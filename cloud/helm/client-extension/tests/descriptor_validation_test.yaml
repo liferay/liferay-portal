@@ -10,7 +10,7 @@ templates:
 tests:
     -   asserts:
             -   failedTemplate:
-                    errorMessage: descriptor type other is not supported, expected batch, configuration, frontend, or service
+                    errorMessage: descriptor type other is not supported, expected "batch", "configuration", "frontend", or "service"
                 template: templates/clientextension.yaml
         it: Fails a descriptor type it cannot run
         set:

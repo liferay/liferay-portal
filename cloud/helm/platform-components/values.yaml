@@ -32,9 +32,8 @@ argocd:
         credentialsSecretKey: ""
         enabled: false
 clientExtensions:
-    chart:
-        repoURL: oci://us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart/liferay-client-extension
-        targetRevision: 0.1.0
+    repoURL: oci://us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart/liferay-client-extension
+    targetRevision: 0.1.0
 clusterBootstrap:
     enabled: true
     image: alpine:3

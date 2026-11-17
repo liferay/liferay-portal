@@ -159,6 +159,5 @@ tests:
         it: Renders every client extension from the platform's chart and version
         set:
             clientExtensions:
-                chart:
-                    repoURL: oci://registry.example.com/charts/liferay-client-extension
-                    targetRevision: 0.2.0
+                repoURL: oci://registry.example.com/charts/liferay-client-extension
+                targetRevision: 0.2.0

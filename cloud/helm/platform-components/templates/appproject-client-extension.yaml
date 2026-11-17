@@ -34,5 +34,5 @@ spec:
         -   group: gateway.networking.k8s.io
             kind: HTTPRoute
     sourceRepos:
-        {{- include "liferay-platform.sourceRepos" (list .Values.clientExtensions.chart.repoURL) | nindent 8 }}
+        {{- include "liferay-platform.sourceRepos" (list .Values.clientExtensions.repoURL) | nindent 8 }}
 {{- end -}}

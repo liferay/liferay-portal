@@ -60,7 +60,7 @@ spec:
                 server: https://kubernetes.default.svc
             project: liferay-client-extension
             source:
-                {{- include "liferay-platform.chartSource" .Values.clientExtensions.chart | nindent 16 }}
+                {{- include "liferay-platform.chartSource" .Values.clientExtensions | nindent 16 }}
                 helm:
                     parameters:
                         -   forceString: true

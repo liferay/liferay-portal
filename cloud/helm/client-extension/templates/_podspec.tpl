@@ -8,10 +8,10 @@ affinity:
 containers:
     -   env:
             {{- $descriptor := include "liferay-client-extension.descriptor" . | fromJson }}
-            {{- $batchOAuthApplicationERC := get $descriptor "oauthApplicationHeadlessServerERC" }}
-            {{- if and (eq (get $descriptor "type") "batch") $batchOAuthApplicationERC (not (hasKey (.Values.workload.env | default dict) "LIFERAY_BATCH_OAUTH_APP_ERC")) }}
+            {{- $batchOAuthAppERC := get $descriptor "oauthApplicationHeadlessServerERC" }}
+            {{- if and (eq (get $descriptor "type") "batch") $batchOAuthAppERC (not (hasKey (.Values.workload.env | default dict) "LIFERAY_BATCH_OAUTH_APP_ERC")) }}
             -   name: LIFERAY_BATCH_OAUTH_APP_ERC
-                value: {{ $batchOAuthApplicationERC | quote }}
+                value: {{ $batchOAuthAppERC | quote }}
             {{- end }}
             {{- if $extInit }}
             -   name: LIFERAY_ROUTES_CLIENT_EXTENSION

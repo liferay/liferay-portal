@@ -21,7 +21,7 @@
 {{- end -}}
 {{- $type := get $descriptor "type" -}}
 {{- if not (has $type (list "batch" "configuration" "frontend" "service")) -}}
-{{- fail (printf "descriptor type %v is not supported, expected batch, configuration, frontend, or service" $type) -}}
+{{- fail (printf "descriptor type %v is not supported, expected \"batch\", \"configuration\", \"frontend\", or \"service\"" $type) -}}
 {{- end -}}
 {{- if not (kindIs "map" (get $descriptor "configs" | default dict)) -}}
 {{- fail "descriptor configs must be an object" -}}
