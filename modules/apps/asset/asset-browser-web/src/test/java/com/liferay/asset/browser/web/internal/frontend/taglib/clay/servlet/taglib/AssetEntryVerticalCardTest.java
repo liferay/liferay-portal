@@ -19,7 +19,7 @@ import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import jakarta.portlet.RenderRequest;
 
-import org.junit.AfterClass;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -39,14 +39,10 @@ public class AssetEntryVerticalCardTest {
 	public static final LiferayUnitTestRule liferayUnitTestRule =
 		LiferayUnitTestRule.INSTANCE;
 
-	@AfterClass
-	public static void tearDownClass() {
-		_groupLocalServiceUtilMockedStatic.close();
-	}
-
 	@Before
 	public void setUp() {
-		_groupLocalServiceUtilMockedStatic.reset();
+		_groupLocalServiceUtilMockedStatic = Mockito.mockStatic(
+			GroupLocalServiceUtil.class);
 
 		Mockito.doReturn(
 			_assetRendererFactory
@@ -67,6 +63,11 @@ public class AssetEntryVerticalCardTest {
 		).thenReturn(
 			themeDisplay
 		);
+	}
+
+	@After
+	public void tearDown() {
+		_groupLocalServiceUtilMockedStatic.close();
 	}
 
 	@Test
@@ -139,15 +140,13 @@ public class AssetEntryVerticalCardTest {
 	private static final long _SUBTYPE_SELECTION_ID =
 		RandomTestUtil.randomLong();
 
-	private static final MockedStatic<GroupLocalServiceUtil>
-		_groupLocalServiceUtilMockedStatic = Mockito.mockStatic(
-			GroupLocalServiceUtil.class);
-
 	private final AssetBrowserDisplayContext _assetBrowserDisplayContext =
 		Mockito.mock(AssetBrowserDisplayContext.class);
 	private final AssetEntry _assetEntry = Mockito.mock(AssetEntry.class);
 	private final AssetRendererFactory<?> _assetRendererFactory = Mockito.mock(
 		AssetRendererFactory.class);
+	private MockedStatic<GroupLocalServiceUtil>
+		_groupLocalServiceUtilMockedStatic;
 	private final RenderRequest _renderRequest = Mockito.mock(
 		RenderRequest.class);
 

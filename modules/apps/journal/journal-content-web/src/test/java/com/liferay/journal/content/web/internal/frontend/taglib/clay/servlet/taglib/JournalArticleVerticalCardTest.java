@@ -18,8 +18,9 @@ import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import jakarta.portlet.RenderRequest;
 
-import org.junit.AfterClass;
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -37,8 +38,14 @@ public class JournalArticleVerticalCardTest {
 	public static final LiferayUnitTestRule liferayUnitTestRule =
 		LiferayUnitTestRule.INSTANCE;
 
-	@AfterClass
-	public static void tearDownClass() {
+	@Before
+	public void setUp() {
+		_groupLocalServiceUtilMockedStatic = Mockito.mockStatic(
+			GroupLocalServiceUtil.class);
+	}
+
+	@After
+	public void tearDown() {
 		_groupLocalServiceUtilMockedStatic.close();
 	}
 
@@ -102,8 +109,7 @@ public class JournalArticleVerticalCardTest {
 
 	private static final long _GROUP_ID = RandomTestUtil.randomLong();
 
-	private static final MockedStatic<GroupLocalServiceUtil>
-		_groupLocalServiceUtilMockedStatic = Mockito.mockStatic(
-			GroupLocalServiceUtil.class);
+	private MockedStatic<GroupLocalServiceUtil>
+		_groupLocalServiceUtilMockedStatic;
 
 }
