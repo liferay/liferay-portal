@@ -815,6 +815,17 @@ public class DBPartitionUtil {
 				}
 			}
 		}
+
+		for (String servletContextName : releases.keySet()) {
+			if (servletContextName.endsWith(".service")) {
+				throw new IllegalArgumentException(
+					StringBundler.concat(
+						"Unable to insert the database partition ",
+						sourcePartitionName,
+						" because it does not have module ",
+						servletContextName));
+			}
+		}
 	}
 
 	private static void _checkSQL(String sql) {
