@@ -144,7 +144,7 @@ public class EditLDAPServerMVCActionCommandTest {
 			String serverName)
 		throws Exception {
 
-		_waitForConfigurationEvents();
+		_waitForConfigurationUpdates();
 
 		List<LDAPServerConfiguration> ldapServerConfigurations =
 			_ldapServerConfigurationProvider.getConfigurations(
@@ -215,7 +215,7 @@ public class EditLDAPServerMVCActionCommandTest {
 		return themeDisplay;
 	}
 
-	private void _waitForConfigurationEvents() throws Exception {
+	private void _waitForConfigurationUpdates() throws Exception {
 		String pid = EditLDAPServerMVCActionCommandTest.class.getName();
 
 		ConfigurationTestUtil.saveConfiguration(pid, new HashMapDictionary<>());
