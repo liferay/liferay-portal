@@ -44,6 +44,7 @@ import com.liferay.social.kernel.util.SocialInteractionsConfiguration;
 import com.liferay.social.kernel.util.SocialInteractionsConfigurationUtil;
 
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -280,7 +281,7 @@ public class DefaultMentionsNotifier implements MentionsNotifier {
 	private Set<Long> _getMentionedUserGroupIds(
 		long companyId, String content) {
 
-		Set<Long> mentionedUserGroupIds = new HashSet<>();
+		Set<Long> mentionedUserGroupIds = new LinkedHashSet<>();
 
 		if (!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-104086")) {
 			return mentionedUserGroupIds;
