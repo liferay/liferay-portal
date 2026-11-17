@@ -403,6 +403,56 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 
 	@Override
 	@Test
+	@TestInfo("LPD-114990")
+	public void testPatchDesignLibraryMasterPage() throws Exception {
+		String designLibraryExternalReferenceCode =
+			_getDesignLibraryExternalReferenceCode();
+
+		MasterPage masterPage = _addDesignLibraryMasterPage(
+			designLibraryExternalReferenceCode,
+			WorkflowConstants.STATUS_APPROVED);
+
+		String newName = RandomTestUtil.randomString();
+
+		MasterPage patchMasterPage =
+			masterPageResource.patchDesignLibraryMasterPage(
+				designLibraryExternalReferenceCode,
+				masterPage.getExternalReferenceCode(),
+				new MasterPage() {
+					{
+						setName(newName);
+					}
+				});
+
+		Assert.assertEquals(newName, patchMasterPage.getName());
+
+		MasterPage getMasterPage =
+			masterPageResource.getDesignLibraryMasterPage(
+				designLibraryExternalReferenceCode,
+				masterPage.getExternalReferenceCode());
+
+		Assert.assertEquals(
+			masterPage.getMarkedAsDefault(),
+			getMasterPage.getMarkedAsDefault());
+		Assert.assertEquals(newName, getMasterPage.getName());
+
+		ProblemExceptionTestUtil.assertProblemException(
+			"BAD_REQUEST", "Name must not be empty.",
+			() -> masterPageResource.patchDesignLibraryMasterPage(
+				designLibraryExternalReferenceCode,
+				masterPage.getExternalReferenceCode(),
+				new MasterPage() {
+					{
+						setName(StringPool.BLANK);
+					}
+				}));
+
+		_testPatchDesignLibraryMasterPageWithDuplicateName(
+			designLibraryExternalReferenceCode, newName);
+	}
+
+	@Override
+	@Test
 	@TestInfo("LPD-92443")
 	public void testPatchSiteMasterPage() throws Exception {
 		MasterPage masterPage = testPostSiteMasterPage_addMasterPage(
@@ -629,6 +679,40 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 				getDisplayPageLayoutPageTemplateEntry(serviceContext));
 
 		_testPostSiteMasterPagePageSpecificationWithInvalidPageExperiences();
+	}
+
+	@Override
+	@Test
+	@TestInfo("LPD-114990")
+	public void testPutDesignLibraryMasterPage() throws Exception {
+		String designLibraryExternalReferenceCode =
+			_getDesignLibraryExternalReferenceCode();
+
+		MasterPage masterPage = _randomMasterPage(_designLibraryGroup);
+
+		MasterPage putMasterPage =
+			masterPageResource.putDesignLibraryMasterPage(
+				designLibraryExternalReferenceCode,
+				masterPage.getExternalReferenceCode(), masterPage);
+
+		assertEquals(masterPage, putMasterPage);
+		assertValid(putMasterPage);
+
+		masterPage.setName(RandomTestUtil.randomString());
+
+		putMasterPage = masterPageResource.putDesignLibraryMasterPage(
+			designLibraryExternalReferenceCode,
+			masterPage.getExternalReferenceCode(), masterPage);
+
+		assertEquals(masterPage, putMasterPage);
+		assertValid(putMasterPage);
+
+		Map<String, Map<String, String>> actions = putMasterPage.getActions();
+
+		Assert.assertTrue(actions.containsKey("update"));
+
+		_testPutDesignLibraryMasterPageWithoutUpdatePermission(
+			designLibraryExternalReferenceCode, putMasterPage);
 	}
 
 	@Override
@@ -1247,6 +1331,24 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 		return layoutPageTemplateEntry.getExternalReferenceCode();
 	}
 
+	private MasterPageResource _getUserWithoutPermissionsMasterPageResource()
+		throws Exception {
+
+		String password = RandomTestUtil.randomString();
+
+		User user = UserTestUtil.addUser(testCompany, password);
+
+		return MasterPageResource.builder(
+		).authentication(
+			user.getEmailAddress(), password
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).build();
+	}
+
 	private boolean _hasViewPermission(
 			String designLibraryExternalReferenceCode,
 			String masterPageExternalReferenceCode, String roleName)
@@ -1472,6 +1574,17 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 		Assert.assertFalse(actions.containsKey("markAsDefault"));
 		Assert.assertTrue(actions.containsKey("permissions"));
 		Assert.assertFalse(actions.containsKey("unmarkAsDefault"));
+		Assert.assertTrue(actions.containsKey("update"));
+
+		Map<String, String> updateAction = actions.get("update");
+
+		String updateHref = updateAction.get("href");
+
+		Assert.assertTrue(
+			updateHref.endsWith(
+				"/master-pages/" + masterPage.getExternalReferenceCode()));
+
+		Assert.assertEquals("PATCH", updateAction.get("method"));
 	}
 
 	private void _testGetDesignLibraryMasterPageWithNestedFields()
@@ -1613,6 +1726,26 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 					logEntry.getMessage());
 			}
 		}
+	}
+
+	private void _testPatchDesignLibraryMasterPageWithDuplicateName(
+			String designLibraryExternalReferenceCode, String newName)
+		throws Exception {
+
+		MasterPage masterPage = _addDesignLibraryMasterPage(
+			designLibraryExternalReferenceCode,
+			WorkflowConstants.STATUS_APPROVED);
+
+		ProblemExceptionTestUtil.assertProblemException(
+			"CONFLICT", "A page template entry with that name already exists.",
+			() -> masterPageResource.patchDesignLibraryMasterPage(
+				designLibraryExternalReferenceCode,
+				masterPage.getExternalReferenceCode(),
+				new MasterPage() {
+					{
+						setName(newName);
+					}
+				}));
 	}
 
 	private void _testPatchSiteMasterPage(
@@ -2430,6 +2563,36 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 			"Unable to download file from " + url +
 				" because of unsupported protocol ftp",
 			RandomTestUtil.randomString(), url);
+	}
+
+	private void _testPutDesignLibraryMasterPageWithoutUpdatePermission(
+			String designLibraryExternalReferenceCode, MasterPage masterPage)
+		throws Exception {
+
+		MasterPageResource userWithoutPermissionsMasterPageResource =
+			_getUserWithoutPermissionsMasterPageResource();
+
+		MasterPage userMasterPage =
+			userWithoutPermissionsMasterPageResource.getDesignLibraryMasterPage(
+				designLibraryExternalReferenceCode,
+				masterPage.getExternalReferenceCode());
+
+		Map<String, Map<String, String>> actions = userMasterPage.getActions();
+
+		Assert.assertFalse(actions.containsKey("update"));
+
+		ProblemExceptionTestUtil.assertProblemException(
+			"FORBIDDEN", "Forbidden",
+			() ->
+				userWithoutPermissionsMasterPageResource.
+					putDesignLibraryMasterPage(
+						designLibraryExternalReferenceCode,
+						masterPage.getExternalReferenceCode(),
+						new MasterPage() {
+							{
+								setName(RandomTestUtil.randomString());
+							}
+						}));
 	}
 
 	private void _testPutSiteMasterPage(MasterPage masterPage)
