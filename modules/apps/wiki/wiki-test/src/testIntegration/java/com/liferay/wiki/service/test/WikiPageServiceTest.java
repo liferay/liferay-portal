@@ -9,6 +9,7 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
@@ -101,9 +102,18 @@ public class WikiPageServiceTest {
 
 		_userLocalService.addGroupUser(_group.getGroupId(), _user);
 
-		Assert.assertThrows(
-			PrincipalException.MustHavePermission.class,
-			() -> _copyPageAttachments(page, templatePage));
+		PrincipalException.MustHavePermission mustHavePermission =
+			Assert.assertThrows(
+				PrincipalException.MustHavePermission.class,
+				() -> _copyPageAttachments(page, templatePage));
+
+		Assert.assertArrayEquals(
+			new String[] {ActionKeys.VIEW}, mustHavePermission.actionId);
+		Assert.assertEquals(
+			templatePage.getResourcePrimKey(), mustHavePermission.resourceId);
+		Assert.assertEquals(
+			WikiPage.class.getName(), mustHavePermission.resourceName);
+
 		Assert.assertEquals(0, page.getAttachmentsFileEntriesCount());
 
 		_userLocalService.addGroupUser(_templateGroup.getGroupId(), _user);
