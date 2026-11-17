@@ -491,19 +491,19 @@ public class BlogsEntryStagedModelDataHandlerTest
 		super.validateImport(
 			stagedModel, stagedModelAssets, dependentStagedModelsMap, group);
 
-		BlogsEntry entry = (BlogsEntry)stagedModel;
+		BlogsEntry blogsEntry = (BlogsEntry)stagedModel;
 
-		BlogsEntry importedEntry = (BlogsEntry)getStagedModel(
-			entry.getUuid(), group);
+		BlogsEntry importedBlogsEntry = (BlogsEntry)getStagedModel(
+			blogsEntry.getUuid(), group);
 
 		RatingsEntry importedRatingsEntry =
 			_ratingsEntryLocalService.fetchEntry(
 				TestPropsValues.getUserId(), BlogsEntry.class.getName(),
-				importedEntry.getEntryId());
+				importedBlogsEntry.getEntryId());
 
 		RatingsEntry ratingsEntry = _ratingsEntryLocalService.getEntry(
 			TestPropsValues.getUserId(), BlogsEntry.class.getName(),
-			entry.getEntryId());
+			blogsEntry.getEntryId());
 
 		Assert.assertEquals(
 			ratingsEntry.getScore(), importedRatingsEntry.getScore(), 0);

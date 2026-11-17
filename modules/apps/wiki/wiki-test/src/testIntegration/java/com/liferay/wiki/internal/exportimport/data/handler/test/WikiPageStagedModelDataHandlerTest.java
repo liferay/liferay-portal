@@ -372,25 +372,26 @@ public class WikiPageStagedModelDataHandlerTest
 		super.validateImport(
 			stagedModel, stagedModelAssets, dependentStagedModelsMap, group);
 
-		WikiPage page = (WikiPage)stagedModel;
+		WikiPage wikiPage = (WikiPage)stagedModel;
 
 		List<FileEntry> attachmentsFileEntries =
-			page.getAttachmentsFileEntries();
+			wikiPage.getAttachmentsFileEntries();
 
 		Assert.assertEquals(
 			attachmentsFileEntries.toString(), 1,
 			attachmentsFileEntries.size());
 
-		WikiPage importedPage = (WikiPage)getStagedModel(page.getUuid(), group);
+		WikiPage importedWikiPage = (WikiPage)getStagedModel(
+			wikiPage.getUuid(), group);
 
 		RatingsEntry importedRatingsEntry =
 			_ratingsEntryLocalService.fetchEntry(
 				TestPropsValues.getUserId(), WikiPage.class.getName(),
-				importedPage.getResourcePrimKey());
+				importedWikiPage.getResourcePrimKey());
 
 		RatingsEntry ratingsEntry = _ratingsEntryLocalService.getEntry(
 			TestPropsValues.getUserId(), WikiPage.class.getName(),
-			page.getResourcePrimKey());
+			wikiPage.getResourcePrimKey());
 
 		Assert.assertEquals(
 			ratingsEntry.getScore(), importedRatingsEntry.getScore(), 0);
