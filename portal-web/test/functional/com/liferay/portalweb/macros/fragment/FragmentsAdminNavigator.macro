@@ -14,18 +14,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro gotoImportCollection() {
-		if (IsElementPresent(locator1 = "NavNested#NAV_NESTED_ELLIPSIS")) {
-			Click.waitForMenuToggleJSClick(locator1 = "NavNested#NAV_NESTED_ELLIPSIS");
-		}
-		else {
-			Button.click(button = "New");
-		}
-
-		DropdownMenuItem.click(menuItem = "Import");
-	}
-
-	@summary = "Default summary"
 	macro gotoSpecificScopeCollection(scope = null, collectionName = null) {
 		MenuBar.clickInStack(
 			menuBar = ${collectionName},

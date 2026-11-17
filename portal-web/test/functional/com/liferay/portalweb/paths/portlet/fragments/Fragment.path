@@ -211,14 +211,6 @@
 	<td></td>
 </tr>
 
-<!--FRAGMENT_COMMENT-->
-
-<tr>
-	<td>FRAGMENT_COMMENT_ICON</td>
-	<td>//div[contains(@class,'page-editor__topper__bar') and contains(.,'${key_fragmentName}')]//button[*[name()='svg'][contains(@class,'icon-comments')]]</td>
-	<td></td>
-</tr>
-
 <!--FRAGMENT_CUSTOM_STYLE-->
 
 <tr>

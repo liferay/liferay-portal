@@ -39,29 +39,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro addCommentViaFragment(fragmentName = null, fragmentComment = null, position = null) {
-		PageEditor.gotoCommentViaFragment(
-			fragmentName = ${fragmentName},
-			key_position = ${position});
-
-		AssertElementPresent(
-			key_fragmentName = ${fragmentName},
-			locator1 = "PageEditor#FRAGMENT_SIDEBAR_COMMENT_SECTION_NAME");
-
-		Click.clickAt(locator1 = "PageEditor#FRAGMENT_SIDEBAR_COMMENTS");
-
-		Type(
-			locator1 = "PageEditor#FRAGMENT_SIDEBAR_COMMENTS",
-			value1 = ${fragmentComment});
-
-		Button.clickComment();
-
-		AssertElementNotPresent(
-			key_fragmentComment = ${fragmentComment},
-			locator1 = "PageEditor#FRAGMENT_SIDEBAR_COMMENT_ENTRY_INPUT");
-	}
-
-	@summary = "Default summary"
 	macro addElementToColumn(navTab = null, targetFragmentName = null, fragmentName = null, columnNumber = null, collectionName = null, height = null, portletName = null) {
 		if (!(isSet(position))) {
 			var position = 1;
@@ -2995,25 +2972,6 @@ return	Array.from(getWebElement("(//div[@data-name='${fragmentName}'])[${index}]
 		AssertTextEquals(
 			locator1 = "PageEditor#FRAGMENT_SIDEBAR_COMMENT_LIST_TITLE",
 			value1 = "Comments");
-	}
-
-	@summary = "Default summary"
-	macro gotoCommentViaFragment(fragmentName = null) {
-		var key_fragmentName = ${fragmentName};
-
-		if (IsElementNotPresent(locator1 = "Fragment#FRAGMENT_COMMENT_ICON")) {
-			PageEditor.clickConfigurableField(fragmentName = ${fragmentName});
-
-			PageEditor.gotoTab(tabName = "Browser");
-		}
-
-		Click(locator1 = "Fragment#FRAGMENT_COMMENT_ICON");
-
-		if (IsElementNotPresent(locator1 = "PageEditor#FRAGMENT_SIDEBAR_COMMENT_SECTION_NAME")) {
-			PageEditor.clickConfigurableField(fragmentName = ${fragmentName});
-
-			PageEditor.gotoTab(tabName = "Browser");
-		}
 	}
 
 	@summary = "Default summary"
