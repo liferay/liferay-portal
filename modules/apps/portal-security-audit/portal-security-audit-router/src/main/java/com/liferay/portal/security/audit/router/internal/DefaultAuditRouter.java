@@ -130,7 +130,7 @@ public class DefaultAuditRouter implements AuditRouter {
 		long companyId = auditMessage.getCompanyId();
 
 		if ((companyId == CompanyConstants.SYSTEM) ||
-			!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-6417")) {
+			!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-96921")) {
 
 			auditMessage.setAction(null);
 			auditMessage.setResourceAction(null);

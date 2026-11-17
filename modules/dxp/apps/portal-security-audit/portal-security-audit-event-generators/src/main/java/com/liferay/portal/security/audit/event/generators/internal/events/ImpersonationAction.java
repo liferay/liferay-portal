@@ -78,7 +78,7 @@ public class ImpersonationAction extends Action {
 				JSONObject additionalInfoJSONObject = null;
 
 				if (!FeatureFlagManagerUtil.isEnabled(
-						themeDisplay.getCompanyId(), "LPD-6417")) {
+						themeDisplay.getCompanyId(), "LPD-96921")) {
 
 					additionalInfoJSONObject = JSONUtil.put(
 						"userEmailAddress", user.getEmailAddress()

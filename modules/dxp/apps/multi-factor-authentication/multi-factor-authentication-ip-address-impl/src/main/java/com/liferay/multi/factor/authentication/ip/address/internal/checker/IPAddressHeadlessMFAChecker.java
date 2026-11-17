@@ -205,7 +205,7 @@ public class IPAddressHeadlessMFAChecker implements HeadlessMFAChecker {
 			long companyId = auditMessage.getCompanyId();
 
 			if ((companyId == CompanyConstants.SYSTEM) ||
-				!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-6417")) {
+				!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-96921")) {
 
 				return;
 			}

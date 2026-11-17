@@ -91,7 +91,7 @@ public class AuditMessage implements Serializable {
 		_correlationId = auditRequestContext.getCorrelationId();
 
 		if ((companyId > CompanyConstants.SYSTEM) &&
-			FeatureFlagManagerUtil.isEnabled(companyId, "LPD-6417")) {
+			FeatureFlagManagerUtil.isEnabled(companyId, "LPD-96921")) {
 
 			_httpMethod = auditRequestContext.getHttpMethod();
 			_userAgent = auditRequestContext.getUserAgent();
@@ -114,7 +114,7 @@ public class AuditMessage implements Serializable {
 		}
 
 		if ((realUserId > 0) && (impersonatedUserId != realUserId)) {
-			if (FeatureFlagManagerUtil.isEnabled(companyId, "LPD-6417")) {
+			if (FeatureFlagManagerUtil.isEnabled(companyId, "LPD-96921")) {
 				User impersonatedUser = UserLocalServiceUtil.fetchUser(
 					impersonatedUserId);
 

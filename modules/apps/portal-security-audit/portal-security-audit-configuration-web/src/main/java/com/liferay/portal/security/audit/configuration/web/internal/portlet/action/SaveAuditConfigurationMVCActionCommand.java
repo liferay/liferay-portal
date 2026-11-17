@@ -249,7 +249,7 @@ public class SaveAuditConfigurationMVCActionCommand
 		ThemeDisplay themeDisplay) {
 
 		if (!FeatureFlagManagerUtil.isEnabled(
-				themeDisplay.getCompanyId(), "LPD-6417")) {
+				themeDisplay.getCompanyId(), "LPD-96921")) {
 
 			return;
 		}

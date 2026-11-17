@@ -315,7 +315,7 @@ public class LayoutAction implements Action {
 					if (Validator.isNotNull(themeDisplay.getDoAsUserId()) &&
 						(realUser.getUserId() != user.getUserId()) &&
 						!FeatureFlagManagerUtil.isEnabled(
-							realUser.getCompanyId(), "LPD-6417")) {
+							realUser.getCompanyId(), "LPD-96921")) {
 
 						additionalInfoJSONObject = JSONUtil.put(
 							"doAsUserEmailAddress", user.getEmailAddress()

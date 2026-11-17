@@ -131,7 +131,7 @@ public class AuditFilter extends BaseFilter implements TryFilter {
 
 		long companyId = CompanyThreadLocal.getCompanyId();
 
-		if (FeatureFlagManagerUtil.isEnabled(companyId, "LPD-6417")) {
+		if (FeatureFlagManagerUtil.isEnabled(companyId, "LPD-96921")) {
 			auditRequestContext.setHttpMethod(
 				_truncate(75, httpServletRequest.getMethod()));
 			auditRequestContext.setUserAgent(
