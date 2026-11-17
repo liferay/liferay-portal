@@ -9,6 +9,8 @@ import aQute.bnd.annotation.metatype.Meta;
 
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 
+import org.osgi.annotation.versioning.ProviderType;
+
 /**
  * @author Guilherme Camacho
  */
@@ -19,6 +21,7 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
 	id = "com.liferay.object.storage.salesforce.configuration.SalesforceConfiguration",
 	localization = "content/Language", name = "salesforce-configuration-name"
 )
+@ProviderType
 public interface SalesforceConfiguration {
 
 	@Meta.AD(name = "consumer-key", required = false)
@@ -28,6 +31,13 @@ public interface SalesforceConfiguration {
 		name = "consumer-secret", required = false, type = Meta.Type.Password
 	)
 	public String consumerSecret();
+
+	@Meta.AD(
+		deflt = "password", name = "grant-type",
+		optionLabels = {"CLIENT_CREDENTIALS", "RESOURCE_OWNER_PASSWORD"},
+		optionValues = {"client_credentials", "password"}, required = false
+	)
+	public String grantType();
 
 	@Meta.AD(name = "login-url", required = false)
 	public String loginURL();
