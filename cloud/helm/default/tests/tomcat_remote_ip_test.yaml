@@ -1,0 +1,79 @@
+suite: Tomcat Remote IP
+templates:
+    -   templates/configmap.yaml
+    -   templates/liferay-init-scripts-cm.yaml
+    -   templates/liferay-network-cm.yaml
+    -   templates/workloads.yaml
+tests:
+    -   asserts:
+            -   matchRegex:
+                    path: spec.template.spec.initContainers[?(@.name=="liferay-prepopulate-data")].command[2]
+                    pattern: className="org\.apache\.catalina\.valves\.RemoteIpValve"
+            -   matchRegex:
+                    path: spec.template.spec.initContainers[?(@.name=="liferay-prepopulate-data")].command[2]
+                    pattern: >-
+                        internalProxies="10\\\.\\d\+\\\.\\d\+\\\.\\d\+"
+            -   notMatchRegex:
+                    path: spec.template.spec.initContainers[?(@.name=="liferay-prepopulate-data")].command[2]
+                    pattern: protocolHeader
+            -   matchRegex:
+                    path: spec.template.spec.initContainers[?(@.name=="liferay-prepopulate-data")].command[2]
+                    pattern: remoteIpHeader="X-Forwarded-For"
+            -   matchRegex:
+                    path: spec.template.spec.initContainers[?(@.name=="liferay-prepopulate-data")].command[2]
+                    pattern: >-
+                        sed --in-place '/<Engine/r'<\(echo "\$\{SERVER_XML_REMOTE_IP_VALVE\}"\) /temp/tomcat/conf/server\.xml
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: StatefulSet
+        it: Adds the valve with the configured internal proxies and without the protocol header
+        set:
+            tomcat.remoteIP.enabled: true
+            tomcat.remoteIP.internalProxies: 10\.\d+\.\d+\.\d+
+    -   asserts:
+            -   failedTemplate:
+                    errorMessage: The value "tomcat.remoteIP.internalProxies" is required when the remote IP valve is enabled
+        it: Fails when the valve is enabled without internal proxies
+        set:
+            tomcat.remoteIP.enabled: true
+        template: templates/workloads.yaml
+    -   asserts:
+            -   matchRegex:
+                    path: spec.template.spec.initContainers[?(@.name=="liferay-prepopulate-data")].command[2]
+                    pattern: remoteIpHeader="X-Forwarded-For"
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: StatefulSet
+        it: Falls back to the X-Forwarded-For header when the remote IP header is empty
+        set:
+            tomcat.remoteIP.enabled: true
+            tomcat.remoteIP.internalProxies: 10\.\d+\.\d+\.\d+
+            tomcat.remoteIP.remoteIPHeader: ""
+    -   asserts:
+            -   notMatchRegex:
+                    path: spec.template.spec.initContainers[?(@.name=="liferay-prepopulate-data")].command[2]
+                    pattern: RemoteIpValve
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: StatefulSet
+        it: Leaves the image server.xml without the valve by default
+    -   asserts:
+            -   matchRegex:
+                    path: spec.template.spec.initContainers[?(@.name=="liferay-prepopulate-data")].command[2]
+                    pattern: protocolHeader="X-Custom-Proto"
+            -   matchRegex:
+                    path: spec.template.spec.initContainers[?(@.name=="liferay-prepopulate-data")].command[2]
+                    pattern: remoteIpHeader="X-Custom-For"
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: StatefulSet
+        it: Uses the configured proxy headers
+        set:
+            tomcat.remoteIP.enabled: true
+            tomcat.remoteIP.internalProxies: 10\.\d+\.\d+\.\d+
+            tomcat.remoteIP.protocolHeader: X-Custom-Proto
+            tomcat.remoteIP.remoteIPHeader: X-Custom-For

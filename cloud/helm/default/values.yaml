@@ -216,6 +216,22 @@ customInitContainers:
 
                             sed --in-place '/<Engine/r'<(echo "${SERVER_XML_CLUSTER}") /temp/tomcat/conf/server.xml
 
+                            {{- if dig "remoteIP" "enabled" false (.tomcat | default dict) }}
+
+                            IFS='' read -r -d '' SERVER_XML_REMOTE_IP_VALVE <<EOF
+                            <Valve
+                                className="org.apache.catalina.valves.RemoteIpValve"
+                                internalProxies="{{ required "The value \"tomcat.remoteIP.internalProxies\" is required when the remote IP valve is enabled" .tomcat.remoteIP.internalProxies }}"
+                                {{- with .tomcat.remoteIP.protocolHeader }}
+                                protocolHeader="{{ . }}"
+                                {{- end }}
+                                remoteIpHeader="{{ .tomcat.remoteIP.remoteIPHeader | default "X-Forwarded-For" }}"
+                            />
+                            EOF
+
+                            sed --in-place '/<Engine/r'<(echo "${SERVER_XML_REMOTE_IP_VALVE}") /temp/tomcat/conf/server.xml
+                            {{- end }}
+
                             if [ -d /opt/liferay/deploy ] && [ -n "$(ls --almost-all /opt/liferay/deploy 2>/dev/null)" ] && [ -z "$(ls --all /temp/liferay/deploy/*license* 2>/dev/null)" ]
                             then
                                 if [ ! -d /temp/liferay/data/license ] || [ -z "$(ls --all /temp/liferay/data/license/*.li 2>/dev/null)" ]
@@ -551,6 +567,11 @@ startupProbe:
 tolerations: []
 tomcat:
     maxThreads: ""
+    remoteIP:
+        enabled: false
+        internalProxies: ""
+        protocolHeader: ""
+        remoteIPHeader: X-Forwarded-For
     sessionReplication:
         transportTimeoutMs: 300000
 updateStrategy:
