@@ -110,6 +110,12 @@ public class DisplayPageTemplateActionUtil {
 				ActionKeys.UPDATE, contextScopeChecker, layoutPageTemplateEntry,
 				"postDesignLibraryDisplayPageTemplateUnmarkAsDefault",
 				modelResourcePermission, templateParameterMap, uriInfo)
+		).put(
+			"update",
+			_addAction(
+				ActionKeys.UPDATE, contextScopeChecker, layoutPageTemplateEntry,
+				"patchDesignLibraryDisplayPageTemplate",
+				modelResourcePermission, templateParameterMap, uriInfo)
 		).build();
 	}
 

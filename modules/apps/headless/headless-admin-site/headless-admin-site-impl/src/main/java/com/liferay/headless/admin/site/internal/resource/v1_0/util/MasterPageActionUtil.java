@@ -111,6 +111,12 @@ public class MasterPageActionUtil {
 				ActionKeys.UPDATE, contextScopeChecker, layoutPageTemplateEntry,
 				"postDesignLibraryMasterPageUnmarkAsDefault",
 				modelResourcePermission, templateParameterMap, uriInfo)
+		).put(
+			"update",
+			_addAction(
+				ActionKeys.UPDATE, contextScopeChecker, layoutPageTemplateEntry,
+				"patchDesignLibraryMasterPage", modelResourcePermission,
+				templateParameterMap, uriInfo)
 		).build();
 	}
 

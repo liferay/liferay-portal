@@ -376,6 +376,21 @@ public class MasterPageResourceImpl
 	}
 
 	@Override
+	public MasterPage putDesignLibraryMasterPage(
+			String designLibraryExternalReferenceCode,
+			String masterPageExternalReferenceCode, MasterPage masterPage)
+		throws Exception {
+
+		EnabledUtil.checkDesignLibraryMasterPagesEnabled(contextCompany);
+
+		return _putMasterPage(
+			_getDesignLibraryGroupId(designLibraryExternalReferenceCode),
+			masterPage, masterPageExternalReferenceCode,
+			layoutPageTemplateEntry -> _toDesignLibraryMasterPage(
+				designLibraryExternalReferenceCode, layoutPageTemplateEntry));
+	}
+
+	@Override
 	public Page<Permission> putDesignLibraryMasterPagePermissionsPage(
 			String designLibraryExternalReferenceCode,
 			String masterPageExternalReferenceCode, Permission[] permissions)
@@ -434,10 +449,11 @@ public class MasterPageResourceImpl
 			String siteExternalReferenceCode, MasterPage masterPage)
 		throws Exception {
 
-		return _addMasterPage(
-			GroupUtil.getStagingAwareGroupId(
-				contextCompany.getCompanyId(), siteExternalReferenceCode),
-			masterPage);
+		return _toMasterPage(
+			_addMasterPage(
+				GroupUtil.getStagingAwareGroupId(
+					contextCompany.getCompanyId(), siteExternalReferenceCode),
+				masterPage));
 	}
 
 	@Override
@@ -446,79 +462,10 @@ public class MasterPageResourceImpl
 			String masterPageExternalReferenceCode, MasterPage masterPage)
 		throws Exception {
 
-		long groupId = GroupUtil.getStagingAwareGroupId(
-			contextCompany.getCompanyId(), siteExternalReferenceCode);
-
-		LayoutPageTemplateEntry layoutPageTemplateEntry =
-			_layoutPageTemplateEntryService.
-				fetchLayoutPageTemplateEntryByExternalReferenceCode(
-					masterPageExternalReferenceCode, groupId);
-
-		if (layoutPageTemplateEntry == null) {
-			return _addMasterPage(groupId, masterPage);
-		}
-
-		_validateMasterPage(layoutPageTemplateEntry);
-
-		ServiceContext serviceContext = _getServiceContext(groupId, masterPage);
-
-		long previewFileEntryId = FileEntryUtil.getPreviewFileEntryId(
-			groupId, LayoutAdminPortletKeys.GROUP_PAGES,
-			masterPage.getThumbnailURLReference(), contextUser.getUserId());
-
-		if (previewFileEntryId !=
-				layoutPageTemplateEntry.getPreviewFileEntryId()) {
-
-			layoutPageTemplateEntry =
-				_layoutPageTemplateEntryService.updateLayoutPageTemplateEntry(
-					layoutPageTemplateEntry.getLayoutPageTemplateEntryId(),
-					previewFileEntryId);
-		}
-
-		Layout layout = _layoutLocalService.getLayout(
-			layoutPageTemplateEntry.getPlid());
-
-		layout = LayoutUtil.updateContentLayout(
-			_cetManager, _fragmentEntryProcessorRegistry,
-			_infoItemServiceRegistry, layout, layout.getNameMap(),
-			layout.getTitleMap(), layout.getDescriptionMap(),
-			layout.getKeywordsMap(), layout.getRobotsMap(),
-			layout.getFriendlyURLMap(), layout.getTypeSettingsProperties(),
-			masterPage.getPageSpecifications(), serviceContext);
-
-		if (!layoutPageTemplateEntry.isApproved() && layout.isPublished()) {
-			layoutPageTemplateEntry =
-				_layoutPageTemplateEntryService.updateStatus(
-					layoutPageTemplateEntry.getLayoutPageTemplateEntryId(),
-					WorkflowConstants.STATUS_APPROVED);
-		}
-
-		if (!Objects.equals(
-				GetterUtil.getBoolean(masterPage.getMarkedAsDefault()),
-				layoutPageTemplateEntry.isDefaultTemplate())) {
-
-			layoutPageTemplateEntry =
-				_layoutPageTemplateEntryService.updateLayoutPageTemplateEntry(
-					layoutPageTemplateEntry.getLayoutPageTemplateEntryId(),
-					GetterUtil.getBoolean(masterPage.getMarkedAsDefault()));
-		}
-
-		ServiceContextThreadLocal.pushServiceContext(serviceContext);
-
-		try {
-			return _masterPageDTOConverter.toDTO(
-				DTOConverterContextUtil.getDTOConverterContext(
-					contextAcceptLanguage, _dtoConverterRegistry,
-					contextHttpServletRequest,
-					layoutPageTemplateEntry.getLayoutPageTemplateEntryId(),
-					contextUriInfo, contextUser),
-				_layoutPageTemplateEntryService.updateLayoutPageTemplateEntry(
-					layoutPageTemplateEntry.getLayoutPageTemplateEntryId(),
-					masterPage.getName()));
-		}
-		finally {
-			ServiceContextThreadLocal.popServiceContext();
-		}
+		return _putMasterPage(
+			GroupUtil.getStagingAwareGroupId(
+				contextCompany.getCompanyId(), siteExternalReferenceCode),
+			masterPage, masterPageExternalReferenceCode, this::_toMasterPage);
 	}
 
 	@Override
@@ -566,7 +513,8 @@ public class MasterPageResourceImpl
 		}
 	}
 
-	private MasterPage _addMasterPage(long groupId, MasterPage masterPage)
+	private LayoutPageTemplateEntry _addMasterPage(
+			long groupId, MasterPage masterPage)
 		throws Exception {
 
 		boolean defaultTemplate = false;
@@ -577,30 +525,20 @@ public class MasterPageResourceImpl
 
 		ServiceContext serviceContext = _getServiceContext(groupId, masterPage);
 
-		LayoutPageTemplateEntry layoutPageTemplateEntry =
-			_layoutPageTemplateEntryService.addLayoutPageTemplateEntry(
-				masterPage.getExternalReferenceCode(), groupId,
-				LayoutPageTemplateConstants.
-					PARENT_LAYOUT_PAGE_TEMPLATE_COLLECTION_ID_DEFAULT,
-				masterPage.getKey(), 0, null, masterPage.getName(),
-				LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT,
-				FileEntryUtil.getPreviewFileEntryId(
-					groupId, LayoutAdminPortletKeys.GROUP_PAGES,
-					masterPage.getThumbnailURLReference(),
-					contextUser.getUserId()),
-				defaultTemplate, 0,
-				_getLayoutPlid(groupId, masterPage, serviceContext), 0,
-				PageSpecificationUtil.getPublishedStatus(
-					masterPage.getPageSpecifications()),
-				serviceContext);
-
-		return _masterPageDTOConverter.toDTO(
-			DTOConverterContextUtil.getDTOConverterContext(
-				contextAcceptLanguage, _dtoConverterRegistry,
-				contextHttpServletRequest,
-				layoutPageTemplateEntry.getLayoutPageTemplateEntryId(),
-				contextUriInfo, contextUser),
-			layoutPageTemplateEntry);
+		return _layoutPageTemplateEntryService.addLayoutPageTemplateEntry(
+			masterPage.getExternalReferenceCode(), groupId,
+			LayoutPageTemplateConstants.
+				PARENT_LAYOUT_PAGE_TEMPLATE_COLLECTION_ID_DEFAULT,
+			masterPage.getKey(), 0, null, masterPage.getName(),
+			LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT,
+			FileEntryUtil.getPreviewFileEntryId(
+				groupId, LayoutAdminPortletKeys.GROUP_PAGES,
+				masterPage.getThumbnailURLReference(), contextUser.getUserId()),
+			defaultTemplate, 0,
+			_getLayoutPlid(groupId, masterPage, serviceContext), 0,
+			PageSpecificationUtil.getPublishedStatus(
+				masterPage.getPageSpecifications()),
+			serviceContext);
 	}
 
 	private MasterPage _copyDesignLibraryMasterPage(
@@ -721,6 +659,80 @@ public class MasterPageResourceImpl
 			masterPage.getDateModified(),
 			masterPage.getTaxonomyCategoryBriefs(), contextUser.getUserId(),
 			masterPage.getUuid());
+	}
+
+	private MasterPage _putMasterPage(
+			long groupId, MasterPage masterPage,
+			String masterPageExternalReferenceCode,
+			UnsafeFunction<LayoutPageTemplateEntry, MasterPage, Exception>
+				unsafeFunction)
+		throws Exception {
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			_layoutPageTemplateEntryService.
+				fetchLayoutPageTemplateEntryByExternalReferenceCode(
+					masterPageExternalReferenceCode, groupId);
+
+		if (layoutPageTemplateEntry == null) {
+			return unsafeFunction.apply(_addMasterPage(groupId, masterPage));
+		}
+
+		_validateMasterPage(layoutPageTemplateEntry);
+
+		ServiceContext serviceContext = _getServiceContext(groupId, masterPage);
+
+		long previewFileEntryId = FileEntryUtil.getPreviewFileEntryId(
+			groupId, LayoutAdminPortletKeys.GROUP_PAGES,
+			masterPage.getThumbnailURLReference(), contextUser.getUserId());
+
+		if (previewFileEntryId !=
+				layoutPageTemplateEntry.getPreviewFileEntryId()) {
+
+			layoutPageTemplateEntry =
+				_layoutPageTemplateEntryService.updateLayoutPageTemplateEntry(
+					layoutPageTemplateEntry.getLayoutPageTemplateEntryId(),
+					previewFileEntryId);
+		}
+
+		Layout layout = _layoutLocalService.getLayout(
+			layoutPageTemplateEntry.getPlid());
+
+		layout = LayoutUtil.updateContentLayout(
+			_cetManager, _fragmentEntryProcessorRegistry,
+			_infoItemServiceRegistry, layout, layout.getNameMap(),
+			layout.getTitleMap(), layout.getDescriptionMap(),
+			layout.getKeywordsMap(), layout.getRobotsMap(),
+			layout.getFriendlyURLMap(), layout.getTypeSettingsProperties(),
+			masterPage.getPageSpecifications(), serviceContext);
+
+		if (!layoutPageTemplateEntry.isApproved() && layout.isPublished()) {
+			layoutPageTemplateEntry =
+				_layoutPageTemplateEntryService.updateStatus(
+					layoutPageTemplateEntry.getLayoutPageTemplateEntryId(),
+					WorkflowConstants.STATUS_APPROVED);
+		}
+
+		if (!Objects.equals(
+				GetterUtil.getBoolean(masterPage.getMarkedAsDefault()),
+				layoutPageTemplateEntry.isDefaultTemplate())) {
+
+			layoutPageTemplateEntry =
+				_layoutPageTemplateEntryService.updateLayoutPageTemplateEntry(
+					layoutPageTemplateEntry.getLayoutPageTemplateEntryId(),
+					GetterUtil.getBoolean(masterPage.getMarkedAsDefault()));
+		}
+
+		ServiceContextThreadLocal.pushServiceContext(serviceContext);
+
+		try {
+			return unsafeFunction.apply(
+				_layoutPageTemplateEntryService.updateLayoutPageTemplateEntry(
+					layoutPageTemplateEntry.getLayoutPageTemplateEntryId(),
+					masterPage.getName()));
+		}
+		finally {
+			ServiceContextThreadLocal.popServiceContext();
+		}
 	}
 
 	private MasterPage _toDesignLibraryMasterPage(
