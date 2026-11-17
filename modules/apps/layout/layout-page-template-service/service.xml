@@ -405,6 +405,7 @@
 		<exception>LayoutPageTemplateEntryLayoutPageTemplateCollectionId</exception>
 		<exception>LayoutPageTemplateEntryLayoutPageTemplateEntryKey</exception>
 		<exception>LayoutPageTemplateEntryName</exception>
+		<exception>LayoutPageTemplateEntryPreviewFileEntryId</exception>
 		<exception>LayoutPageTemplateStructureRelElementVariationAudienceEntryERCs</exception>
 		<exception>LayoutPageTemplateStructureRelElementVariationName</exception>
 		<exception>LayoutPageTemplateStructureRelElementVariationTargetElement</exception>
