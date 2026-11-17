@@ -1,0 +1,23 @@
+{
+	"friendlyURL": "/event-attribute",
+	"hidden": true,
+	"name": "Event Attribute",
+	"permissions": [
+		{
+			"actionIds": [
+			],
+			"roleName": "Guest",
+			"scope": 4
+		},
+		{
+			"actionIds": [
+				"VIEW"
+			],
+			"roleName": "Site Member",
+			"scope": 4
+		}
+	],
+	"private": false,
+	"system": false,
+	"type": "Content"
+}

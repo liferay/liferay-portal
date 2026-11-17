@@ -1,0 +1,23 @@
+{
+	"friendlyURL": "/feature-flags",
+	"hidden": true,
+	"name": "Feature Flags",
+	"permissions": [
+		{
+			"actionIds": [
+			],
+			"roleName": "Guest",
+			"scope": 4
+		},
+		{
+			"actionIds": [
+				"VIEW"
+			],
+			"roleName": "Site Member",
+			"scope": 4
+		}
+	],
+	"private": false,
+	"system": false,
+	"type": "Content"
+}

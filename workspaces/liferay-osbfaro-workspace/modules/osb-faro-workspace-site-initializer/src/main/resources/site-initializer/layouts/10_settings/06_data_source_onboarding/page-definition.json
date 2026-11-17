@@ -1,0 +1,14 @@
+{
+	"pageElement": {
+		"id": "08654e3b-6586-5a45-9f3b-07dffe6e1922",
+		"pageElements": [
+		],
+		"type": "Root"
+	},
+	"settings": {
+		"masterPage": {
+			"key": "ldp-master"
+		}
+	},
+	"version": 1.1
+}

@@ -1,0 +1,23 @@
+{
+	"friendlyURL": "/event-definitions",
+	"hidden": true,
+	"name": "Event Definitions",
+	"permissions": [
+		{
+			"actionIds": [
+			],
+			"roleName": "Guest",
+			"scope": 4
+		},
+		{
+			"actionIds": [
+				"VIEW"
+			],
+			"roleName": "Site Member",
+			"scope": 4
+		}
+	],
+	"private": false,
+	"system": false,
+	"type": "Content"
+}
