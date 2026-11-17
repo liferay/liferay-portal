@@ -29,8 +29,7 @@ const ParameterModal = ({onClose, onSave, parameter, parameterNames}) => {
 	const trimmedName = name.trim();
 
 	const duplicated =
-		trimmedName !== parameter?.name &&
-		parameterNames.includes(trimmedName);
+		trimmedName !== parameter?.name && parameterNames.includes(trimmedName);
 
 	let nameError = null;
 
