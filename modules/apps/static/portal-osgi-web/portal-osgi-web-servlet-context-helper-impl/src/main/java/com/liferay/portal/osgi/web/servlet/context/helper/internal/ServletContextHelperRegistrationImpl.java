@@ -121,13 +121,11 @@ public class ServletContextHelperRegistrationImpl
 
 		_customServletContextHelper = new CustomServletContextHelper(
 			_bundle, _webXMLDefinition.getWebResourceCollectionDefinitions());
-
-		_servletContextHelperServiceRegistration = _createServletContextHelper(
-			contextPath);
-
 		_customServletContextListener = new CustomServletContextListener(
 			_bundle);
 
+		_servletContextHelperServiceRegistration = _createServletContextHelper(
+			contextPath);
 		_servletContextListenerServiceRegistration =
 			_createServletContextListener();
 
