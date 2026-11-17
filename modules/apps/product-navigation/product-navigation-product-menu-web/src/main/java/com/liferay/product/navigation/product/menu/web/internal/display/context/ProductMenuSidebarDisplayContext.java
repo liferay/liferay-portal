@@ -55,7 +55,6 @@ public class ProductMenuSidebarDisplayContext {
 
 		_panelAppRegistry = (PanelAppRegistry)httpServletRequest.getAttribute(
 			ApplicationListWebKeys.PANEL_APP_REGISTRY);
-
 		_panelCategory = PanelCategoryRegistryUtil.getPanelCategory(
 			PanelCategoryKeys.SITE_ADMINISTRATION);
 
