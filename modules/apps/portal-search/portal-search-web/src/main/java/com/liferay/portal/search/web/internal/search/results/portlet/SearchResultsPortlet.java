@@ -27,6 +27,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.search.searcher.SearchRequest;
 import com.liferay.portal.search.searcher.SearchResponse;
@@ -225,12 +226,14 @@ public class SearchResultsPortlet extends MVCPortlet {
 		searchResultsPortletDisplayContext.setRenderNothing(
 			isRenderNothing(renderRequest, searchRequest));
 
-		int paginationDelta = GetterUtil.getInteger(
-			portletSharedSearchResponse.getParameter(
-				searchResultsPortletPreferences.
-					getPaginationDeltaParameterName(),
-				renderRequest),
-			searchResultsPortletPreferences.getPaginationDelta());
+		int paginationDelta = Math.min(
+			GetterUtil.getInteger(
+				portletSharedSearchResponse.getParameter(
+					searchResultsPortletPreferences.
+						getPaginationDeltaParameterName(),
+					renderRequest),
+				searchResultsPortletPreferences.getPaginationDelta()),
+			PropsValues.SEARCH_CONTAINER_PAGE_MAX_DELTA);
 		int paginationStart = GetterUtil.getInteger(
 			portletSharedSearchResponse.getParameter(
 				searchResultsPortletPreferences.
