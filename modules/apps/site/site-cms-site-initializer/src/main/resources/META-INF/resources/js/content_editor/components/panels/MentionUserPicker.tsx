@@ -235,14 +235,20 @@ export default function MentionUserPicker({
 			}
 		};
 
+		const onScroll = (event: Event) => {
+			if (!menuRef.current?.contains(event.target as Node)) {
+				updateAnchor();
+			}
+		};
+
 		window.addEventListener('keydown', onEscape, true);
 		window.addEventListener('resize', updateAnchor);
-		window.addEventListener('scroll', updateAnchor, true);
+		window.addEventListener('scroll', onScroll, true);
 
 		return () => {
 			window.removeEventListener('keydown', onEscape, true);
 			window.removeEventListener('resize', updateAnchor);
-			window.removeEventListener('scroll', updateAnchor, true);
+			window.removeEventListener('scroll', onScroll, true);
 		};
 	}, [close, open]);
 
