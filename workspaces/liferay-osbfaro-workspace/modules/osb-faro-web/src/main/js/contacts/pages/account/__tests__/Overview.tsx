@@ -65,10 +65,26 @@ const mockUseRequest = ({
 	loading = false,
 }: {data?: unknown; error?: boolean; loading?: boolean} = {}) =>
 	mockedUseRequest.mockImplementation(
-		({dataSourceFn}: {dataSourceFn?: unknown}) =>
-			dataSourceFn === API.accounts.fetchAccountIndividualMetrics
-				? {data, error, loading, refetch: mockRefetch}
-				: {data: {items: []}, error: false, loading: false}
+		({dataSourceFn}: {dataSourceFn?: unknown}) => {
+			if (dataSourceFn === API.accounts.fetchAccountIndividualMetrics) {
+				return {data, error, loading, refetch: mockRefetch};
+			}
+
+			if (dataSourceFn === API.lifecycle.fetchChannelLifecycles) {
+				return {
+					data: [
+						{
+							defaultAccountLifecycle: true,
+							id: 'al-1',
+							name: 'Customer',
+						},
+					],
+					loading: false,
+				};
+			}
+
+			return {data: {items: []}, error: false, loading: false};
+		}
 	);
 
 const getMetricsCard = (title: string) =>
@@ -81,7 +97,14 @@ const mockAccount = {
 	country: 'United States',
 	id: 'acc-1',
 	industry: 'Business Services',
-	lifecycleStage: 'Engaged',
+	lifecycleStages: [
+		{
+			lifecycleId: 'al-1',
+			lifecycleName: 'Customer',
+			name: 'Engaged',
+			stageExternalReferenceCode: 'erc-engaged',
+		},
+	],
 };
 
 const renderOverview = (props = {}) =>
@@ -120,15 +143,15 @@ describe('Overview', () => {
 		expect(screen.getByText('United States')).toBeInTheDocument();
 		expect(screen.getByText('11.3B Revenue')).toBeInTheDocument();
 		expect(screen.getByText('Business Services')).toBeInTheDocument();
-		expect(screen.getByText('Lifecycle: Engaged')).toBeInTheDocument();
+		expect(screen.getByText('Engaged')).toBeInTheDocument();
 		expect(screen.getByText('Type: Prospect')).toBeInTheDocument();
 	});
 
-	it('should render no lifecycle label when the account has none', () => {
-		renderOverview({account: {...mockAccount, lifecycleStage: null}});
+	it('should render no lifecycle stage label when the account has none', () => {
+		renderOverview({account: {...mockAccount, lifecycleStages: []}});
 
 		expect(screen.getByText('IQVIA')).toBeInTheDocument();
-		expect(screen.queryByText(/Lifecycle/)).not.toBeInTheDocument();
+		expect(screen.queryByText('Engaged')).not.toBeInTheDocument();
 	});
 
 	it('should render no account type label when the account has none', () => {
