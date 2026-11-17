@@ -80,6 +80,18 @@ public class ObjectEntryFolderModelDocumentContributorTest {
 			ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_FILES);
 		_testContribute(
 			HashMapBuilder.put(
+				"cms_root", "true"
+			).put(
+				"cms_section", "products"
+			).put(
+				"objectDefinitionExternalReferenceCode",
+				StringUtil.toLowerCase(
+					ObjectEntryFolderConstants.
+						EXTERNAL_REFERENCE_CODE_OBJECT_ENTRY_FOLDER)
+			).build(),
+			ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_PRODUCTS);
+		_testContribute(
+			HashMapBuilder.put(
 				"cms_root", StringPool.BLANK
 			).put(
 				"cms_section", StringPool.BLANK
