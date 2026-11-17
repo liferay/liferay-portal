@@ -181,11 +181,21 @@ public class SelectTag extends BaseSelectTag implements BodyTag {
 			title = TextFormatter.format(name, TextFormatter.K);
 		}
 
+		boolean numericValue = false;
 		String value = String.valueOf(getValue());
 
 		if (Validator.isNull(listType)) {
 			if (bean != null) {
-				value = BeanPropertiesUtil.getStringSilent(bean, name, value);
+				Object beanValue = BeanPropertiesUtil.getObjectSilent(
+					bean, name);
+
+				if (beanValue != null) {
+					if (beanValue instanceof Number) {
+						numericValue = true;
+					}
+
+					value = String.valueOf(beanValue);
+				}
 			}
 
 			if (!getIgnoreRequestValue()) {
@@ -200,6 +210,8 @@ public class SelectTag extends BaseSelectTag implements BodyTag {
 		setNamespacedAttribute(
 			httpServletRequest, "listTypeFieldName", listTypeFieldName);
 		setNamespacedAttribute(httpServletRequest, "model", getModel());
+		setNamespacedAttribute(
+			httpServletRequest, "numericValue", numericValue);
 		setNamespacedAttribute(
 			httpServletRequest, "title", String.valueOf(title));
 		setNamespacedAttribute(httpServletRequest, "value", value);

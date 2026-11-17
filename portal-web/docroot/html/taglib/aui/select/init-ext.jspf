@@ -23,40 +23,5 @@ else if (Validator.isNotNull(title)) {
 
 String controlGroupCssClass = AUIUtil.buildControlGroupCss(inlineField, inlineLabel, wrapperCssClass, "select");
 String fieldCss = AUIUtil.buildCss("form-control", disabled, first, last, cssClass);
-
-boolean numericValue = false;
-
-if ((bean != null) && Validator.isNull(listType) && showEmptyOption) {
-	Object propertyInstance = null;
-
-	Class<?> propertyTypeClass = BeanPropertiesUtil.getObjectTypeSilent(bean, name, String.class);
-
-	if (propertyTypeClass.isPrimitive()) {
-		propertyInstance = _primitiveObjects.get(propertyTypeClass);
-	}
-	else {
-		try {
-			propertyInstance = propertyTypeClass.newInstance();
-		}
-		catch (Exception e) {
-		}
-	}
-
-	if (propertyInstance instanceof Number) {
-		numericValue = true;
-	}
-}
-%>
-
-<%!
-private static Map<Class<?>, Object> _primitiveObjects = new HashMap<Class<?>, Object>();
-
-static {
-	_primitiveObjects.put(byte.class, Byte.valueOf("0"));
-	_primitiveObjects.put(double.class, Double.valueOf(0));
-	_primitiveObjects.put(float.class, Float.valueOf(0));
-	_primitiveObjects.put(int.class, Integer.valueOf(0));
-	_primitiveObjects.put(long.class, Long.valueOf(0));
-	_primitiveObjects.put(short.class, Short.valueOf("0"));
-}
+boolean numericValue = GetterUtil.getBoolean(request.getAttribute("aui:select:numericValue"));
 %>
