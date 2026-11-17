@@ -1,103 +1,16 @@
 {{- $databaseAppUser := "liferay" -}}
 
-{{- if not $env.databaseScripts }}
-{{- fail "The \"database-scripts\" EnvironmentConfig is missing, so the database Jobs have no scripts to run" }}
-{{- end }}
-apiVersion: kubernetes.m.crossplane.io/v1alpha1
-kind: Object
-metadata:
-    annotations:
-        gotemplating.fn.crossplane.io/composition-resource-name: database-scripts
-    name: {{ $baseName }}-database-scripts
-spec:
-    forProvider:
-        manifest:
-            apiVersion: v1
-            data:
-                {{- $env.databaseScripts | toYaml | nindent 16 }}
-            kind: ConfigMap
-            metadata:
-                name: database-scripts
-                namespace: {{ $namespace }}
-    managementPolicies: {{ $managementPolicies }}
 {{- if $activeDatabaseFqdn }}
----
-apiVersion: kubernetes.m.crossplane.io/v1alpha1
-kind: Object
-metadata:
-    annotations:
-        gotemplating.fn.crossplane.io/composition-resource-name: database-bootstrap-job
-    name: {{ $baseName }}-database-bootstrap-job
-spec:
-    forProvider:
-        manifest:
-            apiVersion: batch/v1
-            kind: Job
-            metadata:
-                name: {{ $baseName }}-database-bootstrap
-                namespace: {{ $namespace }}
-            spec:
-                template:
-                    spec:
-                        automountServiceAccountToken: false
-                        containers:
-                            -   command:
-                                    -   /bin/sh
-                                    -   /scripts/bootstrap-database.sh
-                                env:
-                                    -   name: ADMIN_PASSWORD
-                                        valueFrom:
-                                            secretKeyRef:
-                                                key: password
-                                                name: database-admin-password
-                                    -   name: DATABASE_ADMIN_USERNAME
-                                        value: {{ $databaseAdminLogin }}
-                                    -   name: DATABASE_NAME
-                                        value: {{ $databaseName }}
-                                    -   name: LIFERAY_DATABASE_USERNAME
-                                        value: {{ $databaseAppUser }}
-                                    -   name: LIFERAY_PASSWORD
-                                        valueFrom:
-                                            secretKeyRef:
-                                                key: DATABASE_PASSWORD
-                                                name: database-app-password
-                                    -   name: MYSQL_HOST
-                                        value: {{ $activeDatabaseFqdn }}
-                                image: mysql:{{ $databaseVersion }}
-                                name: sql-runner
-                                resources:
-                                    limits:
-                                        cpu: 200m
-                                        memory: 256Mi
-                                    requests:
-                                        cpu: 100m
-                                        memory: 128Mi
-                                securityContext:
-                                    allowPrivilegeEscalation: false
-                                    capabilities:
-                                        drop:
-                                            -   ALL
-                                    readOnlyRootFilesystem: true
-                                    runAsNonRoot: true
-                                    runAsUser: 1000
-                                    seccompProfile:
-                                        type: RuntimeDefault
-                                volumeMounts:
-                                    -   mountPath: /scripts
-                                        name: database-scripts
-                                        readOnly: true
-                        restartPolicy: OnFailure
-                        securityContext:
-                            fsGroup: 1000
-                            runAsNonRoot: true
-                            seccompProfile:
-                                type: RuntimeDefault
-                        volumes:
-                            -   configMap:
-                                    name: database-scripts
-                                name: database-scripts
-    managementPolicies: ["Create", "Observe", "Delete"]
-    readiness:
-        celQuery: object.status.succeeded == 1
-        policy: DeriveFromCelQuery
+{{ include "database-bootstrap-job" (dict
+    "baseName" $baseName
+    "env" (list
+        (dict "name" "ADMIN_PASSWORD" "valueFrom" (dict "secretKeyRef" (dict "key" "password" "name" "database-admin-password")))
+        (dict "name" "DATABASE_ADMIN_USERNAME" "value" $databaseAdminLogin)
+        (dict "name" "DATABASE_NAME" "value" $databaseName)
+        (dict "name" "LIFERAY_DATABASE_USERNAME" "value" $databaseAppUser)
+        (dict "name" "LIFERAY_PASSWORD" "valueFrom" (dict "secretKeyRef" (dict "key" "DATABASE_PASSWORD" "name" "database-app-password")))
+        (dict "name" "MYSQL_HOST" "value" $activeDatabaseFqdn))
+    "image" (printf "mysql:%s" $databaseVersion)
+    "isEntraTokenRequired" false
+    "namespace" $namespace) }}
 {{- end }}

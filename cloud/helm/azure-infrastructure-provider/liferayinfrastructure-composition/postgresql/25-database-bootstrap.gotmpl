@@ -7,28 +7,7 @@
     {{- end -}}
 {{- end }}
 
-{{- if not $env.databaseScripts }}
-{{- fail "The \"database-scripts\" EnvironmentConfig is missing, so the database Jobs have no scripts to run" }}
-{{- end }}
-apiVersion: kubernetes.m.crossplane.io/v1alpha1
-kind: Object
-metadata:
-    annotations:
-        gotemplating.fn.crossplane.io/composition-resource-name: database-scripts
-    name: {{ $baseName }}-database-scripts
-spec:
-    forProvider:
-        manifest:
-            apiVersion: v1
-            data:
-                {{- $env.databaseScripts | toYaml | nindent 16 }}
-            kind: ConfigMap
-            metadata:
-                name: database-scripts
-                namespace: {{ $namespace }}
-    managementPolicies: {{ $managementPolicies }}
 {{- if and $activeDatabaseFqdn $entraAdministratorReady }}
----
 apiVersion: kubernetes.m.crossplane.io/v1alpha1
 kind: Object
 metadata:
@@ -47,126 +26,17 @@ spec:
                 namespace: {{ $namespace }}
     managementPolicies: {{ $managementPolicies }}
 ---
-apiVersion: kubernetes.m.crossplane.io/v1alpha1
-kind: Object
-metadata:
-    annotations:
-        gotemplating.fn.crossplane.io/composition-resource-name: database-bootstrap-job
-    name: {{ $baseName }}-database-bootstrap-job
-spec:
-    forProvider:
-        manifest:
-            apiVersion: batch/v1
-            kind: Job
-            metadata:
-                name: {{ $baseName }}-database-bootstrap
-                namespace: {{ $namespace }}
-            spec:
-                template:
-                    metadata:
-                        labels:
-                            azure.workload.identity/use: "true"
-                    spec:
-                        containers:
-                            -   command:
-                                    -   /bin/sh
-                                    -   /scripts/bootstrap-database.sh
-                                env:
-                                    -   name: DATABASE_NAME
-                                        value: {{ $databaseName }}
-                                    -   name: LIFERAY_DATABASE_USERNAME
-                                        value: {{ $databaseAppRole }}
-                                    -   name: LIFERAY_PASSWORD
-                                        valueFrom:
-                                            secretKeyRef:
-                                                key: DATABASE_PASSWORD
-                                                name: database-app-password
-                                    -   name: PGHOST
-                                        value: {{ $activeDatabaseFqdn }}
-                                    -   name: PGPORT
-                                        value: "5432"
-                                    -   name: PGSSLMODE
-                                        value: require
-                                    -   name: PGUSER
-                                        value: {{ $bootstrapIdentityName }}
-                                image: postgres:18-alpine
-                                name: sql-runner
-                                resources:
-                                    limits:
-                                        cpu: 200m
-                                        memory: 256Mi
-                                    requests:
-                                        cpu: 100m
-                                        memory: 128Mi
-                                securityContext:
-                                    allowPrivilegeEscalation: false
-                                    capabilities:
-                                        drop:
-                                            -   ALL
-                                    readOnlyRootFilesystem: true
-                                    runAsNonRoot: true
-                                    runAsUser: 1000
-                                    seccompProfile:
-                                        type: RuntimeDefault
-                                volumeMounts:
-                                    -   mountPath: /entra
-                                        name: entra-token
-                                        readOnly: true
-                                    -   mountPath: /scripts
-                                        name: database-scripts
-                                        readOnly: true
-                        initContainers:
-                            -   command:
-                                    -   /bin/sh
-                                    -   /scripts/entra-token.sh
-                                env:
-                                    -   name: AZURE_CONFIG_DIR
-                                        value: /tmp/azure
-                                image: mcr.microsoft.com/azure-cli:2.64.0
-                                name: entra-token
-                                resources:
-                                    limits:
-                                        cpu: 500m
-                                        memory: 512Mi
-                                    requests:
-                                        cpu: 100m
-                                        memory: 256Mi
-                                securityContext:
-                                    allowPrivilegeEscalation: false
-                                    capabilities:
-                                        drop:
-                                            -   ALL
-                                    readOnlyRootFilesystem: true
-                                    runAsNonRoot: true
-                                    runAsUser: 1000
-                                    seccompProfile:
-                                        type: RuntimeDefault
-                                volumeMounts:
-                                    -   mountPath: /entra
-                                        name: entra-token
-                                    -   mountPath: /scripts
-                                        name: database-scripts
-                                        readOnly: true
-                                    -   mountPath: /tmp
-                                        name: tmp
-                        restartPolicy: OnFailure
-                        securityContext:
-                            fsGroup: 1000
-                            runAsNonRoot: true
-                            seccompProfile:
-                                type: RuntimeDefault
-                        serviceAccountName: database-bootstrap
-                        volumes:
-                            -   configMap:
-                                    name: database-scripts
-                                name: database-scripts
-                            -   emptyDir:
-                                    medium: Memory
-                                name: entra-token
-                            -   emptyDir: {}
-                                name: tmp
-    managementPolicies: ["Create", "Observe", "Delete"]
-    readiness:
-        celQuery: object.status.succeeded == 1
-        policy: DeriveFromCelQuery
+{{ include "database-bootstrap-job" (dict
+    "baseName" $baseName
+    "env" (list
+        (dict "name" "DATABASE_NAME" "value" $databaseName)
+        (dict "name" "LIFERAY_DATABASE_USERNAME" "value" $databaseAppRole)
+        (dict "name" "LIFERAY_PASSWORD" "valueFrom" (dict "secretKeyRef" (dict "key" "DATABASE_PASSWORD" "name" "database-app-password")))
+        (dict "name" "PGHOST" "value" $activeDatabaseFqdn)
+        (dict "name" "PGPORT" "value" "5432")
+        (dict "name" "PGSSLMODE" "value" "require")
+        (dict "name" "PGUSER" "value" $bootstrapIdentityName))
+    "image" "postgres:18-alpine"
+    "isEntraTokenRequired" true
+    "namespace" $namespace) }}
 {{- end }}

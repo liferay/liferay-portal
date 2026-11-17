@@ -1,0 +1,142 @@
+{{- define "database-bootstrap-job" -}}
+apiVersion: kubernetes.m.crossplane.io/v1alpha1
+kind: Object
+metadata:
+    annotations:
+        gotemplating.fn.crossplane.io/composition-resource-name: database-bootstrap-job
+    name: {{ .baseName }}-database-bootstrap-job
+spec:
+    forProvider:
+        manifest:
+            apiVersion: batch/v1
+            kind: Job
+            metadata:
+                name: {{ .baseName }}-database-bootstrap
+                namespace: {{ .namespace }}
+            spec:
+                template:
+                    {{- if .isEntraTokenRequired }}
+                    metadata:
+                        labels:
+                            azure.workload.identity/use: "true"
+                    {{- end }}
+                    spec:
+                        {{- if not .isEntraTokenRequired }}
+                        automountServiceAccountToken: false
+                        {{- end }}
+                        containers:
+                            -   command:
+                                    -   /bin/sh
+                                    -   /scripts/bootstrap-database.sh
+                                env:
+                                    {{- .env | toYaml | nindent 36 }}
+                                image: {{ .image }}
+                                name: sql-runner
+                                resources:
+                                    limits:
+                                        cpu: 200m
+                                        memory: 256Mi
+                                    requests:
+                                        cpu: 100m
+                                        memory: 128Mi
+                                securityContext:
+                                    allowPrivilegeEscalation: false
+                                    capabilities:
+                                        drop:
+                                            -   ALL
+                                    readOnlyRootFilesystem: true
+                                    runAsNonRoot: true
+                                    runAsUser: 1000
+                                    seccompProfile:
+                                        type: RuntimeDefault
+                                volumeMounts:
+                                    {{- if .isEntraTokenRequired }}
+                                    -   mountPath: /entra
+                                        name: entra-token
+                                        readOnly: true
+                                    {{- end }}
+                                    -   mountPath: /scripts
+                                        name: database-scripts
+                                        readOnly: true
+                        {{- if .isEntraTokenRequired }}
+                        initContainers:
+                            -   command:
+                                    -   /bin/sh
+                                    -   /scripts/entra-token.sh
+                                env:
+                                    -   name: AZURE_CONFIG_DIR
+                                        value: /tmp/azure
+                                image: mcr.microsoft.com/azure-cli:2.64.0
+                                name: entra-token
+                                resources:
+                                    limits:
+                                        cpu: 500m
+                                        memory: 512Mi
+                                    requests:
+                                        cpu: 100m
+                                        memory: 256Mi
+                                securityContext:
+                                    allowPrivilegeEscalation: false
+                                    capabilities:
+                                        drop:
+                                            -   ALL
+                                    readOnlyRootFilesystem: true
+                                    runAsNonRoot: true
+                                    runAsUser: 1000
+                                    seccompProfile:
+                                        type: RuntimeDefault
+                                volumeMounts:
+                                    -   mountPath: /entra
+                                        name: entra-token
+                                    -   mountPath: /scripts
+                                        name: database-scripts
+                                        readOnly: true
+                                    -   mountPath: /tmp
+                                        name: tmp
+                        {{- end }}
+                        restartPolicy: OnFailure
+                        securityContext:
+                            fsGroup: 1000
+                            runAsNonRoot: true
+                            seccompProfile:
+                                type: RuntimeDefault
+                        {{- if .isEntraTokenRequired }}
+                        serviceAccountName: database-bootstrap
+                        {{- end }}
+                        volumes:
+                            -   configMap:
+                                    name: database-scripts
+                                name: database-scripts
+                            {{- if .isEntraTokenRequired }}
+                            -   emptyDir:
+                                    medium: Memory
+                                name: entra-token
+                            -   emptyDir: {}
+                                name: tmp
+                            {{- end }}
+    managementPolicies: ["Create", "Observe", "Delete"]
+    readiness:
+        celQuery: object.status.succeeded == 1
+        policy: DeriveFromCelQuery
+{{- end }}
+
+{{- if not $env.databaseScripts }}
+{{- fail "The \"database-scripts\" EnvironmentConfig is missing, so the database Jobs have no scripts to run" }}
+{{- end }}
+apiVersion: kubernetes.m.crossplane.io/v1alpha1
+kind: Object
+metadata:
+    annotations:
+        gotemplating.fn.crossplane.io/composition-resource-name: database-scripts
+    name: {{ $baseName }}-database-scripts
+spec:
+    forProvider:
+        manifest:
+            apiVersion: v1
+            data:
+                {{- $env.databaseScripts | toYaml | nindent 16 }}
+            kind: ConfigMap
+            metadata:
+                name: database-scripts
+                namespace: {{ $namespace }}
+    managementPolicies: {{ $managementPolicies }}
