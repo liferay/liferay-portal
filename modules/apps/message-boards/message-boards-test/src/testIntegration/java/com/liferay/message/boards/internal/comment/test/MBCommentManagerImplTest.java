@@ -104,10 +104,10 @@ public class MBCommentManagerImplTest {
 		MBMessage mbMessage = _addMessage();
 
 		Assert.assertNull(
-			_commentManager.fetchComment(mbMessage.getMessageId()));
-		Assert.assertNull(
 			_commentManager.fetchComment(
 				_group.getGroupId(), mbMessage.getExternalReferenceCode()));
+		Assert.assertNull(
+			_commentManager.fetchComment(mbMessage.getMessageId()));
 	}
 
 	@Test
