@@ -169,6 +169,10 @@ export function ImageSelectorSize({
 		});
 	}, [fileEntryId]);
 
+	if (!fileEntryId) {
+		return null;
+	}
+
 	const warningText = `${Liferay.Language.get(
 		'big-image-file-size-used'
 	)} ${Liferay.Language.get(
