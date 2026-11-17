@@ -178,6 +178,7 @@ const AccountsDataSet: React.FC<IAccountsDataSetProps> = ({
 						columns.dateRenderer({itemData: {}, value}),
 					textRenderer: columns.textRenderer,
 				}}
+				defaultSort={{key: 'lastActive'}}
 				emptyState={{
 					description: Liferay.Language.get(
 						'no-accounts-were-synced-from-the-connected-data-sources'
@@ -274,14 +275,6 @@ const AccountsDataSet: React.FC<IAccountsDataSetProps> = ({
 				pagination={pagination}
 				showPagination
 				snapshotsEnabled
-				sorts={[
-					{
-						active: true,
-						direction: 'desc',
-						key: 'lastActive',
-						label: Liferay.Language.get('last-active'),
-					},
-				]}
 				views={buildViews(fieldCatalog)}
 			/>
 		</Card>

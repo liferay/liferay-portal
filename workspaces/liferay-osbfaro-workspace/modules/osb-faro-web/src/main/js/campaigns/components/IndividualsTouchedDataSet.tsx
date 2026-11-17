@@ -91,6 +91,7 @@ const IndividualsTouchedDataSet: React.FC<IIndividualsTouchedDataSetProps> = ({
 						? columns.cmsLabelRenderer(getVisitorType(value))
 						: '',
 			}}
+			defaultSort={{key: 'lastActivityDate'}}
 			emptyState={{
 				description: Liferay.Language.get(
 					'check-back-later-to-verify-if-data-has-been-received-from-your-data-sources'
@@ -102,15 +103,6 @@ const IndividualsTouchedDataSet: React.FC<IIndividualsTouchedDataSetProps> = ({
 			id="campaign-individuals-dataset"
 			pagination={pagination}
 			showPagination
-			sorts={[
-				{
-					active: true,
-					default: true,
-					direction: 'desc',
-					key: 'lastActivityDate',
-					label: Liferay.Language.get('last-active'),
-				},
-			]}
 			views={views}
 		/>
 	);

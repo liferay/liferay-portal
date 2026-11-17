@@ -130,18 +130,10 @@ const AccountsTouchedDataSet: React.FC<IAccountsTouchedDataSetProps> = ({
 					/>
 				),
 			}}
+			defaultSort={{key: 'salesforce/openPipelineAmount'}}
 			id="campaign-accounts-dataset"
 			pagination={pagination}
 			showPagination
-			sorts={[
-				{
-					active: true,
-					default: true,
-					direction: 'desc',
-					key: 'salesforce/openPipelineAmount',
-					label: Liferay.Language.get('pipeline-value'),
-				},
-			]}
 			views={views}
 		/>
 	);

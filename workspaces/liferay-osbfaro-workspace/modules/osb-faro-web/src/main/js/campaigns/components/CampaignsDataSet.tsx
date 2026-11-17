@@ -85,6 +85,7 @@ const CampaignsDataSet: React.FC<ICampaignsDataSetProps> = ({
 						}),
 					countRenderer: columns.countRenderer,
 				}}
+				defaultSort={{key: 'accountsTouched'}}
 				emptyState={{
 					description: Liferay.Language.get(
 						'no-campaigns-were-synced-from-the-connected-data-sources'
@@ -115,15 +116,6 @@ const CampaignsDataSet: React.FC<ICampaignsDataSetProps> = ({
 				key={accountId}
 				pagination={pagination}
 				showPagination
-				sorts={[
-					{
-						active: true,
-						default: true,
-						direction: 'desc',
-						key: 'accountsTouched',
-						label: Liferay.Language.get('accounts-touched'),
-					},
-				]}
 				views={views}
 			/>
 		</Card>

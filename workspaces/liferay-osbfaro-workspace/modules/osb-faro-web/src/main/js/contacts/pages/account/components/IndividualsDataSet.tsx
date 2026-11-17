@@ -15,16 +15,6 @@ const PREVIEW_FDS_ID = 'most-engaged-individuals-dataset';
 
 const PREVIEW_DELTA = 5;
 
-const SORTS = [
-	{
-		active: true,
-		default: true,
-		direction: 'desc' as const,
-		key: 'activitiesCount',
-		label: Liferay.Language.get('total-events'),
-	},
-];
-
 interface IIndividualItemData {
 	id: string | number;
 	properties?: {jobTitle?: string};
@@ -126,6 +116,7 @@ const IndividualsDataSet: React.FC<IIndividualsDataSetProps> = ({
 					/>
 				),
 			}}
+			defaultSort={{key: 'activitiesCount'}}
 			emptyState={{
 				description: Liferay.Language.get(
 					'no-activities-were-found-on-the-selected-period'
@@ -137,7 +128,6 @@ const IndividualsDataSet: React.FC<IIndividualsDataSetProps> = ({
 			showManagementBar={!preview}
 			showPagination={!preview}
 			showSearch={!preview}
-			sorts={SORTS}
 			views={[
 				{
 					contentRenderer: 'table',
