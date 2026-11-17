@@ -86,6 +86,7 @@ import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.Tuple;
 import com.liferay.portal.kernel.util.Validator;
 
+import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
 
 import jakarta.ws.rs.DELETE;
@@ -630,6 +631,7 @@ public class ProjectFaroController extends BaseFaroController {
 
 	@GET
 	@Path("/joinable")
+	@PermitAll
 	public List<JoinableProjectDisplay> getJoinableProjectDisplays()
 		throws PortalException {
 
@@ -711,6 +713,7 @@ public class ProjectFaroController extends BaseFaroController {
 
 	@GET
 	@Path("/corpProjectUuid/{corpProjectUuid}")
+	@PermitAll
 	public ProjectDisplay getProjectDisplay(
 			@PathParam("corpProjectUuid") String corpProjectUuid)
 		throws Exception {
@@ -733,6 +736,7 @@ public class ProjectFaroController extends BaseFaroController {
 	}
 
 	@GET
+	@PermitAll
 	public List<ProjectDisplay> getProjectDisplays() {
 		return TransformUtil.transform(
 			_faroUserLocalService.getFaroUsersByLiveUserId(
@@ -812,6 +816,7 @@ public class ProjectFaroController extends BaseFaroController {
 
 	@GET
 	@Path("/time_zones")
+	@PermitAll
 	public List<TimeZoneDisplay> getTimeZones() {
 		return TimeZoneUtil.getTimeZoneDisplays();
 	}

@@ -29,6 +29,7 @@ import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 
+import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
 
 import jakarta.ws.rs.DELETE;
@@ -127,6 +128,7 @@ public class UserFaroController extends BaseFaroController {
 
 	@GET
 	@Path("/current")
+	@PermitAll
 	public FaroUserDisplay getCurrentFaroUserDisplay(
 			@PathParam("groupId") long groupId)
 		throws Exception {
@@ -154,6 +156,7 @@ public class UserFaroController extends BaseFaroController {
 	}
 
 	@Path("/join_request")
+	@PermitAll
 	@POST
 	public void joinRequest(@PathParam("groupId") long groupId)
 		throws PortalException {
