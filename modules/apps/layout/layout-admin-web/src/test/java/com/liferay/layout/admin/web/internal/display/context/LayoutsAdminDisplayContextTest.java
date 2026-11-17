@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
+import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionRequest;
@@ -51,6 +52,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -107,6 +109,51 @@ public class LayoutsAdminDisplayContextTest {
 		_layoutsAdminDisplayContext = new LayoutsAdminDisplayContext(
 			null, _layoutActionsHelper, null, null, null,
 			_liferayPortletRequest, null, _siteConnectedGroupGroupProvider);
+	}
+
+	@Test
+	@TestInfo("LPD-116060")
+	public void testGetAIAssistantProps() {
+		LiferayPortletResponse liferayPortletResponse = Mockito.mock(
+			LiferayPortletResponse.class);
+
+		String portletNamespace = RandomTestUtil.randomString();
+
+		Mockito.when(
+			liferayPortletResponse.getNamespace()
+		).thenReturn(
+			portletNamespace
+		);
+
+		Group scopeGroup = Mockito.mock(Group.class);
+
+		String siteExternalReferenceCode = RandomTestUtil.randomString();
+
+		Mockito.when(
+			scopeGroup.getExternalReferenceCode()
+		).thenReturn(
+			siteExternalReferenceCode
+		);
+
+		Mockito.when(
+			_themeDisplay.getScopeGroup()
+		).thenReturn(
+			scopeGroup
+		);
+
+		LayoutsAdminDisplayContext layoutsAdminDisplayContext =
+			new LayoutsAdminDisplayContext(
+				null, _layoutActionsHelper, null, null, null,
+				_liferayPortletRequest, liferayPortletResponse, null);
+
+		Map<String, Object> aiAssistantProps =
+			layoutsAdminDisplayContext.getAIAssistantProps();
+
+		Assert.assertEquals(
+			portletNamespace, aiAssistantProps.get("portletNamespace"));
+		Assert.assertEquals(
+			siteExternalReferenceCode,
+			aiAssistantProps.get("siteExternalReferenceCode"));
 	}
 
 	@Test
