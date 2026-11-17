@@ -13,6 +13,13 @@ buildPluginDescriptor {
 	goalPrefix = "rest-builder"
 }
 
+configurations {
+	portalTestSnapshot {
+		exclude group: "com.liferay.portal", module: "com.liferay.portal.impl"
+		exclude group: "com.liferay.portal", module: "com.liferay.portal.kernel"
+	}
+}
+
 copyCSS {
 	mustRunAfter buildPluginDescriptor
 }
