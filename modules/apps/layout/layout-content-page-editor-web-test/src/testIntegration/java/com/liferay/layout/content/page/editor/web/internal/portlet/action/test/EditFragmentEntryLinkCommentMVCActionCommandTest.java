@@ -7,10 +7,13 @@ package com.liferay.layout.content.page.editor.web.internal.portlet.action.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.fragment.model.FragmentEntryLink;
+import com.liferay.layout.test.util.ContentLayoutTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.comment.Comment;
 import com.liferay.portal.kernel.comment.CommentManager;
+import com.liferay.portal.kernel.comment.WorkflowableComment;
+import com.liferay.portal.kernel.exception.NoSuchModelException;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
@@ -24,6 +27,7 @@ import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFunction;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
+import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionRequest;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionResponse;
@@ -45,6 +49,7 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+import com.liferay.segments.service.SegmentsExperienceLocalService;
 
 import jakarta.portlet.ActionRequest;
 import jakarta.portlet.ActionResponse;
@@ -84,9 +89,12 @@ public class EditFragmentEntryLinkCommentMVCActionCommandTest {
 
 		_layout = layout.fetchDraftLayout();
 
+		_fragmentEntryLink = _addFragmentEntryLink(_layout);
+
 		long parentCommentId = _commentManager.addComment(
 			_user.getUserId(), _group.getGroupId(),
-			FragmentEntryLink.class.getName(), RandomTestUtil.randomLong(),
+			FragmentEntryLink.class.getName(),
+			_fragmentEntryLink.getFragmentEntryLinkId(),
 			RandomTestUtil.randomString(),
 			_getFunction(
 				_getActionRequest(null, null, "false"), _getThemeDisplay()));
@@ -95,8 +103,8 @@ public class EditFragmentEntryLinkCommentMVCActionCommandTest {
 
 		long childCommentId = _commentManager.addComment(
 			null, _user.getUserId(), FragmentEntryLink.class.getName(),
-			RandomTestUtil.randomLong(), _user.getFullName(), parentCommentId,
-			null, RandomTestUtil.randomString(),
+			_fragmentEntryLink.getFragmentEntryLinkId(), _user.getFullName(),
+			parentCommentId, null, RandomTestUtil.randomString(),
 			_getFunction(
 				_getActionRequest(null, null, "false"), _getThemeDisplay()));
 
@@ -104,9 +112,7 @@ public class EditFragmentEntryLinkCommentMVCActionCommandTest {
 	}
 
 	@Test
-	public void testEditFragmentEntryLinkCommentResolveComment()
-		throws Exception {
-
+	public void testDoTransactionalCommand() throws Exception {
 		ServiceContextThreadLocal.pushServiceContext(
 			ServiceContextTestUtil.getServiceContext(
 				_group, _user.getUserId()));
@@ -125,45 +131,20 @@ public class EditFragmentEntryLinkCommentMVCActionCommandTest {
 			-1);
 
 		Assert.assertFalse(childComments.isEmpty());
+
+		_testDoTransactionalCommandFromAnotherLayout();
+		_testDoTransactionalCommandUnresolveComment();
+		_testDoTransactionalCommandWithInvalidClassName();
+		_testDoTransactionalCommandWithInvalidCommentId();
 	}
 
-	@Test
-	public void testEditFragmentEntryLinkCommentUnresolveComment()
+	private FragmentEntryLink _addFragmentEntryLink(Layout layout)
 		throws Exception {
 
-		ServiceContextThreadLocal.pushServiceContext(
-			ServiceContextTestUtil.getServiceContext(
-				_group, _user.getUserId()));
-
-		JSONObject jsonObject = ReflectionTestUtil.invoke(
-			_mvcActionCommand, "doTransactionalCommand",
-			new Class<?>[] {ActionRequest.class, ActionResponse.class},
-			_getActionRequest(
-				null, String.valueOf(_parentComment.getCommentId()), "true"),
-			new MockLiferayPortletActionResponse());
-
-		Assert.assertTrue(jsonObject.getBoolean("resolved"));
-
-		List<Comment> childComments = _commentManager.getChildComments(
-			jsonObject.getLong("commentId"), WorkflowConstants.STATUS_DRAFT, -1,
-			-1);
-
-		Assert.assertFalse(childComments.isEmpty());
-
-		jsonObject = ReflectionTestUtil.invoke(
-			_mvcActionCommand, "doTransactionalCommand",
-			new Class<?>[] {ActionRequest.class, ActionResponse.class},
-			_getActionRequest(
-				null, String.valueOf(_parentComment.getCommentId()), "false"),
-			new MockLiferayPortletActionResponse());
-
-		Assert.assertFalse(jsonObject.getBoolean("resolved"));
-
-		childComments = _commentManager.getChildComments(
-			jsonObject.getLong("commentId"), WorkflowConstants.STATUS_APPROVED,
-			-1, -1);
-
-		Assert.assertFalse(childComments.isEmpty());
+		return ContentLayoutTestUtil.addFragmentEntryLinkToLayout(
+			"{}", layout,
+			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
+				layout.getPlid()));
 	}
 
 	private ActionRequest _getActionRequest(
@@ -258,6 +239,107 @@ public class EditFragmentEntryLinkCommentMVCActionCommandTest {
 		return themeDisplay;
 	}
 
+	private void _testDoTransactionalCommandFromAnotherLayout()
+		throws Exception {
+
+		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
+
+		FragmentEntryLink fragmentEntryLink = _addFragmentEntryLink(
+			layout.fetchDraftLayout());
+
+		long commentId = _commentManager.addComment(
+			_user.getUserId(), _group.getGroupId(),
+			FragmentEntryLink.class.getName(),
+			fragmentEntryLink.getFragmentEntryLinkId(),
+			RandomTestUtil.randomString(),
+			_getFunction(
+				_getActionRequest(null, null, "false"), _getThemeDisplay()));
+
+		AssertUtils.assertFailure(
+			NoSuchModelException.class,
+			"No comment exists with the primary key " + commentId,
+			() -> ReflectionTestUtil.invoke(
+				_mvcActionCommand, "doTransactionalCommand",
+				new Class<?>[] {ActionRequest.class, ActionResponse.class},
+				_getActionRequest(null, String.valueOf(commentId), "true"),
+				new MockLiferayPortletActionResponse()));
+
+		WorkflowableComment workflowableComment =
+			(WorkflowableComment)_commentManager.fetchComment(commentId);
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_APPROVED, workflowableComment.getStatus());
+	}
+
+	private void _testDoTransactionalCommandUnresolveComment()
+		throws Exception {
+
+		JSONObject jsonObject = ReflectionTestUtil.invoke(
+			_mvcActionCommand, "doTransactionalCommand",
+			new Class<?>[] {ActionRequest.class, ActionResponse.class},
+			_getActionRequest(
+				null, String.valueOf(_parentComment.getCommentId()), "true"),
+			new MockLiferayPortletActionResponse());
+
+		Assert.assertTrue(jsonObject.getBoolean("resolved"));
+
+		List<Comment> childComments = _commentManager.getChildComments(
+			jsonObject.getLong("commentId"), WorkflowConstants.STATUS_DRAFT, -1,
+			-1);
+
+		Assert.assertFalse(childComments.isEmpty());
+
+		jsonObject = ReflectionTestUtil.invoke(
+			_mvcActionCommand, "doTransactionalCommand",
+			new Class<?>[] {ActionRequest.class, ActionResponse.class},
+			_getActionRequest(
+				null, String.valueOf(_parentComment.getCommentId()), "false"),
+			new MockLiferayPortletActionResponse());
+
+		Assert.assertFalse(jsonObject.getBoolean("resolved"));
+
+		childComments = _commentManager.getChildComments(
+			jsonObject.getLong("commentId"), WorkflowConstants.STATUS_APPROVED,
+			-1, -1);
+
+		Assert.assertFalse(childComments.isEmpty());
+	}
+
+	private void _testDoTransactionalCommandWithInvalidClassName()
+		throws Exception {
+
+		long commentId = _commentManager.addComment(
+			_user.getUserId(), _group.getGroupId(), Layout.class.getName(),
+			_fragmentEntryLink.getFragmentEntryLinkId(),
+			RandomTestUtil.randomString(),
+			_getFunction(
+				_getActionRequest(null, null, "false"), _getThemeDisplay()));
+
+		AssertUtils.assertFailure(
+			NoSuchModelException.class,
+			"No comment exists with the primary key " + commentId,
+			() -> ReflectionTestUtil.invoke(
+				_mvcActionCommand, "doTransactionalCommand",
+				new Class<?>[] {ActionRequest.class, ActionResponse.class},
+				_getActionRequest(null, String.valueOf(commentId), "true"),
+				new MockLiferayPortletActionResponse()));
+	}
+
+	private void _testDoTransactionalCommandWithInvalidCommentId()
+		throws Exception {
+
+		long commentId = RandomTestUtil.randomLong();
+
+		AssertUtils.assertFailure(
+			NoSuchModelException.class,
+			"No comment exists with the primary key " + commentId,
+			() -> ReflectionTestUtil.invoke(
+				_mvcActionCommand, "doTransactionalCommand",
+				new Class<?>[] {ActionRequest.class, ActionResponse.class},
+				_getActionRequest(null, String.valueOf(commentId), "true"),
+				new MockLiferayPortletActionResponse()));
+	}
+
 	private Comment _childComment;
 
 	@Inject
@@ -267,6 +349,8 @@ public class EditFragmentEntryLinkCommentMVCActionCommandTest {
 
 	@Inject
 	private CompanyLocalService _companyLocalService;
+
+	private FragmentEntryLink _fragmentEntryLink;
 
 	@DeleteAfterTestRun
 	private Group _group;
@@ -279,6 +363,10 @@ public class EditFragmentEntryLinkCommentMVCActionCommandTest {
 	private MVCActionCommand _mvcActionCommand;
 
 	private Comment _parentComment;
+
+	@Inject
+	private SegmentsExperienceLocalService _segmentsExperienceLocalService;
+
 	private User _user;
 
 }
