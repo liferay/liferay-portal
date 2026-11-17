@@ -630,26 +630,31 @@ test(
 test(
 	'A product folder lists its products and subfolders',
 	{tag: '@LPD-115762'},
-	async ({apiHelpers, page, productFolderPage, productPage}) => {
+	async ({
+		apiHelpers,
+		page,
+		productFolderPage,
+		productPage,
+		productsPage,
+	}) => {
+		const folderTitle = getRandomString();
+		const productTitle = getRandomString();
 		const space = await apiHelpers.headlessAssetLibrary.createSpace();
-
-		const objectEntryFolder =
-			await apiHelpers.objectFolder.createObjectEntryFolder({
-				parentObjectEntryFolderExternalReferenceCode: 'L_PRODUCTS',
-				scopeKey: space.name,
-				title: getRandomString(),
-			});
-
 		const subfolderTitle = getRandomString();
 
-		await apiHelpers.objectFolder.createObjectEntryFolder({
-			parentObjectEntryFolderExternalReferenceCode:
-				objectEntryFolder.externalReferenceCode,
-			scopeKey: space.name,
-			title: subfolderTitle,
-		});
+		await test.step('A folder created from the products page is listed in it', async () => {
+			await productsPage.goto();
 
-		await productFolderPage.goto(objectEntryFolder.id);
+			await productFolderPage.createFolder(folderTitle, space.name);
+
+			await expect(productsPage.getProduct(folderTitle)).toBeVisible();
+
+			await productsPage.getProduct(folderTitle).click();
+
+			await productFolderPage.newButton.waitFor();
+
+			await productFolderPage.createFolder(subfolderTitle, space.name);
+		});
 
 		await test.step('The New menu offers a folder and the product types', async () => {
 			await productFolderPage.openNewMenu();
@@ -675,8 +680,6 @@ test(
 		});
 
 		await test.step('A product created from the folder is listed in it', async () => {
-			const productTitle = getRandomString();
-
 			await productFolderPage.openNewProductEditor('PIM Basic Product');
 
 			await productPage.sku.fill(getRandomString());
@@ -697,6 +700,18 @@ test(
 			await productFolderPage.rowLink(subfolderTitle).click();
 
 			await expect(productFolderPage.emptyState).toBeVisible();
+		});
+
+		await test.step('The products page lists only top-level items, and search finds the rest', async () => {
+			await productsPage.goto();
+
+			await expect(productsPage.getProduct(folderTitle)).toBeVisible();
+			await expect(productsPage.getProduct(productTitle)).toBeHidden();
+			await expect(productsPage.getProduct(subfolderTitle)).toBeHidden();
+
+			await productsPage.search(productTitle);
+
+			await expect(productsPage.getProduct(productTitle)).toBeVisible();
 		});
 	}
 );

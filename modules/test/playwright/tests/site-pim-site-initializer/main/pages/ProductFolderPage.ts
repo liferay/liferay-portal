@@ -8,6 +8,7 @@ import {Locator, Page, expect} from '@playwright/test';
 import {ApiHelpers} from '../../../../helpers/ApiHelpers';
 import {clickAndExpectToBeVisible} from '../../../../utils/clickAndExpectToBeVisible';
 import {PORTLET_URLS} from '../../../../utils/portletUrls';
+import {waitForAlert} from '../../../../utils/waitForAlert';
 import {DataSetPage} from '../../../site-cms-site-initializer/main/pages/DataSetPage';
 
 export class ProductFolderPage {
@@ -37,6 +38,33 @@ export class ProductFolderPage {
 		this.rowActionsMenu = page.locator('.dropdown-menu.show');
 		this.rowLink = (name: string) =>
 			this.row(name).getByRole('link', {name});
+	}
+
+	async createFolder(name: string, spaceName: string) {
+		await this.openNewMenu();
+
+		await this.menuItem('Folder').click();
+
+		const dialog = this.page.getByRole('dialog', {name: 'New Folder'});
+
+		await dialog.getByLabel('Name').fill(name);
+
+		const spaceSelect = dialog.getByLabel('SpaceMandatory');
+
+		if (await spaceSelect.isVisible()) {
+			await clickAndExpectToBeVisible({
+				autoClick: true,
+				target: this.page.getByRole('option', {name: spaceName}),
+				trigger: spaceSelect,
+			});
+		}
+
+		await dialog.getByRole('button', {name: 'Save'}).click();
+
+		await waitForAlert(
+			this.page,
+			`Success:${name} was created successfully`
+		);
 	}
 
 	async goto(folderId: number) {
