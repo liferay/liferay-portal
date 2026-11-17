@@ -60,39 +60,34 @@ public class JSBundleConfigRegistryUtil {
 	}
 
 	private static String _getModuleMainJavaScript(
-		ServletContext servletContext) {
+			ServletContext servletContext)
+		throws Exception {
 
-		try {
-			URL url = servletContext.getResource(
-				"META-INF/resources/package.json");
+		URL url = servletContext.getResource("META-INF/resources/package.json");
 
-			if (url == null) {
-				url = servletContext.getResource("package.json");
-			}
-
-			if (url == null) {
-				return StringPool.BLANK;
-			}
-
-			JSONObject jsonObject = JSONFactoryUtil.createJSONObject(
-				URLUtil.toString(url));
-
-			String moduleName = jsonObject.getString("name");
-			String moduleVersion = jsonObject.getString("version");
-
-			String moduleMain = jsonObject.getString("main");
-
-			if (Validator.isNull(moduleMain)) {
-				moduleMain = "index.js";
-			}
-
-			return StringBundler.concat(
-				"var MODULE_MAIN='", moduleName, "@", moduleVersion, "/",
-				ModuleNameUtil.toModuleName(moduleMain), "';");
+		if (url == null) {
+			url = servletContext.getResource("package.json");
 		}
-		catch (Exception exception) {
-			throw new RuntimeException(exception);
+
+		if (url == null) {
+			return StringPool.BLANK;
 		}
+
+		JSONObject jsonObject = JSONFactoryUtil.createJSONObject(
+			URLUtil.toString(url));
+
+		String moduleName = jsonObject.getString("name");
+		String moduleVersion = jsonObject.getString("version");
+
+		String moduleMain = jsonObject.getString("main");
+
+		if (Validator.isNull(moduleMain)) {
+			moduleMain = "index.js";
+		}
+
+		return StringBundler.concat(
+			"var MODULE_MAIN='", moduleName, "@", moduleVersion, "/",
+			ModuleNameUtil.toModuleName(moduleMain), "';");
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
