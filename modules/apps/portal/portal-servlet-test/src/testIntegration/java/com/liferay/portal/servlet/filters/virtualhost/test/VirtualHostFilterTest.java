@@ -141,7 +141,6 @@ public class VirtualHostFilterTest {
 		_group = GroupTestUtil.addGroup();
 
 		String groupFriendlyURL = _getGroupFriendlyURL(_publicLayoutSet);
-
 		MockHttpServletRequest mockHttpServletRequest =
 			_getMockHttpServletRequest(_group.getFriendlyURL());
 
