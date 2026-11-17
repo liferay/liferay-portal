@@ -206,43 +206,8 @@ public class KBArticleServiceTest {
 	@Test
 	@TestInfo("LPD-114777")
 	public void testGetKBArticle() throws Exception {
-		KBArticle kbArticle = _addKBArticle(new Date());
-
-		KBArticle draftKBArticle = _updateKBArticle(
-			kbArticle, WorkflowConstants.ACTION_SAVE_DRAFT);
-
-		Assert.assertEquals(
-			draftKBArticle,
-			_kbArticleService.getKBArticle(
-				kbArticle.getResourcePrimKey(), draftKBArticle.getVersion()));
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				_siteMemberUser)) {
-
-			Assert.assertEquals(
-				kbArticle,
-				_kbArticleService.getKBArticle(
-					kbArticle.getResourcePrimKey(), kbArticle.getVersion()));
-			Assert.assertThrows(
-				PrincipalException.MustHavePermission.class,
-				() -> _kbArticleService.getKBArticle(
-					kbArticle.getResourcePrimKey(),
-					draftKBArticle.getVersion()));
-		}
-
-		KBArticle deniedKBArticle = _kbArticleLocalService.updateStatus(
-			TestPropsValues.getUserId(), kbArticle.getResourcePrimKey(),
-			WorkflowConstants.STATUS_DENIED, _serviceContext);
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				_siteMemberUser)) {
-
-			Assert.assertEquals(
-				deniedKBArticle,
-				_kbArticleService.getKBArticle(
-					kbArticle.getResourcePrimKey(),
-					deniedKBArticle.getVersion()));
-		}
+		_testGetKBArticleWithDraftVersion();
+		_testGetKBArticleWithScheduledVersionInLiveGroup();
 	}
 
 	@Test
@@ -721,6 +686,99 @@ public class KBArticleServiceTest {
 				PrincipalException.MustHavePermission.class,
 				() -> _kbArticleService.getKBArticleAttachment(
 					fileEntry.getFileEntryId()));
+		}
+	}
+
+	private void _testGetKBArticleWithDraftVersion() throws Exception {
+		KBArticle kbArticle = _addKBArticle(new Date());
+
+		KBArticle draftKBArticle = _updateKBArticle(
+			kbArticle, WorkflowConstants.ACTION_SAVE_DRAFT);
+
+		Assert.assertEquals(
+			draftKBArticle,
+			_kbArticleService.getKBArticle(
+				kbArticle.getResourcePrimKey(), draftKBArticle.getVersion()));
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_siteMemberUser)) {
+
+			Assert.assertEquals(
+				kbArticle,
+				_kbArticleService.getKBArticle(
+					kbArticle.getResourcePrimKey(), kbArticle.getVersion()));
+			Assert.assertThrows(
+				PrincipalException.MustHavePermission.class,
+				() -> _kbArticleService.getKBArticle(
+					kbArticle.getResourcePrimKey(),
+					draftKBArticle.getVersion()));
+		}
+
+		KBArticle deniedKBArticle = _kbArticleLocalService.updateStatus(
+			TestPropsValues.getUserId(), kbArticle.getResourcePrimKey(),
+			WorkflowConstants.STATUS_DENIED, _serviceContext);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_siteMemberUser)) {
+
+			Assert.assertEquals(
+				deniedKBArticle,
+				_kbArticleService.getKBArticle(
+					kbArticle.getResourcePrimKey(),
+					deniedKBArticle.getVersion()));
+		}
+	}
+
+	private void _testGetKBArticleWithScheduledVersionInLiveGroup()
+		throws Exception {
+
+		GroupTestUtil.enableLocalStaging(_group2);
+
+		KBArticle stagingKBArticle = _addKBArticle(_group2.getStagingGroup());
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_group2, TestPropsValues.getUserId());
+
+		serviceContext.setUuid(stagingKBArticle.getUuid());
+
+		KBArticle kbArticle = _kbArticleLocalService.addKBArticle(
+			null, TestPropsValues.getUserId(), _kbFolderClassNameId,
+			KBFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			stagingKBArticle.getTitle(), stagingKBArticle.getUrlTitle(),
+			stagingKBArticle.getContent(), stagingKBArticle.getDescription(),
+			null, null, new Date(System.currentTimeMillis() + Time.DAY), null,
+			null, null, serviceContext);
+
+		Assert.assertTrue(kbArticle.isScheduled());
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_siteMemberUser)) {
+
+			Assert.assertThrows(
+				PrincipalException.MustHavePermission.class,
+				() -> _kbArticleService.getKBArticle(
+					kbArticle.getResourcePrimKey(), kbArticle.getVersion()));
+		}
+
+		_regularRole = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		_resourcePermissionLocalService.setResourcePermissions(
+			_regularRole.getCompanyId(), KBArticle.class.getName(),
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(stagingKBArticle.getResourcePrimKey()),
+			_regularRole.getRoleId(), new String[] {KBActionKeys.UPDATE});
+
+		_userLocalService.addRoleUser(
+			_regularRole.getRoleId(), _siteMemberUser);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_siteMemberUser)) {
+
+			Assert.assertEquals(
+				kbArticle,
+				_kbArticleService.getKBArticle(
+					kbArticle.getResourcePrimKey(), kbArticle.getVersion()));
 		}
 	}
 
