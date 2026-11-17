@@ -686,15 +686,22 @@ public class PageTemplateResourceImpl
 		layoutPageTemplateEntry.setLayoutPageTemplateCollectionId(
 			layoutPageTemplateCollectionId);
 
-		layoutPageTemplateEntry.setPreviewFileEntryId(
-			FileEntryUtil.getPreviewFileEntryId(
-				groupId, LayoutAdminPortletKeys.GROUP_PAGES,
-				widgetPageTemplate.getThumbnailURLReference(),
-				contextUser.getUserId()));
-
 		layoutPageTemplateEntry =
 			_layoutPageTemplateEntryLocalService.updateLayoutPageTemplateEntry(
 				layoutPageTemplateEntry);
+
+		long previewFileEntryId = FileEntryUtil.getPreviewFileEntryId(
+			groupId, LayoutAdminPortletKeys.GROUP_PAGES,
+			widgetPageTemplate.getThumbnailURLReference(),
+			contextUser.getUserId());
+
+		if (previewFileEntryId > 0) {
+			layoutPageTemplateEntry =
+				_layoutPageTemplateEntryLocalService.
+					updateLayoutPageTemplateEntry(
+						layoutPageTemplateEntry.getLayoutPageTemplateEntryId(),
+						previewFileEntryId);
+		}
 
 		Layout layout = _layoutLocalService.getLayout(
 			layoutPageTemplateEntry.getPlid());
