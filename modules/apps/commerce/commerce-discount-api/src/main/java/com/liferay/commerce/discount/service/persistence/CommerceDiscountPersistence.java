@@ -727,42 +727,86 @@ public interface CommerceDiscountPersistence
 	public int filterCountByLtE_S(Date expirationDate, int status);
 
 	/**
-	 * Returns the commerce discount where companyId = &#63; and couponCode = &#63; and active = &#63; or throws a <code>NoSuchDiscountException</code> if it could not be found.
+	 * Returns an ordered range of all the commerce discounts where companyId = &#63; and couponCode = &#63; and active = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.commerce.discount.model.impl.CommerceDiscountModelImpl</code>.
+	 * </p>
 	 *
 	 * @param companyId the company ID
 	 * @param couponCode the coupon code
 	 * @param active the active
-	 * @return the matching commerce discount
-	 * @throws NoSuchDiscountException if a matching commerce discount could not be found
-	 */
-	public CommerceDiscount findByC_C_A(
-			long companyId, String couponCode, boolean active)
-		throws NoSuchDiscountException;
-
-	/**
-	 * Returns the commerce discount where companyId = &#63; and couponCode = &#63; and active = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
-	 *
-	 * @param companyId the company ID
-	 * @param couponCode the coupon code
-	 * @param active the active
+	 * @param start the lower bound of the range of commerce discounts
+	 * @param end the upper bound of the range of commerce discounts (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	 * @param useFinderCache whether to use the finder cache
-	 * @return the matching commerce discount, or <code>null</code> if a matching commerce discount could not be found
+	 * @return the ordered range of matching commerce discounts
 	 */
-	public CommerceDiscount fetchByC_C_A(
-		long companyId, String couponCode, boolean active,
+	public java.util.List<CommerceDiscount> findByC_C_A(
+		long companyId, String couponCode, boolean active, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<CommerceDiscount>
+			orderByComparator,
 		boolean useFinderCache);
 
 	/**
-	 * Removes the commerce discount where companyId = &#63; and couponCode = &#63; and active = &#63; from the database.
+	 * Returns the first commerce discount in the ordered set where companyId = &#63; and couponCode = &#63; and active = &#63;.
 	 *
 	 * @param companyId the company ID
 	 * @param couponCode the coupon code
 	 * @param active the active
-	 * @return the commerce discount that was removed
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching commerce discount
+	 * @throws NoSuchDiscountException if a matching commerce discount could not be found
 	 */
-	public CommerceDiscount removeByC_C_A(
-			long companyId, String couponCode, boolean active)
+	public CommerceDiscount findByC_C_A_First(
+			long companyId, String couponCode, boolean active,
+			com.liferay.portal.kernel.util.OrderByComparator<CommerceDiscount>
+				orderByComparator)
 		throws NoSuchDiscountException;
+
+	/**
+	 * Returns the first commerce discount in the ordered set where companyId = &#63; and couponCode = &#63; and active = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param couponCode the coupon code
+	 * @param active the active
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching commerce discount, or <code>null</code> if a matching commerce discount could not be found
+	 */
+	public CommerceDiscount fetchByC_C_A_First(
+		long companyId, String couponCode, boolean active,
+		com.liferay.portal.kernel.util.OrderByComparator<CommerceDiscount>
+			orderByComparator);
+
+	/**
+	 * Returns an ordered range of all the commerce discounts that the user has permissions to view where companyId = &#63; and couponCode = &#63; and active = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.commerce.discount.model.impl.CommerceDiscountModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param couponCode the coupon code
+	 * @param active the active
+	 * @param start the lower bound of the range of commerce discounts
+	 * @param end the upper bound of the range of commerce discounts (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching commerce discounts that the user has permission to view
+	 */
+	public java.util.List<CommerceDiscount> filterFindByC_C_A(
+		long companyId, String couponCode, boolean active, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<CommerceDiscount>
+			orderByComparator);
+
+	/**
+	 * Removes all the commerce discounts where companyId = &#63; and couponCode = &#63; and active = &#63; from the database.
+	 *
+	 * @param companyId the company ID
+	 * @param couponCode the coupon code
+	 * @param active the active
+	 */
+	public void removeByC_C_A(
+		long companyId, String couponCode, boolean active);
 
 	/**
 	 * Returns the number of commerce discounts where companyId = &#63; and couponCode = &#63; and active = &#63;.
@@ -773,6 +817,17 @@ public interface CommerceDiscountPersistence
 	 * @return the number of matching commerce discounts
 	 */
 	public int countByC_C_A(long companyId, String couponCode, boolean active);
+
+	/**
+	 * Returns the number of commerce discounts that the user has permission to view where companyId = &#63; and couponCode = &#63; and active = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param couponCode the coupon code
+	 * @param active the active
+	 * @return the number of matching commerce discounts that the user has permission to view
+	 */
+	public int filterCountByC_C_A(
+		long companyId, String couponCode, boolean active);
 
 	/**
 	 * Returns an ordered range of all the commerce discounts where companyId = &#63; and level = &#63; and active = &#63; and status = &#63;.
@@ -967,20 +1022,6 @@ public interface CommerceDiscountPersistence
 	 * @return the commerce discount, or <code>null</code> if a commerce discount with the primary key could not be found
 	 */
 	public CommerceDiscount fetchByPrimaryKey(long commerceDiscountId);
-
-	/**
-	 * Returns the commerce discount where companyId = &#63; and couponCode = &#63; and active = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
-	 *
-	 * @param companyId the company ID
-	 * @param couponCode the coupon code
-	 * @param active the active
-	 * @return the matching commerce discount, or <code>null</code> if a matching commerce discount could not be found
-	 */
-	public default CommerceDiscount fetchByC_C_A(
-		long companyId, String couponCode, boolean active) {
-
-		return fetchByC_C_A(companyId, couponCode, active, true);
-	}
 
 	/**
 	 * Returns the commerce discount where externalReferenceCode = &#63; and companyId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
@@ -1350,6 +1391,106 @@ public interface CommerceDiscountPersistence
 	}
 
 	/**
+	 * Returns all the commerce discounts where companyId = &#63; and couponCode = &#63; and active = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param couponCode the coupon code
+	 * @param active the active
+	 * @return the matching commerce discounts
+	 */
+	public default java.util.List<CommerceDiscount> findByC_C_A(
+		long companyId, String couponCode, boolean active) {
+
+		return findByC_C_A(
+			companyId, couponCode, active,
+			com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS,
+			com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS, null, true);
+	}
+
+	/**
+	 * Returns a range of all the commerce discounts where companyId = &#63; and couponCode = &#63; and active = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.commerce.discount.model.impl.CommerceDiscountModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param couponCode the coupon code
+	 * @param active the active
+	 * @param start the lower bound of the range of commerce discounts
+	 * @param end the upper bound of the range of commerce discounts (not inclusive)
+	 * @return the range of matching commerce discounts
+	 */
+	public default java.util.List<CommerceDiscount> findByC_C_A(
+		long companyId, String couponCode, boolean active, int start, int end) {
+
+		return findByC_C_A(
+			companyId, couponCode, active, start, end, null, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the commerce discounts where companyId = &#63; and couponCode = &#63; and active = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.commerce.discount.model.impl.CommerceDiscountModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param couponCode the coupon code
+	 * @param active the active
+	 * @param start the lower bound of the range of commerce discounts
+	 * @param end the upper bound of the range of commerce discounts (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching commerce discounts
+	 */
+	public default java.util.List<CommerceDiscount> findByC_C_A(
+		long companyId, String couponCode, boolean active, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<CommerceDiscount>
+			orderByComparator) {
+
+		return findByC_C_A(
+			companyId, couponCode, active, start, end, orderByComparator, true);
+	}
+
+	/**
+	 * Returns all the commerce discounts that the user has permission to view where companyId = &#63; and couponCode = &#63; and active = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param couponCode the coupon code
+	 * @param active the active
+	 * @return the matching commerce discounts that the user has permission to view
+	 */
+	public default java.util.List<CommerceDiscount> filterFindByC_C_A(
+		long companyId, String couponCode, boolean active) {
+
+		return filterFindByC_C_A(
+			companyId, couponCode, active,
+			com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS,
+			com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the commerce discounts that the user has permission to view where companyId = &#63; and couponCode = &#63; and active = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.commerce.discount.model.impl.CommerceDiscountModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param couponCode the coupon code
+	 * @param active the active
+	 * @param start the lower bound of the range of commerce discounts
+	 * @param end the upper bound of the range of commerce discounts (not inclusive)
+	 * @return the range of matching commerce discounts that the user has permission to view
+	 */
+	public default java.util.List<CommerceDiscount> filterFindByC_C_A(
+		long companyId, String couponCode, boolean active, int start, int end) {
+
+		return filterFindByC_C_A(
+			companyId, couponCode, active, start, end, null);
+	}
+
+	/**
 	 * Returns all the commerce discounts where companyId = &#63; and level = &#63; and active = &#63; and status = &#63;.
 	 *
 	 * @param companyId the company ID
@@ -1459,4 +1600,4 @@ public interface CommerceDiscountPersistence
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1684911833
+// LIFERAY-SERVICE-BUILDER-HASH:461494039

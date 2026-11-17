@@ -1024,63 +1024,115 @@ public class CommerceDiscountPersistenceImpl
 			finderCache, new Object[] {expirationDate, status});
 	}
 
-	private UniquePersistenceFinder<CommerceDiscount, NoSuchDiscountException>
-		_uniquePersistenceFinderByC_C_A;
+	private FilterCollectionPersistenceFinder
+		<CommerceDiscount, NoSuchDiscountException>
+			_collectionPersistenceFinderByC_C_A;
 
 	/**
-	 * Returns the commerce discount where companyId = &#63; and couponCode = &#63; and active = &#63; or throws a <code>NoSuchDiscountException</code> if it could not be found.
+	 * Returns an ordered range of all the commerce discounts where companyId = &#63; and couponCode = &#63; and active = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CommerceDiscountModelImpl</code>.
+	 * </p>
 	 *
 	 * @param companyId the company ID
 	 * @param couponCode the coupon code
 	 * @param active the active
-	 * @return the matching commerce discount
+	 * @param start the lower bound of the range of commerce discounts
+	 * @param end the upper bound of the range of commerce discounts (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching commerce discounts
+	 */
+	@Override
+	public List<CommerceDiscount> findByC_C_A(
+		long companyId, String couponCode, boolean active, int start, int end,
+		OrderByComparator<CommerceDiscount> orderByComparator,
+		boolean useFinderCache) {
+
+		return _collectionPersistenceFinderByC_C_A.find(
+			finderCache, new Object[] {companyId, couponCode, active}, start,
+			end, orderByComparator, useFinderCache);
+	}
+
+	/**
+	 * Returns the first commerce discount in the ordered set where companyId = &#63; and couponCode = &#63; and active = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param couponCode the coupon code
+	 * @param active the active
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching commerce discount
 	 * @throws NoSuchDiscountException if a matching commerce discount could not be found
 	 */
 	@Override
-	public CommerceDiscount findByC_C_A(
-			long companyId, String couponCode, boolean active)
+	public CommerceDiscount findByC_C_A_First(
+			long companyId, String couponCode, boolean active,
+			OrderByComparator<CommerceDiscount> orderByComparator)
 		throws NoSuchDiscountException {
 
-		return _uniquePersistenceFinderByC_C_A.find(
-			finderCache, new Object[] {companyId, couponCode, active});
-	}
-
-	/**
-	 * Returns the commerce discount where companyId = &#63; and couponCode = &#63; and active = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
-	 *
-	 * @param companyId the company ID
-	 * @param couponCode the coupon code
-	 * @param active the active
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the matching commerce discount, or <code>null</code> if a matching commerce discount could not be found
-	 */
-	@Override
-	public CommerceDiscount fetchByC_C_A(
-		long companyId, String couponCode, boolean active,
-		boolean useFinderCache) {
-
-		return _uniquePersistenceFinderByC_C_A.fetch(
+		return _collectionPersistenceFinderByC_C_A.findFirst(
 			finderCache, new Object[] {companyId, couponCode, active},
-			useFinderCache);
+			orderByComparator);
 	}
 
 	/**
-	 * Removes the commerce discount where companyId = &#63; and couponCode = &#63; and active = &#63; from the database.
+	 * Returns the first commerce discount in the ordered set where companyId = &#63; and couponCode = &#63; and active = &#63;.
 	 *
 	 * @param companyId the company ID
 	 * @param couponCode the coupon code
 	 * @param active the active
-	 * @return the commerce discount that was removed
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching commerce discount, or <code>null</code> if a matching commerce discount could not be found
 	 */
 	@Override
-	public CommerceDiscount removeByC_C_A(
-			long companyId, String couponCode, boolean active)
-		throws NoSuchDiscountException {
+	public CommerceDiscount fetchByC_C_A_First(
+		long companyId, String couponCode, boolean active,
+		OrderByComparator<CommerceDiscount> orderByComparator) {
 
-		CommerceDiscount commerceDiscount = findByC_C_A(
-			companyId, couponCode, active);
+		return _collectionPersistenceFinderByC_C_A.fetchFirst(
+			finderCache, new Object[] {companyId, couponCode, active},
+			orderByComparator);
+	}
 
-		return remove(commerceDiscount);
+	/**
+	 * Returns an ordered range of all the commerce discounts that the user has permissions to view where companyId = &#63; and couponCode = &#63; and active = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CommerceDiscountModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param couponCode the coupon code
+	 * @param active the active
+	 * @param start the lower bound of the range of commerce discounts
+	 * @param end the upper bound of the range of commerce discounts (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching commerce discounts that the user has permission to view
+	 */
+	@Override
+	public List<CommerceDiscount> filterFindByC_C_A(
+		long companyId, String couponCode, boolean active, int start, int end,
+		OrderByComparator<CommerceDiscount> orderByComparator) {
+
+		return _collectionPersistenceFinderByC_C_A.filterFind(
+			finderCache, new Object[] {companyId, couponCode, active}, start,
+			end, orderByComparator, companyId, 0);
+	}
+
+	/**
+	 * Removes all the commerce discounts where companyId = &#63; and couponCode = &#63; and active = &#63; from the database.
+	 *
+	 * @param companyId the company ID
+	 * @param couponCode the coupon code
+	 * @param active the active
+	 */
+	@Override
+	public void removeByC_C_A(
+		long companyId, String couponCode, boolean active) {
+
+		_collectionPersistenceFinderByC_C_A.remove(
+			finderCache, new Object[] {companyId, couponCode, active});
 	}
 
 	/**
@@ -1093,8 +1145,25 @@ public class CommerceDiscountPersistenceImpl
 	 */
 	@Override
 	public int countByC_C_A(long companyId, String couponCode, boolean active) {
-		return _uniquePersistenceFinderByC_C_A.count(
+		return _collectionPersistenceFinderByC_C_A.count(
 			finderCache, new Object[] {companyId, couponCode, active});
+	}
+
+	/**
+	 * Returns the number of commerce discounts that the user has permission to view where companyId = &#63; and couponCode = &#63; and active = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param couponCode the coupon code
+	 * @param active the active
+	 * @return the number of matching commerce discounts that the user has permission to view
+	 */
+	@Override
+	public int filterCountByC_C_A(
+		long companyId, String couponCode, boolean active) {
+
+		return _collectionPersistenceFinderByC_C_A.filterCount(
+			finderCache, new Object[] {companyId, couponCode, active},
+			companyId, 0);
 	}
 
 	private FilterCollectionPersistenceFinder
@@ -1788,29 +1857,49 @@ public class CommerceDiscountPersistenceImpl
 					"commerceDiscount.", "status", FinderColumn.Type.INTEGER,
 					"=", true, true, CommerceDiscount::getStatus));
 
-		_uniquePersistenceFinderByC_C_A = new UniquePersistenceFinder<>(
-			this,
-			createUniqueFinderPath(
-				FINDER_CLASS_NAME_ENTITY, "fetchByC_C_A",
-				new String[] {
-					Long.class.getName(), String.class.getName(),
-					Boolean.class.getName()
-				},
-				new String[] {"companyId", "couponCode", "active_"}, 2, 2,
-				false, CommerceDiscount::getCompanyId,
-				convertCaseFunction(CommerceDiscount::getCouponCode),
-				CommerceDiscount::isActive),
-			_SQL_SELECT_COMMERCEDISCOUNT_WHERE, "",
-			new FinderColumn<>(
-				"commerceDiscount.", "companyId", FinderColumn.Type.LONG, "=",
-				true, true, CommerceDiscount::getCompanyId),
-			new FinderColumn<>(
-				"commerceDiscount.", "couponCode", FinderColumn.Type.STRING,
-				"=", false, true, CommerceDiscount::getCouponCode),
-			new FinderColumn<>(
-				"commerceDiscount.", "active", "active_",
-				FinderColumn.Type.BOOLEAN, "=", true, true,
-				CommerceDiscount::isActive));
+		_collectionPersistenceFinderByC_C_A =
+			new FilterCollectionPersistenceFinder<>(
+				this, CommerceDiscount::getCommerceDiscountId,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByC_C_A",
+					new String[] {
+						Long.class.getName(), String.class.getName(),
+						Boolean.class.getName()
+					},
+					new String[] {"companyId", "couponCode", "active_"}, 2, 2,
+					false, null),
+				"", CommerceDiscountModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByC_C_A",
+					new String[] {
+						Long.class.getName(), String.class.getName(),
+						Boolean.class.getName(), Integer.class.getName(),
+						Integer.class.getName(),
+						OrderByComparator.class.getName()
+					},
+					new String[] {"companyId", "couponCode", "active_"}, true),
+				_SQL_COUNT_COMMERCEDISCOUNT_WHERE,
+				_SQL_SELECT_COMMERCEDISCOUNT_WHERE, null,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByC_C_A",
+					new String[] {
+						Long.class.getName(), String.class.getName(),
+						Boolean.class.getName()
+					},
+					new String[] {"companyId", "couponCode", "active_"}, 2, 2,
+					true, null),
+				"",
+				new FinderColumn<>(
+					"commerceDiscount.", "companyId", FinderColumn.Type.LONG,
+					"=", true, true, CommerceDiscount::getCompanyId),
+				new FinderColumn<>(
+					"commerceDiscount.", "couponCode", FinderColumn.Type.STRING,
+					"=", false, true, CommerceDiscount::getCouponCode),
+				new FinderColumn<>(
+					"commerceDiscount.", "active", "active_",
+					FinderColumn.Type.BOOLEAN, "=", true, true,
+					CommerceDiscount::isActive));
 
 		_collectionPersistenceFinderByC_L_A_S =
 			new FilterCollectionPersistenceFinder<>(
@@ -1948,4 +2037,4 @@ public class CommerceDiscountPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1615074533
+// LIFERAY-SERVICE-BUILDER-HASH:1709920560

@@ -708,22 +708,6 @@ public class CommerceDiscountPersistenceTest {
 
 	private void _assertOriginalValues(CommerceDiscount commerceDiscount) {
 		Assert.assertEquals(
-			Long.valueOf(commerceDiscount.getCompanyId()),
-			ReflectionTestUtil.<Long>invoke(
-				commerceDiscount, "getColumnOriginalValue",
-				new Class<?>[] {String.class}, "companyId"));
-		Assert.assertEquals(
-			commerceDiscount.getCouponCode(),
-			ReflectionTestUtil.invoke(
-				commerceDiscount, "getColumnOriginalValue",
-				new Class<?>[] {String.class}, "couponCode"));
-		Assert.assertEquals(
-			Boolean.valueOf(commerceDiscount.getActive()),
-			ReflectionTestUtil.<Boolean>invoke(
-				commerceDiscount, "getColumnOriginalValue",
-				new Class<?>[] {String.class}, "active_"));
-
-		Assert.assertEquals(
 			commerceDiscount.getExternalReferenceCode(),
 			ReflectionTestUtil.invoke(
 				commerceDiscount, "getColumnOriginalValue",
@@ -815,4 +799,4 @@ public class CommerceDiscountPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1183361289
+// LIFERAY-SERVICE-BUILDER-HASH:-180264694
