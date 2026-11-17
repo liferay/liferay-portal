@@ -1431,9 +1431,6 @@ public class ObjectFieldLocalServiceTest {
 					ObjectFieldConstants.BUSINESS_TYPE_ENCRYPTED) ||
 				Objects.equals(
 					objectFieldBusinessType.getName(),
-					ObjectFieldConstants.BUSINESS_TYPE_LOCATION) ||
-				Objects.equals(
-					objectFieldBusinessType.getName(),
 					ObjectFieldConstants.BUSINESS_TYPE_MULTISELECT_PICKLIST) ||
 				Objects.equals(
 					objectFieldBusinessType.getName(),
