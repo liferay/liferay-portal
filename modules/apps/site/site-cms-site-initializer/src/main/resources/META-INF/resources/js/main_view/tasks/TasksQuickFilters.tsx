@@ -10,7 +10,10 @@ import {fetch} from 'frontend-js-web';
 import React, {useCallback, useState} from 'react';
 
 import useRefreshOnFDSDisplayUpdated from '../../common/hooks/useRefreshOnFDSDisplayUpdated';
-import {CMSSiteInitializerFDSNames} from '../../common/utils/constants';
+import {
+	CMSSiteInitializerFDSNames,
+	FDS_FILTER_ID,
+} from '../../common/utils/constants';
 import QuickFilterButton from '../quick_filters/QuickFilterButton';
 import {
 	applyQuickFilterUpdates,
@@ -52,7 +55,8 @@ export default function TasksQuickFilters({apiURL}: {apiURL: string}) {
 
 	const activeQuickFilter = getActiveQuickFilter(
 		tasksFDSState.filters,
-		TASK_QUICK_FILTER_UPDATES
+		TASK_QUICK_FILTER_UPDATES,
+		[FDS_FILTER_ID.SCOPE_GROUP_ID]
 	);
 
 	const [counts, setCounts] = useState<TaskCounts>({
