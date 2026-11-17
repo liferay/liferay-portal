@@ -195,8 +195,15 @@ public class CPDefinitionOptionValueRelLocalServiceImpl
 		}
 
 		cpDefinitionOptionValueRel.setPriority(priority);
+
+		BigDecimal defaultQuantity = BigDecimal.ZERO;
+
+		if (cpDefinitionOptionRel.isPriceContributor()) {
+			defaultQuantity = BigDecimal.ONE;
+		}
+
 		cpDefinitionOptionValueRel.setQuantity(
-			BigDecimalUtil.get(quantity, BigDecimal.ONE));
+			BigDecimalUtil.get(quantity, defaultQuantity));
 		cpDefinitionOptionValueRel.setUnitOfMeasureKey(unitOfMeasureKey);
 
 		if (_emptyModelManager.isEmptyModel()) {

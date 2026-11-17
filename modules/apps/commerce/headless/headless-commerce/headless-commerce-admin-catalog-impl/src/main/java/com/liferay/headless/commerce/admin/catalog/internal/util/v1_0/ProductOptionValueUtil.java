@@ -5,6 +5,7 @@
 
 package com.liferay.headless.commerce.admin.catalog.internal.util.v1_0;
 
+import com.liferay.commerce.product.model.CPDefinitionOptionRel;
 import com.liferay.commerce.product.model.CPDefinitionOptionValueRel;
 import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.service.CPDefinitionOptionValueRelService;
@@ -92,8 +93,7 @@ public class ProductOptionValueUtil {
 					BigDecimalUtil.get(
 						productOptionValue.getDeltaPrice(), null),
 					GetterUtil.get(productOptionValue.getPriority(), 0D),
-					BigDecimalUtil.get(
-						productOptionValue.getQuantity(), BigDecimal.ONE),
+					productOptionValue.getQuantity(),
 					GetterUtil.get(
 						productOptionValue.getUnitOfMeasureKey(),
 						StringPool.BLANK),
@@ -119,9 +119,8 @@ public class ProductOptionValueUtil {
 						GetterUtil.get(
 							productOptionValue.getPriority(),
 							cpDefinitionOptionValueRel.getPriority()),
-						BigDecimalUtil.get(
-							productOptionValue.getQuantity(),
-							cpDefinitionOptionValueRel.getQuantity()),
+						getQuantity(
+							cpDefinitionOptionValueRel, productOptionValue),
 						GetterUtil.get(
 							productOptionValue.getUnitOfMeasureKey(),
 							cpDefinitionOptionValueRel.getUnitOfMeasureKey()),
@@ -137,6 +136,25 @@ public class ProductOptionValueUtil {
 		}
 
 		return cpDefinitionOptionValueRel;
+	}
+
+	public static BigDecimal getQuantity(
+			CPDefinitionOptionValueRel cpDefinitionOptionValueRel,
+			ProductOptionValue productOptionValue)
+		throws PortalException {
+
+		if (productOptionValue.getQuantity() != null) {
+			return productOptionValue.getQuantity();
+		}
+
+		CPDefinitionOptionRel cpDefinitionOptionRel =
+			cpDefinitionOptionValueRel.getCPDefinitionOptionRel();
+
+		if (!cpDefinitionOptionRel.isPriceContributor()) {
+			return BigDecimal.ZERO;
+		}
+
+		return cpDefinitionOptionValueRel.getQuantity();
 	}
 
 }

@@ -173,9 +173,8 @@ public class ProductOptionValueResourceImpl
 				GetterUtil.get(
 					productOptionValue.getPriority(),
 					cpDefinitionOptionValueRel.getPriority()),
-				BigDecimalUtil.get(
-					productOptionValue.getQuantity(),
-					cpDefinitionOptionValueRel.getQuantity()),
+				ProductOptionValueUtil.getQuantity(
+					cpDefinitionOptionValueRel, productOptionValue),
 				GetterUtil.get(
 					productOptionValue.getUnitOfMeasureKey(),
 					cpDefinitionOptionValueRel.getUnitOfMeasureKey()),
