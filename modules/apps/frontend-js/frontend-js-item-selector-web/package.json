@@ -14,6 +14,7 @@
 		"@clayui/loading-indicator": "^3.167.0",
 		"@clayui/modal": "^3.167.0",
 		"@clayui/multi-select": "^3.167.0",
+		"@clayui/nav": "^3.167.0",
 		"@clayui/shared": "^3.167.0",
 		"@clayui/sticker": "^3.167.0",
 		"@clayui/tooltip": "^3.167.0",

@@ -4,10 +4,11 @@
  */
 
 import ClayIcon from '@clayui/icon';
+import {ClayVerticalNav} from '@clayui/nav';
 import {EConfigInURLBehavior} from '@liferay/frontend-data-set-web';
 import {render} from '@liferay/frontend-js-react-web';
 import {mimeTypeUtils} from 'frontend-js-web';
-import React from 'react';
+import React, {useState} from 'react';
 
 import CMSFileUploaderComponent from '../item_selector_file_uploader/CMSFileUploaderComponent';
 import DetachedCMSFilesItemSelectorModal from './DetachedCMSFilesItemSelectorModal';
@@ -207,6 +208,49 @@ const FDS_PROPS: Omit<
 	],
 };
 
+type Source = {icon: string; key: string; label: string};
+
+const SOURCES: Source[] = [
+	{icon: 'box-container', key: 'cms', label: 'Spaces'},
+	{icon: 'sites', key: 'dm', label: 'Sites'},
+	{icon: 'link', key: 'url', label: 'URL'},
+];
+
+function SourceSidebar() {
+	const [activeSourceKey, setActiveSourceKey] = useState(SOURCES[0].key);
+
+	const items = SOURCES.map((source) => ({
+		active: activeSourceKey === source.key,
+		label: (
+			<>
+				<ClayIcon
+					className="inline-item inline-item-before"
+					symbol={source.icon}
+				/>
+
+				{source.label}
+			</>
+		),
+		onClick: () => setActiveSourceKey(source.key),
+		textValue: source.label,
+	}));
+
+	return (
+		<>
+			<h3 className="p-2 text-2 text-secondary text-uppercase">
+				{Liferay.Language.get('select-from')}
+			</h3>
+
+			<ClayVerticalNav
+				aria-label={Liferay.Language.get('source')}
+				displayType="primary"
+				items={items}
+				stacked
+			/>
+		</>
+	);
+}
+
 function getRandomId(): string {
 	return Math.random().toString(36).substring(2, 9);
 }
@@ -310,6 +354,9 @@ export default function openCMSFileSelectorModal({
 			itemTypeLabel: itemTypeLabel ?? Liferay.Language.get('files'),
 			maxFileSize,
 			onItemsChange: onSelect,
+			sidebar: Liferay.FeatureFlags['LPD-95652'] ? (
+				<SourceSidebar />
+			) : undefined,
 		},
 		document.createElement('div')
 	);
