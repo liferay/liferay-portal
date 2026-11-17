@@ -345,6 +345,26 @@ describe('[CMS Dashboard] OverdueTasks', () => {
 		]);
 	});
 
+	it('carries the selected space over to the Tasks page from View All', async () => {
+		renderOperations({
+			space: {label: 'My Space', siteId: 12345, value: '999'},
+		});
+
+		await expandList();
+
+		const {filters} = (serializeFDSConfig as jest.Mock).mock.calls.at(
+			-1
+		)[0];
+
+		expect(filters).toContainEqual({
+			id: 'scopeGroupId',
+			selectedData: {
+				exclude: false,
+				selectedItems: [{label: 'My Space', value: 12345}],
+			},
+		});
+	});
+
 	it('is accessible', async () => {
 		const {container} = renderOperations();
 

@@ -17,7 +17,10 @@ import {TASK_QUICK_FILTER_UPDATES} from '../../../tasks/taskQuickFilterUpdates';
 import InteractiveCard from '../../performance/components/InteractiveCard';
 import {GovernanceContext} from '../GovernanceContext';
 import GovernanceService, {MILLISECONDS_PER_DAY} from '../GovernanceService';
-import getSectionHref, {toFDSConfigFilters} from '../getSectionHref';
+import getSectionHref, {
+	getSpaceFilters,
+	toFDSConfigFilters,
+} from '../getSectionHref';
 import {GovernanceAdditionalProps} from '../types';
 import {
 	GovernanceListPanel,
@@ -143,7 +146,8 @@ export function OverdueTasksList({
 }: {
 	additionalProps: GovernanceAdditionalProps;
 }) {
-	const {selectedSpaceGroupIds, statistics} = useContext(GovernanceContext);
+	const {selectedSpaceGroupIds, space, statistics} =
+		useContext(GovernanceContext);
 
 	const reloadStatistics = useReloadStatisticsOnListRefresh(LIST_ID);
 
@@ -202,9 +206,10 @@ export function OverdueTasksList({
 			id={LIST_ID}
 			title={Liferay.Language.get('overdue-tasks')}
 			viewAllHref={getSectionHref('tasks', tasksSectionFDSName, {
-				filters: toFDSConfigFilters(
-					TASK_QUICK_FILTER_UPDATES.overdue()
-				),
+				filters: [
+					...toFDSConfigFilters(TASK_QUICK_FILTER_UPDATES.overdue()),
+					...getSpaceFilters(space),
+				],
 			})}
 		/>
 	);
