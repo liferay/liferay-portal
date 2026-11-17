@@ -1,7 +1,7 @@
 {
 	"devDependencies": {
 		"@liferay/prettier-plugin": "1.1.5",
-		"@types/ckeditor4": "4.16.2",
+		"@types/ckeditor4": "4.20.7",
 		"@types/codemirror": "5.60.5",
 		"@types/jest": "27.5.2",
 		"@types/node": "20.12.2",
