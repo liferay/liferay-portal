@@ -45,16 +45,16 @@ public class PlaywrightSetupFailureMessageGeneratorTest
 				"Duplicate OSGi modules found for ",
 				RandomTestUtil.randomString(), ":"));
 
-		String fileName = RandomTestUtil.randomString();
+		String filePath = RandomTestUtil.randomString();
 
 		_testGetMessageElement(
 			JenkinsResultsParserUtil.combine(
 				"Unable to deploy OSGi module ", RandomTestUtil.randomString(),
-				" in ", fileName, "."));
+				" in ", filePath, "."));
 		_testGetMessageElement(
 			JenkinsResultsParserUtil.combine(
 				"Unable to find OSGi module ", RandomTestUtil.randomString(),
-				" in ", fileName, "."));
+				" in ", filePath, "."));
 
 		Assert.assertNull(
 			_playwrightSetupFailureMessageGenerator.getMessageElement(""));
@@ -64,7 +64,7 @@ public class PlaywrightSetupFailureMessageGeneratorTest
 		Assert.assertNull(
 			_playwrightSetupFailureMessageGenerator.getMessageElement(
 				JenkinsResultsParserUtil.combine(
-					"  [exec] Deploying OSGi modules in ", fileName,
+					"  [exec] Deploying OSGi modules in ", filePath,
 					".\n  [exec] > Task :", RandomTestUtil.randomString(),
 					":compileJava FAILED\n")));
 	}
@@ -80,7 +80,7 @@ public class PlaywrightSetupFailureMessageGeneratorTest
 		Mockito.when(
 			build.getConsoleText()
 		).thenReturn(
-			"  [exec] " + message + "\n"
+			JenkinsResultsParserUtil.combine("  [exec] ", message, "\n")
 		);
 
 		Mockito.when(
@@ -150,9 +150,9 @@ public class PlaywrightSetupFailureMessageGeneratorTest
 	private void _testGetMessageElementDuplicateOSGiModules(String linePrefix) {
 		String osgiModuleName = RandomTestUtil.randomString();
 
-		String appsOSGiModuleDirName = JenkinsResultsParserUtil.combine(
+		String appsOSGiModuleDirPath = JenkinsResultsParserUtil.combine(
 			"apps/", RandomTestUtil.randomString(), "/", osgiModuleName);
-		String dxpAppsOSGiModuleDirName = JenkinsResultsParserUtil.combine(
+		String dxpAppsOSGiModuleDirPath = JenkinsResultsParserUtil.combine(
 			"dxp/apps/", RandomTestUtil.randomString(), "/", osgiModuleName);
 		String message = JenkinsResultsParserUtil.combine(
 			"Duplicate OSGi modules found for ", osgiModuleName, ":");
@@ -167,11 +167,11 @@ public class PlaywrightSetupFailureMessageGeneratorTest
 				JenkinsResultsParserUtil.combine(
 					RandomTestUtil.randomString(), "\n", linePrefix, message,
 					"\n", linePrefix, "/", RandomTestUtil.randomString(), "/",
-					appsOSGiModuleDirName, "\n", linePrefix, "/",
+					appsOSGiModuleDirPath, "\n", linePrefix, "/",
 					RandomTestUtil.randomString(), "/",
-					dxpAppsOSGiModuleDirName, "\n", linePrefix, replaceLine,
-					"\n", linePrefix, appsOSGiModuleDirName, "\n", linePrefix,
-					dxpAppsOSGiModuleDirName, "\n", linePrefix, trailingLine,
+					dxpAppsOSGiModuleDirPath, "\n", linePrefix, replaceLine,
+					"\n", linePrefix, appsOSGiModuleDirPath, "\n", linePrefix,
+					dxpAppsOSGiModuleDirPath, "\n", linePrefix, trailingLine,
 					"\n"));
 
 		Element preElement = messageElement.element("pre");
@@ -181,8 +181,8 @@ public class PlaywrightSetupFailureMessageGeneratorTest
 		Assert.assertTrue(
 			text.endsWith(
 				JenkinsResultsParserUtil.combine(
-					replaceLine, "\n", linePrefix, appsOSGiModuleDirName, "\n",
-					linePrefix, dxpAppsOSGiModuleDirName)));
+					replaceLine, "\n", linePrefix, appsOSGiModuleDirPath, "\n",
+					linePrefix, dxpAppsOSGiModuleDirPath)));
 		Assert.assertFalse(text.contains(trailingLine));
 
 		Element pElement = messageElement.element("p");
