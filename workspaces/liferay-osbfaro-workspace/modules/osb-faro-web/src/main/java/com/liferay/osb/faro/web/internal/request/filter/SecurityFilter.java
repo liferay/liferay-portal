@@ -35,6 +35,7 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 
 import jakarta.annotation.Priority;
+import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -116,9 +117,13 @@ public class SecurityFilter implements ContainerRequestFilter {
 			}
 		}
 
+		if (method.isAnnotationPresent(PermitAll.class)) {
+			return;
+		}
+
 		RolesAllowed rolesAllowed = method.getAnnotation(RolesAllowed.class);
 
-		if ((rolesAllowed == null) ||
+		if ((rolesAllowed != null) &&
 			_hasPermission(groupId, rolesAllowed.value(), user.getUserId())) {
 
 			return;
