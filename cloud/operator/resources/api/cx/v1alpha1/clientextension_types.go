@@ -107,15 +107,15 @@ type ClientExtensionSpec struct {
 	// +kubebuilder:validation:Required
 	ServiceID string `json:"serviceId"`
 
+	// +kubebuilder:validation:MaxLength=128
+	// +optional
+	Version string `json:"version,omitempty"`
+
 	// +kubebuilder:validation:MaxLength=63
 	// +kubebuilder:validation:MinLength=1
 	// +kubebuilder:validation:Pattern=`^[a-z0-9]([-a-z0-9.]*[a-z0-9])?$`
 	// +kubebuilder:validation:Required
 	VirtualInstanceID string `json:"virtualInstanceId"`
-
-	// +kubebuilder:validation:MaxLength=128
-	// +optional
-	Version string `json:"version,omitempty"`
 
 	// +optional
 	WorkloadRef *WorkloadRef `json:"workloadRef,omitempty"`

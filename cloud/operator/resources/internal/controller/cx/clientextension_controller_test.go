@@ -439,49 +439,6 @@ func TestReconcileKeepsConfigMapWhenVirtualInstanceDisappears(t *testing.T) {
 	}
 }
 
-func TestUnknownVirtualInstanceGraceRemaining(t *testing.T) {
-	testCases := map[string]struct {
-		condition *metav1.Condition
-		wantGrace bool
-	}{
-		"a client extension that is delivered": {
-			condition: &metav1.Condition{
-				LastTransitionTime: metav1.Now(), Reason: ReasonDelivered, Status: metav1.ConditionTrue,
-				Type: cxv1alpha1.ConditionDelivered,
-			},
-		},
-		"a virtual instance that has been unknown longer than the grace period": {
-			condition: &metav1.Condition{
-				LastTransitionTime: metav1.NewTime(time.Now().Add(-unknownVirtualInstanceGracePeriod - time.Minute)),
-				Reason:             ReasonUnknownVirtualInstance, Status: metav1.ConditionFalse,
-				Type: cxv1alpha1.ConditionDelivered,
-			},
-		},
-		"a virtual instance that just became unknown": {
-			condition: &metav1.Condition{
-				LastTransitionTime: metav1.Now(), Reason: ReasonUnknownVirtualInstance, Status: metav1.ConditionFalse,
-				Type: cxv1alpha1.ConditionDelivered,
-			},
-			wantGrace: true,
-		},
-		"no Delivered condition yet": {},
-	}
-
-	for name, testCase := range testCases {
-		t.Run(name, func(t *testing.T) {
-			status := &cxv1alpha1.ClientExtensionStatus{}
-
-			if testCase.condition != nil {
-				status.Conditions = []metav1.Condition{*testCase.condition}
-			}
-
-			if grace := unknownVirtualInstanceGraceRemaining(status); (grace > 0) != testCase.wantGrace {
-				t.Errorf("unknownVirtualInstanceGraceRemaining() = %s, want grace %t", grace, testCase.wantGrace)
-			}
-		})
-	}
-}
-
 func TestReconcileLeavesUnchangedExtProvisionConfigMapAlone(t *testing.T) {
 	clientExtension := newClientExtension("", "able", "able")
 
@@ -1243,6 +1200,49 @@ func TestRequestsForConfigMapMatchesPolicyConfigMapByDxpNamespace(t *testing.T) 
 		},
 	}; !reflect.DeepEqual(got, want) {
 		t.Errorf("requestsForConfigMap() = %v, want %v", got, want)
+	}
+}
+
+func TestUnknownVirtualInstanceGraceRemaining(t *testing.T) {
+	testCases := map[string]struct {
+		condition *metav1.Condition
+		wantGrace bool
+	}{
+		"a client extension that is delivered": {
+			condition: &metav1.Condition{
+				LastTransitionTime: metav1.Now(), Reason: ReasonDelivered, Status: metav1.ConditionTrue,
+				Type: cxv1alpha1.ConditionDelivered,
+			},
+		},
+		"a virtual instance that has been unknown longer than the grace period": {
+			condition: &metav1.Condition{
+				LastTransitionTime: metav1.NewTime(time.Now().Add(-unknownVirtualInstanceGracePeriod - time.Minute)),
+				Reason:             ReasonUnknownVirtualInstance, Status: metav1.ConditionFalse,
+				Type: cxv1alpha1.ConditionDelivered,
+			},
+		},
+		"a virtual instance that just became unknown": {
+			condition: &metav1.Condition{
+				LastTransitionTime: metav1.Now(), Reason: ReasonUnknownVirtualInstance, Status: metav1.ConditionFalse,
+				Type: cxv1alpha1.ConditionDelivered,
+			},
+			wantGrace: true,
+		},
+		"no Delivered condition yet": {},
+	}
+
+	for name, testCase := range testCases {
+		t.Run(name, func(t *testing.T) {
+			status := &cxv1alpha1.ClientExtensionStatus{}
+
+			if testCase.condition != nil {
+				status.Conditions = []metav1.Condition{*testCase.condition}
+			}
+
+			if grace := unknownVirtualInstanceGraceRemaining(status); (grace > 0) != testCase.wantGrace {
+				t.Errorf("unknownVirtualInstanceGraceRemaining() = %s, want grace %t", grace, testCase.wantGrace)
+			}
+		})
 	}
 }
 
