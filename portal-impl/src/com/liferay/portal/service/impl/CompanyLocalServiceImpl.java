@@ -2438,7 +2438,7 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 
 	private String _generateKey(long companyId) {
 		try {
-			return CompanyKeyResolverUtil.generateKey(companyId);
+			return CompanyKeyResolverUtil.generateKey(companyId, null);
 		}
 		catch (EncryptorException encryptorException) {
 			throw new SystemException(encryptorException);

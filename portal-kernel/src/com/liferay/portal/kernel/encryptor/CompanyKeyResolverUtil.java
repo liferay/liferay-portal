@@ -26,8 +26,15 @@ import java.util.Objects;
  */
 public class CompanyKeyResolverUtil {
 
-	public static String generateKey(long companyId) throws EncryptorException {
-		String keyString = wrapKey(companyId, EncryptorUtil.generateKey());
+	public static String generateKey(long companyId, String oldKeyString)
+		throws EncryptorException {
+
+		String keyString = _wrapKey(companyId, EncryptorUtil.generateKey());
+
+		if (isWrappedKey(oldKeyString) && !isWrappedKey(keyString)) {
+			throw new CompanyKeyException(
+				"Unable to wrap the regenerated key for company " + companyId);
+		}
 
 		if (!PropsValues.FIPS_ENABLED) {
 			return keyString;
@@ -35,16 +42,6 @@ public class CompanyKeyResolverUtil {
 
 		return StringBundler.concat(
 			_FIPS_KEY_PREFIX, keyString, StringPool.CLOSE_CURLY_BRACE);
-	}
-
-	public static boolean isFIPSKey(String keyString) {
-		if ((keyString != null) && keyString.startsWith(_FIPS_KEY_PREFIX) &&
-			keyString.endsWith(StringPool.CLOSE_CURLY_BRACE)) {
-
-			return true;
-		}
-
-		return false;
 	}
 
 	public static boolean isWrappedKey(String keyString) {
@@ -55,19 +52,6 @@ public class CompanyKeyResolverUtil {
 		}
 
 		return false;
-	}
-
-	public static String regenerateKey(long companyId, String keyString)
-		throws EncryptorException {
-
-		String regeneratedKeyString = generateKey(companyId);
-
-		if (isWrappedKey(keyString) && !isWrappedKey(regeneratedKeyString)) {
-			throw new CompanyKeyException(
-				"Unable to wrap the regenerated key for company " + companyId);
-		}
-
-		return regeneratedKeyString;
 	}
 
 	public static void rotateKey(Company company) {
@@ -81,7 +65,7 @@ public class CompanyKeyResolverUtil {
 			CompanyInfo companyInfo = CompanyInfoUtil.fetchByCompanyId(
 				companyId, false);
 
-			companyInfo.setKey(regenerateKey(companyId, company.getKey()));
+			companyInfo.setKey(generateKey(companyId, company.getKey()));
 
 			CompanyInfoUtil.update(companyInfo);
 
@@ -135,7 +119,34 @@ public class CompanyKeyResolverUtil {
 		return companyKeyResolver.unwrapKey(companyId, keyString);
 	}
 
-	public static String wrapKey(long companyId, Key key) {
+	private static String _getInnerKeyString(String keyString) {
+		if (!_isFIPSKey(keyString)) {
+			return keyString;
+		}
+
+		return keyString.substring(
+			_FIPS_KEY_PREFIX.length(), keyString.length() - 1);
+	}
+
+	private static boolean _isAllowedKey(String keyString) {
+		if (!PropsValues.FIPS_ENABLED || _isFIPSKey(keyString)) {
+			return true;
+		}
+
+		return false;
+	}
+
+	private static boolean _isFIPSKey(String keyString) {
+		if ((keyString != null) && keyString.startsWith(_FIPS_KEY_PREFIX) &&
+			keyString.endsWith(StringPool.CLOSE_CURLY_BRACE)) {
+
+			return true;
+		}
+
+		return false;
+	}
+
+	private static String _wrapKey(long companyId, Key key) {
 		CompanyKeyResolver companyKeyResolver =
 			_companyKeyResolverSnapshot.get();
 
@@ -146,23 +157,6 @@ public class CompanyKeyResolverUtil {
 		}
 
 		return companyKeyResolver.wrapKey(companyId, key);
-	}
-
-	private static String _getInnerKeyString(String keyString) {
-		if (!isFIPSKey(keyString)) {
-			return keyString;
-		}
-
-		return keyString.substring(
-			_FIPS_KEY_PREFIX.length(), keyString.length() - 1);
-	}
-
-	private static boolean _isAllowedKey(String keyString) {
-		if (!PropsValues.FIPS_ENABLED || isFIPSKey(keyString)) {
-			return true;
-		}
-
-		return false;
 	}
 
 	private static final String _FIPS_KEY_PREFIX = "${fipsKey:";

@@ -16,6 +16,7 @@ import com.liferay.portal.kernel.encryptor.CompanyKeyResolverUtil;
 import com.liferay.portal.kernel.encryptor.EncryptorUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
+import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -96,7 +97,7 @@ public class CompanyKeyResolverUtilTest {
 
 		String keyString = company.getKey();
 
-		Assert.assertFalse(CompanyKeyResolverUtil.isFIPSKey(keyString));
+		Assert.assertFalse(_isFIPSKey(keyString));
 		Assert.assertTrue(CompanyKeyResolverUtil.isWrappedKey(keyString));
 
 		_saveKeyManagerConfiguration(StringPool.BLANK);
@@ -107,7 +108,7 @@ public class CompanyKeyResolverUtilTest {
 
 		String legacyKeyString = legacyCompany.getKey();
 
-		Assert.assertFalse(CompanyKeyResolverUtil.isFIPSKey(legacyKeyString));
+		Assert.assertFalse(_isFIPSKey(legacyKeyString));
 		Assert.assertFalse(
 			CompanyKeyResolverUtil.isWrappedKey(legacyKeyString));
 
@@ -123,7 +124,7 @@ public class CompanyKeyResolverUtilTest {
 		String rotatedKeyString = _checkCompanyKey(company);
 
 		Assert.assertEquals(rotatedKeyString, _checkCompanyKey(company));
-		Assert.assertTrue(CompanyKeyResolverUtil.isFIPSKey(rotatedKeyString));
+		Assert.assertTrue(_isFIPSKey(rotatedKeyString));
 		Assert.assertTrue(
 			CompanyKeyResolverUtil.isWrappedKey(rotatedKeyString));
 
@@ -139,8 +140,7 @@ public class CompanyKeyResolverUtilTest {
 
 		String rotatedLegacyKeyString = _checkCompanyKey(legacyCompany);
 
-		Assert.assertTrue(
-			CompanyKeyResolverUtil.isFIPSKey(rotatedLegacyKeyString));
+		Assert.assertTrue(_isFIPSKey(rotatedLegacyKeyString));
 		Assert.assertFalse(
 			CompanyKeyResolverUtil.isWrappedKey(rotatedLegacyKeyString));
 
@@ -158,7 +158,7 @@ public class CompanyKeyResolverUtilTest {
 		long companyId = RandomTestUtil.randomLong();
 		Key key = EncryptorUtil.generateKey();
 
-		String keyString = CompanyKeyResolverUtil.wrapKey(companyId, key);
+		String keyString = _wrapKey(companyId, key);
 
 		_saveKeyManagerConfiguration(TestCompanyCryptoProvider.KEY_IDENTIFIER);
 
@@ -275,6 +275,12 @@ public class CompanyKeyResolverUtilTest {
 		).build();
 	}
 
+	private boolean _isFIPSKey(String keyString) {
+		return ReflectionTestUtil.invoke(
+			CompanyKeyResolverUtil.class, "_isFIPSKey",
+			new Class<?>[] {String.class}, keyString);
+	}
+
 	private void _saveKeyManagerConfiguration(String companyKEKIdentifier)
 		throws Exception {
 
@@ -291,6 +297,12 @@ public class CompanyKeyResolverUtilTest {
 			_KEY_MANAGER_CUSTOM_PROFILE_CONFIGURATION_PID,
 			_getKeyManagerCustomProfileConfigurationProperties(
 				companyKEKProviderId));
+	}
+
+	private String _wrapKey(long companyId, Key key) {
+		return ReflectionTestUtil.invoke(
+			CompanyKeyResolverUtil.class, "_wrapKey",
+			new Class<?>[] {long.class, Key.class}, companyId, key);
 	}
 
 	private static final String _KEY_MANAGER_CONFIGURATION_PID =

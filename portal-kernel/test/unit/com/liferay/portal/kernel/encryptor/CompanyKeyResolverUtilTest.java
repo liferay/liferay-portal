@@ -61,85 +61,15 @@ public class CompanyKeyResolverUtilTest {
 			AutoCloseable autoCloseable2 = _setCompanyKeyResolver(null)) {
 
 			Assert.assertEquals(
-				keyString, CompanyKeyResolverUtil.generateKey(_COMPANY_ID));
-
-			try (SafeCloseable safeCloseable =
-					PropsValuesTestUtil.swapWithSafeCloseable(
-						"FIPS_ENABLED", true)) {
-
-				String fipsKeyString = CompanyKeyResolverUtil.generateKey(
-					_COMPANY_ID);
-
-				Assert.assertEquals(
-					_FIPS_KEY_PREFIX + keyString + "}", fipsKeyString);
-				Assert.assertTrue(
-					CompanyKeyResolverUtil.isFIPSKey(fipsKeyString));
-				Assert.assertFalse(
-					CompanyKeyResolverUtil.isWrappedKey(fipsKeyString));
-			}
-		}
-	}
-
-	@Test
-	public void testIsFIPSKey() {
-		Assert.assertFalse(
-			CompanyKeyResolverUtil.isFIPSKey(RandomTestUtil.randomString()));
-		Assert.assertFalse(
-			CompanyKeyResolverUtil.isFIPSKey(
-				_FIPS_KEY_PREFIX + RandomTestUtil.randomString()));
-		Assert.assertTrue(
-			CompanyKeyResolverUtil.isFIPSKey(
-				_FIPS_KEY_PREFIX + RandomTestUtil.randomString() + "}"));
-		Assert.assertFalse(
-			CompanyKeyResolverUtil.isFIPSKey(
-				_WRAPPED_KEY_PREFIX + RandomTestUtil.randomString()));
-		Assert.assertFalse(CompanyKeyResolverUtil.isFIPSKey(null));
-	}
-
-	@Test
-	public void testIsWrappedKey() {
-		Assert.assertFalse(
-			CompanyKeyResolverUtil.isWrappedKey(RandomTestUtil.randomString()));
-		Assert.assertFalse(
-			CompanyKeyResolverUtil.isWrappedKey(
-				_FIPS_KEY_PREFIX + RandomTestUtil.randomString() + "}"));
-		Assert.assertTrue(
-			CompanyKeyResolverUtil.isWrappedKey(
-				_FIPS_KEY_PREFIX + _WRAPPED_KEY_PREFIX + "}"));
-		Assert.assertTrue(
-			CompanyKeyResolverUtil.isWrappedKey(_WRAPPED_KEY_PREFIX));
-		Assert.assertFalse(CompanyKeyResolverUtil.isWrappedKey(null));
-	}
-
-	@Test
-	public void testRegenerateKey() throws Exception {
-		Encryptor encryptor = Mockito.mock(Encryptor.class);
-		Key key = Mockito.mock(Key.class);
-
-		Mockito.when(
-			encryptor.generateKey()
-		).thenReturn(
-			key
-		);
-
-		String keyString = RandomTestUtil.randomString();
-
-		Mockito.when(
-			encryptor.serializeKey(key)
-		).thenReturn(
-			keyString
-		);
-
-		try (AutoCloseable autoCloseable1 = _setEncryptor(encryptor);
-			AutoCloseable autoCloseable2 = _setCompanyKeyResolver(null)) {
-
+				keyString,
+				CompanyKeyResolverUtil.generateKey(
+					_COMPANY_ID, RandomTestUtil.randomString()));
 			Assert.assertEquals(
 				keyString,
-				CompanyKeyResolverUtil.regenerateKey(
-					_COMPANY_ID, RandomTestUtil.randomString()));
+				CompanyKeyResolverUtil.generateKey(_COMPANY_ID, null));
 
 			try {
-				CompanyKeyResolverUtil.regenerateKey(
+				CompanyKeyResolverUtil.generateKey(
 					_COMPANY_ID,
 					_WRAPPED_KEY_PREFIX + RandomTestUtil.randomString());
 
@@ -150,6 +80,20 @@ public class CompanyKeyResolverUtilTest {
 
 				Assert.assertTrue(
 					message.contains(String.valueOf(_COMPANY_ID)));
+			}
+
+			try (SafeCloseable safeCloseable =
+					PropsValuesTestUtil.swapWithSafeCloseable(
+						"FIPS_ENABLED", true)) {
+
+				String fipsKeyString = CompanyKeyResolverUtil.generateKey(
+					_COMPANY_ID, null);
+
+				Assert.assertEquals(
+					_FIPS_KEY_PREFIX + keyString + "}", fipsKeyString);
+				Assert.assertTrue(_isFIPSKey(fipsKeyString));
+				Assert.assertFalse(
+					CompanyKeyResolverUtil.isWrappedKey(fipsKeyString));
 			}
 		}
 
@@ -176,10 +120,37 @@ public class CompanyKeyResolverUtilTest {
 
 			Assert.assertEquals(
 				keyString,
-				CompanyKeyResolverUtil.regenerateKey(
+				CompanyKeyResolverUtil.generateKey(
 					_COMPANY_ID,
 					_WRAPPED_KEY_PREFIX + RandomTestUtil.randomString()));
 		}
+	}
+
+	@Test
+	public void testIsFIPSKey() {
+		Assert.assertFalse(_isFIPSKey(RandomTestUtil.randomString()));
+		Assert.assertFalse(
+			_isFIPSKey(_FIPS_KEY_PREFIX + RandomTestUtil.randomString()));
+		Assert.assertTrue(
+			_isFIPSKey(_FIPS_KEY_PREFIX + RandomTestUtil.randomString() + "}"));
+		Assert.assertFalse(
+			_isFIPSKey(_WRAPPED_KEY_PREFIX + RandomTestUtil.randomString()));
+		Assert.assertFalse(_isFIPSKey(null));
+	}
+
+	@Test
+	public void testIsWrappedKey() {
+		Assert.assertFalse(
+			CompanyKeyResolverUtil.isWrappedKey(RandomTestUtil.randomString()));
+		Assert.assertFalse(
+			CompanyKeyResolverUtil.isWrappedKey(
+				_FIPS_KEY_PREFIX + RandomTestUtil.randomString() + "}"));
+		Assert.assertTrue(
+			CompanyKeyResolverUtil.isWrappedKey(
+				_FIPS_KEY_PREFIX + _WRAPPED_KEY_PREFIX + "}"));
+		Assert.assertTrue(
+			CompanyKeyResolverUtil.isWrappedKey(_WRAPPED_KEY_PREFIX));
+		Assert.assertFalse(CompanyKeyResolverUtil.isWrappedKey(null));
 	}
 
 	@Test
@@ -377,8 +348,7 @@ public class CompanyKeyResolverUtilTest {
 		try (AutoCloseable autoCloseable1 = _setEncryptor(encryptor);
 			AutoCloseable autoCloseable2 = _setCompanyKeyResolver(null)) {
 
-			Assert.assertEquals(
-				keyString, CompanyKeyResolverUtil.wrapKey(_COMPANY_ID, key));
+			Assert.assertEquals(keyString, _wrapKey(_COMPANY_ID, key));
 		}
 
 		CompanyKeyResolver companyKeyResolver = Mockito.mock(
@@ -394,8 +364,7 @@ public class CompanyKeyResolverUtilTest {
 			AutoCloseable autoCloseable2 = _setCompanyKeyResolver(
 				companyKeyResolver)) {
 
-			Assert.assertEquals(
-				keyString, CompanyKeyResolverUtil.wrapKey(_COMPANY_ID, key));
+			Assert.assertEquals(keyString, _wrapKey(_COMPANY_ID, key));
 		}
 
 		keyString = _WRAPPED_KEY_PREFIX + RandomTestUtil.randomString();
@@ -415,9 +384,14 @@ public class CompanyKeyResolverUtilTest {
 		try (AutoCloseable autoCloseable = _setCompanyKeyResolver(
 				companyKeyResolver)) {
 
-			Assert.assertEquals(
-				keyString, CompanyKeyResolverUtil.wrapKey(_COMPANY_ID, key));
+			Assert.assertEquals(keyString, _wrapKey(_COMPANY_ID, key));
 		}
+	}
+
+	private boolean _isFIPSKey(String keyString) {
+		return ReflectionTestUtil.invoke(
+			CompanyKeyResolverUtil.class, "_isFIPSKey",
+			new Class<?>[] {String.class}, keyString);
 	}
 
 	private AutoCloseable _setCompanyKeyResolver(
@@ -512,6 +486,12 @@ public class CompanyKeyResolverUtilTest {
 
 			return logEntries.get(0);
 		}
+	}
+
+	private String _wrapKey(long companyId, Key key) {
+		return ReflectionTestUtil.invoke(
+			CompanyKeyResolverUtil.class, "_wrapKey",
+			new Class<?>[] {long.class, Key.class}, companyId, key);
 	}
 
 	private static final long _COMPANY_ID = RandomTestUtil.randomLong();
