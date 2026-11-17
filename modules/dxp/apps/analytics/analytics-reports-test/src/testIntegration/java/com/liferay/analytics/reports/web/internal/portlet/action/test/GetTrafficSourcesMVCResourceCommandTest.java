@@ -93,6 +93,8 @@ public class GetTrafficSourcesMVCResourceCommandTest {
 						).put(
 							"/api/1.0/pages/acquisition-channels",
 							() -> JSONUtil.put(
+								"chatbot", 20L
+							).put(
 								"organic", 3192L
 							).put(
 								"paid", 1L
@@ -136,13 +138,13 @@ public class GetTrafficSourcesMVCResourceCommandTest {
 					JSONArray jsonArray = jsonObject1.getJSONArray(
 						"trafficSources");
 
-					Assert.assertEquals(5, jsonArray.length());
+					Assert.assertEquals(6, jsonArray.length());
 
 					JSONObject jsonObject2 = jsonArray.getJSONObject(0);
 
 					Assert.assertEquals("organic", jsonObject2.get("name"));
 					Assert.assertEquals(
-						String.format("%.1f", 89.20D),
+						String.format("%.1f", 88.67D),
 						jsonObject2.getString("share"));
 
 					Assert.assertEquals(3192, jsonObject2.get("value"));
@@ -157,22 +159,27 @@ public class GetTrafficSourcesMVCResourceCommandTest {
 
 					JSONObject jsonObject4 = jsonArray.getJSONObject(2);
 
-					Assert.assertEquals(
-						"http//localhost/test?",
-						jsonObject4.getString("endpointURL"));
-					Assert.assertEquals("referral", jsonObject4.get("name"));
-					Assert.assertEquals(2L, jsonObject4.getInt("value"));
+					Assert.assertEquals("chatbot", jsonObject4.get("name"));
+					Assert.assertEquals(20, jsonObject4.getInt("value"));
 
 					JSONObject jsonObject5 = jsonArray.getJSONObject(3);
 
-					Assert.assertEquals("paid", jsonObject5.get("name"));
-					Assert.assertEquals(1L, jsonObject5.getInt("value"));
+					Assert.assertEquals(
+						"http//localhost/test?",
+						jsonObject5.getString("endpointURL"));
+					Assert.assertEquals("referral", jsonObject5.get("name"));
+					Assert.assertEquals(2, jsonObject5.getInt("value"));
 
 					JSONObject jsonObject6 = jsonArray.getJSONObject(4);
 
-					Assert.assertEquals("direct", jsonObject6.get("name"));
-					Assert.assertEquals(0, jsonObject6.getInt("value"));
-					Assert.assertNull(jsonObject6.get("endpointURL"));
+					Assert.assertEquals("paid", jsonObject6.get("name"));
+					Assert.assertEquals(1, jsonObject6.getInt("value"));
+
+					JSONObject jsonObject7 = jsonArray.getJSONObject(5);
+
+					Assert.assertNull(jsonObject7.get("endpointURL"));
+					Assert.assertEquals("direct", jsonObject7.get("name"));
+					Assert.assertEquals(0, jsonObject7.getInt("value"));
 				});
 		}
 		finally {
@@ -235,6 +242,20 @@ public class GetTrafficSourcesMVCResourceCommandTest {
 
 					Assert.assertEquals(
 						JSONUtil.putAll(
+							JSONUtil.put(
+								"helpMessage",
+								ResourceBundleUtil.getString(
+									resourceBundle,
+									"this-is-the-number-of-page-views-" +
+										"generated-by-people-coming-to-your-" +
+											"page-from-ai-chatbots")
+							).put(
+								"name", "chatbot"
+							).put(
+								"title",
+								ResourceBundleUtil.getString(
+									resourceBundle, "ai-chatbot")
+							),
 							JSONUtil.put(
 								"helpMessage",
 								ResourceBundleUtil.getString(
