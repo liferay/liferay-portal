@@ -789,8 +789,20 @@ public class MCPServerServletTest {
 
 		Http.Options options = new Http.Options();
 
+		options.addHeader("Accept", "application/json, text/event-stream");
 		options.addHeader("Authorization", authorization);
+		options.addHeader("Content-Type", ContentTypes.APPLICATION_JSON);
+		options.setBody(
+			JSONUtil.put(
+				"id", 1
+			).put(
+				"jsonrpc", "2.0"
+			).put(
+				"method", "ping"
+			).toString(),
+			ContentTypes.APPLICATION_JSON, StringPool.UTF8);
 		options.setLocation(_getMCPURL() + StringPool.SLASH + profileName);
+		options.setPost(true);
 
 		_http.URLtoString(options);
 
