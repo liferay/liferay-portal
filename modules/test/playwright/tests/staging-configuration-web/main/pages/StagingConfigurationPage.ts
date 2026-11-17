@@ -11,6 +11,7 @@ import {waitForAlert} from '../../../../utils/waitForAlert';
 export class StagingConfigurationPage {
 	readonly page: Page;
 	readonly localLiveRadio: Locator;
+	readonly pageVersioningCheckbox: Locator;
 	readonly remoteLiveRadio: Locator;
 	readonly saveButton: Locator;
 	readonly confirmationOkBUtton: Locator;
@@ -19,6 +20,7 @@ export class StagingConfigurationPage {
 		this.page = page;
 
 		this.localLiveRadio = page.getByLabel('Local Live:');
+		this.pageVersioningCheckbox = page.getByLabel('Enabled', {exact: true});
 		this.remoteLiveRadio = page.getByLabel('Remote Live:');
 		this.saveButton = page.getByRole('button', {name: 'Save'});
 		this.confirmationOkBUtton = page

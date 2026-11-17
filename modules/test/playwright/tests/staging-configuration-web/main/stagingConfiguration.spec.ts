@@ -28,6 +28,7 @@ import {PORTLET_URLS} from '../../../utils/portletUrls';
 import {reloadUntilVisible} from '../../../utils/reloadUntilVisible';
 import {enableLocalStaging} from '../../../utils/staging';
 import getBasicWebContentStructureId from '../../../utils/structured-content/getBasicWebContentStructureId';
+import {waitForAlert} from '../../../utils/waitForAlert';
 import {exportImportPagesTest} from '../../export-import-web/main/fixtures/exportImportPagesTest';
 import {stagingPageTest} from '../../export-import-web/main/fixtures/stagingPageTest';
 import {StagingPage} from '../../export-import-web/main/pages/StagingPage';
@@ -762,5 +763,86 @@ testWithLegacyExportImportUI(
 		await expect(
 			page.getByText(OBJECT_LABEL_PAYLOAD).first()
 		).toBeVisible();
+	}
+);
+
+const testWithPageVersioning = mergeTests(
+	test,
+	featureFlagsTest({'LPD-105778': {enabled: true}})
+);
+
+testWithPageVersioning(
+	'Save page versioning changes when the staging type is unchanged',
+	{tag: '@LPD-115749'},
+	async ({apiHelpers, page, stagingConfigurationPage}) => {
+		const site = await apiHelpers.headlessAdminSite.postSite({
+			name: getRandomString(),
+		});
+
+		await enableLocalStaging(apiHelpers, page, site);
+
+		await waitForInitialPublication(page, site);
+
+		// Enable page versioning without changing the staging type
+
+		await page.goto(
+			`/group${site.friendlyUrlPath}-staging${PORTLET_URLS.staging}&${STAGING_PROCESSES_NAMESPACE}showStagingConfiguration=true`
+		);
+
+		await stagingConfigurationPage.pageVersioningCheckbox.check();
+
+		await stagingConfigurationPage.saveButton.click();
+
+		// Check the change is saved
+
+		await waitForAlert(
+			page,
+			'Success:Local staging configuration is successfully modified.'
+		);
+
+		await expect(
+			stagingConfigurationPage.pageVersioningCheckbox
+		).toBeChecked();
+	}
+);
+
+test(
+	'Identify the invalid remote staging field when saving fails',
+	{tag: '@LPD-115749'},
+	async ({apiHelpers, page, stagingConfigurationPage}) => {
+		const site = await apiHelpers.headlessAdminSite.postSite({
+			name: getRandomString(),
+		});
+
+		// Save remote staging without a remote site ID
+
+		await stagingConfigurationPage.gotoStagingConfiguration(
+			site.friendlyUrlPath
+		);
+
+		await stagingConfigurationPage.remoteLiveRadio.check();
+
+		await page.getByLabel('Remote Host/IP').fill('localhost');
+		await page.getByLabel('Remote Port').fill('8080');
+
+		page.on('dialog', async (dialog) => {
+			await dialog.accept();
+		});
+
+		await stagingConfigurationPage.saveButton.click();
+
+		// Check the error is tied to the invalid field
+
+		const remoteSiteIdInput = page.getByLabel('Remote Site ID');
+
+		await expect(remoteSiteIdInput).toBeFocused();
+		await expect(remoteSiteIdInput).toHaveAttribute('aria-invalid', 'true');
+		await expect(remoteSiteIdInput).toHaveAccessibleDescription(
+			/The remote site ID 0 is not valid\./
+		);
+
+		await expect(
+			page.getByText('Your request failed to complete.')
+		).toBeHidden();
 	}
 );
