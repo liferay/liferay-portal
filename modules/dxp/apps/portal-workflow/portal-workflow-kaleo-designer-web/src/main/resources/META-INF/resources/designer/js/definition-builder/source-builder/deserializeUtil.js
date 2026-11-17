@@ -173,7 +173,17 @@ DeserializeUtil.prototype = {
 				}
 
 				if (type === 'service') {
+					data.inputVariables = parseJSON(
+						node['input-variables'],
+						[]
+					);
+
 					data.javaDelegate = node['java-delegate'] || '';
+
+					data.outputVariables = parseJSON(
+						node['output-variables'],
+						[]
+					);
 				}
 
 				if (type === 'task') {
