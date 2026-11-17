@@ -682,22 +682,17 @@ public class PortletImportControllerImpl implements PortletImportController {
 			PortletDataContext portletDataContext, Element serviceElement)
 		throws PortalException {
 
-		long ownerId = GetterUtil.getLong(
-			serviceElement.attributeValue("owner-id"));
 		int ownerType = GetterUtil.getInteger(
 			serviceElement.attributeValue("owner-type"));
-		String serviceName = serviceElement.attributeValue("service-name");
 
-		if (ownerType == PortletKeys.PREFS_OWNER_TYPE_GROUP) {
-			ownerId = portletDataContext.getGroupId();
-		}
-		else if (ownerType == PortletKeys.PREFS_OWNER_TYPE_COMPANY) {
-			ownerId = portletDataContext.getCompanyId();
+		if (ownerType != PortletKeys.PREFS_OWNER_TYPE_GROUP) {
+			return;
 		}
 
 		PortletPreferences portletPreferences = getPortletPreferences(
-			portletDataContext.getCompanyId(), ownerId, ownerType,
-			LayoutConstants.DEFAULT_PLID, serviceName);
+			portletDataContext.getCompanyId(), portletDataContext.getGroupId(),
+			ownerType, LayoutConstants.DEFAULT_PLID,
+			serviceElement.attributeValue("service-name"));
 
 		for (Attribute attribute : serviceElement.attributes()) {
 			serviceElement.remove(attribute);
