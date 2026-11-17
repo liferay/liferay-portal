@@ -72,6 +72,15 @@ describe('getAssetTypeLabel', () => {
 		);
 		expect(getAssetTypeLabel('C_MyNewStructure')).toBe('C_MyNewStructure');
 	});
+
+	it('should return the object definition label for non-predefined types when it is known', () => {
+		expect(
+			getAssetTypeLabel('CMSBasicWebContent', 'Basic Web Content')
+		).toBe('Basic Web Content');
+		expect(getAssetTypeLabel('C_ProductSheet', 'Product Sheet')).toBe(
+			'Product Sheet'
+		);
+	});
 });
 
 describe('getCompatibleAssetTypes (asset types the picker offers)', () => {

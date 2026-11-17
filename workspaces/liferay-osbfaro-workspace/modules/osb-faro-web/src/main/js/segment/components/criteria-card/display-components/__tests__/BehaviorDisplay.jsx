@@ -16,6 +16,22 @@ import {withReferencedObjectsProvider} from 'segment/segment-editor/dynamic/cont
 
 jest.unmock('react-dom');
 
+jest.mock('react-router-dom', () => ({
+	...jest.requireActual('react-router-dom'),
+	useParams: () => ({channelId: '123', groupId: '456'})
+}));
+
+jest.mock('shared/api', () => ({
+	assets: {
+		searchTypes: jest.fn(() =>
+			Promise.resolve({
+				items: [{id: 'C_ProductSheet', name: 'Product Sheet'}],
+				totalCount: 1
+			})
+		)
+	}
+}));
+
 describe('BehaviorDisplay', () => {
 	const WrappedBehaviorDisplay =
 		withReferencedObjectsProvider(BehaviorDisplay);
@@ -162,5 +178,60 @@ describe('BehaviorDisplay', () => {
 		);
 
 		expect(queryByText('Foo Attribute String')).toBeTruthy();
+	});
+
+	const getObjectEntryCriterion = objectDefinitionName => ({
+		operatorName: CustomFunctionOperators.ActivitiesFilterByCount,
+		propertyName: 'activityKey',
+		value: Map({
+			criterionGroup: Map({
+				items: List([
+					Map({
+						operatorName: RelationalOperators.EQ,
+						propertyName: 'applicationId',
+						value: 'ObjectEntry'
+					}),
+					Map({
+						operatorName: RelationalOperators.EQ,
+						propertyName: 'objectDefinitionName',
+						value: objectDefinitionName
+					}),
+					Map({
+						operatorName: RelationalOperators.GT,
+						propertyName: 'day',
+						value: TimeSpans.Last24Hours
+					})
+				])
+			}),
+			operator: RelationalOperators.GE,
+			value: 2
+		})
+	});
+
+	it('renders the label of the object definition of any asset of that type', async () => {
+		const {findByText, queryByText} = render(
+			<WrappedBehaviorDisplay
+				criterion={getObjectEntryCriterion('C_ProductSheet')}
+				property={mockProperty}
+				segment={mockSegment}
+				segmentType={SegmentTypes.Batch}
+			/>
+		);
+
+		expect(await findByText('Product Sheet')).toBeInTheDocument();
+		expect(queryByText('ObjectEntry')).toBeNull();
+	});
+
+	it('renders the name of the object definition when its label is unknown', async () => {
+		const {findByText} = render(
+			<WrappedBehaviorDisplay
+				criterion={getObjectEntryCriterion('C_UnknownStructure')}
+				property={mockProperty}
+				segment={mockSegment}
+				segmentType={SegmentTypes.Batch}
+			/>
+		);
+
+		expect(await findByText('C_UnknownStructure')).toBeInTheDocument();
 	});
 });

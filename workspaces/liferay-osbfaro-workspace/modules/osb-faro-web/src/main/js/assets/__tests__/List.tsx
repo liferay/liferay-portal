@@ -21,6 +21,7 @@ jest.mock('@liferay/frontend-data-set-web', () => ({
 	...jest.requireActual('@liferay/frontend-data-set-web'),
 	FrontendDataSet: ({
 		additionalAPIURLParametersTransformer,
+		customDataRenderers,
 		emptyState,
 		filters,
 		groupedFilters,
@@ -30,6 +31,7 @@ jest.mock('@liferay/frontend-data-set-web', () => ({
 		views,
 	}: {
 		additionalAPIURLParametersTransformer?: (loadDataArgs: any) => any;
+		customDataRenderers?: {[key: string]: (props: any) => React.ReactNode};
 		emptyState?: {
 			description?: React.ReactNode;
 			image?: string;
@@ -68,6 +70,23 @@ jest.mock('@liferay/frontend-data-set-web', () => ({
 
 				<div data-testid="fds-transformer-result">
 					{transformerResult}
+				</div>
+
+				<div data-testid="fds-asset-type-with-label">
+					{customDataRenderers?.assetTypeRenderer?.({
+						itemData: {
+							assetType: 'C_ProductSheet',
+							assetTypeLabel: 'Product Sheet',
+						},
+						value: 'C_ProductSheet',
+					})}
+				</div>
+
+				<div data-testid="fds-asset-type-without-label">
+					{customDataRenderers?.assetTypeRenderer?.({
+						itemData: {assetType: 'blog'},
+						value: 'blog',
+					})}
 				</div>
 
 				<div data-testid="fds-sorts">
@@ -479,6 +498,39 @@ describe('List', () => {
 			);
 
 			expect(groupedFilters[0].filters).toContain('cmpProjects/id');
+		});
+
+		it('should filter by the id of the asset type and show its name', async () => {
+			await renderList();
+
+			const filters = JSON.parse(
+				screen.getByTestId('fds-filters').textContent
+			);
+
+			const assetTypeFilter = filters.find(
+				(filter: {apiURL: string; id: string; label: string}) =>
+					filter.id === 'assetType'
+			);
+
+			expect(assetTypeFilter.apiURL).toContain('asset-summary-types');
+			expect(assetTypeFilter.itemKey).toBe('id');
+			expect(assetTypeFilter.itemLabel).toBe('name');
+		});
+
+		it('should render the label of the asset type when the asset has one', async () => {
+			await renderList();
+
+			expect(
+				screen.getByTestId('fds-asset-type-with-label')
+			).toHaveTextContent('Product Sheet');
+		});
+
+		it('should render the asset type when the asset has no label', async () => {
+			await renderList();
+
+			expect(
+				screen.getByTestId('fds-asset-type-without-label')
+			).toHaveTextContent('blog');
 		});
 
 		it('should pass the mimeType filter to FrontendDataSet', async () => {

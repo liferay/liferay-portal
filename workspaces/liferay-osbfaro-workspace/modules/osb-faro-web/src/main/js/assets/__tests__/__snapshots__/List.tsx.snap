@@ -140,6 +140,20 @@ exports[`List rendering should match the snapshot 1`] = `
             data-testid="fds-transformer-result"
           />
           <div
+            data-testid="fds-asset-type-with-label"
+          >
+            <span>
+              Product Sheet
+            </span>
+          </div>
+          <div
+            data-testid="fds-asset-type-without-label"
+          >
+            <span>
+              blog
+            </span>
+          </div>
+          <div
             data-testid="fds-sorts"
           >
             [{"active":false,"default":false,"direction":"asc","key":"assetTitle","label":"Title"},{"active":false,"default":false,"direction":"asc","key":"assetType","label":"Type"},{"active":true,"default":true,"direction":"desc","key":"viewsMetric","label":"Views"},{"active":false,"default":false,"direction":"asc","key":"impressionsMetric","label":"Impressions"},{"active":false,"default":false,"direction":"asc","key":"downloadsMetric","label":"Downloads"}]
@@ -147,7 +161,7 @@ exports[`List rendering should match the snapshot 1`] = `
           <div
             data-testid="fds-fields"
           >
-            [{"contentRenderer":"assetTitleRenderer","fieldName":"assetTitle","label":"Title","sortable":true,"truncate":true},{"fieldName":"assetType","label":"Type","sortable":true},{"contentRenderer":"assetMetricRenderer","fieldName":"viewsMetric","label":"Views","sortable":true},{"contentRenderer":"assetMetricRenderer","fieldName":"impressionsMetric","label":"Impressions","sortable":true},{"contentRenderer":"assetMetricRenderer","fieldName":"downloadsMetric","label":"Downloads","sortable":true}]
+            [{"contentRenderer":"assetTitleRenderer","fieldName":"assetTitle","label":"Title","sortable":true,"truncate":true},{"contentRenderer":"assetTypeRenderer","fieldName":"assetType","label":"Type","sortable":true},{"contentRenderer":"assetMetricRenderer","fieldName":"viewsMetric","label":"Views","sortable":true},{"contentRenderer":"assetMetricRenderer","fieldName":"impressionsMetric","label":"Impressions","sortable":true},{"contentRenderer":"assetMetricRenderer","fieldName":"downloadsMetric","label":"Downloads","sortable":true}]
           </div>
           <div
             data-testid="fds-empty-state"
@@ -183,7 +197,7 @@ exports[`List rendering should match the snapshot 1`] = `
           <div
             data-testid="fds-filters"
           >
-            [{"apiURL":"/o/faro/contacts/23/account/search?channelId=123&filter=(rangeKey eq '30')","autocompleteEnabled":true,"entityFieldType":"string","id":"accountIds","itemKey":"id","itemLabel":"accountName","label":"Accounts","multiple":true,"type":"selection"},{"apiURL":"/o/faro/contacts/23/individual_segment/search?channelId=123&rangeKey=30","autocompleteEnabled":true,"entityFieldType":"string","id":"segmentIds","itemKey":"id","itemLabel":"name","label":"Segments","multiple":true,"type":"selection"},{"apiURL":"/o/faro/contacts/23/asset-summary-types?channelId=123&rangeKey=30","autocompleteEnabled":true,"entityFieldType":"string","id":"assetType","itemKey":"name","itemLabel":"name","label":"Type","multiple":true,"type":"selection"},{"entityFieldType":"string","id":"objectType","items":[{"label":"Content","value":"content"},{"label":"File","value":"file"}],"label":"Asset Structure Type","multiple":false,"type":"selection"},{"apiURL":"/o/faro/contacts/23/asset-summary-tags?channelId=123&rangeKey=30","autocompleteEnabled":true,"entityFieldType":"string","id":"tags/id","itemKey":"id","itemLabel":"name","label":"Tags","multiple":true,"type":"selection"},{"apiURL":"/o/faro/contacts/23/asset-summary-categories?channelId=123&rangeKey=30","autocompleteEnabled":true,"entityFieldType":"string","id":"categories/id","itemKey":"id","itemLabel":"name","label":"Categories","multiple":true,"type":"selection"},{"apiURL":"/o/faro/contacts/23/asset-summary-cmp-projects?channelId=123&rangeKey=30","autocompleteEnabled":true,"entityFieldType":"string","id":"cmpProjects/id","itemKey":"id","itemLabel":"name","label":"CMP Projects","multiple":true,"type":"selection"},{"apiURL":"/o/faro/contacts/23/asset-summary-mime-types?channelId=123&rangeKey=30","autocompleteEnabled":true,"entityFieldType":"string","id":"mimeType","itemKey":"id","itemLabel":"name","label":"File Type","multiple":true,"type":"selection"}]
+            [{"apiURL":"/o/faro/contacts/23/account/search?channelId=123&filter=(rangeKey eq '30')","autocompleteEnabled":true,"entityFieldType":"string","id":"accountIds","itemKey":"id","itemLabel":"accountName","label":"Accounts","multiple":true,"type":"selection"},{"apiURL":"/o/faro/contacts/23/individual_segment/search?channelId=123&rangeKey=30","autocompleteEnabled":true,"entityFieldType":"string","id":"segmentIds","itemKey":"id","itemLabel":"name","label":"Segments","multiple":true,"type":"selection"},{"apiURL":"/o/faro/contacts/23/asset-summary-types?channelId=123&rangeKey=30","autocompleteEnabled":true,"entityFieldType":"string","id":"assetType","itemKey":"id","itemLabel":"name","label":"Type","multiple":true,"type":"selection"},{"entityFieldType":"string","id":"objectType","items":[{"label":"Content","value":"content"},{"label":"File","value":"file"}],"label":"Asset Structure Type","multiple":false,"type":"selection"},{"apiURL":"/o/faro/contacts/23/asset-summary-tags?channelId=123&rangeKey=30","autocompleteEnabled":true,"entityFieldType":"string","id":"tags/id","itemKey":"id","itemLabel":"name","label":"Tags","multiple":true,"type":"selection"},{"apiURL":"/o/faro/contacts/23/asset-summary-categories?channelId=123&rangeKey=30","autocompleteEnabled":true,"entityFieldType":"string","id":"categories/id","itemKey":"id","itemLabel":"name","label":"Categories","multiple":true,"type":"selection"},{"apiURL":"/o/faro/contacts/23/asset-summary-cmp-projects?channelId=123&rangeKey=30","autocompleteEnabled":true,"entityFieldType":"string","id":"cmpProjects/id","itemKey":"id","itemLabel":"name","label":"CMP Projects","multiple":true,"type":"selection"},{"apiURL":"/o/faro/contacts/23/asset-summary-mime-types?channelId=123&rangeKey=30","autocompleteEnabled":true,"entityFieldType":"string","id":"mimeType","itemKey":"id","itemLabel":"name","label":"File Type","multiple":true,"type":"selection"}]
           </div>
           <div
             data-testid="fds-grouped-filters"
@@ -227,9 +241,9 @@ exports[`List rendering should match the snapshot 1`] = `
         style="top: 0px;"
       >
         <div
-          aria-labelledby="clay-id-74"
+          aria-labelledby="clay-id-92"
           class="sidebar base-page-sidebar sidebar-light"
-          id="clay-id-73"
+          id="clay-id-91"
           inert=""
           style="width: 512px;"
           tabindex="-1"
@@ -270,7 +284,7 @@ exports[`List rendering should match the snapshot 1`] = `
                       </span>
                       <span
                         class="component-title flex-grow-1 text-truncate"
-                        id="clay-id-74"
+                        id="clay-id-92"
                       >
                         <h4
                           class="text-7 font-weight-semi-bold"
