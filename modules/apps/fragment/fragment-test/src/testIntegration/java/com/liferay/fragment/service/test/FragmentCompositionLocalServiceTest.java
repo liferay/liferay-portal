@@ -176,15 +176,14 @@ public class FragmentCompositionLocalServiceTest {
 		String name = RandomTestUtil.randomString();
 		String description = RandomTestUtil.randomString();
 		String data = RandomTestUtil.randomString();
-		long previewFileEntryId = RandomTestUtil.randomLong();
 		int status = WorkflowConstants.STATUS_APPROVED;
 
 		FragmentComposition fragmentComposition =
 			_fragmentCompositionLocalService.addFragmentComposition(
 				null, TestPropsValues.getUserId(), _group.getGroupId(),
 				_fragmentCollection.getFragmentCollectionId(),
-				fragmentCompositionKey, name, description, data,
-				previewFileEntryId, status, serviceContext);
+				fragmentCompositionKey, name, description, data, 0, status,
+				serviceContext);
 
 		_fragmentCompositionLocalService.updateFragmentComposition(
 			fragmentComposition.getUserId(),

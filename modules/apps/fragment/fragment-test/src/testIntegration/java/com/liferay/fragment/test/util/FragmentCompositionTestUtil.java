@@ -31,8 +31,7 @@ public class FragmentCompositionTestUtil {
 			null, fragmentCollection.getGroupId(),
 			fragmentCollection.getFragmentCollectionId(),
 			RandomTestUtil.randomString(), name, RandomTestUtil.randomString(),
-			RandomTestUtil.randomString(), RandomTestUtil.randomLong(),
-			WorkflowConstants.STATUS_APPROVED,
+			RandomTestUtil.randomString(), 0, WorkflowConstants.STATUS_APPROVED,
 			ServiceContextTestUtil.getServiceContext(
 				fragmentCollection.getGroupId()));
 	}

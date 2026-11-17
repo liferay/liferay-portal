@@ -6,15 +6,21 @@
 package com.liferay.fragment.service.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.fragment.constants.FragmentPortletKeys;
+import com.liferay.fragment.exception.FragmentCompositionPreviewFileEntryIdException;
 import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.fragment.model.FragmentComposition;
 import com.liferay.fragment.service.FragmentCompositionLocalService;
 import com.liferay.fragment.service.FragmentCompositionService;
+import com.liferay.fragment.test.util.FragmentCompositionTestUtil;
 import com.liferay.fragment.test.util.FragmentTestUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.Repository;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.portletfilerepository.PortletFileRepository;
+import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -27,6 +33,7 @@ import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
@@ -62,6 +69,22 @@ public class FragmentCompositionServiceTest {
 
 		_updatedFragmentCollection = FragmentTestUtil.addFragmentCollection(
 			_group.getGroupId());
+	}
+
+	@Test(expected = FragmentCompositionPreviewFileEntryIdException.class)
+	public void testAddFragmentCompositionWithPreviewFileEntryFromDifferentGroup()
+		throws Exception {
+
+		FileEntry fileEntry = _addPreviewFileEntry(GroupTestUtil.addGroup());
+
+		_fragmentCompositionService.addFragmentComposition(
+			null, _group.getGroupId(),
+			_fragmentCollection.getFragmentCollectionId(),
+			StringUtil.randomId(), RandomTestUtil.randomString(),
+			StringPool.BLANK, StringPool.BLANK, fileEntry.getFileEntryId(),
+			WorkflowConstants.STATUS_APPROVED,
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), TestPropsValues.getUserId()));
 	}
 
 	@Test
@@ -244,7 +267,7 @@ public class FragmentCompositionServiceTest {
 		String name = RandomTestUtil.randomString();
 		String description = RandomTestUtil.randomString();
 		String data = RandomTestUtil.randomString();
-		long previewFileEntryId = RandomTestUtil.randomLong();
+		FileEntry fileEntry = _addPreviewFileEntry(_group);
 		int status = WorkflowConstants.STATUS_APPROVED;
 
 		FragmentComposition fragmentComposition =
@@ -252,7 +275,7 @@ public class FragmentCompositionServiceTest {
 				null, _group.getGroupId(),
 				_fragmentCollection.getFragmentCollectionId(),
 				fragmentCompositionKey, name, description, data,
-				previewFileEntryId, status, serviceContext);
+				fileEntry.getFileEntryId(), status, serviceContext);
 
 		fragmentComposition =
 			_fragmentCompositionService.updateFragmentComposition(
@@ -269,6 +292,34 @@ public class FragmentCompositionServiceTest {
 			_updatedFragmentCollection.getFragmentCollectionId());
 	}
 
+	@Test(expected = FragmentCompositionPreviewFileEntryIdException.class)
+	public void testUpdateFragmentCompositionWithPreviewFileEntryFromDifferentGroup()
+		throws Exception {
+
+		FragmentComposition fragmentComposition =
+			FragmentCompositionTestUtil.addFragmentComposition(
+				_fragmentCollection.getFragmentCollectionId(),
+				RandomTestUtil.randomString());
+
+		FileEntry fileEntry = _addPreviewFileEntry(GroupTestUtil.addGroup());
+
+		_fragmentCompositionService.updateFragmentComposition(
+			fragmentComposition.getFragmentCompositionId(),
+			fileEntry.getFileEntryId());
+	}
+
+	private FileEntry _addPreviewFileEntry(Group group) throws Exception {
+		Repository repository = _portletFileRepository.addPortletRepository(
+			group.getGroupId(), FragmentPortletKeys.FRAGMENT,
+			ServiceContextTestUtil.getServiceContext(group.getGroupId()));
+
+		return _portletFileRepository.addPortletFileEntry(
+			group.getGroupId(), TestPropsValues.getUserId(), null, 0,
+			FragmentPortletKeys.FRAGMENT, repository.getDlFolderId(),
+			new byte[0], RandomTestUtil.randomString() + ".png",
+			ContentTypes.IMAGE_PNG, false);
+	}
+
 	private FragmentCollection _fragmentCollection;
 
 	@Inject
@@ -279,6 +330,9 @@ public class FragmentCompositionServiceTest {
 
 	@DeleteAfterTestRun
 	private Group _group;
+
+	@Inject
+	private PortletFileRepository _portletFileRepository;
 
 	private FragmentCollection _updatedFragmentCollection;
 
