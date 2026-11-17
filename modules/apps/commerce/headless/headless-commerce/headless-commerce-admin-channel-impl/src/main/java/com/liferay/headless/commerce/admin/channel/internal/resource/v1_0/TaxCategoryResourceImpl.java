@@ -10,6 +10,7 @@ import com.liferay.commerce.product.constants.CPConstants;
 import com.liferay.commerce.product.model.CPTaxCategory;
 import com.liferay.commerce.product.service.CPTaxCategoryService;
 import com.liferay.headless.commerce.admin.channel.dto.v1_0.TaxCategory;
+import com.liferay.headless.commerce.admin.channel.internal.odata.entity.v1_0.TaxCategoryEntityModel;
 import com.liferay.headless.commerce.admin.channel.resource.v1_0.TaxCategoryResource;
 import com.liferay.headless.commerce.core.helper.ServiceContextHelper;
 import com.liferay.headless.commerce.core.util.LanguageUtils;
@@ -19,11 +20,14 @@ import com.liferay.portal.kernel.search.filter.Filter;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.portal.vulcan.util.SearchUtil;
+
+import jakarta.ws.rs.core.MultivaluedMap;
 
 import java.util.Collections;
 import java.util.Map;
@@ -40,6 +44,11 @@ import org.osgi.service.component.annotations.ServiceScope;
 	scope = ServiceScope.PROTOTYPE, service = TaxCategoryResource.class
 )
 public class TaxCategoryResourceImpl extends BaseTaxCategoryResourceImpl {
+
+	@Override
+	public EntityModel getEntityModel(MultivaluedMap multivaluedMap) {
+		return _entityModel;
+	}
 
 	@Override
 	public TaxCategory patchTaxCategory(Long id, TaxCategory taxCategory)
@@ -168,6 +177,9 @@ public class TaxCategoryResourceImpl extends BaseTaxCategoryResourceImpl {
 
 		return _toTaxCategory(cpTaxCategory.getCPTaxCategoryId());
 	}
+
+	private static final EntityModel _entityModel =
+		new TaxCategoryEntityModel();
 
 	@Reference
 	private CPTaxCategoryService _cpTaxCategoryService;
