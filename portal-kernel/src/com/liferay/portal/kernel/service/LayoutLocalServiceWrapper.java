@@ -1434,6 +1434,14 @@ public class LayoutLocalServiceWrapper
 
 	@Override
 	public int getLayoutsCount(
+		long groupId, boolean privateLayout, int[] statuses) {
+
+		return _layoutLocalService.getLayoutsCount(
+			groupId, privateLayout, statuses);
+	}
+
+	@Override
+	public int getLayoutsCount(
 		long groupId, boolean privateLayout, long parentLayoutId) {
 
 		return _layoutLocalService.getLayoutsCount(
@@ -2355,4 +2363,4 @@ public class LayoutLocalServiceWrapper
 	private LayoutLocalService _layoutLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-529608770
+// LIFERAY-SERVICE-BUILDER-HASH:-253017056

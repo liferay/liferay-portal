@@ -1323,6 +1323,12 @@ public class LayoutLocalServiceUtil {
 	}
 
 	public static int getLayoutsCount(
+		long groupId, boolean privateLayout, int[] statuses) {
+
+		return getService().getLayoutsCount(groupId, privateLayout, statuses);
+	}
+
+	public static int getLayoutsCount(
 		long groupId, boolean privateLayout, long parentLayoutId) {
 
 		return getService().getLayoutsCount(
@@ -2139,4 +2145,4 @@ public class LayoutLocalServiceUtil {
 	private static volatile LayoutLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1097985250
+// LIFERAY-SERVICE-BUILDER-HASH:-629644598

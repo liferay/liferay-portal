@@ -1127,6 +1127,10 @@ public interface LayoutLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getLayoutsCount(
+		long groupId, boolean privateLayout, int[] statuses);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int getLayoutsCount(
 		long groupId, boolean privateLayout, long parentLayoutId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -1735,4 +1739,4 @@ public interface LayoutLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1360736024
+// LIFERAY-SERVICE-BUILDER-HASH:2037369851
