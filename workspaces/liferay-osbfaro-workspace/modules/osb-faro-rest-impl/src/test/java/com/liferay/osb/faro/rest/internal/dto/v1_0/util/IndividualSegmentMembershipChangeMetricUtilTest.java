@@ -96,7 +96,7 @@ public class IndividualSegmentMembershipChangeMetricUtilTest {
 	}
 
 	private IndividualSegmentMembershipChangeAggregation _aggregation(
-		long individualsCount, long intervalInitDate,
+		long individualsCount, long intervalInitTime,
 		long knownIndividualsCount) {
 
 		IndividualSegmentMembershipChangeAggregation
@@ -106,7 +106,7 @@ public class IndividualSegmentMembershipChangeMetricUtilTest {
 		individualSegmentMembershipChangeAggregation.setIndividualsCount(
 			individualsCount);
 		individualSegmentMembershipChangeAggregation.setIntervalInitDate(
-			new Date(intervalInitDate));
+			new Date(intervalInitTime));
 		individualSegmentMembershipChangeAggregation.setKnownIndividualsCount(
 			knownIndividualsCount);
 
