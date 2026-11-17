@@ -13,6 +13,7 @@ import {setUriQueryValues, toRoute} from 'shared/util/router';
 import type {
 	EConfigInURLBehavior,
 	IFrontendDataSetProps,
+	TSort,
 } from '@liferay/frontend-data-set-web';
 
 // The data set is a webpack external the portal serves, and importing it here
@@ -228,6 +229,59 @@ export function useSnapshots(fdsName: string, enabled = true) {
 	return snapshots;
 }
 
+interface IDefaultSort {
+	direction?: 'asc' | 'desc';
+	key: string;
+}
+
+interface IFaroFrontendDataSetProps extends IFrontendDataSetProps {
+	activeSortKey?: string | null;
+	defaultSort?: IDefaultSort;
+}
+
+// The Order menu lists only what `sorts` holds and never reads the `sortable`
+// flag of the fields, so a data set that sets `sortable` alone sorts from its
+// column headers and offers nothing in the menu. The default sort is kept even
+// when its field is not sortable, since it is still how the data is loaded.
+// The default and the active sort take the default direction, and the other
+// options start ascending, as the data set itself starts a column it sorts.
+
+const deriveSorts = (
+	views: IFrontendDataSetProps['views'],
+	{direction = 'desc', key}: IDefaultSort,
+	activeSortKey?: string | null
+): TSort[] => {
+	const fields = (views ?? []).flatMap(({schema}) =>
+		schema && 'fields' in schema && Array.isArray(schema.fields)
+			? schema.fields
+			: []
+	);
+
+	// Views often share fields, and the map keeps one entry per field name.
+
+	const labels = new Map(
+		fields.flatMap((field) =>
+			typeof field !== 'string' &&
+			typeof field.fieldName === 'string' &&
+			(field.sortable || field.fieldName === key)
+				? [[field.fieldName, field.label] as const]
+				: []
+		)
+	);
+
+	const activeKey =
+		activeSortKey && labels.has(activeSortKey) ? activeSortKey : key;
+
+	return Array.from(labels, ([fieldName, label]) => ({
+		active: fieldName === activeKey,
+		default: fieldName === key,
+		direction:
+			fieldName === key || fieldName === activeKey ? direction : 'asc',
+		key: fieldName,
+		label,
+	}));
+};
+
 /**
  * Drop-in wrapper around the @liferay/frontend-data-set-web FrontendDataSet,
  * and the single entry point for the data set across the app. The underlying
@@ -237,12 +291,17 @@ export function useSnapshots(fdsName: string, enabled = true) {
  * mounted once they are ready (the base FrontendDataSet reads `snapshots` only
  * when its reducer is initialized on mount). `configInURLBehavior` defaults to
  * OFF so the data set does not dirty the URL unless a consumer overrides it.
+ * With `defaultSort`, the sorts come from the sortable fields of the views; an
+ * explicit `sorts` still wins.
  */
 const FrontendDataSet = ({
+	activeSortKey,
 	configInURLBehavior = CONFIG_IN_URL_OFF,
+	defaultSort,
 	snapshotsEnabled = false,
+	sorts,
 	...props
-}: IFrontendDataSetProps) => {
+}: IFaroFrontendDataSetProps) => {
 	const snapshots = useSnapshots(props.id, snapshotsEnabled);
 
 	if (snapshots === null) {
@@ -262,6 +321,15 @@ const FrontendDataSet = ({
 					configInURLBehavior={configInURLBehavior}
 					snapshots={snapshots}
 					snapshotsEnabled={snapshotsEnabled}
+					sorts={
+						sorts ??
+						(defaultSort &&
+							deriveSorts(
+								props.views,
+								defaultSort,
+								activeSortKey
+							))
+					}
 				/>
 			</Suspense>
 		</PortalClayIconSpriteContext.Provider>
