@@ -118,16 +118,14 @@ public class DefaultPortalLDAP implements PortalLDAP {
 			_ldapServerConfigurationProvider.getConfiguration(
 				companyId, ldapServerId);
 
-		SecretContext secretContext =
-			SecretContext.createConfigurationSecretContext(
-				LDAPConstants.SECURITY_CREDENTIAL,
-				_ldapServerConfigurationProvider.getConfigurationProperties(
-					companyId, ldapServerId));
-
 		String baseProviderURL = ldapServerConfiguration.baseProviderURL();
 		String securityPrincipal = ldapServerConfiguration.securityPrincipal();
 		String securityCredential = _secretResolver.resolve(
-			companyId, secretContext,
+			companyId,
+			SecretContext.createConfigurationSecretContext(
+				LDAPConstants.SECURITY_CREDENTIAL,
+				_ldapServerConfigurationProvider.getConfigurationProperties(
+					companyId, ldapServerId)),
 			ldapServerConfiguration.securityCredential());
 
 		return getContext(

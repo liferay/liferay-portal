@@ -38,10 +38,6 @@ public class ElasticsearchConnectionConfigurationActivationHandler {
 			new ElasticsearchConnection.Builder(
 				elasticsearchConnectionConfiguration::networkHostAddresses);
 
-		SecretContext passwordSecretContext =
-			SecretContext.createConfigurationSecretContext(
-				"password", properties);
-
 		builder.active(
 			elasticsearchConnectionConfiguration.active()
 		).authenticationEnabled(
@@ -58,7 +54,9 @@ public class ElasticsearchConnectionConfigurationActivationHandler {
 			elasticsearchConnectionConfiguration.maxConnectionsPerRoute()
 		).password(
 			_secretResolver.resolve(
-				CompanyConstants.SYSTEM, passwordSecretContext,
+				CompanyConstants.SYSTEM,
+				SecretContext.createConfigurationSecretContext(
+					"password", properties),
 				elasticsearchConnectionConfiguration.password())
 		).proxyConfig(
 			createProxyConfig(elasticsearchConnectionConfiguration, properties)

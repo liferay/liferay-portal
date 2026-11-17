@@ -126,15 +126,14 @@ public class SharepointRepositoryTokenBroker {
 	private ConfidentialClientApplication _getConfidentialClientApplication()
 		throws MalformedURLException {
 
-		long companyId = GetterUtil.getLong(
-			_properties.get(
-				ExtendedObjectClassDefinition.Scope.COMPANY.getPropertyKey()));
-
 		return ConfidentialClientApplication.builder(
 			_sharepointRepositoryConfiguration.clientId(),
 			ClientCredentialFactory.createFromSecret(
 				SecretResolverUtil.resolve(
-					companyId,
+					GetterUtil.getLong(
+						_properties.get(
+							ExtendedObjectClassDefinition.Scope.COMPANY.
+								getPropertyKey())),
 					SecretContext.createConfigurationSecretContext(
 						"clientSecret", _properties),
 					_sharepointRepositoryConfiguration.clientSecret()))

@@ -102,10 +102,6 @@ public class OpenSearchConnectionsHolderImpl
 		OpenSearchConnection.Builder openSearchConnectionBuilder =
 			new OpenSearchConnection.Builder();
 
-		SecretContext passwordSecretContext =
-			SecretContext.createConfigurationSecretContext(
-				"password", properties);
-
 		addOpenSearchConnection(
 			openSearchConnectionBuilder.active(
 				openSearchConnectionConfiguration.active()
@@ -125,7 +121,9 @@ public class OpenSearchConnectionsHolderImpl
 				openSearchConnectionConfiguration.networkHostAddresses()
 			).password(
 				_secretResolver.resolve(
-					CompanyConstants.SYSTEM, passwordSecretContext,
+					CompanyConstants.SYSTEM,
+					SecretContext.createConfigurationSecretContext(
+						"password", properties),
 					openSearchConnectionConfiguration.password())
 			).proxyConfig(
 				createProxyConfig(openSearchConnectionConfiguration, properties)

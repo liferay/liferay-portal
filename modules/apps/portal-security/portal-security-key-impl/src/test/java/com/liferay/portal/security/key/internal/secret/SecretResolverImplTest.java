@@ -248,7 +248,96 @@ public class SecretResolverImplTest {
 
 	@Test
 	public void testResolveWithSecretContext() throws Exception {
-		_testResolveWithConfigurationSecretContext();
+		long companyId = RandomTestUtil.randomLong();
+		String key = RandomTestUtil.randomString();
+		String pid = RandomTestUtil.randomString();
+
+		SecretContext secretContext =
+			SecretContext.createConfigurationSecretContext(
+				key,
+				HashMapBuilder.<String, Object>put(
+					ConfigurationAdmin.SERVICE_FACTORYPID, pid + ".scoped"
+				).put(
+					Constants.SERVICE_PID,
+					pid + ".scoped~" + RandomTestUtil.randomString()
+				).put(
+					"companyId", companyId
+				).build());
+
+		_assertResolve(
+			companyId,
+			StringBundler.concat(
+				"config/", pid, "/company/", companyId, StringPool.SLASH, key),
+			companyId, secretContext);
+		_assertResolveRejects(
+			companyId, StringBundler.concat("config/", pid, "/system/0/", key),
+			secretContext);
+
+		String name = RandomTestUtil.randomString();
+
+		_assertResolve(
+			companyId,
+			StringBundler.concat(
+				"config/", pid, StringPool.SLASH, name, "/company/", companyId,
+				StringPool.SLASH, key),
+			companyId,
+			SecretContext.createConfigurationSecretContext(
+				key,
+				HashMapBuilder.<String, Object>put(
+					ConfigurationAdmin.SERVICE_FACTORYPID, pid
+				).put(
+					Constants.SERVICE_PID, pid + "~" + name
+				).put(
+					"companyId", companyId
+				).build()));
+
+		long groupId = RandomTestUtil.randomLong();
+
+		_assertResolve(
+			companyId,
+			StringBundler.concat(
+				"config/", pid, "/group/", groupId, StringPool.SLASH, key),
+			companyId,
+			SecretContext.createConfigurationSecretContext(
+				key,
+				HashMapBuilder.<String, Object>put(
+					ConfigurationAdmin.SERVICE_FACTORYPID, pid + ".scoped"
+				).put(
+					Constants.SERVICE_PID,
+					pid + ".scoped~" + RandomTestUtil.randomString()
+				).put(
+					"companyId", companyId
+				).put(
+					"groupId", groupId
+				).build()));
+
+		String portletInstanceId = RandomTestUtil.randomString();
+
+		_assertResolve(
+			companyId,
+			StringBundler.concat(
+				"config/", pid, "/portlet-instance/", portletInstanceId,
+				StringPool.SLASH, key),
+			CompanyConstants.SYSTEM,
+			SecretContext.createConfigurationSecretContext(
+				key,
+				HashMapBuilder.<String, Object>put(
+					ConfigurationAdmin.SERVICE_FACTORYPID, pid + ".scoped"
+				).put(
+					Constants.SERVICE_PID,
+					pid + ".scoped~" + RandomTestUtil.randomString()
+				).put(
+					"portletInstanceId", portletInstanceId
+				).build()));
+
+		_assertResolve(
+			companyId, StringBundler.concat("config/", pid, "/system/0/", key),
+			CompanyConstants.SYSTEM,
+			SecretContext.createConfigurationSecretContext(
+				key,
+				HashMapBuilder.<String, Object>put(
+					Constants.SERVICE_PID, pid
+				).build()));
 	}
 
 	@Test
@@ -495,99 +584,6 @@ public class SecretResolverImplTest {
 				_toKeyReferenceString(keyReferenceIdentifier)));
 
 		Mockito.verifyNoInteractions(_secretManager);
-	}
-
-	private void _testResolveWithConfigurationSecretContext() throws Exception {
-		long companyId = RandomTestUtil.randomLong();
-		String key = RandomTestUtil.randomString();
-		String pid = RandomTestUtil.randomString();
-
-		SecretContext secretContext =
-			SecretContext.createConfigurationSecretContext(
-				key,
-				HashMapBuilder.<String, Object>put(
-					ConfigurationAdmin.SERVICE_FACTORYPID, pid + ".scoped"
-				).put(
-					Constants.SERVICE_PID,
-					pid + ".scoped~" + RandomTestUtil.randomString()
-				).put(
-					"companyId", companyId
-				).build());
-
-		_assertResolve(
-			companyId,
-			StringBundler.concat(
-				"config/", pid, "/company/", companyId, StringPool.SLASH, key),
-			companyId, secretContext);
-		_assertResolveRejects(
-			companyId, StringBundler.concat("config/", pid, "/system/0/", key),
-			secretContext);
-
-		String name = RandomTestUtil.randomString();
-
-		_assertResolve(
-			companyId,
-			StringBundler.concat(
-				"config/", pid, StringPool.SLASH, name, "/company/", companyId,
-				StringPool.SLASH, key),
-			companyId,
-			SecretContext.createConfigurationSecretContext(
-				key,
-				HashMapBuilder.<String, Object>put(
-					ConfigurationAdmin.SERVICE_FACTORYPID, pid
-				).put(
-					Constants.SERVICE_PID, pid + "~" + name
-				).put(
-					"companyId", companyId
-				).build()));
-
-		long groupId = RandomTestUtil.randomLong();
-
-		_assertResolve(
-			companyId,
-			StringBundler.concat(
-				"config/", pid, "/group/", groupId, StringPool.SLASH, key),
-			companyId,
-			SecretContext.createConfigurationSecretContext(
-				key,
-				HashMapBuilder.<String, Object>put(
-					ConfigurationAdmin.SERVICE_FACTORYPID, pid + ".scoped"
-				).put(
-					Constants.SERVICE_PID,
-					pid + ".scoped~" + RandomTestUtil.randomString()
-				).put(
-					"companyId", companyId
-				).put(
-					"groupId", groupId
-				).build()));
-
-		String portletInstanceId = RandomTestUtil.randomString();
-
-		_assertResolve(
-			companyId,
-			StringBundler.concat(
-				"config/", pid, "/portlet-instance/", portletInstanceId,
-				StringPool.SLASH, key),
-			CompanyConstants.SYSTEM,
-			SecretContext.createConfigurationSecretContext(
-				key,
-				HashMapBuilder.<String, Object>put(
-					ConfigurationAdmin.SERVICE_FACTORYPID, pid + ".scoped"
-				).put(
-					Constants.SERVICE_PID,
-					pid + ".scoped~" + RandomTestUtil.randomString()
-				).put(
-					"portletInstanceId", portletInstanceId
-				).build()));
-
-		_assertResolve(
-			companyId, StringBundler.concat("config/", pid, "/system/0/", key),
-			CompanyConstants.SYSTEM,
-			SecretContext.createConfigurationSecretContext(
-				key,
-				HashMapBuilder.<String, Object>put(
-					Constants.SERVICE_PID, pid
-				).build()));
 	}
 
 	private void _testStore() throws Exception {

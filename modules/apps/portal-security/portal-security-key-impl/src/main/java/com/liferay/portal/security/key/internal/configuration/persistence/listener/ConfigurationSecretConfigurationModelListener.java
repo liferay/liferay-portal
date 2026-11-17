@@ -7,12 +7,14 @@ package com.liferay.portal.security.key.internal.configuration.persistence.liste
 
 import com.liferay.configuration.admin.util.ConfigurationPidUtil;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 import com.liferay.portal.configuration.metatype.definitions.ExtendedMetaTypeInformation;
 import com.liferay.portal.configuration.metatype.definitions.ExtendedMetaTypeService;
 import com.liferay.portal.configuration.persistence.listener.ConfigurationModelListener;
 import com.liferay.portal.configuration.persistence.listener.ConfigurationModelListenerException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.security.fips.FIPSAuditEvent;
 import com.liferay.portal.kernel.security.fips.FIPSAuditUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
@@ -74,8 +76,11 @@ public class ConfigurationSecretConfigurationModelListener
 					continue;
 				}
 
-				long companyId = SecretIdentifierUtil.getConfigurationCompanyId(
-					properties);
+				long companyId = GetterUtil.getLong(
+					properties.get(
+						ExtendedObjectClassDefinition.Scope.COMPANY.
+							getPropertyKey()),
+					CompanyConstants.SYSTEM);
 
 				Enumeration<String> enumeration = properties.keys();
 
@@ -132,8 +137,10 @@ public class ConfigurationSecretConfigurationModelListener
 			return;
 		}
 
-		long companyId = SecretIdentifierUtil.getConfigurationCompanyId(
-			properties);
+		long companyId = GetterUtil.getLong(
+			properties.get(
+				ExtendedObjectClassDefinition.Scope.COMPANY.getPropertyKey()),
+			CompanyConstants.SYSTEM);
 
 		for (AttributeDefinition attributeDefinition :
 				objectClassDefinition.getAttributeDefinitions(

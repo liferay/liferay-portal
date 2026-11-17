@@ -9,6 +9,7 @@ import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 import com.liferay.portal.kernel.cache.PortalCache;
 import com.liferay.portal.kernel.cache.PortalCacheHelperUtil;
 import com.liferay.portal.kernel.cache.PortalCacheManagerNames;
@@ -178,15 +179,15 @@ public class SecretResolverImpl implements SecretResolver {
 
 			String identifier = entry.getKey();
 
-			long scopeCompanyId = _getScopeCompanyId(
-				companyId, identifier, "store", secretIdentifierMap);
-
 			try (Secret secret = new Secret(
 					new KeyReference(
 						identifier, StringPool.STAR, KeyReference.Type.SECRET),
 					value)) {
 
-				return _putSecret(scopeCompanyId, secret);
+				return _putSecret(
+					_getScopeCompanyId(
+						companyId, identifier, "store", secretIdentifierMap),
+					secret);
 			}
 		}
 		catch (SecretException secretException) {
@@ -316,19 +317,20 @@ public class SecretResolverImpl implements SecretResolver {
 
 		SequencedMap<String, Long> secretIdentifierMap = new LinkedHashMap<>();
 
-		SecretContext.Type type = secretContext.getType();
-
-		if (type == SecretContext.Type.CONFIGURATION) {
+		if (secretContext.getType() == SecretContext.Type.CONFIGURATION) {
 			Dictionary<String, Object> properties = new HashMapDictionary<>(
 				secretContext.getProperties());
 
-			String pid = GetterUtil.getString(
-				properties.get(Constants.SERVICE_PID));
-
 			secretIdentifierMap.put(
 				SecretIdentifierUtil.getSecretIdentifier(
-					secretContext.getKey(), pid, properties),
-				SecretIdentifierUtil.getConfigurationCompanyId(properties));
+					secretContext.getKey(),
+					GetterUtil.getString(properties.get(Constants.SERVICE_PID)),
+					properties),
+				GetterUtil.getLong(
+					properties.get(
+						ExtendedObjectClassDefinition.Scope.COMPANY.
+							getPropertyKey()),
+					CompanyConstants.SYSTEM));
 		}
 
 		return secretIdentifierMap;
@@ -337,10 +339,8 @@ public class SecretResolverImpl implements SecretResolver {
 	private String _putSecret(long companyId, Secret secret)
 		throws SecretException {
 
-		KeyReference keyReference = _secretManager.putSecret(
-			companyId, secret);
-
-		return KeyReferenceUtil.toKeyReferenceString(keyReference);
+		return KeyReferenceUtil.toKeyReferenceString(
+			_secretManager.putSecret(companyId, secret));
 	}
 
 	private static final String _IDENTIFIER_PREFIX_PREFERENCE = "preference/";

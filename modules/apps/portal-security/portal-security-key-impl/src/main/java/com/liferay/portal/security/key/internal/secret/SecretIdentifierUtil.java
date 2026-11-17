@@ -24,15 +24,6 @@ import org.osgi.service.cm.ConfigurationAdmin;
  */
 public class SecretIdentifierUtil {
 
-	public static long getConfigurationCompanyId(
-		Dictionary<String, ?> properties) {
-
-		return GetterUtil.getLong(
-			properties.get(
-				ExtendedObjectClassDefinition.Scope.COMPANY.getPropertyKey()),
-			CompanyConstants.SYSTEM);
-	}
-
 	public static String getSecretIdentifier(
 		String key, String pid, Dictionary<String, ?> properties) {
 
@@ -60,7 +51,10 @@ public class SecretIdentifierUtil {
 				ExtendedObjectClassDefinition.Scope.GROUP, groupId);
 		}
 
-		long companyId = getConfigurationCompanyId(properties);
+		long companyId = GetterUtil.getLong(
+			properties.get(
+				ExtendedObjectClassDefinition.Scope.COMPANY.getPropertyKey()),
+			CompanyConstants.SYSTEM);
 
 		if (companyId != CompanyConstants.SYSTEM) {
 			return _getSecretIdentifier(
