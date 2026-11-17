@@ -309,7 +309,7 @@ const List = () => {
 				autocompleteEnabled: true,
 				entityFieldType: 'string',
 				id: 'assetType',
-				itemKey: 'name',
+				itemKey: 'id',
 				itemLabel: 'name',
 				label: Liferay.Language.get('type'),
 				multiple: true,
