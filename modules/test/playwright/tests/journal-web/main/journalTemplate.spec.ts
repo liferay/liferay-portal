@@ -80,13 +80,19 @@ test(
 
 		await page.waitForURL(/ddmTemplateId=/);
 
+		const editURL = page.url();
+
+		await journalEditTemplatePage.basicInformation.waitFor();
+
 		await expect(cacheableCheckbox).not.toBeChecked();
 
 		await cacheableCheckbox.check();
 
 		await journalEditTemplatePage.saveTemplate();
 
-		await page.reload();
+		await page.goto(editURL);
+
+		await journalEditTemplatePage.basicInformation.waitFor();
 
 		await expect(cacheableCheckbox).toBeChecked();
 	}
