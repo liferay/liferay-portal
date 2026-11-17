@@ -892,8 +892,8 @@ public class CommerceDiscountLocalServiceImpl
 			long companyId, String couponCode, boolean active)
 		throws PortalException {
 
-		return commerceDiscountPersistence.findByC_C_A(
-			companyId, couponCode, active);
+		return commerceDiscountPersistence.findByC_C_A_First(
+			companyId, couponCode, active, null);
 	}
 
 	@Override
