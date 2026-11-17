@@ -52,6 +52,7 @@ import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
 import java.io.ByteArrayInputStream;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.Assert;
@@ -76,41 +77,38 @@ public class EditMessageMVCActionCommandTest {
 	@Test
 	@TestInfo("LPD-115508")
 	public void testProcessAction() throws Exception {
-		_testProcessActionWithDifferentUserTempFileEntry();
-		_testProcessActionWithFileEntry();
-		_testProcessActionWithTempFileEntry();
+		_testProcessActionAddWithDifferentUserTempFileEntry();
+		_testProcessActionAddWithFileEntry();
+		_testProcessActionAddWithTempFileEntry();
+		_testProcessActionUpdateWithDifferentUserTempFileEntry();
+		_testProcessActionUpdateWithFileEntry();
+		_testProcessActionUpdateWithTempFileEntry();
 	}
 
-	private MBMessage _addMessage(long fileEntryId, Group group)
-		throws Exception {
+	private FileEntry _addFileEntry() throws Exception {
+		Group group = GroupTestUtil.addGroup();
 
-		return _addMessage(
-			fileEntryId, group,
-			UserTestUtil.addGroupUser(group, RoleConstants.SITE_MEMBER));
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(group.getGroupId());
+
+		serviceContext.setAddGroupPermissions(false);
+		serviceContext.setAddGuestPermissions(false);
+
+		return _dlAppLocalService.addFileEntry(
+			null, TestPropsValues.getUserId(), group.getGroupId(),
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			RandomTestUtil.randomString() + ".txt", ContentTypes.TEXT_PLAIN,
+			RandomTestUtil.randomBytes(), null, null, null, serviceContext);
 	}
 
-	private MBMessage _addMessage(long fileEntryId, Group group, User user)
-		throws Exception {
-
-		UserTestUtil.setUser(user);
-
-		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
-			_getMockLiferayPortletActionRequest(
-				fileEntryId, LayoutTestUtil.addTypePortletLayout(group), user);
-
-		_mvcActionCommand.processAction(
-			mockLiferayPortletActionRequest,
-			new MockLiferayPortletActionResponse());
-
-		Assert.assertTrue(
-			SessionErrors.isEmpty(mockLiferayPortletActionRequest));
-
-		List<MBMessage> messages = _mbMessageLocalService.getGroupMessages(
-			group.getGroupId(), WorkflowConstants.STATUS_ANY, 0, 1);
-
-		Assert.assertEquals(messages.toString(), 1, messages.size());
-
-		return messages.get(0);
+	private MBMessage _addMessage(Group group, User user) throws Exception {
+		return _mbMessageLocalService.addMessage(
+			user.getUserId(), user.getFullName(), group.getGroupId(),
+			MBCategoryConstants.DEFAULT_PARENT_CATEGORY_ID,
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			"html", Collections.emptyList(), false, 0, false,
+			ServiceContextTestUtil.getServiceContext(
+				group.getGroupId(), user.getUserId()));
 	}
 
 	private FileEntry _addTempFileEntry(Group group, User user)
@@ -125,7 +123,8 @@ public class EditMessageMVCActionCommandTest {
 	}
 
 	private MockLiferayPortletActionRequest _getMockLiferayPortletActionRequest(
-			long fileEntryId, Layout layout, User user)
+			String cmd, long fileEntryId, Layout layout, long messageId,
+			User user)
 		throws Exception {
 
 		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
@@ -150,11 +149,12 @@ public class EditMessageMVCActionCommandTest {
 			"mbCategoryId",
 			String.valueOf(MBCategoryConstants.DEFAULT_PARENT_CATEGORY_ID));
 		mockLiferayPortletActionRequest.setParameter(
+			"messageId", String.valueOf(messageId));
+		mockLiferayPortletActionRequest.setParameter(
 			"portletResource", MBPortletKeys.MESSAGE_BOARDS);
 		mockLiferayPortletActionRequest.setParameter(
 			"subject", RandomTestUtil.randomString());
-		mockLiferayPortletActionRequest.setParameter(
-			Constants.CMD, Constants.ADD);
+		mockLiferayPortletActionRequest.setParameter(Constants.CMD, cmd);
 		mockLiferayPortletActionRequest.setPortletSession(
 			new MockPortletSession());
 
@@ -182,7 +182,34 @@ public class EditMessageMVCActionCommandTest {
 		return themeDisplay;
 	}
 
-	private void _testProcessActionWithDifferentUserTempFileEntry()
+	private MBMessage _processAction(
+			String cmd, long fileEntryId, Group group, long messageId,
+			User user)
+		throws Exception {
+
+		UserTestUtil.setUser(user);
+
+		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
+			_getMockLiferayPortletActionRequest(
+				cmd, fileEntryId, LayoutTestUtil.addTypePortletLayout(group),
+				messageId, user);
+
+		_mvcActionCommand.processAction(
+			mockLiferayPortletActionRequest,
+			new MockLiferayPortletActionResponse());
+
+		Assert.assertTrue(
+			SessionErrors.isEmpty(mockLiferayPortletActionRequest));
+
+		List<MBMessage> groupMessages = _mbMessageLocalService.getGroupMessages(
+			group.getGroupId(), WorkflowConstants.STATUS_ANY, 0, 1);
+
+		Assert.assertEquals(groupMessages.toString(), 1, groupMessages.size());
+
+		return groupMessages.get(0);
+	}
+
+	private void _testProcessActionAddWithDifferentUserTempFileEntry()
 		throws Exception {
 
 		Group group = GroupTestUtil.addGroup();
@@ -190,7 +217,9 @@ public class EditMessageMVCActionCommandTest {
 		FileEntry tempFileEntry = _addTempFileEntry(
 			group, UserTestUtil.addGroupUser(group, RoleConstants.SITE_MEMBER));
 
-		MBMessage message = _addMessage(tempFileEntry.getFileEntryId(), group);
+		MBMessage message = _processAction(
+			Constants.ADD, tempFileEntry.getFileEntryId(), group, 0,
+			UserTestUtil.addGroupUser(group, RoleConstants.SITE_MEMBER));
 
 		Assert.assertEquals(0, message.getAttachmentsFileEntriesCount());
 
@@ -199,23 +228,14 @@ public class EditMessageMVCActionCommandTest {
 				tempFileEntry.getFileEntryId()));
 	}
 
-	private void _testProcessActionWithFileEntry() throws Exception {
+	private void _testProcessActionAddWithFileEntry() throws Exception {
+		FileEntry fileEntry = _addFileEntry();
+
 		Group group = GroupTestUtil.addGroup();
 
-		ServiceContext serviceContext =
-			ServiceContextTestUtil.getServiceContext(group.getGroupId());
-
-		serviceContext.setAddGroupPermissions(false);
-		serviceContext.setAddGuestPermissions(false);
-
-		FileEntry fileEntry = _dlAppLocalService.addFileEntry(
-			null, TestPropsValues.getUserId(), group.getGroupId(),
-			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
-			RandomTestUtil.randomString() + ".txt", ContentTypes.TEXT_PLAIN,
-			RandomTestUtil.randomBytes(), null, null, null, serviceContext);
-
-		MBMessage message = _addMessage(
-			fileEntry.getFileEntryId(), GroupTestUtil.addGroup());
+		MBMessage message = _processAction(
+			Constants.ADD, fileEntry.getFileEntryId(), group, 0,
+			UserTestUtil.addGroupUser(group, RoleConstants.SITE_MEMBER));
 
 		Assert.assertEquals(0, message.getAttachmentsFileEntriesCount());
 
@@ -224,15 +244,78 @@ public class EditMessageMVCActionCommandTest {
 				fileEntry.getFileEntryId()));
 	}
 
-	private void _testProcessActionWithTempFileEntry() throws Exception {
+	private void _testProcessActionAddWithTempFileEntry() throws Exception {
 		Group group = GroupTestUtil.addGroup();
 
 		User user = UserTestUtil.addGroupUser(group, RoleConstants.SITE_MEMBER);
 
 		FileEntry tempFileEntry = _addTempFileEntry(group, user);
 
-		MBMessage message = _addMessage(
-			tempFileEntry.getFileEntryId(), group, user);
+		MBMessage message = _processAction(
+			Constants.ADD, tempFileEntry.getFileEntryId(), group, 0, user);
+
+		Assert.assertEquals(1, message.getAttachmentsFileEntriesCount());
+
+		Assert.assertNull(
+			_dlFileEntryLocalService.fetchDLFileEntry(
+				tempFileEntry.getFileEntryId()));
+	}
+
+	private void _testProcessActionUpdateWithDifferentUserTempFileEntry()
+		throws Exception {
+
+		Group group = GroupTestUtil.addGroup();
+
+		FileEntry tempFileEntry = _addTempFileEntry(
+			group, UserTestUtil.addGroupUser(group, RoleConstants.SITE_MEMBER));
+
+		User user = UserTestUtil.addGroupUser(group, RoleConstants.SITE_MEMBER);
+
+		MBMessage message = _addMessage(group, user);
+
+		message = _processAction(
+			Constants.UPDATE, tempFileEntry.getFileEntryId(), group,
+			message.getMessageId(), user);
+
+		Assert.assertEquals(0, message.getAttachmentsFileEntriesCount());
+
+		Assert.assertNotNull(
+			_dlFileEntryLocalService.fetchDLFileEntry(
+				tempFileEntry.getFileEntryId()));
+	}
+
+	private void _testProcessActionUpdateWithFileEntry() throws Exception {
+		FileEntry fileEntry = _addFileEntry();
+
+		Group group = GroupTestUtil.addGroup();
+
+		User user = UserTestUtil.addGroupUser(group, RoleConstants.SITE_MEMBER);
+
+		MBMessage message = _addMessage(group, user);
+
+		message = _processAction(
+			Constants.UPDATE, fileEntry.getFileEntryId(), group,
+			message.getMessageId(), user);
+
+		Assert.assertEquals(0, message.getAttachmentsFileEntriesCount());
+
+		Assert.assertNotNull(
+			_dlFileEntryLocalService.fetchDLFileEntry(
+				fileEntry.getFileEntryId()));
+	}
+
+	private void _testProcessActionUpdateWithTempFileEntry() throws Exception {
+		Group group = GroupTestUtil.addGroup();
+
+		User user = UserTestUtil.addGroupUser(group, RoleConstants.SITE_MEMBER);
+
+		FileEntry tempFileEntry = _addTempFileEntry(group, user);
+
+		MBMessage message = _addMessage(group, user);
+
+		message = _processAction(
+			Constants.UPDATE, tempFileEntry.getFileEntryId(), group,
+			message.getMessageId(), user);
 
 		Assert.assertEquals(1, message.getAttachmentsFileEntriesCount());
 
