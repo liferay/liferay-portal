@@ -59,7 +59,7 @@ func cronJobAvailableCondition(cronJob *batchv1.CronJob, jobs []batchv1.Job) met
 		)
 	}
 
-	if failed := jobCondition(lastJob, batchv1.JobFailed); failed != nil {
+	if failed := jobCondition(batchv1.JobFailed, lastJob); failed != nil {
 		return newCondition(
 			metav1.ConditionFalse,
 			fmt.Sprintf("The last run of CronJob %q, Job %q, failed: %s", cronJob.Name, lastJob.Name, failed.Message),
@@ -69,7 +69,7 @@ func cronJobAvailableCondition(cronJob *batchv1.CronJob, jobs []batchv1.Job) met
 
 	state := "is running"
 
-	if jobCondition(lastJob, batchv1.JobComplete) != nil {
+	if jobCondition(batchv1.JobComplete, lastJob) != nil {
 		state = "completed"
 	}
 
@@ -117,7 +117,7 @@ func isFailedWaitingReason(reason string) bool {
 }
 
 func jobAvailableCondition(job *batchv1.Job, podProblem string) metav1.Condition {
-	if complete := jobCondition(job, batchv1.JobComplete); complete != nil {
+	if complete := jobCondition(batchv1.JobComplete, job); complete != nil {
 		return newCondition(
 			metav1.ConditionTrue,
 			fmt.Sprintf("Job %q completed at %s.", job.Name, complete.LastTransitionTime.UTC().Format(time.RFC3339)),
@@ -125,7 +125,7 @@ func jobAvailableCondition(job *batchv1.Job, podProblem string) metav1.Condition
 		)
 	}
 
-	if failed := jobCondition(job, batchv1.JobFailed); failed != nil {
+	if failed := jobCondition(batchv1.JobFailed, job); failed != nil {
 		message := fmt.Sprintf("Job %q failed: %s", job.Name, failed.Message)
 
 		if podProblem != "" {
@@ -145,7 +145,7 @@ func jobAvailableCondition(job *batchv1.Job, podProblem string) metav1.Condition
 	return newCondition(metav1.ConditionFalse, fmt.Sprintf("Job %q is running.", job.Name), ReasonJobRunning)
 }
 
-func jobCondition(job *batchv1.Job, conditionType batchv1.JobConditionType) *batchv1.JobCondition {
+func jobCondition(conditionType batchv1.JobConditionType, job *batchv1.Job) *batchv1.JobCondition {
 	for index := range job.Status.Conditions {
 		condition := &job.Status.Conditions[index]
 
@@ -155,80 +155,6 @@ func jobCondition(job *batchv1.Job, conditionType batchv1.JobConditionType) *bat
 	}
 
 	return nil
-}
-
-func podProblem(pods []corev1.Pod) string {
-	slices.SortFunc(pods, func(pod1 corev1.Pod, pod2 corev1.Pod) int {
-		return cmp.Compare(pod1.Name, pod2.Name)
-	})
-
-	for _, pod := range pods {
-		for _, containerStatus := range slices.Concat(pod.Status.InitContainerStatuses, pod.Status.ContainerStatuses) {
-			if waiting := containerStatus.State.Waiting; (waiting != nil) &&
-				isFailedWaitingReason(waiting.Reason) {
-
-				problem := fmt.Sprintf(
-					"Container %q of pod %q is waiting: %s.", containerStatus.Name, pod.Name, waiting.Reason,
-				)
-
-				if terminated := containerStatus.LastTerminationState.Terminated; terminated != nil {
-					problem += fmt.Sprintf(" It last exited with code %d.", terminated.ExitCode)
-				} else if waiting.Message != "" {
-					problem = fmt.Sprintf(
-						"Container %q of pod %q is waiting: %s: %s", containerStatus.Name, pod.Name,
-						waiting.Reason, waiting.Message,
-					)
-				}
-
-				return problem
-			}
-
-			if terminated := containerStatus.State.Terminated; (terminated != nil) && (terminated.ExitCode != 0) {
-				return fmt.Sprintf(
-					"Container %q of pod %q exited with code %d (%s).", containerStatus.Name, pod.Name,
-					terminated.ExitCode, terminated.Reason,
-				)
-			}
-		}
-	}
-
-	return ""
-}
-
-func workloadSummary(workload client.Object, workloadAvailable metav1.Condition) string {
-	if deployment, ok := workload.(*appsv1.Deployment); ok {
-		replicas := int32(1)
-
-		if deployment.Spec.Replicas != nil {
-			replicas = *deployment.Spec.Replicas
-		}
-
-		return fmt.Sprintf("%d/%d", deployment.Status.AvailableReplicas, replicas)
-	} else if cronJob, ok := workload.(*batchv1.CronJob); ok {
-		if workloadAvailable.Reason == ReasonJobFailed {
-			return "Failed"
-		}
-
-		if len(cronJob.Status.Active) > 0 {
-			return "Running"
-		}
-
-		if cronJob.Status.LastSuccessfulTime != nil {
-			return "Completed"
-		}
-
-		return "Scheduled"
-	} else if _, ok := workload.(*batchv1.Job); ok {
-		if workloadAvailable.Reason == ReasonJobComplete {
-			return "Completed"
-		} else if workloadAvailable.Reason == ReasonJobFailed {
-			return "Failed"
-		}
-
-		return "Running"
-	}
-
-	return ""
 }
 
 func (clientExtensionReconciler *ClientExtensionReconciler) listPods(
@@ -255,6 +181,44 @@ func (clientExtensionReconciler *ClientExtensionReconciler) listPods(
 	}
 
 	return podList.Items, nil
+}
+
+func podProblem(pods []corev1.Pod) string {
+	slices.SortFunc(pods, func(pod1 corev1.Pod, pod2 corev1.Pod) int {
+		return cmp.Compare(pod1.Name, pod2.Name)
+	})
+
+	for _, pod := range pods {
+		for _, containerStatus := range slices.Concat(pod.Status.InitContainerStatuses, pod.Status.ContainerStatuses) {
+			if waiting := containerStatus.State.Waiting; (waiting != nil) &&
+				isFailedWaitingReason(waiting.Reason) {
+
+				problem := fmt.Sprintf(
+					"Container %q of pod %q is waiting: %s.", containerStatus.Name, pod.Name, waiting.Reason,
+				)
+
+				if terminated := containerStatus.LastTerminationState.Terminated; terminated != nil {
+					problem += fmt.Sprintf(" It last exited with code %d.", terminated.ExitCode)
+				} else if waiting.Message != "" {
+					problem = fmt.Sprintf(
+						"Container %q of pod %q is waiting: %s: %s.", containerStatus.Name, pod.Name,
+						waiting.Reason, waiting.Message,
+					)
+				}
+
+				return problem
+			}
+
+			if terminated := containerStatus.State.Terminated; (terminated != nil) && (terminated.ExitCode != 0) {
+				return fmt.Sprintf(
+					"Container %q of pod %q exited with code %d (%s).", containerStatus.Name, pod.Name,
+					terminated.ExitCode, terminated.Reason,
+				)
+			}
+		}
+	}
+
+	return ""
 }
 
 func (clientExtensionReconciler *ClientExtensionReconciler) workloadAvailableCondition(
@@ -296,4 +260,40 @@ func (clientExtensionReconciler *ClientExtensionReconciler) workloadAvailableCon
 	}
 
 	return metav1.Condition{}, fmt.Errorf("unsupported workload %T", workload)
+}
+
+func workloadSummary(workload client.Object, workloadAvailable metav1.Condition) string {
+	if deployment, ok := workload.(*appsv1.Deployment); ok {
+		replicas := int32(1)
+
+		if deployment.Spec.Replicas != nil {
+			replicas = *deployment.Spec.Replicas
+		}
+
+		return fmt.Sprintf("%d/%d", deployment.Status.AvailableReplicas, replicas)
+	} else if cronJob, ok := workload.(*batchv1.CronJob); ok {
+		if workloadAvailable.Reason == ReasonJobFailed {
+			return "Failed"
+		}
+
+		if len(cronJob.Status.Active) > 0 {
+			return "Running"
+		}
+
+		if cronJob.Status.LastSuccessfulTime != nil {
+			return "Completed"
+		}
+
+		return "Scheduled"
+	} else if _, ok := workload.(*batchv1.Job); ok {
+		if workloadAvailable.Reason == ReasonJobComplete {
+			return "Completed"
+		} else if workloadAvailable.Reason == ReasonJobFailed {
+			return "Failed"
+		}
+
+		return "Running"
+	}
+
+	return ""
 }

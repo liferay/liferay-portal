@@ -29,8 +29,8 @@ func TestCronJobAvailableCondition(t *testing.T) {
 	}{
 		"a CronJob whose last run completed": {
 			jobs: []batchv1.Job{
-				newCronJobRun(cronJob, batchv1.JobFailed, "able-1", 1),
-				newCronJobRun(cronJob, batchv1.JobComplete, "able-2", 2),
+				newCronJobRun(batchv1.JobFailed, cronJob, 1, "able-1"),
+				newCronJobRun(batchv1.JobComplete, cronJob, 2, "able-2"),
 			},
 			wantMessage: `Job "able-2", completed.`,
 			wantReason:  ReasonCronJobScheduled,
@@ -38,8 +38,8 @@ func TestCronJobAvailableCondition(t *testing.T) {
 		},
 		"a CronJob whose last run failed": {
 			jobs: []batchv1.Job{
-				newCronJobRun(cronJob, batchv1.JobComplete, "able-1", 1),
-				newCronJobRun(cronJob, batchv1.JobFailed, "able-2", 2),
+				newCronJobRun(batchv1.JobComplete, cronJob, 1, "able-1"),
+				newCronJobRun(batchv1.JobFailed, cronJob, 2, "able-2"),
 			},
 			wantMessage: `Job "able-2", failed: BackoffLimitExceeded`,
 			wantReason:  ReasonJobFailed,
@@ -58,8 +58,8 @@ func TestCronJobAvailableCondition(t *testing.T) {
 	for name, testCase := range testCases {
 		t.Run(name, func(t *testing.T) {
 			assertCondition(
-				cronJobAvailableCondition(cronJob, testCase.jobs), testCase.wantMessage, testCase.wantReason,
-				testCase.wantStatus, t,
+				cronJobAvailableCondition(cronJob, testCase.jobs), t, testCase.wantMessage, testCase.wantReason,
+				testCase.wantStatus,
 			)
 		})
 	}
@@ -75,7 +75,7 @@ func TestDeploymentAvailableCondition(t *testing.T) {
 	}{
 		"a Deployment past its progress deadline": {
 			deployment: newAvailabilityDeployment(
-				1, 0, 1,
+				0, 1, 1,
 				appsv1.DeploymentCondition{
 					Message: "ReplicaSet \"able-1\" has timed out progressing.", Reason: "ProgressDeadlineExceeded",
 					Type: appsv1.DeploymentProgressing,
@@ -86,7 +86,7 @@ func TestDeploymentAvailableCondition(t *testing.T) {
 			wantStatus:  metav1.ConditionFalse,
 		},
 		"a Deployment rolling out": {
-			deployment:  newAvailabilityDeployment(2, 1, 1),
+			deployment:  newAvailabilityDeployment(1, 2, 1),
 			wantMessage: `Deployment "able" has 1 of 2 replicas available.`,
 			wantReason:  ReasonWorkloadProgressing,
 			wantStatus:  metav1.ConditionFalse,
@@ -103,7 +103,7 @@ func TestDeploymentAvailableCondition(t *testing.T) {
 			wantStatus: metav1.ConditionFalse,
 		},
 		"a Deployment whose pod fails": {
-			deployment:  newAvailabilityDeployment(1, 0, 1),
+			deployment:  newAvailabilityDeployment(0, 1, 1),
 			podProblem:  `Container "able" of pod "able-1" is waiting: CrashLoopBackOff. It last exited with code 1.`,
 			wantMessage: `has 0 of 1 replicas available. Container "able" of pod "able-1" is waiting: CrashLoopBackOff.`,
 			wantReason:  ReasonWorkloadUnavailable,
@@ -120,8 +120,8 @@ func TestDeploymentAvailableCondition(t *testing.T) {
 	for name, testCase := range testCases {
 		t.Run(name, func(t *testing.T) {
 			assertCondition(
-				deploymentAvailableCondition(testCase.deployment, testCase.podProblem), testCase.wantMessage,
-				testCase.wantReason, testCase.wantStatus, t,
+				deploymentAvailableCondition(testCase.deployment, testCase.podProblem), t, testCase.wantMessage,
+				testCase.wantReason, testCase.wantStatus,
 			)
 		})
 	}
@@ -172,8 +172,8 @@ func TestJobAvailableCondition(t *testing.T) {
 			}
 
 			assertCondition(
-				jobAvailableCondition(job, testCase.podProblem), testCase.wantMessage, testCase.wantReason,
-				testCase.wantStatus, t,
+				jobAvailableCondition(job, testCase.podProblem), t, testCase.wantMessage, testCase.wantReason,
+				testCase.wantStatus,
 			)
 		})
 	}
@@ -185,54 +185,54 @@ func TestPodProblem(t *testing.T) {
 		want string
 	}{
 		"a container that cannot be created": {
-			pods: []corev1.Pod{newPod("able-1", corev1.ContainerStatus{
+			pods: []corev1.Pod{newPod(corev1.ContainerStatus{
 				Name: "able",
 				State: corev1.ContainerState{Waiting: &corev1.ContainerStateWaiting{
 					Message: "no command specified", Reason: "CreateContainerError",
 				}},
-			})},
-			want: `Container "able" of pod "able-1" is waiting: CreateContainerError: no command specified`,
+			}, "able-1")},
+			want: `Container "able" of pod "able-1" is waiting: CreateContainerError: no command specified.`,
 		},
 		"a container that exited": {
-			pods: []corev1.Pod{newPod("able-1", corev1.ContainerStatus{
+			pods: []corev1.Pod{newPod(corev1.ContainerStatus{
 				Name:  "able",
 				State: corev1.ContainerState{Terminated: &corev1.ContainerStateTerminated{ExitCode: 3, Reason: "Error"}},
-			})},
+			}, "able-1")},
 			want: `Container "able" of pod "able-1" exited with code 3 (Error).`,
 		},
 		"a crash looping container": {
-			pods: []corev1.Pod{newPod("able-1", corev1.ContainerStatus{
+			pods: []corev1.Pod{newPod(corev1.ContainerStatus{
 				LastTerminationState: corev1.ContainerState{
 					Terminated: &corev1.ContainerStateTerminated{ExitCode: 1},
 				},
 				Name:  "able",
 				State: corev1.ContainerState{Waiting: &corev1.ContainerStateWaiting{Reason: "CrashLoopBackOff"}},
-			})},
+			}, "able-1")},
 			want: `Container "able" of pod "able-1" is waiting: CrashLoopBackOff. It last exited with code 1.`,
 		},
 		"a container whose image cannot be inspected": {
-			pods: []corev1.Pod{newPod("able-1", corev1.ContainerStatus{
+			pods: []corev1.Pod{newPod(corev1.ContainerStatus{
 				Name:  "able",
 				State: corev1.ContainerState{Waiting: &corev1.ContainerStateWaiting{Reason: "ImageInspectError"}},
-			})},
+			}, "able-1")},
 			want: `Container "able" of pod "able-1" is waiting: ImageInspectError.`,
 		},
 		"a starting container": {
-			pods: []corev1.Pod{newPod("able-1", corev1.ContainerStatus{
+			pods: []corev1.Pod{newPod(corev1.ContainerStatus{
 				Name:  "able",
 				State: corev1.ContainerState{Waiting: &corev1.ContainerStateWaiting{Reason: "ContainerCreating"}},
-			})},
+			}, "able-1")},
 		},
 		"pods in name order": {
 			pods: []corev1.Pod{
-				newPod("able-2", corev1.ContainerStatus{
+				newPod(corev1.ContainerStatus{
 					Name:  "able",
 					State: corev1.ContainerState{Waiting: &corev1.ContainerStateWaiting{Reason: "ErrImagePull"}},
-				}),
-				newPod("able-1", corev1.ContainerStatus{
+				}, "able-2"),
+				newPod(corev1.ContainerStatus{
 					Name:  "able",
 					State: corev1.ContainerState{Waiting: &corev1.ContainerStateWaiting{Reason: "ImagePullBackOff"}},
-				}),
+				}, "able-1"),
 			},
 			want: `Container "able" of pod "able-1" is waiting: ImagePullBackOff.`,
 		},
@@ -255,20 +255,20 @@ func TestReconcileReportsWorkloadAvailability(t *testing.T) {
 		wantReadyReason string
 	}{
 		"a Deployment rolling out": {
-			deployment:      newAvailabilityDeployment(1, 0, 0),
+			deployment:      newAvailabilityDeployment(0, 1, 0),
 			wantPhase:       cxv1alpha1.PhasePending,
 			wantReadyReason: ReasonWorkloadProgressing,
 		},
 		"a Deployment whose pod cannot start": {
-			deployment: newAvailabilityDeployment(1, 0, 1),
+			deployment: newAvailabilityDeployment(0, 1, 1),
 			pods: []client.Object{
 				func() *corev1.Pod {
-					pod := newPod("able-1", corev1.ContainerStatus{
+					pod := newPod(corev1.ContainerStatus{
 						Name: "able",
 						State: corev1.ContainerState{Waiting: &corev1.ContainerStateWaiting{
 							Message: "no command specified", Reason: "CreateContainerError",
 						}},
-					})
+					}, "able-1")
 
 					return &pod
 				}(),
@@ -332,7 +332,7 @@ func TestRequestsForJobMatchesItsCronJob(t *testing.T) {
 		ObjectMeta: metav1.ObjectMeta{Name: "able", Namespace: "liferay-cx", UID: types.UID("able-uid")},
 	}
 
-	job := newCronJobRun(cronJob, batchv1.JobComplete, "able-1", 1)
+	job := newCronJobRun(batchv1.JobComplete, cronJob, 1, "able-1")
 
 	requests := clientExtensionReconciler.requestsForJob(context.Background(), &job)
 
@@ -344,25 +344,6 @@ func TestRequestsForJobMatchesItsCronJob(t *testing.T) {
 
 	if requests := clientExtensionReconciler.requestsForJob(context.Background(), &job); len(requests) != 0 {
 		t.Errorf("requests = %v, want none for a Job that no CronJob owns", requests)
-	}
-}
-
-func assertCondition(
-	condition metav1.Condition,
-	wantMessage string,
-	wantReason string,
-	wantStatus metav1.ConditionStatus,
-	t *testing.T,
-) {
-	t.Helper()
-
-	if !strings.Contains(condition.Message, wantMessage) || (condition.Reason != wantReason) ||
-		(condition.Status != wantStatus) {
-
-		t.Errorf(
-			"condition = %s / %s / %q, want %s / %s / containing %q", condition.Status, condition.Reason,
-			condition.Message, wantStatus, wantReason, wantMessage,
-		)
 	}
 }
 
@@ -394,7 +375,7 @@ func TestWorkloadSummary(t *testing.T) {
 			workloadAvailable: metav1.Condition{Reason: ReasonCronJobScheduled},
 		},
 		"a Deployment rolling out": {
-			want: "1/2", workload: newAvailabilityDeployment(2, 1, 1),
+			want: "1/2", workload: newAvailabilityDeployment(1, 2, 1),
 		},
 		"a Job that completed": {
 			want: "Completed", workload: &batchv1.Job{}, workloadAvailable: metav1.Condition{Reason: ReasonJobComplete},
@@ -416,9 +397,28 @@ func TestWorkloadSummary(t *testing.T) {
 	}
 }
 
+func assertCondition(
+	condition metav1.Condition,
+	t *testing.T,
+	wantMessage string,
+	wantReason string,
+	wantStatus metav1.ConditionStatus,
+) {
+	t.Helper()
+
+	if !strings.Contains(condition.Message, wantMessage) || (condition.Reason != wantReason) ||
+		(condition.Status != wantStatus) {
+
+		t.Errorf(
+			"condition = %s / %s / %q, want %s / %s / containing %q", condition.Status, condition.Reason,
+			condition.Message, wantStatus, wantReason, wantMessage,
+		)
+	}
+}
+
 func newAvailabilityDeployment(
-	replicas int32,
 	availableReplicas int32,
+	replicas int32,
 	updatedReplicas int32,
 	conditions ...appsv1.DeploymentCondition,
 ) *appsv1.Deployment {
@@ -443,10 +443,10 @@ func newAvailabilityDeployment(
 }
 
 func newCronJobRun(
-	cronJob *batchv1.CronJob,
 	conditionType batchv1.JobConditionType,
-	name string,
+	cronJob *batchv1.CronJob,
 	minutes int,
+	name string,
 ) batchv1.Job {
 	controller := true
 
@@ -468,7 +468,7 @@ func newCronJobRun(
 	}
 }
 
-func newPod(name string, containerStatus corev1.ContainerStatus) corev1.Pod {
+func newPod(containerStatus corev1.ContainerStatus, name string) corev1.Pod {
 	return corev1.Pod{
 		ObjectMeta: metav1.ObjectMeta{
 			Labels: map[string]string{"app.kubernetes.io/name": "able"}, Name: name, Namespace: "liferay-cx",
