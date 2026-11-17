@@ -16,7 +16,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.launch.LaunchPreviewThreadLocal;
+import com.liferay.portal.kernel.launch.LaunchThreadLocal;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
@@ -171,8 +171,8 @@ public class GetLayoutsStrutsActionTest {
 		_assertLayoutInTree(false, layout);
 
 		try (SafeCloseable safeCloseable =
-				LaunchPreviewThreadLocal.setLaunchSetIdWithSafeCloseable(
-					launchSetId)) {
+				LaunchThreadLocal.setLaunchSetIdWithSafeCloseable(
+					launchSetId, LaunchThreadLocal.Mode.PREVIEW)) {
 
 			_assertLayoutInTree(true, layout);
 		}

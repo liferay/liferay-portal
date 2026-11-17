@@ -48,7 +48,7 @@ import com.liferay.portal.kernel.image.ImageBag;
 import com.liferay.portal.kernel.instance.PortalInstancePool;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.language.constants.LanguageConstants;
-import com.liferay.portal.kernel.launch.LaunchPreviewThreadLocal;
+import com.liferay.portal.kernel.launch.LaunchThreadLocal;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.login.AuthLoginGroupSettingsUtil;
@@ -804,13 +804,11 @@ public class PortalImpl implements Portal {
 				url, "previewCTIndicator", true);
 		}
 
-		long previewLaunchSetId = LaunchPreviewThreadLocal.getLaunchSetId();
-
-		if (previewLaunchSetId > -1) {
+		if (LaunchThreadLocal.isPreview()) {
 			url = HttpComponentsUtil.setParameter(
 				url, "p_l_mode", Constants.PREVIEW);
 			url = HttpComponentsUtil.setParameter(
-				url, "previewLaunchSetId", previewLaunchSetId);
+				url, "previewLaunchSetId", LaunchThreadLocal.getLaunchSetId());
 		}
 
 		return url;

@@ -17,8 +17,7 @@ import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.launch.LaunchEditThreadLocal;
-import com.liferay.portal.kernel.launch.LaunchPreviewThreadLocal;
+import com.liferay.portal.kernel.launch.LaunchThreadLocal;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.User;
@@ -215,7 +214,7 @@ public class LaunchEditFilterTest {
 
 		// Launch preview
 
-		long[] launchSetIds = {launchSetId};
+		boolean[] edit = {true};
 
 		MockHttpServletRequest mockHttpServletRequest =
 			new MockHttpServletRequest();
@@ -226,16 +225,16 @@ public class LaunchEditFilterTest {
 			"editLaunchSetId", String.valueOf(launchSetId));
 
 		try (SafeCloseable safeCloseable =
-				LaunchPreviewThreadLocal.setLaunchSetIdWithSafeCloseable(
-					launchSetId)) {
+				LaunchThreadLocal.setLaunchSetIdWithSafeCloseable(
+					launchSetId, LaunchThreadLocal.Mode.PREVIEW)) {
 
 			_filter.doFilter(
 				mockHttpServletRequest, new MockHttpServletResponse(),
 				(servletRequest, servletResponse) ->
-					launchSetIds[0] = LaunchEditThreadLocal.getLaunchSetId());
+					edit[0] = LaunchThreadLocal.isEdit());
 		}
 
-		Assert.assertEquals(0, launchSetIds[0]);
+		Assert.assertFalse(edit[0]);
 
 		// Portlet namespaced edit launch set ID parameter
 
@@ -345,8 +344,8 @@ public class LaunchEditFilterTest {
 				throw new ServletException(portalException);
 			}
 
-			values[3] = LaunchPreviewThreadLocal.getLaunchSetId();
-			values[4] = LaunchEditThreadLocal.getLaunchSetId();
+			values[3] = LaunchThreadLocal.getLaunchSetId();
+			values[4] = LaunchThreadLocal.getMode();
 		};
 
 		if (forwardParameters == null) {
@@ -368,8 +367,15 @@ public class LaunchEditFilterTest {
 		Assert.assertEquals(expectedJournalArticleTitle, values[0]);
 		Assert.assertEquals(expectedLayout1Plid, values[1]);
 		Assert.assertEquals(expectedLayout2Plid, values[2]);
-		Assert.assertEquals(-1L, values[3]);
-		Assert.assertEquals(expectedLaunchSetId, values[4]);
+
+		if (expectedLaunchSetId > 0) {
+			Assert.assertEquals(expectedLaunchSetId, values[3]);
+			Assert.assertEquals(LaunchThreadLocal.Mode.EDIT, values[4]);
+		}
+		else {
+			Assert.assertEquals(-1L, values[3]);
+			Assert.assertNull(values[4]);
+		}
 
 		Assert.assertNull(PreviewableResolverUtil.getPreviewId());
 	}

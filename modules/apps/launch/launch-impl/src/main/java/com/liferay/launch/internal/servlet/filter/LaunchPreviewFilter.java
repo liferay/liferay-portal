@@ -6,7 +6,7 @@
 package com.liferay.launch.internal.servlet.filter;
 
 import com.liferay.petra.lang.SafeCloseable;
-import com.liferay.portal.kernel.launch.LaunchPreviewThreadLocal;
+import com.liferay.portal.kernel.launch.LaunchThreadLocal;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.util.Constants;
@@ -77,8 +77,8 @@ public class LaunchPreviewFilter extends BaseLaunchFilter {
 		}
 
 		try (SafeCloseable safeCloseable =
-				LaunchPreviewThreadLocal.setLaunchSetIdWithSafeCloseable(
-					previewLaunchSetId)) {
+				LaunchThreadLocal.setLaunchSetIdWithSafeCloseable(
+					previewLaunchSetId, LaunchThreadLocal.Mode.PREVIEW)) {
 
 			processFilter(
 				filterChain, httpServletRequest, httpServletResponse,

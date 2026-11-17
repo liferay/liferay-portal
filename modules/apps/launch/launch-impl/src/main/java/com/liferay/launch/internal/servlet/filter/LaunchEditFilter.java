@@ -11,8 +11,7 @@ import com.liferay.object.service.ObjectEntryService;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.launch.LaunchEditThreadLocal;
-import com.liferay.portal.kernel.launch.LaunchPreviewThreadLocal;
+import com.liferay.portal.kernel.launch.LaunchThreadLocal;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
@@ -52,8 +51,7 @@ public class LaunchEditFilter extends BaseLaunchFilter {
 			HttpServletResponse httpServletResponse, FilterChain filterChain)
 		throws Exception {
 
-		if ((LaunchEditThreadLocal.getLaunchSetId() > 0) ||
-			(LaunchPreviewThreadLocal.getLaunchSetId() > -1) ||
+		if ((LaunchThreadLocal.getMode() != null) ||
 			(PreviewableResolverUtil.getPreviewId() != null)) {
 
 			processFilter(
@@ -81,8 +79,8 @@ public class LaunchEditFilter extends BaseLaunchFilter {
 			getPreviewableMap(companyId, launchSetId);
 
 		try (SafeCloseable safeCloseable =
-				LaunchEditThreadLocal.setLaunchSetIdWithSafeCloseable(
-					launchSetId)) {
+				LaunchThreadLocal.setLaunchSetIdWithSafeCloseable(
+					launchSetId, LaunchThreadLocal.Mode.EDIT)) {
 
 			processFilter(
 				filterChain, httpServletRequest, httpServletResponse,
