@@ -18,6 +18,7 @@ import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 
 import java.util.Date;
+import java.util.TimeZone;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -32,6 +33,8 @@ import org.apache.commons.cli.ParseException;
 public class DBMigrationImport {
 
 	public static void main(String[] args) throws Exception {
+		TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
+
 		Options options = _getOptions();
 
 		if (ArrayUtil.contains(args, "--help")) {
