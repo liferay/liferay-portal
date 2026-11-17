@@ -90,7 +90,7 @@ public class HashedFilesUtil {
 
 		int j = uri.lastIndexOf(").");
 
-		if (j == -1) {
+		if (j < i) {
 			return null;
 		}
 
