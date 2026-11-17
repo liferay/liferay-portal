@@ -6,13 +6,13 @@
 package com.liferay.layout.page.template.service.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateActionKeys;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateCollectionTypeConstants;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateConstants;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
 import com.liferay.layout.page.template.exception.LayoutPageTemplateEntryNameException;
+import com.liferay.layout.page.template.exception.LayoutPageTemplateEntryPreviewFileEntryIdException;
 import com.liferay.layout.page.template.model.LayoutPageTemplateCollection;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateCollectionLocalService;
@@ -293,6 +293,21 @@ public class LayoutPageTemplateEntryServiceTest {
 			layoutPrototype.getName(LocaleUtil.getMostRelevantLocale()));
 	}
 
+	@Test(expected = LayoutPageTemplateEntryPreviewFileEntryIdException.class)
+	public void testAddLayoutPageTemplateEntryWithPreviewFileEntryFromDifferentGroup()
+		throws Exception {
+
+		FileEntry fileEntry = _addPreviewFileEntry(GroupTestUtil.addGroup());
+
+		_layoutPageTemplateEntryService.addLayoutPageTemplateEntry(
+			null, _group.getGroupId(),
+			_layoutPageTemplateCollection.getLayoutPageTemplateCollectionId(),
+			null, 0, null, RandomTestUtil.randomString(),
+			LayoutPageTemplateEntryTypeConstants.BASIC,
+			fileEntry.getFileEntryId(), false, 0, 0, 0,
+			WorkflowConstants.STATUS_APPROVED, _serviceContext);
+	}
+
 	@Test(expected = LayoutPageTemplateEntryNameException.class)
 	public void testAddLayoutPageTemplateEntryWithSymbolInName()
 		throws Exception {
@@ -494,16 +509,7 @@ public class LayoutPageTemplateEntryServiceTest {
 				_layoutPageTemplateCollection.
 					getLayoutPageTemplateCollectionId());
 
-		Repository repository = _portletFileRepository.addPortletRepository(
-			_group.getGroupId(), LayoutAdminPortletKeys.GROUP_PAGES,
-			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
-
-		FileEntry fileEntry = _portletFileRepository.addPortletFileEntry(
-			_group.getGroupId(), TestPropsValues.getUserId(),
-			FragmentCollection.class.getName(),
-			_layoutPageTemplateCollection.getLayoutPageTemplateCollectionId(),
-			LayoutAdminPortletKeys.GROUP_PAGES, repository.getDlFolderId(),
-			new byte[0], "test.png", ContentTypes.IMAGE_PNG, false);
+		FileEntry fileEntry = _addPreviewFileEntry(_group);
 
 		layoutPageTemplateEntry =
 			_layoutPageTemplateEntryService.updateLayoutPageTemplateEntry(
@@ -1294,6 +1300,33 @@ public class LayoutPageTemplateEntryServiceTest {
 		Assert.assertEquals(
 			WorkflowConstants.STATUS_PENDING,
 			persistedLayoutPageTemplateEntry.getStatus());
+	}
+
+	@Test(expected = LayoutPageTemplateEntryPreviewFileEntryIdException.class)
+	public void testUpdateLayoutPageTemplateEntryWithPreviewFileEntryFromDifferentGroup()
+		throws Exception {
+
+		FileEntry fileEntry = _addPreviewFileEntry(GroupTestUtil.addGroup());
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			LayoutPageTemplateTestUtil.addLayoutPageTemplateEntry(
+				_layoutPageTemplateCollection.
+					getLayoutPageTemplateCollectionId());
+
+		_layoutPageTemplateEntryService.updateLayoutPageTemplateEntry(
+			layoutPageTemplateEntry.getLayoutPageTemplateEntryId(),
+			fileEntry.getFileEntryId());
+	}
+
+	private FileEntry _addPreviewFileEntry(Group group) throws Exception {
+		Repository repository = _portletFileRepository.addPortletRepository(
+			group.getGroupId(), LayoutAdminPortletKeys.GROUP_PAGES,
+			ServiceContextTestUtil.getServiceContext(group.getGroupId()));
+
+		return _portletFileRepository.addPortletFileEntry(
+			group.getGroupId(), TestPropsValues.getUserId(), null, 0,
+			LayoutAdminPortletKeys.GROUP_PAGES, repository.getDlFolderId(),
+			new byte[0], RandomTestUtil.randomString() + ".png",
+			ContentTypes.IMAGE_PNG, false);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
