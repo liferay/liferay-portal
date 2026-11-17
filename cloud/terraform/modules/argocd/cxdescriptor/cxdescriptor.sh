@@ -29,7 +29,8 @@ function main {
 		--extract \
 		--file "${_IMAGE_FILE}" \
 		--to-stdout \
-		client-extension-descriptor.json
+		client-extension-descriptor.json | \
+		"${HELM_PLUGIN_DIR}/bin/jq" 'if type == "object" and keys == ["descriptor"] then . else error("client-extension-descriptor.json may only have a descriptor key") end'
 }
 
 function _check_registry {

@@ -463,6 +463,7 @@ resource "helm_release" "argocd" {
 										"cp /cxdescriptor/plugin.yaml /helm-plugins/cxdescriptor",
 										"cp /cxdescriptor/cxdescriptor.sh /ko-app/crane /helm-plugins/cxdescriptor/bin",
 										"chmod 755 /helm-plugins/cxdescriptor/bin/*",
+										"cp /busybox/busybox /cxdescriptor-busybox",
 									]),
 								]
 								image="gcr.io/go-containerregistry/crane:debug@sha256:e505815aa3573ae223c2ddcd004c8d4f7a6608df85da429af1e0f6aff728a1f0"
@@ -483,6 +484,43 @@ resource "helm_release" "argocd" {
 									{
 										mountPath="/cxdescriptor"
 										name="cxdescriptor"
+									},
+									{
+										mountPath="/cxdescriptor-busybox"
+										name="cxdescriptor-busybox"
+									},
+									{
+										mountPath="/helm-plugins"
+										name="helm-plugins"
+									},
+								]
+							},
+							{
+								command=[
+									"/busybox/busybox",
+									"cp",
+									"/jq",
+									"/helm-plugins/cxdescriptor/bin",
+								]
+								image="ghcr.io/jqlang/jq:1.8.2@sha256:b9c68867e5766576263a222e91db3de422d802069c7af70440e667a95344e486"
+								name="cxdescriptor-jq"
+								securityContext={
+									allowPrivilegeEscalation=false
+									capabilities={
+										drop=["ALL"]
+									}
+									readOnlyRootFilesystem=true
+									runAsNonRoot=true
+									runAsUser=65532
+									seccompProfile={
+										type="RuntimeDefault"
+									}
+								}
+								volumeMounts=[
+									{
+										mountPath="/busybox"
+										name="cxdescriptor-busybox"
+										readOnly=true
 									},
 									{
 										mountPath="/helm-plugins"
@@ -527,6 +565,10 @@ resource "helm_release" "argocd" {
 									name="argocd-repo-server-cxdescriptor"
 								}
 								name="cxdescriptor"
+							},
+							{
+								emptyDir={}
+								name="cxdescriptor-busybox"
 							},
 							{
 								name="cxdescriptor-docker-config"
