@@ -9,6 +9,7 @@ import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.search.analysis.KeywordTokenizer;
+import com.liferay.portal.search.internal.analysis.IndexAnalyzerUtil;
 import com.liferay.portal.search.query.BooleanQuery;
 import com.liferay.portal.search.query.QueriesUtil;
 import com.liferay.portal.search.query.Query;
@@ -128,7 +129,23 @@ public class FullTextQueryBuilder {
 
 		builder.setTrailingStarAware(true);
 
-		return builder.build(field, phrase);
+		Query query = builder.build(field, phrase);
+
+		String analyzer = IndexAnalyzerUtil.getIndexAnalyzer(field);
+
+		if (analyzer == null) {
+			return query;
+		}
+
+		builder.setAnalyzer(analyzer);
+
+		BooleanQuery booleanQuery = QueriesUtil.booleanQuery();
+
+		booleanQuery.addShouldQueryClauses(query);
+
+		booleanQuery.addShouldQueryClauses(builder.build(field, phrase));
+
+		return booleanQuery;
 	}
 
 	private Query _createProximityQuery(String field, String value) {
