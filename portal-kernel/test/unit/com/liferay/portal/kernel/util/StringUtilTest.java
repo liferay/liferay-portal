@@ -299,6 +299,16 @@ public class StringUtilTest {
 	}
 
 	@Test
+	public void testLowerCaseFirstLetter() {
+		Assert.assertEquals("", StringUtil.lowerCaseFirstLetter(""));
+		Assert.assertEquals(
+			"hello World", StringUtil.lowerCaseFirstLetter("Hello World"));
+		Assert.assertSame(
+			"hello World", StringUtil.lowerCaseFirstLetter("hello World"));
+		Assert.assertNull(StringUtil.lowerCaseFirstLetter(null));
+	}
+
+	@Test
 	public void testMerge() {
 		Assert.assertEquals(
 			"1,2,3", StringUtil.merge(new String[] {"1", " 2 ", "3"}));
@@ -1156,6 +1166,8 @@ public class StringUtilTest {
 	@Test
 	public void testUpperCaseFirstLetter() {
 		Assert.assertEquals("", StringUtil.upperCaseFirstLetter(""));
+		Assert.assertSame(
+			"Hello World", StringUtil.upperCaseFirstLetter("Hello World"));
 		Assert.assertEquals(
 			"Hello World", StringUtil.upperCaseFirstLetter("hello World"));
 		Assert.assertNull(StringUtil.upperCaseFirstLetter(null));
