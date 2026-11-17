@@ -128,7 +128,6 @@ public class JavaScriptFrontendResourceRequestHandlerTest
 		mockDeployedFile(
 			hashedFilesRegistry, deployHashed ? _VALID_HASHED_URL : _VALID_URL,
 			_getDeployedContent());
-
 		mockDeployedFile(
 			hashedFilesRegistry,
 			"/o/" + _SERVLET_CONTEXT_NAME + "/language.json", "{}");
