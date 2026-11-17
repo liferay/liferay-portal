@@ -8,9 +8,13 @@ package com.liferay.headless.commerce.admin.channel.internal.dto.v1_0.converter;
 import com.liferay.commerce.product.model.CPTaxCategory;
 import com.liferay.commerce.product.service.CPTaxCategoryService;
 import com.liferay.headless.commerce.admin.channel.dto.v1_0.TaxCategory;
+import com.liferay.headless.commerce.admin.channel.internal.dto.v1_0.util.CreatorUtil;
 import com.liferay.headless.commerce.core.util.LanguageUtils;
+import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
+import com.liferay.portal.vulcan.fields.NestedFieldsSupplier;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -42,6 +46,15 @@ public class TaxCategoryDTOConverter
 
 		return new TaxCategory() {
 			{
+				setCreator(
+					() -> NestedFieldsSupplier.supply(
+						"creator",
+						fieldName -> CreatorUtil.toCreator(
+							_portal,
+							_userLocalService.fetchUser(
+								cpTaxCategory.getUserId()))));
+				setDateCreated(cpTaxCategory::getCreateDate);
+				setDateModified(cpTaxCategory::getModifiedDate);
 				setDescription(
 					() -> LanguageUtils.getLanguageIdMap(
 						cpTaxCategory.getDescriptionMap()));
@@ -57,5 +70,11 @@ public class TaxCategoryDTOConverter
 
 	@Reference
 	private CPTaxCategoryService _cpTaxCategoryService;
+
+	@Reference
+	private Portal _portal;
+
+	@Reference
+	private UserLocalService _userLocalService;
 
 }
