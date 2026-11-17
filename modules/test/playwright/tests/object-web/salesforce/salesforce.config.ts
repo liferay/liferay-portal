@@ -13,12 +13,6 @@ const salesforceConfig = {
 		: '',
 	salesforceLoginURL: process.env.OBJECT_STORAGE_SALESFORCE_LOGIN_URL
 		? process.env.OBJECT_STORAGE_SALESFORCE_LOGIN_URL
-		: 'https://test.salesforce.com/',
-	salesforcePassword: process.env.OBJECT_STORAGE_SALESFORCE_PASSWORD
-		? process.env.OBJECT_STORAGE_SALESFORCE_PASSWORD
-		: '',
-	salesforceUsername: process.env.OBJECT_STORAGE_SALESFORCE_USERNAME
-		? process.env.OBJECT_STORAGE_SALESFORCE_USERNAME
 		: '',
 };
 

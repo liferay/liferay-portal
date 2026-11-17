@@ -86,11 +86,22 @@ test.beforeEach(async ({apiHelpers, instanceSettingsPage, page}) => {
 	test.skip(
 		!salesforceConfig.salesforceLoginURL ||
 			!salesforceConfig.salesforceConsumerKey ||
-			!salesforceConfig.salesforceConsumerSecret ||
-			!salesforceConfig.salesforceUsername ||
-			!salesforceConfig.salesforcePassword,
+			!salesforceConfig.salesforceConsumerSecret,
 		'Requires Salesforce environment variables.'
 	);
+
+	const response = await page.request.post(
+		`${salesforceConfig.salesforceLoginURL}/services/oauth2/token`,
+		{
+			form: {
+				client_id: salesforceConfig.salesforceConsumerKey,
+				client_secret: salesforceConfig.salesforceConsumerSecret,
+				grant_type: 'client_credentials',
+			},
+		}
+	);
+
+	test.skip(!response.ok(), 'Unable to authenticate with Salesforce.');
 
 	page.setViewportSize({height: 1080, width: 1920});
 
@@ -118,14 +129,17 @@ test.beforeEach(async ({apiHelpers, instanceSettingsPage, page}) => {
 		await page
 			.getByLabel('Consumer Secret')
 			.fill(salesforceConfig.salesforceConsumerSecret!);
-		await page
-			.getByLabel('Username')
-			.fill(salesforceConfig.salesforceUsername!);
 
-		await page
-			.locator('input[name*="password"]')
-			.filter({visible: true})
-			.fill(salesforceConfig.salesforcePassword!);
+		const clientCredentialsOption = page.getByRole('option', {
+			name: 'Client Credentials',
+		});
+
+		await clickAndExpectToBeVisible({
+			target: clientCredentialsOption,
+			trigger: page.getByRole('combobox', {name: 'Grant Type'}),
+		});
+
+		await clientCredentialsOption.click();
 
 		await instanceSettingsPage.saveAndWaitForAlert();
 	});
