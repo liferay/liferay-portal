@@ -95,6 +95,11 @@ public interface MasterPageResource {
 			com.liferay.portal.kernel.search.Sort[] sorts)
 		throws Exception;
 
+	public MasterPage patchDesignLibraryMasterPage(
+			String designLibraryExternalReferenceCode,
+			String masterPageExternalReferenceCode, MasterPage masterPage)
+		throws Exception;
+
 	public MasterPage patchSiteMasterPage(
 			String siteExternalReferenceCode,
 			String masterPageExternalReferenceCode, MasterPage masterPage)
@@ -139,6 +144,11 @@ public interface MasterPageResource {
 			com.liferay.portal.kernel.search.filter.Filter filter,
 			com.liferay.portal.kernel.search.Sort[] sorts, String callbackURL,
 			String contentType, String fieldNames)
+		throws Exception;
+
+	public MasterPage putDesignLibraryMasterPage(
+			String designLibraryExternalReferenceCode,
+			String masterPageExternalReferenceCode, MasterPage masterPage)
 		throws Exception;
 
 	public Page<com.liferay.portal.vulcan.permission.Permission>
@@ -256,4 +266,4 @@ public interface MasterPageResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-688386953
+// LIFERAY-REST-BUILDER-HASH:80529424

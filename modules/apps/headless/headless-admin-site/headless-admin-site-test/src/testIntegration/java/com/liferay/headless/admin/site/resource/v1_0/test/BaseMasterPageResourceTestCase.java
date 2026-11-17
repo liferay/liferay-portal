@@ -1258,6 +1258,39 @@ public abstract class BaseMasterPageResourceTestCase {
 	}
 
 	@Test
+	public void testPatchDesignLibraryMasterPage() throws Exception {
+		MasterPage postMasterPage =
+			testPatchDesignLibraryMasterPage_addMasterPage();
+
+		MasterPage randomPatchMasterPage = randomPatchMasterPage();
+
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		MasterPage patchMasterPage =
+			masterPageResource.patchDesignLibraryMasterPage(
+				null, postMasterPage.getExternalReferenceCode(),
+				randomPatchMasterPage);
+
+		MasterPage expectedPatchMasterPage = postMasterPage.clone();
+
+		BeanTestUtil.copyProperties(
+			randomPatchMasterPage, expectedPatchMasterPage);
+
+		MasterPage getMasterPage =
+			masterPageResource.getDesignLibraryMasterPage(
+				null, patchMasterPage.getExternalReferenceCode());
+
+		assertEquals(expectedPatchMasterPage, getMasterPage);
+		assertValid(getMasterPage);
+	}
+
+	protected MasterPage testPatchDesignLibraryMasterPage_addMasterPage()
+		throws Exception {
+
+		return masterPageResource.postSiteMasterPage(
+			testGroup.getExternalReferenceCode(), randomMasterPage());
+	}
+
+	@Test
 	public void testPatchSiteMasterPage() throws Exception {
 		MasterPage postMasterPage = testPatchSiteMasterPage_addMasterPage();
 
@@ -1416,6 +1449,45 @@ public abstract class BaseMasterPageResourceTestCase {
 		return permissionsMasterPageResource.postSiteMasterPage(
 			testGetSiteMasterPagesPage_getSiteExternalReferenceCode(),
 			masterPage);
+	}
+
+	@Test
+	public void testPutDesignLibraryMasterPage() throws Exception {
+		MasterPage postMasterPage =
+			testPutDesignLibraryMasterPage_addMasterPage();
+
+		MasterPage randomMasterPage = randomMasterPage();
+
+		MasterPage putMasterPage =
+			masterPageResource.putDesignLibraryMasterPage(
+				testPutDesignLibraryMasterPage_getDesignLibraryExternalReferenceCode(),
+				postMasterPage.getExternalReferenceCode(), randomMasterPage);
+
+		assertEquals(randomMasterPage, putMasterPage);
+		assertValid(putMasterPage);
+
+		MasterPage getMasterPage =
+			masterPageResource.getDesignLibraryMasterPage(
+				testPutDesignLibraryMasterPage_getDesignLibraryExternalReferenceCode(),
+				putMasterPage.getExternalReferenceCode());
+
+		assertEquals(randomMasterPage, getMasterPage);
+		assertValid(getMasterPage);
+	}
+
+	protected MasterPage testPutDesignLibraryMasterPage_addMasterPage()
+		throws Exception {
+
+		return masterPageResource.postSiteMasterPage(
+			testGroup.getExternalReferenceCode(), randomMasterPage());
+	}
+
+	protected String
+			testPutDesignLibraryMasterPage_getDesignLibraryExternalReferenceCode()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test
@@ -2987,4 +3059,4 @@ public abstract class BaseMasterPageResourceTestCase {
 		_masterPageResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1149626408
+// LIFERAY-REST-BUILDER-HASH:-670776846

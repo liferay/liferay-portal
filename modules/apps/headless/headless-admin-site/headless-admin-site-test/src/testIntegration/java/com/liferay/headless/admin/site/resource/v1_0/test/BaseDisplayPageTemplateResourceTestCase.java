@@ -1551,6 +1551,42 @@ public abstract class BaseDisplayPageTemplateResourceTestCase {
 	}
 
 	@Test
+	public void testPatchDesignLibraryDisplayPageTemplate() throws Exception {
+		DisplayPageTemplate postDisplayPageTemplate =
+			testPatchDesignLibraryDisplayPageTemplate_addDisplayPageTemplate();
+
+		DisplayPageTemplate randomPatchDisplayPageTemplate =
+			randomPatchDisplayPageTemplate();
+
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		DisplayPageTemplate patchDisplayPageTemplate =
+			displayPageTemplateResource.patchDesignLibraryDisplayPageTemplate(
+				null, postDisplayPageTemplate.getExternalReferenceCode(),
+				randomPatchDisplayPageTemplate);
+
+		DisplayPageTemplate expectedPatchDisplayPageTemplate =
+			postDisplayPageTemplate.clone();
+
+		BeanTestUtil.copyProperties(
+			randomPatchDisplayPageTemplate, expectedPatchDisplayPageTemplate);
+
+		DisplayPageTemplate getDisplayPageTemplate =
+			displayPageTemplateResource.getDesignLibraryDisplayPageTemplate(
+				null, patchDisplayPageTemplate.getExternalReferenceCode());
+
+		assertEquals(expectedPatchDisplayPageTemplate, getDisplayPageTemplate);
+		assertValid(getDisplayPageTemplate);
+	}
+
+	protected DisplayPageTemplate
+			testPatchDesignLibraryDisplayPageTemplate_addDisplayPageTemplate()
+		throws Exception {
+
+		return displayPageTemplateResource.postSiteDisplayPageTemplate(
+			testGroup.getExternalReferenceCode(), randomDisplayPageTemplate());
+	}
+
+	@Test
 	public void testPatchSiteDisplayPageTemplate() throws Exception {
 		DisplayPageTemplate postDisplayPageTemplate =
 			testPatchSiteDisplayPageTemplate_addDisplayPageTemplate();
@@ -1752,6 +1788,48 @@ public abstract class BaseDisplayPageTemplateResourceTestCase {
 	protected DisplayPageTemplate
 			testPostSiteDisplayPageTemplateFolderDisplayPageTemplate_addDisplayPageTemplate(
 				DisplayPageTemplate displayPageTemplate)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testPutDesignLibraryDisplayPageTemplate() throws Exception {
+		DisplayPageTemplate postDisplayPageTemplate =
+			testPutDesignLibraryDisplayPageTemplate_addDisplayPageTemplate();
+
+		DisplayPageTemplate randomDisplayPageTemplate =
+			randomDisplayPageTemplate();
+
+		DisplayPageTemplate putDisplayPageTemplate =
+			displayPageTemplateResource.putDesignLibraryDisplayPageTemplate(
+				testPutDesignLibraryDisplayPageTemplate_getDesignLibraryExternalReferenceCode(),
+				postDisplayPageTemplate.getExternalReferenceCode(),
+				randomDisplayPageTemplate);
+
+		assertEquals(randomDisplayPageTemplate, putDisplayPageTemplate);
+		assertValid(putDisplayPageTemplate);
+
+		DisplayPageTemplate getDisplayPageTemplate =
+			displayPageTemplateResource.getDesignLibraryDisplayPageTemplate(
+				testPutDesignLibraryDisplayPageTemplate_getDesignLibraryExternalReferenceCode(),
+				putDisplayPageTemplate.getExternalReferenceCode());
+
+		assertEquals(randomDisplayPageTemplate, getDisplayPageTemplate);
+		assertValid(getDisplayPageTemplate);
+	}
+
+	protected DisplayPageTemplate
+			testPutDesignLibraryDisplayPageTemplate_addDisplayPageTemplate()
+		throws Exception {
+
+		return displayPageTemplateResource.postSiteDisplayPageTemplate(
+			testGroup.getExternalReferenceCode(), randomDisplayPageTemplate());
+	}
+
+	protected String
+			testPutDesignLibraryDisplayPageTemplate_getDesignLibraryExternalReferenceCode()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -3469,4 +3547,4 @@ public abstract class BaseDisplayPageTemplateResourceTestCase {
 			DisplayPageTemplateResource _displayPageTemplateResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:2001146410
+// LIFERAY-REST-BUILDER-HASH:-272409918

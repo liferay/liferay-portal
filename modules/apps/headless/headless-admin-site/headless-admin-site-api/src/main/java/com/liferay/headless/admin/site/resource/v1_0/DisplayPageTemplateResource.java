@@ -104,6 +104,12 @@ public interface DisplayPageTemplateResource {
 			com.liferay.portal.kernel.search.Sort[] sorts)
 		throws Exception;
 
+	public DisplayPageTemplate patchDesignLibraryDisplayPageTemplate(
+			String designLibraryExternalReferenceCode,
+			String displayPageTemplateExternalReferenceCode,
+			DisplayPageTemplate displayPageTemplate)
+		throws Exception;
+
 	public DisplayPageTemplate patchSiteDisplayPageTemplate(
 			String siteExternalReferenceCode,
 			String displayPageTemplateExternalReferenceCode,
@@ -161,6 +167,12 @@ public interface DisplayPageTemplateResource {
 			com.liferay.portal.kernel.search.filter.Filter filter,
 			com.liferay.portal.kernel.search.Sort[] sorts, String callbackURL,
 			String contentType, String fieldNames)
+		throws Exception;
+
+	public DisplayPageTemplate putDesignLibraryDisplayPageTemplate(
+			String designLibraryExternalReferenceCode,
+			String displayPageTemplateExternalReferenceCode,
+			DisplayPageTemplate displayPageTemplate)
 		throws Exception;
 
 	public Page<com.liferay.portal.vulcan.permission.Permission>
@@ -279,4 +291,4 @@ public interface DisplayPageTemplateResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:923741493
+// LIFERAY-REST-BUILDER-HASH:521420188
