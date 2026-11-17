@@ -22,6 +22,8 @@ import com.liferay.portal.security.key.secret.SecretResolverUtil;
 
 import java.net.HttpURLConnection;
 
+import java.util.Objects;
+
 /**
  * @author Brian Wing Shun Chan
  */
@@ -36,6 +38,7 @@ public class SalesforceAccessTokenWebCacheItem implements WebCacheItem {
 				StringPool.POUND, companyId, StringPool.POUND,
 				salesforceConfiguration.consumerKey(), StringPool.POUND,
 				salesforceConfiguration.consumerSecret(), StringPool.POUND,
+				salesforceConfiguration.grantType(), StringPool.POUND,
 				salesforceConfiguration.password(), StringPool.POUND,
 				salesforceConfiguration.username()),
 			new SalesforceAccessTokenWebCacheItem(
@@ -58,6 +61,9 @@ public class SalesforceAccessTokenWebCacheItem implements WebCacheItem {
 						_salesforceConfiguration.consumerKey());
 			}
 
+			boolean clientCredentialsGrantType = Objects.equals(
+				_salesforceConfiguration.grantType(), "client_credentials");
+
 			Http.Options options = new Http.Options();
 
 			options.setParts(
@@ -68,13 +74,33 @@ public class SalesforceAccessTokenWebCacheItem implements WebCacheItem {
 					SecretResolverUtil.resolve(
 						_companyId, _salesforceConfiguration.consumerSecret())
 				).put(
-					"grant_type", "password"
+					"grant_type",
+					() -> {
+						if (clientCredentialsGrantType) {
+							return "client_credentials";
+						}
+
+						return "password";
+					}
 				).put(
 					"password",
-					SecretResolverUtil.resolve(
-						_companyId, _salesforceConfiguration.password())
+					() -> {
+						if (clientCredentialsGrantType) {
+							return null;
+						}
+
+						return SecretResolverUtil.resolve(
+							_companyId, _salesforceConfiguration.password());
+					}
 				).put(
-					"username", _salesforceConfiguration.username()
+					"username",
+					() -> {
+						if (clientCredentialsGrantType) {
+							return null;
+						}
+
+						return _salesforceConfiguration.username();
+					}
 				).build());
 			options.setLocation(
 				_salesforceConfiguration.loginURL() + "/services/oauth2/token");
