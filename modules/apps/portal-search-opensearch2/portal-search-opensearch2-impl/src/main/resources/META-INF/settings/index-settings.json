@@ -23,9 +23,9 @@
 				"filter": [
 					"lowercase",
 					"decimal_digit",
+					"liferay_filter_synonym_ar",
 					"arabic_stop",
 					"arabic_normalization",
-					"liferay_filter_synonym_ar",
 					"arabic_stemmer"
 				],
 				"tokenizer": "standard",
@@ -35,8 +35,8 @@
 				"filter": [
 					"catalan_elision",
 					"lowercase",
-					"catalan_stop",
 					"liferay_filter_synonym_ca",
+					"catalan_stop",
 					"catalan_stemmer"
 				],
 				"tokenizer": "standard",
@@ -45,8 +45,8 @@
 			"liferay_analyzer_de": {
 				"filter": [
 					"lowercase",
-					"german_stop",
 					"liferay_filter_synonym_de",
+					"german_stop",
 					"german_normalization",
 					"german_stemmer"
 				],
@@ -67,8 +67,8 @@
 			"liferay_analyzer_es": {
 				"filter": [
 					"lowercase",
-					"spanish_stop",
 					"liferay_filter_synonym_es",
+					"spanish_stop",
 					"spanish_stemmer"
 				],
 				"tokenizer": "standard",
@@ -77,8 +77,8 @@
 			"liferay_analyzer_fi": {
 				"filter": [
 					"lowercase",
-					"finnish_stop",
 					"liferay_filter_synonym_fi",
+					"finnish_stop",
 					"finnish_stemmer"
 				],
 				"tokenizer": "standard",
@@ -88,8 +88,8 @@
 				"filter": [
 					"french_elision",
 					"lowercase",
-					"french_stop",
 					"liferay_filter_synonym_fr",
+					"french_stop",
 					"french_stemmer"
 				],
 				"tokenizer": "standard",
@@ -98,8 +98,8 @@
 			"liferay_analyzer_hu": {
 				"filter": [
 					"lowercase",
-					"hungarian_stop",
 					"liferay_filter_synonym_hu",
+					"hungarian_stop",
 					"hungarian_stemmer"
 				],
 				"tokenizer": "standard",
@@ -109,8 +109,8 @@
 				"filter": [
 					"italian_elision",
 					"lowercase",
-					"italian_stop",
 					"liferay_filter_synonym_it",
+					"italian_stop",
 					"italian_stemmer"
 				],
 				"tokenizer": "standard",
@@ -122,8 +122,8 @@
 					"kuromoji_part_of_speech",
 					"cjk_width",
 					"lowercase",
-					"ja_stop",
 					"liferay_filter_synonym_ja",
+					"ja_stop",
 					"kuromoji_stemmer"
 				],
 				"tokenizer": "kuromoji_tokenizer",
@@ -132,8 +132,8 @@
 			"liferay_analyzer_nl": {
 				"filter": [
 					"lowercase",
-					"dutch_stop",
 					"liferay_filter_synonym_nl",
+					"dutch_stop",
 					"dutch_override",
 					"dutch_stemmer"
 				],
@@ -143,8 +143,8 @@
 			"liferay_analyzer_pt_BR": {
 				"filter": [
 					"lowercase",
-					"brazilian_stop",
 					"liferay_filter_synonym_pt_BR",
+					"brazilian_stop",
 					"brazilian_stemmer"
 				],
 				"tokenizer": "standard",
@@ -153,8 +153,8 @@
 			"liferay_analyzer_pt_PT": {
 				"filter": [
 					"lowercase",
-					"portuguese_stop",
 					"liferay_filter_synonym_pt_PT",
+					"portuguese_stop",
 					"portuguese_stemmer"
 				],
 				"tokenizer": "standard",
@@ -163,8 +163,8 @@
 			"liferay_analyzer_sv": {
 				"filter": [
 					"lowercase",
-					"swedish_stop",
 					"liferay_filter_synonym_sv",
+					"swedish_stop",
 					"swedish_stemmer"
 				],
 				"tokenizer": "standard",
