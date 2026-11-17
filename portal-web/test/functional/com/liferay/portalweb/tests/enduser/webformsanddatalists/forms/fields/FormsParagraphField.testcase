@@ -804,18 +804,16 @@ definition {
 			key_titleName = "Undo",
 			locator1 = "FormFields#TOOLBAR_ANY_ITEM_BUTTON");
 
-		AssertElementPresent(
-			key_fieldName = "Paragraph",
-			locator1 = "FormFields#PARAGRAPH_BODY_TEXT_CONTENT",
+		AssertTextEquals(
+			locator1 = "CKEditor#BODY_FIELD_CONTENTEDITABLE",
 			value1 = "Test");
 
 		Click(
 			key_titleName = "Redo",
 			locator1 = "FormFields#TOOLBAR_ANY_ITEM_BUTTON");
 
-		AssertElementPresent(
-			key_fieldName = "Paragraph",
-			locator1 = "FormFields#PARAGRAPH_BODY_TEXT_CONTENT",
+		AssertTextEquals(
+			locator1 = "CKEditor#BODY_FIELD_CONTENTEDITABLE",
 			value1 = "Test Body Text");
 	}
 
