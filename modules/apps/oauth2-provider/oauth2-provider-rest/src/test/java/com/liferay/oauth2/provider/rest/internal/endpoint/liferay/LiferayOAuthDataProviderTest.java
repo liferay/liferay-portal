@@ -39,6 +39,7 @@ import java.util.Map;
 import org.apache.cxf.rs.security.jose.jwk.JsonWebKey;
 import org.apache.cxf.rs.security.jose.jwk.JsonWebKeys;
 import org.apache.cxf.rs.security.jose.jwk.JwkUtils;
+import org.apache.cxf.rs.security.jose.jws.JwsHeaders;
 import org.apache.cxf.rs.security.jose.jws.JwsJwtCompactConsumer;
 import org.apache.cxf.rs.security.jose.jws.JwsUtils;
 import org.apache.cxf.rs.security.jose.jwt.JwtClaims;
@@ -160,7 +161,13 @@ public class LiferayOAuthDataProviderTest {
 		jwtClaims.setSubject(RandomTestUtil.randomString());
 
 		JwsJwtCompactConsumer jwsJwtCompactConsumer = new JwsJwtCompactConsumer(
-			_liferayOAuthDataProvider.processJwtAccessToken(jwtClaims));
+			ReflectionTestUtil.invoke(
+				_liferayOAuthDataProvider, "processJwtAccessToken",
+				new Class<?>[] {JwtClaims.class}, jwtClaims));
+
+		JwsHeaders jwsHeaders = jwsJwtCompactConsumer.getJwsHeaders();
+
+		Assert.assertEquals("at+jwt", jwsHeaders.getHeader("typ"));
 
 		LiferayJWKSService liferayJWKSService = new LiferayJWKSService();
 
