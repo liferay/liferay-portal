@@ -205,6 +205,21 @@ components:
             required: false
             schema:
                 type: string
+        taxCategoryIdPathParam:
+            in: path
+            description:
+                Identifier of a tax category. Addresses a single tax classification that products reference to drive tax calculation at checkout.
+            explode: false
+            name: taxCategoryId
+            required: true
+            schema:
+                description:
+                    The resource Id
+                example: 30130
+                format: int64
+                minimum: 0
+                type: integer
+            style: simple
     schemas:
         Account:
             description:
@@ -1142,6 +1157,26 @@ components:
             description:
                 Tax classification assigned to products to drive tax calculation at checkout. Readable and writable by external reference code so a vocabulary export can be imported into another environment; the Site Setting admin API remains the full featured management surface.
             properties:
+                creator:
+                    allOf:
+                        -   $ref: "#/components/schemas/Creator"
+                    description:
+                        User who created the tax category. Read only; embedded through the `creator` nested field.
+                    readOnly: true
+                dateCreated:
+                    description:
+                        The creation timestamp in ISO 8601 (UTC) of the tax category. It is read only and set when the tax category is first persisted. Filterable and sortable via the OData query parameter.
+                    example: 2017-07-21T19:30:00Z
+                    format: date-time
+                    readOnly: true
+                    type: string
+                dateModified:
+                    description:
+                        The last modification timestamp in ISO 8601 (UTC) of the tax category. It is read only and updated on each save. Filterable and sortable via the OData query parameter.
+                    example: 2017-07-21T19:30:00Z
+                    format: date-time
+                    readOnly: true
+                    type: string
                 description:
                     additionalProperties:
                         type: string
@@ -1183,6 +1218,10 @@ components:
                         hr_HR: Hrvatska
                         hu_HU: Horvatorszag
                     type: object
+                permissions:
+                    items:
+                        type: permission
+                    type: array
             required:
                 -   name
             type: object
@@ -6019,11 +6058,13 @@ paths:
     /tax-categories:
         get:
             description:
-                Lists every tax category visible to the caller. Calls CPTaxCategoryService.findCPTaxCategoriesByCompanyId + CPTaxCategoryService.countCPTaxCategoriesByCompanyId. Validation -- None (returns empty page when no matches). List query support — page and pageSize paginate the related entries.
+                Lists every tax category visible to the caller. Calls SearchUtil.search (index CPTaxCategory). Validation -- None (returns empty page when no matches). List query support — filterable fields -- dateCreated, dateModified, externalReferenceCode; sortable fields -- dateCreated, dateModified, externalReferenceCode.
             parameters:
+                -   $ref: "#/components/parameters/filterQueryParam"
                 -   $ref: "#/components/parameters/pageQueryParam"
                 -   $ref: "#/components/parameters/pageSizeQueryParam"
                 -   $ref: "#/components/parameters/searchQueryParam"
+                -   $ref: "#/components/parameters/sortQueryParam"
             responses:
                 200:
                     content:
@@ -6445,6 +6486,55 @@ paths:
                     description:
                         Unexpected error
             summary: Updates a Tax Category by ID.
+            tags:
+                -   TaxCategory
+    /tax-categories/{taxCategoryId}/permissions:
+        get:
+            description:
+                Lists the role permissions granted on the tax category identified by ID. Requires the PERMISSIONS action on the tax category.
+            operationId: getTaxCategoryPermissionsPage
+            parameters:
+                -   $ref: "#/components/parameters/taxCategoryIdPathParam"
+                -   in: query
+                    name: fields
+                    schema:
+                        type: string
+                -   in: query
+                    name: restrictFields
+                    schema:
+                        type: string
+                -   in: query
+                    name: roleNames
+                    schema:
+                        type: string
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+                    description:
+                        The role permissions of the tax category.
+            summary: Lists the permissions of a tax category by ID.
+            tags:
+                -   TaxCategory
+        put:
+            description:
+                Replaces the role permissions granted on the tax category identified by ID. Roles missing from the request lose their individual permissions. Requires the PERMISSIONS action on the tax category.
+            operationId: putTaxCategoryPermissionsPage
+            parameters:
+                -   $ref: "#/components/parameters/taxCategoryIdPathParam"
+            requestBody:
+                content:
+                    application/json: {}
+                    application/xml: {}
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+                    description:
+                        The updated role permissions of the tax category.
+            summary: Replaces the permissions of a tax category by ID.
             tags:
                 -   TaxCategory
 tags:
