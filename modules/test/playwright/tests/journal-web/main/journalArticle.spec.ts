@@ -3496,3 +3496,109 @@ baseTest(
 		).toContainText('Draft');
 	}
 );
+
+baseTest(
+	'Rich Text field of a structure keeps the content typed in the source editor',
+	{tag: '@LPD-115982'},
+	async ({apiHelpers, journalEditArticlePage, journalPage, page, site}) => {
+		const content = getRandomString();
+		const structureName = getRandomString();
+		const title = getRandomString();
+
+		await apiHelpers.dataEngine.createStructure(
+			site.id,
+			getDataStructureDefinition({
+				defaultLanguageId: 'en_US',
+				fields: [{fieldType: 'rich_text', name: 'RichText'}],
+				name: structureName,
+			})
+		);
+
+		await journalEditArticlePage.goto({
+			siteUrl: site.friendlyUrlPath,
+			structureName,
+		});
+
+		await journalEditArticlePage.fillTitle(title);
+
+		const richTextField = page.locator('[data-field-name="RichText"]');
+
+		const sourceButton = richTextField.getByRole('button', {
+			name: 'Source',
+		});
+
+		await sourceButton.click();
+
+		await richTextField
+			.getByLabel('Source code editing area')
+			.fill(`<p>${content}</p>`);
+
+		await sourceButton.click();
+
+		await journalEditArticlePage.publishArticle();
+
+		await journalPage.goto(site.friendlyUrlPath);
+
+		await journalEditArticlePage.editArticle(title);
+
+		await expect(richTextField.locator('.ck-content')).toHaveText(content);
+	}
+);
+
+baseTest(
+	'Duplicated Rich Text field of a structure keeps the content of every instance',
+	{tag: '@LPD-115982'},
+	async ({apiHelpers, journalEditArticlePage, journalPage, page, site}) => {
+		const firstContent = getRandomString();
+		const secondContent = getRandomString();
+		const structureName = getRandomString();
+		const title = getRandomString();
+
+		await apiHelpers.dataEngine.createStructure(
+			site.id,
+			getDataStructureDefinition({
+				defaultLanguageId: 'en_US',
+				fields: [
+					{
+						fieldType: 'rich_text',
+						name: 'RichText',
+						repeatable: true,
+					},
+				],
+				name: structureName,
+			})
+		);
+
+		await journalEditArticlePage.goto({
+			siteUrl: site.friendlyUrlPath,
+			structureName,
+		});
+
+		await journalEditArticlePage.fillTitle(title);
+
+		const richTextEditables = page
+			.locator('[data-field-name="RichText"]')
+			.locator('.ck-content');
+
+		await richTextEditables.first().fill(firstContent);
+
+		await page
+			.getByRole('button', {name: /Add Duplicate Field/})
+			.first()
+			.click();
+
+		await expect(richTextEditables).toHaveCount(2);
+
+		await richTextEditables.nth(1).fill(secondContent);
+
+		await journalEditArticlePage.publishArticle();
+
+		await journalPage.goto(site.friendlyUrlPath);
+
+		await journalEditArticlePage.editArticle(title);
+
+		await expect(richTextEditables).toHaveCount(2);
+		await expect(richTextEditables.nth(0)).toHaveText(firstContent);
+		await expect(richTextEditables.nth(1)).toHaveText(secondContent);
+	}
+);
