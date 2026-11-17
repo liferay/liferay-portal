@@ -130,7 +130,7 @@ public class CPTaxCategoryLocalServiceImpl
 		cpTaxCategoryPersistence.removeByCompanyId(companyId);
 	}
 
-	@Indexable(type = IndexableType.REINDEX)
+	@Indexable(type = IndexableType.DELETE)
 	@Override
 	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
 	public CPTaxCategory deleteCPTaxCategory(CPTaxCategory cpTaxCategory)
