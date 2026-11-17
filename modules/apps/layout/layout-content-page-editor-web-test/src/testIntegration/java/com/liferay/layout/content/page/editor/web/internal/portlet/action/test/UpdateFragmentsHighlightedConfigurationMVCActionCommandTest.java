@@ -17,6 +17,7 @@ import com.liferay.layout.util.structure.DropZoneLayoutStructureItem;
 import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
@@ -51,8 +52,6 @@ import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.segments.service.SegmentsExperienceLocalService;
 
 import jakarta.portlet.ActionRequest;
-
-import java.util.Collections;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -266,8 +265,10 @@ public class UpdateFragmentsHighlightedConfigurationMVCActionCommandTest {
 				layoutStructure.getDropZoneLayoutStructureItem();
 
 		dropZoneLayoutStructureItem.setAllowNewFragmentEntries(false);
-		dropZoneLayoutStructureItem.setFragmentEntryKeys(
-			Collections.singletonList("BASIC_COMPONENT-heading"));
+		dropZoneLayoutStructureItem.setFragmentEntriesJSONArray(
+			JSONUtil.putAll(
+				JSONUtil.put(
+					"fragmentEntryRendererKey", "BASIC_COMPONENT-heading")));
 
 		_layoutPageTemplateStructureLocalService.
 			updateLayoutPageTemplateStructureData(

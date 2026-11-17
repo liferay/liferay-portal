@@ -11,8 +11,6 @@ import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -22,14 +20,10 @@ public class DropZoneLayoutStructureItem extends LayoutStructureItem {
 
 	public DropZoneLayoutStructureItem(String parentItemId) {
 		super(parentItemId);
-
-		_fragmentEntryKeys = Collections.emptyList();
 	}
 
 	public DropZoneLayoutStructureItem(String itemId, String parentItemId) {
 		super(itemId, parentItemId);
-
-		_fragmentEntryKeys = Collections.emptyList();
 	}
 
 	@Override
@@ -50,10 +44,7 @@ public class DropZoneLayoutStructureItem extends LayoutStructureItem {
 				dropZoneLayoutStructureItem._allowNewFragmentEntries) ||
 			!Objects.equals(
 				_fragmentEntriesJSONArray,
-				dropZoneLayoutStructureItem._fragmentEntriesJSONArray) ||
-			!Objects.equals(
-				_fragmentEntryKeys,
-				dropZoneLayoutStructureItem._fragmentEntryKeys)) {
+				dropZoneLayoutStructureItem._fragmentEntriesJSONArray)) {
 
 			return false;
 		}
@@ -65,23 +56,12 @@ public class DropZoneLayoutStructureItem extends LayoutStructureItem {
 		return _fragmentEntriesJSONArray;
 	}
 
-	/**
-	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
-	 *             #getFragmentEntriesJSONArray()}
-	 */
-	@Deprecated
-	public List<String> getFragmentEntryKeys() {
-		return _fragmentEntryKeys;
-	}
-
 	@Override
 	public JSONObject getItemConfigJSONObject() {
 		return JSONUtil.put(
 			"allowNewFragmentEntries", _allowNewFragmentEntries
 		).put(
 			"fragmentEntries", _fragmentEntriesJSONArray
-		).put(
-			"fragmentEntryKeys", _fragmentEntryKeys
 		);
 	}
 
@@ -109,15 +89,6 @@ public class DropZoneLayoutStructureItem extends LayoutStructureItem {
 		_fragmentEntriesJSONArray = fragmentEntriesJSONArray;
 	}
 
-	/**
-	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
-	 *             #setFragmentEntriesJSONArray(JSONArray)}
-	 */
-	@Deprecated
-	public void setFragmentEntryKeys(List<String> fragmentEntryKeys) {
-		_fragmentEntryKeys = fragmentEntryKeys;
-	}
-
 	@Override
 	public void updateItemConfig(JSONObject itemConfigJSONObject) {
 		if (itemConfigJSONObject.has("allowNewFragmentEntries")) {
@@ -129,18 +100,9 @@ public class DropZoneLayoutStructureItem extends LayoutStructureItem {
 			setFragmentEntriesJSONArray(
 				itemConfigJSONObject.getJSONArray("fragmentEntries"));
 		}
-
-		if (itemConfigJSONObject.has("fragmentEntryKeys")) {
-			JSONArray fragmentEntryKeysJSONArray =
-				itemConfigJSONObject.getJSONArray("fragmentEntryKeys");
-
-			_fragmentEntryKeys = JSONUtil.toStringList(
-				fragmentEntryKeysJSONArray);
-		}
 	}
 
 	private boolean _allowNewFragmentEntries = true;
 	private JSONArray _fragmentEntriesJSONArray;
-	private List<String> _fragmentEntryKeys;
 
 }

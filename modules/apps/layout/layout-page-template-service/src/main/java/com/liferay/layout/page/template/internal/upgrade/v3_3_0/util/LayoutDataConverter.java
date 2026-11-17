@@ -235,8 +235,19 @@ public class LayoutDataConverter {
 			JSONArray fragmentEntryKeysJSONArray =
 				inputDataJSONObject.getJSONArray("fragmentEntryKeys");
 
-			dropZoneLayoutStructureItem.setFragmentEntryKeys(
-				JSONUtil.toStringList(fragmentEntryKeysJSONArray));
+			if (fragmentEntryKeysJSONArray != null) {
+				JSONArray fragmentEntriesJSONArray = JSONUtil.putAll();
+
+				for (int i = 0; i < fragmentEntryKeysJSONArray.length(); i++) {
+					fragmentEntriesJSONArray.put(
+						JSONUtil.put(
+							"fragmentEntryRendererKey",
+							fragmentEntryKeysJSONArray.getString(i)));
+				}
+
+				dropZoneLayoutStructureItem.setFragmentEntriesJSONArray(
+					fragmentEntriesJSONArray);
+			}
 
 			return;
 		}
