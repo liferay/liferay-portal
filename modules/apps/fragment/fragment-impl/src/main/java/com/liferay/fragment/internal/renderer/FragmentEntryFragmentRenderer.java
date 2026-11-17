@@ -394,8 +394,7 @@ public class FragmentEntryFragmentRenderer implements FragmentRenderer {
 			HttpServletResponse httpServletResponse)
 		throws PortalException {
 
-		String content = StringPool.BLANK;
-		String nonce = _NONCE;
+		boolean cacheable = false;
 
 		FragmentEntryLink fragmentEntryLink = _getFragmentEntryLink(
 			fragmentRendererContext);
@@ -404,12 +403,13 @@ public class FragmentEntryFragmentRenderer implements FragmentRenderer {
 			fragmentEntryLink.getCompanyId(),
 			_portal.getForwardedHost(httpServletRequest));
 
-		boolean cacheable = false;
-
 		if (fragmentCacheHostAllowed) {
 			cacheable = _isCacheable(
 				fragmentEntryLink, fragmentRendererContext);
 		}
+
+		String content = StringPool.BLANK;
+		String nonce = _NONCE;
 
 		if (cacheable) {
 			content = _fragmentEntryLinkCache.getFragmentEntryLinkContent(
