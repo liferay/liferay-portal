@@ -65,8 +65,6 @@ public class SampleSQLBuilderTest {
 	public void testGenerateAndInsertSampleSQL() throws Exception {
 		ToolDependencies.wireBasic();
 
-		DBManagerUtil.setDB(DBType.HYPERSONIC, null);
-
 		Properties properties = new Properties();
 
 		File tempDir = new File(
@@ -85,6 +83,8 @@ public class SampleSQLBuilderTest {
 			System.setProperty("user.dir", tempDir.getAbsolutePath());
 
 			new SampleSQLBuilder();
+
+			DBManagerUtil.setDB(DBType.HYPERSONIC, null);
 
 			_loadHypersonic(tempDir.getAbsolutePath());
 		}
