@@ -1,0 +1,170 @@
+{
+	"availableLanguageIds": [
+		"en_US"
+	],
+	"contentType": "journal",
+	"dataDefinitionFields": [
+		{
+			"customProperties": {
+				"dataType": "string",
+				"fieldReference": "releaseKey"
+			},
+			"fieldType": "text",
+			"indexType": "keyword",
+			"label": {
+				"en_US": "Release Key"
+			},
+			"name": "releaseKey",
+			"required": true,
+			"tip": {
+				"en_US": "The release ID, for example 7413-u86 or 7010-de-102."
+			}
+		},
+		{
+			"customProperties": {
+				"dataType": "date",
+				"fieldReference": "releaseDate"
+			},
+			"fieldType": "date",
+			"indexType": "keyword",
+			"label": {
+				"en_US": "Release Date"
+			},
+			"localizable": true,
+			"name": "releaseDate",
+			"required": true
+		},
+		{
+			"customProperties": {
+				"dataType": "string",
+				"fieldReference": "keyHighlights"
+			},
+			"fieldType": "rich_text",
+			"indexType": "text",
+			"label": {
+				"en_US": "Key Highlights"
+			},
+			"localizable": true,
+			"name": "keyHighlights"
+		},
+		{
+			"customProperties": {
+				"dataType": "string",
+				"fieldReference": "importantChanges"
+			},
+			"fieldType": "rich_text",
+			"indexType": "text",
+			"label": {
+				"en_US": "Important Changes"
+			},
+			"localizable": true,
+			"name": "importantChanges"
+		},
+		{
+			"customProperties": {
+				"dataType": "string",
+				"fieldReference": "knownIssues"
+			},
+			"fieldType": "rich_text",
+			"indexType": "text",
+			"label": {
+				"en_US": "Known Issues"
+			},
+			"localizable": true,
+			"name": "knownIssues"
+		},
+		{
+			"customProperties": {
+				"dataType": "string",
+				"fieldReference": "security"
+			},
+			"fieldType": "rich_text",
+			"indexType": "text",
+			"label": {
+				"en_US": "Security"
+			},
+			"localizable": true,
+			"name": "security"
+		}
+	],
+	"dataDefinitionKey": "LEGACY-RELEASE-HIGHLIGHT",
+	"defaultDataLayout": {
+		"dataLayoutPages": [
+			{
+				"dataLayoutRows": [
+					{
+						"dataLayoutColumns": [
+							{
+								"columnSize": 12,
+								"fieldNames": [
+									"releaseKey"
+								]
+							}
+						]
+					},
+					{
+						"dataLayoutColumns": [
+							{
+								"columnSize": 12,
+								"fieldNames": [
+									"releaseDate"
+								]
+							}
+						]
+					},
+					{
+						"dataLayoutColumns": [
+							{
+								"columnSize": 12,
+								"fieldNames": [
+									"keyHighlights"
+								]
+							}
+						]
+					},
+					{
+						"dataLayoutColumns": [
+							{
+								"columnSize": 12,
+								"fieldNames": [
+									"importantChanges"
+								]
+							}
+						]
+					},
+					{
+						"dataLayoutColumns": [
+							{
+								"columnSize": 12,
+								"fieldNames": [
+									"knownIssues"
+								]
+							}
+						]
+					},
+					{
+						"dataLayoutColumns": [
+							{
+								"columnSize": 12,
+								"fieldNames": [
+									"security"
+								]
+							}
+						]
+					}
+				]
+			}
+		],
+		"name": {
+			"en_US": "LEGACY-RELEASE-HIGHLIGHT"
+		},
+		"paginationMode": "single-page"
+	},
+	"defaultLanguageId": "en_US",
+	"description": {
+		"en_US": "This structure holds the highlights of one Liferay DXP release: key highlights, important changes, known issues, and security."
+	},
+	"name": {
+		"en_US": "LEGACY-RELEASE-HIGHLIGHT"
+	}
+}
