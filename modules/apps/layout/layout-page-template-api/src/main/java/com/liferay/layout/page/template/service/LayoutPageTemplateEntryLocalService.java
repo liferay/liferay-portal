@@ -534,4 +534,4 @@ public interface LayoutPageTemplateEntryLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1796412744
+// LIFERAY-SERVICE-BUILDER-HASH:-1365817209
