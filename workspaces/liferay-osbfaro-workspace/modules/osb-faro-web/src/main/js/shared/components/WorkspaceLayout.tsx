@@ -162,13 +162,6 @@ const LifecycleEdit = lazy(
 			/* webpackChunkName: "LifecycleEdit" */ 'lifecycle/pages/EditLifecycle'
 		)
 );
-const LifecycleRedirect = lazy(
-	() =>
-		import(
-
-			/* webpackChunkName: "LifecycleRedirect" */ 'lifecycle/pages/LifecycleRedirect'
-		)
-);
 
 /* Segments */
 
@@ -365,21 +358,11 @@ const WorkspaceLayer = ({groupId}: {groupId: string}) => {
 								<Route
 									element={
 										<BundleRouter
-											data={LifecycleRedirect}
-											destructured={false}
-										/>
-									}
-									path=":channelId?/lifecycle"
-								/>
-
-								<Route
-									element={
-										<BundleRouter
 											data={LifecycleDashboard}
 											destructured={false}
 										/>
 									}
-									path=":channelId?/lifecycle/:lifecycleId"
+									path=":channelId?/lifecycle/:lifecycleId?"
 								/>
 							</Route>
 

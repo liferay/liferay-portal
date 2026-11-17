@@ -5,6 +5,7 @@ import processingStateURL from '../../../images/states/lifecycle_processing_stat
 import AccountsDataSet from 'shared/components/accounts-data-set/AccountsDataSet';
 import BasePage from 'shared/components/base-page';
 import ClayEmptyState from '@clayui/empty-state';
+import ErrorDisplay from 'shared/components/ErrorDisplay';
 import FilterPicker from '../components/FilterPicker';
 import getCN from 'classnames';
 import LifecycleSwitchPanel, {
@@ -17,7 +18,7 @@ import LifecyclesPage from 'lifecycle/components/LifecyclesPage';
 import TrailingNinetyDayRange from 'shared/components/TrailingNinetyDayRange';
 import Loading from 'shared/components/Loading';
 import OverviewSection from '../components/OverviewSection';
-import React, {useContext, useRef, useState} from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
 import SegmentDropdown from 'shared/components/SegmentDropdown';
 import {ChannelContext} from 'shared/context/channel';
 import {ClayButtonWithIcon} from '@clayui/button';
@@ -25,8 +26,11 @@ import {
 	LifecycleContextProvider,
 	useLifecycle,
 } from '../context/LifecycleContext';
-import {LifecycleAccountDataEmptyState} from 'lifecycle/components/LifecycleEmptyStates';
-import {useParams} from 'react-router-dom';
+import {
+	ConfigureLifecycleEmptyState,
+	LifecycleAccountDataEmptyState,
+} from 'lifecycle/components/LifecycleEmptyStates';
+import {useNavigate, useParams} from 'react-router-dom';
 import {RangeKeyTimeRanges} from 'shared/util/constants';
 import {Routes, toRoute} from 'shared/util/router';
 import {SectionHeader} from 'shared/components/SectionHeader';
@@ -145,7 +149,9 @@ const BaseLifecycle = () => {
 	const currentUser = useCurrentUser();
 	const {selectedChannel} = useContext(ChannelContext);
 
-	const {channelId, groupId, lifecycleId} = useParams();
+	const navigate = useNavigate();
+
+	const {channelId, groupId, lifecycleId: lifecycleIdParam} = useParams();
 
 	const {refetch: refetchAccountData, status: accountDataStatus} =
 		useLifecycleAccountData();
@@ -153,13 +159,47 @@ const BaseLifecycle = () => {
 	const {segmentId, segmentName, setSegment} = useSegmentFilter();
 
 	const {
+		data: defaultLifecycles,
+		error: defaultLifecyclesError,
+		loading: defaultLifecyclesLoading,
+		refetch: refetchDefaultLifecycles,
+	} = useRequest({
+		dataSourceFn: API.lifecycle.fetchLifecycles,
+		resetStateIfSkipingRequest: true,
+		skipRequest: !!lifecycleIdParam,
+		variables: {
+			channelId,
+			defaultAccountLifecycle: true,
+			groupId: groupId!,
+		},
+	});
+
+	const lifecycleId =
+		lifecycleIdParam ?? defaultLifecycles?.[0]?.externalReferenceCode;
+
+	const {
 		data: lifecycle,
 		error: lifecycleError,
 		loading: lifecycleLoading,
 	} = useRequest({
 		dataSourceFn: API.lifecycle.fetchLifecycle,
+		resetStateIfSkipingRequest: true,
+		skipRequest: !lifecycleId,
 		variables: {groupId: groupId!, lifecycleId: lifecycleId!},
 	});
+
+	useEffect(() => {
+		if (!lifecycleIdParam && lifecycleId) {
+			navigate(
+				toRoute(Routes.LIFECYCLE_DASHBOARD, {
+					channelId,
+					groupId,
+					lifecycleId,
+				}),
+				{replace: true}
+			);
+		}
+	}, [channelId, groupId, lifecycleId, lifecycleIdParam, navigate]);
 
 	const switchButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -227,7 +267,10 @@ const BaseLifecycle = () => {
 
 	const title = lifecycle?.name ?? '';
 
-	if (accountDataStatus === AccountDataStatus.Loading || lifecycleLoading) {
+	if (
+		accountDataStatus === AccountDataStatus.Loading ||
+		(lifecycleId ? lifecycleLoading : defaultLifecyclesLoading)
+	) {
 		return (
 			<LifecyclesPage showTitle={false}>
 				<Loading />
@@ -244,6 +287,21 @@ const BaseLifecycle = () => {
 					onReload={refetchAccountData}
 					status={accountDataStatus}
 				/>
+			</LifecyclesPage>
+		);
+	}
+
+	if (!lifecycleId) {
+		return (
+			<LifecyclesPage>
+				{defaultLifecyclesError ? (
+					<ErrorDisplay onReload={refetchDefaultLifecycles} spacer />
+				) : (
+					<ConfigureLifecycleEmptyState
+						channelId={channelId!}
+						groupId={groupId!}
+					/>
+				)}
 			</LifecyclesPage>
 		);
 	}
