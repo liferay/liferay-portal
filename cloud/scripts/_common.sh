@@ -63,7 +63,7 @@ function confirm_teardown {
 }
 
 function get_database_engine {
-	jq --raw-output '.setup.database.engine // empty' "${1}"
+	jq --raw-output '.setup.database.engine // error("setup.database.engine is missing")' "${1}"
 }
 
 function get_tfstate_prefix {
