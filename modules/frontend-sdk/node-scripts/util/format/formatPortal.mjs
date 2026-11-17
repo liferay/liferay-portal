@@ -20,6 +20,7 @@ import formatPackageJSONFiles from './formatters/formatPackageJSONFiles.mjs';
 import formatPackageJSONForbidAlloyUI from './formatters/formatPackageJSONForbidAlloyUI.mjs';
 import formatPackageJSONForbidNestedWorkspaces from './formatters/formatPackageJSONForbidNestedWorkspaces.mjs';
 import formatPackageJSONTypesLocation from './formatters/formatPackageJSONTypesLocation.mjs';
+import formatPackageJSONTypesPackages from './formatters/formatPackageJSONTypesPackages.mjs';
 import formatPackageJSONVersionAlignment from './formatters/formatPackageJSONVersionAlignment.mjs';
 import formatSourceFiles from './formatters/formatSourceFiles.mjs';
 import formatTsconfigFiles from './formatters/formatTsconfigFiles.mjs';
@@ -115,6 +116,10 @@ export default async function formatPortal(check, files) {
 		}
 
 		if (!(await formatPackageJSONVersionAlignment(packageJSONs))) {
+			checksPassed = false;
+		}
+
+		if (!(await formatPackageJSONTypesPackages(packageJSONs))) {
 			checksPassed = false;
 		}
 
