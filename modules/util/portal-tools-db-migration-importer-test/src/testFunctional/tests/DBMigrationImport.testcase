@@ -26,6 +26,50 @@ definition {
 
 	@priority = 5
 	test CanImportDatabaseToPostgreSQL {
+		task ("Add a custom table with a date in the daylight saving time gap of the importer host time zone") {
+			ServerAdministration.openServerAdmin();
+
+			var script = '''
+				import com.liferay.portal.kernel.dao.db.DB;
+				import com.liferay.portal.kernel.dao.db.DBManagerUtil;
+				import com.liferay.portal.kernel.dao.jdbc.DataAccess;
+
+				import java.sql.Connection;
+				import java.sql.PreparedStatement;
+				import java.sql.Timestamp;
+
+				DB db = DBManagerUtil.getDB();
+
+				db.runSQL("create table CustomTable (id LONG not null primary key, createDate DATE null)");
+
+				Connection connection = null;
+				PreparedStatement preparedStatement = null;
+
+				try {
+					connection = DataAccess.getConnection();
+
+					preparedStatement = connection.prepareStatement("insert into CustomTable values (1, ?)");
+
+					preparedStatement.setTimestamp(1, Timestamp.valueOf("2026-03-29 02:30:00"));
+
+					preparedStatement.executeUpdate();
+				}
+				finally {
+					DataAccess.cleanUp(connection, preparedStatement);
+				}
+
+				out.println("Added custom table");
+			''';
+
+			ServerAdministration.executeScript(
+				language = "Groovy",
+				script = ${script});
+
+			AssertTextEquals.assertPartialText(
+				locator1 = "ServerAdministrationScript#OUTPUT_FIELD",
+				value1 = "Added custom table");
+		}
+
 		task ("Export origin database schema definition") {
 			DBMigrationExportImport.dbSchemaDefinitionExport();
 		}
@@ -54,6 +98,49 @@ definition {
 			PagesAdmin.enableWidgetPages();
 
 			Smoke.runSmoke();
+
+			SignOut.signOut();
+		}
+
+		task ("Ensure that the custom table date was migrated unchanged") {
+			SignIn.signInTestSetup();
+
+			ServerAdministration.openServerAdmin();
+
+			var script = '''
+				import com.liferay.portal.kernel.dao.jdbc.DataAccess;
+
+				import java.sql.Connection;
+				import java.sql.ResultSet;
+				import java.sql.Statement;
+
+				Connection connection = null;
+				Statement statement = null;
+				ResultSet resultSet = null;
+
+				try {
+					connection = DataAccess.getConnection();
+
+					statement = connection.createStatement();
+
+					resultSet = statement.executeQuery("select createDate from CustomTable");
+
+					while (resultSet.next()) {
+						out.println("Custom table date: " + resultSet.getTimestamp(1));
+					}
+				}
+				finally {
+					DataAccess.cleanUp(connection, statement, resultSet);
+				}
+			''';
+
+			ServerAdministration.executeScript(
+				language = "Groovy",
+				script = ${script});
+
+			AssertTextEquals.assertPartialText(
+				locator1 = "ServerAdministrationScript#OUTPUT_FIELD",
+				value1 = "Custom table date: 2026-03-29 02:30:00.0");
 
 			SignOut.signOut();
 		}

@@ -66,6 +66,7 @@
 			<copy-drivers />
 
 			<exec dir="${liferay.home}/tools/portal-tools-db-migration-importer" executable="/bin/bash" failonerror="false" output="db-migration-importer.log">
+				<env key="TZ" value="Europe/Budapest" />
 				<arg value="${liferay.home}/tools/portal-tools-db-migration-importer/db_migration_importer.sh" />
 				<arg value="--source-jdbc-url" />
 				<arg value="${source.jdbc.url}" />
