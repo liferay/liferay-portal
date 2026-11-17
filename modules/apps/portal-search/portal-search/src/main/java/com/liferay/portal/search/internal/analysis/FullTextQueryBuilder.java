@@ -132,7 +132,24 @@ public class FullTextQueryBuilder {
 
 		builder.setTrailingStarAware(true);
 
-		return builder.build(field, phrase);
+		Query query = builder.build(field, phrase);
+
+		String analyzer = IndexAnalyzerUtil.getIndexAnalyzer(field);
+
+		if (analyzer == null) {
+			return query;
+		}
+
+		builder.setAnalyzer(analyzer);
+
+		BooleanQuery booleanQuery = new BooleanQuery();
+
+		booleanQuery.add(query, BooleanClauseOccur.SHOULD);
+
+		booleanQuery.add(
+			builder.build(field, phrase), BooleanClauseOccur.SHOULD);
+
+		return booleanQuery;
 	}
 
 	private Query _createProximityQuery(String field, String value) {
