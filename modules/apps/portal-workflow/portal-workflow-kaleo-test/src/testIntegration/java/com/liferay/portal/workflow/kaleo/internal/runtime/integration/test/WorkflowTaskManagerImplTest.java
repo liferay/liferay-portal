@@ -1490,13 +1490,9 @@ public class WorkflowTaskManagerImplTest extends BaseWorkflowManagerTestCase {
 
 		String name = RandomTestUtil.randomString();
 
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				TestPropsValues.getUser())) {
-
-			_workflowDefinitionManager.deployWorkflowDefinition(
-				content.getBytes(), _company.getCompanyId(), null, name, name,
-				_adminUser.getUserId());
-		}
+		_workflowDefinitionManager.deployWorkflowDefinition(
+			content.getBytes(), _company.getCompanyId(), null, name, name,
+			_adminUser.getUserId());
 
 		_activateWorkflow(DLFolder.class.getName(), 0, -1, name, 1);
 
