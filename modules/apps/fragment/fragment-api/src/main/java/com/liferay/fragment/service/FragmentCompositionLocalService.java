@@ -428,4 +428,4 @@ public interface FragmentCompositionLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:550365415
+// LIFERAY-SERVICE-BUILDER-HASH:-1429190197
