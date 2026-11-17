@@ -126,16 +126,20 @@ public class SynonymSearchTest {
 	@Test
 	public void testSearchQuotedPhrase() {
 		_assertSearch(
-			1, "\"denunciado pelo Ministério Público\"", LocaleUtil.BRAZIL);
-		_assertSearch(
 			1, "\"Ministério Público de Santa Catarina\"", LocaleUtil.BRAZIL);
+		_assertSearch(
+			1, "\"denunciado pelo Ministério Público\"", LocaleUtil.BRAZIL);
 		_assertSearch(1, "\"perseguido pelo bichano\"", LocaleUtil.BRAZIL);
 		_assertSearch(1, "\"perseguido pelo gato\"", LocaleUtil.BRAZIL);
 		_assertSearch(2, "\"Tribunal de Justiça\"", LocaleUtil.BRAZIL);
 	}
 
-	private static void _addJournalArticle(Map<Locale, String> localeStringMap)
+	private static void _addJournalArticle(Locale locale, String title)
 		throws Exception {
+
+		Map<Locale, String> localeStringMap = HashMapBuilder.put(
+			locale, title
+		).build();
 
 		JournalTestUtil.addArticle(
 			_group.getGroupId(), 0,
@@ -149,29 +153,20 @@ public class SynonymSearchTest {
 		for (Map.Entry<Locale, String> entry : _synonymsMap.entrySet()) {
 			String[] parts = StringUtil.split(entry.getValue());
 
-			_addJournalArticle(
-				HashMapBuilder.put(
-					entry.getKey(), parts[0]
-				).build());
-			_addJournalArticle(
-				HashMapBuilder.put(
-					entry.getKey(), parts[1]
-				).build());
+			_addJournalArticle(entry.getKey(), parts[0]);
+			_addJournalArticle(entry.getKey(), parts[1]);
 		}
 
-		for (String title :
-				new String[] {
-					"Decisão do Tribunal de Justiça hoje",
-					"Ministério Público de Santa Catarina abre vaga",
-					"Promotor denunciado pelo MP ontem",
-					"Rato perseguido pelo gato fugiu", "Recurso ao TJ negado"
-				}) {
-
-			_addJournalArticle(
-				HashMapBuilder.put(
-					LocaleUtil.BRAZIL, title
-				).build());
-		}
+		_addJournalArticle(
+			LocaleUtil.BRAZIL, "Decisão do Tribunal de Justiça hoje");
+		_addJournalArticle(
+			LocaleUtil.BRAZIL,
+			"Ministério Público de Santa Catarina abre vaga");
+		_addJournalArticle(
+			LocaleUtil.BRAZIL, "Promotor denunciado pelo MP ontem");
+		_addJournalArticle(
+			LocaleUtil.BRAZIL, "Rato perseguido pelo gato fugiu");
+		_addJournalArticle(LocaleUtil.BRAZIL, "Recurso ao TJ negado");
 	}
 
 	private static void _addSynonymSets() {
