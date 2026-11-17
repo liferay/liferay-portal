@@ -6,10 +6,10 @@
 package com.liferay.layout.utility.page.service.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
 import com.liferay.layout.test.util.ContentLayoutTestUtil;
 import com.liferay.layout.utility.page.constants.LayoutUtilityPageActionKeys;
+import com.liferay.layout.utility.page.exception.LayoutUtilityPageEntryPreviewFileEntryIdException;
 import com.liferay.layout.utility.page.model.LayoutUtilityPageEntry;
 import com.liferay.layout.utility.page.service.LayoutUtilityPageEntryLocalService;
 import com.liferay.layout.utility.page.service.LayoutUtilityPageEntryService;
@@ -97,6 +97,18 @@ public class LayoutUtilityPageEntryServiceTest {
 		ServiceContextThreadLocal.popServiceContext();
 	}
 
+	@Test(expected = LayoutUtilityPageEntryPreviewFileEntryIdException.class)
+	public void testAddLayoutUtilityPageEntryWithPreviewFileEntryFromDifferentGroup()
+		throws Exception {
+
+		FileEntry fileEntry = _addPreviewFileEntry(GroupTestUtil.addGroup());
+
+		_layoutUtilityPageEntryService.addLayoutUtilityPageEntry(
+			RandomTestUtil.randomString(), _group.getGroupId(), 0,
+			fileEntry.getFileEntryId(), false, RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), null, _serviceContext);
+	}
+
 	@Test
 	public void testAddLayoutUtilityPageEntryWithoutAddPermission()
 		throws Exception {
@@ -126,16 +138,7 @@ public class LayoutUtilityPageEntryServiceTest {
 				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 				null, _serviceContext);
 
-		Repository repository = _portletFileRepository.addPortletRepository(
-			_group.getGroupId(), LayoutAdminPortletKeys.GROUP_PAGES,
-			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
-
-		FileEntry fileEntry = _portletFileRepository.addPortletFileEntry(
-			_group.getGroupId(), TestPropsValues.getUserId(),
-			FragmentCollection.class.getName(),
-			layoutUtilityPageEntry.getLayoutUtilityPageEntryId(),
-			LayoutAdminPortletKeys.GROUP_PAGES, repository.getDlFolderId(),
-			new byte[0], "test.png", ContentTypes.IMAGE_PNG, false);
+		FileEntry fileEntry = _addPreviewFileEntry(_group);
 
 		layoutUtilityPageEntry =
 			_layoutUtilityPageEntryService.updateLayoutUtilityPageEntry(
@@ -531,6 +534,34 @@ public class LayoutUtilityPageEntryServiceTest {
 		Assert.assertEquals(
 			layoutUtilityPageEntry.getName(),
 			layout.getName(LocaleUtil.getSiteDefault()));
+	}
+
+	@Test(expected = LayoutUtilityPageEntryPreviewFileEntryIdException.class)
+	public void testUpdateLayoutUtilityPageEntryWithPreviewFileEntryFromDifferentGroup()
+		throws Exception {
+
+		FileEntry fileEntry = _addPreviewFileEntry(GroupTestUtil.addGroup());
+		LayoutUtilityPageEntry layoutUtilityPageEntry =
+			_layoutUtilityPageEntryService.addLayoutUtilityPageEntry(
+				RandomTestUtil.randomString(), _group.getGroupId(), 0, 0, false,
+				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+				null, _serviceContext);
+
+		_layoutUtilityPageEntryService.updateLayoutUtilityPageEntry(
+			layoutUtilityPageEntry.getLayoutUtilityPageEntryId(),
+			fileEntry.getFileEntryId(), _serviceContext);
+	}
+
+	private FileEntry _addPreviewFileEntry(Group group) throws Exception {
+		Repository repository = _portletFileRepository.addPortletRepository(
+			group.getGroupId(), LayoutAdminPortletKeys.GROUP_PAGES,
+			ServiceContextTestUtil.getServiceContext(group.getGroupId()));
+
+		return _portletFileRepository.addPortletFileEntry(
+			group.getGroupId(), TestPropsValues.getUserId(), null, 0,
+			LayoutAdminPortletKeys.GROUP_PAGES, repository.getDlFolderId(),
+			new byte[0], RandomTestUtil.randomString() + ".png",
+			ContentTypes.IMAGE_PNG, false);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
