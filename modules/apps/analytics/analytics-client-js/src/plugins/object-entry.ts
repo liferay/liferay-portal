@@ -64,6 +64,13 @@ function getObjectEntryPayload({
 		});
 	}
 
+	if (dataset.analyticsObjectDefinitionLabel) {
+		Object.assign(payload, {
+			objectDefinitionLabel:
+				dataset.analyticsObjectDefinitionLabel.trim(),
+		});
+	}
+
 	if (dataset.analyticsObjectType) {
 		Object.assign(payload, {
 			objectType: dataset.analyticsObjectType.trim(),

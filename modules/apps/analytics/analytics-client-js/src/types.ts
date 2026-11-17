@@ -120,6 +120,7 @@ export namespace Analytics {
 			[Analytics.DataSetList.AnalyticsAssetVocabularies]?: string;
 			[Analytics.DataSetList.AnalyticsCmpProjects]?: string;
 			[Analytics.DataSetList.AnalyticsExternalReferenceCode]: string;
+			[Analytics.DataSetList.AnalyticsObjectDefinitionLabel]?: string;
 			[Analytics.DataSetList.AnalyticsObjectDefinitionName]: string;
 			[Analytics.DataSetList.AnalyticsObjectType]?: string;
 		};
@@ -140,6 +141,7 @@ export namespace Analytics {
 		AnalyticsAssetVocabularies = 'analyticsAssetVocabularies',
 		AnalyticsCmpProjects = 'analyticsCmpProjects',
 		AnalyticsExternalReferenceCode = 'analyticsExternalReferenceCode',
+		AnalyticsObjectDefinitionLabel = 'analyticsObjectDefinitionLabel',
 		AnalyticsObjectDefinitionName = 'analyticsObjectDefinitionName',
 		AnalyticsObjectType = 'analyticsObjectType',
 		AnalyticsWebContentResourcePk = 'analyticsWebContentResourcePk',
