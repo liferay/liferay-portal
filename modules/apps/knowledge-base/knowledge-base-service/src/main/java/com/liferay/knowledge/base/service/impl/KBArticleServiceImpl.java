@@ -38,6 +38,8 @@ import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
+import com.liferay.portal.kernel.security.permission.resource.WorkflowedModelPermissionLogic;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
@@ -50,7 +52,6 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
-import com.liferay.portal.kernel.workflow.permission.WorkflowPermissionUtil;
 import com.liferay.rss.export.RSSExporter;
 import com.liferay.rss.model.SyndContent;
 import com.liferay.rss.model.SyndEntry;
@@ -1222,20 +1223,18 @@ public class KBArticleServiceImpl extends KBArticleServiceBaseImpl {
 			KBArticle kbArticle, PermissionChecker permissionChecker)
 		throws PortalException {
 
-		if (kbArticle.isDraft() || kbArticle.isScheduled()) {
-			return _kbArticleModelResourcePermission.contains(
-				permissionChecker, kbArticle, KBActionKeys.UPDATE);
-		}
+		WorkflowedModelPermissionLogic<KBArticle>
+			workflowedModelPermissionLogic =
+				new WorkflowedModelPermissionLogic<>(
+					_kbArticleModelResourcePermission, _groupLocalService,
+					KBArticle::getResourcePrimKey);
 
-		if (kbArticle.isPending()) {
-			Boolean permission = WorkflowPermissionUtil.hasPermission(
-				permissionChecker, kbArticle.getGroupId(),
-				KBArticle.class.getName(), kbArticle.getResourcePrimKey(),
-				ActionKeys.VIEW);
+		Boolean permission = workflowedModelPermissionLogic.contains(
+			permissionChecker, KBArticle.class.getName(), kbArticle,
+			ActionKeys.VIEW);
 
-			if (permission != null) {
-				return permission;
-			}
+		if (permission != null) {
+			return permission;
 		}
 
 		return _kbArticleModelResourcePermission.contains(
@@ -1267,6 +1266,9 @@ public class KBArticleServiceImpl extends KBArticleServiceBaseImpl {
 		target = "(resource.name=" + KBConstants.RESOURCE_NAME_DISPLAY + ")"
 	)
 	private PortletResourcePermission _displayPortletResourcePermission;
+
+	@Reference
+	private GroupLocalService _groupLocalService;
 
 	@Reference
 	private HtmlParser _htmlParser;
