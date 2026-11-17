@@ -8,6 +8,7 @@ package com.liferay.data.cleanup.internal.verify.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.blogs.model.BlogsEntry;
 import com.liferay.dynamic.data.mapping.kernel.DDMStructure;
+import com.liferay.headless.delivery.dto.v1_0.BlogPosting;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.message.boards.util.MBUtil;
 import com.liferay.object.constants.ObjectDefinitionConstants;
@@ -157,6 +158,42 @@ public class ClassNamePostUpgradeDataCleanupProcessTest
 
 				Assert.assertEquals(
 					objectDefinition.getClassName(), className.getValue());
+			});
+	}
+
+	@Test
+	public void testFoundLiferayClassNameWithUnderscoreInPackageIsNotDeleted()
+		throws Exception {
+
+		AtomicReference<ClassName> classNameAtomicReference =
+			new AtomicReference<>();
+		String classNameValue = BlogPosting.class.getName();
+
+		test(
+			logCapture -> {
+				List<String> messages = logCapture.getMessages();
+
+				Assert.assertTrue(messages.toString(), messages.isEmpty());
+
+				ClassName className = _classNameLocalService.fetchClassName(
+					classNameValue);
+
+				Assert.assertEquals(classNameValue, className.getValue());
+			},
+			() -> {
+				if (classNameAtomicReference.get() != null) {
+					_classNameLocalService.deleteClassName(
+						classNameAtomicReference.get());
+				}
+			},
+			() -> {
+				ClassName className = _classNameLocalService.fetchClassName(
+					classNameValue);
+
+				if (className.getClassNameId() == 0) {
+					classNameAtomicReference.set(
+						_classNameLocalService.addClassName(classNameValue));
+				}
 			});
 	}
 
