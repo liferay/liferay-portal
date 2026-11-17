@@ -438,6 +438,54 @@ public class DBPartitionUtilTest extends BaseDBPartitionTestCase {
 	}
 
 	@Test
+	@TestInfo("LPD-110027")
+	public void testCopyDBPartitionWhenSourceIsInUse() throws Exception {
+		dropSchemas();
+		addDBPartitions();
+
+		long companyId = RandomTestUtil.randomLong();
+		String counterName = RandomTestUtil.randomString();
+
+		try (AutoCloseable autoCloseable =
+				ReflectionTestUtil.setFieldValueWithAutoCloseable(
+					DBPartitionUtil.class, "_dbPartitionDB",
+					ProxyUtil.newProxyInstance(
+						DBPartitionDB.class.getClassLoader(),
+						new Class<?>[] {DBPartitionDB.class},
+						(proxy, method, args) -> {
+							if (Objects.equals(
+									method.getName(), "getCreateTableSQL") &&
+								StringUtil.equalsIgnoreCase(
+									(String)args[3], "User_")) {
+
+								db.runSQL(
+									StringBundler.concat(
+										"insert into ",
+										getPartitionName(COMPANY_IDS[0]),
+										".Counter (name, currentId) values ('",
+										counterName, "', ",
+										RandomTestUtil.randomLong(), ")"));
+							}
+
+							return method.invoke(dbPartitionDB, args);
+						}))) {
+
+			Assert.assertTrue(
+				DBPartitionUtil.copyDBPartition(COMPANY_IDS[0], companyId));
+
+			Assert.assertTrue(
+				_hasValue(
+					getPartitionName(companyId), "Counter", "name",
+					counterName));
+		}
+		finally {
+			removeDBPartitions(new long[] {companyId});
+
+			removeDBPartitions();
+		}
+	}
+
+	@Test
 	@TestInfo("LPD-93376")
 	public void testExistsExportedPartition() throws Exception {
 		long companyId = RandomTestUtil.randomLong();
