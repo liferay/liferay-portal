@@ -64,6 +64,16 @@ public class SharepointURLHelperTest {
 	}
 
 	@Test
+	public void testGetFileVersionContentURL() {
+		Assert.assertEquals(
+			_getFileURL(
+				"/Shared%20Documents/image.png", "/Versions(512)/$value"),
+			_sharepointURLHelper.getFileVersionContentURL(
+				_getExtRepositoryFileEntry("/Shared Documents/image.png"),
+				"512"));
+	}
+
+	@Test
 	public void testGetFileVersionsURLEncodesApostrophe() {
 		Assert.assertEquals(
 			_getFileURL(
