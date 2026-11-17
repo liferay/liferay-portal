@@ -11,10 +11,12 @@ import com.liferay.adaptive.media.document.library.thumbnails.internal.configura
 import com.liferay.adaptive.media.image.finder.AMImageFinder;
 import com.liferay.adaptive.media.image.mime.type.AMImageMimeTypeProvider;
 import com.liferay.adaptive.media.image.processor.AMImageAttribute;
+import com.liferay.adaptive.media.image.service.AMImageEntryLocalService;
 import com.liferay.adaptive.media.image.validator.AMImageValidator;
 import com.liferay.adaptive.media.processor.AMAsyncProcessor;
 import com.liferay.adaptive.media.processor.AMAsyncProcessorLocator;
 import com.liferay.adaptive.media.processor.AMProcessor;
+import com.liferay.document.library.kernel.model.DLFileVersion;
 import com.liferay.document.library.kernel.model.DLProcessorConstants;
 import com.liferay.document.library.kernel.processor.DLProcessor;
 import com.liferay.document.library.kernel.processor.ImageProcessor;
@@ -66,6 +68,20 @@ public class AMImageEntryProcessor implements DLProcessor, ImageProcessor {
 
 	@Override
 	public void cleanUp(FileVersion fileVersion) {
+		if (fileVersion.getModel() instanceof DLFileVersion) {
+			return;
+		}
+
+		try {
+			_amImageEntryLocalService.deleteAMImageEntryFileVersion(
+				fileVersion);
+		}
+		catch (PortalException portalException) {
+			_log.error(
+				"Unable to delete adaptive media for file version " +
+					fileVersion.getFileVersionId(),
+				portalException);
+		}
 	}
 
 	@Override
@@ -421,6 +437,9 @@ public class AMImageEntryProcessor implements DLProcessor, ImageProcessor {
 
 	@Reference
 	private AMAsyncProcessorLocator _amAsyncProcessorLocator;
+
+	@Reference
+	private AMImageEntryLocalService _amImageEntryLocalService;
 
 	@Reference
 	private AMImageFinder _amImageFinder;

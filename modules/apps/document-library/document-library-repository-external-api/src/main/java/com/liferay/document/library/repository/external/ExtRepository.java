@@ -5,6 +5,7 @@
 
 package com.liferay.document.library.repository.external;
 
+import com.liferay.document.library.kernel.model.DLVersionNumberIncrease;
 import com.liferay.document.library.repository.external.search.ExtRepositoryQueryMapper;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.search.Query;
@@ -111,6 +112,21 @@ public interface ExtRepository {
 			String extRepositoryFileEntryKey, boolean createMajorVersion,
 			String changeLog)
 		throws PortalException;
+
+	public default void checkInExtRepositoryFileEntry(
+			String extRepositoryFileEntryKey,
+			DLVersionNumberIncrease dlVersionNumberIncrease, String changeLog)
+		throws PortalException {
+
+		boolean createMajorVersion = false;
+
+		if (dlVersionNumberIncrease == DLVersionNumberIncrease.MAJOR) {
+			createMajorVersion = true;
+		}
+
+		checkInExtRepositoryFileEntry(
+			extRepositoryFileEntryKey, createMajorVersion, changeLog);
+	}
 
 	/**
 	 * Checks out the external repository file entry.

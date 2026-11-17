@@ -5,6 +5,7 @@
 
 package com.liferay.sharepoint.rest.repository.internal.document.library.repository.external;
 
+import com.liferay.document.library.kernel.model.DLVersionNumberIncrease;
 import com.liferay.document.library.repository.external.CredentialsProvider;
 import com.liferay.document.library.repository.external.ExtRepository;
 import com.liferay.document.library.repository.external.ExtRepositoryFileEntry;
@@ -116,6 +117,18 @@ public class SharepointCachingExtRepository implements ExtRepository {
 			String changeLog)
 		throws PortalException {
 
+		checkInExtRepositoryFileEntry(
+			extRepositoryFileEntryKey,
+			DLVersionNumberIncrease.fromMajorVersion(createMajorVersion),
+			changeLog);
+	}
+
+	@Override
+	public void checkInExtRepositoryFileEntry(
+			String extRepositoryFileEntryKey,
+			DLVersionNumberIncrease dlVersionNumberIncrease, String changeLog)
+		throws PortalException {
+
 		Map<String, ExtRepositoryObject> extRepositoryObjectCache =
 			_extRepositoryObjectCache.get();
 
@@ -128,7 +141,7 @@ public class SharepointCachingExtRepository implements ExtRepository {
 		extRepositoryFileVersionCache.remove(extRepositoryFileEntryKey);
 
 		_extRepository.checkInExtRepositoryFileEntry(
-			extRepositoryFileEntryKey, createMajorVersion, changeLog);
+			extRepositoryFileEntryKey, dlVersionNumberIncrease, changeLog);
 	}
 
 	@Override

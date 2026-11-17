@@ -12,6 +12,7 @@ import com.liferay.document.library.kernel.model.DLFileEntryTypeConstants;
 import com.liferay.document.library.kernel.model.DLFolder;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.model.DLVersionNumberIncrease;
+import com.liferay.document.library.kernel.processor.DLProcessorHelperUtil;
 import com.liferay.document.library.kernel.service.DLFolderLocalServiceUtil;
 import com.liferay.document.library.repository.external.model.ExtRepositoryFileEntryAdapter;
 import com.liferay.document.library.repository.external.model.ExtRepositoryFileVersionAdapter;
@@ -150,17 +151,9 @@ public class ExtRepositoryAdapter extends BaseRepositoryImpl {
 			ServiceContext serviceContext)
 		throws PortalException {
 
-		boolean major = false;
-
-		if (dlVersionNumberIncrease == DLVersionNumberIncrease.MAJOR) {
-			major = true;
-		}
-
-		String extRepositoryFileEntryKey = getExtRepositoryObjectKey(
-			fileEntryId);
-
-		_extRepository.checkInExtRepositoryFileEntry(
-			extRepositoryFileEntryKey, major, changeLog);
+		_checkInExtRepositoryFileEntry(
+			changeLog, dlVersionNumberIncrease,
+			getExtRepositoryObjectKey(fileEntryId), fileEntryId);
 	}
 
 	@Override
@@ -1052,15 +1045,10 @@ public class ExtRepositoryAdapter extends BaseRepositoryImpl {
 			}
 
 			if (needsCheckIn) {
-				boolean majorVersion = false;
-
-				if (dlVersionNumberIncrease == DLVersionNumberIncrease.MAJOR) {
-					majorVersion = true;
-				}
-
-				_extRepository.checkInExtRepositoryFileEntry(
+				_checkInExtRepositoryFileEntry(
+					changeLog, dlVersionNumberIncrease,
 					extRepositoryFileEntry.getExtRepositoryModelKey(),
-					majorVersion, changeLog);
+					fileEntryId);
 
 				needsCheckIn = false;
 			}
@@ -1225,6 +1213,37 @@ public class ExtRepositoryAdapter extends BaseRepositoryImpl {
 			extRepositoryFileEntryAdapter.getFileVersion());
 
 		checkedFileEntryIds.add(fileEntryId);
+	}
+
+	private void _checkInExtRepositoryFileEntry(
+			String changeLog, DLVersionNumberIncrease dlVersionNumberIncrease,
+			String extRepositoryFileEntryKey, long fileEntryId)
+		throws PortalException {
+
+		if (dlVersionNumberIncrease != DLVersionNumberIncrease.NONE) {
+			_extRepository.checkInExtRepositoryFileEntry(
+				extRepositoryFileEntryKey, dlVersionNumberIncrease, changeLog);
+
+			return;
+		}
+
+		FileEntry fileEntry = getFileEntry(fileEntryId);
+
+		FileVersion fileVersion = fileEntry.getLatestFileVersion();
+
+		_extRepository.checkInExtRepositoryFileEntry(
+			extRepositoryFileEntryKey, dlVersionNumberIncrease, changeLog);
+
+		DLProcessorHelperUtil.cleanUp(fileVersion);
+
+		ExtRepositoryAdapterCache extRepositoryAdapterCache =
+			ExtRepositoryAdapterCache.getInstance();
+
+		extRepositoryAdapterCache.remove(extRepositoryFileEntryKey);
+
+		fileEntry = getFileEntry(fileEntryId);
+
+		DLProcessorHelperUtil.cleanUp(fileEntry.getLatestFileVersion());
 	}
 
 	private User _fetchGuestUser() {
