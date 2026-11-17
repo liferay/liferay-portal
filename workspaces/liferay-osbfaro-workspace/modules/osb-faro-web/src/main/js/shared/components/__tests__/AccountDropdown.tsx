@@ -119,6 +119,36 @@ describe('AccountDropdown', () => {
 		);
 	});
 
+	it('should search the accounts touched by any campaign in the range', async () => {
+		(API.accounts.searchAccounts as jest.Mock).mockReturnValue(
+			Promise.resolve({
+				items: [MOCK_ACCOUNT('100', 'Account 100')],
+				total: 1,
+			})
+		);
+
+		render(
+			<Wrapper>
+				<AccountDropdown
+					campaignTouched
+					onFilterChange={jest.fn()}
+					rangeQueryValues={{rangeKey: '30'}}
+				/>
+			</Wrapper>
+		);
+
+		openPicker();
+
+		await waitFor(() =>
+			expect(API.accounts.searchAccounts).toHaveBeenCalledWith(
+				expect.objectContaining({
+					campaignTouched: true,
+					rangeKey: '30',
+				})
+			)
+		);
+	});
+
 	it('should list the fetched accounts when opened', async () => {
 		(API.accounts.searchAccounts as jest.Mock).mockReturnValue(
 			Promise.resolve({

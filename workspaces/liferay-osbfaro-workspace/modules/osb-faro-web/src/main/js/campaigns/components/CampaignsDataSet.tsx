@@ -96,7 +96,14 @@ const CampaignsDataSet: React.FC<ICampaignsDataSetProps> = ({
 				}}
 				filters={[
 					{
-						apiURL: `/o/faro/contacts/${groupId}/account/account-names?channelId=${channelId}`,
+						apiURL: setUriQueryValues(
+							{
+								campaignTouched: true,
+								channelId,
+								...apiRangeParams,
+							},
+							`/o/faro/contacts/${groupId}/account/account-names`
+						),
 						entityFieldType: 'string',
 						id: 'accountId',
 						itemKey: 'id',
@@ -111,9 +118,10 @@ const CampaignsDataSet: React.FC<ICampaignsDataSetProps> = ({
 				]}
 				id="campaigns-list-dataset"
 
-				// `filters` is read only on mount: remount to seed it again.
+				// `filters` is read only on mount: remount to seed it again,
+				// and to list the accounts of the new range.
 
-				key={accountId}
+				key={`${accountId}-${JSON.stringify(apiRangeParams)}`}
 				pagination={pagination}
 				showPagination
 				views={views}

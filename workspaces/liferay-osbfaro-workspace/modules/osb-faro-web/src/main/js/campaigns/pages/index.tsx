@@ -106,10 +106,12 @@ const Campaigns: React.FC = () => {
 			{!dataSourcesLoading && !noDataSources && (
 				<BasePage.SubHeader>
 					<AccountDropdown
+						campaignTouched
 						className="mr-2"
 						initialAccountId={accountId}
 						initialAccountName={accountName}
 						onFilterChange={setAccount}
+						rangeQueryValues={apiRangeParams}
 					/>
 
 					<div className="d-flex justify-content-end w-100">

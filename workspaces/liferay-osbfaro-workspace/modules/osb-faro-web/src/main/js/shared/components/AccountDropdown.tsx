@@ -7,18 +7,22 @@ import {useParams} from 'react-router-dom';
 
 interface IAccountDropdownProps {
 	assetType?: string;
+	campaignTouched?: boolean;
 	className?: string;
 	initialAccountId?: string | null;
 	initialAccountName?: string | null;
 	onFilterChange: (item: IFilterPickerItem | null) => void;
+	rangeQueryValues?: Record<string, string | null>;
 }
 
 const AccountDropdown: React.FC<IAccountDropdownProps> = ({
 	assetType,
+	campaignTouched,
 	className,
 	initialAccountId,
 	initialAccountName,
 	onFilterChange,
+	rangeQueryValues,
 }) => {
 	const {
 		assetId = '',
@@ -66,11 +70,15 @@ const AccountDropdown: React.FC<IAccountDropdownProps> = ({
 					? getSafeDecodedURIComponent(title)
 					: undefined,
 				assetType,
+				campaignTouched,
 				channelId,
 				groupId,
 				page: page - 1,
 				pageSize,
 				query,
+				rangeEnd: rangeQueryValues?.rangeEnd,
+				rangeKey: rangeQueryValues?.rangeKey,
+				rangeStart: rangeQueryValues?.rangeStart,
 			})
 			.then(({items, totalCount}) => ({items, total: totalCount}));
 

@@ -59,11 +59,15 @@ interface ISearchAccountsParams {
 	assetId?: string | null;
 	assetTitle?: string;
 	assetType?: string | null;
+	campaignTouched?: boolean;
 	channelId?: string;
 	groupId?: string;
 	page?: number;
 	pageSize?: number;
 	query?: string;
+	rangeEnd?: string | null;
+	rangeKey?: string | null;
+	rangeStart?: string | null;
 }
 
 interface ISearchByFilterParams {
@@ -200,21 +204,29 @@ export function searchAccounts({
 	assetId,
 	assetTitle,
 	assetType,
+	campaignTouched,
 	channelId = '',
 	groupId,
 	page = 0,
 	pageSize = DEFAULT_DELTA,
 	query = '',
+	rangeEnd,
+	rangeKey,
+	rangeStart,
 }: ISearchAccountsParams) {
 	return sendRequest({
 		data: {
 			assetId,
 			assetTitle,
 			assetType,
+			campaignTouched,
 			channelId,
 			keywords: query,
 			page,
 			pageSize,
+			rangeEnd,
+			rangeKey,
+			rangeStart,
 		},
 		method: 'GET',
 		path: `contacts/${groupId}/account/account-names`,

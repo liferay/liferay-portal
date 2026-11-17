@@ -11,7 +11,7 @@ import {pickBy} from 'lodash';
 import {SectionHeader} from 'shared/components/SectionHeader';
 import {useAccountFilter} from 'shared/hooks/useAccountFilter';
 import {useParams} from 'react-router-dom';
-import {useQueryRangeSelectors} from 'shared/hooks/useQueryRangeSelectors';
+import {useRangeQueryValues} from 'shared/hooks/useRangeQueryValues';
 import {useRangeSelectorChange} from 'shared/hooks/useRangeSelectorChange';
 import {useRequest} from 'shared/hooks/useRequest';
 
@@ -22,7 +22,7 @@ const CampaignDetail: React.FC = () => {
 
 	const {channelId, groupId, id} = useParams();
 
-	const rangeSelectors = useQueryRangeSelectors();
+	const {apiRangeParams, rangeSelectors} = useRangeQueryValues();
 
 	const {data: campaign} = useRequest({
 		dataSourceFn: API.campaigns.fetchCampaign,
@@ -64,10 +64,12 @@ const CampaignDetail: React.FC = () => {
 
 			<BasePage.SubHeader>
 				<AccountDropdown
+					campaignTouched
 					className="mr-2"
 					initialAccountId={accountId}
 					initialAccountName={accountName}
 					onFilterChange={setAccount}
+					rangeQueryValues={apiRangeParams}
 				/>
 
 				<div className="d-flex justify-content-end w-100">

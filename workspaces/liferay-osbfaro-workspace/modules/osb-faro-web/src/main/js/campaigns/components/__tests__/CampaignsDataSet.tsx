@@ -257,7 +257,7 @@ describe('CampaignsDataSet', () => {
 
 			expect(lastFDSProps.filters).toEqual([
 				{
-					apiURL: '/o/faro/contacts/23/account/account-names?channelId=123',
+					apiURL: '/o/faro/contacts/23/account/account-names?campaignTouched=true&channelId=123&rangeKey=30',
 					entityFieldType: 'string',
 					id: 'accountId',
 					itemKey: 'id',
