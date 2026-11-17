@@ -12,6 +12,7 @@ import {loginTest} from '../../../fixtures/loginTest';
 import {workflowPagesTest} from '../../../fixtures/workflowPagesTest';
 import {DataApiHelpers} from '../../../helpers/ApiHelpers';
 import {addSpaceUser} from '../../../utils/addSpaceUser';
+import {applyFDSSelectionFilter} from '../../../utils/applyFDSSelectionFilter';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import dragAndDropElement from '../../../utils/dragAndDropElement';
 import getRandomString from '../../../utils/getRandomString';
@@ -2180,5 +2181,48 @@ governanceDashboardTest(
 				tasksPage.getItem(otherSpaceOverdueTitle)
 			).toBeHidden();
 		});
+	}
+);
+
+test(
+	'Filters all the tasks by space',
+	{tag: ['@LPD-109713']},
+	async ({apiHelpers, page, tasksPage}) => {
+		const overdueTitle = getRandomString();
+		const otherSpaceOverdueTitle = getRandomString();
+
+		const space = await addSpaceWithOverdueWorkflowTask(
+			apiHelpers,
+			overdueTitle
+		);
+
+		await addSpaceWithOverdueWorkflowTask(
+			apiHelpers,
+			otherSpaceOverdueTitle
+		);
+
+		await tasksPage.goto();
+
+		await tasksPage.allTasksTab.click();
+
+		const itemsPerPageButton = page
+			.getByRole('tabpanel')
+			.getByLabel('Items Per Page');
+
+		await itemsPerPageButton.click();
+
+		await page.getByRole('option', {exact: true, name: '60 Items'}).click();
+
+		await expect(tasksPage.getItem(overdueTitle)).toBeVisible();
+		await expect(tasksPage.getItem(otherSpaceOverdueTitle)).toBeVisible();
+
+		await applyFDSSelectionFilter(page, {
+			filter: 'Space',
+			value: space.name,
+		});
+
+		await expect(tasksPage.getItem(overdueTitle)).toBeVisible();
+		await expect(tasksPage.getItem(otherSpaceOverdueTitle)).toBeHidden();
+		await expect(tasksPage.getItem(taskNames[0])).toBeHidden();
 	}
 );

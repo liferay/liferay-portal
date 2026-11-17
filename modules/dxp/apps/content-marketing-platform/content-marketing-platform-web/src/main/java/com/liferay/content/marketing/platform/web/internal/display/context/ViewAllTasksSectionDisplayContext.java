@@ -6,6 +6,7 @@
 package com.liferay.content.marketing.platform.web.internal.display.context;
 
 import com.liferay.asset.kernel.service.AssetTagLocalService;
+import com.liferay.content.marketing.platform.web.internal.frontend.data.set.filter.SpaceSelectionFDSFilter;
 import com.liferay.content.marketing.platform.web.internal.frontend.data.set.filter.TaskTypeSelectionFDSFilter;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.frontend.data.set.filter.FDSFilter;
@@ -94,6 +95,7 @@ public class ViewAllTasksSectionDisplayContext
 	public List<FDSFilter> getFDSFilters() {
 		List<FDSFilter> fdsFilters = super.getFDSFilters();
 
+		fdsFilters.add(new SpaceSelectionFDSFilter());
 		fdsFilters.add(
 			new TaskTypeSelectionFDSFilter(
 				classNameLocalService, objectDefinition));
