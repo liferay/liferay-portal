@@ -141,6 +141,9 @@ public class ImportSystemDataSetMVCResourceCommand
 				"searchSuggestionsEnabled",
 				systemFDSEntry.getSearchSuggestionsEnabled()
 			).put(
+				"showColumnsVisibility",
+				systemFDSEntry.getShowColumnsVisibility()
+			).put(
 				"showPagination", systemFDSEntry.getShowPagination()
 			).put(
 				"showSearch", systemFDSEntry.getShowSearch()

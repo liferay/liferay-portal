@@ -325,6 +325,20 @@ public class SystemFDSSerializer
 	}
 
 	@Override
+	public boolean serializeShowColumnsVisibility(
+		String fdsName, HttpServletRequest httpServletRequest) {
+
+		SystemFDSEntry systemFDSEntry =
+			systemFDSEntryRegistry.getSystemFDSEntry(fdsName);
+
+		if (systemFDSEntry == null) {
+			return _systemFDSEntry.getShowColumnsVisibility();
+		}
+
+		return systemFDSEntry.getShowColumnsVisibility();
+	}
+
+	@Override
 	public boolean serializeShowPagination(
 		String fdsName, HttpServletRequest httpServletRequest) {
 

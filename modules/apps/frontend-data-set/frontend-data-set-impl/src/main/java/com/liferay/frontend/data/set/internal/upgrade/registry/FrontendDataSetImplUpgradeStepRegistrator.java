@@ -9,6 +9,7 @@ import com.liferay.frontend.data.set.internal.upgrade.v1_0_0.DataSetOrderValuesU
 import com.liferay.frontend.data.set.internal.upgrade.v1_1_0.DataSetShowSearchUpgradeProcess;
 import com.liferay.frontend.data.set.internal.upgrade.v1_2_0.DataSetFragmentEntryLinkClassNameUpgradeProcess;
 import com.liferay.frontend.data.set.internal.upgrade.v1_3_0.DataSetShowPaginationUpgradeProcess;
+import com.liferay.frontend.data.set.internal.upgrade.v1_4_0.DataSetShowColumnsVisibilityUpgradeProcess;
 import com.liferay.object.action.engine.ObjectActionEngine;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
@@ -49,6 +50,12 @@ public class FrontendDataSetImplUpgradeStepRegistrator
 		registry.register(
 			"1.2.0", "1.3.0",
 			new DataSetShowPaginationUpgradeProcess(
+				_companyLocalService, _objectDefinitionLocalService,
+				_objectEntryLocalService));
+
+		registry.register(
+			"1.3.0", "1.4.0",
+			new DataSetShowColumnsVisibilityUpgradeProcess(
 				_companyLocalService, _objectDefinitionLocalService,
 				_objectEntryLocalService));
 	}

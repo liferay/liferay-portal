@@ -87,6 +87,9 @@ public interface FDSSerializer {
 	public boolean serializeSearchSuggestionsEnabled(
 		String fdsName, HttpServletRequest httpServletRequest);
 
+	public boolean serializeShowColumnsVisibility(
+		String fdsName, HttpServletRequest httpServletRequest);
+
 	public default boolean serializeShowPagination(
 		String fdsName, HttpServletRequest httpServletRequest) {
 
