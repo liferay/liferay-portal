@@ -5,9 +5,11 @@
 
 import '@testing-library/jest-dom';
 import {render, screen} from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import React from 'react';
 import {isEdge, isNode} from 'react-flow-renderer';
 
+import ServiceNode from '../../../../src/main/resources/META-INF/resources/designer/js/definition-builder/diagram-builder/components/nodes/ServiceNode';
 import MockDefinitionBuilderContext from '../../../mock/MockDefinitionBuilderContext';
 import MockDiagramBuilderContext from '../../../mock/MockDiagramBuilderContext';
 
@@ -86,25 +88,26 @@ describe('Service node variables', () => {
 		delete Liferay.PropsValues.ENTERPRISE_PRODUCT_AI_HUB_ENABLED;
 	});
 
-	it('Shows the input and output variables of a selected service node', () => {
+	it('Shows the input and output variables of a service node when it is selected', async () => {
 		render(
 			<MockDefinitionBuilderContext>
-				<MockDiagramBuilderContext
-					mockSelectedNode={{
-						data: {
+				<MockDiagramBuilderContext>
+					<ServiceNode
+						data={{
 							inputVariables: INPUT_VARIABLES,
 							javaDelegate: 'javaDelegate#requestSpaceSelection',
 							label: {en_US: 'Request Space Selection'},
 							outputVariables: OUTPUT_VARIABLES,
-						},
-						id: 'requestSpaceSelection',
-						type: 'service',
-					}}
-				>
+						}}
+						id="requestSpaceSelection"
+					/>
+
 					<Sidebar />
 				</MockDiagramBuilderContext>
 			</MockDefinitionBuilderContext>
 		);
+
+		await userEvent.click(screen.getByText('Request Space Selection'));
 
 		expect(screen.getByLabelText('input-variables')).toHaveValue(
 			JSON.stringify(INPUT_VARIABLES, null, 2)
