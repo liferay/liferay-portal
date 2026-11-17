@@ -42,6 +42,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.upload.FileItem;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
@@ -97,6 +98,8 @@ public class UploadFileEntryMVCActionCommandTest {
 
 		_ddmFormInstance = DDMFormInstanceTestUtil.addDDMFormInstance(
 			_group, TestPropsValues.getUserId());
+
+		_groupId = _ddmFormInstance.getGroupId();
 
 		_uploadHandler = ReflectionTestUtil.getFieldValue(
 			_mvcActionCommand, "_uploadHandler");
@@ -211,6 +214,29 @@ public class UploadFileEntryMVCActionCommandTest {
 		}
 	}
 
+	@Test
+	public void testProcessActionWithMismatchedGroupId() throws Exception {
+		_otherGroup = GroupTestUtil.addGroup();
+
+		_groupId = _otherGroup.getGroupId();
+
+		JSONObject jsonObject = _processAction();
+
+		JSONObject fileJSONObject = jsonObject.getJSONObject("file");
+
+		DLFileEntry dlFileEntry = _dlFileEntryLocalService.fetchDLFileEntry(
+			fileJSONObject.getLong("fileEntryId"));
+
+		Assert.assertEquals(
+			_ddmFormInstance.getGroupId(), dlFileEntry.getGroupId());
+
+		Assert.assertTrue(
+			ArrayUtil.isEmpty(
+				TempFileEntryUtil.getTempFileNames(
+					_otherGroup.getGroupId(), dlFileEntry.getUserId(),
+					DDMFormConstants.TEMP_FOLDER_NAME)));
+	}
+
 	private FileItem _getFileItem() throws Exception {
 		Path path = Files.createTempFile(null, ".txt");
 
@@ -260,7 +286,7 @@ public class UploadFileEntryMVCActionCommandTest {
 			"formInstanceId",
 			String.valueOf(_ddmFormInstance.getFormInstanceId()));
 		mockHttpServletRequest.addParameter(
-			"groupId", String.valueOf(_ddmFormInstance.getGroupId()));
+			"groupId", String.valueOf(_groupId));
 		mockHttpServletRequest.addParameter(
 			"oldFileEntryId", String.valueOf(_oldFileEntry.getFileEntryId()));
 
@@ -309,6 +335,8 @@ public class UploadFileEntryMVCActionCommandTest {
 	@DeleteAfterTestRun
 	private Group _group;
 
+	private long _groupId;
+
 	@Inject
 	private JSONFactory _jsonFactory;
 
@@ -318,6 +346,9 @@ public class UploadFileEntryMVCActionCommandTest {
 	private MVCActionCommand _mvcActionCommand;
 
 	private FileEntry _oldFileEntry;
+
+	@DeleteAfterTestRun
+	private Group _otherGroup;
 
 	@Inject
 	private Portal _portal;

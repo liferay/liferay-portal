@@ -161,10 +161,10 @@ public class DocumentLibraryDDMFormFieldTemplateContextContributorTest {
 				"param_formInstanceId=" + _FORM_INSTANCE_ID));
 		Assert.assertThat(
 			guestUploadURL,
-			CoreMatchers.containsString("param_groupId=" + _GROUP_ID));
+			CoreMatchers.not(CoreMatchers.containsString("param_folderId")));
 		Assert.assertThat(
 			guestUploadURL,
-			CoreMatchers.not(CoreMatchers.containsString("param_folderId")));
+			CoreMatchers.not(CoreMatchers.containsString("param_groupId")));
 	}
 
 	@Test
