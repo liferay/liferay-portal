@@ -935,9 +935,9 @@ public class WebXMLDefinitionLoader extends DefaultHandler {
 	private void _collectAnnotatedClasses(
 		WebXMLDefinition webXMLDefinition, Class<?> clazz) {
 
-		WebServlet webServlet = clazz.getAnnotation(WebServlet.class);
-
 		boolean annotated = false;
+
+		WebServlet webServlet = clazz.getAnnotation(WebServlet.class);
 
 		if (webServlet != null) {
 			annotated = true;
