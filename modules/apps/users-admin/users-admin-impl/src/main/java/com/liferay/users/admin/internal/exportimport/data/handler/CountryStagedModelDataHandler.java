@@ -85,7 +85,7 @@ public class CountryStagedModelDataHandler
 			PortletDataContext portletDataContext, Country country)
 		throws Exception {
 
-		ScopeUtil.validateInstanceScoped(portletDataContext);
+		ScopeUtil.validateCompanyScoped(portletDataContext);
 
 		Country existingCountry = _countryLocalService.fetchCountryByA2(
 			portletDataContext.getCompanyId(), country.getA2());

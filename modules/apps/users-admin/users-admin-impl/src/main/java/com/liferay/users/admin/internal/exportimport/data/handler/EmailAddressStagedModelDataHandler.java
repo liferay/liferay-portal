@@ -84,7 +84,7 @@ public class EmailAddressStagedModelDataHandler
 			PortletDataContext portletDataContext, EmailAddress emailAddress)
 		throws Exception {
 
-		ScopeUtil.validateInstanceScoped(portletDataContext);
+		ScopeUtil.validateCompanyScoped(portletDataContext);
 
 		long userId = portletDataContext.getUserId(emailAddress.getUserUuid());
 

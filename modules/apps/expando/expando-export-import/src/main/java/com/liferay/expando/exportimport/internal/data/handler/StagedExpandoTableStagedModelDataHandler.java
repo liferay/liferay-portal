@@ -82,7 +82,7 @@ public class StagedExpandoTableStagedModelDataHandler
 			StagedExpandoTable stagedExpandoTable)
 		throws Exception {
 
-		ScopeUtil.validateInstanceScoped(portletDataContext);
+		ScopeUtil.validateCompanyScoped(portletDataContext);
 
 		StagedExpandoTable importedStagedExpandoTable =
 			(StagedExpandoTable)stagedExpandoTable.clone();

@@ -85,7 +85,7 @@ public class ListTypeStagedModelDataHandler
 			PortletDataContext portletDataContext, ListType listType)
 		throws Exception {
 
-		ScopeUtil.validateInstanceScoped(portletDataContext);
+		ScopeUtil.validateCompanyScoped(portletDataContext);
 
 		ListType existingListType = _listTypeLocalService.fetchListType(
 			portletDataContext.getCompanyId(), listType.getName(),

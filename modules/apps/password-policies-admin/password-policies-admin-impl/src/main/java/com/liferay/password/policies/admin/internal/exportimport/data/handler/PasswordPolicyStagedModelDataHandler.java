@@ -90,7 +90,7 @@ public class PasswordPolicyStagedModelDataHandler
 			PasswordPolicy passwordPolicy)
 		throws Exception {
 
-		ScopeUtil.validateInstanceScoped(portletDataContext);
+		ScopeUtil.validateCompanyScoped(portletDataContext);
 
 		long userId = portletDataContext.getUserId(
 			passwordPolicy.getUserUuid());

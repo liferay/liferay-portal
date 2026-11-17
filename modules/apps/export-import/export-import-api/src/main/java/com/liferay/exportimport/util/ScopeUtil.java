@@ -33,7 +33,7 @@ public class ScopeUtil {
 	}
 
 	public static boolean isCommentsAndRatingsEnabled(Group group) {
-		if (!isInstanceScoped(group) ||
+		if (!isCompanyScoped(group) ||
 			FeatureFlagManagerUtil.isEnabled(
 				group.getCompanyId(), "LPD-43996")) {
 
@@ -43,7 +43,7 @@ public class ScopeUtil {
 		return false;
 	}
 
-	public static boolean isInstanceScoped(Group group) {
+	public static boolean isCompanyScoped(Group group) {
 		StagingGroupHelper stagingGroupHelper =
 			StagingGroupHelperUtil.getStagingGroupHelper();
 
@@ -66,11 +66,11 @@ public class ScopeUtil {
 		return false;
 	}
 
-	public static void validateInstanceScoped(
+	public static void validateCompanyScoped(
 			PortletDataContext portletDataContext)
 		throws PortalException {
 
-		if (isInstanceScoped(
+		if (isCompanyScoped(
 				GroupLocalServiceUtil.getGroup(
 					portletDataContext.getGroupId()))) {
 
@@ -82,7 +82,7 @@ public class ScopeUtil {
 	}
 
 	private static String _getScopePath(Group group) {
-		if (isInstanceScoped(group)) {
+		if (isCompanyScoped(group)) {
 			return StringPool.BLANK;
 		}
 

@@ -147,7 +147,7 @@ public class StagedExpandoColumnStagedModelDataHandler
 			StagedExpandoColumn stagedExpandoColumn)
 		throws Exception {
 
-		ScopeUtil.validateInstanceScoped(portletDataContext);
+		ScopeUtil.validateCompanyScoped(portletDataContext);
 
 		Map<Long, Long> tableIds =
 			(Map<Long, Long>)portletDataContext.getNewPrimaryKeysMap(

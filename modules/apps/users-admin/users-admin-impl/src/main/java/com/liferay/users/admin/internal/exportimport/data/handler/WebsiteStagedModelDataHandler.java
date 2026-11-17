@@ -85,7 +85,7 @@ public class WebsiteStagedModelDataHandler
 			PortletDataContext portletDataContext, Website website)
 		throws Exception {
 
-		ScopeUtil.validateInstanceScoped(portletDataContext);
+		ScopeUtil.validateCompanyScoped(portletDataContext);
 
 		long userId = portletDataContext.getUserId(website.getUserUuid());
 

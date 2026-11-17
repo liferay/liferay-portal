@@ -82,7 +82,7 @@ public class PhoneStagedModelDataHandler
 			PortletDataContext portletDataContext, Phone phone)
 		throws Exception {
 
-		ScopeUtil.validateInstanceScoped(portletDataContext);
+		ScopeUtil.validateCompanyScoped(portletDataContext);
 
 		long userId = portletDataContext.getUserId(phone.getUserUuid());
 

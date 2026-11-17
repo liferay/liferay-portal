@@ -110,7 +110,7 @@ public class UserGroupStagedModelDataHandler
 			PortletDataContext portletDataContext, UserGroup userGroup)
 		throws Exception {
 
-		ScopeUtil.validateInstanceScoped(portletDataContext);
+		ScopeUtil.validateCompanyScoped(portletDataContext);
 
 		long userId = portletDataContext.getUserId(userGroup.getUserUuid());
 

@@ -257,7 +257,7 @@ public class ExportImportProcessesDisplayContext {
 	}
 
 	private String _getFDSName(String companyFDSName, String fdsName) {
-		if (ScopeUtil.isInstanceScoped(_group)) {
+		if (ScopeUtil.isCompanyScoped(_group)) {
 			return companyFDSName;
 		}
 

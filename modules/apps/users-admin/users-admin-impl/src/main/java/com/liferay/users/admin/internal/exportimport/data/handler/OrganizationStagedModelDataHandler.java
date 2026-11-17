@@ -180,7 +180,7 @@ public class OrganizationStagedModelDataHandler
 			PortletDataContext portletDataContext, Organization organization)
 		throws Exception {
 
-		ScopeUtil.validateInstanceScoped(portletDataContext);
+		ScopeUtil.validateCompanyScoped(portletDataContext);
 
 		organization = _importCountry(portletDataContext, organization);
 		organization = _importListType(portletDataContext, organization);

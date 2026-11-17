@@ -154,7 +154,7 @@ public class LayoutSetPrototypeStagedModelDataHandler
 			LayoutSetPrototype layoutSetPrototype)
 		throws Exception {
 
-		com.liferay.exportimport.util.ScopeUtil.validateInstanceScoped(
+		com.liferay.exportimport.util.ScopeUtil.validateCompanyScoped(
 			portletDataContext);
 
 		long userId = portletDataContext.getUserId(
