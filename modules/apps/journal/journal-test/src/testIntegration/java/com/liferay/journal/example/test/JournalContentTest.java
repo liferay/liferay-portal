@@ -118,82 +118,13 @@ public class JournalContentTest {
 	}
 
 	@Test
+	@TestInfo("LPD-115959")
 	public void testGetDisplay() throws Exception {
 		_testGetDisplay();
 		_testGetDisplayWithCSPNonceTemplate();
 		_testGetDisplayWithCSPNonceTemplateWithBlankNonce();
+		_testGetDisplayWithLocalizedContent();
 		_testGetDisplayWithoutCSPNonceTemplate();
-	}
-
-	@Test
-	@TestInfo("LPD-115959")
-	public void testGetDisplayWithTranslation() throws Exception {
-		DDMStructure ddmStructure = _ddmStructureLocalService.getStructure(
-			_portal.getSiteGroupId(_group.getGroupId()),
-			_portal.getClassNameId(JournalArticle.class), "BASIC-WEB-CONTENT",
-			true);
-
-		JournalArticle journalArticle = _journalArticleLocalService.addArticle(
-			null, TestPropsValues.getUserId(), _group.getGroupId(),
-			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID,
-			HashMapBuilder.put(
-				LocaleUtil.JAPAN,
-				"Basic S.P.A.C.E. Banner (Japanese Translation)"
-			).put(
-				LocaleUtil.US, "Basic S.P.A.C.E. Banner"
-			).build(),
-			HashMapBuilder.put(
-				LocaleUtil.JAPAN,
-				"A Japanese translation of the basic front page banner"
-			).build(),
-			DDMStructureTestUtil.getSampleStructuredContent(
-				"content",
-				Collections.singletonList(
-					HashMapBuilder.put(
-						LocaleUtil.JAPAN,
-						"<h2 class=\"text-center\">Space Program 大学生涯教育</h2>" +
-							"<p class=\"text-center\">地球から、宇宙の果てへ</p>"
-					).put(
-						LocaleUtil.US,
-						StringBundler.concat(
-							"<h2 class=\"text-center\">",
-							"Space Program Academy of Continuing Education",
-							"</h2><p class=\"text-center\">",
-							"Dare to Dream out of this world</p>")
-					).build()),
-				LocaleUtil.toLanguageId(LocaleUtil.US)),
-			ddmStructure.getStructureId(), "BASIC-WEB-CONTENT",
-			_serviceContext);
-
-		JournalArticleDisplay journalArticleDisplay =
-			_journalContent.getDisplay(
-				journalArticle.getGroupId(), journalArticle.getArticleId(),
-				Constants.VIEW, LocaleUtil.toLanguageId(LocaleUtil.JAPAN),
-				_portletRequestModel);
-
-		Assert.assertEquals(
-			"<h2 class=\"text-center\">Space Program 大学生涯教育</h2><p " +
-				"class=\"text-center\">地球から、宇宙の果てへ</p>",
-			journalArticleDisplay.getContent());
-		Assert.assertEquals(
-			"A Japanese translation of the basic front page banner",
-			journalArticleDisplay.getDescription());
-		Assert.assertEquals(
-			"Basic S.P.A.C.E. Banner (Japanese Translation)",
-			journalArticleDisplay.getTitle());
-
-		journalArticleDisplay = _journalContent.getDisplay(
-			journalArticle.getGroupId(), journalArticle.getArticleId(),
-			Constants.VIEW, LocaleUtil.toLanguageId(LocaleUtil.US),
-			_portletRequestModel);
-
-		Assert.assertEquals(
-			"<h2 class=\"text-center\">Space Program Academy of Continuing " +
-				"Education</h2><p class=\"text-center\">Dare to Dream out of " +
-					"this world</p>",
-			journalArticleDisplay.getContent());
-		Assert.assertEquals(
-			"Basic S.P.A.C.E. Banner", journalArticleDisplay.getTitle());
 	}
 
 	protected static String getXML() {
@@ -649,6 +580,75 @@ public class JournalContentTest {
 
 			Assert.assertTrue(content.contains("data-lfr-nonce-journal"));
 		}
+	}
+
+	private void _testGetDisplayWithLocalizedContent() throws Exception {
+		DDMStructure ddmStructure = _ddmStructureLocalService.getStructure(
+			_portal.getSiteGroupId(_group.getGroupId()),
+			_portal.getClassNameId(JournalArticle.class), "BASIC-WEB-CONTENT",
+			true);
+
+		JournalArticle journalArticle = _journalArticleLocalService.addArticle(
+			null, TestPropsValues.getUserId(), _group.getGroupId(),
+			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			HashMapBuilder.put(
+				LocaleUtil.JAPAN,
+				"Basic S.P.A.C.E. Banner (Japanese Translation)"
+			).put(
+				LocaleUtil.US, "Basic S.P.A.C.E. Banner"
+			).build(),
+			HashMapBuilder.put(
+				LocaleUtil.JAPAN,
+				"A Japanese translation of the basic front page banner"
+			).build(),
+			DDMStructureTestUtil.getSampleStructuredContent(
+				"content",
+				Collections.singletonList(
+					HashMapBuilder.put(
+						LocaleUtil.JAPAN,
+						"<h2 class=\"text-center\">Space Program 大学生涯教育</h2>" +
+							"<p class=\"text-center\">地球から、宇宙の果てへ</p>"
+					).put(
+						LocaleUtil.US,
+						StringBundler.concat(
+							"<h2 class=\"text-center\">",
+							"Space Program Academy of Continuing Education",
+							"</h2><p class=\"text-center\">",
+							"Dare to Dream out of this world</p>")
+					).build()),
+				LocaleUtil.toLanguageId(LocaleUtil.US)),
+			ddmStructure.getStructureId(), "BASIC-WEB-CONTENT",
+			_serviceContext);
+
+		JournalArticleDisplay journalArticleDisplay =
+			_journalContent.getDisplay(
+				journalArticle.getGroupId(), journalArticle.getArticleId(),
+				Constants.VIEW, LocaleUtil.toLanguageId(LocaleUtil.JAPAN),
+				_portletRequestModel);
+
+		Assert.assertEquals(
+			"<h2 class=\"text-center\">Space Program 大学生涯教育</h2><p " +
+				"class=\"text-center\">地球から、宇宙の果てへ</p>",
+			journalArticleDisplay.getContent());
+		Assert.assertEquals(
+			"A Japanese translation of the basic front page banner",
+			journalArticleDisplay.getDescription());
+		Assert.assertEquals(
+			"Basic S.P.A.C.E. Banner (Japanese Translation)",
+			journalArticleDisplay.getTitle());
+
+		journalArticleDisplay = _journalContent.getDisplay(
+			journalArticle.getGroupId(), journalArticle.getArticleId(),
+			Constants.VIEW, LocaleUtil.toLanguageId(LocaleUtil.US),
+			_portletRequestModel);
+
+		Assert.assertEquals(
+			"<h2 class=\"text-center\">Space Program Academy of Continuing " +
+				"Education</h2><p class=\"text-center\">Dare to Dream out of " +
+					"this world</p>",
+			journalArticleDisplay.getContent());
+		Assert.assertEquals(
+			"Basic S.P.A.C.E. Banner", journalArticleDisplay.getTitle());
 	}
 
 	private void _testGetDisplayWithoutCSPNonceTemplate() throws Exception {
