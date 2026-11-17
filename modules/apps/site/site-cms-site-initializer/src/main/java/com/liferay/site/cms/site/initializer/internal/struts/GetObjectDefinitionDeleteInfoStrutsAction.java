@@ -12,9 +12,13 @@ import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.servlet.ServletResponseUtil;
 import com.liferay.portal.kernel.struts.StrutsAction;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -42,6 +46,14 @@ public class GetObjectDefinitionDeleteInfoStrutsAction implements StrutsAction {
 
 		long objectDefinitionId = ParamUtil.getLong(
 			httpServletRequest, "objectDefinitionId");
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		_objectDefinitionModelResourcePermission.check(
+			themeDisplay.getPermissionChecker(), objectDefinitionId,
+			ActionKeys.DELETE);
 
 		ObjectDefinition objectDefinition =
 			_objectDefinitionLocalService.fetchObjectDefinition(
@@ -85,6 +97,12 @@ public class GetObjectDefinitionDeleteInfoStrutsAction implements StrutsAction {
 
 	@Reference
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
+
+	@Reference(
+		target = "(model.class.name=com.liferay.object.model.ObjectDefinition)"
+	)
+	private ModelResourcePermission<ObjectDefinition>
+		_objectDefinitionModelResourcePermission;
 
 	@Reference
 	private ObjectEntryLocalService _objectEntryLocalService;
