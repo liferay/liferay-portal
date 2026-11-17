@@ -226,15 +226,15 @@ public class CampaignFaroControllerTest {
 
 	@Test
 	public void testGetCampaignNamesFaroFDSResultsDisplay() throws Exception {
+		CampaignName campaignName = new CampaignName();
+
+		campaignName.setId(RandomTestUtil.randomString());
+
 		long channelId = RandomTestUtil.randomLong();
 		int page = RandomTestUtil.randomInt();
 		int pageSize = RandomTestUtil.randomInt();
 		String search = RandomTestUtil.randomString();
 		int total = RandomTestUtil.randomInt();
-
-		CampaignName campaignName = new CampaignName();
-
-		campaignName.setId(RandomTestUtil.randomString());
 
 		Mockito.when(
 			_contactsEngineClient.getCampaignNames(
