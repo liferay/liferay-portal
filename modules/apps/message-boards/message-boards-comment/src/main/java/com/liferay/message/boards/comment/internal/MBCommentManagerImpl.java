@@ -44,6 +44,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 
 import org.osgi.service.component.annotations.Component;
@@ -128,6 +129,15 @@ public class MBCommentManagerImpl implements CommentManager {
 		throws PortalException {
 
 		MBMessage parentMessage = _getDiscussionMessage(parentCommentId);
+
+		if (!Objects.equals(className, parentMessage.getClassName()) ||
+			(classPK != parentMessage.getClassPK())) {
+
+			throw new NoSuchMessageException(
+				StringBundler.concat(
+					"No comment exists with comment ID ", parentCommentId,
+					" for class name ", className, " and class PK ", classPK));
+		}
 
 		ServiceContext serviceContext = serviceContextFunction.apply(
 			MBMessage.class.getName());
