@@ -5,13 +5,13 @@
 
 import getCreationMenuItems from '../../src/main/resources/META-INF/resources/js/getCreationMenuItems';
 
-const mockOpenCreationModal = jest.fn();
+const mockOpenModuleModal = jest.fn();
 
 jest.mock(
-	'../../src/main/resources/META-INF/resources/js/openCreationModal',
+	'../../src/main/resources/META-INF/resources/js/openModuleModal',
 	() => ({
 		__esModule: true,
-		default: (item: unknown) => mockOpenCreationModal(item),
+		default: (item: unknown) => mockOpenModuleModal(item),
 	})
 );
 
@@ -101,7 +101,7 @@ describe('getCreationMenuItems', () => {
 
 		styleBookItem.onClick();
 
-		expect(mockOpenCreationModal).toHaveBeenCalledWith(
+		expect(mockOpenModuleModal).toHaveBeenCalledWith(
 			STYLE_BOOK_CREATION_ITEM
 		);
 	});

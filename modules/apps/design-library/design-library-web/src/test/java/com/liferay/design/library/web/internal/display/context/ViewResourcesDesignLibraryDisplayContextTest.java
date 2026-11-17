@@ -11,6 +11,7 @@ import com.liferay.design.library.resource.type.DesignLibraryResourceTypeContrib
 import com.liferay.design.library.resource.type.DesignLibraryResourceTypeContributorRegistry;
 import com.liferay.design.library.web.internal.constants.DesignLibraryWebKeys;
 import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
+import com.liferay.frontend.js.loader.modules.extender.esm.ESImportUtil;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.json.JSONFactoryImpl;
@@ -26,6 +27,7 @@ import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.service.permission.GroupPermissionUtil;
+import com.liferay.portal.kernel.servlet.taglib.aui.ESImport;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -34,6 +36,8 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
+import com.liferay.portal.url.builder.AbsolutePortalURLBuilder;
+import com.liferay.portal.url.builder.AbsolutePortalURLBuilderFactory;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -186,6 +190,7 @@ public class ViewResourcesDesignLibraryDisplayContextTest {
 	}
 
 	@Test
+	@TestInfo("LPD-114990")
 	public void testGetFDSActionDropdownItems() throws Exception {
 		_setUpPortletURLMocks();
 
@@ -208,6 +213,8 @@ public class ViewResourcesDesignLibraryDisplayContextTest {
 		Assert.assertFalse(
 			visibilityFilters.toString(),
 			visibilityFilters.containsKey("type"));
+
+		_testGetFDSActionDropdownItemsWithModule();
 	}
 
 	@Test
@@ -727,6 +734,92 @@ public class ViewResourcesDesignLibraryDisplayContextTest {
 					"((classNameId eq ", _CLASS_NAME_ID_2,
 					" and type eq '3') or (classNameId eq ", _CLASS_NAME_ID_2,
 					" and type eq '1'))")));
+	}
+
+	private void _testGetFDSActionDropdownItemsWithModule() throws Exception {
+		DesignLibraryResourceTypeContributor
+			designLibraryResourceTypeContributor = _mockContributor(
+				false, _CLASS_NAME_2, "master", "3");
+
+		FDSActionDropdownItem renameFDSActionDropdownItem =
+			_createFDSActionDropdownItem("master");
+
+		renameFDSActionDropdownItem.putData(
+			"module", "{RenameModal} from layout-page-template-admin-web");
+
+		Mockito.when(
+			designLibraryResourceTypeContributor.getFDSActionDropdownItems(
+				Mockito.any(), Mockito.any(), Mockito.any())
+		).thenReturn(
+			Collections.singletonList(renameFDSActionDropdownItem)
+		);
+
+		_setUpRegistry(designLibraryResourceTypeContributor);
+
+		AbsolutePortalURLBuilderFactory absolutePortalURLBuilderFactory =
+			Mockito.mock(AbsolutePortalURLBuilderFactory.class);
+		AbsolutePortalURLBuilder absolutePortalURLBuilder = Mockito.mock(
+			AbsolutePortalURLBuilder.class);
+
+		Mockito.when(
+			absolutePortalURLBuilderFactory.getAbsolutePortalURLBuilder(
+				_mockHttpServletRequest)
+		).thenReturn(
+			absolutePortalURLBuilder
+		);
+
+		Snapshot<AbsolutePortalURLBuilderFactory>
+			absolutePortalURLBuilderFactorySnapshot =
+				ReflectionTestUtil.getFieldValue(
+					ViewResourcesDesignLibraryDisplayContext.class,
+					"_absolutePortalURLBuilderFactorySnapshot");
+
+		ReflectionTestUtil.setFieldValue(
+			ViewResourcesDesignLibraryDisplayContext.class,
+			"_absolutePortalURLBuilderFactorySnapshot",
+			new Snapshot<AbsolutePortalURLBuilderFactory>(
+				ViewResourcesDesignLibraryDisplayContext.class,
+				AbsolutePortalURLBuilderFactory.class) {
+
+				@Override
+				public AbsolutePortalURLBuilderFactory get() {
+					return absolutePortalURLBuilderFactory;
+				}
+
+			});
+
+		try (MockedStatic<ESImportUtil> esImportUtilMockedStatic =
+				Mockito.mockStatic(ESImportUtil.class)) {
+
+			esImportUtilMockedStatic.when(
+				() -> ESImportUtil.getESImport(
+					absolutePortalURLBuilder,
+					"{RenameModal} from layout-page-template-admin-web")
+			).thenReturn(
+				new ESImport(
+					"/o/layout-page-template-admin-web/index.js", "RenameModal")
+			);
+
+			List<FDSActionDropdownItem> fdsActionDropdownItems =
+				_viewResourcesDesignLibraryDisplayContext.
+					getFDSActionDropdownItems();
+
+			FDSActionDropdownItem fdsActionDropdownItem =
+				fdsActionDropdownItems.get(0);
+
+			Map<String, Object> data =
+				(Map<String, Object>)fdsActionDropdownItem.get("data");
+
+			Assert.assertEquals(
+				"{RenameModal} from /o/layout-page-template-admin-web/index.js",
+				data.get("module"));
+		}
+		finally {
+			ReflectionTestUtil.setFieldValue(
+				ViewResourcesDesignLibraryDisplayContext.class,
+				"_absolutePortalURLBuilderFactorySnapshot",
+				absolutePortalURLBuilderFactorySnapshot);
+		}
 	}
 
 	private static final String _CLASS_NAME_1 =

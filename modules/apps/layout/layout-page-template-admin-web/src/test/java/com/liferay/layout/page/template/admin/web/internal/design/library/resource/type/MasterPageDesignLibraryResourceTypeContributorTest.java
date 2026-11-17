@@ -144,25 +144,44 @@ public class MasterPageDesignLibraryResourceTypeContributorTest {
 			String.valueOf(_editLiferayPortletURL), "pencil", "edit", "edit",
 			null, "get", "link");
 		_assertFDSActionDropdownItem(
-			fdsActionDropdownItems.get(1), "{actions.markAsDefault.href}",
+			fdsActionDropdownItems.get(1), null, null, "rename", "rename", null,
+			"update", null);
+		_assertFDSActionDropdownItem(
+			fdsActionDropdownItems.get(2), "{actions.markAsDefault.href}",
 			"star", "markAsDefault", "mark-as-default", "post", "markAsDefault",
 			"async");
 		_assertFDSActionDropdownItem(
-			fdsActionDropdownItems.get(2), "{actions.unmarkAsDefault.href}",
+			fdsActionDropdownItems.get(3), "{actions.unmarkAsDefault.href}",
 			"star-o", "unmarkAsDefault", "unmark-as-default", "post",
 			"unmarkAsDefault", "async");
-		_assertCopyMenuFDSActionDropdownItem(fdsActionDropdownItems.get(3));
+		_assertCopyMenuFDSActionDropdownItem(fdsActionDropdownItems.get(4));
 		_assertFDSActionDropdownItem(
-			fdsActionDropdownItems.get(4),
+			fdsActionDropdownItems.get(5),
 			String.valueOf(_permissionsLiferayPortletURL), "password-policies",
 			"permissions", "permissions", null, "permissions",
 			"modal-permissions");
 		_assertFDSActionDropdownItem(
-			fdsActionDropdownItems.get(5), "{actions.delete.href}", "trash",
+			fdsActionDropdownItems.get(6), "{actions.delete.href}", "trash",
 			"delete", "delete", "delete", "delete", "async");
 		Assert.assertEquals(
-			fdsActionDropdownItems.toString(), 6,
+			fdsActionDropdownItems.toString(), 7,
 			fdsActionDropdownItems.size());
+
+		FDSActionDropdownItem renameFDSActionDropdownItem =
+			fdsActionDropdownItems.get(1);
+
+		Map<String, Object> data =
+			(Map<String, Object>)renameFDSActionDropdownItem.get("data");
+
+		Assert.assertEquals(
+			"{RenameLayoutPageTemplateEntryDesignLibraryModalContent} from " +
+				"layout-page-template-admin-web",
+			data.get("module"));
+
+		Map<String, Object> moduleProps = (Map<String, Object>)data.get(
+			"moduleProps");
+
+		Assert.assertEquals("rename-master-page", moduleProps.get("title"));
 
 		_assertLiferayPortletURL(
 			_editLiferayPortletURL,

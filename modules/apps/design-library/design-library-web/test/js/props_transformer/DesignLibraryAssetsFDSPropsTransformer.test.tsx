@@ -6,11 +6,20 @@
 import DesignLibraryAssetsFDSPropsTransformer from '../../../src/main/resources/META-INF/resources/js/props_transformer/DesignLibraryAssetsFDSPropsTransformer';
 
 const mockOpenModal = jest.fn();
+const mockOpenModuleModal = jest.fn();
 
 jest.mock('frontend-js-components-web', () => ({
 	openModal: (...args: any[]) => mockOpenModal(...args),
 	openToast: jest.fn(),
 }));
+
+jest.mock(
+	'../../../src/main/resources/META-INF/resources/js/openModuleModal',
+	() => ({
+		__esModule: true,
+		default: (props: unknown) => mockOpenModuleModal(props),
+	})
+);
 
 const BASE_PROPS = {
 	bulkActions: [
@@ -218,5 +227,45 @@ describe('DesignLibraryAssetsFDSPropsTransformer', () => {
 		});
 
 		expect(mockOpenModal).not.toHaveBeenCalled();
+	});
+
+	it('opens the module modal of a row action that declares a module', () => {
+		const loadData = jest.fn();
+		const {onActionDropdownItemClick} =
+			DesignLibraryAssetsFDSPropsTransformer(BASE_PROPS);
+		const preventDefault = jest.fn();
+
+		onActionDropdownItemClick({
+			action: {data: {id: 'edit'}},
+			event: {preventDefault},
+			itemData: DELETABLE_ITEM,
+			loadData,
+		});
+
+		expect(mockOpenModuleModal).not.toHaveBeenCalled();
+		expect(preventDefault).not.toHaveBeenCalled();
+
+		onActionDropdownItemClick({
+			action: {
+				data: {
+					id: 'rename',
+					module: '{RenameFoo} from foo-web',
+					moduleProps: {title: 'rename-foo'},
+				},
+			},
+			event: {preventDefault},
+			itemData: DELETABLE_ITEM,
+			loadData,
+		});
+
+		expect(preventDefault).toHaveBeenCalledTimes(1);
+		expect(mockOpenModuleModal).toHaveBeenCalledWith({
+			module: '{RenameFoo} from foo-web',
+			moduleProps: {
+				itemData: DELETABLE_ITEM,
+				loadData,
+				title: 'rename-foo',
+			},
+		});
 	});
 });
