@@ -5,6 +5,7 @@
 
 package com.liferay.sharepoint.rest.repository.internal.helper;
 
+import com.liferay.document.library.kernel.model.DLVersionNumberIncrease;
 import com.liferay.document.library.repository.external.ExtRepositoryFileEntry;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
@@ -54,13 +55,25 @@ public class SharepointURLHelperTest {
 	}
 
 	@Test
+	public void testGetCheckInFileURL() {
+		Assert.assertEquals(
+			_getFileURL(
+				"/Shared%20Documents/image.png",
+				"/CheckIn(comment='notes',checkintype=2)"),
+			_sharepointURLHelper.getCheckInFileURL(
+				"/Shared Documents/image.png", DLVersionNumberIncrease.NONE,
+				"notes"));
+	}
+
+	@Test
 	public void testGetCheckInFileURLEncodesApostropheInChangeLog() {
 		Assert.assertEquals(
 			_getFileURL(
 				"/Shared%20Documents/relatorio.doc",
 				"/CheckIn(comment='Ankita%27%27s%20edit',checkintype=1)"),
 			_sharepointURLHelper.getCheckInFileURL(
-				"/Shared Documents/relatorio.doc", true, "Ankita's edit"));
+				"/Shared Documents/relatorio.doc",
+				DLVersionNumberIncrease.MAJOR, "Ankita's edit"));
 	}
 
 	@Test

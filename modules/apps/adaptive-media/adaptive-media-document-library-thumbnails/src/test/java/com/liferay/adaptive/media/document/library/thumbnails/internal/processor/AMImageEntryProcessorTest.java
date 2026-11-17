@@ -9,9 +9,11 @@ import com.liferay.adaptive.media.AdaptiveMedia;
 import com.liferay.adaptive.media.document.library.thumbnails.internal.configuration.AMSystemImagesConfiguration;
 import com.liferay.adaptive.media.image.finder.AMImageFinder;
 import com.liferay.adaptive.media.image.mime.type.AMImageMimeTypeProvider;
+import com.liferay.adaptive.media.image.service.AMImageEntryLocalService;
 import com.liferay.adaptive.media.image.validator.AMImageValidator;
 import com.liferay.adaptive.media.processor.AMAsyncProcessor;
 import com.liferay.adaptive.media.processor.AMAsyncProcessorLocator;
+import com.liferay.document.library.kernel.model.DLFileVersion;
 import com.liferay.portal.kernel.repository.model.FileVersion;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.util.PrefsProps;
@@ -56,20 +58,29 @@ public class AMImageEntryProcessorTest {
 		);
 
 		ReflectionTestUtil.setFieldValue(
+			_amImageEntryProcessor, "_amAsyncProcessorLocator",
+			_amAsyncProcessorLocator);
+		ReflectionTestUtil.setFieldValue(
+			_amImageEntryProcessor, "_amImageEntryLocalService",
+			_amImageEntryLocalService);
+		ReflectionTestUtil.setFieldValue(
 			_amImageEntryProcessor, "_amImageFinder", _amImageFinder);
 		ReflectionTestUtil.setFieldValue(
 			_amImageEntryProcessor, "_amImageMimeTypeProvider",
 			_amImageMimeTypeProvider);
 		ReflectionTestUtil.setFieldValue(
+			_amImageEntryProcessor, "_amImageValidator", _amImageValidator);
+		ReflectionTestUtil.setFieldValue(
 			_amImageEntryProcessor, "_amSystemImagesConfiguration",
 			_amSystemImagesConfiguration);
 		ReflectionTestUtil.setFieldValue(
-			_amImageEntryProcessor, "_amImageValidator", _amImageValidator);
-		ReflectionTestUtil.setFieldValue(
-			_amImageEntryProcessor, "_amAsyncProcessorLocator",
-			_amAsyncProcessorLocator);
-		ReflectionTestUtil.setFieldValue(
 			PrefsPropsUtil.class, "_prefsProps", _prefsProps);
+	}
+
+	@Test
+	public void testCleanUp() throws Exception {
+		_testCleanUpWhenFileVersionIsExternal();
+		_testCleanUpWhenFileVersionIsLocal();
 	}
 
 	@Test
@@ -686,12 +697,44 @@ public class AMImageEntryProcessorTest {
 		);
 	}
 
+	private void _testCleanUpWhenFileVersionIsExternal() throws Exception {
+		FileVersion fileVersion = Mockito.mock(FileVersion.class);
+
+		_amImageEntryProcessor.cleanUp(fileVersion);
+
+		Mockito.verify(
+			_amImageEntryLocalService
+		).deleteAMImageEntryFileVersion(
+			fileVersion
+		);
+	}
+
+	private void _testCleanUpWhenFileVersionIsLocal() throws Exception {
+		FileVersion fileVersion = Mockito.mock(FileVersion.class);
+
+		Mockito.when(
+			fileVersion.getModel()
+		).thenReturn(
+			Mockito.mock(DLFileVersion.class)
+		);
+
+		_amImageEntryProcessor.cleanUp(fileVersion);
+
+		Mockito.verify(
+			_amImageEntryLocalService, Mockito.never()
+		).deleteAMImageEntryFileVersion(
+			fileVersion
+		);
+	}
+
 	private final AdaptiveMedia<?> _adaptiveMedia = Mockito.mock(
 		AdaptiveMedia.class);
 	private final AMAsyncProcessor<FileVersion, ?> _amAsyncProcessor =
 		Mockito.mock(AMAsyncProcessor.class);
 	private final AMAsyncProcessorLocator _amAsyncProcessorLocator =
 		Mockito.mock(AMAsyncProcessorLocator.class);
+	private final AMImageEntryLocalService _amImageEntryLocalService =
+		Mockito.mock(AMImageEntryLocalService.class);
 	private AMImageEntryProcessor _amImageEntryProcessor;
 	private final AMImageFinder _amImageFinder = Mockito.mock(
 		AMImageFinder.class);
