@@ -11,6 +11,7 @@ import com.liferay.jenkins.results.parser.history.TestClassHistory;
 import com.liferay.jenkins.results.parser.test.clazz.group.BatchTestClassGroup;
 
 import java.io.File;
+import java.io.IOException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -170,9 +171,10 @@ public class PlaywrightJUnitTestClass extends JUnitTestClass {
 
 			boolean analyticsCloudEnabled = false;
 
-			if (!JenkinsResultsParserUtil.isNullOrEmpty(
+			if ((!JenkinsResultsParserUtil.isNullOrEmpty(
 					analyticsCloudEnabledString) &&
-				analyticsCloudEnabledString.equals("true")) {
+				 analyticsCloudEnabledString.equals("true")) ||
+				_hasStartAnalyticsCloud()) {
 
 				analyticsCloudEnabled = true;
 			}
@@ -220,6 +222,23 @@ public class PlaywrightJUnitTestClass extends JUnitTestClass {
 		_workspaceName = jsonObject.optString("workspace_name", null);
 	}
 
+	private File _getPlaywrightProjectDir() {
+		File dir = JenkinsResultsParserUtil.getCanonicalFile(
+			getTestClassFile());
+
+		while (dir != null) {
+			File configFile = new File(dir, "config.ts");
+
+			if (configFile.exists()) {
+				return dir;
+			}
+
+			dir = dir.getParentFile();
+		}
+
+		return null;
+	}
+
 	private Map<String, TestClassHistory> _getTestClassHistoriesMap() {
 		if (_testClassHistoriesMap != null) {
 			return _testClassHistoriesMap;
@@ -251,8 +270,34 @@ public class PlaywrightJUnitTestClass extends JUnitTestClass {
 		return _testClassHistoriesMap;
 	}
 
+	private boolean _hasStartAnalyticsCloud() {
+		File playwrightProjectDir = _getPlaywrightProjectDir();
+
+		if (playwrightProjectDir == null) {
+			return false;
+		}
+
+		File setUpFile = new File(playwrightProjectDir, "env/set_up.sh");
+
+		if (!setUpFile.exists()) {
+			return false;
+		}
+
+		try {
+			Matcher matcher = _startAnalyticsCloudPattern.matcher(
+				JenkinsResultsParserUtil.read(setUpFile));
+
+			return matcher.find();
+		}
+		catch (IOException ioException) {
+			return false;
+		}
+	}
+
 	private static final String _MINIMUM_SLAVE_RAM_DEFAULT = "12";
 
+	private static final Pattern _startAnalyticsCloudPattern = Pattern.compile(
+		"^\\s*start_analytics_cloud\\b", Pattern.MULTILINE);
 	private static final Pattern _testFilePathPattern = Pattern.compile(
 		".+/playwright/(setup|tests)/(?<specFilePath>.+)");
 
