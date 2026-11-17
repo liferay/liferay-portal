@@ -4397,7 +4397,20 @@ public class ObjectDefinitionLocalServiceTest {
 						String methodName = method.getName();
 
 						if (methodName.equals("execute")) {
-							clusterRequests.add((ClusterRequest)arguments[0]);
+							ClusterRequest clusterRequest =
+								(ClusterRequest)arguments[0];
+
+							MethodHandler methodHandler =
+								(MethodHandler)clusterRequest.getPayload();
+
+							MethodKey methodKey = methodHandler.getMethodKey();
+
+							if (Objects.equals(
+									methodKey.getMethodName(),
+									"deployObjectDefinition")) {
+
+								clusterRequests.add(clusterRequest);
+							}
 						}
 						else if (methodName.equals(
 									"getClusterEventListeners") ||
@@ -4457,14 +4470,34 @@ public class ObjectDefinitionLocalServiceTest {
 
 		clusterRequests.clear();
 
+		objectDefinition.setPanelCategoryKey("site_administration.content");
+
 		_updateCustomObjectDefinition(
 			objectDefinition.getClassName(),
 			objectDefinition.getDescriptionMap(),
 			objectDefinition.getFriendlyURLSeparator(), objectDefinition,
 			Collections.emptyList());
 
-		Assert.assertTrue(
-			clusterRequests.toString(), clusterRequests.isEmpty());
+		Assert.assertEquals(
+			clusterRequests.toString(), 1, clusterRequests.size());
+
+		clusterRequest = clusterRequests.get(0);
+
+		Assert.assertTrue(clusterRequest.isMulticast());
+		Assert.assertTrue(clusterRequest.isSkipLocal());
+
+		methodHandler = (MethodHandler)clusterRequest.getPayload();
+
+		arguments = methodHandler.getArguments();
+
+		deployedObjectDefinition = (ObjectDefinition)arguments[0];
+
+		Assert.assertEquals(
+			objectDefinition.getObjectDefinitionId(),
+			deployedObjectDefinition.getObjectDefinitionId());
+		Assert.assertEquals(
+			"site_administration.content",
+			deployedObjectDefinition.getPanelCategoryKey());
 
 		ReflectionTestUtil.setFieldValue(
 			clusterExecutorSnapshot, "_serviceSupplier", serviceSupplier);
