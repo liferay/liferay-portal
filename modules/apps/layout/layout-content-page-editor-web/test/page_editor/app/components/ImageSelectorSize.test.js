@@ -4,7 +4,7 @@
  */
 
 import '@testing-library/jest-dom';
-import {act, render, screen} from '@testing-library/react';
+import {act, render, screen, waitFor} from '@testing-library/react';
 import React from 'react';
 
 import {useGlobalContext} from '../../../../src/main/resources/META-INF/resources/page_editor/app/contexts/GlobalContext';
@@ -20,8 +20,16 @@ jest.mock(
 	'../../../../src/main/resources/META-INF/resources/page_editor/app/services/ImageService'
 );
 
+const frontendJsWebMock = jest.requireMock('frontend-js-web');
+
 const renderImageSelectorSize = (
-	{imageSizeId = '1000px', imageSizeLimit = null, onImageSizeIdChanged} = {
+	{
+		fieldValue = {fileEntryId: '1234'},
+		imageSizeId = '1000px',
+		imageSizeLimit = null,
+		onImageSizeIdChanged,
+	} = {
+		fieldValue: {fileEntryId: '1234'},
 		imageSizeId: '1000px',
 		imageSizeLimit: null,
 	}
@@ -29,13 +37,25 @@ const renderImageSelectorSize = (
 	render(
 		<StoreAPIContextProvider>
 			<ImageSelectorSize
-				fieldValue={{fileEntryId: '1234'}}
+				fieldValue={fieldValue}
 				imageSizeId={imageSizeId}
 				imageSizeLimit={imageSizeLimit}
 				onImageSizeIdChanged={onImageSizeIdChanged}
 			/>
 		</StoreAPIContextProvider>
 	);
+
+function mockInfoItemFieldValue(fieldValue) {
+	frontendJsWebMock.fetch.mockImplementation(() =>
+		Promise.resolve({
+			clone() {
+				return this;
+			},
+			json: () => Promise.resolve({fieldValue}),
+			status: 200,
+		})
+	);
+}
 
 const imageSizesPromise = Promise.resolve([
 	{
@@ -86,6 +106,7 @@ describe('ImageSelectorSize', () => {
 	afterEach(() => {
 		useGlobalContext.mockClear();
 		ImageService.getAvailableImageConfigurations.mockClear();
+		frontendJsWebMock.fetch.mockReset();
 	});
 
 	it('renders viewport width if there are no image sizes', async () => {
@@ -170,6 +191,50 @@ describe('ImageSelectorSize', () => {
 		const widthLabel = getByText('width:', {exact: false});
 
 		expect(widthLabel.parentElement.textContent).toBe('width:300px');
+	});
+
+	it('does not render anything if the mapped image has no file entry', async () => {
+		mockInfoItemFieldValue({url: 'http://localhost/user_portrait'});
+
+		const {container} = renderImageSelectorSize({
+			fieldValue: {
+				classNameId: '1',
+				classPK: '2',
+				fieldId: 'userProfileImage',
+			},
+			onImageSizeIdChanged: jest.fn(),
+		});
+
+		await waitFor(() => expect(frontendJsWebMock.fetch).toHaveBeenCalled());
+
+		expect(container).toBeEmptyDOMElement();
+		expect(
+			ImageService.getAvailableImageConfigurations
+		).not.toHaveBeenCalled();
+	});
+
+	it('renders the image sizes of the file entry of the mapped image', async () => {
+		mockInfoItemFieldValue({
+			fileEntryId: '1234',
+			url: 'http://localhost/image.png',
+		});
+
+		renderImageSelectorSize({
+			fieldValue: {
+				classNameId: '1',
+				classPK: '2',
+				fieldId: 'fileURL',
+			},
+			onImageSizeIdChanged: jest.fn(),
+		});
+
+		await screen.findByRole('option', {name: '1000px'});
+
+		const select = screen.getByLabelText('resolution');
+
+		expect(
+			Array.from(select.options).map((option) => option.value)
+		).toEqual(['480px', '1000px', 'auto']);
 	});
 
 	it('shows a warning (and checks that this warning is also in the label) if the image is larger than the specified size', async () => {
