@@ -250,12 +250,20 @@ export class GlobalMenuPage {
 
 		await input.press('Tab');
 
+		// Sub-entries load after the filter and can share the entry's name.
+		// Their lists sit next to the parent entry's link, while section lists
+		// sit next to a button, so excluding them keeps every top-level entry.
+
 		await this.page
 			.getByRole('menuitem', {
 				exact: true,
 				name: menuItem as string,
 			})
-			.and(this.page.locator('.nav-link[href]'))
+			.and(
+				this.page.locator(
+					'.nav-link[href]:not(a[href] ~ [role="menu"] *)'
+				)
+			)
 			.click();
 	}
 
