@@ -6,9 +6,11 @@
 import {expect, mergeTests} from '@playwright/test';
 
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
+import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {globalMenuPagesTest} from '../../../fixtures/globalMenuPagesTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {workflowPagesTest} from '../../../fixtures/workflowPagesTest';
+import {DataApiHelpers} from '../../../helpers/ApiHelpers';
 import {addSpaceUser} from '../../../utils/addSpaceUser';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import dragAndDropElement from '../../../utils/dragAndDropElement';
@@ -29,11 +31,78 @@ const test = mergeTests(
 	workflowPagesTest
 );
 
+const governanceDashboardTest = mergeTests(
+	featureFlagsTest({
+		'LPD-82226': {enabled: true},
+	}),
+	test
+);
+
 const cmpProject = 'cmp/projects';
 const cmpTask = 'cmp/tasks';
 let project;
 const tasks = [];
 let taskNames: string[] = [];
+
+async function addSpaceWithOverdueWorkflowTask(
+	apiHelpers: DataApiHelpers,
+	title: string
+) {
+	const space = await apiHelpers.headlessAssetLibrary.createSpace();
+
+	const objectDefinition =
+		await apiHelpers.objectAdmin.getObjectDefinitionByName(
+			'CMSBasicWebContent'
+		);
+
+	const workflowDefinition =
+		await apiHelpers.headlessAdminWorkflow.getWorkflowDefinitionByName(
+			'Single Approver'
+		);
+
+	await apiHelpers.headlessAdminWorkflow.postWorkflowDefinitionLink(
+		objectDefinition.className,
+		space.siteId,
+		workflowDefinition.id,
+		workflowDefinition.name,
+		Number(workflowDefinition.version)
+	);
+
+	const objectEntry = await apiHelpers.objectEntry.postObjectEntry(
+		{
+			objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
+			title,
+		},
+		'cms/basic-web-contents',
+		space.name
+	);
+
+	let workflowTask;
+
+	await expect(async () => {
+		workflowTask =
+			await apiHelpers.headlessAdminWorkflow.getWorkflowTaskByAsset(
+				objectDefinition.className,
+				String(objectEntry.id)
+			);
+
+		expect(workflowTask).toBeTruthy();
+	}).toPass();
+
+	const userAccount = await apiHelpers.headlessAdminUser.getMyUserAccount();
+
+	await apiHelpers.headlessAdminWorkflow.postAssignTaskToUser(
+		workflowTask.id,
+		userAccount.id
+	);
+
+	await apiHelpers.headlessAdminWorkflow.postWorkflowTaskUpdateDueDate(
+		workflowTask.id,
+		new Date(Date.parse(workflowTask.dateCreated) + 1000)
+	);
+
+	return space;
+}
 
 /**
  * Formats a date as its long month name and year.
@@ -2038,5 +2107,78 @@ test(
 		);
 
 		await expect(page.locator('.fc-daygrid-day')).toHaveCount(7);
+	}
+);
+
+governanceDashboardTest(
+	'Opens the workflow tasks of the selected space from the Overdue Tasks View All of the Governance dashboard',
+	{tag: ['@LPD-109713']},
+	async ({apiHelpers, page, tasksPage}) => {
+		const overdueTitle = getRandomString();
+		const otherSpaceOverdueTitle = getRandomString();
+
+		const space = await addSpaceWithOverdueWorkflowTask(
+			apiHelpers,
+			overdueTitle
+		);
+
+		await addSpaceWithOverdueWorkflowTask(
+			apiHelpers,
+			otherSpaceOverdueTitle
+		);
+
+		await page.clock.install({time: Date.now() + 2 * 60 * 1000});
+
+		await test.step('Open the overdue tasks of the space in the Governance dashboard', async () => {
+			const overdueTasksCard = page.getByRole('button', {
+				name: /^Overdue Tasks/,
+			});
+
+			await expect(async () => {
+				await page.goto('/web/cms/dashboard');
+
+				const searchInput = page.getByRole('textbox', {name: 'Search'});
+
+				await page
+					.getByRole('combobox', {name: 'Filter by Spaces'})
+					.click();
+
+				await searchInput.fill(space.name);
+
+				await page.getByRole('option', {name: space.name}).click();
+
+				await expect(overdueTasksCard).toContainText(
+					'100% of 1 Workflow Tasks'
+				);
+			}).toPass();
+
+			await overdueTasksCard.click();
+
+			await page
+				.getByRole('link', {name: 'View All Overdue Tasks'})
+				.click();
+		});
+
+		await test.step('Show the overdue workflow tasks of the space', async () => {
+			await expect(tasksPage.workflowTasksTab).toHaveAttribute(
+				'aria-selected',
+				'true'
+			);
+
+			for (const name of [
+				`Space: ${space.name}`,
+				'Status: Pending',
+				/^Due Date: To /,
+			]) {
+				await expect(
+					page.getByRole('tabpanel').getByRole('button', {name})
+				).toBeVisible();
+			}
+
+			await expect(tasksPage.getItem(overdueTitle)).toBeVisible();
+			await expect(
+				tasksPage.getItem(otherSpaceOverdueTitle)
+			).toBeHidden();
+		});
 	}
 );
