@@ -365,6 +365,8 @@ public class BatchTestClassGroupTest
 			portalGitWorkingDirectory
 		).getUpstreamBranchName();
 
+		String batchName = batchTestClassGroup.getBatchName();
+
 		JobHistory jobHistory = portalTestClassJob.getJobHistory();
 
 		Mockito.doReturn(
@@ -372,7 +374,7 @@ public class BatchTestClassGroupTest
 		).when(
 			jobHistory
 		).getBatchHistory(
-			batchTestClassGroup.getBatchName()
+			batchName
 		);
 
 		if (targetAxisDurationExpected) {
