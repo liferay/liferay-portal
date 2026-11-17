@@ -5,6 +5,7 @@ import {
 	buildStageFilterMetadata,
 	buildUpdateLifecyclePayload,
 	duplicateStageConfigsFromLifecycle,
+	getDuplicateLifecycleSearchName,
 	stageConfigsFromLifecycle,
 } from 'lifecycle/utils/lifecyclePayload';
 import {LIFECYCLE_NAME_MAX_LENGTH} from 'lifecycle/utils/constants';
@@ -653,6 +654,73 @@ describe('buildDuplicateLifecycleName', () => {
 
 		expect(name).toHaveLength(LIFECYCLE_NAME_MAX_LENGTH);
 		expect(name.endsWith(' (1)')).toBe(true);
+	});
+
+	it('uses the next number that no existing lifecycle has', () => {
+		expect(
+			buildDuplicateLifecycleName('Growth Hub', [
+				'Growth Hub',
+				'growth hub (1)',
+				'Growth Hub (2)',
+				'Growth Hub (4)',
+			])
+		).toBe('Growth Hub (3)');
+	});
+
+	it('replaces the number of a copy instead of adding another one', () => {
+		expect(
+			buildDuplicateLifecycleName('Growth Hub (1)', [
+				'Growth Hub',
+				'Growth Hub (1)',
+			])
+		).toBe('Growth Hub (2)');
+	});
+
+	it('shortens a long original name further for a longer number', () => {
+		const existingNames = Array.from(
+			{length: 9},
+			(_, index) =>
+				`${'a'.repeat(LIFECYCLE_NAME_MAX_LENGTH - 4)} (${index + 1})`
+		);
+
+		expect(
+			buildDuplicateLifecycleName(
+				'a'.repeat(LIFECYCLE_NAME_MAX_LENGTH),
+				existingNames
+			)
+		).toBe(`${'a'.repeat(LIFECYCLE_NAME_MAX_LENGTH - 5)} (10)`);
+	});
+
+	it('never cuts a character in half when it shortens the name', () => {
+		const name = buildDuplicateLifecycleName(
+			`${'a'.repeat(LIFECYCLE_NAME_MAX_LENGTH - 5)}\u{1F600}b`
+		);
+
+		expect(name).toBe(`${'a'.repeat(LIFECYCLE_NAME_MAX_LENGTH - 5)} (1)`);
+	});
+
+	it('keeps a whole emoji that fits within the limit', () => {
+		expect(
+			buildDuplicateLifecycleName(
+				`${'a'.repeat(LIFECYCLE_NAME_MAX_LENGTH - 6)}\u{1F600}b`
+			)
+		).toBe(`${'a'.repeat(LIFECYCLE_NAME_MAX_LENGTH - 6)}\u{1F600} (1)`);
+	});
+});
+
+describe('getDuplicateLifecycleSearchName', () => {
+	it('searches by the original name without its copy number', () => {
+		expect(getDuplicateLifecycleSearchName('Growth Hub (2)')).toBe(
+			'Growth Hub'
+		);
+	});
+
+	it('searches by a prefix that every numbered copy keeps', () => {
+		expect(
+			getDuplicateLifecycleSearchName(
+				'a'.repeat(LIFECYCLE_NAME_MAX_LENGTH)
+			)
+		).toBe('a'.repeat(LIFECYCLE_NAME_MAX_LENGTH - 6));
 	});
 });
 

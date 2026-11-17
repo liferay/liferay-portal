@@ -101,10 +101,23 @@ const lifecycle = {
 	segmentId: '456',
 };
 
-const mockRequests = (props: any) =>
-	props.dataSourceFn === (API as any).catalog.fetchCatalogFields
-		? {data: {items: []}, error: false, loading: false}
-		: {data: lifecycle, error: false, loading: false};
+let existingLifecycleNames: string[];
+
+const mockRequests = (props: any) => {
+	if (props.dataSourceFn === (API as any).catalog.fetchCatalogFields) {
+		return {data: {items: []}, error: false, loading: false};
+	}
+
+	if (props.dataSourceFn === (API as any).lifecycle.fetchLifecyclesPage) {
+		return {
+			data: {items: existingLifecycleNames.map((name) => ({name}))},
+			error: false,
+			loading: false,
+		};
+	}
+
+	return {data: lifecycle, error: false, loading: false};
+};
 
 const renderPage = () =>
 	render(
@@ -149,6 +162,8 @@ describe('DuplicateLifecycle', () => {
 			updateLifecycle: jest.fn(),
 		};
 
+		existingLifecycleNames = ['Growth and Retention Hub'];
+
 		mockedUseRequest.mockImplementation(mockRequests);
 
 		(useLifecycleAccountData as jest.Mock).mockReturnValue({
@@ -188,6 +203,47 @@ describe('DuplicateLifecycle', () => {
 				.getAllByRole('group', {name: /^(aware|qualified|pipeline)$/i})
 				.map((chip) => chip.getAttribute('aria-label'))
 		).toEqual(STAGE_NAMES);
+	});
+
+	it('looks up the existing copies of the original in its channel', () => {
+		renderPage();
+
+		expect(mockedUseRequest).toHaveBeenCalledWith(
+			expect.objectContaining({
+				dataSourceFn: API.lifecycle.fetchLifecyclesPage,
+				skipRequest: false,
+				variables: expect.objectContaining({
+					channelId: '123',
+					groupId: '23',
+					search: 'Growth and Retention Hub',
+				}),
+			})
+		);
+	});
+
+	it('prefills the next free copy number when copies already exist', () => {
+		existingLifecycleNames = [
+			'Growth and Retention Hub',
+			'Growth and Retention Hub (1)',
+		];
+
+		renderPage();
+
+		expect(screen.getByLabelText(/^name/i)).toHaveValue(
+			'Growth and Retention Hub (2)'
+		);
+	});
+
+	it('waits for the existing names before it opens the editor', () => {
+		mockedUseRequest.mockImplementation((props: any) =>
+			props.dataSourceFn === API.lifecycle.fetchLifecyclesPage
+				? {data: null, error: false, loading: true}
+				: mockRequests(props)
+		);
+
+		renderPage();
+
+		expect(screen.queryByLabelText(/^name/i)).not.toBeInTheDocument();
 	});
 
 	it('summarizes the copy with the current user and no date', () => {
