@@ -258,48 +258,13 @@ public class CommentResourceTest extends BaseCommentResourceTestCase {
 					newComment.getExternalReferenceCode()));
 	}
 
+	@Override
 	@Test
 	@TestInfo("LPD-115723")
-	public void testGetCommentCommentsPageWithViewPermission()
-		throws Exception {
+	public void testGetCommentCommentsPage() throws Exception {
+		super.testGetCommentCommentsPage();
 
-		ServiceContext serviceContext = new ServiceContext();
-
-		serviceContext.setAddGroupPermissions(true);
-		serviceContext.setScopeGroupId(testGroup.getGroupId());
-
-		BlogsEntry blogsEntry = BlogsEntryLocalServiceUtil.addEntry(
-			TestPropsValues.getUserId(), RandomTestUtil.randomString(),
-			RandomTestUtil.randomString(), serviceContext);
-
-		Comment comment = commentResource.postBlogPostingComment(
-			blogsEntry.getEntryId(), randomComment());
-
-		Comment childComment = commentResource.postCommentComment(
-			comment.getId(), randomComment());
-
-		String password = RandomTestUtil.randomString();
-
-		User user1 = UserTestUtil.addUser(testCompany, password);
-
-		CommentResource commentResource1 = _getCommentResource(password, user1);
-
-		_testGetCommentCommentsPageWithViewPermissionDenied(
-			commentResource1, comment.getId());
-		_testGetCommentCommentsPageWithViewPermissionDenied(
-			commentResource1, comment.getParentCommentId());
-
-		User user2 = UserTestUtil.addUser(testCompany, password);
-
-		UserLocalServiceUtil.addGroupUsers(
-			testGroup.getGroupId(), new long[] {user2.getUserId()});
-
-		CommentResource commentResource2 = _getCommentResource(password, user2);
-
-		_testGetCommentCommentsPageWithViewPermission(
-			commentResource2, childComment, comment.getId());
-		_testGetCommentCommentsPageWithViewPermission(
-			commentResource2, comment, comment.getParentCommentId());
+		_testGetCommentCommentsPageWithViewPermission();
 	}
 
 	@Override
@@ -1366,9 +1331,22 @@ public class CommentResourceTest extends BaseCommentResourceTestCase {
 		).build();
 	}
 
-	private void _testGetCommentCommentsPageWithViewPermission(
-			CommentResource userCommentResource, Comment expectedComment,
-			Long parentCommentId)
+	private void _testGetCommentCommentsPageNotFound(
+		Long parentCommentId, CommentResource userCommentResource) {
+
+		Problem.ProblemException problemException = Assert.assertThrows(
+			Problem.ProblemException.class,
+			() -> userCommentResource.getCommentCommentsPage(
+				parentCommentId, null, null, null, Pagination.of(1, 10), null));
+
+		Problem problem = problemException.getProblem();
+
+		Assert.assertEquals("NOT_FOUND", problem.getStatus());
+	}
+
+	private void _testGetCommentCommentsPageVisible(
+			Comment expectedComment, Long parentCommentId,
+			CommentResource userCommentResource)
 		throws Exception {
 
 		Page<Comment> commentCommentsPage =
@@ -1384,17 +1362,45 @@ public class CommentResourceTest extends BaseCommentResourceTestCase {
 		Assert.assertEquals(expectedComment.getId(), comment.getId());
 	}
 
-	private void _testGetCommentCommentsPageWithViewPermissionDenied(
-		CommentResource userCommentResource, Long parentCommentId) {
+	private void _testGetCommentCommentsPageWithViewPermission()
+		throws Exception {
 
-		Problem.ProblemException problemException = Assert.assertThrows(
-			Problem.ProblemException.class,
-			() -> userCommentResource.getCommentCommentsPage(
-				parentCommentId, null, null, null, Pagination.of(1, 10), null));
+		ServiceContext serviceContext = new ServiceContext();
 
-		Problem problem = problemException.getProblem();
+		serviceContext.setAddGroupPermissions(true);
+		serviceContext.setScopeGroupId(testGroup.getGroupId());
 
-		Assert.assertEquals("NOT_FOUND", problem.getStatus());
+		BlogsEntry blogsEntry = BlogsEntryLocalServiceUtil.addEntry(
+			TestPropsValues.getUserId(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), serviceContext);
+
+		Comment comment = commentResource.postBlogPostingComment(
+			blogsEntry.getEntryId(), randomComment());
+
+		Comment childComment = commentResource.postCommentComment(
+			comment.getId(), randomComment());
+
+		String password = RandomTestUtil.randomString();
+
+		User user1 = UserTestUtil.addUser(testCompany, password);
+
+		CommentResource commentResource1 = _getCommentResource(password, user1);
+
+		_testGetCommentCommentsPageNotFound(comment.getId(), commentResource1);
+		_testGetCommentCommentsPageNotFound(
+			comment.getParentCommentId(), commentResource1);
+
+		User user2 = UserTestUtil.addUser(testCompany, password);
+
+		UserLocalServiceUtil.addGroupUsers(
+			testGroup.getGroupId(), new long[] {user2.getUserId()});
+
+		CommentResource commentResource2 = _getCommentResource(password, user2);
+
+		_testGetCommentCommentsPageVisible(
+			childComment, comment.getId(), commentResource2);
+		_testGetCommentCommentsPageVisible(
+			comment, comment.getParentCommentId(), commentResource2);
 	}
 
 	private void _testPostBlogPostingCommentBatch() throws Exception {
