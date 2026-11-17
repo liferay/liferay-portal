@@ -19,11 +19,17 @@ import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Repository;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.repository.LocalRepository;
 import com.liferay.portal.kernel.repository.RepositoryProviderUtil;
 import com.liferay.portal.kernel.repository.capabilities.TemporaryFileEntriesCapability;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
+import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
+import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermissionRegistryUtil;
 import com.liferay.portal.kernel.service.RepositoryLocalServiceUtil;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
@@ -65,6 +71,42 @@ public class TemporaryFileEntriesCapabilityTest {
 	public void setUp() throws Exception {
 		_group = GroupTestUtil.addGroup();
 		_user = UserTestUtil.addUser();
+	}
+
+	@Test
+	@TestInfo("LPD-116077")
+	public void testAddTempFileEntry() throws Exception {
+		User user1 = UserTestUtil.addGroupUser(
+			_group, RoleConstants.SITE_MEMBER);
+
+		FileEntry fileEntry = TempFileEntryUtil.addTempFileEntry(
+			_group.getGroupId(), user1.getUserId(),
+			RandomTestUtil.randomString(),
+			RandomTestUtil.randomString() + ".jpg", getInputStream(),
+			ContentTypes.IMAGE_JPEG);
+
+		ModelResourcePermission<FileEntry> fileEntryModelResourcePermission =
+			ModelResourcePermissionRegistryUtil.getModelResourcePermission(
+				FileEntry.class.getName());
+
+		Assert.assertTrue(
+			fileEntryModelResourcePermission.contains(
+				PermissionCheckerFactoryUtil.create(user1), fileEntry,
+				ActionKeys.VIEW));
+
+		User user2 = UserTestUtil.addGroupUser(
+			_group, RoleConstants.SITE_MEMBER);
+
+		Assert.assertFalse(
+			fileEntryModelResourcePermission.contains(
+				PermissionCheckerFactoryUtil.create(user2), fileEntry,
+				ActionKeys.VIEW));
+
+		Assert.assertFalse(
+			fileEntryModelResourcePermission.contains(
+				PermissionCheckerFactoryUtil.create(
+					UserLocalServiceUtil.getGuestUser(_group.getCompanyId())),
+				fileEntry, ActionKeys.VIEW));
 	}
 
 	@Test
