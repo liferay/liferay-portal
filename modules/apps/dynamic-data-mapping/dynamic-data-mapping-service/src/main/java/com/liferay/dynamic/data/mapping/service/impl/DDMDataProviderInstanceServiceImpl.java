@@ -274,9 +274,7 @@ public class DDMDataProviderInstanceServiceImpl
 					return _getDDMDataProviderInstance(ddmDataProviderInstance);
 				}
 				catch (PortalException portalException) {
-					if (_log.isWarnEnabled()) {
-						_log.warn(portalException);
-					}
+					_log.error(portalException);
 
 					return null;
 				}
