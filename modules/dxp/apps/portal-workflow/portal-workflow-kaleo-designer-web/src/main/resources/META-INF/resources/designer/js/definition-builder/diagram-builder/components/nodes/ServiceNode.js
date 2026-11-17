@@ -10,7 +10,14 @@ import {defaultLanguageId} from '../../../constants';
 import BaseNode from './BaseNode';
 
 export default function ServiceNode({
-	data: {description, javaDelegate, label, newNode} = {},
+	data: {
+		description,
+		inputVariables,
+		javaDelegate,
+		label,
+		newNode,
+		outputVariables,
+	} = {},
 	descriptionSidebar,
 	id,
 	...otherProps
@@ -27,10 +34,12 @@ export default function ServiceNode({
 			descriptionSidebar={descriptionSidebar}
 			icon="cog"
 			id={id}
+			inputVariables={inputVariables}
 			javaDelegate={javaDelegate}
 			label={label}
 			newNode={newNode}
 			nodeTypeClassName="service-node"
+			outputVariables={outputVariables}
 			type="service"
 			{...otherProps}
 		/>
