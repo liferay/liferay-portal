@@ -133,7 +133,7 @@ Map<String, Object> componentContext = journalDisplayContext.getComponentContext
 
 				<liferay-ui:search-container-column-text
 					name="author"
-					value="<%= HtmlUtil.escape(PortalUtil.getUserName(articleVersion)) %>"
+					value="<%= HtmlUtil.escape(articleVersion.getStatusByUserName()) %>"
 				/>
 
 				<liferay-ui:search-container-column-text>

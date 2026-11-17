@@ -72,7 +72,7 @@ JournalArticleItemSelectorViewDisplayContext journalArticleItemSelectorViewDispl
 
 							<liferay-ui:search-container-column-text>
 								<liferay-user:user-portrait
-									userId="<%= curArticle.getUserId() %>"
+									userId="<%= curArticle.getStatusByUserId() %>"
 								/>
 							</liferay-ui:search-container-column-text>
 
@@ -87,7 +87,7 @@ JournalArticleItemSelectorViewDisplayContext journalArticleItemSelectorViewDispl
 								%>
 
 								<span class="text-default">
-									<liferay-ui:message arguments="<%= new String[] {HtmlUtil.escape(curArticle.getUserName()), modifiedDateDescription} %>" key="x-modified-x-ago" />
+									<liferay-ui:message arguments="<%= new String[] {HtmlUtil.escape(curArticle.getStatusByUserName()), modifiedDateDescription} %>" key="x-modified-x-ago" />
 								</span>
 
 								<p class="font-weight-bold h5">
