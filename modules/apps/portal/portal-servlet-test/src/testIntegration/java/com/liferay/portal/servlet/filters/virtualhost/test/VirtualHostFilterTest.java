@@ -334,21 +334,30 @@ public class VirtualHostFilterTest {
 	public void testProcessFilterSetsGroupOnRequestWhenLayoutSetMatches()
 		throws Exception {
 
-		String groupFriendlyURL = _getGroupFriendlyURL(_publicLayoutSet);
+		try (SafeCloseable safeCloseable =
+				PropsValuesTestUtil.swapWithSafeCloseable(
+					"LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING_ENABLED",
+					false)) {
 
-		MockHttpServletRequest mockHttpServletRequest = _processFilter(
-			_publicLayoutSet,
-			groupFriendlyURL + StringPool.SLASH + RandomTestUtil.randomString(),
-			null);
+			String groupFriendlyURL = _getGroupFriendlyURL(_publicLayoutSet);
 
-		Group group = (Group)mockHttpServletRequest.getAttribute(
-			WebKeys.FRIENDLY_URL_GROUP);
+			MockHttpServletRequest mockHttpServletRequest = _processFilter(
+				_publicLayoutSet,
+				groupFriendlyURL + StringPool.SLASH +
+					RandomTestUtil.randomString(),
+				null);
 
-		Assert.assertEquals(_publicLayoutSet.getGroupId(), group.getGroupId());
+			Group group = (Group)mockHttpServletRequest.getAttribute(
+				WebKeys.FRIENDLY_URL_GROUP);
 
-		Assert.assertEquals(
-			groupFriendlyURL,
-			mockHttpServletRequest.getAttribute(WebKeys.GROUP_FRIENDLY_URL));
+			Assert.assertEquals(
+				_publicLayoutSet.getGroupId(), group.getGroupId());
+
+			Assert.assertEquals(
+				groupFriendlyURL,
+				mockHttpServletRequest.getAttribute(
+					WebKeys.GROUP_FRIENDLY_URL));
+		}
 	}
 
 	@Test
