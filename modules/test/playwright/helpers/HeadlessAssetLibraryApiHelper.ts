@@ -136,6 +136,15 @@ export class HeadlessAssetLibraryApiHelper {
 		);
 	}
 
+	async putAssetLibraryUserGroup(
+		assetLibraryExternalReferenceCode: string,
+		userGroupExternalReferenceCode: string
+	) {
+		return this.apiHelpers.put(
+			`${this.apiHelpers.baseUrl}${this.basePath}/asset-libraries/${assetLibraryExternalReferenceCode}/user-groups/${userGroupExternalReferenceCode}`
+		);
+	}
+
 	private async _createAssetLibrary({
 		externalReferenceCode,
 		name,
