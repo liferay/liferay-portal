@@ -12,7 +12,7 @@ import {
 	waitFor,
 	within,
 } from '@testing-library/react';
-import {MemoryRouter, useLocation} from 'react-router-dom';
+import {MemoryRouter, matchPath, useLocation} from 'react-router-dom';
 import {mockChannelContext} from 'test/mock-channel-context';
 import {Provider} from 'react-redux';
 import {Routes, toRoute} from 'shared/util/router';
@@ -177,6 +177,14 @@ const useRequestImpl =
 				error: metricsError,
 				loading: metricsLoading,
 				refetch: mockRefetchMetrics,
+			};
+		}
+
+		if (dataSourceFn === API.lifecycle.fetchLifecycles) {
+			return {
+				data: [{externalReferenceCode: 'erc-8', id: '8'}],
+				error: false,
+				loading: false,
 			};
 		}
 
@@ -1183,5 +1191,48 @@ describe('BaseLifecycle', () => {
 				screen.queryByRole('menuitem', {name: /set.default/i})
 			).toBeNull();
 		});
+	});
+
+	it('opens the default lifecycle of the channel without requesting it again', () => {
+		mockUseParams.mockImplementation(() => ({
+			channelId: '123',
+			groupId: '23',
+			lifecycleId: matchPath(
+				'/workspace/:groupId/:channelId/lifecycle/:lifecycleId',
+				useLocation().pathname
+			)?.params.lifecycleId,
+		}));
+
+		mockedUseRequest.mockImplementation(
+			useRequestImpl({
+				lifecycle: {id: '8', name: 'Growth Hub'},
+				totalCount: 5,
+			})
+		);
+
+		renderPage([
+			toRoute(Routes.LIFECYCLE, {channelId: '123', groupId: '23'}),
+		]);
+
+		expect(screen.getByTestId('location')).toHaveTextContent(
+			toRoute(Routes.LIFECYCLE_DASHBOARD, {
+				channelId: '123',
+				groupId: '23',
+				lifecycleId: 'erc-8',
+			})
+		);
+		expect(
+			screen.getByRole('heading', {name: 'Growth Hub'})
+		).toBeInTheDocument();
+
+		const lifecycleIds = mockedUseRequest.mock.calls
+			.filter(
+				([{dataSourceFn, skipRequest}]) =>
+					dataSourceFn === API.lifecycle.fetchLifecycle &&
+					!skipRequest
+			)
+			.map(([{variables}]) => variables.lifecycleId);
+
+		expect(new Set(lifecycleIds)).toEqual(new Set(['erc-8']));
 	});
 });
