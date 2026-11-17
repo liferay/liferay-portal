@@ -755,6 +755,9 @@ public class ExtRepositoryAdapter extends BaseRepositoryImpl {
 				ExtRepositoryObjectType.FILE, extRepositoryFileEntryKey,
 				extRepositoryNewFolderKey, extRepositoryFileEntry.getTitle());
 
+		_updateRepositoryEntry(
+			moveExtRepositoryFileEntry, extRepositoryFileEntryKey, fileEntryId);
+
 		return _toExtRepositoryObjectAdapter(
 			ExtRepositoryObjectAdapterType.FILE, moveExtRepositoryFileEntry);
 	}
@@ -778,6 +781,9 @@ public class ExtRepositoryAdapter extends BaseRepositoryImpl {
 			_extRepository.moveExtRepositoryObject(
 				ExtRepositoryObjectType.FOLDER, extRepositoryFolderKey,
 				extRepositoryNewParentFolderKey, extRepositoryFolder.getName());
+
+		_updateRepositoryEntry(
+			moveExtRepositoryFolder, extRepositoryFolderKey, folderId);
 
 		return _toExtRepositoryObjectAdapter(
 			ExtRepositoryObjectAdapterType.FOLDER, moveExtRepositoryFolder);
@@ -1106,10 +1112,8 @@ public class ExtRepositoryAdapter extends BaseRepositoryImpl {
 				ExtRepositoryObjectType.FOLDER, extRepositoryFolderKey,
 				parentExtRepositoryFolder.getExtRepositoryModelKey(), name);
 
-		ExtRepositoryAdapterCache extRepositoryAdapterCache =
-			ExtRepositoryAdapterCache.getInstance();
-
-		extRepositoryAdapterCache.remove(extRepositoryFolderKey);
+		_updateRepositoryEntry(
+			newExtRepositoryFolder, extRepositoryFolderKey, folderId);
 
 		return _toExtRepositoryObjectAdapter(
 			ExtRepositoryObjectAdapterType.FOLDER, newExtRepositoryFolder);
@@ -1518,6 +1522,29 @@ public class ExtRepositoryAdapter extends BaseRepositoryImpl {
 			extRepositoryObjects,
 			extRepositoryObject -> _getExtRepositoryObjectAdapter(
 				extRepositoryObjectAdapterType, extRepositoryObject));
+	}
+
+	private void _updateRepositoryEntry(
+			ExtRepositoryObject extRepositoryObject,
+			String extRepositoryObjectKey, long repositoryEntryId)
+		throws PortalException {
+
+		ExtRepositoryAdapterCache extRepositoryAdapterCache =
+			ExtRepositoryAdapterCache.getInstance();
+
+		extRepositoryAdapterCache.remove(extRepositoryObjectKey);
+
+		String newExtRepositoryObjectKey =
+			extRepositoryObject.getExtRepositoryModelKey();
+
+		if (extRepositoryObjectKey.equals(newExtRepositoryObjectKey)) {
+			return;
+		}
+
+		extRepositoryAdapterCache.remove(newExtRepositoryObjectKey);
+
+		repositoryEntryLocalService.updateRepositoryEntry(
+			repositoryEntryId, newExtRepositoryObjectKey);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

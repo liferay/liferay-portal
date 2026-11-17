@@ -133,6 +133,19 @@ public class RepositoryEntryLocalServiceImpl
 		RepositoryEntry repositoryEntry =
 			repositoryEntryPersistence.findByPrimaryKey(repositoryEntryId);
 
+		RepositoryEntry mappedRepositoryEntry =
+			repositoryEntryPersistence.fetchByR_M(
+				repositoryEntry.getRepositoryId(), mappedId);
+
+		if ((mappedRepositoryEntry != null) &&
+			(mappedRepositoryEntry.getRepositoryEntryId() !=
+				repositoryEntryId)) {
+
+			repositoryEntryPersistence.remove(mappedRepositoryEntry);
+
+			repositoryEntryPersistence.flush();
+		}
+
 		repositoryEntry.setMappedId(mappedId);
 
 		return repositoryEntryPersistence.update(repositoryEntry);

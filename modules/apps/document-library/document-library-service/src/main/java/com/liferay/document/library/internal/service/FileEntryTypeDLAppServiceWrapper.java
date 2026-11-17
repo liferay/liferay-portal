@@ -13,8 +13,8 @@ import com.liferay.document.library.kernel.model.DLFileEntryType;
 import com.liferay.document.library.kernel.model.DLFileEntryTypeConstants;
 import com.liferay.document.library.kernel.model.DLFileVersion;
 import com.liferay.document.library.kernel.service.DLAppServiceWrapper;
+import com.liferay.document.library.kernel.service.DLFileEntryLocalService;
 import com.liferay.document.library.kernel.service.DLFileEntryMetadataLocalService;
-import com.liferay.document.library.kernel.service.DLFileEntryService;
 import com.liferay.document.library.kernel.service.DLFileEntryTypeLocalService;
 import com.liferay.document.library.kernel.service.DLFileVersionLocalService;
 import com.liferay.document.library.util.DLFileEntryTypeUtil;
@@ -73,7 +73,12 @@ public class FileEntryTypeDLAppServiceWrapper extends DLAppServiceWrapper {
 			ServiceContext serviceContext, long fileEntryId)
 		throws PortalException {
 
-		DLFileEntry dlFileEntry = _dlFileEntryService.getFileEntry(fileEntryId);
+		DLFileEntry dlFileEntry = _dlFileEntryLocalService.fetchDLFileEntry(
+			fileEntryId);
+
+		if (dlFileEntry == null) {
+			return;
+		}
 
 		long fileEntryTypeId = dlFileEntry.getFileEntryTypeId();
 
@@ -154,10 +159,10 @@ public class FileEntryTypeDLAppServiceWrapper extends DLAppServiceWrapper {
 	private DDMStorageEngineManager _ddmStorageEngineManager;
 
 	@Reference
-	private DLFileEntryMetadataLocalService _dlFileEntryMetadataLocalService;
+	private DLFileEntryLocalService _dlFileEntryLocalService;
 
 	@Reference
-	private DLFileEntryService _dlFileEntryService;
+	private DLFileEntryMetadataLocalService _dlFileEntryMetadataLocalService;
 
 	@Reference
 	private DLFileEntryTypeLocalService _dlFileEntryTypeLocalService;
