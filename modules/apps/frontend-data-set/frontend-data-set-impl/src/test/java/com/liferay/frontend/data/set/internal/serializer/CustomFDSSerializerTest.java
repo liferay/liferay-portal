@@ -1087,6 +1087,27 @@ public class CustomFDSSerializerTest extends BaseFDSSerializerTestCase {
 	}
 
 	@Test
+	public void testSerializeShowColumnsVisibility() throws Exception {
+		String fdsName = RandomTestUtil.randomString();
+
+		_mockSerializeShowColumnsVisibility(FDS_NAMES[0], false);
+		_mockSerializeShowColumnsVisibility(FDS_NAMES[1], true);
+		_mockSerializeShowColumnsVisibility(fdsName, null);
+
+		Assert.assertFalse(
+			_customFDSSerializer.serializeShowColumnsVisibility(
+				FDS_NAMES[0], httpServletRequest));
+		Assert.assertTrue(
+			_customFDSSerializer.serializeShowColumnsVisibility(
+				FDS_NAMES[1], httpServletRequest));
+		Assert.assertTrue(
+			_customFDSSerializer.serializeShowColumnsVisibility(
+				fdsName, httpServletRequest));
+
+		_resetFDSSerializer();
+	}
+
+	@Test
 	public void testSerializeShowPagination() throws Exception {
 		_mockSerializeShowPagination(FDS_NAMES[0], false);
 		_mockSerializeShowPagination(FDS_NAMES[1], true);
@@ -2226,6 +2247,24 @@ public class CustomFDSSerializerTest extends BaseFDSSerializerTestCase {
 
 		Mockito.when(
 			_customFDSSerializer.serializeSearchSuggestionsEnabled(
+				fdsName, httpServletRequest)
+		).thenCallRealMethod();
+	}
+
+	private void _mockSerializeShowColumnsVisibility(
+		String fdsName, Boolean showColumnsVisibility) {
+
+		Mockito.when(
+			_customFDSSerializer.getDataSetObjectEntryProperties(
+				fdsName, httpServletRequest)
+		).thenReturn(
+			HashMapBuilder.<String, Object>put(
+				"showColumnsVisibility", showColumnsVisibility
+			).build()
+		);
+
+		Mockito.when(
+			_customFDSSerializer.serializeShowColumnsVisibility(
 				fdsName, httpServletRequest)
 		).thenCallRealMethod();
 	}

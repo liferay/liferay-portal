@@ -13,6 +13,7 @@ import {loginTest} from '../../../../../fixtures/loginTest';
 import {EFDSVisualizationMode, waitForFDS} from '../../../../../utils/waitFor';
 import {waitForAlert} from '../../../../../utils/waitForAlert';
 import {systemDataSetsPageTest} from '../../../../frontend-data-set-admin-web/main/fixtures/systemDataSetsPageTest';
+import {SystemDataSetsPage} from '../../../../frontend-data-set-admin-web/main/pages/SystemDataSetsPage';
 import {fdsSamplePageTest} from '../../fixtures/fdsSamplePageTest';
 
 const test = mergeTests(
@@ -31,6 +32,34 @@ const ADVANCED_SAMPLE_ERC =
 	'com_liferay_frontend_data_set_sample_web_internal_portlet_FDSSamplePortlet-advanced';
 
 let fdsSamplePageURL: string;
+
+async function createSampleCustomization({
+	label,
+	systemDataSetsPage,
+}: {
+	label: string;
+	systemDataSetsPage: SystemDataSetsPage;
+}) {
+	await systemDataSetsPage.goto();
+
+	const creationModal = systemDataSetsPage.creationModal;
+
+	const sampleListItem = creationModal.listItems.filter({
+		hasText: label,
+	});
+
+	await systemDataSetsPage.createButton.click();
+
+	await expect(sampleListItem).toBeVisible();
+
+	await sampleListItem.click();
+
+	await expect(sampleListItem).toHaveClass(/selected/);
+
+	await creationModal.createButton.click();
+
+	await waitForAlert(systemDataSetsPage.page);
+}
 
 test.beforeEach(
 	async ({dataSetManagerApiHelpers, fdsSamplePage, page, site}) => {
@@ -195,6 +224,175 @@ test(
 
 			await expect(searchInput).toBeFocused();
 		});
+	}
+);
+
+test(
+	'Columns visibility dropdown is shown/hidden according to FDS configuration',
+	{tag: '@LPD-112704'},
+	async ({
+		dataSetManagerApiHelpers,
+		fdsSamplePage,
+		page,
+		systemDataSetsPage,
+	}) => {
+		const columnsVisibilityButton = page.getByLabel(
+			'Manage Columns Visibility'
+		);
+		const firstBodyCell = fdsSamplePage.table.container
+			.locator('td')
+			.nth(1);
+
+		let fdsSamplePageURLWithHiddenColumn: string;
+		let hiddenColumnText: string;
+
+		await test.step('Hide the first column through the columns visibility dropdown', async () => {
+			hiddenColumnText = await firstBodyCell.innerText();
+
+			await columnsVisibilityButton.click();
+
+			await page.getByRole('menuitem').nth(0).click();
+
+			await expect(firstBodyCell).not.toHaveText(hiddenColumnText);
+
+			await expect.poll(() => page.url()).toContain('_fdsConfig=');
+
+			fdsSamplePageURLWithHiddenColumn = page.url();
+		});
+
+		try {
+			await test.step('Hide the columns visibility dropdown in the Data Set Manager', async () => {
+				await createSampleCustomization({
+					label: 'Advanced Sample',
+					systemDataSetsPage,
+				});
+
+				await dataSetManagerApiHelpers.updateDataSet({
+					erc: ADVANCED_SAMPLE_ERC,
+					showColumnsVisibility: false,
+				});
+			});
+
+			await test.step('Check the columns visibility dropdown is not shown and the item actions column is kept', async () => {
+				await page.goto(fdsSamplePageURL);
+
+				await fdsSamplePage.selectTab('Advanced');
+
+				await waitForFDS({
+					page,
+					visualizationMode: EFDSVisualizationMode.TABLE,
+				});
+
+				await expect(columnsVisibilityButton).not.toBeAttached();
+
+				await expect(firstBodyCell).toHaveText(hiddenColumnText);
+
+				await expect(fdsSamplePage.table.headerCells).toHaveCount(
+					await fdsSamplePage.table.bodyRows
+						.first()
+						.locator('td')
+						.count()
+				);
+
+				await expect(fdsSamplePage.table.headerCells.last()).toHaveText(
+					'Item Actions'
+				);
+
+				await expect(fdsSamplePage.table.headerCells.last()).toHaveCSS(
+					'position',
+					'sticky'
+				);
+
+				await expect(
+					fdsSamplePage.table.bodyRows
+						.first()
+						.locator('td.cell-item-actions')
+				).toBeAttached();
+			});
+
+			await test.step('Check the columns hidden through the URL are still hidden', async () => {
+				await page.goto(fdsSamplePageURLWithHiddenColumn);
+
+				await waitForFDS({
+					page,
+					visualizationMode: EFDSVisualizationMode.TABLE,
+				});
+
+				await expect(columnsVisibilityButton).not.toBeAttached();
+
+				await expect(firstBodyCell).not.toHaveText(hiddenColumnText);
+			});
+		}
+		finally {
+			await test.step('Delete used system data set', async () => {
+				await dataSetManagerApiHelpers.deleteDataSet({
+					erc: ADVANCED_SAMPLE_ERC,
+				});
+			});
+		}
+	}
+);
+
+test(
+	'Item actions column is not shown when the columns visibility dropdown is hidden and there are no item actions',
+	{tag: '@LPD-112704'},
+	async ({
+		dataSetManagerApiHelpers,
+		fdsSamplePage,
+		page,
+		systemDataSetsPage,
+	}) => {
+		const erc =
+			'com_liferay_frontend_data_set_sample_web_internal_portlet_FDSSamplePortlet-delegatedFilters';
+
+		try {
+			await test.step('Hide the columns visibility dropdown of a data set without item actions', async () => {
+				await createSampleCustomization({
+					label: 'Delegated Filters Sample',
+					systemDataSetsPage,
+				});
+
+				await dataSetManagerApiHelpers.updateDataSet({
+					erc,
+					showColumnsVisibility: false,
+				});
+			});
+
+			await test.step('Check there is no item actions column', async () => {
+				await page.goto(fdsSamplePageURL);
+
+				await fdsSamplePage.selectTab('Delegated Filters');
+
+				await waitForFDS({
+					page,
+					visualizationMode: EFDSVisualizationMode.TABLE,
+				});
+
+				await expect(
+					page.getByLabel('Manage Columns Visibility')
+				).not.toBeAttached();
+
+				await expect(fdsSamplePage.table.headerCells).toHaveCount(
+					await fdsSamplePage.table.bodyRows
+						.first()
+						.locator('td')
+						.count()
+				);
+
+				await expect(
+					fdsSamplePage.table.container.locator('.cell-item-actions')
+				).toHaveCount(0);
+
+				await expect(
+					fdsSamplePage.table.headerCells.last()
+				).not.toHaveCSS('position', 'sticky');
+			});
+		}
+		finally {
+			await test.step('Delete used system data set', async () => {
+				await dataSetManagerApiHelpers.deleteDataSet({erc});
+			});
+		}
 	}
 );
 

@@ -51,6 +51,7 @@ import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -1230,6 +1231,38 @@ public class SystemFDSSerializerTest extends BaseFDSSerializerTestCase {
 	}
 
 	@Test
+	public void testSerializeShowColumnsVisibility() throws Exception {
+		String fdsName = RandomTestUtil.randomString();
+
+		_registerServices(
+			_registerSystemFDSEntry(
+				SystemFDSEntryFactory.create(
+					FDS_NAMES[0]
+				).withShowColumnsVisibility(
+					false
+				)),
+			_registerSystemFDSEntry(
+				SystemFDSEntryFactory.create(
+					FDS_NAMES[1]
+				).withShowColumnsVisibility(
+					true
+				)),
+			_registerSystemFDSEntry(fdsName));
+
+		Assert.assertFalse(
+			systemFDSSerializer.serializeShowColumnsVisibility(
+				FDS_NAMES[0], httpServletRequest));
+		Assert.assertTrue(
+			systemFDSSerializer.serializeShowColumnsVisibility(
+				FDS_NAMES[1], httpServletRequest));
+		Assert.assertTrue(
+			systemFDSSerializer.serializeShowColumnsVisibility(
+				fdsName, httpServletRequest));
+
+		_unregisterServices();
+	}
+
+	@Test
 	public void testSerializeShowPagination() throws Exception {
 		_registerServices(
 			_registerSystemFDSEntry(
@@ -2014,6 +2047,16 @@ public class SystemFDSSerializerTest extends BaseFDSSerializerTestCase {
 					}
 
 					@Override
+					public boolean getShowColumnsVisibility() {
+						if (_showColumnsVisibility == null) {
+							return SystemFDSEntry.super.
+								getShowColumnsVisibility();
+						}
+
+						return _showColumnsVisibility;
+					}
+
+					@Override
 					public boolean getShowPagination() {
 						return _showPagination;
 					}
@@ -2087,6 +2130,14 @@ public class SystemFDSSerializerTest extends BaseFDSSerializerTestCase {
 			return this;
 		}
 
+		public SystemFDSEntryWrapper withShowColumnsVisibility(
+			boolean showColumnsVisibility) {
+
+			_showColumnsVisibility = showColumnsVisibility;
+
+			return this;
+		}
+
 		public SystemFDSEntryWrapper withShowPagination(
 			boolean showPagination) {
 
@@ -2117,6 +2168,7 @@ public class SystemFDSSerializerTest extends BaseFDSSerializerTestCase {
 		private String _propsTransformer;
 		private boolean _searchAsYouType;
 		private boolean _searchSuggestionsEnabled;
+		private Boolean _showColumnsVisibility;
 		private boolean _showPagination = true;
 		private boolean _showSearch;
 		private boolean _snapshotsEnabled;
