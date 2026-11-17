@@ -23,10 +23,12 @@ import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.model.Repository;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
 import com.liferay.portal.kernel.portletfilerepository.PortletFileRepositoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.servlet.SessionMessages;
@@ -674,6 +676,52 @@ public class ExportImportStyleBookEntriesMVCResourceCommandTest {
 			}
 
 			Assert.assertEquals(4, count);
+		}
+	}
+
+	@Test
+	public void testExportStyleBookEntriesWithoutPermission() throws Exception {
+		_user = UserTestUtil.addGroupUser(
+			_targetGroup, RoleConstants.SITE_ADMINISTRATOR);
+
+		UserTestUtil.setUser(_user);
+
+		try {
+			StyleBookEntry targetStyleBookEntry =
+				_styleBookEntryLocalService.addStyleBookEntry(
+					null, TestPropsValues.getUserId(),
+					_targetGroup.getGroupId(), false, StringPool.BLANK, null,
+					RandomTestUtil.randomString(),
+					RandomTestUtil.randomString(),
+					RandomTestUtil.randomString(),
+					ServiceContextTestUtil.getServiceContext(
+						_targetGroup, TestPropsValues.getUserId()));
+
+			Assert.assertNotNull(
+				_exportStyleBookEntry(
+					targetStyleBookEntry.getStyleBookEntryId()));
+
+			try {
+				StyleBookEntry sourceStyleBookEntry =
+					_styleBookEntryLocalService.addStyleBookEntry(
+						null, TestPropsValues.getUserId(),
+						_sourceGroup.getGroupId(), false, StringPool.BLANK,
+						null, RandomTestUtil.randomString(),
+						RandomTestUtil.randomString(),
+						RandomTestUtil.randomString(),
+						ServiceContextTestUtil.getServiceContext(
+							_sourceGroup, TestPropsValues.getUserId()));
+
+				_exportStyleBookEntry(
+					sourceStyleBookEntry.getStyleBookEntryId());
+
+				Assert.fail();
+			}
+			catch (PrincipalException principalException) {
+			}
+		}
+		finally {
+			UserTestUtil.setUser(TestPropsValues.getUser());
 		}
 	}
 
