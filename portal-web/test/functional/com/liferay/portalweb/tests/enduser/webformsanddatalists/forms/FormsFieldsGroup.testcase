@@ -131,7 +131,7 @@ definition {
 
 		FormsAdminNavigator.gotoPublishedForm();
 
-		FormFields.addRepeatableField(
+		FormFields.addRepeatableFieldsGroup(
 			fieldName = "Fields Group",
 			repeatableFieldNumber = 1);
 

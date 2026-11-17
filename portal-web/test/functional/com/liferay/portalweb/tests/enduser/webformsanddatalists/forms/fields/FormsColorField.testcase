@@ -226,7 +226,7 @@ definition {
 		AssertElementPresent(
 			key_fieldName = "Color",
 			key_repeatableFieldNumber = 1,
-			locator1 = "FormFields#FIELD_ADD_SPECIFIC");
+			locator1 = "FormFields#FIELD_REPEATABLE_ADD_BUTTON_SPECIFIC");
 
 		Form.save();
 

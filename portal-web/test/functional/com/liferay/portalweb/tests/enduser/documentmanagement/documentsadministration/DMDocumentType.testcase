@@ -637,7 +637,7 @@ definition {
 		AssertElementNotPresent(
 			key_fieldName = "Numeric",
 			key_repeatableFieldNumber = 2,
-			locator1 = "FormFields#FIELD_ADD_SPECIFIC");
+			locator1 = "FormFields#FIELD_REPEATABLE_ADD_BUTTON_SPECIFIC");
 	}
 
 }

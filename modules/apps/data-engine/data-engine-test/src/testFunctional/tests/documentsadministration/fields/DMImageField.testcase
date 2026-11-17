@@ -294,14 +294,14 @@ definition {
 		AssertVisible(
 			key_fieldName = "Image",
 			key_repeatableFieldNumber = 2,
-			locator1 = "FormFields#FIELD_ADD_SPECIFIC");
+			locator1 = "FormFields#FIELD_REPEATABLE_ADD_BUTTON_SPECIFIC");
 
 		Click(locator1 = "FormFields#FIELD_ADD_REMOVE");
 
 		AssertElementNotPresent(
 			key_fieldName = "Image",
 			key_repeatableFieldNumber = 2,
-			locator1 = "FormFields#FIELD_ADD_SPECIFIC");
+			locator1 = "FormFields#FIELD_REPEATABLE_ADD_BUTTON_SPECIFIC");
 	}
 
 	@description = "Verify if user can add a field label"
