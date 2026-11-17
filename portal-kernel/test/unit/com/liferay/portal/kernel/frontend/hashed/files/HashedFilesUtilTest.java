@@ -72,6 +72,7 @@ public class HashedFilesUtilTest {
 
 		Assert.assertNull(
 			HashedFilesUtil.getHash("/css/main.).(" + hash + ".css"));
+
 		Assert.assertNull(HashedFilesUtil.getHash("/css/main.css"));
 	}
 
