@@ -14,6 +14,7 @@ import SegmentDropdown from 'shared/components/SegmentDropdown';
 import TextTruncate from 'shared/components/TextTruncate';
 import {CSVType} from 'shared/components/download-report/utils';
 import {DropdownRangeKey} from 'shared/components/dropdown-range-key/DropdownRangeKey';
+import {getAPIRangeParams} from 'shared/hooks/useRangeQueryValues';
 import {getMatchedRoute, Routes} from 'shared/util/router';
 import {getSafeDecodedURIComponent, getSafeTouchpoint} from 'shared/util/util';
 import {pickBy} from 'lodash';
@@ -98,6 +99,7 @@ function TouchpointRoutes({className, router}) {
 			initialAccountId={accountId}
 			initialAccountName={accountName}
 			onFilterChange={setAccount}
+			rangeQueryValues={getAPIRangeParams(pathRangeSelectors)}
 		/>
 	);
 

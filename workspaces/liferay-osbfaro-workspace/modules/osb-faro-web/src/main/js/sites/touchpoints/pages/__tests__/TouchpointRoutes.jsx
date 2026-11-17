@@ -47,10 +47,11 @@ jest.mock('../../components/ExperienceDropdown', () => ({
 
 jest.mock('shared/components/AccountDropdown', () => ({
 	__esModule: true,
-	default: ({initialAccountId, initialAccountName}) => (
+	default: ({initialAccountId, initialAccountName, rangeQueryValues}) => (
 		<div
 			data-initial-account-id={initialAccountId}
 			data-initial-account-name={initialAccountName}
+			data-range-key={rangeQueryValues?.rangeKey}
 			data-testid='account-dropdown'
 		/>
 	)
@@ -312,6 +313,36 @@ describe('TouchpointRoutes', () => {
 		);
 
 		expect(screen.queryByTestId('account-dropdown')).toBeTruthy();
+	});
+
+	it('scopes the account filter to the selected range', () => {
+		getMatchedRoute.mockReturnValue(Routes.SITES_TOUCHPOINTS_OVERVIEW);
+		useLDPEnabled.mockReturnValue(true);
+
+		const router = {
+			params: {
+				channelId: '1',
+				experienceId: '',
+				groupId: '2',
+				title: 'page',
+				touchpoint: 'http://example.com/web/site/home',
+				touchpointType: 'overview'
+			},
+			query: {}
+		};
+
+		render(
+			<Provider store={mockStore()}>
+				<MemoryRouter>
+					<TouchpointRoutes router={router} />
+				</MemoryRouter>
+			</Provider>
+		);
+
+		expect(screen.getByTestId('account-dropdown')).toHaveAttribute(
+			'data-range-key',
+			'30'
+		);
 	});
 
 	it('hides the account filter on the overview route for non-LDP workspaces', () => {
