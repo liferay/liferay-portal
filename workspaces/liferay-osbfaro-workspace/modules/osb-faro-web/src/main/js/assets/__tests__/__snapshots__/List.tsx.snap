@@ -142,7 +142,7 @@ exports[`List rendering should match the snapshot 1`] = `
           <div
             data-testid="fds-sorts"
           >
-            null
+            [{"active":false,"default":false,"direction":"asc","key":"assetTitle","label":"Title"},{"active":false,"default":false,"direction":"asc","key":"assetType","label":"Type"},{"active":true,"default":true,"direction":"desc","key":"viewsMetric","label":"Views"},{"active":false,"default":false,"direction":"asc","key":"impressionsMetric","label":"Impressions"},{"active":false,"default":false,"direction":"asc","key":"downloadsMetric","label":"Downloads"}]
           </div>
           <div
             data-testid="fds-fields"

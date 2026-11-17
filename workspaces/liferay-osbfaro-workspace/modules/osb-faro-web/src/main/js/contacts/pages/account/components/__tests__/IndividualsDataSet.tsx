@@ -140,8 +140,12 @@ describe('IndividualsDataSet', () => {
 		it('should keep the total events sort of the full table', () => {
 			render(<IndividualsDataSet preview />);
 
-			expect(lastFDSProps.sorts[0].key).toBe('activitiesCount');
-			expect(lastFDSProps.sorts[0].direction).toBe('desc');
+			const activeSort = lastFDSProps.sorts.find(
+				(sort: any) => sort.active
+			);
+
+			expect(activeSort.key).toBe('activitiesCount');
+			expect(activeSort.direction).toBe('desc');
 		});
 	});
 
@@ -188,16 +192,51 @@ describe('IndividualsDataSet', () => {
 		]);
 	});
 
-	it('should sort the individuals by total events descending', () => {
+	it('should offer every sortable column in the Order menu, total events descending by default', () => {
 		render(<IndividualsDataSet />);
 
 		expect(lastFDSProps.sorts).toEqual([
+			{
+				active: false,
+				default: false,
+				direction: 'asc',
+				key: 'name',
+				label: 'Individual Name',
+			},
+			{
+				active: false,
+				default: false,
+				direction: 'asc',
+				key: 'jobTitle',
+				label: 'Job Title',
+			},
+			{
+				active: false,
+				default: false,
+				direction: 'asc',
+				key: 'sessionsCount',
+				label: 'Visitor Type',
+			},
 			{
 				active: true,
 				default: true,
 				direction: 'desc',
 				key: 'activitiesCount',
 				label: 'Total Events',
+			},
+			{
+				active: false,
+				default: false,
+				direction: 'asc',
+				key: 'averageSessionDuration',
+				label: 'Avg. Session Duration',
+			},
+			{
+				active: false,
+				default: false,
+				direction: 'asc',
+				key: 'lastActivityDate',
+				label: 'Last Active',
 			},
 		]);
 	});

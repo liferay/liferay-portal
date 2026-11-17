@@ -845,20 +845,37 @@ describe('List', () => {
 		const getSorts = () =>
 			JSON.parse(screen.getByTestId('fds-sorts').textContent);
 
-		it('should not pass any sort when no orderBy is in the URL', async () => {
+		const getActiveSortKeys = () =>
+			getSorts()
+				.filter((sort: {active: boolean}) => sort.active)
+				.map((sort: {key: string}) => sort.key);
+
+		it('should sort by views when no orderBy is in the URL', async () => {
 			await renderList();
 
-			expect(getSorts()).toBeNull();
+			expect(getActiveSortKeys()).toEqual(['viewsMetric']);
 		});
 
-		it('should ignore an unknown orderBy value', async () => {
+		it('should fall back to views on an unknown orderBy value', async () => {
 			await renderList({queryString: '?orderBy=bogusMetric'});
 
-			expect(getSorts()).toBeNull();
+			expect(getActiveSortKeys()).toEqual(['viewsMetric']);
 		});
 
-		it('should offer every sortable column as a sort option', async () => {
-			await renderList({queryString: '?orderBy=viewsMetric'});
+		it('should keep views as the default sort whatever the orderBy', async () => {
+			await renderList({queryString: '?orderBy=impressionsMetric'});
+
+			const defaultSorts = getSorts().filter(
+				(sort: {default: boolean}) => sort.default
+			);
+
+			expect(defaultSorts.map((sort: {key: string}) => sort.key)).toEqual(
+				['viewsMetric']
+			);
+		});
+
+		it('should offer every sortable column as a sort option without an orderBy', async () => {
+			await renderList();
 
 			const sorts = getSorts();
 
@@ -866,10 +883,14 @@ describe('List', () => {
 				SORTABLE_KEYS
 			);
 
-			sorts.forEach((sort: {direction: string; label: string}) => {
-				expect(sort.direction).toBe('desc');
-				expect(sort.label).toBeTruthy();
-			});
+			sorts.forEach(
+				(sort: {direction: string; key: string; label: string}) => {
+					expect(sort.direction).toBe(
+						sort.key === 'viewsMetric' ? 'desc' : 'asc'
+					);
+					expect(sort.label).toBeTruthy();
+				}
+			);
 		});
 
 		['viewsMetric', 'impressionsMetric', 'downloadsMetric'].forEach(

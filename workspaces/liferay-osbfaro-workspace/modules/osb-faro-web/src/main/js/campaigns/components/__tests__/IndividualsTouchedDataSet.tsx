@@ -90,10 +90,31 @@ describe('IndividualsTouchedDataSet', () => {
 		]);
 	});
 
-	it('should sort by last activity descending by default', () => {
+	it('should offer every sortable column in the Order menu, last activity descending by default', () => {
 		renderDataSet();
 
 		expect(lastFDSProps.sorts).toEqual([
+			{
+				active: false,
+				default: false,
+				direction: 'asc',
+				key: 'name',
+				label: 'Individual Name',
+			},
+			{
+				active: false,
+				default: false,
+				direction: 'asc',
+				key: 'accountName',
+				label: 'Account Name',
+			},
+			{
+				active: false,
+				default: false,
+				direction: 'asc',
+				key: 'sessionsCount',
+				label: 'Visitor Type',
+			},
 			{
 				active: true,
 				default: true,

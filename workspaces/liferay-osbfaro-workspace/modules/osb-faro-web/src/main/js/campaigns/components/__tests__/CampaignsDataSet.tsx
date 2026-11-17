@@ -120,16 +120,30 @@ describe('CampaignsDataSet', () => {
 		expect(getFields().every(({sortable}: any) => sortable)).toBe(true);
 	});
 
-	it('should sort by accounts touched descending by default', () => {
+	it('should offer every sortable column in the Order menu, accounts touched descending by default', () => {
 		renderDataSet();
 
 		expect(lastFDSProps.sorts).toEqual([
+			{
+				active: false,
+				default: false,
+				direction: 'asc',
+				key: 'campaignName',
+				label: 'Campaign Name',
+			},
 			{
 				active: true,
 				default: true,
 				direction: 'desc',
 				key: 'accountsTouched',
 				label: 'Accounts Touched',
+			},
+			{
+				active: false,
+				default: false,
+				direction: 'asc',
+				key: 'individualsTouched',
+				label: 'Individuals Touched',
 			},
 		]);
 	});
