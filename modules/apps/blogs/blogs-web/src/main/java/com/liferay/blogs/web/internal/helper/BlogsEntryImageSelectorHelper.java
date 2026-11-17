@@ -5,6 +5,7 @@
 
 package com.liferay.blogs.web.internal.helper;
 
+import com.liferay.document.library.kernel.service.DLAppServiceUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -36,9 +37,8 @@ public class BlogsEntryImageSelectorHelper {
 			(_imageFileEntryId != _oldImageFileEntryId)) {
 
 			if (_imageFileEntryId != 0) {
-				FileEntry fileEntry =
-					PortletFileRepositoryUtil.getPortletFileEntry(
-						_imageFileEntryId);
+				FileEntry fileEntry = DLAppServiceUtil.getFileEntry(
+					_imageFileEntryId);
 
 				_fileEntryTempFile = fileEntry.isRepositoryCapabilityProvided(
 					TemporaryFileEntriesCapability.class);
