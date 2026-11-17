@@ -317,19 +317,6 @@
 	<td></td>
 </tr>
 
-<!--DOCUMENT_VERSIONS-->
-
-<tr>
-	<td>DOCUMENT_VERSIONS_CREATION_DATE</td>
-	<td>//div[contains(@class,'group-title') and contains(.,'Version ${versionNumber}')]//following::div[1]</td>
-	<td></td>
-</tr>
-<tr>
-	<td></td>
-	<td></td>
-	<td></td>
-</tr>
-
 <!--DOCUMENT_VIEWPORT-->
 
 <tr>

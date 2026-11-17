@@ -2450,25 +2450,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro revertPG(dmDocumentVersionNumber = null) {
-		DMNavigator.gotoDocumentVersion();
-
-		var key_dmDocumentVersionNumber = ${dmDocumentVersionNumber};
-		var documentCreationDate = DateUtil.getFormattedCurrentDate("M/d/yy");
-
-		AssertTextEquals.assertPartialText(
-			locator1 = "DocumentsAndMediaDocument#DOCUMENT_VERSIONS_CREATION_DATE",
-			value1 = ${documentCreationDate},
-			versionNumber = ${key_dmDocumentVersionNumber});
-
-		Click(locator1 = "DocumentsAndMedia#DOCUMENT_VERSION_VERTICAL_ELLIPSIS");
-
-		MenuItem.click(menuItem = "Revert");
-
-		Alert.viewSuccessMessage();
-	}
-
-	@summary = "Default summary"
 	macro reviewDocument(dmDocumentTitle = null) {
 		AssertTextEquals(
 			locator1 = "TextInput#TITLE",
