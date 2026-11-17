@@ -666,7 +666,15 @@ public class AssetLibraryResourceImpl extends BaseAssetLibraryResourceImpl {
 			GetterUtil.getBoolean(settings.getTrashEnabled(), true)
 		).put(
 			"trashEntriesMaxAge",
-			GetterUtil.getInteger(settings.getTrashEntriesMaxAge())
+			() -> {
+				Integer trashEntriesMaxAge = settings.getTrashEntriesMaxAge();
+
+				if (trashEntriesMaxAge == null) {
+					return null;
+				}
+
+				return String.valueOf(trashEntriesMaxAge);
+			}
 		).build();
 	}
 
