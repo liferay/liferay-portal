@@ -10308,7 +10308,7 @@ ${output.content}</echo>
 						<available file="${liferay.portal.public.dir}" type="dir" />
 					</not>
 					<then>
-						<fail>Unable to find the public portal directory ${liferay.portal.public.dir}.</fail>
+						<fail>Unable to find the public portal directory ${liferay.portal.public.dir}</fail>
 					</then>
 				</if>
 
