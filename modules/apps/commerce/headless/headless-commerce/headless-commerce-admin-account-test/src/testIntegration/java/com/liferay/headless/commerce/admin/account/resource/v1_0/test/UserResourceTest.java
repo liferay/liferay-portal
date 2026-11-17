@@ -119,6 +119,13 @@ public class UserResourceTest extends BaseUserResourceTestCase {
 				accountEntry1.getAccountEntryGroupId(),
 				AccountRoleConstants.REQUIRED_ROLE_NAME_ACCOUNT_ADMINISTRATOR));
 
+		_resourcePermissionLocalService.setResourcePermissions(
+			TestPropsValues.getCompanyId(), AccountEntry.class.getName(),
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(accountEntry1.getAccountEntryId()),
+			role1.getRoleId(),
+			new String[] {AccountActionKeys.ASSIGN_USERS, ActionKeys.VIEW});
+
 		AccountEntry accountEntry2 = _accountEntryLocalService.addAccountEntry(
 			StringPool.BLANK, TestPropsValues.getUserId(),
 			AccountConstants.PARENT_ACCOUNT_ENTRY_ID_DEFAULT,
@@ -133,12 +140,6 @@ public class UserResourceTest extends BaseUserResourceTestCase {
 			accountEntry2.getAccountEntryId(),
 			StringUtil.toLowerCase(RandomTestUtil.randomString()), null, null);
 
-		_resourcePermissionLocalService.setResourcePermissions(
-			TestPropsValues.getCompanyId(), AccountEntry.class.getName(),
-			ResourceConstants.SCOPE_INDIVIDUAL,
-			String.valueOf(accountEntry1.getAccountEntryId()),
-			role1.getRoleId(),
-			new String[] {AccountActionKeys.ASSIGN_USERS, ActionKeys.VIEW});
 		_resourcePermissionLocalService.setResourcePermissions(
 			TestPropsValues.getCompanyId(), Role.class.getName(),
 			ResourceConstants.SCOPE_INDIVIDUAL,
