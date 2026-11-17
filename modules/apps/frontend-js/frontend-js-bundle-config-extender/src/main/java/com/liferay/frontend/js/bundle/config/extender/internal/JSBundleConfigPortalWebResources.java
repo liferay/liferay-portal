@@ -29,20 +29,13 @@ public class JSBundleConfigPortalWebResources {
 
 	@Activate
 	protected void activate(BundleContext bundleContext) {
-		try {
-			ServletConfig servletConfig =
-				_jsBundleConfigServlet.getServletConfig();
+		ServletConfig servletConfig = _jsBundleConfigServlet.getServletConfig();
 
-			PortalWebResources portalWebResources =
-				new InternalPortalWebResources(
-					servletConfig.getServletContext());
+		PortalWebResources portalWebResources = new InternalPortalWebResources(
+			servletConfig.getServletContext());
 
-			_serviceRegistration = bundleContext.registerService(
-				PortalWebResources.class, portalWebResources, null);
-		}
-		catch (NoClassDefFoundError ncdfe) {
-			throw new RuntimeException(ncdfe);
-		}
+		_serviceRegistration = bundleContext.registerService(
+			PortalWebResources.class, portalWebResources, null);
 	}
 
 	@Deactivate
