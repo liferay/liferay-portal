@@ -83,6 +83,18 @@ public class MBCommentManagerImplTest extends Mockito {
 		throws Exception {
 
 		when(
+			_mbMessage.getClassName()
+		).thenReturn(
+			_CLASS_NAME
+		);
+
+		when(
+			_mbMessage.getClassPK()
+		).thenReturn(
+			_ENTRY_ID
+		);
+
+		when(
 			_mbMessage.getMessageId()
 		).thenReturn(
 			_MBMESSAGE_ID

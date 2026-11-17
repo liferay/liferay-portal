@@ -87,6 +87,52 @@ public class MBCommentManagerImplTest {
 	}
 
 	@Test
+	@TestInfo("LPD-115812")
+	public void testAddCommentWithParentCommentOfAnotherClassName()
+		throws Exception {
+
+		Assert.assertThrows(
+			NoSuchMessageException.class,
+			() -> _commentManager.addComment(
+				null, _user.getUserId(), User.class.getName(),
+				_fileEntry.getFileEntryId(), _user.getFullName(),
+				_parentCommentId, StringUtil.randomString(),
+				StringUtil.randomString(), _createServiceContextFunction()));
+
+		Assert.assertEquals(
+			3,
+			_commentManager.getChildCommentsCount(
+				_parentCommentId, WorkflowConstants.STATUS_ANY));
+	}
+
+	@Test
+	@TestInfo("LPD-115812")
+	public void testAddCommentWithParentCommentOfAnotherClassPK()
+		throws Exception {
+
+		FileEntry fileEntry = DLAppLocalServiceUtil.addFileEntry(
+			null, _user.getUserId(), _group.getGroupId(),
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			StringUtil.randomString(), ContentTypes.APPLICATION_OCTET_STREAM,
+			null, null, null, null,
+			ServiceContextTestUtil.getServiceContext(
+				_group, _user.getUserId()));
+
+		Assert.assertThrows(
+			NoSuchMessageException.class,
+			() -> _commentManager.addComment(
+				null, _user.getUserId(), DLFileEntryConstants.getClassName(),
+				fileEntry.getFileEntryId(), _user.getFullName(),
+				_parentCommentId, StringUtil.randomString(),
+				StringUtil.randomString(), _createServiceContextFunction()));
+
+		Assert.assertEquals(
+			3,
+			_commentManager.getChildCommentsCount(
+				_parentCommentId, WorkflowConstants.STATUS_ANY));
+	}
+
+	@Test
 	@TestInfo("LPD-115704")
 	public void testDeleteComment() throws Exception {
 		MBMessage mbMessage = _addMessage();
@@ -268,9 +314,10 @@ public class MBCommentManagerImplTest {
 					_group, user.getUserId()));
 
 		return _commentManager.addComment(
-			null, user.getUserId(), User.class.getName(), user.getUserId(),
-			user.getFullName(), parentCommentId, StringUtil.randomString(),
-			StringUtil.randomString(), serviceContextFunction);
+			null, user.getUserId(), DLFileEntryConstants.getClassName(),
+			_fileEntry.getFileEntryId(), user.getFullName(), parentCommentId,
+			StringUtil.randomString(), StringUtil.randomString(),
+			serviceContextFunction);
 	}
 
 	private MBMessage _addMessage() throws Exception {
