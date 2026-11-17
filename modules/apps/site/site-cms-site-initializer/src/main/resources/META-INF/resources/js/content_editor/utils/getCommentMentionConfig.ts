@@ -9,13 +9,17 @@ import {TextWatcher} from '@ckeditor/ckeditor5-typing';
 import {uid} from '@ckeditor/ckeditor5-utils';
 import {LiferayEditorConfig} from 'frontend-editor-ckeditor-web';
 
-import {MentionUser} from '../services/CommentService';
-
 import type {ViewElement} from '@ckeditor/ckeditor5-engine';
+
+export type Mention = {
+	id: string;
+	name: string;
+	type: 'user' | 'usergroup';
+};
 
 export type MentionQuery = {
 	getRect: () => DOMRect;
-	insert: (user: MentionUser) => void;
+	insert: (mention: Mention) => void;
 	keywords: string;
 };
 
@@ -24,9 +28,11 @@ export type MentionQueryHandler = {
 	onQueryChange: (query: MentionQuery | null) => void;
 };
 
+const MENTION_CLASS_NAME_REGEXP = /^mention-(?:user|usergroup)-\S+$/;
+
 const MENTION_QUERY_REGEXP = /(?:^|[\s([{"'])@([^\s@]*)$/u;
 
-class MentionUserMarkup extends Plugin {
+class MentionMarkup extends Plugin {
 	init() {
 		const {conversion} = this.editor;
 
@@ -43,16 +49,17 @@ class MentionUserMarkup extends Plugin {
 
 					return {
 						_text: textNode.data,
+						className: [...viewElement.getClassNames()].find(
+							(className) =>
+								MENTION_CLASS_NAME_REGEXP.test(className)
+						),
 						id: textNode.data,
 						uid: uid(),
-						userId: viewElement
-							.getAttribute('class')
-							?.match(/mention-user-(\S+)/)?.[1],
 					};
 				},
 			},
 			view: {
-				classes: ['mention', /^mention-user-/],
+				classes: ['mention', MENTION_CLASS_NAME_REGEXP],
 				name: 'span',
 			},
 		});
@@ -61,13 +68,13 @@ class MentionUserMarkup extends Plugin {
 			converterPriority: 'high',
 			model: 'mention',
 			view: (mention, {writer}) => {
-				if (!mention?.userId) {
+				if (!mention?.className) {
 					return;
 				}
 
 				return writer.createAttributeElement(
 					'span',
-					{class: `mention mention-user-${mention.userId}`},
+					{class: `mention ${mention.className}`},
 					{id: mention.uid, priority: 20}
 				);
 			},
@@ -113,12 +120,15 @@ export class MentionUserQuery extends Plugin {
 							)
 						)
 						.getBoundingClientRect(),
-				insert: (user) => {
-					const text = `@${user.name || user.screenName}`;
+				insert: (mention) => {
+					const text = `@${mention.name}`;
 
 					this.editor.execute('mention', {
 						marker: '@',
-						mention: {id: text, userId: user.id},
+						mention: {
+							className: `mention-${mention.type}-${mention.id}`,
+							id: text,
+						},
 						range,
 						text,
 					});
@@ -150,7 +160,7 @@ export default function getCommentMentionConfig(
 		extraPlugins: [
 			...(editorConfig.extraPlugins ?? []),
 			MentionEditing,
-			MentionUserMarkup,
+			MentionMarkup,
 			MentionUserQuery,
 		],
 	};

@@ -38,6 +38,12 @@ export type MentionUser = {
 	screenName: string;
 };
 
+export type MentionUserGroup = {
+	id: string;
+	membersCount: number;
+	name: string;
+};
+
 async function addComment({
 	content,
 	parentCommentId = null,
@@ -95,7 +101,9 @@ async function getMentionUsers({
 }: {
 	keywords: string;
 	url: string;
-}): Promise<RequestResult<{users: MentionUser[]}>> {
+}): Promise<
+	RequestResult<{userGroups: MentionUserGroup[]; users: MentionUser[]}>
+> {
 	return await ApiHelper.get(addParams({keywords}, url));
 }
 
