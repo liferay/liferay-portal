@@ -531,10 +531,7 @@ spec:
     ingress:
         {{- if and .statefulset.network .statefulset.network.enabled .statefulset.networkPolicy.allowGatewayIngress }}
         -   from:
-                -   namespaceSelector:
-                        matchLabels:
-                            kubernetes.io/metadata.name: {{ .statefulset.networkPolicy.gatewayNamespace | quote }}
-                    podSelector:
+                -   podSelector:
                         matchLabels:
                             app.kubernetes.io/managed-by: envoy-gateway
                             app.kubernetes.io/name: {{ .statefulset.networkPolicy.gatewayPodLabel | quote }}

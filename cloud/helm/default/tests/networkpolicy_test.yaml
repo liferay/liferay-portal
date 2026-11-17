@@ -104,6 +104,11 @@ tests:
             -   lengthEqual:
                     count: 3
                     path: spec.ingress
+            -   notExists:
+                    path: spec.ingress[0].from[0].namespaceSelector
+            -   equal:
+                    path: spec.ingress[0].from[0].podSelector.matchLabels["gateway.envoyproxy.io/owning-gateway-namespace"]
+                    value: NAMESPACE
             -   equal:
                     path: spec.ingress[0].ports[0].port
                     value: http
