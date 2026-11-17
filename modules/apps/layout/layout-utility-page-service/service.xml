@@ -67,5 +67,6 @@
 	<exceptions>
 		<exception>DefaultLayoutUtilityPageEntry</exception>
 		<exception>LayoutUtilityPageEntryName</exception>
+		<exception>LayoutUtilityPageEntryPreviewFileEntryId</exception>
 	</exceptions>
 </service-builder>
