@@ -111,6 +111,30 @@ public class FrontendJSAudiencesWebServletTest {
 	}
 
 	@Test
+	public void testDoGetWhenRequestHashIsMissing() throws Exception {
+		Mockito.when(
+			_httpServletRequest.getPathInfo()
+		).thenReturn(
+			"/bootstrap.js"
+		);
+
+		_frontendJSAudiencesWebServlet.doGet(
+			_httpServletRequest, _httpServletResponse);
+
+		Mockito.verify(
+			_httpServletResponse
+		).setStatus(
+			HttpServletResponse.SC_NOT_FOUND
+		);
+
+		Mockito.verify(
+			_httpServletResponse, Mockito.never()
+		).sendRedirect(
+			Mockito.anyString()
+		);
+	}
+
+	@Test
 	public void testDoGetWhenRequestHashIsStale() throws Exception {
 		String staleHash = RandomTestUtil.randomString(8);
 

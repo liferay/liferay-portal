@@ -132,6 +132,12 @@ public class FrontendJSAudiencesWebServlet extends HttpServlet {
 		String requestHash = HashedFilesUtil.getHash(
 			httpServletRequest.getPathInfo());
 
+		if (requestHash == null) {
+			httpServletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
+
+			return;
+		}
+
 		if (!Objects.equals(hash, requestHash)) {
 			StringBundler sb = new StringBundler(3);
 
