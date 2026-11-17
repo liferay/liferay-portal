@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.portal.kernel.portlet.bridges.mvc.constants.MVCRenderConstants;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.service.CompanyLocalService;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletRenderRequest;
@@ -284,6 +285,8 @@ public class JournalContentDisplayContextTest {
 					mockLiferayPortletRenderRequest),
 				childGroup.getGroupId());
 		}
+
+		GroupLocalServiceUtil.deleteGroup(childGroup);
 	}
 
 	private void _testGetArticleGroupIdFromRenderParameter() throws Exception {
