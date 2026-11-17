@@ -1710,13 +1710,13 @@ public class DefaultObjectEntryManagerImplTest
 						properties = HashMapBuilder.<String, Object>put(
 							"attachmentObjectFieldName",
 							HashMapBuilder.<String, Object>put(
-								"id", fileEntryId
+								"externalReferenceCode",
+								dlFileEntryExternalReferenceCode
 							).build()
 						).build();
 					}
 				},
 				String.valueOf(group.getGroupId())));
-
 		Assert.assertNotNull(
 			_defaultObjectEntryManager.addObjectEntry(
 				_simpleDTOConverterContext, objectDefinition,
@@ -1725,8 +1725,7 @@ public class DefaultObjectEntryManagerImplTest
 						properties = HashMapBuilder.<String, Object>put(
 							"attachmentObjectFieldName",
 							HashMapBuilder.<String, Object>put(
-								"externalReferenceCode",
-								dlFileEntryExternalReferenceCode
+								"id", fileEntryId
 							).build()
 						).build();
 					}
@@ -1786,26 +1785,15 @@ public class DefaultObjectEntryManagerImplTest
 				new ObjectEntry() {
 					{
 						properties = HashMapBuilder.<String, Object>put(
-							"attachmentObjectFieldName", fileEntryId
-						).build();
-					}
-				},
-				String.valueOf(group.getGroupId())));
-
-		Assert.assertThrows(
-			PrincipalException.class,
-			() -> _defaultObjectEntryManager.addObjectEntry(
-				_simpleDTOConverterContext, objectDefinition,
-				new ObjectEntry() {
-					{
-						properties = HashMapBuilder.<String, Object>put(
 							"attachmentObjectFieldName",
-							String.valueOf(fileEntryId)
+							HashMapBuilder.<String, Object>put(
+								"externalReferenceCode",
+								dlFileEntryExternalReferenceCode
+							).build()
 						).build();
 					}
 				},
 				String.valueOf(group.getGroupId())));
-
 		Assert.assertThrows(
 			PrincipalException.class,
 			() -> _defaultObjectEntryManager.addObjectEntry(
@@ -1821,7 +1809,6 @@ public class DefaultObjectEntryManagerImplTest
 					}
 				},
 				String.valueOf(group.getGroupId())));
-
 		Assert.assertThrows(
 			PrincipalException.class,
 			() -> _defaultObjectEntryManager.addObjectEntry(
@@ -1830,10 +1817,19 @@ public class DefaultObjectEntryManagerImplTest
 					{
 						properties = HashMapBuilder.<String, Object>put(
 							"attachmentObjectFieldName",
-							HashMapBuilder.<String, Object>put(
-								"externalReferenceCode",
-								dlFileEntryExternalReferenceCode
-							).build()
+							String.valueOf(fileEntryId)
+						).build();
+					}
+				},
+				String.valueOf(group.getGroupId())));
+		Assert.assertThrows(
+			PrincipalException.class,
+			() -> _defaultObjectEntryManager.addObjectEntry(
+				_simpleDTOConverterContext, objectDefinition,
+				new ObjectEntry() {
+					{
+						properties = HashMapBuilder.<String, Object>put(
+							"attachmentObjectFieldName", fileEntryId
 						).build();
 					}
 				},
