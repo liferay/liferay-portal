@@ -105,6 +105,8 @@ public class TestPropsUtil {
 		"digital.signature.site.settings.strategy",
 		"object.storage.salesforce.consumer.key",
 		"object.storage.salesforce.consumer.secret",
+		"object.storage.salesforce.grant.password.consumer.key",
+		"object.storage.salesforce.grant.password.consumer.secret",
 		"object.storage.salesforce.login.url",
 		"object.storage.salesforce.password",
 		"object.storage.salesforce.username",

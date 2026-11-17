@@ -13503,6 +13503,24 @@ enterprise.product.enterprise.search.enabled=false</echo>
 		</if>
 
 		<if>
+			<isset property="object.storage.salesforce.grant.password.consumer.key" />
+			<then>
+				<echo append="true" file="${project.dir}/portal-test/src/test-portal-impl.properties">
+					object.storage.salesforce.grant.password.consumer.key=${object.storage.salesforce.grant.password.consumer.key}
+				</echo>
+			</then>
+		</if>
+
+		<if>
+			<isset property="object.storage.salesforce.grant.password.consumer.secret" />
+			<then>
+				<echo append="true" file="${project.dir}/portal-test/src/test-portal-impl.properties">
+					object.storage.salesforce.grant.password.consumer.secret=${object.storage.salesforce.grant.password.consumer.secret}
+				</echo>
+			</then>
+		</if>
+
+		<if>
 			<isset property="object.storage.salesforce.login.url" />
 			<then>
 				<echo append="true" file="${project.dir}/portal-test/src/test-portal-impl.properties">

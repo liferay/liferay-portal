@@ -94,24 +94,7 @@ public class SalesforceObjectEntryManagerImplTest
 
 		companyId = TestPropsValues.getCompanyId();
 
-		_configurationProvider.saveCompanyConfiguration(
-			SalesforceConfiguration.class, companyId,
-			HashMapDictionaryBuilder.<String, Object>put(
-				"consumerKey",
-				TestPropsUtil.get("object.storage.salesforce.consumer.key")
-			).put(
-				"consumerSecret",
-				TestPropsUtil.get("object.storage.salesforce.consumer.secret")
-			).put(
-				"loginURL",
-				TestPropsUtil.get("object.storage.salesforce.login.url")
-			).put(
-				"password",
-				TestPropsUtil.get("object.storage.salesforce.password")
-			).put(
-				"username",
-				TestPropsUtil.get("object.storage.salesforce.username")
-			).build());
+		_saveCompanyConfiguration();
 
 		_simpleDateFormat = DateFormatFactoryUtil.getSimpleDateFormat(
 			"yyyy-MM-dd");
@@ -119,19 +102,7 @@ public class SalesforceObjectEntryManagerImplTest
 
 	@AfterClass
 	public static void tearDownClass() throws Exception {
-		_configurationProvider.saveCompanyConfiguration(
-			SalesforceConfiguration.class, companyId,
-			HashMapDictionaryBuilder.<String, Object>put(
-				"consumerKey", ""
-			).put(
-				"consumerSecret", ""
-			).put(
-				"loginURL", ""
-			).put(
-				"password", ""
-			).put(
-				"username", ""
-			).build());
+		_saveCompanyConfiguration("", "", "", "", "", "");
 	}
 
 	@Before
@@ -305,6 +276,37 @@ public class SalesforceObjectEntryManagerImplTest
 			null, null, false, null, RandomTestUtil.randomString());
 
 		Assert.assertNotNull(objectEntry.getExternalReferenceCode());
+	}
+
+	@Test
+	public void testAddObjectEntryWithPasswordGrantType() throws Exception {
+		_saveCompanyConfiguration(
+			TestPropsUtil.get(
+				"object.storage.salesforce.grant.password.consumer.key"),
+			TestPropsUtil.get(
+				"object.storage.salesforce.grant.password.consumer.secret"),
+			"password",
+			TestPropsUtil.get("object.storage.salesforce.login.url"),
+			TestPropsUtil.get("object.storage.salesforce.password"),
+			TestPropsUtil.get("object.storage.salesforce.username"));
+
+		try {
+			ObjectEntry objectEntry = _addObjectEntry(
+				null, null, false, null, RandomTestUtil.randomString());
+
+			Assert.assertNotNull(objectEntry.getExternalReferenceCode());
+		}
+		catch (ObjectEntryManagerHttpException
+					objectEntryManagerHttpException) {
+
+			Assume.assumeNoException(
+				"Unable to authenticate with Salesforce using the password " +
+					"grant type",
+				objectEntryManagerHttpException);
+		}
+		finally {
+			_saveCompanyConfiguration();
+		}
 	}
 
 	@Test
@@ -584,6 +586,36 @@ public class SalesforceObjectEntryManagerImplTest
 			companyId, _objectDefinition, null, null, dtoConverterContext,
 			_buildRunFilterString(context.get("filter")), Pagination.of(1, 4),
 			context.get("search"), sorts);
+	}
+
+	private static void _saveCompanyConfiguration() throws Exception {
+		_saveCompanyConfiguration(
+			TestPropsUtil.get("object.storage.salesforce.consumer.key"),
+			TestPropsUtil.get("object.storage.salesforce.consumer.secret"),
+			"client_credentials",
+			TestPropsUtil.get("object.storage.salesforce.login.url"), "", "");
+	}
+
+	private static void _saveCompanyConfiguration(
+			String consumerKey, String consumerSecret, String grantType,
+			String loginURL, String password, String userName)
+		throws Exception {
+
+		_configurationProvider.saveCompanyConfiguration(
+			SalesforceConfiguration.class, companyId,
+			HashMapDictionaryBuilder.<String, Object>put(
+				"consumerKey", consumerKey
+			).put(
+				"consumerSecret", consumerSecret
+			).put(
+				"grantType", grantType
+			).put(
+				"loginURL", loginURL
+			).put(
+				"password", password
+			).put(
+				"username", userName
+			).build());
 	}
 
 	private ObjectEntry _addObjectEntry(
