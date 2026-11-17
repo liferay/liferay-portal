@@ -225,6 +225,9 @@ public class CommentUtil {
 			return body;
 		}
 
+		long groupId = _getGroupId(
+			className, classPK, themeDisplay.getCompanyId());
+
 		StringBundler sb = new StringBundler();
 
 		Matcher matcher = _mentionPattern.matcher(body);
@@ -250,22 +253,6 @@ public class CommentUtil {
 				}
 			}
 			else {
-				ObjectEntry objectEntry =
-					ObjectEntryLocalServiceUtil.getObjectEntry(classPK);
-
-				long groupId = objectEntry.getGroupId();
-
-				if (groupId == 0) {
-					Group group = GroupLocalServiceUtil.fetchGroup(
-						themeDisplay.getCompanyId(),
-						ClassNameLocalServiceUtil.getClassNameId(className),
-						classPK);
-
-					if (group != null) {
-						groupId = group.getGroupId();
-					}
-				}
-
 				UserGroup userGroup =
 					UserGroupLocalServiceUtil.
 						fetchUserGroupByExternalReferenceCode(
@@ -400,6 +387,28 @@ public class CommentUtil {
 			themeDisplay.getPortalURL(), themeDisplay.getPathMain(),
 			GroupConstants.CMS_FRIENDLY_URL,
 			"/edit_content_item?objectEntryId=", objectEntryId);
+	}
+
+	private static long _getGroupId(
+			String className, long classPK, long companyId)
+		throws PortalException {
+
+		ObjectEntry objectEntry = ObjectEntryLocalServiceUtil.getObjectEntry(
+			classPK);
+
+		if (objectEntry.getGroupId() != 0) {
+			return objectEntry.getGroupId();
+		}
+
+		Group group = GroupLocalServiceUtil.fetchGroup(
+			companyId, ClassNameLocalServiceUtil.getClassNameId(className),
+			classPK);
+
+		if (group == null) {
+			return 0;
+		}
+
+		return group.getGroupId();
 	}
 
 	private static final Pattern _mentionPattern = Pattern.compile(
