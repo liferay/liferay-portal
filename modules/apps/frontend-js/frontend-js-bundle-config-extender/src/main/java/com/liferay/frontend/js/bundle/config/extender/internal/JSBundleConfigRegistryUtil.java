@@ -59,7 +59,9 @@ public class JSBundleConfigRegistryUtil {
 		return sb.toString();
 	}
 
-	private static String _getModuleMain(ServletContext servletContext) {
+	private static String _getModuleMainJavaScript(
+		ServletContext servletContext) {
+
 		try {
 			URL url = servletContext.getResource(
 				"META-INF/resources/package.json");
@@ -69,7 +71,7 @@ public class JSBundleConfigRegistryUtil {
 			}
 
 			if (url == null) {
-				return null;
+				return StringPool.BLANK;
 			}
 
 			JSONObject jsonObject = JSONFactoryUtil.createJSONObject(
@@ -85,8 +87,8 @@ public class JSBundleConfigRegistryUtil {
 			}
 
 			return StringBundler.concat(
-				moduleName, "@", moduleVersion, "/",
-				ModuleNameUtil.toModuleName(moduleMain));
+				"var MODULE_MAIN='", moduleName, "@", moduleVersion, "/",
+				ModuleNameUtil.toModuleName(moduleMain), "';");
 		}
 		catch (Exception exception) {
 			throw new RuntimeException(exception);
@@ -130,8 +132,8 @@ public class JSBundleConfigRegistryUtil {
 
 			try {
 				String javaScript = StringBundler.concat(
-					"try {var MODULE_MAIN='", _getModuleMain(servletContext),
-					"';var MODULE_PATH='", PortalUtil.getPathProxy(),
+					"try {", _getModuleMainJavaScript(servletContext),
+					"var MODULE_PATH='", PortalUtil.getPathProxy(),
 					servletContext.getContextPath(), "';",
 					StringUtil.removeSubstring(
 						URLUtil.toString(url),
