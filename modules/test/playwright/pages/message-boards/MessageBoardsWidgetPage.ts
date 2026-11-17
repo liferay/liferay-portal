@@ -117,6 +117,13 @@ export class MessageBoardsWidgetPage {
 
 		await this.page.getByRole('button', {name: 'Reply'}).click();
 
+		await this.page
+			.frameLocator(
+				'iframe[title*="_com_liferay_message_boards_web_portlet_MBPortlet_replyMessageBody"]'
+			)
+			.getByRole('textbox')
+			.waitFor();
+
 		await this.page.getByRole('button', {name: 'Advanced Reply'}).click();
 
 		await this.page.waitForLoadState('networkidle');
