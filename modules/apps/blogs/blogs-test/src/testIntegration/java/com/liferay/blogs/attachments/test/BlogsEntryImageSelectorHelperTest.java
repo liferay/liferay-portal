@@ -6,13 +6,20 @@
 package com.liferay.blogs.attachments.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.module.util.BundleUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.servlet.taglib.ui.ImageSelector;
+import com.liferay.portal.kernel.test.TestInfo;
+import com.liferay.portal.kernel.test.constants.TestDataConstants;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
@@ -28,6 +35,7 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import java.io.InputStream;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.junit.Assert;
@@ -133,6 +141,50 @@ public class BlogsEntryImageSelectorHelperTest {
 				(Boolean)_isFileEntryTempFileMethod.invoke(
 					blogsEntryImageSelectorHelper));
 		}
+	}
+
+	@Test
+	@TestInfo("LPD-116075")
+	public void testGetImageSelectorWithDLImageFileEntryWithoutViewPermission()
+		throws Exception {
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId());
+
+		serviceContext.setAddGroupPermissions(false);
+		serviceContext.setAddGuestPermissions(false);
+
+		FileEntry fileEntry = DLAppLocalServiceUtil.addFileEntry(
+			null, TestPropsValues.getUserId(), _group.getGroupId(),
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID, _IMAGE_TITLE,
+			ContentTypes.IMAGE_JPEG, TestDataConstants.TEST_BYTE_ARRAY, null,
+			null, null, serviceContext);
+
+		Object blogsEntryImageSelectorHelper = _constructor.newInstance(
+			0, fileEntry.getFileEntryId(), 0, _IMAGE_CROP_REGION,
+			StringPool.BLANK, StringPool.BLANK);
+
+		User user = UserTestUtil.addUser();
+
+		UserTestUtil.setUser(user);
+
+		InvocationTargetException invocationTargetException =
+			Assert.assertThrows(
+				InvocationTargetException.class,
+				() -> _getImageSelectorMethod.invoke(
+					blogsEntryImageSelectorHelper));
+
+		PrincipalException.MustHavePermission mustHavePermission =
+			(PrincipalException.MustHavePermission)
+				invocationTargetException.getCause();
+
+		Assert.assertArrayEquals(
+			new String[] {ActionKeys.VIEW}, mustHavePermission.actionId);
+		Assert.assertEquals(
+			fileEntry.getFileEntryId(), mustHavePermission.resourceId);
+		Assert.assertEquals(
+			DLFileEntry.class.getName(), mustHavePermission.resourceName);
+		Assert.assertEquals(user.getUserId(), mustHavePermission.userId);
 	}
 
 	@Test
