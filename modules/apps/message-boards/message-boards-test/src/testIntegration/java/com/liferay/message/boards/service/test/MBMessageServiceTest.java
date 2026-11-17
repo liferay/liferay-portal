@@ -285,24 +285,25 @@ public class MBMessageServiceTest {
 	public void testGetChildMessages() throws Exception {
 		MBMessage mbMessage = _addMessage();
 
-		List<MBMessage> mbMessages = MBMessageServiceUtil.getChildMessages(
+		List<MBMessage> childMessages = MBMessageServiceUtil.getChildMessages(
 			mbMessage.getMessageId(), false,
 			new QueryDefinition<>(WorkflowConstants.STATUS_ANY));
 
-		Assert.assertEquals(mbMessages.toString(), 2, mbMessages.size());
+		Assert.assertEquals(childMessages.toString(), 2, childMessages.size());
 
 		User user = _users[0];
 
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				user, PermissionCheckerFactoryUtil.create(user))) {
 
-			mbMessages = MBMessageServiceUtil.getChildMessages(
+			childMessages = MBMessageServiceUtil.getChildMessages(
 				mbMessage.getMessageId(), false,
 				new QueryDefinition<>(WorkflowConstants.STATUS_ANY));
 
-			Assert.assertEquals(mbMessages.toString(), 1, mbMessages.size());
+			Assert.assertEquals(
+				childMessages.toString(), 1, childMessages.size());
 
-			MBMessage childMBMessage = mbMessages.get(0);
+			MBMessage childMBMessage = childMessages.get(0);
 
 			Assert.assertEquals(
 				WorkflowConstants.STATUS_APPROVED, childMBMessage.getStatus());
@@ -318,11 +319,20 @@ public class MBMessageServiceTest {
 				() -> MBMessageServiceUtil.getChildMessages(
 					MBMessageConstants.DEFAULT_PARENT_MESSAGE_ID, false,
 					new QueryDefinition<>(WorkflowConstants.STATUS_ANY)));
-			Assert.assertThrows(
-				PrincipalException.MustHavePermission.class,
-				() -> MBMessageServiceUtil.getChildMessages(
-					mbMessage.getMessageId(), false,
-					new QueryDefinition<>(WorkflowConstants.STATUS_ANY)));
+
+			PrincipalException.MustHavePermission mustHavePermission =
+				Assert.assertThrows(
+					PrincipalException.MustHavePermission.class,
+					() -> MBMessageServiceUtil.getChildMessages(
+						mbMessage.getMessageId(), false,
+						new QueryDefinition<>(WorkflowConstants.STATUS_ANY)));
+
+			Assert.assertArrayEquals(
+				new String[] {ActionKeys.VIEW}, mustHavePermission.actionId);
+			Assert.assertEquals(
+				mbMessage.getMessageId(), mustHavePermission.resourceId);
+			Assert.assertEquals(
+				MBMessage.class.getName(), mustHavePermission.resourceName);
 		}
 	}
 
@@ -359,11 +369,20 @@ public class MBMessageServiceTest {
 				() -> MBMessageServiceUtil.getChildMessagesCount(
 					MBMessageConstants.DEFAULT_PARENT_MESSAGE_ID, false,
 					new QueryDefinition<>(WorkflowConstants.STATUS_ANY)));
-			Assert.assertThrows(
-				PrincipalException.MustHavePermission.class,
-				() -> MBMessageServiceUtil.getChildMessagesCount(
-					mbMessage.getMessageId(), false,
-					new QueryDefinition<>(WorkflowConstants.STATUS_ANY)));
+
+			PrincipalException.MustHavePermission mustHavePermission =
+				Assert.assertThrows(
+					PrincipalException.MustHavePermission.class,
+					() -> MBMessageServiceUtil.getChildMessagesCount(
+						mbMessage.getMessageId(), false,
+						new QueryDefinition<>(WorkflowConstants.STATUS_ANY)));
+
+			Assert.assertArrayEquals(
+				new String[] {ActionKeys.VIEW}, mustHavePermission.actionId);
+			Assert.assertEquals(
+				mbMessage.getMessageId(), mustHavePermission.resourceId);
+			Assert.assertEquals(
+				MBMessage.class.getName(), mustHavePermission.resourceName);
 		}
 	}
 
