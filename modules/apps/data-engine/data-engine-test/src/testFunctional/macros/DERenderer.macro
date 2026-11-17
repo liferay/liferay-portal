@@ -144,15 +144,29 @@ definition {
 
 	@summary = "Default summary"
 	macro assertDataInRichTextField(fieldLabel = null, index = null, content = null) {
-		DERenderer.selectCKEditorByIndex(
-			fieldLabel = ${fieldLabel},
-			index = ${index});
+		if (!(isSet(index))) {
+			var index = 1;
+		}
 
-		AssertTextEquals(
-			locator1 = "CKEditor#BODY",
-			value1 = ${content});
+		if (IsElementPresent(index = ${index}, key_fieldLabel = ${fieldLabel}, locator1 = "CKEditor#ANY_BODY_FIELD_IFRAME_WEB_CONTENT_ARTICLE")) {
+			SelectFrame.selectFrameNoLoading(
+				index = ${index},
+				key_fieldLabel = ${fieldLabel},
+				locator1 = "CKEditor#ANY_BODY_FIELD_IFRAME_WEB_CONTENT_ARTICLE");
 
-		SelectFrame(value1 = "relative=top");
+			AssertTextEquals(
+				locator1 = "CKEditor#BODY",
+				value1 = ${content});
+
+			SelectFrame(value1 = "relative=top");
+		}
+		else {
+			AssertTextEquals(
+				index = ${index},
+				key_fieldLabel = ${fieldLabel},
+				locator1 = "CKEditor#ANY_BODY_FIELD_CONTENTEDITABLE_WEB_CONTENT_ARTICLE",
+				value1 = ${content});
+		}
 	}
 
 	@summary = "Default summary"
@@ -514,15 +528,14 @@ definition {
 
 	@summary = "Default summary"
 	macro inputDataInRichTextField(fieldLabel = null, index = null, content = null) {
-		DERenderer.selectCKEditorByIndex(
+		if (!(isSet(index))) {
+			var index = 1;
+		}
+
+		CKEditor.addContentInRepeatableWebContent(
+			content = ${content},
 			fieldLabel = ${fieldLabel},
 			index = ${index});
-
-		Type(
-			locator1 = "CKEditor#BODY",
-			value1 = ${content});
-
-		SelectFrame(value1 = "relative=top");
 	}
 
 	@summary = "Default summary"
@@ -658,18 +671,6 @@ definition {
 			index = ${index},
 			key_fieldLabel = ${fieldLabel},
 			locator1 = "DataEngineRenderer#REPEATABLE_FIELD_DELETE_BUTTON_INDEXED");
-	}
-
-	@summary = "Default summary"
-	macro selectCKEditorByIndex(fieldLabel = null) {
-		if (!(isSet(index))) {
-			var index = 1;
-		}
-
-		SelectFrame.selectFrameNoLoading(
-			index = ${index},
-			key_fieldLabel = ${fieldLabel},
-			locator1 = "CKEditor#ANY_BODY_FIELD_IFRAME_WEB_CONTENT_ARTICLE");
 	}
 
 }
