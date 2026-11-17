@@ -57,8 +57,7 @@ public class SemVerModulesBatchTestClassGroup
 
 	protected boolean isQuarterlyReleaseBranch() {
 		Matcher quarterlyReleaseNameMatcher =
-			_quarterlyReleaseNamePattern.matcher(
-				portalGitWorkingDirectory.getUpstreamBranchName());
+			_quarterlyReleaseNamePattern.matcher(getPortalUpstreamBranchName());
 
 		return quarterlyReleaseNameMatcher.find();
 	}

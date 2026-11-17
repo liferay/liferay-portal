@@ -5,6 +5,8 @@
 
 package com.liferay.jenkins.results.parser;
 
+import com.liferay.jenkins.results.parser.history.HistoryFactory;
+import com.liferay.jenkins.results.parser.history.JobHistory;
 import com.liferay.jenkins.results.parser.test.clazz.group.BatchTestClassGroup;
 import com.liferay.jenkins.results.parser.test.clazz.group.PlaywrightSegmentTestClassGroup;
 import com.liferay.jenkins.results.parser.test.clazz.group.SegmentTestClassGroup;
@@ -17,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -29,6 +32,63 @@ import org.mockito.Mockito;
  * @author Brittney Nguyen
  */
 public class BaseJobTest extends com.liferay.jenkins.results.parser.Test {
+
+	@Test
+	public void testGetJobHistory() {
+		Map<String, JobHistory> jobHistories = ReflectionTestUtil.getFieldValue(
+			HistoryFactory.class, "_jobHistories");
+
+		JobHistory jobJobHistory = Mockito.mock(JobHistory.class);
+		String jobUpstreamBranchName = RandomTestUtil.randomString();
+
+		jobHistories.put(jobUpstreamBranchName, jobJobHistory);
+
+		JobHistory workingDirectoryJobHistory = Mockito.mock(JobHistory.class);
+		String workingDirectoryUpstreamBranchName =
+			RandomTestUtil.randomString();
+
+		jobHistories.put(
+			workingDirectoryUpstreamBranchName, workingDirectoryJobHistory);
+
+		PortalGitWorkingDirectory portalGitWorkingDirectory = Mockito.mock(
+			PortalGitWorkingDirectory.class);
+
+		Mockito.doReturn(
+			workingDirectoryUpstreamBranchName
+		).when(
+			portalGitWorkingDirectory
+		).getUpstreamBranchName();
+
+		PortalGitRepositoryJob portalGitRepositoryJob = Mockito.mock(
+			PortalGitRepositoryJob.class, Mockito.CALLS_REAL_METHODS);
+
+		Mockito.doReturn(
+			portalGitWorkingDirectory
+		).when(
+			portalGitRepositoryJob
+		).getPortalGitWorkingDirectory();
+
+		Mockito.doReturn(
+			jobUpstreamBranchName
+		).when(
+			portalGitRepositoryJob
+		).getUpstreamBranchName();
+
+		Assert.assertSame(
+			jobJobHistory, portalGitRepositoryJob.getJobHistory());
+
+		PortalAppReleaseJob portalAppReleaseJob = Mockito.mock(
+			PortalAppReleaseJob.class, Mockito.CALLS_REAL_METHODS);
+
+		Mockito.doReturn(
+			portalGitWorkingDirectory
+		).when(
+			portalAppReleaseJob
+		).getPortalGitWorkingDirectory();
+
+		Assert.assertSame(
+			workingDirectoryJobHistory, portalAppReleaseJob.getJobHistory());
+	}
 
 	@Test
 	public void testGetWorkspaceNames() {

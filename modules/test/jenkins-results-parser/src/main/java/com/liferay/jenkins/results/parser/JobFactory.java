@@ -64,8 +64,13 @@ public class JobFactory {
 			PortalGitWorkingDirectory portalGitWorkingDirectory =
 				portalTestClassJob.getPortalGitWorkingDirectory();
 
-			portalUpstreamBranchName =
-				portalGitWorkingDirectory.getUpstreamBranchName();
+			if (job instanceof PortalGitRepositoryJob) {
+				portalUpstreamBranchName = upstreamBranchName;
+			}
+			else {
+				portalUpstreamBranchName =
+					portalGitWorkingDirectory.getUpstreamBranchName();
+			}
 
 			if (JenkinsResultsParserUtil.isNullOrEmpty(repositoryName)) {
 				repositoryName =

@@ -130,11 +130,10 @@ public abstract class ModulesBatchTestClassGroup extends BatchTestClassGroup {
 		File modulesDir = new File(
 			portalGitWorkingDirectory.getWorkingDirectory(), "modules");
 
-		String upstreamBranchName =
-			portalGitWorkingDirectory.getUpstreamBranchName();
+		String portalUpstreamBranchName = getPortalUpstreamBranchName();
 
-		if (upstreamBranchName.startsWith("ee-") ||
-			upstreamBranchName.endsWith("-private")) {
+		if (portalUpstreamBranchName.startsWith("ee-") ||
+			portalUpstreamBranchName.endsWith("-private")) {
 
 			excludesJobProperties.add(
 				getJobProperty(
@@ -183,11 +182,10 @@ public abstract class ModulesBatchTestClassGroup extends BatchTestClassGroup {
 		File modulesDir = new File(
 			portalGitWorkingDirectory.getWorkingDirectory(), "modules");
 
-		String upstreamBranchName =
-			portalGitWorkingDirectory.getUpstreamBranchName();
+		String portalUpstreamBranchName = getPortalUpstreamBranchName();
 
-		if (upstreamBranchName.startsWith("ee-") ||
-			upstreamBranchName.endsWith("-private")) {
+		if (portalUpstreamBranchName.startsWith("ee-") ||
+			portalUpstreamBranchName.endsWith("-private")) {
 
 			includesJobProperties.add(
 				getJobProperty(

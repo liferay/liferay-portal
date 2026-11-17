@@ -5,6 +5,7 @@
 
 package com.liferay.jenkins.results.parser.test.clazz.group;
 
+import com.liferay.jenkins.results.parser.PortalGitRepositoryJob;
 import com.liferay.jenkins.results.parser.PortalGitWorkingDirectory;
 import com.liferay.jenkins.results.parser.PortalTestClassJob;
 import com.liferay.jenkins.results.parser.RandomTestUtil;
@@ -107,6 +108,49 @@ public class BatchTestClassGroupTest
 		Collections.sort(axisTestClasses);
 
 		Assert.assertEquals(testClasses, axisTestClasses);
+	}
+
+	@Test
+	public void testGetPortalUpstreamBranchName() {
+		PortalTestClassJob portalTestClassJob =
+			BatchTestClassGroupTestUtil.getPortalTestClassJob();
+
+		PortalGitWorkingDirectory portalGitWorkingDirectory =
+			portalTestClassJob.getPortalGitWorkingDirectory();
+
+		Mockito.doReturn(
+			RandomTestUtil.randomString()
+		).when(
+			portalGitWorkingDirectory
+		).getUpstreamBranchName();
+
+		PortalGitRepositoryJob portalGitRepositoryJob =
+			(PortalGitRepositoryJob)portalTestClassJob;
+
+		_testGetPortalUpstreamBranchName(
+			portalTestClassJob, portalGitRepositoryJob.getUpstreamBranchName());
+
+		portalGitWorkingDirectory = Mockito.mock(
+			PortalGitWorkingDirectory.class);
+
+		String upstreamBranchName = RandomTestUtil.randomString();
+
+		Mockito.doReturn(
+			upstreamBranchName
+		).when(
+			portalGitWorkingDirectory
+		).getUpstreamBranchName();
+
+		portalTestClassJob = Mockito.mock(PortalTestClassJob.class);
+
+		Mockito.doReturn(
+			portalGitWorkingDirectory
+		).when(
+			portalTestClassJob
+		).getPortalGitWorkingDirectory();
+
+		_testGetPortalUpstreamBranchName(
+			portalTestClassJob, upstreamBranchName);
 	}
 
 	@Test
@@ -318,6 +362,18 @@ public class BatchTestClassGroupTest
 		testEquals(expectedAxisMaxSize, batchTestClassGroup.getAxisMaxSize());
 	}
 
+	private void _testGetPortalUpstreamBranchName(
+		PortalTestClassJob portalTestClassJob, String upstreamBranchName) {
+
+		BatchTestClassGroup batchTestClassGroup = new BatchTestClassGroup(
+			RandomTestUtil.randomString(), portalTestClassJob) {
+		};
+
+		testEquals(
+			upstreamBranchName,
+			batchTestClassGroup.getPortalUpstreamBranchName());
+	}
+
 	private void _testGetSegmentMaxChildren(
 		int expectedSegmentMaxChildren, String segmentMaxChildren) {
 
@@ -350,20 +406,11 @@ public class BatchTestClassGroupTest
 			new BatchTestClassGroup("default", portalTestClassJob) {
 			});
 
-		PortalGitWorkingDirectory portalGitWorkingDirectory = Mockito.mock(
-			PortalGitWorkingDirectory.class);
-
-		Mockito.doReturn(
-			portalGitWorkingDirectory
-		).when(
-			batchTestClassGroup
-		).getPortalGitWorkingDirectory();
-
 		Mockito.doReturn(
 			upstreamBranchName
 		).when(
-			portalGitWorkingDirectory
-		).getUpstreamBranchName();
+			batchTestClassGroup
+		).getPortalUpstreamBranchName();
 
 		String batchName = batchTestClassGroup.getBatchName();
 

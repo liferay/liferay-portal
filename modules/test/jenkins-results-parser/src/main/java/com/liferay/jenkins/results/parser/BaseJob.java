@@ -1687,6 +1687,13 @@ public abstract class BaseJob implements Job {
 	}
 
 	private String _getPortalUpstreamBranchName() {
+		if (this instanceof PortalGitRepositoryJob) {
+			PortalGitRepositoryJob portalGitRepositoryJob =
+				(PortalGitRepositoryJob)this;
+
+			return portalGitRepositoryJob.getUpstreamBranchName();
+		}
+
 		if (!(this instanceof PortalTestClassJob)) {
 			return null;
 		}

@@ -293,6 +293,16 @@ public class BatchTestClassGroupTestUtil {
 		PortalGitWorkingDirectory portalGitWorkingDirectory) {
 
 		try {
+			Mockito.doCallRealMethod(
+			).when(
+				portalGitWorkingDirectory
+			).getUpstreamBranchName();
+
+			Mockito.doCallRealMethod(
+			).when(
+				portalGitWorkingDirectory
+			).getWorkingDirectory();
+
 			Mockito.doReturn(
 				Collections.emptyList()
 			).when(
@@ -326,11 +336,6 @@ public class BatchTestClassGroupTestUtil {
 			).when(
 				portalGitWorkingDirectory
 			).getModifiedPoshiModules();
-
-			Mockito.doCallRealMethod(
-			).when(
-				portalGitWorkingDirectory
-			).getWorkingDirectory();
 		}
 		catch (IOException ioException) {
 			throw new RuntimeException(ioException);

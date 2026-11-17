@@ -12,10 +12,10 @@ import com.liferay.jenkins.results.parser.BuildDatabaseUtil;
 import com.liferay.jenkins.results.parser.BuildReportFactory;
 import com.liferay.jenkins.results.parser.CloudBucketUtil;
 import com.liferay.jenkins.results.parser.DownstreamBuildReport;
-import com.liferay.jenkins.results.parser.GitWorkingDirectory;
 import com.liferay.jenkins.results.parser.JenkinsMaster;
 import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
 import com.liferay.jenkins.results.parser.Job;
+import com.liferay.jenkins.results.parser.PortalGitRepositoryJob;
 import com.liferay.jenkins.results.parser.PortalGitWorkingDirectory;
 import com.liferay.jenkins.results.parser.PortalTestClassJob;
 import com.liferay.jenkins.results.parser.RootCauseAnalysisToolJob;
@@ -901,6 +901,17 @@ public abstract class BatchTestClassGroup extends BaseTestClassGroup {
 			JenkinsResultsParserUtil.getGlobsFromProperty(relativeGlobs));
 	}
 
+	protected String getPortalUpstreamBranchName() {
+		if (portalTestClassJob instanceof PortalGitRepositoryJob) {
+			PortalGitRepositoryJob portalGitRepositoryJob =
+				(PortalGitRepositoryJob)portalTestClassJob;
+
+			return portalGitRepositoryJob.getUpstreamBranchName();
+		}
+
+		return portalGitWorkingDirectory.getUpstreamBranchName();
+	}
+
 	protected List<String> getRelevantIntegrationUnitBatchNames() {
 		List<String> relevantIntegrationUnitBatchNames = new ArrayList<>();
 
@@ -957,12 +968,9 @@ public abstract class BatchTestClassGroup extends BaseTestClassGroup {
 			return 0;
 		}
 
-		GitWorkingDirectory gitWorkingDirectory =
-			getPortalGitWorkingDirectory();
+		String portalUpstreamBranchName = getPortalUpstreamBranchName();
 
-		String upstreamBranchName = gitWorkingDirectory.getUpstreamBranchName();
-
-		if (!upstreamBranchName.equals("master") &&
+		if (!portalUpstreamBranchName.equals("master") &&
 			(getBatchHistory() == null)) {
 
 			return 0;

@@ -41,8 +41,7 @@ public class PortalAppReleaseJob extends BaseJob implements PortalTestClassJob {
 	public List<String> getJobPropertyOptions() {
 		List<String> jobPropertyOptions = super.getJobPropertyOptions();
 
-		jobPropertyOptions.add(
-			_portalGitWorkingDirectory.getUpstreamBranchName());
+		jobPropertyOptions.add(_portalUpstreamBranchName);
 
 		return jobPropertyOptions;
 	}
