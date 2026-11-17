@@ -6,6 +6,8 @@
 package com.liferay.sharepoint.rest.repository.internal.document.library.repository.external.model;
 
 import com.liferay.document.library.repository.external.ExtRepositoryFolder;
+import com.liferay.document.library.repository.external.ExtRepositoryObject;
+import com.liferay.document.library.repository.external.ExtRepositoryObjectType;
 import com.liferay.petra.string.StringPool;
 
 import java.util.Date;
@@ -17,13 +19,16 @@ public class SharepointFolder implements ExtRepositoryFolder {
 
 	public SharepointFolder(
 		String extRepositoryModelKey, String name, Date createDate,
-		Date modifiedDate, long effectiveBasePermissionsBits) {
+		Date modifiedDate, long effectiveBasePermissionsBits,
+		Integer filesCount, Integer foldersCount) {
 
 		_extRepositoryModelKey = extRepositoryModelKey;
 		_name = name;
 		_createDate = createDate;
 		_modifiedDate = modifiedDate;
 		_effectiveBasePermissionsBits = effectiveBasePermissionsBits;
+		_filesCount = filesCount;
+		_foldersCount = foldersCount;
 	}
 
 	@Override
@@ -66,6 +71,21 @@ public class SharepointFolder implements ExtRepositoryFolder {
 		}
 
 		return true;
+	}
+
+	public Integer getChildrenCount(
+		ExtRepositoryObjectType<? extends ExtRepositoryObject>
+			extRepositoryObjectType) {
+
+		if (extRepositoryObjectType == ExtRepositoryObjectType.FILE) {
+			return _filesCount;
+		}
+
+		if (extRepositoryObjectType == ExtRepositoryObjectType.FOLDER) {
+			return _foldersCount;
+		}
+
+		return null;
 	}
 
 	@Override
@@ -116,6 +136,8 @@ public class SharepointFolder implements ExtRepositoryFolder {
 	private final Date _createDate;
 	private final long _effectiveBasePermissionsBits;
 	private final String _extRepositoryModelKey;
+	private final Integer _filesCount;
+	private final Integer _foldersCount;
 	private final Date _modifiedDate;
 	private final String _name;
 

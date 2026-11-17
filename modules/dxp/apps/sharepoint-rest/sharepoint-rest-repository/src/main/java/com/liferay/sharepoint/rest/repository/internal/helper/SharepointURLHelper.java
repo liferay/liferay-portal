@@ -147,6 +147,17 @@ public class SharepointURLHelper {
 			_FIELDS_SELECTED_FOLDER, _FIELDS_EXPANDED_FOLDER);
 	}
 
+	public String getFoldersWithChildrenCountURL(
+		String extRepositoryFolderKey) {
+
+		return String.format(
+			"%s/_api/web/GetFolderByServerRelativePath(decodedUrl='%s')" +
+				"/Folders?$select=%s,Files/Name,Folders/Name&" +
+					"$expand=%s,Files,Folders",
+			_siteAbsoluteURL, _encode(extRepositoryFolderKey),
+			_FIELDS_SELECTED_FOLDER, _FIELDS_EXPANDED_FOLDER);
+	}
+
 	public String getListURL(String libraryPath) {
 		return String.format(
 			"%s/_api/web/GetList('%s/%s')?$select=EnableMinorVersions",
