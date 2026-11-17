@@ -78,6 +78,24 @@ describe('hideProductMenuIfPresent', () => {
 		);
 	});
 
+	it('closes the open sidebar without a callback', () => {
+		document.body.classList.add(
+			'product-menu-open',
+			'product-menu-unified-sidebar'
+		);
+
+		hideProductMenuIfPresent();
+
+		expect(Liferay.fire).toHaveBeenCalledWith(
+			'productMenuSidebarStateRequested',
+			{visible: false}
+		);
+
+		expect(() =>
+			getHandler('productMenuSidebarStateChanged')({visible: false})
+		).not.toThrow();
+	});
+
 	it('asks again when the sidebar becomes ready after the request', () => {
 		document.body.classList.add(
 			'product-menu-open',

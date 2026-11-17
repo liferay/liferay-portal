@@ -12,6 +12,7 @@
 		"@clayui/list": "^3.167.0",
 		"@clayui/loading-indicator": "^3.167.0",
 		"@clayui/modal": "^3.167.0",
+		"@liferay/layout-js-components-web": "*",
 		"classnames": "2.3.1",
 		"frontend-js-components-web": "*",
 		"frontend-js-web": "*",

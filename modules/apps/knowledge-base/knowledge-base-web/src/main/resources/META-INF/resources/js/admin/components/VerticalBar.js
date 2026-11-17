@@ -5,6 +5,10 @@
 
 import {ClayButtonWithIcon} from '@clayui/button';
 import {VerticalBar} from '@clayui/core';
+import {
+	hideProductMenuIfPresent,
+	onProductMenuVisibleChange,
+} from '@liferay/layout-js-components-web';
 import {navigate} from 'frontend-js-web';
 import PropTypes from 'prop-types';
 import React, {useEffect, useState} from 'react';
@@ -40,12 +44,8 @@ const VerticalNavigationBar = ({
 		!initialProductMenuOpen && activePanel !== SUGGESTION_KEY
 	);
 
-	const productMenu = Liferay.SideNavigation.instance(
-		document.querySelector('.product-menu-toggle')
-	);
-
 	useEffect(() => {
-		const onProductMenuChange = ({open}) => {
+		const onProductMenuChange = (open) => {
 			setProductMenuOpen(open);
 
 			if (open) {
@@ -60,29 +60,35 @@ const VerticalNavigationBar = ({
 			}
 		};
 
-		const closedProductMenuListener = productMenu?.on(
-			'closed.lexicon.sidenav',
-			() => onProductMenuChange({open: false})
-		);
-
-		const openProductMenuListener = productMenu?.on(
-			'openStart.lexicon.sidenav',
-			() => onProductMenuChange({open: true})
-		);
-
-		if (initialProductMenuOpen) {
-			setTimeout(() => {
-				productMenu.hide();
-			}, DELAY_ANIMATION);
-		}
+		const handler = onProductMenuVisibleChange(onProductMenuChange);
 
 		return () => {
-			closedProductMenuListener?.removeListener();
-			openProductMenuListener?.removeListener();
-
-			productMenu?.destroy();
+			handler.removeListener();
 		};
-	}, [activePanel, initialProductMenuOpen, productMenu]);
+	}, [activePanel]);
+
+	useEffect(() => {
+		if (!initialProductMenuOpen) {
+			return;
+		}
+
+		const timeoutId = setTimeout(() => {
+
+			// The product menu may have closed itself before this listens, as
+			// it does on narrow screens, so sync once it is hidden.
+
+			hideProductMenuIfPresent({
+				onHide: () => {
+					setProductMenuOpen(false);
+					setVerticalBarOpen(
+						items.find(({active}) => active)?.key !== SUGGESTION_KEY
+					);
+				},
+			});
+		}, DELAY_ANIMATION);
+
+		return () => clearTimeout(timeoutId);
+	}, [initialProductMenuOpen, items]);
 
 	useEffect(() => {
 		parentContainer.classList.toggle(
@@ -113,6 +119,9 @@ const VerticalNavigationBar = ({
 		}
 
 		if (currentActivePanelKey) {
+			const shouldHideProductMenu =
+				productMenuOpen && currentActivePanelKey !== SUGGESTION_KEY;
+
 			if (currentActivePanelKey !== activePanel) {
 				setActivePanel(currentActivePanelKey);
 
@@ -120,25 +129,15 @@ const VerticalNavigationBar = ({
 					({key}) => key === currentActivePanelKey
 				)?.href;
 
-				if (
-					productMenuOpen &&
-					currentActivePanelKey !== SUGGESTION_KEY
-				) {
-					const productMenuOpenListener = productMenu.on(
-						'closed.lexicon.sidenav',
-						() => {
-							productMenuOpenListener.removeListener();
-							navigate(href);
-						}
-					);
+				if (shouldHideProductMenu) {
+					hideProductMenuIfPresent({onHide: () => navigate(href)});
 				}
 				else {
 					navigate(href);
 				}
 			}
-
-			if (productMenuOpen && currentActivePanelKey !== SUGGESTION_KEY) {
-				productMenu.hide();
+			else if (shouldHideProductMenu) {
+				hideProductMenuIfPresent();
 			}
 		}
 	};

@@ -4,6 +4,10 @@
  */
 
 import {ClayButtonWithIcon} from '@clayui/button';
+import {
+	hideProductMenuIfPresent,
+	onProductMenuVisibleChange,
+} from '@liferay/layout-js-components-web';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, {useEffect} from 'react';
@@ -17,24 +21,19 @@ export default function Sidebar({
 	setSelectedSidebarPanelId,
 }) {
 	useEffect(() => {
-		const sideNavigation = Liferay.SideNavigation.instance(
-			document.querySelector('.product-menu-toggle')
-		);
-
-		if (sideNavigation) {
-			if (selectedSidebarPanelId && sideNavigation.visible()) {
-				sideNavigation.hide();
-			}
-
-			const sideNavigationListener = sideNavigation.on(
-				'openStart.lexicon.sidenav',
-				() => setSelectedSidebarPanelId(null)
-			);
-
-			return () => {
-				sideNavigationListener.removeListener();
-			};
+		if (selectedSidebarPanelId) {
+			hideProductMenuIfPresent();
 		}
+
+		const handler = onProductMenuVisibleChange((visible) => {
+			if (visible) {
+				setSelectedSidebarPanelId(null);
+			}
+		});
+
+		return () => {
+			handler.removeListener();
+		};
 	}, [selectedSidebarPanelId, setSelectedSidebarPanelId]);
 
 	return (

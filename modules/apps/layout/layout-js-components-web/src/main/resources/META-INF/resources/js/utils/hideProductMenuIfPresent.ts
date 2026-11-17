@@ -41,10 +41,10 @@ function hideProductMenuSidebar(onHide: () => void) {
 }
 
 export default function hideProductMenuIfPresent({
-	onHide,
+	onHide = () => {},
 }: {
-	onHide: () => void;
-}) {
+	onHide?: () => void;
+} = {}) {
 	if (document.body.classList.contains('product-menu-unified-sidebar')) {
 		hideProductMenuSidebar(onHide);
 

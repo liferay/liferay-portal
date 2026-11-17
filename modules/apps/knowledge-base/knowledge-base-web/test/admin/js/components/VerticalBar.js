@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {cleanup, fireEvent, render} from '@testing-library/react';
+import {act, cleanup, fireEvent, render} from '@testing-library/react';
 import {navigate} from 'frontend-js-web';
 import React from 'react';
 
@@ -72,9 +72,9 @@ describe('VerticalBar', () => {
 		};
 
 		const productMenu = {
-			destroy: jest.fn(),
 			hide: jest.fn(),
 			on: () => productMenuOn,
+			visible: () => true,
 		};
 
 		global.Liferay.SideNavigation = {instance: () => productMenu};
@@ -103,6 +103,27 @@ describe('VerticalBar', () => {
 		});
 
 		expect(container.querySelector('.sidebar')).toBeInTheDocument();
+	});
+
+	it('renders the panel if the product menu closed before it', () => {
+		jest.useFakeTimers();
+
+		document.body.classList.add('product-menu-unified-sidebar');
+
+		try {
+			const {container} = renderComponent();
+
+			act(() => {
+				jest.runAllTimers();
+			});
+
+			expect(container.querySelector('.sidebar')).toBeInTheDocument();
+		}
+		finally {
+			document.body.classList.remove('product-menu-unified-sidebar');
+
+			jest.useRealTimers();
+		}
 	});
 
 	it('does not navigate if user clicks on the current panel icon', () => {

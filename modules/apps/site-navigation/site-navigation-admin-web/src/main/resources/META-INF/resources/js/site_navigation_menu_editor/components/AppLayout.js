@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {
+	hideProductMenuIfPresent,
+	onProductMenuVisibleChange,
+} from '@liferay/layout-js-components-web';
 import classNames from 'classnames';
 import {useId} from 'frontend-js-components-web';
 import {COOKIE_TYPES, sessionStorage} from 'frontend-js-web';
@@ -44,7 +48,11 @@ export function AppLayout({
 	const appLayoutContentRef = useRef();
 
 	useEffect(() => {
-		const handler = onProductMenuOpen(() => setSidebarPanelId(null));
+		const handler = onProductMenuVisibleChange((visible) => {
+			if (visible) {
+				setSidebarPanelId(null);
+			}
+		});
 
 		return () => {
 			handler.removeListener();
@@ -53,7 +61,7 @@ export function AppLayout({
 
 	useEffect(() => {
 		if (SidebarPanel) {
-			closeProductMenu();
+			hideProductMenuIfPresent();
 		}
 	}, [SidebarPanel]);
 
@@ -143,15 +151,3 @@ AppLayout.ToolbarItem.propTypes = {
 	children: PropTypes.node,
 	expand: PropTypes.bool,
 };
-
-function closeProductMenu() {
-	Liferay.SideNavigation.hide(document.querySelector('.product-menu-toggle'));
-}
-
-function onProductMenuOpen(fn) {
-	return (
-		Liferay.SideNavigation.instance(
-			document.querySelector('.product-menu-toggle')
-		)?.on('openStart.lexicon.sidenav', fn) ?? {removeListener: () => {}}
-	);
-}

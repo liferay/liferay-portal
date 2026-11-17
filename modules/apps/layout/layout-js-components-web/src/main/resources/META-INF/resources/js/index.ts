@@ -64,4 +64,5 @@ export {default as hideProductMenuIfPresent} from './utils/hideProductMenuIfPres
 export {default as isCtrlOrMeta} from './utils/isCtrlOrMeta';
 export {default as isNullOrUndefined} from './utils/isNullOrUndefined';
 export {default as isValidStyleValue} from './utils/isValidStyleValue';
+export {default as onProductMenuVisibleChange} from './utils/onProductMenuVisibleChange';
 export {default as preventIframeNavigation} from './utils/preventIframeNavigation';

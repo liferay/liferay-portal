@@ -26,6 +26,7 @@ import com.liferay.knowledge.base.web.internal.security.permission.resource.Admi
 import com.liferay.knowledge.base.web.internal.util.KBDropdownItemsProvider;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -271,10 +272,13 @@ public class KBAdminNavigationDisplayContext {
 	}
 
 	public boolean isProductMenuOpen() {
+		boolean unifiedSidebar = FeatureFlagManagerUtil.isEnabled(
+			_themeDisplay.getCompanyId(), "LPD-88120");
+
 		String productMenuState = SessionClicks.get(
 			_httpServletRequest,
 			"com.liferay.product.navigation.product.menu.web_productMenuState",
-			"closed");
+			unifiedSidebar ? "open" : "closed");
 
 		return Objects.equals(productMenuState, "open");
 	}
