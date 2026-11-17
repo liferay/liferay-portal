@@ -13,7 +13,7 @@ import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.style.book.constants.StyleBookPortletKeys;
 import com.liferay.style.book.model.StyleBookEntry;
-import com.liferay.style.book.service.StyleBookEntryLocalService;
+import com.liferay.style.book.service.StyleBookEntryService;
 import com.liferay.style.book.zip.processor.StyleBookEntryZipProcessor;
 
 import jakarta.portlet.PortletException;
@@ -83,7 +83,7 @@ public class ExportStyleBookEntriesMVCResourceCommand
 		if (ArrayUtil.isNotEmpty(exportStyleBookEntryIds)) {
 			for (long exportStyleBookEntryId : exportStyleBookEntryIds) {
 				styleBookEntries.add(
-					_styleBookEntryLocalService.fetchStyleBookEntry(
+					_styleBookEntryService.getStyleBookEntry(
 						exportStyleBookEntryId));
 			}
 		}
@@ -93,7 +93,7 @@ public class ExportStyleBookEntriesMVCResourceCommand
 	}
 
 	@Reference
-	private StyleBookEntryLocalService _styleBookEntryLocalService;
+	private StyleBookEntryService _styleBookEntryService;
 
 	@Reference
 	private StyleBookEntryZipProcessor _styleBookEntryZipProcessor;
