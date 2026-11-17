@@ -47,13 +47,20 @@ import org.osgi.annotation.versioning.ProviderType;
 public interface TaxCategoryResource {
 
 	public Page<TaxCategory> getTaxCategoriesPage(
-			String search, Pagination pagination)
+			String search,
+			com.liferay.portal.kernel.search.filter.Filter filter,
+			Pagination pagination,
+			com.liferay.portal.kernel.search.Sort[] sorts)
 		throws Exception;
 
 	public TaxCategory getTaxCategory(Long id) throws Exception;
 
 	public TaxCategory getTaxCategoryByExternalReferenceCode(
 			String externalReferenceCode)
+		throws Exception;
+
+	public Page<com.liferay.portal.vulcan.permission.Permission>
+			getTaxCategoryPermissionsPage(Long taxCategoryId, String roleNames)
 		throws Exception;
 
 	public TaxCategory patchTaxCategory(Long id, TaxCategory taxCategory)
@@ -64,14 +71,22 @@ public interface TaxCategoryResource {
 		throws Exception;
 
 	public Response postTaxCategoriesPageExportBatch(
-			String search, String callbackURL, String contentType,
-			String fieldNames)
+			String search,
+			com.liferay.portal.kernel.search.filter.Filter filter,
+			com.liferay.portal.kernel.search.Sort[] sorts, String callbackURL,
+			String contentType, String fieldNames)
 		throws Exception;
 
 	public TaxCategory postTaxCategory(TaxCategory taxCategory)
 		throws Exception;
 
 	public Response postTaxCategoryBatch(String callbackURL, Object object)
+		throws Exception;
+
+	public Page<com.liferay.portal.vulcan.permission.Permission>
+			putTaxCategoryPermissionsPage(
+				Long taxCategoryId,
+				com.liferay.portal.vulcan.permission.Permission[] permissions)
 		throws Exception;
 
 	public default void setContextAcceptLanguage(
@@ -170,4 +185,4 @@ public interface TaxCategoryResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1305373240
+// LIFERAY-REST-BUILDER-HASH:1919866286

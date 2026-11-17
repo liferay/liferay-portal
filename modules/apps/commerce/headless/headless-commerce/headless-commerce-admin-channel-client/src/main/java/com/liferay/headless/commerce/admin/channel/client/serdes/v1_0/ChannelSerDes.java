@@ -10,6 +10,9 @@ import com.liferay.headless.commerce.admin.channel.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
@@ -45,6 +48,9 @@ public class ChannelSerDes {
 
 		sb.append("{");
 
+		DateFormat liferayToJSONDateFormat = new SimpleDateFormat(
+			"yyyy-MM-dd'T'HH:mm:ssXX");
+
 		if (channel.getAccountExternalReferenceCode() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -67,6 +73,16 @@ public class ChannelSerDes {
 			sb.append("\"accountId\": ");
 
 			sb.append(channel.getAccountId());
+		}
+
+		if (channel.getCreator() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"creator\": ");
+
+			sb.append(String.valueOf(channel.getCreator()));
 		}
 
 		if (channel.getCurrencyCode() != null) {
@@ -107,6 +123,35 @@ public class ChannelSerDes {
 			sb.append(channel.getCurrencyId());
 		}
 
+		if (channel.getDateCreated() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"dateCreated\": ");
+
+			sb.append("\"");
+
+			sb.append(liferayToJSONDateFormat.format(channel.getDateCreated()));
+
+			sb.append("\"");
+		}
+
+		if (channel.getDateModified() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"dateModified\": ");
+
+			sb.append("\"");
+
+			sb.append(
+				liferayToJSONDateFormat.format(channel.getDateModified()));
+
+			sb.append("\"");
+		}
+
 		if (channel.getExternalReferenceCode() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -143,6 +188,26 @@ public class ChannelSerDes {
 			sb.append(_escape(channel.getName()));
 
 			sb.append("\"");
+		}
+
+		if (channel.getPermissions() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"permissions\": ");
+
+			sb.append("[");
+
+			for (int i = 0; i < channel.getPermissions().length; i++) {
+				sb.append(channel.getPermissions()[i]);
+
+				if ((i + 1) < channel.getPermissions().length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
 		}
 
 		if (channel.getSiteGroupId() != null) {
@@ -187,6 +252,9 @@ public class ChannelSerDes {
 
 		Map<String, String> map = new TreeMap<>();
 
+		DateFormat liferayToJSONDateFormat = new SimpleDateFormat(
+			"yyyy-MM-dd'T'HH:mm:ssXX");
+
 		if (channel.getAccountExternalReferenceCode() == null) {
 			map.put("accountExternalReferenceCode", null);
 		}
@@ -201,6 +269,13 @@ public class ChannelSerDes {
 		}
 		else {
 			map.put("accountId", String.valueOf(channel.getAccountId()));
+		}
+
+		if (channel.getCreator() == null) {
+			map.put("creator", null);
+		}
+		else {
+			map.put("creator", String.valueOf(channel.getCreator()));
 		}
 
 		if (channel.getCurrencyCode() == null) {
@@ -226,6 +301,24 @@ public class ChannelSerDes {
 			map.put("currencyId", String.valueOf(channel.getCurrencyId()));
 		}
 
+		if (channel.getDateCreated() == null) {
+			map.put("dateCreated", null);
+		}
+		else {
+			map.put(
+				"dateCreated",
+				liferayToJSONDateFormat.format(channel.getDateCreated()));
+		}
+
+		if (channel.getDateModified() == null) {
+			map.put("dateModified", null);
+		}
+		else {
+			map.put(
+				"dateModified",
+				liferayToJSONDateFormat.format(channel.getDateModified()));
+		}
+
 		if (channel.getExternalReferenceCode() == null) {
 			map.put("externalReferenceCode", null);
 		}
@@ -247,6 +340,13 @@ public class ChannelSerDes {
 		}
 		else {
 			map.put("name", String.valueOf(channel.getName()));
+		}
+
+		if (channel.getPermissions() == null) {
+			map.put("permissions", null);
+		}
+		else {
+			map.put("permissions", String.valueOf(channel.getPermissions()));
 		}
 
 		if (channel.getSiteGroupId() == null) {
@@ -288,6 +388,9 @@ public class ChannelSerDes {
 			else if (Objects.equals(jsonParserFieldName, "accountId")) {
 				return false;
 			}
+			else if (Objects.equals(jsonParserFieldName, "creator")) {
+				return false;
+			}
 			else if (Objects.equals(jsonParserFieldName, "currencyCode")) {
 				return false;
 			}
@@ -299,6 +402,12 @@ public class ChannelSerDes {
 			else if (Objects.equals(jsonParserFieldName, "currencyId")) {
 				return false;
 			}
+			else if (Objects.equals(jsonParserFieldName, "dateCreated")) {
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "dateModified")) {
+				return false;
+			}
 			else if (Objects.equals(
 						jsonParserFieldName, "externalReferenceCode")) {
 
@@ -308,6 +417,9 @@ public class ChannelSerDes {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "name")) {
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "permissions")) {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "siteGroupId")) {
@@ -339,6 +451,12 @@ public class ChannelSerDes {
 						Long.valueOf((String)jsonParserFieldValue));
 				}
 			}
+			else if (Objects.equals(jsonParserFieldName, "creator")) {
+				if (jsonParserFieldValue != null) {
+					channel.setCreator(
+						CreatorSerDes.toDTO((String)jsonParserFieldValue));
+				}
+			}
 			else if (Objects.equals(jsonParserFieldName, "currencyCode")) {
 				if (jsonParserFieldValue != null) {
 					channel.setCurrencyCode((String)jsonParserFieldValue);
@@ -358,6 +476,18 @@ public class ChannelSerDes {
 						Long.valueOf((String)jsonParserFieldValue));
 				}
 			}
+			else if (Objects.equals(jsonParserFieldName, "dateCreated")) {
+				if (jsonParserFieldValue != null) {
+					channel.setDateCreated(
+						toDate((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "dateModified")) {
+				if (jsonParserFieldValue != null) {
+					channel.setDateModified(
+						toDate((String)jsonParserFieldValue));
+				}
+			}
 			else if (Objects.equals(
 						jsonParserFieldName, "externalReferenceCode")) {
 
@@ -374,6 +504,26 @@ public class ChannelSerDes {
 			else if (Objects.equals(jsonParserFieldName, "name")) {
 				if (jsonParserFieldValue != null) {
 					channel.setName((String)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "permissions")) {
+				if (jsonParserFieldValue != null) {
+					Object[] jsonParserFieldValues =
+						(Object[])jsonParserFieldValue;
+
+					com.liferay.headless.commerce.admin.channel.client.
+						permission.Permission[] permissionsArray = new
+						com.liferay.headless.commerce.admin.channel.client.
+							permission.Permission[jsonParserFieldValues.length];
+
+					for (int i = 0; i < permissionsArray.length; i++) {
+						permissionsArray[i] =
+							com.liferay.headless.commerce.admin.channel.client.
+								permission.Permission.toDTO(
+									(String)jsonParserFieldValues[i]);
+					}
+
+					channel.setPermissions(permissionsArray);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "siteGroupId")) {
@@ -474,4 +624,4 @@ public class ChannelSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:714191293
+// LIFERAY-REST-BUILDER-HASH:-1293681184

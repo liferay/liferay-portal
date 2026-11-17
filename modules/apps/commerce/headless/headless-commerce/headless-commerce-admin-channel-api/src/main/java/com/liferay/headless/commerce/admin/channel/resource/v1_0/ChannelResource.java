@@ -64,6 +64,10 @@ public interface ChannelResource {
 			String externalReferenceCode)
 		throws Exception;
 
+	public Page<com.liferay.portal.vulcan.permission.Permission>
+			getChannelPermissionsPage(Long channelId, String roleNames)
+		throws Exception;
+
 	public Page<Channel> getChannelsPage(
 			String search,
 			com.liferay.portal.kernel.search.filter.Filter filter,
@@ -97,6 +101,12 @@ public interface ChannelResource {
 
 	public Channel putChannelByExternalReferenceCode(
 			String externalReferenceCode, Channel channel)
+		throws Exception;
+
+	public Page<com.liferay.portal.vulcan.permission.Permission>
+			putChannelPermissionsPage(
+				Long channelId,
+				com.liferay.portal.vulcan.permission.Permission[] permissions)
 		throws Exception;
 
 	public default void setContextAcceptLanguage(
@@ -195,4 +205,4 @@ public interface ChannelResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-345350000
+// LIFERAY-REST-BUILDER-HASH:94243078

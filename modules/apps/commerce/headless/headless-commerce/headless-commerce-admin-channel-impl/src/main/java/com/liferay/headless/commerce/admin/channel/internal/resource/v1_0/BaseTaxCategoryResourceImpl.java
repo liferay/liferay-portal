@@ -14,11 +14,22 @@ import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.exception.NoSuchModelException;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Resource;
+import com.liferay.portal.kernel.model.ResourceAction;
+import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.ResourcePermission;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.PermissionServiceUtil;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
+import com.liferay.portal.kernel.service.ResourceLocalServiceUtil;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
+import com.liferay.portal.kernel.service.permission.ModelPermissions;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.GroupThreadLocal;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -35,8 +46,11 @@ import com.liferay.portal.vulcan.batch.engine.VulcanBatchEngineTaskItemDelegate;
 import com.liferay.portal.vulcan.batch.engine.resource.VulcanBatchEngineExportTaskResource;
 import com.liferay.portal.vulcan.batch.engine.resource.VulcanBatchEngineImportTaskResource;
 import com.liferay.portal.vulcan.crud.VulcanCRUDItemDelegate;
+import com.liferay.portal.vulcan.fields.NestedFieldsSupplier;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
+import com.liferay.portal.vulcan.permission.ModelPermissionsUtil;
+import com.liferay.portal.vulcan.permission.Permission;
 import com.liferay.portal.vulcan.resource.EntityModelResource;
 import com.liferay.portal.vulcan.util.ActionUtil;
 import com.liferay.portal.vulcan.util.UriInfoUtil;
@@ -56,6 +70,8 @@ import java.io.Serializable;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -72,16 +88,28 @@ public abstract class BaseTaxCategoryResourceImpl
 			   VulcanBatchEngineTaskItemDelegate<TaxCategory>,
 			   VulcanCRUDItemDelegate<TaxCategory> {
 
+	protected abstract Page<TaxCategory> doGetTaxCategoriesPage(
+			String search,
+			com.liferay.portal.kernel.search.filter.Filter filter,
+			Pagination pagination,
+			com.liferay.portal.kernel.search.Sort[] sorts)
+		throws Exception;
+
 	/**
 	 * Invoke this method with the command line:
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-channel/v1.0/tax-categories'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Lists every tax category visible to the caller. Calls CPTaxCategoryService.findCPTaxCategoriesByCompanyId + CPTaxCategoryService.countCPTaxCategoriesByCompanyId. Validation -- None (returns empty page when no matches). List query support — page and pageSize paginate the related entries."
+		description = "Lists every tax category visible to the caller. Calls SearchUtil.search (index CPTaxCategory). Validation -- None (returns empty page when no matches). List query support — filterable fields -- dateCreated, dateModified, externalReferenceCode; sortable fields -- dateCreated, dateModified, externalReferenceCode."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "OData v4 filter expression that narrows the result set. Supported fields depend on the endpoint and are sourced from the matching entity model; see the per-resource list operation description for specifics. For example, filter=externalReferenceCode eq 'AB-34098-789-N'.",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "filter"
+			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "1-based page number for paginated responses. Defaults to 1.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -96,6 +124,11 @@ public abstract class BaseTaxCategoryResourceImpl
 				description = "Free-text search applied to the resource's full-text indexed fields. Multiple terms are AND-combined.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "search"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Sort expression of the form `field:asc` or `field:desc`, comma-separated for multi-field sorting (for example, name:asc,createDate:desc). Supported sort fields depend on the endpoint and are sourced from the matching entity model; see the per-resource list operation description for specifics.",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "sort"
 			)
 		}
 	)
@@ -106,15 +139,41 @@ public abstract class BaseTaxCategoryResourceImpl
 	@jakarta.ws.rs.Path("/tax-categories")
 	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
-	public Page<TaxCategory> getTaxCategoriesPage(
+	public final Page<TaxCategory> getTaxCategoriesPage(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 			@jakarta.ws.rs.QueryParam("search")
 			String search,
-			@jakarta.ws.rs.core.Context Pagination pagination)
+			@jakarta.ws.rs.core.Context
+				com.liferay.portal.kernel.search.filter.Filter filter,
+			@jakarta.ws.rs.core.Context Pagination pagination,
+			@jakarta.ws.rs.core.Context com.liferay.portal.kernel.search.Sort[]
+				sorts)
 		throws Exception {
 
-		return Page.of(Collections.emptyList());
+		Page<TaxCategory> taxCategoriesPage = doGetTaxCategoriesPage(
+			search, filter, pagination, sorts);
+
+		for (TaxCategory taxCategory : taxCategoriesPage.getItems()) {
+			taxCategory.setPermissions(
+				() -> NestedFieldsSupplier.supply(
+					"permissions",
+					nestedField -> {
+						Page<Permission> permissionsPage =
+							getTaxCategoryPermissionsPage(
+								taxCategory.getId(), null);
+
+						Collection<Permission> permissions =
+							permissionsPage.getItems();
+
+						return permissions.toArray(
+							new Permission[permissions.size()]);
+					}));
+		}
+
+		return taxCategoriesPage;
 	}
+
+	protected abstract TaxCategory doGetTaxCategory(Long id) throws Exception;
 
 	/**
 	 * Invoke this method with the command line:
@@ -140,15 +199,36 @@ public abstract class BaseTaxCategoryResourceImpl
 	@jakarta.ws.rs.Path("/tax-categories/{id}")
 	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
-	public TaxCategory getTaxCategory(
+	public final TaxCategory getTaxCategory(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 			@jakarta.validation.constraints.NotNull
 			@jakarta.ws.rs.PathParam("id")
 			Long id)
 		throws Exception {
 
-		return new TaxCategory();
+		TaxCategory getTaxCategory = doGetTaxCategory(id);
+
+		getTaxCategory.setPermissions(
+			() -> NestedFieldsSupplier.supply(
+				"permissions",
+				nestedField -> {
+					Page<Permission> permissionsPage =
+						getTaxCategoryPermissionsPage(
+							getTaxCategory.getId(), null);
+
+					Collection<Permission> permissions =
+						permissionsPage.getItems();
+
+					return permissions.toArray(
+						new Permission[permissions.size()]);
+				}));
+
+		return getTaxCategory;
 	}
+
+	protected abstract TaxCategory doGetTaxCategoryByExternalReferenceCode(
+			String externalReferenceCode)
+		throws Exception;
 
 	/**
 	 * Invoke this method with the command line:
@@ -176,20 +256,108 @@ public abstract class BaseTaxCategoryResourceImpl
 	)
 	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
-	public TaxCategory getTaxCategoryByExternalReferenceCode(
+	public final TaxCategory getTaxCategoryByExternalReferenceCode(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 			@jakarta.validation.constraints.NotNull
 			@jakarta.ws.rs.PathParam("externalReferenceCode")
 			String externalReferenceCode)
 		throws Exception {
 
-		return new TaxCategory();
+		TaxCategory getTaxCategory = doGetTaxCategoryByExternalReferenceCode(
+			externalReferenceCode);
+
+		getTaxCategory.setPermissions(
+			() -> NestedFieldsSupplier.supply(
+				"permissions",
+				nestedField -> {
+					Page<Permission> permissionsPage =
+						getTaxCategoryPermissionsPage(
+							getTaxCategory.getId(), null);
+
+					Collection<Permission> permissions =
+						permissionsPage.getItems();
+
+					return permissions.toArray(
+						new Permission[permissions.size()]);
+				}));
+
+		return getTaxCategory;
 	}
 
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-channel/v1.0/tax-categories/{id}' -d $'{"description": ___, "externalReferenceCode": ___, "name": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-channel/v1.0/tax-categories/{taxCategoryId}/permissions'  -u 'test@liferay.com:test'
+	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Lists the role permissions granted on the tax category identified by ID. Requires the PERMISSIONS action on the tax category."
+	)
+	@io.swagger.v3.oas.annotations.Parameters(
+		value = {
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Identifier of a tax category. Addresses a single tax classification that products reference to drive tax calculation at checkout.",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
+				name = "taxCategoryId", required = true
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "fields"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "restrictFields"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "roleNames"
+			)
+		}
+	)
+	@io.swagger.v3.oas.annotations.tags.Tags(
+		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "TaxCategory")}
+	)
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path("/tax-categories/{taxCategoryId}/permissions")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
+	@Override
+	public Page<Permission> getTaxCategoryPermissionsPage(
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("taxCategoryId")
+			Long taxCategoryId,
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.ws.rs.QueryParam("roleNames")
+			String roleNames)
+		throws Exception {
+
+		Long groupId = getPermissionCheckerGroupId(taxCategoryId);
+		Long resourceId = getPermissionCheckerResourceId(taxCategoryId);
+		String resourceName = getPermissionCheckerResourceName(taxCategoryId);
+
+		PermissionServiceUtil.checkPermission(
+			groupId, resourceName, resourceId);
+
+		return toPermissionPage(
+			HashMapBuilder.put(
+				"get",
+				addAction(
+					ActionKeys.PERMISSIONS, resourceId,
+					"getTaxCategoryPermissionsPage", null, resourceName,
+					groupId)
+			).put(
+				"replace",
+				addAction(
+					ActionKeys.PERMISSIONS, resourceId,
+					"putTaxCategoryPermissionsPage", null, resourceName,
+					groupId)
+			).build(),
+			resourceId, resourceName, roleNames);
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-channel/v1.0/tax-categories/{id}' -d $'{"description": ___, "externalReferenceCode": ___, "name": ___, "permissions": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Partially updates the tax category addressed by its internal ID -- only the fields supplied in the body are replaced; omitted fields are left unchanged. Calls CPTaxCategoryService.getCPTaxCategory + CPTaxCategoryService.updateCPTaxCategory. Validation -- NoSuchCPTaxCategoryException -> 404 when tax category ID not found; CPTaxCategoryNameException -> 400 when the name is missing for the default locale."
@@ -225,7 +393,7 @@ public abstract class BaseTaxCategoryResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-channel/v1.0/tax-categories/by-externalReferenceCode/{externalReferenceCode}' -d $'{"description": ___, "externalReferenceCode": ___, "name": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-channel/v1.0/tax-categories/by-externalReferenceCode/{externalReferenceCode}' -d $'{"description": ___, "externalReferenceCode": ___, "name": ___, "permissions": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Partially updates the tax category addressed by its external reference code (ERC) -- only the fields supplied in the body are replaced; omitted fields are left unchanged. Calls CPTaxCategoryService.getCPTaxCategoryByExternalReferenceCode + CPTaxCategoryService.updateCPTaxCategory. Validation -- NoSuchCPTaxCategoryException -> 404 when tax category ERC not found; CPTaxCategoryNameException -> 400 when the name is missing for the default locale."
@@ -268,9 +436,19 @@ public abstract class BaseTaxCategoryResourceImpl
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "OData v4 filter expression that narrows the result set. Supported fields depend on the endpoint and are sourced from the matching entity model; see the per-resource list operation description for specifics. For example, filter=externalReferenceCode eq 'AB-34098-789-N'.",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "filter"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Free-text search applied to the resource's full-text indexed fields. Multiple terms are AND-combined.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "search"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Sort expression of the form `field:asc` or `field:desc`, comma-separated for multi-field sorting (for example, name:asc,createDate:desc). Supported sort fields depend on the endpoint and are sourced from the matching entity model; see the per-resource list operation description for specifics.",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "sort"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -298,6 +476,10 @@ public abstract class BaseTaxCategoryResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 			@jakarta.ws.rs.QueryParam("search")
 			String search,
+			@jakarta.ws.rs.core.Context
+				com.liferay.portal.kernel.search.filter.Filter filter,
+			@jakarta.ws.rs.core.Context com.liferay.portal.kernel.search.Sort[]
+				sorts,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 			@jakarta.ws.rs.QueryParam("callbackURL")
 			String callbackURL,
@@ -329,10 +511,13 @@ public abstract class BaseTaxCategoryResourceImpl
 		).build();
 	}
 
+	protected abstract TaxCategory doPostTaxCategory(TaxCategory taxCategory)
+		throws Exception;
+
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-channel/v1.0/tax-categories' -d $'{"description": ___, "externalReferenceCode": ___, "name": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-channel/v1.0/tax-categories' -d $'{"description": ___, "externalReferenceCode": ___, "name": ___, "permissions": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Creates or updates a tax category. Calls CPTaxCategoryService.fetchCPTaxCategoryByExternalReferenceCode + CPTaxCategoryService.addCPTaxCategory or CPTaxCategoryService.updateCPTaxCategory. POST is upsert by external reference code -- creates a new entity when the code is unknown, otherwise updates the existing one. Validation -- CPTaxCategoryNameException -> 400 when the name is missing for the default locale."
@@ -345,10 +530,30 @@ public abstract class BaseTaxCategoryResourceImpl
 	@jakarta.ws.rs.POST
 	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
-	public TaxCategory postTaxCategory(TaxCategory taxCategory)
+	public final TaxCategory postTaxCategory(TaxCategory taxCategory)
 		throws Exception {
 
-		return new TaxCategory();
+		Permission[] permissions = taxCategory.getPermissions();
+
+		TaxCategory postTaxCategory = doPostTaxCategory(taxCategory);
+
+		if (permissions != null) {
+			Page<Permission> permissionsPage = putTaxCategoryPermissionsPage(
+				postTaxCategory.getId(), permissions);
+
+			postTaxCategory.setPermissions(
+				() -> NestedFieldsSupplier.supply(
+					"permissions",
+					nestedField -> {
+						Collection<Permission> collection =
+							permissionsPage.getItems();
+
+						return collection.toArray(
+							new Permission[collection.size()]);
+					}));
+		}
+
+		return postTaxCategory;
 	}
 
 	/**
@@ -393,6 +598,100 @@ public abstract class BaseTaxCategoryResourceImpl
 			vulcanBatchEngineImportTaskResource.postImportTask(
 				TaxCategory.class.getName(), callbackURL, null, object)
 		).build();
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -X 'PUT' 'http://localhost:8080/o/headless-commerce-admin-channel/v1.0/tax-categories/{taxCategoryId}/permissions'  -u 'test@liferay.com:test'
+	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Replaces the role permissions granted on the tax category identified by ID. Roles missing from the request lose their individual permissions. Requires the PERMISSIONS action on the tax category."
+	)
+	@io.swagger.v3.oas.annotations.Parameters(
+		value = {
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Identifier of a tax category. Addresses a single tax classification that products reference to drive tax calculation at checkout.",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
+				name = "taxCategoryId", required = true
+			)
+		}
+	)
+	@io.swagger.v3.oas.annotations.tags.Tags(
+		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "TaxCategory")}
+	)
+	@jakarta.ws.rs.Consumes({"application/json", "application/xml"})
+	@jakarta.ws.rs.Path("/tax-categories/{taxCategoryId}/permissions")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.PUT
+	@Override
+	public Page<Permission> putTaxCategoryPermissionsPage(
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("taxCategoryId")
+			Long taxCategoryId,
+			Permission[] permissions)
+		throws Exception {
+
+		Long groupId = getPermissionCheckerGroupId(taxCategoryId);
+		Long resourceId = getPermissionCheckerResourceId(taxCategoryId);
+		String resourceName = getPermissionCheckerResourceName(taxCategoryId);
+
+		PermissionServiceUtil.checkPermission(
+			groupId, resourceName, resourceId);
+
+		ModelPermissions modelPermissions =
+			ModelPermissionsUtil.toModelPermissions(
+				contextCompany.getCompanyId(), permissions, resourceId,
+				resourceName, resourceActionLocalService,
+				resourcePermissionLocalService, roleLocalService);
+
+		Collection<String> roleNames = modelPermissions.getRoleNames();
+
+		for (ResourcePermission resourcePermission :
+				resourcePermissionLocalService.getResourcePermissions(
+					contextCompany.getCompanyId(), resourceName,
+					ResourceConstants.SCOPE_INDIVIDUAL,
+					String.valueOf(resourceId))) {
+
+			com.liferay.portal.kernel.model.Role role =
+				roleLocalService.fetchRole(resourcePermission.getRoleId());
+
+			if ((role == null) || roleNames.contains(role.getName())) {
+				continue;
+			}
+
+			for (ResourceAction resourceAction :
+					resourceActionLocalService.getResourceActions(
+						resourceName)) {
+
+				resourcePermissionLocalService.removeResourcePermission(
+					contextCompany.getCompanyId(), resourceName,
+					ResourceConstants.SCOPE_INDIVIDUAL,
+					String.valueOf(resourceId), role.getRoleId(),
+					resourceAction.getActionId());
+			}
+		}
+
+		resourcePermissionLocalService.updateResourcePermissions(
+			contextCompany.getCompanyId(), groupId, resourceName,
+			String.valueOf(resourceId), modelPermissions);
+
+		return toPermissionPage(
+			HashMapBuilder.put(
+				"get",
+				addAction(
+					ActionKeys.PERMISSIONS, resourceId,
+					"getTaxCategoryPermissionsPage", null, resourceName,
+					groupId)
+			).put(
+				"replace",
+				addAction(
+					ActionKeys.PERMISSIONS, resourceId,
+					"putTaxCategoryPermissionsPage", null, resourceName,
+					groupId)
+			).build(),
+			resourceId, resourceName, null);
 	}
 
 	@Override
@@ -501,7 +800,7 @@ public abstract class BaseTaxCategoryResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		return getTaxCategoriesPage(search, pagination);
+		return getTaxCategoriesPage(search, filter, pagination, sorts);
 	}
 
 	@Override
@@ -583,6 +882,175 @@ public abstract class BaseTaxCategoryResourceImpl
 	@Override
 	public TaxCategory getItem(Long id) throws Exception {
 		return getTaxCategory(id);
+	}
+
+	protected String getPermissionCheckerActionsResourceName(Object id)
+		throws Exception {
+
+		return getPermissionCheckerResourceName(id);
+	}
+
+	protected Long getPermissionCheckerGroupId(Object id) throws Exception {
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected String getPermissionCheckerPortletName(Object id)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected Long getPermissionCheckerResourceId(Object id) throws Exception {
+		return GetterUtil.getLong(id);
+	}
+
+	protected String getPermissionCheckerResourceName(Object id)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected Page<Permission> toPermissionPage(
+			Map<String, Map<String, String>> actions, long id,
+			String resourceName, String roleNames)
+		throws Exception {
+
+		List<ResourceAction> resourceActions =
+			resourceActionLocalService.getResourceActions(resourceName);
+
+		if (Validator.isNotNull(roleNames)) {
+			return Page.of(
+				actions,
+				_getPermissions(
+					contextCompany.getCompanyId(), resourceActions, id,
+					resourceName, StringUtil.split(roleNames)));
+		}
+
+		return Page.of(
+			actions,
+			_getPermissions(
+				contextCompany.getCompanyId(), resourceActions, id,
+				resourceName, null));
+	}
+
+	/**
+	 * @see com.liferay.portal.vulcan.permission.PermissionUtil#getPermissions(long, List, long, String, String[])
+	 */
+	private Collection<Permission> _getPermissions(
+			long companyId, List<ResourceAction> resourceActions,
+			long resourceId, String resourceName, String[] roleNames)
+		throws Exception {
+
+		Map<String, Permission> permissions = new HashMap<>();
+
+		int count = resourcePermissionLocalService.getResourcePermissionsCount(
+			companyId, resourceName, ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(resourceId));
+
+		if (count == 0) {
+			ResourceLocalServiceUtil.addResources(
+				companyId, resourceId, 0, resourceName,
+				String.valueOf(resourceId), false, true, true);
+		}
+
+		List<String> actionIds = transform(
+			resourceActions, resourceAction -> resourceAction.getActionId());
+
+		Set<ResourcePermission> resourcePermissions = new HashSet<>();
+
+		resourcePermissions.addAll(
+			resourcePermissionLocalService.getResourcePermissions(
+				companyId, resourceName, ResourceConstants.SCOPE_COMPANY,
+				String.valueOf(companyId)));
+		resourcePermissions.addAll(
+			resourcePermissionLocalService.getResourcePermissions(
+				companyId, resourceName, ResourceConstants.SCOPE_GROUP,
+				String.valueOf(GroupThreadLocal.getGroupId())));
+		resourcePermissions.addAll(
+			resourcePermissionLocalService.getResourcePermissions(
+				companyId, resourceName, ResourceConstants.SCOPE_GROUP_TEMPLATE,
+				"0"));
+		resourcePermissions.addAll(
+			resourcePermissionLocalService.getResourcePermissions(
+				companyId, resourceName, ResourceConstants.SCOPE_INDIVIDUAL,
+				String.valueOf(resourceId)));
+
+		List<Resource> resources = transform(
+			resourcePermissions,
+			resourcePermission -> ResourceLocalServiceUtil.getResource(
+				resourcePermission.getCompanyId(), resourcePermission.getName(),
+				resourcePermission.getScope(),
+				resourcePermission.getPrimKey()));
+
+		Set<com.liferay.portal.kernel.model.Role> roles = new HashSet<>();
+
+		if (roleNames != null) {
+			for (String roleName : roleNames) {
+				roles.add(roleLocalService.getRole(companyId, roleName));
+			}
+		}
+		else {
+			for (ResourcePermission resourcePermission : resourcePermissions) {
+				com.liferay.portal.kernel.model.Role role =
+					roleLocalService.getRole(resourcePermission.getRoleId());
+
+				roles.add(role);
+			}
+		}
+
+		for (com.liferay.portal.kernel.model.Role role : roles) {
+			Set<String> actionsIdsSet = new HashSet<>();
+
+			for (Resource resource : resources) {
+				actionsIdsSet.addAll(
+					resourcePermissionLocalService.
+						getAvailableResourcePermissionActionIds(
+							resource.getCompanyId(), resource.getName(),
+							ResourceConstants.SCOPE_COMPANY,
+							String.valueOf(resource.getCompanyId()),
+							role.getRoleId(), actionIds));
+				actionsIdsSet.addAll(
+					resourcePermissionLocalService.
+						getAvailableResourcePermissionActionIds(
+							resource.getCompanyId(), resource.getName(),
+							ResourceConstants.SCOPE_GROUP,
+							String.valueOf(GroupThreadLocal.getGroupId()),
+							role.getRoleId(), actionIds));
+				actionsIdsSet.addAll(
+					resourcePermissionLocalService.
+						getAvailableResourcePermissionActionIds(
+							resource.getCompanyId(), resource.getName(),
+							ResourceConstants.SCOPE_GROUP_TEMPLATE, "0",
+							role.getRoleId(), actionIds));
+				actionsIdsSet.addAll(
+					resourcePermissionLocalService.
+						getAvailableResourcePermissionActionIds(
+							resource.getCompanyId(), resource.getName(),
+							resource.getScope(), resource.getPrimKey(),
+							role.getRoleId(), actionIds));
+			}
+
+			if (actionsIdsSet.isEmpty()) {
+				continue;
+			}
+
+			Permission permission = new Permission() {
+				{
+					actionIds = actionsIdsSet.toArray(new String[0]);
+
+					roleExternalReferenceCode = role.getExternalReferenceCode();
+
+					roleName = role.getName();
+				}
+			};
+
+			permissions.put(role.getName(), permission);
+		}
+
+		return permissions.values();
 	}
 
 	public void setContextAcceptLanguage(AcceptLanguage contextAcceptLanguage) {
@@ -1139,4 +1607,4 @@ public abstract class BaseTaxCategoryResourceImpl
 		LogFactoryUtil.getLog(BaseTaxCategoryResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1871491786
+// LIFERAY-REST-BUILDER-HASH:-161915043

@@ -258,6 +258,11 @@ public class ServletDataImpl implements ServletData {
 							ChannelResourceImpl.class,
 							"putChannelByExternalReferenceCode"));
 					put(
+						"mutation#updateChannelPermissionsPage",
+						new ObjectValuePair<>(
+							ChannelResourceImpl.class,
+							"putChannelPermissionsPage"));
+					put(
 						"mutation#deleteChannelAccount",
 						new ObjectValuePair<>(
 							ChannelAccountResourceImpl.class,
@@ -430,6 +435,11 @@ public class ServletDataImpl implements ServletData {
 						new ObjectValuePair<>(
 							TaxCategoryResourceImpl.class,
 							"postTaxCategoryBatch"));
+					put(
+						"mutation#updateTaxCategoryPermissionsPage",
+						new ObjectValuePair<>(
+							TaxCategoryResourceImpl.class,
+							"putTaxCategoryPermissionsPage"));
 
 					put(
 						"query#channelAccountAccount",
@@ -475,6 +485,11 @@ public class ServletDataImpl implements ServletData {
 						new ObjectValuePair<>(
 							ChannelResourceImpl.class,
 							"getChannelByExternalReferenceCode"));
+					put(
+						"query#channelPermissions",
+						new ObjectValuePair<>(
+							ChannelResourceImpl.class,
+							"getChannelPermissionsPage"));
 					put(
 						"query#channels",
 						new ObjectValuePair<>(
@@ -583,6 +598,11 @@ public class ServletDataImpl implements ServletData {
 						new ObjectValuePair<>(
 							TaxCategoryResourceImpl.class,
 							"getTaxCategoryByExternalReferenceCode"));
+					put(
+						"query#taxCategoryPermissions",
+						new ObjectValuePair<>(
+							TaxCategoryResourceImpl.class,
+							"getTaxCategoryPermissionsPage"));
 					put(
 						"query#paymentMethodGroupRelTermTerm",
 						new ObjectValuePair<>(
@@ -725,4 +745,4 @@ public class ServletDataImpl implements ServletData {
 		_termResourceComponentServiceObjects;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1406460515
+// LIFERAY-REST-BUILDER-HASH:-85728089

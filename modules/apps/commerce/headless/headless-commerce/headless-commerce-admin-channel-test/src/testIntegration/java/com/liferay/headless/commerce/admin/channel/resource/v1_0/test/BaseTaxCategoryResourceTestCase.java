@@ -17,9 +17,11 @@ import com.liferay.headless.commerce.admin.channel.client.dto.v1_0.TaxCategory;
 import com.liferay.headless.commerce.admin.channel.client.http.HttpInvoker;
 import com.liferay.headless.commerce.admin.channel.client.pagination.Page;
 import com.liferay.headless.commerce.admin.channel.client.pagination.Pagination;
+import com.liferay.headless.commerce.admin.channel.client.permission.Permission;
 import com.liferay.headless.commerce.admin.channel.client.resource.v1_0.TaxCategoryResource;
 import com.liferay.headless.commerce.admin.channel.client.serdes.v1_0.TaxCategorySerDes;
 import com.liferay.oauth2.provider.scope.ScopeChecker;
+import com.liferay.petra.function.UnsafeTriConsumer;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
@@ -28,6 +30,7 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.RoleConstants;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
@@ -38,6 +41,7 @@ import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.JAXRSWhiteboardTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.DateUtil;
@@ -47,8 +51,10 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.odata.entity.EntityField;
 import com.liferay.portal.odata.entity.EntityModel;
+import com.liferay.portal.search.test.rule.SearchTestRule;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -142,6 +148,19 @@ public abstract class BaseTaxCategoryResourceTestCase {
 		).locale(
 			LocaleUtil.getDefault()
 		).build();
+
+		permissionsTaxCategoryResource = TaxCategoryResource.builder(
+		).authentication(
+			_testCompanyAdminUser.getEmailAddress(),
+			PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).parameter(
+			"nestedFields", "permissions"
+		).build();
 	}
 
 	@After
@@ -214,7 +233,7 @@ public abstract class BaseTaxCategoryResourceTestCase {
 	@Test
 	public void testGetTaxCategoriesPage() throws Exception {
 		Page<TaxCategory> page = taxCategoryResource.getTaxCategoriesPage(
-			null, Pagination.of(1, 10));
+			null, null, Pagination.of(1, 10), null);
 
 		long totalCount = page.getTotalCount();
 
@@ -225,13 +244,24 @@ public abstract class BaseTaxCategoryResourceTestCase {
 			randomTaxCategory());
 
 		page = taxCategoryResource.getTaxCategoriesPage(
-			null, Pagination.of(1, (int)totalCount + 2));
+			null, null, Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
 		assertContains(taxCategory1, (List<TaxCategory>)page.getItems());
 		assertContains(taxCategory2, (List<TaxCategory>)page.getItems());
 		assertValid(page, testGetTaxCategoriesPage_getExpectedActions());
+
+		for (TaxCategory taxCategory : page.getItems()) {
+			Assert.assertNull(taxCategory.getPermissions());
+		}
+
+		page = permissionsTaxCategoryResource.getTaxCategoriesPage(
+			null, null, Pagination.of(1, 10), null);
+
+		for (TaxCategory taxCategory : page.getItems()) {
+			Assert.assertNotNull(taxCategory.getPermissions());
+		}
 	}
 
 	protected Map<String, Map<String, String>>
@@ -244,9 +274,92 @@ public abstract class BaseTaxCategoryResourceTestCase {
 	}
 
 	@Test
+	public void testGetTaxCategoriesPageWithFilterDateTimeEquals()
+		throws Exception {
+
+		List<EntityField> entityFields = getEntityFields(
+			EntityField.Type.DATE_TIME);
+
+		if (entityFields.isEmpty()) {
+			return;
+		}
+
+		TaxCategory taxCategory1 = randomTaxCategory();
+
+		taxCategory1 = testGetTaxCategoriesPage_addTaxCategory(taxCategory1);
+
+		for (EntityField entityField : entityFields) {
+			Page<TaxCategory> page = taxCategoryResource.getTaxCategoriesPage(
+				null, getFilterString(entityField, "between", taxCategory1),
+				Pagination.of(1, 2), null);
+
+			assertEquals(
+				Collections.singletonList(taxCategory1),
+				(List<TaxCategory>)page.getItems());
+		}
+	}
+
+	@Test
+	public void testGetTaxCategoriesPageWithFilterDoubleEquals()
+		throws Exception {
+
+		testGetTaxCategoriesPageWithFilter("eq", EntityField.Type.DOUBLE);
+	}
+
+	@Test
+	public void testGetTaxCategoriesPageWithFilterStringContains()
+		throws Exception {
+
+		testGetTaxCategoriesPageWithFilter("contains", EntityField.Type.STRING);
+	}
+
+	@Test
+	public void testGetTaxCategoriesPageWithFilterStringEquals()
+		throws Exception {
+
+		testGetTaxCategoriesPageWithFilter("eq", EntityField.Type.STRING);
+	}
+
+	@Test
+	public void testGetTaxCategoriesPageWithFilterStringStartsWith()
+		throws Exception {
+
+		testGetTaxCategoriesPageWithFilter(
+			"startswith", EntityField.Type.STRING);
+	}
+
+	protected void testGetTaxCategoriesPageWithFilter(
+			String operator, EntityField.Type type)
+		throws Exception {
+
+		List<EntityField> entityFields = getEntityFields(type);
+
+		if (entityFields.isEmpty()) {
+			return;
+		}
+
+		TaxCategory taxCategory1 = testGetTaxCategoriesPage_addTaxCategory(
+			randomTaxCategory());
+
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		TaxCategory taxCategory2 = testGetTaxCategoriesPage_addTaxCategory(
+			randomTaxCategory());
+
+		for (EntityField entityField : entityFields) {
+			Page<TaxCategory> page = taxCategoryResource.getTaxCategoriesPage(
+				null, getFilterString(entityField, operator, taxCategory1),
+				Pagination.of(1, 2), null);
+
+			assertEquals(
+				Collections.singletonList(taxCategory1),
+				(List<TaxCategory>)page.getItems());
+		}
+	}
+
+	@Test
 	public void testGetTaxCategoriesPageWithPagination() throws Exception {
 		Page<TaxCategory> taxCategoriesPage =
-			taxCategoryResource.getTaxCategoriesPage(null, null);
+			taxCategoryResource.getTaxCategoriesPage(null, null, null, null);
 
 		int totalCount = GetterUtil.getInteger(
 			taxCategoriesPage.getTotalCount());
@@ -266,34 +379,37 @@ public abstract class BaseTaxCategoryResourceTestCase {
 
 		if (totalCount >= (pageSizeLimit - 2)) {
 			Page<TaxCategory> page1 = taxCategoryResource.getTaxCategoriesPage(
-				null,
+				null, null,
 				Pagination.of(
 					(int)Math.ceil((totalCount + 1.0) / pageSizeLimit),
-					pageSizeLimit));
+					pageSizeLimit),
+				null);
 
 			Assert.assertEquals(totalCount + 3, page1.getTotalCount());
 
 			assertContains(taxCategory1, (List<TaxCategory>)page1.getItems());
 
 			Page<TaxCategory> page2 = taxCategoryResource.getTaxCategoriesPage(
-				null,
+				null, null,
 				Pagination.of(
 					(int)Math.ceil((totalCount + 2.0) / pageSizeLimit),
-					pageSizeLimit));
+					pageSizeLimit),
+				null);
 
 			assertContains(taxCategory2, (List<TaxCategory>)page2.getItems());
 
 			Page<TaxCategory> page3 = taxCategoryResource.getTaxCategoriesPage(
-				null,
+				null, null,
 				Pagination.of(
 					(int)Math.ceil((totalCount + 3.0) / pageSizeLimit),
-					pageSizeLimit));
+					pageSizeLimit),
+				null);
 
 			assertContains(taxCategory3, (List<TaxCategory>)page3.getItems());
 		}
 		else {
 			Page<TaxCategory> page1 = taxCategoryResource.getTaxCategoriesPage(
-				null, Pagination.of(1, totalCount + 2));
+				null, null, Pagination.of(1, totalCount + 2), null);
 
 			List<TaxCategory> taxCategories1 =
 				(List<TaxCategory>)page1.getItems();
@@ -303,7 +419,7 @@ public abstract class BaseTaxCategoryResourceTestCase {
 				taxCategories1.size());
 
 			Page<TaxCategory> page2 = taxCategoryResource.getTaxCategoriesPage(
-				null, Pagination.of(2, totalCount + 2));
+				null, null, Pagination.of(2, totalCount + 2), null);
 
 			Assert.assertEquals(totalCount + 3, page2.getTotalCount());
 
@@ -314,11 +430,144 @@ public abstract class BaseTaxCategoryResourceTestCase {
 				taxCategories2.toString(), 1, taxCategories2.size());
 
 			Page<TaxCategory> page3 = taxCategoryResource.getTaxCategoriesPage(
-				null, Pagination.of(1, (int)totalCount + 3));
+				null, null, Pagination.of(1, (int)totalCount + 3), null);
 
 			assertContains(taxCategory1, (List<TaxCategory>)page3.getItems());
 			assertContains(taxCategory2, (List<TaxCategory>)page3.getItems());
 			assertContains(taxCategory3, (List<TaxCategory>)page3.getItems());
+		}
+	}
+
+	@Test
+	public void testGetTaxCategoriesPageWithSortDateTime() throws Exception {
+		testGetTaxCategoriesPageWithSort(
+			EntityField.Type.DATE_TIME,
+			(entityField, taxCategory1, taxCategory2) -> {
+				BeanTestUtil.setProperty(
+					taxCategory1, entityField.getName(),
+					new Date(System.currentTimeMillis() - (2 * Time.MINUTE)));
+			});
+	}
+
+	@Test
+	public void testGetTaxCategoriesPageWithSortDouble() throws Exception {
+		testGetTaxCategoriesPageWithSort(
+			EntityField.Type.DOUBLE,
+			(entityField, taxCategory1, taxCategory2) -> {
+				BeanTestUtil.setProperty(
+					taxCategory1, entityField.getName(), 0.1);
+				BeanTestUtil.setProperty(
+					taxCategory2, entityField.getName(), 0.5);
+			});
+	}
+
+	@Test
+	public void testGetTaxCategoriesPageWithSortInteger() throws Exception {
+		testGetTaxCategoriesPageWithSort(
+			EntityField.Type.INTEGER,
+			(entityField, taxCategory1, taxCategory2) -> {
+				BeanTestUtil.setProperty(
+					taxCategory1, entityField.getName(), 0);
+				BeanTestUtil.setProperty(
+					taxCategory2, entityField.getName(), 1);
+			});
+	}
+
+	@Test
+	public void testGetTaxCategoriesPageWithSortString() throws Exception {
+		testGetTaxCategoriesPageWithSort(
+			EntityField.Type.STRING,
+			(entityField, taxCategory1, taxCategory2) -> {
+				Class<?> clazz = taxCategory1.getClass();
+
+				String entityFieldName = entityField.getName();
+
+				Method method = clazz.getMethod(
+					"get" + StringUtil.upperCaseFirstLetter(entityFieldName));
+
+				Class<?> returnType = method.getReturnType();
+
+				if (returnType.isAssignableFrom(Map.class)) {
+					BeanTestUtil.setProperty(
+						taxCategory1, entityFieldName,
+						Collections.singletonMap("Aaa", "Aaa"));
+					BeanTestUtil.setProperty(
+						taxCategory2, entityFieldName,
+						Collections.singletonMap("Bbb", "Bbb"));
+				}
+				else if (entityFieldName.contains("email")) {
+					BeanTestUtil.setProperty(
+						taxCategory1, entityFieldName,
+						"aaa" +
+							StringUtil.toLowerCase(
+								RandomTestUtil.randomString()) +
+									"@liferay.com");
+					BeanTestUtil.setProperty(
+						taxCategory2, entityFieldName,
+						"bbb" +
+							StringUtil.toLowerCase(
+								RandomTestUtil.randomString()) +
+									"@liferay.com");
+				}
+				else {
+					BeanTestUtil.setProperty(
+						taxCategory1, entityFieldName,
+						"aaa" +
+							StringUtil.toLowerCase(
+								RandomTestUtil.randomString()));
+					BeanTestUtil.setProperty(
+						taxCategory2, entityFieldName,
+						"bbb" +
+							StringUtil.toLowerCase(
+								RandomTestUtil.randomString()));
+				}
+			});
+	}
+
+	protected void testGetTaxCategoriesPageWithSort(
+			EntityField.Type type,
+			UnsafeTriConsumer<EntityField, TaxCategory, TaxCategory, Exception>
+				unsafeTriConsumer)
+		throws Exception {
+
+		List<EntityField> entityFields = getEntityFields(type);
+
+		if (entityFields.isEmpty()) {
+			return;
+		}
+
+		TaxCategory taxCategory1 = randomTaxCategory();
+		TaxCategory taxCategory2 = randomTaxCategory();
+
+		for (EntityField entityField : entityFields) {
+			unsafeTriConsumer.accept(entityField, taxCategory1, taxCategory2);
+		}
+
+		taxCategory1 = testGetTaxCategoriesPage_addTaxCategory(taxCategory1);
+
+		taxCategory2 = testGetTaxCategoriesPage_addTaxCategory(taxCategory2);
+
+		Page<TaxCategory> page = taxCategoryResource.getTaxCategoriesPage(
+			null, null, null, null);
+
+		for (EntityField entityField : entityFields) {
+			Page<TaxCategory> ascPage =
+				taxCategoryResource.getTaxCategoriesPage(
+					null, null, Pagination.of(1, (int)page.getTotalCount() + 1),
+					entityField.getName() + ":asc");
+
+			assertContains(taxCategory1, (List<TaxCategory>)ascPage.getItems());
+			assertContains(taxCategory2, (List<TaxCategory>)ascPage.getItems());
+
+			Page<TaxCategory> descPage =
+				taxCategoryResource.getTaxCategoriesPage(
+					null, null, Pagination.of(1, (int)page.getTotalCount() + 1),
+					entityField.getName() + ":desc");
+
+			assertContains(
+				taxCategory2, (List<TaxCategory>)descPage.getItems());
+			assertContains(
+				taxCategory1, (List<TaxCategory>)descPage.getItems());
 		}
 	}
 
@@ -417,6 +666,13 @@ public abstract class BaseTaxCategoryResourceTestCase {
 
 		assertEquals(postTaxCategory, getTaxCategory);
 		assertValid(getTaxCategory);
+
+		Assert.assertNull(getTaxCategory.getPermissions());
+
+		getTaxCategory = permissionsTaxCategoryResource.getTaxCategory(
+			postTaxCategory.getId());
+
+		Assert.assertNotNull(getTaxCategory.getPermissions());
 	}
 
 	@Test
@@ -722,6 +978,15 @@ public abstract class BaseTaxCategoryResourceTestCase {
 
 		assertEquals(postTaxCategory, getTaxCategory);
 		assertValid(getTaxCategory);
+
+		Assert.assertNull(getTaxCategory.getPermissions());
+
+		getTaxCategory =
+			permissionsTaxCategoryResource.
+				getTaxCategoryByExternalReferenceCode(
+					postTaxCategory.getExternalReferenceCode());
+
+		Assert.assertNotNull(getTaxCategory.getPermissions());
 	}
 
 	protected TaxCategory
@@ -847,6 +1112,56 @@ public abstract class BaseTaxCategoryResourceTestCase {
 	}
 
 	@Test
+	public void testGetTaxCategoryPermissionsPage() throws Exception {
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		TaxCategory postTaxCategory =
+			testGetTaxCategoryPermissionsPage_addTaxCategory();
+
+		Page<Permission> page =
+			taxCategoryResource.getTaxCategoryPermissionsPage(
+				postTaxCategory.getId(), RoleConstants.GUEST);
+
+		Assert.assertNotNull(page);
+	}
+
+	protected TaxCategory testGetTaxCategoryPermissionsPage_addTaxCategory()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testGraphQLGetTaxCategoryPermissionsPage() throws Exception {
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		TaxCategory postTaxCategory =
+			testGraphQLGetTaxCategoryPermissionsPage_addTaxCategory();
+
+		GraphQLField graphQLField = new GraphQLField(
+			"taxCategoryPermissions",
+			new HashMap<String, Object>() {
+				{
+					put("taxCategoryId", postTaxCategory.getId());
+				}
+			},
+			new GraphQLField("page"), new GraphQLField("totalCount"));
+
+		JSONObject taxCategoryPermissionsJSONObject =
+			JSONUtil.getValueAsJSONObject(
+				invokeGraphQLQuery(graphQLField), "JSONObject/data",
+				"JSONObject/taxCategoryPermissions");
+
+		Assert.assertNotNull(taxCategoryPermissionsJSONObject);
+	}
+
+	protected TaxCategory
+			testGraphQLGetTaxCategoryPermissionsPage_addTaxCategory()
+		throws Exception {
+
+		return testGraphQLTaxCategory_addTaxCategory();
+	}
+
+	@Test
 	public void testPatchTaxCategory() throws Exception {
 		TaxCategory postTaxCategory = testPatchTaxCategory_addTaxCategory();
 
@@ -918,9 +1233,34 @@ public abstract class BaseTaxCategoryResourceTestCase {
 
 		assertEquals(randomTaxCategory, postTaxCategory);
 		assertValid(postTaxCategory);
+
+		TaxCategory randomPermissionsTaxCategory1 =
+			randomPermissionsTaxCategory();
+
+		TaxCategory postPermissionsTaxCategory1 =
+			testPostTaxCategory_addTaxCategory(randomPermissionsTaxCategory1);
+
+		Assert.assertNull(postPermissionsTaxCategory1.getPermissions());
+
+		TaxCategory randomPermissionsTaxCategory2 =
+			randomPermissionsTaxCategory();
+
+		TaxCategory postPermissionsTaxCategory2 =
+			testPostTaxCategory_addPermissionsTaxCategory(
+				randomPermissionsTaxCategory2);
+
+		Assert.assertNotNull(postPermissionsTaxCategory2.getPermissions());
 	}
 
 	protected TaxCategory testPostTaxCategory_addTaxCategory(
+			TaxCategory taxCategory)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected TaxCategory testPostTaxCategory_addPermissionsTaxCategory(
 			TaxCategory taxCategory)
 		throws Exception {
 
@@ -939,9 +1279,56 @@ public abstract class BaseTaxCategoryResourceTestCase {
 	}
 
 	@Test
+	public void testPutTaxCategoryPermissionsPage() throws Exception {
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		TaxCategory taxCategory =
+			testPutTaxCategoryPermissionsPage_addTaxCategory();
+
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		com.liferay.portal.kernel.model.Role role = RoleTestUtil.addRole(
+			RoleConstants.TYPE_REGULAR);
+
+		assertHttpResponseStatusCode(
+			200,
+			taxCategoryResource.putTaxCategoryPermissionsPageHttpResponse(
+				taxCategory.getId(),
+				new Permission[] {
+					new Permission() {
+						{
+							setActionIds(new String[] {"VIEW"});
+							setRoleName(role.getName());
+						}
+					}
+				}));
+
+		assertHttpResponseStatusCode(
+			404,
+			taxCategoryResource.putTaxCategoryPermissionsPageHttpResponse(
+				0L,
+				new Permission[] {
+					new Permission() {
+						{
+							setActionIds(new String[] {"-"});
+							setRoleName("-");
+						}
+					}
+				}));
+	}
+
+	protected TaxCategory testPutTaxCategoryPermissionsPage_addTaxCategory()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
 	public void testBatchEngineDeleteImportTask() throws Exception {
 		Assert.assertTrue(true);
 	}
+
+	@Rule
+	public SearchTestRule searchTestRule = new SearchTestRule();
 
 	protected TaxCategory testGraphQLTaxCategory_addTaxCategory()
 		throws Exception {
@@ -1136,12 +1523,28 @@ public abstract class BaseTaxCategoryResourceTestCase {
 	protected void assertValid(TaxCategory taxCategory) throws Exception {
 		boolean valid = true;
 
+		if (taxCategory.getDateCreated() == null) {
+			valid = false;
+		}
+
+		if (taxCategory.getDateModified() == null) {
+			valid = false;
+		}
+
 		if (taxCategory.getId() == null) {
 			valid = false;
 		}
 
 		for (String additionalAssertFieldName :
 				getAdditionalAssertFieldNames()) {
+
+			if (Objects.equals("creator", additionalAssertFieldName)) {
+				if (taxCategory.getCreator() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
 
 			if (Objects.equals("description", additionalAssertFieldName)) {
 				if (taxCategory.getDescription() == null) {
@@ -1171,6 +1574,14 @@ public abstract class BaseTaxCategoryResourceTestCase {
 
 			if (Objects.equals("name", additionalAssertFieldName)) {
 				if (taxCategory.getName() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("permissions", additionalAssertFieldName)) {
+				if (taxCategory.getPermissions() == null) {
 					valid = false;
 				}
 
@@ -1300,6 +1711,38 @@ public abstract class BaseTaxCategoryResourceTestCase {
 		for (String additionalAssertFieldName :
 				getAdditionalAssertFieldNames()) {
 
+			if (Objects.equals("creator", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						taxCategory1.getCreator(), taxCategory2.getCreator())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("dateCreated", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						taxCategory1.getDateCreated(),
+						taxCategory2.getDateCreated())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("dateModified", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						taxCategory1.getDateModified(),
+						taxCategory2.getDateModified())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("description", additionalAssertFieldName)) {
 				if (!equals(
 						(Map)taxCategory1.getDescription(),
@@ -1348,6 +1791,17 @@ public abstract class BaseTaxCategoryResourceTestCase {
 				if (!equals(
 						(Map)taxCategory1.getName(),
 						(Map)taxCategory2.getName())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("permissions", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						taxCategory1.getPermissions(),
+						taxCategory2.getPermissions())) {
 
 					return false;
 				}
@@ -1462,6 +1916,69 @@ public abstract class BaseTaxCategoryResourceTestCase {
 		sb.append(operator);
 		sb.append(" ");
 
+		if (entityFieldName.equals("creator")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
+		if (entityFieldName.equals("dateCreated")) {
+			if (operator.equals("between")) {
+				Date date = taxCategory.getDateCreated();
+
+				sb = new StringBundler();
+
+				sb.append("(");
+				sb.append(entityFieldName);
+				sb.append(" gt ");
+				sb.append(_format.format(date.getTime() - (2 * Time.SECOND)));
+				sb.append(" and ");
+				sb.append(entityFieldName);
+				sb.append(" lt ");
+				sb.append(_format.format(date.getTime() + (2 * Time.SECOND)));
+				sb.append(")");
+			}
+			else {
+				sb.append(entityFieldName);
+
+				sb.append(" ");
+				sb.append(operator);
+				sb.append(" ");
+
+				sb.append(_format.format(taxCategory.getDateCreated()));
+			}
+
+			return sb.toString();
+		}
+
+		if (entityFieldName.equals("dateModified")) {
+			if (operator.equals("between")) {
+				Date date = taxCategory.getDateModified();
+
+				sb = new StringBundler();
+
+				sb.append("(");
+				sb.append(entityFieldName);
+				sb.append(" gt ");
+				sb.append(_format.format(date.getTime() - (2 * Time.SECOND)));
+				sb.append(" and ");
+				sb.append(entityFieldName);
+				sb.append(" lt ");
+				sb.append(_format.format(date.getTime() + (2 * Time.SECOND)));
+				sb.append(")");
+			}
+			else {
+				sb.append(entityFieldName);
+
+				sb.append(" ");
+				sb.append(operator);
+				sb.append(" ");
+
+				sb.append(_format.format(taxCategory.getDateModified()));
+			}
+
+			return sb.toString();
+		}
+
 		if (entityFieldName.equals("description")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
@@ -1528,6 +2045,11 @@ public abstract class BaseTaxCategoryResourceTestCase {
 				"Invalid entity field " + entityFieldName);
 		}
 
+		if (entityFieldName.equals("permissions")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
 		throw new IllegalArgumentException(
 			"Invalid entity field " + entityFieldName);
 	}
@@ -1575,6 +2097,8 @@ public abstract class BaseTaxCategoryResourceTestCase {
 	protected TaxCategory randomTaxCategory() throws Exception {
 		return new TaxCategory() {
 			{
+				dateCreated = RandomTestUtil.nextDate();
+				dateModified = RandomTestUtil.nextDate();
 				externalReferenceCode = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 				groupId = RandomTestUtil.randomLong();
@@ -1593,8 +2117,28 @@ public abstract class BaseTaxCategoryResourceTestCase {
 		return randomTaxCategory();
 	}
 
+	protected TaxCategory randomPermissionsTaxCategory() throws Exception {
+		TaxCategory taxCategory = randomTaxCategory();
+
+		com.liferay.portal.kernel.model.Role role = RoleTestUtil.addRole(
+			RoleConstants.TYPE_REGULAR);
+
+		taxCategory.setPermissions(
+			new Permission[] {
+				new Permission() {
+					{
+						setActionIds(new String[] {"VIEW"});
+						setRoleName(role.getName());
+					}
+				}
+			});
+
+		return taxCategory;
+	}
+
 	protected TaxCategoryResource taxCategoryResource;
 	protected com.liferay.portal.kernel.model.Group irrelevantGroup;
+	protected TaxCategoryResource permissionsTaxCategoryResource;
 	protected com.liferay.portal.kernel.model.Company testCompany;
 	protected com.liferay.portal.kernel.model.Group testGroup;
 
@@ -1825,4 +2369,4 @@ public abstract class BaseTaxCategoryResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1108093500
+// LIFERAY-REST-BUILDER-HASH:1473440073

@@ -20,6 +20,7 @@ import com.liferay.headless.commerce.admin.channel.client.dto.v1_0.Channel;
 import com.liferay.headless.commerce.admin.channel.client.http.HttpInvoker;
 import com.liferay.headless.commerce.admin.channel.client.pagination.Page;
 import com.liferay.headless.commerce.admin.channel.client.pagination.Pagination;
+import com.liferay.headless.commerce.admin.channel.client.permission.Permission;
 import com.liferay.headless.commerce.admin.channel.client.resource.v1_0.ChannelResource;
 import com.liferay.headless.commerce.admin.channel.client.serdes.v1_0.ChannelSerDes;
 import com.liferay.oauth2.provider.scope.ScopeChecker;
@@ -33,6 +34,7 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.RoleConstants;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
@@ -43,6 +45,7 @@ import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.JAXRSWhiteboardTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.DateUtil;
@@ -159,6 +162,19 @@ public abstract class BaseChannelResourceTestCase {
 			PortalUtil.getPortalServerPort(false), "http"
 		).locale(
 			LocaleUtil.getDefault()
+		).build();
+
+		permissionsChannelResource = ChannelResource.builder(
+		).authentication(
+			_testCompanyAdminUser.getEmailAddress(),
+			PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).parameter(
+			"nestedFields", "permissions"
 		).build();
 	}
 
@@ -663,6 +679,12 @@ public abstract class BaseChannelResourceTestCase {
 
 		assertEquals(postChannel, getChannel);
 		assertValid(getChannel);
+
+		Assert.assertNull(getChannel.getPermissions());
+
+		getChannel = permissionsChannelResource.getChannel(postChannel.getId());
+
+		Assert.assertNotNull(getChannel.getPermissions());
 	}
 
 	@Test
@@ -964,6 +986,14 @@ public abstract class BaseChannelResourceTestCase {
 
 		assertEquals(postChannel, getChannel);
 		assertValid(getChannel);
+
+		Assert.assertNull(getChannel.getPermissions());
+
+		getChannel =
+			permissionsChannelResource.getChannelByExternalReferenceCode(
+				postChannel.getExternalReferenceCode());
+
+		Assert.assertNotNull(getChannel.getPermissions());
 	}
 
 	protected Channel testGetChannelByExternalReferenceCode_addChannel()
@@ -1087,6 +1117,51 @@ public abstract class BaseChannelResourceTestCase {
 	}
 
 	@Test
+	public void testGetChannelPermissionsPage() throws Exception {
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		Channel postChannel = testGetChannelPermissionsPage_addChannel();
+
+		Page<Permission> page = channelResource.getChannelPermissionsPage(
+			postChannel.getId(), RoleConstants.GUEST);
+
+		Assert.assertNotNull(page);
+	}
+
+	protected Channel testGetChannelPermissionsPage_addChannel()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testGraphQLGetChannelPermissionsPage() throws Exception {
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		Channel postChannel = testGraphQLGetChannelPermissionsPage_addChannel();
+
+		GraphQLField graphQLField = new GraphQLField(
+			"channelPermissions",
+			new HashMap<String, Object>() {
+				{
+					put("channelId", postChannel.getId());
+				}
+			},
+			new GraphQLField("page"), new GraphQLField("totalCount"));
+
+		JSONObject channelPermissionsJSONObject = JSONUtil.getValueAsJSONObject(
+			invokeGraphQLQuery(graphQLField), "JSONObject/data",
+			"JSONObject/channelPermissions");
+
+		Assert.assertNotNull(channelPermissionsJSONObject);
+	}
+
+	protected Channel testGraphQLGetChannelPermissionsPage_addChannel()
+		throws Exception {
+
+		return testGraphQLChannel_addChannel();
+	}
+
+	@Test
 	public void testGetChannelsPage() throws Exception {
 		Page<Channel> page = channelResource.getChannelsPage(
 			null, null, Pagination.of(1, 10), null);
@@ -1105,6 +1180,17 @@ public abstract class BaseChannelResourceTestCase {
 		assertContains(channel1, (List<Channel>)page.getItems());
 		assertContains(channel2, (List<Channel>)page.getItems());
 		assertValid(page, testGetChannelsPage_getExpectedActions());
+
+		for (Channel channel : page.getItems()) {
+			Assert.assertNull(channel.getPermissions());
+		}
+
+		page = permissionsChannelResource.getChannelsPage(
+			null, null, Pagination.of(1, 10), null);
+
+		for (Channel channel : page.getItems()) {
+			Assert.assertNotNull(channel.getPermissions());
+		}
 
 		channelResource.deleteChannel(channel1.getId());
 
@@ -1532,9 +1618,30 @@ public abstract class BaseChannelResourceTestCase {
 
 		assertEquals(randomChannel, postChannel);
 		assertValid(postChannel);
+
+		Channel randomPermissionsChannel1 = randomPermissionsChannel();
+
+		Channel postPermissionsChannel1 = testPostChannel_addChannel(
+			randomPermissionsChannel1);
+
+		Assert.assertNull(postPermissionsChannel1.getPermissions());
+
+		Channel randomPermissionsChannel2 = randomPermissionsChannel();
+
+		Channel postPermissionsChannel2 = testPostChannel_addPermissionsChannel(
+			randomPermissionsChannel2);
+
+		Assert.assertNotNull(postPermissionsChannel2.getPermissions());
 	}
 
 	protected Channel testPostChannel_addChannel(Channel channel)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected Channel testPostChannel_addPermissionsChannel(Channel channel)
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -1562,10 +1669,27 @@ public abstract class BaseChannelResourceTestCase {
 		assertEquals(randomChannel, putChannel);
 		assertValid(putChannel);
 
+		Assert.assertNull(putChannel.getPermissions());
+
 		Channel getChannel = channelResource.getChannel(putChannel.getId());
 
 		assertEquals(randomChannel, getChannel);
 		assertValid(getChannel);
+
+		Channel randomPermissionsChannel = randomPermissionsChannel();
+
+		putChannel = channelResource.putChannel(
+			postChannel.getId(), randomPermissionsChannel);
+
+		assertEquals(randomPermissionsChannel, putChannel);
+		assertValid(putChannel);
+
+		Assert.assertNull(putChannel.getPermissions());
+
+		putChannel = permissionsChannelResource.putChannel(
+			postChannel.getId(), randomPermissionsChannel);
+
+		Assert.assertNotNull(putChannel.getPermissions());
 	}
 
 	protected Channel testPutChannel_addChannel() throws Exception {
@@ -1586,11 +1710,30 @@ public abstract class BaseChannelResourceTestCase {
 		assertEquals(randomChannel, putChannel);
 		assertValid(putChannel);
 
+		Assert.assertNull(putChannel.getPermissions());
+
 		Channel getChannel = channelResource.getChannelByExternalReferenceCode(
 			putChannel.getExternalReferenceCode());
 
 		assertEquals(randomChannel, getChannel);
 		assertValid(getChannel);
+
+		Channel randomPermissionsChannel = randomPermissionsChannel();
+
+		putChannel = channelResource.putChannelByExternalReferenceCode(
+			postChannel.getExternalReferenceCode(), randomPermissionsChannel);
+
+		assertEquals(randomPermissionsChannel, putChannel);
+		assertValid(putChannel);
+
+		Assert.assertNull(putChannel.getPermissions());
+
+		putChannel =
+			permissionsChannelResource.putChannelByExternalReferenceCode(
+				postChannel.getExternalReferenceCode(),
+				randomPermissionsChannel);
+
+		Assert.assertNotNull(putChannel.getPermissions());
 
 		Channel newChannel =
 			testPutChannelByExternalReferenceCode_createChannel();
@@ -1622,6 +1765,49 @@ public abstract class BaseChannelResourceTestCase {
 		throws Exception {
 
 		return randomChannel();
+	}
+
+	@Test
+	public void testPutChannelPermissionsPage() throws Exception {
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		Channel channel = testPutChannelPermissionsPage_addChannel();
+
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		com.liferay.portal.kernel.model.Role role = RoleTestUtil.addRole(
+			RoleConstants.TYPE_REGULAR);
+
+		assertHttpResponseStatusCode(
+			200,
+			channelResource.putChannelPermissionsPageHttpResponse(
+				channel.getId(),
+				new Permission[] {
+					new Permission() {
+						{
+							setActionIds(new String[] {"VIEW"});
+							setRoleName(role.getName());
+						}
+					}
+				}));
+
+		assertHttpResponseStatusCode(
+			404,
+			channelResource.putChannelPermissionsPageHttpResponse(
+				0L,
+				new Permission[] {
+					new Permission() {
+						{
+							setActionIds(new String[] {"-"});
+							setRoleName("-");
+						}
+					}
+				}));
+	}
+
+	protected Channel testPutChannelPermissionsPage_addChannel()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test
@@ -1888,6 +2074,14 @@ public abstract class BaseChannelResourceTestCase {
 	protected void assertValid(Channel channel) throws Exception {
 		boolean valid = true;
 
+		if (channel.getDateCreated() == null) {
+			valid = false;
+		}
+
+		if (channel.getDateModified() == null) {
+			valid = false;
+		}
+
 		if (channel.getId() == null) {
 			valid = false;
 		}
@@ -1908,6 +2102,14 @@ public abstract class BaseChannelResourceTestCase {
 
 			if (Objects.equals("accountId", additionalAssertFieldName)) {
 				if (channel.getAccountId() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("creator", additionalAssertFieldName)) {
+				if (channel.getCreator() == null) {
 					valid = false;
 				}
 
@@ -1953,6 +2155,14 @@ public abstract class BaseChannelResourceTestCase {
 
 			if (Objects.equals("name", additionalAssertFieldName)) {
 				if (channel.getName() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("permissions", additionalAssertFieldName)) {
+				if (channel.getPermissions() == null) {
 					valid = false;
 				}
 
@@ -2119,6 +2329,16 @@ public abstract class BaseChannelResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("creator", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						channel1.getCreator(), channel2.getCreator())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("currencyCode", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
 						channel1.getCurrencyCode(),
@@ -2154,6 +2374,27 @@ public abstract class BaseChannelResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("dateCreated", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						channel1.getDateCreated(), channel2.getDateCreated())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("dateModified", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						channel1.getDateModified(),
+						channel2.getDateModified())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals(
 					"externalReferenceCode", additionalAssertFieldName)) {
 
@@ -2178,6 +2419,16 @@ public abstract class BaseChannelResourceTestCase {
 			if (Objects.equals("name", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
 						channel1.getName(), channel2.getName())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("permissions", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						channel1.getPermissions(), channel2.getPermissions())) {
 
 					return false;
 				}
@@ -2363,6 +2614,11 @@ public abstract class BaseChannelResourceTestCase {
 				"Invalid entity field " + entityFieldName);
 		}
 
+		if (entityFieldName.equals("creator")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
 		if (entityFieldName.equals("currencyCode")) {
 			Object object = channel.getCurrencyCode();
 
@@ -2460,6 +2716,64 @@ public abstract class BaseChannelResourceTestCase {
 				"Invalid entity field " + entityFieldName);
 		}
 
+		if (entityFieldName.equals("dateCreated")) {
+			if (operator.equals("between")) {
+				Date date = channel.getDateCreated();
+
+				sb = new StringBundler();
+
+				sb.append("(");
+				sb.append(entityFieldName);
+				sb.append(" gt ");
+				sb.append(_format.format(date.getTime() - (2 * Time.SECOND)));
+				sb.append(" and ");
+				sb.append(entityFieldName);
+				sb.append(" lt ");
+				sb.append(_format.format(date.getTime() + (2 * Time.SECOND)));
+				sb.append(")");
+			}
+			else {
+				sb.append(entityFieldName);
+
+				sb.append(" ");
+				sb.append(operator);
+				sb.append(" ");
+
+				sb.append(_format.format(channel.getDateCreated()));
+			}
+
+			return sb.toString();
+		}
+
+		if (entityFieldName.equals("dateModified")) {
+			if (operator.equals("between")) {
+				Date date = channel.getDateModified();
+
+				sb = new StringBundler();
+
+				sb.append("(");
+				sb.append(entityFieldName);
+				sb.append(" gt ");
+				sb.append(_format.format(date.getTime() - (2 * Time.SECOND)));
+				sb.append(" and ");
+				sb.append(entityFieldName);
+				sb.append(" lt ");
+				sb.append(_format.format(date.getTime() + (2 * Time.SECOND)));
+				sb.append(")");
+			}
+			else {
+				sb.append(entityFieldName);
+
+				sb.append(" ");
+				sb.append(operator);
+				sb.append(" ");
+
+				sb.append(_format.format(channel.getDateModified()));
+			}
+
+			return sb.toString();
+		}
+
 		if (entityFieldName.equals("externalReferenceCode")) {
 			Object object = channel.getExternalReferenceCode();
 
@@ -2555,6 +2869,11 @@ public abstract class BaseChannelResourceTestCase {
 			}
 
 			return sb.toString();
+		}
+
+		if (entityFieldName.equals("permissions")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
 		}
 
 		if (entityFieldName.equals("siteGroupId")) {
@@ -2663,6 +2982,8 @@ public abstract class BaseChannelResourceTestCase {
 				currencyExternalReferenceCode = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 				currencyId = RandomTestUtil.randomLong();
+				dateCreated = RandomTestUtil.nextDate();
+				dateModified = RandomTestUtil.nextDate();
 				externalReferenceCode = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 				id = RandomTestUtil.randomLong();
@@ -2681,6 +3002,25 @@ public abstract class BaseChannelResourceTestCase {
 
 	protected Channel randomPatchChannel() throws Exception {
 		return randomChannel();
+	}
+
+	protected Channel randomPermissionsChannel() throws Exception {
+		Channel channel = randomChannel();
+
+		com.liferay.portal.kernel.model.Role role = RoleTestUtil.addRole(
+			RoleConstants.TYPE_REGULAR);
+
+		channel.setPermissions(
+			new Permission[] {
+				new Permission() {
+					{
+						setActionIds(new String[] {"VIEW"});
+						setRoleName(role.getName());
+					}
+				}
+			});
+
+		return channel;
 	}
 
 	protected final JSONObject waitForFinish(
@@ -2708,6 +3048,7 @@ public abstract class BaseChannelResourceTestCase {
 	protected ChannelResource channelResource;
 	protected ImportTaskResource importTaskResource;
 	protected com.liferay.portal.kernel.model.Group irrelevantGroup;
+	protected ChannelResource permissionsChannelResource;
 	protected com.liferay.portal.kernel.model.Company testCompany;
 	protected com.liferay.portal.kernel.model.Group testGroup;
 
@@ -2939,4 +3280,4 @@ public abstract class BaseChannelResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-764896178
+// LIFERAY-REST-BUILDER-HASH:-1503892846

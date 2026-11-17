@@ -14,11 +14,22 @@ import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.exception.NoSuchModelException;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Resource;
+import com.liferay.portal.kernel.model.ResourceAction;
+import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.ResourcePermission;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.PermissionServiceUtil;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
+import com.liferay.portal.kernel.service.ResourceLocalServiceUtil;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
+import com.liferay.portal.kernel.service.permission.ModelPermissions;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.GroupThreadLocal;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -35,8 +46,11 @@ import com.liferay.portal.vulcan.batch.engine.VulcanBatchEngineTaskItemDelegate;
 import com.liferay.portal.vulcan.batch.engine.resource.VulcanBatchEngineExportTaskResource;
 import com.liferay.portal.vulcan.batch.engine.resource.VulcanBatchEngineImportTaskResource;
 import com.liferay.portal.vulcan.crud.VulcanCRUDItemDelegate;
+import com.liferay.portal.vulcan.fields.NestedFieldsSupplier;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
+import com.liferay.portal.vulcan.permission.ModelPermissionsUtil;
+import com.liferay.portal.vulcan.permission.Permission;
 import com.liferay.portal.vulcan.resource.EntityModelResource;
 import com.liferay.portal.vulcan.util.ActionUtil;
 import com.liferay.portal.vulcan.util.UriInfoUtil;
@@ -56,6 +70,8 @@ import java.io.Serializable;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -218,6 +234,8 @@ public abstract class BaseChannelResourceImpl
 		return new Channel();
 	}
 
+	protected abstract Channel doGetChannel(Long channelId) throws Exception;
+
 	/**
 	 * Invoke this method with the command line:
 	 *
@@ -242,15 +260,35 @@ public abstract class BaseChannelResourceImpl
 	@jakarta.ws.rs.Path("/channels/{channelId}")
 	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
-	public Channel getChannel(
+	public final Channel getChannel(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 			@jakarta.validation.constraints.NotNull
 			@jakarta.ws.rs.PathParam("channelId")
 			Long channelId)
 		throws Exception {
 
-		return new Channel();
+		Channel getChannel = doGetChannel(channelId);
+
+		getChannel.setPermissions(
+			() -> NestedFieldsSupplier.supply(
+				"permissions",
+				nestedField -> {
+					Page<Permission> permissionsPage =
+						getChannelPermissionsPage(getChannel.getId(), null);
+
+					Collection<Permission> permissions =
+						permissionsPage.getItems();
+
+					return permissions.toArray(
+						new Permission[permissions.size()]);
+				}));
+
+		return getChannel;
 	}
+
+	protected abstract Channel doGetChannelByExternalReferenceCode(
+			String externalReferenceCode)
+		throws Exception;
 
 	/**
 	 * Invoke this method with the command line:
@@ -278,15 +316,107 @@ public abstract class BaseChannelResourceImpl
 	)
 	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
-	public Channel getChannelByExternalReferenceCode(
+	public final Channel getChannelByExternalReferenceCode(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 			@jakarta.validation.constraints.NotNull
 			@jakarta.ws.rs.PathParam("externalReferenceCode")
 			String externalReferenceCode)
 		throws Exception {
 
-		return new Channel();
+		Channel getChannel = doGetChannelByExternalReferenceCode(
+			externalReferenceCode);
+
+		getChannel.setPermissions(
+			() -> NestedFieldsSupplier.supply(
+				"permissions",
+				nestedField -> {
+					Page<Permission> permissionsPage =
+						getChannelPermissionsPage(getChannel.getId(), null);
+
+					Collection<Permission> permissions =
+						permissionsPage.getItems();
+
+					return permissions.toArray(
+						new Permission[permissions.size()]);
+				}));
+
+		return getChannel;
 	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-channel/v1.0/channels/{channelId}/permissions'  -u 'test@liferay.com:test'
+	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Lists the role permissions granted on the channel identified by ID. Requires the PERMISSIONS action on the channel."
+	)
+	@io.swagger.v3.oas.annotations.Parameters(
+		value = {
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Identifier of a commerce channel. Addresses a single storefront bound to a Liferay site, with its own currency, account visibility, and display pages.",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
+				name = "channelId", required = true
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "fields"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "restrictFields"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "roleNames"
+			)
+		}
+	)
+	@io.swagger.v3.oas.annotations.tags.Tags(
+		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Channel")}
+	)
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path("/channels/{channelId}/permissions")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
+	@Override
+	public Page<Permission> getChannelPermissionsPage(
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("channelId")
+			Long channelId,
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.ws.rs.QueryParam("roleNames")
+			String roleNames)
+		throws Exception {
+
+		Long groupId = getPermissionCheckerGroupId(channelId);
+		Long resourceId = getPermissionCheckerResourceId(channelId);
+		String resourceName = getPermissionCheckerResourceName(channelId);
+
+		PermissionServiceUtil.checkPermission(
+			groupId, resourceName, resourceId);
+
+		return toPermissionPage(
+			HashMapBuilder.put(
+				"get",
+				addAction(
+					ActionKeys.PERMISSIONS, resourceId,
+					"getChannelPermissionsPage", null, resourceName, groupId)
+			).put(
+				"replace",
+				addAction(
+					ActionKeys.PERMISSIONS, resourceId,
+					"putChannelPermissionsPage", null, resourceName, groupId)
+			).build(),
+			resourceId, resourceName, roleNames);
+	}
+
+	protected abstract Page<Channel> doGetChannelsPage(
+			String search,
+			com.liferay.portal.kernel.search.filter.Filter filter,
+			Pagination pagination,
+			com.liferay.portal.kernel.search.Sort[] sorts)
+		throws Exception;
 
 	/**
 	 * Invoke this method with the command line:
@@ -294,7 +424,7 @@ public abstract class BaseChannelResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-channel/v1.0/channels'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Lists every commerce channel visible to the caller. Calls SearchUtil.search (index CommerceChannel). Validation -- None (returns empty page when no matches). List query support — filterable fields -- name, siteGroupId; sortable fields -- name, siteGroupId."
+		description = "Lists every commerce channel visible to the caller. Calls SearchUtil.search (index CommerceChannel). Validation -- None (returns empty page when no matches). List query support — filterable fields -- dateCreated, dateModified, externalReferenceCode, name, siteGroupId; sortable fields -- dateCreated, dateModified, externalReferenceCode, name, siteGroupId."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -332,7 +462,7 @@ public abstract class BaseChannelResourceImpl
 	@jakarta.ws.rs.Path("/channels")
 	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
-	public Page<Channel> getChannelsPage(
+	public final Page<Channel> getChannelsPage(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 			@jakarta.ws.rs.QueryParam("search")
 			String search,
@@ -343,13 +473,32 @@ public abstract class BaseChannelResourceImpl
 				sorts)
 		throws Exception {
 
-		return Page.of(Collections.emptyList());
+		Page<Channel> channelsPage = doGetChannelsPage(
+			search, filter, pagination, sorts);
+
+		for (Channel channel : channelsPage.getItems()) {
+			channel.setPermissions(
+				() -> NestedFieldsSupplier.supply(
+					"permissions",
+					nestedField -> {
+						Page<Permission> permissionsPage =
+							getChannelPermissionsPage(channel.getId(), null);
+
+						Collection<Permission> permissions =
+							permissionsPage.getItems();
+
+						return permissions.toArray(
+							new Permission[permissions.size()]);
+					}));
+		}
+
+		return channelsPage;
 	}
 
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-channel/v1.0/channels/{channelId}' -d $'{"accountExternalReferenceCode": ___, "accountId": ___, "currencyCode": ___, "currencyExternalReferenceCode": ___, "currencyId": ___, "externalReferenceCode": ___, "name": ___, "siteGroupId": ___, "type": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-channel/v1.0/channels/{channelId}' -d $'{"accountExternalReferenceCode": ___, "accountId": ___, "currencyCode": ___, "currencyExternalReferenceCode": ___, "currencyId": ___, "externalReferenceCode": ___, "name": ___, "permissions": ___, "siteGroupId": ___, "type": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Partially updates the commerce channel by its internal ID — only the fields supplied in the body are replaced; omitted fields are left unchanged. A resolvable currencyCode (or matching currencyId / currencyExternalReferenceCode) is applied; an unresolved code is silently ignored and the channel's current currency is preserved. Calls CommerceChannelService.getCommerceChannel + CommerceCurrencyUtil.getCommerceCurrency + CommerceChannelService.updateCommerceChannel. Validation -- NoSuchChannelException -> 404 when channel ID not found; CommerceChannelNameException -> 400 when invalid name; CommerceChannelTypeException -> 400 when invalid type; CommerceChannelSiteGroupIdException -> 400 when siteGroupId matches no site of the instance. Side effects -- an unresolvable currency code is swallowed and the existing currency kept; the channel is reindexed on update."
@@ -412,6 +561,10 @@ public abstract class BaseChannelResourceImpl
 			existingChannel.setName(channel.getName());
 		}
 
+		if (channel.getPermissions() != null) {
+			existingChannel.setPermissions(channel.getPermissions());
+		}
+
 		if (channel.getSiteGroupId() != null) {
 			existingChannel.setSiteGroupId(channel.getSiteGroupId());
 		}
@@ -428,7 +581,7 @@ public abstract class BaseChannelResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-channel/v1.0/channels/by-externalReferenceCode/{externalReferenceCode}' -d $'{"accountExternalReferenceCode": ___, "accountId": ___, "currencyCode": ___, "currencyExternalReferenceCode": ___, "currencyId": ___, "externalReferenceCode": ___, "name": ___, "siteGroupId": ___, "type": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-channel/v1.0/channels/by-externalReferenceCode/{externalReferenceCode}' -d $'{"accountExternalReferenceCode": ___, "accountId": ___, "currencyCode": ___, "currencyExternalReferenceCode": ___, "currencyId": ___, "externalReferenceCode": ___, "name": ___, "permissions": ___, "siteGroupId": ___, "type": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Partially updates the commerce channel by its external reference code (ERC) — only the fields supplied in the body are replaced; omitted fields are left unchanged. A resolvable currencyCode (or matching currencyId / currencyExternalReferenceCode) is applied; an unresolved code is silently ignored and the channel's current currency is preserved. Calls CommerceChannelService.fetchCommerceChannelByExternalReferenceCode + CommerceCurrencyUtil.getCommerceCurrency + CommerceChannelService.updateCommerceChannel. Validation -- NoSuchChannelException -> 404 when channel ERC not found; CommerceChannelNameException -> 400 when invalid name; CommerceChannelTypeException -> 400 when invalid type; CommerceChannelSiteGroupIdException -> 400 when siteGroupId matches no site of the instance. Side effects -- an unresolvable currency code is swallowed and the existing currency kept; the channel is reindexed on update."
@@ -494,6 +647,10 @@ public abstract class BaseChannelResourceImpl
 			existingChannel.setName(channel.getName());
 		}
 
+		if (channel.getPermissions() != null) {
+			existingChannel.setPermissions(channel.getPermissions());
+		}
+
 		if (channel.getSiteGroupId() != null) {
 			existingChannel.setSiteGroupId(channel.getSiteGroupId());
 		}
@@ -508,10 +665,12 @@ public abstract class BaseChannelResourceImpl
 			externalReferenceCode, existingChannel);
 	}
 
+	protected abstract Channel doPostChannel(Channel channel) throws Exception;
+
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-channel/v1.0/channels' -d $'{"accountExternalReferenceCode": ___, "accountId": ___, "currencyCode": ___, "currencyExternalReferenceCode": ___, "currencyId": ___, "externalReferenceCode": ___, "name": ___, "siteGroupId": ___, "type": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-channel/v1.0/channels' -d $'{"accountExternalReferenceCode": ___, "accountId": ___, "currencyCode": ___, "currencyExternalReferenceCode": ___, "currencyId": ___, "externalReferenceCode": ___, "name": ___, "permissions": ___, "siteGroupId": ___, "type": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Creates a new commerce channel and allocates a fresh internal ID via the portal counter. Calls CommerceCurrencyUtil.getCommerceCurrency + AccountEntryService.fetchAccountEntryByExternalReferenceCode + CommerceChannelService.addCommerceChannel. Validation -- NoSuchCurrencyException -> 404 when currency not resolvable; DuplicateCommerceChannelException -> 409 when channel already exists; CommerceChannelNameException -> 400 when invalid name; DuplicateExternalReferenceCodeException -> 400 when duplicate ERC; CommerceChannelSiteGroupIdException -> 400 when siteGroupId matches no site of the instance. Side effects -- provisions the channel site group and reindexes the channel."
@@ -524,8 +683,28 @@ public abstract class BaseChannelResourceImpl
 	@jakarta.ws.rs.POST
 	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
-	public Channel postChannel(Channel channel) throws Exception {
-		return new Channel();
+	public final Channel postChannel(Channel channel) throws Exception {
+		Permission[] permissions = channel.getPermissions();
+
+		Channel postChannel = doPostChannel(channel);
+
+		if (permissions != null) {
+			Page<Permission> permissionsPage = putChannelPermissionsPage(
+				postChannel.getId(), permissions);
+
+			postChannel.setPermissions(
+				() -> NestedFieldsSupplier.supply(
+					"permissions",
+					nestedField -> {
+						Collection<Permission> collection =
+							permissionsPage.getItems();
+
+						return collection.toArray(
+							new Permission[collection.size()]);
+					}));
+		}
+
+		return postChannel;
 	}
 
 	/**
@@ -654,10 +833,13 @@ public abstract class BaseChannelResourceImpl
 		).build();
 	}
 
+	protected abstract Channel doPutChannel(Long channelId, Channel channel)
+		throws Exception;
+
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'PUT' 'http://localhost:8080/o/headless-commerce-admin-channel/v1.0/channels/{channelId}' -d $'{"accountExternalReferenceCode": ___, "accountId": ___, "currencyCode": ___, "currencyExternalReferenceCode": ___, "currencyId": ___, "externalReferenceCode": ___, "name": ___, "siteGroupId": ___, "type": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'PUT' 'http://localhost:8080/o/headless-commerce-admin-channel/v1.0/channels/{channelId}' -d $'{"accountExternalReferenceCode": ___, "accountId": ___, "currencyCode": ___, "currencyExternalReferenceCode": ___, "currencyId": ___, "externalReferenceCode": ___, "name": ___, "permissions": ___, "siteGroupId": ___, "type": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Fully replaces the commerce channel by its internal ID — every mutable field is set from the body, and omitted optional fields are reset to their default. Falls back to a new-channel create when the supplied ID does not match an existing channel. The supplied currencyCode (or matching currencyId / currencyExternalReferenceCode) must resolve to an existing CommerceCurrency; an unresolved code returns 404. Calls CommerceChannelService.fetchCommerceChannel + CommerceCurrencyUtil.getCommerceCurrency + CommerceChannelService.updateCommerceChannel | addCommerceChannel. Validation -- NoSuchCurrencyException -> 404 when currency not resolvable; CommerceChannelNameException -> 400 when invalid name; CommerceChannelTypeException -> 400 when invalid type; CommerceChannelSiteGroupIdException -> 400 when siteGroupId matches no site of the instance. Side effects -- creates the channel and provisions its site group when the ID is unknown; reindexes on write."
@@ -679,7 +861,7 @@ public abstract class BaseChannelResourceImpl
 	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@jakarta.ws.rs.PUT
 	@Override
-	public Channel putChannel(
+	public final Channel putChannel(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 			@jakarta.validation.constraints.NotNull
 			@jakarta.ws.rs.PathParam("channelId")
@@ -687,7 +869,27 @@ public abstract class BaseChannelResourceImpl
 			Channel channel)
 		throws Exception {
 
-		return new Channel();
+		Permission[] permissions = channel.getPermissions();
+
+		Channel putChannel = doPutChannel(channelId, channel);
+
+		if (permissions != null) {
+			Page<Permission> permissionsPage = putChannelPermissionsPage(
+				putChannel.getId(), permissions);
+
+			putChannel.setPermissions(
+				() -> NestedFieldsSupplier.supply(
+					"permissions",
+					nestedField -> {
+						Collection<Permission> collection =
+							permissionsPage.getItems();
+
+						return collection.toArray(
+							new Permission[collection.size()]);
+					}));
+		}
+
+		return putChannel;
 	}
 
 	/**
@@ -734,10 +936,14 @@ public abstract class BaseChannelResourceImpl
 		).build();
 	}
 
+	protected abstract Channel doPutChannelByExternalReferenceCode(
+			String externalReferenceCode, Channel channel)
+		throws Exception;
+
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'PUT' 'http://localhost:8080/o/headless-commerce-admin-channel/v1.0/channels/by-externalReferenceCode/{externalReferenceCode}' -d $'{"accountExternalReferenceCode": ___, "accountId": ___, "currencyCode": ___, "currencyExternalReferenceCode": ___, "currencyId": ___, "externalReferenceCode": ___, "name": ___, "siteGroupId": ___, "type": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'PUT' 'http://localhost:8080/o/headless-commerce-admin-channel/v1.0/channels/by-externalReferenceCode/{externalReferenceCode}' -d $'{"accountExternalReferenceCode": ___, "accountId": ___, "currencyCode": ___, "currencyExternalReferenceCode": ___, "currencyId": ___, "externalReferenceCode": ___, "name": ___, "permissions": ___, "siteGroupId": ___, "type": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Fully replaces the commerce channel by its external reference code (ERC) — every mutable field is set from the body, and omitted optional fields are reset to their default. Upserts when the ERC does not match an existing channel. The supplied currencyCode (or matching currencyId / currencyExternalReferenceCode) must resolve to an existing CommerceCurrency; an unresolved code returns 404. Calls CommerceCurrencyUtil.getCommerceCurrency + AccountEntryService.fetchAccountEntryByExternalReferenceCode + CommerceChannelService.addOrUpdateCommerceChannel. Validation -- NoSuchCurrencyException -> 404 when currency not resolvable; CommerceChannelNameException -> 400 when invalid name; CommerceChannelTypeException -> 400 when invalid type; CommerceChannelSiteGroupIdException -> 400 when siteGroupId matches no site of the instance. Side effects -- creates the channel and provisions its site group when the ERC is unknown; reindexes on write."
@@ -761,7 +967,7 @@ public abstract class BaseChannelResourceImpl
 	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@jakarta.ws.rs.PUT
 	@Override
-	public Channel putChannelByExternalReferenceCode(
+	public final Channel putChannelByExternalReferenceCode(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 			@jakarta.validation.constraints.NotNull
 			@jakarta.ws.rs.PathParam("externalReferenceCode")
@@ -769,7 +975,120 @@ public abstract class BaseChannelResourceImpl
 			Channel channel)
 		throws Exception {
 
-		return new Channel();
+		Permission[] permissions = channel.getPermissions();
+
+		Channel putChannel = doPutChannelByExternalReferenceCode(
+			externalReferenceCode, channel);
+
+		if (permissions != null) {
+			Page<Permission> permissionsPage = putChannelPermissionsPage(
+				putChannel.getId(), permissions);
+
+			putChannel.setPermissions(
+				() -> NestedFieldsSupplier.supply(
+					"permissions",
+					nestedField -> {
+						Collection<Permission> collection =
+							permissionsPage.getItems();
+
+						return collection.toArray(
+							new Permission[collection.size()]);
+					}));
+		}
+
+		return putChannel;
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -X 'PUT' 'http://localhost:8080/o/headless-commerce-admin-channel/v1.0/channels/{channelId}/permissions'  -u 'test@liferay.com:test'
+	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Replaces the role permissions granted on the channel identified by ID. Roles missing from the request lose their individual permissions. Requires the PERMISSIONS action on the channel."
+	)
+	@io.swagger.v3.oas.annotations.Parameters(
+		value = {
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Identifier of a commerce channel. Addresses a single storefront bound to a Liferay site, with its own currency, account visibility, and display pages.",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
+				name = "channelId", required = true
+			)
+		}
+	)
+	@io.swagger.v3.oas.annotations.tags.Tags(
+		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Channel")}
+	)
+	@jakarta.ws.rs.Consumes({"application/json", "application/xml"})
+	@jakarta.ws.rs.Path("/channels/{channelId}/permissions")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.PUT
+	@Override
+	public Page<Permission> putChannelPermissionsPage(
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("channelId")
+			Long channelId,
+			Permission[] permissions)
+		throws Exception {
+
+		Long groupId = getPermissionCheckerGroupId(channelId);
+		Long resourceId = getPermissionCheckerResourceId(channelId);
+		String resourceName = getPermissionCheckerResourceName(channelId);
+
+		PermissionServiceUtil.checkPermission(
+			groupId, resourceName, resourceId);
+
+		ModelPermissions modelPermissions =
+			ModelPermissionsUtil.toModelPermissions(
+				contextCompany.getCompanyId(), permissions, resourceId,
+				resourceName, resourceActionLocalService,
+				resourcePermissionLocalService, roleLocalService);
+
+		Collection<String> roleNames = modelPermissions.getRoleNames();
+
+		for (ResourcePermission resourcePermission :
+				resourcePermissionLocalService.getResourcePermissions(
+					contextCompany.getCompanyId(), resourceName,
+					ResourceConstants.SCOPE_INDIVIDUAL,
+					String.valueOf(resourceId))) {
+
+			com.liferay.portal.kernel.model.Role role =
+				roleLocalService.fetchRole(resourcePermission.getRoleId());
+
+			if ((role == null) || roleNames.contains(role.getName())) {
+				continue;
+			}
+
+			for (ResourceAction resourceAction :
+					resourceActionLocalService.getResourceActions(
+						resourceName)) {
+
+				resourcePermissionLocalService.removeResourcePermission(
+					contextCompany.getCompanyId(), resourceName,
+					ResourceConstants.SCOPE_INDIVIDUAL,
+					String.valueOf(resourceId), role.getRoleId(),
+					resourceAction.getActionId());
+			}
+		}
+
+		resourcePermissionLocalService.updateResourcePermissions(
+			contextCompany.getCompanyId(), groupId, resourceName,
+			String.valueOf(resourceId), modelPermissions);
+
+		return toPermissionPage(
+			HashMapBuilder.put(
+				"get",
+				addAction(
+					ActionKeys.PERMISSIONS, resourceId,
+					"getChannelPermissionsPage", null, resourceName, groupId)
+			).put(
+				"replace",
+				addAction(
+					ActionKeys.PERMISSIONS, resourceId,
+					"putChannelPermissionsPage", null, resourceName, groupId)
+			).build(),
+			resourceId, resourceName, null);
 	}
 
 	@Override
@@ -1011,6 +1330,175 @@ public abstract class BaseChannelResourceImpl
 	@Override
 	public Channel getItem(Long id) throws Exception {
 		return getChannel(id);
+	}
+
+	protected String getPermissionCheckerActionsResourceName(Object id)
+		throws Exception {
+
+		return getPermissionCheckerResourceName(id);
+	}
+
+	protected Long getPermissionCheckerGroupId(Object id) throws Exception {
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected String getPermissionCheckerPortletName(Object id)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected Long getPermissionCheckerResourceId(Object id) throws Exception {
+		return GetterUtil.getLong(id);
+	}
+
+	protected String getPermissionCheckerResourceName(Object id)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected Page<Permission> toPermissionPage(
+			Map<String, Map<String, String>> actions, long id,
+			String resourceName, String roleNames)
+		throws Exception {
+
+		List<ResourceAction> resourceActions =
+			resourceActionLocalService.getResourceActions(resourceName);
+
+		if (Validator.isNotNull(roleNames)) {
+			return Page.of(
+				actions,
+				_getPermissions(
+					contextCompany.getCompanyId(), resourceActions, id,
+					resourceName, StringUtil.split(roleNames)));
+		}
+
+		return Page.of(
+			actions,
+			_getPermissions(
+				contextCompany.getCompanyId(), resourceActions, id,
+				resourceName, null));
+	}
+
+	/**
+	 * @see com.liferay.portal.vulcan.permission.PermissionUtil#getPermissions(long, List, long, String, String[])
+	 */
+	private Collection<Permission> _getPermissions(
+			long companyId, List<ResourceAction> resourceActions,
+			long resourceId, String resourceName, String[] roleNames)
+		throws Exception {
+
+		Map<String, Permission> permissions = new HashMap<>();
+
+		int count = resourcePermissionLocalService.getResourcePermissionsCount(
+			companyId, resourceName, ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(resourceId));
+
+		if (count == 0) {
+			ResourceLocalServiceUtil.addResources(
+				companyId, resourceId, 0, resourceName,
+				String.valueOf(resourceId), false, true, true);
+		}
+
+		List<String> actionIds = transform(
+			resourceActions, resourceAction -> resourceAction.getActionId());
+
+		Set<ResourcePermission> resourcePermissions = new HashSet<>();
+
+		resourcePermissions.addAll(
+			resourcePermissionLocalService.getResourcePermissions(
+				companyId, resourceName, ResourceConstants.SCOPE_COMPANY,
+				String.valueOf(companyId)));
+		resourcePermissions.addAll(
+			resourcePermissionLocalService.getResourcePermissions(
+				companyId, resourceName, ResourceConstants.SCOPE_GROUP,
+				String.valueOf(GroupThreadLocal.getGroupId())));
+		resourcePermissions.addAll(
+			resourcePermissionLocalService.getResourcePermissions(
+				companyId, resourceName, ResourceConstants.SCOPE_GROUP_TEMPLATE,
+				"0"));
+		resourcePermissions.addAll(
+			resourcePermissionLocalService.getResourcePermissions(
+				companyId, resourceName, ResourceConstants.SCOPE_INDIVIDUAL,
+				String.valueOf(resourceId)));
+
+		List<Resource> resources = transform(
+			resourcePermissions,
+			resourcePermission -> ResourceLocalServiceUtil.getResource(
+				resourcePermission.getCompanyId(), resourcePermission.getName(),
+				resourcePermission.getScope(),
+				resourcePermission.getPrimKey()));
+
+		Set<com.liferay.portal.kernel.model.Role> roles = new HashSet<>();
+
+		if (roleNames != null) {
+			for (String roleName : roleNames) {
+				roles.add(roleLocalService.getRole(companyId, roleName));
+			}
+		}
+		else {
+			for (ResourcePermission resourcePermission : resourcePermissions) {
+				com.liferay.portal.kernel.model.Role role =
+					roleLocalService.getRole(resourcePermission.getRoleId());
+
+				roles.add(role);
+			}
+		}
+
+		for (com.liferay.portal.kernel.model.Role role : roles) {
+			Set<String> actionsIdsSet = new HashSet<>();
+
+			for (Resource resource : resources) {
+				actionsIdsSet.addAll(
+					resourcePermissionLocalService.
+						getAvailableResourcePermissionActionIds(
+							resource.getCompanyId(), resource.getName(),
+							ResourceConstants.SCOPE_COMPANY,
+							String.valueOf(resource.getCompanyId()),
+							role.getRoleId(), actionIds));
+				actionsIdsSet.addAll(
+					resourcePermissionLocalService.
+						getAvailableResourcePermissionActionIds(
+							resource.getCompanyId(), resource.getName(),
+							ResourceConstants.SCOPE_GROUP,
+							String.valueOf(GroupThreadLocal.getGroupId()),
+							role.getRoleId(), actionIds));
+				actionsIdsSet.addAll(
+					resourcePermissionLocalService.
+						getAvailableResourcePermissionActionIds(
+							resource.getCompanyId(), resource.getName(),
+							ResourceConstants.SCOPE_GROUP_TEMPLATE, "0",
+							role.getRoleId(), actionIds));
+				actionsIdsSet.addAll(
+					resourcePermissionLocalService.
+						getAvailableResourcePermissionActionIds(
+							resource.getCompanyId(), resource.getName(),
+							resource.getScope(), resource.getPrimKey(),
+							role.getRoleId(), actionIds));
+			}
+
+			if (actionsIdsSet.isEmpty()) {
+				continue;
+			}
+
+			Permission permission = new Permission() {
+				{
+					actionIds = actionsIdsSet.toArray(new String[0]);
+
+					roleExternalReferenceCode = role.getExternalReferenceCode();
+
+					roleName = role.getName();
+				}
+			};
+
+			permissions.put(role.getName(), permission);
+		}
+
+		return permissions.values();
 	}
 
 	public void setContextAcceptLanguage(AcceptLanguage contextAcceptLanguage) {
@@ -1568,4 +2056,4 @@ public abstract class BaseChannelResourceImpl
 		LogFactoryUtil.getLog(BaseChannelResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:202773312
+// LIFERAY-REST-BUILDER-HASH:-1318324600

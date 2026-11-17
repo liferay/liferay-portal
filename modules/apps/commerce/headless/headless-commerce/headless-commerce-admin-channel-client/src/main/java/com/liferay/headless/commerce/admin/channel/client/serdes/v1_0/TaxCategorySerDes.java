@@ -10,6 +10,9 @@ import com.liferay.headless.commerce.admin.channel.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
@@ -46,6 +49,49 @@ public class TaxCategorySerDes {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append("{");
+
+		DateFormat liferayToJSONDateFormat = new SimpleDateFormat(
+			"yyyy-MM-dd'T'HH:mm:ssXX");
+
+		if (taxCategory.getCreator() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"creator\": ");
+
+			sb.append(String.valueOf(taxCategory.getCreator()));
+		}
+
+		if (taxCategory.getDateCreated() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"dateCreated\": ");
+
+			sb.append("\"");
+
+			sb.append(
+				liferayToJSONDateFormat.format(taxCategory.getDateCreated()));
+
+			sb.append("\"");
+		}
+
+		if (taxCategory.getDateModified() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"dateModified\": ");
+
+			sb.append("\"");
+
+			sb.append(
+				liferayToJSONDateFormat.format(taxCategory.getDateModified()));
+
+			sb.append("\"");
+		}
 
 		if (taxCategory.getDescription() != null) {
 			if (sb.length() > 1) {
@@ -101,6 +147,26 @@ public class TaxCategorySerDes {
 			sb.append(_toJSON(taxCategory.getName()));
 		}
 
+		if (taxCategory.getPermissions() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"permissions\": ");
+
+			sb.append("[");
+
+			for (int i = 0; i < taxCategory.getPermissions().length; i++) {
+				sb.append(taxCategory.getPermissions()[i]);
+
+				if ((i + 1) < taxCategory.getPermissions().length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
+		}
+
 		sb.append("}");
 
 		return sb.toString();
@@ -119,6 +185,34 @@ public class TaxCategorySerDes {
 		}
 
 		Map<String, String> map = new TreeMap<>();
+
+		DateFormat liferayToJSONDateFormat = new SimpleDateFormat(
+			"yyyy-MM-dd'T'HH:mm:ssXX");
+
+		if (taxCategory.getCreator() == null) {
+			map.put("creator", null);
+		}
+		else {
+			map.put("creator", String.valueOf(taxCategory.getCreator()));
+		}
+
+		if (taxCategory.getDateCreated() == null) {
+			map.put("dateCreated", null);
+		}
+		else {
+			map.put(
+				"dateCreated",
+				liferayToJSONDateFormat.format(taxCategory.getDateCreated()));
+		}
+
+		if (taxCategory.getDateModified() == null) {
+			map.put("dateModified", null);
+		}
+		else {
+			map.put(
+				"dateModified",
+				liferayToJSONDateFormat.format(taxCategory.getDateModified()));
+		}
 
 		if (taxCategory.getDescription() == null) {
 			map.put("description", null);
@@ -158,6 +252,14 @@ public class TaxCategorySerDes {
 			map.put("name", String.valueOf(taxCategory.getName()));
 		}
 
+		if (taxCategory.getPermissions() == null) {
+			map.put("permissions", null);
+		}
+		else {
+			map.put(
+				"permissions", String.valueOf(taxCategory.getPermissions()));
+		}
+
 		return map;
 	}
 
@@ -176,7 +278,16 @@ public class TaxCategorySerDes {
 
 		@Override
 		protected boolean parseMaps(String jsonParserFieldName) {
-			if (Objects.equals(jsonParserFieldName, "description")) {
+			if (Objects.equals(jsonParserFieldName, "creator")) {
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "dateCreated")) {
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "dateModified")) {
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "description")) {
 				return true;
 			}
 			else if (Objects.equals(
@@ -193,6 +304,9 @@ public class TaxCategorySerDes {
 			else if (Objects.equals(jsonParserFieldName, "name")) {
 				return true;
 			}
+			else if (Objects.equals(jsonParserFieldName, "permissions")) {
+				return false;
+			}
 
 			return false;
 		}
@@ -202,7 +316,25 @@ public class TaxCategorySerDes {
 			TaxCategory taxCategory, String jsonParserFieldName,
 			Object jsonParserFieldValue) {
 
-			if (Objects.equals(jsonParserFieldName, "description")) {
+			if (Objects.equals(jsonParserFieldName, "creator")) {
+				if (jsonParserFieldValue != null) {
+					taxCategory.setCreator(
+						CreatorSerDes.toDTO((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "dateCreated")) {
+				if (jsonParserFieldValue != null) {
+					taxCategory.setDateCreated(
+						toDate((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "dateModified")) {
+				if (jsonParserFieldValue != null) {
+					taxCategory.setDateModified(
+						toDate((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "description")) {
 				if (jsonParserFieldValue != null) {
 					taxCategory.setDescription(
 						(Map<String, String>)jsonParserFieldValue);
@@ -232,6 +364,26 @@ public class TaxCategorySerDes {
 				if (jsonParserFieldValue != null) {
 					taxCategory.setName(
 						(Map<String, String>)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "permissions")) {
+				if (jsonParserFieldValue != null) {
+					Object[] jsonParserFieldValues =
+						(Object[])jsonParserFieldValue;
+
+					com.liferay.headless.commerce.admin.channel.client.
+						permission.Permission[] permissionsArray = new
+						com.liferay.headless.commerce.admin.channel.client.
+							permission.Permission[jsonParserFieldValues.length];
+
+					for (int i = 0; i < permissionsArray.length; i++) {
+						permissionsArray[i] =
+							com.liferay.headless.commerce.admin.channel.client.
+								permission.Permission.toDTO(
+									(String)jsonParserFieldValues[i]);
+					}
+
+					taxCategory.setPermissions(permissionsArray);
 				}
 			}
 		}
@@ -321,4 +473,4 @@ public class TaxCategorySerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-908561858
+// LIFERAY-REST-BUILDER-HASH:-805073875

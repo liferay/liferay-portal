@@ -372,7 +372,7 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {accountAddressChannelChannel(accountAddressChannelId: ___){accountExternalReferenceCode, accountId, currencyCode, currencyExternalReferenceCode, currencyId, externalReferenceCode, id, name, siteGroupId, type}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {accountAddressChannelChannel(accountAddressChannelId: ___){accountExternalReferenceCode, accountId, creator, currencyCode, currencyExternalReferenceCode, currencyId, dateCreated, dateModified, externalReferenceCode, id, name, permissions, siteGroupId, type}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
 		description = "Retrieves the commerce channel associated with the parent AccountAddressChannel, addressed by internal ID. Calls CommerceChannelRelService.getCommerceChannelRel. Validation -- NoSuchChannelRelException -> 404 when channel rel ID not found."
@@ -392,7 +392,7 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {channel(channelId: ___){accountExternalReferenceCode, accountId, currencyCode, currencyExternalReferenceCode, currencyId, externalReferenceCode, id, name, siteGroupId, type}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {channel(channelId: ___){accountExternalReferenceCode, accountId, creator, currencyCode, currencyExternalReferenceCode, currencyId, dateCreated, dateModified, externalReferenceCode, id, name, permissions, siteGroupId, type}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
 		description = "Retrieves the commerce channel by its internal ID. Calls CommerceChannelService.fetchCommerceChannel. Validation -- NoSuchChannelException -> 404 when channel ID not found."
@@ -409,7 +409,7 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {channelByExternalReferenceCode(externalReferenceCode: ___){accountExternalReferenceCode, accountId, currencyCode, currencyExternalReferenceCode, currencyId, externalReferenceCode, id, name, siteGroupId, type}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {channelByExternalReferenceCode(externalReferenceCode: ___){accountExternalReferenceCode, accountId, creator, currencyCode, currencyExternalReferenceCode, currencyId, dateCreated, dateModified, externalReferenceCode, id, name, permissions, siteGroupId, type}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
 		description = "Retrieves the commerce channel by its external reference code (ERC). Calls CommerceChannelService.fetchCommerceChannelByExternalReferenceCode. Validation -- NoSuchChannelException -> 404 when channel ERC not found."
@@ -429,10 +429,31 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {channelPermissions(channelId: ___, roleNames: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
+	 */
+	@GraphQLField(
+		description = "Lists the role permissions granted on the channel identified by ID. Requires the PERMISSIONS action on the channel."
+	)
+	public ChannelPage channelPermissions(
+			@GraphQLName("channelId") Long channelId,
+			@GraphQLName("roleNames") String roleNames)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_channelResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			channelResource -> new ChannelPage(
+				channelResource.getChannelPermissionsPage(
+					channelId, roleNames)));
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {channels(filter: ___, page: ___, pageSize: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Lists every commerce channel visible to the caller. Calls SearchUtil.search (index CommerceChannel). Validation -- None (returns empty page when no matches). List query support — filterable fields -- name, siteGroupId; sortable fields -- name, siteGroupId."
+		description = "Lists every commerce channel visible to the caller. Calls SearchUtil.search (index CommerceChannel). Validation -- None (returns empty page when no matches). List query support — filterable fields -- dateCreated, dateModified, externalReferenceCode, name, siteGroupId; sortable fields -- dateCreated, dateModified, externalReferenceCode, name, siteGroupId."
 	)
 	public ChannelPage channels(
 			@GraphQLName("search") String search,
@@ -923,15 +944,17 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {taxCategories(page: ___, pageSize: ___, search: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {taxCategories(filter: ___, page: ___, pageSize: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Lists every tax category visible to the caller. Calls CPTaxCategoryService.findCPTaxCategoriesByCompanyId + CPTaxCategoryService.countCPTaxCategoriesByCompanyId. Validation -- None (returns empty page when no matches). List query support — page and pageSize paginate the related entries."
+		description = "Lists every tax category visible to the caller. Calls SearchUtil.search (index CPTaxCategory). Validation -- None (returns empty page when no matches). List query support — filterable fields -- dateCreated, dateModified, externalReferenceCode; sortable fields -- dateCreated, dateModified, externalReferenceCode."
 	)
 	public TaxCategoryPage taxCategories(
 			@GraphQLName("search") String search,
+			@GraphQLName("filter") String filterString,
 			@GraphQLName("pageSize") int pageSize,
-			@GraphQLName("page") int page)
+			@GraphQLName("page") int page,
+			@GraphQLName("sort") String sortsString)
 		throws Exception {
 
 		return _applyComponentServiceObjects(
@@ -939,13 +962,16 @@ public class Query {
 			this::_populateResourceContext,
 			taxCategoryResource -> new TaxCategoryPage(
 				taxCategoryResource.getTaxCategoriesPage(
-					search, Pagination.of(page, pageSize))));
+					search,
+					_filterBiFunction.apply(taxCategoryResource, filterString),
+					Pagination.of(page, pageSize),
+					_sortsBiFunction.apply(taxCategoryResource, sortsString))));
 	}
 
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {taxCategory(id: ___){description, externalReferenceCode, groupId, id, name}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {taxCategory(id: ___){creator, dateCreated, dateModified, description, externalReferenceCode, groupId, id, name, permissions}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
 		description = "Retrieves the tax category by its internal ID. Calls CPTaxCategoryService.getCPTaxCategory. Validation -- NoSuchCPTaxCategoryException -> 404 when tax category ID not found."
@@ -962,7 +988,7 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {taxCategoryByExternalReferenceCode(externalReferenceCode: ___){description, externalReferenceCode, groupId, id, name}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {taxCategoryByExternalReferenceCode(externalReferenceCode: ___){creator, dateCreated, dateModified, description, externalReferenceCode, groupId, id, name, permissions}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
 		description = "Retrieves the tax category by its external reference code (ERC). Calls CPTaxCategoryService.getCPTaxCategoryByExternalReferenceCode. Validation -- NoSuchCPTaxCategoryException -> 404 when tax category ERC not found."
@@ -977,6 +1003,27 @@ public class Query {
 			taxCategoryResource ->
 				taxCategoryResource.getTaxCategoryByExternalReferenceCode(
 					externalReferenceCode));
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {taxCategoryPermissions(roleNames: ___, taxCategoryId: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
+	 */
+	@GraphQLField(
+		description = "Lists the role permissions granted on the tax category identified by ID. Requires the PERMISSIONS action on the tax category."
+	)
+	public TaxCategoryPage taxCategoryPermissions(
+			@GraphQLName("taxCategoryId") Long taxCategoryId,
+			@GraphQLName("roleNames") String roleNames)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_taxCategoryResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			taxCategoryResource -> new TaxCategoryPage(
+				taxCategoryResource.getTaxCategoryPermissionsPage(
+					taxCategoryId, roleNames)));
 	}
 
 	/**
@@ -2373,4 +2420,4 @@ public class Query {
 	private com.liferay.portal.kernel.model.User _user;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1020760556
+// LIFERAY-REST-BUILDER-HASH:2113315373
