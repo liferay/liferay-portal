@@ -5,10 +5,12 @@
 
 package com.liferay.layout.utility.page.service.impl;
 
+import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
 import com.liferay.layout.constants.LayoutTypeSettingsConstants;
 import com.liferay.layout.utility.page.exception.DefaultLayoutUtilityPageEntryException;
 import com.liferay.layout.utility.page.exception.LayoutUtilityPageEntryNameException;
+import com.liferay.layout.utility.page.exception.LayoutUtilityPageEntryPreviewFileEntryIdException;
 import com.liferay.layout.utility.page.model.LayoutUtilityPageEntry;
 import com.liferay.layout.utility.page.service.base.LayoutUtilityPageEntryLocalServiceBaseImpl;
 import com.liferay.layout.validator.LayoutValidator;
@@ -23,6 +25,7 @@ import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.model.LayoutSet;
 import com.liferay.portal.kernel.model.ModelHintsUtil;
+import com.liferay.portal.kernel.model.Repository;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
@@ -78,6 +81,7 @@ public class LayoutUtilityPageEntryLocalServiceImpl
 		throws PortalException {
 
 		_validateName(groupId, 0, name, type);
+		_validatePreviewFileEntryId(groupId, previewFileEntryId);
 
 		LayoutUtilityPageEntry layoutUtilityPageEntry =
 			layoutUtilityPageEntryPersistence.create(
@@ -401,6 +405,9 @@ public class LayoutUtilityPageEntryLocalServiceImpl
 			layoutUtilityPageEntryPersistence.findByPrimaryKey(
 				layoutUtilityPageEntryId);
 
+		_validatePreviewFileEntryId(
+			layoutUtilityPageEntry.getGroupId(), previewFileEntryId);
+
 		layoutUtilityPageEntry.setModifiedDate(
 			serviceContext.getModifiedDate(new Date()));
 
@@ -648,8 +655,33 @@ public class LayoutUtilityPageEntryLocalServiceImpl
 		}
 	}
 
+	private void _validatePreviewFileEntryId(
+			long groupId, long previewFileEntryId)
+		throws PortalException {
+
+		if (previewFileEntryId <= 0) {
+			return;
+		}
+
+		FileEntry fileEntry = _dlAppLocalService.fetchFileEntry(
+			previewFileEntryId);
+		Repository repository = _portletFileRepository.fetchPortletRepository(
+			groupId, LayoutAdminPortletKeys.GROUP_PAGES);
+
+		if ((fileEntry == null) || (repository == null) ||
+			(repository.getRepositoryId() != fileEntry.getRepositoryId())) {
+
+			throw new LayoutUtilityPageEntryPreviewFileEntryIdException(
+				"Unable to use file entry " + previewFileEntryId +
+					" as a preview");
+		}
+	}
+
 	@Reference
 	private CustomSQL _customSQL;
+
+	@Reference
+	private DLAppLocalService _dlAppLocalService;
 
 	@Reference
 	private File _file;
