@@ -174,10 +174,7 @@ public class ExpandoValueLocalServiceTest {
 			_ptLocale, "um"
 		).build();
 
-		long classPK = _counterLocalService.increment();
-
-		ExpandoTestUtil.addValues(
-			_expandoTable, classPK,
+		Map<String, Serializable> attributes =
 			new HashMapBuilder<>().<String, Serializable>put(
 				"Test Column One", data
 			).put(
@@ -187,7 +184,11 @@ public class ExpandoValueLocalServiceTest {
 				).build()
 			).put(
 				"Test Column Three", new HashMap<Locale, String>()
-			).build());
+			).build();
+
+		long classPK = _counterLocalService.increment();
+
+		ExpandoTestUtil.addValues(_expandoTable, classPK, attributes);
 
 		Assert.assertEquals(
 			data,
@@ -206,6 +207,16 @@ public class ExpandoValueLocalServiceTest {
 			_expandoValueLocalService.getData(
 				_expandoTable.getCompanyId(), _expandoTable.getClassName(),
 				_expandoTable.getName(), "Test Column Three", classPK));
+		Assert.assertEquals(
+			attributes,
+			_expandoValueLocalService.getData(
+				_expandoTable.getCompanyId(), _expandoTable.getClassName(),
+				_expandoTable.getName(), attributes.keySet(), classPK));
+		Assert.assertEquals(
+			attributes,
+			_expandoValueLocalService.getData(
+				_expandoTable.getCompanyId(), _expandoTable.getClassName(),
+				_expandoTable.getName(), classPK));
 	}
 
 	@Test
