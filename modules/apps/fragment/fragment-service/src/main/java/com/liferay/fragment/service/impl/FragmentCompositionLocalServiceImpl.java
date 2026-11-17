@@ -5,10 +5,13 @@
 
 package com.liferay.fragment.service.impl;
 
+import com.liferay.document.library.kernel.service.DLAppLocalService;
+import com.liferay.fragment.constants.FragmentPortletKeys;
 import com.liferay.fragment.exception.DuplicateFragmentCompositionKeyException;
 import com.liferay.fragment.exception.FragmentCompositionDescriptionException;
 import com.liferay.fragment.exception.FragmentCompositionGroupIdException;
 import com.liferay.fragment.exception.FragmentCompositionNameException;
+import com.liferay.fragment.exception.FragmentCompositionPreviewFileEntryIdException;
 import com.liferay.fragment.internal.util.FragmentCompositionKeyUtil;
 import com.liferay.fragment.model.FragmentComposition;
 import com.liferay.fragment.service.base.FragmentCompositionLocalServiceBaseImpl;
@@ -20,11 +23,13 @@ import com.liferay.portal.kernel.dao.orm.WildcardMode;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.ModelHintsUtil;
+import com.liferay.portal.kernel.model.Repository;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portletfilerepository.PortletFileRepository;
 import com.liferay.portal.kernel.portletfilerepository.PortletFileRepositoryUtil;
+import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourceLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -78,6 +83,7 @@ public class FragmentCompositionLocalServiceImpl
 
 		_validateName(name);
 		_validateDescription(description);
+		_validatePreviewFileEntryId(groupId, previewFileEntryId);
 
 		long fragmentCompositionId = counterLocalService.increment();
 
@@ -319,6 +325,9 @@ public class FragmentCompositionLocalServiceImpl
 			fragmentCompositionPersistence.findByPrimaryKey(
 				fragmentCompositionId);
 
+		_validatePreviewFileEntryId(
+			fragmentComposition.getGroupId(), previewFileEntryId);
+
 		fragmentComposition.setModifiedDate(new Date());
 
 		long previousPreviewFileEntryId =
@@ -350,6 +359,8 @@ public class FragmentCompositionLocalServiceImpl
 
 		_validateName(name);
 		_validateDescription(description);
+		_validatePreviewFileEntryId(
+			fragmentComposition.getGroupId(), previewFileEntryId);
 
 		User user = _userLocalService.getUser(userId);
 
@@ -445,8 +456,33 @@ public class FragmentCompositionLocalServiceImpl
 		}
 	}
 
+	private void _validatePreviewFileEntryId(
+			long groupId, long previewFileEntryId)
+		throws PortalException {
+
+		if (previewFileEntryId <= 0) {
+			return;
+		}
+
+		FileEntry fileEntry = _dlAppLocalService.fetchFileEntry(
+			previewFileEntryId);
+		Repository repository = _portletFileRepository.fetchPortletRepository(
+			groupId, FragmentPortletKeys.FRAGMENT);
+
+		if ((fileEntry == null) || (repository == null) ||
+			(repository.getRepositoryId() != fileEntry.getRepositoryId())) {
+
+			throw new FragmentCompositionPreviewFileEntryIdException(
+				"Unable to use file entry " + previewFileEntryId +
+					" as a preview");
+		}
+	}
+
 	@Reference
 	private CustomSQL _customSQL;
+
+	@Reference
+	private DLAppLocalService _dlAppLocalService;
 
 	@Reference
 	private GroupLocalService _groupLocalService;
