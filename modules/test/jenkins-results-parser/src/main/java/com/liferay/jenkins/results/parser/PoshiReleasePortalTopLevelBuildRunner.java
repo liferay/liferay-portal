@@ -301,8 +301,7 @@ public class PoshiReleasePortalTopLevelBuildRunner
 					"JENKINS_JOB_VARIANT", _getCITestSuite(upstreamBranchName));
 				invocationParameters.put(
 					"PORTAL_BUNDLES_DIST_URL",
-					JenkinsResultsParserUtil.getLatestPortalBundleS3ObjectPath(
-						upstreamBranchName));
+					_getLatestPortalBundleS3ObjectPath(upstreamBranchName));
 			}
 
 			for (Map.Entry<String, String> invocationParameter :
@@ -348,22 +347,27 @@ public class PoshiReleasePortalTopLevelBuildRunner
 	private String _getDistPortalBundlesBuildSHA(String upstreamBranchName)
 		throws IOException {
 
-		String latestPortalBundleS3ObjectPath = null;
+		String distPortalBundlesBuildSHA = _distPortalBundlesBuildSHAs.get(
+			upstreamBranchName);
 
-		try {
-			latestPortalBundleS3ObjectPath =
-				JenkinsResultsParserUtil.getLatestPortalBundleS3ObjectPath(
-					upstreamBranchName);
+		if (distPortalBundlesBuildSHA != null) {
+			return distPortalBundlesBuildSHA;
 		}
-		catch (Exception exception) {
-			System.out.println("WARNING: Unable to get a dist portal bundle");
-		}
+
+		String latestPortalBundleS3ObjectPath =
+			_getLatestPortalBundleS3ObjectPath(upstreamBranchName);
 
 		if ((latestPortalBundleS3ObjectPath != null) &&
 			latestPortalBundleS3ObjectPath.startsWith("s3://")) {
 
-			return JenkinsResultsParserUtil.getPortalBundleGitCommit(
-				latestPortalBundleS3ObjectPath);
+			distPortalBundlesBuildSHA =
+				JenkinsResultsParserUtil.getPortalBundleGitCommit(
+					latestPortalBundleS3ObjectPath);
+
+			_distPortalBundlesBuildSHAs.put(
+				upstreamBranchName, distPortalBundlesBuildSHA);
+
+			return distPortalBundlesBuildSHA;
 		}
 
 		StringBuilder sb = new StringBuilder();
@@ -379,7 +383,12 @@ public class PoshiReleasePortalTopLevelBuildRunner
 
 		RemoteGitRef remoteGitRef = GitUtil.getRemoteGitRef(sb.toString());
 
-		return remoteGitRef.getSHA();
+		distPortalBundlesBuildSHA = remoteGitRef.getSHA();
+
+		_distPortalBundlesBuildSHAs.put(
+			upstreamBranchName, distPortalBundlesBuildSHA);
+
+		return distPortalBundlesBuildSHA;
 	}
 
 	private String _getGitHubBranchName(String parameterName) {
@@ -471,6 +480,35 @@ public class PoshiReleasePortalTopLevelBuildRunner
 		}
 
 		return Collections.emptyList();
+	}
+
+	private String _getLatestPortalBundleS3ObjectPath(
+		String upstreamBranchName) {
+
+		String latestPortalBundleS3ObjectPath =
+			_latestPortalBundleS3ObjectPaths.get(upstreamBranchName);
+
+		if (latestPortalBundleS3ObjectPath != null) {
+			return latestPortalBundleS3ObjectPath;
+		}
+
+		try {
+			latestPortalBundleS3ObjectPath =
+				JenkinsResultsParserUtil.getLatestPortalBundleS3ObjectPath(
+					upstreamBranchName);
+		}
+		catch (Exception exception) {
+			System.out.println("WARNING: Unable to get a dist portal bundle");
+		}
+
+		if (latestPortalBundleS3ObjectPath == null) {
+			latestPortalBundleS3ObjectPath = "";
+		}
+
+		_latestPortalBundleS3ObjectPaths.put(
+			upstreamBranchName, latestPortalBundleS3ObjectPath);
+
+		return latestPortalBundleS3ObjectPath;
 	}
 
 	private String _getPortalGitHubURL() {
@@ -634,7 +672,11 @@ public class PoshiReleasePortalTopLevelBuildRunner
 		"https://github.com/(?<username>[^/]+)/(?<repository>[^/]+)/" +
 			"(commits|tree)/(?<branch>[^/]+)");
 
+	private final Map<String, String> _distPortalBundlesBuildSHAs =
+		new HashMap<>();
 	private String _gradlePluginsPoshiRunnerVersion;
+	private final Map<String, String> _latestPortalBundleS3ObjectPaths =
+		new HashMap<>();
 	private final Map<GitWorkingDirectory, PullRequest> _pullRequests =
 		new HashMap<>();
 	private final Map<GitWorkingDirectory, RemoteGitBranch> _remoteGitBranches =
