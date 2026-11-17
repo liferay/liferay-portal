@@ -129,6 +129,20 @@ public class SharepointURLHelperTest {
 	}
 
 	@Test
+	public void testGetFoldersWithChildrenCountURL() {
+		Assert.assertEquals(
+			_getFolderURL(
+				"/Shared%20Documents/Owner%27%27s%20folder",
+				StringBundler.concat(
+					"/Folders?$select=Name,ListItemAllFields",
+					"/EffectiveBasePermissions,ServerRelativeUrl,TimeCreated,",
+					"TimeLastModified,Files/Name,Folders/Name&$expand=",
+					"ListItemAllFields,Files,Folders")),
+			_sharepointURLHelper.getFoldersWithChildrenCountURL(
+				"/Shared Documents/Owner's folder"));
+	}
+
+	@Test
 	public void testGetListURL() {
 		SharepointURLHelper sharepointURLHelper = new SharepointURLHelper(
 			_SITE_ABSOLUTE_URL + "/sites/site", _RESULTS_SOURCE_ID);
