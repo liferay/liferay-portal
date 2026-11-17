@@ -11,9 +11,9 @@ import {GLOBAL_NODE_MODULES_DIR} from '../../locations.mjs';
 import print from '../../print.mjs';
 import ALLOWED_TYPES_PACKAGE_MISALIGNMENTS from './ALLOWED_TYPES_PACKAGE_MISALIGNMENTS.mjs';
 
-const GLOBALS_TYPES_PACKAGES = ['@types/jest'];
+const TYPES_PACKAGES_GLOBALS = ['@types/jest'];
 
-const RUNTIME_TYPES_PACKAGES = ['@types/node'];
+const TYPES_PACKAGES_RUNTIME = ['@types/node'];
 
 const TYPES_PREFIX = '@types/';
 
@@ -27,11 +27,10 @@ export default async function formatPackageJSONTypesPackages(packageJSONs) {
 		)
 	);
 
+	const errors = [];
 	const typeScriptVersion = readPackageJSON(
 		path.join(GLOBAL_NODE_MODULES_DIR, 'typescript')
 	).version;
-
-	const errors = [];
 
 	for (const {dir, pkg, relPath} of packageJSONs) {
 		for (const section of ['dependencies', 'devDependencies']) {
@@ -98,32 +97,32 @@ function checkTypesPackage(dir, typesName, typeScriptVersion) {
 		return `${typesPkg.version} requires TypeScript ${typesPkg.typeScriptVersion} but ${typeScriptVersion} is used`;
 	}
 
-	if (RUNTIME_TYPES_PACKAGES.includes(typesName)) {
+	if (TYPES_PACKAGES_RUNTIME.includes(typesName)) {
 		return;
 	}
 
-	const name = getDescribedPackageName(typesName);
+	const describedPackageName = getDescribedPackageName(typesName);
 
-	const describedDir = resolvePackageDir(name, dir);
+	const describedDir = resolvePackageDir(describedPackageName, dir);
 
 	if (!describedDir) {
-		return `is not needed because ${name} is not installed`;
+		return `is not needed because ${describedPackageName} is not installed`;
 	}
 
 	const describedPkg = readPackageJSON(describedDir);
 
 	if (
-		!GLOBALS_TYPES_PACKAGES.includes(typesName) &&
-		providesTypes(describedDir, describedPkg)
+		!TYPES_PACKAGES_GLOBALS.includes(typesName) &&
+		hasTypes(describedDir, describedPkg)
 	) {
-		return `is not needed because ${name} ${describedPkg.version} provides its own types`;
+		return `is not needed because ${describedPackageName} ${describedPkg.version} provides its own types`;
 	}
 
 	if (
 		!ALLOWED_TYPES_PACKAGE_MISALIGNMENTS.includes(typesName) &&
 		compareMajorMinor(typesPkg.version, describedPkg.version)
 	) {
-		return `${typesPkg.version} does not match the major.minor of ${name} ${describedPkg.version}`;
+		return `${typesPkg.version} does not match the major.minor of ${describedPackageName} ${describedPkg.version}`;
 	}
 }
 
@@ -144,17 +143,7 @@ function getDescribedPackageName(typesName) {
 	return name;
 }
 
-function hasTypesCondition(exports) {
-	if (!exports || typeof exports !== 'object') {
-		return false;
-	}
-
-	return Object.entries(exports).some(
-		([key, value]) => key === 'types' || hasTypesCondition(value)
-	);
-}
-
-function providesTypes(dir, pkg) {
+function hasTypes(dir, pkg) {
 	if (
 		pkg.types ||
 		pkg.typings ||
@@ -169,11 +158,21 @@ function providesTypes(dir, pkg) {
 		.replace(/\.[cm]?js$/, '');
 
 	return [
-		`${mainPath}.d.ts`,
 		`${mainPath}.d.cts`,
 		`${mainPath}.d.mts`,
+		`${mainPath}.d.ts`,
 		path.join(mainPath, 'index.d.ts'),
 	].some((filePath) => fs.existsSync(filePath));
+}
+
+function hasTypesCondition(exports) {
+	if (!exports || typeof exports !== 'object') {
+		return false;
+	}
+
+	return Object.entries(exports).some(
+		([key, value]) => key === 'types' || hasTypesCondition(value)
+	);
 }
 
 function readPackageJSON(dir) {

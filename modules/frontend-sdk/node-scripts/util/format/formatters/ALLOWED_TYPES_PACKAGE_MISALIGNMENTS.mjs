@@ -4,7 +4,7 @@
  */
 
 /**
- * "@types" packages that are allowed to declare a major.minor different from the one of the
+ * These "@types" packages are allowed to declare a major.minor different from the one of the
  * package they describe because no version with the right major.minor is published that supports
  * our TypeScript version. They are still checked for being needed and for supporting our
  * TypeScript version.
