@@ -378,6 +378,7 @@ XMLDefinition.prototype = {
 					locator: 'prompt',
 				},
 				'output-variables',
+				'parameters',
 				'rag',
 				'request-body',
 				'script',

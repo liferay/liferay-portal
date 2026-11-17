@@ -131,6 +131,8 @@ DeserializeUtil.prototype = {
 						[]
 					);
 
+					data.parameters = parseJSON(node.parameters, []);
+
 					data.prompt = node.prompt || '';
 
 					data.rag = parseRAG(node.rag);
