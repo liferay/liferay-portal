@@ -342,4 +342,191 @@ describe('FrontendDataSet (snapshots wrapper)', () => {
 			);
 		});
 	});
+
+	describe('sorts', () => {
+		const views = [
+			{
+				name: 'table',
+				schema: {
+					fields: [
+						{fieldName: 'name', label: 'Name', sortable: true},
+						{fieldName: 'views', label: 'Views', sortable: true},
+						{fieldName: 'notes', label: 'Notes', sortable: false},
+					],
+				},
+			},
+			{
+				name: 'allAttributes',
+				schema: {
+					fields: [
+						{fieldName: 'name', label: 'Name', sortable: true},
+						{
+							fieldName: 'downloads',
+							label: 'Downloads',
+							sortable: true,
+						},
+					],
+				},
+			},
+		];
+
+		const getSorts = () =>
+			lastProps?.sorts as {
+				active: boolean;
+				default: boolean;
+				direction: string;
+				key: string;
+			}[];
+
+		it('should offer one sort for each sortable field across the views, with no duplicates', () => {
+			render(
+				<FrontendDataSet
+					defaultSort={{key: 'views'}}
+					id="assetTable"
+					views={views}
+				/>
+			);
+
+			expect(lastProps?.sorts).toEqual([
+				{
+					active: false,
+					default: false,
+					direction: 'asc',
+					key: 'name',
+					label: 'Name',
+				},
+				{
+					active: true,
+					default: true,
+					direction: 'desc',
+					key: 'views',
+					label: 'Views',
+				},
+				{
+					active: false,
+					default: false,
+					direction: 'asc',
+					key: 'downloads',
+					label: 'Downloads',
+				},
+			]);
+		});
+
+		it('should give the default and the active sort the default direction, and start the others ascending', () => {
+			render(
+				<FrontendDataSet
+					activeSortKey="downloads"
+					defaultSort={{key: 'views'}}
+					id="assetTable"
+					views={views}
+				/>
+			);
+
+			expect(getSorts().map(({direction}) => direction)).toEqual([
+				'asc',
+				'desc',
+				'desc',
+			]);
+		});
+
+		it('should use the direction of the default sort', () => {
+			render(
+				<FrontendDataSet
+					defaultSort={{direction: 'asc', key: 'name'}}
+					id="assetTable"
+					views={views}
+				/>
+			);
+
+			expect(getSorts().map(({direction}) => direction)).toEqual([
+				'asc',
+				'asc',
+				'asc',
+			]);
+		});
+
+		it('should activate the active sort key and keep the default sort as the default', () => {
+			render(
+				<FrontendDataSet
+					activeSortKey="downloads"
+					defaultSort={{key: 'views'}}
+					id="assetTable"
+					views={views}
+				/>
+			);
+
+			expect(
+				getSorts()
+					.filter((sort) => sort.active)
+					.map(({key}) => key)
+			).toEqual(['downloads']);
+			expect(
+				getSorts()
+					.filter((sort) => sort.default)
+					.map(({key}) => key)
+			).toEqual(['views']);
+		});
+
+		it('should fall back to the default sort when the active sort key names no sortable field', () => {
+			render(
+				<FrontendDataSet
+					activeSortKey="notes"
+					defaultSort={{key: 'views'}}
+					id="assetTable"
+					views={views}
+				/>
+			);
+
+			expect(
+				getSorts()
+					.filter((sort) => sort.active)
+					.map(({key}) => key)
+			).toEqual(['views']);
+		});
+
+		it('should keep the default sort when its field is not sortable', () => {
+			render(
+				<FrontendDataSet
+					defaultSort={{key: 'notes'}}
+					id="assetTable"
+					views={views}
+				/>
+			);
+
+			expect(getSorts().map(({key}) => key)).toEqual([
+				'name',
+				'views',
+				'notes',
+				'downloads',
+			]);
+			expect(
+				getSorts()
+					.filter((sort) => sort.active)
+					.map(({key}) => key)
+			).toEqual(['notes']);
+		});
+
+		it('should pass an explicit sorts unchanged', () => {
+			const sorts = [
+				{active: true, direction: 'asc' as const, key: 'name'},
+			];
+
+			render(
+				<FrontendDataSet
+					defaultSort={{key: 'views'}}
+					id="assetTable"
+					sorts={sorts}
+					views={views}
+				/>
+			);
+
+			expect(lastProps?.sorts).toBe(sorts);
+		});
+
+		it('should pass no sorts without a default sort', () => {
+			render(<FrontendDataSet id="assetTable" views={views} />);
+
+			expect(lastProps?.sorts).toBeUndefined();
+		});
+	});
 });
