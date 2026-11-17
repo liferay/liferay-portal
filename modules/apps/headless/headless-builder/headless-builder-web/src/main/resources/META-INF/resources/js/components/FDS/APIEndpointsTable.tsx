@@ -4,7 +4,7 @@
  */
 
 import {FrontendDataSet} from '@liferay/frontend-data-set-web';
-import {openModal} from 'frontend-js-components-web';
+import {openModal, openToast} from 'frontend-js-components-web';
 import React, {Dispatch, SetStateAction, useContext, useEffect} from 'react';
 
 import {EditAPIApplicationContext} from '../EditAPIApplicationContext';
@@ -77,6 +77,27 @@ export default function APIEndpointsTable({
 		});
 	};
 
+	const copyAPIEndpointURL = async (itemData: APIEndpointItem) => {
+		try {
+			await navigator.clipboard.writeText(
+				itemData.scope.key === 'group'
+					? `${window.location.origin}${basePath}${apiApplicationBaseURL}/scopes/group${itemData.path}`
+					: `${window.location.origin}${basePath}${apiApplicationBaseURL}${itemData.path}`
+			);
+
+			openToast({
+				message: Liferay.Language.get('copied-to-clipboard'),
+				type: 'success',
+			});
+		}
+		catch {
+			openToast({
+				message: Liferay.Language.get('failed-to-copy-to-clipboard'),
+				type: 'danger',
+			});
+		}
+	};
+
 	function onActionDropdownItemClick({
 		action,
 		itemData,
@@ -87,11 +108,7 @@ export default function APIEndpointsTable({
 		}
 
 		if (action.id === 'copyEndpointURL') {
-			navigator.clipboard.writeText(
-				itemData.scope.key === 'group'
-					? `${window.location.origin}${basePath}${apiApplicationBaseURL}/scopes/group${itemData.path}`
-					: `${window.location.origin}${basePath}${apiApplicationBaseURL}${itemData.path}`
-			);
+			copyAPIEndpointURL(itemData);
 		}
 
 		if (action.id === 'deleteAPIEndpoint') {
