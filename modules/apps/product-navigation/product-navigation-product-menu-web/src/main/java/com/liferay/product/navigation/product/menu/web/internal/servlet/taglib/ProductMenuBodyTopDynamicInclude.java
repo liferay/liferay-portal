@@ -8,7 +8,8 @@ package com.liferay.product.navigation.product.menu.web.internal.servlet.taglib;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.portal.kernel.servlet.taglib.BaseDynamicInclude;
 import com.liferay.portal.kernel.servlet.taglib.DynamicInclude;
-import com.liferay.product.navigation.control.menu.manager.ProductNavigationControlMenuManager;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.product.navigation.product.menu.constants.ProductNavigationProductMenuPortletKeys;
 import com.liferay.product.navigation.product.menu.helper.ProductNavigationProductMenuHelper;
 import com.liferay.taglib.portletext.RuntimeTag;
@@ -40,8 +41,11 @@ public class ProductMenuBodyTopDynamicInclude extends BaseDynamicInclude {
 			HttpServletResponse httpServletResponse, String key)
 		throws IOException {
 
-		if (!_productNavigationControlMenuManager.isShowControlMenu(
-				httpServletRequest) ||
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		if (!themeDisplay.isShowControlMenu() ||
 			!_productNavigationProductMenuHelper.isShowProductMenu(
 				httpServletRequest)) {
 
@@ -71,10 +75,6 @@ public class ProductMenuBodyTopDynamicInclude extends BaseDynamicInclude {
 	}
 
 	private volatile BundleContext _bundleContext;
-
-	@Reference
-	private ProductNavigationControlMenuManager
-		_productNavigationControlMenuManager;
 
 	@Reference
 	private ProductNavigationProductMenuHelper

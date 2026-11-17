@@ -14,7 +14,6 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.product.navigation.control.menu.manager.ProductNavigationControlMenuManager;
 import com.liferay.product.navigation.taglib.internal.servlet.ServletContextUtil;
 import com.liferay.taglib.util.IncludeTag;
 
@@ -108,21 +107,15 @@ public class ProductNavigationControlMenuTag extends IncludeTag {
 	private boolean _isIncludePage() {
 		HttpServletRequest httpServletRequest = getRequest();
 
-		ProductNavigationControlMenuManager
-			productNavigationControlMenuManager =
-				ServletContextUtil.getProductNavigationControlMenuManager();
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
 
-		if (!productNavigationControlMenuManager.isShowControlMenu(
-				httpServletRequest)) {
-
+		if (!themeDisplay.isShowControlMenu()) {
 			return false;
 		}
 
 		// Temporary workaround for LPS-175648
-
-		ThemeDisplay themeDisplay =
-			(ThemeDisplay)httpServletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY);
 
 		if ((_ROLE_NAMES.length == 0) || !themeDisplay.isSignedIn()) {
 			return true;

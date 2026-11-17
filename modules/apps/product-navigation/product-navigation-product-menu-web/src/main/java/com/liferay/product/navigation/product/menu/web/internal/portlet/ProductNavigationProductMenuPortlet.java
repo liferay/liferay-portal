@@ -14,8 +14,9 @@ import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.LayoutService;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Portal;
-import com.liferay.product.navigation.control.menu.manager.ProductNavigationControlMenuManager;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.product.navigation.product.menu.constants.ProductNavigationProductMenuPortletKeys;
 import com.liferay.product.navigation.product.menu.helper.ProductNavigationProductMenuHelper;
 import com.liferay.product.navigation.product.menu.web.internal.display.context.LayoutsTreeDisplayContext;
@@ -68,8 +69,10 @@ public class ProductNavigationProductMenuPortlet extends MVCPortlet {
 		HttpServletRequest httpServletRequest = _portal.getHttpServletRequest(
 			renderRequest);
 
-		if (!_productNavigationControlMenuManager.isShowControlMenu(
-				httpServletRequest) ||
+		ThemeDisplay themeDisplay = (ThemeDisplay)renderRequest.getAttribute(
+			WebKeys.THEME_DISPLAY);
+
+		if (!themeDisplay.isShowControlMenu() ||
 			!_productNavigationProductMenuHelper.isShowProductMenu(
 				httpServletRequest)) {
 
@@ -115,10 +118,6 @@ public class ProductNavigationProductMenuPortlet extends MVCPortlet {
 
 	@Reference
 	private Portal _portal;
-
-	@Reference
-	private ProductNavigationControlMenuManager
-		_productNavigationControlMenuManager;
 
 	@Reference
 	private ProductNavigationProductMenuHelper
