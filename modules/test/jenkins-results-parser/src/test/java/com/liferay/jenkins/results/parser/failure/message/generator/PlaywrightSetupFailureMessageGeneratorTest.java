@@ -45,16 +45,16 @@ public class PlaywrightSetupFailureMessageGeneratorTest
 				"Duplicate OSGi modules found for ",
 				RandomTestUtil.randomString(), ":"));
 
-		String osgiModulesListFile = RandomTestUtil.randomString();
+		String fileName = RandomTestUtil.randomString();
 
 		_testGetMessageElement(
 			JenkinsResultsParserUtil.combine(
 				"Unable to deploy OSGi module ", RandomTestUtil.randomString(),
-				" in ", osgiModulesListFile, "."));
+				" in ", fileName, "."));
 		_testGetMessageElement(
 			JenkinsResultsParserUtil.combine(
 				"Unable to find OSGi module ", RandomTestUtil.randomString(),
-				" in ", osgiModulesListFile, "."));
+				" in ", fileName, "."));
 
 		Assert.assertNull(
 			_playwrightSetupFailureMessageGenerator.getMessageElement(""));
@@ -64,7 +64,7 @@ public class PlaywrightSetupFailureMessageGeneratorTest
 		Assert.assertNull(
 			_playwrightSetupFailureMessageGenerator.getMessageElement(
 				JenkinsResultsParserUtil.combine(
-					"  [exec] Deploying OSGi modules in ", osgiModulesListFile,
+					"  [exec] Deploying OSGi modules in ", fileName,
 					".\n  [exec] > Task :", RandomTestUtil.randomString(),
 					":compileJava FAILED\n")));
 	}
