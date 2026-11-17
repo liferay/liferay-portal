@@ -20,7 +20,6 @@ import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.FileVersion;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
@@ -123,10 +122,7 @@ public class FileEntryVerticalCard implements VerticalCard {
 
 		return LanguageUtil.format(
 			_httpServletRequest, "x-ago-by-x",
-			new Object[] {
-				modifiedDateDescription,
-				HtmlUtil.escape(_fileEntry.getUserName())
-			});
+			new Object[] {modifiedDateDescription, _fileEntry.getUserName()});
 	}
 
 	@Override

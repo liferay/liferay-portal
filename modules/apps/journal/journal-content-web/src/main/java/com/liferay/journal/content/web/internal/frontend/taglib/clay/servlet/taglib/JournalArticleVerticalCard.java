@@ -77,8 +77,7 @@ public class JournalArticleVerticalCard extends BaseVerticalCard {
 		try {
 			return StringBundler.concat(
 				title, StringPool.SPACE, StringPool.OPEN_PARENTHESIS,
-				HtmlUtil.escape(
-					articleGroup.getDescriptiveName(_themeDisplay.getLocale())),
+				articleGroup.getDescriptiveName(_themeDisplay.getLocale()),
 				StringPool.CLOSE_PARENTHESIS);
 		}
 		catch (Exception exception) {

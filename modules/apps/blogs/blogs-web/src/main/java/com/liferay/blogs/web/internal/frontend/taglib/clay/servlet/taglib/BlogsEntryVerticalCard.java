@@ -19,7 +19,6 @@ import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.util.HtmlParser;
-import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.trash.TrashHelper;
@@ -120,11 +119,12 @@ public class BlogsEntryVerticalCard extends BaseVerticalCard {
 			PortalUtil.getHttpServletRequest(renderRequest),
 			System.currentTimeMillis() - modifiedDate.getTime(), true);
 
+		BlogsEntry blogsEntry = _blogsEntry.toUnescapedModel();
+
 		return LanguageUtil.format(
 			_resourceBundle, "x-ago-by-x",
 			new Object[] {
-				modifiedDateDescription,
-				HtmlUtil.escape(_blogsEntry.getStatusByUserName())
+				modifiedDateDescription, blogsEntry.getStatusByUserName()
 			});
 	}
 

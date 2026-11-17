@@ -20,7 +20,6 @@ import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.repository.model.FileShortcut;
 import com.liferay.portal.kernel.repository.model.FileVersion;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
@@ -124,8 +123,7 @@ public class FileShortcutVerticalCard implements VerticalCard {
 		return LanguageUtil.format(
 			_httpServletRequest, "x-ago-by-x",
 			new Object[] {
-				modifiedDateDescription,
-				HtmlUtil.escape(_fileShortcut.getUserName())
+				modifiedDateDescription, _fileShortcut.getUserName()
 			});
 	}
 

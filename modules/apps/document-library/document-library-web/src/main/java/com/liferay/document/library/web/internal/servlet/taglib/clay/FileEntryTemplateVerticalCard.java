@@ -13,7 +13,6 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -73,8 +72,7 @@ public class FileEntryTemplateVerticalCard implements VerticalCard {
 		User user = _themeDisplay.getUser();
 
 		return LanguageUtil.format(
-			_themeDisplay.getLocale(), "right-now-by-x",
-			HtmlUtil.escape(user.getFullName()));
+			_themeDisplay.getLocale(), "right-now-by-x", user.getFullName());
 	}
 
 	@Override
