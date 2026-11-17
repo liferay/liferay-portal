@@ -13,6 +13,7 @@
 		"@clayui/modal": "^3.167.0",
 		"@clayui/popover": "^3.167.0",
 		"@clayui/table": "^3.167.0",
+		"@liferay/ai-hub-cell-js-components-web": "*",
 		"@liferay/frontend-data-set-web": "*",
 		"@liferay/frontend-icons-web": "*",
 		"@liferay/frontend-js-item-selector-web": "*",
