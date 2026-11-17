@@ -881,6 +881,7 @@ public class DataSourceFaroController extends BaseFaroController {
 
 	@GET
 	@Path("/{id}/progress")
+	@RolesAllowed(RoleConstants.SITE_MEMBER)
 	public Map<String, DataSourceProgress> getDataSourceProgress(
 			@PathParam("groupId") long groupId, @PathParam("id") String id)
 		throws Exception {
@@ -985,6 +986,7 @@ public class DataSourceFaroController extends BaseFaroController {
 
 	@GET
 	@Path("/{type}/oauth_request_token_credentials")
+	@RolesAllowed(RoleConstants.SITE_MEMBER)
 	public Credentials getOAuthRequestTokenCredentials(
 		@PathParam("groupId") long groupId, @PathParam("type") String type,
 		@QueryParam("baseURL") String baseURL,

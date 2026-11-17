@@ -10,6 +10,9 @@ import com.liferay.osb.faro.web.internal.controller.BaseFaroController;
 import com.liferay.osb.faro.web.internal.model.display.FaroFDSResultsDisplay;
 import com.liferay.osb.faro.web.internal.model.display.contacts.AssetSummaryCategoryDisplay;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.model.RoleConstants;
+
+import jakarta.annotation.security.RolesAllowed;
 
 import jakarta.ws.rs.DefaultValue;
 import jakarta.ws.rs.GET;
@@ -30,6 +33,7 @@ import org.osgi.service.component.annotations.Component;
 public class AssetSummaryCategoryFaroController extends BaseFaroController {
 
 	@GET
+	@RolesAllowed(RoleConstants.SITE_MEMBER)
 	public FaroFDSResultsDisplay<AssetSummaryCategory>
 			getAssetSummaryCategoriesFaroFDSResultsDisplay(
 				@PathParam("groupId") long groupId,
