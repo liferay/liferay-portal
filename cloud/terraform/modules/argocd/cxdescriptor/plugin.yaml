@@ -1,9 +1,9 @@
 description:
-    Reads client extension descriptors from OCI artifacts as values files
+    Reads client extension descriptors from OCI artifacts as values files.
 downloaders:
     -   command: bin/cxdescriptor.sh
         protocols:
             -   cxdescriptor
 name: cxdescriptor
-usage: Reads client extension descriptors from OCI artifacts as values files
+usage: Reads client extension descriptors from OCI artifacts as values files.
 version: 1.0.0

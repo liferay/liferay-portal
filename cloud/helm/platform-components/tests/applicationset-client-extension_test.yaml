@@ -34,6 +34,15 @@ tests:
         it: Derives the application names and namespaces from the layout expressions
     -   asserts:
             -   failedTemplate:
+                    errorMessage: The value "gitops.layout.base" may only use {{path[n]}} placeholders for the client extension ApplicationSet
+                template: templates/applicationset-client-extension.yaml
+        it: Fails for a base layout that uses a placeholder other than a path segment
+        set:
+            gitops:
+                layout:
+                    base: liferay/projects/{{path.basename}}/base
+    -   asserts:
+            -   failedTemplate:
                     errorMessage: The value "gitops.layout.projectId" must have the form {{path[n]}} for the client extension ApplicationSet
                 template: templates/applicationset-client-extension.yaml
         it: Fails for a layout expression that is not a path segment
@@ -83,16 +92,6 @@ tests:
                 enabled: false
     -   asserts:
             -   equal:
-                    path: spec.template.spec.source.helm.valueFiles
-                    value:
-                        -   "cxdescriptor://{{ trimPrefix \"oci://\" .descriptor }}:{{ .version }}"
-                template: templates/applicationset-client-extension.yaml
-            -   notExists:
-                    path: spec.generators[0].matrix.generators[1].oci
-                template: templates/applicationset-client-extension.yaml
-        it: Reads each client extension descriptor for its own Application, not in a generator
-    -   asserts:
-            -   equal:
                     path: spec.generators[0].matrix.generators[0].matrix.generators
                     value:
                         -   git:
@@ -109,14 +108,24 @@ tests:
                 template: templates/applicationset-client-extension.yaml
         it: Pairs each environment's liferay.yaml with its project's base liferay.yaml
     -   asserts:
-            -   failedTemplate:
-                    errorMessage: The value "gitops.layout.base" may only use {{path[n]}} placeholders for the client extension ApplicationSet
+            -   notExists:
+                    path: spec.templatePatch
                 template: templates/applicationset-client-extension.yaml
-        it: Fails for a base layout that uses a placeholder other than a path segment
-        set:
-            gitops:
-                layout:
-                    base: liferay/projects/{{path.basename}}/base
+            -   notMatchRegex:
+                    path: spec.template.spec.source.helm.values
+                    pattern: "\\b(fail|required)\\b"
+                template: templates/applicationset-client-extension.yaml
+        it: Passes the liferay.yaml values to the chart through toJson, without a template patch or anything that can fail
+    -   asserts:
+            -   equal:
+                    path: spec.template.spec.source.helm.valueFiles
+                    value:
+                        -   "cxdescriptor://{{ trimPrefix \"oci://\" .descriptor }}:{{ .version }}"
+                template: templates/applicationset-client-extension.yaml
+            -   notExists:
+                    path: spec.generators[0].matrix.generators[1].oci
+                template: templates/applicationset-client-extension.yaml
+        it: Reads each client extension descriptor for its own Application, not in a generator
     -   asserts:
             -   equal:
                     path: spec.template.spec.source
@@ -153,12 +162,3 @@ tests:
                 chart:
                     repoURL: oci://registry.example.com/charts/liferay-client-extension
                     targetRevision: 0.2.0
-    -   asserts:
-            -   notExists:
-                    path: spec.templatePatch
-                template: templates/applicationset-client-extension.yaml
-            -   notMatchRegex:
-                    path: spec.template.spec.source.helm.values
-                    pattern: "\\b(fail|required)\\b"
-                template: templates/applicationset-client-extension.yaml
-        it: Passes the liferay.yaml values to the chart through toJson, without a template patch or anything that can fail

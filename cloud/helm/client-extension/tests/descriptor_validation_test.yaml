@@ -10,17 +10,6 @@ templates:
 tests:
     -   asserts:
             -   failedTemplate:
-                    errorMessage: descriptor version 2 is not supported, expected 1
-                template: templates/clientextension.yaml
-        it: Fails a descriptor version it cannot read
-        set:
-            descriptor:
-                configs:
-                    key~able: {}
-                descriptorVersion: 2
-                type: service
-    -   asserts:
-            -   failedTemplate:
                     errorMessage: descriptor type other is not supported, expected batch, configuration, frontend, or service
                 template: templates/clientextension.yaml
         it: Fails a descriptor type it cannot run
@@ -30,6 +19,17 @@ tests:
                     key~able: {}
                 descriptorVersion: 1
                 type: other
+    -   asserts:
+            -   failedTemplate:
+                    errorMessage: descriptor version 2 is not supported, expected 1
+                template: templates/clientextension.yaml
+        it: Fails a descriptor version it cannot read
+        set:
+            descriptor:
+                configs:
+                    key~able: {}
+                descriptorVersion: 2
+                type: service
     -   asserts:
             -   failedTemplate:
                     errorMessage: descriptor configs must be an object

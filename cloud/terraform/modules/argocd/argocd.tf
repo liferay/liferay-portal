@@ -146,18 +146,6 @@ resource "helm_release" "argocd" {
 					}
 					extraObjects=[
 						{
-							apiVersion="v1"
-							data={
-								"cxdescriptor.sh"=file("${path.module}/cxdescriptor/cxdescriptor.sh")
-								"plugin.yaml"=file("${path.module}/cxdescriptor/plugin.yaml")
-							}
-							kind="ConfigMap"
-							metadata={
-								labels=local.common_labels
-								name="argocd-repo-server-cxdescriptor"
-							}
-						},
-						{
 							apiVersion="networking.k8s.io/v1"
 							kind="NetworkPolicy"
 							metadata={
@@ -358,6 +346,18 @@ resource "helm_release" "argocd" {
 										"app.kubernetes.io/name"="argocd-repo-server"
 									}
 								}
+							}
+						},
+						{
+							apiVersion="v1"
+							data={
+								"cxdescriptor.sh"=file("${path.module}/cxdescriptor/cxdescriptor.sh")
+								"plugin.yaml"=file("${path.module}/cxdescriptor/plugin.yaml")
+							}
+							kind="ConfigMap"
+							metadata={
+								labels=local.common_labels
+								name="argocd-repo-server-cxdescriptor"
 							}
 						},
 						{

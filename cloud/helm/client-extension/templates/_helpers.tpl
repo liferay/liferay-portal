@@ -3,8 +3,8 @@
 {{- end }}
 
 {{- define "liferay-client-extension.configs" -}}
-{{- $descriptor := include "liferay-client-extension.descriptor" . | fromJson -}}
 {{- $configs := deepCopy (.Values.clientExtension.configs | default dict) -}}
+{{- $descriptor := include "liferay-client-extension.descriptor" . | fromJson -}}
 {{- toJson (merge $configs (get $descriptor "configs" | default dict)) -}}
 {{- end }}
 
@@ -93,6 +93,14 @@ app.kubernetes.io/instance: {{ include "liferay-client-extension.fullname" . }}
 app.kubernetes.io/name: {{ include "liferay-client-extension.serviceId" . | quote }}
 {{- end }}
 
+{{- define "liferay-client-extension.serviceAccountName" -}}
+{{- if .Values.serviceAccount.create }}
+{{- default (include "liferay-client-extension.fullname" .) .Values.serviceAccount.name }}
+{{- else }}
+{{- .Values.serviceAccount.name }}
+{{- end }}
+{{- end }}
+
 {{- define "liferay-client-extension.serviceEnabled" -}}
 {{- if kindIs "bool" .Values.service.enabled -}}
 {{- if .Values.service.enabled -}}
@@ -101,14 +109,6 @@ true
 {{- else if and (include "liferay-client-extension.descriptorType" .) (include "liferay-client-extension.workloadEnabled" .) (eq (include "liferay-client-extension.workloadKind" .) "Deployment") -}}
 true
 {{- end -}}
-{{- end }}
-
-{{- define "liferay-client-extension.serviceAccountName" -}}
-{{- if .Values.serviceAccount.create }}
-{{- default (include "liferay-client-extension.fullname" .) .Values.serviceAccount.name }}
-{{- else }}
-{{- .Values.serviceAccount.name }}
-{{- end }}
 {{- end }}
 
 {{- define "liferay-client-extension.serviceId" -}}

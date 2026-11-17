@@ -1,9 +1,13 @@
 #!/bin/bash
 
+set -o errexit
+set -o nounset
+set -o pipefail
+
 function main {
 	local reference
 
-	reference=$(echo "${4}" | sed --expression "s|^cxdescriptor://||")
+	reference=$(echo "${4}" | sed -e "s|^cxdescriptor://||")
 
 	if ! _check_registry "${reference}"
 	then
@@ -12,7 +16,7 @@ function main {
 
 	_IMAGE_FILE=$(mktemp)
 
-	trap 'rm --force "${_IMAGE_FILE}"' EXIT
+	trap 'rm -f "${_IMAGE_FILE}"' EXIT
 
 	export DOCKER_CONFIG="/cxdescriptor-docker-config"
 
@@ -29,7 +33,7 @@ function main {
 }
 
 function _check_registry {
-	if [ -z "${CXDESCRIPTOR_REGISTRIES}" ]
+	if [[ -z ${CXDESCRIPTOR_REGISTRIES} ]]
 	then
 		return 0
 	fi

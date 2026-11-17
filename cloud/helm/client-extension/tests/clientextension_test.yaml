@@ -26,6 +26,10 @@ tests:
             clientExtension:
                 configs: null
     -   asserts:
+            -   notExists:
+                    path: spec.version
+        it: Omits the version when none is set
+    -   asserts:
             -   equal:
                     path: spec.workloadRef
                     value:
@@ -116,7 +120,3 @@ tests:
         set:
             clientExtension:
                 version: 5.0.0
-    -   asserts:
-            -   notExists:
-                    path: spec.version
-        it: Omits the version when none is set

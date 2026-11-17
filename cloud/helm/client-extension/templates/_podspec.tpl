@@ -1,5 +1,4 @@
 {{- define "liferay-client-extension.podSpec" -}}
-{{- $descriptor := include "liferay-client-extension.descriptor" . | fromJson -}}
 {{- $extInit := include "liferay-client-extension.requiresExtInit" . -}}
 {{- $kind := include "liferay-client-extension.workloadKind" . -}}
 {{- with .Values.workload.affinity }}
@@ -8,17 +7,18 @@ affinity:
 {{- end }}
 containers:
     -   env:
+            {{- $descriptor := include "liferay-client-extension.descriptor" . | fromJson }}
+            {{- $batchOAuthApplicationERC := get $descriptor "oauthApplicationHeadlessServerERC" }}
+            {{- if and (eq (get $descriptor "type") "batch") $batchOAuthApplicationERC (not (hasKey (.Values.workload.env | default dict) "LIFERAY_BATCH_OAUTH_APP_ERC")) }}
+            -   name: LIFERAY_BATCH_OAUTH_APP_ERC
+                value: {{ $batchOAuthApplicationERC | quote }}
+            {{- end }}
             {{- if $extInit }}
             -   name: LIFERAY_ROUTES_CLIENT_EXTENSION
                 value: /etc/liferay/lxc/ext-init-metadata
             {{- end }}
             -   name: LIFERAY_ROUTES_DXP
                 value: /etc/liferay/lxc/dxp-metadata
-            {{- $batchOAuthApplicationERC := get $descriptor "oauthApplicationHeadlessServerERC" }}
-            {{- if and (eq (get $descriptor "type") "batch") $batchOAuthApplicationERC (not (hasKey (.Values.workload.env | default dict) "LIFERAY_BATCH_OAUTH_APP_ERC")) }}
-            -   name: LIFERAY_BATCH_OAUTH_APP_ERC
-                value: {{ $batchOAuthApplicationERC | quote }}
-            {{- end }}
             {{- range $name, $value := .Values.workload.env }}
             {{- if not (has $name (list "LIFERAY_ROUTES_CLIENT_EXTENSION" "LIFERAY_ROUTES_DXP")) }}
             -   name: {{ $name }}

@@ -160,7 +160,7 @@ run "should_install_the_cxdescriptor_helm_plugin" {
 	}
 	assert {
 		condition=yamldecode(helm_release.argocd.values[0]).repoServer.initContainers[0].securityContext.runAsUser == 65532
-		error_message="The cxdescriptor init container must run as a non-root user in the restricted argocd-system namespace"
+		error_message="The cxdescriptor init container must run as a non root user in the restricted argocd-system namespace"
 	}
 	assert {
 		condition=[for v in yamldecode(helm_release.argocd.values[0]).repoServer.volumes : v.secret if v.name == "cxdescriptor-docker-config"][0] == {items=[{key=".dockerconfigjson", path="config.json"}], optional=true, secretName="argocd-cxdescriptor-registry-credentials"}
