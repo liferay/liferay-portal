@@ -1,3 +1,4 @@
+import AssetTypeDisplay from './AssetTypeDisplay';
 import AttributeConjunctionDisplay from './AttributeConjunctionDisplay';
 import DateFilterConjunctionDisplay from './DateFilterConjunctionDisplay';
 import OccurenceConjunctionDisplay from './OccurenceConjunctionDisplay';
@@ -42,6 +43,11 @@ const BehaviorDisplay: React.FC<IDisplayComponentProps> = ({
 	const singleApplicationId = activityKeys.length
 		? undefined
 		: getFilterValueByPropertyName(valueIMap, 'applicationId');
+
+	const objectDefinitionName =
+		singleApplicationId === 'ObjectEntry'
+			? getFilterValueByPropertyName(valueIMap, 'objectDefinitionName')
+			: undefined;
 
 	const operatorKey = maybeFormatToKnownType(operatorName ?? '', name);
 
@@ -102,7 +108,11 @@ const BehaviorDisplay: React.FC<IDisplayComponentProps> = ({
 				);
 			})}
 
-			{singleApplicationId && (
+			{objectDefinitionName && (
+				<AssetTypeDisplay objectDefinitionName={objectDefinitionName} />
+			)}
+
+			{singleApplicationId && !objectDefinitionName && (
 				<span>
 					{ASSET_TYPE_LANG_MAP[
 						singleApplicationId as keyof typeof ASSET_TYPE_LANG_MAP
