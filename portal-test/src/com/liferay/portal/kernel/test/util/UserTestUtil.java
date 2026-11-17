@@ -382,8 +382,6 @@ public class UserTestUtil {
 		String screenName = "TestUser" + RandomTestUtil.nextLong();
 		String emailAddress =
 			"UserServiceTest." + RandomTestUtil.nextLong() + "@liferay.com";
-		long facebookId = 0;
-		String openId = StringPool.BLANK;
 		String languageId = StringPool.BLANK;
 		String timeZoneId = StringPool.BLANK;
 		String greeting = StringPool.BLANK;
@@ -412,12 +410,12 @@ public class UserTestUtil {
 		return UserServiceUtil.updateUser(
 			user.getUserId(), oldPassword, newPassword1, newPassword2,
 			passwordReset, reminderQueryQuestion, reminderQueryAnswer,
-			screenName, emailAddress, facebookId, openId, languageId,
-			timeZoneId, greeting, comments, firstName, middleName, lastName,
-			prefixListTypeId, suffixListTypeId, male, birthdayMonth,
-			birthdayDay, birthdayYear, smsSn, facebookSn, jabberSn, skypeSn,
-			twitterSn, jobTitle, groupIds, organizationIds, roleIds,
-			userGroupRoles, userGroupIds, serviceContext);
+			screenName, emailAddress, languageId, timeZoneId, greeting,
+			comments, firstName, middleName, lastName, prefixListTypeId,
+			suffixListTypeId, male, birthdayMonth, birthdayDay, birthdayYear,
+			smsSn, facebookSn, jabberSn, skypeSn, twitterSn, jobTitle, groupIds,
+			organizationIds, roleIds, userGroupRoles, userGroupIds,
+			serviceContext);
 	}
 
 }
