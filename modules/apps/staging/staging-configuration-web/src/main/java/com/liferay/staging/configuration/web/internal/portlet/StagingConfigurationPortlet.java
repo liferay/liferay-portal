@@ -6,6 +6,7 @@
 package com.liferay.staging.configuration.web.internal.portlet;
 
 import com.liferay.change.tracking.configuration.CTSettingsConfiguration;
+import com.liferay.exportimport.kernel.exception.RemoteExportException;
 import com.liferay.exportimport.kernel.service.StagingLocalService;
 import com.liferay.exportimport.kernel.staging.Staging;
 import com.liferay.exportimport.kernel.staging.constants.StagingConstants;
@@ -16,6 +17,7 @@ import com.liferay.portal.kernel.backgroundtask.constants.BackgroundTaskConstant
 import com.liferay.portal.kernel.exception.LocaleException;
 import com.liferay.portal.kernel.exception.NoSuchBackgroundTaskException;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.exception.RemoteOptionsException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -195,6 +197,12 @@ public class StagingConfigurationPortlet extends MVCPortlet {
 			catch (Exception exception) {
 				SessionErrors.add(
 					actionRequest, exception.getClass(), exception);
+
+				if (exception instanceof RemoteExportException ||
+					exception instanceof RemoteOptionsException) {
+
+					hideDefaultErrorMessage(actionRequest);
+				}
 
 				if (_log.isDebugEnabled()) {
 					_log.debug(exception);

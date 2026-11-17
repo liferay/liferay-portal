@@ -12,6 +12,11 @@
 	%>
 
 	<c:if test="<%= roe.getType() == RemoteOptionsException.REMOTE_ADDRESS %>">
+
+		<%
+		invalidRemoteOptionName = "remoteAddress";
+		%>
+
 		<liferay-ui:message arguments="<%= roe.getRemoteAddress() %>" key="the-remote-address-x-is-not-valid" translateArguments="<%= false %>" />
 
 		<c:if test="<%= liveGroup.isStaged() && liveGroup.isStagedRemotely() %>">
@@ -27,14 +32,29 @@
 	</c:if>
 
 	<c:if test="<%= roe.getType() == RemoteOptionsException.REMOTE_GROUP_ID %>">
+
+		<%
+		invalidRemoteOptionName = "remoteGroupId";
+		%>
+
 		<liferay-ui:message arguments="<%= roe.getRemoteGroupId() %>" key="the-remote-site-id-x-is-not-valid" translateArguments="<%= false %>" />
 	</c:if>
 
 	<c:if test="<%= roe.getType() == RemoteOptionsException.REMOTE_PATH_CONTEXT %>">
+
+		<%
+		invalidRemoteOptionName = "remotePathContext";
+		%>
+
 		<liferay-ui:message arguments="<%= roe.getRemotePathContext() %>" key="the-remote-path-context-x-is-not-valid" translateArguments="<%= false %>" />
 	</c:if>
 
 	<c:if test="<%= roe.getType() == RemoteOptionsException.REMOTE_PORT %>">
+
+		<%
+		invalidRemoteOptionName = "remotePort";
+		%>
+
 		<liferay-ui:message arguments="<%= roe.getRemotePort() %>" key="the-remote-port-x-is-not-valid" translateArguments="<%= false %>" />
 	</c:if>
 </liferay-ui:error>

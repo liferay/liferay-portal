@@ -13,19 +13,23 @@ int stagingType = ParamUtil.getInteger(request, "stagingType");
 if (stagingType == StagingConstants.TYPE_REMOTE_STAGING) {
 	showRemoteOptions = true;
 }
+
+String invalidRemoteOptionName = null;
 %>
 
 <div class="<%= showRemoteOptions ? StringPool.BLANK : "hide" %>" id="<portlet:namespace />remoteStagingOptions">
-	<%@ include file="/error_auth_exception.jspf" %>
+	<div id="<portlet:namespace />remoteStagingErrors">
+		<%@ include file="/error_auth_exception.jspf" %>
 
-	<%@ include file="/error_remote_export_exception.jspf" %>
+		<%@ include file="/error_remote_export_exception.jspf" %>
+
+		<%@ include file="/error_remote_options_exception.jspf" %>
+	</div>
 
 	<div cssClass="sheet-section">
 		<div class="sheet-subtitle">
 			<liferay-ui:message key="remote-live-connection-settings" />
 		</div>
-
-		<%@ include file="/error_remote_options_exception.jspf" %>
 
 		<liferay-staging:alert
 			type="INFO"
@@ -66,6 +70,22 @@ if (stagingType == StagingConstants.TYPE_REMOTE_STAGING) {
 </div>
 
 <aui:script>
+	<c:if test="<%= invalidRemoteOptionName != null %>">
+		var invalidRemoteOptionInput = document.getElementById(
+			'<portlet:namespace /><%= invalidRemoteOptionName %>'
+		);
+
+		invalidRemoteOptionInput.setAttribute(
+			'aria-describedby',
+			'<portlet:namespace />remoteStagingErrors'
+		);
+		invalidRemoteOptionInput.setAttribute('aria-invalid', 'true');
+
+		invalidRemoteOptionInput.closest('.form-group').classList.add('has-error');
+
+		invalidRemoteOptionInput.focus();
+	</c:if>
+
 	var overrideRemoteSiteURLCheckbox = document.getElementById(
 		'<portlet:namespace />overrideRemoteSiteURL'
 	);

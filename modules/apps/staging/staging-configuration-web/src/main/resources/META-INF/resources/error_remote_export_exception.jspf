@@ -12,6 +12,11 @@
 	%>
 
 	<c:if test="<%= ree.getType() == RemoteExportException.BAD_CONNECTION %>">
+
+		<%
+		invalidRemoteOptionName = "remoteAddress";
+		%>
+
 		<liferay-ui:message arguments='<%= "<em>" + HtmlUtil.escape(ree.getURL()) + "</em>" %>' key="could-not-connect-to-address-x.-please-verify-that-the-specified-port-is-correct-and-that-the-remote-server-is-configured-to-accept-requests-from-this-server" translateArguments="<%= false %>" />
 
 		<c:if test="<%= liveGroup.isStaged() && liveGroup.isStagedRemotely() %>">
@@ -27,10 +32,20 @@
 	</c:if>
 
 	<c:if test="<%= ree.getType() == RemoteExportException.SAME_GROUP %>">
+
+		<%
+		invalidRemoteOptionName = "remoteGroupId";
+		%>
+
 		<liferay-ui:message arguments='<%= "<em>" + ree.getGroupId() + "</em>" %>' key="unable-to-activate-remote-staging-on-site-with-id-x.-the-remote-live-site-must-be-different-from-the-stage-site" translateArguments="<%= false %>" />
 	</c:if>
 
 	<c:if test="<%= ree.getType() == RemoteExportException.INVALID_GROUP %>">
+
+		<%
+		invalidRemoteOptionName = "remoteGroupId";
+		%>
+
 		<c:choose>
 			<c:when test="<%= liveGroup.isDepot() %>">
 				<liferay-ui:message arguments='<%= "<em>" + ree.getGroupId() + "</em>" %>' key="unable-to-activate-remote-staging-on-site-with-id-x.-an-asset-library-can-can-only-be-staged-to-another-asset-library" translateArguments="<%= false %>" />
@@ -42,10 +57,20 @@
 	</c:if>
 
 	<c:if test="<%= ree.getType() == RemoteExportException.INVALID_STATE %>">
+
+		<%
+		invalidRemoteOptionName = "remoteGroupId";
+		%>
+
 		<liferay-ui:message arguments='<%= "<em>" + ree.getGroupId() + "</em>" %>' key="unable-to-activate-remote-staging-on-site-with-id-x.-the-remote-live-site-cannot-be-locally-staged" translateArguments="<%= false %>" />
 	</c:if>
 
 	<c:if test="<%= ree.getType() == RemoteExportException.NO_GROUP %>">
+
+		<%
+		invalidRemoteOptionName = "remoteGroupId";
+		%>
+
 		<liferay-ui:message arguments='<%= "<em>" + ree.getGroupId() + "</em>" %>' key="no-site-exists-on-the-remote-server-with-site-id-x" translateArguments="<%= false %>" />
 
 		<c:if test="<%= liveGroup.isStaged() && liveGroup.isStagedRemotely() %>">
@@ -61,6 +86,11 @@
 	</c:if>
 
 	<c:if test="<%= ree.getType() == RemoteExportException.NO_PERMISSIONS %>">
+
+		<%
+		invalidRemoteOptionName = "remoteGroupId";
+		%>
+
 		<liferay-ui:message arguments='<%= "<em>" + ree.getGroupId() + "</em>" %>' key="you-do-not-have-permissions-to-edit-the-site-with-id-x-on-the-remote-server.-please-verify-that-you-have-the-proper-permissions-in-both-the-live-environment-and-the-staging-environment" translateArguments="<%= false %>" />
 	</c:if>
 </liferay-ui:error>
