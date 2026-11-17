@@ -46,11 +46,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>CACHEABLE_CHECKBOX</td>
-	<td>//input[contains(@id,'JournalPortlet_cacheable')]</td>
-	<td></td>
-</tr>
-<tr>
 	<td>DETAILS_TOGGLE</td>
 	<td>//button[@role='tab']/span[contains(text(), 'Details')]</td>
 	<td></td>

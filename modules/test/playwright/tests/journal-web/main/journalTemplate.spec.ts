@@ -8,6 +8,7 @@ import {expect, mergeTests} from '@playwright/test';
 import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
+import getRandomString from '../../../utils/getRandomString';
 import {journalPagesTest} from './fixtures/journalPagesTest';
 
 export const test = mergeTests(
@@ -56,3 +57,37 @@ test('This is a test for LPS-153976 and LPD-16407. Check Featured image and rese
 		).toBeVisible();
 	}
 });
+
+test(
+	'The Cacheable checkbox is checked by default and keeps its value after saving',
+	{tag: '@LPS-67094'},
+	async ({journalEditTemplatePage, page, site}) => {
+		await journalEditTemplatePage.goto(site.friendlyUrlPath);
+
+		const cacheableCheckbox = page.getByLabel('Cacheable', {exact: true});
+
+		await expect(cacheableCheckbox).toBeChecked();
+
+		await page
+			.getByPlaceholder('Untitled Template')
+			.pressSequentially(getRandomString(), {delay: 50});
+
+		await cacheableCheckbox.uncheck();
+
+		await page
+			.getByRole('button', {exact: true, name: 'Save and Continue'})
+			.click();
+
+		await page.waitForURL(/ddmTemplateId=/);
+
+		await expect(cacheableCheckbox).not.toBeChecked();
+
+		await cacheableCheckbox.check();
+
+		await journalEditTemplatePage.saveTemplate();
+
+		await page.reload();
+
+		await expect(cacheableCheckbox).toBeChecked();
+	}
+);
