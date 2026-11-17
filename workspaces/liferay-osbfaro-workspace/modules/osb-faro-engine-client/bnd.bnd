@@ -28,7 +28,9 @@ Import-Package:\
 	\
 	!com.damnhandy.*,\
 	\
-	!com.fasterxml.*,\
+	!com.fasterxml.jackson.dataformat.*,\
+	!com.fasterxml.jackson.datatype.*,\
+	!com.fasterxml.jackson.module.*,\
 	\
 	!com.github.mustachejava.*,\
 	\

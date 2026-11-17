@@ -1,8 +1,5 @@
 dependencies {
 	compileInclude group: "com.damnhandy", name: "handy-uri-templates", version: "2.1.8"
-	compileInclude group: "com.fasterxml.jackson.core", name: "jackson-annotations", version: "2.18.12"
-	compileInclude group: "com.fasterxml.jackson.core", name: "jackson-core", version: "2.18.12"
-	compileInclude group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.18.12"
 	compileInclude group: "io.micrometer", name: "micrometer-commons", version: "1.14.3"
 	compileInclude group: "io.micrometer", name: "micrometer-observation", version: "1.14.3"
 	compileInclude group: "joda-time", name: "joda-time", version: "2.12.1"
@@ -16,6 +13,9 @@ dependencies {
 		exclude group: "org.springframework", module: "spring-context"
 	}
 
+	compileOnly group: "com.fasterxml.jackson.core", name: "jackson-annotations", version: "2.18.12"
+	compileOnly group: "com.fasterxml.jackson.core", name: "jackson-core", version: "2.18.12"
+	compileOnly group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.18.12"
 	compileOnly group: "com.liferay", name: "org.springframework.beans", version: "6.2.9.LIFERAY-PATCHED-1"
 	compileOnly group: "com.liferay.portal", name: "release.dxp.api", version: "2026.q3.2"
 	compileOnly group: "commons-codec", name: "commons-codec", version: "1.15"
