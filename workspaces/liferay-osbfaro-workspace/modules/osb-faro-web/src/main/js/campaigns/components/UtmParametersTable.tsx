@@ -9,7 +9,7 @@ interface IUtmParametersTableProps {
 }
 
 const UtmParametersTable: React.FC<IUtmParametersTableProps> = ({rows}) => (
-	<ClayTable className="table-sm">
+	<ClayTable className="table-sm" responsive={false}>
 		<ClayTable.Head>
 			<ClayTable.Row>
 				<ClayTable.Cell headingCell>

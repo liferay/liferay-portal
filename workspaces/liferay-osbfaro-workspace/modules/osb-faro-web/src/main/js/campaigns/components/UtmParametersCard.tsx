@@ -28,7 +28,7 @@ const UtmParametersCard: React.FC<IUtmParametersCardProps> = ({
 	return (
 		<Card>
 			<Panel
-				className="card-root"
+				className="card-root mb-0"
 				collapsable
 				displayTitle={
 					<Panel.Title className="card-title">
@@ -36,7 +36,7 @@ const UtmParametersCard: React.FC<IUtmParametersCardProps> = ({
 					</Panel.Title>
 				}
 			>
-				<Panel.Body>
+				<Panel.Body className="pb-3">
 					{isEmpty ? (
 						<UtmParametersEmptyState />
 					) : (

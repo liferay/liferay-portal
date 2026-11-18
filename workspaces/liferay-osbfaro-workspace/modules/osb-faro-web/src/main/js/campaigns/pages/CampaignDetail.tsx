@@ -84,22 +84,19 @@ const CampaignDetail: React.FC = () => {
 
 			<BasePage.Body>
 				<SectionHeader
-					icon="users"
-					title={Liferay.Language.get('membership')}
+					icon="box-container"
+					title={Liferay.Language.get('details')}
 				/>
-
-				<MembershipsCard
+				<CampaignUtmParameters
 					campaignId={id!}
 					channelId={channelId!}
 					groupId={groupId!}
 				/>
-
 				<SectionHeader
-					icon="info-circle"
-					title={Liferay.Language.get('details')}
+					icon="users"
+					title={Liferay.Language.get('membership')}
 				/>
-
-				<CampaignUtmParameters
+				<MembershipsCard
 					campaignId={id!}
 					channelId={channelId!}
 					groupId={groupId!}
