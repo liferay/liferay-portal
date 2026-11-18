@@ -5,6 +5,9 @@
 
 package com.liferay.product.navigation.omni.search.web.internal.portlet.action;
 
+import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerList;
+import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerListFactory;
+import com.liferay.osgi.service.tracker.collections.map.PropertyServiceReferenceComparator;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -22,7 +25,6 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.product.navigation.omni.search.OmniSearchResult;
 import com.liferay.product.navigation.omni.search.OmniSearchResultProvider;
-import com.liferay.product.navigation.omni.search.OmniSearchResultProviderRegistry;
 import com.liferay.product.navigation.omni.search.web.internal.constants.ProductNavigationOmniSearchPortletKeys;
 
 import jakarta.portlet.ResourceRequest;
@@ -32,7 +34,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.osgi.framework.BundleContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 
 /**
@@ -48,6 +53,20 @@ import org.osgi.service.component.annotations.Reference;
 )
 public class OmniSearchResultsMVCResourceCommand
 	extends BaseMVCResourceCommand {
+
+	@Activate
+	protected void activate(BundleContext bundleContext) {
+		_serviceTrackerList = ServiceTrackerListFactory.open(
+			bundleContext, OmniSearchResultProvider.class,
+			Collections.reverseOrder(
+				new PropertyServiceReferenceComparator<>(
+					"omni.search.result.provider.order")));
+	}
+
+	@Deactivate
+	protected void deactivate() {
+		_serviceTrackerList.close();
+	}
 
 	@Override
 	protected void doServeResource(
@@ -82,8 +101,7 @@ public class OmniSearchResultsMVCResourceCommand
 			_portal.getLiferayPortletResponse(resourceResponse);
 
 		for (OmniSearchResultProvider omniSearchResultProvider :
-				_omniSearchResultProviderRegistry.
-					getOmniSearchResultProviders()) {
+				_serviceTrackerList) {
 
 			try {
 				omniSearchResults.addAll(
@@ -127,9 +145,8 @@ public class OmniSearchResultsMVCResourceCommand
 		OmniSearchResultsMVCResourceCommand.class);
 
 	@Reference
-	private OmniSearchResultProviderRegistry _omniSearchResultProviderRegistry;
-
-	@Reference
 	private Portal _portal;
+
+	private ServiceTrackerList<OmniSearchResultProvider> _serviceTrackerList;
 
 }

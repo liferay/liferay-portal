@@ -6,15 +6,17 @@
 package com.liferay.product.navigation.omni.search.web.internal.omni.search.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerList;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
+import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
+import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.product.navigation.omni.search.OmniSearchResult;
 import com.liferay.product.navigation.omni.search.OmniSearchResultProvider;
-import com.liferay.product.navigation.omni.search.OmniSearchResultProviderRegistry;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -69,8 +71,12 @@ public class OmniSearchResultProviderRegistryTest {
 		OmniSearchResultProvider firstOmniSearchResultProvider =
 			_registerOmniSearchResultProvider(1000);
 
+		ServiceTrackerList<OmniSearchResultProvider> serviceTrackerList =
+			ReflectionTestUtil.getFieldValue(
+				_mvcResourceCommand, "_serviceTrackerList");
+
 		List<OmniSearchResultProvider> omniSearchResultProviders =
-			_omniSearchResultProviderRegistry.getOmniSearchResultProviders();
+			serviceTrackerList.toList();
 
 		Assert.assertTrue(
 			omniSearchResultProviders.toString(),
@@ -97,8 +103,8 @@ public class OmniSearchResultProviderRegistryTest {
 
 	private BundleContext _bundleContext;
 
-	@Inject
-	private OmniSearchResultProviderRegistry _omniSearchResultProviderRegistry;
+	@Inject(filter = "mvc.command.name=/omni_search/omni_search_results")
+	private MVCResourceCommand _mvcResourceCommand;
 
 	private final List<ServiceRegistration<OmniSearchResultProvider>>
 		_serviceRegistrations = new ArrayList<>();
