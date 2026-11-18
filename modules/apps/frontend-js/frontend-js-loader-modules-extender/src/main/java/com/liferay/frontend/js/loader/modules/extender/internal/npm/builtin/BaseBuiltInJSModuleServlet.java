@@ -8,14 +8,13 @@ package com.liferay.frontend.js.loader.modules.extender.internal.npm.builtin;
 import com.liferay.frontend.js.loader.modules.extender.npm.JSBundle;
 import com.liferay.frontend.js.loader.modules.extender.npm.JSModule;
 import com.liferay.frontend.js.loader.modules.extender.npm.JSPackage;
-import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
-import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.resource.bundle.ResourceBundleLoader;
+import com.liferay.portal.kernel.resource.bundle.ResourceBundleLoaderUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -34,9 +33,6 @@ import java.io.PrintWriter;
 
 import java.util.Locale;
 
-import org.osgi.framework.Bundle;
-import org.osgi.framework.FrameworkUtil;
-
 /**
  * Provides a base abstract class to implement servlets that return JavaScript
  * modules tracked by the {@link
@@ -49,20 +45,6 @@ public abstract class BaseBuiltInJSModuleServlet extends HttpServlet {
 	public BaseBuiltInJSModuleServlet() {
 		_workDirName = StringBundler.concat(
 			PropsValues.LIFERAY_HOME, File.separator, "work");
-	}
-
-	@Override
-	public void destroy() {
-		_serviceTrackerMap.close();
-	}
-
-	@Override
-	public void init() {
-		Bundle bundle = FrameworkUtil.getBundle(getClass());
-
-		_serviceTrackerMap = ServiceTrackerMapFactory.openSingleValueMap(
-			bundle.getBundleContext(), ResourceBundleLoader.class,
-			"bundle.symbolic.name");
 	}
 
 	protected abstract MimeTypes getMimeTypes();
@@ -161,7 +143,9 @@ public abstract class BaseBuiltInJSModuleServlet extends HttpServlet {
 				JSBundle jsBundle = jsPackage.getJSBundle();
 
 				ResourceBundleLoader resourceBundleLoader =
-					_serviceTrackerMap.getService(jsBundle.getName());
+					ResourceBundleLoaderUtil.
+						getResourceBundleLoaderByBundleSymbolicName(
+							jsBundle.getName());
 
 				if (resourceBundleLoader != null) {
 					content = LanguageUtil.process(
@@ -208,7 +192,6 @@ public abstract class BaseBuiltInJSModuleServlet extends HttpServlet {
 	private static final Log _log = LogFactoryUtil.getLog(
 		BaseBuiltInJSModuleServlet.class);
 
-	private ServiceTrackerMap<String, ResourceBundleLoader> _serviceTrackerMap;
 	private final String _workDirName;
 
 }
