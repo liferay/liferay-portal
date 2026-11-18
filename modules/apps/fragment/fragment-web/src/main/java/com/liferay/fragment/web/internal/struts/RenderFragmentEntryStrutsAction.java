@@ -12,6 +12,7 @@ import com.liferay.fragment.contributor.FragmentCollectionContributorRegistry;
 import com.liferay.fragment.renderer.FragmentRendererController;
 import com.liferay.petra.io.unsync.UnsyncStringWriter;
 import com.liferay.portal.kernel.model.LayoutSet;
+import com.liferay.portal.kernel.security.auth.AuthTokenUtil;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.service.LayoutSetLocalService;
 import com.liferay.portal.kernel.servlet.PipingServletResponse;
@@ -47,6 +48,10 @@ public class RenderFragmentEntryStrutsAction implements StrutsAction {
 			HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse)
 		throws Exception {
+
+		AuthTokenUtil.checkCSRFToken(
+			httpServletRequest,
+			RenderFragmentEntryStrutsAction.class.getName());
 
 		ThemeDisplay themeDisplay =
 			(ThemeDisplay)httpServletRequest.getAttribute(
