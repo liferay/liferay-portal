@@ -204,6 +204,7 @@ definition {
 				messageBoardSectionId = ${childMessageBoardSectionId});
 
 			var messageBoardMessageId = JSONUtil.getWithJSONPath(${response}, "$.messageBoardRootMessageId");
+			var messageBoardThreadId = JSONUtil.getWithJSONPath(${response}, "$.id");
 		}
 
 		task ("And Given with postMessageBoardThreadMessageBoardAttachment and messageBoardThreadId to create an attachment for message board thread") {
@@ -211,7 +212,7 @@ definition {
 
 			var response = MessageBoardAttachmentAPI.createMessageBoardThreadMessageBoardAttachment(
 				attachmentPath = ${attachmentPath},
-				messageBoardThreadId = ${staticMessageBoardThreadId});
+				messageBoardThreadId = ${messageBoardThreadId});
 		}
 
 		task ("When with DELETE request, siteId, message board message's and message board attachment's external reference codes to delete the message board attachment") {
