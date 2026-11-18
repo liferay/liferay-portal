@@ -182,6 +182,8 @@ public class FragmentEntryStagedModelDataHandler
 		if ((existingFragmentEntry == null) ||
 			!portletDataContext.isDataStrategyMirror()) {
 
+			importedFragmentEntry.setPreviewFileEntryId(0);
+
 			importedFragmentEntry = _stagedModelRepository.addStagedModel(
 				portletDataContext, importedFragmentEntry);
 		}
@@ -190,6 +192,8 @@ public class FragmentEntryStagedModelDataHandler
 				existingFragmentEntry.getMvccVersion());
 			importedFragmentEntry.setFragmentEntryId(
 				existingFragmentEntry.getFragmentEntryId());
+			importedFragmentEntry.setPreviewFileEntryId(
+				existingFragmentEntry.getPreviewFileEntryId());
 
 			importedFragmentEntry = _stagedModelRepository.updateStagedModel(
 				portletDataContext, importedFragmentEntry);
@@ -197,9 +201,6 @@ public class FragmentEntryStagedModelDataHandler
 
 		if ((fragmentEntry.getPreviewFileEntryId() == 0) &&
 			(importedFragmentEntry.getPreviewFileEntryId() > 0)) {
-
-			PortletFileRepositoryUtil.deletePortletFileEntry(
-				importedFragmentEntry.getPreviewFileEntryId());
 
 			importedFragmentEntry =
 				_fragmentEntryLocalService.updateFragmentEntry(

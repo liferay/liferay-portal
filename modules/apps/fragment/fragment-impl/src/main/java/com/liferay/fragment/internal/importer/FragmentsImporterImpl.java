@@ -428,10 +428,8 @@ public class FragmentsImporterImpl implements FragmentsImporter {
 						name, readOnly, status, thumbnailPath, typeOptions,
 						zipFile)) {
 
-				if (fragmentEntry.getPreviewFileEntryId() > 0) {
-					PortletFileRepositoryUtil.deletePortletFileEntry(
-						fragmentEntry.getPreviewFileEntryId());
-				}
+				_fragmentEntryLocalService.updateFragmentEntry(
+					fragmentEntry.getFragmentEntryId(), 0);
 
 				fragmentEntry = _fragmentEntryService.updateFragmentEntry(
 					fragmentEntry.getFragmentEntryId(), fragmentCollectionId,
