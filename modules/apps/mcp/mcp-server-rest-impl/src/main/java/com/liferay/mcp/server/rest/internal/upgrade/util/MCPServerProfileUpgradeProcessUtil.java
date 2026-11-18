@@ -95,8 +95,8 @@ public class MCPServerProfileUpgradeProcessUtil {
 
 		profilePaths.add(uniqueProfilePath);
 
-		if (_log.isInfoEnabled() && !name.equals(uniqueProfilePath)) {
-			_log.info(
+		if (_log.isWarnEnabled() && !name.equals(uniqueProfilePath)) {
+			_log.warn(
 				StringBundler.concat(
 					"Generated profile path \"", uniqueProfilePath,
 					"\" for MCP server profile \"", name, "\""));

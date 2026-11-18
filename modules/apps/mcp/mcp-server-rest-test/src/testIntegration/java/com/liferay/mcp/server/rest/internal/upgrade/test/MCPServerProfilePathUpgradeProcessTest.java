@@ -107,7 +107,7 @@ public class MCPServerProfilePathUpgradeProcessTest {
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				"com.liferay.mcp.server.rest.internal.upgrade.util." +
 					"MCPServerProfileUpgradeProcessUtil",
-				LoggerTestUtil.INFO)) {
+				LoggerTestUtil.WARN)) {
 
 			upgradeProcess.upgrade();
 

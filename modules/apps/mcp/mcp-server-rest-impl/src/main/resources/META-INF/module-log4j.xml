@@ -2,6 +2,8 @@
 
 <Configuration strict="true">
 	<Loggers>
+		<Logger level="WARN" name="com.liferay.mcp.server.rest.internal.upgrade.util.MCPServerProfileUpgradeProcessUtil" />
+
 		<Logger level="WARN" name="io.modelcontextprotocol.server.DefaultMcpStatelessServerHandler">
 			<Filter onMatch="DENY" onMismatch="NEUTRAL" regex="Missing handler for notification type: notifications/initialized" type="RegexFilter" />
 		</Logger>
