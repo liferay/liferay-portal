@@ -6,14 +6,17 @@
 package com.liferay.batch.engine.internal.unit;
 
 import com.liferay.batch.engine.internal.bundle.CompanyBatchEngineUnitWrapper;
+import com.liferay.batch.engine.internal.instance.lifecycle.MultiCompanyBatchEngineUnitPortalInstanceLifecycleListener;
 import com.liferay.batch.engine.unit.BatchEngineUnit;
 import com.liferay.batch.engine.unit.BatchEngineUnitProcessor;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.instance.lifecycle.PortalInstanceLifecycleListener;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.service.CompanyLocalService;
+import com.liferay.portal.kernel.util.MapUtil;
 
 import java.util.List;
 import java.util.Map;
@@ -21,6 +24,9 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
@@ -86,8 +92,19 @@ public class MultiCompanyBatchEngineUnitProcessor {
 		}
 	}
 
+	@Activate
+	protected void activate(BundleContext bundleContext) {
+		_serviceRegistration = bundleContext.registerService(
+			PortalInstanceLifecycleListener.class,
+			new MultiCompanyBatchEngineUnitPortalInstanceLifecycleListener(
+				this),
+			MapUtil.singletonDictionary("service.ranking", Integer.MIN_VALUE));
+	}
+
 	@Deactivate
 	protected void deactivate() {
+		_serviceRegistration.unregister();
+
 		_bundleBatchEngineUnits.clear();
 		_bundleProcessedCompanies.clear();
 	}
@@ -122,5 +139,7 @@ public class MultiCompanyBatchEngineUnitProcessor {
 
 	@Reference
 	private CompanyLocalService _companyLocalService;
+
+	private ServiceRegistration<?> _serviceRegistration;
 
 }
