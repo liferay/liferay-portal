@@ -260,10 +260,10 @@ public class AuditFilterTest {
 		MockHttpServletResponse mockHttpServletResponse = _testDoFilter(
 			false, xRequestId);
 
-		Assert.assertNotNull(
-			mockHttpServletResponse.getHeader(HttpHeaders.X_REQUEST_ID));
 		Assert.assertNotEquals(
 			xRequestId,
+			mockHttpServletResponse.getHeader(HttpHeaders.X_REQUEST_ID));
+		Assert.assertNotNull(
 			mockHttpServletResponse.getHeader(HttpHeaders.X_REQUEST_ID));
 
 		mockHttpServletResponse = _testDoFilter(true, xRequestId);
