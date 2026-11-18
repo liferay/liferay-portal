@@ -832,7 +832,6 @@ describe('BaseLifecycle', () => {
 			await confirmDelete();
 
 			expect(API.lifecycle.deleteLifecycle).toHaveBeenCalledWith({
-				channelId: '123',
 				groupId: '23',
 				lifecycleId: '1',
 			});
@@ -1083,7 +1082,6 @@ describe('BaseLifecycle', () => {
 			);
 
 			expect(API.lifecycle.deleteLifecycle).toHaveBeenCalledWith({
-				channelId: '123',
 				groupId: '23',
 				lifecycleId: '3',
 			});

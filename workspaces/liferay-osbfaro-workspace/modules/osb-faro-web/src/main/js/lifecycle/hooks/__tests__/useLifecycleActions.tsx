@@ -427,7 +427,6 @@ describe('useLifecycleActions', () => {
 
 			expect(API.lifecycle.deleteLifecycle).toHaveBeenCalledTimes(1);
 			expect(API.lifecycle.deleteLifecycle).toHaveBeenCalledWith({
-				channelId: '123',
 				groupId: '23',
 				lifecycleId: '5',
 			});

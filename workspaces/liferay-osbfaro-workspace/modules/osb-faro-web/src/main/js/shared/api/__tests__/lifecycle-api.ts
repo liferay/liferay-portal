@@ -1,9 +1,5 @@
 jest.mock('shared/util/request');
 
-jest.mock('shared/util/feature-flags', () => ({
-	ENABLE_LIFECYCLE_STAGES_MOCK_DATA: false,
-}));
-
 import sendRequest from 'shared/util/request';
 import {
 	fetchChannelLifecycles,
