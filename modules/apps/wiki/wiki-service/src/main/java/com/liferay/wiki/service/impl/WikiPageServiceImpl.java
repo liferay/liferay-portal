@@ -10,12 +10,16 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.dao.orm.QueryDefinition;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
+import com.liferay.portal.kernel.security.permission.resource.WorkflowedModelPermissionLogic;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.settings.GroupServiceSettingsLocator;
 import com.liferay.portal.kernel.util.CalendarFactoryUtil;
@@ -672,8 +676,23 @@ public class WikiPageServiceImpl extends WikiPageServiceBaseImpl {
 				getPermissionChecker(), page, ActionKeys.VIEW);
 		}
 
-		List<WikiPage> pages = wikiPageLocalService.getPages(
-			nodeId, title, 0, max, PageCreateDateComparator.getInstance(true));
+		List<WikiPage> pages = new ArrayList<>();
+
+		for (WikiPage curPage :
+				wikiPageLocalService.getPages(
+					nodeId, title, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					PageCreateDateComparator.getInstance(true))) {
+
+			if (pages.size() >= max) {
+				break;
+			}
+
+			if (!_hasPermission(curPage, getPermissionChecker())) {
+				continue;
+			}
+
+			pages.add(curPage);
+		}
 
 		return _exportToRSS(
 			title, title, type, version, displayStyle, feedURL, entryURL,
@@ -1023,8 +1042,32 @@ public class WikiPageServiceImpl extends WikiPageServiceBaseImpl {
 		return _rssExporter.export(syndFeed);
 	}
 
+	private boolean _hasPermission(
+			WikiPage page, PermissionChecker permissionChecker)
+		throws PortalException {
+
+		WorkflowedModelPermissionLogic<WikiPage>
+			workflowedModelPermissionLogic =
+				new WorkflowedModelPermissionLogic<>(
+					_wikiPageModelResourcePermission, _groupLocalService,
+					WikiPage::getResourcePrimKey);
+
+		Boolean permission = workflowedModelPermissionLogic.contains(
+			permissionChecker, WikiPage.class.getName(), page, ActionKeys.VIEW);
+
+		if (permission != null) {
+			return permission;
+		}
+
+		return _wikiPageModelResourcePermission.contains(
+			permissionChecker, page, ActionKeys.VIEW);
+	}
+
 	@Reference
 	private ConfigurationProvider _configurationProvider;
+
+	@Reference
+	private GroupLocalService _groupLocalService;
 
 	@Reference
 	private HtmlParser _htmlParser;
