@@ -123,6 +123,8 @@ public abstract class BaseFragmentRenderer implements FragmentRenderer {
 				).put(
 					"sidebarNavigationItems",
 					() -> getSidebarNavigationItems(httpServletRequest)
+				).put(
+					"signOutURL", themeDisplay.getURLSignOut()
 				).build());
 			componentTag.setServletContext(servletContext);
 
