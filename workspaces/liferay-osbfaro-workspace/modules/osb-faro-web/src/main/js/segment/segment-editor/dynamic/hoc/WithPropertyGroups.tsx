@@ -14,6 +14,7 @@ import {
 	SegmentTypes,
 } from 'shared/util/constants';
 import {
+	CAMPAIGN_PROPERTY,
 	createWebBehaviors,
 	INDIVIDUAL_PROPERTIES,
 	ORGANIZATION_PROPERTIES,
@@ -205,6 +206,19 @@ const mapResultToProps = (
 					propertyKey: 'tag',
 					propertySubgroups: List([
 						new PropertySubgroup({properties: List()}),
+					]),
+				}),
+
+			// Real-time segments do not support `campaigns.filter`.
+
+			type === SegmentTypes.Batch &&
+				new PropertyGroup({
+					label: Liferay.Language.get('campaigns'),
+					propertyKey: 'campaign',
+					propertySubgroups: List([
+						new PropertySubgroup({
+							properties: List([CAMPAIGN_PROPERTY]),
+						}),
 					]),
 				}),
 		].filter(Boolean) as PropertyGroup[]

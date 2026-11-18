@@ -132,6 +132,26 @@ describe('WithPropertyGroups', () => {
 		expect(container).toMatchSnapshot();
 	});
 
+	it('should not offer campaigns in real-time segments', async () => {
+		const WrappedComponent = withPropertyGroups(TestComponent);
+
+		const {container} = render(
+			<MemoryRouter>
+				<WrappedComponent
+					channelId='123'
+					groupId='123'
+					type='REAL_TIME'
+				/>
+			</MemoryRouter>
+		);
+
+		jest.runAllTimers();
+
+		await waitForLoadingToBeRemoved(container);
+
+		expect(screen.queryByText('Campaigns')).not.toBeInTheDocument();
+	});
+
 	// The editor is composed onto this HOC, and a remount here takes its
 	// `useBlocker` registration with it, so React Router drops a blocked
 	// navigation and the unsaved changes prompt never opens. See LPD-104396.

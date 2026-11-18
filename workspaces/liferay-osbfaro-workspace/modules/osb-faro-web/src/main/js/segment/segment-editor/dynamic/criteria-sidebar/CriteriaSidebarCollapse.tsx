@@ -180,6 +180,19 @@ export const getDefaultValue = (property: Property): any => {
 				{key: 'operator', value: RelationalOperators.GE},
 				{key: 'value', value: 1},
 			]);
+		case PropertyTypes.Campaign:
+			return createCustomValueMap([
+				{
+					key: 'criterionGroup',
+					value: [
+						{
+							operatorName: RelationalOperators.In,
+							propertyName: name,
+							value: [],
+						},
+					],
+				},
+			]);
 		case PropertyTypes.Tag:
 		case PropertyTypes.Vocabulary:
 			return createCustomValueMap([

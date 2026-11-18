@@ -1,5 +1,6 @@
 import AccountDisplay from './AccountDisplay';
 import BehaviorDisplay from './BehaviorDisplay';
+import CampaignDisplay from './CampaignDisplay';
 import EventDisplay from './EventDisplay';
 import IndividualDisplay from './IndividualDisplay';
 import InterestDisplay from './InterestDisplay';
@@ -12,6 +13,7 @@ import {IDisplayComponentProps} from '../types';
 
 const NON_REMOTE_DISPLAYS: Record<string, React.ComponentType<any>> = {
 	account: AccountDisplay,
+	campaign: CampaignDisplay,
 	event: EventDisplay,
 	individual: IndividualDisplay,
 	interest: InterestDisplay,

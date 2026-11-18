@@ -5,6 +5,7 @@ import React from 'react';
  */
 const STICKER_COLORS: Record<string, [string, string]> = {
 	account: ['orange-l5', 'orange'],
+	campaign: ['green-l5', 'green'],
 	event: ['teal-l5', 'teal'],
 	individual: ['indigo-l5', 'indigo'],
 	interest: ['red-l5', 'red'],

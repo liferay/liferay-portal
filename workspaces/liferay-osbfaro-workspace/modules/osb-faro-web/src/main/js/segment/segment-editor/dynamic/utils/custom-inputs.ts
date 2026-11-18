@@ -324,6 +324,9 @@ export const getPropertyValue = (
 	index: number
 ): any => valueIMap.getIn(['criterionGroup', 'items', index, propertyName]);
 
+export const getCampaignIds = (valueIMap: CustomValue): string[] =>
+	getPropertyValue(valueIMap, 'value', 0).toArray();
+
 /**
  * Get the time period label from the time period value.
  * @param {string} timePeriod - The time period value.

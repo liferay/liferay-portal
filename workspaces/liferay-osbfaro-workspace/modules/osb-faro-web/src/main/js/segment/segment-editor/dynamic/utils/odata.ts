@@ -759,6 +759,33 @@ const escapeRegExp = (value: string): string =>
  * id.  Returns null when the filter does not match any registered remote
  * criterion type (e.g. vocabulary, tag).
  */
+const CAMPAIGNS_FILTER_PREFIX = 'id in (';
+
+// The OData parser has no `in` operator, so the campaign IDs are read directly.
+
+const parseCampaignsFilterGroup = (innerFilter: string) => {
+	if (!innerFilter.startsWith(CAMPAIGNS_FILTER_PREFIX)) {
+		return null;
+	}
+
+	const ids = innerFilter
+		.slice(CAMPAIGNS_FILTER_PREFIX.length, -1)
+		.split(',')
+		.map((id) => id.replace(/'/g, ''));
+
+	return fromJS({
+		conjunctionName: Conjunctions.And,
+		criteriaGroupId: generateGroupId(),
+		items: [
+			{
+				operatorName: RelationalOperators.In,
+				propertyName: 'id',
+				value: ids,
+			},
+		],
+	});
+};
+
 const buildInnerFilterItems = (
 	innerFilter: string
 ): {
@@ -1445,6 +1472,10 @@ const transformCustomFunctionNode = ({oDataASTNode}: Context): Criterion[] => {
 
 	const {name, namespace} = fn.value;
 
+	const campaignsFilter =
+		getOperatorNameFromFunctionName(name, namespace) ===
+		CustomFunctionOperators.CampaignsFilter;
+
 	let detectedFilterType: 'tag' | 'vocabulary' | null = null;
 	let detectedEntityId: string | null = null;
 	let detectedEntityName: string | null = null;
@@ -1464,6 +1495,13 @@ const transformCustomFunctionNode = ({oDataASTNode}: Context): Criterion[] => {
 					rawFilterFull.startsWith('(') && rawFilterFull.endsWith(')')
 						? rawFilterFull.slice(1, -1)
 						: rawFilterFull;
+
+				const campaignsGroup =
+					campaignsFilter && parseCampaignsFilterGroup(rawFilter);
+
+				if (campaignsGroup) {
+					return accIMap.set('criterionGroup', campaignsGroup);
+				}
 
 				const innerResult = buildInnerFilterItems(rawFilter);
 

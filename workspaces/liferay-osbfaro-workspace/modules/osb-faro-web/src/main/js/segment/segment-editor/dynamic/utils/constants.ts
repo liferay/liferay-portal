@@ -79,6 +79,7 @@ export enum CustomFunctionOperators {
 	AccountsFilterByCount = 'accounts-filter-by-count',
 	ActivitiesFilter = 'activities-filter',
 	ActivitiesFilterByCount = 'activities-filter-by-count',
+	CampaignsFilter = 'campaigns-filter',
 	EventsFilterByCount = 'events-filter-by-count',
 	InterestsFilter = 'interests-filter',
 	OrganizationsFilter = 'organizations-filter',
@@ -103,6 +104,7 @@ export enum NotOperators {
 	NotAccountsFilterByCount = 'not-accounts-filter-by-count',
 	NotActivitiesFilter = 'not-activities-filter',
 	NotActivitiesFilterByCount = 'not-activities-filter-by-count',
+	NotCampaignsFilter = 'not-campaigns-filter',
 	NotContains = 'not-contains',
 	NotEventsFilterByCount = 'not-events-filter-by-count',
 	NotOrganizationsFilter = 'not-organizations-filter',
@@ -134,6 +136,7 @@ export enum PropertyTypes {
 	AccountText = 'account-text',
 	Behavior = 'behavior',
 	Boolean = 'boolean',
+	Campaign = 'campaign',
 	Date = 'date',
 	DateTime = 'date-time',
 	Duration = 'duration',
@@ -169,6 +172,7 @@ export const CUSTOM_FUNCTION_OPERATOR_KEY_MAP = {
 	['activities.filter']: CustomFunctionOperators.ActivitiesFilter,
 	['activities.filterByCount']:
 		CustomFunctionOperators.ActivitiesFilterByCount,
+	['campaigns.filter']: CustomFunctionOperators.CampaignsFilter,
 	['events.filterByCount']: CustomFunctionOperators.EventsFilterByCount,
 	['interests.filter']: CustomFunctionOperators.InterestsFilter,
 	['organizations.filter']: CustomFunctionOperators.OrganizationsFilter,
@@ -242,6 +246,18 @@ export const SUPPORTED_OPERATORS_MAP = {
 			key: RelationalOperators.EQ,
 			label: Liferay.Language.get('is').toLowerCase(),
 			name: RelationalOperators.EQ,
+		},
+	],
+	[PropertyTypes.Campaign]: [
+		{
+			key: CustomFunctionOperators.CampaignsFilter,
+			label: Liferay.Language.get('is').toLowerCase(),
+			name: CustomFunctionOperators.CampaignsFilter,
+		},
+		{
+			key: NotOperators.NotCampaignsFilter,
+			label: Liferay.Language.get('is-not').toLowerCase(),
+			name: NotOperators.NotCampaignsFilter,
 		},
 	],
 	[PropertyTypes.Tag]: [
@@ -544,6 +560,10 @@ export const SUPPORTED_PROPERTY_TYPES_MAP = {
 		NotOperators.NotActivitiesFilterByCount,
 	],
 	[PropertyTypes.Boolean]: [RelationalOperators.EQ],
+	[PropertyTypes.Campaign]: [
+		CustomFunctionOperators.CampaignsFilter,
+		NotOperators.NotCampaignsFilter,
+	],
 	[PropertyTypes.Tag]: [
 		CustomFunctionOperators.TagsFilter,
 		NotOperators.NotTagsFilter,

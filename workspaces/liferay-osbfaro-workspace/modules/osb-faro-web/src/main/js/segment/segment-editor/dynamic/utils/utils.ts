@@ -1,6 +1,7 @@
 import dateFns from 'date-fns';
 import {
 	ACCOUNT_PROPERTIES,
+	CAMPAIGN_PROPERTY,
 	INDIVIDUAL_PROPERTIES,
 	ORGANIZATION_PROPERTIES,
 	SESSION_PROPERTIES,
@@ -438,6 +439,16 @@ export const findPropertyByCriterion = (
 			],
 			''
 		);
+	}
+	else if (
+		[
+			CustomFunctionOperators.CampaignsFilter,
+			NotOperators.NotCampaignsFilter,
+		].includes(
+			operatorName as unknown as CustomFunctionOperators | NotOperators
+		)
+	) {
+		return CAMPAIGN_PROPERTY;
 	}
 	else if (
 		[

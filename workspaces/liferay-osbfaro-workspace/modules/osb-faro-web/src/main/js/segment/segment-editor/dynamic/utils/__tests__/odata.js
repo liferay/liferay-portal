@@ -7,9 +7,12 @@ import {
 	ATTRIBUTE_PROPERTY_PREFIX,
 	CustomFunctionOperators,
 	FunctionalOperators,
+	NotOperators,
 	RelationalOperators,
 } from '../constants';
+import {CAMPAIGN_PROPERTY} from '../properties';
 import {createCustomValueMap} from '../custom-inputs';
+import {getDefaultValue} from '../../criteria-sidebar/CriteriaSidebarCollapse';
 import {CustomValue} from 'shared/util/records';
 import {List, Map} from 'immutable';
 
@@ -958,6 +961,50 @@ describe('odata', () => {
 			const testQuery = "(givenName eq 'O''Brien')";
 
 			testConversionToAndFrom(testQuery);
+		});
+	});
+
+	describe('campaigns.filter', () => {
+		it('should write the selected campaigns as the filter the engine reads', () => {
+			const value = getDefaultValue(CAMPAIGN_PROPERTY).setIn(
+				['criterionGroup', 'items', 0, 'value'],
+				List(['c1', 'c2'])
+			);
+
+			expect(
+				ODataUtil.buildQueryString([
+					{
+						operatorName: CustomFunctionOperators.CampaignsFilter,
+						propertyName: 'id',
+						value,
+					},
+				])
+			).toBe("campaigns.filter(filter='(id in (''c1'',''c2''))')");
+		});
+
+		it('should translate the campaigns a segment includes to map and back to string', () => {
+			testConversionToAndFrom(
+				"(campaigns.filter(filter='(id in (''c1'',''c2''))'))"
+			);
+		});
+
+		it('should translate the campaigns a segment excludes to map and back to string', () => {
+			testConversionToAndFrom(
+				"((not campaigns.filter(filter='(id in (''c1''))')))"
+			);
+		});
+
+		it('should read excluded campaigns back as a campaign criterion', () => {
+			const {items} = ODataUtil.translateQueryToCriteria(
+				"((not campaigns.filter(filter='(id in (''c1'',''c2''))')))"
+			);
+
+			expect(items[0].operatorName).toBe(NotOperators.NotCampaignsFilter);
+			expect(
+				items[0].value
+					.getIn(['criterionGroup', 'items', 0, 'value'])
+					.toJS()
+			).toEqual(['c1', 'c2']);
 		});
 	});
 

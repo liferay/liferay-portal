@@ -2,6 +2,7 @@ import AccountInput from '../inputs/AccountInput';
 import AccountSelectInput from '../inputs/AccountSelectInput';
 import BehaviorInput from '../inputs/BehaviorInput';
 import BooleanInput from '../inputs/BooleanInput';
+import CampaignInput from '../inputs/CampaignInput';
 import ClayIcon from 'shared/components/Icon';
 import ClaySticker from '@clayui/sticker';
 import CustomBooleanInput from '../inputs/CustomBooleanInput';
@@ -461,6 +462,7 @@ class CriteriaRow extends React.Component<
 		const inputComponentsMap = {
 			[PropertyTypes.Behavior]: BehaviorInput,
 			[PropertyTypes.Boolean]: BooleanInput,
+			[PropertyTypes.Campaign]: CampaignInput,
 			[PropertyTypes.Vocabulary]: VocabularyInput,
 			[PropertyTypes.AccountDate]: AccountInput,
 			[PropertyTypes.AccountSelectText]: AccountSelectInput,
