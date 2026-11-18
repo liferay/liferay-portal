@@ -6,7 +6,7 @@
 package com.liferay.headless.delivery.internal.dto.v1_0.converter;
 
 import com.liferay.asset.kernel.model.AssetTag;
-import com.liferay.asset.kernel.service.AssetCategoryLocalService;
+import com.liferay.asset.kernel.service.AssetCategoryService;
 import com.liferay.asset.kernel.service.AssetEntryLocalService;
 import com.liferay.asset.kernel.service.AssetTagLocalService;
 import com.liferay.asset.link.service.AssetLinkLocalService;
@@ -132,7 +132,7 @@ public class WikiPageDTOConverter
 						wikiPage.getResourcePrimKey()));
 				setTaxonomyCategoryBriefs(
 					() -> TransformUtil.transformToArray(
-						_assetCategoryLocalService.getCategories(
+						_assetCategoryService.getCategories(
 							com.liferay.wiki.model.WikiPage.class.getName(),
 							wikiPage.getResourcePrimKey()),
 						assetCategory ->
@@ -172,7 +172,7 @@ public class WikiPageDTOConverter
 	}
 
 	@Reference
-	private AssetCategoryLocalService _assetCategoryLocalService;
+	private AssetCategoryService _assetCategoryService;
 
 	@Reference
 	private AssetEntryLocalService _assetEntryLocalService;

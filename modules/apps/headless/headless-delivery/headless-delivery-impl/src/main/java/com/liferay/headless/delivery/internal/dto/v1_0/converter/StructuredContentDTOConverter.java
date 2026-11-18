@@ -7,7 +7,7 @@ package com.liferay.headless.delivery.internal.dto.v1_0.converter;
 
 import com.liferay.asset.kernel.model.AssetEntry;
 import com.liferay.asset.kernel.model.AssetTag;
-import com.liferay.asset.kernel.service.AssetCategoryLocalService;
+import com.liferay.asset.kernel.service.AssetCategoryService;
 import com.liferay.asset.kernel.service.AssetEntryLocalService;
 import com.liferay.asset.kernel.service.AssetTagLocalService;
 import com.liferay.asset.link.service.AssetLinkLocalService;
@@ -218,7 +218,7 @@ public class StructuredContentDTOConverter
 						journalArticle.getResourcePrimKey()));
 				setTaxonomyCategoryBriefs(
 					() -> TransformUtil.transformToArray(
-						_assetCategoryLocalService.getCategories(
+						_assetCategoryService.getCategories(
 							JournalArticle.class.getName(),
 							journalArticle.getResourcePrimKey()),
 						assetCategory ->
@@ -344,7 +344,7 @@ public class StructuredContentDTOConverter
 	}
 
 	@Reference
-	private AssetCategoryLocalService _assetCategoryLocalService;
+	private AssetCategoryService _assetCategoryService;
 
 	@Reference
 	private AssetEntryLocalService _assetEntryLocalService;

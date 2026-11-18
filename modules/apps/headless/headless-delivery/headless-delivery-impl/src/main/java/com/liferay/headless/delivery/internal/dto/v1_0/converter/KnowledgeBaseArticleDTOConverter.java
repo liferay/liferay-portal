@@ -6,7 +6,7 @@
 package com.liferay.headless.delivery.internal.dto.v1_0.converter;
 
 import com.liferay.asset.kernel.model.AssetTag;
-import com.liferay.asset.kernel.service.AssetCategoryLocalService;
+import com.liferay.asset.kernel.service.AssetCategoryService;
 import com.liferay.asset.kernel.service.AssetEntryLocalService;
 import com.liferay.asset.kernel.service.AssetTagLocalService;
 import com.liferay.asset.link.service.AssetLinkLocalService;
@@ -144,7 +144,7 @@ public class KnowledgeBaseArticleDTOConverter
 						kbArticle.getResourcePrimKey()));
 				setTaxonomyCategoryBriefs(
 					() -> TransformUtil.transformToArray(
-						_assetCategoryLocalService.getCategories(
+						_assetCategoryService.getCategories(
 							KBArticle.class.getName(), kbArticle.getClassPK()),
 						assetCategory ->
 							TaxonomyCategoryBriefUtil.toTaxonomyCategoryBrief(
@@ -156,7 +156,7 @@ public class KnowledgeBaseArticleDTOConverter
 	}
 
 	@Reference
-	private AssetCategoryLocalService _assetCategoryLocalService;
+	private AssetCategoryService _assetCategoryService;
 
 	@Reference
 	private AssetEntryLocalService _assetEntryLocalService;

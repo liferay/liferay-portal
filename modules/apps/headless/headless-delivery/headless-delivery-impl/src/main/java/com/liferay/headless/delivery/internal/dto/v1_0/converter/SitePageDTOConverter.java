@@ -6,7 +6,7 @@
 package com.liferay.headless.delivery.internal.dto.v1_0.converter;
 
 import com.liferay.asset.kernel.model.AssetTag;
-import com.liferay.asset.kernel.service.AssetCategoryLocalService;
+import com.liferay.asset.kernel.service.AssetCategoryService;
 import com.liferay.asset.kernel.service.AssetTagLocalService;
 import com.liferay.document.library.helper.DLURLHelper;
 import com.liferay.document.library.kernel.service.DLAppService;
@@ -320,7 +320,7 @@ public class SitePageDTOConverter implements DTOConverter<Layout, SitePage> {
 				setSiteId(layout::getGroupId);
 				setTaxonomyCategoryBriefs(
 					() -> TransformUtil.transformToArray(
-						_assetCategoryLocalService.getCategories(
+						_assetCategoryService.getCategories(
 							Layout.class.getName(), layout.getPlid()),
 						assetCategory ->
 							TaxonomyCategoryBriefUtil.toTaxonomyCategoryBrief(
@@ -340,7 +340,7 @@ public class SitePageDTOConverter implements DTOConverter<Layout, SitePage> {
 		SitePageDTOConverter.class);
 
 	@Reference
-	private AssetCategoryLocalService _assetCategoryLocalService;
+	private AssetCategoryService _assetCategoryService;
 
 	@Reference
 	private AssetTagLocalService _assetTagLocalService;

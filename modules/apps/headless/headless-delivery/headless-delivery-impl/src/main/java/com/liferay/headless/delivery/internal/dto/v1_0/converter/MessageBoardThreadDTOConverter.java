@@ -6,7 +6,7 @@
 package com.liferay.headless.delivery.internal.dto.v1_0.converter;
 
 import com.liferay.asset.kernel.model.AssetTag;
-import com.liferay.asset.kernel.service.AssetCategoryLocalService;
+import com.liferay.asset.kernel.service.AssetCategoryService;
 import com.liferay.asset.kernel.service.AssetEntryLocalService;
 import com.liferay.asset.kernel.service.AssetTagLocalService;
 import com.liferay.asset.link.service.AssetLinkLocalService;
@@ -151,7 +151,7 @@ public class MessageBoardThreadDTOConverter
 						MBThread.class.getName(), mbMessage.getThreadId()));
 				setTaxonomyCategoryBriefs(
 					() -> TransformUtil.transformToArray(
-						_assetCategoryLocalService.getCategories(
+						_assetCategoryService.getCategories(
 							MBMessage.class.getName(),
 							mbThread.getRootMessageId()),
 						assetCategory ->
@@ -188,7 +188,7 @@ public class MessageBoardThreadDTOConverter
 	}
 
 	@Reference
-	private AssetCategoryLocalService _assetCategoryLocalService;
+	private AssetCategoryService _assetCategoryService;
 
 	@Reference
 	private AssetEntryLocalService _assetEntryLocalService;
