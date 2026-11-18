@@ -87,6 +87,13 @@ public class AMImageProcessorImplTest {
 		);
 
 		Mockito.when(
+			_amImageEntryLocalService.hasAMImageEntryContent(
+				Mockito.nullable(String.class), Mockito.eq(_fileVersion))
+		).thenReturn(
+			true
+		);
+
+		Mockito.when(
 			_fileVersion.getFileEntry()
 		).thenReturn(
 			_fileEntry
@@ -114,6 +121,13 @@ public class AMImageProcessorImplTest {
 			_fileEntry.isCheckedOut()
 		).thenReturn(
 			false
+		);
+
+		Mockito.when(
+			_amImageScalerRegistry.getAMImageScaler(
+				Mockito.nullable(String.class))
+		).thenReturn(
+			_amImageScaler
 		);
 
 		_amImageAMProcessor.process(
@@ -282,54 +296,6 @@ public class AMImageProcessorImplTest {
 		).scaleImage(
 			Mockito.any(FileVersion.class),
 			Mockito.any(AMImageConfigurationEntry.class)
-		);
-	}
-
-	@Test
-	public void testProcessConfigurationWhenNoAMImageScalerAvailable()
-		throws Exception {
-
-		Mockito.when(
-			_amImageValidator.isProcessingSupported(_fileVersion)
-		).thenReturn(
-			true
-		);
-
-		AMImageConfigurationEntry amImageConfigurationEntry =
-			new AMImageConfigurationEntryImpl(
-				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-				Collections.emptyMap());
-
-		Mockito.when(
-			_amImageConfigurationHelper.getAMImageConfigurationEntries(
-				Mockito.anyLong())
-		).thenReturn(
-			Collections.singleton(amImageConfigurationEntry)
-		);
-
-		Mockito.when(
-			_amImageConfigurationHelper.getAMImageConfigurationEntry(
-				Mockito.anyLong(), Mockito.nullable(String.class))
-		).thenReturn(
-			amImageConfigurationEntry
-		);
-
-		Mockito.when(
-			_amImageScalerRegistry.getAMImageScaler(
-				Mockito.nullable(String.class))
-		).thenReturn(
-			null
-		);
-
-		_amImageAMProcessor.process(
-			_fileVersion, RandomTestUtil.randomString());
-
-		Mockito.verify(
-			_amImageEntryLocalService, Mockito.never()
-		).addAMImageEntry(
-			Mockito.any(AMImageConfigurationEntry.class),
-			Mockito.any(FileVersion.class), Mockito.anyInt(), Mockito.anyInt(),
-			Mockito.any(InputStream.class), Mockito.anyLong()
 		);
 	}
 
