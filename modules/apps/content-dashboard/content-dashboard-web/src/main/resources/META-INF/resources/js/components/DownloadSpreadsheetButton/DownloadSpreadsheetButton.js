@@ -30,7 +30,6 @@ const initialFeedbackState = {
 
 let fetchController = null;
 
-const DEFAULT_TIMEOUT_DELAY = 500;
 const FEEDBACK_TIMEOUT_DELAY = 2000;
 
 const DownloadSpreadsheetButton = ({fileURL, total}) => {
@@ -45,9 +44,6 @@ const DownloadSpreadsheetButton = ({fileURL, total}) => {
 	);
 	const [disableCancelAndLeaveButton, setDisableCancelAndLeaveButton] =
 		useState(false);
-
-	let defaultDelayTimeout = null;
-	let feedbackDelayTimeout = null;
 
 	const handleSuccess = () => {
 		setToastMessage((current) => ({
@@ -90,23 +86,17 @@ const DownloadSpreadsheetButton = ({fileURL, total}) => {
 	};
 
 	const handleUIState = () => {
-		defaultDelayTimeout = setTimeout(() => {
-			setLoading(false);
+		setLoading(false);
 
-			setFeedbackStatus((current) => ({
-				...current,
-				show: true,
-			}));
+		setFeedbackStatus((current) => ({
+			...current,
+			show: true,
+		}));
 
-			setToastMessage((current) => ({
-				...current,
-				show: true,
-			}));
-		}, DEFAULT_TIMEOUT_DELAY);
-
-		feedbackDelayTimeout = setTimeout(() => {
-			setFeedbackStatus(initialFeedbackState);
-		}, FEEDBACK_TIMEOUT_DELAY);
+		setToastMessage((current) => ({
+			...current,
+			show: true,
+		}));
 	};
 
 	const buttonTextKey = loading
@@ -168,7 +158,7 @@ const DownloadSpreadsheetButton = ({fileURL, total}) => {
 			setTimeout(() => {
 				onClose();
 				navigate(tentativeNavigationPath);
-			}, DEFAULT_TIMEOUT_DELAY + FEEDBACK_TIMEOUT_DELAY);
+			}, FEEDBACK_TIMEOUT_DELAY);
 		},
 		[tentativeNavigationPath]
 	);
@@ -202,20 +192,25 @@ const DownloadSpreadsheetButton = ({fileURL, total}) => {
 		);
 
 		return () => {
-			clearTimeout(defaultDelayTimeout);
-			clearTimeout(feedbackDelayTimeout);
 			navigationEventHandler.detach();
 			window.removeEventListener(
 				'beforeunload',
 				preventHardReloadWhileGenerating
 			);
 		};
-	}, [
-		defaultDelayTimeout,
-		feedbackDelayTimeout,
-		loading,
-		preventHardReloadWhileGenerating,
-	]);
+	}, [loading, preventHardReloadWhileGenerating]);
+
+	useEffect(() => {
+		if (!feedbackStatus.show) {
+			return;
+		}
+
+		const timeoutId = setTimeout(() => {
+			setFeedbackStatus(initialFeedbackState);
+		}, FEEDBACK_TIMEOUT_DELAY);
+
+		return () => clearTimeout(timeoutId);
+	}, [feedbackStatus.show]);
 
 	return (
 		<>
