@@ -3,11 +3,15 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {FrameLocator, Locator, Page} from '@playwright/test';
+import {FrameLocator, Locator, Page, expect} from '@playwright/test';
+
+import {selectMaxItemsPerPage} from '../../../utils/pagination';
 
 export class UserAssociatedDataMessageBoardPage {
 	readonly actionButton: Locator;
 	readonly editMenuItem: Locator;
+	readonly itemsPerPageButton: Locator;
+	readonly maxItemsPerPageLink: Locator;
 	readonly newButton: Locator;
 	readonly page: Page;
 	readonly permissionsFrameLocator: FrameLocator;
@@ -22,20 +26,30 @@ export class UserAssociatedDataMessageBoardPage {
 		this.permissionsFrameLocator = page.frameLocator(
 			'iframe[title="Permissions"]'
 		);
+		this.itemsPerPageButton =
+			this.permissionsFrameLocator.getByLabel('Items per Page');
+		this.maxItemsPerPageLink = this.permissionsFrameLocator.locator(
+			'a[href*="_delta=60"]'
+		);
 		this.threadMenuItem = page.getByRole('menuitem', {name: 'Thread'});
 		this.threadSubjectLink = (subject: string) =>
 			page.getByRole('link', {name: subject});
 	}
 
 	async setPermissions(permissionLocators: string[]) {
-		await this.permissionsFrameLocator
-			.locator(permissionLocators[0])
-			.check({trial: true});
+		await expect(
+			this.permissionsFrameLocator.getByRole('button', {name: 'Save'})
+		).toBeVisible();
+
+		await selectMaxItemsPerPage(
+			this.itemsPerPageButton,
+			this.maxItemsPerPageLink
+		);
 
 		for (const permissionsLocator of permissionLocators) {
 			await this.permissionsFrameLocator
 				.locator(permissionsLocator)
-				.check({timeout: 1000});
+				.check();
 		}
 
 		await this.permissionsFrameLocator

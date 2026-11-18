@@ -46,8 +46,6 @@ export class PermissionsPage {
 	async checkPermissionsAndSave(
 		permissions: Array<{action: string; role: string}>
 	) {
-		await expect(this.permissionsModalSaveButton).toBeVisible();
-
 		await this.showAllRoles();
 
 		for (const permission of permissions) {
@@ -77,6 +75,8 @@ export class PermissionsPage {
 	}
 
 	async showAllRoles() {
+		await expect(this.permissionsModalSaveButton).toBeVisible();
+
 		await selectMaxItemsPerPage(
 			this.itemsPerPageButton,
 			this.maxItemsPerPageLink
@@ -86,8 +86,6 @@ export class PermissionsPage {
 	async verifyPermissions(
 		permissions: Array<{action: string; checked: boolean; role: string}>
 	) {
-		await expect(this.permissionsModalSaveButton).toBeVisible();
-
 		await this.showAllRoles();
 
 		for (const permission of permissions) {

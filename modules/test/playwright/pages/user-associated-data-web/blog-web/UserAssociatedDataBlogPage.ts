@@ -16,7 +16,7 @@ export class UserAssociatedDataBlogPage {
 
 	constructor(page: Page) {
 		this.blogContentInput = page.locator(
-			'[id="_com_liferay_blogs_web_portlet_BlogsAdminPortlet_contentEditor"]'
+			'#_com_liferay_blogs_web_portlet_BlogsAdminPortlet_contentEditor.cke_editable'
 		);
 		this.blogTitleInput = page.getByPlaceholder('Title *');
 		this.blogTitleLink = (subject: string) =>

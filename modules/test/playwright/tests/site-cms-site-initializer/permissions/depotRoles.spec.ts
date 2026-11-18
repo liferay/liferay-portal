@@ -75,6 +75,8 @@ test(
 				});
 			}).toPass({timeout: 20000});
 
+			await permissionsPage.showAllRoles();
+
 			await expect(
 				permissionsPage.roleCell(role1.name).first()
 			).toBeVisible();
