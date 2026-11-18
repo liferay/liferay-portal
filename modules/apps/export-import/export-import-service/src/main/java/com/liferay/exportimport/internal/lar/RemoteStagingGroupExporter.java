@@ -32,7 +32,7 @@ public class RemoteStagingGroupExporter {
 		_groupLocalService = groupLocalService;
 	}
 
-	public void addGroupExternalReferenceCodesElement(
+	public void addGroupExternalReferenceCodeMappingsElement(
 		Group group, Element headerElement) {
 
 		if (!ExportImportThreadLocal.isStagingInProcess() ||
@@ -44,8 +44,8 @@ public class RemoteStagingGroupExporter {
 		UnicodeProperties typeSettingsUnicodeProperties =
 			group.getTypeSettingsProperties();
 
-		Element groupExternalReferenceCodesElement = headerElement.addElement(
-			"group-external-reference-codes");
+		Element groupExternalReferenceCodeMappingsElement =
+			headerElement.addElement("group-external-reference-code-mappings");
 
 		for (Group stagedRemotelyGroup :
 				_getStagedRemotelyGroups(group.getCompanyId())) {
@@ -61,26 +61,26 @@ public class RemoteStagingGroupExporter {
 			String externalReferenceCode =
 				stagedRemotelyGroup.getExternalReferenceCode();
 
-			String remoteExternalReferenceCode =
+			String liveExternalReferenceCode =
 				_exportImportPortletPreferencesProcessorHelper.
 					getGroupExportPortletPreferencesExternalReferenceCode(
 						stagedRemotelyGroup.getCompanyId(),
 						externalReferenceCode);
 
 			if (Objects.equals(
-					externalReferenceCode, remoteExternalReferenceCode)) {
+					externalReferenceCode, liveExternalReferenceCode)) {
 
 				continue;
 			}
 
-			Element groupExternalReferenceCodeElement =
-				groupExternalReferenceCodesElement.addElement(
-					"group-external-reference-code");
+			Element groupExternalReferenceCodeMappingElement =
+				groupExternalReferenceCodeMappingsElement.addElement(
+					"group-external-reference-code-mapping");
 
-			groupExternalReferenceCodeElement.addAttribute(
-				"source", externalReferenceCode);
-			groupExternalReferenceCodeElement.addAttribute(
-				"target", remoteExternalReferenceCode);
+			groupExternalReferenceCodeMappingElement.addAttribute(
+				"external-reference-code", externalReferenceCode);
+			groupExternalReferenceCodeMappingElement.addAttribute(
+				"live-external-reference-code", liveExternalReferenceCode);
 		}
 	}
 

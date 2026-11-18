@@ -260,7 +260,7 @@ public class LayoutExportController implements ExportController {
 				_exportImportPortletPreferencesProcessorHelper,
 				_groupLocalService);
 
-		remoteStagingGroupExporter.addGroupExternalReferenceCodesElement(
+		remoteStagingGroupExporter.addGroupExternalReferenceCodeMappingsElement(
 			group, headerElement);
 
 		headerElement.addAttribute(

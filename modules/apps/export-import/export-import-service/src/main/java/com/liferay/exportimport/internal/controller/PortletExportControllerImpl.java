@@ -871,7 +871,7 @@ public class PortletExportControllerImpl implements PortletExportController {
 				_exportImportPortletPreferencesProcessorHelper,
 				_groupLocalService);
 
-		remoteStagingGroupExporter.addGroupExternalReferenceCodesElement(
+		remoteStagingGroupExporter.addGroupExternalReferenceCodeMappingsElement(
 			layout.getGroup(), headerElement);
 
 		headerElement.addAttribute("group-id", String.valueOf(scopeGroupId));
