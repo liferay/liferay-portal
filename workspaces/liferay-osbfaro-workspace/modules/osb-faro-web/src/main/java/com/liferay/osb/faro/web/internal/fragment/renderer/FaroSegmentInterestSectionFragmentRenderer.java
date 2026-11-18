@@ -6,6 +6,12 @@
 package com.liferay.osb.faro.web.internal.fragment.renderer;
 
 import com.liferay.fragment.renderer.FragmentRenderer;
+import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.ParamUtil;
+
+import jakarta.servlet.http.HttpServletRequest;
+
+import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -24,6 +30,23 @@ public class FaroSegmentInterestSectionFragmentRenderer
 	@Override
 	protected String getModule() {
 		return "{SegmentInterest} from osb-faro-web/segments";
+	}
+
+	@Override
+	protected Map<String, String> getParams(
+		HttpServletRequest httpServletRequest) {
+
+		return HashMapBuilder.putAll(
+			super.getParams(httpServletRequest)
+		).put(
+			"active", ParamUtil.getString(httpServletRequest, "active")
+		).put(
+			"id", ParamUtil.getString(httpServletRequest, "id")
+		).put(
+			"interestId", ParamUtil.getString(httpServletRequest, "interestId")
+		).put(
+			"tabId", ParamUtil.getString(httpServletRequest, "tabId")
+		).build();
 	}
 
 }
