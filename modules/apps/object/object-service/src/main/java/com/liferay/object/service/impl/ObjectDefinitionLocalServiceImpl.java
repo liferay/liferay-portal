@@ -1708,6 +1708,19 @@ public class ObjectDefinitionLocalServiceImpl
 					objectDefinition.getCompanyId(), className);
 
 			if (existingObjectDefinition != null) {
+				if (_log.isInfoEnabled()) {
+					_log.info(
+						StringBundler.concat(
+							"Object definition ",
+							objectDefinition.getExternalReferenceCode(),
+							" uses class name ",
+							objectDefinition.getClassName(),
+							" because object definition ",
+							existingObjectDefinition.getExternalReferenceCode(),
+							" uses class name ", className, " in company ",
+							objectDefinition.getCompanyId()));
+				}
+
 				return;
 			}
 		}
