@@ -41,6 +41,7 @@ import com.liferay.portal.kernel.zip.ZipReaderFactory;
 import com.liferay.portal.kernel.zip.ZipWriter;
 import com.liferay.portal.kernel.zip.ZipWriterFactory;
 import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
@@ -117,7 +118,10 @@ public class LARValidationExportImportTest extends BaseExportImportTestCase {
 	public void testValidateImportLayoutsFileWithEmptyFile() throws Exception {
 		larFile = FileUtil.createTempFile("lar");
 
-		try {
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.portal.zip.internal.reader.BaseZipReader",
+				LoggerTestUtil.ERROR)) {
+
 			_validateImportLayoutsFile();
 
 			Assert.fail();
@@ -176,7 +180,10 @@ public class LARValidationExportImportTest extends BaseExportImportTestCase {
 	public void testValidateImportPortletInfoWithEmptyFile() throws Exception {
 		larFile = FileUtil.createTempFile("lar");
 
-		try {
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.portal.zip.internal.reader.BaseZipReader",
+				LoggerTestUtil.ERROR)) {
+
 			_validateImportPortletInfo();
 
 			Assert.fail();
