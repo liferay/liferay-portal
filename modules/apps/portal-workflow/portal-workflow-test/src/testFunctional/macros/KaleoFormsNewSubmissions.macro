@@ -261,13 +261,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro viewVersionOnDetails(workflowVersion = null) {
-		AssertElementPresent(
-			locator1 = "KaleoFormsAdmin#WORKFLOW_VERSION",
-			value1 = ${workflowVersion});
-	}
-
-	@summary = "Default summary"
 	macro viewWorkflowInProcessMessage(errorMessage = null) {
 		AssertTextEquals(
 			key_errorMessage = ${errorMessage},

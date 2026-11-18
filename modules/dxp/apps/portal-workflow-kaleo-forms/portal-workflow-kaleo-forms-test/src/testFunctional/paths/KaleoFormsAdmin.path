@@ -37,11 +37,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>WORKFLOW_VERSION</td>
-	<td>//section[contains(@id,'KaleoFormsAdminPortlet')]//span[contains(@class,'mr-2 workflow-Version')]</td>
-	<td></td>
-</tr>
-<tr>
 	<td>PROCESS_TABLE_NAME_BY_INDEX</td>
 	<td>//tr[contains(.,'${key_kfProcessName}')]/td[${key_itemPosition}]</td>
 	<td></td>
