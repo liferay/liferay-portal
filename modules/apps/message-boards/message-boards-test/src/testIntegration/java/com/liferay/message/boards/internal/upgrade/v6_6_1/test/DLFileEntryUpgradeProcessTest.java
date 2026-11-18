@@ -17,6 +17,7 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.portletfilerepository.PortletFileRepositoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.Folder;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.constants.TestDataConstants;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
@@ -48,6 +49,7 @@ public class DLFileEntryUpgradeProcessTest {
 		new LiferayIntegrationTestRule();
 
 	@Test
+	@TestInfo("LPD-116076")
 	public void testUpgrade() throws Exception {
 		Group group1 = GroupTestUtil.addGroup();
 
