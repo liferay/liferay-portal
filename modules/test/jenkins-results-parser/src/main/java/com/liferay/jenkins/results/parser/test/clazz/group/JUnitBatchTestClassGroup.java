@@ -999,11 +999,9 @@ public class JUnitBatchTestClassGroup extends BatchTestClassGroup {
 			String workingDirectoryPath =
 				JenkinsResultsParserUtil.getCanonicalPath(workingDirectory);
 
-			if (_javaFileDirPaths.contains(workingDirectoryPath)) {
+			if (!_javaFileDirPaths.add(workingDirectoryPath)) {
 				return;
 			}
-
-			_javaFileDirPaths.add(workingDirectoryPath);
 
 			long start = System.currentTimeMillis();
 
