@@ -44,7 +44,6 @@ import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.petra.sql.dsl.query.DSLQuery;
 import com.liferay.petra.sql.dsl.spi.expression.Scalar;
 import com.liferay.petra.sql.dsl.spi.query.QueryTable;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -151,14 +150,7 @@ public class CommerceInventoryWarehouseItemLocalServiceImpl
 			if (commerceInventoryWarehouseItemWarehouseId !=
 					commerceInventoryWarehouseId) {
 
-				throw new CommerceInventoryWarehouseItemCommerceInventoryWarehouseIdException(
-					StringBundler.concat(
-						"Commerce inventory warehouse item with external ",
-						"reference code ",
-						commerceInventoryWarehouseItem.
-							getExternalReferenceCode(),
-						" does not belong to commerce inventory warehouse ",
-						commerceInventoryWarehouseId));
+				throw new CommerceInventoryWarehouseItemCommerceInventoryWarehouseIdException();
 			}
 
 			return commerceInventoryWarehouseItemLocalService.
