@@ -66,7 +66,7 @@ func cronJobAvailableCondition(cronJob *batchv1.CronJob, jobs []batchv1.Job) met
 	if failed := jobCondition(batchv1.JobFailed, lastJob); failed != nil {
 		return newCondition(
 			metav1.ConditionFalse,
-			fmt.Sprintf("The last run of CronJob %q, Job %q, failed: %s", cronJob.Name, lastJob.Name, failed.Message),
+			fmt.Sprintf("The last run of CronJob %q, Job %q, failed: %s.", cronJob.Name, lastJob.Name, failed.Message),
 			ReasonJobFailed,
 		)
 	}
@@ -132,7 +132,7 @@ func jobAvailableCondition(job *batchv1.Job, podProblem string) metav1.Condition
 	}
 
 	if failed := jobCondition(batchv1.JobFailed, job); failed != nil {
-		message := fmt.Sprintf("Job %q failed: %s", job.Name, failed.Message)
+		message := fmt.Sprintf("Job %q failed: %s.", job.Name, failed.Message)
 
 		if podProblem != "" {
 			message += " " + podProblem

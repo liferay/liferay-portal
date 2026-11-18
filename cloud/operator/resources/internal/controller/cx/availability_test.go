@@ -178,7 +178,7 @@ func TestJobAvailableCondition(t *testing.T) {
 		"a failed Job": {
 			conditionType: batchv1.JobFailed,
 			podProblem:    `Container "able" of pod "able-x" exited with code 3 (Error).`,
-			wantMessage:   `Job "able" failed: BackoffLimitExceeded Container "able" of pod "able-x" exited with code 3 (Error).`,
+			wantMessage:   `Job "able" failed: BackoffLimitExceeded. Container "able" of pod "able-x" exited with code 3 (Error).`,
 			wantReason:    ReasonJobFailed,
 			wantStatus:    metav1.ConditionFalse,
 		},

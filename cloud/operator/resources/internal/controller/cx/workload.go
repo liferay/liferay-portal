@@ -339,11 +339,17 @@ func (clientExtensionReconciler *ClientExtensionReconciler) workloadStatus(
 		return nil, error
 	}
 
+	var workloadStatus workloadStatus
+
 	workloadAvailableCondition, error := clientExtensionReconciler.workloadAvailableCondition(context, workload)
 
 	if error != nil {
 		return nil, error
 	}
+
+	workloadStatus.available = &workloadAvailableCondition
+	workloadStatus.image = containerImage(workload)
+	workloadStatus.summary = workloadSummary(workload, workloadAvailableCondition)
 
 	podTemplate := podTemplateOf(workload)
 
@@ -362,12 +368,6 @@ func (clientExtensionReconciler *ClientExtensionReconciler) workloadStatus(
 		)
 	}
 
-	workloadStatus := &workloadStatus{
-		available: &workloadAvailableCondition,
-		image:     containerImage(workload),
-		summary:   workloadSummary(workload, workloadAvailableCondition),
-	}
-
 	if len(workloadIssues) > 0 {
 		workloadStatus.accepted = newCondition(
 			metav1.ConditionFalse,
@@ -379,7 +379,7 @@ func (clientExtensionReconciler *ClientExtensionReconciler) workloadStatus(
 		)
 		workloadStatus.issues = workloadIssues
 
-		return workloadStatus, nil
+		return &workloadStatus, nil
 	}
 
 	if configMapsWithDigest != nil {
@@ -395,7 +395,7 @@ func (clientExtensionReconciler *ClientExtensionReconciler) workloadStatus(
 		fmt.Sprintf("%s %q mounts DXP's metadata.", workloadRef.Kind, workloadRef.Name), ReasonWorkloadAccepted,
 	)
 
-	return workloadStatus, nil
+	return &workloadStatus, nil
 }
 
 type workloadStatus struct {
