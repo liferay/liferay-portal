@@ -283,7 +283,7 @@ public class MBMessageServiceTest {
 	@Test
 	@TestInfo("LPD-115514")
 	public void testGetChildMessages() throws Exception {
-		MBMessage mbMessage = _addMessage();
+		MBMessage mbMessage = _addMessageWithChildMessages();
 
 		List<MBMessage> childMessages = MBMessageServiceUtil.getChildMessages(
 			mbMessage.getMessageId(), false,
@@ -303,10 +303,10 @@ public class MBMessageServiceTest {
 			Assert.assertEquals(
 				childMessages.toString(), 1, childMessages.size());
 
-			MBMessage childMBMessage = childMessages.get(0);
+			MBMessage childMessage = childMessages.get(0);
 
 			Assert.assertEquals(
-				WorkflowConstants.STATUS_APPROVED, childMBMessage.getStatus());
+				WorkflowConstants.STATUS_APPROVED, childMessage.getStatus());
 		}
 
 		_user = UserTestUtil.addUser();
@@ -339,7 +339,7 @@ public class MBMessageServiceTest {
 	@Test
 	@TestInfo("LPD-115514")
 	public void testGetChildMessagesCount() throws Exception {
-		MBMessage mbMessage = _addMessage();
+		MBMessage mbMessage = _addMessageWithChildMessages();
 
 		Assert.assertEquals(
 			2,
@@ -386,7 +386,7 @@ public class MBMessageServiceTest {
 		}
 	}
 
-	private MBMessage _addMessage() throws Exception {
+	private MBMessage _addMessageWithChildMessages() throws Exception {
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId());
 
