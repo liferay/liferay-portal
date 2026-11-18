@@ -24,6 +24,7 @@ import com.liferay.commerce.service.CommerceShipmentLocalService;
 import com.liferay.commerce.shipping.engine.fixed.model.CommerceShippingFixedOption;
 import com.liferay.commerce.test.util.CommerceInventoryTestUtil;
 import com.liferay.commerce.test.util.CommerceTestUtil;
+import com.liferay.commerce.util.comparator.CommerceShipmentCreateDateComparator;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -41,6 +42,7 @@ import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import java.math.BigDecimal;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.Assert;
@@ -94,23 +96,16 @@ public class CommerceShipmentLocalServiceTest {
 	public void testGetCommerceShipments() throws Exception {
 		CommerceOrder commerceOrder = _addCommerceOrder();
 
-		List<CommerceShipment> commerceShipments =
-			_commerceShipmentLocalService.getCommerceShipments(
-				commerceOrder.getCommerceOrderId(), QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS);
-
-		Assert.assertEquals(
-			commerceShipments.toString(), 2, commerceShipments.size());
+		_testGetCommerceShipments(commerceOrder);
+		_testGetCommerceShipmentsWithCommerceAccountId(commerceOrder);
 	}
 
 	@Test
 	public void testGetCommerceShipmentsCount() throws Exception {
 		CommerceOrder commerceOrder = _addCommerceOrder();
 
-		int count = _commerceShipmentLocalService.getCommerceShipmentsCount(
-			commerceOrder.getCommerceOrderId());
-
-		Assert.assertEquals(2, count);
+		_testGetCommerceShipmentsCount(commerceOrder);
+		_testGetCommerceShipmentsCountWithCommerceAccountId(commerceOrder);
 	}
 
 	private CommerceOrder _addCommerceOrder() throws Exception {
@@ -212,6 +207,92 @@ public class CommerceShipmentLocalServiceTest {
 		}
 
 		return commerceShipment;
+	}
+
+	private void _testGetCommerceShipments(CommerceOrder commerceOrder)
+		throws Exception {
+
+		List<CommerceShipment> commerceShipments =
+			_commerceShipmentLocalService.getCommerceShipments(
+				commerceOrder.getCommerceOrderId(), QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS);
+
+		Assert.assertEquals(
+			commerceShipments.toString(), 2, commerceShipments.size());
+	}
+
+	private void _testGetCommerceShipmentsCount(CommerceOrder commerceOrder)
+		throws Exception {
+
+		int count = _commerceShipmentLocalService.getCommerceShipmentsCount(
+			commerceOrder.getCommerceOrderId());
+
+		Assert.assertEquals(2, count);
+	}
+
+	private void _testGetCommerceShipmentsCountWithCommerceAccountId(
+			CommerceOrder commerceOrder)
+		throws Exception {
+
+		Assert.assertEquals(
+			2,
+			_commerceShipmentLocalService.getCommerceShipmentsCount(
+				_commerceChannel.getGroupId(),
+				commerceOrder.getCommerceAccountId()));
+
+		Assert.assertEquals(
+			0,
+			_commerceShipmentLocalService.getCommerceShipmentsCount(
+				_commerceChannel.getGroupId(), RandomTestUtil.randomLong()));
+		Assert.assertEquals(
+			0,
+			_commerceShipmentLocalService.getCommerceShipmentsCount(
+				RandomTestUtil.randomLong(),
+				commerceOrder.getCommerceAccountId()));
+	}
+
+	private void _testGetCommerceShipmentsWithCommerceAccountId(
+			CommerceOrder commerceOrder)
+		throws Exception {
+
+		List<CommerceShipment> commerceShipments =
+			_commerceShipmentLocalService.getCommerceShipments(
+				_commerceChannel.getGroupId(),
+				commerceOrder.getCommerceAccountId(), QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS,
+				CommerceShipmentCreateDateComparator.getInstance(false));
+
+		Assert.assertEquals(
+			commerceShipments.toString(), 2, commerceShipments.size());
+
+		CommerceShipment commerceShipment1 = commerceShipments.get(0);
+
+		CommerceShipment commerceShipment2 = commerceShipments.get(1);
+
+		Date createDate = commerceShipment2.getCreateDate();
+
+		Assert.assertFalse(createDate.after(commerceShipment1.getCreateDate()));
+
+		commerceShipments = _commerceShipmentLocalService.getCommerceShipments(
+			_commerceChannel.getGroupId(), commerceOrder.getCommerceAccountId(),
+			0, 1, null);
+
+		Assert.assertEquals(
+			commerceShipments.toString(), 1, commerceShipments.size());
+
+		commerceShipments = _commerceShipmentLocalService.getCommerceShipments(
+			_commerceChannel.getGroupId(), RandomTestUtil.randomLong(),
+			QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+
+		Assert.assertTrue(
+			commerceShipments.toString(), commerceShipments.isEmpty());
+
+		commerceShipments = _commerceShipmentLocalService.getCommerceShipments(
+			RandomTestUtil.randomLong(), commerceOrder.getCommerceAccountId(),
+			QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+
+		Assert.assertTrue(
+			commerceShipments.toString(), commerceShipments.isEmpty());
 	}
 
 	private CommerceChannel _commerceChannel;

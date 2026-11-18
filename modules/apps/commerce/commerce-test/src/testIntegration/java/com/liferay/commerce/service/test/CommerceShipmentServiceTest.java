@@ -13,6 +13,7 @@ import com.liferay.commerce.constants.CommerceOrderActionKeys;
 import com.liferay.commerce.constants.CommerceOrderConstants;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.test.util.CommerceCurrencyTestUtil;
+import com.liferay.commerce.exception.NoSuchShipmentException;
 import com.liferay.commerce.inventory.model.CommerceInventoryWarehouse;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.model.CommerceOrderItem;
@@ -35,6 +36,7 @@ import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.service.CompanyLocalService;
@@ -232,96 +234,8 @@ public class CommerceShipmentServiceTest {
 
 	@Test
 	public void testGetCommerceShipment() throws Exception {
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				_user, PermissionCheckerFactoryUtil.create(_user))) {
-
-			_commerceShipmentService.getCommerceShipment(
-				_commerceShipment.getCommerceShipmentId());
-
-			Assert.fail();
-		}
-		catch (Exception exception) {
-			_assertMessage(
-				ActionKeys.VIEW, exception.getMessage(), _user.getUserId());
-		}
-
-		RoleTestUtil.addResourcePermission(
-			_role, CommerceConstants.RESOURCE_NAME_COMMERCE_SHIPMENT,
-			ResourceConstants.SCOPE_COMPANY,
-			String.valueOf(TestPropsValues.getCompanyId()),
-			CommerceActionKeys.ADD_COMMERCE_SHIPMENT);
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				_user, PermissionCheckerFactoryUtil.create(_user))) {
-
-			_commerceShipmentService.getCommerceShipment(
-				_commerceShipment.getCommerceShipmentId());
-
-			Assert.fail();
-		}
-		catch (Exception exception) {
-			_assertMessage(
-				ActionKeys.VIEW, exception.getMessage(), _user.getUserId());
-		}
-
-		_commerceOrder.setUserId(_user.getUserId());
-
-		_commerceOrder = _commerceOrderLocalService.updateCommerceOrder(
-			_commerceOrder);
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				_user, PermissionCheckerFactoryUtil.create(_user))) {
-
-			_commerceShipmentService.getCommerceShipment(
-				_commerceShipment.getCommerceShipmentId());
-		}
-
-		CPInstance cpInstance = CPTestUtil.addCPInstanceWithRandomSku(
-			_commerceChannel.getGroupId());
-
-		CommerceOrder commerceOrder = CommerceTestUtil.addB2CCommerceOrder(
-			TestPropsValues.getUserId(), _commerceChannel.getGroupId(),
-			_commerceCurrency.getCommerceCurrencyId());
-
-		CommerceOrderItem commerceOrderItem =
-			CommerceTestUtil.addCommerceOrderItem(
-				commerceOrder.getCommerceOrderId(),
-				cpInstance.getCPInstanceId(), BigDecimal.ONE);
-
-		CommerceInventoryWarehouse commerceInventoryWarehouse =
-			CommerceInventoryTestUtil.addCommerceInventoryWarehouse();
-
-		_commerceShipmentItemLocalService.addCommerceShipmentItem(
-			null, _commerceShipment.getCommerceShipmentId(),
-			commerceOrderItem.getCommerceOrderItemId(),
-			commerceInventoryWarehouse.getCommerceInventoryWarehouseId(),
-			commerceOrderItem.getQuantity(), null, false, _serviceContext);
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				_user, PermissionCheckerFactoryUtil.create(_user))) {
-
-			_commerceShipmentService.getCommerceShipment(
-				_commerceShipment.getCommerceShipmentId());
-
-			Assert.fail();
-		}
-		catch (Exception exception) {
-			_assertMessage(
-				ActionKeys.VIEW, exception.getMessage(), _user.getUserId());
-		}
-
-		RoleTestUtil.addResourcePermission(
-			_role, CommerceOrderConstants.RESOURCE_NAME,
-			ResourceConstants.SCOPE_COMPANY,
-			String.valueOf(TestPropsValues.getCompanyId()),
-			CommerceOrderActionKeys.MANAGE_COMMERCE_ORDERS);
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				_user, PermissionCheckerFactoryUtil.create(_user))) {
-
-			_commerceShipmentService.getCommerceShipment(
-				_commerceShipment.getCommerceShipmentId());
-		}
+		_testGetCommerceShipmentWithGroupId();
+		_testGetCommerceShipment();
 	}
 
 	@Test
@@ -419,6 +333,142 @@ public class CommerceShipmentServiceTest {
 				StringBundler.concat(
 					"User ", userId, " must have ", actionId,
 					" permission for")));
+	}
+
+	private void _testGetCommerceShipment() throws Exception {
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_user, PermissionCheckerFactoryUtil.create(_user))) {
+
+			_commerceShipmentService.getCommerceShipment(
+				_commerceShipment.getCommerceShipmentId());
+
+			Assert.fail();
+		}
+		catch (Exception exception) {
+			_assertMessage(
+				ActionKeys.VIEW, exception.getMessage(), _user.getUserId());
+		}
+
+		RoleTestUtil.addResourcePermission(
+			_role, CommerceConstants.RESOURCE_NAME_COMMERCE_SHIPMENT,
+			ResourceConstants.SCOPE_COMPANY,
+			String.valueOf(TestPropsValues.getCompanyId()),
+			CommerceActionKeys.ADD_COMMERCE_SHIPMENT);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_user, PermissionCheckerFactoryUtil.create(_user))) {
+
+			_commerceShipmentService.getCommerceShipment(
+				_commerceShipment.getCommerceShipmentId());
+
+			Assert.fail();
+		}
+		catch (Exception exception) {
+			_assertMessage(
+				ActionKeys.VIEW, exception.getMessage(), _user.getUserId());
+		}
+
+		_commerceOrder.setUserId(_user.getUserId());
+
+		_commerceOrder = _commerceOrderLocalService.updateCommerceOrder(
+			_commerceOrder);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_user, PermissionCheckerFactoryUtil.create(_user))) {
+
+			_commerceShipmentService.getCommerceShipment(
+				_commerceShipment.getCommerceShipmentId());
+		}
+
+		CPInstance cpInstance = CPTestUtil.addCPInstanceWithRandomSku(
+			_commerceChannel.getGroupId());
+
+		CommerceOrder commerceOrder = CommerceTestUtil.addB2CCommerceOrder(
+			TestPropsValues.getUserId(), _commerceChannel.getGroupId(),
+			_commerceCurrency.getCommerceCurrencyId());
+
+		CommerceOrderItem commerceOrderItem =
+			CommerceTestUtil.addCommerceOrderItem(
+				commerceOrder.getCommerceOrderId(),
+				cpInstance.getCPInstanceId(), BigDecimal.ONE);
+
+		CommerceInventoryWarehouse commerceInventoryWarehouse =
+			CommerceInventoryTestUtil.addCommerceInventoryWarehouse();
+
+		_commerceShipmentItemLocalService.addCommerceShipmentItem(
+			null, _commerceShipment.getCommerceShipmentId(),
+			commerceOrderItem.getCommerceOrderItemId(),
+			commerceInventoryWarehouse.getCommerceInventoryWarehouseId(),
+			commerceOrderItem.getQuantity(), null, false, _serviceContext);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_user, PermissionCheckerFactoryUtil.create(_user))) {
+
+			_commerceShipmentService.getCommerceShipment(
+				_commerceShipment.getCommerceShipmentId());
+
+			Assert.fail();
+		}
+		catch (Exception exception) {
+			_assertMessage(
+				ActionKeys.VIEW, exception.getMessage(), _user.getUserId());
+		}
+
+		RoleTestUtil.addResourcePermission(
+			_role, CommerceOrderConstants.RESOURCE_NAME,
+			ResourceConstants.SCOPE_COMPANY,
+			String.valueOf(TestPropsValues.getCompanyId()),
+			CommerceOrderActionKeys.MANAGE_COMMERCE_ORDERS);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_user, PermissionCheckerFactoryUtil.create(_user))) {
+
+			_commerceShipmentService.getCommerceShipment(
+				_commerceShipment.getCommerceShipmentId());
+		}
+	}
+
+	private void _testGetCommerceShipmentWithGroupId() throws Exception {
+		User user = UserTestUtil.addUser();
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user, PermissionCheckerFactoryUtil.create(user))) {
+
+			_commerceShipmentService.getCommerceShipment(
+				_commerceChannel.getGroupId(),
+				_commerceShipment.getCommerceShipmentId());
+
+			Assert.fail();
+		}
+		catch (PrincipalException principalException) {
+			_assertMessage(
+				ActionKeys.VIEW, principalException.getMessage(),
+				user.getUserId());
+		}
+
+		_commerceOrder.setUserId(user.getUserId());
+
+		_commerceOrder = _commerceOrderLocalService.updateCommerceOrder(
+			_commerceOrder);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user, PermissionCheckerFactoryUtil.create(user))) {
+
+			Assert.assertEquals(
+				_commerceShipment,
+				_commerceShipmentService.getCommerceShipment(
+					_commerceChannel.getGroupId(),
+					_commerceShipment.getCommerceShipmentId()));
+
+			_commerceShipmentService.getCommerceShipment(
+				RandomTestUtil.randomLong(),
+				_commerceShipment.getCommerceShipmentId());
+
+			Assert.fail();
+		}
+		catch (NoSuchShipmentException noSuchShipmentException) {
+			Assert.assertNotNull(noSuchShipmentException);
+		}
 	}
 
 	@DeleteAfterTestRun
