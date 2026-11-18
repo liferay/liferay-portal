@@ -145,8 +145,12 @@ public class LayoutSetPrototypeExportImportTest
 							getImportParameterMap()),
 					new ServiceContext());
 
+		UserTestUtil.setUser(companyAdminUser);
+
 		ExportImportLocalServiceUtil.importPortletInfo(
 			exportImportConfiguration, larFile);
+
+		UserTestUtil.setUser(user);
 
 		LayoutSetPrototype importedLayoutSetPrototype =
 			LayoutSetPrototypeLocalServiceUtil.
