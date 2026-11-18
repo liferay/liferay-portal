@@ -12,6 +12,7 @@ import com.liferay.commerce.context.CommerceContextFactory;
 import com.liferay.commerce.exception.CommerceOrderImporterTypeException;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.order.content.web.internal.importer.type.util.CommerceOrderImporterTypeUtil;
+import com.liferay.commerce.order.content.web.internal.portlet.action.ImportCSVMVCActionCommand;
 import com.liferay.commerce.order.importer.item.CommerceOrderImporterItem;
 import com.liferay.commerce.order.importer.item.CommerceOrderImporterItemImpl;
 import com.liferay.commerce.order.importer.type.CommerceOrderImporterType;
@@ -26,6 +27,7 @@ import com.liferay.commerce.product.service.CPInstanceLocalService;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.service.CommerceOrderItemService;
 import com.liferay.commerce.service.CommerceOrderService;
+import com.liferay.document.library.kernel.exception.NoSuchFileEntryException;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.frontend.data.set.provider.search.FDSPagination;
 import com.liferay.frontend.taglib.servlet.taglib.util.JSPRenderer;
@@ -42,11 +44,14 @@ import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.settings.GroupServiceSettingsLocator;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.File;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
+import com.liferay.portal.kernel.util.TempFileEntryUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -94,11 +99,27 @@ public class CSVCommerceOrderImporterTypeImpl
 		long fileEntryId = ParamUtil.getLong(
 			httpServletRequest, getCommerceOrderImporterItemParamName());
 
-		if (fileEntryId > 0) {
-			return _dlAppLocalService.getFileEntry(fileEntryId);
+		if (fileEntryId <= 0) {
+			return null;
 		}
 
-		return null;
+		FileEntry fileEntry = _dlAppLocalService.getFileEntry(fileEntryId);
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		FileEntry tempFileEntry = TempFileEntryUtil.getTempFileEntry(
+			themeDisplay.getCompanyGroupId(), themeDisplay.getUserId(),
+			ImportCSVMVCActionCommand.TEMP_FOLDER_NAME, fileEntry.getTitle());
+
+		if (tempFileEntry.getFileEntryId() != fileEntryId) {
+			throw new NoSuchFileEntryException(
+				"No temporary file entry exists with file entry ID " +
+					fileEntryId);
+		}
+
+		return tempFileEntry;
 	}
 
 	@Override
@@ -120,13 +141,15 @@ public class CSVCommerceOrderImporterTypeImpl
 			_commerceChannelLocalService.getCommerceChannelByOrderGroupId(
 				commerceOrder.getGroupId());
 
-		_commerceOrderImporterItemImpls = _getCommerceOrderImporterItemImpls(
-			commerceOrder.getCompanyId(), commerceOrder.getCommerceAccountId(),
-			commerceChannel.getGroupId(),
-			commerceOrder.getCommerceOrderTypeId(), (FileEntry)object);
+		CommerceOrderImporterItemImpl[] commerceOrderImporterItemImpls =
+			_getCommerceOrderImporterItemImpls(
+				commerceOrder.getCompanyId(),
+				commerceOrder.getCommerceAccountId(),
+				commerceChannel.getGroupId(),
+				commerceOrder.getCommerceOrderTypeId(), (FileEntry)object);
 
 		int start = 0;
-		int end = _commerceOrderImporterItemImpls.length;
+		int end = commerceOrderImporterItemImpls.length;
 
 		if (fdsPagination != null) {
 			start = fdsPagination.getStartPosition();
@@ -138,7 +161,7 @@ public class CSVCommerceOrderImporterTypeImpl
 
 		return CommerceOrderImporterTypeUtil.getCommerceOrderImporterItems(
 			_commerceContextFactory, commerceOrder,
-			Arrays.copyOfRange(_commerceOrderImporterItemImpls, start, end),
+			Arrays.copyOfRange(commerceOrderImporterItemImpls, start, end),
 			_commerceOrderItemService, _commerceOrderPriceCalculation,
 			_commerceOrderService, _userLocalService);
 	}
@@ -147,15 +170,11 @@ public class CSVCommerceOrderImporterTypeImpl
 	public int getCommerceOrderImporterItemsCount(Object object)
 		throws Exception {
 
-		if (_commerceOrderImporterItemImpls == null) {
-			CSVParser csvParser = _getCSVParser((FileEntry)object);
+		CSVParser csvParser = _getCSVParser((FileEntry)object);
 
-			List<CSVRecord> csvRecords = csvParser.getRecords();
+		List<CSVRecord> csvRecords = csvParser.getRecords();
 
-			return csvRecords.size();
-		}
-
-		return _commerceOrderImporterItemImpls.length;
+		return csvRecords.size();
 	}
 
 	@Override
@@ -359,7 +378,6 @@ public class CSVCommerceOrderImporterTypeImpl
 	@Reference
 	private CommerceContextFactory _commerceContextFactory;
 
-	private CommerceOrderImporterItemImpl[] _commerceOrderImporterItemImpls;
 	private volatile CommerceOrderImporterTypeConfiguration
 		_commerceOrderImporterTypeConfiguration;
 

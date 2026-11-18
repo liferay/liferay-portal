@@ -68,6 +68,9 @@ import org.osgi.service.component.annotations.Reference;
 )
 public class ImportCSVMVCActionCommand extends BaseMVCActionCommand {
 
+	public static final String TEMP_FOLDER_NAME =
+		ImportCSVMVCActionCommand.class.getName();
+
 	@Activate
 	@Modified
 	protected void activate(Map<String, Object> properties) {
@@ -160,7 +163,7 @@ public class ImportCSVMVCActionCommand extends BaseMVCActionCommand {
 					fileName, groupId, themeDisplay.getUserId()));
 
 			return TempFileEntryUtil.addTempFileEntry(
-				groupId, themeDisplay.getUserId(), _TEMP_FOLDER_NAME,
+				groupId, themeDisplay.getUserId(), TEMP_FOLDER_NAME,
 				uniqueFileName, inputStream,
 				uploadPortletRequest.getContentType(_PARAMETER_NAME));
 		}
@@ -169,7 +172,7 @@ public class ImportCSVMVCActionCommand extends BaseMVCActionCommand {
 	private boolean _exists(String fileName, long groupId, long userId) {
 		try {
 			FileEntry fileEntry = TempFileEntryUtil.getTempFileEntry(
-				groupId, userId, _TEMP_FOLDER_NAME, fileName);
+				groupId, userId, TEMP_FOLDER_NAME, fileName);
 
 			if (fileEntry != null) {
 				return true;
@@ -237,9 +240,6 @@ public class ImportCSVMVCActionCommand extends BaseMVCActionCommand {
 	private static final String[] _HEADER_NAMES = {"quantity", "sku"};
 
 	private static final String _PARAMETER_NAME = "csvFileName";
-
-	private static final String _TEMP_FOLDER_NAME =
-		ImportCSVMVCActionCommand.class.getName();
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		ImportCSVMVCActionCommand.class);
