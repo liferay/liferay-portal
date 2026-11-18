@@ -125,12 +125,12 @@ public class BatchEnginePortletDataHandlerRegistryUtil {
 			_allCompaniesKeyPortletIdsMap.remove(key, portletId);
 		}
 
-		if (!_companyIdKeyPortletIdsMap.containsKey(companyId)) {
-			return;
-		}
-
 		Map<String, String> keyPortletIdsMap = _companyIdKeyPortletIdsMap.get(
 			companyId);
+
+		if (keyPortletIdsMap == null) {
+			return;
+		}
 
 		keyPortletIdsMap.remove(key, portletId);
 
