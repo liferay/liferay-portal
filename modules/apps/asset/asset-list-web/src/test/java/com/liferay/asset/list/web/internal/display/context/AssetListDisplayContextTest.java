@@ -11,6 +11,7 @@ import com.liferay.asset.list.service.AssetListEntryAudienceEntryRelLocalService
 import com.liferay.asset.list.service.AssetListEntrySegmentsEntryRelLocalServiceUtil;
 import com.liferay.asset.util.AssetRendererFactoryClassProvider;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
+import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.portlet.PortletPreferencesFactory;
 import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -151,6 +152,27 @@ public class AssetListDisplayContextTest {
 
 			Assert.assertEquals(
 				3,
+				assetListDisplayContext.getAssetListEntryVariationsCount(
+					assetListEntry));
+
+			featureFlagManagerUtilMockedStatic.when(
+				() -> FeatureFlagManagerUtil.isEnabled(
+					CompanyConstants.SYSTEM, "LPD-78863")
+			).thenReturn(
+				true
+			);
+
+			assetListEntrySegmentsEntryRelLocalServiceUtilMockedStatic.when(
+				() ->
+					AssetListEntrySegmentsEntryRelLocalServiceUtil.
+						getAssetListEntrySegmentsEntryRelsCount(
+							_ASSET_LIST_ENTRY_ID)
+			).thenReturn(
+				5
+			);
+
+			Assert.assertEquals(
+				5,
 				assetListDisplayContext.getAssetListEntryVariationsCount(
 					assetListEntry));
 		}

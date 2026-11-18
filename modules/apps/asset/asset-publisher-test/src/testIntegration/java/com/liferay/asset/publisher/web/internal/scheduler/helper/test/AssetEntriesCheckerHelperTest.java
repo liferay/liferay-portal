@@ -49,6 +49,7 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
+import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -142,7 +143,12 @@ public class AssetEntriesCheckerHelperTest {
 				_layout));
 	}
 
-	@FeatureFlag("LPD-109242")
+	@FeatureFlags(
+		featureFlags = {
+			@FeatureFlag("LPD-109242"),
+			@FeatureFlag(enable = false, value = "LPD-78863")
+		}
+	)
 	@Test
 	public void testGetAssetEntriesFromAssetListSelectionAssetPublisherWithVariationsWhenFeatureFlagIsEnabled()
 		throws Exception {

@@ -78,6 +78,7 @@ import com.liferay.portal.kernel.util.URLCodec;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.FeatureFlag;
+import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -268,7 +269,12 @@ public class AssetPublisherDisplayContextTest {
 		Assert.assertEquals(assetEntry, assetEntries.get(0));
 	}
 
-	@FeatureFlag("LPD-109242")
+	@FeatureFlags(
+		featureFlags = {
+			@FeatureFlag("LPD-109242"),
+			@FeatureFlag(enable = false, value = "LPD-78863")
+		}
+	)
 	@Test
 	public void testGetAssetEntryResultsWithAudienceEntryWhenFeatureFlagIsEnabled()
 		throws Exception {

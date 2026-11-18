@@ -24,6 +24,7 @@ const test = mergeTests(
 	isolatedSiteTest,
 	dataApiHelpersTest,
 	featureFlagsTest({
+		'LPD-78863': {enabled: false, system: true}, // DXP Segments
 		'LPD-85746': {enabled: true}, // Audiences
 		'LPD-109242': {enabled: true}, // Collections Audiences
 	}),

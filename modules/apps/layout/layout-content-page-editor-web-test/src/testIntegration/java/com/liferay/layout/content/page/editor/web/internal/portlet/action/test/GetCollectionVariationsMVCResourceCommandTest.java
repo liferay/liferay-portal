@@ -32,6 +32,7 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.FeatureFlag;
+import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.segments.constants.SegmentsEntryConstants;
@@ -74,7 +75,12 @@ public class GetCollectionVariationsMVCResourceCommandTest {
 			AssetListEntryTypeConstants.TYPE_MANUAL, _serviceContext);
 	}
 
-	@FeatureFlag("LPD-109242")
+	@FeatureFlags(
+		featureFlags = {
+			@FeatureFlag("LPD-109242"),
+			@FeatureFlag(enable = false, value = "LPD-78863")
+		}
+	)
 	@Test
 	public void testDoServeResourceWithAudienceVariations() throws Exception {
 		AudiencesEntry audiencesEntry1 = _addAudiencesEntry();
@@ -122,7 +128,36 @@ public class GetCollectionVariationsMVCResourceCommandTest {
 			segmentsEntry.getName(LocaleUtil.US), jsonArray.getString(1));
 	}
 
-	@FeatureFlag("LPD-109242")
+	@FeatureFlags(
+		featureFlags = {@FeatureFlag("LPD-109242"), @FeatureFlag("LPD-78863")}
+	)
+	@Test
+	public void testDoServeResourceWithSegmentsVariationsAndAudienceVariationsFeatureFlag()
+		throws Exception {
+
+		AudiencesEntry audiencesEntry = _addAudiencesEntry();
+
+		_addAssetListEntryAudienceEntryRel(
+			audiencesEntry.getExternalReferenceCode(), 0);
+
+		SegmentsEntry segmentsEntry = _addAssetListEntrySegmentsEntryRel();
+
+		JSONArray jsonArray = _getCollectionVariationsJSONArray();
+
+		Assert.assertEquals(2, jsonArray.length());
+		Assert.assertEquals(
+			SegmentsEntryConstants.getDefaultSegmentsEntryName(LocaleUtil.US),
+			jsonArray.getString(0));
+		Assert.assertEquals(
+			segmentsEntry.getName(LocaleUtil.US), jsonArray.getString(1));
+	}
+
+	@FeatureFlags(
+		featureFlags = {
+			@FeatureFlag("LPD-109242"),
+			@FeatureFlag(enable = false, value = "LPD-78863")
+		}
+	)
 	@Test
 	public void testDoServeResourceWithoutAudienceVariations()
 		throws Exception {

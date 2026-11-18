@@ -68,6 +68,7 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.view.count.ViewCountManager;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.FeatureFlag;
+import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -337,7 +338,12 @@ public class AssetPublisherHelperTest {
 			_getAssetEntries(audienceEntryERC, portletPreferences));
 	}
 
-	@FeatureFlag("LPD-109242")
+	@FeatureFlags(
+		featureFlags = {
+			@FeatureFlag("LPD-109242"),
+			@FeatureFlag(enable = false, value = "LPD-78863")
+		}
+	)
 	@Test
 	public void testGetAssetEntriesForManualCollectionWithAudienceEntryWhenFeatureFlagIsEnabled()
 		throws Exception {
