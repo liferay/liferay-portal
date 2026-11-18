@@ -6,6 +6,25 @@ templates:
     -   templates/operator-networking.yaml
 tests:
     -   asserts:
+            -   documentIndex: 2
+                isKind:
+                    of: Gateway
+            -   documentIndex: 2
+                equal:
+                    path: metadata.annotations
+                    value:
+                        argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+                        argocd.argoproj.io/sync-wave: "-90"
+                        cert-manager.io/cluster-issuer: letsencrypt
+        it: Adds the configured annotations to the gateway
+        set:
+            argocd:
+                gateway:
+                    annotations:
+                        cert-manager.io/cluster-issuer: letsencrypt
+                    enabled: true
+                    hostname: argocd.liferay.test
+    -   asserts:
             -   hasDocuments:
                     count: 5
             -   documentIndex: 1

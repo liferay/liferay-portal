@@ -17,6 +17,7 @@ argoWorkflows:
     chart: argo-workflows
     enabled: true
     gateway:
+        annotations: {}
         clientTrafficPolicySpec: {}
         enabled: false
         envoyProxy:
@@ -78,6 +79,7 @@ argoWorkflows:
                 create: false
 argocd:
     gateway:
+        annotations: {}
         clientTrafficPolicySpec: {}
         enabled: false
         envoyProxy:

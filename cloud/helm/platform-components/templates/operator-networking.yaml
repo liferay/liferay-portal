@@ -132,6 +132,9 @@ metadata:
     annotations:
         argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
         argocd.argoproj.io/sync-wave: "-90"
+        {{- with $gateway.values.annotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
     labels:
         {{- include "liferay-platform.labels" $ | nindent 8 }}
         app.kubernetes.io/name: {{ $gateway.name }}-gateway
