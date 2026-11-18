@@ -20,9 +20,18 @@ portletDisplay.setShowBackIcon(true);
 portletDisplay.setURLBack(redirect);
 
 renderResponse.setTitle(assetListDisplayContext.getAssetListEntryTitle());
+
+boolean audienceVariationsEnabled = FeatureFlagManagerUtil.isEnabled(company.getCompanyId(), "LPD-109242") && !FeatureFlagManagerUtil.isEnabled(CompanyConstants.SYSTEM, "LPD-78863");
 %>
 
-<c:if test="<%= !editAssetListDisplayContext.isSegmentationEnabled(company.getCompanyId()) %>">
+<c:if test='<%= !audienceVariationsEnabled && FeatureFlagManagerUtil.isEnabled(company.getCompanyId(), "LPD-109242") %>'>
+	<clay:stripe
+		displayType="info"
+		message="personalized-variations-use-segments-while-the-dxp-segments-feature-flag-is-enabled"
+	/>
+</c:if>
+
+<c:if test="<%= !audienceVariationsEnabled && !editAssetListDisplayContext.isSegmentationEnabled(company.getCompanyId()) %>">
 	<clay:stripe
 		defaultTitleDisabled="<%= true %>"
 		dismissible="<%= true %>"
@@ -64,7 +73,7 @@ renderResponse.setTitle(assetListDisplayContext.getAssetListEntryTitle());
 				<span aria-hidden="true" class="loading-animation loading-animation-sm mt-4"></span>
 
 				<c:choose>
-					<c:when test='<%= FeatureFlagManagerUtil.isEnabled(company.getCompanyId(), "LPD-109242") %>'>
+					<c:when test="<%= audienceVariationsEnabled %>">
 						<react:component
 							module="{AudienceVariationsNav} from asset-list-web"
 							props="<%= editAssetListDisplayContext.getAudienceVariationsData() %>"
