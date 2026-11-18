@@ -50,8 +50,10 @@ import com.liferay.portal.kernel.repository.model.Folder;
 import com.liferay.portal.kernel.repository.model.RepositoryModel;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
+import com.liferay.portal.kernel.service.SQLStateAcceptor;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.social.SocialActivityManagerUtil;
+import com.liferay.portal.kernel.spring.aop.Retry;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -124,6 +126,15 @@ public class DLAppHelperLocalServiceImpl
 	}
 
 	@Override
+	@Retry(
+		acceptor = SQLStateAcceptor.class,
+		properties = {
+			@com.liferay.portal.kernel.spring.aop.Property(
+				name = SQLStateAcceptor.SQLSTATE,
+				value = SQLStateAcceptor.SQLSTATE_INTEGRITY_CONSTRAINT_VIOLATION
+			)
+		}
+	)
 	public void checkAssetEntry(
 			long userId, FileEntry fileEntry, FileVersion fileVersion)
 		throws PortalException {
