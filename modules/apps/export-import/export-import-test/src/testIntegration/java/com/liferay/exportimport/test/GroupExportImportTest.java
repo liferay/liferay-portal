@@ -11,6 +11,7 @@ import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
+import com.liferay.document.library.test.util.DLTestUtil;
 import com.liferay.exportimport.kernel.configuration.ExportImportConfigurationSettingsMapFactoryUtil;
 import com.liferay.exportimport.kernel.configuration.constants.ExportImportConfigurationConstants;
 import com.liferay.exportimport.kernel.lar.ExportImportGroup;
@@ -497,8 +498,8 @@ public class GroupExportImportTest {
 		return _dlAppLocalService.addFileEntry(
 			null, TestPropsValues.getUserId(), group.getGroupId(),
 			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
-			RandomTestUtil.randomString() + ".jpg", ContentTypes.IMAGE_JPEG,
-			RandomTestUtil.randomBytes(), null, null, null,
+			RandomTestUtil.randomString() + ".png", ContentTypes.IMAGE_PNG,
+			DLTestUtil.getImageBytes("png"), null, null, null,
 			ServiceContextTestUtil.getServiceContext(group.getGroupId()));
 	}
 
