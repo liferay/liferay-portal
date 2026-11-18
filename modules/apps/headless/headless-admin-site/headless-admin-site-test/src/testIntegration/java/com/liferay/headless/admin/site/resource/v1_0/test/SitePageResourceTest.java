@@ -5736,10 +5736,12 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 				sitePage.getExternalReferenceCode(), false, sitePage);
 		}
 
-		Layout layout = _layoutLocalService.getLayoutByExternalReferenceCode(
-			stagingLayout.getExternalReferenceCode(), testGroup.getGroupId());
+		Layout importedLiveLayout =
+			_layoutLocalService.getLayoutByExternalReferenceCode(
+				stagingLayout.getExternalReferenceCode(),
+				testGroup.getGroupId());
 
-		Assert.assertEquals(liveLayout.getPlid(), layout.getPlid());
+		Assert.assertEquals(liveLayout.getPlid(), importedLiveLayout.getPlid());
 	}
 
 	private void _testPutSiteSitePageWithWidgetPageSettings() throws Exception {
