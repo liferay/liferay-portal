@@ -9,6 +9,7 @@ import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {virtualInstancesPagesTest} from '../../../fixtures/virtualInstancesPagesTest';
 import {liferayConfig} from '../../../liferay.config';
+import {PageEditorPage} from '../../../pages/layout-content-page-editor-web/PageEditorPage';
 import getRandomString from '../../../utils/getRandomString';
 import performLogin from '../../../utils/performLogin';
 import {journalPagesTest} from '../../journal-web/main/fixtures/journalPagesTest';
@@ -151,57 +152,60 @@ test('Check client extension does not apply to new instances @LPD-63018', async 
 	const virtualInstancePage = await browser.newPage({
 		baseURL: `http://${DEFAULT_VIRTUAL_INSTANCE_NAME}:${liferayConfig.environment.port}`,
 	});
+
 	await test.step('Create virtual instance', async () => {
 		test.slow();
 
 		await virtualInstancesPage.addNewVirtualInstance(
 			DEFAULT_VIRTUAL_INSTANCE_NAME
 		);
+	});
 
-		await performLogin(
-			virtualInstancePage,
-			'test',
-			'?p_p_id=com_liferay_login_web_portlet_LoginPortlet&' +
-				'p_p_state=maximized',
-			`@${DEFAULT_VIRTUAL_INSTANCE_NAME}.com`
+	try {
+		await test.step('Log in to the virtual instance', async () => {
+			await performLogin(
+				virtualInstancePage,
+				'test',
+				'?p_p_id=com_liferay_login_web_portlet_LoginPortlet&' +
+					'p_p_state=maximized',
+				`@${DEFAULT_VIRTUAL_INSTANCE_NAME}.com`
+			);
+		});
+
+		await test.step('Check toolbar does not appear', async () => {
+			await virtualInstancePage.getByRole('link', {name: 'Edit'}).click();
+
+			const pageEditorPage = new PageEditorPage(virtualInstancePage);
+
+			await pageEditorPage.addWidget('Sample', 'CKEditor 4 Sample');
+
+			await expect(
+				virtualInstancePage
+					.locator('header')
+					.filter({hasText: 'CKEditor 4 Sample'})
+					.first()
+			).toBeVisible();
+
+			await pageEditorPage.publishPage();
+
+			await virtualInstancePage
+				.getByRole('link', {name: 'Alloy'})
+				.click();
+
+			await expect(
+				virtualInstancePage.getByText('Alloy Editor')
+			).toBeVisible();
+
+			await expect(
+				virtualInstancePage.getByTitle('Insert Video')
+			).not.toBeInViewport();
+		});
+	}
+	finally {
+		await virtualInstancePage.close();
+
+		await virtualInstancesPage.deleteVirtualInstance(
+			DEFAULT_VIRTUAL_INSTANCE_NAME
 		);
-	});
-
-	await test.step('Check toolbar does not appear', async () => {
-		await virtualInstancePage.getByRole('link', {name: 'Edit'}).click();
-
-		await virtualInstancePage
-			.getByLabel('Search Fragments and Widgets')
-			.fill('ckeditor');
-
-		await virtualInstancePage
-			.getByRole('menuitem', {name: 'CKEditor 4 Sample'})
-			.locator('div')
-			.first()
-			.click();
-
-		await virtualInstancePage.keyboard.press('ArrowLeft');
-
-		await virtualInstancePage.keyboard.press('Enter');
-
-		await virtualInstancePage.keyboard.press('Enter');
-
-		await virtualInstancePage
-			.locator('header')
-			.filter({hasText: 'CKEditor 4 Sample'})
-			.first()
-			.waitFor({state: 'visible'});
-
-		await virtualInstancePage.getByLabel('Publish').click();
-
-		await virtualInstancePage.getByRole('link', {name: 'Alloy'}).click();
-
-		await expect(
-			virtualInstancePage.getByText('Alloy Editor')
-		).toBeVisible();
-
-		await expect(
-			virtualInstancePage.getByTitle('Insert Video')
-		).not.toBeInViewport();
-	});
+	}
 });
