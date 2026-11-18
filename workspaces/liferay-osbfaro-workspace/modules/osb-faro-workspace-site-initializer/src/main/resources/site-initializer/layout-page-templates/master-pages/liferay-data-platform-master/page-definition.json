@@ -5,6 +5,19 @@
 			{
 				"definition": {
 					"fragment": {
+						"key": "com.liferay.osb.faro.web.internal.fragment.renderer.FaroExternalScriptsFragmentRenderer"
+					},
+					"fragmentConfig": {
+					},
+					"fragmentFields": [
+					]
+				},
+				"id": "d3b1def4-165e-4c40-8ecc-b066c04242a6",
+				"type": "Fragment"
+			},
+			{
+				"definition": {
+					"fragment": {
 						"key": "sidebar"
 					},
 					"fragmentConfig": {

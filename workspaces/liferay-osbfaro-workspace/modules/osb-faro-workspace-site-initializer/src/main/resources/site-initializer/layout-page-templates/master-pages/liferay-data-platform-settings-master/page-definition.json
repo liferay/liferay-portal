@@ -4,6 +4,19 @@
 		"pageElements": [
 			{
 				"definition": {
+					"fragment": {
+						"key": "com.liferay.osb.faro.web.internal.fragment.renderer.FaroExternalScriptsFragmentRenderer"
+					},
+					"fragmentConfig": {
+					},
+					"fragmentFields": [
+					]
+				},
+				"id": "7697bf46-e8b3-4285-8376-fb223f8addbe",
+				"type": "Fragment"
+			},
+			{
+				"definition": {
 					"fragmentSettings": {
 						"unallowedFragments": [
 						]
