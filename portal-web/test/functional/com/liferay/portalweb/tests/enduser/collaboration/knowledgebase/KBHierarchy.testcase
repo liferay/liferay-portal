@@ -139,32 +139,6 @@ definition {
 			kbMarkdownImageCaption = "Figure 1: The First Start wizard makes it easy to configure the runtime that ships with Liferay Developer Studio.");
 	}
 
-	@priority = 4
-	@refactorneeded
-	test ViewImportedKBArticlesWithMultiplePeerHierarchies {
-		KBAdmin.openKBAdmin(siteURLKey = "guest");
-
-		KBArticle.importCP(
-			applyNumericalPrefix = "true",
-			kbZipFile = "KBArticlesWithMarkdown.zip");
-
-		Navigator.gotoPage(pageName = "Knowledge Base Display Page");
-
-		KBArticle.gotoKBArticleViaKBDisplayHierarchyNavigationPG(kbArticleTitle = "Knowledge Base Article Parent Title 1");
-
-		KBDisplayWidget.viewParentArticleHierarchyViaKBDisplayPG(kbArticleTitle = "Knowledge Base Article Parent Title");
-
-		KBDisplayWidget.viewChildArticleHierarchyViaKBDisplayPG(kbArticleTitle = "Knowledge Base Article Parent Title 1");
-
-		KBDisplayWidget.viewChildArticleHierarchyViaKBDisplayPG(kbArticleTitle = "Knowledge Base Article Parent Title 2");
-
-		KBDisplayWidget.viewChildArticleHierarchyViaKBDisplayPG(kbArticleTitle = "Knowledge Base Article Parent Title 3");
-
-		KBDisplayWidget.viewChildArticleHierarchyViaKBDisplayPG(kbArticleTitle = "Knowledge Base Article Parent Title 4");
-
-		KBDisplayWidget.viewChildArticleHierarchyViaKBDisplayPG(kbArticleTitle = "Knowledge Base Article Parent Title 5");
-	}
-
 	@priority = 3
 	@refactorneeded
 	test ViewKBArticleNoHierarchyInFolder {

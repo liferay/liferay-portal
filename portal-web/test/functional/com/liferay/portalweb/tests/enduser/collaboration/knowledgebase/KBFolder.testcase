@@ -106,15 +106,6 @@ definition {
 			kbArticleTitle = "KB Article A Edit");
 	}
 
-	@description = "This test checks that articles can be sorted by priority."
-	@ignore = "Test Stub"
-	@priority = 3
-	test AssetsCanBeSortedByPriority {
-
-		// TODO LPS-166644
-
-	}
-
 	@description = "This test checks that articles can be sorted by view count."
 	@priority = 3
 	test AssetsCanBeSortedByViewCount {

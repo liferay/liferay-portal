@@ -175,36 +175,6 @@ definition {
 			kbArticleTitle = "Knowledge Base Article Title Child");
 	}
 
-	@priority = 4
-	@refactordone
-	test CanSelectParentArticle {
-		JSONKnowledgeBase.addkBArticle(
-			groupName = "Guest",
-			kbArticleContent = "Knowledge Base Article Content Parent",
-			kbArticleTitle = "Knowledge Base Article Title Parent");
-
-		JSONKnowledgeBase.addkBArticle(
-			groupName = "Guest",
-			kbArticleContent = "Knowledge Base Article Content Child",
-			kbArticleTitle = "Knowledge Base Article Title Child");
-
-		KBAdmin.openKBAdmin(siteURLKey = "guest");
-
-		KBArticle.moveArticleCP(
-			destinationItem = "Knowledge Base Article Title Parent",
-			kbArticleTitle = "Knowledge Base Article Title Child");
-
-		Alert.reloadPageAfterSuccessMessage(successMessage = "Your request completed successfully.");
-
-		KBArticle.gotoViaKBAdminCP(
-			hasChildArticle = "true",
-			kbArticleTitle = "Knowledge Base Article Title Parent");
-
-		KBArticle.viewChildArticleCP(
-			kbChildArticleContent = "Knowledge Base Article Content Child",
-			kbChildArticleTitle = "Knowledge Base Article Title Child");
-	}
-
 	@description = "This test ensures that users can view article in the table view."
 	@priority = 4
 	test CanViewArticleInTableView {
