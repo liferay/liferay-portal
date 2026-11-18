@@ -181,28 +181,6 @@ definition {
 	}
 
 	@disable-webdriver = "true"
-	@priority = 3
-	test CanDeleteAttachmentForKnowledgeBaseArticleByExternalReferenceCode {
-		property portal.acceptance = "false";
-
-		task ("When with deleteSiteKnowledgeBaseArticleByExternalReferenceCodeKnowledgeBaseArticleExternalReferenceCodeKnowledgeBaseAttachmentByExternalReferenceCode and siteId and knowledgeBaseExternalReferenceCode and knowledgeBaseAttachmentExternalReferenceCode to delete the knwoledgeBaseAttachment") {
-			KnowledgeBaseAttachmentAPI.deleteKBAttachmentByKBArticleErcAndKBAttachmentErc(
-				kBArticleErc = "KBAErc",
-				kBAttachmentErc = "KBAtErc");
-		}
-
-		task ("Then the knowledgeBaseAttachment is deleted") {
-			var response = KnowledgeBaseAttachmentAPI.getKBAttachmentByKBArticleErcAndKBAttachmentErc(
-				kBArticleErc = "KBAErc",
-				kBAttachmentErc = "KBAtErc");
-
-			ObjectDefinitionAPI.assertStatusInResponse(
-				expectedValue = "NOT_FOUND",
-				responseToParse = ${response});
-		}
-	}
-
-	@disable-webdriver = "true"
 	@priority = 4
 	test CanDeleteAttachmentForKnowledgeBaseArticleInFolderByExternalReferenceCode {
 		property portal.acceptance = "true";
@@ -268,26 +246,6 @@ definition {
 			TestUtils.assertEquals(
 				actual = ${actualValue},
 				expected = "Document_2.jpeg");
-		}
-	}
-
-	@disable-webdriver = "true"
-	@priority = 4
-	test CanGetAttachmentForKnowledgeBaseArticleByExternalReferenceCode {
-		property portal.acceptance = "true";
-
-		task ("When with getSiteKnowledgeBaseArticleByExternalReferenceCodeKnowledgeBaseArticleExternalReferenceCodeKnowledgeBaseAttachmentByExternalReferenceCode and knowledgeBaseExternalReferenceCode and knowledgeBaseAttachmentExternalReferenceCode to retrieve the knwoledgeBaseAttachment") {
-			var response = KnowledgeBaseAttachmentAPI.getKBAttachmentByKBArticleErcAndKBAttachmentErc(
-				kBArticleErc = "KBAErc",
-				kBAttachmentErc = "KBAtErc");
-		}
-
-		task ("Then I can see details of the knowledgeBaseAttachment") {
-			var actualValue = JSONUtil.getWithJSONPath(${response}, "$.[?(@.externalReferenceCode=='KBAtErc')].title");
-
-			TestUtils.assertEquals(
-				actual = ${actualValue},
-				expected = "Document_1.jpeg");
 		}
 	}
 

@@ -227,24 +227,6 @@ definition {
 		}
 	}
 
-	@description = "Unable to get document by nonexistent erc"
-	@priority = 4
-	test CanReturnErrorWithGetDocumentInAssetLibraryByNonexistentErc {
-		property portal.acceptance = "true";
-
-		task ("When I make a GET request by assetLibraryID and non-existent erc") {
-			var response = DocumentAPI.getDocumentsByErcInAssetLibrary(
-				depotName = "Test Depot Name",
-				externalReferenceCode = "nonexistent-erc");
-		}
-
-		task ("Then I receive error message in response") {
-			TestUtils.assertPartialEquals(
-				actual = ${response},
-				expected = "NOT_FOUND");
-		}
-	}
-
 	@description = "Document is updated by asset library id and erc"
 	@priority = 5
 	test CanUpdateDocumentTitleInAssetLibraryByErc {

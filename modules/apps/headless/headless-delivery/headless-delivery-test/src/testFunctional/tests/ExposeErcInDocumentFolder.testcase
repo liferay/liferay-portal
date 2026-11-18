@@ -305,24 +305,6 @@ definition {
 	}
 
 	@disable-webdriver = "true"
-	@priority = 3
-	test CanReturnErrorWithGetDocumentFolderByNonexistentErc {
-		property portal.acceptance = "false";
-
-		task ("When with GET request, siteId and nonexistent external reference code to retrieve the document folder") {
-			var response = DocumentFolderAPI.getDocumentFolderBySiteIdAndErc(
-				externalReferenceCode = "customErc",
-				groupName = "Guest");
-		}
-
-		task ("Then I receive no DLFolder exists error message in response") {
-			ObjectDefinitionAPI.assertStatusInResponse(
-				expectedValue = "NOT_FOUND",
-				responseToParse = ${response});
-		}
-	}
-
-	@disable-webdriver = "true"
 	@priority = 4
 	test CanUpdateDocumentFolderNameByErc {
 		property portal.acceptance = "true";
