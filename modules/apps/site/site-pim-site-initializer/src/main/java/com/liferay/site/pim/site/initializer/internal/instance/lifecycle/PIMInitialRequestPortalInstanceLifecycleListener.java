@@ -18,12 +18,16 @@ import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.instance.lifecycle.InitialRequestPortalInstanceLifecycleListener;
 import com.liferay.portal.instance.lifecycle.PortalInstanceLifecycleListener;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagListener;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.site.initializer.SiteInitializer;
+import com.liferay.site.navigation.service.SiteNavigationMenuItemLocalService;
 import com.liferay.site.pim.site.initializer.connector.PIMConnectorRegistry;
+import com.liferay.site.pim.site.initializer.internal.feature.flag.PIMFeatureFlagListener;
 import com.liferay.site.pim.site.initializer.internal.fragment.renderer.EditPIMConnectorFieldMappingsJSPSectionFragmentRenderer;
 import com.liferay.site.pim.site.initializer.internal.fragment.renderer.EditPIMConnectorJSPSectionFragmentRenderer;
 import com.liferay.site.pim.site.initializer.internal.fragment.renderer.PIMConnectorFieldMappingsJSPSectionFragmentRenderer;
@@ -116,6 +120,15 @@ public class PIMInitialRequestPortalInstanceLifecycleListener
 					_language, _objectDefinitionLocalService, _servletContext),
 				null));
 
+		_serviceRegistrations.add(
+			bundleContext.registerService(
+				FeatureFlagListener.class,
+				new PIMFeatureFlagListener(
+					_cmsSiteInitializer, _depotEntryLocalService,
+					_groupLocalService, _objectEntryFolderLocalService,
+					_pimSiteInitializer, _siteNavigationMenuItemLocalService),
+				MapUtil.singletonDictionary("feature.flag.key", "LPD-96666")));
+
 		super.activate(bundleContext);
 	}
 
@@ -206,5 +219,9 @@ public class PIMInitialRequestPortalInstanceLifecycleListener
 		target = "(osgi.web.symbolicname=com.liferay.site.pim.site.initializer)"
 	)
 	private ServletContext _servletContext;
+
+	@Reference
+	private SiteNavigationMenuItemLocalService
+		_siteNavigationMenuItemLocalService;
 
 }

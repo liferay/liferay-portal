@@ -25,16 +25,27 @@ import com.liferay.site.pim.site.initializer.internal.constants.PIMSiteInitializ
 import com.liferay.site.pim.site.initializer.internal.util.PIMObjectEntryFolderUtil;
 import com.liferay.site.pim.site.initializer.internal.util.SiteInitializerUtil;
 
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-
 /**
  * @author Stefano Motta
  */
-@Component(
-	property = "feature.flag.key=LPD-96666", service = FeatureFlagListener.class
-)
 public class PIMFeatureFlagListener implements FeatureFlagListener {
+
+	public PIMFeatureFlagListener(
+		SiteInitializer cmsSiteInitializer,
+		DepotEntryLocalService depotEntryLocalService,
+		GroupLocalService groupLocalService,
+		ObjectEntryFolderLocalService objectEntryFolderLocalService,
+		SiteInitializer pimSiteInitializer,
+		SiteNavigationMenuItemLocalService siteNavigationMenuItemLocalService) {
+
+		_cmsSiteInitializer = cmsSiteInitializer;
+		_depotEntryLocalService = depotEntryLocalService;
+		_groupLocalService = groupLocalService;
+		_objectEntryFolderLocalService = objectEntryFolderLocalService;
+		_pimSiteInitializer = pimSiteInitializer;
+		_siteNavigationMenuItemLocalService =
+			siteNavigationMenuItemLocalService;
+	}
 
 	@Override
 	public void onValue(
@@ -92,27 +103,12 @@ public class PIMFeatureFlagListener implements FeatureFlagListener {
 	private static final Log _log = LogFactoryUtil.getLog(
 		PIMFeatureFlagListener.class);
 
-	@Reference(
-		target = "(site.initializer.key=com.liferay.site.initializer.cms)"
-	)
-	private SiteInitializer _cmsSiteInitializer;
-
-	@Reference
-	private DepotEntryLocalService _depotEntryLocalService;
-
-	@Reference
-	private GroupLocalService _groupLocalService;
-
-	@Reference
-	private ObjectEntryFolderLocalService _objectEntryFolderLocalService;
-
-	@Reference(
-		target = "(site.initializer.key=com.liferay.site.initializer.pim)"
-	)
-	private SiteInitializer _pimSiteInitializer;
-
-	@Reference
-	private SiteNavigationMenuItemLocalService
+	private final SiteInitializer _cmsSiteInitializer;
+	private final DepotEntryLocalService _depotEntryLocalService;
+	private final GroupLocalService _groupLocalService;
+	private final ObjectEntryFolderLocalService _objectEntryFolderLocalService;
+	private final SiteInitializer _pimSiteInitializer;
+	private final SiteNavigationMenuItemLocalService
 		_siteNavigationMenuItemLocalService;
 
 }
