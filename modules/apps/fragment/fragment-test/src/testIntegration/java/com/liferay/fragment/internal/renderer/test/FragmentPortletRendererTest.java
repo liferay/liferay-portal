@@ -12,10 +12,13 @@ import com.liferay.fragment.service.FragmentEntryLinkLocalService;
 import com.liferay.journal.constants.JournalContentPortletKeys;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
-import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
+import com.liferay.layout.page.template.test.util.LayoutPageTemplateTestUtil;
 import com.liferay.layout.test.util.ContentLayoutTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.layout.util.LayoutServiceContextHelper;
+import com.liferay.layout.utility.page.kernel.constants.LayoutUtilityPageEntryConstants;
+import com.liferay.layout.utility.page.model.LayoutUtilityPageEntry;
+import com.liferay.layout.utility.page.service.LayoutUtilityPageEntryLocalService;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -70,66 +73,26 @@ public class FragmentPortletRendererTest {
 
 	@Test
 	@TestInfo("LPD-115998")
-	public void testRenderPortletFromAnotherLayout() throws Exception {
+	public void testRenderPortlet() throws Exception {
 		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
 
-		FragmentEntryLink fragmentEntryLink = _addPortletFragmentEntryLink(
-			layout);
+		_testRenderPortlet(
+			_addPortletFragmentEntryLink(
+				LayoutTestUtil.addTypeContentLayout(_group)),
+			layout, false);
 
-		_renderPortlet(
-			fragmentEntryLink, LayoutTestUtil.addTypeContentLayout(_group));
-
-		Assert.assertNull(_fetchSharedPortletPreferences(fragmentEntryLink));
-	}
-
-	@Test
-	@TestInfo("LPD-115998")
-	public void testRenderPortletFromMasterLayout() throws Exception {
-		LayoutPageTemplateEntry masterLayoutPageTemplateEntry =
-			_layoutPageTemplateEntryLocalService.addLayoutPageTemplateEntry(
-				null, TestPropsValues.getUserId(), _group.getGroupId(), 0, null,
-				RandomTestUtil.randomString(),
-				LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT, 0,
-				WorkflowConstants.STATUS_APPROVED,
+		LayoutUtilityPageEntry layoutUtilityPageEntry =
+			_layoutUtilityPageEntryLocalService.addLayoutUtilityPageEntry(
+				null, TestPropsValues.getUserId(), _group.getGroupId(), 0, 0,
+				true, RandomTestUtil.randomString(),
+				LayoutUtilityPageEntryConstants.TYPE_SC_NOT_FOUND, null,
 				ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 
-		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
-
-		layout.setMasterLayoutPageTemplateEntryERC(
-			masterLayoutPageTemplateEntry.getExternalReferenceCode());
-
-		layout = _layoutLocalService.updateLayout(layout);
-
-		Assert.assertEquals(
-			masterLayoutPageTemplateEntry.getPlid(),
-			layout.getMasterLayoutPlid());
-
-		FragmentEntryLink fragmentEntryLink = _addPortletFragmentEntryLink(
-			_layoutLocalService.getLayout(
-				masterLayoutPageTemplateEntry.getPlid()));
-
-		_renderPortlet(fragmentEntryLink, layout);
-
-		Assert.assertNotNull(_fetchSharedPortletPreferences(fragmentEntryLink));
-	}
-
-	@Test
-	@TestInfo("LPD-115998")
-	public void testRenderPortletFromSameLayout() throws Exception {
-		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
-
-		FragmentEntryLink fragmentEntryLink = _addPortletFragmentEntryLink(
-			layout);
-
-		_renderPortlet(fragmentEntryLink, layout);
-
-		Assert.assertNull(_fetchSharedPortletPreferences(fragmentEntryLink));
-	}
-
-	@Test
-	@TestInfo("LPD-115998")
-	public void testRenderPortletFromUnsavedFragmentEntryLink()
-		throws Exception {
+		_testRenderPortlet(
+			_addPortletFragmentEntryLink(
+				_layoutLocalService.getLayout(
+					layoutUtilityPageEntry.getPlid())),
+			layout, false);
 
 		FragmentEntryLink fragmentEntryLink =
 			_fragmentEntryLinkLocalService.createFragmentEntryLink(0);
@@ -142,10 +105,27 @@ public class FragmentPortletRendererTest {
 				"portletId", JournalContentPortletKeys.JOURNAL_CONTENT
 			).toString());
 
-		_renderPortlet(
-			fragmentEntryLink, LayoutTestUtil.addTypeContentLayout(_group));
+		_testRenderPortlet(fragmentEntryLink, layout, false);
 
-		Assert.assertNull(_fetchSharedPortletPreferences(fragmentEntryLink));
+		LayoutPageTemplateEntry masterLayoutPageTemplateEntry =
+			LayoutPageTemplateTestUtil.addLayoutPageTemplateEntry(
+				_group.getGroupId(),
+				LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT,
+				WorkflowConstants.STATUS_APPROVED);
+
+		layout = LayoutTestUtil.updateMasterLayoutPageTemplateEntryERC(
+			layout, masterLayoutPageTemplateEntry.getExternalReferenceCode(),
+			null);
+
+		Assert.assertEquals(
+			masterLayoutPageTemplateEntry.getPlid(),
+			layout.getMasterLayoutPlid());
+
+		_testRenderPortlet(
+			_addPortletFragmentEntryLink(
+				_layoutLocalService.getLayout(
+					masterLayoutPageTemplateEntry.getPlid())),
+			layout, true);
 	}
 
 	private FragmentEntryLink _addPortletFragmentEntryLink(Layout layout)
@@ -161,23 +141,12 @@ public class FragmentPortletRendererTest {
 			fragmentEntryLinkJSONObject.getLong("fragmentEntryLinkId"));
 	}
 
-	private PortletPreferences _fetchSharedPortletPreferences(
-		FragmentEntryLink fragmentEntryLink) {
+	private void _testRenderPortlet(
+			FragmentEntryLink fragmentEntryLink, Layout layout, boolean shared)
+		throws Exception {
 
 		JSONObject editableValuesJSONObject =
 			fragmentEntryLink.getEditableValuesJSONObject();
-
-		return _portletPreferencesLocalService.fetchPortletPreferences(
-			_group.getGroupId(), PortletKeys.PREFS_OWNER_TYPE_LAYOUT,
-			PortletKeys.PREFS_PLID_SHARED,
-			PortletIdCodec.encode(
-				editableValuesJSONObject.getString("portletId"),
-				editableValuesJSONObject.getString("instanceId")));
-	}
-
-	private void _renderPortlet(
-			FragmentEntryLink fragmentEntryLink, Layout layout)
-		throws Exception {
 
 		try (AutoCloseable autoCloseable =
 				_layoutServiceContextHelper.getServiceContextAutoCloseable(
@@ -191,9 +160,6 @@ public class FragmentPortletRendererTest {
 			httpServletRequest.setAttribute(
 				"ORIGINAL_HTTP_SERVLET_REQUEST", httpServletRequest);
 
-			JSONObject editableValuesJSONObject =
-				fragmentEntryLink.getEditableValuesJSONObject();
-
 			_fragmentPortletRenderer.renderPortlet(
 				fragmentEntryLink, httpServletRequest,
 				new MockHttpServletResponse(),
@@ -201,6 +167,16 @@ public class FragmentPortletRendererTest {
 				editableValuesJSONObject.getString("instanceId"),
 				StringPool.BLANK);
 		}
+
+		PortletPreferences portletPreferences =
+			_portletPreferencesLocalService.fetchPortletPreferences(
+				_group.getGroupId(), PortletKeys.PREFS_OWNER_TYPE_LAYOUT,
+				PortletKeys.PREFS_PLID_SHARED,
+				PortletIdCodec.encode(
+					editableValuesJSONObject.getString("portletId"),
+					editableValuesJSONObject.getString("instanceId")));
+
+		Assert.assertEquals(shared, portletPreferences != null);
 	}
 
 	@Inject
@@ -215,11 +191,11 @@ public class FragmentPortletRendererTest {
 	private LayoutLocalService _layoutLocalService;
 
 	@Inject
-	private LayoutPageTemplateEntryLocalService
-		_layoutPageTemplateEntryLocalService;
+	private LayoutServiceContextHelper _layoutServiceContextHelper;
 
 	@Inject
-	private LayoutServiceContextHelper _layoutServiceContextHelper;
+	private LayoutUtilityPageEntryLocalService
+		_layoutUtilityPageEntryLocalService;
 
 	@Inject
 	private PortletPreferencesLocalService _portletPreferencesLocalService;
