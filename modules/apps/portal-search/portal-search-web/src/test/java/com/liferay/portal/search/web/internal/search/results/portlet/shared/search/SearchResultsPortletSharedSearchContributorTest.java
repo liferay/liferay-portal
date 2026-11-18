@@ -142,7 +142,7 @@ public class SearchResultsPortletSharedSearchContributorTest {
 	@Test
 	public void testContributeTrackTotalHitsLimit() {
 		_testContributeTrackTotalHitsLimit(
-			10001, true, RandomTestUtil.randomInt());
+			10000, true, RandomTestUtil.randomInt());
 		_testContributeTrackTotalHitsLimit(
 			null, false, RandomTestUtil.randomInt());
 	}
@@ -157,20 +157,18 @@ public class SearchResultsPortletSharedSearchContributorTest {
 	}
 
 	@FeatureFlags(
-		featureFlags = {
-			@FeatureFlag("LPD-114635"), @FeatureFlag("LPD-98858")
-		}
+		featureFlags = {@FeatureFlag("LPD-114635"), @FeatureFlag("LPD-98858")}
 	)
 	@Test
 	public void testContributeTrackTotalHitsLimitWithMaximumSearchDepth() {
-		_testContributeTrackTotalHitsLimit(101, true, 100);
+		_testContributeTrackTotalHitsLimit(100, true, 100);
+		_testContributeTrackTotalHitsLimit(
+			Integer.MAX_VALUE, true, Integer.MAX_VALUE);
 		_testContributeTrackTotalHitsLimit(null, false, 100);
 	}
 
 	@FeatureFlags(
-		featureFlags = {
-			@FeatureFlag("LPD-114635"), @FeatureFlag("LPD-98858")
-		}
+		featureFlags = {@FeatureFlag("LPD-114635"), @FeatureFlag("LPD-98858")}
 	)
 	@Test
 	public void testContributeTrackTotalHitsLimitWithMultipleWidgets() {
@@ -410,7 +408,7 @@ public class SearchResultsPortletSharedSearchContributorTest {
 		SearchRequest searchRequest = searchRequestBuilder.build();
 
 		Assert.assertEquals(
-			Integer.valueOf(101), searchRequest.getTrackTotalHitsLimit());
+			Integer.valueOf(100), searchRequest.getTrackTotalHitsLimit());
 	}
 
 	private static final String _PORTLET_ID = RandomTestUtil.randomString();
