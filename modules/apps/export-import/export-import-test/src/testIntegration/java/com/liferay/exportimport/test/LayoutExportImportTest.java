@@ -55,6 +55,7 @@ import com.liferay.journal.constants.JournalPortletKeys;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.service.JournalArticleLocalService;
 import com.liferay.journal.test.util.JournalTestUtil;
+import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
 import com.liferay.layout.friendly.url.LayoutFriendlyURLEntryHelper;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
@@ -1944,7 +1945,7 @@ public class LayoutExportImportTest extends BaseExportImportTestCase {
 				serviceContext);
 
 		Repository repository = PortletFileRepositoryUtil.addPortletRepository(
-			group.getGroupId(), RandomTestUtil.randomString(),
+			group.getGroupId(), LayoutAdminPortletKeys.GROUP_PAGES,
 			ServiceContextTestUtil.getServiceContext(group.getGroupId()));
 
 		String randomString = StringUtil.randomString();
@@ -1954,7 +1955,7 @@ public class LayoutExportImportTest extends BaseExportImportTestCase {
 				null, group.getGroupId(), TestPropsValues.getUserId(),
 				LayoutPageTemplateEntry.class.getName(),
 				layoutUtilityPageEntry.getLayoutUtilityPageEntryId(),
-				RandomTestUtil.randomString(), repository.getDlFolderId(),
+				LayoutAdminPortletKeys.GROUP_PAGES, repository.getDlFolderId(),
 				new ByteArrayInputStream(randomString.getBytes()),
 				RandomTestUtil.randomString(), ContentTypes.IMAGE_PNG, false);
 
