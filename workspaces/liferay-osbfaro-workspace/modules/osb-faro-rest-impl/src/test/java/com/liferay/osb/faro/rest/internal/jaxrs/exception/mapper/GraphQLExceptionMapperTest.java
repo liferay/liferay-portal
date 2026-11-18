@@ -53,21 +53,22 @@ public class GraphQLExceptionMapperTest {
 		_assertResponse(
 			Response.Status.INTERNAL_SERVER_ERROR, "Internal Server Error",
 			_getGraphQLError(
-				"DataFetchingException", RandomTestUtil.randomString(), null));
+				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+				null));
 		_assertResponse(
 			Response.Status.INTERNAL_SERVER_ERROR, "Internal Server Error",
-			_getGraphQLError("DataFetchingException", null, null));
-		_assertResponse(
-			Response.Status.NOT_FOUND, "Not Found",
-			_getGraphQLError(
-				"DataFetchingException", null,
-				"no-account-was-found-with-id-1"));
+			_getGraphQLError(RandomTestUtil.randomString(), null, null));
 		_assertResponse(
 			Response.Status.NOT_FOUND, "Not Found",
 			_getGraphQLError("ValidationError", null, null),
 			_getGraphQLError(
-				"DataFetchingException", "no-account-was-found-with-id-1",
+				RandomTestUtil.randomString(), "no-account-was-found-with-id-1",
 				null));
+		_assertResponse(
+			Response.Status.NOT_FOUND, "Not Found",
+			_getGraphQLError(
+				RandomTestUtil.randomString(), null,
+				"no-account-was-found-with-id-1"));
 	}
 
 	@Test
