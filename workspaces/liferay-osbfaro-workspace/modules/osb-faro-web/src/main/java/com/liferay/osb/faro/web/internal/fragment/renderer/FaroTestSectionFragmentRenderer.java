@@ -6,6 +6,8 @@
 package com.liferay.osb.faro.web.internal.fragment.renderer;
 
 import com.liferay.fragment.renderer.FragmentRenderer;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItemList;
+import com.liferay.osb.faro.web.internal.display.context.TestNavigationDisplayContext;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ParamUtil;
 
@@ -30,6 +32,17 @@ public class FaroTestSectionFragmentRenderer
 	@Override
 	protected String getModule() {
 		return "{Test} from osb-faro-web/tests";
+	}
+
+	@Override
+	protected NavigationItemList getNavigationItems(
+			HttpServletRequest httpServletRequest)
+		throws Exception {
+
+		TestNavigationDisplayContext testNavigationDisplayContext =
+			new TestNavigationDisplayContext(httpServletRequest);
+
+		return testNavigationDisplayContext.getNavigationItems();
 	}
 
 	@Override
