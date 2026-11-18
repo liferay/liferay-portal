@@ -24,6 +24,8 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.tools.db.migration.importer.jdbc.AutoBatchPreparedStatementUtil;
 import com.liferay.portal.tools.db.migration.importer.jdbc.ConnectionConfigUtil;
 
+import com.mysql.cj.jdbc.JdbcStatement;
+
 import java.math.BigDecimal;
 
 import java.nio.charset.StandardCharsets;
@@ -547,6 +549,13 @@ public class DBCopyTablesProcess {
 
 			preparedStatement1.setFetchSize(
 				ConnectionConfigUtil.getFetchSize());
+
+			if (preparedStatement1.isWrapperFor(JdbcStatement.class)) {
+				JdbcStatement jdbcStatement = preparedStatement1.unwrap(
+					JdbcStatement.class);
+
+				jdbcStatement.enableStreamingResults();
+			}
 
 			try (ResultSet resultSet = preparedStatement1.executeQuery()) {
 				while (resultSet.next()) {
