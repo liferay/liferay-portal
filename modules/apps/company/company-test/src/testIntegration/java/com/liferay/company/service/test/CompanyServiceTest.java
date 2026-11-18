@@ -6,7 +6,9 @@
 package com.liferay.company.service.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.instance.PortalInstancePool;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
@@ -83,6 +85,58 @@ public class CompanyServiceTest {
 			Assert.assertThrows(
 				PrincipalException.MustBeOmniadmin.class,
 				_companyService::getCompanies);
+		}
+	}
+
+	@Test
+	@TestInfo("LPD-116211")
+	public void testGetCompanyByVirtualHost() throws Exception {
+		_testGetCompany(
+			company -> _companyService.getCompanyByVirtualHost(
+				company.getVirtualHostname()));
+	}
+
+	@Test
+	@TestInfo("LPD-116211")
+	public void testGetCompanyByWebId() throws Exception {
+		_testGetCompany(
+			company -> _companyService.getCompanyByWebId(company.getWebId()));
+	}
+
+	private void _testGetCompany(
+			UnsafeFunction<Company, Company, PortalException>
+				getCompanyUnsafeFunction)
+		throws Exception {
+
+		Company company = CompanyTestUtil.addCompany();
+
+		try (SafeCloseable safeCloseable =
+				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
+					PortalInstancePool.getDefaultCompanyId())) {
+
+			UserTestUtil.setUser(
+				UserTestUtil.getAdminUser(
+					PortalInstancePool.getDefaultCompanyId()));
+
+			Assert.assertEquals(
+				company, getCompanyUnsafeFunction.apply(company));
+		}
+
+		UserTestUtil.setUser(UserTestUtil.addUser());
+
+		Assert.assertThrows(
+			PrincipalException.class,
+			() -> getCompanyUnsafeFunction.apply(company));
+
+		try (SafeCloseable safeCloseable =
+				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
+					company.getCompanyId())) {
+
+			UserTestUtil.setUser(
+				UserTestUtil.getAdminUser(company.getCompanyId()));
+
+			Assert.assertEquals(
+				company, getCompanyUnsafeFunction.apply(company));
 		}
 	}
 
