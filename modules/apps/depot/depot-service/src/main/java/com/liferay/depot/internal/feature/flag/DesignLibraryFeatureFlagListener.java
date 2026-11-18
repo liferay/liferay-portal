@@ -20,7 +20,6 @@ import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 
 import java.util.List;
-import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -40,7 +39,7 @@ public class DesignLibraryFeatureFlagListener implements FeatureFlagListener {
 	public void onValue(
 		long companyId, String featureFlagKey, boolean enabled) {
 
-		if (!enabled || !Objects.equals(featureFlagKey, "LPD-57283")) {
+		if (!enabled) {
 			return;
 		}
 
