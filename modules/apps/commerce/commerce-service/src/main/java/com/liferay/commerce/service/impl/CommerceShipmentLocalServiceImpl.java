@@ -29,8 +29,11 @@ import com.liferay.commerce.service.persistence.CommerceShipmentItemPersistence;
 import com.liferay.commerce.service.persistence.CommerceShippingMethodPersistence;
 import com.liferay.expando.kernel.service.ExpandoRowLocalService;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
+import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.petra.sql.dsl.query.FromStep;
 import com.liferay.petra.sql.dsl.query.GroupByStep;
+import com.liferay.petra.sql.dsl.query.JoinStep;
+import com.liferay.petra.sql.dsl.query.LimitStep;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -279,6 +282,22 @@ public class CommerceShipmentLocalServiceImpl
 
 	@Override
 	public List<CommerceShipment> getCommerceShipments(
+		long groupId, long commerceAccountId, int start, int end,
+		OrderByComparator<CommerceShipment> orderByComparator) {
+
+		GroupByStep groupByStep = _getCommerceAccountGroupByStep(
+			commerceAccountId,
+			DSLQueryFactoryUtil.select(CommerceShipmentTable.INSTANCE),
+			groupId);
+
+		LimitStep limitStep = groupByStep.orderBy(
+			CommerceShipmentTable.INSTANCE, orderByComparator);
+
+		return dslQuery(limitStep.limit(start, end));
+	}
+
+	@Override
+	public List<CommerceShipment> getCommerceShipments(
 			long companyId, long[] groupIds, long[] commerceAccountIds,
 			String keywords, int[] shipmentStatuses,
 			boolean excludeShipmentStatus, int start, int end)
@@ -325,6 +344,13 @@ public class CommerceShipmentLocalServiceImpl
 	public int getCommerceShipmentsCount(long commerceOrderId) {
 		return dslQueryCount(
 			_getGroupByStep(DSLQueryFactoryUtil.count(), commerceOrderId));
+	}
+
+	@Override
+	public int getCommerceShipmentsCount(long groupId, long commerceAccountId) {
+		return dslQueryCount(
+			_getCommerceAccountGroupByStep(
+				commerceAccountId, DSLQueryFactoryUtil.count(), groupId));
 	}
 
 	@Override
@@ -763,6 +789,20 @@ public class CommerceShipmentLocalServiceImpl
 		queryConfig.setScoreEnabled(false);
 
 		return searchContext;
+	}
+
+	private GroupByStep _getCommerceAccountGroupByStep(
+		long commerceAccountId, FromStep fromStep, long groupId) {
+
+		JoinStep joinStep = fromStep.from(CommerceShipmentTable.INSTANCE);
+
+		Predicate predicate = CommerceShipmentTable.INSTANCE.groupId.eq(
+			groupId);
+
+		return joinStep.where(
+			predicate.and(
+				CommerceShipmentTable.INSTANCE.commerceAccountId.eq(
+					commerceAccountId)));
 	}
 
 	private List<CommerceShipment> _getCommerceShipments(Hits hits)

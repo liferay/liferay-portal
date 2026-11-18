@@ -6,12 +6,14 @@
 package com.liferay.commerce.service.impl;
 
 import com.liferay.commerce.constants.CommerceActionKeys;
+import com.liferay.commerce.exception.NoSuchShipmentException;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.model.CommerceShipment;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.service.CommerceChannelService;
 import com.liferay.commerce.service.base.CommerceShipmentServiceBaseImpl;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
@@ -109,6 +111,24 @@ public class CommerceShipmentServiceImpl
 			getPermissionChecker(), commerceShipmentId, ActionKeys.VIEW);
 
 		return commerceShipmentPersistence.findByPrimaryKey(commerceShipmentId);
+	}
+
+	@Override
+	public CommerceShipment getCommerceShipment(
+			long groupId, long commerceShipmentId)
+		throws PortalException {
+
+		CommerceShipment commerceShipment = getCommerceShipment(
+			commerceShipmentId);
+
+		if (commerceShipment.getGroupId() != groupId) {
+			throw new NoSuchShipmentException(
+				StringBundler.concat(
+					"No commerce shipment exists with the primary key ",
+					commerceShipmentId, " and group ID ", groupId));
+		}
+
+		return commerceShipment;
 	}
 
 	@Override
