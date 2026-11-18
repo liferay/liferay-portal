@@ -8,19 +8,22 @@ package com.liferay.oauth2.provider.jsonws.internal.instance.lifecycle;
 import com.liferay.oauth2.provider.jsonws.internal.service.access.policy.scope.SAPEntryScopeDescriptorFinderRegistrator;
 import com.liferay.portal.instance.lifecycle.BasePortalInstanceLifecycleListener;
 import com.liferay.portal.instance.lifecycle.EveryNodeEveryStartup;
-import com.liferay.portal.instance.lifecycle.PortalInstanceLifecycleListener;
 import com.liferay.portal.kernel.model.Company;
-
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Tomas Polesovsky
  */
-@Component(service = PortalInstanceLifecycleListener.class)
 public class OAuth2JSONWSPortalInstanceLifecycleListener
 	extends BasePortalInstanceLifecycleListener
 	implements EveryNodeEveryStartup {
+
+	public OAuth2JSONWSPortalInstanceLifecycleListener(
+		SAPEntryScopeDescriptorFinderRegistrator
+			sapEntryScopeDescriptorFinderRegistrator) {
+
+		_sapEntryScopeDescriptorFinderRegistrator =
+			sapEntryScopeDescriptorFinderRegistrator;
+	}
 
 	@Override
 	public void portalInstanceRegistered(Company company) {
@@ -28,8 +31,7 @@ public class OAuth2JSONWSPortalInstanceLifecycleListener
 			company.getCompanyId());
 	}
 
-	@Reference
-	private SAPEntryScopeDescriptorFinderRegistrator
+	private final SAPEntryScopeDescriptorFinderRegistrator
 		_sapEntryScopeDescriptorFinderRegistrator;
 
 }

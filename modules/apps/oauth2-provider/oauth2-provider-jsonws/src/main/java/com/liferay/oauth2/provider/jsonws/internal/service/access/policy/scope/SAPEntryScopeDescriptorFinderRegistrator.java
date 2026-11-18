@@ -7,13 +7,17 @@ package com.liferay.oauth2.provider.jsonws.internal.service.access.policy.scope;
 
 import com.liferay.oauth2.provider.jsonws.internal.configuration.OAuth2JSONWSConfiguration;
 import com.liferay.oauth2.provider.jsonws.internal.constants.OAuth2JSONWSConstants;
+import com.liferay.oauth2.provider.jsonws.internal.instance.lifecycle.OAuth2JSONWSPortalInstanceLifecycleListener;
+import com.liferay.oauth2.provider.jsonws.internal.service.access.policy.model.listener.SAPEntryModelListener;
 import com.liferay.oauth2.provider.scope.spi.scope.descriptor.ScopeDescriptor;
 import com.liferay.oauth2.provider.scope.spi.scope.finder.ScopeFinder;
 import com.liferay.osgi.util.ServiceTrackerFactory;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
+import com.liferay.portal.instance.lifecycle.PortalInstanceLifecycleListener;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -173,10 +177,21 @@ public class SAPEntryScopeDescriptorFinderRegistrator {
 		_companyLocalService.forEachCompanyId(
 			companyId -> register(companyId),
 			ArrayUtil.toLongArray(_scopeFinderServiceRegistrations.keySet()));
+
+		_portalInstanceLifecycleListenerServiceRegistration =
+			bundleContext.registerService(
+				PortalInstanceLifecycleListener.class,
+				new OAuth2JSONWSPortalInstanceLifecycleListener(this), null);
+		_sapEntryModelListenerServiceRegistration =
+			bundleContext.registerService(
+				ModelListener.class, new SAPEntryModelListener(this), null);
 	}
 
 	@Deactivate
 	protected void deactivate() {
+		_portalInstanceLifecycleListenerServiceRegistration.unregister();
+		_sapEntryModelListenerServiceRegistration.unregister();
+
 		for (ServiceRegistration<ScopeFinder> serviceRegistration :
 				_scopeFinderServiceRegistrations.values()) {
 
@@ -275,6 +290,8 @@ public class SAPEntryScopeDescriptorFinderRegistrator {
 
 	private final Set<String> _jaxRsApplicationNames =
 		Collections.newSetFromMap(new ConcurrentHashMap<>());
+	private ServiceRegistration<?>
+		_portalInstanceLifecycleListenerServiceRegistration;
 	private final Map<Long, SAPEntryScopeFinder>
 		_registeredSAPEntryScopeFinders = new ConcurrentHashMap<>();
 	private boolean _removeSAPEntryOAuth2Prefix = true;
@@ -282,6 +299,7 @@ public class SAPEntryScopeDescriptorFinderRegistrator {
 	@Reference
 	private SAPEntryLocalService _sapEntryLocalService;
 
+	private ServiceRegistration<?> _sapEntryModelListenerServiceRegistration;
 	private String _sapEntryOAuth2Prefix = "OAUTH2_";
 	private final Map<Long, ServiceRegistration<ScopeDescriptor>>
 		_scopeDescriptorServiceRegistrations = new ConcurrentHashMap<>();

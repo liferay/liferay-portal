@@ -8,17 +8,20 @@ package com.liferay.oauth2.provider.jsonws.internal.service.access.policy.model.
 import com.liferay.oauth2.provider.jsonws.internal.service.access.policy.scope.SAPEntryScopeDescriptorFinderRegistrator;
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.model.BaseModelListener;
-import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.security.service.access.policy.model.SAPEntry;
-
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Tomas Polesovsky
  */
-@Component(service = ModelListener.class)
 public class SAPEntryModelListener extends BaseModelListener<SAPEntry> {
+
+	public SAPEntryModelListener(
+		SAPEntryScopeDescriptorFinderRegistrator
+			sapEntryScopeDescriptorFinderRegistrator) {
+
+		_sapEntryScopeDescriptorFinderRegistrator =
+			sapEntryScopeDescriptorFinderRegistrator;
+	}
 
 	@Override
 	public void onAfterCreate(SAPEntry sapEntry) throws ModelListenerException {
@@ -40,8 +43,7 @@ public class SAPEntryModelListener extends BaseModelListener<SAPEntry> {
 			sapEntry.getCompanyId());
 	}
 
-	@Reference
-	private SAPEntryScopeDescriptorFinderRegistrator
+	private final SAPEntryScopeDescriptorFinderRegistrator
 		_sapEntryScopeDescriptorFinderRegistrator;
 
 }
