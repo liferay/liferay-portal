@@ -114,6 +114,7 @@ public class ObjectEntryServiceImpl extends ObjectEntryServiceBaseImpl {
 		if (!ObjectEntryThreadLocal.isSkipObjectEntryResourcePermission()) {
 			_checkAddObjectEntryPortletResourcePermission(
 				groupId, objectDefinitionId, objectEntryFolderId, values);
+
 			_checkAttachmentPermissions(objectDefinitionId, null, values);
 		}
 
@@ -138,12 +139,14 @@ public class ObjectEntryServiceImpl extends ObjectEntryServiceBaseImpl {
 		if (objectEntry == null) {
 			_checkAddObjectEntryPortletResourcePermission(
 				groupId, objectDefinitionId, objectEntryFolderId, values);
+
 			_checkAttachmentPermissions(objectDefinitionId, null, values);
 		}
 		else {
 			checkModelResourcePermission(
 				objectDefinitionId, objectEntry.getObjectEntryId(),
 				ActionKeys.UPDATE);
+
 			_checkAttachmentPermissions(
 				objectDefinitionId, objectEntry.getValues(), values);
 		}
@@ -191,6 +194,7 @@ public class ObjectEntryServiceImpl extends ObjectEntryServiceBaseImpl {
 		checkModelResourcePermission(
 			objectEntry.getObjectDefinitionId(), objectEntry.getObjectEntryId(),
 			ActionKeys.UPDATE);
+
 		_checkAttachmentPermissions(
 			objectEntry.getObjectDefinitionId(), objectEntry.getValues(),
 			values);
@@ -588,6 +592,7 @@ public class ObjectEntryServiceImpl extends ObjectEntryServiceBaseImpl {
 		checkModelResourcePermission(
 			objectEntry.getObjectDefinitionId(), objectEntry.getObjectEntryId(),
 			ActionKeys.UPDATE);
+
 		_checkAttachmentPermissions(
 			objectEntry.getObjectDefinitionId(), objectEntry.getValues(),
 			values);
@@ -639,6 +644,7 @@ public class ObjectEntryServiceImpl extends ObjectEntryServiceBaseImpl {
 			checkModelResourcePermission(
 				objectEntry.getObjectDefinitionId(),
 				objectEntry.getObjectEntryId(), ActionKeys.UPDATE);
+
 			_checkAttachmentPermissions(
 				objectEntry.getObjectDefinitionId(), objectEntry.getValues(),
 				values);
@@ -705,6 +711,7 @@ public class ObjectEntryServiceImpl extends ObjectEntryServiceBaseImpl {
 			checkModelResourcePermission(
 				objectEntry.getObjectDefinitionId(),
 				objectEntry.getObjectEntryId(), ActionKeys.UPDATE);
+
 			_checkAttachmentPermissions(
 				objectEntry.getObjectDefinitionId(), objectEntry.getValues(),
 				values);
