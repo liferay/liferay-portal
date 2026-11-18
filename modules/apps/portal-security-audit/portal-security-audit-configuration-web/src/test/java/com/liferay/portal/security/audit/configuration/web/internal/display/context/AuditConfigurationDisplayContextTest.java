@@ -50,15 +50,15 @@ public class AuditConfigurationDisplayContextTest {
 	@Test
 	public void testIsOverridden() {
 		_testIsOverridden(
+			"auditMessageMaxQueueSize",
 			AuditConfigurationDisplayContext::
-				isAuditMessageMaxQueueSizeOverridden,
-			"auditMessageMaxQueueSize");
+				isAuditMessageMaxQueueSizeOverridden);
 		_testIsOverridden(
-			AuditConfigurationDisplayContext::isEnabledOverridden, "enabled");
+			"enabled", AuditConfigurationDisplayContext::isEnabledOverridden);
 		_testIsOverridden(
+			"pseudonymizationEnabled",
 			AuditConfigurationDisplayContext::
-				isPseudonymizationEnabledOverridden,
-			"pseudonymizationEnabled");
+				isPseudonymizationEnabledOverridden);
 	}
 
 	private AuditConfigurationDisplayContext
@@ -110,7 +110,7 @@ public class AuditConfigurationDisplayContextTest {
 	}
 
 	private void _testIsOverridden(
-		Predicate<AuditConfigurationDisplayContext> predicate, String key) {
+		String key, Predicate<AuditConfigurationDisplayContext> predicate) {
 
 		try (MockedStatic<ConfigurationOverridePropertiesUtil>
 				configurationOverridePropertiesUtilMockedStatic =

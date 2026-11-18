@@ -56,21 +56,21 @@ public class FileSystemAuditMessageProcessorConfigurationDisplayContextTest {
 	@Test
 	public void testIsOverridden() {
 		_testIsOverridden(
+			"enabled",
 			FileSystemAuditMessageProcessorConfigurationDisplayContext::
-				isEnabledOverridden,
-			"enabled");
+				isEnabledOverridden);
 		_testIsOverridden(
+			"generateChecksum",
 			FileSystemAuditMessageProcessorConfigurationDisplayContext::
-				isGenerateChecksumOverridden,
-			"generateChecksum");
+				isGenerateChecksumOverridden);
 		_testIsOverridden(
+			"outputDirectory",
 			FileSystemAuditMessageProcessorConfigurationDisplayContext::
-				isOutputDirectoryOverridden,
-			"outputDirectory");
+				isOutputDirectoryOverridden);
 		_testIsOverridden(
+			"outputFormat",
 			FileSystemAuditMessageProcessorConfigurationDisplayContext::
-				isOutputFormatOverridden,
-			"outputFormat");
+				isOutputFormatOverridden);
 	}
 
 	private FileSystemAuditMessageProcessorConfigurationDisplayContext
@@ -127,9 +127,9 @@ public class FileSystemAuditMessageProcessorConfigurationDisplayContextTest {
 	}
 
 	private void _testIsOverridden(
+		String key,
 		Predicate<FileSystemAuditMessageProcessorConfigurationDisplayContext>
-			predicate,
-		String key) {
+			predicate) {
 
 		try (MockedStatic<ConfigurationOverridePropertiesUtil>
 				configurationOverridePropertiesUtilMockedStatic =
