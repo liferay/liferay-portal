@@ -584,7 +584,7 @@ public class LayoutLocalServiceTest {
 		List<Layout> draftLayouts = _layoutLocalService.fetchDraftLayouts(
 			RandomTestUtil.randomLong());
 
-		Assert.assertTrue(draftLayouts.toString(), draftLayouts.isEmpty());
+		Assert.assertTrue(draftLayouts.isEmpty());
 
 		Layout layout = LayoutTestUtil.addTypeContentPublishedLayout(
 			_group, RandomTestUtil.randomString(),
@@ -595,8 +595,7 @@ public class LayoutLocalServiceTest {
 
 		draftLayouts = _layoutLocalService.fetchDraftLayouts(layout.getPlid());
 
-		Assert.assertTrue(
-			draftLayouts.toString(), draftLayouts.contains(mainDraftLayout));
+		Assert.assertTrue(draftLayouts.contains(mainDraftLayout));
 		Assert.assertEquals(draftLayouts.toString(), 1, draftLayouts.size());
 
 		Layout launchDraftLayout1 = LayoutTestUtil.addLaunchDraftLayout(
@@ -605,7 +604,6 @@ public class LayoutLocalServiceTest {
 		draftLayouts = _layoutLocalService.fetchDraftLayouts(layout.getPlid());
 
 		Assert.assertTrue(
-			draftLayouts.toString(),
 			draftLayouts.containsAll(
 				Arrays.asList(launchDraftLayout1, mainDraftLayout)));
 		Assert.assertEquals(draftLayouts.toString(), 2, draftLayouts.size());
@@ -616,7 +614,6 @@ public class LayoutLocalServiceTest {
 		draftLayouts = _layoutLocalService.fetchDraftLayouts(layout.getPlid());
 
 		Assert.assertTrue(
-			draftLayouts.toString(),
 			draftLayouts.containsAll(
 				Arrays.asList(
 					launchDraftLayout1, launchDraftLayout2, mainDraftLayout)));
