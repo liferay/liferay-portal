@@ -213,7 +213,7 @@
 		<finder name="CorpProjectUuid" return-type="FaroProject">
 			<finder-column name="corpProjectUuid" />
 		</finder>
-		<finder name="SalesforceAccountId" return-type="FaroProject" unique="true">
+		<finder name="SalesforceAccountId" return-type="Collection">
 			<finder-column name="salesforceAccountId" />
 		</finder>
 		<finder name="ServerLocation" return-type="Collection">

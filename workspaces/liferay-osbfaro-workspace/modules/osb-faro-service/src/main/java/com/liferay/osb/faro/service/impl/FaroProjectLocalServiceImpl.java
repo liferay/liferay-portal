@@ -167,8 +167,8 @@ public class FaroProjectLocalServiceImpl
 	public FaroProject fetchFaroProjectBySalesforceAccountId(
 		String salesforceAccountId) {
 
-		return faroProjectPersistence.fetchBySalesforceAccountId(
-			salesforceAccountId);
+		return faroProjectPersistence.fetchBySalesforceAccountId_First(
+			salesforceAccountId, null);
 	}
 
 	@Override
