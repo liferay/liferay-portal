@@ -85,6 +85,7 @@ import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
@@ -373,7 +374,9 @@ public class AssetPublisherDisplayContext {
 
 		if (isSelectionStyleAssetList() && (assetListEntry != null)) {
 			if (FeatureFlagManagerUtil.isEnabled(
-					assetListEntry.getCompanyId(), "LPD-109242")) {
+					assetListEntry.getCompanyId(), "LPD-109242") &&
+				!FeatureFlagManagerUtil.isEnabled(
+					CompanyConstants.SYSTEM, "LPD-78863")) {
 
 				_assetEntryQuery =
 					_assetListAssetEntryProvider.getAssetEntryQuery(
@@ -2333,7 +2336,9 @@ public class AssetPublisherDisplayContext {
 			}
 
 			if (FeatureFlagManagerUtil.isEnabled(
-					assetListEntry.getCompanyId(), "LPD-109242")) {
+					assetListEntry.getCompanyId(), "LPD-109242") &&
+				!FeatureFlagManagerUtil.isEnabled(
+					CompanyConstants.SYSTEM, "LPD-78863")) {
 
 				return _assetListAssetEntryProvider.getAssetEntriesInfoPage(
 					assetCategoryIds, assetListEntry, assetTagNames,

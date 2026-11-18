@@ -7,6 +7,7 @@ package com.liferay.asset.list.web.internal.util;
 
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
+import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 
@@ -19,7 +20,9 @@ public class AudienceVariationUtil {
 
 	public static String getAudienceEntryERC(PortletRequest portletRequest) {
 		if (!FeatureFlagManagerUtil.isEnabled(
-				PortalUtil.getCompanyId(portletRequest), "LPD-109242")) {
+				PortalUtil.getCompanyId(portletRequest), "LPD-109242") ||
+			FeatureFlagManagerUtil.isEnabled(
+				CompanyConstants.SYSTEM, "LPD-78863")) {
 
 			return StringPool.BLANK;
 		}

@@ -39,6 +39,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.model.ModelHintsUtil;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.SystemEventConstants;
@@ -962,8 +963,11 @@ public class AssetListEntryLocalServiceImpl
 		AssetListEntry assetListEntry, String audienceEntryERC,
 		long segmentsEntryId) {
 
-		boolean audiencesEnabled = FeatureFlagManagerUtil.isEnabled(
-			assetListEntry.getCompanyId(), "LPD-109242");
+		boolean audiencesEnabled =
+			FeatureFlagManagerUtil.isEnabled(
+				assetListEntry.getCompanyId(), "LPD-109242") &&
+			!FeatureFlagManagerUtil.isEnabled(
+				CompanyConstants.SYSTEM, "LPD-78863");
 
 		List<String> segmentsVariationsTypeSettings = TransformUtil.transform(
 			_assetListEntrySegmentsEntryRelPersistence.findByAssetListEntryId(

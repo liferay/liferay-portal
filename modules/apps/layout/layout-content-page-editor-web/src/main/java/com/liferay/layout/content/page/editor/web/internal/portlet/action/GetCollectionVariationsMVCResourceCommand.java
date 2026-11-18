@@ -16,6 +16,7 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
+import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCResourceCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
@@ -123,7 +124,9 @@ public class GetCollectionVariationsMVCResourceCommand
 			WebKeys.THEME_DISPLAY);
 
 		if (FeatureFlagManagerUtil.isEnabled(
-				themeDisplay.getCompanyId(), "LPD-109242")) {
+				themeDisplay.getCompanyId(), "LPD-109242") &&
+			!FeatureFlagManagerUtil.isEnabled(
+				CompanyConstants.SYSTEM, "LPD-78863")) {
 
 			return _getAudienceVariationsJSONArray(
 				assetListEntryId, themeDisplay);

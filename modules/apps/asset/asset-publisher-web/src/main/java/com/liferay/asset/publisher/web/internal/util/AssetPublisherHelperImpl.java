@@ -41,6 +41,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
@@ -379,7 +380,9 @@ public class AssetPublisherHelperImpl implements AssetPublisherHelper {
 					SegmentsWebKeys.SEGMENTS_ANONYMOUS_USER_ID));
 
 			if (FeatureFlagManagerUtil.isEnabled(
-					assetListEntry.getCompanyId(), "LPD-109242")) {
+					assetListEntry.getCompanyId(), "LPD-109242") &&
+				!FeatureFlagManagerUtil.isEnabled(
+					CompanyConstants.SYSTEM, "LPD-78863")) {
 
 				InfoPage<AssetEntry> infoPage =
 					_assetListAssetEntryProvider.getAssetEntriesInfoPage(

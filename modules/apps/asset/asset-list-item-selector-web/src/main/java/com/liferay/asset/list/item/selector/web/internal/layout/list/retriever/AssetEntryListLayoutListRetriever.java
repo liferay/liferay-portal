@@ -26,6 +26,7 @@ import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
+import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -197,7 +198,9 @@ public class AssetEntryListLayoutListRetriever
 		}
 
 		if (FeatureFlagManagerUtil.isEnabled(
-				assetListEntry.getCompanyId(), "LPD-109242")) {
+				assetListEntry.getCompanyId(), "LPD-109242") &&
+			!FeatureFlagManagerUtil.isEnabled(
+				CompanyConstants.SYSTEM, "LPD-78863")) {
 
 			return _assetListAssetEntryProvider.getAssetEntriesInfoPage(
 				_getAssetCategoryIds(layoutListRetrieverContext),

@@ -39,6 +39,7 @@ import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
@@ -307,7 +308,9 @@ public class AssetListDisplayContext {
 
 	public int getAssetListEntryVariationsCount(AssetListEntry assetListEntry) {
 		if (FeatureFlagManagerUtil.isEnabled(
-				assetListEntry.getCompanyId(), "LPD-109242")) {
+				assetListEntry.getCompanyId(), "LPD-109242") &&
+			!FeatureFlagManagerUtil.isEnabled(
+				CompanyConstants.SYSTEM, "LPD-78863")) {
 
 			int assetListEntryAudienceEntryRelsCount =
 				AssetListEntryAudienceEntryRelLocalServiceUtil.
