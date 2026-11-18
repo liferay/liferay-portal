@@ -182,7 +182,7 @@ public class CompanyKeyResolverUtilTest {
 					"FIPS_ENABLED", true)) {
 
 			Assert.assertNull(
-				_testRotateKey(
+				_rotateKey(
 					null,
 					_FIPS_KEY_PREFIX + RandomTestUtil.randomString() + "}",
 					null, RandomTestUtil.randomString()));
@@ -192,14 +192,14 @@ public class CompanyKeyResolverUtilTest {
 						"FIPS_ENABLED", false)) {
 
 				Assert.assertNull(
-					_testRotateKey(
+					_rotateKey(
 						null, RandomTestUtil.randomString(), null,
 						RandomTestUtil.randomString()));
 			}
 
 			CompanyInfo companyInfo = Mockito.mock(CompanyInfo.class);
 
-			LogEntry logEntry = _testRotateKey(
+			LogEntry logEntry = _rotateKey(
 				companyInfo, RandomTestUtil.randomString(), null,
 				RandomTestUtil.randomString());
 
@@ -216,14 +216,14 @@ public class CompanyKeyResolverUtilTest {
 
 			ORMException ormException = new ORMException();
 
-			logEntry = _testRotateKey(
+			logEntry = _rotateKey(
 				companyInfo, RandomTestUtil.randomString(), ormException,
 				RandomTestUtil.randomString());
 
 			Assert.assertEquals(LoggerTestUtil.ERROR, logEntry.getPriority());
 			Assert.assertSame(ormException, logEntry.getThrowable());
 
-			logEntry = _testRotateKey(
+			logEntry = _rotateKey(
 				companyInfo,
 				_WRAPPED_KEY_PREFIX + RandomTestUtil.randomString(), null,
 				RandomTestUtil.randomString());
@@ -237,7 +237,7 @@ public class CompanyKeyResolverUtilTest {
 
 			fipsApplicationStateMachineUtilMockedStatic.verifyNoInteractions();
 
-			logEntry = _testRotateKey(
+			logEntry = _rotateKey(
 				companyInfo, RandomTestUtil.randomString(), ormException,
 				PropsValues.COMPANY_DEFAULT_WEB_ID);
 
@@ -394,36 +394,7 @@ public class CompanyKeyResolverUtilTest {
 			new Class<?>[] {String.class}, keyString);
 	}
 
-	private AutoCloseable _setCompanyKeyResolver(
-		CompanyKeyResolver companyKeyResolver) {
-
-		Snapshot<CompanyKeyResolver> snapshot = Mockito.mock(Snapshot.class);
-
-		Mockito.when(
-			snapshot.get()
-		).thenReturn(
-			companyKeyResolver
-		);
-
-		return ReflectionTestUtil.setFieldValueWithAutoCloseable(
-			CompanyKeyResolverUtil.class, "_companyKeyResolverSnapshot",
-			snapshot);
-	}
-
-	private AutoCloseable _setEncryptor(Encryptor encryptor) {
-		Snapshot<Encryptor> snapshot = Mockito.mock(Snapshot.class);
-
-		Mockito.when(
-			snapshot.get()
-		).thenReturn(
-			encryptor
-		);
-
-		return ReflectionTestUtil.setFieldValueWithAutoCloseable(
-			EncryptorUtil.class, "_encryptorSnapshot", snapshot);
-	}
-
-	private LogEntry _testRotateKey(
+	private LogEntry _rotateKey(
 			CompanyInfo companyInfo, String keyString, Throwable throwable,
 			String webId)
 		throws Exception {
@@ -470,9 +441,7 @@ public class CompanyKeyResolverUtilTest {
 					CompanyInfoUtil.class, "_persistence",
 					companyInfoPersistence);
 			LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				CompanyKeyResolverUtil.class.getName(), LoggerTestUtil.WARN)) {
-
-			logCapture.resetPriority(LoggerTestUtil.INFO);
+				CompanyKeyResolverUtil.class.getName(), LoggerTestUtil.INFO)) {
 
 			CompanyKeyResolverUtil.rotateKey(company);
 
@@ -486,6 +455,35 @@ public class CompanyKeyResolverUtilTest {
 
 			return logEntries.get(0);
 		}
+	}
+
+	private AutoCloseable _setCompanyKeyResolver(
+		CompanyKeyResolver companyKeyResolver) {
+
+		Snapshot<CompanyKeyResolver> snapshot = Mockito.mock(Snapshot.class);
+
+		Mockito.when(
+			snapshot.get()
+		).thenReturn(
+			companyKeyResolver
+		);
+
+		return ReflectionTestUtil.setFieldValueWithAutoCloseable(
+			CompanyKeyResolverUtil.class, "_companyKeyResolverSnapshot",
+			snapshot);
+	}
+
+	private AutoCloseable _setEncryptor(Encryptor encryptor) {
+		Snapshot<Encryptor> snapshot = Mockito.mock(Snapshot.class);
+
+		Mockito.when(
+			snapshot.get()
+		).thenReturn(
+			encryptor
+		);
+
+		return ReflectionTestUtil.setFieldValueWithAutoCloseable(
+			EncryptorUtil.class, "_encryptorSnapshot", snapshot);
 	}
 
 	private String _wrapKey(long companyId, Key key) {
