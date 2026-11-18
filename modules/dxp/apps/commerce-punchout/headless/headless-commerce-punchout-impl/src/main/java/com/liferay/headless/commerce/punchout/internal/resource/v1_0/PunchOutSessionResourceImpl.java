@@ -12,9 +12,11 @@ import com.liferay.commerce.context.CommerceContextFactory;
 import com.liferay.commerce.helper.CommerceAccountHelper;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.model.CommerceOrderItem;
+import com.liferay.commerce.product.constants.CPConstants;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.punchout.configuration.PunchOutConfiguration;
+import com.liferay.commerce.punchout.constants.PunchOutActionKeys;
 import com.liferay.commerce.punchout.constants.PunchOutConstants;
 import com.liferay.commerce.punchout.oauth2.provider.PunchOutAccessTokenProvider;
 import com.liferay.commerce.punchout.oauth2.provider.model.PunchOutAccessToken;
@@ -40,6 +42,8 @@ import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.UserConstants;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
@@ -91,6 +95,11 @@ public class PunchOutSessionResourceImpl
 
 		CommerceChannel commerceChannel = _fetchChannel(
 			buyerGroup.getGroupId());
+
+		_portletResourcePermission.check(
+			PermissionThreadLocal.getPermissionChecker(),
+			commerceChannel.getGroupId(),
+			PunchOutActionKeys.START_PUNCH_OUT_SESSION);
 
 		if (!_punchOutEnabled(commerceChannel.getGroupId())) {
 			_log.error(
@@ -521,6 +530,11 @@ public class PunchOutSessionResourceImpl
 
 	@Reference
 	private GroupLocalService _groupLocalService;
+
+	@Reference(
+		target = "(resource.name=" + CPConstants.RESOURCE_NAME_CHANNEL + ")"
+	)
+	private PortletResourcePermission _portletResourcePermission;
 
 	@Reference
 	private PunchOutAccessTokenProvider _punchOutAccessTokenProvider;

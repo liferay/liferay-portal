@@ -10,7 +10,9 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.commerce.account.test.util.CommerceAccountTestUtil;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.test.util.CommerceCurrencyTestUtil;
+import com.liferay.commerce.product.constants.CPConstants;
 import com.liferay.commerce.product.model.CommerceChannel;
+import com.liferay.commerce.punchout.constants.PunchOutActionKeys;
 import com.liferay.commerce.punchout.constants.PunchOutConstants;
 import com.liferay.commerce.test.util.CommerceTestUtil;
 import com.liferay.headless.commerce.punchout.dto.v1_0.Cart;
@@ -18,9 +20,12 @@ import com.liferay.headless.commerce.punchout.dto.v1_0.Group;
 import com.liferay.headless.commerce.punchout.dto.v1_0.PunchOutSession;
 import com.liferay.headless.commerce.punchout.dto.v1_0.User;
 import com.liferay.headless.commerce.punchout.resource.v1_0.PunchOutSessionResource;
+import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.service.RoleLocalService;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.settings.FallbackKeysSettingsUtil;
 import com.liferay.portal.kernel.settings.GroupServiceSettingsLocator;
 import com.liferay.portal.kernel.settings.ModifiableSettings;
@@ -96,34 +101,57 @@ public class PunchOutSessionResourceTest {
 				PunchOutConstants.ROLE_NAME_ACCOUNT_PUNCH_OUT,
 				RoleConstants.TYPE_ACCOUNT);
 		}
+
+		_punchOutRole = RoleTestUtil.addRole(
+			RandomTestUtil.randomString(), RoleConstants.TYPE_REGULAR,
+			CPConstants.RESOURCE_NAME_CHANNEL, ResourceConstants.SCOPE_COMPANY,
+			String.valueOf(_group.getCompanyId()),
+			PunchOutActionKeys.START_PUNCH_OUT_SESSION);
+
+		_punchOutUser = UserTestUtil.addUser();
+
+		_roleLocalService.addUserRole(_punchOutUser.getUserId(), _punchOutRole);
 	}
 
 	@Test
 	public void testPostPunchOutSessionRequest() throws Exception {
-		PunchOutSessionResource.Builder builder =
-			_punchOutSessionResourceFactory.create();
-
-		PunchOutSessionResource punchOutSessionResource = builder.user(
-			_user
-		).build();
+		PunchOutSessionResource punchOutSessionResource =
+			_getPunchOutSessionResource(_punchOutUser);
 
 		Assert.assertThrows(
 			BadRequestException.class,
 			() -> punchOutSessionResource.postPunchOutSessionRequest(
 				_getPunchOutSession(
+					_user.getEmailAddress(),
 					"http://127.0.0.1/" + RandomTestUtil.randomString())));
 
 		PunchOutSession punchOutSession =
 			punchOutSessionResource.postPunchOutSessionRequest(
 				_getPunchOutSession(
+					_user.getEmailAddress(),
 					"https://8.8.8.8/" + RandomTestUtil.randomString()));
 
 		Assert.assertTrue(
 			StringUtil.startsWith(
 				punchOutSession.getPunchOutStartURL(), _PUNCH_OUT_START_URL));
+
+		String emailAddress = RandomTestUtil.randomString() + "@liferay.com";
+
+		punchOutSessionResource.postPunchOutSessionRequest(
+			_getPunchOutSession(
+				emailAddress,
+				"https://8.8.8.8/" + RandomTestUtil.randomString()));
+
+		Assert.assertNotNull(
+			_userLocalService.fetchUserByEmailAddress(
+				_group.getCompanyId(), emailAddress));
+
+		_testPostPunchOutSessionRequestWithoutPermission();
 	}
 
-	private PunchOutSession _getPunchOutSession(String punchOutReturnURL) {
+	private PunchOutSession _getPunchOutSession(
+		String emailAddress, String punchOutReturnURL) {
+
 		PunchOutSession punchOutSession = new PunchOutSession();
 
 		punchOutSession.setBuyerAccountReferenceCode(
@@ -140,7 +168,7 @@ public class PunchOutSessionResourceTest {
 			() -> {
 				User user = new User();
 
-				user.setEmail(_user::getEmailAddress);
+				user.setEmail(() -> emailAddress);
 				user.setFirstName(_user::getFirstName);
 				user.setLastName(_user::getLastName);
 
@@ -160,6 +188,42 @@ public class PunchOutSessionResourceTest {
 		return punchOutSession;
 	}
 
+	private PunchOutSessionResource _getPunchOutSessionResource(
+		com.liferay.portal.kernel.model.User user) {
+
+		PunchOutSessionResource.Builder builder =
+			_punchOutSessionResourceFactory.create();
+
+		return builder.user(
+			user
+		).build();
+	}
+
+	private void _testPostPunchOutSessionRequestWithoutPermission()
+		throws Exception {
+
+		PunchOutSessionResource punchOutSessionResource =
+			_getPunchOutSessionResource(_user);
+
+		// Buyer is another user
+
+		Assert.assertThrows(
+			PrincipalException.MustHavePermission.class,
+			() -> punchOutSessionResource.postPunchOutSessionRequest(
+				_getPunchOutSession(
+					_punchOutUser.getEmailAddress(),
+					"https://8.8.8.8/" + RandomTestUtil.randomString())));
+
+		// Buyer is the caller
+
+		Assert.assertThrows(
+			PrincipalException.MustHavePermission.class,
+			() -> punchOutSessionResource.postPunchOutSessionRequest(
+				_getPunchOutSession(
+					_user.getEmailAddress(),
+					"https://8.8.8.8/" + RandomTestUtil.randomString())));
+	}
+
 	private static final String _PUNCH_OUT_START_URL =
 		"https://example.com/start";
 
@@ -175,8 +239,14 @@ public class PunchOutSessionResourceTest {
 	@DeleteAfterTestRun
 	private com.liferay.portal.kernel.model.Group _group;
 
+	@DeleteAfterTestRun
+	private Role _punchOutRole;
+
 	@Inject
 	private PunchOutSessionResource.Factory _punchOutSessionResourceFactory;
+
+	@DeleteAfterTestRun
+	private com.liferay.portal.kernel.model.User _punchOutUser;
 
 	@DeleteAfterTestRun
 	private Role _role;
@@ -186,5 +256,8 @@ public class PunchOutSessionResourceTest {
 
 	@DeleteAfterTestRun
 	private com.liferay.portal.kernel.model.User _user;
+
+	@Inject
+	private UserLocalService _userLocalService;
 
 }

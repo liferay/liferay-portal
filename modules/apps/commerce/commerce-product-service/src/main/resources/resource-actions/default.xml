@@ -37,6 +37,7 @@
 				<action-key>DELETE_COMMERCE_NOTIFICATION_QUEUE_ENTRY</action-key>
 				<action-key>PERMISSIONS</action-key>
 				<action-key>RESEND_COMMERCE_NOTIFICATION_QUEUE_ENTRY</action-key>
+				<action-key>START_PUNCH_OUT_SESSION</action-key>
 				<action-key>VIEW_COMMERCE_CHANNELS</action-key>
 				<action-key>VIEW_COMMERCE_NOTIFICATION_QUEUE_ENTRIES</action-key>
 				<action-key>VIEW_COMMERCE_NOTIFICATION_TEMPLATES</action-key>
@@ -49,6 +50,7 @@
 				<action-key>DELETE_COMMERCE_NOTIFICATION_QUEUE_ENTRY</action-key>
 				<action-key>PERMISSIONS</action-key>
 				<action-key>RESEND_COMMERCE_NOTIFICATION_QUEUE_ENTRY</action-key>
+				<action-key>START_PUNCH_OUT_SESSION</action-key>
 				<action-key>VIEW_COMMERCE_CHANNELS</action-key>
 				<action-key>VIEW_COMMERCE_NOTIFICATION_QUEUE_ENTRIES</action-key>
 				<action-key>VIEW_COMMERCE_NOTIFICATION_TEMPLATES</action-key>
