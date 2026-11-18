@@ -145,9 +145,9 @@ public class IndividualResourceTest extends BaseIndividualResourceTestCase {
 			"KNOWN",
 			new Sort[] {new Sort("activitiesCount", Sort.LONG_TYPE, true)});
 
-		Assert.assertEquals(Collections.singletonList("KNOWN"), objects[10]);
+		Assert.assertEquals(Collections.singletonList("KNOWN"), objects[11]);
 
-		List<OrderByField> orderByFields = (List<OrderByField>)objects[19];
+		List<OrderByField> orderByFields = (List<OrderByField>)objects[20];
 
 		Assert.assertEquals(orderByFields.toString(), 1, orderByFields.size());
 
@@ -164,8 +164,8 @@ public class IndividualResourceTest extends BaseIndividualResourceTestCase {
 
 		Object[] objects = _getWorkspaceGroupChannelIndividualsPage(null, null);
 
-		Assert.assertNull(objects[10]);
-		Assert.assertNull(objects[19]);
+		Assert.assertNull(objects[11]);
+		Assert.assertNull(objects[20]);
 	}
 
 }
