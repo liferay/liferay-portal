@@ -183,6 +183,8 @@ public class LiferayJWTBearerAuthenticationHandlerTest {
 	}
 
 	private Message _filter(String assertion) throws Exception {
+		Message message = new MessageImpl();
+
 		HttpServletRequest httpServletRequest = Mockito.mock(
 			HttpServletRequest.class);
 
@@ -200,9 +202,8 @@ public class LiferayJWTBearerAuthenticationHandlerTest {
 			Constants.CLIENT_AUTH_JWT_BEARER
 		);
 
-		Message message = new MessageImpl();
-
 		message.put(AbstractHTTPDestination.HTTP_REQUEST, httpServletRequest);
+
 		message.put(Message.REQUEST_URL, _TOKEN_URL);
 
 		ThreadLocal<Message> threadLocal = _getCurrentMessageThreadLocal();
