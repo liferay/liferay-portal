@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.math.BigDecimal;
 
@@ -105,8 +106,9 @@ public class CommercePriceEntryServiceImpl
 			ServiceContext serviceContext)
 		throws PortalException {
 
-		_commercePriceListModelResourcePermission.check(
-			getPermissionChecker(), commercePriceListId, ActionKeys.UPDATE);
+		_checkCommercePriceList(
+			commercePriceEntryId, commercePriceListId,
+			serviceContext.getCompanyId(), externalReferenceCode);
 
 		Calendar calendar = new GregorianCalendar();
 
@@ -135,8 +137,9 @@ public class CommercePriceEntryServiceImpl
 			String unitOfMeasureKey, ServiceContext serviceContext)
 		throws PortalException {
 
-		_commercePriceListModelResourcePermission.check(
-			getPermissionChecker(), commercePriceListId, ActionKeys.UPDATE);
+		_checkCommercePriceList(
+			commercePriceEntryId, commercePriceListId,
+			serviceContext.getCompanyId(), externalReferenceCode);
 
 		return commercePriceEntryLocalService.addOrUpdateCommercePriceEntry(
 			externalReferenceCode, commercePriceEntryId, cProductId,
@@ -417,6 +420,33 @@ public class CommercePriceEntryServiceImpl
 		return commercePriceEntryLocalService.updatePricingInfo(
 			commercePriceEntryId, bulkPricing, price, priceOnApplication,
 			promoPrice, unitOfMeasureKey, serviceContext);
+	}
+
+	private void _checkCommercePriceList(
+			long commercePriceEntryId, long commercePriceListId, long companyId,
+			String externalReferenceCode)
+		throws PortalException {
+
+		CommercePriceEntry commercePriceEntry =
+			commercePriceEntryPersistence.fetchByPrimaryKey(
+				commercePriceEntryId);
+
+		if ((commercePriceEntry == null) &&
+			Validator.isNotNull(externalReferenceCode)) {
+
+			commercePriceEntry = commercePriceEntryPersistence.fetchByERC_C(
+				externalReferenceCode, companyId);
+		}
+
+		if (commercePriceEntry != null) {
+			_commercePriceListModelResourcePermission.check(
+				getPermissionChecker(),
+				commercePriceEntry.getCommercePriceListId(), ActionKeys.UPDATE);
+		}
+		else {
+			_commercePriceListModelResourcePermission.check(
+				getPermissionChecker(), commercePriceListId, ActionKeys.UPDATE);
+		}
 	}
 
 	@Reference(
