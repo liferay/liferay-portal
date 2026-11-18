@@ -101,11 +101,22 @@ export class SearchPage {
 
 		await categoryPanel.getByText(portletName, {exact: true}).click();
 
+		// The widget is rendered before the layout is saved, so wait for the
+		// save to finish or a following reload can lose the widget
+
+		const updateLayoutResponsePromise = this.page.waitForResponse(
+			(response) =>
+				response.request().method() === 'POST' &&
+				response.url().includes('/portal/update_layout')
+		);
+
 		await categoryPanel
 			.locator('li')
 			.filter({hasText: new RegExp(`^${portletName}$`)})
 			.getByLabel('Add Content')
 			.click();
+
+		expect((await updateLayoutResponsePromise).ok()).toBe(true);
 	}
 
 	async fillPortletConfigurationsInput(
