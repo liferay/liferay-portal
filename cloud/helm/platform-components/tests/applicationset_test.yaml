@@ -364,6 +364,17 @@ tests:
     -   asserts:
             -   contains:
                     content:
+                        name: global.database.engine
+                        value: postgresql
+                    path: spec.template.spec.sources[0].helm.parameters
+                template: templates/applicationset-liferay.yaml
+        it: Passes the database engine to the Liferay ApplicationSet
+        set:
+            database:
+                engine: postgresql
+    -   asserts:
+            -   contains:
+                    content:
                         name: database.engine
                         value: postgresql
                     path: spec.sources[0].helm.parameters

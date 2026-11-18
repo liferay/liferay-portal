@@ -66,6 +66,12 @@ tests:
                         -   ALL
         it: Drops the sidecar privileges the controller defaults do not cover
     -   asserts:
+            -   failedTemplate:
+                    errorMessage: Database engine "oracle" is not supported. Set "database.engine" to "mysql" or "postgresql".
+        it: Fails when the database engine is not supported
+        set:
+            liferay-subchart-backup-restore.database.engine: oracle
+    -   asserts:
             -   contains:
                     any: true
                     content:
@@ -129,6 +135,20 @@ tests:
                         name: sanitize-database
                     path: spec.templates[?(@.name=="main")].dag.tasks
         it: Restarts Liferay after promoting the target data plane
+    -   asserts:
+            -   equal:
+                    path: spec.templates[?(@.name=="sanitize-database")].script.image
+                    value: mysql:8.4
+            -   matchRegex:
+                    path: spec.templates[?(@.name=="sanitize-database")].script.source
+                    pattern: lportal < "\$\{sql_file\}"
+            -   notMatchRegex:
+                    path: spec.templates[?(@.name=="sanitize-database")].script.source
+                    pattern: psql
+        it: Runs mysql against the Liferay database when the engine is mysql
+        set:
+            database.engine: mysql
+            liferay-subchart-backup-restore.database.engine: mysql
     -   asserts:
             -   equal:
                     path: spec.templates[?(@.name=="sanitize-database")].script.image
