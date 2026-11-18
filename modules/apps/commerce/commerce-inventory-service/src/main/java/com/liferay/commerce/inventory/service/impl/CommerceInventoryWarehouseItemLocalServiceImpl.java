@@ -141,26 +141,26 @@ public class CommerceInventoryWarehouseItemLocalServiceImpl
 			commerceInventoryWarehouseItem =
 				commerceInventoryWarehouseItemPersistence.fetchByERC_C(
 					externalReferenceCode, companyId);
-
-			if (commerceInventoryWarehouseItem != null) {
-				long commerceInventoryWarehouseItemWarehouseId =
-					commerceInventoryWarehouseItem.
-						getCommerceInventoryWarehouseId();
-
-				if (commerceInventoryWarehouseItemWarehouseId !=
-						commerceInventoryWarehouseId) {
-
-					throw new CommerceInventoryWarehouseItemCommerceInventoryWarehouseIdException(
-						StringBundler.concat(
-							"Commerce inventory warehouse item with external ",
-							"reference code ", externalReferenceCode,
-							" does not belong to commerce inventory warehouse ",
-							commerceInventoryWarehouseId));
-				}
-			}
 		}
 
 		if (commerceInventoryWarehouseItem != null) {
+			long commerceInventoryWarehouseItemWarehouseId =
+				commerceInventoryWarehouseItem.
+					getCommerceInventoryWarehouseId();
+
+			if (commerceInventoryWarehouseItemWarehouseId !=
+					commerceInventoryWarehouseId) {
+
+				throw new CommerceInventoryWarehouseItemCommerceInventoryWarehouseIdException(
+					StringBundler.concat(
+						"Commerce inventory warehouse item with external ",
+						"reference code ",
+						commerceInventoryWarehouseItem.
+							getExternalReferenceCode(),
+						" does not belong to commerce inventory warehouse ",
+						commerceInventoryWarehouseId));
+			}
+
 			return commerceInventoryWarehouseItemLocalService.
 				updateCommerceInventoryWarehouseItem(
 					userId,
