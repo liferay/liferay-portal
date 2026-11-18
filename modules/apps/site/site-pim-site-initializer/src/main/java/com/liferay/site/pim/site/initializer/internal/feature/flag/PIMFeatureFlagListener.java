@@ -77,8 +77,7 @@ public class PIMFeatureFlagListener implements FeatureFlagListener {
 
 			if (siteNavigationMenuItem == null) {
 				SiteInitializerUtil.initialize(
-					companyId, _cmsSiteInitializer, _groupLocalService,
-					_pimSiteInitializer);
+					companyId, _cmsSiteInitializer, _pimSiteInitializer);
 			}
 
 			PIMObjectEntryFolderUtil.addProductsObjectEntryFolders(

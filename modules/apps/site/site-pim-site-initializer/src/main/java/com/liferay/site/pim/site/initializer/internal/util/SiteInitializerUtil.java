@@ -6,7 +6,6 @@
 package com.liferay.site.pim.site.initializer.internal.util;
 
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Role;
@@ -16,7 +15,6 @@ import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
-import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -33,11 +31,10 @@ public class SiteInitializerUtil {
 
 	public static void initialize(
 			long companyId, SiteInitializer cmsSiteInitializer,
-			GroupLocalService groupLocalService,
 			SiteInitializer pimSiteInitializer)
 		throws PortalException {
 
-		groupLocalService.checkSystemGroups(companyId);
+		GroupLocalServiceUtil.checkSystemGroups(companyId);
 
 		// The PIM site initializer appends to the pages and the primary
 		// navigation menu the CMS one creates, so run that one first.
@@ -69,10 +66,6 @@ public class SiteInitializerUtil {
 	private static void _initialize(
 			long companyId, SiteInitializer siteInitializer)
 		throws PortalException {
-
-		if (!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-96666")) {
-			return;
-		}
 
 		Group group = GroupLocalServiceUtil.getGroup(
 			companyId, GroupConstants.CMS);

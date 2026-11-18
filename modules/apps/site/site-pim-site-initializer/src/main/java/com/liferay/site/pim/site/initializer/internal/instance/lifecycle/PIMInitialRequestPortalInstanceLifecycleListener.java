@@ -68,8 +68,7 @@ public class PIMInitialRequestPortalInstanceLifecycleListener
 				CTCollectionThreadLocal.setProductionModeWithSafeCloseable()) {
 
 			SiteInitializerUtil.initialize(
-				companyId, _cmsSiteInitializer, _groupLocalService,
-				_pimSiteInitializer);
+				companyId, _cmsSiteInitializer, _pimSiteInitializer);
 
 			PIMObjectEntryFolderUtil.addProductsObjectEntryFolders(
 				companyId, _depotEntryLocalService,
