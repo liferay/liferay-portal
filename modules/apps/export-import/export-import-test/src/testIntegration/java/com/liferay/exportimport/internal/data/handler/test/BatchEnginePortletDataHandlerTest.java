@@ -4397,9 +4397,13 @@ public class BatchEnginePortletDataHandlerTest {
 
 			_objectFieldLocalService.updateObjectField(objectField);
 
-			try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+			try (LogCapture logCapture1 = LoggerTestUtil.configureLog4JLogger(
 					"com.liferay.batch.engine.internal." +
 						"BatchEngineExportTaskExecutorImpl",
+					LoggerTestUtil.ERROR);
+				LogCapture logCapture2 = LoggerTestUtil.configureLog4JLogger(
+					"com.liferay.exportimport.internal.lifecycle." +
+						"LoggerExportImportLifecycleListener",
 					LoggerTestUtil.ERROR)) {
 
 				new ExportImportExecutor(

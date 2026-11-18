@@ -182,6 +182,9 @@ public class ExportImportLifecycleEventTest {
 			try (LogCapture logCapture2 = LoggerTestUtil.configureLog4JLogger(
 					"com.liferay.exportimport.internal.lifecycle." +
 						"LoggerExportImportLifecycleListener",
+					LoggerTestUtil.ERROR);
+				LogCapture logCapture3 = LoggerTestUtil.configureLog4JLogger(
+					"com.liferay.exportimport.internal.staging.StagingImpl",
 					LoggerTestUtil.ERROR)) {
 
 				StagingUtil.publishLayouts(
@@ -287,6 +290,9 @@ public class ExportImportLifecycleEventTest {
 			try (LogCapture logCapture2 = LoggerTestUtil.configureLog4JLogger(
 					"com.liferay.exportimport.internal.lifecycle." +
 						"LoggerExportImportLifecycleListener",
+					LoggerTestUtil.ERROR);
+				LogCapture logCapture3 = LoggerTestUtil.configureLog4JLogger(
+					"com.liferay.exportimport.internal.staging.StagingImpl",
 					LoggerTestUtil.ERROR)) {
 
 				StagingUtil.publishPortlet(
