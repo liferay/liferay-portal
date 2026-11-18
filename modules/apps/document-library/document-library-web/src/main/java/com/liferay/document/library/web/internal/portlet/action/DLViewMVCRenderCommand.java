@@ -189,14 +189,12 @@ public class DLViewMVCRenderCommand extends BaseFolderMVCRenderCommand {
 			return false;
 		}
 
-		if (rootFolder) {
-			ThemeDisplay themeDisplay =
-				(ThemeDisplay)renderRequest.getAttribute(WebKeys.THEME_DISPLAY);
+		ThemeDisplay themeDisplay = (ThemeDisplay)renderRequest.getAttribute(
+			WebKeys.THEME_DISPLAY);
 
-			if (!themeDisplay.isSignedIn()) {
-				throw new PrincipalException.MustBeAuthenticated(
-					themeDisplay.getUserId());
-			}
+		if (!themeDisplay.isSignedIn()) {
+			throw new PrincipalException.MustBeAuthenticated(
+				themeDisplay.getUserId());
 		}
 
 		AuthorizationCapability authorizationCapability =
