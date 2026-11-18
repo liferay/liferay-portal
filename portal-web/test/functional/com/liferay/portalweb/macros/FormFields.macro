@@ -4,8 +4,7 @@ definition {
 
 	@summary = "Default summary"
 	macro addParagraphLinkToAURL(paragraphLink = null) {
-		Click(
-			locator1 = "CKEditor#TOOLBAR_HYPERLINK_BUTTON");
+		Click(locator1 = "CKEditor#TOOLBAR_HYPERLINK_BUTTON");
 
 		SelectFrame.selectFrameNoLoading(locator1 = "FormFields#PARAGRAPH_LINK_MODAL");
 
@@ -44,8 +43,7 @@ definition {
 
 	@summary = "Default summary"
 	macro addTableInBodyParagraph() {
-		Click.clickNoMouseOver(
-			locator1 = "CKEditor#TOOLBAR_TABLE_BUTTON");
+		Click.clickNoMouseOver(locator1 = "CKEditor#TOOLBAR_TABLE_BUTTON");
 
 		Click(locator1 = "CKEditor#OK_BUTTON");
 	}

@@ -395,8 +395,7 @@ definition {
 
 		FormFields.editParagraphBody(content = "Test");
 
-		Click(
-			locator1 = "CKEditor#TOOLBAR_FORMATTING_STYLES_BUTTON");
+		Click(locator1 = "CKEditor#TOOLBAR_FORMATTING_STYLES_BUTTON");
 
 		SelectFrame.selectFrameNoLoading(locator1 = "FormFields#PARAGRAPH_FORMATTING_STYLES");
 
@@ -416,8 +415,7 @@ definition {
 
 		FormsAdminNavigator.gotoEditField(fieldName = "Paragraph");
 
-		Click(
-			locator1 = "CKEditor#TOOLBAR_FORMATTING_STYLES_BUTTON");
+		Click(locator1 = "CKEditor#TOOLBAR_FORMATTING_STYLES_BUTTON");
 
 		SelectFrame.selectFrameNoLoading(locator1 = "FormFields#PARAGRAPH_FORMATTING_STYLES");
 
@@ -544,8 +542,7 @@ definition {
 
 		SelectFrame(value1 = "relative=top");
 
-		Click(
-			locator1 = "CKEditor#TOOLBAR_BULLETED_LIST_BUTTON");
+		Click(locator1 = "CKEditor#TOOLBAR_BULLETED_LIST_BUTTON");
 
 		Form.save();
 
@@ -614,8 +611,7 @@ definition {
 			fieldPositionNumber = 0,
 			fieldType = "Paragraph");
 
-		Click(
-			locator1 = "CKEditor#TOOLBAR_IMAGE_BUTTON");
+		Click(locator1 = "CKEditor#TOOLBAR_IMAGE_BUTTON");
 
 		ItemSelector.uploadFile(
 			navTab = "Documents and Media",
@@ -662,8 +658,7 @@ definition {
 
 		SelectFrame(value1 = "relative=top");
 
-		Click(
-			locator1 = "CKEditor#TOOLBAR_NUMBERED_LIST_BUTTON");
+		Click(locator1 = "CKEditor#TOOLBAR_NUMBERED_LIST_BUTTON");
 
 		Form.save();
 
@@ -703,8 +698,7 @@ definition {
 			fieldPositionNumber = 0,
 			fieldType = "Paragraph");
 
-		Click(
-			locator1 = "CKEditor#TOOLBAR_TABLE_BUTTON");
+		Click(locator1 = "CKEditor#TOOLBAR_TABLE_BUTTON");
 
 		Click(locator1 = "CKEditor#OK_BUTTON");
 
@@ -739,8 +733,7 @@ definition {
 			fieldPositionNumber = 0,
 			fieldType = "Paragraph");
 
-		Click(
-			locator1 = "CKEditor#TOOLBAR_VIDEO_BUTTON");
+		Click(locator1 = "CKEditor#TOOLBAR_VIDEO_BUTTON");
 
 		var key_navTab = "URL";
 
@@ -793,15 +786,13 @@ definition {
 
 		FormFields.editParagraphBody(content = "Test Body Text");
 
-		Click(
-			locator1 = "CKEditor#TOOLBAR_UNDO_BUTTON");
+		Click(locator1 = "CKEditor#TOOLBAR_UNDO_BUTTON");
 
 		AssertTextEquals(
 			locator1 = "CKEditor#BODY_FIELD_CONTENTEDITABLE",
 			value1 = "Test");
 
-		Click(
-			locator1 = "CKEditor#TOOLBAR_REDO_BUTTON");
+		Click(locator1 = "CKEditor#TOOLBAR_REDO_BUTTON");
 
 		AssertTextEquals(
 			locator1 = "CKEditor#BODY_FIELD_CONTENTEDITABLE",
