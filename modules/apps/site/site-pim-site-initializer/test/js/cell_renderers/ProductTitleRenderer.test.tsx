@@ -51,4 +51,28 @@ describe('ProductTitleRenderer', () => {
 		expect(screen.queryByRole('link')).not.toBeInTheDocument();
 		expect(screen.getByText('Product A')).toBeInTheDocument();
 	});
+
+	it('renders the first image of the product as its icon', () => {
+		const {container} = render(
+			<ProductTitleRenderer
+				actions={ACTIONS}
+				itemData={{
+					embedded: {
+						actions: {},
+						id: '42',
+						images: [
+							{image: {link: {href: '/first.png'}}},
+							{image: {link: {href: '/second.png'}}},
+						],
+					},
+				}}
+				value="Product A"
+			/>
+		);
+
+		expect(container.querySelector('img')).toHaveAttribute(
+			'src',
+			'/first.png'
+		);
+	});
 });

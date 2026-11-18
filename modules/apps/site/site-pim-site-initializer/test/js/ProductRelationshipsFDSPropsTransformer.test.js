@@ -75,6 +75,26 @@ describe('ProductRelationshipsFDSPropsTransformer', () => {
 		expect(screen.queryByText('viewing')).not.toBeInTheDocument();
 	});
 
+	it('renders the image of each product as its icon', () => {
+		const result = propsTransformer({
+			additionalProps: {objectEntryId: '42986'},
+		});
+
+		const [{component: TitleRenderer}] = result.customRenderers.tableCell;
+
+		const {container} = render(
+			<TitleRenderer
+				itemData={{id: 42994, imageURL: '/shirt.png'}}
+				value="Shirt Red"
+			/>
+		);
+
+		expect(container.querySelector('img')).toHaveAttribute(
+			'src',
+			'/shirt.png'
+		);
+	});
+
 	it('hides View on the row of the current product', () => {
 		const result = propsTransformer({
 			additionalProps: {objectEntryId: '42986'},
