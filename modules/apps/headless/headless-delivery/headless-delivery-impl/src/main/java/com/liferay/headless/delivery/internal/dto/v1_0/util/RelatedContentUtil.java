@@ -5,11 +5,16 @@
 
 package com.liferay.headless.delivery.internal.dto.v1_0.util;
 
+import com.liferay.asset.kernel.AssetRendererFactoryRegistryUtil;
 import com.liferay.asset.kernel.model.AssetEntry;
+import com.liferay.asset.kernel.model.AssetRenderer;
+import com.liferay.asset.kernel.model.AssetRendererFactory;
 import com.liferay.asset.kernel.service.AssetEntryLocalService;
 import com.liferay.asset.link.service.AssetLinkLocalService;
 import com.liferay.headless.delivery.dto.v1_0.RelatedContent;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
 
@@ -42,10 +47,29 @@ public class RelatedContentUtil {
 	}
 
 	private static RelatedContent _toRelatedContent(
-		AssetEntry assetEntry, DTOConverterRegistry dtoConverterRegistry,
-		Locale locale) {
+			AssetEntry assetEntry, DTOConverterRegistry dtoConverterRegistry,
+			Locale locale)
+		throws PortalException {
 
 		if (assetEntry == null) {
+			return null;
+		}
+
+		AssetRendererFactory<?> assetRendererFactory =
+			AssetRendererFactoryRegistryUtil.getAssetRendererFactoryByClassName(
+				assetEntry.getClassName());
+
+		if (assetRendererFactory == null) {
+			return null;
+		}
+
+		AssetRenderer<?> assetRenderer = assetRendererFactory.getAssetRenderer(
+			assetEntry.getClassPK());
+
+		if ((assetRenderer == null) ||
+			!assetRenderer.hasViewPermission(
+				PermissionThreadLocal.getPermissionChecker())) {
+
 			return null;
 		}
 
