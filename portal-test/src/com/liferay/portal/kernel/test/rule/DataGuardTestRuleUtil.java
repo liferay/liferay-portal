@@ -544,14 +544,19 @@ public class DataGuardTestRuleUtil {
 				"_serviceTrackerMap");
 
 		for (String modelClassName : _PRIORITIZED_MODEL_CLASS_NAMES) {
-			if (!serviceTrackerMap.containsKey(modelClassName) ||
-				(modelClassName.indexOf(CharPool.POUND) != -1)) {
+			if (modelClassName.indexOf(CharPool.POUND) != -1) {
+				continue;
+			}
 
+			PersistedModelLocalService persistedModelLocalService =
+				serviceTrackerMap.getService(modelClassName);
+
+			if (persistedModelLocalService == null) {
 				continue;
 			}
 
 			scrubbedPersistedModelLocalServices.put(
-				modelClassName, serviceTrackerMap.getService(modelClassName));
+				modelClassName, persistedModelLocalService);
 		}
 
 		for (String modelClassName : serviceTrackerMap.keySet()) {
