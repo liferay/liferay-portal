@@ -5,9 +5,9 @@
 
 package com.liferay.portal.kernel.workflow;
 
-import com.liferay.osgi.service.tracker.collections.map.ServiceReferenceMapper;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
@@ -20,18 +20,16 @@ import com.liferay.portal.kernel.service.WorkflowInstanceLinkLocalServiceUtil;
 import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 
 import java.io.Serializable;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
 
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
 
 /**
  * @author Bruno Farache
@@ -40,7 +38,8 @@ import org.osgi.framework.ServiceReference;
 public class WorkflowHandlerRegistryUtil {
 
 	public static List<WorkflowHandler<?>> getScopeableWorkflowHandlers() {
-		return _getWorkflowHandlers(_scopeableWorkflowHandlerServiceTrackerMap);
+		return ListUtil.filter(
+			getWorkflowHandlers(), WorkflowHandler::isScopeable);
 	}
 
 	public static <T> WorkflowHandler<T> getWorkflowHandler(String className) {
@@ -49,7 +48,9 @@ public class WorkflowHandlerRegistryUtil {
 	}
 
 	public static List<WorkflowHandler<?>> getWorkflowHandlers() {
-		return _getWorkflowHandlers(_workflowHandlerServiceTrackerMap);
+		return TransformUtil.transform(
+			_workflowHandlerServiceTrackerMap.keySet(),
+			_workflowHandlerServiceTrackerMap::getService);
 	}
 
 	public static <T> void startWorkflowInstance(
@@ -216,22 +217,6 @@ public class WorkflowHandlerRegistryUtil {
 		return workflowHandler.updateStatus(status, workflowContext);
 	}
 
-	private static List<WorkflowHandler<?>> _getWorkflowHandlers(
-		ServiceTrackerMap<String, WorkflowHandler<?>>
-			workflowHandlerServiceTrackerMap) {
-
-		List<WorkflowHandler<?>> workflowHandlers = new ArrayList<>();
-
-		for (String modelClassName :
-				workflowHandlerServiceTrackerMap.keySet()) {
-
-			workflowHandlers.add(
-				workflowHandlerServiceTrackerMap.getService(modelClassName));
-		}
-
-		return workflowHandlers;
-	}
-
 	private static boolean _hasWorkflowInstanceInProgress(
 			long companyId, long groupId, String className, long classPK)
 		throws PortalException {
@@ -256,52 +241,18 @@ public class WorkflowHandlerRegistryUtil {
 
 	private static final BundleContext _bundleContext =
 		SystemBundleUtil.getBundleContext();
+
 	private static final ServiceTrackerMap<String, WorkflowHandler<?>>
-		_scopeableWorkflowHandlerServiceTrackerMap;
-	private static final ServiceTrackerMap<String, WorkflowHandler<?>>
-		_workflowHandlerServiceTrackerMap;
-
-	private static class WorkflowHandlerServiceReferenceMapper
-		implements ServiceReferenceMapper<String, WorkflowHandler<?>> {
-
-		@Override
-		public void map(
-			ServiceReference<WorkflowHandler<?>> serviceReference,
-			Emitter<String> emitter) {
-
-			WorkflowHandler<?> workflowHandler = _bundleContext.getService(
-				serviceReference);
-
-			if (_predicate.test(workflowHandler)) {
-				emitter.emit(workflowHandler.getClassName());
-			}
-		}
-
-		private WorkflowHandlerServiceReferenceMapper(
-			Predicate<WorkflowHandler<?>> predicate) {
-
-			_predicate = predicate;
-		}
-
-		private final Predicate<WorkflowHandler<?>> _predicate;
-
-	}
-
-	static {
 		_workflowHandlerServiceTrackerMap =
 			ServiceTrackerMapFactory.openSingleValueMap(
 				_bundleContext,
 				(Class<WorkflowHandler<?>>)(Class<?>)WorkflowHandler.class,
 				null,
-				new WorkflowHandlerServiceReferenceMapper(handler -> true));
+				(serviceReference, emitter) -> {
+					WorkflowHandler<?> workflowHandler =
+						_bundleContext.getService(serviceReference);
 
-		_scopeableWorkflowHandlerServiceTrackerMap =
-			ServiceTrackerMapFactory.openSingleValueMap(
-				_bundleContext,
-				(Class<WorkflowHandler<?>>)(Class<?>)WorkflowHandler.class,
-				null,
-				new WorkflowHandlerServiceReferenceMapper(
-					handler -> handler.isScopeable()));
-	}
+					emitter.emit(workflowHandler.getClassName());
+				});
 
 }
