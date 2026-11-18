@@ -7,7 +7,7 @@ import ClayLabel from '@clayui/label';
 import React from 'react';
 
 import confirmAndUnscheduleLaunchAction from '../actions/confirmAndUnscheduleLaunchAction';
-import {Launch, isInProgress, isPublished} from '../api/launches';
+import {Launch, isPublished} from '../api/launches';
 import {
 	WORKFLOW_STATUS_DRAFT,
 	WORKFLOW_STATUS_SCHEDULED,
@@ -109,7 +109,8 @@ export default function LaunchesFDSPropsTransformer({
 			if (action.data?.id === 'schedule') {
 				return {
 					...action,
-					isVisible: isInProgress,
+					isVisible: (launch: Launch) =>
+						launch.status?.code === WORKFLOW_STATUS_DRAFT,
 				};
 			}
 

@@ -15,6 +15,11 @@ const IN_PROGRESS_LAUNCH: Launch = {
 	status: {code: 2},
 };
 
+const FAILED_LAUNCH: Launch = {
+	...IN_PROGRESS_LAUNCH,
+	scheduledDate: '2030-10-31T13:00:00Z',
+};
+
 const SCHEDULED_LAUNCH: Launch = {
 	...IN_PROGRESS_LAUNCH,
 	scheduledDate: '2030-10-31T13:00:00Z',
@@ -55,17 +60,12 @@ describe('LaunchesFDSPropsTransformer', () => {
 	});
 
 	describe('schedule action', () => {
-		it('is visible only for in progress launches', () => {
+		it('is visible only for draft launches', () => {
 			const scheduleAction = getScheduleAction();
 
+			expect(scheduleAction.isVisible(FAILED_LAUNCH)).toBe(true);
 			expect(scheduleAction.isVisible(IN_PROGRESS_LAUNCH)).toBe(true);
 			expect(scheduleAction.isVisible(SCHEDULED_LAUNCH)).toBe(false);
-			expect(
-				scheduleAction.isVisible({
-					...IN_PROGRESS_LAUNCH,
-					scheduledDate: '2030-10-31T13:00:00Z',
-				})
-			).toBe(false);
 			expect(
 				scheduleAction.isVisible({
 					...IN_PROGRESS_LAUNCH,
