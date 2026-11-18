@@ -488,7 +488,9 @@ public class JSONServiceAction extends JSONAction {
 		for (Method curMethod : methods) {
 			String curMethodName = curMethod.getName();
 
-			if (!curMethodName.equals(methodName)) {
+			if (!curMethodName.equals(methodName) ||
+				!_isServiceMethod(clazz, curMethod)) {
+
 				continue;
 			}
 
@@ -659,6 +661,32 @@ public class JSONServiceAction extends JSONAction {
 		}
 
 		return false;
+	}
+
+	private boolean _isServiceMethod(Class<?> clazz, Method method) {
+		String className = clazz.getName();
+
+		if (!className.endsWith("ServiceUtil")) {
+			return false;
+		}
+
+		try {
+			Class<?> serviceClass = Class.forName(
+				StringUtil.removeLast(className, "Util"), false,
+				clazz.getClassLoader());
+
+			serviceClass.getMethod(
+				method.getName(), method.getParameterTypes());
+
+			return true;
+		}
+		catch (ReflectiveOperationException reflectiveOperationException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(reflectiveOperationException);
+			}
+
+			return false;
+		}
 	}
 
 	private static final String _REROUTE_PATH = "/api/json";
