@@ -205,6 +205,76 @@ test(
 	}
 );
 
+test(
+	'Repeated "Rich Text" field keeps the content of every instance on form submission',
+	{
+		tag: ['@LPD-115982'],
+	},
+	async ({formBuilderPage, formBuilderSidePanelPage, formsPage, page}) => {
+		const firstContent = getRandomString();
+		const formTitle = 'Form' + getRandomInt();
+		const secondContent = getRandomString();
+
+		await formBuilderPage.goToNew();
+
+		await expect(formBuilderPage.newFormHeading).toBeVisible();
+
+		await formBuilderPage.fillFormTitle(formTitle);
+
+		await formBuilderSidePanelPage.addFieldByDoubleClick('Rich Text');
+
+		await formBuilderSidePanelPage.clickAdvancedTab();
+
+		await formBuilderSidePanelPage.repeatableFieldToggleSwitch.click();
+
+		await page.getByLabel('Add Duplicate Field').waitFor();
+
+		await formBuilderPage.clickPublishFormButton();
+
+		const formSubmissionURL = await formBuilderPage.getFormSubmissionURL();
+
+		await page.goto(formSubmissionURL);
+
+		const richTextEditors = page.getByRole('textbox', {
+			name: 'Rich Text Editor. Editing area: main',
+		});
+
+		await richTextEditors.first().fill(firstContent);
+
+		await page
+			.getByRole('button', {name: 'Add Duplicate Field Rich Text'})
+			.click();
+
+		await expect(richTextEditors).toHaveCount(2);
+
+		await richTextEditors.nth(1).fill(secondContent);
+
+		await page.getByRole('button', {name: 'Submit'}).click();
+
+		await expect(
+			page.getByText(
+				'Your information was successfully received. Thank you for filling out the form.'
+			)
+		).toBeVisible();
+
+		await formsPage.goTo();
+
+		await page
+			.getByRole('row', {name: `Select ${formTitle}`})
+			.getByLabel('Show Actions')
+			.click();
+
+		await page.getByRole('menuitem', {name: 'View Entries'}).click();
+
+		await expect(
+			page.getByRole('cell', {
+				exact: true,
+				name: `${firstContent}, ${secondContent}`,
+			})
+		).toBeVisible();
+	}
+);
+
 const content = '<script>alert("Hello! I am an alert box!");</script>';
 const sanitizedContent = '<p>alert("Hello! I am an alert box!");</p>';
 
