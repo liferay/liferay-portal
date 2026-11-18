@@ -11,9 +11,11 @@ import com.liferay.commerce.product.exception.CPInstanceUnitOfMeasureNameExcepti
 import com.liferay.commerce.product.exception.CPInstanceUnitOfMeasureRateException;
 import com.liferay.commerce.product.exception.CPInstanceUnitOfMeasureSkuException;
 import com.liferay.commerce.product.exception.DuplicateCPInstanceUnitOfMeasureKeyException;
+import com.liferay.commerce.product.exception.NoSuchCPInstanceUnitOfMeasureException;
 import com.liferay.commerce.product.model.CPInstanceUnitOfMeasure;
 import com.liferay.commerce.product.service.base.CPInstanceUnitOfMeasureLocalServiceBaseImpl;
 import com.liferay.commerce.product.util.comparator.CPInstanceUnitOfMeasurePriorityComparator;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -212,6 +214,8 @@ public class CPInstanceUnitOfMeasureLocalServiceImpl
 			cpInstanceUnitOfMeasurePersistence.findByPrimaryKey(
 				cpInstanceUnitOfMeasureId);
 
+		_validateCPInstanceUnitOfMeasure(cpInstanceId, cpInstanceUnitOfMeasure);
+
 		_validateCPInstanceUnitOfMeasureIncrementalOrderQuantity(
 			incrementalOrderQuantity, precision);
 		_validateCPInstanceUnitOfMeasureKey(
@@ -294,6 +298,20 @@ public class CPInstanceUnitOfMeasureLocalServiceImpl
 			cpInstanceUnitOfMeasure.setPrimary(false);
 
 			cpInstanceUnitOfMeasurePersistence.update(cpInstanceUnitOfMeasure);
+		}
+	}
+
+	private void _validateCPInstanceUnitOfMeasure(
+			long cpInstanceId, CPInstanceUnitOfMeasure cpInstanceUnitOfMeasure)
+		throws PortalException {
+
+		if (cpInstanceUnitOfMeasure.getCPInstanceId() != cpInstanceId) {
+			throw new NoSuchCPInstanceUnitOfMeasureException(
+				StringBundler.concat(
+					"Commerce product instance unit of measure ",
+					cpInstanceUnitOfMeasure.getCPInstanceUnitOfMeasureId(),
+					" does not belong to commerce product instance ",
+					cpInstanceId));
 		}
 	}
 
