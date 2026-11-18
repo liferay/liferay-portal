@@ -239,7 +239,6 @@ public class CommerceShipmentLocalServiceTest {
 			_commerceShipmentLocalService.getCommerceShipmentsCount(
 				_commerceChannel.getGroupId(),
 				commerceOrder.getCommerceAccountId()));
-
 		Assert.assertEquals(
 			0,
 			_commerceShipmentLocalService.getCommerceShipmentsCount(
@@ -284,15 +283,13 @@ public class CommerceShipmentLocalServiceTest {
 			_commerceChannel.getGroupId(), RandomTestUtil.randomLong(),
 			QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 
-		Assert.assertTrue(
-			commerceShipments.toString(), commerceShipments.isEmpty());
+		Assert.assertTrue(commerceShipments.isEmpty());
 
 		commerceShipments = _commerceShipmentLocalService.getCommerceShipments(
 			RandomTestUtil.randomLong(), commerceOrder.getCommerceAccountId(),
 			QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 
-		Assert.assertTrue(
-			commerceShipments.toString(), commerceShipments.isEmpty());
+		Assert.assertTrue(commerceShipments.isEmpty());
 	}
 
 	private CommerceChannel _commerceChannel;
