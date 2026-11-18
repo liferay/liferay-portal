@@ -138,11 +138,10 @@ public class GetLayoutsStrutsActionTest {
 			ServiceContextTestUtil.getServiceContext(
 				TestPropsValues.getGroupId(), TestPropsValues.getUserId()));
 
-		_assertLayoutInTree(true, publishedLayout, false);
 		_assertLayoutInTree(false, unpublishedLayout, false);
-
-		_assertLayoutInTree(true, publishedLayout, true);
 		_assertLayoutInTree(false, unpublishedLayout, true);
+		_assertLayoutInTree(true, publishedLayout, false);
+		_assertLayoutInTree(true, publishedLayout, true);
 
 		RoleTestUtil.addResourcePermission(
 			_role, Layout.class.getName(), ResourceConstants.SCOPE_INDIVIDUAL,

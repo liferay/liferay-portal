@@ -132,6 +132,7 @@ public class LayoutModelPreFilterContributor
 		launchDraftFilter.add(classPKsTermsFilter, BooleanClauseOccur.MUST);
 
 		booleanFilter.add(launchDraftFilter, BooleanClauseOccur.SHOULD);
+
 		booleanFilter.add(statusesTermsFilter, BooleanClauseOccur.SHOULD);
 
 		return booleanFilter;

@@ -68,14 +68,15 @@ public class FindLayoutsStrutsAction implements StrutsAction {
 
 		JSONArray jsonArray = _jsonFactory.createJSONArray();
 
-		boolean includeDraftLayouts = ParamUtil.getBoolean(
-			httpServletRequest, "includeDraftLayouts");
 		boolean privateLayout = ParamUtil.getBoolean(
 			httpServletRequest, "privateLayout");
 		boolean searchOnlyByTitle = ParamUtil.getBoolean(
 			httpServletRequest, "searchOnlyByTitle");
 
 		int[] statuses = new int[0];
+
+		boolean includeDraftLayouts = ParamUtil.getBoolean(
+			httpServletRequest, "includeDraftLayouts");
 
 		if (includeDraftLayouts) {
 			statuses = new int[] {
