@@ -397,6 +397,12 @@ definition {
 			groupName = "Guest",
 			title = "apple");
 
+		SearchPage.openSearchPage(searchTerm = "apple");
+
+		SearchResults.viewSearchResults(
+			searchAssetTitle = "apple",
+			searchAssetType = "Web Content Article");
+
 		var portalHostname = PropsUtil.get("portal.hostname");
 
 		var curlSecondConnection = '''
@@ -440,12 +446,6 @@ definition {
 		Navigator.openSpecificURL(url = "${portalURL}/web/guest/multiple-connections-page");
 
 		SearchPage.configureSearchOptions(allowEmptySearches = "true");
-
-		Refresh();
-
-		SearchResults.viewSearchResults(
-			searchAssetTitle = "apple",
-			searchAssetType = "Web Content Article");
 
 		SearchPage.configureCustomFilter(
 			filterField = "connection2_field",
