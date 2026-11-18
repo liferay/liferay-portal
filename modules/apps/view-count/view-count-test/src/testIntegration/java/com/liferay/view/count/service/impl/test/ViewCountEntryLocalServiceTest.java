@@ -80,15 +80,17 @@ public class ViewCountEntryLocalServiceTest {
 		Assert.assertNull(
 			_viewCountEntryLocalService.fetchViewCountEntry(viewCountEntryPK));
 
-		CountDownLatch countDownLatch = new CountDownLatch(2);
+		CountDownLatch readCountDownLatch = new CountDownLatch(2);
 		SessionFactory sessionFactory = ReflectionTestUtil.getFieldValue(
 			_viewCountEntryFinder, "_sessionFactory");
+		CountDownLatch startCountDownLatch = new CountDownLatch(1);
 		List<ViewCountEntry> viewCountEntries = new CopyOnWriteArrayList<>();
 
 		ReflectionTestUtil.setFieldValue(
 			_viewCountEntryFinder, "_sessionFactory",
 			_createSessionFactoryProxy(
-				countDownLatch, sessionFactory, viewCountEntries));
+				readCountDownLatch, sessionFactory, startCountDownLatch,
+				viewCountEntries));
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				SqlExceptionHelper.class.getName(), LoggerTestUtil.OFF)) {
@@ -96,6 +98,8 @@ public class ViewCountEntryLocalServiceTest {
 			FutureTask<Void> futureTask = new FutureTask<>(
 				new CompanyInheritableThreadLocalCallable<>(
 					() -> {
+						startCountDownLatch.await();
+
 						try (SafeCloseable safeCloseable =
 								BufferedIncrementThreadLocal.
 									setForceSyncWithSafeCloseable(true)) {
@@ -132,7 +136,8 @@ public class ViewCountEntryLocalServiceTest {
 	}
 
 	private Object _createSessionFactoryProxy(
-		CountDownLatch countDownLatch, SessionFactory sessionFactory,
+		CountDownLatch readCountDownLatch, SessionFactory sessionFactory,
+		CountDownLatch startCountDownLatch,
 		List<ViewCountEntry> viewCountEntries) {
 
 		return ProxyUtil.newProxyInstance(
@@ -141,8 +146,8 @@ public class ViewCountEntryLocalServiceTest {
 			(proxy, method, args) -> {
 				if (Objects.equals(method.getName(), "openSession")) {
 					return _createSessionProxy(
-						countDownLatch, sessionFactory.openSession(),
-						viewCountEntries);
+						readCountDownLatch, sessionFactory.openSession(),
+						startCountDownLatch, viewCountEntries);
 				}
 
 				return method.invoke(sessionFactory, args);
@@ -150,18 +155,21 @@ public class ViewCountEntryLocalServiceTest {
 	}
 
 	private Object _createSessionProxy(
-		CountDownLatch countDownLatch, Session session,
+		CountDownLatch readCountDownLatch, Session session,
+		CountDownLatch startCountDownLatch,
 		List<ViewCountEntry> viewCountEntries) {
 
 		return ProxyUtil.newProxyInstance(
 			Session.class.getClassLoader(), new Class<?>[] {Session.class},
 			(proxy, method, args) -> {
 				if (Objects.equals(method.getName(), "get") &&
-					(countDownLatch.getCount() > 0)) {
+					(readCountDownLatch.getCount() > 0)) {
 
-					countDownLatch.countDown();
+					startCountDownLatch.countDown();
 
-					countDownLatch.await();
+					readCountDownLatch.countDown();
+
+					readCountDownLatch.await();
 
 					ViewCountEntry viewCountEntry =
 						(ViewCountEntry)method.invoke(session, args);
