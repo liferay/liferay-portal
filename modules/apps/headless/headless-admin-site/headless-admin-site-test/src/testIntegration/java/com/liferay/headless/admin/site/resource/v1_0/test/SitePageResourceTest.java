@@ -122,6 +122,7 @@ import com.liferay.petra.lang.CentralizedThreadLocal;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.feature.flag.constants.FeatureFlagConstants;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -135,6 +136,7 @@ import com.liferay.portal.kernel.model.CustomizedPages;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
+import com.liferay.portal.kernel.model.LayoutSetPrototype;
 import com.liferay.portal.kernel.model.LayoutTypePortletConstants;
 import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.model.ResourceConstants;
@@ -153,6 +155,7 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.BundleContextTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -176,6 +179,7 @@ import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.props.test.util.PropsTemporarySwapper;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LogEntry;
 import com.liferay.portal.test.log.LoggerTestUtil;
@@ -350,6 +354,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		_testGetSiteSitePageSitePagesPageWithFlatten();
 		_testGetSiteSitePageSitePagesPageWithPageSpecificationVersionsNestedField();
 		_testGetSiteSitePageSitePagesPageWithPermissions();
+		_testGetSiteSitePageSitePagesPageWithSiteTemplate();
 		_testGetSiteSitePageSitePagesPageWithUnknownSitePageExternalReferenceCode();
 		_testGetSiteSitePageSitePagesPageWithUnsupportedType();
 		_testGetSiteSitePageSitePagesPageWithoutViewPermission();
@@ -365,6 +370,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		_testGetSitePageSitePagesPage(true);
 		_testGetSiteSitePagesPageWithFlatten();
 		_testGetSiteSitePagesPageWithPageSpecificationVersionsNestedField();
+		_testGetSiteSitePagesPageWithSiteTemplate();
 	}
 
 	@Override
@@ -431,6 +437,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		_testPostSiteSitePageWithPageSpecifications();
 		_testPostSiteSitePageWithContentPageSpecification();
 		_testPostSiteSitePageWithInvalidSitemapPagePriority();
+		_testPostSiteSitePageWithSiteTemplate();
 		_testPostSiteSitePageWithWidgetPageSettings();
 		_testPostSiteSitePageWithWidgetPageSettingsWithWidgetPageTemplate();
 		_testPostSiteSitePageWithWidgetPageTypeIsDeprecated();
@@ -524,6 +531,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		_testPutSiteSitePageWithPageSpecifications();
 		_testPutSiteSitePageWithParentLayout();
 		_testPutSiteSitePageWithPriority();
+		_testPutSiteSitePageWithSiteTemplate();
 		_testPutSiteSitePageWithStagingImport(serviceContext);
 		_testPutSiteSitePageWithWidgetPageSettings();
 		_testPutSiteSitePageWithWidgetPageSettingsWithWidgetPageTemplate();
@@ -2618,6 +2626,45 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		Assert.assertTrue(ArrayUtil.isNotEmpty(sitePage.getPermissions()));
 	}
 
+	private void _testGetSiteSitePageSitePagesPageWithSiteTemplate()
+		throws Exception {
+
+		_layoutSetPrototype = LayoutTestUtil.addLayoutSetPrototype(
+			RandomTestUtil.randomString());
+
+		Group group = _layoutSetPrototype.getGroup();
+
+		Layout childLayout = LayoutTestUtil.addTypePortletLayout(group, true);
+		Layout parentLayout = LayoutTestUtil.addTypePortletLayout(group, true);
+
+		_layoutLocalService.updateParentLayoutId(
+			childLayout.getPlid(), parentLayout.getPlid());
+
+		try (PropsTemporarySwapper propsTemporarySwapper =
+				new PropsTemporarySwapper(
+					FeatureFlagConstants.getKey("LPD-38869"),
+					Boolean.FALSE.toString())) {
+
+			_assertExternalReferenceCodes(
+				Collections.singletonList(childLayout),
+				sitePageResource.getSiteSitePageSitePagesPage(
+					group.getExternalReferenceCode(),
+					parentLayout.getExternalReferenceCode(), null,
+					Pagination.of(1, 10)));
+
+			Layout layout = LayoutTestUtil.addTypePortletLayout(
+				testGroup, true);
+
+			_assertProblemException(
+				"Feature flag LPD-38869 is disabled for company " +
+					testCompany.getCompanyId(),
+				() -> sitePageResource.getSiteSitePageSitePagesPage(
+					testGroup.getExternalReferenceCode(),
+					layout.getExternalReferenceCode(), null,
+					Pagination.of(1, 10)));
+		}
+	}
+
 	private void _testGetSiteSitePageSitePagesPageWithUnknownSitePageExternalReferenceCode()
 		throws Exception {
 
@@ -2903,6 +2950,36 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 					sitePage.getExternalReferenceCode(),
 					testGroup.getGroupId()),
 				sitePage.getPageSpecificationVersions());
+		}
+	}
+
+	private void _testGetSiteSitePagesPageWithSiteTemplate() throws Exception {
+		_layoutSetPrototype = LayoutTestUtil.addLayoutSetPrototype(
+			RandomTestUtil.randomString());
+
+		try (PropsTemporarySwapper propsTemporarySwapper =
+				new PropsTemporarySwapper(
+					FeatureFlagConstants.getKey("LPD-38869"),
+					Boolean.FALSE.toString())) {
+
+			Group group = _layoutSetPrototype.getGroup();
+
+			Layout layout = LayoutTestUtil.addTypePortletLayout(group, true);
+
+			_assertExternalReferenceCodes(
+				Collections.singletonList(layout),
+				sitePageResource.getSiteSitePagesPage(
+					group.getExternalReferenceCode(), null, true, null, null,
+					"externalReferenceCode eq '" +
+						layout.getExternalReferenceCode() + "'",
+					Pagination.of(1, 10), null));
+
+			_assertProblemException(
+				"Feature flag LPD-38869 is disabled for company " +
+					testCompany.getCompanyId(),
+				() -> sitePageResource.getSiteSitePagesPage(
+					testGroup.getExternalReferenceCode(), null, true, null,
+					null, null, Pagination.of(1, 10), null));
 		}
 	}
 
@@ -4068,6 +4145,39 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 				draftFragmentEntryLinkExternalReferenceCodes.toString(),
 				draftFragmentEntryLinkExternalReferenceCodes.contains(
 					draftFragmentOrWidgetInstanceExternalReferenceCode));
+		}
+	}
+
+	private void _testPostSiteSitePageWithSiteTemplate() throws Exception {
+		_layoutSetPrototype = LayoutTestUtil.addLayoutSetPrototype(
+			RandomTestUtil.randomString());
+
+		try (PropsTemporarySwapper propsTemporarySwapper =
+				new PropsTemporarySwapper(
+					FeatureFlagConstants.getKey("LPD-38869"),
+					Boolean.FALSE.toString())) {
+
+			Group group = _layoutSetPrototype.getGroup();
+
+			SitePage sitePage = sitePageResource.postSiteSitePage(
+				group.getExternalReferenceCode(), true,
+				_getRandomSitePage(
+					ServiceContextTestUtil.getServiceContext(
+						group, TestPropsValues.getUserId()),
+					SitePage.Type.CONTENT_PAGE));
+
+			Layout layout =
+				_layoutLocalService.getLayoutByExternalReferenceCode(
+					sitePage.getExternalReferenceCode(), group.getGroupId());
+
+			Assert.assertTrue(layout.isPrivateLayout());
+
+			_assertProblemException(
+				"Feature flag LPD-38869 is disabled for company " +
+					testCompany.getCompanyId(),
+				() -> sitePageResource.postSiteSitePage(
+					testGroup.getExternalReferenceCode(), true,
+					_getRandomSitePage(SitePage.Type.CONTENT_PAGE)));
 		}
 	}
 
@@ -5521,6 +5631,44 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			});
 	}
 
+	private void _testPutSiteSitePageWithSiteTemplate() throws Exception {
+		_layoutSetPrototype = LayoutTestUtil.addLayoutSetPrototype(
+			RandomTestUtil.randomString());
+
+		try (PropsTemporarySwapper propsTemporarySwapper =
+				new PropsTemporarySwapper(
+					FeatureFlagConstants.getKey("LPD-38869"),
+					Boolean.FALSE.toString())) {
+
+			Group group = _layoutSetPrototype.getGroup();
+
+			SitePage randomSitePage = _getRandomSitePage(
+				ServiceContextTestUtil.getServiceContext(
+					group, TestPropsValues.getUserId()),
+				SitePage.Type.CONTENT_PAGE);
+
+			sitePageResource.putSiteSitePage(
+				group.getExternalReferenceCode(),
+				randomSitePage.getExternalReferenceCode(), true,
+				randomSitePage);
+
+			Layout layout =
+				_layoutLocalService.getLayoutByExternalReferenceCode(
+					randomSitePage.getExternalReferenceCode(),
+					group.getGroupId());
+
+			Assert.assertTrue(layout.isPrivateLayout());
+
+			_assertProblemException(
+				"Feature flag LPD-38869 is disabled for company " +
+					testCompany.getCompanyId(),
+				() -> sitePageResource.putSiteSitePage(
+					testGroup.getExternalReferenceCode(),
+					randomSitePage.getExternalReferenceCode(), true,
+					randomSitePage));
+		}
+	}
+
 	private void _testPutSiteSitePageWithStagingImport(
 			ServiceContext serviceContext)
 		throws Exception {
@@ -6086,6 +6234,9 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 
 	@Inject
 	private LayoutSEOEntryLocalService _layoutSEOEntryLocalService;
+
+	@DeleteAfterTestRun
+	private LayoutSetPrototype _layoutSetPrototype;
 
 	@Inject
 	private LayoutStructureProvider _layoutStructureProvider;
