@@ -18,7 +18,11 @@ import com.liferay.site.initializer.SiteInitializer;
 import com.liferay.site.pim.site.initializer.internal.util.PIMObjectEntryFolderUtil;
 import com.liferay.site.pim.site.initializer.internal.util.SiteInitializerUtil;
 
+import jakarta.servlet.ServletContext;
+
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleReference;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -30,9 +34,24 @@ import org.osgi.service.component.annotations.Reference;
 public class PIMInitialRequestPortalInstanceLifecycleListener
 	extends InitialRequestPortalInstanceLifecycleListener {
 
+	@Override
+	public long getLastModifiedTime() {
+		return _lastModifiedTime;
+	}
+
 	@Activate
 	@Override
 	protected void activate(BundleContext bundleContext) {
+		BundleReference bundleReference =
+			(BundleReference)_pimServletContext.getClassLoader();
+
+		Bundle pimBundle = bundleReference.getBundle();
+
+		Bundle bundle = bundleContext.getBundle();
+
+		_lastModifiedTime = Math.max(
+			bundle.getLastModified(), pimBundle.getLastModified());
+
 		super.activate(bundleContext);
 	}
 
@@ -69,8 +88,15 @@ public class PIMInitialRequestPortalInstanceLifecycleListener
 	@Reference
 	private GroupLocalService _groupLocalService;
 
+	private long _lastModifiedTime;
+
 	@Reference
 	private ObjectEntryFolderLocalService _objectEntryFolderLocalService;
+
+	@Reference(
+		target = "(osgi.web.symbolicname=com.liferay.site.initializer.pim)"
+	)
+	private ServletContext _pimServletContext;
 
 	@Reference(
 		target = "(site.initializer.key=com.liferay.site.initializer.pim)"
