@@ -13,8 +13,11 @@ import com.liferay.osb.faro.web.internal.util.FaroFragmentRendererUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.taglib.servlet.PageContextFactoryUtil;
 
@@ -23,6 +26,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.jsp.JspWriter;
 import jakarta.servlet.jsp.PageContext;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import org.osgi.service.component.annotations.Reference;
 
@@ -62,6 +68,10 @@ public abstract class BaseFragmentRenderer implements FragmentRenderer {
 
 			jspWriter.write("<div>");
 
+			ThemeDisplay themeDisplay =
+				(ThemeDisplay)httpServletRequest.getAttribute(
+					WebKeys.THEME_DISPLAY);
+
 			ComponentTag componentTag = new ComponentTag();
 
 			componentTag.setModule(getModule());
@@ -78,13 +88,23 @@ public abstract class BaseFragmentRenderer implements FragmentRenderer {
 						return channelSelectorDisplayContext.getFaroChannelId();
 					}
 				).put(
-					"groupId",
+					"groupId", String.valueOf(themeDisplay.getScopeGroupId())
+				).put(
+					"pageURLs",
 					() -> {
-						ThemeDisplay themeDisplay =
-							(ThemeDisplay)httpServletRequest.getAttribute(
-								WebKeys.THEME_DISPLAY);
+						Map<String, String> pageURLs = new HashMap<>();
 
-						return String.valueOf(themeDisplay.getScopeGroupId());
+						for (Layout layout :
+								layoutLocalService.getLayouts(
+									themeDisplay.getScopeGroupId(), false)) {
+
+							pageURLs.put(
+								layout.getFriendlyURL(),
+								portal.getLayoutRelativeURL(
+									layout, themeDisplay));
+						}
+
+						return pageURLs;
 					}
 				).build());
 			componentTag.setServletContext(servletContext);
@@ -102,6 +122,12 @@ public abstract class BaseFragmentRenderer implements FragmentRenderer {
 	}
 
 	protected abstract String getModule();
+
+	@Reference
+	protected LayoutLocalService layoutLocalService;
+
+	@Reference
+	protected Portal portal;
 
 	@Reference(target = "(osgi.web.symbolicname=com.liferay.osb.faro.web)")
 	protected ServletContext servletContext;
