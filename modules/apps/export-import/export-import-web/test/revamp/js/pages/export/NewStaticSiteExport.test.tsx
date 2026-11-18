@@ -28,7 +28,6 @@ const DEFAULT_PROPS = {
 	pageTreeModalConfiguration: {
 		groupId: 20121,
 		pageSize: 20,
-		privateLayoutsAvailable: false,
 		siteExternalReferenceCode: 'site-erc',
 	},
 	portletNamespace: '_portletNamespace_',

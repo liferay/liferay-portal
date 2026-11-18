@@ -58,10 +58,6 @@ public class PublishProcessDisplayContext {
 		).put(
 			"pageSize", PropsValues.LAYOUT_MANAGE_PAGES_INITIAL_CHILDREN
 		).put(
-			"privateLayoutsAvailable",
-			_publishSourceGroup.isPrivateLayoutsEnabled() &&
-			_publishSourceGroup.hasPrivateLayouts()
-		).put(
 			"siteExternalReferenceCode",
 			_publishSourceGroup.getExternalReferenceCode()
 		).build();

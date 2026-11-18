@@ -20,16 +20,12 @@ const SESSION_TREE_JS_CLICK_URL = `${PATH_MAIN}/portal/session_tree_js_click`;
 export interface PageTreeModalConfiguration {
 	groupId: number;
 	pageSize: number;
-	privateLayoutsAvailable: boolean;
 	siteExternalReferenceCode: string;
 	title?: string;
 }
 
 interface Props
-	extends Omit<
-		PageTreeModalConfiguration,
-		'privateLayoutsAvailable' | 'siteExternalReferenceCode'
-	> {
+	extends Omit<PageTreeModalConfiguration, 'siteExternalReferenceCode'> {
 	initialAll?: boolean;
 	initialSelectedIds: string[];
 	onClose: () => void;

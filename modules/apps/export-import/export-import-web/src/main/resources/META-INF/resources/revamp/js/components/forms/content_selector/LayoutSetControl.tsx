@@ -12,6 +12,7 @@ import React, {useId, useState} from 'react';
 
 import {
 	LayoutSetSelection,
+	LayoutSetVisibility,
 	PortletDataHandlerSelection,
 	isAllLayoutsSelected,
 } from '../../../utils/contentSelection';
@@ -20,7 +21,7 @@ import SectionTags from './SectionTags';
 
 interface Props {
 	additionCount?: number;
-	defaultPrivateLayout?: boolean;
+	availableLayoutSetVisibilities: LayoutSetVisibility[];
 	deletionCount?: number;
 	label: string;
 	onChange: (value: PortletDataHandlerSelection | undefined) => void;
@@ -95,19 +96,15 @@ function LayoutVisibilitySelector({
 
 export default function LayoutSetControl({
 	additionCount,
-	defaultPrivateLayout = false,
+	availableLayoutSetVisibilities,
 	deletionCount,
 	label,
 	onChange,
 	pageTreeModalConfiguration,
 	portletDataHandlerSelection,
 }: Props) {
-	const {
-		pageSize,
-		privateLayoutsAvailable,
-		siteExternalReferenceCode,
-		title,
-	} = pageTreeModalConfiguration;
+	const {pageSize, siteExternalReferenceCode, title} =
+		pageTreeModalConfiguration;
 
 	const checkboxId = useId();
 
@@ -119,7 +116,10 @@ export default function LayoutSetControl({
 			: {}
 	) as LayoutSetSelection;
 
-	const {privateLayout = defaultPrivateLayout} = layoutSetSelection;
+	const [defaultLayoutSetVisibility] = availableLayoutSetVisibilities;
+
+	const {privateLayout = defaultLayoutSetVisibility === 'private'} =
+		layoutSetSelection;
 
 	const isAll = isAllLayoutsSelected(portletDataHandlerSelection);
 
@@ -165,7 +165,7 @@ export default function LayoutSetControl({
 				</ClayLayout.ContentCol>
 			</ClayLayout.ContentRow>
 
-			{privateLayoutsAvailable && selected && (
+			{availableLayoutSetVisibilities.length > 1 && selected && (
 				<LayoutVisibilitySelector
 					label={label}
 					onSetMode={(nextPrivateLayout) =>

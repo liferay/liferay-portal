@@ -88,7 +88,6 @@ const DEFAULT_PROPS = {
 	pageTreeModalConfiguration: {
 		groupId: 20121,
 		pageSize: 20,
-		privateLayoutsAvailable: false,
 		siteExternalReferenceCode: 'site-erc',
 	},
 	processesBackURL: '/some/back/url?tab=processes',

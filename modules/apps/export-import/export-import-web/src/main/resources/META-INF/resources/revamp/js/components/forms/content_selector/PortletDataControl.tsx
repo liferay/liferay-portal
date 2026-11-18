@@ -13,10 +13,10 @@ import {PortletDataHandlerControl} from '../../../types/portletDataHandler';
 import {
 	PORTLET_DATA_KEY_LAYOUT_SET_LAYOUTS,
 	PortletDataHandlerSelection,
+	getAvailableLayoutSetVisibilities,
 	getNestedPortletDataHandlerControls,
 	getPortletDataHandlerSelection,
 	getSelectionSummary,
-	isPrivateLayoutDefault,
 	isSelected,
 	updateSelection,
 } from '../../../utils/contentSelection';
@@ -58,7 +58,7 @@ export default function PortletDataControl({
 						? portletDataHandlerControl.additionCount
 						: undefined
 				}
-				defaultPrivateLayout={isPrivateLayoutDefault(
+				availableLayoutSetVisibilities={getAvailableLayoutSetVisibilities(
 					portletDataHandlerControl
 				)}
 				deletionCount={

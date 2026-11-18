@@ -33,7 +33,6 @@ const DEFAULT_PROPS = {
 	pageTreeModalConfiguration: {
 		groupId: 20121,
 		pageSize: 20,
-		privateLayoutsAvailable: false,
 		siteExternalReferenceCode: 'site-template-erc',
 	},
 	siteTemplateName: 'Intranet',
@@ -226,6 +225,32 @@ describe('NewSiteTemplateSync', () => {
 
 		expect(Liferay.Util.openToast).toHaveBeenCalledWith(
 			expect.objectContaining({type: 'success'})
+		);
+	});
+
+	it('syncs all private pages when the pages are selected again', async () => {
+		renderComponent({syncPreview: previewWithPages});
+
+		await userEvent.click(screen.getByRole('button', {name: 'expand-x'}));
+
+		const pagesCheckbox = screen.getByRole('checkbox', {name: 'Pages'});
+
+		await userEvent.click(pagesCheckbox);
+
+		expect(pagesCheckbox).not.toBeChecked();
+
+		await userEvent.click(pagesCheckbox);
+
+		expect(pagesCheckbox).toBeChecked();
+		expect(screen.queryAllByRole('radio')).toHaveLength(0);
+
+		await submitSync();
+
+		await waitFor(() =>
+			expect(getSyncRequest().portletDataHandlers).toEqual([
+				toMockLayoutSetPortletDataHandler('private-pages'),
+				lookAndFeelPortletDataHandler,
+			])
 		);
 	});
 

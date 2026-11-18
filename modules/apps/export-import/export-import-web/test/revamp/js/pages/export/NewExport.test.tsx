@@ -61,7 +61,6 @@ const DEFAULT_PROPS = {
 	pageTreeModalConfiguration: {
 		groupId: 20121,
 		pageSize: 20,
-		privateLayoutsAvailable: false,
 		siteExternalReferenceCode: 'site-erc',
 	},
 	timeZoneId: 'UTC',
@@ -730,20 +729,15 @@ describe('NewExport', () => {
 	});
 
 	describe('page selection', () => {
-		const toPreviewWithPages = (choice: string) =>
+		const toPreviewWithPages = (choiceNames: string[]) =>
 			toMockSiteBuilderPreview([
-				toMockLayoutSetPreviewPortletDataHandler(
-					['public-pages', 'private-pages'],
-					choice
-				),
+				toMockLayoutSetPreviewPortletDataHandler(choiceNames),
 			]);
 
-		const previewWithPages = toPreviewWithPages('public-pages');
-
-		const privatePageTreeModalConfiguration = {
-			...DEFAULT_PROPS.pageTreeModalConfiguration,
-			privateLayoutsAvailable: true,
-		};
+		const previewWithPages = toPreviewWithPages([
+			'public-pages',
+			'private-pages',
+		]);
 
 		const getExportRequest = () =>
 			JSON.parse(String(getExportCall()?.[1]?.body));
@@ -827,13 +821,9 @@ describe('NewExport', () => {
 			).toBeDisabled();
 		});
 
-		it('exports all private pages when private pages are the default', async () => {
+		it('exports all private pages when only private pages are available', async () => {
 			renderComponent({
-				exportPreview: toPreviewWithPages('private-pages'),
-				pageTreeModalConfiguration: {
-					...DEFAULT_PROPS.pageTreeModalConfiguration,
-					privateLayoutsAvailable: true,
-				},
+				exportPreview: toPreviewWithPages(['private-pages']),
 			});
 
 			await typeFileName();
@@ -848,7 +838,9 @@ describe('NewExport', () => {
 		});
 
 		it('hides the visibility radios and excludes a page deselected in the modal', async () => {
-			renderComponent({exportPreview: previewWithPages});
+			renderComponent({
+				exportPreview: toPreviewWithPages(['public-pages']),
+			});
 
 			await typeFileName();
 			await expandSection();
@@ -890,7 +882,6 @@ describe('NewExport', () => {
 		it('shows the visibility radios and exports all private pages', async () => {
 			renderComponent({
 				exportPreview: previewWithPages,
-				pageTreeModalConfiguration: privatePageTreeModalConfiguration,
 			});
 
 			await typeFileName();
@@ -918,7 +909,6 @@ describe('NewExport', () => {
 		it('resets the selection to public when the public radio is selected', async () => {
 			renderComponent({
 				exportPreview: previewWithPages,
-				pageTreeModalConfiguration: privatePageTreeModalConfiguration,
 			});
 
 			await expandSection();
@@ -936,7 +926,6 @@ describe('NewExport', () => {
 		it('clears the page selection when the main checkbox is toggled off', async () => {
 			renderComponent({
 				exportPreview: previewWithPages,
-				pageTreeModalConfiguration: privatePageTreeModalConfiguration,
 			});
 
 			await expandSection();
@@ -957,7 +946,6 @@ describe('NewExport', () => {
 		it('excludes a private page deselected in the modal', async () => {
 			renderComponent({
 				exportPreview: previewWithPages,
-				pageTreeModalConfiguration: privatePageTreeModalConfiguration,
 			});
 
 			await typeFileName();

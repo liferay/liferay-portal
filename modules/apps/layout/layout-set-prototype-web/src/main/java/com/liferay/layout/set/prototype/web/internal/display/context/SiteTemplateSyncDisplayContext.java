@@ -72,8 +72,6 @@ public class SiteTemplateSyncDisplayContext {
 		).put(
 			"pageSize", PropsValues.LAYOUT_MANAGE_PAGES_INITIAL_CHILDREN
 		).put(
-			"privateLayoutsAvailable", false
-		).put(
 			"siteExternalReferenceCode", _group.getExternalReferenceCode()
 		).build();
 	}

@@ -249,10 +249,6 @@ public class ExportImportProcessDisplayContext {
 		).put(
 			"pageSize", PropsValues.LAYOUT_MANAGE_PAGES_INITIAL_CHILDREN
 		).put(
-			"privateLayoutsAvailable",
-			!_staticSite && !liveGroup.isLayoutSetPrototype() &&
-			liveGroup.isPrivateLayoutsEnabled() && liveGroup.hasPrivateLayouts()
-		).put(
 			"siteExternalReferenceCode", liveGroup.getExternalReferenceCode()
 		).build();
 	}

@@ -12,7 +12,10 @@ import React from 'react';
 import '@testing-library/jest-dom';
 
 import LayoutSetControl from '../../../../../../src/main/resources/META-INF/resources/revamp/js/components/forms/content_selector/LayoutSetControl';
-import {PortletDataHandlerSelection} from '../../../../../../src/main/resources/META-INF/resources/revamp/js/utils/contentSelection';
+import {
+	LayoutSetVisibility,
+	PortletDataHandlerSelection,
+} from '../../../../../../src/main/resources/META-INF/resources/revamp/js/utils/contentSelection';
 
 jest.mock('@liferay/layout-js-components-web', () => ({
 	PageTreePickerModal: () => null,
@@ -20,24 +23,23 @@ jest.mock('@liferay/layout-js-components-web', () => ({
 
 function renderLayoutSetControl(
 	{
-		defaultPrivateLayout,
+		availableLayoutSetVisibilities = ['public'],
 		onChange = jest.fn(),
 		portletDataHandlerSelection,
 	}: {
-		defaultPrivateLayout?: boolean;
+		availableLayoutSetVisibilities?: LayoutSetVisibility[];
 		onChange?: jest.Mock;
 		portletDataHandlerSelection?: PortletDataHandlerSelection;
 	} = {portletDataHandlerSelection: {all: true, privateLayout: false}}
 ) {
 	return render(
 		<LayoutSetControl
-			defaultPrivateLayout={defaultPrivateLayout}
+			availableLayoutSetVisibilities={availableLayoutSetVisibilities}
 			label="Pages"
 			onChange={onChange}
 			pageTreeModalConfiguration={{
 				groupId: 20121,
 				pageSize: 20,
-				privateLayoutsAvailable: false,
 				siteExternalReferenceCode: 'site',
 			}}
 			portletDataHandlerSelection={portletDataHandlerSelection}
@@ -91,11 +93,32 @@ describe('LayoutSetControl', () => {
 	it('selects the private pages again when they are the default', async () => {
 		const onChange = jest.fn();
 
-		renderLayoutSetControl({defaultPrivateLayout: true, onChange});
+		renderLayoutSetControl({
+			availableLayoutSetVisibilities: ['private'],
+			onChange,
+		});
 
 		await userEvent.click(screen.getByRole('checkbox', {name: 'Pages'}));
 
 		expect(onChange).toHaveBeenCalledWith({all: true, privateLayout: true});
+	});
+
+	it('shows the visibility radios only when both visibilities are available', () => {
+		const {unmount} = renderLayoutSetControl({
+			availableLayoutSetVisibilities: ['private'],
+			portletDataHandlerSelection: {all: true, privateLayout: true},
+		});
+
+		expect(screen.queryAllByRole('radio')).toHaveLength(0);
+
+		unmount();
+
+		renderLayoutSetControl({
+			availableLayoutSetVisibilities: ['public', 'private'],
+			portletDataHandlerSelection: {all: true, privateLayout: false},
+		});
+
+		expect(screen.getAllByRole('radio')).toHaveLength(2);
 	});
 
 	it('has no accessibility violations', async () => {

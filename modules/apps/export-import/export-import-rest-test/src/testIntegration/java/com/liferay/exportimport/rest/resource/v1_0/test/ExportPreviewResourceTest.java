@@ -287,6 +287,7 @@ public class ExportPreviewResourceTest
 		_testGetSiteExportPreviewWithLayoutSetPrototypeGroup();
 		_testGetSiteExportPreviewWithSitePage(
 			externalReferenceCode, BlogsPortletKeys.BLOGS);
+		_testGetSiteExportPreviewWithoutPrivateLayouts();
 	}
 
 	private LayoutPageTemplateCollection _addBasicLayoutPageTemplateCollection()
@@ -873,6 +874,23 @@ public class ExportPreviewResourceTest
 		}
 	}
 
+	private void _testGetSiteExportPreviewWithoutPrivateLayouts()
+		throws Exception {
+
+		_group = GroupTestUtil.addGroup();
+
+		LayoutTestUtil.addTypeContentLayout(_group, false, false);
+
+		PortletDataHandler portletDataHandler = _getPortletDataHandler(
+			exportPreviewResource.getSiteExportPreview(
+				_group.getExternalReferenceCode(), null, null, null, null, null,
+				null),
+			"PORTLET_DATA_" + LayoutAdminPortletKeys.LAYOUT_SET_LAYOUTS);
+
+		Assert.assertNull(_getChoice(portletDataHandler, "private-pages"));
+		Assert.assertNotNull(_getChoice(portletDataHandler, "public-pages"));
+	}
+
 	private String _toDateFilterType(Date startDate, Date endDate) {
 		if ((startDate == null) && (endDate == null)) {
 			return null;
@@ -884,6 +902,9 @@ public class ExportPreviewResourceTest
 	private ObjectDefinition _companyObjectDefinition;
 	private ObjectDefinition _depotObjectDefinition;
 	private ExportPreviewResource _exportPreviewResource;
+
+	@DeleteAfterTestRun
+	private Group _group;
 
 	@Inject
 	private GroupLocalService _groupLocalService;

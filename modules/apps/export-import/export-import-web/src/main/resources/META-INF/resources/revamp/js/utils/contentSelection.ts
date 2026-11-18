@@ -23,6 +23,8 @@ export type PortletDataHandlerSelection =
 	| string
 	| true;
 
+export type LayoutSetVisibility = 'private' | 'public';
+
 export type LayoutSetSelection = Omit<SitePageTreeSelection, 'privateLayout'> &
 	Partial<Pick<SitePageTreeSelection, 'privateLayout'>>;
 
@@ -111,18 +113,24 @@ export function isSelected(
 	);
 }
 
-export function isPrivateLayoutDefault(
+export function getAvailableLayoutSetVisibilities(
 	portletDataHandlerControl: PortletDataHandlerControl
-): boolean {
+): LayoutSetVisibility[] {
 	const visibilityPortletDataHandlerControl =
 		getNestedPortletDataHandlerControls(portletDataHandlerControl).find(
 			(nestedPortletDataHandlerControl) =>
 				nestedPortletDataHandlerControl.name === CONTROL_NAME_VISIBILITY
 		);
 
-	return (
-		visibilityPortletDataHandlerControl?.type === 'Choice' &&
-		visibilityPortletDataHandlerControl.choice === CHOICE_NAME_PRIVATE_PAGES
+	if (
+		visibilityPortletDataHandlerControl?.type !== 'Choice' ||
+		!visibilityPortletDataHandlerControl.choices?.length
+	) {
+		return ['public'];
+	}
+
+	return visibilityPortletDataHandlerControl.choices.map(({name}) =>
+		name === CHOICE_NAME_PRIVATE_PAGES ? 'private' : 'public'
 	);
 }
 
@@ -134,7 +142,10 @@ export function getPortletDataHandlerSelection(
 	) {
 		return {
 			all: true,
-			privateLayout: isPrivateLayoutDefault(portletDataHandlerControl),
+			privateLayout:
+				getAvailableLayoutSetVisibilities(
+					portletDataHandlerControl
+				)[0] === 'private',
 		};
 	}
 
