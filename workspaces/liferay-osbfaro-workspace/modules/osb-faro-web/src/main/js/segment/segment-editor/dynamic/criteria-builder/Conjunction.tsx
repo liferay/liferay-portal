@@ -3,12 +3,19 @@ import getCN from 'classnames';
 import React from 'react';
 import {Conjunctions, SUPPORTED_CONJUNCTION_OPTIONS} from '../utils/constants';
 
-interface IConjunctionProps extends React.HTMLAttributes<HTMLButtonElement> {
+interface IConjunctionProps {
+	className?: string;
 	conjunctionName: string;
-	disabled?: boolean;
 	sequential?: boolean;
 }
 
+/**
+ * The separator drawn between the items of a group. It only repeats the
+ * operator of the group visually: the group operator is set by the
+ * `GroupOperator` picker, which is what assistive technology reads. In a
+ * sequential group there is no picker, so the separator stays exposed to
+ * announce the "Then" between the steps.
+ */
 class Conjunction extends React.Component<IConjunctionProps> {
 	getConjunctionLabel(conjunctionName: string, sequential?: boolean) {
 		if (sequential && conjunctionName === Conjunctions.And) {
@@ -23,8 +30,7 @@ class Conjunction extends React.Component<IConjunctionProps> {
 	}
 
 	render() {
-		const {className, conjunctionName, disabled, onClick, sequential} =
-			this.props;
+		const {className, conjunctionName, sequential} = this.props;
 
 		const classnames = getCN(
 			'button-root',
@@ -36,10 +42,10 @@ class Conjunction extends React.Component<IConjunctionProps> {
 		return (
 			<div className="conjunction-container">
 				<ClayButton
+					aria-hidden={!sequential}
 					className={classnames}
-					disabled={disabled}
+					disabled
 					displayType="secondary"
-					onClick={onClick}
 					size="sm"
 				>
 					{this.getConjunctionLabel(conjunctionName, sequential)}

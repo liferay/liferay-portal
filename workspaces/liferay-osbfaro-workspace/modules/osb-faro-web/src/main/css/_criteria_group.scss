@@ -27,6 +27,15 @@
 		}
 	}
 
+	.group-operator {
+		padding: 16px 16px 0 36px;
+
+		.entity-name {
+			color: $secondary;
+			font-weight: $fontWeightSemiBold;
+		}
+	}
+
 	.conjunction-container {
 		align-items: center;
 		display: flex;
