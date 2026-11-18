@@ -25,9 +25,7 @@ import {
 } from '../main/utils/navigation';
 import {
 	addSegmentField,
-	addStaticMember,
 	createBatchSegment,
-	createStaticSegment,
 	deleteSegment,
 	saveSegment,
 	selectOperator,
@@ -938,138 +936,6 @@ test.skip(
 			await expect(page.getByText(pageTitle2).first()).toBeVisible();
 
 			await expect(page.getByText('Drop Offs')).toBeVisible();
-		});
-	}
-);
-
-test.skip(
-	'Remove segments from the filter',
-	{
-		tag: '@LRAC-14836',
-	},
-	async ({analyticsChannel: channel, apiHelpers, page, project}) => {
-		const individualName = 'user1';
-		const individuals = [
-			generateIndividual({
-				name: individualName,
-			}),
-		];
-
-		await test.step('Create an Individual directly in the AC database', async () => {
-			await createIndividuals({
-				apiHelpers,
-				individuals,
-			});
-		});
-
-		const date1 = new Date();
-
-		await test.step('Create an event for the individual to appear within the Last 24 hours period in AC', async () => {
-			const events = individuals.map((individual) => ({
-				applicationId: 'Page',
-				canonicalUrl: 'https://www.liferay.com',
-				channelId: channel.id,
-				eventDate: date1.toISOString(),
-				eventId: 'pageViewed',
-				referrer: 'https://www.google.com',
-				title: pageTitle,
-				userId: individual.id,
-			}));
-
-			await apiHelpers.jsonWebServicesOSBAsah.createEvents(events);
-		});
-
-		await test.step('Go to Analytics Cloud and Switch the property', async () => {
-			await navigateToACWorkspace({page});
-			await switchChannel({
-				channelName: channel.name,
-				page,
-			});
-		});
-
-		await test.step('Go to Segments Dashboard and create a Static Segment', async () => {
-			await navigateToACPageViaURL({
-				acPage: ACPage.segmentPage,
-				channelID: channel.id,
-				page,
-				projectID: project.groupId,
-			});
-
-			await createStaticSegment(page);
-
-			await setSegmentName({page, segmentName: 'Test Static Segment'});
-		});
-
-		await test.step('Add static member and save segment', async () => {
-			await addStaticMember({
-				memberNames: [`user1`],
-				page,
-			});
-
-			await saveSegment(page);
-		});
-
-		await test.step('Go to Pages Tab', async () => {
-			await navigateToACPageViaURL({
-				acPage: ACPage.sitePage,
-				channelID: channel.id,
-				page,
-				projectID: project.groupId,
-			});
-
-			await navigateTo({
-				page,
-				pageName: 'Pages',
-			});
-		});
-
-		await test.step('Change the time filter to Last 24 hours', async () => {
-			await changeTimeFilter({
-				page,
-				timeFilterPeriod: 'Last 24 hours',
-			});
-		});
-
-		await test.step('Access one of the pages on the list > Go to Path Tab', async () => {
-			await navigateTo({
-				page,
-				pageName: pageTitle,
-			});
-			await navigateTo({
-				page,
-				pageName: 'Path',
-			});
-		});
-
-		const filterLabel = page
-			.locator('span')
-			.filter({hasText: 'Test Static Segment'})
-			.first();
-
-		await test.step('Add filter with created segment', async () => {
-			await page.getByRole('button', {name: 'Filter'}).click();
-
-			await page
-				.getByRole('menuitem', {name: 'Test Static Segment'})
-				.click();
-
-			await expect(filterLabel).toBeVisible();
-		});
-
-		const numberOfViews = page.getByText('1', {exact: true}).first();
-
-		await test.step('Check the number of views with the filter', async () => {
-			await expect(numberOfViews).toBeVisible();
-		});
-
-		await test.step('Remove segment from filter', async () => {
-			await page.getByLabel('Close').click();
-
-			await expect(filterLabel).not.toBeVisible();
-		});
-
-		await test.step('Check the number of views without the filter', async () => {
-			await expect(numberOfViews).toBeVisible();
 		});
 	}
 );
