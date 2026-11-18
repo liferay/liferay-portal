@@ -87,45 +87,44 @@ public class ViewHomeRecentAssetsFilesSectionDisplayContextTest
 			getFDSActionDropdownItems();
 
 		Assert.assertEquals(
-			fdsActionDropdownItems.toString(), 20,
+			fdsActionDropdownItems.toString(), 19,
 			fdsActionDropdownItems.size());
 
-		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
-			"view", "actionLinkFolder", "View Folder", "get",
-			HashMapBuilder.<String, Object>put(
-				"entryClassName", ObjectEntryFolder.class.getName()
-			).build(),
-			fdsActionDropdownItems.get(0));
-		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
-			"download", "download", "Download", "get",
-			fdsActionDropdownItems.get(1));
 		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
 			"pencil", "editFolder", "Edit", "get",
 			HashMapBuilder.<String, Object>put(
 				"entryClassName", ObjectEntryFolder.class.getName()
 			).build(),
-			fdsActionDropdownItems.get(2));
+			fdsActionDropdownItems.get(0));
 		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
 			"pencil", "actionLink", "Edit", "get",
-			fdsActionDropdownItems.get(3));
+			fdsActionDropdownItems.get(1));
 		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
 			null, "edit-image", "Edit Image", null,
-			fdsActionDropdownItems.get(4));
+			fdsActionDropdownItems.get(2));
 		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
 			"view", "view-content", "View", null,
+			fdsActionDropdownItems.get(3));
+		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
+			"view", "view-file", "View", null, fdsActionDropdownItems.get(4));
+		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
+			"view", "actionLinkFolder", "View Folder", "get",
+			HashMapBuilder.<String, Object>put(
+				"entryClassName", ObjectEntryFolder.class.getName()
+			).build(),
 			fdsActionDropdownItems.get(5));
 		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
-			"view", "view-file", "View", null, fdsActionDropdownItems.get(6));
+			"info-circle-open", "show-details", "Show Details", null,
+			fdsActionDropdownItems.get(6));
 		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
 			"automatic-translate", "translate", "Translate", "get",
 			fdsActionDropdownItems.get(7));
 		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
-			"share", "share", "Share", "get", fdsActionDropdownItems.get(8));
+			"download", "download", "Download", "get",
+			fdsActionDropdownItems.get(8));
 		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
-			"info-circle-open", "show-details", "Show Details", null,
-			fdsActionDropdownItems.get(9));
-		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
-			"time", "expire", "Expire", "post", fdsActionDropdownItems.get(10));
+			"time", "expire", "Expire", "post", fdsActionDropdownItems.get(9));
+		assertUpdateDatesFDSActionDropdownItem(fdsActionDropdownItems.get(10));
 		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
 			"date-time", "version-history", "View History", "get",
 			fdsActionDropdownItems.get(11));
@@ -159,9 +158,11 @@ public class ViewHomeRecentAssetsFilesSectionDisplayContextTest
 		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
 			"download", "import-translation", "Import Translation", null,
 			fdsActionDropdownItems.get(15));
+		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
+			"share", "share", "Share", "get", fdsActionDropdownItems.get(16));
 
 		FDSActionDropdownItem permissionsFDSActionDropdownItem =
-			fdsActionDropdownItems.get(16);
+			fdsActionDropdownItems.get(17);
 
 		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
 			"password-policies", "permissions-menu", "Permissions", null,
@@ -198,13 +199,7 @@ public class ViewHomeRecentAssetsFilesSectionDisplayContextTest
 			permissionsFDSActionDropdownItems.get(3));
 
 		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
-			"trash", "delete", "Delete", null, fdsActionDropdownItems.get(17));
-		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
-			"date-time", "update-expiration-date", "Update Expiration Date",
-			null, fdsActionDropdownItems.get(18));
-		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
-			"date-time", "update-review-date", "Update Review Date", null,
-			fdsActionDropdownItems.get(19));
+			"trash", "delete", "Delete", null, fdsActionDropdownItems.get(18));
 	}
 
 	@Override

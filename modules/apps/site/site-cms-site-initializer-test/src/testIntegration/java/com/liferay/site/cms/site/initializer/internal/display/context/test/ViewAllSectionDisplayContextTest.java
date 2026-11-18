@@ -168,6 +168,23 @@ public class ViewAllSectionDisplayContextTest
 			bulkActionDropdownItems.get(16));
 	}
 
+	@Test
+	public void testGetFDSActionDropdownItems() throws Exception {
+		List<FDSActionDropdownItem> fdsActionDropdownItems =
+			getFDSActionDropdownItems();
+
+		assertFDSActionDropdownItemIds(
+			new String[] {
+				"editFolder", "actionLink", "edit-image", "view-content",
+				"view-file", "actionLinkFolder", "show-details", "translate",
+				"download", "expire", "update-dates-menu", "version-history",
+				"move", "copy-menu", "export-for-translation",
+				"import-translation", "share", "permissions-menu", "delete"
+			},
+			fdsActionDropdownItems);
+		assertUpdateDatesFDSActionDropdownItem(fdsActionDropdownItems.get(10));
+	}
+
 	@Override
 	protected String getCMSSectionFilterString(Object displayContext) {
 		return ReflectionTestUtil.invoke(

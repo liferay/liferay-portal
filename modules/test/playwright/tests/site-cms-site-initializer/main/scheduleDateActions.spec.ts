@@ -18,6 +18,10 @@ const APPLICATION_NAME = 'cms/basic-web-contents';
 
 const DATE_ACTIONS = ['Update Expiration Date', 'Update Review Date'];
 
+const ITEM_DATE_ACTIONS = ['Expiration Date', 'Review Date'];
+
+const ITEM_DATE_ACTIONS_MENU = 'Update Dates';
+
 async function createContent(apiHelpers: DataApiHelpers, scope = 'Default') {
 	const title = getRandomString();
 
@@ -74,6 +78,26 @@ async function expectDateActionsInMenu(page: Page, trigger: Locator) {
 	).toBeHidden();
 }
 
+async function expectDateActionsInItemMenu(page: Page, trigger: Locator) {
+	await trigger.click();
+
+	await page
+		.getByRole('menuitem', {exact: true, name: ITEM_DATE_ACTIONS_MENU})
+		.click();
+
+	for (const action of ITEM_DATE_ACTIONS) {
+		await expect(
+			page.getByRole('menuitem', {exact: true, name: action})
+		).toBeVisible();
+	}
+
+	await page.keyboard.press('Escape');
+
+	await expect(
+		page.getByRole('menuitem', {exact: true, name: ITEM_DATE_ACTIONS[0]})
+	).toBeHidden();
+}
+
 function getBulkActionsTrigger(page: Page) {
 	return page
 		.getByTestId(/visualization-mode/)
@@ -89,14 +113,14 @@ test(
 
 		await homePage.goto();
 
-		await expectDateActionsInMenu(
+		await expectDateActionsInItemMenu(
 			page,
 			page.getByRole('button', {name: `${contentTitle} Actions`})
 		);
 
 		await assetsPage.gotoContents();
 
-		await expectDateActionsInMenu(
+		await expectDateActionsInItemMenu(
 			page,
 			assetsPage
 				.getItem(contentTitle)
@@ -105,7 +129,7 @@ test(
 
 		await assetsPage.gotoFiles();
 
-		await expectDateActionsInMenu(
+		await expectDateActionsInItemMenu(
 			page,
 			assetsPage.getCardItem(fileTitle).getByLabel(`${fileTitle} Actions`)
 		);
@@ -128,16 +152,17 @@ test(
 
 		await assetsPage.gotoContents();
 
-		await expectDateActionsInMenu(
+		await expectDateActionsInItemMenu(
 			page,
 			assetsPage
 				.getItem(contentTitle)
 				.getByRole('button', {name: `${contentTitle} Actions`})
 		);
 
-		for (const action of DATE_ACTIONS) {
-			await assetsPage.expectItemActionHidden(action, folderTitle);
-		}
+		await assetsPage.expectItemActionHidden(
+			ITEM_DATE_ACTIONS_MENU,
+			folderTitle
+		);
 	}
 );
 
@@ -220,7 +245,7 @@ for (const role of ['Space Administrator', 'Space Content Reviewer'] as const) {
 
 			await assetsPage.gotoSpaceContents(space.name);
 
-			await expectDateActionsInMenu(
+			await expectDateActionsInItemMenu(
 				page,
 				assetsPage
 					.getItem(contentTitle)

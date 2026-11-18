@@ -145,39 +145,38 @@ public class ViewContentsSectionDisplayContextTest
 			getFDSActionDropdownItems();
 
 		Assert.assertEquals(
-			fdsActionDropdownItems.toString(), 18,
+			fdsActionDropdownItems.toString(), 17,
 			fdsActionDropdownItems.size());
 
-		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
-			"view", "actionLinkFolder", "View Folder", "get",
-			HashMapBuilder.<String, Object>put(
-				"entryClassName", ObjectEntryFolder.class.getName()
-			).build(),
-			fdsActionDropdownItems.get(0));
 		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
 			"pencil", "editFolder", "Edit", "get",
 			HashMapBuilder.<String, Object>put(
 				"entryClassName", ObjectEntryFolder.class.getName()
 			).build(),
-			fdsActionDropdownItems.get(1));
+			fdsActionDropdownItems.get(0));
 		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
 			"pencil", "actionLink", "Edit", "get",
-			fdsActionDropdownItems.get(2));
+			fdsActionDropdownItems.get(1));
 		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
 			"view", "view-content", "View", null,
-			fdsActionDropdownItems.get(3));
+			fdsActionDropdownItems.get(2));
 		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
-			"view", "view-file", "View", null, fdsActionDropdownItems.get(4));
+			"view", "view-file", "View", null, fdsActionDropdownItems.get(3));
 		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
-			"automatic-translate", "translate", "Translate", "get",
-			fdsActionDropdownItems.get(5));
-		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
-			"share", "share", "Share", "get", fdsActionDropdownItems.get(6));
+			"view", "actionLinkFolder", "View Folder", "get",
+			HashMapBuilder.<String, Object>put(
+				"entryClassName", ObjectEntryFolder.class.getName()
+			).build(),
+			fdsActionDropdownItems.get(4));
 		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
 			"info-circle-open", "show-details", "Show Details", null,
-			fdsActionDropdownItems.get(7));
+			fdsActionDropdownItems.get(5));
 		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
-			"time", "expire", "Expire", "post", fdsActionDropdownItems.get(8));
+			"automatic-translate", "translate", "Translate", "get",
+			fdsActionDropdownItems.get(6));
+		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
+			"time", "expire", "Expire", "post", fdsActionDropdownItems.get(7));
+		assertUpdateDatesFDSActionDropdownItem(fdsActionDropdownItems.get(8));
 		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
 			"date-time", "version-history", "View History", "get",
 			fdsActionDropdownItems.get(9));
@@ -211,9 +210,11 @@ public class ViewContentsSectionDisplayContextTest
 		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
 			"download", "import-translation", "Import Translation", null,
 			fdsActionDropdownItems.get(13));
+		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
+			"share", "share", "Share", "get", fdsActionDropdownItems.get(14));
 
 		FDSActionDropdownItem permissionsFDSActionDropdownItem =
-			fdsActionDropdownItems.get(14);
+			fdsActionDropdownItems.get(15);
 
 		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
 			"password-policies", "permissions-menu", "Permissions", null,
@@ -250,13 +251,7 @@ public class ViewContentsSectionDisplayContextTest
 			permissionsFDSActionDropdownItems.get(3));
 
 		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
-			"trash", "delete", "Delete", null, fdsActionDropdownItems.get(15));
-		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
-			"date-time", "update-expiration-date", "Update Expiration Date",
-			null, fdsActionDropdownItems.get(16));
-		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
-			"date-time", "update-review-date", "Update Review Date", null,
-			fdsActionDropdownItems.get(17));
+			"trash", "delete", "Delete", null, fdsActionDropdownItems.get(16));
 	}
 
 	@FeatureFlag("LPD-72278")
@@ -269,12 +264,14 @@ public class ViewContentsSectionDisplayContextTest
 			getFDSActionDropdownItems();
 
 		Assert.assertEquals(
-			fdsActionDropdownItems.toString(), 19,
+			fdsActionDropdownItems.toString(), 18,
 			fdsActionDropdownItems.size());
 
 		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
 			"rocket", "addToLaunch", "Add to Launch", "get",
-			fdsActionDropdownItems.get(16));
+			fdsActionDropdownItems.get(7));
+		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
+			"time", "expire", "Expire", "post", fdsActionDropdownItems.get(8));
 	}
 
 	@Override

@@ -108,17 +108,11 @@ public class ViewHomeRecentAssetsSectionDisplayContext
 		List<FDSActionDropdownItem> fdsActionDropdownItems =
 			super.getFDSActionDropdownItems();
 
+		SectionDisplayContextUtil.addDownloadFDSActionDropdownItem(
+			fdsActionDropdownItems, httpServletRequest);
 		SectionDisplayContextUtil.addEditImageFDSActionDropdownItem(
 			fdsActionDropdownItems, httpServletRequest);
-
-		fdsActionDropdownItems.add(
-			1,
-			new FDSActionDropdownItem(
-				"{embedded.file.link.href}", "download", "download",
-				LanguageUtil.get(httpServletRequest, "download"), "get", null,
-				"link"));
-
-		SectionDisplayContextUtil.addScheduleDateFDSActionDropdownItems(
+		SectionDisplayContextUtil.addUpdateDatesFDSActionDropdownItem(
 			fdsActionDropdownItems, httpServletRequest);
 
 		return fdsActionDropdownItems;

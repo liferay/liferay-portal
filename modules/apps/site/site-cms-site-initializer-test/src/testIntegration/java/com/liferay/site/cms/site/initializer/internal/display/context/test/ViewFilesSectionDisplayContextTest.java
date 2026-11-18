@@ -139,6 +139,24 @@ public class ViewFilesSectionDisplayContextTest
 			bulkActionDropdownItems.get(14));
 	}
 
+	@Test
+	public void testGetFDSActionDropdownItems() throws Exception {
+		List<FDSActionDropdownItem> fdsActionDropdownItems =
+			getFDSActionDropdownItems();
+
+		assertFDSActionDropdownItemIds(
+			new String[] {
+				"editFolder", "actionLink", "edit-image", "view-content",
+				"view-file", "actionLinkFolder", "show-details", "translate",
+				"download", "download-folder", "expire", "update-dates-menu",
+				"version-history", "move", "copy-menu",
+				"export-for-translation", "import-translation", "share",
+				"permissions-menu", "delete"
+			},
+			fdsActionDropdownItems);
+		assertUpdateDatesFDSActionDropdownItem(fdsActionDropdownItems.get(11));
+	}
+
 	@Override
 	protected Map<String, String> getExpectedCreationMenuItems()
 		throws PortalException {

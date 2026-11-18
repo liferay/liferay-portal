@@ -82,12 +82,32 @@ import java.util.Objects;
  */
 public class SectionDisplayContextUtil {
 
+	public static void addDownloadFDSActionDropdownItem(
+		List<FDSActionDropdownItem> fdsActionDropdownItems,
+		HttpServletRequest httpServletRequest) {
+
+		_addFDSActionDropdownItem(
+			FDSActionDropdownItemBuilder.setHref(
+				"{embedded.file.link.href}"
+			).setIcon(
+				"download"
+			).setLabel(
+				LanguageUtil.get(httpServletRequest, "download")
+			).setMethod(
+				"get"
+			).setTarget(
+				"link"
+			).build(
+				"download"
+			),
+			fdsActionDropdownItems, "translate");
+	}
+
 	public static void addEditImageFDSActionDropdownItem(
 		List<FDSActionDropdownItem> fdsActionDropdownItems,
 		HttpServletRequest httpServletRequest) {
 
-		fdsActionDropdownItems.add(
-			3,
+		_addFDSActionDropdownItem(
 			FDSActionDropdownItemBuilder.setHref(
 				StringPool.POUND
 			).setLabel(
@@ -96,7 +116,8 @@ public class SectionDisplayContextUtil {
 				"update"
 			).build(
 				"edit-image"
-			));
+			),
+			fdsActionDropdownItems, "actionLink");
 	}
 
 	public static void addScheduleDateFDSActionDropdownItems(
@@ -109,6 +130,49 @@ public class SectionDisplayContextUtil {
 		fdsActionDropdownItems.add(
 			getScheduleDateFDSActionDropdownItem(
 				"update-review-date", httpServletRequest));
+	}
+
+	public static void addUpdateDatesFDSActionDropdownItem(
+		List<FDSActionDropdownItem> fdsActionDropdownItems,
+		HttpServletRequest httpServletRequest) {
+
+		_addFDSActionDropdownItem(
+			FDSActionDropdownItemBuilder.setFDSActionDropdownItems(
+				FDSActionDropdownItemList.of(
+					FDSActionDropdownItemBuilder.setHref(
+						StringPool.POUND
+					).setIcon(
+						"date-time"
+					).setLabel(
+						LanguageUtil.get(httpServletRequest, "expiration-date")
+					).setPermissionKey(
+						"update"
+					).build(
+						"update-expiration-date"
+					),
+					FDSActionDropdownItemBuilder.setHref(
+						StringPool.POUND
+					).setIcon(
+						"date-time"
+					).setLabel(
+						LanguageUtil.get(httpServletRequest, "review-date")
+					).setPermissionKey(
+						"update"
+					).build(
+						"update-review-date"
+					))
+			).setIcon(
+				"date-time"
+			).setLabel(
+				LanguageUtil.get(httpServletRequest, "update-dates")
+			).setPermissionKey(
+				"update"
+			).setType(
+				"contextual"
+			).build(
+				"update-dates-menu"
+			),
+			fdsActionDropdownItems, "expire");
 	}
 
 	public static String appendGroupIds(
@@ -260,26 +324,11 @@ public class SectionDisplayContextUtil {
 		List<FDSActionDropdownItem> fdsActionDropdownItems =
 			getFDSActionDropdownItems(httpServletRequest);
 
+		addDownloadFDSActionDropdownItem(
+			fdsActionDropdownItems, httpServletRequest);
 		addEditImageFDSActionDropdownItem(
 			fdsActionDropdownItems, httpServletRequest);
-
-		fdsActionDropdownItems.add(
-			6,
-			FDSActionDropdownItemBuilder.setHref(
-				"{embedded.file.link.href}"
-			).setIcon(
-				"download"
-			).setLabel(
-				LanguageUtil.get(httpServletRequest, "download")
-			).setMethod(
-				"get"
-			).setTarget(
-				"link"
-			).build(
-				"download"
-			));
-
-		addScheduleDateFDSActionDropdownItems(
+		addUpdateDatesFDSActionDropdownItem(
 			fdsActionDropdownItems, httpServletRequest);
 
 		return fdsActionDropdownItems;
@@ -402,7 +451,7 @@ public class SectionDisplayContextUtil {
 
 		_addAddToLaunchAction(fdsActionDropdownItems, httpServletRequest);
 
-		addScheduleDateFDSActionDropdownItems(
+		addUpdateDatesFDSActionDropdownItem(
 			fdsActionDropdownItems, httpServletRequest);
 
 		return fdsActionDropdownItems;
@@ -589,23 +638,6 @@ public class SectionDisplayContextUtil {
 
 		return ListUtil.fromArray(
 			FDSActionDropdownItemBuilder.setHref(
-				ActionUtil.getBaseViewFolderURL(themeDisplay) + "{embedded.id}"
-			).setIcon(
-				"view"
-			).setLabel(
-				LanguageUtil.get(httpServletRequest, "view-folder")
-			).setMethod(
-				"get"
-			).setPermissionKey(
-				"get"
-			).setVisibilityFilters(
-				HashMapBuilder.<String, Object>put(
-					"entryClassName", ObjectEntryFolder.class.getName()
-				).build()
-			).build(
-				"actionLinkFolder"
-			),
-			FDSActionDropdownItemBuilder.setHref(
 				StringBundler.concat(
 					themeDisplay.getPathFriendlyURLPublic(),
 					GroupConstants.CMS_FRIENDLY_URL, "/e/edit-folder/",
@@ -672,6 +704,34 @@ public class SectionDisplayContextUtil {
 				"view-file"
 			),
 			FDSActionDropdownItemBuilder.setHref(
+				ActionUtil.getBaseViewFolderURL(themeDisplay) + "{embedded.id}"
+			).setIcon(
+				"view"
+			).setLabel(
+				LanguageUtil.get(httpServletRequest, "view-folder")
+			).setMethod(
+				"get"
+			).setPermissionKey(
+				"get"
+			).setVisibilityFilters(
+				HashMapBuilder.<String, Object>put(
+					"entryClassName", ObjectEntryFolder.class.getName()
+				).build()
+			).build(
+				"actionLinkFolder"
+			),
+			FDSActionDropdownItemBuilder.setHref(
+				StringPool.BLANK
+			).setIcon(
+				"info-circle-open"
+			).setLabel(
+				LanguageUtil.get(httpServletRequest, "show-details")
+			).setTarget(
+				"infoPanel"
+			).build(
+				"show-details"
+			),
+			FDSActionDropdownItemBuilder.setHref(
 				StringBundler.concat(
 					themeDisplay.getPortalURL(), themeDisplay.getPathMain(),
 					GroupConstants.CMS_FRIENDLY_URL,
@@ -687,30 +747,6 @@ public class SectionDisplayContextUtil {
 				"update"
 			).build(
 				"translate"
-			),
-			FDSActionDropdownItemBuilder.setIcon(
-				"share"
-			).setLabel(
-				LanguageUtil.get(httpServletRequest, "share")
-			).setMethod(
-				"get"
-			).setPermissionKey(
-				"share"
-			).setTarget(
-				"link"
-			).build(
-				"share"
-			),
-			FDSActionDropdownItemBuilder.setHref(
-				StringPool.BLANK
-			).setIcon(
-				"info-circle-open"
-			).setLabel(
-				LanguageUtil.get(httpServletRequest, "show-details")
-			).setTarget(
-				"infoPanel"
-			).build(
-				"show-details"
 			),
 			FDSActionDropdownItemBuilder.setHref(
 				"{actions.expire.href}"
@@ -793,6 +829,19 @@ public class SectionDisplayContextUtil {
 				"update"
 			).build(
 				"import-translation"
+			),
+			FDSActionDropdownItemBuilder.setIcon(
+				"share"
+			).setLabel(
+				LanguageUtil.get(httpServletRequest, "share")
+			).setMethod(
+				"get"
+			).setPermissionKey(
+				"share"
+			).setTarget(
+				"link"
+			).build(
+				"share"
 			),
 			_getPermissionsFDSActionDropdownItem(
 				httpServletRequest, themeDisplay),
@@ -912,26 +961,10 @@ public class SectionDisplayContextUtil {
 		List<FDSActionDropdownItem> fdsActionDropdownItems =
 			getFDSActionDropdownItems(httpServletRequest);
 
-		addEditImageFDSActionDropdownItem(
+		addDownloadFDSActionDropdownItem(
 			fdsActionDropdownItems, httpServletRequest);
 
-		fdsActionDropdownItems.add(
-			6,
-			FDSActionDropdownItemBuilder.setHref(
-				"{embedded.file.link.href}"
-			).setIcon(
-				"download"
-			).setLabel(
-				LanguageUtil.get(httpServletRequest, "download")
-			).setMethod(
-				"get"
-			).setTarget(
-				"link"
-			).build(
-				"download"
-			));
-		fdsActionDropdownItems.add(
-			7,
+		_addFDSActionDropdownItem(
 			FDSActionDropdownItemBuilder.setHref(
 				StringBundler.concat(
 					"/o", GroupConstants.CMS_FRIENDLY_URL, "/download-folder/",
@@ -951,9 +984,12 @@ public class SectionDisplayContextUtil {
 				).build()
 			).build(
 				"download-folder"
-			));
+			),
+			fdsActionDropdownItems, "download");
 
-		addScheduleDateFDSActionDropdownItems(
+		addEditImageFDSActionDropdownItem(
+			fdsActionDropdownItems, httpServletRequest);
+		addUpdateDatesFDSActionDropdownItem(
 			fdsActionDropdownItems, httpServletRequest);
 
 		return fdsActionDropdownItems;
@@ -1112,7 +1148,7 @@ public class SectionDisplayContextUtil {
 			return;
 		}
 
-		fdsActionDropdownItems.add(
+		_addFDSActionDropdownItem(
 			FDSActionDropdownItemBuilder.setHref(
 				"{actions.addToLaunch.href}"
 			).setIcon(
@@ -1125,7 +1161,8 @@ public class SectionDisplayContextUtil {
 				"addToLaunch"
 			).build(
 				"addToLaunch"
-			));
+			),
+			fdsActionDropdownItems, "translate");
 	}
 
 	private static void _addEditCategoriesAndTagsBulkActions(
@@ -1156,6 +1193,27 @@ public class SectionDisplayContextUtil {
 			).build(
 				"edit-tags"
 			));
+	}
+
+	private static void _addFDSActionDropdownItem(
+		FDSActionDropdownItem fdsActionDropdownItem,
+		List<FDSActionDropdownItem> fdsActionDropdownItems, String previousId) {
+
+		for (int i = 0; i < fdsActionDropdownItems.size(); i++) {
+			FDSActionDropdownItem previousFDSActionDropdownItem =
+				fdsActionDropdownItems.get(i);
+
+			Map<String, Object> data =
+				(Map<String, Object>)previousFDSActionDropdownItem.get("data");
+
+			if (Objects.equals(data.get("id"), previousId)) {
+				fdsActionDropdownItems.add(i + 1, fdsActionDropdownItem);
+
+				return;
+			}
+		}
+
+		fdsActionDropdownItems.add(fdsActionDropdownItem);
 	}
 
 	private static void _addPermissionsBulkActions(

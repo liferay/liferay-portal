@@ -435,7 +435,7 @@ export default function AssetsFDSPropsTransformer({
 			}
 			else if (
 				action?.data?.id === 'actionLink' ||
-				isScheduleDateActionId(action?.data?.id)
+				action?.data?.id === 'update-dates-menu'
 			) {
 				return {
 					...action,
