@@ -1174,13 +1174,13 @@ public class MCPServerServletTest {
 		throws Exception {
 
 		String description = RandomTestUtil.randomString();
-		String profileName = RandomTestUtil.randomString();
+		String name = RandomTestUtil.randomString();
 		String profilePath = StringUtil.toLowerCase(
 			RandomTestUtil.randomString());
 
 		ObjectEntry mcpServerProfileObjectEntry =
 			MCPServerTestUtil.addMCPServerProfileObjectEntry(
-				description, null, profileName, profilePath);
+				description, null, name, profilePath);
 
 		String mcpServerProfileExternalReferenceCode =
 			mcpServerProfileObjectEntry.getExternalReferenceCode();
@@ -1213,9 +1213,9 @@ public class MCPServerServletTest {
 			HashMapBuilder.<String, Object>put(
 				"pageSize", "100"
 			).build(),
-			mcpSyncClient, profileName);
+			mcpSyncClient, name);
 
-		Assert.assertEquals(profileName, itemJSONObject.getString("name"));
+		Assert.assertEquals(name, itemJSONObject.getString("name"));
 		Assert.assertFalse(itemJSONObject.has("description"));
 
 		JSONObject creatorJSONObject = itemJSONObject.getJSONObject("creator");
@@ -1229,9 +1229,9 @@ public class MCPServerServletTest {
 			).put(
 				"pageSize", "100"
 			).build(),
-			mcpSyncClient, profileName);
+			mcpSyncClient, name);
 
-		Assert.assertEquals(profileName, itemJSONObject.getString("name"));
+		Assert.assertEquals(name, itemJSONObject.getString("name"));
 		Assert.assertFalse(itemJSONObject.has("description"));
 
 		_assertRestrictedQueryParameters(
@@ -1259,13 +1259,13 @@ public class MCPServerServletTest {
 
 		itemJSONObject = _getMCPServerProfileItemJSONObject(
 			HashMapBuilder.<String, Object>put(
-				"filter", "name eq '" + profileName + "'"
+				"filter", "name eq '" + name + "'"
 			).put(
 				"pageSize", "100"
 			).build(),
-			mcpSyncClient, profileName);
+			mcpSyncClient, name);
 
-		Assert.assertEquals(profileName, itemJSONObject.getString("name"));
+		Assert.assertEquals(name, itemJSONObject.getString("name"));
 
 		_assertAllowedQueryParameters(
 			HashMapBuilder.<String, Object>put(
@@ -1313,9 +1313,9 @@ public class MCPServerServletTest {
 			HashMapBuilder.<String, Object>put(
 				"pageSize", "100"
 			).build(),
-			mcpSyncClient, profileName);
+			mcpSyncClient, name);
 
-		Assert.assertEquals(profileName, itemJSONObject.getString("name"));
+		Assert.assertEquals(name, itemJSONObject.getString("name"));
 		Assert.assertFalse(itemJSONObject.has("creator"));
 
 		MCPServerTestUtil.updateMCPServerProfileToolRestrictFields(
@@ -1327,7 +1327,7 @@ public class MCPServerServletTest {
 			HashMapBuilder.<String, Object>put(
 				"pageSize", "100"
 			).build(),
-			mcpSyncClient, profileName);
+			mcpSyncClient, name);
 
 		Assert.assertEquals(
 			description, itemJSONObject.getString("description"));
