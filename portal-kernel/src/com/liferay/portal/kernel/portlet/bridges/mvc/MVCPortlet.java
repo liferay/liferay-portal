@@ -11,12 +11,15 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.internal.util.ContextResourcePathsUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.model.PortletApp;
 import com.liferay.portal.kernel.portlet.LiferayPortlet;
 import com.liferay.portal.kernel.portlet.LiferayPortletConfig;
+import com.liferay.portal.kernel.portlet.LiferayPortletMode;
 import com.liferay.portal.kernel.portlet.bridges.mvc.constants.MVCRenderConstants;
 import com.liferay.portal.kernel.service.PortletLocalServiceUtil;
 import com.liferay.portal.kernel.servlet.SessionMessages;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -34,6 +37,7 @@ import jakarta.portlet.HeaderResponse;
 import jakarta.portlet.PortletConfig;
 import jakarta.portlet.PortletContext;
 import jakarta.portlet.PortletException;
+import jakarta.portlet.PortletMode;
 import jakarta.portlet.PortletPreferences;
 import jakarta.portlet.PortletRequest;
 import jakarta.portlet.PortletRequestDispatcher;
@@ -348,7 +352,9 @@ public class MVCPortlet extends LiferayPortlet {
 
 		String path = getPath(resourceRequest, resourceResponse);
 
-		if (path != null) {
+		if ((path != null) &&
+			!_isUnauthorizedConfigurationPath(path, resourceRequest)) {
+
 			include(
 				path, resourceRequest, resourceResponse,
 				PortletRequest.RESOURCE_PHASE);
@@ -489,7 +495,9 @@ public class MVCPortlet extends LiferayPortlet {
 
 		String path = getPath(renderRequest, renderResponse);
 
-		if (path != null) {
+		if ((path != null) &&
+			!_isUnauthorizedConfigurationPath(path, renderRequest)) {
+
 			WindowState windowState = renderRequest.getWindowState();
 
 			if (windowState.equals(WindowState.MINIMIZED)) {
@@ -739,6 +747,23 @@ public class MVCPortlet extends LiferayPortlet {
 		return _validPaths;
 	}
 
+	private boolean _hasConfigurationAction(PortletRequest portletRequest) {
+		LiferayPortletConfig liferayPortletConfig =
+			(LiferayPortletConfig)getPortletConfig();
+
+		Portlet portlet = PortletLocalServiceUtil.getPortletById(
+			PortalUtil.getCompanyId(portletRequest),
+			liferayPortletConfig.getPortletId());
+
+		if ((portlet == null) ||
+			(portlet.getConfigurationActionInstance() == null)) {
+
+			return false;
+		}
+
+		return true;
+	}
+
 	private Set<String> _initValidPaths(String rootPath) {
 		PortletContext portletContext = getPortletContext();
 
@@ -794,6 +819,46 @@ public class MVCPortlet extends LiferayPortlet {
 
 				return validPaths;
 			});
+	}
+
+	private boolean _isUnauthorizedConfigurationPath(
+		String path, PortletRequest portletRequest) {
+
+		PortletMode portletMode = portletRequest.getPortletMode();
+
+		if (portletMode.equals(LiferayPortletMode.CONFIG)) {
+			return false;
+		}
+
+		if (path.startsWith(
+				_PATH_META_INF_RESOURCES.concat(StringPool.SLASH))) {
+
+			path = path.substring(_PATH_META_INF_RESOURCES.length());
+		}
+
+		if (configTemplate != null) {
+			if (path.equals(configTemplate)) {
+				return true;
+			}
+		}
+		else if (!_hasConfigurationAction(portletRequest)) {
+			return false;
+		}
+
+		LiferayPortletConfig liferayPortletConfig =
+			(LiferayPortletConfig)getPortletConfig();
+
+		String configJSP = liferayPortletConfig.getInitParameter("config-jsp");
+
+		if (((configJSP != null) && path.equals(configJSP)) ||
+			path.contains("/configuration/")) {
+
+			return true;
+		}
+
+		return ArrayUtil.contains(
+			new String[] {"configuration.jsp", "configuration_browse.jsp"},
+			path.substring(path.lastIndexOf(CharPool.SLASH) + 1));
 	}
 
 	private Set<String> _visitResources(
