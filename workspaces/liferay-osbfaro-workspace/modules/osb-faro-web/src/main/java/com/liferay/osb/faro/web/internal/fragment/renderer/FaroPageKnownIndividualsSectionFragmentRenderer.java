@@ -6,6 +6,12 @@
 package com.liferay.osb.faro.web.internal.fragment.renderer;
 
 import com.liferay.fragment.renderer.FragmentRenderer;
+import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.ParamUtil;
+
+import jakarta.servlet.http.HttpServletRequest;
+
+import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -24,6 +30,24 @@ public class FaroPageKnownIndividualsSectionFragmentRenderer
 	@Override
 	protected String getModule() {
 		return "{PageKnownIndividuals} from osb-faro-web/sites";
+	}
+
+	@Override
+	protected Map<String, String> getParams(
+		HttpServletRequest httpServletRequest) {
+
+		return HashMapBuilder.putAll(
+			super.getParams(httpServletRequest)
+		).put(
+			"experienceId",
+			ParamUtil.getString(httpServletRequest, "experienceId")
+		).put(
+			"title", ParamUtil.getString(httpServletRequest, "title")
+		).put(
+			"touchpoint", ParamUtil.getString(httpServletRequest, "touchpoint")
+		).put(
+			"useDB", ParamUtil.getString(httpServletRequest, "useDB")
+		).build();
 	}
 
 }
