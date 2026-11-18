@@ -8,8 +8,8 @@ package com.liferay.commerce.inventory.internal.method;
 import com.liferay.commerce.inventory.constants.CommerceInventoryAvailabilityConstants;
 import com.liferay.commerce.inventory.constants.CommerceInventoryConstants;
 import com.liferay.commerce.inventory.engine.contributor.CommerceInventoryEngineContributor;
-import com.liferay.commerce.inventory.engine.contributor.CommerceInventoryEngineContributorRegistry;
 import com.liferay.commerce.inventory.exception.MVCCException;
+import com.liferay.commerce.inventory.internal.engine.contributor.comparator.CommerceInventoryEngineContributorOrderComparator;
 import com.liferay.commerce.inventory.method.CommerceInventoryMethod;
 import com.liferay.commerce.inventory.model.CommerceInventoryWarehouseItem;
 import com.liferay.commerce.inventory.service.CommerceInventoryAuditLocalService;
@@ -18,6 +18,10 @@ import com.liferay.commerce.inventory.service.CommerceInventoryWarehouseItemLoca
 import com.liferay.commerce.inventory.service.CommerceInventoryWarehouseItemService;
 import com.liferay.commerce.inventory.type.CommerceInventoryAuditType;
 import com.liferay.commerce.inventory.type.CommerceInventoryAuditTypeRegistry;
+import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerCustomizerFactory;
+import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
+import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
@@ -25,15 +29,22 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.util.BigDecimalUtil;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 
 import java.math.BigDecimal;
 
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import org.osgi.framework.BundleContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 
 /**
@@ -80,8 +91,7 @@ public class DefaultCommerceInventoryMethodImpl
 
 		for (CommerceInventoryEngineContributor
 				commerceInventoryEngineContributor :
-					_commerceInventoryEngineContributorRegistry.
-						getCommerceInventoryEngineContributors()) {
+					_getCommerceInventoryEngineContributors()) {
 
 			commerceInventoryEngineContributor.consumeQuantityContribute(
 				userId, commerceInventoryBookedQuantityId,
@@ -119,8 +129,7 @@ public class DefaultCommerceInventoryMethodImpl
 
 		for (CommerceInventoryEngineContributor
 				commerceInventoryEngineContributor :
-					_commerceInventoryEngineContributorRegistry.
-						getCommerceInventoryEngineContributors()) {
+					_getCommerceInventoryEngineContributors()) {
 
 			commerceInventoryEngineContributor.decreaseStockQuantityContribute(
 				userId, commerceInventoryWarehouseId, quantity, sku,
@@ -241,13 +250,27 @@ public class DefaultCommerceInventoryMethodImpl
 
 		for (CommerceInventoryEngineContributor
 				commerceInventoryEngineContributor :
-					_commerceInventoryEngineContributorRegistry.
-						getCommerceInventoryEngineContributors()) {
+					_getCommerceInventoryEngineContributors()) {
 
 			commerceInventoryEngineContributor.increaseStockQuantityContribute(
 				userId, commerceInventoryWarehouseId, quantity, sku,
 				unitOfMeasureKey);
 		}
+	}
+
+	@Activate
+	protected void activate(BundleContext bundleContext) {
+		_serviceTrackerMap = ServiceTrackerMapFactory.openSingleValueMap(
+			bundleContext, CommerceInventoryEngineContributor.class,
+			"commerce.inventory.engine.contributor.key",
+			ServiceTrackerCustomizerFactory.
+				<CommerceInventoryEngineContributor>serviceWrapper(
+					bundleContext));
+	}
+
+	@Deactivate
+	protected void deactivate() {
+		_serviceTrackerMap.close();
 	}
 
 	private String _getAvailabilityStatus(
@@ -270,8 +293,33 @@ public class DefaultCommerceInventoryMethodImpl
 		return availabilityStatus;
 	}
 
+	private List<CommerceInventoryEngineContributor>
+		_getCommerceInventoryEngineContributors() {
+
+		List
+			<ServiceTrackerCustomizerFactory.ServiceWrapper
+				<CommerceInventoryEngineContributor>>
+					commerceInventoryEngineContributorServiceWrappers =
+						ListUtil.fromCollection(_serviceTrackerMap.values());
+
+		Collections.sort(
+			commerceInventoryEngineContributorServiceWrappers,
+			_commerceInventoryEngineContributorServiceWrapperOrderComparator);
+
+		return TransformUtil.transform(
+			commerceInventoryEngineContributorServiceWrappers,
+			commerceInventoryEngineContributorServiceWrapper ->
+				commerceInventoryEngineContributorServiceWrapper.getService());
+	}
+
 	private static final Log _log = LogFactoryUtil.getLog(
 		DefaultCommerceInventoryMethodImpl.class);
+
+	private static final Comparator
+		<ServiceTrackerCustomizerFactory.ServiceWrapper
+			<CommerceInventoryEngineContributor>>
+				_commerceInventoryEngineContributorServiceWrapperOrderComparator =
+					new CommerceInventoryEngineContributorOrderComparator();
 
 	@Reference
 	private CommerceInventoryAuditLocalService
@@ -286,10 +334,6 @@ public class DefaultCommerceInventoryMethodImpl
 		_commerceInventoryBookedQuantityLocalService;
 
 	@Reference
-	private CommerceInventoryEngineContributorRegistry
-		_commerceInventoryEngineContributorRegistry;
-
-	@Reference
 	private CommerceInventoryWarehouseItemLocalService
 		_commerceInventoryWarehouseItemLocalService;
 
@@ -299,5 +343,10 @@ public class DefaultCommerceInventoryMethodImpl
 
 	@Reference
 	private Language _language;
+
+	private ServiceTrackerMap
+		<String,
+		 ServiceTrackerCustomizerFactory.ServiceWrapper
+			 <CommerceInventoryEngineContributor>> _serviceTrackerMap;
 
 }
