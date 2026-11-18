@@ -14,6 +14,7 @@ import com.liferay.commerce.product.service.CPInstanceLocalService;
 import com.liferay.commerce.product.service.CommerceCatalogLocalService;
 import com.liferay.commerce.product.type.virtual.model.CPDefinitionVirtualSetting;
 import com.liferay.commerce.product.type.virtual.service.base.CPDefinitionVirtualSettingServiceBaseImpl;
+import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
@@ -53,6 +54,9 @@ public class CPDefinitionVirtualSettingServiceImpl
 			long termsOfUseJournalArticleResourcePrimKey, boolean override,
 			ServiceContext serviceContext)
 		throws PortalException {
+
+		_checkFileEntry(fileEntryId);
+		_checkFileEntry(sampleFileEntryId);
 
 		_checkPermission(className, classPK, ActionKeys.UPDATE);
 
@@ -119,6 +123,9 @@ public class CPDefinitionVirtualSettingServiceImpl
 			ServiceContext serviceContext)
 		throws PortalException {
 
+		_checkFileEntry(fileEntryId);
+		_checkFileEntry(sampleFileEntryId);
+
 		CPDefinitionVirtualSetting cpDefinitionVirtualSetting =
 			cpDefinitionVirtualSettingPersistence.findByPrimaryKey(
 				cpDefinitionVirtualSettingId);
@@ -146,6 +153,9 @@ public class CPDefinitionVirtualSettingServiceImpl
 			long termsOfUseJournalArticleResourcePrimKey,
 			ServiceContext serviceContext)
 		throws PortalException {
+
+		_checkFileEntry(fileEntryId);
+		_checkFileEntry(sampleFileEntryId);
 
 		CPDefinitionVirtualSetting cpDefinitionVirtualSetting =
 			cpDefinitionVirtualSettingPersistence.findByPrimaryKey(
@@ -192,6 +202,13 @@ public class CPDefinitionVirtualSettingServiceImpl
 			getPermissionChecker(), commerceCatalog, actionId);
 	}
 
+	private void _checkFileEntry(long fileEntryId) throws PortalException {
+		if (fileEntryId > 0) {
+			_dlFileEntryModelResourcePermission.check(
+				getPermissionChecker(), fileEntryId, ActionKeys.VIEW);
+		}
+	}
+
 	private void _checkPermission(String className, long classPK, String action)
 		throws PortalException {
 
@@ -218,5 +235,11 @@ public class CPDefinitionVirtualSettingServiceImpl
 
 	@Reference
 	private CPInstanceLocalService _cpInstanceLocalService;
+
+	@Reference(
+		target = "(model.class.name=com.liferay.document.library.kernel.model.DLFileEntry)"
+	)
+	private ModelResourcePermission<DLFileEntry>
+		_dlFileEntryModelResourcePermission;
 
 }

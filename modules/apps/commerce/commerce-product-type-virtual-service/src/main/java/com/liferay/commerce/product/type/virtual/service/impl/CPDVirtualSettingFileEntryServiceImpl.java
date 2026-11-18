@@ -14,6 +14,8 @@ import com.liferay.commerce.product.service.CommerceCatalogLocalService;
 import com.liferay.commerce.product.type.virtual.model.CPDVirtualSettingFileEntry;
 import com.liferay.commerce.product.type.virtual.model.CPDefinitionVirtualSetting;
 import com.liferay.commerce.product.type.virtual.service.base.CPDVirtualSettingFileEntryServiceBaseImpl;
+import com.liferay.commerce.product.type.virtual.service.persistence.CPDefinitionVirtualSettingPersistence;
+import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.repository.model.FileEntry;
@@ -48,7 +50,15 @@ public class CPDVirtualSettingFileEntryServiceImpl
 			String version)
 		throws PortalException {
 
-		_checkPermission(className, classPK, ActionKeys.UPDATE);
+		_checkFileEntry(fileEntryId);
+
+		CPDefinitionVirtualSetting cpDefinitionVirtualSetting =
+			_cpDefinitionVirtualSettingPersistence.findByPrimaryKey(
+				cpDefinitionVirtualSettingId);
+
+		_checkPermission(
+			cpDefinitionVirtualSetting.getClassName(),
+			cpDefinitionVirtualSetting.getClassPK(), ActionKeys.UPDATE);
 
 		return cpdVirtualSettingFileEntryLocalService.
 			addCPDVirtualSettingFileEntry(
@@ -103,7 +113,16 @@ public class CPDVirtualSettingFileEntryServiceImpl
 			String className, long classPK, long cpdVirtualSettingFileEntryId)
 		throws PortalException {
 
-		_checkPermission(className, classPK, ActionKeys.UPDATE);
+		CPDVirtualSettingFileEntry cpdVirtualSettingFileEntry =
+			cpdVirtualSettingFileEntryLocalService.
+				getCPDVirtualSettingFileEntry(cpdVirtualSettingFileEntryId);
+
+		CPDefinitionVirtualSetting cpDefinitionVirtualSetting =
+			cpdVirtualSettingFileEntry.getCPDefinitionVirtualSetting();
+
+		_checkPermission(
+			cpDefinitionVirtualSetting.getClassName(),
+			cpDefinitionVirtualSetting.getClassPK(), ActionKeys.UPDATE);
 
 		return cpdVirtualSettingFileEntryLocalService.
 			deleteCPDVirtualSettingFileEntry(cpdVirtualSettingFileEntryId);
@@ -168,6 +187,8 @@ public class CPDVirtualSettingFileEntryServiceImpl
 			String version)
 		throws PortalException {
 
+		_checkFileEntry(fileEntryId);
+
 		CPDVirtualSettingFileEntry cpdVirtualSettingFileEntry =
 			cpdVirtualSettingFileEntryLocalService.
 				getCPDVirtualSettingFileEntry(cpdVirtualSettingFileEntryId);
@@ -196,6 +217,13 @@ public class CPDVirtualSettingFileEntryServiceImpl
 
 		_commerceCatalogModelResourcePermission.check(
 			getPermissionChecker(), commerceCatalog, actionId);
+	}
+
+	private void _checkFileEntry(long fileEntryId) throws PortalException {
+		if (fileEntryId > 0) {
+			_dlFileEntryModelResourcePermission.check(
+				getPermissionChecker(), fileEntryId, ActionKeys.VIEW);
+		}
 	}
 
 	private void _checkPermission(String className, long classPK, String action)
@@ -229,6 +257,16 @@ public class CPDVirtualSettingFileEntryServiceImpl
 	private CPDefinitionLocalService _cpDefinitionLocalService;
 
 	@Reference
+	private CPDefinitionVirtualSettingPersistence
+		_cpDefinitionVirtualSettingPersistence;
+
+	@Reference
 	private CPInstanceLocalService _cpInstanceLocalService;
+
+	@Reference(
+		target = "(model.class.name=com.liferay.document.library.kernel.model.DLFileEntry)"
+	)
+	private ModelResourcePermission<DLFileEntry>
+		_dlFileEntryModelResourcePermission;
 
 }
