@@ -289,120 +289,96 @@ export default function MentionUserPicker({
 						triggerRef={editableRef}
 					>
 						{mentions.length ? (
-							<>
-								<ClayDropDown.ItemList
-									aria-label={Liferay.Language.get(
-										'mentions'
-									)}
-									id={listboxId}
-									role="listbox"
-								>
-									{!!users.length && (
-										<MentionSection
-											header={Liferay.Language.get(
-												'people'
-											)}
-											id={`${id}-people`}
-										>
-											{users.map((user, index) => (
+							<ClayDropDown.ItemList
+								aria-label={Liferay.Language.get('mentions')}
+								id={listboxId}
+								role="listbox"
+							>
+								{!!users.length && (
+									<MentionSection
+										header={Liferay.Language.get('people')}
+										id={`${id}-people`}
+									>
+										{users.map((user, index) => (
+											<MentionItem
+												active={index === activeIndex}
+												focus={
+													keyboardNavigation &&
+													index === activeIndex
+												}
+												id={`${id}-${index}`}
+												key={user.id}
+												onMouseEnter={() =>
+													setActiveIndex(index)
+												}
+												onSelect={() =>
+													select(mentions[index])
+												}
+												portraitURL={user.portraitURL}
+												stickerDisplayType={getStickerColor(
+													user.id
+												)}
+												stickerShape="circle"
+												subtitle={`@${user.screenName}`}
+												title={user.name}
+											/>
+										))}
+									</MentionSection>
+								)}
+
+								{!!userGroups.length && (
+									<MentionSection
+										header={Liferay.Language.get('groups')}
+										id={`${id}-groups`}
+									>
+										{userGroups.map((userGroup, index) => {
+											const mentionIndex =
+												users.length + index;
+
+											return (
 												<MentionItem
 													active={
-														index === activeIndex
+														mentionIndex ===
+														activeIndex
 													}
 													focus={
 														keyboardNavigation &&
-														index === activeIndex
+														mentionIndex ===
+															activeIndex
 													}
-													id={`${id}-${index}`}
-													key={user.id}
+													id={`${id}-${mentionIndex}`}
+													key={userGroup.id}
 													onMouseEnter={() =>
-														setActiveIndex(index)
+														setActiveIndex(
+															mentionIndex
+														)
 													}
 													onSelect={() =>
-														select(mentions[index])
+														select(
+															mentions[
+																mentionIndex
+															]
+														)
 													}
-													portraitURL={
-														user.portraitURL
-													}
-													stickerDisplayType={getStickerColor(
-														user.id
+													stickerDisplayType="outline"
+													subtitle={sub(
+														userGroup.membersCount ===
+															1
+															? Liferay.Language.get(
+																	'up-to-x-user-will-be-notified'
+																)
+															: Liferay.Language.get(
+																	'up-to-x-users-will-be-notified'
+																),
+														userGroup.membersCount
 													)}
-													stickerShape="circle"
-													subtitle={`@${user.screenName}`}
-													title={user.name}
+													title={userGroup.name}
 												/>
-											))}
-										</MentionSection>
-									)}
-
-									{!!userGroups.length && (
-										<MentionSection
-											header={Liferay.Language.get(
-												'groups'
-											)}
-											id={`${id}-groups`}
-										>
-											{userGroups.map(
-												(userGroup, index) => {
-													const mentionIndex =
-														users.length + index;
-
-													return (
-														<MentionItem
-															active={
-																mentionIndex ===
-																activeIndex
-															}
-															focus={
-																keyboardNavigation &&
-																mentionIndex ===
-																	activeIndex
-															}
-															id={`${id}-${mentionIndex}`}
-															key={userGroup.id}
-															onMouseEnter={() =>
-																setActiveIndex(
-																	mentionIndex
-																)
-															}
-															onSelect={() =>
-																select(
-																	mentions[
-																		mentionIndex
-																	]
-																)
-															}
-															stickerDisplayType="outline"
-															subtitle={sub(
-																userGroup.membersCount ===
-																	1
-																	? Liferay.Language.get(
-																			'up-to-x-user-will-be-notified'
-																		)
-																	: Liferay.Language.get(
-																			'up-to-x-users-will-be-notified'
-																		),
-																userGroup.membersCount
-															)}
-															title={
-																userGroup.name
-															}
-														/>
-													);
-												}
-											)}
-										</MentionSection>
-									)}
-								</ClayDropDown.ItemList>
-
-								<ClayDropDown.Divider />
-
-								<ClayDropDown.Caption>
-									{Liferay.Language.get(
-										'only-people-and-groups-with-access-to-this-asset-are-shown'
-									)}
-								</ClayDropDown.Caption>
-							</>
+											);
+										})}
+									</MentionSection>
+								)}
+							</ClayDropDown.ItemList>
 						) : status === 'searching' ? (
 							<ClayDropDown.Caption className="font-weight-semi-bold text-dark">
 								{Liferay.Language.get('searching')}
