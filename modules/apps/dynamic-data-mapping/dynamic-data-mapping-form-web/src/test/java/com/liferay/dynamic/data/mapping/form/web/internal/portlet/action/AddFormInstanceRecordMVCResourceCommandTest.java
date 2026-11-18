@@ -79,6 +79,7 @@ public class AddFormInstanceRecordMVCResourceCommandTest {
 
 		DDMFormInstanceVersion ddmFormInstanceVersion = Mockito.mock(
 			DDMFormInstanceVersion.class);
+
 		DDMStructureVersion ddmStructureVersion = Mockito.mock(
 			DDMStructureVersion.class);
 
