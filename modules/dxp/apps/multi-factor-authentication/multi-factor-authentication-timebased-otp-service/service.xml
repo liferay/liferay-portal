@@ -20,6 +20,7 @@
 
 		<!-- Other fields -->
 
+		<column name="algorithm" type="String" />
 		<column name="failedAttempts" type="int" />
 		<column name="lastFailDate" type="Date" />
 		<column name="lastFailIP" type="String" />

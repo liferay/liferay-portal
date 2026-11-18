@@ -23,6 +23,11 @@ public class MultiFactorAuthenticationTimebasedOtpUpgradeStepRegistrator
 			"1.0.0", "1.0.1",
 			UpgradeProcessFactory.addColumns(
 				"MFATimeBasedOTPEntry", "lastValidTOTP VARCHAR(75) null"));
+
+		registry.register(
+			"1.0.1", "1.0.2",
+			UpgradeProcessFactory.addColumns(
+				"MFATimeBasedOTPEntry", "algorithm VARCHAR(75) null"));
 	}
 
 }

@@ -43,7 +43,7 @@ public class MFATimeBasedOTPEntryLocalServiceImpl
 
 	@Override
 	public MFATimeBasedOTPEntry addTimeBasedOTPEntry(
-			long userId, String sharedSecret)
+			long userId, String algorithm, String sharedSecret)
 		throws PortalException {
 
 		if (KeyReferenceUtil.isKeyReference(sharedSecret)) {
@@ -70,6 +70,7 @@ public class MFATimeBasedOTPEntryLocalServiceImpl
 		mfaTimeBasedOTPEntry.setUserId(userId);
 		mfaTimeBasedOTPEntry.setUserName(user.getFullName());
 		mfaTimeBasedOTPEntry.setCreateDate(new Date());
+		mfaTimeBasedOTPEntry.setAlgorithm(algorithm);
 
 		_setSharedSecret(mfaTimeBasedOTPEntry, sharedSecret);
 
@@ -123,6 +124,22 @@ public class MFATimeBasedOTPEntryLocalServiceImpl
 		return _secretResolver.resolve(
 			mfaTimeBasedOTPEntry.getCompanyId(),
 			mfaTimeBasedOTPEntry.getSharedSecret());
+	}
+
+	@Override
+	public MFATimeBasedOTPEntry updateAlgorithm(long userId, String algorithm)
+		throws PortalException {
+
+		MFATimeBasedOTPEntry mfaTimeBasedOTPEntry =
+			mfaTimeBasedOTPEntryPersistence.fetchByUserId(userId);
+
+		if (mfaTimeBasedOTPEntry == null) {
+			throw new NoSuchEntryException("User ID " + userId);
+		}
+
+		mfaTimeBasedOTPEntry.setAlgorithm(algorithm);
+
+		return mfaTimeBasedOTPEntryPersistence.update(mfaTimeBasedOTPEntry);
 	}
 
 	@Override
