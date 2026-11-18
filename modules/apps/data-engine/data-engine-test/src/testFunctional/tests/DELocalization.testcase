@@ -2122,7 +2122,9 @@ definition {
 			fieldGroupLabel = "Fields Group",
 			fieldsLabelList = "Text,Numeric");
 
-		PortletEntry.changeLocale(locale = "zh-CN");
+		PortletEntry.changeLocale(
+			locale = "zh-CN",
+			translated = "true");
 
 		PortletEntry.inputTitle(title = "Test zh-CN");
 
@@ -3768,8 +3770,6 @@ definition {
 		WebContent.viewCP(
 			webContentContent = "WC WebContent Content zh-CN",
 			webContentTitle = "WC WebContent Title zh-CN");
-
-		PortletEntry.changeLocale(locale = "pt-BR");
 
 		PortletEntry.changeLocale(
 			locale = "pt-BR",
