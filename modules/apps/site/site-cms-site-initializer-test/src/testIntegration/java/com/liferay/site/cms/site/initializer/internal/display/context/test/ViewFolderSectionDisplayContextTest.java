@@ -142,6 +142,14 @@ public class ViewFolderSectionDisplayContextTest
 			additionalProps.toString(),
 			additionalProps.containsKey("trashEnabled"));
 
+		// Object entry folder with a CMS structure object folder contributor
+
+		additionalProps = _getAdditionalProps(
+			getMockHttpServletRequest(_objectEntryFolder));
+
+		Assert.assertEquals(
+			Boolean.FALSE, additionalProps.get("galleryViewEnabled"));
+
 		// Recycle Bin is enabled
 
 		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
@@ -177,14 +185,6 @@ public class ViewFolderSectionDisplayContextTest
 			getMockHttpServletRequest(objectEntryFolder));
 
 		Assert.assertEquals(Boolean.FALSE, additionalProps.get("trashEnabled"));
-
-		// Object entry folder with a CMS structure object folder contributor
-
-		additionalProps = _getAdditionalProps(
-			getMockHttpServletRequest(_objectEntryFolder));
-
-		Assert.assertEquals(
-			Boolean.FALSE, additionalProps.get("galleryViewEnabled"));
 	}
 
 	@Test
