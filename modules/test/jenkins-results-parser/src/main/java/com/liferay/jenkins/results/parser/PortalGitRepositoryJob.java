@@ -7,6 +7,8 @@ package com.liferay.jenkins.results.parser;
 
 import java.io.File;
 
+import java.util.Objects;
+
 import org.json.JSONObject;
 
 /**
@@ -67,19 +69,55 @@ public abstract class PortalGitRepositoryJob
 		return getUpstreamBranchName();
 	}
 
+	private PortalGitWorkingDirectory _getPrivatePortalGitWorkingDirectory(
+		PortalGitWorkingDirectory portalGitWorkingDirectory) {
+
+		if (!JenkinsResultsParserUtil.isCINode() ||
+			!Objects.equals(
+				portalGitWorkingDirectory.getUpstreamBranchName(), "master")) {
+
+			return null;
+		}
+
+		File privatePortalDir = new File(
+			JenkinsResultsParserUtil.getBaseGitRepositoryDir(),
+			"liferay-portal-master-private");
+
+		if (!privatePortalDir.exists()) {
+			return null;
+		}
+
+		return GitWorkingDirectoryFactory.newPortalGitWorkingDirectory(
+			"master-private");
+	}
+
 	private void _initialize(
 		PortalGitWorkingDirectory portalGitWorkingDirectory) {
 
-		if (portalGitWorkingDirectory != null) {
-			gitWorkingDirectory = portalGitWorkingDirectory;
-		}
-		else {
-			gitWorkingDirectory =
+		String upstreamBranchName = getUpstreamBranchName();
+
+		if ((portalGitWorkingDirectory == null) ||
+			(!upstreamBranchName.endsWith("-private") &&
+			 portalGitWorkingDirectory.isPrivate())) {
+
+			portalGitWorkingDirectory =
 				GitWorkingDirectoryFactory.newPortalGitWorkingDirectory(
-					getUpstreamBranchName());
+					upstreamBranchName);
 		}
 
-		setGitRepositoryDir(gitWorkingDirectory.getWorkingDirectory());
+		setGitRepositoryDir(portalGitWorkingDirectory.getWorkingDirectory());
+
+		gitWorkingDirectory = portalGitWorkingDirectory;
+
+		PortalGitWorkingDirectory privatePortalGitWorkingDirectory =
+			_getPrivatePortalGitWorkingDirectory(portalGitWorkingDirectory);
+
+		if (privatePortalGitWorkingDirectory != null) {
+			privatePortalGitWorkingDirectory.setPublicPortalGitWorkingDirectory(
+				portalGitWorkingDirectory);
+
+			gitWorkingDirectory = privatePortalGitWorkingDirectory;
+		}
 
 		checkGitRepositoryDir();
 
@@ -93,8 +131,6 @@ public abstract class PortalGitRepositoryJob
 				gitRepositoryDir,
 				JenkinsResultsParserUtil.combine(
 					"build.", Environment.get("HOSTNAME"), ".properties")));
-
-		String upstreamBranchName = getUpstreamBranchName();
 
 		if (upstreamBranchName.endsWith("-private")) {
 			File privatePortalDir = new File(

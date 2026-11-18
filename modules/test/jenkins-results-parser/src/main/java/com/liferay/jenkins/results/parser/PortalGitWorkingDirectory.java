@@ -523,6 +523,12 @@ public class PortalGitWorkingDirectory extends GitWorkingDirectory {
 		return _testProperties;
 	}
 
+	public boolean isPrivate() {
+		String upstreamBranchName = getUpstreamBranchName();
+
+		return upstreamBranchName.endsWith("-private");
+	}
+
 	public void setPublicPortalGitWorkingDirectory(
 		PortalGitWorkingDirectory publicPortalGitWorkingDirectory) {
 
