@@ -63,3 +63,49 @@ tests:
                     path: spec.pipeline[2].input.addTags[0].fromFieldPath
                     value: defaultTags
         it: Lets the derived tags win over the common tags
+    -   asserts:
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: define "database-parameters"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: define "database-server-parameters"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: include "database-bootstrap-job"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "sizeGb:"
+            -   documentIndex: 0
+                notMatchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: (?s)define "database-parameters".*define "database-parameters"
+        it: Supplies the shared database templates with the MySQL hooks when the engine is mysql
+        set:
+            database.engine: mysql
+    -   asserts:
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: define "database-parameters"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: define "database-server-parameters"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: include "database-bootstrap-job"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "storageMb:"
+            -   documentIndex: 0
+                notMatchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: (?s)define "database-parameters".*define "database-parameters"
+        it: Supplies the shared database templates with the PostgreSQL hooks when the engine is postgresql
