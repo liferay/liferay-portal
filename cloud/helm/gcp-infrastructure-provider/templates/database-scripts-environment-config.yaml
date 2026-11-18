@@ -1,7 +1,7 @@
 apiVersion: apiextensions.crossplane.io/v1beta1
 data:
     databaseScripts:
-        {{- range $path, $_ := .Files.Glob "scripts/database/*" }}
+        {{- range $path, $_ := .Files.Glob (printf "scripts/database/%s/*" .Values.database.engine) }}
         {{ base $path }}: {{ $.Files.Get $path | toJson }}
         {{- end }}
 kind: EnvironmentConfig

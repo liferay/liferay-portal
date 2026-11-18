@@ -29,7 +29,7 @@ spec:
                                     -   /scripts/{{ .scriptName }}
                                 env:
                                     {{- .env | toYaml | nindent 36 }}
-                                image: postgres:18-alpine
+                                image: {{ .image }}
                                 name: sql-runner
                                 resources:
                                     limits:
@@ -130,8 +130,8 @@ metadata:
     name: {{ $xr.metadata.name }}-db-{{ $dataPlane }}
 spec:
     forProvider:
-        charset: UTF8
-        collation: en_US.UTF8
+        charset: {{ $databaseCharset }}
+        collation: {{ $databaseCollation }}
         instanceSelector:
             matchLabels:
                 app: liferay
@@ -152,7 +152,7 @@ metadata:
     name: {{ $databaseInstanceNamePrefix }}{{ $dataPlane }}
 spec:
     forProvider:
-        databaseVersion: {{ printf "POSTGRES_%s" ($database.version | default "18") }}
+        databaseVersion: {{ $databaseVersion }}
         deletionProtection: {{ and (not $forceDestroy) (eq $dataPlane $activeDataPlane) }}
         {{- if $cmkEnabled }}
         encryptionKeyName: {{ $cmkKeyId }}
@@ -165,11 +165,11 @@ spec:
                 backupRetentionSettings:
                     retainedBackups: 7
                 enabled: true
-                pointInTimeRecoveryEnabled: true
+                {{ $databasePointInTimeRecoveryFieldName }}: true
                 transactionLogRetentionDays: 7
             {{- end }}
             databaseFlags:
-                -   name: cloudsql.iam_authentication
+                -   name: {{ $databaseIamAuthenticationFlagName }}
                     value: "on"
             diskSize: {{ $database.storageGB }}
             diskType: PD_SSD
@@ -193,7 +193,7 @@ apiVersion: sql.gcp.m.upbound.io/v1beta1
 kind: User
 metadata:
     annotations:
-        crossplane.io/external-name: {{ $databaseBootstrapIamUser }}
+        crossplane.io/external-name: {{ $databaseBootstrapIamUserExternalName }}
         gotemplating.fn.crossplane.io/composition-resource-name: database-bootstrap-iam-user-{{ $dataPlane }}
     labels:
         app: liferay
@@ -218,7 +218,7 @@ apiVersion: sql.gcp.m.upbound.io/v1beta1
 kind: User
 metadata:
     annotations:
-        crossplane.io/external-name: {{ $databaseIamUser }}
+        crossplane.io/external-name: {{ $databaseIamUserExternalName }}
         gotemplating.fn.crossplane.io/composition-resource-name: liferay-iam-user-{{ $dataPlane }}
     labels:
         app: liferay
@@ -249,18 +249,17 @@ spec:
     {{- end }}
 {{- end }}
 {{- $databaseConnectionName := dig "status" "atProvider" "connectionName" "" $observedDatabaseInstance }}
-{{- $databasePort := "5432" }}
 {{- if and $isDatabaseInstanceReady $isDatabaseBootstrapUserReady $gsaEmail }}
 ---
 {{ include "database-job" (dict
     "connectionName" $databaseConnectionName
     "dataPlane" $dataPlane
-    "env" (list
+    "env" (concat (list
         (dict "name" "DATABASE_NAME" "value" $databaseName)
         (dict "name" "DATABASE_PORT" "value" $databasePort)
         (dict "name" "DATABASE_USERNAME" "value" $databaseBootstrapIamUser)
-        (dict "name" "LIFERAY_DATABASE_USERNAME" "value" $databaseIamUser)
-        (dict "name" "PGPASSWORD" "value" "iam"))
+        (dict "name" "LIFERAY_DATABASE_USERNAME" "value" $databaseIamUser)) $databaseClientEnv)
+    "image" $databaseClientImage
     "jobName" (printf "%s-db-grant-%s" $xr.metadata.name $dataPlane)
     "name" "grant"
     "namespace" $namespace
@@ -279,11 +278,11 @@ spec:
 {{ include "database-job" (dict
     "connectionName" $databaseConnectionName
     "dataPlane" $dataPlane
-    "env" (list
+    "env" (concat (list
         (dict "name" "DATABASE_NAME" "value" $databaseName)
         (dict "name" "DATABASE_PORT" "value" $databasePort)
-        (dict "name" "DATABASE_USERNAME" "value" $databaseIamUser)
-        (dict "name" "PGPASSWORD" "value" "iam"))
+        (dict "name" "DATABASE_USERNAME" "value" $databaseIamUser)) $databaseClientEnv)
+    "image" $databaseClientImage
     "jobName" (printf "%s-db-login-check-%s" $xr.metadata.name $dataPlane)
     "name" "login-check"
     "namespace" $namespace

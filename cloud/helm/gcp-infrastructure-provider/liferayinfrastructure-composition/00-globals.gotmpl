@@ -29,8 +29,16 @@
 {{- $targetActiveDataPlane := $xr.spec.targetActiveDataPlane -}}
 
 {{- $activeDataPlane := $targetActiveDataPlane -}}
-{{- $databaseBootstrapIamUser := trimSuffix ".gserviceaccount.com" $databaseBootstrapEmail -}}
-{{- $databaseIamUser := trimSuffix ".gserviceaccount.com" $gsaEmail -}}
+{{- $databaseBootstrapIamUser := get (dict "mysql" (splitList "@" $databaseBootstrapEmail | first) "postgresql" (trimSuffix ".gserviceaccount.com" $databaseBootstrapEmail)) $env.databaseEngine -}}
+{{- $databaseCharset := get (dict "mysql" "utf8mb4" "postgresql" "UTF8") $env.databaseEngine -}}
+{{- $databaseClientEnv := get (dict "mysql" (list) "postgresql" (list (dict "name" "PGPASSWORD" "value" "iam"))) $env.databaseEngine -}}
+{{- $databaseClientImage := get (dict "mysql" "mysql:8.4" "postgresql" "postgres:18-alpine") $env.databaseEngine -}}
+{{- $databaseCollation := get (dict "mysql" "utf8mb4_unicode_ci" "postgresql" "en_US.UTF8") $env.databaseEngine -}}
+{{- $databaseIamAuthenticationFlagName := get (dict "mysql" "cloudsql_iam_authentication" "postgresql" "cloudsql.iam_authentication") $env.databaseEngine -}}
+{{- $databaseIamUser := get (dict "mysql" (splitList "@" $gsaEmail | first) "postgresql" (trimSuffix ".gserviceaccount.com" $gsaEmail)) $env.databaseEngine -}}
+{{- $databasePointInTimeRecoveryFieldName := get (dict "mysql" "binaryLogEnabled" "postgresql" "pointInTimeRecoveryEnabled") $env.databaseEngine -}}
+{{- $databasePort := get (dict "mysql" "3306" "postgresql" "5432") $env.databaseEngine -}}
+{{- $databaseVersion := get (dict "mysql" (printf "MYSQL_%s" ($xr.spec.database.version | default "8.4" | replace "." "_")) "postgresql" (printf "POSTGRES_%s" ($xr.spec.database.version | default "18"))) $env.databaseEngine -}}
 {{- $dataPlanes := list $targetActiveDataPlane -}}
 {{- $isCMKKeyReady := or (not $cmkEnabled) $cmkKeyId -}}
 {{- $labels := merge (dict "app" "liferay" "deployment-name" $env.deploymentName "environment-id" $environmentId "project-id" $projectId) $xr.spec.commonTags -}}
@@ -46,3 +54,5 @@
 
 {{- $backupTargetLabels := merge (dict "should-back-up" "true") $labels -}}
 {{- $baseName := printf "%.18s-%s" $projectIdFull (printf "%s-%s" $env.projectNumber $projectIdFull | sha256sum | trunc 6) -}}
+{{- $databaseBootstrapIamUserExternalName := get (dict "mysql" $databaseBootstrapEmail "postgresql" $databaseBootstrapIamUser) $env.databaseEngine -}}
+{{- $databaseIamUserExternalName := get (dict "mysql" $gsaEmail "postgresql" $databaseIamUser) $env.databaseEngine -}}
