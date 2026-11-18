@@ -71,22 +71,49 @@ public class PlaywrightJUnitTestClassTest
 			workspaceName, null, "workspace.name=" + workspaceName);
 	}
 
+	@Test
+	public void testIsAnalyticsCloudEnabled() throws Exception {
+		_testIsAnalyticsCloudEnabled(
+			false, RandomTestUtil.randomString() + "=",
+			RandomTestUtil.randomString() + "\n\n# start_analytics_cloud");
+		_testIsAnalyticsCloudEnabled(
+			false, RandomTestUtil.randomString() + "=",
+			RandomTestUtil.randomString());
+		_testIsAnalyticsCloudEnabled(
+			false, RandomTestUtil.randomString() + "=", null);
+		_testIsAnalyticsCloudEnabled(
+			true, "analytics.cloud.enabled=true", null);
+		_testIsAnalyticsCloudEnabled(
+			true, RandomTestUtil.randomString() + "=",
+			RandomTestUtil.randomString() + "\n\nstart_analytics_cloud");
+		_testIsAnalyticsCloudEnabled(
+			true, null,
+			RandomTestUtil.randomString() + "\n\nstart_analytics_cloud");
+	}
+
 	@Rule
 	public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
 	private PlaywrightJUnitTestClass _newPlaywrightJUnitTestClass(
 			String nestedTestPropertiesContent,
-			String projectTestPropertiesContent)
+			String projectTestPropertiesContent, String setUpContent)
 		throws Exception {
 
+		File playwrightDir = new File(
+			temporaryFolder.getRoot(), "modules/test/playwright");
+
 		File projectDir = new File(
-			temporaryFolder.getRoot(),
-			"modules/test/playwright/tests/" + RandomTestUtil.randomString() +
-				"/main");
+			playwrightDir, "tests/" + RandomTestUtil.randomString() + "/main");
 
 		File specDir = new File(projectDir, RandomTestUtil.randomString());
 
 		specDir.mkdirs();
+
+		JenkinsResultsParserUtil.write(
+			new File(playwrightDir, "test.properties"),
+			RandomTestUtil.randomString() + "=");
+		JenkinsResultsParserUtil.write(
+			new File(projectDir, "config.ts"), RandomTestUtil.randomString());
 
 		if (nestedTestPropertiesContent != null) {
 			JenkinsResultsParserUtil.write(
@@ -100,6 +127,11 @@ public class PlaywrightJUnitTestClassTest
 				projectTestPropertiesContent);
 		}
 
+		if (setUpContent != null) {
+			JenkinsResultsParserUtil.write(
+				new File(projectDir, "env/set_up.sh"), setUpContent);
+		}
+
 		File specFile = new File(
 			specDir, RandomTestUtil.randomString() + ".spec.ts");
 
@@ -111,7 +143,8 @@ public class PlaywrightJUnitTestClassTest
 		throws Exception {
 
 		PlaywrightJUnitTestClass playwrightJUnitTestClass =
-			_newPlaywrightJUnitTestClass(null, projectTestPropertiesContent);
+			_newPlaywrightJUnitTestClass(
+				null, projectTestPropertiesContent, null);
 
 		JSONObject jsonObject = playwrightJUnitTestClass.getJSONObject();
 
@@ -131,10 +164,25 @@ public class PlaywrightJUnitTestClassTest
 
 		PlaywrightJUnitTestClass playwrightJUnitTestClass =
 			_newPlaywrightJUnitTestClass(
-				nestedTestPropertiesContent, projectTestPropertiesContent);
+				nestedTestPropertiesContent, projectTestPropertiesContent,
+				null);
 
 		testEquals(
 			expectedWorkspaceName, playwrightJUnitTestClass.getWorkspaceName());
+	}
+
+	private void _testIsAnalyticsCloudEnabled(
+			boolean expectedAnalyticsCloudEnabled,
+			String projectTestPropertiesContent, String setUpContent)
+		throws Exception {
+
+		PlaywrightJUnitTestClass playwrightJUnitTestClass =
+			_newPlaywrightJUnitTestClass(
+				null, projectTestPropertiesContent, setUpContent);
+
+		testEquals(
+			expectedAnalyticsCloudEnabled,
+			playwrightJUnitTestClass.isAnalyticsCloudEnabled());
 	}
 
 	private final BatchTestClassGroup _batchTestClassGroup = Mockito.mock(
