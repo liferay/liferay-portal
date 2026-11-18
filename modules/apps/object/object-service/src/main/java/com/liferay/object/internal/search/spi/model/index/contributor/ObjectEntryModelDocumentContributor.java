@@ -672,7 +672,17 @@ public class ObjectEntryModelDocumentContributor
 					getRootObjectEntryFolderObjectEntryModelDocumentContributors(
 						rootObjectEntryFolder.getExternalReferenceCode())) {
 
-			modelDocumentContributor.contribute(document, objectEntry);
+			try {
+				modelDocumentContributor.contribute(document, objectEntry);
+			}
+			catch (Exception exception) {
+				if (_log.isWarnEnabled()) {
+					_log.warn(
+						"Unable to index object entry " +
+							objectEntry.getObjectEntryId(),
+						exception);
+				}
+			}
 		}
 
 		String cmsSection = _getCMSSection(
