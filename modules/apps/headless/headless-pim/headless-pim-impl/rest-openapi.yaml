@@ -32,6 +32,9 @@ components:
                     format: int64
                     readOnly: true
                     type: integer
+                imageURL:
+                    readOnly: true
+                    type: string
                 primary:
                     readOnly: true
                     type: boolean
