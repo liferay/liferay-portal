@@ -12,9 +12,13 @@ import com.liferay.frontend.taglib.react.servlet.taglib.ComponentTag;
 import com.liferay.osb.faro.web.internal.display.context.ChannelSelectorDisplayContext;
 import com.liferay.osb.faro.web.internal.util.FaroFragmentRendererUtil;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -104,19 +108,15 @@ public abstract class BaseFragmentRenderer implements FragmentRenderer {
 				).put(
 					"pageURLs",
 					() -> {
-						Map<String, String> pageURLs = new HashMap<>();
+						Group group = groupLocalService.getGroup(
+							themeDisplay.getCompanyId(), GroupConstants.GUEST);
 
-						for (Layout layout :
-								layoutLocalService.getLayouts(
-									themeDisplay.getScopeGroupId(), false)) {
-
-							pageURLs.put(
-								layout.getFriendlyURL(),
-								portal.getLayoutRelativeURL(
-									layout, themeDisplay));
-						}
-
-						return pageURLs;
+						return HashMapBuilder.putAll(
+							_getPageURLs(group.getGroupId(), themeDisplay)
+						).putAll(
+							_getPageURLs(
+								themeDisplay.getScopeGroupId(), themeDisplay)
+						).build();
 					}
 				).put(
 					"params", getParams(httpServletRequest)
@@ -195,6 +195,9 @@ public abstract class BaseFragmentRenderer implements FragmentRenderer {
 	}
 
 	@Reference
+	protected GroupLocalService groupLocalService;
+
+	@Reference
 	protected LayoutLocalService layoutLocalService;
 
 	@Reference
@@ -202,6 +205,21 @@ public abstract class BaseFragmentRenderer implements FragmentRenderer {
 
 	@Reference(target = "(osgi.web.symbolicname=com.liferay.osb.faro.web)")
 	protected ServletContext servletContext;
+
+	private Map<String, String> _getPageURLs(
+			long groupId, ThemeDisplay themeDisplay)
+		throws PortalException {
+
+		Map<String, String> pageURLs = new HashMap<>();
+
+		for (Layout layout : layoutLocalService.getLayouts(groupId, false)) {
+			pageURLs.put(
+				layout.getFriendlyURL(),
+				portal.getLayoutFullURL(layout, themeDisplay));
+		}
+
+		return pageURLs;
+	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		BaseFragmentRenderer.class);
