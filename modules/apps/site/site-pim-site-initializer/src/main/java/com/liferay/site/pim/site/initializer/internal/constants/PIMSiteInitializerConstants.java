@@ -13,4 +13,8 @@ public class PIMSiteInitializerConstants {
 	public static final String BUNDLE_SYMBOLIC_NAME =
 		"com.liferay.site.pim.site.initializer";
 
+	public static final String
+		EXTERNAL_REFERENCE_CODE_SITE_NAVIGATION_MENU_ITEM_CONNECTORS =
+			"PIMPRIMARYNAVIGATIONCONNECTORS";
+
 }

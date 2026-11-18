@@ -29,6 +29,7 @@ dependencies {
 	compileOnly project(":apps:portal-vulcan:portal-vulcan-api")
 	compileOnly project(":apps:portal:portal-instance-lifecycle-api")
 	compileOnly project(":apps:segments:segments-api")
+	compileOnly project(":apps:site-navigation:site-navigation-api")
 	compileOnly project(":apps:site:site-api")
 	compileOnly project(":apps:site:site-cms-site-initializer-api")
 	compileOnly project(":apps:site:site-pim-site-initializer-api")

@@ -19,6 +19,9 @@ import com.liferay.portal.kernel.security.auth.CompanyInheritableThreadLocalCall
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.servlet.InitialRequestSyncUtil;
 import com.liferay.site.initializer.SiteInitializer;
+import com.liferay.site.navigation.model.SiteNavigationMenuItem;
+import com.liferay.site.navigation.service.SiteNavigationMenuItemLocalService;
+import com.liferay.site.pim.site.initializer.internal.constants.PIMSiteInitializerConstants;
 import com.liferay.site.pim.site.initializer.internal.util.PIMObjectEntryFolderUtil;
 import com.liferay.site.pim.site.initializer.internal.util.SiteInitializerUtil;
 
@@ -65,9 +68,18 @@ public class PIMFeatureFlagListener implements FeatureFlagListener {
 		try (SafeCloseable safeCloseable =
 				CTCollectionThreadLocal.setProductionModeWithSafeCloseable()) {
 
-			SiteInitializerUtil.initialize(
-				companyId, _cmsSiteInitializer, _groupLocalService,
-				_pimSiteInitializer);
+			SiteNavigationMenuItem siteNavigationMenuItem =
+				_siteNavigationMenuItemLocalService.
+					fetchSiteNavigationMenuItemByExternalReferenceCode(
+						PIMSiteInitializerConstants.
+							EXTERNAL_REFERENCE_CODE_SITE_NAVIGATION_MENU_ITEM_CONNECTORS,
+						group.getGroupId());
+
+			if (siteNavigationMenuItem == null) {
+				SiteInitializerUtil.initialize(
+					companyId, _cmsSiteInitializer, _groupLocalService,
+					_pimSiteInitializer);
+			}
 
 			PIMObjectEntryFolderUtil.addProductsObjectEntryFolders(
 				companyId, _depotEntryLocalService,
@@ -99,5 +111,9 @@ public class PIMFeatureFlagListener implements FeatureFlagListener {
 		target = "(site.initializer.key=com.liferay.site.initializer.pim)"
 	)
 	private SiteInitializer _pimSiteInitializer;
+
+	@Reference
+	private SiteNavigationMenuItemLocalService
+		_siteNavigationMenuItemLocalService;
 
 }
