@@ -152,6 +152,54 @@ public class PortalGitWorkingDirectory extends GitWorkingDirectory {
 			getReleaseProperties(), "lp.version.major");
 	}
 
+	@Override
+	public List<File> getModifiedFilesList(
+		boolean checkUnstagedFiles, List<PathMatcher> excludesPathMatchers,
+		List<PathMatcher> includesPathMatchers) {
+
+		List<File> modifiedFiles = super.getModifiedFilesList(
+			checkUnstagedFiles, excludesPathMatchers, includesPathMatchers);
+
+		PortalGitWorkingDirectory publicPortalGitWorkingDirectory =
+			getPublicPortalGitWorkingDirectory();
+
+		if (publicPortalGitWorkingDirectory == null) {
+			return modifiedFiles;
+		}
+
+		List<File> publicModifiedFiles = new ArrayList<>();
+
+		File publicWorkingDirectory =
+			publicPortalGitWorkingDirectory.getWorkingDirectory();
+
+		for (File publicModifiedFile :
+				publicPortalGitWorkingDirectory.getModifiedFilesList(
+					checkUnstagedFiles, null, null)) {
+
+			publicModifiedFiles.add(
+				new File(
+					getWorkingDirectory(),
+					JenkinsResultsParserUtil.getPathRelativeTo(
+						publicModifiedFile, publicWorkingDirectory)));
+		}
+
+		modifiedFiles = new ArrayList<>(modifiedFiles);
+
+		for (File publicModifiedFile :
+				JenkinsResultsParserUtil.getIncludedFiles(
+					excludesPathMatchers, includesPathMatchers,
+					publicModifiedFiles)) {
+
+			if (modifiedFiles.contains(publicModifiedFile)) {
+				continue;
+			}
+
+			modifiedFiles.add(publicModifiedFile);
+		}
+
+		return modifiedFiles;
+	}
+
 	public List<File> getModifiedModuleDirsList() throws IOException {
 		if (_modifiedModuleDirs != null) {
 			return _modifiedModuleDirs;
@@ -448,6 +496,24 @@ public class PortalGitWorkingDirectory extends GitWorkingDirectory {
 		}
 
 		return JenkinsResultsParserUtil.getCanonicalFile(portalPrivateDir);
+	}
+
+	public PortalGitWorkingDirectory getPublicPortalGitWorkingDirectory() {
+		if (_publicPortalGitWorkingDirectory != null) {
+			return _publicPortalGitWorkingDirectory;
+		}
+
+		String upstreamBranchName = getUpstreamBranchName();
+
+		if (!upstreamBranchName.endsWith("-private")) {
+			return null;
+		}
+
+		_publicPortalGitWorkingDirectory =
+			GitWorkingDirectoryFactory.newPortalGitWorkingDirectory(
+				upstreamBranchName.replaceAll("-private$", ""));
+
+		return _publicPortalGitWorkingDirectory;
 	}
 
 	public Properties getReleaseProperties() {
@@ -955,6 +1021,7 @@ public class PortalGitWorkingDirectory extends GitWorkingDirectory {
 	private Properties _appServerProperties;
 	private List<File> _jsUnitFiles;
 	private List<File> _modifiedModuleDirs;
+	private PortalGitWorkingDirectory _publicPortalGitWorkingDirectory;
 	private Properties _releaseProperties;
 	private boolean _setUpYarn;
 	private Properties _testProperties;
