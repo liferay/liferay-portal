@@ -26,9 +26,12 @@ import {
 } from '../main/utils/navigation';
 import {changeTimeFilter} from '../main/utils/time-filter';
 import {
+	searchByTerm,
 	selectPaginationItemsPerPage,
 	selectPaginationPageNumber,
 	viewNameListInOrder,
+	viewNameNotPresentOnTableList,
+	viewNameOnTableList,
 	viewPaginationResults,
 } from '../main/utils/utils';
 
@@ -852,6 +855,110 @@ test(
 		finally {
 			await apiHelpers.jsonWebServicesOSBFaro.deleteIndividualSegments(
 				`[${segmentIds.join(',')}]`,
+				project.groupId
+			);
+		}
+	}
+);
+
+test(
+	'Segment Membership tab lists all known individuals and supports search',
+	{
+		tag: ['@LRAC-8510', '@LRAC-8523'],
+	},
+	async ({
+		analyticsChannel: channel,
+		apiHelpers,
+		dxpSyncedAnalyticsChannel,
+		page,
+		project,
+	}) => {
+		const {dataSourceId} = dxpSyncedAnalyticsChannel;
+
+		const runId = getRandomString();
+
+		const individuals = ['1', '2', '3'].map((suffix) => ({
+			...generateIndividual({name: `member${runId}${suffix}`}),
+			dataSourceId,
+		}));
+
+		const date = new Date();
+
+		await createIndividuals({apiHelpers, individuals});
+
+		await apiHelpers.jsonWebServicesOSBAsah.createSessions(
+			individuals.map((individual) => ({
+				channelId: channel.id,
+				id: individual.id,
+				sessionEnd: date.toISOString(),
+				sessionStart: date.toISOString(),
+				userId: individual.id,
+			}))
+		);
+
+		const segmentName = `Segment ${runId}`;
+
+		const segment =
+			await apiHelpers.jsonWebServicesOSBFaro.createIndividualSegment({
+				channelId: channel.id,
+				filter: individuals
+					.map((individual) => `(firstName eq '${individual.name}')`)
+					.join(' or '),
+				groupId: project.groupId,
+				name: segmentName,
+			});
+
+		try {
+			await runNanites({
+				apiHelpers,
+				naniteNames: [Nanites.UpdateMembershipsNanite],
+				page,
+			});
+
+			// Open the segment Membership tab
+
+			await navigateToACPageViaURL({
+				acPage: ACPage.segmentPage,
+				channelID: channel.id,
+				page,
+				projectID: project.groupId,
+			});
+
+			await page.getByRole('link', {name: segmentName}).click();
+
+			await page
+				.getByRole('link', {exact: true, name: 'Membership'})
+				.click();
+
+			// Every member is listed
+
+			await viewNameOnTableList({
+				itemNames: individuals.map(
+					(individual) => `${individual.name} Smith`
+				),
+				page,
+			});
+
+			// Searching narrows the list to one member
+
+			await searchByTerm({page, searchTerm: individuals[1].name});
+
+			await viewNameOnTableList({
+				itemNames: `${individuals[1].name} Smith`,
+				page,
+			});
+
+			await viewNameNotPresentOnTableList({
+				itemNames: [
+					`${individuals[0].name} Smith`,
+					`${individuals[2].name} Smith`,
+				],
+				page,
+			});
+		}
+		finally {
+			await apiHelpers.jsonWebServicesOSBFaro.deleteIndividualSegments(
+				`[${segment.id}]`,
 				project.groupId
 			);
 		}
