@@ -11,23 +11,99 @@ import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 
+import com.mysql.cj.jdbc.JdbcStatement;
+
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Types;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import javax.sql.DataSource;
+
 import org.junit.Assert;
 import org.junit.Test;
+
+import org.mockito.Mockito;
 
 /**
  * @author Mariano Álvaro Sáiz
  */
 public class DBCopyTablesProcessTest {
+
+	@Test
+	@TestInfo("LPD-110028")
+	public void testCopyTable() throws Exception {
+		DataSource dataSource = Mockito.mock(DataSource.class);
+		Connection connection = Mockito.mock(Connection.class);
+		PreparedStatement preparedStatement = Mockito.mock(
+			PreparedStatement.class);
+		JdbcStatement jdbcStatement = Mockito.mock(JdbcStatement.class);
+
+		Mockito.when(
+			preparedStatement.isWrapperFor(JdbcStatement.class)
+		).thenReturn(
+			true
+		);
+
+		Mockito.when(
+			preparedStatement.unwrap(JdbcStatement.class)
+		).thenReturn(
+			jdbcStatement
+		);
+
+		Mockito.when(
+			preparedStatement.executeQuery()
+		).thenReturn(
+			Mockito.mock(ResultSet.class)
+		);
+
+		Mockito.when(
+			connection.prepareStatement(Mockito.anyString())
+		).thenReturn(
+			preparedStatement
+		);
+
+		Mockito.when(
+			dataSource.getConnection()
+		).thenReturn(
+			connection
+		);
+
+		DBCopyTablesProcess dbCopyTablesProcess = new DBCopyTablesProcess(
+			dataSource, Mockito.mock(DataSource.class));
+
+		String columnName = RandomTestUtil.randomString();
+		String tableName = RandomTestUtil.randomString();
+
+		Map<String, List<String>> sourceColumnNamesMap =
+			ReflectionTestUtil.getFieldValue(
+				dbCopyTablesProcess, "_sourceColumnNamesMap");
+
+		sourceColumnNamesMap.put(
+			tableName, new ArrayList<>(Arrays.asList(columnName)));
+
+		Map<String, List<String>> targetColumnNamesMap =
+			ReflectionTestUtil.getFieldValue(
+				dbCopyTablesProcess, "_targetColumnNamesMap");
+
+		targetColumnNamesMap.put(
+			tableName, new ArrayList<>(Arrays.asList(columnName)));
+
+		ReflectionTestUtil.invoke(
+			dbCopyTablesProcess, "_copyTable",
+			new Class<?>[] {String.class, String.class}, tableName, tableName);
+
+		Mockito.verify(
+			jdbcStatement
+		).enableStreamingResults();
+	}
 
 	@Test
 	@TestInfo("LPD-110097")
