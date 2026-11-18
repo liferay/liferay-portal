@@ -45,7 +45,22 @@ let project;
 const tasks = [];
 let taskNames: string[] = [];
 
-async function addSpaceWithOverdueWorkflowTask(
+async function addBasicWebContent(
+	apiHelpers: DataApiHelpers,
+	spaceName: string,
+	title: string
+) {
+	return apiHelpers.objectEntry.postObjectEntry(
+		{
+			objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
+			title,
+		},
+		'cms/basic-web-contents',
+		spaceName
+	);
+}
+
+async function addSpaceWithWorkflowTaskAssignedToMe(
 	apiHelpers: DataApiHelpers,
 	title: string
 ) {
@@ -69,14 +84,7 @@ async function addSpaceWithOverdueWorkflowTask(
 		Number(workflowDefinition.version)
 	);
 
-	const objectEntry = await apiHelpers.objectEntry.postObjectEntry(
-		{
-			objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
-			title,
-		},
-		'cms/basic-web-contents',
-		space.name
-	);
+	const objectEntry = await addBasicWebContent(apiHelpers, space.name, title);
 
 	let workflowTask;
 
@@ -95,6 +103,18 @@ async function addSpaceWithOverdueWorkflowTask(
 	await apiHelpers.headlessAdminWorkflow.postAssignTaskToUser(
 		workflowTask.id,
 		userAccount.id
+	);
+
+	return {space, workflowTask};
+}
+
+async function addSpaceWithOverdueWorkflowTask(
+	apiHelpers: DataApiHelpers,
+	title: string
+) {
+	const {space, workflowTask} = await addSpaceWithWorkflowTaskAssignedToMe(
+		apiHelpers,
+		title
 	);
 
 	await apiHelpers.headlessAdminWorkflow.postWorkflowTaskUpdateDueDate(
@@ -2181,6 +2201,40 @@ governanceDashboardTest(
 				tasksPage.getItem(otherSpaceOverdueTitle)
 			).toBeHidden();
 		});
+	}
+);
+
+test(
+	'Opens the pending workflow tasks assigned to the user from the My Tasks View All of Home',
+	{tag: ['@LPD-116311']},
+	async ({apiHelpers, homePage, page, tasksPage}) => {
+		const myTaskTitle = getRandomString();
+		const roleTaskTitle = getRandomString();
+
+		const {space} = await addSpaceWithWorkflowTaskAssignedToMe(
+			apiHelpers,
+			myTaskTitle
+		);
+
+		await addBasicWebContent(apiHelpers, space.name, roleTaskTitle);
+
+		await homePage.goto();
+
+		await page.getByRole('link', {name: 'View All My Tasks'}).click();
+
+		await expect(tasksPage.workflowTasksTab).toHaveAttribute(
+			'aria-selected',
+			'true'
+		);
+
+		for (const name of [/^Assignee: /, 'Status: Pending']) {
+			await expect(
+				page.getByRole('tabpanel').getByRole('button', {name})
+			).toBeVisible();
+		}
+
+		await expect(tasksPage.getItem(myTaskTitle)).toBeVisible();
+		await expect(tasksPage.getItem(roleTaskTitle)).toBeHidden();
 	}
 );
 

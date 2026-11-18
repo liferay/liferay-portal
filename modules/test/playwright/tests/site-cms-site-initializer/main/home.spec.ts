@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {expect, mergeTests} from '@playwright/test';
+import {Page, expect, mergeTests} from '@playwright/test';
 
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
@@ -107,240 +107,287 @@ test.afterAll(async ({browser}) => {
 	await page.close();
 });
 
+const BASIC_WEB_CONTENT_APPLICATION_NAME = 'cms/basic-web-contents';
+
+async function addBasicWebContent(
+	apiHelpers: DataApiHelpers,
+	spaceName: string,
+	title: string
+) {
+	return apiHelpers.objectEntry.postObjectEntry(
+		{
+			objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
+			title,
+		},
+		BASIC_WEB_CONTENT_APPLICATION_NAME,
+		spaceName
+	);
+}
+
+async function addSpaceWithWorkflow(apiHelpers: DataApiHelpers) {
+	const objectDefinition =
+		await apiHelpers.objectAdmin.getObjectDefinitionByName(
+			'CMSBasicWebContent'
+		);
+
+	const workflowDefinition =
+		await apiHelpers.headlessAdminWorkflow.getWorkflowDefinitionByName(
+			'Single Approver'
+		);
+
+	const space = await apiHelpers.headlessAssetLibrary.createSpace();
+
+	await apiHelpers.headlessAdminWorkflow.postWorkflowDefinitionLink(
+		objectDefinition.className,
+		space.siteId,
+		workflowDefinition.id,
+		workflowDefinition.name,
+		Number(workflowDefinition.version)
+	);
+
+	return space;
+}
+
+async function assignWorkflowTaskToMe(
+	apiHelpers: DataApiHelpers,
+	assetClassName: string,
+	assetPrimaryKey: number
+) {
+	const userAccount = await apiHelpers.headlessAdminUser.getMyUserAccount();
+
+	let workflowTask;
+
+	await expect(async () => {
+		workflowTask =
+			await apiHelpers.headlessAdminWorkflow.getWorkflowTaskByAsset(
+				assetClassName,
+				String(assetPrimaryKey)
+			);
+
+		expect(workflowTask).toBeTruthy();
+	}).toPass();
+
+	await apiHelpers.headlessAdminWorkflow.postAssignTaskToUser(
+		workflowTask.id,
+		userAccount.id
+	);
+}
+
+async function addBasicWebContentAssignedToMe(
+	apiHelpers: DataApiHelpers,
+	spaceName: string,
+	title: string
+) {
+	const objectDefinition =
+		await apiHelpers.objectAdmin.getObjectDefinitionByName(
+			'CMSBasicWebContent'
+		);
+
+	const objectEntry = await addBasicWebContent(apiHelpers, spaceName, title);
+
+	await assignWorkflowTaskToMe(
+		apiHelpers,
+		objectDefinition.className,
+		objectEntry.id
+	);
+
+	return objectEntry;
+}
+
+function getMyTasksSection(page: Page) {
+	return page.locator('div.container-fluid-max').filter({
+		has: page.getByRole('heading', {exact: true, name: 'My Tasks'}),
+	});
+}
+
+function getMyTasksRows(page: Page) {
+	return getMyTasksSection(page)
+		.getByRole('row')
+		.filter({hasText: /sent you/i});
+}
+
 test(
-	'My Workflow Tasks "Open" button opens the Tasks page in a new tab',
-	{tag: ['@LPD-78912', '@LPD-92859', '@LPD-112143']},
-	async ({context, homePage, page}) => {
+	'My Tasks "View All" opens the pending tasks assigned to the user',
+	{tag: ['@LPD-78912', '@LPD-116311', '@LPD-92859', '@LPD-112143']},
+	async ({apiHelpers, homePage, page}) => {
+		const space = await addSpaceWithWorkflow(apiHelpers);
+
+		const myTaskTitle = `My task ${getRandomString()}`;
+		const roleTaskTitle = `Role task ${getRandomString()}`;
+
+		await addBasicWebContent(apiHelpers, space.name, roleTaskTitle);
+		await addBasicWebContentAssignedToMe(
+			apiHelpers,
+			space.name,
+			myTaskTitle
+		);
+
 		await homePage.goto();
 
-		const [tasksPage] = await Promise.all([
-			context.waitForEvent('page'),
-			page
-				.getByRole('button', {
-					name: 'Open Tasks',
-				})
-				.click(),
-		]);
+		await page.getByRole('link', {name: 'View All My Tasks'}).click();
 
-		await tasksPage.waitForLoadState();
+		await expect(page).toHaveURL(/\/tasks\?/);
 
-		await expect(tasksPage).toHaveURL(/\/tasks$/);
+		const assigneeFilter = page
+			.getByRole('group')
+			.filter({hasText: 'Assignee:'});
 
+		await expect(assigneeFilter).toBeVisible();
 		await expect(
-			tasksPage.getByRole('heading', {level: 2, name: 'Tasks'})
+			page.getByRole('group').filter({hasText: 'Status: Pending'})
 		).toBeVisible();
+
+		const myTaskRow = page.getByRole('row').filter({hasText: myTaskTitle});
+		const roleTaskRow = page
+			.getByRole('row')
+			.filter({hasText: roleTaskTitle});
+
+		await expect(myTaskRow).toBeVisible();
+		await expect(roleTaskRow).toBeHidden();
+
+		await assigneeFilter
+			.getByRole('button', {name: 'Remove Filter'})
+			.click();
+
+		await expect(roleTaskRow).toBeVisible();
 	}
 );
 
 test(
-	'My Workflow Tasks filter stays inside its card at narrow widths',
-	{tag: '@LPD-102090'},
-	async ({homePage, page}) => {
+	'My Tasks lists the 8 tasks most recently assigned to the user',
+	{tag: '@LPD-116311'},
+	async ({apiHelpers, homePage, page}) => {
+		const space = await addSpaceWithWorkflow(apiHelpers);
+
+		const roleTaskTitle = `Role task ${getRandomString()}`;
+
+		await addBasicWebContent(apiHelpers, space.name, roleTaskTitle);
+
+		const titles = Array.from(
+			{length: 9},
+			(_, index) => `My task ${index} ${getRandomString()}`
+		);
+
+		for (const title of titles) {
+			await addBasicWebContentAssignedToMe(apiHelpers, space.name, title);
+		}
+
 		await homePage.goto();
 
-		const card = page.locator('.container-fluid-max', {
-			has: homePage.workflowTaskFilterButton,
-		});
+		const rows = getMyTasksRows(page);
 
-		for (const width of [880, 800]) {
-			await page.setViewportSize({height: 900, width});
+		await expect(rows).toHaveCount(8);
 
-			await expect(homePage.workflowTaskFilterButton).toBeVisible();
+		await expect(rows.first()).toContainText(titles[8]);
 
-			await expect(async () => {
-				const buttonBox =
-					await homePage.workflowTaskFilterButton.boundingBox();
-				const cardBox = await card.boundingBox();
+		await expect(rows.filter({hasText: titles[0]})).toBeHidden();
+		await expect(rows.filter({hasText: roleTaskTitle})).toBeHidden();
+	}
+);
 
-				expect(buttonBox.x).toBeGreaterThanOrEqual(cardBox.x);
-				expect(buttonBox.x + buttonBox.width).toBeLessThanOrEqual(
-					cardBox.x + cardBox.width
-				);
-			}).toPass({timeout: 5000});
+test(
+	'My Tasks shows an empty state when the user has no assigned tasks',
+	{tag: '@LPD-116311'},
+	async ({homePage, page}) => {
+		try {
+			await performUserSwitch(page, spaceUser.alternateName);
 
-			expect(
-				await page.evaluate(
-					() =>
-						document.documentElement.scrollWidth >
-						document.documentElement.clientWidth
-				)
-			).toBe(false);
+			await homePage.goto();
+
+			const myTasksSection = getMyTasksSection(page);
+
+			await expect(
+				myTasksSection.getByText('No Tasks Yet')
+			).toBeVisible();
+			await expect(
+				myTasksSection.getByText('There are no tasks assigned to you.')
+			).toBeVisible();
+		}
+		finally {
+			await performUserSwitch(page, 'test');
 		}
 	}
 );
 
 test(
 	'Can manage my workflow tasks',
-	{tag: '@LPD-58790'},
-	async ({
-		apiHelpers,
-		configurationTabPage,
-		homePage,
-		page,
-		processBuilderPage,
-	}) => {
-		await processBuilderPage.goto('/test');
-		await configurationTabPage.configurationTabLink.waitFor({
-			state: 'visible',
+	{tag: ['@LPD-58790', '@LPD-116311']},
+	async ({apiHelpers, homePage, page}) => {
+		const space = await addSpaceWithWorkflow(apiHelpers);
+
+		await apiHelpers.headlessAssetLibrary.putAssetLibraryUserAccount(
+			space.externalReferenceCode,
+			spaceAdminUser.externalReferenceCode
+		);
+
+		await apiHelpers.headlessAssetLibrary.putAssetLibraryUserAccountRoles(
+			space.externalReferenceCode,
+			spaceAdminUser.externalReferenceCode,
+			['Asset Library Administrator']
+		);
+
+		const objectEntry1 = await addBasicWebContentAssignedToMe(
+			apiHelpers,
+			space.name,
+			getRandomString()
+		);
+		const objectEntry2 = await addBasicWebContentAssignedToMe(
+			apiHelpers,
+			space.name,
+			getRandomString()
+		);
+		const objectEntry3 = await addBasicWebContentAssignedToMe(
+			apiHelpers,
+			space.name,
+			getRandomString()
+		);
+
+		await homePage.goto();
+
+		await test.step('Verify workflow task transition action', async () => {
+			const workflowTaskRow = getMyTasksRows(page).filter({
+				hasText: objectEntry3.title,
+			});
+
+			await workflowTaskRow.getByRole('button').click();
+
+			await page.getByRole('menuitem', {name: 'Approve'}).click();
+
+			await page.getByRole('button', {name: 'Save'}).click();
+
+			await expect(workflowTaskRow).toBeHidden();
 		});
-		await configurationTabPage.configurationTabLink.click({force: true});
-		await configurationTabPage.page.waitForURL((url) =>
-			url.href.includes('=configuration')
-		);
 
-		await configurationTabPage.assignWorkflowToAssetType(
-			'Single Approver',
-			'Basic Web Content'
-		);
-
-		let objectEntry1;
-		let objectEntry2;
-		let objectEntry3;
-
-		const applicationName = 'cms/basic-web-contents';
-
-		try {
-			const contentName1 = getRandomString();
-			const contentName2 = getRandomString();
-			const contentName3 = getRandomString();
-
-			objectEntry1 = await apiHelpers.objectEntry.postObjectEntry(
-				{
-					objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
-					title: contentName1,
-				},
-				applicationName,
-				'Default'
-			);
-
-			objectEntry2 = await apiHelpers.objectEntry.postObjectEntry(
-				{
-					objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
-					title: contentName2,
-				},
-				applicationName,
-				'Default'
-			);
-
-			objectEntry3 = await apiHelpers.objectEntry.postObjectEntry(
-				{
-					objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
-					title: contentName3,
-				},
-				applicationName,
-				'Default'
-			);
-
-			await homePage.goto();
-
-			await test.step('Verify workflow task assign to me action', async () => {
-				await homePage.workflowTaskFilterButton.click();
-				await homePage.assignedToMyRolesMenuItem.click();
-				await page.waitForLoadState('networkidle');
-
-				const workflowTaskRow1 = page
-					.getByRole('row')
-					.filter({hasText: /sent you/i})
-					.filter({hasText: objectEntry1.title});
-
-				await expect(workflowTaskRow1).toBeVisible();
-				await homePage.assignToMe(objectEntry1.title);
-				await expect(workflowTaskRow1).toBeHidden();
-
-				await homePage.workflowTaskFilterButton.click();
-				await homePage.assignedToMeMenuItem.click();
-				await page.waitForLoadState('networkidle');
-
-				await expect(workflowTaskRow1).toBeVisible();
+		await test.step('Verify workflow task assign to... action', async () => {
+			const workflowTaskRow = getMyTasksRows(page).filter({
+				hasText: objectEntry1.title,
 			});
 
-			await test.step('Verify workflow task assign to... action', async () => {
-				await homePage.workflowTaskFilterButton.click();
-				await homePage.assignedToMyRolesMenuItem.click();
-				await page.waitForLoadState('networkidle');
+			await expect(workflowTaskRow).toBeVisible();
 
-				const workflowTaskRow2 = page
-					.getByRole('row')
-					.filter({hasText: /sent you/i})
-					.filter({hasText: objectEntry2.title});
+			await homePage.assignTo(objectEntry1.title);
 
-				await expect(workflowTaskRow2).toBeVisible();
-				await homePage.assignTo(objectEntry2.title);
-				await expect(workflowTaskRow2).toBeHidden();
+			await expect(workflowTaskRow).toBeHidden();
+		});
 
-				await homePage.workflowTaskFilterButton.click();
-				await homePage.assignedToMeMenuItem.click();
-				await page.waitForLoadState('networkidle');
+		await test.step('Verify workflow task update due date action', async () => {
+			const dueDate = `${new Date().getFullYear() + 1}-01-01`;
 
-				await expect(workflowTaskRow2).toBeHidden();
-			});
+			await homePage.updateDueDate(dueDate, objectEntry2.title);
 
-			await test.step('Verify workflow task update due date action', async () => {
-				await homePage.workflowTaskFilterButton.click();
-				await homePage.assignedToMyRolesMenuItem.click();
-				await page.waitForLoadState('networkidle');
+			await getMyTasksRows(page)
+				.filter({hasText: objectEntry2.title})
+				.getByRole('button')
+				.click();
 
-				const workflowTaskRow3 = page
-					.getByRole('row')
-					.filter({hasText: /sent you/i})
-					.filter({hasText: objectEntry3.title});
+			await page.getByRole('menuitem', {name: 'Update Due Date'}).click();
 
-				await expect(workflowTaskRow3).toBeVisible();
-				await homePage.assignToMe(objectEntry3.title);
-				await expect(workflowTaskRow3).toBeHidden();
-
-				await homePage.workflowTaskFilterButton.click();
-				await homePage.assignedToMeMenuItem.click();
-				await page.waitForLoadState('networkidle');
-
-				await expect(workflowTaskRow3).toBeVisible();
-
-				const now = new Date();
-
-				const nextYear = now.getFullYear() + 1;
-
-				const dueDate = nextYear + '-01-01';
-
-				await homePage.updateDueDate(dueDate, objectEntry3.title);
-
-				const workflowTaskRow = page
-					.getByRole('row')
-					.filter({hasText: /sent you/i})
-					.filter({hasText: objectEntry3.title});
-				await workflowTaskRow.getByRole('button').click();
-				await page
-					.getByRole('menuitem', {name: 'Update Due Date'})
-					.click();
-
-				await expect(page.locator('input[type="date"]')).toHaveValue(
-					dueDate
-				);
-
-				await page.getByRole('button', {name: 'Cancel'}).click();
-			});
-		}
-		finally {
-
-			// Teardown for created web content workflow
-
-			await processBuilderPage.goto('/test');
-
-			await configurationTabPage.configurationTabLink.waitFor({
-				state: 'visible',
-			});
-
-			await configurationTabPage.configurationTabLink.click({
-				force: true,
-			});
-
-			await configurationTabPage.page.waitForURL((url) =>
-				url.href.includes('=configuration')
+			await expect(page.locator('input[type="date"]')).toHaveValue(
+				dueDate
 			);
 
-			await configurationTabPage.unassignWorkflowFromAssetType(
-				'Basic Web Content'
-			);
-		}
+			await page.getByRole('button', {name: 'Cancel'}).click();
+		});
 	}
 );
 
@@ -378,40 +425,28 @@ test(
 			type: 'business',
 		});
 
-		let objectEntry;
-
-		const applicationName = 'cms/basic-web-contents';
-
 		try {
-			const contentName = getRandomString();
+			await assignWorkflowTaskToMe(
+				apiHelpers,
+				'com.liferay.account.model.AccountEntry',
+				account.id
+			);
 
-			objectEntry = await apiHelpers.objectEntry.postObjectEntry(
-				{
-					objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
-					title: contentName,
-				},
-				applicationName,
-				'Default'
+			const objectEntry = await addBasicWebContentAssignedToMe(
+				apiHelpers,
+				'Default',
+				getRandomString()
 			);
 
 			await homePage.goto();
 
-			await homePage.workflowTaskFilterButton.click();
-			await homePage.assignedToMyRolesMenuItem.click();
-
-			await expect(page.getByText(account.name)).toBeHidden();
-
-			const myWorkflowTasksContainer = page
-				.locator('div.container-fluid-max')
-				.filter({
-					has: page.getByRole('heading', {name: 'My Workflow Tasks'}),
-				});
+			const myTasksSection = getMyTasksSection(page);
 
 			await expect(
-				myWorkflowTasksContainer.getByRole('link', {
-					name: objectEntry.title,
-				})
+				myTasksSection.getByRole('link', {name: objectEntry.title})
 			).toBeVisible();
+
+			await expect(myTasksSection.getByText(account.name)).toBeHidden();
 		}
 		finally {
 

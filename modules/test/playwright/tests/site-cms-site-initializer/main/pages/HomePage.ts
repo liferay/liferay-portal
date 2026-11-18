@@ -11,25 +11,16 @@ import {waitForAlert} from '../../../../utils/waitForAlert';
 export class HomePage {
 	readonly page: Page;
 
-	readonly assignedToMeMenuItem: Locator;
-	readonly assignedToMyRolesMenuItem: Locator;
 	readonly basicDocumentButton: Locator;
 	readonly basicWebContentButton: Locator;
 	readonly blogButton: Locator;
 	readonly knowledgeBaseButton: Locator;
 	readonly viewAllButton: Locator;
 	readonly vocabularyButton: Locator;
-	readonly workflowTaskFilterButton: Locator;
 
 	constructor(page: Page) {
 		this.page = page;
 
-		this.assignedToMeMenuItem = page.getByRole('menuitem', {
-			name: 'Assigned to Me',
-		});
-		this.assignedToMyRolesMenuItem = page.getByRole('menuitem', {
-			name: 'Assigned to My Roles',
-		});
 		this.basicDocumentButton = page.getByRole('button', {
 			exact: true,
 			name: 'Basic Document',
@@ -47,38 +38,18 @@ export class HomePage {
 			name: 'Knowledge Base',
 		});
 		this.viewAllButton = page.getByRole('link', {
+			exact: true,
 			name: 'View All',
 		});
 		this.vocabularyButton = page.getByRole('button', {
 			exact: true,
 			name: 'Vocabulary',
 		});
-		this.workflowTaskFilterButton = page.getByRole('button', {
-			name: /^Assigned to/,
-		});
 	}
 
 	async goto() {
 		await this.page.goto(PORTLET_URLS.cmsHome);
 		await this.page.getByRole('menuitem', {name: 'Home'}).waitFor();
-	}
-
-	async assignToMe(name: string) {
-		const workflowTaskRow = this.page
-			.getByRole('row')
-			.filter({hasText: /sent you/i})
-			.filter({hasText: name});
-
-		await workflowTaskRow.getByRole('button').click();
-
-		await this.page.getByRole('menuitem', {name: 'Assign to Me'}).click();
-
-		await this.page.getByRole('button', {name: 'Save'}).click();
-
-		await waitForAlert(
-			this.page,
-			`Success:Your request completed successfully.`
-		);
 	}
 
 	async assignTo(name: string) {
