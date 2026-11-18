@@ -77,9 +77,9 @@ public class AIHubCellUserTokenWebCacheItemTest {
 
 		List<String> keys = argumentCaptor.getAllValues();
 
-		Assert.assertEquals(keys.toString(), 3, keys.size());
 		Assert.assertEquals(keys.get(0), keys.get(1));
 		Assert.assertNotEquals(keys.get(0), keys.get(2));
+		Assert.assertEquals(keys.toString(), 3, keys.size());
 	}
 
 	private String _createAccessToken(long expirationTime) throws Exception {
