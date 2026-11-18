@@ -1,7 +1,6 @@
 import BundleRouter from 'route-middleware/BundleRouter';
 import LDPLayout from 'shared/components/LDPLayout';
 import LifecycleDashboard from 'lifecycle/pages/BaseLifecycle';
-import LifecycleRedirect from 'lifecycle/pages/LifecycleRedirect';
 import React from 'react';
 import SectionApp from '../SectionApp';
 
@@ -20,20 +19,11 @@ const LifecyclesApp: React.FC<ILifecyclesAppProps> = (props) => (
 					{
 						element: (
 							<BundleRouter
-								data={LifecycleRedirect}
-								destructured={false}
-							/>
-						),
-						path: 'lifecycle',
-					},
-					{
-						element: (
-							<BundleRouter
 								data={LifecycleDashboard}
 								destructured={false}
 							/>
 						),
-						path: 'lifecycle/:lifecycleId',
+						path: 'lifecycle/:lifecycleId?',
 					},
 				],
 				element: <LDPLayout />,
