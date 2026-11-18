@@ -244,8 +244,11 @@ public class SharepointRepositoryAuthorizationCapabilityTest {
 			mockLiferayPortletRenderResponse);
 		mockHttpServletRequest.setAttribute(
 			WebKeys.THEME_DISPLAY, _getThemeDisplay(layout, signedIn));
-		mockHttpServletRequest.setAttribute(
-			WebKeys.USER_ID, TestPropsValues.getUserId());
+
+		if (signedIn) {
+			mockHttpServletRequest.setAttribute(
+				WebKeys.USER_ID, TestPropsValues.getUserId());
+		}
 
 		return _dlViewMVCRenderCommand.render(
 			mockLiferayPortletRenderRequest, mockLiferayPortletRenderResponse);
@@ -376,16 +379,37 @@ public class SharepointRepositoryAuthorizationCapabilityTest {
 		Folder mountFolder = _dlAppLocalService.getMountFolder(
 			_repository.getRepositoryId());
 
+		Layout layout = _addLayout(mountFolder.getExternalReferenceCode());
+
 		MockLiferayPortletRenderResponse mockLiferayPortletRenderResponse =
 			new MockLiferayPortletRenderResponse();
 
 		Assert.assertEquals(
 			"/document_library/error.jsp",
 			_render(
-				_addLayout(mountFolder.getExternalReferenceCode()),
-				new MockHttpServletRequest(), mockLiferayPortletRenderResponse,
-				false));
+				layout, new MockHttpServletRequest(),
+				mockLiferayPortletRenderResponse, false));
 		Assert.assertNull(_getRedirectedURL(mockLiferayPortletRenderResponse));
+
+		MockHttpServletRequest viewFolderMockHttpServletRequest =
+			new MockHttpServletRequest();
+
+		viewFolderMockHttpServletRequest.addParameter(
+			"folderId", String.valueOf(mountFolder.getFolderId()));
+		viewFolderMockHttpServletRequest.addParameter(
+			"mvcRenderCommandName", "/document_library/view_folder");
+
+		MockLiferayPortletRenderResponse
+			viewFolderMockLiferayPortletRenderResponse =
+				new MockLiferayPortletRenderResponse();
+
+		Assert.assertEquals(
+			"/document_library/error.jsp",
+			_render(
+				layout, viewFolderMockHttpServletRequest,
+				viewFolderMockLiferayPortletRenderResponse, false));
+		Assert.assertNull(
+			_getRedirectedURL(viewFolderMockLiferayPortletRenderResponse));
 	}
 
 	private static final String _FACTORY_PID =
