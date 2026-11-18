@@ -168,6 +168,14 @@ tests:
                     values:
                         fullnameOverride: liferay-dxp-operator
     -   asserts:
+            -   notContains:
+                    any: true
+                    content:
+                        name: liferay-default.network.sessionPersistence.enabled
+                    path: spec.template.spec.sources[0].helm.parameters
+                template: templates/applicationset-liferay.yaml
+        it: Keeps session persistence on with the experimental Gateway API CRDs
+    -   asserts:
             -   equal:
                     path: spec.template.spec.syncPolicy.managedNamespaceMetadata.labels
                     value:
@@ -674,6 +682,22 @@ tests:
         set:
             liferay:
                 valuesPrefix: liferay-aws.liferay-default.
+    -   asserts:
+            -   contains:
+                    content:
+                        name: liferay-default.network.sessionPersistence.enabled
+                        value: "false"
+                    path: spec.template.spec.sources[0].helm.parameters
+                template: templates/applicationset-liferay.yaml
+        it: Turns session persistence off with the standard Gateway API CRDs
+        set:
+            operatorApplications:
+                envoyGateway:
+                    crds:
+                        values:
+                            crds:
+                                gatewayAPI:
+                                    channel: standard
     -   asserts:
             -   contains:
                     content:

@@ -2,6 +2,7 @@
 {{- $gitops := .Values.gitops -}}
 {{- $layout := $gitops.layout -}}
 {{- $dxpOperator := .Values.operatorApplications.dxpOperator -}}
+{{- $envoyGateway := .Values.operatorApplications.envoyGateway -}}
 {{- $name := printf "%s-%s-app" $layout.projectId $layout.environmentId -}}
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
@@ -79,6 +80,10 @@ spec:
                             {{- end }}
                             -   name: {{ printf "%snetwork.gatewayName" .Values.liferay.valuesPrefix }}
                                 value: {{ printf "%s-%s-gateway" $layout.projectId $layout.environmentId | quote }}
+                            {{- if and $envoyGateway.enabled $envoyGateway.crds.enabled (eq (dig "crds" "gatewayAPI" "channel" "experimental" ($envoyGateway.crds.values | default dict)) "standard") }}
+                            -   name: {{ printf "%snetwork.sessionPersistence.enabled" .Values.liferay.valuesPrefix }}
+                                value: "false"
+                            {{- end }}
                             {{- with .Values.liferay.parameters }}
                             {{- toYaml . | nindent 28 }}
                             {{- end }}
