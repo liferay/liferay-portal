@@ -118,28 +118,24 @@ public class PersistenceCallCheck extends BaseCheck {
 		DetailAST methodCallDetailAST, List<String> importNames,
 		Map<String, String> variablesMap, String packageName) {
 
-		DetailAST childDetailAST = methodCallDetailAST.getFirstChild();
+		DetailAST firstChildDetailAST = methodCallDetailAST.getFirstChild();
 
-		if (childDetailAST.getType() != TokenTypes.DOT) {
+		if (firstChildDetailAST.getType() != TokenTypes.DOT) {
 			return;
 		}
 
-		childDetailAST = childDetailAST.getFirstChild();
+		List<String> names = getNames(firstChildDetailAST, false);
 
-		if (childDetailAST.getType() != TokenTypes.IDENT) {
+		if (names.size() != 2) {
 			return;
 		}
 
-		DetailAST siblingDetailAST = childDetailAST.getNextSibling();
+		String methodCallMethodName = names.get(1);
 
-		if (siblingDetailAST.getType() == TokenTypes.IDENT) {
-			String methodName = siblingDetailAST.getText();
+		if (methodCallMethodName.equals("clearCache") ||
+			methodCallMethodName.startsWith("create")) {
 
-			if (methodName.equals("clearCache") ||
-				methodName.startsWith("create")) {
-
-				return;
-			}
+			return;
 		}
 
 		String absolutePath = getAbsolutePath();
@@ -151,16 +147,16 @@ public class PersistenceCallCheck extends BaseCheck {
 			return;
 		}
 
-		String fieldName = childDetailAST.getText();
+		String methodCallClassName = names.get(0);
 
-		if (fieldName.matches("[A-Z].*")) {
+		if (methodCallClassName.matches("[A-Z].*")) {
 			_checkClass(
-				fieldName, importNames, packageName,
+				methodCallClassName, importNames, packageName,
 				methodCallDetailAST.getLineNo());
 		}
 		else {
 			_checkVariable(
-				fieldName, variablesMap, packageName,
+				methodCallClassName, variablesMap, packageName,
 				methodCallDetailAST.getLineNo());
 		}
 	}
