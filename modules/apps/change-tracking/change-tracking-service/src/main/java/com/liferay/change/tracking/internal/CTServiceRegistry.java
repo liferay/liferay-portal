@@ -102,6 +102,10 @@ public class CTServiceRegistry {
 		return ctMappingTableHelpers.values();
 	}
 
+	public boolean hasCTService(String className) {
+		return _serviceTrackerMap.containsKey(className);
+	}
+
 	public void onAfterCopy(
 		CTCollection sourceCTCollection, CTCollection targetCTCollection) {
 

@@ -6,13 +6,12 @@
 package com.liferay.change.tracking.internal.search.spi.model.query.contributor;
 
 import com.liferay.change.tracking.constants.CTConstants;
+import com.liferay.change.tracking.internal.CTServiceRegistry;
 import com.liferay.change.tracking.model.CTEntry;
 import com.liferay.change.tracking.service.CTEntryLocalService;
 import com.liferay.change.tracking.spi.search.CTSearchExcludeModelClassPKContributor;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerList;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerListFactory;
-import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
-import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.Field;
@@ -22,7 +21,6 @@ import com.liferay.portal.kernel.search.filter.Filter;
 import com.liferay.portal.kernel.search.filter.MissingFilter;
 import com.liferay.portal.kernel.search.filter.TermsFilter;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
-import com.liferay.portal.kernel.service.change.tracking.CTService;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.search.model.uid.UIDFactory;
 import com.liferay.portal.search.spi.model.query.contributor.ModelPreFilterContributor;
@@ -55,7 +53,7 @@ public class CTModelPreFilterContributor implements ModelPreFilterContributor {
 
 		String className = modelSearchSettings.getClassName();
 
-		if (!_serviceTrackerMap.containsKey(className)) {
+		if (!_ctServiceRegistry.hasCTService(className)) {
 			return;
 		}
 
@@ -143,24 +141,11 @@ public class CTModelPreFilterContributor implements ModelPreFilterContributor {
 	protected void activate(BundleContext bundleContext) {
 		_serviceTrackerList = ServiceTrackerListFactory.open(
 			bundleContext, CTSearchExcludeModelClassPKContributor.class);
-
-		_serviceTrackerMap = ServiceTrackerMapFactory.openSingleValueMap(
-			bundleContext, (Class<CTService<?>>)(Class<?>)CTService.class, null,
-			(serviceReference, emitter) -> {
-				CTService<?> ctService = bundleContext.getService(
-					serviceReference);
-
-				Class<?> modelClass = ctService.getModelClass();
-
-				emitter.emit(modelClass.getName());
-			});
 	}
 
 	@Deactivate
 	protected void deactivate() {
 		_serviceTrackerList.close();
-
-		_serviceTrackerMap.close();
 	}
 
 	private static final String _CT_COLLECTION_ID = "ctCollectionId";
@@ -174,9 +159,11 @@ public class CTModelPreFilterContributor implements ModelPreFilterContributor {
 	@Reference
 	private CTEntryLocalService _ctEntryLocalService;
 
+	@Reference
+	private CTServiceRegistry _ctServiceRegistry;
+
 	private ServiceTrackerList<CTSearchExcludeModelClassPKContributor>
 		_serviceTrackerList;
-	private ServiceTrackerMap<String, CTService<?>> _serviceTrackerMap;
 
 	@Reference
 	private UIDFactory _uidFactory;
