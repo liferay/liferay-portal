@@ -11,6 +11,7 @@ import com.liferay.microblogs.service.base.MicroblogsEntryServiceBaseImpl;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
@@ -42,6 +43,10 @@ public class MicroblogsEntryServiceImpl extends MicroblogsEntryServiceBaseImpl {
 		_portletResourcePermission.check(
 			getPermissionChecker(), serviceContext.getScopeGroupId(),
 			ActionKeys.ADD_ENTRY);
+
+		if (userId != getUserId()) {
+			throw new PrincipalException();
+		}
 
 		return microblogsEntryLocalService.addMicroblogsEntry(
 			userId, content, type, parentMicroblogsEntryId, socialRelationType,
