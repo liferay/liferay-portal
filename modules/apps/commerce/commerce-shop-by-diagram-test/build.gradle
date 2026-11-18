@@ -3,5 +3,6 @@ dependencies {
 	testIntegrationImplementation project(":apps:commerce:commerce-product-api")
 	testIntegrationImplementation project(":apps:commerce:commerce-product-test-util")
 	testIntegrationImplementation project(":apps:commerce:commerce-shop-by-diagram-api")
+	testIntegrationImplementation project(":apps:commerce:commerce-test-util")
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
 }
