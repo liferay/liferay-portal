@@ -1512,9 +1512,15 @@ const FrontendDataSetContent = ({
 
 	const refreshData = useCallback(
 		(successNotification?: ISuccessNotification) => {
+			const request = requestData();
+
+			if (!request) {
+				return Promise.resolve();
+			}
+
 			setDataLoading(true);
 
-			return requestData()!
+			return request
 				.then(({data, stale}) => {
 					if (successNotification?.showSuccessNotification) {
 						openToast({
