@@ -104,6 +104,22 @@ describe('DropdownRangeKey', () => {
 		);
 	});
 
+	it('should focus the first additional period when showing more preset periods', async () => {
+		const {getByRole, getByText} = render(
+			<WrapperComponent>
+				<DropdownRangeKey legacy={false} />
+			</WrapperComponent>
+		);
+
+		await waitForLoadingToBeRemoved(document.body);
+
+		fireEvent.click(getByRole('button', {name: 'Select Date Range'}));
+
+		fireEvent.click(getByText('More Preset Periods'));
+
+		expect(getByRole('menuitem', {name: /yesterday/i})).toHaveFocus();
+	});
+
 	it('should display a message with retention period for 13 months on date picker', async () => {
 		const {getByTestId, getByText} = render(
 			<WrapperComponent>
