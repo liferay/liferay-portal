@@ -257,8 +257,8 @@ public class LayoutExportController implements ExportController {
 
 		RemoteStagingGroupExporter remoteStagingGroupExporter =
 			new RemoteStagingGroupExporter(
-				_depotEntryLocalService,
-				_exportImportPortletPreferencesProcessorHelper);
+				_exportImportPortletPreferencesProcessorHelper,
+				_groupLocalService);
 
 		remoteStagingGroupExporter.addGroupExternalReferenceCodesElement(
 			group, headerElement);

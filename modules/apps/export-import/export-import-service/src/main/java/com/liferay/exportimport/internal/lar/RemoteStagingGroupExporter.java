@@ -5,15 +5,17 @@
 
 package com.liferay.exportimport.internal.lar;
 
-import com.liferay.depot.constants.DepotConstants;
-import com.liferay.depot.model.DepotEntry;
-import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.exportimport.portlet.preferences.processor.ExportImportPortletPreferencesProcessorHelper;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.GroupTable;
+import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.xml.Element;
+
+import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Adolfo Pérez Álvarez
@@ -21,18 +23,17 @@ import com.liferay.portal.kernel.xml.Element;
 public class RemoteStagingGroupExporter {
 
 	public RemoteStagingGroupExporter(
-		DepotEntryLocalService depotEntryLocalService,
 		ExportImportPortletPreferencesProcessorHelper
-			exportImportPortletPreferencesProcessorHelper) {
+			exportImportPortletPreferencesProcessorHelper,
+		GroupLocalService groupLocalService) {
 
-		_depotEntryLocalService = depotEntryLocalService;
 		_exportImportPortletPreferencesProcessorHelper =
 			exportImportPortletPreferencesProcessorHelper;
+		_groupLocalService = groupLocalService;
 	}
 
 	public void addGroupExternalReferenceCodesElement(
-			Group group, Element headerElement)
-		throws PortalException {
+		Group group, Element headerElement) {
 
 		if (!ExportImportThreadLocal.isStagingInProcess() ||
 			!group.isStagedRemotely()) {
@@ -40,33 +41,87 @@ public class RemoteStagingGroupExporter {
 			return;
 		}
 
+		UnicodeProperties typeSettingsUnicodeProperties =
+			group.getTypeSettingsProperties();
+
 		Element groupExternalReferenceCodesElement = headerElement.addElement(
 			"group-external-reference-codes");
 
-		for (DepotEntry depotEntry :
-				_depotEntryLocalService.getGroupConnectedDepotEntries(
-					group.getGroupId(), DepotConstants.TYPE_ANY,
-					QueryUtil.ALL_POS, QueryUtil.ALL_POS)) {
+		for (Group stagedRemotelyGroup :
+				_getStagedRemotelyGroups(group.getCompanyId())) {
+
+			if (!stagedRemotelyGroup.isStagedRemotely() ||
+				!_isSameRemoteConnection(
+					typeSettingsUnicodeProperties,
+					stagedRemotelyGroup.getTypeSettingsProperties())) {
+
+				continue;
+			}
+
+			String externalReferenceCode =
+				stagedRemotelyGroup.getExternalReferenceCode();
+
+			String remoteExternalReferenceCode =
+				_exportImportPortletPreferencesProcessorHelper.
+					getGroupExportPortletPreferencesExternalReferenceCode(
+						stagedRemotelyGroup.getCompanyId(),
+						externalReferenceCode);
+
+			if (Objects.equals(
+					externalReferenceCode, remoteExternalReferenceCode)) {
+
+				continue;
+			}
 
 			Element groupExternalReferenceCodeElement =
 				groupExternalReferenceCodesElement.addElement(
 					"group-external-reference-code");
 
-			Group depotGroup = depotEntry.getGroup();
-
 			groupExternalReferenceCodeElement.addAttribute(
-				"source", depotGroup.getExternalReferenceCode());
+				"source", externalReferenceCode);
 			groupExternalReferenceCodeElement.addAttribute(
-				"target",
-				_exportImportPortletPreferencesProcessorHelper.
-					getGroupExportPortletPreferencesExternalReferenceCode(
-						depotGroup.getCompanyId(),
-						depotGroup.getExternalReferenceCode()));
+				"target", remoteExternalReferenceCode);
 		}
 	}
 
-	private final DepotEntryLocalService _depotEntryLocalService;
+	private List<Group> _getStagedRemotelyGroups(long companyId) {
+		return _groupLocalService.dslQuery(
+			DSLQueryFactoryUtil.select(
+				GroupTable.INSTANCE
+			).from(
+				GroupTable.INSTANCE
+			).where(
+				GroupTable.INSTANCE.companyId.eq(
+					companyId
+				).and(
+					GroupTable.INSTANCE.typeSettings.like(
+						"%stagedRemotely=true%")
+				)
+			));
+	}
+
+	private boolean _isSameRemoteConnection(
+		UnicodeProperties typeSettingsUnicodeProperties1,
+		UnicodeProperties typeSettingsUnicodeProperties2) {
+
+		for (String key : _REMOTE_CONNECTION_KEYS) {
+			if (!Objects.equals(
+					typeSettingsUnicodeProperties1.getProperty(key),
+					typeSettingsUnicodeProperties2.getProperty(key))) {
+
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	private static final String[] _REMOTE_CONNECTION_KEYS = {
+		"remoteAddress", "remotePathContext", "remotePort", "secureConnection"
+	};
+
 	private final ExportImportPortletPreferencesProcessorHelper
 		_exportImportPortletPreferencesProcessorHelper;
+	private final GroupLocalService _groupLocalService;
 
 }

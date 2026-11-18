@@ -8,7 +8,6 @@ package com.liferay.exportimport.internal.controller;
 import com.liferay.asset.link.model.AssetLink;
 import com.liferay.asset.link.model.adapter.StagedAssetLink;
 import com.liferay.asset.link.service.AssetLinkLocalService;
-import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.exportimport.changeset.constants.ChangesetPortletKeys;
 import com.liferay.exportimport.configuration.ExportImportServiceConfiguration;
 import com.liferay.exportimport.constants.ExportImportConstants;
@@ -869,8 +868,8 @@ public class PortletExportControllerImpl implements PortletExportController {
 
 		RemoteStagingGroupExporter remoteStagingGroupExporter =
 			new RemoteStagingGroupExporter(
-				_depotEntryLocalService,
-				_exportImportPortletPreferencesProcessorHelper);
+				_exportImportPortletPreferencesProcessorHelper,
+				_groupLocalService);
 
 		remoteStagingGroupExporter.addGroupExternalReferenceCodesElement(
 			layout.getGroup(), headerElement);
@@ -1409,9 +1408,6 @@ public class PortletExportControllerImpl implements PortletExportController {
 
 	@Reference
 	private DeletionSystemEventExporter _deletionSystemEventExporter;
-
-	@Reference
-	private DepotEntryLocalService _depotEntryLocalService;
 
 	@Reference
 	private ExportImportHelper _exportImportHelper;
