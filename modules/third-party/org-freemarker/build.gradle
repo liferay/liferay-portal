@@ -4,6 +4,9 @@ apply plugin: "com.liferay.patcher"
 
 task patch(type: PatchTask)
 
+sourceCompatibility = "1.8"
+targetCompatibility = "1.8"
+
 dependencies {
 	api group: "jakarta.servlet.jsp", name: "jakarta.servlet.jsp-api", transitive: false, version: "3.1.1"
 	api group: "javax.servlet.jsp", name: "javax.servlet.jsp-api", transitive: false, version: "2.3.2-b01"
