@@ -94,14 +94,6 @@ public class ObjectEntryServiceUtil {
 		return getService().expireObjectEntry(objectEntryId, serviceContext);
 	}
 
-	public static ObjectEntry fetchManyToOneObjectEntry(
-			long groupId, long objectRelationshipId, long primaryKey)
-		throws PortalException {
-
-		return getService().fetchManyToOneObjectEntry(
-			groupId, objectRelationshipId, primaryKey);
-	}
-
 	public static ObjectEntry fetchObjectEntry(long objectEntryId)
 		throws PortalException {
 
@@ -114,6 +106,14 @@ public class ObjectEntryServiceUtil {
 
 		return getService().fetchObjectEntry(
 			externalReferenceCode, groupId, objectDefinitionId);
+	}
+
+	public static ObjectEntry fetchRelatedObjectEntry(
+			long groupId, long objectRelationshipId, long primaryKey)
+		throws PortalException {
+
+		return getService().fetchRelatedObjectEntry(
+			groupId, objectRelationshipId, primaryKey);
 	}
 
 	public static List<ObjectEntry> getManyToManyObjectEntries(
@@ -174,30 +174,6 @@ public class ObjectEntryServiceUtil {
 			externalReferenceCode, groupId, objectDefinitionId);
 	}
 
-	public static List<ObjectEntry> getOneToManyObjectEntries(
-			long groupId, long objectRelationshipId,
-			com.liferay.petra.sql.dsl.expression.Predicate predicate,
-			boolean preferApproved, long primaryKey, boolean related,
-			String search, int start, int end,
-			com.liferay.portal.kernel.search.Sort[] sorts)
-		throws PortalException {
-
-		return getService().getOneToManyObjectEntries(
-			groupId, objectRelationshipId, predicate, preferApproved,
-			primaryKey, related, search, start, end, sorts);
-	}
-
-	public static int getOneToManyObjectEntriesCount(
-			long groupId, long objectRelationshipId,
-			com.liferay.petra.sql.dsl.expression.Predicate predicate,
-			long primaryKey, boolean related, String search)
-		throws PortalException {
-
-		return getService().getOneToManyObjectEntriesCount(
-			groupId, objectRelationshipId, predicate, primaryKey, related,
-			search);
-	}
-
 	public static ObjectEntry getOrAddEmptyObjectEntry(
 			String externalReferenceCode, long groupId, long objectDefinitionId)
 		throws PortalException {
@@ -213,6 +189,30 @@ public class ObjectEntryServiceUtil {
 	 */
 	public static String getOSGiServiceIdentifier() {
 		return getService().getOSGiServiceIdentifier();
+	}
+
+	public static List<ObjectEntry> getRelatedObjectEntries(
+			long groupId, long objectRelationshipId,
+			com.liferay.petra.sql.dsl.expression.Predicate predicate,
+			boolean preferApproved, long primaryKey, boolean related,
+			String search, int start, int end,
+			com.liferay.portal.kernel.search.Sort[] sorts)
+		throws PortalException {
+
+		return getService().getRelatedObjectEntries(
+			groupId, objectRelationshipId, predicate, preferApproved,
+			primaryKey, related, search, start, end, sorts);
+	}
+
+	public static int getRelatedObjectEntriesCount(
+			long groupId, long objectRelationshipId,
+			com.liferay.petra.sql.dsl.expression.Predicate predicate,
+			long primaryKey, boolean related, String search)
+		throws PortalException {
+
+		return getService().getRelatedObjectEntriesCount(
+			groupId, objectRelationshipId, predicate, primaryKey, related,
+			search);
 	}
 
 	public static boolean hasModelResourcePermission(
@@ -325,4 +325,4 @@ public class ObjectEntryServiceUtil {
 		new Snapshot<>(ObjectEntryServiceUtil.class, ObjectEntryService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-812823718
+// LIFERAY-SERVICE-BUILDER-HASH:-1284561770

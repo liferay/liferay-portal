@@ -85,17 +85,17 @@ public interface ObjectEntryService extends BaseService {
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public ObjectEntry fetchManyToOneObjectEntry(
-			long groupId, long objectRelationshipId, long primaryKey)
-		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ObjectEntry fetchObjectEntry(long objectEntryId)
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ObjectEntry fetchObjectEntry(
 			String externalReferenceCode, long groupId, long objectDefinitionId)
+		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public ObjectEntry fetchRelatedObjectEntry(
+			long groupId, long objectRelationshipId, long primaryKey)
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -135,19 +135,6 @@ public interface ObjectEntryService extends BaseService {
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<ObjectEntry> getOneToManyObjectEntries(
-			long groupId, long objectRelationshipId, Predicate predicate,
-			boolean preferApproved, long primaryKey, boolean related,
-			String search, int start, int end, Sort[] sorts)
-		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getOneToManyObjectEntriesCount(
-			long groupId, long objectRelationshipId, Predicate predicate,
-			long primaryKey, boolean related, String search)
-		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ObjectEntry getOrAddEmptyObjectEntry(
 			String externalReferenceCode, long groupId, long objectDefinitionId)
 		throws PortalException;
@@ -158,6 +145,19 @@ public interface ObjectEntryService extends BaseService {
 	 * @return the OSGi service identifier
 	 */
 	public String getOSGiServiceIdentifier();
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<ObjectEntry> getRelatedObjectEntries(
+			long groupId, long objectRelationshipId, Predicate predicate,
+			boolean preferApproved, long primaryKey, boolean related,
+			String search, int start, int end, Sort[] sorts)
+		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int getRelatedObjectEntriesCount(
+			long groupId, long objectRelationshipId, Predicate predicate,
+			long primaryKey, boolean related, String search)
+		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public boolean hasModelResourcePermission(
@@ -215,4 +215,4 @@ public interface ObjectEntryService extends BaseService {
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1873666262
+// LIFERAY-SERVICE-BUILDER-HASH:-1424192967

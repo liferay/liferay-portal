@@ -347,15 +347,6 @@ public class ObjectEntryLocalServiceWrapper
 	}
 
 	@Override
-	public com.liferay.object.model.ObjectEntry fetchManyToOneObjectEntry(
-			long groupId, long objectRelationshipId, long primaryKey)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _objectEntryLocalService.fetchManyToOneObjectEntry(
-			groupId, objectRelationshipId, primaryKey);
-	}
-
-	@Override
 	public com.liferay.object.model.ObjectEntry fetchObjectEntry(
 		long objectEntryId) {
 
@@ -409,6 +400,15 @@ public class ObjectEntryLocalServiceWrapper
 
 		return _objectEntryLocalService.fetchObjectEntryByUuidAndGroupId(
 			uuid, groupId);
+	}
+
+	@Override
+	public com.liferay.object.model.ObjectEntry fetchRelatedObjectEntry(
+			long groupId, long objectRelationshipId, long primaryKey)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _objectEntryLocalService.fetchRelatedObjectEntry(
+			groupId, objectRelationshipId, primaryKey);
 	}
 
 	@Override
@@ -686,33 +686,6 @@ public class ObjectEntryLocalServiceWrapper
 	}
 
 	@Override
-	public java.util.List<com.liferay.object.model.ObjectEntry>
-			getOneToManyObjectEntries(
-				long groupId, long objectRelationshipId,
-				com.liferay.petra.sql.dsl.expression.Predicate predicate,
-				boolean preferApproved, long primaryKey, boolean related,
-				String search, int start, int end,
-				com.liferay.portal.kernel.search.Sort[] sorts)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _objectEntryLocalService.getOneToManyObjectEntries(
-			groupId, objectRelationshipId, predicate, preferApproved,
-			primaryKey, related, search, start, end, sorts);
-	}
-
-	@Override
-	public int getOneToManyObjectEntriesCount(
-			long groupId, long objectRelationshipId,
-			com.liferay.petra.sql.dsl.expression.Predicate predicate,
-			long primaryKey, boolean related, String search)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _objectEntryLocalService.getOneToManyObjectEntriesCount(
-			groupId, objectRelationshipId, predicate, primaryKey, related,
-			search);
-	}
-
-	@Override
 	public com.liferay.object.model.ObjectEntry getOrAddEmptyObjectEntry(
 			String externalReferenceCode, long groupId, long userId,
 			long objectDefinitionId)
@@ -755,6 +728,33 @@ public class ObjectEntryLocalServiceWrapper
 		return _objectEntryLocalService.getPrimaryKeys(
 			groupIds, companyId, userId, objectDefinitionId, predicate,
 			preferApproved, search, start, end, sorts);
+	}
+
+	@Override
+	public java.util.List<com.liferay.object.model.ObjectEntry>
+			getRelatedObjectEntries(
+				long groupId, long objectRelationshipId,
+				com.liferay.petra.sql.dsl.expression.Predicate predicate,
+				boolean preferApproved, long primaryKey, boolean related,
+				String search, int start, int end,
+				com.liferay.portal.kernel.search.Sort[] sorts)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _objectEntryLocalService.getRelatedObjectEntries(
+			groupId, objectRelationshipId, predicate, preferApproved,
+			primaryKey, related, search, start, end, sorts);
+	}
+
+	@Override
+	public int getRelatedObjectEntriesCount(
+			long groupId, long objectRelationshipId,
+			com.liferay.petra.sql.dsl.expression.Predicate predicate,
+			long primaryKey, boolean related, String search)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _objectEntryLocalService.getRelatedObjectEntriesCount(
+			groupId, objectRelationshipId, predicate, primaryKey, related,
+			search);
 	}
 
 	@Override
@@ -1084,4 +1084,4 @@ public class ObjectEntryLocalServiceWrapper
 	private ObjectEntryLocalService _objectEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-133152576
+// LIFERAY-SERVICE-BUILDER-HASH:1918964230
