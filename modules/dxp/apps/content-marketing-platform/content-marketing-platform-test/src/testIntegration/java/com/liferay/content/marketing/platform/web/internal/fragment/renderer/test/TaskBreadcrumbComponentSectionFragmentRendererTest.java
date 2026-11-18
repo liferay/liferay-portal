@@ -6,6 +6,7 @@
 package com.liferay.content.marketing.platform.web.internal.fragment.renderer.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.content.marketing.platform.test.util.CMPTestUtil;
 import com.liferay.fragment.renderer.FragmentRenderer;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
@@ -27,6 +28,7 @@ import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -90,6 +92,7 @@ public class TaskBreadcrumbComponentSectionFragmentRendererTest
 			_cmpTaskObjectDefinition, _cmpTaskObjectEntry);
 	}
 
+	@FeatureFlag("LPD-107678")
 	@Test
 	public void testGetProps() throws Exception {
 		Map<String, Object> props = getProps();
@@ -241,11 +244,56 @@ public class TaskBreadcrumbComponentSectionFragmentRendererTest
 
 		Assert.assertTrue((Boolean)props.get("hideSpace"));
 		Assert.assertEquals("lg", props.get("size"));
+
+		_addCMPTaskObjectEntry(
+			_cmpTaskObjectEntry, WorkflowConstants.ACTION_SAVE_DRAFT);
+
+		ObjectEntry cmpTaskObjectEntry2 = _addCMPTaskObjectEntry(
+			_cmpTaskObjectEntry, WorkflowConstants.ACTION_PUBLISH);
+
+		_assertDeleteConfirmationMessage(
+			_language.format(
+				mockHttpServletRequest,
+				"delete-task-and-one-subtask-confirmation-body",
+				_cmpTaskObjectEntryTitle));
+
+		_addCMPTaskObjectEntry(
+			cmpTaskObjectEntry2, WorkflowConstants.ACTION_PUBLISH);
+
+		_assertDeleteConfirmationMessage(
+			_language.format(
+				mockHttpServletRequest,
+				"delete-task-and-x-subtasks-confirmation-body",
+				new Object[] {_cmpTaskObjectEntryTitle, 2}));
 	}
 
 	@Override
 	protected FragmentRenderer getFragmentRenderer() {
 		return _fragmentRenderer;
+	}
+
+	private ObjectEntry _addCMPTaskObjectEntry(
+			ObjectEntry parentCMPTaskObjectEntry, int workflowAction)
+		throws Exception {
+
+		return CMPTestUtil.addCMPTaskObjectEntry(
+			cmpProjectObjectEntry,
+			HashMapBuilder.<String, Serializable>put(
+				"r_cmpTaskToCMPTasks_c_cmpTaskId",
+				parentCMPTaskObjectEntry.getObjectEntryId()
+			).build(),
+			workflowAction);
+	}
+
+	private void _assertDeleteConfirmationMessage(String confirmationMessage) {
+		Map<String, Object> props = getProps();
+
+		JSONArray jsonArray = (JSONArray)props.get("actionItems");
+
+		JSONObject jsonObject = jsonArray.getJSONObject(2);
+
+		Assert.assertEquals(
+			confirmationMessage, jsonObject.getString("confirmationMessage"));
 	}
 
 	private ObjectDefinition _cmpTaskObjectDefinition;
