@@ -9,8 +9,12 @@ import com.liferay.fragment.exception.FragmentEntryContentException;
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.renderer.FragmentPortletRenderer;
 import com.liferay.petra.io.unsync.UnsyncStringWriter;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.portlet.constants.PortletPreferencesFactoryConstants;
 import com.liferay.portal.kernel.servlet.PipingServletResponse;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -47,7 +51,29 @@ public class FragmentPortletRendererImpl implements FragmentPortletRenderer {
 		if ((themeDisplay != null) &&
 			(fragmentEntryLink.getPlid() != themeDisplay.getPlid())) {
 
-			inheritedFromMaster = true;
+			Layout layout = themeDisplay.getLayout();
+
+			long masterLayoutPlid = 0;
+
+			if (layout != null) {
+				masterLayoutPlid = layout.getMasterLayoutPlid();
+			}
+
+			if ((masterLayoutPlid > 0) &&
+				(fragmentEntryLink.getPlid() == masterLayoutPlid)) {
+
+				inheritedFromMaster = true;
+			}
+			else if (_log.isDebugEnabled()) {
+				_log.debug(
+					StringBundler.concat(
+						"Fragment entry link ",
+						fragmentEntryLink.getFragmentEntryLinkId(),
+						" with PLID ", fragmentEntryLink.getPlid(),
+						" rendered on PLID ", themeDisplay.getPlid(),
+						" for current URL ", themeDisplay.getURLCurrent(),
+						" will not share its preferences"));
+			}
 		}
 
 		try {
@@ -66,5 +92,8 @@ public class FragmentPortletRendererImpl implements FragmentPortletRenderer {
 
 		return unsyncStringWriter.toString();
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		FragmentPortletRendererImpl.class);
 
 }
