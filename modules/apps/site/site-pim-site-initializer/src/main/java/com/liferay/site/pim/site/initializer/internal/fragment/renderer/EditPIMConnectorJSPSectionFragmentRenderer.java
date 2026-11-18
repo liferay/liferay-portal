@@ -5,28 +5,42 @@
 
 package com.liferay.site.pim.site.initializer.internal.fragment.renderer;
 
-import com.liferay.fragment.renderer.FragmentRenderer;
 import com.liferay.list.type.service.ListTypeEntryLocalService;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectFieldLocalService;
+import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.site.pim.site.initializer.connector.PIMConnectorRegistry;
 import com.liferay.site.pim.site.initializer.constants.PIMObjectDefinitionConstants;
 import com.liferay.site.pim.site.initializer.internal.display.context.EditPIMConnectorDisplayContext;
 
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
-
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Andrea Sbarra
  */
-@Component(service = FragmentRenderer.class)
 public class EditPIMConnectorJSPSectionFragmentRenderer
 	extends BaseJSPSectionFragmentRenderer<EditPIMConnectorDisplayContext> {
+
+	public EditPIMConnectorJSPSectionFragmentRenderer(
+		Language language, ListTypeEntryLocalService listTypeEntryLocalService,
+		ObjectDefinitionLocalService objectDefinitionLocalService,
+		ObjectEntryLocalService objectEntryLocalService,
+		ObjectFieldLocalService objectFieldLocalService,
+		PIMConnectorRegistry pimConnectorRegistry,
+		ServletContext servletContext) {
+
+		super(language, servletContext);
+
+		_listTypeEntryLocalService = listTypeEntryLocalService;
+		_objectDefinitionLocalService = objectDefinitionLocalService;
+		_objectEntryLocalService = objectEntryLocalService;
+		_objectFieldLocalService = objectFieldLocalService;
+		_pimConnectorRegistry = pimConnectorRegistry;
+	}
 
 	@Override
 	public String getLabelKey() {
@@ -53,19 +67,10 @@ public class EditPIMConnectorJSPSectionFragmentRenderer
 				themeDisplay.getCompanyId()));
 	}
 
-	@Reference
-	private ListTypeEntryLocalService _listTypeEntryLocalService;
-
-	@Reference
-	private ObjectDefinitionLocalService _objectDefinitionLocalService;
-
-	@Reference
-	private ObjectEntryLocalService _objectEntryLocalService;
-
-	@Reference
-	private ObjectFieldLocalService _objectFieldLocalService;
-
-	@Reference
-	private PIMConnectorRegistry _pimConnectorRegistry;
+	private final ListTypeEntryLocalService _listTypeEntryLocalService;
+	private final ObjectDefinitionLocalService _objectDefinitionLocalService;
+	private final ObjectEntryLocalService _objectEntryLocalService;
+	private final ObjectFieldLocalService _objectFieldLocalService;
+	private final PIMConnectorRegistry _pimConnectorRegistry;
 
 }

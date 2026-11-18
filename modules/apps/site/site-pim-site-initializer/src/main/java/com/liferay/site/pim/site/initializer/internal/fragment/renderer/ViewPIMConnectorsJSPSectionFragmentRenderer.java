@@ -5,24 +5,31 @@
 
 package com.liferay.site.pim.site.initializer.internal.fragment.renderer;
 
-import com.liferay.fragment.renderer.FragmentRenderer;
 import com.liferay.object.service.ObjectDefinitionLocalService;
+import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.site.pim.site.initializer.constants.PIMObjectDefinitionConstants;
 import com.liferay.site.pim.site.initializer.internal.display.context.ViewPIMConnectorsDisplayContext;
 
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
-
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Andrea Sbarra
  */
-@Component(service = FragmentRenderer.class)
 public class ViewPIMConnectorsJSPSectionFragmentRenderer
 	extends BaseJSPSectionFragmentRenderer<ViewPIMConnectorsDisplayContext> {
+
+	public ViewPIMConnectorsJSPSectionFragmentRenderer(
+		Language language,
+		ObjectDefinitionLocalService objectDefinitionLocalService,
+		ServletContext servletContext) {
+
+		super(language, servletContext);
+
+		_objectDefinitionLocalService = objectDefinitionLocalService;
+	}
 
 	@Override
 	public String getLabelKey() {
@@ -46,7 +53,6 @@ public class ViewPIMConnectorsJSPSectionFragmentRenderer
 					themeDisplay.getCompanyId()));
 	}
 
-	@Reference
-	private ObjectDefinitionLocalService _objectDefinitionLocalService;
+	private final ObjectDefinitionLocalService _objectDefinitionLocalService;
 
 }

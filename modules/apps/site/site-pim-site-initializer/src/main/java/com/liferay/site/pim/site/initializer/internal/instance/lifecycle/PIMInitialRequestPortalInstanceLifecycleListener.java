@@ -8,8 +8,12 @@ package com.liferay.site.pim.site.initializer.internal.instance.lifecycle;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.fragment.renderer.FragmentRenderer;
 import com.liferay.frontend.data.set.serializer.FDSSerializer;
+import com.liferay.list.type.service.ListTypeEntryLocalService;
+import com.liferay.object.service.ObjectDefinitionLocalService;
+import com.liferay.object.service.ObjectDefinitionService;
 import com.liferay.object.service.ObjectEntryFolderLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
+import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.instance.lifecycle.InitialRequestPortalInstanceLifecycleListener;
 import com.liferay.portal.instance.lifecycle.PortalInstanceLifecycleListener;
@@ -19,8 +23,13 @@ import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.site.initializer.SiteInitializer;
+import com.liferay.site.pim.site.initializer.connector.PIMConnectorRegistry;
+import com.liferay.site.pim.site.initializer.internal.fragment.renderer.EditPIMConnectorFieldMappingsJSPSectionFragmentRenderer;
+import com.liferay.site.pim.site.initializer.internal.fragment.renderer.EditPIMConnectorJSPSectionFragmentRenderer;
+import com.liferay.site.pim.site.initializer.internal.fragment.renderer.PIMConnectorFieldMappingsJSPSectionFragmentRenderer;
 import com.liferay.site.pim.site.initializer.internal.fragment.renderer.ProductRelationshipsSectionFragmentRenderer;
 import com.liferay.site.pim.site.initializer.internal.fragment.renderer.ProductsSectionFragmentRenderer;
+import com.liferay.site.pim.site.initializer.internal.fragment.renderer.ViewPIMConnectorsJSPSectionFragmentRenderer;
 import com.liferay.site.pim.site.initializer.internal.util.PIMObjectEntryFolderUtil;
 import com.liferay.site.pim.site.initializer.internal.util.SiteInitializerUtil;
 
@@ -66,6 +75,31 @@ public class PIMInitialRequestPortalInstanceLifecycleListener
 		_serviceRegistrations.add(
 			bundleContext.registerService(
 				FragmentRenderer.class,
+				new EditPIMConnectorFieldMappingsJSPSectionFragmentRenderer(
+					_language, _objectDefinitionService,
+					_objectEntryLocalService, _objectFieldLocalService,
+					_pimConnectorRegistry, _servletContext),
+				null));
+		_serviceRegistrations.add(
+			bundleContext.registerService(
+				FragmentRenderer.class,
+				new EditPIMConnectorJSPSectionFragmentRenderer(
+					_language, _listTypeEntryLocalService,
+					_objectDefinitionLocalService, _objectEntryLocalService,
+					_objectFieldLocalService, _pimConnectorRegistry,
+					_servletContext),
+				null));
+		_serviceRegistrations.add(
+			bundleContext.registerService(
+				FragmentRenderer.class,
+				new PIMConnectorFieldMappingsJSPSectionFragmentRenderer(
+					_language, _objectDefinitionLocalService,
+					_objectEntryLocalService, _pimConnectorRegistry,
+					_servletContext),
+				null));
+		_serviceRegistrations.add(
+			bundleContext.registerService(
+				FragmentRenderer.class,
 				new ProductRelationshipsSectionFragmentRenderer(
 					_fdsSerializer, _language, _objectEntryLocalService,
 					_servletContext),
@@ -74,6 +108,12 @@ public class PIMInitialRequestPortalInstanceLifecycleListener
 			bundleContext.registerService(
 				FragmentRenderer.class,
 				new ProductsSectionFragmentRenderer(_language, _servletContext),
+				null));
+		_serviceRegistrations.add(
+			bundleContext.registerService(
+				FragmentRenderer.class,
+				new ViewPIMConnectorsJSPSectionFragmentRenderer(
+					_language, _objectDefinitionLocalService, _servletContext),
 				null));
 
 		super.activate(bundleContext);
@@ -129,10 +169,25 @@ public class PIMInitialRequestPortalInstanceLifecycleListener
 	private long _lastModifiedTime;
 
 	@Reference
+	private ListTypeEntryLocalService _listTypeEntryLocalService;
+
+	@Reference
+	private ObjectDefinitionLocalService _objectDefinitionLocalService;
+
+	@Reference
+	private ObjectDefinitionService _objectDefinitionService;
+
+	@Reference
 	private ObjectEntryFolderLocalService _objectEntryFolderLocalService;
 
 	@Reference
 	private ObjectEntryLocalService _objectEntryLocalService;
+
+	@Reference
+	private ObjectFieldLocalService _objectFieldLocalService;
+
+	@Reference
+	private PIMConnectorRegistry _pimConnectorRegistry;
 
 	@Reference(
 		target = "(osgi.web.symbolicname=com.liferay.site.initializer.pim)"

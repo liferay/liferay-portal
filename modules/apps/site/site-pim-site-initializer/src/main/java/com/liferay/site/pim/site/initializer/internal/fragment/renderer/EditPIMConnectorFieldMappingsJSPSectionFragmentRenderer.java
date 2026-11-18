@@ -5,26 +5,38 @@
 
 package com.liferay.site.pim.site.initializer.internal.fragment.renderer;
 
-import com.liferay.fragment.renderer.FragmentRenderer;
 import com.liferay.object.service.ObjectDefinitionService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectFieldLocalService;
+import com.liferay.portal.kernel.language.Language;
 import com.liferay.site.pim.site.initializer.connector.PIMConnectorRegistry;
 import com.liferay.site.pim.site.initializer.internal.display.context.EditPIMConnectorFieldMappingsDisplayContext;
 
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
-
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Andrea Sbarra
  * @author Stefano Motta
  */
-@Component(service = FragmentRenderer.class)
 public class EditPIMConnectorFieldMappingsJSPSectionFragmentRenderer
 	extends BaseJSPSectionFragmentRenderer
 		<EditPIMConnectorFieldMappingsDisplayContext> {
+
+	public EditPIMConnectorFieldMappingsJSPSectionFragmentRenderer(
+		Language language, ObjectDefinitionService objectDefinitionService,
+		ObjectEntryLocalService objectEntryLocalService,
+		ObjectFieldLocalService objectFieldLocalService,
+		PIMConnectorRegistry pimConnectorRegistry,
+		ServletContext servletContext) {
+
+		super(language, servletContext);
+
+		_objectDefinitionService = objectDefinitionService;
+		_objectEntryLocalService = objectEntryLocalService;
+		_objectFieldLocalService = objectFieldLocalService;
+		_pimConnectorRegistry = pimConnectorRegistry;
+	}
 
 	@Override
 	public String getLabelKey() {
@@ -41,16 +53,9 @@ public class EditPIMConnectorFieldMappingsJSPSectionFragmentRenderer
 			_pimConnectorRegistry);
 	}
 
-	@Reference
-	private ObjectDefinitionService _objectDefinitionService;
-
-	@Reference
-	private ObjectEntryLocalService _objectEntryLocalService;
-
-	@Reference
-	private ObjectFieldLocalService _objectFieldLocalService;
-
-	@Reference
-	private PIMConnectorRegistry _pimConnectorRegistry;
+	private final ObjectDefinitionService _objectDefinitionService;
+	private final ObjectEntryLocalService _objectEntryLocalService;
+	private final ObjectFieldLocalService _objectFieldLocalService;
+	private final PIMConnectorRegistry _pimConnectorRegistry;
 
 }

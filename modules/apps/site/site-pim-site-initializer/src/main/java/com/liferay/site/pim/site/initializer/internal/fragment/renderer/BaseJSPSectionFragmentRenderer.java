@@ -21,8 +21,6 @@ import java.io.IOException;
 
 import java.util.Locale;
 
-import org.osgi.service.component.annotations.Reference;
-
 /**
  * @author Andrea Sbarra
  */
@@ -36,7 +34,7 @@ public abstract class BaseJSPSectionFragmentRenderer<T>
 
 	@Override
 	public String getLabel(Locale locale) {
-		return language.get(locale, getLabelKey());
+		return _language.get(locale, getLabelKey());
 	}
 
 	@Override
@@ -53,7 +51,7 @@ public abstract class BaseJSPSectionFragmentRenderer<T>
 
 		try {
 			RequestDispatcher requestDispatcher =
-				servletContext.getRequestDispatcher(getJSPPath());
+				_servletContext.getRequestDispatcher(getJSPPath());
 
 			T displayContext = getDisplayContext(httpServletRequest);
 
@@ -71,6 +69,13 @@ public abstract class BaseJSPSectionFragmentRenderer<T>
 		}
 	}
 
+	protected BaseJSPSectionFragmentRenderer(
+		Language language, ServletContext servletContext) {
+
+		_language = language;
+		_servletContext = servletContext;
+	}
+
 	protected abstract T getDisplayContext(
 			HttpServletRequest httpServletRequest)
 		throws PortalException;
@@ -82,12 +87,7 @@ public abstract class BaseJSPSectionFragmentRenderer<T>
 
 	protected abstract String getLabelKey();
 
-	@Reference
-	protected Language language;
-
-	@Reference(
-		target = "(osgi.web.symbolicname=com.liferay.site.pim.site.initializer)"
-	)
-	protected ServletContext servletContext;
+	private final Language _language;
+	private final ServletContext _servletContext;
 
 }
