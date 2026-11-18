@@ -6,6 +6,10 @@
 package com.liferay.osb.faro.web.internal.fragment.renderer;
 
 import com.liferay.fragment.renderer.FragmentRenderer;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItemList;
+import com.liferay.osb.faro.web.internal.display.context.IndividualsNavigationDisplayContext;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -24,6 +28,18 @@ public class FaroKnownIndividualsSectionFragmentRenderer
 	@Override
 	protected String getModule() {
 		return "{KnownIndividuals} from osb-faro-web/individuals";
+	}
+
+	@Override
+	protected NavigationItemList getNavigationItems(
+			HttpServletRequest httpServletRequest)
+		throws Exception {
+
+		IndividualsNavigationDisplayContext
+			individualsNavigationDisplayContext =
+				new IndividualsNavigationDisplayContext(httpServletRequest);
+
+		return individualsNavigationDisplayContext.getNavigationItems();
 	}
 
 }
