@@ -12,9 +12,16 @@ import com.liferay.layout.display.page.LayoutDisplayPageObjectProvider;
 import com.liferay.layout.display.page.constants.LayoutDisplayPageWebKeys;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
+import com.liferay.object.model.ObjectEntryTable;
+import com.liferay.object.model.ObjectRelationship;
 import com.liferay.object.service.ObjectDefinitionLocalService;
+import com.liferay.object.service.ObjectEntryLocalService;
+import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -24,9 +31,11 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.util.List;
 import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
@@ -134,9 +143,8 @@ public class TaskBreadcrumbComponentSectionFragmentRenderer
 							"className", "text-danger"
 						).put(
 							"confirmationMessage",
-							LanguageUtil.format(
-								httpServletRequest,
-								"delete-task-confirmation-body", title)
+							_getDeleteConfirmationMessage(
+								httpServletRequest, objectEntry, title)
 						).put(
 							"confirmationTitle",
 							LanguageUtil.format(
@@ -223,10 +231,79 @@ public class TaskBreadcrumbComponentSectionFragmentRenderer
 		).build();
 	}
 
+	private String _getDeleteConfirmationMessage(
+			HttpServletRequest httpServletRequest, ObjectEntry objectEntry,
+			String title)
+		throws PortalException {
+
+		if (!FeatureFlagManagerUtil.isEnabled(
+				objectEntry.getCompanyId(), "LPD-107678")) {
+
+			return LanguageUtil.format(
+				httpServletRequest, "delete-task-confirmation-body", title);
+		}
+
+		int descendantCMPTaskObjectEntriesCount =
+			_getDescendantCMPTaskObjectEntriesCount(objectEntry);
+
+		if (descendantCMPTaskObjectEntriesCount == 0) {
+			return LanguageUtil.format(
+				httpServletRequest, "delete-task-confirmation-body", title);
+		}
+
+		if (descendantCMPTaskObjectEntriesCount == 1) {
+			return LanguageUtil.format(
+				httpServletRequest,
+				"delete-task-and-one-subtask-confirmation-body", title);
+		}
+
+		return LanguageUtil.format(
+			httpServletRequest, "delete-task-and-x-subtasks-confirmation-body",
+			new Object[] {title, descendantCMPTaskObjectEntriesCount});
+	}
+
+	private int _getDescendantCMPTaskObjectEntriesCount(
+			ObjectEntry cmpTaskObjectEntry)
+		throws PortalException {
+
+		ObjectRelationship objectRelationship =
+			_objectRelationshipLocalService.getObjectRelationship(
+				cmpTaskObjectEntry.getObjectDefinitionId(),
+				"cmpTaskToCMPTasks");
+
+		List<ObjectEntry> childCMPTaskObjectEntries =
+			_objectEntryLocalService.getRelatedObjectEntries(
+				cmpTaskObjectEntry.getGroupId(),
+				objectRelationship.getObjectRelationshipId(),
+				ObjectEntryTable.INSTANCE.status.neq(
+					WorkflowConstants.STATUS_DRAFT),
+				false, cmpTaskObjectEntry.getObjectEntryId(), true, null,
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+
+		int count = childCMPTaskObjectEntries.size();
+
+		for (ObjectEntry childCMPTaskObjectEntry : childCMPTaskObjectEntries) {
+			count += _objectEntryLocalService.getRelatedObjectEntriesCount(
+				childCMPTaskObjectEntry.getGroupId(),
+				objectRelationship.getObjectRelationshipId(),
+				ObjectEntryTable.INSTANCE.status.neq(
+					WorkflowConstants.STATUS_DRAFT),
+				childCMPTaskObjectEntry.getObjectEntryId(), true, null);
+		}
+
+		return count;
+	}
+
 	@Reference
 	private JSONFactory _jsonFactory;
 
 	@Reference
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
+
+	@Reference
+	private ObjectEntryLocalService _objectEntryLocalService;
+
+	@Reference
+	private ObjectRelationshipLocalService _objectRelationshipLocalService;
 
 }
