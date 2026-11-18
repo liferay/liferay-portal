@@ -27,6 +27,7 @@ argoWorkflows:
         hostname: ""
         tls:
             externalSecretKey: ""
+            secretName: ""
     namespace: argo-workflows-system
     repoURL: https://argoproj.github.io/argo-helm
     targetRevision: 2.0.15
@@ -89,6 +90,7 @@ argocd:
         hostname: ""
         tls:
             externalSecretKey: ""
+            secretName: ""
     sso:
         credentialsSecretKey: ""
         enabled: false

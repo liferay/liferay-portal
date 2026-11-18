@@ -1,6 +1,7 @@
 {{- define "liferay-platform.argocdExternalURL" -}}
 {{- if .Values.argocd.gateway.enabled -}}
-{{- $scheme := ternary "https" "http" (ne .Values.argocd.gateway.tls.externalSecretKey "") -}}
+{{- $tls := .Values.argocd.gateway.tls -}}
+{{- $scheme := ternary "https" "http" (or $tls.externalSecretKey $tls.secretName | empty | not) -}}
 {{- printf "%s://%s" $scheme .Values.argocd.gateway.hostname -}}
 {{- end -}}
 {{- end -}}

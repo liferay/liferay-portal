@@ -344,6 +344,20 @@ tests:
                     enabled: true
                     hostname: argocd.liferay.test
     -   asserts:
+            -   failedTemplate:
+                    errorPattern: The values "argoWorkflows.gateway.tls.externalSecretKey" and "argoWorkflows.gateway.tls.secretName" must not both be set
+        it: Rejects both a TLS external secret key and a TLS secret name
+        set:
+            argoWorkflows:
+                gateway:
+                    enabled: true
+                    hostname: workflows.liferay.test
+                    tls:
+                        externalSecretKey: liferay-certificates-workflows
+                        secretName: workflows-certificate
+            clusterSecretStores:
+                liferay-test-secret-store: {}
+    -   asserts:
             -   hasDocuments:
                     count: 10
             -   documentIndex: 0
@@ -538,3 +552,39 @@ tests:
                 liferay-test-secret-store: {}
             deploymentContext:
                 deploymentName: liferay-test
+    -   asserts:
+            -   hasDocuments:
+                    count: 6
+            -   documentIndex: 0
+                isKind:
+                    of: EnvoyProxy
+            -   documentIndex: 2
+                equal:
+                    path: spec.listeners[1]
+                    value:
+                        allowedRoutes:
+                            namespaces:
+                                from: Same
+                        hostname: workflows.liferay.test
+                        name: https
+                        port: 443
+                        protocol: HTTPS
+                        tls:
+                            certificateRefs:
+                                -   name: workflows-certificate
+            -   documentIndex: 4
+                equal:
+                    path: spec.rules[0].filters[0].requestRedirect.scheme
+                    value: https
+            -   documentIndex: 5
+                equal:
+                    path: spec.parentRefs[0].sectionName
+                    value: https
+        it: Terminates TLS with a Secret provided outside the chart, without an external secret
+        set:
+            argoWorkflows:
+                gateway:
+                    enabled: true
+                    hostname: workflows.liferay.test
+                    tls:
+                        secretName: workflows-certificate

@@ -122,6 +122,23 @@ tests:
             -   contains:
                     content:
                         name: centralHub.argocdURL
+                        value: https://argocd.liferay.test
+                    path: spec.sources[0].helm.parameters
+                template: templates/application-observability.yaml
+        it: Derives the observability ArgoCD URL from a gateway serving a Secret provided outside the chart
+        set:
+            argocd:
+                gateway:
+                    enabled: true
+                    hostname: argocd.liferay.test
+                    tls:
+                        secretName: argocd-certificate
+            observability:
+                enabled: true
+    -   asserts:
+            -   contains:
+                    content:
+                        name: centralHub.argocdURL
                         value: http://argocd.liferay.test
                     path: spec.sources[0].helm.parameters
                 template: templates/application-observability.yaml
