@@ -39,6 +39,7 @@ const config = {
 		assets: getComponentEntry('assets'),
 		campaigns: getComponentEntry('campaigns'),
 		events: getComponentEntry('events'),
+		'external-scripts': resolveModule('external-scripts.js'),
 		individuals: getComponentEntry('individuals'),
 		lifecycles: getComponentEntry('lifecycles'),
 		main: [...POLYFILLS, resolveModule('main.jsx')],
