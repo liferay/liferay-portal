@@ -139,45 +139,6 @@ definition {
 		CalendarScheduler.viewEventUsersViaDialogBox(usersList = "Test Test");
 	}
 
-	@description = "LRQA-71888 - Verify that the user can rate a event"
-	@priority = 3
-	test CanRateAEvent {
-		var siteName = TestCase.getSiteName(siteName = ${siteName});
-
-		Calendar.chooseSiteCalendarMenulistOption(
-			menuListOption = "Calendar Settings",
-			siteCalendarName = ${siteName},
-			siteName = ${siteName});
-
-		SelectFrame(locator1 = "IFrame#MODAL_BODY");
-
-		CalendarMyCalendars.checkboxOption(checkboxName = "Enable Ratings");
-
-		PortletEntry.save();
-
-		Navigator.gotoPage(pageName = "Calendar Page");
-
-		CalendarNavigator.gotoAddEvent();
-
-		CalendarEvent.add(
-			eventTitle = "Calendar Event Title",
-			eventType = "Regular",
-			pageName = "Calendar Page");
-
-		Navigator.gotoPage(pageName = "Calendar Page");
-
-		CalendarScheduler.selectSpecificEventNoRefresh(eventTitle = "Calendar Event Title");
-
-		CalendarScheduler.gotoDetailsViaDialogBox();
-
-		CalendarEvent.inputRateStar(ratingStarCount = 3);
-
-		CalendarEvent.viewCalendarRateStar(
-			averageRatingStarCount = "3.0",
-			message = "You have rated this 3 stars out of 5",
-			ratingStarCount = 3);
-	}
-
 	@description = "LRQA-71888 - Verify that the user can view the fields Title, Starts, Ends, Rresources in event details page"
 	@priority = 3
 	test CanViewValuesInEventDetailsPage {

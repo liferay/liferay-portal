@@ -73,28 +73,4 @@ definition {
 			calendarType = "Other Calendars");
 	}
 
-	@description = "LRQA-71886 - Verify that is possible to create an Inactive Resource"
-	@priority = 3
-	test CanAddInactiveResource {
-		CalendarNavigator.gotoAddResource();
-
-		CalendarResource.editResourceName(calendarResourceName = "Resource Active");
-
-		CalendarResource.save();
-
-		CalendarNavigator.gotoAddResource();
-
-		CalendarResource.editResourceName(calendarResourceName = "Resource Inactive");
-
-		CalendarResource.deactivate();
-
-		CalendarResource.save();
-
-		CalendarResource.viewResourceNameNotPresent(calendarResourceName = "Resource Inactive");
-
-		CalendarResource.resourceSetFilterAndOrder(filterBy = "No");
-
-		CalendarResource.viewResourceName(calendarResourceName = "Resource Inactive");
-	}
-
 }

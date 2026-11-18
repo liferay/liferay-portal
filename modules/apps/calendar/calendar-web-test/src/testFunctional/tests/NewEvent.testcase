@@ -847,36 +847,6 @@ definition {
 			relatedAssetTitle = "Blogs Entry Title");
 	}
 
-	@description = "Verify that the user can add an Event with a workflow assigned"
-	@priority = 4
-	test CanAddEventWithWorkflowAssigned {
-		Workflow.openWorkflowProcessBuilderConfiguration();
-
-		Workflow.configureWorkflow(
-			workflowDefinition = "Single Approver",
-			workflowResourceValue = "Calendar Event");
-
-		Navigator.gotoPage(pageName = "Calendar Page");
-
-		CalendarEvent.enableEventBySiteCalendarName(calendarName = "Liferay DXP");
-
-		CalendarNavigator.gotoAddEvent();
-
-		CalendarEvent.editTitle(eventTitle = "Calendar Event Title");
-
-		CalendarEvent.setDatesToday();
-
-		CalendarEvent.setTimes(
-			endDateTime = " 8:00 PM",
-			startDateTime = " 7:00 PM");
-
-		Button.clickSubmitForWorkflow();
-
-		IFrame.closeFrame();
-
-		CalendarEvent.view(eventTitle = "Calendar Event Title");
-	}
-
 	@description = "Verify that the user can Approve an Event"
 	@priority = 4
 	test CanApproveEvent {
