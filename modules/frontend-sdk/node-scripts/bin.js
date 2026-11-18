@@ -82,6 +82,10 @@ const COMMANDS = {
 		them: paste them and press Ctrl+D, or pipe a file. The command deletes
 		those entries from yarn.lock and runs 'yarn install' to resolve them
 		again, without touching any package.json.
+
+		When that adds a version of a package that already had an entry in
+		the same major line, the command tries to merge the older entries into
+		it, keeping each merge only if it adds no version to any package.
 `,
 		parameters: '',
 		script: './refresh/yarn-lock.mjs',
