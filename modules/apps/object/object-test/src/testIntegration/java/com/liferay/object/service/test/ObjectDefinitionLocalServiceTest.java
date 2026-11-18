@@ -4439,6 +4439,41 @@ public class ObjectDefinitionLocalServiceTest {
 	}
 
 	@Test
+	public void testUpdateCustomObjectDefinitionWithClassNameHeldByCustomObjectDefinition()
+		throws Exception {
+
+		ObjectDefinition objectDefinition1 =
+			ObjectDefinitionTestUtil.publishObjectDefinition();
+		ObjectDefinition objectDefinition2 =
+			ObjectDefinitionTestUtil.publishObjectDefinition();
+
+		try {
+			objectDefinition2 = _updateCustomObjectDefinition(
+				objectDefinition1.getClassName(), objectDefinition2);
+
+			Assert.assertNotEquals(
+				objectDefinition1.getClassName(),
+				objectDefinition2.getClassName());
+
+			ObjectDefinitionSetting objectDefinitionSetting =
+				_objectDefinitionSettingLocalService.
+					fetchObjectDefinitionSetting(
+						objectDefinition2.getObjectDefinitionId(),
+						ObjectDefinitionSettingConstants.NAME_OLD_CLASS_NAME);
+
+			Assert.assertEquals(
+				objectDefinition1.getClassName(),
+				objectDefinitionSetting.getValue());
+		}
+		finally {
+			_objectDefinitionLocalService.deleteObjectDefinition(
+				objectDefinition1.getObjectDefinitionId());
+			_objectDefinitionLocalService.deleteObjectDefinition(
+				objectDefinition2.getObjectDefinitionId());
+		}
+	}
+
+	@Test
 	public void testUpdateCustomObjectDefinitionWithClusterExecutor()
 		throws Exception {
 
