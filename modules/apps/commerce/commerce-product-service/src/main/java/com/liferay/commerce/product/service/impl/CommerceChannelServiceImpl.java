@@ -66,12 +66,31 @@ public class CommerceChannelServiceImpl extends CommerceChannelServiceBaseImpl {
 			String commerceCurrencyCode, ServiceContext serviceContext)
 		throws PortalException {
 
+		PermissionChecker permissionChecker = getPermissionChecker();
+
+		CommerceChannel commerceChannel =
+			commerceChannelPersistence.fetchByERC_C(
+				externalReferenceCode, permissionChecker.getCompanyId());
+
 		PortletResourcePermission portletResourcePermission =
 			_commerceChannelModelResourcePermission.
 				getPortletResourcePermission();
 
-		portletResourcePermission.check(
-			getPermissionChecker(), null, CPActionKeys.ADD_COMMERCE_CHANNEL);
+		if (commerceChannel == null) {
+			portletResourcePermission.check(
+				permissionChecker, null, CPActionKeys.ADD_COMMERCE_CHANNEL);
+		}
+		else {
+			_commerceChannelModelResourcePermission.check(
+				permissionChecker, commerceChannel, ActionKeys.UPDATE);
+
+			if (!portletResourcePermission.contains(
+					permissionChecker, null,
+					CPActionKeys.VIEW_COMMERCE_CHANNELS)) {
+
+				accountEntryId = commerceChannel.getAccountEntryId();
+			}
+		}
 
 		return commerceChannelLocalService.addOrUpdateCommerceChannel(
 			getUserId(), externalReferenceCode, accountEntryId, siteGroupId,
