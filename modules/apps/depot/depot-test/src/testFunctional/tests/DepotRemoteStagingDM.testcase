@@ -1246,69 +1246,6 @@ definition {
 			assetTitle = "DM Folder Name");
 	}
 
-	@description = "This ensures that a document stored in a DM folder of asset library can be published in DM widget when remote staging is enabled."
-	@priority = 4
-	test CanPublishDocumentFromFolderViaWidget {
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		JSONFolder.addFolder(
-			dmFolderDescription = "DM Folder Description",
-			dmFolderName = "Depot Folder Name",
-			groupName = "Test Depot Name");
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Description",
-			dmDocumentTitle = "DM Document Title",
-			folderName = "Depot Folder Name",
-			groupName = "Test Depot Name",
-			mimeType = "application/msword",
-			sourceFileName = "Document_1.doc");
-
-		DepotNavigator.openDepotDocumentsAndMediaAdmin(depotName = "Test Depot Name");
-
-		DepotNavigator.switchStagingStatus(stagingItem = "Publish to Live");
-
-		Staging.publishToLive(remoteStaging = "true");
-
-		JSONLayout.addWidgetToPublicLayout(
-			groupName = "Site Name",
-			layoutName = "Test Page",
-			widgetName = "Documents and Media");
-
-		Navigator.gotoSitePage(
-			pageName = "Test Page",
-			siteName = "Site Name");
-
-		DMDocument.setRootFolder(
-			depotName = "Test Depot Name",
-			dmRootFolderName = "Depot Folder Name");
-
-		Navigator.gotoSitePage(
-			pageName = "Test Page",
-			siteName = "Site Name");
-
-		DMDocument.viewPG(dmDocumentTitle = "DM Document Title");
-
-		Staging.gotoPublishToLive();
-
-		Staging.publishToLive(remoteStaging = "true");
-
-		User.logoutPG();
-
-		User.firstLoginUI(
-			password = PropsUtil.get("default.admin.password"),
-			specificURL = "http://localhost:9080",
-			userEmailAddress = "test@liferay.com");
-
-		Navigator.openSitePage(
-			baseURL = "http://localhost:9080",
-			pageName = "Test Page",
-			siteName = "Remote Site");
-
-		DMDocument.viewPG(dmDocumentTitle = "DM Document Title");
-	}
-
 	@description = "This ensures that a document stored in a DM folder of asset library can be edited and republished in DM widget when remote staging is enabled."
 	@priority = 4
 	test CanPublishEditedDocumentFromFolderViaWidget {
