@@ -7277,15 +7277,6 @@
 	},
 	{
 		"classNames": [
-			"CommerceOrderLocalService",
-			"CommerceOrderLocalServiceUtil"
-		],
-		"from": "addCommerceOrder(long paramName, long paramName, long paramName, long paramName, long paramName, long paramName, long paramName, long paramName, String paramName, int paramName, int paramName, int paramName, int paramName, int paramName, int paramName, int paramName, String paramName, BigDecimal paramName, String paramName, BigDecimal paramName, BigDecimal paramName, BigDecimal paramName, BigDecimal paramName, BigDecimal paramName, BigDecimal paramName, ServiceContext paramName)",
-		"issueKey": "LPS-198138",
-		"to": "addCommerceOrder(param#0#, param#1#, param#2#, param#3#, param#4#, param#5#, param#6#, param#7#, param#8#, param#9#, param#10#, param#11#, param#12#, param#13#, param#14#, param#15#, param#16#, param#17#, param#18#)"
-	},
-	{
-		"classNames": [
 			"AssetVocabularyLocalService",
 			"AssetVocabularyLocalServiceUtil"
 		],
