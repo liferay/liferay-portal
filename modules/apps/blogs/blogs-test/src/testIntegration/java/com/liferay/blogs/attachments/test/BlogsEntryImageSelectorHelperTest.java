@@ -16,10 +16,11 @@ import com.liferay.portal.kernel.module.util.BundleUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.servlet.taglib.ui.ImageSelector;
 import com.liferay.portal.kernel.test.TestInfo;
-import com.liferay.portal.kernel.test.constants.TestDataConstants;
+import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
@@ -157,8 +158,9 @@ public class BlogsEntryImageSelectorHelperTest {
 		FileEntry fileEntry = DLAppLocalServiceUtil.addFileEntry(
 			null, TestPropsValues.getUserId(), _group.getGroupId(),
 			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID, _IMAGE_TITLE,
-			ContentTypes.IMAGE_JPEG, TestDataConstants.TEST_BYTE_ARRAY, null,
-			null, null, serviceContext);
+			MimeTypesUtil.getContentType(_IMAGE_TITLE),
+			FileUtil.getBytes(getInputStream()), null, null, null,
+			serviceContext);
 
 		Object blogsEntryImageSelectorHelper = _constructor.newInstance(
 			0, fileEntry.getFileEntryId(), 0, _IMAGE_CROP_REGION,
@@ -166,25 +168,27 @@ public class BlogsEntryImageSelectorHelperTest {
 
 		User user = UserTestUtil.addUser();
 
-		UserTestUtil.setUser(user);
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user, PermissionCheckerFactoryUtil.create(user))) {
 
-		InvocationTargetException invocationTargetException =
-			Assert.assertThrows(
-				InvocationTargetException.class,
-				() -> _getImageSelectorMethod.invoke(
-					blogsEntryImageSelectorHelper));
+			InvocationTargetException invocationTargetException =
+				Assert.assertThrows(
+					InvocationTargetException.class,
+					() -> _getImageSelectorMethod.invoke(
+						blogsEntryImageSelectorHelper));
 
-		PrincipalException.MustHavePermission mustHavePermission =
-			(PrincipalException.MustHavePermission)
-				invocationTargetException.getCause();
+			PrincipalException.MustHavePermission mustHavePermission =
+				(PrincipalException.MustHavePermission)
+					invocationTargetException.getCause();
 
-		Assert.assertArrayEquals(
-			new String[] {ActionKeys.VIEW}, mustHavePermission.actionId);
-		Assert.assertEquals(
-			fileEntry.getFileEntryId(), mustHavePermission.resourceId);
-		Assert.assertEquals(
-			DLFileEntry.class.getName(), mustHavePermission.resourceName);
-		Assert.assertEquals(user.getUserId(), mustHavePermission.userId);
+			Assert.assertArrayEquals(
+				new String[] {ActionKeys.VIEW}, mustHavePermission.actionId);
+			Assert.assertEquals(
+				fileEntry.getFileEntryId(), mustHavePermission.resourceId);
+			Assert.assertEquals(
+				DLFileEntry.class.getName(), mustHavePermission.resourceName);
+			Assert.assertEquals(user.getUserId(), mustHavePermission.userId);
+		}
 	}
 
 	@Test
