@@ -12,6 +12,7 @@ import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.segments.model.SegmentsExperience;
 import com.liferay.segments.model.SegmentsExperiment;
 import com.liferay.segments.model.SegmentsExperimentRel;
 import com.liferay.segments.service.base.SegmentsExperimentRelServiceBaseImpl;
@@ -53,6 +54,8 @@ public class SegmentsExperimentRelServiceImpl
 			ServiceContext serviceContext)
 		throws PortalException {
 
+		_segmentsExperienceResourcePermission.check(
+			getPermissionChecker(), segmentsExperienceId, ActionKeys.UPDATE);
 		_segmentsExperimentResourcePermission.check(
 			getPermissionChecker(), segmentsExperimentId, ActionKeys.UPDATE);
 
@@ -69,6 +72,9 @@ public class SegmentsExperimentRelServiceImpl
 			segmentsExperimentRelPersistence.findByPrimaryKey(
 				segmentsExperimentRelId);
 
+		_segmentsExperienceResourcePermission.check(
+			getPermissionChecker(),
+			segmentsExperimentRel.getSegmentsExperienceId(), ActionKeys.DELETE);
 		_segmentsExperimentResourcePermission.check(
 			getPermissionChecker(),
 			segmentsExperimentRel.getSegmentsExperimentId(), ActionKeys.UPDATE);
@@ -147,6 +153,12 @@ public class SegmentsExperimentRelServiceImpl
 		return segmentsExperimentRelLocalService.updateSegmentsExperimentRel(
 			segmentsExperimentRelId, name, serviceContext);
 	}
+
+	@Reference(
+		target = "(model.class.name=com.liferay.segments.model.SegmentsExperience)"
+	)
+	private ModelResourcePermission<SegmentsExperience>
+		_segmentsExperienceResourcePermission;
 
 	@Reference
 	private SegmentsExperimentPersistence _segmentsExperimentPersistence;
