@@ -60,7 +60,7 @@ tests:
                     value: true
             -   equal:
                     path: spec.source.helm.valuesObject.crds.gatewayAPI.channel
-                    value: standard
+                    value: experimental
             -   equal:
                     path: spec.source.helm.valuesObject.crds.gatewayAPI.enabled
                     value: true

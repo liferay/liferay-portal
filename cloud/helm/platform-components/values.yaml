@@ -335,7 +335,7 @@ operatorApplications:
                     envoyGateway:
                         enabled: true
                     gatewayAPI:
-                        channel: standard
+                        channel: experimental
                         enabled: true
         enabled: true
         name: envoy-gateway
