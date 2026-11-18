@@ -466,6 +466,7 @@ public class StructuredContentResourceTest
 
 	@Override
 	@Test
+	@TestInfo("LPD-116124")
 	public void testGetStructuredContent() throws Exception {
 
 		// Get structured content
@@ -490,6 +491,7 @@ public class StructuredContentResourceTest
 		_testGetStructuredContentWithImageContentURL();
 		_testGetStructuredContentWithInvalidImage();
 		_testGetStructuredContentWithRadioField();
+		_testGetStructuredContentWithRelatedContents();
 		_testGetStructuredContentWithRoleAdministrator();
 		_testGetStructuredContentWithRoleOwner();
 		_testGetStructuredContentWithRoleRegularUser();
@@ -2670,6 +2672,80 @@ public class StructuredContentResourceTest
 				journalArticle.getResourcePrimKey());
 
 		Assert.assertNotNull(structuredContent.getContentStructureId());
+	}
+
+	private void _testGetStructuredContentWithRelatedContents()
+		throws Exception {
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				irrelevantGroup.getGroupId());
+
+		serviceContext.setAddGuestPermissions(false);
+
+		BlogsEntry blogsEntry = BlogsTestUtil.addEntryWithWorkflow(
+			TestPropsValues.getUserId(), RandomTestUtil.randomString(), true,
+			serviceContext);
+
+		StructuredContent structuredContent = randomStructuredContent();
+
+		structuredContent.setRelatedContents(
+			new RelatedContent[] {
+				new RelatedContent() {
+					{
+						contentType = "BlogPosting";
+						id = blogsEntry.getEntryId();
+					}
+				},
+				new RelatedContent() {
+					{
+						contentType = "BlogPosting";
+						id = _blogsEntry.getEntryId();
+					}
+				}
+			});
+		structuredContent.setViewableBy(StructuredContent.ViewableBy.ANYONE);
+
+		StructuredContent postStructuredContent =
+			structuredContentResource.postSiteStructuredContent(
+				testGroup.getGroupId(), structuredContent);
+
+		RelatedContent[] relatedContents =
+			postStructuredContent.getRelatedContents();
+
+		Assert.assertEquals(
+			Arrays.toString(relatedContents), 2, relatedContents.length);
+
+		String password = RandomTestUtil.randomString();
+
+		User regularUser = UserTestUtil.addUser(testCompany, password);
+
+		StructuredContentResource.Builder builder =
+			StructuredContentResource.builder();
+
+		StructuredContentResource regularUserStructuredContentResource =
+			builder.authentication(
+				regularUser.getEmailAddress(), password
+			).endpoint(
+				testCompany.getVirtualHostname(),
+				PortalUtil.getPortalServerPort(false), "http"
+			).locale(
+				LocaleUtil.getDefault()
+			).build();
+
+		StructuredContent getStructuredContent =
+			regularUserStructuredContentResource.getStructuredContent(
+				postStructuredContent.getId());
+
+		relatedContents = getStructuredContent.getRelatedContents();
+
+		Assert.assertEquals(
+			Arrays.toString(relatedContents), 1, relatedContents.length);
+
+		RelatedContent relatedContent = relatedContents[0];
+
+		Assert.assertEquals(
+			Long.valueOf(_blogsEntry.getEntryId()), relatedContent.getId());
 	}
 
 	private void _testGetStructuredContentWithRoleAdministrator()
