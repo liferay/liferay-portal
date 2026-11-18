@@ -108,6 +108,9 @@ public class ClusterCacheReplicationTest implements Serializable {
 						PortalCacheHelperUtil.getPortalCache(
 							PortalCacheManagerNames.MULTI_VM, testCacheName);
 
+					portalCache.registerPortalCacheListener(
+						new TestPortalCacheListener());
+
 					String value = portalCache.get(testKey);
 
 					portalCache.put(testKey, testValue1);
@@ -165,6 +168,10 @@ public class ClusterCacheReplicationTest implements Serializable {
 					PortalCache<String, String> portalCache =
 						PortalCacheHelperUtil.getPortalCache(
 							PortalCacheManagerNames.MULTI_VM, testCacheName);
+
+					TestPortalCacheListener.await(
+						portalCache,
+						TestPortalCacheListener::getRemoveCountDownLatch);
 
 					return portalCache.get(testKey);
 				}));
