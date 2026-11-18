@@ -145,16 +145,20 @@ public class DLAppServiceWhenSearchingFileEntriesTest
 
 		UserTestUtil.setUser(user);
 
-		_assertSearch(fileEntry.getFileEntryId(), 1);
-		_assertSearch(privateFileEntry.getFileEntryId(), 0);
-		_assertSearch(targetGroupFileEntry.getFileEntryId(), 0);
-		_assertSearch(user.getUserId(), 0);
+		_testShouldFindViewableFileEntriesOnlyByQuery(
+			fileEntry.getFileEntryId(), 1);
+		_testShouldFindViewableFileEntriesOnlyByQuery(
+			privateFileEntry.getFileEntryId(), 0);
+		_testShouldFindViewableFileEntriesOnlyByQuery(
+			targetGroupFileEntry.getFileEntryId(), 0);
+		_testShouldFindViewableFileEntriesOnlyByQuery(user.getUserId(), 0);
 	}
 
 	@Rule
 	public SearchTestRule searchTestRule = new SearchTestRule();
 
-	private void _assertSearch(long entryClassPK, int expectedLength)
+	private void _testShouldFindViewableFileEntriesOnlyByQuery(
+			long entryClassPK, int expectedLength)
 		throws Exception {
 
 		Hits hits = dlAppService.search(
