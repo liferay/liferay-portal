@@ -11,6 +11,7 @@ import com.liferay.commerce.product.exception.CPInstanceUnitOfMeasureKeyExceptio
 import com.liferay.commerce.product.exception.CPInstanceUnitOfMeasureRateException;
 import com.liferay.commerce.product.exception.CPInstanceUnitOfMeasureSkuException;
 import com.liferay.commerce.product.exception.DuplicateCPInstanceUnitOfMeasureKeyException;
+import com.liferay.commerce.product.exception.NoSuchCPInstanceUnitOfMeasureException;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.model.CPInstanceUnitOfMeasure;
@@ -513,6 +514,50 @@ public class CPInstanceUnitOfMeasureLocalServiceTest {
 			Double.valueOf(cpInstanceUnitOfMeasure.getPriority()));
 		Assert.assertEquals(
 			"Rate", BigDecimal.TEN, cpInstanceUnitOfMeasure.getRate());
+	}
+
+	@Test(expected = NoSuchCPInstanceUnitOfMeasureException.class)
+	public void testUpdateCPInstanceUnitOfMeasureWithDifferentCPInstance()
+		throws PortalException {
+
+		frutillaRule.scenario(
+			"Update a Unit of Measure with a different SKU"
+		).given(
+			"I have two product definitions with a default SKU"
+		).when(
+			"Unit Of Measure is added to the first SKU"
+		).then(
+			"Update the Unit Of Measure with the second SKU"
+		).and(
+			"An exception is thrown"
+		);
+
+		CPDefinition cpDefinition1 = CPTestUtil.addCPDefinitionFromCatalog(
+			_commerceCatalog.getGroupId(), SimpleCPTypeConstants.NAME, true,
+			true);
+
+		List<CPInstance> cpInstances1 = cpDefinition1.getCPInstances();
+
+		CPInstanceUnitOfMeasure cpInstanceUnitOfMeasure =
+			_getCpInstanceUnitOfMeasure(cpInstances1.get(0));
+
+		CPDefinition cpDefinition2 = CPTestUtil.addCPDefinitionFromCatalog(
+			_commerceCatalog.getGroupId(), SimpleCPTypeConstants.NAME, true,
+			true);
+
+		List<CPInstance> cpInstances2 = cpDefinition2.getCPInstances();
+
+		CPInstance cpInstance2 = cpInstances2.get(0);
+
+		_cpInstanceUnitOfMeasureLocalService.updateCPInstanceUnitOfMeasure(
+			cpInstanceUnitOfMeasure.getCPInstanceUnitOfMeasureId(),
+			cpInstance2.getCPInstanceId(), true, BigDecimal.TEN,
+			RandomTestUtil.randomString(),
+			HashMapBuilder.put(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()
+			).build(),
+			2, BigDecimal.ZERO, true, 0.0, BigDecimal.ONE,
+			cpInstanceUnitOfMeasure.getSku());
 	}
 
 	@Test
