@@ -24,7 +24,7 @@ import org.mockito.Mockito;
 public class JobFactoryTest extends com.liferay.jenkins.results.parser.Test {
 
 	@Test
-	public void testGetKey() {
+	public void testGetKey() throws Exception {
 		for (String jobName : _JOB_NAMES) {
 			Job job = _newJob(jobName);
 
@@ -90,7 +90,7 @@ public class JobFactoryTest extends com.liferay.jenkins.results.parser.Test {
 	}
 
 	@Test
-	public void testNewJobJSONObject() {
+	public void testNewJobJSONObject() throws Exception {
 		for (String jobName : _JOB_NAMES) {
 			Job job = _newJob(jobName);
 
@@ -169,7 +169,7 @@ public class JobFactoryTest extends com.liferay.jenkins.results.parser.Test {
 		return spyJob.getJSONObject();
 	}
 
-	private Job _newJob(String jobName) {
+	private Job _newJob(String jobName) throws Exception {
 		BuildDatabase buildDatabase = Mockito.mock(BuildDatabase.class);
 
 		Mockito.doReturn(
@@ -182,15 +182,52 @@ public class JobFactoryTest extends com.liferay.jenkins.results.parser.Test {
 
 		BuildDatabaseUtil.setBuildDatabase(buildDatabase);
 
-		String repositoryName = "liferay-portal";
+		File gitWorkingDir = JenkinsResultsParserUtil.getGitWorkingDir(
+			new File("."));
+
+		String repositoryName = JenkinsResultsParserUtil.getGitRepositoryName(
+			gitWorkingDir.getName());
+
 		String upstreamBranchName = "master";
 
-		PortalGitWorkingDirectory portalGitWorkingDirectory =
+		PortalGitWorkingDirectory portalGitWorkingDirectory = Mockito.spy(
 			(PortalGitWorkingDirectory)
 				GitWorkingDirectoryFactory.newGitWorkingDirectory(
-					upstreamBranchName,
-					JenkinsResultsParserUtil.getGitWorkingDir(new File(".")),
-					repositoryName);
+					upstreamBranchName, gitWorkingDir, repositoryName));
+
+		LocalGitBranch localGitBranch = Mockito.mock(LocalGitBranch.class);
+
+		Mockito.doReturn(
+			localGitBranch
+		).when(
+			portalGitWorkingDirectory
+		).getCurrentLocalGitBranch();
+
+		Mockito.doReturn(
+			RandomTestUtil.randomString()
+		).when(
+			portalGitWorkingDirectory
+		).getMergeBaseCommitSHA(
+			Mockito.any(LocalGitBranch.class), Mockito.any(LocalGitBranch.class)
+		);
+
+		Mockito.doReturn(
+			Collections.emptyList()
+		).when(
+			portalGitWorkingDirectory
+		).getModifiedFilesList();
+
+		Mockito.doReturn(
+			Collections.emptyList()
+		).when(
+			portalGitWorkingDirectory
+		).getModifiedModuleDirsList();
+
+		Mockito.doReturn(
+			localGitBranch
+		).when(
+			portalGitWorkingDirectory
+		).getUpstreamLocalGitBranch();
 
 		return JobFactory.newJob(
 			Job.BuildProfile.DXP, jobName, null, portalGitWorkingDirectory,
