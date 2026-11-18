@@ -16,8 +16,6 @@ long cpDefinitionId = cpDefinitionsDisplayContext.getCPDefinitionId();
 
 Map<String, String> contextParams = HashMapBuilder.<String, String>put(
 	"cpDefinitionId", String.valueOf(cpDefinitionId)
-).put(
-	"permissionUserId", String.valueOf(themeDisplay.getUserId())
 ).build();
 %>
 
