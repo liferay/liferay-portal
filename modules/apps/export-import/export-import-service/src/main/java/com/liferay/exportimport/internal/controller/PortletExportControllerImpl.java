@@ -8,12 +8,14 @@ package com.liferay.exportimport.internal.controller;
 import com.liferay.asset.link.model.AssetLink;
 import com.liferay.asset.link.model.adapter.StagedAssetLink;
 import com.liferay.asset.link.service.AssetLinkLocalService;
+import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.exportimport.changeset.constants.ChangesetPortletKeys;
 import com.liferay.exportimport.configuration.ExportImportServiceConfiguration;
 import com.liferay.exportimport.constants.ExportImportConstants;
 import com.liferay.exportimport.controller.PortletExportController;
 import com.liferay.exportimport.internal.data.handler.BatchEnginePortletDataHandler;
 import com.liferay.exportimport.internal.lar.PermissionExporter;
+import com.liferay.exportimport.internal.lar.RemoteStagingGroupExporter;
 import com.liferay.exportimport.kernel.controller.ExportImportController;
 import com.liferay.exportimport.kernel.exception.ExportImportIOException;
 import com.liferay.exportimport.kernel.exception.LayoutImportException;
@@ -38,6 +40,7 @@ import com.liferay.exportimport.portlet.element.handler.PortletElementHandler;
 import com.liferay.exportimport.portlet.element.handler.PortletElementHandlerFactory;
 import com.liferay.exportimport.portlet.preferences.processor.Capability;
 import com.liferay.exportimport.portlet.preferences.processor.ExportImportPortletPreferencesProcessor;
+import com.liferay.exportimport.portlet.preferences.processor.ExportImportPortletPreferencesProcessorHelper;
 import com.liferay.exportimport.portlet.preferences.processor.ExportImportPortletPreferencesProcessorRegistryUtil;
 import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
 import com.liferay.petra.string.CharPool;
@@ -864,6 +867,14 @@ public class PortletExportControllerImpl implements PortletExportController {
 				companyGroup.getExternalReferenceCode());
 		}
 
+		RemoteStagingGroupExporter remoteStagingGroupExporter =
+			new RemoteStagingGroupExporter(
+				_depotEntryLocalService,
+				_exportImportPortletPreferencesProcessorHelper);
+
+		remoteStagingGroupExporter.addGroupExternalReferenceCodesElement(
+			layout.getGroup(), headerElement);
+
 		headerElement.addAttribute("group-id", String.valueOf(scopeGroupId));
 		headerElement.addAttribute(
 			"user-personal-site-group-id",
@@ -1400,10 +1411,17 @@ public class PortletExportControllerImpl implements PortletExportController {
 	private DeletionSystemEventExporter _deletionSystemEventExporter;
 
 	@Reference
+	private DepotEntryLocalService _depotEntryLocalService;
+
+	@Reference
 	private ExportImportHelper _exportImportHelper;
 
 	@Reference
 	private ExportImportLifecycleManager _exportImportLifecycleManager;
+
+	@Reference
+	private ExportImportPortletPreferencesProcessorHelper
+		_exportImportPortletPreferencesProcessorHelper;
 
 	@Reference
 	private ExportImportProcessCallbackRegistry

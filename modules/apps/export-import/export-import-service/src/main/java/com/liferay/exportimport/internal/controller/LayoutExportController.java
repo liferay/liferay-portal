@@ -6,13 +6,12 @@
 package com.liferay.exportimport.internal.controller;
 
 import com.liferay.asset.link.model.adapter.StagedAssetLink;
-import com.liferay.depot.constants.DepotConstants;
-import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.exportimport.constants.ExportImportConstants;
 import com.liferay.exportimport.controller.PortletExportController;
 import com.liferay.exportimport.internal.lar.GroupExporter;
 import com.liferay.exportimport.internal.lar.PermissionExporter;
+import com.liferay.exportimport.internal.lar.RemoteStagingGroupExporter;
 import com.liferay.exportimport.internal.util.ManifestXMLFilePathUtil;
 import com.liferay.exportimport.kernel.controller.ExportController;
 import com.liferay.exportimport.kernel.controller.ExportImportController;
@@ -32,7 +31,6 @@ import com.liferay.exportimport.portlet.preferences.processor.ExportImportPortle
 import com.liferay.portal.background.task.model.BackgroundTask;
 import com.liferay.portal.background.task.service.BackgroundTaskLocalService;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTaskThreadLocal;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -257,7 +255,13 @@ public class LayoutExportController implements ExportController {
 		headerElement.addAttribute(
 			"group-friendly-url", group.getFriendlyURL());
 
-		_addGroupExternalReferenceCodesElement(group, headerElement);
+		RemoteStagingGroupExporter remoteStagingGroupExporter =
+			new RemoteStagingGroupExporter(
+				_depotEntryLocalService,
+				_exportImportPortletPreferencesProcessorHelper);
+
+		remoteStagingGroupExporter.addGroupExternalReferenceCodesElement(
+			group, headerElement);
 
 		headerElement.addAttribute(
 			"group-id", String.valueOf(portletDataContext.getGroupId()));
@@ -433,41 +437,6 @@ public class LayoutExportController implements ExportController {
 
 		return ExportImportLifecycleConstants.
 			PROCESS_FLAG_LAYOUT_EXPORT_IN_PROCESS;
-	}
-
-	private void _addGroupExternalReferenceCodesElement(
-			Group group, Element headerElement)
-		throws Exception {
-
-		if (!ExportImportThreadLocal.isLayoutStagingInProcess() ||
-			!group.isStagedRemotely()) {
-
-			return;
-		}
-
-		Element groupExternalReferenceCodesElement = headerElement.addElement(
-			"group-external-reference-codes");
-
-		for (DepotEntry depotEntry :
-				_depotEntryLocalService.getGroupConnectedDepotEntries(
-					group.getGroupId(), DepotConstants.TYPE_ANY,
-					QueryUtil.ALL_POS, QueryUtil.ALL_POS)) {
-
-			Element groupExternalReferenceCodeElement =
-				groupExternalReferenceCodesElement.addElement(
-					"group-external-reference-code");
-
-			Group depotGroup = depotEntry.getGroup();
-
-			groupExternalReferenceCodeElement.addAttribute(
-				"source", depotGroup.getExternalReferenceCode());
-			groupExternalReferenceCodeElement.addAttribute(
-				"target",
-				_exportImportPortletPreferencesProcessorHelper.
-					getGroupExportPortletPreferencesExternalReferenceCode(
-						depotGroup.getCompanyId(),
-						depotGroup.getExternalReferenceCode()));
-		}
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
