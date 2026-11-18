@@ -60,7 +60,7 @@ public class FileEntryFriendlyURLResolverTest {
 	@TestInfo("LPD-116142")
 	public void testResolveFriendlyURL() throws Exception {
 		_testResolveFriendlyURL();
-		_testResolveFriendlyURLAfterRevert();
+		_testResolveFriendlyURLWithRevertedFileEntry();
 	}
 
 	private FileEntry _addFileEntry(String urlTitle) throws Exception {
@@ -90,7 +90,7 @@ public class FileEntryFriendlyURLResolverTest {
 				_group.getGroupId(), RandomTestUtil.randomString()));
 	}
 
-	private void _testResolveFriendlyURLAfterRevert() throws Exception {
+	private void _testResolveFriendlyURLWithRevertedFileEntry() throws Exception {
 		FileEntry fileEntry = _addFileEntry("urltitle1");
 
 		ServiceContext serviceContext =
