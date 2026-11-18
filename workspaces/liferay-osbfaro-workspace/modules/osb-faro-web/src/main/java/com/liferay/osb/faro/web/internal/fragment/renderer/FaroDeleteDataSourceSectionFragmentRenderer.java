@@ -20,7 +20,7 @@ import org.osgi.service.component.annotations.Component;
  */
 @Component(service = FragmentRenderer.class)
 public class FaroDeleteDataSourceSectionFragmentRenderer
-	extends BaseSectionFragmentRenderer {
+	extends BaseSettingsSectionFragmentRenderer {
 
 	@Override
 	protected String getLabelKey() {
