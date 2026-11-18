@@ -1711,7 +1711,23 @@ public class LayoutExportImportTest extends BaseExportImportTestCase {
 
 		liveLayout = _layoutLocalService.updateLayout(liveLayout);
 
-		_publishToLive(stagingGroup);
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.batch.engine.internal." +
+					"BatchEngineImportTaskExecutorImpl",
+				LoggerTestUtil.ERROR)) {
+
+			_publishToLive(stagingGroup);
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
+
+			LogEntry logEntry = logEntries.get(0);
+
+			Throwable throwable = logEntry.getThrowable();
+
+			Assert.assertTrue(throwable instanceof LayoutFriendlyURLsException);
+		}
 
 		Assert.assertNotNull(
 			_layoutLocalService.fetchLayout(liveLayout.getPlid()));
