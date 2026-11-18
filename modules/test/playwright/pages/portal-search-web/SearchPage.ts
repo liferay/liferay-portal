@@ -119,6 +119,26 @@ export class SearchPage {
 		expect((await updateLayoutResponsePromise).ok()).toBe(true);
 	}
 
+	async assertSearchParameter(name: string, values: (number | string)[]) {
+		await expect
+			.poll(() =>
+				new URL(this.page.url()).searchParams.getAll(name).sort()
+			)
+			.toEqual(values.map(String).sort());
+	}
+
+	async assertSearchResults(keyword: string, titles: string[]) {
+		await expect(this.searchResultsTotalLabel).toHaveText(
+			`${titles.length} ${titles.length === 1 ? 'Result' : 'Results'} for ${keyword}`
+		);
+
+		for (const title of titles) {
+			await expect(
+				this.searchResults.getByRole('link', {exact: true, name: title})
+			).toBeVisible();
+		}
+	}
+
 	async fillPortletConfigurationsInput(
 		options: {label: string; value: string}[]
 	) {
@@ -140,6 +160,15 @@ export class SearchPage {
 				`xpath=//div[contains(.,'${type}') and contains(@class, 'panel-group')]`
 			)
 			.getByRole('checkbox', {name: searchFacetTerm});
+	}
+
+	getSearchFacetClearButton(searchFacetTerm: string | RegExp): Locator {
+		return this.page
+			.locator('.search-facet')
+			.filter({
+				has: this.page.getByRole('checkbox', {name: searchFacetTerm}),
+			})
+			.getByRole('button', {name: /Clear/});
 	}
 
 	async getSearchFacetLink(
