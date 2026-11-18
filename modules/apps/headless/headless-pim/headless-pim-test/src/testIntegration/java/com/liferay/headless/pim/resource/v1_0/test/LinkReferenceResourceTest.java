@@ -231,13 +231,6 @@ public class LinkReferenceResourceTest
 			ObjectEntry objectEntry, boolean withFile)
 		throws Exception {
 
-		ObjectDefinition objectDefinition =
-			_objectDefinitionLocalService.
-				getObjectDefinitionByExternalReferenceCode(
-					PIMObjectDefinitionConstants.
-						EXTERNAL_REFERENCE_CODE_BASIC_PRODUCT_IMAGE,
-					objectEntry.getCompanyId());
-
 		Map<String, Serializable> values =
 			HashMapBuilder.<String, Serializable>put(
 				"r_images_l_pimBasicProductId", objectEntry.getObjectEntryId()
@@ -257,6 +250,13 @@ public class LinkReferenceResourceTest
 			values.put("image", fileEntry.getFileEntryId());
 		}
 
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.
+				getObjectDefinitionByExternalReferenceCode(
+					PIMObjectDefinitionConstants.
+						EXTERNAL_REFERENCE_CODE_BASIC_PRODUCT_IMAGE,
+					objectEntry.getCompanyId());
+
 		return _objectEntryLocalService.addObjectEntry(
 			objectEntry.getGroupId(), TestPropsValues.getUserId(),
 			objectDefinition.getObjectDefinitionId(),
@@ -266,14 +266,15 @@ public class LinkReferenceResourceTest
 	}
 
 	private void _assertImageURL(
-			ObjectEntry imageObjectEntry, ObjectEntry objectEntry)
+			ObjectEntry imageObjectEntry, ObjectEntry productObjectEntry)
 		throws Exception {
 
-		Page<LinkReference> page = _getLinkReferencesPage(
-			objectEntry, Pagination.of(1, 20));
+		Page<LinkReference> linkReferencesPage = _getLinkReferencesPage(
+			productObjectEntry, Pagination.of(1, 20));
 
 		LinkReference linkReference = _getLinkReference(
-			(List<LinkReference>)page.getItems(), objectEntry);
+			(List<LinkReference>)linkReferencesPage.getItems(),
+			productObjectEntry);
 
 		if (imageObjectEntry == null) {
 			Assert.assertNull(linkReference.getImageURL());
@@ -289,7 +290,7 @@ public class LinkReferenceResourceTest
 
 		String imageURL = linkReference.getImageURL();
 
-		Assert.assertTrue(imageURL, imageURL.contains(fileEntry.getUuid()));
+		Assert.assertTrue(imageURL.contains(fileEntry.getUuid()));
 	}
 
 	private void _assertLinkReference(
