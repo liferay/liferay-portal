@@ -11,6 +11,7 @@ import {EditProjectPage} from '../pages/EditProjectPage';
 import {EditTaskPage} from '../pages/EditTaskPage';
 import {ProjectPage} from '../pages/ProjectPage';
 import {ProjectsPage} from '../pages/ProjectsPage';
+import {TaskPage} from '../pages/TaskPage';
 import {TasksPage} from '../pages/TasksPage';
 
 const cmpPages = test.extend<{
@@ -19,6 +20,7 @@ const cmpPages = test.extend<{
 	editTaskPage: EditTaskPage;
 	projectPage: ProjectPage;
 	projectsPage: ProjectsPage;
+	taskPage: TaskPage;
 	tasksPage: TasksPage;
 }>({
 	cmpSetup: [
@@ -43,6 +45,9 @@ const cmpPages = test.extend<{
 	},
 	projectsPage: async ({page}, use) => {
 		await use(new ProjectsPage(page));
+	},
+	taskPage: async ({page}, use) => {
+		await use(new TaskPage(page));
 	},
 	tasksPage: async ({page}, use) => {
 		await use(new TasksPage(page));

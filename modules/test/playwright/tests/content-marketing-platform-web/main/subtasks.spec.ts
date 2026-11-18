@@ -8,6 +8,8 @@ import {expect, mergeTests} from '@playwright/test';
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../fixtures/loginTest';
+import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
+import dragAndDropElement from '../../../utils/dragAndDropElement';
 import getRandomString from '../../../utils/getRandomString';
 import {waitForAlert} from '../../../utils/waitForAlert';
 import {cmpPagesTest} from './fixtures/cmpPagesTest';
@@ -182,5 +184,294 @@ test(
 					.getByText(title, {exact: true})
 			).toBeVisible();
 		});
+	}
+);
+
+test(
+	'Delete confirmation counts the subtasks of a task',
+	{tag: ['@LPD-114770']},
+	async ({
+		apiHelpers,
+		page,
+		projectPage,
+		projectsPage,
+		taskPage,
+		tasksPage,
+	}) => {
+		const project = await apiHelpers.objectEntry.postObjectEntry(
+			{
+				title: getRandomString(),
+			},
+			cmpProject
+		);
+
+		const task = await apiHelpers.objectEntry.postObjectEntry(
+			{
+				r_cmpProjectToCMPTasks_c_cmpProjectId: project.id,
+				title: getRandomString(),
+			},
+			cmpTask,
+			project.scopeKey
+		);
+
+		const subtask = await apiHelpers.objectEntry.postObjectEntry(
+			{
+				r_cmpProjectToCMPTasks_c_cmpProjectId: project.id,
+				r_cmpTaskToCMPTasks_c_cmpTaskId: task.id,
+				title: getRandomString(),
+			},
+			cmpTask,
+			project.scopeKey
+		);
+
+		await apiHelpers.objectEntry.postObjectEntry(
+			{
+				r_cmpProjectToCMPTasks_c_cmpProjectId: project.id,
+				r_cmpTaskToCMPTasks_c_cmpTaskId: subtask.id,
+				title: getRandomString(),
+			},
+			cmpTask,
+			project.scopeKey
+		);
+
+		await apiHelpers.objectEntry.postObjectEntry(
+			{
+				r_cmpProjectToCMPTasks_c_cmpProjectId: project.id,
+				r_cmpTaskToCMPTasks_c_cmpTaskId: task.id,
+				status: {code: 2},
+				title: getRandomString(),
+			},
+			cmpTask,
+			project.scopeKey
+		);
+
+		const deleteConfirmationMessage = `You are about to delete the task "${task.title}" and its 2 subtasks.`;
+
+		await test.step('Count the subtasks from the row action', async () => {
+			await tasksPage.goto();
+
+			await tasksPage.projectTasksTab.click();
+
+			await tasksPage.execItemAction({
+				action: 'Delete',
+				filter: task.title,
+			});
+
+			const dialog = page
+				.getByRole('alert')
+				.filter({hasText: 'You are about to delete'});
+
+			await expect(dialog).toContainText(deleteConfirmationMessage);
+
+			await dialog.getByRole('button', {name: 'Cancel'}).click();
+		});
+
+		await test.step('Count the subtasks from the Kanban card actions', async () => {
+			await projectsPage.goto();
+
+			await projectsPage.getProject(project.title).click();
+
+			await projectPage.tasksTab.click();
+
+			await tasksPage.tableViewButton.click();
+
+			await tasksPage.kanbanView.viewOption.click();
+
+			await clickAndExpectToBeVisible({
+				target: page.getByRole('menuitem', {name: 'Delete'}),
+				trigger: page
+					.locator('.lfr__kaban-task-card', {hasText: task.title})
+					.getByLabel('Actions'),
+			});
+
+			await page.getByRole('menuitem', {name: 'Delete'}).click();
+
+			const dialog = page
+				.getByRole('dialog')
+				.filter({hasText: 'You are about to delete'});
+
+			await expect(dialog).toContainText(deleteConfirmationMessage);
+
+			await dialog.getByRole('button', {name: 'Cancel'}).click();
+		});
+
+		await test.step('Count the subtasks from the task page menu', async () => {
+			await taskPage.goto(task.id);
+
+			await taskPage.openMoreActions();
+
+			await taskPage.deleteMenuItem.click();
+
+			const dialog = page.getByRole('alertdialog');
+
+			await expect(dialog).toContainText(deleteConfirmationMessage);
+
+			await dialog.getByRole('button', {name: 'Cancel'}).click();
+		});
+	}
+);
+
+test(
+	'Informs about open subtasks when a task is set to Done',
+	{tag: ['@LPD-114770']},
+	async ({
+		apiHelpers,
+		page,
+		projectPage,
+		projectsPage,
+		taskPage,
+		tasksPage,
+	}) => {
+		const project = await apiHelpers.objectEntry.postObjectEntry(
+			{
+				title: getRandomString(),
+			},
+			cmpProject
+		);
+
+		const tasks = [];
+
+		for (const subtaskState of ['notStarted', 'done', 'notStarted']) {
+			const task = await apiHelpers.objectEntry.postObjectEntry(
+				{
+					r_cmpProjectToCMPTasks_c_cmpProjectId: project.id,
+					state: {key: 'inProgress'},
+					title: getRandomString(),
+				},
+				cmpTask,
+				project.scopeKey
+			);
+
+			await apiHelpers.objectEntry.postObjectEntry(
+				{
+					r_cmpProjectToCMPTasks_c_cmpProjectId: project.id,
+					r_cmpTaskToCMPTasks_c_cmpTaskId: task.id,
+					state: {key: subtaskState},
+					title: getRandomString(),
+				},
+				cmpTask,
+				project.scopeKey
+			);
+
+			tasks.push(task);
+		}
+
+		await test.step('Inform from the Info panel', async () => {
+			await taskPage.goto(tasks[0].id);
+
+			await page.locator('.lfr-cmp__state-selector').click();
+
+			await page.getByRole('option', {name: 'Done'}).click();
+
+			await waitForAlert(
+				page,
+				'Task was marked as done. 1 subtask is not done yet.',
+				{type: 'info'}
+			);
+		});
+
+		await test.step('Do not inform when every subtask is done', async () => {
+			await taskPage.goto(tasks[1].id);
+
+			await page.locator('.lfr-cmp__state-selector').click();
+
+			await page.getByRole('option', {name: 'Done'}).click();
+
+			await waitForAlert(page, 'State was successfully updated.');
+
+			await expect(page.locator('.alert-info')).toBeHidden();
+		});
+
+		await test.step('Inform from Kanban', async () => {
+			await projectsPage.goto();
+
+			await projectsPage.getProject(project.title).click();
+
+			await projectPage.tasksTab.click();
+
+			await tasksPage.tableViewButton.click();
+
+			await tasksPage.kanbanView.viewOption.click();
+
+			await dragAndDropElement({
+				dragTarget: tasksPage
+					.getKanbanColumn('In Progress')
+					.getByText(tasks[2].title, {exact: true}),
+				dropTarget: tasksPage.getKanbanColumn('Done'),
+			});
+
+			await waitForAlert(
+				page,
+				'Task was marked as done. 1 subtask is not done yet.',
+				{type: 'info'}
+			);
+		});
+	}
+);
+
+test(
+	'Informs once about open subtasks after a bulk Update State to Done',
+	{tag: ['@LPD-114770']},
+	async ({apiHelpers, page, tasksPage}) => {
+		const project = await apiHelpers.objectEntry.postObjectEntry(
+			{
+				title: getRandomString(),
+			},
+			cmpProject
+		);
+
+		const tasks = [];
+
+		for (let i = 0; i < 2; i++) {
+			const task = await apiHelpers.objectEntry.postObjectEntry(
+				{
+					r_cmpProjectToCMPTasks_c_cmpProjectId: project.id,
+					state: {key: 'inProgress'},
+					title: getRandomString(),
+				},
+				cmpTask,
+				project.scopeKey
+			);
+
+			await apiHelpers.objectEntry.postObjectEntry(
+				{
+					r_cmpProjectToCMPTasks_c_cmpProjectId: project.id,
+					r_cmpTaskToCMPTasks_c_cmpTaskId: task.id,
+					title: getRandomString(),
+				},
+				cmpTask,
+				project.scopeKey
+			);
+
+			tasks.push(task);
+		}
+
+		await tasksPage.goto();
+
+		await tasksPage.projectTasksTab.click();
+
+		for (const task of tasks) {
+			await tasksPage
+				.getItem(task.title)
+				.locator('input[title="Select Item"]')
+				.check();
+		}
+
+		await tasksPage.execBulkItemAction('Update State');
+
+		await tasksPage.updateStateSelector.click();
+
+		await page.getByRole('option', {name: 'Done'}).click();
+
+		await tasksPage.saveButton.click();
+
+		await waitForAlert(
+			page,
+			'Task was marked as done. 2 subtasks are not done yet.',
+			{
+				timeout: 30000,
+				type: 'info',
+			}
+		);
 	}
 );
