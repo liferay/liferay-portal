@@ -68,12 +68,12 @@ public class AccountEntryModelListener extends BaseModelListener<AccountEntry> {
 			}
 		}
 		else {
-			int accountOrders =
+			int count =
 				_commerceOrderLocalService.
 					getCommerceOrdersCountByCommerceAccountId(
 						accountEntry.getAccountEntryId());
 
-			if (accountOrders > 0) {
+			if (count > 0) {
 				throw new CommerceAccountOrdersException();
 			}
 		}
