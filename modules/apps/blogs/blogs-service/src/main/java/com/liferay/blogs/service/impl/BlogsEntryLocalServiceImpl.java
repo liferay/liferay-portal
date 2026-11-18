@@ -25,7 +25,9 @@ import com.liferay.blogs.service.base.BlogsEntryLocalServiceBaseImpl;
 import com.liferay.blogs.settings.BlogsGroupServiceSettings;
 import com.liferay.blogs.social.BlogsActivityKeys;
 import com.liferay.document.library.kernel.exception.NoSuchFileEntryException;
+import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
+import com.liferay.document.library.kernel.service.DLFileEntryLocalService;
 import com.liferay.expando.kernel.service.ExpandoRowLocalService;
 import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.friendly.url.constants.FriendlyURLEntryConstants;
@@ -41,6 +43,9 @@ import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.image.ImageToolUtil;
 import com.liferay.portal.kernel.comment.CommentManager;
+import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
+import com.liferay.portal.kernel.dao.orm.Property;
+import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryDefinition;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.image.ImageBag;
@@ -161,16 +166,29 @@ public class BlogsEntryLocalServiceImpl extends BlogsEntryLocalServiceBaseImpl {
 	@Override
 	public FileEntry addAttachmentFileEntry(
 			String externalReferenceCode, long userId, long groupId,
-			String fileName, String mimeType, InputStream inputStream)
+			long entryId, String fileName, String mimeType,
+			InputStream inputStream)
 		throws PortalException {
 
 		Folder folder = addAttachmentsFolder(userId, groupId);
 
 		return _portletFileRepository.addPortletFileEntry(
-			externalReferenceCode, groupId, userId, null, 0,
-			BlogsConstants.SERVICE_NAME, folder.getFolderId(), inputStream,
+			externalReferenceCode, groupId, userId, BlogsEntry.class.getName(),
+			entryId, BlogsConstants.SERVICE_NAME, folder.getFolderId(),
+			inputStream,
 			_getUniqueFileName(groupId, fileName, folder.getFolderId()),
 			mimeType, true);
+	}
+
+	@Override
+	public FileEntry addAttachmentFileEntry(
+			String externalReferenceCode, long userId, long groupId,
+			String fileName, String mimeType, InputStream inputStream)
+		throws PortalException {
+
+		return addAttachmentFileEntry(
+			externalReferenceCode, userId, groupId, 0, fileName, mimeType,
+			inputStream);
 	}
 
 	@Override
@@ -500,8 +518,8 @@ public class BlogsEntryLocalServiceImpl extends BlogsEntryLocalServiceBaseImpl {
 
 		FileEntry originalFileEntry =
 			_portletFileRepository.addPortletFileEntry(
-				groupId, userId, null, 0, BlogsConstants.SERVICE_NAME,
-				folder.getFolderId(), imageBytes,
+				groupId, userId, BlogsEntry.class.getName(), entryId,
+				BlogsConstants.SERVICE_NAME, folder.getFolderId(), imageBytes,
 				_getUniqueFileName(
 					groupId, imageSelector.getImageTitle(),
 					folder.getFolderId()),
@@ -668,6 +686,8 @@ public class BlogsEntryLocalServiceImpl extends BlogsEntryLocalServiceBaseImpl {
 			_portletFileRepository.deletePortletFileEntry(
 				smallImageFileEntryId);
 		}
+
+		_releaseAttachmentFileEntries(entry);
 
 		// Comment
 
@@ -2198,6 +2218,39 @@ public class BlogsEntryLocalServiceImpl extends BlogsEntryLocalServiceBaseImpl {
 		blogsEntryPersistence.update(entry);
 	}
 
+	private void _releaseAttachmentFileEntries(BlogsEntry entry)
+		throws PortalException {
+
+		ActionableDynamicQuery actionableDynamicQuery =
+			_dlFileEntryLocalService.getActionableDynamicQuery();
+
+		actionableDynamicQuery.setAddCriteriaMethod(
+			dynamicQuery -> {
+				Property classNameIdProperty = PropertyFactoryUtil.forName(
+					"classNameId");
+
+				dynamicQuery.add(
+					classNameIdProperty.eq(
+						_classNameLocalService.getClassNameId(
+							BlogsEntry.class)));
+
+				Property classPKProperty = PropertyFactoryUtil.forName(
+					"classPK");
+
+				dynamicQuery.add(classPKProperty.eq(entry.getEntryId()));
+			});
+		actionableDynamicQuery.setGroupId(entry.getGroupId());
+		actionableDynamicQuery.setPerformActionMethod(
+			(DLFileEntry dlFileEntry) -> {
+				dlFileEntry.setClassNameId(0);
+				dlFileEntry.setClassPK(0);
+
+				_dlFileEntryLocalService.updateDLFileEntry(dlFileEntry);
+			});
+
+		actionableDynamicQuery.performActions();
+	}
+
 	private String _sanitizeUrlTitle(String urlTitle) {
 		while (urlTitle.startsWith(StringPool.SLASH)) {
 			urlTitle = urlTitle.substring(1);
@@ -2394,6 +2447,9 @@ public class BlogsEntryLocalServiceImpl extends BlogsEntryLocalServiceBaseImpl {
 
 	@Reference
 	private ConfigurationProvider _configurationProvider;
+
+	@Reference
+	private DLFileEntryLocalService _dlFileEntryLocalService;
 
 	@Reference
 	private ExpandoRowLocalService _expandoRowLocalService;
