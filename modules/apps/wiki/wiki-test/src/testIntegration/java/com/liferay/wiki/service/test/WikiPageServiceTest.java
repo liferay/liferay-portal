@@ -28,6 +28,7 @@ import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.wiki.constants.WikiPageConstants;
 import com.liferay.wiki.model.WikiNode;
 import com.liferay.wiki.model.WikiPage;
+import com.liferay.wiki.service.WikiPageLocalService;
 import com.liferay.wiki.service.WikiPageService;
 import com.liferay.wiki.test.util.WikiTestUtil;
 
@@ -123,6 +124,48 @@ public class WikiPageServiceTest {
 		Assert.assertEquals(1, page.getAttachmentsFileEntriesCount());
 	}
 
+	@Test
+	@TestInfo("LPD-116205")
+	public void testUpdatePage() throws Exception {
+		WikiPage page = WikiTestUtil.addPage(
+			_group.getGroupId(), _node.getNodeId(), false);
+
+		_user = UserTestUtil.addUser();
+
+		PrincipalException.MustHavePermission mustHavePermission =
+			Assert.assertThrows(
+				PrincipalException.MustHavePermission.class,
+				() -> _updatePage(page.getTitle()));
+
+		Assert.assertArrayEquals(
+			new String[] {ActionKeys.UPDATE}, mustHavePermission.actionId);
+		Assert.assertEquals(
+			page.getResourcePrimKey(), mustHavePermission.resourceId);
+		Assert.assertEquals(
+			WikiPage.class.getName(), mustHavePermission.resourceName);
+
+		String title = RandomTestUtil.randomString();
+
+		mustHavePermission = Assert.assertThrows(
+			PrincipalException.MustHavePermission.class,
+			() -> _updatePage(title));
+
+		Assert.assertArrayEquals(
+			new String[] {ActionKeys.ADD_PAGE}, mustHavePermission.actionId);
+		Assert.assertEquals(_node.getNodeId(), mustHavePermission.resourceId);
+		Assert.assertEquals(
+			WikiNode.class.getName(), mustHavePermission.resourceName);
+
+		Assert.assertNull(
+			_wikiPageLocalService.fetchPage(_node.getNodeId(), title));
+
+		_userLocalService.addGroupUser(_group.getGroupId(), _user);
+
+		WikiPage newPage = _updatePage(title);
+
+		Assert.assertEquals(_user.getUserId(), newPage.getUserId());
+	}
+
 	private WikiPage _addPage() throws Exception {
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				_user, PermissionCheckerFactoryUtil.create(_user))) {
@@ -149,6 +192,17 @@ public class WikiPageServiceTest {
 		}
 	}
 
+	private WikiPage _updatePage(String title) throws Exception {
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_user, PermissionCheckerFactoryUtil.create(_user))) {
+
+			return _wikiPageService.updatePage(
+				_node.getNodeId(), title, 0, RandomTestUtil.randomString(),
+				RandomTestUtil.randomString(), false, "creole", null, null,
+				ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+		}
+	}
+
 	@DeleteAfterTestRun
 	private Group _group;
 
@@ -162,6 +216,9 @@ public class WikiPageServiceTest {
 
 	@Inject
 	private UserLocalService _userLocalService;
+
+	@Inject
+	private WikiPageLocalService _wikiPageLocalService;
 
 	@Inject
 	private WikiPageService _wikiPageService;
