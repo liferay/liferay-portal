@@ -1,5 +1,7 @@
 import Table from 'shared/components/table';
-import {compose, withPaginationBar, withToolbar} from 'shared/hoc';
+import withPaginationBar from './WithPaginationBar';
+import withToolbar from './WithToolbar';
+import {compose} from 'redux';
 import {withEmpty} from 'cerebro-shared/hocs/utils';
 import {withError, withLoading} from './util';
 
