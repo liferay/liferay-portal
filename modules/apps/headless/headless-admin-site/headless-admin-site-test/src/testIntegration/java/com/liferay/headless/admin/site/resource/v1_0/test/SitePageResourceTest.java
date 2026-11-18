@@ -402,7 +402,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 	@FeatureFlag("LPD-38869")
 	@Override
 	@Test
-	@TestInfo({"LPD-83094", "LPD-101791"})
+	@TestInfo({"LPD-83094", "LPD-101791", "LPD-116313"})
 	public void testPostSiteSitePage() throws Exception {
 		super.testPostSiteSitePage();
 
@@ -3828,7 +3828,8 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		sitemapSettings.setPagePriority(RandomTestUtil.randomDouble() + 1);
 
 		_assertProblemException(
-			"The sitemap page priority must be between 0 and 1",
+			"pageSettings.seoSettings.sitemapSettings.pagePriority must be " +
+				"less than or equal to 1\n",
 			() -> sitePageResource.postSiteSitePage(
 				testGroup.getExternalReferenceCode(), false, sitePage));
 	}
