@@ -23,4 +23,4 @@ const SitesApp: React.FC<ISitesAppProps> = (props) => (
 	/>
 );
 
-export default SitesApp;
+export {SitesApp as Sites};

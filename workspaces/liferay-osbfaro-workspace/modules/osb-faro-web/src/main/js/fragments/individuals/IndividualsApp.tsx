@@ -37,4 +37,4 @@ const IndividualsApp: React.FC<IIndividualsAppProps> = (props) => (
 	/>
 );
 
-export default IndividualsApp;
+export {IndividualsApp as Individuals};

@@ -27,4 +27,4 @@ const AccountsApp: React.FC<IAccountsAppProps> = (props) => (
 	/>
 );
 
-export default AccountsApp;
+export {AccountsApp as Accounts};

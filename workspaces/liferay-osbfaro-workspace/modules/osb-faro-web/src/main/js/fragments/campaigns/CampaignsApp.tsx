@@ -32,4 +32,4 @@ const CampaignsApp: React.FC<ICampaignsAppProps> = (props) => (
 	/>
 );
 
-export default CampaignsApp;
+export {CampaignsApp as Campaigns};

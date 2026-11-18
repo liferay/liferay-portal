@@ -23,4 +23,4 @@ const TestsApp: React.FC<ITestsAppProps> = (props) => (
 	/>
 );
 
-export default TestsApp;
+export {TestsApp as Tests};

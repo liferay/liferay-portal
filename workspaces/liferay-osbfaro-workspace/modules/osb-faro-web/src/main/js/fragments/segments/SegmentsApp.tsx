@@ -21,4 +21,4 @@ const SegmentsApp: React.FC<ISegmentsAppProps> = (props) => (
 	/>
 );
 
-export default SegmentsApp;
+export {SegmentsApp as Segments};

@@ -23,4 +23,4 @@ const AssetsApp: React.FC<IAssetsAppProps> = (props) => (
 	/>
 );
 
-export default AssetsApp;
+export {AssetsApp as Assets};

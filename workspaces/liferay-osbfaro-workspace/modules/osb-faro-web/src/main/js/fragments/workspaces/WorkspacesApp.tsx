@@ -39,4 +39,4 @@ const WorkspacesApp = () => {
 	);
 };
 
-export default WorkspacesApp;
+export {WorkspacesApp as Workspaces};

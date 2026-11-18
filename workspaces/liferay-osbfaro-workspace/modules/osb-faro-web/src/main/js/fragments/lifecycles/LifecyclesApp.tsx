@@ -42,4 +42,4 @@ const LifecyclesApp: React.FC<ILifecyclesAppProps> = (props) => (
 	/>
 );
 
-export default LifecyclesApp;
+export {LifecyclesApp as Lifecycles};

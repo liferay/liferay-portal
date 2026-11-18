@@ -26,4 +26,4 @@ const EventsApp: React.FC<IEventsAppProps> = (props) => (
 	/>
 );
 
-export default EventsApp;
+export {EventsApp as Events};

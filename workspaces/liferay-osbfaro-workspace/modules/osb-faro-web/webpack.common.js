@@ -24,9 +24,14 @@ const POLYFILLS = [
 ];
 
 function getComponentEntry(name) {
+	const appName = `${name.charAt(0).toUpperCase()}${name.slice(1)}App`;
+
 	return {
 		filename: '../__liferay__/[name].js',
-		import: [...POLYFILLS, resolveModule(`fragments/${name}/index.ts`)],
+		import: [
+			...POLYFILLS,
+			resolveModule(`fragments/${name}/${appName}.tsx`),
+		],
 		library: {
 			type: 'module',
 		},
