@@ -16,7 +16,8 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.service.CompanyLocalService;
+import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.HTTPTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
@@ -34,6 +35,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,6 +46,22 @@ import org.junit.runner.RunWith;
 @FeatureFlag("LPD-63311")
 @RunWith(Arquillian.class)
 public class ToolSetResourceTest extends BaseToolSetResourceTestCase {
+
+	@After
+	@Override
+	public void tearDown() throws Exception {
+		super.tearDown();
+
+		if (_company == null) {
+			return;
+		}
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				UserTestUtil.getAdminUser(_company.getCompanyId()))) {
+
+			_companyLocalService.deleteCompany(_company);
+		}
+	}
 
 	@Override
 	@Test
@@ -152,8 +170,10 @@ public class ToolSetResourceTest extends BaseToolSetResourceTestCase {
 		return toolSetNames;
 	}
 
-	@DeleteAfterTestRun
 	private Company _company;
+
+	@Inject
+	private CompanyLocalService _companyLocalService;
 
 	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;

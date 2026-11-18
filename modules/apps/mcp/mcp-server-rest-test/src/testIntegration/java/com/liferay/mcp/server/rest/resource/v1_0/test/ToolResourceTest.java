@@ -22,6 +22,8 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.CompanyLocalService;
+import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.HTTPTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -44,6 +46,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -56,6 +59,22 @@ import org.skyscreamer.jsonassert.JSONAssert;
 @FeatureFlag("LPD-63311")
 @RunWith(Arquillian.class)
 public class ToolResourceTest extends BaseToolResourceTestCase {
+
+	@After
+	@Override
+	public void tearDown() throws Exception {
+		super.tearDown();
+
+		if (_company == null) {
+			return;
+		}
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				UserTestUtil.getAdminUser(_company.getCompanyId()))) {
+
+			_companyLocalService.deleteCompany(_company);
+		}
+	}
 
 	@Override
 	@Test
@@ -130,9 +149,9 @@ public class ToolResourceTest extends BaseToolResourceTestCase {
 			null, objectDefinitionName, objectFieldName,
 			TestPropsValues.getUserId());
 
-		Company company = CompanyTestUtil.addCompany();
+		_company = CompanyTestUtil.addCompany();
 
-		User user = UserTestUtil.getAdminUser(company.getCompanyId());
+		User user = UserTestUtil.getAdminUser(_company.getCompanyId());
 
 		String otherObjectFieldName = "a" + RandomTestUtil.randomString(8);
 
@@ -168,7 +187,7 @@ public class ToolResourceTest extends BaseToolResourceTestCase {
 								"/tools/post",
 								companyObjectDefinition.getShortName()),
 							HashMapBuilder.put(
-								"Host", company.getVirtualHostname()
+								"Host", _company.getVirtualHostname()
 							).build(),
 							Http.Method.GET)),
 					"JSONObject/inputSchema", "JSONObject/properties",
@@ -412,6 +431,11 @@ public class ToolResourceTest extends BaseToolResourceTestCase {
 				"JSONObject/properties"),
 			true);
 	}
+
+	private Company _company;
+
+	@Inject
+	private CompanyLocalService _companyLocalService;
 
 	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
