@@ -18,6 +18,7 @@ argoWorkflows:
     enabled: true
     gateway:
         annotations: {}
+        backendTrafficPolicySpec: {}
         clientTrafficPolicySpec: {}
         enabled: false
         envoyProxy:
@@ -81,6 +82,7 @@ argoWorkflows:
 argocd:
     gateway:
         annotations: {}
+        backendTrafficPolicySpec: {}
         clientTrafficPolicySpec: {}
         enabled: false
         envoyProxy:

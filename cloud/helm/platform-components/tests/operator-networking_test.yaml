@@ -72,6 +72,41 @@ tests:
                     count: 6
             -   documentIndex: 0
                 isKind:
+                    of: BackendTrafficPolicy
+            -   documentIndex: 0
+                equal:
+                    path: metadata.name
+                    value: argo-workflows-server-backend-traffic-policy
+            -   documentIndex: 0
+                equal:
+                    path: metadata.namespace
+                    value: argo-workflows-system
+            -   documentIndex: 0
+                equal:
+                    path: spec
+                    value:
+                        targetRefs:
+                            -   group: gateway.networking.k8s.io
+                                kind: HTTPRoute
+                                name: argo-workflows-server-route
+                        timeout:
+                            http:
+                                requestTimeout: 120s
+        it: Attaches the backend traffic policy to the server route when one is configured
+        set:
+            argoWorkflows:
+                gateway:
+                    backendTrafficPolicySpec:
+                        timeout:
+                            http:
+                                requestTimeout: 120s
+                    enabled: true
+                    hostname: workflows.liferay.test
+    -   asserts:
+            -   hasDocuments:
+                    count: 6
+            -   documentIndex: 0
+                isKind:
                     of: ClientTrafficPolicy
             -   documentIndex: 0
                 equal:

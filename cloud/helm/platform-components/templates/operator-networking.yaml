@@ -48,6 +48,26 @@ spec:
                     app.kubernetes.io/name: {{ $gateway.name }}-server-tls
             type: kubernetes.io/tls
 {{- end }}
+{{- with $gateway.values.backendTrafficPolicySpec }}
+---
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: BackendTrafficPolicy
+metadata:
+    annotations:
+        argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+        argocd.argoproj.io/sync-wave: "-90"
+    labels:
+        {{- include "liferay-platform.labels" $ | nindent 8 }}
+        app.kubernetes.io/name: {{ $gateway.name }}-server-backend-traffic-policy
+    name: {{ $gateway.name }}-server-backend-traffic-policy
+    namespace: {{ $gateway.namespace }}
+spec:
+    {{- toYaml . | nindent 4 }}
+    targetRefs:
+        -   group: gateway.networking.k8s.io
+            kind: HTTPRoute
+            name: {{ $gateway.name }}-server-route
+{{- end }}
 {{- with $gateway.values.clientTrafficPolicySpec }}
 ---
 apiVersion: gateway.envoyproxy.io/v1alpha1
