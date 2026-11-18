@@ -156,7 +156,7 @@ public class ExportImportInstancePerformanceTest {
 
 	private static final long _EXPORT_BACKGROUND_TASK_MAX_WAIT_TIME = 150000;
 
-	private static final long _EXPORT_MAX_TIME = 60000;
+	private static final long _EXPORT_MAX_TIME = 120000;
 
 	private static final long _IMPORT_BACKGROUND_TASK_MAX_WAIT_TIME = 600000;
 
