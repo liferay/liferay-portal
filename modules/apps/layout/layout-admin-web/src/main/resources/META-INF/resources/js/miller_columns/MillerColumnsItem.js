@@ -529,7 +529,7 @@ const MillerColumnsItem = ({
 									)}
 								>
 									<ClayIcon
-										className="text-4 text-primary"
+										className="mt-0 text-4 text-primary"
 										symbol="arrow-split"
 									/>
 								</span>
