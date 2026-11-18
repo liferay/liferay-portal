@@ -109,15 +109,6 @@ public class AccountRoleModelResourcePermission
 				group, AccountRole.class.getName(), 0L, actionId);
 		}
 
-		Role role = accountRole.getRole();
-
-		if (permissionChecker.hasOwnerPermission(
-				permissionChecker.getCompanyId(), AccountRole.class.getName(),
-				accountRoleId, role.getUserId(), actionId)) {
-
-			return true;
-		}
-
 		long accountRoleAccountEntryId = accountRole.getAccountEntryId();
 
 		if ((accountRoleAccountEntryId >
@@ -127,6 +118,18 @@ public class AccountRoleModelResourcePermission
 			!Objects.equals(accountRoleAccountEntryId, contextAccountEntryId)) {
 
 			return false;
+		}
+
+		Role role = accountRole.getRole();
+
+		if ((Objects.equals(accountRoleAccountEntryId, contextAccountEntryId) ||
+			 (contextAccountEntryId ==
+				 AccountConstants.ACCOUNT_ENTRY_ID_DEFAULT)) &&
+			permissionChecker.hasOwnerPermission(
+				permissionChecker.getCompanyId(), AccountRole.class.getName(),
+				accountRoleId, role.getUserId(), actionId)) {
+
+			return true;
 		}
 
 		for (long accountEntryId :
