@@ -522,6 +522,16 @@ public class FragmentEntryServicePermissionTest {
 	}
 
 	@Test
+	@TestInfo("LPD-116159")
+	public void testMoveFragmentEntry() throws Exception {
+		_group2 = GroupTestUtil.addGroup();
+
+		_setRolePermissions(FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
+
+		_testMoveFragmentEntryWithFragmentCollectionFromAnotherGroup();
+	}
+
+	@Test
 	public void testMoveFragmentEntryWithPermissions() throws Exception {
 		FragmentEntry fragmentEntry = FragmentEntryTestUtil.addFragmentEntry(
 			_fragmentCollection.getFragmentCollectionId());
@@ -584,6 +594,7 @@ public class FragmentEntryServicePermissionTest {
 
 		_setRolePermissions(FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
 
+		_testUpdateFragmentEntryValuesWithFragmentCollectionFromAnotherGroup();
 		_testUpdateFragmentEntryWithFragmentEntryFromAnotherGroup();
 	}
 
@@ -811,6 +822,36 @@ public class FragmentEntryServicePermissionTest {
 			siteMemberRole.getRoleId(), permissionType);
 	}
 
+	private void _testMoveFragmentEntryWithFragmentCollectionFromAnotherGroup()
+		throws Exception {
+
+		UserTestUtil.setUser(TestPropsValues.getUser());
+
+		FragmentEntry fragmentEntry = FragmentEntryTestUtil.addFragmentEntry(
+			_fragmentCollection.getFragmentCollectionId());
+
+		FragmentCollection fragmentCollection =
+			FragmentTestUtil.addFragmentCollection(_group2.getGroupId());
+
+		UserTestUtil.setUser(_user);
+
+		try {
+			_fragmentEntryService.moveFragmentEntry(
+				fragmentEntry.getFragmentEntryId(),
+				fragmentCollection.getFragmentCollectionId());
+
+			Assert.fail();
+		}
+		catch (IllegalArgumentException illegalArgumentException) {
+			Assert.assertEquals(
+				StringBundler.concat(
+					"Fragment collection ",
+					fragmentCollection.getFragmentCollectionId(),
+					" does not belong to group ", _group1.getGroupId()),
+				illegalArgumentException.getMessage());
+		}
+	}
+
 	private void _testPublishDraftWithFragmentEntryFromAnotherGroup()
 		throws Exception {
 
@@ -958,6 +999,42 @@ public class FragmentEntryServicePermissionTest {
 			draftFragmentEntry);
 
 		Assert.assertEquals(html, updatedFragmentEntry.getHtml());
+	}
+
+	private void _testUpdateFragmentEntryValuesWithFragmentCollectionFromAnotherGroup()
+		throws Exception {
+
+		UserTestUtil.setUser(TestPropsValues.getUser());
+
+		FragmentEntry fragmentEntry = FragmentEntryTestUtil.addFragmentEntry(
+			_fragmentCollection.getFragmentCollectionId());
+
+		FragmentCollection fragmentCollection =
+			FragmentTestUtil.addFragmentCollection(_group2.getGroupId());
+
+		UserTestUtil.setUser(_user);
+
+		try {
+			_fragmentEntryService.updateFragmentEntry(
+				fragmentEntry.getFragmentEntryId(),
+				fragmentCollection.getFragmentCollectionId(),
+				RandomTestUtil.randomString(), StringPool.BLANK,
+				RandomTestUtil.randomString(), StringPool.BLANK,
+				fragmentEntry.isCacheable(), "{\n\t\"fieldSets\": [\n\t]\n}",
+				fragmentEntry.getIcon(), fragmentEntry.getPreviewFileEntryId(),
+				false, fragmentEntry.getTypeOptions(),
+				WorkflowConstants.STATUS_APPROVED);
+
+			Assert.fail();
+		}
+		catch (IllegalArgumentException illegalArgumentException) {
+			Assert.assertEquals(
+				StringBundler.concat(
+					"Fragment collection ",
+					fragmentCollection.getFragmentCollectionId(),
+					" does not belong to group ", _group1.getGroupId()),
+				illegalArgumentException.getMessage());
+		}
 	}
 
 	private void _testUpdateFragmentEntryWithFragmentEntryFromAnotherGroup()
