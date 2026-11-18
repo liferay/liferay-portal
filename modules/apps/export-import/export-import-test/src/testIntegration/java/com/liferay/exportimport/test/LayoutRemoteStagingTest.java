@@ -71,7 +71,7 @@ import org.junit.runner.RunWith;
  * @author Brian Wulbern
  */
 @RunWith(Arquillian.class)
-public class LayoutRemoteStagingExportImportTest {
+public class LayoutRemoteStagingTest {
 
 	@ClassRule
 	@Rule
