@@ -75,6 +75,10 @@ public class DDMRESTDataProviderTest {
 
 	@Test
 	public void testGetData() throws Exception {
+		DDMDataProviderInstanceLocalService
+			ddmDataProviderInstanceLocalService = Mockito.mock(
+				DDMDataProviderInstanceLocalService.class);
+
 		DDMDataProviderInstance ddmDataProviderInstance = Mockito.mock(
 			DDMDataProviderInstance.class);
 
@@ -93,10 +97,6 @@ public class DDMRESTDataProviderTest {
 		).thenReturn(
 			dataProviderInstanceId
 		);
-
-		DDMDataProviderInstanceLocalService
-			ddmDataProviderInstanceLocalService = Mockito.mock(
-				DDMDataProviderInstanceLocalService.class);
 
 		Mockito.when(
 			ddmDataProviderInstanceLocalService.getDDMDataProviderInstance(
