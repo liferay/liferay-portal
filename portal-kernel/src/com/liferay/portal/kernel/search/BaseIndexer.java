@@ -1575,6 +1575,10 @@ public abstract class BaseIndexer<T> implements Indexer<T> {
 	private static final Snapshot<AddSearchKeywordsQueryContributor>
 		_addSearchKeywordsQueryContributorSnapshot = new Snapshot<>(
 			BaseIndexer.class, AddSearchKeywordsQueryContributor.class);
+	private static final ServiceTrackerList<DocumentContributor<?>>
+		_documentContributors = ServiceTrackerListFactory.open(
+			SystemBundleUtil.getBundleContext(),
+			(Class<DocumentContributor<?>>)(Class<?>)DocumentContributor.class);
 	private static final Snapshot<ExpandoQueryContributor>
 		_expandoQueryContributorSnapshot = new Snapshot<>(
 			BaseIndexer.class, ExpandoQueryContributor.class);
@@ -1592,10 +1596,6 @@ public abstract class BaseIndexer<T> implements Indexer<T> {
 	private String[] _defaultSelectedFieldNames;
 	private String[] _defaultSelectedLocalizedFieldNames;
 	private final Document _document = new DocumentImpl();
-	private final ServiceTrackerList<DocumentContributor<?>>
-		_documentContributors = ServiceTrackerListFactory.open(
-			SystemBundleUtil.getBundleContext(),
-			(Class<DocumentContributor<?>>)(Class<?>)DocumentContributor.class);
 	private boolean _filterSearch;
 	private Boolean _indexerEnabled;
 	private boolean _permissionAware;
