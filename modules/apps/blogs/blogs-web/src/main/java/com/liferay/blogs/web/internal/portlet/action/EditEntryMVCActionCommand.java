@@ -435,8 +435,8 @@ public class EditEntryMVCActionCommand extends BaseMVCActionCommand {
 			content, ContentTypes.TEXT_HTML,
 			tempFileEntry -> _blogsEntryLocalService.addAttachmentFileEntry(
 				null, themeDisplay.getUserId(), entry.getGroupId(),
-				tempFileEntry.getTitle(), tempFileEntry.getMimeType(),
-				tempFileEntry.getContentStream()));
+				entry.getEntryId(), tempFileEntry.getTitle(),
+				tempFileEntry.getMimeType(), tempFileEntry.getContentStream()));
 	}
 
 	private BlogsEntry _updateEntry(ActionRequest actionRequest)
