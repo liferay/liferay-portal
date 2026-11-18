@@ -247,12 +247,12 @@ describe('Kanban Task', () => {
 		expect(mockOpenCMPModal).toHaveBeenCalledTimes(1);
 	});
 
-	it('opens delete modal', () => {
+	it('opens delete modal', async () => {
 		const {getByText} = renderTask();
 
 		fireEvent.click(getByText('delete'));
 
-		expect(mockOpenCMPModal).toHaveBeenCalledTimes(1);
+		await waitFor(() => expect(mockOpenCMPModal).toHaveBeenCalledTimes(1));
 	});
 
 	it('opens update due date modal', () => {
