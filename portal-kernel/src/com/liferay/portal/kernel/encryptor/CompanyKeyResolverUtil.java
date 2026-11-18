@@ -80,7 +80,7 @@ public class CompanyKeyResolverUtil {
 				FIPSApplicationStateMachineUtil.error(
 					"Default company key rotation",
 					new CompanyKeyException(
-						"Unable to rotate the key of the default company " +
+						"Unable to rotate the key for the default company " +
 							companyId,
 						throwable));
 			}
@@ -88,7 +88,8 @@ public class CompanyKeyResolverUtil {
 			_log.error(
 				StringBundler.concat(
 					"Unable to rotate the key for company ", companyId,
-					". The key is refused until a later start rotates it."),
+					". The key is not allowed until a later startup rotates ",
+					"it."),
 				throwable);
 		}
 	}
@@ -97,9 +98,9 @@ public class CompanyKeyResolverUtil {
 		if (!_isAllowedKey(keyString)) {
 			throw new CompanyKeyException(
 				StringBundler.concat(
-					"The key of company ", companyId,
-					" was not generated in FIPS mode and is refused until a ",
-					"FIPS start rotates it"));
+					"The key for company ", companyId,
+					" was not generated in FIPS mode and is not allowed until ",
+					"a startup in FIPS mode rotates it"));
 		}
 
 		keyString = _getInnerKeyString(keyString);
