@@ -55,24 +55,54 @@ public class AccountRoleModelResourcePermissionTest {
 
 	@Test
 	public void testAccountRolePermissions() throws Exception {
-		AccountEntry accountEntry = AccountEntryTestUtil.addAccountEntry();
+		AccountEntry accountEntry1 = AccountEntryTestUtil.addAccountEntry();
 
 		AccountRole ownedAccountRole = _accountRoleLocalService.addAccountRole(
 			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
-			accountEntry.getAccountEntryId(), RandomTestUtil.randomString(),
+			accountEntry1.getAccountEntryId(), RandomTestUtil.randomString(),
 			null, null);
 
-		_testPermissions(Assert::assertTrue, accountEntry, ownedAccountRole);
+		_testPermissions(Assert::assertTrue, accountEntry1, ownedAccountRole);
 
-		AccountEntry accountEntryB = AccountEntryTestUtil.addAccountEntry();
+		User user = UserTestUtil.addUser();
+
+		PermissionChecker permissionChecker =
+			PermissionCheckerFactoryUtil.create(user);
+
+		AccountRole userSharedAccountRole =
+			_accountRoleLocalService.addAccountRole(
+				RandomTestUtil.randomString(), user.getUserId(),
+				AccountConstants.ACCOUNT_ENTRY_ID_DEFAULT,
+				RandomTestUtil.randomString(), null, null);
+
+		Assert.assertTrue(
+			_accountRoleModelResourcePermission.contains(
+				permissionChecker, userSharedAccountRole,
+				AccountActionKeys.ASSIGN_USERS));
+
+		AccountEntry accountEntry2 = AccountEntryTestUtil.addAccountEntry();
+
+		AccountRole userAccountRole = _accountRoleLocalService.addAccountRole(
+			RandomTestUtil.randomString(), user.getUserId(),
+			accountEntry1.getAccountEntryId(), RandomTestUtil.randomString(),
+			null, null);
 
 		try (SafeCloseable safeCloseable =
 				AccountRolePermissionThreadLocal.
 					setAccountEntryIdWithSafeCloseable(
-						accountEntryB.getAccountEntryId())) {
+						accountEntry2.getAccountEntryId())) {
+
+			Assert.assertFalse(
+				_accountRoleModelResourcePermission.contains(
+					permissionChecker, userAccountRole,
+					AccountActionKeys.ASSIGN_USERS));
+			Assert.assertFalse(
+				_accountRoleModelResourcePermission.contains(
+					permissionChecker, userSharedAccountRole,
+					AccountActionKeys.ASSIGN_USERS));
 
 			_testPermissions(
-				Assert::assertFalse, accountEntry, ownedAccountRole);
+				Assert::assertFalse, accountEntry1, ownedAccountRole);
 		}
 
 		AccountRole sharedAccountRole = _accountRoleLocalService.addAccountRole(
@@ -80,15 +110,20 @@ public class AccountRoleModelResourcePermissionTest {
 			AccountConstants.ACCOUNT_ENTRY_ID_DEFAULT,
 			RandomTestUtil.randomString(), null, null);
 
-		_testPermissions(Assert::assertFalse, accountEntry, sharedAccountRole);
+		_testPermissions(Assert::assertFalse, accountEntry1, sharedAccountRole);
 
 		try (SafeCloseable safeCloseable =
 				AccountRolePermissionThreadLocal.
 					setAccountEntryIdWithSafeCloseable(
-						accountEntry.getAccountEntryId())) {
+						accountEntry1.getAccountEntryId())) {
+
+			Assert.assertTrue(
+				_accountRoleModelResourcePermission.contains(
+					permissionChecker, userAccountRole,
+					AccountActionKeys.ASSIGN_USERS));
 
 			_testPermissions(
-				Assert::assertTrue, accountEntry, sharedAccountRole);
+				Assert::assertTrue, accountEntry1, sharedAccountRole);
 		}
 	}
 
