@@ -17,6 +17,9 @@ public interface CommerceRoleHelper {
 	public void checkCommerceAccountRoles(ServiceContext serviceContext)
 		throws PortalException;
 
+	public void checkCommerceReturnsRoles(ServiceContext serviceContext)
+		throws PortalException;
+
 	public void checkCommerceUserRoles(ServiceContext serviceContext)
 		throws PortalException;
 

@@ -110,6 +110,22 @@ public class CommerceRoleHelperImpl implements CommerceRoleHelper {
 	}
 
 	@Override
+	public void checkCommerceReturnsRoles(ServiceContext serviceContext)
+		throws PortalException {
+
+		for (String name : _RETURNS_ROLE_NAMES) {
+			Role role = _roleLocalService.fetchRole(
+				serviceContext.getCompanyId(), name);
+
+			if (role == null) {
+				continue;
+			}
+
+			_setRolePermissions(role, serviceContext);
+		}
+	}
+
+	@Override
 	public void checkCommerceUserRoles(ServiceContext serviceContext)
 		throws PortalException {
 
@@ -773,6 +789,13 @@ public class CommerceRoleHelperImpl implements CommerceRoleHelper {
 
 	private static final String[] _RETURNS_MANAGER_OBJECT_DEFINITION_NAMES = {
 		"CommerceReturn", "CommerceReturnItem"
+	};
+
+	private static final String[] _RETURNS_ROLE_NAMES = {
+		AccountRoleConstants.REQUIRED_ROLE_NAME_ACCOUNT_ADMINISTRATOR,
+		AccountRoleConstants.ROLE_NAME_ACCOUNT_BUYER,
+		AccountRoleConstants.ROLE_NAME_ACCOUNT_ORDER_MANAGER,
+		AccountRoleConstants.ROLE_NAME_RETURNS_MANAGER, RoleConstants.USER
 	};
 
 	private static final String[] _SUPPLIER_CONTROL_PANEL_PORTLET_IDS = {
