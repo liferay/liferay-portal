@@ -56,7 +56,6 @@ import com.liferay.object.related.models.ObjectRelatedModelsPredicateProvider;
 import com.liferay.object.related.models.ObjectRelatedModelsProviderRegistryUtil;
 import com.liferay.object.rest.context.path.RESTContextPathResolver;
 import com.liferay.object.scope.ObjectScopeProviderRegistry;
-import com.liferay.object.search.RootObjectEntryFolderObjectEntryModelDocumentContributorRegistry;
 import com.liferay.object.service.ObjectActionLocalService;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectDefinitionSettingLocalService;
@@ -72,6 +71,7 @@ import com.liferay.object.service.ObjectViewLocalService;
 import com.liferay.object.tree.Node;
 import com.liferay.object.tree.ObjectDefinitionTreeFactory;
 import com.liferay.object.tree.Tree;
+import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -163,9 +163,9 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 		PortletLocalService portletLocalService,
 		ResourceActions resourceActions, UserLocalService userLocalService,
 		ResourcePermissionLocalService resourcePermissionLocalService,
-		RootObjectEntryFolderObjectEntryModelDocumentContributorRegistry
-			rootObjectEntryFolderObjectEntryModelDocumentContributorRegistry,
 		SearchLocalizationHelper searchLocalizationHelper,
+		ServiceTrackerMap<String, List<ModelDocumentContributor<ObjectEntry>>>
+			serviceTrackerMap,
 		SharingModelResourcePermissionConfigurator
 			sharingModelResourcePermissionConfigurator,
 		SystemEventLocalService systemEventLocalService,
@@ -207,9 +207,8 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 		_resourceActions = resourceActions;
 		_userLocalService = userLocalService;
 		_resourcePermissionLocalService = resourcePermissionLocalService;
-		_rootObjectEntryFolderObjectEntryModelDocumentContributorRegistry =
-			rootObjectEntryFolderObjectEntryModelDocumentContributorRegistry;
 		_searchLocalizationHelper = searchLocalizationHelper;
+		_serviceTrackerMap = serviceTrackerMap;
 		_sharingModelResourcePermissionConfigurator =
 			sharingModelResourcePermissionConfigurator;
 		_systemEventLocalService = systemEventLocalService;
@@ -362,8 +361,7 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 						_accountEntryOrganizationRelLocalService,
 						_dlFileEntryLocalService, _dlFileEntryTextProvider,
 						_objectEntryFolderLocalService,
-						_objectFieldBusinessTypeRegistry,
-						_rootObjectEntryFolderObjectEntryModelDocumentContributorRegistry,
+						_objectFieldBusinessTypeRegistry, _serviceTrackerMap,
 						_textEmbeddingDocumentContributor),
 					HashMapDictionaryBuilder.<String, Object>put(
 						"indexer.class.name", objectDefinition.getClassName()
@@ -755,12 +753,12 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 	private final ResourceActions _resourceActions;
 	private final ResourcePermissionLocalService
 		_resourcePermissionLocalService;
-	private final
-		RootObjectEntryFolderObjectEntryModelDocumentContributorRegistry
-			_rootObjectEntryFolderObjectEntryModelDocumentContributorRegistry;
 	private final SearchLocalizationHelper _searchLocalizationHelper;
 	private final Map<String, List<ServiceRegistration<?>>>
 		_serviceRegistrations = new ConcurrentHashMap<>();
+	private final ServiceTrackerMap
+		<String, List<ModelDocumentContributor<ObjectEntry>>>
+			_serviceTrackerMap;
 	private final SharingModelResourcePermissionConfigurator
 		_sharingModelResourcePermissionConfigurator;
 	private final SystemEventLocalService _systemEventLocalService;
