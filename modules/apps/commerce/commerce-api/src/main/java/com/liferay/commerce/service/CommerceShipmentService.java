@@ -68,6 +68,11 @@ public interface CommerceShipmentService extends BaseService {
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public CommerceShipment getCommerceShipment(
+			long groupId, long commerceShipmentId)
+		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CommerceShipment> getCommerceShipments(
 			long companyId, int status, int start, int end,
 			OrderByComparator<CommerceShipment> orderByComparator)
@@ -184,4 +189,4 @@ public interface CommerceShipmentService extends BaseService {
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1057606236
+// LIFERAY-SERVICE-BUILDER-HASH:840608334

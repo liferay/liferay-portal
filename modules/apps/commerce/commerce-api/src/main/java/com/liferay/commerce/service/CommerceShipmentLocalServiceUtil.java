@@ -337,6 +337,14 @@ public class CommerceShipmentLocalServiceUtil {
 	}
 
 	public static List<CommerceShipment> getCommerceShipments(
+		long groupId, long commerceAccountId, int start, int end,
+		OrderByComparator<CommerceShipment> orderByComparator) {
+
+		return getService().getCommerceShipments(
+			groupId, commerceAccountId, start, end, orderByComparator);
+	}
+
+	public static List<CommerceShipment> getCommerceShipments(
 			long companyId, long[] groupIds, long[] commerceAccountIds,
 			String keywords, int[] shipmentStatuses,
 			boolean excludeShipmentStatus, int start, int end)
@@ -414,6 +422,13 @@ public class CommerceShipmentLocalServiceUtil {
 
 	public static int getCommerceShipmentsCount(long commerceOrderId) {
 		return getService().getCommerceShipmentsCount(commerceOrderId);
+	}
+
+	public static int getCommerceShipmentsCount(
+		long groupId, long commerceAccountId) {
+
+		return getService().getCommerceShipmentsCount(
+			groupId, commerceAccountId);
 	}
 
 	public static int getCommerceShipmentsCount(
@@ -630,4 +645,4 @@ public class CommerceShipmentLocalServiceUtil {
 			CommerceShipmentLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-600379210
+// LIFERAY-SERVICE-BUILDER-HASH:573429282

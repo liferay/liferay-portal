@@ -291,6 +291,11 @@ public interface CommerceShipmentLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CommerceShipment> getCommerceShipments(
+		long groupId, long commerceAccountId, int start, int end,
+		OrderByComparator<CommerceShipment> orderByComparator);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<CommerceShipment> getCommerceShipments(
 			long companyId, long[] groupIds, long[] commerceAccountIds,
 			String keywords, int[] shipmentStatuses,
 			boolean excludeShipmentStatus, int start, int end)
@@ -347,6 +352,9 @@ public interface CommerceShipmentLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getCommerceShipmentsCount(long commerceOrderId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int getCommerceShipmentsCount(long groupId, long commerceAccountId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getCommerceShipmentsCount(
@@ -476,4 +484,4 @@ public interface CommerceShipmentLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1195127136
+// LIFERAY-SERVICE-BUILDER-HASH:-1121881828

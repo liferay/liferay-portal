@@ -81,6 +81,15 @@ public class CommerceShipmentServiceWrapper
 	}
 
 	@Override
+	public com.liferay.commerce.model.CommerceShipment getCommerceShipment(
+			long groupId, long commerceShipmentId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _commerceShipmentService.getCommerceShipment(
+			groupId, commerceShipmentId);
+	}
+
+	@Override
 	public java.util.List<com.liferay.commerce.model.CommerceShipment>
 			getCommerceShipments(
 				long companyId, int status, int start, int end,
@@ -338,4 +347,4 @@ public class CommerceShipmentServiceWrapper
 	private CommerceShipmentService _commerceShipmentService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-362710443
+// LIFERAY-SERVICE-BUILDER-HASH:965836711

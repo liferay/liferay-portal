@@ -385,6 +385,18 @@ public class CommerceShipmentLocalServiceWrapper
 
 	@Override
 	public java.util.List<com.liferay.commerce.model.CommerceShipment>
+		getCommerceShipments(
+			long groupId, long commerceAccountId, int start, int end,
+			com.liferay.portal.kernel.util.OrderByComparator
+				<com.liferay.commerce.model.CommerceShipment>
+					orderByComparator) {
+
+		return _commerceShipmentLocalService.getCommerceShipments(
+			groupId, commerceAccountId, start, end, orderByComparator);
+	}
+
+	@Override
+	public java.util.List<com.liferay.commerce.model.CommerceShipment>
 			getCommerceShipments(
 				long companyId, long[] groupIds, long[] commerceAccountIds,
 				String keywords, int[] shipmentStatuses,
@@ -484,6 +496,12 @@ public class CommerceShipmentLocalServiceWrapper
 	public int getCommerceShipmentsCount(long commerceOrderId) {
 		return _commerceShipmentLocalService.getCommerceShipmentsCount(
 			commerceOrderId);
+	}
+
+	@Override
+	public int getCommerceShipmentsCount(long groupId, long commerceAccountId) {
+		return _commerceShipmentLocalService.getCommerceShipmentsCount(
+			groupId, commerceAccountId);
 	}
 
 	@Override
@@ -741,4 +759,4 @@ public class CommerceShipmentLocalServiceWrapper
 	private CommerceShipmentLocalService _commerceShipmentLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-485336981
+// LIFERAY-SERVICE-BUILDER-HASH:-109738487
