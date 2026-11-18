@@ -13,6 +13,7 @@ import com.liferay.portal.events.EventsProcessorUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.RoleConstants;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.security.auth.AuthTokenUtil;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.servlet.PipingServletResponse;
 import com.liferay.portal.kernel.struts.StrutsAction;
@@ -20,6 +21,7 @@ import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsValues;
@@ -107,6 +109,9 @@ public class RenderFragmentEntryStrutsActionTest {
 
 		_processEvents(mockHttpServletRequest, mockHttpServletResponse, _user);
 
+		mockHttpServletRequest.setParameter(
+			"p_auth", AuthTokenUtil.getToken(mockHttpServletRequest));
+
 		_renderFragmentEntryStrutsAction.execute(
 			mockHttpServletRequest, pipingServletResponse);
 
@@ -145,6 +150,9 @@ public class RenderFragmentEntryStrutsActionTest {
 
 		_processEvents(mockHttpServletRequest, mockHttpServletResponse, _user);
 
+		mockHttpServletRequest.setParameter(
+			"p_auth", AuthTokenUtil.getToken(mockHttpServletRequest));
+
 		UnsyncStringWriter unsyncStringWriter = new UnsyncStringWriter();
 
 		_renderFragmentEntryStrutsAction.execute(
@@ -160,6 +168,30 @@ public class RenderFragmentEntryStrutsActionTest {
 				StringBundler.concat(
 					"<div class=\"scope-group-id\">", _group.getGroupId(),
 					"</div>")));
+	}
+
+	@Test(expected = PrincipalException.MustHaveSessionCSRFToken.class)
+	public void testRenderFragmentWithoutCSRFToken() throws Exception {
+		_user = UserTestUtil.addOmniadminUser();
+
+		UserTestUtil.setUser(_user);
+
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest(
+				Method.GET, "/portal/fragment/render_fragment_entry");
+
+		MockHttpServletResponse mockHttpServletResponse =
+			new MockHttpServletResponse();
+
+		_processEvents(mockHttpServletRequest, mockHttpServletResponse, _user);
+
+		mockHttpServletRequest.setParameter(
+			"groupId", String.valueOf(_group.getGroupId()));
+		mockHttpServletRequest.setParameter(
+			"html", "<div>" + RandomTestUtil.randomString() + "</div>");
+
+		_renderFragmentEntryStrutsAction.execute(
+			mockHttpServletRequest, mockHttpServletResponse);
 	}
 
 	@Test(expected = PrincipalException.class)
@@ -179,6 +211,8 @@ public class RenderFragmentEntryStrutsActionTest {
 
 		mockHttpServletRequest.setParameter(
 			"groupId", String.valueOf(_group.getGroupId()));
+		mockHttpServletRequest.setParameter(
+			"p_auth", AuthTokenUtil.getToken(mockHttpServletRequest));
 
 		_renderFragmentEntryStrutsAction.execute(
 			mockHttpServletRequest, mockHttpServletResponse);
