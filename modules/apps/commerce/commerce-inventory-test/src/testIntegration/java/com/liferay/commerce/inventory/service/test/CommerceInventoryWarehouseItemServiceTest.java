@@ -8,7 +8,9 @@ package com.liferay.commerce.inventory.service.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.commerce.inventory.constants.CommerceInventoryActionKeys;
 import com.liferay.commerce.inventory.constants.CommerceInventoryConstants;
+import com.liferay.commerce.inventory.exception.CommerceInventoryWarehouseItemCommerceInventoryWarehouseIdException;
 import com.liferay.commerce.inventory.model.CommerceInventoryWarehouse;
+import com.liferay.commerce.inventory.model.CommerceInventoryWarehouseItem;
 import com.liferay.commerce.inventory.service.CommerceInventoryWarehouseItemLocalService;
 import com.liferay.commerce.inventory.service.CommerceInventoryWarehouseItemService;
 import com.liferay.commerce.product.model.CPInstance;
@@ -22,6 +24,7 @@ import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
@@ -33,6 +36,7 @@ import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.BigDecimalUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -82,6 +86,126 @@ public class CommerceInventoryWarehouseItemServiceTest {
 		_user = UserTestUtil.addUser();
 
 		_roleLocalService.addUserRole(_user.getUserId(), _role);
+	}
+
+	@Test
+	public void testAddOrUpdateCommerceInventoryWarehouseItem()
+		throws Exception {
+
+		CommerceInventoryWarehouse commerceInventoryWarehouse =
+			CommerceInventoryTestUtil.addCommerceInventoryWarehouse(true);
+
+		CommerceInventoryWarehouseItem commerceInventoryWarehouseItem =
+			_commerceInventoryWarehouseItemLocalService.
+				addCommerceInventoryWarehouseItem(
+					RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+					commerceInventoryWarehouse.
+						getCommerceInventoryWarehouseId(),
+					BigDecimal.TEN, BigDecimal.ZERO, _cpInstance.getSku(),
+					StringPool.BLANK);
+
+		String externalReferenceCode =
+			commerceInventoryWarehouseItem.getExternalReferenceCode();
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_user, PermissionCheckerFactoryUtil.create(_user))) {
+
+			PrincipalException principalException = Assert.assertThrows(
+				PrincipalException.class,
+				() ->
+					_commerceInventoryWarehouseItemService.
+						addOrUpdateCommerceInventoryWarehouseItem(
+							externalReferenceCode, _user.getCompanyId(),
+							commerceInventoryWarehouse.
+								getCommerceInventoryWarehouseId(),
+							BigDecimal.ONE, BigDecimal.ZERO,
+							_cpInstance.getSku(), StringPool.BLANK));
+
+			_assertMessage(
+				ActionKeys.UPDATE, principalException.getMessage(),
+				_user.getUserId());
+
+			commerceInventoryWarehouseItem =
+				_commerceInventoryWarehouseItemLocalService.
+					getCommerceInventoryWarehouseItem(
+						commerceInventoryWarehouseItem.
+							getCommerceInventoryWarehouseItemId());
+
+			Assert.assertTrue(
+				BigDecimalUtil.eq(
+					BigDecimal.TEN,
+					commerceInventoryWarehouseItem.getQuantity()));
+
+			_resourcePermissionLocalService.setResourcePermissions(
+				_commerceInventoryWarehouse.getCompanyId(),
+				CommerceInventoryWarehouse.class.getName(),
+				ResourceConstants.SCOPE_INDIVIDUAL,
+				String.valueOf(
+					_commerceInventoryWarehouse.
+						getCommerceInventoryWarehouseId()),
+				_role.getRoleId(), new String[] {ActionKeys.UPDATE});
+
+			CommerceInventoryWarehouseItemCommerceInventoryWarehouseIdException
+				commerceInventoryWarehouseItemCommerceInventoryWarehouseIdException =
+					Assert.assertThrows(
+						CommerceInventoryWarehouseItemCommerceInventoryWarehouseIdException.class,
+						() ->
+							_commerceInventoryWarehouseItemService.
+								addOrUpdateCommerceInventoryWarehouseItem(
+									externalReferenceCode, _user.getCompanyId(),
+									_commerceInventoryWarehouse.
+										getCommerceInventoryWarehouseId(),
+									BigDecimal.ONE, BigDecimal.ZERO,
+									_cpInstance.getSku(), StringPool.BLANK));
+
+			Assert.assertEquals(
+				StringBundler.concat(
+					"Commerce inventory warehouse item with external ",
+					"reference code ", externalReferenceCode,
+					" does not belong to commerce inventory warehouse ",
+					_commerceInventoryWarehouse.
+						getCommerceInventoryWarehouseId()),
+				commerceInventoryWarehouseItemCommerceInventoryWarehouseIdException.
+					getMessage());
+
+			commerceInventoryWarehouseItem =
+				_commerceInventoryWarehouseItemLocalService.
+					getCommerceInventoryWarehouseItem(
+						commerceInventoryWarehouseItem.
+							getCommerceInventoryWarehouseItemId());
+
+			Assert.assertTrue(
+				BigDecimalUtil.eq(
+					BigDecimal.TEN,
+					commerceInventoryWarehouseItem.getQuantity()));
+
+			_resourcePermissionLocalService.setResourcePermissions(
+				commerceInventoryWarehouse.getCompanyId(),
+				CommerceInventoryWarehouse.class.getName(),
+				ResourceConstants.SCOPE_INDIVIDUAL,
+				String.valueOf(
+					commerceInventoryWarehouse.
+						getCommerceInventoryWarehouseId()),
+				_role.getRoleId(), new String[] {ActionKeys.UPDATE});
+
+			_commerceInventoryWarehouseItemService.
+				addOrUpdateCommerceInventoryWarehouseItem(
+					externalReferenceCode, _user.getCompanyId(),
+					commerceInventoryWarehouse.
+						getCommerceInventoryWarehouseId(),
+					BigDecimal.ONE, BigDecimal.ZERO, _cpInstance.getSku(),
+					StringPool.BLANK);
+		}
+
+		commerceInventoryWarehouseItem =
+			_commerceInventoryWarehouseItemLocalService.
+				getCommerceInventoryWarehouseItem(
+					commerceInventoryWarehouseItem.
+						getCommerceInventoryWarehouseItemId());
+
+		Assert.assertTrue(
+			BigDecimalUtil.eq(
+				BigDecimal.ONE, commerceInventoryWarehouseItem.getQuantity()));
 	}
 
 	@Test
