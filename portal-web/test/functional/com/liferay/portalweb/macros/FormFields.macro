@@ -5,8 +5,7 @@ definition {
 	@summary = "Default summary"
 	macro addParagraphLinkToAURL(paragraphLink = null) {
 		Click(
-			key_titleName = "Link",
-			locator1 = "FormFields#TOOLBAR_ANY_ITEM_BUTTON");
+			locator1 = "CKEditor#TOOLBAR_HYPERLINK_BUTTON");
 
 		SelectFrame.selectFrameNoLoading(locator1 = "FormFields#PARAGRAPH_LINK_MODAL");
 
@@ -46,8 +45,7 @@ definition {
 	@summary = "Default summary"
 	macro addTableInBodyParagraph() {
 		Click.clickNoMouseOver(
-			key_titleName = "Table",
-			locator1 = "FormFields#TOOLBAR_ANY_ITEM_BUTTON");
+			locator1 = "CKEditor#TOOLBAR_TABLE_BUTTON");
 
 		Click(locator1 = "CKEditor#OK_BUTTON");
 	}
@@ -1250,13 +1248,11 @@ definition {
 
 		SelectFrame();
 
-		WaitForElementPresent(
-			key_titleName = ${optionTool},
-			locator1 = "FormFields#TOOLBAR_ANY_ITEM_BUTTON");
+		var optionToolUppercase = StringUtil.upperCase(${optionTool});
 
-		Click(
-			key_titleName = ${optionTool},
-			locator1 = "FormFields#TOOLBAR_ANY_ITEM_BUTTON");
+		WaitForElementPresent(locator1 = "CKEditor#TOOLBAR_${optionToolUppercase}_BUTTON");
+
+		Click(locator1 = "CKEditor#TOOLBAR_${optionToolUppercase}_BUTTON");
 	}
 
 	@summary = "Default summary"

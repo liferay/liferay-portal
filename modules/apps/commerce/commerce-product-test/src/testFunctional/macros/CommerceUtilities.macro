@@ -9,8 +9,7 @@ definition {
 		CommerceEntry.addFullDescriptionViaCKEditor(entryFullDescription = ${sourceFullDescription});
 
 		Click(
-			key_titleName = "Source",
-			locator1 = "FormFields#TOOLBAR_ANY_ITEM_BUTTON");
+			locator1 = "CKEditor#TOOLBAR_SOURCE_BUTTON");
 	}
 
 	@summary = "Default summary"

@@ -396,14 +396,13 @@ definition {
 		FormFields.editParagraphBody(content = "Test");
 
 		Click(
-			key_titleName = "Formatting Styles",
-			locator1 = "FormFields#TOOLBAR_ANY_ITEM_BUTTON");
+			locator1 = "CKEditor#TOOLBAR_FORMATTING_STYLES_BUTTON");
 
 		SelectFrame.selectFrameNoLoading(locator1 = "FormFields#PARAGRAPH_FORMATTING_STYLES");
 
 		Click.clickAt(
-			key_titleName = "Heading 2",
-			locator1 = "FormFields#TOOLBAR_ANY_ITEM_BUTTON",
+			key_formattingStyle = "Heading 2",
+			locator1 = "CKEditor#TOOLBAR_FORMATTING_STYLES_OPTION",
 			value1 = "Heading 2");
 
 		SelectFrame.selectSecondFrame();
@@ -418,14 +417,13 @@ definition {
 		FormsAdminNavigator.gotoEditField(fieldName = "Paragraph");
 
 		Click(
-			key_titleName = "Formatting Styles",
-			locator1 = "FormFields#TOOLBAR_ANY_ITEM_BUTTON");
+			locator1 = "CKEditor#TOOLBAR_FORMATTING_STYLES_BUTTON");
 
 		SelectFrame.selectFrameNoLoading(locator1 = "FormFields#PARAGRAPH_FORMATTING_STYLES");
 
 		Click.clickAt(
-			key_titleName = "Preformatted Text",
-			locator1 = "FormFields#TOOLBAR_ANY_ITEM_BUTTON",
+			key_formattingStyle = "Preformatted Text",
+			locator1 = "CKEditor#TOOLBAR_FORMATTING_STYLES_OPTION",
 			value1 = "Preformatted Text");
 
 		SelectFrameTop();
@@ -547,8 +545,7 @@ definition {
 		SelectFrame(value1 = "relative=top");
 
 		Click(
-			key_titleName = "Insert/Remove Bulleted List",
-			locator1 = "FormFields#TOOLBAR_ANY_ITEM_BUTTON");
+			locator1 = "CKEditor#TOOLBAR_BULLETED_LIST_BUTTON");
 
 		Form.save();
 
@@ -618,8 +615,7 @@ definition {
 			fieldType = "Paragraph");
 
 		Click(
-			key_titleName = "Image",
-			locator1 = "FormFields#TOOLBAR_ANY_ITEM_BUTTON");
+			locator1 = "CKEditor#TOOLBAR_IMAGE_BUTTON");
 
 		ItemSelector.uploadFile(
 			navTab = "Documents and Media",
@@ -667,8 +663,7 @@ definition {
 		SelectFrame(value1 = "relative=top");
 
 		Click(
-			key_titleName = "Insert/Remove Numbered List",
-			locator1 = "FormFields#TOOLBAR_ANY_ITEM_BUTTON");
+			locator1 = "CKEditor#TOOLBAR_NUMBERED_LIST_BUTTON");
 
 		Form.save();
 
@@ -709,8 +704,7 @@ definition {
 			fieldType = "Paragraph");
 
 		Click(
-			key_titleName = "Table",
-			locator1 = "FormFields#TOOLBAR_ANY_ITEM_BUTTON");
+			locator1 = "CKEditor#TOOLBAR_TABLE_BUTTON");
 
 		Click(locator1 = "CKEditor#OK_BUTTON");
 
@@ -746,8 +740,7 @@ definition {
 			fieldType = "Paragraph");
 
 		Click(
-			key_titleName = "Video",
-			locator1 = "FormFields#TOOLBAR_ANY_ITEM_BUTTON");
+			locator1 = "CKEditor#TOOLBAR_VIDEO_BUTTON");
 
 		var key_navTab = "URL";
 
@@ -801,16 +794,14 @@ definition {
 		FormFields.editParagraphBody(content = "Test Body Text");
 
 		Click(
-			key_titleName = "Undo",
-			locator1 = "FormFields#TOOLBAR_ANY_ITEM_BUTTON");
+			locator1 = "CKEditor#TOOLBAR_UNDO_BUTTON");
 
 		AssertTextEquals(
 			locator1 = "CKEditor#BODY_FIELD_CONTENTEDITABLE",
 			value1 = "Test");
 
 		Click(
-			key_titleName = "Redo",
-			locator1 = "FormFields#TOOLBAR_ANY_ITEM_BUTTON");
+			locator1 = "CKEditor#TOOLBAR_REDO_BUTTON");
 
 		AssertTextEquals(
 			locator1 = "CKEditor#BODY_FIELD_CONTENTEDITABLE",
