@@ -47,6 +47,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Image;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
@@ -64,6 +65,7 @@ import com.liferay.portal.kernel.portlet.PortletPreferencesFactory;
 import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
 import com.liferay.portal.kernel.security.auth.GuestOrUserUtil;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ImageLocalService;
 import com.liferay.portal.kernel.service.PortletLocalService;
 import com.liferay.portal.kernel.service.PortletPreferencesLocalService;
@@ -1689,6 +1691,9 @@ public class LayoutLocalServiceWrapper
 	private FriendlyURLEntryLocalService _friendlyURLEntryLocalService;
 
 	@Reference
+	private GroupLocalService _groupLocalService;
+
+	@Reference
 	private ImageLocalService _imageLocalService;
 
 	@Reference
@@ -1827,7 +1832,7 @@ public class LayoutLocalServiceWrapper
 				imageBytes = image.getTextObj();
 			}
 
-			return updateLayout(
+			Layout layout = updateLayout(
 				_targetLayout.getGroupId(), _targetLayout.isPrivateLayout(),
 				_targetLayout.getLayoutId(),
 				_getTypeSettings(_sourceLayout, _targetLayout), imageBytes,
@@ -1837,6 +1842,22 @@ public class LayoutLocalServiceWrapper
 				_sourceLayout.getCss(), _sourceLayout.getFaviconFileEntryERC(),
 				_sourceLayout.getFaviconFileEntryScopeERC(),
 				_sourceLayout.getMasterLayoutPageTemplateEntryERC());
+
+			String masterLayoutPageTemplateEntryScopeERC =
+				_getMasterLayoutPageTemplateEntryScopeERC();
+
+			if (StringUtil.equals(
+					GetterUtil.getString(masterLayoutPageTemplateEntryScopeERC),
+					layout.getMasterLayoutPageTemplateEntryScopeERC())) {
+
+				return layout;
+			}
+
+			return updateMasterLayoutPageTemplateEntry(
+				layout.getGroupId(), layout.isPrivateLayout(),
+				layout.getLayoutId(),
+				layout.getMasterLayoutPageTemplateEntryERC(),
+				masterLayoutPageTemplateEntryScopeERC);
 		}
 
 		private CopyLayoutCallable(
@@ -1925,6 +1946,37 @@ public class LayoutLocalServiceWrapper
 					}
 				}
 			}
+		}
+
+		private String _getMasterLayoutPageTemplateEntryScopeERC() {
+			if (_sourceLayout.getGroupId() == _targetLayout.getGroupId()) {
+				return _sourceLayout.getMasterLayoutPageTemplateEntryScopeERC();
+			}
+
+			long masterLayoutPlid = _sourceLayout.getMasterLayoutPlid();
+
+			if (masterLayoutPlid <= 0) {
+				return null;
+			}
+
+			LayoutPageTemplateEntry masterLayoutPageTemplateEntry =
+				_layoutPageTemplateEntryLocalService.
+					fetchLayoutPageTemplateEntryByPlid(masterLayoutPlid);
+
+			if (masterLayoutPageTemplateEntry == null) {
+				return null;
+			}
+
+			Group group = _groupLocalService.fetchGroup(
+				masterLayoutPageTemplateEntry.getGroupId());
+
+			if ((group == null) || !group.isDepot() ||
+				(group.getGroupId() == _targetLayout.getGroupId())) {
+
+				return null;
+			}
+
+			return group.getExternalReferenceCode();
 		}
 
 		private boolean _isMasterLayoutCopy() {
