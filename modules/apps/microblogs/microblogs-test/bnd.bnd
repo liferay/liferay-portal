@@ -1,0 +1,3 @@
+Bundle-Name: Liferay Microblogs Test
+Bundle-SymbolicName: com.liferay.microblogs.test
+Bundle-Version: 1.0.0

@@ -1,0 +1,4 @@
+dependencies {
+	testIntegrationImplementation project(":apps:microblogs:microblogs-api")
+	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
+}
