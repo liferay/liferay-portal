@@ -451,25 +451,19 @@ public class OrganizationLocalServiceImpl
 			organizationId);
 
 		User user = _userLocalService.fetchUserByEmailAddress(
-			serviceContext.getCompanyId(), emailAddress);
+			organization.getCompanyId(), emailAddress);
 
 		if (user == null) {
 			Group group = organization.getGroup();
 
-			long[] groupIds = {group.getGroupId()};
-
-			if (serviceContext.getScopeGroupId() > 0) {
-				groupIds = ArrayUtil.append(
-					groupIds, serviceContext.getScopeGroupId());
-			}
-
 			user = _userLocalService.addUserWithWorkflow(
-				serviceContext.getUserId(), serviceContext.getCompanyId(), true,
+				serviceContext.getUserId(), organization.getCompanyId(), true,
 				StringPool.BLANK, StringPool.BLANK, true, StringPool.BLANK,
 				emailAddress, serviceContext.getLocale(), emailAddress,
 				StringPool.BLANK, emailAddress, 0, 0, true, 1, 1, 1970,
-				StringPool.BLANK, UserConstants.TYPE_REGULAR, groupIds, null,
-				null, null, true, serviceContext);
+				StringPool.BLANK, UserConstants.TYPE_REGULAR,
+				new long[] {group.getGroupId()}, null, null, null, true,
+				serviceContext);
 		}
 
 		_userLocalService.addOrganizationUser(organizationId, user);

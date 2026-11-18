@@ -27,6 +27,8 @@ import com.liferay.portal.kernel.security.membershippolicy.OrganizationMembershi
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.service.UserService;
 import com.liferay.portal.kernel.service.permission.GroupPermissionUtil;
 import com.liferay.portal.kernel.service.permission.OrganizationPermissionUtil;
 import com.liferay.portal.kernel.service.permission.PortalPermissionUtil;
@@ -308,6 +310,19 @@ public class OrganizationServiceImpl extends OrganizationServiceBaseImpl {
 		OrganizationPermissionUtil.check(
 			getPermissionChecker(), organizationId, ActionKeys.ASSIGN_MEMBERS);
 
+		Organization organization = organizationPersistence.findByPrimaryKey(
+			organizationId);
+
+		User user = _userLocalService.fetchUserByEmailAddress(
+			organization.getCompanyId(), emailAddress);
+
+		if (user != null) {
+			_userService.addOrganizationUsers(
+				organizationId, new long[] {user.getUserId()});
+
+			return user;
+		}
+
 		return organizationLocalService.addOrganizationUserByEmailAddress(
 			emailAddress, organizationId, serviceContext);
 	}
@@ -339,8 +354,14 @@ public class OrganizationServiceImpl extends OrganizationServiceBaseImpl {
 		OrganizationPermissionUtil.check(
 			getPermissionChecker(), organizationId, ActionKeys.ASSIGN_MEMBERS);
 
-		organizationLocalService.addUserOrganizationByEmailAddress(
-			emailAddress, organizationId);
+		Organization organization = organizationPersistence.findByPrimaryKey(
+			organizationId);
+
+		User user = _userLocalService.getUserByEmailAddress(
+			organization.getCompanyId(), emailAddress);
+
+		_userService.addOrganizationUsers(
+			organizationId, new long[] {user.getUserId()});
 	}
 
 	/**
@@ -378,8 +399,14 @@ public class OrganizationServiceImpl extends OrganizationServiceBaseImpl {
 		OrganizationPermissionUtil.check(
 			getPermissionChecker(), organizationId, ActionKeys.ASSIGN_MEMBERS);
 
-		organizationLocalService.deleteUserOrganizationByEmailAddress(
-			emailAddress, organizationId);
+		Organization organization = organizationPersistence.findByPrimaryKey(
+			organizationId);
+
+		User user = _userLocalService.getUserByEmailAddress(
+			organization.getCompanyId(), emailAddress);
+
+		_userService.unsetOrganizationUsers(
+			organizationId, new long[] {user.getUserId()});
 	}
 
 	/**
@@ -925,5 +952,11 @@ public class OrganizationServiceImpl extends OrganizationServiceBaseImpl {
 
 	@BeanReference(type = AssetTagLocalService.class)
 	private AssetTagLocalService _assetTagLocalService;
+
+	@BeanReference(type = UserLocalService.class)
+	private UserLocalService _userLocalService;
+
+	@BeanReference(type = UserService.class)
+	private UserService _userService;
 
 }
