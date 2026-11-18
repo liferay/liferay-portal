@@ -69,4 +69,28 @@ describe('Serializing a node with untouched variables', () => {
 		expect(xmlDefinition).toMatch(/<rag>[\s\S]*?\{\}[\s\S]*?<\/rag>/);
 		expect(xmlDefinition).toMatch(/<tools>[\s\S]*?\[\][\s\S]*?<\/tools>/);
 	});
+
+	it('Writes empty arrays for a service node', () => {
+		const xmlDefinition = serializeDefinition(
+			XML_NAMESPACE,
+			METADATA,
+			[
+				{
+					data: {label: {en_US: 'Service'}, newNode: true},
+					id: 'serviceNode',
+					position: {x: 0, y: 0},
+					type: 'service',
+				},
+			],
+			[]
+		);
+
+		expect(xmlDefinition).not.toContain('undefined');
+		expect(xmlDefinition).toMatch(
+			/<input-variables>[\s\S]*?\[\][\s\S]*?<\/input-variables>/
+		);
+		expect(xmlDefinition).toMatch(
+			/<output-variables>[\s\S]*?\[\][\s\S]*?<\/output-variables>/
+		);
+	});
 });

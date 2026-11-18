@@ -153,30 +153,4 @@ describe('Service node variables', () => {
 		expect(positions).not.toContain(-1);
 		expect(positions).toStrictEqual([...positions].sort((a, b) => a - b));
 	});
-
-	it('Writes empty arrays for a new service node', () => {
-		const serviceElement = getServiceElement(
-			serializeDefinition(
-				XML_NAMESPACE,
-				METADATA,
-				[
-					{
-						data: {label: {en_US: 'Service'}, newNode: true},
-						id: 'serviceNode',
-						position: {x: 0, y: 0},
-						type: 'service',
-					},
-				],
-				[]
-			)
-		);
-
-		expect(serviceElement).not.toContain('undefined');
-		expect(getVariables(serviceElement, 'input-variables')).toStrictEqual(
-			[]
-		);
-		expect(getVariables(serviceElement, 'output-variables')).toStrictEqual(
-			[]
-		);
-	});
 });
