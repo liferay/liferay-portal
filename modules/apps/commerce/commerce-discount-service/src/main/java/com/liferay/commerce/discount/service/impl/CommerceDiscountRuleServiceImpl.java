@@ -14,6 +14,7 @@ import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.util.List;
 
@@ -67,8 +68,29 @@ public class CommerceDiscountRuleServiceImpl
 			String typeSettings, ServiceContext serviceContext)
 		throws PortalException {
 
-		_commerceDiscountResourcePermission.check(
-			getPermissionChecker(), commerceDiscountId, ActionKeys.UPDATE);
+		CommerceDiscountRule commerceDiscountRule = null;
+
+		if (Validator.isNotNull(externalReferenceCode)) {
+			commerceDiscountRule = commerceDiscountRulePersistence.fetchByERC_C(
+				externalReferenceCode, serviceContext.getCompanyId());
+		}
+
+		if ((commerceDiscountRule == null) && (commerceDiscountRuleId > 0)) {
+			commerceDiscountRule =
+				commerceDiscountRulePersistence.fetchByPrimaryKey(
+					commerceDiscountRuleId);
+		}
+
+		if (commerceDiscountRule != null) {
+			_commerceDiscountResourcePermission.check(
+				getPermissionChecker(),
+				commerceDiscountRule.getCommerceDiscountId(),
+				ActionKeys.UPDATE);
+		}
+		else {
+			_commerceDiscountResourcePermission.check(
+				getPermissionChecker(), commerceDiscountId, ActionKeys.UPDATE);
+		}
 
 		return commerceDiscountRuleLocalService.addOrUpdateCommerceDiscountRule(
 			externalReferenceCode, commerceDiscountRuleId, commerceDiscountId,
