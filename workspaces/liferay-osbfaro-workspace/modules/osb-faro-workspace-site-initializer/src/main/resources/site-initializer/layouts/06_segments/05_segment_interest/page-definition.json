@@ -1,13 +1,26 @@
 {
 	"pageElement": {
-		"id": "c8f3f2fa-8fff-5904-b291-8fe1b93f9add",
+		"id": "c56d4eb1-c92a-5e63-92a1-8c3bf10bf83e",
 		"pageElements": [
+			{
+				"definition": {
+					"fragment": {
+						"key": "com.liferay.osb.faro.web.internal.fragment.renderer.FaroSegmentInterestSectionFragmentRenderer"
+					},
+					"fragmentConfig": {
+					},
+					"fragmentFields": [
+					]
+				},
+				"id": "47ab4f91-d808-5ad2-996d-31eeef6f5d74",
+				"type": "Fragment"
+			}
 		],
 		"type": "Root"
 	},
 	"settings": {
 		"masterPage": {
-			"key": "ldp-master"
+			"key": "liferay-data-platform-master"
 		}
 	},
 	"version": 1.1
