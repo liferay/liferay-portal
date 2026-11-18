@@ -148,7 +148,7 @@ async function deduplicate(lockFile, originalPackageVersions) {
 
 		const resolvedEntries = getEntries(await fs.readFile(lockFile, 'utf8'));
 
-		const addedPackageVersions = getNewPackageVersions(
+		const newPackageVersions = getNewPackageVersions(
 			resolvedEntries,
 			getPackageVersions(content)
 		);
@@ -157,7 +157,7 @@ async function deduplicate(lockFile, originalPackageVersions) {
 			specifiers.includes(entry.specifiers[0])
 		)?.version;
 
-		if (addedPackageVersions.size) {
+		if (newPackageVersions.size) {
 			await fs.writeFile(lockFile, content);
 
 			await execa('yarn', ['install', '--silent']);
