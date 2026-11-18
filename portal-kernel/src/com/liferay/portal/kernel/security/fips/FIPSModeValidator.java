@@ -33,6 +33,7 @@ import java.net.URL;
 
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import java.security.Provider;
@@ -232,9 +233,16 @@ public class FIPSModeValidator {
 	private static Document _readChannelPropertiesDocument(
 		String channelPropertiesLocation) {
 
-		try (InputStream inputStream = Files.newInputStream(
-				Paths.get(channelPropertiesLocation))) {
+		Path path = Paths.get(channelPropertiesLocation);
 
+		if (!Files.isRegularFile(path)) {
+			throw new SecurityException(
+				"The cluster link channel properties \"" +
+					channelPropertiesLocation +
+						"\" must be a file in FIPS mode");
+		}
+
+		try (InputStream inputStream = Files.newInputStream(path)) {
 			DocumentBuilderFactory documentBuilderFactory =
 				SecureXMLFactoryProviderUtil.newDocumentBuilderFactory();
 
