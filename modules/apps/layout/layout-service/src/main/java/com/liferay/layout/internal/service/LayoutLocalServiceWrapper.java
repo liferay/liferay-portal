@@ -28,6 +28,7 @@ import com.liferay.layout.page.template.model.LayoutPageTemplateStructureRelElem
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocalService;
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureRelElementVariationLocalService;
+import com.liferay.layout.page.template.util.CheckUnlockedLayoutThreadLocal;
 import com.liferay.layout.seo.model.LayoutSEOEntry;
 import com.liferay.layout.seo.service.LayoutSEOEntryLocalService;
 import com.liferay.layout.service.LayoutClassedModelUsageLocalService;
@@ -39,6 +40,7 @@ import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.comment.CommentManager;
+import com.liferay.portal.kernel.exception.LockedLayoutException;
 import com.liferay.portal.kernel.exception.NoSuchLayoutException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -61,6 +63,7 @@ import com.liferay.portal.kernel.portlet.PortletIdCodec;
 import com.liferay.portal.kernel.portlet.PortletPreferencesFactory;
 import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
 import com.liferay.portal.kernel.security.auth.GuestOrUserUtil;
+import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.service.ImageLocalService;
 import com.liferay.portal.kernel.service.PortletLocalService;
 import com.liferay.portal.kernel.service.PortletPreferencesLocalService;
@@ -75,6 +78,7 @@ import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.TransactionConfig;
 import com.liferay.portal.kernel.transaction.TransactionInvokerUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.CopyLayoutThreadLocal;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -395,9 +399,32 @@ public class LayoutLocalServiceWrapper
 			ctCollectionId = CTCollectionThreadLocal.getCTCollectionId();
 		}
 
-		try (SafeCloseable safeCloseable =
+		User principalUser = _userLocalService.fetchUser(
+			PrincipalThreadLocal.getUserId());
+
+		if ((principalUser == null) || principalUser.isGuestUser() ||
+			(principalUser.getCompanyId() != targetLayout.getCompanyId())) {
+
+			principalUser = null;
+		}
+
+		boolean checkUnlockedLayout =
+			CheckUnlockedLayoutThreadLocal.isCheckUnlockedLayout();
+
+		try (SafeCloseable safeCloseable1 =
 				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
-					ctCollectionId)) {
+					ctCollectionId);
+			SafeCloseable safeCloseable2 =
+				CheckUnlockedLayoutThreadLocal.
+					setCheckUnlockedLayoutWithSafeCloseable(
+						checkUnlockedLayout && (principalUser == null))) {
+
+			if (checkUnlockedLayout && (principalUser != null) &&
+				!targetLayout.isUnlocked(
+					Constants.EDIT, principalUser.getUserId())) {
+
+				throw new LockedLayoutException();
+			}
 
 			CopyLayoutThreadLocal.setCopyLayout(true);
 
