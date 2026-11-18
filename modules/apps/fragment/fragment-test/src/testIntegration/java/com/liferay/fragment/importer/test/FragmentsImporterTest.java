@@ -245,6 +245,7 @@ public class FragmentsImporterTest {
 	}
 
 	@Test
+	@TestInfo("LPD-115706")
 	public void testImportFragmentEntriesSystem() throws Exception {
 		List<FragmentCollection> fragmentCollections =
 			_fragmentCollectionLocalService.getFragmentCollections(
@@ -252,9 +253,21 @@ public class FragmentsImporterTest {
 
 		long initialFragmentCollectionsCount = fragmentCollections.size();
 
-		_fragmentsImporter.importFragmentEntries(
-			_user.getUserId(), CompanyConstants.SYSTEM, 0, _file,
-			FragmentsImportStrategy.DO_NOT_OVERWRITE, false);
+		List<FragmentsImporterResultEntry> fragmentsImporterResultEntries =
+			_fragmentsImporter.importFragmentEntries(
+				_user.getUserId(), CompanyConstants.SYSTEM, 0, _file,
+				FragmentsImportStrategy.DO_NOT_OVERWRITE, false);
+
+		_assertFragmentsImporterResultEntries(
+			ListUtil.filter(
+				fragmentsImporterResultEntries,
+				fragmentsImporterResultEntry -> ArrayUtil.contains(
+					new String[] {
+						"Card", "Heading", "Image", "Input", "Line", "Text"
+					},
+					fragmentsImporterResultEntry.getName())),
+			FragmentsImporterResultEntry.Status.IMPORTED,
+			FragmentsImporterResultEntry.Type.FRAGMENT);
 
 		fragmentCollections =
 			_fragmentCollectionLocalService.getFragmentCollections(

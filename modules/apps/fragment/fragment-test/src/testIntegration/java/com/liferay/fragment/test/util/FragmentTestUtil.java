@@ -5,6 +5,7 @@
 
 package com.liferay.fragment.test.util;
 
+import com.liferay.fragment.constants.FragmentPortletKeys;
 import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.fragment.model.FragmentEntry;
 import com.liferay.fragment.model.FragmentEntryLink;
@@ -14,10 +15,14 @@ import com.liferay.fragment.service.FragmentEntryLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.Repository;
+import com.liferay.portal.kernel.portletfilerepository.PortletFileRepositoryUtil;
+import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.ScopeUtil;
 import com.liferay.segments.service.SegmentsExperienceLocalServiceUtil;
 
@@ -143,6 +148,18 @@ public class FragmentTestUtil {
 			fragmentEntry.getConfiguration(), StringPool.BLANK,
 			StringPool.BLANK, 1, StringPool.BLANK, fragmentEntry.getType(),
 			serviceContext);
+	}
+
+	public static FileEntry addPreviewFileEntry(long groupId) throws Exception {
+		Repository repository = PortletFileRepositoryUtil.addPortletRepository(
+			groupId, FragmentPortletKeys.FRAGMENT,
+			ServiceContextTestUtil.getServiceContext(groupId));
+
+		return PortletFileRepositoryUtil.addPortletFileEntry(
+			groupId, TestPropsValues.getUserId(), null, 0,
+			FragmentPortletKeys.FRAGMENT, repository.getDlFolderId(),
+			new byte[0], RandomTestUtil.randomString() + ".png",
+			ContentTypes.IMAGE_PNG, false);
 	}
 
 	public static FragmentEntryLink fetchFragmentEntryLink(

@@ -6,10 +6,12 @@
 package com.liferay.fragment.service.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.document.library.kernel.exception.NoSuchFileEntryException;
 import com.liferay.fragment.constants.FragmentConstants;
 import com.liferay.fragment.exception.FragmentEntryConfigurationException;
 import com.liferay.fragment.exception.FragmentEntryContentException;
 import com.liferay.fragment.exception.FragmentEntryNameException;
+import com.liferay.fragment.exception.FragmentEntryPreviewFileEntryIdException;
 import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.fragment.model.FragmentComposition;
 import com.liferay.fragment.model.FragmentEntry;
@@ -27,9 +29,12 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.portletfilerepository.PortletFileRepositoryUtil;
+import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
@@ -303,6 +308,28 @@ public class FragmentEntryServiceTest {
 			WorkflowConstants.STATUS_APPROVED, serviceContext);
 
 		Assert.assertEquals(html, fragmentEntry.getHtml());
+	}
+
+	@Test
+	@TestInfo("LPD-115706")
+	public void testAddFragmentEntryWithPreviewFileEntryFromDifferentGroup()
+		throws Exception {
+
+		FileEntry previewFileEntry = FragmentTestUtil.addPreviewFileEntry(
+			TestPropsValues.getGroupId());
+
+		Assert.assertThrows(
+			FragmentEntryPreviewFileEntryIdException.class,
+			() -> _fragmentEntryService.addFragmentEntry(
+				null, _group.getGroupId(),
+				_fragmentCollection.getFragmentCollectionId(), StringPool.BLANK,
+				RandomTestUtil.randomString(), StringPool.BLANK,
+				"<div>Fragment</div>", StringPool.BLANK, false,
+				StringPool.BLANK, null, previewFileEntry.getFileEntryId(),
+				false, false, FragmentConstants.TYPE_COMPONENT, null,
+				WorkflowConstants.STATUS_APPROVED,
+				ServiceContextTestUtil.getServiceContext(
+					_group.getGroupId(), TestPropsValues.getUserId())));
 	}
 
 	@Test
@@ -1986,6 +2013,44 @@ public class FragmentEntryServiceTest {
 	}
 
 	@Test
+	@TestInfo("LPD-115706")
+	public void testPublishDraftWithPreviewFileEntryFromDifferentGroup()
+		throws Exception {
+
+		FragmentEntry fragmentEntry =
+			FragmentEntryTestUtil.addFragmentEntryByStatus(
+				_fragmentCollection.getFragmentCollectionId(),
+				WorkflowConstants.STATUS_DRAFT);
+		FileEntry previewFileEntry = FragmentTestUtil.addPreviewFileEntry(
+			TestPropsValues.getGroupId());
+
+		fragmentEntry.setPreviewFileEntryId(previewFileEntry.getFileEntryId());
+
+		Assert.assertThrows(
+			FragmentEntryPreviewFileEntryIdException.class,
+			() -> _fragmentEntryService.publishDraft(fragmentEntry));
+	}
+
+	@Test
+	@TestInfo("LPD-115706")
+	public void testUpdateDraftWithPreviewFileEntryFromDifferentGroup()
+		throws Exception {
+
+		FragmentEntry fragmentEntry =
+			FragmentEntryTestUtil.addFragmentEntryByStatus(
+				_fragmentCollection.getFragmentCollectionId(),
+				WorkflowConstants.STATUS_DRAFT);
+		FileEntry previewFileEntry = FragmentTestUtil.addPreviewFileEntry(
+			TestPropsValues.getGroupId());
+
+		fragmentEntry.setPreviewFileEntryId(previewFileEntry.getFileEntryId());
+
+		Assert.assertThrows(
+			FragmentEntryPreviewFileEntryIdException.class,
+			() -> _fragmentEntryService.updateDraft(fragmentEntry));
+	}
+
+	@Test
 	public void testUpdateFragmentCollectionId() throws Exception {
 		FragmentEntry fragmentEntry = FragmentEntryTestUtil.addFragmentEntry(
 			_fragmentCollection.getFragmentCollectionId());
@@ -1995,7 +2060,7 @@ public class FragmentEntryServiceTest {
 			_updatedFragmentCollection.getFragmentCollectionId(),
 			"Fragment Entry Updated", "div {\ncolor: red;\n}",
 			"<div>Updated</div>", "alert(\"test\");", false,
-			"{\n\t\"fieldSets\": [\n\t]\n}", fragmentEntry.getIcon(), 1, false,
+			"{\n\t\"fieldSets\": [\n\t]\n}", fragmentEntry.getIcon(), 0, false,
 			fragmentEntry.getTypeOptions(), WorkflowConstants.STATUS_APPROVED);
 
 		Assert.assertEquals(
@@ -2005,7 +2070,7 @@ public class FragmentEntryServiceTest {
 		Assert.assertEquals("div {\ncolor: red;\n}", fragmentEntry.getCss());
 		Assert.assertEquals("<div>Updated</div>", fragmentEntry.getHtml());
 		Assert.assertEquals("alert(\"test\");", fragmentEntry.getJs());
-		Assert.assertEquals(1, fragmentEntry.getPreviewFileEntryId());
+		Assert.assertEquals(0, fragmentEntry.getPreviewFileEntryId());
 		Assert.assertEquals(
 			WorkflowConstants.STATUS_APPROVED, fragmentEntry.getStatus());
 	}
@@ -2069,35 +2134,56 @@ public class FragmentEntryServiceTest {
 
 		Assert.assertEquals(0, fragmentEntry.getPreviewFileEntryId());
 
+		FileEntry previewFileEntry = FragmentTestUtil.addPreviewFileEntry(
+			_group.getGroupId());
+
 		fragmentEntry = _fragmentEntryService.updateFragmentEntry(
 			fragmentEntry.getFragmentEntryId(),
 			fragmentEntry.getFragmentCollectionId(), "Fragment Entry Updated",
 			"div {\ncolor: red;\n}", "<div>Updated</div>", "alert(\"test\");",
 			fragmentEntry.isCacheable(), "{\n\t\"fieldSets\": [\n\t]\n}",
-			fragmentEntry.getIcon(), 1, false, fragmentEntry.getTypeOptions(),
-			WorkflowConstants.STATUS_APPROVED);
+			fragmentEntry.getIcon(), previewFileEntry.getFileEntryId(), false,
+			fragmentEntry.getTypeOptions(), WorkflowConstants.STATUS_APPROVED);
 
 		Assert.assertEquals("Fragment Entry Updated", fragmentEntry.getName());
 		Assert.assertEquals("div {\ncolor: red;\n}", fragmentEntry.getCss());
 		Assert.assertEquals("<div>Updated</div>", fragmentEntry.getHtml());
 		Assert.assertEquals("alert(\"test\");", fragmentEntry.getJs());
-		Assert.assertEquals(1, fragmentEntry.getPreviewFileEntryId());
+		Assert.assertEquals(
+			previewFileEntry.getFileEntryId(),
+			fragmentEntry.getPreviewFileEntryId());
 		Assert.assertEquals(
 			WorkflowConstants.STATUS_APPROVED, fragmentEntry.getStatus());
 	}
 
 	@Test
+	@TestInfo("LPD-115706")
+	public void testUpdateFragmentEntryWithPreviewFileEntryFromDifferentGroup()
+		throws Exception {
+
+		FragmentEntry fragmentEntry =
+			FragmentEntryTestUtil.addFragmentEntryByStatus(
+				_fragmentCollection.getFragmentCollectionId(),
+				WorkflowConstants.STATUS_APPROVED);
+		FileEntry previewFileEntry = FragmentTestUtil.addPreviewFileEntry(
+			TestPropsValues.getGroupId());
+
+		fragmentEntry.setPreviewFileEntryId(previewFileEntry.getFileEntryId());
+
+		Assert.assertThrows(
+			FragmentEntryPreviewFileEntryIdException.class,
+			() -> _fragmentEntryService.updateFragmentEntry(fragmentEntry));
+	}
+
+	@Test
+	@TestInfo("LPD-115706")
 	public void testUpdatePreviewFileEntryId() throws Exception {
 		FragmentEntry fragmentEntry = FragmentEntryTestUtil.addFragmentEntry(
 			_fragmentCollection.getFragmentCollectionId());
 
-		long previewFileEntryId = fragmentEntry.getPreviewFileEntryId();
-
-		fragmentEntry = _fragmentEntryService.updateFragmentEntry(
-			fragmentEntry.getFragmentEntryId(), previewFileEntryId + 1);
-
-		Assert.assertEquals(
-			previewFileEntryId + 1, fragmentEntry.getPreviewFileEntryId());
+		_testUpdatePreviewFileEntryId(fragmentEntry);
+		_testUpdatePreviewFileEntryIdWithPreviewFileEntryFromDifferentGroup(
+			fragmentEntry);
 	}
 
 	private void _assertCopiedFragment(
@@ -2126,6 +2212,44 @@ public class FragmentEntryServiceTest {
 	private String _read(String fileName) throws Exception {
 		return new String(
 			FileUtil.getBytes(getClass(), "dependencies/" + fileName));
+	}
+
+	private void _testUpdatePreviewFileEntryId(FragmentEntry fragmentEntry)
+		throws Exception {
+
+		FileEntry previewFileEntry = FragmentTestUtil.addPreviewFileEntry(
+			_group.getGroupId());
+
+		fragmentEntry = _fragmentEntryService.updateFragmentEntry(
+			fragmentEntry.getFragmentEntryId(),
+			previewFileEntry.getFileEntryId());
+
+		Assert.assertEquals(
+			previewFileEntry.getFileEntryId(),
+			fragmentEntry.getPreviewFileEntryId());
+
+		_fragmentEntryService.updateFragmentEntry(
+			fragmentEntry.getFragmentEntryId(), 0);
+
+		Assert.assertThrows(
+			NoSuchFileEntryException.class,
+			() -> PortletFileRepositoryUtil.getPortletFileEntry(
+				previewFileEntry.getFileEntryId()));
+	}
+
+	private void
+			_testUpdatePreviewFileEntryIdWithPreviewFileEntryFromDifferentGroup(
+				FragmentEntry fragmentEntry)
+		throws Exception {
+
+		FileEntry previewFileEntry = FragmentTestUtil.addPreviewFileEntry(
+			TestPropsValues.getGroupId());
+
+		Assert.assertThrows(
+			FragmentEntryPreviewFileEntryIdException.class,
+			() -> _fragmentEntryService.updateFragmentEntry(
+				fragmentEntry.getFragmentEntryId(),
+				previewFileEntry.getFileEntryId()));
 	}
 
 	private FragmentCollection _fragmentCollection;
