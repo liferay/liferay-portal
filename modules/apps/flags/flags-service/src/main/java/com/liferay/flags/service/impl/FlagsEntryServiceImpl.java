@@ -21,6 +21,10 @@ import com.liferay.portal.kernel.messaging.DestinationNames;
 import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.messaging.MessageBus;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
+import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermissionRegistryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.Validator;
@@ -51,6 +55,18 @@ public class FlagsEntryServiceImpl extends FlagsEntryServiceBaseImpl {
 		if (!Validator.isEmailAddress(reporterEmailAddress)) {
 			throw new EmailAddressException();
 		}
+
+		ModelResourcePermission<?> modelResourcePermission =
+			ModelResourcePermissionRegistryUtil.getModelResourcePermission(
+				className);
+
+		if (modelResourcePermission == null) {
+			throw new PrincipalException.MustHavePermission(
+				getPermissionChecker(), className, classPK, ActionKeys.VIEW);
+		}
+
+		modelResourcePermission.check(
+			getPermissionChecker(), classPK, ActionKeys.VIEW);
 
 		FlagsRequest flagsRequest = new FlagsRequest(
 			className, classPK, reporterEmailAddress, reportedUserId,
