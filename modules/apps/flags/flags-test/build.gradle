@@ -2,6 +2,7 @@ dependencies {
 	testIntegrationImplementation project(":apps:captcha:captcha-api")
 	testIntegrationImplementation project(":apps:flags:flags-api")
 	testIntegrationImplementation project(":apps:flags:flags-web")
+	testIntegrationImplementation project(":apps:layout:layout-test-util")
 	testIntegrationImplementation project(":apps:message-boards:message-boards-api")
 	testIntegrationImplementation project(":apps:portal-configuration:portal-configuration-test-util")
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
