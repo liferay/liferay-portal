@@ -2915,15 +2915,6 @@ definition {
 			fieldName = "Web Content");
 	}
 
-	@description = "This is a stubbed description"
-	@ignore = "Test Stub"
-	@priority = 5
-	test CanTranslateLabelPlaceholderAndHelpTextOfTextField {
-
-		// TODO pending implementation
-
-	}
-
 	@description = "Verify that is possible to translate Label, Placeholder and Help text of Text Field"
 	@priority = 5
 	test CanTranslateLabelPlaceholderHelpTextOnTextField {

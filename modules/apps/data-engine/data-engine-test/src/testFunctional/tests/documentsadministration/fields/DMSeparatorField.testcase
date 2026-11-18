@@ -36,56 +36,6 @@ definition {
 	}
 
 	@description = "This is a test for LPS-98081. As a Developer, I want to use separators"
-	@ignore = "Test Stub"
-	@priority = 5
-	test AddSeparatorOnFormByDragAndDrop {
-		property portal.acceptance = "false";
-
-		// TODO LPS-98081 AddSeparatorOnFormByDragAndDrop pending implementation
-
-	}
-
-	@description = "This is a test for LPS-98081. As a Developer, I want to use separators"
-	@ignore = "Test Stub"
-	@priority = 5
-	test DeleteSeparatorOnBuilder {
-		property portal.acceptance = "false";
-
-		// TODO LPS-98081 DeleteSeparatorOnBuilder pending implementation
-
-	}
-
-	@description = "This is a test for LPS-98081. As a Developer, I want to use separators"
-	@ignore = "Test Stub"
-	@priority = 4
-	test DuplicateSeparatorOnBuilder {
-		property portal.acceptance = "false";
-
-		// TODO LPS-98081 DuplicateSeparatorOnBuilder pending implementation
-
-	}
-
-	@description = "This is a test for LPS-98081. As a Developer, I want to use separators"
-	@ignore = "Test Stub"
-	@priority = 5
-	test EditHelpTextOfSeparator {
-		property portal.acceptance = "false";
-
-		// TODO LPS-98081 EditHelpTextOfSeparator pending implementation
-
-	}
-
-	@description = "This is a test for LPS-98081. As a Developer, I want to use separators"
-	@ignore = "Test Stub"
-	@priority = 5
-	test EditLabelOfSeparator {
-		property portal.acceptance = "false";
-
-		// TODO LPS-98081 EditLabelOfSeparator pending implementation
-
-	}
-
-	@description = "This is a test for LPS-98081. As a Developer, I want to use separators"
 	@priority = 5
 	test EditReferenceOfSeparator {
 		property portal.acceptance = "false";
@@ -148,16 +98,6 @@ definition {
 			fieldReference = ${assertFieldReference});
 
 		Button.clickSave();
-	}
-
-	@description = "This is a test for LPS-98081. As a Developer, I want to use separators"
-	@ignore = "Test Stub"
-	@priority = 5
-	test RepeatSeparatorOnUpload {
-		property portal.acceptance = "false";
-
-		// TODO LPS-98081 RepeatSeparatorOnUpload pending implementation
-
 	}
 
 	@description = "This is a test for LPS-98081. As a Developer, I want to use separators"
