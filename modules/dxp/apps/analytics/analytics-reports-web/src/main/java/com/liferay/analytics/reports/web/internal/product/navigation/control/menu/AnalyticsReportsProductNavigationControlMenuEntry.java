@@ -12,7 +12,9 @@ import com.liferay.analytics.reports.info.item.ClassNameClassPKInfoItemIdentifie
 import com.liferay.analytics.reports.info.item.provider.AnalyticsReportsInfoItemObjectProvider;
 import com.liferay.analytics.reports.web.internal.constants.AnalyticsReportsPortletKeys;
 import com.liferay.analytics.reports.web.internal.constants.ProductNavigationControlMenuEntryConstants;
+import com.liferay.analytics.reports.web.internal.events.LogoutPreAction;
 import com.liferay.analytics.reports.web.internal.info.item.provider.util.AnalyticsReportsInfoItemObjectProviderRegistryUtil;
+import com.liferay.analytics.reports.web.internal.template.AnalyticsReportsTemplateContextContributor;
 import com.liferay.analytics.reports.web.internal.util.AnalyticsReportsUtil;
 import com.liferay.analytics.settings.rest.manager.AnalyticsSettingsManager;
 import com.liferay.frontend.taglib.clay.servlet.taglib.ButtonTag;
@@ -26,6 +28,7 @@ import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.content.security.policy.ContentSecurityPolicyNonceProviderUtil;
+import com.liferay.portal.kernel.events.LifecycleAction;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
@@ -38,11 +41,13 @@ import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.PortletPreferencesLocalService;
+import com.liferay.portal.kernel.template.TemplateContextContributor;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HtmlUtil;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
@@ -77,8 +82,11 @@ import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.Set;
 
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 
 /**
@@ -255,9 +263,25 @@ public class AnalyticsReportsProductNavigationControlMenuEntry
 	}
 
 	@Activate
-	protected void activate() {
+	protected void activate(BundleContext bundleContext) {
 		_portletNamespace = _portal.getPortletNamespace(
 			AnalyticsReportsPortletKeys.ANALYTICS_REPORTS);
+
+		_logoutPreActionServiceRegistration = bundleContext.registerService(
+			LifecycleAction.class, new LogoutPreAction(this),
+			MapUtil.singletonDictionary("key", "logout.events.pre"));
+		_templateContextContributorServiceRegistration =
+			bundleContext.registerService(
+				TemplateContextContributor.class,
+				new AnalyticsReportsTemplateContextContributor(this),
+				MapUtil.singletonDictionary(
+					"type", TemplateContextContributor.TYPE_THEME));
+	}
+
+	@Deactivate
+	protected void deactivate() {
+		_logoutPreActionServiceRegistration.unregister();
+		_templateContextContributorServiceRegistration.unregister();
 	}
 
 	private String _getAnalyticsReportsURL(
@@ -518,6 +542,8 @@ public class AnalyticsReportsProductNavigationControlMenuEntry
 	@Reference
 	private Language _language;
 
+	private ServiceRegistration<?> _logoutPreActionServiceRegistration;
+
 	@Reference
 	private Portal _portal;
 
@@ -547,5 +573,7 @@ public class AnalyticsReportsProductNavigationControlMenuEntry
 				"com.liferay.journal",
 				"com.liferay.journal.model.JournalArticle")
 		).build();
+	private ServiceRegistration<?>
+		_templateContextContributorServiceRegistration;
 
 }

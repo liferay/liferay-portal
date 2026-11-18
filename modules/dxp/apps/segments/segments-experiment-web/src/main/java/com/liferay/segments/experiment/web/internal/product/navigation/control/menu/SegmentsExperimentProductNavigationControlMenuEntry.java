@@ -12,6 +12,7 @@ import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.content.security.policy.ContentSecurityPolicyNonceProviderUtil;
+import com.liferay.portal.kernel.events.LifecycleAction;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
@@ -23,12 +24,14 @@ import com.liferay.portal.kernel.portlet.PortletURLFactory;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.permission.LayoutPermissionUtil;
+import com.liferay.portal.kernel.template.TemplateContextContributor;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
@@ -42,6 +45,8 @@ import com.liferay.product.navigation.control.menu.ProductNavigationControlMenuE
 import com.liferay.product.navigation.control.menu.constants.ProductNavigationControlMenuCategoryKeys;
 import com.liferay.segments.constants.SegmentsPortletKeys;
 import com.liferay.segments.experiment.web.internal.constants.ProductNavigationControlMenuEntryConstants;
+import com.liferay.segments.experiment.web.internal.events.LogoutPreAction;
+import com.liferay.segments.experiment.web.internal.template.SegmentsExperimentTemplateContextContributor;
 import com.liferay.segments.manager.SegmentsExperienceManager;
 import com.liferay.segments.model.SegmentsExperience;
 import com.liferay.segments.model.SegmentsExperiment;
@@ -65,8 +70,11 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 
 /**
@@ -244,9 +252,25 @@ public class SegmentsExperimentProductNavigationControlMenuEntry
 	}
 
 	@Activate
-	protected void activate() {
+	protected void activate(BundleContext bundleContext) {
 		_portletNamespace = _portal.getPortletNamespace(
 			SegmentsPortletKeys.SEGMENTS_EXPERIMENT);
+
+		_logoutPreActionServiceRegistration = bundleContext.registerService(
+			LifecycleAction.class, new LogoutPreAction(this),
+			MapUtil.singletonDictionary("key", "logout.events.pre"));
+		_templateContextContributorServiceRegistration =
+			bundleContext.registerService(
+				TemplateContextContributor.class,
+				new SegmentsExperimentTemplateContextContributor(this),
+				MapUtil.singletonDictionary(
+					"type", TemplateContextContributor.TYPE_THEME));
+	}
+
+	@Deactivate
+	protected void deactivate() {
+		_logoutPreActionServiceRegistration.unregister();
+		_templateContextContributorServiceRegistration.unregister();
 	}
 
 	private Map<String, Object> _getData(
@@ -474,6 +498,8 @@ public class SegmentsExperimentProductNavigationControlMenuEntry
 	@Reference
 	private LayoutLocalService _layoutLocalService;
 
+	private ServiceRegistration<?> _logoutPreActionServiceRegistration;
+
 	@Reference
 	private Portal _portal;
 
@@ -490,5 +516,8 @@ public class SegmentsExperimentProductNavigationControlMenuEntry
 
 	@Reference
 	private SegmentsExperimentService _segmentsExperimentService;
+
+	private ServiceRegistration<?>
+		_templateContextContributorServiceRegistration;
 
 }

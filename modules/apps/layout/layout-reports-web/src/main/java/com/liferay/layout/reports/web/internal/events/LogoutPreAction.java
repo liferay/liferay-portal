@@ -8,20 +8,23 @@ package com.liferay.layout.reports.web.internal.events;
 import com.liferay.layout.reports.web.internal.constants.ProductNavigationControlMenuEntryConstants;
 import com.liferay.portal.kernel.events.Action;
 import com.liferay.portal.kernel.events.ActionException;
-import com.liferay.portal.kernel.events.LifecycleAction;
 import com.liferay.product.navigation.control.menu.ProductNavigationControlMenuEntry;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-
 /**
  * @author Yurena Cabrera
  */
-@Component(property = "key=logout.events.pre", service = LifecycleAction.class)
 public class LogoutPreAction extends Action {
+
+	public LogoutPreAction(
+		ProductNavigationControlMenuEntry
+			layoutReportsProductNavigationControlMenuEntry) {
+
+		_layoutReportsProductNavigationControlMenuEntry =
+			layoutReportsProductNavigationControlMenuEntry;
+	}
 
 	@Override
 	public void run(
@@ -35,10 +38,7 @@ public class LogoutPreAction extends Action {
 			"closed");
 	}
 
-	@Reference(
-		target = "(component.name=com.liferay.layout.reports.web.internal.product.navigation.control.menu.LayoutReportsProductNavigationControlMenuEntry)"
-	)
-	private ProductNavigationControlMenuEntry
+	private final ProductNavigationControlMenuEntry
 		_layoutReportsProductNavigationControlMenuEntry;
 
 }

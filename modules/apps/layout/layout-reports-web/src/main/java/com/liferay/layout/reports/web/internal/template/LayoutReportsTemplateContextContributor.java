@@ -17,18 +17,19 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Map;
 
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-
 /**
  * @author Sandro Chinea
  */
-@Component(
-	property = "type=" + TemplateContextContributor.TYPE_THEME,
-	service = TemplateContextContributor.class
-)
 public class LayoutReportsTemplateContextContributor
 	implements TemplateContextContributor {
+
+	public LayoutReportsTemplateContextContributor(
+		ProductNavigationControlMenuEntry
+			layoutReportsProductNavigationControlMenuEntry) {
+
+		_layoutReportsProductNavigationControlMenuEntry =
+			layoutReportsProductNavigationControlMenuEntry;
+	}
 
 	@Override
 	public void prepare(
@@ -66,10 +67,7 @@ public class LayoutReportsTemplateContextContributor
 	private static final Log _log = LogFactoryUtil.getLog(
 		LayoutReportsTemplateContextContributor.class);
 
-	@Reference(
-		target = "(component.name=com.liferay.layout.reports.web.internal.product.navigation.control.menu.LayoutReportsProductNavigationControlMenuEntry)"
-	)
-	private ProductNavigationControlMenuEntry
+	private final ProductNavigationControlMenuEntry
 		_layoutReportsProductNavigationControlMenuEntry;
 
 }

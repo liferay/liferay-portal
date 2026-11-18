@@ -12,10 +12,13 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.IconTag;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.layout.reports.web.internal.configuration.provider.LayoutReportsGooglePageSpeedConfigurationProvider;
 import com.liferay.layout.reports.web.internal.constants.ProductNavigationControlMenuEntryConstants;
+import com.liferay.layout.reports.web.internal.events.LogoutPreAction;
+import com.liferay.layout.reports.web.internal.template.LayoutReportsTemplateContextContributor;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.content.security.policy.ContentSecurityPolicyNonceProviderUtil;
+import com.liferay.portal.kernel.events.LifecycleAction;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
@@ -26,10 +29,12 @@ import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.permission.LayoutPermissionUtil;
+import com.liferay.portal.kernel.template.TemplateContextContributor;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
@@ -54,7 +59,11 @@ import java.io.Writer;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 
 /**
@@ -176,6 +185,25 @@ public class LayoutReportsProductNavigationControlMenuEntry
 		}
 
 		return super.isShow(httpServletRequest);
+	}
+
+	@Activate
+	protected void activate(BundleContext bundleContext) {
+		_logoutPreActionServiceRegistration = bundleContext.registerService(
+			LifecycleAction.class, new LogoutPreAction(this),
+			MapUtil.singletonDictionary("key", "logout.events.pre"));
+		_templateContextContributorServiceRegistration =
+			bundleContext.registerService(
+				TemplateContextContributor.class,
+				new LayoutReportsTemplateContextContributor(this),
+				MapUtil.singletonDictionary(
+					"type", TemplateContextContributor.TYPE_THEME));
+	}
+
+	@Deactivate
+	protected void deactivate() {
+		_logoutPreActionServiceRegistration.unregister();
+		_templateContextContributorServiceRegistration.unregister();
 	}
 
 	private boolean _hasEditPermission(
@@ -371,10 +399,15 @@ public class LayoutReportsProductNavigationControlMenuEntry
 	private LayoutReportsGooglePageSpeedConfigurationProvider
 		_layoutReportsGooglePageSpeedConfigurationProvider;
 
+	private ServiceRegistration<?> _logoutPreActionServiceRegistration;
+
 	@Reference
 	private Portal _portal;
 
 	@Reference
 	private ReactRenderer _reactRenderer;
+
+	private ServiceRegistration<?>
+		_templateContextContributorServiceRegistration;
 
 }

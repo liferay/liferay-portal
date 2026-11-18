@@ -7,7 +7,6 @@ package com.liferay.segments.experiment.web.internal.events;
 
 import com.liferay.portal.kernel.events.Action;
 import com.liferay.portal.kernel.events.ActionException;
-import com.liferay.portal.kernel.events.LifecycleAction;
 import com.liferay.product.navigation.control.menu.ProductNavigationControlMenuEntry;
 import com.liferay.segments.experiment.web.internal.constants.ProductNavigationControlMenuEntryConstants;
 import com.liferay.segments.experiment.web.internal.util.SegmentsCookieManagerUtil;
@@ -15,14 +14,18 @@ import com.liferay.segments.experiment.web.internal.util.SegmentsCookieManagerUt
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-
 /**
  * @author Yurena Cabrera
  */
-@Component(property = "key=logout.events.pre", service = LifecycleAction.class)
 public class LogoutPreAction extends Action {
+
+	public LogoutPreAction(
+		ProductNavigationControlMenuEntry
+			segmentsExperimentProductNavigationControlMenuEntry) {
+
+		_segmentsExperimentProductNavigationControlMenuEntry =
+			segmentsExperimentProductNavigationControlMenuEntry;
+	}
 
 	@Override
 	public void run(
@@ -39,10 +42,7 @@ public class LogoutPreAction extends Action {
 			httpServletRequest, httpServletResponse);
 	}
 
-	@Reference(
-		target = "(component.name=com.liferay.segments.experiment.web.internal.product.navigation.control.menu.SegmentsExperimentProductNavigationControlMenuEntry)"
-	)
-	private ProductNavigationControlMenuEntry
+	private final ProductNavigationControlMenuEntry
 		_segmentsExperimentProductNavigationControlMenuEntry;
 
 }
