@@ -85,129 +85,13 @@ public class GetFragmentEntryLinksMVCResourceCommandTest {
 
 	@Test
 	public void testGetFragmentEntryLinks() throws Exception {
-		LayoutPageTemplateEntry masterLayoutPageTemplateEntry =
-			_addMasterLayoutPageTemplateEntry();
-
-		_draftLayout =
-			_layoutLocalService.updateMasterLayoutPageTemplateEntryERC(
-				_draftLayout.getGroupId(), _draftLayout.isPrivateLayout(),
-				_draftLayout.getLayoutId(),
-				masterLayoutPageTemplateEntry.getExternalReferenceCode());
-
-		FragmentEntryLink fragmentEntryLink = _addFragmentEntryLink(
-			_draftLayout);
-
-		FragmentEntryLink masterFragmentEntryLink = _addFragmentEntryLink(
-			_layoutLocalService.getLayout(
-				masterLayoutPageTemplateEntry.getPlid()));
-
-		JSONArray jsonArray = _serveResource(
-			fragmentEntryLink.getFragmentEntryLinkId(),
-			masterFragmentEntryLink.getFragmentEntryLinkId());
-
-		Assert.assertEquals(2, jsonArray.length());
-
-		JSONObject jsonObject = jsonArray.getJSONObject(0);
-
-		Assert.assertTrue(jsonObject.has("content"));
-		Assert.assertEquals(
-			fragmentEntryLink.getFragmentEntryLinkId(),
-			jsonObject.getLong("fragmentEntryLinkId"));
-
-		jsonObject = jsonArray.getJSONObject(1);
-
-		Assert.assertTrue(jsonObject.has("content"));
-		Assert.assertEquals(
-			masterFragmentEntryLink.getFragmentEntryLinkId(),
-			jsonObject.getLong("fragmentEntryLinkId"));
-	}
-
-	@Test
-	public void testGetFragmentEntryLinksWithOtherLayoutFragmentEntryLinks()
-		throws Exception {
-
-		FragmentEntryLink fragmentEntryLink = _addFragmentEntryLink(
-			_draftLayout);
-		FragmentEntryLink noLayoutFragmentEntryLink =
-			_fragmentEntryLinkLocalService.addFragmentEntryLink(
-				null, TestPropsValues.getUserId(), _group.getGroupId(), null,
-				null, null, 0, 0, StringPool.BLANK, StringPool.BLANK,
-				StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
-				StringPool.BLANK, 0, StringPool.BLANK,
-				FragmentConstants.TYPE_COMPONENT, _serviceContext);
-
-		_otherGroup = GroupTestUtil.addGroup();
-
-		Layout otherGroupLayout = LayoutTestUtil.addTypeContentLayout(
-			_otherGroup);
-
-		FragmentEntryLink otherGroupFragmentEntryLink = _addFragmentEntryLink(
-			otherGroupLayout.fetchDraftLayout());
-
-		Layout otherLayout = LayoutTestUtil.addTypeContentLayout(_group);
-
-		FragmentEntryLink otherLayoutFragmentEntryLink = _addFragmentEntryLink(
-			otherLayout.fetchDraftLayout());
-
-		LayoutPageTemplateEntry otherMasterLayoutPageTemplateEntry =
-			_addMasterLayoutPageTemplateEntry();
-
-		FragmentEntryLink otherMasterFragmentEntryLink = _addFragmentEntryLink(
-			_layoutLocalService.getLayout(
-				otherMasterLayoutPageTemplateEntry.getPlid()));
-
-		JSONArray jsonArray = _serveResource(
-			fragmentEntryLink.getFragmentEntryLinkId(),
-			noLayoutFragmentEntryLink.getFragmentEntryLinkId(),
-			otherGroupFragmentEntryLink.getFragmentEntryLinkId(),
-			otherLayoutFragmentEntryLink.getFragmentEntryLinkId(),
-			otherMasterFragmentEntryLink.getFragmentEntryLinkId(),
-			RandomTestUtil.nextLong());
-
-		Assert.assertEquals(6, jsonArray.length());
-
-		JSONObject jsonObject = jsonArray.getJSONObject(0);
-
-		Assert.assertTrue(jsonObject.has("content"));
-		Assert.assertEquals(
-			fragmentEntryLink.getFragmentEntryLinkId(),
-			jsonObject.getLong("fragmentEntryLinkId"));
-
-		for (int i = 1; i < jsonArray.length(); i++) {
-			jsonObject = jsonArray.getJSONObject(i);
-
-			Assert.assertEquals(0, jsonObject.length());
-		}
-	}
-
-	@Test
-	public void testGetFragmentEntryLinksWithOtherMasterLayoutFragmentEntryLink()
-		throws Exception {
-
-		LayoutPageTemplateEntry masterLayoutPageTemplateEntry =
-			_addMasterLayoutPageTemplateEntry();
-
-		_draftLayout =
-			_layoutLocalService.updateMasterLayoutPageTemplateEntryERC(
-				_draftLayout.getGroupId(), _draftLayout.isPrivateLayout(),
-				_draftLayout.getLayoutId(),
-				masterLayoutPageTemplateEntry.getExternalReferenceCode());
-
-		LayoutPageTemplateEntry otherMasterLayoutPageTemplateEntry =
-			_addMasterLayoutPageTemplateEntry();
-
-		FragmentEntryLink otherMasterFragmentEntryLink = _addFragmentEntryLink(
-			_layoutLocalService.getLayout(
-				otherMasterLayoutPageTemplateEntry.getPlid()));
-
-		JSONArray jsonArray = _serveResource(
-			otherMasterFragmentEntryLink.getFragmentEntryLinkId());
-
-		Assert.assertEquals(1, jsonArray.length());
-
-		JSONObject jsonObject = jsonArray.getJSONObject(0);
-
-		Assert.assertEquals(0, jsonObject.length());
+		_testGetFragmentEntryLinksWithInvalidFragmentEntryLinkId();
+		_testGetFragmentEntryLinksWithLayoutFragmentEntryLink();
+		_testGetFragmentEntryLinksWithMasterLayoutFragmentEntryLink();
+		_testGetFragmentEntryLinksWithNoLayoutFragmentEntryLink();
+		_testGetFragmentEntryLinksWithOtherGroupFragmentEntryLink();
+		_testGetFragmentEntryLinksWithOtherLayoutFragmentEntryLink();
+		_testGetFragmentEntryLinksWithOtherMasterLayoutFragmentEntryLink();
 	}
 
 	private FragmentEntryLink _addFragmentEntryLink(Layout layout)
@@ -230,7 +114,7 @@ public class GetFragmentEntryLinksMVCResourceCommandTest {
 	}
 
 	private MockLiferayResourceRequest _getMockLiferayResourceRequest(
-			long... fragmentEntryLinkIds)
+			Layout layout, Long... fragmentEntryLinkIds)
 		throws Exception {
 
 		MockLiferayResourceRequest mockLiferayResourceRequest =
@@ -240,33 +124,33 @@ public class GetFragmentEntryLinksMVCResourceCommandTest {
 			WebKeys.THEME_DISPLAY,
 			ContentLayoutTestUtil.getThemeDisplay(
 				_companyLocalService.fetchCompany(_group.getCompanyId()),
-				_group, _draftLayout));
+				_group, layout));
 
-		JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
-
-		for (long fragmentEntryLinkId : fragmentEntryLinkIds) {
-			jsonArray.put(
-				JSONUtil.put("fragmentEntryLinkId", fragmentEntryLinkId));
-		}
-
-		mockLiferayResourceRequest.setParameter("data", jsonArray.toString());
+		mockLiferayResourceRequest.setParameter(
+			"data",
+			JSONUtil.toJSONArray(
+				fragmentEntryLinkIds,
+				fragmentEntryLinkId -> JSONUtil.put(
+					"fragmentEntryLinkId", fragmentEntryLinkId)
+			).toString());
 		mockLiferayResourceRequest.setParameter(
 			"segmentsExperienceId",
 			String.valueOf(
 				_segmentsExperienceLocalService.
-					fetchDefaultSegmentsExperienceId(_draftLayout.getPlid())));
+					fetchDefaultSegmentsExperienceId(layout.getPlid())));
 
 		return mockLiferayResourceRequest;
 	}
 
-	private JSONArray _serveResource(long... fragmentEntryLinkIds)
+	private JSONArray _serveResource(
+			Layout layout, Long... fragmentEntryLinkIds)
 		throws Exception {
 
 		MockLiferayResourceResponse mockLiferayResourceResponse =
 			new MockLiferayResourceResponse();
 
 		_mvcResourceCommand.serveResource(
-			_getMockLiferayResourceRequest(fragmentEntryLinkIds),
+			_getMockLiferayResourceRequest(layout, fragmentEntryLinkIds),
 			mockLiferayResourceResponse);
 
 		ByteArrayOutputStream byteArrayOutputStream =
@@ -275,6 +159,173 @@ public class GetFragmentEntryLinksMVCResourceCommandTest {
 
 		return JSONFactoryUtil.createJSONArray(
 			byteArrayOutputStream.toString());
+	}
+
+	private void _testGetFragmentEntryLinksWithInvalidFragmentEntryLinkId()
+		throws Exception {
+
+		JSONArray jsonArray = _serveResource(
+			_draftLayout, RandomTestUtil.nextLong());
+
+		Assert.assertEquals(1, jsonArray.length());
+
+		JSONObject jsonObject = jsonArray.getJSONObject(0);
+
+		Assert.assertEquals(0, jsonObject.length());
+	}
+
+	private void _testGetFragmentEntryLinksWithLayoutFragmentEntryLink()
+		throws Exception {
+
+		FragmentEntryLink fragmentEntryLink = _addFragmentEntryLink(
+			_draftLayout);
+
+		JSONArray jsonArray = _serveResource(
+			_draftLayout, fragmentEntryLink.getFragmentEntryLinkId());
+
+		Assert.assertEquals(1, jsonArray.length());
+
+		JSONObject jsonObject = jsonArray.getJSONObject(0);
+
+		Assert.assertTrue(jsonObject.has("content"));
+		Assert.assertEquals(
+			fragmentEntryLink.getFragmentEntryLinkId(),
+			jsonObject.getLong("fragmentEntryLinkId"));
+	}
+
+	private void _testGetFragmentEntryLinksWithMasterLayoutFragmentEntryLink()
+		throws Exception {
+
+		LayoutPageTemplateEntry masterLayoutPageTemplateEntry =
+			_addMasterLayoutPageTemplateEntry();
+
+		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
+
+		Layout draftLayout = layout.fetchDraftLayout();
+
+		draftLayout =
+			_layoutLocalService.updateMasterLayoutPageTemplateEntryERC(
+				draftLayout.getGroupId(), draftLayout.isPrivateLayout(),
+				draftLayout.getLayoutId(),
+				masterLayoutPageTemplateEntry.getExternalReferenceCode());
+
+		FragmentEntryLink fragmentEntryLink = _addFragmentEntryLink(
+			draftLayout);
+
+		FragmentEntryLink masterFragmentEntryLink = _addFragmentEntryLink(
+			_layoutLocalService.getLayout(
+				masterLayoutPageTemplateEntry.getPlid()));
+
+		LayoutPageTemplateEntry otherMasterLayoutPageTemplateEntry =
+			_addMasterLayoutPageTemplateEntry();
+
+		FragmentEntryLink otherMasterFragmentEntryLink = _addFragmentEntryLink(
+			_layoutLocalService.getLayout(
+				otherMasterLayoutPageTemplateEntry.getPlid()));
+
+		JSONArray jsonArray = _serveResource(
+			draftLayout, fragmentEntryLink.getFragmentEntryLinkId(),
+			masterFragmentEntryLink.getFragmentEntryLinkId(),
+			otherMasterFragmentEntryLink.getFragmentEntryLinkId());
+
+		Assert.assertEquals(3, jsonArray.length());
+
+		JSONObject jsonObject = jsonArray.getJSONObject(0);
+
+		Assert.assertTrue(jsonObject.has("content"));
+		Assert.assertEquals(
+			fragmentEntryLink.getFragmentEntryLinkId(),
+			jsonObject.getLong("fragmentEntryLinkId"));
+
+		jsonObject = jsonArray.getJSONObject(1);
+
+		Assert.assertTrue(jsonObject.has("content"));
+		Assert.assertEquals(
+			masterFragmentEntryLink.getFragmentEntryLinkId(),
+			jsonObject.getLong("fragmentEntryLinkId"));
+
+		jsonObject = jsonArray.getJSONObject(2);
+
+		Assert.assertEquals(0, jsonObject.length());
+	}
+
+	private void _testGetFragmentEntryLinksWithNoLayoutFragmentEntryLink()
+		throws Exception {
+
+		FragmentEntryLink fragmentEntryLink =
+			_fragmentEntryLinkLocalService.addFragmentEntryLink(
+				null, TestPropsValues.getUserId(), _group.getGroupId(), null,
+				null, null, 0, 0, StringPool.BLANK, StringPool.BLANK,
+				StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
+				StringPool.BLANK, 0, StringPool.BLANK,
+				FragmentConstants.TYPE_COMPONENT, _serviceContext);
+
+		JSONArray jsonArray = _serveResource(
+			_draftLayout, fragmentEntryLink.getFragmentEntryLinkId());
+
+		Assert.assertEquals(1, jsonArray.length());
+
+		JSONObject jsonObject = jsonArray.getJSONObject(0);
+
+		Assert.assertEquals(0, jsonObject.length());
+	}
+
+	private void _testGetFragmentEntryLinksWithOtherGroupFragmentEntryLink()
+		throws Exception {
+
+		_otherGroup = GroupTestUtil.addGroup();
+
+		Layout layout = LayoutTestUtil.addTypeContentLayout(_otherGroup);
+
+		FragmentEntryLink fragmentEntryLink = _addFragmentEntryLink(
+			layout.fetchDraftLayout());
+
+		JSONArray jsonArray = _serveResource(
+			_draftLayout, fragmentEntryLink.getFragmentEntryLinkId());
+
+		Assert.assertEquals(1, jsonArray.length());
+
+		JSONObject jsonObject = jsonArray.getJSONObject(0);
+
+		Assert.assertEquals(0, jsonObject.length());
+	}
+
+	private void _testGetFragmentEntryLinksWithOtherLayoutFragmentEntryLink()
+		throws Exception {
+
+		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
+
+		FragmentEntryLink fragmentEntryLink = _addFragmentEntryLink(
+			layout.fetchDraftLayout());
+
+		JSONArray jsonArray = _serveResource(
+			_draftLayout, fragmentEntryLink.getFragmentEntryLinkId());
+
+		Assert.assertEquals(1, jsonArray.length());
+
+		JSONObject jsonObject = jsonArray.getJSONObject(0);
+
+		Assert.assertEquals(0, jsonObject.length());
+	}
+
+	private void _testGetFragmentEntryLinksWithOtherMasterLayoutFragmentEntryLink()
+		throws Exception {
+
+		LayoutPageTemplateEntry masterLayoutPageTemplateEntry =
+			_addMasterLayoutPageTemplateEntry();
+
+		FragmentEntryLink fragmentEntryLink = _addFragmentEntryLink(
+			_layoutLocalService.getLayout(
+				masterLayoutPageTemplateEntry.getPlid()));
+
+		JSONArray jsonArray = _serveResource(
+			_draftLayout, fragmentEntryLink.getFragmentEntryLinkId());
+
+		Assert.assertEquals(1, jsonArray.length());
+
+		JSONObject jsonObject = jsonArray.getJSONObject(0);
+
+		Assert.assertEquals(0, jsonObject.length());
 	}
 
 	@Inject
