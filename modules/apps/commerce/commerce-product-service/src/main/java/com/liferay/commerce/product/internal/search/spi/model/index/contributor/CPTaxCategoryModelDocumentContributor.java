@@ -39,14 +39,14 @@ public class CPTaxCategoryModelDocumentContributor
 			cpTaxCategory.getName());
 
 		for (String languageId : languageIds) {
-			String name = cpTaxCategory.getName(languageId);
-
 			String description = cpTaxCategory.getDescription(languageId);
 
 			document.addText(Field.CONTENT, description);
 			document.addText(
 				_localization.getLocalizedName(Field.DESCRIPTION, languageId),
 				description);
+
+			String name = cpTaxCategory.getName(languageId);
 
 			document.addText(
 				_localization.getLocalizedName(Field.NAME, languageId), name);
