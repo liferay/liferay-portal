@@ -11,12 +11,15 @@ import com.liferay.commerce.internal.search.CommerceOrderBatchReindexer;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.service.CommerceOrderLocalService;
 import com.liferay.commerce.service.CommerceShippingOptionAccountEntryRelLocalService;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.ModelListenerException;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.search.indexer.IndexerDocumentBuilder;
 import com.liferay.portal.search.indexer.IndexerWriter;
+import com.liferay.portal.util.PortalInstances;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -45,14 +48,34 @@ public class AccountEntryModelListener extends BaseModelListener<AccountEntry> {
 	}
 
 	@Override
-	public void onBeforeRemove(AccountEntry accountEntry) {
-		int accountOrders =
-			_commerceOrderLocalService.
-				getCommerceOrdersCountByCommerceAccountId(
-					accountEntry.getAccountEntryId());
+	public void onBeforeRemove(AccountEntry accountEntry)
+		throws ModelListenerException {
 
-		if (accountOrders > 0) {
-			throw new CommerceAccountOrdersException();
+		if (PortalInstances.isCurrentCompanyInDeletionProcess()) {
+			try {
+				for (CommerceOrder commerceOrder :
+						_commerceOrderLocalService.
+							getCommerceOrdersByCommerceAccountId(
+								accountEntry.getAccountEntryId(),
+								QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
+
+					_commerceOrderLocalService.deleteCommerceOrder(
+						commerceOrder);
+				}
+			}
+			catch (PortalException portalException) {
+				throw new ModelListenerException(portalException);
+			}
+		}
+		else {
+			int accountOrders =
+				_commerceOrderLocalService.
+					getCommerceOrdersCountByCommerceAccountId(
+						accountEntry.getAccountEntryId());
+
+			if (accountOrders > 0) {
+				throw new CommerceAccountOrdersException();
+			}
 		}
 
 		_commerceShippingOptionAccountEntryRelLocalService.
