@@ -694,7 +694,7 @@ definition {
 
 		var year = StringUtil.extractLast(${dateMonth}, " ");
 
-		while ((!(IsTextEqual.isPartialText(locator1 = "Calendar#SCHEDULER_VIEW_MONTH_DATE", value1 = ${year}))) && (maxIterations = "100")) {
+		while ((!(IsTextEqual.isPartialText(locator1 = "Calendar#SCHEDULER_VIEW_MONTH_DATE", value1 = ${year}))) && (maxIterations = "200")) {
 			var currentYear = selenium.getText("Calendar#SCHEDULER_VIEW_MONTH_DATE");
 
 			var currentYear = StringUtil.extractLast(${currentYear}, " ");
