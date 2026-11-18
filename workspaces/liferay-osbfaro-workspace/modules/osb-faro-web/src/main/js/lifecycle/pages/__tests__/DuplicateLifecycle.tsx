@@ -420,7 +420,9 @@ describe('DuplicateLifecycle', () => {
 		renderPage();
 
 		expect(screen.queryByText(/new lifecycle/i)).toBeNull();
-		expect(screen.getByText(/dashboard not found/i)).toBeInTheDocument();
+		expect(
+			screen.getByText(/dashboard was not found/i)
+		).toBeInTheDocument();
 	});
 
 	it('shows the empty state when the channel has no account data', () => {
