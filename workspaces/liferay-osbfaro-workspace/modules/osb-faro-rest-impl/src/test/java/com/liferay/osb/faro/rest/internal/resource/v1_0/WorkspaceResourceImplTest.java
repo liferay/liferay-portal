@@ -31,14 +31,6 @@ public class WorkspaceResourceImplTest {
 
 	@Test
 	public void testGetWorkspacesPage() throws Exception {
-		User user = Mockito.mock(User.class);
-
-		Mockito.when(
-			user.getUserId()
-		).thenReturn(
-			_USER_ID
-		);
-
 		FaroUser faroUser = Mockito.mock(FaroUser.class);
 
 		Mockito.when(
@@ -74,6 +66,14 @@ public class WorkspaceResourceImplTest {
 			_faroProjectLocalService.fetchFaroProjectByGroupId(_GROUP_ID)
 		).thenReturn(
 			faroProject
+		);
+
+		User user = Mockito.mock(User.class);
+
+		Mockito.when(
+			user.getUserId()
+		).thenReturn(
+			_USER_ID
 		);
 
 		_workspaceResourceImpl.setContextUser(user);
