@@ -6,6 +6,7 @@
 package com.liferay.exportimport.rest.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.counter.kernel.service.CounterLocalService;
 import com.liferay.exportimport.kernel.background.task.BackgroundTaskExecutorNames;
 import com.liferay.exportimport.kernel.configuration.constants.ExportImportConfigurationConstants;
 import com.liferay.exportimport.kernel.model.ExportImportConfiguration;
@@ -21,6 +22,7 @@ import com.liferay.exportimport.rest.client.resource.v1_0.ReportEntryResource;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.background.task.model.BackgroundTask;
 import com.liferay.portal.background.task.service.BackgroundTaskLocalService;
+import com.liferay.portal.kernel.backgroundtask.constants.BackgroundTaskConstants;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
@@ -62,16 +64,9 @@ public class ReportEntryResourceTest extends BaseReportEntryResourceTestCase {
 					ExportImportConfigurationConstants.TYPE_IMPORT_LAYOUT,
 					Collections.emptyMap());
 
-		_importBackgroundTask = _backgroundTaskLocalService.addBackgroundTask(
-			TestPropsValues.getUserId(), TestPropsValues.getGroupId(),
-			RandomTestUtil.randomString(),
-			BackgroundTaskExecutorNames.LAYOUT_IMPORT_BACKGROUND_TASK_EXECUTOR,
-			HashMapBuilder.<String, Serializable>put(
-				"exportImportConfigurationId",
-				_importExportImportConfiguration.
-					getExportImportConfigurationId()
-			).build(),
-			null);
+		_importBackgroundTask = _addBackgroundTask(
+			_importExportImportConfiguration,
+			BackgroundTaskExecutorNames.LAYOUT_IMPORT_BACKGROUND_TASK_EXECUTOR);
 
 		_publishExportImportConfiguration =
 			_exportImportConfigurationLocalService.
@@ -81,16 +76,10 @@ public class ReportEntryResourceTest extends BaseReportEntryResourceTestCase {
 						TYPE_PUBLISH_LAYOUT_LOCAL,
 					Collections.emptyMap());
 
-		_publishBackgroundTask = _backgroundTaskLocalService.addBackgroundTask(
-			TestPropsValues.getUserId(), TestPropsValues.getGroupId(),
-			RandomTestUtil.randomString(),
-			BackgroundTaskExecutorNames.LAYOUT_STAGING_BACKGROUND_TASK_EXECUTOR,
-			HashMapBuilder.<String, Serializable>put(
-				"exportImportConfigurationId",
-				_publishExportImportConfiguration.
-					getExportImportConfigurationId()
-			).build(),
-			null);
+		_publishBackgroundTask = _addBackgroundTask(
+			_publishExportImportConfiguration,
+			BackgroundTaskExecutorNames.
+				LAYOUT_STAGING_BACKGROUND_TASK_EXECUTOR);
 	}
 
 	@Override
@@ -154,6 +143,30 @@ public class ReportEntryResourceTest extends BaseReportEntryResourceTestCase {
 	protected ReportEntry testGetReportEntry_addReportEntry() throws Exception {
 		return _addReportEntry(
 			_importExportImportConfiguration, randomReportEntry());
+	}
+
+	private BackgroundTask _addBackgroundTask(
+			ExportImportConfiguration exportImportConfiguration,
+			String taskExecutorClassName)
+		throws Exception {
+
+		BackgroundTask backgroundTask =
+			_backgroundTaskLocalService.createBackgroundTask(
+				_counterLocalService.increment());
+
+		backgroundTask.setGroupId(TestPropsValues.getGroupId());
+		backgroundTask.setCompanyId(TestPropsValues.getCompanyId());
+		backgroundTask.setUserId(TestPropsValues.getUserId());
+		backgroundTask.setName(RandomTestUtil.randomString());
+		backgroundTask.setTaskExecutorClassName(taskExecutorClassName);
+		backgroundTask.setTaskContextMap(
+			HashMapBuilder.<String, Serializable>put(
+				"exportImportConfigurationId",
+				exportImportConfiguration.getExportImportConfigurationId()
+			).build());
+		backgroundTask.setStatus(BackgroundTaskConstants.STATUS_NEW);
+
+		return _backgroundTaskLocalService.updateBackgroundTask(backgroundTask);
 	}
 
 	private ReportEntry _addReportEntry(
@@ -438,6 +451,9 @@ public class ReportEntryResourceTest extends BaseReportEntryResourceTestCase {
 
 	@Inject
 	private BackgroundTaskLocalService _backgroundTaskLocalService;
+
+	@Inject
+	private CounterLocalService _counterLocalService;
 
 	@Inject
 	private ExportImportConfigurationLocalService
