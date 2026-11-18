@@ -87,6 +87,9 @@ public class UpdateFragmentsHighlightedConfigurationMVCActionCommandTest {
 	@Test
 	@TestInfo("LPD-108820")
 	public void testUpdateFragmentsHighlightedConfiguration() throws Exception {
+		FeatureFlagTestUtil.invokeFeatureFlagListeners(
+			_group.getCompanyId(), true, "LPD-57283");
+
 		User user = UserTestUtil.addGroupAdminUser(_group);
 
 		_testUpdateFragmentsHighlightedConfiguration(user);
@@ -243,9 +246,6 @@ public class UpdateFragmentsHighlightedConfigurationMVCActionCommandTest {
 			_testUpdateFragmentsHighlightedConfigurationWithDesignLibraryMasterLayout(
 				User user)
 		throws Exception {
-
-		FeatureFlagTestUtil.invokeFeatureFlagListeners(
-			_group.getCompanyId(), true, "LPD-57283");
 
 		Group designLibraryGroup = DesignLibraryTestUtil.addDesignLibraryGroup(
 			_group.getGroupId(), true);
