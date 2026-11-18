@@ -14,17 +14,16 @@ import com.liferay.fragment.service.FragmentEntryLocalService;
 import com.liferay.layout.helper.DropZoneAllowedFragmentEntriesHelper;
 import com.liferay.layout.util.structure.DropZoneLayoutStructureItem;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ScopeUtil;
 import com.liferay.portal.kernel.util.Validator;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
@@ -42,45 +41,35 @@ public class DropZoneAllowedFragmentEntriesHelperImpl
 		long companyId, DropZoneLayoutStructureItem dropZoneLayoutStructureItem,
 		long scopeGroupId) {
 
-		JSONArray fragmentEntriesJSONArray =
-			dropZoneLayoutStructureItem.getFragmentEntriesJSONArray();
+		return JSONUtil.toList(
+			dropZoneLayoutStructureItem.getFragmentEntriesJSONArray(),
+			jsonObject -> {
+				String fragmentEntryRendererKey = jsonObject.getString(
+					"fragmentEntryRendererKey");
 
-		if (JSONUtil.isEmpty(fragmentEntriesJSONArray)) {
-			return Collections.emptyList();
-		}
+				if (Validator.isNotNull(fragmentEntryRendererKey)) {
+					return fragmentEntryRendererKey;
+				}
 
-		List<String> fragmentEntryKeys = new ArrayList<>();
+				String fragmentEntryERC = jsonObject.getString(
+					"fragmentEntryERC");
 
-		for (int i = 0; i < fragmentEntriesJSONArray.length(); i++) {
-			JSONObject jsonObject = fragmentEntriesJSONArray.getJSONObject(i);
+				if (Validator.isNull(fragmentEntryERC)) {
+					return null;
+				}
 
-			String fragmentEntryRendererKey = jsonObject.getString(
-				"fragmentEntryRendererKey");
+				FragmentEntry fragmentEntry = _fetchFragmentEntry(
+					companyId, fragmentEntryERC,
+					jsonObject.getString("fragmentEntryScopeERC"),
+					scopeGroupId);
 
-			if (Validator.isNotNull(fragmentEntryRendererKey)) {
-				fragmentEntryKeys.add(fragmentEntryRendererKey);
+				if (fragmentEntry == null) {
+					return null;
+				}
 
-				continue;
-			}
-
-			String fragmentEntryERC = jsonObject.getString("fragmentEntryERC");
-
-			if (Validator.isNull(fragmentEntryERC)) {
-				continue;
-			}
-
-			FragmentEntry fragmentEntry = _fetchFragmentEntry(
-				companyId, fragmentEntryERC,
-				jsonObject.getString("fragmentEntryScopeERC"), scopeGroupId);
-
-			if (fragmentEntry == null) {
-				continue;
-			}
-
-			fragmentEntryKeys.add(fragmentEntry.getFragmentEntryKey());
-		}
-
-		return fragmentEntryKeys;
+				return fragmentEntry.getFragmentEntryKey();
+			},
+			_log);
 	}
 
 	@Override
@@ -118,43 +107,44 @@ public class DropZoneAllowedFragmentEntriesHelperImpl
 
 		itemConfigJSONObject.remove("fragmentEntryKeys");
 
-		JSONArray fragmentEntriesJSONArray = JSONUtil.putAll();
-
 		long[] groupIds = _getGroupIds(companyId, scopeGroupId);
 
-		for (String fragmentEntryKey : fragmentEntryKeys) {
-			FragmentEntry defaultFragmentEntry =
-				_fragmentCollectionContributorRegistry.getFragmentEntry(
-					fragmentEntryKey);
-			FragmentRenderer fragmentRenderer =
-				_fragmentRendererRegistry.getFragmentRenderer(fragmentEntryKey);
-
-			if ((defaultFragmentEntry != null) || (fragmentRenderer != null)) {
-				fragmentEntriesJSONArray.put(
-					JSONUtil.put("fragmentEntryRendererKey", fragmentEntryKey));
-
-				continue;
-			}
-
-			FragmentEntry fragmentEntry = _fetchFragmentEntry(
-				fragmentEntryKey, groupIds);
-
-			if (fragmentEntry == null) {
-				continue;
-			}
-
-			fragmentEntriesJSONArray.put(
-				JSONUtil.put(
-					"fragmentEntryERC", fragmentEntry.getExternalReferenceCode()
-				).put(
-					"fragmentEntryScopeERC",
-					ScopeUtil.getItemScopeExternalReferenceCode(
-						fragmentEntry.getGroupId(), scopeGroupId)
-				));
-		}
-
 		return itemConfigJSONObject.put(
-			"fragmentEntries", fragmentEntriesJSONArray);
+			"fragmentEntries",
+			JSONUtil.toJSONArray(
+				fragmentEntryKeys,
+				fragmentEntryKey -> {
+					FragmentEntry defaultFragmentEntry =
+						_fragmentCollectionContributorRegistry.getFragmentEntry(
+							fragmentEntryKey);
+					FragmentRenderer fragmentRenderer =
+						_fragmentRendererRegistry.getFragmentRenderer(
+							fragmentEntryKey);
+
+					if ((defaultFragmentEntry != null) ||
+						(fragmentRenderer != null)) {
+
+						return JSONUtil.put(
+							"fragmentEntryRendererKey", fragmentEntryKey);
+					}
+
+					FragmentEntry fragmentEntry = _fetchFragmentEntry(
+						fragmentEntryKey, groupIds);
+
+					if (fragmentEntry == null) {
+						return null;
+					}
+
+					return JSONUtil.put(
+						"fragmentEntryERC",
+						fragmentEntry.getExternalReferenceCode()
+					).put(
+						"fragmentEntryScopeERC",
+						ScopeUtil.getItemScopeExternalReferenceCode(
+							fragmentEntry.getGroupId(), scopeGroupId)
+					);
+				},
+				_log));
 	}
 
 	private FragmentEntry _fetchFragmentEntry(
@@ -181,9 +171,11 @@ public class DropZoneAllowedFragmentEntriesHelperImpl
 				_fragmentEntryLocalService.fetchFragmentEntry(
 					groupId, fragmentEntryKey);
 
-			if (fragmentEntry != null) {
-				return fragmentEntry;
+			if (fragmentEntry == null) {
+				continue;
 			}
+
+			return fragmentEntry;
 		}
 
 		return null;
@@ -199,6 +191,9 @@ public class DropZoneAllowedFragmentEntriesHelperImpl
 			DesignLibraryUtil.fetchConnectedDesignLibraryGroupIds(
 				scopeGroupId));
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		DropZoneAllowedFragmentEntriesHelperImpl.class);
 
 	@Reference
 	private FragmentCollectionContributorRegistry
