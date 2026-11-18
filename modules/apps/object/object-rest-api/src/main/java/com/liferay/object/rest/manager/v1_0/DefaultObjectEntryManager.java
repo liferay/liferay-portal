@@ -127,7 +127,7 @@ public interface DefaultObjectEntryManager extends ObjectEntryManager {
 			String scopeKey)
 		throws Exception;
 
-	public ObjectEntry fetchRelatedManyToOneObjectEntry(
+	public ObjectEntry fetchRelatedObjectEntry(
 			DTOConverterContext dtoConverterContext,
 			ObjectDefinition objectDefinition, Long objectEntryId,
 			String objectRelationshipName)

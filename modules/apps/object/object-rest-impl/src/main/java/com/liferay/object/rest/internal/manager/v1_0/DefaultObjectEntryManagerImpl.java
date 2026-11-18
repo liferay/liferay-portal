@@ -710,7 +710,7 @@ public class DefaultObjectEntryManagerImpl
 	}
 
 	@Override
-	public ObjectEntry fetchRelatedManyToOneObjectEntry(
+	public ObjectEntry fetchRelatedObjectEntry(
 			DTOConverterContext dtoConverterContext,
 			ObjectDefinition objectDefinition, Long objectEntryId,
 			String objectRelationshipName)
