@@ -331,16 +331,15 @@ public class DLAdminDisplayContextTest {
 	private ThemeDisplay _getThemeDisplay() throws Exception {
 		ThemeDisplay themeDisplay = new ThemeDisplay();
 
+		PortletDisplay portletDisplay = themeDisplay.getPortletDisplay();
+
+		portletDisplay.setId(DLPortletKeys.DOCUMENT_LIBRARY_ADMIN);
+
 		themeDisplay.setCompany(_company);
 		themeDisplay.setLayout(_layout);
 		themeDisplay.setPermissionChecker(
 			PermissionThreadLocal.getPermissionChecker());
 		themeDisplay.setPlid(_layout.getPlid());
-
-		PortletDisplay portletDisplay = themeDisplay.getPortletDisplay();
-
-		portletDisplay.setId(DLPortletKeys.DOCUMENT_LIBRARY_ADMIN);
-
 		themeDisplay.setRealUser(TestPropsValues.getUser());
 		themeDisplay.setScopeGroupId(_layout.getGroupId());
 		themeDisplay.setSignedIn(_signedIn);
