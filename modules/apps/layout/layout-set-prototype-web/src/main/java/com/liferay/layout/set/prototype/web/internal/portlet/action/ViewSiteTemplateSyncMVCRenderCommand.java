@@ -57,10 +57,10 @@ public class ViewSiteTemplateSyncMVCRenderCommand implements MVCRenderCommand {
 			return "/error.jsp";
 		}
 
-		long layoutSetPrototypeId = ParamUtil.getLong(
-			renderRequest, "layoutSetPrototypeId");
-
 		try {
+			long layoutSetPrototypeId = ParamUtil.getLong(
+				renderRequest, "layoutSetPrototypeId");
+
 			LayoutSetPrototypePermissionUtil.check(
 				PermissionThreadLocal.getPermissionChecker(),
 				layoutSetPrototypeId, ActionKeys.UPDATE);

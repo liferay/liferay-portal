@@ -176,9 +176,9 @@ public class PortletDataHandlerUtil {
 				}
 
 				_addLayoutSetPortletDataHandler(
-					group.getCompanyId(), group.hasPrivateLayouts(), locale,
-					portlet, portletDataHandler, portletDataHandlers,
-					privateDeletionSystemEventsCount, privateLayoutsEnabled,
+					group.getCompanyId(), locale, portlet, portletDataHandler,
+					portletDataHandlers, privateDeletionSystemEventsCount,
+					group.hasPrivateLayouts(), privateLayoutsEnabled,
 					privateManifestSummary, publicDeletionSystemEventsCount,
 					!group.isLayoutSetPrototype(),
 					group.isLayoutSetPrototype() ? null :
@@ -229,8 +229,8 @@ public class PortletDataHandlerUtil {
 
 			if (_isLayoutSetScoped(portlet)) {
 				_addLayoutSetPortletDataHandler(
-					group.getCompanyId(), group.hasPrivateLayouts(), locale,
-					portlet, portletDataHandler, portletDataHandlers, 0,
+					group.getCompanyId(), locale, portlet, portletDataHandler,
+					portletDataHandlers, 0, group.hasPrivateLayouts(),
 					_isPrivateLayoutsEnabled(group, portletScoped), null, 0,
 					!group.isLayoutSetPrototype(), null);
 
@@ -283,9 +283,9 @@ public class PortletDataHandlerUtil {
 
 			if (_isLayoutSetScoped(portlet)) {
 				_addLayoutSetPortletDataHandler(
-					group.getCompanyId(), false, locale, portlet,
-					portletDataHandler, portletDataHandlers, 0, false, null, 0,
-					true, counted ? manifestSummary : null);
+					group.getCompanyId(), locale, portlet, portletDataHandler,
+					portletDataHandlers, 0, false, false, null, 0, true,
+					counted ? manifestSummary : null);
 
 				continue;
 			}
@@ -352,14 +352,14 @@ public class PortletDataHandlerUtil {
 	}
 
 	private static void _addLayoutSetPortletDataHandler(
-		long companyId, boolean hasPrivateLayouts, Locale locale,
-		Portlet portlet,
+		long companyId, Locale locale, Portlet portlet,
 		com.liferay.exportimport.kernel.lar.PortletDataHandler
 			portletDataHandler,
 		List<PortletDataHandler> portletDataHandlers,
-		long privateLayoutDeletionCount, boolean privateLayoutsEnabled,
-		ManifestSummary privateManifestSummary, long publicLayoutDeletionCount,
-		boolean publicLayoutsEnabled, ManifestSummary publicManifestSummary) {
+		long privateLayoutDeletionCount, boolean privateLayouts,
+		boolean privateLayoutsEnabled, ManifestSummary privateManifestSummary,
+		long publicLayoutDeletionCount, boolean publicLayoutsEnabled,
+		ManifestSummary publicManifestSummary) {
 
 		if (!portletDataHandler.isEnabled(companyId)) {
 			return;
@@ -429,10 +429,10 @@ public class PortletDataHandlerUtil {
 
 							return new PortletDataHandlerControl[] {
 								_toVisibilityPortletDataHandlerChoice(
-									hasPrivateLayouts, locale,
+									locale,
 									pagesPortletDataHandlerTreeSelection,
 									privateLayoutAdditionCount,
-									privateLayoutDeletionCount,
+									privateLayoutDeletionCount, privateLayouts,
 									publicLayoutAdditionCount,
 									publicLayoutDeletionCount,
 									publicLayoutsEnabled)
@@ -791,12 +791,12 @@ public class PortletDataHandlerUtil {
 
 	private static PortletDataHandlerChoice
 		_toVisibilityPortletDataHandlerChoice(
-			boolean hasPrivateLayouts, Locale locale,
+			Locale locale,
 			PortletDataHandlerTreeSelection
 				pagesPortletDataHandlerTreeSelection,
 			long privateLayoutAdditionCount, long privateLayoutDeletionCount,
-			long publicLayoutAdditionCount, long publicLayoutDeletionCount,
-			boolean publicLayoutsEnabled) {
+			boolean privateLayouts, long publicLayoutAdditionCount,
+			long publicLayoutDeletionCount, boolean publicLayoutsEnabled) {
 
 		return new PortletDataHandlerChoice() {
 			{
@@ -830,7 +830,7 @@ public class PortletDataHandlerUtil {
 								});
 						}
 
-						if (!publicLayoutsEnabled || hasPrivateLayouts) {
+						if (!publicLayoutsEnabled || privateLayouts) {
 							choices.add(
 								new Choice() {
 									{
