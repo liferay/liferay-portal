@@ -15,6 +15,8 @@ import com.liferay.portal.kernel.dao.orm.EntityCacheUtil;
 import com.liferay.portal.kernel.encryptor.CompanyKeyResolverUtil;
 import com.liferay.portal.kernel.encryptor.EncryptorUtil;
 import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.CompanyInfo;
+import com.liferay.portal.kernel.service.CompanyInfoLocalServiceUtil;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
@@ -250,10 +252,10 @@ public class CompanyKeyResolverUtilTest {
 
 		EntityCacheUtil.clearCache();
 
-		Company persistedCompany = CompanyLocalServiceUtil.getCompany(
+		CompanyInfo companyInfo = CompanyInfoLocalServiceUtil.fetchCompany(
 			company.getCompanyId());
 
-		return persistedCompany.getKey();
+		return companyInfo.getKey();
 	}
 
 	private Dictionary<String, Object> _getKeyManagerConfigurationProperties(
