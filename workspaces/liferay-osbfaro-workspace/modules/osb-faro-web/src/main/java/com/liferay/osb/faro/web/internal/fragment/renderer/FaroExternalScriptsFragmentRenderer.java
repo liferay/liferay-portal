@@ -8,14 +8,14 @@ package com.liferay.osb.faro.web.internal.fragment.renderer;
 import com.liferay.fragment.renderer.FragmentRenderer;
 import com.liferay.fragment.renderer.FragmentRendererContext;
 import com.liferay.portal.kernel.language.Language;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.taglib.aui.ScriptTag;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
+import java.io.IOException;
 
 import java.util.Locale;
 
@@ -47,7 +47,8 @@ public class FaroExternalScriptsFragmentRenderer implements FragmentRenderer {
 	public void render(
 		FragmentRendererContext fragmentRendererContext,
 		HttpServletRequest httpServletRequest,
-		HttpServletResponse httpServletResponse) {
+		HttpServletResponse httpServletResponse)
+		throws IOException {
 
 		ScriptTag scriptTag = new ScriptTag();
 
@@ -64,14 +65,9 @@ public class FaroExternalScriptsFragmentRenderer implements FragmentRenderer {
 				});
 		}
 		catch (Exception exception) {
-			_log.error(exception);
-
-			throw new RuntimeException(exception);
+			throw new IOException(exception);
 		}
 	}
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		FaroExternalScriptsFragmentRenderer.class);
 
 	@Reference
 	private Language _language;
