@@ -1617,7 +1617,9 @@ $form-control-select-sm: () !default;
 $form-control-select-sm: map-deep-merge(
 	(
 		height: $input-height-sm,
+		padding-bottom: $input-padding-y-sm,
 		padding-right: 2em,
+		padding-top: $input-padding-y-sm,
 
 		mobile: (
 			height: $input-height-sm-mobile,

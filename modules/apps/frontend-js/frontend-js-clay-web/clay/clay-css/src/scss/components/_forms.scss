@@ -500,7 +500,8 @@ textarea.form-control-lg,
 	}
 }
 
-.form-control-select.form-control-sm {
+.form-control-select.form-control-sm,
+select.form-control-sm {
 	@extend %clay-select-form-control-sm !optional;
 }
 
