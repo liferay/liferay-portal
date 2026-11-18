@@ -9,6 +9,7 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.model.OrganizationConstants;
 import com.liferay.portal.kernel.model.ResourceConstants;
@@ -21,14 +22,18 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.OrganizationLocalService;
 import com.liferay.portal.kernel.service.OrganizationService;
 import com.liferay.portal.kernel.service.RoleLocalService;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserGroupRoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.service.UserService;
 import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.OrganizationTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.RoleTestUtil;
+import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.PortletKeys;
@@ -126,6 +131,178 @@ public class OrganizationServiceTest {
 				_organizationLocalService.hasGroupOrganization(
 					TestPropsValues.getGroupId(),
 					organization2.getOrganizationId()));
+		}
+	}
+
+	@Test
+	public void testAddOrganizationUserByEmailAddress() throws Exception {
+		Group group = GroupTestUtil.addGroup();
+
+		Organization organization = OrganizationTestUtil.addOrganization();
+
+		_organizations.add(organization);
+
+		User organizationAdminUser = UserTestUtil.addOrganizationAdminUser(
+			organization);
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				group.getGroupId(), organizationAdminUser.getUserId());
+
+		User user1 = UserTestUtil.addUser();
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				organizationAdminUser)) {
+
+			Assert.assertThrows(
+				PrincipalException.class,
+				() -> _organizationService.addOrganizationUserByEmailAddress(
+					user1.getEmailAddress(), organization.getOrganizationId(),
+					serviceContext));
+			Assert.assertFalse(
+				_userLocalService.hasOrganizationUser(
+					organization.getOrganizationId(), user1.getUserId()));
+			Assert.assertThrows(
+				PrincipalException.class,
+				() -> _userService.getUserById(user1.getUserId()));
+
+			User user2 = _organizationService.addOrganizationUserByEmailAddress(
+				RandomTestUtil.randomString() + "@liferay.com",
+				organization.getOrganizationId(), serviceContext);
+
+			Assert.assertFalse(
+				_userLocalService.hasGroupUser(
+					group.getGroupId(), user2.getUserId()));
+			Assert.assertTrue(
+				_userLocalService.hasOrganizationUser(
+					organization.getOrganizationId(), user2.getUserId()));
+		}
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_addUser())) {
+
+			Assert.assertThrows(
+				PrincipalException.class,
+				() -> _organizationService.addOrganizationUserByEmailAddress(
+					user1.getEmailAddress(), organization.getOrganizationId(),
+					serviceContext));
+			Assert.assertFalse(
+				_userLocalService.hasOrganizationUser(
+					organization.getOrganizationId(), user1.getUserId()));
+			Assert.assertEquals(
+				user1, _userService.getUserById(user1.getUserId()));
+		}
+	}
+
+	@Test
+	public void testAddUserOrganizationByEmailAddress() throws Exception {
+		Organization organization1 = OrganizationTestUtil.addOrganization();
+
+		_organizations.add(organization1);
+
+		User organizationAdminUser = UserTestUtil.addOrganizationAdminUser(
+			organization1);
+
+		User user1 = UserTestUtil.addUser();
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				organizationAdminUser)) {
+
+			Assert.assertThrows(
+				PrincipalException.class,
+				() -> _organizationService.addUserOrganizationByEmailAddress(
+					user1.getEmailAddress(),
+					organization1.getOrganizationId()));
+			Assert.assertFalse(
+				_userLocalService.hasOrganizationUser(
+					organization1.getOrganizationId(), user1.getUserId()));
+			Assert.assertThrows(
+				PrincipalException.class,
+				() -> _userService.getUserById(user1.getUserId()));
+		}
+
+		Organization organization2 = OrganizationTestUtil.addOrganization(
+			organization1.getOrganizationId(), RandomTestUtil.randomString(),
+			false);
+
+		_organizations.add(organization2);
+
+		User user2 = UserTestUtil.addUser();
+
+		_userLocalService.addOrganizationUser(
+			organization2.getOrganizationId(), user2.getUserId());
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				organizationAdminUser)) {
+
+			_organizationService.addUserOrganizationByEmailAddress(
+				user2.getEmailAddress(), organization1.getOrganizationId());
+
+			Assert.assertTrue(
+				_userLocalService.hasOrganizationUser(
+					organization1.getOrganizationId(), user2.getUserId()));
+		}
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_addUser())) {
+
+			Assert.assertThrows(
+				PrincipalException.class,
+				() -> _organizationService.addUserOrganizationByEmailAddress(
+					user1.getEmailAddress(),
+					organization1.getOrganizationId()));
+			Assert.assertFalse(
+				_userLocalService.hasOrganizationUser(
+					organization1.getOrganizationId(), user1.getUserId()));
+			Assert.assertEquals(
+				user1, _userService.getUserById(user1.getUserId()));
+		}
+	}
+
+	@Test
+	public void testDeleteUserOrganizationByEmailAddress() throws Exception {
+		Organization organization = OrganizationTestUtil.addOrganization();
+
+		_organizations.add(organization);
+
+		User organizationAdminUser1 = UserTestUtil.addOrganizationAdminUser(
+			organization);
+		User organizationAdminUser2 = UserTestUtil.addOrganizationAdminUser(
+			organization);
+		User organizationOwnerUser = UserTestUtil.addOrganizationOwnerUser(
+			organization);
+		User organizationUser = UserTestUtil.addOrganizationUser(
+			organization, RoleConstants.ORGANIZATION_USER);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				organizationAdminUser1)) {
+
+			_organizationService.deleteUserOrganizationByEmailAddress(
+				organizationAdminUser2.getEmailAddress(),
+				organization.getOrganizationId());
+
+			Assert.assertTrue(
+				_userLocalService.hasOrganizationUser(
+					organization.getOrganizationId(),
+					organizationAdminUser2.getUserId()));
+
+			_organizationService.deleteUserOrganizationByEmailAddress(
+				organizationOwnerUser.getEmailAddress(),
+				organization.getOrganizationId());
+
+			Assert.assertTrue(
+				_userLocalService.hasOrganizationUser(
+					organization.getOrganizationId(),
+					organizationOwnerUser.getUserId()));
+
+			_organizationService.deleteUserOrganizationByEmailAddress(
+				organizationUser.getEmailAddress(),
+				organization.getOrganizationId());
+
+			Assert.assertFalse(
+				_userLocalService.hasOrganizationUser(
+					organization.getOrganizationId(),
+					organizationUser.getUserId()));
 		}
 	}
 
@@ -409,6 +586,24 @@ public class OrganizationServiceTest {
 		}
 	}
 
+	private User _addUser() throws Exception {
+		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		RoleTestUtil.addResourcePermission(
+			role, Organization.class.getName(), ResourceConstants.SCOPE_COMPANY,
+			String.valueOf(TestPropsValues.getCompanyId()),
+			ActionKeys.ASSIGN_MEMBERS);
+		RoleTestUtil.addResourcePermission(
+			role, User.class.getName(), ResourceConstants.SCOPE_COMPANY,
+			String.valueOf(TestPropsValues.getCompanyId()), ActionKeys.VIEW);
+
+		User user = UserTestUtil.addUser();
+
+		_userLocalService.addRoleUser(role.getRoleId(), user.getUserId());
+
+		return user;
+	}
+
 	private void _assertExpectedOrganizations(
 			List<Organization> expectedOrganizations, long parentOrganizationId,
 			String nameSearch)
@@ -453,5 +648,8 @@ public class OrganizationServiceTest {
 
 	@Inject
 	private UserLocalService _userLocalService;
+
+	@Inject
+	private UserService _userService;
 
 }
