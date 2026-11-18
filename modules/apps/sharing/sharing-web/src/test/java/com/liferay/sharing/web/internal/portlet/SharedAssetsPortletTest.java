@@ -7,6 +7,7 @@ package com.liferay.sharing.web.internal.portlet;
 
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCCommandCache;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
+import com.liferay.portal.kernel.portlet.bridges.mvc.constants.MVCRenderConstants;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletRenderRequest;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletRenderResponse;
@@ -39,19 +40,12 @@ public class SharedAssetsPortletTest {
 
 	@Test
 	public void testRender() throws Exception {
-		String viewTemplatePath = RandomTestUtil.randomString();
-
-		_testRender(
-			"mvcPath", "/shared_assets/view.jsp", "/shared_assets/view.jsp",
-			viewTemplatePath);
-		_testRender(
-			"mvcRenderCommandName", "/shared_assets/view_sharing_entry",
-			viewTemplatePath, viewTemplatePath);
+		_testRender("mvcPath", false);
+		_testRender("mvcRenderCommandName", false);
+		_testRender("mvcRenderCommandName", true);
 	}
 
-	private void _testRender(
-			String parameterName, String parameterValue,
-			String expectedIncludedPath, String viewTemplatePath)
+	private void _testRender(String parameterName, boolean mvcRenderCommand)
 		throws Exception {
 
 		ViewSharedAssetsDisplayContextFactory
@@ -76,15 +70,12 @@ public class SharedAssetsPortletTest {
 		);
 
 		mockLiferayPortletRenderRequest.setParameter(
-			parameterName, parameterValue);
+			parameterName, RandomTestUtil.randomString());
 
-		AtomicReference<String> includedPathAtomicReference =
+		AtomicReference<Object> viewSharedAssetsDisplayContextAtomicReference =
 			new AtomicReference<>();
 
 		SharedAssetsPortlet sharedAssetsPortlet = new SharedAssetsPortlet() {
-			{
-				viewTemplate = viewTemplatePath;
-			}
 
 			@Override
 			protected String getTitle(RenderRequest renderRequest) {
@@ -96,7 +87,9 @@ public class SharedAssetsPortletTest {
 				String path, RenderRequest renderRequest,
 				RenderResponse renderResponse) {
 
-				includedPathAtomicReference.set(path);
+				viewSharedAssetsDisplayContextAtomicReference.set(
+					renderRequest.getAttribute(
+						ViewSharedAssetsDisplayContext.class.getName()));
 			}
 
 		};
@@ -104,10 +97,22 @@ public class SharedAssetsPortletTest {
 		MVCCommandCache<MVCRenderCommand> mvcCommandCache = Mockito.mock(
 			MVCCommandCache.class);
 
+		MVCRenderCommand cachedMVCRenderCommand = MVCRenderCommand.EMPTY;
+
+		if (mvcRenderCommand) {
+			cachedMVCRenderCommand = (renderRequest, renderResponse) -> {
+				viewSharedAssetsDisplayContextAtomicReference.set(
+					renderRequest.getAttribute(
+						ViewSharedAssetsDisplayContext.class.getName()));
+
+				return MVCRenderConstants.MVC_PATH_VALUE_SKIP_DISPATCH;
+			};
+		}
+
 		Mockito.when(
 			mvcCommandCache.getMVCCommand(Mockito.anyString())
 		).thenReturn(
-			MVCRenderCommand.EMPTY
+			cachedMVCRenderCommand
 		);
 
 		ReflectionTestUtil.setFieldValue(
@@ -120,12 +125,9 @@ public class SharedAssetsPortletTest {
 		sharedAssetsPortlet.render(
 			mockLiferayPortletRenderRequest, mockLiferayPortletRenderResponse);
 
-		Assert.assertEquals(
-			expectedIncludedPath, includedPathAtomicReference.get());
 		Assert.assertSame(
 			viewSharedAssetsDisplayContext,
-			mockLiferayPortletRenderRequest.getAttribute(
-				ViewSharedAssetsDisplayContext.class.getName()));
+			viewSharedAssetsDisplayContextAtomicReference.get());
 	}
 
 }
