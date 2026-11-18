@@ -11,7 +11,9 @@ import com.liferay.commerce.pricing.model.CommercePricingClassCPDefinitionRel;
 import com.liferay.commerce.pricing.service.CommercePricingClassCPDefinitionRelLocalService;
 import com.liferay.commerce.pricing.service.CommercePricingClassCPDefinitionRelService;
 import com.liferay.commerce.pricing.service.CommercePricingClassLocalService;
+import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPInstance;
+import com.liferay.commerce.product.model.CommerceCatalog;
 import com.liferay.commerce.product.test.util.CPTestUtil;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
@@ -27,6 +29,7 @@ import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
@@ -54,6 +57,73 @@ public class CommercePricingClassCPDefinitionRelServiceTest {
 		_user = UserTestUtil.addUser();
 
 		_userLocalService.addRoleUser(_role.getRoleId(), _user);
+	}
+
+	@Test
+	public void testAddCommercePricingClassCPDefinitionRel() throws Exception {
+		CommercePricingClass commercePricingClass = _addCommercePricingClass();
+
+		_resourcePermissionLocalService.setResourcePermissions(
+			commercePricingClass.getCompanyId(),
+			CommercePricingClass.class.getName(),
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(commercePricingClass.getCommercePricingClassId()),
+			_role.getRoleId(), new String[] {ActionKeys.UPDATE});
+
+		CPInstance cpInstance = CPTestUtil.addCPInstance(
+			TestPropsValues.getGroupId());
+
+		CPDefinition cpDefinition = cpInstance.getCPDefinition();
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_user)) {
+
+			PrincipalException.MustHavePermission principalException =
+				Assert.assertThrows(
+					PrincipalException.MustHavePermission.class,
+					() ->
+						_commercePricingClassCPDefinitionRelService.
+							addCommercePricingClassCPDefinitionRel(
+								commercePricingClass.
+									getCommercePricingClassId(),
+								cpDefinition.getCPDefinitionId(),
+								ServiceContextTestUtil.getServiceContext(
+									TestPropsValues.getGroupId(),
+									_user.getUserId())));
+
+			CommerceCatalog commerceCatalog = cpDefinition.getCommerceCatalog();
+
+			Assert.assertEquals(
+				commerceCatalog.getCommerceCatalogId(),
+				principalException.resourceId);
+
+			Assert.assertFalse(
+				ArrayUtil.contains(
+					_commercePricingClassCPDefinitionRelLocalService.
+						getCPDefinitionIds(
+							commercePricingClass.getCommercePricingClassId()),
+					cpDefinition.getCPDefinitionId()));
+
+			_resourcePermissionLocalService.setResourcePermissions(
+				commerceCatalog.getCompanyId(), CommerceCatalog.class.getName(),
+				ResourceConstants.SCOPE_INDIVIDUAL,
+				String.valueOf(commerceCatalog.getCommerceCatalogId()),
+				_role.getRoleId(), new String[] {ActionKeys.VIEW});
+
+			_commercePricingClassCPDefinitionRelService.
+				addCommercePricingClassCPDefinitionRel(
+					commercePricingClass.getCommercePricingClassId(),
+					cpDefinition.getCPDefinitionId(),
+					ServiceContextTestUtil.getServiceContext(
+						TestPropsValues.getGroupId(), _user.getUserId()));
+
+			Assert.assertTrue(
+				ArrayUtil.contains(
+					_commercePricingClassCPDefinitionRelLocalService.
+						getCPDefinitionIds(
+							commercePricingClass.getCommercePricingClassId()),
+					cpDefinition.getCPDefinitionId()));
+		}
 	}
 
 	@Test
