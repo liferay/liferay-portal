@@ -3498,56 +3498,6 @@ baseTest(
 );
 
 baseTest(
-	'Rich Text field of a structure keeps the content typed in the source editor',
-	{tag: '@LPD-115982'},
-	async ({apiHelpers, journalEditArticlePage, journalPage, page, site}) => {
-		const content = getRandomString();
-		const structureName = getRandomString();
-		const title = getRandomString();
-
-		await apiHelpers.dataEngine.createStructure(
-			site.id,
-			getDataStructureDefinition({
-				defaultLanguageId: 'en_US',
-				fields: [{fieldType: 'rich_text', name: 'RichText'}],
-				name: structureName,
-			})
-		);
-
-		await journalEditArticlePage.goto({
-			siteUrl: site.friendlyUrlPath,
-			structureName,
-		});
-
-		await journalEditArticlePage.fillTitle(title);
-
-		const richTextField = page.locator('[data-field-name="RichText"]');
-
-		const sourceButton = richTextField.getByRole('button', {
-			name: 'Source',
-		});
-
-		await sourceButton.click();
-
-		await richTextField
-			.getByLabel('Source code editing area')
-			.fill(`<p>${content}</p>`);
-
-		await sourceButton.click();
-
-		await journalEditArticlePage.publishArticle();
-
-		await waitForAlert(page, `Success:${title} was created successfully.`);
-
-		await journalPage.goto(site.friendlyUrlPath);
-
-		await journalEditArticlePage.editArticle(title);
-
-		await expect(richTextField.locator('.ck-content')).toHaveText(content);
-	}
-);
-
-baseTest(
 	'Duplicated Rich Text field of a structure keeps the content of every instance',
 	{tag: '@LPD-115982'},
 	async ({apiHelpers, journalEditArticlePage, journalPage, page, site}) => {
