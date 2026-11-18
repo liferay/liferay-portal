@@ -793,8 +793,8 @@ public abstract class BaseSectionDisplayContextTestCase
 		FDSActionDropdownItem fdsActionDropdownItem) {
 
 		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
-			"date-time", "update-dates-menu", "Update Dates", null,
-			"contextual", null, fdsActionDropdownItem);
+			"calendar", "update-dates-menu", "Update Dates", null, "contextual",
+			null, fdsActionDropdownItem);
 
 		List<FDSActionDropdownItem> fdsActionDropdownItems =
 			(List<FDSActionDropdownItem>)fdsActionDropdownItem.get("items");
@@ -804,10 +804,10 @@ public abstract class BaseSectionDisplayContextTestCase
 			fdsActionDropdownItems.size());
 
 		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
-			"date-time", "update-expiration-date", "Expiration Date", null,
+			null, "update-expiration-date", "Expiration Date", null,
 			fdsActionDropdownItems.get(0));
 		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
-			"date-time", "update-review-date", "Review Date", null,
+			null, "update-review-date", "Review Date", null,
 			fdsActionDropdownItems.get(1));
 	}
 

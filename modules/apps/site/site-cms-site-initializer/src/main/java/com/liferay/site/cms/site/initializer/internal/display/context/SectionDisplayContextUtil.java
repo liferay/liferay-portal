@@ -141,8 +141,6 @@ public class SectionDisplayContextUtil {
 				FDSActionDropdownItemList.of(
 					FDSActionDropdownItemBuilder.setHref(
 						StringPool.POUND
-					).setIcon(
-						"date-time"
 					).setLabel(
 						LanguageUtil.get(httpServletRequest, "expiration-date")
 					).setPermissionKey(
@@ -152,8 +150,6 @@ public class SectionDisplayContextUtil {
 					),
 					FDSActionDropdownItemBuilder.setHref(
 						StringPool.POUND
-					).setIcon(
-						"date-time"
 					).setLabel(
 						LanguageUtil.get(httpServletRequest, "review-date")
 					).setPermissionKey(
@@ -162,7 +158,7 @@ public class SectionDisplayContextUtil {
 						"update-review-date"
 					))
 			).setIcon(
-				"date-time"
+				"calendar"
 			).setLabel(
 				LanguageUtil.get(httpServletRequest, "update-dates")
 			).setPermissionKey(
