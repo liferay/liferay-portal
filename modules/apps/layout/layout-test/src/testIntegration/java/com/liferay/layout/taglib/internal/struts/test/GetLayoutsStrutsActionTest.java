@@ -140,6 +140,7 @@ public class GetLayoutsStrutsActionTest {
 
 		_assertLayoutInTree(false, unpublishedLayout, false);
 		_assertLayoutInTree(false, unpublishedLayout, true);
+
 		_assertLayoutInTree(true, publishedLayout, false);
 		_assertLayoutInTree(true, publishedLayout, true);
 
