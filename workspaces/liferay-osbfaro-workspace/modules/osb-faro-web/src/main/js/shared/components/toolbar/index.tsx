@@ -88,7 +88,7 @@ const Toolbar: React.FC<IToolbarProps> = ({className, groupId}) => {
 							Liferay.Language.get('go-to-x'),
 							[Liferay.Language.get('sites')]
 						)}`}
-						className="font-weight-semi-bold text-5 text-dark text-decoration-none text-nowrap"
+						className="font-weight-semi-bold text-5 text-dark text-nowrap"
 						to={toRoute(Routes.SITES, {
 							channelId: selectedChannel?.id,
 							groupId,
