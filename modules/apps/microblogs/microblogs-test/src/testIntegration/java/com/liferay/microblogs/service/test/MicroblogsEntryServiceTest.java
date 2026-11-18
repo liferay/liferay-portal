@@ -50,12 +50,12 @@ public class MicroblogsEntryServiceTest {
 
 		User user2 = UserTestUtil.addUser();
 
-		ServiceContext serviceContext =
-			ServiceContextTestUtil.getServiceContext(
-				group.getGroupId(), user1.getUserId());
-
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				user1, PermissionCheckerFactoryUtil.create(user1))) {
+
+			ServiceContext serviceContext =
+				ServiceContextTestUtil.getServiceContext(
+					group.getGroupId(), user1.getUserId());
 
 			Assert.assertThrows(
 				PrincipalException.class,
