@@ -103,6 +103,7 @@ public class CTCollectionServiceTest {
 	public void setUp() throws Exception {
 		_group = GroupTestUtil.addGroup();
 		_role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
 		_user = UserTestUtil.addGroupUser(_group, RoleConstants.SITE_MEMBER);
 
 		_resourcePermissionLocalService.addResourcePermission(

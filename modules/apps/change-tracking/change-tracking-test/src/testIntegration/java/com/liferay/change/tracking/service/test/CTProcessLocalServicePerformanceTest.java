@@ -62,7 +62,6 @@ public class CTProcessLocalServicePerformanceTest {
 		_ctCollection = _ctCollectionLocalService.addCTCollection(
 			null, TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
 			0, RandomTestUtil.randomString(), null);
-
 		_group = GroupTestUtil.addGroup();
 	}
 

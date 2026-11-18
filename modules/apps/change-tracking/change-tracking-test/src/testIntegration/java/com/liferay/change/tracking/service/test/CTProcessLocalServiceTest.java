@@ -62,7 +62,6 @@ public class CTProcessLocalServiceTest {
 	@Before
 	public void setUp() throws Exception {
 		_group = GroupTestUtil.addGroup();
-
 		_journalFolderClassNameId = _classNameLocalService.getClassNameId(
 			JournalFolder.class);
 	}
