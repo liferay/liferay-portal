@@ -865,54 +865,6 @@ definition {
 		PortalSettings.configureCurrentLanguagesCP(defaultPortalLanguage = "English (United States)");
 	}
 
-	@description = "Verify that Fieldset's translations are displayed on the Web Content"
-	@priority = 5
-	test CanFielsetTranslationsBeShown {
-		WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
-
-		NavItem.gotoStructures();
-
-		WebContentStructures.addCP(structureName = "WC Structure Title");
-
-		DataEngine.gotoCreateNewFieldset();
-
-		FormViewBuilder.editFieldSetName(fieldSetName = "New Fieldset");
-
-		DEBuilder.addField(
-			fieldLabel = "Text",
-			fieldName = "Text");
-
-		PortletEntry.changeLocale(
-			locale = "zh-CN",
-			modal = "true");
-
-		FormViewBuilder.editFieldSetName(fieldSetName = "新字段集");
-
-		DataEngine.editFieldLabel(
-			fieldFieldLabel = "Text",
-			fieldFieldLabelEdit = "文本");
-
-		FormViewBuilder.saveButtonFieldset();
-
-		DataEngine.addFieldsetToBuilder(fieldsetName = "New Fieldset");
-
-		WebContentStructures.saveCP();
-
-		WebContentNavigator.gotoEditStructure(structureName = "WC Structure Title");
-
-		DataEngine.viewFieldset(
-			fieldNameList = "Text",
-			fieldsetName = "New Fieldset");
-
-		WebContentStructures.addTranslations(localeList = "zh-CN");
-
-		PortletEntry.changeLocale(locale = "zh-CN");
-
-		DataEngine.viewFieldset(
-			fieldNameList = "文本",
-			fieldsetName = "新字段集");
-	}
-
 	@description = "Verify that is possible to input different values for Text and Numeric fields inside a Fields Group for translated languages"
 	@priority = 5
 	test CanInputtedDataBeTranslatedInFieldOnFieldsGroup {

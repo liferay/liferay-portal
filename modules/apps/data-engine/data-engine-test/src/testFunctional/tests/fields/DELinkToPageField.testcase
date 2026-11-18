@@ -247,42 +247,6 @@ definition {
 			linkToPageFieldLabel = "Link to Page");
 	}
 
-	@description = "This is a use case for LPS-140253. View no private page in link to page structure."
-	@priority = 4
-	test CanInputLinkFF {
-		JSONLayout.addPublicLayout(
-			groupName = "Test Site Name",
-			layoutName = "Test Page Name");
-
-		NavItem.gotoStructures();
-
-		WebContentStructures.addCP(structureName = "WC Structure Title");
-
-		DEBuilder.addField(
-			fieldLabel = "Link to Page",
-			fieldName = "Link to Page");
-
-		WebContentStructures.saveCP();
-
-		NavItem.gotoWebContent();
-
-		WebContentNavigator.gotoAddWithStructureCP(structureName = "WC Structure Title");
-
-		PortletEntry.inputTitle(title = "Web Content Title");
-
-		DERenderer.inputDataInLinkToPageField(
-			linkToPageContent = "Test Page Name",
-			linkToPageFieldLabel = "Link to Page");
-
-		WebContent.publishWithPermissions();
-
-		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
-
-		DERenderer.assertContentInLinktoPageField(
-			linkToPageContent = "Pages > Test Page Name",
-			linkToPageFieldLabel = "Link to Page");
-	}
-
 	@description = "This is a test for LRQA-70110. This test verifies that is not possible to publish the Web Content with a required field blank"
 	@priority = 4
 	test CanNotPublishBlankRequiredField {

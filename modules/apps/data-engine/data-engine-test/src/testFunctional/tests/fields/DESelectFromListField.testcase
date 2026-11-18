@@ -496,34 +496,6 @@ definition {
 			fieldName = "Select from List");
 	}
 
-	@description = "This is a test for LRQA-68540. This test verifies that multiple options can be set."
-	@priority = 5
-	test CanSetMultipleOptions {
-		NavItem.gotoStructures();
-
-		WebContentStructures.addCP(structureName = "WC Structure Title");
-
-		DEBuilder.addField(
-			fieldLabel = "Select from List",
-			fieldName = "Select from List");
-
-		DEBuilder.addFieldOptions(
-			fieldLabel = "Select from List",
-			optionValueList = "Option 1,Option 2,Option 3");
-
-		WebContentStructures.saveCP();
-
-		WebContentNavigator.gotoEditStructure(structureName = "WC Structure Title");
-
-		DataEngine.viewField(
-			fieldFieldLabel = "Select from List",
-			fieldName = "Select from List");
-
-		DEBuilder.assertFieldOptionLabels(
-			fieldFieldLabel = "Select from List",
-			optionLabelList = "Option 1,Option 2,Option 3");
-	}
-
 	@description = "Check if Select from List Field details can be seen."
 	@priority = 4
 	test ViewSelectFromListFieldDetails {

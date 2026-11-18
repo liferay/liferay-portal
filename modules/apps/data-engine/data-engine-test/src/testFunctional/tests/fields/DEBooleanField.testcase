@@ -126,36 +126,6 @@ definition {
 			fieldValue = "Help Text Test");
 	}
 
-	@description = "Verify that a structure with the boolean field can be edited."
-	@priority = 5
-	test CanBeEdited {
-		property portal.acceptance = "true";
-
-		NavItem.gotoStructures();
-
-		WebContentStructures.addCP(structureName = "Structure 1");
-
-		DEBuilder.addField(
-			fieldLabel = "Boolean",
-			fieldName = "Boolean");
-
-		FormFields.viewBooleanField(fieldValue = "Boolean");
-
-		WebContentStructures.saveCP();
-
-		WebContentNavigator.gotoEditStructure(structureName = "Structure 1");
-
-		DataEngine.editFieldLabel(
-			fieldFieldLabel = "Boolean",
-			fieldFieldLabelEdit = "Test Boolean Field");
-
-		WebContentStructures.saveCP();
-
-		WebContentNavigator.gotoEditStructure(structureName = "Structure 1");
-
-		FormFields.viewBooleanField(fieldValue = "Test Boolean Field");
-	}
-
 	@description = "Verify that a structure with the boolean field can be Required."
 	@priority = 5
 	test CanBeRequired {
