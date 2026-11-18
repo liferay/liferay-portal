@@ -11,6 +11,7 @@ import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {objectPagesTest} from '../../../fixtures/objectPagesTest';
 import {usersAndOrganizationsPagesTest} from '../../../fixtures/usersAndOrganizationsPagesTest';
+import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import {getRandomInt} from '../../../utils/getRandomInt';
 import {performUserSwitch, userData} from '../../../utils/performLogin';
 import {waitForAlert} from '../../../utils/waitForAlert';
@@ -370,9 +371,12 @@ test('can export object entries via personal data management', async ({
 
 	const downloadPromise = page.waitForEvent('download');
 
-	await exportUserDataPage.actionsButton.click();
-
-	await page.getByRole('menuitem', {name: /Download/}).click();
+	await clickAndExpectToBeVisible({
+		autoClick: true,
+		target: page.getByRole('menuitem', {name: /Download/}),
+		timeout: 2000,
+		trigger: exportUserDataPage.actionsButton,
+	});
 
 	const download = await downloadPromise;
 
