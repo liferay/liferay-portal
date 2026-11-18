@@ -285,6 +285,31 @@
 	<td></td>
 </tr>
 <tr>
+	<td>TOOLBAR_BOLD_BUTTON</td>
+	<td>//a[contains(@class,'cke_button__bold')] | //button[contains(@class,'ck-button')][.//span[contains(@class,'ck-button__label') and normalize-space(text())='Bold']]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>TOOLBAR_BULLETED_LIST_BUTTON</td>
+	<td>//a[contains(@class,'cke_button__bulletedlist')] | //button[contains(@class,'ck-button')][.//span[contains(@class,'ck-button__label') and normalize-space(text())='Bulleted List']]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>TOOLBAR_FORMATTING_STYLES_BUTTON</td>
+	<td>//span[contains(@class,'cke_combo__styles')]//a[contains(@class,'cke_combo_button')] | //div[contains(@class,'ck-heading-dropdown')]//button[contains(@class,'ck-dropdown__button')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>TOOLBAR_FORMATTING_STYLES_OPTION</td>
+	<td>//li[contains(@class,'cke_panel_listItem')]//a[@title='${key_formattingStyle}'] | //div[contains(@class,'ck-heading-dropdown')]//button[contains(@class,'ck-button')][.//span[contains(@class,'ck-button__label') and normalize-space(text())='${key_formattingStyle}']]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>TOOLBAR_HYPERLINK_BUTTON</td>
+	<td>//a[contains(@class,'cke_button__link')] | //button[contains(@class,'ck-button')][.//span[contains(@class,'ck-button__label') and normalize-space(text())='Link']]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>TOOLBAR_IMAGE_BUTTON</td>
 	<td>//button[contains(@class,'ck-button')][.//span[contains(@class,'ck-button__label') and normalize-space(text())='Image']] | //a[contains(@class,'cke_button') and contains(@class,'image')]</td>
 	<td></td>
@@ -295,13 +320,28 @@
 	<td></td>
 </tr>
 <tr>
+	<td>TOOLBAR_ITALIC_BUTTON</td>
+	<td>//a[contains(@class,'cke_button__italic')] | //button[contains(@class,'ck-button')][.//span[contains(@class,'ck-button__label') and normalize-space(text())='Italic']]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>TOOLBAR_LINK_BUTTON</td>
 	<td>//label[contains(.,'${key_fieldLabel}')]//following-sibling::div//a[contains(@class,'cke_button') and contains(@class,'button__link')] | //label[contains(.,'${key_fieldLabel}')]//following-sibling::div//button[contains(@class,'ck-button')][.//span[contains(@class,'ck-button__label') and normalize-space(text())='Link']]</td>
 	<td></td>
 </tr>
 <tr>
+	<td>TOOLBAR_NUMBERED_LIST_BUTTON</td>
+	<td>//a[contains(@class,'cke_button__numberedlist')] | //button[contains(@class,'ck-button')][.//span[contains(@class,'ck-button__label') and normalize-space(text())='Numbered List']]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>TOOLBAR_PREVIEW_BUTTON</td>
 	<td>//a[contains(@class,'cke_button') and contains(@class,'expand')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>TOOLBAR_REDO_BUTTON</td>
+	<td>//a[contains(@class,'cke_button__redo')] | //button[contains(@class,'ck-button')][.//span[contains(@class,'ck-button__label') and normalize-space(text())='Redo']]</td>
 	<td></td>
 </tr>
 <tr>
@@ -312,6 +352,21 @@
 <tr>
 	<td>TOOLBAR_SOURCE_BUTTON_2</td>
 	<td>//div[contains(@class,'cke_2')]//a[contains(@class,'cke_button') and contains(@class,'source')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>TOOLBAR_TABLE_BUTTON</td>
+	<td>//a[contains(@class,'cke_button__table')] | //button[contains(@class,'ck-button')][.//span[contains(@class,'ck-button__label') and normalize-space(text())='Insert table']]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>TOOLBAR_UNDERLINE_BUTTON</td>
+	<td>//a[contains(@class,'cke_button__underline')] | //button[contains(@class,'ck-button')][.//span[contains(@class,'ck-button__label') and normalize-space(text())='Underline']]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>TOOLBAR_UNDO_BUTTON</td>
+	<td>//a[contains(@class,'cke_button__undo')] | //button[contains(@class,'ck-button')][.//span[contains(@class,'ck-button__label') and normalize-space(text())='Undo']]</td>
 	<td></td>
 </tr>
 <tr>
