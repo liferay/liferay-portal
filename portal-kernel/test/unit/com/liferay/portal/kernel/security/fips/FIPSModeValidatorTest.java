@@ -173,6 +173,12 @@ public class FIPSModeValidatorTest {
 			authElement.getAttribute("auth_class"));
 
 		_assertSecurityException(
+			"The cluster link channel properties " +
+				"\"jgroups/secure/sym_encrypt/udp_control.xml\" must be a " +
+					"file in FIPS mode",
+			"_readChannelPropertiesDocument", new Class<?>[] {String.class},
+			"jgroups/secure/sym_encrypt/udp_control.xml");
+		_assertSecurityException(
 			"Unable to parse the cluster link channel properties",
 			"_readChannelPropertiesDocument", new Class<?>[] {String.class},
 			String.valueOf(
@@ -180,9 +186,8 @@ public class FIPSModeValidatorTest {
 					FIPSModeValidatorTest.class,
 					"cluster-link-channel-properties-malformed.xml")));
 		_assertSecurityException(
-			"Unable to read the cluster link channel properties",
-			"_readChannelPropertiesDocument", new Class<?>[] {String.class},
-			RandomTestUtil.randomString());
+			"must be a file in FIPS mode", "_readChannelPropertiesDocument",
+			new Class<?>[] {String.class}, RandomTestUtil.randomString());
 	}
 
 	@Test
