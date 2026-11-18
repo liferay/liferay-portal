@@ -464,7 +464,7 @@ public class SitePageResourceImpl
 		long groupId = GroupUtil.getStagingAwareGroupId(
 			contextCompany.getCompanyId(), siteExternalReferenceCode);
 
-		Layout layout = _fetchLayout(
+		Layout layout = _fetchOrUpdateLayout(
 			groupId, privateLayout, sitePage, sitePageExternalReferenceCode);
 
 		if (layout == null) {
@@ -680,7 +680,7 @@ public class SitePageResourceImpl
 		return layout;
 	}
 
-	private Layout _fetchLayout(
+	private Layout _fetchOrUpdateLayout(
 			long groupId, boolean privateLayout, SitePage sitePage,
 			String sitePageExternalReferenceCode)
 		throws Exception {
