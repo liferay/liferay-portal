@@ -101,14 +101,9 @@ public class PortletRatingsDefinitionUtilTest {
 			_group2.getGroupId(), typeSettingsUnicodeProperties.toString());
 
 		Assert.assertEquals(
-			RatingsType.STARS,
+			RatingsType.LIKE,
 			PortletRatingsDefinitionUtil.getRatingsType(
-				TestPropsValues.getCompanyId(), _group1.getGroupId(),
-				BlogsEntry.class.getName()));
-		Assert.assertEquals(
-			RatingsType.STARS,
-			PortletRatingsDefinitionUtil.getRatingsType(
-				TestPropsValues.getCompanyId(), _group1.getGroupId(),
+				TestPropsValues.getCompanyId(), _group2.getGroupId(),
 				DLFileEntry.class.getName()));
 		Assert.assertEquals(
 			RatingsType.STACKED_STARS,
@@ -116,9 +111,14 @@ public class PortletRatingsDefinitionUtilTest {
 				TestPropsValues.getCompanyId(), _group2.getGroupId(),
 				BlogsEntry.class.getName()));
 		Assert.assertEquals(
-			RatingsType.LIKE,
+			RatingsType.STARS,
 			PortletRatingsDefinitionUtil.getRatingsType(
-				TestPropsValues.getCompanyId(), _group2.getGroupId(),
+				TestPropsValues.getCompanyId(), _group1.getGroupId(),
+				BlogsEntry.class.getName()));
+		Assert.assertEquals(
+			RatingsType.STARS,
+			PortletRatingsDefinitionUtil.getRatingsType(
+				TestPropsValues.getCompanyId(), _group1.getGroupId(),
 				DLFileEntry.class.getName()));
 	}
 
