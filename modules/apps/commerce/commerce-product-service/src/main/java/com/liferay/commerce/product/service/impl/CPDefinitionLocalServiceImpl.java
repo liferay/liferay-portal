@@ -33,6 +33,7 @@ import com.liferay.commerce.product.exception.CPDefinitionMetaKeywordsException;
 import com.liferay.commerce.product.exception.CPDefinitionMetaTitleException;
 import com.liferay.commerce.product.exception.CPDefinitionProductTypeNameException;
 import com.liferay.commerce.product.exception.CPDefinitionSubscriptionLengthException;
+import com.liferay.commerce.product.exception.NoSuchCPDefinitionException;
 import com.liferay.commerce.product.model.CPAttachmentFileEntry;
 import com.liferay.commerce.product.model.CPConfigurationEntry;
 import com.liferay.commerce.product.model.CPConfigurationEntrySetting;
@@ -459,6 +460,21 @@ public class CPDefinitionLocalServiceImpl
 
 				if (cpDefinitionId == 0) {
 					cpDefinitionId = cProduct.getPublishedCPDefinitionId();
+				}
+				else {
+					CPDefinition cpDefinition =
+						cpDefinitionPersistence.findByPrimaryKey(
+							cpDefinitionId);
+
+					if (cpDefinition.getCProductId() !=
+							cProduct.getCProductId()) {
+
+						throw new NoSuchCPDefinitionException(
+							StringBundler.concat(
+								"Commerce product definition ", cpDefinitionId,
+								" does not belong to commerce product ",
+								cProduct.getCProductId()));
+					}
 				}
 
 				CPDefinition cpDefinition =
