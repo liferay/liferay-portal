@@ -7,10 +7,18 @@ package com.liferay.sharing.web.internal.portlet;
 
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.sharing.web.internal.constants.SharingPortletKeys;
+import com.liferay.sharing.web.internal.display.context.ViewSharedAssetsDisplayContext;
+import com.liferay.sharing.web.internal.display.context.ViewSharedAssetsDisplayContextFactory;
 
 import jakarta.portlet.Portlet;
+import jakarta.portlet.PortletException;
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.RenderResponse;
+
+import java.io.IOException;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Sergio González
@@ -33,4 +41,23 @@ import org.osgi.service.component.annotations.Component;
 	service = Portlet.class
 )
 public class SharedAssetsPortlet extends MVCPortlet {
+
+	@Override
+	public void render(
+			RenderRequest renderRequest, RenderResponse renderResponse)
+		throws IOException, PortletException {
+
+		renderRequest.setAttribute(
+			ViewSharedAssetsDisplayContext.class.getName(),
+			_viewSharedAssetsDisplayContextFactory.
+				getViewSharedAssetsDisplayContext(
+					renderRequest, renderResponse));
+
+		super.render(renderRequest, renderResponse);
+	}
+
+	@Reference
+	private ViewSharedAssetsDisplayContextFactory
+		_viewSharedAssetsDisplayContextFactory;
+
 }
