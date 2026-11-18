@@ -5,7 +5,12 @@
 
 package com.liferay.taglib.portletext;
 
+import com.liferay.portal.kernel.portlet.PortletConfigurationLayoutUtil;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.service.permission.PortletPermissionUtil;
 import com.liferay.portal.kernel.servlet.DirectRequestDispatcherFactoryUtil;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.taglib.servlet.PipingServletResponseFactory;
 import com.liferay.taglib.util.IncludeTag;
 
@@ -16,6 +21,15 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.jsp.JspException;
 
 /**
+ * Renders a live preview of a portlet while its own configuration is being
+ * edited. Every current usage embeds this inside the previewed portlet's own
+ * configuration screen, and {@link #doTag} relies on that: it only renders
+ * when the caller holds {@link ActionKeys#CONFIGURATION} on the previewed
+ * portlet. Reusing this tag for a preview outside a configuration screen
+ * requires revisiting that check first, since a caller without
+ * {@link ActionKeys#CONFIGURATION} on the previewed portlet otherwise sees
+ * nothing instead of the preview.
+ *
  * @author Brian Wing Shun Chan
  */
 public class PreviewTag extends IncludeTag {
@@ -38,6 +52,19 @@ public class PreviewTag extends IncludeTag {
 			HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse)
 		throws Exception {
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		if (!PortletPermissionUtil.contains(
+				themeDisplay.getPermissionChecker(),
+				themeDisplay.getScopeGroupId(),
+				PortletConfigurationLayoutUtil.getLayout(themeDisplay),
+				portletName, ActionKeys.CONFIGURATION)) {
+
+			return;
+		}
 
 		httpServletRequest.setAttribute(
 			"liferay-portlet:preview:portletName", portletName);
