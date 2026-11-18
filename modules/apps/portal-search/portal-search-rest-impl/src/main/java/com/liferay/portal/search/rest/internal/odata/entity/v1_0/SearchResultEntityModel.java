@@ -35,6 +35,9 @@ public class SearchResultEntityModel implements EntityModel {
 				"rootDescendantNode", locale -> "rootDescendantNode"),
 			new CollectionEntityField(
 				new IntegerEntityField(
+					"assigneeClassPKs", locale -> "assigneeClassPKs")),
+			new CollectionEntityField(
+				new IntegerEntityField(
 					"cmpFunnelStageCategoryIds",
 					locale -> Field.ASSET_INTERNAL_CATEGORY_IDS)),
 			new CollectionEntityField(
