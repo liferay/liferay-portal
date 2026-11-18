@@ -13,13 +13,13 @@ import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.site.cms.site.initializer.contributor.CMSStructureObjectFolderContributor;
 import com.liferay.site.pim.site.initializer.constants.PIMObjectDefinitionConstants;
 import com.liferay.site.pim.site.initializer.constants.PIMObjectEntryFolderConstants;
 import com.liferay.site.pim.site.initializer.constants.PIMObjectFolderConstants;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -86,30 +86,27 @@ public class ProductTypesCMSStructureObjectFolderContributor
 			return Collections.emptyMap();
 		}
 
-		Map<String, List<String>> systemObjectFieldNamesMap = new HashMap<>();
-
-		for (String externalReferenceCode :
-				new String[] {
-					PIMObjectDefinitionConstants.
-						EXTERNAL_REFERENCE_CODE_BASIC_PRODUCT,
-					PIMObjectDefinitionConstants.
-						EXTERNAL_REFERENCE_CODE_BASIC_PRODUCT_ATTACHMENT,
-					PIMObjectDefinitionConstants.
-						EXTERNAL_REFERENCE_CODE_BASIC_PRODUCT_IMAGE
-				}) {
-
-			List<String> systemObjectFieldNames = _getSystemObjectFieldNames(
-				companyId, externalReferenceCode);
-
-			if (systemObjectFieldNames.isEmpty()) {
-				continue;
-			}
-
-			systemObjectFieldNamesMap.put(
-				externalReferenceCode, systemObjectFieldNames);
-		}
-
-		return systemObjectFieldNamesMap;
+		return HashMapBuilder.<String, List<String>>put(
+			PIMObjectDefinitionConstants.EXTERNAL_REFERENCE_CODE_BASIC_PRODUCT,
+			() -> _getSystemObjectFieldNames(
+				companyId,
+				PIMObjectDefinitionConstants.
+					EXTERNAL_REFERENCE_CODE_BASIC_PRODUCT)
+		).put(
+			PIMObjectDefinitionConstants.
+				EXTERNAL_REFERENCE_CODE_BASIC_PRODUCT_ATTACHMENT,
+			() -> _getSystemObjectFieldNames(
+				companyId,
+				PIMObjectDefinitionConstants.
+					EXTERNAL_REFERENCE_CODE_BASIC_PRODUCT_ATTACHMENT)
+		).put(
+			PIMObjectDefinitionConstants.
+				EXTERNAL_REFERENCE_CODE_BASIC_PRODUCT_IMAGE,
+			() -> _getSystemObjectFieldNames(
+				companyId,
+				PIMObjectDefinitionConstants.
+					EXTERNAL_REFERENCE_CODE_BASIC_PRODUCT_IMAGE)
+		).build();
 	}
 
 	private List<String> _getSystemObjectFieldNames(
@@ -121,10 +118,10 @@ public class ProductTypesCMSStructureObjectFolderContributor
 					externalReferenceCode, companyId);
 
 		if (objectDefinition == null) {
-			return Collections.emptyList();
+			return null;
 		}
 
-		return TransformUtil.transform(
+		List<String> systemObjectFieldNames = TransformUtil.transform(
 			_objectFieldLocalService.getObjectFields(
 				objectDefinition.getObjectDefinitionId()),
 			objectField -> {
@@ -144,6 +141,12 @@ public class ProductTypesCMSStructureObjectFolderContributor
 
 				return null;
 			});
+
+		if (systemObjectFieldNames.isEmpty()) {
+			return null;
+		}
+
+		return systemObjectFieldNames;
 	}
 
 	@Reference
