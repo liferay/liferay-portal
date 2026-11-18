@@ -1,8 +1,8 @@
 {{- if .Values.liferay.enabled -}}
 {{- $gitops := .Values.gitops -}}
 {{- $layout := $gitops.layout -}}
-{{- $dxpOperator := .Values.operatorApplications.dxpOperator -}}
-{{- $envoyGateway := .Values.operatorApplications.envoyGateway -}}
+{{- $dxpOperator := .Values.dxpOperator -}}
+{{- $envoyGateway := .Values.envoyGateway -}}
 {{- $name := printf "%s-%s-app" $layout.projectId $layout.environmentId -}}
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet

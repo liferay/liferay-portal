@@ -1,4 +1,4 @@
-{{- $keda := .Values.operatorApplications.keda -}}
+{{- $keda := .Values.keda -}}
 {{- if $keda.enabled -}}
 {{- include "liferay-platform.requireAPIServerSources" (dict "apiServerSources" .Values.networkPolicy.apiServerSources "operatorApplication" "keda") -}}
 apiVersion: networking.k8s.io/v1

@@ -1,4 +1,4 @@
-{{- $crossplane := .Values.operatorApplications.crossplane -}}
+{{- $crossplane := .Values.crossplane -}}
 {{- if $crossplane.enabled -}}
 {{- include "liferay-platform.requireAPIServerSources" (dict "apiServerSources" .Values.networkPolicy.apiServerSources "operatorApplication" "crossplane") -}}
 apiVersion: networking.k8s.io/v1
@@ -14,7 +14,7 @@ spec:
                 -   podSelector:
                         matchLabels:
                             app: crossplane
-                            release: {{ $crossplane.name }}
+                            release: crossplane
             ports:
                 -   port: grpc
                     protocol: TCP
@@ -85,7 +85,7 @@ spec:
     podSelector:
         matchLabels:
             app: crossplane
-            release: {{ $crossplane.name }}
+            release: crossplane
     policyTypes:
         -   Ingress
 ---

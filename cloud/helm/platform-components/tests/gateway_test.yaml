@@ -44,13 +44,13 @@ tests:
                     value: custom-system
         it: Follows the Envoy Gateway namespace
         set:
-            operatorApplications.envoyGateway.namespace: custom-system
+            envoyGateway.namespace: custom-system
     -   asserts:
             -   hasDocuments:
                     count: 0
         it: Omits the gateway when the Envoy Gateway operator is disabled
         set:
-            operatorApplications.envoyGateway.enabled: false
+            envoyGateway.enabled: false
     -   asserts:
             -   documentIndex: 0
                 equal:

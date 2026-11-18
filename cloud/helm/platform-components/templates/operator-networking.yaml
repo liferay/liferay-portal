@@ -1,11 +1,11 @@
 {{- $accessControl := .Values.accessControl }}
-{{- $envoyGatewayNamespace := .Values.operatorApplications.envoyGateway.namespace }}
+{{- $envoyGatewayNamespace := .Values.envoyGateway.namespace }}
 {{- $gateways := list
-    (dict "name" "argo-workflows" "namespace" .Values.operatorApplications.argoWorkflows.namespace "port" 2746 "product" "Argo Workflows" "values" .Values.argoWorkflows.gateway "valuesPath" "argoWorkflows.gateway")
-    (dict "name" "argocd" "namespace" .Release.Namespace "port" 80 "product" "ArgoCD" "values" .Values.argocd.gateway "valuesPath" "argocd.gateway")
+    (dict "enabled" .Values.argoWorkflows.enabled "name" "argo-workflows" "namespace" .Values.argoWorkflows.namespace "port" 2746 "product" "Argo Workflows" "values" .Values.argoWorkflows.gateway "valuesPath" "argoWorkflows.gateway")
+    (dict "enabled" true "name" "argocd" "namespace" .Release.Namespace "port" 80 "product" "ArgoCD" "values" .Values.argocd.gateway "valuesPath" "argocd.gateway")
 -}}
 {{- range $gateway := $gateways }}
-{{- if $gateway.values.enabled }}
+{{- if and $gateway.enabled $gateway.values.enabled }}
 {{- $envoyProxy := $gateway.values.envoyProxy }}
 {{- $hostname := required (printf "The value %q is required to route traffic to %s" (printf "%s.hostname" $gateway.valuesPath) $gateway.product) $gateway.values.hostname }}
 {{- $tlsEnabled := ne $gateway.values.tls.externalSecretKey "" }}

@@ -13,15 +13,14 @@ tests:
                     value: workflows
             -   equal:
                     path: spec.podSelector.matchLabels["app.kubernetes.io/instance"]
-                    value: workflows-app
+                    value: argo-workflows
         documentSelector:
             path: metadata.name
             value: argo-workflows-server-ingress
         it: Admits the Argo Workflows gateway's Envoy proxies in its namespace to the server when the gateway is enabled
         set:
             argoWorkflows.gateway.enabled: true
-            operatorApplications.argoWorkflows.name: workflows-app
-            operatorApplications.argoWorkflows.namespace: workflows
+            argoWorkflows.namespace: workflows
     -   asserts:
             -   equal:
                     path: spec.ingress[0].from[0].namespaceSelector.matchLabels["kubernetes.io/metadata.name"]
@@ -53,7 +52,7 @@ tests:
                     count: 0
         it: Omits every NetworkPolicy when Argo Workflows is disabled
         set:
-            operatorApplications.argoWorkflows.enabled: false
+            argoWorkflows.enabled: false
     -   asserts:
             -   notEqual:
                     path: metadata.name
@@ -85,4 +84,4 @@ tests:
         it: Opens the gateway proxy ports in the Argo Workflows namespace when the gateway is enabled
         set:
             argoWorkflows.gateway.enabled: true
-            operatorApplications.argoWorkflows.namespace: workflows
+            argoWorkflows.namespace: workflows

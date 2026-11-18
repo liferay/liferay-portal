@@ -58,7 +58,7 @@ tests:
             observability.namespace: monitoring
     -   asserts:
             -   failedTemplate:
-                    errorMessage: The value "networkPolicy.apiServerSources" must not be empty when "operatorApplications.envoyGateway.enabled" is true
+                    errorMessage: The value "networkPolicy.apiServerSources" must not be empty when "envoyGateway.enabled" is true
         it: Fails without API server sources rather than admitting everyone
         set:
             networkPolicy.apiServerSources: []
@@ -74,18 +74,17 @@ tests:
                     value: envoy-gateway-ingress
                 equal:
                     path: spec.podSelector.matchLabels["app.kubernetes.io/instance"]
-                    value: gateway-operator
-        it: Follows the Envoy Gateway application's name and namespace
+                    value: envoy-gateway
+        it: Follows the Envoy Gateway namespace
         set:
-            operatorApplications.envoyGateway.name: gateway-operator
-            operatorApplications.envoyGateway.namespace: gateways
+            envoyGateway.namespace: gateways
     -   asserts:
             -   hasDocuments:
                     count: 0
         it: Omits every NetworkPolicy when Envoy Gateway is disabled
         set:
+            envoyGateway.enabled: false
             networkPolicy.apiServerSources: []
-            operatorApplications.envoyGateway.enabled: false
     -   asserts:
             -   notEqual:
                     path: metadata.name

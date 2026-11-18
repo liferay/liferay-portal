@@ -2,10 +2,10 @@ release:
     name: my-release
     namespace: argocd-system
 set:
+    keda.enabled: true
     networkPolicy.apiServerSources:
         -   ipBlock:
                 cidr: 10.0.0.0/16
-    operatorApplications.keda.enabled: true
 suite: KEDA System NetworkPolicies
 templates:
     -   templates/networkpolicy-keda-system.yaml
@@ -30,7 +30,7 @@ tests:
         it: Admits the API server sources to the admission webhooks and the metrics API server
     -   asserts:
             -   failedTemplate:
-                    errorMessage: The value "networkPolicy.apiServerSources" must not be empty when "operatorApplications.keda.enabled" is true
+                    errorMessage: The value "networkPolicy.apiServerSources" must not be empty when "keda.enabled" is true
         it: Fails without API server sources rather than admitting everyone
         set:
             networkPolicy.apiServerSources: []
@@ -40,11 +40,11 @@ tests:
                     value: autoscaling
         it: Follows the KEDA application's namespace
         set:
-            operatorApplications.keda.namespace: autoscaling
+            keda.namespace: autoscaling
     -   asserts:
             -   hasDocuments:
                     count: 0
         it: Omits every NetworkPolicy when KEDA is disabled
         set:
+            keda.enabled: false
             networkPolicy.apiServerSources: []
-            operatorApplications.keda.enabled: false

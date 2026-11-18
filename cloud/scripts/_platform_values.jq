@@ -15,17 +15,15 @@ def artifact_values($configuration; $infrastructure_provider_chart_name; $lifera
 	{
 		platformComponents: (chart("liferay-platform-components") + {
 			values: {
+				dxpOperator: (chart("liferay-dxp-operator") + {
+					values: {
+						image: image("liferay-dxp-operator")
+					}
+				}),
 				infrastructure: chart("liferay-infrastructure"),
 				infrastructureProvider: chart($infrastructure_provider_chart_name),
 				liferay: chart($liferay_chart_name),
-				observability: chart("observability"),
-				operatorApplications: {
-					dxpOperator: (chart("liferay-dxp-operator") + {
-						values: {
-							image: image("liferay-dxp-operator")
-						}
-					})
-				}
+				observability: chart("observability")
 			}
 		})
 	};

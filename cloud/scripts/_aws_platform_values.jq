@@ -17,7 +17,7 @@ $configuration[0] as $configuration
 } as $operator_service_annotations
 | {
 	platformComponents: {
-		values: {
+		values: ({
 			argoWorkflows: {
 				gateway: {
 					envoyProxy: {
@@ -40,6 +40,27 @@ $configuration[0] as $configuration
 				}
 			},
 			deploymentContext: $deployment_context,
+			dxpOperator: {
+				values: {
+					marketplace: {
+						claimName: "dxp-operator-marketplace",
+						csi: {
+							driver: "efs.csi.aws.com",
+							volumeHandle: $marketplace_volume_handle
+						},
+						enabled: true
+					}
+				}
+			},
+			externalSecrets: {
+				values: {
+					serviceAccount: {
+						annotations: {
+							"eks.amazonaws.com/role-arn": $outputs.external_secrets_role_arn.value
+						}
+					}
+				}
+			},
 			gateway: {
 				envoyProxy: {
 					serviceAnnotations: {
@@ -70,6 +91,26 @@ $configuration[0] as $configuration
 					}
 				]
 			},
+			keda: (
+				($outputs.keda_role_arn.value // "") as $role_arn
+				| if $role_arn == "" then
+					{}
+				else
+					{
+						enabled: true,
+						namespace: ($outputs.keda_service_account_namespace.value // "keda-system"),
+						values: {
+							podIdentity: {
+								aws: {
+									irsa: {
+										enabled: true,
+										roleArn: $role_arn
+									}
+								}
+							}
+						}
+					}
+				end),
 			liferay: {
 				parameters: [
 					{
@@ -165,71 +206,29 @@ $configuration[0] as $configuration
 							}
 						]
 					}
-				end),
-			operatorApplications: ({
-				dxpOperator: {
-					values: {
-						marketplace: {
-							claimName: "dxp-operator-marketplace",
-							csi: {
-								driver: "efs.csi.aws.com",
-								volumeHandle: $marketplace_volume_handle
+				end)
+		} + (
+			($outputs.ack_prometheusservice_role_arn.value // "") as $role_arn
+			| if $role_arn == "" then
+				{}
+			else
+				{
+					ackPrometheusService: {
+						enabled: true,
+						values: {
+							aws: {
+								region: $deployment_context.region
 							},
-							enabled: true
-						}
-					}
-				},
-				externalSecrets: {
-					values: {
-						serviceAccount: {
-							annotations: {
-								"eks.amazonaws.com/role-arn": $outputs.external_secrets_role_arn.value
-							}
-						}
-					}
-				},
-				keda: (
-					($outputs.keda_role_arn.value // "") as $role_arn
-					| if $role_arn == "" then
-						{}
-					else
-						{
-							enabled: true,
-							namespace: ($outputs.keda_service_account_namespace.value // "keda-system"),
-							values: {
-								podIdentity: {
-									aws: {
-										irsa: {
-											enabled: true,
-											roleArn: $role_arn
-										}
-									}
-								}
-							}
-						}
-					end)
-			} + (
-				($outputs.ack_prometheusservice_role_arn.value // "") as $role_arn
-				| if $role_arn == "" then
-					{}
-				else
-					{
-						ackPrometheusService: {
-							enabled: true,
-							values: {
-								aws: {
-									region: $deployment_context.region
-								},
-								serviceAccount: {
-									annotations: {
-										"eks.amazonaws.com/role-arn": $role_arn
-									}
+							serviceAccount: {
+								annotations: {
+									"eks.amazonaws.com/role-arn": $role_arn
 								}
 							}
 						}
 					}
-				end))
-		}
+				}
+			end)
+		)
 	}
 }
 | platform_values($configuration; "liferay-aws-infrastructure-provider"; $liferay_chart_name)

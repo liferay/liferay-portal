@@ -107,14 +107,13 @@ tests:
                 repoURL: oci://example-registry/liferay-azure
     -   asserts:
             -   failedTemplate:
-                    errorMessage: The value "operatorApplications.dxpOperator.values.fullnameOverride" must not be empty when "operatorApplications.dxpOperator.values.clientExtensions.enabled" is true
+                    errorMessage: The value "dxpOperator.values.fullnameOverride" must not be empty when "dxpOperator.values.clientExtensions.enabled" is true
                 template: templates/applicationset-liferay.yaml
         it: Fails without the name the DXP operator runs as
         set:
-            operatorApplications:
-                dxpOperator:
-                    values:
-                        fullnameOverride: ""
+            dxpOperator:
+                values:
+                    fullnameOverride: ""
     -   asserts:
             -   notContains:
                     any: true
@@ -124,11 +123,10 @@ tests:
                 template: templates/applicationset-liferay.yaml
         it: Grants no delivery access when the DXP operator does not deliver client extensions
         set:
-            operatorApplications:
-                dxpOperator:
-                    values:
-                        clientExtensions:
-                            enabled: false
+            dxpOperator:
+                values:
+                    clientExtensions:
+                        enabled: false
     -   asserts:
             -   notContains:
                     any: true
@@ -138,9 +136,8 @@ tests:
                 template: templates/applicationset-liferay.yaml
         it: Grants no delivery access when the DXP operator is disabled
         set:
-            operatorApplications:
-                dxpOperator:
-                    enabled: false
+            dxpOperator:
+                enabled: false
     -   asserts:
             -   contains:
                     content:
@@ -162,11 +159,10 @@ tests:
                 template: templates/applicationset-liferay.yaml
         it: Grants the DXP operator delivery access to the Liferay namespace
         set:
-            operatorApplications:
-                dxpOperator:
-                    namespace: liferay-operators
-                    values:
-                        fullnameOverride: liferay-dxp-operator
+            dxpOperator:
+                namespace: liferay-operators
+                values:
+                    fullnameOverride: liferay-dxp-operator
     -   asserts:
             -   notContains:
                     any: true
@@ -246,11 +242,10 @@ tests:
                 template: templates/applicationset-liferay.yaml
         it: Leaves the online activation workflow off when the DXP operator does not run it
         set:
-            operatorApplications:
-                dxpOperator:
-                    values:
-                        onlineActivationWorkflow:
-                            enabled: false
+            dxpOperator:
+                values:
+                    onlineActivationWorkflow:
+                        enabled: false
     -   asserts:
             -   notContains:
                     any: true
@@ -260,9 +255,8 @@ tests:
                 template: templates/applicationset-liferay.yaml
         it: Leaves the online activation workflow off when the DXP operator is disabled
         set:
-            operatorApplications:
-                dxpOperator:
-                    enabled: false
+            dxpOperator:
+                enabled: false
     -   asserts:
             -   contains:
                     content:
@@ -283,11 +277,10 @@ tests:
                 template: templates/applicationset-liferay.yaml
         it: Names the DXP operator by its service account name over its full name
         set:
-            operatorApplications:
-                dxpOperator:
-                    values:
-                        serviceAccount:
-                            name: operator-account
+            dxpOperator:
+                values:
+                    serviceAccount:
+                        name: operator-account
     -   asserts:
             -   hasDocuments:
                     count: 0
@@ -415,11 +408,11 @@ tests:
                     count: 9
                     path: spec.destinations
                 template: templates/appproject-operator.yaml
-        it: Permits the extra destination namespaces declared by an operator application
+        it: Permits the extra destination namespaces declared by an operator
         set:
-            operatorApplications.eckOperator.extraDestinationNamespaces:
+            eckOperator.extraDestinationNamespaces:
                 -   monitoring
-            operatorApplications.keda.extraDestinationNamespaces: null
+            keda.extraDestinationNamespaces: null
     -   asserts:
             -   contains:
                     content: https://charts.example.com
@@ -435,7 +428,7 @@ tests:
                 template: templates/appproject-operator.yaml
         it: Reflects a repository URL override in the operator AppProject source repositories
         set:
-            operatorApplications.keda.repoURL: https://charts.example.com
+            keda.repoURL: https://charts.example.com
     -   asserts:
             -   hasDocuments:
                     count: 0
@@ -473,17 +466,17 @@ tests:
         set:
             appProjects.application.enabled: false
             appProjects.infrastructure.enabled: false
+            argoWorkflows.enabled: false
+            crossplane.enabled: false
+            dxpOperator.enabled: false
+            eckOperator.enabled: false
+            envoyGateway.enabled: false
+            externalSecrets.enabled: false
             infrastructure.enabled: false
             infrastructureProvider.enabled: false
+            keda.enabled: false
             liferay.enabled: false
             observability.enabled: false
-            operatorApplications.argoWorkflows.enabled: false
-            operatorApplications.crossplane.enabled: false
-            operatorApplications.dxpOperator.enabled: false
-            operatorApplications.eckOperator.enabled: false
-            operatorApplications.envoyGateway.enabled: false
-            operatorApplications.externalSecrets.enabled: false
-            operatorApplications.keda.enabled: false
     -   asserts:
             -   hasDocuments:
                     count: 1
@@ -691,13 +684,12 @@ tests:
                 template: templates/applicationset-liferay.yaml
         it: Turns session persistence off with the standard Gateway API CRDs
         set:
-            operatorApplications:
-                envoyGateway:
-                    crds:
-                        values:
-                            crds:
-                                gatewayAPI:
-                                    channel: standard
+            envoyGateway:
+                crds:
+                    values:
+                        crds:
+                            gatewayAPI:
+                                channel: standard
     -   asserts:
             -   contains:
                     content:
@@ -707,11 +699,10 @@ tests:
                 template: templates/applicationset-liferay.yaml
         it: Turns the online activation workflow on when the DXP operator runs it
         set:
-            operatorApplications:
-                dxpOperator:
-                    values:
-                        onlineActivationWorkflow:
-                            enabled: true
+            dxpOperator:
+                values:
+                    onlineActivationWorkflow:
+                        enabled: true
     -   asserts:
             -   equal:
                     path: spec.generators[0].git.repoURL

@@ -129,13 +129,13 @@ function _test_aws_converts_kubernetes_endpoint_cidrs {
 }
 
 function _test_aws_enables_ack_prometheus_service_with_role {
-	_assert "$(_render "aws" "$(_get_aws_outputs)")" '.operatorApplications | has("ackPrometheusService") | not' &&
-	_assert "$(_render "aws" "$(_get_aws_outputs '{"ack_prometheusservice_role_arn": {"value": "ack-role-arn"}}')")" '.operatorApplications.ackPrometheusService.enabled'
+	_assert "$(_render "aws" "$(_get_aws_outputs)")" 'has("ackPrometheusService") | not' &&
+	_assert "$(_render "aws" "$(_get_aws_outputs '{"ack_prometheusservice_role_arn": {"value": "ack-role-arn"}}')")" '.ackPrometheusService.enabled'
 }
 
 function _test_aws_enables_keda_with_role {
-	_assert "$(_render "aws" "$(_get_aws_outputs)")" '.operatorApplications.keda | has("enabled") | not' &&
-	_assert "$(_render "aws" "$(_get_aws_outputs '{"keda_role_arn": {"value": "keda-role-arn"}}')")" '.operatorApplications.keda.enabled'
+	_assert "$(_render "aws" "$(_get_aws_outputs)")" '.keda | has("enabled") | not' &&
+	_assert "$(_render "aws" "$(_get_aws_outputs '{"keda_role_arn": {"value": "keda-role-arn"}}')")" '.keda.enabled'
 }
 
 function _test_aws_enables_observability_with_workspace {
@@ -154,8 +154,8 @@ function _test_aws_selects_liferay_chart_from_marketplace {
 }
 
 function _test_azure_enables_keda_with_identity {
-	_assert "$(_render "azure" "$(_get_azure_outputs)")" '.operatorApplications.keda | has("enabled") | not' &&
-	_assert "$(_render "azure" "$(_get_azure_outputs '{"keda_identity_client_id": {"value": "keda-client-id"}}')")" '.operatorApplications.keda.enabled'
+	_assert "$(_render "azure" "$(_get_azure_outputs)")" '.keda | has("enabled") | not' &&
+	_assert "$(_render "azure" "$(_get_azure_outputs '{"keda_identity_client_id": {"value": "keda-client-id"}}')")" '.keda.enabled'
 }
 
 function _test_azure_enables_observability_with_workspace {
@@ -172,8 +172,8 @@ function _test_gcp_admits_api_server_and_konnectivity_agent {
 }
 
 function _test_gcp_enables_keda_with_namespace {
-	_assert "$(_render "gcp" "$(_get_gcp_outputs)")" '(.operatorApplications.keda | has("enabled") | not) and all(.liferay.parameters[]; .name | contains("autoscaling.keda") | not)' &&
-	_assert "$(_render "gcp" "$(_get_gcp_outputs '{"keda_service_account_namespace": {"value": "keda-system"}}')")" '.operatorApplications.keda.enabled and any(.liferay.parameters[]; .name == "liferay-default.autoscaling.keda.prometheusTriggerMetadata.serverAddress")'
+	_assert "$(_render "gcp" "$(_get_gcp_outputs)")" '(.keda | has("enabled") | not) and all(.liferay.parameters[]; .name | contains("autoscaling.keda") | not)' &&
+	_assert "$(_render "gcp" "$(_get_gcp_outputs '{"keda_service_account_namespace": {"value": "keda-system"}}')")" '.keda.enabled and any(.liferay.parameters[]; .name == "liferay-default.autoscaling.keda.prometheusTriggerMetadata.serverAddress")'
 }
 
 function _test_gcp_enables_observability_from_configuration {

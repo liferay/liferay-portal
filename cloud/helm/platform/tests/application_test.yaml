@@ -13,11 +13,11 @@ tests:
                     path: spec.sources[0].helm.valuesObject.deploymentContext.deploymentName
                     value: liferay-test
             -   equal:
+                    path: spec.sources[0].helm.valuesObject.externalSecrets.values.serviceAccount.annotations["azure.workload.identity/client-id"]
+                    value: external-secrets-client-id
+            -   equal:
                     path: spec.sources[0].helm.valuesObject.gitops.repository.url
                     value: https://github.com/example/liferay-gitops.git
-            -   equal:
-                    path: spec.sources[0].helm.valuesObject.operatorApplications.externalSecrets.values.serviceAccount.annotations["azure.workload.identity/client-id"]
-                    value: external-secrets-client-id
         it: Forwards the platform components values verbatim
         set:
             platformComponents:
@@ -30,15 +30,14 @@ tests:
                                         vaultUrl: https://liferay-test-vault.vault.azure.net
                     deploymentContext:
                         deploymentName: liferay-test
+                    externalSecrets:
+                        values:
+                            serviceAccount:
+                                annotations:
+                                    azure.workload.identity/client-id: external-secrets-client-id
                     gitops:
                         repository:
                             url: https://github.com/example/liferay-gitops.git
-                    operatorApplications:
-                        externalSecrets:
-                            values:
-                                serviceAccount:
-                                    annotations:
-                                        azure.workload.identity/client-id: external-secrets-client-id
     -   asserts:
             -   notExists:
                     path: spec.sources[0].helm

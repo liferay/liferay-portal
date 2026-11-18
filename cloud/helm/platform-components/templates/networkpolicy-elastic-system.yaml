@@ -1,4 +1,4 @@
-{{- $eckOperator := .Values.operatorApplications.eckOperator -}}
+{{- $eckOperator := .Values.eckOperator -}}
 {{- if $eckOperator.enabled -}}
 {{- include "liferay-platform.requireAPIServerSources" (dict "apiServerSources" .Values.networkPolicy.apiServerSources "operatorApplication" "eckOperator") -}}
 apiVersion: networking.k8s.io/v1
@@ -29,7 +29,7 @@ spec:
                     protocol: TCP
     podSelector:
         matchLabels:
-            app.kubernetes.io/instance: {{ $eckOperator.name }}
+            app.kubernetes.io/instance: eck-operator
             app.kubernetes.io/name: elastic-operator
     policyTypes:
         -   Ingress

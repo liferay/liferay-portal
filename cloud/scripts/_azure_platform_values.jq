@@ -17,6 +17,15 @@ $configuration[0] as $configuration
 				}
 			},
 			deploymentContext: $deployment_context,
+			externalSecrets: {
+				values: {
+					serviceAccount: {
+						annotations: {
+							"azure.workload.identity/client-id": $outputs.external_secrets_client_id.value
+						}
+					}
+				}
+			},
 			infrastructure: {
 				parameters: [
 					{
@@ -25,6 +34,25 @@ $configuration[0] as $configuration
 					}
 				]
 			},
+			keda: (
+				($outputs.keda_identity_client_id.value // "") as $client_id
+				| if $client_id == "" then
+					{}
+				else
+					{
+						enabled: true,
+						namespace: ($outputs.keda_service_account_namespace.value // "keda-system"),
+						values: {
+							podIdentity: {
+								azureWorkload: {
+									clientId: $client_id,
+									enabled: true,
+									tenantId: $deployment_context.tenantId
+								}
+							}
+						}
+					}
+				end),
 			liferay: (
 				if $prometheus_workspace_id == "" then
 					{}
@@ -115,37 +143,7 @@ $configuration[0] as $configuration
 							}
 						]
 					}
-				end),
-			operatorApplications: {
-				externalSecrets: {
-					values: {
-						serviceAccount: {
-							annotations: {
-								"azure.workload.identity/client-id": $outputs.external_secrets_client_id.value
-							}
-						}
-					}
-				},
-				keda: (
-					($outputs.keda_identity_client_id.value // "") as $client_id
-					| if $client_id == "" then
-						{}
-					else
-						{
-							enabled: true,
-							namespace: ($outputs.keda_service_account_namespace.value // "keda-system"),
-							values: {
-								podIdentity: {
-									azureWorkload: {
-										clientId: $client_id,
-										enabled: true,
-										tenantId: $deployment_context.tenantId
-									}
-								}
-							}
-						}
-					end)
-			}
+				end)
 		}
 	}
 }

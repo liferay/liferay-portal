@@ -1,4 +1,4 @@
-{{- $dxpOperator := .Values.operatorApplications.dxpOperator -}}
+{{- $dxpOperator := .Values.dxpOperator -}}
 {{- if and .Values.liferay.enabled $dxpOperator.enabled (dig "clientExtensions" "enabled" false ($dxpOperator.values | default dict)) -}}
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject

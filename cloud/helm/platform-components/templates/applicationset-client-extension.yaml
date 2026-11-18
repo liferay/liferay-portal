@@ -1,4 +1,4 @@
-{{- $dxpOperator := .Values.operatorApplications.dxpOperator -}}
+{{- $dxpOperator := .Values.dxpOperator -}}
 {{- if and .Values.liferay.enabled $dxpOperator.enabled (dig "clientExtensions" "enabled" false ($dxpOperator.values | default dict)) -}}
 {{- $gitops := .Values.gitops -}}
 {{- $layout := $gitops.layout -}}

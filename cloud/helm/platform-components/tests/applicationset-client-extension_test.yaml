@@ -77,11 +77,10 @@ tests:
                 template: templates/appproject-client-extension.yaml
         it: Omits the ApplicationSet and AppProject when the DXP operator does not deliver client extensions
         set:
-            operatorApplications:
-                dxpOperator:
-                    values:
-                        clientExtensions:
-                            enabled: false
+            dxpOperator:
+                values:
+                    clientExtensions:
+                        enabled: false
     -   asserts:
             -   hasDocuments:
                     count: 0

@@ -39,9 +39,9 @@ sidecar.opentelemetry.io/inject: "false"
 {{- end -}}
 
 {{- define "liferay-platform.dxpOperatorServiceAccountName" -}}
-{{- $values := .Values.operatorApplications.dxpOperator.values | default dict -}}
+{{- $values := .Values.dxpOperator.values | default dict -}}
 {{- dig "serviceAccount" "name" "" $values | default (dig "fullnameOverride" "" $values) | required (printf "The value %q must not be empty when %q is true"
-    "operatorApplications.dxpOperator.values.fullnameOverride" "operatorApplications.dxpOperator.values.clientExtensions.enabled") -}}
+    "dxpOperator.values.fullnameOverride" "dxpOperator.values.clientExtensions.enabled") -}}
 {{- end -}}
 
 {{- define "liferay-platform.environmentNamespaceLabels" -}}
@@ -62,9 +62,20 @@ pod-security.kubernetes.io/enforce: restricted
 liferay.com/project: liferay-cloud-native
 {{- end -}}
 
+{{- define "liferay-platform.operators" -}}
+ackPrometheusService: ack-prometheusservice
+argoWorkflows: argo-workflows
+crossplane: crossplane
+dxpOperator: dxp-operator
+eckOperator: eck-operator
+envoyGateway: envoy-gateway
+externalSecrets: external-secrets
+keda: keda
+{{- end -}}
+
 {{- define "liferay-platform.requireAPIServerSources" -}}
 {{- if not .apiServerSources -}}
-{{- fail (printf "The value \"networkPolicy.apiServerSources\" must not be empty when \"operatorApplications.%s.enabled\" is true" .operatorApplication) -}}
+{{- fail (printf "The value \"networkPolicy.apiServerSources\" must not be empty when \"%s.enabled\" is true" .operatorApplication) -}}
 {{- end -}}
 {{- end -}}
 

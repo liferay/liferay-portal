@@ -14,7 +14,7 @@ metadata:
     namespace: {{ .Release.Namespace }}
 spec:
     destination:
-        namespace: {{ .Values.operatorApplications.crossplane.namespace }}
+        namespace: {{ .Values.crossplane.namespace }}
         server: https://kubernetes.default.svc
     project: liferay-infrastructure
     sources:

@@ -1,5 +1,5 @@
-{{- if .Values.operatorApplications.crossplane.enabled }}
-{{- if .Values.operatorApplications.crossplane.clusterProviderConfig.enabled }}
+{{- if .Values.crossplane.enabled }}
+{{- if .Values.crossplane.clusterProviderConfig.enabled }}
 ---
 apiVersion: kubernetes.m.crossplane.io/v1alpha1
 kind: ClusterProviderConfig
@@ -15,7 +15,7 @@ spec:
     credentials:
         source: InjectedIdentity
 {{- end }}
-{{- range $name, $provider := .Values.operatorApplications.crossplane.providers }}
+{{- range $name, $provider := .Values.crossplane.providers }}
 ---
 apiVersion: pkg.crossplane.io/v1beta1
 kind: DeploymentRuntimeConfig

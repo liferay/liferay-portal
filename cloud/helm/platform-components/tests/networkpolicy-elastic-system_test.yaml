@@ -33,7 +33,7 @@ tests:
         it: Admits the API server sources to the operator's webhook
     -   asserts:
             -   failedTemplate:
-                    errorMessage: The value "networkPolicy.apiServerSources" must not be empty when "operatorApplications.eckOperator.enabled" is true
+                    errorMessage: The value "networkPolicy.apiServerSources" must not be empty when "eckOperator.enabled" is true
         it: Fails without API server sources rather than admitting everyone
         set:
             networkPolicy.apiServerSources: []
@@ -55,15 +55,14 @@ tests:
                     value: elastic-operator-webhook-ingress
                 equal:
                     path: spec.podSelector.matchLabels["app.kubernetes.io/instance"]
-                    value: search-operator
-        it: Follows the operator application's name and namespace
+                    value: eck-operator
+        it: Follows the ECK operator namespace
         set:
-            operatorApplications.eckOperator.name: search-operator
-            operatorApplications.eckOperator.namespace: search-system
+            eckOperator.namespace: search-system
     -   asserts:
             -   hasDocuments:
                     count: 0
         it: Omits both NetworkPolicies when the ECK operator is disabled
         set:
+            eckOperator.enabled: false
             networkPolicy.apiServerSources: []
-            operatorApplications.eckOperator.enabled: false

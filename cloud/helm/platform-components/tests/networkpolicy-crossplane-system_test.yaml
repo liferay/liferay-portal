@@ -40,7 +40,7 @@ tests:
             observability.namespace: monitoring
     -   asserts:
             -   failedTemplate:
-                    errorMessage: The value "networkPolicy.apiServerSources" must not be empty when "operatorApplications.crossplane.enabled" is true
+                    errorMessage: The value "networkPolicy.apiServerSources" must not be empty when "crossplane.enabled" is true
         it: Fails without API server sources rather than admitting everyone
         set:
             networkPolicy.apiServerSources: []
@@ -50,30 +50,29 @@ tests:
                     value: crossplane-function-grpc-ingress
                 equal:
                     path: spec.ingress[0].from[0].podSelector.matchLabels.release
-                    value: xp
+                    value: crossplane
             -   documentSelector:
                     path: metadata.name
                     value: crossplane-webhook-ingress
                 equal:
                     path: spec.podSelector.matchLabels.release
-                    value: xp
+                    value: crossplane
             -   documentSelector:
                     path: metadata.name
                     value: default-deny-ingress
                 equal:
                     path: metadata.namespace
                     value: xp-system
-        it: Follows the Crossplane application's name and namespace
+        it: Follows the Crossplane namespace
         set:
-            operatorApplications.crossplane.name: xp
-            operatorApplications.crossplane.namespace: xp-system
+            crossplane.namespace: xp-system
     -   asserts:
             -   hasDocuments:
                     count: 0
         it: Omits every NetworkPolicy when Crossplane is disabled
         set:
+            crossplane.enabled: false
             networkPolicy.apiServerSources: []
-            operatorApplications.crossplane.enabled: false
     -   asserts:
             -   notEqual:
                     path: metadata.name

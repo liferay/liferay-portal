@@ -1,4 +1,5 @@
-{{- range $application := .Values.operatorApplications }}
+{{- range $key, $name := include "liferay-platform.operators" . | fromYaml }}
+{{- $application := index $.Values $key }}
 {{- if and $application.enabled (or (not $application.requiresObservability) $.Values.observability.enabled) }}
 ---
 apiVersion: argoproj.io/v1alpha1
@@ -10,8 +11,8 @@ metadata:
         -   resources-finalizer.argocd.argoproj.io
     labels:
         {{- include "liferay-platform.labels" $ | nindent 8 }}
-        app.kubernetes.io/name: {{ $application.name }}
-    name: {{ $application.name }}
+        app.kubernetes.io/name: {{ $name }}
+    name: {{ $name }}
     namespace: {{ $.Release.Namespace }}
 spec:
     destination:

@@ -1,4 +1,4 @@
-{{- if .Values.operatorApplications.crossplane.enabled -}}
+{{- if .Values.crossplane.enabled -}}
 apiVersion: apiextensions.crossplane.io/v2
 kind: CompositeResourceDefinition
 metadata:

@@ -26,9 +26,9 @@ spec:
             server: https://kubernetes.default.svc
         -   namespace: {{ .Release.Namespace }}
             server: https://kubernetes.default.svc
-        -   namespace: {{ .Values.operatorApplications.crossplane.namespace }}
+        -   namespace: {{ .Values.crossplane.namespace }}
             server: https://kubernetes.default.svc
-        -   namespace: {{ .Values.operatorApplications.envoyGateway.namespace }}
+        -   namespace: {{ .Values.envoyGateway.namespace }}
             server: https://kubernetes.default.svc
         -   namespace: {{ .Values.observability.namespace }}
             server: https://kubernetes.default.svc

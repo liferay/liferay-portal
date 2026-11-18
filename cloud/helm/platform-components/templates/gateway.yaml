@@ -1,4 +1,4 @@
-{{- if .Values.operatorApplications.envoyGateway.enabled -}}
+{{- if .Values.envoyGateway.enabled -}}
 {{- $envoyProxy := .Values.gateway.envoyProxy }}
 apiVersion: gateway.envoyproxy.io/v1alpha1
 kind: EnvoyProxy
@@ -10,7 +10,7 @@ metadata:
         {{- include "liferay-platform.labels" . | nindent 8 }}
         app.kubernetes.io/name: {{ $envoyProxy.name }}
     name: {{ $envoyProxy.name }}
-    namespace: {{ .Values.operatorApplications.envoyGateway.namespace }}
+    namespace: {{ .Values.envoyGateway.namespace }}
 spec:
     provider:
         kubernetes:
@@ -64,5 +64,5 @@ spec:
         group: gateway.envoyproxy.io
         kind: EnvoyProxy
         name: {{ $envoyProxy.name }}
-        namespace: {{ .Values.operatorApplications.envoyGateway.namespace }}
+        namespace: {{ .Values.envoyGateway.namespace }}
 {{- end -}}

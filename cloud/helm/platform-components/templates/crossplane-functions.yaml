@@ -1,5 +1,5 @@
-{{- if .Values.operatorApplications.crossplane.enabled }}
-{{- range $name, $function := .Values.operatorApplications.crossplane.functions }}
+{{- if .Values.crossplane.enabled }}
+{{- range $name, $function := .Values.crossplane.functions }}
 ---
 apiVersion: pkg.crossplane.io/v1beta1
 kind: DeploymentRuntimeConfig

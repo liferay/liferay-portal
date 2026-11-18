@@ -248,9 +248,17 @@ tests:
                 gateway:
                     enabled: true
                     hostname: workflows.liferay.test
-            operatorApplications:
-                argoWorkflows:
-                    namespace: custom-workflows
+                namespace: custom-workflows
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+        it: Omits the Argo Workflows gateway while Argo Workflows is disabled
+        set:
+            argoWorkflows:
+                enabled: false
+                gateway:
+                    enabled: true
+                    hostname: workflows.liferay.test
     -   asserts:
             -   hasDocuments:
                     count: 0

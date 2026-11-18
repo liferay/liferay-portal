@@ -8,12 +8,22 @@ tests:
     -   asserts:
             -   hasDocuments:
                     count: 6
+        it: Ignores values for an operator the chart does not install
+        set:
+            unknownOperator:
+                enabled: true
+                namespace: unknown-system
+                repoURL: https://charts.example.com
+                targetRevision: 1.0.0
+    -   asserts:
+            -   hasDocuments:
+                    count: 6
             -   notEqual:
                     path: metadata.name
                     value: ack-prometheusservice
         it: Omits the ACK Prometheus service controller when observability is disabled
         set:
-            operatorApplications.ackPrometheusService.enabled: true
+            ackPrometheusService.enabled: true
     -   asserts:
             -   equal:
                     path: spec.project
@@ -149,11 +159,11 @@ tests:
             value: keda
         it: Renders KEDA with the injected Azure workload identity when enabled
         set:
-            operatorApplications.keda.enabled: true
-            operatorApplications.keda.namespace: keda
-            operatorApplications.keda.values.podIdentity.azureWorkload.clientId: 11111111-1111-1111-1111-111111111111
-            operatorApplications.keda.values.podIdentity.azureWorkload.enabled: true
-            operatorApplications.keda.values.podIdentity.azureWorkload.tenantId: 22222222-2222-2222-2222-222222222222
+            keda.enabled: true
+            keda.namespace: keda
+            keda.values.podIdentity.azureWorkload.clientId: 11111111-1111-1111-1111-111111111111
+            keda.values.podIdentity.azureWorkload.enabled: true
+            keda.values.podIdentity.azureWorkload.tenantId: 22222222-2222-2222-2222-222222222222
     -   asserts:
             -   hasDocuments:
                     count: 6
@@ -184,13 +194,12 @@ tests:
             value: ack-prometheusservice
         it: Renders the ACK Prometheus service controller when observability and the operator are enabled
         set:
+            ackPrometheusService:
+                enabled: true
+                values:
+                    aws:
+                        region: us-west-2
             observability.enabled: true
-            operatorApplications:
-                ackPrometheusService:
-                    enabled: true
-                    values:
-                        aws:
-                            region: us-west-2
     -   asserts:
             -   equal:
                     path: metadata.annotations["argocd.argoproj.io/sync-wave"]
@@ -223,7 +232,7 @@ tests:
             value: dxp-operator
         it: Renders the DXP operator by default
         set:
-            operatorApplications.dxpOperator.targetRevision: 9.9.9
+            dxpOperator.targetRevision: 9.9.9
     -   asserts:
             -   equal:
                     path: spec.destination.namespace

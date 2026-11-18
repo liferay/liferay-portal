@@ -1,4 +1,4 @@
-{{- $argoWorkflows := .Values.operatorApplications.argoWorkflows -}}
+{{- $argoWorkflows := .Values.argoWorkflows -}}
 {{- if $argoWorkflows.enabled }}
 {{- if .Values.observability.enabled }}
 ---
@@ -20,7 +20,7 @@ spec:
                     protocol: TCP
     podSelector:
         matchLabels:
-            app.kubernetes.io/instance: {{ $argoWorkflows.name }}
+            app.kubernetes.io/instance: argo-workflows
             app.kubernetes.io/name: argo-workflows-workflow-controller
     policyTypes:
         -   Ingress
@@ -83,7 +83,7 @@ spec:
                     protocol: TCP
     podSelector:
         matchLabels:
-            app.kubernetes.io/instance: {{ $argoWorkflows.name }}
+            app.kubernetes.io/instance: argo-workflows
             app.kubernetes.io/name: argo-workflows-server
     policyTypes:
         -   Ingress

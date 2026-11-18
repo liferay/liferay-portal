@@ -18,23 +18,22 @@ tests:
                     value: xpkg.upbound.io/crossplane-contrib/function-patch-and-transform:v0.9.0
         it: Appends additional cloud specific functions
         set:
-            operatorApplications:
-                crossplane:
-                    functions:
-                        function-patch-and-transform:
-                            package: xpkg.upbound.io/crossplane-contrib/function-patch-and-transform:v0.9.0
-                            resources:
-                                limits:
-                                    memory: 256Mi
-                                requests:
-                                    cpu: 15m
-                                    memory: 128Mi
+            crossplane:
+                functions:
+                    function-patch-and-transform:
+                        package: xpkg.upbound.io/crossplane-contrib/function-patch-and-transform:v0.9.0
+                        resources:
+                            limits:
+                                memory: 256Mi
+                            requests:
+                                cpu: 15m
+                                memory: 128Mi
     -   asserts:
             -   hasDocuments:
                     count: 0
         it: Omits the functions when Crossplane is disabled
         set:
-            operatorApplications.crossplane.enabled: false
+            crossplane.enabled: false
     -   asserts:
             -   hasDocuments:
                     count: 8

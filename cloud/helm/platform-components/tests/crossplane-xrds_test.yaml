@@ -197,4 +197,4 @@ tests:
                 template: templates/crossplane-xrd-liferayoverlay.yaml
         it: Omits the XRDs when Crossplane is disabled
         set:
-            operatorApplications.crossplane.enabled: false
+            crossplane.enabled: false
