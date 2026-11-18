@@ -45,58 +45,18 @@ const DownloadSpreadsheetButton = ({fileURL, total}) => {
 	const [disableCancelAndLeaveButton, setDisableCancelAndLeaveButton] =
 		useState(false);
 
-	const handleSuccess = () => {
-		setToastMessage((current) => ({
-			...current,
-			content: Liferay.Language.get('xls-was-successfully-generated'),
-			type: 'success',
-		}));
+	const showResult = ({feedbackStatusContent, toastContent, type}) => {
+		setFeedbackStatus({
+			content: feedbackStatusContent,
+			show: true,
+			type,
+		});
 
-		setFeedbackStatus((current) => ({
-			...current,
-			content: Liferay.Language.get('xls-generated'),
-			type: 'success',
-		}));
-	};
-
-	const handleError = ({abortedRequest, error}) => {
-		const type = abortedRequest ? 'warning' : 'danger';
-
-		const toastContent = abortedRequest
-			? Liferay.Language.get('xls-generation-was-cancelled')
-			: `${Liferay.Language.get(
-					'xls-generation-failed.-try-again'
-				)}. ${error}`;
-
-		const feedbackContent = abortedRequest
-			? Liferay.Language.get('xls-generation-was-cancelled')
-			: Liferay.Language.get('an-error-occurred');
-
-		setToastMessage((current) => ({
-			...current,
+		setToastMessage({
 			content: toastContent,
-			type,
-		}));
-
-		setFeedbackStatus((current) => ({
-			...current,
-			content: feedbackContent,
-			type,
-		}));
-	};
-
-	const handleUIState = () => {
-		setLoading(false);
-
-		setFeedbackStatus((current) => ({
-			...current,
 			show: true,
-		}));
-
-		setToastMessage((current) => ({
-			...current,
-			show: true,
-		}));
+			type,
+		});
 	};
 
 	const buttonTextKey = loading
@@ -129,15 +89,39 @@ const DownloadSpreadsheetButton = ({fileURL, total}) => {
 
 			downloadFileFromBlob(blob);
 
-			handleSuccess();
+			showResult({
+				feedbackStatusContent: Liferay.Language.get('xls-generated'),
+				toastContent: Liferay.Language.get(
+					'xls-was-successfully-generated'
+				),
+				type: 'success',
+			});
 		}
 		catch (error) {
-			const abortedRequest = error.name === 'AbortError' ? true : false;
-
-			handleError({abortedRequest, error});
+			if (error?.name === 'AbortError') {
+				showResult({
+					feedbackStatusContent: Liferay.Language.get(
+						'xls-generation-was-cancelled'
+					),
+					toastContent: Liferay.Language.get(
+						'xls-generation-was-cancelled'
+					),
+					type: 'warning',
+				});
+			}
+			else {
+				showResult({
+					feedbackStatusContent:
+						Liferay.Language.get('an-error-occurred'),
+					toastContent: `${Liferay.Language.get(
+						'xls-generation-failed.-try-again'
+					)}. ${error}`,
+					type: 'danger',
+				});
+			}
 		}
 		finally {
-			handleUIState();
+			setLoading(false);
 		}
 	};
 
