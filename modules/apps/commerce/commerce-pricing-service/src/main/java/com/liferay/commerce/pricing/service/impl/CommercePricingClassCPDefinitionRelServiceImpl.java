@@ -55,6 +55,11 @@ public class CommercePricingClassCPDefinitionRelServiceImpl
 					commercePricingClassCPDefinitionRel)
 		throws PortalException {
 
+		commercePricingClassCPDefinitionRel =
+			commercePricingClassCPDefinitionRelPersistence.findByPrimaryKey(
+				commercePricingClassCPDefinitionRel.
+					getCommercePricingClassCPDefinitionRelId());
+
 		_commercePricingClassResourcePermission.check(
 			getPermissionChecker(),
 			commercePricingClassCPDefinitionRel.getCommercePricingClassId(),
@@ -71,19 +76,9 @@ public class CommercePricingClassCPDefinitionRelServiceImpl
 				long commercePricingClassCPDefinitionRelId)
 		throws PortalException {
 
-		CommercePricingClassCPDefinitionRel
-			commercePricingClassCPDefinitionRel =
-				commercePricingClassCPDefinitionRelPersistence.findByPrimaryKey(
-					commercePricingClassCPDefinitionRelId);
-
-		_commercePricingClassResourcePermission.check(
-			getPermissionChecker(),
-			commercePricingClassCPDefinitionRel.getCommercePricingClassId(),
-			ActionKeys.UPDATE);
-
-		return commercePricingClassCPDefinitionRelLocalService.
-			deleteCommercePricingClassCPDefinitionRel(
-				commercePricingClassCPDefinitionRelId);
+		return deleteCommercePricingClassCPDefinitionRel(
+			commercePricingClassCPDefinitionRelPersistence.findByPrimaryKey(
+				commercePricingClassCPDefinitionRelId));
 	}
 
 	@Override
