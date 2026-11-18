@@ -160,7 +160,9 @@ public class CompanyKeyResolverUtilTest {
 		long companyId = RandomTestUtil.randomLong();
 		Key key = EncryptorUtil.generateKey();
 
-		String keyString = _wrapKey(companyId, key);
+		String keyString = ReflectionTestUtil.invoke(
+			CompanyKeyResolverUtil.class, "_wrapKey",
+			new Class<?>[] {long.class, Key.class}, companyId, key);
 
 		_saveKeyManagerConfiguration(TestCompanyCryptoProvider.KEY_IDENTIFIER);
 
@@ -299,12 +301,6 @@ public class CompanyKeyResolverUtilTest {
 			_KEY_MANAGER_CUSTOM_PROFILE_CONFIGURATION_PID,
 			_getKeyManagerCustomProfileConfigurationProperties(
 				companyKEKProviderId));
-	}
-
-	private String _wrapKey(long companyId, Key key) {
-		return ReflectionTestUtil.invoke(
-			CompanyKeyResolverUtil.class, "_wrapKey",
-			new Class<?>[] {long.class, Key.class}, companyId, key);
 	}
 
 	private static final String _KEY_MANAGER_CONFIGURATION_PID =
