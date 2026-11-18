@@ -97,39 +97,36 @@ export const useLifecycleActions = ({
 			);
 
 	const removeLifecycle = () =>
-		API.lifecycle
-			.deleteLifecycle({channelId, groupId: groupId!, lifecycleId})
-			.then(
-				() => {
-					dispatch(
-						addAlert({
-							alertType: Alert.Types.Success,
-							message: sub(
-								Liferay.Language.get('x-was-deleted'),
-								[lifecycleName]
-							) as string,
-						})
-					);
+		API.lifecycle.deleteLifecycle({groupId: groupId!, lifecycleId}).then(
+			() => {
+				dispatch(
+					addAlert({
+						alertType: Alert.Types.Success,
+						message: sub(Liferay.Language.get('x-was-deleted'), [
+							lifecycleName,
+						]) as string,
+					})
+				);
 
-					if (lifecycleERC === openLifecycleId) {
-						history.replace(
-							toRoute(Routes.LIFECYCLE, {channelId, groupId})
-						);
-					}
-					else {
-						onDelete?.(lifecycle);
-					}
-				},
-				() =>
-					dispatch(
-						addAlert({
-							alertType: Alert.Types.Error,
-							message: Liferay.Language.get(
-								'the-delete-process-failed-to-complete.-try-again-later'
-							),
-						})
-					)
-			);
+				if (lifecycleERC === openLifecycleId) {
+					history.replace(
+						toRoute(Routes.LIFECYCLE, {channelId, groupId})
+					);
+				}
+				else {
+					onDelete?.(lifecycle);
+				}
+			},
+			() =>
+				dispatch(
+					addAlert({
+						alertType: Alert.Types.Error,
+						message: Liferay.Language.get(
+							'the-delete-process-failed-to-complete.-try-again-later'
+						),
+					})
+				)
+		);
 
 	const actions = [
 		...(onView
