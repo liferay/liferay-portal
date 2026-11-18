@@ -101,13 +101,13 @@ public class ViewPromptsDisplayContext {
 		}
 
 		fdsActionDropdownItems.add(
+			MCPServerPermissionUtil.getPermissionsFDSActionDropdownItem(
+				_httpServletRequest, _objectDefinition));
+		fdsActionDropdownItems.add(
 			new FDSActionDropdownItem(
 				"#", "trash", "delete",
 				LanguageUtil.get(_httpServletRequest, "delete"), "get",
 				"delete", null));
-		fdsActionDropdownItems.add(
-			MCPServerPermissionUtil.getPermissionsFDSActionDropdownItem(
-				_httpServletRequest, _objectDefinition));
 
 		return fdsActionDropdownItems;
 	}

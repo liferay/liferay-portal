@@ -127,8 +127,8 @@ test.describe('Prompts - FDS Table', () => {
 			await expectFDSTableRowActions(fdsTablePage, page, seededItemName, [
 				'Edit',
 				'Duplicate',
-				'Delete',
 				'Permissions',
+				'Delete',
 			]);
 		}
 	);
