@@ -9,15 +9,8 @@ import com.liferay.portal.configuration.persistence.listener.ConfigurationModelL
 import com.liferay.portal.kernel.audit.AuditException;
 import com.liferay.portal.kernel.audit.AuditMessage;
 import com.liferay.portal.kernel.audit.AuditRouter;
-import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
-import com.liferay.portal.kernel.security.permission.PermissionChecker;
-import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.security.audit.configuration.AuditConfiguration;
 import com.liferay.portal.security.audit.configuration.web.internal.util.AuditConfigurationFormThreadLocal;
 
 import java.util.Dictionary;
@@ -37,49 +30,17 @@ public class AuditConfigurationModelListener
 
 	@Override
 	public void onAfterSave(String pid, Dictionary<String, Object> properties) {
-		Boolean previousPseudonymizationEnabled =
-			AuditConfigurationFormThreadLocal.
-				isPreviousPseudonymizationEnabled();
+		AuditMessage auditMessage =
+			AuditConfigurationFormThreadLocal.getAuditMessage();
 
-		AuditConfigurationFormThreadLocal.
-			removePreviousPseudonymizationEnabled();
-
-		if (previousPseudonymizationEnabled == null) {
+		if (auditMessage == null) {
 			return;
 		}
 
-		boolean pseudonymizationEnabled = GetterUtil.getBoolean(
-			properties.get("pseudonymizationEnabled"),
-			previousPseudonymizationEnabled);
-
-		if (pseudonymizationEnabled == previousPseudonymizationEnabled) {
-			return;
-		}
+		AuditConfigurationFormThreadLocal.removeAuditMessage();
 
 		try {
-			long companyId = GetterUtil.getLong(
-				properties.get("companyId"), CompanyThreadLocal.getCompanyId());
-
-			PermissionChecker permissionChecker =
-				PermissionThreadLocal.getPermissionChecker();
-
-			User user = permissionChecker.getUser();
-
-			_auditRouter.route(
-				new AuditMessage(
-					companyId, user.getUserId(), user.getFullName(),
-					JSONUtil.put(
-						"attributes",
-						JSONUtil.putAll(
-							JSONUtil.put(
-								"name", "pseudonymizationEnabled"
-							).put(
-								"newValue", pseudonymizationEnabled
-							).put(
-								"oldValue", previousPseudonymizationEnabled
-							))),
-					AuditConfiguration.class.getName(),
-					String.valueOf(companyId), "AUDIT_CONFIG_CHANGE", null));
+			_auditRouter.route(auditMessage);
 		}
 		catch (AuditException auditException) {
 			_log.error(auditException);

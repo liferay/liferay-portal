@@ -8,7 +8,10 @@ package com.liferay.portal.security.audit.configuration.web.internal.configurati
 import com.liferay.configuration.admin.display.ConfigurationFormRenderer;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
+import com.liferay.portal.kernel.audit.AuditMessage;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
+import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -92,18 +95,22 @@ public class AuditConfigurationFormRenderer
 		if (!AuditConfigurationOverrideUtil.isOverridden(
 				AuditConfiguration.class, "pseudonymizationEnabled")) {
 
+			boolean pseudonymizationEnabled = ParamUtil.getBoolean(
+				httpServletRequest, "pseudonymizationEnabled",
+				auditConfiguration.pseudonymizationEnabled());
+
 			requestParameters.put(
-				"pseudonymizationEnabled",
-				ParamUtil.getBoolean(
-					httpServletRequest, "pseudonymizationEnabled",
-					auditConfiguration.pseudonymizationEnabled()));
+				"pseudonymizationEnabled", pseudonymizationEnabled);
 
 			if (FeatureFlagManagerUtil.isEnabled(
-					themeDisplay.getCompanyId(), "LPD-6417")) {
+					themeDisplay.getCompanyId(), "LPD-6417") &&
+				(pseudonymizationEnabled !=
+					auditConfiguration.pseudonymizationEnabled())) {
 
-				AuditConfigurationFormThreadLocal.
-					setPreviousPseudonymizationEnabled(
-						auditConfiguration.pseudonymizationEnabled());
+				AuditConfigurationFormThreadLocal.setAuditMessage(
+					_getAuditMessage(
+						auditConfiguration.pseudonymizationEnabled(),
+						pseudonymizationEnabled, themeDisplay));
 			}
 		}
 
@@ -161,6 +168,30 @@ public class AuditConfigurationFormRenderer
 		catch (ConfigurationException configurationException) {
 			return ReflectionUtil.throwException(configurationException);
 		}
+	}
+
+	private AuditMessage _getAuditMessage(
+		boolean previousPseudonymizationEnabled,
+		boolean pseudonymizationEnabled, ThemeDisplay themeDisplay) {
+
+		User user = themeDisplay.getUser();
+
+		return new AuditMessage(
+			themeDisplay.getCompanyId(), themeDisplay.getUserId(),
+			user.getFullName(),
+			JSONUtil.put(
+				"attributes",
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"name", "pseudonymizationEnabled"
+					).put(
+						"newValue", pseudonymizationEnabled
+					).put(
+						"oldValue", previousPseudonymizationEnabled
+					))),
+			AuditConfiguration.class.getName(),
+			String.valueOf(themeDisplay.getCompanyId()), "AUDIT_CONFIG_CHANGE",
+			null);
 	}
 
 	@SuppressWarnings("deprecation")

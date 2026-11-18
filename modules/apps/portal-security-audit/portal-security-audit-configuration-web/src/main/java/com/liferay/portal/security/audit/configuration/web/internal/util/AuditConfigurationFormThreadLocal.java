@@ -6,29 +6,27 @@
 package com.liferay.portal.security.audit.configuration.web.internal.util;
 
 import com.liferay.petra.lang.CentralizedThreadLocal;
+import com.liferay.portal.kernel.audit.AuditMessage;
 
 /**
  * @author Álvaro Saugar
  */
 public class AuditConfigurationFormThreadLocal {
 
-	public static Boolean isPreviousPseudonymizationEnabled() {
-		return _previousPseudonymizationEnabled.get();
+	public static AuditMessage getAuditMessage() {
+		return _auditMessage.get();
 	}
 
-	public static void removePreviousPseudonymizationEnabled() {
-		_previousPseudonymizationEnabled.remove();
+	public static void removeAuditMessage() {
+		_auditMessage.remove();
 	}
 
-	public static void setPreviousPseudonymizationEnabled(
-		boolean previousPseudonymizationEnabled) {
-
-		_previousPseudonymizationEnabled.set(previousPseudonymizationEnabled);
+	public static void setAuditMessage(AuditMessage auditMessage) {
+		_auditMessage.set(auditMessage);
 	}
 
-	private static final ThreadLocal<Boolean> _previousPseudonymizationEnabled =
+	private static final ThreadLocal<AuditMessage> _auditMessage =
 		new CentralizedThreadLocal<>(
-			AuditConfigurationFormThreadLocal.class +
-				"._previousPseudonymizationEnabled");
+			AuditConfigurationFormThreadLocal.class + "._auditMessage");
 
 }
