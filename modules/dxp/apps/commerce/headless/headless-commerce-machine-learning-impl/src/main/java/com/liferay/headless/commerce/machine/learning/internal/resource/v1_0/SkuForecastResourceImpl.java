@@ -9,6 +9,7 @@ import com.liferay.commerce.machine.learning.forecast.SkuCommerceMLForecast;
 import com.liferay.commerce.machine.learning.forecast.SkuCommerceMLForecastManager;
 import com.liferay.headless.commerce.machine.learning.dto.v1_0.SkuForecast;
 import com.liferay.headless.commerce.machine.learning.internal.constants.CommerceMLForecastConstants;
+import com.liferay.headless.commerce.machine.learning.internal.security.permission.CommerceMLPermissionUtil;
 import com.liferay.headless.commerce.machine.learning.resource.v1_0.SkuForecastResource;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.pagination.Page;
@@ -34,6 +35,9 @@ public class SkuForecastResourceImpl extends BaseSkuForecastResourceImpl {
 			Integer forecastLength, Date forecastStartDate,
 			Integer historyLength, String[] skus, Pagination pagination)
 		throws Exception {
+
+		CommerceMLPermissionUtil.check(
+			contextCompany.getCompanyId(), roleLocalService);
 
 		Date startDate = forecastStartDate;
 
