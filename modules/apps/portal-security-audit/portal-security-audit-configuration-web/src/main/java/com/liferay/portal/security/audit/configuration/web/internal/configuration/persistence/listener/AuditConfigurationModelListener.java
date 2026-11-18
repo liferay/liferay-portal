@@ -11,7 +11,7 @@ import com.liferay.portal.kernel.audit.AuditMessage;
 import com.liferay.portal.kernel.audit.AuditRouter;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.security.audit.configuration.web.internal.util.AuditConfigurationFormThreadLocal;
+import com.liferay.portal.security.audit.configuration.web.internal.util.AuditConfigurationThreadLocal;
 
 import java.util.Dictionary;
 
@@ -31,13 +31,13 @@ public class AuditConfigurationModelListener
 	@Override
 	public void onAfterSave(String pid, Dictionary<String, Object> properties) {
 		AuditMessage auditMessage =
-			AuditConfigurationFormThreadLocal.getAuditMessage();
+			AuditConfigurationThreadLocal.getAuditMessage();
 
 		if (auditMessage == null) {
 			return;
 		}
 
-		AuditConfigurationFormThreadLocal.removeAuditMessage();
+		AuditConfigurationThreadLocal.removeAuditMessage();
 
 		try {
 			_auditRouter.route(auditMessage);

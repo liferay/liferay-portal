@@ -11,7 +11,7 @@ import com.liferay.portal.kernel.audit.AuditMessage;
 /**
  * @author Álvaro Saugar
  */
-public class AuditConfigurationFormThreadLocal {
+public class AuditConfigurationThreadLocal {
 
 	public static AuditMessage getAuditMessage() {
 		return _auditMessage.get();
@@ -27,6 +27,6 @@ public class AuditConfigurationFormThreadLocal {
 
 	private static final ThreadLocal<AuditMessage> _auditMessage =
 		new CentralizedThreadLocal<>(
-			AuditConfigurationFormThreadLocal.class + "._auditMessage");
+			AuditConfigurationThreadLocal.class + "._auditMessage");
 
 }

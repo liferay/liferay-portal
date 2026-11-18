@@ -18,9 +18,9 @@ import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.security.audit.configuration.AuditConfiguration;
 import com.liferay.portal.security.audit.configuration.web.internal.display.context.AuditConfigurationDisplayContext;
-import com.liferay.portal.security.audit.configuration.web.internal.util.AuditConfigurationFormThreadLocal;
 import com.liferay.portal.security.audit.configuration.web.internal.util.AuditConfigurationOverrideUtil;
 import com.liferay.portal.security.audit.configuration.web.internal.util.AuditConfigurationScopeUtil;
+import com.liferay.portal.security.audit.configuration.web.internal.util.AuditConfigurationThreadLocal;
 
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletContext;
@@ -107,7 +107,7 @@ public class AuditConfigurationFormRenderer
 				(pseudonymizationEnabled !=
 					auditConfiguration.pseudonymizationEnabled())) {
 
-				AuditConfigurationFormThreadLocal.setAuditMessage(
+				AuditConfigurationThreadLocal.setAuditMessage(
 					_getAuditMessage(
 						auditConfiguration.pseudonymizationEnabled(),
 						pseudonymizationEnabled, themeDisplay));
