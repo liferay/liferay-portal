@@ -152,12 +152,12 @@ public class SearchResultsPortletTest {
 	@FeatureFlag("LPD-114635")
 	@Test
 	public void testIsPaginationStartAdjusted() throws Exception {
-		_testIsPaginationStartAdjusted(false, 5, 0, 0);
-		_testIsPaginationStartAdjusted(false, 5, 15, 4);
+		_testIsPaginationStartAdjusted(5, false, 0, 0);
+		_testIsPaginationStartAdjusted(5, false, 15, 4);
+		_testIsPaginationStartAdjusted(5, true, 15, 6);
 		_testIsPaginationStartAdjusted(
-			false, PropsValues.SEARCH_CONTAINER_PAGE_MAX_DELTA + 1,
+			PropsValues.SEARCH_CONTAINER_PAGE_MAX_DELTA + 1, false,
 			PropsValues.SEARCH_CONTAINER_PAGE_MAX_DELTA, 2);
-		_testIsPaginationStartAdjusted(true, 5, 15, 6);
 	}
 
 	@FeatureFlag(enable = false, value = "LPD-114635")
@@ -165,7 +165,7 @@ public class SearchResultsPortletTest {
 	public void testIsPaginationStartAdjustedWhenFeatureFlagIsDisabled()
 		throws Exception {
 
-		_testIsPaginationStartAdjusted(false, 5, 15, 6);
+		_testIsPaginationStartAdjusted(5, false, 15, 6);
 	}
 
 	@Test
@@ -510,7 +510,7 @@ public class SearchResultsPortletTest {
 	}
 
 	private void _testIsPaginationStartAdjusted(
-			boolean expectedPaginationStartAdjusted, int delta, int from,
+			int delta, boolean expectedPaginationStartAdjusted, int from,
 			int start)
 		throws Exception {
 

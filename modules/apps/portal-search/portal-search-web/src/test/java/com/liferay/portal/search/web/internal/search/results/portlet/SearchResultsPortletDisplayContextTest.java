@@ -145,7 +145,8 @@ public class SearchResultsPortletDisplayContextTest {
 
 	@Test
 	public void testGetPaginationStartURL() throws Exception {
-		_setUpPortalUtil();
+		ReflectionTestUtil.setFieldValue(
+			PortalUtil.class, "_portal", new PortalImpl());
 
 		SearchContainer<Document> searchContainer = Mockito.mock(
 			SearchContainer.class);
@@ -272,11 +273,6 @@ public class SearchResultsPortletDisplayContextTest {
 		).thenReturn(
 			group
 		);
-	}
-
-	private void _setUpPortalUtil() {
-		ReflectionTestUtil.setFieldValue(
-			PortalUtil.class, "_portal", new PortalImpl());
 	}
 
 	private void _setUpPortletDisplayStyleGroupExternalReferenceCode(
