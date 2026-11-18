@@ -2,6 +2,19 @@
 	"pageElement": {
 		"id": "a611f774-bec1-545c-995a-96561855489d",
 		"pageElements": [
+			{
+				"definition": {
+					"fragment": {
+						"key": "com.liferay.osb.faro.web.internal.fragment.renderer.FaroAccountProfileSectionFragmentRenderer"
+					},
+					"fragmentConfig": {
+					},
+					"fragmentFields": [
+					]
+				},
+				"id": "a2213b69-33b2-4843-ba12-0df6478bb057",
+				"type": "Fragment"
+			}
 		],
 		"type": "Root"
 	},
