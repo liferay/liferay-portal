@@ -46,19 +46,24 @@ export const DropdownRangeKeyContent: React.FC<
 	});
 	const [seeMore, setSeeMore] = useState(false);
 	const [showDatePicker, setShowDatePicker] = useState(false);
-	const itemRefs = useRef<Array<HTMLElement | null>>([]);
+	const firstExtraItemRef = useRef<HTMLElement | null>(null);
 	const location = useLocation();
-	const previousValuesRef = useRef<Array<RangeKeyTimeRanges>>([]);
 	const retentionPeriod = useRetentionPeriod();
 	const timeRange = formatTimeRange(data.timeRange);
-	const filteredItems = getFilteredItems({
+	const filterArgs = {
 		legacy,
 		rangeKey: rangeSelectors?.rangeKey as RangeKeyTimeRanges,
 		rangeKeys,
 		retentionPeriod: retentionPeriod as number,
-		seeMore,
 		timeRange,
-	});
+	};
+	const baseItems = getFilteredItems({...filterArgs, seeMore: false});
+	const moreItems = getFilteredItems({...filterArgs, seeMore: true});
+	const filteredItems = seeMore ? moreItems : baseItems;
+	const baseValues = new Set(baseItems.map(({value}) => value));
+	const firstExtraValue = moreItems.find(
+		({value}) => !baseValues.has(value)
+	)?.value;
 
 	let selectedItem = null;
 
@@ -103,15 +108,9 @@ export const DropdownRangeKeyContent: React.FC<
 	}, [customDateRange]);
 
 	useEffect(() => {
-		if (!seeMore) {
-			return;
+		if (seeMore) {
+			firstExtraItemRef.current?.focus();
 		}
-
-		const index = filteredItems.findIndex(
-			({value}) => !previousValuesRef.current.includes(value)
-		);
-
-		itemRefs.current[Math.max(index, 0)]?.focus();
 	}, [seeMore]);
 
 	return (
@@ -156,15 +155,17 @@ export const DropdownRangeKeyContent: React.FC<
 				/>
 			) : (
 				<ClayDropDown.ItemList>
-					{filteredItems.map(({description, label, value}, index) => (
+					{filteredItems.map(({description, label, value}) => (
 						<ClayDropDown.Item
 							className={getCN('c-pointer', {
 								active: selectedItem?.value === value,
 							})}
-							innerRef={(element: HTMLElement | null) => {
-								itemRefs.current[index] = element;
-							}}
-							key={index}
+							innerRef={
+								value === firstExtraValue
+									? firstExtraItemRef
+									: undefined
+							}
+							key={value}
 							onClick={() => {
 								setActive(false);
 
@@ -189,13 +190,7 @@ export const DropdownRangeKeyContent: React.FC<
 
 					{!legacy && (
 						<DropdownRangeKeyLegacy
-							onClickSeeMore={() => {
-								previousValuesRef.current = filteredItems.map(
-									({value}) => value
-								);
-
-								setSeeMore(true);
-							}}
+							onClickSeeMore={() => setSeeMore(true)}
 							onClickShowDatePicker={() =>
 								setShowDatePicker(true)
 							}
