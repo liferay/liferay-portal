@@ -7,10 +7,15 @@ package com.liferay.audiences.web.internal.cache;
 
 import com.liferay.audiences.cache.AudiencesDefinitionCache;
 import com.liferay.audiences.model.AudiencesEntry;
+import com.liferay.audiences.web.internal.model.listener.AudiencesEntryModelListener;
+import com.liferay.audiences.web.internal.model.listener.GroupModelListener;
 import com.liferay.frontend.js.audiences.AudiencesDefinition;
 import com.liferay.portal.kernel.cache.MultiVMPool;
 import com.liferay.portal.kernel.cache.PortalCache;
+import com.liferay.portal.kernel.model.ModelListener;
 
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -40,16 +45,30 @@ public class AudiencesDefinitionCacheImpl implements AudiencesDefinitionCache {
 	}
 
 	@Activate
-	protected void activate() {
+	protected void activate(BundleContext bundleContext) {
 		_portalCache =
 			(PortalCache<Long, AudiencesDefinition>)_multiVMPool.getPortalCache(
 				AudiencesEntry.class.getName());
+
+		_audiencesEntryModelListenerServiceRegistration =
+			bundleContext.registerService(
+				ModelListener.class, new AudiencesEntryModelListener(this),
+				null);
+		_groupModelListenerServiceRegistration = bundleContext.registerService(
+			ModelListener.class, new GroupModelListener(this), null);
 	}
 
 	@Deactivate
 	protected void deactivate() {
+		_audiencesEntryModelListenerServiceRegistration.unregister();
+		_groupModelListenerServiceRegistration.unregister();
+
 		_multiVMPool.removePortalCache(AudiencesEntry.class.getName());
 	}
+
+	private ServiceRegistration<?>
+		_audiencesEntryModelListenerServiceRegistration;
+	private ServiceRegistration<?> _groupModelListenerServiceRegistration;
 
 	@Reference
 	private MultiVMPool _multiVMPool;

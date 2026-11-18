@@ -8,17 +8,18 @@ package com.liferay.audiences.web.internal.model.listener;
 import com.liferay.audiences.cache.AudiencesDefinitionCache;
 import com.liferay.audiences.model.AudiencesEntry;
 import com.liferay.portal.kernel.model.BaseModelListener;
-import com.liferay.portal.kernel.model.ModelListener;
-
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Eudaldo Alonso
  */
-@Component(service = ModelListener.class)
 public class AudiencesEntryModelListener
 	extends BaseModelListener<AudiencesEntry> {
+
+	public AudiencesEntryModelListener(
+		AudiencesDefinitionCache audiencesDefinitionCache) {
+
+		_audiencesDefinitionCache = audiencesDefinitionCache;
+	}
 
 	@Override
 	public void onAfterCreate(AudiencesEntry audiencesEntry) {
@@ -40,7 +41,6 @@ public class AudiencesEntryModelListener
 			audiencesEntry.getCompanyId());
 	}
 
-	@Reference
-	private AudiencesDefinitionCache _audiencesDefinitionCache;
+	private final AudiencesDefinitionCache _audiencesDefinitionCache;
 
 }

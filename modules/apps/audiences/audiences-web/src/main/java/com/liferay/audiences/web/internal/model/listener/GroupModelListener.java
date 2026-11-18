@@ -8,16 +8,17 @@ package com.liferay.audiences.web.internal.model.listener;
 import com.liferay.audiences.cache.AudiencesDefinitionCache;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.Group;
-import com.liferay.portal.kernel.model.ModelListener;
-
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Víctor Galán
  */
-@Component(service = ModelListener.class)
 public class GroupModelListener extends BaseModelListener<Group> {
+
+	public GroupModelListener(
+		AudiencesDefinitionCache audiencesDefinitionCache) {
+
+		_audiencesDefinitionCache = audiencesDefinitionCache;
+	}
 
 	@Override
 	public void onAfterRemove(Group group) {
@@ -25,7 +26,6 @@ public class GroupModelListener extends BaseModelListener<Group> {
 			group.getCompanyId());
 	}
 
-	@Reference
-	private AudiencesDefinitionCache _audiencesDefinitionCache;
+	private final AudiencesDefinitionCache _audiencesDefinitionCache;
 
 }
