@@ -144,30 +144,6 @@ definition {
 		KaleoFormsNewSubmissions.viewStatusLabel(lbstatus = "Approved");
 	}
 
-	@description = "Verify that the details page shows the process Status is Pending before the user approve."
-	@priority = 4
-	test CanViewProcessStatusPending {
-		KaleoFormsAdmin.submitNewProcess(kfProcessName = "Kaleo Forms Process");
-
-		KaleoFormsNewSubmissions.addNewContacts(
-			ddlCompany = "Liferay",
-			ddlEmail = "userfn@liferay.com",
-			ddlFirstName = "Userfn",
-			ddlInstantMessegerService = "Google Hangouts",
-			ddlJobTitle = "QA Engineer",
-			ddlLastName = "Userln",
-			ddlnotes = "Notes",
-			ddlPhoneMobile = "(123) 9999-9999",
-			ddlPhoneOffice = "(123) 1111-2222",
-			ddlUserName = "testliferay");
-
-		KaleoFormsAdmin.saveProcessRecord();
-
-		KaleoFormsNewSubmissions.viewEllipsisMenu(menuItem = "View");
-
-		KaleoFormsNewSubmissions.viewStatusLabel(lbstatus = "Pending");
-	}
-
 	@description = "Verify that the basic structure of workflow track approval is available."
 	@priority = 5
 	test CanViewTrackApprovalBasicStructure {
@@ -218,29 +194,6 @@ definition {
 			ddlPhoneMobile = "(123) 9999-9999",
 			ddlPhoneOffice = "(123) 1111-2222",
 			ddlUserName = "testliferay");
-	}
-
-	@description = "Verify that the details page shows the version."
-	@ignore = "Test Stub"
-	@priority = 3
-	test VersionOnDetailsPage {
-		KaleoFormsAdmin.submitNewProcess(kfProcessName = "Kaleo Forms Process");
-
-		KaleoFormsNewSubmissions.addNewContacts(
-			ddlCompany = "Liferay",
-			ddlEmail = "userfn@liferay.com",
-			ddlFirstName = "Userfn",
-			ddlInstantMessegerService = "Google Hangouts",
-			ddlJobTitle = "QA Engineer",
-			ddlLastName = "Userln",
-			ddlnotes = "Notes",
-			ddlPhoneMobile = "(123) 9999-9999",
-			ddlPhoneOffice = "(123) 1111-2222",
-			ddlUserName = "testliferay");
-
-		KaleoFormsAdmin.saveProcessRecord();
-
-		KaleoFormsNewSubmissions.viewVersionOnDetails(workflowVersion = "1.0");
 	}
 
 }

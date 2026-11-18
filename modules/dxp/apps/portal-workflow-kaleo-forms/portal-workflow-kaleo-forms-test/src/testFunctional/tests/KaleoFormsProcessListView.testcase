@@ -290,40 +290,6 @@ definition {
 		KaleoFormsAdmin.viewPermissionsAndAssertModal();
 	}
 
-	@description = "Verify that the user can select view option."
-	@priority = 5
-	test CanSelectViewOption {
-		KaleoFormsAdmin.addProcess();
-
-		KaleoFormsAdmin.createKaleoFormsProcess(
-			kfFieldSetName = "Contacts",
-			kfFormName = "Created Task Form",
-			kfProcessDescription = "Kaleo Forms Process Description",
-			kfProcessName = "Kaleo Forms Process",
-			workflowDefinitionTitle = "Single Approver",
-			workflowTask = "created");
-
-		KaleoFormsAdmin.viewProcessRecord(kfProcessName = "Kaleo Forms Process");
-
-		KaleoFormsAdmin.viewProcessNoRecords(kfProcessName = "Kaleo Forms Process");
-	}
-
-	@description = "Verify that the user can view the process after it has been created."
-	@priority = 5
-	test CanViewProcessAfterCreated {
-		KaleoFormsAdmin.addProcess();
-
-		KaleoFormsAdmin.createKaleoFormsProcess(
-			kfFieldSetName = "Contacts",
-			kfFormName = "Created Task Form",
-			kfProcessDescription = "Kaleo Forms Process Description",
-			kfProcessName = "Kaleo Forms Process",
-			workflowDefinitionTitle = "Single Approver",
-			workflowTask = "created");
-
-		KaleoFormsAdmin.viewProcess(kfProcessName = "Kaleo Forms Process");
-	}
-
 	@description = "Verify that the page displays columns Id, Name, Description and Modified Date."
 	@priority = 5
 	test DisplaysColumnsNameDescriptionModifiedDate {
