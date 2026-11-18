@@ -1803,7 +1803,6 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
-			<description>The position after the last item shown on the current page. When set, the displayed range ends here instead of at the end of the page.</description>
 			<name>resultEnd</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
@@ -2899,7 +2898,6 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
-			<description>The position after the last item shown on the current page. When set, the displayed range ends here instead of at the end of the page.</description>
 			<name>resultEnd</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
