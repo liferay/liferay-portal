@@ -297,13 +297,10 @@ public class PersistenceCallCheck extends BaseCheck {
 
 				String className = getClassOrVariableName(methodCallDetailAST);
 
-				if (className != null) {
-					Matcher matcher = _transactionUtilPattern.matcher(
-						className);
+				if ((className != null) &&
+					className.matches("Transaction\\w*Util")) {
 
-					if (matcher.matches()) {
-						return true;
-					}
+					return true;
 				}
 			}
 
@@ -322,7 +319,5 @@ public class PersistenceCallCheck extends BaseCheck {
 
 	private static final Pattern _extendedClassPattern = Pattern.compile(
 		"\\sextends\\s+(\\w+)\\W");
-	private static final Pattern _transactionUtilPattern = Pattern.compile(
-		"Transaction\\w*Util");
 
 }
