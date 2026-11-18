@@ -1722,9 +1722,12 @@ definition {
 				configurationName = "Authorization Server Configuration",
 				configurationScope = "System Scope");
 
-			PortletEntry.inputTextArea(
-				fieldId = "JsonWebKey",
-				text = ${jwk});
+			var jwk = StringUtil.regexReplaceAll(${jwk}, "\s", "");
+
+			Type(
+				key_text = "JsonWebKey",
+				locator1 = "TextInput#ANY_PASSWORD",
+				value1 = ${jwk});
 
 			SystemSettings.saveConfiguration();
 		}
