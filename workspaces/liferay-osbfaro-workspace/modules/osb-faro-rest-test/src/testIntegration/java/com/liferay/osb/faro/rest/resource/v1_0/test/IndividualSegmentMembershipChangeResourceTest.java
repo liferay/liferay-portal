@@ -6,11 +6,18 @@
 package com.liferay.osb.faro.rest.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.osb.faro.constants.FaroProjectConstants;
+import com.liferay.osb.faro.model.FaroProject;
 import com.liferay.osb.faro.rest.client.http.HttpInvoker;
 import com.liferay.osb.faro.rest.client.pagination.Pagination;
+import com.liferay.osb.faro.service.FaroProjectLocalService;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.test.rule.Inject;
+
+import java.util.Collections;
 
 import org.junit.Assert;
 import org.junit.Ignore;
@@ -29,8 +36,15 @@ public class IndividualSegmentMembershipChangeResourceTest
 	public void testGetWorkspaceGroupIndividualSegmentMembershipChangesPage()
 		throws Exception {
 
-		_testGetWorkspaceGroupIndividualSegmentMembershipChangesPageWithRangeEnd();
-		_testGetWorkspaceGroupIndividualSegmentMembershipChangesPageWithRangeStart();
+		FaroProject faroProject = _faroProjectLocalService.addFaroProject(
+			TestPropsValues.getUserId(), RandomTestUtil.randomString(), null,
+			null, null, null, Collections.emptyList(), null, null, null, null,
+			null, FaroProjectConstants.STATE_READY, "{}", "UTC", null);
+
+		_testGetWorkspaceGroupIndividualSegmentMembershipChangesPageWithRangeEnd(
+			faroProject.getGroupId());
+		_testGetWorkspaceGroupIndividualSegmentMembershipChangesPageWithRangeStart(
+			faroProject.getGroupId());
 	}
 
 	@Ignore
@@ -96,26 +110,32 @@ public class IndividualSegmentMembershipChangeResourceTest
 			jsonObject.getString("title"));
 	}
 
-	private void _testGetWorkspaceGroupIndividualSegmentMembershipChangesPageWithRangeEnd()
+	private void
+			_testGetWorkspaceGroupIndividualSegmentMembershipChangesPageWithRangeEnd(
+				long groupId)
 		throws Exception {
 
 		_assertBadRequest(
 			individualSegmentMembershipChangeResource.
 				getWorkspaceGroupIndividualSegmentMembershipChangesPageHttpResponse(
-					testGroup.getGroupId(),
-					String.valueOf(RandomTestUtil.randomLong()), "2026-01-31",
-					null, null, null, Pagination.of(1, 10), null));
+					groupId, String.valueOf(RandomTestUtil.randomLong()),
+					"2026-01-31", null, null, null, Pagination.of(1, 10),
+					null));
 	}
 
-	private void _testGetWorkspaceGroupIndividualSegmentMembershipChangesPageWithRangeStart()
+	private void
+			_testGetWorkspaceGroupIndividualSegmentMembershipChangesPageWithRangeStart(
+				long groupId)
 		throws Exception {
 
 		_assertBadRequest(
 			individualSegmentMembershipChangeResource.
 				getWorkspaceGroupIndividualSegmentMembershipChangesPageHttpResponse(
-					testGroup.getGroupId(),
-					String.valueOf(RandomTestUtil.randomLong()), null, null,
-					"2026-01-01", null, Pagination.of(1, 10), null));
+					groupId, String.valueOf(RandomTestUtil.randomLong()), null,
+					null, "2026-01-01", null, Pagination.of(1, 10), null));
 	}
+
+	@Inject
+	private FaroProjectLocalService _faroProjectLocalService;
 
 }
