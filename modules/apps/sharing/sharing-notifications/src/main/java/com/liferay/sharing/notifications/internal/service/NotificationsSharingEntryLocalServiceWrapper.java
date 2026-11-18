@@ -13,9 +13,6 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.notifications.UserNotificationDefinition;
-import com.liferay.portal.kernel.portlet.PortletProvider;
-import com.liferay.portal.kernel.portlet.PortletProviderUtil;
-import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceWrapper;
 import com.liferay.portal.kernel.service.UserLocalService;
@@ -35,6 +32,7 @@ import com.liferay.sharing.interpreter.SharingEntryInterpreterProvider;
 import com.liferay.sharing.mail.SharingCollaborationMailSender;
 import com.liferay.sharing.model.SharingEntry;
 import com.liferay.sharing.notifications.internal.util.SharingNotificationSubcriptionSender;
+import com.liferay.sharing.notifications.internal.util.SharingNotificationURLUtil;
 import com.liferay.sharing.security.permission.SharingEntryAction;
 import com.liferay.sharing.service.SharingEntryLocalServiceWrapper;
 
@@ -188,10 +186,11 @@ public class NotificationsSharingEntryLocalServiceWrapper
 			_getNotificationMessage(
 				sharingEntry, resourceBundle.getLocale(), portletRequest));
 
-		if (portletRequest != null) {
-			template.put(
-				"sharingEntryURL",
-				_getNotificationURL(sharingEntry, portletRequest));
+		String sharingEntryURL = SharingNotificationURLUtil.getURL(
+			portletRequest, sharingEntry);
+
+		if (sharingEntryURL != null) {
+			template.put("sharingEntryURL", sharingEntryURL);
 		}
 
 		UnsyncStringWriter unsyncStringWriter = new UnsyncStringWriter();
@@ -243,27 +242,6 @@ public class NotificationsSharingEntryLocalServiceWrapper
 			_getActionName(sharingEntry, resourceBundle), expirationDateString);
 	}
 
-	private String _getNotificationURL(
-			SharingEntry sharingEntry, PortletRequest portletRequest)
-		throws Exception {
-
-		if (portletRequest != null) {
-			return PortletURLBuilder.create(
-				PortletProviderUtil.getPortletURL(
-					portletRequest, SharingEntry.class.getName(),
-					PortletProvider.Action.PREVIEW)
-			).setParameter(
-				"classNameId", sharingEntry.getClassNameId()
-			).setParameter(
-				"classPK", sharingEntry.getClassPK()
-			).setParameter(
-				"sharingEntryId", sharingEntry.getSharingEntryId()
-			).buildString();
-		}
-
-		return null;
-	}
-
 	private SharingEntryInterpreter _getSharingEntryInterpreter(
 		SharingEntry sharingEntry) {
 
@@ -289,14 +267,17 @@ public class NotificationsSharingEntryLocalServiceWrapper
 			title = ResourceBundleUtil.getString(resourceBundle, "something");
 		}
 
-		if (portletRequest != null) {
-			return StringBundler.concat(
-				"<a href=\"", _getNotificationURL(sharingEntry, portletRequest),
-				"\" style=\"color: #0b5fff; text-decoration: none;\">",
-				HtmlUtil.escape(title), "</a>");
+		String sharingEntryURL = SharingNotificationURLUtil.getURL(
+			portletRequest, sharingEntry);
+
+		if (sharingEntryURL == null) {
+			return title;
 		}
 
-		return title;
+		return StringBundler.concat(
+			"<a href=\"", sharingEntryURL,
+			"\" style=\"color: #0b5fff; text-decoration: none;\">",
+			HtmlUtil.escape(title), "</a>");
 	}
 
 	private void _sendNotificationEvent(
@@ -355,8 +336,8 @@ public class NotificationsSharingEntryLocalServiceWrapper
 		sharingNotificationSubcriptionSender.setSubject(
 			_getNotificationMessage(sharingEntry, user.getLocale(), null));
 
-		String entryURL = _getNotificationURL(
-			sharingEntry, serviceContext.getLiferayPortletRequest());
+		String entryURL = SharingNotificationURLUtil.getURL(
+			serviceContext.getLiferayPortletRequest(), sharingEntry);
 
 		sharingNotificationSubcriptionSender.setBody(
 			_getNotificationEmailBody(

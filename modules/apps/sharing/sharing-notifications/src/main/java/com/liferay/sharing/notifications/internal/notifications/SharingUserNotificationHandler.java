@@ -5,33 +5,26 @@
 
 package com.liferay.sharing.notifications.internal.notifications;
 
-import com.liferay.asset.kernel.AssetRendererFactoryRegistryUtil;
 import com.liferay.asset.kernel.model.AssetEntry;
 import com.liferay.asset.kernel.model.AssetRenderer;
-import com.liferay.asset.kernel.model.AssetRendererFactory;
 import com.liferay.asset.kernel.service.AssetEntryLocalService;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.UserNotificationEvent;
 import com.liferay.portal.kernel.notifications.BaseModelUserNotificationHandler;
 import com.liferay.portal.kernel.notifications.UserNotificationHandler;
-import com.liferay.portal.kernel.portlet.PortletProvider;
-import com.liferay.portal.kernel.portlet.PortletProviderUtil;
-import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserNotificationEventLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.trash.TrashHandler;
 import com.liferay.portal.kernel.trash.TrashHandlerRegistryUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
-import com.liferay.portal.kernel.util.URLCodec;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.sharing.constants.SharingPortletKeys;
 import com.liferay.sharing.model.SharingEntry;
+import com.liferay.sharing.notifications.internal.util.SharingNotificationURLUtil;
 import com.liferay.sharing.security.permission.SharingEntryAction;
 import com.liferay.sharing.service.SharingEntryLocalService;
-
-import jakarta.portlet.PortletURL;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -83,16 +76,8 @@ public class SharingUserNotificationHandler
 			return super.getLink(userNotificationEvent, serviceContext);
 		}
 
-		AssetRendererFactory<Object> assetRendererFactory =
-			AssetRendererFactoryRegistryUtil.getAssetRendererFactoryByClassName(
-				sharingEntry.getClassName());
-
-		if (assetRendererFactory == null) {
-			return super.getLink(userNotificationEvent, serviceContext);
-		}
-
-		AssetRenderer<Object> assetRenderer =
-			assetRendererFactory.getAssetRenderer(sharingEntry.getClassPK());
+		AssetRenderer<?> assetRenderer = getAssetRenderer(
+			sharingEntry.getClassName(), sharingEntry.getClassPK());
 
 		if (assetRenderer == null) {
 			return super.getLink(userNotificationEvent, serviceContext);
@@ -106,33 +91,14 @@ public class SharingUserNotificationHandler
 			return viewInContextURL;
 		}
 
-		String link = super.getLink(userNotificationEvent, serviceContext);
+		String previewURL = SharingNotificationURLUtil.getURL(
+			themeDisplay.getRequest(), sharingEntry);
 
-		String decodedLink = URLCodec.decodeURL(link);
-
-		if (!decodedLink.contains(
-				"mvcRenderCommandName=/shared_assets/view_sharing_entry")) {
-
-			return link;
+		if (previewURL == null) {
+			return super.getLink(userNotificationEvent, serviceContext);
 		}
 
-		PortletURL portletURL = PortletProviderUtil.getPortletURL(
-			themeDisplay.getRequest(), SharingEntry.class.getName(),
-			PortletProvider.Action.PREVIEW);
-
-		if (portletURL == null) {
-			return link;
-		}
-
-		return PortletURLBuilder.create(
-			portletURL
-		).setParameter(
-			"classNameId", sharingEntry.getClassNameId()
-		).setParameter(
-			"classPK", sharingEntry.getClassPK()
-		).setParameter(
-			"sharingEntryId", sharingEntry.getSharingEntryId()
-		).buildString();
+		return previewURL;
 	}
 
 	@Override
