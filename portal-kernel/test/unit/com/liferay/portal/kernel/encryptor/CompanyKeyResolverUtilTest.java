@@ -203,10 +203,10 @@ public class CompanyKeyResolverUtilTest {
 				companyInfo, RandomTestUtil.randomString(), null,
 				RandomTestUtil.randomString());
 
-			Assert.assertEquals(LoggerTestUtil.INFO, logEntry.getPriority());
 			Assert.assertEquals(
 				"Rotated the key for company " + _COMPANY_ID,
 				logEntry.getMessage());
+			Assert.assertEquals(LoggerTestUtil.INFO, logEntry.getPriority());
 
 			Mockito.verify(
 				companyInfo
