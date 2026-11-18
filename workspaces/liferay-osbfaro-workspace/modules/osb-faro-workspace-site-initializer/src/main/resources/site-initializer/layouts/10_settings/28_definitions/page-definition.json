@@ -1,0 +1,27 @@
+{
+	"pageElement": {
+		"id": "682a983b-fe87-4f9d-a555-1c01d9e9c850",
+		"pageElements": [
+			{
+				"definition": {
+					"fragment": {
+						"key": "com.liferay.osb.faro.web.internal.fragment.renderer.FaroDefinitionsSectionFragmentRenderer"
+					},
+					"fragmentConfig": {
+					},
+					"fragmentFields": [
+					]
+				},
+				"id": "35168cc7-96bf-4793-8d43-fe3199811c61",
+				"type": "Fragment"
+			}
+		],
+		"type": "Root"
+	},
+	"settings": {
+		"masterPage": {
+			"key": "liferay-data-platform-settings-master"
+		}
+	},
+	"version": 1.1
+}
