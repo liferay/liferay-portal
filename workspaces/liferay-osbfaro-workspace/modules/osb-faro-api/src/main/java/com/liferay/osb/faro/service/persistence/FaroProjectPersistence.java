@@ -166,33 +166,57 @@ public interface FaroProjectPersistence extends BasePersistence<FaroProject> {
 	public int countByCorpProjectUuid(String corpProjectUuid);
 
 	/**
-	 * Returns the faro project where salesforceAccountId = &#63; or throws a <code>NoSuchFaroProjectException</code> if it could not be found.
+	 * Returns an ordered range of all the faro projects where salesforceAccountId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.osb.faro.model.impl.FaroProjectModelImpl</code>.
+	 * </p>
 	 *
 	 * @param salesforceAccountId the salesforce account ID
-	 * @return the matching faro project
+	 * @param start the lower bound of the range of faro projects
+	 * @param end the upper bound of the range of faro projects (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching faro projects
+	 */
+	public java.util.List<FaroProject> findBySalesforceAccountId(
+		String salesforceAccountId, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<FaroProject>
+			orderByComparator,
+		boolean useFinderCache);
+
+	/**
+	 * Returns the first faro project in the ordered set where salesforceAccountId = &#63;.
+	 *
+	 * @param salesforceAccountId the salesforce account ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching faro project
 	 * @throws NoSuchFaroProjectException if a matching faro project could not be found
 	 */
-	public FaroProject findBySalesforceAccountId(String salesforceAccountId)
+	public FaroProject findBySalesforceAccountId_First(
+			String salesforceAccountId,
+			com.liferay.portal.kernel.util.OrderByComparator<FaroProject>
+				orderByComparator)
 		throws NoSuchFaroProjectException;
 
 	/**
-	 * Returns the faro project where salesforceAccountId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 * Returns the first faro project in the ordered set where salesforceAccountId = &#63;.
 	 *
 	 * @param salesforceAccountId the salesforce account ID
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the matching faro project, or <code>null</code> if a matching faro project could not be found
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching faro project, or <code>null</code> if a matching faro project could not be found
 	 */
-	public FaroProject fetchBySalesforceAccountId(
-		String salesforceAccountId, boolean useFinderCache);
+	public FaroProject fetchBySalesforceAccountId_First(
+		String salesforceAccountId,
+		com.liferay.portal.kernel.util.OrderByComparator<FaroProject>
+			orderByComparator);
 
 	/**
-	 * Removes the faro project where salesforceAccountId = &#63; from the database.
+	 * Removes all the faro projects where salesforceAccountId = &#63; from the database.
 	 *
 	 * @param salesforceAccountId the salesforce account ID
-	 * @return the faro project that was removed
 	 */
-	public FaroProject removeBySalesforceAccountId(String salesforceAccountId)
-		throws NoSuchFaroProjectException;
+	public void removeBySalesforceAccountId(String salesforceAccountId);
 
 	/**
 	 * Returns the number of faro projects where salesforceAccountId = &#63;.
@@ -359,18 +383,6 @@ public interface FaroProjectPersistence extends BasePersistence<FaroProject> {
 	}
 
 	/**
-	 * Returns the faro project where salesforceAccountId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
-	 *
-	 * @param salesforceAccountId the salesforce account ID
-	 * @return the matching faro project, or <code>null</code> if a matching faro project could not be found
-	 */
-	public default FaroProject fetchBySalesforceAccountId(
-		String salesforceAccountId) {
-
-		return fetchBySalesforceAccountId(salesforceAccountId, true);
-	}
-
-	/**
 	 * Returns the faro project where weDeployKey = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
 	 *
 	 * @param weDeployKey the we deploy key
@@ -432,6 +444,62 @@ public interface FaroProjectPersistence extends BasePersistence<FaroProject> {
 	}
 
 	/**
+	 * Returns all the faro projects where salesforceAccountId = &#63;.
+	 *
+	 * @param salesforceAccountId the salesforce account ID
+	 * @return the matching faro projects
+	 */
+	public default java.util.List<FaroProject> findBySalesforceAccountId(
+		String salesforceAccountId) {
+
+		return findBySalesforceAccountId(
+			salesforceAccountId,
+			com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS,
+			com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS, null, true);
+	}
+
+	/**
+	 * Returns a range of all the faro projects where salesforceAccountId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.osb.faro.model.impl.FaroProjectModelImpl</code>.
+	 * </p>
+	 *
+	 * @param salesforceAccountId the salesforce account ID
+	 * @param start the lower bound of the range of faro projects
+	 * @param end the upper bound of the range of faro projects (not inclusive)
+	 * @return the range of matching faro projects
+	 */
+	public default java.util.List<FaroProject> findBySalesforceAccountId(
+		String salesforceAccountId, int start, int end) {
+
+		return findBySalesforceAccountId(
+			salesforceAccountId, start, end, null, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the faro projects where salesforceAccountId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.osb.faro.model.impl.FaroProjectModelImpl</code>.
+	 * </p>
+	 *
+	 * @param salesforceAccountId the salesforce account ID
+	 * @param start the lower bound of the range of faro projects
+	 * @param end the upper bound of the range of faro projects (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching faro projects
+	 */
+	public default java.util.List<FaroProject> findBySalesforceAccountId(
+		String salesforceAccountId, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<FaroProject>
+			orderByComparator) {
+
+		return findBySalesforceAccountId(
+			salesforceAccountId, start, end, orderByComparator, true);
+	}
+
+	/**
 	 * Returns all the faro projects where serverLocation = &#63;.
 	 *
 	 * @param serverLocation the server location
@@ -486,4 +554,4 @@ public interface FaroProjectPersistence extends BasePersistence<FaroProject> {
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1508897939
+// LIFERAY-SERVICE-BUILDER-HASH:1859128796

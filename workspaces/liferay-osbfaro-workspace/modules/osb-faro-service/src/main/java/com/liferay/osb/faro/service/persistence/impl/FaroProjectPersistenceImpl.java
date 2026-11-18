@@ -274,53 +274,77 @@ public class FaroProjectPersistenceImpl
 			finderCache, new Object[] {corpProjectUuid});
 	}
 
-	private UniquePersistenceFinder<FaroProject, NoSuchFaroProjectException>
-		_uniquePersistenceFinderBySalesforceAccountId;
+	private CollectionPersistenceFinder<FaroProject, NoSuchFaroProjectException>
+		_collectionPersistenceFinderBySalesforceAccountId;
 
 	/**
-	 * Returns the faro project where salesforceAccountId = &#63; or throws a <code>NoSuchFaroProjectException</code> if it could not be found.
+	 * Returns an ordered range of all the faro projects where salesforceAccountId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>FaroProjectModelImpl</code>.
+	 * </p>
 	 *
 	 * @param salesforceAccountId the salesforce account ID
-	 * @return the matching faro project
+	 * @param start the lower bound of the range of faro projects
+	 * @param end the upper bound of the range of faro projects (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching faro projects
+	 */
+	@Override
+	public List<FaroProject> findBySalesforceAccountId(
+		String salesforceAccountId, int start, int end,
+		OrderByComparator<FaroProject> orderByComparator,
+		boolean useFinderCache) {
+
+		return _collectionPersistenceFinderBySalesforceAccountId.find(
+			finderCache, new Object[] {salesforceAccountId}, start, end,
+			orderByComparator, useFinderCache);
+	}
+
+	/**
+	 * Returns the first faro project in the ordered set where salesforceAccountId = &#63;.
+	 *
+	 * @param salesforceAccountId the salesforce account ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching faro project
 	 * @throws NoSuchFaroProjectException if a matching faro project could not be found
 	 */
 	@Override
-	public FaroProject findBySalesforceAccountId(String salesforceAccountId)
+	public FaroProject findBySalesforceAccountId_First(
+			String salesforceAccountId,
+			OrderByComparator<FaroProject> orderByComparator)
 		throws NoSuchFaroProjectException {
 
-		return _uniquePersistenceFinderBySalesforceAccountId.find(
+		return _collectionPersistenceFinderBySalesforceAccountId.findFirst(
+			finderCache, new Object[] {salesforceAccountId}, orderByComparator);
+	}
+
+	/**
+	 * Returns the first faro project in the ordered set where salesforceAccountId = &#63;.
+	 *
+	 * @param salesforceAccountId the salesforce account ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching faro project, or <code>null</code> if a matching faro project could not be found
+	 */
+	@Override
+	public FaroProject fetchBySalesforceAccountId_First(
+		String salesforceAccountId,
+		OrderByComparator<FaroProject> orderByComparator) {
+
+		return _collectionPersistenceFinderBySalesforceAccountId.fetchFirst(
+			finderCache, new Object[] {salesforceAccountId}, orderByComparator);
+	}
+
+	/**
+	 * Removes all the faro projects where salesforceAccountId = &#63; from the database.
+	 *
+	 * @param salesforceAccountId the salesforce account ID
+	 */
+	@Override
+	public void removeBySalesforceAccountId(String salesforceAccountId) {
+		_collectionPersistenceFinderBySalesforceAccountId.remove(
 			finderCache, new Object[] {salesforceAccountId});
-	}
-
-	/**
-	 * Returns the faro project where salesforceAccountId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
-	 *
-	 * @param salesforceAccountId the salesforce account ID
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the matching faro project, or <code>null</code> if a matching faro project could not be found
-	 */
-	@Override
-	public FaroProject fetchBySalesforceAccountId(
-		String salesforceAccountId, boolean useFinderCache) {
-
-		return _uniquePersistenceFinderBySalesforceAccountId.fetch(
-			finderCache, new Object[] {salesforceAccountId}, useFinderCache);
-	}
-
-	/**
-	 * Removes the faro project where salesforceAccountId = &#63; from the database.
-	 *
-	 * @param salesforceAccountId the salesforce account ID
-	 * @return the faro project that was removed
-	 */
-	@Override
-	public FaroProject removeBySalesforceAccountId(String salesforceAccountId)
-		throws NoSuchFaroProjectException {
-
-		FaroProject faroProject = findBySalesforceAccountId(
-			salesforceAccountId);
-
-		return remove(faroProject);
 	}
 
 	/**
@@ -331,7 +355,7 @@ public class FaroProjectPersistenceImpl
 	 */
 	@Override
 	public int countBySalesforceAccountId(String salesforceAccountId) {
-		return _uniquePersistenceFinderBySalesforceAccountId.count(
+		return _collectionPersistenceFinderBySalesforceAccountId.count(
 			finderCache, new Object[] {salesforceAccountId});
 	}
 
@@ -715,15 +739,31 @@ public class FaroProjectPersistenceImpl
 					"faroProject.", "corpProjectUuid", FinderColumn.Type.STRING,
 					"=", true, true, FaroProject::getCorpProjectUuid));
 
-		_uniquePersistenceFinderBySalesforceAccountId =
-			new UniquePersistenceFinder<>(
+		_collectionPersistenceFinderBySalesforceAccountId =
+			new CollectionPersistenceFinder<>(
 				this,
-				createUniqueFinderPath(
-					FINDER_CLASS_NAME_ENTITY, "fetchBySalesforceAccountId",
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
+					"findBySalesforceAccountId",
+					new String[] {
+						String.class.getName(), Integer.class.getName(),
+						Integer.class.getName(),
+						OrderByComparator.class.getName()
+					},
+					new String[] {"salesforceAccountId"}, true),
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+					"findBySalesforceAccountId",
 					new String[] {String.class.getName()},
-					new String[] {"salesforceAccountId"}, 0, 1, false,
-					convertNullFunction(FaroProject::getSalesforceAccountId)),
-				_SQL_SELECT_FAROPROJECT_WHERE, "",
+					new String[] {"salesforceAccountId"}, 0, 1, true, null),
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+					"countBySalesforceAccountId",
+					new String[] {String.class.getName()},
+					new String[] {"salesforceAccountId"}, 0, 1, false, null),
+				_SQL_SELECT_FAROPROJECT_WHERE, _SQL_COUNT_FAROPROJECT_WHERE,
+				FaroProjectModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
+				"", null,
 				new FinderColumn<>(
 					"faroProject.", "salesforceAccountId",
 					FinderColumn.Type.STRING, "=", true, true,
@@ -833,4 +873,4 @@ public class FaroProjectPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-859203400
+// LIFERAY-SERVICE-BUILDER-HASH:1674558129
