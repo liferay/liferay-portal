@@ -134,13 +134,13 @@ public class AccountEntryAddressDisplaySearchContainerFactoryTest {
 				WebKeys.CURRENT_PORTLET_URL),
 			new MockLiferayPortletURL());
 
-		Class<?> mvcRenderCommandClass = _mvcRenderCommand.getClass();
+		Class<?> clazz = _mvcRenderCommand.getClass();
 
 		return ReflectionTestUtil.invoke(
 			Class.forName(
 				"com.liferay.account.admin.web.internal.dao.search." +
 					"AccountEntryAddressDisplaySearchContainerFactory",
-				true, mvcRenderCommandClass.getClassLoader()),
+				true, clazz.getClassLoader()),
 			"create",
 			new Class<?>[] {
 				LiferayPortletRequest.class, LiferayPortletResponse.class

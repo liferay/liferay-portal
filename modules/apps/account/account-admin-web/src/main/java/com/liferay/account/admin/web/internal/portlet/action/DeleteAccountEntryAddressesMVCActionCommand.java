@@ -69,14 +69,14 @@ public class DeleteAccountEntryAddressesMVCActionCommand
 			long[] accountEntryAddressIds, ActionRequest actionRequest)
 		throws Exception {
 
-		long accountEntryId = ParamUtil.getLong(
-			actionRequest, "accountEntryId");
-
 		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
 		PermissionChecker permissionChecker =
 			themeDisplay.getPermissionChecker();
+
+		long accountEntryId = ParamUtil.getLong(
+			actionRequest, "accountEntryId");
 
 		_accountEntryModelResourcePermission.check(
 			permissionChecker, accountEntryId, ActionKeys.UPDATE);
