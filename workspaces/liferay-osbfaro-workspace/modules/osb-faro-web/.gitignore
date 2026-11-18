@@ -1,5 +1,5 @@
+**/resources/META-INF/resources/__liferay__
 **/resources/dist
 .awcache/
 .env
 coverage/
-**/resources/META-INF/resources/__liferay__
