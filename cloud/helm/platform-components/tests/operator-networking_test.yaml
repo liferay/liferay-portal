@@ -314,6 +314,19 @@ tests:
                     enabled: true
                     hostname: workflows.liferay.test
     -   asserts:
+            -   documentIndex: 4
+                isKind:
+                    of: HTTPRoute
+            -   documentIndex: 4
+                notExists:
+                    path: spec.rules[0].filters
+        it: Omits HSTS while the gateway serves plain HTTP
+        set:
+            argoWorkflows:
+                gateway:
+                    enabled: true
+                    hostname: workflows.liferay.test
+    -   asserts:
             -   hasDocuments:
                     count: 0
         it: Omits the networking by default
@@ -437,6 +450,28 @@ tests:
                 gateway:
                     enabled: true
                     hostname: argocd.liferay.test
+    -   asserts:
+            -   documentIndex: 5
+                equal:
+                    path: metadata.name
+                    value: argo-workflows-server-route
+            -   documentIndex: 5
+                equal:
+                    path: spec.rules[0].filters
+                    value:
+                        -   responseHeaderModifier:
+                                set:
+                                    -   name: Strict-Transport-Security
+                                        value: max-age=31536000
+                            type: ResponseHeaderModifier
+        it: Sends HSTS from the server route once the gateway serves TLS
+        set:
+            argoWorkflows:
+                gateway:
+                    enabled: true
+                    hostname: workflows.liferay.test
+                    tls:
+                        secretName: workflows-certificate
     -   asserts:
             -   hasDocuments:
                     count: 7

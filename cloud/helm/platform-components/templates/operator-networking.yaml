@@ -253,5 +253,13 @@ spec:
         -   backendRefs:
                 -   name: {{ $gateway.name }}-server
                     port: {{ $gateway.port }}
+            {{- if $tlsEnabled }}
+            filters:
+                -   responseHeaderModifier:
+                        set:
+                            -   name: Strict-Transport-Security
+                                value: max-age=31536000
+                    type: ResponseHeaderModifier
+            {{- end }}
 {{- end }}
 {{- end }}
