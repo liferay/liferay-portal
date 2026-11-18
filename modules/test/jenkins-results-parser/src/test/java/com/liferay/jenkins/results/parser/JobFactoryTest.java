@@ -182,18 +182,15 @@ public class JobFactoryTest extends com.liferay.jenkins.results.parser.Test {
 
 		BuildDatabaseUtil.setBuildDatabase(buildDatabase);
 
-		File gitWorkingDir = JenkinsResultsParserUtil.getGitWorkingDir(
-			new File("."));
-
-		String repositoryName = JenkinsResultsParserUtil.getGitRepositoryName(
-			gitWorkingDir.getName());
-
+		String repositoryName = "liferay-portal";
 		String upstreamBranchName = "master";
 
 		PortalGitWorkingDirectory portalGitWorkingDirectory = Mockito.spy(
 			(PortalGitWorkingDirectory)
 				GitWorkingDirectoryFactory.newGitWorkingDirectory(
-					upstreamBranchName, gitWorkingDir, repositoryName));
+					upstreamBranchName,
+					JenkinsResultsParserUtil.getGitWorkingDir(new File(".")),
+					repositoryName));
 
 		LocalGitBranch localGitBranch = Mockito.mock(LocalGitBranch.class);
 
