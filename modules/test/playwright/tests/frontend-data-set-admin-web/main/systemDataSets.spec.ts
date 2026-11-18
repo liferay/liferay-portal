@@ -490,7 +490,7 @@ test(
 					const assignedFieldLocator =
 						await visualizationModesPage.getAssignedFieldLocator({
 							container:
-								visualizationModesPage.cardsVisualizationModeContainer,
+								visualizationModesPage.listVisualizationModeContainer,
 							sectionLabel,
 						});
 					await expect(assignedFieldLocator).toHaveText(
