@@ -7,6 +7,7 @@ package com.liferay.commerce.product.service.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.commerce.product.constants.CPInstanceConstants;
+import com.liferay.commerce.product.exception.CPDefinitionGroupIdException;
 import com.liferay.commerce.product.exception.CPInstanceReplacementCPInstanceUuidException;
 import com.liferay.commerce.product.exception.NoSuchCPInstanceException;
 import com.liferay.commerce.product.model.CPDefinition;
@@ -157,6 +158,13 @@ public class CPInstanceLocalServiceTest {
 			cpDefinition.getCPDefinitionId(),
 			combinationsSize +
 				(int)Math.pow(cpOptionValuesCount, cpOptionsCount - 1));
+	}
+
+	@Test
+	public void testAddOrUpdateCPInstance() throws Exception {
+		_testAddOrUpdateCPInstance();
+		_testAddOrUpdateCPInstanceWithCPInstanceInDifferentGroup();
+		_testAddOrUpdateCPInstanceWithDifferentGroup();
 	}
 
 	@Test
@@ -889,6 +897,143 @@ public class CPInstanceLocalServiceTest {
 				cpInstanceCPDefinitionOptionValueRel.
 					getCPDefinitionOptionValueRelId());
 		}
+	}
+
+	private void _testAddOrUpdateCPInstance() throws Exception {
+		frutillaRule.scenario(
+			"Add or update a product SKU"
+		).given(
+			"A product definition in a catalog"
+		).when(
+			"A SKU is added with a new external reference code"
+		).and(
+			"The SKU is updated through its external reference code"
+		).then(
+			"The SKU is added"
+		).and(
+			"The SKU is updated"
+		);
+
+		CPDefinition cpDefinition = CPTestUtil.addCPDefinitionFromCatalog(
+			_commerceCatalog.getGroupId(), SimpleCPTypeConstants.NAME, true,
+			true);
+
+		String externalReferenceCode = RandomTestUtil.randomString();
+
+		CPInstance cpInstance1 = _cpInstanceLocalService.addOrUpdateCPInstance(
+			externalReferenceCode, cpDefinition.getCPDefinitionId(),
+			_commerceCatalog.getGroupId(), RandomTestUtil.randomString(), null,
+			null, true, null, 0, 0, 0, 0, BigDecimal.ZERO, BigDecimal.ZERO,
+			BigDecimal.ZERO, true, 0, 1, 2026, 0, 0, 0, 0, 0, 0, 0, true, false,
+			false, 1, null, null, 0, false, 1, null, null, 0, null, false, null,
+			0, 0, 0, 0,
+			ServiceContextTestUtil.getServiceContext(
+				_commerceCatalog.getGroupId()));
+
+		Assert.assertEquals(
+			externalReferenceCode, cpInstance1.getExternalReferenceCode());
+
+		String sku = RandomTestUtil.randomString();
+
+		CPInstance cpInstance2 = _cpInstanceLocalService.addOrUpdateCPInstance(
+			externalReferenceCode, cpDefinition.getCPDefinitionId(),
+			_commerceCatalog.getGroupId(), sku, null, null, true, null, 0, 0, 0,
+			0, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, true, 0, 1,
+			2026, 0, 0, 0, 0, 0, 0, 0, true, false, false, 1, null, null, 0,
+			false, 1, null, null, 0, null, false, null, 0, 0, 0, 0,
+			ServiceContextTestUtil.getServiceContext(
+				_commerceCatalog.getGroupId()));
+
+		Assert.assertEquals(
+			cpInstance1.getCPInstanceId(), cpInstance2.getCPInstanceId());
+		Assert.assertEquals(sku, cpInstance2.getSku());
+	}
+
+	private void _testAddOrUpdateCPInstanceWithCPInstanceInDifferentGroup()
+		throws Exception {
+
+		frutillaRule.scenario(
+			"Add or update a product SKU of a different group"
+		).given(
+			"A product definition in a catalog and a SKU in another catalog"
+		).when(
+			"The SKU of the other catalog is updated through its external " +
+				"reference code"
+		).then(
+			"A CPDefinitionGroupIdException is thrown"
+		).and(
+			"The SKU is not updated"
+		);
+
+		CommerceCatalog commerceCatalog =
+			CommerceCatalogLocalServiceUtil.addCommerceCatalog(
+				null, RandomTestUtil.randomString(),
+				RandomTestUtil.randomString(),
+				LocaleUtil.US.getDisplayLanguage(),
+				ServiceContextTestUtil.getServiceContext(
+					_company.getGroupId()));
+
+		CPInstance cpInstance1 = CPTestUtil.addCPInstanceFromCatalog(
+			commerceCatalog.getGroupId());
+
+		CPDefinition cpDefinition = CPTestUtil.addCPDefinitionFromCatalog(
+			_commerceCatalog.getGroupId(), SimpleCPTypeConstants.NAME, true,
+			true);
+
+		Assert.assertThrows(
+			CPDefinitionGroupIdException.class,
+			() -> _cpInstanceLocalService.addOrUpdateCPInstance(
+				cpInstance1.getExternalReferenceCode(),
+				cpDefinition.getCPDefinitionId(), _commerceCatalog.getGroupId(),
+				RandomTestUtil.randomString(), null, null, true, null, 0, 0, 0,
+				0, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, true, 0,
+				1, 2026, 0, 0, 0, 0, 0, 0, 0, true, false, false, 1, null, null,
+				0, false, 1, null, null, 0, null, false, null, 0, 0, 0, 0,
+				ServiceContextTestUtil.getServiceContext(
+					_commerceCatalog.getGroupId())));
+
+		CPInstance cpInstance2 = _cpInstanceLocalService.getCPInstance(
+			cpInstance1.getCPInstanceId());
+
+		Assert.assertEquals(cpInstance1.getSku(), cpInstance2.getSku());
+	}
+
+	private void _testAddOrUpdateCPInstanceWithDifferentGroup()
+		throws Exception {
+
+		frutillaRule.scenario(
+			"Add or update a product SKU with a different group"
+		).given(
+			"A product definition in a catalog"
+		).when(
+			"A SKU is added to the product definition with a different group"
+		).then(
+			"A CPDefinitionGroupIdException is thrown"
+		).and(
+			"No SKU is added"
+		);
+
+		CPDefinition cpDefinition = CPTestUtil.addCPDefinitionFromCatalog(
+			_commerceCatalog.getGroupId(), SimpleCPTypeConstants.NAME, true,
+			true);
+
+		String externalReferenceCode = RandomTestUtil.randomString();
+
+		Assert.assertThrows(
+			CPDefinitionGroupIdException.class,
+			() -> _cpInstanceLocalService.addOrUpdateCPInstance(
+				externalReferenceCode, cpDefinition.getCPDefinitionId(),
+				RandomTestUtil.nextLong(), RandomTestUtil.randomString(), null,
+				null, true, null, 0, 0, 0, 0, BigDecimal.ZERO, BigDecimal.ZERO,
+				BigDecimal.ZERO, true, 0, 1, 2026, 0, 0, 0, 0, 0, 0, 0, true,
+				false, false, 1, null, null, 0, false, 1, null, null, 0, null,
+				false, null, 0, 0, 0, 0,
+				ServiceContextTestUtil.getServiceContext(
+					_commerceCatalog.getGroupId())));
+
+		Assert.assertNull(
+			_cpInstanceLocalService.fetchCPInstanceByExternalReferenceCode(
+				externalReferenceCode, _company.getCompanyId()));
 	}
 
 	private static Company _company;
