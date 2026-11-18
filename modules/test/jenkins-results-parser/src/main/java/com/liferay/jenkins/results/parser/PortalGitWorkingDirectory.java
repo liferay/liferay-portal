@@ -160,19 +160,16 @@ public class PortalGitWorkingDirectory extends GitWorkingDirectory {
 		List<File> modifiedFiles = super.getModifiedFilesList(
 			checkUnstagedFiles, excludesPathMatchers, includesPathMatchers);
 
-		PortalGitWorkingDirectory publicPortalGitWorkingDirectory =
-			_getPublicPortalGitWorkingDirectory();
-
-		if (publicPortalGitWorkingDirectory == null) {
+		if (_publicPortalGitWorkingDirectory == null) {
 			return modifiedFiles;
 		}
 
 		List<File> publicModifiedFiles = new ArrayList<>();
 		File publicWorkingDirectory =
-			publicPortalGitWorkingDirectory.getWorkingDirectory();
+			_publicPortalGitWorkingDirectory.getWorkingDirectory();
 
 		for (File publicModifiedFile :
-				publicPortalGitWorkingDirectory.getModifiedFilesList(
+				_publicPortalGitWorkingDirectory.getModifiedFilesList(
 					checkUnstagedFiles, null, null)) {
 
 			publicModifiedFiles.add(
@@ -524,6 +521,12 @@ public class PortalGitWorkingDirectory extends GitWorkingDirectory {
 			testPropertiesFile);
 
 		return _testProperties;
+	}
+
+	public void setPublicPortalGitWorkingDirectory(
+		PortalGitWorkingDirectory publicPortalGitWorkingDirectory) {
+
+		_publicPortalGitWorkingDirectory = publicPortalGitWorkingDirectory;
 	}
 
 	public synchronized void setUpYarn() {
@@ -915,24 +918,6 @@ public class PortalGitWorkingDirectory extends GitWorkingDirectory {
 		}
 
 		return jsUnitFiles;
-	}
-
-	private PortalGitWorkingDirectory _getPublicPortalGitWorkingDirectory() {
-		if (_publicPortalGitWorkingDirectory != null) {
-			return _publicPortalGitWorkingDirectory;
-		}
-
-		String upstreamBranchName = getUpstreamBranchName();
-
-		if (!upstreamBranchName.endsWith("-private")) {
-			return null;
-		}
-
-		_publicPortalGitWorkingDirectory =
-			GitWorkingDirectoryFactory.newPortalGitWorkingDirectory(
-				upstreamBranchName.replaceAll("-private$", ""));
-
-		return _publicPortalGitWorkingDirectory;
 	}
 
 	private boolean _isGitArchiveYarnCacheEnabled() {

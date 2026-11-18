@@ -36,6 +36,8 @@ public class PortalWorkspaceGitRepository extends BaseWorkspaceGitRepository {
 	public boolean bypassCITestRelevant() {
 		setUp();
 
+		_setUpBasePortalWorkspaceGitRepository();
+
 		Properties testProperties = JenkinsResultsParserUtil.getProperties(
 			new File(getDirectory(), "test.properties"));
 
@@ -872,6 +874,21 @@ public class PortalWorkspaceGitRepository extends BaseWorkspaceGitRepository {
 		_uploadBasePortalCache();
 
 		_setUpBasePortalCache = true;
+	}
+
+	private void _setUpBasePortalWorkspaceGitRepository() {
+		if (_basePortalWorkspaceGitRepository == null) {
+			return;
+		}
+
+		_basePortalWorkspaceGitRepository.setUp();
+
+		PortalGitWorkingDirectory portalGitWorkingDirectory =
+			(PortalGitWorkingDirectory)getGitWorkingDirectory();
+
+		portalGitWorkingDirectory.setPublicPortalGitWorkingDirectory(
+			(PortalGitWorkingDirectory)
+				_basePortalWorkspaceGitRepository.getGitWorkingDirectory());
 	}
 
 	private synchronized void _uploadBasePortalCache() throws IOException {
