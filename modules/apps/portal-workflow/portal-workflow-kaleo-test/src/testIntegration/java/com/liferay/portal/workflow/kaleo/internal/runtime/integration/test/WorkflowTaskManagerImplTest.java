@@ -1493,8 +1493,8 @@ public class WorkflowTaskManagerImplTest extends BaseWorkflowManagerTestCase {
 		String name = RandomTestUtil.randomString();
 
 		_workflowDefinitionManager.deployWorkflowDefinition(
-			workflowDefinitionJSON.getBytes(), _company.getCompanyId(), null, name,
-			name, _adminUser.getUserId());
+			workflowDefinitionJSON.getBytes(), _company.getCompanyId(), null,
+			name, name, _adminUser.getUserId());
 
 		_activateWorkflow(DLFolder.class.getName(), 0, -1, name, 1);
 
