@@ -153,16 +153,6 @@ public class AuditEventLocalServiceImpl extends AuditEventLocalServiceBaseImpl {
 			junction = RestrictionsFactoryUtil.disjunction();
 		}
 
-		Property accountEntryIdProperty = PropertyFactoryUtil.forName(
-			"accountEntryId");
-
-		if (ArrayUtil.isNotEmpty(accountEntryIds)) {
-			junction.add(accountEntryIdProperty.in(accountEntryIds));
-		}
-		else if (andSearch) {
-			junction.add(accountEntryIdProperty.eq(0L));
-		}
-
 		if (groupId > 0) {
 			Property property = PropertyFactoryUtil.forName("groupId");
 
@@ -240,6 +230,16 @@ public class AuditEventLocalServiceImpl extends AuditEventLocalServiceBaseImpl {
 		}
 
 		DynamicQuery dynamicQuery = dynamicQuery();
+
+		Property accountEntryIdProperty = PropertyFactoryUtil.forName(
+			"accountEntryId");
+
+		if (ArrayUtil.isNotEmpty(accountEntryIds)) {
+			dynamicQuery.add(accountEntryIdProperty.in(accountEntryIds));
+		}
+		else if (andSearch) {
+			dynamicQuery.add(accountEntryIdProperty.eq(0L));
+		}
 
 		if (companyId > 0) {
 			Property property = PropertyFactoryUtil.forName("companyId");
