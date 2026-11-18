@@ -542,7 +542,7 @@ public class EditPIMConnectorFieldMappingsDisplayContextTest {
 		ObjectEntry... objectEntries) {
 
 		_objectEntryLocalServiceUtilMockedStatic.when(
-			() -> ObjectEntryLocalServiceUtil.getOneToManyObjectEntries(
+			() -> ObjectEntryLocalServiceUtil.getRelatedObjectEntries(
 				_GROUP_ID, _PIM_FIELD_MAPPING_OBJECT_RELATIONSHIP_ID, null,
 				false, _OBJECT_ENTRY_ID, true, null, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)
@@ -588,7 +588,7 @@ public class EditPIMConnectorFieldMappingsDisplayContextTest {
 		ObjectEntry... objectEntries) {
 
 		_objectEntryLocalServiceUtilMockedStatic.when(
-			() -> ObjectEntryLocalServiceUtil.getOneToManyObjectEntries(
+			() -> ObjectEntryLocalServiceUtil.getRelatedObjectEntries(
 				_GROUP_ID, _PIM_FIELD_MAPPING_RULE_OBJECT_RELATIONSHIP_ID, null,
 				false, _OBJECT_ENTRY_ID, true, null, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)

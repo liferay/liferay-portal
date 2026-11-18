@@ -288,7 +288,7 @@ public class ContentCoverageResourceImpl
 		}
 
 		return transformToLongArray(
-			_objectEntryLocalService.getOneToManyObjectEntries(
+			_objectEntryLocalService.getRelatedObjectEntries(
 				objectEntry.getGroupId(),
 				objectRelationship.getObjectRelationshipId(), null, false,
 				objectEntry.getObjectEntryId(), true, null, QueryUtil.ALL_POS,

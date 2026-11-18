@@ -491,7 +491,7 @@ public class MCPServerServlet extends HttpServlet {
 					mcpServerProfileObjectEntry.getObjectDefinitionId(),
 					"mcpServerProfileToTools");
 
-			return _objectEntryLocalService.getOneToManyObjectEntries(
+			return _objectEntryLocalService.getRelatedObjectEntries(
 				0, objectRelationship.getObjectRelationshipId(), null, false,
 				mcpServerProfileObjectEntry.getObjectEntryId(), true, null,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);

@@ -230,7 +230,7 @@ public class GetObjectEntriesValuesStrutsAction implements StrutsAction {
 					objectRelationship.getObjectDefinitionId2());
 
 			List<ObjectEntry> relatedObjectEntries =
-				_objectEntryService.getOneToManyObjectEntries(
+				_objectEntryService.getRelatedObjectEntries(
 					objectEntry.getGroupId(),
 					objectRelationship.getObjectRelationshipId(), null, false,
 					objectEntry.getObjectEntryId(), true, null, -1, -1, null);

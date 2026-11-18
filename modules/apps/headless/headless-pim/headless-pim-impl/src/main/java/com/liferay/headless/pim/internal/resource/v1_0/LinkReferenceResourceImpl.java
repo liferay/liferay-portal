@@ -237,7 +237,7 @@ public class LinkReferenceResourceImpl extends BaseLinkReferenceResourceImpl {
 				objectField.getObjectDefinitionId(), objectField.getName());
 
 		List<ObjectEntry> imageObjectEntries =
-			_objectEntryLocalService.getOneToManyObjectEntries(
+			_objectEntryLocalService.getRelatedObjectEntries(
 				objectEntry.getGroupId(),
 				objectRelationship.getObjectRelationshipId(), column.gt(0L),
 				true, objectEntry.getObjectEntryId(), true, null, 0, 1, null);

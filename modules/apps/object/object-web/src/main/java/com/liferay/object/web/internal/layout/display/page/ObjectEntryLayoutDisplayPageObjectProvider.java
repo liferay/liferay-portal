@@ -139,7 +139,7 @@ public class ObjectEntryLayoutDisplayPageObjectProvider
 				layoutDisplayPageObjectProviders = new ArrayList<>();
 
 			List<ObjectEntry> objectEntries =
-				_objectEntryLocalService.getOneToManyObjectEntries(
+				_objectEntryLocalService.getRelatedObjectEntries(
 					getGroupId(), objectRelationship.getObjectRelationshipId(),
 					null, _objectEntry.isApproved(),
 					_objectEntry.getObjectEntryId(), true, null,

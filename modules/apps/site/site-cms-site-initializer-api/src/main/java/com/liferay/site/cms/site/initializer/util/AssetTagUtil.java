@@ -61,7 +61,7 @@ public class AssetTagUtil {
 		}
 
 		for (ObjectEntry relatedObjectEntry :
-				objectEntryLocalService.getOneToManyObjectEntries(
+				objectEntryLocalService.getRelatedObjectEntries(
 					objectEntry.getGroupId(),
 					objectRelationship.getObjectRelationshipId(), null, false,
 					objectEntry.getObjectEntryId(), true, null,

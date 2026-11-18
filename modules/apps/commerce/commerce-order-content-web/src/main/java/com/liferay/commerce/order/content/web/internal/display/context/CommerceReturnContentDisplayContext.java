@@ -824,7 +824,7 @@ public class CommerceReturnContentDisplayContext {
 
 		return StringUtil.merge(
 			TransformUtil.transformToLongArray(
-				_objectEntryLocalService.getOneToManyObjectEntries(
+				_objectEntryLocalService.getRelatedObjectEntries(
 					objectEntry.getGroupId(),
 					commerceReturnToCommerceReturnItems.
 						getObjectRelationshipId(),

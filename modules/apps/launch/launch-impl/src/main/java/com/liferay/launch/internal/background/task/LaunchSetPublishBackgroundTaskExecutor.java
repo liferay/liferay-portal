@@ -188,7 +188,7 @@ public class LaunchSetPublishBackgroundTaskExecutor
 				"launchSetToLaunchEntries");
 
 		for (ObjectEntry launchEntryObjectEntry :
-				_objectEntryLocalService.getOneToManyObjectEntries(
+				_objectEntryLocalService.getRelatedObjectEntries(
 					launchSetObjectEntry.getGroupId(),
 					objectRelationship.getObjectRelationshipId(), null, false,
 					launchSetObjectEntry.getObjectEntryId(), true, null,

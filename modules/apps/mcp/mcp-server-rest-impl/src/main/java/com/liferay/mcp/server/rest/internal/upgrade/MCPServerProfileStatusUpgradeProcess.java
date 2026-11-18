@@ -98,7 +98,7 @@ public class MCPServerProfileStatusUpgradeProcess extends UpgradeProcess {
 				}
 
 				int toolsCount =
-					_objectEntryLocalService.getOneToManyObjectEntriesCount(
+					_objectEntryLocalService.getRelatedObjectEntriesCount(
 						0, objectRelationship.getObjectRelationshipId(), null,
 						objectEntry.getObjectEntryId(), true, null);
 

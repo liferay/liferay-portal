@@ -679,7 +679,7 @@ public class CommerceReturnEditDisplayContext {
 				objectEntry.getObjectDefinitionId(),
 				"commerceReturnToCommerceReturnItems");
 
-		return _objectEntryLocalService.getOneToManyObjectEntries(
+		return _objectEntryLocalService.getRelatedObjectEntries(
 			objectEntry.getGroupId(),
 			objectRelationship.getObjectRelationshipId(), null, false,
 			objectEntry.getObjectEntryId(), true, null, QueryUtil.ALL_POS,

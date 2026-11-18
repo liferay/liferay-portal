@@ -219,7 +219,7 @@ public class PIMConnectorFieldMappingsUtil {
 		}
 
 		return ListUtil.sort(
-			ObjectEntryLocalServiceUtil.getOneToManyObjectEntries(
+			ObjectEntryLocalServiceUtil.getRelatedObjectEntries(
 				objectEntry.getGroupId(),
 				objectRelationship.getObjectRelationshipId(), null, false,
 				objectEntry.getObjectEntryId(), true, null, QueryUtil.ALL_POS,

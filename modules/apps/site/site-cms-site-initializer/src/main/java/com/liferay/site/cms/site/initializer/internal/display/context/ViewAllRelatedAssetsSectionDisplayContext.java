@@ -109,7 +109,7 @@ public class ViewAllRelatedAssetsSectionDisplayContext
 	private long[] _getRelatedCMPTaskObjectEntryIds() {
 		try {
 			return TransformUtil.transformToLongArray(
-				_objectEntryLocalService.getOneToManyObjectEntries(
+				_objectEntryLocalService.getRelatedObjectEntries(
 					objectEntry.getGroupId(),
 					_objectRelationship.getObjectRelationshipId(), null, false,
 					objectEntry.getObjectEntryId(), true, null,

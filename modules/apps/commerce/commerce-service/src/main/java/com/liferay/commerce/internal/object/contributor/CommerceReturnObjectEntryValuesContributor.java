@@ -130,7 +130,7 @@ public class CommerceReturnObjectEntryValuesContributor
 				"commerceReturnToCommerceReturnItems");
 
 		List<ObjectEntry> objectEntries =
-			_objectEntryLocalService.getOneToManyObjectEntries(
+			_objectEntryLocalService.getRelatedObjectEntries(
 				originalObjectEntry.getGroupId(),
 				objectRelationships.getObjectRelationshipId(), null, false,
 				originalObjectEntry.getObjectEntryId(), true, null,

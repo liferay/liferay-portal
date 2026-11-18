@@ -1261,29 +1261,6 @@ public class ObjectEntryServiceTest {
 	}
 
 	@Test
-	public void testGetOneToManyObjectEntries() throws Exception {
-		UnsafeBiFunction<Long, Long, List<ObjectEntry>, PortalException>
-			unsafeBiFunction = (objectRelationshipId, primaryKey) ->
-				_objectEntryService.getOneToManyObjectEntries(
-					_group.getGroupId(), objectRelationshipId, null, false,
-					primaryKey, true, null, QueryUtil.ALL_POS,
-					QueryUtil.ALL_POS, null);
-
-		_testGetObjectEntries(
-			false, false, ObjectRelationshipConstants.TYPE_ONE_TO_MANY,
-			unsafeBiFunction);
-		_testGetObjectEntries(
-			false, true, ObjectRelationshipConstants.TYPE_ONE_TO_MANY,
-			unsafeBiFunction);
-		_testGetObjectEntries(
-			true, false, ObjectRelationshipConstants.TYPE_ONE_TO_MANY,
-			unsafeBiFunction);
-		_testGetObjectEntries(
-			true, true, ObjectRelationshipConstants.TYPE_ONE_TO_MANY,
-			unsafeBiFunction);
-	}
-
-	@Test
 	public void testGetOrAddEmptyObjectEntry() throws Exception {
 
 		// Lazy referencing disabled
@@ -1446,6 +1423,29 @@ public class ObjectEntryServiceTest {
 				" permission for ", _objectDefinition.getClassName(),
 				StringPool.SPACE, objectEntry2.getObjectEntryId()),
 			() -> _testGetObjectEntry(objectEntry2, _user));
+	}
+
+	@Test
+	public void testGetRelatedObjectEntries() throws Exception {
+		UnsafeBiFunction<Long, Long, List<ObjectEntry>, PortalException>
+			unsafeBiFunction = (objectRelationshipId, primaryKey) ->
+				_objectEntryService.getRelatedObjectEntries(
+					_group.getGroupId(), objectRelationshipId, null, false,
+					primaryKey, true, null, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, null);
+
+		_testGetObjectEntries(
+			false, false, ObjectRelationshipConstants.TYPE_ONE_TO_MANY,
+			unsafeBiFunction);
+		_testGetObjectEntries(
+			false, true, ObjectRelationshipConstants.TYPE_ONE_TO_MANY,
+			unsafeBiFunction);
+		_testGetObjectEntries(
+			true, false, ObjectRelationshipConstants.TYPE_ONE_TO_MANY,
+			unsafeBiFunction);
+		_testGetObjectEntries(
+			true, true, ObjectRelationshipConstants.TYPE_ONE_TO_MANY,
+			unsafeBiFunction);
 	}
 
 	@Test

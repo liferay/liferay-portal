@@ -450,7 +450,7 @@ public class MCPServerTestUtil {
 				mcpServerProfileObjectEntry.getObjectDefinitionId(),
 				"mcpServerProfileToTools");
 
-		return ObjectEntryLocalServiceUtil.getOneToManyObjectEntries(
+		return ObjectEntryLocalServiceUtil.getRelatedObjectEntries(
 			0, objectRelationship.getObjectRelationshipId(), null, false,
 			mcpServerProfileObjectEntry.getObjectEntryId(), true, null,
 			QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);

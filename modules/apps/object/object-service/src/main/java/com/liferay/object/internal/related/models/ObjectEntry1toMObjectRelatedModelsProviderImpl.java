@@ -133,7 +133,7 @@ public class ObjectEntry1toMObjectRelatedModelsProviderImpl
 			long groupId, long objectRelationshipId, long primaryKey)
 		throws PortalException {
 
-		return _objectEntryService.fetchManyToOneObjectEntry(
+		return _objectEntryService.fetchRelatedObjectEntry(
 			groupId, objectRelationshipId, primaryKey);
 	}
 
@@ -159,7 +159,7 @@ public class ObjectEntry1toMObjectRelatedModelsProviderImpl
 			int end, Sort[] sorts)
 		throws PortalException {
 
-		return _objectEntryService.getOneToManyObjectEntries(
+		return _objectEntryService.getRelatedObjectEntries(
 			groupId, objectRelationshipId, predicate, preferApproved,
 			primaryKey, true, search, start, end, sorts);
 	}
@@ -170,7 +170,7 @@ public class ObjectEntry1toMObjectRelatedModelsProviderImpl
 			long primaryKey, String search)
 		throws PortalException {
 
-		return _objectEntryService.getOneToManyObjectEntriesCount(
+		return _objectEntryService.getRelatedObjectEntriesCount(
 			groupId, objectRelationshipId, predicate, primaryKey, true, search);
 	}
 
@@ -181,7 +181,7 @@ public class ObjectEntry1toMObjectRelatedModelsProviderImpl
 			int start, int end)
 		throws PortalException {
 
-		return _objectEntryService.getOneToManyObjectEntries(
+		return _objectEntryService.getRelatedObjectEntries(
 			groupId, objectRelationshipId, null, false, objectEntryId, false,
 			search, start, end, null);
 	}
@@ -192,7 +192,7 @@ public class ObjectEntry1toMObjectRelatedModelsProviderImpl
 			long objectEntryId, long objectRelationshipId, String search)
 		throws PortalException {
 
-		return _objectEntryService.getOneToManyObjectEntriesCount(
+		return _objectEntryService.getRelatedObjectEntriesCount(
 			groupId, objectRelationshipId, null, objectEntryId, false, search);
 	}
 

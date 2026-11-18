@@ -32,7 +32,7 @@ public class MCPServerProfileUtil {
 				mcpServerProfileObjectEntry.getObjectDefinitionId(),
 				"mcpServerProfileToTools");
 
-		return objectEntryLocalService.getOneToManyObjectEntriesCount(
+		return objectEntryLocalService.getRelatedObjectEntriesCount(
 			0, objectRelationship.getObjectRelationshipId(), null,
 			mcpServerProfileObjectEntry.getObjectEntryId(), true, null);
 	}

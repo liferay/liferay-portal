@@ -151,7 +151,7 @@ public class ObjectEntry1to1ObjectRelatedModelsProviderImpl
 			int end, Sort[] sorts)
 		throws PortalException {
 
-		return _objectEntryService.getOneToManyObjectEntries(
+		return _objectEntryService.getRelatedObjectEntries(
 			groupId, objectRelationshipId, predicate, false, primaryKey, true,
 			search, 0, 1, sorts);
 	}

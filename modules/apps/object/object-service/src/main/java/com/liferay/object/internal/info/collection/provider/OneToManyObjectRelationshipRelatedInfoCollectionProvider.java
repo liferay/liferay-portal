@@ -37,12 +37,12 @@ public class OneToManyObjectRelationshipRelatedInfoCollectionProvider
 		throws PortalException {
 
 		return InfoPage.of(
-			objectEntryLocalService.getOneToManyObjectEntries(
+			objectEntryLocalService.getRelatedObjectEntries(
 				groupId, objectRelationship.getObjectRelationshipId(), null,
 				false, primaryKey, true, null, pagination.getStart(),
 				pagination.getEnd(), null),
 			pagination,
-			objectEntryLocalService.getOneToManyObjectEntriesCount(
+			objectEntryLocalService.getRelatedObjectEntriesCount(
 				groupId, objectRelationship.getObjectRelationshipId(), null,
 				primaryKey, true, null));
 	}

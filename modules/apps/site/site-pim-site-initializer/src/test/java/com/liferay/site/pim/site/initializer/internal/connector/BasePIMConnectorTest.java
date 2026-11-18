@@ -192,7 +192,7 @@ public class BasePIMConnectorTest {
 			_mockPIMFieldMappingObjectEntry(
 				"name", 1, "name", StringPool.BLANK);
 
-		_mockOneToManyObjectEntries(
+		_mockRelatedObjectEntries(
 			ListUtil.fromArray(pimFieldMappingObjectEntry));
 
 		_mockSearchResponse(Collections.emptyList());
@@ -241,7 +241,7 @@ public class BasePIMConnectorTest {
 		ObjectEntry tagsPIMFieldMappingRuleObjectEntry =
 			_mockPIMFieldMappingRuleObjectEntry("tags");
 
-		_mockOneToManyObjectEntries(
+		_mockRelatedObjectEntries(
 			ListUtil.fromArray(
 				namePIMFieldMappingRuleObjectEntry,
 				tagsPIMFieldMappingRuleObjectEntry));
@@ -298,21 +298,6 @@ public class BasePIMConnectorTest {
 		);
 
 		return document;
-	}
-
-	private void _mockOneToManyObjectEntries(List<ObjectEntry> objectEntries)
-		throws Exception {
-
-		_objectEntryLocalServiceUtilMockedStatic.when(
-			() -> ObjectEntryLocalServiceUtil.getOneToManyObjectEntries(
-				Mockito.anyLong(), Mockito.anyLong(),
-				Mockito.nullable(Predicate.class), Mockito.anyBoolean(),
-				Mockito.anyLong(), Mockito.anyBoolean(),
-				Mockito.nullable(String.class), Mockito.anyInt(),
-				Mockito.anyInt(), Mockito.nullable(Sort[].class))
-		).thenReturn(
-			objectEntries
-		);
 	}
 
 	private void _mockPIMConnectorConfigurationObjectEntry(
@@ -428,6 +413,21 @@ public class BasePIMConnectorTest {
 		return objectEntry;
 	}
 
+	private void _mockRelatedObjectEntries(List<ObjectEntry> objectEntries)
+		throws Exception {
+
+		_objectEntryLocalServiceUtilMockedStatic.when(
+			() -> ObjectEntryLocalServiceUtil.getRelatedObjectEntries(
+				Mockito.anyLong(), Mockito.anyLong(),
+				Mockito.nullable(Predicate.class), Mockito.anyBoolean(),
+				Mockito.anyLong(), Mockito.anyBoolean(),
+				Mockito.nullable(String.class), Mockito.anyInt(),
+				Mockito.anyInt(), Mockito.nullable(Sort[].class))
+		).thenReturn(
+			objectEntries
+		);
+	}
+
 	private void _mockSearchResponse(List<Document> documents) {
 		Mockito.when(
 			_searchResponse.getDocuments()
@@ -484,7 +484,7 @@ public class BasePIMConnectorTest {
 			_mockPIMFieldMappingObjectEntry(
 				"tags", 3, "tag2", StringPool.BLANK);
 
-		_mockOneToManyObjectEntries(
+		_mockRelatedObjectEntries(
 			ListUtil.fromArray(
 				namePIMFieldMappingObjectEntry, tag1PIMFieldMappingObjectEntry,
 				tag2PIMFieldMappingObjectEntry));
@@ -506,7 +506,7 @@ public class BasePIMConnectorTest {
 	private void _testGetPIMFieldMappingObjectEntriesMapWithBlankRequiredMapping()
 		throws Exception {
 
-		_mockOneToManyObjectEntries(
+		_mockRelatedObjectEntries(
 			ListUtil.fromArray(
 				_mockPIMFieldMappingObjectEntry(
 					"name", 1, StringPool.BLANK, StringPool.BLANK)));
@@ -521,7 +521,7 @@ public class BasePIMConnectorTest {
 			_mockPIMFieldMappingObjectEntry(
 				"name", 1, StringPool.BLANK, "A shirt");
 
-		_mockOneToManyObjectEntries(
+		_mockRelatedObjectEntries(
 			ListUtil.fromArray(pimFieldMappingObjectEntry));
 
 		Assert.assertEquals(
@@ -535,7 +535,7 @@ public class BasePIMConnectorTest {
 	private void _testGetPIMFieldMappingObjectEntriesMapWithoutRequiredMapping()
 		throws Exception {
 
-		_mockOneToManyObjectEntries(
+		_mockRelatedObjectEntries(
 			ListUtil.fromArray(
 				_mockPIMFieldMappingObjectEntry(
 					"tags", 1, "tag", StringPool.BLANK)));

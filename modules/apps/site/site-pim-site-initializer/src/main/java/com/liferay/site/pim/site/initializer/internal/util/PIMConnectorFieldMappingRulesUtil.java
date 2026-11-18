@@ -150,7 +150,7 @@ public class PIMConnectorFieldMappingRulesUtil {
 			return Collections.emptyList();
 		}
 
-		return ObjectEntryLocalServiceUtil.getOneToManyObjectEntries(
+		return ObjectEntryLocalServiceUtil.getRelatedObjectEntries(
 			objectEntry.getGroupId(),
 			objectRelationship.getObjectRelationshipId(), null, false,
 			objectEntry.getObjectEntryId(), true, null, QueryUtil.ALL_POS,

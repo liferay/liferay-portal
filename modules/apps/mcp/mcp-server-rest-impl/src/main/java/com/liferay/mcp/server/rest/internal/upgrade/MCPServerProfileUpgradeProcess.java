@@ -149,7 +149,7 @@ public class MCPServerProfileUpgradeProcess extends UpgradeProcess {
 			Set<String> existingTools = new HashSet<>();
 
 			for (ObjectEntry mcpServerProfileToolObjectEntry :
-					_objectEntryLocalService.getOneToManyObjectEntries(
+					_objectEntryLocalService.getRelatedObjectEntries(
 						0, objectRelationship.getObjectRelationshipId(), null,
 						false, mcpServerProfileObjectEntry.getObjectEntryId(),
 						true, null, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
@@ -231,7 +231,7 @@ public class MCPServerProfileUpgradeProcess extends UpgradeProcess {
 		}
 		catch (PortalException portalException) {
 			for (ObjectEntry mcpServerProfileToolObjectEntry :
-					_objectEntryLocalService.getOneToManyObjectEntries(
+					_objectEntryLocalService.getRelatedObjectEntries(
 						0, objectRelationship.getObjectRelationshipId(), null,
 						false, mcpServerProfileObjectEntry.getObjectEntryId(),
 						true, null, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
@@ -536,7 +536,7 @@ public class MCPServerProfileUpgradeProcess extends UpgradeProcess {
 			}
 
 			int toolsCount =
-				_objectEntryLocalService.getOneToManyObjectEntriesCount(
+				_objectEntryLocalService.getRelatedObjectEntriesCount(
 					0, objectRelationship.getObjectRelationshipId(), null,
 					objectEntry.getObjectEntryId(), true, null);
 
