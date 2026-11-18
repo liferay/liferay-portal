@@ -147,16 +147,16 @@ public class PersistenceCallCheck extends BaseCheck {
 			return;
 		}
 
-		String methodCallClassName = names.get(0);
+		String classOrVariableName = names.get(0);
 
-		if (methodCallClassName.matches("[A-Z].*")) {
+		if (classOrVariableName.matches("[A-Z].*")) {
 			_checkClass(
-				methodCallClassName, importNames, packageName,
+				classOrVariableName, importNames, packageName,
 				methodCallDetailAST.getLineNo());
 		}
 		else {
 			_checkVariable(
-				methodCallClassName, variablesMap, packageName,
+				classOrVariableName, variablesMap, packageName,
 				methodCallDetailAST.getLineNo());
 		}
 	}
@@ -295,10 +295,11 @@ public class PersistenceCallCheck extends BaseCheck {
 			if ((methodCallDetailAST != null) &&
 				Objects.equals(getMethodName(methodCallDetailAST), "invoke")) {
 
-				String className = getClassOrVariableName(methodCallDetailAST);
+				String classOrVariableName = getClassOrVariableName(
+					methodCallDetailAST);
 
-				if ((className != null) &&
-					className.matches("Transaction\\w*Util")) {
+				if ((classOrVariableName != null) &&
+					classOrVariableName.matches("Transaction\\w*Util")) {
 
 					return true;
 				}
