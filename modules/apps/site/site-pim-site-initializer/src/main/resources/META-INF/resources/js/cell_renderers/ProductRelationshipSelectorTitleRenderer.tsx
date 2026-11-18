@@ -3,23 +3,23 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import ClayIcon from '@clayui/icon';
 import ClayLabel from '@clayui/label';
-import ClaySticker from '@clayui/sticker';
 import React from 'react';
+
+import ProductSticker from './ProductSticker';
 
 export default function ProductRelationshipSelectorTitleRenderer({
 	current = false,
+	imageURL,
 	value,
 }: {
 	current?: boolean;
+	imageURL?: string | null;
 	value: string;
 }) {
 	return (
 		<span className="align-items-center d-flex table-list-title">
-			<ClaySticker className="c-mr-2 content-icon-custom-structure flex-shrink-0 inline-item inline-item-before">
-				<ClayIcon symbol="product" />
-			</ClaySticker>
+			<ProductSticker imageURL={imageURL} />
 
 			<span>{value}</span>
 

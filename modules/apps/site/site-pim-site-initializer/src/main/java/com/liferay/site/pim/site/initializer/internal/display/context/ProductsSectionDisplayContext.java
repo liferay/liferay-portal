@@ -73,7 +73,8 @@ public class ProductsSectionDisplayContext {
 					"cmsSection eq 'products' and status in (",
 					StringUtil.merge(CMSWorkflowConstants.STATUSES, ", "),
 					")")),
-			"&nestedFields=embedded,systemProperties.objectDefinitionBrief");
+			"&nestedFields=embedded,embedded.images,",
+			"systemProperties.objectDefinitionBrief&nestedFieldsDepth=2");
 	}
 
 	public Map<String, Object> getAdditionalProps() {

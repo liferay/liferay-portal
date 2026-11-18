@@ -5,15 +5,23 @@
 
 package com.liferay.headless.pim.internal.resource.v1_0;
 
+import com.liferay.document.library.helper.DLURLHelper;
+import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.headless.pim.dto.v1_0.LinkReference;
 import com.liferay.headless.pim.dto.v1_0.Status;
 import com.liferay.headless.pim.resource.v1_0.LinkReferenceResource;
+import com.liferay.object.field.util.ObjectFieldUtil;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
+import com.liferay.object.model.ObjectField;
+import com.liferay.object.model.ObjectRelationship;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectEntryService;
+import com.liferay.object.service.ObjectFieldLocalService;
+import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.NoSuchGroupException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
@@ -207,6 +215,52 @@ public class LinkReferenceResourceImpl extends BaseLinkReferenceResourceImpl {
 		return groupId;
 	}
 
+	private String _getImageURL(ObjectEntry objectEntry) throws Exception {
+		ObjectRelationship objectRelationship =
+			_objectRelationshipLocalService.
+				fetchObjectRelationshipByObjectDefinitionId1(
+					objectEntry.getObjectDefinitionId(), "images");
+
+		if (objectRelationship == null) {
+			return null;
+		}
+
+		ObjectField objectField = _objectFieldLocalService.fetchObjectField(
+			objectRelationship.getObjectDefinitionId2(), "image");
+
+		if (objectField == null) {
+			return null;
+		}
+
+		for (ObjectEntry imageObjectEntry :
+				_objectEntryLocalService.getOneToManyObjectEntries(
+					objectEntry.getGroupId(),
+					objectRelationship.getObjectRelationshipId(), null, true,
+					objectEntry.getObjectEntryId(), true, null,
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
+
+			long fileEntryId = MapUtil.getLong(
+				_objectEntryLocalService.getValues(imageObjectEntry),
+				objectField.getName());
+
+			if (fileEntryId == 0) {
+				continue;
+			}
+
+			ObjectDefinition objectDefinition =
+				imageObjectEntry.getObjectDefinition();
+
+			return ObjectFieldUtil.getAttachmentDownloadURL(
+				_dlURLHelper, _dlAppLocalService.getFileEntry(fileEntryId),
+				imageObjectEntry.getGroupId(),
+				objectDefinition.getExternalReferenceCode(), imageObjectEntry,
+				_objectEntryService, objectField,
+				PermissionThreadLocal.getPermissionChecker(), null);
+		}
+
+		return null;
+	}
+
 	private ObjectEntry _getObjectEntry(
 			String className, String externalReferenceCode, long groupId)
 		throws Exception {
@@ -257,6 +311,7 @@ public class LinkReferenceResourceImpl extends BaseLinkReferenceResourceImpl {
 				setClassName(objectEntry::getModelClassName);
 				setExternalReferenceCode(objectEntry::getExternalReferenceCode);
 				setId(objectEntry::getObjectEntryId);
+				setImageURL(() -> _getImageURL(objectEntry));
 				setPrimary(pimLinkRelatedEntry::isPrimary);
 				setSku(() -> MapUtil.getString(values, "sku"));
 				setStatus(
@@ -280,6 +335,12 @@ public class LinkReferenceResourceImpl extends BaseLinkReferenceResourceImpl {
 	}
 
 	@Reference
+	private DLAppLocalService _dlAppLocalService;
+
+	@Reference
+	private DLURLHelper _dlURLHelper;
+
+	@Reference
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
 
 	@Reference
@@ -287,6 +348,12 @@ public class LinkReferenceResourceImpl extends BaseLinkReferenceResourceImpl {
 
 	@Reference
 	private ObjectEntryService _objectEntryService;
+
+	@Reference
+	private ObjectFieldLocalService _objectFieldLocalService;
+
+	@Reference
+	private ObjectRelationshipLocalService _objectRelationshipLocalService;
 
 	@Reference
 	private PIMLinkEngine _pimLinkEngine;

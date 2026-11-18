@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import ClayIcon from '@clayui/icon';
 import ClayLink from '@clayui/link';
-import ClaySticker from '@clayui/sticker';
 import {findAction, replaceTokens} from '@liferay/frontend-data-set-web';
 import React from 'react';
+
+import ProductSticker from './ProductSticker';
+import getImageURL from './getImageURL';
 
 export default function ProductTitleRenderer({
 	actions,
@@ -27,9 +28,9 @@ export default function ProductTitleRenderer({
 
 	return (
 		<span className="align-items-center d-flex table-list-title">
-			<ClaySticker className="c-mr-2 content-icon-custom-structure flex-shrink-0 inline-item inline-item-before">
-				<ClayIcon symbol="product" />
-			</ClaySticker>
+			<ProductSticker
+				imageURL={getImageURL(itemData?.embedded?.images)}
+			/>
 
 			{href ? (
 				<ClayLink href={href}>{value}</ClayLink>

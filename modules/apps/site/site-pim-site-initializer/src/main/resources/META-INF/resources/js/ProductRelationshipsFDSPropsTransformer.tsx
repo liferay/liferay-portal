@@ -53,6 +53,7 @@ export default function propsTransformer({
 					component: ({itemData, value}: any) => (
 						<ProductRelationshipSelectorTitleRenderer
 							current={isCurrent(itemData)}
+							imageURL={itemData?.imageURL}
 							value={value}
 						/>
 					),
