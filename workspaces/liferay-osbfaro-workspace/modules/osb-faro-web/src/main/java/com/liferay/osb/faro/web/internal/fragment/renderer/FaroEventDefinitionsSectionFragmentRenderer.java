@@ -6,6 +6,8 @@
 package com.liferay.osb.faro.web.internal.fragment.renderer;
 
 import com.liferay.fragment.renderer.FragmentRenderer;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItemList;
+import com.liferay.osb.faro.web.internal.display.context.EventDefinitionsNavigationDisplayContext;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ParamUtil;
 
@@ -30,6 +32,19 @@ public class FaroEventDefinitionsSectionFragmentRenderer
 	@Override
 	protected String getModule() {
 		return "{EventDefinitions} from osb-faro-web/settings";
+	}
+
+	@Override
+	protected NavigationItemList getNavigationItems(
+			HttpServletRequest httpServletRequest)
+		throws Exception {
+
+		EventDefinitionsNavigationDisplayContext
+			eventDefinitionsNavigationDisplayContext =
+				new EventDefinitionsNavigationDisplayContext(
+					httpServletRequest);
+
+		return eventDefinitionsNavigationDisplayContext.getNavigationItems();
 	}
 
 	@Override
