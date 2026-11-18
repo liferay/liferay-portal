@@ -686,43 +686,36 @@ public class ExportImportStyleBookEntriesMVCResourceCommandTest {
 
 		UserTestUtil.setUser(_user);
 
+		StyleBookEntry targetStyleBookEntry =
+			_styleBookEntryLocalService.addStyleBookEntry(
+				null, TestPropsValues.getUserId(), _targetGroup.getGroupId(),
+				false, StringPool.BLANK, null, RandomTestUtil.randomString(),
+				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+				ServiceContextTestUtil.getServiceContext(
+					_targetGroup, TestPropsValues.getUserId()));
+
+		Assert.assertNotNull(
+			_exportStyleBookEntry(targetStyleBookEntry.getStyleBookEntryId()));
+
 		try {
-			StyleBookEntry targetStyleBookEntry =
+			StyleBookEntry sourceStyleBookEntry =
 				_styleBookEntryLocalService.addStyleBookEntry(
 					null, TestPropsValues.getUserId(),
-					_targetGroup.getGroupId(), false, StringPool.BLANK, null,
+					_sourceGroup.getGroupId(), false, StringPool.BLANK, null,
 					RandomTestUtil.randomString(),
 					RandomTestUtil.randomString(),
 					RandomTestUtil.randomString(),
 					ServiceContextTestUtil.getServiceContext(
-						_targetGroup, TestPropsValues.getUserId()));
+						_sourceGroup, TestPropsValues.getUserId()));
 
-			Assert.assertNotNull(
-				_exportStyleBookEntry(
-					targetStyleBookEntry.getStyleBookEntryId()));
+			_exportStyleBookEntry(sourceStyleBookEntry.getStyleBookEntryId());
 
-			try {
-				StyleBookEntry sourceStyleBookEntry =
-					_styleBookEntryLocalService.addStyleBookEntry(
-						null, TestPropsValues.getUserId(),
-						_sourceGroup.getGroupId(), false, StringPool.BLANK,
-						null, RandomTestUtil.randomString(),
-						RandomTestUtil.randomString(),
-						RandomTestUtil.randomString(),
-						ServiceContextTestUtil.getServiceContext(
-							_sourceGroup, TestPropsValues.getUserId()));
-
-				_exportStyleBookEntry(
-					sourceStyleBookEntry.getStyleBookEntryId());
-
-				Assert.fail();
-			}
-			catch (PrincipalException principalException) {
-			}
+			Assert.fail();
 		}
-		finally {
-			UserTestUtil.setUser(TestPropsValues.getUser());
+		catch (PrincipalException principalException) {
 		}
+
+		UserTestUtil.setUser(TestPropsValues.getUser());
 	}
 
 	private FileEntry _addFileEntry(StyleBookEntry styleBookEntry)
