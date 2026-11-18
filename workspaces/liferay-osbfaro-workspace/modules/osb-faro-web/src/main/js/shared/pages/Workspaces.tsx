@@ -122,12 +122,6 @@ const Workspaces: any = () => {
 		isLDPPlan(faroSubscription?.get('name'))
 	);
 
-	if (projects.length === 1 && !projects[0].groupId) {
-		return toRoute(Routes.WORKSPACE_ADD_WITH_CORP_PROJECT_UUID, {
-			corpProjectUuid: projects[0].corpProjectUuid,
-		});
-	}
-
 	const handleDetails = () => {
 		if (projects.length) {
 			return [
