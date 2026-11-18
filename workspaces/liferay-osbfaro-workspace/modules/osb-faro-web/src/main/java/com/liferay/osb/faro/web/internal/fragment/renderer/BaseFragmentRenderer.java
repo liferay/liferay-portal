@@ -88,6 +88,13 @@ public abstract class BaseFragmentRenderer implements FragmentRenderer {
 						return channelSelectorDisplayContext.getFaroChannelId();
 					}
 				).put(
+					"friendlyURL",
+					() -> {
+						Layout layout = themeDisplay.getLayout();
+
+						return layout.getFriendlyURL();
+					}
+				).put(
 					"groupId", String.valueOf(themeDisplay.getScopeGroupId())
 				).put(
 					"pageURLs",
