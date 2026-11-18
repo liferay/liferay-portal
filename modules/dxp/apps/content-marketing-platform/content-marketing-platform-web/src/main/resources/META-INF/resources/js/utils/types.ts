@@ -159,6 +159,7 @@ export interface ProjectTaskItemData {
 		externalReferenceCode: string;
 		id: number;
 		r_cmpProjectToCMPTasks_c_cmpProjectId?: number;
+		scopeKey: string;
 		title: string;
 	};
 	entryClassName: string;

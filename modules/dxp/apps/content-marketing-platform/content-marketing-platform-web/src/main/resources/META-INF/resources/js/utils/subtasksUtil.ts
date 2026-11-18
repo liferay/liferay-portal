@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {sub} from 'frontend-js-web';
+
 import {getTasks} from './api';
 import {ISubtaskObjectEntry} from './types';
 
@@ -63,6 +65,32 @@ function getIdsFilter(fieldName: string, ids: number[]) {
 
 function isOpen(subtask: ISubtaskObjectEntry) {
 	return subtask.state?.key !== 'done';
+}
+
+export function getDeleteTaskConfirmationMessage(
+	title: string,
+	subtasksCount: number
+) {
+	if (subtasksCount === 1) {
+		return sub(
+			Liferay.Language.get(
+				'delete-task-and-one-subtask-confirmation-body'
+			),
+			title
+		);
+	}
+
+	if (subtasksCount > 1) {
+		return sub(
+			Liferay.Language.get(
+				'delete-task-and-x-subtasks-confirmation-body'
+			),
+			title,
+			String(subtasksCount)
+		);
+	}
+
+	return sub(Liferay.Language.get('delete-task-confirmation-body'), title);
 }
 
 export async function getDoneTasksOpenSubtasksCount(tasks: Task[]) {
