@@ -6,6 +6,12 @@
 package com.liferay.osb.faro.web.internal.fragment.renderer;
 
 import com.liferay.fragment.renderer.FragmentRenderer;
+import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.ParamUtil;
+
+import jakarta.servlet.http.HttpServletRequest;
+
+import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -24,6 +30,24 @@ public class FaroEditLifecycleSectionFragmentRenderer
 	@Override
 	protected String getModule() {
 		return "{EditLifecycle} from osb-faro-web/lifecycles";
+	}
+
+	@Override
+	protected Map<String, String> getParams(
+		HttpServletRequest httpServletRequest) {
+
+		return HashMapBuilder.putAll(
+			super.getParams(httpServletRequest)
+		).put(
+			"backLifecycleId",
+			ParamUtil.getString(httpServletRequest, "backLifecycleId")
+		).put(
+			"lifecycleId",
+			ParamUtil.getString(httpServletRequest, "lifecycleId")
+		).put(
+			"sourceLifecycleId",
+			ParamUtil.getString(httpServletRequest, "sourceLifecycleId")
+		).build();
 	}
 
 }
