@@ -6,7 +6,6 @@
 package com.liferay.commerce.payment.internal.gateway;
 
 import com.liferay.commerce.payment.audit.CommercePaymentEntryAuditType;
-import com.liferay.commerce.payment.audit.CommercePaymentEntryAuditTypeRegistry;
 import com.liferay.commerce.payment.configuration.CommercePaymentEntryAuditConfiguration;
 import com.liferay.commerce.payment.constants.CommercePaymentEntryAuditConstants;
 import com.liferay.commerce.payment.gateway.CommercePaymentGateway;
@@ -15,6 +14,8 @@ import com.liferay.commerce.payment.integration.CommercePaymentIntegration;
 import com.liferay.commerce.payment.model.CommercePaymentEntry;
 import com.liferay.commerce.payment.service.CommercePaymentEntryAuditLocalService;
 import com.liferay.commerce.payment.service.CommercePaymentEntryLocalService;
+import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
+import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.dao.orm.ORMException;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -37,7 +38,10 @@ import jakarta.persistence.OptimisticLockException;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import org.osgi.framework.BundleContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 
 /**
@@ -125,10 +129,8 @@ public class CommercePaymentGatewayImpl implements CommercePaymentGateway {
 
 		if (commercePaymentEntryAuditConfiguration.enabled()) {
 			CommercePaymentEntryAuditType commercePaymentEntryAuditType =
-				_commercePaymentEntryAuditTypeRegistry.
-					getCommercePaymentEntryAuditType(
-						CommercePaymentEntryAuditConstants.
-							TYPE_AUTHORIZE_PAYMENT);
+				_serviceTrackerMap.getService(
+					CommercePaymentEntryAuditConstants.TYPE_AUTHORIZE_PAYMENT);
 
 			_commercePaymentEntryAuditLocalService.addCommercePaymentEntryAudit(
 				currentUser.getUserId(),
@@ -202,9 +204,8 @@ public class CommercePaymentGatewayImpl implements CommercePaymentGateway {
 
 		if (commercePaymentEntryAuditConfiguration.enabled()) {
 			CommercePaymentEntryAuditType commercePaymentEntryAuditType =
-				_commercePaymentEntryAuditTypeRegistry.
-					getCommercePaymentEntryAuditType(
-						CommercePaymentEntryAuditConstants.TYPE_CANCEL_PAYMENT);
+				_serviceTrackerMap.getService(
+					CommercePaymentEntryAuditConstants.TYPE_CANCEL_PAYMENT);
 
 			_commercePaymentEntryAuditLocalService.addCommercePaymentEntryAudit(
 				currentUser.getUserId(),
@@ -310,10 +311,8 @@ public class CommercePaymentGatewayImpl implements CommercePaymentGateway {
 
 		if (commercePaymentEntryAuditConfiguration.enabled()) {
 			CommercePaymentEntryAuditType commercePaymentEntryAuditType =
-				_commercePaymentEntryAuditTypeRegistry.
-					getCommercePaymentEntryAuditType(
-						CommercePaymentEntryAuditConstants.
-							TYPE_CAPTURE_PAYMENT);
+				_serviceTrackerMap.getService(
+					CommercePaymentEntryAuditConstants.TYPE_CAPTURE_PAYMENT);
 
 			_commercePaymentEntryAuditLocalService.addCommercePaymentEntryAudit(
 				currentUser.getUserId(),
@@ -387,9 +386,8 @@ public class CommercePaymentGatewayImpl implements CommercePaymentGateway {
 
 		if (commercePaymentEntryAuditConfiguration.enabled()) {
 			CommercePaymentEntryAuditType commercePaymentEntryAuditType =
-				_commercePaymentEntryAuditTypeRegistry.
-					getCommercePaymentEntryAuditType(
-						CommercePaymentEntryAuditConstants.TYPE_REFUND_PAYMENT);
+				_serviceTrackerMap.getService(
+					CommercePaymentEntryAuditConstants.TYPE_REFUND_PAYMENT);
 
 			_commercePaymentEntryAuditLocalService.addCommercePaymentEntryAudit(
 				currentUser.getUserId(),
@@ -424,6 +422,18 @@ public class CommercePaymentGatewayImpl implements CommercePaymentGateway {
 
 		return commercePaymentIntegration.setUpPayment(
 			httpServletRequest, commercePaymentEntry);
+	}
+
+	@Activate
+	protected void activate(BundleContext bundleContext) {
+		_serviceTrackerMap = ServiceTrackerMapFactory.openSingleValueMap(
+			bundleContext, CommercePaymentEntryAuditType.class,
+			"commerce.payment.entry.audit.type.key");
+	}
+
+	@Deactivate
+	protected void deactivate() {
+		_serviceTrackerMap.close();
 	}
 
 	private ServiceContext _createServiceContext(User user) {
@@ -488,10 +498,6 @@ public class CommercePaymentGatewayImpl implements CommercePaymentGateway {
 		_commercePaymentEntryAuditLocalService;
 
 	@Reference
-	private CommercePaymentEntryAuditTypeRegistry
-		_commercePaymentEntryAuditTypeRegistry;
-
-	@Reference
 	private CommercePaymentEntryLocalService _commercePaymentEntryLocalService;
 
 	@Reference
@@ -505,6 +511,9 @@ public class CommercePaymentGatewayImpl implements CommercePaymentGateway {
 
 	@Reference
 	private Portal _portal;
+
+	private ServiceTrackerMap<String, CommercePaymentEntryAuditType>
+		_serviceTrackerMap;
 
 	@Reference
 	private UserLocalService _userLocalService;
