@@ -10,11 +10,14 @@ import {dataApiHelpersTest} from '../../../../fixtures/dataApiHelpersTest';
 import {featureFlagsTest} from '../../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import {liferayConfig} from '../../../../liferay.config';
+import {getRandomInt} from '../../../../utils/getRandomInt';
 import getRandomString from '../../../../utils/getRandomString';
 import {
 	performLoginViaApi,
 	performLogout,
 } from '../../../../utils/performLogin';
+import getPageDefinition from '../../../layout-content-page-editor-web/main/utils/getPageDefinition';
+import getWidgetDefinition from '../../../layout-content-page-editor-web/main/utils/getWidgetDefinition';
 import {ORDER_WORKFLOW_STATUS_CODE} from '../../../workspaces/liferay-workspace-marketplace/main/utils/constants';
 import {
 	classicCommerceSetUp,
@@ -165,5 +168,110 @@ test(
 		await commerceThemeClassicOrdersPage.orderTabs('Shipments').click();
 
 		await expect(page.getByText(shipment.id.toString())).toBeVisible();
+	}
+);
+
+test(
+	'A shipping address city containing markup is escaped in the Shipments widget',
+	{tag: '@LPD-116132'},
+	async ({apiHelpers, commerceShipmentContentPage, page}) => {
+		const {channel, site} = await classicCommerceSetUp(apiHelpers);
+
+		const account = await apiHelpers.headlessAdminUser.postAccount({
+			type: 'business',
+		});
+
+		const city = `<img src=x onerror="alert('x')">A${getRandomInt()}`;
+
+		const address =
+			await apiHelpers.headlessCommerceAdminAccount.postAddress(
+				account.id,
+				{city, regionISOCode: 'AL'}
+			);
+
+		const product =
+			await apiHelpers.headlessCommerceAdminCatalog.getProducts(
+				new URLSearchParams({filter: `name eq 'U-Joint'`})
+			);
+
+		const sku = await apiHelpers.headlessCommerceAdminCatalog
+			.getProduct(product.items[0].productId)
+			.then((product) => product.skus[0]);
+
+		const warehouse =
+			await apiHelpers.headlessCommerceAdminInventoryApiHelper.postWarehouses(
+				{
+					active: true,
+					latitude: 10,
+					longitude: 0,
+					warehouseItems: [{quantity: 100, sku: sku.sku}],
+				}
+			);
+
+		await apiHelpers.headlessCommerceAdminInventoryApiHelper.postWarehousesChannels(
+			warehouse.id,
+			channel.id
+		);
+
+		const order = await apiHelpers.headlessCommerceAdminOrder.postOrder({
+			accountId: account.id,
+			billingAddressId: address.id,
+			channelId: channel.id,
+			orderItems: [{quantity: 1, skuId: sku.id}],
+			orderStatus: ORDER_WORKFLOW_STATUS_CODE.PROCESSING,
+			shippingAddressId: address.id,
+		});
+
+		const shipment =
+			await apiHelpers.headlessCommerceAdminShipment.postShipment({
+				orderId: order.id,
+				shipmentItems: [
+					{
+						orderItemId: order.orderItems[0].id,
+						quantity: 1,
+						warehouseId: warehouse.id,
+					},
+				],
+				shippingAddressId: address.id,
+			});
+
+		const portletId =
+			'com_liferay_commerce_shipment_content_web_internal_portlet_CommerceShipmentContentPortlet';
+
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([
+				getWidgetDefinition({
+					id: getRandomString(),
+					widgetName: portletId,
+				}),
+			]),
+			siteId: site.id,
+			title: getRandomString(),
+		});
+
+		page.on('dialog', async (dialog) => {
+			if (dialog.type() === 'alert') {
+				throw new Error('XSS');
+			}
+		});
+
+		const urlSearchParams = new URLSearchParams({
+			[`_${portletId}_commerceShipmentId`]: String(shipment.id),
+			[`_${portletId}_mvcRenderCommandName`]:
+				'/commerce_shipment_content/view_commerce_shipment_items',
+			p_p_id: portletId,
+			p_p_lifecycle: '0',
+		});
+
+		await page.goto(
+			`${liferayConfig.environment.baseUrl}/web${site.friendlyUrlPath}${layout.friendlyUrlPath}?${urlSearchParams}`
+		);
+
+		await expect(commerceShipmentContentPage.shipmentAddress).toContainText(
+			city
+		);
+		await expect(
+			commerceShipmentContentPage.shipmentAddressImage
+		).toHaveCount(0);
 	}
 );

@@ -74,6 +74,7 @@ import {CommerceAdminProductPage} from '../pages/commerce/commerce-product-defin
 import {ProductRelationTypesSystemSettingPage} from '../pages/commerce/commerce-product-definitions-web/productRelationTypesSystemSettingPage';
 import {CommerceSpecificationsPage} from '../pages/commerce/commerce-product-options-web/commerceSpecificationsPage';
 import {VirtualOrderItemContentPage} from '../pages/commerce/commerce-product-type-virtual-order-content-web/virtualOrderItemContentPage';
+import {CommerceShipmentContentPage} from '../pages/commerce/commerce-shipment-content-web/commerceShipmentContentPage';
 import {CommerceAdminShipmentsPage} from '../pages/commerce/commerce-shipment-web/commerceAdminShipmentsPage';
 import {TermsAndConditionDetailsPage} from '../pages/commerce/commerce-term-web/termsAndConditionDetailsPage';
 import {TermsAndConditionsPage} from '../pages/commerce/commerce-term-web/termsAndConditionsPage';
@@ -148,6 +149,7 @@ const commercePagesTest = test.extend<{
 	commerceMiniCartPage: CommerceMiniCartPage;
 	commercePaymentsPage: CommercePaymentsPage;
 	commercePricingSystemSettingsPage: CommercePricingSystemSettingsPage;
+	commerceShipmentContentPage: CommerceShipmentContentPage;
 	commerceSpecificationsPage: CommerceSpecificationsPage;
 	commerceThemeClassicCatalogPage: CommerceThemeClassicCatalogPage;
 	commerceThemeClassicOrdersPage: CommerceThemeClassicOrdersPage;
@@ -352,6 +354,9 @@ const commercePagesTest = test.extend<{
 	},
 	commercePricingSystemSettingsPage: async ({page}, use) => {
 		await use(new CommercePricingSystemSettingsPage(page));
+	},
+	commerceShipmentContentPage: async ({page}, use) => {
+		await use(new CommerceShipmentContentPage(page));
 	},
 	commerceSpecificationsPage: async ({page}, use) => {
 		await use(new CommerceSpecificationsPage(page));
