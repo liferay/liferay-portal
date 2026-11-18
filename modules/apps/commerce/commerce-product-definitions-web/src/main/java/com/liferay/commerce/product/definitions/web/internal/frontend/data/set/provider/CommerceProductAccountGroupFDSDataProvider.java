@@ -11,7 +11,7 @@ import com.liferay.account.service.AccountGroupRelLocalService;
 import com.liferay.commerce.product.definitions.web.internal.constants.CommerceProductFDSNames;
 import com.liferay.commerce.product.definitions.web.internal.model.CProductAccountGroup;
 import com.liferay.commerce.product.model.CPDefinition;
-import com.liferay.commerce.product.service.CPDefinitionLocalService;
+import com.liferay.commerce.product.service.CPDefinitionService;
 import com.liferay.frontend.data.set.provider.FDSDataProvider;
 import com.liferay.frontend.data.set.provider.search.FDSKeywords;
 import com.liferay.frontend.data.set.provider.search.FDSPagination;
@@ -91,7 +91,7 @@ public class CommerceProductAccountGroupFDSDataProvider
 		long cpDefinitionId = ParamUtil.getLong(
 			httpServletRequest, "cpDefinitionId");
 
-		CPDefinition cpDefinition = _cpDefinitionLocalService.getCPDefinition(
+		CPDefinition cpDefinition = _cpDefinitionService.getCPDefinition(
 			cpDefinitionId);
 
 		LinkedHashMap<String, Object> params = new LinkedHashMap<>();
@@ -118,6 +118,6 @@ public class CommerceProductAccountGroupFDSDataProvider
 	private AccountGroupRelLocalService _accountGroupRelLocalService;
 
 	@Reference
-	private CPDefinitionLocalService _cpDefinitionLocalService;
+	private CPDefinitionService _cpDefinitionService;
 
 }
