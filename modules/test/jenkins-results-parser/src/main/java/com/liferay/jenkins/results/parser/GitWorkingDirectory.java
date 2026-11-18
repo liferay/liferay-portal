@@ -1943,6 +1943,10 @@ public class GitWorkingDirectory {
 			String gitDiffOutput = executionResult.getStandardOut();
 
 			for (String line : gitDiffOutput.split("\n")) {
+				if (JenkinsResultsParserUtil.isNullOrEmpty(line)) {
+					continue;
+				}
+
 				modifiedFiles.add(new File(_workingDirectory, line));
 			}
 
