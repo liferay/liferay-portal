@@ -7,6 +7,8 @@ package com.liferay.commerce.shipment.content.web.internal.display.context;
 
 import com.liferay.account.model.AccountEntry;
 import com.liferay.commerce.constants.CommerceShipmentConstants;
+import com.liferay.commerce.context.CommerceContext;
+import com.liferay.commerce.exception.NoSuchShipmentException;
 import com.liferay.commerce.model.CommerceOrderItem;
 import com.liferay.commerce.model.CommerceShipment;
 import com.liferay.commerce.model.CommerceShipmentItem;
@@ -17,6 +19,7 @@ import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.service.CommerceShipmentItemLocalService;
 import com.liferay.commerce.service.CommerceShipmentLocalService;
+import com.liferay.commerce.service.CommerceShipmentService;
 import com.liferay.commerce.shipment.content.web.internal.display.context.helper.CommerceShipmentContentRequestHelper;
 import com.liferay.commerce.util.CommerceShippingEngineRegistry;
 import com.liferay.commerce.util.comparator.CommerceShipmentCreateDateComparator;
@@ -48,17 +51,22 @@ public class CommerceShipmentContentDisplayContext {
 		CommerceOrderHttpHelper commerceOrderHttpHelper,
 		CommerceShipmentItemLocalService commerceShipmentItemLocalService,
 		CommerceShipmentLocalService commerceShipmentLocalService,
+		CommerceShipmentService commerceShipmentService,
 		CommerceShippingEngineRegistry commerceShippingEngineRegistry,
 		RenderRequest renderRequest) {
 
-		_commerceChannelLocalService = commerceChannelLocalService;
 		_commerceOrderHttpHelper = commerceOrderHttpHelper;
 		_commerceShipmentItemLocalService = commerceShipmentItemLocalService;
 		_commerceShipmentLocalService = commerceShipmentLocalService;
+		_commerceShipmentService = commerceShipmentService;
 		_commerceShippingEngineRegistry = commerceShippingEngineRegistry;
 
 		_commerceShipmentContentRequestHelper =
 			new CommerceShipmentContentRequestHelper(renderRequest);
+
+		_commerceChannel =
+			commerceChannelLocalService.fetchCommerceChannelBySiteGroupId(
+				_commerceShipmentContentRequestHelper.getScopeGroupId());
 
 		ThemeDisplay themeDisplay =
 			_commerceShipmentContentRequestHelper.getThemeDisplay();
@@ -95,11 +103,18 @@ public class CommerceShipmentContentDisplayContext {
 	}
 
 	public CommerceShipment getCommerceShipment() throws PortalException {
-		if ((_commerceShipment == null) && (_commerceShipmentId > 0)) {
-			_commerceShipment =
-				_commerceShipmentLocalService.getCommerceShipment(
-					_commerceShipmentId);
+		if (_commerceShipment != null) {
+			return _commerceShipment;
 		}
+
+		if (_commerceChannel == null) {
+			throw new NoSuchShipmentException(
+				"No commerce channel exists for group " +
+					_commerceShipmentContentRequestHelper.getScopeGroupId());
+		}
+
+		_commerceShipment = _commerceShipmentService.getCommerceShipment(
+			_commerceChannel.getGroupId(), _commerceShipmentId);
 
 		return _commerceShipment;
 	}
@@ -142,11 +157,16 @@ public class CommerceShipmentContentDisplayContext {
 	}
 
 	public SearchContainer<CommerceShipmentItem>
-		getCommerceShipmentItemsSearchContainer() {
+			getCommerceShipmentItemsSearchContainer()
+		throws PortalException {
 
 		if (_commerceShipmentItemSearchContainer != null) {
 			return _commerceShipmentItemSearchContainer;
 		}
+
+		CommerceShipment commerceShipment = getCommerceShipment();
+
+		long commerceShipmentId = commerceShipment.getCommerceShipmentId();
 
 		_commerceShipmentItemSearchContainer = new SearchContainer<>(
 			_commerceShipmentContentRequestHelper.getLiferayPortletRequest(),
@@ -154,12 +174,12 @@ public class CommerceShipmentContentDisplayContext {
 
 		_commerceShipmentItemSearchContainer.setResultsAndTotal(
 			() -> _commerceShipmentItemLocalService.getCommerceShipmentItems(
-				_commerceShipmentId,
+				commerceShipmentId,
 				_commerceShipmentItemSearchContainer.getStart(),
 				_commerceShipmentItemSearchContainer.getEnd(),
 				CommerceShipmentItemCreateDateComparator.getInstance(false)),
 			_commerceShipmentItemLocalService.getCommerceShipmentItemsCount(
-				_commerceShipmentId));
+				commerceShipmentId));
 
 		return _commerceShipmentItemSearchContainer;
 	}
@@ -232,22 +252,22 @@ public class CommerceShipmentContentDisplayContext {
 			_commerceShipmentContentRequestHelper.getLiferayPortletRequest(),
 			getPortletURL(), null, "no-shipments-were-found");
 
-		CommerceChannel commerceChannel =
-			_commerceChannelLocalService.fetchCommerceChannelBySiteGroupId(
-				_commerceShipmentContentRequestHelper.getScopeGroupId());
+		AccountEntry accountEntry = _getAccountEntry();
 
-		if (commerceChannel != null) {
-			_searchContainer.setResultsAndTotal(
-				() -> _commerceShipmentLocalService.getCommerceShipments(
-					new long[] {commerceChannel.getGroupId()},
-					_searchContainer.getStart(), _searchContainer.getEnd(),
-					CommerceShipmentCreateDateComparator.getInstance(false)),
-				_commerceShipmentLocalService.getCommerceShipmentsCount(
-					new long[] {commerceChannel.getGroupId()}));
-		}
-		else {
+		if ((_commerceChannel == null) || (accountEntry == null)) {
 			_searchContainer.setResultsAndTotal(Collections::emptyList, 0);
+
+			return _searchContainer;
 		}
+
+		_searchContainer.setResultsAndTotal(
+			() -> _commerceShipmentLocalService.getCommerceShipments(
+				_commerceChannel.getGroupId(), accountEntry.getAccountEntryId(),
+				_searchContainer.getStart(), _searchContainer.getEnd(),
+				CommerceShipmentCreateDateComparator.getInstance(false)),
+			_commerceShipmentLocalService.getCommerceShipmentsCount(
+				_commerceChannel.getGroupId(),
+				accountEntry.getAccountEntryId()));
 
 		return _searchContainer;
 	}
@@ -268,7 +288,31 @@ public class CommerceShipmentContentDisplayContext {
 			commerceOrderItem.getCommerceOrder());
 	}
 
-	private final CommerceChannelLocalService _commerceChannelLocalService;
+	private AccountEntry _getAccountEntry() throws PortalException {
+		ThemeDisplay themeDisplay =
+			_commerceShipmentContentRequestHelper.getThemeDisplay();
+
+		if (!themeDisplay.isSignedIn()) {
+			return null;
+		}
+
+		CommerceContext commerceContext =
+			_commerceShipmentContentRequestHelper.getCommerceContext();
+
+		if (commerceContext == null) {
+			return null;
+		}
+
+		AccountEntry accountEntry = commerceContext.getAccountEntry();
+
+		if ((accountEntry == null) || accountEntry.isGuestAccount()) {
+			return null;
+		}
+
+		return accountEntry;
+	}
+
+	private final CommerceChannel _commerceChannel;
 	private final CommerceOrderHttpHelper _commerceOrderHttpHelper;
 	private CommerceShipment _commerceShipment;
 	private final CommerceShipmentContentRequestHelper
@@ -280,6 +324,7 @@ public class CommerceShipmentContentDisplayContext {
 	private SearchContainer<CommerceShipmentItem>
 		_commerceShipmentItemSearchContainer;
 	private final CommerceShipmentLocalService _commerceShipmentLocalService;
+	private final CommerceShipmentService _commerceShipmentService;
 	private final Format _commerceShipmentTimeFormat;
 	private final CommerceShippingEngineRegistry
 		_commerceShippingEngineRegistry;

@@ -10,6 +10,7 @@ import com.liferay.commerce.order.CommerceOrderHttpHelper;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.service.CommerceShipmentItemLocalService;
 import com.liferay.commerce.service.CommerceShipmentLocalService;
+import com.liferay.commerce.service.CommerceShipmentService;
 import com.liferay.commerce.shipment.content.web.internal.display.context.CommerceShipmentContentDisplayContext;
 import com.liferay.commerce.util.CommerceShippingEngineRegistry;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
@@ -61,7 +62,7 @@ public class CommerceShipmentContentPortlet extends MVCPortlet {
 				new CommerceShipmentContentDisplayContext(
 					_commerceChannelLocalService, _commerceOrderHttpHelper,
 					_commerceShipmentItemLocalService,
-					_commerceShipmentLocalService,
+					_commerceShipmentLocalService, _commerceShipmentService,
 					_commerceShippingEngineRegistry, renderRequest);
 
 		renderRequest.setAttribute(
@@ -82,6 +83,9 @@ public class CommerceShipmentContentPortlet extends MVCPortlet {
 
 	@Reference
 	private CommerceShipmentLocalService _commerceShipmentLocalService;
+
+	@Reference
+	private CommerceShipmentService _commerceShipmentService;
 
 	@Reference
 	private CommerceShippingEngineRegistry _commerceShippingEngineRegistry;

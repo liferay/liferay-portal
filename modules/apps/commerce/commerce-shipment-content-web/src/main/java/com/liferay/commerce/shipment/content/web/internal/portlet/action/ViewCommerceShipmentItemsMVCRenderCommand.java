@@ -6,13 +6,17 @@
 package com.liferay.commerce.shipment.content.web.internal.portlet.action;
 
 import com.liferay.commerce.constants.CommercePortletKeys;
+import com.liferay.commerce.exception.NoSuchShipmentException;
 import com.liferay.commerce.order.CommerceOrderHttpHelper;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.service.CommerceShipmentItemLocalService;
 import com.liferay.commerce.service.CommerceShipmentLocalService;
+import com.liferay.commerce.service.CommerceShipmentService;
 import com.liferay.commerce.shipment.content.web.internal.display.context.CommerceShipmentContentDisplayContext;
 import com.liferay.commerce.util.CommerceShippingEngineRegistry;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.portlet.PortletException;
@@ -45,12 +49,27 @@ public class ViewCommerceShipmentItemsMVCRenderCommand
 				new CommerceShipmentContentDisplayContext(
 					_commerceChannelLocalService, _commerceOrderHttpHelper,
 					_commerceShipmentItemLocalService,
-					_commerceShipmentLocalService,
+					_commerceShipmentLocalService, _commerceShipmentService,
 					_commerceShippingEngineRegistry, renderRequest);
 
 		renderRequest.setAttribute(
 			WebKeys.PORTLET_DISPLAY_CONTEXT,
 			commerceShipmentContentDisplayContext);
+
+		try {
+			commerceShipmentContentDisplayContext.getCommerceShipment();
+		}
+		catch (Exception exception) {
+			if (exception instanceof NoSuchShipmentException ||
+				exception instanceof PrincipalException) {
+
+				SessionErrors.add(renderRequest, exception.getClass());
+
+				return "/error.jsp";
+			}
+
+			throw new PortletException(exception);
+		}
 
 		return "/view_commerce_shipment_items.jsp";
 	}
@@ -66,6 +85,9 @@ public class ViewCommerceShipmentItemsMVCRenderCommand
 
 	@Reference
 	private CommerceShipmentLocalService _commerceShipmentLocalService;
+
+	@Reference
+	private CommerceShipmentService _commerceShipmentService;
 
 	@Reference
 	private CommerceShippingEngineRegistry _commerceShippingEngineRegistry;
