@@ -33,13 +33,17 @@ import com.liferay.commerce.test.util.context.TestCommerceContext;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.NoSuchModelException;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
@@ -48,13 +52,18 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MimeTypesUtil;
+import com.liferay.portal.kernel.util.TempFileEntryUtil;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 
 import java.math.BigDecimal;
@@ -68,6 +77,8 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import org.springframework.mock.web.MockHttpServletRequest;
 
 /**
  * @author Andrea Sbarra
@@ -178,6 +189,50 @@ public class CommerceOrderImporterTypeTest {
 	}
 
 	@Test
+	public void testGetCommerceOrderImporterItem() throws Exception {
+		CommerceOrderImporterType commerceOrderImporterType =
+			_commerceOrderImporterTypeRegistry.getCommerceOrderImporterType(
+				"csv");
+
+		FileEntry fileEntry1 = DLAppLocalServiceUtil.addFileEntry(
+			null, _user.getUserId(), _group.getGroupId(),
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			RandomTestUtil.randomString() + ".csv", ContentTypes.TEXT_CSV,
+			_CSV_CONTENT.getBytes(), null, null, null, _serviceContext);
+
+		Company company = _companyLocalService.getCompany(_user.getCompanyId());
+
+		Assert.assertThrows(
+			NoSuchModelException.class,
+			() -> _getCommerceOrderImporterItem(
+				commerceOrderImporterType, company,
+				fileEntry1.getFileEntryId()));
+
+		User user = UserTestUtil.addUser();
+
+		FileEntry fileEntry2 = _addTempFileEntry(
+			company.getGroupId(), user.getUserId());
+
+		Assert.assertThrows(
+			NoSuchModelException.class,
+			() -> _getCommerceOrderImporterItem(
+				commerceOrderImporterType, company,
+				fileEntry2.getFileEntryId()));
+
+		FileEntry fileEntry3 = _addTempFileEntry(
+			company.getGroupId(), _user.getUserId());
+
+		FileEntry commerceOrderImporterItem =
+			(FileEntry)_getCommerceOrderImporterItem(
+				commerceOrderImporterType, company,
+				fileEntry3.getFileEntryId());
+
+		Assert.assertEquals(
+			fileEntry3.getFileEntryId(),
+			commerceOrderImporterItem.getFileEntryId());
+	}
+
+	@Test
 	public void testSuccessfulCSVImport() throws Exception {
 		CommerceCatalog commerceCatalog =
 			_commerceCatalogLocalService.addCommerceCatalog(
@@ -244,6 +299,43 @@ public class CommerceOrderImporterTypeTest {
 		Assert.assertNull(commerceOrderImporterItem.getErrorMessages());
 	}
 
+	private FileEntry _addTempFileEntry(long groupId, long userId)
+		throws Exception {
+
+		return TempFileEntryUtil.addTempFileEntry(
+			groupId, userId,
+			"com.liferay.commerce.order.content.web.internal.portlet.action." +
+				"ImportCSVMVCActionCommand",
+			RandomTestUtil.randomString() + ".csv",
+			new ByteArrayInputStream(_CSV_CONTENT.getBytes()),
+			ContentTypes.TEXT_CSV);
+	}
+
+	private Object _getCommerceOrderImporterItem(
+			CommerceOrderImporterType commerceOrderImporterType,
+			Company company, long fileEntryId)
+		throws Exception {
+
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest();
+
+		ThemeDisplay themeDisplay = new ThemeDisplay();
+
+		themeDisplay.setCompany(company);
+		themeDisplay.setUser(_user);
+
+		mockHttpServletRequest.setAttribute(
+			WebKeys.THEME_DISPLAY, themeDisplay);
+
+		mockHttpServletRequest.setParameter(
+			"fileEntryId", String.valueOf(fileEntryId));
+
+		return commerceOrderImporterType.getCommerceOrderImporterItem(
+			mockHttpServletRequest);
+	}
+
+	private static final String _CSV_CONTENT = "sku,quantity\nerc-test,1";
+
 	private AccountEntry _accountEntry;
 
 	@Inject
@@ -265,6 +357,9 @@ public class CommerceOrderImporterTypeTest {
 
 	@Inject
 	private CommerceOrderLocalService _commerceOrderLocalService;
+
+	@Inject
+	private CompanyLocalService _companyLocalService;
 
 	@DeleteAfterTestRun
 	private Group _group;
