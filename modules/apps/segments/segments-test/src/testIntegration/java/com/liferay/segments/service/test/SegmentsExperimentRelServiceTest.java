@@ -36,6 +36,7 @@ import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.segments.model.SegmentsExperience;
 import com.liferay.segments.model.SegmentsExperiment;
 import com.liferay.segments.model.SegmentsExperimentRel;
+import com.liferay.segments.service.SegmentsExperimentRelLocalService;
 import com.liferay.segments.service.SegmentsExperimentRelService;
 import com.liferay.segments.test.util.SegmentsTestUtil;
 
@@ -83,10 +84,7 @@ public class SegmentsExperimentRelServiceTest {
 	public void testAddSegmentsExperienceWithUpdateLayoutPermission()
 		throws Exception {
 
-		ResourcePermissionLocalServiceUtil.addResourcePermission(
-			_group.getCompanyId(), Layout.class.getName(),
-			ResourceConstants.SCOPE_GROUP, String.valueOf(_group.getGroupId()),
-			_role.getRoleId(), ActionKeys.UPDATE);
+		_addLayoutUpdateResourcePermission();
 
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				_user, PermissionCheckerFactoryUtil.create(_user))) {
@@ -110,11 +108,69 @@ public class SegmentsExperimentRelServiceTest {
 		}
 	}
 
+	@Test(expected = PrincipalException.MustHavePermission.class)
+	public void testAddSegmentsExperimentRelWithSegmentsExperienceFromDifferentGroup()
+		throws Exception {
+
+		_addLayoutUpdateResourcePermission();
+
+		SegmentsExperience segmentsExperience = _addSegmentsExperience(
+			GroupTestUtil.addGroup());
+		SegmentsExperiment segmentsExperiment = _addSegmentsExperiment();
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_user, PermissionCheckerFactoryUtil.create(_user))) {
+
+			_segmentsExperimentRelService.addSegmentsExperimentRel(
+				segmentsExperiment.getSegmentsExperimentId(),
+				segmentsExperience.getSegmentsExperienceId(),
+				ServiceContextTestUtil.getServiceContext(
+					_group, _user.getUserId()));
+		}
+	}
+
+	@Test(expected = PrincipalException.MustHavePermission.class)
+	public void testDeleteSegmentsExperimentRelWithSegmentsExperienceFromDifferentGroup()
+		throws Exception {
+
+		_addLayoutUpdateResourcePermission();
+
+		SegmentsExperience segmentsExperience = _addSegmentsExperience(
+			GroupTestUtil.addGroup());
+		SegmentsExperiment segmentsExperiment = _addSegmentsExperiment();
+
+		SegmentsExperimentRel segmentsExperimentRel =
+			_segmentsExperimentRelLocalService.addSegmentsExperimentRel(
+				segmentsExperiment.getSegmentsExperimentId(),
+				segmentsExperience.getSegmentsExperienceId(),
+				ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_user, PermissionCheckerFactoryUtil.create(_user))) {
+
+			_segmentsExperimentRelService.deleteSegmentsExperimentRel(
+				segmentsExperimentRel.getSegmentsExperimentRelId());
+		}
+	}
+
+	private void _addLayoutUpdateResourcePermission() throws Exception {
+		ResourcePermissionLocalServiceUtil.addResourcePermission(
+			_group.getCompanyId(), Layout.class.getName(),
+			ResourceConstants.SCOPE_GROUP, String.valueOf(_group.getGroupId()),
+			_role.getRoleId(), ActionKeys.UPDATE);
+	}
+
 	private SegmentsExperience _addSegmentsExperience() throws Exception {
-		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
+		return _addSegmentsExperience(_group);
+	}
+
+	private SegmentsExperience _addSegmentsExperience(Group group)
+		throws Exception {
+
+		Layout layout = LayoutTestUtil.addTypeContentLayout(group);
 
 		return SegmentsTestUtil.addSegmentsExperience(
-			_group.getGroupId(), layout.getPlid());
+			group.getGroupId(), layout.getPlid());
 	}
 
 	private SegmentsExperiment _addSegmentsExperiment() throws Exception {
@@ -160,6 +216,10 @@ public class SegmentsExperimentRelServiceTest {
 
 	@DeleteAfterTestRun
 	private Role _role;
+
+	@Inject
+	private SegmentsExperimentRelLocalService
+		_segmentsExperimentRelLocalService;
 
 	@Inject
 	private SegmentsExperimentRelService _segmentsExperimentRelService;
