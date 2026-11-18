@@ -1189,6 +1189,8 @@ public class WorkflowTaskManagerImplTest extends BaseWorkflowManagerTestCase {
 		ConfigurationTestUtil.saveConfiguration(
 			_configuration,
 			HashMapDictionaryBuilder.<String, Object>put(
+				"company.administrator.can.publish", true
+			).put(
 				"preventNotifyingAncestorSites", true
 			).build());
 
