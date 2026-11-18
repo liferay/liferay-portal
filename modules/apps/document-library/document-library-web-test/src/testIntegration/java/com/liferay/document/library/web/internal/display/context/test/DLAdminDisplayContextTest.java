@@ -23,7 +23,6 @@ import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
-import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.Folder;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
@@ -44,7 +43,6 @@ import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.JavaConstants;
-import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.Inject;
@@ -53,7 +51,6 @@ import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
 import jakarta.portlet.MutableRenderParameters;
 import jakarta.portlet.PortletMode;
-import jakarta.portlet.PortletPreferences;
 import jakarta.portlet.PortletURL;
 import jakarta.portlet.RenderURL;
 import jakarta.portlet.WindowState;
@@ -101,46 +98,8 @@ public class DLAdminDisplayContextTest {
 
 	@Test
 	public void testGetOrderByCol() throws Exception {
-		Assert.assertEquals("modifiedDate", _getOrderByCol(null, null));
-
-		String keywords = RandomTestUtil.randomString();
-
-		Assert.assertEquals("relevance", _getOrderByCol(keywords, null));
-
-		Assert.assertEquals("size", _getOrderByCol(null, "size"));
-		Assert.assertEquals("size", _getOrderByCol(keywords, null));
-		Assert.assertEquals("relevance", _getOrderByCol(keywords, "relevance"));
-		Assert.assertEquals(
-			"relevance",
-			_mockHttpSession.getAttribute(
-				DLPortletKeys.DOCUMENT_LIBRARY_ADMIN + "_order-by-col"));
-		Assert.assertEquals("modifiedDate", _getOrderByCol(null, null));
-		Assert.assertNull(
-			_mockHttpSession.getAttribute(
-				DLPortletKeys.DOCUMENT_LIBRARY_ADMIN + "_order-by-col"));
-		Assert.assertEquals("relevance", _getOrderByCol(keywords, null));
-		Assert.assertEquals("title", _getOrderByCol(keywords, "title"));
-		Assert.assertEquals("title", _getOrderByCol(null, null));
-	}
-
-	@Test
-	public void testGetOrderByColWithSignedInUser() throws Exception {
-		_signedIn = true;
-
-		Assert.assertEquals("modifiedDate", _getOrderByCol(null, null));
-
-		String keywords = RandomTestUtil.randomString();
-
-		Assert.assertEquals("relevance", _getOrderByCol(keywords, null));
-
-		Assert.assertEquals("size", _getOrderByCol(null, "size"));
-		Assert.assertEquals("size", _getOrderByColPortletPreference());
-		Assert.assertEquals("size", _getOrderByCol(keywords, null));
-		Assert.assertEquals("relevance", _getOrderByCol(keywords, "relevance"));
-		Assert.assertEquals("relevance", _getOrderByColPortletPreference());
-		Assert.assertEquals("modifiedDate", _getOrderByCol(null, null));
-		Assert.assertNull(_getOrderByColPortletPreference());
-		Assert.assertEquals("relevance", _getOrderByCol(keywords, null));
+		_testGetOrderByCol(false);
+		_testGetOrderByCol(true);
 	}
 
 	@Test
@@ -354,14 +313,11 @@ public class DLAdminDisplayContextTest {
 			"getOrderByCol", new Class<?>[0], null);
 	}
 
-	private String _getOrderByColPortletPreference() throws Exception {
-		PortletPreferences portletPreferences =
-			PortletPreferencesFactoryUtil.getLayoutPortletSetup(
-				_company.getCompanyId(), TestPropsValues.getUserId(),
-				PortletKeys.PREFS_OWNER_TYPE_USER, _layout.getPlid(),
-				DLPortletKeys.DOCUMENT_LIBRARY_ADMIN, StringPool.BLANK);
-
-		return portletPreferences.getValue("order-by-col", null);
+	private String _getSavedOrderByCol() throws Exception {
+		return ReflectionTestUtil.invoke(
+			_getDLAdminDisplayContext(_getMockLiferayPortletActionRequest()),
+			"_getPortletPreference",
+			new Class<?>[] {String.class, String.class}, "order-by-col", null);
 	}
 
 	private SearchContainer<Object> _getSearchContainer(
@@ -392,6 +348,27 @@ public class DLAdminDisplayContextTest {
 		themeDisplay.setUser(TestPropsValues.getUser());
 
 		return themeDisplay;
+	}
+
+	private void _testGetOrderByCol(boolean signedIn) throws Exception {
+		_signedIn = signedIn;
+
+		Assert.assertEquals("modifiedDate", _getOrderByCol(null, null));
+
+		String keywords = RandomTestUtil.randomString();
+
+		Assert.assertEquals("relevance", _getOrderByCol(keywords, null));
+
+		Assert.assertEquals("size", _getOrderByCol(null, "size"));
+		Assert.assertEquals("size", _getSavedOrderByCol());
+		Assert.assertEquals("size", _getOrderByCol(keywords, null));
+		Assert.assertEquals("relevance", _getOrderByCol(keywords, "relevance"));
+		Assert.assertEquals("relevance", _getSavedOrderByCol());
+		Assert.assertEquals("modifiedDate", _getOrderByCol(null, null));
+		Assert.assertNull(_getSavedOrderByCol());
+		Assert.assertEquals("relevance", _getOrderByCol(keywords, null));
+		Assert.assertEquals("title", _getOrderByCol(keywords, "title"));
+		Assert.assertEquals("title", _getOrderByCol(null, null));
 	}
 
 	@Inject
