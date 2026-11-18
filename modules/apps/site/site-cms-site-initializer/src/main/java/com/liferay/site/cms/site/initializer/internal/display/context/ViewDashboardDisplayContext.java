@@ -44,6 +44,7 @@ import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.site.cms.site.initializer.internal.constants.CMSSiteInitializerFDSNames;
 import com.liferay.site.cms.site.initializer.internal.util.CommentUtil;
 import com.liferay.site.cms.site.initializer.internal.util.PermissionUtil;
+import com.liferay.site.cms.site.initializer.internal.util.TasksSectionUtil;
 import com.liferay.translation.exporter.TranslationInfoItemFieldValuesExporterRegistry;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -301,19 +302,7 @@ public class ViewDashboardDisplayContext {
 			"redirect", _themeDisplay.getURLCurrent()
 		).put(
 			"tasksSectionFDSName",
-			() -> {
-				ObjectDefinition cmpProjectObjectDefinition =
-					ObjectDefinitionLocalServiceUtil.
-						fetchObjectDefinitionByExternalReferenceCode(
-							"L_CMP_PROJECT", _themeDisplay.getCompanyId());
-
-				if (cmpProjectObjectDefinition == null) {
-					return CMSSiteInitializerFDSNames.TASKS_SECTION;
-				}
-
-				return "com.liferay.content.marketing.platform.web-workflow-" +
-					"tasks";
-			}
+			() -> TasksSectionUtil.getFDSName(_themeDisplay.getCompanyId())
 		).put(
 			"unlinkedContentFDSActionDropdownItems",
 			() ->

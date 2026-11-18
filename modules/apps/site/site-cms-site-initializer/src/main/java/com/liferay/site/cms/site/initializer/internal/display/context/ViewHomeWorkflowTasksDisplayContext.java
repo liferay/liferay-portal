@@ -10,12 +10,13 @@ import com.liferay.object.admin.rest.dto.v1_0.util.ObjectDefinitionUtil;
 import com.liferay.object.admin.rest.resource.v1_0.ObjectDefinitionResource;
 import com.liferay.object.constants.ObjectFolderConstants;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
-import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.PortalUtil;
@@ -24,6 +25,7 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.site.cms.site.initializer.internal.constants.CMSSiteInitializerFDSNames;
+import com.liferay.site.cms.site.initializer.internal.util.TasksSectionUtil;
 
 import jakarta.portlet.ActionRequest;
 
@@ -33,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author Christian Dorado
@@ -53,16 +56,25 @@ public class ViewHomeWorkflowTasksDisplayContext {
 	}
 
 	public Map<String, Object> getReactData() throws Exception {
+		String tasksSectionFDSName = TasksSectionUtil.getFDSName(
+			_themeDisplay.getCompanyId());
+
 		return HashMapBuilder.<String, Object>put(
+			"assigneeFilter", _getAssigneeFilter(tasksSectionFDSName)
+		).put(
+			"fdsActionDropdownItems",
+			() -> {
+				ViewTasksDisplayContext viewTasksDisplayContext =
+					new ViewTasksDisplayContext(_httpServletRequest);
+
+				return viewTasksDisplayContext.getFDSActionDropdownItems();
+			}
+		).put(
 			"id", CMSSiteInitializerFDSNames.HOME_MY_WORKFLOW_TASKS_SECTION
 		).put(
 			"objectDefinitions", _getObjectDefinitionsJSONArray()
 		).put(
-			"tasksURL",
-			PortalUtil.getLayoutFullURL(
-				LayoutLocalServiceUtil.getLayoutByFriendlyURL(
-					_themeDisplay.getScopeGroupId(), false, "/tasks"),
-				_themeDisplay)
+			"tasksSectionFDSName", tasksSectionFDSName
 		).put(
 			"workflowTaskURL",
 			PortletURLBuilder.create(
@@ -72,6 +84,28 @@ public class ViewHomeWorkflowTasksDisplayContext {
 			).setRedirect(
 				_themeDisplay.getURLCurrent()
 			).buildString()
+		).build();
+	}
+
+	private Map<String, Object> _getAssigneeFilter(String tasksSectionFDSName) {
+		if (Objects.equals(
+				tasksSectionFDSName,
+				CMSSiteInitializerFDSNames.TASKS_SECTION)) {
+
+			return HashMapBuilder.<String, Object>put(
+				"id", "assigneeClassPKs"
+			).put(
+				"value", _themeDisplay.getUserId()
+			).build();
+		}
+
+		return HashMapBuilder.<String, Object>put(
+			"id", "cmpAssignTo"
+		).put(
+			"value",
+			StringBundler.concat(
+				PortalUtil.getClassNameId(User.class), StringPool.UNDERLINE,
+				_themeDisplay.getUserId())
 		).build();
 	}
 

@@ -3,379 +3,190 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import ClayButton from '@clayui/button';
-import ClayDropdown from '@clayui/drop-down';
-import ClayIcon from '@clayui/icon';
-import {ClayPaginationBarWithBasicItems} from '@clayui/pagination-bar';
-import {ClayTooltipProvider} from '@clayui/tooltip';
+import ClayLink from '@clayui/link';
 import {
 	FrontendDataSet,
 	IInternalRenderer,
+	IItemsActions,
 } from '@liferay/frontend-data-set-web';
 import {sub} from 'frontend-js-web';
 import React, {useCallback, useEffect, useState} from 'react';
 
-import AssignToModalContent from '../home/modal/AssignToModalContent';
-import UpdateDueDateModalContent from '../home/modal/UpdateDueDateModalContent';
-
-import '../../../css/home/Home.scss';
-import {
-	getWorkflowTasksAssignedToMe,
-	getWorkflowTasksAssignedToMyRoles,
-} from '../../common/services/WorkflowService';
+import {getWorkflowTasksAssignedToMe} from '../../common/services/WorkflowService';
 import {WorkflowTask} from '../../common/types/WorkflowTask';
-import {PAGINATION_BAR_LABELS} from '../../common/utils/constants';
-import {openCMSModal} from '../../common/utils/openCMSModal';
+import {FDS_EVENT_ACTION_PERFORMED} from '../../common/utils/constants';
+import getSectionHref, {
+	toFDSConfigFilters,
+} from '../dashboard/governance/getSectionHref';
 import WorkflowTaskRenderer from '../props_transformer/cell_renderers/WorkflowTaskRenderer';
+import {onWorkflowTaskActionClick} from '../tasks/onWorkflowTaskActionClick';
+import {TASK_QUICK_FILTER_UPDATES} from '../tasks/taskQuickFilterUpdates';
+
+const MAX_WORKFLOW_TASKS = 8;
+
+const VIEWS = [
+	{
+		contentRenderer: 'table',
+		label: 'Table',
+		name: 'table',
+		schema: {
+			fields: [
+				{
+					contentRenderer: 'workflowTaskTableCellRenderer',
+					fieldName: 'renderer',
+					label: Liferay.Language.get('renderer'),
+				},
+			],
+		},
+		style: 'fluid',
+		thumbnail: 'table',
+	},
+];
+
+type AssigneeFilter = {id: string; value: number | string};
+
+type WorkflowTaskItem = WorkflowTask & {embedded: WorkflowTask};
+
+function getTasksHref(
+	assigneeFilter: AssigneeFilter,
+	tasksSectionFDSName: string
+) {
+	return getSectionHref('tasks', tasksSectionFDSName, {
+		filters: [
+			{
+				id: assigneeFilter.id,
+				selectedData: {
+					exclude: false,
+					selectedItems: [
+						{
+							label: Liferay.ThemeDisplay.getUserName(),
+							value: assigneeFilter.value,
+						},
+					],
+				},
+			},
+			...toFDSConfigFilters(TASK_QUICK_FILTER_UPDATES.pending()),
+		],
+	});
+}
 
 export default function ViewWorkflowTasks({
+	assigneeFilter,
+	fdsActionDropdownItems,
 	id,
 	objectDefinitions,
-	tasksURL,
+	tasksSectionFDSName,
 	workflowTaskURL,
 }: {
+	assigneeFilter: AssigneeFilter;
+	fdsActionDropdownItems: IItemsActions[];
 	id: string;
 	objectDefinitions: any[];
-	tasksURL: string;
+	tasksSectionFDSName: string;
 	workflowTaskURL: string;
 }) {
-	const filterItems = [
-		{
-			label: Liferay.Language.get('assigned-to-me'),
-			value: 'assigned-to-me',
-		},
-		{
-			label: Liferay.Language.get('assigned-to-my-roles'),
-			value: 'assigned-to-my-roles',
-		},
-	];
-
-	const [selectedItem, setSelectedItem] = useState({
-		label: Liferay.Language.get('assigned-to-me'),
-		value: 'assigned-to-me',
-	});
-
-	const [workflowTasks, setWorkflowTasks] = useState<{
-		items: WorkflowTask[];
-		totalCount: number;
-	}>({
-		items: [],
-		totalCount: 0,
-	});
-
-	const [pagination, setPagination] = useState({
-		currentPage: 1,
-		pageSize: 8,
-	});
-
-	const handlePaginationDeltaChange = useCallback((value: any) => {
-		setPagination((prevState) => ({
-			...prevState,
-			pageSize: value,
-		}));
-	}, []);
-
-	const handlePaginationPageChange = useCallback((value: any) => {
-		setPagination((prevState) => ({
-			...prevState,
-			currentPage: value,
-		}));
-	}, []);
+	const [workflowTasks, setWorkflowTasks] = useState<WorkflowTaskItem[]>([]);
 
 	const getWorkflowTasks = useCallback(async () => {
 		try {
-			const getWorkflowTasksAPI =
-				selectedItem.value === 'assigned-to-me'
-					? getWorkflowTasksAssignedToMe
-					: getWorkflowTasksAssignedToMyRoles;
-
-			const res = await getWorkflowTasksAPI({
+			const {items} = await getWorkflowTasksAssignedToMe({
 				objectDefinitions,
-				page: pagination.currentPage,
-				pageSize: pagination.pageSize,
+				page: 1,
+				pageSize: MAX_WORKFLOW_TASKS,
 			});
 
-			const items = res.items.map((item) => {
-				return {
-					...item,
-					workflowTaskURL,
-				};
-			});
+			setWorkflowTasks(
+				items.map((item) => {
+					const workflowTask = {...item, workflowTaskURL};
 
-			setWorkflowTasks({
-				items,
-				totalCount: res.totalCount,
-			});
+					return {...workflowTask, embedded: workflowTask};
+				})
+			);
 		}
 		catch (error) {
-			setWorkflowTasks({items: [], totalCount: 0});
+			setWorkflowTasks([]);
 		}
-	}, [pagination, selectedItem.value, workflowTaskURL, objectDefinitions]);
+	}, [objectDefinitions, workflowTaskURL]);
 
 	useEffect(() => {
 		getWorkflowTasks();
 	}, [getWorkflowTasks]);
 
-	const defaultFDSDataSetProps = {
-		customViewsEnabled: false,
-		showManagementBar: false,
-		showPagination: false,
-		showSearch: false,
-		showSelectAll: false,
-	};
+	useEffect(() => {
+		const handleActionPerformed = (event?: {id?: string}) => {
+			if (event?.id === id) {
+				getWorkflowTasks();
+			}
+		};
 
-	const frontendDataSetProps = {
-		...defaultFDSDataSetProps,
-		customRenderers: {
-			tableCell: [
-				{
-					component: WorkflowTaskRenderer,
-					name: 'workflowTaskTableCellRenderer',
-					type: 'internal',
-				} as IInternalRenderer,
-			],
-		},
-		emptyState: {
-			description: Liferay.Language.get(
-				'there-are-no-tasks-assigned-to-you'
-			),
-			image: '',
-			title: Liferay.Language.get('no-tasks'),
-		},
-		hideManagementBarInEmptyState: true,
-		id,
-		items: workflowTasks.items,
-		itemsActions:
-			selectedItem.value === 'assigned-to-me'
-				? [
-						{
-							data: {
-								id: 'assignTo',
-							},
-							label: Liferay.Language.get('assign-to'),
-							onClick: ({itemData}: any) => {
-								openCMSModal({
-									contentComponent: ({
-										closeModal,
-									}: {
-										closeModal: () => void;
-									}) =>
-										AssignToModalContent({
-											assignable: true,
-											closeModal,
-											loadData: getWorkflowTasks,
-											workflowTaskId: Number(itemData.id),
-										}),
-									size: 'md',
-								});
-							},
-						},
-						{
-							data: {
-								id: 'updateDueDate',
-							},
-							label: Liferay.Language.get('update-due-date'),
-							onClick: ({itemData}: any) => {
-								openCMSModal({
-									contentComponent: ({
-										closeModal,
-									}: {
-										closeModal: () => void;
-									}) =>
-										UpdateDueDateModalContent({
-											closeModal,
-											dueDate: itemData.dateDue,
-											loadData: getWorkflowTasks,
-											workflowTaskId: Number(itemData.id),
-										}),
-									size: 'md',
-								});
-							},
-						},
-					]
-				: [
-						{
-							data: {
-								id: 'assignToMe',
-							},
-							label: Liferay.Language.get('assign-to-me'),
-							onClick: ({itemData}: any) => {
-								openCMSModal({
-									contentComponent: ({
-										closeModal,
-									}: {
-										closeModal: () => void;
-									}) =>
-										AssignToModalContent({
-											assignable: false,
-											closeModal,
-											loadData: getWorkflowTasks,
-											workflowTaskId: Number(itemData.id),
-										}),
-									size: 'md',
-								});
-							},
-						},
-						{
-							data: {
-								id: 'assignTo',
-							},
-							label: Liferay.Language.get('assign-to-...'),
-							onClick: ({itemData}: any) => {
-								openCMSModal({
-									contentComponent: ({
-										closeModal,
-									}: {
-										closeModal: () => void;
-									}) =>
-										AssignToModalContent({
-											assignable: true,
-											closeModal,
-											loadData: getWorkflowTasks,
-											workflowTaskId: Number(itemData.id),
-										}),
-									size: 'md',
-								});
-							},
-						},
-						{
-							data: {
-								id: 'updateDueDate',
-							},
-							label: Liferay.Language.get('update-due-date'),
-							onClick: ({itemData}: any) => {
-								openCMSModal({
-									contentComponent: ({
-										closeModal,
-									}: {
-										closeModal: () => void;
-									}) =>
-										UpdateDueDateModalContent({
-											closeModal,
-											dueDate: itemData.dateDue,
-											loadData: getWorkflowTasks,
-											workflowTaskId: Number(itemData.id),
-										}),
-									size: 'md',
-								});
-							},
-						},
-					],
-		views: [
-			{
-				contentRenderer: 'table',
-				label: 'Table',
-				name: 'table',
-				schema: {
-					fields: [
-						{
-							contentRenderer: 'workflowTaskTableCellRenderer',
-							fieldName: 'renderer',
-							label: Liferay.Language.get('renderer'),
-						},
-					],
-				},
-				style: 'fluid',
-				thumbnail: 'table',
-			},
-		],
-	};
+		Liferay.on(FDS_EVENT_ACTION_PERFORMED, handleActionPerformed);
+
+		return () => {
+			Liferay.detach(FDS_EVENT_ACTION_PERFORMED, handleActionPerformed);
+		};
+	}, [getWorkflowTasks, id]);
 
 	return (
 		<div className="container-fluid-max p-2 p-sm-3">
-			<div className="align-items-center c-gapy-2 d-flex flex-wrap justify-content-between mb-4">
+			<div className="align-items-center d-flex justify-content-between mb-4">
 				<span
 					aria-level={2}
-					className="font-weight-semi-bold mr-3 text-4"
+					className="font-weight-semi-bold text-4"
 					role="heading"
 				>
-					{Liferay.Language.get('my-workflow-tasks')}
+					{Liferay.Language.get('my-tasks')}
 				</span>
 
-				<div className="align-items-center d-flex">
-					<ClayDropdown
-						className="filter-dropdown"
-						closeOnClick
-						hasLeftSymbols
-						trigger={
-							<ClayButton
-								className="align-items-center d-flex"
-								displayType="secondary"
-								size="sm"
-							>
-								<span className="text-left text-wrap">
-									{selectedItem.label}
-								</span>
-
-								<ClayIcon
-									className="flex-shrink-0 ml-2"
-									symbol="caret-bottom"
-								/>
-							</ClayButton>
-						}
-					>
-						{filterItems.map((item) => (
-							<ClayDropdown.Item
-								active={item.value === selectedItem.value}
-								key={item.value}
-								onClick={() => {
-									setSelectedItem(item);
-								}}
-								symbolLeft={
-									item.value === selectedItem.value
-										? 'check'
-										: ''
-								}
-							>
-								{item.label}
-							</ClayDropdown.Item>
-						))}
-					</ClayDropdown>
-
-					<ClayTooltipProvider>
-						<ClayButton
-							aria-label={sub(
-								Liferay.Language.get('open-x'),
-								Liferay.Language.get('tasks')
-							)}
-							borderless
-							className="btn-sm cms-btn-icon-only cms-btn-secondary ml-2"
-							displayType="secondary"
-							onClick={() => window.open(tasksURL, '_blank')}
-							title={sub(
-								Liferay.Language.get(
-									'open-x-in-full-page-view'
-								),
-								Liferay.Language.get('tasks')
-							)}
-							type="button"
-						>
-							<ClayIcon
-								className="text-primary"
-								symbol="shortcut"
-							/>
-						</ClayButton>
-					</ClayTooltipProvider>
-				</div>
+				<ClayLink
+					aria-label={sub(
+						Liferay.Language.get('view-all-x'),
+						Liferay.Language.get('my-tasks')
+					)}
+					borderless
+					className="font-weight-semi-bold text-3"
+					href={getTasksHref(assigneeFilter, tasksSectionFDSName)}
+					small
+				>
+					{Liferay.Language.get('view-all')}
+				</ClayLink>
 			</div>
 
-			<div className="cms-fds-fluid cms-section home-custom-empty-state">
-				<FrontendDataSet {...frontendDataSetProps} />
-
-				{workflowTasks.totalCount > 0 && (
-					<ClayPaginationBarWithBasicItems
-						activeDelta={pagination.pageSize}
-						className="mt-3"
-						deltas={[8, 20, 40, 60].map((size) => ({
-							label: size,
-						}))}
-						ellipsisBuffer={3}
-						labels={PAGINATION_BAR_LABELS}
-						onActiveChange={handlePaginationPageChange}
-						onDeltaChange={handlePaginationDeltaChange}
-						totalItems={workflowTasks.totalCount}
-					/>
-				)}
+			<div className="cms-fds-fluid cms-home-my-tasks cms-section custom-empty-state table-valign-top">
+				<FrontendDataSet
+					customRenderers={{
+						tableCell: [
+							{
+								component: WorkflowTaskRenderer,
+								name: 'workflowTaskTableCellRenderer',
+								type: 'internal',
+							} as IInternalRenderer,
+						],
+					}}
+					emptyState={{
+						description: Liferay.Language.get(
+							'there-are-no-tasks-assigned-to-you'
+						),
+						image: '/states/cms_empty_state_tasks.svg',
+						title: Liferay.Language.get('no-tasks-yet'),
+					}}
+					hideManagementBarInEmptyState
+					id={id}
+					items={workflowTasks}
+					itemsActions={fdsActionDropdownItems}
+					onActionDropdownItemClick={(
+						props: Parameters<typeof onWorkflowTaskActionClick>[0]
+					) =>
+						onWorkflowTaskActionClick({
+							...props,
+							loadData: getWorkflowTasks,
+						})
+					}
+					showManagementBar={false}
+					showPagination={false}
+					showSearch={false}
+					showSelectAll={false}
+					views={VIEWS}
+				/>
 			</div>
 		</div>
 	);

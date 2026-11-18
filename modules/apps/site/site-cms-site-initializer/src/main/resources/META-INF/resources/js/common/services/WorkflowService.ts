@@ -51,98 +51,30 @@ export async function getWorkflowTasksAssignedToMe({
 				assetTypes.includes(item.objectReviewed.assetType)
 		);
 
-		const transformedWorkflowTasks = filteredWorkflowTasks.map(
-			(workflowTask) => {
-				const workflowLogs = workflowTask.workflowLogs.filter(
+		const assignedWorkflowTasks = filteredWorkflowTasks.map(
+			(workflowTask) => ({
+				assignWorkflowLog: workflowTask.workflowLogs.find(
 					(item) => item.type === 'TaskAssign'
-				);
-
-				return {
-					...workflowTask,
-					assignedDate: workflowLogs[0].dateCreated,
-					auditUser: workflowLogs[0].auditPerson.name,
-					auditUserImageURL: workflowLogs[0].auditPerson.image,
-				};
-			}
+				)!,
+				workflowTask,
+			})
 		);
 
-		transformedWorkflowTasks.sort((a, b) => {
-			const dateA = new Date(a.assignedDate);
-			const dateB = new Date(b.assignedDate);
-
-			return dateB.getTime() - dateA.getTime();
-		});
-
-		return {
-			items: getPaginatedList({
-				delta: pageSize,
-				items: transformedWorkflowTasks,
-				page,
-			}),
-			totalCount: transformedWorkflowTasks.length,
-		};
-	}
-
-	throw new Error(error);
-}
-
-export async function getWorkflowTasksAssignedToMyRoles({
-	objectDefinitions,
-	page,
-	pageSize,
-}: {
-	objectDefinitions: any[];
-	page: number;
-	pageSize: number;
-}): Promise<{items: WorkflowTask[]; totalCount: number}> {
-	let fetchUrl =
-		'/o/headless-admin-workflow/v1.0/workflow-tasks/assigned-to-my-roles?nestedFields=workflowLogs&';
-
-	fetchUrl =
-		fetchUrl +
-		new URLSearchParams({
-			page: String(-1),
-			pageSize: String(-1),
-		}).toString();
-
-	const {data, error} = await ApiHelper.get<{
-		items: WorkflowTask[];
-		totalCount: number;
-	}>(fetchUrl);
-
-	if (data) {
-		const assetTypes = objectDefinitions.map(
-			(item) => item.label[item.defaultLanguageId]
+		assignedWorkflowTasks.sort(
+			(a, b) =>
+				new Date(b.assignWorkflowLog.dateCreated).getTime() -
+					new Date(a.assignWorkflowLog.dateCreated).getTime() ||
+				b.assignWorkflowLog.id - a.assignWorkflowLog.id
 		);
 
-		const filteredWorkflowTasks = data.items.filter(
-			(item) =>
-				!item.completed &&
-				item.name === 'review' &&
-				assetTypes.includes(item.objectReviewed.assetType)
+		const transformedWorkflowTasks = assignedWorkflowTasks.map(
+			({assignWorkflowLog, workflowTask}) => ({
+				...workflowTask,
+				assignedDate: assignWorkflowLog.dateCreated,
+				auditUser: assignWorkflowLog.auditPerson.name,
+				auditUserImageURL: assignWorkflowLog.auditPerson.image,
+			})
 		);
-
-		const transformedWorkflowTasks = filteredWorkflowTasks.map(
-			(workflowTask) => {
-				const workflowLogs = workflowTask.workflowLogs.filter(
-					(item) => item.type === 'TaskAssign'
-				);
-
-				return {
-					...workflowTask,
-					assignedDate: workflowLogs[0].dateCreated,
-					auditUser: workflowLogs[0].auditPerson.name,
-					auditUserImageURL: workflowLogs[0].auditPerson.image,
-				};
-			}
-		);
-
-		transformedWorkflowTasks.sort((a, b) => {
-			const dateA = new Date(a.assignedDate);
-			const dateB = new Date(b.assignedDate);
-
-			return dateB.getTime() - dateA.getTime();
-		});
 
 		return {
 			items: getPaginatedList({

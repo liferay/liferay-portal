@@ -4,108 +4,78 @@
  */
 
 import '@testing-library/jest-dom';
-import {fireEvent, render, screen} from '@testing-library/react';
+import {serializeFDSConfig} from '@liferay/frontend-data-set-web';
+import {render, screen, waitFor} from '@testing-library/react';
 import React from 'react';
 
 import * as WorkflowService from '../../../../src/main/resources/META-INF/resources/js/common/services/WorkflowService';
 import ViewWorkflowTasks from '../../../../src/main/resources/META-INF/resources/js/main_view/home/ViewWorkflowTasks';
 
+jest.mock('@liferay/frontend-data-set-web', () => ({
+	...(jest.requireActual('@liferay/frontend-data-set-web') as object),
+	serializeFDSConfig: jest.fn(() => 'SERIALIZED_CONFIG'),
+}));
+
 describe('[CMS Dashboard] Components: ViewWorkflowTasks', () => {
-	const originalWindowOpen = window.open;
-
-	beforeAll(() => {
-		window.open = jest.fn();
-	});
-
-	afterAll(() => {
-		window.open = originalWindowOpen;
-	});
-
 	const defaultProps = {
+		assigneeFilter: {id: 'assigneeClassPKs', value: 20164},
+		fdsActionDropdownItems: [],
 		id: 'myWorkflowTasksSection',
 		objectDefinitions: [],
-		tasksURL: 'http://www.test.com/tasks',
+		tasksSectionFDSName: 'tasksSection',
 		workflowTaskURL:
 			'http://www.test.com/workflowTask?p_p_id=com_liferay_portal_workflow_task_web_portlet_MyWorkflowTaskPortlet',
 	};
 
-	it('renders correctly', () => {
-		render(<ViewWorkflowTasks {...defaultProps} />);
-
-		expect(screen.getByText('my-workflow-tasks')).toBeInTheDocument();
-		expect(
-			screen.getByRole('button', {name: 'assigned-to-me'})
-		).toBeInTheDocument();
-
-		fireEvent.click(screen.getByRole('button', {name: 'assigned-to-me'}));
-
-		expect(
-			screen.getByRole('menuitem', {name: 'assigned-to-my-roles'})
-		).toBeInTheDocument();
-
-		expect(screen.getByLabelText('open-x')).toBeInTheDocument();
+	beforeEach(() => {
+		Liferay.ThemeDisplay.getPathFriendlyURLPublic = jest.fn(() => '/web');
+		Liferay.ThemeDisplay.getUserId = jest.fn(() => '20164');
+		Liferay.ThemeDisplay.getUserName = jest.fn(() => 'Test Test');
 	});
 
-	it('opens the Tasks page for both filters', () => {
+	it('links View All to the pending tasks assigned to the user', () => {
 		render(<ViewWorkflowTasks {...defaultProps} />);
 
-		fireEvent.click(screen.getByLabelText('open-x'));
-
-		expect(window.open).toHaveBeenCalledWith(
-			defaultProps.tasksURL,
-			'_blank'
-		);
-
-		fireEvent.click(screen.getByRole('button', {name: 'assigned-to-me'}));
-
 		expect(
-			screen.getByRole('menuitem', {name: 'assigned-to-my-roles'})
+			screen.getByRole('heading', {name: 'my-tasks'})
 		).toBeInTheDocument();
-
-		fireEvent.click(
-			screen.getByRole('menuitem', {name: 'assigned-to-my-roles'})
+		expect(screen.getByText('view-all').closest('a')).toHaveAttribute(
+			'href',
+			'/web/cms/tasks?tasksSection_fdsConfig=SERIALIZED_CONFIG'
 		);
-
-		fireEvent.click(screen.getByLabelText('open-x'));
-
-		expect(window.open).toHaveBeenCalledWith(
-			defaultProps.tasksURL,
-			'_blank'
-		);
-	});
-
-	it('renders the pagination bar with translated labels', async () => {
-		jest.spyOn(
-			WorkflowService,
-			'getWorkflowTasksAssignedToMe'
-		).mockResolvedValue({
-			items: [
+		expect(serializeFDSConfig).toHaveBeenCalledWith({
+			filters: [
 				{
-					assignedDate: '2026-09-30T10:00:00Z',
-					assigneePerson: {id: 1, name: 'Test User'},
-					auditUser: 'Test User',
-					auditUserImageURL: '',
-					completed: false,
-					dateDue: '',
-					id: '1',
-					name: 'review',
-					objectReviewed: {
-						assetTitle: 'Test Content',
-						assetType: 'Basic Web Content',
-						id: 2,
+					id: 'assigneeClassPKs',
+					selectedData: {
+						exclude: false,
+						selectedItems: [{label: 'Test Test', value: 20164}],
 					},
-					workflowLogs: [],
-					workflowTaskURL: defaultProps.workflowTaskURL,
+				},
+				{
+					id: 'completed',
+					selectedData: {
+						exclude: false,
+						selectedItems: [{label: 'pending', value: 'false'}],
+					},
 				},
 			],
-			totalCount: 1,
-		} as any);
+		});
+	});
+
+	it('requests the first 8 tasks assigned to the user', async () => {
+		const getWorkflowTasksAssignedToMe = jest
+			.spyOn(WorkflowService, 'getWorkflowTasksAssignedToMe')
+			.mockResolvedValue({items: [], totalCount: 0});
 
 		render(<ViewWorkflowTasks {...defaultProps} />);
 
-		expect(
-			await screen.findByText('showing-x-to-x-of-x-entries')
-		).toBeInTheDocument();
-		expect(screen.getByText('x-items')).toBeInTheDocument();
+		await waitFor(() =>
+			expect(getWorkflowTasksAssignedToMe).toHaveBeenCalledWith({
+				objectDefinitions: [],
+				page: 1,
+				pageSize: 8,
+			})
+		);
 	});
 });

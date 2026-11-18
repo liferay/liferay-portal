@@ -10,24 +10,22 @@ import {WorkflowTask} from '../../../common/types/WorkflowTask';
 
 const WorkflowTaskRenderer = ({itemData}: {itemData: WorkflowTask}) => {
 	return (
-		<span className="align-items-center d-flex">
-			<div className="autofit-col">
-				<div className="c-mr-2 sticker sticker-circle sticker-lg sticker-secondary">
-					<span className="inline-item">
-						<img
-							className="avatar img-fluid logo-img mw-100 rounded-circle"
-							src={
-								itemData.auditUserImageURL
-									? itemData.auditUserImageURL
-									: '/image/user_portrait?img_id=0'
-							}
-						/>
-					</span>
-				</div>
+		<span className="align-items-start d-flex pb-2">
+			<div className="flex-shrink-0 mr-3 sticker sticker-circle sticker-secondary">
+				<span className="inline-item">
+					<img
+						className="avatar img-fluid logo-img mw-100 rounded-circle"
+						src={
+							itemData.auditUserImageURL
+								? itemData.auditUserImageURL
+								: '/image/user_portrait?img_id=0'
+						}
+					/>
+				</span>
 			</div>
 
-			<div className="autofit-col autofit-col-expand mt-3">
-				<p className="list-group-text text-3 text-dark">
+			<div className="flex-grow-1">
+				<p className="list-group-text mb-0 text-3 text-dark">
 					{sub(
 						Liferay.Language.get(
 							'x-sent-you-x-for-x-in-the-workflow'
@@ -52,7 +50,7 @@ const WorkflowTaskRenderer = ({itemData}: {itemData: WorkflowTask}) => {
 					)}
 				</p>
 
-				<p className="text-3 text-secondary">
+				<p className="mb-0 text-3 text-secondary">
 					{dateUtils.fromNow(new Date(itemData?.assignedDate))}
 				</p>
 			</div>
