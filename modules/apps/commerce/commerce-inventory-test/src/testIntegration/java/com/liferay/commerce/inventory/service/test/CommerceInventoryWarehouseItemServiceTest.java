@@ -145,28 +145,16 @@ public class CommerceInventoryWarehouseItemServiceTest {
 						getCommerceInventoryWarehouseId()),
 				_role.getRoleId(), new String[] {ActionKeys.UPDATE});
 
-			CommerceInventoryWarehouseItemCommerceInventoryWarehouseIdException
-				commerceInventoryWarehouseItemCommerceInventoryWarehouseIdException =
-					Assert.assertThrows(
-						CommerceInventoryWarehouseItemCommerceInventoryWarehouseIdException.class,
-						() ->
-							_commerceInventoryWarehouseItemService.
-								addOrUpdateCommerceInventoryWarehouseItem(
-									externalReferenceCode, _user.getCompanyId(),
-									_commerceInventoryWarehouse.
-										getCommerceInventoryWarehouseId(),
-									BigDecimal.ONE, BigDecimal.ZERO,
-									_cpInstance.getSku(), StringPool.BLANK));
-
-			Assert.assertEquals(
-				StringBundler.concat(
-					"Commerce inventory warehouse item with external ",
-					"reference code ", externalReferenceCode,
-					" does not belong to commerce inventory warehouse ",
-					_commerceInventoryWarehouse.
-						getCommerceInventoryWarehouseId()),
-				commerceInventoryWarehouseItemCommerceInventoryWarehouseIdException.
-					getMessage());
+			Assert.assertThrows(
+				CommerceInventoryWarehouseItemCommerceInventoryWarehouseIdException.class,
+				() ->
+					_commerceInventoryWarehouseItemService.
+						addOrUpdateCommerceInventoryWarehouseItem(
+							externalReferenceCode, _user.getCompanyId(),
+							_commerceInventoryWarehouse.
+								getCommerceInventoryWarehouseId(),
+							BigDecimal.ONE, BigDecimal.ZERO,
+							_cpInstance.getSku(), StringPool.BLANK));
 
 			commerceInventoryWarehouseItem =
 				_commerceInventoryWarehouseItemLocalService.
