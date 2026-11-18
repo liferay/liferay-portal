@@ -24,6 +24,7 @@ dependencies {
 	testImplementation group: "org.apache.logging.log4j", name: "log4j-core", version: "2.20.0"
 	testImplementation group: "org.jabsorb", name: "jabsorb", version: "1.3.1"
 	testImplementation group: "org.jodd", name: "jodd-json", version: "6.0.3"
+	testImplementation group: "org.mockito", name: "mockito-core", version: "5.14.2"
 	testImplementation group: "org.slf4j", name: "slf4j-api", version: "1.7.26"
 	testImplementation project(":modules:osb-faro-api")
 }
