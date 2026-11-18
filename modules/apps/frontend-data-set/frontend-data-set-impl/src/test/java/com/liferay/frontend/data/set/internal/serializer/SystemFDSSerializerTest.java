@@ -18,7 +18,6 @@ import com.liferay.frontend.data.set.filter.GroupedFDSFilters;
 import com.liferay.frontend.data.set.filter.SelectionFDSFilterItem;
 import com.liferay.frontend.data.set.internal.filter.ClientExtensionFDSFilterContextContributor;
 import com.liferay.frontend.data.set.internal.filter.DateRangeFDSFilterContextContributor;
-import com.liferay.frontend.data.set.internal.filter.FDSFilterContextContributorRegistryImpl;
 import com.liferay.frontend.data.set.internal.filter.FDSFilterRegistryImpl;
 import com.liferay.frontend.data.set.internal.filter.SelectionFDSFilterContextContributor;
 import com.liferay.frontend.data.set.internal.url.FDSAPIURLResolverRegistryImpl;
@@ -376,29 +375,14 @@ public class SystemFDSSerializerTest extends BaseFDSSerializerTestCase {
 
 		ServiceTrackerMap
 			<String,
-			 List
-				 <ServiceTrackerCustomizerFactory.ServiceWrapper
-					 <FDSFilterContextContributor>>> serviceTrackerMap1 =
-						ServiceTrackerMapFactory.openMultiValueMap(
-							bundleContext, FDSFilterContextContributor.class,
-							"frontend.data.set.filter.type",
-							ServiceTrackerCustomizerFactory.
-								<FDSFilterContextContributor>serviceWrapper(
-									bundleContext));
-
-		systemFDSSerializer.fdsFilterContextContributorRegistry =
-			new FDSFilterContextContributorRegistryImpl(serviceTrackerMap1);
-
-		ServiceTrackerMap
-			<String,
 			 List<ServiceTrackerCustomizerFactory.ServiceWrapper<FDSFilter>>>
-				serviceTrackerMap2 = ServiceTrackerMapFactory.openMultiValueMap(
+				serviceTrackerMap = ServiceTrackerMapFactory.openMultiValueMap(
 					bundleContext, FDSFilter.class, "frontend.data.set.name",
 					ServiceTrackerCustomizerFactory.<FDSFilter>serviceWrapper(
 						bundleContext));
 
 		systemFDSSerializer.fdsFilterRegistry = new FDSFilterRegistryImpl(
-			serviceTrackerMap2);
+			serviceTrackerMap);
 
 		mockLanguage();
 
@@ -773,8 +757,7 @@ public class SystemFDSSerializerTest extends BaseFDSSerializerTestCase {
 
 		_unregisterServices();
 
-		serviceTrackerMap1.close();
-		serviceTrackerMap2.close();
+		serviceTrackerMap.close();
 	}
 
 	@Test

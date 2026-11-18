@@ -8,17 +8,14 @@ package com.liferay.frontend.data.set.internal.serializer;
 import com.liferay.frontend.data.set.SystemFDSEntry;
 import com.liferay.frontend.data.set.SystemFDSEntryRegistry;
 import com.liferay.frontend.data.set.action.FDSBulkActions;
-import com.liferay.frontend.data.set.action.FDSBulkActionsRegistry;
 import com.liferay.frontend.data.set.action.FDSCreationMenu;
 import com.liferay.frontend.data.set.action.FDSCreationMenuRegistry;
 import com.liferay.frontend.data.set.action.FDSItemsActions;
 import com.liferay.frontend.data.set.action.FDSItemsActionsRegistry;
 import com.liferay.frontend.data.set.filter.FDSFilter;
 import com.liferay.frontend.data.set.filter.FDSFilterContextContributor;
-import com.liferay.frontend.data.set.filter.FDSFilterContextContributorRegistry;
 import com.liferay.frontend.data.set.filter.FDSFilterRegistry;
 import com.liferay.frontend.data.set.filter.GroupedFDSFilters;
-import com.liferay.frontend.data.set.filter.GroupedFDSFiltersRegistry;
 import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
 import com.liferay.frontend.data.set.model.FDSSortItem;
 import com.liferay.frontend.data.set.serializer.FDSSerializer;
@@ -26,11 +23,12 @@ import com.liferay.frontend.data.set.sort.FDSSorts;
 import com.liferay.frontend.data.set.sort.FDSSortsRegistry;
 import com.liferay.frontend.data.set.view.FDSView;
 import com.liferay.frontend.data.set.view.FDSViewContextContributor;
-import com.liferay.frontend.data.set.view.FDSViewContextContributorRegistry;
 import com.liferay.frontend.data.set.view.FDSViewRegistry;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
 import com.liferay.object.rest.manager.v1_0.ObjectEntryManagerRegistry;
 import com.liferay.object.service.ObjectDefinitionLocalService;
+import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
+import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -49,7 +47,10 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import org.osgi.framework.BundleContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 
 /**
@@ -126,7 +127,7 @@ public class SystemFDSSerializer
 		String fdsName, HttpServletRequest httpServletRequest) {
 
 		FDSBulkActions fdsBulkActions =
-			fdsBulkActionsRegistry.getFDSBulkActions(fdsName);
+			_fdsBulkActionsServiceTrackerMap.getService(fdsName);
 
 		if (fdsBulkActions == null) {
 			return Collections.emptyList();
@@ -180,7 +181,7 @@ public class SystemFDSSerializer
 		JSONArray jsonArray = JSONUtil.putAll();
 
 		GroupedFDSFilters groupedFDSFilters =
-			groupedFDSFiltersRegistry.getGroupedFDSFilters(fdsName);
+			_groupedFDSFiltersServiceTrackerMap.getService(fdsName);
 
 		if (groupedFDSFilters == null) {
 			return jsonArray;
@@ -423,24 +424,26 @@ public class SystemFDSSerializer
 			);
 
 			List<FDSViewContextContributor> fdsViewContextContributors =
-				fdsViewContextContributorRegistry.getFDSViewContextContributors(
+				_fdsViewContextContributorsServiceTrackerMap.getService(
 					fdsView.getContentRenderer());
 
-			for (FDSViewContextContributor fdsViewContextContributor :
-					fdsViewContextContributors) {
+			if (fdsViewContextContributors != null) {
+				for (FDSViewContextContributor fdsViewContextContributor :
+						fdsViewContextContributors) {
 
-				Map<String, Object> fdsViewContext =
-					fdsViewContextContributor.getFDSViewContext(
-						fdsView, PortalUtil.getLocale(httpServletRequest));
+					Map<String, Object> fdsViewContext =
+						fdsViewContextContributor.getFDSViewContext(
+							fdsView, PortalUtil.getLocale(httpServletRequest));
 
-				if (fdsViewContext == null) {
-					continue;
-				}
+					if (fdsViewContext == null) {
+						continue;
+					}
 
-				for (Map.Entry<String, Object> entry :
-						fdsViewContext.entrySet()) {
+					for (Map.Entry<String, Object> entry :
+							fdsViewContext.entrySet()) {
 
-					jsonObject.put(entry.getKey(), entry.getValue());
+						jsonObject.put(entry.getKey(), entry.getValue());
+					}
 				}
 			}
 
@@ -450,15 +453,38 @@ public class SystemFDSSerializer
 		return jsonArray;
 	}
 
-	@Reference
-	protected FDSBulkActionsRegistry fdsBulkActionsRegistry;
+	@Activate
+	protected void activate(BundleContext bundleContext) {
+		_fdsBulkActionsServiceTrackerMap =
+			ServiceTrackerMapFactory.openSingleValueMap(
+				bundleContext, FDSBulkActions.class, "frontend.data.set.name");
+
+		_fdsFilterContextContributorsServiceTrackerMap =
+			ServiceTrackerMapFactory.openMultiValueMap(
+				bundleContext, FDSFilterContextContributor.class,
+				"frontend.data.set.filter.type");
+
+		_fdsViewContextContributorsServiceTrackerMap =
+			ServiceTrackerMapFactory.openMultiValueMap(
+				bundleContext, FDSViewContextContributor.class,
+				"frontend.data.set.view.name");
+
+		_groupedFDSFiltersServiceTrackerMap =
+			ServiceTrackerMapFactory.openSingleValueMap(
+				bundleContext, GroupedFDSFilters.class,
+				"frontend.data.set.name");
+	}
+
+	@Deactivate
+	protected void deactivate() {
+		_fdsBulkActionsServiceTrackerMap.close();
+		_fdsFilterContextContributorsServiceTrackerMap.close();
+		_fdsViewContextContributorsServiceTrackerMap.close();
+		_groupedFDSFiltersServiceTrackerMap.close();
+	}
 
 	@Reference
 	protected FDSCreationMenuRegistry fdsCreationMenuRegistry;
-
-	@Reference
-	protected FDSFilterContextContributorRegistry
-		fdsFilterContextContributorRegistry;
 
 	@Reference
 	protected FDSFilterRegistry fdsFilterRegistry;
@@ -470,14 +496,7 @@ public class SystemFDSSerializer
 	protected FDSSortsRegistry fdsSortsRegistry;
 
 	@Reference
-	protected FDSViewContextContributorRegistry
-		fdsViewContextContributorRegistry;
-
-	@Reference
 	protected FDSViewRegistry fdsViewRegistry;
-
-	@Reference
-	protected GroupedFDSFiltersRegistry groupedFDSFiltersRegistry;
 
 	@Reference
 	protected SystemFDSEntryRegistry systemFDSEntryRegistry;
@@ -506,24 +525,26 @@ public class SystemFDSSerializer
 			);
 
 			List<FDSFilterContextContributor> fdsFilterContextContributors =
-				fdsFilterContextContributorRegistry.
-					getFDSFilterContextContributors(fdsFilter.getType());
+				_fdsFilterContextContributorsServiceTrackerMap.getService(
+					fdsFilter.getType());
 
-			for (FDSFilterContextContributor fdsFilterContextContributor :
-					fdsFilterContextContributors) {
+			if (fdsFilterContextContributors != null) {
+				for (FDSFilterContextContributor fdsFilterContextContributor :
+						fdsFilterContextContributors) {
 
-				Map<String, Object> fdsFilterContext =
-					fdsFilterContextContributor.getFDSFilterContext(
-						fdsFilter, locale);
+					Map<String, Object> fdsFilterContext =
+						fdsFilterContextContributor.getFDSFilterContext(
+							fdsFilter, locale);
 
-				if (fdsFilterContext == null) {
-					continue;
-				}
+					if (fdsFilterContext == null) {
+						continue;
+					}
 
-				for (Map.Entry<String, Object> entry :
-						fdsFilterContext.entrySet()) {
+					for (Map.Entry<String, Object> entry :
+							fdsFilterContext.entrySet()) {
 
-					jsonObject.put(entry.getKey(), entry.getValue());
+						jsonObject.put(entry.getKey(), entry.getValue());
+					}
 				}
 			}
 
@@ -572,6 +593,15 @@ public class SystemFDSSerializer
 		}
 
 	};
+
+	private ServiceTrackerMap<String, FDSBulkActions>
+		_fdsBulkActionsServiceTrackerMap;
+	private ServiceTrackerMap<String, List<FDSFilterContextContributor>>
+		_fdsFilterContextContributorsServiceTrackerMap;
+	private ServiceTrackerMap<String, List<FDSViewContextContributor>>
+		_fdsViewContextContributorsServiceTrackerMap;
+	private ServiceTrackerMap<String, GroupedFDSFilters>
+		_groupedFDSFiltersServiceTrackerMap;
 
 	@Reference
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
