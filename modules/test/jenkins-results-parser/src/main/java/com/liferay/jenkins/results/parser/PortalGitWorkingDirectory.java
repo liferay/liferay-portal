@@ -161,14 +161,13 @@ public class PortalGitWorkingDirectory extends GitWorkingDirectory {
 			checkUnstagedFiles, excludesPathMatchers, includesPathMatchers);
 
 		PortalGitWorkingDirectory publicPortalGitWorkingDirectory =
-			getPublicPortalGitWorkingDirectory();
+			_getPublicPortalGitWorkingDirectory();
 
 		if (publicPortalGitWorkingDirectory == null) {
 			return modifiedFiles;
 		}
 
 		List<File> publicModifiedFiles = new ArrayList<>();
-
 		File publicWorkingDirectory =
 			publicPortalGitWorkingDirectory.getWorkingDirectory();
 
@@ -496,24 +495,6 @@ public class PortalGitWorkingDirectory extends GitWorkingDirectory {
 		}
 
 		return JenkinsResultsParserUtil.getCanonicalFile(portalPrivateDir);
-	}
-
-	public PortalGitWorkingDirectory getPublicPortalGitWorkingDirectory() {
-		if (_publicPortalGitWorkingDirectory != null) {
-			return _publicPortalGitWorkingDirectory;
-		}
-
-		String upstreamBranchName = getUpstreamBranchName();
-
-		if (!upstreamBranchName.endsWith("-private")) {
-			return null;
-		}
-
-		_publicPortalGitWorkingDirectory =
-			GitWorkingDirectoryFactory.newPortalGitWorkingDirectory(
-				upstreamBranchName.replaceAll("-private$", ""));
-
-		return _publicPortalGitWorkingDirectory;
 	}
 
 	public Properties getReleaseProperties() {
@@ -934,6 +915,24 @@ public class PortalGitWorkingDirectory extends GitWorkingDirectory {
 		}
 
 		return jsUnitFiles;
+	}
+
+	private PortalGitWorkingDirectory _getPublicPortalGitWorkingDirectory() {
+		if (_publicPortalGitWorkingDirectory != null) {
+			return _publicPortalGitWorkingDirectory;
+		}
+
+		String upstreamBranchName = getUpstreamBranchName();
+
+		if (!upstreamBranchName.endsWith("-private")) {
+			return null;
+		}
+
+		_publicPortalGitWorkingDirectory =
+			GitWorkingDirectoryFactory.newPortalGitWorkingDirectory(
+				upstreamBranchName.replaceAll("-private$", ""));
+
+		return _publicPortalGitWorkingDirectory;
 	}
 
 	private boolean _isGitArchiveYarnCacheEnabled() {
