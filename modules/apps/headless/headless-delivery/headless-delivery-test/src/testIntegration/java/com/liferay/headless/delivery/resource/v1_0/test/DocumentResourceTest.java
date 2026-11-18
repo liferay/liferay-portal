@@ -6,6 +6,7 @@
 package com.liferay.headless.delivery.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFileEntryMetadata;
 import com.liferay.document.library.kernel.model.DLFileEntryType;
@@ -29,6 +30,7 @@ import com.liferay.headless.delivery.client.permission.Permission;
 import com.liferay.headless.delivery.client.resource.v1_0.DocumentResource;
 import com.liferay.headless.delivery.client.serdes.v1_0.DocumentSerDes;
 import com.liferay.headless.delivery.resource.v1_0.test.util.DisplayPageTestUtil;
+import com.liferay.headless.delivery.resource.v1_0.test.util.TaxonomyCategoryTestUtil;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -128,6 +130,8 @@ public class DocumentResourceTest extends BaseDocumentResourceTestCase {
 	@Test
 	public void testGetDocument() throws Exception {
 		super.testGetDocument();
+
+		_testGetDocumentTaxonomyCategoryBriefsWithoutViewPermission();
 
 		Document document1 = documentResource.postSiteDocument(
 			testGroup.getGroupId(), randomDocument(), getMultipartFiles());
@@ -665,6 +669,54 @@ public class DocumentResourceTest extends BaseDocumentResourceTestCase {
 
 		Assert.assertFalse(actions.containsKey("create"));
 		Assert.assertFalse(actions.containsKey("createBatch"));
+	}
+
+	private void _testGetDocumentTaxonomyCategoryBriefsWithoutViewPermission()
+		throws Exception {
+
+		AssetCategory assetCategory = TaxonomyCategoryTestUtil.addAssetCategory(
+			testGroup.getGroupId());
+		AssetCategory ownerAssetCategory =
+			TaxonomyCategoryTestUtil.addOwnerAssetCategory(
+				testGroup.getGroupId());
+
+		Document document = randomDocument();
+
+		document.setTaxonomyCategoryIds(
+			new Long[] {
+				assetCategory.getCategoryId(),
+				ownerAssetCategory.getCategoryId()
+			});
+		document.setViewableBy(Document.ViewableBy.ANYONE);
+
+		document = documentResource.postSiteDocument(
+			testGroup.getGroupId(), document, getMultipartFiles());
+
+		TaxonomyCategoryTestUtil.assertTaxonomyCategoryBriefs(
+			new AssetCategory[] {assetCategory, ownerAssetCategory},
+			document.getTaxonomyCategoryBriefs());
+
+		String password = RandomTestUtil.randomString();
+
+		User user = UserTestUtil.addUser(testCompany, password);
+
+		DocumentResource userWithoutPermissionsDocumentResource =
+			DocumentResource.builder(
+			).authentication(
+				user.getEmailAddress(), password
+			).endpoint(
+				testCompany.getVirtualHostname(),
+				PortalUtil.getPortalServerPort(false), "http"
+			).locale(
+				LocaleUtil.getDefault()
+			).build();
+
+		document = userWithoutPermissionsDocumentResource.getDocument(
+			document.getId());
+
+		TaxonomyCategoryTestUtil.assertTaxonomyCategoryBriefs(
+			new AssetCategory[] {assetCategory},
+			document.getTaxonomyCategoryBriefs());
 	}
 
 	private void _testPatchDocumentWithDates() throws Exception {

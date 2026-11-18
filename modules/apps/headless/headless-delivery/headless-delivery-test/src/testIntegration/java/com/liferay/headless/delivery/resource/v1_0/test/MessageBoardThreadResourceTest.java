@@ -6,11 +6,13 @@
 package com.liferay.headless.delivery.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.headless.delivery.client.dto.v1_0.MessageBoardThread;
 import com.liferay.headless.delivery.client.pagination.Page;
 import com.liferay.headless.delivery.client.pagination.Pagination;
 import com.liferay.headless.delivery.client.resource.v1_0.MessageBoardThreadResource;
 import com.liferay.headless.delivery.client.serdes.v1_0.MessageBoardThreadSerDes;
+import com.liferay.headless.delivery.resource.v1_0.test.util.TaxonomyCategoryTestUtil;
 import com.liferay.message.boards.model.MBCategory;
 import com.liferay.message.boards.model.MBMessage;
 import com.liferay.message.boards.model.MBThread;
@@ -22,6 +24,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -93,6 +96,8 @@ public class MessageBoardThreadResourceTest
 	@Test
 	public void testGetMessageBoardThread() throws Exception {
 		super.testGetMessageBoardThread();
+
+		_testGetMessageBoardThreadTaxonomyCategoryBriefsWithoutViewPermission();
 
 		MessageBoardThread messageBoardThread =
 			testGetMessageBoardThread_addMessageBoardThread();
@@ -310,6 +315,47 @@ public class MessageBoardThreadResourceTest
 		).locale(
 			LocaleUtil.getDefault()
 		).build();
+	}
+
+	private void _testGetMessageBoardThreadTaxonomyCategoryBriefsWithoutViewPermission()
+		throws Exception {
+
+		AssetCategory assetCategory = TaxonomyCategoryTestUtil.addAssetCategory(
+			testGroup.getGroupId());
+		AssetCategory ownerAssetCategory =
+			TaxonomyCategoryTestUtil.addOwnerAssetCategory(
+				testGroup.getGroupId());
+
+		MessageBoardThread messageBoardThread = randomMessageBoardThread();
+
+		messageBoardThread.setTaxonomyCategoryIds(
+			new Long[] {
+				assetCategory.getCategoryId(),
+				ownerAssetCategory.getCategoryId()
+			});
+		messageBoardThread.setViewableBy(MessageBoardThread.ViewableBy.ANYONE);
+
+		MBCategory mbCategory = MBCategoryLocalServiceUtil.addCategory(
+			null, TestPropsValues.getUserId(), testGroup.getGroupId(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			ServiceContextTestUtil.getServiceContext(testGroup.getGroupId()));
+
+		messageBoardThread =
+			messageBoardThreadResource.
+				postMessageBoardSectionMessageBoardThread(
+					mbCategory.getCategoryId(), messageBoardThread);
+
+		TaxonomyCategoryTestUtil.assertTaxonomyCategoryBriefs(
+			new AssetCategory[] {assetCategory, ownerAssetCategory},
+			messageBoardThread.getTaxonomyCategoryBriefs());
+
+		messageBoardThread =
+			_getUserWithoutPermissionsMessageBoardThreadResource().
+				getMessageBoardThread(messageBoardThread.getId());
+
+		TaxonomyCategoryTestUtil.assertTaxonomyCategoryBriefs(
+			new AssetCategory[] {assetCategory},
+			messageBoardThread.getTaxonomyCategoryBriefs());
 	}
 
 	private MBCategory _mbCategory;

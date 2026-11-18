@@ -6,16 +6,23 @@
 package com.liferay.headless.delivery.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.headless.delivery.client.dto.v1_0.KnowledgeBaseArticle;
+import com.liferay.headless.delivery.client.resource.v1_0.KnowledgeBaseArticleResource;
+import com.liferay.headless.delivery.resource.v1_0.test.util.TaxonomyCategoryTestUtil;
 import com.liferay.knowledge.base.model.KBArticle;
 import com.liferay.knowledge.base.model.KBFolder;
 import com.liferay.knowledge.base.service.KBArticleLocalServiceUtil;
 import com.liferay.knowledge.base.service.KBFolderLocalServiceUtil;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.DateTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -91,6 +98,15 @@ public class KnowledgeBaseArticleResourceTest
 			knowledgeBaseArticleResource.
 				deleteKnowledgeBaseArticleMyRatingHttpResponse(
 					irrelevantKnowledgeBaseArticle.getId()));
+	}
+
+	@Override
+	@Test
+	@TestInfo("LPD-116125")
+	public void testGetKnowledgeBaseArticle() throws Exception {
+		super.testGetKnowledgeBaseArticle();
+
+		_testGetKnowledgeBaseArticleTaxonomyCategoryBriefsWithoutViewPermission();
 	}
 
 	@Ignore
@@ -255,6 +271,59 @@ public class KnowledgeBaseArticleResourceTest
 		testGetKnowledgeBaseFolderKnowledgeBaseArticlesPage_getKnowledgeBaseFolderId() {
 
 		return _kbFolder.getKbFolderId();
+	}
+
+	private void _testGetKnowledgeBaseArticleTaxonomyCategoryBriefsWithoutViewPermission()
+		throws Exception {
+
+		AssetCategory assetCategory = TaxonomyCategoryTestUtil.addAssetCategory(
+			testGroup.getGroupId());
+		AssetCategory ownerAssetCategory =
+			TaxonomyCategoryTestUtil.addOwnerAssetCategory(
+				testGroup.getGroupId());
+
+		KnowledgeBaseArticle knowledgeBaseArticle =
+			randomKnowledgeBaseArticle();
+
+		knowledgeBaseArticle.setTaxonomyCategoryIds(
+			new Long[] {
+				assetCategory.getCategoryId(),
+				ownerAssetCategory.getCategoryId()
+			});
+		knowledgeBaseArticle.setViewableBy(
+			KnowledgeBaseArticle.ViewableBy.ANYONE);
+
+		knowledgeBaseArticle =
+			knowledgeBaseArticleResource.postSiteKnowledgeBaseArticle(
+				testGroup.getGroupId(), knowledgeBaseArticle);
+
+		TaxonomyCategoryTestUtil.assertTaxonomyCategoryBriefs(
+			new AssetCategory[] {assetCategory, ownerAssetCategory},
+			knowledgeBaseArticle.getTaxonomyCategoryBriefs());
+
+		String password = RandomTestUtil.randomString();
+
+		User user = UserTestUtil.addUser(testCompany, password);
+
+		KnowledgeBaseArticleResource
+			userWithoutPermissionsKnowledgeBaseArticleResource =
+				KnowledgeBaseArticleResource.builder(
+				).authentication(
+					user.getEmailAddress(), password
+				).endpoint(
+					testCompany.getVirtualHostname(),
+					PortalUtil.getPortalServerPort(false), "http"
+				).locale(
+					LocaleUtil.getDefault()
+				).build();
+
+		knowledgeBaseArticle =
+			userWithoutPermissionsKnowledgeBaseArticleResource.
+				getKnowledgeBaseArticle(knowledgeBaseArticle.getId());
+
+		TaxonomyCategoryTestUtil.assertTaxonomyCategoryBriefs(
+			new AssetCategory[] {assetCategory},
+			knowledgeBaseArticle.getTaxonomyCategoryBriefs());
 	}
 
 	private Date _truncateMilliseconds(Date date) {

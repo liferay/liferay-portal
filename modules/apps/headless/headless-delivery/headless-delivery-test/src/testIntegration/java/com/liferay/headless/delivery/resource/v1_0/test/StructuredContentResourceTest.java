@@ -65,6 +65,7 @@ import com.liferay.headless.delivery.client.resource.v1_0.StructuredContentResou
 import com.liferay.headless.delivery.dto.v1_0.util.DDMValueUtil;
 import com.liferay.headless.delivery.dynamic.data.mapping.DDMFormFieldUtil;
 import com.liferay.headless.delivery.resource.v1_0.test.util.DisplayPageTestUtil;
+import com.liferay.headless.delivery.resource.v1_0.test.util.TaxonomyCategoryTestUtil;
 import com.liferay.journal.constants.JournalArticleConstants;
 import com.liferay.journal.constants.JournalFolderConstants;
 import com.liferay.journal.model.JournalArticle;
@@ -472,6 +473,7 @@ public class StructuredContentResourceTest
 		super.testGetStructuredContent();
 
 		_testGetStructuredContentAssetLibrary();
+		_testGetStructuredContentTaxonomyCategoryBriefsWithoutViewPermission();
 		_testGetStructuredContentWithComplexDDMStructure(false);
 		_testGetStructuredContentWithComplexDDMStructure(true);
 		_testGetStructuredContentWithComplexDDMStructureAndAcceptAllLanguagesHeader(
@@ -2262,6 +2264,56 @@ public class StructuredContentResourceTest
 			journalFolder3.getFolderId(),
 			GetterUtil.getLong(
 				getStructuredContent3.getStructuredContentFolderId()));
+	}
+
+	private void _testGetStructuredContentTaxonomyCategoryBriefsWithoutViewPermission()
+		throws Exception {
+
+		AssetCategory assetCategory = TaxonomyCategoryTestUtil.addAssetCategory(
+			testGroup.getGroupId());
+		AssetCategory ownerAssetCategory =
+			TaxonomyCategoryTestUtil.addOwnerAssetCategory(
+				testGroup.getGroupId());
+
+		StructuredContent structuredContent = randomStructuredContent();
+
+		structuredContent.setTaxonomyCategoryIds(
+			new Long[] {
+				assetCategory.getCategoryId(),
+				ownerAssetCategory.getCategoryId()
+			});
+		structuredContent.setViewableBy(StructuredContent.ViewableBy.ANYONE);
+
+		structuredContent = structuredContentResource.postSiteStructuredContent(
+			testGroup.getGroupId(), structuredContent);
+
+		TaxonomyCategoryTestUtil.assertTaxonomyCategoryBriefs(
+			new AssetCategory[] {assetCategory, ownerAssetCategory},
+			structuredContent.getTaxonomyCategoryBriefs());
+
+		String password = RandomTestUtil.randomString();
+
+		User user = UserTestUtil.addUser(testCompany, password);
+
+		StructuredContentResource
+			userWithoutPermissionsStructuredContentResource =
+				StructuredContentResource.builder(
+				).authentication(
+					user.getEmailAddress(), password
+				).endpoint(
+					testCompany.getVirtualHostname(),
+					PortalUtil.getPortalServerPort(false), "http"
+				).locale(
+					LocaleUtil.getDefault()
+				).build();
+
+		structuredContent =
+			userWithoutPermissionsStructuredContentResource.
+				getStructuredContent(structuredContent.getId());
+
+		TaxonomyCategoryTestUtil.assertTaxonomyCategoryBriefs(
+			new AssetCategory[] {assetCategory},
+			structuredContent.getTaxonomyCategoryBriefs());
 	}
 
 	private void _testGetStructuredContentWithArticleFieldWithDifferentLocale()

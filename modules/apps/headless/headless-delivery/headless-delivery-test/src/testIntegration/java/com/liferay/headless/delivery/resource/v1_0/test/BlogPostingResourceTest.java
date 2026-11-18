@@ -19,19 +19,23 @@ import com.liferay.headless.delivery.client.pagination.Page;
 import com.liferay.headless.delivery.client.pagination.Pagination;
 import com.liferay.headless.delivery.client.resource.v1_0.BlogPostingResource;
 import com.liferay.headless.delivery.resource.v1_0.test.util.DisplayPageTestUtil;
+import com.liferay.headless.delivery.resource.v1_0.test.util.TaxonomyCategoryTestUtil;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.test.rule.Inject;
@@ -96,6 +100,15 @@ public class BlogPostingResourceTest extends BaseBlogPostingResourceTestCase {
 			404,
 			blogPostingResource.deleteBlogPostingMyRatingHttpResponse(
 				irrelevantBlogPosting.getId()));
+	}
+
+	@Override
+	@Test
+	@TestInfo("LPD-116125")
+	public void testGetBlogPosting() throws Exception {
+		super.testGetBlogPosting();
+
+		_testGetBlogPostingTaxonomyCategoryBriefsWithoutViewPermission();
 	}
 
 	@Override
@@ -315,6 +328,54 @@ public class BlogPostingResourceTest extends BaseBlogPostingResourceTestCase {
 		Assert.assertEquals(
 			SetUtil.fromArray("create", "delete", "get", "replace"),
 			actions.keySet());
+	}
+
+	private void _testGetBlogPostingTaxonomyCategoryBriefsWithoutViewPermission()
+		throws Exception {
+
+		AssetCategory assetCategory = TaxonomyCategoryTestUtil.addAssetCategory(
+			testGroup.getGroupId());
+		AssetCategory ownerAssetCategory =
+			TaxonomyCategoryTestUtil.addOwnerAssetCategory(
+				testGroup.getGroupId());
+
+		BlogPosting blogPosting = randomBlogPosting();
+
+		blogPosting.setTaxonomyCategoryIds(
+			new Long[] {
+				assetCategory.getCategoryId(),
+				ownerAssetCategory.getCategoryId()
+			});
+		blogPosting.setViewableBy(BlogPosting.ViewableBy.ANYONE);
+
+		blogPosting = blogPostingResource.postSiteBlogPosting(
+			testGroup.getGroupId(), blogPosting);
+
+		TaxonomyCategoryTestUtil.assertTaxonomyCategoryBriefs(
+			new AssetCategory[] {assetCategory, ownerAssetCategory},
+			blogPosting.getTaxonomyCategoryBriefs());
+
+		String password = RandomTestUtil.randomString();
+
+		User user = UserTestUtil.addUser(testCompany, password);
+
+		BlogPostingResource userWithoutPermissionsBlogPostingResource =
+			BlogPostingResource.builder(
+			).authentication(
+				user.getEmailAddress(), password
+			).endpoint(
+				testCompany.getVirtualHostname(),
+				PortalUtil.getPortalServerPort(false), "http"
+			).locale(
+				LocaleUtil.getDefault()
+			).build();
+
+		blogPosting = userWithoutPermissionsBlogPostingResource.getBlogPosting(
+			blogPosting.getId());
+
+		TaxonomyCategoryTestUtil.assertTaxonomyCategoryBriefs(
+			new AssetCategory[] {assetCategory},
+			blogPosting.getTaxonomyCategoryBriefs());
 	}
 
 	private BlogPosting _testGetSiteBlogPostingsPage_addBlogPosting(

@@ -64,6 +64,7 @@ import com.liferay.headless.delivery.client.pagination.Page;
 import com.liferay.headless.delivery.client.problem.Problem;
 import com.liferay.headless.delivery.client.resource.v1_0.SitePageResource;
 import com.liferay.headless.delivery.client.serdes.v1_0.SitePageSerDes;
+import com.liferay.headless.delivery.resource.v1_0.test.util.TaxonomyCategoryTestUtil;
 import com.liferay.layout.admin.kernel.model.LayoutTypePortletConstants;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
@@ -253,6 +254,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		FeatureFlagTestUtil.invokeFeatureFlagListeners(
 			testGroup.getCompanyId(), true, "LPD-57283");
 
+		_testGetSiteSitePageTaxonomyCategoryBriefsWithoutViewPermission();
 		_testGetSiteSitePageWithContentPage();
 		_testGetSiteSitePageWithDesignLibraryMasterPage();
 		_testGetSiteSitePageWithInvalidFriendlyURL();
@@ -997,6 +999,57 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 				StringBundler.concat(
 					"getPortalURL: () => 'http://", virtualHostname, ":", port,
 					"'")));
+	}
+
+	private void _testGetSiteSitePageTaxonomyCategoryBriefsWithoutViewPermission()
+		throws Exception {
+
+		AssetCategory assetCategory = TaxonomyCategoryTestUtil.addAssetCategory(
+			testGroup.getGroupId());
+		AssetCategory ownerAssetCategory =
+			TaxonomyCategoryTestUtil.addOwnerAssetCategory(
+				testGroup.getGroupId());
+
+		Layout layout = LayoutTestUtil.addTypePortletLayout(testGroup);
+
+		_layoutLocalService.updateAsset(
+			TestPropsValues.getUserId(), layout,
+			new long[] {
+				assetCategory.getCategoryId(),
+				ownerAssetCategory.getCategoryId()
+			},
+			new String[0]);
+
+		String friendlyURL = layout.getFriendlyURL();
+
+		SitePage sitePage = sitePageResource.getSiteSitePage(
+			testGroup.getGroupId(), friendlyURL.substring(1));
+
+		TaxonomyCategoryTestUtil.assertTaxonomyCategoryBriefs(
+			new AssetCategory[] {assetCategory, ownerAssetCategory},
+			sitePage.getTaxonomyCategoryBriefs());
+
+		String password = RandomTestUtil.randomString();
+
+		User user = UserTestUtil.addUser(testCompany, password);
+
+		SitePageResource userWithoutPermissionsSitePageResource =
+			SitePageResource.builder(
+			).authentication(
+				user.getEmailAddress(), password
+			).endpoint(
+				testCompany.getVirtualHostname(),
+				PortalUtil.getPortalServerPort(false), "http"
+			).locale(
+				LocaleUtil.getDefault()
+			).build();
+
+		sitePage = userWithoutPermissionsSitePageResource.getSiteSitePage(
+			testGroup.getGroupId(), friendlyURL.substring(1));
+
+		TaxonomyCategoryTestUtil.assertTaxonomyCategoryBriefs(
+			new AssetCategory[] {assetCategory},
+			sitePage.getTaxonomyCategoryBriefs());
 	}
 
 	private void _testGetSiteSitePageWithContentPage() throws Exception {

@@ -13,14 +13,22 @@ import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
 import com.liferay.headless.delivery.client.dto.v1_0.TaxonomyCategoryBrief;
 import com.liferay.headless.delivery.client.dto.v1_0.TaxonomyCategoryReference;
 import com.liferay.headless.delivery.client.dto.v1_0.WikiPage;
+import com.liferay.headless.delivery.client.resource.v1_0.WikiPageResource;
+import com.liferay.headless.delivery.resource.v1_0.test.util.TaxonomyCategoryTestUtil;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
+import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
@@ -62,6 +70,15 @@ public class WikiPageResourceTest extends BaseWikiPageResourceTestCase {
 			serviceContext);
 
 		_wikiPage = _addWikiPage(parentWikiNode.getNodeId());
+	}
+
+	@Override
+	@Test
+	@TestInfo("LPD-116125")
+	public void testGetWikiPage() throws Exception {
+		super.testGetWikiPage();
+
+		_testGetWikiPageTaxonomyCategoryBriefsWithoutViewPermission();
 	}
 
 	@Ignore
@@ -258,6 +275,59 @@ public class WikiPageResourceTest extends BaseWikiPageResourceTestCase {
 
 			Assert.assertTrue(contains);
 		}
+	}
+
+	private void _testGetWikiPageTaxonomyCategoryBriefsWithoutViewPermission()
+		throws Exception {
+
+		AssetCategory assetCategory = TaxonomyCategoryTestUtil.addAssetCategory(
+			testGroup.getGroupId());
+		AssetCategory ownerAssetCategory =
+			TaxonomyCategoryTestUtil.addOwnerAssetCategory(
+				testGroup.getGroupId());
+
+		WikiPage wikiPage = randomWikiPage();
+
+		wikiPage.setTaxonomyCategoryIds(
+			new Long[] {
+				assetCategory.getCategoryId(),
+				ownerAssetCategory.getCategoryId()
+			});
+		wikiPage.setViewableBy(WikiPage.ViewableBy.ANYONE);
+
+		WikiNode wikiNode = _wikiNodeLocalService.addNode(
+			TestPropsValues.getUserId(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(),
+			ServiceContextTestUtil.getServiceContext(testGroup.getGroupId()));
+
+		wikiPage = wikiPageResource.postWikiNodeWikiPage(
+			wikiNode.getNodeId(), wikiPage);
+
+		TaxonomyCategoryTestUtil.assertTaxonomyCategoryBriefs(
+			new AssetCategory[] {assetCategory, ownerAssetCategory},
+			wikiPage.getTaxonomyCategoryBriefs());
+
+		String password = RandomTestUtil.randomString();
+
+		User user = UserTestUtil.addUser(testCompany, password);
+
+		WikiPageResource userWithoutPermissionsWikiPageResource =
+			WikiPageResource.builder(
+			).authentication(
+				user.getEmailAddress(), password
+			).endpoint(
+				testCompany.getVirtualHostname(),
+				PortalUtil.getPortalServerPort(false), "http"
+			).locale(
+				LocaleUtil.getDefault()
+			).build();
+
+		wikiPage = userWithoutPermissionsWikiPageResource.getWikiPage(
+			wikiPage.getId());
+
+		TaxonomyCategoryTestUtil.assertTaxonomyCategoryBriefs(
+			new AssetCategory[] {assetCategory},
+			wikiPage.getTaxonomyCategoryBriefs());
 	}
 
 	private void _testPutWikiPageSuccessTaxonomyCategoryBriefWithAssetCategory()
