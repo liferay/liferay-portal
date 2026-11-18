@@ -114,7 +114,7 @@ if (commerceAddress != null) {
 					<p><%= HtmlUtil.escape(street3) %></p>
 				</c:if>
 
-				<p><%= city + StringPool.COMMA_AND_SPACE + regionCode + StringPool.SPACE + zip %></p>
+				<p><%= HtmlUtil.escape(city + StringPool.COMMA_AND_SPACE + regionCode + StringPool.SPACE + zip) %></p>
 
 				<c:if test="<%= Validator.isNotNull(phoneNumber) %>">
 					<p><%= HtmlUtil.escape(phoneNumber) %></p>
