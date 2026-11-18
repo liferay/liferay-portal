@@ -7,6 +7,7 @@ package com.liferay.osb.faro.web.internal.fragment.renderer;
 
 import com.liferay.fragment.renderer.FragmentRenderer;
 import com.liferay.fragment.renderer.FragmentRendererContext;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItemList;
 import com.liferay.frontend.taglib.react.servlet.taglib.ComponentTag;
 import com.liferay.osb.faro.web.internal.display.context.ChannelSelectorDisplayContext;
 import com.liferay.osb.faro.web.internal.util.FaroFragmentRendererUtil;
@@ -98,6 +99,9 @@ public abstract class BaseFragmentRenderer implements FragmentRenderer {
 				).put(
 					"groupId", String.valueOf(themeDisplay.getScopeGroupId())
 				).put(
+					"navigationItems",
+					() -> getNavigationItems(httpServletRequest)
+				).put(
 					"pageURLs",
 					() -> {
 						Map<String, String> pageURLs = new HashMap<>();
@@ -132,6 +136,13 @@ public abstract class BaseFragmentRenderer implements FragmentRenderer {
 	}
 
 	protected abstract String getModule();
+
+	protected NavigationItemList getNavigationItems(
+			HttpServletRequest httpServletRequest)
+		throws Exception {
+
+		return null;
+	}
 
 	protected Map<String, String> getParams(
 		HttpServletRequest httpServletRequest) {
