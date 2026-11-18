@@ -8,13 +8,20 @@ package com.liferay.launch.internal.entry.manager.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.launch.entry.manager.LaunchEntryManager;
 import com.liferay.layout.item.selector.LayoutItemSelectorCriterion;
+import com.liferay.layout.manager.LayoutLockManager;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.portal.kernel.exception.LockedLayoutException;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.test.TestInfo;
+import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.TreeMapBuilder;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -95,6 +102,7 @@ public class LayoutLaunchEntryManagerTest
 
 		_testPublishDraftReturnsStableVersionKey();
 		_testPublishDraftWithExistingMainDraft();
+		_testPublishDraftWithMainDraftLockedByOtherUser();
 	}
 
 	@Override
@@ -467,6 +475,40 @@ public class LayoutLaunchEntryManagerTest
 			WorkflowConstants.STATUS_APPROVED, mainDraft.getStatus());
 	}
 
+	private void _testPublishDraftWithMainDraftLockedByOtherUser()
+		throws Exception {
+
+		long classPK = addEntry();
+
+		LaunchEntryManager.Draft draft = addDraft(classPK);
+
+		updateDraft(draft, createValue());
+
+		Layout mainDraft = _layoutLocalService.fetchDraftLayout(classPK);
+
+		_layoutLockManager.getLock(mainDraft, mainDraft.getUserId());
+
+		LaunchEntryManager launchEntryManager = getLaunchEntryManager();
+		User user = UserTestUtil.addGroupAdminUser(group);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user, PermissionCheckerFactoryUtil.create(user))) {
+
+			launchEntryManager.publishDraft(classPK, draft.getDraftId());
+
+			Assert.fail();
+		}
+		catch (PortalException portalException) {
+			Throwable throwable = portalException.getCause();
+
+			Assert.assertTrue(
+				throwable.getCause() instanceof LockedLayoutException);
+		}
+
+		Assert.assertNotNull(
+			_layoutLocalService.fetchLayout(draft.getDraftId()));
+	}
+
 	private void _updateLayout(long plid, Values values) throws Exception {
 		Layout layout = _layoutLocalService.getLayout(plid);
 
@@ -483,5 +525,8 @@ public class LayoutLaunchEntryManagerTest
 
 	@Inject
 	private LayoutLocalService _layoutLocalService;
+
+	@Inject
+	private LayoutLockManager _layoutLockManager;
 
 }

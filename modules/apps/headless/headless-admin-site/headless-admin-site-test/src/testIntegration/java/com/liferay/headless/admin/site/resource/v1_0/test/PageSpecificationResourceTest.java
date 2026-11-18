@@ -1024,6 +1024,19 @@ public class PageSpecificationResourceTest
 		finally {
 			_layoutLockManager.unlock(draftLayout, user.getUserId());
 		}
+
+		draftLayout.setUserId(user.getUserId());
+
+		_layoutLockManager.getLock(
+			_layoutLocalService.updateLayout(draftLayout),
+			TestPropsValues.getUserId());
+
+		try {
+			_assertDeleteSitePageSpecification(draftLayout);
+		}
+		finally {
+			_layoutLockManager.unlock(draftLayout, TestPropsValues.getUserId());
+		}
 	}
 
 	private void _testDeleteSitePageSpecificationWithSupportedPageTypes(
