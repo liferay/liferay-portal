@@ -5,6 +5,7 @@
 
 package com.liferay.style.book.web.internal.portlet.action;
 
+import com.liferay.fragment.constants.FragmentEntryLinkConstants;
 import com.liferay.fragment.contributor.FragmentCollectionContributorRegistry;
 import com.liferay.fragment.entry.processor.constants.FragmentEntryProcessorConstants;
 import com.liferay.fragment.model.FragmentEntry;
@@ -110,6 +111,9 @@ public class RenderFragmentEntryLinkMVCResourceCommand
 
 		defaultFragmentRendererContext.setLocale(
 			LocaleUtil.fromLanguageId(languageId));
+
+		defaultFragmentRendererContext.setMode(
+			FragmentEntryLinkConstants.PREVIEW);
 
 		defaultFragmentRendererContext.setUseCachedContent(false);
 
