@@ -11,9 +11,18 @@ import com.liferay.commerce.machine.learning.forecast.SkuCommerceMLForecastManag
 import com.liferay.headless.commerce.machine.learning.client.dto.v1_0.SkuForecast;
 import com.liferay.headless.commerce.machine.learning.client.pagination.Page;
 import com.liferay.headless.commerce.machine.learning.client.pagination.Pagination;
+import com.liferay.headless.commerce.machine.learning.client.resource.v1_0.SkuForecastResource;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.service.RoleLocalService;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.search.test.util.IdempotentRetryAssert;
 import com.liferay.portal.test.rule.Inject;
 
@@ -65,6 +74,33 @@ public class SkuForecastResourceTest extends BaseSkuForecastResourceTestCase {
 
 				return null;
 			});
+
+		String password = RandomTestUtil.randomString();
+
+		User user = UserTestUtil.addUser(testCompany, password);
+
+		skuForecastResource = SkuForecastResource.builder(
+		).authentication(
+			user.getEmailAddress(), password
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).build();
+
+		assertHttpResponseStatusCode(
+			404,
+			skuForecastResource.getSkuForecastsByMonthlyRevenuePageHttpResponse(
+				_FORECAST_LENGTH, _actualDate, _HISTORY_LENGTH,
+				expectedSkus.toArray(new String[0]), Pagination.of(1, 10)));
+
+		Role role = _roleLocalService.getRole(
+			testCompany.getCompanyId(), RoleConstants.ANALYTICS_ADMINISTRATOR);
+
+		_userLocalService.addRoleUser(role.getRoleId(), user.getUserId());
+
+		_testGetSkuForecastsByMonthlyRevenuePage(expectedSkus);
 	}
 
 	@Override
@@ -213,9 +249,15 @@ public class SkuForecastResourceTest extends BaseSkuForecastResourceTestCase {
 	private final Date _actualDate = RandomTestUtil.nextDate();
 
 	@Inject
+	private RoleLocalService _roleLocalService;
+
+	@Inject
 	private SkuCommerceMLForecastManager _skuCommerceMLForecastManager;
 
 	private List<SkuCommerceMLForecast> _skuCommerceMLForecasts;
 	private List<String> _skus;
+
+	@Inject
+	private UserLocalService _userLocalService;
 
 }
