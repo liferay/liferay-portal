@@ -10,9 +10,11 @@ import com.liferay.fragment.constants.FragmentActionKeys;
 import com.liferay.fragment.constants.FragmentConstants;
 import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.fragment.model.FragmentEntry;
+import com.liferay.fragment.service.FragmentEntryLocalService;
 import com.liferay.fragment.service.FragmentEntryService;
 import com.liferay.fragment.test.util.FragmentEntryTestUtil;
 import com.liferay.fragment.test.util.FragmentTestUtil;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.ResourceConstants;
@@ -552,6 +554,40 @@ public class FragmentEntryServicePermissionTest {
 	}
 
 	@Test
+	@TestInfo("LPD-116159")
+	public void testPublishDraft() throws Exception {
+		_group2 = GroupTestUtil.addGroup();
+
+		_setRolePermissions(FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
+
+		_testPublishDraftWithFragmentEntryFromAnotherGroup();
+		_testPublishDraftWithPermissions();
+	}
+
+	@Test
+	@TestInfo("LPD-116159")
+	public void testUpdateDraft() throws Exception {
+		_group2 = GroupTestUtil.addGroup();
+
+		_setRolePermissions(FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
+
+		_testUpdateDraftWithFragmentCollectionFromAnotherGroup();
+		_testUpdateDraftWithFragmentEntryFromAnotherGroup();
+		_testUpdateDraftWithGroupIdFromAnotherGroup();
+		_testUpdateDraftWithPermissions();
+	}
+
+	@Test
+	@TestInfo("LPD-116159")
+	public void testUpdateFragmentEntry() throws Exception {
+		_group2 = GroupTestUtil.addGroup();
+
+		_setRolePermissions(FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
+
+		_testUpdateFragmentEntryWithFragmentEntryFromAnotherGroup();
+	}
+
+	@Test
 	public void testUpdateFragmentEntryNameWithPermissions() throws Exception {
 		FragmentEntry fragmentEntry = FragmentEntryTestUtil.addFragmentEntry(
 			_fragmentCollection.getFragmentCollectionId(),
@@ -726,6 +762,45 @@ public class FragmentEntryServicePermissionTest {
 			fragmentEntry.getFragmentEntryId(), previewFileEntryId + 1);
 	}
 
+	private FragmentEntry _addFragmentEntry(long groupId) throws Exception {
+		FragmentCollection fragmentCollection =
+			FragmentTestUtil.addFragmentCollection(groupId);
+
+		return FragmentEntryTestUtil.addFragmentEntry(
+			fragmentCollection.getFragmentCollectionId());
+	}
+
+	private void _assertMustHavePermission(
+		PrincipalException.MustHavePermission principalException,
+		long resourceId, String resourceName) {
+
+		Assert.assertArrayEquals(
+			new String[] {FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES},
+			principalException.actionId);
+		Assert.assertEquals(resourceId, principalException.resourceId);
+		Assert.assertEquals(resourceName, principalException.resourceName);
+	}
+
+	private FragmentEntry _createFragmentEntry(long fragmentEntryId) {
+		FragmentEntry fragmentEntry =
+			_fragmentEntryLocalService.createFragmentEntry(fragmentEntryId);
+
+		fragmentEntry.setGroupId(_group1.getGroupId());
+		fragmentEntry.setFragmentCollectionId(
+			_fragmentCollection.getFragmentCollectionId());
+
+		return fragmentEntry;
+	}
+
+	private FragmentEntry _getDraftFragmentEntry(long fragmentEntryId)
+		throws Exception {
+
+		FragmentEntry draftFragmentEntry = _fragmentEntryLocalService.getDraft(
+			fragmentEntryId);
+
+		return (FragmentEntry)draftFragmentEntry.clone();
+	}
+
 	private void _setRolePermissions(String permissionType) throws Exception {
 		Role siteMemberRole = RoleLocalServiceUtil.getRole(
 			TestPropsValues.getCompanyId(), RoleConstants.SITE_MEMBER);
@@ -736,13 +811,190 @@ public class FragmentEntryServicePermissionTest {
 			siteMemberRole.getRoleId(), permissionType);
 	}
 
+	private void _testPublishDraftWithFragmentEntryFromAnotherGroup()
+		throws Exception {
+
+		UserTestUtil.setUser(TestPropsValues.getUser());
+
+		FragmentEntry fragmentEntry = _addFragmentEntry(_group2.getGroupId());
+
+		UserTestUtil.setUser(_user);
+
+		try {
+			_fragmentEntryService.publishDraft(
+				_createFragmentEntry(fragmentEntry.getFragmentEntryId()));
+
+			Assert.fail();
+		}
+		catch (PrincipalException.MustHavePermission principalException) {
+			_assertMustHavePermission(
+				principalException, _group2.getGroupId(),
+				FragmentConstants.RESOURCE_NAME);
+		}
+	}
+
+	private void _testPublishDraftWithPermissions() throws Exception {
+		UserTestUtil.setUser(TestPropsValues.getUser());
+
+		FragmentEntry fragmentEntry = FragmentEntryTestUtil.addFragmentEntry(
+			_fragmentCollection.getFragmentCollectionId());
+
+		FragmentEntry draftFragmentEntry = _fragmentEntryLocalService.getDraft(
+			fragmentEntry.getFragmentEntryId());
+
+		String html = RandomTestUtil.randomString();
+
+		draftFragmentEntry.setHtml(html);
+
+		UserTestUtil.setUser(_user);
+
+		FragmentEntry publishedFragmentEntry =
+			_fragmentEntryService.publishDraft(draftFragmentEntry);
+
+		Assert.assertEquals(html, publishedFragmentEntry.getHtml());
+	}
+
+	private void _testUpdateDraftWithFragmentCollectionFromAnotherGroup()
+		throws Exception {
+
+		UserTestUtil.setUser(TestPropsValues.getUser());
+
+		FragmentEntry fragmentEntry = FragmentEntryTestUtil.addFragmentEntry(
+			_fragmentCollection.getFragmentCollectionId());
+
+		FragmentEntry draftFragmentEntry = _getDraftFragmentEntry(
+			fragmentEntry.getFragmentEntryId());
+
+		FragmentCollection fragmentCollection =
+			FragmentTestUtil.addFragmentCollection(_group2.getGroupId());
+
+		draftFragmentEntry.setFragmentCollectionId(
+			fragmentCollection.getFragmentCollectionId());
+
+		UserTestUtil.setUser(_user);
+
+		try {
+			_fragmentEntryService.updateDraft(draftFragmentEntry);
+
+			Assert.fail();
+		}
+		catch (IllegalArgumentException illegalArgumentException) {
+			Assert.assertEquals(
+				StringBundler.concat(
+					"Fragment collection ",
+					fragmentCollection.getFragmentCollectionId(),
+					" does not belong to group ", _group1.getGroupId()),
+				illegalArgumentException.getMessage());
+		}
+	}
+
+	private void _testUpdateDraftWithFragmentEntryFromAnotherGroup()
+		throws Exception {
+
+		UserTestUtil.setUser(TestPropsValues.getUser());
+
+		FragmentEntry fragmentEntry = _addFragmentEntry(_group2.getGroupId());
+
+		UserTestUtil.setUser(_user);
+
+		try {
+			_fragmentEntryService.updateDraft(
+				_createFragmentEntry(fragmentEntry.getFragmentEntryId()));
+
+			Assert.fail();
+		}
+		catch (PrincipalException.MustHavePermission principalException) {
+			_assertMustHavePermission(
+				principalException, _group2.getGroupId(),
+				FragmentConstants.RESOURCE_NAME);
+		}
+	}
+
+	private void _testUpdateDraftWithGroupIdFromAnotherGroup()
+		throws Exception {
+
+		UserTestUtil.setUser(TestPropsValues.getUser());
+
+		FragmentEntry fragmentEntry = FragmentEntryTestUtil.addFragmentEntry(
+			_fragmentCollection.getFragmentCollectionId());
+
+		FragmentEntry draftFragmentEntry = _getDraftFragmentEntry(
+			fragmentEntry.getFragmentEntryId());
+
+		draftFragmentEntry.setGroupId(_group2.getGroupId());
+
+		UserTestUtil.setUser(_user);
+
+		try {
+			_fragmentEntryService.updateDraft(draftFragmentEntry);
+
+			Assert.fail();
+		}
+		catch (IllegalArgumentException illegalArgumentException) {
+			Assert.assertEquals(
+				StringBundler.concat(
+					"Fragment entry ", draftFragmentEntry.getFragmentEntryId(),
+					" does not match the persisted fragment entry"),
+				illegalArgumentException.getMessage());
+		}
+	}
+
+	private void _testUpdateDraftWithPermissions() throws Exception {
+		UserTestUtil.setUser(TestPropsValues.getUser());
+
+		FragmentEntry fragmentEntry = FragmentEntryTestUtil.addFragmentEntry(
+			_fragmentCollection.getFragmentCollectionId());
+
+		FragmentEntry draftFragmentEntry = _fragmentEntryLocalService.getDraft(
+			fragmentEntry.getFragmentEntryId());
+
+		String html = RandomTestUtil.randomString();
+
+		draftFragmentEntry.setHtml(html);
+
+		UserTestUtil.setUser(_user);
+
+		FragmentEntry updatedFragmentEntry = _fragmentEntryService.updateDraft(
+			draftFragmentEntry);
+
+		Assert.assertEquals(html, updatedFragmentEntry.getHtml());
+	}
+
+	private void _testUpdateFragmentEntryWithFragmentEntryFromAnotherGroup()
+		throws Exception {
+
+		UserTestUtil.setUser(TestPropsValues.getUser());
+
+		FragmentEntry fragmentEntry = _addFragmentEntry(_group2.getGroupId());
+
+		UserTestUtil.setUser(_user);
+
+		try {
+			_fragmentEntryService.updateFragmentEntry(
+				_createFragmentEntry(fragmentEntry.getFragmentEntryId()));
+
+			Assert.fail();
+		}
+		catch (PrincipalException.MustHavePermission principalException) {
+			_assertMustHavePermission(
+				principalException, _group2.getGroupId(),
+				FragmentConstants.RESOURCE_NAME);
+		}
+	}
+
 	private FragmentCollection _fragmentCollection;
+
+	@Inject
+	private FragmentEntryLocalService _fragmentEntryLocalService;
 
 	@Inject
 	private FragmentEntryService _fragmentEntryService;
 
 	@DeleteAfterTestRun
 	private Group _group1;
+
+	@DeleteAfterTestRun
+	private Group _group2;
 
 	@DeleteAfterTestRun
 	private User _user;
