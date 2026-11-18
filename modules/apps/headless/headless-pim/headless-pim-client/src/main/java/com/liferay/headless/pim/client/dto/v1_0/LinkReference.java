@@ -109,6 +109,27 @@ public class LinkReference implements Cloneable, Serializable {
 
 	protected Long id;
 
+	public String getImageURL() {
+		return imageURL;
+	}
+
+	public void setImageURL(String imageURL) {
+		this.imageURL = imageURL;
+	}
+
+	public void setImageURL(
+		UnsafeSupplier<String, Exception> imageURLUnsafeSupplier) {
+
+		try {
+			imageURL = imageURLUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String imageURL;
+
 	public Boolean getPrimary() {
 		return primary;
 	}
@@ -242,4 +263,4 @@ public class LinkReference implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1657957224
+// LIFERAY-REST-BUILDER-HASH:-381902269

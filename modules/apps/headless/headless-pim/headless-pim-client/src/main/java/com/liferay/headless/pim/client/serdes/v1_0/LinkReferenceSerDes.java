@@ -95,6 +95,20 @@ public class LinkReferenceSerDes {
 			sb.append(linkReference.getId());
 		}
 
+		if (linkReference.getImageURL() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"imageURL\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(linkReference.getImageURL()));
+
+			sb.append("\"");
+		}
+
 		if (linkReference.getPrimary() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -206,6 +220,13 @@ public class LinkReferenceSerDes {
 			map.put("id", String.valueOf(linkReference.getId()));
 		}
 
+		if (linkReference.getImageURL() == null) {
+			map.put("imageURL", null);
+		}
+		else {
+			map.put("imageURL", String.valueOf(linkReference.getImageURL()));
+		}
+
 		if (linkReference.getPrimary() == null) {
 			map.put("primary", null);
 		}
@@ -273,6 +294,9 @@ public class LinkReferenceSerDes {
 			else if (Objects.equals(jsonParserFieldName, "id")) {
 				return false;
 			}
+			else if (Objects.equals(jsonParserFieldName, "imageURL")) {
+				return false;
+			}
 			else if (Objects.equals(jsonParserFieldName, "primary")) {
 				return false;
 			}
@@ -320,6 +344,11 @@ public class LinkReferenceSerDes {
 				if (jsonParserFieldValue != null) {
 					linkReference.setId(
 						Long.valueOf((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "imageURL")) {
+				if (jsonParserFieldValue != null) {
+					linkReference.setImageURL((String)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "primary")) {
@@ -435,4 +464,4 @@ public class LinkReferenceSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1674665599
+// LIFERAY-REST-BUILDER-HASH:-506889286

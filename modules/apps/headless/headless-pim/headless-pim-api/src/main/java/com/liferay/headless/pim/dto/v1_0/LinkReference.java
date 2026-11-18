@@ -222,6 +222,47 @@ public class LinkReference implements Serializable {
 	private Supplier<Long> _idSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema
+	public String getImageURL() {
+		if (_imageURLSupplier != null) {
+			imageURL = _imageURLSupplier.get();
+
+			_imageURLSupplier = null;
+		}
+
+		return imageURL;
+	}
+
+	public void setImageURL(String imageURL) {
+		this.imageURL = imageURL;
+
+		_imageURLSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setImageURL(
+		UnsafeSupplier<String, Exception> imageURLUnsafeSupplier) {
+
+		_imageURLSupplier = () -> {
+			try {
+				return imageURLUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected String imageURL;
+
+	@JsonIgnore
+	private Supplier<String> _imageURLSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema
 	public Boolean getPrimary() {
 		if (_primarySupplier != null) {
 			primary = _primarySupplier.get();
@@ -506,6 +547,22 @@ public class LinkReference implements Serializable {
 			sb.append(id);
 		}
 
+		String imageURL = getImageURL();
+
+		if (imageURL != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"imageURL\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(imageURL));
+
+			sb.append("\"");
+		}
+
 		Boolean primary = getPrimary();
 
 		if (primary != null) {
@@ -700,4 +757,4 @@ public class LinkReference implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1066426246
+// LIFERAY-REST-BUILDER-HASH:168049243

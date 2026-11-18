@@ -174,6 +174,7 @@ public abstract class BaseLinkReferenceResourceTestCase {
 
 		linkReference.setClassName(regex);
 		linkReference.setExternalReferenceCode(regex);
+		linkReference.setImageURL(regex);
 		linkReference.setSku(regex);
 		linkReference.setTitle(regex);
 		linkReference.setType(regex);
@@ -186,6 +187,7 @@ public abstract class BaseLinkReferenceResourceTestCase {
 
 		Assert.assertEquals(regex, linkReference.getClassName());
 		Assert.assertEquals(regex, linkReference.getExternalReferenceCode());
+		Assert.assertEquals(regex, linkReference.getImageURL());
 		Assert.assertEquals(regex, linkReference.getSku());
 		Assert.assertEquals(regex, linkReference.getTitle());
 		Assert.assertEquals(regex, linkReference.getType());
@@ -482,6 +484,14 @@ public abstract class BaseLinkReferenceResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("imageURL", additionalAssertFieldName)) {
+				if (linkReference.getImageURL() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("primary", additionalAssertFieldName)) {
 				if (linkReference.getPrimary() == null) {
 					valid = false;
@@ -682,6 +692,17 @@ public abstract class BaseLinkReferenceResourceTestCase {
 			if (Objects.equals("id", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
 						linkReference1.getId(), linkReference2.getId())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("imageURL", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						linkReference1.getImageURL(),
+						linkReference2.getImageURL())) {
 
 					return false;
 				}
@@ -950,6 +971,52 @@ public abstract class BaseLinkReferenceResourceTestCase {
 				"Invalid entity field " + entityFieldName);
 		}
 
+		if (entityFieldName.equals("imageURL")) {
+			Object object = linkReference.getImageURL();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
+		}
+
 		if (entityFieldName.equals("primary")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
@@ -1150,6 +1217,8 @@ public abstract class BaseLinkReferenceResourceTestCase {
 				externalReferenceCode = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 				id = RandomTestUtil.randomLong();
+				imageURL = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
 				primary = RandomTestUtil.randomBoolean();
 				sku = StringUtil.toLowerCase(RandomTestUtil.randomString());
 				title = StringUtil.toLowerCase(RandomTestUtil.randomString());
@@ -1378,4 +1447,4 @@ public abstract class BaseLinkReferenceResourceTestCase {
 		_linkReferenceResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:2023048826
+// LIFERAY-REST-BUILDER-HASH:-306152976
