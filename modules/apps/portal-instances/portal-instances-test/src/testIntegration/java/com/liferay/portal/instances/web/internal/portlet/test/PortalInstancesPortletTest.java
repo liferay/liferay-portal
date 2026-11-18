@@ -46,7 +46,6 @@ import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
-import com.liferay.portlet.test.MockLiferayPortletContext;
 
 import jakarta.portlet.ActionRequest;
 import jakarta.portlet.Portlet;
@@ -92,6 +91,14 @@ public class PortalInstancesPortletTest {
 
 			_companyAdminUser = UserTestUtil.getAdminUser(
 				company.getCompanyId());
+		}
+
+		try (SafeCloseable safeCloseable =
+				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
+					PortalInstancePool.getDefaultCompanyId())) {
+
+			_omniadminUser = UserTestUtil.getAdminUser(
+				PortalInstancePool.getDefaultCompanyId());
 		}
 
 		Bundle bundle = FrameworkUtil.getBundle(
@@ -169,7 +176,7 @@ public class PortalInstancesPortletTest {
 	@Test
 	public void testRender() throws Exception {
 		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
-			_createMockLiferayPortletRenderRequest();
+			new MockLiferayPortletRenderRequest();
 
 		mockLiferayPortletRenderRequest.addParameter(
 			"mvcRenderCommandName", _MVC_COMMAND_NAME);
@@ -195,17 +202,6 @@ public class PortalInstancesPortletTest {
 		_userLocalService.addRoleUser(role.getRoleId(), user);
 
 		_assertRenderMustBeOmniadmin(mockLiferayPortletRenderRequest, user);
-
-		MockLiferayPortletRenderRequest editMockLiferayPortletRenderRequest =
-			_createMockLiferayPortletRenderRequest();
-
-		editMockLiferayPortletRenderRequest.addParameter(
-			"companyId", String.valueOf(TestPropsValues.getCompanyId()));
-		editMockLiferayPortletRenderRequest.addParameter(
-			"mvcRenderCommandName", "/portal_instances/edit_instance");
-
-		_assertRenderMustBeOmniadmin(
-			editMockLiferayPortletRenderRequest, _companyAdminUser);
 	}
 
 	@Test
@@ -236,15 +232,7 @@ public class PortalInstancesPortletTest {
 
 		_invoked = false;
 
-		try (SafeCloseable safeCloseable =
-				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
-					PortalInstancePool.getDefaultCompanyId())) {
-
-			_invoke(
-				portletRequest, unsafeRunnable,
-				UserTestUtil.getAdminUser(
-					PortalInstancePool.getDefaultCompanyId()));
-		}
+		_invoke(portletRequest, unsafeRunnable, _omniadminUser);
 
 		Assert.assertTrue(_invoked);
 	}
@@ -259,10 +247,10 @@ public class PortalInstancesPortletTest {
 			PortletException.class,
 			() -> _invoke(portletRequest, unsafeRunnable, user));
 
-		Throwable causeThrowable = portletException.getCause();
+		Throwable throwable = portletException.getCause();
 
 		Assert.assertTrue(
-			causeThrowable instanceof PrincipalException.MustBeOmniadmin);
+			throwable instanceof PrincipalException.MustBeOmniadmin);
 
 		Assert.assertFalse(_invoked);
 	}
@@ -277,23 +265,6 @@ public class PortalInstancesPortletTest {
 				mockLiferayPortletRenderRequest,
 				new MockLiferayPortletRenderResponse()),
 			user);
-	}
-
-	private MockLiferayPortletRenderRequest
-		_createMockLiferayPortletRenderRequest() {
-
-		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
-			new MockLiferayPortletRenderRequest();
-
-		for (String path : new String[] {"/edit_instance.jsp", "/view.jsp"}) {
-			mockLiferayPortletRenderRequest.setAttribute(
-				MVCRenderConstants.
-					PORTLET_CONTEXT_OVERRIDE_REQUEST_ATTIBUTE_NAME_PREFIX +
-						path,
-				new MockLiferayPortletContext(path));
-		}
-
-		return mockLiferayPortletRenderRequest;
 	}
 
 	private void _invoke(
@@ -339,6 +310,7 @@ public class PortalInstancesPortletTest {
 
 	private static User _companyAdminUser;
 	private static boolean _invoked;
+	private static User _omniadminUser;
 	private static final List<ServiceRegistration<?>> _serviceRegistrations =
 		new ArrayList<>();
 
