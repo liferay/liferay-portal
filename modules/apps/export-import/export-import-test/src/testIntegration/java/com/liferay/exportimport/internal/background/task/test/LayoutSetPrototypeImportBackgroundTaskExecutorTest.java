@@ -85,7 +85,10 @@ public class LayoutSetPrototypeImportBackgroundTaskExecutorTest {
 
 		long backgroundTaskId = 0;
 
-		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+		try (LogCapture logCapture1 = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.exportimport.internal.staging.StagingImpl",
+				LoggerTestUtil.ERROR);
+			LogCapture logCapture2 = LoggerTestUtil.configureLog4JLogger(
 				"com.liferay.portal.background.task.internal.messaging." +
 					"BackgroundTaskMessageListener",
 				LoggerTestUtil.ERROR)) {
