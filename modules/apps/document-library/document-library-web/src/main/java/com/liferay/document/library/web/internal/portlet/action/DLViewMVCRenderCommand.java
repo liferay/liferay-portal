@@ -20,6 +20,8 @@ import com.liferay.document.library.web.internal.display.context.DLViewFileEntry
 import com.liferay.document.library.web.internal.helper.DLTrashHelper;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLinkLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMStructureService;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -40,6 +42,9 @@ import com.liferay.portal.kernel.util.WebKeys;
 import jakarta.portlet.PortletException;
 import jakarta.portlet.RenderRequest;
 import jakarta.portlet.RenderResponse;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 
@@ -204,6 +209,25 @@ public class DLViewMVCRenderCommand extends BaseFolderMVCRenderCommand {
 				renderRequest, renderResponse)) {
 
 			return false;
+		}
+
+		if (rootFolder) {
+			HttpServletRequest httpServletRequest =
+				_portal.getHttpServletRequest(renderRequest);
+
+			HttpSession httpSession = httpServletRequest.getSession();
+
+			String attributeName = StringBundler.concat(
+				DLViewMVCRenderCommand.class.getName(), StringPool.POUND,
+				dlFolder.getRepositoryId());
+
+			if (httpSession.getAttribute(attributeName) != null) {
+				throw new PrincipalException(
+					"Repository " + dlFolder.getRepositoryId() +
+						" was not authorized");
+			}
+
+			httpSession.setAttribute(attributeName, Boolean.TRUE);
 		}
 
 		authorizationCapability.authorize(renderRequest, renderResponse);
