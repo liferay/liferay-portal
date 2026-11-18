@@ -240,26 +240,6 @@ public class ObjectEntryServiceImpl extends ObjectEntryServiceBaseImpl {
 	}
 
 	@Override
-	public ObjectEntry fetchRelatedObjectEntry(
-			long groupId, long objectRelationshipId, long primaryKey)
-		throws PortalException {
-
-		ObjectEntry objectEntry =
-			objectEntryLocalService.fetchRelatedObjectEntry(
-				groupId, objectRelationshipId, primaryKey);
-
-		if ((objectEntry != null) &&
-			!ObjectEntryThreadLocal.isSkipObjectEntryResourcePermission()) {
-
-			objectEntryService.checkModelResourcePermission(
-				objectEntry.getObjectDefinitionId(),
-				objectEntry.getObjectEntryId(), ActionKeys.VIEW);
-		}
-
-		return objectEntry;
-	}
-
-	@Override
 	public ObjectEntry fetchObjectEntry(long objectEntryId)
 		throws PortalException {
 
@@ -289,6 +269,26 @@ public class ObjectEntryServiceImpl extends ObjectEntryServiceBaseImpl {
 			_checkPermission(
 				ActionKeys.VIEW, objectEntry.getObjectDefinitionId(),
 				objectEntry);
+		}
+
+		return objectEntry;
+	}
+
+	@Override
+	public ObjectEntry fetchRelatedObjectEntry(
+			long groupId, long objectRelationshipId, long primaryKey)
+		throws PortalException {
+
+		ObjectEntry objectEntry =
+			objectEntryLocalService.fetchRelatedObjectEntry(
+				groupId, objectRelationshipId, primaryKey);
+
+		if ((objectEntry != null) &&
+			!ObjectEntryThreadLocal.isSkipObjectEntryResourcePermission()) {
+
+			objectEntryService.checkModelResourcePermission(
+				objectEntry.getObjectDefinitionId(),
+				objectEntry.getObjectEntryId(), ActionKeys.VIEW);
 		}
 
 		return objectEntry;
@@ -464,6 +464,29 @@ public class ObjectEntryServiceImpl extends ObjectEntryServiceBaseImpl {
 	}
 
 	@Override
+	public ObjectEntry getOrAddEmptyObjectEntry(
+			String externalReferenceCode, long groupId, long objectDefinitionId)
+		throws PortalException {
+
+		ObjectEntry objectEntry = objectEntryService.fetchObjectEntry(
+			externalReferenceCode, groupId, objectDefinitionId);
+
+		if (objectEntry != null) {
+			return objectEntry;
+		}
+
+		if (!ObjectEntryThreadLocal.isSkipObjectEntryResourcePermission()) {
+			_checkAddObjectEntryPortletResourcePermission(
+				groupId, objectDefinitionId, 0L, new HashMap<>());
+		}
+
+		_validateSubmissionLimit(objectDefinitionId, getUser());
+
+		return objectEntryLocalService.getOrAddEmptyObjectEntry(
+			externalReferenceCode, groupId, getUserId(), objectDefinitionId);
+	}
+
+	@Override
 	public List<ObjectEntry> getRelatedObjectEntries(
 			long groupId, long objectRelationshipId, Predicate predicate,
 			boolean preferApproved, long primaryKey, boolean related,
@@ -486,29 +509,6 @@ public class ObjectEntryServiceImpl extends ObjectEntryServiceBaseImpl {
 		return objectEntryLocalService.getRelatedObjectEntriesCount(
 			groupId, objectRelationshipId, predicate, primaryKey, related,
 			search);
-	}
-
-	@Override
-	public ObjectEntry getOrAddEmptyObjectEntry(
-			String externalReferenceCode, long groupId, long objectDefinitionId)
-		throws PortalException {
-
-		ObjectEntry objectEntry = objectEntryService.fetchObjectEntry(
-			externalReferenceCode, groupId, objectDefinitionId);
-
-		if (objectEntry != null) {
-			return objectEntry;
-		}
-
-		if (!ObjectEntryThreadLocal.isSkipObjectEntryResourcePermission()) {
-			_checkAddObjectEntryPortletResourcePermission(
-				groupId, objectDefinitionId, 0L, new HashMap<>());
-		}
-
-		_validateSubmissionLimit(objectDefinitionId, getUser());
-
-		return objectEntryLocalService.getOrAddEmptyObjectEntry(
-			externalReferenceCode, groupId, getUserId(), objectDefinitionId);
 	}
 
 	@Override
