@@ -28,7 +28,7 @@ public interface MFATimeBasedOTPConfiguration {
 
 	@Meta.AD(
 		deflt = "20", description = "algorithm-key-size-description",
-		name = "algorithm-key-size", required = false
+		name = "algorithm-key-size-bytes", required = false
 	)
 	public int algorithmKeySize();
 

@@ -37,7 +37,15 @@ public class MFATimeBasedOTPUtil {
 
 	public static final int MFA_TIMEBASED_OTP_DIGITS = 6;
 
+	public static final int MFA_TIMEBASED_OTP_FIPS_ALGORITHM_KEY_SIZE_MIN = 14;
+
 	public static String generateSharedSecret(int algorithmKeySize) {
+		if (PropsValues.FIPS_ENABLED) {
+			algorithmKeySize = Math.max(
+				algorithmKeySize,
+				MFA_TIMEBASED_OTP_FIPS_ALGORITHM_KEY_SIZE_MIN);
+		}
+
 		int count = (int)Math.ceil((double)algorithmKeySize / 8);
 
 		byte[] buffer = new byte[count * 8];
