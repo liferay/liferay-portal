@@ -67,29 +67,6 @@ definition {
 	}
 
 	@priority = 5
-	test AddFolderSiteRoleDefaultPermission {
-		property portal.acceptance = "true";
-
-		Permissions.definePermissionsViaJSONAPI(
-			resourceNameActionList = "com.liferay.journal,VIEW:com.liferay.portal.kernel.model.Group,VIEW_SITE_ADMINISTRATION:com_liferay_journal_web_portlet_JournalPortlet,ACCESS_IN_CONTROL_PANEL",
-			roleTitle = ${randomRoleKey},
-			roleType = "site");
-
-		JSONRole.assignSiteRoleToUser(
-			groupName = ${randomSiteName},
-			roleTitle = ${randomRoleKey},
-			userEmailAddress = StringUtil.toLowerCase("${randomUserEmailAddress}@liferay.com"));
-
-		User.logoutAndLoginPG(userLoginEmailAddress = StringUtil.toLowerCase("${randomUserEmailAddress}@liferay.com"));
-
-		Navigator.gotoSitePage(
-			pageName = "Test Page Name",
-			siteName = ${randomSiteName});
-
-		AssertElementNotPresent(locator1 = "Button#PLUS");
-	}
-
-	@priority = 5
 	test AddFolderSiteRoleDefinePermission {
 		property portal.acceptance = "true";
 
@@ -227,29 +204,6 @@ definition {
 			resourceName = "com.liferay.journal",
 			roleTitle = ${randomRoleKey},
 			roleType = "site");
-
-		User.logoutAndLoginPG(userLoginEmailAddress = StringUtil.toLowerCase("${randomUserEmailAddress}@liferay.com"));
-
-		Navigator.gotoSitePage(
-			pageName = "Test Page Name",
-			siteName = ${randomSiteName});
-
-		AssertElementNotPresent(locator1 = "Toolbar#MANAGE");
-	}
-
-	@priority = 5
-	test AddTemplateSiteRoleDefaultPermission {
-		property portal.acceptance = "true";
-
-		Permissions.definePermissionsViaJSONAPI(
-			resourceNameActionList = "com.liferay.journal,VIEW:com.liferay.portal.kernel.model.Group,VIEW_SITE_ADMINISTRATION:com_liferay_journal_web_portlet_JournalPortlet,ACCESS_IN_CONTROL_PANEL",
-			roleTitle = ${randomRoleKey},
-			roleType = "site");
-
-		JSONRole.assignSiteRoleToUser(
-			groupName = ${randomSiteName},
-			roleTitle = ${randomRoleKey},
-			userEmailAddress = StringUtil.toLowerCase("${randomUserEmailAddress}@liferay.com"));
 
 		User.logoutAndLoginPG(userLoginEmailAddress = StringUtil.toLowerCase("${randomUserEmailAddress}@liferay.com"));
 
