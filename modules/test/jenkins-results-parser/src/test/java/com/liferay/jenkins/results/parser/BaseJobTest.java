@@ -50,6 +50,9 @@ public class BaseJobTest extends com.liferay.jenkins.results.parser.Test {
 		jobHistories.put(
 			workingDirectoryUpstreamBranchName, workingDirectoryJobHistory);
 
+		PortalAppReleaseJob portalAppReleaseJob = Mockito.mock(
+			PortalAppReleaseJob.class, Mockito.CALLS_REAL_METHODS);
+
 		PortalGitWorkingDirectory portalGitWorkingDirectory = Mockito.mock(
 			PortalGitWorkingDirectory.class);
 
@@ -76,9 +79,6 @@ public class BaseJobTest extends com.liferay.jenkins.results.parser.Test {
 
 		Assert.assertSame(
 			jobJobHistory, portalGitRepositoryJob.getJobHistory());
-
-		PortalAppReleaseJob portalAppReleaseJob = Mockito.mock(
-			PortalAppReleaseJob.class, Mockito.CALLS_REAL_METHODS);
 
 		Mockito.doReturn(
 			portalGitWorkingDirectory
