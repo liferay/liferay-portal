@@ -5,7 +5,6 @@
 
 import ClayAlert from '@clayui/alert';
 import ClayButton, {ClayButtonWithIcon} from '@clayui/button';
-import {Text} from '@clayui/core';
 import ClayLayout from '@clayui/layout';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
 import {Form, FormikProvider, useFormik} from 'formik';
@@ -239,11 +238,7 @@ function ProfileForm({
 
 							setFieldValue('profilePath', toProfilePath(value));
 						}}
-						prefix={
-							<Text as="p" size={2} weight="semi-bold">
-								{`${getProfileURL('')}${isDefaultProfile ? '' : '/'}`}
-							</Text>
-						}
+						prefixHelpMessage={`${getProfileURL('')}${isDefaultProfile ? '' : '/'}`}
 						required={!isDefaultProfile}
 						suffix={
 							<ClayButtonWithIcon

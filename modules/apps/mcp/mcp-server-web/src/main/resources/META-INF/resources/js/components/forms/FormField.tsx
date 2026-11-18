@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {ClayInput} from '@clayui/form';
+import ClayForm, {ClayInput} from '@clayui/form';
 import {FieldValidator, useField} from 'formik';
 import {FieldBase} from 'frontend-js-components-web';
 import React from 'react';
@@ -18,7 +18,7 @@ interface FormFieldProps {
 	label: string;
 	name: string;
 	onChange?: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>;
-	prefix?: React.ReactNode;
+	prefixHelpMessage?: string;
 	required?: boolean;
 	suffix?: React.ReactNode;
 	validate?: FieldValidator;
@@ -32,7 +32,7 @@ export function FormField({
 	label,
 	name,
 	onChange,
-	prefix,
+	prefixHelpMessage,
 	required: isRequired,
 	suffix,
 	validate,
@@ -42,10 +42,16 @@ export function FormField({
 		validate: validate ?? (isRequired ? required : undefined),
 	});
 
+	const prefixHelpMessageId = `${id}prefixHelpMessage`;
+
 	const input = (
 		<ClayInput
 			{...field}
-			aria-describedby={`${id}fieldFeedback`}
+			aria-describedby={
+				prefixHelpMessage
+					? `${prefixHelpMessageId} ${id}fieldFeedback`
+					: `${id}fieldFeedback`
+			}
 			aria-invalid={meta.touched && meta.error ? true : undefined}
 			component={component}
 			disabled={disabled}
@@ -69,7 +75,13 @@ export function FormField({
 			label={label}
 			required={isRequired}
 		>
-			{prefix}
+			{prefixHelpMessage && (
+				<ClayForm.FeedbackGroup>
+					<ClayForm.HelpText id={prefixHelpMessageId}>
+						{prefixHelpMessage}
+					</ClayForm.HelpText>
+				</ClayForm.FeedbackGroup>
+			)}
 
 			{suffix ? (
 				<ClayInput.Group>

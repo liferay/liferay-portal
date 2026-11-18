@@ -56,6 +56,9 @@ describe('EditProfileInfo', () => {
 		expect(
 			screen.getByText('http://localhost:8080/o/mcp/')
 		).toBeInTheDocument();
+		expect(profilePathInput).toHaveAccessibleDescription(
+			expect.stringContaining('http://localhost:8080/o/mcp/')
+		);
 
 		await userEvent.clear(profilePathInput);
 		await userEvent.type(profilePathInput, 'docs');
