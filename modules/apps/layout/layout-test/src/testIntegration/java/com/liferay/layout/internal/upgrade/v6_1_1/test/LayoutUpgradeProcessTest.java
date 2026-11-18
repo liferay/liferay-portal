@@ -134,8 +134,14 @@ public class LayoutUpgradeProcessTest extends BaseCTUpgradeProcessTestCase {
 
 		_group = GroupTestUtil.addGroup();
 
-		_updateLayoutSetPrototypesLinks(
-			_group, _layoutSetPrototype.getLayoutSetPrototypeId(), true);
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.headless.admin.site.internal.util.LogUtil",
+				LoggerTestUtil.ERROR)) {
+
+			_sites.updateLayoutSetPrototypesLinks(
+				_group, _layoutSetPrototype.getLayoutSetPrototypeId(),
+				_layoutSetPrototype.getLayoutSetPrototypeId(), true, true);
+		}
 
 		_mergeLayoutSetPrototypeLayouts();
 	}
@@ -248,7 +254,14 @@ public class LayoutUpgradeProcessTest extends BaseCTUpgradeProcessTestCase {
 		Group group = GroupTestUtil.addGroup();
 
 		try {
-			_updateLayoutSetPrototypesLinks(group, 0, false);
+			try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+					"com.liferay.headless.admin.site.internal.util.LogUtil",
+					LoggerTestUtil.ERROR)) {
+
+				_sites.updateLayoutSetPrototypesLinks(
+					group, 0, _layoutSetPrototype.getLayoutSetPrototypeId(),
+					false, true);
+			}
 
 			_mergeLayoutSetPrototypeLayouts();
 
@@ -652,22 +665,6 @@ public class LayoutUpgradeProcessTest extends BaseCTUpgradeProcessTestCase {
 		layout.setLayoutSetPrototypeLayoutERC(layoutSetPrototypeLayoutERC);
 
 		_layoutLocalService.updateLayout(layout);
-	}
-
-	private void _updateLayoutSetPrototypesLinks(
-			Group group, long publicLayoutSetPrototypeId,
-			boolean publicLayoutSetPrototypeLinkEnabled)
-		throws Exception {
-
-		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				"com.liferay.headless.admin.site.internal.util.LogUtil",
-				LoggerTestUtil.ERROR)) {
-
-			_sites.updateLayoutSetPrototypesLinks(
-				group, publicLayoutSetPrototypeId,
-				_layoutSetPrototype.getLayoutSetPrototypeId(),
-				publicLayoutSetPrototypeLinkEnabled, true);
-		}
 	}
 
 	private Layout _childLayout;
