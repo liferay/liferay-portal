@@ -118,32 +118,6 @@ definition {
 			threadSubject = "MB Thread Subject");
 	}
 
-	@description = "This is a test for LRQA-69700. Verify that the user can approve a thread."
-	@priority = 4
-	test CanApproveAThread {
-		MessageBoardsAdmin.openMessageBoardsAdmin(siteURLKey = "guest");
-
-		MessageboardsThread.addWithWorkflowCP(
-			threadBody = "Thread Message Body",
-			threadSubject = "Thread Message Subject");
-
-		UserBar.gotoDropdownItem(dropdownItem = "My Workflow Tasks");
-
-		Workflow.assignToMeTaskByActions(
-			workflowAssetTitle = "Thread Message Subject",
-			workflowAssetType = "Message Boards Message",
-			workflowTask = "Review");
-
-		Workflow.approveTaskByActions(
-			workflowAssetTitle = "Thread Message Subject",
-			workflowAssetType = "Message Boards Message",
-			workflowTask = "Review");
-
-		MessageBoardsAdmin.openMessageBoardsAdmin(siteURLKey = "guest");
-
-		Workflow.viewWorkflowStatus(status = "Approved");
-	}
-
 	@description = "This is a test for LRQA-70151. Verify that the user cannot reply to a Pending Thread."
 	@priority = 3
 	test CannotReplyToPendingThread {

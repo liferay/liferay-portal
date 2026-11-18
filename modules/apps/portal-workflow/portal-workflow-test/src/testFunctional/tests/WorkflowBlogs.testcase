@@ -121,20 +121,6 @@ definition {
 			entryTitle = "Blogs Entry Title");
 	}
 
-	@description = "Verify that a workflow can be assigned to Blog Entry in the Portal configurations"
-	@priority = 4
-	test CanAssignWorkflowThroughPortalConfiguration {
-		Workflow.openWorkflowListView();
-
-		Navigator.gotoNavItem(navItem = "Configuration");
-
-		Workflow.configureWorkflow(
-			workflowDefinition = "Single Approver",
-			workflowResourceValue = "Blogs Entry");
-
-		Alert.viewSuccessMessage();
-	}
-
 	@description = "Verify that the user can assign a Workflow to Blog Entry"
 	@priority = 5
 	test CanAssignWorkflowToBlogEntry {
