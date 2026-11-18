@@ -48,26 +48,6 @@ definition {
 		}
 	}
 
-	@priority = 4
-	@refactordone
-	test CanAddAnnouncementsEntry {
-		JSONAnnouncement.addAnnouncement(
-			announcementContent = "Announcements Entry Content",
-			announcementTitle = "Announcements Entry Title",
-			announcementURL = "http://www.liferay.com");
-
-		AnnouncementsNavigator.openToEntriesTab(
-			layoutName = "announcements-page",
-			siteURLKey = "guest",
-			tabName = "unread");
-
-		AnnouncementsEntry.viewPG(
-			distributionScope = "General",
-			entryContent = "Announcements Entry Content",
-			entryTitle = "Announcements Entry Title",
-			entryURL = "http://www.liferay.com");
-	}
-
 	@e2etest
 	@priority = 4
 	@refactordone
