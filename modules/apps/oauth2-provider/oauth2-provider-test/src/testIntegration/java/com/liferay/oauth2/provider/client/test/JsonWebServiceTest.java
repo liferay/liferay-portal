@@ -8,7 +8,9 @@ package com.liferay.oauth2.provider.client.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.portal.json.JSONObjectImpl;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -59,7 +61,7 @@ public class JsonWebServiceTest extends BaseClientTestCase {
 
 		MultivaluedMap<String, String> formData = new MultivaluedHashMap<>();
 
-		formData.putSingle("virtualHostname", "testcompany.xyz");
+		formData.putSingle("virtualHostname", _company.getVirtualHostname());
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				"portal_web.docroot.errors.code_jsp", LoggerTestUtil.WARN)) {
@@ -84,7 +86,7 @@ public class JsonWebServiceTest extends BaseClientTestCase {
 		JSONObject jsonObject = new JSONObjectImpl(
 			response.readEntity(String.class));
 
-		Assert.assertEquals("testcompany", jsonObject.getString("webId"));
+		Assert.assertEquals(_company.getWebId(), jsonObject.getString("webId"));
 
 		webTarget = getJsonWebTarget("region", "add-region");
 
@@ -127,7 +129,7 @@ public class JsonWebServiceTest extends BaseClientTestCase {
 
 		formData = new MultivaluedHashMap<>();
 
-		formData.putSingle("virtualHostname", "testcompany.xyz");
+		formData.putSingle("virtualHostname", _company.getVirtualHostname());
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				"portal_web.docroot.errors.code_jsp", LoggerTestUtil.WARN)) {
@@ -151,6 +153,7 @@ public class JsonWebServiceTest extends BaseClientTestCase {
 	private static final String _CLIENT_ID_READ_WRITE =
 		RandomTestUtil.randomString();
 
+	private Company _company;
 	private User _user;
 
 	private class JsonWebServiceTestPreparatorBundleActivator
@@ -160,9 +163,9 @@ public class JsonWebServiceTest extends BaseClientTestCase {
 		protected void prepareTest() throws Exception {
 			long companyId = TestPropsValues.getCompanyId();
 
-			_user = UserTestUtil.getAdminUser(companyId);
+			_company = CompanyLocalServiceUtil.getCompany(companyId);
 
-			createCompany("testcompany");
+			_user = UserTestUtil.getAdminUser(companyId);
 
 			createOAuth2Application(
 				companyId, _user, _CLIENT_ID_READ_ONLY,
