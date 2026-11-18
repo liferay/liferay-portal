@@ -18,9 +18,13 @@ import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.document.library.kernel.service.DLFileEntryTypeLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileVersionLocalService;
 import com.liferay.layout.page.template.test.util.DisplayPageTemplateTestUtil;
+import com.liferay.portal.kernel.exception.ModelListenerException;
+import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.FileVersion;
+import com.liferay.portal.kernel.security.auth.CompanyInheritableThreadLocalCallable;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.TestInfo;
@@ -45,12 +49,18 @@ import java.io.InputStream;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.FutureTask;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceRegistration;
 
 import org.springframework.mock.web.MockHttpServletRequest;
 
@@ -144,6 +154,48 @@ public class DLAppHelperLocalServiceTest {
 		publishDate = fileVersionAssetEntry.getPublishDate();
 
 		Assert.assertEquals(displayDate.getTime(), publishDate.getTime());
+	}
+
+	@Test
+	@TestInfo("LPD-115672")
+	public void testCheckAssetEntryWhenAddedConcurrently() throws Exception {
+		FileEntry fileEntry = _addFileEntry(
+			RandomTestUtil.randomString(), null, RandomTestUtil.randomString(),
+			ServiceContextTestUtil.getServiceContext());
+
+		AssetEntry assetEntry = _assetEntryLocalService.getEntry(
+			DLFileEntry.class.getName(), fileEntry.getFileEntryId());
+
+		_assetEntryLocalService.deleteAssetEntry(assetEntry);
+
+		ConcurrentAddModelListener concurrentAddModelListener =
+			new ConcurrentAddModelListener(fileEntry);
+
+		Bundle bundle = FrameworkUtil.getBundle(
+			DLAppHelperLocalServiceTest.class);
+
+		BundleContext bundleContext = bundle.getBundleContext();
+
+		ServiceRegistration<?> serviceRegistration =
+			bundleContext.registerService(
+				ModelListener.class, concurrentAddModelListener, null);
+
+		try {
+			_dlAppHelperLocalService.checkAssetEntry(
+				fileEntry.getUserId(), fileEntry, fileEntry.getFileVersion());
+		}
+		finally {
+			serviceRegistration.unregister();
+		}
+
+		assetEntry = _assetEntryLocalService.getEntry(
+			DLFileEntry.class.getName(), fileEntry.getFileEntryId());
+
+		AssetEntry concurrentAssetEntry =
+			concurrentAddModelListener._assetEntry;
+
+		Assert.assertEquals(
+			concurrentAssetEntry.getEntryId(), assetEntry.getEntryId());
 	}
 
 	@Test
@@ -351,5 +403,49 @@ public class DLAppHelperLocalServiceTest {
 
 	@Inject
 	private WorkflowDefinitionManager _workflowDefinitionManager;
+
+	private class ConcurrentAddModelListener
+		extends BaseModelListener<AssetEntry> {
+
+		@Override
+		public void onBeforeCreate(AssetEntry assetEntry)
+			throws ModelListenerException {
+
+			if ((_assetEntry != null) ||
+				(assetEntry.getClassPK() != _fileEntry.getFileEntryId())) {
+
+				return;
+			}
+
+			_assetEntry = assetEntry;
+
+			FutureTask<AssetEntry> futureTask = new FutureTask<>(
+				new CompanyInheritableThreadLocalCallable<>(
+					() -> _assetEntryLocalService.updateEntry(
+						_fileEntry.getUserId(), _fileEntry.getGroupId(),
+						DLFileEntry.class.getName(),
+						_fileEntry.getFileEntryId(), new long[0],
+						new String[0])));
+
+			Thread thread = new Thread(futureTask);
+
+			thread.start();
+
+			try {
+				_assetEntry = futureTask.get();
+			}
+			catch (Exception exception) {
+				throw new ModelListenerException(exception);
+			}
+		}
+
+		private ConcurrentAddModelListener(FileEntry fileEntry) {
+			_fileEntry = fileEntry;
+		}
+
+		private AssetEntry _assetEntry;
+		private final FileEntry _fileEntry;
+
+	}
 
 }
