@@ -524,7 +524,13 @@ const MillerColumnsItem = ({
 								<span
 									className="c-ml-2 lfr-portal-tooltip miller-columns-item__launch-indicator position-relative"
 									data-title={sub(
-										Liferay.Language.get('in-launch-x'),
+										launchDraftNames.length > 1
+											? Liferay.Language.get(
+													'in-launches-x'
+												)
+											: Liferay.Language.get(
+													'in-launch-x'
+												),
 										launchDraftNames.join(', ')
 									)}
 								>
