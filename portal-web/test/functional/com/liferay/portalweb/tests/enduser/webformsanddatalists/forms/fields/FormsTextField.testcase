@@ -402,7 +402,12 @@ definition {
 
 		Form.gotoAdvancedTab();
 
-		FormFields.enableSwitch(fieldName = "repeatable");
+		FormViewBuilder.setFieldRepeatable();
+
+		AssertElementPresent(
+			key_fieldName = ${fieldTextField},
+			key_repeatableFieldNumber = 1,
+			locator1 = "FormFields#FIELD_REPEATABLE_ADD_BUTTON_SPECIFIC");
 
 		Form.save();
 
