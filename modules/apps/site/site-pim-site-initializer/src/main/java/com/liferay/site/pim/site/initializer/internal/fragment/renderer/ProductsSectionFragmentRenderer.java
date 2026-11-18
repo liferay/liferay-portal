@@ -19,14 +19,17 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.Locale;
 
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-
 /**
  * @author Stefano Motta
  */
-@Component(service = FragmentRenderer.class)
 public class ProductsSectionFragmentRenderer implements FragmentRenderer {
+
+	public ProductsSectionFragmentRenderer(
+		Language language, ServletContext servletContext) {
+
+		_language = language;
+		_servletContext = servletContext;
+	}
 
 	@Override
 	public String getCollectionKey() {
@@ -69,12 +72,7 @@ public class ProductsSectionFragmentRenderer implements FragmentRenderer {
 	private static final Log _log = LogFactoryUtil.getLog(
 		ProductsSectionFragmentRenderer.class);
 
-	@Reference
-	private Language _language;
-
-	@Reference(
-		target = "(osgi.web.symbolicname=com.liferay.site.pim.site.initializer)"
-	)
-	private ServletContext _servletContext;
+	private final Language _language;
+	private final ServletContext _servletContext;
 
 }

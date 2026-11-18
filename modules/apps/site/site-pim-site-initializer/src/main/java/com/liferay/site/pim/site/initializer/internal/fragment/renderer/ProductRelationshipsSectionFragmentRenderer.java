@@ -26,15 +26,22 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.Locale;
 
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-
 /**
  * @author Stefano Motta
  */
-@Component(service = FragmentRenderer.class)
 public class ProductRelationshipsSectionFragmentRenderer
 	implements FragmentRenderer {
+
+	public ProductRelationshipsSectionFragmentRenderer(
+		FDSSerializer fdsSerializer, Language language,
+		ObjectEntryLocalService objectEntryLocalService,
+		ServletContext servletContext) {
+
+		_fdsSerializer = fdsSerializer;
+		_language = language;
+		_objectEntryLocalService = objectEntryLocalService;
+		_servletContext = servletContext;
+	}
 
 	@Override
 	public String getCollectionKey() {
@@ -91,18 +98,9 @@ public class ProductRelationshipsSectionFragmentRenderer
 	private static final Log _log = LogFactoryUtil.getLog(
 		ProductRelationshipsSectionFragmentRenderer.class);
 
-	@Reference
-	private FDSSerializer _fdsSerializer;
-
-	@Reference
-	private Language _language;
-
-	@Reference
-	private ObjectEntryLocalService _objectEntryLocalService;
-
-	@Reference(
-		target = "(osgi.web.symbolicname=com.liferay.site.pim.site.initializer)"
-	)
-	private ServletContext _servletContext;
+	private final FDSSerializer _fdsSerializer;
+	private final Language _language;
+	private final ObjectEntryLocalService _objectEntryLocalService;
+	private final ServletContext _servletContext;
 
 }
