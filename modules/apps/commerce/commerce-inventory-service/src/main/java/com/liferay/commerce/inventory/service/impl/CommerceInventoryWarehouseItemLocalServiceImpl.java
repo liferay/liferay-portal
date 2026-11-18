@@ -9,6 +9,7 @@ import com.liferay.account.model.AccountEntry;
 import com.liferay.account.model.AccountGroup;
 import com.liferay.account.service.AccountGroupLocalService;
 import com.liferay.commerce.inventory.constants.CommerceInventoryConstants;
+import com.liferay.commerce.inventory.exception.CommerceInventoryWarehouseItemCommerceInventoryWarehouseIdException;
 import com.liferay.commerce.inventory.exception.CommerceInventoryWarehouseItemSkuException;
 import com.liferay.commerce.inventory.exception.DuplicateCommerceInventoryWarehouseItemException;
 import com.liferay.commerce.inventory.exception.MVCCException;
@@ -43,6 +44,7 @@ import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.petra.sql.dsl.query.DSLQuery;
 import com.liferay.petra.sql.dsl.spi.expression.Scalar;
 import com.liferay.petra.sql.dsl.spi.query.QueryTable;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -139,6 +141,23 @@ public class CommerceInventoryWarehouseItemLocalServiceImpl
 			commerceInventoryWarehouseItem =
 				commerceInventoryWarehouseItemPersistence.fetchByERC_C(
 					externalReferenceCode, companyId);
+
+			if (commerceInventoryWarehouseItem != null) {
+				long commerceInventoryWarehouseItemWarehouseId =
+					commerceInventoryWarehouseItem.
+						getCommerceInventoryWarehouseId();
+
+				if (commerceInventoryWarehouseItemWarehouseId !=
+						commerceInventoryWarehouseId) {
+
+					throw new CommerceInventoryWarehouseItemCommerceInventoryWarehouseIdException(
+						StringBundler.concat(
+							"Commerce inventory warehouse item with external ",
+							"reference code ", externalReferenceCode,
+							" does not belong to commerce inventory warehouse ",
+							commerceInventoryWarehouseId));
+				}
+			}
 		}
 
 		if (commerceInventoryWarehouseItem != null) {
