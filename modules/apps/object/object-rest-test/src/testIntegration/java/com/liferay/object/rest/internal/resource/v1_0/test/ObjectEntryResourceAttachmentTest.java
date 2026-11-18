@@ -1908,11 +1908,15 @@ public class ObjectEntryResourceAttachmentTest
 		Company company = companyLocalService.getCompany(
 			TestPropsValues.getCompanyId());
 
+		FileEntry customFileEntry2 = _addFileEntry(
+			DLTestUtil.randomTextFileBytes(),
+			RandomTestUtil.randomString() + ".txt", ContentTypes.TEXT_PLAIN);
+
 		String previewFileURL = StringBundler.concat(
 			"http://", company.getVirtualHostname(), ":",
 			PortalUtil.getPortalServerPort(false),
 			_dlURLHelper.getPreviewURL(
-				customFileEntry1, customFileEntry1.getFileVersion(), null, "",
+				customFileEntry2, customFileEntry2.getFileVersion(), null, "",
 				false, true));
 
 		String hostNotAllowedMessage = StringBundler.concat(
@@ -2731,11 +2735,15 @@ public class ObjectEntryResourceAttachmentTest
 		Company company = companyLocalService.getCompany(
 			TestPropsValues.getCompanyId());
 
+		FileEntry customFileEntry3 = _addFileEntry(
+			DLTestUtil.randomTextFileBytes(),
+			RandomTestUtil.randomString() + ".txt", ContentTypes.TEXT_PLAIN);
+
 		String previewFileURL = StringBundler.concat(
 			"http://", company.getVirtualHostname(), ":",
 			PortalUtil.getPortalServerPort(false),
 			_dlURLHelper.getPreviewURL(
-				customFileEntry1, customFileEntry1.getFileVersion(), null, "",
+				customFileEntry3, customFileEntry3.getFileVersion(), null, "",
 				false, true));
 
 		String hostNotAllowedMessage = StringBundler.concat(
