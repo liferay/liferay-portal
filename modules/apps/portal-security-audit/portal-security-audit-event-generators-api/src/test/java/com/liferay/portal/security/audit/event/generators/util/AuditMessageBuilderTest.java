@@ -65,10 +65,10 @@ public class AuditMessageBuilderTest {
 			Mockito.anyLong(), Mockito.anyString()
 		);
 
-		long realUserId = RandomTestUtil.randomLong();
-
 		AuditRequestContext auditRequestContext =
 			AuditRequestContextThreadLocal.getAuditRequestContext();
+
+		long realUserId = RandomTestUtil.randomLong();
 
 		auditRequestContext.setRealUserId(realUserId);
 
