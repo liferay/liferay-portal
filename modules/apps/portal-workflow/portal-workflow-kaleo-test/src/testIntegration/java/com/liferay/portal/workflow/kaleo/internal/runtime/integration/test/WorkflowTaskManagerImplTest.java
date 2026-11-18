@@ -1485,7 +1485,7 @@ public class WorkflowTaskManagerImplTest extends BaseWorkflowManagerTestCase {
 			0, RandomTestUtil.randomString(), null, null,
 			RoleConstants.TYPE_REGULAR, null, null);
 
-		String content = StringUtil.replace(
+		String workflowDefinitionJSON = StringUtil.replace(
 			StringUtil.read(
 				getResourceInputStream("role-id-workflow-definition.json")),
 			"[$ROLE_ID$]", String.valueOf(role.getRoleId()));
@@ -1493,8 +1493,8 @@ public class WorkflowTaskManagerImplTest extends BaseWorkflowManagerTestCase {
 		String name = RandomTestUtil.randomString();
 
 		_workflowDefinitionManager.deployWorkflowDefinition(
-			content.getBytes(), _company.getCompanyId(), null, name, name,
-			_adminUser.getUserId());
+			workflowDefinitionJSON.getBytes(), _company.getCompanyId(), null, name,
+			name, _adminUser.getUserId());
 
 		_activateWorkflow(DLFolder.class.getName(), 0, -1, name, 1);
 
