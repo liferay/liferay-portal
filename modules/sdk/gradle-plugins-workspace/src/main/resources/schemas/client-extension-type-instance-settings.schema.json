@@ -2845,7 +2845,7 @@
 				"algorithmKeySize": {
 					"default": 20,
 					"description": "Set the size of the algorithm key.",
-					"title": "Algorithm Key Size",
+					"title": "Algorithm Key Size (Bytes)",
 					"type": "number"
 				},
 				"clockSkew": {
