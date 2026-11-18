@@ -3,7 +3,7 @@ import ClayDropDown, {Align} from '@clayui/drop-down';
 import ClayIcon from 'shared/components/Icon';
 import getCN from 'classnames';
 import moment from 'moment';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {Text as ClayText} from '@clayui/core';
 import {Data, DropdownRangeKeyIProps} from './DropdownRangeKey';
 import {DEFAULT_DATE_FORMAT} from 'shared/util/date';
@@ -46,7 +46,9 @@ export const DropdownRangeKeyContent: React.FC<
 	});
 	const [seeMore, setSeeMore] = useState(false);
 	const [showDatePicker, setShowDatePicker] = useState(false);
+	const itemRefs = useRef<Array<HTMLElement | null>>([]);
 	const location = useLocation();
+	const previousValuesRef = useRef<Array<RangeKeyTimeRanges>>([]);
 	const retentionPeriod = useRetentionPeriod();
 	const timeRange = formatTimeRange(data.timeRange);
 	const filteredItems = getFilteredItems({
@@ -100,6 +102,18 @@ export const DropdownRangeKeyContent: React.FC<
 		}
 	}, [customDateRange]);
 
+	useEffect(() => {
+		if (!seeMore) {
+			return;
+		}
+
+		const index = filteredItems.findIndex(
+			({value}) => !previousValuesRef.current.includes(value)
+		);
+
+		itemRefs.current[Math.max(index, 0)]?.focus();
+	}, [seeMore]);
+
 	return (
 		<ClayDropDown
 			active={active}
@@ -147,6 +161,9 @@ export const DropdownRangeKeyContent: React.FC<
 							className={getCN('c-pointer', {
 								active: selectedItem?.value === value,
 							})}
+							innerRef={(element: HTMLElement | null) => {
+								itemRefs.current[index] = element;
+							}}
 							key={index}
 							onClick={() => {
 								setActive(false);
@@ -172,7 +189,13 @@ export const DropdownRangeKeyContent: React.FC<
 
 					{!legacy && (
 						<DropdownRangeKeyLegacy
-							onClickSeeMore={() => setSeeMore(true)}
+							onClickSeeMore={() => {
+								previousValuesRef.current = filteredItems.map(
+									({value}) => value
+								);
+
+								setSeeMore(true);
+							}}
 							onClickShowDatePicker={() =>
 								setShowDatePicker(true)
 							}
