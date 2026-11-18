@@ -45,9 +45,9 @@ public class FaroExternalScriptsFragmentRenderer implements FragmentRenderer {
 
 	@Override
 	public void render(
-		FragmentRendererContext fragmentRendererContext,
-		HttpServletRequest httpServletRequest,
-		HttpServletResponse httpServletResponse)
+			FragmentRendererContext fragmentRendererContext,
+			HttpServletRequest httpServletRequest,
+			HttpServletResponse httpServletResponse)
 		throws IOException {
 
 		ScriptTag scriptTag = new ScriptTag();
@@ -61,7 +61,8 @@ public class FaroExternalScriptsFragmentRenderer implements FragmentRenderer {
 
 		try {
 			scriptTag.doBodyTag(
-				httpServletRequest, httpServletResponse, pageContext -> {
+				httpServletRequest, httpServletResponse,
+				pageContext -> {
 				});
 		}
 		catch (Exception exception) {
