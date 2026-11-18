@@ -89,7 +89,7 @@ public class MCPServerProfileUpgradeProcessUtil {
 
 		String uniqueProfilePath = profilePath;
 
-		for (int i = 1; profilePaths.contains(uniqueProfilePath); i++) {
+		for (int i = 2; profilePaths.contains(uniqueProfilePath); i++) {
 			uniqueProfilePath = profilePath + "-" + i;
 		}
 

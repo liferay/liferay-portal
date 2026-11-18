@@ -117,11 +117,11 @@ public class MCPServerProfilePathUpgradeProcessTest {
 						"profile \"My Profile/1\"",
 					"Generated profile path \"my-profile-2\" for MCP server " +
 						"profile \"My Profile 2\"",
-					"Generated profile path \"my-profile-2-1\" for MCP " +
+					"Generated profile path \"my-profile-2-2\" for MCP " +
 						"server profile \"My-Profile-2\"",
 					"Generated profile path \"profile\" for MCP server " +
 						"profile \"!!!\"",
-					"Generated profile path \"profile-1\" for MCP server " +
+					"Generated profile path \"profile-2\" for MCP server " +
 						"profile \"???\""),
 				logCapture.getMessages());
 		}
@@ -198,9 +198,9 @@ public class MCPServerProfilePathUpgradeProcessTest {
 			_defaultMCPServerProfileObjectEntry, StringPool.BLANK);
 		_assertProfilePath(_objectEntry1, "my-profile-1");
 		_assertProfilePath(_objectEntry2, "my-profile-2");
-		_assertProfilePath(_objectEntry3, "my-profile-2-1");
+		_assertProfilePath(_objectEntry3, "my-profile-2-2");
 		_assertProfilePath(_objectEntry4, "profile");
-		_assertProfilePath(_objectEntry5, "profile-1");
+		_assertProfilePath(_objectEntry5, "profile-2");
 		_assertProfilePath(_objectEntry6, "my-profile");
 	}
 

@@ -178,7 +178,7 @@ public class MCPServerProfileStatusUpgradeProcessTest {
 		values = _objectEntryLocalService.getValues(
 			_activeMCPServerProfileWithoutToolsObjectEntry2.getObjectEntryId());
 
-		Assert.assertEquals("my-profile-1", values.get("profilePath"));
+		Assert.assertEquals("my-profile-2", values.get("profilePath"));
 		Assert.assertEquals("inactive", values.get("profileStatus"));
 
 		Assert.assertEquals(
