@@ -26,6 +26,32 @@ export const test = mergeTests(
 );
 
 test(
+	'Can publish a site from the revamped Staging application',
+	{tag: '@LPD-116356'},
+	async ({apiHelpers, exportImportPage, page, site}) => {
+		await enableLocalStaging(apiHelpers, page, site);
+
+		await page.goto(
+			`/group${site.friendlyUrlPath}-staging/~/control_panel/manage?p_p_id=com_liferay_staging_processes_web_portlet_StagingProcessesPortlet`
+		);
+
+		await exportImportPage.clickNew();
+
+		await expect(
+			page.getByRole('heading', {name: 'New Publish Process'})
+		).toBeVisible();
+
+		const name = `Publication-${getRandomString()}`;
+
+		await exportImportPage.nameInput.fill(name);
+
+		await page.getByRole('button', {name: 'Publish to Live'}).click();
+
+		await expect(exportImportPage.taskStatusLabel(name)).toBeVisible();
+	}
+);
+
+test(
 	'Can publish to live through the new publish page',
 	{tag: '@LPD-116053'},
 	async ({apiHelpers, exportImportPage, page, pageEditorPage, site}) => {
