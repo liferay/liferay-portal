@@ -17,6 +17,7 @@ import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.taglib.servlet.PageContextFactoryUtil;
@@ -113,6 +114,8 @@ public abstract class BaseFragmentRenderer implements FragmentRenderer {
 
 						return pageURLs;
 					}
+				).put(
+					"params", getParams(httpServletRequest)
 				).build());
 			componentTag.setServletContext(servletContext);
 
@@ -129,6 +132,46 @@ public abstract class BaseFragmentRenderer implements FragmentRenderer {
 	}
 
 	protected abstract String getModule();
+
+	protected Map<String, String> getParams(
+		HttpServletRequest httpServletRequest) {
+
+		return HashMapBuilder.put(
+			"accountId", ParamUtil.getString(httpServletRequest, "accountId")
+		).put(
+			"accountName",
+			ParamUtil.getString(httpServletRequest, "accountName")
+		).put(
+			"campaignId", ParamUtil.getString(httpServletRequest, "campaignId")
+		).put(
+			"campaignName",
+			ParamUtil.getString(httpServletRequest, "campaignName")
+		).put(
+			"delta", ParamUtil.getString(httpServletRequest, "delta")
+		).put(
+			"downloadReport",
+			ParamUtil.getString(httpServletRequest, "downloadReport")
+		).put(
+			"field", ParamUtil.getString(httpServletRequest, "field")
+		).put(
+			"page", ParamUtil.getString(httpServletRequest, "page")
+		).put(
+			"query", ParamUtil.getString(httpServletRequest, "query")
+		).put(
+			"rangeEnd", ParamUtil.getString(httpServletRequest, "rangeEnd")
+		).put(
+			"rangeKey", ParamUtil.getString(httpServletRequest, "rangeKey")
+		).put(
+			"rangeStart", ParamUtil.getString(httpServletRequest, "rangeStart")
+		).put(
+			"segmentId", ParamUtil.getString(httpServletRequest, "segmentId")
+		).put(
+			"segmentName",
+			ParamUtil.getString(httpServletRequest, "segmentName")
+		).put(
+			"sortOrder", ParamUtil.getString(httpServletRequest, "sortOrder")
+		).build();
+	}
 
 	@Reference
 	protected LayoutLocalService layoutLocalService;
