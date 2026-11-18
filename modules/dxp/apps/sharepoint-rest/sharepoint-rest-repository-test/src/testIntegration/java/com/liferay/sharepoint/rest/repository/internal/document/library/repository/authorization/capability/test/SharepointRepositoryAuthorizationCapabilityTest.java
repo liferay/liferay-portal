@@ -134,6 +134,7 @@ public class SharepointRepositoryAuthorizationCapabilityTest {
 		_testAuthorize();
 		_testAuthorizeWhenRootFolderDoesNotExist();
 		_testAuthorizeWhenRootFolderIsNotMountPoint();
+		_testAuthorizeWhenUserDeniesAccess();
 		_testAuthorizeWhenUserHasToken();
 		_testAuthorizeWhenUserIsNotSignedIn();
 	}
@@ -323,6 +324,58 @@ public class SharepointRepositoryAuthorizationCapabilityTest {
 				new MockHttpServletRequest(), mockLiferayPortletRenderResponse,
 				true));
 		Assert.assertNull(_getRedirectedURL(mockLiferayPortletRenderResponse));
+	}
+
+	private void _testAuthorizeWhenUserDeniesAccess() throws Exception {
+		Folder mountFolder = _dlAppLocalService.getMountFolder(
+			_repository.getRepositoryId());
+
+		Layout layout = _addLayout(mountFolder.getExternalReferenceCode());
+
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest();
+		MockLiferayPortletRenderResponse mockLiferayPortletRenderResponse =
+			new MockLiferayPortletRenderResponse();
+
+		Assert.assertEquals(
+			MVCRenderConstants.MVC_PATH_VALUE_SKIP_DISPATCH,
+			_render(
+				layout, mockHttpServletRequest,
+				mockLiferayPortletRenderResponse, true));
+		Assert.assertNotNull(
+			_getRedirectedURL(mockLiferayPortletRenderResponse));
+
+		MockHttpServletRequest callbackMockHttpServletRequest =
+			new MockHttpServletRequest();
+
+		callbackMockHttpServletRequest.setParameter("error", "access_denied");
+		callbackMockHttpServletRequest.setSession(
+			mockHttpServletRequest.getSession());
+
+		AssertUtils.assertFailure(
+			OAuth2AuthorizationException.AccessDenied.class,
+			"The client is not authorized to request an authorization code " +
+				"using method: access_denied",
+			() -> _strutsAction.execute(
+				callbackMockHttpServletRequest, new MockHttpServletResponse()));
+
+		MockHttpServletRequest returnMockHttpServletRequest =
+			new MockHttpServletRequest();
+
+		returnMockHttpServletRequest.setSession(
+			mockHttpServletRequest.getSession());
+
+		MockLiferayPortletRenderResponse
+			returnMockLiferayPortletRenderResponse =
+				new MockLiferayPortletRenderResponse();
+
+		Assert.assertEquals(
+			"/document_library/error.jsp",
+			_render(
+				layout, returnMockHttpServletRequest,
+				returnMockLiferayPortletRenderResponse, true));
+		Assert.assertNull(
+			_getRedirectedURL(returnMockLiferayPortletRenderResponse));
 	}
 
 	private void _testAuthorizeWhenUserHasToken() throws Exception {
