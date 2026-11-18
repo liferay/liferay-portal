@@ -6,6 +6,7 @@
 package com.liferay.portal.action;
 
 import com.liferay.portal.kernel.service.GroupServiceUtil;
+import com.liferay.portal.kernel.service.ListTypeServiceUtil;
 import com.liferay.portal.kernel.service.RoleServiceUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
@@ -103,6 +104,34 @@ public class JSONServiceActionTest {
 		long[] arrayValue = (long[])value;
 
 		Assert.assertEquals(Arrays.toString(arrayValue), 3, arrayValue.length);
+	}
+
+	@Test
+	public void testGetMethodAndParameterTypes() throws Exception {
+		JSONServiceAction jsonServiceAction = new JSONServiceAction();
+
+		Assert.assertEquals(
+			ListTypeServiceUtil.class.getMethod(
+				"getListTypes", long.class, String.class),
+			jsonServiceAction.getMethodAndParameterTypes(
+				ListTypeServiceUtil.class, "getListTypes",
+				new String[] {"companyId", "type"}, new String[0])[0]);
+		Assert.assertNull(
+			jsonServiceAction.getMethodAndParameterTypes(
+				ListTypeServiceUtil.class, "getService", new String[0],
+				new String[0]));
+		Assert.assertNull(
+			jsonServiceAction.getMethodAndParameterTypes(
+				ListTypeServiceUtil.class, "hashCode", new String[0],
+				new String[0]));
+		Assert.assertNull(
+			jsonServiceAction.getMethodAndParameterTypes(
+				ListTypeServiceUtil.class, "setService",
+				new String[] {"service"}, new String[0]));
+		Assert.assertNull(
+			jsonServiceAction.getMethodAndParameterTypes(
+				ListTypeServiceUtil.class, "toString", new String[0],
+				new String[0]));
 	}
 
 }
