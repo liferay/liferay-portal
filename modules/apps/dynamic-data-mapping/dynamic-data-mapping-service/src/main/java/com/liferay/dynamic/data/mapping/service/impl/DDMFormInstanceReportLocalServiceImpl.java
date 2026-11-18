@@ -12,13 +12,14 @@ import com.liferay.dynamic.data.mapping.model.DDMFormInstance;
 import com.liferay.dynamic.data.mapping.model.DDMFormInstanceRecordVersion;
 import com.liferay.dynamic.data.mapping.model.DDMFormInstanceReport;
 import com.liferay.dynamic.data.mapping.report.DDMFormFieldTypeReportProcessor;
-import com.liferay.dynamic.data.mapping.report.DDMFormFieldTypeReportProcessorRegistry;
 import com.liferay.dynamic.data.mapping.service.base.DDMFormInstanceReportLocalServiceBaseImpl;
 import com.liferay.dynamic.data.mapping.service.persistence.DDMFormInstancePersistence;
 import com.liferay.dynamic.data.mapping.service.persistence.DDMFormInstanceRecordPersistence;
 import com.liferay.dynamic.data.mapping.service.persistence.DDMFormInstanceRecordVersionPersistence;
 import com.liferay.dynamic.data.mapping.storage.DDMFormFieldValue;
 import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
+import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
+import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -36,7 +37,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+import org.osgi.framework.BundleContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 
 /**
@@ -166,6 +170,21 @@ public class DDMFormInstanceReportLocalServiceImpl
 		return ddmFormInstanceReportPersistence.update(ddmFormInstanceReport);
 	}
 
+	@Activate
+	protected void activate(BundleContext bundleContext) {
+		_serviceTrackerMap = ServiceTrackerMapFactory.openSingleValueMap(
+			bundleContext, DDMFormFieldTypeReportProcessor.class,
+			"ddm.form.field.type.name");
+	}
+
+	@Deactivate
+	@Override
+	protected void deactivate() {
+		super.deactivate();
+
+		_serviceTrackerMap.close();
+	}
+
 	private String _getData(
 			long formInstanceRecordVersionId, String ddmFormInstanceReportEvent)
 		throws PortalException {
@@ -238,8 +257,7 @@ public class DDMFormInstanceReportLocalServiceImpl
 		throws Exception, JSONException {
 
 		DDMFormFieldTypeReportProcessor ddmFormFieldTypeReportProcessor =
-			_ddmFormFieldTypeReportProcessorRegistry.
-				getDDMFormFieldTypeReportProcessor(ddmFormFieldValue.getType());
+			_serviceTrackerMap.getService(ddmFormFieldValue.getType());
 
 		if (ddmFormFieldTypeReportProcessor != null) {
 			String fieldName = ddmFormFieldValue.getName();
@@ -271,10 +289,6 @@ public class DDMFormInstanceReportLocalServiceImpl
 		DDMFormInstanceReportLocalServiceImpl.class);
 
 	@Reference
-	private DDMFormFieldTypeReportProcessorRegistry
-		_ddmFormFieldTypeReportProcessorRegistry;
-
-	@Reference
 	private DDMFormInstancePersistence _ddmFormInstancePersistence;
 
 	@Reference
@@ -286,5 +300,8 @@ public class DDMFormInstanceReportLocalServiceImpl
 
 	@Reference
 	private JSONFactory _jsonFactory;
+
+	private ServiceTrackerMap<String, DDMFormFieldTypeReportProcessor>
+		_serviceTrackerMap;
 
 }
