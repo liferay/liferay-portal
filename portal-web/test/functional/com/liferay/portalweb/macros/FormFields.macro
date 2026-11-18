@@ -27,14 +27,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro addRepeatableFieldsGroup(fieldName = null, repeatableFieldNumber = null) {
-		Click.javaScriptClick(
-			key_fieldName = ${fieldName},
-			key_repeatableFieldNumber = ${repeatableFieldNumber},
-			locator1 = "FormFields#FIELD_ADD_SPECIFIC");
-	}
-
-	@summary = "Default summary"
 	macro addRichTextContent(fieldLabel = null, content = null) {
 		CKEditor.addContentInWebContent(
 			content = ${content},

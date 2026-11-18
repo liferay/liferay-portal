@@ -86,11 +86,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>FIELD_ADD_SPECIFIC</td>
-	<td>//div[contains(@class,'lfr-ddm-form-container')]//div[contains(@data-field-name,'${key_fieldName}')][${key_repeatableFieldNumber}]//div[contains(@class,'lfr-ddm-form-field-repeatable-toolbar')]//button[contains(@class,'btn') and contains(@title,'Duplicate')]</td>
-	<td></td>
-</tr>
-<tr>
 	<td>FIELD_REPEATABLE_ADD_BUTTON_SPECIFIC</td>
 	<td>((//label[normalize-space(text())='${key_fieldName}']/ancestor::div[@class='ddm-field'][1] | //div[@class='ddm-field'][contains(@data-field-name,'${key_fieldName}')])[.//*[contains(@class,'ddm-form-field-repeatable-delete-button')]])[${key_repeatableFieldNumber}]//button[contains(@class,'ddm-form-field-repeatable-add-button')][ancestor::div[@class='ddm-field'][1][contains(@data-field-name,'${key_fieldName}') or .//label[normalize-space(text())='${key_fieldName}']]]</td>
 	<td></td>
