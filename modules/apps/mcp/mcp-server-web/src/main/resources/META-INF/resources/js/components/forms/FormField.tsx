@@ -19,6 +19,7 @@ interface FormFieldProps {
 	name: string;
 	onChange?: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>;
 	prefixHelpMessage?: string;
+	prependContent?: string;
 	required?: boolean;
 	suffix?: React.ReactNode;
 	validate?: FieldValidator;
@@ -33,6 +34,7 @@ export function FormField({
 	name,
 	onChange,
 	prefixHelpMessage,
+	prependContent,
 	required: isRequired,
 	suffix,
 	validate,
@@ -83,11 +85,23 @@ export function FormField({
 				</ClayForm.FeedbackGroup>
 			)}
 
-			{suffix ? (
+			{prependContent || suffix ? (
 				<ClayInput.Group>
-					<ClayInput.GroupItem>{input}</ClayInput.GroupItem>
+					{prependContent && (
+						<ClayInput.GroupItem prepend shrink>
+							<ClayInput.GroupText>
+								{prependContent}
+							</ClayInput.GroupText>
+						</ClayInput.GroupItem>
+					)}
 
-					<ClayInput.GroupItem shrink>{suffix}</ClayInput.GroupItem>
+					<ClayInput.GroupItem append={!!prependContent}>
+						{input}
+					</ClayInput.GroupItem>
+
+					{suffix && (
+						<ClayInput.GroupItem shrink>{suffix}</ClayInput.GroupItem>
+					)}
 				</ClayInput.Group>
 			) : (
 				input

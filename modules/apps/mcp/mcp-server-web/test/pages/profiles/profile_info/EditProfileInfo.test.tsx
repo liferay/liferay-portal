@@ -53,12 +53,10 @@ describe('EditProfileInfo', () => {
 		);
 
 		expect(profilePathInput).toHaveValue('my-team-docs');
-		expect(
-			screen.getByText('http://localhost:8080/o/mcp/')
-		).toBeInTheDocument();
 		expect(profilePathInput).toHaveAccessibleDescription(
-			expect.stringContaining('http://localhost:8080/o/mcp/')
+			expect.stringContaining('http://localhost:8080/o/mcp')
 		);
+		expect(screen.getByText('/')).toBeInTheDocument();
 
 		await userEvent.clear(profilePathInput);
 		await userEvent.type(profilePathInput, 'docs');
@@ -156,7 +154,7 @@ describe('EditProfileInfo', () => {
 
 		expect(copyButton).toBeDisabled();
 		expect(
-			screen.getByText('http://localhost:8080/liferay/o/mcp/')
+			screen.getByText('http://localhost:8080/liferay/o/mcp')
 		).toBeInTheDocument();
 
 		await user.type(

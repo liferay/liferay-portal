@@ -238,7 +238,8 @@ function ProfileForm({
 
 							setFieldValue('profilePath', toProfilePath(value));
 						}}
-						prefixHelpMessage={`${getProfileURL('')}${isDefaultProfile ? '' : '/'}`}
+						prefixHelpMessage={getProfileURL('')}
+						prependContent="/"
 						required={!isDefaultProfile}
 						suffix={
 							<ClayButtonWithIcon
