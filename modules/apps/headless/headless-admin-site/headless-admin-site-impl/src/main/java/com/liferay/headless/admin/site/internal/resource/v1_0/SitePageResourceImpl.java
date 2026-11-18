@@ -965,16 +965,9 @@ public class SitePageResourceImpl
 					sitemapIncludeChildLayouts = "true";
 				}
 
-				Double pagePriority = sitemapSettings.getPagePriority();
-
-				if (pagePriority != null) {
-					if ((pagePriority < 0) || (pagePriority > 1)) {
-						throw new IllegalArgumentException(
-							"The sitemap page priority must be between 0 and " +
-								"1");
-					}
-
-					sitemapPagePriority = String.valueOf(pagePriority);
+				if (sitemapSettings.getPagePriority() != null) {
+					sitemapPagePriority = String.valueOf(
+						sitemapSettings.getPagePriority());
 				}
 			}
 		}
