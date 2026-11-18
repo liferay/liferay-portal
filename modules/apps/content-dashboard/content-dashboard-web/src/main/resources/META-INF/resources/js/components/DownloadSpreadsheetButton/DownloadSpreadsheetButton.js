@@ -3,24 +3,18 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import ClayAlert from '@clayui/alert';
 import ClayButton, {ClayButtonWithIcon} from '@clayui/button';
 import ClayIcon from '@clayui/icon';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
 import {ClayTooltipProvider} from '@clayui/tooltip';
 import classnames from 'classnames';
-import {navigate} from 'frontend-js-web';
+import {openToast} from 'frontend-js-components-web';
+import {escapeHTML, navigate} from 'frontend-js-web';
 import PropTypes from 'prop-types';
 import React, {useCallback, useEffect, useState} from 'react';
 
 import DownloadSpreadsheetModal from './DownloadSpreadsheetModal';
 import {downloadFileFromBlob, fetchFile} from './downloadSpreadsheetUtils';
-
-const initialToastState = {
-	content: null,
-	show: false,
-	type: null,
-};
 
 const initialFeedbackState = {
 	content: null,
@@ -34,7 +28,6 @@ const FEEDBACK_TIMEOUT_DELAY = 2000;
 
 const DownloadSpreadsheetButton = ({fileURL, total}) => {
 	const [loading, setLoading] = useState(false);
-	const [toastMessage, setToastMessage] = useState(initialToastState);
 	const [feedbackStatus, setFeedbackStatus] = useState(initialFeedbackState);
 	const [showPendingRequestModal, setShowPendingRequestModal] =
 		useState(false);
@@ -44,20 +37,6 @@ const DownloadSpreadsheetButton = ({fileURL, total}) => {
 	);
 	const [disableCancelAndLeaveButton, setDisableCancelAndLeaveButton] =
 		useState(false);
-
-	const showResult = ({feedbackStatusContent, toastContent, type}) => {
-		setFeedbackStatus({
-			content: feedbackStatusContent,
-			show: true,
-			type,
-		});
-
-		setToastMessage({
-			content: toastContent,
-			show: true,
-			type,
-		});
-	};
 
 	const buttonTextKey = loading
 		? Liferay.Language.get('generating-xls')
@@ -77,6 +56,20 @@ const DownloadSpreadsheetButton = ({fileURL, total}) => {
 	const disabledGenerateButton =
 		loading || feedbackStatus.show || !parseInt(total, 10);
 
+	const showResult = ({feedbackStatusContent, toastMessage, type}) => {
+		setFeedbackStatus({
+			content: feedbackStatusContent,
+			show: true,
+			type,
+		});
+
+		openToast({
+			message: escapeHTML(toastMessage),
+			title: '',
+			type,
+		});
+	};
+
 	const handleClick = async () => {
 		setLoading(true);
 
@@ -91,7 +84,7 @@ const DownloadSpreadsheetButton = ({fileURL, total}) => {
 
 			showResult({
 				feedbackStatusContent: Liferay.Language.get('xls-generated'),
-				toastContent: Liferay.Language.get(
+				toastMessage: Liferay.Language.get(
 					'xls-was-successfully-generated'
 				),
 				type: 'success',
@@ -103,7 +96,7 @@ const DownloadSpreadsheetButton = ({fileURL, total}) => {
 					feedbackStatusContent: Liferay.Language.get(
 						'xls-generation-was-cancelled'
 					),
-					toastContent: Liferay.Language.get(
+					toastMessage: Liferay.Language.get(
 						'xls-generation-was-cancelled'
 					),
 					type: 'warning',
@@ -113,7 +106,7 @@ const DownloadSpreadsheetButton = ({fileURL, total}) => {
 				showResult({
 					feedbackStatusContent:
 						Liferay.Language.get('an-error-occurred'),
-					toastContent: `${Liferay.Language.get(
+					toastMessage: `${Liferay.Language.get(
 						'xls-generation-failed.-try-again'
 					)}. ${error}`,
 					type: 'danger',
@@ -127,10 +120,6 @@ const DownloadSpreadsheetButton = ({fileURL, total}) => {
 
 	const handleCancelRequest = () => {
 		fetchController.abort();
-	};
-
-	const handleToastClose = () => {
-		setToastMessage(initialToastState);
 	};
 
 	const secondaryClickModalHandler = useCallback(
@@ -249,20 +238,6 @@ const DownloadSpreadsheetButton = ({fileURL, total}) => {
 						title={Liferay.Language.get('cancel-export')}
 					/>
 				</ClayTooltipProvider>
-			)}
-
-			{toastMessage.show && (
-				<ClayAlert.ToastContainer>
-					<ClayAlert
-						autoClose={5000}
-						className="download-spreadsheet-button__alert"
-						closeButtonAriaLabel={Liferay.Language.get('close')}
-						displayType={toastMessage.type}
-						onClose={handleToastClose}
-					>
-						{toastMessage.content}
-					</ClayAlert>
-				</ClayAlert.ToastContainer>
 			)}
 
 			<DownloadSpreadsheetModal
