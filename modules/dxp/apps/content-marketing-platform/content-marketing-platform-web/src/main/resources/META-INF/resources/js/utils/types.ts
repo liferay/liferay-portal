@@ -71,6 +71,15 @@ export interface IProjectObjectEntry {
 	title: string;
 }
 
+export interface ISubtaskObjectEntry {
+	id: number;
+	r_cmpTaskToCMPTasks_c_cmpTaskId: number;
+	state: {
+		key: string;
+		name: string;
+	};
+}
+
 export interface ITaskObjectEntry {
 	actions?: {
 		[action: string]: {

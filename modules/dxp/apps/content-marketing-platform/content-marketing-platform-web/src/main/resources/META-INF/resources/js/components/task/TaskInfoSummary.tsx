@@ -10,8 +10,10 @@ import {displayErrorToast} from '@liferay/site-cms-site-initializer';
 import React, {useState} from 'react';
 
 import {patchTaskById} from '../../utils/api';
+import {getOpenSubtasksCount} from '../../utils/subtasksUtil';
 import {
 	displayAssignSuccessToast,
+	displayOpenSubtasksToast,
 	displayStateSuccessToast,
 } from '../../utils/toastUtil';
 import CustomAssignee from '../CustomAssignee';
@@ -61,7 +63,7 @@ export default function TaskInfoSummary({
 							onChange={async (key: string) => {
 								setStateSelectorDisabled(true);
 
-								const {error} = await patchTaskById({
+								const {data, error} = await patchTaskById({
 									body: {state: key},
 									taskId: cmpTaskObjectEntryId,
 								});
@@ -72,6 +74,18 @@ export default function TaskInfoSummary({
 									displayStateSuccessToast();
 
 									Liferay.fire(UPDATE_HISTORY);
+
+									if (key === 'done' && data) {
+										getOpenSubtasksCount(data).then(
+											(openSubtasksCount) => {
+												if (openSubtasksCount) {
+													displayOpenSubtasksToast(
+														openSubtasksCount
+													);
+												}
+											}
+										);
+									}
 								}
 								else {
 									displayErrorToast(error);

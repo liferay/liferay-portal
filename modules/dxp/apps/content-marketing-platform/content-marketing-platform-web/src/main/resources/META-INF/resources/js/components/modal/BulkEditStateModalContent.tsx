@@ -5,6 +5,7 @@
 
 import ClayButton from '@clayui/button';
 import ClayModal from '@clayui/modal';
+import {FDS_EVENT} from '@liferay/frontend-data-set-web';
 import {
 	IBulkActionFDSData,
 	IBulkActionTaskStarterDTO,
@@ -12,8 +13,44 @@ import {
 } from '@liferay/site-cms-site-initializer';
 import React, {useCallback, useState} from 'react';
 
-import {displayErrorToast} from '../../utils/toastUtil';
+import {getProcessingBulkActionTasksCount} from '../../utils/api';
+import {getDoneTasksOpenSubtasksCount} from '../../utils/subtasksUtil';
+import {
+	displayErrorToast,
+	displayOpenSubtasksToast,
+} from '../../utils/toastUtil';
 import StateSelector, {State} from '../StateSelector';
+
+function displayOpenSubtasksToastOnUpdate(
+	dataSetId: string,
+	selectedData: IBulkActionFDSData
+) {
+	const tasks = (selectedData.items ?? []).map(({embedded}) => embedded);
+
+	if (!tasks.length) {
+		return;
+	}
+
+	const handleFDSUpdateDisplay = async ({id}: {id: string}) => {
+		if (id !== dataSetId) {
+			return;
+		}
+
+		if (await getProcessingBulkActionTasksCount()) {
+			return;
+		}
+
+		Liferay.detach(FDS_EVENT.UPDATE_DISPLAY, handleFDSUpdateDisplay);
+
+		const openSubtasksCount = await getDoneTasksOpenSubtasksCount(tasks);
+
+		if (openSubtasksCount) {
+			displayOpenSubtasksToast(openSubtasksCount);
+		}
+	};
+
+	Liferay.on(FDS_EVENT.UPDATE_DISPLAY, handleFDSUpdateDisplay);
+}
 
 export default function BulkEditStateModalContent({
 	apiURL,
@@ -56,6 +93,10 @@ export default function BulkEditStateModalContent({
 					displayErrorToast(error as string);
 
 					return;
+				}
+
+				if (selectedState === 'done' && !selectedData.selectAll) {
+					displayOpenSubtasksToastOnUpdate(dataSetId, selectedData);
 				}
 
 				closeModal();

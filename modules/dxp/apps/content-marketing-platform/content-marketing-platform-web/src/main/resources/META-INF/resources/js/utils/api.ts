@@ -5,7 +5,7 @@
 
 import {ApiHelper} from '@liferay/site-cms-site-initializer';
 
-import {ChangeTransition, ITaskObjectEntry} from './types';
+import {ChangeTransition, ISubtaskObjectEntry, ITaskObjectEntry} from './types';
 
 type WorkflowTaskAssignee = {
 	assignableUsers: Array<{id: number; name: string}>;
@@ -65,8 +65,30 @@ export async function getAssignableUsersForWorkflowTasks(
 	});
 }
 
+export async function getProcessingBulkActionTasksCount() {
+	const {data} = await ApiHelper.get<{totalCount: number}>(
+		`/o/cms/bulk-action-tasks?filter=${encodeURIComponent(
+			"executionStatus eq 'initial' or executionStatus eq 'started'"
+		)}&pageSize=1`
+	);
+
+	return data?.totalCount ?? 0;
+}
+
 export async function getTaskById({taskId}: {taskId: string}) {
 	return await ApiHelper.get<ITaskObjectEntry>(`/o/cmp/tasks/${taskId}`);
+}
+
+export async function getTasks({
+	filter,
+	scopeKey,
+}: {
+	filter: string;
+	scopeKey: string;
+}) {
+	return await ApiHelper.get<{items: ISubtaskObjectEntry[]}>(
+		`/o/cmp/tasks/scopes/${scopeKey}?fields=id,r_cmpTaskToCMPTasks_c_cmpTaskId,state&filter=${encodeURIComponent(filter)}&pageSize=-1`
+	);
 }
 
 export async function getUserAccount(id: string) {
