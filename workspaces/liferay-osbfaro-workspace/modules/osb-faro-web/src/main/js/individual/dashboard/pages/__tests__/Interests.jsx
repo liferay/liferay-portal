@@ -66,7 +66,7 @@ describe('Individuals Dashboard Individuals Interests', () => {
 		const {getByText} = render(<WrappedComponent />);
 
 		expect(
-			getByText('No Sites Have Been Synced From Data Sources')
+			getByText('No Sites Have Been Synced from Data Sources')
 		).toBeInTheDocument();
 	});
 });

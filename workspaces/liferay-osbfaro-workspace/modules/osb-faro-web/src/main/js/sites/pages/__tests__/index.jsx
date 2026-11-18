@@ -128,7 +128,7 @@ describe('sites with no Data Source', () => {
 		const {getByText} = render(<WrappedComponent />);
 
 		expect(
-			getByText('No Sites Have Been Synced From Data Sources')
+			getByText('No Sites Have Been Synced from Data Sources')
 		).toBeInTheDocument();
 		expect(
 			getByText('Connect a data source with sites data.')
