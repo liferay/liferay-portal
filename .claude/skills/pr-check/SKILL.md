@@ -182,6 +182,8 @@ The procedure runs in two passes over the validations, in the order below. The o
 
 1. [Redundant Assert Message](validations/branch/redundant-assert-message.md)
 
+1. [Redundant Contains on Race Receivers](validations/branch/redundant-contains-race-receivers.md)
+
 1. [Workspace Source Format](validations/workspaces/source-format.md)
 
 1. [Go Source Format](validations/portal/go-source-format.md)
