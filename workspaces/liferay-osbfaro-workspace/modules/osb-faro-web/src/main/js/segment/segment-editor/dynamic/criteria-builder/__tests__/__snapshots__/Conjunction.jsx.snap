@@ -6,7 +6,9 @@ exports[`Conjunction should render 1`] = `
     class="conjunction-container"
   >
     <button
+      aria-hidden="true"
       class="button-root conjunction-button conjunction-label btn btn-sm btn-secondary"
+      disabled=""
       type="button"
     >
       And
