@@ -20,6 +20,7 @@ import com.liferay.message.boards.internal.upgrade.v3_0_0.MBMessageTreePathUpgra
 import com.liferay.message.boards.internal.upgrade.v3_1_0.UrlSubjectUpgradeProcess;
 import com.liferay.message.boards.internal.upgrade.v6_3_0.util.MBSuspiciousActivityTable;
 import com.liferay.message.boards.internal.upgrade.v6_5_0.FriendlyURLUpgradeProcess;
+import com.liferay.message.boards.internal.upgrade.v6_6_1.DLFileEntryUpgradeProcess;
 import com.liferay.message.boards.model.MBCategory;
 import com.liferay.message.boards.model.MBMessage;
 import com.liferay.message.boards.model.MBThread;
@@ -188,6 +189,8 @@ public class MBServiceUpgradeStepRegistrator implements UpgradeStepRegistrator {
 				}
 
 			});
+
+		registry.register("6.6.0", "6.6.1", new DLFileEntryUpgradeProcess());
 	}
 
 	@Reference(
