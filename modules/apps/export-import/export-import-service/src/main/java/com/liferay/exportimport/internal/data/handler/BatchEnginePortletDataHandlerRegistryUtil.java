@@ -94,11 +94,17 @@ public class BatchEnginePortletDataHandlerRegistryUtil {
 			_allCompaniesKeyPortletIdsMap.put(key, portletId);
 		}
 		else {
-			_companyIdKeyPortletIdsMap.computeIfAbsent(
-				companyId, __ -> new ConcurrentHashMap<>()
-			).put(
-				key, portletId
-			);
+			_companyIdKeyPortletIdsMap.compute(
+				companyId,
+				(__, keyPortletIdsMap) -> {
+					if (keyPortletIdsMap == null) {
+						keyPortletIdsMap = new ConcurrentHashMap<>();
+					}
+
+					keyPortletIdsMap.put(key, portletId);
+
+					return keyPortletIdsMap;
+				});
 		}
 	}
 
@@ -125,18 +131,17 @@ public class BatchEnginePortletDataHandlerRegistryUtil {
 			_allCompaniesKeyPortletIdsMap.remove(key, portletId);
 		}
 
-		Map<String, String> keyPortletIdsMap = _companyIdKeyPortletIdsMap.get(
-			companyId);
+		_companyIdKeyPortletIdsMap.computeIfPresent(
+			companyId,
+			(__, keyPortletIdsMap) -> {
+				keyPortletIdsMap.remove(key, portletId);
 
-		if (keyPortletIdsMap == null) {
-			return;
-		}
+				if (keyPortletIdsMap.isEmpty()) {
+					return null;
+				}
 
-		keyPortletIdsMap.remove(key, portletId);
-
-		if (keyPortletIdsMap.isEmpty()) {
-			_companyIdKeyPortletIdsMap.remove(companyId);
-		}
+				return keyPortletIdsMap;
+			});
 	}
 
 	private static boolean _isAllCompanies(long companyId) {
