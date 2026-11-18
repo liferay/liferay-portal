@@ -3716,6 +3716,12 @@
 				"pid": {
 					"const": "com.liferay.portal.search.rest.configuration.SearchSuggestionsCompanyConfiguration",
 					"title": "Search Suggestions"
+				},
+				"suggestionsSizeLimit": {
+					"default": 20,
+					"description": "Set the size limit of suggestions each contributor can return through REST. A value of 0 or less means unlimited and is not recommended.",
+					"title": "Suggestions Size Limit",
+					"type": "number"
 				}
 			},
 			"required": [
