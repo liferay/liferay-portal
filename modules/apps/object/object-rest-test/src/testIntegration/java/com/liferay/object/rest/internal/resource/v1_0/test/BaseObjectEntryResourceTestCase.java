@@ -763,7 +763,7 @@ public abstract class BaseObjectEntryResourceTestCase {
 			endpoint, expectedJSONObject, OBJECT_FIELD_NAME_PICKLIST,
 			LIST_TYPE_ENTRY_KEY_1);
 
-		// Relationship ERC field
+		// Relationship external reference code field
 
 		expectedJSONObject = _cloneJSONObject(
 			expectedJSONObject, objectRelationship1ERCObjectFieldName,
@@ -773,7 +773,7 @@ public abstract class BaseObjectEntryResourceTestCase {
 			endpoint, expectedJSONObject, objectRelationship1ERCObjectFieldName,
 			objectEntry3.getExternalReferenceCode());
 
-		// Relationship Id field
+		// Relationship ID field
 
 		expectedJSONObject = _cloneJSONObject(
 			expectedJSONObject, objectRelationship2IdObjectFieldName,
