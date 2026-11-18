@@ -204,6 +204,7 @@ public class CPDefinitionOptionValueRelLocalServiceImpl
 
 		cpDefinitionOptionValueRel.setQuantity(
 			BigDecimalUtil.get(quantity, defaultQuantity));
+
 		cpDefinitionOptionValueRel.setUnitOfMeasureKey(unitOfMeasureKey);
 
 		if (_emptyModelManager.isEmptyModel()) {
