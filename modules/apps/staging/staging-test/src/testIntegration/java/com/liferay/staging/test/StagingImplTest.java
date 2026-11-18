@@ -96,6 +96,7 @@ import com.liferay.portal.kernel.xml.SAXReaderUtil;
 import com.liferay.portal.kernel.zip.ZipReader;
 import com.liferay.portal.kernel.zip.ZipReaderFactory;
 import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LogEntry;
 import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
@@ -228,14 +229,30 @@ public class StagingImplTest {
 	public void testGetExceptionMessagesJSONObject() throws Exception {
 		Exception exception = new Exception(new ConnectException());
 
-		JSONObject jsonObject = _staging.getExceptionMessagesJSONObject(
-			LocaleUtil.getDefault(), exception, null);
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.exportimport.internal.staging.StagingImpl",
+				LoggerTestUtil.ERROR)) {
 
-		Assert.assertEquals(
-			exception.getLocalizedMessage(), jsonObject.getString("message"));
-		Assert.assertEquals(
-			ServletResponseConstants.SC_FILE_CUSTOM_EXCEPTION,
-			jsonObject.getInt("status"));
+			JSONObject jsonObject = _staging.getExceptionMessagesJSONObject(
+				LocaleUtil.getDefault(), exception, null);
+
+			Assert.assertEquals(
+				exception.getLocalizedMessage(),
+				jsonObject.getString("message"));
+			Assert.assertEquals(
+				ServletResponseConstants.SC_FILE_CUSTOM_EXCEPTION,
+				jsonObject.getInt("status"));
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
+
+			LogEntry logEntry = logEntries.get(0);
+
+			Assert.assertEquals(
+				"Unexpected error: " + exception.getMessage(),
+				logEntry.getMessage());
+		}
 	}
 
 	@Test
