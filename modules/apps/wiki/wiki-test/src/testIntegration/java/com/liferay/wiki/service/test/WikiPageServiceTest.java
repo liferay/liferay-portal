@@ -6,6 +6,7 @@
 package com.liferay.wiki.service.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
@@ -22,9 +23,11 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+import com.liferay.rss.util.RSSUtil;
 import com.liferay.wiki.constants.WikiPageConstants;
 import com.liferay.wiki.model.WikiNode;
 import com.liferay.wiki.model.WikiPage;
@@ -125,6 +128,56 @@ public class WikiPageServiceTest {
 	}
 
 	@Test
+	@TestInfo("LPD-116194")
+	public void testGetPagesRSS() throws Exception {
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId());
+
+		String approvedContent = RandomTestUtil.randomString();
+
+		WikiPage approvedPage = WikiTestUtil.addPage(
+			TestPropsValues.getUserId(), _node.getNodeId(),
+			RandomTestUtil.randomString(), approvedContent, true,
+			serviceContext);
+
+		String draftContent = RandomTestUtil.randomString();
+
+		WikiTestUtil.updatePage(
+			approvedPage, TestPropsValues.getUserId(), approvedPage.getTitle(),
+			draftContent, false, serviceContext);
+
+		String draftPageContent = RandomTestUtil.randomString();
+
+		WikiPage draftPage = WikiTestUtil.addPage(
+			TestPropsValues.getUserId(), _node.getNodeId(),
+			RandomTestUtil.randomString(), draftPageContent, false,
+			serviceContext);
+
+		String rss = _getPagesRSS(approvedPage.getTitle());
+
+		Assert.assertTrue(rss.contains(draftContent));
+
+		rss = _getPagesRSS(draftPage.getTitle());
+
+		Assert.assertTrue(rss.contains(draftPageContent));
+
+		User user = UserTestUtil.addUser();
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user, PermissionCheckerFactoryUtil.create(user))) {
+
+			rss = _getPagesRSS(approvedPage.getTitle());
+
+			Assert.assertTrue(rss.contains(approvedContent));
+			Assert.assertFalse(rss.contains(draftContent));
+
+			rss = _getPagesRSS(draftPage.getTitle());
+
+			Assert.assertFalse(rss.contains(draftPageContent));
+		}
+	}
+
+	@Test
 	@TestInfo("LPD-116205")
 	public void testUpdatePage() throws Exception {
 		WikiPage page = WikiTestUtil.addPage(
@@ -190,6 +243,14 @@ public class WikiPageServiceTest {
 				templatePage.getNodeId(), templatePage.getTitle(),
 				page.getNodeId(), page.getTitle());
 		}
+	}
+
+	private String _getPagesRSS(String title) throws Exception {
+		return _wikiPageService.getPagesRSS(
+			_node.getNodeId(), title, 20, RSSUtil.RSS, RSSUtil.VERSION_DEFAULT,
+			RSSUtil.DISPLAY_STYLE_FULL_CONTENT, RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), StringPool.BLANK,
+			LocaleUtil.getDefault());
 	}
 
 	private WikiPage _updatePage(String title) throws Exception {
