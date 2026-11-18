@@ -369,46 +369,40 @@ public class ExportImportTestUtil {
 		throws Exception {
 
 		Group remoteLiveGroup = GroupTestUtil.addGroup();
+		Group stagingGroup = GroupTestUtil.addGroup();
 
-		try {
-			Group stagingGroup = GroupTestUtil.addGroup();
+		try (SafeCloseable safeCloseable1 =
+				PropsValuesTestUtil.swapWithSafeCloseable(
+					"TUNNELING_SERVLET_SHARED_SECRET",
+					"F0E1D2C3B4A5968778695A4B3C2D1E0F");
+			SafeCloseable safeCloseable2 =
+				PropsValuesTestUtil.swapWithSafeCloseable(
+					"TUNNELING_SERVLET_SHARED_SECRET_HEX", true)) {
 
-			try (SafeCloseable safeCloseable1 =
-					PropsValuesTestUtil.swapWithSafeCloseable(
-						"TUNNELING_SERVLET_SHARED_SECRET",
-						"F0E1D2C3B4A5968778695A4B3C2D1E0F");
-				SafeCloseable safeCloseable2 =
-					PropsValuesTestUtil.swapWithSafeCloseable(
-						"TUNNELING_SERVLET_SHARED_SECRET_HEX", true)) {
+			ServiceContext serviceContext =
+				ServiceContextTestUtil.getServiceContext(
+					stagingGroup.getGroupId());
 
-				ServiceContext serviceContext =
-					ServiceContextTestUtil.getServiceContext(
-						stagingGroup.getGroupId());
+			Map<String, Serializable> attributes =
+				serviceContext.getAttributes();
 
-				Map<String, Serializable> attributes =
-					serviceContext.getAttributes();
+			attributes.putAll(
+				ExportImportConfigurationParameterMapFactoryUtil.
+					buildParameterMap());
 
-				attributes.putAll(
-					ExportImportConfigurationParameterMapFactoryUtil.
-						buildParameterMap());
+			StagingLocalServiceUtil.enableRemoteStaging(
+				TestPropsValues.getUserId(), stagingGroup, false, false,
+				"localhost", PortalUtil.getPortalServerPort(false),
+				PortalUtil.getPathContext(), false,
+				remoteLiveGroup.getGroupId(), serviceContext);
 
-				StagingLocalServiceUtil.enableRemoteStaging(
-					TestPropsValues.getUserId(), stagingGroup, false, false,
-					"localhost", PortalUtil.getPortalServerPort(false),
-					PortalUtil.getPathContext(), false,
-					remoteLiveGroup.getGroupId(), serviceContext);
-
-				unsafeBiConsumer.accept(
-					GroupLocalServiceUtil.getGroup(stagingGroup.getGroupId()),
-					remoteLiveGroup);
-			}
-			finally {
-				GroupTestUtil.deleteGroup(stagingGroup);
-			}
+			unsafeBiConsumer.accept(
+				GroupLocalServiceUtil.getGroup(stagingGroup.getGroupId()),
+				remoteLiveGroup);
 		}
-		finally {
-			GroupTestUtil.deleteGroup(remoteLiveGroup);
-		}
+
+		GroupTestUtil.deleteGroup(remoteLiveGroup);
+		GroupTestUtil.deleteGroup(stagingGroup);
 	}
 
 	private static ExportImportConfiguration _addExportImportConfiguration(
