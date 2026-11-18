@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {IInternalRenderer} from '@liferay/frontend-data-set-web';
+import {IInternalRenderer, IItemsActions} from '@liferay/frontend-data-set-web';
 
 import {Profile} from '../types/Profile';
 import copyProfileURL from '../utils/copyProfileURL';
+import styleDeleteAction from '../utils/styleDeleteAction';
 import confirmAndDeleteProfileAction from './actions/confirmAndDeleteProfileAction';
 import MCPStatusRenderer from './cell_renderers/MCPStatusRenderer';
 import ProfilePathRenderer from './cell_renderers/ProfilePathRenderer';
@@ -16,6 +17,7 @@ interface ItemsAction {
 }
 
 interface ProfilesFDSPropsTransformerProps {
+	itemsActions?: IItemsActions[];
 	[key: string]: unknown;
 }
 
@@ -38,6 +40,7 @@ export default function ProfilesFDSPropsTransformer(
 				} as IInternalRenderer,
 			],
 		},
+		itemsActions: props.itemsActions?.map(styleDeleteAction),
 		onActionDropdownItemClick({
 			action,
 			itemData,

@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {IInternalRenderer} from '@liferay/frontend-data-set-web';
+import {IInternalRenderer, IItemsActions} from '@liferay/frontend-data-set-web';
 
 import {Prompt} from '../types/Prompt';
+import styleDeleteAction from '../utils/styleDeleteAction';
 import confirmAndDeletePromptAction from './actions/confirmAndDeletePromptAction';
 import duplicatePromptAction from './actions/duplicatePromptAction';
 import MCPStatusRenderer from './cell_renderers/MCPStatusRenderer';
@@ -15,6 +16,7 @@ interface ItemsAction {
 }
 
 interface PromptsFDSPropsTransformerProps {
+	itemsActions?: IItemsActions[];
 	[key: string]: unknown;
 }
 
@@ -32,6 +34,7 @@ export default function PromptsFDSPropsTransformer(
 				} as IInternalRenderer,
 			],
 		},
+		itemsActions: props.itemsActions?.map(styleDeleteAction),
 		onActionDropdownItemClick({
 			action,
 			itemData,
