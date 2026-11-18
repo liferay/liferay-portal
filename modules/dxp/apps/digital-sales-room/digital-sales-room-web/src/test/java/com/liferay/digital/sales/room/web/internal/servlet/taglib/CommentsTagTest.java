@@ -165,9 +165,9 @@ public class CommentsTagTest {
 
 		CommentsTag commentsTag = new CommentsTag();
 
-		commentsTag.setGroupId(RandomTestUtil.randomLong());
-
 		commentsTag.setAttributes(mockHttpServletRequest);
+
+		commentsTag.setGroupId(RandomTestUtil.randomLong());
 
 		return mockHttpServletRequest;
 	}

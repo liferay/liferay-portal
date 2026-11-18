@@ -583,10 +583,12 @@ public class GetContentItemMentionUsersStrutsActionTest {
 			depotEntry.getGroupId(), userGroup1);
 
 		User user1 = UserTestUtil.addUser();
-		User user2 = UserTestUtil.addUser();
 
 		_userLocalService.addUserGroupUser(
 			userGroup1.getUserGroupId(), user1.getUserId());
+
+		User user2 = UserTestUtil.addUser();
+
 		_userLocalService.addUserGroupUser(
 			userGroup1.getUserGroupId(), user2.getUserId());
 

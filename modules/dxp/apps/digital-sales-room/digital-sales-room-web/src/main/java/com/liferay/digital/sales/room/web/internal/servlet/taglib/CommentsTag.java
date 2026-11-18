@@ -217,6 +217,7 @@ public class CommentsTag extends IncludeTag {
 		httpServletRequest.setAttribute(
 			"liferay-digital-sales-room-web:comments:getMentionUsersURL",
 			getMentionUsersURL);
+
 		httpServletRequest.setAttribute(
 			"liferay-digital-sales-room-web:comments:readOnly", readOnly);
 		httpServletRequest.setAttribute(
