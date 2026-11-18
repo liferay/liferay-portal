@@ -187,6 +187,9 @@ public class FIPSModeValidatorTest {
 					"cluster-link-channel-properties-malformed.xml")));
 		_assertSecurityException(
 			"must be a file in FIPS mode", "_readChannelPropertiesDocument",
+			new Class<?>[] {String.class}, "\u0000");
+		_assertSecurityException(
+			"must be a file in FIPS mode", "_readChannelPropertiesDocument",
 			new Class<?>[] {String.class}, RandomTestUtil.randomString());
 	}
 
