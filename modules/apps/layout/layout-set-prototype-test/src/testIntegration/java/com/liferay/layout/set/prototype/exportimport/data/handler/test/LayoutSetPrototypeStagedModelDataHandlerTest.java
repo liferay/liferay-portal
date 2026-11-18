@@ -17,6 +17,7 @@ import com.liferay.portal.kernel.model.LayoutFriendlyURL;
 import com.liferay.portal.kernel.model.LayoutPrototype;
 import com.liferay.portal.kernel.model.LayoutSetPrototype;
 import com.liferay.portal.kernel.model.StagedModel;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.LayoutFriendlyURLLocalServiceUtil;
 import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.service.LayoutPrototypeLocalServiceUtil;
@@ -178,8 +179,12 @@ public class LayoutSetPrototypeStagedModelDataHandlerTest
 		LayoutPrototype layoutPrototype = addLayoutPrototype(
 			dependentStagedModelsMap);
 
+		Group companyGroup = GroupLocalServiceUtil.getCompanyGroup(
+			layoutPrototype.getCompanyId());
+
 		Layout prototypedLayout = LayoutTestUtil.addTypePortletLayout(
-			_layoutSetPrototype.getGroupId(), true, layoutPrototype, true);
+			_layoutSetPrototype.getGroup(), true, companyGroup.getGroupId(),
+			layoutPrototype, true);
 
 		addLayout(LayoutSetPrototype.class, prototypedLayout);
 		addLayoutFriendlyURLs(
