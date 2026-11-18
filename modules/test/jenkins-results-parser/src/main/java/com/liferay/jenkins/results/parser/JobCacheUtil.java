@@ -8,6 +8,8 @@ package com.liferay.jenkins.results.parser;
 import java.io.File;
 import java.io.IOException;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -170,6 +172,12 @@ public class JobCacheUtil {
 			return null;
 		}
 
+		PortalWorkspace portalWorkspace = _getPortalWorkspace();
+
+		if (portalWorkspace == null) {
+			return null;
+		}
+
 		StringBuilder sb = new StringBuilder();
 
 		try {
@@ -181,19 +189,10 @@ public class JobCacheUtil {
 			throw new RuntimeException(ioException);
 		}
 
-		LocalGitBranch currentLocalGitBranch =
-			portalGitWorkingDirectory.getCurrentLocalGitBranch();
-		LocalGitBranch upstreamLocalGitBranch =
-			portalGitWorkingDirectory.getUpstreamLocalGitBranch();
-
 		sb.append("/");
 		sb.append(jobName.replaceAll("[\\/\\(\\)]+", "__"));
 		sb.append("/");
-		sb.append(portalGitWorkingDirectory.getGitRepositoryName());
-		sb.append("/");
-		sb.append(upstreamLocalGitBranch.getSHA());
-		sb.append("/");
-		sb.append(currentLocalGitBranch.getSHA());
+		sb.append(portalWorkspace.getS3ObjectPathName());
 		sb.append("/");
 
 		if (JenkinsResultsParserUtil.isNullOrEmpty(testSuiteName)) {
@@ -205,6 +204,34 @@ public class JobCacheUtil {
 		sb.append(".json.gz");
 
 		return sb.toString();
+	}
+
+	private static PortalWorkspace _getPortalWorkspace() {
+		List<PortalWorkspace> portalWorkspaces = new ArrayList<>();
+
+		BuildDatabase buildDatabase = BuildDatabaseUtil.getBuildDatabase();
+
+		for (Workspace workspace : buildDatabase.getWorkspaces()) {
+			if (!(workspace instanceof PortalWorkspace)) {
+				continue;
+			}
+
+			PortalWorkspace portalWorkspace = (PortalWorkspace)workspace;
+
+			if (portalWorkspace.getPrimaryWorkspaceGitRepository() instanceof
+					PortalWorkspaceGitRepository) {
+
+				return portalWorkspace;
+			}
+
+			portalWorkspaces.add(portalWorkspace);
+		}
+
+		if (portalWorkspaces.isEmpty()) {
+			return null;
+		}
+
+		return portalWorkspaces.get(0);
 	}
 
 	private static final Map<String, JSONObject> _jobJSONObjects =

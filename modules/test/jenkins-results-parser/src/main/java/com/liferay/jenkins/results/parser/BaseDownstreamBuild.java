@@ -1389,11 +1389,22 @@ public class BaseDownstreamBuild extends BaseBuild implements DownstreamBuild {
 			workspace.getPrimaryWorkspaceGitRepository();
 
 		sb.append("/");
-		sb.append(workspaceGitRepository.getName());
-		sb.append("/");
-		sb.append(workspaceGitRepository.getBaseBranchSHA());
-		sb.append("/");
-		sb.append(workspaceGitRepository.getSenderBranchSHA());
+
+		if ((workspace instanceof PortalWorkspace) &&
+			(workspaceGitRepository instanceof PortalWorkspaceGitRepository)) {
+
+			PortalWorkspace portalWorkspace = (PortalWorkspace)workspace;
+
+			sb.append(portalWorkspace.getS3ObjectPathName());
+		}
+		else {
+			sb.append(workspaceGitRepository.getName());
+			sb.append("/");
+			sb.append(workspaceGitRepository.getBaseBranchSHA());
+			sb.append("/");
+			sb.append(workspaceGitRepository.getSenderBranchSHA());
+		}
+
 		sb.append("/");
 		sb.append(getBatchName());
 		sb.append("/");

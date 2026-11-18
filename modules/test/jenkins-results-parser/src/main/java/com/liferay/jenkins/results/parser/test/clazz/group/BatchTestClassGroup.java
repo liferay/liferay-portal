@@ -18,6 +18,8 @@ import com.liferay.jenkins.results.parser.Job;
 import com.liferay.jenkins.results.parser.PortalGitRepositoryJob;
 import com.liferay.jenkins.results.parser.PortalGitWorkingDirectory;
 import com.liferay.jenkins.results.parser.PortalTestClassJob;
+import com.liferay.jenkins.results.parser.PortalWorkspace;
+import com.liferay.jenkins.results.parser.PortalWorkspaceGitRepository;
 import com.liferay.jenkins.results.parser.RootCauseAnalysisToolJob;
 import com.liferay.jenkins.results.parser.TestClassReport;
 import com.liferay.jenkins.results.parser.TestReport;
@@ -1237,15 +1239,13 @@ public abstract class BatchTestClassGroup extends BaseTestClassGroup {
 
 		List<Workspace> workspaces = buildDatabase.getWorkspaces();
 
-		Workspace workspace = workspaces.get(0);
+		if (workspaces.isEmpty()) {
+			_buildReportsDownloaded.set(true);
 
-		WorkspaceGitRepository workspaceGitRepository =
-			workspace.getPrimaryWorkspaceGitRepository();
+			return;
+		}
 
-		String path = JenkinsResultsParserUtil.combine(
-			workspaceGitRepository.getName(), "/",
-			workspaceGitRepository.getBaseBranchSHA(), "/",
-			workspaceGitRepository.getSenderBranchSHA());
+		String path = _getBuildReportsPathName(workspaces.get(0));
 
 		File baseDir = new File(
 			System.getProperty("java.io.tmpdir"),
@@ -1284,6 +1284,24 @@ public abstract class BatchTestClassGroup extends BaseTestClassGroup {
 		}
 
 		_buildReportsDownloaded.set(true);
+	}
+
+	private String _getBuildReportsPathName(Workspace workspace) {
+		WorkspaceGitRepository workspaceGitRepository =
+			workspace.getPrimaryWorkspaceGitRepository();
+
+		if ((workspace instanceof PortalWorkspace) &&
+			(workspaceGitRepository instanceof PortalWorkspaceGitRepository)) {
+
+			PortalWorkspace portalWorkspace = (PortalWorkspace)workspace;
+
+			return portalWorkspace.getS3ObjectPathName();
+		}
+
+		return JenkinsResultsParserUtil.combine(
+			workspaceGitRepository.getName(), "/",
+			workspaceGitRepository.getBaseBranchSHA(), "/",
+			workspaceGitRepository.getSenderBranchSHA());
 	}
 
 	private Map<String, Properties> _getJobPropertiesMap() {
@@ -1420,15 +1438,8 @@ public abstract class BatchTestClassGroup extends BaseTestClassGroup {
 			return;
 		}
 
-		Workspace workspace = workspaces.get(0);
-
-		WorkspaceGitRepository workspaceGitRepository =
-			workspace.getPrimaryWorkspaceGitRepository();
-
 		String path = JenkinsResultsParserUtil.combine(
-			workspaceGitRepository.getName(), "/",
-			workspaceGitRepository.getBaseBranchSHA(), "/",
-			workspaceGitRepository.getSenderBranchSHA(), "/", getBatchName());
+			_getBuildReportsPathName(workspaces.get(0)), "/", getBatchName());
 
 		File baseDir = new File(
 			System.getProperty("java.io.tmpdir"),
