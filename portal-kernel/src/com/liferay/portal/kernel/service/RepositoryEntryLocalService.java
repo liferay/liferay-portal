@@ -22,6 +22,8 @@ import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.service.change.tracking.CTService;
 import com.liferay.portal.kernel.service.persistence.change.tracking.CTPersistence;
+import com.liferay.portal.kernel.spring.aop.Property;
+import com.liferay.portal.kernel.spring.aop.Retry;
 import com.liferay.portal.kernel.spring.osgi.OSGiBeanProperties;
 import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.Propagation;
@@ -313,6 +315,15 @@ public interface RepositoryEntryLocalService
 	public RepositoryEntry getRepositoryEntry(long repositoryEntryId)
 		throws PortalException;
 
+	@Retry(
+		acceptor = SQLStateAcceptor.class,
+		properties = {
+			@Property(
+				name = SQLStateAcceptor.SQLSTATE,
+				value = SQLStateAcceptor.SQLSTATE_INTEGRITY_CONSTRAINT_VIOLATION
+			)
+		}
+	)
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public RepositoryEntry getRepositoryEntry(
 			long userId, long groupId, long repositoryId, String objectId)
@@ -369,4 +380,4 @@ public interface RepositoryEntryLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1689846619
+// LIFERAY-SERVICE-BUILDER-HASH:607749222
