@@ -36,18 +36,6 @@ public interface KaleoSignaler {
 			KaleoNode currentKaleoNode, ExecutionContext executionContext)
 		throws PortalException;
 
-	public default void signalExecute(
-			KaleoNode currentKaleoNode, ExecutionContext executionContext,
-			boolean waitForCompletion)
-		throws PortalException {
-
-		if (waitForCompletion) {
-			throw new UnsupportedOperationException();
-		}
-
-		signalExecute(currentKaleoNode, executionContext);
-	}
-
 	public void signalExit(
 			String transitionName, ExecutionContext executionContext)
 		throws PortalException;
