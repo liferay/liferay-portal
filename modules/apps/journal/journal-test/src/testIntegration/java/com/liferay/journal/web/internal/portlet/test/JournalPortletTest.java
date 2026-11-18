@@ -90,34 +90,31 @@ public class JournalPortletTest {
 
 		_user = UserTestUtil.addUser();
 
-		try {
-			PermissionThreadLocal.setPermissionChecker(
-				PermissionCheckerFactoryUtil.create(_user));
+		PermissionThreadLocal.setPermissionChecker(
+			PermissionCheckerFactoryUtil.create(_user));
 
-			renderRequest = _render(journalArticle);
+		renderRequest = _render(journalArticle);
 
-			Assert.assertFalse(
-				SessionErrors.contains(
-					renderRequest, PrincipalException.getNestedClasses()));
+		Assert.assertFalse(
+			SessionErrors.contains(
+				renderRequest, PrincipalException.getNestedClasses()));
 
-			RoleTestUtil.removeResourcePermission(
-				RoleConstants.GUEST, JournalArticle.class.getName(),
-				ResourceConstants.SCOPE_INDIVIDUAL,
-				String.valueOf(journalArticle.getResourcePrimKey()),
-				ActionKeys.VIEW);
+		RoleTestUtil.removeResourcePermission(
+			RoleConstants.GUEST, JournalArticle.class.getName(),
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(journalArticle.getResourcePrimKey()),
+			ActionKeys.VIEW);
 
-			PermissionThreadLocal.setPermissionChecker(
-				PermissionCheckerFactoryUtil.create(_user));
+		PermissionThreadLocal.setPermissionChecker(
+			PermissionCheckerFactoryUtil.create(_user));
 
-			renderRequest = _render(journalArticle);
+		renderRequest = _render(journalArticle);
 
-			Assert.assertTrue(
-				SessionErrors.contains(
-					renderRequest, PrincipalException.getNestedClasses()));
-		}
-		finally {
-			PermissionThreadLocal.setPermissionChecker(permissionChecker);
-		}
+		Assert.assertTrue(
+			SessionErrors.contains(
+				renderRequest, PrincipalException.getNestedClasses()));
+
+		PermissionThreadLocal.setPermissionChecker(permissionChecker);
 	}
 
 	private RenderRequest _render(JournalArticle journalArticle)

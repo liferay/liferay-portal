@@ -178,52 +178,46 @@ public class FragmentEntryLinkDisplayContextTest {
 
 		_user = UserTestUtil.addUser();
 
-		try {
-			PermissionThreadLocal.setPermissionChecker(
-				PermissionCheckerFactoryUtil.create(_user));
+		PermissionThreadLocal.setPermissionChecker(
+			PermissionCheckerFactoryUtil.create(_user));
 
-			fragmentEntryLinkDisplayContext =
-				_getFragmentEntryLinkDisplayContext(
-					fragmentEntry.getFragmentEntryId(), "all");
+		fragmentEntryLinkDisplayContext = _getFragmentEntryLinkDisplayContext(
+			fragmentEntry.getFragmentEntryId(), "all");
 
-			String restrictedPageLabel = StringBundler.concat(
-				StringPool.OPEN_BRACKET,
-				LanguageUtil.get(LocaleUtil.getDefault(), "restricted-page"),
-				StringPool.CLOSE_BRACKET);
+		String restrictedPageLabel = StringBundler.concat(
+			StringPool.OPEN_BRACKET,
+			LanguageUtil.get(LocaleUtil.getDefault(), "restricted-page"),
+			StringPool.CLOSE_BRACKET);
 
-			Assert.assertEquals(
-				restrictedPageLabel,
-				ReflectionTestUtil.invoke(
-					fragmentEntryLinkDisplayContext, "getFragmentEntryLinkName",
-					new Class<?>[] {FragmentEntryLink.class},
-					layoutFragmentEntryLink));
-			Assert.assertEquals(
-				restrictedPageLabel,
-				ReflectionTestUtil.invoke(
-					fragmentEntryLinkDisplayContext, "getFragmentEntryLinkName",
-					new Class<?>[] {FragmentEntryLink.class},
-					layoutPageTemplateFragmentEntryLink));
+		Assert.assertEquals(
+			restrictedPageLabel,
+			ReflectionTestUtil.invoke(
+				fragmentEntryLinkDisplayContext, "getFragmentEntryLinkName",
+				new Class<?>[] {FragmentEntryLink.class},
+				layoutFragmentEntryLink));
+		Assert.assertEquals(
+			restrictedPageLabel,
+			ReflectionTestUtil.invoke(
+				fragmentEntryLinkDisplayContext, "getFragmentEntryLinkName",
+				new Class<?>[] {FragmentEntryLink.class},
+				layoutPageTemplateFragmentEntryLink));
 
-			_userLocalService.addGroupUser(
-				_group.getGroupId(), _user.getUserId());
+		_userLocalService.addGroupUser(_group.getGroupId(), _user.getUserId());
 
-			PermissionThreadLocal.setPermissionChecker(
-				PermissionCheckerFactoryUtil.create(_user));
+		PermissionThreadLocal.setPermissionChecker(
+			PermissionCheckerFactoryUtil.create(_user));
 
-			fragmentEntryLinkDisplayContext =
-				_getFragmentEntryLinkDisplayContext(
-					fragmentEntry.getFragmentEntryId(), "all");
+		fragmentEntryLinkDisplayContext = _getFragmentEntryLinkDisplayContext(
+			fragmentEntry.getFragmentEntryId(), "all");
 
-			Assert.assertEquals(
-				layoutPageTemplateEntry.getName(),
-				ReflectionTestUtil.invoke(
-					fragmentEntryLinkDisplayContext, "getFragmentEntryLinkName",
-					new Class<?>[] {FragmentEntryLink.class},
-					layoutPageTemplateFragmentEntryLink));
-		}
-		finally {
-			PermissionThreadLocal.setPermissionChecker(permissionChecker);
-		}
+		Assert.assertEquals(
+			layoutPageTemplateEntry.getName(),
+			ReflectionTestUtil.invoke(
+				fragmentEntryLinkDisplayContext, "getFragmentEntryLinkName",
+				new Class<?>[] {FragmentEntryLink.class},
+				layoutPageTemplateFragmentEntryLink));
+
+		PermissionThreadLocal.setPermissionChecker(permissionChecker);
 	}
 
 	@Test

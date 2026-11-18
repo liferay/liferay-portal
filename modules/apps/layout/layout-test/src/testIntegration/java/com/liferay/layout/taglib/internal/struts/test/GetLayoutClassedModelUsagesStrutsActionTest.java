@@ -228,20 +228,17 @@ public class GetLayoutClassedModelUsagesStrutsActionTest {
 		PermissionChecker permissionChecker =
 			PermissionThreadLocal.getPermissionChecker();
 
-		try {
-			PermissionThreadLocal.setPermissionChecker(
-				PermissionCheckerFactoryUtil.create(_user));
+		PermissionThreadLocal.setPermissionChecker(
+			PermissionCheckerFactoryUtil.create(_user));
 
-			jsonObject = _execute(
-				DLFileEntry.class.getName(), fileEntry.getFileEntryId());
+		jsonObject = _execute(
+			DLFileEntry.class.getName(), fileEntry.getFileEntryId());
 
-			jsonArray = jsonObject.getJSONArray("usages");
+		jsonArray = jsonObject.getJSONArray("usages");
 
-			Assert.assertEquals(0, jsonArray.length());
-		}
-		finally {
-			PermissionThreadLocal.setPermissionChecker(permissionChecker);
-		}
+		Assert.assertEquals(0, jsonArray.length());
+
+		PermissionThreadLocal.setPermissionChecker(permissionChecker);
 	}
 
 	private void _testExecuteWithoutLayoutViewPermission() throws Exception {
@@ -285,57 +282,53 @@ public class GetLayoutClassedModelUsagesStrutsActionTest {
 		PermissionChecker permissionChecker =
 			PermissionThreadLocal.getPermissionChecker();
 
-		try {
-			PermissionThreadLocal.setPermissionChecker(
-				PermissionCheckerFactoryUtil.create(_user));
+		PermissionThreadLocal.setPermissionChecker(
+			PermissionCheckerFactoryUtil.create(_user));
 
-			jsonObject = _execute(journalArticle);
+		jsonObject = _execute(journalArticle);
 
-			jsonArray = jsonObject.getJSONArray("usages");
+		jsonArray = jsonObject.getJSONArray("usages");
 
-			Assert.assertEquals(2, jsonArray.length());
+		Assert.assertEquals(2, jsonArray.length());
 
-			String restrictedPageLabel = StringBundler.concat(
-				StringPool.OPEN_BRACKET,
-				_language.get(LocaleUtil.getSiteDefault(), "restricted-page"),
-				StringPool.CLOSE_BRACKET);
+		String restrictedPageLabel = StringBundler.concat(
+			StringPool.OPEN_BRACKET,
+			_language.get(LocaleUtil.getSiteDefault(), "restricted-page"),
+			StringPool.CLOSE_BRACKET);
 
-			layoutJSONObject = _getJSONObject(
-				jsonArray, layoutLayoutClassedModelUsage);
+		layoutJSONObject = _getJSONObject(
+			jsonArray, layoutLayoutClassedModelUsage);
 
-			Assert.assertEquals(
-				restrictedPageLabel, layoutJSONObject.getString("name"));
-			Assert.assertFalse(layoutJSONObject.has("url"));
+		Assert.assertEquals(
+			restrictedPageLabel, layoutJSONObject.getString("name"));
+		Assert.assertFalse(layoutJSONObject.has("url"));
 
-			layoutPageTemplateJSONObject = _getJSONObject(
-				jsonArray, layoutPageTemplateLayoutClassedModelUsage);
+		layoutPageTemplateJSONObject = _getJSONObject(
+			jsonArray, layoutPageTemplateLayoutClassedModelUsage);
 
-			Assert.assertEquals(
-				restrictedPageLabel,
-				layoutPageTemplateJSONObject.getString("name"));
-			Assert.assertFalse(layoutPageTemplateJSONObject.has("url"));
+		Assert.assertEquals(
+			restrictedPageLabel,
+			layoutPageTemplateJSONObject.getString("name"));
+		Assert.assertFalse(layoutPageTemplateJSONObject.has("url"));
 
-			_userLocalService.addGroupUser(
-				_group.getGroupId(), _user.getUserId());
+		_userLocalService.addGroupUser(_group.getGroupId(), _user.getUserId());
 
-			PermissionThreadLocal.setPermissionChecker(
-				PermissionCheckerFactoryUtil.create(_user));
+		PermissionThreadLocal.setPermissionChecker(
+			PermissionCheckerFactoryUtil.create(_user));
 
-			jsonObject = _execute(journalArticle);
+		jsonObject = _execute(journalArticle);
 
-			jsonArray = jsonObject.getJSONArray("usages");
+		jsonArray = jsonObject.getJSONArray("usages");
 
-			layoutPageTemplateJSONObject = _getJSONObject(
-				jsonArray, layoutPageTemplateLayoutClassedModelUsage);
+		layoutPageTemplateJSONObject = _getJSONObject(
+			jsonArray, layoutPageTemplateLayoutClassedModelUsage);
 
-			Assert.assertEquals(
-				layoutPageTemplateEntry.getName(),
-				layoutPageTemplateJSONObject.getString("name"));
-			Assert.assertTrue(layoutPageTemplateJSONObject.has("url"));
-		}
-		finally {
-			PermissionThreadLocal.setPermissionChecker(permissionChecker);
-		}
+		Assert.assertEquals(
+			layoutPageTemplateEntry.getName(),
+			layoutPageTemplateJSONObject.getString("name"));
+		Assert.assertTrue(layoutPageTemplateJSONObject.has("url"));
+
+		PermissionThreadLocal.setPermissionChecker(permissionChecker);
 	}
 
 	private void _testExecuteWithoutModelViewPermission() throws Exception {
@@ -361,21 +354,18 @@ public class GetLayoutClassedModelUsagesStrutsActionTest {
 		PermissionChecker permissionChecker =
 			PermissionThreadLocal.getPermissionChecker();
 
-		try {
-			PermissionThreadLocal.setPermissionChecker(
-				PermissionCheckerFactoryUtil.create(_user));
+		PermissionThreadLocal.setPermissionChecker(
+			PermissionCheckerFactoryUtil.create(_user));
 
-			jsonObject = _execute(journalArticle);
+		jsonObject = _execute(journalArticle);
 
-			Assert.assertEquals(0, jsonObject.getInt("totalNumberOfPages"));
+		Assert.assertEquals(0, jsonObject.getInt("totalNumberOfPages"));
 
-			jsonArray = jsonObject.getJSONArray("usages");
+		jsonArray = jsonObject.getJSONArray("usages");
 
-			Assert.assertEquals(0, jsonArray.length());
-		}
-		finally {
-			PermissionThreadLocal.setPermissionChecker(permissionChecker);
-		}
+		Assert.assertEquals(0, jsonArray.length());
+
+		PermissionThreadLocal.setPermissionChecker(permissionChecker);
 	}
 
 	@Inject
