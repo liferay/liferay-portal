@@ -221,7 +221,8 @@ public class ViewConflictsDisplayContext {
 	}
 
 	public String getRedirect() {
-		String redirect = ParamUtil.getString(_renderRequest, "redirect");
+		String redirect = _portal.escapeRedirect(
+			ParamUtil.getString(_renderRequest, "redirect"));
 
 		if (Validator.isNotNull(redirect)) {
 			return redirect;

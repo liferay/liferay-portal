@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.dao.orm.ORMException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
+import com.liferay.portal.kernel.portlet.bridges.mvc.constants.MVCRenderConstants;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -83,11 +84,8 @@ public class ViewConflictsMVCRenderCommand implements MVCRenderCommand {
 				_ctCollectionLocalService.getCTCollection(ctCollectionId);
 
 			if (ctCollection.getStatus() == WorkflowConstants.STATUS_APPROVED) {
-				HttpServletResponse httpServletResponse =
-					_portal.getHttpServletResponse(renderResponse);
-
-				String redirect = ParamUtil.getString(
-					renderRequest, "redirect");
+				String redirect = _portal.escapeRedirect(
+					ParamUtil.getString(renderRequest, "redirect"));
 
 				if (Validator.isNull(redirect)) {
 					redirect = PortletURLBuilder.createRenderURL(
@@ -99,7 +97,12 @@ public class ViewConflictsMVCRenderCommand implements MVCRenderCommand {
 					).buildString();
 				}
 
+				HttpServletResponse httpServletResponse =
+					_portal.getHttpServletResponse(renderResponse);
+
 				httpServletResponse.sendRedirect(redirect);
+
+				return MVCRenderConstants.MVC_PATH_VALUE_SKIP_DISPATCH;
 			}
 
 			Map<Long, List<ConflictInfo>> conflictInfoMap = null;
