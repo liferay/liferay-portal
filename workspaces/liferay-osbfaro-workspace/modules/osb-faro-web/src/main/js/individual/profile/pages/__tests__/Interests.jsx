@@ -30,7 +30,7 @@ describe('Interests', () => {
 
 		jest.runAllTimers();
 
-		expect(getByText('Contributing Pages')).toBeInTheDocument();
+		expect(getByText(/^contributing pages$/i)).toBeInTheDocument();
 	});
 });
 

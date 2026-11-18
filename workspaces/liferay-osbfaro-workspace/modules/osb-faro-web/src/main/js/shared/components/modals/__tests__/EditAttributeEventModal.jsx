@@ -55,7 +55,7 @@ describe('EditAttributeEventModal', () => {
 			<DefaultComponent observer={observer} onClose={onClose} />
 		));
 
-		fireEvent.click(await screen.findByText('Cancel'));
+		fireEvent.click(await screen.findByText(/^cancel$/i));
 
 		expect(onClose).toHaveBeenCalledTimes(1);
 		expect(onClose).toHaveBeenCalledWith(false);

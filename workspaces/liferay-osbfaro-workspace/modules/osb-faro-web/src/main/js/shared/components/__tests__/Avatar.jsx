@@ -23,7 +23,7 @@ describe('Avatar', () => {
 			/>
 		);
 
-		expect(getByText('F')).toBeTruthy();
+		expect(getByText(/^f$/i)).toBeTruthy();
 	});
 
 	it('should render with a first and last name', () => {

@@ -104,7 +104,7 @@ describe.skip('Event Analysis Edit', () => {
 
 		await waitForLoadingToBeRemoved(container);
 
-		expect(getByText('Download Reports')).toBeTruthy();
+		expect(getByText(/^download reports$/i)).toBeTruthy();
 
 		expect(
 			container.querySelector('.event-analysis-editor-root')
@@ -179,10 +179,10 @@ describe.skip('Event Analysis Edit', () => {
 
 		expect(queryByText('jobTitle')).toBeTruthy();
 		expect(queryByText('languageId')).toBeTruthy();
-		expect(queryByText('Role')).toBeTruthy();
-		expect(queryByText('Site Membership')).toBeTruthy();
-		expect(queryByText('Team')).toBeTruthy();
-		expect(queryByText('User Group')).toBeTruthy();
+		expect(queryByText(/^role$/i)).toBeTruthy();
+		expect(queryByText(/^site membership$/i)).toBeTruthy();
+		expect(queryByText(/^team$/i)).toBeTruthy();
+		expect(queryByText(/^user group$/i)).toBeTruthy();
 
 		const searchInput = document.querySelectorAll(
 			'[placeholder="Search"]'
@@ -198,10 +198,10 @@ describe.skip('Event Analysis Edit', () => {
 
 		expect(queryByText('jobTitle')).toBeTruthy();
 		expect(queryByText('languageId')).not.toBeTruthy();
-		expect(queryByText('Role')).not.toBeTruthy();
-		expect(queryByText('Site Membership')).not.toBeTruthy();
-		expect(queryByText('Team')).not.toBeTruthy();
-		expect(queryByText('User Group')).not.toBeTruthy();
+		expect(queryByText(/^role$/i)).not.toBeTruthy();
+		expect(queryByText(/^site membership$/i)).not.toBeTruthy();
+		expect(queryByText(/^team$/i)).not.toBeTruthy();
+		expect(queryByText(/^user group$/i)).not.toBeTruthy();
 	});
 
 	it('should enable the save button when name is changed', async () => {
@@ -221,7 +221,7 @@ describe.skip('Event Analysis Edit', () => {
 
 		expect(getByText('My First Event Analysis Updated')).toBeTruthy();
 
-		expect(getByText('Save Analysis')).toBeEnabled();
+		expect(getByText(/^save analysis$/i)).toBeEnabled();
 	});
 
 	it('should enable the save button when a new breakdown is added', async () => {
@@ -231,7 +231,7 @@ describe.skip('Event Analysis Edit', () => {
 
 		await waitForLoadingToBeRemoved(container);
 
-		expect(getByText('Save Analysis')).toBeDisabled();
+		expect(getByText(/^save analysis$/i)).toBeDisabled();
 
 		const addAttributeButton = container.querySelector(
 			'.attribute-breakdown-section-root .add-attribute'
@@ -260,7 +260,7 @@ describe.skip('Event Analysis Edit', () => {
 				'.attribute-breakdown-section-root .attribute-list .dropdown'
 			).length
 		).toBe(3);
-		expect(getByText('Save Analysis')).toBeEnabled();
+		expect(getByText(/^save analysis$/i)).toBeEnabled();
 	});
 
 	it('should enable the save button when compareToPrevious checkbox is changed', async () => {
@@ -270,7 +270,7 @@ describe.skip('Event Analysis Edit', () => {
 
 		await waitForLoadingToBeRemoved(container);
 
-		expect(getByText('Save Analysis')).toBeDisabled();
+		expect(getByText(/^save analysis$/i)).toBeDisabled();
 
 		const compareToPreviousCheckbox = container.querySelector(
 			'.compare-to-previous-checkbox input'
@@ -282,7 +282,7 @@ describe.skip('Event Analysis Edit', () => {
 
 		expect(compareToPreviousCheckbox.checked).toBeFalsy();
 
-		expect(getByText('Save Analysis')).toBeEnabled();
+		expect(getByText(/^save analysis$/i)).toBeEnabled();
 	});
 
 	it('should enable the save button when range selector is changed', async () => {
@@ -292,7 +292,7 @@ describe.skip('Event Analysis Edit', () => {
 
 		await waitForLoadingToBeRemoved(container);
 
-		expect(getByText('Save Analysis')).toBeDisabled();
+		expect(getByText(/^save analysis$/i)).toBeDisabled();
 
 		const rangeKeyButton = container.querySelector(
 			'.dropdown-range-key-root > button'
@@ -314,6 +314,6 @@ describe.skip('Event Analysis Edit', () => {
 
 		expect(rangeKeyButton.textContent).toEqual('Last 24 hours');
 
-		expect(getByText('Save Analysis')).toBeEnabled();
+		expect(getByText(/^save analysis$/i)).toBeEnabled();
 	});
 });

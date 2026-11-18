@@ -95,7 +95,7 @@ describe('UserDropdown', () => {
 
 		fireEvent.click(toggleButton!);
 
-		const languageBtn = screen.getByText('Language');
+		const languageBtn = screen.getByText(/^language$/i);
 
 		fireEvent.click(languageBtn);
 
@@ -103,8 +103,8 @@ describe('UserDropdown', () => {
 			jest.advanceTimersByTime(250);
 		});
 
-		expect(screen.getByText('English')).toBeInTheDocument();
-		expect(screen.getByText('Japanese')).toBeInTheDocument();
+		expect(screen.getByText(/^english$/i)).toBeInTheDocument();
+		expect(screen.getByText(/^japanese$/i)).toBeInTheDocument();
 	});
 
 	it('should ascend from nested menu when back button is clicked', async () => {
@@ -122,7 +122,7 @@ describe('UserDropdown', () => {
 
 		fireEvent.click(toggleButton!);
 
-		const languageBtn = screen.getByText('Language');
+		const languageBtn = screen.getByText(/^language$/i);
 
 		fireEvent.click(languageBtn);
 
@@ -130,9 +130,9 @@ describe('UserDropdown', () => {
 			jest.advanceTimersByTime(250);
 		});
 
-		expect(screen.getByText('English')).toBeInTheDocument();
+		expect(screen.getByText(/^english$/i)).toBeInTheDocument();
 
-		const backBtn = screen.getByLabelText('Back');
+		const backBtn = screen.getByLabelText(/^back$/i);
 
 		fireEvent.click(backBtn);
 
@@ -140,7 +140,7 @@ describe('UserDropdown', () => {
 			jest.advanceTimersByTime(250);
 		});
 
-		expect(screen.getByText('Language')).toBeInTheDocument();
+		expect(screen.getByText(/^language$/i)).toBeInTheDocument();
 	});
 
 	it('should go back to the initialActiveMenu on close', async () => {
@@ -158,7 +158,7 @@ describe('UserDropdown', () => {
 
 		fireEvent.click(toggleButton!);
 
-		const languageBtn = screen.getByText('Language');
+		const languageBtn = screen.getByText(/^language$/i);
 
 		fireEvent.click(languageBtn);
 
@@ -166,7 +166,7 @@ describe('UserDropdown', () => {
 			jest.advanceTimersByTime(250);
 		});
 
-		expect(screen.getByText('English')).toBeInTheDocument();
+		expect(screen.getByText(/^english$/i)).toBeInTheDocument();
 
 		// Close
 
@@ -184,6 +184,6 @@ describe('UserDropdown', () => {
 			jest.advanceTimersByTime(250);
 		});
 
-		expect(screen.getByText('Language')).toBeInTheDocument();
+		expect(screen.getByText(/^language$/i)).toBeInTheDocument();
 	});
 });

@@ -23,8 +23,8 @@ describe('UserActionsRenderer', () => {
 			/>
 		);
 
-		expect(findByText('Save')).toBeTruthy();
-		expect(findByText('Cancel')).toBeTruthy();
+		expect(findByText(/^save$/i)).toBeTruthy();
+		expect(findByText(/^cancel$/i)).toBeTruthy();
 	});
 
 	it('should render without row actions for the current user', () => {

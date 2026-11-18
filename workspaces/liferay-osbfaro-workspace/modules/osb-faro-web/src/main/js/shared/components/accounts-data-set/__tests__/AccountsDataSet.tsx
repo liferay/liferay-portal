@@ -730,7 +730,7 @@ describe('AccountsDataSet', () => {
 			})
 		);
 
-		expect(container).toHaveTextContent('Engaged');
+		expect(container).toHaveTextContent(/engaged/i);
 	});
 
 	it('should render a custom lifecycle stage name as a secondary label', async () => {

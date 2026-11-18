@@ -18,14 +18,14 @@ describe('IntervalSelector', () => {
 			<IntervalSelector activeInterval='W' onChange={jest.fn()} />
 		);
 
-		expect(getByText('W')).not.toHaveClass('.active');
+		expect(getByText(/^w$/i)).not.toHaveClass('.active');
 	});
 
 	it('should call the onChange callback when an interval is clicked', () => {
 		const spy = jest.fn();
 		const {getByText} = render(<IntervalSelector onChange={spy} />);
 
-		fireEvent.click(getByText('M'));
+		fireEvent.click(getByText(/^m$/i));
 
 		expect(spy).toHaveBeenCalled();
 	});

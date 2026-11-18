@@ -17,8 +17,8 @@ describe('BooleanInput', () => {
 		);
 		fireEvent.click(getByText('Select an option'));
 
-		expect(getByText('True')).toBeTruthy();
-		expect(getByText('False')).toBeTruthy();
+		expect(getByText(/^true$/i)).toBeTruthy();
+		expect(getByText(/^false$/i)).toBeTruthy();
 		expect(container).toMatchSnapshot();
 	});
 
@@ -31,10 +31,10 @@ describe('BooleanInput', () => {
 				value='true'
 			/>
 		);
-		fireEvent.click(getByText('True'));
+		fireEvent.click(getByText(/^true$/i));
 
-		expect(getAllByText('True')[1]).toBeTruthy();
-		expect(getByText('False')).toBeTruthy();
+		expect(getAllByText(/^true$/i)[1]).toBeTruthy();
+		expect(getByText(/^false$/i)).toBeTruthy();
 		expect(container).toMatchSnapshot();
 	});
 });

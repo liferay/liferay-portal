@@ -44,7 +44,7 @@ describe('InterestsCard', () => {
 
 		await waitFor(() =>
 			expect(
-				getByText('Top Interests as of Yesterday')
+				getByText(/^top interests as of yesterday$/i)
 			).toBeInTheDocument()
 		);
 	});
@@ -76,7 +76,7 @@ describe('InterestsCard', () => {
 
 		await waitFor(() =>
 			expect(
-				getByText('No interests were found.')
+				getByText(/^no interests were found\.$/i)
 			).toBeInTheDocument()
 		);
 	});

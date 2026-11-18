@@ -59,7 +59,7 @@ describe('SidebarLayout', () => {
 		expect(await screen.findByText('segments list')).toBeInTheDocument();
 
 		expect(
-			screen.getByRole('combobox', {name: 'Property'})
+			screen.getByRole('combobox', {name: /^property$/i})
 		).toBeInTheDocument();
 		expect(screen.getByTitle(/language/i)).toBeInTheDocument();
 	});
@@ -73,7 +73,7 @@ describe('SidebarLayout', () => {
 		expect(screen.queryByText('segments list')).not.toBeInTheDocument();
 
 		expect(
-			screen.getByRole('combobox', {name: 'Property'})
+			screen.getByRole('combobox', {name: /^property$/i})
 		).toBeInTheDocument();
 	});
 });

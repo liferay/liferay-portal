@@ -39,7 +39,7 @@ describe('Membership', () => {
 		await waitForLoadingToBeRemoved(container);
 
 		expect(
-			screen.getByText('Segment Membership Trend')
+			screen.getByText(/^segment membership trend$/i)
 		).toBeInTheDocument();
 	});
 

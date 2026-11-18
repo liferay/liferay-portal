@@ -103,9 +103,9 @@ describe('TopPagesCard', () => {
 		await waitForLoadingToBeRemoved(container);
 
 		expect(screen.getByText('TOP PAGES')).toBeInTheDocument();
-		expect(screen.getByText('Visited Pages')).toBeInTheDocument();
-		expect(screen.getByText('Entrance Pages')).toBeInTheDocument();
-		expect(screen.getByText('Exit Pages')).toBeInTheDocument();
+		expect(screen.getByText(/^visited pages$/i)).toBeInTheDocument();
+		expect(screen.getByText(/^entrance pages$/i)).toBeInTheDocument();
+		expect(screen.getByText(/^exit pages$/i)).toBeInTheDocument();
 	});
 
 	it('should render the unique visitors of the pages of the account', async () => {
@@ -139,7 +139,7 @@ describe('TopPagesCard', () => {
 
 		await waitForLoadingToBeRemoved(container);
 
-		fireEvent.click(screen.getByText('Entrance Pages'));
+		fireEvent.click(screen.getByText(/^entrance pages$/i));
 
 		expect(await screen.findByText('My asset A')).toBeInTheDocument();
 		expect(screen.getByText('10')).toBeInTheDocument();
@@ -151,7 +151,7 @@ describe('TopPagesCard', () => {
 		await waitForLoadingToBeRemoved(container);
 
 		const href = screen
-			.getByText('View All')
+			.getByText(/^view all$/i)
 			.closest('a')
 			?.getAttribute('href');
 
@@ -165,7 +165,7 @@ describe('TopPagesCard', () => {
 
 		await waitForLoadingToBeRemoved(container);
 
-		const link = screen.getByText('View All').closest('a');
+		const link = screen.getByText(/^view all$/i).closest('a');
 
 		expect(link).toHaveClass(
 			'btn-outline-borderless',
@@ -182,10 +182,10 @@ describe('TopPagesCard', () => {
 		await waitForLoadingToBeRemoved(container);
 
 		expect(
-			await screen.findByText('No Pages Available')
+			await screen.findByText(/^no pages available$/i)
 		).toBeInTheDocument();
 		expect(
-			screen.getByText('Pages will appear here when available.')
+			screen.getByText(/^pages will appear here when available\.$/i)
 		).toBeInTheDocument();
 	});
 
@@ -194,7 +194,7 @@ describe('TopPagesCard', () => {
 
 		await waitForLoadingToBeRemoved(container);
 
-		await screen.findByText('No Pages Available');
+		await screen.findByText(/^no pages available$/i);
 
 		expect(container.querySelector('.c-empty-state')).toHaveClass(
 			'c-empty-state-sm',

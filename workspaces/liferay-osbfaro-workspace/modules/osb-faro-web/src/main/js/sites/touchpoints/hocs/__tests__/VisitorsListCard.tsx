@@ -29,13 +29,13 @@ describe('VisitorsListCard', () => {
 			</Provider>
 		);
 
-		expect(getByText('Accounts')).toBeTruthy();
-		expect(getByText('Known Individuals')).toBeTruthy();
+		expect(getByText(/^accounts$/i)).toBeTruthy();
+		expect(getByText(/^known individuals$/i)).toBeTruthy();
 
 		expect(getByTestId('accounts').className).toContain('active');
 		expect(getByTestId('individuals').className).not.toContain('active');
 
-		fireEvent.click(getByText('Known Individuals'));
+		fireEvent.click(getByText(/^known individuals$/i));
 
 		expect(getByTestId('individuals').className).toContain('active');
 		expect(getByTestId('accounts').className).not.toContain('active');

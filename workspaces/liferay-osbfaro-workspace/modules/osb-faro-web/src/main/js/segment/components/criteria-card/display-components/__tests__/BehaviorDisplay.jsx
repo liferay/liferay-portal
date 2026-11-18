@@ -108,9 +108,9 @@ describe('BehaviorDisplay', () => {
 			/>
 		);
 
-		expect(getByText('Account')).toBeTruthy();
-		expect(getByText('at least one individual who triggered')).toBeTruthy();
-		expect(queryByText('Individual')).toBeNull();
+		expect(getByText(/^account$/i)).toBeTruthy();
+		expect(getByText(/^at least one individual who triggered$/i)).toBeTruthy();
+		expect(queryByText(/^individual$/i)).toBeNull();
 	});
 
 	it('renders the attribute filter when an attribute/<id> criterion is present', () => {

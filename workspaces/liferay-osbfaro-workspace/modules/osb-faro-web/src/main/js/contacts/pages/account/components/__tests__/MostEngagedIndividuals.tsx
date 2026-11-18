@@ -81,7 +81,7 @@ describe('MostEngagedIndividuals', () => {
 		render(<MostEngagedIndividuals />);
 
 		expect(
-			screen.getByRole('link', {name: 'View All'}).getAttribute('href')
+			screen.getByRole('link', {name: /^view all$/i}).getAttribute('href')
 		).toContain('/contacts/accounts/acc-1/profile');
 	});
 
@@ -91,7 +91,7 @@ describe('MostEngagedIndividuals', () => {
 		render(<MostEngagedIndividuals />);
 
 		expect(
-			screen.getByRole('link', {name: 'View All'}).getAttribute('href')
+			screen.getByRole('link', {name: /^view all$/i}).getAttribute('href')
 		).toContain('rangeKey=7');
 	});
 
@@ -102,7 +102,7 @@ describe('MostEngagedIndividuals', () => {
 		render(<MostEngagedIndividuals />);
 
 		const href = screen
-			.getByRole('link', {name: 'View All'})
+			.getByRole('link', {name: /^view all$/i})
 			.getAttribute('href');
 
 		expect(href).toContain('rangeEnd=2026-02-20');
@@ -116,7 +116,7 @@ describe('MostEngagedIndividuals', () => {
 		render(<MostEngagedIndividuals />);
 
 		const href = screen
-			.getByRole('link', {name: 'View All'})
+			.getByRole('link', {name: /^view all$/i})
 			.getAttribute('href');
 
 		expect(href).not.toContain('rangeEnd');
@@ -189,7 +189,7 @@ describe('MostEngagedIndividuals', () => {
 		render(<MostEngagedIndividuals />);
 
 		expect(
-			screen.queryByRole('link', {name: 'View All'})
+			screen.queryByRole('link', {name: /^view all$/i})
 		).not.toBeInTheDocument();
 	});
 });

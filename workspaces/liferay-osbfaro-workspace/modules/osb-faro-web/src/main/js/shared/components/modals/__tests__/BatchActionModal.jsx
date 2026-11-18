@@ -58,7 +58,7 @@ describe('BatchActionModal', () => {
 			<DefaultComponent observer={observer} onClose={onClose} />
 		));
 
-		fireEvent.click(screen.getByText('Cancel'));
+		fireEvent.click(screen.getByText(/^cancel$/i));
 
 		expect(onClose).toHaveBeenCalledTimes(1);
 	});

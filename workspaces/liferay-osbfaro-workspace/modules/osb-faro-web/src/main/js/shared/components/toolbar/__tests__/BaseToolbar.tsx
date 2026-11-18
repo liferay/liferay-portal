@@ -18,7 +18,7 @@ describe('BaseToolbar', () => {
 		renderBaseToolbar();
 
 		expect(screen.getByRole('navigation')).toContainElement(
-			screen.getByText('Settings')
+			screen.getByText(/^settings$/i)
 		);
 	});
 

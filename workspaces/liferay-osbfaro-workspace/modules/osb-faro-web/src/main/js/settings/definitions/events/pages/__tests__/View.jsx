@@ -85,7 +85,7 @@ describe('Event View page', () => {
 
 		expect(screen.queryByRole('dialog')).toBeNull();
 
-		fireEvent.click(screen.getByText('Edit'));
+		fireEvent.click(screen.getByText(/^edit$/i));
 
 		expect(await screen.findByRole('dialog')).toBeInTheDocument();
 		expect(

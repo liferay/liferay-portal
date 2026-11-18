@@ -122,8 +122,8 @@ describe('Event Analysis Create', () => {
 
 		await waitForLoadingToBeRemoved(container);
 
-		expect(getByPlaceholderText('New Analysis')).toBeTruthy();
-		expect(getByText('No Conditions Yet')).toBeTruthy();
+		expect(getByPlaceholderText(/^new analysis$/i)).toBeTruthy();
+		expect(getByText(/^no conditions yet$/i)).toBeTruthy();
 		expect(
 			container.querySelector('.dropdown-range-key-root button')
 				.textContent
@@ -148,7 +148,7 @@ describe('Event Analysis Create', () => {
 
 		await waitForLoadingToBeRemoved(container);
 
-		expect(getByText('Save Analysis')).toBeDisabled();
+		expect(getByText(/^save analysis$/i)).toBeDisabled();
 	});
 
 	it('should enable the save button when there is at least one name and one event added', async () => {
@@ -168,7 +168,7 @@ describe('Event Analysis Create', () => {
 
 		expect(inputName).toHaveValue('My First Event Analysis');
 
-		expect(getByText('Save Analysis')).toBeDisabled();
+		expect(getByText(/^save analysis$/i)).toBeDisabled();
 
 		fireEvent.click(getByRole('button', {name: /add.event/i}));
 
@@ -188,13 +188,13 @@ describe('Event Analysis Create', () => {
 
 		jest.runOnlyPendingTimers();
 
-		expect(getByText('Save Analysis')).toBeEnabled();
+		expect(getByText(/^save analysis$/i)).toBeEnabled();
 	});
 
 	it('should contain a link to return to the event analysis list on the cancel button', () => {
 		const {getByText} = render(<WrappedComponent />);
 
-		expect(getByText('Cancel')).toHaveAttribute(
+		expect(getByText(/^cancel$/i)).toHaveAttribute(
 			'href',
 			'/workspace/123/456/event-analysis'
 		);

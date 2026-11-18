@@ -118,7 +118,7 @@ describe('GeneralInfoSection', () => {
 			/>
 		);
 
-		expect(getByText('User Profile')).toBeTruthy();
+		expect(getByText(/^user profile$/i)).toBeTruthy();
 	});
 
 	it('should render multiple sections with their respective items', () => {

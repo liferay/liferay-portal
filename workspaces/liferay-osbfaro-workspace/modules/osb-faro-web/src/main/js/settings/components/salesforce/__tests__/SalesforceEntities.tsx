@@ -15,10 +15,10 @@ describe('SalesforceEntities', () => {
 			/>
 		);
 
-		expect(getByText('Campaigns')).toBeTruthy();
+		expect(getByText(/^campaigns$/i)).toBeTruthy();
 		expect(
 			getByText(
-				'Represents fields from the Campaign and Campaign Members objects within Salesforce.'
+				/^represents fields from the campaign and campaign members objects within salesforce\.$/i
 			)
 		).toBeTruthy();
 
@@ -79,7 +79,7 @@ describe('SalesforceEntities', () => {
 			/>
 		);
 
-		expect(getByText('Campaigns')).toBeTruthy();
-		expect(queryByText(/Items Synced/i)).toBeNull();
+		expect(getByText(/^campaigns$/i)).toBeTruthy();
+		expect(queryByText(/items synced/i)).toBeNull();
 	});
 });

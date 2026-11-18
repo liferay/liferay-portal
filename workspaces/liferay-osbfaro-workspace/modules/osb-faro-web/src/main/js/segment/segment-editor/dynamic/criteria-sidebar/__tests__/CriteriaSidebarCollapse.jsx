@@ -123,8 +123,8 @@ describe('CriteriaSidebarCollapse', () => {
 			</DndProvider>
 		);
 
-		expect(screen.getByText('Page Views')).toBeInTheDocument();
-		expect(screen.getByText('DXP Custom Fields')).toBeInTheDocument();
+		expect(screen.getByText(/^page views$/i)).toBeInTheDocument();
+		expect(screen.getByText(/^dxp custom fields$/i)).toBeInTheDocument();
 	});
 
 	it('should filter properties and show "no-results-were-found" for the empty subgroup', () => {
@@ -138,7 +138,7 @@ describe('CriteriaSidebarCollapse', () => {
 			</DndProvider>
 		);
 
-		expect(queryByText('Page Views')).toBeInTheDocument();
+		expect(queryByText(/^page views$/i)).toBeInTheDocument();
 
 		expect(queryByText('Page Actions')).toBeNull();
 
@@ -166,7 +166,7 @@ describe('CriteriaSidebarCollapse', () => {
 			queryByText('review-your-search-and-try-again')
 		).toBeInTheDocument();
 
-		expect(queryByText('Page Views')).toBeNull();
+		expect(queryByText(/^page views$/i)).toBeNull();
 		expect(queryByText('Page Actions')).toBeNull();
 	});
 
@@ -181,7 +181,7 @@ describe('CriteriaSidebarCollapse', () => {
 			</DndProvider>
 		);
 
-		expect(queryByText('Custom Events')).toBeInTheDocument();
+		expect(queryByText(/^custom events$/i)).toBeInTheDocument();
 		expect(queryByText('Custom Event 1')).toBeInTheDocument();
 		expect(queryByText('Custom Event 2')).toBeInTheDocument();
 		expect(queryByText('Custom Event 3')).toBeInTheDocument();
@@ -250,7 +250,7 @@ describe('CriteriaSidebarCollapse', () => {
 			</DndProvider>
 		);
 
-		expect(queryByText('Account Name')).toBeInTheDocument();
+		expect(queryByText(/^account name$/i)).toBeInTheDocument();
 
 		expect(queryByText('no-account-data-has-been-synced')).toBeNull();
 	});

@@ -73,7 +73,7 @@ describe('Account Membership', () => {
 		);
 
 		expect(
-			getByText('Annual Revenue').nextElementSibling
+			getByText(/^annual revenue$/i).nextElementSibling
 		).toHaveTextContent('–');
 	});
 
@@ -85,10 +85,10 @@ describe('Account Membership', () => {
 		);
 
 		expect(
-			getByText('Annual Revenue').nextElementSibling
+			getByText(/^annual revenue$/i).nextElementSibling
 		).not.toHaveTextContent('–');
 		expect(
-			getByText('Annual Revenue').nextElementSibling
+			getByText(/^annual revenue$/i).nextElementSibling
 		).toHaveTextContent('0');
 	});
 

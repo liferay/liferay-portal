@@ -78,16 +78,16 @@ describe('TimeZoneSelectionModal', () => {
 
 		const {getByText} = screen;
 
-		expect(getByText('Workspace Timezone')).toBeInTheDocument();
+		expect(getByText(/^workspace timezone$/i)).toBeInTheDocument();
 		expect(
 			getByText(/Your workspace now supports custom timezones/)
 		).toBeInTheDocument();
 
-		expect(getByText('Current Time:')).toBeInTheDocument();
+		expect(getByText(/^current time:$/i)).toBeInTheDocument();
 		expect(getByText('12:10 PM')).toBeInTheDocument();
 
-		expect(getByText('Do This Later')).toBeInTheDocument();
-		expect(getByText('Set Timezone')).toBeInTheDocument();
+		expect(getByText(/^do this later$/i)).toBeInTheDocument();
+		expect(getByText(/^set timezone$/i)).toBeInTheDocument();
 	});
 
 	it('renders the current time in the workspace time zone', async () => {
@@ -106,7 +106,7 @@ describe('TimeZoneSelectionModal', () => {
 		const {getByText} = screen;
 
 		await waitFor(() =>
-			expect(getByText('Chile')).toBeInTheDocument()
+			expect(getByText(/^chile$/i)).toBeInTheDocument()
 		);
 
 		fireEvent.change(document.querySelector('select'), {

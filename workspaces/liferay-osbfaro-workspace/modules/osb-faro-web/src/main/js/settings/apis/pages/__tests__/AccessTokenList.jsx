@@ -88,11 +88,11 @@ describe('AccessTokenList', () => {
 
 		await waitForLoadingToBeRemoved(container);
 
-		fireEvent.click(getByText('Revoke'));
+		fireEvent.click(getByText(/^revoke$/i));
 
 		expect(await screen.findByRole('dialog')).toBeInTheDocument();
 
-		expect(await screen.findByText('Revoke Token')).toBeInTheDocument();
+		expect(await screen.findByText(/^revoke token$/i)).toBeInTheDocument();
 	});
 
 	it('should display the "Generate Token" card  above the table if the token is expired', async () => {

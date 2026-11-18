@@ -37,7 +37,7 @@ describe('DisconnectDataSourceModal', () => {
 
 		await renderDisconnect({addAlert, onClose, onSubmit});
 
-		fireEvent.click(screen.getByRole('button', {name: 'Disconnect'}));
+		fireEvent.click(screen.getByRole('button', {name: /^disconnect$/i}));
 
 		await waitFor(() => expect(onClose).toHaveBeenCalled());
 
@@ -57,7 +57,7 @@ describe('DisconnectDataSourceModal', () => {
 			onSubmit: jest.fn(() => Promise.reject(new Error('boom'))),
 		});
 
-		fireEvent.click(screen.getByRole('button', {name: 'Disconnect'}));
+		fireEvent.click(screen.getByRole('button', {name: /^disconnect$/i}));
 
 		await waitFor(() =>
 			expect(addAlert).toHaveBeenCalledWith({
@@ -76,7 +76,7 @@ describe('DisconnectDataSourceModal', () => {
 
 		await renderDisconnect({onClose});
 
-		fireEvent.click(screen.getByText('Cancel'));
+		fireEvent.click(screen.getByText(/^cancel$/i));
 
 		expect(onClose).toHaveBeenCalledTimes(1);
 	});

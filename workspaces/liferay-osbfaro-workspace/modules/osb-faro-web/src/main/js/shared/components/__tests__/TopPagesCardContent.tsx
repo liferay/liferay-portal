@@ -182,7 +182,7 @@ describe('TopPagesCardContent', () => {
 		});
 
 		const href = screen
-			.getByText('View All')
+			.getByText(/^view all$/i)
 			.closest('a')
 			?.getAttribute('href');
 

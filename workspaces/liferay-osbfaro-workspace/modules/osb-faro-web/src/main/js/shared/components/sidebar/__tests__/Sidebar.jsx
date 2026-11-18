@@ -86,8 +86,8 @@ describe('Sidebar', () => {
 			</Provider>
 		);
 
-		expect(queryByText('Lifecycles')).toBeTruthy();
-		expect(queryByText('Accounts')).toBeTruthy();
+		expect(queryByText(/^lifecycles$/i)).toBeTruthy();
+		expect(queryByText(/^accounts$/i)).toBeTruthy();
 	});
 
 	it('should render the campaigns item when LDP is enabled', () => {
@@ -99,7 +99,7 @@ describe('Sidebar', () => {
 			</Provider>
 		);
 
-		expect(queryByText('Campaigns').closest('a')).toHaveAttribute(
+		expect(queryByText(/^campaigns$/i).closest('a')).toHaveAttribute(
 			'href',
 			'/workspace/23/123/campaigns'
 		);
@@ -114,7 +114,7 @@ describe('Sidebar', () => {
 			</Provider>
 		);
 
-		expect(queryByText('Campaigns')).toBeNull();
+		expect(queryByText(/^campaigns$/i)).toBeNull();
 	});
 
 	it('should not render lifecycle and accounts items when LDP is not enabled', () => {
@@ -126,8 +126,8 @@ describe('Sidebar', () => {
 			</Provider>
 		);
 
-		expect(queryByText('Lifecycles')).toBeNull();
-		expect(queryByText('Accounts')).toBeNull();
+		expect(queryByText(/^lifecycles$/i)).toBeNull();
+		expect(queryByText(/^accounts$/i)).toBeNull();
 	});
 
 	it('should default a section to expanded when nothing is stored for it', () => {
@@ -140,7 +140,7 @@ describe('Sidebar', () => {
 		);
 
 		expect(
-			screen.getByRole('menuitem', {name: 'Touchpoints'})
+			screen.getByRole('menuitem', {name: /^touchpoints$/i})
 		).toHaveAttribute('aria-expanded', 'true');
 	});
 
@@ -157,7 +157,7 @@ describe('Sidebar', () => {
 		);
 
 		expect(
-			screen.getByRole('menuitem', {name: 'Touchpoints'})
+			screen.getByRole('menuitem', {name: /^touchpoints$/i})
 		).toHaveAttribute('aria-expanded', 'false');
 	});
 
@@ -175,7 +175,7 @@ describe('Sidebar', () => {
 			</Provider>
 		);
 
-		fireEvent.click(screen.getByRole('menuitem', {name: 'Touchpoints'}));
+		fireEvent.click(screen.getByRole('menuitem', {name: /^touchpoints$/i}));
 
 		expect(onSectionToggle).toHaveBeenCalledWith('touchpoints', true);
 	});
@@ -217,7 +217,7 @@ describe('Sidebar', () => {
 
 		onCollapsedChange.mockClear();
 
-		fireEvent.click(screen.getByRole('button', {name: 'Close'}));
+		fireEvent.click(screen.getByRole('button', {name: /^close$/i}));
 
 		expect(onCollapsedChange).toHaveBeenCalledWith(true);
 	});
@@ -230,7 +230,7 @@ describe('Sidebar', () => {
 		renderSidebar({onCollapsedChange});
 
 		expect(onCollapsedChange).not.toHaveBeenCalled();
-		expect(screen.queryByRole('button', {name: 'Close'})).toBeNull();
+		expect(screen.queryByRole('button', {name: /^close$/i})).toBeNull();
 	});
 
 	it('should close from its backdrop on mobile', () => {

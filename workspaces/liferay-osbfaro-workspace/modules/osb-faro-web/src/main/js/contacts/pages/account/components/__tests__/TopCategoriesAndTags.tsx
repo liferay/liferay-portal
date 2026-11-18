@@ -187,18 +187,22 @@ describe('TopCategoriesAndTags', () => {
 			renderTopCategoriesAndTags();
 
 			expect(
-				screen.getByRole('tab', {name: 'Category'})
+				screen.getByRole('tab', {name: /^category$/i})
 			).toBeInTheDocument();
-			expect(screen.getByRole('tab', {name: 'Tag'})).toBeInTheDocument();
+			expect(
+				screen.getByRole('tab', {name: /^tag$/i})
+			).toBeInTheDocument();
 		});
 
 		it('should render the Group By picker with the default metric (Impressions)', () => {
 			renderTopCategoriesAndTags();
 
-			expect(screen.getAllByText('Group By').length).toBeGreaterThan(0);
-			expect(screen.getAllByText('Impressions').length).toBeGreaterThan(
+			expect(screen.getAllByText(/^group by$/i).length).toBeGreaterThan(
 				0
 			);
+			expect(
+				screen.getAllByText(/^impressions$/i).length
+			).toBeGreaterThan(0);
 		});
 	});
 
@@ -213,7 +217,7 @@ describe('TopCategoriesAndTags', () => {
 				0
 			);
 			expect(
-				screen.getAllByText('Document Types').length
+				screen.getAllByText(/^document types$/i).length
 			).toBeGreaterThan(0);
 			expect(
 				screen.getAllByText('Employment Status').length
@@ -241,20 +245,22 @@ describe('TopCategoriesAndTags', () => {
 			) as HTMLElement;
 
 			expect(
-				within(tabPanel).getByText('Category Name')
+				within(tabPanel).getByText(/^category name$/i)
 			).toBeInTheDocument();
 			expect(
-				within(tabPanel).getByText('Vocabulary')
+				within(tabPanel).getByText(/^vocabulary$/i)
 			).toBeInTheDocument();
 		});
 
 		it('should render the vocabulary name of every category returned', () => {
 			renderTopCategoriesAndTags();
 
-			expect(screen.getAllByText('Department').length).toBeGreaterThan(0);
-			expect(screen.getAllByText('Document Type').length).toBeGreaterThan(
+			expect(screen.getAllByText(/^department$/i).length).toBeGreaterThan(
 				0
 			);
+			expect(
+				screen.getAllByText(/^document type$/i).length
+			).toBeGreaterThan(0);
 			expect(
 				screen.getAllByText('Employment Type').length
 			).toBeGreaterThan(0);
@@ -275,14 +281,16 @@ describe('TopCategoriesAndTags', () => {
 				},
 			});
 
-			fireEvent.click(screen.getByRole('tab', {name: 'Tag'}));
+			fireEvent.click(screen.getByRole('tab', {name: /^tag$/i}));
 
 			const tabPanel = container.querySelector(
 				'.tab-pane'
 			) as HTMLElement;
 
-			expect(within(tabPanel).getByText('Tag Name')).toBeInTheDocument();
-			expect(within(tabPanel).queryByText('Vocabulary')).toBeNull();
+			expect(
+				within(tabPanel).getByText(/^tag name$/i)
+			).toBeInTheDocument();
+			expect(within(tabPanel).queryByText(/^vocabulary$/i)).toBeNull();
 		});
 	});
 
@@ -317,10 +325,12 @@ describe('TopCategoriesAndTags', () => {
 			renderTopCategoriesAndTags();
 
 			fireEvent.click(
-				screen.getAllByRole('combobox', {name: 'Group By'})[0]
+				screen.getAllByRole('combobox', {name: /^group by$/i})[0]
 			);
 
-			fireEvent.click(screen.getAllByRole('option', {name: 'Views'})[0]);
+			fireEvent.click(
+				screen.getAllByRole('option', {name: /^views$/i})[0]
+			);
 
 			const lastCall =
 				mockedUseRequest.mock.calls[
@@ -334,11 +344,11 @@ describe('TopCategoriesAndTags', () => {
 			renderTopCategoriesAndTags();
 
 			fireEvent.click(
-				screen.getAllByRole('combobox', {name: 'Group By'})[0]
+				screen.getAllByRole('combobox', {name: /^group by$/i})[0]
 			);
 
 			fireEvent.click(
-				screen.getAllByRole('option', {name: 'Downloads'})[0]
+				screen.getAllByRole('option', {name: /^downloads$/i})[0]
 			);
 
 			const lastCall =
@@ -371,7 +381,7 @@ describe('TopCategoriesAndTags', () => {
 
 			renderTopCategoriesAndTags();
 
-			fireEvent.click(screen.getByRole('tab', {name: 'Tag'}));
+			fireEvent.click(screen.getByRole('tab', {name: /^tag$/i}));
 
 			const lastCall =
 				mockedUseRequest.mock.calls[
@@ -394,7 +404,7 @@ describe('TopCategoriesAndTags', () => {
 			const categoryVariables =
 				mockedUseRequest.mock.calls[0][0].variables;
 
-			fireEvent.click(screen.getByRole('tab', {name: 'Tag'}));
+			fireEvent.click(screen.getByRole('tab', {name: /^tag$/i}));
 
 			const tagVariables =
 				mockedUseRequest.mock.calls[
@@ -421,7 +431,7 @@ describe('TopCategoriesAndTags', () => {
 				},
 			});
 
-			fireEvent.click(screen.getByRole('tab', {name: 'Tag'}));
+			fireEvent.click(screen.getByRole('tab', {name: /^tag$/i}));
 
 			expect(screen.getAllByText('promo').length).toBeGreaterThan(0);
 		});
@@ -461,7 +471,8 @@ describe('TopCategoriesAndTags', () => {
 
 			expect(tabPanel.querySelector('.loading-root')).toBeNull();
 			expect(
-				within(tabPanel).getAllByText('No Categories Available').length
+				within(tabPanel).getAllByText(/^no categories available$/i)
+					.length
 			).toBeGreaterThan(0);
 		});
 
@@ -481,11 +492,11 @@ describe('TopCategoriesAndTags', () => {
 			renderTopCategoriesAndTags();
 
 			expect(
-				screen.getAllByText('No Categories Available').length
+				screen.getAllByText(/^no categories available$/i).length
 			).toBeGreaterThan(0);
 			expect(
 				screen.getAllByText(
-					'Categories will appear here when available.'
+					/^categories will appear here when available\.$/i
 				).length
 			).toBeGreaterThan(0);
 		});
@@ -495,13 +506,13 @@ describe('TopCategoriesAndTags', () => {
 
 			renderTopCategoriesAndTags();
 
-			fireEvent.click(screen.getByRole('tab', {name: 'Tag'}));
+			fireEvent.click(screen.getByRole('tab', {name: /^tag$/i}));
 
 			expect(
-				screen.getAllByText('No Tags Available').length
+				screen.getAllByText(/^no tags available$/i).length
 			).toBeGreaterThan(0);
 			expect(
-				screen.getAllByText('Tags will appear here when available.')
+				screen.getAllByText(/^tags will appear here when available\.$/i)
 					.length
 			).toBeGreaterThan(0);
 		});
@@ -512,9 +523,11 @@ describe('TopCategoriesAndTags', () => {
 			renderTopCategoriesAndTags();
 
 			expect(
-				screen.getByRole('tab', {name: 'Category'})
+				screen.getByRole('tab', {name: /^category$/i})
 			).toBeInTheDocument();
-			expect(screen.getByRole('tab', {name: 'Tag'})).toBeInTheDocument();
+			expect(
+				screen.getByRole('tab', {name: /^tag$/i})
+			).toBeInTheDocument();
 		});
 
 		it('should not render rows when no items are returned', () => {

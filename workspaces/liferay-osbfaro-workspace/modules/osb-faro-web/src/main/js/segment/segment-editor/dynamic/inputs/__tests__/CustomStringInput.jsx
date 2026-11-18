@@ -118,9 +118,9 @@ describe('CustomStringInput', () => {
 				queryByTestId('attribute-value-string-input')
 			).toBeNull();
 
-			fireEvent.click(getByText('Direct'));
+			fireEvent.click(getByText(/^direct$/i));
 
-			expect(getByText('Organic')).toBeTruthy();
+			expect(getByText(/^organic$/i)).toBeTruthy();
 		});
 	});
 });

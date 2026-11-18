@@ -278,7 +278,7 @@ describe('IndividualsDataSet', () => {
 
 		render(<div>{renderer({value: 0})}</div>);
 
-		expect(screen.getByText('No Activities')).toBeInTheDocument();
+		expect(screen.getByText(/^no activities$/i)).toBeInTheDocument();
 	});
 
 	it('should render a missing visitor type as no data', () => {

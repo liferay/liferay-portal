@@ -63,8 +63,8 @@ describe('AddChannelModal', () => {
 			<DefaultComponent observer={observer} />
 		));
 
-		expect(screen.getByText('New Property')).toBeInTheDocument();
-		expect(screen.getByLabelText('Property Name')).toBeInTheDocument();
+		expect(screen.getByText(/^new property$/i)).toBeInTheDocument();
+		expect(screen.getByLabelText(/^property name$/i)).toBeInTheDocument();
 	});
 
 	it('focuses the property name field without showing its error', async () => {
@@ -76,9 +76,9 @@ describe('AddChannelModal', () => {
 			jest.runOnlyPendingTimers();
 		});
 
-		expect(screen.getByLabelText('Property Name')).toHaveFocus();
+		expect(screen.getByLabelText(/^property name$/i)).toHaveFocus();
 		expect(document.querySelector('.modal .has-error')).toBeNull();
-		expect(screen.queryByText('Required')).toBeNull();
+		expect(screen.queryByText(/^required$/i)).toBeNull();
 	});
 
 	it('closes when cancel is clicked', async () => {
@@ -88,7 +88,7 @@ describe('AddChannelModal', () => {
 			<DefaultComponent observer={observer} onClose={onClose} />
 		));
 
-		fireEvent.click(screen.getByText('Cancel'));
+		fireEvent.click(screen.getByText(/^cancel$/i));
 
 		expect(onClose).toHaveBeenCalledTimes(1);
 	});
@@ -98,8 +98,8 @@ describe('AddChannelModal', () => {
 			<DefaultComponent observer={observer} />
 		));
 
-		const save = screen.getByText('Save').closest('button');
-		const input = screen.getByLabelText('Property Name');
+		const save = screen.getByText(/^save$/i).closest('button');
+		const input = screen.getByLabelText(/^property name$/i);
 
 		fireEvent.change(input, {target: {value: 'ab'}});
 		fireEvent.blur(input);

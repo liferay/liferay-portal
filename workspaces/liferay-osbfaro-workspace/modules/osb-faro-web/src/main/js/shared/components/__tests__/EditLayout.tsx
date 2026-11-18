@@ -81,7 +81,7 @@ describe('EditLayout', () => {
 		await screen.findByText('event analysis editor');
 
 		expect(
-			screen.queryByRole('combobox', {name: 'Property'})
+			screen.queryByRole('combobox', {name: /^property$/i})
 		).not.toBeInTheDocument();
 		expect(screen.queryByTitle(/language/i)).not.toBeInTheDocument();
 	});

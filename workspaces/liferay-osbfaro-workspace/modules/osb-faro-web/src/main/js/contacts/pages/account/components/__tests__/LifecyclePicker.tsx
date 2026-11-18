@@ -23,7 +23,7 @@ describe('LifecyclePicker', () => {
 		);
 
 		expect(
-			screen.getByRole('combobox', {name: 'Lifecycle'})
+			screen.getByRole('combobox', {name: /^lifecycle$/i})
 		).toHaveTextContent('Partner');
 	});
 
@@ -38,7 +38,7 @@ describe('LifecyclePicker', () => {
 			/>
 		);
 
-		fireEvent.click(screen.getByRole('combobox', {name: 'Lifecycle'}));
+		fireEvent.click(screen.getByRole('combobox', {name: /^lifecycle$/i}));
 
 		expect(
 			screen.getAllByRole('option').map(({textContent}) => textContent)
@@ -55,7 +55,7 @@ describe('LifecyclePicker', () => {
 		);
 
 		expect(
-			screen.getByRole('combobox', {name: 'Lifecycle'})
+			screen.getByRole('combobox', {name: /^lifecycle$/i})
 		).toBeDisabled();
 	});
 });

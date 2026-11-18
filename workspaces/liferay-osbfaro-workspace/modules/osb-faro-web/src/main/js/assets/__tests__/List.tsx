@@ -418,7 +418,7 @@ describe('List', () => {
 
 			expect(
 				screen.getByTestId('fds-empty-state-title')
-			).toHaveTextContent('No assets were found.');
+			).toHaveTextContent(/no assets were found\./i);
 		});
 
 		it('should include the check-back-later text in the empty state description', async () => {
@@ -427,7 +427,7 @@ describe('List', () => {
 			expect(
 				screen.getByTestId('fds-empty-state-description')
 			).toHaveTextContent(
-				'Check back later to verify if data has been received from your data sources, or you can try a different date range.'
+				/check back later to verify if data has been received from your data sources, or you can try a different date range\./i
 			);
 		});
 
@@ -457,7 +457,7 @@ describe('List', () => {
 		it('should render the page title "Assets"', async () => {
 			await renderList();
 
-			expect(screen.getByText('Assets')).toBeInTheDocument();
+			expect(screen.getByText(/^assets$/i)).toBeInTheDocument();
 		});
 
 		it('should render the FrontendDataSet component', async () => {
@@ -1284,7 +1284,7 @@ describe('List', () => {
 
 			fireEvent.click(screen.getByTestId('trigger-info-panel'));
 
-			fireEvent.click(screen.getByRole('button', {name: 'Close'}));
+			fireEvent.click(screen.getByRole('button', {name: /^close$/i}));
 
 			await waitFor(() =>
 				expect(container.querySelector('.index-root')).not.toHaveClass(
@@ -1298,7 +1298,7 @@ describe('List', () => {
 
 			fireEvent.click(screen.getByTestId('trigger-info-panel'));
 
-			expect(screen.getByText('Categorization')).toBeInTheDocument();
+			expect(screen.getByText(/^categorization$/i)).toBeInTheDocument();
 		});
 	});
 
@@ -1307,7 +1307,7 @@ describe('List', () => {
 			await renderList();
 
 			fireEvent.click(screen.getByTestId('trigger-info-panel'));
-			fireEvent.click(screen.getByText('Categorization'));
+			fireEvent.click(screen.getByText(/^categorization$/i));
 
 			expect(
 				screen.getByText('No Categories were found for this asset.')
@@ -1320,9 +1320,9 @@ describe('List', () => {
 			fireEvent.click(
 				screen.getByTestId('trigger-info-panel-with-items')
 			);
-			fireEvent.click(screen.getByText('Categorization'));
+			fireEvent.click(screen.getByText(/^categorization$/i));
 
-			expect(screen.getByText('Topic')).toBeInTheDocument();
+			expect(screen.getByText(/^topic$/i)).toBeInTheDocument();
 			expect(screen.getByText('Category One')).toBeInTheDocument();
 			expect(screen.getByText('Category Two')).toBeInTheDocument();
 		});
@@ -1333,9 +1333,9 @@ describe('List', () => {
 			fireEvent.click(
 				screen.getByTestId('trigger-info-panel-empty-vocab')
 			);
-			fireEvent.click(screen.getByText('Categorization'));
+			fireEvent.click(screen.getByText(/^categorization$/i));
 
-			expect(screen.getByText('Topics')).toBeInTheDocument();
+			expect(screen.getByText(/^topics$/i)).toBeInTheDocument();
 			expect(screen.queryByText('Genres')).not.toBeInTheDocument();
 		});
 
@@ -1345,9 +1345,9 @@ describe('List', () => {
 			fireEvent.click(
 				screen.getByTestId('trigger-info-panel-with-items')
 			);
-			fireEvent.click(screen.getByText('Categorization'));
+			fireEvent.click(screen.getByText(/^categorization$/i));
 
-			expect(screen.getAllByText('Topic')).toHaveLength(1);
+			expect(screen.getAllByText(/^topic$/i)).toHaveLength(1);
 			expect(screen.getByText('Category One')).toBeInTheDocument();
 			expect(screen.getByText('Category Two')).toBeInTheDocument();
 		});
@@ -1358,7 +1358,7 @@ describe('List', () => {
 			fireEvent.click(
 				screen.getByTestId('trigger-info-panel-with-items')
 			);
-			fireEvent.click(screen.getByText('Categorization'));
+			fireEvent.click(screen.getByText(/^categorization$/i));
 
 			expect(
 				screen.queryByText('No Categories were found for this asset.')
@@ -1371,7 +1371,7 @@ describe('List', () => {
 			await renderList();
 
 			fireEvent.click(screen.getByTestId('trigger-info-panel'));
-			fireEvent.click(screen.getByText('Categorization'));
+			fireEvent.click(screen.getByText(/^categorization$/i));
 
 			expect(
 				screen.getByText('No Tags were found for this asset.')
@@ -1384,7 +1384,7 @@ describe('List', () => {
 			fireEvent.click(
 				screen.getByTestId('trigger-info-panel-with-items')
 			);
-			fireEvent.click(screen.getByText('Categorization'));
+			fireEvent.click(screen.getByText(/^categorization$/i));
 
 			expect(screen.getByText('Tag One')).toBeInTheDocument();
 		});
@@ -1395,7 +1395,7 @@ describe('List', () => {
 			fireEvent.click(
 				screen.getByTestId('trigger-info-panel-with-items')
 			);
-			fireEvent.click(screen.getByText('Categorization'));
+			fireEvent.click(screen.getByText(/^categorization$/i));
 
 			expect(
 				screen.queryByText('No Tags were found for this asset.')

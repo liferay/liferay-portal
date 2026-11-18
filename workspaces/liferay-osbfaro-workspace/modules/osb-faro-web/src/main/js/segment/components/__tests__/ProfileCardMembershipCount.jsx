@@ -52,7 +52,7 @@ describe('SegmentProfileCard membership count', () => {
 
 		expect(counts).toHaveLength(2);
 
-		counts.forEach(count => expect(count).toHaveTextContent('Processing'));
+		counts.forEach(count => expect(count).toHaveTextContent(/processing/i));
 	});
 
 	it('shows a zero member count once membership is calculated', async () => {

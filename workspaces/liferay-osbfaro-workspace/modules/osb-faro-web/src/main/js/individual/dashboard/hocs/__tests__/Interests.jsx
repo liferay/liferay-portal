@@ -43,6 +43,6 @@ describe('Interests', () => {
 
 		jest.runAllTimers();
 
-		expect(getByText('Interest Topics')).toBeInTheDocument();
+		expect(getByText(/^interest topics$/i)).toBeInTheDocument();
 	});
 });

@@ -101,7 +101,7 @@ describe('FilterPicker', () => {
 			await screen.findByRole('option', {name: 'Tech'})
 		).toBeInTheDocument();
 		expect(
-			screen.getByRole('option', {name: 'Finance'})
+			screen.getByRole('option', {name: /^finance$/i})
 		).toBeInTheDocument();
 	});
 

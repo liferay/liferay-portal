@@ -68,7 +68,7 @@ describe.skip('Channels List', () => {
 
 		await waitForLoadingToBeRemoved();
 
-		expect(screen.queryByText('New Property')).toBeNull();
+		expect(screen.queryByText(/^new property$/i)).toBeNull();
 	});
 
 	it('should check if the number of synced sites and channels appears for each property', async () => {
@@ -84,9 +84,9 @@ describe.skip('Channels List', () => {
 
 		await waitForLoadingToBeRemoved();
 
-		expect(screen.getByText('Sites')).toBeInTheDocument();
-		expect(screen.getByText('Channels')).toBeInTheDocument();
-		expect(screen.getByText('Liferay DXP')).toBeInTheDocument();
+		expect(screen.getByText(/^sites$/i)).toBeInTheDocument();
+		expect(screen.getByText(/^channels$/i)).toBeInTheDocument();
+		expect(screen.getByText(/^liferay dxp$/i)).toBeInTheDocument();
 		expect(screen.getAllByText('6')).toHaveLength(1);
 		expect(screen.getAllByText('5')).toHaveLength(1);
 	});

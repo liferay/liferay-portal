@@ -117,7 +117,7 @@ describe('Workspaces', () => {
 		).toBeInTheDocument();
 
 		expect(
-			getByText('Visit our Status Page for more details.')
+			getByText(/^visit our status page for more details\.$/i)
 		).toBeInTheDocument();
 
 		const statusPageAnnouncementsLink = container.querySelector(

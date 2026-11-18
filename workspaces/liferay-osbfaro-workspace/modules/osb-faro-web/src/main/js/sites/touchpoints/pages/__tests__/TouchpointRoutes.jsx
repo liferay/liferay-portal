@@ -207,7 +207,7 @@ describe('TouchpointRoutes', () => {
 			</Provider>
 		);
 
-		expect(screen.queryByText('Visitors')).toBeTruthy();
+		expect(screen.queryByText(/^visitors$/i)).toBeTruthy();
 	});
 
 	it('hides the visitors tab for non-LDP workspaces', () => {
@@ -233,7 +233,7 @@ describe('TouchpointRoutes', () => {
 			</Provider>
 		);
 
-		expect(screen.queryByText('Visitors')).toBeNull();
+		expect(screen.queryByText(/^visitors$/i)).toBeNull();
 	});
 
 	it('shows the known individuals tab for non-LDP workspaces', () => {
@@ -259,7 +259,7 @@ describe('TouchpointRoutes', () => {
 			</Provider>
 		);
 
-		expect(screen.queryByText('Known Individuals')).toBeTruthy();
+		expect(screen.queryByText(/^known individuals$/i)).toBeTruthy();
 	});
 
 	it('hides the known individuals tab for LDP workspaces', () => {
@@ -285,7 +285,7 @@ describe('TouchpointRoutes', () => {
 			</Provider>
 		);
 
-		expect(screen.queryByText('Known Individuals')).toBeNull();
+		expect(screen.queryByText(/^known individuals$/i)).toBeNull();
 	});
 
 	it('shows the account filter on the overview route for LDP workspaces', () => {
@@ -723,7 +723,7 @@ describe('TouchpointRoutes', () => {
 			</Provider>
 		);
 
-		const href = screen.getByText('Path').closest('a').getAttribute('href');
+		const href = screen.getByText(/^path$/i).closest('a').getAttribute('href');
 
 		expect(href).toContain('accountId=100');
 		expect(href).toContain('accountName=Account');
@@ -754,7 +754,7 @@ describe('TouchpointRoutes', () => {
 			</Provider>
 		);
 
-		const href = screen.getByText('Path').closest('a').getAttribute('href');
+		const href = screen.getByText(/^path$/i).closest('a').getAttribute('href');
 
 		expect(href).not.toContain('accountId');
 		expect(href).not.toContain('accountName');
@@ -787,7 +787,7 @@ describe('TouchpointRoutes', () => {
 			</Provider>
 		);
 
-		const href = screen.getByText('Path').closest('a').getAttribute('href');
+		const href = screen.getByText(/^path$/i).closest('a').getAttribute('href');
 
 		expect(href).toContain('segmentId=100');
 		expect(href).toContain('segmentName=Segment');
@@ -817,7 +817,7 @@ describe('TouchpointRoutes', () => {
 			</Provider>
 		);
 
-		const href = screen.getByText('Path').closest('a').getAttribute('href');
+		const href = screen.getByText(/^path$/i).closest('a').getAttribute('href');
 
 		expect(href).not.toContain('segmentId');
 		expect(href).not.toContain('segmentName');

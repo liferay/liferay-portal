@@ -64,7 +64,7 @@ describe('HeaderDefault', () => {
 
 		fireEvent.click(dropdownToggle);
 
-		const last24HoursBtn = screen.getByText('Last 24 hours');
+		const last24HoursBtn = screen.getByText(/^last 24 hours$/i);
 
 		fireEvent.click(last24HoursBtn);
 

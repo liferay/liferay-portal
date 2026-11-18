@@ -33,7 +33,7 @@ describe('HideEventsModal', () => {
 		expect(document.querySelector('.modal-warning')).toBeTruthy();
 
 		expect(
-			screen.getByRole('button', {name: 'Hide'})
+			screen.getByRole('button', {name: /^hide$/i})
 		).toBeInTheDocument();
 	});
 
@@ -43,7 +43,7 @@ describe('HideEventsModal', () => {
 
 		await renderHideEvents({addAlert, hideEvents});
 
-		fireEvent.click(screen.getByRole('button', {name: 'Hide'}));
+		fireEvent.click(screen.getByRole('button', {name: /^hide$/i}));
 
 		expect(hideEvents).toHaveBeenCalledWith(['1', '2']);
 
@@ -67,7 +67,7 @@ describe('HideEventsModal', () => {
 			singleEventHiddenMessage,
 		});
 
-		fireEvent.click(screen.getByRole('button', {name: 'Hide'}));
+		fireEvent.click(screen.getByRole('button', {name: /^hide$/i}));
 
 		await waitFor(() =>
 			expect(addAlert).toHaveBeenCalledWith({
@@ -83,7 +83,7 @@ describe('HideEventsModal', () => {
 
 		await renderHideEvents({addAlert, singleEventHiddenMessage});
 
-		fireEvent.click(screen.getByRole('button', {name: 'Hide'}));
+		fireEvent.click(screen.getByRole('button', {name: /^hide$/i}));
 
 		await waitFor(() => expect(addAlert).toHaveBeenCalled());
 
@@ -98,7 +98,7 @@ describe('HideEventsModal', () => {
 			hideEvents: jest.fn(() => Promise.reject(new Error('failed'))),
 		});
 
-		fireEvent.click(screen.getByRole('button', {name: 'Hide'}));
+		fireEvent.click(screen.getByRole('button', {name: /^hide$/i}));
 
 		await waitFor(() =>
 			expect(addAlert).toHaveBeenCalledWith(
@@ -115,7 +115,7 @@ describe('HideEventsModal', () => {
 
 		await renderHideEvents({onClose});
 
-		fireEvent.click(screen.getByText('Cancel'));
+		fireEvent.click(screen.getByText(/^cancel$/i));
 
 		expect(onClose).toHaveBeenCalledTimes(1);
 	});

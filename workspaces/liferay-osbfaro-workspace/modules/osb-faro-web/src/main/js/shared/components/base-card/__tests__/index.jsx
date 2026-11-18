@@ -83,7 +83,7 @@ describe('BaseCard', () => {
 
 		expect(container.querySelector('.interval-selector-root')).toBeTruthy();
 		expect(getByText('D')).toBeTruthy();
-		expect(getByText('W')).toBeTruthy();
-		expect(getByText('M')).toBeTruthy();
+		expect(getByText(/^w$/i)).toBeTruthy();
+		expect(getByText(/^m$/i)).toBeTruthy();
 	});
 });

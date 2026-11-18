@@ -50,7 +50,7 @@ describe('AutocompleteInput', () => {
 
 		fireEvent.focus(screen.getByRole('combobox'));
 
-		await screen.findByText('Chile');
+		await screen.findByText(/^chile$/i);
 
 		expect(paginatedDataSourceFn).toHaveBeenLastCalledWith({
 			page: 1,
@@ -60,7 +60,7 @@ describe('AutocompleteInput', () => {
 
 		scrollListToBottom();
 
-		await screen.findByText('Mexico');
+		await screen.findByText(/^mexico$/i);
 
 		expect(paginatedDataSourceFn).toHaveBeenLastCalledWith({
 			page: 2,

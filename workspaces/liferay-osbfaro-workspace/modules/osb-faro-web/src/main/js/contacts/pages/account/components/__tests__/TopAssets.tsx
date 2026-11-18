@@ -174,10 +174,10 @@ describe('TopAssets', () => {
 			renderTopAssets();
 
 			expect(
-				screen.getByRole('tab', {name: 'Content'})
+				screen.getByRole('tab', {name: /^content$/i})
 			).toBeInTheDocument();
 			expect(
-				screen.getByRole('tab', {name: 'Files'})
+				screen.getByRole('tab', {name: /^files$/i})
 			).toBeInTheDocument();
 		});
 
@@ -185,17 +185,19 @@ describe('TopAssets', () => {
 			renderTopAssets();
 
 			expect(
-				screen.getByRole('button', {name: 'View All'})
+				screen.getByRole('button', {name: /^view all$/i})
 			).toBeInTheDocument();
 		});
 
 		it('should render the Group By picker with the default metric (Impressions)', () => {
 			renderTopAssets();
 
-			expect(screen.getAllByText('Group By').length).toBeGreaterThan(0);
-			expect(screen.getAllByText('Impressions').length).toBeGreaterThan(
+			expect(screen.getAllByText(/^group by$/i).length).toBeGreaterThan(
 				0
 			);
+			expect(
+				screen.getAllByText(/^impressions$/i).length
+			).toBeGreaterThan(0);
 		});
 	});
 
@@ -327,10 +329,12 @@ describe('TopAssets', () => {
 			renderTopAssets();
 
 			fireEvent.click(
-				screen.getAllByRole('combobox', {name: 'Group By'})[0]
+				screen.getAllByRole('combobox', {name: /^group by$/i})[0]
 			);
 
-			fireEvent.click(screen.getAllByRole('option', {name: 'Views'})[0]);
+			fireEvent.click(
+				screen.getAllByRole('option', {name: /^views$/i})[0]
+			);
 
 			const lastCall =
 				mockedUseRequest.mock.calls[
@@ -343,14 +347,14 @@ describe('TopAssets', () => {
 		it('should refetch with downloadsMetric when the user picks Downloads on the Files tab', () => {
 			renderTopAssets();
 
-			fireEvent.click(screen.getByRole('tab', {name: 'Files'}));
+			fireEvent.click(screen.getByRole('tab', {name: /^files$/i}));
 
 			fireEvent.click(
-				screen.getAllByRole('combobox', {name: 'Group By'})[0]
+				screen.getAllByRole('combobox', {name: /^group by$/i})[0]
 			);
 
 			fireEvent.click(
-				screen.getAllByRole('option', {name: 'Downloads'})[0]
+				screen.getAllByRole('option', {name: /^downloads$/i})[0]
 			);
 
 			const lastCall =
@@ -365,48 +369,48 @@ describe('TopAssets', () => {
 			renderTopAssets();
 
 			fireEvent.click(
-				screen.getAllByRole('combobox', {name: 'Group By'})[0]
+				screen.getAllByRole('combobox', {name: /^group by$/i})[0]
 			);
 
 			expect(
-				screen.queryByRole('option', {name: 'Downloads'})
+				screen.queryByRole('option', {name: /^downloads$/i})
 			).toBeNull();
 			expect(
-				screen.getAllByRole('option', {name: 'Impressions'}).length
+				screen.getAllByRole('option', {name: /^impressions$/i}).length
 			).toBeGreaterThan(0);
 			expect(
-				screen.getAllByRole('option', {name: 'Views'}).length
+				screen.getAllByRole('option', {name: /^views$/i}).length
 			).toBeGreaterThan(0);
 		});
 
 		it('should offer the Downloads metric on the Files tab', () => {
 			renderTopAssets();
 
-			fireEvent.click(screen.getByRole('tab', {name: 'Files'}));
+			fireEvent.click(screen.getByRole('tab', {name: /^files$/i}));
 
 			fireEvent.click(
-				screen.getAllByRole('combobox', {name: 'Group By'})[0]
+				screen.getAllByRole('combobox', {name: /^group by$/i})[0]
 			);
 
 			expect(
-				screen.getAllByRole('option', {name: 'Downloads'}).length
+				screen.getAllByRole('option', {name: /^downloads$/i}).length
 			).toBeGreaterThan(0);
 		});
 
 		it('should reset to impressionsMetric when switching to Content while Downloads is selected', () => {
 			renderTopAssets();
 
-			fireEvent.click(screen.getByRole('tab', {name: 'Files'}));
+			fireEvent.click(screen.getByRole('tab', {name: /^files$/i}));
 
 			fireEvent.click(
-				screen.getAllByRole('combobox', {name: 'Group By'})[0]
+				screen.getAllByRole('combobox', {name: /^group by$/i})[0]
 			);
 
 			fireEvent.click(
-				screen.getAllByRole('option', {name: 'Downloads'})[0]
+				screen.getAllByRole('option', {name: /^downloads$/i})[0]
 			);
 
-			fireEvent.click(screen.getByRole('tab', {name: 'Content'}));
+			fireEvent.click(screen.getByRole('tab', {name: /^content$/i}));
 
 			const lastCall =
 				mockedUseRequest.mock.calls[
@@ -430,7 +434,7 @@ describe('TopAssets', () => {
 		it('should request the File objectType after clicking the Files tab', () => {
 			renderTopAssets();
 
-			fireEvent.click(screen.getByRole('tab', {name: 'Files'}));
+			fireEvent.click(screen.getByRole('tab', {name: /^files$/i}));
 
 			const lastCall =
 				mockedUseRequest.mock.calls[
@@ -457,7 +461,7 @@ describe('TopAssets', () => {
 		it('should navigate to the asset list when the View All button is clicked', () => {
 			renderTopAssets();
 
-			fireEvent.click(screen.getByRole('button', {name: 'View All'}));
+			fireEvent.click(screen.getByRole('button', {name: /^view all$/i}));
 
 			expect(mockPush).toHaveBeenCalledTimes(1);
 
@@ -471,7 +475,7 @@ describe('TopAssets', () => {
 		it('should pass the default metric (Impressions) as the orderBy param', () => {
 			renderTopAssets();
 
-			fireEvent.click(screen.getByRole('button', {name: 'View All'}));
+			fireEvent.click(screen.getByRole('button', {name: /^view all$/i}));
 
 			const pushedURL = mockPush.mock.calls[0][0];
 
@@ -482,12 +486,14 @@ describe('TopAssets', () => {
 			renderTopAssets();
 
 			fireEvent.click(
-				screen.getAllByRole('combobox', {name: 'Group By'})[0]
+				screen.getAllByRole('combobox', {name: /^group by$/i})[0]
 			);
 
-			fireEvent.click(screen.getAllByRole('option', {name: 'Views'})[0]);
+			fireEvent.click(
+				screen.getAllByRole('option', {name: /^views$/i})[0]
+			);
 
-			fireEvent.click(screen.getByRole('button', {name: 'View All'}));
+			fireEvent.click(screen.getByRole('button', {name: /^view all$/i}));
 
 			const pushedURL = mockPush.mock.calls[0][0];
 
@@ -497,7 +503,7 @@ describe('TopAssets', () => {
 		it('should pass the Content objectType from the Content tab', () => {
 			renderTopAssets();
 
-			fireEvent.click(screen.getByRole('button', {name: 'View All'}));
+			fireEvent.click(screen.getByRole('button', {name: /^view all$/i}));
 
 			const pushedURL = mockPush.mock.calls[0][0];
 
@@ -507,9 +513,9 @@ describe('TopAssets', () => {
 		it('should pass the File objectType from the Files tab', () => {
 			renderTopAssets();
 
-			fireEvent.click(screen.getByRole('tab', {name: 'Files'}));
+			fireEvent.click(screen.getByRole('tab', {name: /^files$/i}));
 
-			fireEvent.click(screen.getByRole('button', {name: 'View All'}));
+			fireEvent.click(screen.getByRole('button', {name: /^view all$/i}));
 
 			const pushedURL = mockPush.mock.calls[0][0];
 
@@ -539,7 +545,7 @@ describe('TopAssets', () => {
 
 			expect(tabPanel.querySelector('.loading-root')).toBeNull();
 			expect(
-				within(tabPanel).getAllByText('No Assets Available').length
+				within(tabPanel).getAllByText(/^no assets available$/i).length
 			).toBeGreaterThan(0);
 		});
 
@@ -558,7 +564,9 @@ describe('TopAssets', () => {
 
 			renderTopAssets();
 
-			expect(screen.queryByRole('button', {name: 'View All'})).toBeNull();
+			expect(
+				screen.queryByRole('button', {name: /^view all$/i})
+			).toBeNull();
 		});
 	});
 
@@ -568,14 +576,16 @@ describe('TopAssets', () => {
 
 			renderTopAssets();
 
-			expect(screen.queryByRole('button', {name: 'View All'})).toBeNull();
+			expect(
+				screen.queryByRole('button', {name: /^view all$/i})
+			).toBeNull();
 		});
 
 		it('should render the View All button when assets are returned', () => {
 			renderTopAssets();
 
 			expect(
-				screen.getByRole('button', {name: 'View All'})
+				screen.getByRole('button', {name: /^view all$/i})
 			).toBeInTheDocument();
 		});
 	});
@@ -607,7 +617,7 @@ describe('TopAssets', () => {
 			renderTopAssets();
 
 			expect(
-				screen.getAllByText('No Assets Available').length
+				screen.getAllByText(/^no assets available$/i).length
 			).toBeGreaterThan(0);
 		});
 
@@ -616,10 +626,10 @@ describe('TopAssets', () => {
 
 			renderTopAssets();
 
-			fireEvent.click(screen.getByRole('tab', {name: 'Files'}));
+			fireEvent.click(screen.getByRole('tab', {name: /^files$/i}));
 
 			expect(
-				screen.getAllByText('No Files Available').length
+				screen.getAllByText(/^no files available$/i).length
 			).toBeGreaterThan(0);
 		});
 

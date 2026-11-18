@@ -140,10 +140,10 @@ describe('SearchCard', () => {
 
 		expect(screen.queryByRole('dialog')).toBeNull();
 
-		fireEvent.click(screen.getByText('Cancel'));
+		fireEvent.click(screen.getByText(/^cancel$/i));
 
 		expect(
-			await screen.findByText('Exit without saving?')
+			await screen.findByText(/^exit without saving\?$/i)
 		).toBeInTheDocument();
 	});
 });

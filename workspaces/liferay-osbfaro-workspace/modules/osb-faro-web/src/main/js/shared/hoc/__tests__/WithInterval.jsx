@@ -21,6 +21,6 @@ describe('WithInterval', () => {
 
 		const {getByText} = render(<WrappedComponent activeInterval='W' />);
 
-		expect(getByText('W').classList.contains('active')).toBe(true);
+		expect(getByText(/^w$/i).classList.contains('active')).toBe(true);
 	});
 });

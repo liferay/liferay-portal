@@ -57,7 +57,7 @@ describe('EntityDetailsList', () => {
 
 		await waitForLoadingToBeRemoved(container);
 
-		fireEvent.change(getByPlaceholderText('Search'), {
+		fireEvent.change(getByPlaceholderText(/^search$/i), {
 			target: {value: 'Agriculture'}
 		});
 

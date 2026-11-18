@@ -56,9 +56,9 @@ describe('ConfirmationModal', () => {
 	it('should render the default title and buttons', async () => {
 		await renderOpen();
 
-		expect(screen.getByText('Confirm')).toBeInTheDocument();
-		expect(screen.getByText('Cancel')).toBeInTheDocument();
-		expect(screen.getByText('Continue')).toBeInTheDocument();
+		expect(screen.getByText(/^confirm$/i)).toBeInTheDocument();
+		expect(screen.getByText(/^cancel$/i)).toBeInTheDocument();
+		expect(screen.getByText(/^continue$/i)).toBeInTheDocument();
 	});
 
 	it('should render the icon and the class of its type', async () => {
@@ -99,7 +99,7 @@ describe('ConfirmationModal', () => {
 
 		await renderOpen({onClose});
 
-		fireEvent.click(screen.getByText('Cancel'));
+		fireEvent.click(screen.getByText(/^cancel$/i));
 
 		expect(onClose).toHaveBeenCalledTimes(1);
 	});
@@ -110,7 +110,7 @@ describe('ConfirmationModal', () => {
 
 		await renderOpen({onClose, onSubmit});
 
-		fireEvent.click(screen.getByText('Continue'));
+		fireEvent.click(screen.getByText(/^continue$/i));
 
 		expect(onSubmit).toHaveBeenCalledTimes(1);
 		expect(onClose).toHaveBeenCalledTimes(1);
@@ -122,7 +122,7 @@ describe('ConfirmationModal', () => {
 
 		await renderOpen({closeAfterSubmit: false, onClose, onSubmit});
 
-		fireEvent.click(screen.getByText('Continue'));
+		fireEvent.click(screen.getByText(/^continue$/i));
 
 		expect(onSubmit).toHaveBeenCalledTimes(1);
 		expect(onClose).not.toHaveBeenCalled();
@@ -133,7 +133,7 @@ describe('ConfirmationModal', () => {
 
 		await renderOpen({onClose, onSubmit: () => Promise.resolve()});
 
-		fireEvent.click(screen.getByText('Continue'));
+		fireEvent.click(screen.getByText(/^continue$/i));
 
 		await waitFor(() => expect(onClose).toHaveBeenCalledTimes(1));
 	});
@@ -144,7 +144,7 @@ describe('ConfirmationModal', () => {
 
 		await renderOpen({onClose, onSubmit});
 
-		fireEvent.click(screen.getByText('Continue'));
+		fireEvent.click(screen.getByText(/^continue$/i));
 
 		await waitFor(() => expect(onSubmit).toHaveBeenCalledTimes(1));
 

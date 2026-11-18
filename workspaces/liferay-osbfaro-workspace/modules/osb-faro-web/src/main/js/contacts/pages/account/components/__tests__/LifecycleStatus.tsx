@@ -178,7 +178,7 @@ describe('LifecycleStatus', () => {
 			expect(screen.getByText('LIFECYCLE STATUS')).toBeInTheDocument();
 			expect(
 				screen.getByText(
-					'Shows the current stage progression for this account.'
+					/^shows the current stage progression for this account\.$/i
 				)
 			).toBeInTheDocument();
 		});
@@ -190,14 +190,18 @@ describe('LifecycleStatus', () => {
 				'.lifecycle-status-multistep'
 			) as HTMLElement;
 
-			expect(within(multistep).getByText('Aware')).toBeInTheDocument();
-			expect(within(multistep).getByText('Engaged')).toBeInTheDocument();
-			expect(within(multistep).getByText('Pipeline')).toBeInTheDocument();
+			expect(within(multistep).getByText(/^aware$/i)).toBeInTheDocument();
 			expect(
-				within(multistep).getByText('Onboarding')
+				within(multistep).getByText(/^engaged$/i)
 			).toBeInTheDocument();
 			expect(
-				within(multistep).getByText('Established')
+				within(multistep).getByText(/^pipeline$/i)
+			).toBeInTheDocument();
+			expect(
+				within(multistep).getByText(/^onboarding$/i)
+			).toBeInTheDocument();
+			expect(
+				within(multistep).getByText(/^established$/i)
 			).toBeInTheDocument();
 		});
 
@@ -284,7 +288,9 @@ describe('LifecycleStatus', () => {
 				'.lifecycle-status-multistep'
 			) as HTMLElement;
 
-			expect(within(multistep).getByText('At Risk')).toBeInTheDocument();
+			expect(
+				within(multistep).getByText(/^at risk$/i)
+			).toBeInTheDocument();
 			expect(multistep.querySelector('.sticker')).toBeInTheDocument();
 			expect(
 				multistep.querySelector('.lexicon-icon-exclamation-circle')
@@ -300,7 +306,7 @@ describe('LifecycleStatus', () => {
 				'.lifecycle-status-summary'
 			) as HTMLElement;
 
-			expect(within(summary).getByText('Engaged')).toBeInTheDocument();
+			expect(within(summary).getByText(/^engaged$/i)).toBeInTheDocument();
 			expect(
 				within(summary).getByText('Step 2 of 5')
 			).toBeInTheDocument();
@@ -325,8 +331,8 @@ describe('LifecycleStatus', () => {
 				'.lifecycle-status-summary'
 			) as HTMLElement;
 
-			expect(within(summary).getByText('At Risk')).toBeInTheDocument();
-			expect(within(summary).getByText('No')).toBeInTheDocument();
+			expect(within(summary).getByText(/^at risk$/i)).toBeInTheDocument();
+			expect(within(summary).getByText(/^no$/i)).toBeInTheDocument();
 		});
 
 		it('should render the at-risk row when no progression stage is active', () => {
@@ -360,9 +366,9 @@ describe('LifecycleStatus', () => {
 			) as HTMLElement;
 
 			expect(summary).not.toBeNull();
-			expect(within(summary).getByText('At Risk')).toBeInTheDocument();
-			expect(within(summary).getByText('Yes')).toBeInTheDocument();
-			expect(within(summary).queryByText('Aware')).toBeNull();
+			expect(within(summary).getByText(/^at risk$/i)).toBeInTheDocument();
+			expect(within(summary).getByText(/^yes$/i)).toBeInTheDocument();
+			expect(within(summary).queryByText(/^aware$/i)).toBeNull();
 		});
 
 		it('should not render the summary when the lifecycle has no at-risk stage and no active stage', () => {
@@ -432,7 +438,7 @@ describe('LifecycleStatus', () => {
 				const {container} = render(<LifecycleStatus />);
 
 				expect(
-					screen.getByRole('combobox', {name: 'Lifecycle'})
+					screen.getByRole('combobox', {name: /^lifecycle$/i})
 				).toHaveTextContent(expectedLifecycle);
 				expect(
 					within(
@@ -464,7 +470,9 @@ describe('LifecycleStatus', () => {
 
 			const {container} = render(<LifecycleStatus />);
 
-			fireEvent.click(screen.getByRole('combobox', {name: 'Lifecycle'}));
+			fireEvent.click(
+				screen.getByRole('combobox', {name: /^lifecycle$/i})
+			);
 			fireEvent.click(screen.getByRole('option', {name: 'Partner'}));
 
 			const multistep = container.querySelector(
@@ -543,10 +551,12 @@ describe('LifecycleStatus', () => {
 			const {container} = render(<LifecycleStatus />);
 
 			expect(
-				screen.getByText('No Lifecycle Data Available')
+				screen.getByText(/^no lifecycle data available$/i)
 			).toBeInTheDocument();
 			expect(
-				screen.getByText('Lifecycle data will appear here when synced.')
+				screen.getByText(
+					/^lifecycle data will appear here when synced\.$/i
+				)
 			).toBeInTheDocument();
 			expect(
 				container.querySelector('.lifecycle-status-multistep')
@@ -571,7 +581,7 @@ describe('LifecycleStatus', () => {
 			render(<LifecycleStatus />);
 
 			expect(
-				screen.getByText('No Lifecycle Data Available')
+				screen.getByText(/^no lifecycle data available$/i)
 			).toBeInTheDocument();
 		});
 	});

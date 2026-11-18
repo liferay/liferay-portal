@@ -35,7 +35,7 @@ describe('MaintenanceAlert', () => {
 		expect(
 			container.querySelector('.maintenance-alert-root')
 		).toBeInTheDocument();
-		expect(queryByText('Scheduled Maintenance')).toBeNull();
+		expect(queryByText(/^scheduled maintenance$/i)).toBeNull();
 	});
 
 	it('should render w/ maintenance alert', () => {

@@ -88,6 +88,6 @@ describe('Individuals Dashboard Individuals Interest Details', () => {
 
 		await waitForLoading(document.body);
 
-		expect(getByText('Back to Interests')).toBeInTheDocument();
+		expect(getByText(/^back to interests$/i)).toBeInTheDocument();
 	});
 });

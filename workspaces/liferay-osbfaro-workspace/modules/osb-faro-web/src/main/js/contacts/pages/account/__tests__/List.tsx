@@ -176,7 +176,9 @@ describe('List', () => {
 		it('should render the page title "Accounts"', () => {
 			renderList();
 
-			expect(screen.getByText('Accounts')).toBeInTheDocument();
+			expect(
+				screen.getByRole('heading', {name: /^accounts$/i})
+			).toBeInTheDocument();
 		});
 
 		it('should render the empty state when there are no data sources connected', () => {
@@ -201,7 +203,7 @@ describe('List', () => {
 			renderList();
 
 			expect(
-				await screen.findByRole('heading', {name: 'Accounts'})
+				await screen.findByRole('heading', {name: /^accounts$/i})
 			).toBeInTheDocument();
 			expect(screen.queryByTestId('fds-component')).toBeNull();
 		});

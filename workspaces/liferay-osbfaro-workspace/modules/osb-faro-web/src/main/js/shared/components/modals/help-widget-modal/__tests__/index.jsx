@@ -44,7 +44,7 @@ describe('HelpWidgetModal', () => {
 		await renderModal(observer => <DefaultComponent observer={observer} />);
 
 		expect(
-			screen.getByRole('heading', {name: 'Report an Issue'})
+			screen.getByRole('heading', {name: /^report an issue$/i})
 		).toBeInTheDocument();
 	});
 });

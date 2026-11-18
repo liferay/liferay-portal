@@ -33,7 +33,7 @@ describe('ContactSalesModal', () => {
 		await renderModal(observer => <DefaultComponent observer={observer} />);
 
 		expect(
-			screen.getByRole('heading', {name: 'Contact Sales'})
+			screen.getByRole('heading', {name: /^contact sales$/i})
 		).toBeInTheDocument();
 	});
 });

@@ -85,7 +85,7 @@ describe('IndividualProfileCard', () => {
 
 		await waitForLoadingToBeRemoved(document.body);
 
-		expect(getByPlaceholderText('Search')).toBeInTheDocument();
+		expect(getByPlaceholderText(/^search$/i)).toBeInTheDocument();
 	});
 
 	it('renders the activities count and the trend versus the previous period', async () => {
@@ -198,7 +198,7 @@ describe('IndividualProfileCard', () => {
 			await jest.advanceTimersByTimeAsync(500);
 		});
 
-		const searchInput = getByPlaceholderText('Search');
+		const searchInput = getByPlaceholderText(/^search$/i);
 
 		fireEvent.change(searchInput, {target: {value: inputValue}});
 
@@ -212,7 +212,7 @@ describe('IndividualProfileCard', () => {
 			await jest.advanceTimersByTimeAsync(500);
 		});
 
-		expect(getByPlaceholderText('Search')).toHaveValue(inputValue);
+		expect(getByPlaceholderText(/^search$/i)).toHaveValue(inputValue);
 
 		fireEvent.click(container.querySelector('.lexicon-icon-times')!);
 
@@ -220,7 +220,7 @@ describe('IndividualProfileCard', () => {
 			await jest.advanceTimersByTimeAsync(500);
 		});
 
-		expect(getByPlaceholderText('Search')).toHaveValue('');
+		expect(getByPlaceholderText(/^search$/i)).toHaveValue('');
 	});
 
 	it('should render w/ an error display', async () => {
@@ -255,7 +255,7 @@ describe('IndividualProfileCard', () => {
 
 		await waitForLoadingToBeRemoved(container);
 
-		expect(getByText('An unexpected error occurred.')).toBeTruthy();
+		expect(getByText(/^an unexpected error occurred\.$/i)).toBeTruthy();
 	});
 
 	it('should render w/ loading', () => {

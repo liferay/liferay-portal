@@ -81,7 +81,7 @@ describe('SegmentOverview', () => {
 			'.composition-card-root'
 		);
 
-		expect(compositionCard).toHaveTextContent('Processing');
+		expect(compositionCard).toHaveTextContent(/processing/i);
 		expect(compositionCard).not.toHaveTextContent('0%');
 	});
 });

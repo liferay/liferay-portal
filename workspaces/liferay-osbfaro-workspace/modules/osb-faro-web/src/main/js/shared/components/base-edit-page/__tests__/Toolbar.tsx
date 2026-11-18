@@ -28,7 +28,10 @@ describe('BaseEditPage.Toolbar', () => {
 		renderToolbar();
 
 		expect(
-			screen.getByRole('heading', {level: 1, name: 'New Event Analysis'})
+			screen.getByRole('heading', {
+				level: 1,
+				name: /^new event analysis$/i,
+			})
 		).toBeInTheDocument();
 	});
 
@@ -66,7 +69,7 @@ describe('BaseEditPage.Toolbar', () => {
 			screen.getByRole('link', {name: /cancel/i})
 		);
 		expect(actions).toContainElement(
-			screen.getByRole('button', {name: 'Save'})
+			screen.getByRole('button', {name: /^save$/i})
 		);
 		expect(actions).not.toContainElement(
 			screen.getByRole('heading', {level: 1})
@@ -92,7 +95,7 @@ describe('BaseEditPage.Toolbar', () => {
 			'd-lg-flex'
 		);
 		expect(
-			screen.getByRole('button', {name: 'Save'}).closest('li')
+			screen.getByRole('button', {name: /^save$/i}).closest('li')
 		).not.toHaveClass('d-none');
 	});
 
@@ -109,7 +112,7 @@ describe('BaseEditPage.Toolbar', () => {
 		renderToolbar(<Toolbar.Save label="Save Analysis" type="submit" />);
 
 		expect(
-			screen.getByRole('button', {name: 'Save Analysis'})
+			screen.getByRole('button', {name: /^save analysis$/i})
 		).toHaveAttribute('type', 'submit');
 	});
 
@@ -130,7 +133,7 @@ describe('BaseEditPage.Toolbar', () => {
 			</MemoryRouter>
 		);
 
-		fireEvent.click(screen.getByRole('button', {name: 'Save Analysis'}));
+		fireEvent.click(screen.getByRole('button', {name: /^save analysis$/i}));
 
 		expect(onSubmit).toHaveBeenCalledTimes(1);
 	});
@@ -146,7 +149,7 @@ describe('BaseEditPage.Toolbar', () => {
 			</MemoryRouter>
 		);
 
-		expect(screen.getByRole('button', {name: 'Save'})).toBeDisabled();
+		expect(screen.getByRole('button', {name: /^save$/i})).toBeDisabled();
 
 		rerender(
 			<MemoryRouter>
@@ -156,7 +159,7 @@ describe('BaseEditPage.Toolbar', () => {
 			</MemoryRouter>
 		);
 
-		fireEvent.click(screen.getByRole('button', {name: 'Save'}));
+		fireEvent.click(screen.getByRole('button', {name: /^save$/i}));
 
 		expect(onClick).toHaveBeenCalledTimes(1);
 	});

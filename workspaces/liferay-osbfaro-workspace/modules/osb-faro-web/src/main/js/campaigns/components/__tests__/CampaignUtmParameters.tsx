@@ -60,7 +60,7 @@ describe('CampaignUtmParameters', () => {
 
 		renderComponent();
 
-		fireEvent.click(await screen.findByRole('button', {name: 'Reload'}));
+		fireEvent.click(await screen.findByRole('button', {name: /^reload$/i}));
 
 		expect(
 			await screen.findByRole('button', {name: /UTM Parameters/})

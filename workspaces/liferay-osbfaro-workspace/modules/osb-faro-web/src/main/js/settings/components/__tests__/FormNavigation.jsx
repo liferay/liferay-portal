@@ -26,6 +26,6 @@ describe('FormNavigation', () => {
 			<FormNavigation onPreviousStep={() => jest.fn()} />
 		);
 
-		expect(getByText('Previous')).toBeTruthy();
+		expect(getByText(/^previous$/i)).toBeTruthy();
 	});
 });

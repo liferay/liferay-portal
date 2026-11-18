@@ -112,7 +112,7 @@ describe('SegmentLinkRedirect', () => {
 
 		renderAt('/workspace/23/contacts/segments/456');
 
-		fireEvent.click(screen.getByText('Sites'));
+		fireEvent.click(screen.getByText(/^sites$/i));
 
 		await act(async () => {
 			resolveSegment({channelId: '123', id: '456'});

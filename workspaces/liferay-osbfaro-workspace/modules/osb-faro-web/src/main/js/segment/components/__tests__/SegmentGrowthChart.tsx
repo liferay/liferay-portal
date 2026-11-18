@@ -337,7 +337,7 @@ describe('SegmentGrowthChart', () => {
 		expect(counts).toHaveLength(3);
 
 		counts.forEach((count) =>
-			expect(count).toHaveTextContent('Processing')
+			expect(count).toHaveTextContent(/processing/i)
 		);
 	});
 

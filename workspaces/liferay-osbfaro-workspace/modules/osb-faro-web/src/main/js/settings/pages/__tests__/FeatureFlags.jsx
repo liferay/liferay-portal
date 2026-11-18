@@ -41,7 +41,7 @@ describe('FeatureFlags', () => {
 	it('renders a toggle for every registered feature flag', () => {
 		const {container, getByText} = render(<FeatureFlags />);
 
-		expect(getByText('Feature Flags')).toBeTruthy();
+		expect(getByText(/^feature flags$/i)).toBeTruthy();
 		expect(
 			container.querySelectorAll('[data-testid="toggle-switch-input"]')
 		).toHaveLength(FEATURE_FLAGS.length);

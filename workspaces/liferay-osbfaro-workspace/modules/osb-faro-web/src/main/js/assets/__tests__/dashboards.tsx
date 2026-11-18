@@ -215,7 +215,7 @@ describe.each(DASHBOARDS)('$name', ({assetType, label, slug}) => {
 
 		renderDashboard();
 
-		expect(screen.queryByText('Visitors')).toBeTruthy();
+		expect(screen.queryByText(/^visitors$/i)).toBeTruthy();
 	});
 
 	it('hides the visitors tab for non-LDP workspaces', () => {
@@ -223,7 +223,7 @@ describe.each(DASHBOARDS)('$name', ({assetType, label, slug}) => {
 
 		renderDashboard();
 
-		expect(screen.queryByText('Visitors')).toBeNull();
+		expect(screen.queryByText(/^visitors$/i)).toBeNull();
 	});
 
 	it('shows the known individuals tab for non-LDP workspaces', () => {
@@ -231,7 +231,7 @@ describe.each(DASHBOARDS)('$name', ({assetType, label, slug}) => {
 
 		renderDashboard();
 
-		expect(screen.queryByText('Known Individuals')).toBeTruthy();
+		expect(screen.queryByText(/^known individuals$/i)).toBeTruthy();
 	});
 
 	it('hides the known individuals tab for LDP workspaces', () => {
@@ -239,7 +239,7 @@ describe.each(DASHBOARDS)('$name', ({assetType, label, slug}) => {
 
 		renderDashboard();
 
-		expect(screen.queryByText('Known Individuals')).toBeNull();
+		expect(screen.queryByText(/^known individuals$/i)).toBeNull();
 	});
 
 	it('carries the account filter and the date range over to the tab links', () => {
@@ -248,7 +248,7 @@ describe.each(DASHBOARDS)('$name', ({assetType, label, slug}) => {
 		renderDashboard(['/?accountId=100&accountName=Account+100']);
 
 		const href = screen
-			.getByText('Visitors')
+			.getByText(/^visitors$/i)
 			.closest('a')
 			?.getAttribute('href');
 
@@ -263,7 +263,7 @@ describe.each(DASHBOARDS)('$name', ({assetType, label, slug}) => {
 		renderDashboard();
 
 		const href = screen
-			.getByText('Visitors')
+			.getByText(/^visitors$/i)
 			.closest('a')
 			?.getAttribute('href');
 
@@ -278,7 +278,7 @@ describe.each(DASHBOARDS)('$name', ({assetType, label, slug}) => {
 		renderDashboard();
 
 		const href = screen
-			.getByText('Assets')
+			.getByText(/^assets$/i)
 			.closest('a')
 			?.getAttribute('href');
 
@@ -299,7 +299,7 @@ describe.each(DASHBOARDS)('$name', ({assetType, label, slug}) => {
 		renderDashboard();
 
 		const href = screen
-			.getByText('Assets')
+			.getByText(/^assets$/i)
 			.closest('a')
 			?.getAttribute('href');
 
@@ -316,7 +316,7 @@ describe.each(DASHBOARDS)('$name', ({assetType, label, slug}) => {
 		]);
 
 		const href = screen
-			.getByText('Assets')
+			.getByText(/^assets$/i)
 			.closest('a')
 			?.getAttribute('href');
 
@@ -330,7 +330,7 @@ describe.each(DASHBOARDS)('$name', ({assetType, label, slug}) => {
 		renderDashboard();
 
 		const href = screen
-			.getByText('Assets')
+			.getByText(/^assets$/i)
 			.closest('a')
 			?.getAttribute('href');
 
@@ -344,7 +344,7 @@ describe.each(DASHBOARDS)('$name', ({assetType, label, slug}) => {
 		renderDashboard(['/?segmentId=100&segmentName=Segment+100']);
 
 		const href = screen
-			.getByText('Visitors')
+			.getByText(/^visitors$/i)
 			.closest('a')
 			?.getAttribute('href');
 
@@ -358,7 +358,7 @@ describe.each(DASHBOARDS)('$name', ({assetType, label, slug}) => {
 		renderDashboard();
 
 		const href = screen
-			.getByText('Visitors')
+			.getByText(/^visitors$/i)
 			.closest('a')
 			?.getAttribute('href');
 

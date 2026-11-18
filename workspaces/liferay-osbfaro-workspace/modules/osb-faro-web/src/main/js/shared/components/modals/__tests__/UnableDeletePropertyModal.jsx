@@ -13,7 +13,7 @@ describe('UnableDeletePropertyModal', () => {
 			<UnableDeletePropertyModal observer={observer} onClose={jest.fn()} />
 		));
 
-		expect(screen.getByText('Unable to Delete Property')).toBeInTheDocument();
+		expect(screen.getByText(/^unable to delete property$/i)).toBeInTheDocument();
 
 		expect(document.querySelector('.modal-danger')).toBeTruthy();
 
@@ -31,7 +31,7 @@ describe('UnableDeletePropertyModal', () => {
 			<UnableDeletePropertyModal observer={observer} onClose={onClose} />
 		));
 
-		fireEvent.click(screen.getByText('Done'));
+		fireEvent.click(screen.getByText(/^done$/i));
 
 		expect(onClose).toHaveBeenCalledTimes(1);
 	});

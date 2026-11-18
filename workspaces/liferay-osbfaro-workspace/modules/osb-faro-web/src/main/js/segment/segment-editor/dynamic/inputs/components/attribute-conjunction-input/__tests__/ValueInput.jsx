@@ -56,10 +56,10 @@ describe('ValueInput', () => {
 				/>
 			</WrapperComponent>
 		);
-		fireEvent.click(getByText('True'));
+		fireEvent.click(getByText(/^true$/i));
 
-		expect(getAllByText('True')[1]).toBeTruthy();
-		expect(getByText('False')).toBeTruthy();
+		expect(getAllByText(/^true$/i)[1]).toBeTruthy();
+		expect(getByText(/^false$/i)).toBeTruthy();
 
 		expect(container).toMatchSnapshot();
 	});

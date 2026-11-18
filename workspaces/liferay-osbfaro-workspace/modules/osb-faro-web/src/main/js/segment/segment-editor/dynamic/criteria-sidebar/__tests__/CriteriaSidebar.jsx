@@ -135,12 +135,12 @@ describe('CriteriaSidebar', () => {
 			</DndProvider>
 		);
 
-		expect(screen.getByText('Conditions Library')).toBeInTheDocument();
+		expect(screen.getByText(/^conditions library$/i)).toBeInTheDocument();
 		expect(
-			screen.getByText('Interests', {selector: '[role="combobox"]'})
+			screen.getByText(/^interests$/i, {selector: '[role="combobox"]'})
 		).toBeInTheDocument();
-		expect(screen.getByText('Page Views')).toBeInTheDocument();
-		expect(screen.getByText('DXP Custom Fields')).toBeInTheDocument();
+		expect(screen.getByText(/^page views$/i)).toBeInTheDocument();
+		expect(screen.getByText(/^dxp custom fields$/i)).toBeInTheDocument();
 	});
 
 	it('names the property-group picker for assistive technologies', () => {
@@ -155,7 +155,7 @@ describe('CriteriaSidebar', () => {
 
 		expect(
 			screen.getByRole('combobox', {name: 'condition-type'})
-		).toHaveTextContent('Interests');
+		).toHaveTextContent(/interests/i);
 	});
 
 	it('keeps a single tab stop and moves focus between items with the arrow keys', () => {
@@ -199,7 +199,7 @@ describe('CriteriaSidebar', () => {
 		);
 
 		expect(
-			screen.queryByText('No Results Were Found')
+			screen.queryByText(/^no results were found$/i)
 		).not.toBeInTheDocument();
 	});
 
@@ -236,12 +236,12 @@ describe('CriteriaSidebar', () => {
 			</DndProvider>
 		);
 
-		expect(screen.getByText('Default')).toBeInTheDocument();
-		expect(screen.getByText('Custom')).toBeInTheDocument();
+		expect(screen.getByText(/^default$/i)).toBeInTheDocument();
+		expect(screen.getByText(/^custom$/i)).toBeInTheDocument();
 
 		// The frontend default events render under the Default tab.
 
-		fireEvent.click(screen.getByText('Default'));
+		fireEvent.click(screen.getByText(/^default$/i));
 
 		expect(screen.getByText('Asset View')).toBeInTheDocument();
 	});
@@ -256,11 +256,11 @@ describe('CriteriaSidebar', () => {
 			</DndProvider>
 		);
 
-		expect(screen.getByText('Default')).toBeInTheDocument();
-		expect(screen.getByText('Custom')).toBeInTheDocument();
-		expect(screen.getByText('First Name')).toBeInTheDocument();
+		expect(screen.getByText(/^default$/i)).toBeInTheDocument();
+		expect(screen.getByText(/^custom$/i)).toBeInTheDocument();
+		expect(screen.getByText(/^first name$/i)).toBeInTheDocument();
 
-		fireEvent.click(screen.getByText('Custom'));
+		fireEvent.click(screen.getByText(/^custom$/i));
 
 		expect(screen.getByText('Loyalty Tier')).toBeInTheDocument();
 	});

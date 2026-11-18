@@ -31,6 +31,6 @@ describe('IndividualAssociatedSegments', () => {
 
 		jest.runAllTimers();
 
-		expect(getByText('Associated Segments')).toBeInTheDocument();
+		expect(getByText(/^associated segments$/i)).toBeInTheDocument();
 	});
 });

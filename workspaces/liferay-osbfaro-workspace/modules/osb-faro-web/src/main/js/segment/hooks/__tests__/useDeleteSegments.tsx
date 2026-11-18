@@ -72,7 +72,9 @@ describe('useDeleteSegments', () => {
 
 		fireEvent.click(screen.getByText('trigger'));
 
-		expect(await screen.findByText('Delete Segments?')).toBeInTheDocument();
+		expect(
+			await screen.findByText(/^delete segments\?$/i)
+		).toBeInTheDocument();
 	});
 
 	it('does not delete anything until the user confirms', async () => {
@@ -93,7 +95,7 @@ describe('useDeleteSegments', () => {
 		fireEvent.click(screen.getByText('trigger'));
 
 		fireEvent.click(
-			await screen.findByText('Delete', {selector: 'button'})
+			await screen.findByText(/^delete$/i, {selector: 'button'})
 		);
 
 		await waitFor(() => expect(onSuccess).toHaveBeenCalledTimes(1));
@@ -116,7 +118,7 @@ describe('useDeleteSegments', () => {
 		fireEvent.click(screen.getByText('trigger'));
 
 		fireEvent.click(
-			await screen.findByText('Delete', {selector: 'button'})
+			await screen.findByText(/^delete$/i, {selector: 'button'})
 		);
 
 		await waitFor(() =>
@@ -131,7 +133,7 @@ describe('useDeleteSegments', () => {
 
 		fireEvent.click(screen.getByText('trigger'));
 
-		fireEvent.click(await screen.findByText('Cancel'));
+		fireEvent.click(await screen.findByText(/^cancel$/i));
 
 		await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
 

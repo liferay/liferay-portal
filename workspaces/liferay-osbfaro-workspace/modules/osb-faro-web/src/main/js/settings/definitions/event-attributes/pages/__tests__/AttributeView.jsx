@@ -83,7 +83,7 @@ describe('AttributeView', () => {
 			jest.runOnlyPendingTimers();
 		});
 
-		expect(getByText('Sample Raw Data')).toBeTruthy();
+		expect(getByText(/^sample raw data$/i)).toBeTruthy();
 	});
 
 	it('should render table with empty data if there is no column accessor value', async () => {

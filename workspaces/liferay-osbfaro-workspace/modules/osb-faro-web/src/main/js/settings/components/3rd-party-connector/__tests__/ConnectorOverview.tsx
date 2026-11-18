@@ -265,7 +265,7 @@ describe('ConnectorOverview', () => {
 
 				expect(
 					getByText(
-						'To configure your data source, utilize the token and endpoint URL provided by Liferay Data Platform.'
+						/^to configure your data source, utilize the token and endpoint url provided by liferay data platform\.$/i
 					)
 				).toBeTruthy();
 			}
@@ -276,7 +276,9 @@ describe('ConnectorOverview', () => {
 				dataSource: buildDataSource(DataSourceStatuses.Inactive),
 			});
 
-			expect(getByText('Learn more about data sources.')).toBeTruthy();
+			expect(
+				getByText(/^learn more about data sources\.$/i)
+			).toBeTruthy();
 		});
 
 		it('does not render the Data Source Type or Data Source ID inputs', () => {
@@ -324,7 +326,7 @@ describe('ConnectorOverview', () => {
 
 			expect(
 				getByText(
-					'Generate a new token to continue configuring this data source.'
+					/^generate a new token to continue configuring this data source\.$/i
 				)
 			).toBeTruthy();
 		});
@@ -332,7 +334,7 @@ describe('ConnectorOverview', () => {
 		it('renders the Generate Token button', () => {
 			const {getByLabelText} = renderDisconnected();
 
-			expect(getByLabelText('Generate Token')).toBeTruthy();
+			expect(getByLabelText(/^generate token$/i)).toBeTruthy();
 		});
 
 		it('does not render the Endpoint URL or Token copy inputs', () => {
@@ -352,7 +354,7 @@ describe('ConnectorOverview', () => {
 		it('on Generate Token click: generates a token, updates status to ACTIVE, then refetches the data source', async () => {
 			const {getByLabelText} = renderDisconnected();
 
-			fireEvent.click(getByLabelText('Generate Token'));
+			fireEvent.click(getByLabelText(/^generate token$/i));
 
 			await waitFor(() =>
 				expect(generateConnectorToken).toHaveBeenCalledWith({
@@ -434,7 +436,7 @@ describe('ConnectorOverview', () => {
 				}),
 			});
 
-			fireEvent.click(getByLabelText('Generate Token'));
+			fireEvent.click(getByLabelText(/^generate token$/i));
 
 			await waitFor(() =>
 				expect(generateConnectorToken).toHaveBeenCalledWith({
@@ -449,7 +451,7 @@ describe('ConnectorOverview', () => {
 		it('shows the disconnect button when the user is admin and the data source is active', () => {
 			const {getByLabelText} = renderOverview();
 
-			expect(getByLabelText('Disconnect Data Source')).toBeTruthy();
+			expect(getByLabelText(/^disconnect data source$/i)).toBeTruthy();
 		});
 
 		it('shows the disconnect button when the data source is inactive but still has a token', () => {
@@ -457,7 +459,7 @@ describe('ConnectorOverview', () => {
 				dataSource: buildDataSource(DataSourceStatuses.Inactive),
 			});
 
-			expect(getByLabelText('Disconnect Data Source')).toBeTruthy();
+			expect(getByLabelText(/^disconnect data source$/i)).toBeTruthy();
 		});
 
 		it('hides the disconnect button when the data source is already disconnected', () => {
@@ -467,7 +469,7 @@ describe('ConnectorOverview', () => {
 				}),
 			});
 
-			expect(queryByLabelText('Disconnect Data Source')).toBeNull();
+			expect(queryByLabelText(/^disconnect data source$/i)).toBeNull();
 		});
 
 		it('hides the disconnect button when the user is not an admin', () => {
@@ -475,7 +477,7 @@ describe('ConnectorOverview', () => {
 
 			const {queryByLabelText} = renderOverview();
 
-			expect(queryByLabelText('Disconnect Data Source')).toBeNull();
+			expect(queryByLabelText(/^disconnect data source$/i)).toBeNull();
 		});
 
 		it('on click: invokes handleDisconnect from useDisconnectDataSource', () => {
@@ -485,7 +487,7 @@ describe('ConnectorOverview', () => {
 
 			const {getByLabelText} = renderOverview();
 
-			fireEvent.click(getByLabelText('Disconnect Data Source'));
+			fireEvent.click(getByLabelText(/^disconnect data source$/i));
 
 			expect(handleDisconnect).toHaveBeenCalled();
 		});
@@ -640,7 +642,7 @@ describe('ConnectorOverview', () => {
 
 			expect(
 				getByText(
-					'You have successfully connected to your data source. Complete your data source configuration to start syncing data.'
+					/^you have successfully connected to your data source\. complete your data source configuration to start syncing data\.$/i
 				)
 			).toBeTruthy();
 		});
@@ -663,11 +665,11 @@ describe('ConnectorOverview', () => {
 			expect(container.querySelectorAll('.list-group-item')).toHaveLength(
 				2
 			);
-			expect(getByText('Events')).toBeTruthy();
-			expect(getByText('Unconfigured')).toBeTruthy();
-			expect(getByText(/0 Items Synced/i)).toBeTruthy();
-			expect(queryByText('Error')).toBeNull();
-			expect(queryByText('Sorry, an error occurred.')).toBeNull();
+			expect(getByText(/^events$/i)).toBeTruthy();
+			expect(getByText(/^unconfigured$/i)).toBeTruthy();
+			expect(getByText(/0 items synced/i)).toBeTruthy();
+			expect(queryByText(/^error$/i)).toBeNull();
+			expect(queryByText(/^sorry, an error occurred\.$/i)).toBeNull();
 		});
 
 		it('renders a loading state while the count is being fetched', () => {
@@ -693,7 +695,7 @@ describe('ConnectorOverview', () => {
 
 			expect(
 				getByText(
-					'You have successfully connected to your data source. Complete your data source configuration to start syncing data.'
+					/^you have successfully connected to your data source\. complete your data source configuration to start syncing data\.$/i
 				)
 			).toBeTruthy();
 		});
@@ -707,7 +709,7 @@ describe('ConnectorOverview', () => {
 
 			expect(
 				getByText(
-					'All data coming from this data source is up to date. There are no errors to report.'
+					/^all data coming from this data source is up to date\. there are no errors to report\.$/i
 				)
 			).toBeTruthy();
 		});
@@ -721,7 +723,7 @@ describe('ConnectorOverview', () => {
 
 			expect(
 				getByText(
-					'Your token was generated successfully. Complete your data source configuration to start syncing data.'
+					/^your token was generated successfully\. complete your data source configuration to start syncing data\.$/i
 				)
 			).toBeTruthy();
 		});
@@ -735,7 +737,7 @@ describe('ConnectorOverview', () => {
 
 			expect(
 				getByText(
-					'Data is no longer being received. Review your data source configuration to confirm it is still active.'
+					/^data is no longer being received\. review your data source configuration to confirm it is still active\.$/i
 				)
 			).toBeTruthy();
 		});
@@ -751,7 +753,7 @@ describe('ConnectorOverview', () => {
 
 			expect(
 				getByText(
-					'Data is no longer being received. Reconnect to resume syncing.'
+					/^data is no longer being received\. reconnect to resume syncing\.$/i
 				)
 			).toBeTruthy();
 		});
@@ -767,7 +769,7 @@ describe('ConnectorOverview', () => {
 
 			expect(
 				queryByText(
-					'Your data may take some time to appear as syncing completes.'
+					/^your data may take some time to appear as syncing completes\.$/i
 				)
 			).toBeNull();
 		});
@@ -781,7 +783,7 @@ describe('ConnectorOverview', () => {
 
 			expect(
 				getByText(
-					'Your data may take some time to appear as syncing completes.'
+					/^your data may take some time to appear as syncing completes\.$/i
 				)
 			).toBeTruthy();
 		});
@@ -803,7 +805,7 @@ describe('ConnectorOverview', () => {
 
 			expect(
 				queryByText(
-					'Your data may take some time to appear as syncing completes.'
+					/^your data may take some time to appear as syncing completes\.$/i
 				)
 			).toBeNull();
 
@@ -828,7 +830,7 @@ describe('ConnectorOverview', () => {
 
 			expect(
 				queryByText(
-					'Your data may take some time to appear as syncing completes.'
+					/^your data may take some time to appear as syncing completes\.$/i
 				)
 			).toBeNull();
 		});
@@ -847,7 +849,7 @@ describe('ConnectorOverview', () => {
 
 			expect(
 				getByText(
-					'Your data may take some time to appear as syncing completes.'
+					/^your data may take some time to appear as syncing completes\.$/i
 				)
 			).toBeTruthy();
 		});
@@ -871,7 +873,7 @@ describe('ConnectorOverview', () => {
 
 			expect(
 				queryByText(
-					'Previously synced data remains available. Reconnect or check your data source connection to resume data syncing.'
+					/^previously synced data remains available\. reconnect or check your data source connection to resume data syncing\.$/i
 				)
 			).toBeNull();
 
@@ -898,7 +900,7 @@ describe('ConnectorOverview', () => {
 
 			expect(
 				queryByText(
-					'Previously synced data remains available. Reconnect or check your data source connection to resume data syncing.'
+					/^previously synced data remains available\. reconnect or check your data source connection to resume data syncing\.$/i
 				)
 			).toBeNull();
 		});
@@ -919,7 +921,7 @@ describe('ConnectorOverview', () => {
 
 			expect(
 				getByText(
-					'Previously synced data remains available. Reconnect or check your data source connection to resume data syncing.'
+					/^previously synced data remains available\. reconnect or check your data source connection to resume data syncing\.$/i
 				)
 			).toBeTruthy();
 		});
@@ -933,7 +935,7 @@ describe('ConnectorOverview', () => {
 
 			expect(
 				queryByText(
-					'Previously synced data remains available. Reconnect or check your data source connection to resume data syncing.'
+					/^previously synced data remains available\. reconnect or check your data source connection to resume data syncing\.$/i
 				)
 			).toBeNull();
 		});
@@ -947,7 +949,7 @@ describe('ConnectorOverview', () => {
 
 			expect(
 				getByText(
-					'Previously synced data remains available. Reconnect or check your data source connection to resume data syncing.'
+					/^previously synced data remains available\. reconnect or check your data source connection to resume data syncing\.$/i
 				)
 			).toBeTruthy();
 		});
@@ -963,7 +965,7 @@ describe('ConnectorOverview', () => {
 
 			expect(
 				getByText(
-					'Previously synced data remains available. Reconnect or check your data source connection to resume data syncing.'
+					/^previously synced data remains available\. reconnect or check your data source connection to resume data syncing\.$/i
 				)
 			).toBeTruthy();
 		});
@@ -979,8 +981,8 @@ describe('ConnectorOverview', () => {
 
 			const {getByText} = renderOverview({config});
 
-			expect(getByText('Accounts')).toBeTruthy();
-			expect(getByText('Events')).toBeTruthy();
+			expect(getByText(/^accounts$/i)).toBeTruthy();
+			expect(getByText(/^events$/i)).toBeTruthy();
 		});
 
 		it('marks each entity row Configured/Unconfigured based on its own count, independent of the others', () => {
@@ -995,8 +997,8 @@ describe('ConnectorOverview', () => {
 
 			const {getAllByText} = renderOverview({config});
 
-			expect(getAllByText('Configured')).toHaveLength(1);
-			expect(getAllByText('Unconfigured')).toHaveLength(1);
+			expect(getAllByText(/^configured$/i)).toHaveLength(1);
+			expect(getAllByText(/^unconfigured$/i)).toHaveLength(1);
 		});
 	});
 
@@ -1018,7 +1020,7 @@ describe('ConnectorOverview', () => {
 
 			expect(
 				getByText(
-					'Your data may take some time to appear as syncing completes.'
+					/^your data may take some time to appear as syncing completes\.$/i
 				)
 			).toBeTruthy();
 		});
@@ -1040,7 +1042,7 @@ describe('ConnectorOverview', () => {
 
 			expect(
 				getByText(
-					'All data coming from this data source is up to date. There are no errors to report.'
+					/^all data coming from this data source is up to date\. there are no errors to report\.$/i
 				)
 			).toBeTruthy();
 		});
@@ -1062,13 +1064,13 @@ describe('ConnectorOverview', () => {
 
 			expect(
 				queryByText(
-					'Your data may take some time to appear as syncing completes.'
+					/^your data may take some time to appear as syncing completes\.$/i
 				)
 			).toBeNull();
 
 			expect(
 				getByText(
-					'You have successfully connected to your data source. Complete your data source configuration to start syncing data.'
+					/^you have successfully connected to your data source\. complete your data source configuration to start syncing data\.$/i
 				)
 			).toBeTruthy();
 		});

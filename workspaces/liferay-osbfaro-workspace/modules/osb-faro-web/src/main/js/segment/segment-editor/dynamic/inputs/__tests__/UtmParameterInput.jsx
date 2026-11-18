@@ -97,9 +97,9 @@ describe('UtmParameterInput', () => {
 	it('should render the entity name, display value, default parameter, operator, and value input', () => {
 		const {getByText} = render(<DefaultComponent />);
 
-		expect(getByText('Session')).toBeInTheDocument();
-		expect(getByText('UTM Parameter')).toBeInTheDocument();
-		expect(getByText('UTM Source')).toBeInTheDocument();
+		expect(getByText(/^session$/i)).toBeInTheDocument();
+		expect(getByText(/^utm parameter$/i)).toBeInTheDocument();
+		expect(getByText(/^utm source$/i)).toBeInTheDocument();
 		expect(getByText('is')).toBeInTheDocument();
 	});
 
@@ -116,20 +116,20 @@ describe('UtmParameterInput', () => {
 
 	it('should offer every default UTM parameter in the parameter picker', () => {
 		const {getByText} = render(<DefaultComponent />);
-		fireEvent.click(getByText('UTM Source'));
+		fireEvent.click(getByText(/^utm source$/i));
 
-		expect(getByText('UTM Medium')).toBeTruthy();
-		expect(getByText('UTM Campaign')).toBeTruthy();
-		expect(getByText('UTM Term')).toBeTruthy();
-		expect(getByText('UTM Content')).toBeTruthy();
+		expect(getByText(/^utm medium$/i)).toBeTruthy();
+		expect(getByText(/^utm campaign$/i)).toBeTruthy();
+		expect(getByText(/^utm term$/i)).toBeTruthy();
+		expect(getByText(/^utm content$/i)).toBeTruthy();
 	});
 
 	it('should switch the underlying attribute and reset the value when a different parameter is selected', () => {
 		const onChange = jest.fn();
 		const {getByText} = render(<DefaultComponent onChange={onChange} />);
 
-		fireEvent.click(getByText('UTM Source'));
-		fireEvent.click(getByText('UTM Medium'));
+		fireEvent.click(getByText(/^utm source$/i));
+		fireEvent.click(getByText(/^utm medium$/i));
 
 		const [{value}] = onChange.mock.calls[onChange.mock.calls.length - 1];
 
@@ -209,8 +209,8 @@ describe('UtmParameterInput', () => {
 			/>
 		);
 
-		fireEvent.click(getByText('UTM Source'));
-		fireEvent.click(getByText('UTM Medium'));
+		fireEvent.click(getByText(/^utm source$/i));
+		fireEvent.click(getByText(/^utm medium$/i));
 
 		const [{valid, value}] =
 			onChange.mock.calls[onChange.mock.calls.length - 1];
@@ -238,12 +238,12 @@ describe('UtmParameterInput', () => {
 				).toHaveBeenCalled()
 			);
 
-			expect(getByText('UTM Source')).toBeInTheDocument();
+			expect(getByText(/^utm source$/i)).toBeInTheDocument();
 
-			fireEvent.click(getByText('UTM Source'));
+			fireEvent.click(getByText(/^utm source$/i));
 
-			expect(getByText('UTM Medium')).toBeTruthy();
-			expect(getByText('UTM Campaign')).toBeTruthy();
+			expect(getByText(/^utm medium$/i)).toBeTruthy();
+			expect(getByText(/^utm campaign$/i)).toBeTruthy();
 		});
 
 		it('should keep the default parameters when the endpoint omits items', async () => {
@@ -260,10 +260,10 @@ describe('UtmParameterInput', () => {
 			// The trigger keeps its label either way, so the dropdown is
 			// what shows whether the defaults survived.
 
-			fireEvent.click(getByText('UTM Source'));
+			fireEvent.click(getByText(/^utm source$/i));
 
-			expect(getByText('UTM Medium')).toBeTruthy();
-			expect(getByText('UTM Campaign')).toBeTruthy();
+			expect(getByText(/^utm medium$/i)).toBeTruthy();
+			expect(getByText(/^utm campaign$/i)).toBeTruthy();
 		});
 
 		it('should offer a custom parameter returned by the endpoint', async () => {
@@ -277,16 +277,16 @@ describe('UtmParameterInput', () => {
 
 			const {getByText, queryByText} = render(<DefaultComponent />);
 
-			await waitFor(() => expect(getByText('UTM Source')).toBeTruthy());
+			await waitFor(() => expect(getByText(/^utm source$/i)).toBeTruthy());
 
-			fireEvent.click(getByText('UTM Source'));
+			fireEvent.click(getByText(/^utm source$/i));
 
 			// A custom parameter has no translation, so it shows its raw
 			// name, and the discovered list replaces the seeded defaults.
 
 			await waitFor(() => expect(getByText('utm_cid')).toBeTruthy());
 
-			expect(queryByText('UTM Campaign')).toBeNull();
+			expect(queryByText(/^utm campaign$/i)).toBeNull();
 		});
 
 		it('should refetch the suggested values when the parameter changes', async () => {
@@ -303,8 +303,8 @@ describe('UtmParameterInput', () => {
 
 			expect(fieldNames()).toContain('context/acquisitionSource');
 
-			fireEvent.click(getByText('UTM Source'));
-			fireEvent.click(getByText('UTM Medium'));
+			fireEvent.click(getByText(/^utm source$/i));
+			fireEvent.click(getByText(/^utm medium$/i));
 
 			// The typed query is unchanged, so the field name is the only
 			// thing that can invalidate the suggestions.

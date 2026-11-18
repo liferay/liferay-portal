@@ -128,7 +128,7 @@ describe('CriteriaView', () => {
 			<CriteriaView criteria={data.mockNewCriteria()} />
 		);
 
-		expect(queryByText('Attribute no longer exists.')).toBeTruthy();
+		expect(queryByText(/^attribute no longer exists\.$/i)).toBeTruthy();
 	});
 
 	it('should render numbered steps and "then" conjunction when real time + sequential', () => {
@@ -149,8 +149,8 @@ describe('CriteriaView', () => {
 		expect(stepNumbers).toHaveLength(2);
 		expect(stepNumbers[0].textContent).toBe('1');
 		expect(stepNumbers[1].textContent).toBe('2');
-		expect(queryByText('Then')).toBeTruthy();
-		expect(queryByText('And')).toBeFalsy();
+		expect(queryByText(/^then$/i)).toBeTruthy();
+		expect(queryByText(/^and$/i)).toBeFalsy();
 	});
 
 	it('should not wrap items in criteria-step when sequential is false', () => {
@@ -168,7 +168,7 @@ describe('CriteriaView', () => {
 
 		expect(container.querySelector('.criteria-step')).toBeNull();
 		expect(container.querySelector('.criteria-step-number')).toBeNull();
-		expect(queryByText('Then')).toBeFalsy();
+		expect(queryByText(/^then$/i)).toBeFalsy();
 	});
 
 	it('should not render numbered steps when segment type is batch even if sequential', () => {
@@ -186,7 +186,7 @@ describe('CriteriaView', () => {
 
 		expect(container.querySelector('.criteria-step')).toBeNull();
 		expect(container.querySelector('.criteria-step-number')).toBeNull();
-		expect(queryByText('Then')).toBeFalsy();
+		expect(queryByText(/^then$/i)).toBeFalsy();
 	});
 
 	it('should render numbered steps only at the top level when nested', () => {

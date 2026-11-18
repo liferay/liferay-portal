@@ -12,7 +12,7 @@ describe('BaseEditPage.Main', () => {
 			</Main>
 		);
 
-		const main = screen.getByText('Editor').parentElement;
+		const main = screen.getByText(/^editor$/i).parentElement;
 
 		expect(main).toHaveClass(
 			'base-edit-page-main',

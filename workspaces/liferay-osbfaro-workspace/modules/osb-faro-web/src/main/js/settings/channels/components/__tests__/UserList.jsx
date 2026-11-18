@@ -88,7 +88,7 @@ describe('ChannelUserList', () => {
 		expect(screen.getByText('User 2')).toBeInTheDocument();
 		expect(screen.getByText('test2@liferay.com')).toBeInTheDocument();
 
-		expect(screen.getByText('Add User')).toBeInTheDocument();
+		expect(screen.getByText(/^add user$/i)).toBeInTheDocument();
 	});
 
 	it('should render without checkboxes if user is not an AC admin', async () => {
@@ -101,7 +101,7 @@ describe('ChannelUserList', () => {
 		await waitForLoadingToBeRemoved(container);
 
 		expect(container.querySelector('input[type=checkbox]')).toBeNull();
-		expect(screen.queryByText('Add User')).toBeNull();
+		expect(screen.queryByText(/^add user$/i)).toBeNull();
 	});
 
 	it('should open a modal to add users', async () => {
@@ -115,7 +115,7 @@ describe('ChannelUserList', () => {
 
 		expect(isModalOpen()).toBe(false);
 
-		fireEvent.click(screen.getByText('Add User'));
+		fireEvent.click(screen.getByText(/^add user$/i));
 
 		expect(isModalOpen()).toBe(true);
 	});
@@ -132,6 +132,6 @@ describe('ChannelUserList', () => {
 		const deleteButtons = screen.getAllByTestId('delete-user');
 		fireEvent.click(deleteButtons[0]);
 
-		expect(await screen.findByText('Remove User')).toBeInTheDocument();
+		expect(await screen.findByText(/^remove user$/i)).toBeInTheDocument();
 	});
 });

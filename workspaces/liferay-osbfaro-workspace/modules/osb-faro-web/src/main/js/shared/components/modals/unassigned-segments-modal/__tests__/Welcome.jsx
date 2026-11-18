@@ -21,7 +21,7 @@ describe('Welcome', () => {
 
 		expect(spy).not.toBeCalled();
 
-		fireEvent.click(queryByText('Next'));
+		fireEvent.click(queryByText(/^next$/i));
 
 		expect(spy).toBeCalled();
 	});

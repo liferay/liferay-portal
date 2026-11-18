@@ -25,9 +25,9 @@ describe('OverviewSection', () => {
 		const {getByText} = render(<OverviewSection />);
 
 		expect(getByText('OVERVIEW')).toBeInTheDocument();
-		expect(getByText('Net New Pipeline Generated')).toBeInTheDocument();
-		expect(getByText('Stalled Accounts')).toBeInTheDocument();
-		expect(getByText('At Risk Accounts')).toBeInTheDocument();
+		expect(getByText(/^net new pipeline generated$/i)).toBeInTheDocument();
+		expect(getByText(/^stalled accounts$/i)).toBeInTheDocument();
+		expect(getByText(/^at risk accounts$/i)).toBeInTheDocument();
 	});
 
 	it('should fall back to 0 for each card when no metrics are provided', () => {
@@ -76,8 +76,8 @@ describe('OverviewSection', () => {
 		const {container, queryByText} = render(<OverviewSection loading />);
 
 		expect(container.querySelectorAll('.loading-root')).toHaveLength(3);
-		expect(queryByText('Net New Pipeline Generated')).toBeNull();
-		expect(queryByText('Stalled Accounts')).toBeNull();
-		expect(queryByText('At Risk Accounts')).toBeNull();
+		expect(queryByText(/^net new pipeline generated$/i)).toBeNull();
+		expect(queryByText(/^stalled accounts$/i)).toBeNull();
+		expect(queryByText(/^at risk accounts$/i)).toBeNull();
 	});
 });

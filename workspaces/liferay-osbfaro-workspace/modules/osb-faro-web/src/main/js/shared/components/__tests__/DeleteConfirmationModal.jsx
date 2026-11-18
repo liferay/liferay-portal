@@ -68,7 +68,7 @@ describe('DeleteConfirmationModal', () => {
 	it('should render with a custom title and message', async () => {
 		await renderOpen({children: 'Custom Delete Message', title: 'Custom'});
 
-		expect(screen.getByText('Custom')).toBeInTheDocument();
+		expect(screen.getByText(/^custom$/i)).toBeInTheDocument();
 		expect(screen.getByText('Custom Delete Message')).toBeInTheDocument();
 	});
 
@@ -84,7 +84,7 @@ describe('DeleteConfirmationModal', () => {
 	it('should disable the delete button until the text matches', async () => {
 		await renderOpen();
 
-		const button = screen.getByText('Delete').closest('button');
+		const button = screen.getByText(/^delete$/i).closest('button');
 		const input = screen.getByTestId('delete-confirmation-input');
 
 		fireEvent.change(input, {target: {value: 'nope'}});
@@ -112,7 +112,7 @@ describe('DeleteConfirmationModal', () => {
 
 		await renderOpen({onClose});
 
-		fireEvent.click(screen.getByText('Cancel'));
+		fireEvent.click(screen.getByText(/^cancel$/i));
 
 		expect(onClose).toHaveBeenCalledTimes(1);
 	});

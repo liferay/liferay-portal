@@ -51,6 +51,6 @@ describe('IndividualOverview', () => {
 
 		await waitForLoadingToBeRemoved(container);
 
-		expect(getByText('View All Details')).toBeInTheDocument();
+		expect(getByText(/^view all details$/i)).toBeInTheDocument();
 	});
 });

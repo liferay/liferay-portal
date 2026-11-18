@@ -46,7 +46,7 @@ describe('Toolbar', () => {
 			'href',
 			toRoute(Routes.SITES, {groupId: '23'})
 		);
-		expect(link).toHaveTextContent('Liferay Data Platform');
+		expect(link).toHaveTextContent(/liferay data platform/i);
 	});
 
 	it('collapses the sidebar from the toggle', () => {

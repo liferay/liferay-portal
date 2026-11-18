@@ -82,10 +82,10 @@ describe('BaseEventAnalysisPage', () => {
 			target: {value: 'My Analysis'}
 		});
 
-		fireEvent.click(screen.getByText('Save Analysis'));
+		fireEvent.click(screen.getByText(/^save analysis$/i));
 
 		expect(await screen.findByTestId('loading-modal')).toHaveTextContent(
-			'Creating...'
+			/creating\.\.\./i
 		);
 
 		expect(

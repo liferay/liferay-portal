@@ -25,7 +25,7 @@ describe('DefinitionItem', () => {
 	it('should render with an edit button', () => {
 		const {queryByLabelText} = render(<DefinitionItem editable />);
 
-		expect(queryByLabelText('Edit')).toBeTruthy();
+		expect(queryByLabelText(/^edit$/i)).toBeTruthy();
 	});
 
 	it('should render as an input field with a cancel and submit button', () => {
@@ -33,12 +33,12 @@ describe('DefinitionItem', () => {
 			<DefinitionItem editable />
 		);
 
-		fireEvent.click(getByLabelText('Edit'));
+		fireEvent.click(getByLabelText(/^edit$/i));
 
 		jest.runAllTimers();
 
-		expect(queryByLabelText('Cancel')).toBeTruthy();
-		expect(queryByLabelText('Submit')).toBeTruthy();
-		expect(queryByLabelText('Edit')).toBeNull();
+		expect(queryByLabelText(/^cancel$/i)).toBeTruthy();
+		expect(queryByLabelText(/^submit$/i)).toBeTruthy();
+		expect(queryByLabelText(/^edit$/i)).toBeNull();
 	});
 });

@@ -46,6 +46,6 @@ describe('IndividualOverview', () => {
 		const {queryByText} = renderComponent();
 
 		expect(queryByText('No Site Data Synced')).not.toBeInTheDocument();
-		expect(queryByText('Connect Data Source')).not.toBeInTheDocument();
+		expect(queryByText(/^connect data source$/i)).not.toBeInTheDocument();
 	});
 });

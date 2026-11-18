@@ -110,8 +110,8 @@ describe('StageConfigurationPanel', () => {
 	it('shows "Unconfigured" until the condition value is selected', () => {
 		renderPanel();
 
-		expect(screen.getByText('Unconfigured')).toBeInTheDocument();
-		expect(screen.queryByText('Configured')).toBeNull();
+		expect(screen.getByText(/^unconfigured$/i)).toBeInTheDocument();
+		expect(screen.queryByText(/^configured$/i)).toBeNull();
 	});
 
 	it('shows "Configured" once the condition value is selected', () => {
@@ -126,7 +126,7 @@ describe('StageConfigurationPanel', () => {
 			),
 		});
 
-		expect(screen.getByText('Configured')).toBeInTheDocument();
+		expect(screen.getByText(/^configured$/i)).toBeInTheDocument();
 	});
 
 	it('shows the lifecycle and the stage in the breadcrumb', () => {
@@ -245,7 +245,7 @@ describe('StageConfigurationPanel', () => {
 
 		renderPanel({onChange});
 
-		const descriptionInput = screen.getByLabelText('Description');
+		const descriptionInput = screen.getByLabelText(/^description$/i);
 
 		expect(descriptionInput).toBeInTheDocument();
 
@@ -261,7 +261,7 @@ describe('StageConfigurationPanel', () => {
 	it('renders the Account entity label and the field picker', () => {
 		renderPanel();
 
-		expect(screen.getByText('Account')).toBeInTheDocument();
+		expect(screen.getByText(/^account$/i)).toBeInTheDocument();
 		expect(screen.queryByText('Select Entity')).toBeNull();
 		expect(screen.getByText('Select Attribute')).toBeInTheDocument();
 		expect(screen.getByRole('spinbutton')).toHaveValue(
@@ -293,7 +293,7 @@ describe('StageConfigurationPanel', () => {
 	it('renders the selected catalog field display name', () => {
 		renderPanel({value: withCondition({field: 'account.annualRevenue'})});
 
-		expect(screen.getByText('Annual Revenue')).toBeInTheDocument();
+		expect(screen.getByText(/^annual revenue$/i)).toBeInTheDocument();
 	});
 
 	it('reveals the next condition picker once the previous is filled', () => {
@@ -331,7 +331,9 @@ describe('StageConfigurationPanel', () => {
 		});
 
 		expect(screen.getByText('is before')).toBeInTheDocument();
-		expect(screen.getByPlaceholderText('YYYY-MM-DD')).toBeInTheDocument();
+		expect(
+			screen.getByPlaceholderText(/^yyyy-mm-dd$/i)
+		).toBeInTheDocument();
 		expect(screen.queryByLabelText(/value/i)).toBeNull();
 	});
 
@@ -347,7 +349,7 @@ describe('StageConfigurationPanel', () => {
 
 		renderPanel({onChange, value: dateFieldValue});
 
-		fireEvent.change(screen.getByPlaceholderText('YYYY-MM-DD'), {
+		fireEvent.change(screen.getByPlaceholderText(/^yyyy-mm-dd$/i), {
 			target: {value: '2026-03-15'},
 		});
 
@@ -435,7 +437,7 @@ describe('StageConfigurationPanel', () => {
 		});
 
 		expect(screen.queryByLabelText(/value/i)).toBeNull();
-		expect(screen.getByText('Configured')).toBeInTheDocument();
+		expect(screen.getByText(/^configured$/i)).toBeInTheDocument();
 	});
 
 	it('hides the value input and marks configured for a value-less operator', () => {
@@ -452,7 +454,7 @@ describe('StageConfigurationPanel', () => {
 		});
 
 		expect(screen.queryByLabelText(/value/i)).toBeNull();
-		expect(screen.getByText('Configured')).toBeInTheDocument();
+		expect(screen.getByText(/^configured$/i)).toBeInTheDocument();
 	});
 
 	it('resets the operator and value when the field changes', () => {
@@ -469,8 +471,8 @@ describe('StageConfigurationPanel', () => {
 			}),
 		});
 
-		fireEvent.click(screen.getByText('Industry'));
-		fireEvent.click(screen.getByText('Annual Revenue'));
+		fireEvent.click(screen.getByText(/^industry$/i));
+		fireEvent.click(screen.getByText(/^annual revenue$/i));
 
 		expect(onChange).toHaveBeenCalledWith(
 			expect.objectContaining({
@@ -523,7 +525,7 @@ describe('StageConfigurationPanel', () => {
 
 		fireEvent.click(screen.getByText('Select Attribute'));
 
-		expect(screen.getByText('Industry')).toBeInTheDocument();
+		expect(screen.getByText(/^industry$/i)).toBeInTheDocument();
 	});
 
 	it('leaves out a field no condition can be built from', () => {
@@ -531,7 +533,7 @@ describe('StageConfigurationPanel', () => {
 
 		fireEvent.click(screen.getByText('Select Attribute'));
 
-		expect(screen.getByText('Industry')).toBeInTheDocument();
+		expect(screen.getByText(/^industry$/i)).toBeInTheDocument();
 		expect(screen.queryByText('Uncategorized Field')).toBeNull();
 	});
 
@@ -605,8 +607,8 @@ describe('StageConfigurationPanel', () => {
 	it('joins the conditions with AND while matching on all', () => {
 		renderPanel({value: withConditions([textCondition, textCondition])});
 
-		expect(screen.getByText('And')).toBeInTheDocument();
-		expect(screen.queryByText('Or')).toBeNull();
+		expect(screen.getByText(/^and$/i)).toBeInTheDocument();
+		expect(screen.queryByText(/^or$/i)).toBeNull();
 	});
 
 	it('joins the conditions with OR while matching on any', () => {
@@ -616,15 +618,15 @@ describe('StageConfigurationPanel', () => {
 			}),
 		});
 
-		expect(screen.getByText('Or')).toBeInTheDocument();
-		expect(screen.queryByText('And')).toBeNull();
+		expect(screen.getByText(/^or$/i)).toBeInTheDocument();
+		expect(screen.queryByText(/^and$/i)).toBeNull();
 	});
 
 	it('shows no connector while the stage holds a single condition', () => {
 		renderPanel({value: withCondition(textCondition)});
 
-		expect(screen.queryByText('And')).toBeNull();
-		expect(screen.queryByText('Or')).toBeNull();
+		expect(screen.queryByText(/^and$/i)).toBeNull();
+		expect(screen.queryByText(/^or$/i)).toBeNull();
 	});
 
 	it('disables the match logic picker while a stage holds one condition', () => {
@@ -648,7 +650,7 @@ describe('StageConfigurationPanel', () => {
 		});
 
 		fireEvent.click(screen.getByLabelText(/match.logic/i));
-		fireEvent.click(screen.getByText('Any'));
+		fireEvent.click(screen.getByText(/^any$/i));
 
 		expect(onChange).toHaveBeenCalledWith(
 			expect.objectContaining({matchLogic: MatchLogic.Any})

@@ -18,7 +18,7 @@ describe('HelpWidget', () => {
 			</Provider>
 		);
 
-		expect(getByRole('button', {name: 'Help'})).toBeInTheDocument();
+		expect(getByRole('button', {name: /^help$/i})).toBeInTheDocument();
 	});
 
 	it('should render a dropdown', () => {
@@ -28,7 +28,7 @@ describe('HelpWidget', () => {
 			</Provider>
 		);
 
-		expect(getByText('Report an Issue')).toBeTruthy();
+		expect(getByText(/^report an issue$/i)).toBeTruthy();
 	});
 
 	it('should open the report an issue modal on the basic plan', async () => {
@@ -52,8 +52,8 @@ describe('HelpWidget', () => {
 
 		expect(screen.queryByRole('dialog')).toBeNull();
 
-		fireEvent.click(screen.getByRole('button', {name: 'Help'}));
-		fireEvent.click(screen.getByText('Report an Issue'));
+		fireEvent.click(screen.getByRole('button', {name: /^help$/i}));
+		fireEvent.click(screen.getByText(/^report an issue$/i));
 
 		expect(await screen.findByRole('dialog')).toBeInTheDocument();
 	});

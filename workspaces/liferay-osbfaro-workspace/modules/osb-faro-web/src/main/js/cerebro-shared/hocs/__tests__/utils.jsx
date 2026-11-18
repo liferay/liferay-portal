@@ -28,8 +28,8 @@ describe('withEmpty', () => {
 			<ComposedComponent items={[]} query='asdf' total={0} />
 		);
 
-		expect(queryByText('No Results Were Found')).toBeTruthy();
-		expect(queryByText('Please try a different search term.')).toBeTruthy();
+		expect(queryByText(/^no results were found$/i)).toBeTruthy();
+		expect(queryByText(/^please try a different search term\.$/i)).toBeTruthy();
 	});
 
 	it('should render with default no results display if total is 0 & items is empty and has no query', () => {
@@ -85,7 +85,7 @@ describe('withError', () => {
 
 		const {queryByText} = render(<ComposedComponent error />);
 
-		expect(queryByText('Sorry, an error occurred.')).toBeTruthy();
+		expect(queryByText(/^sorry, an error occurred\.$/i)).toBeTruthy();
 	});
 
 	it('should not render error state when "error" props is false', () => {

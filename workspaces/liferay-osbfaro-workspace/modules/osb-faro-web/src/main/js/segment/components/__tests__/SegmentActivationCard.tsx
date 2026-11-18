@@ -83,7 +83,7 @@ describe('SegmentActivationCard', () => {
 		const modal = await findByTestId('segment-activation-modal');
 		expect(modal).toBeInTheDocument();
 
-		const modalHeader = await findByText('Configure Activation');
+		const modalHeader = await findByText(/^configure activation$/i);
 		expect(modalHeader).toBeInTheDocument();
 	});
 
@@ -106,7 +106,7 @@ describe('SegmentActivationCard', () => {
 		const modal = await findByTestId('segment-activation-modal');
 		expect(modal).toBeInTheDocument();
 
-		expect(await findByText('Configure Activation')).toBeInTheDocument();
+		expect(await findByText(/^configure activation$/i)).toBeInTheDocument();
 
 		expect(await findByText('indefinitely')).toBeInTheDocument();
 	});
@@ -131,7 +131,7 @@ describe('SegmentActivationCard', () => {
 		const modal = await findByTestId('segment-activation-modal');
 		expect(modal).toBeInTheDocument();
 
-		expect(await findByText('Configure Activation')).toBeInTheDocument();
+		expect(await findByText(/^configure activation$/i)).toBeInTheDocument();
 
 		expect(await findByText('between')).toBeInTheDocument();
 

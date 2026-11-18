@@ -113,9 +113,9 @@ describe('DropdownRangeKey', () => {
 
 		await waitForLoadingToBeRemoved(document.body);
 
-		fireEvent.click(getByRole('button', {name: 'Select Date Range'}));
+		fireEvent.click(getByRole('button', {name: /^select date range$/i}));
 
-		fireEvent.click(getByText('More Preset Periods'));
+		fireEvent.click(getByText(/^more preset periods$/i));
 
 		expect(getByRole('menuitem', {name: /yesterday/i})).toHaveFocus();
 	});

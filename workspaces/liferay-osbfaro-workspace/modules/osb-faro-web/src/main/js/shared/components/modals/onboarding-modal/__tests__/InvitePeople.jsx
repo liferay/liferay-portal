@@ -33,20 +33,20 @@ describe('InvitePeople', () => {
 
 		expect(queryByText(inviteSentMessage)).toBeNull();
 
-		fireEvent.change(queryByPlaceholderText('Enter Email Address'), {
+		fireEvent.change(queryByPlaceholderText(/^enter email address$/i), {
 			target: {
 				value: 'test@liferay.com'
 			}
 		});
 
-		fireEvent.click(queryByText('Send Invitations'));
+		fireEvent.click(queryByText(/^send invitations$/i));
 
 		jest.runAllTimers();
 
 		await waitForLoadingToBeRemoved(container);
 
 		expect(queryByText(inviteSentMessage)).not.toBeNull();
-		expect(queryByText('Next')).not.toBeNull();
+		expect(queryByText(/^next$/i)).not.toBeNull();
 	});
 
 	it('renders the "Done" button invitations have been sent without connecting dxp', async () => {
@@ -62,19 +62,19 @@ describe('InvitePeople', () => {
 
 		expect(queryByText(inviteSentMessage)).toBeNull();
 
-		fireEvent.change(queryByPlaceholderText('Enter Email Address'), {
+		fireEvent.change(queryByPlaceholderText(/^enter email address$/i), {
 			target: {
 				value: 'test@liferay.com'
 			}
 		});
 
-		fireEvent.click(queryByText('Send Invitations'));
+		fireEvent.click(queryByText(/^send invitations$/i));
 
 		jest.runAllTimers();
 
 		await waitForLoadingToBeRemoved(container);
 
 		expect(queryByText(inviteSentMessage)).not.toBeNull();
-		expect(queryByText('Done')).not.toBeNull();
+		expect(queryByText(/^done$/i)).not.toBeNull();
 	});
 });

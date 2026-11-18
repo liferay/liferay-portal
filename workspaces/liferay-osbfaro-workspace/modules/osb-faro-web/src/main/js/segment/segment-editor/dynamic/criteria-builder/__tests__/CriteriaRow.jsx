@@ -89,6 +89,6 @@ describe('CriteriaRow', () => {
 			</WrapperComponent>
 		);
 
-		expect(queryByText('Attribute no longer exists.')).toBeTruthy();
+		expect(queryByText(/^attribute no longer exists\.$/i)).toBeTruthy();
 	});
 });

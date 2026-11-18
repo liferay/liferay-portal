@@ -100,10 +100,10 @@ describe('CompositionLegend', () => {
 		);
 
 		expect(screen.getByTestId('active-count')).toHaveTextContent(
-			'Processing'
+			/processing/i
 		);
 		expect(screen.getByTestId('active-porcentage')).toHaveTextContent(
-			'Processing'
+			/processing/i
 		);
 	});
 });

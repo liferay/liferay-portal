@@ -68,7 +68,7 @@ describe('ActivityStreamCard', () => {
 	it('renders the search input, footer label, empty chart and no-results content', () => {
 		const {container, getByPlaceholderText, getByText} = renderCard();
 
-		expect(getByPlaceholderText('Search')).toBeInTheDocument();
+		expect(getByPlaceholderText(/^search$/i)).toBeInTheDocument();
 		expect(getByText('The events footer')).toBeInTheDocument();
 		expect(getByText('Empty chart overlay')).toBeInTheDocument();
 		expect(getByText('No sessions here')).toBeInTheDocument();

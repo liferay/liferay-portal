@@ -30,7 +30,7 @@ describe('Welcome', () => {
 
 		expect(spy).not.toBeCalled();
 
-		fireEvent.click(queryByText('Next'));
+		fireEvent.click(queryByText(/^next$/i));
 
 		expect(spy).toBeCalled();
 	});
@@ -38,7 +38,7 @@ describe('Welcome', () => {
 	it('shows the Analytics Cloud welcome message for a non-LDP workspace', () => {
 		const {queryByText} = render(<Welcome onClose={noop} onNext={noop} />);
 
-		expect(queryByText('Welcome to Analytics Cloud')).toBeTruthy();
+		expect(queryByText(/^welcome to analytics cloud$/i)).toBeTruthy();
 	});
 
 	it('shows the Liferay Data Platform welcome message for an LDP workspace', () => {
@@ -46,6 +46,6 @@ describe('Welcome', () => {
 
 		const {queryByText} = render(<Welcome onClose={noop} onNext={noop} />);
 
-		expect(queryByText('Welcome to Liferay Data Platform')).toBeTruthy();
+		expect(queryByText(/^welcome to liferay data platform$/i)).toBeTruthy();
 	});
 });

@@ -38,7 +38,7 @@ describe('SelectEntityFromModal', () => {
 	it('should trigger modal when pressing Select button', () => {
 		const {getByText} = render(<DefaultComponent />);
 
-		fireEvent.click(getByText('Select'));
+		fireEvent.click(getByText(/^select$/i));
 
 		jest.runAllTimers();
 

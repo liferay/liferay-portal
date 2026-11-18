@@ -85,7 +85,7 @@ describe('EngagementSummary', () => {
 			renderEngagementSummary({showEmptyState: true});
 
 			expect(
-				screen.getByText('No Individuals Data Has Been Synced')
+				screen.getByText(/^no individuals data has been synced$/i)
 			).toBeInTheDocument();
 			expect(screen.queryByText('TOP PAGES')).toBeNull();
 			expect(screen.queryByText('TOP ASSETS')).toBeNull();
@@ -117,7 +117,7 @@ describe('EngagementSummary', () => {
 
 			expect(screen.getByText('TOP PAGES')).toBeInTheDocument();
 			expect(
-				screen.queryByText('No Individuals Data Has Been Synced')
+				screen.queryByText(/^no individuals data has been synced$/i)
 			).toBeNull();
 		});
 	});

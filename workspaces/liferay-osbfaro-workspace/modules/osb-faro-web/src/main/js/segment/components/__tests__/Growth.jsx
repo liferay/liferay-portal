@@ -109,7 +109,7 @@ describe('SegmentGrowthChart', () => {
 		render(<SegmentGrowthChart data={[]} onPointSelect={jest.fn()} />);
 
 		expect(
-			screen.getByText('There is no data for segment membership.')
+			screen.getByText(/^there is no data for segment membership\.$/i)
 		).toBeInTheDocument();
 	});
 

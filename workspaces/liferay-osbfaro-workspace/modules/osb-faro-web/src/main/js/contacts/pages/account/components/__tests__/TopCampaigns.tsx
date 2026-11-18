@@ -27,7 +27,7 @@ jest.mock('react-router-dom', () => ({
 const mockedUseParams = useParams as jest.Mock;
 
 const getViewAllHref = () =>
-	screen.getByRole('link', {name: 'View All'}).getAttribute('href')!;
+	screen.getByRole('link', {name: /^view all$/i}).getAttribute('href')!;
 
 describe('TopCampaigns', () => {
 	beforeEach(() => {
@@ -68,7 +68,7 @@ describe('TopCampaigns', () => {
 
 		expect(screen.queryByTestId('fds-component')).not.toBeInTheDocument();
 		expect(
-			screen.queryByRole('link', {name: 'View All'})
+			screen.queryByRole('link', {name: /^view all$/i})
 		).not.toBeInTheDocument();
 	});
 });

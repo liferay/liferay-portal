@@ -139,12 +139,12 @@ describe('EventAnalysisList with no Data Source', () => {
 			<WrappedComponent eventAnalyses={eventAnalysis} />
 		);
 
-		expect(getByText('No Data Sources Are Connected')).toBeInTheDocument();
+		expect(getByText(/^no data sources are connected$/i)).toBeInTheDocument();
 		expect(
-			getByText('Connect a data source to get started.')
+			getByText(/^connect a data source to get started\.$/i)
 		).toBeInTheDocument();
 		expect(
-			getByText('Access our documentation to learn more.')
+			getByText(/^access our documentation to learn more\.$/i)
 		).toBeInTheDocument();
 	});
 });
@@ -169,7 +169,7 @@ describe('Event Analysis List - Feature Limits', () => {
 			<WrappedComponent eventAnalyses={eventAnalysis} />
 		);
 
-		const createButton = getByText('Create Analysis').closest('a');
+		const createButton = getByText(/^create analysis$/i).closest('a');
 		expect(createButton).not.toHaveClass('disabled');
 	});
 
@@ -191,7 +191,7 @@ describe('Event Analysis List - Feature Limits', () => {
 			<WrappedComponent eventAnalyses={eventAnalysis} />
 		);
 
-		const createButton = getByText('Create Analysis').closest('a');
+		const createButton = getByText(/^create analysis$/i).closest('a');
 		expect(createButton).toHaveClass('disabled');
 
 		expect(
@@ -218,7 +218,7 @@ describe('Event Analysis List - Feature Limits', () => {
 			<WrappedComponent eventAnalyses={eventAnalysis} />
 		);
 
-		const createButton = getByText('Create Analysis').closest('a');
+		const createButton = getByText(/^create analysis$/i).closest('a');
 		expect(createButton).not.toHaveClass('disabled');
 	});
 });

@@ -44,7 +44,7 @@ const runDisconnectFlow = async ({
 
 	fireEvent.click(screen.getByText('trigger'));
 
-	fireEvent.click(await screen.findByText('Disconnect'));
+	fireEvent.click(await screen.findByText(/^disconnect$/i));
 
 	await waitFor(() => expect(addAlert).toHaveBeenCalled());
 

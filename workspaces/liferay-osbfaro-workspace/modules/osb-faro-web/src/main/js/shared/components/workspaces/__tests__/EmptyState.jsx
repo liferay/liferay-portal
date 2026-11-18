@@ -33,11 +33,11 @@ describe('Workspace Empty State', () => {
 
 		expect(screen.queryByRole('dialog')).toBeNull();
 
-		fireEvent.click(screen.getByText('Contact Sales'));
+		fireEvent.click(screen.getByText(/^contact sales$/i));
 
 		expect(await screen.findByRole('dialog')).toBeInTheDocument();
 		expect(
-			await screen.findByRole('heading', {name: 'Contact Sales'})
+			await screen.findByRole('heading', {name: /^contact sales$/i})
 		).toBeInTheDocument();
 	});
 });

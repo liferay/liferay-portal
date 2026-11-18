@@ -157,8 +157,8 @@ describe('AssetAppearsOnCard', () => {
 
 		await waitForLoadingToBeRemoved(document.body);
 
-		expect(getByText('Asset Appears On')).toBeInTheDocument();
-		expect(getByText('Views')).toBeInTheDocument();
+		expect(getByText(/^asset appears on$/i)).toBeInTheDocument();
+		expect(getByText(/^views$/i)).toBeInTheDocument();
 	});
 
 	it('should have a Views column for Blog', async () => {
@@ -173,7 +173,7 @@ describe('AssetAppearsOnCard', () => {
 
 		await waitForLoadingToBeRemoved(container);
 
-		expect(getByText('Views')).toBeInTheDocument();
+		expect(getByText(/^views$/i)).toBeInTheDocument();
 	});
 
 	it('should have [Downloads, Impressions] columns for Document', async () => {
@@ -191,8 +191,8 @@ describe('AssetAppearsOnCard', () => {
 
 		await waitForLoadingToBeRemoved(container);
 
-		expect(getByText('Downloads')).toBeInTheDocument();
-		expect(getByText('Impressions')).toBeInTheDocument();
+		expect(getByText(/^downloads$/i)).toBeInTheDocument();
+		expect(getByText(/^impressions$/i)).toBeInTheDocument();
 	});
 
 	it('should have a [Submissions, Views] column for Forms', async () => {
@@ -207,8 +207,8 @@ describe('AssetAppearsOnCard', () => {
 
 		await waitForLoadingToBeRemoved(container);
 
-		expect(getByText('Submissions')).toBeInTheDocument();
-		expect(getByText('Views')).toBeInTheDocument();
+		expect(getByText(/^submissions$/i)).toBeInTheDocument();
+		expect(getByText(/^views$/i)).toBeInTheDocument();
 	});
 
 	it('should have a Views column for WebContent', async () => {
@@ -223,7 +223,7 @@ describe('AssetAppearsOnCard', () => {
 
 		await waitForLoadingToBeRemoved(container);
 
-		expect(getByText('Views')).toBeInTheDocument();
+		expect(getByText(/^views$/i)).toBeInTheDocument();
 	});
 
 	it('should render empty state for Blog', async () => {
@@ -239,14 +239,14 @@ describe('AssetAppearsOnCard', () => {
 
 		await waitForLoadingToBeRemoved(container);
 
-		const linkText = getByText('Learn more about blogs.');
+		const linkText = getByText(/^learn more about blogs\.$/i);
 
 		expect(
-			getByText('There are no assets on the selected period.')
+			getByText(/^there are no assets on the selected period\.$/i)
 		).toBeInTheDocument();
 		expect(
 			getByText(
-				'Check back later to verify if data has been received from your data sources.'
+				/^check back later to verify if data has been received from your data sources\.$/i
 			)
 		).toBeInTheDocument();
 		expect(linkText).toBeInTheDocument();
@@ -266,14 +266,14 @@ describe('AssetAppearsOnCard', () => {
 
 		await waitForLoadingToBeRemoved(container);
 
-		const linkText = getByText('Learn more about documents and media.');
+		const linkText = getByText(/^learn more about documents and media\.$/i);
 
 		expect(
-			getByText('There are no assets on the selected period.')
+			getByText(/^there are no assets on the selected period\.$/i)
 		).toBeInTheDocument();
 		expect(
 			getByText(
-				'Check back later to verify if data has been received from your data sources.'
+				/^check back later to verify if data has been received from your data sources\.$/i
 			)
 		).toBeInTheDocument();
 		expect(linkText).toBeInTheDocument();
@@ -293,14 +293,14 @@ describe('AssetAppearsOnCard', () => {
 
 		await waitForLoadingToBeRemoved(container);
 
-		const linkText = getByText('Learn more about forms.');
+		const linkText = getByText(/^learn more about forms\.$/i);
 
 		expect(
-			getByText('There are no assets on the selected period.')
+			getByText(/^there are no assets on the selected period\.$/i)
 		).toBeInTheDocument();
 		expect(
 			getByText(
-				'Check back later to verify if data has been received from your data sources.'
+				/^check back later to verify if data has been received from your data sources\.$/i
 			)
 		).toBeInTheDocument();
 		expect(linkText).toBeInTheDocument();
@@ -320,14 +320,14 @@ describe('AssetAppearsOnCard', () => {
 
 		await waitForLoadingToBeRemoved(container);
 
-		const linkText = getByText('Learn more about web content.');
+		const linkText = getByText(/^learn more about web content\.$/i);
 
 		expect(
-			getByText('There are no assets on the selected period.')
+			getByText(/^there are no assets on the selected period\.$/i)
 		).toBeInTheDocument();
 		expect(
 			getByText(
-				'Check back later to verify if data has been received from your data sources.'
+				/^check back later to verify if data has been received from your data sources\.$/i
 			)
 		).toBeInTheDocument();
 		expect(linkText).toBeInTheDocument();

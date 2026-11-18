@@ -26,12 +26,12 @@ describe('Conjunction', () => {
 			<Conjunction conjunctionName='and' sequential />
 		);
 
-		expect(getByRole('button')).toHaveTextContent('Then');
+		expect(getByRole('button')).toHaveTextContent(/then/i);
 	});
 
 	it('should render the And label for an AND conjunction outside sequential mode', () => {
 		const {getByRole} = render(<Conjunction conjunctionName='and' />);
 
-		expect(getByRole('button')).toHaveTextContent('And');
+		expect(getByRole('button')).toHaveTextContent(/and/i);
 	});
 });

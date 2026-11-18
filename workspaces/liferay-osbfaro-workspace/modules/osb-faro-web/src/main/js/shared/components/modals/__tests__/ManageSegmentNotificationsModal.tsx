@@ -37,14 +37,16 @@ describe('ManageSegmentNotificationsModal', () => {
 		render(<DefaultComponent />);
 
 		expect(
-			await screen.findByText('Manage Segment Notifications')
+			await screen.findByText(/^manage segment notifications$/i)
 		).toBeInTheDocument();
 
 		expect(
-			await screen.findByLabelText('New Member Added to the Segment')
+			await screen.findByLabelText(/^new member added to the segment$/i)
 		).not.toBeChecked();
 
-		expect(screen.getByLabelText('Email Frequency')).toHaveValue('monthly');
+		expect(screen.getByLabelText(/^email frequency$/i)).toHaveValue(
+			'monthly'
+		);
 	});
 
 	it('renders the saved notification settings', async () => {
@@ -57,10 +59,12 @@ describe('ManageSegmentNotificationsModal', () => {
 		render(<DefaultComponent />);
 
 		expect(
-			await screen.findByLabelText('New Member Added to the Segment')
+			await screen.findByLabelText(/^new member added to the segment$/i)
 		).toBeChecked();
 
-		expect(screen.getByLabelText('Email Frequency')).toHaveValue('weekly');
+		expect(screen.getByLabelText(/^email frequency$/i)).toHaveValue(
+			'weekly'
+		);
 
 		expect(API.preferences.fetchSegmentNotifications).toHaveBeenCalledWith({
 			groupId: '23',
@@ -73,7 +77,7 @@ describe('ManageSegmentNotificationsModal', () => {
 
 		render(<DefaultComponent onClose={onClose} />);
 
-		fireEvent.click(await screen.findByText('Cancel'));
+		fireEvent.click(await screen.findByText(/^cancel$/i));
 
 		expect(onClose).toHaveBeenCalled();
 	});
@@ -84,10 +88,10 @@ describe('ManageSegmentNotificationsModal', () => {
 		render(<DefaultComponent onClose={onClose} />);
 
 		fireEvent.click(
-			await screen.findByLabelText('New Member Added to the Segment')
+			await screen.findByLabelText(/^new member added to the segment$/i)
 		);
 
-		fireEvent.click(screen.getByText('Save'));
+		fireEvent.click(screen.getByText(/^save$/i));
 
 		await waitFor(() => expect(onClose).toHaveBeenCalled());
 

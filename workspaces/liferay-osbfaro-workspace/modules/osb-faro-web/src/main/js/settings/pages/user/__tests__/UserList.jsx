@@ -71,6 +71,6 @@ describe('UserList', () => {
 
 		expect(queryByTestId('select-all-checkbox')).not.toBeInTheDocument();
 
-		expect(queryByText('Invite Users')).not.toBeInTheDocument();
+		expect(queryByText(/^invite users$/i)).not.toBeInTheDocument();
 	});
 });

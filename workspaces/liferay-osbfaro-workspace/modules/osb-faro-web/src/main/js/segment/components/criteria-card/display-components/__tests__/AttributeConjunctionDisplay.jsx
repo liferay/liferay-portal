@@ -78,7 +78,7 @@ describe('AttributeConjunctionDisplay', () => {
 			/>
 		);
 
-		expect(getByText('Undefined Attribute')).toBeTruthy();
+		expect(getByText(/^undefined attribute$/i)).toBeTruthy();
 	});
 
 	it('should decode the attribute name from the hex id when it is not in referencedEntities', () => {

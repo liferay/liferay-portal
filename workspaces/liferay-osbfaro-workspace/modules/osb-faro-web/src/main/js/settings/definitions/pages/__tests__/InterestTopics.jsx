@@ -84,7 +84,7 @@ describe('InterestTopics', () => {
 
 		await waitForLoadingToBeRemoved(container);
 
-		expect(queryByText('Add Keyword')).toBeNull();
+		expect(queryByText(/^add keyword$/i)).toBeNull();
 	});
 
 	it('should render with an empty state', async () => {

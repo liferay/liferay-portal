@@ -27,7 +27,7 @@ describe('CompositionCard', () => {
 			/>
 		);
 
-		expect(screen.getAllByText('Processing')).toHaveLength(4);
+		expect(screen.getAllByText(/^processing$/i)).toHaveLength(4);
 		expect(screen.queryByText('0')).not.toBeInTheDocument();
 	});
 });

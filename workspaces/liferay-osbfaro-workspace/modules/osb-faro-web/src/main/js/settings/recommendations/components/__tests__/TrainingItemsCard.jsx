@@ -71,12 +71,12 @@ describe('TrainingItemsCard', () => {
 
 		expect(screen.queryByRole('dialog')).toBeNull();
 
-		fireEvent.click(screen.getAllByLabelText('Watch')[0]);
+		fireEvent.click(screen.getAllByLabelText(/^watch$/i)[0]);
 
 		expect(await screen.findByRole('dialog')).toBeInTheDocument();
 
 		expect(
-			await screen.findByRole('heading', {name: 'Matching Pages'})
+			await screen.findByRole('heading', {name: /^matching pages$/i})
 		).toBeInTheDocument();
 	});
 });

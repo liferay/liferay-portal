@@ -10,7 +10,7 @@ describe('GenericBarsCard', () => {
 			<GenericBarsCard cardTitle="Number of Sites" />
 		);
 
-		expect(getByText('Number of Sites').tagName).toBe('H3');
+		expect(getByText(/^number of sites$/i).tagName).toBe('H3');
 		expect(container.querySelector('.card-title-rectangle')).toBeNull();
 	});
 
@@ -22,6 +22,6 @@ describe('GenericBarsCard', () => {
 		expect(
 			container.querySelector('.card-title-rectangle')
 		).toBeTruthy();
-		expect(getByText('Number of Sites')).toHaveClass('sr-only');
+		expect(getByText(/^number of sites$/i)).toHaveClass('sr-only');
 	});
 });

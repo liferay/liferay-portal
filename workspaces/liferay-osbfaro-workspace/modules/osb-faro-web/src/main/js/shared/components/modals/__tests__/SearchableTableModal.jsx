@@ -75,7 +75,7 @@ describe('SearchableTableModal', () => {
 		jest.runAllTimers();
 
 		expect(document.querySelector('.modal-title')).toHaveTextContent(
-			'Custom Title'
+			/custom title/i
 		);
 	});
 

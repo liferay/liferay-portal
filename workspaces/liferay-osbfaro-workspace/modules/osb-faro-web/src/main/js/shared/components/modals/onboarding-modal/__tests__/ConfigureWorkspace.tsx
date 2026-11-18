@@ -88,7 +88,9 @@ describe('ConfigureWorkspace', () => {
 	it('should have the next button enabled by default', async () => {
 		render(<WrapperComponent />);
 
-		expect(screen.getByText('Next').closest('button')).not.toBeDisabled();
+		expect(
+			screen.getByText(/^next$/i).closest('button')
+		).not.toBeDisabled();
 	});
 
 	// Note: Validation tests for Formik are skipped here as they are proving

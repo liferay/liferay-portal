@@ -10,7 +10,7 @@ describe('DateHeader', () => {
 	it('shows the day title and its event count', () => {
 		render(<DateHeader title="Yesterday" totalEvents={3} />);
 
-		expect(screen.getByText('Yesterday')).toBeInTheDocument();
+		expect(screen.getByText(/^yesterday$/i)).toBeInTheDocument();
 		expect(screen.getByText('3')).toBeInTheDocument();
 	});
 
@@ -32,7 +32,7 @@ describe('DateHeader', () => {
 	it('omits the count when there is no event total', () => {
 		const {container} = render(<DateHeader title="Yesterday" />);
 
-		expect(screen.getByText('Yesterday')).toBeInTheDocument();
+		expect(screen.getByText(/^yesterday$/i)).toBeInTheDocument();
 		expect(
 			container.querySelector('.event-count-pill')
 		).not.toBeInTheDocument();

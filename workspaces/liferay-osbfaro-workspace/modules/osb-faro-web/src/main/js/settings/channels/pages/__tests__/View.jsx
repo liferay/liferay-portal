@@ -64,7 +64,7 @@ describe('View Channel', () => {
 
 		await waitForLoadingToBeRemoved(container);
 
-		expect(screen.getByLabelText('Select Users').checked).toBeTrue();
+		expect(screen.getByLabelText(/^select users$/i).checked).toBeTrue();
 		expect(container.querySelector('.table-root')).toBeTruthy();
 	});
 
@@ -75,8 +75,8 @@ describe('View Channel', () => {
 
 		const {queryByLabelText, queryByText} = render(<DefaultComponent />);
 
-		expect(queryByText('Delete')).toBeNull();
-		expect(queryByLabelText('Edit')).toBeNull();
+		expect(queryByText(/^delete$/i)).toBeNull();
+		expect(queryByLabelText(/^edit$/i)).toBeNull();
 	});
 
 	it('should check if DELETE and CLEAR DATA buttons are displayed', async () => {
@@ -88,8 +88,8 @@ describe('View Channel', () => {
 
 		await waitForLoadingToBeRemoved(container);
 
-		expect(queryByText('Delete')).toBeInTheDocument();
-		expect(queryByText('Clear Data')).toBeInTheDocument();
+		expect(queryByText(/^delete$/i)).toBeInTheDocument();
+		expect(queryByText(/^clear data$/i)).toBeInTheDocument();
 	});
 
 	it('should check error modal message and hyperlink on deleting property that has SITES synced', async () => {
@@ -120,7 +120,7 @@ describe('View Channel', () => {
 		expect(await screen.findByRole('dialog')).toBeInTheDocument();
 
 		expect(
-			await screen.findByText('Unable to Delete Property')
+			await screen.findByText(/^unable to delete property$/i)
 		).toBeInTheDocument();
 
 		const modalText = screen.getByText((content, node) => {
@@ -138,11 +138,11 @@ describe('View Channel', () => {
 		expect(modalText).toBeTruthy();
 
 		expect(
-			screen.getByText('Access our documentation to learn more.')
+			screen.getByText(/^access our documentation to learn more\.$/i)
 		).toBeInTheDocument();
 
 		expect(
-			screen.getByText('Access our documentation to learn more.')
+			screen.getByText(/^access our documentation to learn more\.$/i)
 		).toHaveAttribute(
 			'href',
 			'https://learn.liferay.com/w/dxp/personalization/analytics-cloud/workspace-settings/managing-properties#adding-and-removing-users-to-a-property'
@@ -192,10 +192,10 @@ describe('View Channel', () => {
 
 		await waitForLoadingToBeRemoved(container);
 
-		expect(screen.queryByText('Permissions Change')).toBeNull();
+		expect(screen.queryByText(/^permissions change$/i)).toBeNull();
 
-		fireEvent.click(screen.getByLabelText('Select Users'));
+		fireEvent.click(screen.getByLabelText(/^select users$/i));
 
-		expect(await screen.findByText('Permissions Change')).toBeTruthy();
+		expect(await screen.findByText(/^permissions change$/i)).toBeTruthy();
 	});
 });

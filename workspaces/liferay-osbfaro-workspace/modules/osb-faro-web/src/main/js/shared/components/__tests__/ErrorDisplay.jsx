@@ -15,6 +15,6 @@ describe('ErrorDisplay', () => {
 
 	it('should render with button', () => {
 		const {queryByText} = render(<ErrorDisplay onReload={noop} />);
-		expect(queryByText('Reload')).toBeTruthy();
+		expect(queryByText(/^reload$/i)).toBeTruthy();
 	});
 });

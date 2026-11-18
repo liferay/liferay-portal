@@ -51,6 +51,6 @@ describe('Individuals Dashboard Distribution', () => {
 
 		const {getByText} = render(<WrappedComponent />);
 
-		expect(getByText('No Data Sources Are Connected')).toBeInTheDocument();
+		expect(getByText(/^no data sources are connected$/i)).toBeInTheDocument();
 	});
 });

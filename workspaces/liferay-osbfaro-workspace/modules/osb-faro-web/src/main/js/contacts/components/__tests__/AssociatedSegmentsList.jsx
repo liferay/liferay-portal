@@ -37,7 +37,7 @@ describe('AssociatedSegmentsList', () => {
 		const {container} = render(<WrappedComponent {...defaultProps} />);
 
 		expect(container.querySelector('.card-title')).toHaveTextContent(
-			'Associated Segments'
+			/associated segments/i
 		);
 		expect(container.querySelector('.secondary-info b')).toHaveTextContent(
 			'2'

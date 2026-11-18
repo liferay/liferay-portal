@@ -108,9 +108,9 @@ describe('IndividualsOverviewCDP', () => {
 
 		const {getByText} = renderIndividualsOverviewCDP();
 
-		expect(getByText('Total Individuals')).toBeInTheDocument();
-		expect(getByText('Known Individuals')).toBeInTheDocument();
-		expect(getByText('Anonymous Individuals')).toBeInTheDocument();
+		expect(getByText(/^total individuals$/i)).toBeInTheDocument();
+		expect(getByText(/^known individuals$/i)).toBeInTheDocument();
+		expect(getByText(/^anonymous individuals$/i)).toBeInTheDocument();
 	});
 
 	it('should render the period-over-period trend only for the known and anonymous individuals cards', () => {

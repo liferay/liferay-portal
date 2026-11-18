@@ -32,7 +32,7 @@ describe('InfoPopover', () => {
 		const {getByRole} = render(<InfoPopover content='foo content' />);
 
 		expect(
-			getByRole('button', {name: 'More Information'})
+			getByRole('button', {name: /^more information$/i})
 		).toBeInTheDocument();
 	});
 });

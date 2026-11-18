@@ -50,7 +50,7 @@ describe('AddWorkspaceForm', () => {
 		).toBeNull();
 
 		expect(container.querySelector('.select-root')).toBeDisabled();
-		expect(queryByText('Save')).not.toBeNull();
+		expect(queryByText(/^save$/i)).not.toBeNull();
 		expect(getByTestId('server-location-input')).toBeDisabled();
 	});
 

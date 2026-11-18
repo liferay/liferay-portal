@@ -60,15 +60,15 @@ describe('AttributesCriteriaTabs', () => {
 	it('renders both the Default and Custom tabs', () => {
 		renderTabs();
 
-		expect(screen.getByText('Default')).toBeInTheDocument();
-		expect(screen.getByText('Custom')).toBeInTheDocument();
+		expect(screen.getByText(/^default$/i)).toBeInTheDocument();
+		expect(screen.getByText(/^custom$/i)).toBeInTheDocument();
 	});
 
 	it('opens on the Default tab and lists the default properties', () => {
 		renderTabs();
 
-		expect(screen.getByText('First Name')).toBeInTheDocument();
-		expect(screen.getByText('Last Name')).toBeInTheDocument();
+		expect(screen.getByText(/^first name$/i)).toBeInTheDocument();
+		expect(screen.getByText(/^last name$/i)).toBeInTheDocument();
 
 		expect(screen.queryByText('Loyalty Tier')).not.toBeInTheDocument();
 	});
@@ -76,19 +76,19 @@ describe('AttributesCriteriaTabs', () => {
 	it('lists the custom DXP properties when the Custom tab is selected', () => {
 		renderTabs();
 
-		fireEvent.click(screen.getByText('Custom'));
+		fireEvent.click(screen.getByText(/^custom$/i));
 
 		expect(screen.getByText('Loyalty Tier')).toBeInTheDocument();
 		expect(screen.getByText('Favorite Store')).toBeInTheDocument();
 
-		expect(screen.queryByText('First Name')).not.toBeInTheDocument();
+		expect(screen.queryByText(/^first name$/i)).not.toBeInTheDocument();
 	});
 
 	it('filters the active tab client-side by the search keyword', () => {
 		renderTabs({searchValue: 'First'});
 
-		expect(screen.getByText('First Name')).toBeInTheDocument();
-		expect(screen.queryByText('Last Name')).not.toBeInTheDocument();
+		expect(screen.getByText(/^first name$/i)).toBeInTheDocument();
+		expect(screen.queryByText(/^last name$/i)).not.toBeInTheDocument();
 	});
 
 	it('renders the criteria items inside the shared property-subgroups-list container', () => {
@@ -107,7 +107,7 @@ describe('AttributesCriteriaTabs', () => {
 	it('shows the no-entries empty state when there are no custom properties', () => {
 		renderTabs({customProperties: new List()});
 
-		fireEvent.click(screen.getByText('Custom'));
+		fireEvent.click(screen.getByText(/^custom$/i));
 
 		expect(screen.getByText('no-custom-fields-yet')).toBeInTheDocument();
 		expect(

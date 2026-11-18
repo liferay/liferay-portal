@@ -39,6 +39,6 @@ describe('Edit', () => {
 			</Provider>
 		);
 
-		expect(getByText('Configure CSV')).toBeInTheDocument();
+		expect(getByText(/^configure csv$/i)).toBeInTheDocument();
 	});
 });

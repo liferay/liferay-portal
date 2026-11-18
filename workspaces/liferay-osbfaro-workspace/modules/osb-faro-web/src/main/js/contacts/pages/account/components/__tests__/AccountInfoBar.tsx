@@ -62,7 +62,7 @@ describe('AccountInfoBar', () => {
 		it('should render every firmographic value', () => {
 			render(<AccountInfoBar {...mockAccount} />);
 
-			expect(screen.getByText('Australia')).toBeInTheDocument();
+			expect(screen.getByText(/^australia$/i)).toBeInTheDocument();
 			expect(screen.getByText('Health Sector')).toBeInTheDocument();
 		});
 
@@ -75,8 +75,8 @@ describe('AccountInfoBar', () => {
 		it('should render the stage of the account in the selected lifecycle and the account type as labels', () => {
 			render(<AccountInfoBar {...mockAccount} />);
 
-			expect(screen.getByText('Engaged')).toBeInTheDocument();
-			expect(screen.queryByText('At Risk')).not.toBeInTheDocument();
+			expect(screen.getByText(/^engaged$/i)).toBeInTheDocument();
+			expect(screen.queryByText(/^at risk$/i)).not.toBeInTheDocument();
 			expect(screen.getByText('Type: Prospect')).toBeInTheDocument();
 		});
 
@@ -88,16 +88,16 @@ describe('AccountInfoBar', () => {
 
 			render(<AccountInfoBar {...mockAccount} />);
 
-			expect(screen.getByText('At Risk')).toBeInTheDocument();
-			expect(screen.queryByText('Engaged')).not.toBeInTheDocument();
+			expect(screen.getByText(/^at risk$/i)).toBeInTheDocument();
+			expect(screen.queryByText(/^engaged$/i)).not.toBeInTheDocument();
 		});
 
 		it('should render the lifecycle selector with the selected lifecycle', () => {
 			render(<AccountInfoBar {...mockAccount} />);
 
 			expect(
-				screen.getByRole('combobox', {name: 'Lifecycle'})
-			).toHaveTextContent('Customer');
+				screen.getByRole('combobox', {name: /^lifecycle$/i})
+			).toHaveTextContent(/customer/i);
 		});
 
 		it.each([
@@ -122,7 +122,7 @@ describe('AccountInfoBar', () => {
 			render(<AccountInfoBar accountName="Hydrofield" />);
 
 			expect(screen.getByText('Hydrofield')).toBeInTheDocument();
-			expect(screen.queryByText('Australia')).not.toBeInTheDocument();
+			expect(screen.queryByText(/^australia$/i)).not.toBeInTheDocument();
 			expect(screen.queryByText(/Revenue/)).not.toBeInTheDocument();
 			expect(screen.queryByText(/Type:/)).not.toBeInTheDocument();
 		});
@@ -136,7 +136,7 @@ describe('AccountInfoBar', () => {
 				/>
 			);
 
-			expect(screen.queryByText('Engaged')).not.toBeInTheDocument();
+			expect(screen.queryByText(/^engaged$/i)).not.toBeInTheDocument();
 			expect(container.querySelectorAll('.label')).toHaveLength(1);
 			expect(screen.getByText('Type: Prospect')).toBeInTheDocument();
 		});

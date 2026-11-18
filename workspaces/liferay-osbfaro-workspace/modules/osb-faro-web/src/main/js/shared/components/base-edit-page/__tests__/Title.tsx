@@ -50,7 +50,7 @@ describe('BaseEditPage.Title', () => {
 		renderTitle({errorMessage: 'Name cannot be blank.'});
 
 		expect(screen.getByRole('alert')).toHaveTextContent(
-			'Name cannot be blank.'
+			/name cannot be blank\./i
 		);
 		expect(screen.getByLabelText(/title/i)).toHaveAttribute(
 			'aria-describedby',

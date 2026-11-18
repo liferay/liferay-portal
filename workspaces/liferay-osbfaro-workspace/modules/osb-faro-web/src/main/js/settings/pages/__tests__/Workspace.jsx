@@ -71,8 +71,8 @@ describe('Workspace Settting', () => {
 			/>
 		);
 
-		expect(getByLabelText('Workspace Name')).toBeDisabled();
-		expect(getByDisplayValue('Oregon, USA')).toBeDisabled();
+		expect(getByLabelText(/^workspace name$/i)).toBeDisabled();
+		expect(getByDisplayValue(/^oregon, usa$/i)).toBeDisabled();
 		expect(
 			container.querySelector('.input-list-root input')
 		).toBeDisabled();

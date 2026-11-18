@@ -409,9 +409,9 @@ describe('ExperimentOverviewPage', () => {
 
 		await waitForLoadingToBeRemoved(container);
 
-		expect(queryByText('Test Sessions')).toBeInTheDocument();
+		expect(queryByText(/^test sessions$/i)).toBeInTheDocument();
 
-		expect(queryByText('Test Traffic')).toBeNull();
+		expect(queryByText(/^test traffic$/i)).toBeNull();
 	});
 
 	it('renders test traffic card when test type is MAB', async () => {
@@ -429,8 +429,8 @@ describe('ExperimentOverviewPage', () => {
 
 		await waitForLoadingToBeRemoved(container);
 
-		expect(queryByText('Test Traffic')).toBeInTheDocument();
+		expect(queryByText(/^test traffic$/i)).toBeInTheDocument();
 
-		expect(queryByText('Test Sessions')).toBeNull();
+		expect(queryByText(/^test sessions$/i)).toBeNull();
 	});
 });

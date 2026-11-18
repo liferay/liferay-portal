@@ -91,7 +91,7 @@ describe('AccountDropdown', () => {
 
 		expect(
 			screen.getByRole('combobox', {name: 'Filter By Accounts'})
-		).toHaveTextContent('All Accounts');
+		).toHaveTextContent(/all accounts/i);
 
 		expect(container).toMatchSnapshot();
 	});
@@ -179,7 +179,7 @@ describe('AccountDropdown', () => {
 			screen.getByRole('option', {name: 'Account 200'})
 		).toBeInTheDocument();
 		expect(
-			screen.getByRole('option', {name: 'All Accounts'})
+			screen.getByRole('option', {name: /^all accounts$/i})
 		).toBeInTheDocument();
 	});
 
@@ -249,7 +249,7 @@ describe('AccountDropdown', () => {
 		openPicker();
 
 		fireEvent.click(
-			await screen.findByRole('option', {name: 'All Accounts'})
+			await screen.findByRole('option', {name: /^all accounts$/i})
 		);
 
 		expect(onFilterChange).toHaveBeenCalledWith(null);

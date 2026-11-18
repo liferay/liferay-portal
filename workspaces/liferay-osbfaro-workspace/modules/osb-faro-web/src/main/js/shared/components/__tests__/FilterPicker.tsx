@@ -172,7 +172,7 @@ describe('FilterPicker', () => {
 
 			expect(getTrigger()).toHaveAttribute('aria-expanded', 'false');
 			expect(
-				screen.queryByRole('option', {name: 'All Accounts'})
+				screen.queryByRole('option', {name: /^all accounts$/i})
 			).toBeNull();
 
 			resolveRequest({items: ITEMS});
@@ -247,7 +247,7 @@ describe('FilterPicker', () => {
 			fireEvent.click(getTrigger());
 
 			expect(
-				await screen.findByRole('option', {name: 'All Accounts'})
+				await screen.findByRole('option', {name: /^all accounts$/i})
 			).toBeInTheDocument();
 		});
 
@@ -273,7 +273,7 @@ describe('FilterPicker', () => {
 
 	describe('server side search', () => {
 		const getSearchInput = () =>
-			screen.getByRole('textbox', {name: 'Search'});
+			screen.getByRole('textbox', {name: /^search$/i});
 
 		it('sends the typed text to the backend as the query', async () => {
 			const dataSourceFn = jest.fn().mockResolvedValue({items: ITEMS});
@@ -379,7 +379,7 @@ describe('FilterPicker', () => {
 		it('falls back to the "all-x" label when nothing is selected', () => {
 			renderPicker({items: ITEMS});
 
-			expect(screen.getByText('All Accounts')).toBeInTheDocument();
+			expect(screen.getByText(/^all accounts$/i)).toBeInTheDocument();
 		});
 
 		it('shows the selected item name on the trigger', () => {
@@ -417,7 +417,9 @@ describe('FilterPicker', () => {
 
 			await screen.findByRole('option', {name: 'Item 24'});
 
-			expect(screen.queryByText('All Accounts')).not.toBeInTheDocument();
+			expect(
+				screen.queryByText(/^all accounts$/i)
+			).not.toBeInTheDocument();
 
 			scrollListToBottom();
 

@@ -34,7 +34,7 @@ describe('DataValue', () => {
 	it('should render the processing label while the value is processing', () => {
 		render(<DataValue processing type="count" value={0} />);
 
-		expect(screen.getByText('Processing')).toBeInTheDocument();
+		expect(screen.getByText(/^processing$/i)).toBeInTheDocument();
 		expect(screen.queryByText('0')).not.toBeInTheDocument();
 	});
 

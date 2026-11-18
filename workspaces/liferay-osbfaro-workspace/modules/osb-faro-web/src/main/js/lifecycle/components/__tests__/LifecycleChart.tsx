@@ -129,7 +129,7 @@ describe('LifecycleChart', () => {
 		expect(
 			container.querySelector('.loading-root')?.closest('.card')
 		).toHaveStyle({minHeight: '432px'});
-		expect(queryByText('Aware')).toBeNull();
+		expect(queryByText(/^aware$/i)).toBeNull();
 	});
 
 	it('should not reserve the loading height once the stages arrive', () => {

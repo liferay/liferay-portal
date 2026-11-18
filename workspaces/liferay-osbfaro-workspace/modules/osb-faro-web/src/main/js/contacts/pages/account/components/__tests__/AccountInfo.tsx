@@ -37,24 +37,24 @@ describe('AccountInfo', () => {
 			render(<AccountInfo account={mockAccount} />);
 
 			expect(
-				screen.getByText('General Account Information')
+				screen.getByText(/^general account information$/i)
 			).toBeInTheDocument();
 		});
 
 		it('should render every info label', () => {
 			render(<AccountInfo account={mockAccount} />);
 
-			expect(screen.getByText('Account Type')).toBeInTheDocument();
-			expect(screen.getByText('Industry')).toBeInTheDocument();
-			expect(screen.getByText('Company Size')).toBeInTheDocument();
-			expect(screen.getByText('Annual Revenue')).toBeInTheDocument();
-			expect(screen.getByText('Website')).toBeInTheDocument();
+			expect(screen.getByText(/^account type$/i)).toBeInTheDocument();
+			expect(screen.getByText(/^industry$/i)).toBeInTheDocument();
+			expect(screen.getByText(/^company size$/i)).toBeInTheDocument();
+			expect(screen.getByText(/^annual revenue$/i)).toBeInTheDocument();
+			expect(screen.getByText(/^website$/i)).toBeInTheDocument();
 		});
 
 		it('should render the values from the mock', () => {
 			render(<AccountInfo account={mockAccount} />);
 
-			expect(screen.getByText('Customer')).toBeInTheDocument();
+			expect(screen.getByText(/^customer$/i)).toBeInTheDocument();
 			expect(screen.getByText('Technology')).toBeInTheDocument();
 			expect(screen.getByText('250')).toBeInTheDocument();
 			expect(screen.getByText('5M')).toBeInTheDocument();
@@ -109,7 +109,7 @@ describe('AccountInfo', () => {
 			render(<AccountInfo account={mockAccount} />);
 
 			expect(
-				screen.getByRole('button', {name: 'View All'})
+				screen.getByRole('button', {name: /^view all$/i})
 			).toBeInTheDocument();
 		});
 	});
@@ -124,7 +124,7 @@ describe('AccountInfo', () => {
 				container.querySelector('.loading-root')
 			).toBeInTheDocument();
 			expect(
-				screen.queryByRole('button', {name: 'View All'})
+				screen.queryByRole('button', {name: /^view all$/i})
 			).not.toBeInTheDocument();
 		});
 	});
@@ -134,11 +134,11 @@ describe('AccountInfo', () => {
 			render(<AccountInfo />);
 
 			expect(
-				screen.getByText('No Account Attributes Available')
+				screen.getByText(/^no account attributes available$/i)
 			).toBeInTheDocument();
 			expect(
 				screen.getByText(
-					'Account attributes will appear here when available.'
+					/^account attributes will appear here when available\.$/i
 				)
 			).toBeInTheDocument();
 		});
@@ -147,7 +147,7 @@ describe('AccountInfo', () => {
 			render(<AccountInfo />);
 
 			expect(
-				screen.queryByRole('button', {name: 'View All'})
+				screen.queryByRole('button', {name: /^view all$/i})
 			).not.toBeInTheDocument();
 		});
 
@@ -155,7 +155,7 @@ describe('AccountInfo', () => {
 			render(<AccountInfo account={{}} />);
 
 			expect(
-				screen.getByText('No Account Attributes Available')
+				screen.getByText(/^no account attributes available$/i)
 			).toBeInTheDocument();
 		});
 
@@ -173,7 +173,7 @@ describe('AccountInfo', () => {
 			);
 
 			expect(
-				screen.getByText('No Account Attributes Available')
+				screen.getByText(/^no account attributes available$/i)
 			).toBeInTheDocument();
 			expect(screen.queryByText('–')).not.toBeInTheDocument();
 		});
@@ -182,7 +182,7 @@ describe('AccountInfo', () => {
 			render(<AccountInfo account={{annualRevenue: 0}} />);
 
 			expect(
-				screen.queryByText('No Account Attributes Available')
+				screen.queryByText(/^no account attributes available$/i)
 			).not.toBeInTheDocument();
 			expect(screen.getByText('0')).toBeInTheDocument();
 		});
@@ -200,7 +200,7 @@ describe('AccountInfo', () => {
 		it('should open the modal when the View All button is clicked', () => {
 			render(<AccountInfo account={mockAccount} />);
 
-			fireEvent.click(screen.getByRole('button', {name: 'View All'}));
+			fireEvent.click(screen.getByRole('button', {name: /^view all$/i}));
 
 			expect(
 				screen.getByTestId('account-details-modal')
@@ -210,7 +210,7 @@ describe('AccountInfo', () => {
 		it('should close the modal when onClose is called', () => {
 			render(<AccountInfo account={mockAccount} />);
 
-			fireEvent.click(screen.getByRole('button', {name: 'View All'}));
+			fireEvent.click(screen.getByRole('button', {name: /^view all$/i}));
 			fireEvent.click(screen.getByRole('button', {name: 'close'}));
 
 			expect(

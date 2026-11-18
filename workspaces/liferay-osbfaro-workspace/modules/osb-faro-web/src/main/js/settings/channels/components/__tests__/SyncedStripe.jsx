@@ -27,7 +27,7 @@ describe('SyncedStripe', () => {
 
 			if (sitesSyncedCount === 1) {
 				expect(
-					queryByText('There is 1 site synced to this property.')
+					queryByText(/^there is 1 site synced to this property\.$/i)
 				).toBeInTheDocument();
 			} else {
 				expect(

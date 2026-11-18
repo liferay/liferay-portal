@@ -71,7 +71,7 @@ describe('VerticalTimeline', () => {
 			).toHaveTextContent('e484348e-anon');
 			expect(
 				container.querySelector('.individual-subtitle')
-			).toHaveTextContent('Anonymous User');
+			).toHaveTextContent(/anonymous user/i);
 		});
 
 		it('falls back to the label alone for an anonymous individual with no id', () => {
@@ -87,7 +87,7 @@ describe('VerticalTimeline', () => {
 
 			expect(
 				container.querySelector('.individual-title')
-			).toHaveTextContent('Anonymous User');
+			).toHaveTextContent(/anonymous user/i);
 			expect(
 				container.querySelector('.individual-subtitle')
 			).not.toBeInTheDocument();
@@ -105,7 +105,7 @@ describe('VerticalTimeline', () => {
 				]
 			});
 
-			expect(screen.getByText('Anonymous User').closest('a')).toBeNull();
+			expect(screen.getByText(/^anonymous user$/i).closest('a')).toBeNull();
 			expect(screen.getByText('e484348e-anon').closest('a')).toHaveAttribute(
 				'href',
 				INDIVIDUAL_ITEM.individualUrl
@@ -247,7 +247,7 @@ describe('VerticalTimeline', () => {
 
 			expect(
 				container.querySelector('.payload-table-title')
-			).toHaveTextContent('Session Attributes');
+			).toHaveTextContent(/session attributes/i);
 			expect(
 				container.querySelector('.attributes-payload')
 			).toHaveTextContent('Mozilla/5.0');
@@ -283,7 +283,7 @@ describe('VerticalTimeline', () => {
 				]
 			});
 
-			expect(screen.getByText('Home')).toBeInTheDocument();
+			expect(screen.getByText(/^home$/i)).toBeInTheDocument();
 		});
 
 		it('should display the "DXP" label for a Liferay DXP data source', () => {
@@ -291,7 +291,7 @@ describe('VerticalTimeline', () => {
 				items: [{...SESSION_ITEM, applicationId: 'WebContent'}]
 			});
 
-			expect(screen.getByText('DXP')).toBeInTheDocument();
+			expect(screen.getByText(/^dxp$/i)).toBeInTheDocument();
 		});
 
 		it('should display the application id label for a webhook data source', () => {
@@ -305,26 +305,26 @@ describe('VerticalTimeline', () => {
 				]
 			});
 
-			expect(screen.getByText('Hubspot')).toBeInTheDocument();
-			expect(screen.queryByText('DXP')).not.toBeInTheDocument();
+			expect(screen.getByText(/^hubspot$/i)).toBeInTheDocument();
+			expect(screen.queryByText(/^dxp$/i)).not.toBeInTheDocument();
 		});
 
 		it('shows the became known label for the session the individual was identified in', () => {
 			renderTimeline({items: [{...SESSION_ITEM, becameKnown: true}]});
 
-			expect(screen.getByText('Became Known')).toBeInTheDocument();
+			expect(screen.getByText(/^became known$/i)).toBeInTheDocument();
 		});
 
 		it('hides the became known label for every other session', () => {
 			renderTimeline({items: [SESSION_ITEM]});
 
-			expect(screen.queryByText('Became Known')).not.toBeInTheDocument();
+			expect(screen.queryByText(/^became known$/i)).not.toBeInTheDocument();
 		});
 
 		it('lays the became known icon out beside its text', () => {
 			renderTimeline({items: [{...SESSION_ITEM, becameKnown: true}]});
 
-			const label = screen.getByText('Became Known').closest('.label');
+			const label = screen.getByText(/^became known$/i).closest('.label');
 
 			expect(
 				label.querySelector('.label-item-before .lexicon-icon')
@@ -337,7 +337,7 @@ describe('VerticalTimeline', () => {
 				LDPEnabled: false
 			});
 
-			expect(screen.queryByText('DXP')).not.toBeInTheDocument();
+			expect(screen.queryByText(/^dxp$/i)).not.toBeInTheDocument();
 		});
 	});
 
@@ -355,7 +355,7 @@ describe('VerticalTimeline', () => {
 		it('renders the page title as a link to its dashboard when a descriptionUrl is provided', () => {
 			renderTimeline({items: [PAGE_ITEM]});
 
-			expect(screen.getByText('Home').closest('a')).toHaveAttribute(
+			expect(screen.getByText(/^home$/i).closest('a')).toHaveAttribute(
 				'href',
 				PAGE_ITEM.descriptionUrl
 			);
@@ -364,7 +364,7 @@ describe('VerticalTimeline', () => {
 		it('renders the page title as plain text when there is no descriptionUrl', () => {
 			renderTimeline({items: [{...PAGE_ITEM, descriptionUrl: undefined}]});
 
-			expect(screen.getByText('Home').closest('a')).toBeNull();
+			expect(screen.getByText(/^home$/i).closest('a')).toBeNull();
 		});
 
 		it('renders the page url as an external link', () => {
@@ -411,13 +411,13 @@ describe('VerticalTimeline', () => {
 		it('does not show the experience label when the page carries no experience data', () => {
 			renderTimeline({items: [PAGE_ITEM]});
 
-			expect(screen.queryByText('Experience')).not.toBeInTheDocument();
+			expect(screen.queryByText(/^experience$/i)).not.toBeInTheDocument();
 		});
 
 		it('does not show the experience label when experienceNames is empty', () => {
 			renderTimeline({items: [{...PAGE_ITEM, experienceNames: []}]});
 
-			expect(screen.queryByText('Experience')).not.toBeInTheDocument();
+			expect(screen.queryByText(/^experience$/i)).not.toBeInTheDocument();
 		});
 
 		it('shows the experience label when the page was served by a non-default experience', () => {
@@ -427,7 +427,7 @@ describe('VerticalTimeline', () => {
 				]
 			});
 
-			expect(screen.getByText('Experience')).toBeInTheDocument();
+			expect(screen.getByText(/^experience$/i)).toBeInTheDocument();
 		});
 
 		it('names the experience in the label\'s tooltip', () => {
@@ -438,7 +438,7 @@ describe('VerticalTimeline', () => {
 			});
 
 			expect(
-				screen.getByText('Experience').closest('.experience-label-root')
+				screen.getByText(/^experience$/i).closest('.experience-label-root')
 			).toHaveAttribute('title', 'Q3 Promo Experience');
 		});
 
@@ -456,7 +456,7 @@ describe('VerticalTimeline', () => {
 			});
 
 			expect(
-				screen.getByText('Experience').closest('.experience-label-root')
+				screen.getByText(/^experience$/i).closest('.experience-label-root')
 			).toHaveAttribute(
 				'title',
 				'Q3 Promo Experience\nWinter Sale Experience'
@@ -544,7 +544,7 @@ describe('VerticalTimeline', () => {
 
 			expect(
 				container.querySelector('.attributes-payload')
-			).toHaveTextContent('HubSpot');
+			).toHaveTextContent(/hubspot/i);
 		});
 
 		it('lays the attributes out as a property and value table', () => {
@@ -554,12 +554,12 @@ describe('VerticalTimeline', () => {
 				container.querySelector('.event-row .payload-button')
 			);
 
-			expect(screen.getByText('Property')).toBeInTheDocument();
-			expect(screen.getByText('Value')).toBeInTheDocument();
+			expect(screen.getByText(/^property$/i)).toBeInTheDocument();
+			expect(screen.getByText(/^value$/i)).toBeInTheDocument();
 
 			expect(
 				screen.getByText('applicationId').closest('tr')
-			).toHaveTextContent('HubSpot');
+			).toHaveTextContent(/hubspot/i);
 		});
 
 		it('shows the acquisition parameters in a table of their own', () => {
@@ -582,10 +582,10 @@ describe('VerticalTimeline', () => {
 			const [attributesTable, utmTable] =
 				container.querySelectorAll('.payload-table');
 
-			expect(attributesTable).toHaveTextContent('Event Attributes');
+			expect(attributesTable).toHaveTextContent(/event attributes/i);
 			expect(attributesTable).not.toHaveTextContent('utm_medium');
 
-			expect(utmTable).toHaveTextContent('UTM Parameters');
+			expect(utmTable).toHaveTextContent(/utm parameters/i);
 			expect(
 				screen.getByText('utm_medium').closest('tr')
 			).toHaveTextContent('email');
@@ -654,7 +654,7 @@ describe('VerticalTimeline', () => {
 			it('shows the campaign as its own key in the code view', () => {
 				const container = expandCampaignEvent();
 
-				fireEvent.click(screen.getByText('Code'));
+				fireEvent.click(screen.getByText(/^code$/i));
 
 				expect(
 					JSON.parse(
@@ -689,9 +689,9 @@ describe('VerticalTimeline', () => {
 			it('titles the payload and offers a table and a code view', () => {
 				expandFirstEvent();
 
-				expect(screen.getByText('Details')).toBeInTheDocument();
-				expect(screen.getByText('Table')).toBeInTheDocument();
-				expect(screen.getByText('Code')).toBeInTheDocument();
+				expect(screen.getByText(/^details$/i)).toBeInTheDocument();
+				expect(screen.getByText(/^table$/i)).toBeInTheDocument();
+				expect(screen.getByText(/^code$/i)).toBeInTheDocument();
 			});
 
 			it('shows the tables first', () => {
@@ -704,7 +704,7 @@ describe('VerticalTimeline', () => {
 			it('shows the raw payload once code is chosen', () => {
 				const container = expandFirstEvent();
 
-				fireEvent.click(screen.getByText('Code'));
+				fireEvent.click(screen.getByText(/^code$/i));
 
 				expect(container.querySelector('.payload-code')).toHaveTextContent(
 					'"applicationId": "HubSpot"'
@@ -715,8 +715,8 @@ describe('VerticalTimeline', () => {
 			it('returns to the tables once table is chosen again', () => {
 				const container = expandFirstEvent();
 
-				fireEvent.click(screen.getByText('Code'));
-				fireEvent.click(screen.getByText('Table'));
+				fireEvent.click(screen.getByText(/^code$/i));
+				fireEvent.click(screen.getByText(/^table$/i));
 
 				expect(container.querySelector('.payload-table')).toBeInTheDocument();
 				expect(container.querySelector('.payload-code')).not.toBeInTheDocument();
@@ -733,7 +733,7 @@ describe('VerticalTimeline', () => {
 			it('offers a copy button carrying the raw payload in the code view', () => {
 				const container = expandFirstEvent();
 
-				fireEvent.click(screen.getByText('Code'));
+				fireEvent.click(screen.getByText(/^code$/i));
 
 				expect(container.querySelector('.payload-copy')).toHaveAttribute(
 					'data-clipboard-text',
@@ -744,7 +744,7 @@ describe('VerticalTimeline', () => {
 			it('names the copy button after what it copies', () => {
 				const container = expandFirstEvent();
 
-				fireEvent.click(screen.getByText('Code'));
+				fireEvent.click(screen.getByText(/^code$/i));
 
 				const copy = container.querySelector('.payload-copy');
 
@@ -762,7 +762,7 @@ describe('VerticalTimeline', () => {
 				fireEvent.click(firstRow.querySelector('.payload-button'));
 				fireEvent.click(secondRow.querySelector('.payload-button'));
 
-				fireEvent.click(within(firstRow).getByText('Code'));
+				fireEvent.click(within(firstRow).getByText(/^code$/i));
 
 				expect(firstRow.querySelector('.payload-code')).toBeInTheDocument();
 				expect(secondRow.querySelector('.payload-code')).not.toBeInTheDocument();

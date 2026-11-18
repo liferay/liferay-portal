@@ -100,15 +100,15 @@ describe('EventsCriteriaTabs', () => {
 	it('renders both the Default and Custom tabs', () => {
 		renderTabs();
 
-		expect(screen.getByText('Default')).toBeInTheDocument();
-		expect(screen.getByText('Custom')).toBeInTheDocument();
+		expect(screen.getByText(/^default$/i)).toBeInTheDocument();
+		expect(screen.getByText(/^custom$/i)).toBeInTheDocument();
 	});
 
 	it('opens on the Default tab and lists the frontend default events', () => {
 		renderTabs();
 
-		expect(screen.getByText('Viewed Page')).toBeInTheDocument();
-		expect(screen.getByText('Submitted Form')).toBeInTheDocument();
+		expect(screen.getByText(/^viewed page$/i)).toBeInTheDocument();
+		expect(screen.getByText(/^submitted form$/i)).toBeInTheDocument();
 
 		// Custom events are not in the DOM until the Custom tab is selected.
 
@@ -118,12 +118,12 @@ describe('EventsCriteriaTabs', () => {
 	it('lists the backend custom events when the Custom tab is selected', async () => {
 		renderTabs();
 
-		fireEvent.click(screen.getByText('Custom'));
+		fireEvent.click(screen.getByText(/^custom$/i));
 
 		expect(await screen.findByText('Custom Event 1')).toBeInTheDocument();
 		expect(screen.getByText('Custom Event 3')).toBeInTheDocument();
 
-		expect(screen.queryByText('Viewed Page')).not.toBeInTheDocument();
+		expect(screen.queryByText(/^viewed page$/i)).not.toBeInTheDocument();
 	});
 
 	it('renders criteria items inside the shared property-subgroups-list container so they pick up the sidebar item styles', () => {
@@ -148,7 +148,7 @@ describe('EventsCriteriaTabs', () => {
 	it('requests custom events from the backend with eventType Custom, page 0 and size 10', async () => {
 		renderTabs();
 
-		fireEvent.click(screen.getByText('Custom'));
+		fireEvent.click(screen.getByText(/^custom$/i));
 
 		await waitFor(() =>
 			expect(lastQueryVariables()).toMatchObject({
@@ -164,7 +164,7 @@ describe('EventsCriteriaTabs', () => {
 
 		renderTabs();
 
-		fireEvent.click(screen.getByText('Custom'));
+		fireEvent.click(screen.getByText(/^custom$/i));
 
 		fireEvent.click(await screen.findByText('2'));
 
@@ -176,7 +176,7 @@ describe('EventsCriteriaTabs', () => {
 
 		renderTabs();
 
-		fireEvent.click(screen.getByText('Custom'));
+		fireEvent.click(screen.getByText(/^custom$/i));
 
 		expect(await screen.findByText('Custom Event 1')).toBeInTheDocument();
 
@@ -188,7 +188,7 @@ describe('EventsCriteriaTabs', () => {
 
 		const {rerender} = renderTabs();
 
-		fireEvent.click(screen.getByText('Custom'));
+		fireEvent.click(screen.getByText(/^custom$/i));
 
 		fireEvent.click(await screen.findByText('2'));
 
@@ -216,8 +216,8 @@ describe('EventsCriteriaTabs', () => {
 	it('filters the default events client-side by the search keyword', () => {
 		renderTabs({searchValue: 'Viewed'});
 
-		expect(screen.getByText('Viewed Page')).toBeInTheDocument();
-		expect(screen.queryByText('Submitted Form')).not.toBeInTheDocument();
+		expect(screen.getByText(/^viewed page$/i)).toBeInTheDocument();
+		expect(screen.queryByText(/^submitted form$/i)).not.toBeInTheDocument();
 	});
 
 	it('shows the no-entries empty state when there are no custom events', async () => {
@@ -225,7 +225,7 @@ describe('EventsCriteriaTabs', () => {
 
 		const {container} = renderTabs();
 
-		fireEvent.click(screen.getByText('Custom'));
+		fireEvent.click(screen.getByText(/^custom$/i));
 
 		expect(
 			await screen.findByText('no-custom-events-yet')
@@ -248,7 +248,7 @@ describe('EventsCriteriaTabs', () => {
 
 		renderTabs({searchValue: 'nothing-matches'});
 
-		fireEvent.click(screen.getByText('Custom'));
+		fireEvent.click(screen.getByText(/^custom$/i));
 
 		await waitFor(() =>
 			expect(screen.getByText('no-results-were-found')).toBeInTheDocument()

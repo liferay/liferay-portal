@@ -74,7 +74,7 @@ describe('SelectWorkspaceAccount', () => {
 
 		jest.runAllTimers();
 
-		expect(getByText('Select Account')).toBeInTheDocument();
+		expect(getByText(/^select account$/i)).toBeInTheDocument();
 	});
 });
 

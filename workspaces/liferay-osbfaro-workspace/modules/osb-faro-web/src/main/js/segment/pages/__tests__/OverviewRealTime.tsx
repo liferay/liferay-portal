@@ -39,13 +39,13 @@ describe('OverviewRealTime', () => {
 	it('should display the segment criteria', () => {
 		renderOverviewRealTime();
 
-		expect(screen.getByText('Segment Criteria')).toBeTruthy();
+		expect(screen.getByText(/^segment criteria$/i)).toBeTruthy();
 	});
 
 	it('should not display the membership of the segment', () => {
 		renderOverviewRealTime();
 
-		expect(screen.queryByText('Segment Membership Trend')).toBeNull();
-		expect(screen.queryByText('Total Members')).toBeNull();
+		expect(screen.queryByText(/^segment membership trend$/i)).toBeNull();
+		expect(screen.queryByText(/^total members$/i)).toBeNull();
 	});
 });

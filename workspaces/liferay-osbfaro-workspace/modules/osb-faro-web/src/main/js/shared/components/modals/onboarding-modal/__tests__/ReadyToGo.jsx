@@ -30,7 +30,7 @@ describe('ReadyToGo', () => {
 
 		expect(spy).not.toBeCalled();
 
-		fireEvent.click(queryByText('Done'));
+		fireEvent.click(queryByText(/^done$/i));
 
 		expect(spy).toBeCalled();
 	});

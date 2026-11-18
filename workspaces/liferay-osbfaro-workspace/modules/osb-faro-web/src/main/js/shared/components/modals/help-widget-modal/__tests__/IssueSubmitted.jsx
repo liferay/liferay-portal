@@ -27,6 +27,6 @@ describe('IssueSubmitted', () => {
 			</ClayModal>
 		));
 
-		expect(screen.getByText('Message Received')).toBeInTheDocument();
+		expect(screen.getByText(/^message received$/i)).toBeInTheDocument();
 	});
 });

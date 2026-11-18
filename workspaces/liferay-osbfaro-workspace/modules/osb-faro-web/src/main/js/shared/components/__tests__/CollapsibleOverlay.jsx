@@ -26,7 +26,7 @@ describe('CollapsibleOverlay', () => {
 			<CollapsibleOverlay onClose={onCloseSpy} visible />
 		);
 
-		fireEvent.click(getByLabelText('Close'));
+		fireEvent.click(getByLabelText(/^close$/i));
 
 		expect(onCloseSpy).toHaveBeenCalled();
 	});

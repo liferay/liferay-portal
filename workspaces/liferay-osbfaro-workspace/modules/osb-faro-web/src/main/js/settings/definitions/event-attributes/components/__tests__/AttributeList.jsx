@@ -66,7 +66,7 @@ describe('AttributeList', () => {
 
 		await waitForLoadingToBeRemoved();
 
-		expect(getByText('String').closest('.label')).toHaveClass(
+		expect(getByText(/^string$/i).closest('.label')).toHaveClass(
 			'label-inverse-info'
 		);
 	});

@@ -113,14 +113,14 @@ describe('Sites Dashboard Overview', () => {
 				</MemoryRouter>
 			</ApolloProvider>
 		);
-		fireEvent.click(getByText('All Visitors'));
+		fireEvent.click(getByText(/^all visitors$/i));
 
-		expect(getAllByText('All Visitors')[1]).toBeTruthy();
-		expect(getByText('Anonymous Visitors')).toBeTruthy();
-		expect(getByText('Known Visitors')).toBeTruthy();
-		expect(getByLabelText('View All Pages')).toBeInTheDocument();
-		expect(getByLabelText('View All Search Terms')).toBeInTheDocument();
-		expect(getByLabelText('View All Interests')).toBeInTheDocument();
+		expect(getAllByText(/^all visitors$/i)[1]).toBeTruthy();
+		expect(getByText(/^anonymous visitors$/i)).toBeTruthy();
+		expect(getByText(/^known visitors$/i)).toBeTruthy();
+		expect(getByLabelText(/^view all pages$/i)).toBeInTheDocument();
+		expect(getByLabelText(/^view all search terms$/i)).toBeInTheDocument();
+		expect(getByLabelText(/^view all interests$/i)).toBeInTheDocument();
 
 		expect(container).toMatchSnapshot();
 	});

@@ -74,7 +74,7 @@ describe('SessionsCard', () => {
 			<SessionsCard experiment={experiment} />
 		);
 
-		fireEvent.click(getByText('Per Variant'));
+		fireEvent.click(getByText(/^per variant$/i));
 
 		hoverFirstDataPoint(container);
 

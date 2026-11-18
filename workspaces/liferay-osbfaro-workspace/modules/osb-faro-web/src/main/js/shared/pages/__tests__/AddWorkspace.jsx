@@ -36,7 +36,7 @@ describe('AddWorkspace', () => {
 			</Provider>
 		);
 
-		expect(getByText('Create Workspace')).toBeInTheDocument();
+		expect(getByText(/^create workspace$/i)).toBeInTheDocument();
 	});
 });
 

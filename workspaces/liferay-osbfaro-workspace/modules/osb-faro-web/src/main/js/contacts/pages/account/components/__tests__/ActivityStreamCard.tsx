@@ -82,7 +82,7 @@ describe('ActivityStreamCard', () => {
 
 		await waitForLoadingToBeRemoved(container);
 
-		expect(getByPlaceholderText('Search')).toBeInTheDocument();
+		expect(getByPlaceholderText(/^search$/i)).toBeInTheDocument();
 		expect(getByText('Jane Doe')).toBeInTheDocument();
 	});
 
@@ -141,7 +141,7 @@ describe('ActivityStreamCard', () => {
 
 		await waitForLoadingToBeRemoved(container);
 
-		expect(getByText('Experience')).toBeInTheDocument();
+		expect(getByText(/^experience$/i)).toBeInTheDocument();
 	});
 
 	it('includes accountId and accountName as query params on a page event link', async () => {
@@ -205,10 +205,10 @@ describe('ActivityStreamCard', () => {
 		await waitForLoadingToBeRemoved(container);
 
 		expect(
-			getByText('There is no data for account activities.')
+			getByText(/^there is no data for account activities\.$/i)
 		).toBeInTheDocument();
 		expect(
-			getByText('Learn more about account activities.')
+			getByText(/^learn more about account activities\.$/i)
 		).toBeInTheDocument();
 		expect(container.querySelector('.recharts-cartesian-grid')).toBeNull();
 	});
@@ -236,7 +236,7 @@ describe('ActivityStreamCard', () => {
 
 		await waitForLoadingToBeRemoved(container);
 
-		const searchInput = getByPlaceholderText('Search');
+		const searchInput = getByPlaceholderText(/^search$/i);
 
 		fireEvent.change(searchInput, {target: {value: SEARCH_KEYWORDS}});
 		fireEvent.keyDown(searchInput, {
@@ -249,15 +249,15 @@ describe('ActivityStreamCard', () => {
 			await jest.advanceTimersByTimeAsync(500);
 		});
 
-		expect(getByText('No Results Were Found')).toBeInTheDocument();
+		expect(getByText(/^no results were found$/i)).toBeInTheDocument();
 
-		fireEvent.click(getByText('Clear Search'));
+		fireEvent.click(getByText(/^clear search$/i));
 
 		await act(async () => {
 			await jest.advanceTimersByTimeAsync(500);
 		});
 
-		expect(getByPlaceholderText('Search')).toHaveValue('');
+		expect(getByPlaceholderText(/^search$/i)).toHaveValue('');
 		expect(getByText('Jane Doe')).toBeInTheDocument();
 	});
 

@@ -132,9 +132,9 @@ describe('TopPagesCard', () => {
 		await waitForLoadingToBeRemoved(container);
 
 		expect(screen.getByText('TOP PAGES')).toBeInTheDocument();
-		expect(screen.getByText('Visited Pages')).toBeInTheDocument();
-		expect(screen.getByText('Entrance Pages')).toBeInTheDocument();
-		expect(screen.getByText('Exit Pages')).toBeInTheDocument();
+		expect(screen.getByText(/^visited pages$/i)).toBeInTheDocument();
+		expect(screen.getByText(/^entrance pages$/i)).toBeInTheDocument();
+		expect(screen.getByText(/^exit pages$/i)).toBeInTheDocument();
 	});
 
 	it('should render the unique visitors of the pages of the individual', async () => {
@@ -168,7 +168,7 @@ describe('TopPagesCard', () => {
 
 		await waitForLoadingToBeRemoved(container);
 
-		fireEvent.click(screen.getByText('Entrance Pages'));
+		fireEvent.click(screen.getByText(/^entrance pages$/i));
 
 		expect(await screen.findByText('My asset A')).toBeInTheDocument();
 		expect(screen.getByText('10')).toBeInTheDocument();
@@ -179,16 +179,18 @@ describe('TopPagesCard', () => {
 
 		await waitForLoadingToBeRemoved(container);
 
-		expect(screen.queryByText('View All')).toBeNull();
+		expect(screen.queryByText(/^view all$/i)).toBeNull();
 	});
 
 	it('should request nothing while the individual is unknown', async () => {
 		renderTopPagesCardWithoutIndividual();
 
 		expect(
-			await screen.findByText('No Pages Available')
+			await screen.findByText(/^no pages available$/i)
 		).toBeInTheDocument();
-		expect(screen.queryByText('An unexpected error occurred.')).toBeNull();
+		expect(
+			screen.queryByText(/^an unexpected error occurred\.$/i)
+		).toBeNull();
 	});
 
 	it('should render the empty state when the individual has no pages', async () => {
@@ -197,10 +199,10 @@ describe('TopPagesCard', () => {
 		await waitForLoadingToBeRemoved(container);
 
 		expect(
-			await screen.findByText('No Pages Available')
+			await screen.findByText(/^no pages available$/i)
 		).toBeInTheDocument();
 		expect(
-			screen.getByText('Pages will appear here when available.')
+			screen.getByText(/^pages will appear here when available\.$/i)
 		).toBeInTheDocument();
 	});
 });

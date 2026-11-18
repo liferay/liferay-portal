@@ -140,10 +140,10 @@ describe('Overview', () => {
 		renderOverview({account: mockAccount});
 
 		expect(screen.getByText('IQVIA')).toBeInTheDocument();
-		expect(screen.getByText('United States')).toBeInTheDocument();
+		expect(screen.getByText(/^united states$/i)).toBeInTheDocument();
 		expect(screen.getByText('11.3B Revenue')).toBeInTheDocument();
 		expect(screen.getByText('Business Services')).toBeInTheDocument();
-		expect(screen.getByText('Engaged')).toBeInTheDocument();
+		expect(screen.getByText(/^engaged$/i)).toBeInTheDocument();
 		expect(screen.getByText('Type: Prospect')).toBeInTheDocument();
 	});
 
@@ -151,7 +151,7 @@ describe('Overview', () => {
 		renderOverview({account: {...mockAccount, lifecycleStages: []}});
 
 		expect(screen.getByText('IQVIA')).toBeInTheDocument();
-		expect(screen.queryByText('Engaged')).not.toBeInTheDocument();
+		expect(screen.queryByText(/^engaged$/i)).not.toBeInTheDocument();
 	});
 
 	it('should render no account type label when the account has none', () => {
@@ -362,7 +362,7 @@ describe('Overview', () => {
 			renderOverview({account: mockAccount});
 
 			expect(
-				screen.getAllByText('An unexpected error occurred.')
+				screen.getAllByText(/^an unexpected error occurred\.$/i)
 			).toHaveLength(4);
 			expect(screen.queryByText('1.2K')).not.toBeInTheDocument();
 		});

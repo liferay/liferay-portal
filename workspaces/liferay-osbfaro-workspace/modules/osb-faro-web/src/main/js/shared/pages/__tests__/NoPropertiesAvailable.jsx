@@ -65,7 +65,7 @@ describe('NoPropertiesAvailable', () => {
 
 		await waitForLoadingToBeRemoved(container);
 
-		fireEvent.click(queryByText('Start'));
+		fireEvent.click(queryByText(/^start$/i));
 
 		expect(await screen.findByTestId('onboarding-modal')).toBeInTheDocument();
 	});

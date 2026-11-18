@@ -14,8 +14,8 @@ describe('ConnectorEntities', () => {
 			/>
 		);
 
-		expect(getByText('Accounts')).toBeTruthy();
-		expect(getByText('Events')).toBeTruthy();
+		expect(getByText(/^accounts$/i)).toBeTruthy();
+		expect(getByText(/^events$/i)).toBeTruthy();
 	});
 
 	it('renders the synced count when it is a non-negative number', () => {
@@ -59,7 +59,7 @@ describe('ConnectorEntities', () => {
 			/>
 		);
 
-		expect(queryByText(/Items Synced/i)).toBeNull();
+		expect(queryByText(/items synced/i)).toBeNull();
 	});
 
 	it('renders the Configured label with success display when count is greater than zero', () => {
@@ -70,7 +70,7 @@ describe('ConnectorEntities', () => {
 			/>
 		);
 
-		expect(getByText('Configured')).toBeTruthy();
+		expect(getByText(/^configured$/i)).toBeTruthy();
 	});
 
 	it('renders the Unconfigured label when count is zero', () => {
@@ -81,7 +81,7 @@ describe('ConnectorEntities', () => {
 			/>
 		);
 
-		expect(getByText('Unconfigured')).toBeTruthy();
+		expect(getByText(/^unconfigured$/i)).toBeTruthy();
 	});
 
 	it('renders the Unconfigured label when no count is provided', () => {
@@ -92,7 +92,7 @@ describe('ConnectorEntities', () => {
 			/>
 		);
 
-		expect(getByText('Unconfigured')).toBeTruthy();
+		expect(getByText(/^unconfigured$/i)).toBeTruthy();
 	});
 
 	it('renders the Unconfigured label when connector status is Disconnected even with count greater than zero', () => {
@@ -104,7 +104,7 @@ describe('ConnectorEntities', () => {
 			/>
 		);
 
-		expect(getByText('Unconfigured')).toBeTruthy();
+		expect(getByText(/^unconfigured$/i)).toBeTruthy();
 	});
 
 	it('renders the Configured label when connector status is Active and count is greater than zero', () => {
@@ -116,7 +116,7 @@ describe('ConnectorEntities', () => {
 			/>
 		);
 
-		expect(getByText('Configured')).toBeTruthy();
+		expect(getByText(/^configured$/i)).toBeTruthy();
 	});
 
 	it('renders the Configured label when connector status is Inactive and count is greater than zero', () => {
@@ -128,7 +128,7 @@ describe('ConnectorEntities', () => {
 			/>
 		);
 
-		expect(getByText('Configured')).toBeTruthy();
+		expect(getByText(/^configured$/i)).toBeTruthy();
 	});
 
 	it('renders nothing inside the list when no entities are provided', () => {

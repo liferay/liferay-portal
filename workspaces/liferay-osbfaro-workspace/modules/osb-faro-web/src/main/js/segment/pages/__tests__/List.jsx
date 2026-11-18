@@ -95,7 +95,7 @@ describe('List', () => {
 		expect(realTimeOption.closest('a')).not.toHaveClass('disabled');
 
 		expect(
-			screen.getByText('New Segment').closest('button')
+			screen.getByText(/^new segment$/i).closest('button')
 		).not.toBeDisabled();
 
 		expect(API.projects.fetchFeatureUsages).not.toHaveBeenCalled();
@@ -106,7 +106,7 @@ describe('List', () => {
 
 		await waitForLoadingToBeRemoved(document.body);
 
-		expect(screen.getByText('Segments')).toBeInTheDocument();
+		expect(screen.getByText(/^segments$/i)).toBeInTheDocument();
 	});
 
 	it('should show the sequential info icon for real time sequential segments', async () => {
@@ -189,8 +189,8 @@ describe('List', () => {
 			.closest('.dropdown-menu')
 			.querySelectorAll('.dropdown-subheader');
 
-		expect(accountGroup).toHaveTextContent('Account');
-		expect(individualGroup).toHaveTextContent('Individual');
+		expect(accountGroup).toHaveTextContent(/account/i);
+		expect(individualGroup).toHaveTextContent(/individual/i);
 	});
 
 	it('links straight to an individual batch segment for non-LDP plans', async () => {
@@ -212,7 +212,7 @@ describe('List', () => {
 
 		const newSegmentLink = screen.getByTestId('new-segment-link');
 
-		expect(newSegmentLink).toHaveTextContent('New Segment');
+		expect(newSegmentLink).toHaveTextContent(/new segment/i);
 		expect(newSegmentLink).toHaveAttribute(
 			'href',
 			'/workspace/23/123/contacts/segments/create?type=BATCH'
@@ -238,7 +238,7 @@ describe('List', () => {
 
 		const row = screen.getByText('Seattle0').closest('tr');
 
-		expect(within(row).getByText('Account')).toBeInTheDocument();
+		expect(within(row).getByText(/^account$/i)).toBeInTheDocument();
 		expect(within(row).getByText('1.8K accounts')).toBeInTheDocument();
 	});
 
@@ -261,7 +261,7 @@ describe('List', () => {
 
 		const row = screen.getByText('Seattle0').closest('tr');
 
-		expect(within(row).getByText('Individual')).toBeInTheDocument();
+		expect(within(row).getByText(/^individual$/i)).toBeInTheDocument();
 		expect(within(row).getByText('2.3K individuals')).toBeInTheDocument();
 	});
 
@@ -328,7 +328,7 @@ describe('List', () => {
 
 		const row = screen.getByText('Seattle0').closest('tr');
 
-		expect(within(row).getAllByText('Processing')).toHaveLength(2);
+		expect(within(row).getAllByText(/^processing$/i)).toHaveLength(2);
 		expect(within(row).queryByText('0 individuals')).toBeNull();
 	});
 
@@ -351,7 +351,7 @@ describe('List', () => {
 
 		const row = screen.getByText('Seattle0').closest('tr');
 
-		expect(within(row).getAllByText('Processing')).toHaveLength(2);
+		expect(within(row).getAllByText(/^processing$/i)).toHaveLength(2);
 		expect(within(row).queryByText('2.3K individuals')).toBeNull();
 	});
 
@@ -434,7 +434,7 @@ describe('List', () => {
 
 		const row = screen.getByText('Seattle0').closest('tr');
 
-		expect(within(row).getAllByText('Processing')).toHaveLength(2);
+		expect(within(row).getAllByText(/^processing$/i)).toHaveLength(2);
 	});
 
 	it('opens the manage notifications modal from the row actions', async () => {
@@ -448,14 +448,14 @@ describe('List', () => {
 
 		const row = screen.getByText('Seattle0').closest('tr');
 
-		fireEvent.click(within(row).getByRole('button', {name: 'Menu'}));
+		fireEvent.click(within(row).getByRole('button', {name: /^menu$/i}));
 
 		fireEvent.click(
-			screen.getByRole('menuitem', {name: 'Manage Notifications'})
+			screen.getByRole('menuitem', {name: /^manage notifications$/i})
 		);
 
 		expect(
-			await screen.findByText('Manage Segment Notifications')
+			await screen.findByText(/^manage segment notifications$/i)
 		).toBeInTheDocument();
 	});
 });

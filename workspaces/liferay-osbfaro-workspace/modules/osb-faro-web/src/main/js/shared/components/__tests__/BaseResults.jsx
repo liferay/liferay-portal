@@ -56,7 +56,7 @@ describe('BaseResults', () => {
 		await waitFor(
 			() => {
 				expect(
-					getByText('An unexpected error occurred.')
+					getByText(/^an unexpected error occurred\.$/i)
 				).toBeInTheDocument();
 			},
 			{timeout: 1000}
@@ -76,7 +76,7 @@ describe('BaseResults', () => {
 		await waitFor(
 			() => {
 				expect(
-					getByText('No Results Were Found')
+					getByText(/^no results were found$/i)
 				).toBeInTheDocument();
 			},
 			{timeout: 1000}

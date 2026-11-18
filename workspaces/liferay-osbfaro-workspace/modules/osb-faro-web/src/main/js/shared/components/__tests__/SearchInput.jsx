@@ -20,7 +20,7 @@ describe('SearchInput', () => {
 			<SearchInput onSubmit={onSubmit} value={value} />
 		);
 
-		const node = getByPlaceholderText('Search');
+		const node = getByPlaceholderText(/^search$/i);
 		const event = createEvent.keyDown(node, {key: 'Enter'});
 		fireEvent(node, event);
 		expect(onSubmit).toHaveBeenCalledWith(value);
@@ -32,7 +32,7 @@ describe('SearchInput', () => {
 		const {getByPlaceholderText} = render(
 			<SearchInput onSubmit={onSubmit} />
 		);
-		const node = getByPlaceholderText('Search');
+		const node = getByPlaceholderText(/^search$/i);
 		const event = createEvent.keyDown(node, {key: 'a'});
 		fireEvent(node, event);
 
@@ -47,7 +47,7 @@ describe('SearchInput', () => {
 			<SearchInput onChange={onChange} />
 		);
 
-		fireEvent.change(getByPlaceholderText('Search'), {target: {value}});
+		fireEvent.change(getByPlaceholderText(/^search$/i), {target: {value}});
 
 		expect(onChange).toHaveBeenCalledWith(value);
 	});

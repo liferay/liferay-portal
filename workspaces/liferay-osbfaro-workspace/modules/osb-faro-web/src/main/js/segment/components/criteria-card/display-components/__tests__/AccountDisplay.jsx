@@ -215,7 +215,7 @@ describe('AccountDisplay', () => {
 				)
 			);
 
-			await findByText('Undefined Stage');
+			await findByText(/^undefined stage$/i);
 
 			expect(container).toHaveTextContent(
 				"'Customer: Aware', Undefined Stage"

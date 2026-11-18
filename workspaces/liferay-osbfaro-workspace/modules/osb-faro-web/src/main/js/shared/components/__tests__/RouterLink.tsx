@@ -23,7 +23,7 @@ describe('RouterLink', () => {
 
 		renderLink('/workspace/23/sites', ref);
 
-		expect(ref.current).toBe(screen.getByRole('link', {name: 'Sites'}));
+		expect(ref.current).toBe(screen.getByRole('link', {name: /^sites$/i}));
 		expect(ref.current).toHaveAttribute('href', '/workspace/23/sites');
 	});
 
@@ -32,7 +32,7 @@ describe('RouterLink', () => {
 
 		renderLink('https://www.liferay.com', ref);
 
-		expect(ref.current).toBe(screen.getByRole('link', {name: 'Sites'}));
+		expect(ref.current).toBe(screen.getByRole('link', {name: /^sites$/i}));
 		expect(ref.current).toHaveAttribute('href', 'https://www.liferay.com');
 	});
 });

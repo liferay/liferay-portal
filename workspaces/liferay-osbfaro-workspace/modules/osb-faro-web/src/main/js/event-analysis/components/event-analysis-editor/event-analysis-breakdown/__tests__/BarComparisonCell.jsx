@@ -55,7 +55,7 @@ describe('BarComparisonCell', () => {
 
 		expect(container.querySelectorAll('tbody > tr').length).toBe(2);
 		expect(container.querySelector('.metric-bar-root .lines')).toBeTruthy();
-		expect(queryByText('Previous Value')).toBeTruthy();
+		expect(queryByText(/^previous value$/i)).toBeTruthy();
 	});
 
 	it('render comparing previous and segment', () => {
@@ -76,7 +76,7 @@ describe('BarComparisonCell', () => {
 		);
 
 		expect(container.querySelectorAll('tbody > tr').length).toBe(4);
-		expect(queryByText('Segmented')).toBeTruthy();
+		expect(queryByText(/^segmented$/i)).toBeTruthy();
 	});
 
 	it('render comparing previous and event', () => {

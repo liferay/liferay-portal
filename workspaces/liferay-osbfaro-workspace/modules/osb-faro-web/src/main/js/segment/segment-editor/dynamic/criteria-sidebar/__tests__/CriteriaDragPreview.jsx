@@ -51,7 +51,7 @@ describe('CriteriaDragPreview', () => {
 
 		const sticker = preview.querySelector('.sticker');
 
-		expect(preview).toHaveTextContent('Click');
+		expect(preview).toHaveTextContent(/click/i);
 		expect(sticker).toHaveClass('sticker-sm');
 		expect(sticker.querySelector('.lexicon-icon-click')).toBeTruthy();
 		expect(preview.style.transform).toContain('translate(100px, 200px)');

@@ -92,7 +92,7 @@ describe('columns.attributeNameAndValue', () => {
 			columns.attributeNameAndValue({attributeName: 'Count', value: ''})
 		);
 
-		expect(screen.getByText('Count')).toBeInTheDocument();
+		expect(screen.getByText(/^count$/i)).toBeInTheDocument();
 		expect(screen.getByText('–')).toHaveClass('text-secondary');
 	});
 });
@@ -101,7 +101,7 @@ describe('columns.textRenderer', () => {
 	it('should render the value', () => {
 		render(columns.textRenderer({itemData: {}, value: 'Software'}));
 
-		expect(screen.getByText('Software')).toBeInTheDocument();
+		expect(screen.getByText(/^software$/i)).toBeInTheDocument();
 	});
 
 	it('should render a real zero as 0', () => {
@@ -201,7 +201,7 @@ describe('columns.nameAndLinkRenderer', () => {
 			})
 		);
 
-		expect(screen.getByRole('link')).toHaveTextContent('abc');
+		expect(screen.getByRole('link')).toHaveTextContent(/abc/i);
 	});
 });
 

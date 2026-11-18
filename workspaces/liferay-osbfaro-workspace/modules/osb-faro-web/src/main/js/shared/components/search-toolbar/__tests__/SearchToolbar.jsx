@@ -23,7 +23,7 @@ describe('SearchToolbar', () => {
 			/>
 		);
 
-		expect(queryByPlaceholderText('Search')).toBeNull();
+		expect(queryByPlaceholderText(/^search$/i)).toBeNull();
 	});
 
 	it('should render with a search input when alwaysShowSearch is true', () => {
@@ -31,13 +31,13 @@ describe('SearchToolbar', () => {
 			<DefaultComponent alwaysShowSearch selectEntirePageIndeterminate />
 		);
 
-		expect(getByPlaceholderText('Search')).toBeTruthy();
+		expect(getByPlaceholderText(/^search$/i)).toBeTruthy();
 	});
 
 	it('should render as disabled', () => {
 		const {getByPlaceholderText} = render(<DefaultComponent disabled />);
 
-		expect(getByPlaceholderText('Search')).toBeDisabled();
+		expect(getByPlaceholderText(/^search$/i)).toBeDisabled();
 	});
 
 	it('should render w/ a search query bar when there is a query', () => {
@@ -49,7 +49,7 @@ describe('SearchToolbar', () => {
 			/>
 		);
 
-		expect(getByText('Test')).toBeTruthy();
+		expect(getByText(/^test$/i)).toBeTruthy();
 		expect(container.querySelector('.management-bar-primary')).toBeTruthy();
 		expect(container.querySelector('.items-selected')).toBeTruthy();
 	});

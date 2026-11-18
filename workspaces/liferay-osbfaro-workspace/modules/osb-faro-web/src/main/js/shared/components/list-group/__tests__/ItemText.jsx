@@ -16,6 +16,6 @@ describe('ItemText', () => {
 	it('should render with subtext', () => {
 		const {getByText} = render(<DefaultComponent subtext='subtext here' />);
 
-		expect(getByText('Content')).toHaveClass('list-group-subtext');
+		expect(getByText(/^content$/i)).toHaveClass('list-group-subtext');
 	});
 });

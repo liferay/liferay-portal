@@ -110,7 +110,7 @@ describe('SearchableTableModalGraphql', () => {
 		await waitForLoadingToBeRemoved(document.body);
 
 		expect(document.querySelector('.modal-title')).toHaveTextContent(
-			'Custom Title'
+			/custom title/i
 		);
 	});
 

@@ -37,7 +37,7 @@ describe('BaseInterestDetails', () => {
 
 		await waitForLoadingToBeRemoved(container);
 
-		expect(getByText('Back to Interests')).toBeInTheDocument();
+		expect(getByText(/^back to interests$/i)).toBeInTheDocument();
 	});
 
 	it('should render an individuals list tab', () => {
@@ -60,9 +60,9 @@ describe('BaseInterestDetails', () => {
 		jest.runAllTimers();
 
 		const individualsGrandparentElement =
-			getByText('Individuals').parentElement?.parentElement;
+			getByText(/^individuals$/i).parentElement?.parentElement;
 
-		expect(getByText('Individuals')).toBeTruthy();
+		expect(getByText(/^individuals$/i)).toBeTruthy();
 
 		expect(individualsGrandparentElement).toHaveClass('active');
 	});
@@ -88,9 +88,9 @@ describe('BaseInterestDetails', () => {
 		jest.runAllTimers();
 
 		const activePagesGrandparentElement =
-			getByText('Active Pages').parentElement?.parentElement;
+			getByText(/^active pages$/i).parentElement?.parentElement;
 
-		expect(getByText('Active Pages')).toBeTruthy();
+		expect(getByText(/^active pages$/i)).toBeTruthy();
 
 		expect(activePagesGrandparentElement).toHaveClass('active');
 	});
@@ -116,9 +116,9 @@ describe('BaseInterestDetails', () => {
 		jest.runAllTimers();
 
 		const InactivePagesGrandparentElement =
-			getByText('Inactive Pages').parentElement?.parentElement;
+			getByText(/^inactive pages$/i).parentElement?.parentElement;
 
-		expect(getByText('Inactive Pages')).toBeTruthy();
+		expect(getByText(/^inactive pages$/i)).toBeTruthy();
 
 		expect(InactivePagesGrandparentElement).toHaveClass('active');
 	});

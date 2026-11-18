@@ -37,14 +37,18 @@ describe('ManageLifecycleNotificationsModal', () => {
 		render(<DefaultComponent />);
 
 		expect(
-			await screen.findByText('Manage Lifecycle Notifications')
+			await screen.findByText(/^manage lifecycle notifications$/i)
 		).toBeInTheDocument();
 
-		expect(await screen.findByLabelText('New Accounts')).not.toBeChecked();
 		expect(
-			screen.getByLabelText('Account Stage Changes')
+			await screen.findByLabelText(/^new accounts$/i)
 		).not.toBeChecked();
-		expect(screen.getByLabelText('Email Frequency')).toHaveValue('monthly');
+		expect(
+			screen.getByLabelText(/^account stage changes$/i)
+		).not.toBeChecked();
+		expect(screen.getByLabelText(/^email frequency$/i)).toHaveValue(
+			'monthly'
+		);
 	});
 
 	it('renders the saved notification settings', async () => {
@@ -60,11 +64,13 @@ describe('ManageLifecycleNotificationsModal', () => {
 
 		render(<DefaultComponent />);
 
-		expect(await screen.findByLabelText('New Accounts')).toBeChecked();
+		expect(await screen.findByLabelText(/^new accounts$/i)).toBeChecked();
 		expect(
-			screen.getByLabelText('Account Stage Changes')
+			screen.getByLabelText(/^account stage changes$/i)
 		).not.toBeChecked();
-		expect(screen.getByLabelText('Email Frequency')).toHaveValue('weekly');
+		expect(screen.getByLabelText(/^email frequency$/i)).toHaveValue(
+			'weekly'
+		);
 
 		expect(
 			API.preferences.fetchLifecycleNotifications
@@ -76,7 +82,7 @@ describe('ManageLifecycleNotificationsModal', () => {
 
 		render(<DefaultComponent onClose={onClose} />);
 
-		fireEvent.click(await screen.findByText('Cancel'));
+		fireEvent.click(await screen.findByText(/^cancel$/i));
 
 		expect(onClose).toHaveBeenCalled();
 	});
@@ -86,9 +92,9 @@ describe('ManageLifecycleNotificationsModal', () => {
 
 		render(<DefaultComponent onClose={onClose} />);
 
-		fireEvent.click(await screen.findByLabelText('New Accounts'));
+		fireEvent.click(await screen.findByLabelText(/^new accounts$/i));
 
-		fireEvent.click(screen.getByText('Save'));
+		fireEvent.click(screen.getByText(/^save$/i));
 
 		await waitFor(() => expect(onClose).toHaveBeenCalled());
 

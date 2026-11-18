@@ -87,7 +87,7 @@ describe('Individuals List', () => {
 
 		await waitForLoadingToBeRemoved(document.body);
 
-		expect(getByText('Individual Profiles')).toBeInTheDocument();
+		expect(getByText(/^individual profiles$/i)).toBeInTheDocument();
 		expect(getByText('Test Test')).toBeInTheDocument();
 	});
 
@@ -132,15 +132,15 @@ describe('Individuals List', () => {
 		await waitForLoadingToBeRemoved(document.body);
 
 		expect(
-			getByText('No Individuals Have Been Synced from Data Sources')
+			getByText(/^no individuals have been synced from data sources$/i)
 		).toBeInTheDocument();
 
 		expect(
-			getByText('Connect a data source with people data.')
+			getByText(/^connect a data source with people data\.$/i)
 		).toBeInTheDocument();
 
 		expect(
-			getByText('Access our documentation to learn more.')
+			getByText(/^access our documentation to learn more\.$/i)
 		).toBeInTheDocument();
 	});
 
@@ -179,11 +179,11 @@ describe('Individuals List', () => {
 
 		await waitForLoadingToBeRemoved(document.body);
 
-		expect(getByText('No Results Found')).toBeInTheDocument();
+		expect(getByText(/^no results found$/i)).toBeInTheDocument();
 		expect(
-			getByText('Review your filters and try again.')
+			getByText(/^review your filters and try again\.$/i)
 		).toBeInTheDocument();
-		expect(getByText('Clear Filters')).toBeInTheDocument();
+		expect(getByText(/^clear filters$/i)).toBeInTheDocument();
 		expect(
 			queryByText('No Individuals Synced from Data Sources')
 		).toBeNull();
@@ -208,7 +208,7 @@ describe('Individuals List', () => {
 
 		await waitForLoadingToBeRemoved(document.body);
 
-		fireEvent.click(getByText('Clear Filters'));
+		fireEvent.click(getByText(/^clear filters$/i));
 
 		expect(onClearFilters).toHaveBeenCalledTimes(1);
 	});

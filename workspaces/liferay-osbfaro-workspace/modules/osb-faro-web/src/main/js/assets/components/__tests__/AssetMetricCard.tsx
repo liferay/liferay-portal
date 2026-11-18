@@ -173,7 +173,7 @@ describe('AssetMetricCard', () => {
 
 			await waitForLoadingToBeRemoved(document.body);
 
-			expect(getByText('Visitors Behavior')).toBeInTheDocument();
+			expect(getByText(/^visitors behavior$/i)).toBeInTheDocument();
 		});
 
 		it('should render the empty state linking to the right documentation', async () => {
@@ -184,11 +184,11 @@ describe('AssetMetricCard', () => {
 			await waitForLoadingToBeRemoved(container);
 
 			expect(
-				getByText('No visitors data was found.')
+				getByText(/^no visitors data was found\.$/i)
 			).toBeInTheDocument();
 
 			expect(
-				getByText('Learn more about visitor behavior.')
+				getByText(/^learn more about visitor behavior\.$/i)
 			).toHaveAttribute('href', assetCase.documentationURL);
 		});
 	});

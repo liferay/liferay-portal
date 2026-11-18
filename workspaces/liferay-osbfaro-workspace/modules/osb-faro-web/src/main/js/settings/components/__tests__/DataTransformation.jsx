@@ -87,7 +87,7 @@ describe('DataTransformation', () => {
 
 		await waitForLoadingToBeRemoved(document.body);
 
-		expect(getByText('Done')).not.toBeDisabled();
+		expect(getByText(/^done$/i)).not.toBeDisabled();
 	});
 
 	it('should render w/ the done button disabled if there are duplicate CSV field mappings', async () => {
@@ -115,6 +115,6 @@ describe('DataTransformation', () => {
 
 		await waitForLoadingToBeRemoved(document.body);
 
-		expect(getByText('Done')).toBeDisabled();
+		expect(getByText(/^done$/i)).toBeDisabled();
 	});
 });

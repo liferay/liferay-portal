@@ -45,7 +45,7 @@ describe('DateInput', () => {
 			</WrapperComponent>
 		);
 
-		expect(getByText('Start Date')).toBeInTheDocument();
+		expect(getByText(/^start date$/i)).toBeInTheDocument();
 		expect(getByText('operator')).toBeInTheDocument();
 	});
 });

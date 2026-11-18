@@ -339,10 +339,10 @@ describe('EventInput', () => {
 			</MockedProvider>
 		);
 
-		expect(screen.getByText('Add Event Attribute')).toBeInTheDocument();
+		expect(screen.getByText(/^add event attribute$/i)).toBeInTheDocument();
 		expect(screen.queryByText('where event attribute')).toBeNull();
 
-		fireEvent.click(screen.getByText('Add Event Attribute'));
+		fireEvent.click(screen.getByText(/^add event attribute$/i));
 
 		await waitFor(() =>
 			expect(screen.getByText('where event attribute')).toBeInTheDocument()

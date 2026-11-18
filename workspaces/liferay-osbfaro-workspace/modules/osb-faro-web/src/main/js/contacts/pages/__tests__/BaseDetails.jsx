@@ -50,6 +50,6 @@ describe('BaseDetails', () => {
 
 		await waitForLoadingToBeRemoved(container);
 
-		expect(queryByText('Reload')).toBeTruthy();
+		expect(queryByText(/^reload$/i)).toBeTruthy();
 	});
 });

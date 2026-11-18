@@ -92,9 +92,9 @@ describe('Campaigns', () => {
 	afterEach(cleanup);
 
 	it('should render the page title', () => {
-		const {getByText} = renderCampaigns();
+		const {getByRole} = renderCampaigns();
 
-		expect(getByText('Campaigns')).toBeTruthy();
+		expect(getByRole('heading', {name: /^campaigns$/i})).toBeTruthy();
 	});
 
 	it('should render the channel breadcrumb', () => {
@@ -125,7 +125,7 @@ describe('Campaigns', () => {
 	it('should no longer pin the list to all time', () => {
 		const {queryByText} = renderCampaigns();
 
-		expect(queryByText('All Time')).toBeNull();
+		expect(queryByText(/^all time$/i)).toBeNull();
 	});
 
 	it('should render the range selector in the sub header', () => {

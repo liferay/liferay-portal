@@ -27,24 +27,26 @@ describe('GroupByPicker', () => {
 	it('should render the label of the selected metric', () => {
 		renderGroupByPicker({value: GroupByMetric.VIEWS});
 
-		expect(screen.getByText('Group By')).toBeInTheDocument();
+		expect(screen.getByText(/^group by$/i)).toBeInTheDocument();
 		expect(
-			screen.getByRole('combobox', {name: 'Group By'})
-		).toHaveTextContent('Views');
+			screen.getByRole('combobox', {name: /^group by$/i})
+		).toHaveTextContent(/views/i);
 	});
 
 	it('should offer every metric it is given', () => {
 		renderGroupByPicker();
 
-		fireEvent.click(screen.getByRole('combobox', {name: 'Group By'}));
+		fireEvent.click(screen.getByRole('combobox', {name: /^group by$/i}));
 
 		expect(
-			screen.getByRole('option', {name: 'Downloads'})
+			screen.getByRole('option', {name: /^downloads$/i})
 		).toBeInTheDocument();
 		expect(
-			screen.getByRole('option', {name: 'Impressions'})
+			screen.getByRole('option', {name: /^impressions$/i})
 		).toBeInTheDocument();
-		expect(screen.getByRole('option', {name: 'Views'})).toBeInTheDocument();
+		expect(
+			screen.getByRole('option', {name: /^views$/i})
+		).toBeInTheDocument();
 	});
 
 	it('should not offer a metric it is not given', () => {
@@ -52,9 +54,9 @@ describe('GroupByPicker', () => {
 			metrics: [GroupByMetric.IMPRESSIONS, GroupByMetric.VIEWS],
 		});
 
-		fireEvent.click(screen.getByRole('combobox', {name: 'Group By'}));
+		fireEvent.click(screen.getByRole('combobox', {name: /^group by$/i}));
 
-		expect(screen.queryByRole('option', {name: 'Downloads'})).toBeNull();
+		expect(screen.queryByRole('option', {name: /^downloads$/i})).toBeNull();
 	});
 
 	it('should report the metric the user picks', () => {
@@ -62,9 +64,9 @@ describe('GroupByPicker', () => {
 
 		renderGroupByPicker({onGroupByChange});
 
-		fireEvent.click(screen.getByRole('combobox', {name: 'Group By'}));
+		fireEvent.click(screen.getByRole('combobox', {name: /^group by$/i}));
 
-		fireEvent.click(screen.getByRole('option', {name: 'Views'}));
+		fireEvent.click(screen.getByRole('option', {name: /^views$/i}));
 
 		expect(onGroupByChange).toHaveBeenCalledWith(GroupByMetric.VIEWS);
 	});

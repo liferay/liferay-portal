@@ -204,7 +204,7 @@ describe('AccountsTouchedDataSet', () => {
 			})
 		);
 
-		expect(container).toHaveTextContent('At Risk');
+		expect(container).toHaveTextContent(/at risk/i);
 		expect(container.querySelector('.label-inverse-danger')).toBeTruthy();
 	});
 

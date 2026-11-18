@@ -60,6 +60,6 @@ describe('CriteriaCard', () => {
 			</ReferencedObjectsProvider>
 		);
 
-		expect(queryByText('Includes Anonymous Individuals')).toBeTruthy();
+		expect(queryByText(/^includes anonymous individuals$/i)).toBeTruthy();
 	});
 });

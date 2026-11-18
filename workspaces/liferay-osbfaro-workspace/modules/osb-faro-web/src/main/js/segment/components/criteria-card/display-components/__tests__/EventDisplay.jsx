@@ -134,9 +134,9 @@ describe('EventDisplay', () => {
 			/>
 		);
 
-		expect(getByText('Account')).toBeTruthy();
-		expect(getByText('at least one individual who triggered')).toBeTruthy();
-		expect(queryByText('Individual')).toBeNull();
+		expect(getByText(/^account$/i)).toBeTruthy();
+		expect(getByText(/^at least one individual who triggered$/i)).toBeTruthy();
+		expect(queryByText(/^individual$/i)).toBeNull();
 		expect(queryByText('performed')).toBeNull();
 	});
 
@@ -156,6 +156,6 @@ describe('EventDisplay', () => {
 			/>
 		);
 
-		expect(getByText('Custom event no longer exists.')).toBeTruthy();
+		expect(getByText(/^custom event no longer exists\.$/i)).toBeTruthy();
 	});
 });

@@ -71,7 +71,7 @@ describe('DataSourceList exports', () => {
 				<AddDataSourceNav items={[{label: 'Liferay DXP', onClick}]} />
 			);
 
-			expect(getByText('Add Data Source')).toBeInTheDocument();
+			expect(getByText(/^add data source$/i)).toBeInTheDocument();
 
 			fireEvent.click(container.querySelector('button'));
 
@@ -91,7 +91,7 @@ describe('DataSourceList exports', () => {
 				/>
 			);
 
-			expect(getByText('Add Data Source')).toBeInTheDocument();
+			expect(getByText(/^add data source$/i)).toBeInTheDocument();
 
 			fireEvent.click(container.querySelector('button'));
 

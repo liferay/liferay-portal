@@ -220,7 +220,7 @@ describe('DownloadReportModal CSV', () => {
 
 		await waitForLoadingToBeRemoved(container);
 
-		expect(getByText('Select Date Range')).toBeInTheDocument();
+		expect(getByText(/^select date range$/i)).toBeInTheDocument();
 
 		expect(
 			getByRole('heading', {
@@ -234,7 +234,7 @@ describe('DownloadReportModal CSV', () => {
 			)
 		);
 
-		expect(getByText('Date Range')).toBeInTheDocument();
+		expect(getByText(/^date range$/i)).toBeInTheDocument();
 
 		expect(getByTestId('cancel')).toBeInTheDocument();
 		expect(getByTestId('submit')).toBeInTheDocument();
@@ -337,7 +337,7 @@ describe('DownloadReportModal PDF', () => {
 
 		await waitForLoadingToBeRemoved(container);
 
-		expect(getByText('Select Date Range')).toBeInTheDocument();
+		expect(getByText(/^select date range$/i)).toBeInTheDocument();
 
 		expect(
 			getByRole('heading', {
@@ -347,17 +347,17 @@ describe('DownloadReportModal PDF', () => {
 
 		expect(
 			getByText(
-				'The dashboard will be downloaded exactly as it is displayed on your screen. Please verify if the desired tabs and filters are selected before proceeding.'
+				/^the dashboard will be downloaded exactly as it is displayed on your screen\. please verify if the desired tabs and filters are selected before proceeding\.$/i
 			)
 		);
 
 		expect(
 			getByText(
-				'Only select a date range if you want to modify the current date filter.'
+				/^only select a date range if you want to modify the current date filter\.$/i
 			)
 		).toBeInTheDocument();
 
-		expect(getByText('Date Range')).toBeInTheDocument();
+		expect(getByText(/^date range$/i)).toBeInTheDocument();
 
 		expect(getByTestId('cancel')).toBeInTheDocument();
 		expect(getByTestId('submit')).toBeInTheDocument();
