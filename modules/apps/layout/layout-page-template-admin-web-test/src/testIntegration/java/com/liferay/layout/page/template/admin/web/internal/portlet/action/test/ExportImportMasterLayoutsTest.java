@@ -6,6 +6,7 @@
 package com.liferay.layout.page.template.admin.web.internal.portlet.action.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
 import com.liferay.layout.importer.LayoutsImportStrategy;
 import com.liferay.layout.importer.LayoutsImporter;
 import com.liferay.layout.importer.LayoutsImporterResultEntry;
@@ -106,7 +107,7 @@ public class ExportImportMasterLayoutsTest {
 				_read("export_import_master_layout_layout_data.json"));
 
 		Repository repository = PortletFileRepositoryUtil.addPortletRepository(
-			_group1.getGroupId(), RandomTestUtil.randomString(),
+			_group1.getGroupId(), LayoutAdminPortletKeys.GROUP_PAGES,
 			_serviceContext1);
 
 		Class<?> clazz = getClass();
@@ -115,7 +116,7 @@ public class ExportImportMasterLayoutsTest {
 			null, _group1.getGroupId(), TestPropsValues.getUserId(),
 			LayoutPageTemplateEntry.class.getName(),
 			layoutPageTemplateEntry1.getLayoutPageTemplateEntryId(),
-			RandomTestUtil.randomString(), repository.getDlFolderId(),
+			LayoutAdminPortletKeys.GROUP_PAGES, repository.getDlFolderId(),
 			clazz.getResourceAsStream("dependencies/thumbnail.png"),
 			RandomTestUtil.randomString(), ContentTypes.IMAGE_PNG, false);
 

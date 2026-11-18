@@ -7,7 +7,7 @@ package com.liferay.layout.page.template.admin.web.internal.portlet.action.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.document.library.kernel.exception.NoSuchFileEntryException;
-import com.liferay.layout.page.template.admin.constants.LayoutPageTemplateAdminPortletKeys;
+import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
 import com.liferay.layout.page.template.test.util.DisplayPageTemplateTestUtil;
@@ -77,17 +77,15 @@ public class DeleteLayoutPageTemplateEntryPreviewMVCActionCommandTest {
 				_group.getGroupId());
 
 		Repository repository = _portletFileRepository.addPortletRepository(
-			_group.getGroupId(),
-			LayoutPageTemplateAdminPortletKeys.LAYOUT_PAGE_TEMPLATES,
+			_group.getGroupId(), LayoutAdminPortletKeys.GROUP_PAGES,
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 
 		FileEntry fileEntry = _portletFileRepository.addPortletFileEntry(
 			_group.getGroupId(), TestPropsValues.getUserId(),
 			LayoutPageTemplateEntry.class.getName(),
 			layoutPageTemplateEntry.getLayoutPageTemplateEntryId(),
-			LayoutPageTemplateAdminPortletKeys.LAYOUT_PAGE_TEMPLATES,
-			repository.getDlFolderId(), new byte[0], "test.png",
-			ContentTypes.IMAGE_PNG, false);
+			LayoutAdminPortletKeys.GROUP_PAGES, repository.getDlFolderId(),
+			new byte[0], "test.png", ContentTypes.IMAGE_PNG, false);
 
 		layoutPageTemplateEntry =
 			_layoutPageTemplateEntryLocalService.updateLayoutPageTemplateEntry(

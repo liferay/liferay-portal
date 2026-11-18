@@ -20,6 +20,7 @@ import com.liferay.dynamic.data.mapping.util.DDM;
 import com.liferay.info.item.InfoItemFormVariation;
 import com.liferay.info.item.InfoItemServiceRegistry;
 import com.liferay.info.item.provider.InfoItemFormVariationsProvider;
+import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
 import com.liferay.layout.importer.LayoutsImportStrategy;
 import com.liferay.layout.importer.LayoutsImporter;
 import com.liferay.layout.importer.LayoutsImporterResultEntry;
@@ -322,7 +323,7 @@ public class ExportImportDisplayPagesTest {
 				_read("export_import_display_page_layout_data.json"));
 
 		Repository repository = PortletFileRepositoryUtil.addPortletRepository(
-			_group1.getGroupId(), RandomTestUtil.randomString(),
+			_group1.getGroupId(), LayoutAdminPortletKeys.GROUP_PAGES,
 			_serviceContext1);
 
 		Class<?> clazz = getClass();
@@ -331,7 +332,7 @@ public class ExportImportDisplayPagesTest {
 			null, _group1.getGroupId(), TestPropsValues.getUserId(),
 			LayoutPageTemplateEntry.class.getName(),
 			layoutPageTemplateEntry1.getLayoutPageTemplateEntryId(),
-			RandomTestUtil.randomString(), repository.getDlFolderId(),
+			LayoutAdminPortletKeys.GROUP_PAGES, repository.getDlFolderId(),
 			clazz.getResourceAsStream("dependencies/thumbnail.png"),
 			RandomTestUtil.randomString(), ContentTypes.IMAGE_PNG, false);
 

@@ -116,7 +116,7 @@ public class ExportImportLayoutUtilityPageTest {
 			null, _group.getGroupId(), TestPropsValues.getUserId(),
 			LayoutUtilityPageEntry.class.getName(),
 			layoutUtilityPageEntry1.getLayoutUtilityPageEntryId(),
-			RandomTestUtil.randomString(), _repository.getDlFolderId(),
+			LayoutAdminPortletKeys.GROUP_PAGES, _repository.getDlFolderId(),
 			clazz.getResourceAsStream("dependencies/thumbnail.png"),
 			layoutUtilityPageEntry1.getLayoutUtilityPageEntryId() +
 				"_preview.png",
@@ -213,7 +213,7 @@ public class ExportImportLayoutUtilityPageTest {
 			null, _group.getGroupId(), TestPropsValues.getUserId(),
 			LayoutUtilityPageEntry.class.getName(),
 			layoutUtilityPageEntry1.getLayoutUtilityPageEntryId(),
-			RandomTestUtil.randomString(), _repository.getDlFolderId(),
+			LayoutAdminPortletKeys.GROUP_PAGES, _repository.getDlFolderId(),
 			clazz.getResourceAsStream("dependencies/thumbnail.png"),
 			layoutUtilityPageEntry1.getLayoutUtilityPageEntryId() +
 				"_preview.png",

@@ -6,13 +6,12 @@
 package com.liferay.layout.admin.web.internal.portlet.action.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.document.library.kernel.model.DLFolderConstants;
-import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
 import com.liferay.layout.utility.page.kernel.constants.LayoutUtilityPageEntryConstants;
 import com.liferay.layout.utility.page.model.LayoutUtilityPageEntry;
 import com.liferay.layout.utility.page.service.LayoutUtilityPageEntryLocalService;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.Repository;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
@@ -74,12 +73,15 @@ public class DeleteLayoutUtilityPageEntryPreviewMVCActionCommandTest {
 	public void setUp() throws Exception {
 		_group = _groupLocalService.fetchGroup(TestPropsValues.getGroupId());
 
-		_fileEntry = _dlAppLocalService.addFileEntry(
-			null, TestPropsValues.getUserId(), _group.getGroupId(),
-			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
-			StringUtil.randomString(), ContentTypes.APPLICATION_OCTET_STREAM,
-			new byte[0], null, null, null,
+		Repository repository = _portletFileRepository.addPortletRepository(
+			_group.getGroupId(), LayoutAdminPortletKeys.GROUP_PAGES,
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+
+		_fileEntry = _portletFileRepository.addPortletFileEntry(
+			_group.getGroupId(), TestPropsValues.getUserId(), null, 0,
+			LayoutAdminPortletKeys.GROUP_PAGES, repository.getDlFolderId(),
+			new byte[0], StringUtil.randomString() + ".png",
+			ContentTypes.IMAGE_PNG, false);
 	}
 
 	@Test
@@ -97,14 +99,8 @@ public class DeleteLayoutUtilityPageEntryPreviewMVCActionCommandTest {
 				LayoutUtilityPageEntryConstants.TYPE_SC_NOT_FOUND, null,
 				serviceContext);
 
-		long groupId = _group.getGroupId();
-
-		_portletFileRepository.addPortletRepository(
-			groupId, LayoutAdminPortletKeys.GROUP_PAGES,
-			ServiceContextTestUtil.getServiceContext(groupId));
-
 		FileEntry fileEntry = _portletFileRepository.addPortletFileEntry(
-			groupId, TestPropsValues.getUserId(),
+			_group.getGroupId(), TestPropsValues.getUserId(),
 			LayoutUtilityPageEntry.class.getName(),
 			layoutUtilityPageEntry.getLayoutUtilityPageEntryId(),
 			LayoutAdminPortletKeys.GROUP_PAGES, 0, new byte[0], "test.png",
@@ -205,9 +201,6 @@ public class DeleteLayoutUtilityPageEntryPreviewMVCActionCommandTest {
 	)
 	private MVCActionCommand
 		_deleteLayoutUtilityPageEntryPreviewMVCActionCommand;
-
-	@Inject
-	private DLAppLocalService _dlAppLocalService;
 
 	private FileEntry _fileEntry;
 	private Group _group;
