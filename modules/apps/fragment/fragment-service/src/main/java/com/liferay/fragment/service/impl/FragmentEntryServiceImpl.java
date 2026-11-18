@@ -508,6 +508,9 @@ public class FragmentEntryServiceImpl extends FragmentEntryServiceBaseImpl {
 			getPermissionChecker(), fragmentEntry.getGroupId(),
 			FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
 
+		_validateFragmentCollectionId(
+			fragmentCollectionId, fragmentEntry.getGroupId());
+
 		return fragmentEntryLocalService.moveFragmentEntry(
 			fragmentEntryId, fragmentCollectionId);
 	}
@@ -585,6 +588,9 @@ public class FragmentEntryServiceImpl extends FragmentEntryServiceBaseImpl {
 		_portletResourcePermission.check(
 			getPermissionChecker(), fragmentEntry.getGroupId(),
 			FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
+
+		_validateFragmentCollectionId(
+			fragmentCollectionId, fragmentEntry.getGroupId());
 
 		return fragmentEntryLocalService.updateFragmentEntry(
 			getUserId(), fragmentEntryId, fragmentCollectionId, name, css, html,
