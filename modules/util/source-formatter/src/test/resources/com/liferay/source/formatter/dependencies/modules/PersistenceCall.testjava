@@ -15,11 +15,11 @@ import com.liferay.portal.kernel.transaction.TransactionInvokerUtil;
  */
 public class PersistenceCall {
 
-	public int countUsers(long companyId) {
+	public int method1(long companyId) {
 		return UserUtil.countByCompanyId(companyId);
 	}
 
-	public int countUsersInTransaction(long companyId) throws Throwable {
+	public int method2(long companyId) throws Throwable {
 		return TransactionInvokerUtil.invoke(
 			_transactionConfig, () -> UserUtil.countByCompanyId(companyId));
 	}

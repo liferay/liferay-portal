@@ -6,7 +6,6 @@
 package com.liferay.persistence.call;
 
 import com.liferay.portal.kernel.service.persistence.UserUtil;
-import com.liferay.portal.kernel.test.util.TransactionTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.TransactionConfig;
 import com.liferay.portal.kernel.transaction.TransactionInvokerUtil;
@@ -16,19 +15,13 @@ import com.liferay.portal.kernel.transaction.TransactionInvokerUtil;
  */
 public class PersistenceCall {
 
-	public int countUsers(long companyId) {
+	public int method1(long companyId) {
 		return UserUtil.countByCompanyId(companyId);
 	}
 
-	public int countUsersInTransaction(long companyId) throws Throwable {
+	public int method2(long companyId) throws Throwable {
 		return TransactionInvokerUtil.invoke(
 			_transactionConfig, () -> UserUtil.countByCompanyId(companyId));
-	}
-
-	public int countUsersInTransactionTest(long companyId) throws Throwable {
-		return TransactionTestUtil.invoke(
-			PersistenceCall.class, _transactionConfig,
-			() -> UserUtil.countByCompanyId(companyId));
 	}
 
 	private static final TransactionConfig _transactionConfig =
