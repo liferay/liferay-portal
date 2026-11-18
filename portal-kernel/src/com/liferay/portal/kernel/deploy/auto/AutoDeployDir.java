@@ -263,8 +263,10 @@ public class AutoDeployDir {
 			return;
 		}
 
-		if (_blacklistFileTimestamps.containsKey(fileName) &&
-			(_blacklistFileTimestamps.get(fileName) == file.lastModified())) {
+		Long blacklistFileTimestamp = _blacklistFileTimestamps.get(fileName);
+
+		if ((blacklistFileTimestamp != null) &&
+			(blacklistFileTimestamp == file.lastModified())) {
 
 			if (_log.isDebugEnabled()) {
 				_log.debug(
