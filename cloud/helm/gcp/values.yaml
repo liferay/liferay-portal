@@ -37,10 +37,6 @@ liferay-default:
                 value: "true"
             -   name: LIFERAY_DL_PERIOD_STORE_PERIOD_IMPL
                 value: com.liferay.portal.store.gcs.GCSStore
-            -   name: LIFERAY_JDBC_PERIOD_DEFAULT_PERIOD_DRIVER_UPPERCASEC_LASS_UPPERCASEN_AME
-                value: org.postgresql.Driver
-            -   name: LIFERAY_JDBC_PERIOD_DEFAULT_PERIOD_URL
-                value: jdbc:postgresql://localhost:5432/lportal?useUnicode=true&characterEncoding=UTF-8&useFastDateParsing=false
             -   name: LIFERAY_JDBC_PERIOD_DEFAULT_PERIOD_USERNAME
                 value: ${env.DATABASE_USERNAME}
             -   name: LIFERAY_WEB_PERIOD_SERVER_PERIOD_FORWARDED_PERIOD_PORT_PERIOD_ENABLED
@@ -60,7 +56,6 @@ liferay-default:
             -   args:
                     -   "$(DATABASE_INSTANCE_NAME)"
                     -   "--auto-iam-authn"
-                    -   "--port=5432"
                     -   "--private-ip"
                     -   "--structured-logs"
                 env:
@@ -125,6 +120,8 @@ liferay-default:
                     defaultMode: 0755
                     name: liferay-init-scripts-gcp
                 name: liferay-init-scripts-gcp
+    database:
+        host: localhost
     marketplace:
         csi:
             driver: filestore.csi.storage.gke.io
