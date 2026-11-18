@@ -482,6 +482,12 @@ public class AMImageRequestHandlerTest {
 		);
 
 		Mockito.when(
+			fileVersion.isApproved()
+		).thenReturn(
+			true
+		);
+
+		Mockito.when(
 			fileVersion.isExpired()
 		).thenReturn(
 			false
