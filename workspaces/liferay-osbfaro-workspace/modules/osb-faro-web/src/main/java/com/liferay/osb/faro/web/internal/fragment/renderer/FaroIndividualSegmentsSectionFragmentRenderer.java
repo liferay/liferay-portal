@@ -6,6 +6,8 @@
 package com.liferay.osb.faro.web.internal.fragment.renderer;
 
 import com.liferay.fragment.renderer.FragmentRenderer;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItemList;
+import com.liferay.osb.faro.web.internal.display.context.IndividualNavigationDisplayContext;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ParamUtil;
 
@@ -30,6 +32,17 @@ public class FaroIndividualSegmentsSectionFragmentRenderer
 	@Override
 	protected String getModule() {
 		return "{IndividualSegments} from osb-faro-web/individuals";
+	}
+
+	@Override
+	protected NavigationItemList getNavigationItems(
+			HttpServletRequest httpServletRequest)
+		throws Exception {
+
+		IndividualNavigationDisplayContext individualNavigationDisplayContext =
+			new IndividualNavigationDisplayContext(httpServletRequest);
+
+		return individualNavigationDisplayContext.getNavigationItems();
 	}
 
 	@Override
