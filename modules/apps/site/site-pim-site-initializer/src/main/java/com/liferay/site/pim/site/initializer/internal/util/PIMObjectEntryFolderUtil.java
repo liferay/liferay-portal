@@ -5,6 +5,9 @@
 
 package com.liferay.site.pim.site.initializer.internal.util;
 
+import com.liferay.depot.constants.DepotConstants;
+import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.object.model.ObjectEntryFolder;
 import com.liferay.object.service.ObjectEntryFolderLocalService;
@@ -22,6 +25,20 @@ import java.util.Map;
  * @author Andrea Sbarra
  */
 public class PIMObjectEntryFolderUtil {
+
+	public static void addProductsObjectEntryFolders(
+			long companyId, DepotEntryLocalService depotEntryLocalService,
+			ObjectEntryFolderLocalService objectEntryFolderLocalService)
+		throws PortalException {
+
+		for (DepotEntry depotEntry :
+				depotEntryLocalService.getDepotEntries(
+					companyId, DepotConstants.TYPE_SPACE)) {
+
+			getOrAddProductsObjectEntryFolder(
+				depotEntry.getGroup(), objectEntryFolderLocalService);
+		}
+	}
 
 	public static ObjectEntryFolder getOrAddProductsObjectEntryFolder(
 			Group group,

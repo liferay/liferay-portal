@@ -5,8 +5,6 @@
 
 package com.liferay.site.pim.site.initializer.internal.feature.flag;
 
-import com.liferay.depot.constants.DepotConstants;
-import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.object.service.ObjectEntryFolderLocalService;
 import com.liferay.petra.lang.SafeCloseable;
@@ -67,23 +65,13 @@ public class PIMFeatureFlagListener implements FeatureFlagListener {
 		try (SafeCloseable safeCloseable =
 				CTCollectionThreadLocal.setProductionModeWithSafeCloseable()) {
 
-			_groupLocalService.checkSystemGroups(companyId);
+			SiteInitializerUtil.initialize(
+				companyId, _cmsSiteInitializer, _groupLocalService,
+				_pimSiteInitializer);
 
-			// The PIM site initializer appends to the pages and the primary
-			// navigation menu the CMS one creates, so run that one first.
-
-			com.liferay.site.cms.site.initializer.util.SiteInitializerUtil.
-				initialize(companyId, _cmsSiteInitializer);
-
-			SiteInitializerUtil.initialize(companyId, _pimSiteInitializer);
-
-			for (DepotEntry depotEntry :
-					_depotEntryLocalService.getDepotEntries(
-						companyId, DepotConstants.TYPE_SPACE)) {
-
-				PIMObjectEntryFolderUtil.getOrAddProductsObjectEntryFolder(
-					depotEntry.getGroup(), _objectEntryFolderLocalService);
-			}
+			PIMObjectEntryFolderUtil.addProductsObjectEntryFolders(
+				companyId, _depotEntryLocalService,
+				_objectEntryFolderLocalService);
 		}
 		catch (PortalException portalException) {
 			_log.error(portalException);

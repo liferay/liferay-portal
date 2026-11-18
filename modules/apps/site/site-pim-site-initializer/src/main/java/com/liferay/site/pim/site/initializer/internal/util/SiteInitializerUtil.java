@@ -16,6 +16,7 @@ import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -31,6 +32,41 @@ import java.util.List;
 public class SiteInitializerUtil {
 
 	public static void initialize(
+			long companyId, SiteInitializer cmsSiteInitializer,
+			GroupLocalService groupLocalService,
+			SiteInitializer pimSiteInitializer)
+		throws PortalException {
+
+		groupLocalService.checkSystemGroups(companyId);
+
+		// The PIM site initializer appends to the pages and the primary
+		// navigation menu the CMS one creates, so run that one first.
+
+		com.liferay.site.cms.site.initializer.util.SiteInitializerUtil.
+			initialize(companyId, cmsSiteInitializer);
+
+		_initialize(companyId, pimSiteInitializer);
+	}
+
+	private static User _getUser(long companyId) throws PortalException {
+		Role role = RoleLocalServiceUtil.fetchRole(
+			companyId, RoleConstants.ADMINISTRATOR);
+
+		if (role == null) {
+			return UserLocalServiceUtil.getGuestUser(companyId);
+		}
+
+		List<User> adminUsers = UserLocalServiceUtil.getRoleUsers(
+			role.getRoleId(), 0, 1);
+
+		if (adminUsers.isEmpty()) {
+			return UserLocalServiceUtil.getGuestUser(companyId);
+		}
+
+		return adminUsers.get(0);
+	}
+
+	private static void _initialize(
 			long companyId, SiteInitializer siteInitializer)
 		throws PortalException {
 
@@ -65,24 +101,6 @@ public class SiteInitializerUtil {
 
 			ServiceContextThreadLocal.popServiceContext();
 		}
-	}
-
-	private static User _getUser(long companyId) throws PortalException {
-		Role role = RoleLocalServiceUtil.fetchRole(
-			companyId, RoleConstants.ADMINISTRATOR);
-
-		if (role == null) {
-			return UserLocalServiceUtil.getGuestUser(companyId);
-		}
-
-		List<User> adminUsers = UserLocalServiceUtil.getRoleUsers(
-			role.getRoleId(), 0, 1);
-
-		if (adminUsers.isEmpty()) {
-			return UserLocalServiceUtil.getGuestUser(companyId);
-		}
-
-		return adminUsers.get(0);
 	}
 
 }
