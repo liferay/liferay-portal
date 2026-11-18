@@ -195,17 +195,18 @@ public class CommerceInventoryWarehouseItemServiceTest {
 						getCommerceInventoryWarehouseId(),
 					BigDecimal.ONE, BigDecimal.ZERO, _cpInstance.getSku(),
 					StringPool.BLANK);
+
+			commerceInventoryWarehouseItem =
+				_commerceInventoryWarehouseItemLocalService.
+					getCommerceInventoryWarehouseItem(
+						commerceInventoryWarehouseItem.
+							getCommerceInventoryWarehouseItemId());
+
+			Assert.assertTrue(
+				BigDecimalUtil.eq(
+					BigDecimal.ONE,
+					commerceInventoryWarehouseItem.getQuantity()));
 		}
-
-		commerceInventoryWarehouseItem =
-			_commerceInventoryWarehouseItemLocalService.
-				getCommerceInventoryWarehouseItem(
-					commerceInventoryWarehouseItem.
-						getCommerceInventoryWarehouseItemId());
-
-		Assert.assertTrue(
-			BigDecimalUtil.eq(
-				BigDecimal.ONE, commerceInventoryWarehouseItem.getQuantity()));
 	}
 
 	@Test
