@@ -17,6 +17,8 @@ import jakarta.portlet.PortletException;
 import jakarta.portlet.RenderRequest;
 import jakarta.portlet.RenderResponse;
 
+import jakarta.servlet.ServletContext;
+
 import java.io.IOException;
 
 import org.osgi.service.component.annotations.Component;
@@ -70,9 +72,14 @@ public class StagingProcessesPortlet extends MVCPortlet {
 		}
 
 		renderRequest.setAttribute(TrashWebKeys.TRASH_HELPER, _trashHelper);
+		renderRequest.setAttribute(
+			"exportImportWebServletContext", _servletContext);
 
 		super.render(renderRequest, renderResponse);
 	}
+
+	@Reference(target = "(osgi.web.symbolicname=com.liferay.exportimport.web)")
+	private ServletContext _servletContext;
 
 	@Reference
 	private TrashHelper _trashHelper;

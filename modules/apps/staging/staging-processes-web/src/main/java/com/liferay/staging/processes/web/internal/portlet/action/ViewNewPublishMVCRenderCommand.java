@@ -8,14 +8,7 @@ package com.liferay.staging.processes.web.internal.portlet.action;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 import com.liferay.staging.constants.StagingProcessesPortletKeys;
 
-import jakarta.portlet.PortletException;
-import jakarta.portlet.RenderRequest;
-import jakarta.portlet.RenderResponse;
-
-import jakarta.servlet.ServletContext;
-
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Daniel Raposo
@@ -30,22 +23,8 @@ import org.osgi.service.component.annotations.Reference;
 public class ViewNewPublishMVCRenderCommand extends BaseGroupMVCRenderCommand {
 
 	@Override
-	public String render(
-			RenderRequest renderRequest, RenderResponse renderResponse)
-		throws PortletException {
-
-		renderRequest.setAttribute(
-			"exportImportWebServletContext", _servletContext);
-
-		return super.render(renderRequest, renderResponse);
-	}
-
-	@Override
 	protected String getPath() {
 		return "/new_publish.jsp";
 	}
-
-	@Reference(target = "(osgi.web.symbolicname=com.liferay.exportimport.web)")
-	private ServletContext _servletContext;
 
 }

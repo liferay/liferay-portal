@@ -37,41 +37,7 @@ boolean showStagingConfiguration = ParamUtil.getBoolean(request, "showStagingCon
 		/>
 	</c:when>
 	<c:when test='<%= FeatureFlagManagerUtil.isEnabled(company.getCompanyId(), "LPD-96689") && (liveGroup != null) %>'>
-
-		<%
-		PublishProcessesDisplayContext publishProcessesDisplayContext = new PublishProcessesDisplayContext(request, liferayPortletResponse, liveGroup);
-
-		String tabs1 = ParamUtil.getString(request, "tabs1", "processes");
-		%>
-
-		<clay:navigation-bar
-			navigationItems="<%= publishProcessesDisplayContext.getNavigationItems() %>"
-		/>
-
-		<c:choose>
-			<c:when test='<%= tabs1.equals("scheduled") %>'>
-				<frontend-data-set:headless-display
-					apiURL="<%= publishProcessesDisplayContext.getScheduledPublishProcessesAPIURL() %>"
-					creationMenu="<%= publishProcessesDisplayContext.getCreationMenu() %>"
-					fdsActionDropdownItems="<%= publishProcessesDisplayContext.getScheduledPublishFDSActionDropdownItems() %>"
-					id="<%= publishProcessesDisplayContext.getScheduledPublishFDSName() %>"
-					propsTransformer="{ScheduledPublishProcessesFDSPropsTransformer} from exportimport-web"
-					style="fluid"
-					uniformActionsDisplay="<%= true %>"
-				/>
-			</c:when>
-			<c:otherwise>
-				<frontend-data-set:headless-display
-					apiURL="<%= publishProcessesDisplayContext.getPublishProcessesAPIURL() %>"
-					creationMenu="<%= publishProcessesDisplayContext.getCreationMenu() %>"
-					fdsActionDropdownItems="<%= publishProcessesDisplayContext.getPublishFDSActionDropdownItems() %>"
-					id="<%= publishProcessesDisplayContext.getPublishFDSName() %>"
-					propsTransformer="{PublishProcessesFDSPropsTransformer} from exportimport-web"
-					style="fluid"
-					uniformActionsDisplay="<%= true %>"
-				/>
-			</c:otherwise>
-		</c:choose>
+		<liferay-util:include page="/revamp/publish/view_publish.jsp" servletContext='<%= (ServletContext)request.getAttribute("exportImportWebServletContext") %>' />
 	</c:when>
 	<c:otherwise>
 		<liferay-util:include page="/navigation.jsp" servletContext="<%= application %>" />
