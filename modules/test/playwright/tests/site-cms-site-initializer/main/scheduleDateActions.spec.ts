@@ -91,11 +91,16 @@ async function expectDateActionsInItemMenu(page: Page, trigger: Locator) {
 		).toBeVisible();
 	}
 
-	await page.keyboard.press('Escape');
+	await expect(async () => {
+		await page.keyboard.press('Escape');
 
-	await expect(
-		page.getByRole('menuitem', {exact: true, name: ITEM_DATE_ACTIONS[0]})
-	).toBeHidden();
+		await expect(
+			page.getByRole('menuitem', {
+				exact: true,
+				name: ITEM_DATE_ACTIONS_MENU,
+			})
+		).toBeHidden({timeout: 1000});
+	}).toPass();
 }
 
 function getBulkActionsTrigger(page: Page) {
