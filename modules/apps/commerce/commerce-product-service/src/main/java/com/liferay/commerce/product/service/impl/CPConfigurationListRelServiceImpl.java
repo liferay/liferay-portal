@@ -56,6 +56,10 @@ public class CPConfigurationListRelServiceImpl
 			CPConfigurationListRel cpConfigurationListRel)
 		throws PortalException {
 
+		cpConfigurationListRel =
+			cpConfigurationListRelPersistence.findByPrimaryKey(
+				cpConfigurationListRel.getCPConfigurationListRelId());
+
 		_checkCommerceCatalog(
 			cpConfigurationListRel.getCPConfigurationListId(),
 			ActionKeys.UPDATE);
@@ -69,16 +73,9 @@ public class CPConfigurationListRelServiceImpl
 			long cpConfigurationListRelId)
 		throws PortalException {
 
-		CPConfigurationListRel cpConfigurationListRel =
+		return deleteCPConfigurationListRel(
 			cpConfigurationListRelPersistence.findByPrimaryKey(
-				cpConfigurationListRelId);
-
-		_checkCommerceCatalog(
-			cpConfigurationListRel.getCPConfigurationListId(),
-			ActionKeys.UPDATE);
-
-		return cpConfigurationListRelLocalService.deleteCPConfigurationListRel(
-			cpConfigurationListRelId);
+				cpConfigurationListRelId));
 	}
 
 	@Override
