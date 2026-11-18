@@ -133,12 +133,12 @@ public class GetFileStrutsActionTest {
 		_assertNotFound(
 			_getMockHttpServletResponse(
 				parameters,
-				_getGuestUser(
-					fileEntry, ActionKeys.DOWNLOAD, ActionKeys.VIEW)));
+				_addUser(fileEntry, ActionKeys.DOWNLOAD, ActionKeys.VIEW)));
 		_assertNotFound(
 			_getMockHttpServletResponse(
 				parameters,
-				_addUser(fileEntry, ActionKeys.DOWNLOAD, ActionKeys.VIEW)));
+				_getGuestUser(
+					fileEntry, ActionKeys.DOWNLOAD, ActionKeys.VIEW)));
 		_assertFileSent(
 			_getMockHttpServletResponse(
 				parameters,

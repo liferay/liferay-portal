@@ -183,8 +183,6 @@ public class AMImageRequestHandlerTest {
 			StringPool.BLANK, StringPool.BLANK, DLVersionNumberIncrease.MINOR,
 			bytes, null, null, null, serviceContext);
 
-		FileVersion fileVersion = fileEntry.getFileVersion();
-
 		FileVersion latestFileVersion = fileEntry.getLatestFileVersion(true);
 
 		Assert.assertTrue(latestFileVersion.isDraft());
@@ -195,6 +193,9 @@ public class AMImageRequestHandlerTest {
 		mockHttpServletRequest.setAttribute(
 			WebKeys.USER,
 			UserLocalServiceUtil.getGuestUser(_group.getCompanyId()));
+
+		FileVersion fileVersion = fileEntry.getFileVersion();
+
 		mockHttpServletRequest.setPathInfo(
 			StringBundler.concat(
 				"/image/", fileEntry.getFileEntryId(), "/",
