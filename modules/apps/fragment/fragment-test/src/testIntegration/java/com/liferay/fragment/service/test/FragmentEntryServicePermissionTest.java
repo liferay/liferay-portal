@@ -22,14 +22,14 @@ import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
-import com.liferay.portal.kernel.service.ResourcePermissionLocalServiceUtil;
-import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserGroupRoleLocalServiceUtil;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
@@ -44,7 +44,6 @@ import com.liferay.portal.test.rule.TransactionalTestRule;
 
 import java.util.List;
 
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -76,17 +75,6 @@ public class FragmentEntryServicePermissionTest {
 			_group1.getGroupId());
 
 		_user = UserTestUtil.addGroupUser(_group1, RoleConstants.POWER_USER);
-	}
-
-	@After
-	public void tearDown() throws Exception {
-		Role siteMemberRole = RoleLocalServiceUtil.getRole(
-			TestPropsValues.getCompanyId(), RoleConstants.SITE_MEMBER);
-
-		ResourcePermissionLocalServiceUtil.removeResourcePermissions(
-			TestPropsValues.getCompanyId(), FragmentConstants.RESOURCE_NAME,
-			ResourceConstants.SCOPE_GROUP, siteMemberRole.getRoleId(),
-			FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
 	}
 
 	@Test
@@ -529,38 +517,9 @@ public class FragmentEntryServicePermissionTest {
 		_setRolePermissions(FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
 
 		_testMoveFragmentEntryWithFragmentCollectionFromAnotherGroup();
-	}
+		_testMoveFragmentEntryWithPermissions();
 
-	@Test
-	public void testMoveFragmentEntryWithPermissions() throws Exception {
-		FragmentEntry fragmentEntry = FragmentEntryTestUtil.addFragmentEntry(
-			_fragmentCollection.getFragmentCollectionId());
-
-		FragmentCollection targetFragmentCollection =
-			FragmentTestUtil.addFragmentCollection(_group1.getGroupId());
-
-		_setRolePermissions(FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
-
-		UserTestUtil.setUser(_user);
-
-		_fragmentEntryService.moveFragmentEntry(
-			fragmentEntry.getFragmentEntryId(),
-			targetFragmentCollection.getFragmentCollectionId());
-	}
-
-	@Test(expected = PrincipalException.MustHavePermission.class)
-	public void testMoveFragmentEntryWithoutPermissions() throws Exception {
-		FragmentEntry fragmentEntry = FragmentEntryTestUtil.addFragmentEntry(
-			_fragmentCollection.getFragmentCollectionId());
-
-		FragmentCollection targetFragmentCollection =
-			FragmentTestUtil.addFragmentCollection(_group1.getGroupId());
-
-		UserTestUtil.setUser(_user);
-
-		_fragmentEntryService.moveFragmentEntry(
-			fragmentEntry.getFragmentEntryId(),
-			targetFragmentCollection.getFragmentCollectionId());
+		_testMoveFragmentEntryWithoutPermissions();
 	}
 
 	@Test
@@ -594,153 +553,15 @@ public class FragmentEntryServicePermissionTest {
 
 		_setRolePermissions(FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
 
+		_testUpdateFragmentEntryNameWithPermissions();
+		_testUpdateFragmentEntryValuesAndPreviewFileEntryIdWithPermissions();
 		_testUpdateFragmentEntryValuesWithFragmentCollectionFromAnotherGroup();
+		_testUpdateFragmentEntryValuesWithPermissions();
 		_testUpdateFragmentEntryWithFragmentEntryFromAnotherGroup();
-	}
 
-	@Test
-	public void testUpdateFragmentEntryNameWithPermissions() throws Exception {
-		FragmentEntry fragmentEntry = FragmentEntryTestUtil.addFragmentEntry(
-			_fragmentCollection.getFragmentCollectionId(),
-			RandomTestUtil.randomString());
-
-		_setRolePermissions(FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
-
-		UserTestUtil.setUser(_user);
-
-		_fragmentEntryService.updateFragmentEntry(
-			fragmentEntry.getFragmentEntryId(), RandomTestUtil.randomString());
-	}
-
-	@Test(expected = PrincipalException.MustHavePermission.class)
-	public void testUpdateFragmentEntryNameWithoutPermissions()
-		throws Exception {
-
-		FragmentEntry fragmentEntry = FragmentEntryTestUtil.addFragmentEntry(
-			_fragmentCollection.getFragmentCollectionId(),
-			RandomTestUtil.randomString());
-
-		UserTestUtil.setUser(_user);
-
-		_fragmentEntryService.updateFragmentEntry(
-			fragmentEntry.getFragmentEntryId(), RandomTestUtil.randomString());
-	}
-
-	@Test
-	public void testUpdateFragmentEntryValuesAndPreviewFileEntryIdWithPermissions()
-		throws Exception {
-
-		FragmentEntry fragmentEntry = _fragmentEntryService.addFragmentEntry(
-			null, _group1.getGroupId(),
-			_fragmentCollection.getFragmentCollectionId(), StringPool.BLANK,
-			StringUtil.randomString(), StringPool.BLANK,
-			RandomTestUtil.randomString(), StringPool.BLANK, false,
-			StringPool.BLANK, null, 0, false, false,
-			FragmentConstants.TYPE_COMPONENT, null,
-			WorkflowConstants.STATUS_DRAFT,
-			ServiceContextTestUtil.getServiceContext(
-				_group1.getGroupId(), TestPropsValues.getUserId()));
-
-		Assert.assertEquals(0, fragmentEntry.getPreviewFileEntryId());
-
-		_setRolePermissions(FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
-
-		UserTestUtil.setUser(_user);
-
-		_fragmentEntryService.updateFragmentEntry(
-			fragmentEntry.getFragmentEntryId(),
-			fragmentEntry.getFragmentCollectionId(),
-			RandomTestUtil.randomString(), StringPool.BLANK,
-			RandomTestUtil.randomString(), StringPool.BLANK,
-			fragmentEntry.isCacheable(), "{\n\t\"fieldSets\": [\n\t]\n}",
-			fragmentEntry.getIcon(), 1, false, fragmentEntry.getTypeOptions(),
-			WorkflowConstants.STATUS_APPROVED);
-	}
-
-	@Test(expected = PrincipalException.MustHavePermission.class)
-	public void testUpdateFragmentEntryValuesAndPreviewFileEntryIdWithoutPermissions()
-		throws Exception {
-
-		FragmentEntry fragmentEntry = _fragmentEntryService.addFragmentEntry(
-			null, _group1.getGroupId(),
-			_fragmentCollection.getFragmentCollectionId(), StringPool.BLANK,
-			StringUtil.randomString(), StringPool.BLANK,
-			RandomTestUtil.randomString(), StringPool.BLANK, false,
-			StringPool.BLANK, null, 0, false, false,
-			FragmentConstants.TYPE_COMPONENT, null,
-			WorkflowConstants.STATUS_DRAFT,
-			ServiceContextTestUtil.getServiceContext(
-				_group1.getGroupId(), TestPropsValues.getUserId()));
-
-		Assert.assertEquals(0, fragmentEntry.getPreviewFileEntryId());
-
-		UserTestUtil.setUser(_user);
-
-		_fragmentEntryService.updateFragmentEntry(
-			fragmentEntry.getFragmentEntryId(),
-			fragmentEntry.getFragmentCollectionId(),
-			RandomTestUtil.randomString(), StringPool.BLANK,
-			RandomTestUtil.randomString(), StringPool.BLANK,
-			fragmentEntry.isCacheable(), "{\n\t\"fieldSets\": [\n\t]\n}",
-			fragmentEntry.getIcon(), 1, false, fragmentEntry.getTypeOptions(),
-			WorkflowConstants.STATUS_APPROVED);
-	}
-
-	@Test
-	public void testUpdateFragmentEntryValuesWithPermissions()
-		throws Exception {
-
-		FragmentEntry fragmentEntry = _fragmentEntryService.addFragmentEntry(
-			null, _group1.getGroupId(),
-			_fragmentCollection.getFragmentCollectionId(), StringPool.BLANK,
-			StringUtil.randomString(), StringPool.BLANK,
-			RandomTestUtil.randomString(), StringPool.BLANK, false,
-			StringPool.BLANK, null, 0, false, false,
-			FragmentConstants.TYPE_COMPONENT, null,
-			WorkflowConstants.STATUS_DRAFT,
-			ServiceContextTestUtil.getServiceContext(
-				_group1.getGroupId(), TestPropsValues.getUserId()));
-
-		_setRolePermissions(FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
-
-		UserTestUtil.setUser(_user);
-
-		_fragmentEntryService.updateFragmentEntry(
-			fragmentEntry.getFragmentEntryId(),
-			fragmentEntry.getFragmentCollectionId(),
-			RandomTestUtil.randomString(), StringPool.BLANK,
-			RandomTestUtil.randomString(), StringPool.BLANK,
-			fragmentEntry.isCacheable(), "{\n\t\"fieldSets\": [\n\t]\n}",
-			fragmentEntry.getIcon(), fragmentEntry.getPreviewFileEntryId(),
-			false, fragmentEntry.getTypeOptions(),
-			WorkflowConstants.STATUS_APPROVED);
-	}
-
-	@Test(expected = PrincipalException.MustHavePermission.class)
-	public void testUpdateFragmentEntryValuesWithoutPermissions()
-		throws Exception {
-
-		FragmentEntry fragmentEntry = _fragmentEntryService.addFragmentEntry(
-			null, _group1.getGroupId(),
-			_fragmentCollection.getFragmentCollectionId(), StringPool.BLANK,
-			StringUtil.randomString(), StringPool.BLANK,
-			RandomTestUtil.randomString(), StringPool.BLANK, false,
-			StringPool.BLANK, null, 0, false, false,
-			FragmentConstants.TYPE_COMPONENT, null,
-			WorkflowConstants.STATUS_DRAFT,
-			ServiceContextTestUtil.getServiceContext(
-				_group1.getGroupId(), TestPropsValues.getUserId()));
-
-		UserTestUtil.setUser(_user);
-
-		_fragmentEntryService.updateFragmentEntry(
-			fragmentEntry.getFragmentEntryId(),
-			fragmentEntry.getFragmentCollectionId(),
-			RandomTestUtil.randomString(), StringPool.BLANK,
-			RandomTestUtil.randomString(), StringPool.BLANK, false,
-			"{\n\t\"fieldSets\": [\n\t]\n}", fragmentEntry.getIcon(),
-			fragmentEntry.getPreviewFileEntryId(), false,
-			fragmentEntry.getTypeOptions(), WorkflowConstants.STATUS_APPROVED);
+		_testUpdateFragmentEntryNameWithoutPermissions();
+		_testUpdateFragmentEntryValuesAndPreviewFileEntryIdWithoutPermissions();
+		_testUpdateFragmentEntryValuesWithoutPermissions();
 	}
 
 	@Test
@@ -813,13 +634,16 @@ public class FragmentEntryServicePermissionTest {
 	}
 
 	private void _setRolePermissions(String permissionType) throws Exception {
-		Role siteMemberRole = RoleLocalServiceUtil.getRole(
-			TestPropsValues.getCompanyId(), RoleConstants.SITE_MEMBER);
+		_role = RoleTestUtil.addRole(RoleConstants.TYPE_SITE);
 
-		ResourcePermissionLocalServiceUtil.addResourcePermission(
-			TestPropsValues.getCompanyId(), FragmentConstants.RESOURCE_NAME,
+		RoleTestUtil.addResourcePermission(
+			_role, FragmentConstants.RESOURCE_NAME,
 			ResourceConstants.SCOPE_GROUP, String.valueOf(_group1.getGroupId()),
-			siteMemberRole.getRoleId(), permissionType);
+			permissionType);
+
+		UserGroupRoleLocalServiceUtil.addUserGroupRoles(
+			_user.getUserId(), _group1.getGroupId(),
+			new long[] {_role.getRoleId()});
 	}
 
 	private void _testMoveFragmentEntryWithFragmentCollectionFromAnotherGroup()
@@ -849,6 +673,48 @@ public class FragmentEntryServicePermissionTest {
 					fragmentCollection.getFragmentCollectionId(),
 					" does not belong to group ", _group1.getGroupId()),
 				illegalArgumentException.getMessage());
+		}
+	}
+
+	private void _testMoveFragmentEntryWithPermissions() throws Exception {
+		UserTestUtil.setUser(TestPropsValues.getUser());
+
+		FragmentEntry fragmentEntry = FragmentEntryTestUtil.addFragmentEntry(
+			_fragmentCollection.getFragmentCollectionId());
+
+		FragmentCollection targetFragmentCollection =
+			FragmentTestUtil.addFragmentCollection(_group1.getGroupId());
+
+		UserTestUtil.setUser(_user);
+
+		_fragmentEntryService.moveFragmentEntry(
+			fragmentEntry.getFragmentEntryId(),
+			targetFragmentCollection.getFragmentCollectionId());
+	}
+
+	private void _testMoveFragmentEntryWithoutPermissions() throws Exception {
+		UserTestUtil.setUser(TestPropsValues.getUser());
+
+		FragmentEntry fragmentEntry = FragmentEntryTestUtil.addFragmentEntry(
+			_fragmentCollection.getFragmentCollectionId());
+
+		FragmentCollection targetFragmentCollection =
+			FragmentTestUtil.addFragmentCollection(_group1.getGroupId());
+
+		UserTestUtil.setUser(
+			UserTestUtil.addGroupUser(_group1, RoleConstants.SITE_MEMBER));
+
+		try {
+			_fragmentEntryService.moveFragmentEntry(
+				fragmentEntry.getFragmentEntryId(),
+				targetFragmentCollection.getFragmentCollectionId());
+
+			Assert.fail();
+		}
+		catch (PrincipalException.MustHavePermission principalException) {
+			_assertMustHavePermission(
+				principalException, _group1.getGroupId(),
+				FragmentConstants.RESOURCE_NAME);
 		}
 	}
 
@@ -1001,6 +867,118 @@ public class FragmentEntryServicePermissionTest {
 		Assert.assertEquals(html, updatedFragmentEntry.getHtml());
 	}
 
+	private void _testUpdateFragmentEntryNameWithPermissions()
+		throws Exception {
+
+		UserTestUtil.setUser(TestPropsValues.getUser());
+
+		FragmentEntry fragmentEntry = FragmentEntryTestUtil.addFragmentEntry(
+			_fragmentCollection.getFragmentCollectionId(),
+			RandomTestUtil.randomString());
+
+		UserTestUtil.setUser(_user);
+
+		_fragmentEntryService.updateFragmentEntry(
+			fragmentEntry.getFragmentEntryId(), RandomTestUtil.randomString());
+	}
+
+	private void _testUpdateFragmentEntryNameWithoutPermissions()
+		throws Exception {
+
+		UserTestUtil.setUser(TestPropsValues.getUser());
+
+		FragmentEntry fragmentEntry = FragmentEntryTestUtil.addFragmentEntry(
+			_fragmentCollection.getFragmentCollectionId(),
+			RandomTestUtil.randomString());
+
+		UserTestUtil.setUser(
+			UserTestUtil.addGroupUser(_group1, RoleConstants.SITE_MEMBER));
+
+		try {
+			_fragmentEntryService.updateFragmentEntry(
+				fragmentEntry.getFragmentEntryId(),
+				RandomTestUtil.randomString());
+
+			Assert.fail();
+		}
+		catch (PrincipalException.MustHavePermission principalException) {
+			_assertMustHavePermission(
+				principalException, _group1.getGroupId(),
+				FragmentConstants.RESOURCE_NAME);
+		}
+	}
+
+	private void _testUpdateFragmentEntryValuesAndPreviewFileEntryIdWithPermissions()
+		throws Exception {
+
+		UserTestUtil.setUser(TestPropsValues.getUser());
+
+		FragmentEntry fragmentEntry = _fragmentEntryService.addFragmentEntry(
+			null, _group1.getGroupId(),
+			_fragmentCollection.getFragmentCollectionId(), StringPool.BLANK,
+			StringUtil.randomString(), StringPool.BLANK,
+			RandomTestUtil.randomString(), StringPool.BLANK, false,
+			StringPool.BLANK, null, 0, false, false,
+			FragmentConstants.TYPE_COMPONENT, null,
+			WorkflowConstants.STATUS_DRAFT,
+			ServiceContextTestUtil.getServiceContext(
+				_group1.getGroupId(), TestPropsValues.getUserId()));
+
+		Assert.assertEquals(0, fragmentEntry.getPreviewFileEntryId());
+
+		UserTestUtil.setUser(_user);
+
+		_fragmentEntryService.updateFragmentEntry(
+			fragmentEntry.getFragmentEntryId(),
+			fragmentEntry.getFragmentCollectionId(),
+			RandomTestUtil.randomString(), StringPool.BLANK,
+			RandomTestUtil.randomString(), StringPool.BLANK,
+			fragmentEntry.isCacheable(), "{\n\t\"fieldSets\": [\n\t]\n}",
+			fragmentEntry.getIcon(), 1, false, fragmentEntry.getTypeOptions(),
+			WorkflowConstants.STATUS_APPROVED);
+	}
+
+	private void _testUpdateFragmentEntryValuesAndPreviewFileEntryIdWithoutPermissions()
+		throws Exception {
+
+		UserTestUtil.setUser(TestPropsValues.getUser());
+
+		FragmentEntry fragmentEntry = _fragmentEntryService.addFragmentEntry(
+			null, _group1.getGroupId(),
+			_fragmentCollection.getFragmentCollectionId(), StringPool.BLANK,
+			StringUtil.randomString(), StringPool.BLANK,
+			RandomTestUtil.randomString(), StringPool.BLANK, false,
+			StringPool.BLANK, null, 0, false, false,
+			FragmentConstants.TYPE_COMPONENT, null,
+			WorkflowConstants.STATUS_DRAFT,
+			ServiceContextTestUtil.getServiceContext(
+				_group1.getGroupId(), TestPropsValues.getUserId()));
+
+		Assert.assertEquals(0, fragmentEntry.getPreviewFileEntryId());
+
+		UserTestUtil.setUser(
+			UserTestUtil.addGroupUser(_group1, RoleConstants.SITE_MEMBER));
+
+		try {
+			_fragmentEntryService.updateFragmentEntry(
+				fragmentEntry.getFragmentEntryId(),
+				fragmentEntry.getFragmentCollectionId(),
+				RandomTestUtil.randomString(), StringPool.BLANK,
+				RandomTestUtil.randomString(), StringPool.BLANK,
+				fragmentEntry.isCacheable(), "{\n\t\"fieldSets\": [\n\t]\n}",
+				fragmentEntry.getIcon(), 1, false,
+				fragmentEntry.getTypeOptions(),
+				WorkflowConstants.STATUS_APPROVED);
+
+			Assert.fail();
+		}
+		catch (PrincipalException.MustHavePermission principalException) {
+			_assertMustHavePermission(
+				principalException, _group1.getGroupId(),
+				FragmentConstants.RESOURCE_NAME);
+		}
+	}
+
 	private void _testUpdateFragmentEntryValuesWithFragmentCollectionFromAnotherGroup()
 		throws Exception {
 
@@ -1034,6 +1012,74 @@ public class FragmentEntryServicePermissionTest {
 					fragmentCollection.getFragmentCollectionId(),
 					" does not belong to group ", _group1.getGroupId()),
 				illegalArgumentException.getMessage());
+		}
+	}
+
+	private void _testUpdateFragmentEntryValuesWithPermissions()
+		throws Exception {
+
+		UserTestUtil.setUser(TestPropsValues.getUser());
+
+		FragmentEntry fragmentEntry = _fragmentEntryService.addFragmentEntry(
+			null, _group1.getGroupId(),
+			_fragmentCollection.getFragmentCollectionId(), StringPool.BLANK,
+			StringUtil.randomString(), StringPool.BLANK,
+			RandomTestUtil.randomString(), StringPool.BLANK, false,
+			StringPool.BLANK, null, 0, false, false,
+			FragmentConstants.TYPE_COMPONENT, null,
+			WorkflowConstants.STATUS_DRAFT,
+			ServiceContextTestUtil.getServiceContext(
+				_group1.getGroupId(), TestPropsValues.getUserId()));
+
+		UserTestUtil.setUser(_user);
+
+		_fragmentEntryService.updateFragmentEntry(
+			fragmentEntry.getFragmentEntryId(),
+			fragmentEntry.getFragmentCollectionId(),
+			RandomTestUtil.randomString(), StringPool.BLANK,
+			RandomTestUtil.randomString(), StringPool.BLANK,
+			fragmentEntry.isCacheable(), "{\n\t\"fieldSets\": [\n\t]\n}",
+			fragmentEntry.getIcon(), fragmentEntry.getPreviewFileEntryId(),
+			false, fragmentEntry.getTypeOptions(),
+			WorkflowConstants.STATUS_APPROVED);
+	}
+
+	private void _testUpdateFragmentEntryValuesWithoutPermissions()
+		throws Exception {
+
+		UserTestUtil.setUser(TestPropsValues.getUser());
+
+		FragmentEntry fragmentEntry = _fragmentEntryService.addFragmentEntry(
+			null, _group1.getGroupId(),
+			_fragmentCollection.getFragmentCollectionId(), StringPool.BLANK,
+			StringUtil.randomString(), StringPool.BLANK,
+			RandomTestUtil.randomString(), StringPool.BLANK, false,
+			StringPool.BLANK, null, 0, false, false,
+			FragmentConstants.TYPE_COMPONENT, null,
+			WorkflowConstants.STATUS_DRAFT,
+			ServiceContextTestUtil.getServiceContext(
+				_group1.getGroupId(), TestPropsValues.getUserId()));
+
+		UserTestUtil.setUser(
+			UserTestUtil.addGroupUser(_group1, RoleConstants.SITE_MEMBER));
+
+		try {
+			_fragmentEntryService.updateFragmentEntry(
+				fragmentEntry.getFragmentEntryId(),
+				fragmentEntry.getFragmentCollectionId(),
+				RandomTestUtil.randomString(), StringPool.BLANK,
+				RandomTestUtil.randomString(), StringPool.BLANK, false,
+				"{\n\t\"fieldSets\": [\n\t]\n}", fragmentEntry.getIcon(),
+				fragmentEntry.getPreviewFileEntryId(), false,
+				fragmentEntry.getTypeOptions(),
+				WorkflowConstants.STATUS_APPROVED);
+
+			Assert.fail();
+		}
+		catch (PrincipalException.MustHavePermission principalException) {
+			_assertMustHavePermission(
+				principalException, _group1.getGroupId(),
+				FragmentConstants.RESOURCE_NAME);
 		}
 	}
 
@@ -1072,6 +1118,9 @@ public class FragmentEntryServicePermissionTest {
 
 	@DeleteAfterTestRun
 	private Group _group2;
+
+	@DeleteAfterTestRun
+	private Role _role;
 
 	@DeleteAfterTestRun
 	private User _user;
