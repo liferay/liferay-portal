@@ -246,7 +246,8 @@ public class ClassNamePostUpgradeDataCleanupProcess
 		Set<String> models, Map<String, List<Bundle>> packageNameBundlesMap,
 		String value) {
 
-		if (_isDefined(
+		if ((value.indexOf(CharPool.DASH) == -1) &&
+			_isDefined(
 				bundleContext, value, definedClasses, models,
 				packageNameBundlesMap)) {
 
