@@ -220,6 +220,20 @@ function ProfileForm({
 					/>
 
 					<FormField
+						appendContent={
+							<ClayButtonWithIcon
+								aria-label={Liferay.Language.get('copy-url')}
+								disabled={
+									!isDefaultProfile && !values.profilePath
+								}
+								displayType="secondary"
+								onClick={() =>
+									copyProfileURL(values.profilePath)
+								}
+								symbol="copy"
+								title={Liferay.Language.get('copy-url')}
+							/>
+						}
 						disabled={isDefaultProfile}
 						helpMessage={
 							isDefaultProfile
@@ -241,20 +255,6 @@ function ProfileForm({
 						prefixHelpMessage={getProfileURL('')}
 						prependContent="/"
 						required={!isDefaultProfile}
-						suffix={
-							<ClayButtonWithIcon
-								aria-label={Liferay.Language.get('copy-url')}
-								disabled={
-									!isDefaultProfile && !values.profilePath
-								}
-								displayType="secondary"
-								onClick={() =>
-									copyProfileURL(values.profilePath)
-								}
-								symbol="copy"
-								title={Liferay.Language.get('copy-url')}
-							/>
-						}
 						validate={
 							isDefaultProfile ? undefined : validateProfilePath
 						}

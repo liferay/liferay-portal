@@ -11,6 +11,7 @@ import React from 'react';
 import required from '../../utils/required';
 
 interface FormFieldProps {
+	appendContent?: React.ReactNode;
 	component?: 'input' | 'textarea';
 	disabled?: boolean;
 	helpMessage?: string;
@@ -21,11 +22,11 @@ interface FormFieldProps {
 	prefixHelpMessage?: string;
 	prependContent?: string;
 	required?: boolean;
-	suffix?: React.ReactNode;
 	validate?: FieldValidator;
 }
 
 export function FormField({
+	appendContent,
 	component = 'input',
 	disabled,
 	helpMessage,
@@ -36,7 +37,6 @@ export function FormField({
 	prefixHelpMessage,
 	prependContent,
 	required: isRequired,
-	suffix,
 	validate,
 }: FormFieldProps) {
 	const [field, meta] = useField({
@@ -85,7 +85,7 @@ export function FormField({
 				</ClayForm.FeedbackGroup>
 			)}
 
-			{prependContent || suffix ? (
+			{prependContent || appendContent ? (
 				<ClayInput.Group>
 					{prependContent && (
 						<ClayInput.GroupItem prepend shrink>
@@ -95,12 +95,17 @@ export function FormField({
 						</ClayInput.GroupItem>
 					)}
 
-					<ClayInput.GroupItem append={!!prependContent}>
+					<ClayInput.GroupItem
+						append={!!prependContent}
+						prepend={!!appendContent}
+					>
 						{input}
 					</ClayInput.GroupItem>
 
-					{suffix && (
-						<ClayInput.GroupItem shrink>{suffix}</ClayInput.GroupItem>
+					{appendContent && (
+						<ClayInput.GroupItem append shrink>
+							{appendContent}
+						</ClayInput.GroupItem>
 					)}
 				</ClayInput.Group>
 			) : (
