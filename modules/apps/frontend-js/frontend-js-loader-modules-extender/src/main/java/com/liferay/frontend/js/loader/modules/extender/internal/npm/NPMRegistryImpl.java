@@ -10,6 +10,7 @@ import com.github.yuchi.semver.Version;
 
 import com.liferay.frontend.js.loader.modules.extender.internal.config.generator.JSConfigGeneratorPackage;
 import com.liferay.frontend.js.loader.modules.extender.internal.configuration.Details;
+import com.liferay.frontend.js.loader.modules.extender.internal.servlet.util.JSLoaderModulesUtil;
 import com.liferay.frontend.js.loader.modules.extender.npm.JSBundle;
 import com.liferay.frontend.js.loader.modules.extender.npm.JSBundleProcessor;
 import com.liferay.frontend.js.loader.modules.extender.npm.JSBundleTracker;
@@ -463,6 +464,8 @@ public class NPMRegistryImpl implements NPMRegistry {
 	}
 
 	private void _notifyNPMRegistryUpdatesListeners() {
+		JSLoaderModulesUtil.updateETag();
+
 		for (NPMRegistryUpdatesListener npmRegistryUpdatesListener :
 				_getNPMRegistryUpdatesListeners()) {
 
