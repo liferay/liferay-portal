@@ -5,7 +5,6 @@
 
 package com.liferay.headless.commerce.machine.learning.internal.batch.engine.v1_0;
 
-import com.liferay.batch.engine.BaseBatchEngineTaskItemDelegate;
 import com.liferay.batch.engine.BatchEngineTaskItemDelegate;
 import com.liferay.batch.engine.pagination.Page;
 import com.liferay.batch.engine.pagination.Pagination;
@@ -36,7 +35,12 @@ public class SkuForecastBatchEngineTaskItemDelegate
 	public static final String KEY = "sku-monthly-quantity-forecast";
 
 	@Override
-	public SkuForecast createItem(
+	public Class<SkuForecast> getItemClass() {
+		return SkuForecast.class;
+	}
+
+	@Override
+	protected SkuForecast doCreateItem(
 			SkuForecast skuForecast, Map<String, Serializable> parameters)
 		throws Exception {
 
@@ -70,12 +74,7 @@ public class SkuForecastBatchEngineTaskItemDelegate
 	}
 
 	@Override
-	public Class<SkuForecast> getItemClass() {
-		return SkuForecast.class;
-	}
-
-	@Override
-	public Page<SkuForecast> read(
+	protected Page<SkuForecast> doRead(
 			Filter filter, Pagination pagination, Sort[] sorts,
 			Map<String, Serializable> parameters, String search)
 		throws Exception {

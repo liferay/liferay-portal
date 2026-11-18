@@ -5,7 +5,6 @@
 
 package com.liferay.headless.commerce.machine.learning.internal.batch.engine.v1_0;
 
-import com.liferay.batch.engine.BaseBatchEngineTaskItemDelegate;
 import com.liferay.batch.engine.BatchEngineTaskItemDelegate;
 import com.liferay.batch.engine.pagination.Page;
 import com.liferay.batch.engine.pagination.Pagination;
@@ -34,7 +33,7 @@ public class FrequentPatternRecommendationBatchEngineTaskItemDelegate
 	extends BaseBatchEngineTaskItemDelegate<FrequentPatternRecommendation> {
 
 	@Override
-	public FrequentPatternRecommendation createItem(
+	protected FrequentPatternRecommendation doCreateItem(
 			FrequentPatternRecommendation frequentPatternRecommendation,
 			Map<String, Serializable> parameters)
 		throws Exception {
@@ -67,7 +66,7 @@ public class FrequentPatternRecommendationBatchEngineTaskItemDelegate
 	}
 
 	@Override
-	public Page<FrequentPatternRecommendation> read(
+	protected Page<FrequentPatternRecommendation> doRead(
 			Filter filter, Pagination pagination, Sort[] sorts,
 			Map<String, Serializable> parameters, String search)
 		throws Exception {

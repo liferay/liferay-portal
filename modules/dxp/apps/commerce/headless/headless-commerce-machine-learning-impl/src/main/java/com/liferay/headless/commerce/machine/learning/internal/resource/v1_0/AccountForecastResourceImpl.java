@@ -11,6 +11,7 @@ import com.liferay.headless.commerce.machine.learning.dto.v1_0.AccountForecast;
 import com.liferay.headless.commerce.machine.learning.internal.constants.CommerceMLForecastConstants;
 import com.liferay.headless.commerce.machine.learning.internal.dto.v1_0.converter.CommerceMLForecastCompositeResourcePrimaryKey;
 import com.liferay.headless.commerce.machine.learning.internal.helper.v1_0.CommerceAccountPermissionHelper;
+import com.liferay.headless.commerce.machine.learning.internal.security.permission.CommerceMLPermissionUtil;
 import com.liferay.headless.commerce.machine.learning.resource.v1_0.AccountForecastResource;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
@@ -46,6 +47,9 @@ public class AccountForecastResourceImpl
 			Collection<AccountForecast> accountForecasts,
 			Map<String, Serializable> parameters)
 		throws Exception {
+
+		CommerceMLPermissionUtil.check(
+			contextCompany.getCompanyId(), roleLocalService);
 
 		contextBatchUnsafeBiConsumer.accept(
 			accountForecasts,

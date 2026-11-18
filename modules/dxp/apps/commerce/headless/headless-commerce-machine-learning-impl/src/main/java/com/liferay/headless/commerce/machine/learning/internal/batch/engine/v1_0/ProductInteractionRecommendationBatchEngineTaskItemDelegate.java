@@ -5,7 +5,6 @@
 
 package com.liferay.headless.commerce.machine.learning.internal.batch.engine.v1_0;
 
-import com.liferay.batch.engine.BaseBatchEngineTaskItemDelegate;
 import com.liferay.batch.engine.BatchEngineTaskItemDelegate;
 import com.liferay.batch.engine.pagination.Page;
 import com.liferay.batch.engine.pagination.Pagination;
@@ -33,7 +32,7 @@ public class ProductInteractionRecommendationBatchEngineTaskItemDelegate
 	extends BaseBatchEngineTaskItemDelegate<ProductInteractionRecommendation> {
 
 	@Override
-	public ProductInteractionRecommendation createItem(
+	protected ProductInteractionRecommendation doCreateItem(
 			ProductInteractionRecommendation productInteractionRecommendation,
 			Map<String, Serializable> parameters)
 		throws Exception {
@@ -65,7 +64,7 @@ public class ProductInteractionRecommendationBatchEngineTaskItemDelegate
 	}
 
 	@Override
-	public Page<ProductInteractionRecommendation> read(
+	protected Page<ProductInteractionRecommendation> doRead(
 			Filter filter, Pagination pagination, Sort[] sorts,
 			Map<String, Serializable> parameters, String search)
 		throws Exception {

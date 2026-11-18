@@ -5,7 +5,6 @@
 
 package com.liferay.headless.commerce.machine.learning.internal.batch.engine.v1_0;
 
-import com.liferay.batch.engine.BaseBatchEngineTaskItemDelegate;
 import com.liferay.batch.engine.BatchEngineTaskItemDelegate;
 import com.liferay.batch.engine.pagination.Page;
 import com.liferay.batch.engine.pagination.Pagination;
@@ -34,7 +33,7 @@ public class UserRecommendationBatchEngineTaskItemDelegate
 	extends BaseBatchEngineTaskItemDelegate<UserRecommendation> {
 
 	@Override
-	public UserRecommendation createItem(
+	protected UserRecommendation doCreateItem(
 			UserRecommendation userRecommendation,
 			Map<String, Serializable> parameters)
 		throws Exception {
@@ -62,7 +61,7 @@ public class UserRecommendationBatchEngineTaskItemDelegate
 	}
 
 	@Override
-	public Page<UserRecommendation> read(
+	protected Page<UserRecommendation> doRead(
 			Filter filter, Pagination pagination, Sort[] sorts,
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
