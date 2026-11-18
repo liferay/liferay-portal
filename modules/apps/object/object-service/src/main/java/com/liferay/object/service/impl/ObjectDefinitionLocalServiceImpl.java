@@ -1702,6 +1702,16 @@ public class ObjectDefinitionLocalServiceImpl
 			return;
 		}
 
+		if (objectDefinition.isSystem()) {
+			ObjectDefinition existingObjectDefinition =
+				objectDefinitionPersistence.fetchByC_C(
+					objectDefinition.getCompanyId(), className);
+
+			if (existingObjectDefinition != null) {
+				return;
+			}
+		}
+
 		ObjectDefinitionSetting objectDefinitionSetting =
 			_objectDefinitionSettingPersistence.fetchByODI_N(
 				objectDefinition.getObjectDefinitionId(),

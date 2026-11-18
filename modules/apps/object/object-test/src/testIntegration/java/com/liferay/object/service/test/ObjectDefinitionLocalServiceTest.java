@@ -35,6 +35,7 @@ import com.liferay.object.constants.ObjectFolderConstants;
 import com.liferay.object.constants.ObjectRelationshipConstants;
 import com.liferay.object.constants.ObjectValidationRuleConstants;
 import com.liferay.object.constants.ObjectValidationRuleSettingConstants;
+import com.liferay.object.definition.processor.ObjectDefinitionClassNameProcessor;
 import com.liferay.object.definition.setting.builder.ObjectDefinitionSettingBuilder;
 import com.liferay.object.definition.util.ObjectDefinitionValidationThreadLocal;
 import com.liferay.object.exception.DuplicateObjectDefinitionExternalReferenceCodeException;
@@ -5466,6 +5467,10 @@ public class ObjectDefinitionLocalServiceTest {
 	private void _assertUniqueClassName(
 		String className, ObjectDefinition objectDefinition) {
 
+		Assert.assertEquals(
+			className,
+			_objectDefinitionClassNameProcessor.
+				updateObjectDefinitionReferences(className));
 		Assert.assertNotEquals(className, objectDefinition.getClassName());
 		Assert.assertTrue(
 			StringUtil.startsWith(
@@ -6610,6 +6615,10 @@ public class ObjectDefinitionLocalServiceTest {
 
 	@Inject
 	private ObjectActionLocalService _objectActionLocalService;
+
+	@Inject
+	private ObjectDefinitionClassNameProcessor
+		_objectDefinitionClassNameProcessor;
 
 	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
