@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {Page, expect} from '@playwright/test';
+import {Locator, Page, expect} from '@playwright/test';
 
 import {clickAndExpectToBeVisible} from '../../../../utils/clickAndExpectToBeVisible';
+import dragAndDropElement from '../../../../utils/dragAndDropElement';
 
 export class PageTreePage {
 	readonly page: Page;
@@ -46,5 +47,25 @@ export class PageTreePage {
 				).toHaveClass(/panel-group/, {timeout: 2000});
 			}).toPass();
 		}
+	}
+
+	async dragItem(
+		item: Locator,
+		targetItem: Locator,
+		{above = false}: {above?: boolean} = {}
+	) {
+		await dragAndDropElement({
+			dragTarget: item,
+			dropTarget: targetItem,
+			offset: above ? {y: 1} : undefined,
+		});
+	}
+
+	async selectPagesType(name: string) {
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: this.page.getByRole('option', {name}),
+			trigger: this.page.getByLabel('Pages Type'),
+		});
 	}
 }

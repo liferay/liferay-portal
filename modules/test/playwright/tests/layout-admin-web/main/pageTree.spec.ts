@@ -11,10 +11,10 @@ import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {pageEditorPagesTest} from '../../../fixtures/pageEditorPagesTest';
 import {pagesAdminPagesTest} from '../../../fixtures/pagesAdminPagesTest';
+import {ApiHelpers} from '../../../helpers/ApiHelpers';
 import {liferayConfig} from '../../../liferay.config';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import createUserWithPermissions from '../../../utils/createUserWithPermissions';
-import dragAndDropElement from '../../../utils/dragAndDropElement';
 import getRandomString from '../../../utils/getRandomString';
 import {hoverAndExpectToBeVisible} from '../../../utils/hoverAndExpectToBeVisible';
 import {performUserSwitch} from '../../../utils/performLogin';
@@ -43,6 +43,34 @@ const testWithPrivatePages = mergeTests(
 		'LPS-178052': {enabled: true},
 	})
 );
+
+async function getLayoutNames(
+	apiHelpers: ApiHelpers,
+	groupId: string,
+	privateLayout: boolean
+) {
+	const layouts = await apiHelpers.jsonWebServicesLayout.getLayouts(
+		Number(groupId),
+		privateLayout
+	);
+
+	return layouts.map((layout) => layout.nameCurrentValue);
+}
+
+async function getParentPlid(
+	apiHelpers: ApiHelpers,
+	groupId: string,
+	privateLayout: boolean,
+	name: string
+) {
+	const layouts = await apiHelpers.jsonWebServicesLayout.getLayouts(
+		Number(groupId),
+		privateLayout
+	);
+
+	return layouts.find((layout) => layout.nameCurrentValue === name)
+		?.parentPlid;
+}
 
 test(
 	'Add child page',
@@ -258,11 +286,7 @@ testWithPrivatePages(
 
 		// Assert private page
 
-		await clickAndExpectToBeVisible({
-			autoClick: true,
-			target: page.getByRole('option', {name: 'Private Pages'}),
-			trigger: page.getByLabel('Pages Type'),
-		});
+		await pageTreePage.selectPagesType('Private Pages');
 
 		await expect(
 			page.getByRole('link', {name: publicLayoutTitle})
@@ -274,11 +298,7 @@ testWithPrivatePages(
 
 		// Assert navigation menu
 
-		await clickAndExpectToBeVisible({
-			autoClick: true,
-			target: page.getByRole('option', {name: siteNavigationMenuName}),
-			trigger: page.getByLabel('Pages Type'),
-		});
+		await pageTreePage.selectPagesType(siteNavigationMenuName);
 
 		await expect(
 			page.getByRole('link', {name: publicLayoutTitle})
@@ -290,11 +310,7 @@ testWithPrivatePages(
 
 		// Assert public page
 
-		await clickAndExpectToBeVisible({
-			autoClick: true,
-			target: page.getByRole('option', {name: 'Public Pages'}),
-			trigger: page.getByLabel('Pages Type'),
-		});
+		await pageTreePage.selectPagesType('Public Pages');
 
 		await expect(
 			page.getByRole('link', {name: publicLayoutTitle})
@@ -624,10 +640,7 @@ test(
 
 		// Reorder pages
 
-		await dragAndDropElement({
-			dragTarget: treeViewItems.nth(3),
-			dropTarget: treeViewItems.nth(1),
-		});
+		await pageTreePage.dragItem(treeViewItems.nth(3), treeViewItems.nth(1));
 
 		// Assert order
 
@@ -636,6 +649,232 @@ test(
 		await expect(treeViewItems.nth(2)).toContainText(thirdLayoutTitle);
 
 		await expect(treeViewItems.nth(3)).toContainText(secondLayoutTitle);
+	}
+);
+
+testWithPrivatePages(
+	'Can move a private page without guest view permission as the first child of another private page',
+	{
+		tag: '@LPD-115692',
+	},
+	async ({apiHelpers, page, pageTreePage, site}) => {
+		const parentLayoutTitle = getRandomString();
+
+		const parentLayout = await apiHelpers.jsonWebServicesLayout.addLayout({
+			groupId: site.id,
+			privateLayout: 'true',
+			title: parentLayoutTitle,
+		});
+
+		const childLayoutTitle = getRandomString();
+
+		await apiHelpers.jsonWebServicesLayout.addLayout({
+			groupId: site.id,
+			privateLayout: 'true',
+			title: childLayoutTitle,
+		});
+
+		await page.goto(
+			`${liferayConfig.environment.baseUrl}/en/group${site.friendlyUrlPath}${parentLayout.friendlyURL}`
+		);
+
+		await openProductMenu(page);
+
+		await pageTreePage.open();
+
+		try {
+			await pageTreePage.selectPagesType('Private Pages');
+
+			await pageTreePage.dragItem(
+				page.getByRole('treeitem', {name: childLayoutTitle}),
+				page.getByRole('treeitem', {name: parentLayoutTitle})
+			);
+		}
+		finally {
+			await pageTreePage.selectPagesType('Public Pages');
+		}
+
+		await expect
+			.poll(() =>
+				getParentPlid(apiHelpers, site.id, true, childLayoutTitle)
+			)
+			.toBe(parentLayout.plid);
+	}
+);
+
+test(
+	'Can move a page without guest view permission to the first position of a site that is not the default site',
+	{
+		tag: '@LPD-115692',
+	},
+	async ({apiHelpers, page, pageTreePage, site}) => {
+		const firstLayoutTitle = getRandomString();
+
+		const firstLayout = await apiHelpers.headlessDelivery.createSitePage({
+			siteId: site.id,
+			title: firstLayoutTitle,
+		});
+
+		const restrictedLayoutTitle = getRandomString();
+
+		await apiHelpers.headlessDelivery.createSitePage({
+			pagePermissions: [
+				{
+					actionKeys: ['VIEW'],
+					roleKey: 'Owner',
+				},
+			],
+			siteId: site.id,
+			title: restrictedLayoutTitle,
+		});
+
+		await page.goto(
+			`/web${site.friendlyUrlPath}${firstLayout.friendlyUrlPath}`
+		);
+
+		await openProductMenu(page);
+
+		await pageTreePage.open();
+
+		await pageTreePage.dragItem(
+			page.getByRole('treeitem', {name: restrictedLayoutTitle}),
+			page.getByRole('treeitem', {name: firstLayoutTitle}),
+			{above: true}
+		);
+
+		await expect
+			.poll(() => getLayoutNames(apiHelpers, site.id, false))
+			.toEqual([restrictedLayoutTitle, firstLayoutTitle]);
+	}
+);
+
+test(
+	'Can move a link to URL page as the first child of another page but not as the first page',
+	{
+		tag: '@LPD-115692',
+	},
+	async ({apiHelpers, page, pageTreePage, site}) => {
+		const parentLayoutTitle = getRandomString();
+
+		const parentLayout = await apiHelpers.jsonWebServicesLayout.addLayout({
+			groupId: site.id,
+			title: parentLayoutTitle,
+		});
+
+		const urlLayoutTitle = getRandomString();
+
+		await apiHelpers.jsonWebServicesLayout.addLayout({
+			groupId: site.id,
+			options: {type: 'url'},
+			title: urlLayoutTitle,
+			typeSettings: 'url=https://www.liferay.com',
+		});
+
+		await page.goto(
+			`${liferayConfig.environment.baseUrl}/en/web${site.friendlyUrlPath}${parentLayout.friendlyURL}`
+		);
+
+		await openProductMenu(page);
+
+		await pageTreePage.open();
+
+		await pageTreePage.dragItem(
+			page.getByRole('treeitem', {name: urlLayoutTitle}),
+			page.getByRole('treeitem', {name: parentLayoutTitle}),
+			{above: true}
+		);
+
+		await expect(
+			page.getByText('The first page cannot be of type')
+		).toBeVisible();
+
+		await pageTreePage.dragItem(
+			page.getByRole('treeitem', {name: urlLayoutTitle}),
+			page.getByRole('treeitem', {name: parentLayoutTitle})
+		);
+
+		await expect
+			.poll(() =>
+				getParentPlid(apiHelpers, site.id, false, urlLayoutTitle)
+			)
+			.toBe(parentLayout.plid);
+	}
+);
+
+test(
+	'Cannot move a page without guest view permission to the first position of the default site',
+	{
+		tag: '@LPD-115692',
+	},
+	async ({apiHelpers, page, pageTreePage}) => {
+		const guestSite =
+			await apiHelpers.headlessAdminUser.getSiteByFriendlyUrlPath(
+				'guest'
+			);
+
+		const restrictedLayoutTitle = getRandomString();
+
+		const restrictedLayout =
+			await apiHelpers.headlessDelivery.createSitePage({
+				pagePermissions: [
+					{
+						actionKeys: ['VIEW'],
+						roleKey: 'Owner',
+					},
+				],
+				siteId: guestSite.id,
+				title: restrictedLayoutTitle,
+			});
+
+		try {
+			const layoutNames = await getLayoutNames(
+				apiHelpers,
+				guestSite.id,
+				false
+			);
+
+			await page.goto(`/web/guest${restrictedLayout.friendlyUrlPath}`);
+
+			await openProductMenu(page);
+
+			await pageTreePage.open();
+
+			const editLayoutResponsePromise = page.waitForResponse((response) =>
+				response.url().includes('/portal/edit_layout')
+			);
+
+			await pageTreePage.dragItem(
+				page.getByRole('treeitem', {name: restrictedLayoutTitle}),
+				page.getByRole('treeitem').nth(1),
+				{above: true}
+			);
+
+			const editLayoutResponse = await editLayoutResponsePromise;
+
+			expect(await editLayoutResponse.json()).toMatchObject({
+				message: 'The first page should be visible for guest users.',
+			});
+
+			expect(
+				await getLayoutNames(apiHelpers, guestSite.id, false)
+			).toEqual(layoutNames);
+		}
+		finally {
+			const layouts = await apiHelpers.jsonWebServicesLayout.getLayouts(
+				Number(guestSite.id),
+				false
+			);
+
+			const layout = layouts.find(
+				(layout) => layout.nameCurrentValue === restrictedLayoutTitle
+			);
+
+			if (layout) {
+				await apiHelpers.jsonWebServicesLayout.deleteLayout(
+					layout.plid
+				);
+			}
+		}
 	}
 );
 
