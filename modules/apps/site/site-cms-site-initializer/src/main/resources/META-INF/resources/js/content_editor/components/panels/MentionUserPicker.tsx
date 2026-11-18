@@ -4,7 +4,6 @@
  */
 
 import ClayDropDown from '@clayui/drop-down';
-import ClayIcon from '@clayui/icon';
 import {useNavigation} from '@clayui/shared';
 import Sticker from '@clayui/sticker';
 import {ReactPortal} from '@liferay/frontend-js-react-web';
@@ -21,6 +20,7 @@ import React, {
 	useState,
 } from 'react';
 
+import {getInitials, getStickerColor} from '../../../common/utils/stickerUtil';
 import CommentService, {
 	MentionUser,
 	MentionUserGroup,
@@ -321,29 +321,13 @@ export default function MentionUserPicker({
 													onSelect={() =>
 														select(mentions[index])
 													}
-													sticker={
-														<Sticker
-															className={classNames(
-																'flex-shrink-0 mr-3',
-																{
-																	[`user-icon-color-${user.id.charCodeAt(0) % 10}`]:
-																		!user.portraitURL,
-																}
-															)}
-															shape="user-icon"
-														>
-															{user.portraitURL ? (
-																<Sticker.Image
-																	alt=""
-																	src={
-																		user.portraitURL
-																	}
-																/>
-															) : (
-																<ClayIcon symbol="user" />
-															)}
-														</Sticker>
+													portraitURL={
+														user.portraitURL
 													}
+													stickerDisplayType={getStickerColor(
+														user.id
+													)}
+													stickerShape="circle"
 													subtitle={`@${user.screenName}`}
 													title={user.name}
 												/>
@@ -388,15 +372,7 @@ export default function MentionUserPicker({
 																	]
 																)
 															}
-															sticker={
-																<Sticker
-																	className="flex-shrink-0 mr-3"
-																	displayType="secondary"
-																	shape="user-icon"
-																>
-																	<ClayIcon symbol="users" />
-																</Sticker>
-															}
+															stickerDisplayType="outline"
 															subtitle={sub(
 																userGroup.membersCount ===
 																	1
@@ -457,7 +433,9 @@ function MentionItem({
 	id,
 	onMouseEnter,
 	onSelect,
-	sticker,
+	portraitURL,
+	stickerDisplayType,
+	stickerShape,
 	subtitle,
 	title,
 }: {
@@ -466,7 +444,9 @@ function MentionItem({
 	id: string;
 	onMouseEnter: () => void;
 	onSelect: () => void;
-	sticker: React.ReactNode;
+	portraitURL?: string;
+	stickerDisplayType: React.ComponentProps<typeof Sticker>['displayType'];
+	stickerShape?: React.ComponentProps<typeof Sticker>['shape'];
 	subtitle: string;
 	title: string;
 }) {
@@ -481,7 +461,19 @@ function MentionItem({
 			roleItem="option"
 		>
 			<span className="align-items-center d-flex">
-				{sticker}
+				<Sticker
+					aria-hidden="true"
+					className="flex-shrink-0 mr-2"
+					displayType={stickerDisplayType}
+					shape={stickerShape}
+					size="sm"
+				>
+					{portraitURL ? (
+						<Sticker.Image alt="" src={portraitURL} />
+					) : (
+						getInitials(title)
+					)}
+				</Sticker>
 
 				<span className="autofit-col autofit-col-expand">
 					<span className="font-weight-semi-bold text-3 text-dark text-truncate">
