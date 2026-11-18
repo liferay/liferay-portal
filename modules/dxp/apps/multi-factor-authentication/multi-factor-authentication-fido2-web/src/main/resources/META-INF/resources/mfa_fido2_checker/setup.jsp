@@ -82,12 +82,12 @@ boolean removable = GetterUtil.getBoolean(request.getAttribute(MFAFIDO2WebKeys.M
 					<portlet:param name="setupMFACheckerServiceId" value="<%= String.valueOf(request.getAttribute(MFAFIDO2WebKeys.SETUP_MFA_CHECKER_SERVICE_ID)) %>" />
 				</portlet:actionURL>
 
-				<liferay-ui:icon-delete
-					confirmation="are-you-sure-you-want-to-remove-this-authenticator"
+				<clay:link
+					aria-label='<%= LanguageUtil.get(request, "remove") %>'
+					cssClass="lfr-portal-tooltip"
+					href="<%= removeMFAFIDO2CredentialEntryURL %>"
 					icon="times-circle"
-					message="remove"
-					showIcon="<%= true %>"
-					url="<%= removeMFAFIDO2CredentialEntryURL %>"
+					title='<%= LanguageUtil.get(request, "remove") %>'
 				/>
 			</liferay-ui:search-container-column-text>
 		</c:if>
