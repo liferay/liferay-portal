@@ -68,7 +68,7 @@ public interface MFATimeBasedOTPEntryLocalService
 		MFATimeBasedOTPEntry mfaTimeBasedOTPEntry);
 
 	public MFATimeBasedOTPEntry addTimeBasedOTPEntry(
-			long userId, String sharedSecret)
+			long userId, String algorithm, String sharedSecret)
 		throws PortalException;
 
 	/**
@@ -264,6 +264,9 @@ public interface MFATimeBasedOTPEntryLocalService
 			MFATimeBasedOTPEntry mfaTimeBasedOTPEntry)
 		throws PortalException;
 
+	public MFATimeBasedOTPEntry updateAlgorithm(long userId, String algorithm)
+		throws PortalException;
+
 	public MFATimeBasedOTPEntry updateAttempts(
 			long userId, String ipAddress, boolean success)
 		throws PortalException;
@@ -287,4 +290,4 @@ public interface MFATimeBasedOTPEntryLocalService
 		MFATimeBasedOTPEntry mfaTimeBasedOTPEntry);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1845889294
+// LIFERAY-SERVICE-BUILDER-HASH:-228809838

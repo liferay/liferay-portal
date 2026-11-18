@@ -54,10 +54,11 @@ public class MFATimeBasedOTPEntryLocalServiceUtil {
 	}
 
 	public static MFATimeBasedOTPEntry addTimeBasedOTPEntry(
-			long userId, String sharedSecret)
+			long userId, String algorithm, String sharedSecret)
 		throws PortalException {
 
-		return getService().addTimeBasedOTPEntry(userId, sharedSecret);
+		return getService().addTimeBasedOTPEntry(
+			userId, algorithm, sharedSecret);
 	}
 
 	/**
@@ -301,6 +302,13 @@ public class MFATimeBasedOTPEntryLocalServiceUtil {
 		return getService().getPlaintextSharedSecret(mfaTimeBasedOTPEntry);
 	}
 
+	public static MFATimeBasedOTPEntry updateAlgorithm(
+			long userId, String algorithm)
+		throws PortalException {
+
+		return getService().updateAlgorithm(userId, algorithm);
+	}
+
 	public static MFATimeBasedOTPEntry updateAttempts(
 			long userId, String ipAddress, boolean success)
 		throws PortalException {
@@ -341,4 +349,4 @@ public class MFATimeBasedOTPEntryLocalServiceUtil {
 			MFATimeBasedOTPEntryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1162912140
+// LIFERAY-SERVICE-BUILDER-HASH:1584693470

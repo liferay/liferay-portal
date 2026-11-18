@@ -64,10 +64,11 @@ public class MFATimeBasedOTPEntryModelImpl
 		{"mvccVersion", Types.BIGINT}, {"mfaTimeBasedOTPEntryId", Types.BIGINT},
 		{"companyId", Types.BIGINT}, {"userId", Types.BIGINT},
 		{"userName", Types.VARCHAR}, {"createDate", Types.TIMESTAMP},
-		{"modifiedDate", Types.TIMESTAMP}, {"failedAttempts", Types.INTEGER},
-		{"lastFailDate", Types.TIMESTAMP}, {"lastFailIP", Types.VARCHAR},
-		{"lastSuccessDate", Types.TIMESTAMP}, {"lastSuccessIP", Types.VARCHAR},
-		{"lastValidTOTP", Types.VARCHAR}, {"sharedSecret", Types.VARCHAR}
+		{"modifiedDate", Types.TIMESTAMP}, {"algorithm", Types.VARCHAR},
+		{"failedAttempts", Types.INTEGER}, {"lastFailDate", Types.TIMESTAMP},
+		{"lastFailIP", Types.VARCHAR}, {"lastSuccessDate", Types.TIMESTAMP},
+		{"lastSuccessIP", Types.VARCHAR}, {"lastValidTOTP", Types.VARCHAR},
+		{"sharedSecret", Types.VARCHAR}
 	};
 
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP =
@@ -81,6 +82,7 @@ public class MFATimeBasedOTPEntryModelImpl
 		TABLE_COLUMNS_MAP.put("userName", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("createDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("modifiedDate", Types.TIMESTAMP);
+		TABLE_COLUMNS_MAP.put("algorithm", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("failedAttempts", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("lastFailDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("lastFailIP", Types.VARCHAR);
@@ -91,7 +93,7 @@ public class MFATimeBasedOTPEntryModelImpl
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table MFATimeBasedOTPEntry (mvccVersion LONG default 0 not null,mfaTimeBasedOTPEntryId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,failedAttempts INTEGER,lastFailDate DATE null,lastFailIP VARCHAR(75) null,lastSuccessDate DATE null,lastSuccessIP VARCHAR(75) null,lastValidTOTP VARCHAR(75) null,sharedSecret VARCHAR(75) null)";
+		"create table MFATimeBasedOTPEntry (mvccVersion LONG default 0 not null,mfaTimeBasedOTPEntryId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,algorithm VARCHAR(75) null,failedAttempts INTEGER,lastFailDate DATE null,lastFailIP VARCHAR(75) null,lastSuccessDate DATE null,lastSuccessIP VARCHAR(75) null,lastValidTOTP VARCHAR(75) null,sharedSecret VARCHAR(75) null)";
 
 	public static final String TABLE_SQL_DROP =
 		"drop table MFATimeBasedOTPEntry";
@@ -249,6 +251,8 @@ public class MFATimeBasedOTPEntryModelImpl
 			attributeGetterFunctions.put(
 				"modifiedDate", MFATimeBasedOTPEntry::getModifiedDate);
 			attributeGetterFunctions.put(
+				"algorithm", MFATimeBasedOTPEntry::getAlgorithm);
+			attributeGetterFunctions.put(
 				"failedAttempts", MFATimeBasedOTPEntry::getFailedAttempts);
 			attributeGetterFunctions.put(
 				"lastFailDate", MFATimeBasedOTPEntry::getLastFailDate);
@@ -309,6 +313,10 @@ public class MFATimeBasedOTPEntryModelImpl
 				"modifiedDate",
 				(BiConsumer<MFATimeBasedOTPEntry, Date>)
 					MFATimeBasedOTPEntry::setModifiedDate);
+			attributeSetterBiConsumers.put(
+				"algorithm",
+				(BiConsumer<MFATimeBasedOTPEntry, String>)
+					MFATimeBasedOTPEntry::setAlgorithm);
 			attributeSetterBiConsumers.put(
 				"failedAttempts",
 				(BiConsumer<MFATimeBasedOTPEntry, Integer>)
@@ -476,6 +484,25 @@ public class MFATimeBasedOTPEntryModelImpl
 		}
 
 		_modifiedDate = modifiedDate;
+	}
+
+	@Override
+	public String getAlgorithm() {
+		if (_algorithm == null) {
+			return "";
+		}
+		else {
+			return _algorithm;
+		}
+	}
+
+	@Override
+	public void setAlgorithm(String algorithm) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_algorithm = algorithm;
 	}
 
 	@Override
@@ -662,6 +689,7 @@ public class MFATimeBasedOTPEntryModelImpl
 		mfaTimeBasedOTPEntryImpl.setUserName(getUserName());
 		mfaTimeBasedOTPEntryImpl.setCreateDate(getCreateDate());
 		mfaTimeBasedOTPEntryImpl.setModifiedDate(getModifiedDate());
+		mfaTimeBasedOTPEntryImpl.setAlgorithm(getAlgorithm());
 		mfaTimeBasedOTPEntryImpl.setFailedAttempts(getFailedAttempts());
 		mfaTimeBasedOTPEntryImpl.setLastFailDate(getLastFailDate());
 		mfaTimeBasedOTPEntryImpl.setLastFailIP(getLastFailIP());
@@ -694,6 +722,8 @@ public class MFATimeBasedOTPEntryModelImpl
 			this.<Date>getColumnOriginalValue("createDate"));
 		mfaTimeBasedOTPEntryImpl.setModifiedDate(
 			this.<Date>getColumnOriginalValue("modifiedDate"));
+		mfaTimeBasedOTPEntryImpl.setAlgorithm(
+			this.<String>getColumnOriginalValue("algorithm"));
 		mfaTimeBasedOTPEntryImpl.setFailedAttempts(
 			this.<Integer>getColumnOriginalValue("failedAttempts"));
 		mfaTimeBasedOTPEntryImpl.setLastFailDate(
@@ -823,6 +853,14 @@ public class MFATimeBasedOTPEntryModelImpl
 			mfaTimeBasedOTPEntryCacheModel.modifiedDate = Long.MIN_VALUE;
 		}
 
+		mfaTimeBasedOTPEntryCacheModel.algorithm = getAlgorithm();
+
+		String algorithm = mfaTimeBasedOTPEntryCacheModel.algorithm;
+
+		if ((algorithm != null) && (algorithm.length() == 0)) {
+			mfaTimeBasedOTPEntryCacheModel.algorithm = null;
+		}
+
 		mfaTimeBasedOTPEntryCacheModel.failedAttempts = getFailedAttempts();
 
 		Date lastFailDate = getLastFailDate();
@@ -947,6 +985,7 @@ public class MFATimeBasedOTPEntryModelImpl
 	private Date _createDate;
 	private Date _modifiedDate;
 	private boolean _setModifiedDate;
+	private String _algorithm;
 	private int _failedAttempts;
 	private Date _lastFailDate;
 	private String _lastFailIP;
@@ -991,6 +1030,7 @@ public class MFATimeBasedOTPEntryModelImpl
 		_columnOriginalValues.put("userName", _userName);
 		_columnOriginalValues.put("createDate", _createDate);
 		_columnOriginalValues.put("modifiedDate", _modifiedDate);
+		_columnOriginalValues.put("algorithm", _algorithm);
 		_columnOriginalValues.put("failedAttempts", _failedAttempts);
 		_columnOriginalValues.put("lastFailDate", _lastFailDate);
 		_columnOriginalValues.put("lastFailIP", _lastFailIP);
@@ -1025,19 +1065,21 @@ public class MFATimeBasedOTPEntryModelImpl
 
 		columnBitmasks.put("modifiedDate", 64L);
 
-		columnBitmasks.put("failedAttempts", 128L);
+		columnBitmasks.put("algorithm", 128L);
 
-		columnBitmasks.put("lastFailDate", 256L);
+		columnBitmasks.put("failedAttempts", 256L);
 
-		columnBitmasks.put("lastFailIP", 512L);
+		columnBitmasks.put("lastFailDate", 512L);
 
-		columnBitmasks.put("lastSuccessDate", 1024L);
+		columnBitmasks.put("lastFailIP", 1024L);
 
-		columnBitmasks.put("lastSuccessIP", 2048L);
+		columnBitmasks.put("lastSuccessDate", 2048L);
 
-		columnBitmasks.put("lastValidTOTP", 4096L);
+		columnBitmasks.put("lastSuccessIP", 4096L);
 
-		columnBitmasks.put("sharedSecret", 8192L);
+		columnBitmasks.put("lastValidTOTP", 8192L);
+
+		columnBitmasks.put("sharedSecret", 16384L);
 
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}
@@ -1046,4 +1088,4 @@ public class MFATimeBasedOTPEntryModelImpl
 	private MFATimeBasedOTPEntry _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-114015837
+// LIFERAY-SERVICE-BUILDER-HASH:257099336

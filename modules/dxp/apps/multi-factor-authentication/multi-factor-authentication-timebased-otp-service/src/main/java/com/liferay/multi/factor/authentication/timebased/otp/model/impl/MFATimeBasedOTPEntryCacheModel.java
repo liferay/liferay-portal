@@ -69,7 +69,7 @@ public class MFATimeBasedOTPEntryCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(29);
+		StringBundler sb = new StringBundler(31);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -85,6 +85,8 @@ public class MFATimeBasedOTPEntryCacheModel
 		sb.append(createDate);
 		sb.append(", modifiedDate=");
 		sb.append(modifiedDate);
+		sb.append(", algorithm=");
+		sb.append(algorithm);
 		sb.append(", failedAttempts=");
 		sb.append(failedAttempts);
 		sb.append(", lastFailDate=");
@@ -134,6 +136,13 @@ public class MFATimeBasedOTPEntryCacheModel
 		}
 		else {
 			mfaTimeBasedOTPEntryImpl.setModifiedDate(new Date(modifiedDate));
+		}
+
+		if (algorithm == null) {
+			mfaTimeBasedOTPEntryImpl.setAlgorithm("");
+		}
+		else {
+			mfaTimeBasedOTPEntryImpl.setAlgorithm(algorithm);
 		}
 
 		mfaTimeBasedOTPEntryImpl.setFailedAttempts(failedAttempts);
@@ -198,6 +207,7 @@ public class MFATimeBasedOTPEntryCacheModel
 		userName = objectInput.readUTF();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
+		algorithm = objectInput.readUTF();
 
 		failedAttempts = objectInput.readInt();
 		lastFailDate = objectInput.readLong();
@@ -227,6 +237,13 @@ public class MFATimeBasedOTPEntryCacheModel
 
 		objectOutput.writeLong(createDate);
 		objectOutput.writeLong(modifiedDate);
+
+		if (algorithm == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(algorithm);
+		}
 
 		objectOutput.writeInt(failedAttempts);
 		objectOutput.writeLong(lastFailDate);
@@ -269,6 +286,7 @@ public class MFATimeBasedOTPEntryCacheModel
 	public String userName;
 	public long createDate;
 	public long modifiedDate;
+	public String algorithm;
 	public int failedAttempts;
 	public long lastFailDate;
 	public String lastFailIP;
@@ -278,4 +296,4 @@ public class MFATimeBasedOTPEntryCacheModel
 	public String sharedSecret;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:254618724
+// LIFERAY-SERVICE-BUILDER-HASH:408977641

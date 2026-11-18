@@ -46,6 +46,9 @@ public class MFATimeBasedOTPEntryTable
 	public final Column<MFATimeBasedOTPEntryTable, Date> modifiedDate =
 		createColumn(
 			"modifiedDate", Date.class, Types.TIMESTAMP, Column.FLAG_DEFAULT);
+	public final Column<MFATimeBasedOTPEntryTable, String> algorithm =
+		createColumn(
+			"algorithm", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
 	public final Column<MFATimeBasedOTPEntryTable, Integer> failedAttempts =
 		createColumn(
 			"failedAttempts", Integer.class, Types.INTEGER,
@@ -75,4 +78,4 @@ public class MFATimeBasedOTPEntryTable
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-542337314
+// LIFERAY-SERVICE-BUILDER-HASH:-105448565

@@ -42,6 +42,7 @@ public class MFATimeBasedOTPEntryWrapper
 		attributes.put("userName", getUserName());
 		attributes.put("createDate", getCreateDate());
 		attributes.put("modifiedDate", getModifiedDate());
+		attributes.put("algorithm", getAlgorithm());
 		attributes.put("failedAttempts", getFailedAttempts());
 		attributes.put("lastFailDate", getLastFailDate());
 		attributes.put("lastFailIP", getLastFailIP());
@@ -98,6 +99,12 @@ public class MFATimeBasedOTPEntryWrapper
 			setModifiedDate(modifiedDate);
 		}
 
+		String algorithm = (String)attributes.get("algorithm");
+
+		if (algorithm != null) {
+			setAlgorithm(algorithm);
+		}
+
 		Integer failedAttempts = (Integer)attributes.get("failedAttempts");
 
 		if (failedAttempts != null) {
@@ -144,6 +151,16 @@ public class MFATimeBasedOTPEntryWrapper
 	@Override
 	public MFATimeBasedOTPEntry cloneWithOriginalValues() {
 		return wrap(model.cloneWithOriginalValues());
+	}
+
+	/**
+	 * Returns the algorithm of this mfa time based otp entry.
+	 *
+	 * @return the algorithm of this mfa time based otp entry
+	 */
+	@Override
+	public String getAlgorithm() {
+		return model.getAlgorithm();
 	}
 
 	/**
@@ -309,6 +326,16 @@ public class MFATimeBasedOTPEntryWrapper
 	@Override
 	public void persist() {
 		model.persist();
+	}
+
+	/**
+	 * Sets the algorithm of this mfa time based otp entry.
+	 *
+	 * @param algorithm the algorithm of this mfa time based otp entry
+	 */
+	@Override
+	public void setAlgorithm(String algorithm) {
+		model.setAlgorithm(algorithm);
 	}
 
 	/**
@@ -484,4 +511,4 @@ public class MFATimeBasedOTPEntryWrapper
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2147217580
+// LIFERAY-SERVICE-BUILDER-HASH:1525849646

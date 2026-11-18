@@ -9,6 +9,7 @@
 		<field name="userName" type="String" />
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
+		<field name="algorithm" type="String" />
 		<field name="failedAttempts" type="int" />
 		<field name="lastFailDate" type="Date" />
 		<field name="lastFailIP" type="String" />

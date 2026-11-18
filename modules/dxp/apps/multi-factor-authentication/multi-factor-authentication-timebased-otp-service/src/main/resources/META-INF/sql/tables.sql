@@ -6,6 +6,7 @@ create table MFATimeBasedOTPEntry (
 	userName VARCHAR(75) null,
 	createDate DATE null,
 	modifiedDate DATE null,
+	algorithm VARCHAR(75) null,
 	failedAttempts INTEGER,
 	lastFailDate DATE null,
 	lastFailIP VARCHAR(75) null,

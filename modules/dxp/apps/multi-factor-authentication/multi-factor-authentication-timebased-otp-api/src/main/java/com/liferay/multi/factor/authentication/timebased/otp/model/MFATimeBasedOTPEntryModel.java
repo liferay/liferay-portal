@@ -179,6 +179,21 @@ public interface MFATimeBasedOTPEntryModel
 	public void setModifiedDate(Date modifiedDate);
 
 	/**
+	 * Returns the algorithm of this mfa time based otp entry.
+	 *
+	 * @return the algorithm of this mfa time based otp entry
+	 */
+	@AutoEscape
+	public String getAlgorithm();
+
+	/**
+	 * Sets the algorithm of this mfa time based otp entry.
+	 *
+	 * @param algorithm the algorithm of this mfa time based otp entry
+	 */
+	public void setAlgorithm(String algorithm);
+
+	/**
 	 * Returns the failed attempts of this mfa time based otp entry.
 	 *
 	 * @return the failed attempts of this mfa time based otp entry
@@ -288,4 +303,4 @@ public interface MFATimeBasedOTPEntryModel
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2133103474
+// LIFERAY-SERVICE-BUILDER-HASH:-138618302

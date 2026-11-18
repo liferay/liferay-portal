@@ -52,11 +52,11 @@ public class MFATimeBasedOTPEntryLocalServiceWrapper
 	@Override
 	public com.liferay.multi.factor.authentication.timebased.otp.model.
 		MFATimeBasedOTPEntry addTimeBasedOTPEntry(
-				long userId, String sharedSecret)
+				long userId, String algorithm, String sharedSecret)
 			throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _mfaTimeBasedOTPEntryLocalService.addTimeBasedOTPEntry(
-			userId, sharedSecret);
+			userId, algorithm, sharedSecret);
 	}
 
 	/**
@@ -358,6 +358,15 @@ public class MFATimeBasedOTPEntryLocalServiceWrapper
 
 	@Override
 	public com.liferay.multi.factor.authentication.timebased.otp.model.
+		MFATimeBasedOTPEntry updateAlgorithm(long userId, String algorithm)
+			throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _mfaTimeBasedOTPEntryLocalService.updateAlgorithm(
+			userId, algorithm);
+	}
+
+	@Override
+	public com.liferay.multi.factor.authentication.timebased.otp.model.
 		MFATimeBasedOTPEntry updateAttempts(
 				long userId, String ipAddress, boolean success)
 			throws com.liferay.portal.kernel.exception.PortalException {
@@ -415,4 +424,4 @@ public class MFATimeBasedOTPEntryLocalServiceWrapper
 	private MFATimeBasedOTPEntryLocalService _mfaTimeBasedOTPEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1226640271
+// LIFERAY-SERVICE-BUILDER-HASH:1485476590
