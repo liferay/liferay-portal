@@ -57,8 +57,8 @@ public class CompanyKeyResolverUtilTest {
 			keyString
 		);
 
-		try (AutoCloseable autoCloseable1 = _setEncryptor(encryptor);
-			AutoCloseable autoCloseable2 = _setCompanyKeyResolver(null)) {
+		try (AutoCloseable autoCloseable1 = _setCompanyKeyResolver(null);
+			AutoCloseable autoCloseable2 = _setEncryptor(encryptor)) {
 
 			Assert.assertEquals(
 				keyString,
@@ -114,9 +114,9 @@ public class CompanyKeyResolverUtilTest {
 			keyString
 		);
 
-		try (AutoCloseable autoCloseable1 = _setEncryptor(encryptor);
-			AutoCloseable autoCloseable2 = _setCompanyKeyResolver(
-				companyKeyResolver)) {
+		try (AutoCloseable autoCloseable1 = _setCompanyKeyResolver(
+				companyKeyResolver);
+			AutoCloseable autoCloseable2 = _setEncryptor(encryptor)) {
 
 			Assert.assertEquals(
 				keyString,
@@ -172,8 +172,8 @@ public class CompanyKeyResolverUtilTest {
 			keyString
 		);
 
-		try (AutoCloseable autoCloseable1 = _setEncryptor(encryptor);
-			AutoCloseable autoCloseable2 = _setCompanyKeyResolver(null);
+		try (AutoCloseable autoCloseable1 = _setCompanyKeyResolver(null);
+			AutoCloseable autoCloseable2 = _setEncryptor(encryptor);
 			MockedStatic<FIPSApplicationStateMachineUtil>
 				fipsApplicationStateMachineUtilMockedStatic =
 					Mockito.mockStatic(FIPSApplicationStateMachineUtil.class);
@@ -269,8 +269,8 @@ public class CompanyKeyResolverUtilTest {
 			key
 		);
 
-		try (AutoCloseable autoCloseable1 = _setEncryptor(encryptor);
-			AutoCloseable autoCloseable2 = _setCompanyKeyResolver(null)) {
+		try (AutoCloseable autoCloseable1 = _setCompanyKeyResolver(null);
+			AutoCloseable autoCloseable2 = _setEncryptor(encryptor)) {
 
 			Assert.assertSame(
 				key,
@@ -345,8 +345,8 @@ public class CompanyKeyResolverUtilTest {
 			keyString
 		);
 
-		try (AutoCloseable autoCloseable1 = _setEncryptor(encryptor);
-			AutoCloseable autoCloseable2 = _setCompanyKeyResolver(null)) {
+		try (AutoCloseable autoCloseable1 = _setCompanyKeyResolver(null);
+			AutoCloseable autoCloseable2 = _setEncryptor(encryptor)) {
 
 			Assert.assertEquals(keyString, _wrapKey(_COMPANY_ID, key));
 		}
@@ -360,9 +360,9 @@ public class CompanyKeyResolverUtilTest {
 			false
 		);
 
-		try (AutoCloseable autoCloseable1 = _setEncryptor(encryptor);
-			AutoCloseable autoCloseable2 = _setCompanyKeyResolver(
-				companyKeyResolver)) {
+		try (AutoCloseable autoCloseable1 = _setCompanyKeyResolver(
+				companyKeyResolver);
+			AutoCloseable autoCloseable2 = _setEncryptor(encryptor)) {
 
 			Assert.assertEquals(keyString, _wrapKey(_COMPANY_ID, key));
 		}
