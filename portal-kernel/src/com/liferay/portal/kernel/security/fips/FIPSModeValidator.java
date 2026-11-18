@@ -22,6 +22,8 @@ import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
@@ -32,9 +34,6 @@ import java.lang.reflect.Method;
 import java.net.URL;
 
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import java.security.Provider;
 import java.security.Security;
@@ -233,16 +232,16 @@ public class FIPSModeValidator {
 	private static Document _readChannelPropertiesDocument(
 		String channelPropertiesLocation) {
 
-		Path path = Paths.get(channelPropertiesLocation);
+		File file = new File(channelPropertiesLocation);
 
-		if (!Files.isRegularFile(path)) {
+		if (!file.isFile()) {
 			throw new SecurityException(
 				"The cluster link channel properties \"" +
 					channelPropertiesLocation +
 						"\" must be a file in FIPS mode");
 		}
 
-		try (InputStream inputStream = Files.newInputStream(path)) {
+		try (InputStream inputStream = new FileInputStream(file)) {
 			DocumentBuilderFactory documentBuilderFactory =
 				SecureXMLFactoryProviderUtil.newDocumentBuilderFactory();
 
