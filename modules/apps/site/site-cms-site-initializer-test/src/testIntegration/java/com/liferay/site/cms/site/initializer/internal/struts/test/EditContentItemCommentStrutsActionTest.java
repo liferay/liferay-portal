@@ -310,12 +310,9 @@ public class EditContentItemCommentStrutsActionTest {
 				mentionHTML, "</p>"),
 			commentId, layout, objectEntry2, TestPropsValues.getUser());
 
-		Assert.assertTrue(
-			jsonObject.getString(
-				"body"
-			).contains(
-				mentionHTML
-			));
+		String body = jsonObject.getString("body");
+
+		Assert.assertTrue(body.contains(mentionHTML));
 
 		Comment comment = _commentManager.fetchComment(commentId);
 
