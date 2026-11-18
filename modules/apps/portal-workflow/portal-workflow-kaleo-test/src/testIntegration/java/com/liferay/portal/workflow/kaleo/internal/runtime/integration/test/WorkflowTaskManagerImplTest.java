@@ -60,6 +60,7 @@ import com.liferay.journal.service.JournalArticleLocalService;
 import com.liferay.journal.service.JournalFolderLocalService;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.configuration.test.util.ConfigurationTemporarySwapper;
 import com.liferay.portal.configuration.test.util.ConfigurationTestUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.NoSuchModelException;
@@ -141,6 +142,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -1186,21 +1188,22 @@ public class WorkflowTaskManagerImplTest extends BaseWorkflowManagerTestCase {
 
 		// Prevent notifiying ancestor sites
 
-		ConfigurationTestUtil.saveConfiguration(
-			_configuration,
-			HashMapDictionaryBuilder.<String, Object>put(
-				"company.administrator.can.publish", true
-			).put(
-				"preventNotifyingAncestorSites", true
-			).build());
+		Dictionary<String, Object> properties = _configuration.getProperties();
 
-		blogsEntry = _addBlogsEntry();
+		properties.put("preventNotifyingAncestorSites", true);
 
-		Assert.assertEquals(
-			WorkflowConstants.STATUS_PENDING, blogsEntry.getStatus());
+		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
+				new ConfigurationTemporarySwapper(
+					_configuration.getPid(), properties)) {
 
-		_checkUserNotificationEventsByUsers(1, childSiteMemberUser);
-		_checkUserNotificationEventsByUsers(0, _siteMemberUser);
+			blogsEntry = _addBlogsEntry();
+
+			Assert.assertEquals(
+				WorkflowConstants.STATUS_PENDING, blogsEntry.getStatus());
+
+			_checkUserNotificationEventsByUsers(1, childSiteMemberUser);
+			_checkUserNotificationEventsByUsers(0, _siteMemberUser);
+		}
 	}
 
 	@Test
