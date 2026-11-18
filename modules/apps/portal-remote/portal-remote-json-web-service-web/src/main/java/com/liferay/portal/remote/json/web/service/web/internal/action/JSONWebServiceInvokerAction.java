@@ -174,6 +174,8 @@ public class JSONWebServiceInvokerAction implements JSONWebServiceAction {
 			return (Map<String, Object>)object;
 		}
 
+		JSONFactoryUtil.looseSerialize(object);
+
 		Map<String, Object> map = new LinkedHashMap<>();
 
 		BeanSerializer beanSerializer = new BeanSerializer(
