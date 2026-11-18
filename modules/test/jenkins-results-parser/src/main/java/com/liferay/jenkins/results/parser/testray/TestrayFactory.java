@@ -12,6 +12,7 @@ import com.liferay.jenkins.results.parser.DownstreamBuildReport;
 import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
 import com.liferay.jenkins.results.parser.Job;
 import com.liferay.jenkins.results.parser.Retryable;
+import com.liferay.jenkins.results.parser.TestReport;
 import com.liferay.jenkins.results.parser.TopLevelBuild;
 import com.liferay.jenkins.results.parser.TopLevelBuildReport;
 import com.liferay.jenkins.results.parser.job.property.JobProperty;
@@ -143,6 +144,26 @@ public class TestrayFactory {
 
 		return newBuildTestrayCaseResult(
 			axisTestClassGroup, null, null, testrayBuild, topLevelBuildReport);
+	}
+
+	public static TestrayCaseResult newBuildTestrayCaseResult(
+		AxisTestClassGroup axisTestClassGroup, TestReport testReport,
+		TestrayBuild testrayBuild, TopLevelBuildReport topLevelBuildReport) {
+
+		if (testrayBuild == null) {
+			throw new RuntimeException("Testray build is null");
+		}
+
+		if (topLevelBuildReport == null) {
+			throw new RuntimeException("Top level build report is null");
+		}
+
+		if (axisTestClassGroup == null) {
+			throw new RuntimeException("Axis test class group is null");
+		}
+
+		return new DownstreamTestClassBuildTestrayCaseResult(
+			axisTestClassGroup, testReport, testrayBuild, topLevelBuildReport);
 	}
 
 	public static TestrayCaseResult newDownstreamBuildTestrayCaseResult(
