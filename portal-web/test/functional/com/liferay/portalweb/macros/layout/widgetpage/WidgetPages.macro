@@ -17,17 +17,4 @@ definition {
 			locator1 = "ControlMenuAddPanel#ADD_PORTLET_LINK");
 	}
 
-	@summary = "Default summary"
-	macro addRecentContentWithoutSearch(assetTitle = null) {
-		Click(locator1 = "ControlMenu#ADD");
-
-		AssertElementPresent(locator1 = "ControlMenuAddPanel#SIDEBAR_HEADER");
-
-		Navigator.gotoNavTab(navTab = "Content");
-
-		Click.clickNoWaitForVisible(
-			key_portletName = ${assetTitle},
-			locator1 = "ControlMenuAddPanel#ADD_PORTLET_LINK");
-	}
-
 }

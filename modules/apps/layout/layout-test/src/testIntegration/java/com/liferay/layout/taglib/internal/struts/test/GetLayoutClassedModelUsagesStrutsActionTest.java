@@ -6,10 +6,14 @@
 package com.liferay.layout.taglib.internal.struts.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.asset.kernel.model.AssetEntry;
+import com.liferay.asset.kernel.service.AssetEntryLocalService;
+import com.liferay.asset.publisher.constants.AssetPublisherPortletKeys;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.fragment.model.FragmentEntryLink;
+import com.liferay.journal.constants.JournalContentPortletKeys;
 import com.liferay.journal.constants.JournalFolderConstants;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.test.util.JournalTestUtil;
@@ -20,17 +24,22 @@ import com.liferay.layout.page.template.test.util.LayoutPageTemplateTestUtil;
 import com.liferay.layout.service.LayoutClassedModelUsageLocalService;
 import com.liferay.layout.test.util.ContentLayoutTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.LayoutTypePortlet;
+import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.portlet.PortletLayoutListener;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
@@ -38,9 +47,12 @@ import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUti
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
+import com.liferay.portal.kernel.service.PortletLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.struts.StrutsAction;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
@@ -50,13 +62,22 @@ import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
+import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.kernel.xml.Document;
+import com.liferay.portal.kernel.xml.Element;
+import com.liferay.portal.kernel.xml.SAXReaderUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -87,6 +108,7 @@ public class GetLayoutClassedModelUsagesStrutsActionTest {
 	}
 
 	@Test
+	@TestInfo("LPS-88500")
 	public void testExecute() throws Exception {
 		JournalArticle journalArticle = JournalTestUtil.addArticle(
 			_group.getGroupId(),
@@ -119,6 +141,7 @@ public class GetLayoutClassedModelUsagesStrutsActionTest {
 		_testExecuteWithoutModelViewPermission();
 		_testExecuteWithoutLayoutViewPermission();
 		_testExecuteWithoutInfoItemPermissionProvider();
+		_testExecuteWithWidgets();
 	}
 
 	private LayoutClassedModelUsage _addLayoutClassedModelUsage(
@@ -130,6 +153,25 @@ public class GetLayoutClassedModelUsagesStrutsActionTest {
 			journalArticle.getResourcePrimKey(), RandomTestUtil.randomString(),
 			_portal.getClassNameId(FragmentEntryLink.class), plid,
 			new ServiceContext());
+	}
+
+	private String _addPortletToLayout(
+			Layout layout, String portletId,
+			Map<String, String[]> preferenceMap)
+		throws Exception {
+
+		String newPortletId = LayoutTestUtil.addPortletToLayout(
+			layout, portletId, preferenceMap);
+
+		Portlet portlet = _portletLocalService.getPortletById(
+			layout.getCompanyId(), newPortletId);
+
+		PortletLayoutListener portletLayoutListener =
+			portlet.getPortletLayoutListenerInstance();
+
+		portletLayoutListener.onSetup(newPortletId, layout.getPlid());
+
+		return newPortletId;
 	}
 
 	private JSONObject _execute(JournalArticle journalArticle)
@@ -152,6 +194,21 @@ public class GetLayoutClassedModelUsagesStrutsActionTest {
 
 		return _jsonFactory.createJSONObject(
 			mockHttpServletResponse.getContentAsString());
+	}
+
+	private String _getAssetEntryXML(String assetEntryUuid) throws Exception {
+		Document document = SAXReaderUtil.createDocument(StringPool.UTF8);
+
+		Element assetEntryElement = document.addElement("asset-entry");
+
+		assetEntryElement.addElement("asset-entry-type");
+
+		Element assetEntryUuidElement = assetEntryElement.addElement(
+			"asset-entry-uuid");
+
+		assetEntryUuidElement.addText(assetEntryUuid);
+
+		return document.formattedString(StringPool.BLANK);
 	}
 
 	private JSONObject _getJSONObject(
@@ -187,6 +244,135 @@ public class GetLayoutClassedModelUsagesStrutsActionTest {
 					_portal.getControlPanelPlid(_group.getCompanyId()))));
 
 		return mockHttpServletRequest;
+	}
+
+	private String _getUsageKey(String containerKey, long plid) {
+		return plid + StringPool.POUND + containerKey;
+	}
+
+	private List<String> _getUsageKeys(JournalArticle journalArticle) {
+		return ListUtil.sort(
+			TransformUtil.transform(
+				_layoutClassedModelUsageLocalService.
+					getLayoutClassedModelUsages(
+						_portal.getClassNameId(JournalArticle.class),
+						journalArticle.getResourcePrimKey()),
+				layoutClassedModelUsage -> _getUsageKey(
+					layoutClassedModelUsage.getContainerKey(),
+					layoutClassedModelUsage.getPlid())));
+	}
+
+	private void _testExecuteWithWidgets() throws Exception {
+		ServiceContextThreadLocal.pushServiceContext(
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), TestPropsValues.getUserId()));
+
+		JournalArticle journalArticle = JournalTestUtil.addArticle(
+			_group.getGroupId(),
+			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID);
+
+		Layout journalContentLayout = LayoutTestUtil.addTypePortletLayout(
+			_group);
+		Map<String, String[]> journalContentPreferenceMap = HashMapBuilder.put(
+			"articleExternalReferenceCode",
+			new String[] {journalArticle.getExternalReferenceCode()}
+		).build();
+
+		String journalContentPortletId = _addPortletToLayout(
+			journalContentLayout, JournalContentPortletKeys.JOURNAL_CONTENT,
+			journalContentPreferenceMap);
+
+		Layout assetPublisherLayout = LayoutTestUtil.addTypePortletLayout(
+			_group);
+
+		AssetEntry assetEntry = _assetEntryLocalService.getEntry(
+			JournalArticle.class.getName(),
+			journalArticle.getResourcePrimKey());
+
+		Map<String, String[]> assetPublisherPreferenceMap = HashMapBuilder.put(
+			"assetEntryXml",
+			new String[] {_getAssetEntryXML(assetEntry.getClassUuid())}
+		).put(
+			"selectionStyle", new String[] {"manual"}
+		).build();
+
+		String assetPublisherPortletId = _addPortletToLayout(
+			assetPublisherLayout, AssetPublisherPortletKeys.ASSET_PUBLISHER,
+			assetPublisherPreferenceMap);
+
+		Layout layout = LayoutTestUtil.addTypePortletLayout(_group);
+
+		String layoutAssetPublisherPortletId = _addPortletToLayout(
+			layout, AssetPublisherPortletKeys.ASSET_PUBLISHER,
+			assetPublisherPreferenceMap);
+		String layoutJournalContentPortletId = _addPortletToLayout(
+			layout, JournalContentPortletKeys.JOURNAL_CONTENT,
+			journalContentPreferenceMap);
+
+		Layout unusedLayout = LayoutTestUtil.addTypePortletLayout(_group);
+
+		_addPortletToLayout(
+			unusedLayout, AssetPublisherPortletKeys.ASSET_PUBLISHER, null);
+		_addPortletToLayout(
+			unusedLayout, JournalContentPortletKeys.JOURNAL_CONTENT, null);
+
+		Assert.assertEquals(
+			ListUtil.sort(
+				Arrays.asList(
+					_getUsageKey(
+						assetPublisherPortletId,
+						assetPublisherLayout.getPlid()),
+					_getUsageKey(
+						journalContentPortletId,
+						journalContentLayout.getPlid()),
+					_getUsageKey(
+						layoutAssetPublisherPortletId, layout.getPlid()),
+					_getUsageKey(
+						layoutJournalContentPortletId, layout.getPlid()))),
+			_getUsageKeys(journalArticle));
+
+		JSONObject jsonObject = _execute(journalArticle);
+
+		JSONArray jsonArray = jsonObject.getJSONArray("usages");
+
+		Assert.assertEquals(
+			ListUtil.sort(
+				Arrays.asList(
+					assetPublisherLayout.getName(LocaleUtil.getDefault()),
+					journalContentLayout.getName(LocaleUtil.getDefault()),
+					layout.getName(LocaleUtil.getDefault()),
+					layout.getName(LocaleUtil.getDefault()))),
+			ListUtil.sort(JSONUtil.toStringList(jsonArray, "name")));
+		Assert.assertEquals(
+			Arrays.asList("Page", "Page", "Page", "Page"),
+			JSONUtil.toStringList(jsonArray, "type"));
+
+		layout = _layoutLocalService.getLayout(layout.getPlid());
+
+		LayoutTypePortlet layoutTypePortlet =
+			(LayoutTypePortlet)layout.getLayoutType();
+
+		layoutTypePortlet.removePortletId(
+			TestPropsValues.getUserId(), layoutAssetPublisherPortletId);
+		layoutTypePortlet.removePortletId(
+			TestPropsValues.getUserId(), layoutJournalContentPortletId);
+
+		_layoutLocalService.updateTypeSettings(
+			layout.getGroupId(), layout.isPrivateLayout(), layout.getLayoutId(),
+			layout.getTypeSettings());
+
+		Assert.assertEquals(
+			ListUtil.sort(
+				Arrays.asList(
+					_getUsageKey(
+						assetPublisherPortletId,
+						assetPublisherLayout.getPlid()),
+					_getUsageKey(
+						journalContentPortletId,
+						journalContentLayout.getPlid()))),
+			_getUsageKeys(journalArticle));
+
+		ServiceContextThreadLocal.popServiceContext();
 	}
 
 	private void _testExecuteWithoutInfoItemPermissionProvider()
@@ -369,6 +555,9 @@ public class GetLayoutClassedModelUsagesStrutsActionTest {
 	}
 
 	@Inject
+	private AssetEntryLocalService _assetEntryLocalService;
+
+	@Inject
 	private CompanyLocalService _companyLocalService;
 
 	@Inject
@@ -395,6 +584,9 @@ public class GetLayoutClassedModelUsagesStrutsActionTest {
 
 	@Inject
 	private Portal _portal;
+
+	@Inject
+	private PortletLocalService _portletLocalService;
 
 	@DeleteAfterTestRun
 	private User _user;
