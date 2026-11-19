@@ -15,12 +15,15 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItemListBuilder;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.backgroundtask.constants.BackgroundTaskConstants;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.service.permission.GroupPermissionUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -35,6 +38,7 @@ import jakarta.portlet.PortletRequest;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -56,7 +60,11 @@ public class PublishProcessesDisplayContext {
 			WebKeys.THEME_DISPLAY);
 	}
 
-	public CreationMenu getCreationMenu() {
+	public CreationMenu getCreationMenu() throws PortalException {
+		if (!_hasPublishPermission()) {
+			return null;
+		}
+
 		return CreationMenuBuilder.addPrimaryDropdownItem(
 			dropdownItem -> {
 				dropdownItem.setHref(_getNewPublishURL());
@@ -86,7 +94,18 @@ public class PublishProcessesDisplayContext {
 		).build();
 	}
 
-	public List<FDSActionDropdownItem> getPublishFDSActionDropdownItems() {
+	public List<FDSActionDropdownItem> getPublishFDSActionDropdownItems()
+		throws PortalException {
+
+		if (!_hasPublishPermission()) {
+			if (_liveGroup.isStagedRemotely()) {
+				return Collections.emptyList();
+			}
+
+			return ListUtil.fromArray(
+				_getViewReportEntriesFDSActionDropdownItem());
+		}
+
 		FDSActionDropdownItem deleteFDSActionDropdownItem =
 			new FDSActionDropdownItem(
 				ScopeUtil.getAPIURL("/publish-processes/{id}"), "trash",
@@ -137,32 +156,7 @@ public class PublishProcessesDisplayContext {
 
 		return ListUtil.fromArray(
 			relaunchFDSActionDropdownItem,
-			new FDSActionDropdownItem(
-				PortletURLBuilder.create(
-					PortletURLFactoryUtil.create(
-						_httpServletRequest,
-						ExportImportPortletKeys.EXPORT_IMPORT,
-						PortletRequest.RENDER_PHASE)
-				).setMVCRenderCommandName(
-					"/export_import/view_publish_report_entries"
-				).setBackURL(
-					_themeDisplay.getURLCurrent()
-				).setParameter(
-					"backgroundTaskId", "{id}"
-				).setParameter(
-					"groupId", _liveGroup.getGroupId()
-				).setWindowState(
-					LiferayWindowState.MAXIMIZED
-				).buildString(),
-				"list-ul", "view-report-entries",
-				LanguageUtil.get(_httpServletRequest, "view-report-entries"),
-				"get", null, "link",
-				HashMapBuilder.<String, Object>put(
-					"status.code",
-					Arrays.asList(
-						BackgroundTaskConstants.STATUS_COMPLETED_WITH_ERRORS,
-						BackgroundTaskConstants.STATUS_FAILED)
-				).build()),
+			_getViewReportEntriesFDSActionDropdownItem(),
 			deleteFDSActionDropdownItem, clearFDSActionDropdownItem);
 	}
 
@@ -177,7 +171,12 @@ public class PublishProcessesDisplayContext {
 	}
 
 	public List<FDSActionDropdownItem>
-		getScheduledPublishFDSActionDropdownItems() {
+			getScheduledPublishFDSActionDropdownItems()
+		throws PortalException {
+
+		if (!_hasPublishPermission()) {
+			return Collections.emptyList();
+		}
 
 		FDSActionDropdownItem unscheduleFDSActionDropdownItem =
 			new FDSActionDropdownItem(
@@ -276,6 +275,46 @@ public class PublishProcessesDisplayContext {
 
 	private String _getTabs1() {
 		return ParamUtil.getString(_httpServletRequest, "tabs1", "processes");
+	}
+
+	private FDSActionDropdownItem _getViewReportEntriesFDSActionDropdownItem() {
+		return new FDSActionDropdownItem(
+			PortletURLBuilder.create(
+				PortletURLFactoryUtil.create(
+					_httpServletRequest, ExportImportPortletKeys.EXPORT_IMPORT,
+					PortletRequest.RENDER_PHASE)
+			).setMVCRenderCommandName(
+				"/export_import/view_publish_report_entries"
+			).setBackURL(
+				_themeDisplay.getURLCurrent()
+			).setParameter(
+				"backgroundTaskId", "{id}"
+			).setParameter(
+				"groupId", _liveGroup.getGroupId()
+			).setWindowState(
+				LiferayWindowState.MAXIMIZED
+			).buildString(),
+			"list-ul", "view-report-entries",
+			LanguageUtil.get(_httpServletRequest, "view-report-entries"), "get",
+			null, "link",
+			HashMapBuilder.<String, Object>put(
+				"status.code",
+				Arrays.asList(
+					BackgroundTaskConstants.STATUS_COMPLETED_WITH_ERRORS,
+					BackgroundTaskConstants.STATUS_FAILED)
+			).build());
+	}
+
+	private boolean _hasPublishPermission() throws PortalException {
+		String actionId = ActionKeys.PUBLISH_STAGING;
+
+		if (!Validator.isBlank(_getPortletId())) {
+			actionId = ActionKeys.PUBLISH_PORTLET_INFO;
+		}
+
+		return GroupPermissionUtil.contains(
+			_themeDisplay.getPermissionChecker(),
+			_themeDisplay.getScopeGroupId(), actionId);
 	}
 
 	private final HttpServletRequest _httpServletRequest;
