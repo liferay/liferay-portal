@@ -82,18 +82,7 @@ public class PermissionUtil {
 	public static String getPublishGroupActionId(
 		BackgroundTask backgroundTask) {
 
-		String taskExecutorClassName =
-			backgroundTask.getTaskExecutorClassName();
-
-		if (StringUtil.equals(
-				taskExecutorClassName,
-				BackgroundTaskExecutorNames.
-					PORTLET_REMOTE_STAGING_BACKGROUND_TASK_EXECUTOR) ||
-			StringUtil.equals(
-				taskExecutorClassName,
-				BackgroundTaskExecutorNames.
-					PORTLET_STAGING_BACKGROUND_TASK_EXECUTOR)) {
-
+		if (_isPortletPublishProcess(backgroundTask)) {
 			return ActionKeys.PUBLISH_PORTLET_INFO;
 		}
 
@@ -106,6 +95,24 @@ public class PermissionUtil {
 		}
 
 		return ActionKeys.PUBLISH_STAGING;
+	}
+
+	public static String getViewPublishGroupActionId(
+		BackgroundTask backgroundTask) {
+
+		if (_isPortletPublishProcess(backgroundTask)) {
+			return ActionKeys.PUBLISH_PORTLET_INFO;
+		}
+
+		return ActionKeys.VIEW_STAGING;
+	}
+
+	public static String getViewPublishGroupActionId(String portletId) {
+		if (!Validator.isBlank(portletId)) {
+			return ActionKeys.PUBLISH_PORTLET_INFO;
+		}
+
+		return ActionKeys.VIEW_STAGING;
 	}
 
 	private static void _checkPermission(
@@ -135,6 +142,27 @@ public class PermissionUtil {
 				permissionChecker, groupId, portletKey,
 				ActionKeys.ACCESS_IN_CONTROL_PANEL);
 		}
+	}
+
+	private static boolean _isPortletPublishProcess(
+		BackgroundTask backgroundTask) {
+
+		String taskExecutorClassName =
+			backgroundTask.getTaskExecutorClassName();
+
+		if (StringUtil.equals(
+				taskExecutorClassName,
+				BackgroundTaskExecutorNames.
+					PORTLET_REMOTE_STAGING_BACKGROUND_TASK_EXECUTOR) ||
+			StringUtil.equals(
+				taskExecutorClassName,
+				BackgroundTaskExecutorNames.
+					PORTLET_STAGING_BACKGROUND_TASK_EXECUTOR)) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 }

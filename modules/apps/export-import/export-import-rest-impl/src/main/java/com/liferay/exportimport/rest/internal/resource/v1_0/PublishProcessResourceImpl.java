@@ -105,12 +105,11 @@ public class PublishProcessResourceImpl extends BasePublishProcessResourceImpl {
 		BackgroundTask backgroundTask =
 			_backgroundTaskLocalService.getBackgroundTask(publishProcessId);
 
-		PermissionUtil.checkPublishPermission(
-			backgroundTask.getGroupId(),
-			PermissionUtil.getPublishGroupActionId(backgroundTask));
-
 		BackgroundTaskUtil.checkTaskExecutorClassName(
 			backgroundTask, _CLASS_NAMES_TASK_EXECUTOR);
+		PermissionUtil.checkPublishPermission(
+			backgroundTask.getGroupId(),
+			PermissionUtil.getViewPublishGroupActionId(backgroundTask));
 
 		return _toPublishProcess(backgroundTask);
 	}
@@ -122,12 +121,11 @@ public class PublishProcessResourceImpl extends BasePublishProcessResourceImpl {
 		BackgroundTask backgroundTask =
 			_backgroundTaskLocalService.getBackgroundTask(publishProcessId);
 
-		PermissionUtil.checkPublishPermission(
-			backgroundTask.getGroupId(),
-			PermissionUtil.getPublishGroupActionId(backgroundTask));
-
 		BackgroundTaskUtil.checkTaskExecutorClassName(
 			backgroundTask, _CLASS_NAMES_TASK_EXECUTOR);
+		PermissionUtil.checkPublishPermission(
+			backgroundTask.getGroupId(),
+			PermissionUtil.getViewPublishGroupActionId(backgroundTask));
 
 		return new ProcessProgress() {
 			{
@@ -163,7 +161,7 @@ public class PublishProcessResourceImpl extends BasePublishProcessResourceImpl {
 
 		PermissionUtil.checkPublishPermission(
 			scopeGroup.getGroupId(),
-			PermissionUtil.getPublishGroupActionId(portletId));
+			PermissionUtil.getViewPublishGroupActionId(portletId));
 
 		List<Long> groupIds = _getPublishGroupIds(scopeGroup);
 

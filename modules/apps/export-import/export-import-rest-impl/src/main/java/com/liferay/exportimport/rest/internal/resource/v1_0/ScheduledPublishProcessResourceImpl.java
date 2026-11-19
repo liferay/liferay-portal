@@ -129,7 +129,7 @@ public class ScheduledPublishProcessResourceImpl
 				contextCompany.getCompanyId(), siteExternalReferenceCode));
 
 		PermissionUtil.checkPublishPermission(
-			stagingGroup.getGroupId(), ActionKeys.PUBLISH_STAGING);
+			stagingGroup.getGroupId(), ActionKeys.VIEW_STAGING);
 
 		return _toScheduledPublishProcess(
 			_getExportPortletDataHandlers(stagingGroup),
@@ -149,7 +149,7 @@ public class ScheduledPublishProcessResourceImpl
 				contextCompany.getCompanyId(), siteExternalReferenceCode));
 
 		PermissionUtil.checkPublishPermission(
-			stagingGroup.getGroupId(), ActionKeys.PUBLISH_STAGING);
+			stagingGroup.getGroupId(), ActionKeys.VIEW_STAGING);
 
 		PortletDataHandler[] exportPortletDataHandlers =
 			_getExportPortletDataHandlers(stagingGroup);

@@ -96,11 +96,11 @@ public class ReportEntryResourceImpl extends BaseReportEntryResourceImpl {
 		BackgroundTask backgroundTask =
 			_backgroundTaskLocalService.getBackgroundTask(publishProcessId);
 
-		PermissionUtil.checkPublishPermission(
-			backgroundTask.getGroupId(), ActionKeys.PUBLISH_STAGING);
-
 		BackgroundTaskUtil.checkTaskExecutorClassName(
 			backgroundTask, _CLASS_NAMES_PUBLISH_TASK_EXECUTOR);
+		PermissionUtil.checkPublishPermission(
+			backgroundTask.getGroupId(),
+			PermissionUtil.getViewPublishGroupActionId(backgroundTask));
 
 		return _getReportEntriesPage(
 			backgroundTask, filter, pagination, search, sorts);
@@ -137,7 +137,7 @@ public class ReportEntryResourceImpl extends BaseReportEntryResourceImpl {
 		else {
 			PermissionUtil.checkPublishPermission(
 				exportImportConfiguration.getGroupId(),
-				ActionKeys.PUBLISH_STAGING);
+				ActionKeys.VIEW_STAGING);
 		}
 
 		return _toReportEntry(
