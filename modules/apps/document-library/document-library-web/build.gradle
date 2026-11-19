@@ -63,7 +63,6 @@ dependencies {
 	compileOnly project(":apps:portal-url-builder:portal-url-builder-api")
 	compileOnly project(":apps:portal-workflow:portal-workflow-api")
 	compileOnly project(":apps:portal-workflow:portal-workflow-taglib")
-	compileOnly project(":apps:portal:portal-instance-lifecycle-api")
 	compileOnly project(":apps:portlet-display-template:portlet-display-template-api")
 	compileOnly project(":apps:product-navigation:product-navigation-control-menu-api")
 	compileOnly project(":apps:product-navigation:product-navigation-personal-menu-api")
