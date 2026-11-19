@@ -5,11 +5,15 @@
 
 package com.liferay.portal.security.audit.event.generators.internal.events;
 
+import com.liferay.account.model.AccountEntryUserRel;
+import com.liferay.account.service.AccountEntryUserRelLocalService;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.audit.AuditMessage;
 import com.liferay.portal.kernel.audit.AuditRouter;
 import com.liferay.portal.kernel.events.Action;
 import com.liferay.portal.kernel.events.ActionException;
 import com.liferay.portal.kernel.events.LifecycleAction;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.security.audit.event.generators.constants.EventTypes;
@@ -54,8 +58,22 @@ public class LogoutPostAction extends Action {
 			User.class.getName(), String.valueOf(user.getUserId()),
 			EventTypes.LOGOUT);
 
+		if (FeatureFlagManagerUtil.isEnabled(
+				user.getCompanyId(), "LPD-113659")) {
+
+			auditMessage.setUserAccountEntryIds(
+				TransformUtil.transformToLongArray(
+					_accountEntryUserRelLocalService.
+						getAccountEntryUserRelsByAccountUserId(
+							user.getUserId()),
+					AccountEntryUserRel::getAccountEntryId));
+		}
+
 		_auditRouter.route(auditMessage);
 	}
+
+	@Reference
+	private AccountEntryUserRelLocalService _accountEntryUserRelLocalService;
 
 	@Reference
 	private AuditRouter _auditRouter;

@@ -5,6 +5,10 @@
 
 package com.liferay.portal.security.audit.event.generators.internal.events.test;
 
+import com.liferay.account.constants.AccountConstants;
+import com.liferay.account.model.AccountEntry;
+import com.liferay.account.service.AccountEntryLocalService;
+import com.liferay.account.service.AccountEntryUserRelLocalService;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.audit.AuditMessage;
@@ -17,16 +21,19 @@ import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.servlet.filters.invoker.InvokerFilterChain;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.FeatureFlagTestUtil;
 import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.security.audit.AuditMessageProcessor;
 import com.liferay.portal.security.audit.event.generators.constants.EventTypes;
 import com.liferay.portal.security.auth.session.AuthenticatedSessionManagerUtil;
-import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -35,6 +42,7 @@ import jakarta.servlet.Filter;
 import jakarta.servlet.http.HttpSession;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.List;
@@ -96,123 +104,29 @@ public class LoginPostActionTest {
 	}
 
 	@Test
-	public void testRunGeneratesOpaqueAuditSessionId() throws Exception {
-		MockHttpServletRequest mockHttpServletRequest1 =
-			_createMockHttpServletRequest();
-
-		_run(mockHttpServletRequest1);
-
-		MockHttpServletRequest mockHttpServletRequest2 =
-			_createMockHttpServletRequest();
-
-		_run(mockHttpServletRequest2);
-
-		String auditSessionId1 = _getAuditSessionId(mockHttpServletRequest1);
-		String auditSessionId2 = _getAuditSessionId(mockHttpServletRequest2);
-
-		HttpSession httpSession1 = mockHttpServletRequest1.getSession();
-		HttpSession httpSession2 = mockHttpServletRequest2.getSession();
-
-		Assert.assertNotEquals(auditSessionId1, auditSessionId2);
-		Assert.assertNotEquals(httpSession1.getId(), auditSessionId1);
-		Assert.assertNotEquals(httpSession2.getId(), auditSessionId2);
+	public void testRun() throws Exception {
+		_testRunGeneratesOpaqueAuditSessionId();
+		_testRunKeepsAuditSessionIdAcrossRequests();
+		_testRunKeepsAuditSessionIdAcrossSessionRenewal();
+		_testRunSetsAccountEntryIds();
+		_testRunSetsResourceAction();
 	}
 
-	@Test
-	public void testRunKeepsAuditSessionIdAcrossRequests() throws Exception {
-		MockHttpServletRequest mockHttpServletRequest1 =
-			_createMockHttpServletRequest();
+	private AccountEntry _addAccountEntry() throws Exception {
+		AccountEntry accountEntry = _accountEntryLocalService.addAccountEntry(
+			RandomTestUtil.randomString(), TestPropsValues.getUserId(), 0,
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(), null,
+			null, null, RandomTestUtil.randomString(),
+			AccountConstants.ACCOUNT_ENTRY_TYPE_BUSINESS,
+			WorkflowConstants.STATUS_APPROVED,
+			ServiceContextTestUtil.getServiceContext());
 
-		_run(mockHttpServletRequest1);
+		_accountEntries.add(accountEntry);
 
-		AuditMessage auditMessage = _fetchAuditMessage(EventTypes.LOGIN);
+		_accountEntryUserRelLocalService.addAccountEntryUserRel(
+			accountEntry.getAccountEntryId(), _user.getUserId());
 
-		String auditSessionId = auditMessage.getSessionID();
-
-		Assert.assertNotNull(auditSessionId);
-
-		MockHttpServletRequest mockHttpServletRequest2 =
-			new MockHttpServletRequest();
-
-		mockHttpServletRequest2.setSession(
-			mockHttpServletRequest1.getSession());
-
-		_testDoFilter(mockHttpServletRequest2);
-
-		AuditRequestContext auditRequestContext =
-			AuditRequestContextThreadLocal.getAuditRequestContext();
-
-		Assert.assertEquals(auditSessionId, auditRequestContext.getSessionID());
-	}
-
-	@Test
-	public void testRunKeepsAuditSessionIdAcrossSessionRenewal()
-		throws Exception {
-
-		MockHttpServletRequest mockHttpServletRequest =
-			_createMockHttpServletRequest();
-
-		_run(mockHttpServletRequest);
-
-		String auditSessionId = _getAuditSessionId(mockHttpServletRequest);
-
-		HttpSession httpSession = mockHttpServletRequest.getSession();
-
-		String containerSessionId = httpSession.getId();
-
-		AuthenticatedSessionManagerUtil.renewSession(
-			mockHttpServletRequest, httpSession);
-
-		_run(mockHttpServletRequest);
-
-		HttpSession renewedHttpSession = mockHttpServletRequest.getSession();
-
-		Assert.assertNotEquals(containerSessionId, renewedHttpSession.getId());
-
-		Assert.assertEquals(
-			auditSessionId, _getAuditSessionId(mockHttpServletRequest));
-
-		AuditMessage auditMessage = _fetchAuditMessage(EventTypes.LOGIN);
-
-		Assert.assertEquals(auditSessionId, auditMessage.getSessionID());
-
-		try (SafeCloseable safeCloseable =
-				PropsValuesTestUtil.swapWithSafeCloseable(
-					"SESSION_PHISHING_PROTECTED_ATTRIBUTES",
-					ArrayUtil.remove(
-						PropsValues.SESSION_PHISHING_PROTECTED_ATTRIBUTES,
-						WebKeys.AUDIT_SESSION_ID))) {
-
-			MockHttpServletRequest unprotectedMockHttpServletRequest =
-				_createMockHttpServletRequest();
-
-			_run(unprotectedMockHttpServletRequest);
-
-			String unprotectedAuditSessionId = _getAuditSessionId(
-				unprotectedMockHttpServletRequest);
-
-			AuthenticatedSessionManagerUtil.renewSession(
-				unprotectedMockHttpServletRequest,
-				unprotectedMockHttpServletRequest.getSession());
-
-			_run(unprotectedMockHttpServletRequest);
-
-			Assert.assertNotEquals(
-				unprotectedAuditSessionId,
-				_getAuditSessionId(unprotectedMockHttpServletRequest));
-		}
-	}
-
-	@FeatureFlag("LPD-96921")
-	@Test
-	public void testRunSetsResourceAction() throws Exception {
-		_run(_createMockHttpServletRequest());
-
-		AuditMessage auditMessage = _fetchAuditMessage(EventTypes.LOGIN);
-
-		Assert.assertEquals(
-			"instance.user.login", auditMessage.getResourceAction());
-		Assert.assertEquals("user", auditMessage.getResourceType());
+		return accountEntry;
 	}
 
 	private MockHttpServletRequest _createMockHttpServletRequest()
@@ -281,6 +195,174 @@ public class LoginPostActionTest {
 				mockHttpServletRequest, new MockHttpServletResponse());
 		}
 	}
+
+	private void _testRunGeneratesOpaqueAuditSessionId() throws Exception {
+		MockHttpServletRequest mockHttpServletRequest1 =
+			_createMockHttpServletRequest();
+
+		_run(mockHttpServletRequest1);
+
+		MockHttpServletRequest mockHttpServletRequest2 =
+			_createMockHttpServletRequest();
+
+		_run(mockHttpServletRequest2);
+
+		String auditSessionId1 = _getAuditSessionId(mockHttpServletRequest1);
+		String auditSessionId2 = _getAuditSessionId(mockHttpServletRequest2);
+
+		HttpSession httpSession1 = mockHttpServletRequest1.getSession();
+		HttpSession httpSession2 = mockHttpServletRequest2.getSession();
+
+		Assert.assertNotEquals(auditSessionId1, auditSessionId2);
+		Assert.assertNotEquals(httpSession1.getId(), auditSessionId1);
+		Assert.assertNotEquals(httpSession2.getId(), auditSessionId2);
+	}
+
+	private void _testRunKeepsAuditSessionIdAcrossRequests() throws Exception {
+		MockHttpServletRequest mockHttpServletRequest1 =
+			_createMockHttpServletRequest();
+
+		_run(mockHttpServletRequest1);
+
+		AuditMessage auditMessage = _fetchAuditMessage(EventTypes.LOGIN);
+
+		String auditSessionId = auditMessage.getSessionID();
+
+		Assert.assertNotNull(auditSessionId);
+
+		MockHttpServletRequest mockHttpServletRequest2 =
+			new MockHttpServletRequest();
+
+		mockHttpServletRequest2.setSession(
+			mockHttpServletRequest1.getSession());
+
+		_testDoFilter(mockHttpServletRequest2);
+
+		AuditRequestContext auditRequestContext =
+			AuditRequestContextThreadLocal.getAuditRequestContext();
+
+		Assert.assertEquals(auditSessionId, auditRequestContext.getSessionID());
+	}
+
+	private void _testRunKeepsAuditSessionIdAcrossSessionRenewal()
+		throws Exception {
+
+		MockHttpServletRequest mockHttpServletRequest =
+			_createMockHttpServletRequest();
+
+		_run(mockHttpServletRequest);
+
+		String auditSessionId = _getAuditSessionId(mockHttpServletRequest);
+
+		HttpSession httpSession = mockHttpServletRequest.getSession();
+
+		String containerSessionId = httpSession.getId();
+
+		AuthenticatedSessionManagerUtil.renewSession(
+			mockHttpServletRequest, httpSession);
+
+		_run(mockHttpServletRequest);
+
+		HttpSession renewedHttpSession = mockHttpServletRequest.getSession();
+
+		Assert.assertNotEquals(containerSessionId, renewedHttpSession.getId());
+
+		Assert.assertEquals(
+			auditSessionId, _getAuditSessionId(mockHttpServletRequest));
+
+		AuditMessage auditMessage = _fetchAuditMessage(EventTypes.LOGIN);
+
+		Assert.assertEquals(auditSessionId, auditMessage.getSessionID());
+
+		try (SafeCloseable safeCloseable =
+				PropsValuesTestUtil.swapWithSafeCloseable(
+					"SESSION_PHISHING_PROTECTED_ATTRIBUTES",
+					ArrayUtil.remove(
+						PropsValues.SESSION_PHISHING_PROTECTED_ATTRIBUTES,
+						WebKeys.AUDIT_SESSION_ID))) {
+
+			MockHttpServletRequest unprotectedMockHttpServletRequest =
+				_createMockHttpServletRequest();
+
+			_run(unprotectedMockHttpServletRequest);
+
+			String unprotectedAuditSessionId = _getAuditSessionId(
+				unprotectedMockHttpServletRequest);
+
+			AuthenticatedSessionManagerUtil.renewSession(
+				unprotectedMockHttpServletRequest,
+				unprotectedMockHttpServletRequest.getSession());
+
+			_run(unprotectedMockHttpServletRequest);
+
+			Assert.assertNotEquals(
+				unprotectedAuditSessionId,
+				_getAuditSessionId(unprotectedMockHttpServletRequest));
+		}
+	}
+
+	private void _testRunSetsAccountEntryIds() throws Exception {
+		try (SafeCloseable safeCloseable =
+				FeatureFlagTestUtil.setFeatureFlagsWithSafeCloseable(
+					true, "LPD-113659")) {
+
+			_run(_createMockHttpServletRequest());
+
+			AuditMessage auditMessage = _fetchAuditMessage(EventTypes.LOGIN);
+
+			Assert.assertArrayEquals(
+				new long[0], auditMessage.getUserAccountEntryIds());
+
+			AccountEntry accountEntry1 = _addAccountEntry();
+			AccountEntry accountEntry2 = _addAccountEntry();
+
+			_run(_createMockHttpServletRequest());
+
+			auditMessage = _fetchAuditMessage(EventTypes.LOGIN);
+
+			long[] userAccountEntryIds = auditMessage.getUserAccountEntryIds();
+
+			Arrays.sort(userAccountEntryIds);
+
+			Assert.assertArrayEquals(
+				new long[] {
+					accountEntry1.getAccountEntryId(),
+					accountEntry2.getAccountEntryId()
+				},
+				userAccountEntryIds);
+		}
+
+		_run(_createMockHttpServletRequest());
+
+		AuditMessage auditMessage = _fetchAuditMessage(EventTypes.LOGIN);
+
+		Assert.assertArrayEquals(
+			new long[0], auditMessage.getUserAccountEntryIds());
+	}
+
+	private void _testRunSetsResourceAction() throws Exception {
+		try (SafeCloseable safeCloseable =
+				FeatureFlagTestUtil.setFeatureFlagsWithSafeCloseable(
+					true, "LPD-96921")) {
+
+			_run(_createMockHttpServletRequest());
+
+			AuditMessage auditMessage = _fetchAuditMessage(EventTypes.LOGIN);
+
+			Assert.assertEquals(
+				"instance.user.login", auditMessage.getResourceAction());
+			Assert.assertEquals("user", auditMessage.getResourceType());
+		}
+	}
+
+	@DeleteAfterTestRun
+	private final List<AccountEntry> _accountEntries = new ArrayList<>();
+
+	@Inject
+	private AccountEntryLocalService _accountEntryLocalService;
+
+	@Inject
+	private AccountEntryUserRelLocalService _accountEntryUserRelLocalService;
 
 	private final List<AuditMessage> _auditMessages = new ArrayList<>();
 
