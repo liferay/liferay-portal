@@ -88,11 +88,9 @@ public class EditLayoutModeProductNavigationControlMenuEntry
 
 			if (layout.isDraftLayout()) {
 				return _getRedirect(
-					httpServletRequest,
-					_portal.getLayoutFullURL(
-						_layoutLocalService.getLayout(layout.getClassPK()),
-						themeDisplay),
-					layout, themeDisplay);
+					httpServletRequest, layout,
+					_layoutLocalService.getLayout(layout.getClassPK()),
+					themeDisplay);
 			}
 
 			Layout draftLayout = layout.fetchDraftLayout();
@@ -125,9 +123,7 @@ public class EditLayoutModeProductNavigationControlMenuEntry
 			}
 
 			return _getRedirect(
-				httpServletRequest,
-				_portal.getLayoutFullURL(draftLayout, themeDisplay), layout,
-				themeDisplay);
+				httpServletRequest, layout, draftLayout, themeDisplay);
 		}
 		catch (Exception exception) {
 			if (_log.isDebugEnabled()) {
@@ -211,45 +207,49 @@ public class EditLayoutModeProductNavigationControlMenuEntry
 		long segmentsExperienceId = ParamUtil.getLong(
 			httpServletRequest, "segmentsExperienceId", -1);
 
-		if (segmentsExperienceId != -1) {
-			SegmentsExperience publishedSegmentsExperience =
-				_segmentsExperienceLocalService.fetchSegmentsExperience(
-					segmentsExperienceId);
-
-			Layout draftLayout = layout.fetchDraftLayout();
-
-			SegmentsExperience draftSegmentsExperience =
-				_segmentsExperienceLocalService.fetchSegmentsExperience(
-					draftLayout.getGroupId(),
-					publishedSegmentsExperience.getSegmentsExperienceKey(),
-					draftLayout.getPlid());
-
-			if ((draftSegmentsExperience != null) &&
-				(draftLayout.getPlid() == draftSegmentsExperience.getPlid())) {
-
-				return HttpComponentsUtil.setParameter(
-					url, "segmentsExperienceId",
-					draftSegmentsExperience.getSegmentsExperienceId());
-			}
+		if (segmentsExperienceId == -1) {
+			return url;
 		}
 
-		return url;
+		SegmentsExperience segmentsExperience =
+			_segmentsExperienceLocalService.fetchSegmentsExperience(
+				segmentsExperienceId);
+
+		if (segmentsExperience == null) {
+			return url;
+		}
+
+		SegmentsExperience layoutSegmentsExperience =
+			_segmentsExperienceLocalService.fetchSegmentsExperience(
+				layout.getGroupId(),
+				segmentsExperience.getSegmentsExperienceKey(),
+				layout.getPlid());
+
+		if (layoutSegmentsExperience == null) {
+			return url;
+		}
+
+		return HttpComponentsUtil.setParameter(
+			url, "segmentsExperienceId",
+			layoutSegmentsExperience.getSegmentsExperienceId());
 	}
 
 	private String _getRedirect(
-			HttpServletRequest httpServletRequest, String fullLayoutURL,
-			Layout layout, ThemeDisplay themeDisplay)
+			HttpServletRequest httpServletRequest, Layout layout,
+			Layout redirectLayout, ThemeDisplay themeDisplay)
 		throws PortalException {
 
 		String redirect = HttpComponentsUtil.addParameters(
-			fullLayoutURL, "p_l_back_url",
+			_portal.getLayoutFullURL(redirectLayout, themeDisplay),
+			"p_l_back_url",
 			_addSegmentsExperienceId(
 				httpServletRequest, layout,
 				_portal.getLayoutFullURL(layout, themeDisplay)),
 			"p_l_back_url_title", layout.getName(themeDisplay.getLocale()),
 			"p_l_mode", Constants.EDIT);
 
-		return _addSegmentsExperienceId(httpServletRequest, layout, redirect);
+		return _addSegmentsExperienceId(
+			httpServletRequest, redirectLayout, redirect);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
