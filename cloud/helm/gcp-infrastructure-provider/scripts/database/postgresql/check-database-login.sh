@@ -9,7 +9,7 @@ function main {
 
 	timeout=$(($(date +%s) + 600))
 
-	until PGCONNECT_TIMEOUT=10 psql \
+	until PGCONNECT_TIMEOUT=10 PGPASSWORD=iam psql \
 		--command "SELECT 1" \
 		--dbname "${DATABASE_NAME}" \
 		--host 127.0.0.1 \

@@ -253,10 +253,10 @@ spec:
 {{ include "database-job" (dict
     "connectionName" $databaseConnectionName
     "dataPlane" $dataPlane
-    "env" (concat (list
+    "env" (list
         (dict "name" "DATABASE_NAME" "value" $databaseName)
         (dict "name" "DATABASE_USERNAME" "value" $databaseBootstrapIamUser)
-        (dict "name" "LIFERAY_DATABASE_USERNAME" "value" $databaseIamUser)) $databaseClientEnv)
+        (dict "name" "LIFERAY_DATABASE_USERNAME" "value" $databaseIamUser))
     "image" $databaseClientImage
     "jobName" (printf "%s-db-grant-%s" $xr.metadata.name $dataPlane)
     "name" "grant"
@@ -275,9 +275,9 @@ spec:
 {{ include "database-job" (dict
     "connectionName" $databaseConnectionName
     "dataPlane" $dataPlane
-    "env" (concat (list
+    "env" (list
         (dict "name" "DATABASE_NAME" "value" $databaseName)
-        (dict "name" "DATABASE_USERNAME" "value" $databaseIamUser)) $databaseClientEnv)
+        (dict "name" "DATABASE_USERNAME" "value" $databaseIamUser))
     "image" $databaseClientImage
     "jobName" (printf "%s-db-login-check-%s" $xr.metadata.name $dataPlane)
     "name" "login-check"

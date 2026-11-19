@@ -11,7 +11,7 @@ function main {
 
 	sh "${scripts_dir}/check-database-login.sh"
 
-	psql \
+	PGPASSWORD=iam psql \
 		--dbname "${DATABASE_NAME}" \
 		--file "${scripts_dir}/grant-database.sql" \
 		--host 127.0.0.1 \
