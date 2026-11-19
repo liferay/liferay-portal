@@ -127,6 +127,17 @@
 				([$STATUS$] [$OWNER_USER_ID_AND_OR_CONNECTOR$] [$OWNER_USER_ID$])
 		]]>
 	</sql>
+	<sql id="com.liferay.message.boards.service.persistence.MBMessageFinder.countByThreadId">
+		<![CDATA[
+			SELECT
+				COUNT(*) AS COUNT_VALUE
+			FROM
+				MBMessage
+			WHERE
+				(MBMessage.threadId = ?) AND
+				([$STATUS$] [$OWNER_USER_ID_AND_OR_CONNECTOR$] [$OWNER_USER_ID$])
+		]]>
+	</sql>
 	<sql id="com.liferay.message.boards.service.persistence.MBMessageFinder.countByG_U_C_S">
 		<![CDATA[
 			SELECT
@@ -197,6 +208,9 @@
 			WHERE
 				(MBMessage.threadId = ?) AND
 				([$STATUS$] [$OWNER_USER_ID_AND_OR_CONNECTOR$] [$OWNER_USER_ID$])
+			ORDER BY
+				MBMessage.createDate ASC,
+				MBMessage.messageId ASC
 		]]>
 	</sql>
 	<sql id="com.liferay.message.boards.service.persistence.MBMessageFinder.findByG_U_C_S">

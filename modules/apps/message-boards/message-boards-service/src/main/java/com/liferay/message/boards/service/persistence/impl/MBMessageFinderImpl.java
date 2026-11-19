@@ -38,6 +38,9 @@ public class MBMessageFinderImpl
 	public static final String COUNT_BY_PARENT_MESSAGE_ID =
 		MBMessageFinder.class.getName() + ".countByParentMessageId";
 
+	public static final String COUNT_BY_THREAD_ID =
+		MBMessageFinder.class.getName() + ".countByThreadId";
+
 	public static final String COUNT_BY_G_U_C_S =
 		MBMessageFinder.class.getName() + ".countByG_U_C_S";
 
@@ -86,6 +89,53 @@ public class MBMessageFinderImpl
 			queryPos.add(parentMessageId);
 			queryPos.add(flatten);
 			queryPos.add("%/" + parentMessageId + "/_%");
+			queryPos.add(queryDefinition.getStatus());
+
+			if (queryDefinition.getOwnerUserId() > 0) {
+				queryPos.add(queryDefinition.getOwnerUserId());
+
+				if (queryDefinition.isIncludeOwner()) {
+					queryPos.add(WorkflowConstants.STATUS_IN_TRASH);
+				}
+			}
+
+			Iterator<Long> iterator = sqlQuery.iterate();
+
+			if (iterator.hasNext()) {
+				Long count = iterator.next();
+
+				if (count != null) {
+					return count.intValue();
+				}
+			}
+
+			return 0;
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	@Override
+	public int countByThreadId(
+		long threadId, QueryDefinition<MBMessage> queryDefinition) {
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			String sql = _customSQL.get(
+				getClass(), COUNT_BY_THREAD_ID, queryDefinition,
+				MBMessageImpl.TABLE_NAME);
+
+			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
+
+			sqlQuery.addScalar(COUNT_COLUMN_NAME, Type.LONG);
+
+			QueryPos queryPos = QueryPos.getInstance(sqlQuery);
+
+			queryPos.add(threadId);
 			queryPos.add(queryDefinition.getStatus());
 
 			if (queryDefinition.getOwnerUserId() > 0) {
@@ -242,6 +292,9 @@ public class MBMessageFinderImpl
 			String sql = _customSQL.get(
 				getClass(), FIND_BY_THREAD_ID, queryDefinition,
 				MBMessageImpl.TABLE_NAME);
+
+			sql = _customSQL.replaceOrderBy(
+				sql, queryDefinition.getOrderByComparator());
 
 			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
 
