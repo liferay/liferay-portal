@@ -2018,27 +2018,29 @@
   integrity sha512-1w0pZtceaUdfAnxMSCGHCQalhi+mR1jOe76sXzyAXpcPz/Lf0zHSdcGK/U2XpZlnQgQtBZW+d+QBnnzVQKCxAA==
 
 "@graphiql/plugin-doc-explorer@^0.4.1":
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/@graphiql/plugin-doc-explorer/-/plugin-doc-explorer-0.4.1.tgz#9fa7d2fec92827a63444c822fd81bfbcb6d9e2e3"
-  integrity sha512-+ram1dDDGMqJn/f9n5I8E6grTvxcM9JZYt/HhtYLuCvkN8kERI6/E3zBHBshhIUnQZoXioZ03fAzXg7JOn0Kyg==
+  version "0.4.4"
+  resolved "https://registry.yarnpkg.com/@graphiql/plugin-doc-explorer/-/plugin-doc-explorer-0.4.4.tgz#c669904c743196a5f61950584005ff07aed5998a"
+  integrity sha512-N+AVh4KFjX8ooZUXj3jBPmz8rshXM0kIl+vV6TiyQgMZtGSpPohIn2NdSYc8ukRmZEfMzYT9gqLw4446SXz1lw==
   dependencies:
     "@headlessui/react" "^2.2"
+    react-compiler-runtime "19.1.0-rc.1"
     zustand "^5"
 
 "@graphiql/plugin-history@^0.4.1":
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/@graphiql/plugin-history/-/plugin-history-0.4.1.tgz#2a1574570c9b200159c44ef19568dd8672a3f4b4"
-  integrity sha512-UyGI/Nm5tzKNMB71li41p6TfkthLqHkmNi9CgHzAM1zKgPIrtSq7Q8WCWKHLOEB5n4/8X8sXFeyQfHgnGYTXYg==
+  version "0.4.4"
+  resolved "https://registry.yarnpkg.com/@graphiql/plugin-history/-/plugin-history-0.4.4.tgz#a69febc5ceb06cec6a9acfb5463ad02ab7c3a3ce"
+  integrity sha512-vbUq8mKmUsEnhLupY+mYerWbRS7FoCsFjRiST+QmJmIGzR6VmsIrmeF2vLKtwx+ztOCqcFGYjZ31oITORBk+aA==
   dependencies:
-    "@graphiql/toolkit" "^0.11.3"
+    "@graphiql/toolkit" "^0.12.0"
+    react-compiler-runtime "19.1.0-rc.1"
     zustand "^5"
 
 "@graphiql/react@^0.37.3":
-  version "0.37.3"
-  resolved "https://registry.yarnpkg.com/@graphiql/react/-/react-0.37.3.tgz#0d805ff12aa15c1231aad09b0dd8ead80e0d85b9"
-  integrity sha512-rNJjwsYGhcZRdZ2FnyU6ss06xQaZ4UordyvOhp7+b/bEqQiEBpMOLJjuUr48Z6T7zEbZBnzCJpIJyXNqlcfQeA==
+  version "0.37.7"
+  resolved "https://registry.yarnpkg.com/@graphiql/react/-/react-0.37.7.tgz#85cd4c6e12171a8bbfe574065f3d3ab231b96bea"
+  integrity sha512-yHK+9wk9xWggrDdAOEOPwNJFCgkAG01ZDVcwuteBw1DCkDaPyBYC6H7hkw5AVYw8PbhlgPOEWBwXzceb9IV4zw==
   dependencies:
-    "@graphiql/toolkit" "^0.11.3"
+    "@graphiql/toolkit" "^0.12.1"
     "@radix-ui/react-dialog" "^1.1"
     "@radix-ui/react-dropdown-menu" "^2.1"
     "@radix-ui/react-tooltip" "^1.2"
@@ -2046,19 +2048,20 @@
     clsx "^1.2.1"
     framer-motion "^12.12"
     get-value "^3.0.1"
-    graphql-language-service "^5.5.0"
+    graphql-language-service "^5.5.2"
     jsonc-parser "^3.3.1"
     markdown-it "^14.1.0"
     monaco-editor "0.52.2"
-    monaco-graphql "^1.7.3"
+    monaco-graphql "^1.8.0"
     prettier "^3.5.3"
+    react-compiler-runtime "19.1.0-rc.1"
     set-value "^4.1.0"
     zustand "^5"
 
-"@graphiql/toolkit@^0.11.3":
-  version "0.11.3"
-  resolved "https://registry.yarnpkg.com/@graphiql/toolkit/-/toolkit-0.11.3.tgz#7f08352779b316fc6436820e11329ac3e6af9f9c"
-  integrity sha512-Glf0fK1cdHLNq52UWPzfSrYIJuNxy8h4451Pw1ZVpJ7dtU+tm7GVVC64UjEDQ/v2j3fnG4cX8jvR75IvfL6nzQ==
+"@graphiql/toolkit@^0.12.0", "@graphiql/toolkit@^0.12.1":
+  version "0.12.1"
+  resolved "https://registry.yarnpkg.com/@graphiql/toolkit/-/toolkit-0.12.1.tgz#c74866a8c2ab3a81ca5553d0503b05b6db5892bc"
+  integrity sha512-OuHVUIvPL7nz3uAdG9eyZ5cZx87JH+XMOHiXgv3foYZWBPW8FNMGUyFflxP70jhv7bX9UPyYmRsTIJ+GSlK0PQ==
   dependencies:
     "@n1ru4l/push-pull-async-iterable-iterator" "^3.1.0"
     meros "^1.1.4"
@@ -7287,10 +7290,10 @@ graphql-hooks@4.4.0:
     dequal "^1.0.0"
     extract-files "^7.0.0"
 
-graphql-language-service@^5.5.0:
-  version "5.5.0"
-  resolved "https://registry.yarnpkg.com/graphql-language-service/-/graphql-language-service-5.5.0.tgz#2e68b23bd5384f2fbf1e9391e907106e8246d025"
-  integrity sha512-9EvWrLLkF6Y5e29/2cmFoAO6hBPPAZlCyjznmpR11iFtRydfkss+9m6x+htA8h7YznGam+TtJwS6JuwoWWgb2Q==
+graphql-language-service@^5.5.0, graphql-language-service@^5.5.2, graphql-language-service@^5.7.0:
+  version "5.7.0"
+  resolved "https://registry.yarnpkg.com/graphql-language-service/-/graphql-language-service-5.7.0.tgz#4e5768edae5112e381442b705eb1d616381c7100"
+  integrity sha512-5mwDb9HyHxMcO9RCLLieg6rC1u9XKJKWhFuvaZFJi3broQZDz1fcFNlm96UCMrIgI6MSsb9RwwqKKp2sZOZ9Gw==
   dependencies:
     debounce-promise "^3.1.2"
     nullthrows "^1.0.0"
@@ -9585,12 +9588,20 @@ monaco-editor@0.52.2:
   resolved "https://registry.yarnpkg.com/monaco-editor/-/monaco-editor-0.52.2.tgz#53c75a6fcc6802684e99fd1b2700299857002205"
   integrity sha512-GEQWEZmfkOGLdd3XK8ryrfWz3AIP8YymVXiPHEdewrUq7mh0qrKrfHLNCXcbB6sTnMLnOZ3ztSiKcciFUkIJwQ==
 
-monaco-graphql@1.7.3, monaco-graphql@^1.7.3:
+monaco-graphql@1.7.3:
   version "1.7.3"
   resolved "https://registry.yarnpkg.com/monaco-graphql/-/monaco-graphql-1.7.3.tgz#985adbcc8dcbc1bd60967f9126c98a557466da10"
   integrity sha512-6LAIcg/vT2NGLjHnT+5iIZONsZCaCuz2orbg7qD/u4Ry9R7rDotLh0HAzIF/yKdzEA5fTZC+TofSx2O+Zi+0ow==
   dependencies:
     graphql-language-service "^5.5.0"
+    picomatch-browser "^2.2.6"
+
+monaco-graphql@^1.8.0:
+  version "1.9.0"
+  resolved "https://registry.yarnpkg.com/monaco-graphql/-/monaco-graphql-1.9.0.tgz#e4f32e9b62a28055c5a90e1f409cfab9f2b25273"
+  integrity sha512-zIK4Abg7KpJ6E0nis75wktpQ6vgDTKOEMwtrqa2mMIv7D+Q2n42cr75LCuWfO144xqbTjxyav7MbI2ViIy6q3w==
+  dependencies:
+    graphql-language-service "^5.7.0"
     picomatch-browser "^2.2.6"
 
 morphdom@2.7.7:
