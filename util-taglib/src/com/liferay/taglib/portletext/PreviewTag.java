@@ -21,15 +21,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.jsp.JspException;
 
 /**
- * Renders a live preview of a portlet while its own configuration is being
- * edited. Every current usage embeds this inside the previewed portlet's own
- * configuration screen, and {@link #doTag} relies on that: it only renders
- * when the caller holds {@link ActionKeys#CONFIGURATION} on the previewed
- * portlet. Reusing this tag for a preview outside a configuration screen
- * requires revisiting that check first, since a caller without
- * {@link ActionKeys#CONFIGURATION} on the previewed portlet otherwise sees
- * nothing instead of the preview.
- *
  * @author Brian Wing Shun Chan
  */
 public class PreviewTag extends IncludeTag {
