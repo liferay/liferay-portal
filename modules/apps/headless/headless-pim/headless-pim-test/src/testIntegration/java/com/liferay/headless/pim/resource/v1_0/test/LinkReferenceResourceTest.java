@@ -399,8 +399,9 @@ public class LinkReferenceResourceTest
 		ObjectEntry imageObjectEntry2 = _addImageObjectEntry(
 			true, targetObjectEntry);
 
-		_assertImageURL(null, sourceObjectEntry);
 		_assertImageURL(imageObjectEntry1, targetObjectEntry);
+
+		_assertImageURL(null, sourceObjectEntry);
 
 		_objectEntryLocalService.deleteObjectEntry(imageObjectEntry1);
 
