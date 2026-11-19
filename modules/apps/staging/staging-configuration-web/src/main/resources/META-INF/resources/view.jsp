@@ -160,7 +160,6 @@ BackgroundTask lastCompletedInitialPublicationBackgroundTask = BackgroundTaskMan
 <aui:script>
 	function <portlet:namespace />saveGroup(forceDisable) {
 		var form = document.<portlet:namespace />fm;
-		var ok = true;
 
 		function doSubmit() {
 			if (forceDisable) {
