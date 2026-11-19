@@ -13,7 +13,6 @@ function main {
 		--connect-timeout 10 \
 		--execute "SELECT 1" \
 		--host 127.0.0.1 \
-		--port "${DATABASE_PORT}" \
 		--user "${DATABASE_USERNAME}" \
 		"${DATABASE_NAME}" > /dev/null 2>&1
 	do

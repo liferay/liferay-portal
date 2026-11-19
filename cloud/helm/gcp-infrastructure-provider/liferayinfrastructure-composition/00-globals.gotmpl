@@ -37,7 +37,6 @@
 {{- $databaseIamAuthenticationFlagName := get (dict "mysql" "cloudsql_iam_authentication" "postgresql" "cloudsql.iam_authentication") $env.databaseEngine -}}
 {{- $databaseIamUser := get (dict "mysql" (splitList "@" $gsaEmail | first) "postgresql" (trimSuffix ".gserviceaccount.com" $gsaEmail)) $env.databaseEngine -}}
 {{- $databasePointInTimeRecoveryFieldName := get (dict "mysql" "binaryLogEnabled" "postgresql" "pointInTimeRecoveryEnabled") $env.databaseEngine -}}
-{{- $databasePort := get (dict "mysql" "3306" "postgresql" "5432") $env.databaseEngine -}}
 {{- $databaseVersion := get (dict "mysql" (printf "MYSQL_%s" ($xr.spec.database.version | default "8.4" | replace "." "_")) "postgresql" (printf "POSTGRES_%s" ($xr.spec.database.version | default "18"))) $env.databaseEngine -}}
 {{- $dataPlanes := list $targetActiveDataPlane -}}
 {{- $isCMKKeyReady := or (not $cmkEnabled) $cmkKeyId -}}

@@ -54,7 +54,6 @@ spec:
                         initContainers:
                             -   args:
                                     -   --auto-iam-authn
-                                    -   --port={{ .port }}
                                     -   --private-ip
                                     -   --structured-logs
                                     -   "{{ .connectionName }}"
@@ -256,14 +255,12 @@ spec:
     "dataPlane" $dataPlane
     "env" (concat (list
         (dict "name" "DATABASE_NAME" "value" $databaseName)
-        (dict "name" "DATABASE_PORT" "value" $databasePort)
         (dict "name" "DATABASE_USERNAME" "value" $databaseBootstrapIamUser)
         (dict "name" "LIFERAY_DATABASE_USERNAME" "value" $databaseIamUser)) $databaseClientEnv)
     "image" $databaseClientImage
     "jobName" (printf "%s-db-grant-%s" $xr.metadata.name $dataPlane)
     "name" "grant"
     "namespace" $namespace
-    "port" $databasePort
     "scriptName" "grant-database.sh"
     "serviceAccountName" "database-bootstrap") }}
 {{- end }}
@@ -280,13 +277,11 @@ spec:
     "dataPlane" $dataPlane
     "env" (concat (list
         (dict "name" "DATABASE_NAME" "value" $databaseName)
-        (dict "name" "DATABASE_PORT" "value" $databasePort)
         (dict "name" "DATABASE_USERNAME" "value" $databaseIamUser)) $databaseClientEnv)
     "image" $databaseClientImage
     "jobName" (printf "%s-db-login-check-%s" $xr.metadata.name $dataPlane)
     "name" "login-check"
     "namespace" $namespace
-    "port" $databasePort
     "scriptName" "check-database-login.sh"
     "serviceAccountName" "liferay-default") }}
 {{- end }}

@@ -13,7 +13,6 @@ function main {
 		--command "SELECT 1" \
 		--dbname "${DATABASE_NAME}" \
 		--host 127.0.0.1 \
-		--port "${DATABASE_PORT}" \
 		--username "${DATABASE_USERNAME}" > /dev/null 2>&1
 	do
 		if [ $(date +%s) -ge ${timeout} ]
