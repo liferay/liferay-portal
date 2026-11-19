@@ -17,6 +17,7 @@ import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PortalRunMode;
@@ -307,6 +308,8 @@ public class AuditMessage implements Serializable {
 
 		_timestampDate = GetterUtil.getDate(
 			jsonObject.getString(_TIMESTAMP), _getDateFormat());
+		_userAccountEntryIds = JSONUtil.toLongArray(
+			jsonObject.getJSONArray(_USER_ACCOUNT_ENTRY_IDS));
 
 		if (jsonObject.has(_USER_AGENT)) {
 			_userAgent = jsonObject.getString(_USER_AGENT);
@@ -420,6 +423,10 @@ public class AuditMessage implements Serializable {
 
 	public Date getTimestampDate() {
 		return _timestampDate;
+	}
+
+	public long[] getUserAccountEntryIds() {
+		return _userAccountEntryIds;
 	}
 
 	public String getUserAgent() {
@@ -568,6 +575,10 @@ public class AuditMessage implements Serializable {
 		_timestampDate = timestampDate;
 	}
 
+	public void setUserAccountEntryIds(long[] userAccountEntryIds) {
+		_userAccountEntryIds = userAccountEntryIds;
+	}
+
 	public void setUserAgent(String userAgent) {
 		_userAgent = userAgent;
 	}
@@ -650,6 +661,15 @@ public class AuditMessage implements Serializable {
 			dateFormat.format(
 				(_timestampDate != null) ? _timestampDate : new Date())
 		).put(
+			_USER_ACCOUNT_ENTRY_IDS,
+			() -> {
+				if (ArrayUtil.isEmpty(_userAccountEntryIds)) {
+					return null;
+				}
+
+				return JSONUtil.putAll(ArrayUtil.toArray(_userAccountEntryIds));
+			}
+		).put(
 			_USER_AGENT, _userAgent
 		).put(
 			_USER_EMAIL_ADDRESS, _userEmailAddress
@@ -726,6 +746,8 @@ public class AuditMessage implements Serializable {
 
 	private static final String _TIMESTAMP = "timestamp";
 
+	private static final String _USER_ACCOUNT_ENTRY_IDS = "userAccountEntryIds";
+
 	private static final String _USER_AGENT = "userAgent";
 
 	private static final String _USER_EMAIL_ADDRESS = "userEmailAddress";
@@ -766,6 +788,7 @@ public class AuditMessage implements Serializable {
 	private int _serverPort;
 	private String _sessionID;
 	private Date _timestampDate;
+	private long[] _userAccountEntryIds = new long[0];
 	private String _userAgent;
 	private String _userEmailAddress;
 	private long _userId = -1;
