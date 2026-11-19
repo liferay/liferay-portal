@@ -402,15 +402,15 @@ public class CompanyKeyResolverUtilTest {
 		Company company = Mockito.mock(Company.class);
 
 		Mockito.when(
-			company.getKey()
-		).thenReturn(
-			keyString
-		);
-
-		Mockito.when(
 			company.getCompanyId()
 		).thenReturn(
 			_COMPANY_ID
+		);
+
+		Mockito.when(
+			company.getKey()
+		).thenReturn(
+			keyString
 		);
 
 		Mockito.when(
