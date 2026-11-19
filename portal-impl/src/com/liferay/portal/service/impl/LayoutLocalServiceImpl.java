@@ -3293,7 +3293,7 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 		layout.setFaviconFileEntryERC(faviconFileEntryERC);
 		layout.setFaviconFileEntryScopeERC(faviconFileEntryScopeERC);
 
-		_setMasterLayoutPageTemplateEntryERC(
+		_updateMasterLayoutPageTemplateEntryERC(
 			layout, masterLayoutPageTemplateEntryERC);
 
 		boolean layoutUpdateable = ParamUtil.getBoolean(
@@ -3411,7 +3411,7 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 		layout.setFaviconFileEntryERC(faviconFileEntryERC);
 		layout.setFaviconFileEntryScopeERC(faviconFileEntryScopeERC);
 
-		_setMasterLayoutPageTemplateEntryERC(
+		_updateMasterLayoutPageTemplateEntryERC(
 			layout, masterLayoutPageTemplateEntryERC);
 
 		PortalUtil.updateImageId(
@@ -4733,7 +4733,7 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 		}
 	}
 
-	private void _setMasterLayoutPageTemplateEntryERC(
+	private void _updateMasterLayoutPageTemplateEntryERC(
 		Layout layout, String masterLayoutPageTemplateEntryERC) {
 
 		if (!Objects.equals(
