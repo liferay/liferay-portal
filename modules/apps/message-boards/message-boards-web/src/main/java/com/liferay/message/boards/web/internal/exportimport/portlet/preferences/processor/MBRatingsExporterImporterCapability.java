@@ -14,12 +14,9 @@ import jakarta.portlet.PortletPreferences;
 
 import java.util.Map;
 
-import org.osgi.service.component.annotations.Component;
-
 /**
  * @author Cristina González
  */
-@Component(service = Capability.class)
 public class MBRatingsExporterImporterCapability implements Capability {
 
 	@Override
