@@ -11,7 +11,7 @@ import {
 	RelationalOperators,
 } from '../constants';
 import {CAMPAIGN_PROPERTY} from '../properties';
-import {createCustomValueMap} from '../custom-inputs';
+import {createCustomValueMap, getCampaignIds} from '../custom-inputs';
 import {getDefaultValue} from '../../criteria-sidebar/CriteriaSidebarCollapse';
 import {CustomValue} from 'shared/util/records';
 import {List, Map} from 'immutable';
@@ -1005,6 +1005,14 @@ describe('odata', () => {
 					.getIn(['criterionGroup', 'items', 0, 'value'])
 					.toJS()
 			).toEqual(['c1', 'c2']);
+		});
+
+		it('should read a campaign compared with eq as a single campaign', () => {
+			const {items} = ODataUtil.translateQueryToCriteria(
+				"(campaigns.filter(filter='(id eq ''c1'')'))"
+			);
+
+			expect(getCampaignIds(items[0].value)).toEqual(['c1']);
 		});
 	});
 

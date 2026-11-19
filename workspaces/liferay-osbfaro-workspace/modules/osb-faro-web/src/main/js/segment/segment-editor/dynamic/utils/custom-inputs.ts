@@ -324,8 +324,19 @@ export const getPropertyValue = (
 	index: number
 ): any => valueIMap.getIn(['criterionGroup', 'items', index, propertyName]);
 
-export const getCampaignIds = (valueIMap: CustomValue): string[] =>
-	getPropertyValue(valueIMap, 'value', 0).toArray();
+/**
+ * The builder writes the IDs as an `in` list, but a segment created through the
+ * API can compare a single ID with `eq`, which reads back as a string.
+ */
+export const getCampaignIds = (valueIMap: CustomValue): string[] => {
+	const value = getPropertyValue(valueIMap, 'value', 0);
+
+	if (List.isList(value)) {
+		return (value as List<string>).toArray();
+	}
+
+	return value ? [value] : [];
+};
 
 /**
  * Get the time period label from the time period value.
