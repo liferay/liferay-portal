@@ -56,6 +56,14 @@ describe('IndividualsTouchedDataSet', () => {
 		);
 	});
 
+	it('should send the selected account to the endpoint', () => {
+		renderDataSet('/?accountId=9&accountName=Acme');
+
+		expect(lastFDSProps.apiURL).toBe(
+			'/o/faro/contacts/23/campaigns/7/individuals?accountIds=9&channelId=123&rangeKey=30'
+		);
+	});
+
 	it('should ask the endpoint for a custom range by its bounds alone', () => {
 		renderDataSet(
 			'/?rangeEnd=2026-10-20&rangeKey=CUSTOM&rangeStart=2026-10-01'
