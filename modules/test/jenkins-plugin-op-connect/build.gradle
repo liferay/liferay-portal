@@ -11,7 +11,7 @@ buildscript {
 apply plugin: "org.jenkins-ci.jpi"
 
 dependencies {
-	api group: "com.liferay", name: "org.json", version: "20231013.LIFERAY-PATCHED-1"
+	api group: "com.liferay", name: "org.json", version: "20260814.LIFERAY-PATCHED-1"
 	api group: "jakarta.servlet", name: "jakarta.servlet-api", version: "6.0.0"
 }
 

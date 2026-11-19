@@ -20,6 +20,6 @@ dependencies {
 	compileOnly project(":core:petra:petra-function")
 	compileOnly project(":core:petra:petra-io")
 	compileOnly project(":core:petra:petra-string")
-	testImplementation group: "com.liferay", name: "org.json", version: "20231013.LIFERAY-PATCHED-1"
+	testImplementation group: "com.liferay", name: "org.json", version: "20260814.LIFERAY-PATCHED-1"
 	testImplementation group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 }

@@ -13,7 +13,7 @@ apply plugin: "org.jenkins-ci.jpi"
 dependencies {
 	api group: "com.liferay", name: "org.apache.activemq.client", version: "5.16.7.JAKARTA-LIFERAY-PATCHED-1"
 	api group: "com.liferay", name: "org.apache.geronimo.specs.jms", version: "1.1.1.JAKARTA-LIFERAY-PATCHED-1"
-	api group: "com.liferay", name: "org.json", version: "20231013.LIFERAY-PATCHED-1"
+	api group: "com.liferay", name: "org.json", version: "20260814.LIFERAY-PATCHED-1"
 	api group: "jakarta.servlet", name: "jakarta.servlet-api", version: "6.0.0"
 	api group: "org.jenkins-ci.plugins", name: "nodelabelparameter", version: "1.12.0"
 	compileOnly group: "jakarta.annotation", name: "jakarta.annotation-api", version: "2.1.1"

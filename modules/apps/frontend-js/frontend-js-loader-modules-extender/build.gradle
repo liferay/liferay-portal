@@ -27,7 +27,7 @@ clean {
 dependencies {
 	compileInclude group: "com.github.yuchi", name: "npm-semver", version: "1.0.0"
 	compileOnly group: "com.liferay", name: "biz.aQute.bnd.annotation", version: "4.2.0.LIFERAY-PATCHED-2"
-	compileOnly group: "com.liferay", name: "org.json", version: "20231013.LIFERAY-PATCHED-1"
+	compileOnly group: "com.liferay", name: "org.json", version: "20260814.LIFERAY-PATCHED-1"
 	compileOnly group: "com.liferay.jakarta.portlet", name: "com.liferay.jakarta.portlet-api", version: "4.0.0"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
 	compileOnly group: "jakarta.servlet", name: "jakarta.servlet-api", version: "6.0.0"
