@@ -234,8 +234,8 @@ public class CommerceShipmentServiceTest {
 
 	@Test
 	public void testGetCommerceShipment() throws Exception {
-		_testGetCommerceShipmentWithGroupId();
 		_testGetCommerceShipment();
+		_testGetCommerceShipmentWithGroupId();
 	}
 
 	@Test
@@ -429,6 +429,31 @@ public class CommerceShipmentServiceTest {
 	}
 
 	private void _testGetCommerceShipmentWithGroupId() throws Exception {
+		CommerceOrder commerceOrder = CommerceTestUtil.addB2CCommerceOrder(
+			TestPropsValues.getUserId(), _commerceChannel.getGroupId(),
+			_commerceCurrency.getCommerceCurrencyId());
+
+		CommerceShipment commerceShipment =
+			_commerceShipmentService.addCommerceShipment(
+				commerceOrder.getCommerceOrderId(), _serviceContext);
+
+		CPInstance cpInstance = CPTestUtil.addCPInstanceWithRandomSku(
+			_commerceChannel.getSiteGroupId());
+
+		CommerceOrderItem commerceOrderItem =
+			CommerceTestUtil.addCommerceOrderItem(
+				commerceOrder.getCommerceOrderId(),
+				cpInstance.getCPInstanceId(), BigDecimal.ONE);
+
+		CommerceInventoryWarehouse commerceInventoryWarehouse =
+			CommerceInventoryTestUtil.addCommerceInventoryWarehouse();
+
+		_commerceShipmentItemLocalService.addCommerceShipmentItem(
+			null, commerceShipment.getCommerceShipmentId(),
+			commerceOrderItem.getCommerceOrderItemId(),
+			commerceInventoryWarehouse.getCommerceInventoryWarehouseId(),
+			commerceOrderItem.getQuantity(), null, false, _serviceContext);
+
 		User user = UserTestUtil.addUser();
 
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
@@ -436,7 +461,7 @@ public class CommerceShipmentServiceTest {
 
 			_commerceShipmentService.getCommerceShipment(
 				_commerceChannel.getGroupId(),
-				_commerceShipment.getCommerceShipmentId());
+				commerceShipment.getCommerceShipmentId());
 
 			Assert.fail();
 		}
@@ -446,23 +471,25 @@ public class CommerceShipmentServiceTest {
 				user.getUserId());
 		}
 
-		_commerceOrder.setUserId(user.getUserId());
+		commerceOrder = _commerceOrderLocalService.getCommerceOrder(
+			commerceOrder.getCommerceOrderId());
 
-		_commerceOrder = _commerceOrderLocalService.updateCommerceOrder(
-			_commerceOrder);
+		commerceOrder.setUserId(user.getUserId());
+
+		_commerceOrderLocalService.updateCommerceOrder(commerceOrder);
 
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				user, PermissionCheckerFactoryUtil.create(user))) {
 
 			Assert.assertEquals(
-				_commerceShipment,
+				commerceShipment,
 				_commerceShipmentService.getCommerceShipment(
 					_commerceChannel.getGroupId(),
-					_commerceShipment.getCommerceShipmentId()));
+					commerceShipment.getCommerceShipmentId()));
 
 			_commerceShipmentService.getCommerceShipment(
 				RandomTestUtil.randomLong(),
-				_commerceShipment.getCommerceShipmentId());
+				commerceShipment.getCommerceShipmentId());
 
 			Assert.fail();
 		}
