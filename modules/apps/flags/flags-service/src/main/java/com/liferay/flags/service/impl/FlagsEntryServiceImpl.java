@@ -5,6 +5,9 @@
 
 package com.liferay.flags.service.impl;
 
+import com.liferay.asset.kernel.AssetRendererFactoryRegistryUtil;
+import com.liferay.asset.kernel.model.AssetRenderer;
+import com.liferay.asset.kernel.model.AssetRendererFactory;
 import com.liferay.flags.internal.messaging.FlagsRequest;
 import com.liferay.flags.service.base.FlagsEntryServiceBaseImpl;
 import com.liferay.message.boards.model.MBMessage;
@@ -60,13 +63,14 @@ public class FlagsEntryServiceImpl extends FlagsEntryServiceBaseImpl {
 			ModelResourcePermissionRegistryUtil.getModelResourcePermission(
 				className);
 
-		if (modelResourcePermission == null) {
+		if (modelResourcePermission != null) {
+			modelResourcePermission.check(
+				getPermissionChecker(), classPK, ActionKeys.VIEW);
+		}
+		else if (!_hasViewPermission(className, classPK)) {
 			throw new PrincipalException.MustHavePermission(
 				getPermissionChecker(), className, classPK, ActionKeys.VIEW);
 		}
-
-		modelResourcePermission.check(
-			getPermissionChecker(), classPK, ActionKeys.VIEW);
 
 		FlagsRequest flagsRequest = new FlagsRequest(
 			className, classPK, reporterEmailAddress, reportedUserId,
@@ -104,6 +108,27 @@ public class FlagsEntryServiceImpl extends FlagsEntryServiceBaseImpl {
 					addOrUpdateMessageSuspiciousActivity(classPK, reason);
 			}
 		}
+	}
+
+	private boolean _hasViewPermission(String className, long classPK)
+		throws PortalException {
+
+		AssetRendererFactory<?> assetRendererFactory =
+			AssetRendererFactoryRegistryUtil.getAssetRendererFactoryByClassName(
+				className);
+
+		if (assetRendererFactory == null) {
+			return false;
+		}
+
+		AssetRenderer<?> assetRenderer = assetRendererFactory.getAssetRenderer(
+			classPK);
+
+		if (assetRenderer == null) {
+			return false;
+		}
+
+		return assetRenderer.hasViewPermission(getPermissionChecker());
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
