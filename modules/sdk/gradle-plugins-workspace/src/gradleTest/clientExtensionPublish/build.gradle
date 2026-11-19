@@ -8,12 +8,14 @@ runGradleTest {
 	dependsOn ":client-extensions:able:publishClientExtension", ":client-extensions:baker:publishClientExtension"
 
 	doLast {
-		Map<String, Object> catalog = new JsonSlurper().parse(new URL("http://${registry}/v2/_catalog"))
+		JsonSlurper jsonSlurper = new JsonSlurper()
 
-		assert catalog.repositories.contains("able")
-		assert catalog.repositories.contains("able-descriptor")
-		assert !catalog.repositories.contains("baker")
-		assert catalog.repositories.contains("baker-descriptor")
+		Map<String, Object> catalogMap = jsonSlurper.parse(new URL("http://${registry}/v2/_catalog"))
+
+		assert catalogMap.repositories.contains("able")
+		assert catalogMap.repositories.contains("able-descriptor")
+		assert !catalogMap.repositories.contains("baker")
+		assert catalogMap.repositories.contains("baker-descriptor")
 
 		HttpURLConnection httpURLConnection = _openManifest(registry, "able", "1.0.0")
 
@@ -29,7 +31,11 @@ runGradleTest {
 
 		String descriptorDigest = descriptorHttpURLConnection.getHeaderField("Docker-Content-Digest")
 
-		assert project(":client-extensions:able").file("build/client-extension-descriptor-image/digest").text == descriptorDigest
+		Project ableProject = project(":client-extensions:able")
+
+		File descriptorDigestFile = ableProject.file("build/client-extension-descriptor-image/digest")
+
+		assert descriptorDigestFile.text == descriptorDigest
 
 		HttpURLConnection digestTagHttpURLConnection = _openManifest(registry, "able-descriptor", "1.0.0.${descriptorDigest.substring(7, 19)}")
 
@@ -37,24 +43,24 @@ runGradleTest {
 
 		assert digestTagHttpURLConnection.getHeaderField("Docker-Content-Digest") == descriptorDigest
 
-		Map<String, Object> able = _pullDescriptor(registry, "able").descriptor
+		Map<String, Object> ableDescriptorMap = _pullDescriptor(registry, "able")
 
-		assert able.configs.size() > 0
-		assert able.descriptorVersion == 1
-		assert able.image.digest == httpURLConnection.getHeaderField("Docker-Content-Digest")
-		assert able.image.repository == "${registry}/able"
-		assert able.image.tag == "1.0.0"
-		assert able.serviceId == null
-		assert able.type == "service"
-		assert able.workload == null
+		assert ableDescriptorMap.configs.size() > 0
+		assert ableDescriptorMap.descriptorVersion == 1
+		assert ableDescriptorMap.image.digest == httpURLConnection.getHeaderField("Docker-Content-Digest")
+		assert ableDescriptorMap.image.repository == "${registry}/able"
+		assert ableDescriptorMap.image.tag == "1.0.0"
+		assert ableDescriptorMap.serviceId == null
+		assert ableDescriptorMap.type == "service"
+		assert ableDescriptorMap.workload == null
 
-		Map<String, Object> baker = _pullDescriptor(registry, "baker").descriptor
+		Map<String, Object> bakerDescriptorMap = _pullDescriptor(registry, "baker")
 
-		assert baker.configs.size() > 0
-		assert baker.image == null
-		assert baker.oauthApplicationHeadlessServerERC == null
-		assert baker.type == "configuration"
-		assert baker.workload == null
+		assert bakerDescriptorMap.configs.size() > 0
+		assert bakerDescriptorMap.image == null
+		assert bakerDescriptorMap.oauthApplicationHeadlessServerERC == null
+		assert bakerDescriptorMap.type == "configuration"
+		assert bakerDescriptorMap.workload == null
 	}
 }
 
@@ -67,23 +73,33 @@ HttpURLConnection _openManifest(String registry, String name, String reference) 
 }
 
 Map<String, Object> _pullDescriptor(String registry, String name) {
-	Map<String, Object> manifest = new JsonSlurper().parse(_openManifest(registry, "${name}-descriptor", "1.0.0").inputStream)
+	HttpURLConnection httpURLConnection = _openManifest(registry, "${name}-descriptor", "1.0.0")
 
-	assert manifest.layers.size() == 1
+	JsonSlurper jsonSlurper = new JsonSlurper()
 
-	Map<String, Object> config = new JsonSlurper().parse(new URL("http://${registry}/v2/${name}-descriptor/blobs/${manifest.config.digest}"))
+	Map<String, Object> manifestMap = jsonSlurper.parse(httpURLConnection.inputStream)
 
-	assert config.config.Labels["com.liferay.client-extension.descriptor.version"] == "1"
+	List<Map<String, Object>> layerMaps = manifestMap.layers
+
+	assert layerMaps.size() == 1
+
+	Map<String, Object> configMap = jsonSlurper.parse(new URL("http://${registry}/v2/${name}-descriptor/blobs/${manifestMap.config.digest}"))
+
+	assert configMap.config.Labels["com.liferay.client-extension.descriptor.version"] == "1"
 
 	File layerFile = new File(buildDir, "pulled-descriptors/${name}.tar.gz")
 
 	layerFile.parentFile.mkdirs()
 
-	layerFile.bytes = new URL("http://${registry}/v2/${name}-descriptor/blobs/${manifest.layers[0].digest}").bytes
+	layerFile.bytes = new URL("http://${registry}/v2/${name}-descriptor/blobs/${layerMaps[0].digest}").bytes
 
-	File descriptorFile = tarTree(resources.gzip(layerFile)).matching {
+	FileTree layerFileTree = tarTree(resources.gzip(layerFile))
+
+	FileTree descriptorFileTree = layerFileTree.matching {
 		include "client-extension-descriptor.json"
-	}.singleFile
+	}
 
-	return new JsonSlurper().parse(descriptorFile)
+	Map<String, Object> descriptorJSONMap = jsonSlurper.parse(descriptorFileTree.singleFile)
+
+	return descriptorJSONMap.descriptor
 }

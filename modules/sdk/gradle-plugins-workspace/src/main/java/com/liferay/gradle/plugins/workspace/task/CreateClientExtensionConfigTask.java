@@ -228,11 +228,6 @@ public class CreateClientExtensionConfigTask extends DefaultTask {
 		_createClientExtensionConfigFile(jsonMap);
 	}
 
-	/**
-	 * Returns the OAuth 2 headless server application that the project's batch
-	 * or site initializer client extension uses, or null when the project has
-	 * none.
-	 */
 	@Internal
 	public String getBatchOAuthApplicationHeadlessServerERC() {
 		for (ClientExtension clientExtension : _clientExtensions) {
@@ -257,11 +252,6 @@ public class CreateClientExtensionConfigTask extends DefaultTask {
 		return GradleUtil.toFile(_project, _clientExtensionConfigFile);
 	}
 
-	/**
-	 * Returns the client extension descriptor type. The project's own
-	 * Dockerfile, which replaces the template for its classification grouping,
-	 * makes a project that declares only configuration a service.
-	 */
 	@Internal
 	public String getDescriptorType() {
 		File inputDockerfileFile = getInputDockerfileFile();

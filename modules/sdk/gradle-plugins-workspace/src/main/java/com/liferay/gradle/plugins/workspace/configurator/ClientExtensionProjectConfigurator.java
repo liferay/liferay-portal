@@ -518,7 +518,6 @@ public class ClientExtensionProjectConfigurator
 				pushClientExtensionImageTask.dependsOn(
 					RootProjectConfigurator.BUILD_DOCKER_IMAGE_TASK_NAME);
 				pushClientExtensionImageTask.onlyIf(
-					"the client extension has a workload",
 					task -> !_isConfigurationOnly(
 						createClientExtensionConfigTaskProvider));
 				pushClientExtensionImageTask.setDescription(

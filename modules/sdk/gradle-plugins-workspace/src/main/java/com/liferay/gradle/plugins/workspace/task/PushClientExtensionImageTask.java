@@ -108,10 +108,6 @@ public class PushClientExtensionImageTask extends DockerPushImage {
 
 		Files.write(file.toPath(), digest.getBytes(StandardCharsets.UTF_8));
 
-		// The version tag can be pushed again with a new build, so the same
-		// image is also pushed under a tag that ends in its digest, which a
-		// liferay.yaml entry can name to keep exactly this build.
-
 		String tag = image.substring(imageRepository.length() + 1);
 
 		String digestHex = digest.substring(digest.indexOf(':') + 1);
