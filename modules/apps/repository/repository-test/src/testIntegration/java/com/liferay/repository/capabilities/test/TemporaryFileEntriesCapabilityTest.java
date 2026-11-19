@@ -102,11 +102,24 @@ public class TemporaryFileEntriesCapabilityTest {
 				PermissionCheckerFactoryUtil.create(user2), fileEntry,
 				ActionKeys.VIEW));
 
+		User guestUser = UserLocalServiceUtil.getGuestUser(
+			_group.getCompanyId());
+
 		Assert.assertFalse(
 			fileEntryModelResourcePermission.contains(
-				PermissionCheckerFactoryUtil.create(
-					UserLocalServiceUtil.getGuestUser(_group.getCompanyId())),
-				fileEntry, ActionKeys.VIEW));
+				PermissionCheckerFactoryUtil.create(guestUser), fileEntry,
+				ActionKeys.VIEW));
+
+		FileEntry guestFileEntry = TempFileEntryUtil.addTempFileEntry(
+			_group.getGroupId(), guestUser.getUserId(),
+			RandomTestUtil.randomString(),
+			RandomTestUtil.randomString() + ".jpg", getInputStream(),
+			ContentTypes.IMAGE_JPEG);
+
+		Assert.assertTrue(
+			fileEntryModelResourcePermission.contains(
+				PermissionCheckerFactoryUtil.create(guestUser), guestFileEntry,
+				ActionKeys.VIEW));
 	}
 
 	@Test
