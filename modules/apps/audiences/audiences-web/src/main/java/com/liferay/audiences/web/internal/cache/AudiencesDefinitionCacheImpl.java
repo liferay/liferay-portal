@@ -46,16 +46,15 @@ public class AudiencesDefinitionCacheImpl implements AudiencesDefinitionCache {
 
 	@Activate
 	protected void activate(BundleContext bundleContext) {
-		_portalCache =
-			(PortalCache<Long, AudiencesDefinition>)_multiVMPool.getPortalCache(
-				AudiencesEntry.class.getName());
-
 		_audiencesEntryModelListenerServiceRegistration =
 			bundleContext.registerService(
 				ModelListener.class, new AudiencesEntryModelListener(this),
 				null);
 		_groupModelListenerServiceRegistration = bundleContext.registerService(
 			ModelListener.class, new GroupModelListener(this), null);
+		_portalCache =
+			(PortalCache<Long, AudiencesDefinition>)_multiVMPool.getPortalCache(
+				AudiencesEntry.class.getName());
 	}
 
 	@Deactivate
