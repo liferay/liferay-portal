@@ -281,13 +281,6 @@ public class CommercePaymentEntryAuditLocalServiceUtil {
 		return getService().getCommercePaymentEntryAuditsCount();
 	}
 
-	public static int getCommercePaymentEntryAuditsCount(
-		long commercePaymentEntryId) {
-
-		return getService().getCommercePaymentEntryAuditsCount(
-			commercePaymentEntryId);
-	}
-
 	public static
 		com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery
 			getIndexableActionableDynamicQuery() {
@@ -350,4 +343,4 @@ public class CommercePaymentEntryAuditLocalServiceUtil {
 			CommercePaymentEntryAuditLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-192407678
+// LIFERAY-SERVICE-BUILDER-HASH:221245347

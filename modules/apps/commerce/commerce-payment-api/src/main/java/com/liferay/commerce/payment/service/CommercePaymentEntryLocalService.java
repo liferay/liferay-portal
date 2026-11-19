@@ -259,11 +259,6 @@ public interface CommercePaymentEntryLocalService
 		long companyId, long classNameId, long classPK, int type, int start,
 		int end, OrderByComparator<CommercePaymentEntry> orderByComparator);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CommercePaymentEntry> getCommercePaymentEntries(
-		long companyId, long classNameId, long classPK, int start, int end,
-		OrderByComparator<CommercePaymentEntry> orderByComparator);
-
 	/**
 	 * Returns the number of commerce payment entries.
 	 *
@@ -271,10 +266,6 @@ public interface CommercePaymentEntryLocalService
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getCommercePaymentEntriesCount();
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCommercePaymentEntriesCount(
-		long companyId, long classNameId, long classPK);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getCommercePaymentEntriesCount(
@@ -375,4 +366,4 @@ public interface CommercePaymentEntryLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2126615101
+// LIFERAY-SERVICE-BUILDER-HASH:910008949

@@ -250,9 +250,6 @@ public interface CommercePaymentEntryAuditLocalService
 	public int getCommercePaymentEntryAuditsCount();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCommercePaymentEntryAuditsCount(long commercePaymentEntryId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
 
 	/**
@@ -292,4 +289,4 @@ public interface CommercePaymentEntryAuditLocalService
 		CommercePaymentEntryAudit commercePaymentEntryAudit);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1325459093
+// LIFERAY-SERVICE-BUILDER-HASH:-1928720614

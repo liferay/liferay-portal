@@ -293,14 +293,6 @@ public class CommercePaymentEntryLocalServiceUtil {
 			orderByComparator);
 	}
 
-	public static List<CommercePaymentEntry> getCommercePaymentEntries(
-		long companyId, long classNameId, long classPK, int start, int end,
-		OrderByComparator<CommercePaymentEntry> orderByComparator) {
-
-		return getService().getCommercePaymentEntries(
-			companyId, classNameId, classPK, start, end, orderByComparator);
-	}
-
 	/**
 	 * Returns the number of commerce payment entries.
 	 *
@@ -308,13 +300,6 @@ public class CommercePaymentEntryLocalServiceUtil {
 	 */
 	public static int getCommercePaymentEntriesCount() {
 		return getService().getCommercePaymentEntriesCount();
-	}
-
-	public static int getCommercePaymentEntriesCount(
-		long companyId, long classNameId, long classPK) {
-
-		return getService().getCommercePaymentEntriesCount(
-			companyId, classNameId, classPK);
 	}
 
 	public static int getCommercePaymentEntriesCount(
@@ -468,4 +453,4 @@ public class CommercePaymentEntryLocalServiceUtil {
 			CommercePaymentEntryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-961850058
+// LIFERAY-SERVICE-BUILDER-HASH:1958188718

@@ -343,20 +343,6 @@ public class CommercePaymentEntryLocalServiceWrapper
 			orderByComparator);
 	}
 
-	@Override
-	public java.util.List
-		<com.liferay.commerce.payment.model.CommercePaymentEntry>
-			getCommercePaymentEntries(
-				long companyId, long classNameId, long classPK, int start,
-				int end,
-				com.liferay.portal.kernel.util.OrderByComparator
-					<com.liferay.commerce.payment.model.CommercePaymentEntry>
-						orderByComparator) {
-
-		return _commercePaymentEntryLocalService.getCommercePaymentEntries(
-			companyId, classNameId, classPK, start, end, orderByComparator);
-	}
-
 	/**
 	 * Returns the number of commerce payment entries.
 	 *
@@ -366,14 +352,6 @@ public class CommercePaymentEntryLocalServiceWrapper
 	public int getCommercePaymentEntriesCount() {
 		return _commercePaymentEntryLocalService.
 			getCommercePaymentEntriesCount();
-	}
-
-	@Override
-	public int getCommercePaymentEntriesCount(
-		long companyId, long classNameId, long classPK) {
-
-		return _commercePaymentEntryLocalService.getCommercePaymentEntriesCount(
-			companyId, classNameId, classPK);
 	}
 
 	@Override
@@ -570,4 +548,4 @@ public class CommercePaymentEntryLocalServiceWrapper
 	private CommercePaymentEntryLocalService _commercePaymentEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1037394977
+// LIFERAY-SERVICE-BUILDER-HASH:1819655817

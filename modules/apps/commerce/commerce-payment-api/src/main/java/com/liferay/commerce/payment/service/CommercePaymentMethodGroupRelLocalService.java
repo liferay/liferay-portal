@@ -21,7 +21,6 @@ import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.service.BaseLocalService;
 import com.liferay.portal.kernel.service.PersistedModelLocalService;
-import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.Propagation;
@@ -63,15 +62,6 @@ public interface CommercePaymentMethodGroupRelLocalService
 	public CommerceAddressRestriction addCommerceAddressRestriction(
 			long userId, long groupId, long commercePaymentMethodGroupRelId,
 			long countryId)
-		throws PortalException;
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x)
-	 */
-	@Deprecated
-	public CommerceAddressRestriction addCommerceAddressRestriction(
-			long commercePaymentMethodGroupRelId, long countryId,
-			ServiceContext serviceContext)
 		throws PortalException;
 
 	/**
@@ -356,4 +346,4 @@ public interface CommercePaymentMethodGroupRelLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1285481310
+// LIFERAY-SERVICE-BUILDER-HASH:-112028693

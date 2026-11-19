@@ -321,12 +321,6 @@ public class CommercePaymentEntryAuditLocalServiceWrapper
 	}
 
 	@Override
-	public int getCommercePaymentEntryAuditsCount(long commercePaymentEntryId) {
-		return _commercePaymentEntryAuditLocalService.
-			getCommercePaymentEntryAuditsCount(commercePaymentEntryId);
-	}
-
-	@Override
 	public com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery
 		getIndexableActionableDynamicQuery() {
 
@@ -413,4 +407,4 @@ public class CommercePaymentEntryAuditLocalServiceWrapper
 		_commercePaymentEntryAuditLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1958613883
+// LIFERAY-SERVICE-BUILDER-HASH:-1061938674
