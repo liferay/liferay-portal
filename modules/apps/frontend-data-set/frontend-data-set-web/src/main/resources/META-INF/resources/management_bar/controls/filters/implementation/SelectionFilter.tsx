@@ -89,7 +89,7 @@ function fetchData(
 	url.searchParams.append('pageSize', String(DEFAULT_PAGE_SIZE));
 
 	if (searchParam) {
-		url.searchParams.append('search', encodeURIComponent(searchParam));
+		url.searchParams.append('search', searchParam);
 	}
 
 	return fetch(url.pathname + url.search, {
