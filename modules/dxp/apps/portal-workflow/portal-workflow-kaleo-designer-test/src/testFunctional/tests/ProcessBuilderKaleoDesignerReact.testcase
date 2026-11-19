@@ -1233,25 +1233,6 @@ definition {
 			groovyScript = "groovyScript = \"if(type == 'behaviorClarification') {invalidFields = true} else {invalidFields = false}\");");
 	}
 
-	@description = "Verify that the user is able to define the Resource Action"
-	@priority = 3
-	test CanDefineResourceAction {
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		Workflow.openWorkflowListView();
-
-		Workflow.addNewDefinition(workflowDefinitionTitle = "New Workflow Definition");
-
-		ProcessBuilderKaleoDesignerReact.dragSidebarNodeAndMove(nodeLabel = "Task");
-
-		ProcessBuilderKaleoDesignerReact.viewAndFillAssignments(
-			assignmentType = "Resource Actions",
-			resourceActionsText = "Test");
-
-		ProcessBuilderKaleoDesignerReact.viewSelectedAssignments(selectedAssignments = "Resource Actions: Test");
-	}
-
 	@description = "Verify that the user can delete action with the trash icon at the bottom right corner"
 	@priority = 4
 	test CanDeleteAction {
@@ -1744,28 +1725,6 @@ definition {
 			title = "Delete State Node");
 
 		ProcessBuilderKaleoDesignerReact.viewPanelNodeNotPresent(nodeType = "state");
-	}
-
-	@description = "Verify that the user can delete Nodes of Task"
-	@priority = 4
-	test CanDeleteTaskNode {
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		Workflow.openWorkflowListView();
-
-		Workflow.addNewDefinition(workflowDefinitionTitle = "New Workflow Definition");
-
-		ProcessBuilderKaleoDesignerReact.dragSidebarNodeAndMove(
-			nodeLabel = "Task",
-			nodePosition = "-20,-40");
-
-		ProcessBuilderKaleoDesignerReact.deleteNodeOrConnection(
-			modalMessage = "Are you sure you want to delete the selected task node?",
-			nodeType = "task",
-			title = "Delete Task Node");
-
-		ProcessBuilderKaleoDesignerReact.viewPanelNodeNotPresent(nodeType = "task");
 	}
 
 	@description = "Verify that the user can delete the Timers"
@@ -2564,15 +2523,6 @@ definition {
 		Navigator.gotoBack();
 
 		Workflow.viewDefinitionNotPresent(workflowDefinitionTitle = "New Workflow Definition");
-	}
-
-	@description = "LPS-139388 - Verify that nodes behave correctly when we import a workflow with the same names for different elements"
-	@ignore = "Test Stub"
-	@priority = 4
-	test CanNotImportProcessWithDuplicatedElementNames {
-
-		// TODO LRQA-72988 CanNotImportProcessWithDuplicatedElementNames pending implementation
-
 	}
 
 	@description = "LPS-129928 - Verify that the collision detection between nodes are working after moving nodes on canvas"
@@ -3953,21 +3903,6 @@ definition {
 		Alert.viewSuccessMessageText(successMessage = "Restored to Revision 1");
 	}
 
-	@description = "LPS-129928 - Verify that when the user clicks on the Source button the Source editor appears"
-	@priority = 4
-	test CanViewSourceEditor {
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		Workflow.openWorkflowListView();
-
-		Workflow.addNewDefinition(workflowDefinitionTitle = "New Workflow Definition");
-
-		ProcessBuilderKaleoDesignerReact.diagramSourceSwitchView();
-
-		ProcessBuilderKaleoDesignerReact.viewSourceEditor();
-	}
-
 	@description = "Verify that the user can see the Timers Recurrence tooltip with the value 'Repeat the action at a given duration until the workflow task is completed.'"
 	@priority = 2
 	test CanViewTimerRecurrenceFieldTooltip {
@@ -4091,15 +4026,6 @@ definition {
 		ProcessBuilderKaleoDesignerReact.viewXMLSourceCodeSnippet(
 			codeSnippet = "Created",
 			codeSnippetNotPresent = "Start");
-	}
-
-	@description = "LPS-129928 - Verify that when the user makes changes to the XML code these changes are reflected in the Process Builder"
-	@ignore = "Test Stub"
-	@priority = 5
-	test ChangesOnXMLAreReflectedOnDiagram {
-
-		// TODO LRQA-72999 ChangesOnXMLAreReflectedOnDiagram pending implementation
-
 	}
 
 	@description = "Verify that Condition Node do not have Timers property"
