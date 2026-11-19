@@ -196,7 +196,7 @@ apiVersion: sql.gcp.m.upbound.io/v1beta1
 kind: User
 metadata:
     annotations:
-        crossplane.io/external-name: {{ eq $env.databaseEngine "mysql" | ternary $databaseBootstrapEmail $databaseBootstrapIamUser }}
+        crossplane.io/external-name: {{ dig (printf "database-bootstrap-iam-user-%s" $dataPlane) "resource" "metadata" "annotations" "crossplane.io/external-name" (eq $env.databaseEngine "mysql" | ternary $databaseBootstrapEmail $databaseBootstrapIamUser) $observedResources }}
         gotemplating.fn.crossplane.io/composition-resource-name: database-bootstrap-iam-user-{{ $dataPlane }}
     labels:
         app: liferay
@@ -221,7 +221,7 @@ apiVersion: sql.gcp.m.upbound.io/v1beta1
 kind: User
 metadata:
     annotations:
-        crossplane.io/external-name: {{ eq $env.databaseEngine "mysql" | ternary $gsaEmail $databaseIamUser }}
+        crossplane.io/external-name: {{ dig (printf "liferay-iam-user-%s" $dataPlane) "resource" "metadata" "annotations" "crossplane.io/external-name" (eq $env.databaseEngine "mysql" | ternary $gsaEmail $databaseIamUser) $observedResources }}
         gotemplating.fn.crossplane.io/composition-resource-name: liferay-iam-user-{{ $dataPlane }}
     labels:
         app: liferay
