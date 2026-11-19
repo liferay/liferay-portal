@@ -66,7 +66,6 @@ liferay.com/project: liferay-cloud-native
 {{- define "liferay-platform.operators" -}}
 ackPrometheusService:
     name: ack-prometheusservice
-    requiresObservability: true
 argoWorkflows:
     chart: argo-workflows
     name: argo-workflows

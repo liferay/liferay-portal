@@ -1,6 +1,6 @@
 {{- range $key, $operator := include "liferay-platform.operators" . | fromYaml }}
 {{- $config := index $.Values $key }}
-{{- if and $config.enabled (or (not $operator.requiresObservability) $.Values.observability.enabled) }}
+{{- if $config.enabled }}
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application

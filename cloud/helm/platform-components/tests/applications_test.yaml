@@ -16,15 +16,6 @@ tests:
                 repoURL: https://charts.example.com
                 targetRevision: 1.0.0
     -   asserts:
-            -   hasDocuments:
-                    count: 6
-            -   notEqual:
-                    path: metadata.name
-                    value: ack-prometheusservice
-        it: Omits the ACK Prometheus service controller when observability is disabled
-        set:
-            ackPrometheusService.enabled: true
-    -   asserts:
             -   equal:
                     path: spec.project
                     value: liferay-operator
@@ -192,14 +183,13 @@ tests:
         documentSelector:
             path: metadata.name
             value: ack-prometheusservice
-        it: Renders the ACK Prometheus service controller when observability and the operator are enabled
+        it: Renders the ACK Prometheus service controller when it is enabled
         set:
             ackPrometheusService:
                 enabled: true
                 values:
                     aws:
                         region: us-west-2
-            observability.enabled: true
     -   asserts:
             -   equal:
                     path: metadata.annotations["argocd.argoproj.io/sync-wave"]
