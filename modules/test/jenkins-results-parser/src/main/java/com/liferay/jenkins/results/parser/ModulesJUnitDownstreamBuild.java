@@ -41,7 +41,8 @@ public class ModulesJUnitDownstreamBuild extends JUnitDownstreamBuild {
 			String testTaskName = testTask.getName();
 
 			StopWatchRecord stopWatchRecord = stopWatchRecordsGroup.get(
-				"test.execution.duration" + testTaskName.replaceAll(":", "."));
+				"test.execution.duration" +
+					_getStopWatchTestTaskName(testTaskName));
 
 			long duration = 0L;
 
@@ -74,6 +75,16 @@ public class ModulesJUnitDownstreamBuild extends JUnitDownstreamBuild {
 		TopLevelBuild topLevelBuild) {
 
 		super(buildURL, cachedDownstreamBuildReport, topLevelBuild);
+	}
+
+	private String _getStopWatchTestTaskName(String testTaskName) {
+		int index = testTaskName.indexOf(":");
+
+		if (index > 0) {
+			testTaskName = testTaskName.substring(index);
+		}
+
+		return testTaskName.replaceAll(":", ".");
 	}
 
 }
