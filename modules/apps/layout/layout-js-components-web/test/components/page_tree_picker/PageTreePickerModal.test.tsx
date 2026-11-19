@@ -355,6 +355,23 @@ describe('PageTreePickerModal', () => {
 		expect(await screen.findByText('2 items-selected')).toBeInTheDocument();
 	});
 
+	it('labels the root with the given root label', async () => {
+		render(
+			<PageTreePickerModal
+				onClose={() => {}}
+				onSubmit={() => {}}
+				privateLayout={true}
+				rootLabel="pages"
+				siteExternalReferenceCode="site-erc"
+			/>
+		);
+
+		expect(
+			await screen.findByRole('checkbox', {name: 'pages'})
+		).toBeInTheDocument();
+		expect(screen.queryByText('private-pages')).not.toBeInTheDocument();
+	});
+
 	it('titles the dialog with the given title', async () => {
 		await renderPageTreePickerModal({title: 'pages-to-publish'});
 

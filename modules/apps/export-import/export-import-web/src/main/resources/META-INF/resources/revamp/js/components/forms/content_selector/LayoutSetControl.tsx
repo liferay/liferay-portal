@@ -123,6 +123,9 @@ export default function LayoutSetControl({
 
 	const isAll = isAllLayoutsSelected(portletDataHandlerSelection);
 
+	const multipleLayoutSetVisibilities =
+		availableLayoutSetVisibilities.length > 1;
+
 	const selected = typeof portletDataHandlerSelection === 'object';
 
 	return (
@@ -159,13 +162,17 @@ export default function LayoutSetControl({
 
 						<SelectPagesButton
 							onClick={() => setShowModal(true)}
-							privateLayout={privateLayout}
+							privateLayout={
+								multipleLayoutSetVisibilities
+									? privateLayout
+									: undefined
+							}
 						/>
 					</div>
 				</ClayLayout.ContentCol>
 			</ClayLayout.ContentRow>
 
-			{availableLayoutSetVisibilities.length > 1 && selected && (
+			{multipleLayoutSetVisibilities && selected && (
 				<LayoutVisibilitySelector
 					label={label}
 					onSetMode={(nextPrivateLayout) =>
@@ -192,6 +199,11 @@ export default function LayoutSetControl({
 					}}
 					pageSize={pageSize}
 					privateLayout={privateLayout}
+					rootLabel={
+						multipleLayoutSetVisibilities
+							? undefined
+							: Liferay.Language.get('pages')
+					}
 					siteExternalReferenceCode={siteExternalReferenceCode}
 					title={title}
 				/>

@@ -259,9 +259,14 @@ describe('NewSiteTemplateSync', () => {
 
 		await userEvent.click(screen.getByRole('button', {name: 'expand-x'}));
 
-		await userEvent.click(screen.getByRole('button', {name: 'select-x'}));
+		await userEvent.click(
+			screen.getByRole('button', {name: 'select-layouts'})
+		);
 
 		expect(await screen.findByText('pages-to-sync')).toBeInTheDocument();
+		expect(
+			await screen.findByRole('checkbox', {name: 'pages'})
+		).toBeInTheDocument();
 		expect(
 			await screen.findByRole('checkbox', {name: 'page-1'})
 		).toBeChecked();

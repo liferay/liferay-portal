@@ -121,6 +121,28 @@ describe('LayoutSetControl', () => {
 		expect(screen.getAllByRole('radio')).toHaveLength(2);
 	});
 
+	it('names the visibility on the select pages button only when both visibilities are available', () => {
+		const {unmount} = renderLayoutSetControl({
+			availableLayoutSetVisibilities: ['private'],
+			portletDataHandlerSelection: {all: true, privateLayout: true},
+		});
+
+		expect(
+			screen.getByRole('button', {name: 'select-layouts'})
+		).toBeInTheDocument();
+
+		unmount();
+
+		renderLayoutSetControl({
+			availableLayoutSetVisibilities: ['public', 'private'],
+			portletDataHandlerSelection: {all: true, privateLayout: false},
+		});
+
+		expect(
+			screen.getByRole('button', {name: 'select-x'})
+		).toBeInTheDocument();
+	});
+
 	it('has no accessibility violations', async () => {
 		const {container} = renderLayoutSetControl();
 

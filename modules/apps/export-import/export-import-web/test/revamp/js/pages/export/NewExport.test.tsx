@@ -848,11 +848,14 @@ describe('NewExport', () => {
 			expect(screen.queryAllByRole('radio')).toHaveLength(0);
 
 			await userEvent.click(
-				screen.getByRole('button', {name: 'select-x'})
+				screen.getByRole('button', {name: 'select-layouts'})
 			);
 
 			expect(
 				await screen.findByText('pages-to-export')
+			).toBeInTheDocument();
+			expect(
+				await screen.findByRole('checkbox', {name: 'pages'})
 			).toBeInTheDocument();
 
 			expect(

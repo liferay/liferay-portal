@@ -22,6 +22,7 @@ interface Props {
 	onSubmit: (selection: SitePageTreeSelection | null) => void;
 	pageSize?: number;
 	privateLayout: boolean;
+	rootLabel?: string;
 	siteExternalReferenceCode: string;
 	title?: string;
 }
@@ -32,6 +33,7 @@ export default function PageTreePickerModal({
 	onSubmit,
 	pageSize = 50,
 	privateLayout,
+	rootLabel,
 	siteExternalReferenceCode,
 	title = sub(
 		Liferay.Language.get('select-x'),
@@ -45,9 +47,10 @@ export default function PageTreePickerModal({
 			createSitePageDataSource({
 				pageSize,
 				privateLayout,
+				rootLabel,
 				siteExternalReferenceCode,
 			}),
-		[pageSize, privateLayout, siteExternalReferenceCode]
+		[pageSize, privateLayout, rootLabel, siteExternalReferenceCode]
 	);
 
 	const [defaultSelectedEntries] = useState(() =>
