@@ -253,13 +253,6 @@ public class CommerceWishListItemLocalServiceUtil {
 		return getService().fetchCommerceWishListItem(commerceWishListItemId);
 	}
 
-	public static CommerceWishListItem fetchCommerceWishListItem(
-		long commerceWishListId, String cpInstanceUuid, long cProductId) {
-
-		return getService().fetchCommerceWishListItem(
-			commerceWishListId, cpInstanceUuid, cProductId);
-	}
-
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 
@@ -288,20 +281,6 @@ public class CommerceWishListItemLocalServiceUtil {
 			commerceWishListId, cpInstanceUuid, cProductId);
 	}
 
-	public static int getCommerceWishListItemByContainsCPInstanceCount(
-		long commerceWishListId, String cpInstanceUuid) {
-
-		return getService().getCommerceWishListItemByContainsCPInstanceCount(
-			commerceWishListId, cpInstanceUuid);
-	}
-
-	public static int getCommerceWishListItemByContainsCProductCount(
-		long commerceWishListId, long cProductId) {
-
-		return getService().getCommerceWishListItemByContainsCProductCount(
-			commerceWishListId, cProductId);
-	}
-
 	/**
 	 * Returns a range of all the commerce wish list items.
 	 *
@@ -319,14 +298,6 @@ public class CommerceWishListItemLocalServiceUtil {
 		return getService().getCommerceWishListItems(start, end);
 	}
 
-	public static List<CommerceWishListItem> getCommerceWishListItems(
-		long commerceWishListId, int start, int end,
-		OrderByComparator<CommerceWishListItem> orderByComparator) {
-
-		return getService().getCommerceWishListItems(
-			commerceWishListId, start, end, orderByComparator);
-	}
-
 	/**
 	 * Returns the number of commerce wish list items.
 	 *
@@ -334,10 +305,6 @@ public class CommerceWishListItemLocalServiceUtil {
 	 */
 	public static int getCommerceWishListItemsCount() {
 		return getService().getCommerceWishListItemsCount();
-	}
-
-	public static int getCommerceWishListItemsCount(long commerceWishListId) {
-		return getService().getCommerceWishListItemsCount(commerceWishListId);
 	}
 
 	public static
@@ -400,4 +367,4 @@ public class CommerceWishListItemLocalServiceUtil {
 			CommerceWishListItemLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:450381434
+// LIFERAY-SERVICE-BUILDER-HASH:540598323

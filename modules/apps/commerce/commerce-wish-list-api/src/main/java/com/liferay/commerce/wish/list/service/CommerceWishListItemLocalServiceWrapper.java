@@ -291,15 +291,6 @@ public class CommerceWishListItemLocalServiceWrapper
 	}
 
 	@Override
-	public com.liferay.commerce.wish.list.model.CommerceWishListItem
-		fetchCommerceWishListItem(
-			long commerceWishListId, String cpInstanceUuid, long cProductId) {
-
-		return _commerceWishListItemLocalService.fetchCommerceWishListItem(
-			commerceWishListId, cpInstanceUuid, cProductId);
-	}
-
-	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 
@@ -332,24 +323,6 @@ public class CommerceWishListItemLocalServiceWrapper
 			commerceWishListId, cpInstanceUuid, cProductId);
 	}
 
-	@Override
-	public int getCommerceWishListItemByContainsCPInstanceCount(
-		long commerceWishListId, String cpInstanceUuid) {
-
-		return _commerceWishListItemLocalService.
-			getCommerceWishListItemByContainsCPInstanceCount(
-				commerceWishListId, cpInstanceUuid);
-	}
-
-	@Override
-	public int getCommerceWishListItemByContainsCProductCount(
-		long commerceWishListId, long cProductId) {
-
-		return _commerceWishListItemLocalService.
-			getCommerceWishListItemByContainsCProductCount(
-				commerceWishListId, cProductId);
-	}
-
 	/**
 	 * Returns a range of all the commerce wish list items.
 	 *
@@ -370,19 +343,6 @@ public class CommerceWishListItemLocalServiceWrapper
 			start, end);
 	}
 
-	@Override
-	public java.util.List
-		<com.liferay.commerce.wish.list.model.CommerceWishListItem>
-			getCommerceWishListItems(
-				long commerceWishListId, int start, int end,
-				com.liferay.portal.kernel.util.OrderByComparator
-					<com.liferay.commerce.wish.list.model.CommerceWishListItem>
-						orderByComparator) {
-
-		return _commerceWishListItemLocalService.getCommerceWishListItems(
-			commerceWishListId, start, end, orderByComparator);
-	}
-
 	/**
 	 * Returns the number of commerce wish list items.
 	 *
@@ -392,12 +352,6 @@ public class CommerceWishListItemLocalServiceWrapper
 	public int getCommerceWishListItemsCount() {
 		return _commerceWishListItemLocalService.
 			getCommerceWishListItemsCount();
-	}
-
-	@Override
-	public int getCommerceWishListItemsCount(long commerceWishListId) {
-		return _commerceWishListItemLocalService.getCommerceWishListItemsCount(
-			commerceWishListId);
 	}
 
 	@Override
@@ -481,4 +435,4 @@ public class CommerceWishListItemLocalServiceWrapper
 	private CommerceWishListItemLocalService _commerceWishListItemLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1096313181
+// LIFERAY-SERVICE-BUILDER-HASH:697667057

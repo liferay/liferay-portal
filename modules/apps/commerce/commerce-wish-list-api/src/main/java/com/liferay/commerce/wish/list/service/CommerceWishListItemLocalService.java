@@ -222,10 +222,6 @@ public interface CommerceWishListItemLocalService
 		long commerceWishListItemId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public CommerceWishListItem fetchCommerceWishListItem(
-		long commerceWishListId, String cpInstanceUuid, long cProductId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	/**
@@ -245,14 +241,6 @@ public interface CommerceWishListItemLocalService
 			long commerceWishListId, String cpInstanceUuid, long cProductId)
 		throws PortalException;
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCommerceWishListItemByContainsCPInstanceCount(
-		long commerceWishListId, String cpInstanceUuid);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCommerceWishListItemByContainsCProductCount(
-		long commerceWishListId, long cProductId);
-
 	/**
 	 * Returns a range of all the commerce wish list items.
 	 *
@@ -268,11 +256,6 @@ public interface CommerceWishListItemLocalService
 	public List<CommerceWishListItem> getCommerceWishListItems(
 		int start, int end);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CommerceWishListItem> getCommerceWishListItems(
-		long commerceWishListId, int start, int end,
-		OrderByComparator<CommerceWishListItem> orderByComparator);
-
 	/**
 	 * Returns the number of commerce wish list items.
 	 *
@@ -280,9 +263,6 @@ public interface CommerceWishListItemLocalService
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getCommerceWishListItemsCount();
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCommerceWishListItemsCount(long commerceWishListId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
@@ -322,4 +302,4 @@ public interface CommerceWishListItemLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1432922599
+// LIFERAY-SERVICE-BUILDER-HASH:-1398876964
