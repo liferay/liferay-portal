@@ -44,12 +44,12 @@ public class GetObjectDefinitionDeleteInfoStrutsAction implements StrutsAction {
 			HttpServletResponse httpServletResponse)
 		throws Exception {
 
-		long objectDefinitionId = ParamUtil.getLong(
-			httpServletRequest, "objectDefinitionId");
-
 		ThemeDisplay themeDisplay =
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
+
+		long objectDefinitionId = ParamUtil.getLong(
+			httpServletRequest, "objectDefinitionId");
 
 		_objectDefinitionModelResourcePermission.check(
 			themeDisplay.getPermissionChecker(), objectDefinitionId,
