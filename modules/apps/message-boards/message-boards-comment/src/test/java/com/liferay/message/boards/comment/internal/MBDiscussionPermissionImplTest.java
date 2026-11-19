@@ -93,13 +93,13 @@ public class MBDiscussionPermissionImplTest {
 	}
 
 	private void _mockModelResourcePermissionUtil(
-		String actionId, boolean hasPermission) {
+		String actionId, boolean permission) {
 
 		_modelResourcePermissionUtilMockedStatic.when(
 			() -> ModelResourcePermissionUtil.contains(
 				_permissionChecker, _GROUP_ID, _CLASS_NAME, _CLASS_PK, actionId)
 		).thenReturn(
-			hasPermission
+			permission
 		);
 	}
 
