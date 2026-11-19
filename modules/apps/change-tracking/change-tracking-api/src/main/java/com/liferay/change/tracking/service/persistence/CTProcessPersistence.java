@@ -32,93 +32,6 @@ public interface CTProcessPersistence extends BasePersistence<CTProcess> {
 	 */
 
 	/**
-	 * Returns an ordered range of all the ct processes where companyId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.change.tracking.model.impl.CTProcessModelImpl</code>.
-	 * </p>
-	 *
-	 * @param companyId the company ID
-	 * @param start the lower bound of the range of ct processes
-	 * @param end the upper bound of the range of ct processes (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching ct processes
-	 */
-	public java.util.List<CTProcess> findByCompanyId(
-		long companyId, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<CTProcess>
-			orderByComparator,
-		boolean useFinderCache);
-
-	/**
-	 * Returns the first ct process in the ordered set where companyId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching ct process
-	 * @throws NoSuchProcessException if a matching ct process could not be found
-	 */
-	public CTProcess findByCompanyId_First(
-			long companyId,
-			com.liferay.portal.kernel.util.OrderByComparator<CTProcess>
-				orderByComparator)
-		throws NoSuchProcessException;
-
-	/**
-	 * Returns the first ct process in the ordered set where companyId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching ct process, or <code>null</code> if a matching ct process could not be found
-	 */
-	public CTProcess fetchByCompanyId_First(
-		long companyId,
-		com.liferay.portal.kernel.util.OrderByComparator<CTProcess>
-			orderByComparator);
-
-	/**
-	 * Returns an ordered range of all the ct processes that the user has permissions to view where companyId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.change.tracking.model.impl.CTProcessModelImpl</code>.
-	 * </p>
-	 *
-	 * @param companyId the company ID
-	 * @param start the lower bound of the range of ct processes
-	 * @param end the upper bound of the range of ct processes (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching ct processes that the user has permission to view
-	 */
-	public java.util.List<CTProcess> filterFindByCompanyId(
-		long companyId, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<CTProcess>
-			orderByComparator);
-
-	/**
-	 * Removes all the ct processes where companyId = &#63; from the database.
-	 *
-	 * @param companyId the company ID
-	 */
-	public void removeByCompanyId(long companyId);
-
-	/**
-	 * Returns the number of ct processes where companyId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @return the number of matching ct processes
-	 */
-	public int countByCompanyId(long companyId);
-
-	/**
-	 * Returns the number of ct processes that the user has permission to view where companyId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @return the number of matching ct processes that the user has permission to view
-	 */
-	public int filterCountByCompanyId(long companyId);
-
-	/**
 	 * Returns an ordered range of all the ct processes where ctCollectionId = &#63;.
 	 *
 	 * <p>
@@ -337,89 +250,6 @@ public interface CTProcessPersistence extends BasePersistence<CTProcess> {
 	public CTProcess fetchByPrimaryKey(long ctProcessId);
 
 	/**
-	 * Returns all the ct processes where companyId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @return the matching ct processes
-	 */
-	public default java.util.List<CTProcess> findByCompanyId(long companyId) {
-		return findByCompanyId(
-			companyId, com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS,
-			com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS, null, true);
-	}
-
-	/**
-	 * Returns a range of all the ct processes where companyId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.change.tracking.model.impl.CTProcessModelImpl</code>.
-	 * </p>
-	 *
-	 * @param companyId the company ID
-	 * @param start the lower bound of the range of ct processes
-	 * @param end the upper bound of the range of ct processes (not inclusive)
-	 * @return the range of matching ct processes
-	 */
-	public default java.util.List<CTProcess> findByCompanyId(
-		long companyId, int start, int end) {
-
-		return findByCompanyId(companyId, start, end, null, true);
-	}
-
-	/**
-	 * Returns an ordered range of all the ct processes where companyId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.change.tracking.model.impl.CTProcessModelImpl</code>.
-	 * </p>
-	 *
-	 * @param companyId the company ID
-	 * @param start the lower bound of the range of ct processes
-	 * @param end the upper bound of the range of ct processes (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching ct processes
-	 */
-	public default java.util.List<CTProcess> findByCompanyId(
-		long companyId, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<CTProcess>
-			orderByComparator) {
-
-		return findByCompanyId(companyId, start, end, orderByComparator, true);
-	}
-
-	/**
-	 * Returns all the ct processes that the user has permission to view where companyId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @return the matching ct processes that the user has permission to view
-	 */
-	public default java.util.List<CTProcess> filterFindByCompanyId(
-		long companyId) {
-
-		return filterFindByCompanyId(
-			companyId, com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS,
-			com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS, null);
-	}
-
-	/**
-	 * Returns a range of all the ct processes that the user has permission to view where companyId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.change.tracking.model.impl.CTProcessModelImpl</code>.
-	 * </p>
-	 *
-	 * @param companyId the company ID
-	 * @param start the lower bound of the range of ct processes
-	 * @param end the upper bound of the range of ct processes (not inclusive)
-	 * @return the range of matching ct processes that the user has permission to view
-	 */
-	public default java.util.List<CTProcess> filterFindByCompanyId(
-		long companyId, int start, int end) {
-
-		return filterFindByCompanyId(companyId, start, end, null);
-	}
-
-	/**
 	 * Returns all the ct processes where ctCollectionId = &#63;.
 	 *
 	 * @param ctCollectionId the ct collection ID
@@ -599,4 +429,4 @@ public interface CTProcessPersistence extends BasePersistence<CTProcess> {
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1266660516
+// LIFERAY-SERVICE-BUILDER-HASH:754248224

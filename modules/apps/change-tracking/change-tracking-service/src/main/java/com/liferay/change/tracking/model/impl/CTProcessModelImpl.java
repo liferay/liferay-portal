@@ -111,26 +111,20 @@ public class CTProcessModelImpl
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long COMPANYID_COLUMN_BITMASK = 1L;
+	public static final long CTCOLLECTIONID_COLUMN_BITMASK = 1L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long CTCOLLECTIONID_COLUMN_BITMASK = 2L;
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
-	 */
-	@Deprecated
-	public static final long TYPE_COLUMN_BITMASK = 4L;
+	public static final long TYPE_COLUMN_BITMASK = 2L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
 	 *		#getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long CREATEDATE_COLUMN_BITMASK = 8L;
+	public static final long CREATEDATE_COLUMN_BITMASK = 4L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
@@ -340,16 +334,6 @@ public class CTProcessModelImpl
 		}
 
 		_companyId = companyId;
-	}
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *             #getColumnOriginalValue(String)}
-	 */
-	@Deprecated
-	public long getOriginalCompanyId() {
-		return GetterUtil.getLong(
-			this.<Long>getColumnOriginalValue("companyId"));
 	}
 
 	@JSON
@@ -803,4 +787,4 @@ public class CTProcessModelImpl
 	private CTProcess _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1627749650
+// LIFERAY-SERVICE-BUILDER-HASH:-594424651

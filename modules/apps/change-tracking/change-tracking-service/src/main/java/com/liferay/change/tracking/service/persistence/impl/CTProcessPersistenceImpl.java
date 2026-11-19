@@ -76,124 +76,6 @@ public class CTProcessPersistenceImpl
 		FINDER_CLASS_NAME_ENTITY + ".List2";
 
 	private FilterCollectionPersistenceFinder<CTProcess, NoSuchProcessException>
-		_collectionPersistenceFinderByCompanyId;
-
-	/**
-	 * Returns an ordered range of all the ct processes where companyId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CTProcessModelImpl</code>.
-	 * </p>
-	 *
-	 * @param companyId the company ID
-	 * @param start the lower bound of the range of ct processes
-	 * @param end the upper bound of the range of ct processes (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching ct processes
-	 */
-	@Override
-	public List<CTProcess> findByCompanyId(
-		long companyId, int start, int end,
-		OrderByComparator<CTProcess> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByCompanyId.find(
-			finderCache, new Object[] {companyId}, start, end,
-			orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first ct process in the ordered set where companyId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching ct process
-	 * @throws NoSuchProcessException if a matching ct process could not be found
-	 */
-	@Override
-	public CTProcess findByCompanyId_First(
-			long companyId, OrderByComparator<CTProcess> orderByComparator)
-		throws NoSuchProcessException {
-
-		return _collectionPersistenceFinderByCompanyId.findFirst(
-			finderCache, new Object[] {companyId}, orderByComparator);
-	}
-
-	/**
-	 * Returns the first ct process in the ordered set where companyId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching ct process, or <code>null</code> if a matching ct process could not be found
-	 */
-	@Override
-	public CTProcess fetchByCompanyId_First(
-		long companyId, OrderByComparator<CTProcess> orderByComparator) {
-
-		return _collectionPersistenceFinderByCompanyId.fetchFirst(
-			finderCache, new Object[] {companyId}, orderByComparator);
-	}
-
-	/**
-	 * Returns an ordered range of all the ct processes that the user has permissions to view where companyId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CTProcessModelImpl</code>.
-	 * </p>
-	 *
-	 * @param companyId the company ID
-	 * @param start the lower bound of the range of ct processes
-	 * @param end the upper bound of the range of ct processes (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching ct processes that the user has permission to view
-	 */
-	@Override
-	public List<CTProcess> filterFindByCompanyId(
-		long companyId, int start, int end,
-		OrderByComparator<CTProcess> orderByComparator) {
-
-		return _collectionPersistenceFinderByCompanyId.filterFind(
-			finderCache, new Object[] {companyId}, start, end,
-			orderByComparator, companyId, 0);
-	}
-
-	/**
-	 * Removes all the ct processes where companyId = &#63; from the database.
-	 *
-	 * @param companyId the company ID
-	 */
-	@Override
-	public void removeByCompanyId(long companyId) {
-		_collectionPersistenceFinderByCompanyId.remove(
-			finderCache, new Object[] {companyId});
-	}
-
-	/**
-	 * Returns the number of ct processes where companyId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @return the number of matching ct processes
-	 */
-	@Override
-	public int countByCompanyId(long companyId) {
-		return _collectionPersistenceFinderByCompanyId.count(
-			finderCache, new Object[] {companyId});
-	}
-
-	/**
-	 * Returns the number of ct processes that the user has permission to view where companyId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @return the number of matching ct processes that the user has permission to view
-	 */
-	@Override
-	public int filterCountByCompanyId(long companyId) {
-		return _collectionPersistenceFinderByCompanyId.filterCount(
-			finderCache, new Object[] {companyId}, companyId, 0);
-	}
-
-	private FilterCollectionPersistenceFinder<CTProcess, NoSuchProcessException>
 		_collectionPersistenceFinderByCtCollectionId;
 
 	/**
@@ -636,32 +518,6 @@ public class CTProcessPersistenceImpl
 	 */
 	@Activate
 	public void activate() {
-		_collectionPersistenceFinderByCompanyId =
-			new FilterCollectionPersistenceFinder<>(
-				this, CTProcess::getCtProcessId,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"countByCompanyId", new String[] {Long.class.getName()},
-					new String[] {"companyId"}, false),
-				"", CTProcessModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByCompanyId",
-					new String[] {
-						Long.class.getName(), Integer.class.getName(),
-						Integer.class.getName(),
-						OrderByComparator.class.getName()
-					},
-					new String[] {"companyId"}, true),
-				_SQL_COUNT_CTPROCESS_WHERE, _SQL_SELECT_CTPROCESS_WHERE, null,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"findByCompanyId", new String[] {Long.class.getName()},
-					new String[] {"companyId"}, true),
-				"",
-				new FinderColumn<>(
-					"ctProcess.", "companyId", FinderColumn.Type.LONG, "=",
-					true, true, CTProcess::getCompanyId));
-
 		_collectionPersistenceFinderByCtCollectionId =
 			new FilterCollectionPersistenceFinder<>(
 				this, CTProcess::getCtProcessId,
@@ -786,4 +642,4 @@ public class CTProcessPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1975191582
+// LIFERAY-SERVICE-BUILDER-HASH:-1048952937

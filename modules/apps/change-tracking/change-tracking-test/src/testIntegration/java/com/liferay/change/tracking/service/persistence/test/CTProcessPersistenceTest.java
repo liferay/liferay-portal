@@ -152,13 +152,6 @@ public class CTProcessPersistenceTest {
 	}
 
 	@Test
-	public void testCountByCompanyId() throws Exception {
-		_persistence.countByCompanyId(RandomTestUtil.nextLong());
-
-		_persistence.countByCompanyId(0L);
-	}
-
-	@Test
 	public void testCountByCtCollectionId() throws Exception {
 		_persistence.countByCtCollectionId(RandomTestUtil.nextLong());
 
@@ -439,4 +432,4 @@ public class CTProcessPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1525151765
+// LIFERAY-SERVICE-BUILDER-HASH:1271895017
