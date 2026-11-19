@@ -555,3 +555,70 @@ test(
 		);
 	}
 );
+
+test(
+	'Filter the project tasks by tasks or subtasks',
+	{tag: ['@LPD-114772']},
+	async ({apiHelpers, page, projectPage, projectsPage, tasksPage}) => {
+		const project = await apiHelpers.objectEntry.postObjectEntry(
+			{
+				title: getRandomString(),
+			},
+			cmpProject
+		);
+
+		const parentTask = await apiHelpers.objectEntry.postObjectEntry(
+			{
+				r_cmpProjectToCMPTasks_c_cmpProjectId: project.id,
+				title: getRandomString(),
+			},
+			cmpTask,
+			project.scopeKey
+		);
+
+		const subtask = await apiHelpers.objectEntry.postObjectEntry(
+			{
+				r_cmpProjectToCMPTasks_c_cmpProjectId: project.id,
+				r_cmpTaskToCMPTasks_c_cmpTaskId: parentTask.id,
+				title: getRandomString(),
+			},
+			cmpTask,
+			project.scopeKey
+		);
+
+		await projectsPage.goto();
+
+		await projectsPage.getProject(project.title).click();
+
+		await projectPage.tasksTab.click();
+
+		await expect(tasksPage.getItem(parentTask.title)).toBeVisible();
+		await expect(tasksPage.getItem(subtask.title)).toBeVisible();
+
+		await test.step('Show only the subtasks', async () => {
+			await page.getByRole('button', {name: 'Filter'}).click();
+
+			await page.getByRole('menuitem', {name: 'Type'}).click();
+
+			await page
+				.getByRole('radio', {exact: true, name: 'Subtasks'})
+				.check();
+
+			await page.getByRole('button', {name: 'Add Filter'}).click();
+
+			await expect(tasksPage.getItem(subtask.title)).toBeVisible();
+			await expect(tasksPage.getItem(parentTask.title)).toBeHidden();
+		});
+
+		await test.step('Show only the tasks', async () => {
+			await page.getByRole('button', {name: /^Type/}).click();
+
+			await page.getByRole('radio', {exact: true, name: 'Tasks'}).check();
+
+			await page.getByRole('button', {name: 'Show Results'}).click();
+
+			await expect(tasksPage.getItem(parentTask.title)).toBeVisible();
+			await expect(tasksPage.getItem(subtask.title)).toBeHidden();
+		});
+	}
+);
