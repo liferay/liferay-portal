@@ -27,6 +27,9 @@ public abstract class BaseCompanyStagedModelDataHandlerTestCase
 
 	@Test
 	public void testImportStagedModel() throws Exception {
+
+		// Company group
+
 		initExport();
 
 		StagedModel stagedModel = addStagedModel(
@@ -34,8 +37,6 @@ public abstract class BaseCompanyStagedModelDataHandlerTestCase
 
 		StagedModelDataHandlerUtil.exportStagedModel(
 			portletDataContext, stagedModel);
-
-		// Company group
 
 		try (SafeCloseable safeCloseable = initImportWithSafeCloseable()) {
 			StagedModelDataHandlerUtil.importStagedModel(
