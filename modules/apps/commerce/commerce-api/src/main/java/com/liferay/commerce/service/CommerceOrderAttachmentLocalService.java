@@ -125,9 +125,6 @@ public interface CommerceOrderAttachmentLocalService
 			long commerceOrderAttachmentId)
 		throws PortalException;
 
-	public void deleteCommerceOrderAttachments(long commerceOrderId)
-		throws PortalException;
-
 	/**
 	 * @throws PortalException
 	 */
@@ -278,11 +275,6 @@ public interface CommerceOrderAttachmentLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CommerceOrderAttachment> getCommerceOrderAttachments(
-		long commerceOrderId, boolean restricted, int start, int end,
-		OrderByComparator<CommerceOrderAttachment> orderByComparator);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CommerceOrderAttachment> getCommerceOrderAttachments(
 		long commerceOrderId, int start, int end,
 		OrderByComparator<CommerceOrderAttachment> orderByComparator);
 
@@ -365,4 +357,4 @@ public interface CommerceOrderAttachmentLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1558053577
+// LIFERAY-SERVICE-BUILDER-HASH:-283490378

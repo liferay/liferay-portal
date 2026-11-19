@@ -358,18 +358,6 @@ public class CommerceOrderLocalServiceWrapper
 		return _commerceOrderLocalService.fetchCommerceOrder(commerceOrderId);
 	}
 
-	/**
-	 * @deprecated As of Athanasius (7.3.x)
-	 */
-	@Deprecated
-	@Override
-	public com.liferay.commerce.model.CommerceOrder fetchCommerceOrder(
-		long commerceAccountId, long groupId, int orderStatus) {
-
-		return _commerceOrderLocalService.fetchCommerceOrder(
-			commerceAccountId, groupId, orderStatus);
-	}
-
 	@Override
 	public com.liferay.commerce.model.CommerceOrder fetchCommerceOrder(
 		long commerceAccountId, long groupId, long userId, int orderStatus) {
@@ -501,17 +489,6 @@ public class CommerceOrderLocalServiceWrapper
 
 	@Override
 	public java.util.List<com.liferay.commerce.model.CommerceOrder>
-		getCommerceOrders(
-			long groupId, long commerceAccountId, int start, int end,
-			com.liferay.portal.kernel.util.OrderByComparator
-				<com.liferay.commerce.model.CommerceOrder> orderByComparator) {
-
-		return _commerceOrderLocalService.getCommerceOrders(
-			groupId, commerceAccountId, start, end, orderByComparator);
-	}
-
-	@Override
-	public java.util.List<com.liferay.commerce.model.CommerceOrder>
 			getCommerceOrders(
 				long companyId, long groupId, long[] commerceAccountIds,
 				String keywords, int[] orderStatuses,
@@ -539,14 +516,6 @@ public class CommerceOrderLocalServiceWrapper
 
 	@Override
 	public java.util.List<com.liferay.commerce.model.CommerceOrder>
-		getCommerceOrdersByBillingAddress(long billingAddressId) {
-
-		return _commerceOrderLocalService.getCommerceOrdersByBillingAddress(
-			billingAddressId);
-	}
-
-	@Override
-	public java.util.List<com.liferay.commerce.model.CommerceOrder>
 		getCommerceOrdersByCommerceAccountId(
 			long commerceAccountId, int start, int end,
 			com.liferay.portal.kernel.util.OrderByComparator
@@ -554,14 +523,6 @@ public class CommerceOrderLocalServiceWrapper
 
 		return _commerceOrderLocalService.getCommerceOrdersByCommerceAccountId(
 			commerceAccountId, start, end, orderByComparator);
-	}
-
-	@Override
-	public java.util.List<com.liferay.commerce.model.CommerceOrder>
-		getCommerceOrdersByShippingAddress(long shippingAddressId) {
-
-		return _commerceOrderLocalService.getCommerceOrdersByShippingAddress(
-			shippingAddressId);
 	}
 
 	/**
@@ -608,17 +569,6 @@ public class CommerceOrderLocalServiceWrapper
 	@Override
 	public int getCommerceOrdersCount() {
 		return _commerceOrderLocalService.getCommerceOrdersCount();
-	}
-
-	@Override
-	public int getCommerceOrdersCount(long groupId) {
-		return _commerceOrderLocalService.getCommerceOrdersCount(groupId);
-	}
-
-	@Override
-	public int getCommerceOrdersCount(long groupId, long commerceAccountId) {
-		return _commerceOrderLocalService.getCommerceOrdersCount(
-			groupId, commerceAccountId);
 	}
 
 	@Override
@@ -686,36 +636,6 @@ public class CommerceOrderLocalServiceWrapper
 		return _commerceOrderLocalService.
 			getShippedCommerceOrdersByCommerceShipmentId(
 				commerceShipmentId, start, end);
-	}
-
-	/**
-	 * @deprecated As of Mueller (7.2.x)
-	 */
-	@Deprecated
-	@Override
-	public java.util.List<com.liferay.commerce.model.CommerceOrder>
-		getUserCommerceOrders(
-			long groupId, long userId, long commerceAccountId,
-			Integer orderStatus, boolean excludeOrderStatus, String keywords,
-			int start, int end) {
-
-		return _commerceOrderLocalService.getUserCommerceOrders(
-			groupId, userId, commerceAccountId, orderStatus, excludeOrderStatus,
-			keywords, start, end);
-	}
-
-	/**
-	 * @deprecated As of Mueller (7.2.x)
-	 */
-	@Deprecated
-	@Override
-	public int getUserCommerceOrdersCount(
-		long groupId, long userId, long commerceAccountId, Integer orderStatus,
-		boolean excludeOrderStatus, String keywords) {
-
-		return _commerceOrderLocalService.getUserCommerceOrdersCount(
-			groupId, userId, commerceAccountId, orderStatus, excludeOrderStatus,
-			keywords);
 	}
 
 	@Override
@@ -1282,4 +1202,4 @@ public class CommerceOrderLocalServiceWrapper
 	private CommerceOrderLocalService _commerceOrderLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1395158671
+// LIFERAY-SERVICE-BUILDER-HASH:-1210674704

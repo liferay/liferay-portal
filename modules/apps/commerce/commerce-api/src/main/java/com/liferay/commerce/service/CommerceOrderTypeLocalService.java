@@ -293,9 +293,6 @@ public interface CommerceOrderTypeLocalService
 	public int getCommerceOrderTypesCount();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCommerceOrderTypesCount(long companyId, boolean active);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getCommerceOrderTypesCount(
 			long companyId, String className, long classPK, boolean active)
 		throws PortalException;
@@ -366,4 +363,4 @@ public interface CommerceOrderTypeLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:31536212
+// LIFERAY-SERVICE-BUILDER-HASH:975801459

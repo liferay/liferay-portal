@@ -132,14 +132,6 @@ public class CommerceOrderAttachmentLocalServiceWrapper
 			deleteCommerceOrderAttachment(commerceOrderAttachmentId);
 	}
 
-	@Override
-	public void deleteCommerceOrderAttachments(long commerceOrderId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		_commerceOrderAttachmentLocalService.deleteCommerceOrderAttachments(
-			commerceOrderId);
-	}
-
 	/**
 	 * @throws PortalException
 	 */
@@ -364,18 +356,6 @@ public class CommerceOrderAttachmentLocalServiceWrapper
 	@Override
 	public java.util.List<com.liferay.commerce.model.CommerceOrderAttachment>
 		getCommerceOrderAttachments(
-			long commerceOrderId, boolean restricted, int start, int end,
-			com.liferay.portal.kernel.util.OrderByComparator
-				<com.liferay.commerce.model.CommerceOrderAttachment>
-					orderByComparator) {
-
-		return _commerceOrderAttachmentLocalService.getCommerceOrderAttachments(
-			commerceOrderId, restricted, start, end, orderByComparator);
-	}
-
-	@Override
-	public java.util.List<com.liferay.commerce.model.CommerceOrderAttachment>
-		getCommerceOrderAttachments(
 			long commerceOrderId, int start, int end,
 			com.liferay.portal.kernel.util.OrderByComparator
 				<com.liferay.commerce.model.CommerceOrderAttachment>
@@ -530,4 +510,4 @@ public class CommerceOrderAttachmentLocalServiceWrapper
 		_commerceOrderAttachmentLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1271752911
+// LIFERAY-SERVICE-BUILDER-HASH:1519044579

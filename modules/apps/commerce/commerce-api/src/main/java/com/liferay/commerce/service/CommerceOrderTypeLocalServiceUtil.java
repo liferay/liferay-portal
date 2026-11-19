@@ -339,12 +339,6 @@ public class CommerceOrderTypeLocalServiceUtil {
 	}
 
 	public static int getCommerceOrderTypesCount(
-		long companyId, boolean active) {
-
-		return getService().getCommerceOrderTypesCount(companyId, active);
-	}
-
-	public static int getCommerceOrderTypesCount(
 			long companyId, String className, long classPK, boolean active)
 		throws PortalException {
 
@@ -460,4 +454,4 @@ public class CommerceOrderTypeLocalServiceUtil {
 			CommerceOrderTypeLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2130032150
+// LIFERAY-SERVICE-BUILDER-HASH:789195373

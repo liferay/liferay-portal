@@ -18,7 +18,6 @@ import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.service.BaseLocalService;
 import com.liferay.portal.kernel.service.PersistedModelLocalService;
-import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
@@ -70,11 +69,6 @@ public interface CommerceOrderPaymentLocalService
 
 	public CommerceOrderPayment addCommerceOrderPayment(
 			long commerceOrderId, int status, String result)
-		throws PortalException;
-
-	public CommerceOrderPayment addCommerceOrderPayment(
-			long commerceOrderId, int status, String content,
-			ServiceContext serviceContext)
 		throws PortalException;
 
 	/**
@@ -292,4 +286,4 @@ public interface CommerceOrderPaymentLocalService
 		CommerceOrderPayment commerceOrderPayment);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-99528634
+// LIFERAY-SERVICE-BUILDER-HASH:909396534

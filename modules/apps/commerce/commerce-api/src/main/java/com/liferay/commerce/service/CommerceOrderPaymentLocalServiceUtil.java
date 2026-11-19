@@ -61,15 +61,6 @@ public class CommerceOrderPaymentLocalServiceUtil {
 			commerceOrderId, status, result);
 	}
 
-	public static CommerceOrderPayment addCommerceOrderPayment(
-			long commerceOrderId, int status, String content,
-			com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws PortalException {
-
-		return getService().addCommerceOrderPayment(
-			commerceOrderId, status, content, serviceContext);
-	}
-
 	/**
 	 * Creates a new commerce order payment with the primary key. Does not add the commerce order payment to the database.
 	 *
@@ -347,4 +338,4 @@ public class CommerceOrderPaymentLocalServiceUtil {
 			CommerceOrderPaymentLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:167485311
+// LIFERAY-SERVICE-BUILDER-HASH:-1719841000

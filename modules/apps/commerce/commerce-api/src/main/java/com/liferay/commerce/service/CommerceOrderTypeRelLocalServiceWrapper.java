@@ -386,18 +386,6 @@ public class CommerceOrderTypeRelLocalServiceWrapper
 			start, end);
 	}
 
-	@Override
-	public java.util.List<com.liferay.commerce.model.CommerceOrderTypeRel>
-		getCommerceOrderTypeRels(
-			String className, long classPK, int start, int end,
-			com.liferay.portal.kernel.util.OrderByComparator
-				<com.liferay.commerce.model.CommerceOrderTypeRel>
-					orderByComparator) {
-
-		return _commerceOrderTypeRelLocalService.getCommerceOrderTypeRels(
-			className, classPK, start, end, orderByComparator);
-	}
-
 	/**
 	 * Returns the number of commerce order type rels.
 	 *
@@ -407,12 +395,6 @@ public class CommerceOrderTypeRelLocalServiceWrapper
 	public int getCommerceOrderTypeRelsCount() {
 		return _commerceOrderTypeRelLocalService.
 			getCommerceOrderTypeRelsCount();
-	}
-
-	@Override
-	public int getCommerceOrderTypeRelsCount(String className, long classPK) {
-		return _commerceOrderTypeRelLocalService.getCommerceOrderTypeRelsCount(
-			className, classPK);
 	}
 
 	@Override
@@ -495,4 +477,4 @@ public class CommerceOrderTypeRelLocalServiceWrapper
 	private CommerceOrderTypeRelLocalService _commerceOrderTypeRelLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1717974303
+// LIFERAY-SERVICE-BUILDER-HASH:1914871023

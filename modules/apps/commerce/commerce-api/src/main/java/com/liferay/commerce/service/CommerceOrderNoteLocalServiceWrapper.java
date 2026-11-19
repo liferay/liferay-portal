@@ -377,23 +377,6 @@ public class CommerceOrderNoteLocalServiceWrapper
 			commerceOrderId, restricted);
 	}
 
-	@Override
-	public java.util.List<com.liferay.commerce.model.CommerceOrderNote>
-		getCommerceOrderNotes(
-			long commerceOrderId, boolean restricted, int start, int end) {
-
-		return _commerceOrderNoteLocalService.getCommerceOrderNotes(
-			commerceOrderId, restricted, start, end);
-	}
-
-	@Override
-	public java.util.List<com.liferay.commerce.model.CommerceOrderNote>
-		getCommerceOrderNotes(long commerceOrderId, int start, int end) {
-
-		return _commerceOrderNoteLocalService.getCommerceOrderNotes(
-			commerceOrderId, start, end);
-	}
-
 	/**
 	 * Returns all the commerce order notes matching the UUID and company.
 	 *
@@ -440,20 +423,6 @@ public class CommerceOrderNoteLocalServiceWrapper
 	@Override
 	public int getCommerceOrderNotesCount() {
 		return _commerceOrderNoteLocalService.getCommerceOrderNotesCount();
-	}
-
-	@Override
-	public int getCommerceOrderNotesCount(long commerceOrderId) {
-		return _commerceOrderNoteLocalService.getCommerceOrderNotesCount(
-			commerceOrderId);
-	}
-
-	@Override
-	public int getCommerceOrderNotesCount(
-		long commerceOrderId, boolean restricted) {
-
-		return _commerceOrderNoteLocalService.getCommerceOrderNotesCount(
-			commerceOrderId, restricted);
 	}
 
 	@Override
@@ -552,4 +521,4 @@ public class CommerceOrderNoteLocalServiceWrapper
 	private CommerceOrderNoteLocalService _commerceOrderNoteLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:276218290
+// LIFERAY-SERVICE-BUILDER-HASH:-189842846

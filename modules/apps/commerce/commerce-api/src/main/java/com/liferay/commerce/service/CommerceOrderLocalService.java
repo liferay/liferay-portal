@@ -271,14 +271,6 @@ public interface CommerceOrderLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public CommerceOrder fetchCommerceOrder(long commerceOrderId);
 
-	/**
-	 * @deprecated As of Athanasius (7.3.x)
-	 */
-	@Deprecated
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public CommerceOrder fetchCommerceOrder(
-		long commerceAccountId, long groupId, int orderStatus);
-
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public CommerceOrder fetchCommerceOrder(
 		long commerceAccountId, long groupId, long userId, int orderStatus);
@@ -359,11 +351,6 @@ public interface CommerceOrderLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CommerceOrder> getCommerceOrders(
-		long groupId, long commerceAccountId, int start, int end,
-		OrderByComparator<CommerceOrder> orderByComparator);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CommerceOrder> getCommerceOrders(
 			long companyId, long groupId, long[] commerceAccountIds,
 			String keywords, int[] orderStatuses, boolean excludeOrderStatus,
 			int start, int end)
@@ -377,17 +364,9 @@ public interface CommerceOrderLocalService
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CommerceOrder> getCommerceOrdersByBillingAddress(
-		long billingAddressId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CommerceOrder> getCommerceOrdersByCommerceAccountId(
 		long commerceAccountId, int start, int end,
 		OrderByComparator<CommerceOrder> orderByComparator);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CommerceOrder> getCommerceOrdersByShippingAddress(
-		long shippingAddressId);
 
 	/**
 	 * Returns all the commerce orders matching the UUID and company.
@@ -424,12 +403,6 @@ public interface CommerceOrderLocalService
 	public int getCommerceOrdersCount();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCommerceOrdersCount(long groupId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCommerceOrdersCount(long groupId, long commerceAccountId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public long getCommerceOrdersCount(
 			long companyId, long groupId, long[] commerceAccountIds,
 			String keywords, int[] orderStatuses, boolean excludeOrderStatus)
@@ -464,24 +437,6 @@ public interface CommerceOrderLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CommerceOrder> getShippedCommerceOrdersByCommerceShipmentId(
 		long commerceShipmentId, int start, int end);
-
-	/**
-	 * @deprecated As of Mueller (7.2.x)
-	 */
-	@Deprecated
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CommerceOrder> getUserCommerceOrders(
-		long groupId, long userId, long commerceAccountId, Integer orderStatus,
-		boolean excludeOrderStatus, String keywords, int start, int end);
-
-	/**
-	 * @deprecated As of Mueller (7.2.x)
-	 */
-	@Deprecated
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getUserCommerceOrdersCount(
-		long groupId, long userId, long commerceAccountId, Integer orderStatus,
-		boolean excludeOrderStatus, String keywords);
 
 	public void mergeGuestCommerceOrder(
 			long userId, long guestCommerceOrderId, long userCommerceOrderId,
@@ -774,4 +729,4 @@ public interface CommerceOrderLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2046116294
+// LIFERAY-SERVICE-BUILDER-HASH:1447519843

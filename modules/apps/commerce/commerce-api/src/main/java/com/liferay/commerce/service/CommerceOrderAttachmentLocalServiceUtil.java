@@ -126,12 +126,6 @@ public class CommerceOrderAttachmentLocalServiceUtil {
 			commerceOrderAttachmentId);
 	}
 
-	public static void deleteCommerceOrderAttachments(long commerceOrderId)
-		throws PortalException {
-
-		getService().deleteCommerceOrderAttachments(commerceOrderId);
-	}
-
 	/**
 	 * @throws PortalException
 	 */
@@ -322,14 +316,6 @@ public class CommerceOrderAttachmentLocalServiceUtil {
 	}
 
 	public static List<CommerceOrderAttachment> getCommerceOrderAttachments(
-		long commerceOrderId, boolean restricted, int start, int end,
-		OrderByComparator<CommerceOrderAttachment> orderByComparator) {
-
-		return getService().getCommerceOrderAttachments(
-			commerceOrderId, restricted, start, end, orderByComparator);
-	}
-
-	public static List<CommerceOrderAttachment> getCommerceOrderAttachments(
 		long commerceOrderId, int start, int end,
 		OrderByComparator<CommerceOrderAttachment> orderByComparator) {
 
@@ -449,4 +435,4 @@ public class CommerceOrderAttachmentLocalServiceUtil {
 			CommerceOrderAttachmentLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:219463742
+// LIFERAY-SERVICE-BUILDER-HASH:-100894694

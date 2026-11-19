@@ -279,14 +279,6 @@ public interface CommerceOrderNoteLocalService
 	public List<CommerceOrderNote> getCommerceOrderNotes(
 		long commerceOrderId, boolean restricted);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CommerceOrderNote> getCommerceOrderNotes(
-		long commerceOrderId, boolean restricted, int start, int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CommerceOrderNote> getCommerceOrderNotes(
-		long commerceOrderId, int start, int end);
-
 	/**
 	 * Returns all the commerce order notes matching the UUID and company.
 	 *
@@ -320,13 +312,6 @@ public interface CommerceOrderNoteLocalService
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getCommerceOrderNotesCount();
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCommerceOrderNotesCount(long commerceOrderId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCommerceOrderNotesCount(
-		long commerceOrderId, boolean restricted);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ExportActionableDynamicQuery getExportActionableDynamicQuery(
@@ -374,4 +359,4 @@ public interface CommerceOrderNoteLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1492257526
+// LIFERAY-SERVICE-BUILDER-HASH:1186766468

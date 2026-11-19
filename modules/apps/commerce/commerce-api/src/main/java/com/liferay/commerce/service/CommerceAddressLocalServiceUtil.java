@@ -75,18 +75,6 @@ public class CommerceAddressLocalServiceUtil {
 		getService().deleteCommerceAddresses(className, classPK);
 	}
 
-	public static void deleteCountryCommerceAddresses(long countryId)
-		throws PortalException {
-
-		getService().deleteCountryCommerceAddresses(countryId);
-	}
-
-	public static void deleteRegionCommerceAddresses(long regionId)
-		throws PortalException {
-
-		getService().deleteRegionCommerceAddresses(regionId);
-	}
-
 	public static CommerceAddress fetchCommerceAddress(long commerceAddressId) {
 		return getService().fetchCommerceAddress(commerceAddressId);
 	}
@@ -96,21 +84,6 @@ public class CommerceAddressLocalServiceUtil {
 
 		return getService().fetchCommerceAddressByExternalReferenceCode(
 			externalReferenceCode, companyId);
-	}
-
-	public static CommerceAddress geolocateCommerceAddress(
-			long commerceAddressId)
-		throws PortalException {
-
-		return getService().geolocateCommerceAddress(commerceAddressId);
-	}
-
-	public static List<CommerceAddress> getBillingAndShippingCommerceAddresses(
-			long companyId, String className, long classPK)
-		throws PortalException {
-
-		return getService().getBillingAndShippingCommerceAddresses(
-			companyId, className, classPK);
 	}
 
 	public static List<CommerceAddress> getBillingCommerceAddresses(
@@ -326,4 +299,4 @@ public class CommerceAddressLocalServiceUtil {
 			CommerceAddressLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-947118601
+// LIFERAY-SERVICE-BUILDER-HASH:150575200

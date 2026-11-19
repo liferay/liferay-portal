@@ -81,20 +81,6 @@ public class CommerceAddressLocalServiceWrapper
 	}
 
 	@Override
-	public void deleteCountryCommerceAddresses(long countryId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		_commerceAddressLocalService.deleteCountryCommerceAddresses(countryId);
-	}
-
-	@Override
-	public void deleteRegionCommerceAddresses(long regionId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		_commerceAddressLocalService.deleteRegionCommerceAddresses(regionId);
-	}
-
-	@Override
 	public com.liferay.commerce.model.CommerceAddress fetchCommerceAddress(
 		long commerceAddressId) {
 
@@ -110,26 +96,6 @@ public class CommerceAddressLocalServiceWrapper
 		return _commerceAddressLocalService.
 			fetchCommerceAddressByExternalReferenceCode(
 				externalReferenceCode, companyId);
-	}
-
-	@Override
-	public com.liferay.commerce.model.CommerceAddress geolocateCommerceAddress(
-			long commerceAddressId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _commerceAddressLocalService.geolocateCommerceAddress(
-			commerceAddressId);
-	}
-
-	@Override
-	public java.util.List<com.liferay.commerce.model.CommerceAddress>
-			getBillingAndShippingCommerceAddresses(
-				long companyId, String className, long classPK)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _commerceAddressLocalService.
-			getBillingAndShippingCommerceAddresses(
-				companyId, className, classPK);
 	}
 
 	@Override
@@ -392,4 +358,4 @@ public class CommerceAddressLocalServiceWrapper
 	private CommerceAddressLocalService _commerceAddressLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:664406615
+// LIFERAY-SERVICE-BUILDER-HASH:-787133788

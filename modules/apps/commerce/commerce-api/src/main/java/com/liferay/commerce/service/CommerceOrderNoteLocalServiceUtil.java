@@ -333,19 +333,6 @@ public class CommerceOrderNoteLocalServiceUtil {
 		return getService().getCommerceOrderNotes(commerceOrderId, restricted);
 	}
 
-	public static List<CommerceOrderNote> getCommerceOrderNotes(
-		long commerceOrderId, boolean restricted, int start, int end) {
-
-		return getService().getCommerceOrderNotes(
-			commerceOrderId, restricted, start, end);
-	}
-
-	public static List<CommerceOrderNote> getCommerceOrderNotes(
-		long commerceOrderId, int start, int end) {
-
-		return getService().getCommerceOrderNotes(commerceOrderId, start, end);
-	}
-
 	/**
 	 * Returns all the commerce order notes matching the UUID and company.
 	 *
@@ -386,17 +373,6 @@ public class CommerceOrderNoteLocalServiceUtil {
 	 */
 	public static int getCommerceOrderNotesCount() {
 		return getService().getCommerceOrderNotesCount();
-	}
-
-	public static int getCommerceOrderNotesCount(long commerceOrderId) {
-		return getService().getCommerceOrderNotesCount(commerceOrderId);
-	}
-
-	public static int getCommerceOrderNotesCount(
-		long commerceOrderId, boolean restricted) {
-
-		return getService().getCommerceOrderNotesCount(
-			commerceOrderId, restricted);
 	}
 
 	public static com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery
@@ -475,4 +451,4 @@ public class CommerceOrderNoteLocalServiceUtil {
 			CommerceOrderNoteLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1562273404
+// LIFERAY-SERVICE-BUILDER-HASH:-2124669724

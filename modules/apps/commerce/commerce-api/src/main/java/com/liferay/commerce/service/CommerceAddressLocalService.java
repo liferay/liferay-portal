@@ -71,27 +71,12 @@ public interface CommerceAddressLocalService extends BaseLocalService {
 	public void deleteCommerceAddresses(String className, long classPK)
 		throws PortalException;
 
-	public void deleteCountryCommerceAddresses(long countryId)
-		throws PortalException;
-
-	public void deleteRegionCommerceAddresses(long regionId)
-		throws PortalException;
-
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public CommerceAddress fetchCommerceAddress(long commerceAddressId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public CommerceAddress fetchCommerceAddressByExternalReferenceCode(
 		String externalReferenceCode, long companyId);
-
-	@Indexable(type = IndexableType.REINDEX)
-	public CommerceAddress geolocateCommerceAddress(long commerceAddressId)
-		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CommerceAddress> getBillingAndShippingCommerceAddresses(
-			long companyId, String className, long classPK)
-		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CommerceAddress> getBillingCommerceAddresses(
@@ -227,4 +212,4 @@ public interface CommerceAddressLocalService extends BaseLocalService {
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:913212826
+// LIFERAY-SERVICE-BUILDER-HASH:1160903590

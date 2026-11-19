@@ -380,12 +380,6 @@ public class CommerceOrderTypeLocalServiceWrapper
 	}
 
 	@Override
-	public int getCommerceOrderTypesCount(long companyId, boolean active) {
-		return _commerceOrderTypeLocalService.getCommerceOrderTypesCount(
-			companyId, active);
-	}
-
-	@Override
 	public int getCommerceOrderTypesCount(
 			long companyId, String className, long classPK, boolean active)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -526,4 +520,4 @@ public class CommerceOrderTypeLocalServiceWrapper
 	private CommerceOrderTypeLocalService _commerceOrderTypeLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-15495848
+// LIFERAY-SERVICE-BUILDER-HASH:-601518238

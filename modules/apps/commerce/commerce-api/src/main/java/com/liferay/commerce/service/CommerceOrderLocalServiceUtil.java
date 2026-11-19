@@ -325,17 +325,6 @@ public class CommerceOrderLocalServiceUtil {
 		return getService().fetchCommerceOrder(commerceOrderId);
 	}
 
-	/**
-	 * @deprecated As of Athanasius (7.3.x)
-	 */
-	@Deprecated
-	public static CommerceOrder fetchCommerceOrder(
-		long commerceAccountId, long groupId, int orderStatus) {
-
-		return getService().fetchCommerceOrder(
-			commerceAccountId, groupId, orderStatus);
-	}
-
 	public static CommerceOrder fetchCommerceOrder(
 		long commerceAccountId, long groupId, long userId, int orderStatus) {
 
@@ -442,14 +431,6 @@ public class CommerceOrderLocalServiceUtil {
 	}
 
 	public static List<CommerceOrder> getCommerceOrders(
-		long groupId, long commerceAccountId, int start, int end,
-		OrderByComparator<CommerceOrder> orderByComparator) {
-
-		return getService().getCommerceOrders(
-			groupId, commerceAccountId, start, end, orderByComparator);
-	}
-
-	public static List<CommerceOrder> getCommerceOrders(
 			long companyId, long groupId, long[] commerceAccountIds,
 			String keywords, int[] orderStatuses, boolean excludeOrderStatus,
 			int start, int end)
@@ -471,25 +452,12 @@ public class CommerceOrderLocalServiceUtil {
 			excludeOrderStatus, start, end, sort);
 	}
 
-	public static List<CommerceOrder> getCommerceOrdersByBillingAddress(
-		long billingAddressId) {
-
-		return getService().getCommerceOrdersByBillingAddress(billingAddressId);
-	}
-
 	public static List<CommerceOrder> getCommerceOrdersByCommerceAccountId(
 		long commerceAccountId, int start, int end,
 		OrderByComparator<CommerceOrder> orderByComparator) {
 
 		return getService().getCommerceOrdersByCommerceAccountId(
 			commerceAccountId, start, end, orderByComparator);
-	}
-
-	public static List<CommerceOrder> getCommerceOrdersByShippingAddress(
-		long shippingAddressId) {
-
-		return getService().getCommerceOrdersByShippingAddress(
-			shippingAddressId);
 	}
 
 	/**
@@ -531,16 +499,6 @@ public class CommerceOrderLocalServiceUtil {
 	 */
 	public static int getCommerceOrdersCount() {
 		return getService().getCommerceOrdersCount();
-	}
-
-	public static int getCommerceOrdersCount(long groupId) {
-		return getService().getCommerceOrdersCount(groupId);
-	}
-
-	public static int getCommerceOrdersCount(
-		long groupId, long commerceAccountId) {
-
-		return getService().getCommerceOrdersCount(groupId, commerceAccountId);
 	}
 
 	public static long getCommerceOrdersCount(
@@ -599,32 +557,6 @@ public class CommerceOrderLocalServiceUtil {
 
 		return getService().getShippedCommerceOrdersByCommerceShipmentId(
 			commerceShipmentId, start, end);
-	}
-
-	/**
-	 * @deprecated As of Mueller (7.2.x)
-	 */
-	@Deprecated
-	public static List<CommerceOrder> getUserCommerceOrders(
-		long groupId, long userId, long commerceAccountId, Integer orderStatus,
-		boolean excludeOrderStatus, String keywords, int start, int end) {
-
-		return getService().getUserCommerceOrders(
-			groupId, userId, commerceAccountId, orderStatus, excludeOrderStatus,
-			keywords, start, end);
-	}
-
-	/**
-	 * @deprecated As of Mueller (7.2.x)
-	 */
-	@Deprecated
-	public static int getUserCommerceOrdersCount(
-		long groupId, long userId, long commerceAccountId, Integer orderStatus,
-		boolean excludeOrderStatus, String keywords) {
-
-		return getService().getUserCommerceOrdersCount(
-			groupId, userId, commerceAccountId, orderStatus, excludeOrderStatus,
-			keywords);
 	}
 
 	public static void mergeGuestCommerceOrder(
@@ -1136,4 +1068,4 @@ public class CommerceOrderLocalServiceUtil {
 			CommerceOrderLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:636412039
+// LIFERAY-SERVICE-BUILDER-HASH:-168540620

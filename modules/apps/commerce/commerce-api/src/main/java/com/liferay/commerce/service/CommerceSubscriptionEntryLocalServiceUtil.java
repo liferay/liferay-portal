@@ -54,24 +54,6 @@ public class CommerceSubscriptionEntryLocalServiceUtil {
 			commerceSubscriptionEntry);
 	}
 
-	/**
-	 * @deprecated As of Athanasius (7.3.x)
-	 */
-	@Deprecated
-	public static CommerceSubscriptionEntry addCommerceSubscriptionEntry(
-			long userId, long groupId, long commerceOrderItemId,
-			int subscriptionLength, String subscriptionType,
-			long maxSubscriptionCycles,
-			com.liferay.portal.kernel.util.UnicodeProperties
-				subscriptionTypeSettingsUnicodeProperties)
-		throws PortalException {
-
-		return getService().addCommerceSubscriptionEntry(
-			userId, groupId, commerceOrderItemId, subscriptionLength,
-			subscriptionType, maxSubscriptionCycles,
-			subscriptionTypeSettingsUnicodeProperties);
-	}
-
 	public static CommerceSubscriptionEntry addCommerceSubscriptionEntry(
 			long userId, long groupId, long commerceOrderItemId,
 			int subscriptionLength, String subscriptionType,
@@ -316,19 +298,6 @@ public class CommerceSubscriptionEntryLocalServiceUtil {
 		return getService().getCommerceSubscriptionEntries(start, end);
 	}
 
-	/**
-	 * @deprecated As of Athanasius (7.3.x)
-	 */
-	@Deprecated
-	public static List<CommerceSubscriptionEntry>
-		getCommerceSubscriptionEntries(
-			long companyId, long userId, int start, int end,
-			OrderByComparator<CommerceSubscriptionEntry> orderByComparator) {
-
-		return getService().getCommerceSubscriptionEntries(
-			companyId, userId, start, end, orderByComparator);
-	}
-
 	public static List<CommerceSubscriptionEntry>
 		getCommerceSubscriptionEntries(
 			long companyId, long groupId, long userId, int start, int end,
@@ -379,17 +348,6 @@ public class CommerceSubscriptionEntryLocalServiceUtil {
 	 */
 	public static int getCommerceSubscriptionEntriesCount() {
 		return getService().getCommerceSubscriptionEntriesCount();
-	}
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x)
-	 */
-	@Deprecated
-	public static int getCommerceSubscriptionEntriesCount(
-		long companyId, long userId) {
-
-		return getService().getCommerceSubscriptionEntriesCount(
-			companyId, userId);
 	}
 
 	public static List<CommerceSubscriptionEntry>
@@ -481,22 +439,6 @@ public class CommerceSubscriptionEntryLocalServiceUtil {
 			commerceSubscriptionEntryId);
 	}
 
-	/**
-	 * @deprecated As of Athanasius (7.3.x)
-	 */
-	@Deprecated
-	public static com.liferay.portal.kernel.search.BaseModelSearchResult
-		<CommerceSubscriptionEntry> searchCommerceSubscriptionEntries(
-				long companyId, Long maxSubscriptionCycles,
-				Integer subscriptionStatus, String keywords, int start, int end,
-				com.liferay.portal.kernel.search.Sort sort)
-			throws PortalException {
-
-		return getService().searchCommerceSubscriptionEntries(
-			companyId, maxSubscriptionCycles, subscriptionStatus, keywords,
-			start, end, sort);
-	}
-
 	public static com.liferay.portal.kernel.search.BaseModelSearchResult
 		<CommerceSubscriptionEntry> searchCommerceSubscriptionEntries(
 				long companyId, long[] groupIds, Long maxSubscriptionCycles,
@@ -524,29 +466,6 @@ public class CommerceSubscriptionEntryLocalServiceUtil {
 
 		return getService().updateCommerceSubscriptionEntry(
 			commerceSubscriptionEntry);
-	}
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x)
-	 */
-	@Deprecated
-	public static CommerceSubscriptionEntry updateCommerceSubscriptionEntry(
-			long commerceSubscriptionEntryId, int subscriptionLength,
-			String subscriptionType,
-			com.liferay.portal.kernel.util.UnicodeProperties
-				subscriptionTypeSettingsUnicodeProperties,
-			long maxSubscriptionCycles, int subscriptionStatus,
-			int nextIterationDateMonth, int nextIterationDateDay,
-			int nextIterationDateYear, int nextIterationDateHour,
-			int nextIterationDateMinute)
-		throws PortalException {
-
-		return getService().updateCommerceSubscriptionEntry(
-			commerceSubscriptionEntryId, subscriptionLength, subscriptionType,
-			subscriptionTypeSettingsUnicodeProperties, maxSubscriptionCycles,
-			subscriptionStatus, nextIterationDateMonth, nextIterationDateDay,
-			nextIterationDateYear, nextIterationDateHour,
-			nextIterationDateMinute);
 	}
 
 	public static CommerceSubscriptionEntry updateCommerceSubscriptionEntry(
@@ -582,20 +501,6 @@ public class CommerceSubscriptionEntryLocalServiceUtil {
 			deliveryNextIterationDateMinute);
 	}
 
-	/**
-	 * @deprecated As of Athanasius (7.3.x)
-	 */
-	@Deprecated
-	public static CommerceSubscriptionEntry
-			updateCommerceSubscriptionEntryIterationDates(
-				long commerceSubscriptionEntryId,
-				java.util.Date lastIterationDate)
-		throws PortalException {
-
-		return getService().updateCommerceSubscriptionEntryIterationDates(
-			commerceSubscriptionEntryId, lastIterationDate);
-	}
-
 	public static CommerceSubscriptionEntry updateDeliverySubscriptionStatus(
 			long commerceSubscriptionEntryId, int subscriptionStatus)
 		throws PortalException {
@@ -622,4 +527,4 @@ public class CommerceSubscriptionEntryLocalServiceUtil {
 			CommerceSubscriptionEntryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-337708368
+// LIFERAY-SERVICE-BUILDER-HASH:-827157800

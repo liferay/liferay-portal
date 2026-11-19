@@ -285,11 +285,6 @@ public interface CommerceOrderTypeRelLocalService
 	public List<CommerceOrderTypeRel> getCommerceOrderTypeRels(
 		int start, int end);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CommerceOrderTypeRel> getCommerceOrderTypeRels(
-		String className, long classPK, int start, int end,
-		OrderByComparator<CommerceOrderTypeRel> orderByComparator);
-
 	/**
 	 * Returns the number of commerce order type rels.
 	 *
@@ -297,9 +292,6 @@ public interface CommerceOrderTypeRelLocalService
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getCommerceOrderTypeRelsCount();
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCommerceOrderTypeRelsCount(String className, long classPK);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ExportActionableDynamicQuery getExportActionableDynamicQuery(
@@ -338,4 +330,4 @@ public interface CommerceOrderTypeRelLocalService
 		CommerceOrderTypeRel commerceOrderTypeRel);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1743951225
+// LIFERAY-SERVICE-BUILDER-HASH:-1153649273
