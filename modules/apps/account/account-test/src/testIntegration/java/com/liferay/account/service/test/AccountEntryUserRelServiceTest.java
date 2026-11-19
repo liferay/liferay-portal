@@ -162,6 +162,59 @@ public class AccountEntryUserRelServiceTest {
 			_serviceContext);
 	}
 
+	@Test
+	public void testUpdateAccountEntryUserRels() throws Exception {
+		long accountEntryId = _accountEntry.getAccountEntryId();
+
+		User user = UserTestUtil.addUser();
+
+		try {
+			_accountEntryUserRelService.updateAccountEntryUserRels(
+				new long[] {accountEntryId}, new long[0], user.getUserId());
+
+			Assert.fail();
+		}
+		catch (PrincipalException principalException) {
+			Assert.assertNotNull(principalException);
+		}
+
+		Assert.assertFalse(
+			_accountEntryUserRelLocalService.hasAccountEntryUserRel(
+				accountEntryId, user.getUserId()));
+
+		_addResourcePermission(AccountActionKeys.ASSIGN_USERS);
+
+		_accountEntryUserRelService.updateAccountEntryUserRels(
+			new long[] {accountEntryId}, new long[0], user.getUserId());
+
+		Assert.assertTrue(
+			_accountEntryUserRelLocalService.hasAccountEntryUserRel(
+				accountEntryId, user.getUserId()));
+
+		try {
+			_accountEntryUserRelService.updateAccountEntryUserRels(
+				new long[0], new long[] {accountEntryId}, user.getUserId());
+
+			Assert.fail();
+		}
+		catch (PrincipalException principalException) {
+			Assert.assertNotNull(principalException);
+		}
+
+		Assert.assertTrue(
+			_accountEntryUserRelLocalService.hasAccountEntryUserRel(
+				accountEntryId, user.getUserId()));
+
+		_addResourcePermission(AccountActionKeys.UNASSIGN_USERS);
+
+		_accountEntryUserRelService.updateAccountEntryUserRels(
+			new long[0], new long[] {accountEntryId}, user.getUserId());
+
+		Assert.assertFalse(
+			_accountEntryUserRelLocalService.hasAccountEntryUserRel(
+				accountEntryId, user.getUserId()));
+	}
+
 	private void _addResourcePermission(String actionId) throws Exception {
 		_resourcePermissionLocalService.addResourcePermission(
 			TestPropsValues.getCompanyId(), AccountEntry.class.getName(),
