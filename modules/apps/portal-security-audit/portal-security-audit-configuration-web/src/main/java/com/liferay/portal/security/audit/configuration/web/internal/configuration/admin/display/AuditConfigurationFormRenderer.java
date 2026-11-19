@@ -133,7 +133,7 @@ public class AuditConfigurationFormRenderer
 		}
 		catch (Exception exception) {
 			throw new IOException(
-				"Unable to render audit_configuration.jsp", exception);
+				"Unable to render \"audit_configuration.jsp\"", exception);
 		}
 	}
 

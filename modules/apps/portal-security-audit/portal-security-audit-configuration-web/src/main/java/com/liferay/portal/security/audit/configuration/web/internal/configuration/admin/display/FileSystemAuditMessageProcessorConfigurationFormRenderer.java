@@ -125,8 +125,8 @@ public class FileSystemAuditMessageProcessorConfigurationFormRenderer
 		}
 		catch (Exception exception) {
 			throw new IOException(
-				"Unable to render " +
-					"file_system_audit_message_processor_configuration.jsp",
+				"Unable to render \"file_system_audit_message_processor_" +
+					"configuration.jsp\"",
 				exception);
 		}
 	}
