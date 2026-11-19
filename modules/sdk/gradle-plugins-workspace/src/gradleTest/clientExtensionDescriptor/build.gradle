@@ -1,0 +1,48 @@
+import groovy.json.JsonSlurper
+
+task runGradleTest
+
+runGradleTest {
+	dependsOn ":client-extensions:able:createClientExtensionDescriptor", ":client-extensions:baker:createClientExtensionDescriptor", ":client-extensions:charlie:createClientExtensionDescriptor", ":client-extensions:dog:createClientExtensionDescriptor"
+
+	doLast {
+		Map<String, Object> able = _readDescriptor("able").descriptor
+
+		assert able.configs.size() > 0
+		assert able.descriptorVersion == 1
+		assert able.image.digest == null
+		assert able.image.repository == "localhost:5999/able"
+		assert able.image.tag == "1.0.0"
+		assert able.oauthApplicationHeadlessServerERC == null
+		assert able.type == "service"
+		assert able.workload == null
+
+		Map<String, Object> baker = _readDescriptor("baker").descriptor
+
+		assert baker.configs.size() > 0
+		assert baker.image == null
+		assert baker.oauthApplicationHeadlessServerERC == null
+		assert baker.type == "configuration"
+
+		Map<String, Object> charlie = _readDescriptor("charlie").descriptor
+
+		assert charlie.image.repository == "localhost:5999/charlie"
+		assert charlie.oauthApplicationHeadlessServerERC == "charlie-oauth-application-headless-server"
+		assert charlie.type == "batch"
+
+		Map<String, Object> dog = _readDescriptor("dog").descriptor
+
+		assert dog.image.repository == "localhost:5999/dog"
+		assert dog.oauthApplicationHeadlessServerERC == null
+		assert dog.type == "service"
+
+		String dockerfileText = project(":client-extensions:able").file("build/client-extension-descriptor/Dockerfile").text
+
+		assert dockerfileText.contains("COPY client-extension-descriptor.json /")
+		assert dockerfileText.contains("LABEL com.liferay.client-extension.descriptor.version=\"1\"")
+	}
+}
+
+Map<String, Object> _readDescriptor(String name) {
+	return new JsonSlurper().parse(project(":client-extensions:${name}").file("build/client-extension-descriptor/client-extension-descriptor.json"))
+}

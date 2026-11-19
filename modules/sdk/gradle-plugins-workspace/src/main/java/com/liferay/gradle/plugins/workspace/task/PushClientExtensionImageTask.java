@@ -18,6 +18,7 @@ import com.github.dockerjava.api.model.AuthConfig;
 import com.github.dockerjava.api.model.PushResponseItem;
 import com.github.dockerjava.api.model.ResponseItem;
 
+import com.liferay.gradle.plugins.workspace.internal.client.extension.ClientExtensionDescriptor;
 import com.liferay.gradle.plugins.workspace.internal.util.StringUtil;
 
 import java.io.File;
@@ -93,7 +94,7 @@ public class PushClientExtensionImageTask extends DockerPushImage {
 
 		String image = iterator.next();
 
-		String imageRepository = _getRepository(image);
+		String imageRepository = ClientExtensionDescriptor.getRepository(image);
 
 		String digest = _getDigest(image, imageRepository);
 
@@ -155,22 +156,6 @@ public class PushClientExtensionImageTask extends DockerPushImage {
 			StringUtil.concat(
 				"Unable to find the digest of \"", image,
 				"\" after pushing it"));
-	}
-
-	private String _getRepository(String image) {
-		int index = image.indexOf('@');
-
-		if (index >= 0) {
-			image = image.substring(0, index);
-		}
-
-		index = image.lastIndexOf(':');
-
-		if (index > image.lastIndexOf('/')) {
-			image = image.substring(0, index);
-		}
-
-		return image;
 	}
 
 	private void _pushImage(String image) throws Exception {

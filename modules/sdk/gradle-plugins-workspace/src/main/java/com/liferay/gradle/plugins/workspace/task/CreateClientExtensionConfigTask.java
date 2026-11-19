@@ -19,6 +19,7 @@ import com.google.common.collect.Sets;
 
 import com.liferay.gradle.plugins.workspace.configurator.ClientExtensionProjectConfigurator;
 import com.liferay.gradle.plugins.workspace.internal.client.extension.ClientExtension;
+import com.liferay.gradle.plugins.workspace.internal.client.extension.ClientExtensionDescriptor;
 import com.liferay.gradle.plugins.workspace.internal.util.GradleUtil;
 import com.liferay.gradle.plugins.workspace.internal.util.JsonNodeUtil;
 import com.liferay.gradle.plugins.workspace.internal.util.StringUtil;
@@ -62,6 +63,7 @@ import org.gradle.api.provider.Provider;
 import org.gradle.api.provider.ProviderFactory;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputFiles;
+import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.TaskAction;
@@ -226,9 +228,47 @@ public class CreateClientExtensionConfigTask extends DefaultTask {
 		_createClientExtensionConfigFile(jsonMap);
 	}
 
+	/**
+	 * Returns the OAuth 2 headless server application that the project's batch
+	 * or site initializer client extension uses, or null when the project has
+	 * none.
+	 */
+	@Internal
+	public String getBatchOAuthApplicationHeadlessServerERC() {
+		for (ClientExtension clientExtension : _clientExtensions) {
+			if (!Objects.equals(clientExtension.getClassification(), "batch")) {
+				continue;
+			}
+
+			Object oAuthApplicationHeadlessServer =
+				clientExtension.typeSettings.get(
+					"oAuthApplicationHeadlessServer");
+
+			if (oAuthApplicationHeadlessServer != null) {
+				return String.valueOf(oAuthApplicationHeadlessServer);
+			}
+		}
+
+		return null;
+	}
+
 	@OutputFile
 	public File getClientExtensionConfigFile() {
 		return GradleUtil.toFile(_project, _clientExtensionConfigFile);
+	}
+
+	/**
+	 * Returns the client extension descriptor type. The project's own
+	 * Dockerfile, which replaces the template for its classification grouping,
+	 * makes a project that declares only configuration a service.
+	 */
+	@Internal
+	public String getDescriptorType() {
+		File inputDockerfileFile = getInputDockerfileFile();
+
+		return ClientExtensionDescriptor.getType(
+			_validateAndGetClassificationGrouping(_clientExtensions),
+			inputDockerfileFile.exists());
 	}
 
 	@OutputFile

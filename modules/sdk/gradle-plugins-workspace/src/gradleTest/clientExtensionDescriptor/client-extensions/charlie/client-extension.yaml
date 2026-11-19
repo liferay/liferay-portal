@@ -1,0 +1,11 @@
+charlie-batch:
+    name: Charlie Batch
+    oAuthApplicationHeadlessServer: charlie-oauth-application-headless-server
+    type: batch
+charlie-oauth-application-headless-server:
+    .serviceAddress: localhost:58081
+    .serviceScheme: http
+    name: Charlie OAuth Application Headless Server
+    scopes:
+        -   Liferay.Headless.Batch.Engine.everything
+    type: oAuthApplicationHeadlessServer
