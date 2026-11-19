@@ -5,6 +5,7 @@
 
 import {Page, expect, mergeTests} from '@playwright/test';
 
+import {commentsPagesTest} from '../../../fixtures/commentsPagesTest';
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
@@ -18,6 +19,7 @@ import {journalPagesTest} from '../../journal-web/main/fixtures/journalPagesTest
 import getDataStructureDefinition from '../../journal-web/main/utils/getDataStructureDefinition';
 
 const test = mergeTests(
+	commentsPagesTest,
 	dataApiHelpersTest,
 	isolatedSiteTest,
 	journalPagesTest,
@@ -600,6 +602,134 @@ test(
 			webContentDisplay.getByText('Template Edited Extra Content', {
 				exact: true,
 			})
+		).toBeVisible();
+	}
+);
+
+test(
+	'Web Content Display shows the enabled metadata and user tools',
+	{tag: '@LPD-116674'},
+	async ({apiHelpers, commentsPage, page, site, webContentDisplayPage}) => {
+		const contentStructureId =
+			await getBasicWebContentStructureId(apiHelpers);
+
+		const relatedStructuredContent =
+			await apiHelpers.headlessDelivery.postStructuredContent({
+				contentFields: [
+					{
+						contentFieldValue: {
+							data: '<p>Web Content Content 2</p>',
+						},
+						name: 'content',
+					},
+				],
+				contentStructureId,
+				datePublished: null,
+				siteId: site.id,
+				title: 'Web Content Title 2',
+			});
+
+		await apiHelpers.headlessDelivery.postStructuredContent({
+			contentFields: [
+				{
+					contentFieldValue: {data: '<p>Web Content Content 1</p>'},
+					contentFieldValue_i18n: {
+						'en-US': {data: '<p>Web Content Content 1</p>'},
+						'es-ES': {data: '<p>Web Contenido Contenido 1</p>'},
+					},
+					name: 'content',
+				},
+			],
+			contentStructureId,
+			datePublished: null,
+			relatedContents: [
+				{
+					contentType: 'StructuredContent',
+					id: relatedStructuredContent.id,
+					title: 'Web Content Title 2',
+				},
+			],
+			siteId: site.id,
+			title: 'Web Content Title 1',
+			title_i18n: {
+				'en-US': 'Web Content Title 1',
+				'es-ES': 'Web Contenido Título 1',
+			},
+		});
+
+		const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
+			groupId: String(site.id),
+			title: getRandomString(),
+			typeSettings: `layout-template-id=1_column\ncolumn-1=${JOURNAL_CONTENT_PORTLET}_INSTANCE_settings\n`,
+		});
+
+		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
+
+		await openWebContentSelector(page, webContentDisplayPage);
+
+		await clickAndExpectToBeVisible({
+			target: webContentDisplayPage.configurationFrameChangeButton,
+			trigger:
+				webContentDisplayPage.selectWebContentInConfigurationFrame.getByText(
+					'Web Content Title 1',
+					{exact: true}
+				),
+		});
+
+		const configurationFrame = webContentDisplayPage.configurationFrame;
+
+		await configurationFrame
+			.getByLabel('Comment Ratings', {exact: true})
+			.check();
+		await configurationFrame.getByLabel('Comments', {exact: true}).check();
+		await configurationFrame.getByLabel('Print', {exact: true}).check();
+		await configurationFrame.getByLabel('Ratings', {exact: true}).check();
+		await configurationFrame
+			.getByLabel('Related Assets', {exact: true})
+			.check();
+		await configurationFrame
+			.getByLabel('Translations', {exact: true})
+			.check();
+		await configurationFrame
+			.getByLabel('View Count Increment', {exact: true})
+			.check();
+
+		await webContentDisplayPage.saveConfigurationFrameOptions();
+
+		await expect(
+			page.getByRole('button', {name: 'Print Web Content Title 1'})
+		).toBeVisible();
+		await expect(
+			page.getByRole('button', {name: 'Subscribe to Comments'})
+		).toBeVisible();
+		await expect(
+			page.getByRole('link', {name: 'Web Content Title 2'})
+		).toBeVisible();
+
+		await commentsPage.addComment('Hello!');
+
+		const comment = page
+			.locator('.comment-container')
+			.filter({hasText: 'Hello!'});
+
+		await expect(comment.getByTitle('Rate this as bad')).toBeVisible();
+		await expect(comment.getByTitle('Rate this as good')).toBeVisible();
+
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: page.getByRole('menuitem', {name: 'español-España'}),
+			timeout: 1000,
+			trigger: page.getByTitle('Select a Language'),
+		});
+
+		await expect(
+			page.getByRole('heading', {
+				exact: true,
+				name: 'Web Contenido Título 1',
+			})
+		).toBeVisible();
+		await expect(
+			page.getByText('Web Contenido Contenido 1', {exact: true})
 		).toBeVisible();
 	}
 );
