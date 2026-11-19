@@ -392,4 +392,45 @@ describe('transformItemCardView', () => {
 			});
 		});
 	});
+
+	describe('Image Thumbnail', () => {
+		it('shows the first image that has a file', () => {
+			const result = transformItemCardView(
+				{
+					embedded: {
+						images: [
+							{image: null},
+							{image: {link: {href: '/first.png'}}},
+							{image: {link: {href: '/second.png'}}},
+						],
+						title: 'Camera',
+					},
+				},
+				mockFileMimeTypeCssClasses,
+				mockFileMimeTypeIcons,
+				mockObjectDefinitionCssClasses,
+				mockObjectDefinitionIcons,
+				baseMockProps
+			);
+
+			expect(result.imgProps).toEqual({
+				alt: 'Camera',
+				src: '/first.png',
+			});
+		});
+
+		it('keeps the symbol when no image has a file', () => {
+			const result = transformItemCardView(
+				{embedded: {images: [{image: null}], title: 'Tripod'}},
+				mockFileMimeTypeCssClasses,
+				mockFileMimeTypeIcons,
+				mockObjectDefinitionCssClasses,
+				mockObjectDefinitionIcons,
+				baseMockProps
+			);
+
+			expect(result.imgProps).toBeUndefined();
+			expect(result.symbol).toBe('web-content');
+		});
+	});
 });
