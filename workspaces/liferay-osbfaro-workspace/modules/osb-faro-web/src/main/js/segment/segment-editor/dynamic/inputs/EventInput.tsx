@@ -1,4 +1,3 @@
-import Alert from '@clayui/alert';
 import AttributeFilterSection from './components/AttributeFilterSection';
 import ClayButton from '@clayui/button';
 import ClayIcon from 'shared/components/Icon';
@@ -6,8 +5,6 @@ import DateFilterConjunctionInput from './components/DateFilterConjunctionInput'
 import Form from 'shared/components/form';
 import OccurenceConjunctionInput from './components/OccurenceConjunctionInput';
 import React, {useCallback, useMemo, useState} from 'react';
-import {DataTypes} from 'shared/types/DataTypes';
-import {Attribute} from 'event-analysis/utils/types';
 import {
 	AttributeConjunctionChangeParams,
 	Criterion,
@@ -62,9 +59,6 @@ const EventInput: React.FC<IEventInputProps> = ({
 	valid,
 	value: valueIMap,
 }) => {
-	const [selectedCustomAttribute, setSelectedCustomAttribute] =
-		useState<Attribute | null>(null);
-
 	const [showAttributeFilter, setShowAttributeFilter] = useState(() =>
 		hasAttributeFilterCriterion(valueIMap, ATTRIBUTE_PROPERTY_PREFIX)
 	);
@@ -84,7 +78,6 @@ const EventInput: React.FC<IEventInputProps> = ({
 
 	const handleAttributeConjunctionChange = useCallback(
 		({
-			attribute,
 			criterion,
 			touched: conjunctionTouched,
 			valid: conjunctionValid,
@@ -110,10 +103,6 @@ const EventInput: React.FC<IEventInputProps> = ({
 				valid: {...valid, ...conjunctionValid},
 				value: nextValue,
 			});
-
-			if (attribute) {
-				setSelectedCustomAttribute(attribute);
-			}
 		},
 		[onChange, valueIMap, touched, valid]
 	);
@@ -254,9 +243,6 @@ const EventInput: React.FC<IEventInputProps> = ({
 	}
 
 	const isAccountSegment = segmentCategory === SegmentCategories.Account;
-	const isRealTime = segmentType === SegmentTypes.RealTime;
-	const isSelectedAttributeDateType =
-		selectedCustomAttribute?.dataType === DataTypes.Date;
 
 	return (
 		<div className="criteria-statement">
@@ -311,49 +297,42 @@ const EventInput: React.FC<IEventInputProps> = ({
 				)}
 			</Form.Group>
 
-			{showAttributeFilter ? (
-				<AttributeFilterSection
-					conjunctionCriterion={(
-						getFilterCriterionIMapByPropertyNamePrefix(
-							valueIMap,
-							ATTRIBUTE_PROPERTY_PREFIX
-						) || Map({propertyName: ATTRIBUTE_PROPERTY_PREFIX})
-					).toJS()}
-					eventId={eventId}
-					onChange={handleAttributeConjunctionChange}
-					onClear={handleClearAttributeFilter}
-					touched={{
-						attribute: touched.attribute,
-						attributeValue: touched.attributeValue,
-					}}
-					valid={{
-						attribute: valid.attribute,
-						attributeValue: valid.attributeValue,
-					}}
-				/>
-			) : (
-				<Form.Group autoFit>
-					<ClayButton
-						className="button-root"
-						displayType="secondary"
-						onClick={handleShowAttributeFilterClick}
-					>
-						<ClayIcon symbol="plus" />
+			{segmentType === SegmentTypes.Batch &&
+				(showAttributeFilter ? (
+					<AttributeFilterSection
+						conjunctionCriterion={(
+							getFilterCriterionIMapByPropertyNamePrefix(
+								valueIMap,
+								ATTRIBUTE_PROPERTY_PREFIX
+							) || Map({propertyName: ATTRIBUTE_PROPERTY_PREFIX})
+						).toJS()}
+						eventId={eventId}
+						onChange={handleAttributeConjunctionChange}
+						onClear={handleClearAttributeFilter}
+						touched={{
+							attribute: touched.attribute,
+							attributeValue: touched.attributeValue,
+						}}
+						valid={{
+							attribute: valid.attribute,
+							attributeValue: valid.attributeValue,
+						}}
+					/>
+				) : (
+					<Form.Group autoFit>
+						<ClayButton
+							className="button-root"
+							displayType="secondary"
+							onClick={handleShowAttributeFilterClick}
+						>
+							<ClayIcon symbol="plus" />
 
-						<span className="ml-2">
-							{Liferay.Language.get('add-event-attribute')}
-						</span>
-					</ClayButton>
-				</Form.Group>
-			)}
-
-			{isRealTime && isSelectedAttributeDateType && (
-				<Alert className="mt-2" displayType="info" variant="feedback">
-					{Liferay.Language.get(
-						'event-date-attributes-may-create-time-conflicts-and-reduce-matching-users.-review-your-criteria-to-ensure-the-segment-behaves-as-expected'
-					)}
-				</Alert>
-			)}
+							<span className="ml-2">
+								{Liferay.Language.get('add-event-attribute')}
+							</span>
+						</ClayButton>
+					</Form.Group>
+				))}
 		</div>
 	);
 };

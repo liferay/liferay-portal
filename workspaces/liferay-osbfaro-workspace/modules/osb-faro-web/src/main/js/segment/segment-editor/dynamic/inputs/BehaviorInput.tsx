@@ -512,31 +512,34 @@ export class BehaviorInput extends React.Component<
 					</Form.Group>
 				)}
 
-				{this.state.showAttributeFilter && eventId ? (
-					<AttributeFilterSection
-						conjunctionCriterion={attributeConjunctionCriterion}
-						eventId={eventId}
-						onChange={this.handleAttributeConjunctionChange}
-						onClear={this.handleClearAttributeFilter}
-						touched={touched}
-						valid={valid}
-					/>
-				) : (
-					<Form.Group autoFit>
-						<ClayButton
-							className="button-root"
-							disabled={!eventId}
-							displayType="secondary"
-							onClick={this.handleShowAttributeFilterClick}
-						>
-							<ClayIcon symbol="plus" />
+				{segmentType === SegmentTypes.Batch &&
+					(this.state.showAttributeFilter && eventId ? (
+						<AttributeFilterSection
+							conjunctionCriterion={attributeConjunctionCriterion}
+							eventId={eventId}
+							onChange={this.handleAttributeConjunctionChange}
+							onClear={this.handleClearAttributeFilter}
+							touched={touched}
+							valid={valid}
+						/>
+					) : (
+						<Form.Group autoFit>
+							<ClayButton
+								className="button-root"
+								disabled={!eventId}
+								displayType="secondary"
+								onClick={this.handleShowAttributeFilterClick}
+							>
+								<ClayIcon symbol="plus" />
 
-							<span className="ml-2">
-								{Liferay.Language.get('add-event-attribute')}
-							</span>
-						</ClayButton>
-					</Form.Group>
-				)}
+								<span className="ml-2">
+									{Liferay.Language.get(
+										'add-event-attribute'
+									)}
+								</span>
+							</ClayButton>
+						</Form.Group>
+					))}
 			</div>
 		);
 	}
