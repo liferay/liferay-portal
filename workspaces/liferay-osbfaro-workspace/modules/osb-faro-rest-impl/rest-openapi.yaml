@@ -282,6 +282,22 @@ components:
                     readOnly: true
                     type: string
             type: object
+        Acquisition:
+            description:
+                "Number of sessions that came from one acquisition channel, referrer or source / medium. Use `getWorkspaceGroupChannelAcquisitionsPage` to list them."
+            properties:
+                count:
+                    description:
+                        "Number of sessions in the date range that came from this value. With `type` REFERRER, a session with several referrers counts once for each."
+                    format: int64
+                    readOnly: true
+                    type: integer
+                name:
+                    description:
+                        "Acquisition channel, referrer URL, or `source / medium` pair, depending on the `type` the list was requested with. Channel and source / medium values are lowercase."
+                    readOnly: true
+                    type: string
+            type: object
         AssetSummaryMetric:
             description:
                 "An aggregated set of analytics metrics for a single tracked asset (page, blog, document, form, journal, object entry, etc.) over the selected date range. Trend percentages compare metrics on the selected date range to the previous date range. Use `getWorkspaceGroupChannelAssetSummariesPage` to list these sets of metrics."
@@ -1104,6 +1120,76 @@ components:
                     readOnly: true
                     type: array
             type: object
+        VisitFrequencyMetric:
+            description:
+                "Unique visitors of a channel over a date range, split by how often they came back. Use `getWorkspaceGroupChannelVisitFrequencyMetric` to retrieve it. Buckets compare the number of sessions of each visitor to the number of days in the range: a visitor is daily with at least as many sessions as days, weekly with at least one session per 7 days, biweekly with at least one per 14 days, monthly with at least one per 30 days, and occasional otherwise. Each threshold is at least one session, so ranges shorter than 14, 28 or 60 days leave the biweekly, monthly or occasional bucket empty. Each visitor is counted in the most frequent bucket they qualify for."
+            properties:
+                biWeeklyVisitors:
+                    description:
+                        "Visitors with at least one session per 14 days of the range, who are not daily or weekly."
+                    format: int64
+                    readOnly: true
+                    type: integer
+                dailyVisitors:
+                    description:
+                        "Visitors with at least as many sessions as days in the range."
+                    format: int64
+                    readOnly: true
+                    type: integer
+                monthlyVisitors:
+                    description:
+                        "Visitors with at least one session per 30 days of the range, who are not in a more frequent bucket."
+                    format: int64
+                    readOnly: true
+                    type: integer
+                occasionalVisitors:
+                    description:
+                        "Visitors who are not in any of the other buckets."
+                    format: int64
+                    readOnly: true
+                    type: integer
+                visitors:
+                    description:
+                        "Unique visitors in the range; the sum of the five buckets."
+                    format: int64
+                    readOnly: true
+                    type: integer
+                weeklyVisitors:
+                    description:
+                        "Visitors with at least one session per 7 days of the range, who are not daily."
+                    format: int64
+                    readOnly: true
+                    type: integer
+            type: object
+        VisitorMetric:
+            description:
+                "Visitor totals of a channel over a date range. Use `getWorkspaceGroupChannelVisitorMetric` to retrieve it."
+            properties:
+                averageSessionDuration:
+                    description:
+                        "Average duration of the sessions in the range, in milliseconds."
+                    format: int64
+                    readOnly: true
+                    type: integer
+                knownVisitors:
+                    description:
+                        "Visitors identified by email. Anonymous visitors are `visitors` minus `knownVisitors`."
+                    format: int64
+                    readOnly: true
+                    type: integer
+                totalSessionDuration:
+                    description:
+                        "Sum of the durations of all sessions in the range, in milliseconds."
+                    format: int64
+                    readOnly: true
+                    type: integer
+                visitors:
+                    description:
+                        "Unique visitors, known and anonymous, with at least one session in the range."
+                    format: int64
+                    readOnly: true
+                    type: integer
+            type: object
         Workspace:
             description:
                 "An LDP workspace synced from a Liferay site. Each workspace owns its own channels, individuals, accounts, segments, and asset analytics. Workspaces are scoped to the Liferay group identified by `groupId`."
@@ -1121,7 +1207,7 @@ components:
             type: object
 info:
     description:
-        "Read only headless REST API for LDP (Liferay Data Platform). Exposes account lifecycles, accounts, asset summary metrics, event attribute definitions, event definitions, events, individuals, individual segments, page metrics, properties, and search terms for use as MCP tools and external integrations. All endpoints are scoped to a provisioned LDP workspace. Every tool accepts a `fields` input: request only the fields you need, especially on lists, and leave out the heavy fields `demographics`, `events` and `attributes` unless the question needs them. A Java client JAR is available for use with the group ID 'com.liferay', artifact ID 'com.liferay.osb.faro.rest.client', and version '1.0.0'."
+        "Read only headless REST API for LDP (Liferay Data Platform). Exposes account lifecycles, accounts, acquisitions, asset summary metrics, event attribute definitions, event definitions, events, individuals, individual segments, page metrics, properties, search terms, visit frequency metrics, and visitor metrics for use as MCP tools and external integrations. All endpoints are scoped to a provisioned LDP workspace. Every tool accepts a `fields` input: request only the fields you need, especially on lists, and leave out the heavy fields `demographics`, `events` and `attributes` unless the question needs them. A Java client JAR is available for use with the group ID 'com.liferay', artifact ID 'com.liferay.osb.faro.rest.client', and version '1.0.0'."
     license:
         name: Apache 2.0
         url: http://www.apache.org/licenses/LICENSE-2.0.html
@@ -1765,6 +1851,96 @@ paths:
                                     $ref: "#/components/schemas/UserSession"
                                 type: array
             tags: ["UserSession"]
+    "/workspace/{groupId}/channels/{channelId}/acquisitions":
+        get:
+            description:
+                "List where the sessions of a channel (also known as property) came from in a date range, in descending order of number of sessions. `type` picks the breakdown: CHANNEL (the acquisition channel LDP assigns to each session, such as direct), REFERRER (referring URL), or SOURCE_MEDIUM (`source / medium` pairs from UTM parameters); it defaults to CHANNEL. Optionally narrow to the individuals of an account with `accountId` or of a segment with `segmentId`. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, or pass both `rangeStart` and `rangeEnd` as `yyyy-MM-dd` dates for a custom window of at most 180 days; a custom window takes precedence over `rangeKey`. Without either, the last 30 days are used. Use this for 'top traffic sources' or 'top referrers' style queries. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
+            operationId: getWorkspaceGroupChannelAcquisitionsPage
+            parameters:
+                -   in: path
+                    description:
+                        "ID of the Liferay site that owns the LDP workspace."
+                    name: groupId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: path
+                    description:
+                        "ID of the channel whose acquisitions should be listed."
+                    name: channelId
+                    required: true
+                    schema:
+                        type: string
+                -   in: query
+                    description:
+                        "ID of an account. When set, count only sessions of the individuals in that account."
+                    name: accountId
+                    schema:
+                        type: string
+                -   in: query
+                    description:
+                        "Page number (starts at 1)."
+                    name: page
+                    schema:
+                        minimum: 1
+                        type: integer
+                -   in: query
+                    description:
+                        "Page size, from 1 to 100. Larger values are rejected."
+                    name: pageSize
+                    schema:
+                        maximum: 100
+                        minimum: 1
+                        type: integer
+                -   in: query
+                    description:
+                        "Custom range end as a `yyyy-MM-dd` date (e.g. 2026-01-31). Set together with `rangeStart`; together they take precedence over `rangeKey`. The window can span at most 180 days."
+                    name: rangeEnd
+                    schema:
+                        type: string
+                -   in: query
+                    description:
+                        "Date range preset. Use one of the listed enum values. Defaults to LAST_30_DAYS. When both `rangeStart` and `rangeEnd` are set, they take precedence over `rangeKey`."
+                    example: LAST_30_DAYS
+                    name: rangeKey
+                    schema:
+                        enum: [LAST_180_DAYS, LAST_24_HOURS, LAST_28_DAYS, LAST_30_DAYS, LAST_7_DAYS, LAST_90_DAYS, YESTERDAY]
+                        type: string
+                -   in: query
+                    description:
+                        "Custom range start as a `yyyy-MM-dd` date (e.g. 2026-01-01). Set together with `rangeEnd`; together they take precedence over `rangeKey`. The window can span at most 180 days."
+                    name: rangeStart
+                    schema:
+                        type: string
+                -   in: query
+                    description:
+                        "ID of a segment. When set, count only sessions of the individuals in that segment."
+                    name: segmentId
+                    schema:
+                        type: string
+                -   in: query
+                    description:
+                        "Breakdown to list: CHANNEL, REFERRER or SOURCE_MEDIUM. Defaults to CHANNEL."
+                    example: CHANNEL
+                    name: type
+                    schema:
+                        enum: [CHANNEL, REFERRER, SOURCE_MEDIUM]
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/Acquisition"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/Acquisition"
+                                type: array
+            tags: ["Acquisition"]
     "/workspace/{groupId}/channels/{channelId}/asset-summaries":
         get:
             description:
@@ -2758,6 +2934,102 @@ paths:
                                     $ref: "#/components/schemas/SearchTerm"
                                 type: array
             tags: ["SearchTerm"]
+    "/workspace/{groupId}/channels/{channelId}/visit-frequency-metrics":
+        get:
+            description:
+                "Get how often the visitors of a channel (also known as property) came back in a date range, as counts of daily, weekly, biweekly, monthly and occasional visitors. The buckets are relative to the length of the range, so compare ranges of the same length. Each threshold is at least one session, so short ranges leave the less frequent buckets empty: under 14 days there are no biweekly visitors, under 28 days no monthly ones and under 60 days no occasional ones, and a single day such as LAST_24_HOURS or YESTERDAY counts every visitor as daily. Use LAST_90_DAYS or LAST_180_DAYS for a full split. It cannot be narrowed to a segment or an account. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, or pass both `rangeStart` and `rangeEnd` as `yyyy-MM-dd` dates for a custom window of at most 180 days; a custom window takes precedence over `rangeKey`. Without either, the last 30 days are used. Use this for 'how loyal are our visitors' style queries. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
+            operationId: getWorkspaceGroupChannelVisitFrequencyMetric
+            parameters:
+                -   in: path
+                    description:
+                        "ID of the Liferay site that owns the LDP workspace."
+                    name: groupId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: path
+                    description:
+                        "ID of the channel whose visitors should be counted."
+                    name: channelId
+                    required: true
+                    schema:
+                        type: string
+                -   in: query
+                    description:
+                        "Custom range end as a `yyyy-MM-dd` date (e.g. 2026-01-31). Set together with `rangeStart`; together they take precedence over `rangeKey`. The window can span at most 180 days."
+                    name: rangeEnd
+                    schema:
+                        type: string
+                -   in: query
+                    description:
+                        "Date range preset. Use one of the listed enum values. Defaults to LAST_30_DAYS. When both `rangeStart` and `rangeEnd` are set, they take precedence over `rangeKey`."
+                    example: LAST_30_DAYS
+                    name: rangeKey
+                    schema:
+                        enum: [LAST_180_DAYS, LAST_24_HOURS, LAST_28_DAYS, LAST_30_DAYS, LAST_7_DAYS, LAST_90_DAYS, YESTERDAY]
+                        type: string
+                -   in: query
+                    description:
+                        "Custom range start as a `yyyy-MM-dd` date (e.g. 2026-01-01). Set together with `rangeEnd`; together they take precedence over `rangeKey`. The window can span at most 180 days."
+                    name: rangeStart
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/VisitFrequencyMetric"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/VisitFrequencyMetric"
+            tags: ["VisitFrequencyMetric"]
+    "/workspace/{groupId}/channels/{channelId}/visitor-metrics":
+        get:
+            description:
+                "Get the visitor totals of a channel (also known as property) for a date range: unique visitors, known visitors (identified by email), and the average and total session duration. Optionally narrow to the individuals in a segment with `segmentId`. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS; this tool does not support custom `rangeStart`/`rangeEnd` windows and returns 400 when they are set. Without `rangeKey`, the last 30 days are used. Use this for 'how many visitors did the site have' style queries. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
+            operationId: getWorkspaceGroupChannelVisitorMetric
+            parameters:
+                -   in: path
+                    description:
+                        "ID of the Liferay site that owns the LDP workspace."
+                    name: groupId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: path
+                    description:
+                        "ID of the channel whose visitors should be counted."
+                    name: channelId
+                    required: true
+                    schema:
+                        type: string
+                -   in: query
+                    description:
+                        "Date range preset. Use one of the listed enum values. Defaults to LAST_30_DAYS."
+                    example: LAST_30_DAYS
+                    name: rangeKey
+                    schema:
+                        enum: [LAST_180_DAYS, LAST_24_HOURS, LAST_28_DAYS, LAST_30_DAYS, LAST_7_DAYS, LAST_90_DAYS, YESTERDAY]
+                        type: string
+                -   in: query
+                    description:
+                        "ID of a segment. When set, count only the individuals in that segment."
+                    name: segmentId
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/VisitorMetric"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/VisitorMetric"
+            tags: ["VisitorMetric"]
     "/workspace/{groupId}/event-attribute-definitions":
         get:
             description:
