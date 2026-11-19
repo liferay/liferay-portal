@@ -12,7 +12,7 @@ export function Filters() {
 	const {setSpace, space, spaceIds} = useContext(GovernanceContext);
 
 	return (
-		<div className="mb-4">
+		<div>
 			<SpacePicker
 				onSelectSpace={setSpace}
 				selectedSpace={space}
