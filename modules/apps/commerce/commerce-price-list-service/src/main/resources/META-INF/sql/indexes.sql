@@ -31,7 +31,7 @@ create index IX_C6ECAD11 on CommercePriceListOrderTypeRel (uuid_[$COLUMN_LENGTH:
 
 create unique index IX_4072830C on CommerceTierPriceEntry (commercePriceEntryId, minQuantity, ctCollectionId);
 create index IX_89DE1E88 on CommerceTierPriceEntry (commercePriceEntryId, status, minQuantity);
-create unique index IX_FC1787BF on CommerceTierPriceEntry (companyId, externalReferenceCode[$COLUMN_LENGTH:75$], ctCollectionId);
+create unique index IX_9B67FE75 on CommerceTierPriceEntry (externalReferenceCode[$COLUMN_LENGTH:75$], companyId, ctCollectionId);
 create index IX_CB288BCE on CommerceTierPriceEntry (status, displayDate);
 create index IX_D00E2E63 on CommerceTierPriceEntry (status, expirationDate);
 create index IX_71F6D1E8 on CommerceTierPriceEntry (uuid_[$COLUMN_LENGTH:75$]);

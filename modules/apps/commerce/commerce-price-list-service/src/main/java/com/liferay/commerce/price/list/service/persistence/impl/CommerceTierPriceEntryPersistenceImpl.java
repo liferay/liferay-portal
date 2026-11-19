@@ -276,92 +276,6 @@ public class CommerceTierPriceEntryPersistenceImpl
 
 	private CollectionPersistenceFinder
 		<CommerceTierPriceEntry, NoSuchTierPriceEntryException>
-			_collectionPersistenceFinderByCompanyId;
-
-	/**
-	 * Returns an ordered range of all the commerce tier price entries where companyId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CommerceTierPriceEntryModelImpl</code>.
-	 * </p>
-	 *
-	 * @param companyId the company ID
-	 * @param start the lower bound of the range of commerce tier price entries
-	 * @param end the upper bound of the range of commerce tier price entries (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching commerce tier price entries
-	 */
-	@Override
-	public List<CommerceTierPriceEntry> findByCompanyId(
-		long companyId, int start, int end,
-		OrderByComparator<CommerceTierPriceEntry> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByCompanyId.find(
-			finderCache, new Object[] {companyId}, start, end,
-			orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first commerce tier price entry in the ordered set where companyId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching commerce tier price entry
-	 * @throws NoSuchTierPriceEntryException if a matching commerce tier price entry could not be found
-	 */
-	@Override
-	public CommerceTierPriceEntry findByCompanyId_First(
-			long companyId,
-			OrderByComparator<CommerceTierPriceEntry> orderByComparator)
-		throws NoSuchTierPriceEntryException {
-
-		return _collectionPersistenceFinderByCompanyId.findFirst(
-			finderCache, new Object[] {companyId}, orderByComparator);
-	}
-
-	/**
-	 * Returns the first commerce tier price entry in the ordered set where companyId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching commerce tier price entry, or <code>null</code> if a matching commerce tier price entry could not be found
-	 */
-	@Override
-	public CommerceTierPriceEntry fetchByCompanyId_First(
-		long companyId,
-		OrderByComparator<CommerceTierPriceEntry> orderByComparator) {
-
-		return _collectionPersistenceFinderByCompanyId.fetchFirst(
-			finderCache, new Object[] {companyId}, orderByComparator);
-	}
-
-	/**
-	 * Removes all the commerce tier price entries where companyId = &#63; from the database.
-	 *
-	 * @param companyId the company ID
-	 */
-	@Override
-	public void removeByCompanyId(long companyId) {
-		_collectionPersistenceFinderByCompanyId.remove(
-			finderCache, new Object[] {companyId});
-	}
-
-	/**
-	 * Returns the number of commerce tier price entries where companyId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @return the number of matching commerce tier price entries
-	 */
-	@Override
-	public int countByCompanyId(long companyId) {
-		return _collectionPersistenceFinderByCompanyId.count(
-			finderCache, new Object[] {companyId});
-	}
-
-	private CollectionPersistenceFinder
-		<CommerceTierPriceEntry, NoSuchTierPriceEntryException>
 			_collectionPersistenceFinderByCommercePriceEntryId;
 
 	/**
@@ -1612,34 +1526,6 @@ public class CommerceTierPriceEntryPersistenceImpl
 					FinderColumn.Type.LONG, "=", true, true,
 					CommerceTierPriceEntry::getCompanyId));
 
-		_collectionPersistenceFinderByCompanyId =
-			new CollectionPersistenceFinder<>(
-				this,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByCompanyId",
-					new String[] {
-						Long.class.getName(), Integer.class.getName(),
-						Integer.class.getName(),
-						OrderByComparator.class.getName()
-					},
-					new String[] {"companyId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"findByCompanyId", new String[] {Long.class.getName()},
-					new String[] {"companyId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"countByCompanyId", new String[] {Long.class.getName()},
-					new String[] {"companyId"}, false),
-				_SQL_SELECT_COMMERCETIERPRICEENTRY_WHERE,
-				_SQL_COUNT_COMMERCETIERPRICEENTRY_WHERE,
-				CommerceTierPriceEntryModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "", null,
-				new FinderColumn<>(
-					"commerceTierPriceEntry.", "companyId",
-					FinderColumn.Type.LONG, "=", true, true,
-					CommerceTierPriceEntry::getCompanyId));
-
 		_collectionPersistenceFinderByCommercePriceEntryId =
 			new CollectionPersistenceFinder<>(
 				this,
@@ -1901,4 +1787,4 @@ public class CommerceTierPriceEntryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1511657260
+// LIFERAY-SERVICE-BUILDER-HASH:1887250073
