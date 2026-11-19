@@ -58,7 +58,7 @@ public class KBArchiveFactoryUtil {
 
 		Collections.sort(entries);
 
-		String[] articleExtensions =
+		String[] markdownImporterArticleExtensions =
 			kbGroupServiceConfiguration.markdownImporterArticleExtensions();
 
 		String markdownImporterArticleIntro =
@@ -73,7 +73,9 @@ public class KBArchiveFactoryUtil {
 		KBArchiveState kbArchiveState = new KBArchiveState(zipReader);
 
 		for (String entry : entries) {
-			if (!ArrayUtil.exists(articleExtensions, entry::endsWith)) {
+			if (!ArrayUtil.exists(
+					markdownImporterArticleExtensions, entry::endsWith)) {
+
 				continue;
 			}
 
@@ -87,10 +89,10 @@ public class KBArchiveFactoryUtil {
 
 			if (entryFileName.endsWith(markdownImporterArticleIntro) ||
 				ArrayUtil.exists(
-					articleExtensions,
-					articleExtension -> entryFileName.endsWith(
+					markdownImporterArticleExtensions,
+					markdownImporterArticleExtension -> entryFileName.endsWith(
 						markdownImporterArticleIntroWithoutExtension +
-							articleExtension))) {
+							markdownImporterArticleExtension))) {
 
 				KBArchive.File currentFolderIntroFile =
 					kbArchiveState.getCurrentFolderIntroFile();
