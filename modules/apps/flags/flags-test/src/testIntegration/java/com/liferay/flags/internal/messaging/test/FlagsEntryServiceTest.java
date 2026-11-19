@@ -19,13 +19,13 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
-import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -81,12 +81,10 @@ public class FlagsEntryServiceTest {
 			PermissionCheckerMethodTestRule.INSTANCE);
 
 	@Before
-	public void setUp() throws Exception {
+	public void setUp() {
 		Bundle bundle = FrameworkUtil.getBundle(FlagsEntryServiceTest.class);
 
 		_bundleContext = bundle.getBundleContext();
-
-		_group = GroupTestUtil.addGroup();
 	}
 
 	@After
@@ -101,23 +99,33 @@ public class FlagsEntryServiceTest {
 	@Test
 	@TestInfo("LPD-116123")
 	public void testAddEntry() throws Exception {
-		Layout layout = LayoutTestUtil.addTypePortletLayout(_group, true);
+		Group group = GroupTestUtil.addGroup();
 
-		_user = UserTestUtil.addUser();
+		Layout layout = LayoutTestUtil.addTypePortletLayout(group, true);
+
+		User user = UserTestUtil.addUser();
 
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				_user, PermissionCheckerFactoryUtil.create(_user))) {
+				user, PermissionCheckerFactoryUtil.create(user))) {
 
-			Assert.assertThrows(
-				PrincipalException.MustHavePermission.class,
-				() -> _flagsEntryService.addEntry(
-					Layout.class.getName(), layout.getPlid(),
-					_user.getEmailAddress(), TestPropsValues.getUserId(),
-					RandomTestUtil.randomString(),
-					RandomTestUtil.randomString(),
-					RandomTestUtil.randomString(),
-					ServiceContextTestUtil.getServiceContext(
-						_group.getGroupId(), _user.getUserId())));
+			PrincipalException.MustHavePermission mustHavePermission =
+				Assert.assertThrows(
+					PrincipalException.MustHavePermission.class,
+					() -> _flagsEntryService.addEntry(
+						Layout.class.getName(), layout.getPlid(),
+						user.getEmailAddress(), TestPropsValues.getUserId(),
+						RandomTestUtil.randomString(),
+						RandomTestUtil.randomString(),
+						RandomTestUtil.randomString(),
+						ServiceContextTestUtil.getServiceContext(
+							group.getGroupId(), user.getUserId())));
+
+			Assert.assertArrayEquals(
+				new String[] {ActionKeys.VIEW}, mustHavePermission.actionId);
+			Assert.assertEquals(
+				layout.getLayoutId(), mustHavePermission.resourceId);
+			Assert.assertEquals(
+				Layout.class.getName(), mustHavePermission.resourceName);
 		}
 	}
 
@@ -138,7 +146,8 @@ public class FlagsEntryServiceTest {
 			"[$REASON$]", "<img src=x onerror=alert(3)>"
 		).build();
 
-		Layout layout = LayoutTestUtil.addTypePortletLayout(_group);
+		Layout layout = LayoutTestUtil.addTypePortletLayout(
+			TestPropsValues.getGroupId());
 
 		_flagsEntryService.addEntry(
 			Layout.class.getName(), layout.getPlid(),
@@ -209,7 +218,8 @@ public class FlagsEntryServiceTest {
 
 		serviceContext.setRequest(mockHttpServletRequest);
 
-		Layout layout = LayoutTestUtil.addTypePortletLayout(_group);
+		Layout layout = LayoutTestUtil.addTypePortletLayout(
+			TestPropsValues.getGroupId());
 
 		_flagsEntryService.addEntry(
 			Layout.class.getName(), layout.getPlid(),
@@ -276,14 +286,8 @@ public class FlagsEntryServiceTest {
 	@Inject
 	private FlagsEntryService _flagsEntryService;
 
-	@DeleteAfterTestRun
-	private Group _group;
-
 	private final List<ServiceRegistration<?>> _serviceRegistrations =
 		new ArrayList<>();
-
-	@DeleteAfterTestRun
-	private User _user;
 
 	private class MockSubscriptionSenderMessageListener
 		extends BaseMessageListener {
