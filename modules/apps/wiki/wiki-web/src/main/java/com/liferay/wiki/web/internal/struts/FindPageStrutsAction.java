@@ -11,9 +11,11 @@ import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.struts.FindStrutsAction;
 import com.liferay.wiki.constants.WikiPortletKeys;
 import com.liferay.wiki.model.WikiNode;
+import com.liferay.wiki.model.WikiPage;
 import com.liferay.wiki.model.WikiPageResource;
 import com.liferay.wiki.service.WikiNodeLocalService;
 import com.liferay.wiki.service.WikiPageResourceLocalService;
+import com.liferay.wiki.service.WikiPageService;
 
 import jakarta.portlet.PortletURL;
 
@@ -67,11 +69,14 @@ public class FindPageStrutsAction extends FindStrutsAction {
 		WikiPageResource pageResource =
 			_wikiPageResourceLocalService.getPageResource(pageResourcePrimKey);
 
-		WikiNode node = _wikiNodeLocalService.getNode(pageResource.getNodeId());
+		WikiPage page = _wikiPageService.getPage(
+			pageResource.getNodeId(), pageResource.getTitle());
+
+		WikiNode node = page.getNode();
 
 		portletURL.setParameter("nodeName", node.getName());
 
-		portletURL.setParameter("title", pageResource.getTitle());
+		portletURL.setParameter("title", page.getTitle());
 
 		return portletURL;
 	}
@@ -94,5 +99,8 @@ public class FindPageStrutsAction extends FindStrutsAction {
 
 	@Reference
 	private WikiPageResourceLocalService _wikiPageResourceLocalService;
+
+	@Reference
+	private WikiPageService _wikiPageService;
 
 }
