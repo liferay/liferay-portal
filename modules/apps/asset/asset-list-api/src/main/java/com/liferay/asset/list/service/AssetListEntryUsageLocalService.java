@@ -216,11 +216,6 @@ public interface AssetListEntryUsageLocalService
 	public AssetListEntryUsage fetchAssetListEntryUsage(
 		long assetListEntryUsageId);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public AssetListEntryUsage fetchAssetListEntryUsage(
-		long groupId, long classNameId, String containerKey, long containerType,
-		String key, long plid);
-
 	/**
 	 * Returns the asset list entry usage matching the UUID and group.
 	 *
@@ -234,10 +229,6 @@ public interface AssetListEntryUsageLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<AssetListEntryUsage> getAssetEntryListUsages(
-		long containerType, long plid);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<AssetListEntryUsage> getAssetEntryListUsagesByPlid(long plid);
@@ -285,10 +276,6 @@ public interface AssetListEntryUsageLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<AssetListEntryUsage> getAssetListEntryUsages(
 		long groupId, long classNameId, String key);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<AssetListEntryUsage> getAssetListEntryUsages(
-		long groupId, long classNameId, String key, int type);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<AssetListEntryUsage> getAssetListEntryUsages(
@@ -402,4 +389,4 @@ public interface AssetListEntryUsageLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1379171985
+// LIFERAY-SERVICE-BUILDER-HASH:-1767805432

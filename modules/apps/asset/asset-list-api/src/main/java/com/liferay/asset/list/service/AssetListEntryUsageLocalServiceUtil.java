@@ -234,14 +234,6 @@ public class AssetListEntryUsageLocalServiceUtil {
 		return getService().fetchAssetListEntryUsage(assetListEntryUsageId);
 	}
 
-	public static AssetListEntryUsage fetchAssetListEntryUsage(
-		long groupId, long classNameId, String containerKey, long containerType,
-		String key, long plid) {
-
-		return getService().fetchAssetListEntryUsage(
-			groupId, classNameId, containerKey, containerType, key, plid);
-	}
-
 	/**
 	 * Returns the asset list entry usage matching the UUID and group.
 	 *
@@ -260,12 +252,6 @@ public class AssetListEntryUsageLocalServiceUtil {
 		getActionableDynamicQuery() {
 
 		return getService().getActionableDynamicQuery();
-	}
-
-	public static List<AssetListEntryUsage> getAssetEntryListUsages(
-		long containerType, long plid) {
-
-		return getService().getAssetEntryListUsages(containerType, plid);
 	}
 
 	public static List<AssetListEntryUsage> getAssetEntryListUsagesByPlid(
@@ -325,13 +311,6 @@ public class AssetListEntryUsageLocalServiceUtil {
 		long groupId, long classNameId, String key) {
 
 		return getService().getAssetListEntryUsages(groupId, classNameId, key);
-	}
-
-	public static List<AssetListEntryUsage> getAssetListEntryUsages(
-		long groupId, long classNameId, String key, int type) {
-
-		return getService().getAssetListEntryUsages(
-			groupId, classNameId, key, type);
 	}
 
 	public static List<AssetListEntryUsage> getAssetListEntryUsages(
@@ -479,4 +458,4 @@ public class AssetListEntryUsageLocalServiceUtil {
 			AssetListEntryUsageLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1494666846
+// LIFERAY-SERVICE-BUILDER-HASH:-1743600031

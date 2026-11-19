@@ -327,16 +327,6 @@ public class AssetListEntrySegmentsEntryRelLocalServiceWrapper
 
 	@Override
 	public java.util.List<AssetListEntrySegmentsEntryRel>
-		fetchAssetListEntrySegmentsEntryRels(
-			long assetListEntryId, long[] segmentsEntryIds) {
-
-		return _assetListEntrySegmentsEntryRelLocalService.
-			fetchAssetListEntrySegmentsEntryRels(
-				assetListEntryId, segmentsEntryIds);
-	}
-
-	@Override
-	public java.util.List<AssetListEntrySegmentsEntryRel>
 		fetchDynamicAssetListEntrySegmentsEntryRels(long companyId) {
 
 		return _assetListEntrySegmentsEntryRelLocalService.
@@ -365,16 +355,6 @@ public class AssetListEntrySegmentsEntryRelLocalServiceWrapper
 
 		return _assetListEntrySegmentsEntryRelLocalService.
 			getAssetListEntrySegmentsEntryRel(assetListEntrySegmentsEntryRelId);
-	}
-
-	@Override
-	public AssetListEntrySegmentsEntryRel getAssetListEntrySegmentsEntryRel(
-			long assetListEntryId, long segmentsEntryId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _assetListEntrySegmentsEntryRelLocalService.
-			getAssetListEntrySegmentsEntryRel(
-				assetListEntryId, segmentsEntryId);
 	}
 
 	/**
@@ -621,4 +601,4 @@ public class AssetListEntrySegmentsEntryRelLocalServiceWrapper
 		_assetListEntrySegmentsEntryRelLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:428162851
+// LIFERAY-SERVICE-BUILDER-HASH:280701273

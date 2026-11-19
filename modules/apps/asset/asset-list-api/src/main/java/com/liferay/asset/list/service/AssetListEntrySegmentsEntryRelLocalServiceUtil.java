@@ -290,14 +290,6 @@ public class AssetListEntrySegmentsEntryRelLocalServiceUtil {
 	}
 
 	public static List<AssetListEntrySegmentsEntryRel>
-		fetchAssetListEntrySegmentsEntryRels(
-			long assetListEntryId, long[] segmentsEntryIds) {
-
-		return getService().fetchAssetListEntrySegmentsEntryRels(
-			assetListEntryId, segmentsEntryIds);
-	}
-
-	public static List<AssetListEntrySegmentsEntryRel>
 		fetchDynamicAssetListEntrySegmentsEntryRels(long companyId) {
 
 		return getService().fetchDynamicAssetListEntrySegmentsEntryRels(
@@ -324,15 +316,6 @@ public class AssetListEntrySegmentsEntryRelLocalServiceUtil {
 
 		return getService().getAssetListEntrySegmentsEntryRel(
 			assetListEntrySegmentsEntryRelId);
-	}
-
-	public static AssetListEntrySegmentsEntryRel
-			getAssetListEntrySegmentsEntryRel(
-				long assetListEntryId, long segmentsEntryId)
-		throws PortalException {
-
-		return getService().getAssetListEntrySegmentsEntryRel(
-			assetListEntryId, segmentsEntryId);
 	}
 
 	/**
@@ -521,4 +504,4 @@ public class AssetListEntrySegmentsEntryRelLocalServiceUtil {
 			AssetListEntrySegmentsEntryRelLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-923458522
+// LIFERAY-SERVICE-BUILDER-HASH:-102831702

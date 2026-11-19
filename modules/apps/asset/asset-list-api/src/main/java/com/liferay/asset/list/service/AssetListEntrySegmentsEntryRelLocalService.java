@@ -248,11 +248,6 @@ public interface AssetListEntrySegmentsEntryRelLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<AssetListEntrySegmentsEntryRel>
-		fetchAssetListEntrySegmentsEntryRels(
-			long assetListEntryId, long[] segmentsEntryIds);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<AssetListEntrySegmentsEntryRel>
 		fetchDynamicAssetListEntrySegmentsEntryRels(long companyId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -268,11 +263,6 @@ public interface AssetListEntrySegmentsEntryRelLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public AssetListEntrySegmentsEntryRel getAssetListEntrySegmentsEntryRel(
 			long assetListEntrySegmentsEntryRelId)
-		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public AssetListEntrySegmentsEntryRel getAssetListEntrySegmentsEntryRel(
-			long assetListEntryId, long segmentsEntryId)
 		throws PortalException;
 
 	/**
@@ -419,4 +409,4 @@ public interface AssetListEntrySegmentsEntryRelLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1278699503
+// LIFERAY-SERVICE-BUILDER-HASH:1918323541

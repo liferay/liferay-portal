@@ -275,10 +275,6 @@ public interface AssetListEntryAssetEntryRelLocalService
 			long assetListEntryAssetEntryRelId)
 		throws PortalException;
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<AssetListEntryAssetEntryRel>
-		getAssetListEntryAssetEntryRelByAssetEntryId(long assetEntryId);
-
 	/**
 	 * Returns the asset list entry asset entry rel matching the UUID and group.
 	 *
@@ -449,4 +445,4 @@ public interface AssetListEntryAssetEntryRelLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:124879851
+// LIFERAY-SERVICE-BUILDER-HASH:-694412720
