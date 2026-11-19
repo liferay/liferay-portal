@@ -29,13 +29,12 @@
 {{- $targetActiveDataPlane := $xr.spec.targetActiveDataPlane -}}
 
 {{- $activeDataPlane := $targetActiveDataPlane -}}
-{{- $databaseBootstrapIamUser := get (dict "mysql" (splitList "@" $databaseBootstrapEmail | first) "postgresql" (trimSuffix ".gserviceaccount.com" $databaseBootstrapEmail)) $env.databaseEngine -}}
-{{- $databaseCharset := get (dict "mysql" "utf8mb4" "postgresql" "UTF8") $env.databaseEngine -}}
-{{- $databaseCollation := get (dict "mysql" "utf8mb4_unicode_ci" "postgresql" "en_US.UTF8") $env.databaseEngine -}}
-{{- $databaseIamAuthenticationFlagName := get (dict "mysql" "cloudsql_iam_authentication" "postgresql" "cloudsql.iam_authentication") $env.databaseEngine -}}
-{{- $databaseIamUser := get (dict "mysql" (splitList "@" $gsaEmail | first) "postgresql" (trimSuffix ".gserviceaccount.com" $gsaEmail)) $env.databaseEngine -}}
-{{- $databasePointInTimeRecoveryFieldName := get (dict "mysql" "binaryLogEnabled" "postgresql" "pointInTimeRecoveryEnabled") $env.databaseEngine -}}
-{{- $databaseVersion := get (dict "mysql" (printf "MYSQL_%s" ($xr.spec.database.version | default "8.4" | replace "." "_")) "postgresql" (printf "POSTGRES_%s" ($xr.spec.database.version | default "18"))) $env.databaseEngine -}}
+{{- $databaseBootstrapIamUser := eq $env.databaseEngine "mysql" | ternary (splitList "@" $databaseBootstrapEmail | first) (trimSuffix ".gserviceaccount.com" $databaseBootstrapEmail) -}}
+{{- $databaseEngine := get (dict
+    "mysql" (dict "charset" "utf8mb4" "collation" "utf8mb4_unicode_ci" "defaultVersion" "8.4" "versionPrefix" "MYSQL")
+    "postgresql" (dict "charset" "UTF8" "collation" "en_US.UTF8" "defaultVersion" "18" "versionPrefix" "POSTGRES")) $env.databaseEngine -}}
+{{- $databaseIamUser := eq $env.databaseEngine "mysql" | ternary (splitList "@" $gsaEmail | first) (trimSuffix ".gserviceaccount.com" $gsaEmail) -}}
+{{- $databaseVersion := printf "%s_%s" $databaseEngine.versionPrefix ($xr.spec.database.version | default $databaseEngine.defaultVersion | replace "." "_") -}}
 {{- $dataPlanes := list $targetActiveDataPlane -}}
 {{- $isCMKKeyReady := or (not $cmkEnabled) $cmkKeyId -}}
 {{- $labels := merge (dict "app" "liferay" "deployment-name" $env.deploymentName "environment-id" $environmentId "project-id" $projectId) $xr.spec.commonTags -}}
@@ -51,5 +50,3 @@
 
 {{- $backupTargetLabels := merge (dict "should-back-up" "true") $labels -}}
 {{- $baseName := printf "%.18s-%s" $projectIdFull (printf "%s-%s" $env.projectNumber $projectIdFull | sha256sum | trunc 6) -}}
-{{- $databaseBootstrapIamUserExternalName := get (dict "mysql" $databaseBootstrapEmail "postgresql" $databaseBootstrapIamUser) $env.databaseEngine -}}
-{{- $databaseIamUserExternalName := get (dict "mysql" $gsaEmail "postgresql" $databaseIamUser) $env.databaseEngine -}}

@@ -129,8 +129,8 @@ metadata:
     name: {{ $xr.metadata.name }}-db-{{ $dataPlane }}
 spec:
     forProvider:
-        charset: {{ $databaseCharset }}
-        collation: {{ $databaseCollation }}
+        charset: {{ $databaseEngine.charset }}
+        collation: {{ $databaseEngine.collation }}
         instanceSelector:
             matchLabels:
                 app: liferay
@@ -164,11 +164,15 @@ spec:
                 backupRetentionSettings:
                     retainedBackups: 7
                 enabled: true
-                {{ $databasePointInTimeRecoveryFieldName }}: true
+                {{- if eq $env.databaseEngine "mysql" }}
+                binaryLogEnabled: true
+                {{- else }}
+                pointInTimeRecoveryEnabled: true
+                {{- end }}
                 transactionLogRetentionDays: 7
             {{- end }}
             databaseFlags:
-                -   name: {{ $databaseIamAuthenticationFlagName }}
+                -   name: {{ eq $env.databaseEngine "mysql" | ternary "cloudsql_iam_authentication" "cloudsql.iam_authentication" }}
                     value: "on"
             diskSize: {{ $database.storageGB }}
             diskType: PD_SSD
@@ -192,7 +196,7 @@ apiVersion: sql.gcp.m.upbound.io/v1beta1
 kind: User
 metadata:
     annotations:
-        crossplane.io/external-name: {{ $databaseBootstrapIamUserExternalName }}
+        crossplane.io/external-name: {{ eq $env.databaseEngine "mysql" | ternary $databaseBootstrapEmail $databaseBootstrapIamUser }}
         gotemplating.fn.crossplane.io/composition-resource-name: database-bootstrap-iam-user-{{ $dataPlane }}
     labels:
         app: liferay
@@ -217,7 +221,7 @@ apiVersion: sql.gcp.m.upbound.io/v1beta1
 kind: User
 metadata:
     annotations:
-        crossplane.io/external-name: {{ $databaseIamUserExternalName }}
+        crossplane.io/external-name: {{ eq $env.databaseEngine "mysql" | ternary $gsaEmail $databaseIamUser }}
         gotemplating.fn.crossplane.io/composition-resource-name: liferay-iam-user-{{ $dataPlane }}
     labels:
         app: liferay
