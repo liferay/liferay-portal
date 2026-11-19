@@ -103,10 +103,9 @@ public class MultiCompanyBatchEngineUnitProcessor {
 
 	@Deactivate
 	protected void deactivate() {
-		_serviceRegistration.unregister();
-
 		_bundleBatchEngineUnits.clear();
 		_bundleProcessedCompanies.clear();
+		_serviceRegistration.unregister();
 	}
 
 	private void _processBatchEngineUnits(Bundle bundle, Company company)
