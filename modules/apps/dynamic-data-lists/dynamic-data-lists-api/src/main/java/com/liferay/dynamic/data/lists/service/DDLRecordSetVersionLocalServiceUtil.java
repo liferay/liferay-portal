@@ -293,35 +293,10 @@ public class DDLRecordSetVersionLocalServiceUtil {
 	}
 
 	public static DDLRecordSetVersion getRecordSetVersion(
-			long recordSetVersionId)
-		throws PortalException {
-
-		return getService().getRecordSetVersion(recordSetVersionId);
-	}
-
-	public static DDLRecordSetVersion getRecordSetVersion(
 			long recordSetId, String version)
 		throws PortalException {
 
 		return getService().getRecordSetVersion(recordSetId, version);
-	}
-
-	public static List<DDLRecordSetVersion> getRecordSetVersions(
-		long recordSetId) {
-
-		return getService().getRecordSetVersions(recordSetId);
-	}
-
-	public static List<DDLRecordSetVersion> getRecordSetVersions(
-		long recordSetId, int start, int end,
-		OrderByComparator<DDLRecordSetVersion> orderByComparator) {
-
-		return getService().getRecordSetVersions(
-			recordSetId, start, end, orderByComparator);
-	}
-
-	public static int getRecordSetVersionsCount(long recordSetId) {
-		return getService().getRecordSetVersionsCount(recordSetId);
 	}
 
 	/**
@@ -350,4 +325,4 @@ public class DDLRecordSetVersionLocalServiceUtil {
 			DDLRecordSetVersionLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:686195003
+// LIFERAY-SERVICE-BUILDER-HASH:1701273079

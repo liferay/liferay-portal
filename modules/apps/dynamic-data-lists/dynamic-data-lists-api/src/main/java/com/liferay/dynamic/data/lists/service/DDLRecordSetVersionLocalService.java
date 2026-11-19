@@ -264,24 +264,9 @@ public interface DDLRecordSetVersionLocalService
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public DDLRecordSetVersion getRecordSetVersion(long recordSetVersionId)
-		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public DDLRecordSetVersion getRecordSetVersion(
 			long recordSetId, String version)
 		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<DDLRecordSetVersion> getRecordSetVersions(long recordSetId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<DDLRecordSetVersion> getRecordSetVersions(
-		long recordSetId, int start, int end,
-		OrderByComparator<DDLRecordSetVersion> orderByComparator);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getRecordSetVersionsCount(long recordSetId);
 
 	/**
 	 * Updates the ddl record set version in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
@@ -313,4 +298,4 @@ public interface DDLRecordSetVersionLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:256921573
+// LIFERAY-SERVICE-BUILDER-HASH:1361313448

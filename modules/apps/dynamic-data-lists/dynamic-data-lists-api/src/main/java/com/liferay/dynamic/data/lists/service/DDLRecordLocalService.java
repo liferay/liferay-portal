@@ -112,16 +112,6 @@ public interface DDLRecordLocalService
 			Map<String, Serializable> fieldsMap, ServiceContext serviceContext)
 		throws PortalException;
 
-	/**
-	 * @deprecated As of Athanasius (7.3.x)
-	 */
-	@Deprecated
-	@Indexable(type = IndexableType.REINDEX)
-	public DDLRecord addRecord(
-			long userId, long groupId, long ddmStorageId, long ddlRecordSetId,
-			ServiceContext serviceContext)
-		throws PortalException;
-
 	@Indexable(type = IndexableType.REINDEX)
 	public DDLRecord addRecord(
 			long userId, long groupId, long ddmStorageId, long ddlRecordSetId,
@@ -462,23 +452,10 @@ public interface DDLRecordLocalService
 		long recordSetId, int start, int end,
 		OrderByComparator<DDLRecord> orderByComparator);
 
-	/**
-	 * Returns all the records matching the record set ID and user ID.
-	 *
-	 * @param recordSetId the record's record set ID
-	 * @param userId the user ID the records belong to
-	 * @return the list of matching records ordered by the comparator
-	 */
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<DDLRecord> getRecords(long recordSetId, long userId);
-
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<DDLRecord> getRecords(
 		long recordSetId, long userId, int start, int end,
 		OrderByComparator<DDLRecord> orderByComparator);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getRecordsCount(long recordSetId);
 
 	/**
 	 * Returns the number of records matching the record set ID and workflow
@@ -636,4 +613,4 @@ public interface DDLRecordLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1155561891
+// LIFERAY-SERVICE-BUILDER-HASH:1776795608

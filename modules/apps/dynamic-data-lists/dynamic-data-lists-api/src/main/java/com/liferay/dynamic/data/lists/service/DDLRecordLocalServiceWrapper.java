@@ -87,20 +87,6 @@ public class DDLRecordLocalServiceWrapper
 			serviceContext);
 	}
 
-	/**
-	 * @deprecated As of Athanasius (7.3.x)
-	 */
-	@Deprecated
-	@Override
-	public DDLRecord addRecord(
-			long userId, long groupId, long ddmStorageId, long ddlRecordSetId,
-			com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _ddlRecordLocalService.addRecord(
-			userId, groupId, ddmStorageId, ddlRecordSetId, serviceContext);
-	}
-
 	@Override
 	public DDLRecord addRecord(
 			long userId, long groupId, long ddmStorageId, long ddlRecordSetId,
@@ -572,18 +558,6 @@ public class DDLRecordLocalServiceWrapper
 			recordSetId, start, end, orderByComparator);
 	}
 
-	/**
-	 * Returns all the records matching the record set ID and user ID.
-	 *
-	 * @param recordSetId the record's record set ID
-	 * @param userId the user ID the records belong to
-	 * @return the list of matching records ordered by the comparator
-	 */
-	@Override
-	public java.util.List<DDLRecord> getRecords(long recordSetId, long userId) {
-		return _ddlRecordLocalService.getRecords(recordSetId, userId);
-	}
-
 	@Override
 	public java.util.List<DDLRecord> getRecords(
 		long recordSetId, long userId, int start, int end,
@@ -592,11 +566,6 @@ public class DDLRecordLocalServiceWrapper
 
 		return _ddlRecordLocalService.getRecords(
 			recordSetId, userId, start, end, orderByComparator);
-	}
-
-	@Override
-	public int getRecordsCount(long recordSetId) {
-		return _ddlRecordLocalService.getRecordsCount(recordSetId);
 	}
 
 	/**
@@ -824,4 +793,4 @@ public class DDLRecordLocalServiceWrapper
 	private DDLRecordLocalService _ddlRecordLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1961307702
+// LIFERAY-SERVICE-BUILDER-HASH:723976250

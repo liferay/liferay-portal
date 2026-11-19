@@ -209,29 +209,6 @@ public interface DDLRecordSetLocalService
 	 */
 	public void deleteRecordSet(long recordSetId) throws PortalException;
 
-	/**
-	 * Deletes the record set and its resources.
-	 *
-	 * <p>
-	 * This operation updates the record set matching the group and
-	 * recordSetKey.
-	 * </p>
-	 *
-	 * @param groupId the primary key of the record set's group
-	 * @param recordSetKey the record set's mnemonic primary key
-	 * @throws PortalException if a portal exception occurred
-	 */
-	public void deleteRecordSet(long groupId, String recordSetKey)
-		throws PortalException;
-
-	/**
-	 * Deletes all the record sets matching the group.
-	 *
-	 * @param groupId the primary key of the record set's group
-	 * @throws PortalException if a portal exception occurred
-	 */
-	public void deleteRecordSets(long groupId) throws PortalException;
-
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public <T> T dslQuery(DSLQuery dslQuery);
 
@@ -317,16 +294,6 @@ public interface DDLRecordSetLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public DDLRecordSet fetchDDLRecordSetByUuidAndGroupId(
 		String uuid, long groupId);
-
-	/**
-	 * Returns the record set with the ID.
-	 *
-	 * @param recordSetId the primary key of the record set
-	 * @return the record set with the ID, or <code>null</code> if a matching
-	 record set could not be found
-	 */
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public DDLRecordSet fetchRecordSet(long recordSetId);
 
 	/**
 	 * Returns the record set matching the group and record set key.
@@ -464,26 +431,6 @@ public interface DDLRecordSetLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public DDLRecordSet getRecordSet(String uuid, long recordSetId)
 		throws PortalException;
-
-	/**
-	 * Returns all the record sets belonging the group.
-	 *
-	 * @return the record sets belonging to the group
-	 */
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<DDLRecordSet> getRecordSets(long groupId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<DDLRecordSet> getRecordSets(long groupId, int start, int end);
-
-	/**
-	 * Returns the number of all the record sets belonging the group.
-	 *
-	 * @param groupId the primary key of the record set's group
-	 * @return the number of record sets belonging to the group
-	 */
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getRecordSetsCount(long groupId);
 
 	/**
 	 * Returns a range of all record sets matching the parameters, including a
@@ -649,4 +596,4 @@ public interface DDLRecordSetLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-617033878
+// LIFERAY-SERVICE-BUILDER-HASH:1276849755

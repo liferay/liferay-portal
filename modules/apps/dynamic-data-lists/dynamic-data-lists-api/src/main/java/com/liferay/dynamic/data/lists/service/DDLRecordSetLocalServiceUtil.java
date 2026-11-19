@@ -213,34 +213,6 @@ public class DDLRecordSetLocalServiceUtil {
 		getService().deleteRecordSet(recordSetId);
 	}
 
-	/**
-	 * Deletes the record set and its resources.
-	 *
-	 * <p>
-	 * This operation updates the record set matching the group and
-	 * recordSetKey.
-	 * </p>
-	 *
-	 * @param groupId the primary key of the record set's group
-	 * @param recordSetKey the record set's mnemonic primary key
-	 * @throws PortalException if a portal exception occurred
-	 */
-	public static void deleteRecordSet(long groupId, String recordSetKey)
-		throws PortalException {
-
-		getService().deleteRecordSet(groupId, recordSetKey);
-	}
-
-	/**
-	 * Deletes all the record sets matching the group.
-	 *
-	 * @param groupId the primary key of the record set's group
-	 * @throws PortalException if a portal exception occurred
-	 */
-	public static void deleteRecordSets(long groupId) throws PortalException {
-		getService().deleteRecordSets(groupId);
-	}
-
 	public static <T> T dslQuery(DSLQuery dslQuery) {
 		return getService().dslQuery(dslQuery);
 	}
@@ -341,17 +313,6 @@ public class DDLRecordSetLocalServiceUtil {
 		String uuid, long groupId) {
 
 		return getService().fetchDDLRecordSetByUuidAndGroupId(uuid, groupId);
-	}
-
-	/**
-	 * Returns the record set with the ID.
-	 *
-	 * @param recordSetId the primary key of the record set
-	 * @return the record set with the ID, or <code>null</code> if a matching
-	 record set could not be found
-	 */
-	public static DDLRecordSet fetchRecordSet(long recordSetId) {
-		return getService().fetchRecordSet(recordSetId);
 	}
 
 	/**
@@ -527,31 +488,6 @@ public class DDLRecordSetLocalServiceUtil {
 		throws PortalException {
 
 		return getService().getRecordSet(uuid, recordSetId);
-	}
-
-	/**
-	 * Returns all the record sets belonging the group.
-	 *
-	 * @return the record sets belonging to the group
-	 */
-	public static List<DDLRecordSet> getRecordSets(long groupId) {
-		return getService().getRecordSets(groupId);
-	}
-
-	public static List<DDLRecordSet> getRecordSets(
-		long groupId, int start, int end) {
-
-		return getService().getRecordSets(groupId, start, end);
-	}
-
-	/**
-	 * Returns the number of all the record sets belonging the group.
-	 *
-	 * @param groupId the primary key of the record set's group
-	 * @return the number of record sets belonging to the group
-	 */
-	public static int getRecordSetsCount(long groupId) {
-		return getService().getRecordSetsCount(groupId);
 	}
 
 	/**
@@ -738,4 +674,4 @@ public class DDLRecordSetLocalServiceUtil {
 			DDLRecordSetLocalServiceUtil.class, DDLRecordSetLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-310855652
+// LIFERAY-SERVICE-BUILDER-HASH:709908870

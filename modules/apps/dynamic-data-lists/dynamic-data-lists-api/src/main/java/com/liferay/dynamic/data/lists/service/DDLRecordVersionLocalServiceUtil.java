@@ -319,44 +319,6 @@ public class DDLRecordVersionLocalServiceUtil {
 	}
 
 	/**
-	 * Returns an ordered range of record versions matching the record's ID.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end -
-	 * start</code> instances. <code>start</code> and <code>end</code> are not
-	 * primary keys, they are indexes in the result set. Thus, <code>0</code>
-	 * refers to the first result in the set. Setting both <code>start</code>
-	 * and <code>end</code> to <code>QueryUtil.ALL_POS</code> will return the
-	 * full result set.
-	 * </p>
-	 *
-	 * @param recordId the primary key of the record
-	 * @param start the lower bound of the range of record versions to return
-	 * @param end the upper bound of the range of record versions to return
-	 (not inclusive)
-	 * @param orderByComparator the comparator used to order the record
-	 versions
-	 * @return the range of matching record versions ordered by the comparator
-	 */
-	public static List<DDLRecordVersion> getRecordVersions(
-		long recordId, int start, int end,
-		OrderByComparator<DDLRecordVersion> orderByComparator) {
-
-		return getService().getRecordVersions(
-			recordId, start, end, orderByComparator);
-	}
-
-	/**
-	 * Returns the number of record versions matching the record ID.
-	 *
-	 * @param recordId the primary key of the record
-	 * @return the number of matching record versions
-	 */
-	public static int getRecordVersionsCount(long recordId) {
-		return getService().getRecordVersionsCount(recordId);
-	}
-
-	/**
 	 * Updates the ddl record version in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	 *
 	 * <p>
@@ -382,4 +344,4 @@ public class DDLRecordVersionLocalServiceUtil {
 			DDLRecordVersionLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1886103845
+// LIFERAY-SERVICE-BUILDER-HASH:421647749

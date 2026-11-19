@@ -220,38 +220,6 @@ public class DDLRecordSetLocalServiceWrapper
 		_ddlRecordSetLocalService.deleteRecordSet(recordSetId);
 	}
 
-	/**
-	 * Deletes the record set and its resources.
-	 *
-	 * <p>
-	 * This operation updates the record set matching the group and
-	 * recordSetKey.
-	 * </p>
-	 *
-	 * @param groupId the primary key of the record set's group
-	 * @param recordSetKey the record set's mnemonic primary key
-	 * @throws PortalException if a portal exception occurred
-	 */
-	@Override
-	public void deleteRecordSet(long groupId, String recordSetKey)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		_ddlRecordSetLocalService.deleteRecordSet(groupId, recordSetKey);
-	}
-
-	/**
-	 * Deletes all the record sets matching the group.
-	 *
-	 * @param groupId the primary key of the record set's group
-	 * @throws PortalException if a portal exception occurred
-	 */
-	@Override
-	public void deleteRecordSets(long groupId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		_ddlRecordSetLocalService.deleteRecordSets(groupId);
-	}
-
 	@Override
 	public <T> T dslQuery(com.liferay.petra.sql.dsl.query.DSLQuery dslQuery) {
 		return _ddlRecordSetLocalService.dslQuery(dslQuery);
@@ -372,18 +340,6 @@ public class DDLRecordSetLocalServiceWrapper
 
 		return _ddlRecordSetLocalService.fetchDDLRecordSetByUuidAndGroupId(
 			uuid, groupId);
-	}
-
-	/**
-	 * Returns the record set with the ID.
-	 *
-	 * @param recordSetId the primary key of the record set
-	 * @return the record set with the ID, or <code>null</code> if a matching
-	 record set could not be found
-	 */
-	@Override
-	public DDLRecordSet fetchRecordSet(long recordSetId) {
-		return _ddlRecordSetLocalService.fetchRecordSet(recordSetId);
 	}
 
 	/**
@@ -578,34 +534,6 @@ public class DDLRecordSetLocalServiceWrapper
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _ddlRecordSetLocalService.getRecordSet(uuid, recordSetId);
-	}
-
-	/**
-	 * Returns all the record sets belonging the group.
-	 *
-	 * @return the record sets belonging to the group
-	 */
-	@Override
-	public java.util.List<DDLRecordSet> getRecordSets(long groupId) {
-		return _ddlRecordSetLocalService.getRecordSets(groupId);
-	}
-
-	@Override
-	public java.util.List<DDLRecordSet> getRecordSets(
-		long groupId, int start, int end) {
-
-		return _ddlRecordSetLocalService.getRecordSets(groupId, start, end);
-	}
-
-	/**
-	 * Returns the number of all the record sets belonging the group.
-	 *
-	 * @param groupId the primary key of the record set's group
-	 * @return the number of record sets belonging to the group
-	 */
-	@Override
-	public int getRecordSetsCount(long groupId) {
-		return _ddlRecordSetLocalService.getRecordSetsCount(groupId);
 	}
 
 	/**
@@ -836,4 +764,4 @@ public class DDLRecordSetLocalServiceWrapper
 	private DDLRecordSetLocalService _ddlRecordSetLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-823556513
+// LIFERAY-SERVICE-BUILDER-HASH:-29172165

@@ -332,44 +332,12 @@ public class DDLRecordSetVersionLocalServiceWrapper
 	}
 
 	@Override
-	public DDLRecordSetVersion getRecordSetVersion(long recordSetVersionId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _ddlRecordSetVersionLocalService.getRecordSetVersion(
-			recordSetVersionId);
-	}
-
-	@Override
 	public DDLRecordSetVersion getRecordSetVersion(
 			long recordSetId, String version)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _ddlRecordSetVersionLocalService.getRecordSetVersion(
 			recordSetId, version);
-	}
-
-	@Override
-	public java.util.List<DDLRecordSetVersion> getRecordSetVersions(
-		long recordSetId) {
-
-		return _ddlRecordSetVersionLocalService.getRecordSetVersions(
-			recordSetId);
-	}
-
-	@Override
-	public java.util.List<DDLRecordSetVersion> getRecordSetVersions(
-		long recordSetId, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<DDLRecordSetVersion>
-			orderByComparator) {
-
-		return _ddlRecordSetVersionLocalService.getRecordSetVersions(
-			recordSetId, start, end, orderByComparator);
-	}
-
-	@Override
-	public int getRecordSetVersionsCount(long recordSetId) {
-		return _ddlRecordSetVersionLocalService.getRecordSetVersionsCount(
-			recordSetId);
 	}
 
 	/**
@@ -430,4 +398,4 @@ public class DDLRecordSetVersionLocalServiceWrapper
 	private DDLRecordSetVersionLocalService _ddlRecordSetVersionLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1275892461
+// LIFERAY-SERVICE-BUILDER-HASH:139834149
