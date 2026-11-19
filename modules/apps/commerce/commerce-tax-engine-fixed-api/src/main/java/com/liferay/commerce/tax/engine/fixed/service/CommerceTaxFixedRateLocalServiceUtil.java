@@ -53,19 +53,6 @@ public class CommerceTaxFixedRateLocalServiceUtil {
 		return getService().addCommerceTaxFixedRate(commerceTaxFixedRate);
 	}
 
-	/**
-	 * @deprecated As of Athanasius (7.3.x)
-	 */
-	@Deprecated
-	public static CommerceTaxFixedRate addCommerceTaxFixedRate(
-			long commerceTaxMethodId, long cpTaxCategoryId, double rate,
-			com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws PortalException {
-
-		return getService().addCommerceTaxFixedRate(
-			commerceTaxMethodId, cpTaxCategoryId, rate, serviceContext);
-	}
-
 	public static CommerceTaxFixedRate addCommerceTaxFixedRate(
 			long userId, long groupId, long commerceTaxMethodId,
 			long cpTaxCategoryId, double rate)
@@ -274,14 +261,6 @@ public class CommerceTaxFixedRateLocalServiceUtil {
 		return getService().getCommerceTaxFixedRate(commerceTaxFixedRateId);
 	}
 
-	public static CommerceTaxFixedRate getCommerceTaxFixedRate(
-			long cpTaxCategoryId, long commerceTaxMethodId)
-		throws PortalException {
-
-		return getService().getCommerceTaxFixedRate(
-			cpTaxCategoryId, commerceTaxMethodId);
-	}
-
 	/**
 	 * Returns a range of all the commerce tax fixed rates.
 	 *
@@ -299,14 +278,6 @@ public class CommerceTaxFixedRateLocalServiceUtil {
 		return getService().getCommerceTaxFixedRates(start, end);
 	}
 
-	public static List<CommerceTaxFixedRate> getCommerceTaxFixedRates(
-		long commerceTaxMethodId, int start, int end,
-		OrderByComparator<CommerceTaxFixedRate> orderByComparator) {
-
-		return getService().getCommerceTaxFixedRates(
-			commerceTaxMethodId, start, end, orderByComparator);
-	}
-
 	/**
 	 * Returns the number of commerce tax fixed rates.
 	 *
@@ -314,10 +285,6 @@ public class CommerceTaxFixedRateLocalServiceUtil {
 	 */
 	public static int getCommerceTaxFixedRatesCount() {
 		return getService().getCommerceTaxFixedRatesCount();
-	}
-
-	public static int getCommerceTaxFixedRatesCount(long commerceTaxMethodId) {
-		return getService().getCommerceTaxFixedRatesCount(commerceTaxMethodId);
 	}
 
 	public static
@@ -379,4 +346,4 @@ public class CommerceTaxFixedRateLocalServiceUtil {
 			CommerceTaxFixedRateLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-774754814
+// LIFERAY-SERVICE-BUILDER-HASH:670734662

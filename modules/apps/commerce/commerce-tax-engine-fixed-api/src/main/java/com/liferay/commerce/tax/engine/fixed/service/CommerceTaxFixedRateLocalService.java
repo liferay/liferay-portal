@@ -18,7 +18,6 @@ import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.service.BaseLocalService;
 import com.liferay.portal.kernel.service.PersistedModelLocalService;
-import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
@@ -67,15 +66,6 @@ public interface CommerceTaxFixedRateLocalService
 	@Indexable(type = IndexableType.REINDEX)
 	public CommerceTaxFixedRate addCommerceTaxFixedRate(
 		CommerceTaxFixedRate commerceTaxFixedRate);
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x)
-	 */
-	@Deprecated
-	public CommerceTaxFixedRate addCommerceTaxFixedRate(
-			long commerceTaxMethodId, long cpTaxCategoryId, double rate,
-			ServiceContext serviceContext)
-		throws PortalException;
 
 	public CommerceTaxFixedRate addCommerceTaxFixedRate(
 			long userId, long groupId, long commerceTaxMethodId,
@@ -237,11 +227,6 @@ public interface CommerceTaxFixedRateLocalService
 			long commerceTaxFixedRateId)
 		throws PortalException;
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public CommerceTaxFixedRate getCommerceTaxFixedRate(
-			long cpTaxCategoryId, long commerceTaxMethodId)
-		throws PortalException;
-
 	/**
 	 * Returns a range of all the commerce tax fixed rates.
 	 *
@@ -257,11 +242,6 @@ public interface CommerceTaxFixedRateLocalService
 	public List<CommerceTaxFixedRate> getCommerceTaxFixedRates(
 		int start, int end);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CommerceTaxFixedRate> getCommerceTaxFixedRates(
-		long commerceTaxMethodId, int start, int end,
-		OrderByComparator<CommerceTaxFixedRate> orderByComparator);
-
 	/**
 	 * Returns the number of commerce tax fixed rates.
 	 *
@@ -269,9 +249,6 @@ public interface CommerceTaxFixedRateLocalService
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getCommerceTaxFixedRatesCount();
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCommerceTaxFixedRatesCount(long commerceTaxMethodId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
@@ -310,4 +287,4 @@ public interface CommerceTaxFixedRateLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1428971111
+// LIFERAY-SERVICE-BUILDER-HASH:581056808

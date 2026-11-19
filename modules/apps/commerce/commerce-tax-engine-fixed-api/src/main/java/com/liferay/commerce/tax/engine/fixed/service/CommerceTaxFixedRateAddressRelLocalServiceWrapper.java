@@ -69,26 +69,6 @@ public class CommerceTaxFixedRateAddressRelLocalServiceWrapper
 	}
 
 	/**
-	 * @deprecated As of Athanasius (7.3.x)
-	 */
-	@Deprecated
-	@Override
-	public
-		com.liferay.commerce.tax.engine.fixed.model.
-			CommerceTaxFixedRateAddressRel addCommerceTaxFixedRateAddressRel(
-					long commerceTaxMethodId, long cpTaxCategoryId,
-					long countryId, long regionId, String zip, double rate,
-					com.liferay.portal.kernel.service.ServiceContext
-						serviceContext)
-				throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _commerceTaxFixedRateAddressRelLocalService.
-			addCommerceTaxFixedRateAddressRel(
-				commerceTaxMethodId, cpTaxCategoryId, countryId, regionId, zip,
-				rate, serviceContext);
-	}
-
-	/**
 	 * Creates a new commerce tax fixed rate address rel with the primary key. Does not add the commerce tax fixed rate address rel to the database.
 	 *
 	 * @param commerceTaxFixedRateAddressRelId the primary key for the new commerce tax fixed rate address rel
@@ -381,30 +361,6 @@ public class CommerceTaxFixedRateAddressRelLocalServiceWrapper
 			getCommerceTaxFixedRateAddressRels(start, end);
 	}
 
-	@Override
-	public java.util.List
-		<com.liferay.commerce.tax.engine.fixed.model.
-			CommerceTaxFixedRateAddressRel> getCommerceTaxFixedRateAddressRels(
-				long cpTaxCategoryId, int start, int end) {
-
-		return _commerceTaxFixedRateAddressRelLocalService.
-			getCommerceTaxFixedRateAddressRels(cpTaxCategoryId, start, end);
-	}
-
-	@Override
-	public java.util.List
-		<com.liferay.commerce.tax.engine.fixed.model.
-			CommerceTaxFixedRateAddressRel> getCommerceTaxFixedRateAddressRels(
-				long cpTaxCategoryId, int start, int end,
-				com.liferay.portal.kernel.util.OrderByComparator
-					<com.liferay.commerce.tax.engine.fixed.model.
-						CommerceTaxFixedRateAddressRel> orderByComparator) {
-
-		return _commerceTaxFixedRateAddressRelLocalService.
-			getCommerceTaxFixedRateAddressRels(
-				cpTaxCategoryId, start, end, orderByComparator);
-	}
-
 	/**
 	 * Returns the number of commerce tax fixed rate address rels.
 	 *
@@ -414,24 +370,6 @@ public class CommerceTaxFixedRateAddressRelLocalServiceWrapper
 	public int getCommerceTaxFixedRateAddressRelsCount() {
 		return _commerceTaxFixedRateAddressRelLocalService.
 			getCommerceTaxFixedRateAddressRelsCount();
-	}
-
-	@Override
-	public int getCommerceTaxFixedRateAddressRelsCount(long cpTaxCategoryId) {
-		return _commerceTaxFixedRateAddressRelLocalService.
-			getCommerceTaxFixedRateAddressRelsCount(cpTaxCategoryId);
-	}
-
-	@Override
-	public java.util.List
-		<com.liferay.commerce.tax.engine.fixed.model.
-			CommerceTaxFixedRateAddressRel>
-				getCommerceTaxMethodFixedRateAddressRels(
-					long commerceTaxMethodId, int start, int end) {
-
-		return _commerceTaxFixedRateAddressRelLocalService.
-			getCommerceTaxMethodFixedRateAddressRels(
-				commerceTaxMethodId, start, end);
 	}
 
 	@Override
@@ -525,4 +463,4 @@ public class CommerceTaxFixedRateAddressRelLocalServiceWrapper
 		_commerceTaxFixedRateAddressRelLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:196140583
+// LIFERAY-SERVICE-BUILDER-HASH:656938030

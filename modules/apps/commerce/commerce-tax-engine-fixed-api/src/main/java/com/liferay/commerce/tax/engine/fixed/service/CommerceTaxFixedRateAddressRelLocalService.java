@@ -18,7 +18,6 @@ import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.service.BaseLocalService;
 import com.liferay.portal.kernel.service.PersistedModelLocalService;
-import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
@@ -72,16 +71,6 @@ public interface CommerceTaxFixedRateAddressRelLocalService
 			long userId, long groupId, long commerceTaxMethodId,
 			long cpTaxCategoryId, long countryId, long regionId, String zip,
 			double rate)
-		throws PortalException;
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x)
-	 */
-	@Deprecated
-	public CommerceTaxFixedRateAddressRel addCommerceTaxFixedRateAddressRel(
-			long commerceTaxMethodId, long cpTaxCategoryId, long countryId,
-			long regionId, String zip, double rate,
-			ServiceContext serviceContext)
 		throws PortalException;
 
 	/**
@@ -258,18 +247,6 @@ public interface CommerceTaxFixedRateAddressRelLocalService
 	public List<CommerceTaxFixedRateAddressRel>
 		getCommerceTaxFixedRateAddressRels(int start, int end);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CommerceTaxFixedRateAddressRel>
-		getCommerceTaxFixedRateAddressRels(
-			long cpTaxCategoryId, int start, int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CommerceTaxFixedRateAddressRel>
-		getCommerceTaxFixedRateAddressRels(
-			long cpTaxCategoryId, int start, int end,
-			OrderByComparator<CommerceTaxFixedRateAddressRel>
-				orderByComparator);
-
 	/**
 	 * Returns the number of commerce tax fixed rate address rels.
 	 *
@@ -277,14 +254,6 @@ public interface CommerceTaxFixedRateAddressRelLocalService
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getCommerceTaxFixedRateAddressRelsCount();
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCommerceTaxFixedRateAddressRelsCount(long cpTaxCategoryId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CommerceTaxFixedRateAddressRel>
-		getCommerceTaxMethodFixedRateAddressRels(
-			long commerceTaxMethodId, int start, int end);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
@@ -324,4 +293,4 @@ public interface CommerceTaxFixedRateAddressRelLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1177811673
+// LIFERAY-SERVICE-BUILDER-HASH:1884705739

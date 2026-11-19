@@ -49,21 +49,6 @@ public class CommerceTaxFixedRateLocalServiceWrapper
 			commerceTaxFixedRate);
 	}
 
-	/**
-	 * @deprecated As of Athanasius (7.3.x)
-	 */
-	@Deprecated
-	@Override
-	public com.liferay.commerce.tax.engine.fixed.model.CommerceTaxFixedRate
-			addCommerceTaxFixedRate(
-				long commerceTaxMethodId, long cpTaxCategoryId, double rate,
-				com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _commerceTaxFixedRateLocalService.addCommerceTaxFixedRate(
-			commerceTaxMethodId, cpTaxCategoryId, rate, serviceContext);
-	}
-
 	@Override
 	public com.liferay.commerce.tax.engine.fixed.model.CommerceTaxFixedRate
 			addCommerceTaxFixedRate(
@@ -315,16 +300,6 @@ public class CommerceTaxFixedRateLocalServiceWrapper
 			commerceTaxFixedRateId);
 	}
 
-	@Override
-	public com.liferay.commerce.tax.engine.fixed.model.CommerceTaxFixedRate
-			getCommerceTaxFixedRate(
-				long cpTaxCategoryId, long commerceTaxMethodId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _commerceTaxFixedRateLocalService.getCommerceTaxFixedRate(
-			cpTaxCategoryId, commerceTaxMethodId);
-	}
-
 	/**
 	 * Returns a range of all the commerce tax fixed rates.
 	 *
@@ -345,19 +320,6 @@ public class CommerceTaxFixedRateLocalServiceWrapper
 			start, end);
 	}
 
-	@Override
-	public java.util.List
-		<com.liferay.commerce.tax.engine.fixed.model.CommerceTaxFixedRate>
-			getCommerceTaxFixedRates(
-				long commerceTaxMethodId, int start, int end,
-				com.liferay.portal.kernel.util.OrderByComparator
-					<com.liferay.commerce.tax.engine.fixed.model.
-						CommerceTaxFixedRate> orderByComparator) {
-
-		return _commerceTaxFixedRateLocalService.getCommerceTaxFixedRates(
-			commerceTaxMethodId, start, end, orderByComparator);
-	}
-
 	/**
 	 * Returns the number of commerce tax fixed rates.
 	 *
@@ -367,12 +329,6 @@ public class CommerceTaxFixedRateLocalServiceWrapper
 	public int getCommerceTaxFixedRatesCount() {
 		return _commerceTaxFixedRateLocalService.
 			getCommerceTaxFixedRatesCount();
-	}
-
-	@Override
-	public int getCommerceTaxFixedRatesCount(long commerceTaxMethodId) {
-		return _commerceTaxFixedRateLocalService.getCommerceTaxFixedRatesCount(
-			commerceTaxMethodId);
 	}
 
 	@Override
@@ -454,4 +410,4 @@ public class CommerceTaxFixedRateLocalServiceWrapper
 	private CommerceTaxFixedRateLocalService _commerceTaxFixedRateLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1055913208
+// LIFERAY-SERVICE-BUILDER-HASH:-41343376
