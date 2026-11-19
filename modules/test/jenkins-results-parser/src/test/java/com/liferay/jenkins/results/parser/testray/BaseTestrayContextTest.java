@@ -7,17 +7,23 @@ package com.liferay.jenkins.results.parser.testray;
 
 import com.liferay.jenkins.results.parser.Dom4JUtil;
 import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
+import com.liferay.jenkins.results.parser.Job;
 import com.liferay.jenkins.results.parser.RandomTestUtil;
 import com.liferay.jenkins.results.parser.ReflectionTestUtil;
 import com.liferay.jenkins.results.parser.TopLevelBuildReport;
 import com.liferay.jenkins.results.parser.test.clazz.group.AxisTestClassGroup;
 import com.liferay.jenkins.results.parser.test.clazz.group.PlaywrightAxisTestClassGroup;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+
 import java.net.URL;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -25,7 +31,9 @@ import org.dom4j.Document;
 import org.dom4j.Element;
 
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 import org.mockito.ArgumentCaptor;
 import org.mockito.MockedStatic;
@@ -126,6 +134,17 @@ public class BaseTestrayContextTest
 	public void testHasTestrayCaseResultFile() {
 		_testHasTestrayCaseResultFile(false);
 		_testHasTestrayCaseResultFile(true);
+	}
+
+	@Test
+	public void testIsDownstreamTestResultsImported() throws Exception {
+		_testIsDownstreamTestResultsImported(
+			"db-migration-container-mysql84", true, "db-migration-container-*");
+		_testIsDownstreamTestResultsImported(
+			"db-migration-container-mysql84", true,
+			"db-migration-container-mysql84");
+		_testIsDownstreamTestResultsImported(
+			"lpkg-container-mysql80", false, "db-migration-container-*");
 	}
 
 	@Test
@@ -299,6 +318,9 @@ public class BaseTestrayContextTest
 
 		Assert.assertTrue(xmlString, xmlString.contains(testcaseName));
 	}
+
+	@Rule
+	public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
 	private Element _getPropertiesElement(String xmlString) throws Exception {
 		Document document = Dom4JUtil.parse(xmlString);
@@ -474,6 +496,12 @@ public class BaseTestrayContextTest
 		).when(
 			axisTestClassGroup
 		).getAxisName();
+
+		Mockito.doReturn(
+			Mockito.mock(Job.class)
+		).when(
+			axisTestClassGroup
+		).getJob();
 
 		Mockito.doReturn(
 			Collections.emptyList()
@@ -658,6 +686,64 @@ public class BaseTestrayContextTest
 		testEquals(
 			caseResultFileAvailable,
 			baseTestrayContext.hasTestrayCaseResultFile(axisTestClassGroup));
+	}
+
+	private void _testIsDownstreamTestResultsImported(
+			String batchName, boolean expectedDownstreamTestResultsImported,
+			String jobPropertyBatchName)
+		throws Exception {
+
+		AxisTestClassGroup axisTestClassGroup = Mockito.mock(
+			AxisTestClassGroup.class);
+
+		Mockito.doReturn(
+			batchName
+		).when(
+			axisTestClassGroup
+		).getBatchName();
+
+		Job job = Mockito.mock(Job.class);
+
+		Mockito.doReturn(
+			job
+		).when(
+			axisTestClassGroup
+		).getJob();
+
+		Mockito.doReturn(
+			RandomTestUtil.randomString()
+		).when(
+			job
+		).getJobName();
+
+		Properties jobProperties = new Properties();
+
+		jobProperties.setProperty(
+			JenkinsResultsParserUtil.combine(
+				"testray.import.downstream.test.results[", jobPropertyBatchName,
+				"]"),
+			"true");
+
+		File jobPropertiesFile = temporaryFolder.newFile();
+
+		try (OutputStream outputStream = new FileOutputStream(
+				jobPropertiesFile)) {
+
+			jobProperties.store(outputStream, null);
+		}
+
+		Mockito.doReturn(
+			Collections.singletonList(jobPropertiesFile)
+		).when(
+			job
+		).getJobPropertiesFiles();
+
+		testEquals(
+			expectedDownstreamTestResultsImported,
+			ReflectionTestUtil.invoke(
+				Mockito.mock(BaseTestrayContext.class),
+				"_isDownstreamTestResultsImported",
+				new Class<?>[] {AxisTestClassGroup.class}, axisTestClassGroup));
 	}
 
 	private static final long _DURATION = 5400000L;
