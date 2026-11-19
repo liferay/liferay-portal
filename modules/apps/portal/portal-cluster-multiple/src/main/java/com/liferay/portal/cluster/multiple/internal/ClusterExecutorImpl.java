@@ -168,7 +168,15 @@ public class ClusterExecutorImpl implements ClusterExecutor {
 
 	@Override
 	public boolean isClusterNodeAlive(String clusterNodeId) {
-		return _clusterNodeStatuses.containsKey(clusterNodeId);
+		ClusterReceiver clusterReceiver = _clusterChannel.getClusterReceiver();
+
+		for (Address address : clusterReceiver.getAddresses()) {
+			if (clusterNodeId.equals(getClusterNodeId(address))) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	@Override
