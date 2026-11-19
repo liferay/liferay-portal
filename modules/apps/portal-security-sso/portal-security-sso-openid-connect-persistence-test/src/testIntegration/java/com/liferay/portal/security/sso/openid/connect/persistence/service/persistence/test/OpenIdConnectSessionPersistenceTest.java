@@ -220,15 +220,6 @@ public class OpenIdConnectSessionPersistenceTest {
 	}
 
 	@Test
-	public void testCountByC_A_C() throws Exception {
-		_persistence.countByC_A_C(RandomTestUtil.nextLong(), "", "");
-
-		_persistence.countByC_A_C(0L, "null", "null");
-
-		_persistence.countByC_A_C(0L, (String)null, (String)null);
-	}
-
-	@Test
 	public void testCountByC_I_S() throws Exception {
 		_persistence.countByC_I_S(RandomTestUtil.nextLong(), "", "");
 
@@ -640,4 +631,4 @@ public class OpenIdConnectSessionPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1045422463
+// LIFERAY-SERVICE-BUILDER-HASH:-304003692

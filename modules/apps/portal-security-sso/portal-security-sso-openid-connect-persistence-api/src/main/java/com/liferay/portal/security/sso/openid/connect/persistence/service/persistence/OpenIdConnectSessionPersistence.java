@@ -245,80 +245,6 @@ public interface OpenIdConnectSessionPersistence
 	public int countByU_I(long userId, String issuer);
 
 	/**
-	 * Returns an ordered range of all the open ID connect sessions where companyId = &#63; and authServerWellKnownURI = &#63; and clientId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portal.security.sso.openid.connect.persistence.model.impl.OpenIdConnectSessionModelImpl</code>.
-	 * </p>
-	 *
-	 * @param companyId the company ID
-	 * @param authServerWellKnownURI the auth server well known uri
-	 * @param clientId the client ID
-	 * @param start the lower bound of the range of open ID connect sessions
-	 * @param end the upper bound of the range of open ID connect sessions (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching open ID connect sessions
-	 */
-	public java.util.List<OpenIdConnectSession> findByC_A_C(
-		long companyId, String authServerWellKnownURI, String clientId,
-		int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<OpenIdConnectSession>
-			orderByComparator,
-		boolean useFinderCache);
-
-	/**
-	 * Returns the first open ID connect session in the ordered set where companyId = &#63; and authServerWellKnownURI = &#63; and clientId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param authServerWellKnownURI the auth server well known uri
-	 * @param clientId the client ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching open ID connect session
-	 * @throws NoSuchSessionException if a matching open ID connect session could not be found
-	 */
-	public OpenIdConnectSession findByC_A_C_First(
-			long companyId, String authServerWellKnownURI, String clientId,
-			com.liferay.portal.kernel.util.OrderByComparator
-				<OpenIdConnectSession> orderByComparator)
-		throws NoSuchSessionException;
-
-	/**
-	 * Returns the first open ID connect session in the ordered set where companyId = &#63; and authServerWellKnownURI = &#63; and clientId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param authServerWellKnownURI the auth server well known uri
-	 * @param clientId the client ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching open ID connect session, or <code>null</code> if a matching open ID connect session could not be found
-	 */
-	public OpenIdConnectSession fetchByC_A_C_First(
-		long companyId, String authServerWellKnownURI, String clientId,
-		com.liferay.portal.kernel.util.OrderByComparator<OpenIdConnectSession>
-			orderByComparator);
-
-	/**
-	 * Removes all the open ID connect sessions where companyId = &#63; and authServerWellKnownURI = &#63; and clientId = &#63; from the database.
-	 *
-	 * @param companyId the company ID
-	 * @param authServerWellKnownURI the auth server well known uri
-	 * @param clientId the client ID
-	 */
-	public void removeByC_A_C(
-		long companyId, String authServerWellKnownURI, String clientId);
-
-	/**
-	 * Returns the number of open ID connect sessions where companyId = &#63; and authServerWellKnownURI = &#63; and clientId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param authServerWellKnownURI the auth server well known uri
-	 * @param clientId the client ID
-	 * @return the number of matching open ID connect sessions
-	 */
-	public int countByC_A_C(
-		long companyId, String authServerWellKnownURI, String clientId);
-
-	/**
 	 * Returns an ordered range of all the open ID connect sessions where companyId = &#63; and issuer = &#63; and sessionId = &#63;.
 	 *
 	 * <p>
@@ -556,72 +482,6 @@ public interface OpenIdConnectSessionPersistence
 	}
 
 	/**
-	 * Returns all the open ID connect sessions where companyId = &#63; and authServerWellKnownURI = &#63; and clientId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param authServerWellKnownURI the auth server well known uri
-	 * @param clientId the client ID
-	 * @return the matching open ID connect sessions
-	 */
-	public default java.util.List<OpenIdConnectSession> findByC_A_C(
-		long companyId, String authServerWellKnownURI, String clientId) {
-
-		return findByC_A_C(
-			companyId, authServerWellKnownURI, clientId,
-			com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS,
-			com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS, null, true);
-	}
-
-	/**
-	 * Returns a range of all the open ID connect sessions where companyId = &#63; and authServerWellKnownURI = &#63; and clientId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portal.security.sso.openid.connect.persistence.model.impl.OpenIdConnectSessionModelImpl</code>.
-	 * </p>
-	 *
-	 * @param companyId the company ID
-	 * @param authServerWellKnownURI the auth server well known uri
-	 * @param clientId the client ID
-	 * @param start the lower bound of the range of open ID connect sessions
-	 * @param end the upper bound of the range of open ID connect sessions (not inclusive)
-	 * @return the range of matching open ID connect sessions
-	 */
-	public default java.util.List<OpenIdConnectSession> findByC_A_C(
-		long companyId, String authServerWellKnownURI, String clientId,
-		int start, int end) {
-
-		return findByC_A_C(
-			companyId, authServerWellKnownURI, clientId, start, end, null,
-			true);
-	}
-
-	/**
-	 * Returns an ordered range of all the open ID connect sessions where companyId = &#63; and authServerWellKnownURI = &#63; and clientId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portal.security.sso.openid.connect.persistence.model.impl.OpenIdConnectSessionModelImpl</code>.
-	 * </p>
-	 *
-	 * @param companyId the company ID
-	 * @param authServerWellKnownURI the auth server well known uri
-	 * @param clientId the client ID
-	 * @param start the lower bound of the range of open ID connect sessions
-	 * @param end the upper bound of the range of open ID connect sessions (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching open ID connect sessions
-	 */
-	public default java.util.List<OpenIdConnectSession> findByC_A_C(
-		long companyId, String authServerWellKnownURI, String clientId,
-		int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<OpenIdConnectSession>
-			orderByComparator) {
-
-		return findByC_A_C(
-			companyId, authServerWellKnownURI, clientId, start, end,
-			orderByComparator, true);
-	}
-
-	/**
 	 * Returns all the open ID connect sessions where companyId = &#63; and issuer = &#63; and sessionId = &#63;.
 	 *
 	 * @param companyId the company ID
@@ -684,4 +544,4 @@ public interface OpenIdConnectSessionPersistence
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:44091042
+// LIFERAY-SERVICE-BUILDER-HASH:-247198556
