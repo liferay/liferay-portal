@@ -174,7 +174,14 @@ public class FaroUserLocalServiceImpl extends FaroUserLocalServiceBaseImpl {
 			liveUserId);
 
 		for (FaroUser faroUser : faroUsers) {
-			deleteFaroUser(faroUser.getFaroUserId());
+			try {
+				deleteFaroUser(faroUser.getFaroUserId());
+			}
+			catch (PortalException portalException) {
+				_log.error(
+					"Unable to delete faro user " + faroUser.getFaroUserId(),
+					portalException);
+			}
 		}
 	}
 

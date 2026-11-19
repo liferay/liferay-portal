@@ -29,11 +29,9 @@ public class UserModelListener extends BaseModelListener<User> {
 			_faroUserLocalService.deleteFaroUsersByLiveUserId(user.getUserId());
 		}
 		catch (PortalException portalException) {
-			if (_log.isDebugEnabled()) {
-				_log.error(
-					"Unable to delete faro user " + user.getUserId(),
-					portalException);
-			}
+			_log.error(
+				"Unable to delete the faro users of user " + user.getUserId(),
+				portalException);
 		}
 	}
 
