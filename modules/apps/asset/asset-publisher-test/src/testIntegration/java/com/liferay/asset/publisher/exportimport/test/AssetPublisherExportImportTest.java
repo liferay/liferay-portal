@@ -1479,6 +1479,117 @@ public class AssetPublisherExportImportTest extends BaseExportImportTestCase {
 	}
 
 	@Test
+	@TestInfo("LPD-110540")
+	public void testExportImportReferencesWithLocalStaging() throws Exception {
+		StagingLocalServiceUtil.enableLocalStaging(
+			TestPropsValues.getUserId(), group, false, false,
+			new ServiceContext());
+
+		Group stagingGroup = group.getStagingGroup();
+
+		AssetVocabulary assetVocabulary = AssetTestUtil.addVocabulary(
+			stagingGroup.getGroupId());
+
+		AssetCategory assetCategory = AssetTestUtil.addCategory(
+			stagingGroup.getGroupId(), assetVocabulary.getVocabularyId());
+
+		DDMStructure ddmStructure = DDMStructureTestUtil.addStructure(
+			stagingGroup.getGroupId(), JournalArticle.class.getName());
+
+		DDMStructure dlFileEntryTypeDDMStructure =
+			DDMStructureTestUtil.addStructure(
+				stagingGroup.getGroupId(), DLFileEntryMetadata.class.getName());
+
+		DLFileEntryType dlFileEntryType = addDLFileEntryType(
+			stagingGroup.getGroupId(),
+			dlFileEntryTypeDDMStructure.getStructureId(),
+			ServiceContextTestUtil.getServiceContext(
+				stagingGroup.getGroupId(), TestPropsValues.getUserId()));
+
+		String fieldName = RandomTestUtil.randomString();
+
+		Layout stagingLayout = _layoutLocalService.fetchLayoutByUuidAndGroupId(
+			layout.getUuid(), stagingGroup.getGroupId(),
+			layout.isPrivateLayout());
+
+		String portletId = LayoutTestUtil.addPortletToLayout(
+			stagingLayout, AssetPublisherPortletKeys.ASSET_PUBLISHER,
+			HashMapBuilder.put(
+				"anyAssetType",
+				new String[] {
+					String.valueOf(_portal.getClassNameId(JournalArticle.class))
+				}
+			).put(
+				"anyClassTypeDLFileEntryAssetRendererFactory",
+				new String[] {
+					String.valueOf(dlFileEntryType.getFileEntryTypeId())
+				}
+			).put(
+				"assetVocabularyId",
+				new String[] {String.valueOf(assetVocabulary.getVocabularyId())}
+			).put(
+				"classTypeIds",
+				new String[] {String.valueOf(ddmStructure.getStructureId())}
+			).put(
+				"orderByColumn1",
+				new String[] {
+					_getOrderByColumn(ddmStructure.getStructureId(), fieldName)
+				}
+			).put(
+				"queryName0", new String[] {"assetCategories"}
+			).put(
+				"queryValues0",
+				new String[] {String.valueOf(assetCategory.getCategoryId())}
+			).put(
+				"selectionStyle", new String[] {"dynamic"}
+			).build());
+
+		_publishLayouts(stagingGroup);
+
+		PortletPreferences portletPreferences =
+			_portletPreferencesLocalService.fetchPreferences(
+				_portletPreferencesFactory.getPortletPreferencesIds(
+					layout.getCompanyId(), layout.getGroupId(), 0,
+					layout.getPlid(), portletId));
+
+		DLFileEntryType liveDLFileEntryType =
+			_dlFileEntryTypeLocalService.fetchDLFileEntryTypeByUuidAndGroupId(
+				dlFileEntryType.getUuid(), group.getGroupId());
+
+		Assert.assertEquals(
+			String.valueOf(liveDLFileEntryType.getFileEntryTypeId()),
+			portletPreferences.getValue(
+				"anyClassTypeDLFileEntryAssetRendererFactory", null));
+
+		AssetVocabulary liveAssetVocabulary =
+			_assetVocabularyLocalService.fetchAssetVocabularyByUuidAndGroupId(
+				assetVocabulary.getUuid(), group.getGroupId());
+
+		Assert.assertEquals(
+			String.valueOf(liveAssetVocabulary.getVocabularyId()),
+			portletPreferences.getValue("assetVocabularyId", null));
+
+		DDMStructure liveDDMStructure =
+			_ddmStructureLocalService.fetchDDMStructureByUuidAndGroupId(
+				ddmStructure.getUuid(), group.getGroupId());
+
+		Assert.assertEquals(
+			String.valueOf(liveDDMStructure.getStructureId()),
+			portletPreferences.getValue("classTypeIds", null));
+		Assert.assertEquals(
+			_getOrderByColumn(liveDDMStructure.getStructureId(), fieldName),
+			portletPreferences.getValue("orderByColumn1", null));
+
+		AssetCategory liveAssetCategory =
+			_assetCategoryLocalService.fetchAssetCategoryByUuidAndGroupId(
+				assetCategory.getUuid(), group.getGroupId());
+
+		Assert.assertEquals(
+			String.valueOf(liveAssetCategory.getCategoryId()),
+			portletPreferences.getValue("queryValues0", null));
+	}
+
+	@Test
 	@TestInfo("LPD-81813")
 	public void testExportImportScopeIdsWithLocalStaging() throws Exception {
 		DepotEntry depotEntry = _addDepotEntry();
