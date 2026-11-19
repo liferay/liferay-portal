@@ -186,8 +186,12 @@ public class PortalInstancesPortletTest {
 			() -> _portlet.render(
 				mockLiferayPortletRenderRequest,
 				new MockLiferayPortletRenderResponse()));
-		_assertRenderMustBeOmniadmin(
-			mockLiferayPortletRenderRequest, _companyAdminUser);
+		_assertMustBeOmniadmin(
+			mockLiferayPortletRenderRequest,
+			() -> _portlet.render(
+				mockLiferayPortletRenderRequest,
+				new MockLiferayPortletRenderResponse()),
+			_companyAdminUser);
 
 		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
 
@@ -201,7 +205,12 @@ public class PortalInstancesPortletTest {
 
 		_userLocalService.addRoleUser(role.getRoleId(), user);
 
-		_assertRenderMustBeOmniadmin(mockLiferayPortletRenderRequest, user);
+		_assertMustBeOmniadmin(
+			mockLiferayPortletRenderRequest,
+			() -> _portlet.render(
+				mockLiferayPortletRenderRequest,
+				new MockLiferayPortletRenderResponse()),
+			user);
 	}
 
 	@Test
@@ -253,18 +262,6 @@ public class PortalInstancesPortletTest {
 			throwable instanceof PrincipalException.MustBeOmniadmin);
 
 		Assert.assertFalse(_invoked);
-	}
-
-	private void _assertRenderMustBeOmniadmin(
-		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest,
-		User user) {
-
-		_assertMustBeOmniadmin(
-			mockLiferayPortletRenderRequest,
-			() -> _portlet.render(
-				mockLiferayPortletRenderRequest,
-				new MockLiferayPortletRenderResponse()),
-			user);
 	}
 
 	private void _invoke(
