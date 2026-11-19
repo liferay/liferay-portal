@@ -63,7 +63,7 @@ spec:
         principalId: {{ $backupRestoreIdentityPrincipalId }}
         principalType: ServicePrincipal
         roleDefinitionName: Reader
-        scope: /subscriptions/{{ $env.subscriptionId }}/resourceGroups/{{ $env.resourceGroupName }}/providers/{{ $databaseEngine.serverType }}/{{ index $databaseServerNames $dataPlane }}
+        scope: /subscriptions/{{ $env.subscriptionId }}/resourceGroups/{{ $env.resourceGroupName }}/providers/{{ $databaseEngineValues.serverType }}/{{ index $databaseServerNames $dataPlane }}
     managementPolicies: {{ $managementPolicies }}
     providerConfigRef:
         kind: ClusterProviderConfig
@@ -85,7 +85,7 @@ spec:
         principalId: {{ $backupRestoreIdentityPrincipalId }}
         principalType: ServicePrincipal
         roleDefinitionName: Reader
-        scope: /subscriptions/{{ $env.subscriptionId }}/resourceGroups/{{ $env.resourceGroupName }}/providers/{{ $databaseEngine.serverType }}/{{ index $dataPlaneNames $retainedDataPlaneKey "databaseServer" }}
+        scope: /subscriptions/{{ $env.subscriptionId }}/resourceGroups/{{ $env.resourceGroupName }}/providers/{{ $databaseEngineValues.serverType }}/{{ index $dataPlaneNames $retainedDataPlaneKey "databaseServer" }}
     managementPolicies: {{ $managementPolicies }}
     providerConfigRef:
         kind: ClusterProviderConfig

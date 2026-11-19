@@ -24,7 +24,7 @@
 {{- if $i }}
 ---
 {{- end }}
-apiVersion: {{ $databaseEngine.apiVersion }}
+apiVersion: {{ $databaseEngineValues.apiVersion }}
 kind: FlexibleServer
 metadata:
     annotations:
@@ -90,12 +90,12 @@ spec:
     initProvider:
         createMode: PointInTimeRestore
         pointInTimeRestoreTimeInUtc: {{ $restorePointInTime }}
-        sourceServerId: /subscriptions/{{ $env.subscriptionId }}/resourceGroups/{{ $env.resourceGroupName }}/providers/{{ $databaseEngine.serverType }}/{{ $restoreSourceDatabaseServerName }}
+        sourceServerId: /subscriptions/{{ $env.subscriptionId }}/resourceGroups/{{ $env.resourceGroupName }}/providers/{{ $databaseEngineValues.serverType }}/{{ $restoreSourceDatabaseServerName }}
     {{- end }}
     managementPolicies: {{ $isDemotedDataPlane | ternary $demotedManagementPolicies $managementPolicies }}
 ---
-apiVersion: {{ $databaseEngine.apiVersion }}
-kind: {{ $databaseEngine.databaseKind }}
+apiVersion: {{ $databaseEngineValues.apiVersion }}
+kind: {{ $databaseEngineValues.databaseKind }}
 metadata:
     annotations:
         crossplane.io/external-name: {{ $databaseName }}
@@ -124,7 +124,7 @@ spec:
 {{- if not (has $retainedDataPlaneKey $renderedDataPlaneKeys) }}
 {{- $retainedDatabaseServerName := index $dataPlaneNames $retainedDataPlaneKey "databaseServer" }}
 ---
-apiVersion: {{ $databaseEngine.apiVersion }}
+apiVersion: {{ $databaseEngineValues.apiVersion }}
 kind: FlexibleServer
 metadata:
     annotations:
@@ -151,14 +151,14 @@ metadata:
     namespace: {{ $namespace }}
 spec:
     by:
-        apiVersion: {{ $databaseEngine.apiVersion }}
-        kind: {{ $databaseEngine.databaseKind }}
+        apiVersion: {{ $databaseEngineValues.apiVersion }}
+        kind: {{ $databaseEngineValues.databaseKind }}
         resourceSelector:
             matchControllerRef: true
             matchLabels:
                 dataPlane: {{ $dataPlane }}
     of:
-        apiVersion: {{ $databaseEngine.apiVersion }}
+        apiVersion: {{ $databaseEngineValues.apiVersion }}
         kind: FlexibleServer
         resourceSelector:
             matchControllerRef: true
