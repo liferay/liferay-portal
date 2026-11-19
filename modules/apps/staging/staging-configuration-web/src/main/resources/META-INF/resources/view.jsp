@@ -236,7 +236,7 @@ BackgroundTask lastCompletedInitialPublicationBackgroundTask = BackgroundTaskMan
 						});
 					}
 				}
-				else {
+				else if (oldValue != <%= StagingConstants.TYPE_NOT_STAGED %>) {
 					doSubmit();
 				}
 			}
