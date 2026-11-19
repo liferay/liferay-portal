@@ -166,6 +166,7 @@ public class AMImageRequestHandlerTest {
 		byte[] bytes = FileUtil.getBytes(
 			AMImageRequestHandlerTest.class, "dependencies/image.jpg");
 		String fileName = RandomTestUtil.randomString() + ".jpg";
+
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(
 				_group.getGroupId(), TestPropsValues.getUserId());

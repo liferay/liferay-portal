@@ -326,9 +326,11 @@ public class WebServerServletTest {
 			RandomTestUtil.randomBytes(), null, null, null, serviceContext);
 
 		FileVersion fileVersion = fileEntry.getFileVersion();
-		FileVersion latestFileVersion = fileEntry.getLatestFileVersion(true);
 
 		Assert.assertTrue(fileVersion.isApproved());
+
+		FileVersion latestFileVersion = fileEntry.getLatestFileVersion(true);
+
 		Assert.assertTrue(latestFileVersion.isDraft());
 
 		Assert.assertThrows(

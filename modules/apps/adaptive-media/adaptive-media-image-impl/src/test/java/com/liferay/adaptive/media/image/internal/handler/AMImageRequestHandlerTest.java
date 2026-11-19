@@ -470,6 +470,12 @@ public class AMImageRequestHandlerTest {
 		FileVersion fileVersion = Mockito.mock(FileVersion.class);
 
 		Mockito.when(
+			fileVersion.isApproved()
+		).thenReturn(
+			true
+		);
+
+		Mockito.when(
 			fileVersion.getCompanyId()
 		).thenReturn(
 			1234L
@@ -479,12 +485,6 @@ public class AMImageRequestHandlerTest {
 			fileVersion.getContentStream(false)
 		).thenReturn(
 			Mockito.mock(InputStream.class)
-		);
-
-		Mockito.when(
-			fileVersion.isApproved()
-		).thenReturn(
-			true
 		);
 
 		Mockito.when(
