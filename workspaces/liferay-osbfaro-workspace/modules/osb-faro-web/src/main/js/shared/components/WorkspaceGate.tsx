@@ -39,7 +39,12 @@ const WorkspaceModals: React.FC<{groupId: string}> = ({groupId}) => {
 	);
 };
 
-const ChannelGate: React.FC<{groupId: string}> = ({groupId}) => {
+interface IChannelGateProps {
+	children?: React.ReactNode;
+	groupId: string;
+}
+
+const ChannelGate: React.FC<IChannelGateProps> = ({children, groupId}) => {
 	const {channelId} = useParams<{channelId?: string}>();
 
 	const {pathname} = useLocation();
@@ -72,19 +77,23 @@ const ChannelGate: React.FC<{groupId: string}> = ({groupId}) => {
 
 			<DataSourcesProvider groupId={groupId} skip={!selectedChannel}>
 				<DownloadReportProvider>
-					<Outlet />
+					{children ?? <Outlet />}
 				</DownloadReportProvider>
 			</DataSourcesProvider>
 		</>
 	);
 };
 
-const WorkspaceGate: React.FC = () => {
+interface IWorkspaceGateProps {
+	children?: React.ReactNode;
+}
+
+const WorkspaceGate: React.FC<IWorkspaceGateProps> = ({children}) => {
 	const {groupId = ''} = useParams<{groupId: string}>();
 
 	return (
 		<ProjectGate groupId={groupId}>
-			<ChannelGate groupId={groupId} />
+			<ChannelGate groupId={groupId}>{children}</ChannelGate>
 		</ProjectGate>
 	);
 };
