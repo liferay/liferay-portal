@@ -846,3 +846,38 @@ test(
 		).toBeHidden();
 	}
 );
+
+test(
+	'Submit nothing when an unstaged site is saved without staging',
+	{tag: '@LPD-115749'},
+	async ({apiHelpers, page, stagingConfigurationPage}) => {
+		const site = await apiHelpers.headlessAdminSite.postSite({
+			name: getRandomString(),
+		});
+
+		await stagingConfigurationPage.gotoStagingConfiguration(
+			site.friendlyUrlPath
+		);
+
+		const editStagingConfigurationRequests: string[] = [];
+
+		page.on('request', (request) => {
+			if (
+				request.method() === 'POST' &&
+				request.url().includes('editStagingConfiguration')
+			) {
+				editStagingConfigurationRequests.push(request.url());
+			}
+		});
+
+		// Save without selecting a staging type
+
+		await stagingConfigurationPage.saveButton.click();
+
+		// Enable local staging so that a later submission is observable
+
+		await stagingConfigurationPage.enableLocalStaging({});
+
+		expect(editStagingConfigurationRequests).toHaveLength(1);
+	}
+);
