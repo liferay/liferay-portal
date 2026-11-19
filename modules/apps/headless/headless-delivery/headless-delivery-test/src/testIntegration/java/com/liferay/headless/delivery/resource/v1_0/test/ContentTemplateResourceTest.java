@@ -161,7 +161,7 @@ public class ContentTemplateResourceTest
 			Collections.singletonMap(
 				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
 			null, DDMTemplateConstants.TEMPLATE_TYPE_DISPLAY, null,
-			TemplateConstants.LANG_TYPE_VM, "<div>${MyText.getData()}</div>",
+			TemplateConstants.LANG_TYPE_FTL, "<div>${MyText.getData()}</div>",
 			false, false, null, null, new ServiceContext());
 
 		return new ContentTemplate() {
