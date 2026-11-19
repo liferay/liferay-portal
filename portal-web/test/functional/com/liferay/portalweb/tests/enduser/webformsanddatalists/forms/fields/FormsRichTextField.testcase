@@ -294,16 +294,6 @@ definition {
 			fieldValue = "Test");
 	}
 
-	@description = "Verify that changes to the Field can be canceled"
-	@ignore = "Test Stub"
-	@priority = 4
-	test ChangesCanBeCanceled {
-		property portal.acceptance = "false";
-
-		// TODO LPS-133116 ChangesCanBeCanceled pending implementation
-
-	}
-
 	@description = "Verify if the source option of the rich text field is working correctly."
 	@priority = 4
 	test CheckSourceOptionAtRichTextField {
@@ -442,16 +432,6 @@ definition {
 		FormFields.viewFieldReference(
 			fieldName = "Rich Text",
 			key_fieldReferenceValue = "RichText1234");
-	}
-
-	@description = "Verify that the Field Type can be changed"
-	@ignore = "Test Stub"
-	@priority = 5
-	test TypeCanBeChanged {
-		property portal.acceptance = "false";
-
-		// TODO LPS-133115 TypeCanBeChanged pending implementation
-
 	}
 
 }

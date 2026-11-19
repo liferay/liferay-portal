@@ -369,16 +369,6 @@ definition {
 		FormFields.viewTableNotPresent();
 	}
 
-	@description = "Verify that a Table can be deleted in the Body Text using the right click menu"
-	@ignore = "Test Stub"
-	@priority = 4
-	test CanDeleteATableUsingRightClick {
-		property portal.acceptance = "false";
-
-		// TODO LPS-133010 CanDeleteATableUsingRightClick pending implementation
-
-	}
-
 	@description = "Verify that the Formatting Style can be changed using the predefined style options"
 	@priority = 4
 	test CanEditFormattingStyle {
@@ -799,16 +789,6 @@ definition {
 			value1 = "Test Body Text");
 	}
 
-	@description = "Verify that changes to a Field can be canceled"
-	@ignore = "Test Stub"
-	@priority = 5
-	test ChangesCanBeCanceled {
-		property portal.acceptance = "false";
-
-		// TODO LPS-131225 ChangesCanBeCanceled pending implementation
-
-	}
-
 	@description = "Verify that the Field Reference can be Edited"
 	@priority = 5
 	test ReferenceCanBeEdited {
@@ -915,16 +895,6 @@ definition {
 			fieldName = "Paragraph",
 			fieldTitle = "Test Paragraph",
 			fieldValue = "Test");
-	}
-
-	@description = "Verify that the Field Type can be changed"
-	@ignore = "Test Stub"
-	@priority = 5
-	test TypeCanBeChanged {
-		property portal.acceptance = "false";
-
-		// TODO LPS-131232 TypeCanBeChanged pending implementation
-
 	}
 
 }

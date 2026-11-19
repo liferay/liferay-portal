@@ -500,16 +500,6 @@ definition {
 			rowValue = "Option 1");
 	}
 
-	@description = "Verify that edits to the Field can be canceled"
-	@ignore = "Test Stub"
-	@priority = 4
-	test ChangesCanBeCanceled {
-		property portal.acceptance = "false";
-
-		// TODO LPS-132458 ChangesCanBeCanceled pending implementation
-
-	}
-
 	@description = "Verify that an option's Field References can be edited"
 	@priority = 5
 	test FieldReferencesOfOptionsCanBeEdited {
@@ -845,16 +835,6 @@ definition {
 		FormFields.viewFieldReference(
 			fieldName = "Grid",
 			key_fieldReferenceValue = "Grid1234");
-	}
-
-	@description = "Verify that the Field Type can be changed"
-	@ignore = "Test Stub"
-	@priority = 5
-	test TypeCanBeChanged {
-		property portal.acceptance = "false";
-
-		// TODO LPS-132457 TypeCanBeChanged pending implementation
-
 	}
 
 }

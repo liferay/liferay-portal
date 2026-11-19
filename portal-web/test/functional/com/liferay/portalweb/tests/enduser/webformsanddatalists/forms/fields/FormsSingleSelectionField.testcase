@@ -383,16 +383,6 @@ definition {
 			fieldValue = "Option 1");
 	}
 
-	@description = "Verify that changes to the Field can be canceled"
-	@ignore = "Test Stub"
-	@priority = 4
-	test ChangesCanBeCanceled {
-		property portal.acceptance = "false";
-
-		// TODO LPS-132196 ChangesCanBeCanceled pending implementation
-
-	}
-
 	@description = "Verify that the Field References for the options can be edited"
 	@priority = 5
 	test FieldReferencesOfOptionsCanBeEdited {
@@ -932,16 +922,6 @@ definition {
 		FormFields.viewSingleSelectionOption(
 			key_optionLabel = "Option 2",
 			key_position = 2);
-	}
-
-	@description = "Verify that the Field Type can be changed"
-	@ignore = "Test Stub"
-	@priority = 5
-	test TypeCanBeChanged {
-		property portal.acceptance = "false";
-
-		// TODO LPS-132195 TypeCanBeChanged pending implementation
-
 	}
 
 }

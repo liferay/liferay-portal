@@ -688,16 +688,6 @@ definition {
 		FormPortlet.submitSuccessfullyAndViewSuccessPage();
 	}
 
-	@description = "Verify that changes to a Field can be canceled"
-	@ignore = "Test Stub"
-	@priority = 4
-	test ChangesCanBeCanceled {
-		property portal.acceptance = "false";
-
-		// TODO LPS-132839 ChangesCanBeCanceled pending implementation
-
-	}
-
 	@description = "Verify that Validation options are reset after changing the Field Type from a Numeric Field to Text Field"
 	@priority = 4
 	test ConfirmationWithDecimal {
@@ -2488,26 +2478,6 @@ definition {
 		FormFields.viewFieldReference(
 			fieldName = "Numeric",
 			key_fieldReferenceValue = "Numeric1234");
-	}
-
-	@description = "Verify that the Field Type can be changed"
-	@ignore = "Test Stub"
-	@priority = 5
-	test TypeCanBeChanged {
-		property portal.acceptance = "false";
-
-		// TODO LPS-132837 TypeCanBeChanged pending implementation
-
-	}
-
-	@description = "Verify that Validation options are reset after changing the Field Type from a Numeric Field to Text Field"
-	@ignore = "Test Stub"
-	@priority = 4
-	test ValidationIsResetAfterChangingFieldType {
-		property portal.acceptance = "false";
-
-		// TODO LPS-132838 ValidationIsResetAfterChangingFieldType pending implementation
-
 	}
 
 }

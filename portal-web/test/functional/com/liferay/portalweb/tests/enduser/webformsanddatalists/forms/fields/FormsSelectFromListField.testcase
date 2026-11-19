@@ -785,16 +785,6 @@ definition {
 		}
 	}
 
-	@description = "Verify that changes to a Field can be canceled"
-	@ignore = "Test Stub"
-	@priority = 4
-	test ChangesCanBeCanceled {
-		property portal.acceptance = "false";
-
-		// TODO LPS-131364 ChangesCanBeCanceled pending implementation
-
-	}
-
 	@description = "Verify that the correct entries are shown when the page refreshes after autosave"
 	@priority = 4
 	test CorrectEntriesShownWhenPageRefreshedAfterAutoSaveForm {
@@ -1417,16 +1407,6 @@ definition {
 		FormFields.viewFieldReference(
 			fieldName = "Select from List",
 			key_fieldReferenceValue = "SelectFromList1234");
-	}
-
-	@description = "Verify that the Field Type can be changed"
-	@ignore = "Test Stub"
-	@priority = 5
-	test TypeCanBeChanged {
-		property portal.acceptance = "false";
-
-		// TODO LPS-131363 TypeCanBeChanged pending implementation
-
 	}
 
 }

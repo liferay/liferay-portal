@@ -334,16 +334,6 @@ definition {
 			successPageTitle = "Thank you.");
 	}
 
-	@description = "Verify that changes to the Field can be canceled"
-	@ignore = "Test Stub"
-	@priority = 5
-	test ChangesCanBeCanceled {
-		property portal.acceptance = "false";
-
-		// TODO LPS-133038 ChangesCanBeCanceled pending implementation
-
-	}
-
 	@description = "Verify that an Image Description can be added to an uploaded Image"
 	@priority = 4
 	test DescriptionCanBeAdded {
@@ -655,16 +645,6 @@ definition {
 		AssertElementNotPresent(
 			key_fieldValue = "Document_1.jpg",
 			locator1 = "FormFields#TEXT_FIELD_3");
-	}
-
-	@description = " Verify that the Field Type can be changed"
-	@ignore = "Test Stub"
-	@priority = 5
-	test TypeCanBeChanged {
-		property portal.acceptance = "false";
-
-		// TODO LPS-133037 TypeCanBeChanged pending implementation
-
 	}
 
 }
