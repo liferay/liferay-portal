@@ -2,7 +2,7 @@ dependencies {
 	compileInclude group: "com.damnhandy", name: "handy-uri-templates", version: "2.1.7"
 	compileInclude group: "com.github.everit-org.json-schema", name: "org.everit.json.schema", version: "1.11.1"
 	compileInclude group: "com.google.re2j", name: "re2j", version: "1.2"
-	compileInclude group: "com.liferay", name: "org.json", version: "20231013.LIFERAY-PATCHED-1"
+	compileOnly group: "com.liferay", name: "org.json", version: "20231013.LIFERAY-PATCHED-1"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
 	compileOnly group: "joda-time", name: "joda-time", version: "2.12.1"
 	compileOnly project(":core:petra:petra-concurrent")
