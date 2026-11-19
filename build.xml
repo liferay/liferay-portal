@@ -1355,10 +1355,27 @@ This target has been renamed to "snapshot-bundle". Please call "snapshot-bundle"
 
 		<property location="${private.dir}" name="private.dir.absolute.path" />
 
+		<java
+			classname="com.liferay.source.formatter.AdditionalFeatureFlagKeysUpdater"
+			dir="${project.dir}"
+			failonerror="true"
+			fork="true"
+			newenvironment="true"
+		>
+			<classpath>
+				<fileset
+					dir="${sdk.dir}/dependencies/com.liferay.source.formatter/lib"
+					includes="*.jar"
+				/>
+				<path refid="project.classpath" />
+			</classpath>
+			<arg value="private.dir=${private.dir.absolute.path}" />
+			<arg value="source.formatter.properties.file=${project.dir}/source-formatter.properties" />
+		</java>
+
 		<ant dir="portal-impl" inheritAll="false" target="format-source-files">
 			<property name="source.check.names" value="PropertiesFeatureFlagsCheck" />
 			<property name="source.files" value="${project.dir}/portal-impl/src/portal.properties" />
-			<property name="source.formatter.properties" value="source.check.PropertiesFeatureFlagsCheck.privateDirName=${private.dir.absolute.path}" />
 		</ant>
 	</target>
 
