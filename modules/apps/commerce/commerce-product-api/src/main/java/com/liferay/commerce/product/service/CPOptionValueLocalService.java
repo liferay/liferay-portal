@@ -20,10 +20,8 @@ import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.model.PersistedModel;
 import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.search.BaseModelSearchResult;
-import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
-import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.BaseLocalService;
 import com.liferay.portal.kernel.service.PersistedModelLocalService;
@@ -301,11 +299,6 @@ public interface CPOptionValueLocalService
 	public List<CPOptionValue> getCPOptionValues(
 		long cpOptionId, int start, int end);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CPOptionValue> getCPOptionValues(
-		long cpOptionId, int start, int end,
-		OrderByComparator<CPOptionValue> orderByComparator);
-
 	/**
 	 * Returns the number of cp option values.
 	 *
@@ -315,20 +308,11 @@ public interface CPOptionValueLocalService
 	public int getCPOptionValuesCount();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCPOptionValuesCount(long cpOptionId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ExportActionableDynamicQuery getExportActionableDynamicQuery(
 		PortletDataContext portletDataContext);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public CPOptionValue getOrAddEmptyCPOptionValue(
-			String externalReferenceCode, long cpOptionId, long companyId,
-			long userId)
-		throws PortalException;
 
 	/**
 	 * Returns the OSGi service identifier.
@@ -344,9 +328,6 @@ public interface CPOptionValueLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
 		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public Hits search(SearchContext searchContext);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public BaseModelSearchResult<CPOptionValue> searchCPOptionValues(
@@ -394,4 +375,4 @@ public interface CPOptionValueLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1884059968
+// LIFERAY-SERVICE-BUILDER-HASH:928117374

@@ -220,10 +220,6 @@ public interface CPConfigurationListRelLocalService
 		long CPConfigurationListRelId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public CPConfigurationListRel fetchCPConfigurationListRel(
-		String className, long classPK, long cpConfigurationListId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CPConfigurationListRel> getAccountEntryCPConfigurationListRels(
 		long cpConfigurationListId, String keywords, int start, int end);
 
@@ -280,21 +276,7 @@ public interface CPConfigurationListRelLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CPConfigurationListRel> getCPConfigurationListRels(
-		long cpConfigurationListId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CPConfigurationListRel> getCPConfigurationListRels(
-		long cpConfigurationListId, int start, int end,
-		OrderByComparator<CPConfigurationListRel> orderByComparator);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CPConfigurationListRel> getCPConfigurationListRels(
 		String className, long cpConfigurationListId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CPConfigurationListRel> getCPConfigurationListRels(
-		String className, long cpConfigurationListId, int start, int end,
-		OrderByComparator<CPConfigurationListRel> orderByComparator);
 
 	/**
 	 * Returns the number of cp configuration list rels.
@@ -352,4 +334,4 @@ public interface CPConfigurationListRelLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2111242497
+// LIFERAY-SERVICE-BUILDER-HASH:-179496218

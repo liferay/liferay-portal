@@ -276,14 +276,6 @@ public class CPDefinitionLinkLocalServiceWrapper
 			CPDefinitionLinkId);
 	}
 
-	@Override
-	public CPDefinitionLink fetchCPDefinitionLink(
-		long cpDefinitionId, long cProductId, String type) {
-
-		return _cpDefinitionLinkLocalService.fetchCPDefinitionLink(
-			cpDefinitionId, cProductId, type);
-	}
-
 	/**
 	 * Returns the cp definition link matching the UUID and group.
 	 *
@@ -358,14 +350,6 @@ public class CPDefinitionLinkLocalServiceWrapper
 
 	@Override
 	public java.util.List<CPDefinitionLink> getCPDefinitionLinks(
-		long cpDefinitionId) {
-
-		return _cpDefinitionLinkLocalService.getCPDefinitionLinks(
-			cpDefinitionId);
-	}
-
-	@Override
-	public java.util.List<CPDefinitionLink> getCPDefinitionLinks(
 		long cpDefinitionId, int status) {
 
 		return _cpDefinitionLinkLocalService.getCPDefinitionLinks(
@@ -414,16 +398,6 @@ public class CPDefinitionLinkLocalServiceWrapper
 			cpDefinitionId, type, status, start, end, orderByComparator);
 	}
 
-	@Override
-	public java.util.List<CPDefinitionLink> getCPDefinitionLinks(
-		long cpDefinitionId, String type, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<CPDefinitionLink>
-			orderByComparator) {
-
-		return _cpDefinitionLinkLocalService.getCPDefinitionLinks(
-			cpDefinitionId, type, start, end, orderByComparator);
-	}
-
 	/**
 	 * Returns all the cp definition links matching the UUID and company.
 	 *
@@ -469,12 +443,6 @@ public class CPDefinitionLinkLocalServiceWrapper
 	@Override
 	public int getCPDefinitionLinksCount() {
 		return _cpDefinitionLinkLocalService.getCPDefinitionLinksCount();
-	}
-
-	@Override
-	public int getCPDefinitionLinksCount(long cpDefinitionId) {
-		return _cpDefinitionLinkLocalService.getCPDefinitionLinksCount(
-			cpDefinitionId);
 	}
 
 	@Override
@@ -534,14 +502,6 @@ public class CPDefinitionLinkLocalServiceWrapper
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _cpDefinitionLinkLocalService.getPersistedModel(primaryKeyObj);
-	}
-
-	@Override
-	public java.util.List<CPDefinitionLink> getReverseCPDefinitionLinks(
-		long cProductId, String type) {
-
-		return _cpDefinitionLinkLocalService.getReverseCPDefinitionLinks(
-			cProductId, type);
 	}
 
 	@Override
@@ -651,4 +611,4 @@ public class CPDefinitionLinkLocalServiceWrapper
 	private CPDefinitionLinkLocalService _cpDefinitionLinkLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:915354226
+// LIFERAY-SERVICE-BUILDER-HASH:1039222721

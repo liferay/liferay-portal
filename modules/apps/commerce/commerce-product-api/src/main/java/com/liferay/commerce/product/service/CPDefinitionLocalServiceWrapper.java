@@ -716,30 +716,6 @@ public class CPDefinitionLocalServiceWrapper
 	}
 
 	@Override
-	public java.util.List<CPDefinition> getCProductCPDefinitions(
-		long cProductId, int status, int start, int end) {
-
-		return _cpDefinitionLocalService.getCProductCPDefinitions(
-			cProductId, status, start, end);
-	}
-
-	@Override
-	public java.util.List<CPDefinition> getCProductCPDefinitions(
-		long cProductId, int status, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<CPDefinition>
-			orderByComparator) {
-
-		return _cpDefinitionLocalService.getCProductCPDefinitions(
-			cProductId, status, start, end, orderByComparator);
-	}
-
-	@Override
-	public int getCProductCPDefinitionsCount(long cProductId, int status) {
-		return _cpDefinitionLocalService.getCProductCPDefinitionsCount(
-			cProductId, status);
-	}
-
-	@Override
 	public com.liferay.commerce.product.model.CPAttachmentFileEntry
 			getDefaultImageCPAttachmentFileEntry(long cpDefinitionId)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -1163,4 +1139,4 @@ public class CPDefinitionLocalServiceWrapper
 	private CPDefinitionLocalService _cpDefinitionLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-654007187
+// LIFERAY-SERVICE-BUILDER-HASH:-1726778878

@@ -248,13 +248,6 @@ public class CPDefinitionLinkLocalServiceUtil {
 		return getService().fetchCPDefinitionLink(CPDefinitionLinkId);
 	}
 
-	public static CPDefinitionLink fetchCPDefinitionLink(
-		long cpDefinitionId, long cProductId, String type) {
-
-		return getService().fetchCPDefinitionLink(
-			cpDefinitionId, cProductId, type);
-	}
-
 	/**
 	 * Returns the cp definition link matching the UUID and group.
 	 *
@@ -321,12 +314,6 @@ public class CPDefinitionLinkLocalServiceUtil {
 	}
 
 	public static List<CPDefinitionLink> getCPDefinitionLinks(
-		long cpDefinitionId) {
-
-		return getService().getCPDefinitionLinks(cpDefinitionId);
-	}
-
-	public static List<CPDefinitionLink> getCPDefinitionLinks(
 		long cpDefinitionId, int status) {
 
 		return getService().getCPDefinitionLinks(cpDefinitionId, status);
@@ -363,14 +350,6 @@ public class CPDefinitionLinkLocalServiceUtil {
 
 		return getService().getCPDefinitionLinks(
 			cpDefinitionId, type, status, start, end, orderByComparator);
-	}
-
-	public static List<CPDefinitionLink> getCPDefinitionLinks(
-		long cpDefinitionId, String type, int start, int end,
-		OrderByComparator<CPDefinitionLink> orderByComparator) {
-
-		return getService().getCPDefinitionLinks(
-			cpDefinitionId, type, start, end, orderByComparator);
 	}
 
 	/**
@@ -412,10 +391,6 @@ public class CPDefinitionLinkLocalServiceUtil {
 	 */
 	public static int getCPDefinitionLinksCount() {
 		return getService().getCPDefinitionLinksCount();
-	}
-
-	public static int getCPDefinitionLinksCount(long cpDefinitionId) {
-		return getService().getCPDefinitionLinksCount(cpDefinitionId);
 	}
 
 	public static int getCPDefinitionLinksCount(
@@ -468,12 +443,6 @@ public class CPDefinitionLinkLocalServiceUtil {
 		throws PortalException {
 
 		return getService().getPersistedModel(primaryKeyObj);
-	}
-
-	public static List<CPDefinitionLink> getReverseCPDefinitionLinks(
-		long cProductId, String type) {
-
-		return getService().getReverseCPDefinitionLinks(cProductId, type);
 	}
 
 	public static List<CPDefinitionLink> getReverseCPDefinitionLinks(
@@ -547,4 +516,4 @@ public class CPDefinitionLinkLocalServiceUtil {
 			CPDefinitionLinkLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1598021851
+// LIFERAY-SERVICE-BUILDER-HASH:-2132065948

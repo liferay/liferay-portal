@@ -548,15 +548,6 @@ public class CPDefinitionSpecificationOptionValueLocalServiceWrapper
 	}
 
 	@Override
-	public int getCPSpecificationOptionDefinitionValuesCount(
-		long cpSpecificationOptionId) {
-
-		return _cpDefinitionSpecificationOptionValueLocalService.
-			getCPSpecificationOptionDefinitionValuesCount(
-				cpSpecificationOptionId);
-	}
-
-	@Override
 	public com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery
 		getExportActionableDynamicQuery(
 			com.liferay.exportimport.kernel.lar.PortletDataContext
@@ -698,4 +689,4 @@ public class CPDefinitionSpecificationOptionValueLocalServiceWrapper
 		_cpDefinitionSpecificationOptionValueLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-169789520
+// LIFERAY-SERVICE-BUILDER-HASH:-1630191880

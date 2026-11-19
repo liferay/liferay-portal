@@ -85,12 +85,6 @@ public class CPDisplayLayoutLocalServiceUtil {
 		return getService().createPersistedModel(primaryKeyObj);
 	}
 
-	public static CPDisplayLayout deleteCPDisplayLayout(
-		Class<?> clazz, long classPK) {
-
-		return getService().deleteCPDisplayLayout(clazz, classPK);
-	}
-
 	/**
 	 * Deletes the cp display layout from the database. Also notifies the appropriate model listeners.
 	 *
@@ -307,29 +301,11 @@ public class CPDisplayLayoutLocalServiceUtil {
 	}
 
 	public static List<CPDisplayLayout>
-		getCPDisplayLayoutsByGroupIdAndLayoutPageTemplateEntryUuid(
-			long groupId, String layoutPageTemplateEntryUuid, int start,
-			int end) {
-
-		return getService().
-			getCPDisplayLayoutsByGroupIdAndLayoutPageTemplateEntryUuid(
-				groupId, layoutPageTemplateEntryUuid, start, end);
-	}
-
-	public static List<CPDisplayLayout>
 		getCPDisplayLayoutsByGroupIdAndLayoutUuid(
 			long groupId, String layoutUuid) {
 
 		return getService().getCPDisplayLayoutsByGroupIdAndLayoutUuid(
 			groupId, layoutUuid);
-	}
-
-	public static List<CPDisplayLayout>
-		getCPDisplayLayoutsByGroupIdAndLayoutUuid(
-			long groupId, String layoutUuid, int start, int end) {
-
-		return getService().getCPDisplayLayoutsByGroupIdAndLayoutUuid(
-			groupId, layoutUuid, start, end);
 	}
 
 	/**
@@ -453,4 +429,4 @@ public class CPDisplayLayoutLocalServiceUtil {
 			CPDisplayLayoutLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1012043715
+// LIFERAY-SERVICE-BUILDER-HASH:-1740883577

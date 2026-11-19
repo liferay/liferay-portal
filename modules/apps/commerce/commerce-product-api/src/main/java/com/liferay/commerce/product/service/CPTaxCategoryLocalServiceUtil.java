@@ -295,10 +295,6 @@ public class CPTaxCategoryLocalServiceUtil {
 		return getService().getCPTaxCategoriesCount();
 	}
 
-	public static int getCPTaxCategoriesCount(long companyId) {
-		return getService().getCPTaxCategoriesCount(companyId);
-	}
-
 	/**
 	 * Returns the cp tax category with the primary key.
 	 *
@@ -422,4 +418,4 @@ public class CPTaxCategoryLocalServiceUtil {
 			CPTaxCategoryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-709608358
+// LIFERAY-SERVICE-BUILDER-HASH:1694115897

@@ -223,11 +223,6 @@ public interface CPSpecificationOptionListTypeDefinitionRelLocalService
 			long CPSpecificationOptionListTypeDefinitionRelId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public CPSpecificationOptionListTypeDefinitionRel
-		fetchCPSpecificationOptionListTypeDefinitionRel(
-			long cpSpecificationOptionId, long listTypeDefinitionId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	/**
@@ -331,4 +326,4 @@ public interface CPSpecificationOptionListTypeDefinitionRelLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1022136010
+// LIFERAY-SERVICE-BUILDER-HASH:1103977881

@@ -392,10 +392,6 @@ public interface CPDefinitionSpecificationOptionValueLocalService
 		long cpDefinitionId, Boolean visible);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCPSpecificationOptionDefinitionValuesCount(
-		long cpSpecificationOptionId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ExportActionableDynamicQuery getExportActionableDynamicQuery(
 		PortletDataContext portletDataContext);
 
@@ -465,4 +461,4 @@ public interface CPDefinitionSpecificationOptionValueLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1656103488
+// LIFERAY-SERVICE-BUILDER-HASH:932945492

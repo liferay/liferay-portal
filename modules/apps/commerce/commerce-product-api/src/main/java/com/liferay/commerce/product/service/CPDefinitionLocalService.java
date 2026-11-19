@@ -487,18 +487,6 @@ public interface CPDefinitionLocalService
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CPDefinition> getCProductCPDefinitions(
-		long cProductId, int status, int start, int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CPDefinition> getCProductCPDefinitions(
-		long cProductId, int status, int start, int end,
-		OrderByComparator<CPDefinition> orderByComparator);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCProductCPDefinitionsCount(long cProductId, int status);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public CPAttachmentFileEntry getDefaultImageCPAttachmentFileEntry(
 			long cpDefinitionId)
 		throws PortalException;
@@ -720,4 +708,4 @@ public interface CPDefinitionLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:10443816
+// LIFERAY-SERVICE-BUILDER-HASH:-1465680173

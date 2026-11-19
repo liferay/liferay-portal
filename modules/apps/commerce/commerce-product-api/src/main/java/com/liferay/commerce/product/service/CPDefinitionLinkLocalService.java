@@ -226,10 +226,6 @@ public interface CPDefinitionLinkLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public CPDefinitionLink fetchCPDefinitionLink(long CPDefinitionLinkId);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public CPDefinitionLink fetchCPDefinitionLink(
-		long cpDefinitionId, long cProductId, String type);
-
 	/**
 	 * Returns the cp definition link matching the UUID and group.
 	 *
@@ -283,9 +279,6 @@ public interface CPDefinitionLinkLocalService
 	public List<CPDefinitionLink> getCPDefinitionLinks(int start, int end);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CPDefinitionLink> getCPDefinitionLinks(long cpDefinitionId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CPDefinitionLink> getCPDefinitionLinks(
 		long cpDefinitionId, int status);
 
@@ -308,11 +301,6 @@ public interface CPDefinitionLinkLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CPDefinitionLink> getCPDefinitionLinks(
 		long cpDefinitionId, String type, int status, int start, int end,
-		OrderByComparator<CPDefinitionLink> orderByComparator);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CPDefinitionLink> getCPDefinitionLinks(
-		long cpDefinitionId, String type, int start, int end,
 		OrderByComparator<CPDefinitionLink> orderByComparator);
 
 	/**
@@ -350,9 +338,6 @@ public interface CPDefinitionLinkLocalService
 	public int getCPDefinitionLinksCount();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCPDefinitionLinksCount(long cpDefinitionId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getCPDefinitionLinksCount(long cpDefinitionId, int status);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -383,10 +368,6 @@ public interface CPDefinitionLinkLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
 		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CPDefinitionLink> getReverseCPDefinitionLinks(
-		long cProductId, String type);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CPDefinitionLink> getReverseCPDefinitionLinks(
@@ -442,4 +423,4 @@ public interface CPDefinitionLinkLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1875357995
+// LIFERAY-SERVICE-BUILDER-HASH:-149309770

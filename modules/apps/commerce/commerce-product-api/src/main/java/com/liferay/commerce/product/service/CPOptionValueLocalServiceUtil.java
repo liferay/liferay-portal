@@ -333,14 +333,6 @@ public class CPOptionValueLocalServiceUtil {
 		return getService().getCPOptionValues(cpOptionId, start, end);
 	}
 
-	public static List<CPOptionValue> getCPOptionValues(
-		long cpOptionId, int start, int end,
-		OrderByComparator<CPOptionValue> orderByComparator) {
-
-		return getService().getCPOptionValues(
-			cpOptionId, start, end, orderByComparator);
-	}
-
 	/**
 	 * Returns the number of cp option values.
 	 *
@@ -348,10 +340,6 @@ public class CPOptionValueLocalServiceUtil {
 	 */
 	public static int getCPOptionValuesCount() {
 		return getService().getCPOptionValuesCount();
-	}
-
-	public static int getCPOptionValuesCount(long cpOptionId) {
-		return getService().getCPOptionValuesCount(cpOptionId);
 	}
 
 	public static com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery
@@ -367,15 +355,6 @@ public class CPOptionValueLocalServiceUtil {
 			getIndexableActionableDynamicQuery() {
 
 		return getService().getIndexableActionableDynamicQuery();
-	}
-
-	public static CPOptionValue getOrAddEmptyCPOptionValue(
-			String externalReferenceCode, long cpOptionId, long companyId,
-			long userId)
-		throws PortalException {
-
-		return getService().getOrAddEmptyCPOptionValue(
-			externalReferenceCode, cpOptionId, companyId, userId);
 	}
 
 	/**
@@ -394,12 +373,6 @@ public class CPOptionValueLocalServiceUtil {
 		throws PortalException {
 
 		return getService().getPersistedModel(primaryKeyObj);
-	}
-
-	public static com.liferay.portal.kernel.search.Hits search(
-		com.liferay.portal.kernel.search.SearchContext searchContext) {
-
-		return getService().search(searchContext);
 	}
 
 	public static com.liferay.portal.kernel.search.BaseModelSearchResult
@@ -456,4 +429,4 @@ public class CPOptionValueLocalServiceUtil {
 			CPOptionValueLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1863742299
+// LIFERAY-SERVICE-BUILDER-HASH:2142813636

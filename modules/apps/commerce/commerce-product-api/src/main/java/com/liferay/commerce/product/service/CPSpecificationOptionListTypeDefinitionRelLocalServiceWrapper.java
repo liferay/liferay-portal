@@ -288,16 +288,6 @@ public class CPSpecificationOptionListTypeDefinitionRelLocalServiceWrapper
 	}
 
 	@Override
-	public CPSpecificationOptionListTypeDefinitionRel
-		fetchCPSpecificationOptionListTypeDefinitionRel(
-			long cpSpecificationOptionId, long listTypeDefinitionId) {
-
-		return _cpSpecificationOptionListTypeDefinitionRelLocalService.
-			fetchCPSpecificationOptionListTypeDefinitionRel(
-				cpSpecificationOptionId, listTypeDefinitionId);
-	}
-
-	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 
@@ -484,4 +474,4 @@ public class CPSpecificationOptionListTypeDefinitionRelLocalServiceWrapper
 		_cpSpecificationOptionListTypeDefinitionRelLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:471964102
+// LIFERAY-SERVICE-BUILDER-HASH:-1173324178

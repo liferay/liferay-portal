@@ -97,9 +97,6 @@ public interface CPDisplayLayoutLocalService
 	public PersistedModel createPersistedModel(Serializable primaryKeyObj)
 		throws PortalException;
 
-	@Indexable(type = IndexableType.DELETE)
-	public CPDisplayLayout deleteCPDisplayLayout(Class<?> clazz, long classPK);
-
 	/**
 	 * Deletes the cp display layout from the database. Also notifies the appropriate model listeners.
 	 *
@@ -275,18 +272,8 @@ public interface CPDisplayLayoutLocalService
 			long groupId, String layoutPageTemplateEntryUuid);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CPDisplayLayout>
-		getCPDisplayLayoutsByGroupIdAndLayoutPageTemplateEntryUuid(
-			long groupId, String layoutPageTemplateEntryUuid, int start,
-			int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CPDisplayLayout> getCPDisplayLayoutsByGroupIdAndLayoutUuid(
 		long groupId, String layoutUuid);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CPDisplayLayout> getCPDisplayLayoutsByGroupIdAndLayoutUuid(
-		long groupId, String layoutUuid, int start, int end);
 
 	/**
 	 * Returns all the cp display layouts matching the UUID and company.
@@ -386,4 +373,4 @@ public interface CPDisplayLayoutLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1074275758
+// LIFERAY-SERVICE-BUILDER-HASH:-1874431790

@@ -253,14 +253,6 @@ public class CPMeasurementUnitLocalServiceWrapper
 	}
 
 	@Override
-	public CPMeasurementUnit fetchCPMeasurementUnit(long companyId, String key)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _cpMeasurementUnitLocalService.fetchCPMeasurementUnit(
-			companyId, key);
-	}
-
-	@Override
 	public CPMeasurementUnit fetchCPMeasurementUnitByExternalReferenceCode(
 		String externalReferenceCode, long companyId) {
 
@@ -369,17 +361,6 @@ public class CPMeasurementUnitLocalServiceWrapper
 
 	@Override
 	public java.util.List<CPMeasurementUnit> getCPMeasurementUnits(
-			long companyId, int type, int start, int end,
-			com.liferay.portal.kernel.util.OrderByComparator<CPMeasurementUnit>
-				orderByComparator)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _cpMeasurementUnitLocalService.getCPMeasurementUnits(
-			companyId, type, start, end, orderByComparator);
-	}
-
-	@Override
-	public java.util.List<CPMeasurementUnit> getCPMeasurementUnits(
 		long companyId, int start, int end,
 		com.liferay.portal.kernel.util.OrderByComparator<CPMeasurementUnit>
 			orderByComparator) {
@@ -436,18 +417,6 @@ public class CPMeasurementUnitLocalServiceWrapper
 	}
 
 	@Override
-	public int getCPMeasurementUnitsCount(long companyId) {
-		return _cpMeasurementUnitLocalService.getCPMeasurementUnitsCount(
-			companyId);
-	}
-
-	@Override
-	public int getCPMeasurementUnitsCount(long companyId, int type) {
-		return _cpMeasurementUnitLocalService.getCPMeasurementUnitsCount(
-			companyId, type);
-	}
-
-	@Override
 	public com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery
 		getExportActionableDynamicQuery(
 			com.liferay.exportimport.kernel.lar.PortletDataContext
@@ -463,15 +432,6 @@ public class CPMeasurementUnitLocalServiceWrapper
 
 		return _cpMeasurementUnitLocalService.
 			getIndexableActionableDynamicQuery();
-	}
-
-	@Override
-	public CPMeasurementUnit getOrAddEmptyCPMeasurementUnit(
-			String externalReferenceCode, long companyId, long userId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _cpMeasurementUnitLocalService.getOrAddEmptyCPMeasurementUnit(
-			externalReferenceCode, companyId, userId);
 	}
 
 	/**
@@ -583,4 +543,4 @@ public class CPMeasurementUnitLocalServiceWrapper
 	private CPMeasurementUnitLocalService _cpMeasurementUnitLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1363514882
+// LIFERAY-SERVICE-BUILDER-HASH:395390698

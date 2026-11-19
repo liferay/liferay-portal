@@ -228,13 +228,6 @@ public class CPMeasurementUnitLocalServiceUtil {
 		return getService().fetchCPMeasurementUnit(CPMeasurementUnitId);
 	}
 
-	public static CPMeasurementUnit fetchCPMeasurementUnit(
-			long companyId, String key)
-		throws PortalException {
-
-		return getService().fetchCPMeasurementUnit(companyId, key);
-	}
-
 	public static CPMeasurementUnit
 		fetchCPMeasurementUnitByExternalReferenceCode(
 			String externalReferenceCode, long companyId) {
@@ -331,15 +324,6 @@ public class CPMeasurementUnitLocalServiceUtil {
 	}
 
 	public static List<CPMeasurementUnit> getCPMeasurementUnits(
-			long companyId, int type, int start, int end,
-			OrderByComparator<CPMeasurementUnit> orderByComparator)
-		throws PortalException {
-
-		return getService().getCPMeasurementUnits(
-			companyId, type, start, end, orderByComparator);
-	}
-
-	public static List<CPMeasurementUnit> getCPMeasurementUnits(
 		long companyId, int start, int end,
 		OrderByComparator<CPMeasurementUnit> orderByComparator) {
 
@@ -389,14 +373,6 @@ public class CPMeasurementUnitLocalServiceUtil {
 		return getService().getCPMeasurementUnitsCount();
 	}
 
-	public static int getCPMeasurementUnitsCount(long companyId) {
-		return getService().getCPMeasurementUnitsCount(companyId);
-	}
-
-	public static int getCPMeasurementUnitsCount(long companyId, int type) {
-		return getService().getCPMeasurementUnitsCount(companyId, type);
-	}
-
 	public static com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery
 		getExportActionableDynamicQuery(
 			com.liferay.exportimport.kernel.lar.PortletDataContext
@@ -410,14 +386,6 @@ public class CPMeasurementUnitLocalServiceUtil {
 			getIndexableActionableDynamicQuery() {
 
 		return getService().getIndexableActionableDynamicQuery();
-	}
-
-	public static CPMeasurementUnit getOrAddEmptyCPMeasurementUnit(
-			String externalReferenceCode, long companyId, long userId)
-		throws PortalException {
-
-		return getService().getOrAddEmptyCPMeasurementUnit(
-			externalReferenceCode, companyId, userId);
 	}
 
 	/**
@@ -490,4 +458,4 @@ public class CPMeasurementUnitLocalServiceUtil {
 			CPMeasurementUnitLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-512594067
+// LIFERAY-SERVICE-BUILDER-HASH:-1194912788

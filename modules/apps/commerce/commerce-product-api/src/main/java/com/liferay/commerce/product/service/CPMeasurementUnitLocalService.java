@@ -218,10 +218,6 @@ public interface CPMeasurementUnitLocalService
 	public CPMeasurementUnit fetchCPMeasurementUnit(long CPMeasurementUnitId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public CPMeasurementUnit fetchCPMeasurementUnit(long companyId, String key)
-		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public CPMeasurementUnit fetchCPMeasurementUnitByExternalReferenceCode(
 		String externalReferenceCode, long companyId);
 
@@ -292,12 +288,6 @@ public interface CPMeasurementUnitLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CPMeasurementUnit> getCPMeasurementUnits(
-			long companyId, int type, int start, int end,
-			OrderByComparator<CPMeasurementUnit> orderByComparator)
-		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CPMeasurementUnit> getCPMeasurementUnits(
 		long companyId, int start, int end,
 		OrderByComparator<CPMeasurementUnit> orderByComparator);
 
@@ -336,22 +326,11 @@ public interface CPMeasurementUnitLocalService
 	public int getCPMeasurementUnitsCount();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCPMeasurementUnitsCount(long companyId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCPMeasurementUnitsCount(long companyId, int type);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ExportActionableDynamicQuery getExportActionableDynamicQuery(
 		PortletDataContext portletDataContext);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public CPMeasurementUnit getOrAddEmptyCPMeasurementUnit(
-			String externalReferenceCode, long companyId, long userId)
-		throws PortalException;
 
 	/**
 	 * Returns the OSGi service identifier.
@@ -412,4 +391,4 @@ public interface CPMeasurementUnitLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:167663032
+// LIFERAY-SERVICE-BUILDER-HASH:-364542206

@@ -631,27 +631,6 @@ public class CPDefinitionLocalServiceUtil {
 		return getService().getCProductCPDefinition(cProductId, version);
 	}
 
-	public static List<CPDefinition> getCProductCPDefinitions(
-		long cProductId, int status, int start, int end) {
-
-		return getService().getCProductCPDefinitions(
-			cProductId, status, start, end);
-	}
-
-	public static List<CPDefinition> getCProductCPDefinitions(
-		long cProductId, int status, int start, int end,
-		OrderByComparator<CPDefinition> orderByComparator) {
-
-		return getService().getCProductCPDefinitions(
-			cProductId, status, start, end, orderByComparator);
-	}
-
-	public static int getCProductCPDefinitionsCount(
-		long cProductId, int status) {
-
-		return getService().getCProductCPDefinitionsCount(cProductId, status);
-	}
-
 	public static com.liferay.commerce.product.model.CPAttachmentFileEntry
 			getDefaultImageCPAttachmentFileEntry(long cpDefinitionId)
 		throws PortalException {
@@ -1003,4 +982,4 @@ public class CPDefinitionLocalServiceUtil {
 			CPDefinitionLocalServiceUtil.class, CPDefinitionLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1874314472
+// LIFERAY-SERVICE-BUILDER-HASH:-1829917283

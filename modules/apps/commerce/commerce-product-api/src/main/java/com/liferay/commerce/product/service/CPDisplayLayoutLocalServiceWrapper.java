@@ -81,12 +81,6 @@ public class CPDisplayLayoutLocalServiceWrapper
 		return _cpDisplayLayoutLocalService.createPersistedModel(primaryKeyObj);
 	}
 
-	@Override
-	public CPDisplayLayout deleteCPDisplayLayout(Class<?> clazz, long classPK) {
-		return _cpDisplayLayoutLocalService.deleteCPDisplayLayout(
-			clazz, classPK);
-	}
-
 	/**
 	 * Deletes the cp display layout from the database. Also notifies the appropriate model listeners.
 	 *
@@ -342,32 +336,11 @@ public class CPDisplayLayoutLocalServiceWrapper
 
 	@Override
 	public java.util.List<CPDisplayLayout>
-		getCPDisplayLayoutsByGroupIdAndLayoutPageTemplateEntryUuid(
-			long groupId, String layoutPageTemplateEntryUuid, int start,
-			int end) {
-
-		return _cpDisplayLayoutLocalService.
-			getCPDisplayLayoutsByGroupIdAndLayoutPageTemplateEntryUuid(
-				groupId, layoutPageTemplateEntryUuid, start, end);
-	}
-
-	@Override
-	public java.util.List<CPDisplayLayout>
 		getCPDisplayLayoutsByGroupIdAndLayoutUuid(
 			long groupId, String layoutUuid) {
 
 		return _cpDisplayLayoutLocalService.
 			getCPDisplayLayoutsByGroupIdAndLayoutUuid(groupId, layoutUuid);
-	}
-
-	@Override
-	public java.util.List<CPDisplayLayout>
-		getCPDisplayLayoutsByGroupIdAndLayoutUuid(
-			long groupId, String layoutUuid, int start, int end) {
-
-		return _cpDisplayLayoutLocalService.
-			getCPDisplayLayoutsByGroupIdAndLayoutUuid(
-				groupId, layoutUuid, start, end);
 	}
 
 	/**
@@ -537,4 +510,4 @@ public class CPDisplayLayoutLocalServiceWrapper
 	private CPDisplayLayoutLocalService _cpDisplayLayoutLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1650605463
+// LIFERAY-SERVICE-BUILDER-HASH:-616923608

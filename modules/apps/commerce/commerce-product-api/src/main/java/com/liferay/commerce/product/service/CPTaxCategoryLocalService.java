@@ -270,9 +270,6 @@ public interface CPTaxCategoryLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getCPTaxCategoriesCount();
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCPTaxCategoriesCount(long companyId);
-
 	/**
 	 * Returns the cp tax category with the primary key.
 	 *
@@ -369,4 +366,4 @@ public interface CPTaxCategoryLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1657906650
+// LIFERAY-SERVICE-BUILDER-HASH:134693586

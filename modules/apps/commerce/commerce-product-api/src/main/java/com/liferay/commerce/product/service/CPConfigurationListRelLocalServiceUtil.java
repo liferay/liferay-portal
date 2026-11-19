@@ -239,13 +239,6 @@ public class CPConfigurationListRelLocalServiceUtil {
 			CPConfigurationListRelId);
 	}
 
-	public static CPConfigurationListRel fetchCPConfigurationListRel(
-		String className, long classPK, long cpConfigurationListId) {
-
-		return getService().fetchCPConfigurationListRel(
-			className, classPK, cpConfigurationListId);
-	}
-
 	public static List<CPConfigurationListRel>
 		getAccountEntryCPConfigurationListRels(
 			long cpConfigurationListId, String keywords, int start, int end) {
@@ -329,32 +322,10 @@ public class CPConfigurationListRelLocalServiceUtil {
 	}
 
 	public static List<CPConfigurationListRel> getCPConfigurationListRels(
-		long cpConfigurationListId) {
-
-		return getService().getCPConfigurationListRels(cpConfigurationListId);
-	}
-
-	public static List<CPConfigurationListRel> getCPConfigurationListRels(
-		long cpConfigurationListId, int start, int end,
-		OrderByComparator<CPConfigurationListRel> orderByComparator) {
-
-		return getService().getCPConfigurationListRels(
-			cpConfigurationListId, start, end, orderByComparator);
-	}
-
-	public static List<CPConfigurationListRel> getCPConfigurationListRels(
 		String className, long cpConfigurationListId) {
 
 		return getService().getCPConfigurationListRels(
 			className, cpConfigurationListId);
-	}
-
-	public static List<CPConfigurationListRel> getCPConfigurationListRels(
-		String className, long cpConfigurationListId, int start, int end,
-		OrderByComparator<CPConfigurationListRel> orderByComparator) {
-
-		return getService().getCPConfigurationListRels(
-			className, cpConfigurationListId, start, end, orderByComparator);
 	}
 
 	/**
@@ -418,4 +389,4 @@ public class CPConfigurationListRelLocalServiceUtil {
 			CPConfigurationListRelLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-134360728
+// LIFERAY-SERVICE-BUILDER-HASH:-1203718328

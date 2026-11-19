@@ -269,14 +269,6 @@ public class CPConfigurationListRelLocalServiceWrapper
 	}
 
 	@Override
-	public CPConfigurationListRel fetchCPConfigurationListRel(
-		String className, long classPK, long cpConfigurationListId) {
-
-		return _cpConfigurationListRelLocalService.fetchCPConfigurationListRel(
-			className, classPK, cpConfigurationListId);
-	}
-
-	@Override
 	public java.util.List<CPConfigurationListRel>
 		getAccountEntryCPConfigurationListRels(
 			long cpConfigurationListId, String keywords, int start, int end) {
@@ -377,38 +369,10 @@ public class CPConfigurationListRelLocalServiceWrapper
 
 	@Override
 	public java.util.List<CPConfigurationListRel> getCPConfigurationListRels(
-		long cpConfigurationListId) {
-
-		return _cpConfigurationListRelLocalService.getCPConfigurationListRels(
-			cpConfigurationListId);
-	}
-
-	@Override
-	public java.util.List<CPConfigurationListRel> getCPConfigurationListRels(
-		long cpConfigurationListId, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<CPConfigurationListRel>
-			orderByComparator) {
-
-		return _cpConfigurationListRelLocalService.getCPConfigurationListRels(
-			cpConfigurationListId, start, end, orderByComparator);
-	}
-
-	@Override
-	public java.util.List<CPConfigurationListRel> getCPConfigurationListRels(
 		String className, long cpConfigurationListId) {
 
 		return _cpConfigurationListRelLocalService.getCPConfigurationListRels(
 			className, cpConfigurationListId);
-	}
-
-	@Override
-	public java.util.List<CPConfigurationListRel> getCPConfigurationListRels(
-		String className, long cpConfigurationListId, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<CPConfigurationListRel>
-			orderByComparator) {
-
-		return _cpConfigurationListRelLocalService.getCPConfigurationListRels(
-			className, cpConfigurationListId, start, end, orderByComparator);
 	}
 
 	/**
@@ -512,4 +476,4 @@ public class CPConfigurationListRelLocalServiceWrapper
 		_cpConfigurationListRelLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1811420849
+// LIFERAY-SERVICE-BUILDER-HASH:-901495239
