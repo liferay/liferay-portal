@@ -362,14 +362,6 @@ public class CommerceSubscriptionEntryPersistenceTest {
 	}
 
 	@Test
-	public void testCountByC_U() throws Exception {
-		_persistence.countByC_U(
-			RandomTestUtil.nextLong(), RandomTestUtil.nextLong());
-
-		_persistence.countByC_U(0L, 0L);
-	}
-
-	@Test
 	public void testCountByG_C_U() throws Exception {
 		_persistence.countByG_C_U(
 			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(),
@@ -863,4 +855,4 @@ public class CommerceSubscriptionEntryPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1222307697
+// LIFERAY-SERVICE-BUILDER-HASH:-20052123

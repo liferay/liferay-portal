@@ -560,97 +560,6 @@ public class CommerceSubscriptionEntryPersistenceImpl
 
 	private CollectionPersistenceFinder
 		<CommerceSubscriptionEntry, NoSuchSubscriptionEntryException>
-			_collectionPersistenceFinderByC_U;
-
-	/**
-	 * Returns an ordered range of all the commerce subscription entries where companyId = &#63; and userId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CommerceSubscriptionEntryModelImpl</code>.
-	 * </p>
-	 *
-	 * @param companyId the company ID
-	 * @param userId the user ID
-	 * @param start the lower bound of the range of commerce subscription entries
-	 * @param end the upper bound of the range of commerce subscription entries (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching commerce subscription entries
-	 */
-	@Override
-	public List<CommerceSubscriptionEntry> findByC_U(
-		long companyId, long userId, int start, int end,
-		OrderByComparator<CommerceSubscriptionEntry> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByC_U.find(
-			finderCache, new Object[] {companyId, userId}, start, end,
-			orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first commerce subscription entry in the ordered set where companyId = &#63; and userId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param userId the user ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching commerce subscription entry
-	 * @throws NoSuchSubscriptionEntryException if a matching commerce subscription entry could not be found
-	 */
-	@Override
-	public CommerceSubscriptionEntry findByC_U_First(
-			long companyId, long userId,
-			OrderByComparator<CommerceSubscriptionEntry> orderByComparator)
-		throws NoSuchSubscriptionEntryException {
-
-		return _collectionPersistenceFinderByC_U.findFirst(
-			finderCache, new Object[] {companyId, userId}, orderByComparator);
-	}
-
-	/**
-	 * Returns the first commerce subscription entry in the ordered set where companyId = &#63; and userId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param userId the user ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching commerce subscription entry, or <code>null</code> if a matching commerce subscription entry could not be found
-	 */
-	@Override
-	public CommerceSubscriptionEntry fetchByC_U_First(
-		long companyId, long userId,
-		OrderByComparator<CommerceSubscriptionEntry> orderByComparator) {
-
-		return _collectionPersistenceFinderByC_U.fetchFirst(
-			finderCache, new Object[] {companyId, userId}, orderByComparator);
-	}
-
-	/**
-	 * Removes all the commerce subscription entries where companyId = &#63; and userId = &#63; from the database.
-	 *
-	 * @param companyId the company ID
-	 * @param userId the user ID
-	 */
-	@Override
-	public void removeByC_U(long companyId, long userId) {
-		_collectionPersistenceFinderByC_U.remove(
-			finderCache, new Object[] {companyId, userId});
-	}
-
-	/**
-	 * Returns the number of commerce subscription entries where companyId = &#63; and userId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param userId the user ID
-	 * @return the number of matching commerce subscription entries
-	 */
-	@Override
-	public int countByC_U(long companyId, long userId) {
-		return _collectionPersistenceFinderByC_U.count(
-			finderCache, new Object[] {companyId, userId});
-	}
-
-	private CollectionPersistenceFinder
-		<CommerceSubscriptionEntry, NoSuchSubscriptionEntryException>
 			_collectionPersistenceFinderByG_C_U;
 
 	/**
@@ -1212,36 +1121,6 @@ public class CommerceSubscriptionEntryPersistenceImpl
 					FinderColumn.Type.INTEGER, "=", true, true,
 					CommerceSubscriptionEntry::getSubscriptionStatus));
 
-		_collectionPersistenceFinderByC_U = new CollectionPersistenceFinder<>(
-			this,
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByC_U",
-				new String[] {
-					Long.class.getName(), Long.class.getName(),
-					Integer.class.getName(), Integer.class.getName(),
-					OrderByComparator.class.getName()
-				},
-				new String[] {"companyId", "userId"}, true),
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByC_U",
-				new String[] {Long.class.getName(), Long.class.getName()},
-				new String[] {"companyId", "userId"}, true),
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByC_U",
-				new String[] {Long.class.getName(), Long.class.getName()},
-				new String[] {"companyId", "userId"}, false),
-			_SQL_SELECT_COMMERCESUBSCRIPTIONENTRY_WHERE,
-			_SQL_COUNT_COMMERCESUBSCRIPTIONENTRY_WHERE,
-			CommerceSubscriptionEntryModelImpl.ORDER_BY_JPQL,
-			_ENTITY_ALIAS_PREFIX, "", "", null,
-			new FinderColumn<>(
-				"commerceSubscriptionEntry.", "companyId",
-				FinderColumn.Type.LONG, "=", true, true,
-				CommerceSubscriptionEntry::getCompanyId),
-			new FinderColumn<>(
-				"commerceSubscriptionEntry.", "userId", FinderColumn.Type.LONG,
-				"=", true, true, CommerceSubscriptionEntry::getUserId));
-
 		_collectionPersistenceFinderByG_C_U = new CollectionPersistenceFinder<>(
 			this,
 			new FinderPath(
@@ -1374,4 +1253,4 @@ public class CommerceSubscriptionEntryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1331564835
+// LIFERAY-SERVICE-BUILDER-HASH:1862928787
