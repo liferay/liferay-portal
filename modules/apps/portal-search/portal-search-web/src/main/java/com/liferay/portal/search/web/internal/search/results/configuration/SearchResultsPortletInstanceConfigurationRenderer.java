@@ -89,7 +89,7 @@ public class SearchResultsPortletInstanceConfigurationRenderer
 					httpServletRequest);
 
 		if (!FeatureFlagManagerUtil.isEnabled(
-				themeDisplay.getCompanyId(), "LPD-114635")) {
+				themeDisplay.getCompanyId(), "LPD-64988")) {
 
 			return searchResultsPortletInstanceConfiguration.
 				maximumSearchDepth();

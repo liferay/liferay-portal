@@ -243,7 +243,7 @@ public class SearchResultsPortlet extends MVCPortlet {
 			renderRequest);
 
 		if (FeatureFlagManagerUtil.isEnabled(
-				themeDisplay.getCompanyId(), "LPD-114635") &&
+				themeDisplay.getCompanyId(), "LPD-64988") &&
 			(paginationDelta > 0)) {
 
 			int from = GetterUtil.getInteger(searchRequest.getFrom());

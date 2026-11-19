@@ -125,7 +125,7 @@ public class SearchResultsPortletDisplayContext implements Serializable {
 
 	public boolean isMaximumSearchDepthFeatureFlagEnabled() {
 		return FeatureFlagManagerUtil.isEnabled(
-			_themeDisplay.getCompanyId(), "LPD-114635");
+			_themeDisplay.getCompanyId(), "LPD-64988");
 	}
 
 	public boolean isPaginationStartAdjusted() {

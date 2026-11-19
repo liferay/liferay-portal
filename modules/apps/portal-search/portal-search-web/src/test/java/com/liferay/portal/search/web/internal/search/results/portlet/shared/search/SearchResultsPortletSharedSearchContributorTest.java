@@ -59,7 +59,7 @@ public class SearchResultsPortletSharedSearchContributorTest {
 		_testContribute(paginationDelta, String.valueOf(paginationDelta));
 	}
 
-	@FeatureFlag("LPD-114635")
+	@FeatureFlag("LPD-64988")
 	@Test
 	public void testContributeMaximumSearchDepth() {
 		_testContributeMaximumSearchDepth(80, 10, 90, "5");
@@ -68,13 +68,13 @@ public class SearchResultsPortletSharedSearchContributorTest {
 		_testContributeMaximumSearchDepth(80, 20, 100, "6");
 	}
 
-	@FeatureFlag(enable = false, value = "LPD-114635")
+	@FeatureFlag(enable = false, value = "LPD-64988")
 	@Test
 	public void testContributeMaximumSearchDepthWhenFeatureFlagIsDisabled() {
 		_testContributeMaximumSearchDepth(100, 20, 100, "6");
 	}
 
-	@FeatureFlag("LPD-114635")
+	@FeatureFlag("LPD-64988")
 	@Test
 	public void testContributeMaximumSearchDepthWithFederatedSearch() {
 		SearchRequestBuilder searchRequestBuilder =
@@ -126,7 +126,7 @@ public class SearchResultsPortletSharedSearchContributorTest {
 			Integer.valueOf(5), federatedSearchRequest.getSize());
 	}
 
-	@FeatureFlag("LPD-114635")
+	@FeatureFlag("LPD-64988")
 	@Test
 	public void testContributeMaximumSearchDepthWithMultipleWidgets() {
 		_testContributeMaximumSearchDepthWithMultipleWidgets(40, 10, 100, 50);
@@ -135,7 +135,7 @@ public class SearchResultsPortletSharedSearchContributorTest {
 
 	@FeatureFlags(
 		featureFlags = {
-			@FeatureFlag(enable = false, value = "LPD-114635"),
+			@FeatureFlag(enable = false, value = "LPD-64988"),
 			@FeatureFlag("LPD-98858")
 		}
 	)
@@ -157,7 +157,7 @@ public class SearchResultsPortletSharedSearchContributorTest {
 	}
 
 	@FeatureFlags(
-		featureFlags = {@FeatureFlag("LPD-114635"), @FeatureFlag("LPD-98858")}
+		featureFlags = {@FeatureFlag("LPD-64988"), @FeatureFlag("LPD-98858")}
 	)
 	@Test
 	public void testContributeTrackTotalHitsLimitWithMaximumSearchDepth() {
@@ -168,7 +168,7 @@ public class SearchResultsPortletSharedSearchContributorTest {
 	}
 
 	@FeatureFlags(
-		featureFlags = {@FeatureFlag("LPD-114635"), @FeatureFlag("LPD-98858")}
+		featureFlags = {@FeatureFlag("LPD-64988"), @FeatureFlag("LPD-98858")}
 	)
 	@Test
 	public void testContributeTrackTotalHitsLimitWithMultipleWidgets() {

@@ -128,7 +128,7 @@ public class SearchResultsPortletSharedSearchContributor
 		int resultCountAccuracyLimit = RESULT_COUNT_ACCURACY_LIMIT;
 
 		if (FeatureFlagManagerUtil.isEnabled(
-				searchContext.getCompanyId(), "LPD-114635")) {
+				searchContext.getCompanyId(), "LPD-64988")) {
 
 			maximumSearchDepth = Math.min(
 				GetterUtil.getInteger(

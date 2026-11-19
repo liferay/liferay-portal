@@ -114,7 +114,7 @@ public class SearchResultsPortletTest {
 		_assertDisplayContextDocuments(document);
 	}
 
-	@FeatureFlag("LPD-114635")
+	@FeatureFlag("LPD-64988")
 	@Test
 	public void testGetCurWhenPastTotalHits() throws Exception {
 		SearchResultsPortletDisplayContext searchResultsPortletDisplayContext =
@@ -149,7 +149,7 @@ public class SearchResultsPortletTest {
 			String.valueOf(searchContainer.getIteratorURL()));
 	}
 
-	@FeatureFlag("LPD-114635")
+	@FeatureFlag("LPD-64988")
 	@Test
 	public void testIsPaginationStartAdjusted() throws Exception {
 		_testIsPaginationStartAdjusted(5, false, 0, 0);
@@ -160,7 +160,7 @@ public class SearchResultsPortletTest {
 			PropsValues.SEARCH_CONTAINER_PAGE_MAX_DELTA, 2);
 	}
 
-	@FeatureFlag(enable = false, value = "LPD-114635")
+	@FeatureFlag(enable = false, value = "LPD-64988")
 	@Test
 	public void testIsPaginationStartAdjustedWhenFeatureFlagIsDisabled()
 		throws Exception {

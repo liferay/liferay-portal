@@ -101,7 +101,7 @@ public class SearchResultsPortletDisplayContextTest {
 			Mockito.times(1));
 	}
 
-	@FeatureFlag("LPD-114635")
+	@FeatureFlag("LPD-64988")
 	@Test
 	public void testGetPaginationResultEnd() throws Exception {
 		SearchContainer<Document> searchContainer = Mockito.mock(
@@ -130,7 +130,7 @@ public class SearchResultsPortletDisplayContextTest {
 			searchResultsPortletDisplayContext.getPaginationResultEnd());
 	}
 
-	@FeatureFlag(enable = false, value = "LPD-114635")
+	@FeatureFlag(enable = false, value = "LPD-64988")
 	@Test
 	public void testGetPaginationResultEndWhenFeatureFlagIsDisabled()
 		throws Exception {

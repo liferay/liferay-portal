@@ -19,7 +19,7 @@ page import="com.liferay.portal.search.web.internal.search.results.portlet.share
 SearchResultsPortletInstanceConfiguration searchResultsPortletInstanceConfiguration = (SearchResultsPortletInstanceConfiguration)request.getAttribute(SearchResultsPortletInstanceConfiguration.class.getName());
 
 boolean limitResultCountAccuracyAvailable = FeatureFlagManagerUtil.isEnabled("LPD-98858");
-boolean maximumSearchDepthEnabled = FeatureFlagManagerUtil.isEnabled("LPD-114635");
+boolean maximumSearchDepthEnabled = FeatureFlagManagerUtil.isEnabled("LPD-64988");
 %>
 
 <aui:input name="displayStyle" type="textarea" value="<%= searchResultsPortletInstanceConfiguration.displayStyle() %>" />
@@ -63,7 +63,7 @@ boolean maximumSearchDepthEnabled = FeatureFlagManagerUtil.isEnabled("LPD-114635
 		<liferay-ui:message key="maximum-search-depth-help" />
 
 		<c:if test="<%= !maximumSearchDepthEnabled %>">
-			<liferay-ui:message arguments='<%= LanguageUtil.get(request, "feature.flag.LPD-114635.title") %>' key="instance-settings-enable-feature-flag-help" translateArguments="<%= false %>" />
+			<liferay-ui:message arguments='<%= LanguageUtil.get(request, "feature.flag.LPD-64988.title") %>' key="instance-settings-enable-feature-flag-help" translateArguments="<%= false %>" />
 		</c:if>
 	</span>
 </div>

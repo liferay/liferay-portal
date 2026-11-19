@@ -99,7 +99,7 @@ SearchResultsPortletPreferences searchResultsPortletPreferences = new SearchResu
 			String maximumSearchDepthInputName = SearchResultsPortletPreferences.PREFERENCE_KEY_MAXIMUM_SEARCH_DEPTH;
 
 			if (!maximumSearchDepthFeatureFlagEnabled) {
-				maximumSearchDepthHelpMessage += StringPool.SPACE + LanguageUtil.format(request, "instance-settings-enable-feature-flag-help", LanguageUtil.get(request, "feature.flag.LPD-114635.title"), false);
+				maximumSearchDepthHelpMessage += StringPool.SPACE + LanguageUtil.format(request, "instance-settings-enable-feature-flag-help", LanguageUtil.get(request, "feature.flag.LPD-64988.title"), false);
 			}
 			else {
 				maximumSearchDepthInputName = PortletPreferencesJspUtil.getInputName(maximumSearchDepthInputName);
