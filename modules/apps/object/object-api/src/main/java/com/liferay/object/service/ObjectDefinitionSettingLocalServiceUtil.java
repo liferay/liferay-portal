@@ -376,6 +376,12 @@ public class ObjectDefinitionSettingLocalServiceUtil {
 		return getService().getPersistedModel(primaryKeyObj);
 	}
 
+	public static Map<Long, long[]> loadGetRootObjectDefinitionIdsMap(
+		long companyId) {
+
+		return getService().loadGetRootObjectDefinitionIdsMap(companyId);
+	}
+
 	/**
 	 * Updates the object definition setting in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	 *
@@ -403,4 +409,4 @@ public class ObjectDefinitionSettingLocalServiceUtil {
 			ObjectDefinitionSettingLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-597159586
+// LIFERAY-SERVICE-BUILDER-HASH:-102517436

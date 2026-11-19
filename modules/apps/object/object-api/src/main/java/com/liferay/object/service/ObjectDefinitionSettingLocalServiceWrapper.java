@@ -430,6 +430,14 @@ public class ObjectDefinitionSettingLocalServiceWrapper
 			primaryKeyObj);
 	}
 
+	@Override
+	public java.util.Map<Long, long[]> loadGetRootObjectDefinitionIdsMap(
+		long companyId) {
+
+		return _objectDefinitionSettingLocalService.
+			loadGetRootObjectDefinitionIdsMap(companyId);
+	}
+
 	/**
 	 * Updates the object definition setting in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	 *
@@ -473,4 +481,4 @@ public class ObjectDefinitionSettingLocalServiceWrapper
 		_objectDefinitionSettingLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:813241959
+// LIFERAY-SERVICE-BUILDER-HASH:-1999093449

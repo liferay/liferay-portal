@@ -312,6 +312,9 @@ public interface ObjectDefinitionSettingLocalService
 	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
 		throws PortalException;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public Map<Long, long[]> loadGetRootObjectDefinitionIdsMap(long companyId);
+
 	/**
 	 * Updates the object definition setting in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	 *
@@ -327,4 +330,4 @@ public interface ObjectDefinitionSettingLocalService
 		ObjectDefinitionSetting objectDefinitionSetting);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1347008793
+// LIFERAY-SERVICE-BUILDER-HASH:849268967
