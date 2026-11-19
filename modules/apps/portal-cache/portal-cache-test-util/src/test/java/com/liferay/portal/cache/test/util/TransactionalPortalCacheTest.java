@@ -756,6 +756,266 @@ public class TransactionalPortalCacheTest {
 	}
 
 	@Test
+	public void testGetLoad() {
+		TransactionalPortalCache<String, String> transactionalPortalCache =
+			new TransactionalPortalCache<>(_portalCache, false);
+
+		_portalCache.put(_KEY_1, _VALUE_1);
+
+		Assert.assertEquals(
+			_VALUE_1,
+			TransactionalPortalCacheUtil.get(
+				transactionalPortalCache, _KEY_1, key -> _VALUE_2));
+
+		_portalCache.removeAll();
+
+		TransactionalPortalCacheUtil.begin();
+
+		Assert.assertEquals(
+			_VALUE_1,
+			TransactionalPortalCacheUtil.get(
+				transactionalPortalCache, _KEY_1, key -> _VALUE_1));
+		Assert.assertNull(_portalCache.get(_KEY_1));
+
+		TransactionalPortalCacheUtil.commit(true);
+
+		Assert.assertEquals(_VALUE_1, _portalCache.get(_KEY_1));
+
+		TransactionalPortalCacheUtil.begin();
+
+		Assert.assertEquals(
+			_VALUE_2,
+			TransactionalPortalCacheUtil.get(
+				transactionalPortalCache, _KEY_2, key -> _VALUE_2));
+		Assert.assertNull(_portalCache.get(_KEY_2));
+
+		TransactionalPortalCacheUtil.commit(false);
+
+		Assert.assertEquals(_VALUE_2, _portalCache.get(_KEY_2));
+
+		_portalCache.removeAll();
+
+		TransactionalPortalCacheUtil.begin();
+
+		Assert.assertEquals(
+			_VALUE_1,
+			TransactionalPortalCacheUtil.get(
+				transactionalPortalCache, _KEY_1, key -> _VALUE_1));
+
+		TransactionalPortalCacheUtil.rollback();
+
+		Assert.assertNull(_portalCache.get(_KEY_1));
+
+		TransactionalPortalCacheUtil.begin();
+
+		Assert.assertNull(
+			TransactionalPortalCacheUtil.get(
+				transactionalPortalCache, _KEY_1, key -> null));
+
+		TransactionalPortalCacheUtil.commit(true);
+
+		Assert.assertNull(_portalCache.get(_KEY_1));
+	}
+
+	@Test
+	public void testGetLoadAfterInvalidate() {
+		TransactionalPortalCache<String, String> transactionalPortalCache =
+			new TransactionalPortalCache<>(_portalCache, false);
+
+		TransactionalPortalCacheUtil.begin();
+
+		_commitRemove(transactionalPortalCache, _KEY_1);
+
+		Assert.assertEquals(
+			_VALUE_1,
+			TransactionalPortalCacheUtil.get(
+				transactionalPortalCache, _KEY_1, key -> _VALUE_1));
+
+		TransactionalPortalCacheUtil.commit(false);
+
+		Assert.assertNull(_portalCache.get(_KEY_1));
+
+		_portalCache.put(_KEY_2, _VALUE_2);
+
+		TransactionalPortalCacheUtil.begin();
+
+		transactionalPortalCache.remove(_KEY_2);
+
+		Assert.assertEquals(
+			_VALUE_1,
+			TransactionalPortalCacheUtil.get(
+				transactionalPortalCache, _KEY_2, key -> _VALUE_1));
+		Assert.assertEquals(
+			_VALUE_1,
+			TransactionalPortalCacheUtil.get(
+				transactionalPortalCache, _KEY_2, key -> _VALUE_2));
+		Assert.assertEquals(_VALUE_2, _portalCache.get(_KEY_2));
+
+		TransactionalPortalCacheUtil.commit(false);
+
+		Assert.assertEquals(_VALUE_1, _portalCache.get(_KEY_2));
+	}
+
+	@Test
+	public void testGetLoadInSavepoint() {
+		TransactionalPortalCache<String, String> transactionalPortalCache =
+			new TransactionalPortalCache<>(_portalCache, false);
+
+		TransactionLifecycleListener transactionLifecycleListener =
+			TransactionalPortalCacheUtil.TRANSACTION_LIFECYCLE_LISTENER;
+
+		TransactionAttribute.Builder builder =
+			new TransactionAttribute.Builder();
+
+		builder.setReadOnly(true);
+
+		TransactionAttribute transactionAttribute = builder.build();
+
+		TransactionStatus transactionStatus = new TestTrasactionStatus(
+			true, false, false);
+
+		TransactionAttribute.Builder savepointBuilder =
+			new TransactionAttribute.Builder();
+
+		savepointBuilder.setPropagation(Propagation.NESTED);
+
+		TransactionAttribute savepointTransactionAttribute =
+			savepointBuilder.build();
+
+		TransactionStatus savepointTransactionStatus = new TestTrasactionStatus(
+			false, false, false);
+
+		transactionLifecycleListener.created(
+			transactionAttribute, transactionStatus);
+		transactionLifecycleListener.created(
+			savepointTransactionAttribute, savepointTransactionStatus);
+
+		Assert.assertEquals(
+			_VALUE_1,
+			TransactionalPortalCacheUtil.get(
+				transactionalPortalCache, _KEY_1, key -> _VALUE_1));
+		Assert.assertNull(_portalCache.get(_KEY_1));
+
+		transactionLifecycleListener.committed(
+			savepointTransactionAttribute, savepointTransactionStatus);
+		transactionLifecycleListener.committed(
+			transactionAttribute, transactionStatus);
+
+		Assert.assertEquals(_VALUE_1, _portalCache.get(_KEY_1));
+
+		transactionLifecycleListener.created(
+			transactionAttribute, transactionStatus);
+
+		_commitRemove(transactionalPortalCache, _KEY_2);
+
+		transactionLifecycleListener.created(
+			savepointTransactionAttribute, savepointTransactionStatus);
+
+		Assert.assertEquals(
+			_VALUE_2,
+			TransactionalPortalCacheUtil.get(
+				transactionalPortalCache, _KEY_2, key -> _VALUE_2));
+
+		transactionLifecycleListener.committed(
+			savepointTransactionAttribute, savepointTransactionStatus);
+		transactionLifecycleListener.committed(
+			transactionAttribute, transactionStatus);
+
+		Assert.assertNull(_portalCache.get(_KEY_2));
+	}
+
+	@Test
+	public void testGetLoadNested() {
+		TransactionalPortalCache<String, String> transactionalPortalCache =
+			new TransactionalPortalCache<>(_portalCache, false);
+
+		TransactionalPortalCacheUtil.begin();
+
+		Assert.assertEquals(
+			_VALUE_1,
+			TransactionalPortalCacheUtil.get(
+				transactionalPortalCache, _KEY_1,
+				key1 -> {
+					Assert.assertEquals(
+						_VALUE_2,
+						TransactionalPortalCacheUtil.get(
+							transactionalPortalCache, _KEY_2,
+							key2 -> _VALUE_2));
+
+					return _VALUE_1;
+				}));
+
+		TransactionalPortalCacheUtil.commit(true);
+
+		Assert.assertEquals(_VALUE_1, _portalCache.get(_KEY_1));
+		Assert.assertEquals(_VALUE_2, _portalCache.get(_KEY_2));
+	}
+
+	@Test
+	public void testGetLoadWithException() {
+		TransactionalPortalCache<String, String> transactionalPortalCache =
+			new TransactionalPortalCache<>(_portalCache, false);
+
+		TransactionalPortalCacheUtil.begin();
+
+		Exception exception1 = new Exception();
+
+		try {
+			TransactionalPortalCacheUtil.get(
+				transactionalPortalCache, _KEY_1,
+				key -> {
+					throw exception1;
+				});
+
+			Assert.fail();
+		}
+		catch (Exception exception2) {
+			Assert.assertSame(exception1, exception2);
+		}
+
+		TransactionalPortalCacheUtil.commit(true);
+
+		Assert.assertNull(_portalCache.get(_KEY_1));
+	}
+
+	@Test
+	public void testGetLoadWithoutTransaction() {
+		TransactionalPortalCache<String, String> transactionalPortalCache =
+			new TransactionalPortalCache<>(_portalCache, false);
+
+		Assert.assertEquals(
+			_VALUE_1,
+			TransactionalPortalCacheUtil.get(
+				transactionalPortalCache, _KEY_1,
+				key -> {
+					Assert.assertTrue(TransactionalPortalCacheUtil.isEnabled());
+
+					return _VALUE_1;
+				}));
+
+		Assert.assertEquals(_VALUE_1, _portalCache.get(_KEY_1));
+		Assert.assertFalse(TransactionalPortalCacheUtil.isEnabled());
+
+		Exception exception1 = new Exception();
+
+		try {
+			TransactionalPortalCacheUtil.get(
+				transactionalPortalCache, _KEY_2,
+				key -> {
+					throw exception1;
+				});
+
+			Assert.fail();
+		}
+		catch (Exception exception2) {
+			Assert.assertSame(exception1, exception2);
+		}
+
+		Assert.assertNull(_portalCache.get(_KEY_2));
+		Assert.assertFalse(TransactionalPortalCacheUtil.isEnabled());
+	}
+
+	@Test
 	public void testMisc() {
 
 		// For code coverage
@@ -1435,11 +1695,11 @@ public class TransactionalPortalCacheTest {
 			Assert.assertSame(
 				mockMVCCModel,
 				TransactionalPortalCacheUtil.get(
-					transactionalPortalCache, _KEY_1, null));
+					transactionalPortalCache, _KEY_1, (boolean[])null));
 
 			try {
 				TransactionalPortalCacheUtil.get(
-					transactionalPortalCache, null, null);
+					transactionalPortalCache, null, (boolean[])null);
 				Assert.fail();
 			}
 			catch (Exception exception) {
@@ -1469,7 +1729,7 @@ public class TransactionalPortalCacheTest {
 
 			try {
 				TransactionalPortalCacheUtil.get(
-					transactionalPortalCache, null, null);
+					transactionalPortalCache, null, (boolean[])null);
 				Assert.fail();
 			}
 			catch (Exception exception) {

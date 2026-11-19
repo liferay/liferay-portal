@@ -5,6 +5,7 @@
 
 package com.liferay.portal.kernel.cache.transactional;
 
+import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.lang.CentralizedThreadLocal;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringPool;
@@ -265,6 +266,31 @@ public class TransactionalPortalCacheUtil {
 		}
 	}
 
+	public static <K extends Serializable, V, E extends Exception> V get(
+			PortalCache<K, V> portalCache, K key,
+			UnsafeFunction<K, V, E> loadUnsafeFunction)
+		throws E {
+
+		V value = portalCache.get(key);
+
+		if (value != null) {
+			return value;
+		}
+
+		if (isEnabled()) {
+			return _load(portalCache, key, loadUnsafeFunction);
+		}
+
+		begin();
+
+		try {
+			return _load(portalCache, key, loadUnsafeFunction);
+		}
+		finally {
+			commit(true);
+		}
+	}
+
 	public static Serializable getNullHolder() {
 		return _NULL_HOLDER;
 	}
@@ -419,6 +445,22 @@ public class TransactionalPortalCacheUtil {
 		}
 
 		return uncommittedBuffer;
+	}
+
+	private static <K extends Serializable, V, E extends Exception> V _load(
+			PortalCache<K, V> portalCache, K key,
+			UnsafeFunction<K, V, E> loadUnsafeFunction)
+		throws E {
+
+		V value = loadUnsafeFunction.apply(key);
+
+		if (value != null) {
+			completePut(
+				portalCache, key, value, getStartSequence(),
+				PortalCache.DEFAULT_TIME_TO_LIVE);
+		}
+
+		return value;
 	}
 
 	private static PortalCacheMap _peekPortalCacheMap() {

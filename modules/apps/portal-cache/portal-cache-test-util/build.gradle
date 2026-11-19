@@ -4,6 +4,7 @@ dependencies {
 	compileOnly project(":apps:portal-cache:portal-cache-api")
 	compileOnly project(":core:petra:petra-lang")
 	compileOnly project(":core:petra:petra-string")
+	testImplementation project(":core:petra:petra-function")
 	testImplementation project(":core:petra:petra-reflect")
 }
 
