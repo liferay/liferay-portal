@@ -50,8 +50,7 @@ public class PortalInstancesConfigurationFactory {
 
 		String adminPassword = _secretResolver.resolve(
 			CompanyConstants.SYSTEM,
-			SecretContext.createConfigurationSecretContext(
-				"adminPassword", properties),
+			SecretContext.fromConfiguration("adminPassword", properties),
 			portalInstancesConfiguration.adminPassword());
 
 		DependencyManagerSyncUtil.registerSyncCallable(

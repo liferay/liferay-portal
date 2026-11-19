@@ -278,8 +278,7 @@ public class CTSettingsConfigurationModelListener
 
 		clientSecret = _secretResolver.resolve(
 			companyId,
-			SecretContext.createConfigurationSecretContext(
-				"remoteClientSecret", properties),
+			SecretContext.fromConfiguration("remoteClientSecret", properties),
 			clientSecret);
 
 		_oAuth2ApplicationLocalService.addOAuth2Application(

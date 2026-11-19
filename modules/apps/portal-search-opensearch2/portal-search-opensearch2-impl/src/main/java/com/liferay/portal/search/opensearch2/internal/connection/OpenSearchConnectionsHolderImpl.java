@@ -122,15 +122,14 @@ public class OpenSearchConnectionsHolderImpl
 			).password(
 				_secretResolver.resolve(
 					CompanyConstants.SYSTEM,
-					SecretContext.createConfigurationSecretContext(
-						"password", properties),
+					SecretContext.fromConfiguration("password", properties),
 					openSearchConnectionConfiguration.password())
 			).proxyConfig(
 				createProxyConfig(openSearchConnectionConfiguration, properties)
 			).truststorePassword(
 				_secretResolver.resolve(
 					CompanyConstants.SYSTEM,
-					SecretContext.createConfigurationSecretContext(
+					SecretContext.fromConfiguration(
 						"truststorePassword", properties),
 					openSearchConnectionConfiguration.truststorePassword())
 			).truststorePath(
@@ -155,8 +154,7 @@ public class OpenSearchConnectionsHolderImpl
 		).password(
 			_secretResolver.resolve(
 				CompanyConstants.SYSTEM,
-				SecretContext.createConfigurationSecretContext(
-					"proxyPassword", properties),
+				SecretContext.fromConfiguration("proxyPassword", properties),
 				openSearchConnectionConfiguration.proxyPassword())
 		).port(
 			openSearchConnectionConfiguration.proxyPort()

@@ -49,7 +49,7 @@ public class OAuth2InAssertionConfigurationModelListener
 
 		jwks = _secretResolver.resolve(
 			companyId,
-			SecretContext.createConfigurationSecretContext(
+			SecretContext.fromConfiguration(
 				"oauth2.in.assertion.signature.json.web.key.set", properties),
 			jwks);
 

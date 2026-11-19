@@ -165,7 +165,7 @@ public class LDAPTestDisplayContext {
 
 		return SecretResolverUtil.resolve(
 			_companyId,
-			SecretContext.createConfigurationSecretContext(
+			SecretContext.fromConfiguration(
 				LDAPConstants.SECURITY_CREDENTIAL,
 				ldapServerConfigurationProvider.getConfigurationProperties(
 					_companyId, ldapServerId)),

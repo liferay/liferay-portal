@@ -134,7 +134,7 @@ public class SharepointRepositoryTokenBroker {
 						_properties.get(
 							ExtendedObjectClassDefinition.Scope.COMPANY.
 								getPropertyKey())),
-					SecretContext.createConfigurationSecretContext(
+					SecretContext.fromConfiguration(
 						"clientSecret", _properties),
 					_sharepointRepositoryConfiguration.clientSecret()))
 		).authority(

@@ -122,7 +122,7 @@ public class DefaultPortalLDAP implements PortalLDAP {
 		String securityPrincipal = ldapServerConfiguration.securityPrincipal();
 		String securityCredential = _secretResolver.resolve(
 			companyId,
-			SecretContext.createConfigurationSecretContext(
+			SecretContext.fromConfiguration(
 				LDAPConstants.SECURITY_CREDENTIAL,
 				_ldapServerConfigurationProvider.getConfigurationProperties(
 					companyId, ldapServerId)),

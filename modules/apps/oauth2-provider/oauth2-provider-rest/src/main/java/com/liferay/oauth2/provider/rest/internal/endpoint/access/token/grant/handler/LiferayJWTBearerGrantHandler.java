@@ -535,7 +535,7 @@ public class LiferayJWTBearerGrantHandler extends BaseAccessTokenGrantHandler {
 				JsonWebKeys jsonWebKeys = JwkUtils.readJwkSet(
 					_secretResolver.resolve(
 						companyId,
-						SecretContext.createConfigurationSecretContext(
+						SecretContext.fromConfiguration(
 							"oauth2.in.assertion.signature.json.web.key.set",
 							properties),
 						oAuth2InAssertionConfiguration.

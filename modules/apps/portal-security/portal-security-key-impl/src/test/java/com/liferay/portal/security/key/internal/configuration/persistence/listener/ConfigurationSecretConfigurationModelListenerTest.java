@@ -16,6 +16,7 @@ import com.liferay.portal.kernel.security.fips.FIPSAuditUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.security.key.KeyReference;
 import com.liferay.portal.security.key.KeyReferenceUtil;
@@ -28,6 +29,7 @@ import com.liferay.portal.security.key.spi.profile.KeyManagerProfileRegistry;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import java.util.Dictionary;
+import java.util.Map;
 import java.util.Objects;
 
 import org.junit.Assert;
@@ -245,10 +247,11 @@ public class ConfigurationSecretConfigurationModelListenerTest {
 	}
 
 	private boolean _isCredentialConfigurationSecretContext(
-		SecretContext secretContext) {
+		Map<String, Object> properties, SecretContext secretContext) {
 
 		if ((secretContext != null) &&
 			Objects.equals(secretContext.getKey(), "credential") &&
+			Objects.equals(secretContext.getProperties(), properties) &&
 			(secretContext.getType() == SecretContext.Type.CONFIGURATION)) {
 
 			return true;
@@ -423,26 +426,31 @@ public class ConfigurationSecretConfigurationModelListenerTest {
 	}
 
 	private void _testOnBeforeSave() throws Exception {
-		String storedValue = RandomTestUtil.randomString();
+		String host = RandomTestUtil.randomString();
 		String value = RandomTestUtil.randomString();
+
+		Map<String, Object> propertiesMap = HashMapBuilder.<String, Object>put(
+			"credential", value
+		).put(
+			"host", host
+		).build();
+
+		String storedValue = RandomTestUtil.randomString();
 
 		Mockito.when(
 			_secretResolver.store(
 				Mockito.eq(CompanyConstants.SYSTEM),
-				Mockito.argThat(this::_isCredentialConfigurationSecretContext),
+				Mockito.argThat(
+					(SecretContext secretContext) ->
+						_isCredentialConfigurationSecretContext(
+							propertiesMap, secretContext)),
 				Mockito.eq(value))
 		).thenReturn(
 			storedValue
 		);
 
-		String host = RandomTestUtil.randomString();
-
-		Dictionary<String, Object> properties =
-			HashMapDictionaryBuilder.<String, Object>put(
-				"credential", value
-			).put(
-				"host", host
-			).build();
+		Dictionary<String, Object> properties = new HashMapDictionary<>(
+			propertiesMap);
 
 		_configurationSecretConfigurationModelListener.onBeforeSave(
 			_PID, properties);
@@ -524,21 +532,26 @@ public class ConfigurationSecretConfigurationModelListenerTest {
 		long companyId = RandomTestUtil.randomLong();
 		String value = RandomTestUtil.randomString();
 
+		Map<String, Object> propertiesMap = HashMapBuilder.<String, Object>put(
+			ConfigurationAdmin.SERVICE_FACTORYPID, _PID + ".scoped"
+		).put(
+			"companyId", companyId
+		).put(
+			"credential", value
+		).build();
+
 		_configurationSecretConfigurationModelListener.onBeforeSave(
 			_PID + ".scoped~" + RandomTestUtil.randomString(),
-			HashMapDictionaryBuilder.<String, Object>put(
-				ConfigurationAdmin.SERVICE_FACTORYPID, _PID + ".scoped"
-			).put(
-				"companyId", companyId
-			).put(
-				"credential", value
-			).build());
+			new HashMapDictionary<>(propertiesMap));
 
 		Mockito.verify(
 			_secretResolver
 		).store(
 			Mockito.eq(companyId),
-			Mockito.argThat(this::_isCredentialConfigurationSecretContext),
+			Mockito.argThat(
+				(SecretContext secretContext) ->
+					_isCredentialConfigurationSecretContext(
+						propertiesMap, secretContext)),
 			Mockito.eq(value)
 		);
 	}
@@ -547,21 +560,25 @@ public class ConfigurationSecretConfigurationModelListenerTest {
 		long companyId = RandomTestUtil.randomLong();
 		String value = RandomTestUtil.randomString();
 
+		Map<String, Object> propertiesMap = HashMapBuilder.<String, Object>put(
+			"companyId", companyId
+		).put(
+			"credential", value
+		).put(
+			"groupId", RandomTestUtil.randomLong()
+		).build();
+
 		_configurationSecretConfigurationModelListener.onBeforeSave(
-			_PID,
-			HashMapDictionaryBuilder.<String, Object>put(
-				"companyId", companyId
-			).put(
-				"credential", value
-			).put(
-				"groupId", RandomTestUtil.randomLong()
-			).build());
+			_PID, new HashMapDictionary<>(propertiesMap));
 
 		Mockito.verify(
 			_secretResolver
 		).store(
 			Mockito.eq(companyId),
-			Mockito.argThat(this::_isCredentialConfigurationSecretContext),
+			Mockito.argThat(
+				(SecretContext secretContext) ->
+					_isCredentialConfigurationSecretContext(
+						propertiesMap, secretContext)),
 			Mockito.eq(value)
 		);
 	}

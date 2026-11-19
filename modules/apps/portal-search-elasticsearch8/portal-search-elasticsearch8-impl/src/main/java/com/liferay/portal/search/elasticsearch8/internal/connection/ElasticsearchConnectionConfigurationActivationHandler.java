@@ -55,15 +55,14 @@ public class ElasticsearchConnectionConfigurationActivationHandler {
 		).password(
 			_secretResolver.resolve(
 				CompanyConstants.SYSTEM,
-				SecretContext.createConfigurationSecretContext(
-					"password", properties),
+				SecretContext.fromConfiguration("password", properties),
 				elasticsearchConnectionConfiguration.password())
 		).proxyConfig(
 			createProxyConfig(elasticsearchConnectionConfiguration, properties)
 		).truststorePassword(
 			_secretResolver.resolve(
 				CompanyConstants.SYSTEM,
-				SecretContext.createConfigurationSecretContext(
+				SecretContext.fromConfiguration(
 					"truststorePassword", properties),
 				elasticsearchConnectionConfiguration.truststorePassword())
 		).truststorePath(
@@ -92,8 +91,7 @@ public class ElasticsearchConnectionConfigurationActivationHandler {
 		).password(
 			_secretResolver.resolve(
 				CompanyConstants.SYSTEM,
-				SecretContext.createConfigurationSecretContext(
-					"proxyPassword", properties),
+				SecretContext.fromConfiguration("proxyPassword", properties),
 				elasticsearchConnectionConfiguration.proxyPassword())
 		).port(
 			elasticsearchConnectionConfiguration.proxyPort()

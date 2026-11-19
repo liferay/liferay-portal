@@ -17,7 +17,7 @@ import java.util.Map;
  */
 public class SecretContext {
 
-	public static SecretContext createConfigurationSecretContext(
+	public static SecretContext fromConfiguration(
 		String key, Dictionary<String, ?> properties) {
 
 		if (properties == null) {
@@ -30,10 +30,10 @@ public class SecretContext {
 			propertiesMap.put(name, properties.get(name));
 		}
 
-		return createConfigurationSecretContext(key, propertiesMap);
+		return fromConfiguration(key, propertiesMap);
 	}
 
-	public static SecretContext createConfigurationSecretContext(
+	public static SecretContext fromConfiguration(
 		String key, Map<String, ?> properties) {
 
 		if (properties == null) {
@@ -41,8 +41,7 @@ public class SecretContext {
 		}
 
 		return new SecretContext(
-			key, Collections.unmodifiableMap(new HashMap<>(properties)),
-			Type.CONFIGURATION);
+			key, Collections.unmodifiableMap(properties), Type.CONFIGURATION);
 	}
 
 	public String getKey() {
@@ -59,7 +58,7 @@ public class SecretContext {
 
 	public enum Type {
 
-		COMPANY, CONFIGURATION, SETTINGS
+		CONFIGURATION, PORTAL_PREFERENCES, SETTINGS
 
 	}
 

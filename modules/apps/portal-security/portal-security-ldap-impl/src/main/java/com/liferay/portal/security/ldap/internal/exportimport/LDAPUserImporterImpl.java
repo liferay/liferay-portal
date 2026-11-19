@@ -654,7 +654,7 @@ public class LDAPUserImporterImpl implements LDAPUserImporter {
 			if (!autoPassword) {
 				String defaultPassword = _secretResolver.resolve(
 					companyId,
-					SecretContext.createConfigurationSecretContext(
+					SecretContext.fromConfiguration(
 						LDAPConstants.IMPORT_USER_PASSWORD_DEFAULT,
 						_ldapImportConfigurationProvider.
 							getConfigurationProperties(companyId)),
@@ -2015,7 +2015,7 @@ public class LDAPUserImporterImpl implements LDAPUserImporter {
 			else {
 				password = _secretResolver.resolve(
 					companyId,
-					SecretContext.createConfigurationSecretContext(
+					SecretContext.fromConfiguration(
 						LDAPConstants.IMPORT_USER_PASSWORD_DEFAULT,
 						_ldapImportConfigurationProvider.
 							getConfigurationProperties(companyId)),

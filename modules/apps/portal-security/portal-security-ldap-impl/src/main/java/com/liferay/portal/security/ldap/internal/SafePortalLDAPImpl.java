@@ -421,7 +421,7 @@ public class SafePortalLDAPImpl implements SafePortalLDAP {
 			ldapServerConfiguration.securityPrincipal(),
 			_secretResolver.resolve(
 				companyId,
-				SecretContext.createConfigurationSecretContext(
+				SecretContext.fromConfiguration(
 					LDAPConstants.SECURITY_CREDENTIAL,
 					_ldapServerConfigurationProvider.getConfigurationProperties(
 						companyId, ldapServerId)),

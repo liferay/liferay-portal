@@ -74,7 +74,7 @@ public class KeyStoreCredentialResolver extends AbstractCredentialResolver {
 			if (usageType == UsageType.ENCRYPTION) {
 				keyStoreCredentialPassword = SecretResolverUtil.resolve(
 					companyId,
-					SecretContext.createConfigurationSecretContext(
+					SecretContext.fromConfiguration(
 						PortletPropsKeys.
 							SAML_KEYSTORE_ENCRYPTION_CREDENTIAL_PASSWORD,
 						_samlProviderConfigurationHelper.
@@ -85,7 +85,7 @@ public class KeyStoreCredentialResolver extends AbstractCredentialResolver {
 			else {
 				keyStoreCredentialPassword = SecretResolverUtil.resolve(
 					companyId,
-					SecretContext.createConfigurationSecretContext(
+					SecretContext.fromConfiguration(
 						PortletPropsKeys.SAML_KEYSTORE_CREDENTIAL_PASSWORD,
 						_samlProviderConfigurationHelper.
 							getSamlProviderConfigurationProperties()),

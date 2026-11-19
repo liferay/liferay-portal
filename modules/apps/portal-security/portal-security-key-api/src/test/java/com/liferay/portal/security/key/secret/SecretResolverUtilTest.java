@@ -145,9 +145,8 @@ public class SecretResolverUtilTest {
 		String keyReferenceString = _randomKeyReferenceString();
 		String resolvedValue = RandomTestUtil.randomString();
 
-		SecretContext secretContext =
-			SecretContext.createConfigurationSecretContext(
-				RandomTestUtil.randomString(), Collections.emptyMap());
+		SecretContext secretContext = SecretContext.fromConfiguration(
+			RandomTestUtil.randomString(), Collections.emptyMap());
 
 		SecretResolver secretResolver = Mockito.mock(SecretResolver.class);
 

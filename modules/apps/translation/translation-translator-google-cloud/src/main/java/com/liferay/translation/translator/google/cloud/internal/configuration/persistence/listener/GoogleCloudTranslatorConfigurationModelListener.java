@@ -51,7 +51,7 @@ public class GoogleCloudTranslatorConfigurationModelListener
 
 		serviceAccountPrivateKey = _secretResolver.resolve(
 			companyId,
-			SecretContext.createConfigurationSecretContext(
+			SecretContext.fromConfiguration(
 				"serviceAccountPrivateKey", properties),
 			serviceAccountPrivateKey);
 

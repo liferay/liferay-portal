@@ -5,11 +5,12 @@
 
 package com.liferay.oauth2.provider.rest.internal.configuration;
 
-import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.module.framework.ModuleServiceLifecycle;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
+import com.liferay.portal.security.key.secret.SecretContext;
 import com.liferay.portal.security.key.secret.SecretResolver;
 
 import java.io.IOException;
@@ -20,6 +21,7 @@ import org.jose4j.jwk.JsonWebKey;
 import org.jose4j.jwk.RsaJsonWebKey;
 import org.jose4j.jwk.RsaJwkGenerator;
 
+import org.osgi.framework.Constants;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.component.annotations.Activate;
@@ -59,13 +61,12 @@ public class OAuth2AuthorizationServerConfigurationGenerator {
 
 					return _secretResolver.store(
 						CompanyConstants.SYSTEM,
-						StringBundler.concat(
-							"config/",
-							OAuth2AuthorizationServerConfiguration.class.
-								getName(),
-							StringPool.SLASH, CompanyConstants.SYSTEM,
-							"/oauth2.authorization.server.jwt.access.token.",
-							"signing.json.web.key"),
+						SecretContext.fromConfiguration(
+							"oauth2.authorization.server.jwt.access.token." +
+								"signing.json.web.key",
+							HashMapBuilder.put(
+								Constants.SERVICE_PID, configuration.getPid()
+							).build()),
 						rsaJsonWebKey.toJson(
 							JsonWebKey.OutputControlLevel.INCLUDE_PRIVATE));
 				}
