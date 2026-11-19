@@ -375,10 +375,6 @@ public interface CTCollectionLocalService
 	public boolean hasUnapprovedChanges(long ctCollectionId)
 		throws SQLException;
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public boolean isCTEntryEnclosed(
-		long ctCollectionId, long modelClassNameId, long modelClassPK);
-
 	public void moveCTEntries(
 			long fromCTCollectionId, long toCTCollectionId,
 			List<CTEntry> ctEntries)
@@ -412,4 +408,4 @@ public interface CTCollectionLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-110934045
+// LIFERAY-SERVICE-BUILDER-HASH:-109936386

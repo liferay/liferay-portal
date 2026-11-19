@@ -197,9 +197,6 @@ public interface CTProcessLocalService
 	public CTProcess fetchCTProcess(long ctProcessId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public CTProcess fetchLatestCTProcess(long companyId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	/**
@@ -269,4 +266,4 @@ public interface CTProcessLocalService
 	public CTProcess updateCTProcess(CTProcess ctProcess);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:847615245
+// LIFERAY-SERVICE-BUILDER-HASH:808144231

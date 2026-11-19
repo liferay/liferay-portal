@@ -210,10 +210,6 @@ public class CTProcessLocalServiceUtil {
 		return getService().fetchCTProcess(ctProcessId);
 	}
 
-	public static CTProcess fetchLatestCTProcess(long companyId) {
-		return getService().fetchLatestCTProcess(companyId);
-	}
-
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 
@@ -309,4 +305,4 @@ public class CTProcessLocalServiceUtil {
 			CTProcessLocalServiceUtil.class, CTProcessLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1466841024
+// LIFERAY-SERVICE-BUILDER-HASH:-1813052257

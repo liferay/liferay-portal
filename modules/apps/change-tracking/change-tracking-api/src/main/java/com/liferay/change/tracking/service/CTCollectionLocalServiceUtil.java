@@ -474,13 +474,6 @@ public class CTCollectionLocalServiceUtil {
 		return getService().hasUnapprovedChanges(ctCollectionId);
 	}
 
-	public static boolean isCTEntryEnclosed(
-		long ctCollectionId, long modelClassNameId, long modelClassPK) {
-
-		return getService().isCTEntryEnclosed(
-			ctCollectionId, modelClassNameId, modelClassPK);
-	}
-
 	public static void moveCTEntries(
 			long fromCTCollectionId, long toCTCollectionId,
 			List<com.liferay.change.tracking.model.CTEntry> ctEntries)
@@ -539,4 +532,4 @@ public class CTCollectionLocalServiceUtil {
 			CTCollectionLocalServiceUtil.class, CTCollectionLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-955722249
+// LIFERAY-SERVICE-BUILDER-HASH:-2104559129

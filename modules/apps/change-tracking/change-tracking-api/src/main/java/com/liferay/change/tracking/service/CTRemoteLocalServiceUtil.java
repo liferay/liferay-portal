@@ -246,12 +246,6 @@ public class CTRemoteLocalServiceUtil {
 		return getService().getCTRemotes(companyId);
 	}
 
-	public static List<CTRemote> getCTRemotes(
-		long companyId, int start, int end) {
-
-		return getService().getCTRemotes(companyId, start, end);
-	}
-
 	/**
 	 * Returns the number of ct remotes.
 	 *
@@ -318,4 +312,4 @@ public class CTRemoteLocalServiceUtil {
 			CTRemoteLocalServiceUtil.class, CTRemoteLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1445140565
+// LIFERAY-SERVICE-BUILDER-HASH:1683168405

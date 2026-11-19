@@ -226,9 +226,6 @@ public interface CTRemoteLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CTRemote> getCTRemotes(long companyId);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CTRemote> getCTRemotes(long companyId, int start, int end);
-
 	/**
 	 * Returns the number of ct remotes.
 	 *
@@ -275,4 +272,4 @@ public interface CTRemoteLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-109851913
+// LIFERAY-SERVICE-BUILDER-HASH:1338467828

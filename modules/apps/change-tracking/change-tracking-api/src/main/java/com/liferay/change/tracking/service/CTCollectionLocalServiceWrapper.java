@@ -562,14 +562,6 @@ public class CTCollectionLocalServiceWrapper
 	}
 
 	@Override
-	public boolean isCTEntryEnclosed(
-		long ctCollectionId, long modelClassNameId, long modelClassPK) {
-
-		return _ctCollectionLocalService.isCTEntryEnclosed(
-			ctCollectionId, modelClassNameId, modelClassPK);
-	}
-
-	@Override
 	public void moveCTEntries(
 			long fromCTCollectionId, long toCTCollectionId,
 			java.util.List<com.liferay.change.tracking.model.CTEntry> ctEntries)
@@ -645,4 +637,4 @@ public class CTCollectionLocalServiceWrapper
 	private CTCollectionLocalService _ctCollectionLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2120225261
+// LIFERAY-SERVICE-BUILDER-HASH:-1776021934

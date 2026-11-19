@@ -282,13 +282,6 @@ public class CTRemoteLocalServiceWrapper
 		return _ctRemoteLocalService.getCTRemotes(companyId);
 	}
 
-	@Override
-	public java.util.List<com.liferay.change.tracking.model.CTRemote>
-		getCTRemotes(long companyId, int start, int end) {
-
-		return _ctRemoteLocalService.getCTRemotes(companyId, start, end);
-	}
-
 	/**
 	 * Returns the number of ct remotes.
 	 *
@@ -372,4 +365,4 @@ public class CTRemoteLocalServiceWrapper
 	private CTRemoteLocalService _ctRemoteLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1369780603
+// LIFERAY-SERVICE-BUILDER-HASH:670551806

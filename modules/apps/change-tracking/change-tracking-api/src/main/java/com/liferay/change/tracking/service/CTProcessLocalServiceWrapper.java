@@ -236,13 +236,6 @@ public class CTProcessLocalServiceWrapper
 	}
 
 	@Override
-	public com.liferay.change.tracking.model.CTProcess fetchLatestCTProcess(
-		long companyId) {
-
-		return _ctProcessLocalService.fetchLatestCTProcess(companyId);
-	}
-
-	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 
@@ -362,4 +355,4 @@ public class CTProcessLocalServiceWrapper
 	private CTProcessLocalService _ctProcessLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-149267155
+// LIFERAY-SERVICE-BUILDER-HASH:-27994768
