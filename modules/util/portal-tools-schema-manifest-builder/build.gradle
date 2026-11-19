@@ -1,6 +1,6 @@
 dependencies {
 	api group: "org.apache.logging.log4j", name: "log4j-core", version: "2.26.1"
-	compileInclude group: "org.json", name: "json", version: "20231013"
+	compileInclude group: "com.liferay", name: "org.json", version: "20231013.LIFERAY-PATCHED-1"
 	compileOnly group: "com.liferay", name: "com.liferay.petra.concurrent", version: "5.1.7"
 	compileOnly group: "com.liferay", name: "com.liferay.petra.function", version: "5.5.0"
 	compileOnly group: "com.liferay", name: "com.liferay.petra.io", version: "5.0.5"

@@ -10,7 +10,7 @@ dependencies {
 	api group: "org.springframework.boot", name: "spring-boot-starter-oauth2-resource-server", version: "3.5.16"
 	api group: "org.springframework.boot", name: "spring-boot-starter-web", version: "3.5.16"
 	api group: "org.springframework.boot", name: "spring-boot-starter-webflux", version: "3.5.16"
-	implementation group: "org.json", name: "json", version: "20231013"
+	implementation group: "com.liferay", name: "org.json", version: "20231013.LIFERAY-PATCHED-1"
 	testImplementation group: "junit", name: "junit", version: "4.13.1"
 	testImplementation group: "org.mock-server", name: "mockserver-client-java", version: "3.12"
 	testImplementation group: "org.mock-server", name: "mockserver-netty", version: "3.12"

@@ -1,8 +1,8 @@
 dependencies {
+	compileInclude group: "com.liferay", name: "org.json", version: "20231013.LIFERAY-PATCHED-1"
 	compileInclude group: "com.paypal", name: "paypalhttp", version: "1.0.1"
 	compileInclude group: "com.paypal.sdk", name: "checkout-sdk", version: "2.0.0"
 	compileInclude group: "com.paypal.sdk", name: "rest-api-sdk", version: "1.14.0"
-	compileInclude group: "org.json", name: "json", version: "20231013"
 	compileOnly group: "com.google.code.gson", name: "gson", version: "2.9.0"
 	compileOnly group: "com.liferay", name: "biz.aQute.bnd.annotation", version: "4.2.0.LIFERAY-PATCHED-2"
 	compileOnly group: "com.liferay.jakarta.portlet", name: "com.liferay.jakarta.portlet-api", version: "4.0.0"

@@ -3,11 +3,11 @@ targetCompatibility = "1.8"
 
 dependencies {
 	api group: "com.google.guava", name: "guava", version: "33.8.0-jre"
+	api group: "com.liferay", name: "org.json", version: "20231013.LIFERAY-PATCHED-1"
 	api group: "commons-io", name: "commons-io", version: "2.19.0"
 	api group: "commons-lang", name: "commons-lang", version: "2.6"
 	api group: "org.apache.commons", name: "commons-lang3", version: "3.18.0"
 	api group: "org.dom4j", name: "dom4j", transitive: false, version: "2.1.3"
-	api group: "org.json", name: "json", version: "20231013"
 	api group: "org.reflections", name: "reflections", version: "0.10.2"
 	testImplementation group: "io.github.java-diff-utils", name: "java-diff-utils", version: "4.12"
 }

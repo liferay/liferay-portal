@@ -10,6 +10,7 @@ dependencies {
 	api group: "com.google.cloud", name: "google-cloud-storage", version: "2.48.0"
 	api group: "com.google.guava", name: "guava", version: "33.8.0-jre"
 	api group: "com.liferay", name: "com.liferay.poshi.core", version: "1.0.159"
+	api group: "com.liferay", name: "org.json", version: "20231013.LIFERAY-PATCHED-1"
 	api group: "commons-codec", name: "commons-codec", version: "1.15"
 	api group: "commons-io", name: "commons-io", version: "2.19.0"
 	api group: "io.prometheus", name: "prometheus-metrics-exposition-textformats", version: "1.8.0"
@@ -20,7 +21,6 @@ dependencies {
 	api group: "org.apache.httpcomponents", name: "httpclient", version: "4.5.13"
 	api group: "org.dom4j", name: "dom4j", version: "2.1.3"
 	api group: "org.eclipse.angus", name: "jakarta.mail", version: "2.0.5"
-	api group: "org.json", name: "json", version: "20231013"
 	testImplementation group: "org.mockito", name: "mockito-core", version: "4.5.1"
 	testImplementation group: "org.mockito", name: "mockito-inline", version: "4.5.1"
 }
