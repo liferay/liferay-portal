@@ -22,8 +22,6 @@ import com.liferay.portal.kernel.model.ServiceComponent;
 import com.liferay.portal.kernel.service.configuration.ServiceComponentConfiguration;
 import com.liferay.portal.kernel.service.configuration.servlet.ServletServiceContextComponentConfiguration;
 import com.liferay.portal.kernel.upgrade.util.UpgradeTable;
-import com.liferay.portal.kernel.upgrade.util.UpgradeTableListener;
-import com.liferay.portal.kernel.util.InstanceFactory;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -277,40 +275,6 @@ public class ServiceComponentLocalServiceImpl
 			});
 	}
 
-	protected UpgradeTableListener getUpgradeTableListener(
-		ClassLoader classLoader, Class<?> modelClass) {
-
-		String modelClassName = modelClass.getName();
-
-		String upgradeTableListenerClassName = modelClassName;
-
-		upgradeTableListenerClassName = StringUtil.replaceLast(
-			upgradeTableListenerClassName, ".model.impl.", ".model.upgrade.");
-		upgradeTableListenerClassName = StringUtil.replaceLast(
-			upgradeTableListenerClassName, "ModelImpl", "UpgradeTableListener");
-
-		try {
-			UpgradeTableListener upgradeTableListener =
-				(UpgradeTableListener)InstanceFactory.newInstance(
-					classLoader, upgradeTableListenerClassName);
-
-			if (_log.isInfoEnabled()) {
-				_log.info("Instantiated " + upgradeTableListenerClassName);
-			}
-
-			return upgradeTableListener;
-		}
-		catch (Exception exception) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(
-					"Unable to instantiate " + upgradeTableListenerClassName,
-					exception);
-			}
-
-			return null;
-		}
-	}
-
 	protected void removeOldServiceComponents(String buildNamespace) {
 		int serviceComponentsCount =
 			serviceComponentPersistence.countByBuildNamespace(buildNamespace);
@@ -371,28 +335,13 @@ public class ServiceComponentLocalServiceImpl
 			UpgradeTable upgradeTable = UpgradeTableFactoryUtil.getUpgradeTable(
 				tableName, tableColumns);
 
-			UpgradeTableListener upgradeTableListener = getUpgradeTableListener(
-				classLoader, modelClass);
-
 			Field tableSQLCreateField = modelClass.getField("TABLE_SQL_CREATE");
 
 			String tableSQLCreate = (String)tableSQLCreateField.get(null);
 
 			upgradeTable.setCreateSQL(tableSQLCreate);
 
-			if (upgradeTableListener != null) {
-				upgradeTableListener.onBeforeUpdateTable(
-					previousServiceComponent, upgradeTable);
-			}
-
 			upgradeTable.updateTable();
-
-			if (upgradeTableListener == null) {
-				continue;
-			}
-
-			upgradeTableListener.onAfterUpdateTable(
-				previousServiceComponent, upgradeTable);
 		}
 	}
 
