@@ -38,7 +38,7 @@ const testWithoutFeatureFlag = mergeTests(
 	systemSettingsPageTest
 );
 
-test(
+testWithFeatureFlag(
 	'Assert that the audit configuration is rendered on the instance scope',
 	{tag: '@LPD-98544'},
 	async ({instanceSettingsPage, page}) => {
@@ -93,12 +93,14 @@ testWithoutFeatureFlag(
 	async ({instanceSettingsPage, page, systemSettingsPage}) => {
 		await instanceSettingsPage.goToInstanceSetting(
 			'Audit',
-			'Audit',
+			'File System Audit Message Processor',
 			true,
 			'Virtual Instance Scope'
 		);
 
-		await expect(page.getByLabel('Pseudonymization Enabled')).toBeHidden();
+		await expect(
+			page.getByRole('menuitem', {exact: true, name: 'Audit'})
+		).toBeHidden();
 
 		await systemSettingsPage.goToSystemSetting('Audit', 'Audit');
 

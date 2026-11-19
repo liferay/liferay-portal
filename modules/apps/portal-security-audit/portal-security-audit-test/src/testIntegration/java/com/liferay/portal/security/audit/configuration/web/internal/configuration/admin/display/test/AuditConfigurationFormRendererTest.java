@@ -58,7 +58,6 @@ public class AuditConfigurationFormRendererTest {
 				"pseudonymizationEnabled", false
 			).build(),
 			_getRequestParameters(
-				RandomTestUtil.randomInt(),
 				ConfigurationAdminPortletKeys.INSTANCE_SETTINGS));
 		Assert.assertEquals(
 			HashMapBuilder.<String, Object>put(
@@ -67,7 +66,6 @@ public class AuditConfigurationFormRendererTest {
 				"pseudonymizationEnabled", false
 			).build(),
 			_getRequestParameters(
-				RandomTestUtil.randomInt(),
 				ConfigurationAdminPortletKeys.SYSTEM_SETTINGS));
 
 		_testGetRequestParametersWithOverriddenProperties();
@@ -80,7 +78,6 @@ public class AuditConfigurationFormRendererTest {
 
 		try {
 			_getRequestParameters(
-				RandomTestUtil.randomInt(),
 				ConfigurationAdminPortletKeys.INSTANCE_SETTINGS);
 
 			Assert.fail();
@@ -92,23 +89,15 @@ public class AuditConfigurationFormRendererTest {
 				unsupportedOperationException.getMessage());
 		}
 
-		int auditMessageMaxQueueSize = RandomTestUtil.randomInt();
-
 		Assert.assertEquals(
 			HashMapBuilder.<String, Object>put(
-				"auditMessageMaxQueueSize", auditMessageMaxQueueSize
-			).put(
 				"enabled", false
-			).put(
-				"pseudonymizationEnabled", false
 			).build(),
 			_getRequestParameters(
-				auditMessageMaxQueueSize,
 				ConfigurationAdminPortletKeys.SYSTEM_SETTINGS));
 	}
 
-	private Map<String, Object> _getRequestParameters(
-			int auditMessageMaxQueueSize, String portletId)
+	private Map<String, Object> _getRequestParameters(String portletId)
 		throws Exception {
 
 		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
@@ -139,9 +128,6 @@ public class AuditConfigurationFormRendererTest {
 		mockLiferayPortletActionRequest.setAttribute(
 			WebKeys.THEME_DISPLAY, themeDisplay);
 
-		mockLiferayPortletActionRequest.setParameter(
-			"auditMessageMaxQueueSize",
-			String.valueOf(auditMessageMaxQueueSize));
 		mockLiferayPortletActionRequest.setParameter("enabled", "false");
 		mockLiferayPortletActionRequest.setParameter(
 			"pseudonymizationEnabled", "false");
@@ -170,7 +156,6 @@ public class AuditConfigurationFormRendererTest {
 			Assert.assertEquals(
 				Collections.emptyMap(),
 				_getRequestParameters(
-					RandomTestUtil.randomInt(),
 					ConfigurationAdminPortletKeys.SYSTEM_SETTINGS));
 		}
 		finally {

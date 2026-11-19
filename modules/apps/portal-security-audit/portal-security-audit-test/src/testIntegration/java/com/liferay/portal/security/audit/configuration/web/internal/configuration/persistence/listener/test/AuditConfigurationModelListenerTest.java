@@ -26,7 +26,9 @@ import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.security.audit.AuditMessageProcessor;
 import com.liferay.portal.security.audit.configuration.AuditConfiguration;
+import com.liferay.portal.security.audit.event.generators.constants.EventTypes;
 import com.liferay.portal.test.rule.FeatureFlag;
+import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -66,16 +68,20 @@ public class AuditConfigurationModelListenerTest {
 			PermissionCheckerMethodTestRule.INSTANCE);
 
 	@Before
-	public void setUp() {
+	public void setUp() throws Exception {
 		Bundle bundle = FrameworkUtil.getBundle(getClass());
 
 		BundleContext bundleContext = bundle.getBundleContext();
 
+		String classPK = String.valueOf(TestPropsValues.getCompanyId());
+
 		_serviceRegistration = bundleContext.registerService(
 			AuditMessageProcessor.class,
 			auditMessage -> {
-				if (Objects.equals(
-						auditMessage.getEventType(), "AUDIT_CONFIG_CHANGE")) {
+				if (Objects.equals(auditMessage.getClassPK(), classPK) &&
+					Objects.equals(
+						auditMessage.getEventType(),
+						EventTypes.AUDIT_CONFIG_CHANGE)) {
 
 					_auditMessages.add(auditMessage);
 				}
@@ -90,7 +96,9 @@ public class AuditConfigurationModelListenerTest {
 		_serviceRegistration.unregister();
 	}
 
-	@FeatureFlag("LPD-6417")
+	@FeatureFlags(
+		featureFlags = {@FeatureFlag("LPD-6417"), @FeatureFlag("LPD-96921")}
+	)
 	@Test
 	public void testOnAfterSave() throws Exception {
 		_testOnAfterSaveWithCompanyScope();
@@ -98,7 +106,12 @@ public class AuditConfigurationModelListenerTest {
 		_testOnAfterSaveWithoutConfigurationFormRenderer();
 	}
 
-	@FeatureFlag(enable = false, value = "LPD-6417")
+	@FeatureFlags(
+		featureFlags = {
+			@FeatureFlag("LPD-6417"),
+			@FeatureFlag(enable = false, value = "LPD-96921")
+		}
+	)
 	@Test
 	public void testOnAfterSaveWhenFeatureFlagIsDisabled() throws Exception {
 		AuditConfiguration auditConfiguration =

@@ -22,7 +22,6 @@ import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.security.audit.router.configuration.FileSystemAuditMessageProcessorConfiguration;
-import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -50,7 +49,6 @@ public class FileSystemAuditMessageProcessorConfigurationFormRendererTest {
 			new LiferayIntegrationTestRule(),
 			PermissionCheckerMethodTestRule.INSTANCE);
 
-	@FeatureFlag("LPD-6417")
 	@Test
 	public void testGetRequestParameters() throws Exception {
 		_testGetRequestParameters(
@@ -58,29 +56,6 @@ public class FileSystemAuditMessageProcessorConfigurationFormRendererTest {
 		_testGetRequestParameters(
 			ConfigurationAdminPortletKeys.SYSTEM_SETTINGS);
 		_testGetRequestParametersWithOverriddenProperties();
-	}
-
-	@FeatureFlag(enable = false, value = "LPD-6417")
-	@Test
-	public void testGetRequestParametersWhenFeatureFlagIsDisabled()
-		throws Exception {
-
-		try {
-			_getRequestParameters(
-				RandomTestUtil.randomString(),
-				ConfigurationAdminPortletKeys.INSTANCE_SETTINGS);
-
-			Assert.fail();
-		}
-		catch (UnsupportedOperationException unsupportedOperationException) {
-			Assert.assertEquals(
-				"Feature flag LPD-6417 is disabled for company " +
-					TestPropsValues.getCompanyId(),
-				unsupportedOperationException.getMessage());
-		}
-
-		_testGetRequestParameters(
-			ConfigurationAdminPortletKeys.SYSTEM_SETTINGS);
 	}
 
 	private Map<String, Object> _getRequestParameters(

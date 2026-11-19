@@ -36,10 +36,6 @@ public class AuditConfigurationDisplayContextTest {
 	@Test
 	public void testGetHelpMessage() {
 		_testGetHelpMessage(
-			AuditConfigurationDisplayContext::
-				getAuditMessageMaxQueueSizeHelpMessage,
-			"auditMessageMaxQueueSize");
-		_testGetHelpMessage(
 			AuditConfigurationDisplayContext::getEnabledHelpMessage, "enabled");
 		_testGetHelpMessage(
 			AuditConfigurationDisplayContext::
@@ -49,10 +45,6 @@ public class AuditConfigurationDisplayContextTest {
 
 	@Test
 	public void testIsOverridden() {
-		_testIsOverridden(
-			"auditMessageMaxQueueSize",
-			AuditConfigurationDisplayContext::
-				isAuditMessageMaxQueueSizeOverridden);
 		_testIsOverridden(
 			"enabled", AuditConfigurationDisplayContext::isEnabledOverridden);
 		_testIsOverridden(
@@ -65,7 +57,7 @@ public class AuditConfigurationDisplayContextTest {
 		_createAuditConfigurationDisplayContext() {
 
 		return new AuditConfigurationDisplayContext(
-			Mockito.mock(AuditConfiguration.class), false, false);
+			Mockito.mock(AuditConfiguration.class), false);
 	}
 
 	private void _mockOverrideProperties(
