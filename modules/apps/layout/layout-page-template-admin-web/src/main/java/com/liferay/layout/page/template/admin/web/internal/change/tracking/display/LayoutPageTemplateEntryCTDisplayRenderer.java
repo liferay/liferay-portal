@@ -125,6 +125,10 @@ public class LayoutPageTemplateEntryCTDisplayRenderer
 				_portal.getLayoutFriendlyURL(previewLayout, themeDisplay),
 				"p_l_mode", "preview");
 
+			friendlyURL = HttpComponentsUtil.addParameter(
+				friendlyURL, "previewCTCollectionId",
+				layout.getCtCollectionId());
+
 			return StringBundler.concat(
 				"<iframe frameborder=\"0\" onload=\"this.style.height = ",
 				"(this.contentWindow.document.body.scrollHeight+20) + 'px';\" ",

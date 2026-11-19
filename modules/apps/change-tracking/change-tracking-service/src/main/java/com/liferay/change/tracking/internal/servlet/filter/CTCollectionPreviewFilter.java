@@ -9,18 +9,24 @@ import com.liferay.change.tracking.constants.CTConstants;
 import com.liferay.change.tracking.exception.NoSuchCollectionException;
 import com.liferay.change.tracking.model.CTCollection;
 import com.liferay.change.tracking.service.CTCollectionLocalService;
+import com.liferay.change.tracking.util.CTPreviewURLUtil;
 import com.liferay.portal.kernel.change.tracking.CTCollectionPreviewThreadLocal;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactory;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
+import com.liferay.portal.kernel.servlet.BufferCacheServletResponse;
+import com.liferay.portal.kernel.servlet.ServletResponseUtil;
 import com.liferay.portal.kernel.util.Constants;
+import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.servlet.filters.BasePortalFilter;
 
@@ -130,13 +136,48 @@ public class CTCollectionPreviewFilter extends BasePortalFilter {
 		CTCollectionPreviewThreadLocal.setIndicatorEnabled(
 			ParamUtil.getBoolean(httpServletRequest, "previewCTIndicator"));
 
+		if ((httpServletRequest.getAttribute(_SKIP_FILTER) != null) ||
+			CTPreviewURLUtil.isDocumentURL(
+				CompanyThreadLocal.getCompanyId(),
+				httpServletRequest.getRequestURI())) {
+
+			processFilter(
+				CTCollectionPreviewFilter.class.getName(), httpServletRequest,
+				httpServletResponse, filterChain);
+
+			return;
+		}
+
+		httpServletRequest.setAttribute(_SKIP_FILTER, Boolean.TRUE);
+
+		BufferCacheServletResponse bufferCacheServletResponse =
+			new BufferCacheServletResponse(httpServletResponse);
+
 		processFilter(
 			CTCollectionPreviewFilter.class.getName(), httpServletRequest,
-			httpServletResponse, filterChain);
+			bufferCacheServletResponse, filterChain);
+
+		if (!StringUtil.startsWith(
+				bufferCacheServletResponse.getContentType(),
+				ContentTypes.TEXT_HTML)) {
+
+			bufferCacheServletResponse.outputBuffer();
+
+			return;
+		}
+
+		ServletResponseUtil.write(
+			httpServletResponse,
+			CTPreviewURLUtil.addPreviewCTCollectionId(
+				CompanyThreadLocal.getCompanyId(), previewCTCollectionId,
+				bufferCacheServletResponse.getString()));
 	}
 
 	@Reference
 	protected PermissionCheckerFactory permissionCheckerFactory;
+
+	private static final String _SKIP_FILTER =
+		CTCollectionPreviewFilter.class.getName() + "#SKIP_FILTER";
 
 	@Reference
 	private CTCollectionLocalService _ctCollectionLocalService;

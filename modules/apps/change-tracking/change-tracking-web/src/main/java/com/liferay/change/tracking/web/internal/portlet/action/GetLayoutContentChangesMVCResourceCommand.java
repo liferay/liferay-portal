@@ -14,6 +14,7 @@ import com.liferay.change.tracking.service.CTCollectionLocalService;
 import com.liferay.change.tracking.service.CTEntryLocalService;
 import com.liferay.change.tracking.spi.display.CTDisplayRenderer;
 import com.liferay.change.tracking.spi.display.CTDisplayRendererRegistry;
+import com.liferay.change.tracking.util.CTPreviewURLUtil;
 import com.liferay.change.tracking.web.internal.display.DisplayContextImpl;
 import com.liferay.diff.DiffHtml;
 import com.liferay.fragment.model.FragmentEntryLink;
@@ -184,15 +185,34 @@ public class GetLayoutContentChangesMVCResourceCommand
 							_ctDisplayRendererRegistry.getCTDisplayRenderer(
 								ctEntry.getModelClassNameId());
 
-						return _diffHtml.diff(
-							new UnsyncStringReader(
-								_getProductionPreview(
-									ctCollection, ctDisplayRenderer, ctEntry,
-									httpServletRequest, httpServletResponse)),
-							new UnsyncStringReader(
-								_getPublicationPreview(
-									ctCollection, ctDisplayRenderer, ctEntry,
-									httpServletRequest, httpServletResponse)));
+						long leftCTCollectionId =
+							CTConstants.CT_COLLECTION_ID_PRODUCTION;
+						long rightCTCollectionId =
+							ctCollection.getCtCollectionId();
+
+						if (ctCollection.getStatus() ==
+								WorkflowConstants.STATUS_APPROVED) {
+
+							leftCTCollectionId = ctEntry.getCtCollectionId();
+							rightCTCollectionId =
+								_ctEntryLocalService.getCTRowCTCollectionId(
+									ctEntry);
+						}
+
+						return CTPreviewURLUtil.addUnifiedPreviewCTCollectionId(
+							ctCollection.getCompanyId(),
+							_diffHtml.diff(
+								new UnsyncStringReader(
+									_getProductionPreview(
+										ctCollection, ctDisplayRenderer,
+										ctEntry, httpServletRequest,
+										httpServletResponse)),
+								new UnsyncStringReader(
+									_getPublicationPreview(
+										ctCollection, ctDisplayRenderer,
+										ctEntry, httpServletRequest,
+										httpServletResponse))),
+							leftCTCollectionId, rightCTCollectionId);
 					}
 				).put(
 					"viewChangeURL",
