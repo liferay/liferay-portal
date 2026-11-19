@@ -455,13 +455,17 @@ public class StringUtil {
 			return s;
 		}
 
-		char[] chars = s.toCharArray();
+		char c = s.charAt(0);
 
-		if ((chars[0] >= 65) && (chars[0] <= 90)) {
-			chars[0] = (char)(chars[0] + 32);
+		if ((c >= 65) && (c <= 90)) {
+			char[] chars = s.toCharArray();
+
+			chars[0] = (char)(c + 32);
+
+			return new String(chars);
 		}
 
-		return new String(chars);
+		return s;
 	}
 
 	public static boolean matches(String s, String pattern) {
@@ -1116,13 +1120,17 @@ public class StringUtil {
 			return s;
 		}
 
-		char[] chars = s.toCharArray();
+		char c = s.charAt(0);
 
-		if ((chars[0] >= 97) && (chars[0] <= 122)) {
-			chars[0] = (char)(chars[0] - 32);
+		if ((c >= 97) && (c <= 122)) {
+			char[] chars = s.toCharArray();
+
+			chars[0] = (char)(c - 32);
+
+			return new String(chars);
 		}
 
-		return new String(chars);
+		return s;
 	}
 
 	public static String valueOf(Object object) {
