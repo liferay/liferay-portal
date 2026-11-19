@@ -24,6 +24,7 @@ interface ISectionAppProps {
 	groupId: string;
 	path: string;
 	routes: RouteObject[];
+	state?: {[name: string]: string | undefined};
 }
 
 const FullPageLoad = () => {
@@ -79,6 +80,7 @@ const SectionApp: React.FC<ISectionAppProps> = ({
 	groupId,
 	path,
 	routes,
+	state,
 }) => {
 	const [router] = useState(() => {
 		setDefaultGroupId(groupId);
@@ -115,7 +117,11 @@ const SectionApp: React.FC<ISectionAppProps> = ({
 					element: <RootLayout />,
 				},
 			],
-			{initialEntries: [pathname + window.location.search]}
+			{
+				initialEntries: [
+					{pathname, search: window.location.search, state},
+				],
+			}
 		);
 
 		memoryRouter.subscribe(({location}) => {
