@@ -17,6 +17,7 @@ import './CreationMenu.scss';
 const Item = ({item, onClick}) => {
 	return (
 		<ClayDropDown.Item
+			className={item.className}
 			href={item.href}
 			onClick={(event) => {
 				onClick(event, {item});
