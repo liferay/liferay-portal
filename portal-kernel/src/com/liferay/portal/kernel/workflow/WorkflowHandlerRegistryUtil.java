@@ -249,10 +249,21 @@ public class WorkflowHandlerRegistryUtil {
 				(Class<WorkflowHandler<?>>)(Class<?>)WorkflowHandler.class,
 				null,
 				(serviceReference, emitter) -> {
+					Object modelClassName = serviceReference.getProperty(
+						"model.class.name");
+
+					if (modelClassName != null) {
+						emitter.emit((String)modelClassName);
+
+						return;
+					}
+
 					WorkflowHandler<?> workflowHandler =
 						_bundleContext.getService(serviceReference);
 
 					emitter.emit(workflowHandler.getClassName());
+
+					_bundleContext.ungetService(serviceReference);
 				});
 
 }
