@@ -10,6 +10,8 @@ import {
 } from 'frontend-js-components-web';
 import {fetch, objectToFormData, runScriptsInElement} from 'frontend-js-web';
 
+let eventHandles = [];
+
 const MAP_CMD_REVISION = {
 	redo: 'redo_layout_revision',
 	undo: 'undo_layout_revision',
@@ -126,26 +128,34 @@ export default function propsTransformer({
 }) {
 	const dropdownClass = `${portletNamespace}staging-version-options`;
 
+	for (const eventHandle of eventHandles) {
+		eventHandle.detach();
+	}
+
+	eventHandles = [];
+
 	const layoutRevisionDetails = document.getElementById(
 		`${portletNamespace}layoutRevisionDetails`
 	);
 
 	if (layoutRevisionDetails) {
-		Liferay.after('updatedLayout', () => {
-			fetch(additionalProps.markAsReadyForPublicationURL)
-				.then((response) => response.text())
-				.then((response) => {
-					layoutRevisionDetails.innerHTML = response;
-					runScriptsInElement(layoutRevisionDetails);
+		eventHandles.push(
+			Liferay.after('updatedLayout', () => {
+				fetch(additionalProps.markAsReadyForPublicationURL)
+					.then((response) => response.text())
+					.then((response) => {
+						layoutRevisionDetails.innerHTML = response;
+						runScriptsInElement(layoutRevisionDetails);
 
-					Liferay.fire('updatedStatus');
-				})
-				.catch(() => {
-					layoutRevisionDetails.innerHTML = Liferay.Language.get(
-						'there-was-an-unexpected-error.-please-refresh-the-current-page'
-					);
-				});
-		});
+						Liferay.fire('updatedStatus');
+					})
+					.catch(() => {
+						layoutRevisionDetails.innerHTML = Liferay.Language.get(
+							'there-was-an-unexpected-error.-please-refresh-the-current-page'
+						);
+					});
+			})
+		);
 	}
 
 	const layoutRevisionStatus = document.getElementById(
@@ -153,19 +163,21 @@ export default function propsTransformer({
 	);
 
 	if (layoutRevisionStatus) {
-		Liferay.after('updatedStatus', () => {
-			fetch(additionalProps.layoutRevisionStatusURL)
-				.then((response) => response.text())
-				.then((response) => {
-					layoutRevisionStatus.innerHTML = response;
-					runScriptsInElement(layoutRevisionStatus);
-				})
-				.catch(() => {
-					layoutRevisionStatus.innerHTML = Liferay.Language.get(
-						'there-was-an-unexpected-error.-please-refresh-the-current-page'
-					);
-				});
-		});
+		eventHandles.push(
+			Liferay.after('updatedStatus', () => {
+				fetch(additionalProps.layoutRevisionStatusURL)
+					.then((response) => response.text())
+					.then((response) => {
+						layoutRevisionStatus.innerHTML = response;
+						runScriptsInElement(layoutRevisionStatus);
+					})
+					.catch(() => {
+						layoutRevisionStatus.innerHTML = Liferay.Language.get(
+							'there-was-an-unexpected-error.-please-refresh-the-current-page'
+						);
+					});
+			})
+		);
 	}
 
 	const handleDropdownMenuOpen = (event) => {
