@@ -131,6 +131,7 @@ export const Cell = React.forwardRef(
 		const {
 			columnsVisibility,
 			expandedKeys,
+			expanderColumnIndex,
 			headCellsCount,
 			messages,
 			onExpandedChange,
@@ -299,7 +300,7 @@ export const Cell = React.forwardRef(
 					<span className="text-truncate-inline">
 						<span className="text-truncate">{children}</span>
 					</span>
-				) : treegrid && index === 0 && !isHead ? (
+				) : treegrid && index === expanderColumnIndex && !isHead ? (
 					<Layout.ContentRow
 						style={{
 							paddingLeft:
