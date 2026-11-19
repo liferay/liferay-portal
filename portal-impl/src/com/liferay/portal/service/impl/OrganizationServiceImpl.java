@@ -927,12 +927,12 @@ public class OrganizationServiceImpl extends OrganizationServiceBaseImpl {
 			long groupId, long[] organizationIds)
 		throws PortalException {
 
+		GroupPermissionUtil.check(
+			getPermissionChecker(), groupId, ActionKeys.ASSIGN_MEMBERS);
+
 		if (ArrayUtil.isEmpty(organizationIds)) {
 			return;
 		}
-
-		GroupPermissionUtil.check(
-			getPermissionChecker(), groupId, ActionKeys.ASSIGN_MEMBERS);
 
 		Set<Long> userOrganizationIds = SetUtil.fromArray(
 			organizationLocalService.getUserOrganizationIds(getUserId(), true));
