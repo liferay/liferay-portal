@@ -215,16 +215,6 @@ public class LockPersistenceTest {
 	}
 
 	@Test
-	public void testCountByC_U_C() throws Exception {
-		_persistence.countByC_U_C(
-			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(), "");
-
-		_persistence.countByC_U_C(0L, 0L, "null");
-
-		_persistence.countByC_U_C(0L, 0L, (String)null);
-	}
-
-	@Test
 	public void testFindByPrimaryKeyExisting() throws Exception {
 		Lock newLock = addLock();
 
@@ -549,4 +539,4 @@ public class LockPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:410881603
+// LIFERAY-SERVICE-BUILDER-HASH:-1113761659

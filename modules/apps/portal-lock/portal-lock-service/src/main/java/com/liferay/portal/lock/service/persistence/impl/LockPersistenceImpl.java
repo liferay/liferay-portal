@@ -622,102 +622,6 @@ public class LockPersistenceImpl
 			finderCache, new Object[] {className, key});
 	}
 
-	private CollectionPersistenceFinder<Lock, NoSuchLockException>
-		_collectionPersistenceFinderByC_U_C;
-
-	/**
-	 * Returns an ordered range of all the locks where companyId = &#63; and userId = &#63; and className = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>LockModelImpl</code>.
-	 * </p>
-	 *
-	 * @param companyId the company ID
-	 * @param userId the user ID
-	 * @param className the class name
-	 * @param start the lower bound of the range of locks
-	 * @param end the upper bound of the range of locks (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching locks
-	 */
-	@Override
-	public List<Lock> findByC_U_C(
-		long companyId, long userId, String className, int start, int end,
-		OrderByComparator<Lock> orderByComparator, boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByC_U_C.find(
-			finderCache, new Object[] {companyId, userId, className}, start,
-			end, orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first lock in the ordered set where companyId = &#63; and userId = &#63; and className = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param userId the user ID
-	 * @param className the class name
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching lock
-	 * @throws NoSuchLockException if a matching lock could not be found
-	 */
-	@Override
-	public Lock findByC_U_C_First(
-			long companyId, long userId, String className,
-			OrderByComparator<Lock> orderByComparator)
-		throws NoSuchLockException {
-
-		return _collectionPersistenceFinderByC_U_C.findFirst(
-			finderCache, new Object[] {companyId, userId, className},
-			orderByComparator);
-	}
-
-	/**
-	 * Returns the first lock in the ordered set where companyId = &#63; and userId = &#63; and className = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param userId the user ID
-	 * @param className the class name
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching lock, or <code>null</code> if a matching lock could not be found
-	 */
-	@Override
-	public Lock fetchByC_U_C_First(
-		long companyId, long userId, String className,
-		OrderByComparator<Lock> orderByComparator) {
-
-		return _collectionPersistenceFinderByC_U_C.fetchFirst(
-			finderCache, new Object[] {companyId, userId, className},
-			orderByComparator);
-	}
-
-	/**
-	 * Removes all the locks where companyId = &#63; and userId = &#63; and className = &#63; from the database.
-	 *
-	 * @param companyId the company ID
-	 * @param userId the user ID
-	 * @param className the class name
-	 */
-	@Override
-	public void removeByC_U_C(long companyId, long userId, String className) {
-		_collectionPersistenceFinderByC_U_C.remove(
-			finderCache, new Object[] {companyId, userId, className});
-	}
-
-	/**
-	 * Returns the number of locks where companyId = &#63; and userId = &#63; and className = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param userId the user ID
-	 * @param className the class name
-	 * @return the number of matching locks
-	 */
-	@Override
-	public int countByC_U_C(long companyId, long userId, String className) {
-		return _collectionPersistenceFinderByC_U_C.count(
-			finderCache, new Object[] {companyId, userId, className});
-	}
-
 	public LockPersistenceImpl() {
 		Map<String, String> dbColumnNames = new HashMap<String, String>();
 
@@ -1066,44 +970,6 @@ public class LockPersistenceImpl
 				"lock_.", "key", "key_", FinderColumn.Type.STRING, "=", true,
 				true, Lock::getKey));
 
-		_collectionPersistenceFinderByC_U_C = new CollectionPersistenceFinder<>(
-			this,
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByC_U_C",
-				new String[] {
-					Long.class.getName(), Long.class.getName(),
-					String.class.getName(), Integer.class.getName(),
-					Integer.class.getName(), OrderByComparator.class.getName()
-				},
-				new String[] {"companyId", "userId", "className"}, true),
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByC_U_C",
-				new String[] {
-					Long.class.getName(), Long.class.getName(),
-					String.class.getName()
-				},
-				new String[] {"companyId", "userId", "className"}, 0, 4, true,
-				null),
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByC_U_C",
-				new String[] {
-					Long.class.getName(), Long.class.getName(),
-					String.class.getName()
-				},
-				new String[] {"companyId", "userId", "className"}, 0, 4, false,
-				null),
-			_SQL_SELECT_LOCK__WHERE, _SQL_COUNT_LOCK__WHERE,
-			LockModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "", null,
-			new FinderColumn<>(
-				"lock_.", "companyId", FinderColumn.Type.LONG, "=", true, true,
-				Lock::getCompanyId),
-			new FinderColumn<>(
-				"lock_.", "userId", FinderColumn.Type.LONG, "=", true, true,
-				Lock::getUserId),
-			new FinderColumn<>(
-				"lock_.", "className", FinderColumn.Type.STRING, "=", true,
-				true, Lock::getClassName));
-
 		LockUtil.setPersistence(this);
 	}
 
@@ -1167,4 +1033,4 @@ public class LockPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2018253335
+// LIFERAY-SERVICE-BUILDER-HASH:1260152025
