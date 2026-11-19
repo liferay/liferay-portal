@@ -29,6 +29,7 @@ import com.liferay.object.info.field.converter.ObjectFieldInfoFieldConverter;
 import com.liferay.object.internal.item.selector.SystemObjectEntryItemSelectorView;
 import com.liferay.object.internal.notification.handler.ObjectDefinitionNotificationHandler;
 import com.liferay.object.internal.notification.term.contributor.ObjectDefinitionNotificationTermEvaluator;
+import com.liferay.object.internal.related.models.SystemObject1to1ObjectRelatedModelsProviderImpl;
 import com.liferay.object.internal.related.models.SystemObject1toMObjectRelatedModelsProviderImpl;
 import com.liferay.object.internal.related.models.SystemObjectMtoMObjectRelatedModelsProviderImpl;
 import com.liferay.object.internal.rest.context.path.RESTContextPathResolverImpl;
@@ -363,10 +364,10 @@ public class SystemObjectDefinitionManagerPortalInstanceLifecycleListener
 
 			ObjectRelatedModelsProviderRegistryUtil.register(
 				_bundleContext, objectDefinition,
-				new SystemObjectMtoMObjectRelatedModelsProviderImpl(
+				new SystemObject1to1ObjectRelatedModelsProviderImpl(
 					_inlineSQLHelper, objectDefinition,
-					_objectDefinitionLocalService, _objectFieldLocalService,
-					_objectRelationshipLocalService,
+					_objectDefinitionLocalService, _objectEntryLocalService,
+					_objectFieldLocalService, _objectRelationshipLocalService,
 					systemObjectDefinitionManager,
 					_systemObjectDefinitionManagerRegistry));
 			ObjectRelatedModelsProviderRegistryUtil.register(
@@ -375,6 +376,14 @@ public class SystemObjectDefinitionManagerPortalInstanceLifecycleListener
 					_inlineSQLHelper, objectDefinition,
 					_objectDefinitionLocalService, _objectEntryLocalService,
 					_objectFieldLocalService, _objectRelationshipLocalService,
+					systemObjectDefinitionManager,
+					_systemObjectDefinitionManagerRegistry));
+			ObjectRelatedModelsProviderRegistryUtil.register(
+				_bundleContext, objectDefinition,
+				new SystemObjectMtoMObjectRelatedModelsProviderImpl(
+					_inlineSQLHelper, objectDefinition,
+					_objectDefinitionLocalService, _objectFieldLocalService,
+					_objectRelationshipLocalService,
 					systemObjectDefinitionManager,
 					_systemObjectDefinitionManagerRegistry));
 		}
