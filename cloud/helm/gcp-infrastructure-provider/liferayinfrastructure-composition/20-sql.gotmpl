@@ -129,8 +129,8 @@ metadata:
     name: {{ $xr.metadata.name }}-db-{{ $dataPlane }}
 spec:
     forProvider:
-        charset: {{ $databaseEngine.charset }}
-        collation: {{ $databaseEngine.collation }}
+        charset: {{ $databaseEngineSettings.charset }}
+        collation: {{ $databaseEngineSettings.collation }}
         instanceSelector:
             matchLabels:
                 app: liferay
@@ -163,10 +163,11 @@ spec:
             backupConfiguration:
                 backupRetentionSettings:
                     retainedBackups: 7
-                enabled: true
                 {{- if eq $env.databaseEngine "mysql" }}
                 binaryLogEnabled: true
-                {{- else }}
+                {{- end }}
+                enabled: true
+                {{- if ne $env.databaseEngine "mysql" }}
                 pointInTimeRecoveryEnabled: true
                 {{- end }}
                 transactionLogRetentionDays: 7
