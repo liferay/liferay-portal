@@ -6,6 +6,7 @@
 import '@testing-library/jest-dom';
 import {act, render, screen} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import {openToast} from 'frontend-js-components-web';
 import {fetch, navigate} from 'frontend-js-web';
 import React from 'react';
 
@@ -41,10 +42,43 @@ const renderComponent = (mode: 'page-template' | 'set') =>
 		/>
 	);
 
+const saveTemplateInNewSetWithError = async () => {
+	(fetch as jest.Mock)
+		.mockImplementationOnce(() =>
+			Promise.resolve({
+				json: () => ({layoutPageTemplateCollectionId: 5}),
+			})
+		)
+		.mockImplementationOnce(() =>
+			Promise.resolve({
+				json: () => ({
+					error: 'Name cannot contain the following invalid character: /.',
+				}),
+			})
+		);
+
+	const renderResult = renderComponent('page-template');
+
+	await act(async () => {
+		await userEvent.type(
+			screen.getByLabelText('page-template-name'),
+			'Page/Template'
+		);
+		await userEvent.click(screen.getByText('save-in-new-set'));
+	});
+
+	await act(async () => {
+		await userEvent.click(screen.getByText('save'));
+	});
+
+	return renderResult;
+};
+
 describe('AddLayoutPageTemplateEntryDesignLibraryModalContent', () => {
 	afterEach(() => {
 		(fetch as jest.Mock).mockClear();
 		(navigate as jest.Mock).mockClear();
+		(openToast as jest.Mock).mockClear();
 	});
 
 	it('adds a page template set', async () => {
@@ -67,8 +101,16 @@ describe('AddLayoutPageTemplateEntryDesignLibraryModalContent', () => {
 		expect(navigate).toHaveBeenCalled();
 	});
 
-	it('adds a content page template to an existing set', async () => {
-		renderComponent('page-template');
+	it('adds a content page template to an existing set after a server error', async () => {
+		(fetch as jest.Mock).mockImplementationOnce(() =>
+			Promise.resolve({
+				json: () => ({
+					error: 'A page template entry with that name already exists.',
+				}),
+			})
+		);
+
+		const {unmount} = renderComponent('page-template');
 
 		expect(screen.getByText('add-page-template')).toBeInTheDocument();
 
@@ -84,12 +126,83 @@ describe('AddLayoutPageTemplateEntryDesignLibraryModalContent', () => {
 			await userEvent.click(screen.getByText('save'));
 		});
 
-		const [url, {body}] = (fetch as jest.Mock).mock.calls[0];
+		expect(
+			screen.getByText(
+				'A page template entry with that name already exists.'
+			)
+		).toBeInTheDocument();
+		expect(openToast).not.toHaveBeenCalled();
+		expect(navigate).not.toHaveBeenCalled();
+
+		await act(async () => {
+			await userEvent.clear(screen.getByLabelText('page-template-name'));
+			await userEvent.type(
+				screen.getByLabelText('page-template-name'),
+				'Page Template 2'
+			);
+			await userEvent.click(screen.getByText('save'));
+		});
+
+		const [url, {body}] = (fetch as jest.Mock).mock.calls[1];
 
 		expect(url).toBe('addLayoutPageTemplateEntryURL');
 		expect(Object.fromEntries(body.entries())).toEqual({
 			_namespace_layoutPageTemplateCollectionId: '2',
-			_namespace_name: 'Page Template 1',
+			_namespace_name: 'Page Template 2',
 		});
+		expect(navigate).toHaveBeenCalledTimes(1);
+
+		unmount();
+
+		expect(navigate).toHaveBeenCalledTimes(1);
+	});
+
+	it('reloads the page when the modal closes after a new set', async () => {
+		const {unmount} = await saveTemplateInNewSetWithError();
+
+		expect(fetch).toHaveBeenCalledTimes(2);
+		expect(navigate).not.toHaveBeenCalled();
+
+		unmount();
+
+		expect(navigate).toHaveBeenCalledWith(location.href);
+	});
+
+	it('keeps the new set when its template fails', async () => {
+		await saveTemplateInNewSetWithError();
+
+		expect(
+			screen.getByText(
+				'Name cannot contain the following invalid character: /.'
+			)
+		).toBeInTheDocument();
+		expect(openToast).not.toHaveBeenCalled();
+		expect(navigate).not.toHaveBeenCalled();
+		expect(screen.getByLabelText('page-template-set')).toHaveValue('5');
+
+		await act(async () => {
+			await userEvent.clear(screen.getByLabelText('page-template-name'));
+			await userEvent.type(
+				screen.getByLabelText('page-template-name'),
+				'Page Template'
+			);
+			await userEvent.click(screen.getByText('save'));
+		});
+
+		const [url, {body}] = (fetch as jest.Mock).mock.calls[2];
+
+		expect(url).toBe('addLayoutPageTemplateEntryURL');
+		expect(Object.fromEntries(body.entries())).toEqual({
+			_namespace_layoutPageTemplateCollectionId: '5',
+			_namespace_name: 'Page Template',
+		});
+
+		await act(async () => {
+			await userEvent.click(screen.getByText('save-in-new-set'));
+		});
+
+		expect(screen.getByLabelText('page-template-set-name')).toHaveValue(
+			'untitled-set 2'
+		);
 	});
 });
