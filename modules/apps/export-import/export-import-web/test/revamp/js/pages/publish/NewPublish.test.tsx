@@ -238,6 +238,16 @@ describe('NewPublish', () => {
 		).toBeDisabled();
 	});
 
+	it('offers the from last publish date filter', async () => {
+		renderComponent();
+
+		await screen.findByText('loaded');
+
+		expect(
+			screen.getByRole('option', {name: 'from-last-publish-date'})
+		).toBeInTheDocument();
+	});
+
 	it('publishes to the remote live with the edited connection', async () => {
 		renderComponent({remoteConnection: REMOTE_CONNECTION});
 

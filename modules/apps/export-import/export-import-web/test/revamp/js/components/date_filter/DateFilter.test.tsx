@@ -14,6 +14,7 @@ import {
 	LastRange,
 	Range,
 } from '../../../../../src/main/resources/META-INF/resources/revamp/js/components/date_filter/types';
+import {ExportImportProcess} from '../../../../../src/main/resources/META-INF/resources/revamp/js/types/exportImportProcess';
 
 const DAY = 24 * 60 * 60 * 1000;
 
@@ -29,13 +30,13 @@ function toDisplayDateString(dateString: string) {
 
 function ControlledDateFilter({
 	appliedValue: initialAppliedValue,
-	lastPublishDate,
 	onApplyFilter,
+	process,
 	timeZoneId = 'UTC',
 }: {
 	appliedValue?: DateFilterValues;
-	lastPublishDate?: string;
 	onApplyFilter: (dateFilterValues: DateFilterValues) => void;
+	process?: ExportImportProcess;
 	timeZoneId?: string;
 }) {
 	const [appliedValue, setAppliedValue] = useState<DateFilterValues>(
@@ -45,11 +46,11 @@ function ControlledDateFilter({
 	return (
 		<DateFilter
 			appliedValue={appliedValue}
-			lastPublishDate={lastPublishDate}
 			onApplyFilter={(dateFilterValues) => {
 				setAppliedValue(dateFilterValues);
 				onApplyFilter(dateFilterValues);
 			}}
+			process={process}
 			timeZoneId={timeZoneId}
 		/>
 	);
@@ -62,13 +63,13 @@ describe('DateFilter', () => {
 
 	const renderDateFilter = ({
 		appliedValue,
-		lastPublishDate,
 		onApplyFilter = jest.fn(),
+		process,
 		timeZoneId,
 	}: {
 		appliedValue?: DateFilterValues;
-		lastPublishDate?: string;
 		onApplyFilter?: jest.Mock;
+		process?: ExportImportProcess;
 		timeZoneId?: string;
 	} = {}) => {
 		const user = userEvent.setup({delay: null});
@@ -76,8 +77,8 @@ describe('DateFilter', () => {
 		render(
 			<ControlledDateFilter
 				appliedValue={appliedValue}
-				lastPublishDate={lastPublishDate}
 				onApplyFilter={onApplyFilter}
+				process={process}
 				timeZoneId={timeZoneId}
 			/>
 		);
@@ -436,7 +437,7 @@ describe('DateFilter', () => {
 		expect(screen.queryByRole('alert')).not.toBeInTheDocument();
 	});
 
-	it('does not offer the from last publish date range without a last publish date', () => {
+	it('does not offer the from last publish date range outside a publication', () => {
 		renderDateFilter();
 
 		expect(
@@ -444,20 +445,9 @@ describe('DateFilter', () => {
 		).not.toBeInTheDocument();
 	});
 
-	it('keeps a seeded from last publish date range selectable without a last publish date', () => {
-		renderDateFilter({appliedValue: {range: Range.FromLastPublishDate}});
-
-		expect(screen.getByLabelText('filter-content-by')).toHaveValue(
-			Range.FromLastPublishDate
-		);
-		expect(
-			screen.getByRole('option', {name: 'from-last-publish-date'})
-		).toBeInTheDocument();
-	});
-
 	it('applies the from last publish date range', async () => {
 		const {onApplyFilter, user} = renderDateFilter({
-			lastPublishDate: '2026-07-20T15:30:00Z',
+			process: 'publish',
 		});
 
 		await user.selectOptions(
