@@ -291,14 +291,6 @@ public class AssetEntryAssetCategoryRelLocalServiceWrapper
 	}
 
 	@Override
-	public AssetEntryAssetCategoryRel fetchAssetEntryAssetCategoryRel(
-		long assetEntryId, long assetCategoryId) {
-
-		return _assetEntryAssetCategoryRelLocalService.
-			fetchAssetEntryAssetCategoryRel(assetEntryId, assetCategoryId);
-	}
-
-	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 
@@ -357,42 +349,10 @@ public class AssetEntryAssetCategoryRelLocalServiceWrapper
 
 	@Override
 	public java.util.List<AssetEntryAssetCategoryRel>
-		getAssetEntryAssetCategoryRelsByAssetCategoryId(
-			long assetCategoryId, int start, int end) {
-
-		return _assetEntryAssetCategoryRelLocalService.
-			getAssetEntryAssetCategoryRelsByAssetCategoryId(
-				assetCategoryId, start, end);
-	}
-
-	@Override
-	public java.util.List<AssetEntryAssetCategoryRel>
-		getAssetEntryAssetCategoryRelsByAssetCategoryId(
-			long assetCategoryId, int start, int end,
-			com.liferay.portal.kernel.util.OrderByComparator
-				<AssetEntryAssetCategoryRel> orderByComparator) {
-
-		return _assetEntryAssetCategoryRelLocalService.
-			getAssetEntryAssetCategoryRelsByAssetCategoryId(
-				assetCategoryId, start, end, orderByComparator);
-	}
-
-	@Override
-	public java.util.List<AssetEntryAssetCategoryRel>
 		getAssetEntryAssetCategoryRelsByAssetEntryId(long assetEntryId) {
 
 		return _assetEntryAssetCategoryRelLocalService.
 			getAssetEntryAssetCategoryRelsByAssetEntryId(assetEntryId);
-	}
-
-	@Override
-	public java.util.List<AssetEntryAssetCategoryRel>
-		getAssetEntryAssetCategoryRelsByAssetEntryId(
-			long assetEntryId, int start, int end) {
-
-		return _assetEntryAssetCategoryRelLocalService.
-			getAssetEntryAssetCategoryRelsByAssetEntryId(
-				assetEntryId, start, end);
 	}
 
 	@Override
@@ -440,12 +400,6 @@ public class AssetEntryAssetCategoryRelLocalServiceWrapper
 		return _assetEntryAssetCategoryRelLocalService.
 			getAssetEntryAssetCategoryRelsCountByClassNameId(
 				assetCategoryId, classNameId);
-	}
-
-	@Override
-	public long[] getAssetEntryPrimaryKeys(long assetCategoryId) {
-		return _assetEntryAssetCategoryRelLocalService.getAssetEntryPrimaryKeys(
-			assetCategoryId);
 	}
 
 	@Override
@@ -540,4 +494,4 @@ public class AssetEntryAssetCategoryRelLocalServiceWrapper
 		_assetEntryAssetCategoryRelLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1812523877
+// LIFERAY-SERVICE-BUILDER-HASH:-561491171
