@@ -8,7 +8,6 @@ package com.liferay.portal.cluster.multiple.internal;
 import com.liferay.petra.concurrent.DefaultNoticeableFuture;
 import com.liferay.petra.concurrent.NoticeableFuture;
 import com.liferay.petra.concurrent.NoticeableFutureConverter;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.cluster.Address;
 import com.liferay.portal.kernel.cluster.ClusterEvent;
 import com.liferay.portal.kernel.cluster.ClusterEventListener;
@@ -16,7 +15,6 @@ import com.liferay.portal.kernel.cluster.ClusterEventType;
 import com.liferay.portal.kernel.cluster.ClusterExecutor;
 import com.liferay.portal.kernel.cluster.ClusterMasterExecutor;
 import com.liferay.portal.kernel.cluster.ClusterMasterTokenTransitionListener;
-import com.liferay.portal.kernel.cluster.ClusterNode;
 import com.liferay.portal.kernel.cluster.ClusterNodeResponse;
 import com.liferay.portal.kernel.cluster.ClusterNodeResponses;
 import com.liferay.portal.kernel.cluster.ClusterRequest;
@@ -24,7 +22,6 @@ import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.MethodHandler;
-import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -137,10 +134,6 @@ public class ClusterMasterExecutorImpl implements ClusterMasterExecutor {
 			ClusterEventListener.class,
 			new ClusterMasterTokenClusterEventListener(), null);
 
-		ClusterNode localClusterNode = _clusterExecutor.getLocalClusterNode();
-
-		_localClusterNodeId = localClusterNode.getClusterNodeId();
-
 		_enabled = true;
 
 		getMasterClusterNodeId(false);
@@ -155,49 +148,23 @@ public class ClusterMasterExecutorImpl implements ClusterMasterExecutor {
 		}
 
 		_enabled = false;
-		_localClusterNodeId = null;
 	}
 
 	protected String getMasterClusterNodeId(boolean notify) {
-		String masterClusterNodeId = null;
-
 		ClusterExecutorImpl clusterExecutorImpl =
 			(ClusterExecutorImpl)_clusterExecutor;
-		boolean master = false;
 
-		while (true) {
-			ClusterChannel clusterChannel =
-				clusterExecutorImpl.getClusterChannel();
+		ClusterChannel clusterChannel = clusterExecutorImpl.getClusterChannel();
 
-			ClusterReceiver clusterReceiver =
-				clusterChannel.getClusterReceiver();
+		ClusterReceiver clusterReceiver = clusterChannel.getClusterReceiver();
 
-			Address coordinatorAddress =
-				clusterReceiver.getCoordinatorAddress();
+		Address coordinatorAddress = clusterReceiver.getCoordinatorAddress();
 
-			master = coordinatorAddress.equals(
-				clusterChannel.getLocalAddress());
+		String masterClusterNodeId = clusterExecutorImpl.getClusterNodeId(
+			coordinatorAddress);
 
-			if (master) {
-				masterClusterNodeId = _localClusterNodeId;
-			}
-			else {
-				masterClusterNodeId = clusterExecutorImpl.getClusterNodeId(
-					coordinatorAddress);
-			}
-
-			if (Validator.isNotNull(masterClusterNodeId)) {
-				break;
-			}
-
-			if (_log.isInfoEnabled()) {
-				_log.info(
-					StringBundler.concat(
-						"Unable to get cluster node information for ",
-						"coordinator address ", coordinatorAddress,
-						". Trying again."));
-			}
-		}
+		boolean master = coordinatorAddress.equals(
+			clusterChannel.getLocalAddress());
 
 		if (master == _master) {
 			return masterClusterNodeId;
@@ -245,7 +212,6 @@ public class ClusterMasterExecutorImpl implements ClusterMasterExecutor {
 	private final Set<ClusterMasterTokenTransitionListener>
 		_clusterMasterTokenTransitionListeners = new CopyOnWriteArraySet<>();
 	private boolean _enabled;
-	private volatile String _localClusterNodeId;
 	private volatile boolean _master;
 	private ServiceRegistration<ClusterEventListener> _serviceRegistration;
 
