@@ -1,0 +1,28 @@
+query getWorkspaceGroupEventAttributeDefinitionsPage(
+	$eventDefinitionId: String
+	$keyword: String
+	$page: Int!
+	$size: Int!
+	$sort: Sort!
+	$type: EventAttributeDefinitionType!
+) {
+	eventAttributeDefinitionBag: eventAttributeDefinitions(
+		eventDefinitionId: $eventDefinitionId
+		keyword: $keyword
+		page: $page
+		size: $size
+		sort: $sort
+		type: $type
+	) {
+		eventAttributeDefinitions {
+			dataType
+			description
+			displayName
+			id
+			name
+			sampleValue
+			type
+		}
+		total
+	}
+}

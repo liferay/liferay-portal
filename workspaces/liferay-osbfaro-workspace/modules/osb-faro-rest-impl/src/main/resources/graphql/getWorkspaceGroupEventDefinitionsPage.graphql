@@ -1,0 +1,29 @@
+query getWorkspaceGroupEventDefinitionsPage(
+	$blocked: Boolean
+	$eventType: EventDefinitionType!
+	$hidden: Boolean
+	$keyword: String
+	$page: Int!
+	$size: Int!
+	$sort: Sort!
+) {
+	eventDefinitionBag: eventDefinitions(
+		blocked: $blocked
+		eventType: $eventType
+		hidden: $hidden
+		keyword: $keyword
+		page: $page
+		size: $size
+		sort: $sort
+	) {
+		eventDefinitions {
+			description
+			displayName
+			hidden
+			id
+			name
+			type
+		}
+		total
+	}
+}
