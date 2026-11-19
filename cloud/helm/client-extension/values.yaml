@@ -18,6 +18,7 @@ network:
     enabled: false
     endpointRef: http
     gatewayName: ""
+    gatewayNamespace: ""
     hostnames: []
 operatorServiceAccount:
     name: dxp-operator

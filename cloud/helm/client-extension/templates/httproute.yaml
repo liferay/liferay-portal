@@ -21,6 +21,9 @@ spec:
         -   group: gateway.networking.k8s.io
             kind: Gateway
             name: {{ required "network.gatewayName is required when network.enabled is true" .Values.network.gatewayName }}
+            {{- with .Values.network.gatewayNamespace }}
+            namespace: {{ . }}
+            {{- end }}
             sectionName: {{ .Values.network.endpointRef }}
     rules:
         -   backendRefs:

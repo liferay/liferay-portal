@@ -140,6 +140,9 @@ tests:
                                 -   forceString: true
                                     name: network.gatewayName
                                     value: "{{ index .path.segments 2 }}-{{ index .path.segments 4 }}-gateway"
+                                -   forceString: true
+                                    name: network.gatewayNamespace
+                                    value: liferay-{{ index .path.segments 2 }}-{{ index .path.segments 4 }}
                             releaseName: "{{ .name }}"
                             valueFiles:
                                 -   "cxdescriptor://{{ trimPrefix \"oci://\" .descriptor }}:{{ .version }}"

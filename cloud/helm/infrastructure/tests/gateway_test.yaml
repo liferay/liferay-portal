@@ -10,6 +10,29 @@ templates:
     -   templates/gateway.yaml
 tests:
     -   asserts:
+            -   documentSelector:
+                    path: kind
+                    value: Gateway
+                equal:
+                    path: spec.listeners[0].allowedRoutes
+                    value:
+                        namespaces:
+                            from: Selector
+                            selector:
+                                matchExpressions:
+                                    -   key: kubernetes.io/metadata.name
+                                        operator: In
+                                        values:
+                                            -   liferay-able-nonproduction
+                                            -   liferay-able-nonproduction-cx
+        it: Accepts routes from the environment's separate client extension namespace
+        release:
+            namespace: liferay-able-nonproduction
+        set:
+            clientExtensions:
+                separateNamespace:
+                    enabled: true
+    -   asserts:
             -   contains:
                     content:
                         allowedRoutes:

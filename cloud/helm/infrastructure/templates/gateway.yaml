@@ -11,6 +11,11 @@
 {{- range $name, $endpoint := .Values.endpoints }}
 {{- include "liferay.validateEndpoint" (dict "endpoint" $endpoint "name" $name) }}
 {{- end }}
+{{- $allowedRoutes := dict "namespaces" (dict "from" "Same") }}
+{{- if .Values.clientExtensions.separateNamespace.enabled }}
+{{- $namespaces := list .Release.Namespace (include "clientExtensions.namespace" .) }}
+{{- $allowedRoutes = dict "namespaces" (dict "from" "Selector" "selector" (dict "matchExpressions" (list (dict "key" "kubernetes.io/metadata.name" "operator" "In" "values" $namespaces)))) }}
+{{- end }}
 {{- with $gateway.clientTrafficPolicySpec }}
 apiVersion: gateway.envoyproxy.io/v1alpha1
 kind: ClientTrafficPolicy
@@ -82,16 +87,14 @@ spec:
     listeners:
         {{- if not (hasKey .Values.endpoints "http") }}
         -   allowedRoutes:
-                namespaces:
-                    from: Same
+                {{- toYaml $allowedRoutes | nindent 16 }}
             name: http
             port: 80
             protocol: HTTP
         {{- end }}
         {{- range $name, $endpoint := .Values.endpoints }}
         -   allowedRoutes:
-                namespaces:
-                    from: Same
+                {{- toYaml $allowedRoutes | nindent 16 }}
             {{- with $endpoint.hostname }}
             hostname: {{ . | quote }}
             {{- end }}

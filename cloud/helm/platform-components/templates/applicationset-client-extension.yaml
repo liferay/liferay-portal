@@ -74,6 +74,9 @@ spec:
                         -   forceString: true
                             name: network.gatewayName
                             value: {{ printf "{{ %s }}-{{ %s }}-gateway" $projectId $environmentId | quote }}
+                        -   forceString: true
+                            name: network.gatewayNamespace
+                            value: {{ printf "liferay-{{ %s }}-{{ %s }}" $projectId $environmentId | quote }}
                     releaseName: {{ `{{ .name }}` | quote }}
                     valueFiles:
                         -   {{ `cxdescriptor://{{ trimPrefix "oci://" .descriptor }}:{{ .version }}` | quote }}

@@ -53,12 +53,24 @@ tests:
                     -   www.able.example.com
     -   asserts:
             -   equal:
+                    path: spec.parentRefs[0].namespace
+                    value: liferay-able-nonproduction
+        it: Routes the client extension through a gateway in another namespace
+        set:
+            clientExtension:
+                domain: able.example.com
+            network:
+                gatewayNamespace: liferay-able-nonproduction
+    -   asserts:
+            -   equal:
                     path: spec.hostnames
                     value:
                         -   able.example.com
             -   equal:
                     path: spec.parentRefs[0].name
                     value: liferay-gateway
+            -   notExists:
+                    path: spec.parentRefs[0].namespace
             -   equal:
                     path: spec.parentRefs[0].sectionName
                     value: https
