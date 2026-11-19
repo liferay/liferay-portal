@@ -11,18 +11,39 @@ import {loginTest} from '../../../fixtures/loginTest';
 import {webContentDisplayPageTest} from '../../../fixtures/webContentDisplayPageTest';
 import {WebContentDisplayPage} from '../../../pages/journal-content-web/WebContentDisplayPage';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
+import fillAndClickOutside from '../../../utils/fillAndClickOutside';
 import getRandomString from '../../../utils/getRandomString';
 import getBasicWebContentStructureId from '../../../utils/structured-content/getBasicWebContentStructureId';
+import {journalPagesTest} from '../../journal-web/main/fixtures/journalPagesTest';
+import getDataStructureDefinition from '../../journal-web/main/utils/getDataStructureDefinition';
 
 const test = mergeTests(
 	dataApiHelpersTest,
 	isolatedSiteTest,
+	journalPagesTest,
 	loginTest(),
 	webContentDisplayPageTest
 );
 
 const JOURNAL_CONTENT_PORTLET =
 	'com_liferay_journal_content_web_portlet_JournalContentPortlet';
+
+async function addWebContentFromMenu(
+	page: Page,
+	portletId: string,
+	structureName: string
+) {
+	await page.locator(`#portlet_${portletId}`).hover();
+
+	await clickAndExpectToBeVisible({
+		autoClick: true,
+		target: page.getByRole('menuitem', {name: structureName}),
+		timeout: 1000,
+		trigger: page
+			.locator(`[id^="portlet-title-menu_${portletId}_"]`)
+			.getByRole('button', {name: 'Add'}),
+	});
+}
 
 async function openWebContentSelector(
 	page: Page,
@@ -375,5 +396,210 @@ test(
 		await expect(
 			page.getByText('Web Content Content 1', {exact: true})
 		).toBeHidden();
+	}
+);
+
+test(
+	'Web Content Display adds and edits web content and templates from its menus',
+	{tag: ['@LPD-116674', '@LPS-129944']},
+	async ({
+		apiHelpers,
+		journalEditArticlePage,
+		journalEditTemplatePage,
+		page,
+		site,
+		webContentDisplayPage,
+	}) => {
+		test.setTimeout(180000);
+
+		const structureName = getRandomString();
+
+		const dataDefinition = await apiHelpers.dataEngine.createStructure(
+			site.id,
+			getDataStructureDefinition({
+				defaultLanguageId: 'en_US',
+				fields: [
+					{name: 'Text'},
+					{displayStyle: 'multiline', name: 'TextBox'},
+				],
+				name: structureName,
+			})
+		);
+
+		const ddmStructureClassName =
+			await apiHelpers.jsonWebServicesClassName.fetchClassName(
+				'com.liferay.dynamic.data.mapping.model.DDMStructure'
+			);
+		const journalArticleClassName =
+			await apiHelpers.jsonWebServicesClassName.fetchClassName(
+				'com.liferay.journal.model.JournalArticle'
+			);
+
+		await apiHelpers.jsonWebServicesDDM.addTemplate({
+			classNameId: ddmStructureClassName.classNameId,
+			classPK: dataDefinition.id,
+			groupId: site.id,
+			nameMap: {en_US: getRandomString()},
+			resourceClassNameId: journalArticleClassName.classNameId,
+			script: `<h1 class="text">\${Text.getData()}</h1>
+<h2 class="text-box">\${TextBox.getData()}</h2>
+<@liferay_portlet["runtime"] instanceId="nested" portletName="${JOURNAL_CONTENT_PORTLET}" />`,
+		});
+
+		const portletId = `${JOURNAL_CONTENT_PORTLET}_INSTANCE_menus`;
+
+		const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
+			groupId: String(site.id),
+			title: getRandomString(),
+			typeSettings: `layout-template-id=1_column\ncolumn-1=${portletId}\n`,
+		});
+
+		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
+
+		const webContentDisplay = page.locator(`#portlet_${portletId}`);
+
+		await addWebContentFromMenu(page, portletId, 'Basic Web Content');
+
+		await journalEditArticlePage.fillTitle('Web Content Title');
+		await journalEditArticlePage.expandFieldsPanel();
+		await journalEditArticlePage.fillContent('Web Content Content');
+		await journalEditArticlePage.publishArticle();
+
+		await expect(
+			webContentDisplay.getByRole('heading', {
+				exact: true,
+				name: 'Web Content Title',
+			})
+		).toBeVisible();
+		await expect(
+			webContentDisplay.getByText('Web Content Content', {exact: true})
+		).toBeVisible();
+
+		await webContentDisplay
+			.getByText('Web Content Content', {exact: true})
+			.hover();
+
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: page.getByRole('menuitem', {name: 'Edit Web Content'}),
+			timeout: 1000,
+			trigger: webContentDisplay.getByRole('button', {
+				name: 'Show Actions',
+			}),
+		});
+
+		await journalEditArticlePage.fillTitle('Web Content Title Edit');
+		await journalEditArticlePage.expandFieldsPanel();
+		await journalEditArticlePage.fillContent('Web Content Content Edit');
+		await journalEditArticlePage.publishArticle(true);
+
+		await expect(
+			webContentDisplay.getByRole('heading', {
+				exact: true,
+				name: 'Web Content Title Edit',
+			})
+		).toBeVisible();
+		await expect(
+			webContentDisplay.getByText('Web Content Content Edit', {
+				exact: true,
+			})
+		).toBeVisible();
+
+		await addWebContentFromMenu(page, portletId, structureName);
+
+		await journalEditArticlePage.fillTitle('WC WebContent Title');
+		await journalEditArticlePage.expandFieldsPanel();
+
+		await fillAndClickOutside(
+			page,
+			page.getByRole('textbox', {exact: true, name: 'Text'}),
+			'WC WebContent Text'
+		);
+		await fillAndClickOutside(
+			page,
+			page.getByRole('textbox', {exact: true, name: 'TextBox'}),
+			'Hello World\nWelcome to Liferay Community Edition Portal 7.4.0 CE GA1'
+		);
+
+		await journalEditArticlePage.publishArticle();
+
+		const textHeading = webContentDisplay.getByRole('heading', {
+			exact: true,
+			level: 1,
+			name: 'WC WebContent Text',
+		});
+
+		await expect(textHeading).toBeVisible();
+		await expect(
+			webContentDisplay.getByRole('heading', {
+				exact: true,
+				level: 2,
+				name: 'Hello World Welcome to Liferay Community Edition Portal 7.4.0 CE GA1',
+			})
+		).toBeVisible();
+
+		const nestedNotVisibleAlert = page
+			.locator(`#p_p_id_${JOURNAL_CONTENT_PORTLET}_INSTANCE_nested_`)
+			.getByRole('alert')
+			.filter({hasText: 'This application is not visible to users yet.'});
+
+		await expect(nestedNotVisibleAlert).toBeVisible();
+
+		await webContentDisplay.hover();
+
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: page.getByRole('menu').getByRole('menuitem', {
+				exact: true,
+				name: 'Configuration',
+			}),
+			timeout: 1000,
+			trigger: page
+				.locator(`#portlet-topper-toolbar_${portletId}`)
+				.getByRole('button', {name: 'Options'}),
+		});
+
+		await webContentDisplayPage.configurationFrame
+			.getByLabel('Related Assets', {exact: true})
+			.check();
+
+		await webContentDisplayPage.configurationFrame
+			.getByRole('button', {name: 'Save'})
+			.click();
+
+		await expect(
+			webContentDisplayPage.configurationFrame.getByText(
+				'You have successfully updated the setup.'
+			)
+		).toBeVisible();
+
+		await webContentDisplayPage.uiElementsPage.closeClickable.click();
+
+		await expect(nestedNotVisibleAlert).toBeVisible();
+		await expect(textHeading).toBeVisible();
+
+		await textHeading.hover();
+
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: page.getByRole('menuitem', {name: 'Edit Template'}),
+			timeout: 1000,
+			trigger: webContentDisplay.getByRole('button', {
+				name: 'Show Actions',
+			}),
+		});
+
+		await journalEditTemplatePage.editTemplate(
+			'Template Edit',
+			'Template Edited Extra Content'
+		);
+
+		await journalEditTemplatePage.saveButton.click();
+
+		await expect(
+			webContentDisplay.getByText('Template Edited Extra Content', {
+				exact: true,
+			})
+		).toBeVisible();
 	}
 );
