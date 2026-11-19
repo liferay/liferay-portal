@@ -15,6 +15,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.test.util.HTTPTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -25,6 +26,7 @@ import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
+import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
 import java.io.Serializable;
 
@@ -40,6 +42,7 @@ import org.junit.runner.RunWith;
 /**
  * @author Alberto Javier Moreno Lage
  */
+@DataGuard(scope = DataGuard.Scope.METHOD)
 @FeatureFlags(featureFlags = @FeatureFlag("LPD-63311"))
 @RunWith(Arquillian.class)
 public class MCPServerProfileToolObjectEntryModelListenerTest {
@@ -47,7 +50,9 @@ public class MCPServerProfileToolObjectEntryModelListenerTest {
 	@ClassRule
 	@Rule
 	public static final AggregateTestRule aggregateTestRule =
-		new LiferayIntegrationTestRule();
+		new AggregateTestRule(
+			false, PermissionCheckerMethodTestRule.INSTANCE,
+			new LiferayIntegrationTestRule());
 
 	@Before
 	public void setUp() throws Exception {

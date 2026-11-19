@@ -34,6 +34,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.HTTPTestUtil;
 import com.liferay.portal.kernel.test.util.PrefsPropsTestUtil;
@@ -63,6 +64,7 @@ import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
+import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
 import io.modelcontextprotocol.client.McpClient;
 import io.modelcontextprotocol.client.McpSyncClient;
@@ -99,6 +101,7 @@ import org.skyscreamer.jsonassert.JSONAssert;
  * @author Alejandro Tardín
  * @author Beni Herrero
  */
+@DataGuard(scope = DataGuard.Scope.METHOD)
 @FeatureFlags(
 	featureFlags = {
 		@FeatureFlag("LPD-63311"), @FeatureFlag("LPD-63415"),
@@ -111,7 +114,9 @@ public class MCPServerServletTest {
 	@ClassRule
 	@Rule
 	public static final AggregateTestRule aggregateTestRule =
-		new LiferayIntegrationTestRule();
+		new AggregateTestRule(
+			false, PermissionCheckerMethodTestRule.INSTANCE,
+			new LiferayIntegrationTestRule());
 
 	@Before
 	public void setUp() {

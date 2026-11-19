@@ -14,6 +14,7 @@ import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -23,6 +24,7 @@ import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
+import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
 import java.util.List;
 
@@ -36,6 +38,7 @@ import org.junit.runner.RunWith;
 /**
  * @author Jose Luis Navarro
  */
+@DataGuard(scope = DataGuard.Scope.METHOD)
 @FeatureFlags(featureFlags = @FeatureFlag("LPD-63311"))
 @RunWith(Arquillian.class)
 public class DataMaskObjectEntryModelListenerTest {
@@ -43,7 +46,9 @@ public class DataMaskObjectEntryModelListenerTest {
 	@ClassRule
 	@Rule
 	public static final AggregateTestRule aggregateTestRule =
-		new LiferayIntegrationTestRule();
+		new AggregateTestRule(
+			false, PermissionCheckerMethodTestRule.INSTANCE,
+			new LiferayIntegrationTestRule());
 
 	@Before
 	public void setUp() {
