@@ -19,7 +19,6 @@ import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
-import com.liferay.site.pim.site.initializer.constants.PIMObjectEntryFolderConstants;
 import com.liferay.site.pim.site.initializer.test.util.PIMTestUtil;
 
 import org.junit.Assert;
@@ -65,8 +64,7 @@ public class PIMObjectEntryFolderDepotEntryLocalServiceWrapperTest {
 		Assert.assertNotNull(
 			_objectEntryFolderLocalService.
 				fetchObjectEntryFolderByExternalReferenceCode(
-					PIMObjectEntryFolderConstants.
-						EXTERNAL_REFERENCE_CODE_PRODUCTS,
+					ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_PRODUCTS,
 					depotEntry.getGroupId(), TestPropsValues.getCompanyId()));
 	}
 
@@ -84,8 +82,7 @@ public class PIMObjectEntryFolderDepotEntryLocalServiceWrapperTest {
 		Assert.assertNull(
 			_objectEntryFolderLocalService.
 				fetchObjectEntryFolderByExternalReferenceCode(
-					PIMObjectEntryFolderConstants.
-						EXTERNAL_REFERENCE_CODE_PRODUCTS,
+					ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_PRODUCTS,
 					depotEntry.getGroupId(), TestPropsValues.getCompanyId()));
 	}
 

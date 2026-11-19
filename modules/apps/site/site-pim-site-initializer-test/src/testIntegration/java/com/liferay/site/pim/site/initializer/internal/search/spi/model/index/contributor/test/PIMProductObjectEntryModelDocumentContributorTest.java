@@ -8,6 +8,7 @@ package com.liferay.site.pim.site.initializer.internal.search.spi.model.index.co
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
+import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectDefinitionLocalService;
@@ -23,7 +24,6 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.site.pim.site.initializer.constants.PIMObjectDefinitionConstants;
-import com.liferay.site.pim.site.initializer.constants.PIMObjectEntryFolderConstants;
 import com.liferay.site.pim.site.initializer.test.util.PIMBasicProductTestUtil;
 import com.liferay.site.pim.site.initializer.test.util.PIMTestUtil;
 
@@ -68,7 +68,7 @@ public class PIMProductObjectEntryModelDocumentContributorTest {
 			PIMBasicProductTestUtil.addPIMBasicProductObjectEntry(
 				depotEntry.getGroupId(),
 				objectDefinition.getDefaultLanguageId(),
-				PIMObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_PRODUCTS,
+				ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_PRODUCTS,
 				RandomTestUtil.randomString(), RandomTestUtil.randomString());
 
 		Indexer<ObjectEntry> indexer = IndexerRegistryUtil.getIndexer(

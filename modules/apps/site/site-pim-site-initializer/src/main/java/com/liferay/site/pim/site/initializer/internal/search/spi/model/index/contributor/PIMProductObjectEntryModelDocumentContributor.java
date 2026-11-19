@@ -5,13 +5,13 @@
 
 package com.liferay.site.pim.site.initializer.internal.search.spi.model.index.contributor;
 
+import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectEntryFolder;
 import com.liferay.object.service.ObjectEntryFolderLocalService;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.search.spi.model.index.contributor.ModelDocumentContributor;
-import com.liferay.site.pim.site.initializer.constants.PIMObjectEntryFolderConstants;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -20,7 +20,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Stefano Motta
  */
 @Component(
-	property = "root.object.entry.folder.external.reference.code=" + PIMObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_PRODUCTS,
+	property = "root.object.entry.folder.external.reference.code=" + ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_PRODUCTS,
 	service = ModelDocumentContributor.class
 )
 public class PIMProductObjectEntryModelDocumentContributor

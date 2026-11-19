@@ -39,7 +39,6 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.site.pim.site.initializer.constants.PIMObjectDefinitionConstants;
-import com.liferay.site.pim.site.initializer.constants.PIMObjectEntryFolderConstants;
 import com.liferay.site.pim.site.initializer.test.util.PIMBasicProductTestUtil;
 import com.liferay.site.pim.site.initializer.test.util.PIMTestUtil;
 
@@ -303,8 +302,7 @@ public class ObjectEntryModelListenerTest {
 		ObjectEntryFolder objectEntryFolder =
 			_objectEntryFolderLocalService.
 				fetchObjectEntryFolderByExternalReferenceCode(
-					PIMObjectEntryFolderConstants.
-						EXTERNAL_REFERENCE_CODE_PRODUCTS,
+					ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_PRODUCTS,
 					depotEntry.getGroupId(), TestPropsValues.getCompanyId());
 
 		Assert.assertEquals(
@@ -324,16 +322,14 @@ public class ObjectEntryModelListenerTest {
 
 			_objectEntryFolderLocalService.
 				deleteObjectEntryFolderByExternalReferenceCode(
-					PIMObjectEntryFolderConstants.
-						EXTERNAL_REFERENCE_CODE_PRODUCTS,
+					ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_PRODUCTS,
 					depotEntry.getGroupId(), TestPropsValues.getCompanyId());
 		}
 
 		Assert.assertNull(
 			_objectEntryFolderLocalService.
 				fetchObjectEntryFolderByExternalReferenceCode(
-					PIMObjectEntryFolderConstants.
-						EXTERNAL_REFERENCE_CODE_PRODUCTS,
+					ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_PRODUCTS,
 					depotEntry.getGroupId(), TestPropsValues.getCompanyId()));
 
 		ObjectEntry objectEntry =
@@ -345,8 +341,7 @@ public class ObjectEntryModelListenerTest {
 		ObjectEntryFolder objectEntryFolder =
 			_objectEntryFolderLocalService.
 				fetchObjectEntryFolderByExternalReferenceCode(
-					PIMObjectEntryFolderConstants.
-						EXTERNAL_REFERENCE_CODE_PRODUCTS,
+					ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_PRODUCTS,
 					depotEntry.getGroupId(), TestPropsValues.getCompanyId());
 
 		Assert.assertEquals(

@@ -11,6 +11,7 @@ import com.liferay.headless.pim.client.dto.v1_0.LinkReference;
 import com.liferay.headless.pim.client.dto.v1_0.Status;
 import com.liferay.headless.pim.client.pagination.Page;
 import com.liferay.headless.pim.client.pagination.Pagination;
+import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.petra.function.transform.TransformUtil;
@@ -23,7 +24,6 @@ import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
-import com.liferay.site.pim.site.initializer.constants.PIMObjectEntryFolderConstants;
 import com.liferay.site.pim.site.initializer.engine.PIMLinkEngine;
 import com.liferay.site.pim.site.initializer.link.PIMLinkType;
 import com.liferay.site.pim.site.initializer.test.util.PIMBasicProductTestUtil;
@@ -104,12 +104,12 @@ public class LinkReferenceResourceTest
 		ObjectEntry targetObjectEntry1 =
 			PIMBasicProductTestUtil.addPIMBasicProductObjectEntry(
 				depotEntry.getGroupId(), null,
-				PIMObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_PRODUCTS,
+				ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_PRODUCTS,
 				"sku-alpha", "Product");
 		ObjectEntry targetObjectEntry2 =
 			PIMBasicProductTestUtil.addPIMBasicProductObjectEntry(
 				depotEntry.getGroupId(), null,
-				PIMObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_PRODUCTS,
+				ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_PRODUCTS,
 				RandomTestUtil.randomString(), "Beta Product");
 
 		_pimLinkEngine.addPIMLinks(

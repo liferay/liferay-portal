@@ -8,6 +8,7 @@ package com.liferay.site.pim.site.initializer.internal.feature.flag.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.object.constants.ObjectDefinitionConstants;
+import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.object.entry.folder.util.ObjectEntryFolderThreadLocal;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectDefinitionSetting;
@@ -25,7 +26,6 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.site.pim.site.initializer.constants.PIMObjectDefinitionConstants;
-import com.liferay.site.pim.site.initializer.constants.PIMObjectEntryFolderConstants;
 import com.liferay.site.pim.site.initializer.constants.PIMObjectFolderConstants;
 import com.liferay.site.pim.site.initializer.test.util.PIMTestUtil;
 
@@ -110,16 +110,14 @@ public class PIMFeatureFlagListenerTest {
 
 			_objectEntryFolderLocalService.
 				deleteObjectEntryFolderByExternalReferenceCode(
-					PIMObjectEntryFolderConstants.
-						EXTERNAL_REFERENCE_CODE_PRODUCTS,
+					ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_PRODUCTS,
 					depotEntry.getGroupId(), companyId);
 		}
 
 		Assert.assertNull(
 			_objectEntryFolderLocalService.
 				fetchObjectEntryFolderByExternalReferenceCode(
-					PIMObjectEntryFolderConstants.
-						EXTERNAL_REFERENCE_CODE_PRODUCTS,
+					ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_PRODUCTS,
 					depotEntry.getGroupId(), companyId));
 
 		_featureFlagListener.onValue(companyId, "LPD-96666", true);
@@ -127,8 +125,7 @@ public class PIMFeatureFlagListenerTest {
 		Assert.assertNotNull(
 			_objectEntryFolderLocalService.
 				fetchObjectEntryFolderByExternalReferenceCode(
-					PIMObjectEntryFolderConstants.
-						EXTERNAL_REFERENCE_CODE_PRODUCTS,
+					ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_PRODUCTS,
 					depotEntry.getGroupId(), companyId));
 	}
 

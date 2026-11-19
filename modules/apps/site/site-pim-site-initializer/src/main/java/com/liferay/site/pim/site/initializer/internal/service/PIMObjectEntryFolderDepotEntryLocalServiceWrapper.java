@@ -8,6 +8,7 @@ package com.liferay.site.pim.site.initializer.internal.service;
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalServiceWrapper;
+import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.object.entry.folder.util.ObjectEntryFolderThreadLocal;
 import com.liferay.object.model.ObjectEntryFolder;
 import com.liferay.object.service.ObjectEntryFolderLocalService;
@@ -17,7 +18,6 @@ import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceWrapper;
-import com.liferay.site.pim.site.initializer.constants.PIMObjectEntryFolderConstants;
 import com.liferay.site.pim.site.initializer.internal.util.PIMObjectEntryFolderUtil;
 
 import java.util.Locale;
@@ -100,8 +100,7 @@ public class PIMObjectEntryFolderDepotEntryLocalServiceWrapper
 		ObjectEntryFolder objectEntryFolder =
 			_objectEntryFolderLocalService.
 				fetchObjectEntryFolderByExternalReferenceCode(
-					PIMObjectEntryFolderConstants.
-						EXTERNAL_REFERENCE_CODE_PRODUCTS,
+					ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_PRODUCTS,
 					depotEntry.getGroupId(), depotEntry.getCompanyId());
 
 		if (objectEntryFolder == null) {

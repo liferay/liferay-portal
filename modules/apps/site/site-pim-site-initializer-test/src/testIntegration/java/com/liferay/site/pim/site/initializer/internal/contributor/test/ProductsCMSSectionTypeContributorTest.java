@@ -9,6 +9,7 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.fragment.renderer.FragmentRenderer;
 import com.liferay.frontend.data.set.SystemFDSEntry;
+import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.rest.manager.v1_0.DefaultObjectEntryManager;
@@ -38,7 +39,6 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
-import com.liferay.site.pim.site.initializer.constants.PIMObjectEntryFolderConstants;
 import com.liferay.site.pim.site.initializer.test.util.PIMBasicProductTestUtil;
 import com.liferay.site.pim.site.initializer.test.util.PIMTestUtil;
 
@@ -106,7 +106,7 @@ public class ProductsCMSSectionTypeContributorTest {
 		ObjectEntry objectEntry =
 			PIMBasicProductTestUtil.addPIMBasicProductObjectEntry(
 				depotEntry.getGroupId(), null,
-				PIMObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_PRODUCTS,
+				ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_PRODUCTS,
 				RandomTestUtil.randomString(), title);
 
 		ObjectDefinition objectDefinition =

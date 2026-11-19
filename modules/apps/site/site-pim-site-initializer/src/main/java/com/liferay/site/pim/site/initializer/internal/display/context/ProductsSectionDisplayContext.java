@@ -13,6 +13,7 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemBuilder;
 import com.liferay.object.constants.ObjectDefinitionSettingConstants;
+import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectDefinitionSetting;
 import com.liferay.object.model.ObjectEntryFolder;
@@ -45,7 +46,6 @@ import com.liferay.portal.kernel.util.URLCodec;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.site.cms.site.initializer.constants.CMSWorkflowConstants;
-import com.liferay.site.pim.site.initializer.constants.PIMObjectEntryFolderConstants;
 import com.liferay.site.pim.site.initializer.constants.PIMObjectFolderConstants;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -132,7 +132,7 @@ public class ProductsSectionDisplayContext {
 				ObjectEntryFolder objectEntryFolder =
 					ObjectEntryFolderLocalServiceUtil.
 						fetchObjectEntryFolderByExternalReferenceCode(
-							PIMObjectEntryFolderConstants.
+							ObjectEntryFolderConstants.
 								EXTERNAL_REFERENCE_CODE_PRODUCTS,
 							depotEntryGroupId, themeDisplay.getCompanyId());
 
@@ -311,7 +311,7 @@ public class ProductsSectionDisplayContext {
 				"/add_structured_content_item?objectDefinitionId=",
 				objectDefinition.getObjectDefinitionId(),
 				"&objectEntryFolderExternalReferenceCode=",
-				PIMObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_PRODUCTS,
+				ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_PRODUCTS,
 				"&plid=", themeDisplay.getPlid(), "&redirect=",
 				themeDisplay.getURLCurrent())
 		).putData(

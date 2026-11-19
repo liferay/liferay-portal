@@ -5,6 +5,7 @@
 
 package com.liferay.site.pim.site.initializer.internal.contributor;
 
+import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.service.ObjectDefinitionLocalService;
@@ -16,7 +17,6 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.site.cms.site.initializer.contributor.CMSStructureObjectFolderContributor;
 import com.liferay.site.pim.site.initializer.constants.PIMObjectDefinitionConstants;
-import com.liferay.site.pim.site.initializer.constants.PIMObjectEntryFolderConstants;
 import com.liferay.site.pim.site.initializer.constants.PIMObjectFolderConstants;
 
 import java.util.Collections;
@@ -64,7 +64,7 @@ public class ProductTypesCMSStructureObjectFolderContributor
 			return null;
 		}
 
-		return PIMObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_PRODUCTS;
+		return ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_PRODUCTS;
 	}
 
 	@Override
