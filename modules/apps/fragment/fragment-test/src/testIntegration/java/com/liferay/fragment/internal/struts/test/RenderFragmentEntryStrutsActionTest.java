@@ -210,9 +210,9 @@ public class RenderFragmentEntryStrutsActionTest {
 		_processEvents(mockHttpServletRequest, mockHttpServletResponse, _user);
 
 		mockHttpServletRequest.setParameter(
-			"groupId", String.valueOf(_group.getGroupId()));
-		mockHttpServletRequest.setParameter(
 			"p_auth", AuthTokenUtil.getToken(mockHttpServletRequest));
+		mockHttpServletRequest.setParameter(
+			"groupId", String.valueOf(_group.getGroupId()));
 
 		_renderFragmentEntryStrutsAction.execute(
 			mockHttpServletRequest, mockHttpServletResponse);
