@@ -30,6 +30,7 @@ import com.liferay.document.library.kernel.service.DLFileEntryTypeLocalService;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
 import com.liferay.dynamic.data.mapping.util.DDMIndexer;
+import com.liferay.exportimport.kernel.lar.ExportImportProcessCallbackRegistry;
 import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.exportimport.kernel.lar.PortletDataException;
@@ -221,19 +222,54 @@ public class AssetPublisherExportImportPortletPreferencesProcessor
 
 			_updateImportClassNameIds(portletPreferences, "anyAssetType");
 			_updateImportClassNameIds(portletPreferences, "classNameIds");
-			_updateImportClassTypeIds(companyId, portletPreferences);
-			exportImportPortletPreferencesProcessorHelper.
-				updateImportPortletPreferencesClassPKs(
-					portletPreferences, "assetVocabularyId",
-					portletPreferencesOldValue -> _getImportReferenceValue(
-						companyId, AssetVocabulary.class.getName(),
-						portletPreferencesOldValue));
-			_updateImportCategoryQueryValues(companyId, portletPreferences);
-			_updateImportOrderByColumnClassPKs(
-				companyId, "orderByColumn1", portletPreferences);
-			_updateImportOrderByColumnClassPKs(
-				companyId, "orderByColumn2", portletPreferences);
+			_updateImportReferenceValues(companyId, portletPreferences);
 			_updateImportScopeIds(companyId, portletPreferences);
+
+			Map<String, String> orderByColumns = new HashMap<>();
+
+			for (String key : _ORDER_BY_COLUMN_KEYS) {
+				if (!_hasImportReferenceValue(portletPreferences, key)) {
+					continue;
+				}
+
+				orderByColumns.put(key, portletPreferences.getValue(key, null));
+
+				portletPreferences.reset(key);
+			}
+
+			if (orderByColumns.isEmpty() &&
+				!_hasImportReferenceValues(portletPreferences)) {
+
+				return;
+			}
+
+			exportImportProcessCallbackRegistry.registerCallback(
+				String.valueOf(
+					ExportImportThreadLocal.getExportImportConfigurationId()),
+				() -> {
+					for (Map.Entry<String, String> entry :
+							orderByColumns.entrySet()) {
+
+						portletPreferences.setValue(
+							entry.getKey(), entry.getValue());
+					}
+
+					_updateImportReferenceValues(companyId, portletPreferences);
+
+					for (String key : orderByColumns.keySet()) {
+						if (!_hasImportReferenceValue(
+								portletPreferences, key)) {
+
+							continue;
+						}
+
+						portletPreferences.reset(key);
+					}
+
+					portletPreferences.store();
+
+					return null;
+				});
 		}
 		catch (Exception exception) {
 			PortletDataException portletDataException =
@@ -538,6 +574,10 @@ public class AssetPublisherExportImportPortletPreferencesProcessor
 	@Reference
 	protected ExportImportPortletPreferencesProcessorHelper
 		exportImportPortletPreferencesProcessorHelper;
+
+	@Reference
+	protected ExportImportProcessCallbackRegistry
+		exportImportProcessCallbackRegistry;
 
 	@Reference
 	protected GroupLocalService groupLocalService;
@@ -1091,6 +1131,41 @@ public class AssetPublisherExportImportPortletPreferencesProcessor
 		}
 
 		return scopeId;
+	}
+
+	private boolean _hasImportReferenceValue(
+		PortletPreferences portletPreferences, String key) {
+
+		for (String value :
+				portletPreferences.getValues(key, StringPool.EMPTY_ARRAY)) {
+
+			if (value.contains(StringPool.POUND)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private boolean _hasImportReferenceValues(
+		PortletPreferences portletPreferences) {
+
+		Enumeration<String> enumeration = portletPreferences.getNames();
+
+		while (enumeration.hasMoreElements()) {
+			String name = enumeration.nextElement();
+
+			if ((_classTypeIdsClassNames.containsKey(name) ||
+				 name.equals("assetVocabularyId") ||
+				 name.equals("classTypeIds") ||
+				 name.startsWith("queryValues")) &&
+				_hasImportReferenceValue(portletPreferences, name)) {
+
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	private void _importLayoutReferences(PortletDataContext portletDataContext)
@@ -1806,10 +1881,6 @@ public class AssetPublisherExportImportPortletPreferencesProcessor
 			portletPreferencesOldValue);
 
 		if (importReferenceValue == null) {
-			if (portletPreferencesOldValue.contains(StringPool.POUND)) {
-				portletPreferences.reset(key);
-			}
-
 			return;
 		}
 
@@ -1944,6 +2015,25 @@ public class AssetPublisherExportImportPortletPreferencesProcessor
 			portletDataContext, "notifiedAssetEntryIds", portletPreferences);
 
 		return portletPreferences;
+	}
+
+	private void _updateImportReferenceValues(
+			long companyId, PortletPreferences portletPreferences)
+		throws Exception {
+
+		_updateImportClassTypeIds(companyId, portletPreferences);
+		exportImportPortletPreferencesProcessorHelper.
+			updateImportPortletPreferencesClassPKs(
+				portletPreferences, "assetVocabularyId",
+				portletPreferencesOldValue -> _getImportReferenceValue(
+					companyId, AssetVocabulary.class.getName(),
+					portletPreferencesOldValue));
+		_updateImportCategoryQueryValues(companyId, portletPreferences);
+
+		for (String key : _ORDER_BY_COLUMN_KEYS) {
+			_updateImportOrderByColumnClassPKs(
+				companyId, key, portletPreferences);
+		}
 	}
 
 	private void _updateImportScopeIds(
@@ -2081,6 +2171,10 @@ public class AssetPublisherExportImportPortletPreferencesProcessor
 
 		portletPreferences.setValues(key, newValues.toArray(new String[0]));
 	}
+
+	private static final String[] _ORDER_BY_COLUMN_KEYS = {
+		"orderByColumn1", "orderByColumn2"
+	};
 
 	private static final String[] _SCOPE_ID_GROUP_PREFIXES = {
 		AssetPublisherHelper.SCOPE_ID_CHILD_GROUP_PREFIX,
