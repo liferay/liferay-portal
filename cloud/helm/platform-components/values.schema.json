@@ -4,6 +4,16 @@
 		"accessControl": {
 			"additionalProperties": false,
 			"description": "Restricts the operator gateways to a list of client CIDRs.",
+			"if": {
+				"properties": {
+					"enabled": {
+						"const": true
+					}
+				},
+				"required": [
+					"enabled"
+				]
+			},
 			"properties": {
 				"allowedCIDRs": {
 					"description": "Client CIDRs allowed to reach the operator gateways. Required when access control is enabled.",
@@ -16,6 +26,16 @@
 					"description": "Restricts the operator gateways to the allowed CIDRs.",
 					"type": "boolean"
 				}
+			},
+			"then": {
+				"properties": {
+					"allowedCIDRs": {
+						"minItems": 1
+					}
+				},
+				"required": [
+					"allowedCIDRs"
+				]
 			},
 			"type": "object"
 		},
@@ -86,6 +106,16 @@
 				"gateway": {
 					"additionalProperties": false,
 					"description": "Gateway that serves the Argo Workflows web interface.",
+					"if": {
+						"properties": {
+							"enabled": {
+								"const": true
+							}
+						},
+						"required": [
+							"enabled"
+						]
+					},
 					"properties": {
 						"annotations": {
 							"additionalProperties": {
@@ -132,6 +162,20 @@
 						"tls": {
 							"additionalProperties": false,
 							"description": "TLS for the Argo Workflows gateway. Set at most one key; with neither, the gateway serves plain HTTP.",
+							"not": {
+								"properties": {
+									"externalSecretKey": {
+										"minLength": 1
+									},
+									"secretName": {
+										"minLength": 1
+									}
+								},
+								"required": [
+									"externalSecretKey",
+									"secretName"
+								]
+							},
 							"properties": {
 								"externalSecretKey": {
 									"description": "Key in the default ClusterSecretStore holding the certificate; the chart creates the Secret.",
@@ -144,6 +188,16 @@
 							},
 							"type": "object"
 						}
+					},
+					"then": {
+						"properties": {
+							"hostname": {
+								"minLength": 1
+							}
+						},
+						"required": [
+							"hostname"
+						]
 					},
 					"type": "object"
 				},
@@ -173,6 +227,16 @@
 				"gateway": {
 					"additionalProperties": false,
 					"description": "Gateway that serves the Argo CD web interface.",
+					"if": {
+						"properties": {
+							"enabled": {
+								"const": true
+							}
+						},
+						"required": [
+							"enabled"
+						]
+					},
 					"properties": {
 						"annotations": {
 							"additionalProperties": {
@@ -219,6 +283,20 @@
 						"tls": {
 							"additionalProperties": false,
 							"description": "TLS for the Argo CD gateway. Set at most one key; with neither, the gateway serves plain HTTP.",
+							"not": {
+								"properties": {
+									"externalSecretKey": {
+										"minLength": 1
+									},
+									"secretName": {
+										"minLength": 1
+									}
+								},
+								"required": [
+									"externalSecretKey",
+									"secretName"
+								]
+							},
 							"properties": {
 								"externalSecretKey": {
 									"description": "Key in the default ClusterSecretStore holding the certificate; the chart creates the Secret.",
@@ -231,6 +309,16 @@
 							},
 							"type": "object"
 						}
+					},
+					"then": {
+						"properties": {
+							"hostname": {
+								"minLength": 1
+							}
+						},
+						"required": [
+							"hostname"
+						]
 					},
 					"type": "object"
 				},
@@ -463,6 +551,27 @@
 		"envoyGateway": {
 			"additionalProperties": false,
 			"description": "Envoy Gateway, installed as an Argo CD Application.",
+			"if": {
+				"properties": {
+					"crds": {
+						"properties": {
+							"enabled": {
+								"const": true
+							}
+						},
+						"required": [
+							"enabled"
+						]
+					},
+					"enabled": {
+						"const": true
+					}
+				},
+				"required": [
+					"crds",
+					"enabled"
+				]
+			},
 			"properties": {
 				"crds": {
 					"additionalProperties": false,
@@ -507,6 +616,30 @@
 					"description": "Helm values passed to the Envoy Gateway chart.",
 					"type": "object"
 				}
+			},
+			"then": {
+				"properties": {
+					"values": {
+						"properties": {
+							"crds": {
+								"properties": {
+									"enabled": {
+										"const": false
+									}
+								},
+								"required": [
+									"enabled"
+								]
+							}
+						},
+						"required": [
+							"crds"
+						]
+					}
+				},
+				"required": [
+					"values"
+				]
 			},
 			"type": "object"
 		},
@@ -648,6 +781,7 @@
 						},
 						"environmentId": {
 							"description": "Environment ID, as a {{path[n]}} placeholder.",
+							"pattern": "^\\{\\{path\\[[0-9]+\\]\\}\\}$",
 							"type": "string"
 						},
 						"environments": {
@@ -672,6 +806,7 @@
 						},
 						"projectId": {
 							"description": "Project ID, as a {{path[n]}} placeholder.",
+							"pattern": "^\\{\\{path\\[[0-9]+\\]\\}\\}$",
 							"type": "string"
 						},
 						"projectValuesFilename": {

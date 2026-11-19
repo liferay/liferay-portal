@@ -20,6 +20,7 @@ tests:
         it: Admits the Argo Workflows gateway's Envoy proxies in its namespace to the server when the gateway is enabled
         set:
             argoWorkflows.gateway.enabled: true
+            argoWorkflows.gateway.hostname: tasks.example.com
             argoWorkflows.namespace: workflows
     -   asserts:
             -   equal:
@@ -45,6 +46,7 @@ tests:
         it: Admits the observability namespace to the gateway proxy metrics when observability is enabled
         set:
             argoWorkflows.gateway.enabled: true
+            argoWorkflows.gateway.hostname: tasks.example.com
             observability.enabled: true
             observability.namespace: monitoring
     -   asserts:
@@ -84,4 +86,5 @@ tests:
         it: Opens the gateway proxy ports in the Argo Workflows namespace when the gateway is enabled
         set:
             argoWorkflows.gateway.enabled: true
+            argoWorkflows.gateway.hostname: tasks.example.com
             argoWorkflows.namespace: workflows

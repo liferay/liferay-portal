@@ -1,9 +1,6 @@
 {{- $envoyGateway := .Values.envoyGateway -}}
 {{- $crds := $envoyGateway.crds -}}
 {{- if and $envoyGateway.enabled $crds.enabled -}}
-{{- if ne (dig "crds" "enabled" true $envoyGateway.values) false -}}
-{{- fail "The value \"envoyGateway.values.crds.enabled\" must be false when \"envoyGateway.crds.enabled\" is true" -}}
-{{- end -}}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:

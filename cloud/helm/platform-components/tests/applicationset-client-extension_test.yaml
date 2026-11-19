@@ -43,7 +43,7 @@ tests:
                     base: liferay/projects/{{path.basename}}/base
     -   asserts:
             -   failedTemplate:
-                    errorMessage: The value "gitops.layout.projectId" must have the form {{path[n]}} for the client extension ApplicationSet
+                    errorPattern: gitops.layout.projectId
                 template: templates/applicationset-client-extension.yaml
         it: Fails for a layout expression that is not a path segment
         set:

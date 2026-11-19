@@ -368,7 +368,7 @@ tests:
                         externalSecretKey: liferay-certificates-argocd
     -   asserts:
             -   failedTemplate:
-                    errorPattern: The value "argoWorkflows.gateway.hostname" is required to route traffic to Argo Workflows
+                    errorPattern: argoWorkflows.gateway.hostname
         it: Rejects an enabled Argo Workflows gateway without a hostname
         set:
             argoWorkflows:
@@ -376,13 +376,13 @@ tests:
                     enabled: true
     -   asserts:
             -   failedTemplate:
-                    errorPattern: The value "argocd.gateway.hostname" is required to route traffic to ArgoCD
+                    errorPattern: argocd.gateway.hostname
         it: Rejects an enabled ArgoCD gateway without a hostname
         set:
             argocd.gateway.enabled: true
     -   asserts:
             -   failedTemplate:
-                    errorPattern: The value "accessControl.allowedCIDRs" must not be empty when "accessControl.enabled" is true
+                    errorPattern: accessControl.allowedCIDRs
         it: Rejects an enabled allowlist without CIDR blocks
         set:
             accessControl:
@@ -393,7 +393,7 @@ tests:
                     hostname: argocd.liferay.test
     -   asserts:
             -   failedTemplate:
-                    errorPattern: The values "argoWorkflows.gateway.tls.externalSecretKey" and "argoWorkflows.gateway.tls.secretName" must not both be set
+                    errorPattern: argoWorkflows.gateway.tls
         it: Rejects both a TLS external secret key and a TLS secret name
         set:
             argoWorkflows:

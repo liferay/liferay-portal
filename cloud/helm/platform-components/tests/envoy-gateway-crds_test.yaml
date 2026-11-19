@@ -24,13 +24,13 @@ tests:
             envoyGateway.crds.targetRevision: 1.9.2
     -   asserts:
             -   failedTemplate:
-                    errorMessage: The value "envoyGateway.values.crds.enabled" must be false when "envoyGateway.crds.enabled" is true
+                    errorPattern: envoyGateway.values.crds.enabled
         it: Fails when the Envoy Gateway application still installs its bundled CRDs
         set:
             envoyGateway.values.crds.enabled: true
     -   asserts:
             -   failedTemplate:
-                    errorMessage: The value "envoyGateway.values.crds.enabled" must be false when "envoyGateway.crds.enabled" is true
+                    errorPattern: envoyGateway.values.*crds
         it: Fails when the Envoy Gateway application values omit the CRD switch
         set:
             envoyGateway.values.crds: null

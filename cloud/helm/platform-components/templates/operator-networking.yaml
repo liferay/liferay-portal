@@ -1,23 +1,17 @@
 {{- $accessControl := .Values.accessControl }}
 {{- $envoyGatewayNamespace := .Values.envoyGateway.namespace }}
 {{- $gateways := list
-    (dict "enabled" .Values.argoWorkflows.enabled "name" "argo-workflows" "namespace" .Values.argoWorkflows.namespace "port" 2746 "product" "Argo Workflows" "values" .Values.argoWorkflows.gateway "valuesPath" "argoWorkflows.gateway")
-    (dict "enabled" true "name" "argocd" "namespace" .Release.Namespace "port" 80 "product" "ArgoCD" "values" .Values.argocd.gateway "valuesPath" "argocd.gateway")
+    (dict "enabled" .Values.argoWorkflows.enabled "name" "argo-workflows" "namespace" .Values.argoWorkflows.namespace "port" 2746 "values" .Values.argoWorkflows.gateway)
+    (dict "enabled" true "name" "argocd" "namespace" .Release.Namespace "port" 80 "values" .Values.argocd.gateway)
 -}}
 {{- range $gateway := $gateways }}
 {{- if and $gateway.enabled $gateway.values.enabled }}
 {{- $envoyProxy := $gateway.values.envoyProxy }}
-{{- $hostname := required (printf "The value %q is required to route traffic to %s" (printf "%s.hostname" $gateway.valuesPath) $gateway.product) $gateway.values.hostname }}
+{{- $hostname := $gateway.values.hostname }}
 {{- $tls := $gateway.values.tls }}
-{{- if and $tls.externalSecretKey $tls.secretName }}
-{{- fail (printf "The values %q and %q must not both be set" (printf "%s.tls.externalSecretKey" $gateway.valuesPath) (printf "%s.tls.secretName" $gateway.valuesPath)) }}
-{{- end }}
 {{- $tlsEnabled := or $tls.externalSecretKey $tls.secretName | empty | not }}
 {{- $tlsSecretName := ternary (printf "%s-server-tls" $gateway.name) $tls.secretName ($tls.externalSecretKey | empty | not) }}
 
-{{- if and $accessControl.enabled (not $accessControl.allowedCIDRs) }}
-{{- fail (printf "The value %q must not be empty when %q is true" "accessControl.allowedCIDRs" "accessControl.enabled") }}
-{{- end }}
 
 {{- if $tls.externalSecretKey }}
 ---
