@@ -253,6 +253,10 @@ export class WebContentDisplayPage {
 			})
 			.click();
 
+		await this.configurationFrame
+			.getByText('You have successfully updated the setup.')
+			.waitFor();
+
 		await this.uiElementsPage.closeClickable.click();
 
 		await this.page
