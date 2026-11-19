@@ -230,8 +230,6 @@ public class BulkActionResourceTest {
 	private void _testPostBulkActionWithTypeAddObjectToProject()
 		throws Exception {
 
-		// Invalid project scope key
-
 		ObjectEntry cmsBasicWebContentObjectEntry1 =
 			ObjectEntryTestUtil.addObjectEntry(
 				_depotEntry.getGroupId(), _cmsBasicWebContentObjectDefinition,
@@ -255,8 +253,6 @@ public class BulkActionResourceTest {
 			BulkAction.Type.ADD_OBJECT_TO_PROJECT_BULK_SELECTION_ACTION);
 
 		_assertNumberOfFailedItems(_postBulkAction(bulkAction), 2);
-
-		// Link basic web content to projects
 
 		bulkAction = new AddObjectToProjectBulkSelectionAction();
 
@@ -305,8 +301,6 @@ public class BulkActionResourceTest {
 		_assertCMPProjectLinks(
 			cmpProjectLinkObjectDefinition, cmpProjectObjectEntry2.getGroupId(),
 			cmsBasicWebContentObjectEntries);
-
-		// Skip duplicate basic web content
 
 		_assertNumberOfFailedItems(_postBulkAction(bulkAction), 0);
 
