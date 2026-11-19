@@ -64,7 +64,7 @@ public abstract class BaseAccountLifecycleStageTransitionResourceImpl
 				name = "groupId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "ID of the account lifecycle whose stage transitions should be listed.",
+				description = "ID of the account lifecycle whose stage transitions should be listed. Use `getWorkspaceGroupChannelAccountLifecyclesPage` to find it.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "accountLifecycleId", required = true
 			),
@@ -637,4 +637,4 @@ public abstract class BaseAccountLifecycleStageTransitionResourceImpl
 			BaseAccountLifecycleStageTransitionResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1217756403
+// LIFERAY-REST-BUILDER-HASH:-583262791
