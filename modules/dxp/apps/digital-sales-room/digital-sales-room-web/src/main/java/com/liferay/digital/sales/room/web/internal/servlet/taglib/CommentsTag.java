@@ -219,9 +219,9 @@ public class CommentsTag extends IncludeTag {
 			"liferay-digital-sales-room-web:comments:getMentionUsersURL",
 			getMentionUsersURL);
 
-		long messageId = ParamUtil.getLong(httpServletRequest, "messageId");
-
 		String highlightedCommentId = null;
+
+		long messageId = ParamUtil.getLong(httpServletRequest, "messageId");
 
 		if (messageId > 0) {
 			highlightedCommentId = String.valueOf(messageId);
