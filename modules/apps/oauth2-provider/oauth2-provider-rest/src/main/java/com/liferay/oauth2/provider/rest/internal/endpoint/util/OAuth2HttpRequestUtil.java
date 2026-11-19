@@ -6,11 +6,16 @@
 package com.liferay.oauth2.provider.rest.internal.endpoint.util;
 
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.util.PortalUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.util.List;
+
 import org.apache.cxf.jaxrs.utils.JAXRSUtils;
 import org.apache.cxf.message.Message;
+import org.apache.cxf.rs.security.jose.jwt.JwtClaims;
+import org.apache.cxf.rs.security.jose.jwt.JwtConstants;
 import org.apache.cxf.transport.http.AbstractHTTPDestination;
 
 /**
@@ -39,6 +44,25 @@ public class OAuth2HttpRequestUtil {
 		}
 
 		return httpServletRequest.getRequestURI();
+	}
+
+	public static void putExpectedJWTAudience(
+		JwtClaims jwtClaims, Message message) {
+
+		HttpServletRequest httpServletRequest = getHttpServletRequest(message);
+
+		if (httpServletRequest == null) {
+			return;
+		}
+
+		String audience =
+			PortalUtil.getPortalURL(httpServletRequest) +
+				httpServletRequest.getRequestURI();
+		List<String> audiences = jwtClaims.getAudiences();
+
+		if (audiences.contains(audience)) {
+			message.put(JwtConstants.EXPECTED_CLAIM_AUDIENCE, audience);
+		}
 	}
 
 }

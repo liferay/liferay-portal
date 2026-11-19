@@ -219,6 +219,21 @@ public class LiferayJWTBearerAuthenticationHandler
 		}
 	}
 
+	@Override
+	protected void validateToken(JwtToken jwtToken) {
+		Message message = JAXRSUtils.getCurrentMessage();
+
+		try {
+			OAuth2HttpRequestUtil.putExpectedJWTAudience(
+				jwtToken.getClaims(), message);
+
+			super.validateToken(jwtToken);
+		}
+		finally {
+			message.remove(JwtConstants.EXPECTED_CLAIM_AUDIENCE);
+		}
+	}
+
 	private boolean _isUsingJWTAssertionForClientAuthentication(
 		HttpServletRequest httpServletRequest) {
 

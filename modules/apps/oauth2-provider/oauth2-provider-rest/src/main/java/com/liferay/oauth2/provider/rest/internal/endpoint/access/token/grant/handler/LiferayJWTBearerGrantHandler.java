@@ -34,6 +34,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.cxf.jaxrs.utils.JAXRSUtils;
+import org.apache.cxf.message.Message;
 import org.apache.cxf.rs.security.jose.jwa.SignatureAlgorithm;
 import org.apache.cxf.rs.security.jose.jwk.JsonWebKey;
 import org.apache.cxf.rs.security.jose.jwk.JsonWebKeys;
@@ -44,6 +46,7 @@ import org.apache.cxf.rs.security.jose.jws.JwsJwtCompactConsumer;
 import org.apache.cxf.rs.security.jose.jws.JwsSignatureVerifier;
 import org.apache.cxf.rs.security.jose.jws.JwsUtils;
 import org.apache.cxf.rs.security.jose.jwt.JwtClaims;
+import org.apache.cxf.rs.security.jose.jwt.JwtConstants;
 import org.apache.cxf.rs.security.jose.jwt.JwtToken;
 import org.apache.cxf.rs.security.oauth2.common.Client;
 import org.apache.cxf.rs.security.oauth2.common.ServerAccessToken;
@@ -290,7 +293,17 @@ public class LiferayJWTBearerGrantHandler extends BaseAccessTokenGrantHandler {
 					jwsJwtCompactConsumer.getUnsignedEncodedSequence(),
 					jwsJwtCompactConsumer.getDecodedSignature());
 
-				validateClaims(client, jwtClaims);
+				Message message = JAXRSUtils.getCurrentMessage();
+
+				try {
+					OAuth2HttpRequestUtil.putExpectedJWTAudience(
+						jwtClaims, message);
+
+					validateClaims(client, jwtClaims);
+				}
+				finally {
+					message.remove(JwtConstants.EXPECTED_CLAIM_AUDIENCE);
+				}
 
 				return doCreateAccessToken(
 					client,
