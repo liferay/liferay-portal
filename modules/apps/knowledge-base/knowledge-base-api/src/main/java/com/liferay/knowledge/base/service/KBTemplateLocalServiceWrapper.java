@@ -279,21 +279,6 @@ public class KBTemplateLocalServiceWrapper
 	}
 
 	@Override
-	public java.util.List<KBTemplate> getGroupKBTemplates(
-		long groupId, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<KBTemplate>
-			orderByComparator) {
-
-		return _kbTemplateLocalService.getGroupKBTemplates(
-			groupId, start, end, orderByComparator);
-	}
-
-	@Override
-	public int getGroupKBTemplatesCount(long groupId) {
-		return _kbTemplateLocalService.getGroupKBTemplatesCount(groupId);
-	}
-
-	@Override
 	public com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery
 		getIndexableActionableDynamicQuery() {
 
@@ -450,16 +435,6 @@ public class KBTemplateLocalServiceWrapper
 	}
 
 	@Override
-	public void updateKBTemplateResources(
-			KBTemplate kbTemplate, String[] groupPermissions,
-			String[] guestPermissions)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		_kbTemplateLocalService.updateKBTemplateResources(
-			kbTemplate, groupPermissions, guestPermissions);
-	}
-
-	@Override
 	public BasePersistence<?> getBasePersistence() {
 		return _kbTemplateLocalService.getBasePersistence();
 	}
@@ -499,4 +474,4 @@ public class KBTemplateLocalServiceWrapper
 	private KBTemplateLocalService _kbTemplateLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1852310273
+// LIFERAY-SERVICE-BUILDER-HASH:-1115154707

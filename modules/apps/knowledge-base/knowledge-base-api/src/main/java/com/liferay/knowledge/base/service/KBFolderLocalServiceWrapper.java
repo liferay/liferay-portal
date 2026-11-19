@@ -256,25 +256,6 @@ public class KBFolderLocalServiceWrapper
 	}
 
 	@Override
-	public KBFolder fetchFirstChildKBFolder(long groupId, long kbFolderId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _kbFolderLocalService.fetchFirstChildKBFolder(
-			groupId, kbFolderId);
-	}
-
-	@Override
-	public KBFolder fetchFirstChildKBFolder(
-			long groupId, long kbFolderId,
-			com.liferay.portal.kernel.util.OrderByComparator<KBFolder>
-				orderByComparator)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _kbFolderLocalService.fetchFirstChildKBFolder(
-			groupId, kbFolderId, orderByComparator);
-	}
-
-	@Override
 	public KBFolder fetchKBFolder(long kbFolderId) {
 		return _kbFolderLocalService.fetchKBFolder(kbFolderId);
 	}
@@ -622,4 +603,4 @@ public class KBFolderLocalServiceWrapper
 	private KBFolderLocalService _kbFolderLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1398529210
+// LIFERAY-SERVICE-BUILDER-HASH:207593611

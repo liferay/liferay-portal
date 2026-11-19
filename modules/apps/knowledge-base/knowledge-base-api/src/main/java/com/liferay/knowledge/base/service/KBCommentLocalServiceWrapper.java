@@ -125,13 +125,6 @@ public class KBCommentLocalServiceWrapper
 		return _kbCommentLocalService.deleteKBComment(kbCommentId);
 	}
 
-	@Override
-	public void deleteKBComments(String className, long classPK)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		_kbCommentLocalService.deleteKBComments(className, classPK);
-	}
-
 	/**
 	 * @throws PortalException
 	 */
@@ -595,4 +588,4 @@ public class KBCommentLocalServiceWrapper
 	private KBCommentLocalService _kbCommentLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1579949903
+// LIFERAY-SERVICE-BUILDER-HASH:-1289439867

@@ -285,10 +285,6 @@ public interface KBArticleLocalService
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public KBArticle fetchFirstChildKBArticle(
-		long groupId, long parentResourcePrimKey);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public KBArticle fetchKBArticle(long kbArticleId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -349,11 +345,6 @@ public interface KBArticleLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ExportActionableDynamicQuery getExportActionableDynamicQuery(
 		PortletDataContext portletDataContext);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<KBArticle> getGroupKBArticles(
-		long groupId, int status, int start, int end,
-		OrderByComparator<KBArticle> orderByComparator);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getGroupKBArticlesCount(long groupId, int status);
@@ -489,11 +480,6 @@ public interface KBArticleLocalService
 			long groupId, String externalReferenceCode)
 		throws PortalException;
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public KBArticle getLatestKBArticleByUrlTitle(
-			long groupId, long kbFolderId, String urlTitle, int status)
-		throws PortalException;
-
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -514,19 +500,6 @@ public interface KBArticleLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
 		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public KBArticle[] getPreviousAndNextKBArticles(long kbArticleId)
-		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<KBArticle> getSectionsKBArticles(
-		long groupId, String[] sections, int status, int start, int end,
-		OrderByComparator<KBArticle> orderByComparator);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getSectionsKBArticlesCount(
-		long groupId, String[] sections, int status);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public String[] getTempAttachmentNames(
@@ -637,11 +610,6 @@ public interface KBArticleLocalService
 			String[] assetTagNames, long[] assetLinkEntryIds)
 		throws PortalException;
 
-	public void updateKBArticleResources(
-			KBArticle kbArticle, String[] groupPermissions,
-			String[] guestPermissions)
-		throws PortalException;
-
 	public void updateKBArticlesPriorities(
 			Map<Long, Double> resourcePrimKeyToPriorityMap)
 		throws PortalException;
@@ -668,4 +636,4 @@ public interface KBArticleLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1585801828
+// LIFERAY-SERVICE-BUILDER-HASH:-949003460

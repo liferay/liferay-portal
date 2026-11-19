@@ -237,14 +237,6 @@ public interface KBTemplateLocalService
 		PortletDataContext portletDataContext);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<KBTemplate> getGroupKBTemplates(
-		long groupId, int start, int end,
-		OrderByComparator<KBTemplate> orderByComparator);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getGroupKBTemplatesCount(long groupId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
 
 	/**
@@ -356,11 +348,6 @@ public interface KBTemplateLocalService
 			ServiceContext serviceContext)
 		throws PortalException;
 
-	public void updateKBTemplateResources(
-			KBTemplate kbTemplate, String[] groupPermissions,
-			String[] guestPermissions)
-		throws PortalException;
-
 	@Override
 	@Transactional(enabled = false)
 	public CTPersistence<KBTemplate> getCTPersistence();
@@ -377,4 +364,4 @@ public interface KBTemplateLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2051288966
+// LIFERAY-SERVICE-BUILDER-HASH:-469364853

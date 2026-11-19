@@ -331,13 +331,6 @@ public class KBArticleLocalServiceUtil {
 			userId, resourcePrimKey, serviceContext);
 	}
 
-	public static KBArticle fetchFirstChildKBArticle(
-		long groupId, long parentResourcePrimKey) {
-
-		return getService().fetchFirstChildKBArticle(
-			groupId, parentResourcePrimKey);
-	}
-
 	public static KBArticle fetchKBArticle(long kbArticleId) {
 		return getService().fetchKBArticle(kbArticleId);
 	}
@@ -441,14 +434,6 @@ public class KBArticleLocalServiceUtil {
 				portletDataContext) {
 
 		return getService().getExportActionableDynamicQuery(portletDataContext);
-	}
-
-	public static List<KBArticle> getGroupKBArticles(
-		long groupId, int status, int start, int end,
-		OrderByComparator<KBArticle> orderByComparator) {
-
-		return getService().getGroupKBArticles(
-			groupId, status, start, end, orderByComparator);
 	}
 
 	public static int getGroupKBArticlesCount(long groupId, int status) {
@@ -640,14 +625,6 @@ public class KBArticleLocalServiceUtil {
 			groupId, externalReferenceCode);
 	}
 
-	public static KBArticle getLatestKBArticleByUrlTitle(
-			long groupId, long kbFolderId, String urlTitle, int status)
-		throws PortalException {
-
-		return getService().getLatestKBArticleByUrlTitle(
-			groupId, kbFolderId, urlTitle, status);
-	}
-
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -671,27 +648,6 @@ public class KBArticleLocalServiceUtil {
 		throws PortalException {
 
 		return getService().getPersistedModel(primaryKeyObj);
-	}
-
-	public static KBArticle[] getPreviousAndNextKBArticles(long kbArticleId)
-		throws PortalException {
-
-		return getService().getPreviousAndNextKBArticles(kbArticleId);
-	}
-
-	public static List<KBArticle> getSectionsKBArticles(
-		long groupId, String[] sections, int status, int start, int end,
-		OrderByComparator<KBArticle> orderByComparator) {
-
-		return getService().getSectionsKBArticles(
-			groupId, sections, status, start, end, orderByComparator);
-	}
-
-	public static int getSectionsKBArticlesCount(
-		long groupId, String[] sections, int status) {
-
-		return getService().getSectionsKBArticlesCount(
-			groupId, sections, status);
 	}
 
 	public static String[] getTempAttachmentNames(
@@ -890,15 +846,6 @@ public class KBArticleLocalServiceUtil {
 			assetLinkEntryIds);
 	}
 
-	public static void updateKBArticleResources(
-			KBArticle kbArticle, String[] groupPermissions,
-			String[] guestPermissions)
-		throws PortalException {
-
-		getService().updateKBArticleResources(
-			kbArticle, groupPermissions, guestPermissions);
-	}
-
 	public static void updateKBArticlesPriorities(
 			Map<Long, Double> resourcePrimKeyToPriorityMap)
 		throws PortalException {
@@ -928,4 +875,4 @@ public class KBArticleLocalServiceUtil {
 			KBArticleLocalServiceUtil.class, KBArticleLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:832520171
+// LIFERAY-SERVICE-BUILDER-HASH:1971033582

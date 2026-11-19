@@ -124,12 +124,6 @@ public class KBCommentLocalServiceUtil {
 		return getService().deleteKBComment(kbCommentId);
 	}
 
-	public static void deleteKBComments(String className, long classPK)
-		throws PortalException {
-
-		getService().deleteKBComments(className, classPK);
-	}
-
 	/**
 	 * @throws PortalException
 	 */
@@ -510,4 +504,4 @@ public class KBCommentLocalServiceUtil {
 			KBCommentLocalServiceUtil.class, KBCommentLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1980892276
+// LIFERAY-SERVICE-BUILDER-HASH:-433843822

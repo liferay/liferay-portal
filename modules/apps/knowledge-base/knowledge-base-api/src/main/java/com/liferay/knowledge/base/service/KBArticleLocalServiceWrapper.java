@@ -366,14 +366,6 @@ public class KBArticleLocalServiceWrapper
 	}
 
 	@Override
-	public KBArticle fetchFirstChildKBArticle(
-		long groupId, long parentResourcePrimKey) {
-
-		return _kbArticleLocalService.fetchFirstChildKBArticle(
-			groupId, parentResourcePrimKey);
-	}
-
-	@Override
 	public KBArticle fetchKBArticle(long kbArticleId) {
 		return _kbArticleLocalService.fetchKBArticle(kbArticleId);
 	}
@@ -493,16 +485,6 @@ public class KBArticleLocalServiceWrapper
 
 		return _kbArticleLocalService.getExportActionableDynamicQuery(
 			portletDataContext);
-	}
-
-	@Override
-	public java.util.List<KBArticle> getGroupKBArticles(
-		long groupId, int status, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<KBArticle>
-			orderByComparator) {
-
-		return _kbArticleLocalService.getGroupKBArticles(
-			groupId, status, start, end, orderByComparator);
 	}
 
 	@Override
@@ -721,15 +703,6 @@ public class KBArticleLocalServiceWrapper
 			groupId, externalReferenceCode);
 	}
 
-	@Override
-	public KBArticle getLatestKBArticleByUrlTitle(
-			long groupId, long kbFolderId, String urlTitle, int status)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _kbArticleLocalService.getLatestKBArticleByUrlTitle(
-			groupId, kbFolderId, urlTitle, status);
-	}
-
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -758,31 +731,6 @@ public class KBArticleLocalServiceWrapper
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _kbArticleLocalService.getPersistedModel(primaryKeyObj);
-	}
-
-	@Override
-	public KBArticle[] getPreviousAndNextKBArticles(long kbArticleId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _kbArticleLocalService.getPreviousAndNextKBArticles(kbArticleId);
-	}
-
-	@Override
-	public java.util.List<KBArticle> getSectionsKBArticles(
-		long groupId, String[] sections, int status, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<KBArticle>
-			orderByComparator) {
-
-		return _kbArticleLocalService.getSectionsKBArticles(
-			groupId, sections, status, start, end, orderByComparator);
-	}
-
-	@Override
-	public int getSectionsKBArticlesCount(
-		long groupId, String[] sections, int status) {
-
-		return _kbArticleLocalService.getSectionsKBArticlesCount(
-			groupId, sections, status);
 	}
 
 	@Override
@@ -1011,16 +959,6 @@ public class KBArticleLocalServiceWrapper
 	}
 
 	@Override
-	public void updateKBArticleResources(
-			KBArticle kbArticle, String[] groupPermissions,
-			String[] guestPermissions)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		_kbArticleLocalService.updateKBArticleResources(
-			kbArticle, groupPermissions, guestPermissions);
-	}
-
-	@Override
 	public void updateKBArticlesPriorities(
 			java.util.Map<Long, Double> resourcePrimKeyToPriorityMap)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -1081,4 +1019,4 @@ public class KBArticleLocalServiceWrapper
 	private KBArticleLocalService _kbArticleLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1189730527
+// LIFERAY-SERVICE-BUILDER-HASH:-1552892333

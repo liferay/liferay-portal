@@ -219,16 +219,6 @@ public interface KBFolderLocalService
 		DynamicQuery dynamicQuery, Projection projection);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public KBFolder fetchFirstChildKBFolder(long groupId, long kbFolderId)
-		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public KBFolder fetchFirstChildKBFolder(
-			long groupId, long kbFolderId,
-			OrderByComparator<KBFolder> orderByComparator)
-		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public KBFolder fetchKBFolder(long kbFolderId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -435,4 +425,4 @@ public interface KBFolderLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1585547994
+// LIFERAY-SERVICE-BUILDER-HASH:-1829498509

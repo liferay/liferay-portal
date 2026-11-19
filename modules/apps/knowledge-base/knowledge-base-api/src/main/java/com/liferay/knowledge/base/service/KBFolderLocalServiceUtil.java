@@ -230,22 +230,6 @@ public class KBFolderLocalServiceUtil {
 		return getService().dynamicQueryCount(dynamicQuery, projection);
 	}
 
-	public static KBFolder fetchFirstChildKBFolder(
-			long groupId, long kbFolderId)
-		throws PortalException {
-
-		return getService().fetchFirstChildKBFolder(groupId, kbFolderId);
-	}
-
-	public static KBFolder fetchFirstChildKBFolder(
-			long groupId, long kbFolderId,
-			OrderByComparator<KBFolder> orderByComparator)
-		throws PortalException {
-
-		return getService().fetchFirstChildKBFolder(
-			groupId, kbFolderId, orderByComparator);
-	}
-
 	public static KBFolder fetchKBFolder(long kbFolderId) {
 		return getService().fetchKBFolder(kbFolderId);
 	}
@@ -530,4 +514,4 @@ public class KBFolderLocalServiceUtil {
 			KBFolderLocalServiceUtil.class, KBFolderLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-140310027
+// LIFERAY-SERVICE-BUILDER-HASH:416895548

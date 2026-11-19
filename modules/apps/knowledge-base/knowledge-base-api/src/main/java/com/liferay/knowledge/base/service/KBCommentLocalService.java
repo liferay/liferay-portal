@@ -131,9 +131,6 @@ public interface KBCommentLocalService
 	@Indexable(type = IndexableType.DELETE)
 	public KBComment deleteKBComment(long kbCommentId) throws PortalException;
 
-	public void deleteKBComments(String className, long classPK)
-		throws PortalException;
-
 	/**
 	 * @throws PortalException
 	 */
@@ -420,4 +417,4 @@ public interface KBCommentLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1344313609
+// LIFERAY-SERVICE-BUILDER-HASH:-724335475
