@@ -64,24 +64,6 @@ public class CommerceTaxMethodLocalServiceWrapper
 	}
 
 	/**
-	 * @deprecated As of Athanasius (7.3.x)
-	 */
-	@Deprecated
-	@Override
-	public com.liferay.commerce.tax.model.CommerceTaxMethod
-			addCommerceTaxMethod(
-				java.util.Map<java.util.Locale, String> nameMap,
-				java.util.Map<java.util.Locale, String> descriptionMap,
-				String engineKey, boolean percentage, boolean active,
-				com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _commerceTaxMethodLocalService.addCommerceTaxMethod(
-			nameMap, descriptionMap, engineKey, percentage, active,
-			serviceContext);
-	}
-
-	/**
 	 * Creates a new commerce tax method with the primary key. Does not add the commerce tax method to the database.
 	 *
 	 * @param commerceTaxMethodId the primary key for the new commerce tax method
@@ -328,13 +310,6 @@ public class CommerceTaxMethodLocalServiceWrapper
 
 	@Override
 	public java.util.List<com.liferay.commerce.tax.model.CommerceTaxMethod>
-		getCommerceTaxMethods(long groupId) {
-
-		return _commerceTaxMethodLocalService.getCommerceTaxMethods(groupId);
-	}
-
-	@Override
-	public java.util.List<com.liferay.commerce.tax.model.CommerceTaxMethod>
 		getCommerceTaxMethods(long groupId, boolean active) {
 
 		return _commerceTaxMethodLocalService.getCommerceTaxMethods(
@@ -349,12 +324,6 @@ public class CommerceTaxMethodLocalServiceWrapper
 	@Override
 	public int getCommerceTaxMethodsCount() {
 		return _commerceTaxMethodLocalService.getCommerceTaxMethodsCount();
-	}
-
-	@Override
-	public int getCommerceTaxMethodsCount(long groupId, boolean active) {
-		return _commerceTaxMethodLocalService.getCommerceTaxMethodsCount(
-			groupId, active);
 	}
 
 	@Override
@@ -448,4 +417,4 @@ public class CommerceTaxMethodLocalServiceWrapper
 	private CommerceTaxMethodLocalService _commerceTaxMethodLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1765129663
+// LIFERAY-SERVICE-BUILDER-HASH:1078499951

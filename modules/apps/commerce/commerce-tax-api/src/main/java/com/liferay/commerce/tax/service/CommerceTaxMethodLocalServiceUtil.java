@@ -66,22 +66,6 @@ public class CommerceTaxMethodLocalServiceUtil {
 	}
 
 	/**
-	 * @deprecated As of Athanasius (7.3.x)
-	 */
-	@Deprecated
-	public static CommerceTaxMethod addCommerceTaxMethod(
-			Map<java.util.Locale, String> nameMap,
-			Map<java.util.Locale, String> descriptionMap, String engineKey,
-			boolean percentage, boolean active,
-			com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws PortalException {
-
-		return getService().addCommerceTaxMethod(
-			nameMap, descriptionMap, engineKey, percentage, active,
-			serviceContext);
-	}
-
-	/**
 	 * Creates a new commerce tax method with the primary key. Does not add the commerce tax method to the database.
 	 *
 	 * @param commerceTaxMethodId the primary key for the new commerce tax method
@@ -287,10 +271,6 @@ public class CommerceTaxMethodLocalServiceUtil {
 		return getService().getCommerceTaxMethods(start, end);
 	}
 
-	public static List<CommerceTaxMethod> getCommerceTaxMethods(long groupId) {
-		return getService().getCommerceTaxMethods(groupId);
-	}
-
 	public static List<CommerceTaxMethod> getCommerceTaxMethods(
 		long groupId, boolean active) {
 
@@ -304,10 +284,6 @@ public class CommerceTaxMethodLocalServiceUtil {
 	 */
 	public static int getCommerceTaxMethodsCount() {
 		return getService().getCommerceTaxMethodsCount();
-	}
-
-	public static int getCommerceTaxMethodsCount(long groupId, boolean active) {
-		return getService().getCommerceTaxMethodsCount(groupId, active);
 	}
 
 	public static
@@ -378,4 +354,4 @@ public class CommerceTaxMethodLocalServiceUtil {
 			CommerceTaxMethodLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-322908705
+// LIFERAY-SERVICE-BUILDER-HASH:1494639020

@@ -18,7 +18,6 @@ import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.service.BaseLocalService;
 import com.liferay.portal.kernel.service.PersistedModelLocalService;
-import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
@@ -74,16 +73,6 @@ public interface CommerceTaxMethodLocalService
 			long userId, long groupId, Map<Locale, String> nameMap,
 			Map<Locale, String> descriptionMap, String engineKey,
 			boolean percentage, boolean active)
-		throws PortalException;
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x)
-	 */
-	@Deprecated
-	public CommerceTaxMethod addCommerceTaxMethod(
-			Map<Locale, String> nameMap, Map<Locale, String> descriptionMap,
-			String engineKey, boolean percentage, boolean active,
-			ServiceContext serviceContext)
 		throws PortalException;
 
 	/**
@@ -247,9 +236,6 @@ public interface CommerceTaxMethodLocalService
 	public List<CommerceTaxMethod> getCommerceTaxMethods(int start, int end);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CommerceTaxMethod> getCommerceTaxMethods(long groupId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CommerceTaxMethod> getCommerceTaxMethods(
 		long groupId, boolean active);
 
@@ -260,9 +246,6 @@ public interface CommerceTaxMethodLocalService
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getCommerceTaxMethodsCount();
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCommerceTaxMethodsCount(long groupId, boolean active);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
@@ -306,4 +289,4 @@ public interface CommerceTaxMethodLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:934975460
+// LIFERAY-SERVICE-BUILDER-HASH:-1146265788
