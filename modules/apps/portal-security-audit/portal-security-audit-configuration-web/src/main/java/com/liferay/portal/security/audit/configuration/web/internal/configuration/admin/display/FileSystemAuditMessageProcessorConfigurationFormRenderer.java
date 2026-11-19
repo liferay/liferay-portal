@@ -5,16 +5,17 @@
 
 package com.liferay.portal.security.audit.configuration.web.internal.configuration.admin.display;
 
+import com.liferay.configuration.admin.constants.ConfigurationAdminPortletKeys;
 import com.liferay.configuration.admin.display.ConfigurationFormRenderer;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.security.audit.configuration.web.internal.display.context.FileSystemAuditMessageProcessorConfigurationDisplayContext;
 import com.liferay.portal.security.audit.configuration.web.internal.util.AuditConfigurationOverrideUtil;
-import com.liferay.portal.security.audit.configuration.web.internal.util.AuditConfigurationScopeUtil;
 import com.liferay.portal.security.audit.router.configuration.FileSystemAuditMessageProcessorConfiguration;
 
 import jakarta.servlet.RequestDispatcher;
@@ -48,9 +49,7 @@ public class FileSystemAuditMessageProcessorConfigurationFormRenderer
 
 		Map<String, Object> requestParameters = new HashMap<>();
 
-		boolean systemScope = AuditConfigurationScopeUtil.isSystemScope(
-			httpServletRequest);
-
+		boolean systemScope = _isSystemScope(httpServletRequest);
 		ThemeDisplay themeDisplay =
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
@@ -105,11 +104,6 @@ public class FileSystemAuditMessageProcessorConfigurationFormRenderer
 		throws IOException {
 
 		try {
-			RequestDispatcher requestDispatcher =
-				_servletContext.getRequestDispatcher(
-					"/configuration/file_system_audit_message_processor" +
-						"_configuration.jsp");
-
 			ThemeDisplay themeDisplay =
 				(ThemeDisplay)httpServletRequest.getAttribute(
 					WebKeys.THEME_DISPLAY);
@@ -120,8 +114,12 @@ public class FileSystemAuditMessageProcessorConfigurationFormRenderer
 				new FileSystemAuditMessageProcessorConfigurationDisplayContext(
 					_getFileSystemAuditMessageProcessorConfiguration(
 						themeDisplay.getCompanyId(),
-						AuditConfigurationScopeUtil.isSystemScope(
-							httpServletRequest))));
+						_isSystemScope(httpServletRequest))));
+
+			RequestDispatcher requestDispatcher =
+				_servletContext.getRequestDispatcher(
+					"/configuration/file_system_audit_message_processor" +
+						"_configuration.jsp");
 
 			requestDispatcher.include(httpServletRequest, httpServletResponse);
 		}
@@ -154,6 +152,11 @@ public class FileSystemAuditMessageProcessorConfigurationFormRenderer
 	private boolean _isOverridden(String key) {
 		return AuditConfigurationOverrideUtil.isOverridden(
 			FileSystemAuditMessageProcessorConfiguration.class, key);
+	}
+
+	private boolean _isSystemScope(HttpServletRequest httpServletRequest) {
+		return ConfigurationAdminPortletKeys.SYSTEM_SETTINGS.equals(
+			PortalUtil.getPortletId(httpServletRequest));
 	}
 
 	@Reference

@@ -5,6 +5,7 @@
 
 package com.liferay.portal.security.audit.configuration.web.internal.configuration.admin.display;
 
+import com.liferay.configuration.admin.constants.ConfigurationAdminPortletKeys;
 import com.liferay.configuration.admin.display.ConfigurationFormRenderer;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
@@ -15,11 +16,11 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.security.audit.configuration.AuditConfiguration;
 import com.liferay.portal.security.audit.configuration.web.internal.display.context.AuditConfigurationDisplayContext;
 import com.liferay.portal.security.audit.configuration.web.internal.util.AuditConfigurationOverrideUtil;
-import com.liferay.portal.security.audit.configuration.web.internal.util.AuditConfigurationScopeUtil;
 import com.liferay.portal.security.audit.configuration.web.internal.util.AuditConfigurationThreadLocal;
 import com.liferay.portal.security.audit.event.generators.constants.EventTypes;
 
@@ -54,30 +55,28 @@ public class AuditConfigurationFormRenderer
 
 		Map<String, Object> requestParameters = new HashMap<>();
 
-		boolean systemScope = AuditConfigurationScopeUtil.isSystemScope(
-			httpServletRequest);
-
+		boolean systemScope = _isSystemScope(httpServletRequest);
 		ThemeDisplay themeDisplay =
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
 
-		if (!systemScope) {
-			FeatureFlagManagerUtil.checkEnabled(
-				themeDisplay.getCompanyId(), "LPD-6417");
-		}
-
 		AuditConfiguration auditConfiguration = _getAuditConfiguration(
 			themeDisplay.getCompanyId(), systemScope);
 
-		if (systemScope &&
-			!AuditConfigurationOverrideUtil.isOverridden(
-				AuditConfiguration.class, "enabled")) {
+		if (systemScope) {
+			if (!AuditConfigurationOverrideUtil.isOverridden(
+					AuditConfiguration.class, "enabled")) {
 
-			requestParameters.put(
-				"enabled",
-				ParamUtil.getBoolean(
-					httpServletRequest, "enabled",
-					auditConfiguration.enabled()));
+				requestParameters.put(
+					"enabled",
+					ParamUtil.getBoolean(
+						httpServletRequest, "enabled",
+						auditConfiguration.enabled()));
+			}
+		}
+		else {
+			FeatureFlagManagerUtil.checkEnabled(
+				themeDisplay.getCompanyId(), "LPD-6417");
 		}
 
 		if (FeatureFlagManagerUtil.isEnabled(
@@ -114,13 +113,7 @@ public class AuditConfigurationFormRenderer
 		throws IOException {
 
 		try {
-			RequestDispatcher requestDispatcher =
-				_servletContext.getRequestDispatcher(
-					"/configuration/audit_configuration.jsp");
-
-			boolean systemScope = AuditConfigurationScopeUtil.isSystemScope(
-				httpServletRequest);
-
+			boolean systemScope = _isSystemScope(httpServletRequest);
 			ThemeDisplay themeDisplay =
 				(ThemeDisplay)httpServletRequest.getAttribute(
 					WebKeys.THEME_DISPLAY);
@@ -131,6 +124,10 @@ public class AuditConfigurationFormRenderer
 					_getAuditConfiguration(
 						themeDisplay.getCompanyId(), systemScope),
 					systemScope));
+
+			RequestDispatcher requestDispatcher =
+				_servletContext.getRequestDispatcher(
+					"/configuration/audit_configuration.jsp");
 
 			requestDispatcher.include(httpServletRequest, httpServletResponse);
 		}
@@ -179,6 +176,11 @@ public class AuditConfigurationFormRenderer
 			AuditConfiguration.class.getName(),
 			String.valueOf(themeDisplay.getCompanyId()),
 			EventTypes.AUDIT_CONFIG_CHANGE, null);
+	}
+
+	private boolean _isSystemScope(HttpServletRequest httpServletRequest) {
+		return ConfigurationAdminPortletKeys.SYSTEM_SETTINGS.equals(
+			PortalUtil.getPortletId(httpServletRequest));
 	}
 
 	@Reference
