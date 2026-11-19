@@ -38,9 +38,16 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
@@ -165,6 +172,7 @@ public class ScheduledPublishProcessResourceTest
 			scheduledPublishProcess.getName(), publishProcessRequest.getName());
 
 		_testGetSiteScheduledPublishProcessWithRemoteStaging();
+		_testGetSiteScheduledPublishProcessWithViewStagingPermission();
 	}
 
 	@Override
@@ -488,6 +496,71 @@ public class ScheduledPublishProcessResourceTest
 					Long.valueOf(remoteLiveGroup.getGroupId()),
 					remoteConnection.getSiteId());
 			});
+	}
+
+	private void _testGetSiteScheduledPublishProcessWithViewStagingPermission()
+		throws Exception {
+
+		String password = RandomTestUtil.randomString();
+
+		User user = UserTestUtil.addUser(testCompany, password);
+
+		_userLocalService.addGroupUsers(
+			testGroup.getGroupId(), new long[] {user.getUserId()});
+
+		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		_userLocalService.addRoleUser(role.getRoleId(), user.getUserId());
+
+		RoleTestUtil.addResourcePermission(
+			role, Group.class.getName(), ResourceConstants.SCOPE_GROUP,
+			String.valueOf(testGroup.getGroupId()), ActionKeys.VIEW_STAGING);
+
+		String externalReferenceCode = testGroup.getExternalReferenceCode();
+
+		ScheduledPublishProcess scheduledPublishProcess =
+			_addScheduledPublishProcess(
+				externalReferenceCode, RandomTestUtil.randomString());
+
+		ScheduledPublishProcessResource scheduledPublishProcessResource =
+			ScheduledPublishProcessResource.builder(
+			).authentication(
+				user.getEmailAddress(), password
+			).endpoint(
+				testCompany.getVirtualHostname(),
+				PortalUtil.getPortalServerPort(false), "http"
+			).locale(
+				LocaleUtil.getDefault()
+			).build();
+
+		assertHttpResponseStatusCode(
+			200,
+			scheduledPublishProcessResource.
+				getSiteScheduledPublishProcessHttpResponse(
+					externalReferenceCode, scheduledPublishProcess.getId()));
+		assertHttpResponseStatusCode(
+			200,
+			scheduledPublishProcessResource.
+				getSiteScheduledPublishProcessesPageHttpResponse(
+					externalReferenceCode, null, Pagination.of(1, 10), null));
+
+		assertHttpResponseStatusCode(
+			403,
+			scheduledPublishProcessResource.
+				deleteSiteScheduledPublishProcessHttpResponse(
+					externalReferenceCode, scheduledPublishProcess.getId()));
+		assertHttpResponseStatusCode(
+			403,
+			scheduledPublishProcessResource.
+				postSiteScheduledPublishProcessHttpResponse(
+					externalReferenceCode,
+					new ScheduledPublishProcessRequest() {
+						{
+							cronExpression = _CRON_EXPRESSION;
+							publishProcessRequest = _toPublishProcessRequest(
+								RandomTestUtil.randomString());
+						}
+					}));
 	}
 
 	private void _testPostSiteScheduledPublishProcessWithDateFilter()
@@ -884,5 +957,8 @@ public class ScheduledPublishProcessResourceTest
 
 	@Inject
 	private JSONFactory _jsonFactory;
+
+	@Inject
+	private UserLocalService _userLocalService;
 
 }

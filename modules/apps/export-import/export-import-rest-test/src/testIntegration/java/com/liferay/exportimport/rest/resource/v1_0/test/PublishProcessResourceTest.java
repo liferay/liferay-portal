@@ -139,6 +139,16 @@ public class PublishProcessResourceTest
 		).locale(
 			LocaleUtil.getDefault()
 		).build();
+
+		_reportEntryResource = ReportEntryResource.builder(
+		).authentication(
+			_user.getEmailAddress(), password
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).build();
 	}
 
 	@After
@@ -156,6 +166,7 @@ public class PublishProcessResourceTest
 
 		_testGetPublishProcessErrorMessageWhenStatusIsSuccessful();
 		_testGetPublishProcessErrorMessageWhenStatusMessageIsNotJSON();
+		_testGetPublishProcessWithViewStagingPermission();
 	}
 
 	@Override
@@ -449,6 +460,94 @@ public class PublishProcessResourceTest
 		Assert.assertFalse(errorMessage, errorMessage.contains(".java:"));
 		Assert.assertFalse(errorMessage, errorMessage.contains("\tat "));
 		Assert.assertFalse(errorMessage, errorMessage.contains("java.lang."));
+	}
+
+	private void _testGetPublishProcessWithViewStagingPermission()
+		throws Exception {
+
+		String password = RandomTestUtil.randomString();
+
+		User user = UserTestUtil.addUser(testCompany, password);
+
+		_userLocalService.addGroupUsers(
+			testGroup.getGroupId(), new long[] {user.getUserId()});
+
+		String externalReferenceCode = testGroup.getExternalReferenceCode();
+
+		PublishProcess publishProcess = _addPublishProcess(
+			externalReferenceCode, RandomTestUtil.randomString());
+
+		PublishProcessResource publishProcessResource =
+			PublishProcessResource.builder(
+			).authentication(
+				user.getEmailAddress(), password
+			).endpoint(
+				testCompany.getVirtualHostname(),
+				PortalUtil.getPortalServerPort(false), "http"
+			).locale(
+				LocaleUtil.getDefault()
+			).build();
+
+		assertHttpResponseStatusCode(
+			404,
+			publishProcessResource.getPublishProcessHttpResponse(
+				publishProcess.getId()));
+
+		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		_userLocalService.addRoleUser(role.getRoleId(), user.getUserId());
+
+		RoleTestUtil.addResourcePermission(
+			role, Group.class.getName(), ResourceConstants.SCOPE_GROUP,
+			String.valueOf(testGroup.getGroupId()), ActionKeys.VIEW_STAGING);
+
+		assertHttpResponseStatusCode(
+			200,
+			publishProcessResource.getPublishProcessHttpResponse(
+				publishProcess.getId()));
+		assertHttpResponseStatusCode(
+			200,
+			publishProcessResource.getPublishProcessProgressHttpResponse(
+				publishProcess.getId()));
+		assertHttpResponseStatusCode(
+			200,
+			publishProcessResource.getSitePublishProcessesPageHttpResponse(
+				externalReferenceCode, null, null, null, null, null,
+				Pagination.of(1, 10), null));
+
+		ReportEntryResource reportEntryResource = ReportEntryResource.builder(
+		).authentication(
+			user.getEmailAddress(), password
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).build();
+
+		assertHttpResponseStatusCode(
+			200,
+			reportEntryResource.getPublishProcessReportEntriesPageHttpResponse(
+				publishProcess.getId(), null, null, Pagination.of(1, 10),
+				null));
+
+		assertHttpResponseStatusCode(
+			403,
+			publishProcessResource.deletePublishProcessHttpResponse(
+				publishProcess.getId()));
+		assertHttpResponseStatusCode(
+			403,
+			publishProcessResource.postPublishProcessRelaunchHttpResponse(
+				publishProcess.getId()));
+		assertHttpResponseStatusCode(
+			403,
+			publishProcessResource.postSitePublishProcessHttpResponse(
+				externalReferenceCode, null, null,
+				new PublishProcessRequest() {
+					{
+						name = RandomTestUtil.randomString();
+					}
+				}));
 	}
 
 	private void _testGetSitePublishProcessesPageWithPortlet()
@@ -901,6 +1000,11 @@ public class PublishProcessResourceTest
 				externalReferenceCode, null, BlogsPortletKeys.BLOGS, null,
 				layout.getExternalReferenceCode(), null, Pagination.of(1, 10),
 				null));
+		assertHttpResponseStatusCode(
+			404,
+			_reportEntryResource.getPublishProcessReportEntriesPageHttpResponse(
+				publishProcess.getId(), null, null, Pagination.of(1, 10),
+				null));
 
 		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
 
@@ -922,6 +1026,11 @@ public class PublishProcessResourceTest
 			_publishProcessResource.postSitePublishProcessHttpResponse(
 				externalReferenceCode, BlogsPortletKeys.BLOGS,
 				layout.getExternalReferenceCode(), publishProcessRequest));
+		assertHttpResponseStatusCode(
+			200,
+			_reportEntryResource.getPublishProcessReportEntriesPageHttpResponse(
+				publishProcess.getId(), null, null, Pagination.of(1, 10),
+				null));
 		assertHttpResponseStatusCode(
 			403,
 			_publishProcessResource.postSitePublishProcessHttpResponse(
@@ -1528,6 +1637,7 @@ public class PublishProcessResourceTest
 
 	private PublishPreviewResource _publishPreviewResource;
 	private PublishProcessResource _publishProcessResource;
+	private ReportEntryResource _reportEntryResource;
 
 	@Inject
 	private Staging _staging;
