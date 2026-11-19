@@ -732,14 +732,6 @@ public class CommercePriceListLocalServiceWrapper
 	}
 
 	@Override
-	public int getCommercePriceListsCount(
-		long[] groupIds, long companyId, int status) {
-
-		return _commercePriceListLocalService.getCommercePriceListsCount(
-			groupIds, companyId, status);
-	}
-
-	@Override
 	public com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery
 		getExportActionableDynamicQuery(
 			com.liferay.exportimport.kernel.lar.PortletDataContext
@@ -786,13 +778,6 @@ public class CommercePriceListLocalServiceWrapper
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _commercePriceListLocalService.getPersistedModel(primaryKeyObj);
-	}
-
-	@Override
-	public com.liferay.portal.kernel.search.Hits search(
-		com.liferay.portal.kernel.search.SearchContext searchContext) {
-
-		return _commercePriceListLocalService.search(searchContext);
 	}
 
 	@Override
@@ -933,4 +918,4 @@ public class CommercePriceListLocalServiceWrapper
 	private CommercePriceListLocalService _commercePriceListLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-276696647
+// LIFERAY-SERVICE-BUILDER-HASH:-1214174752

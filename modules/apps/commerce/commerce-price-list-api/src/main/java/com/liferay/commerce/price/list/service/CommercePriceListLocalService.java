@@ -19,10 +19,8 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.model.PersistedModel;
 import com.liferay.portal.kernel.search.BaseModelSearchResult;
-import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
-import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.BaseLocalService;
 import com.liferay.portal.kernel.service.PersistedModelLocalService;
@@ -495,10 +493,6 @@ public interface CommercePriceListLocalService
 	public int getCommercePriceListsCount();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCommercePriceListsCount(
-		long[] groupIds, long companyId, int status);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ExportActionableDynamicQuery getExportActionableDynamicQuery(
 		PortletDataContext portletDataContext);
 
@@ -525,9 +519,6 @@ public interface CommercePriceListLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
 		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public Hits search(SearchContext searchContext);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public BaseModelSearchResult<CommercePriceList> searchCommercePriceLists(
@@ -603,4 +594,4 @@ public interface CommercePriceListLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1543157920
+// LIFERAY-SERVICE-BUILDER-HASH:1190684172

@@ -53,31 +53,6 @@ public class CommerceTierPriceEntryLocalServiceWrapper
 
 	@Override
 	public CommerceTierPriceEntry addCommerceTierPriceEntry(
-			long commercePriceEntryId, java.math.BigDecimal price,
-			java.math.BigDecimal promoPrice, java.math.BigDecimal minQuantity,
-			com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _commerceTierPriceEntryLocalService.addCommerceTierPriceEntry(
-			commercePriceEntryId, price, promoPrice, minQuantity,
-			serviceContext);
-	}
-
-	@Override
-	public CommerceTierPriceEntry addCommerceTierPriceEntry(
-			long commercePriceEntryId, java.math.BigDecimal price,
-			java.math.BigDecimal promoPrice, boolean bulkPricing,
-			java.math.BigDecimal minQuantity,
-			com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _commerceTierPriceEntryLocalService.addCommerceTierPriceEntry(
-			commercePriceEntryId, price, promoPrice, bulkPricing, minQuantity,
-			serviceContext);
-	}
-
-	@Override
-	public CommerceTierPriceEntry addCommerceTierPriceEntry(
 			String externalReferenceCode, long commercePriceEntryId,
 			java.math.BigDecimal price, java.math.BigDecimal promoPrice,
 			java.math.BigDecimal minQuantity, boolean bulkPricing,
@@ -101,19 +76,6 @@ public class CommerceTierPriceEntryLocalServiceWrapper
 			expirationDateMonth, expirationDateDay, expirationDateYear,
 			expirationDateHour, expirationDateMinute, neverExpire,
 			serviceContext);
-	}
-
-	@Override
-	public CommerceTierPriceEntry addCommerceTierPriceEntry(
-			String externalReferenceCode, long commercePriceEntryId,
-			java.math.BigDecimal price, java.math.BigDecimal promoPrice,
-			java.math.BigDecimal minQuantity,
-			com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _commerceTierPriceEntryLocalService.addCommerceTierPriceEntry(
-			externalReferenceCode, commercePriceEntryId, price, promoPrice,
-			minQuantity, serviceContext);
 	}
 
 	@Override
@@ -538,14 +500,6 @@ public class CommerceTierPriceEntryLocalServiceWrapper
 
 	@Override
 	public java.util.List<CommerceTierPriceEntry> getCommerceTierPriceEntries(
-		long commercePriceEntryId, int start, int end) {
-
-		return _commerceTierPriceEntryLocalService.getCommerceTierPriceEntries(
-			commercePriceEntryId, start, end);
-	}
-
-	@Override
-	public java.util.List<CommerceTierPriceEntry> getCommerceTierPriceEntries(
 		long commercePriceEntryId, int start, int end,
 		com.liferay.portal.kernel.util.OrderByComparator<CommerceTierPriceEntry>
 			orderByComparator) {
@@ -563,12 +517,6 @@ public class CommerceTierPriceEntryLocalServiceWrapper
 	public int getCommerceTierPriceEntriesCount() {
 		return _commerceTierPriceEntryLocalService.
 			getCommerceTierPriceEntriesCount();
-	}
-
-	@Override
-	public int getCommerceTierPriceEntriesCountByCompanyId(long companyId) {
-		return _commerceTierPriceEntryLocalService.
-			getCommerceTierPriceEntriesCountByCompanyId(companyId);
 	}
 
 	/**
@@ -656,13 +604,6 @@ public class CommerceTierPriceEntryLocalServiceWrapper
 	}
 
 	@Override
-	public com.liferay.portal.kernel.search.Hits search(
-		com.liferay.portal.kernel.search.SearchContext searchContext) {
-
-		return _commerceTierPriceEntryLocalService.search(searchContext);
-	}
-
-	@Override
 	public com.liferay.portal.kernel.search.BaseModelSearchResult
 		<CommerceTierPriceEntry> searchCommerceTierPriceEntries(
 				long companyId, long commercePriceEntryId, String keywords,
@@ -672,16 +613,6 @@ public class CommerceTierPriceEntryLocalServiceWrapper
 		return _commerceTierPriceEntryLocalService.
 			searchCommerceTierPriceEntries(
 				companyId, commercePriceEntryId, keywords, start, end, sort);
-	}
-
-	@Override
-	public int searchCommerceTierPriceEntriesCount(
-			long companyId, long commercePriceEntryId, String keywords)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _commerceTierPriceEntryLocalService.
-			searchCommerceTierPriceEntriesCount(
-				companyId, commercePriceEntryId, keywords);
 	}
 
 	/**
@@ -831,4 +762,4 @@ public class CommerceTierPriceEntryLocalServiceWrapper
 		_commerceTierPriceEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1430756467
+// LIFERAY-SERVICE-BUILDER-HASH:2117708836

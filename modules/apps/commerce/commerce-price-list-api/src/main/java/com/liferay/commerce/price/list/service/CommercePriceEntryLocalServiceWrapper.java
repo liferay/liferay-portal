@@ -431,16 +431,6 @@ public class CommercePriceEntryLocalServiceWrapper
 
 	@Override
 	public java.util.List<CommercePriceEntry> getCommercePriceEntries(
-		long commercePriceListId, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<CommercePriceEntry>
-			orderByComparator) {
-
-		return _commercePriceEntryLocalService.getCommercePriceEntries(
-			commercePriceListId, start, end, orderByComparator);
-	}
-
-	@Override
-	public java.util.List<CommercePriceEntry> getCommercePriceEntries(
 		String cpInstanceUuid, java.math.BigDecimal quantity,
 		String unitOfMeasureKey) {
 
@@ -456,12 +446,6 @@ public class CommercePriceEntryLocalServiceWrapper
 	@Override
 	public int getCommercePriceEntriesCount() {
 		return _commercePriceEntryLocalService.getCommercePriceEntriesCount();
-	}
-
-	@Override
-	public int getCommercePriceEntriesCount(long commercePriceListId) {
-		return _commercePriceEntryLocalService.getCommercePriceEntriesCount(
-			commercePriceListId);
 	}
 
 	/**
@@ -533,22 +517,6 @@ public class CommercePriceEntryLocalServiceWrapper
 				cpInstanceUuid, priceListType, unitOfMeasureKey);
 	}
 
-	@Override
-	public java.util.List<CommercePriceEntry> getInstanceCommercePriceEntries(
-		String cpInstanceUuid, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<CommercePriceEntry>
-			orderByComparator) {
-
-		return _commercePriceEntryLocalService.getInstanceCommercePriceEntries(
-			cpInstanceUuid, start, end, orderByComparator);
-	}
-
-	@Override
-	public int getInstanceCommercePriceEntriesCount(String cpInstanceUuid) {
-		return _commercePriceEntryLocalService.
-			getInstanceCommercePriceEntriesCount(cpInstanceUuid);
-	}
-
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -568,13 +536,6 @@ public class CommercePriceEntryLocalServiceWrapper
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _commercePriceEntryLocalService.getPersistedModel(primaryKeyObj);
-	}
-
-	@Override
-	public com.liferay.portal.kernel.search.Hits search(
-		com.liferay.portal.kernel.search.SearchContext searchContext) {
-
-		return _commercePriceEntryLocalService.search(searchContext);
 	}
 
 	@Override
@@ -735,4 +696,4 @@ public class CommercePriceEntryLocalServiceWrapper
 	private CommercePriceEntryLocalService _commercePriceEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-571766993
+// LIFERAY-SERVICE-BUILDER-HASH:-1818301300

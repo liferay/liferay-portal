@@ -20,10 +20,8 @@ import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.model.PersistedModel;
 import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.search.BaseModelSearchResult;
-import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
-import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.BaseLocalService;
 import com.liferay.portal.kernel.service.PersistedModelLocalService;
@@ -319,11 +317,6 @@ public interface CommercePriceEntryLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CommercePriceEntry> getCommercePriceEntries(
-		long commercePriceListId, int start, int end,
-		OrderByComparator<CommercePriceEntry> orderByComparator);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CommercePriceEntry> getCommercePriceEntries(
 		String cpInstanceUuid, BigDecimal quantity, String unitOfMeasureKey);
 
 	/**
@@ -333,9 +326,6 @@ public interface CommercePriceEntryLocalService
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getCommercePriceEntriesCount();
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCommercePriceEntriesCount(long commercePriceListId);
 
 	/**
 	 * Returns the commerce price entry with the primary key.
@@ -377,14 +367,6 @@ public interface CommercePriceEntryLocalService
 	public CommercePriceEntry getInstanceBaseCommercePriceEntry(
 		String cpInstanceUuid, String priceListType, String unitOfMeasureKey);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CommercePriceEntry> getInstanceCommercePriceEntries(
-		String cpInstanceUuid, int start, int end,
-		OrderByComparator<CommercePriceEntry> orderByComparator);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getInstanceCommercePriceEntriesCount(String cpInstanceUuid);
-
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -399,9 +381,6 @@ public interface CommercePriceEntryLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
 		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public Hits search(SearchContext searchContext);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public BaseModelSearchResult<CommercePriceEntry> searchCommercePriceEntries(
@@ -486,4 +465,4 @@ public interface CommercePriceEntryLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-108467340
+// LIFERAY-SERVICE-BUILDER-HASH:-774197033

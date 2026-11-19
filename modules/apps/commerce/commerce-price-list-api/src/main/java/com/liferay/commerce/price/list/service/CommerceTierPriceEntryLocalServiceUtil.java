@@ -55,29 +55,6 @@ public class CommerceTierPriceEntryLocalServiceUtil {
 	}
 
 	public static CommerceTierPriceEntry addCommerceTierPriceEntry(
-			long commercePriceEntryId, java.math.BigDecimal price,
-			java.math.BigDecimal promoPrice, java.math.BigDecimal minQuantity,
-			com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws PortalException {
-
-		return getService().addCommerceTierPriceEntry(
-			commercePriceEntryId, price, promoPrice, minQuantity,
-			serviceContext);
-	}
-
-	public static CommerceTierPriceEntry addCommerceTierPriceEntry(
-			long commercePriceEntryId, java.math.BigDecimal price,
-			java.math.BigDecimal promoPrice, boolean bulkPricing,
-			java.math.BigDecimal minQuantity,
-			com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws PortalException {
-
-		return getService().addCommerceTierPriceEntry(
-			commercePriceEntryId, price, promoPrice, bulkPricing, minQuantity,
-			serviceContext);
-	}
-
-	public static CommerceTierPriceEntry addCommerceTierPriceEntry(
 			String externalReferenceCode, long commercePriceEntryId,
 			java.math.BigDecimal price, java.math.BigDecimal promoPrice,
 			java.math.BigDecimal minQuantity, boolean bulkPricing,
@@ -101,18 +78,6 @@ public class CommerceTierPriceEntryLocalServiceUtil {
 			expirationDateMonth, expirationDateDay, expirationDateYear,
 			expirationDateHour, expirationDateMinute, neverExpire,
 			serviceContext);
-	}
-
-	public static CommerceTierPriceEntry addCommerceTierPriceEntry(
-			String externalReferenceCode, long commercePriceEntryId,
-			java.math.BigDecimal price, java.math.BigDecimal promoPrice,
-			java.math.BigDecimal minQuantity,
-			com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws PortalException {
-
-		return getService().addCommerceTierPriceEntry(
-			externalReferenceCode, commercePriceEntryId, price, promoPrice,
-			minQuantity, serviceContext);
 	}
 
 	public static CommerceTierPriceEntry addCommerceTierPriceEntry(
@@ -487,13 +452,6 @@ public class CommerceTierPriceEntryLocalServiceUtil {
 	}
 
 	public static List<CommerceTierPriceEntry> getCommerceTierPriceEntries(
-		long commercePriceEntryId, int start, int end) {
-
-		return getService().getCommerceTierPriceEntries(
-			commercePriceEntryId, start, end);
-	}
-
-	public static List<CommerceTierPriceEntry> getCommerceTierPriceEntries(
 		long commercePriceEntryId, int start, int end,
 		OrderByComparator<CommerceTierPriceEntry> orderByComparator) {
 
@@ -508,13 +466,6 @@ public class CommerceTierPriceEntryLocalServiceUtil {
 	 */
 	public static int getCommerceTierPriceEntriesCount() {
 		return getService().getCommerceTierPriceEntriesCount();
-	}
-
-	public static int getCommerceTierPriceEntriesCountByCompanyId(
-		long companyId) {
-
-		return getService().getCommerceTierPriceEntriesCountByCompanyId(
-			companyId);
 	}
 
 	/**
@@ -590,12 +541,6 @@ public class CommerceTierPriceEntryLocalServiceUtil {
 		return getService().getPersistedModel(primaryKeyObj);
 	}
 
-	public static com.liferay.portal.kernel.search.Hits search(
-		com.liferay.portal.kernel.search.SearchContext searchContext) {
-
-		return getService().search(searchContext);
-	}
-
 	public static com.liferay.portal.kernel.search.BaseModelSearchResult
 		<CommerceTierPriceEntry> searchCommerceTierPriceEntries(
 				long companyId, long commercePriceEntryId, String keywords,
@@ -604,14 +549,6 @@ public class CommerceTierPriceEntryLocalServiceUtil {
 
 		return getService().searchCommerceTierPriceEntries(
 			companyId, commercePriceEntryId, keywords, start, end, sort);
-	}
-
-	public static int searchCommerceTierPriceEntriesCount(
-			long companyId, long commercePriceEntryId, String keywords)
-		throws PortalException {
-
-		return getService().searchCommerceTierPriceEntriesCount(
-			companyId, commercePriceEntryId, keywords);
 	}
 
 	/**
@@ -723,4 +660,4 @@ public class CommerceTierPriceEntryLocalServiceUtil {
 			CommerceTierPriceEntryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-954736868
+// LIFERAY-SERVICE-BUILDER-HASH:-297032185

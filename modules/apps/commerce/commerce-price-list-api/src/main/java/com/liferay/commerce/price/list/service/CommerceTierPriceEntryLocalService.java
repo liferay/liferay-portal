@@ -20,10 +20,8 @@ import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.model.PersistedModel;
 import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.search.BaseModelSearchResult;
-import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
-import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.BaseLocalService;
 import com.liferay.portal.kernel.service.PersistedModelLocalService;
@@ -85,17 +83,6 @@ public interface CommerceTierPriceEntryLocalService
 	public CommerceTierPriceEntry addCommerceTierPriceEntry(
 		CommerceTierPriceEntry commerceTierPriceEntry);
 
-	public CommerceTierPriceEntry addCommerceTierPriceEntry(
-			long commercePriceEntryId, BigDecimal price, BigDecimal promoPrice,
-			BigDecimal minQuantity, ServiceContext serviceContext)
-		throws PortalException;
-
-	public CommerceTierPriceEntry addCommerceTierPriceEntry(
-			long commercePriceEntryId, BigDecimal price, BigDecimal promoPrice,
-			boolean bulkPricing, BigDecimal minQuantity,
-			ServiceContext serviceContext)
-		throws PortalException;
-
 	@Indexable(type = IndexableType.REINDEX)
 	public CommerceTierPriceEntry addCommerceTierPriceEntry(
 			String externalReferenceCode, long commercePriceEntryId,
@@ -108,12 +95,6 @@ public interface CommerceTierPriceEntryLocalService
 			int expirationDateDay, int expirationDateYear,
 			int expirationDateHour, int expirationDateMinute,
 			boolean neverExpire, ServiceContext serviceContext)
-		throws PortalException;
-
-	public CommerceTierPriceEntry addCommerceTierPriceEntry(
-			String externalReferenceCode, long commercePriceEntryId,
-			BigDecimal price, BigDecimal promoPrice, BigDecimal minQuantity,
-			ServiceContext serviceContext)
 		throws PortalException;
 
 	public CommerceTierPriceEntry addCommerceTierPriceEntry(
@@ -380,10 +361,6 @@ public interface CommerceTierPriceEntryLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CommerceTierPriceEntry> getCommerceTierPriceEntries(
-		long commercePriceEntryId, int start, int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CommerceTierPriceEntry> getCommerceTierPriceEntries(
 		long commercePriceEntryId, int start, int end,
 		OrderByComparator<CommerceTierPriceEntry> orderByComparator);
 
@@ -394,9 +371,6 @@ public interface CommerceTierPriceEntryLocalService
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getCommerceTierPriceEntriesCount();
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCommerceTierPriceEntriesCountByCompanyId(long companyId);
 
 	/**
 	 * Returns the commerce tier price entry with the primary key.
@@ -452,18 +426,10 @@ public interface CommerceTierPriceEntryLocalService
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public Hits search(SearchContext searchContext);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public BaseModelSearchResult<CommerceTierPriceEntry>
 			searchCommerceTierPriceEntries(
 				long companyId, long commercePriceEntryId, String keywords,
 				int start, int end, Sort sort)
-		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int searchCommerceTierPriceEntriesCount(
-			long companyId, long commercePriceEntryId, String keywords)
 		throws PortalException;
 
 	/**
@@ -542,4 +508,4 @@ public interface CommerceTierPriceEntryLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1695361206
+// LIFERAY-SERVICE-BUILDER-HASH:-76699124

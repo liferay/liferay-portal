@@ -384,14 +384,6 @@ public class CommercePriceEntryLocalServiceUtil {
 	}
 
 	public static List<CommercePriceEntry> getCommercePriceEntries(
-		long commercePriceListId, int start, int end,
-		OrderByComparator<CommercePriceEntry> orderByComparator) {
-
-		return getService().getCommercePriceEntries(
-			commercePriceListId, start, end, orderByComparator);
-	}
-
-	public static List<CommercePriceEntry> getCommercePriceEntries(
 		String cpInstanceUuid, java.math.BigDecimal quantity,
 		String unitOfMeasureKey) {
 
@@ -406,10 +398,6 @@ public class CommercePriceEntryLocalServiceUtil {
 	 */
 	public static int getCommercePriceEntriesCount() {
 		return getService().getCommercePriceEntriesCount();
-	}
-
-	public static int getCommercePriceEntriesCount(long commercePriceListId) {
-		return getService().getCommercePriceEntriesCount(commercePriceListId);
 	}
 
 	/**
@@ -473,21 +461,6 @@ public class CommercePriceEntryLocalServiceUtil {
 			cpInstanceUuid, priceListType, unitOfMeasureKey);
 	}
 
-	public static List<CommercePriceEntry> getInstanceCommercePriceEntries(
-		String cpInstanceUuid, int start, int end,
-		OrderByComparator<CommercePriceEntry> orderByComparator) {
-
-		return getService().getInstanceCommercePriceEntries(
-			cpInstanceUuid, start, end, orderByComparator);
-	}
-
-	public static int getInstanceCommercePriceEntriesCount(
-		String cpInstanceUuid) {
-
-		return getService().getInstanceCommercePriceEntriesCount(
-			cpInstanceUuid);
-	}
-
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -504,12 +477,6 @@ public class CommercePriceEntryLocalServiceUtil {
 		throws PortalException {
 
 		return getService().getPersistedModel(primaryKeyObj);
-	}
-
-	public static com.liferay.portal.kernel.search.Hits search(
-		com.liferay.portal.kernel.search.SearchContext searchContext) {
-
-		return getService().search(searchContext);
 	}
 
 	public static com.liferay.portal.kernel.search.BaseModelSearchResult
@@ -629,4 +596,4 @@ public class CommercePriceEntryLocalServiceUtil {
 			CommercePriceEntryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1797748234
+// LIFERAY-SERVICE-BUILDER-HASH:989127635
