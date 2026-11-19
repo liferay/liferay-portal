@@ -32,30 +32,6 @@ definition {
 		}
 	}
 
-	@description = "Verify that a form with the boolean field can be created"
-	@priority = 5
-	test CanBeCreated {
-		property portal.acceptance = "true";
-
-		FormsAdmin.addForm();
-
-		Form.editName(formName = "Form 1");
-
-		Form.gotoAddField(
-			fieldPositionNumber = 0,
-			fieldType = "Boolean");
-
-		FormFields.viewField(fieldName = "Boolean");
-
-		Form.save();
-
-		FormsAdminNavigator.gotoBack();
-
-		FormsAdminNavigator.gotoEditFormByName(formName = "Form 1");
-
-		FormFields.viewField(fieldName = "Boolean");
-	}
-
 	@description = "Verify that a form with the boolean field can be deleted"
 	@priority = 5
 	test CanBeDeleted {

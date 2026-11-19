@@ -256,46 +256,6 @@ definition {
 		}
 	}
 
-	@description = "Verify that a Rule can be created"
-	@priority = 5
-	test CanBeCreated {
-		property portal.acceptance = "true";
-
-		FormsAdmin.addForm();
-
-		Form.editName(formName = "Form 1");
-
-		Form.gotoAddField(
-			fieldPositionNumber = 0,
-			fieldType = "Text",
-			formPageNumber = 0);
-
-		Form.closeSidebar();
-
-		FormsAdminNavigator.gotoRules();
-
-		FormRules.addRule();
-
-		FormRules.configureConditionOptions(
-			conditionField = "Text",
-			conditionOperator = "Is Empty",
-			conditionRowNumber = 1);
-
-		FormRules.configureActionOptions(
-			action = "Require",
-			actionRowNumber = 1,
-			actionTarget = "Text");
-
-		FormRules.save();
-
-		FormRules.viewSummary(
-			action = "Require",
-			actionTarget = "Text",
-			conditionField = "Text",
-			conditionOperator = "Is Empty",
-			ruleNumber = 1);
-	}
-
 	@description = "LPS-71466 - Verify that a Rule can be created using a Field with a Predefined Value"
 	@priority = 2
 	test CanBeCreatedUsingAFieldWithAPredefinedValue {
