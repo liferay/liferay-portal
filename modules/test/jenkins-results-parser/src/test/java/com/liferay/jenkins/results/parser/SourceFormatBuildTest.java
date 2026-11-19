@@ -87,22 +87,90 @@ public class SourceFormatBuildTest
 
 	@Test
 	public void testGetWorkspace() throws Exception {
-		_testGetWorkspace(false, _newCompareJSON(1), false, true, "{}");
+		String overrideUsername = RandomTestUtil.randomString();
+		String ownerUsername = RandomTestUtil.randomString();
+		String upstreamUsername = RandomTestUtil.randomString();
+
 		_testGetWorkspace(
-			false, _newCompareJSON(1), false, true, _newCompareJSON(0));
-		_testGetWorkspace(false, _newCompareJSON(1), false, true, null);
+			overrideUsername, _newCompareJSON(0), overrideUsername,
+			_newCompareJSON(1), ownerUsername, false, _newCompareJSON(2),
+			upstreamUsername);
 		_testGetWorkspace(
-			false, _newCompareJSON(3), false, false, _newCompareJSON(3));
+			overrideUsername, _newCompareJSON(1), overrideUsername,
+			_newCompareJSON(5), ownerUsername, true, _newCompareJSON(5),
+			upstreamUsername);
 		_testGetWorkspace(
-			false, _newCompareJSON(5), false, true, _newCompareJSON(1));
-		_testGetWorkspace(false, null, false, true, _newCompareJSON(5));
+			overrideUsername, _newCompareJSON(2), overrideUsername,
+			_newCompareJSON(2), ownerUsername, true, _newCompareJSON(5),
+			upstreamUsername);
 		_testGetWorkspace(
-			true, _newCompareJSON(0), false, true, _newCompareJSON(5));
+			ownerUsername, "{}", overrideUsername, _newCompareJSON(1),
+			ownerUsername, true, _newCompareJSON(5), upstreamUsername);
 		_testGetWorkspace(
-			true, _newCompareJSON(1), false, false, _newCompareJSON(5));
+			ownerUsername, _newCompareJSON(3), overrideUsername,
+			_newCompareJSON(1), ownerUsername, true, _newCompareJSON(5),
+			upstreamUsername);
 		_testGetWorkspace(
-			true, _newCompareJSON(2), false, true, _newCompareJSON(3));
-		_testGetWorkspace(true, null, true, false, null);
+			ownerUsername, null, "", _newCompareJSON(2), ownerUsername, true,
+			_newCompareJSON(3), upstreamUsername);
+		_testGetWorkspace(
+			ownerUsername, null, null, _newCompareJSON(0), ownerUsername, true,
+			_newCompareJSON(5), upstreamUsername);
+		_testGetWorkspace(
+			ownerUsername, null, null, _newCompareJSON(1), ownerUsername, false,
+			_newCompareJSON(5), upstreamUsername);
+		_testGetWorkspace(
+			ownerUsername, null, null, _newCompareJSON(2), ownerUsername, true,
+			_newCompareJSON(3), upstreamUsername);
+
+		_testGetWorkspace(
+			ownerUsername, null, null, null, ownerUsername, false, null,
+			ownerUsername);
+		_testGetWorkspace(
+			ownerUsername, null, overrideUsername, _newCompareJSON(1),
+			ownerUsername, true, _newCompareJSON(5), upstreamUsername);
+		_testGetWorkspace(
+			ownerUsername, null, ownerUsername, _newCompareJSON(2),
+			ownerUsername, true, _newCompareJSON(3), upstreamUsername);
+		_testGetWorkspace(
+			upstreamUsername, _newCompareJSON(0), overrideUsername,
+			_newCompareJSON(5), ownerUsername, true, null, upstreamUsername);
+		_testGetWorkspace(
+			upstreamUsername, _newCompareJSON(0), overrideUsername, null,
+			ownerUsername, true, _newCompareJSON(5), upstreamUsername);
+		_testGetWorkspace(
+			upstreamUsername, _newCompareJSON(1), overrideUsername,
+			_newCompareJSON(1), ownerUsername, true, _newCompareJSON(1),
+			upstreamUsername);
+		_testGetWorkspace(
+			upstreamUsername, _newCompareJSON(1), overrideUsername,
+			_newCompareJSON(5), ownerUsername, true, _newCompareJSON(1),
+			upstreamUsername);
+		_testGetWorkspace(
+			upstreamUsername, _newCompareJSON(5), overrideUsername,
+			_newCompareJSON(5), ownerUsername, true, _newCompareJSON(1),
+			upstreamUsername);
+		_testGetWorkspace(
+			upstreamUsername, null, null, _newCompareJSON(1), ownerUsername,
+			true, "{}", upstreamUsername);
+		_testGetWorkspace(
+			upstreamUsername, null, null, _newCompareJSON(1), ownerUsername,
+			true, _newCompareJSON(0), upstreamUsername);
+		_testGetWorkspace(
+			upstreamUsername, null, null, _newCompareJSON(1), ownerUsername,
+			true, null, upstreamUsername);
+		_testGetWorkspace(
+			upstreamUsername, null, null, _newCompareJSON(3), ownerUsername,
+			false, _newCompareJSON(3), upstreamUsername);
+		_testGetWorkspace(
+			upstreamUsername, null, null, _newCompareJSON(5), ownerUsername,
+			true, _newCompareJSON(1), upstreamUsername);
+		_testGetWorkspace(
+			upstreamUsername, null, null, null, ownerUsername, true,
+			_newCompareJSON(5), upstreamUsername);
+		_testGetWorkspace(
+			upstreamUsername, null, upstreamUsername, _newCompareJSON(5),
+			ownerUsername, true, _newCompareJSON(1), upstreamUsername);
 	}
 
 	@Rule
@@ -176,23 +244,28 @@ public class SourceFormatBuildTest
 	}
 
 	private void _testGetWorkspace(
-			boolean expectedOwnerBase, String ownerCompareJSON,
-			boolean ownerUpstream, boolean senderBranchSHAParameter,
-			String upstreamCompareJSON)
+			String expectedBaseBranchUsername, String overrideCompareJSON,
+			String overrideUsername, String ownerCompareJSON,
+			String ownerUsername, boolean senderBranchSHAParameter,
+			String upstreamCompareJSON, String upstreamUsername)
 		throws Exception {
 
 		mockURLReaders();
 
-		String ownerUsername = RandomTestUtil.randomString();
-		String upstreamUsername = RandomTestUtil.randomString();
-
-		if (ownerUpstream) {
-			upstreamUsername = ownerUsername;
-		}
+		Properties buildProperties = new Properties();
 
 		String upstreamRemoteGitBranchName = RandomTestUtil.randomString();
 
-		Properties buildProperties = new Properties();
+		if (overrideUsername != null) {
+			buildProperties.setProperty(
+				"portal.upstream.override.username",
+				RandomTestUtil.randomString());
+			buildProperties.setProperty(
+				JenkinsResultsParserUtil.combine(
+					"portal.upstream.override.username[",
+					upstreamRemoteGitBranchName, "]"),
+				overrideUsername);
+		}
 
 		buildProperties.setProperty(
 			"portal.upstream.username", RandomTestUtil.randomString());
@@ -223,6 +296,10 @@ public class SourceFormatBuildTest
 		String gitRepositoryName = JenkinsResultsParserUtil.combine(
 			"liferay-portal-", RandomTestUtil.randomString());
 
+		String overrideCompareURL = JenkinsResultsParserUtil.combine(
+			"https://api.github.com/repos/", ownerUsername, "/",
+			gitRepositoryName, "/compare/", String.valueOf(overrideUsername),
+			":", upstreamRemoteGitBranchName, "...", compareSHA);
 		String ownerCompareURL = JenkinsResultsParserUtil.combine(
 			"https://api.github.com/repos/", ownerUsername, "/",
 			gitRepositoryName, "/compare/", ownerUsername, ":",
@@ -232,7 +309,11 @@ public class SourceFormatBuildTest
 			gitRepositoryName, "/compare/", upstreamUsername, ":",
 			upstreamRemoteGitBranchName, "...", compareSHA);
 
+		boolean ownerUpstream = ownerUsername.equals(upstreamUsername);
+
 		if (!ownerUpstream) {
+			_setCompareJSON(overrideCompareJSON, overrideCompareURL);
+
 			_setCompareJSON(ownerCompareJSON, ownerCompareURL);
 			_setCompareJSON(upstreamCompareJSON, upstreamCompareURL);
 		}
@@ -323,10 +404,14 @@ public class SourceFormatBuildTest
 
 			sourceFormatBuild.getWorkspace();
 
+			verifyURLReaderAttemptsCount(0, "/compare/:");
+
 			if (ownerUpstream) {
 				verifyURLReaderAttemptsCount(0, "/compare");
 			}
 			else {
+				_setCompareJSON(null, overrideCompareURL);
+
 				_setCompareJSON(ownerCompareJSON, upstreamCompareURL);
 				_setCompareJSON(upstreamCompareJSON, ownerCompareURL);
 			}
@@ -334,12 +419,6 @@ public class SourceFormatBuildTest
 			JenkinsResultsParserUtil.clearCache();
 
 			sourceFormatBuild.getWorkspace();
-		}
-
-		String expectedBaseBranchUsername = upstreamUsername;
-
-		if (expectedOwnerBase) {
-			expectedBaseBranchUsername = ownerUsername;
 		}
 
 		Mockito.verify(
