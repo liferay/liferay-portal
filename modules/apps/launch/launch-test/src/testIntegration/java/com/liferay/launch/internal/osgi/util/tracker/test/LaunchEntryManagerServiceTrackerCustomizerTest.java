@@ -84,8 +84,8 @@ public class LaunchEntryManagerServiceTrackerCustomizerTest {
 		// Journal article
 
 		_testOnAfterRemove(
-			JournalArticle.class.getName(), this::_deleteJournalArticle,
-			this::_addJournalArticle);
+			JournalArticle.class.getName(), this::_addJournalArticle,
+			this::_deleteJournalArticle);
 
 		// Journal article with other versions
 
@@ -109,14 +109,15 @@ public class LaunchEntryManagerServiceTrackerCustomizerTest {
 		// Layout
 
 		_testOnAfterRemove(
-			Layout.class.getName(), _layoutLocalService::deleteLayout,
+			Layout.class.getName(),
 			() -> {
 				Layout layout = LayoutTestUtil.addTypeContentPublishedLayout(
 					_group, RandomTestUtil.randomString(),
 					WorkflowConstants.STATUS_APPROVED);
 
 				return layout.getPlid();
-			});
+			},
+			_layoutLocalService::deleteLayout);
 	}
 
 	private long _addJournalArticle() throws Exception {
@@ -228,8 +229,8 @@ public class LaunchEntryManagerServiceTrackerCustomizerTest {
 
 	private void _testOnAfterRemove(
 			String className,
-			UnsafeConsumer<Long, Exception> deleteItemUnsafeConsumer,
-			UnsafeSupplier<Long, Exception> addItemUnsafeSupplier)
+			UnsafeSupplier<Long, Exception> addItemUnsafeSupplier,
+			UnsafeConsumer<Long, Exception> deleteItemUnsafeConsumer)
 		throws Exception {
 
 		long classPK1 = addItemUnsafeSupplier.get();

@@ -101,12 +101,12 @@ public class LaunchEntryManagerServiceTrackerCustomizer
 			return;
 		}
 
-		Group companyGroup = _groupLocalService.getCompanyGroup(companyId);
-
 		long objectDefinitionId = objectDefinition.getObjectDefinitionId();
 
 		Predicate predicate = _getEqualsPredicate(
 			"className", objectDefinitionId, className);
+
+		Group companyGroup = _groupLocalService.getCompanyGroup(companyId);
 
 		for (long objectEntryId :
 				_objectEntryLocalService.getPrimaryKeys(
