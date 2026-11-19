@@ -100,13 +100,13 @@ public class DefaultUserAssociationsSiteSettingsConfigurationScreenWrapperTest {
 		Dictionary<String, Object> properties =
 			configurationScreen.exportProperties(sourceGroup.getGroupId());
 
-		Assert.assertEquals(properties.toString(), 2, properties.size());
 		Assert.assertEquals(
 			ListUtil.fromArray(role.getExternalReferenceCode()),
 			properties.get("defaultSiteRoleExternalReferenceCodes"));
 		Assert.assertEquals(
 			ListUtil.fromArray(sourceTeam.getName()),
 			properties.get("defaultTeamNames"));
+		Assert.assertEquals(properties.toString(), 2, properties.size());
 
 		Group targetGroup = GroupTestUtil.addGroup();
 
