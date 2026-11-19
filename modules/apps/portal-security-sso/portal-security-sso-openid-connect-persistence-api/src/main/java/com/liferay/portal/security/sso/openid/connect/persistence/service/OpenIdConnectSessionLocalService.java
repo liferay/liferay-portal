@@ -116,9 +116,6 @@ public interface OpenIdConnectSessionLocalService
 
 	public void deleteOpenIdConnectSessions(long userId);
 
-	public void deleteOpenIdConnectSessions(
-		long companyId, String authServerWellKnownURI, String clientId);
-
 	/**
 	 * @throws PortalException
 	 */
@@ -294,4 +291,4 @@ public interface OpenIdConnectSessionLocalService
 		OpenIdConnectSession openIdConnectSession);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2018112190
+// LIFERAY-SERVICE-BUILDER-HASH:1015747573

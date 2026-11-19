@@ -122,14 +122,6 @@ public class OpenIdConnectSessionLocalServiceWrapper
 		_openIdConnectSessionLocalService.deleteOpenIdConnectSessions(userId);
 	}
 
-	@Override
-	public void deleteOpenIdConnectSessions(
-		long companyId, String authServerWellKnownURI, String clientId) {
-
-		_openIdConnectSessionLocalService.deleteOpenIdConnectSessions(
-			companyId, authServerWellKnownURI, clientId);
-	}
-
 	/**
 	 * @throws PortalException
 	 */
@@ -429,4 +421,4 @@ public class OpenIdConnectSessionLocalServiceWrapper
 	private OpenIdConnectSessionLocalService _openIdConnectSessionLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-149381013
+// LIFERAY-SERVICE-BUILDER-HASH:2096900651
