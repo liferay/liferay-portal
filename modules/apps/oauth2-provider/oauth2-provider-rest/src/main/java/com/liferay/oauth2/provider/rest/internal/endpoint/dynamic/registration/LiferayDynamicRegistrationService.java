@@ -371,6 +371,17 @@ public class LiferayDynamicRegistrationService
 	}
 
 	@Override
+	protected boolean isPasswordRequired(
+		List<String> grantTypes, String tokenEndpointAuthMethod) {
+
+		if (Objects.equals(tokenEndpointAuthMethod, "client_secret_jwt")) {
+			return true;
+		}
+
+		return super.isPasswordRequired(grantTypes, tokenEndpointAuthMethod);
+	}
+
+	@Override
 	protected void validateRequestUri(
 		String redirectURI, String applicationType,
 		List<String> allowedGrantTypes) {
