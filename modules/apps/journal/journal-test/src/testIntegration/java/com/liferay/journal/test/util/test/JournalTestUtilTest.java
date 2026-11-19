@@ -198,12 +198,6 @@ public class JournalTestUtilTest {
 	}
 
 	@Test
-	public void testGetSampleTemplateVM() {
-		Assert.assertEquals(
-			"$name.getData()", JournalTestUtil.getSampleTemplateVM());
-	}
-
-	@Test
 	public void testUpdateArticle() throws Exception {
 		JournalArticle article = JournalTestUtil.addArticle(
 			_group.getGroupId(), "Test Article", "This is a test article.");

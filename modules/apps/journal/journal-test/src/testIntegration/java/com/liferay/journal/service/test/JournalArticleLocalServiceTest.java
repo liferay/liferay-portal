@@ -2066,7 +2066,7 @@ public class JournalArticleLocalServiceTest {
 		DDMTemplate ddmTemplate = DDMTemplateTestUtil.addTemplate(
 			_group.getGroupId(), ddmStructure.getStructureId(),
 			PortalUtil.getClassNameId(JournalArticle.class),
-			TemplateConstants.LANG_TYPE_VM, ddmTemplateScript,
+			TemplateConstants.LANG_TYPE_FTL, ddmTemplateScript,
 			LocaleUtil.getSiteDefault());
 
 		String defaultLanguageId = LocaleUtil.toLanguageId(
@@ -2099,7 +2099,7 @@ public class JournalArticleLocalServiceTest {
 		DDMTemplate ddmTemplate1 = DDMTemplateTestUtil.addTemplate(
 			company.getGroupId(), ddmStructure.getStructureId(),
 			PortalUtil.getClassNameId(JournalArticle.class),
-			TemplateConstants.LANG_TYPE_VM, ddmTemplateScript1,
+			TemplateConstants.LANG_TYPE_FTL, ddmTemplateScript1,
 			LocaleUtil.getSiteDefault());
 
 		String ddmTemplateScript2 = RandomTestUtil.randomString();
@@ -2107,7 +2107,7 @@ public class JournalArticleLocalServiceTest {
 		DDMTemplate ddmTemplate2 = DDMTemplateTestUtil.addTemplate(
 			company.getGroupId(), ddmStructure.getStructureId(),
 			PortalUtil.getClassNameId(JournalArticle.class),
-			TemplateConstants.LANG_TYPE_VM, ddmTemplateScript2,
+			TemplateConstants.LANG_TYPE_FTL, ddmTemplateScript2,
 			LocaleUtil.getSiteDefault());
 
 		String defaultLanguageId = LocaleUtil.toLanguageId(
@@ -3342,7 +3342,7 @@ public class JournalArticleLocalServiceTest {
 		DDMTemplate ddmTemplate = DDMTemplateTestUtil.addTemplate(
 			depotEntry.getGroupId(), ddmStructure.getStructureId(),
 			PortalUtil.getClassNameId(JournalArticle.class),
-			TemplateConstants.LANG_TYPE_VM, RandomTestUtil.randomString(),
+			TemplateConstants.LANG_TYPE_FTL, RandomTestUtil.randomString(),
 			LocaleUtil.getSiteDefault());
 
 		JournalArticle journalArticle = _journalArticleLocalService.addArticle(

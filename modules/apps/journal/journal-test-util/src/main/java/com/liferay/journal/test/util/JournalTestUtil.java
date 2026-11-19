@@ -957,10 +957,6 @@ public class JournalTestUtil {
 		return "${name.getData()}";
 	}
 
-	public static String getSampleTemplateVM() {
-		return "$name.getData()";
-	}
-
 	public static Hits getSearchArticles(long companyId, long groupId)
 		throws Exception {
 

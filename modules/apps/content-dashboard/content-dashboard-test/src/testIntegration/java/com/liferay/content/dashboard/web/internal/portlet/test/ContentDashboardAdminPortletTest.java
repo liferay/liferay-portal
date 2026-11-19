@@ -409,8 +409,9 @@ public class ContentDashboardAdminPortletTest {
 		DDMTemplate ddmTemplate = DDMTemplateTestUtil.addTemplate(
 			_group.getGroupId(), ddmStructure.getStructureId(),
 			PortalUtil.getClassNameId(JournalArticle.class),
-			TemplateConstants.LANG_TYPE_VM,
-			JournalTestUtil.getSampleTemplateVM(), LocaleUtil.getSiteDefault());
+			TemplateConstants.LANG_TYPE_FTL,
+			JournalTestUtil.getSampleTemplateFTL(),
+			LocaleUtil.getSiteDefault());
 
 		JournalArticle journalArticle =
 			JournalTestUtil.addArticleWithXMLContent(
@@ -866,8 +867,9 @@ public class ContentDashboardAdminPortletTest {
 		DDMTemplate ddmTemplate = DDMTemplateTestUtil.addTemplate(
 			_group.getGroupId(), ddmStructure1.getStructureId(),
 			PortalUtil.getClassNameId(JournalArticle.class),
-			TemplateConstants.LANG_TYPE_VM,
-			JournalTestUtil.getSampleTemplateVM(), LocaleUtil.getSiteDefault());
+			TemplateConstants.LANG_TYPE_FTL,
+			JournalTestUtil.getSampleTemplateFTL(),
+			LocaleUtil.getSiteDefault());
 
 		JournalArticle journalArticle1 =
 			JournalTestUtil.addArticleWithXMLContent(
