@@ -20,8 +20,8 @@ import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectEntryService;
 import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.service.ObjectRelationshipLocalService;
+import com.liferay.petra.sql.dsl.Column;
 import com.liferay.petra.string.StringBundler;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.NoSuchGroupException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
@@ -232,33 +232,35 @@ public class LinkReferenceResourceImpl extends BaseLinkReferenceResourceImpl {
 			return null;
 		}
 
-		for (ObjectEntry imageObjectEntry :
-				_objectEntryLocalService.getOneToManyObjectEntries(
-					objectEntry.getGroupId(),
-					objectRelationship.getObjectRelationshipId(), null, true,
-					objectEntry.getObjectEntryId(), true, null,
-					QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
+		Column<?, Long> column =
+			(Column<?, Long>)_objectFieldLocalService.getColumn(
+				objectField.getObjectDefinitionId(), objectField.getName());
 
-			long fileEntryId = MapUtil.getLong(
-				_objectEntryLocalService.getValues(imageObjectEntry),
-				objectField.getName());
+		List<ObjectEntry> imageObjectEntries =
+			_objectEntryLocalService.getOneToManyObjectEntries(
+				objectEntry.getGroupId(),
+				objectRelationship.getObjectRelationshipId(), column.gt(0L),
+				true, objectEntry.getObjectEntryId(), true, null, 0, 1, null);
 
-			if (fileEntryId == 0) {
-				continue;
-			}
-
-			ObjectDefinition objectDefinition =
-				imageObjectEntry.getObjectDefinition();
-
-			return ObjectFieldUtil.getAttachmentDownloadURL(
-				_dlURLHelper, _dlAppLocalService.getFileEntry(fileEntryId),
-				imageObjectEntry.getGroupId(),
-				objectDefinition.getExternalReferenceCode(), imageObjectEntry,
-				_objectEntryService, objectField,
-				PermissionThreadLocal.getPermissionChecker(), null);
+		if (imageObjectEntries.isEmpty()) {
+			return null;
 		}
 
-		return null;
+		ObjectEntry imageObjectEntry = imageObjectEntries.get(0);
+
+		ObjectDefinition objectDefinition =
+			imageObjectEntry.getObjectDefinition();
+
+		return ObjectFieldUtil.getAttachmentDownloadURL(
+			_dlURLHelper,
+			_dlAppLocalService.getFileEntry(
+				MapUtil.getLong(
+					_objectEntryLocalService.getValues(imageObjectEntry),
+					objectField.getName())),
+			imageObjectEntry.getGroupId(),
+			objectDefinition.getExternalReferenceCode(), imageObjectEntry,
+			_objectEntryService, objectField,
+			PermissionThreadLocal.getPermissionChecker(), null);
 	}
 
 	private ObjectEntry _getObjectEntry(
