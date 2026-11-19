@@ -17,7 +17,6 @@ import {
 } from 'shared/util/oauth';
 import {FormikProps} from 'formik';
 import {OAUTH_CALLBACK_URL} from 'shared/util/oauth';
-import {Routes} from 'shared/util/router';
 import {sequence} from 'shared/util/promise';
 import {sub} from 'shared/util/lang';
 import {Text} from '@clayui/core';
@@ -163,7 +162,7 @@ const ConnectSalesforceAuth: React.FC<IConnectSalesforceAuthProps> = ({
 				const {setSubmitting} = _formRef.current!;
 
 				const authWindow = open(
-					Routes.LOADING,
+					'about:blank',
 					'authorizeWindow',
 					'width=400,height=500'
 				);
