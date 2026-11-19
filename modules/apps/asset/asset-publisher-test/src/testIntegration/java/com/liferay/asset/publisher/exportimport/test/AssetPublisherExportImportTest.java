@@ -32,12 +32,14 @@ import com.liferay.document.library.kernel.model.DLFileEntryMetadata;
 import com.liferay.document.library.kernel.model.DLFileEntryType;
 import com.liferay.document.library.kernel.model.DLFileEntryTypeConstants;
 import com.liferay.document.library.kernel.service.DLFileEntryTypeLocalService;
+import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.model.DDMTemplate;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
 import com.liferay.dynamic.data.mapping.test.util.DDMStructureTestUtil;
 import com.liferay.dynamic.data.mapping.test.util.DDMTemplateTestUtil;
 import com.liferay.dynamic.data.mapping.util.DDMIndexer;
+import com.liferay.dynamic.data.mapping.util.DDMUtil;
 import com.liferay.exportimport.kernel.configuration.ExportImportConfigurationParameterMapFactoryUtil;
 import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.exportimport.kernel.lar.PortletDataHandlerKeys;
@@ -1339,6 +1341,41 @@ public class AssetPublisherExportImportTest extends BaseExportImportTestCase {
 				new MockPortletRequest(), portletPreferences,
 				_permissionChecker, new long[] {group.getGroupId()}, false,
 				false));
+	}
+
+	@Test
+	@TestInfo("LPD-110540")
+	public void testExportImportOrderByColumn() throws Exception {
+		DDMStructure ddmStructure = DDMStructureTestUtil.addStructure(
+			group.getGroupId(), JournalArticle.class.getName());
+
+		String fieldName = "name" + ddmStructure.getStructureId();
+
+		DDMForm ddmForm = DDMStructureTestUtil.getSampleDDMForm(fieldName);
+
+		_ddmStructureLocalService.updateStructure(
+			TestPropsValues.getUserId(), ddmStructure.getStructureId(), ddmForm,
+			DDMUtil.getDefaultDDMFormLayout(ddmForm),
+			ServiceContextTestUtil.getServiceContext(group.getGroupId()));
+
+		PortletPreferences importedPortletPreferences =
+			getImportedPortletPreferences(
+				HashMapBuilder.put(
+					"orderByColumn1",
+					new String[] {
+						_getOrderByColumn(
+							ddmStructure.getStructureId(), fieldName)
+					}
+				).build(),
+				false);
+
+		DDMStructure importedDDMStructure =
+			_ddmStructureLocalService.fetchDDMStructureByUuidAndGroupId(
+				ddmStructure.getUuid(), importedGroup.getGroupId());
+
+		Assert.assertEquals(
+			_getOrderByColumn(importedDDMStructure.getStructureId(), fieldName),
+			importedPortletPreferences.getValue("orderByColumn1", null));
 	}
 
 	@Test
