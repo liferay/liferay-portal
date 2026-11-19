@@ -1911,13 +1911,17 @@ public class ContactsEngineClientImpl
 
 	@Override
 	public Results<Individual> getCampaignIndividuals(
-			FaroProject faroProject, long channelId, String id, String query,
-			String rangeEnd, Integer rangeKey, String rangeStart,
-			String sortString, int cur, int delta)
+			FaroProject faroProject, String accountIds, long channelId,
+			String id, String query, String rangeEnd, Integer rangeKey,
+			String rangeStart, String sortString, int cur, int delta)
 		throws FaroEngineClientException {
 
 		Map<String, Object> uriVariables = getUriVariables(
 			faroProject, cur, delta, null);
+
+		if (Validator.isNotNull(accountIds)) {
+			uriVariables.put("accountIds", accountIds);
+		}
 
 		uriVariables.put("channelId", channelId);
 		uriVariables.put("id", id);

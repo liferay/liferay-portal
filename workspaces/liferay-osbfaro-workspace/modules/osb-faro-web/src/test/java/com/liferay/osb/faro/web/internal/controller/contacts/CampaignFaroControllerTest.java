@@ -318,6 +318,7 @@ public class CampaignFaroControllerTest {
 
 	@Test
 	public void testGetIndividualsFaroFDSResultsDisplay() throws Exception {
+		String accountIds = RandomTestUtil.randomString();
 		long channelId = RandomTestUtil.randomLong();
 		String id = RandomTestUtil.randomString();
 		int page = RandomTestUtil.randomInt();
@@ -335,16 +336,16 @@ public class CampaignFaroControllerTest {
 
 		Mockito.when(
 			_contactsEngineClient.getCampaignIndividuals(
-				_faroProject, channelId, id, search, rangeEnd, rangeKey,
-				rangeStart, sortString, page, pageSize)
+				_faroProject, accountIds, channelId, id, search, rangeEnd,
+				rangeKey, rangeStart, sortString, page, pageSize)
 		).thenReturn(
 			new Results<>(Collections.singletonList(individual), total)
 		);
 
 		FaroFDSResultsDisplay<Individual> faroFDSResultsDisplay =
 			_campaignFaroController.getIndividualsFaroFDSResultsDisplay(
-				RandomTestUtil.randomLong(), id, channelId, page, pageSize,
-				rangeEnd, rangeKey, rangeStart, search, sortString);
+				RandomTestUtil.randomLong(), id, accountIds, channelId, page,
+				pageSize, rangeEnd, rangeKey, rangeStart, search, sortString);
 
 		List<?> items = faroFDSResultsDisplay.getItems();
 
@@ -361,8 +362,8 @@ public class CampaignFaroControllerTest {
 		Mockito.verify(
 			_contactsEngineClient
 		).getCampaignIndividuals(
-			_faroProject, channelId, id, search, rangeEnd, rangeKey, rangeStart,
-			sortString, page, pageSize
+			_faroProject, accountIds, channelId, id, search, rangeEnd, rangeKey,
+			rangeStart, sortString, page, pageSize
 		);
 	}
 

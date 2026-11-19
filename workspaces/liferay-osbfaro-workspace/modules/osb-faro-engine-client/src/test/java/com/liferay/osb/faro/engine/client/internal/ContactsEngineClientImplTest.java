@@ -70,6 +70,27 @@ public class ContactsEngineClientImplTest {
 	}
 
 	@Test
+	public void testGetCampaignIndividuals() {
+		String accountIds = RandomTestUtil.randomString();
+		long channelId = RandomTestUtil.randomLong();
+		int cur = RandomTestUtil.randomInt();
+		int delta = RandomTestUtil.randomInt();
+		String id = RandomTestUtil.randomString();
+
+		_contactsEngineClientImpl.getCampaignIndividuals(
+			_faroProject, accountIds, channelId, id, null, null, null, null,
+			null, cur, delta);
+
+		Assert.assertEquals(accountIds, _uriVariables.get("accountIds"));
+
+		_contactsEngineClientImpl.getCampaignIndividuals(
+			_faroProject, null, channelId, id, null, null, null, null, null,
+			cur, delta);
+
+		Assert.assertFalse(_uriVariables.containsKey("accountIds"));
+	}
+
+	@Test
 	public void testGetCampaignNames() {
 		Long channelId = RandomTestUtil.randomLong();
 		int cur = RandomTestUtil.randomInt();

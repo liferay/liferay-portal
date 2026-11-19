@@ -166,6 +166,7 @@ public class CampaignFaroController extends BaseFaroController {
 	public FaroFDSResultsDisplay<Individual>
 			getIndividualsFaroFDSResultsDisplay(
 				@PathParam("groupId") long groupId, @PathParam("id") String id,
+				@QueryParam("accountIds") String accountIds,
 				@QueryParam("channelId") long channelId,
 				@QueryParam("page") int page,
 				@DefaultValue("20") @QueryParam("pageSize") int pageSize,
@@ -180,8 +181,8 @@ public class CampaignFaroController extends BaseFaroController {
 		return new FaroFDSResultsDisplay<>(
 			contactsEngineClient.getCampaignIndividuals(
 				faroProjectLocalService.getFaroProjectByGroupId(groupId),
-				channelId, id, search, rangeEnd, rangeKey, rangeStart,
-				sortString, page, pageSize),
+				accountIds, channelId, id, search, rangeEnd, rangeKey,
+				rangeStart, sortString, page, pageSize),
 			IndividualDisplay::new, page, pageSize);
 	}
 
