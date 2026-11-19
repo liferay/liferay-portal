@@ -37,11 +37,9 @@ public class EventAttributeDefinitionResourceImplTest {
 	@Before
 	public void setUp() throws Exception {
 		Mockito.when(
-			_eventAttributeDefinitionDTOConverter.toDTO(
-				Mockito.any(DTOConverterContext.class),
-				Mockito.eq(_responseEventAttributeDefinition))
+			_faroProjectLocalService.getFaroProjectByGroupId(_GROUP_ID)
 		).thenReturn(
-			_eventAttributeDefinition
+			_faroProject
 		);
 
 		Mockito.when(
@@ -61,9 +59,11 @@ public class EventAttributeDefinitionResourceImplTest {
 		);
 
 		Mockito.when(
-			_faroProjectLocalService.getFaroProjectByGroupId(_GROUP_ID)
+			_eventAttributeDefinitionDTOConverter.toDTO(
+				Mockito.any(DTOConverterContext.class),
+				Mockito.eq(_responseEventAttributeDefinition))
 		).thenReturn(
-			_faroProject
+			_eventAttributeDefinition
 		);
 
 		_eventAttributeDefinitionResourceImpl.setContextAcceptLanguage(
