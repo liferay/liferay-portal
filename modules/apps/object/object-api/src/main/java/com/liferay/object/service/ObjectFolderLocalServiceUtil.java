@@ -342,10 +342,6 @@ public class ObjectFolderLocalServiceUtil {
 		return getService().getObjectFoldersCount();
 	}
 
-	public static int getObjectFoldersCount(long companyId) {
-		return getService().getObjectFoldersCount(companyId);
-	}
-
 	public static ObjectFolder getOrAddDefaultObjectFolder(long companyId)
 		throws PortalException {
 
@@ -410,4 +406,4 @@ public class ObjectFolderLocalServiceUtil {
 			ObjectFolderLocalServiceUtil.class, ObjectFolderLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-772532336
+// LIFERAY-SERVICE-BUILDER-HASH:725352069

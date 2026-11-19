@@ -220,9 +220,6 @@ public interface ObjectFilterLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<ObjectFilter> getObjectFieldObjectFilter(long objectFieldId);
-
 	/**
 	 * Returns the object filter with the primary key.
 	 *
@@ -298,4 +295,4 @@ public interface ObjectFilterLocalService
 	public ObjectFilter updateObjectFilter(ObjectFilter objectFilter);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1984858045
+// LIFERAY-SERVICE-BUILDER-HASH:-682046791

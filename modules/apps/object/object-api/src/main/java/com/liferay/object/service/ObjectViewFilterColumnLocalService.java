@@ -289,11 +289,6 @@ public interface ObjectViewFilterColumnLocalService
 	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
 		throws PortalException;
 
-	public ObjectViewFilterColumn updateObjectViewFilterColumn(
-			long objectViewFilterColumnId, long objectViewId, String filterType,
-			String json, String objectFieldName)
-		throws PortalException;
-
 	/**
 	 * Updates the object view filter column in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	 *
@@ -309,4 +304,4 @@ public interface ObjectViewFilterColumnLocalService
 		ObjectViewFilterColumn objectViewFilterColumn);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1073402632
+// LIFERAY-SERVICE-BUILDER-HASH:1131169235

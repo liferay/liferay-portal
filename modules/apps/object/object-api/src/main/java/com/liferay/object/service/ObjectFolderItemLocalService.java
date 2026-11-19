@@ -210,10 +210,6 @@ public interface ObjectFolderItemLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ObjectFolderItem fetchObjectFolderItem(long objectFolderItemId);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public ObjectFolderItem fetchObjectFolderItem(
-		long objectDefinitionId, long objectFolderId);
-
 	/**
 	 * Returns the object folder item with the matching UUID and company.
 	 *
@@ -246,11 +242,6 @@ public interface ObjectFolderItemLocalService
 	public ObjectFolderItem getObjectFolderItem(long objectFolderItemId)
 		throws PortalException;
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public ObjectFolderItem getObjectFolderItem(
-			long objectDefinitionId, long objectFolderId)
-		throws PortalException;
-
 	/**
 	 * Returns the object folder item with the matching UUID and company.
 	 *
@@ -277,10 +268,6 @@ public interface ObjectFolderItemLocalService
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<ObjectFolderItem> getObjectFolderItems(int start, int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<ObjectFolderItem> getObjectFolderItemsByObjectDefinitionId(
-		long objectDefinitionId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<ObjectFolderItem> getObjectFolderItemsByObjectFolderId(
@@ -334,4 +321,4 @@ public interface ObjectFolderItemLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:738040805
+// LIFERAY-SERVICE-BUILDER-HASH:579848364

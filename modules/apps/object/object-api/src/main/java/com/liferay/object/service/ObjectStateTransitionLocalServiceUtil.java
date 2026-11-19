@@ -277,12 +277,6 @@ public class ObjectStateTransitionLocalServiceUtil {
 			objectStateFlowId);
 	}
 
-	public static List<ObjectStateTransition>
-		getObjectStateObjectStateTransitions(long objectStateId) {
-
-		return getService().getObjectStateObjectStateTransitions(objectStateId);
-	}
-
 	/**
 	 * Returns the object state transition with the primary key.
 	 *
@@ -391,4 +385,4 @@ public class ObjectStateTransitionLocalServiceUtil {
 			ObjectStateTransitionLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1967217996
+// LIFERAY-SERVICE-BUILDER-HASH:-682313312

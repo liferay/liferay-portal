@@ -244,14 +244,6 @@ public class ObjectEntryVersionLocalServiceUtil {
 			userId, objectEntry, version, serviceContext);
 	}
 
-	public static ObjectEntryVersion expireObjectEntryVersion(
-			long userId, ObjectEntryVersion objectEntryVersion)
-		throws PortalException {
-
-		return getService().expireObjectEntryVersion(
-			userId, objectEntryVersion);
-	}
-
 	public static void expireObjectEntryVersions(
 			long userId, com.liferay.object.model.ObjectEntry objectEntry,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
@@ -382,20 +374,6 @@ public class ObjectEntryVersionLocalServiceUtil {
 		return getService().getObjectEntryVersions(objectEntryId);
 	}
 
-	public static List<ObjectEntryVersion> getObjectEntryVersions(
-		long objectEntryId, int start, int end) {
-
-		return getService().getObjectEntryVersions(objectEntryId, start, end);
-	}
-
-	public static List<ObjectEntryVersion> getObjectEntryVersions(
-		long objectEntryId, int start, int end,
-		OrderByComparator<ObjectEntryVersion> orderByComparator) {
-
-		return getService().getObjectEntryVersions(
-			objectEntryId, start, end, orderByComparator);
-	}
-
 	/**
 	 * Returns the number of object entry versions.
 	 *
@@ -467,4 +445,4 @@ public class ObjectEntryVersionLocalServiceUtil {
 			ObjectEntryVersionLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1119793392
+// LIFERAY-SERVICE-BUILDER-HASH:-663612995

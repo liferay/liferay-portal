@@ -300,9 +300,6 @@ public interface ObjectFolderLocalService
 	public int getObjectFoldersCount();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getObjectFoldersCount(long companyId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ObjectFolder getOrAddDefaultObjectFolder(long companyId)
 		throws PortalException;
 
@@ -347,4 +344,4 @@ public interface ObjectFolderLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1789072714
+// LIFERAY-SERVICE-BUILDER-HASH:-1368411652

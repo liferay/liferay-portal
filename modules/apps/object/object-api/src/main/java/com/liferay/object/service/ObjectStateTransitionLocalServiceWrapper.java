@@ -314,14 +314,6 @@ public class ObjectStateTransitionLocalServiceWrapper
 			getObjectStateFlowObjectStateTransitions(objectStateFlowId);
 	}
 
-	@Override
-	public java.util.List<com.liferay.object.model.ObjectStateTransition>
-		getObjectStateObjectStateTransitions(long objectStateId) {
-
-		return _objectStateTransitionLocalService.
-			getObjectStateObjectStateTransitions(objectStateId);
-	}
-
 	/**
 	 * Returns the object state transition with the primary key.
 	 *
@@ -458,4 +450,4 @@ public class ObjectStateTransitionLocalServiceWrapper
 		_objectStateTransitionLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1566074291
+// LIFERAY-SERVICE-BUILDER-HASH:-1272698798

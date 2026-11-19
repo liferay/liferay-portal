@@ -358,14 +358,6 @@ public class ObjectEntryFolderLocalServiceUtil {
 			groupId, companyId, parentObjectEntryFolderId, start, end);
 	}
 
-	public static List<ObjectEntryFolder>
-		getObjectEntryFoldersByExternalReferenceCode(
-			String externalReferenceCode, List<Long> groupIds, long companyId) {
-
-		return getService().getObjectEntryFoldersByExternalReferenceCode(
-			externalReferenceCode, groupIds, companyId);
-	}
-
 	/**
 	 * Returns all the object entry folders matching the UUID and company.
 	 *
@@ -551,4 +543,4 @@ public class ObjectEntryFolderLocalServiceUtil {
 			ObjectEntryFolderLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-446673031
+// LIFERAY-SERVICE-BUILDER-HASH:-140947892

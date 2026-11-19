@@ -380,18 +380,6 @@ public class ObjectViewFilterColumnLocalServiceWrapper
 			primaryKeyObj);
 	}
 
-	@Override
-	public com.liferay.object.model.ObjectViewFilterColumn
-			updateObjectViewFilterColumn(
-				long objectViewFilterColumnId, long objectViewId,
-				String filterType, String json, String objectFieldName)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _objectViewFilterColumnLocalService.updateObjectViewFilterColumn(
-			objectViewFilterColumnId, objectViewId, filterType, json,
-			objectFieldName);
-	}
-
 	/**
 	 * Updates the object view filter column in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	 *
@@ -434,4 +422,4 @@ public class ObjectViewFilterColumnLocalServiceWrapper
 		_objectViewFilterColumnLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1499082761
+// LIFERAY-SERVICE-BUILDER-HASH:1224884773

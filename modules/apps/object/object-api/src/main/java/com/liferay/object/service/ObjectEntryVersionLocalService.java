@@ -215,10 +215,6 @@ public interface ObjectEntryVersionLocalService
 			ServiceContext serviceContext)
 		throws PortalException;
 
-	public ObjectEntryVersion expireObjectEntryVersion(
-			long userId, ObjectEntryVersion objectEntryVersion)
-		throws PortalException;
-
 	public void expireObjectEntryVersions(
 			long userId, ObjectEntry objectEntry, ServiceContext serviceContext)
 		throws Exception;
@@ -306,15 +302,6 @@ public interface ObjectEntryVersionLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<ObjectEntryVersion> getObjectEntryVersions(long objectEntryId);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<ObjectEntryVersion> getObjectEntryVersions(
-		long objectEntryId, int start, int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<ObjectEntryVersion> getObjectEntryVersions(
-		long objectEntryId, int start, int end,
-		OrderByComparator<ObjectEntryVersion> orderByComparator);
-
 	/**
 	 * Returns the number of object entry versions.
 	 *
@@ -364,4 +351,4 @@ public interface ObjectEntryVersionLocalService
 		ObjectEntryVersion objectEntryVersion);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1508052147
+// LIFERAY-SERVICE-BUILDER-HASH:138158682

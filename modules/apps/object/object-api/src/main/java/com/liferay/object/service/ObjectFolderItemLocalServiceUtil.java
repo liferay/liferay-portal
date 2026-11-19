@@ -241,13 +241,6 @@ public class ObjectFolderItemLocalServiceUtil {
 		return getService().fetchObjectFolderItem(objectFolderItemId);
 	}
 
-	public static ObjectFolderItem fetchObjectFolderItem(
-		long objectDefinitionId, long objectFolderId) {
-
-		return getService().fetchObjectFolderItem(
-			objectDefinitionId, objectFolderId);
-	}
-
 	/**
 	 * Returns the object folder item with the matching UUID and company.
 	 *
@@ -296,14 +289,6 @@ public class ObjectFolderItemLocalServiceUtil {
 		return getService().getObjectFolderItem(objectFolderItemId);
 	}
 
-	public static ObjectFolderItem getObjectFolderItem(
-			long objectDefinitionId, long objectFolderId)
-		throws PortalException {
-
-		return getService().getObjectFolderItem(
-			objectDefinitionId, objectFolderId);
-	}
-
 	/**
 	 * Returns the object folder item with the matching UUID and company.
 	 *
@@ -335,13 +320,6 @@ public class ObjectFolderItemLocalServiceUtil {
 		int start, int end) {
 
 		return getService().getObjectFolderItems(start, end);
-	}
-
-	public static List<ObjectFolderItem>
-		getObjectFolderItemsByObjectDefinitionId(long objectDefinitionId) {
-
-		return getService().getObjectFolderItemsByObjectDefinitionId(
-			objectDefinitionId);
 	}
 
 	public static List<ObjectFolderItem> getObjectFolderItemsByObjectFolderId(
@@ -422,4 +400,4 @@ public class ObjectFolderItemLocalServiceUtil {
 			ObjectFolderItemLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-576280919
+// LIFERAY-SERVICE-BUILDER-HASH:-1312927508

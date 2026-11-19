@@ -335,16 +335,6 @@ public class ObjectViewFilterColumnLocalServiceUtil {
 		return getService().getPersistedModel(primaryKeyObj);
 	}
 
-	public static ObjectViewFilterColumn updateObjectViewFilterColumn(
-			long objectViewFilterColumnId, long objectViewId, String filterType,
-			String json, String objectFieldName)
-		throws PortalException {
-
-		return getService().updateObjectViewFilterColumn(
-			objectViewFilterColumnId, objectViewId, filterType, json,
-			objectFieldName);
-	}
-
 	/**
 	 * Updates the object view filter column in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	 *
@@ -372,4 +362,4 @@ public class ObjectViewFilterColumnLocalServiceUtil {
 			ObjectViewFilterColumnLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1869740608
+// LIFERAY-SERVICE-BUILDER-HASH:-1450709922

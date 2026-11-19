@@ -265,12 +265,6 @@ public class ObjectLayoutTabLocalServiceUtil {
 		return getService().getIndexableActionableDynamicQuery();
 	}
 
-	public static List<ObjectLayoutTab> getObjectLayoutObjectLayoutTabs(
-		long objectLayoutId) {
-
-		return getService().getObjectLayoutObjectLayoutTabs(objectLayoutId);
-	}
-
 	/**
 	 * Returns the object layout tab with the primary key.
 	 *
@@ -385,4 +379,4 @@ public class ObjectLayoutTabLocalServiceUtil {
 			ObjectLayoutTabLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1733747140
+// LIFERAY-SERVICE-BUILDER-HASH:-84091991

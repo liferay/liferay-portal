@@ -233,10 +233,6 @@ public interface ObjectStateTransitionLocalService
 	public List<ObjectStateTransition> getObjectStateFlowObjectStateTransitions(
 		long objectStateFlowId);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<ObjectStateTransition> getObjectStateObjectStateTransitions(
-		long objectStateId);
-
 	/**
 	 * Returns the object state transition with the primary key.
 	 *
@@ -318,4 +314,4 @@ public interface ObjectStateTransitionLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-768642418
+// LIFERAY-SERVICE-BUILDER-HASH:2039245901

@@ -269,14 +269,6 @@ public class ObjectFolderItemLocalServiceWrapper
 			objectFolderItemId);
 	}
 
-	@Override
-	public com.liferay.object.model.ObjectFolderItem fetchObjectFolderItem(
-		long objectDefinitionId, long objectFolderId) {
-
-		return _objectFolderItemLocalService.fetchObjectFolderItem(
-			objectDefinitionId, objectFolderId);
-	}
-
 	/**
 	 * Returns the object folder item with the matching UUID and company.
 	 *
@@ -333,15 +325,6 @@ public class ObjectFolderItemLocalServiceWrapper
 			objectFolderItemId);
 	}
 
-	@Override
-	public com.liferay.object.model.ObjectFolderItem getObjectFolderItem(
-			long objectDefinitionId, long objectFolderId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _objectFolderItemLocalService.getObjectFolderItem(
-			objectDefinitionId, objectFolderId);
-	}
-
 	/**
 	 * Returns the object folder item with the matching UUID and company.
 	 *
@@ -375,14 +358,6 @@ public class ObjectFolderItemLocalServiceWrapper
 		getObjectFolderItems(int start, int end) {
 
 		return _objectFolderItemLocalService.getObjectFolderItems(start, end);
-	}
-
-	@Override
-	public java.util.List<com.liferay.object.model.ObjectFolderItem>
-		getObjectFolderItemsByObjectDefinitionId(long objectDefinitionId) {
-
-		return _objectFolderItemLocalService.
-			getObjectFolderItemsByObjectDefinitionId(objectDefinitionId);
 	}
 
 	@Override
@@ -482,4 +457,4 @@ public class ObjectFolderItemLocalServiceWrapper
 	private ObjectFolderItemLocalService _objectFolderItemLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1265670684
+// LIFERAY-SERVICE-BUILDER-HASH:-635246931

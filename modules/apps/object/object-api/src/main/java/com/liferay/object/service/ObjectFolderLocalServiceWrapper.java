@@ -395,11 +395,6 @@ public class ObjectFolderLocalServiceWrapper
 	}
 
 	@Override
-	public int getObjectFoldersCount(long companyId) {
-		return _objectFolderLocalService.getObjectFoldersCount(companyId);
-	}
-
-	@Override
 	public com.liferay.object.model.ObjectFolder getOrAddDefaultObjectFolder(
 			long companyId)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -484,4 +479,4 @@ public class ObjectFolderLocalServiceWrapper
 	private ObjectFolderLocalService _objectFolderLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1894342813
+// LIFERAY-SERVICE-BUILDER-HASH:-1039437113

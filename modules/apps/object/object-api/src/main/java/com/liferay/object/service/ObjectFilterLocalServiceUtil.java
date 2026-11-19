@@ -248,12 +248,6 @@ public class ObjectFilterLocalServiceUtil {
 		return getService().getIndexableActionableDynamicQuery();
 	}
 
-	public static List<ObjectFilter> getObjectFieldObjectFilter(
-		long objectFieldId) {
-
-		return getService().getObjectFieldObjectFilter(objectFieldId);
-	}
-
 	/**
 	 * Returns the object filter with the primary key.
 	 *
@@ -347,4 +341,4 @@ public class ObjectFilterLocalServiceUtil {
 			ObjectFilterLocalServiceUtil.class, ObjectFilterLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1024195862
+// LIFERAY-SERVICE-BUILDER-HASH:-861988776

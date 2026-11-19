@@ -230,10 +230,6 @@ public interface ObjectLayoutTabLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<ObjectLayoutTab> getObjectLayoutObjectLayoutTabs(
-		long objectLayoutId);
-
 	/**
 	 * Returns the object layout tab with the primary key.
 	 *
@@ -318,4 +314,4 @@ public interface ObjectLayoutTabLocalService
 		ObjectLayoutTab objectLayoutTab);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1904373129
+// LIFERAY-SERVICE-BUILDER-HASH:58438664
