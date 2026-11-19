@@ -2,7 +2,8 @@ import {AssetTypes} from 'shared/util/constants';
 import {CSVType} from 'shared/components/download-report/utils';
 import {isEmpty} from 'lodash';
 import {Name} from 'shared/components/audience-report/types';
-import {Routes, setUriQueryValues, toRoute} from 'shared/util/router';
+import {setUriQueryValues} from 'shared/util/url';
+import {Routes, toRoute} from 'shared/util/router';
 
 /**
  * Describes one asset type the dashboards cover.

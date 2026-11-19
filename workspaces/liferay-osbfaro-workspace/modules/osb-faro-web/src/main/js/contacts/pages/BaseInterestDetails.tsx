@@ -7,21 +7,15 @@ import InterestPagesList from 'contacts/components/InterestPagesList';
 import React from 'react';
 import SearchableEntityTable from 'shared/components/SearchableEntityTable';
 import {Account, Segment} from 'shared/util/records';
-import {
-	ACCOUNTS,
-	INDIVIDUALS,
-	PAGES,
-	Routes,
-	SEGMENTS,
-	setUriQueryValue,
-	toRoute,
-} from 'shared/util/router';
+import {ACCOUNTS, INDIVIDUALS, PAGES, SEGMENTS} from 'shared/util/constants';
 import {createOrderIOMap, NAME} from 'shared/util/pagination';
 import {formatUTCDateFromUnix} from 'shared/util/date';
 import {getSafeDecodedURIComponent} from 'shared/util/util';
 import {individualsListColumns} from 'shared/util/table-columns';
 import {sub} from 'shared/util/lang';
 import {useQueryPagination} from 'shared/hooks/useQueryPagination';
+import {setUriQueryValue} from 'shared/util/url';
+import {Routes, toRoute} from 'shared/util/router';
 
 const tabIds = {
 	INDIVIDUALS,

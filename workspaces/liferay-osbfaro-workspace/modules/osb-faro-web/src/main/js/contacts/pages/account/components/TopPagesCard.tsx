@@ -13,8 +13,9 @@ import {getSafeRangeSelectors} from 'shared/util/util';
 import {OrderByDirections} from 'shared/util/constants';
 import {pickBy} from 'lodash';
 import {RangeSelectors} from 'shared/types';
-import {Routes, setUriQueryValues, toRoute} from 'shared/util/router';
 import {useQuery} from '@apollo/client';
+import {setUriQueryValues} from 'shared/util/url';
+import {Routes, toRoute} from 'shared/util/router';
 
 const TopPagesCard: React.FC<React.HTMLAttributes<HTMLElement>> = ({
 	className,

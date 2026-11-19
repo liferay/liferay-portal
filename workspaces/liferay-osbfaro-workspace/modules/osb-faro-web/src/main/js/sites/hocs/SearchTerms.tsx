@@ -19,7 +19,7 @@ import {
 } from './mappers/composition-query';
 import {graphql, OperationOption} from '@apollo/client/react/hoc';
 import {pickBy} from 'lodash';
-import {setUriQueryValues} from 'shared/util/router';
+import {setUriQueryValues} from 'shared/util/url';
 import {sub} from 'shared/util/lang';
 import {useChannelContext} from 'shared/context/channel';
 import {useParams} from 'react-router-dom';

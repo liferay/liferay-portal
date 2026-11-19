@@ -1,8 +1,9 @@
 import {AssetTypes} from 'shared/util/constants';
 import {getAssetDescriptorByRESTType} from 'assets/descriptors';
 import {RangeSelectors} from 'shared/types';
-import {Routes, setUriQueryValues, toRoute} from 'shared/util/router';
 import {UserSessionEvent} from 'shared/queries/UserSessionQuery';
+import {setUriQueryValues} from 'shared/util/url';
+import {Routes, toRoute} from 'shared/util/router';
 
 /**
  * Maps an event's `applicationId` to the trailing `:type` segment value and the

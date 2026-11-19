@@ -369,6 +369,8 @@ export enum UserStatuses {
 	Requested = 2,
 }
 
+export const ACCOUNTS = 'accounts';
+
 export const ALIGNMENTS_MAP = {
 	bottom: ALIGN_POSITIONS.BottomCenter,
 	'bottom-left': ALIGN_POSITIONS.BottomLeft,
@@ -441,6 +443,8 @@ export const ASSET_METRICS = [
 
 export const DATA_RETENTION_PERIOD_KEY = 'data-retention-period';
 
+export const DATE_MODIFIED = 'dateModified';
+
 export const DEVELOPER_MODE = FARO_DEV_MODE;
 
 export const ENABLE_ADD_TRIAL_WORKSPACE =
@@ -455,6 +459,12 @@ export const EXPIRATION_DATE_LABELS = {
 	[ExpirationPeriod.Indefinite]: Liferay.Language.get('indefinite'),
 };
 
+export const INDIVIDUALS = 'individuals';
+
+export const INDIVIDUAL_COUNT = 'individualCount';
+
+export const LAST_MEMBERSHIP_UPDATE_DATE = 'lastMembershipUpdateDate';
+
 export const MAX_LABEL_LENGTH = 35;
 
 export const MAX_PAGE_WIDTH = 1280;
@@ -464,6 +474,10 @@ export const NO_DATA_VALUE = '–';
 export const ONE_DAY = '86400000';
 
 export const ONE_MONTH = '2592000000';
+
+export const PAGES = 'pages';
+
+export const PERIOD = 'rangeKey';
 
 export const POSITIONS = [
 	'top',
@@ -476,7 +490,17 @@ export const POSITIONS = [
 	'top',
 ];
 
+export const SEGMENTS = 'segments';
+
+export const SEGMENT_CATEGORY = 'segmentCategory';
+
+export const SEGMENT_STATE = 'state';
+
+export const SEGMENT_TYPE = 'segmentType';
+
 export const SEVEN_MONTHS = '18144000000';
+
+export const STATUSES = 'statuses';
 
 export const THIRTEEN_MONTHS = '33696000000';
 
@@ -498,6 +522,12 @@ export const TIME_RANGE_LABELS = {
 export const TREND_PLACEHOLDER = '\u00A0';
 
 export const TWO_DAYS = '172800000';
+
+export const TYPES = 'types';
+
+export const USERS = 'users';
+
+export const USER_NAME = 'userName';
 
 const Constants: Window['faroConstants'] = window.faroConstants;
 

@@ -4,11 +4,12 @@ import IndividualsDataSet from './IndividualsDataSet';
 import React from 'react';
 import {DropdownRangeKey} from 'shared/components/dropdown-range-key/DropdownRangeKey';
 import {pickBy} from 'lodash';
-import {Routes, setUriQueryValues, toRoute} from 'shared/util/router';
 import {Text} from '@clayui/core';
 import {useParams} from 'react-router-dom';
 import {useQueryRangeSelectors} from 'shared/hooks/useQueryRangeSelectors';
 import {useRangeSelectorChange} from 'shared/hooks/useRangeSelectorChange';
+import {setUriQueryValues} from 'shared/util/url';
+import {Routes, toRoute} from 'shared/util/router';
 
 const MostEngagedIndividuals: React.FC = () => {
 	const {channelId, groupId, id} = useParams<{

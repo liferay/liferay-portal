@@ -8,7 +8,7 @@ import {
 	isFeatureFlagEnabled,
 	setFeatureFlag,
 } from 'shared/util/feature-flags';
-import {reloadPage} from 'shared/util/router';
+import {reloadPage} from 'shared/util/url';
 
 /**
  * Hidden, URL-only panel (`/workspace/:groupId/settings/feature-flags`) for

@@ -47,7 +47,7 @@ import {List, Map} from 'immutable';
 import {noop, omit, pickBy, truncate} from 'lodash';
 import {paginationConfig, paginationDefaults} from 'shared/util/pagination';
 import {PropTypes} from 'prop-types';
-import {setUriQueryValues} from 'shared/util/router';
+import {setUriQueryValues} from 'shared/util/url';
 import {sub} from 'shared/util/lang';
 
 const SearchableEntityTableHOC = withStatefulPagination(

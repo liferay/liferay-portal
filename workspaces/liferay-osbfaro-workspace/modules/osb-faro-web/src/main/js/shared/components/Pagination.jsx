@@ -8,7 +8,7 @@ import getCN from 'classnames';
 import React from 'react';
 import {isFunction, times} from 'lodash';
 import {PropTypes} from 'prop-types';
-import {setUriQueryValue} from 'shared/util/router';
+import {setUriQueryValue} from 'shared/util/url';
 
 const DEFAULT_PAGE = FaroConstants.pagination.cur;
 

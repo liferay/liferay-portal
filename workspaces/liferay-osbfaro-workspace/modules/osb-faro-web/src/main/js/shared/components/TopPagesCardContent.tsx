@@ -17,7 +17,8 @@ import {NameCell} from 'shared/components/table/cell-components';
 import {OrderByDirections} from 'shared/util/constants';
 import {pickBy} from 'lodash';
 import {RangeSelectors} from 'shared/types';
-import {Routes, setUriQueryValues, toRoute} from 'shared/util/router';
+import {setUriQueryValues} from 'shared/util/url';
+import {Routes, toRoute} from 'shared/util/router';
 
 const ROW_IDENTIFIER = ['assetId', 'assetTitle'];
 

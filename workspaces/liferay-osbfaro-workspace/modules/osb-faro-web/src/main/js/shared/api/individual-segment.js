@@ -1,7 +1,10 @@
-import Constants, {TimeIntervals} from 'shared/util/constants';
+import Constants, {
+	TimeIntervals,
+	INDIVIDUALS,
+	SEGMENTS,
+} from 'shared/util/constants';
 import sendRequest from 'shared/util/request';
 import {buildOrderByFields, NAME} from 'shared/util/pagination';
-import {INDIVIDUALS, SEGMENTS} from 'shared/util/router';
 
 const {
 	pagination: {cur: DEFAULT_PAGE, delta: DEFAULT_DELTA, orderDefault},

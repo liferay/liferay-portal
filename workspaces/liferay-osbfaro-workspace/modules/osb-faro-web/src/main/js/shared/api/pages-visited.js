@@ -1,4 +1,4 @@
-import Constants, {TimeIntervals} from 'shared/util/constants';
+import Constants, {TimeIntervals, PAGES} from 'shared/util/constants';
 import moment from 'moment';
 import sendRequest from 'shared/util/request';
 import {
@@ -6,7 +6,6 @@ import {
 	createOrderIOMap,
 	TITLE,
 } from 'shared/util/pagination';
-import {PAGES} from 'shared/util/router';
 
 const {
 	pagination: {cur: DEFAULT_PAGE, delta: DEFAULT_DELTA},

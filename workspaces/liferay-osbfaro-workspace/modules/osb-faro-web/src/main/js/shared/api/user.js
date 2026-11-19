@@ -1,7 +1,6 @@
 import sendRequest from 'shared/util/request';
 import {buildOrderByFields} from 'shared/util/pagination';
-import {USERS} from 'shared/util/router';
-import {UserStatuses} from 'shared/util/constants';
+import {UserStatuses, USERS} from 'shared/util/constants';
 
 function delete$({groupId, ids}) {
 	return sendRequest({

@@ -5,13 +5,14 @@ import getInterestsQuery from 'contacts/queries/InterestsQuery';
 import React from 'react';
 import URLConstants from 'shared/util/url-constants';
 import {compositionListColumns} from 'shared/util/table-columns';
-import {CompositionTypes} from 'shared/util/constants';
+import {CompositionTypes, PAGES} from 'shared/util/constants';
 import {
 	getMapResultToProps,
 	mapCardPropsToOptions
 } from 'contacts/hoc/mappers/interests-query';
 import {graphql} from '@apollo/client/react/hoc';
-import {PAGES, Routes, setUriQueryValue, toRoute} from 'shared/util/router';
+import {setUriQueryValue} from 'shared/util/url';
+import {Routes, toRoute} from 'shared/util/router';
 import {ReportContainer} from 'shared/components/download-report/DownloadPDFReport';
 import {withTableData} from 'shared/hoc';
 

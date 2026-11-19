@@ -1,5 +1,6 @@
 import {RangeKeyTimeRanges} from 'shared/util/constants';
-import {setUriQueryValue, setUriQueryValues, toRoute} from 'shared/util/router';
+import {setUriQueryValue, setUriQueryValues} from 'shared/util/url';
+import {toRoute} from 'shared/util/router';
 
 /**
  * Get URL

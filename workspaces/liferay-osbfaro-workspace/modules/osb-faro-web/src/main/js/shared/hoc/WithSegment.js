@@ -1,6 +1,7 @@
 import withAction from './WithAction';
 import {fetchSegment} from '../actions/segments';
-import {Routes, SEGMENTS, toRoute} from 'shared/util/router';
+import {SEGMENTS} from 'shared/util/constants';
+import {Routes, toRoute} from 'shared/util/router';
 
 export const withSegment = (includeReferencedObjects = false) =>
 	withAction(

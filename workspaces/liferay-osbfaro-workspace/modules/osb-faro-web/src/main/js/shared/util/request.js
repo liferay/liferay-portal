@@ -1,6 +1,6 @@
 import ValidationError from 'shared/util/ValidationError';
 import {forEach, get, keys, mapValues} from 'lodash';
-import {reloadPage} from 'shared/util/router';
+import {reloadPage} from 'shared/util/url';
 
 export const UNAUTHORIZED_ACCESS = 'Unauthorized Access';
 

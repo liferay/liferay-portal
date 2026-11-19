@@ -31,19 +31,8 @@ import {
 } from 'shared/context/selection';
 import {ALERT_CONFIG_MAP, AlertTypes} from 'shared/components/Alert';
 import {createOrderIOMap} from 'shared/util/pagination';
-import {
-	DATE_MODIFIED,
-	INDIVIDUAL_COUNT,
-	LAST_MEMBERSHIP_UPDATE_DATE,
-	Routes,
-	SEGMENT_CATEGORY,
-	SEGMENT_STATE,
-	SEGMENT_TYPE,
-	SEGMENTS,
-	setUriQueryValue,
-	toRoute,
-	USER_NAME,
-} from 'shared/util/router';
+import {setUriQueryValue, setUriQueryValues} from 'shared/util/url';
+import {Routes, toRoute} from 'shared/util/router';
 import {DateCell} from 'shared/components/table/cell-components';
 import {
 	formatDateToTimeZone,
@@ -64,8 +53,15 @@ import {
 	SegmentStates,
 	SegmentTypes,
 	Sizes,
+	DATE_MODIFIED,
+	INDIVIDUAL_COUNT,
+	LAST_MEMBERSHIP_UPDATE_DATE,
+	SEGMENT_CATEGORY,
+	SEGMENT_STATE,
+	SEGMENT_TYPE,
+	SEGMENTS,
+	USER_NAME,
 } from 'shared/util/constants';
-import {setUriQueryValues} from 'shared/util/router';
 import {sub} from 'shared/util/lang';
 import {toThousands} from 'shared/util/numbers';
 import {useModal} from '@clayui/modal';

@@ -23,12 +23,8 @@ import {getMimeType} from 'assets/components/mime-type';
 import {InfoPanel} from 'assets/components/InfoPanel';
 import {pickBy} from 'lodash';
 import {RangeSelectors} from 'shared/types';
-import {
-	removeUriQueryParam,
-	Routes,
-	setUriQueryValues,
-	toRoute,
-} from 'shared/util/router';
+import {removeUriQueryParam, setUriQueryValues} from 'shared/util/url';
+import {Routes, toRoute} from 'shared/util/router';
 import {toThousands} from 'shared/util/numbers';
 import {useChannelContext} from 'shared/context/channel';
 import {useLocation, useParams} from 'react-router-dom';

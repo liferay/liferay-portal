@@ -9,7 +9,8 @@ import React from 'react';
 import {CSVType} from 'shared/components/download-report/utils';
 import {DownloadStaticCSVReport} from 'shared/components/download-report/DownloadStaticCSVReport';
 import {ReferencedObjectsProvider} from 'segment/segment-editor/dynamic/context/referencedObjects';
-import {Routes, SEGMENTS, setUriQueryValues, toRoute} from 'shared/util/router';
+import {setUriQueryValues} from 'shared/util/url';
+import {Routes, toRoute} from 'shared/util/router';
 import {SectionHeader} from 'shared/components/SectionHeader';
 import {getSegmentAlerts} from 'segment/utils/alerts';
 import {Segment} from 'shared/util/records';
@@ -17,6 +18,7 @@ import {
 	SegmentCategories,
 	SegmentStates,
 	SegmentTypes,
+	SEGMENTS,
 } from 'shared/util/constants';
 import {useChannelContext} from 'shared/context/channel';
 import {useDeleteSegments} from 'segment/hooks/useDeleteSegments';

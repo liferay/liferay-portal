@@ -21,11 +21,12 @@ import {getMimeType} from 'assets/components/mime-type';
 import {getSafeRangeSelectors} from 'shared/util/util';
 import {ITopAsset, TopAssetMetric} from 'shared/api/assets';
 import {RangeSelectors, SafeRangeSelectors} from 'shared/types';
-import {Routes, setUriQueryValues, toRoute} from 'shared/util/router';
 import {toThousands} from 'shared/util/numbers';
 import {useHistoryAdapter} from 'shared/hooks/useHistoryAdapter';
 import {useParams} from 'react-router-dom';
 import {useRequest} from 'shared/hooks/useRequest';
+import {setUriQueryValues} from 'shared/util/url';
+import {Routes, toRoute} from 'shared/util/router';
 
 const TABS = ['content', 'files'] as const;
 

@@ -1,10 +1,6 @@
-import {
-	ACCOUNTS,
-	Routes,
-	SEGMENTS,
-	setUriQueryValues,
-	toRoute,
-} from 'shared/util/router';
+import {ACCOUNTS, SEGMENTS} from 'shared/util/constants';
+import {setUriQueryValues} from 'shared/util/url';
+import {Routes, toRoute} from 'shared/util/router';
 
 type IBasicRouteArgs = {
 	groupId: string;

@@ -1,6 +1,7 @@
 import withAction from './WithAction';
 import {fetchIndividual} from '../actions/individuals';
-import {INDIVIDUALS, Routes, toRoute} from 'shared/util/router';
+import {INDIVIDUALS} from 'shared/util/constants';
+import {Routes, toRoute} from 'shared/util/router';
 
 export default withAction(
 	({channelId, groupId, id}) =>

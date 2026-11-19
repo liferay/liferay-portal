@@ -11,8 +11,9 @@ import TopPagesCard from 'sites/components/TopPagesCard';
 import VisitorsByTimeCard from 'sites/hocs/VisitorsByTimeCard';
 import {CompositionTypes} from 'shared/util/constants';
 import {pickBy} from 'lodash';
-import {Routes, setUriQueryValues, toRoute} from 'shared/util/router';
 import {sub} from 'shared/util/lang';
+import {setUriQueryValues} from 'shared/util/url';
+import {Routes, toRoute} from 'shared/util/router';
 import {useParams} from 'react-router-dom';
 
 interface IOverviewProps extends React.HTMLAttributes<HTMLDivElement> {

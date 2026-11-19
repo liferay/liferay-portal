@@ -15,7 +15,8 @@ import NotificationAlertList, {
 import React, {useState} from 'react';
 import Row from './Row';
 import TextTruncate from 'shared/components/TextTruncate';
-import {getMatchedRoute, setUriQueryValues, toRoute} from 'shared/util/router';
+import {setUriQueryValues} from 'shared/util/url';
+import {getMatchedRoute, toRoute} from 'shared/util/router';
 import {IBreadcrumbArgs} from 'shared/util/breadcrumbs';
 import {pickBy} from 'lodash';
 

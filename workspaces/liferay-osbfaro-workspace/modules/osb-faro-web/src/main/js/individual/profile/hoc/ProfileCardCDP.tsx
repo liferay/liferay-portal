@@ -3,7 +3,7 @@ import ProfileCardWithDataCDP from '../components/ProfileCardWithDataCDP';
 import React from 'react';
 import {Individual} from 'shared/util/records';
 import {pickBy} from 'lodash';
-import {removeUriQueryParam, setUriQueryValues} from 'shared/util/router';
+import {removeUriQueryParam, setUriQueryValues} from 'shared/util/url';
 import {SectionHeader} from 'shared/components/SectionHeader';
 import {useHistoryAdapter} from 'shared/hooks/useHistoryAdapter';
 import {useStatefulPagination} from 'shared/hooks/useStatefulPagination';

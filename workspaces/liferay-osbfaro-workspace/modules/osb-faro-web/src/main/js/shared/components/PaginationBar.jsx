@@ -9,7 +9,7 @@ import Pagination from './Pagination';
 import React from 'react';
 import {getPluralMessage} from '../util/lang';
 import {PropTypes} from 'prop-types';
-import {setUriQueryValues} from 'shared/util/router';
+import {setUriQueryValues} from 'shared/util/url';
 import {toLocale} from 'shared/util/numbers';
 
 const {cur: DEFAULT_CUR, deltaValues} = faroConstants.pagination;

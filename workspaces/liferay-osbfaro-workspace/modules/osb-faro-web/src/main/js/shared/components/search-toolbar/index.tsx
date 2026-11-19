@@ -18,7 +18,7 @@ import {getPluralMessage} from 'shared/util/lang';
 import {Map, OrderedMap, Set} from 'immutable';
 import {noop} from 'lodash';
 import {OrderParams} from 'shared/util/records';
-import {setUriFilterValues, setUriQueryValues} from 'shared/util/router';
+import {setUriFilterValues, setUriQueryValues} from 'shared/util/url';
 import {toLocale} from 'shared/util/numbers';
 import {useHistoryAdapter} from 'shared/hooks/useHistoryAdapter';
 

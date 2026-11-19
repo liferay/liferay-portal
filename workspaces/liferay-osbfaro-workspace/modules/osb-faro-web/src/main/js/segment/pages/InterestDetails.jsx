@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import {Routes} from 'shared/util/router';
 import {Segment} from 'shared/util/records';
-import {SEGMENTS} from 'shared/util/router';
+import {SEGMENTS} from 'shared/util/constants';
 
 export default class InterestDetails extends React.Component {
 	static propTypes = {

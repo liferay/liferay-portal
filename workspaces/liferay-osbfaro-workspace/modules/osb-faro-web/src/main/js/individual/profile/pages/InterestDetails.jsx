@@ -9,8 +9,8 @@ import {getSafeDecodedURIComponent} from 'shared/util/util';
 import {Individual} from 'shared/util/records';
 import {PropTypes} from 'prop-types';
 import {Routes, toRoute} from 'shared/util/router';
-import {setUriQueryValue} from 'shared/util/router';
 import {sub} from 'shared/util/lang';
+import {setUriQueryValue} from 'shared/util/url';
 
 export default class InterestDetails extends React.Component {
 	static defaultProps = {

@@ -11,9 +11,9 @@ import {
 	getDefaultSortOrder,
 	NAME,
 } from 'shared/util/pagination';
-import {EntityTypes, Sizes} from 'shared/util/constants';
+import {EntityTypes, Sizes, SEGMENTS} from 'shared/util/constants';
 import {RootState} from 'shared/store';
-import {Routes, SEGMENTS, toRoute} from 'shared/util/router';
+import {Routes, toRoute} from 'shared/util/router';
 import {useQueryPagination} from 'shared/hooks/useQueryPagination';
 
 interface IFetchAssociatedSegmentsArgs {

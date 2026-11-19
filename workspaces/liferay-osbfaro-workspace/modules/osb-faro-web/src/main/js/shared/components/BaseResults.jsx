@@ -12,7 +12,7 @@ import {ACTION_TYPES, SelectionContext} from 'shared/context/selection';
 import {autoCancel, hasRequest} from 'shared/util/request-decorator';
 import {hasChanges} from 'shared/util/react';
 import {paginationConfig, paginationDefaults} from 'shared/util/pagination';
-import {setUriFilterValues, setUriQueryValues} from 'shared/util/router';
+import {setUriFilterValues, setUriQueryValues} from 'shared/util/url';
 import {withHistory} from 'shared/hoc';
 
 const {cur: defaultPage} = Constants.pagination;

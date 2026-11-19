@@ -7,7 +7,7 @@ import {Align} from '@clayui/drop-down';
 import {DropdownRangeKey} from '../dropdown-range-key/DropdownRangeKey';
 import {pickBy} from 'lodash';
 import {RangeSelectors} from 'shared/types';
-import {setUriQueryValues} from 'shared/util/router';
+import {setUriQueryValues} from 'shared/util/url';
 import {Text} from '@clayui/core';
 import {useHistoryAdapter} from 'shared/hooks/useHistoryAdapter';
 

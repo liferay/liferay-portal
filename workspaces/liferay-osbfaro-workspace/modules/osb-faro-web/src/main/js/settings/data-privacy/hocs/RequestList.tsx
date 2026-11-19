@@ -2,7 +2,13 @@ import Card from 'shared/components/Card';
 import ClayButton from '@clayui/button';
 import ClayLabel, {LabelDisplayType} from '@clayui/label';
 import ClayLink from '@clayui/link';
-import Constants, {OrderByDirections, Sizes} from 'shared/util/constants';
+import Constants, {
+	OrderByDirections,
+	Sizes,
+	PERIOD,
+	STATUSES,
+	TYPES,
+} from 'shared/util/constants';
 import CrossPageSelect from 'shared/hoc/CrossPageSelect';
 import DataControlRequest from '../queries/DataControlRequestMutation';
 import getCN from 'classnames';
@@ -34,14 +40,8 @@ import {get} from 'lodash';
 import {getSafeDisplayValue} from 'shared/util/util';
 import {mapListResultsToProps} from 'shared/util/mappers';
 import {OrderedMap, Set} from 'immutable';
-import {
-	PERIOD,
-	Routes,
-	setUriQueryValues,
-	STATUSES,
-	toRoute,
-	TYPES,
-} from 'shared/util/router';
+import {setUriQueryValues} from 'shared/util/url';
+import {Routes, toRoute} from 'shared/util/router';
 import {useMutation, useQuery} from '@apollo/client';
 import {useModal} from '@clayui/modal';
 import {useParams} from 'react-router-dom';

@@ -1,4 +1,4 @@
-import Constants from 'shared/util/constants';
+import Constants, {INDIVIDUALS} from 'shared/util/constants';
 import sendRequest from 'shared/util/request';
 import {
 	buildOrderByFields,
@@ -6,7 +6,6 @@ import {
 	NAME,
 } from 'shared/util/pagination';
 import {escapeSingleQuotes} from 'segment/segment-editor/dynamic/utils/odata';
-import {INDIVIDUALS} from 'shared/util/router';
 
 const {
 	pagination: {cur: DEFAULT_PAGE, delta: DEFAULT_DELTA},

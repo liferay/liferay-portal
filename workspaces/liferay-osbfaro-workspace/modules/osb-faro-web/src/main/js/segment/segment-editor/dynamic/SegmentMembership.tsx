@@ -7,14 +7,18 @@ import InfoPopover from 'shared/components/InfoPopover';
 import React, {useId} from 'react';
 import SearchableEntitiesTableModal from 'shared/components/modals/SearchableEntitiesTableModal';
 import {ACCOUNT_NAME, createOrderIOMap, NAME} from 'shared/util/pagination';
-import {ACCOUNTS, INDIVIDUALS} from 'shared/util/router';
 import {
 	accountsListColumns,
 	individualsListColumns,
 } from 'shared/util/table-columns';
 import {ClayToggle} from '@clayui/form';
 import {Criteria} from './utils/types';
-import {SegmentCategories, SegmentTypes} from 'shared/util/constants';
+import {
+	SegmentCategories,
+	SegmentTypes,
+	ACCOUNTS,
+	INDIVIDUALS,
+} from 'shared/util/constants';
 import {sub} from 'shared/util/lang';
 import {Text} from '@clayui/core';
 import {toLocale} from 'shared/util/numbers';

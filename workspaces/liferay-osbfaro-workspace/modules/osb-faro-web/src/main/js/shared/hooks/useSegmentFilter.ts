@@ -1,4 +1,4 @@
-import {setUriQueryValues} from 'shared/util/router';
+import {setUriQueryValues} from 'shared/util/url';
 import {useHistoryAdapter} from 'shared/hooks/useHistoryAdapter';
 import {useQueryParams} from 'shared/hooks/useQueryParams';
 

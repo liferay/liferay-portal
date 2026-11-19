@@ -5,10 +5,11 @@ import WorkspacesBasePage from 'shared/components/workspaces/BasePage';
 import {getBasicProjects, getSingleProjectRoute} from 'shared/util/projects';
 import {isString} from 'lodash';
 import {Navigate} from 'react-router-dom';
-import {Routes, setUriQueryValue, toRoute} from 'shared/util/router';
 import {sub} from 'shared/util/lang';
 import {useCurrentUser} from 'shared/hooks/useCurrentUser';
 import {useFetchProjects} from 'shared/hooks/useProjects';
+import {setUriQueryValue} from 'shared/util/url';
+import {Routes, toRoute} from 'shared/util/router';
 
 const checkDisabled = ({configured}: {configured: boolean}) => configured;
 

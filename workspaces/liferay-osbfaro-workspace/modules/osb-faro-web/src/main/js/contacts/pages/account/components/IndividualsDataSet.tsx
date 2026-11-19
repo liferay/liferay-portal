@@ -5,7 +5,8 @@ import {
 	FrontendDataSet,
 	pagination,
 } from 'shared/components/FrontendDataSet';
-import {Routes, setUriQueryValues} from 'shared/util/router';
+import {setUriQueryValues} from 'shared/util/url';
+import {Routes} from 'shared/util/router';
 import {useParams} from 'react-router-dom';
 import {useRangeQueryValues} from 'shared/hooks/useRangeQueryValues';
 

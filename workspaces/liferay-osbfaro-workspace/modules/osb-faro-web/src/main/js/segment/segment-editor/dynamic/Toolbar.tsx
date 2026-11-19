@@ -1,7 +1,8 @@
 import BaseEditPage from 'shared/components/base-edit-page';
 import ClayButton from '@clayui/button';
 import React from 'react';
-import {Routes, SEGMENTS, toRoute} from 'shared/util/router';
+import {SEGMENTS} from 'shared/util/constants';
+import {Routes, toRoute} from 'shared/util/router';
 
 interface IToolbarProps {
 	channelId: string;

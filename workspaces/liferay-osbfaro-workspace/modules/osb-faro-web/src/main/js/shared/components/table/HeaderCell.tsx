@@ -7,7 +7,7 @@ import React from 'react';
 import {getDefaultSortOrder, invertSortOrder} from 'shared/util/pagination';
 import {noop} from 'lodash';
 import {OrderParams} from 'shared/util/records';
-import {setUriQueryValues} from 'shared/util/router';
+import {setUriQueryValues} from 'shared/util/url';
 
 const {
 	pagination: {cur: defaultPage},

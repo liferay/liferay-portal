@@ -3,8 +3,8 @@ import Card from 'shared/components/Card';
 import ClayLink from '@clayui/link';
 import ClayList from '@clayui/list';
 import React from 'react';
-import {ACCOUNTS, Routes, toRoute} from 'shared/util/router';
-import {DEVELOPER_MODE} from 'shared/util/constants';
+import {DEVELOPER_MODE, ACCOUNTS} from 'shared/util/constants';
+import {Routes, toRoute} from 'shared/util/router';
 import {ENABLE_BLOCKLIST_KEYWORDS} from 'shared/util/feature-flags';
 
 interface IOverviewProps {

@@ -10,9 +10,9 @@ import {addAlert} from 'shared/actions/alerts';
 import {Alert} from 'shared/types';
 import {connect} from 'react-redux';
 import {PropTypes} from 'prop-types';
-import {Routes, SEGMENTS, toRoute} from 'shared/util/router';
+import {Routes, toRoute} from 'shared/util/router';
 import {Segment} from 'shared/util/records';
-import {SegmentCategories} from 'shared/util/constants';
+import {SegmentCategories, SEGMENTS} from 'shared/util/constants';
 
 const MessageKeys = {
 	ExternalReferenceCodeIsAlreadyUsed:

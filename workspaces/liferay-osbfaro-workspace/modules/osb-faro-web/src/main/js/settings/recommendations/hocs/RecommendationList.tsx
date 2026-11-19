@@ -41,7 +41,8 @@ import {
 import {NameCell} from 'shared/components/table/cell-components';
 import {RECOMMENDATION_DELETE_MUTATION} from '../queries/RecommendationMutation';
 import {RootState} from 'shared/store';
-import {Routes, setUriQueryValues, toRoute} from 'shared/util/router';
+import {setUriQueryValues} from 'shared/util/url';
+import {Routes, toRoute} from 'shared/util/router';
 import {sub} from 'shared/util/lang';
 import {useModal} from '@clayui/modal';
 import {useCurrentUser} from 'shared/hooks/useCurrentUser';

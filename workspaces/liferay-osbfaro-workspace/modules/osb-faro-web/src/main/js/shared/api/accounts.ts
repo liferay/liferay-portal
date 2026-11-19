@@ -1,6 +1,5 @@
-import FaroConstants from 'shared/util/constants';
+import FaroConstants, {ACCOUNTS} from 'shared/util/constants';
 import sendRequest from 'shared/util/request';
-import {ACCOUNTS} from 'shared/util/router';
 import {buildOrderByFields, buildSortString} from 'shared/util/pagination';
 import {escapeSingleQuotes} from 'segment/segment-editor/dynamic/utils/odata';
 import {OrderedMap} from 'immutable';

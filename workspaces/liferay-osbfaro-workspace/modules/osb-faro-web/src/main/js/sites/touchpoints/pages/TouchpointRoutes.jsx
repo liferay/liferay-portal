@@ -19,7 +19,7 @@ import {getMatchedRoute, Routes} from 'shared/util/router';
 import {getSafeDecodedURIComponent, getSafeTouchpoint} from 'shared/util/util';
 import {pickBy} from 'lodash';
 import {PropTypes} from 'prop-types';
-import {removeUriQueryParam, setUriQueryValues} from 'shared/util/router';
+import {removeUriQueryParam, setUriQueryValues} from 'shared/util/url';
 import {useAccountFilter} from 'shared/hooks/useAccountFilter';
 import {useChannelContext} from 'shared/context/channel';
 import {useDataSources} from 'shared/context/dataSources';

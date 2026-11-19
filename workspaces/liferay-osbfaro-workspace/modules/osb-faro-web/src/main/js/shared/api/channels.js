@@ -4,7 +4,7 @@ import {
 	getDefaultSortOrder,
 	NAME,
 } from 'shared/util/pagination';
-import {USERS} from 'shared/util/router';
+import {USERS} from 'shared/util/constants';
 
 export function clear({groupId, ids}) {
 	return sendRequest({

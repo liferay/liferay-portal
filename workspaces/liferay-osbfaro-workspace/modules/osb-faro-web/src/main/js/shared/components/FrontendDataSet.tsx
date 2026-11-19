@@ -8,7 +8,8 @@ import React, {lazy, Suspense, useEffect, useState} from 'react';
 import {getCustomDateFormat} from 'shared/util/date';
 import DataValue from 'shared/components/DataValue';
 import {Text} from '@clayui/core';
-import {setUriQueryValues, toRoute} from 'shared/util/router';
+import {setUriQueryValues} from 'shared/util/url';
+import {toRoute} from 'shared/util/router';
 
 import type {
 	EConfigInURLBehavior,

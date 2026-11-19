@@ -36,10 +36,11 @@ import {Colors} from './colors-size';
 import {formatTime} from './time';
 import {capitalize, get, isNil, noop, pickBy} from 'lodash';
 import {getSafeDecodedURIComponent} from './util';
-import {Routes, setUriQueryValues, toRoute} from 'shared/util/router';
 import {SegmentTypes} from './constants';
 import {sub} from 'shared/util/lang';
 import {formatPercentFromRatio, toLocale, toRounded} from 'shared/util/numbers';
+import {setUriQueryValues} from 'shared/util/url';
+import {Routes, toRoute} from 'shared/util/router';
 
 type ChannelGroupParams = {
 	channelId: string | undefined;

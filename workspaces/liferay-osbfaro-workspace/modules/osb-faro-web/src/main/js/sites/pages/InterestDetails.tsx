@@ -4,9 +4,10 @@ import InterestDetails from 'shared/components/InterestDetails';
 import React from 'react';
 import {pickBy} from 'lodash';
 import {Router} from 'shared/types';
-import {Routes, setUriQueryValues, toRoute} from 'shared/util/router';
 import {useParams} from 'react-router-dom';
 import {useQueryRangeSelectors} from 'shared/hooks/useQueryRangeSelectors';
+import {setUriQueryValues} from 'shared/util/url';
+import {Routes, toRoute} from 'shared/util/router';
 
 interface IInterestDetailsProps extends React.HTMLAttributes<HTMLDivElement> {
 	router: Router;

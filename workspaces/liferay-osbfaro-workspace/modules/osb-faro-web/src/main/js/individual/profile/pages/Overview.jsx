@@ -9,9 +9,8 @@ import React from 'react';
 import URLConstants from 'shared/util/url-constants';
 import {connect} from 'react-redux';
 import {createOrderIOMap, INDIVIDUAL_COUNT} from 'shared/util/pagination';
-import {EntityTypes, OrderByDirections} from 'shared/util/constants';
+import {EntityTypes, OrderByDirections, INDIVIDUALS} from 'shared/util/constants';
 import {Individual} from 'shared/util/records';
-import {INDIVIDUALS} from 'shared/util/router';
 import {PropTypes} from 'prop-types';
 import {Routes, toRoute} from 'shared/util/router';
 

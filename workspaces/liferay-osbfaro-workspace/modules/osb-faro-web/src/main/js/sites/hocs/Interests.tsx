@@ -20,7 +20,8 @@ import {
 import {graphql, OperationOption} from '@apollo/client/react/hoc';
 import {pickBy} from 'lodash';
 import {RangeSelectors} from 'shared/types';
-import {Routes, setUriQueryValues, toRoute} from 'shared/util/router';
+import {setUriQueryValues} from 'shared/util/url';
+import {Routes, toRoute} from 'shared/util/router';
 import {sub} from 'shared/util/lang';
 import {useChannelContext} from 'shared/context/channel';
 import {useParams} from 'react-router-dom';

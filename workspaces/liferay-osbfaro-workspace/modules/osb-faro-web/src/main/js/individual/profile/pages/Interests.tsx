@@ -12,10 +12,9 @@ import {
 	getDefaultSortOrder,
 	NAME,
 } from 'shared/util/pagination';
-import {INDIVIDUALS} from 'shared/util/router';
 import {interestListColumns} from 'shared/util/table-columns';
+import {Sizes, INDIVIDUALS} from 'shared/util/constants';
 import {Routes, toRoute} from 'shared/util/router';
-import {Sizes} from 'shared/util/constants';
 import {sub} from 'shared/util/lang';
 import {useQueryPagination} from 'shared/hooks/useQueryPagination';
 
