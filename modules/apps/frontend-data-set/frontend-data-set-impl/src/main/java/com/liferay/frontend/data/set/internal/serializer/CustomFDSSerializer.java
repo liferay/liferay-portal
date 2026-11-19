@@ -513,6 +513,16 @@ public class CustomFDSSerializer
 	}
 
 	@Override
+	public boolean serializeShowPagination(
+		String fdsName, HttpServletRequest httpServletRequest) {
+
+		Map<String, Object> properties = getDataSetObjectEntryProperties(
+			fdsName, httpServletRequest);
+
+		return GetterUtil.getBoolean(properties.get("showPagination"), true);
+	}
+
+	@Override
 	public boolean serializeShowSearch(
 		String fdsName, HttpServletRequest httpServletRequest) {
 

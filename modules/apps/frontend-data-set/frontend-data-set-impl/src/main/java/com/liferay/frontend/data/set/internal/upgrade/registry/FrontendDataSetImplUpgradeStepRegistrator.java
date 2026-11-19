@@ -8,6 +8,7 @@ package com.liferay.frontend.data.set.internal.upgrade.registry;
 import com.liferay.frontend.data.set.internal.upgrade.v1_0_0.DataSetOrderValuesUpgradeProcess;
 import com.liferay.frontend.data.set.internal.upgrade.v1_1_0.DataSetShowSearchUpgradeProcess;
 import com.liferay.frontend.data.set.internal.upgrade.v1_2_0.DataSetFragmentEntryLinkClassNameUpgradeProcess;
+import com.liferay.frontend.data.set.internal.upgrade.v1_3_0.DataSetShowPaginationUpgradeProcess;
 import com.liferay.object.action.engine.ObjectActionEngine;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
@@ -44,6 +45,12 @@ public class FrontendDataSetImplUpgradeStepRegistrator
 			"1.1.0", "1.2.0",
 			new DataSetFragmentEntryLinkClassNameUpgradeProcess(
 				_objectDefinitionLocalService));
+
+		registry.register(
+			"1.2.0", "1.3.0",
+			new DataSetShowPaginationUpgradeProcess(
+				_companyLocalService, _objectDefinitionLocalService,
+				_objectEntryLocalService));
 	}
 
 	@Reference

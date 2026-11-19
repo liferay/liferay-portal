@@ -54,6 +54,10 @@ public interface SystemFDSEntry {
 		return false;
 	}
 
+	public default boolean getShowPagination() {
+		return true;
+	}
+
 	public default boolean getShowSearch() {
 		return true;
 	}

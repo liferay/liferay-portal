@@ -284,6 +284,18 @@ public class FDSRendererImpl implements FDSRenderer {
 							fdsName, httpServletRequest);
 					}
 				).put(
+					"showPagination",
+					() -> {
+						if (!hasConfiguration ||
+							Boolean.FALSE.equals(props.get("showPagination"))) {
+
+							return null;
+						}
+
+						return fdsSerializer.serializeShowPagination(
+							fdsName, httpServletRequest);
+					}
+				).put(
 					"showSearch",
 					() -> {
 						if (!hasConfiguration) {

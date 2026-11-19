@@ -4,7 +4,7 @@
  */
 
 import ClayButton from '@clayui/button';
-import ClayForm, {ClayInput} from '@clayui/form';
+import ClayForm, {ClayInput, ClayToggle} from '@clayui/form';
 import ClayLayout from '@clayui/layout';
 import classnames from 'classnames';
 import {fetch, navigate} from 'frontend-js-web';
@@ -28,6 +28,9 @@ function Pagination({
 	);
 	const [defaultItemsPerPage, setDefaultItemsPerPage] = useState(
 		dataSet.defaultItemsPerPage.toString()
+	);
+	const [showPagination, setShowPagination] = useState(
+		dataSet.showPagination ?? true
 	);
 	const [
 		incompatibleDefaultItemsPerPageValidationError,
@@ -97,12 +100,13 @@ function Pagination({
 			return sortedItemsPerPageArray.join(', ');
 		};
 
-		const itemsPerPage = getItemsPerPageString();
-
 		const body = {
 			defaultItemsPerPage,
 			label: dataSet.label,
-			listOfItemsPerPage: itemsPerPage,
+			listOfItemsPerPage: showPagination
+				? getItemsPerPageString()
+				: dataSet.listOfItemsPerPage,
+			showPagination,
 		};
 
 		const url = getDataSetResourceURL({
@@ -134,12 +138,13 @@ function Pagination({
 	};
 
 	const listOfItemsPerPageValidationError =
-		requiredListOfItemsPerPageValidationError ||
-		invalidNumberInListOfItemsPerPageValidationError ||
-		invalidListOfItemsPerPageLengthValidationError;
+		showPagination &&
+		(requiredListOfItemsPerPageValidationError ||
+			invalidNumberInListOfItemsPerPageValidationError ||
+			invalidListOfItemsPerPageLengthValidationError);
 
 	const defaultItemsPerPageValidationError =
-		incompatibleDefaultItemsPerPageValidationError ||
+		(showPagination && incompatibleDefaultItemsPerPageValidationError) ||
 		requiredDefaultItemsPerPageValidationError;
 
 	return (
@@ -158,6 +163,30 @@ function Pagination({
 				</ClayLayout.SheetHeader>
 
 				<ClayLayout.SheetSection>
+					<ClayLayout.Row className="align-items-center justify-content-between mb-4">
+						<ClayLayout.Col size={9}>
+							<div>
+								<label
+									htmlFor={`${namespace}dataSetShowPaginationToggle`}
+								>
+									{Liferay.Language.get('show-pagination')}
+								</label>
+							</div>
+
+							<div>
+								{Liferay.Language.get('show-pagination-help')}
+							</div>
+						</ClayLayout.Col>
+
+						<ClayLayout.Col className="align-self-start" size={1}>
+							<ClayToggle
+								id={`${namespace}dataSetShowPaginationToggle`}
+								onToggle={setShowPagination}
+								toggled={showPagination}
+							/>
+						</ClayLayout.Col>
+					</ClayLayout.Row>
+
 					<ClayForm.Group
 						className={classnames(
 							listOfItemsPerPageValidationError && 'has-error'
@@ -173,6 +202,7 @@ function Pagination({
 
 						<ClayInput
 							component="textarea"
+							disabled={!showPagination}
 							id={`${namespace}dataSetListOfItemsPerPageTextarea`}
 							onBlur={() => {
 								const itemsPerPageArray =

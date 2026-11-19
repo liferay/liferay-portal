@@ -114,6 +114,7 @@ export interface IDataSet {
 	restSchema: string;
 	searchAsYouType?: boolean;
 	searchSuggestionsEnabled?: boolean;
+	showPagination?: boolean;
 	showSearch: boolean;
 	snapshotsEnabled: boolean;
 	sortsOrder?: string;

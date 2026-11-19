@@ -286,6 +286,23 @@
 					"DBType": "Boolean",
 					"businessType": "Boolean",
 					"defaultValue": true,
+					"externalReferenceCode": "SHOW_PAGINATION",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "Show Pagination"
+					},
+					"localized": false,
+					"name": "showPagination",
+					"required": false,
+					"state": false,
+					"system": true,
+					"type": "Boolean"
+				},
+				{
+					"DBType": "Boolean",
+					"businessType": "Boolean",
+					"defaultValue": true,
 					"externalReferenceCode": "SHOW_SEARCH",
 					"indexed": true,
 					"indexedAsKeyword": false,

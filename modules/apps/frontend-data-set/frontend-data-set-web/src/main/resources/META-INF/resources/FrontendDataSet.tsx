@@ -620,11 +620,12 @@ const FrontendDataSetContent = ({
 		);
 
 	const getInitialViewsState = () => {
+		const initialDelta = pagination?.initialDelta;
+
 		const defaultSnapshot: any = {
 			modifiedFields: {},
 			paginationDelta:
-				showPagination &&
-				(pagination?.initialDelta || DEFAULT_PAGINATION_DELTA),
+				initialDelta || (showPagination && DEFAULT_PAGINATION_DELTA),
 		};
 
 		let initialActiveView =
@@ -732,7 +733,12 @@ const FrontendDataSetContent = ({
 		useReducer(viewsReducer, getInitialViewsState())
 	);
 
-	const {activeView, pageNumber, paginationDelta, sorts} = viewsState;
+	const {
+		activeView,
+		pageNumber: statePageNumber,
+		paginationDelta: statePaginationDelta,
+		sorts,
+	} = viewsState;
 
 	const handleDeltaChange = useCallback(
 		(delta: number) => {
@@ -749,11 +755,26 @@ const FrontendDataSetContent = ({
 		...currentViewProps
 	} = activeView;
 
+	// The Data Set setting has the last word: a view can hide the pagination,
+	// but it cannot show it again when the Data Set hides it.
+
+	const paginationHidden =
+		!showPagination || activeView.showPagination === false;
+
+	// With hidden pagination, the Data Set always shows its first page with
+	// the configured size, whatever the URL or a saved view say.
+
+	const pageNumber = paginationHidden
+		? DEFAULT_PAGINATION_PAGE_NUMBER
+		: statePageNumber;
+	const paginationDelta: number = paginationHidden
+		? activeView.initialPaginationDelta ||
+			pagination?.initialDelta ||
+			DEFAULT_PAGINATION_DELTA
+		: statePaginationDelta;
+
 	const paginationEnabled =
-		(activeView.showPagination ?? showPagination) &&
-		!!pagination &&
-		!!items?.length &&
-		!!total;
+		!paginationHidden && !!pagination && !!items?.length && !!total;
 
 	const requestIdRef = useRef(0);
 
@@ -1434,7 +1455,7 @@ const FrontendDataSetContent = ({
 
 		const delta = getDelta();
 
-		if (delta && delta !== paginationDelta) {
+		if (!paginationHidden && delta && delta !== statePaginationDelta) {
 			stateUpdates.push({
 				type: EViewsActionTypes.UPDATE_PAGINATION_DELTA,
 				value: delta,
@@ -1482,9 +1503,10 @@ const FrontendDataSetContent = ({
 		getVisibleFields,
 		globalFDSState,
 		mappedInitialFilters,
-		paginationDelta,
+		paginationHidden,
 		setGlobalFDSState,
 		sorts,
+		statePaginationDelta,
 		viewsDispatch,
 	]);
 
