@@ -47,10 +47,10 @@ public abstract class BaseMasterLayoutVerticalCard implements VerticalCard {
 
 	@Override
 	public Map<String, String> getDynamicAttributes() {
-		Map<String, String> data = new HashMap<>();
+		Map<String, String> dynamicAttributes = new HashMap<>();
 
 		try {
-			data.put("data-add-layout-url", getAddLayoutURL());
+			dynamicAttributes.put("data-add-layout-url", getAddLayoutURL());
 		}
 		catch (Exception exception) {
 			if (_log.isDebugEnabled()) {
@@ -58,10 +58,10 @@ public abstract class BaseMasterLayoutVerticalCard implements VerticalCard {
 			}
 		}
 
-		data.put("role", "button");
-		data.put("tabIndex", "0");
+		dynamicAttributes.put("role", "button");
+		dynamicAttributes.put("tabIndex", "0");
 
-		return data;
+		return dynamicAttributes;
 	}
 
 	@Override
