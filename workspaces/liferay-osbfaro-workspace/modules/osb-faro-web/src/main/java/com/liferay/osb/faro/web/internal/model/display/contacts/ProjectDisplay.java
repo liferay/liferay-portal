@@ -16,6 +16,9 @@ import com.liferay.osb.faro.web.internal.util.JSONUtil;
 import com.liferay.osb.faro.web.internal.util.TimeZoneUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 
 import java.util.Date;
 import java.util.List;
@@ -76,6 +79,15 @@ public class ProjectDisplay {
 		_state = faroProject.getState();
 		_timeZoneDisplay = TimeZoneUtil.getTimeZoneDisplay(
 			faroProject.getTimeZoneId());
+
+		Group group = GroupLocalServiceUtil.fetchGroup(
+			faroProject.getGroupId());
+
+		if (group != null) {
+			_url =
+				PortalUtil.getPathFriendlyURLPublic() + group.getFriendlyURL();
+		}
+
 		_userId = faroProject.getUserId();
 	}
 
@@ -152,6 +164,7 @@ public class ProjectDisplay {
 	private Date _stateEndDate;
 	private Date _stateStartDate;
 	private TimeZoneDisplay _timeZoneDisplay;
+	private String _url;
 	private long _userId;
 
 }
