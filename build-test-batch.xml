@@ -11204,7 +11204,7 @@ junit.jvm.override.version=21</echo>
 							return false;
 						}
 
-						public boolean matchesFilePathPatterns(String filePath, String[] filePathPatterns) {
+						public boolean isMatchingFilePathPatterns(String filePath, String[] filePathPatterns) {
 							for (String filePathPattern : filePathPatterns) {
 								if (SelectorUtils.matchPath(filePathPattern, filePath)) {
 									return true;
@@ -11214,24 +11214,24 @@ junit.jvm.override.version=21</echo>
 							return false;
 						}
 
-						String[] privateFilePathPatterns = getFilePathPatterns("working.dir.private.allowed.file.paths");
-						String[] sharedFilePathPatterns = getFilePathPatterns("working.dir.shared.allowed.file.paths");
-
-						boolean privateBranch = isPrivateBranch();
-
 						List prohibitedFilePaths = new ArrayList();
 
 						String gitDiff = project.getProperty("git.diff");
 
 						if (!JenkinsResultsParserUtil.isNullOrEmpty(gitDiff)) {
+							boolean privateBranch = isPrivateBranch();
+
+							String[] privateFilePathPatterns = getFilePathPatterns("working.dir.private.allowed.file.paths");
+							String[] sharedFilePathPatterns = getFilePathPatterns("working.dir.shared.allowed.file.paths");
+
 							for (String filePath : gitDiff.split("\n")) {
 								filePath = filePath.trim();
 
-								if (filePath.isEmpty() || matchesFilePathPatterns(filePath, sharedFilePathPatterns)) {
+								if (filePath.isEmpty() || isMatchingFilePathPatterns(filePath, sharedFilePathPatterns)) {
 									continue;
 								}
 
-								boolean privateFilePath = matchesFilePathPatterns(filePath, privateFilePathPatterns);
+								boolean privateFilePath = isMatchingFilePathPatterns(filePath, privateFilePathPatterns);
 
 								if ((privateBranch && !privateFilePath) || (!privateBranch && privateFilePath)) {
 									prohibitedFilePaths.add(filePath);
@@ -11260,7 +11260,7 @@ junit.jvm.override.version=21</echo>
 
 				<fail if="allowed.file.paths.error.message" message="${allowed.file.paths.error.message}" />
 
-				<echo>All changed file paths are allowed in ${liferay.portal.branch}.</echo>
+				<echo>All changed file paths are allowed in ${liferay.portal.branch}</echo>
 			</test-action>
 		</run-batch-test>
 	</target>
