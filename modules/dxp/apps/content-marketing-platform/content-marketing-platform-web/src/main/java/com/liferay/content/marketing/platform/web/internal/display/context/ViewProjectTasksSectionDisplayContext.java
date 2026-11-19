@@ -6,7 +6,9 @@
 package com.liferay.content.marketing.platform.web.internal.display.context;
 
 import com.liferay.asset.kernel.service.AssetTagLocalService;
+import com.liferay.content.marketing.platform.web.internal.frontend.data.set.filter.SubtaskSelectionFDSFilter;
 import com.liferay.depot.service.DepotEntryLocalService;
+import com.liferay.frontend.data.set.filter.FDSFilter;
 import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
 import com.liferay.list.type.service.ListTypeEntryLocalService;
 import com.liferay.object.model.ObjectDefinition;
@@ -15,6 +17,7 @@ import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.service.ObjectStateFlowLocalService;
 import com.liferay.object.service.ObjectStateLocalService;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.RoleService;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -78,6 +81,19 @@ public class ViewProjectTasksSectionDisplayContext
 	public List<FDSActionDropdownItem> getFDSActionDropdownItems() {
 		return getProjectTasksFDSActionDropdownItems(
 			objectDefinition.getClassName());
+	}
+
+	@Override
+	public List<FDSFilter> getFDSFilters() {
+		List<FDSFilter> fdsFilters = super.getFDSFilters();
+
+		if (FeatureFlagManagerUtil.isEnabled(
+				objectDefinition.getCompanyId(), "LPD-107678")) {
+
+			fdsFilters.add(new SubtaskSelectionFDSFilter());
+		}
+
+		return fdsFilters;
 	}
 
 	public Map<String, Object> getTasksQuickFiltersProperties() {
