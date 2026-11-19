@@ -55,20 +55,6 @@ public class DLContentLocalServiceWrapper
 	}
 
 	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 #addContent(long, long, String, String, InputStream)}
-	 */
-	@Deprecated
-	@Override
-	public DLContent addContent(
-		long companyId, long repositoryId, String path, String version,
-		java.io.InputStream inputStream, long size) {
-
-		return _dlContentLocalService.addContent(
-			companyId, repositoryId, path, version, inputStream, size);
-	}
-
-	/**
 	 * Adds the document library content to the database. Also notifies the appropriate model listeners.
 	 *
 	 * <p>
@@ -111,15 +97,6 @@ public class DLContentLocalServiceWrapper
 
 		_dlContentLocalService.deleteContent(
 			companyId, repositoryId, path, version);
-	}
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
-	 */
-	@Deprecated
-	@Override
-	public void deleteContents(long companyId, long repositoryId, String path) {
-		_dlContentLocalService.deleteContents(companyId, repositoryId, path);
 	}
 
 	@Override
@@ -288,19 +265,6 @@ public class DLContentLocalServiceWrapper
 		return _dlContentLocalService.getActionableDynamicQuery();
 	}
 
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 #getContent(long, long, String, String)}
-	 */
-	@Deprecated
-	@Override
-	public DLContent getContent(long companyId, long repositoryId, String path)
-		throws com.liferay.document.library.content.exception.
-			NoSuchContentException {
-
-		return _dlContentLocalService.getContent(companyId, repositoryId, path);
-	}
-
 	@Override
 	public DLContent getContent(
 			long companyId, long repositoryId, String path, String version)
@@ -309,18 +273,6 @@ public class DLContentLocalServiceWrapper
 
 		return _dlContentLocalService.getContent(
 			companyId, repositoryId, path, version);
-	}
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 #getContentsByDirectory(long, long, String)}
-	 */
-	@Deprecated
-	@Override
-	public java.util.List<DLContent> getContents(
-		long companyId, long repositoryId) {
-
-		return _dlContentLocalService.getContents(companyId, repositoryId);
 	}
 
 	@Override
@@ -442,19 +394,6 @@ public class DLContentLocalServiceWrapper
 		return _dlContentLocalService.updateDLContent(dlContent);
 	}
 
-	/**
-	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
-	 */
-	@Deprecated
-	@Override
-	public void updateDLContent(
-		long companyId, long oldRepositoryId, long newRepositoryId,
-		String oldPath, String newPath) {
-
-		_dlContentLocalService.updateDLContent(
-			companyId, oldRepositoryId, newRepositoryId, oldPath, newPath);
-	}
-
 	@Override
 	public BasePersistence<?> getBasePersistence() {
 		return _dlContentLocalService.getBasePersistence();
@@ -492,4 +431,4 @@ public class DLContentLocalServiceWrapper
 	private DLContentLocalService _dlContentLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1308509087
+// LIFERAY-SERVICE-BUILDER-HASH:1938517922

@@ -60,19 +60,6 @@ public class DLContentLocalServiceUtil {
 	}
 
 	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 #addContent(long, long, String, String, InputStream)}
-	 */
-	@Deprecated
-	public static DLContent addContent(
-		long companyId, long repositoryId, String path, String version,
-		InputStream inputStream, long size) {
-
-		return getService().addContent(
-			companyId, repositoryId, path, version, inputStream, size);
-	}
-
-	/**
 	 * Adds the document library content to the database. Also notifies the appropriate model listeners.
 	 *
 	 * <p>
@@ -110,16 +97,6 @@ public class DLContentLocalServiceUtil {
 		long companyId, long repositoryId, String path, String version) {
 
 		getService().deleteContent(companyId, repositoryId, path, version);
-	}
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
-	 */
-	@Deprecated
-	public static void deleteContents(
-		long companyId, long repositoryId, String path) {
-
-		getService().deleteContents(companyId, repositoryId, path);
 	}
 
 	public static void deleteContentsByDirectory(
@@ -265,36 +242,12 @@ public class DLContentLocalServiceUtil {
 		return getService().getActionableDynamicQuery();
 	}
 
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 #getContent(long, long, String, String)}
-	 */
-	@Deprecated
-	public static DLContent getContent(
-			long companyId, long repositoryId, String path)
-		throws com.liferay.document.library.content.exception.
-			NoSuchContentException {
-
-		return getService().getContent(companyId, repositoryId, path);
-	}
-
 	public static DLContent getContent(
 			long companyId, long repositoryId, String path, String version)
 		throws com.liferay.document.library.content.exception.
 			NoSuchContentException {
 
 		return getService().getContent(companyId, repositoryId, path, version);
-	}
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 #getContentsByDirectory(long, long, String)}
-	 */
-	@Deprecated
-	public static List<DLContent> getContents(
-		long companyId, long repositoryId) {
-
-		return getService().getContents(companyId, repositoryId);
 	}
 
 	public static List<DLContent> getContents(
@@ -403,18 +356,6 @@ public class DLContentLocalServiceUtil {
 		return getService().updateDLContent(dlContent);
 	}
 
-	/**
-	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
-	 */
-	@Deprecated
-	public static void updateDLContent(
-		long companyId, long oldRepositoryId, long newRepositoryId,
-		String oldPath, String newPath) {
-
-		getService().updateDLContent(
-			companyId, oldRepositoryId, newRepositoryId, oldPath, newPath);
-	}
-
 	public static DLContentLocalService getService() {
 		return _serviceSnapshot.get();
 	}
@@ -424,4 +365,4 @@ public class DLContentLocalServiceUtil {
 			DLContentLocalServiceUtil.class, DLContentLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1385541685
+// LIFERAY-SERVICE-BUILDER-HASH:-676319863

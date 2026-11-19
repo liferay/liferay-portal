@@ -75,15 +75,6 @@ public interface DLContentLocalService
 		InputStream inputStream);
 
 	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 #addContent(long, long, String, String, InputStream)}
-	 */
-	@Deprecated
-	public DLContent addContent(
-		long companyId, long repositoryId, String path, String version,
-		InputStream inputStream, long size);
-
-	/**
 	 * Adds the document library content to the database. Also notifies the appropriate model listeners.
 	 *
 	 * <p>
@@ -113,12 +104,6 @@ public interface DLContentLocalService
 
 	public void deleteContent(
 		long companyId, long repositoryId, String path, String version);
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
-	 */
-	@Deprecated
-	public void deleteContents(long companyId, long repositoryId, String path);
 
 	public void deleteContentsByDirectory(
 		long companyId, long repositoryId, String dirName);
@@ -235,27 +220,10 @@ public interface DLContentLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 #getContent(long, long, String, String)}
-	 */
-	@Deprecated
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public DLContent getContent(long companyId, long repositoryId, String path)
-		throws NoSuchContentException;
-
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public DLContent getContent(
 			long companyId, long repositoryId, String path, String version)
 		throws NoSuchContentException;
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 #getContentsByDirectory(long, long, String)}
-	 */
-	@Deprecated
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<DLContent> getContents(long companyId, long repositoryId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<DLContent> getContents(
@@ -338,14 +306,6 @@ public interface DLContentLocalService
 	@Indexable(type = IndexableType.REINDEX)
 	public DLContent updateDLContent(DLContent dlContent);
 
-	/**
-	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
-	 */
-	@Deprecated
-	public void updateDLContent(
-		long companyId, long oldRepositoryId, long newRepositoryId,
-		String oldPath, String newPath);
-
 	@Override
 	@Transactional(enabled = false)
 	public CTPersistence<DLContent> getCTPersistence();
@@ -361,4 +321,4 @@ public interface DLContentLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1612288260
+// LIFERAY-SERVICE-BUILDER-HASH:1628905153
