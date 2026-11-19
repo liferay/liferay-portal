@@ -5,10 +5,7 @@ import ClayIcon from 'shared/components/Icon';
 import DateFilterConjunctionInput from './components/DateFilterConjunctionInput';
 import Form from 'shared/components/form';
 import OccurenceConjunctionInput from './components/OccurenceConjunctionInput';
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
-import RealTimePeriodInput, {
-	DEFAULT_OPTIONS,
-} from './components/RealTimePeriodInput';
+import React, {useCallback, useMemo, useState} from 'react';
 import {DataTypes} from 'shared/types/DataTypes';
 import {Attribute} from 'event-analysis/utils/types';
 import {
@@ -24,9 +21,7 @@ import {
 	RelationalOperators,
 } from '../utils/constants';
 import {
-	getFilterCriterionIMap,
 	getFilterCriterionIMapByPropertyNamePrefix,
-	getIndexFromPropertyName,
 	getIndexFromPropertyNamePrefix,
 	hasAttributeFilterCriterion,
 	removeItemsByIndex,
@@ -74,102 +69,6 @@ const EventInput: React.FC<IEventInputProps> = ({
 		hasAttributeFilterCriterion(valueIMap, ATTRIBUTE_PROPERTY_PREFIX)
 	);
 	const {id: eventId, options} = property;
-
-	const getRealTimePeriodFromCriterion = useCallback((): {
-		interval: number;
-		timeWindow: string;
-	} | null => {
-		const dayCriterion = valueIMap.getIn(['criterionGroup', 'items', 2]);
-
-		if (!dayCriterion) {
-			return null;
-		}
-
-		const dayValue: string = dayCriterion.get('value');
-
-		if (!dayValue || typeof dayValue !== 'string') {
-			return null;
-		}
-
-		const parts = dayValue.split('_');
-
-		if (parts.length !== 2) {
-			return null;
-		}
-
-		const [intervalStr, timeWindow] = parts;
-		const interval = parseInt(intervalStr, 10);
-
-		if (isNaN(interval)) {
-			return null;
-		}
-
-		return {interval, timeWindow};
-	}, [valueIMap]);
-
-	const handleRealTimePeriodChange = useCallback(
-		(interval: number, timeWindow: string) => {
-			const newDayValue = `${interval}_${timeWindow}`;
-
-			const conjunctionDateFilterIndex = getIndexFromPropertyName(
-				valueIMap,
-				'day'
-			);
-
-			let dayCriterion;
-			if (conjunctionDateFilterIndex >= 0) {
-				const existingDayIMap = getFilterCriterionIMap(
-					valueIMap,
-					conjunctionDateFilterIndex
-				);
-
-				dayCriterion = existingDayIMap.merge({
-					operatorName: RelationalOperators.GE,
-					touched: true,
-					valid: true,
-					value: newDayValue,
-				});
-			}
-			else {
-				dayCriterion = fromJS({
-					operatorName: RelationalOperators.GE,
-					propertyName: 'day',
-					touched: true,
-					valid: true,
-					value: newDayValue,
-				});
-			}
-
-			const updatedValue = valueIMap.mergeIn(
-				['criterionGroup', 'items', 2],
-				dayCriterion
-			);
-
-			onChange({
-				touched: {...touched, dateFilter: true},
-				valid: {...valid, dateFilter: true},
-				value: updatedValue,
-			});
-		},
-		[onChange, valueIMap, touched, valid]
-	);
-
-	useEffect(() => {
-		if (segmentType === SegmentTypes.RealTime) {
-			const currentPeriod = getRealTimePeriodFromCriterion();
-
-			if (!currentPeriod) {
-				handleRealTimePeriodChange(
-					DEFAULT_OPTIONS.interval,
-					DEFAULT_OPTIONS.timeWindow
-				);
-			}
-		}
-	}, [
-		segmentType,
-		getRealTimePeriodFromCriterion,
-		handleRealTimePeriodChange,
-	]);
 
 	const getConjunctionDateFilterIMap = (value: CustomValue) => {
 		const conjunctionCriterion = value.getIn([
@@ -359,8 +258,6 @@ const EventInput: React.FC<IEventInputProps> = ({
 	const isSelectedAttributeDateType =
 		selectedCustomAttribute?.dataType === DataTypes.Date;
 
-	const initialPeriod = getRealTimePeriodFromCriterion();
-
 	return (
 		<div className="criteria-statement">
 			<Form.Group autoFit>
@@ -390,34 +287,27 @@ const EventInput: React.FC<IEventInputProps> = ({
 					<b>{displayValue}</b>
 				</Form.GroupItem>
 
-				<OccurenceConjunctionInput
-					onChange={
-						handleOccurenceConjunctionChange as (params: {
-							criterion?: Criterion;
-							touched?: boolean;
-							valid?: boolean;
-						}) => void
-					}
-					operatorName={
-						valueIMap.get('operator') as FunctionalOperators &
-							RelationalOperators
-					}
-					touched={touched.occurenceCount}
-					valid={valid.occurenceCount}
-					value={valueIMap.get('value')}
-				/>
+				{segmentType === SegmentTypes.Batch && (
+					<>
+						<OccurenceConjunctionInput
+							onChange={handleOccurenceConjunctionChange}
+							operatorName={
+								valueIMap.get(
+									'operator'
+								) as FunctionalOperators & RelationalOperators
+							}
+							touched={touched.occurenceCount}
+							valid={valid.occurenceCount}
+							value={valueIMap.get('value')}
+						/>
 
-				{isRealTime ? (
-					<RealTimePeriodInput
-						initialInterval={initialPeriod?.interval}
-						initialTimeWindow={initialPeriod?.timeWindow}
-						onChange={handleRealTimePeriodChange}
-					/>
-				) : (
-					<DateFilterConjunctionInput
-						conjunctionCriterion={dateFilterConjunctionCriterion}
-						onChange={handleDateFilterConjunctionChange}
-					/>
+						<DateFilterConjunctionInput
+							conjunctionCriterion={
+								dateFilterConjunctionCriterion
+							}
+							onChange={handleDateFilterConjunctionChange}
+						/>
+					</>
 				)}
 			</Form.Group>
 

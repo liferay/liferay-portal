@@ -3,11 +3,6 @@ import {TimeSpans} from 'shared/util/constants';
 export const EVER = 'ever';
 export const SINCE = 'since';
 
-export const DAYS = 'days';
-export const HOURS = 'hours';
-
-export const HOURS_IN_A_DAY = 24;
-export const MAX_DAYS = 30;
 export const MAX_NESTED_OR_CRITERIA = 3;
 export const MAX_SEQUENTIAL_CRITERIA = 5;
 
@@ -804,17 +799,6 @@ export const ALL_EVENT_IDS = Array.from(
 		)
 	)
 );
-
-export const TIME_WINDOW_OPTIONS = [
-	{
-		label: Liferay.Language.get('hours'),
-		value: HOURS,
-	},
-	{
-		label: Liferay.Language.get('days'),
-		value: DAYS,
-	},
-];
 
 export const TIME_PERIOD_OPTIONS = [
 	{
