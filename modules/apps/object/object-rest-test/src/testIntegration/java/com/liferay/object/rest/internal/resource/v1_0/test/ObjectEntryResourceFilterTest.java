@@ -748,11 +748,11 @@ public class ObjectEntryResourceFilterTest
 			fieldName + " lt 2023-09-20T10:05:00Z", getObjectDefinition1());
 
 		assertFilterString(
-			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_2,
-			fieldName + " ne 2023-09-20T10:00:00Z", getObjectDefinition1());
-		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			fieldName + " ne 2023-09-20T10:05:00Z", getObjectDefinition1());
+		assertFilterString(
+			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_2,
+			fieldName + " ne 2023-09-20T10:00:00Z", getObjectDefinition1());
 		_assertFilteredObjectEntries(2, fieldName + " ne null");
 	}
 
