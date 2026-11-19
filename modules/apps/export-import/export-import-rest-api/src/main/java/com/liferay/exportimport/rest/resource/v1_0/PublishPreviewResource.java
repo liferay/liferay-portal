@@ -44,7 +44,8 @@ public interface PublishPreviewResource {
 
 	public PublishPreview getSitePublishPreview(
 			String siteExternalReferenceCode, String dateFilterType,
-			Date endDate, Integer hours, Date startDate)
+			Date endDate, Integer hours, String portletId,
+			String sitePageExternalReferenceCode, Date startDate)
 		throws Exception;
 
 	public default void setContextAcceptLanguage(
@@ -135,4 +136,4 @@ public interface PublishPreviewResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1302478293
+// LIFERAY-REST-BUILDER-HASH:-1938061207

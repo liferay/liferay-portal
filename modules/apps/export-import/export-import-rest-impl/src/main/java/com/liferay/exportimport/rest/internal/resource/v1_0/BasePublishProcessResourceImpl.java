@@ -240,7 +240,7 @@ public abstract class BasePublishProcessResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/export-import/v1.0/sites/{siteExternalReferenceCode}/publish-processes'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Retrieves the Publish to Live processes of the specified site."
+		description = "Retrieves the Publish to Live processes of the specified site, or of one of its portlets."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -269,12 +269,22 @@ public abstract class BasePublishProcessResourceImpl
 				name = "pageSize"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The ID of a portlet to list only its processes.",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "portletId"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "restrictFields"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "search"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The external reference code of the site page that holds the portlet, to list only the processes of that widget.",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "sitePageExternalReferenceCode"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -304,8 +314,14 @@ public abstract class BasePublishProcessResourceImpl
 			@jakarta.ws.rs.QueryParam("creatorId")
 			Long creatorId,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.ws.rs.QueryParam("portletId")
+			String portletId,
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 			@jakarta.ws.rs.QueryParam("search")
 			String search,
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.ws.rs.QueryParam("sitePageExternalReferenceCode")
+			String sitePageExternalReferenceCode,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 			@jakarta.ws.rs.QueryParam("status")
 			Integer status,
@@ -358,13 +374,23 @@ public abstract class BasePublishProcessResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/export-import/v1.0/sites/{siteExternalReferenceCode}/publish-processes' -d $'{"comments": ___, "dateFilter": ___, "deletions": ___, "name": ___, "permissions": ___, "portletDataHandlers": ___, "ratings": ___, "remoteConnection": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Starts a Publish to Live of the specified site."
+		description = "Starts a Publish to Live of the specified site, or of one of its portlets."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "siteExternalReferenceCode", required = true
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The ID of a portlet to narrow the process to (e.g., com_liferay_journal_web_portlet_JournalPortlet).",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "portletId"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The external reference code of the site page that holds the portlet. Without it, the portlet is handled as an application rather than a widget on a page.",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "sitePageExternalReferenceCode"
 			)
 		}
 	)
@@ -383,6 +409,12 @@ public abstract class BasePublishProcessResourceImpl
 			@jakarta.validation.constraints.NotNull
 			@jakarta.ws.rs.PathParam("siteExternalReferenceCode")
 			String siteExternalReferenceCode,
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.ws.rs.QueryParam("portletId")
+			String portletId,
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.ws.rs.QueryParam("sitePageExternalReferenceCode")
+			String sitePageExternalReferenceCode,
 			PublishProcessRequest publishProcessRequest)
 		throws Exception {
 
@@ -399,6 +431,16 @@ public abstract class BasePublishProcessResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "siteExternalReferenceCode", required = true
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The ID of a portlet to narrow the process to (e.g., com_liferay_journal_web_portlet_JournalPortlet).",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "portletId"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The external reference code of the site page that holds the portlet. Without it, the portlet is handled as an application rather than a widget on a page.",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "sitePageExternalReferenceCode"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -423,6 +465,12 @@ public abstract class BasePublishProcessResourceImpl
 			@jakarta.validation.constraints.NotNull
 			@jakarta.ws.rs.PathParam("siteExternalReferenceCode")
 			String siteExternalReferenceCode,
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.ws.rs.QueryParam("portletId")
+			String portletId,
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.ws.rs.QueryParam("sitePageExternalReferenceCode")
+			String sitePageExternalReferenceCode,
 			PublishProcessRequest publishProcessRequest,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 			@jakarta.ws.rs.QueryParam("callbackURL")
@@ -462,8 +510,18 @@ public abstract class BasePublishProcessResourceImpl
 				name = "creatorId"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The ID of a portlet to list only its processes.",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "portletId"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "search"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The external reference code of the site page that holds the portlet, to list only the processes of that widget.",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "sitePageExternalReferenceCode"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -508,8 +566,14 @@ public abstract class BasePublishProcessResourceImpl
 			@jakarta.ws.rs.QueryParam("creatorId")
 			Long creatorId,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.ws.rs.QueryParam("portletId")
+			String portletId,
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 			@jakarta.ws.rs.QueryParam("search")
 			String search,
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.ws.rs.QueryParam("sitePageExternalReferenceCode")
+			String sitePageExternalReferenceCode,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 			@jakarta.ws.rs.QueryParam("status")
 			Integer status,
@@ -567,6 +631,8 @@ public abstract class BasePublishProcessResourceImpl
 				publishProcessUnsafeFunction =
 					publishProcess -> postSitePublishProcess(
 						(String)siteExternalReferenceCode,
+						(String)parameters.get("portletId"),
+						(String)parameters.get("sitePageExternalReferenceCode"),
 						(PublishProcessRequest)parameters.get(
 							"publishProcessRequest"));
 			}
@@ -663,7 +729,9 @@ public abstract class BasePublishProcessResourceImpl
 		if (siteExternalReferenceCode != null) {
 			return getSitePublishProcessesPage(
 				(String)siteExternalReferenceCode,
-				_parseLong((String)parameters.get("creatorId")), search,
+				_parseLong((String)parameters.get("creatorId")),
+				(String)parameters.get("portletId"), search,
+				(String)parameters.get("sitePageExternalReferenceCode"),
 				_parseInteger((String)parameters.get("status")), pagination,
 				sorts);
 		}
@@ -1297,4 +1365,4 @@ public abstract class BasePublishProcessResourceImpl
 		LogFactoryUtil.getLog(BasePublishProcessResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1191725956
+// LIFERAY-REST-BUILDER-HASH:-1678313960

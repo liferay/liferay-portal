@@ -37,12 +37,14 @@ public interface PublishPreviewResource {
 
 	public PublishPreview getSitePublishPreview(
 			String siteExternalReferenceCode, String dateFilterType,
-			java.util.Date endDate, Integer hours, java.util.Date startDate)
+			java.util.Date endDate, Integer hours, String portletId,
+			String sitePageExternalReferenceCode, java.util.Date startDate)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse getSitePublishPreviewHttpResponse(
 			String siteExternalReferenceCode, String dateFilterType,
-			java.util.Date endDate, Integer hours, java.util.Date startDate)
+			java.util.Date endDate, Integer hours, String portletId,
+			String sitePageExternalReferenceCode, java.util.Date startDate)
 		throws Exception;
 
 	public static class Builder {
@@ -156,13 +158,14 @@ public interface PublishPreviewResource {
 
 		public PublishPreview getSitePublishPreview(
 				String siteExternalReferenceCode, String dateFilterType,
-				java.util.Date endDate, Integer hours, java.util.Date startDate)
+				java.util.Date endDate, Integer hours, String portletId,
+				String sitePageExternalReferenceCode, java.util.Date startDate)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
 				getSitePublishPreviewHttpResponse(
 					siteExternalReferenceCode, dateFilterType, endDate, hours,
-					startDate);
+					portletId, sitePageExternalReferenceCode, startDate);
 
 			String content = httpResponse.getContent();
 
@@ -225,7 +228,8 @@ public interface PublishPreviewResource {
 
 		public HttpInvoker.HttpResponse getSitePublishPreviewHttpResponse(
 				String siteExternalReferenceCode, String dateFilterType,
-				java.util.Date endDate, Integer hours, java.util.Date startDate)
+				java.util.Date endDate, Integer hours, String portletId,
+				String sitePageExternalReferenceCode, java.util.Date startDate)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -266,6 +270,16 @@ public interface PublishPreviewResource {
 				httpInvoker.parameter("hours", String.valueOf(hours));
 			}
 
+			if (portletId != null) {
+				httpInvoker.parameter("portletId", String.valueOf(portletId));
+			}
+
+			if (sitePageExternalReferenceCode != null) {
+				httpInvoker.parameter(
+					"sitePageExternalReferenceCode",
+					String.valueOf(sitePageExternalReferenceCode));
+			}
+
 			if (startDate != null) {
 				httpInvoker.parameter(
 					"startDate", liferayToJSONDateFormat.format(startDate));
@@ -299,4 +313,4 @@ public interface PublishPreviewResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1815486008
+// LIFERAY-REST-BUILDER-HASH:451427822

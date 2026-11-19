@@ -60,8 +60,9 @@ public interface PublishProcessResource {
 		throws Exception;
 
 	public Page<PublishProcess> getSitePublishProcessesPage(
-			String siteExternalReferenceCode, Long creatorId, String search,
-			Integer status, Pagination pagination,
+			String siteExternalReferenceCode, Long creatorId, String portletId,
+			String search, String sitePageExternalReferenceCode, Integer status,
+			Pagination pagination,
 			com.liferay.portal.kernel.search.Sort[] sorts)
 		throws Exception;
 
@@ -69,20 +70,23 @@ public interface PublishProcessResource {
 		throws Exception;
 
 	public PublishProcess postSitePublishProcess(
-			String siteExternalReferenceCode,
+			String siteExternalReferenceCode, String portletId,
+			String sitePageExternalReferenceCode,
 			PublishProcessRequest publishProcessRequest)
 		throws Exception;
 
 	public Response postSitePublishProcessBatch(
-			String siteExternalReferenceCode,
+			String siteExternalReferenceCode, String portletId,
+			String sitePageExternalReferenceCode,
 			PublishProcessRequest publishProcessRequest, String callbackURL,
 			Object object)
 		throws Exception;
 
 	public Response postSitePublishProcessesPageExportBatch(
-			String siteExternalReferenceCode, Long creatorId, String search,
-			Integer status, com.liferay.portal.kernel.search.Sort[] sorts,
-			String callbackURL, String contentType, String fieldNames)
+			String siteExternalReferenceCode, Long creatorId, String portletId,
+			String search, String sitePageExternalReferenceCode, Integer status,
+			com.liferay.portal.kernel.search.Sort[] sorts, String callbackURL,
+			String contentType, String fieldNames)
 		throws Exception;
 
 	public default void setContextAcceptLanguage(
@@ -181,4 +185,4 @@ public interface PublishProcessResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-361475677
+// LIFERAY-REST-BUILDER-HASH:1354930339

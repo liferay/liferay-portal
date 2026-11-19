@@ -65,13 +65,15 @@ public interface PublishProcessResource {
 		throws Exception;
 
 	public Page<PublishProcess> getSitePublishProcessesPage(
-			String siteExternalReferenceCode, Long creatorId, String search,
-			Integer status, Pagination pagination, String sortString)
+			String siteExternalReferenceCode, Long creatorId, String portletId,
+			String search, String sitePageExternalReferenceCode, Integer status,
+			Pagination pagination, String sortString)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse getSitePublishProcessesPageHttpResponse(
-			String siteExternalReferenceCode, Long creatorId, String search,
-			Integer status, Pagination pagination, String sortString)
+			String siteExternalReferenceCode, Long creatorId, String portletId,
+			String search, String sitePageExternalReferenceCode, Integer status,
+			Pagination pagination, String sortString)
 		throws Exception;
 
 	public PublishProcess postPublishProcessRelaunch(Long publishProcessId)
@@ -82,38 +84,45 @@ public interface PublishProcessResource {
 		throws Exception;
 
 	public PublishProcess postSitePublishProcess(
-			String siteExternalReferenceCode,
+			String siteExternalReferenceCode, String portletId,
+			String sitePageExternalReferenceCode,
 			PublishProcessRequest publishProcessRequest)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse postSitePublishProcessHttpResponse(
-			String siteExternalReferenceCode,
+			String siteExternalReferenceCode, String portletId,
+			String sitePageExternalReferenceCode,
 			PublishProcessRequest publishProcessRequest)
 		throws Exception;
 
 	public void postSitePublishProcessBatch(
-			String siteExternalReferenceCode,
+			String siteExternalReferenceCode, String portletId,
+			String sitePageExternalReferenceCode,
 			PublishProcessRequest publishProcessRequest, String callbackURL,
 			Object object)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse postSitePublishProcessBatchHttpResponse(
-			String siteExternalReferenceCode,
+			String siteExternalReferenceCode, String portletId,
+			String sitePageExternalReferenceCode,
 			PublishProcessRequest publishProcessRequest, String callbackURL,
 			Object object)
 		throws Exception;
 
 	public void postSitePublishProcessesPageExportBatch(
-			String siteExternalReferenceCode, Long creatorId, String search,
-			Integer status, String sortString, String callbackURL,
-			String contentType, String fieldNames)
+			String siteExternalReferenceCode, Long creatorId, String portletId,
+			String search, String sitePageExternalReferenceCode, Integer status,
+			String sortString, String callbackURL, String contentType,
+			String fieldNames)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse
 			postSitePublishProcessesPageExportBatchHttpResponse(
-				String siteExternalReferenceCode, Long creatorId, String search,
-				Integer status, String sortString, String callbackURL,
-				String contentType, String fieldNames)
+				String siteExternalReferenceCode, Long creatorId,
+				String portletId, String search,
+				String sitePageExternalReferenceCode, Integer status,
+				String sortString, String callbackURL, String contentType,
+				String fieldNames)
 		throws Exception;
 
 	public static class Builder {
@@ -640,14 +649,17 @@ public interface PublishProcessResource {
 		}
 
 		public Page<PublishProcess> getSitePublishProcessesPage(
-				String siteExternalReferenceCode, Long creatorId, String search,
-				Integer status, Pagination pagination, String sortString)
+				String siteExternalReferenceCode, Long creatorId,
+				String portletId, String search,
+				String sitePageExternalReferenceCode, Integer status,
+				Pagination pagination, String sortString)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
 				getSitePublishProcessesPageHttpResponse(
-					siteExternalReferenceCode, creatorId, search, status,
-					pagination, sortString);
+					siteExternalReferenceCode, creatorId, portletId, search,
+					sitePageExternalReferenceCode, status, pagination,
+					sortString);
 
 			String content = httpResponse.getContent();
 
@@ -709,8 +721,10 @@ public interface PublishProcessResource {
 		}
 
 		public HttpInvoker.HttpResponse getSitePublishProcessesPageHttpResponse(
-				String siteExternalReferenceCode, Long creatorId, String search,
-				Integer status, Pagination pagination, String sortString)
+				String siteExternalReferenceCode, Long creatorId,
+				String portletId, String search,
+				String sitePageExternalReferenceCode, Integer status,
+				Pagination pagination, String sortString)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -738,8 +752,18 @@ public interface PublishProcessResource {
 				httpInvoker.parameter("creatorId", String.valueOf(creatorId));
 			}
 
+			if (portletId != null) {
+				httpInvoker.parameter("portletId", String.valueOf(portletId));
+			}
+
 			if (search != null) {
 				httpInvoker.parameter("search", String.valueOf(search));
+			}
+
+			if (sitePageExternalReferenceCode != null) {
+				httpInvoker.parameter(
+					"sitePageExternalReferenceCode",
+					String.valueOf(sitePageExternalReferenceCode));
 			}
 
 			if (status != null) {
@@ -881,13 +905,15 @@ public interface PublishProcessResource {
 		}
 
 		public PublishProcess postSitePublishProcess(
-				String siteExternalReferenceCode,
+				String siteExternalReferenceCode, String portletId,
+				String sitePageExternalReferenceCode,
 				PublishProcessRequest publishProcessRequest)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
 				postSitePublishProcessHttpResponse(
-					siteExternalReferenceCode, publishProcessRequest);
+					siteExternalReferenceCode, portletId,
+					sitePageExternalReferenceCode, publishProcessRequest);
 
 			String content = httpResponse.getContent();
 
@@ -949,7 +975,8 @@ public interface PublishProcessResource {
 		}
 
 		public HttpInvoker.HttpResponse postSitePublishProcessHttpResponse(
-				String siteExternalReferenceCode,
+				String siteExternalReferenceCode, String portletId,
+				String sitePageExternalReferenceCode,
 				PublishProcessRequest publishProcessRequest)
 			throws Exception {
 
@@ -977,6 +1004,16 @@ public interface PublishProcessResource {
 
 			httpInvoker.httpMethod(HttpInvoker.HttpMethod.POST);
 
+			if (portletId != null) {
+				httpInvoker.parameter("portletId", String.valueOf(portletId));
+			}
+
+			if (sitePageExternalReferenceCode != null) {
+				httpInvoker.parameter(
+					"sitePageExternalReferenceCode",
+					String.valueOf(sitePageExternalReferenceCode));
+			}
+
 			httpInvoker.path(
 				_builder._scheme + "://" + _builder._host + ":" +
 					_builder._port + _builder._contextPath +
@@ -994,14 +1031,16 @@ public interface PublishProcessResource {
 		}
 
 		public void postSitePublishProcessBatch(
-				String siteExternalReferenceCode,
+				String siteExternalReferenceCode, String portletId,
+				String sitePageExternalReferenceCode,
 				PublishProcessRequest publishProcessRequest, String callbackURL,
 				Object object)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
 				postSitePublishProcessBatchHttpResponse(
-					siteExternalReferenceCode, publishProcessRequest,
+					siteExternalReferenceCode, portletId,
+					sitePageExternalReferenceCode, publishProcessRequest,
 					callbackURL, object);
 
 			String content = httpResponse.getContent();
@@ -1053,7 +1092,8 @@ public interface PublishProcessResource {
 		}
 
 		public HttpInvoker.HttpResponse postSitePublishProcessBatchHttpResponse(
-				String siteExternalReferenceCode,
+				String siteExternalReferenceCode, String portletId,
+				String sitePageExternalReferenceCode,
 				PublishProcessRequest publishProcessRequest, String callbackURL,
 				Object object)
 			throws Exception {
@@ -1081,6 +1121,16 @@ public interface PublishProcessResource {
 
 			httpInvoker.httpMethod(HttpInvoker.HttpMethod.POST);
 
+			if (portletId != null) {
+				httpInvoker.parameter("portletId", String.valueOf(portletId));
+			}
+
+			if (sitePageExternalReferenceCode != null) {
+				httpInvoker.parameter(
+					"sitePageExternalReferenceCode",
+					String.valueOf(sitePageExternalReferenceCode));
+			}
+
 			if (callbackURL != null) {
 				httpInvoker.parameter(
 					"callbackURL", String.valueOf(callbackURL));
@@ -1103,15 +1153,18 @@ public interface PublishProcessResource {
 		}
 
 		public void postSitePublishProcessesPageExportBatch(
-				String siteExternalReferenceCode, Long creatorId, String search,
-				Integer status, String sortString, String callbackURL,
-				String contentType, String fieldNames)
+				String siteExternalReferenceCode, Long creatorId,
+				String portletId, String search,
+				String sitePageExternalReferenceCode, Integer status,
+				String sortString, String callbackURL, String contentType,
+				String fieldNames)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
 				postSitePublishProcessesPageExportBatchHttpResponse(
-					siteExternalReferenceCode, creatorId, search, status,
-					sortString, callbackURL, contentType, fieldNames);
+					siteExternalReferenceCode, creatorId, portletId, search,
+					sitePageExternalReferenceCode, status, sortString,
+					callbackURL, contentType, fieldNames);
 
 			String content = httpResponse.getContent();
 
@@ -1164,8 +1217,10 @@ public interface PublishProcessResource {
 		public HttpInvoker.HttpResponse
 				postSitePublishProcessesPageExportBatchHttpResponse(
 					String siteExternalReferenceCode, Long creatorId,
-					String search, Integer status, String sortString,
-					String callbackURL, String contentType, String fieldNames)
+					String portletId, String search,
+					String sitePageExternalReferenceCode, Integer status,
+					String sortString, String callbackURL, String contentType,
+					String fieldNames)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -1195,8 +1250,18 @@ public interface PublishProcessResource {
 				httpInvoker.parameter("creatorId", String.valueOf(creatorId));
 			}
 
+			if (portletId != null) {
+				httpInvoker.parameter("portletId", String.valueOf(portletId));
+			}
+
 			if (search != null) {
 				httpInvoker.parameter("search", String.valueOf(search));
+			}
+
+			if (sitePageExternalReferenceCode != null) {
+				httpInvoker.parameter(
+					"sitePageExternalReferenceCode",
+					String.valueOf(sitePageExternalReferenceCode));
 			}
 
 			if (status != null) {
@@ -1249,4 +1314,4 @@ public interface PublishProcessResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:138152032
+// LIFERAY-REST-BUILDER-HASH:802705048

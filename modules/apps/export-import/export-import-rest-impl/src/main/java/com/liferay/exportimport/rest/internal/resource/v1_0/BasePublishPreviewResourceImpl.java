@@ -49,7 +49,7 @@ public abstract class BasePublishPreviewResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/export-import/v1.0/sites/{siteExternalReferenceCode}/publish-preview'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Retrieves the portlet data handlers and change counts for a Publish to Live of the specified site."
+		description = "Retrieves the portlet data handlers and change counts for a Publish to Live of the specified site, or of one of its portlets."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -71,6 +71,16 @@ public abstract class BasePublishPreviewResourceImpl
 				description = "The number of hours of a LastHours filter.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "hours"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The ID of a portlet to narrow the process to (e.g., com_liferay_journal_web_portlet_JournalPortlet).",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "portletId"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The external reference code of the site page that holds the portlet. Without it, the portlet is handled as an application rather than a widget on a page.",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "sitePageExternalReferenceCode"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "The start date of a DateRange filter.",
@@ -102,6 +112,12 @@ public abstract class BasePublishPreviewResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 			@jakarta.ws.rs.QueryParam("hours")
 			Integer hours,
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.ws.rs.QueryParam("portletId")
+			String portletId,
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.ws.rs.QueryParam("sitePageExternalReferenceCode")
+			String sitePageExternalReferenceCode,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 			@jakarta.ws.rs.QueryParam("startDate")
 			Date startDate)
@@ -555,4 +571,4 @@ public abstract class BasePublishPreviewResourceImpl
 		LogFactoryUtil.getLog(BasePublishPreviewResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1196651552
+// LIFERAY-REST-BUILDER-HASH:1441196538

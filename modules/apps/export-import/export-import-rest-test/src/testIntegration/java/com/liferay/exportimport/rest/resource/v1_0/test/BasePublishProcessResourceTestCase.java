@@ -523,8 +523,9 @@ public abstract class BasePublishProcessResourceTestCase {
 
 		Page<PublishProcess> page =
 			publishProcessResource.getSitePublishProcessesPage(
-				siteExternalReferenceCode, null, null, null,
-				Pagination.of(1, 10), null);
+				siteExternalReferenceCode, null, RandomTestUtil.randomString(),
+				null, RandomTestUtil.randomString(), null, Pagination.of(1, 10),
+				null);
 
 		long totalCount = page.getTotalCount();
 
@@ -535,8 +536,8 @@ public abstract class BasePublishProcessResourceTestCase {
 					randomIrrelevantPublishProcess());
 
 			page = publishProcessResource.getSitePublishProcessesPage(
-				irrelevantSiteExternalReferenceCode, null, null, null,
-				Pagination.of(1, (int)totalCount + 1), null);
+				irrelevantSiteExternalReferenceCode, null, null, null, null,
+				null, Pagination.of(1, (int)totalCount + 1), null);
 
 			Assert.assertEquals(totalCount + 1, page.getTotalCount());
 
@@ -558,7 +559,7 @@ public abstract class BasePublishProcessResourceTestCase {
 				siteExternalReferenceCode, randomPublishProcess());
 
 		page = publishProcessResource.getSitePublishProcessesPage(
-			siteExternalReferenceCode, null, null, null,
+			siteExternalReferenceCode, null, null, null, null, null,
 			Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
@@ -606,7 +607,8 @@ public abstract class BasePublishProcessResourceTestCase {
 
 		Page<PublishProcess> publishProcessesPage =
 			publishProcessResource.getSitePublishProcessesPage(
-				siteExternalReferenceCode, null, null, null, null, null);
+				siteExternalReferenceCode, null, null, null, null, null, null,
+				null);
 
 		int totalCount = GetterUtil.getInteger(
 			publishProcessesPage.getTotalCount());
@@ -630,7 +632,7 @@ public abstract class BasePublishProcessResourceTestCase {
 		if (totalCount >= (pageSizeLimit - 2)) {
 			Page<PublishProcess> page1 =
 				publishProcessResource.getSitePublishProcessesPage(
-					siteExternalReferenceCode, null, null, null,
+					siteExternalReferenceCode, null, null, null, null, null,
 					Pagination.of(
 						(int)Math.ceil((totalCount + 1.0) / pageSizeLimit),
 						pageSizeLimit),
@@ -643,7 +645,7 @@ public abstract class BasePublishProcessResourceTestCase {
 
 			Page<PublishProcess> page2 =
 				publishProcessResource.getSitePublishProcessesPage(
-					siteExternalReferenceCode, null, null, null,
+					siteExternalReferenceCode, null, null, null, null, null,
 					Pagination.of(
 						(int)Math.ceil((totalCount + 2.0) / pageSizeLimit),
 						pageSizeLimit),
@@ -654,7 +656,7 @@ public abstract class BasePublishProcessResourceTestCase {
 
 			Page<PublishProcess> page3 =
 				publishProcessResource.getSitePublishProcessesPage(
-					siteExternalReferenceCode, null, null, null,
+					siteExternalReferenceCode, null, null, null, null, null,
 					Pagination.of(
 						(int)Math.ceil((totalCount + 3.0) / pageSizeLimit),
 						pageSizeLimit),
@@ -666,7 +668,7 @@ public abstract class BasePublishProcessResourceTestCase {
 		else {
 			Page<PublishProcess> page1 =
 				publishProcessResource.getSitePublishProcessesPage(
-					siteExternalReferenceCode, null, null, null,
+					siteExternalReferenceCode, null, null, null, null, null,
 					Pagination.of(1, totalCount + 2), null);
 
 			List<PublishProcess> publishProcesses1 =
@@ -678,7 +680,7 @@ public abstract class BasePublishProcessResourceTestCase {
 
 			Page<PublishProcess> page2 =
 				publishProcessResource.getSitePublishProcessesPage(
-					siteExternalReferenceCode, null, null, null,
+					siteExternalReferenceCode, null, null, null, null, null,
 					Pagination.of(2, totalCount + 2), null);
 
 			Assert.assertEquals(totalCount + 3, page2.getTotalCount());
@@ -691,7 +693,7 @@ public abstract class BasePublishProcessResourceTestCase {
 
 			Page<PublishProcess> page3 =
 				publishProcessResource.getSitePublishProcessesPage(
-					siteExternalReferenceCode, null, null, null,
+					siteExternalReferenceCode, null, null, null, null, null,
 					Pagination.of(1, (int)totalCount + 3), null);
 
 			assertContains(
@@ -829,12 +831,13 @@ public abstract class BasePublishProcessResourceTestCase {
 
 		Page<PublishProcess> page =
 			publishProcessResource.getSitePublishProcessesPage(
-				siteExternalReferenceCode, null, null, null, null, null);
+				siteExternalReferenceCode, null, null, null, null, null, null,
+				null);
 
 		for (EntityField entityField : entityFields) {
 			Page<PublishProcess> ascPage =
 				publishProcessResource.getSitePublishProcessesPage(
-					siteExternalReferenceCode, null, null, null,
+					siteExternalReferenceCode, null, null, null, null, null,
 					Pagination.of(1, (int)page.getTotalCount() + 1),
 					entityField.getName() + ":asc");
 
@@ -845,7 +848,7 @@ public abstract class BasePublishProcessResourceTestCase {
 
 			Page<PublishProcess> descPage =
 				publishProcessResource.getSitePublishProcessesPage(
-					siteExternalReferenceCode, null, null, null,
+					siteExternalReferenceCode, null, null, null, null, null,
 					Pagination.of(1, (int)page.getTotalCount() + 1),
 					entityField.getName() + ":desc");
 
@@ -2052,4 +2055,4 @@ public abstract class BasePublishProcessResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1955663072
+// LIFERAY-REST-BUILDER-HASH:-1893296688
