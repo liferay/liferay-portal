@@ -353,58 +353,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro viewAllSettingsEnabled(webContentContentLocalized = null, webContentTitleLocalized = null, relatedAssetTitle = null, locale = null) {
-		Click(locator1 = "WCD#WEB_CONTENT_TRANSLATION_DROPDOWN");
-
-		Click(
-			key_locale = ${locale},
-			locator1 = "WCD#WEB_CONTENT_TRANSLATION_DROPDOWN_MENU_ITEM");
-
-		AssertTextEquals(
-			index = 1,
-			locator1 = "WCD#WEB_CONTENT_TITLE",
-			value1 = ${webContentTitleLocalized});
-
-		AssertTextEquals.assertPartialText(
-			index = 1,
-			locator1 = "WCD#WEB_CONTENT_CONTENT",
-			value1 = ${webContentContentLocalized});
-
-		AssertElementPresent(
-			key_text = "print",
-			locator1 = "Icon#ANY");
-
-		AssertTextEquals.assertPartialText(
-			locator1 = "Button#SUBSCRIBE",
-			value1 = "Subscribe");
-
-		AssertTextEquals(
-			key_relatedAssetTitle = ${relatedAssetTitle},
-			locator1 = "AssetRelatedAssets#ASSET_TITLE",
-			value1 = ${relatedAssetTitle});
-
-		SelectFrame.selectFrameNoLoading(locator1 = "CKEditor#BODY_FIELD_IFRAME");
-
-		Type(
-			locator1 = "CKEditor#BODY",
-			value1 = "Hello!");
-
-		SelectFrame(value1 = "relative=top");
-
-		AssertClick(
-			locator1 = "Button#REPLY",
-			value1 = "Reply");
-
-		AssertElementPresent(
-			key_ratingResult = "Rate this as good",
-			locator1 = "Ratings#THUMB");
-
-		AssertElementPresent(
-			key_ratingResult = "Rate this as bad",
-			locator1 = "Ratings#THUMB");
-	}
-
-	@summary = "Default summary"
 	macro viewCannotEditWC(webContentTitle = null) {
 		if (IsElementPresent(key_webContentTitle = ${webContentTitle}, locator1 = "WCD#ARTICLE_ELLIPSIS_ICON")) {
 			WebContentDisplayPortletNavigator.gotoArticleEllipsisMenu(webContentTitle = ${webContentTitle});
@@ -524,16 +472,6 @@ definition {
 			Alert.viewInfoMessageSpecific(infoMessage = "This application is not visible to users yet");
 
 			Alert.viewInfoMessageSpecific(infoMessage = "Select web content to make it visible");
-		}
-	}
-
-	@summary = "Default summary"
-	macro viewRelatedAssets(relatedAssetTitleList = null) {
-		for (var relatedAssetTitle : list ${relatedAssetTitleList}) {
-			AssertTextEquals(
-				key_relatedAssetTitle = ${relatedAssetTitle},
-				locator1 = "AssetRelatedAssets#ASSET_TITLE",
-				value1 = ${relatedAssetTitle});
 		}
 	}
 

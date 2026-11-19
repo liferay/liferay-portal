@@ -146,38 +146,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro addExistingRelatedAssetCP(webContentTitle = null, assetTitle = null, siteName = null, assetType = null, edit = null) {
-		var key_webContentTitle = ${webContentTitle};
-
-		RelatedAssets.selectAsset(assetTitle = ${assetTitle});
-
-		SelectFrame(value1 = "relative=top");
-
-		var key_assetTitle = ${assetTitle};
-
-		AssertTextEquals.assertPartialText(
-			locator1 = "AssetRelatedAssets#RELATED_ASSETS_TABLE_TYPE",
-			value1 = ${assetType});
-
-		AssertTextEquals.assertPartialText(
-			locator1 = "AssetRelatedAssets#RELATED_ASSETS_TABLE_TITLE",
-			value1 = ${assetTitle});
-
-		AssertTextEquals.assertPartialText(
-			locator1 = "AssetRelatedAssets#RELATED_ASSETS_TABLE_SCOPE",
-			value1 = ${siteName});
-
-		AssertElementPresent(locator1 = "AssetRelatedAssets#RELATED_ASSETS_TABLE_REMOVE_LINK");
-
-		if (${edit} == "true") {
-			WebContent.publishExistingWCArticleWithPermissions();
-		}
-		else {
-			WebContent.publishWithPermissions();
-		}
-	}
-
-	@summary = "Default summary"
 	macro addFailWithoutRequiredCategoryAssetTypeCP(vocabularyName = null) {
 		PortletEntry.inputTitle(title = "Web Content Title");
 

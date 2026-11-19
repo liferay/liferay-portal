@@ -54,16 +54,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>WEB_CONTENT_TRANSLATION_DROPDOWN</td>
-	<td>//button[contains(@class,'dropdown-toggle')][@*='Select a Language']</td>
-	<td></td>
-</tr>
-<tr>
-	<td>WEB_CONTENT_TRANSLATION_DROPDOWN_MENU_ITEM</td>
-	<td>//a[contains(.,'${key_locale}')]</td>
-	<td></td>
-</tr>
-<tr>
 	<td>WEB_CONTENT_TRANSLATION_SPAN_LANGUAGE_ENGLISH</td>
 	<td>//div[contains(@class, 'input-localized-palette')]//li//span[contains(@id,'uvlz')]/..//span[contains(text(),'en-US')]</td>
 	<td></td>
