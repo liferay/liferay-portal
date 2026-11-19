@@ -48,6 +48,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -149,6 +150,22 @@ public class ClusterExecutorImpl implements ClusterExecutor {
 
 	@Override
 	public List<ClusterNode> getClusterNodes() {
+		ClusterReceiver clusterReceiver = _clusterChannel.getClusterReceiver();
+
+		List<Address> addresses = clusterReceiver.getAddresses();
+
+		Set<Address> clusterNodeStatusAddresses = _clusterNodeStatuses.keySet();
+
+		if (_log.isWarnEnabled() &&
+			!clusterNodeStatusAddresses.equals(new HashSet<>(addresses))) {
+
+			_log.warn(
+				StringBundler.concat(
+					"Cluster node statuses are stored for ",
+					clusterNodeStatusAddresses, " while the view has ",
+					addresses));
+		}
+
 		List<ClusterNode> clusterNodes = new ArrayList<>();
 
 		for (ClusterNodeStatus clusterNodeStatus :
