@@ -4,9 +4,8 @@
  */
 
 import {PageTemplateModalContent} from '@liferay/layout-js-components-web';
-import {openToast} from 'frontend-js-components-web';
 import {addParams, fetch, navigate} from 'frontend-js-web';
-import React from 'react';
+import React, {useEffect, useRef} from 'react';
 
 import type {PageTemplateSet} from '@liferay/layout-js-components-web';
 
@@ -27,10 +26,25 @@ export default function AddLayoutPageTemplateEntryDesignLibraryModalContent({
 	namespace,
 	pageTemplateSets,
 }: AddLayoutPageTemplateEntryDesignLibraryModalContentProps) {
+	const pageTemplateSetAddedRef = useRef(false);
+
+	useEffect(
+		() => () => {
+			if (pageTemplateSetAddedRef.current) {
+				navigate(location.href);
+			}
+		},
+		[]
+	);
+
 	const submitLayoutPageTemplateEntry = async (
 		pageTemplateSetId: number,
 		pageTemplateName?: string
-	) => {
+	): Promise<string | void> => {
+		if (!pageTemplateSets.some(({id}) => id === pageTemplateSetId)) {
+			pageTemplateSetAddedRef.current = true;
+		}
+
 		const formData = new FormData();
 
 		formData.append(
@@ -46,7 +60,14 @@ export default function AddLayoutPageTemplateEntryDesignLibraryModalContent({
 				method: 'POST',
 			});
 
-			const {redirectURL}: {redirectURL?: string} = await response.json();
+			const {error, redirectURL}: {error?: string; redirectURL?: string} =
+				await response.json();
+
+			if (error) {
+				return error;
+			}
+
+			pageTemplateSetAddedRef.current = false;
 
 			if (!redirectURL) {
 				navigate(location.href);
@@ -62,10 +83,7 @@ export default function AddLayoutPageTemplateEntryDesignLibraryModalContent({
 			);
 		}
 		catch {
-			openToast({
-				message: Liferay.Language.get('an-unexpected-error-occurred'),
-				type: 'danger',
-			});
+			return Liferay.Language.get('an-unexpected-error-occurred');
 		}
 	};
 

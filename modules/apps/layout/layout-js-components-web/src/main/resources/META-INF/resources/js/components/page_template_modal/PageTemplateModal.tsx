@@ -38,7 +38,7 @@ type DesignLibraryProps = {
 	onSubmitPageTemplateSet: (
 		pageTemplateSetId: number,
 		pageTemplateName?: string
-	) => void;
+	) => Promise<string | void> | void;
 	pageTemplateSets: PageTemplateSet[];
 	segmentsExperienceId?: never;
 };
@@ -112,6 +112,14 @@ export function PageTemplateModalContent({
 		[availableSets]
 	);
 
+	const updateAvailableSets = useCallback((sets: PageTemplateSet[]) => {
+		setAvailableSets(sets);
+		setOpenAddTemplateSetModal(!sets.length);
+		setTemplateSetName(
+			getUniqueName(sets, Liferay.Language.get('untitled-set'))
+		);
+	}, []);
+
 	useEffect(() => {
 		if (nameInputRef.current) {
 			nameInputRef.current.focus();
@@ -130,14 +138,7 @@ export function PageTemplateModalContent({
 				const sets = await response.json();
 
 				if (Array.isArray(sets)) {
-					setAvailableSets(sets);
-					setOpenAddTemplateSetModal(!sets.length);
-					setTemplateSetName(
-						getUniqueName(
-							sets,
-							Liferay.Language.get('untitled-set')
-						)
-					);
+					updateAvailableSets(sets);
 				}
 			}
 			catch (error) {
@@ -146,7 +147,7 @@ export function PageTemplateModalContent({
 		};
 
 		getCollections();
-	}, [getCollectionsURL]);
+	}, [getCollectionsURL, updateAvailableSets]);
 
 	const validateForm = useCallback(() => {
 		const errors: Errors = {};
@@ -222,9 +223,19 @@ export function PageTemplateModalContent({
 		}
 
 		if (!openAddTemplateSetModal) {
-			closeModal();
+			const submitError = await onSubmitPageTemplateSet(
+				Number(templateSetId),
+				pageTemplateName
+			);
 
-			onSubmitPageTemplateSet(Number(templateSetId), pageTemplateName);
+			if (submitError) {
+				setFormErrors({pageTemplateName: submitError});
+				setLoading(false);
+
+				return;
+			}
+
+			closeModal();
 
 			return;
 		}
@@ -250,12 +261,25 @@ export function PageTemplateModalContent({
 				throw new Error(error);
 			}
 
-			closeModal();
-
-			onSubmitPageTemplateSet(
+			const submitError = await onSubmitPageTemplateSet(
 				layoutPageTemplateCollectionId,
 				pageTemplateName
 			);
+
+			if (submitError) {
+				updateAvailableSets([
+					...availableSets,
+					{id: layoutPageTemplateCollectionId, name: templateSetName},
+				]);
+				setTemplateSetId(String(layoutPageTemplateCollectionId));
+
+				setFormErrors({pageTemplateName: submitError});
+				setLoading(false);
+
+				return;
+			}
+
+			closeModal();
 		}
 		catch (error) {
 			setLoading(false);
@@ -269,6 +293,7 @@ export function PageTemplateModalContent({
 		}
 	}, [
 		addPageTemplateSetURL,
+		availableSets,
 		closeModal,
 		getFormData,
 		onSubmitPageTemplateSet,
@@ -277,6 +302,7 @@ export function PageTemplateModalContent({
 		templateSetDescription,
 		templateSetId,
 		templateSetName,
+		updateAvailableSets,
 	]);
 
 	const handleSubmit = useCallback(
