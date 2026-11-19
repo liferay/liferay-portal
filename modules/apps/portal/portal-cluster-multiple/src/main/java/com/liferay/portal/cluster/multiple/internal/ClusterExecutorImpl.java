@@ -48,7 +48,6 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -403,21 +402,15 @@ public class ClusterExecutorImpl implements ClusterExecutor {
 	protected void memberRemoved(List<Address> departAddresses) {
 		List<ClusterNode> departClusterNodes = new ArrayList<>();
 
-		Collection<ClusterNodeStatus> clusterNodeStatuses =
-			_clusterNodeStatuses.values();
+		for (Address departAddress : departAddresses) {
+			ClusterNodeStatus clusterNodeStatus = _clusterNodeStatuses.remove(
+				departAddress);
 
-		Iterator<ClusterNodeStatus> iterator = clusterNodeStatuses.iterator();
-
-		while (iterator.hasNext()) {
-			ClusterNodeStatus clusterNodeStatus = iterator.next();
-
-			if (!departAddresses.contains(clusterNodeStatus.getAddress())) {
+			if (clusterNodeStatus == null) {
 				continue;
 			}
 
 			departClusterNodes.add(clusterNodeStatus.getClusterNode());
-
-			iterator.remove();
 		}
 
 		if (departClusterNodes.isEmpty()) {
@@ -512,7 +505,7 @@ public class ClusterExecutorImpl implements ClusterExecutor {
 
 	private boolean _memberJoined(ClusterNodeStatus clusterNodeStatus) {
 		ClusterNodeStatus oldClusterNodeStatus = _clusterNodeStatuses.put(
-			clusterNodeStatus.getClusterNodeId(), clusterNodeStatus);
+			clusterNodeStatus.getAddress(), clusterNodeStatus);
 
 		if (oldClusterNodeStatus != null) {
 			if (!oldClusterNodeStatus.equals(clusterNodeStatus)) {
@@ -539,7 +532,7 @@ public class ClusterExecutorImpl implements ClusterExecutor {
 
 	private ClusterChannel _clusterChannel;
 	private volatile ClusterChannelFactory _clusterChannelFactory;
-	private final Map<String, ClusterNodeStatus> _clusterNodeStatuses =
+	private final Map<Address, ClusterNodeStatus> _clusterNodeStatuses =
 		new ConcurrentHashMap<>();
 	private boolean _enabled;
 	private ExecutorService _executorService;
@@ -586,10 +579,6 @@ public class ClusterExecutorImpl implements ClusterExecutor {
 
 		public ClusterNode getClusterNode() {
 			return _clusterNode;
-		}
-
-		public String getClusterNodeId() {
-			return _clusterNode.getClusterNodeId();
 		}
 
 		@Override
