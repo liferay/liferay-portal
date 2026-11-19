@@ -496,85 +496,6 @@ public class LayoutPageTemplateEntryLocalServiceWrapper
 				groupId, layoutPageTemplateCollectionId, status);
 	}
 
-	@Override
-	public java.util.List<LayoutPageTemplateEntry> getLayoutPageTemplateEntries(
-		long groupId, long layoutPageTemplateCollectionId, int start, int end) {
-
-		return _layoutPageTemplateEntryLocalService.
-			getLayoutPageTemplateEntries(
-				groupId, layoutPageTemplateCollectionId, start, end);
-	}
-
-	@Override
-	public java.util.List<LayoutPageTemplateEntry> getLayoutPageTemplateEntries(
-		long groupId, long layoutPageTemplateCollectionId, int status,
-		int start, int end) {
-
-		return _layoutPageTemplateEntryLocalService.
-			getLayoutPageTemplateEntries(
-				groupId, layoutPageTemplateCollectionId, status, start, end);
-	}
-
-	@Override
-	public java.util.List<LayoutPageTemplateEntry> getLayoutPageTemplateEntries(
-		long groupId, long layoutPageTemplateCollectionId, int status,
-		int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator
-			<LayoutPageTemplateEntry> orderByComparator) {
-
-		return _layoutPageTemplateEntryLocalService.
-			getLayoutPageTemplateEntries(
-				groupId, layoutPageTemplateCollectionId, status, start, end,
-				orderByComparator);
-	}
-
-	@Override
-	public java.util.List<LayoutPageTemplateEntry> getLayoutPageTemplateEntries(
-		long groupId, long layoutPageTemplateCollectionId, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator
-			<LayoutPageTemplateEntry> orderByComparator) {
-
-		return _layoutPageTemplateEntryLocalService.
-			getLayoutPageTemplateEntries(
-				groupId, layoutPageTemplateCollectionId, start, end,
-				orderByComparator);
-	}
-
-	@Override
-	public java.util.List<LayoutPageTemplateEntry> getLayoutPageTemplateEntries(
-		long groupId, long layoutPageTemplateCollectionId, String name,
-		int status, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator
-			<LayoutPageTemplateEntry> orderByComparator) {
-
-		return _layoutPageTemplateEntryLocalService.
-			getLayoutPageTemplateEntries(
-				groupId, layoutPageTemplateCollectionId, name, status, start,
-				end, orderByComparator);
-	}
-
-	@Override
-	public java.util.List<LayoutPageTemplateEntry> getLayoutPageTemplateEntries(
-		long groupId, long layoutPageTemplateCollectionId, String name,
-		int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator
-			<LayoutPageTemplateEntry> orderByComparator) {
-
-		return _layoutPageTemplateEntryLocalService.
-			getLayoutPageTemplateEntries(
-				groupId, layoutPageTemplateCollectionId, name, start, end,
-				orderByComparator);
-	}
-
-	@Override
-	public java.util.List<LayoutPageTemplateEntry>
-		getLayoutPageTemplateEntriesByLayoutPrototypeId(
-			long layoutPrototypeId) {
-
-		return _layoutPageTemplateEntryLocalService.
-			getLayoutPageTemplateEntriesByLayoutPrototypeId(layoutPrototypeId);
-	}
-
 	/**
 	 * Returns all the layout page template entries matching the UUID and company.
 	 *
@@ -841,4 +762,4 @@ public class LayoutPageTemplateEntryLocalServiceWrapper
 		_layoutPageTemplateEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-774049713
+// LIFERAY-SERVICE-BUILDER-HASH:428593949

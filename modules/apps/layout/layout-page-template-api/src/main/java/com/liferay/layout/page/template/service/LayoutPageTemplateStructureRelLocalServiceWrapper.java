@@ -133,25 +133,6 @@ public class LayoutPageTemplateStructureRelLocalServiceWrapper
 	}
 
 	@Override
-	public LayoutPageTemplateStructureRel deleteLayoutPageTemplateStructureRel(
-			long layoutPageTemplateStructureId, long segmentsExperienceId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _layoutPageTemplateStructureRelLocalService.
-			deleteLayoutPageTemplateStructureRel(
-				layoutPageTemplateStructureId, segmentsExperienceId);
-	}
-
-	@Override
-	public void deleteLayoutPageTemplateStructureRels(
-		long layoutPageTemplateStructureId) {
-
-		_layoutPageTemplateStructureRelLocalService.
-			deleteLayoutPageTemplateStructureRels(
-				layoutPageTemplateStructureId);
-	}
-
-	@Override
 	public void deleteLayoutPageTemplateStructureRelsBySegmentsExperienceId(
 		long segmentsExperienceId) {
 
@@ -513,18 +494,6 @@ public class LayoutPageTemplateStructureRelLocalServiceWrapper
 	}
 
 	@Override
-	public LayoutPageTemplateStructureRel updateStatus(
-			long userId, long layoutPageTemplateStructureId,
-			long segmentsExperienceId, int status,
-			com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _layoutPageTemplateStructureRelLocalService.updateStatus(
-			userId, layoutPageTemplateStructureId, segmentsExperienceId, status,
-			serviceContext);
-	}
-
-	@Override
 	public BasePersistence<?> getBasePersistence() {
 		return _layoutPageTemplateStructureRelLocalService.getBasePersistence();
 	}
@@ -567,4 +536,4 @@ public class LayoutPageTemplateStructureRelLocalServiceWrapper
 		_layoutPageTemplateStructureRelLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-234353878
+// LIFERAY-SERVICE-BUILDER-HASH:-2113082754

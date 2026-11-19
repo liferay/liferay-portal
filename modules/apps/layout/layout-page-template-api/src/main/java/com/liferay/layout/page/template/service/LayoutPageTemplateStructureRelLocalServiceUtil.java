@@ -129,22 +129,6 @@ public class LayoutPageTemplateStructureRelLocalServiceUtil {
 			layoutPageTemplateStructureRelId);
 	}
 
-	public static LayoutPageTemplateStructureRel
-			deleteLayoutPageTemplateStructureRel(
-				long layoutPageTemplateStructureId, long segmentsExperienceId)
-		throws PortalException {
-
-		return getService().deleteLayoutPageTemplateStructureRel(
-			layoutPageTemplateStructureId, segmentsExperienceId);
-	}
-
-	public static void deleteLayoutPageTemplateStructureRels(
-		long layoutPageTemplateStructureId) {
-
-		getService().deleteLayoutPageTemplateStructureRels(
-			layoutPageTemplateStructureId);
-	}
-
 	public static void
 		deleteLayoutPageTemplateStructureRelsBySegmentsExperienceId(
 			long segmentsExperienceId) {
@@ -459,17 +443,6 @@ public class LayoutPageTemplateStructureRelLocalServiceUtil {
 			layoutPageTemplateStructureId, segmentsExperienceId, data);
 	}
 
-	public static LayoutPageTemplateStructureRel updateStatus(
-			long userId, long layoutPageTemplateStructureId,
-			long segmentsExperienceId, int status,
-			com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws PortalException {
-
-		return getService().updateStatus(
-			userId, layoutPageTemplateStructureId, segmentsExperienceId, status,
-			serviceContext);
-	}
-
 	public static LayoutPageTemplateStructureRelLocalService getService() {
 		return _serviceSnapshot.get();
 	}
@@ -480,4 +453,4 @@ public class LayoutPageTemplateStructureRelLocalServiceUtil {
 			LayoutPageTemplateStructureRelLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1681831489
+// LIFERAY-SERVICE-BUILDER-HASH:1554525674

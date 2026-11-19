@@ -18,7 +18,6 @@ import com.liferay.portal.kernel.dao.orm.Projection;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.model.PersistedModel;
-import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.service.BaseLocalService;
@@ -26,7 +25,6 @@ import com.liferay.portal.kernel.service.PersistedModelLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.change.tracking.CTService;
 import com.liferay.portal.kernel.service.persistence.change.tracking.CTPersistence;
-import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
@@ -129,14 +127,6 @@ public interface LayoutPageTemplateStructureRelLocalService
 	public LayoutPageTemplateStructureRel deleteLayoutPageTemplateStructureRel(
 			long layoutPageTemplateStructureRelId)
 		throws PortalException;
-
-	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
-	public LayoutPageTemplateStructureRel deleteLayoutPageTemplateStructureRel(
-			long layoutPageTemplateStructureId, long segmentsExperienceId)
-		throws PortalException;
-
-	public void deleteLayoutPageTemplateStructureRels(
-		long layoutPageTemplateStructureId);
 
 	public void deleteLayoutPageTemplateStructureRelsBySegmentsExperienceId(
 		long segmentsExperienceId);
@@ -371,12 +361,6 @@ public interface LayoutPageTemplateStructureRelLocalService
 			String data)
 		throws PortalException;
 
-	public LayoutPageTemplateStructureRel updateStatus(
-			long userId, long layoutPageTemplateStructureId,
-			long segmentsExperienceId, int status,
-			ServiceContext serviceContext)
-		throws PortalException;
-
 	@Override
 	@Transactional(enabled = false)
 	public CTPersistence<LayoutPageTemplateStructureRel> getCTPersistence();
@@ -393,4 +377,4 @@ public interface LayoutPageTemplateStructureRelLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:264324049
+// LIFERAY-SERVICE-BUILDER-HASH:-376850939
