@@ -12,14 +12,21 @@ import com.liferay.exportimport.portlet.data.handler.provider.PortletDataHandler
 import com.liferay.exportimport.rest.dto.v1_0.PortletDataHandler;
 import com.liferay.exportimport.rest.dto.v1_0.PublishPreview;
 import com.liferay.exportimport.rest.internal.util.GroupUtil;
+import com.liferay.exportimport.rest.internal.util.LayoutUtil;
 import com.liferay.exportimport.rest.internal.util.ParameterMapUtil;
 import com.liferay.exportimport.rest.internal.util.PermissionUtil;
 import com.liferay.exportimport.rest.internal.util.PortletDataHandlerUtil;
 import com.liferay.exportimport.rest.resource.v1_0.PublishPreviewResource;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.Portlet;
+import com.liferay.portal.kernel.service.PortletLocalService;
+import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
@@ -38,29 +45,50 @@ public class PublishPreviewResourceImpl extends BasePublishPreviewResourceImpl {
 	@Override
 	public PublishPreview getSitePublishPreview(
 			String siteExternalReferenceCode, String dateFilterType,
-			Date endDate, Integer hours, Date startDate)
+			Date endDate, Integer hours, String portletId,
+			String sitePageExternalReferenceCode, Date startDate)
 		throws Exception {
 
 		Group stagingGroup = GroupUtil.getStagingGroup(
 			GroupUtil.getSiteGroup(
 				contextCompany.getCompanyId(), siteExternalReferenceCode));
 
-		PermissionUtil.checkPublishPermission(stagingGroup.getGroupId());
+		Layout layout = LayoutUtil.getPortletLayout(
+			stagingGroup, portletId, sitePageExternalReferenceCode);
+
+		Group scopeGroup = GroupUtil.getScopeGroup(
+			stagingGroup, layout, portletId);
+
+		PermissionUtil.checkPublishPermission(
+			scopeGroup.getGroupId(),
+			PermissionUtil.getPublishGroupActionId(portletId));
 
 		Map<String, String[]> parameterMap =
 			ParameterMapUtil.putDateRangeParameters(
 				dateFilterType, startDate, endDate, hours,
 				new LinkedHashMap<>(), contextUser);
 
+		List<Portlet> portlets = null;
+
+		boolean portletScoped = !Validator.isBlank(portletId);
+
+		if (portletScoped) {
+			portlets = ListUtil.fromArray(
+				_portletLocalService.getPortletById(
+					contextCompany.getCompanyId(), portletId));
+		}
+		else {
+			portlets = _exportImportHelper.getExportablePortlets(
+				contextCompany.getCompanyId(), false, scopeGroup.getGroupId());
+		}
+
 		PortletDataHandler[] exportPortletDataHandlers =
 			PortletDataHandlerUtil.getExportPortletDataHandlers(
-				_deletionSystemEventExporter, stagingGroup,
-				contextAcceptLanguage.getPreferredLocale(), parameterMap, 0,
+				_deletionSystemEventExporter, scopeGroup,
+				contextAcceptLanguage.getPreferredLocale(), parameterMap,
+				(layout == null) ? 0 : layout.getPlid(),
 				_portletDataContextFactory, _portletDataHandlerProvider,
-				_exportImportHelper.getExportablePortlets(
-					stagingGroup.getCompanyId(), false,
-					stagingGroup.getGroupId()),
-				false, contextUser.getTimeZone());
+				portlets, portletScoped, contextUser.getTimeZone());
 
 		return new PublishPreview() {
 			{
@@ -86,5 +114,8 @@ public class PublishPreviewResourceImpl extends BasePublishPreviewResourceImpl {
 
 	@Reference
 	private PortletDataHandlerProvider _portletDataHandlerProvider;
+
+	@Reference
+	private PortletLocalService _portletLocalService;
 
 }

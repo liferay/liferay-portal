@@ -43,12 +43,13 @@ public class PermissionUtil {
 			ExportImportPortletKeys.IMPORT, groupActionId);
 	}
 
-	public static void checkPublishPermission(long groupId)
+	public static void checkPublishPermission(
+			long groupId, String groupActionId)
 		throws PortalException {
 
 		GroupPermissionUtil.check(
 			PermissionThreadLocal.getPermissionChecker(), groupId,
-			ActionKeys.PUBLISH_STAGING);
+			groupActionId);
 	}
 
 	public static String getGroupActionId(BackgroundTask backgroundTask) {
@@ -76,6 +77,35 @@ public class PermissionUtil {
 		}
 
 		return ActionKeys.EXPORT_IMPORT_LAYOUTS;
+	}
+
+	public static String getPublishGroupActionId(
+		BackgroundTask backgroundTask) {
+
+		String taskExecutorClassName =
+			backgroundTask.getTaskExecutorClassName();
+
+		if (StringUtil.equals(
+				taskExecutorClassName,
+				BackgroundTaskExecutorNames.
+					PORTLET_REMOTE_STAGING_BACKGROUND_TASK_EXECUTOR) ||
+			StringUtil.equals(
+				taskExecutorClassName,
+				BackgroundTaskExecutorNames.
+					PORTLET_STAGING_BACKGROUND_TASK_EXECUTOR)) {
+
+			return ActionKeys.PUBLISH_PORTLET_INFO;
+		}
+
+		return ActionKeys.PUBLISH_STAGING;
+	}
+
+	public static String getPublishGroupActionId(String portletId) {
+		if (!Validator.isBlank(portletId)) {
+			return ActionKeys.PUBLISH_PORTLET_INFO;
+		}
+
+		return ActionKeys.PUBLISH_STAGING;
 	}
 
 	private static void _checkPermission(

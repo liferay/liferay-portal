@@ -41,6 +41,7 @@ import com.liferay.portal.kernel.scheduler.Trigger;
 import com.liferay.portal.kernel.scheduler.TriggerFactory;
 import com.liferay.portal.kernel.scheduler.messaging.SchedulerResponse;
 import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.LayoutService;
 import com.liferay.portal.kernel.service.UserLocalService;
@@ -93,7 +94,8 @@ public class ScheduledPublishProcessResourceImpl
 			GroupUtil.getSiteGroup(
 				contextCompany.getCompanyId(), siteExternalReferenceCode));
 
-		PermissionUtil.checkPublishPermission(stagingGroup.getGroupId());
+		PermissionUtil.checkPublishPermission(
+			stagingGroup.getGroupId(), ActionKeys.PUBLISH_STAGING);
 
 		String groupName = _getSchedulerGroupName(stagingGroup);
 
@@ -126,7 +128,8 @@ public class ScheduledPublishProcessResourceImpl
 			GroupUtil.getSiteGroup(
 				contextCompany.getCompanyId(), siteExternalReferenceCode));
 
-		PermissionUtil.checkPublishPermission(stagingGroup.getGroupId());
+		PermissionUtil.checkPublishPermission(
+			stagingGroup.getGroupId(), ActionKeys.PUBLISH_STAGING);
 
 		return _toScheduledPublishProcess(
 			_getExportPortletDataHandlers(stagingGroup),
@@ -145,7 +148,8 @@ public class ScheduledPublishProcessResourceImpl
 			GroupUtil.getSiteGroup(
 				contextCompany.getCompanyId(), siteExternalReferenceCode));
 
-		PermissionUtil.checkPublishPermission(stagingGroup.getGroupId());
+		PermissionUtil.checkPublishPermission(
+			stagingGroup.getGroupId(), ActionKeys.PUBLISH_STAGING);
 
 		PortletDataHandler[] exportPortletDataHandlers =
 			_getExportPortletDataHandlers(stagingGroup);
@@ -195,7 +199,8 @@ public class ScheduledPublishProcessResourceImpl
 
 		long stagingGroupId = stagingGroup.getGroupId();
 
-		PermissionUtil.checkPublishPermission(stagingGroupId);
+		PermissionUtil.checkPublishPermission(
+			stagingGroupId, ActionKeys.PUBLISH_STAGING);
 
 		PublishProcessRequest publishProcessRequest =
 			scheduledPublishProcessRequest.getPublishProcessRequest();

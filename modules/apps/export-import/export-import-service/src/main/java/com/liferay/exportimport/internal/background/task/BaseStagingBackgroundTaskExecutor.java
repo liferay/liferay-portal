@@ -197,6 +197,9 @@ public abstract class BaseStagingBackgroundTaskExecutor
 				ExportImportConfigurationConstants.TYPE_PUBLISH_LAYOUT_LOCAL) &&
 			 (exportImportConfigurationType !=
 				 ExportImportConfigurationConstants.
+					 TYPE_PUBLISH_PORTLET_LOCAL) &&
+			 (exportImportConfigurationType !=
+				 ExportImportConfigurationConstants.
 					 TYPE_SCHEDULED_PUBLISH_LAYOUT_LOCAL)) ||
 			!FeatureFlagManagerUtil.isEnabled(
 				exportImportConfiguration.getCompanyId(), "LPD-96689")) {

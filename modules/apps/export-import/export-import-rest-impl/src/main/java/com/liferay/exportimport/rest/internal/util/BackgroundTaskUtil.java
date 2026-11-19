@@ -108,17 +108,18 @@ public class BackgroundTaskUtil {
 	public static String getName(BackgroundTask backgroundTask) {
 		String name = backgroundTask.getName();
 
-		String taskExecutorClassName =
-			backgroundTask.getTaskExecutorClassName();
-
-		if (!StringUtil.equals(
-				taskExecutorClassName,
-				BackgroundTaskExecutorNames.
-					PORTLET_EXPORT_BACKGROUND_TASK_EXECUTOR) &&
-			!StringUtil.equals(
-				taskExecutorClassName,
-				BackgroundTaskExecutorNames.
-					PORTLET_IMPORT_BACKGROUND_TASK_EXECUTOR)) {
+		if (!ArrayUtil.contains(
+				new String[] {
+					BackgroundTaskExecutorNames.
+						PORTLET_EXPORT_BACKGROUND_TASK_EXECUTOR,
+					BackgroundTaskExecutorNames.
+						PORTLET_IMPORT_BACKGROUND_TASK_EXECUTOR,
+					BackgroundTaskExecutorNames.
+						PORTLET_REMOTE_STAGING_BACKGROUND_TASK_EXECUTOR,
+					BackgroundTaskExecutorNames.
+						PORTLET_STAGING_BACKGROUND_TASK_EXECUTOR
+				},
+				backgroundTask.getTaskExecutorClassName())) {
 
 			return name;
 		}
