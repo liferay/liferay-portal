@@ -64,11 +64,9 @@ public class KBArchiveFactoryUtil {
 		String markdownImporterArticleIntro =
 			kbGroupServiceConfiguration.markdownImporterArticleIntro();
 
-		int index = markdownImporterArticleIntro.lastIndexOf(CharPool.PERIOD);
-
 		String markdownImporterArticleIntroWithoutExtension =
-			(index > 0) ? markdownImporterArticleIntro.substring(0, index) :
-				markdownImporterArticleIntro;
+			_getMarkdownImporterArticleIntroWithoutExtension(
+				markdownImporterArticleIntro);
 
 		KBArchiveState kbArchiveState = new KBArchiveState(zipReader);
 
@@ -116,6 +114,18 @@ public class KBArchiveFactoryUtil {
 		}
 
 		return new KBArchiveImpl(kbArchiveState.getFolders());
+	}
+
+	private static String _getMarkdownImporterArticleIntroWithoutExtension(
+		String markdownImporterArticleIntro) {
+
+		int index = markdownImporterArticleIntro.lastIndexOf(CharPool.PERIOD);
+
+		if (index > 0) {
+			return markdownImporterArticleIntro.substring(0, index);
+		}
+
+		return markdownImporterArticleIntro;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
