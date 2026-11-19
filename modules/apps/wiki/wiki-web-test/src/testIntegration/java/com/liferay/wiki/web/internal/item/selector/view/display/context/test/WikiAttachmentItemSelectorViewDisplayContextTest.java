@@ -85,9 +85,9 @@ public class WikiAttachmentItemSelectorViewDisplayContextTest {
 
 		_userLocalService.addGroupUser(_group.getGroupId(), _user);
 
-		WikiPage page = _getWikiPage();
+		WikiPage wikiPage = _getWikiPage();
 
-		Assert.assertEquals(_page.getPageId(), page.getPageId());
+		Assert.assertEquals(_page.getPageId(), wikiPage.getPageId());
 	}
 
 	private WikiPage _getWikiPage() throws Exception {
