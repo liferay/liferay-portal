@@ -237,7 +237,63 @@ describe('EventInput', () => {
 
 		expect(screen.getByText('has / has not')).toBeInTheDocument();
 		expect(screen.getByText('Asset Clicked')).toBeInTheDocument();
+		expect(screen.getByText('time(s)')).toBeInTheDocument();
 		expect(screen.getByText('triggered')).toBeInTheDocument();
+	});
+
+	it('should not render the occurrence count nor the date filter in a real time segment', () => {
+		render(
+			<MockedProvider addTypename={false} mocks={[]}>
+				<MemoryRouter
+					initialEntries={[
+						'/workspace/23/123123/contacts/segments/create?type=REAL_TIME'
+					]}
+				>
+					<RouterRoutes>
+						<Route
+							element={
+								<EventInput
+								displayValue='Asset Clicked'
+								onChange={jest.fn()}
+								operatorRenderer={() => (
+									<div>{'has / has not'}</div>
+								)}
+								property={
+									new Property({
+										entityName: 'Event',
+										id: '3',
+										label: 'assetDepthReached',
+										name: '3',
+										options: [],
+										propertyKey: 'event',
+										type: 'event'
+									})
+								}
+								segmentType='REAL_TIME'
+								touched={{
+									attribute: true,
+									attributeValue: 'true',
+									dateFilter: true,
+									occurenceCount: true
+								}}
+								valid={{
+									attribute: true,
+									attributeValue: 'true',
+									dateFilter: true,
+									occurenceCount: true
+								}}
+								value={fromJS(mockValue)}
+							/>
+							}
+							path={`${Routes.CONTACTS_SEGMENT_CREATE}/*`}
+						/>
+					</RouterRoutes>
+				</MemoryRouter>
+			</MockedProvider>
+		);
+
+		expect(screen.getByText('Asset Clicked')).toBeInTheDocument();
+		expect(screen.queryByText('time(s)')).toBeNull();
 	});
 
 	it('should not fetch the event attributes until Add Event Attribute is clicked', async () => {
