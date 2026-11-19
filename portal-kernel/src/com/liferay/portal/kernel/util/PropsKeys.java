@@ -2676,9 +2676,6 @@ public interface PropsKeys {
 	public static final String TRANSACTION_ISOLATION_PORTAL =
 		"transaction.isolation.portal";
 
-	public static final String TRANSACTIONAL_CACHE_ENABLED =
-		"transactional.cache.enable";
-
 	public static final String TRANSACTIONAL_CACHE_NAMES =
 		"transactional.cache.names";
 

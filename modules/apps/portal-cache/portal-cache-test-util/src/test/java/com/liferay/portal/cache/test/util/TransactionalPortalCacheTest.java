@@ -102,8 +102,6 @@ public class TransactionalPortalCacheTest {
 
 	@Test
 	public void testCommitAfterWriterCommitBeforePut() {
-		_setEnableTransactionalCache(true);
-
 		TransactionalPortalCache<String, String> transactionalPortalCache =
 			new TransactionalPortalCache<>(_portalCache, false);
 
@@ -120,8 +118,6 @@ public class TransactionalPortalCacheTest {
 
 	@Test
 	public void testCommitReadOnly() {
-		_setEnableTransactionalCache(true);
-
 		TransactionalPortalCache<String, String> transactionalPortalCache =
 			new TransactionalPortalCache<>(_portalCache, false);
 
@@ -152,8 +148,6 @@ public class TransactionalPortalCacheTest {
 
 	@Test
 	public void testCommitReadOnlyAfterWriterCommit() {
-		_setEnableTransactionalCache(true);
-
 		TransactionalPortalCache<String, String> transactionalPortalCache =
 			new TransactionalPortalCache<>(_portalCache, false);
 
@@ -170,8 +164,6 @@ public class TransactionalPortalCacheTest {
 
 	@Test
 	public void testCommitSavepointAfterWriterCommit() {
-		_setEnableTransactionalCache(true);
-
 		TransactionalPortalCache<String, String> transactionalPortalCache =
 			new TransactionalPortalCache<>(_portalCache, false);
 
@@ -225,8 +217,6 @@ public class TransactionalPortalCacheTest {
 
 	@Test
 	public void testCompletePut() {
-		_setEnableTransactionalCache(true);
-
 		TransactionalPortalCacheUtil.preparePut(_portalCache, _KEY_1);
 
 		Assert.assertTrue(
@@ -274,8 +264,6 @@ public class TransactionalPortalCacheTest {
 
 	@Test
 	public void testCompletePutAfterWriterCommit() {
-		_setEnableTransactionalCache(true);
-
 		TransactionalPortalCache<String, String> transactionalPortalCache =
 			new TransactionalPortalCache<>(_portalCache, false);
 
@@ -338,8 +326,6 @@ public class TransactionalPortalCacheTest {
 
 	@Test
 	public void testCompletePutAfterWriterCommitOnAnotherKey() {
-		_setEnableTransactionalCache(true);
-
 		TransactionalPortalCache<String, String> transactionalPortalCache =
 			new TransactionalPortalCache<>(_portalCache, false);
 
@@ -356,8 +342,6 @@ public class TransactionalPortalCacheTest {
 
 	@Test
 	public void testCompletePutAfterWriterCommitOnCollidingKey() {
-		_setEnableTransactionalCache(true);
-
 		TransactionalPortalCache<String, String> transactionalPortalCache =
 			new TransactionalPortalCache<>(_portalCache, false);
 
@@ -375,8 +359,6 @@ public class TransactionalPortalCacheTest {
 
 	@Test
 	public void testCompletePutAfterWriterPut() {
-		_setEnableTransactionalCache(true);
-
 		TransactionalPortalCache<String, String> transactionalPortalCache =
 			new TransactionalPortalCache<>(_portalCache, false);
 
@@ -393,8 +375,6 @@ public class TransactionalPortalCacheTest {
 
 	@Test
 	public void testCompletePutAfterWriterRemoveAll() {
-		_setEnableTransactionalCache(true);
-
 		TransactionalPortalCache<String, String> transactionalPortalCache =
 			new TransactionalPortalCache<>(_portalCache, false);
 
@@ -423,8 +403,6 @@ public class TransactionalPortalCacheTest {
 
 	@Test
 	public void testCompletePutDuringWriterCommit() {
-		_setEnableTransactionalCache(true);
-
 		TransactionalPortalCache<String, String> transactionalPortalCache =
 			new TransactionalPortalCache<>(_portalCache, false);
 
@@ -451,8 +429,6 @@ public class TransactionalPortalCacheTest {
 
 	@Test
 	public void testCompletePutInTransaction() {
-		_setEnableTransactionalCache(true);
-
 		TransactionalPortalCache<String, String> transactionalPortalCache =
 			new TransactionalPortalCache<>(_portalCache, false);
 
@@ -482,8 +458,6 @@ public class TransactionalPortalCacheTest {
 
 	@Test
 	public void testConcurrentTransactionForMVCCPortalCache() throws Exception {
-		_setEnableTransactionalCache(true);
-
 		TransactionalPortalCache<String, String> transactionalPortalCache =
 			new TransactionalPortalCache<>(_portalCache, true);
 
@@ -598,8 +572,6 @@ public class TransactionalPortalCacheTest {
 	@Test
 	public void testConcurrentTransactionForNonmvccPortalCache()
 		throws Exception {
-
-		_setEnableTransactionalCache(true);
 
 		TransactionalPortalCache<String, String> transactionalPortalCache =
 			new TransactionalPortalCache<>(_portalCache, false);
@@ -717,8 +689,6 @@ public class TransactionalPortalCacheTest {
 
 		new TransactionalPortalCacheUtil();
 
-		_setEnableTransactionalCache(true);
-
 		TransactionalPortalCacheUtil.begin();
 
 		TransactionalPortalCache<String, String> transactionalPortalCache =
@@ -730,44 +700,15 @@ public class TransactionalPortalCacheTest {
 		TransactionalPortalCacheUtil.removeAll(transactionalPortalCache, false);
 
 		TransactionalPortalCacheUtil.commit(false);
-
-		TransactionLifecycleListener transactionLifecycleListener =
-			TransactionalPortalCacheUtil.TRANSACTION_LIFECYCLE_LISTENER;
-
-		_setEnableTransactionalCache(false);
-
-		transactionLifecycleListener.created(null, null);
-
-		transactionLifecycleListener.committed(null, null);
-
-		transactionLifecycleListener.rollbacked(null, null, null);
 	}
 
 	@Test
 	public void testNoneTransactionalCache() {
-		_setEnableTransactionalCache(false);
-
 		Assert.assertFalse(
 			"TransactionalPortalCacheUtil should be disabled",
 			TransactionalPortalCacheUtil.isEnabled());
-
-		// MVCC portal cache when transactional cache is disabled
-
-		_testNoneTransactionalPortalCache(
-			new TransactionalPortalCache<>(_portalCache, true));
-
-		// Non MVCC portal cache when transactional cache is disabled
-
-		_testNoneTransactionalPortalCache(
-			new TransactionalPortalCache<>(_portalCache, false));
 
 		// MVCC portal cache when not used in transaction
-
-		_setEnableTransactionalCache(true);
-
-		Assert.assertFalse(
-			"TransactionalPortalCacheUtil should be disabled",
-			TransactionalPortalCacheUtil.isEnabled());
 
 		_testNoneTransactionalPortalCache(
 			new TransactionalPortalCache<>(_portalCache, true));
@@ -780,12 +721,6 @@ public class TransactionalPortalCacheTest {
 
 	@Test
 	public void testPreparePut() {
-		_setEnableTransactionalCache(false);
-
-		TransactionalPortalCacheUtil.preparePut(_portalCache, _KEY_1);
-
-		_setEnableTransactionalCache(true);
-
 		TransactionalPortalCache<String, String> transactionalPortalCache =
 			new TransactionalPortalCache<>(_portalCache, false);
 
@@ -830,7 +765,6 @@ public class TransactionalPortalCacheTest {
 
 	@Test
 	public void testShardedTransactionalCache() {
-		_setEnableTransactionalCache(true);
 
 		// MVCC portal cache
 
@@ -843,7 +777,6 @@ public class TransactionalPortalCacheTest {
 
 	@Test
 	public void testShardedTransactionalCacheWithException() {
-		_setEnableTransactionalCache(true);
 
 		// Commit with exception
 
@@ -943,8 +876,6 @@ public class TransactionalPortalCacheTest {
 
 	@Test
 	public void testTransactionLifecycleListenerEnabledWithBarrier() {
-		_setEnableTransactionalCache(true);
-
 		_testTransactionLifecycleListenerEnabledWithBarrier(
 			Propagation.NOT_SUPPORTED);
 		_testTransactionLifecycleListenerEnabledWithBarrier(Propagation.NEVER);
@@ -952,8 +883,6 @@ public class TransactionalPortalCacheTest {
 
 	@Test
 	public void testTransactionLifecycleListenerEnabledWithExistTransaction() {
-		_setEnableTransactionalCache(true);
-
 		Assert.assertEquals(0, _getTransactionStackSize());
 
 		TransactionLifecycleListener transactionLifecycleListener =
@@ -990,8 +919,6 @@ public class TransactionalPortalCacheTest {
 
 	@Test
 	public void testTransactionLifecycleListenerEnabledWithSavepoint() {
-		_setEnableTransactionalCache(true);
-
 		TransactionalPortalCache<String, String> transactionalPortalCache =
 			new TransactionalPortalCache<>(_portalCache, true);
 
@@ -1218,8 +1145,6 @@ public class TransactionalPortalCacheTest {
 
 	@Test
 	public void testTransactionLifecycleListenerEnabledWithoutBarrier() {
-		_setEnableTransactionalCache(true);
-
 		_testTransactionLifecycleListenerEnabledWithoutBarrier(
 			Propagation.REQUIRED);
 		_testTransactionLifecycleListenerEnabledWithoutBarrier(
@@ -1232,7 +1157,6 @@ public class TransactionalPortalCacheTest {
 
 	@Test
 	public void testTransactionalCache() {
-		_setEnableTransactionalCache(true);
 
 		// MVCC portal cache without ttl
 
@@ -1257,8 +1181,6 @@ public class TransactionalPortalCacheTest {
 
 	@Test
 	public void testTransactionalCacheWithParameterValidation() {
-		_setEnableTransactionalCache(true);
-
 		TransactionalPortalCache<String, String> transactionalPortalCache =
 			new TransactionalPortalCache<>(_portalCache, true);
 
@@ -1351,14 +1273,6 @@ public class TransactionalPortalCacheTest {
 
 	@Test
 	public void testTransactionalPortalCacheUtilEnabled() {
-		_setEnableTransactionalCache(false);
-
-		Assert.assertFalse(
-			"TransactionalPortalCacheUtil should be disabled",
-			TransactionalPortalCacheUtil.isEnabled());
-
-		_setEnableTransactionalCache(true);
-
 		Assert.assertFalse(
 			"TransactionalPortalCacheUtil should be disabled",
 			TransactionalPortalCacheUtil.isEnabled());
@@ -1371,10 +1285,6 @@ public class TransactionalPortalCacheTest {
 
 		TransactionalPortalCacheUtil.commit(false);
 
-		ReflectionTestUtil.setFieldValue(
-			TransactionalPortalCacheUtil.class, "_transactionalCacheEnabled",
-			null);
-
 		Assert.assertFalse(
 			"TransactionalPortalCacheUtil should be disabled",
 			TransactionalPortalCacheUtil.isEnabled());
@@ -1382,8 +1292,6 @@ public class TransactionalPortalCacheTest {
 
 	@Test
 	public void testTransactionalPortalCacheUtilGet() throws Exception {
-		_setEnableTransactionalCache(true);
-
 		TransactionalPortalCache<String, MVCCModel> transactionalPortalCache =
 			new TransactionalPortalCache<>(
 				new MVCCPortalCache<>(
@@ -1507,8 +1415,6 @@ public class TransactionalPortalCacheTest {
 
 	@Test
 	public void testTransactionalPortalCacheWithRealMVCCPortalCache() {
-		_setEnableTransactionalCache(true);
-
 		TransactionalPortalCache<String, MVCCModel> transactionalPortalCache =
 			new TransactionalPortalCache<>(
 				new MVCCPortalCache<>(
@@ -1616,12 +1522,6 @@ public class TransactionalPortalCacheTest {
 
 		testCallable2.unblock();
 		futureTask2.get();
-	}
-
-	private void _setEnableTransactionalCache(boolean enabled) {
-		ReflectionTestUtil.setFieldValue(
-			TransactionalPortalCacheUtil.class, "_transactionalCacheEnabled",
-			enabled);
 	}
 
 	private void _testNoneTransactionalPortalCache(
