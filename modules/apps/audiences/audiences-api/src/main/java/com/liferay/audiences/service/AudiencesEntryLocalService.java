@@ -222,12 +222,6 @@ public interface AudiencesEntryLocalService
 		long companyId, int start, int end,
 		OrderByComparator<AudiencesEntry> orderByComparator);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<AudiencesEntry> getAudiencesEntries(
-			long companyId, String name, int start, int end,
-			OrderByComparator<AudiencesEntry> orderByComparator)
-		throws PortalException;
-
 	/**
 	 * Returns the number of audiences entries.
 	 *
@@ -238,9 +232,6 @@ public interface AudiencesEntryLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getAudiencesEntriesCount(long companyId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getAudiencesEntriesCount(long companyId, String name);
 
 	/**
 	 * Returns the audiences entry with the primary key.
@@ -295,4 +286,4 @@ public interface AudiencesEntryLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1944268457
+// LIFERAY-SERVICE-BUILDER-HASH:1412790629

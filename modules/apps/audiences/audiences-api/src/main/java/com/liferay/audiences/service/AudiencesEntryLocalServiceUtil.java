@@ -250,15 +250,6 @@ public class AudiencesEntryLocalServiceUtil {
 			companyId, start, end, orderByComparator);
 	}
 
-	public static List<AudiencesEntry> getAudiencesEntries(
-			long companyId, String name, int start, int end,
-			OrderByComparator<AudiencesEntry> orderByComparator)
-		throws PortalException {
-
-		return getService().getAudiencesEntries(
-			companyId, name, start, end, orderByComparator);
-	}
-
 	/**
 	 * Returns the number of audiences entries.
 	 *
@@ -270,10 +261,6 @@ public class AudiencesEntryLocalServiceUtil {
 
 	public static int getAudiencesEntriesCount(long companyId) {
 		return getService().getAudiencesEntriesCount(companyId);
-	}
-
-	public static int getAudiencesEntriesCount(long companyId, String name) {
-		return getService().getAudiencesEntriesCount(companyId, name);
 	}
 
 	/**
@@ -358,4 +345,4 @@ public class AudiencesEntryLocalServiceUtil {
 			AudiencesEntryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:633203813
+// LIFERAY-SERVICE-BUILDER-HASH:2135949559

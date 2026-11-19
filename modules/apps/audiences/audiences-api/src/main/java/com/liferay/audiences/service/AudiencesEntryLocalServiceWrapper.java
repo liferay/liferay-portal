@@ -287,19 +287,6 @@ public class AudiencesEntryLocalServiceWrapper
 			companyId, start, end, orderByComparator);
 	}
 
-	@Override
-	public java.util.List<com.liferay.audiences.model.AudiencesEntry>
-			getAudiencesEntries(
-				long companyId, String name, int start, int end,
-				com.liferay.portal.kernel.util.OrderByComparator
-					<com.liferay.audiences.model.AudiencesEntry>
-						orderByComparator)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _audiencesEntryLocalService.getAudiencesEntries(
-			companyId, name, start, end, orderByComparator);
-	}
-
 	/**
 	 * Returns the number of audiences entries.
 	 *
@@ -313,12 +300,6 @@ public class AudiencesEntryLocalServiceWrapper
 	@Override
 	public int getAudiencesEntriesCount(long companyId) {
 		return _audiencesEntryLocalService.getAudiencesEntriesCount(companyId);
-	}
-
-	@Override
-	public int getAudiencesEntriesCount(long companyId, String name) {
-		return _audiencesEntryLocalService.getAudiencesEntriesCount(
-			companyId, name);
 	}
 
 	/**
@@ -423,4 +404,4 @@ public class AudiencesEntryLocalServiceWrapper
 	private AudiencesEntryLocalService _audiencesEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:813643373
+// LIFERAY-SERVICE-BUILDER-HASH:850855059
