@@ -29,10 +29,8 @@ import com.liferay.commerce.service.persistence.CommerceShipmentItemPersistence;
 import com.liferay.commerce.service.persistence.CommerceShippingMethodPersistence;
 import com.liferay.expando.kernel.service.ExpandoRowLocalService;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
-import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.petra.sql.dsl.query.FromStep;
 import com.liferay.petra.sql.dsl.query.GroupByStep;
-import com.liferay.petra.sql.dsl.query.JoinStep;
 import com.liferay.petra.sql.dsl.query.LimitStep;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
@@ -794,15 +792,16 @@ public class CommerceShipmentLocalServiceImpl
 	private GroupByStep _getCommerceAccountGroupByStep(
 		long commerceAccountId, FromStep fromStep, long groupId) {
 
-		JoinStep joinStep = fromStep.from(CommerceShipmentTable.INSTANCE);
-
-		Predicate predicate = CommerceShipmentTable.INSTANCE.groupId.eq(
-			groupId);
-
-		return joinStep.where(
-			predicate.and(
+		return fromStep.from(
+			CommerceShipmentTable.INSTANCE
+		).where(
+			CommerceShipmentTable.INSTANCE.groupId.eq(
+				groupId
+			).and(
 				CommerceShipmentTable.INSTANCE.commerceAccountId.eq(
-					commerceAccountId)));
+					commerceAccountId)
+			)
+		);
 	}
 
 	private List<CommerceShipment> _getCommerceShipments(Hits hits)

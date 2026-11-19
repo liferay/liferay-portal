@@ -103,14 +103,14 @@ public class CommerceShipmentContentDisplayContext {
 	}
 
 	public CommerceShipment getCommerceShipment() throws PortalException {
-		if (_commerceShipment != null) {
-			return _commerceShipment;
-		}
-
 		if (_commerceChannel == null) {
 			throw new NoSuchShipmentException(
 				"No commerce channel exists for group " +
 					_commerceShipmentContentRequestHelper.getScopeGroupId());
+		}
+
+		if (_commerceShipment != null) {
+			return _commerceShipment;
 		}
 
 		_commerceShipment = _commerceShipmentService.getCommerceShipment(
@@ -166,20 +166,18 @@ public class CommerceShipmentContentDisplayContext {
 
 		CommerceShipment commerceShipment = getCommerceShipment();
 
-		long commerceShipmentId = commerceShipment.getCommerceShipmentId();
-
 		_commerceShipmentItemSearchContainer = new SearchContainer<>(
 			_commerceShipmentContentRequestHelper.getLiferayPortletRequest(),
 			getPortletURL(), null, "this-shipment-has-no-items");
 
 		_commerceShipmentItemSearchContainer.setResultsAndTotal(
 			() -> _commerceShipmentItemLocalService.getCommerceShipmentItems(
-				commerceShipmentId,
+				commerceShipment.getCommerceShipmentId(),
 				_commerceShipmentItemSearchContainer.getStart(),
 				_commerceShipmentItemSearchContainer.getEnd(),
 				CommerceShipmentItemCreateDateComparator.getInstance(false)),
 			_commerceShipmentItemLocalService.getCommerceShipmentItemsCount(
-				commerceShipmentId));
+				commerceShipment.getCommerceShipmentId()));
 
 		return _commerceShipmentItemSearchContainer;
 	}
@@ -254,7 +252,7 @@ public class CommerceShipmentContentDisplayContext {
 
 		AccountEntry accountEntry = _getAccountEntry();
 
-		if ((_commerceChannel == null) || (accountEntry == null)) {
+		if ((accountEntry == null) || (_commerceChannel == null)) {
 			_searchContainer.setResultsAndTotal(Collections::emptyList, 0);
 
 			return _searchContainer;

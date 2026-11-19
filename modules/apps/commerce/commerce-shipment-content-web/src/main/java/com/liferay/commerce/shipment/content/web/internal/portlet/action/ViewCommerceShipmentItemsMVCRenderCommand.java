@@ -52,10 +52,6 @@ public class ViewCommerceShipmentItemsMVCRenderCommand
 					_commerceShipmentLocalService, _commerceShipmentService,
 					_commerceShippingEngineRegistry, renderRequest);
 
-		renderRequest.setAttribute(
-			WebKeys.PORTLET_DISPLAY_CONTEXT,
-			commerceShipmentContentDisplayContext);
-
 		try {
 			commerceShipmentContentDisplayContext.getCommerceShipment();
 		}
@@ -70,6 +66,10 @@ public class ViewCommerceShipmentItemsMVCRenderCommand
 
 			throw new PortletException(exception);
 		}
+
+		renderRequest.setAttribute(
+			WebKeys.PORTLET_DISPLAY_CONTEXT,
+			commerceShipmentContentDisplayContext);
 
 		return "/view_commerce_shipment_items.jsp";
 	}
