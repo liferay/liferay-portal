@@ -15,39 +15,37 @@ AuditConfigurationDisplayContext auditConfigurationDisplayContext = (AuditConfig
 	<aui:input disabled="<%= auditConfigurationDisplayContext.isEnabledOverridden() %>" helpMessage="<%= auditConfigurationDisplayContext.getEnabledHelpMessage() %>" name="enabled" type="checkbox" value="<%= auditConfigurationDisplayContext.isEnabled() %>" />
 </c:if>
 
-<c:if test="<%= auditConfigurationDisplayContext.isAuditMessageMaxQueueSizeVisible() %>">
-	<aui:input disabled="<%= auditConfigurationDisplayContext.isAuditMessageMaxQueueSizeOverridden() %>" helpMessage="<%= auditConfigurationDisplayContext.getAuditMessageMaxQueueSizeHelpMessage() %>" label="audit-message-max-queue-size" name="auditMessageMaxQueueSize" type="number" value="<%= auditConfigurationDisplayContext.getAuditMessageMaxQueueSize() %>" />
+<c:if test='<%= FeatureFlagManagerUtil.isEnabled(company.getCompanyId(), "LPD-6417") %>'>
+	<aui:input disabled="<%= auditConfigurationDisplayContext.isPseudonymizationEnabledOverridden() %>" helpMessage="<%= auditConfigurationDisplayContext.getPseudonymizationEnabledHelpMessage() %>" label="pseudonymization-enabled" name="pseudonymizationEnabled" type="checkbox" value="<%= auditConfigurationDisplayContext.isPseudonymizationEnabled() %>" />
+
+	<aui:script>
+		(function () {
+			const form = document.getElementById('<portlet:namespace />fm');
+
+			const pseudonymizationEnabledCheckbox = document.getElementById(
+				'<portlet:namespace />pseudonymizationEnabled'
+			);
+
+			form.addEventListener('submit', (event) => {
+				if (
+					pseudonymizationEnabledCheckbox &&
+					!pseudonymizationEnabledCheckbox.checked &&
+					pseudonymizationEnabledCheckbox.defaultChecked
+				) {
+					event.preventDefault();
+					event.stopImmediatePropagation();
+
+					Liferay.Util.openConfirmModal({
+						message:
+							'<%= UnicodeLanguageUtil.get(request, "disable-pseudonymization-warning") %>',
+						onConfirm: (isConfirmed) => {
+							if (isConfirmed) {
+								submitForm(form);
+							}
+						},
+					});
+				}
+			});
+		})();
+	</aui:script>
 </c:if>
-
-<aui:input disabled="<%= auditConfigurationDisplayContext.isPseudonymizationEnabledOverridden() %>" helpMessage="<%= auditConfigurationDisplayContext.getPseudonymizationEnabledHelpMessage() %>" label="pseudonymization-enabled" name="pseudonymizationEnabled" type="checkbox" value="<%= auditConfigurationDisplayContext.isPseudonymizationEnabled() %>" />
-
-<aui:script>
-	(function () {
-		const form = document.getElementById('<portlet:namespace />fm');
-
-		const pseudonymizationEnabledCheckbox = document.getElementById(
-			'<portlet:namespace />pseudonymizationEnabled'
-		);
-
-		form.addEventListener('submit', (event) => {
-			if (
-				pseudonymizationEnabledCheckbox &&
-				!pseudonymizationEnabledCheckbox.checked &&
-				pseudonymizationEnabledCheckbox.defaultChecked
-			) {
-				event.preventDefault();
-				event.stopImmediatePropagation();
-
-				Liferay.Util.openConfirmModal({
-					message:
-						'<%= UnicodeLanguageUtil.get(request, "disable-pseudonymization-warning") %>',
-					onConfirm: (isConfirmed) => {
-						if (isConfirmed) {
-							submitForm(form);
-						}
-					},
-				});
-			}
-		});
-	})();
-</aui:script>

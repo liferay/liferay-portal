@@ -8,7 +8,6 @@ package com.liferay.portal.security.audit.configuration.web.internal.configurati
 import com.liferay.configuration.admin.display.ConfigurationFormRenderer;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -55,11 +54,6 @@ public class FileSystemAuditMessageProcessorConfigurationFormRenderer
 		ThemeDisplay themeDisplay =
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
-
-		if (!systemScope) {
-			FeatureFlagManagerUtil.checkEnabled(
-				themeDisplay.getCompanyId(), "LPD-6417");
-		}
 
 		FileSystemAuditMessageProcessorConfiguration
 			fileSystemAuditMessageProcessorConfiguration =

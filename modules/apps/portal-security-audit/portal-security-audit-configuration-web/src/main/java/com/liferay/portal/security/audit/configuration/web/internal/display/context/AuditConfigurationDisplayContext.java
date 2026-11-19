@@ -14,21 +14,10 @@ import com.liferay.portal.security.audit.configuration.web.internal.util.AuditCo
 public class AuditConfigurationDisplayContext {
 
 	public AuditConfigurationDisplayContext(
-		AuditConfiguration auditConfiguration,
-		boolean auditMessageMaxQueueSizeVisible, boolean systemScope) {
+		AuditConfiguration auditConfiguration, boolean systemScope) {
 
 		_auditConfiguration = auditConfiguration;
-		_auditMessageMaxQueueSizeVisible = auditMessageMaxQueueSizeVisible;
 		_systemScope = systemScope;
-	}
-
-	@SuppressWarnings("deprecation")
-	public int getAuditMessageMaxQueueSize() {
-		return _auditConfiguration.auditMessageMaxQueueSize();
-	}
-
-	public String getAuditMessageMaxQueueSizeHelpMessage() {
-		return _getHelpMessage("auditMessageMaxQueueSize");
 	}
 
 	public String getEnabledHelpMessage() {
@@ -37,14 +26,6 @@ public class AuditConfigurationDisplayContext {
 
 	public String getPseudonymizationEnabledHelpMessage() {
 		return _getHelpMessage("pseudonymizationEnabled");
-	}
-
-	public boolean isAuditMessageMaxQueueSizeOverridden() {
-		return _isOverridden("auditMessageMaxQueueSize");
-	}
-
-	public boolean isAuditMessageMaxQueueSizeVisible() {
-		return _auditMessageMaxQueueSizeVisible;
 	}
 
 	public boolean isEnabled() {
@@ -78,7 +59,6 @@ public class AuditConfigurationDisplayContext {
 	}
 
 	private final AuditConfiguration _auditConfiguration;
-	private final boolean _auditMessageMaxQueueSizeVisible;
 	private final boolean _systemScope;
 
 }

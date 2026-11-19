@@ -21,6 +21,7 @@ import com.liferay.portal.security.audit.configuration.web.internal.display.cont
 import com.liferay.portal.security.audit.configuration.web.internal.util.AuditConfigurationOverrideUtil;
 import com.liferay.portal.security.audit.configuration.web.internal.util.AuditConfigurationScopeUtil;
 import com.liferay.portal.security.audit.configuration.web.internal.util.AuditConfigurationThreadLocal;
+import com.liferay.portal.security.audit.event.generators.constants.EventTypes;
 
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletContext;
@@ -68,31 +69,20 @@ public class AuditConfigurationFormRenderer
 		AuditConfiguration auditConfiguration = _getAuditConfiguration(
 			themeDisplay.getCompanyId(), systemScope);
 
-		if (systemScope) {
-			if (!FeatureFlagManagerUtil.isEnabled(
-					themeDisplay.getCompanyId(), "LPD-6417") &&
-				!AuditConfigurationOverrideUtil.isOverridden(
-					AuditConfiguration.class, "auditMessageMaxQueueSize")) {
+		if (systemScope &&
+			!AuditConfigurationOverrideUtil.isOverridden(
+				AuditConfiguration.class, "enabled")) {
 
-				requestParameters.put(
-					"auditMessageMaxQueueSize",
-					ParamUtil.getInteger(
-						httpServletRequest, "auditMessageMaxQueueSize",
-						_getAuditMessageMaxQueueSize(auditConfiguration)));
-			}
-
-			if (!AuditConfigurationOverrideUtil.isOverridden(
-					AuditConfiguration.class, "enabled")) {
-
-				requestParameters.put(
-					"enabled",
-					ParamUtil.getBoolean(
-						httpServletRequest, "enabled",
-						auditConfiguration.enabled()));
-			}
+			requestParameters.put(
+				"enabled",
+				ParamUtil.getBoolean(
+					httpServletRequest, "enabled",
+					auditConfiguration.enabled()));
 		}
 
-		if (!AuditConfigurationOverrideUtil.isOverridden(
+		if (FeatureFlagManagerUtil.isEnabled(
+				themeDisplay.getCompanyId(), "LPD-6417") &&
+			!AuditConfigurationOverrideUtil.isOverridden(
 				AuditConfiguration.class, "pseudonymizationEnabled")) {
 
 			boolean pseudonymizationEnabled = ParamUtil.getBoolean(
@@ -103,7 +93,7 @@ public class AuditConfigurationFormRenderer
 				"pseudonymizationEnabled", pseudonymizationEnabled);
 
 			if (FeatureFlagManagerUtil.isEnabled(
-					themeDisplay.getCompanyId(), "LPD-6417") &&
+					themeDisplay.getCompanyId(), "LPD-96921") &&
 				(pseudonymizationEnabled !=
 					auditConfiguration.pseudonymizationEnabled())) {
 
@@ -140,9 +130,6 @@ public class AuditConfigurationFormRenderer
 				new AuditConfigurationDisplayContext(
 					_getAuditConfiguration(
 						themeDisplay.getCompanyId(), systemScope),
-					systemScope &&
-					!FeatureFlagManagerUtil.isEnabled(
-						themeDisplay.getCompanyId(), "LPD-6417"),
 					systemScope));
 
 			requestDispatcher.include(httpServletRequest, httpServletResponse);
@@ -190,15 +177,8 @@ public class AuditConfigurationFormRenderer
 						"oldValue", previousPseudonymizationEnabled
 					))),
 			AuditConfiguration.class.getName(),
-			String.valueOf(themeDisplay.getCompanyId()), "AUDIT_CONFIG_CHANGE",
-			null);
-	}
-
-	@SuppressWarnings("deprecation")
-	private int _getAuditMessageMaxQueueSize(
-		AuditConfiguration auditConfiguration) {
-
-		return auditConfiguration.auditMessageMaxQueueSize();
+			String.valueOf(themeDisplay.getCompanyId()),
+			EventTypes.AUDIT_CONFIG_CHANGE, null);
 	}
 
 	@Reference
