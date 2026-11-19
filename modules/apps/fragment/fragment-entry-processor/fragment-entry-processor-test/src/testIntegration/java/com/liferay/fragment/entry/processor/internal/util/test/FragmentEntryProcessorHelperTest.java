@@ -515,6 +515,42 @@ public class FragmentEntryProcessorHelperTest {
 	}
 
 	@Test
+	@TestInfo("LPS-182417")
+	public void testGetFieldValueFromStringValueDateTimeDDMFormFieldType()
+		throws Exception {
+
+		DDMFormField ddmFormField = _createDDMFormField(
+			DDMFormFieldTypeConstants.DATE_TIME);
+
+		JournalArticle journalArticle = JournalTestUtil.addJournalArticle(
+			_dataDefinitionResourceFactory, ddmFormField,
+			_ddmFormValuesToFieldsConverter, "2021-08-06 10:00",
+			_group.getGroupId(), _journalConverter);
+
+		Assert.assertEquals(
+			"06-08-2021 10:00 AM",
+			_getFieldValue(
+				JSONUtil.put(
+					"className", JournalArticle.class.getName()
+				).put(
+					"classNameId",
+					_portal.getClassNameId(JournalArticle.class.getName())
+				).put(
+					"classPK", journalArticle.getResourcePrimKey()
+				).put(
+					"config",
+					JSONUtil.put(
+						"dateFormat",
+						JSONUtil.put(
+							LocaleUtil.toLanguageId(LocaleUtil.US),
+							"dd-MM-yyyy hh:mm a"))
+				).put(
+					"fieldId", "DDMStructure_" + ddmFormField.getName()
+				),
+				LocaleUtil.US));
+	}
+
+	@Test
 	public void testGetFieldValueFromStringValueLinkToLayoutDDMFormFieldType()
 		throws Exception {
 
