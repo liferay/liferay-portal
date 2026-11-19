@@ -46,7 +46,7 @@ create unique index IX_EC5B593A on CPDefinition (uuid_[$COLUMN_LENGTH:75$], grou
 
 create unique index IX_3A90EAC9 on CPDefinitionLink (CPDefinitionId, CProductId, type_[$COLUMN_LENGTH:75$], ctCollectionId);
 create index IX_5572A666 on CPDefinitionLink (CPDefinitionId, type_[$COLUMN_LENGTH:75$]);
-create index IX_F7B5F85A on CPDefinitionLink (CProductId, type_[$COLUMN_LENGTH:75$]);
+create index IX_BE558D1B on CPDefinitionLink (CProductId);
 create index IX_FE4C04C0 on CPDefinitionLink (status, CPDefinitionId, type_[$COLUMN_LENGTH:75$]);
 create index IX_786093B4 on CPDefinitionLink (status, CProductId, type_[$COLUMN_LENGTH:75$]);
 create index IX_62BEA79A on CPDefinitionLink (status, displayDate);

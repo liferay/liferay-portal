@@ -643,86 +643,6 @@ public class CPDefinitionLinkUtil {
 	}
 
 	/**
-	 * Returns an ordered range of all the cp definition links where CProductId = &#63; and type = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.commerce.product.model.impl.CPDefinitionLinkModelImpl</code>.
-	 * </p>
-	 *
-	 * @param CProductId the c product ID
-	 * @param type the type
-	 * @param start the lower bound of the range of cp definition links
-	 * @param end the upper bound of the range of cp definition links (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching cp definition links
-	 */
-	public static List<CPDefinitionLink> findByCP_T(
-		long CProductId, String type, int start, int end,
-		OrderByComparator<CPDefinitionLink> orderByComparator,
-		boolean useFinderCache) {
-
-		return getPersistence().findByCP_T(
-			CProductId, type, start, end, orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first cp definition link in the ordered set where CProductId = &#63; and type = &#63;.
-	 *
-	 * @param CProductId the c product ID
-	 * @param type the type
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching cp definition link
-	 * @throws NoSuchCPDefinitionLinkException if a matching cp definition link could not be found
-	 */
-	public static CPDefinitionLink findByCP_T_First(
-			long CProductId, String type,
-			OrderByComparator<CPDefinitionLink> orderByComparator)
-		throws com.liferay.commerce.product.exception.
-			NoSuchCPDefinitionLinkException {
-
-		return getPersistence().findByCP_T_First(
-			CProductId, type, orderByComparator);
-	}
-
-	/**
-	 * Returns the first cp definition link in the ordered set where CProductId = &#63; and type = &#63;.
-	 *
-	 * @param CProductId the c product ID
-	 * @param type the type
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching cp definition link, or <code>null</code> if a matching cp definition link could not be found
-	 */
-	public static CPDefinitionLink fetchByCP_T_First(
-		long CProductId, String type,
-		OrderByComparator<CPDefinitionLink> orderByComparator) {
-
-		return getPersistence().fetchByCP_T_First(
-			CProductId, type, orderByComparator);
-	}
-
-	/**
-	 * Removes all the cp definition links where CProductId = &#63; and type = &#63; from the database.
-	 *
-	 * @param CProductId the c product ID
-	 * @param type the type
-	 */
-	public static void removeByCP_T(long CProductId, String type) {
-		getPersistence().removeByCP_T(CProductId, type);
-	}
-
-	/**
-	 * Returns the number of cp definition links where CProductId = &#63; and type = &#63;.
-	 *
-	 * @param CProductId the c product ID
-	 * @param type the type
-	 * @return the number of matching cp definition links
-	 */
-	public static int countByCP_T(long CProductId, String type) {
-		return getPersistence().countByCP_T(CProductId, type);
-	}
-
-	/**
 	 * Returns an ordered range of all the cp definition links where CProductId = &#63; and status = &#63;.
 	 *
 	 * <p>
@@ -1704,60 +1624,6 @@ public class CPDefinitionLinkUtil {
 	}
 
 	/**
-	 * Returns all the cp definition links where CProductId = &#63; and type = &#63;.
-	 *
-	 * @param CProductId the c product ID
-	 * @param type the type
-	 * @return the matching cp definition links
-	 */
-	public static List<CPDefinitionLink> findByCP_T(
-		long CProductId, String type) {
-
-		return getPersistence().findByCP_T(CProductId, type);
-	}
-
-	/**
-	 * Returns a range of all the cp definition links where CProductId = &#63; and type = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.commerce.product.model.impl.CPDefinitionLinkModelImpl</code>.
-	 * </p>
-	 *
-	 * @param CProductId the c product ID
-	 * @param type the type
-	 * @param start the lower bound of the range of cp definition links
-	 * @param end the upper bound of the range of cp definition links (not inclusive)
-	 * @return the range of matching cp definition links
-	 */
-	public static List<CPDefinitionLink> findByCP_T(
-		long CProductId, String type, int start, int end) {
-
-		return getPersistence().findByCP_T(CProductId, type, start, end);
-	}
-
-	/**
-	 * Returns an ordered range of all the cp definition links where CProductId = &#63; and type = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.commerce.product.model.impl.CPDefinitionLinkModelImpl</code>.
-	 * </p>
-	 *
-	 * @param CProductId the c product ID
-	 * @param type the type
-	 * @param start the lower bound of the range of cp definition links
-	 * @param end the upper bound of the range of cp definition links (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching cp definition links
-	 */
-	public static List<CPDefinitionLink> findByCP_T(
-		long CProductId, String type, int start, int end,
-		OrderByComparator<CPDefinitionLink> orderByComparator) {
-
-		return getPersistence().findByCP_T(
-			CProductId, type, start, end, orderByComparator);
-	}
-
-	/**
 	 * Returns all the cp definition links where CProductId = &#63; and status = &#63;.
 	 *
 	 * @param CProductId the c product ID
@@ -1938,4 +1804,4 @@ public class CPDefinitionLinkUtil {
 	private static volatile CPDefinitionLinkPersistence _persistence;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:352419126
+// LIFERAY-SERVICE-BUILDER-HASH:-2106824522

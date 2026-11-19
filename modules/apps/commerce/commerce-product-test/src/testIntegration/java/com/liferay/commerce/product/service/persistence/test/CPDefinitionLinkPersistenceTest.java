@@ -283,15 +283,6 @@ public class CPDefinitionLinkPersistenceTest {
 	}
 
 	@Test
-	public void testCountByCP_T() throws Exception {
-		_persistence.countByCP_T(RandomTestUtil.nextLong(), "");
-
-		_persistence.countByCP_T(0L, "null");
-
-		_persistence.countByCP_T(0L, (String)null);
-	}
-
-	@Test
 	public void testCountByCP_S() throws Exception {
 		_persistence.countByCP_S(
 			RandomTestUtil.nextLong(), RandomTestUtil.nextInt());
@@ -731,4 +722,4 @@ public class CPDefinitionLinkPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:910619107
+// LIFERAY-SERVICE-BUILDER-HASH:-146927722
