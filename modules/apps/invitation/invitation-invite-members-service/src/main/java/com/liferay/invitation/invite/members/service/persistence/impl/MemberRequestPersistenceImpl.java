@@ -16,17 +16,14 @@ import com.liferay.invitation.invite.members.service.persistence.impl.constants.
 import com.liferay.portal.kernel.configuration.Configuration;
 import com.liferay.portal.kernel.dao.orm.EntityCache;
 import com.liferay.portal.kernel.dao.orm.FinderCache;
-import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
-import com.liferay.portal.kernel.service.persistence.impl.CollectionPersistenceFinder;
 import com.liferay.portal.kernel.service.persistence.impl.FinderColumn;
 import com.liferay.portal.kernel.service.persistence.impl.UniquePersistenceFinder;
-import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 
@@ -36,7 +33,6 @@ import java.lang.reflect.InvocationHandler;
 
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -132,99 +128,6 @@ public class MemberRequestPersistenceImpl
 	public int countByKey(String key) {
 		return _uniquePersistenceFinderByKey.count(
 			finderCache, new Object[] {key});
-	}
-
-	private CollectionPersistenceFinder
-		<MemberRequest, NoSuchMemberRequestException>
-			_collectionPersistenceFinderByR_S;
-
-	/**
-	 * Returns an ordered range of all the member requests where receiverUserId = &#63; and status = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>MemberRequestModelImpl</code>.
-	 * </p>
-	 *
-	 * @param receiverUserId the receiver user ID
-	 * @param status the status
-	 * @param start the lower bound of the range of member requests
-	 * @param end the upper bound of the range of member requests (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching member requests
-	 */
-	@Override
-	public List<MemberRequest> findByR_S(
-		long receiverUserId, int status, int start, int end,
-		OrderByComparator<MemberRequest> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByR_S.find(
-			finderCache, new Object[] {receiverUserId, status}, start, end,
-			orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first member request in the ordered set where receiverUserId = &#63; and status = &#63;.
-	 *
-	 * @param receiverUserId the receiver user ID
-	 * @param status the status
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching member request
-	 * @throws NoSuchMemberRequestException if a matching member request could not be found
-	 */
-	@Override
-	public MemberRequest findByR_S_First(
-			long receiverUserId, int status,
-			OrderByComparator<MemberRequest> orderByComparator)
-		throws NoSuchMemberRequestException {
-
-		return _collectionPersistenceFinderByR_S.findFirst(
-			finderCache, new Object[] {receiverUserId, status},
-			orderByComparator);
-	}
-
-	/**
-	 * Returns the first member request in the ordered set where receiverUserId = &#63; and status = &#63;.
-	 *
-	 * @param receiverUserId the receiver user ID
-	 * @param status the status
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching member request, or <code>null</code> if a matching member request could not be found
-	 */
-	@Override
-	public MemberRequest fetchByR_S_First(
-		long receiverUserId, int status,
-		OrderByComparator<MemberRequest> orderByComparator) {
-
-		return _collectionPersistenceFinderByR_S.fetchFirst(
-			finderCache, new Object[] {receiverUserId, status},
-			orderByComparator);
-	}
-
-	/**
-	 * Removes all the member requests where receiverUserId = &#63; and status = &#63; from the database.
-	 *
-	 * @param receiverUserId the receiver user ID
-	 * @param status the status
-	 */
-	@Override
-	public void removeByR_S(long receiverUserId, int status) {
-		_collectionPersistenceFinderByR_S.remove(
-			finderCache, new Object[] {receiverUserId, status});
-	}
-
-	/**
-	 * Returns the number of member requests where receiverUserId = &#63; and status = &#63;.
-	 *
-	 * @param receiverUserId the receiver user ID
-	 * @param status the status
-	 * @return the number of matching member requests
-	 */
-	@Override
-	public int countByR_S(long receiverUserId, int status) {
-		return _collectionPersistenceFinderByR_S.count(
-			finderCache, new Object[] {receiverUserId, status});
 	}
 
 	private UniquePersistenceFinder<MemberRequest, NoSuchMemberRequestException>
@@ -520,34 +423,6 @@ public class MemberRequestPersistenceImpl
 				"memberRequest.", "key", "key_", FinderColumn.Type.STRING, "=",
 				true, true, MemberRequest::getKey));
 
-		_collectionPersistenceFinderByR_S = new CollectionPersistenceFinder<>(
-			this,
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByR_S",
-				new String[] {
-					Long.class.getName(), Integer.class.getName(),
-					Integer.class.getName(), Integer.class.getName(),
-					OrderByComparator.class.getName()
-				},
-				new String[] {"receiverUserId", "status"}, true),
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByR_S",
-				new String[] {Long.class.getName(), Integer.class.getName()},
-				new String[] {"receiverUserId", "status"}, true),
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByR_S",
-				new String[] {Long.class.getName(), Integer.class.getName()},
-				new String[] {"receiverUserId", "status"}, false),
-			_SQL_SELECT_MEMBERREQUEST_WHERE, _SQL_COUNT_MEMBERREQUEST_WHERE,
-			MemberRequestModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-			null,
-			new FinderColumn<>(
-				"memberRequest.", "receiverUserId", FinderColumn.Type.LONG, "=",
-				true, true, MemberRequest::getReceiverUserId),
-			new FinderColumn<>(
-				"memberRequest.", "status", FinderColumn.Type.INTEGER, "=",
-				true, true, MemberRequest::getStatus));
-
 		_uniquePersistenceFinderByG_R_S = new UniquePersistenceFinder<>(
 			this,
 			createUniqueFinderPath(
@@ -612,17 +487,11 @@ public class MemberRequestPersistenceImpl
 	@Reference
 	protected FinderCache finderCache;
 
-	private static final String _ENTITY_ALIAS_PREFIX =
-		MemberRequestModelImpl.ENTITY_ALIAS + ".";
-
 	private static final String _SQL_SELECT_MEMBERREQUEST =
 		"SELECT memberRequest FROM MemberRequest memberRequest";
 
 	private static final String _SQL_SELECT_MEMBERREQUEST_WHERE =
 		"SELECT memberRequest FROM MemberRequest memberRequest WHERE ";
-
-	private static final String _SQL_COUNT_MEMBERREQUEST_WHERE =
-		"SELECT COUNT(memberRequest) FROM MemberRequest memberRequest WHERE ";
 
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"key"});
@@ -633,4 +502,4 @@ public class MemberRequestPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:480021136
+// LIFERAY-SERVICE-BUILDER-HASH:-921617425

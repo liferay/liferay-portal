@@ -187,14 +187,6 @@ public class MemberRequestPersistenceTest {
 	}
 
 	@Test
-	public void testCountByR_S() throws Exception {
-		_persistence.countByR_S(
-			RandomTestUtil.nextLong(), RandomTestUtil.nextInt());
-
-		_persistence.countByR_S(0L, 0);
-	}
-
-	@Test
 	public void testCountByG_R_S() throws Exception {
 		_persistence.countByG_R_S(
 			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(),
@@ -559,4 +551,4 @@ public class MemberRequestPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1426147888
+// LIFERAY-SERVICE-BUILDER-HASH:1931172968
