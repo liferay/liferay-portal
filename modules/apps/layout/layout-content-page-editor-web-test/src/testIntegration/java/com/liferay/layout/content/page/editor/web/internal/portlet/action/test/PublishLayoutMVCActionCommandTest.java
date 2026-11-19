@@ -65,6 +65,7 @@ import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalService;
 import com.liferay.portal.kernel.service.permission.PortletPermissionUtil;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -508,6 +509,33 @@ public class PublishLayoutMVCActionCommandTest {
 
 		Assert.assertEquals(
 			_layout.getModifiedDate(), layout.getModifiedDate());
+	}
+
+	@Test
+	@TestInfo("LPD-110723")
+	public void testPublishedLaunchDraftLayoutWithWorkflowDefinitionLink()
+		throws Exception {
+
+		_workflowDefinitionLinkLocalService.updateWorkflowDefinitionLink(
+			TestPropsValues.getUserId(), TestPropsValues.getCompanyId(),
+			_group.getGroupId(), Layout.class.getName(), 0, 0,
+			"Single Approver@1");
+
+		Layout launchDraftLayout = LayoutTestUtil.addLaunchDraftLayout(
+			RandomTestUtil.randomLong(), _layout);
+
+		ContentLayoutTestUtil.publishLayout(launchDraftLayout, _layout);
+
+		Layout layout = _layoutLocalService.getLayout(_layout.getPlid());
+
+		Assert.assertEquals(_layout.getStatus(), layout.getStatus());
+
+		launchDraftLayout = _layoutLocalService.getLayout(
+			launchDraftLayout.getPlid());
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_READY_TO_PUBLISH,
+			launchDraftLayout.getStatus());
 	}
 
 	@Test
@@ -1117,5 +1145,9 @@ public class PublishLayoutMVCActionCommandTest {
 
 	@Inject
 	private UserLocalService _userLocalService;
+
+	@Inject
+	private WorkflowDefinitionLinkLocalService
+		_workflowDefinitionLinkLocalService;
 
 }
