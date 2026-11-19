@@ -32,6 +32,7 @@ import com.liferay.site.pim.site.initializer.internal.fragment.renderer.EditPIMC
 import com.liferay.site.pim.site.initializer.internal.fragment.renderer.EditPIMConnectorJSPSectionFragmentRenderer;
 import com.liferay.site.pim.site.initializer.internal.fragment.renderer.PIMConnectorFieldMappingsJSPSectionFragmentRenderer;
 import com.liferay.site.pim.site.initializer.internal.fragment.renderer.ProductRelationshipsSectionFragmentRenderer;
+import com.liferay.site.pim.site.initializer.internal.fragment.renderer.ProductStickerSectionFragmentRenderer;
 import com.liferay.site.pim.site.initializer.internal.fragment.renderer.ProductsSectionFragmentRenderer;
 import com.liferay.site.pim.site.initializer.internal.fragment.renderer.ViewPIMConnectorsJSPSectionFragmentRenderer;
 import com.liferay.site.pim.site.initializer.internal.util.PIMObjectEntryFolderUtil;
@@ -107,6 +108,12 @@ public class PIMInitialRequestPortalInstanceLifecycleListener
 				new ProductRelationshipsSectionFragmentRenderer(
 					_fdsSerializer, _language, _objectEntryLocalService,
 					_servletContext),
+				null));
+		_serviceRegistrations.add(
+			bundleContext.registerService(
+				FragmentRenderer.class,
+				new ProductStickerSectionFragmentRenderer(
+					_language, _servletContext),
 				null));
 		_serviceRegistrations.add(
 			bundleContext.registerService(

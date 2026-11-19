@@ -15,6 +15,7 @@ page import="com.liferay.site.pim.site.initializer.internal.display.context.Edit
 page import="com.liferay.site.pim.site.initializer.internal.display.context.EditPIMConnectorFieldMappingsDisplayContext" %><%@
 page import="com.liferay.site.pim.site.initializer.internal.display.context.PIMConnectorFieldMappingsDisplayContext" %><%@
 page import="com.liferay.site.pim.site.initializer.internal.display.context.ProductRelationshipsDisplayContext" %><%@
+page import="com.liferay.site.pim.site.initializer.internal.display.context.ProductStickerDisplayContext" %><%@
 page import="com.liferay.site.pim.site.initializer.internal.display.context.ProductsSectionDisplayContext" %><%@
 page import="com.liferay.site.pim.site.initializer.internal.display.context.ViewPIMConnectorsDisplayContext" %>
 

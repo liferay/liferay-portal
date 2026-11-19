@@ -17,6 +17,7 @@ import com.liferay.fragment.renderer.FragmentRendererRegistry;
 import com.liferay.fragment.service.FragmentEntryLinkLocalService;
 import com.liferay.layout.page.template.model.LayoutPageTemplateStructure;
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocalService;
+import com.liferay.layout.util.structure.ContainerStyledLayoutStructureItem;
 import com.liferay.layout.util.structure.FormStyledLayoutStructureItem;
 import com.liferay.layout.util.structure.FragmentStyledLayoutStructureItem;
 import com.liferay.layout.util.structure.LayoutStructure;
@@ -37,6 +38,7 @@ import com.liferay.segments.service.SegmentsExperienceLocalService;
 import com.liferay.site.cms.site.initializer.contributor.CMSObjectEntryFormContributor;
 import com.liferay.site.pim.site.initializer.constants.PIMObjectFolderConstants;
 import com.liferay.site.pim.site.initializer.internal.fragment.renderer.ProductRelationshipsSectionFragmentRenderer;
+import com.liferay.site.pim.site.initializer.internal.fragment.renderer.ProductStickerSectionFragmentRenderer;
 
 import java.util.List;
 import java.util.Locale;
@@ -72,6 +74,8 @@ public class PIMCMSObjectEntryFormContributor
 			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
 				layout.getPlid());
 
+		_addProductSticker(layout, segmentsExperienceId, serviceContext);
+
 		String parentItemId = _getParentItemId(
 			layout, segmentsExperienceId, serviceContext);
 
@@ -85,7 +89,8 @@ public class PIMCMSObjectEntryFormContributor
 					KEY_EDITABLE_FRAGMENT_ENTRY_PROCESSOR,
 				JSONUtil.put(
 					"accordion-title", _getLocalizedNameJSONObject(layout))),
-			"BASIC_COMPONENT-accordion", layout, parentItemId,
+			"BASIC_COMPONENT-accordion", layout,
+			_getLayoutStructure(layout, segmentsExperienceId), parentItemId, -1,
 			segmentsExperienceId, serviceContext,
 			JSONUtil.put(
 				"marginBottom", "16px"
@@ -106,8 +111,9 @@ public class PIMCMSObjectEntryFormContributor
 
 		_addFragmentEntryLinkToLayoutStructure(
 			null, ProductRelationshipsSectionFragmentRenderer.class.getName(),
-			layout, accordionContentItemId, segmentsExperienceId,
-			serviceContext, null);
+			layout, _getLayoutStructure(layout, segmentsExperienceId),
+			accordionContentItemId, -1, segmentsExperienceId, serviceContext,
+			null);
 	}
 
 	private FragmentEntryLink _addFragmentEntryLink(
@@ -162,12 +168,10 @@ public class PIMCMSObjectEntryFormContributor
 
 	private String _addFragmentEntryLinkToLayoutStructure(
 			JSONObject editableValuesJSONObject, String fragmentEntryKey,
-			Layout layout, String parentItemId, long segmentsExperienceId,
+			Layout layout, LayoutStructure layoutStructure, String parentItemId,
+			int position, long segmentsExperienceId,
 			ServiceContext serviceContext, JSONObject stylesJSONObject)
 		throws Exception {
-
-		LayoutStructure layoutStructure = _getLayoutStructure(
-			layout, segmentsExperienceId);
 
 		if (layoutStructure == null) {
 			return null;
@@ -183,7 +187,8 @@ public class PIMCMSObjectEntryFormContributor
 
 		LayoutStructureItem layoutStructureItem =
 			layoutStructure.addFragmentStyledLayoutStructureItem(
-				fragmentEntryLink.getFragmentEntryLinkId(), parentItemId, -1);
+				fragmentEntryLink.getFragmentEntryLinkId(), parentItemId,
+				position);
 
 		if (stylesJSONObject != null) {
 			layoutStructureItem.updateItemConfig(
@@ -199,6 +204,81 @@ public class PIMCMSObjectEntryFormContributor
 		_notifyFragmentEntryLinkListeners(fragmentEntryLink);
 
 		return layoutStructureItem.getItemId();
+	}
+
+	private void _addProductSticker(
+			Layout layout, long segmentsExperienceId,
+			ServiceContext serviceContext)
+		throws Exception {
+
+		LayoutStructure layoutStructure = _getLayoutStructure(
+			layout, segmentsExperienceId);
+
+		if (layoutStructure == null) {
+			return;
+		}
+
+		LayoutStructureItem titleLayoutStructureItem =
+			_getTitleLayoutStructureItem(layoutStructure);
+
+		if (titleLayoutStructureItem == null) {
+			return;
+		}
+
+		LayoutStructureItem parentLayoutStructureItem =
+			layoutStructure.getLayoutStructureItem(
+				titleLayoutStructureItem.getParentItemId());
+
+		List<String> childrenItemIds =
+			parentLayoutStructureItem.getChildrenItemIds();
+
+		ContainerStyledLayoutStructureItem containerStyledLayoutStructureItem =
+			(ContainerStyledLayoutStructureItem)
+				layoutStructure.addContainerStyledLayoutStructureItem(
+					parentLayoutStructureItem.getItemId(),
+					childrenItemIds.indexOf(
+						titleLayoutStructureItem.getItemId()));
+
+		containerStyledLayoutStructureItem.setAlign("align-items-center");
+		containerStyledLayoutStructureItem.setContentDisplay("flex-row");
+		containerStyledLayoutStructureItem.setFlexWrap("flex-nowrap");
+		containerStyledLayoutStructureItem.updateItemConfig(
+			JSONUtil.put("styles", JSONUtil.put("marginBottom", "5")));
+
+		layoutStructure.moveLayoutStructureItem(
+			titleLayoutStructureItem.getItemId(),
+			containerStyledLayoutStructureItem.getItemId(), 0);
+
+		titleLayoutStructureItem.updateItemConfig(
+			JSONUtil.put(
+				"styles",
+				JSONUtil.put(
+					"marginBottom", "0"
+				).put(
+					"width", "100%"
+				)));
+
+		LayoutStructureItem stickerLayoutStructureItem =
+			layoutStructure.addContainerStyledLayoutStructureItem(
+				containerStyledLayoutStructureItem.getItemId(), 0);
+
+		stickerLayoutStructureItem.updateItemConfig(
+			JSONUtil.put(
+				"styles",
+				JSONUtil.put(
+					"height", "80px"
+				).put(
+					"marginRight", "3"
+				).put(
+					"minWidth", "80px"
+				).put(
+					"width", "80px"
+				)));
+
+		_addFragmentEntryLinkToLayoutStructure(
+			null, ProductStickerSectionFragmentRenderer.class.getName(), layout,
+			layoutStructure, stickerLayoutStructureItem.getItemId(), 0,
+			segmentsExperienceId, serviceContext, null);
 	}
 
 	private String _getItemId(LayoutStructure layoutStructure) {
@@ -328,6 +408,51 @@ public class PIMCMSObjectEntryFormContributor
 					"BASIC_COMPONENT-tabs")) {
 
 				return fragmentEntryLink;
+			}
+		}
+
+		return null;
+	}
+
+	private LayoutStructureItem _getTitleLayoutStructureItem(
+			LayoutStructure layoutStructure)
+		throws Exception {
+
+		for (LayoutStructureItem layoutStructureItem :
+				layoutStructure.getLayoutStructureItems()) {
+
+			if (!(layoutStructureItem instanceof
+					FragmentStyledLayoutStructureItem)) {
+
+				continue;
+			}
+
+			FragmentStyledLayoutStructureItem
+				fragmentStyledLayoutStructureItem =
+					(FragmentStyledLayoutStructureItem)layoutStructureItem;
+
+			FragmentEntryLink fragmentEntryLink =
+				_fragmentEntryLinkLocalService.fetchFragmentEntryLink(
+					fragmentStyledLayoutStructureItem.getFragmentEntryLinkId());
+
+			if (fragmentEntryLink == null) {
+				continue;
+			}
+
+			JSONObject editableValuesJSONObject = _jsonFactory.createJSONObject(
+				fragmentEntryLink.getEditableValues());
+
+			JSONObject freeMarkerJSONObject =
+				editableValuesJSONObject.getJSONObject(
+					FragmentEntryProcessorConstants.
+						KEY_FREEMARKER_FRAGMENT_ENTRY_PROCESSOR);
+
+			if ((freeMarkerJSONObject != null) &&
+				Objects.equals(
+					freeMarkerJSONObject.getString("inputFieldId"),
+					"ObjectField_title")) {
+
+				return layoutStructureItem;
 			}
 		}
 
