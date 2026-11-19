@@ -22,6 +22,7 @@ Immutable.Record {
     "displayTimeZone": "(UTC) UTC",
     "timeZoneId": "UTC",
   },
+  "url": null,
   "userId": null,
 }
 `;

@@ -38,6 +38,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 
@@ -699,7 +700,10 @@ public class ProjectFaroControllerTest {
 
 		try (MockedStatic<FaroUserLocalServiceUtil>
 				faroUserLocalServiceUtilMockedStatic = Mockito.mockStatic(
-					FaroUserLocalServiceUtil.class)) {
+					FaroUserLocalServiceUtil.class);
+			MockedStatic<GroupLocalServiceUtil>
+				groupLocalServiceUtilMockedStatic = Mockito.mockStatic(
+					GroupLocalServiceUtil.class)) {
 
 			ProjectDisplay projectDisplay =
 				_projectFaroController.getProjectDisplay(salesforceAccountId);

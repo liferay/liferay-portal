@@ -91,6 +91,7 @@ Immutable.Map {
           "displayTimeZone": "(UTC) UTC",
           "timeZoneId": "UTC",
         },
+        "url": null,
         "userId": null,
       },
       "error": false,
