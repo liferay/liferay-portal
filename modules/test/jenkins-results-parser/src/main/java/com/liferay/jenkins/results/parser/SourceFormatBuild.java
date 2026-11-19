@@ -13,6 +13,7 @@ import com.liferay.jenkins.results.parser.failure.message.generator.PoshiValidat
 import com.liferay.jenkins.results.parser.failure.message.generator.RebaseFailureMessageGenerator;
 import com.liferay.jenkins.results.parser.failure.message.generator.RelevantRuleValidationFailureMessageGenerator;
 import com.liferay.jenkins.results.parser.failure.message.generator.SourceFormatFailureMessageGenerator;
+import com.liferay.jenkins.results.parser.failure.message.generator.ValidateAllowedFilesFailureMessageGenerator;
 
 import java.io.File;
 import java.io.IOException;
@@ -222,6 +223,7 @@ public class SourceFormatBuild
 			new RebaseFailureMessageGenerator(),
 			new RelevantRuleValidationFailureMessageGenerator(),
 			new SourceFormatFailureMessageGenerator(),
+			new ValidateAllowedFilesFailureMessageGenerator(),
 			//
 			new GenericFailureMessageGenerator()
 		};
