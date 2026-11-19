@@ -526,6 +526,84 @@ components:
                     readOnly: true
                     type: string
             type: object
+        EventAttributeDefinition:
+            description:
+                "An attribute key that events of an LDP workspace carry in `Event.attributes`, with its data type and a sample value. Use `getWorkspaceGroupEventAttributeDefinitionsPage` to list them."
+            properties:
+                dataType:
+                    description:
+                        "Logical data type of the attribute's values."
+                    enum: [BOOLEAN, DATE, DURATION, NUMBER, STRING]
+                    readOnly: true
+                    type: string
+                description:
+                    description:
+                        "Description of the attribute."
+                    readOnly: true
+                    type: string
+                displayName:
+                    description:
+                        "Display name shown in Analytics Cloud."
+                    readOnly: true
+                    type: string
+                id:
+                    description:
+                        "Event attribute definition ID."
+                    readOnly: true
+                    type: string
+                name:
+                    description:
+                        "Attribute key, as found in `Event.attributes`."
+                    readOnly: true
+                    type: string
+                sampleValue:
+                    description:
+                        "One example value seen for the attribute."
+                    readOnly: true
+                    type: string
+                type:
+                    description:
+                        "GLOBAL for attributes every event carries, LOCAL for attributes specific to some events."
+                    enum: [GLOBAL, LOCAL]
+                    readOnly: true
+                    type: string
+            type: object
+        EventDefinition:
+            description:
+                "An event name that an LDP workspace has seen, across all channels, with its display name and whether it is a DEFAULT or CUSTOM event. Use `getWorkspaceGroupEventDefinitionsPage` to list them."
+            properties:
+                description:
+                    description:
+                        "Description of the event."
+                    readOnly: true
+                    type: string
+                displayName:
+                    description:
+                        "Display name shown in Analytics Cloud."
+                    readOnly: true
+                    type: string
+                hidden:
+                    description:
+                        "Whether the definition is hidden from the Analytics Cloud pickers."
+                    readOnly: true
+                    type: boolean
+                id:
+                    description:
+                        "Event definition ID. Use it as `eventDefinitionId` in `getWorkspaceGroupEventAttributeDefinitionsPage`."
+                    readOnly: true
+                    type: string
+                name:
+                    description:
+                        "Event name as sent by the tracker; it is the `name` that `getWorkspaceGroupChannelEventsPage` returns on each event."
+                    readOnly: true
+                    type: string
+                type:
+                    description:
+                        "DEFAULT for events Analytics Cloud tracks out of the box, CUSTOM for events a site sends itself."
+                    enum: [CUSTOM, DEFAULT]
+                    readOnly: true
+                    type: string
+            type: object
         EventMetric:
             description:
                 "Event and session totals for a single account or individual over the selected date range, each with the previous period's total, a trend, and a time series bucketed by the requested interval. Use `getWorkspaceGroupChannelAccountEventMetric` or `getWorkspaceGroupChannelIndividualEventMetric` to retrieve it."
@@ -1043,7 +1121,7 @@ components:
             type: object
 info:
     description:
-        "Read only headless REST API for LDP (Liferay Data Platform). Exposes account lifecycles, accounts, asset summary metrics, events, individuals, individual segments, page metrics, properties, and search terms for use as MCP tools and external integrations. All endpoints are scoped to a provisioned LDP workspace. Every tool accepts a `fields` input: request only the fields you need, especially on lists, and leave out the heavy fields `demographics`, `events` and `attributes` unless the question needs them. A Java client JAR is available for use with the group ID 'com.liferay', artifact ID 'com.liferay.osb.faro.rest.client', and version '1.0.0'."
+        "Read only headless REST API for LDP (Liferay Data Platform). Exposes account lifecycles, accounts, asset summary metrics, event attribute definitions, event definitions, events, individuals, individual segments, page metrics, properties, and search terms for use as MCP tools and external integrations. All endpoints are scoped to a provisioned LDP workspace. Every tool accepts a `fields` input: request only the fields you need, especially on lists, and leave out the heavy fields `demographics`, `events` and `attributes` unless the question needs them. A Java client JAR is available for use with the group ID 'com.liferay', artifact ID 'com.liferay.osb.faro.rest.client', and version '1.0.0'."
     license:
         name: Apache 2.0
         url: http://www.apache.org/licenses/LICENSE-2.0.html
@@ -2680,6 +2758,152 @@ paths:
                                     $ref: "#/components/schemas/SearchTerm"
                                 type: array
             tags: ["SearchTerm"]
+    "/workspace/{groupId}/event-attribute-definitions":
+        get:
+            description:
+                "List the event attribute definitions of an LDP workspace: the attribute keys events carry, with their data type and a sample value. Pass `eventDefinitionId` (from `getWorkspaceGroupEventDefinitionsPage`) to list only the attributes of that event; an unknown ID returns an empty list. Use this to learn which keys appear in `Event.attributes` and how to read their values."
+            operationId: getWorkspaceGroupEventAttributeDefinitionsPage
+            parameters:
+                -   in: path
+                    description:
+                        "ID of the Liferay site that owns the LDP workspace."
+                    name: groupId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: query
+                    description:
+                        "Only include GLOBAL or LOCAL attributes. Defaults to ALL."
+                    example: ALL
+                    name: attributeType
+                    schema:
+                        enum: [ALL, GLOBAL, LOCAL]
+                        type: string
+                -   in: query
+                    description:
+                        "ID of an event definition, from `getWorkspaceGroupEventDefinitionsPage`."
+                    name: eventDefinitionId
+                    schema:
+                        type: string
+                -   in: query
+                    description:
+                        "Page number (starts at 1)."
+                    name: page
+                    schema:
+                        minimum: 1
+                        type: integer
+                -   in: query
+                    description:
+                        "Page size, from 1 to 100. Larger values are rejected."
+                    name: pageSize
+                    schema:
+                        maximum: 100
+                        minimum: 1
+                        type: integer
+                -   in: query
+                    description:
+                        "Only include attributes whose name, display name or description contains this text, ignoring case."
+                    name: search
+                    schema:
+                        type: string
+                -   in: query
+                    description:
+                        "Sort expression `column:asc|desc`. Defaults to `name:asc`. Sortable column: name. Only one column is accepted."
+                    example: name:asc
+                    name: sort
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/EventAttributeDefinition"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/EventAttributeDefinition"
+                                type: array
+            tags: ["EventAttributeDefinition"]
+    "/workspace/{groupId}/event-definitions":
+        get:
+            description:
+                "List the event definitions of an LDP workspace: every event name that the workspace has seen, across all channels, with its display name and whether it is a DEFAULT or CUSTOM event. Use this to find out which events exist before querying events, and to find the `eventDefinitionId` that `getWorkspaceGroupEventAttributeDefinitionsPage` takes."
+            operationId: getWorkspaceGroupEventDefinitionsPage
+            parameters:
+                -   in: path
+                    description:
+                        "ID of the Liferay site that owns the LDP workspace."
+                    name: groupId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: query
+                    description:
+                        "If true, lists only blocked custom events, which are not collected; if false, leaves them out. Omit to include both."
+                    name: blocked
+                    schema:
+                        type: boolean
+                -   in: query
+                    description:
+                        "Only include DEFAULT or CUSTOM events. Defaults to ALL."
+                    example: ALL
+                    name: eventType
+                    schema:
+                        enum: [ALL, CUSTOM, DEFAULT]
+                        type: string
+                -   in: query
+                    description:
+                        "If true, lists only hidden definitions; if false, only visible ones. Omit to include both."
+                    name: hidden
+                    schema:
+                        type: boolean
+                -   in: query
+                    description:
+                        "Page number (starts at 1)."
+                    name: page
+                    schema:
+                        minimum: 1
+                        type: integer
+                -   in: query
+                    description:
+                        "Page size, from 1 to 100. Larger values are rejected."
+                    name: pageSize
+                    schema:
+                        maximum: 100
+                        minimum: 1
+                        type: integer
+                -   in: query
+                    description:
+                        "Only include definitions whose name, display name or description contains this text, ignoring case (name only when `blocked` is true)."
+                    name: search
+                    schema:
+                        type: string
+                -   in: query
+                    description:
+                        "Sort expression `column:asc|desc`. Defaults to `name:asc`. Sortable columns: displayName, name. Only one column is accepted."
+                    example: name:asc
+                    name: sort
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/EventDefinition"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/EventDefinition"
+                                type: array
+            tags: ["EventDefinition"]
     "/workspace/{groupId}/individual-segments/{individualSegmentId}":
         get:
             description:
