@@ -649,6 +649,10 @@ public class UserAccountResourceImpl extends BaseUserAccountResourceImpl {
 				accountId, userAccountId);
 		Group group = _groupService.getGroup(siteId);
 
+		_userModelResourcePermission.check(
+			PermissionThreadLocal.getPermissionChecker(),
+			accountEntryUserRel.getAccountUserId(), ActionKeys.UPDATE);
+
 		PortalPreferences portalPreferences =
 			_portletPreferencesFactory.getPortalPreferences(
 				accountEntryUserRel.getAccountUserId(), false);
