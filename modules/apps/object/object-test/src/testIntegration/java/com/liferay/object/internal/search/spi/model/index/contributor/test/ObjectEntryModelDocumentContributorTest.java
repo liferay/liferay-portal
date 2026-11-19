@@ -10,6 +10,7 @@ import com.liferay.list.type.model.ListTypeDefinition;
 import com.liferay.list.type.service.ListTypeDefinitionLocalService;
 import com.liferay.list.type.service.ListTypeEntryLocalService;
 import com.liferay.object.constants.ObjectDefinitionConstants;
+import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.constants.ObjectFieldSettingConstants;
 import com.liferay.object.field.builder.AssigneeObjectFieldBuilder;
@@ -23,11 +24,13 @@ import com.liferay.object.model.ObjectEntryFolder;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.rest.test.util.ObjectEntryTestUtil;
 import com.liferay.object.service.ObjectDefinitionLocalService;
+import com.liferay.object.service.ObjectEntryFolderLocalService;
 import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.object.test.util.ObjectEntryFolderTestUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
@@ -39,6 +42,8 @@ import com.liferay.portal.kernel.search.FieldArray;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -498,6 +503,52 @@ public class ObjectEntryModelDocumentContributorTest {
 				String.valueOf(objectEntryFolder.getObjectEntryFolderId())
 			},
 			field.getValues());
+
+		Assert.assertNull(document.getField("cms_section"));
+
+		_group = GroupTestUtil.addGroup();
+
+		ObjectEntryFolder productsObjectEntryFolder =
+			_objectEntryFolderLocalService.addObjectEntryFolder(
+				ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_PRODUCTS,
+				_group.getGroupId(), TestPropsValues.getUserId(),
+				ObjectEntryFolderConstants.
+					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+				RandomTestUtil.randomString(),
+				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
+				RandomTestUtil.randomString(), new ServiceContext());
+
+		document = new DocumentImpl();
+
+		objectEntryModelDocumentContributor.contribute(
+			document,
+			ObjectEntryTestUtil.addObjectEntry(
+				_group.getGroupId(), objectDefinition,
+				productsObjectEntryFolder.getObjectEntryFolderId(),
+				HashMapBuilder.<String, Serializable>put(
+					objectFieldName, RandomTestUtil.randomString()
+				).build()));
+
+		Assert.assertEquals("true", document.get("cms_root"));
+		Assert.assertEquals("products", document.get("cms_section"));
+
+		objectEntryFolder = ObjectEntryFolderTestUtil.addObjectEntryFolder(
+			_group.getGroupId(),
+			productsObjectEntryFolder.getObjectEntryFolderId());
+
+		document = new DocumentImpl();
+
+		objectEntryModelDocumentContributor.contribute(
+			document,
+			ObjectEntryTestUtil.addObjectEntry(
+				_group.getGroupId(), objectDefinition,
+				objectEntryFolder.getObjectEntryFolderId(),
+				HashMapBuilder.<String, Serializable>put(
+					objectFieldName, RandomTestUtil.randomString()
+				).build()));
+
+		Assert.assertEquals("false", document.get("cms_root"));
+		Assert.assertEquals("products", document.get("cms_section"));
 	}
 
 	private ObjectDefinition _addModifiableSystemObjectDefinition(
@@ -612,6 +663,9 @@ public class ObjectEntryModelDocumentContributorTest {
 	@Inject
 	private ClassNameLocalService _classNameLocalService;
 
+	@DeleteAfterTestRun
+	private Group _group;
+
 	@Inject
 	private ListTypeDefinitionLocalService _listTypeDefinitionLocalService;
 
@@ -620,6 +674,9 @@ public class ObjectEntryModelDocumentContributorTest {
 
 	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
+
+	@Inject
+	private ObjectEntryFolderLocalService _objectEntryFolderLocalService;
 
 	@Inject
 	private ObjectFieldLocalService _objectFieldLocalService;
