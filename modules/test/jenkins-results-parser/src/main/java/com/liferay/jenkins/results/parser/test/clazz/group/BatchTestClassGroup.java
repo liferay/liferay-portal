@@ -1279,9 +1279,9 @@ public abstract class BatchTestClassGroup extends BaseTestClassGroup {
 			}
 			catch (IOException | TimeoutException exception) {
 				System.out.println(
-					"Unable to sync cached build reports for " +
-						relativeBuildReportsPath + ":" +
-							exception.getMessage());
+					JenkinsResultsParserUtil.combine(
+						"Unable to sync cached build reports for ",
+						relativeBuildReportsPath, ":", exception.getMessage()));
 			}
 		}
 

@@ -207,9 +207,9 @@ public class JobCacheUtil {
 	}
 
 	private static PortalWorkspace _getPortalWorkspace() {
-		List<PortalWorkspace> portalWorkspaces = new ArrayList<>();
-
 		BuildDatabase buildDatabase = BuildDatabaseUtil.getBuildDatabase();
+
+		List<PortalWorkspace> portalWorkspaces = new ArrayList<>();
 
 		for (Workspace workspace : buildDatabase.getWorkspaces()) {
 			if (!(workspace instanceof PortalWorkspace)) {
