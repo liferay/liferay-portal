@@ -343,38 +343,6 @@ public class BookmarksEntryLocalServiceUtil {
 		return getService().getBookmarksEntryByUuidAndGroupId(uuid, groupId);
 	}
 
-	public static List<BookmarksEntry> getEntries(
-		long groupId, long folderId, int start, int end) {
-
-		return getService().getEntries(groupId, folderId, start, end);
-	}
-
-	public static List<BookmarksEntry> getEntries(
-		long groupId, long folderId, int status, int start, int end) {
-
-		return getService().getEntries(groupId, folderId, status, start, end);
-	}
-
-	public static List<BookmarksEntry> getEntries(
-		long groupId, long folderId, int status, int start, int end,
-		OrderByComparator<BookmarksEntry> orderByComparator) {
-
-		return getService().getEntries(
-			groupId, folderId, status, start, end, orderByComparator);
-	}
-
-	public static List<BookmarksEntry> getEntries(
-		long groupId, long folderId, int start, int end,
-		OrderByComparator<BookmarksEntry> orderByComparator) {
-
-		return getService().getEntries(
-			groupId, folderId, start, end, orderByComparator);
-	}
-
-	public static int getEntriesCount(long groupId, long folderId) {
-		return getService().getEntriesCount(groupId, folderId);
-	}
-
 	public static int getEntriesCount(long groupId, long folderId, int status) {
 		return getService().getEntriesCount(groupId, folderId, status);
 	}
@@ -389,12 +357,6 @@ public class BookmarksEntryLocalServiceUtil {
 				portletDataContext) {
 
 		return getService().getExportActionableDynamicQuery(portletDataContext);
-	}
-
-	public static int getFoldersEntriesCount(
-		long groupId, List<Long> folderIds) {
-
-		return getService().getFoldersEntriesCount(groupId, folderIds);
 	}
 
 	public static
@@ -547,4 +509,4 @@ public class BookmarksEntryLocalServiceUtil {
 			BookmarksEntryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1918355130
+// LIFERAY-SERVICE-BUILDER-HASH:-1316727282

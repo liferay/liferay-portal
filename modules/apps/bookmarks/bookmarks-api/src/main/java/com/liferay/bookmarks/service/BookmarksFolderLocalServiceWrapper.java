@@ -410,18 +410,6 @@ public class BookmarksFolderLocalServiceWrapper
 	}
 
 	@Override
-	public java.util.List<BookmarksFolder> getFolders(long groupId) {
-		return _bookmarksFolderLocalService.getFolders(groupId);
-	}
-
-	@Override
-	public java.util.List<BookmarksFolder> getFolders(
-		long groupId, long parentFolderId) {
-
-		return _bookmarksFolderLocalService.getFolders(groupId, parentFolderId);
-	}
-
-	@Override
 	public java.util.List<BookmarksFolder> getFolders(
 		long groupId, long parentFolderId, int start, int end) {
 
@@ -685,4 +673,4 @@ public class BookmarksFolderLocalServiceWrapper
 	private BookmarksFolderLocalService _bookmarksFolderLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1915357942
+// LIFERAY-SERVICE-BUILDER-HASH:-1000948904

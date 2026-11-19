@@ -380,47 +380,6 @@ public class BookmarksEntryLocalServiceWrapper
 	}
 
 	@Override
-	public java.util.List<BookmarksEntry> getEntries(
-		long groupId, long folderId, int start, int end) {
-
-		return _bookmarksEntryLocalService.getEntries(
-			groupId, folderId, start, end);
-	}
-
-	@Override
-	public java.util.List<BookmarksEntry> getEntries(
-		long groupId, long folderId, int status, int start, int end) {
-
-		return _bookmarksEntryLocalService.getEntries(
-			groupId, folderId, status, start, end);
-	}
-
-	@Override
-	public java.util.List<BookmarksEntry> getEntries(
-		long groupId, long folderId, int status, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<BookmarksEntry>
-			orderByComparator) {
-
-		return _bookmarksEntryLocalService.getEntries(
-			groupId, folderId, status, start, end, orderByComparator);
-	}
-
-	@Override
-	public java.util.List<BookmarksEntry> getEntries(
-		long groupId, long folderId, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<BookmarksEntry>
-			orderByComparator) {
-
-		return _bookmarksEntryLocalService.getEntries(
-			groupId, folderId, start, end, orderByComparator);
-	}
-
-	@Override
-	public int getEntriesCount(long groupId, long folderId) {
-		return _bookmarksEntryLocalService.getEntriesCount(groupId, folderId);
-	}
-
-	@Override
 	public int getEntriesCount(long groupId, long folderId, int status) {
 		return _bookmarksEntryLocalService.getEntriesCount(
 			groupId, folderId, status);
@@ -441,14 +400,6 @@ public class BookmarksEntryLocalServiceWrapper
 
 		return _bookmarksEntryLocalService.getExportActionableDynamicQuery(
 			portletDataContext);
-	}
-
-	@Override
-	public int getFoldersEntriesCount(
-		long groupId, java.util.List<Long> folderIds) {
-
-		return _bookmarksEntryLocalService.getFoldersEntriesCount(
-			groupId, folderIds);
 	}
 
 	@Override
@@ -646,4 +597,4 @@ public class BookmarksEntryLocalServiceWrapper
 	private BookmarksEntryLocalService _bookmarksEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:253502695
+// LIFERAY-SERVICE-BUILDER-HASH:1053751615

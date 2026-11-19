@@ -329,12 +329,6 @@ public interface BookmarksFolderLocalService
 	public BookmarksFolder getFolder(long folderId) throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<BookmarksFolder> getFolders(long groupId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<BookmarksFolder> getFolders(long groupId, long parentFolderId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<BookmarksFolder> getFolders(
 		long groupId, long parentFolderId, int start, int end);
 
@@ -466,4 +460,4 @@ public interface BookmarksFolderLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-365086114
+// LIFERAY-SERVICE-BUILDER-HASH:423692344
