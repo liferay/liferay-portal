@@ -10,7 +10,6 @@ import com.liferay.fragment.renderer.FragmentRendererRegistry;
 import com.liferay.fragment.service.FragmentEntryLinkService;
 import com.liferay.info.item.InfoItemServiceRegistry;
 import com.liferay.info.search.InfoSearchClassMapperRegistry;
-import com.liferay.launch.url.provider.LaunchEditURLProvider;
 import com.liferay.layout.manager.FormManager;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
@@ -68,13 +67,6 @@ public class EditContentItemStrutsAction implements StrutsAction {
 			_infoItemServiceRegistry, _infoSearchClassMapperRegistry,
 			_objectDefinitionLocalService.getObjectDefinition(
 				objectEntry.getObjectDefinitionId()));
-
-		// TODO Execute this only if the object entry is a launch draft. See
-		// LPD-111152 and ObjectEntryConstants.TYPE_DRAFT.
-
-		editURL = _launchEditURLProvider.getEditURL(
-			ObjectEntry.class.getName(), objectEntry.getObjectEntryId(),
-			editURL);
 
 		long messageId = ParamUtil.getLong(httpServletRequest, "messageId");
 
@@ -154,9 +146,6 @@ public class EditContentItemStrutsAction implements StrutsAction {
 
 	@Reference
 	private InfoSearchClassMapperRegistry _infoSearchClassMapperRegistry;
-
-	@Reference
-	private LaunchEditURLProvider _launchEditURLProvider;
 
 	@Reference
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;

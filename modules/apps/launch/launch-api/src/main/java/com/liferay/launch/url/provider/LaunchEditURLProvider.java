@@ -15,6 +15,4 @@ public interface LaunchEditURLProvider {
 
 	public String getEditURL(long launchSetId, String url);
 
-	public String getEditURL(String className, long draftId, String url);
-
 }
