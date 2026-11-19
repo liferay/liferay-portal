@@ -451,6 +451,10 @@ public class StringUtil {
 	}
 
 	public static String lowerCaseFirstLetter(String s) {
+		if ((s == null) || s.isEmpty()) {
+			return s;
+		}
+
 		char[] chars = s.toCharArray();
 
 		if ((chars[0] >= 65) && (chars[0] <= 90)) {
