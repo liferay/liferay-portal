@@ -1,0 +1,19 @@
+query getWorkspaceGroupChannelVisitFrequencyMetric(
+	$channelId: String!
+	$rangeEnd: String
+	$rangeKey: Int
+	$rangeStart: String
+) {
+	visitFrequencyBag: visitFrequency(
+		channelId: $channelId
+		rangeEnd: $rangeEnd
+		rangeKey: $rangeKey
+		rangeStart: $rangeStart
+	) {
+		totalCount
+		visitFrequency {
+			count
+			name
+		}
+	}
+}

@@ -1,0 +1,29 @@
+query getWorkspaceGroupChannelAcquisitionsPage(
+	$accountId: String
+	$acquisitionType: AcquisitionType!
+	$channelId: String
+	$rangeEnd: String
+	$rangeKey: Int
+	$rangeStart: String
+	$segmentId: String
+	$size: Int!
+	$start: Int!
+) {
+	compositionBag: acquisitions(
+		accountId: $accountId
+		acquisitionType: $acquisitionType
+		channelId: $channelId
+		rangeEnd: $rangeEnd
+		rangeKey: $rangeKey
+		rangeStart: $rangeStart
+		segmentId: $segmentId
+		size: $size
+		start: $start
+	) {
+		compositions {
+			count
+			name
+		}
+		totalCount
+	}
+}

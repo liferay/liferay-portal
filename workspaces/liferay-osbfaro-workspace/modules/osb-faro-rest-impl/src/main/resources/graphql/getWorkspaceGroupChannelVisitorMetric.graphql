@@ -1,0 +1,16 @@
+query getWorkspaceGroupChannelVisitorMetric(
+	$channelId: String
+	$rangeKey: Int
+	$segmentId: String
+) {
+	visitorMetric: siteVisitor(
+		channelId: $channelId
+		rangeKey: $rangeKey
+		segmentId: $segmentId
+	) {
+		averageSessionDuration
+		knownVisitors
+		totalSessionDuration
+		visitors
+	}
+}

@@ -1,0 +1,162 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+package com.liferay.osb.faro.rest.internal.dto.v1_0.converter;
+
+import com.liferay.osb.faro.rest.dto.v1_0.VisitFrequencyMetric;
+import com.liferay.osb.faro.rest.internal.graphql.dto.GetWorkspaceGroupChannelVisitFrequencyMetricResponse;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
+
+import java.util.Arrays;
+import java.util.Collections;
+
+import org.junit.Assert;
+import org.junit.Test;
+
+/**
+ * @author Caio Pinheiro
+ */
+public class VisitFrequencyMetricDTOConverterTest {
+
+	@Test
+	public void testToDTO() {
+		Assert.assertNull(_visitFrequencyMetricDTOConverter.toDTO(null, null));
+
+		long biWeeklyVisitors = RandomTestUtil.randomLong();
+		long dailyVisitors = RandomTestUtil.randomLong();
+		long monthlyVisitors = RandomTestUtil.randomLong();
+		long occasionalVisitors = RandomTestUtil.randomLong();
+		long totalCount = RandomTestUtil.randomLong();
+		long weeklyVisitors = RandomTestUtil.randomLong();
+
+		GetWorkspaceGroupChannelVisitFrequencyMetricResponse.VisitFrequencyBag
+			visitFrequencyBag =
+				new GetWorkspaceGroupChannelVisitFrequencyMetricResponse.
+					VisitFrequencyBag();
+
+		visitFrequencyBag.setTotalCount(totalCount);
+		visitFrequencyBag.setVisitFrequency(
+			Arrays.asList(
+				_createComposition(dailyVisitors, "daily"),
+				_createComposition(weeklyVisitors, "weekly"),
+				_createComposition(biWeeklyVisitors, "bi-weekly"),
+				_createComposition(monthlyVisitors, "monthly"),
+				_createComposition(occasionalVisitors, "occasional")));
+
+		VisitFrequencyMetric visitFrequencyMetric =
+			_visitFrequencyMetricDTOConverter.toDTO(null, visitFrequencyBag);
+
+		Assert.assertEquals(
+			Long.valueOf(biWeeklyVisitors),
+			visitFrequencyMetric.getBiWeeklyVisitors());
+		Assert.assertEquals(
+			Long.valueOf(dailyVisitors),
+			visitFrequencyMetric.getDailyVisitors());
+		Assert.assertEquals(
+			Long.valueOf(monthlyVisitors),
+			visitFrequencyMetric.getMonthlyVisitors());
+		Assert.assertEquals(
+			Long.valueOf(occasionalVisitors),
+			visitFrequencyMetric.getOccasionalVisitors());
+		Assert.assertEquals(
+			Long.valueOf(totalCount), visitFrequencyMetric.getVisitors());
+		Assert.assertEquals(
+			Long.valueOf(weeklyVisitors),
+			visitFrequencyMetric.getWeeklyVisitors());
+	}
+
+	@Test
+	public void testToDTOWithMissingBuckets() {
+		long weeklyVisitors = RandomTestUtil.randomLong();
+
+		GetWorkspaceGroupChannelVisitFrequencyMetricResponse.VisitFrequencyBag
+			visitFrequencyBag =
+				new GetWorkspaceGroupChannelVisitFrequencyMetricResponse.
+					VisitFrequencyBag();
+
+		visitFrequencyBag.setTotalCount(weeklyVisitors);
+		visitFrequencyBag.setVisitFrequency(
+			Collections.singletonList(
+				_createComposition(weeklyVisitors, "weekly")));
+
+		VisitFrequencyMetric visitFrequencyMetric =
+			_visitFrequencyMetricDTOConverter.toDTO(null, visitFrequencyBag);
+
+		Assert.assertEquals(
+			Long.valueOf(0L), visitFrequencyMetric.getBiWeeklyVisitors());
+		Assert.assertEquals(
+			Long.valueOf(0L), visitFrequencyMetric.getDailyVisitors());
+		Assert.assertEquals(
+			Long.valueOf(0L), visitFrequencyMetric.getMonthlyVisitors());
+		Assert.assertEquals(
+			Long.valueOf(0L), visitFrequencyMetric.getOccasionalVisitors());
+		Assert.assertEquals(
+			Long.valueOf(weeklyVisitors),
+			visitFrequencyMetric.getWeeklyVisitors());
+	}
+
+	@Test
+	public void testToDTOWithNullCompositions() {
+		VisitFrequencyMetric visitFrequencyMetric =
+			_visitFrequencyMetricDTOConverter.toDTO(
+				null,
+				new GetWorkspaceGroupChannelVisitFrequencyMetricResponse.
+					VisitFrequencyBag());
+
+		_assertZeroBuckets(visitFrequencyMetric);
+
+		Assert.assertEquals(
+			Long.valueOf(0L), visitFrequencyMetric.getVisitors());
+	}
+
+	@Test
+	public void testToDTOWithUnknownBucket() {
+		GetWorkspaceGroupChannelVisitFrequencyMetricResponse.VisitFrequencyBag
+			visitFrequencyBag =
+				new GetWorkspaceGroupChannelVisitFrequencyMetricResponse.
+					VisitFrequencyBag();
+
+		visitFrequencyBag.setVisitFrequency(
+			Collections.singletonList(
+				_createComposition(
+					RandomTestUtil.randomLong(),
+					RandomTestUtil.randomString())));
+
+		_assertZeroBuckets(
+			_visitFrequencyMetricDTOConverter.toDTO(null, visitFrequencyBag));
+	}
+
+	private void _assertZeroBuckets(VisitFrequencyMetric visitFrequencyMetric) {
+		Assert.assertEquals(
+			Long.valueOf(0L), visitFrequencyMetric.getBiWeeklyVisitors());
+		Assert.assertEquals(
+			Long.valueOf(0L), visitFrequencyMetric.getDailyVisitors());
+		Assert.assertEquals(
+			Long.valueOf(0L), visitFrequencyMetric.getMonthlyVisitors());
+		Assert.assertEquals(
+			Long.valueOf(0L), visitFrequencyMetric.getOccasionalVisitors());
+		Assert.assertEquals(
+			Long.valueOf(0L), visitFrequencyMetric.getWeeklyVisitors());
+	}
+
+	private GetWorkspaceGroupChannelVisitFrequencyMetricResponse.Composition
+		_createComposition(long count, String name) {
+
+		GetWorkspaceGroupChannelVisitFrequencyMetricResponse.Composition
+			composition =
+				new GetWorkspaceGroupChannelVisitFrequencyMetricResponse.
+					Composition();
+
+		composition.setCount(count);
+		composition.setName(name);
+
+		return composition;
+	}
+
+	private final VisitFrequencyMetricDTOConverter
+		_visitFrequencyMetricDTOConverter =
+			new VisitFrequencyMetricDTOConverter();
+
+}
