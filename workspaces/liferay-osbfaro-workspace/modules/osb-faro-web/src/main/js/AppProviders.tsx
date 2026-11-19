@@ -18,12 +18,24 @@ import {Provider} from 'react-redux';
 import {saveState} from 'shared/store/local-storage';
 import {throttle} from 'lodash';
 
+const ONBOARDING_TRIGGERED_KEY = 'onboardingTriggered';
+
 interface IAppProvidersProps {
 	children: React.ReactNode;
 }
 
 const AppProviders: React.FC<IAppProvidersProps> = ({children}) => {
-	const [onboardingTriggered, setOnboardingTriggered] = useState(false);
+	const [onboardingTriggered, setOnboardingTriggered] = useState(() => {
+		try {
+			return (
+				window.sessionStorage.getItem(ONBOARDING_TRIGGERED_KEY) ===
+				'true'
+			);
+		}
+		catch (error) {
+			return false;
+		}
+	});
 
 	useEffect(() => {
 		store.subscribe(throttle(() => saveState(store.getState()), 1000));
@@ -41,8 +53,17 @@ const AppProviders: React.FC<IAppProvidersProps> = ({children}) => {
 								<OnboardingContext.Provider
 									value={{
 										onboardingTriggered,
-										setOnboardingTriggered: () =>
-											setOnboardingTriggered(true),
+										setOnboardingTriggered: () => {
+											try {
+												window.sessionStorage.setItem(
+													ONBOARDING_TRIGGERED_KEY,
+													'true'
+												);
+											}
+											catch (error) {}
+
+											setOnboardingTriggered(true);
+										},
 									}}
 								>
 									<ChannelProvider>
