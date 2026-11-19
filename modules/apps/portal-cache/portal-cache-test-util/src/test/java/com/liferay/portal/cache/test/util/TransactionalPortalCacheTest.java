@@ -101,6 +101,23 @@ public class TransactionalPortalCacheTest {
 	}
 
 	@Test
+	public void testCommitAfterInvalidate() {
+		TransactionalPortalCache<String, String> transactionalPortalCache =
+			new TransactionalPortalCache<>(_portalCache, false);
+
+		TransactionalPortalCacheUtil.begin();
+
+		transactionalPortalCache.put(_KEY_1, _VALUE_1);
+
+		TransactionalPortalCacheUtil.invalidate(
+			_portalCache, false, Collections.singleton(_KEY_1));
+
+		TransactionalPortalCacheUtil.commit(false);
+
+		Assert.assertNull(_portalCache.get(_KEY_1));
+	}
+
+	@Test
 	public void testCommitAfterWriterCommitBeforePut() {
 		TransactionalPortalCache<String, String> transactionalPortalCache =
 			new TransactionalPortalCache<>(_portalCache, false);
@@ -144,6 +161,23 @@ public class TransactionalPortalCacheTest {
 		TransactionalPortalCacheUtil.commit(true);
 
 		Assert.assertNull(portalCache.get(_KEY_1));
+	}
+
+	@Test
+	public void testCommitReadOnlyAfterInvalidate() {
+		TransactionalPortalCache<String, String> transactionalPortalCache =
+			new TransactionalPortalCache<>(_portalCache, false);
+
+		TransactionalPortalCacheUtil.begin();
+
+		transactionalPortalCache.put(_KEY_1, _VALUE_1);
+
+		TransactionalPortalCacheUtil.invalidate(
+			_portalCache, false, Collections.singleton(_KEY_1));
+
+		TransactionalPortalCacheUtil.commit(true);
+
+		Assert.assertNull(_portalCache.get(_KEY_1));
 	}
 
 	@Test
@@ -259,6 +293,45 @@ public class TransactionalPortalCacheTest {
 			"Put should be dropped",
 			TransactionalPortalCacheUtil.completePut(
 				_portalCache, _KEY_1, _VALUE_2));
+		Assert.assertNull(_portalCache.get(_KEY_1));
+	}
+
+	@Test
+	public void testCompletePutAfterInvalidate() {
+		TransactionalPortalCacheUtil.preparePut(_portalCache, _KEY_1);
+
+		TransactionalPortalCacheUtil.invalidate(
+			_portalCache, false, Collections.singleton(_KEY_1));
+
+		Assert.assertFalse(
+			TransactionalPortalCacheUtil.completePut(
+				_portalCache, _KEY_1, _VALUE_1));
+		Assert.assertNull(_portalCache.get(_KEY_1));
+
+		TransactionalPortalCacheUtil.preparePut(_portalCache, _KEY_2);
+
+		TransactionalPortalCacheUtil.invalidate(
+			_portalCache, true, Collections.emptyList());
+
+		Assert.assertFalse(
+			TransactionalPortalCacheUtil.completePut(
+				_portalCache, _KEY_2, _VALUE_2));
+		Assert.assertNull(_portalCache.get(_KEY_2));
+
+		TransactionalPortalCacheUtil.begin();
+
+		long startSequence = TransactionalPortalCacheUtil.getStartSequence();
+
+		TransactionalPortalCacheUtil.invalidate(
+			_portalCache, false, Collections.singleton(_KEY_1));
+
+		Assert.assertFalse(
+			TransactionalPortalCacheUtil.completePut(
+				new TransactionalPortalCache<>(_portalCache, false), _KEY_1,
+				_VALUE_1, startSequence, PortalCache.DEFAULT_TIME_TO_LIVE));
+
+		TransactionalPortalCacheUtil.commit(true);
+
 		Assert.assertNull(_portalCache.get(_KEY_1));
 	}
 

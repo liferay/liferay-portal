@@ -285,6 +285,14 @@ public class TransactionalPortalCacheUtil {
 		}
 	}
 
+	public static void invalidate(
+		PortalCache<?, ?> portalCache, boolean removeAll,
+		Collection<Serializable> keys) {
+
+		_invalidationSequence.invalidate(
+			_getRegionName(portalCache), 0, removeAll, keys);
+	}
+
 	public static <K extends Serializable> void invalidate(
 		PortalCache<K, ?> portalCache, K key) {
 

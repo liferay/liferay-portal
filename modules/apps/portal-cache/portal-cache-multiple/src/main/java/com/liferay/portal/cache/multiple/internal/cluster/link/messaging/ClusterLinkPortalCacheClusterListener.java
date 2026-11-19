@@ -14,12 +14,16 @@ import com.liferay.portal.cache.multiple.internal.constants.PortalCacheDestinati
 import com.liferay.portal.kernel.cache.PortalCache;
 import com.liferay.portal.kernel.cache.PortalCacheHelperUtil;
 import com.liferay.portal.kernel.cache.PortalCacheManager;
+import com.liferay.portal.kernel.cache.transactional.TransactionalPortalCacheUtil;
 import com.liferay.portal.kernel.messaging.BaseMessageListener;
 import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.messaging.MessageListener;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 
 import java.io.Serializable;
+
+import java.util.Collection;
+import java.util.Collections;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
@@ -99,6 +103,8 @@ public class ClusterLinkPortalCacheClusterListener extends BaseMessageListener {
 		if (portalCacheClusterEventType.equals(
 				PortalCacheClusterEventType.REMOVE_ALL)) {
 
+			_invalidate(portalCache, true, Collections.emptyList());
+
 			PortalCacheHelperUtil.removeAllWithoutReplicator(portalCache);
 		}
 		else if (portalCacheClusterEventType.equals(
@@ -107,6 +113,9 @@ public class ClusterLinkPortalCacheClusterListener extends BaseMessageListener {
 					 PortalCacheClusterEventType.UPDATE)) {
 
 			Serializable key = ClusterLinkMessageUtil.getKey(message);
+
+			_invalidate(portalCache, false, Collections.singleton(key));
+
 			Serializable value = ClusterLinkMessageUtil.getValue(message);
 
 			if (value == null) {
@@ -119,8 +128,21 @@ public class ClusterLinkPortalCacheClusterListener extends BaseMessageListener {
 			}
 		}
 		else {
-			PortalCacheHelperUtil.removeWithoutReplicator(
-				portalCache, ClusterLinkMessageUtil.getKey(message));
+			Serializable key = ClusterLinkMessageUtil.getKey(message);
+
+			_invalidate(portalCache, false, Collections.singleton(key));
+
+			PortalCacheHelperUtil.removeWithoutReplicator(portalCache, key);
+		}
+	}
+
+	private void _invalidate(
+		PortalCache<Serializable, Serializable> portalCache, boolean removeAll,
+		Collection<Serializable> keys) {
+
+		if (!portalCache.isMVCC()) {
+			TransactionalPortalCacheUtil.invalidate(
+				portalCache, removeAll, keys);
 		}
 	}
 
