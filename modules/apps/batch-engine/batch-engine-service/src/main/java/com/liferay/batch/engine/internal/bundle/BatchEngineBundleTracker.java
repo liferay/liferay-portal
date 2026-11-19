@@ -5,17 +5,21 @@
 
 package com.liferay.batch.engine.internal.bundle;
 
+import com.liferay.batch.engine.internal.instance.lifecycle.MultiCompanyBatchEngineUnitPortalInstanceLifecycleListener;
 import com.liferay.batch.engine.internal.unit.MultiCompanyBatchEngineUnitProcessor;
 import com.liferay.batch.engine.unit.BatchEngineUnit;
 import com.liferay.batch.engine.unit.BatchEngineUnitMetaInfo;
 import com.liferay.batch.engine.unit.BatchEngineUnitProcessor;
 import com.liferay.batch.engine.unit.BatchEngineUnitReader;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.instance.lifecycle.PortalInstanceLifecycleListener;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.module.util.ServiceLatch;
+import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.servlet.InitialRequestSyncUtil;
 import com.liferay.portal.kernel.upgrade.util.UpgradeProcessUtil;
+import com.liferay.portal.kernel.util.MapUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,9 +29,11 @@ import java.util.List;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
+import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
 import org.osgi.util.tracker.BundleTracker;
 import org.osgi.util.tracker.BundleTrackerCustomizer;
 
@@ -55,13 +61,22 @@ public class BatchEngineBundleTracker {
 					BatchEngineUnitReader.class,
 					batchEngineUnitReader ->
 						_batchEngineUnitReader = batchEngineUnitReader
-				).waitFor(
-					MultiCompanyBatchEngineUnitProcessor.class,
-					multiCompanyBatchEngineUnitProcessor ->
-						_multiCompanyBatchEngineUnitProcessor =
-							multiCompanyBatchEngineUnitProcessor
 				).openOn(
-					_bundleTracker::open
+					() -> {
+						_multiCompanyBatchEngineUnitProcessor =
+							new MultiCompanyBatchEngineUnitProcessor(
+								_batchEngineUnitProcessor,
+								_companyLocalService);
+
+						_serviceRegistration = bundleContext.registerService(
+							PortalInstanceLifecycleListener.class,
+							new MultiCompanyBatchEngineUnitPortalInstanceLifecycleListener(
+								_multiCompanyBatchEngineUnitProcessor),
+							MapUtil.singletonDictionary(
+								"service.ranking", Integer.MIN_VALUE));
+
+						_bundleTracker.open();
+					}
 				);
 
 				return null;
@@ -71,6 +86,10 @@ public class BatchEngineBundleTracker {
 	@Deactivate
 	protected void deactivate() {
 		_bundleTracker.close();
+
+		if (_serviceRegistration != null) {
+			_serviceRegistration.unregister();
+		}
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
@@ -79,8 +98,13 @@ public class BatchEngineBundleTracker {
 	private BatchEngineUnitProcessor _batchEngineUnitProcessor;
 	private BatchEngineUnitReader _batchEngineUnitReader;
 	private BundleTracker<Bundle> _bundleTracker;
+
+	@Reference
+	private CompanyLocalService _companyLocalService;
+
 	private MultiCompanyBatchEngineUnitProcessor
 		_multiCompanyBatchEngineUnitProcessor;
+	private ServiceRegistration<?> _serviceRegistration;
 
 	private class BatchEngineBundleTrackerCustomizer
 		implements BundleTrackerCustomizer<Bundle> {
