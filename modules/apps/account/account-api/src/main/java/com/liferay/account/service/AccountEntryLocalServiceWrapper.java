@@ -30,13 +30,6 @@ public class AccountEntryLocalServiceWrapper
 	}
 
 	@Override
-	public void activateAccountEntries(long[] accountEntryIds)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		_accountEntryLocalService.activateAccountEntries(accountEntryIds);
-	}
-
-	@Override
 	public com.liferay.account.model.AccountEntry activateAccountEntry(
 			com.liferay.account.model.AccountEntry accountEntry)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -124,13 +117,6 @@ public class AccountEntryLocalServiceWrapper
 	}
 
 	@Override
-	public void deactivateAccountEntries(long[] accountEntryIds)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		_accountEntryLocalService.deactivateAccountEntries(accountEntryIds);
-	}
-
-	@Override
 	public com.liferay.account.model.AccountEntry deactivateAccountEntry(
 			com.liferay.account.model.AccountEntry accountEntry)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -144,13 +130,6 @@ public class AccountEntryLocalServiceWrapper
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _accountEntryLocalService.deactivateAccountEntry(accountEntryId);
-	}
-
-	@Override
-	public void deleteAccountEntries(long[] accountEntryIds)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		_accountEntryLocalService.deleteAccountEntries(accountEntryIds);
 	}
 
 	@Override
@@ -381,17 +360,6 @@ public class AccountEntryLocalServiceWrapper
 		return _accountEntryLocalService.getAccountEntries(start, end);
 	}
 
-	@Override
-	public java.util.List<com.liferay.account.model.AccountEntry>
-		getAccountEntries(
-			long companyId, int status, int start, int end,
-			com.liferay.portal.kernel.util.OrderByComparator
-				<com.liferay.account.model.AccountEntry> orderByComparator) {
-
-		return _accountEntryLocalService.getAccountEntries(
-			companyId, status, start, end, orderByComparator);
-	}
-
 	/**
 	 * Returns the number of account entries.
 	 *
@@ -400,12 +368,6 @@ public class AccountEntryLocalServiceWrapper
 	@Override
 	public int getAccountEntriesCount() {
 		return _accountEntryLocalService.getAccountEntriesCount();
-	}
-
-	@Override
-	public int getAccountEntriesCount(long companyId, int status) {
-		return _accountEntryLocalService.getAccountEntriesCount(
-			companyId, status);
 	}
 
 	/**
@@ -713,4 +675,4 @@ public class AccountEntryLocalServiceWrapper
 	private AccountEntryLocalService _accountEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1689896953
+// LIFERAY-SERVICE-BUILDER-HASH:-746330689

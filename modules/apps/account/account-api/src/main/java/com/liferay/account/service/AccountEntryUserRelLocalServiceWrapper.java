@@ -215,12 +215,6 @@ public class AccountEntryUserRelLocalServiceWrapper
 			deleteAccountEntryUserRelsByAccountEntryId(accountEntryId);
 	}
 
-	@Override
-	public void deleteAccountEntryUserRelsByAccountUserId(long accountUserId) {
-		_accountEntryUserRelLocalService.
-			deleteAccountEntryUserRelsByAccountUserId(accountUserId);
-	}
-
 	/**
 	 * @throws PortalException
 	 */
@@ -495,11 +489,6 @@ public class AccountEntryUserRelLocalServiceWrapper
 	}
 
 	@Override
-	public boolean isAccountEntryUser(long userId) {
-		return _accountEntryUserRelLocalService.isAccountEntryUser(userId);
-	}
-
-	@Override
 	public void setAccountEntryUserRels(
 			long accountEntryId, long[] accountUserIds)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -565,4 +554,4 @@ public class AccountEntryUserRelLocalServiceWrapper
 	private AccountEntryUserRelLocalService _accountEntryUserRelLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-251029323
+// LIFERAY-SERVICE-BUILDER-HASH:-459220170

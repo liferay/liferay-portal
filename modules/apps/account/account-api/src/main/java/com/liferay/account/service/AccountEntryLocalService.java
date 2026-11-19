@@ -60,9 +60,6 @@ public interface AccountEntryLocalService
 	 *
 	 * Never modify this interface directly. Add custom service methods to <code>com.liferay.account.service.impl.AccountEntryLocalServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface. Consume the account entry local service via injection or a <code>org.osgi.util.tracker.ServiceTracker</code>. Use {@link AccountEntryLocalServiceUtil} if injection and service tracking are not available.
 	 */
-	public void activateAccountEntries(long[] accountEntryIds)
-		throws PortalException;
-
 	public AccountEntry activateAccountEntry(AccountEntry accountEntry)
 		throws PortalException;
 
@@ -113,16 +110,10 @@ public interface AccountEntryLocalService
 	public PersistedModel createPersistedModel(Serializable primaryKeyObj)
 		throws PortalException;
 
-	public void deactivateAccountEntries(long[] accountEntryIds)
-		throws PortalException;
-
 	public AccountEntry deactivateAccountEntry(AccountEntry accountEntry)
 		throws PortalException;
 
 	public AccountEntry deactivateAccountEntry(long accountEntryId)
-		throws PortalException;
-
-	public void deleteAccountEntries(long[] accountEntryIds)
 		throws PortalException;
 
 	public void deleteAccountEntriesByCompanyId(long companyId);
@@ -278,11 +269,6 @@ public interface AccountEntryLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<AccountEntry> getAccountEntries(int start, int end);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<AccountEntry> getAccountEntries(
-		long companyId, int status, int start, int end,
-		OrderByComparator<AccountEntry> orderByComparator);
-
 	/**
 	 * Returns the number of account entries.
 	 *
@@ -290,9 +276,6 @@ public interface AccountEntryLocalService
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getAccountEntriesCount();
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getAccountEntriesCount(long companyId, int status);
 
 	/**
 	 * Returns the account entry with the primary key.
@@ -460,4 +443,4 @@ public interface AccountEntryLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1496696136
+// LIFERAY-SERVICE-BUILDER-HASH:422032596

@@ -275,10 +275,6 @@ public interface AccountGroupLocalService
 	public List<AccountGroup> getAccountGroupsByAccountEntryId(
 		long accountEntryId, int start, int end);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<AccountGroup> getAccountGroupsByAccountGroupId(
-		long[] accountGroupIds);
-
 	/**
 	 * Returns the number of account groups.
 	 *
@@ -288,14 +284,7 @@ public interface AccountGroupLocalService
 	public int getAccountGroupsCount();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getAccountGroupsCountByAccountEntryId(long accountEntryId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public AccountGroup getDefaultAccountGroup(long companyId)
-		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ExportActionableDynamicQuery getExportActionableDynamicQuery(
@@ -328,11 +317,6 @@ public interface AccountGroupLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public boolean hasDefaultAccountGroup(long companyId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public BaseModelSearchResult<AccountGroup> searchAccountGroups(
-		long companyId, String keywords, int start, int end,
-		OrderByComparator<AccountGroup> orderByComparator);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public BaseModelSearchResult<AccountGroup> searchAccountGroups(
@@ -369,4 +353,4 @@ public interface AccountGroupLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1170359977
+// LIFERAY-SERVICE-BUILDER-HASH:-1122613795

@@ -155,22 +155,6 @@ public class AccountEntryOrganizationRelLocalServiceWrapper
 			deleteAccountEntryOrganizationRels(accountEntryId, organizationIds);
 	}
 
-	@Override
-	public void deleteAccountEntryOrganizationRelsByAccountEntryId(
-		long accountEntryId) {
-
-		_accountEntryOrganizationRelLocalService.
-			deleteAccountEntryOrganizationRelsByAccountEntryId(accountEntryId);
-	}
-
-	@Override
-	public void deleteAccountEntryOrganizationRelsByOrganizationId(
-		long organizationId) {
-
-		_accountEntryOrganizationRelLocalService.
-			deleteAccountEntryOrganizationRelsByOrganizationId(organizationId);
-	}
-
 	/**
 	 * @throws PortalException
 	 */
@@ -356,16 +340,6 @@ public class AccountEntryOrganizationRelLocalServiceWrapper
 			getAccountEntryOrganizationRelsByOrganizationId(organizationId);
 	}
 
-	@Override
-	public java.util.List<com.liferay.account.model.AccountEntryOrganizationRel>
-		getAccountEntryOrganizationRelsByOrganizationId(
-			long organizationId, int start, int end) {
-
-		return _accountEntryOrganizationRelLocalService.
-			getAccountEntryOrganizationRelsByOrganizationId(
-				organizationId, start, end);
-	}
-
 	/**
 	 * Returns the number of account entry organization rels.
 	 *
@@ -502,4 +476,4 @@ public class AccountEntryOrganizationRelLocalServiceWrapper
 		_accountEntryOrganizationRelLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1477345792
+// LIFERAY-SERVICE-BUILDER-HASH:1127517641

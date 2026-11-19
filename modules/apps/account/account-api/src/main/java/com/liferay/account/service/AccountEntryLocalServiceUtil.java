@@ -37,12 +37,6 @@ public class AccountEntryLocalServiceUtil {
 	 *
 	 * Never modify this class directly. Add custom service methods to <code>com.liferay.account.service.impl.AccountEntryLocalServiceImpl</code> and rerun ServiceBuilder to regenerate this class.
 	 */
-	public static void activateAccountEntries(long[] accountEntryIds)
-		throws PortalException {
-
-		getService().activateAccountEntries(accountEntryIds);
-	}
-
 	public static AccountEntry activateAccountEntry(AccountEntry accountEntry)
 		throws PortalException {
 
@@ -117,12 +111,6 @@ public class AccountEntryLocalServiceUtil {
 		return getService().createPersistedModel(primaryKeyObj);
 	}
 
-	public static void deactivateAccountEntries(long[] accountEntryIds)
-		throws PortalException {
-
-		getService().deactivateAccountEntries(accountEntryIds);
-	}
-
 	public static AccountEntry deactivateAccountEntry(AccountEntry accountEntry)
 		throws PortalException {
 
@@ -133,12 +121,6 @@ public class AccountEntryLocalServiceUtil {
 		throws PortalException {
 
 		return getService().deactivateAccountEntry(accountEntryId);
-	}
-
-	public static void deleteAccountEntries(long[] accountEntryIds)
-		throws PortalException {
-
-		getService().deleteAccountEntries(accountEntryIds);
 	}
 
 	public static void deleteAccountEntriesByCompanyId(long companyId) {
@@ -328,14 +310,6 @@ public class AccountEntryLocalServiceUtil {
 		return getService().getAccountEntries(start, end);
 	}
 
-	public static List<AccountEntry> getAccountEntries(
-		long companyId, int status, int start, int end,
-		OrderByComparator<AccountEntry> orderByComparator) {
-
-		return getService().getAccountEntries(
-			companyId, status, start, end, orderByComparator);
-	}
-
 	/**
 	 * Returns the number of account entries.
 	 *
@@ -343,10 +317,6 @@ public class AccountEntryLocalServiceUtil {
 	 */
 	public static int getAccountEntriesCount() {
 		return getService().getAccountEntriesCount();
-	}
-
-	public static int getAccountEntriesCount(long companyId, int status) {
-		return getService().getAccountEntriesCount(companyId, status);
 	}
 
 	/**
@@ -603,4 +573,4 @@ public class AccountEntryLocalServiceUtil {
 			AccountEntryLocalServiceUtil.class, AccountEntryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-101200475
+// LIFERAY-SERVICE-BUILDER-HASH:-1132501494

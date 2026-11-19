@@ -161,8 +161,6 @@ public interface AccountEntryUserRelLocalService
 
 	public void deleteAccountEntryUserRelsByAccountEntryId(long accountEntryId);
 
-	public void deleteAccountEntryUserRelsByAccountUserId(long accountUserId);
-
 	/**
 	 * @throws PortalException
 	 */
@@ -335,9 +333,6 @@ public interface AccountEntryUserRelLocalService
 			User inviter, ServiceContext serviceContext)
 		throws PortalException;
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public boolean isAccountEntryUser(long userId);
-
 	public void setAccountEntryUserRels(
 			long accountEntryId, long[] accountUserIds)
 		throws PortalException;
@@ -365,4 +360,4 @@ public interface AccountEntryUserRelLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-280396057
+// LIFERAY-SERVICE-BUILDER-HASH:1541720809

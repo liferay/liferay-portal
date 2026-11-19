@@ -346,14 +346,6 @@ public class AccountGroupLocalServiceWrapper
 			accountEntryId, start, end);
 	}
 
-	@Override
-	public java.util.List<com.liferay.account.model.AccountGroup>
-		getAccountGroupsByAccountGroupId(long[] accountGroupIds) {
-
-		return _accountGroupLocalService.getAccountGroupsByAccountGroupId(
-			accountGroupIds);
-	}
-
 	/**
 	 * Returns the number of account groups.
 	 *
@@ -365,24 +357,10 @@ public class AccountGroupLocalServiceWrapper
 	}
 
 	@Override
-	public int getAccountGroupsCountByAccountEntryId(long accountEntryId) {
-		return _accountGroupLocalService.getAccountGroupsCountByAccountEntryId(
-			accountEntryId);
-	}
-
-	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 
 		return _accountGroupLocalService.getActionableDynamicQuery();
-	}
-
-	@Override
-	public com.liferay.account.model.AccountGroup getDefaultAccountGroup(
-			long companyId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _accountGroupLocalService.getDefaultAccountGroup(companyId);
 	}
 
 	@Override
@@ -436,17 +414,6 @@ public class AccountGroupLocalServiceWrapper
 	@Override
 	public boolean hasDefaultAccountGroup(long companyId) {
 		return _accountGroupLocalService.hasDefaultAccountGroup(companyId);
-	}
-
-	@Override
-	public com.liferay.portal.kernel.search.BaseModelSearchResult
-		<com.liferay.account.model.AccountGroup> searchAccountGroups(
-			long companyId, String keywords, int start, int end,
-			com.liferay.portal.kernel.util.OrderByComparator
-				<com.liferay.account.model.AccountGroup> orderByComparator) {
-
-		return _accountGroupLocalService.searchAccountGroups(
-			companyId, keywords, start, end, orderByComparator);
 	}
 
 	@Override
@@ -529,4 +496,4 @@ public class AccountGroupLocalServiceWrapper
 	private AccountGroupLocalService _accountGroupLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-941979684
+// LIFERAY-SERVICE-BUILDER-HASH:275962868

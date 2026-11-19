@@ -303,12 +303,6 @@ public class AccountGroupLocalServiceUtil {
 			accountEntryId, start, end);
 	}
 
-	public static List<AccountGroup> getAccountGroupsByAccountGroupId(
-		long[] accountGroupIds) {
-
-		return getService().getAccountGroupsByAccountGroupId(accountGroupIds);
-	}
-
 	/**
 	 * Returns the number of account groups.
 	 *
@@ -318,23 +312,10 @@ public class AccountGroupLocalServiceUtil {
 		return getService().getAccountGroupsCount();
 	}
 
-	public static int getAccountGroupsCountByAccountEntryId(
-		long accountEntryId) {
-
-		return getService().getAccountGroupsCountByAccountEntryId(
-			accountEntryId);
-	}
-
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 
 		return getService().getActionableDynamicQuery();
-	}
-
-	public static AccountGroup getDefaultAccountGroup(long companyId)
-		throws PortalException {
-
-		return getService().getDefaultAccountGroup(companyId);
 	}
 
 	public static com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery
@@ -381,15 +362,6 @@ public class AccountGroupLocalServiceUtil {
 
 	public static boolean hasDefaultAccountGroup(long companyId) {
 		return getService().hasDefaultAccountGroup(companyId);
-	}
-
-	public static com.liferay.portal.kernel.search.BaseModelSearchResult
-		<AccountGroup> searchAccountGroups(
-			long companyId, String keywords, int start, int end,
-			OrderByComparator<AccountGroup> orderByComparator) {
-
-		return getService().searchAccountGroups(
-			companyId, keywords, start, end, orderByComparator);
 	}
 
 	public static com.liferay.portal.kernel.search.BaseModelSearchResult
@@ -452,4 +424,4 @@ public class AccountGroupLocalServiceUtil {
 			AccountGroupLocalServiceUtil.class, AccountGroupLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-144651661
+// LIFERAY-SERVICE-BUILDER-HASH:1203214619

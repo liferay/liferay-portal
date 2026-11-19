@@ -142,12 +142,6 @@ public class AccountGroupRelLocalServiceWrapper
 			className, classPKs);
 	}
 
-	@Override
-	public void deleteAccountGroupRelsByAccountGroupId(long accountGroupId) {
-		_accountGroupRelLocalService.deleteAccountGroupRelsByAccountGroupId(
-			accountGroupId);
-	}
-
 	/**
 	 * @throws PortalException
 	 */
@@ -358,17 +352,6 @@ public class AccountGroupRelLocalServiceWrapper
 			accountGroupId);
 	}
 
-	@Override
-	public java.util.List<com.liferay.account.model.AccountGroupRel>
-		getAccountGroupRelsByAccountGroupId(
-			long accountGroupId, int start, int end,
-			com.liferay.portal.kernel.util.OrderByComparator
-				<com.liferay.account.model.AccountGroupRel> orderByComparator) {
-
-		return _accountGroupRelLocalService.getAccountGroupRelsByAccountGroupId(
-			accountGroupId, start, end, orderByComparator);
-	}
-
 	/**
 	 * Returns the number of account group rels.
 	 *
@@ -392,12 +375,6 @@ public class AccountGroupRelLocalServiceWrapper
 	public int getAccountGroupRelsCount(String className, long classPK) {
 		return _accountGroupRelLocalService.getAccountGroupRelsCount(
 			className, classPK);
-	}
-
-	@Override
-	public long getAccountGroupRelsCountByAccountGroupId(long accountGroupId) {
-		return _accountGroupRelLocalService.
-			getAccountGroupRelsCountByAccountGroupId(accountGroupId);
 	}
 
 	@Override
@@ -482,4 +459,4 @@ public class AccountGroupRelLocalServiceWrapper
 	private AccountGroupRelLocalService _accountGroupRelLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:720196586
+// LIFERAY-SERVICE-BUILDER-HASH:-1320638307

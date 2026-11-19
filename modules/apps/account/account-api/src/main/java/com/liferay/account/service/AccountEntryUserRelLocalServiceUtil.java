@@ -196,12 +196,6 @@ public class AccountEntryUserRelLocalServiceUtil {
 		getService().deleteAccountEntryUserRelsByAccountEntryId(accountEntryId);
 	}
 
-	public static void deleteAccountEntryUserRelsByAccountUserId(
-		long accountUserId) {
-
-		getService().deleteAccountEntryUserRelsByAccountUserId(accountUserId);
-	}
-
 	/**
 	 * @throws PortalException
 	 */
@@ -435,10 +429,6 @@ public class AccountEntryUserRelLocalServiceUtil {
 			serviceContext);
 	}
 
-	public static boolean isAccountEntryUser(long userId) {
-		return getService().isAccountEntryUser(userId);
-	}
-
 	public static void setAccountEntryUserRels(
 			long accountEntryId, long[] accountUserIds)
 		throws PortalException {
@@ -488,4 +478,4 @@ public class AccountEntryUserRelLocalServiceUtil {
 			AccountEntryUserRelLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-200152985
+// LIFERAY-SERVICE-BUILDER-HASH:1188505420

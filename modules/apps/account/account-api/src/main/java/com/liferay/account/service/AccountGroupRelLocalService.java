@@ -124,8 +124,6 @@ public interface AccountGroupRelLocalService
 
 	public void deleteAccountGroupRels(String className, long[] classPKs);
 
-	public void deleteAccountGroupRelsByAccountGroupId(long accountGroupId);
-
 	/**
 	 * @throws PortalException
 	 */
@@ -259,11 +257,6 @@ public interface AccountGroupRelLocalService
 	public List<AccountGroupRel> getAccountGroupRelsByAccountGroupId(
 		long accountGroupId);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<AccountGroupRel> getAccountGroupRelsByAccountGroupId(
-		long accountGroupId, int start, int end,
-		OrderByComparator<AccountGroupRel> orderByComparator);
-
 	/**
 	 * Returns the number of account group rels.
 	 *
@@ -279,9 +272,6 @@ public interface AccountGroupRelLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getAccountGroupRelsCount(String className, long classPK);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public long getAccountGroupRelsCountByAccountGroupId(long accountGroupId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getAccountGroupRelsCountByClassName(
@@ -323,4 +313,4 @@ public interface AccountGroupRelLocalService
 		AccountGroupRel accountGroupRel);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1514684193
+// LIFERAY-SERVICE-BUILDER-HASH:318355946
