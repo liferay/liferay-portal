@@ -442,12 +442,21 @@ public class MBCommentManagerImpl implements CommentManager {
 			Function<String, ServiceContext> serviceContextFunction)
 		throws PortalException {
 
-		_getDiscussionMessage(commentId);
+		MBMessage message = _getDiscussionMessage(commentId);
+
+		if (!Objects.equals(className, message.getClassName()) ||
+			(classPK != message.getClassPK())) {
+
+			throw new NoSuchMessageException(
+				StringBundler.concat(
+					"No comment exists with comment ID ", commentId,
+					" for class name ", className, " and class PK ", classPK));
+		}
 
 		ServiceContext serviceContext = serviceContextFunction.apply(
 			MBMessage.class.getName());
 
-		MBMessage message = _mbMessageLocalService.updateDiscussionMessage(
+		message = _mbMessageLocalService.updateDiscussionMessage(
 			userId, commentId, className, classPK, subject, body,
 			serviceContext);
 
