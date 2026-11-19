@@ -214,8 +214,20 @@ public class DBMigrationImportProcess {
 	private void _createIndexes() throws Exception {
 		_executeFilesSQL("indexes.sql");
 
+		List<Future<?>> futures = new ArrayList<>();
+
 		for (DBCopyTablesProcess dbCopyTablesProcess : _dbCopyTablesProcesses) {
-			dbCopyTablesProcess.addCustomPrimaryKeysAndIndexes();
+			futures.add(
+				_executorService.submit(
+					() -> {
+						dbCopyTablesProcess.addCustomPrimaryKeysAndIndexes();
+
+						return null;
+					}));
+		}
+
+		for (Future<?> future : futures) {
+			future.get();
 		}
 	}
 

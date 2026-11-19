@@ -48,6 +48,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -256,154 +257,155 @@ public class DBCopyTablesProcess {
 			}
 
 			Map<String, String> indexTypes = _getIndexTypes(sourceConnection);
+			List<IndexMetadata> targetIndexMetadatas = _getIndexMetadatas(
+				targetConnection);
 
-			for (Map.Entry<String, List<String>> entry :
-					_sourceColumnNamesMap.entrySet()) {
+			for (IndexMetadata indexMetadata :
+					_getIndexMetadatas(sourceConnection)) {
 
-				String tableName = entry.getKey();
+				String tableName = indexMetadata.getTableName();
 
-				String targetTableName = StringUtil.toLowerCase(tableName);
+				List<String> sourceColumnNames = _sourceColumnNamesMap.get(
+					tableName);
 
-				List<IndexMetadata> targetIndexMetadatas = _getIndexMetadatas(
-					targetConnection, targetTableName);
+				if (sourceColumnNames == null) {
+					continue;
+				}
+
+				String indexName = indexMetadata.getIndexName();
+
+				IndexMetadata matchingIndexMetadata = null;
+
+				for (IndexMetadata targetIndexMetadata : targetIndexMetadatas) {
+					if (targetIndexMetadata.equals(indexMetadata) ||
+						(Objects.equals(
+							targetIndexMetadata.getTableName(), tableName) &&
+						 StringUtil.equalsIgnoreCase(
+							 targetIndexMetadata.getIndexName(), indexName) &&
+						 ArrayUtil.contains(
+							 targetIndexMetadata.getColumnNames(),
+							 StringPool.BLANK))) {
+
+						matchingIndexMetadata = targetIndexMetadata;
+
+						break;
+					}
+				}
+
+				if (matchingIndexMetadata != null) {
+					if (indexMetadata.isUnique() &&
+						!matchingIndexMetadata.isUnique()) {
+
+						System.out.println(
+							StringBundler.concat(
+								"Unable to create unique index ", indexName,
+								" on table ", tableName, _partitionMessage,
+								" because index ",
+								matchingIndexMetadata.getIndexName(),
+								" already exists on the same columns"));
+					}
+
+					continue;
+				}
+
+				List<String> indexColumnNames = ListUtil.fromArray(
+					indexMetadata.getColumnNames());
 
 				List<String> columnNames = ListUtil.toList(
-					entry.getValue(), StringUtil::toLowerCase);
+					sourceColumnNames, StringUtil::toLowerCase);
 
-				for (IndexMetadata indexMetadata :
-						_getIndexMetadatas(sourceConnection, tableName)) {
+				if (!columnNames.containsAll(indexColumnNames)) {
+					System.out.println(
+						StringBundler.concat(
+							"Unable to create index ", indexName, " on table ",
+							tableName, _partitionMessage,
+							" because one of its columns is an expression"));
 
-					String indexName = indexMetadata.getIndexName();
-
-					List<IndexMetadata> matchingIndexMetadatas =
-						ListUtil.filter(
-							targetIndexMetadatas,
-							targetIndexMetadata ->
-								targetIndexMetadata.equals(indexMetadata) ||
-								(StringUtil.equalsIgnoreCase(
-									targetIndexMetadata.getIndexName(),
-									indexName) &&
-								 !columnNames.containsAll(
-									 ListUtil.fromArray(
-										 targetIndexMetadata.
-											 getColumnNames()))));
-
-					if (!matchingIndexMetadatas.isEmpty()) {
-						IndexMetadata matchingIndexMetadata =
-							matchingIndexMetadatas.get(0);
-
-						if (indexMetadata.isUnique() &&
-							!matchingIndexMetadata.isUnique()) {
-
-							System.out.println(
-								StringBundler.concat(
-									"Unable to create unique index ", indexName,
-									" on table ", tableName, _partitionMessage,
-									" because index ",
-									matchingIndexMetadata.getIndexName(),
-									" already exists on the same columns"));
-						}
-
-						continue;
-					}
-
-					List<String> indexColumnNames = ListUtil.fromArray(
-						indexMetadata.getColumnNames());
-
-					if (!columnNames.containsAll(indexColumnNames)) {
-						System.out.println(
-							StringBundler.concat(
-								"Unable to create index ", indexName,
-								" on table ", tableName, _partitionMessage,
-								" because one of its columns is an ",
-								"expression"));
-
-						continue;
-					}
-
-					String targetIndexName = StringUtil.toLowerCase(indexName);
-
-					if (_isLongName(targetIndexName) ||
-						targetNames.contains(targetIndexName)) {
-
-						targetIndexName = StringUtil.toLowerCase(
-							IndexMetadataFactoryUtil.createIndexName(
-								targetTableName,
-								indexMetadata.getColumnNames()));
-
-						System.out.println(
-							StringBundler.concat(
-								"Renaming index ", indexName, " on table ",
-								tableName, _partitionMessage, " to ",
-								targetIndexName,
-								" because its name is longer than ",
-								_POSTGRESQL_NAME_MAX_LENGTH,
-								" bytes or a relation with the same name ",
-								"already exists"));
-					}
-
-					String indexColumnsSQL = StringUtil.merge(
-						ListUtil.toList(
-							indexColumnNames,
-							indexColumnName -> {
-								if (!longColumnNames.contains(
-										targetTableName + "." +
-											indexColumnName)) {
-
-									return _getQuotedName(indexColumnName);
-								}
-
-								return StringBundler.concat(
-									"left(", _getQuotedName(indexColumnName),
-									", ", _POSTGRESQL_STRING_INDEX_MAX_LENGTH,
-									")");
-							}),
-						", ");
-
-					String indexType = indexTypes.get(
-						tableName + "." + indexName);
-
-					String uniqueSQL = StringPool.BLANK;
-
-					if (indexMetadata.isUnique() &&
-						!Objects.equals(indexType, "filtered")) {
-
-						uniqueSQL = "unique ";
-					}
-
-					try {
-						statement.executeUpdate(
-							StringBundler.concat(
-								"create ", uniqueSQL, "index ",
-								_getQuotedName(targetIndexName), " on ",
-								_getQuotedName(targetTableName), " (",
-								indexColumnsSQL, ")"));
-					}
-					catch (SQLException sqlException) {
-						System.out.println(
-							StringBundler.concat(
-								"Unable to create index ", indexName,
-								" on table ", tableName, _partitionMessage,
-								": ", sqlException.getMessage()));
-
-						continue;
-					}
-
-					if ((indexType != null) ||
-						indexColumnsSQL.contains("left(")) {
-
-						System.out.println(
-							StringBundler.concat(
-								"Created ",
-								(indexType == null) ? "" : indexType + " ",
-								"index ", indexName, " on table ", tableName,
-								_partitionMessage, " as a ", uniqueSQL,
-								"btree index on (", indexColumnsSQL, ")"));
-					}
-
-					targetIndexMetadatas.add(indexMetadata);
-					targetNames.add(targetIndexName);
+					continue;
 				}
+
+				String targetIndexName = StringUtil.toLowerCase(indexName);
+
+				if (_isLongName(targetIndexName) ||
+					targetNames.contains(targetIndexName)) {
+
+					targetIndexName = StringUtil.toLowerCase(
+						IndexMetadataFactoryUtil.createIndexName(
+							tableName, indexMetadata.getColumnNames()));
+
+					System.out.println(
+						StringBundler.concat(
+							"Renaming index ", indexName, " on table ",
+							tableName, _partitionMessage, " to ",
+							targetIndexName, " because its name is longer ",
+							"than ", _POSTGRESQL_NAME_MAX_LENGTH,
+							" bytes or a relation with the same name already ",
+							"exists"));
+				}
+
+				List<String> indexColumnSQLs = new ArrayList<>();
+
+				boolean wrapped = false;
+
+				for (String indexColumnName : indexColumnNames) {
+					String indexColumnSQL = _getQuotedName(indexColumnName);
+
+					if (longColumnNames.contains(
+							tableName + "." + indexColumnName)) {
+
+						indexColumnSQL = StringBundler.concat(
+							"left(", indexColumnSQL, ", ",
+							_POSTGRESQL_STRING_INDEX_MAX_LENGTH, ")");
+
+						wrapped = true;
+					}
+
+					indexColumnSQLs.add(indexColumnSQL);
+				}
+
+				String indexColumnsSQL = StringUtil.merge(
+					indexColumnSQLs, ", ");
+
+				String indexType = indexTypes.get(tableName + "." + indexName);
+
+				String uniqueSQL = StringPool.BLANK;
+
+				if (indexMetadata.isUnique() &&
+					!Objects.equals(indexType, "filtered")) {
+
+					uniqueSQL = "unique ";
+				}
+
+				try {
+					statement.executeUpdate(
+						StringBundler.concat(
+							"create ", uniqueSQL, "index ",
+							_getQuotedName(targetIndexName), " on ",
+							_getQuotedName(tableName), " (", indexColumnsSQL,
+							")"));
+				}
+				catch (SQLException sqlException) {
+					System.out.println(
+						StringBundler.concat(
+							"Unable to create index ", indexName, " on table ",
+							tableName, _partitionMessage, ": ",
+							sqlException.getMessage()));
+
+					continue;
+				}
+
+				if ((indexType != null) || wrapped) {
+					System.out.println(
+						StringBundler.concat(
+							"Created ",
+							(indexType == null) ? "" : indexType + " ",
+							"index ", indexName, " on table ", tableName,
+							_partitionMessage, " as a ", uniqueSQL,
+							"btree index on (", indexColumnsSQL, ")"));
+				}
+
+				targetIndexMetadatas.add(indexMetadata);
+				targetNames.add(targetIndexName);
 			}
 		}
 	}
@@ -863,58 +865,135 @@ public class DBCopyTablesProcess {
 				resultSet.getInt("DECIMAL_DIGITS")));
 	}
 
-	private List<IndexMetadata> _getIndexMetadatas(
-			Connection connection, String tableName)
+	private List<IndexMetadata> _getIndexMetadatas(Connection connection)
 		throws SQLException {
 
 		List<IndexMetadata> indexMetadatas = new ArrayList<>();
 
 		DatabaseMetaData databaseMetaData = connection.getMetaData();
 
-		try (ResultSet resultSet = databaseMetaData.getIndexInfo(
-				connection.getCatalog(), connection.getSchema(), tableName,
-				false, true)) {
+		String databaseProductName = databaseMetaData.getDatabaseProductName();
 
-			String[] columnNames = new String[0];
-			String previousIndexName = null;
-			boolean unique = false;
+		String schemaName = connection.getSchema();
+		String sql = null;
 
-			while (resultSet.next()) {
-				if (resultSet.getShort("ORDINAL_POSITION") == 0) {
-					continue;
+		if (databaseProductName.startsWith("DB2")) {
+			sql = StringBundler.concat(
+				"select syscat.indexes.tabname as TABLE_NAME, ",
+				"syscat.indexes.indname as INDEX_NAME, case when ",
+				"syscat.indexes.uniquerule = 'D' then 1 else 0 end as ",
+				"NON_UNIQUE, syscat.indexcoluse.colname as COLUMN_NAME, ",
+				"syscat.indexcoluse.colseq as ORDINAL_POSITION from ",
+				"syscat.indexes inner join syscat.indexcoluse on ",
+				"syscat.indexcoluse.indschema = syscat.indexes.indschema and ",
+				"syscat.indexcoluse.indname = syscat.indexes.indname where ",
+				"syscat.indexes.tabschema = ? and syscat.indexcoluse.colorder ",
+				"<> 'I'");
+		}
+		else if (databaseProductName.equals("MariaDB") ||
+				 databaseProductName.equals("MySQL")) {
+
+			schemaName = connection.getCatalog();
+			sql = StringBundler.concat(
+				"select table_name as TABLE_NAME, index_name as INDEX_NAME, ",
+				"non_unique as NON_UNIQUE, column_name as COLUMN_NAME, ",
+				"seq_in_index as ORDINAL_POSITION from ",
+				"information_schema.statistics where table_schema = ?");
+		}
+		else if (databaseProductName.equals("Microsoft SQL Server")) {
+			sql = StringBundler.concat(
+				"select object_name(sys.indexes.object_id) as TABLE_NAME, ",
+				"sys.indexes.name as INDEX_NAME, case when ",
+				"sys.indexes.is_unique = 1 then 0 else 1 end as NON_UNIQUE, ",
+				"sys.columns.name as COLUMN_NAME, ",
+				"sys.index_columns.key_ordinal as ORDINAL_POSITION from ",
+				"sys.indexes inner join sys.index_columns on ",
+				"sys.index_columns.object_id = sys.indexes.object_id and ",
+				"sys.index_columns.index_id = sys.indexes.index_id inner join ",
+				"sys.columns on sys.columns.object_id = ",
+				"sys.index_columns.object_id and sys.columns.column_id = ",
+				"sys.index_columns.column_id where ",
+				"object_schema_name(sys.indexes.object_id) = ? and ",
+				"sys.index_columns.key_ordinal > 0");
+		}
+		else if (databaseProductName.equals("Oracle")) {
+			sql = StringBundler.concat(
+				"select all_indexes.table_name as TABLE_NAME, ",
+				"all_indexes.index_name as INDEX_NAME, ",
+				"decode(all_indexes.uniqueness, 'UNIQUE', 0, 1) as ",
+				"NON_UNIQUE, all_ind_columns.column_name as COLUMN_NAME, ",
+				"all_ind_columns.column_position as ORDINAL_POSITION from ",
+				"all_indexes inner join all_ind_columns on ",
+				"all_ind_columns.index_owner = all_indexes.owner and ",
+				"all_ind_columns.index_name = all_indexes.index_name where ",
+				"all_indexes.table_owner = ?");
+		}
+		else {
+			sql = StringBundler.concat(
+				"select tables.relname as TABLE_NAME, indexes.relname as ",
+				"INDEX_NAME, case when pg_index.indisunique then 0 else 1 end ",
+				"as NON_UNIQUE, pg_attribute.attname as COLUMN_NAME, ",
+				"index_keys.ordinal as ORDINAL_POSITION from pg_index inner ",
+				"join pg_class indexes on indexes.oid = pg_index.indexrelid ",
+				"inner join pg_class tables on tables.oid = pg_index.indrelid ",
+				"inner join pg_namespace on pg_namespace.oid = ",
+				"tables.relnamespace cross join unnest(pg_index.indkey) with ",
+				"ordinality as index_keys(attnum, ordinal) left join ",
+				"pg_attribute on pg_attribute.attrelid = pg_index.indrelid ",
+				"and pg_attribute.attnum = index_keys.attnum where ",
+				"pg_namespace.nspname = ? and index_keys.ordinal <= ",
+				"pg_index.indnkeyatts");
+		}
+
+		Map<String, List<String>> columnNamesMap = new LinkedHashMap<>();
+		Map<String, String> indexNames = new HashMap<>();
+		Map<String, String> tableNames = new HashMap<>();
+		Set<String> uniqueIndexKeys = new HashSet<>();
+
+		try (PreparedStatement preparedStatement = connection.prepareStatement(
+				sql + " order by TABLE_NAME, NON_UNIQUE, INDEX_NAME, " +
+					"ORDINAL_POSITION")) {
+
+			preparedStatement.setString(1, schemaName);
+
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				while (resultSet.next()) {
+					String indexName = resultSet.getString("INDEX_NAME");
+					String tableName = resultSet.getString("TABLE_NAME");
+
+					String indexKey = tableName + "." + indexName;
+
+					List<String> columnNames = columnNamesMap.computeIfAbsent(
+						indexKey, newIndexKey -> new ArrayList<>());
+
+					columnNames.add(
+						StringUtil.toLowerCase(
+							GetterUtil.getString(
+								resultSet.getString("COLUMN_NAME"))));
+
+					indexNames.put(indexKey, indexName);
+					tableNames.put(indexKey, tableName);
+
+					if (resultSet.getInt("NON_UNIQUE") != 0) {
+						continue;
+					}
+
+					uniqueIndexKeys.add(indexKey);
 				}
-
-				String indexName = resultSet.getString("INDEX_NAME");
-
-				if ((previousIndexName != null) &&
-					!previousIndexName.equals(indexName)) {
-
-					indexMetadatas.add(
-						new IndexMetadata(
-							previousIndexName,
-							StringUtil.toLowerCase(tableName), unique,
-							columnNames));
-
-					columnNames = new String[0];
-				}
-
-				previousIndexName = indexName;
-
-				unique = !resultSet.getBoolean("NON_UNIQUE");
-
-				columnNames = ArrayUtil.append(
-					columnNames,
-					StringUtil.toLowerCase(
-						GetterUtil.getString(
-							resultSet.getString("COLUMN_NAME"))));
 			}
+		}
 
-			if (previousIndexName != null) {
-				indexMetadatas.add(
-					new IndexMetadata(
-						previousIndexName, StringUtil.toLowerCase(tableName),
-						unique, columnNames));
-			}
+		for (Map.Entry<String, List<String>> entry :
+				columnNamesMap.entrySet()) {
+
+			String indexKey = entry.getKey();
+
+			indexMetadatas.add(
+				new IndexMetadata(
+					indexNames.get(indexKey),
+					StringUtil.toLowerCase(tableNames.get(indexKey)),
+					uniqueIndexKeys.contains(indexKey),
+					ArrayUtil.toStringArray(entry.getValue())));
 		}
 
 		return indexMetadatas;
