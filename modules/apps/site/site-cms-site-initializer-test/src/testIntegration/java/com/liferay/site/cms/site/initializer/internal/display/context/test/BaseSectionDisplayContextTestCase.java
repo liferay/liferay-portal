@@ -815,11 +815,12 @@ public abstract class BaseSectionDisplayContextTestCase
 		return StringBundler.concat(
 			"emptySearch=true&filter=",
 			appendStatus(appendGroupIds(getFilterString())),
-			"&nestedFields=embedded,embeddedTaxonomyCategory,",
+			"&nestedFields=embedded,embedded.images,embeddedTaxonomyCategory,",
 			"file.metadata,file.previewURL,file.thumbnailURL,",
 			"modifiedBy,numberOfObjectEntries,numberOfObjectEntryFolders,",
 			"systemProperties.collaboratorBrief,",
-			"systemProperties.objectDefinitionBrief&sort=dateModified:desc");
+			"systemProperties.objectDefinitionBrief&nestedFieldsDepth=2&",
+			"sort=dateModified:desc");
 	}
 
 	protected List<FDSActionDropdownItem> getBulkActionDropdownItems()
