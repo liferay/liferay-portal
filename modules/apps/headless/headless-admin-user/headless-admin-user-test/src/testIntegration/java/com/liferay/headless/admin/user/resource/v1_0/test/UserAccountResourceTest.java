@@ -5,6 +5,7 @@
 
 package com.liferay.headless.admin.user.resource.v1_0.test;
 
+import com.liferay.account.constants.AccountActionKeys;
 import com.liferay.account.constants.AccountConstants;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.model.AccountRole;
@@ -894,6 +895,9 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 			userAccountResource.patchSiteAccountUserAccountSelectedHttpResponse(
 				testGroup.getGroupId(), accountEntry2.getAccountEntryId(),
 				user.getUserId()));
+
+		_testPatchSiteAccountUserAccountSelectedWithRegularRole(
+			accountEntry1, user);
 	}
 
 	@Override
@@ -2943,6 +2947,38 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 			domainName, null, Pagination.of(1, 10), "id:desc");
 
 		assertEquals(userAccounts, (List<UserAccount>)page.getItems());
+	}
+
+	private void _testPatchSiteAccountUserAccountSelectedWithRegularRole(
+			AccountEntry accountEntry, User user)
+		throws Exception {
+
+		_setUpTestUserAccountResource();
+
+		_accountEntryUserRelLocalService.addAccountEntryUserRel(
+			accountEntry.getAccountEntryId(), _regularUserAccount.getId());
+
+		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		_resourcePermissionLocalService.addResourcePermission(
+			TestPropsValues.getCompanyId(), AccountEntry.class.getName(),
+			ResourceConstants.SCOPE_COMPANY,
+			String.valueOf(TestPropsValues.getCompanyId()), role.getRoleId(),
+			AccountActionKeys.VIEW_USERS);
+
+		_userLocalService.addRoleUser(
+			role.getRoleId(), _regularUserAccount.getId());
+
+		assertHttpResponseStatusCode(
+			403,
+			_regularUserAccountResource.
+				patchSiteAccountUserAccountSelectedHttpResponse(
+					testGroup.getGroupId(), accountEntry.getAccountEntryId(),
+					user.getUserId()));
+
+		_regularUserAccountResource.patchSiteAccountUserAccountSelected(
+			testGroup.getGroupId(), accountEntry.getAccountEntryId(),
+			_regularUserAccount.getId());
 	}
 
 	private void _testPatchUserAccountWithGender() throws Exception {
