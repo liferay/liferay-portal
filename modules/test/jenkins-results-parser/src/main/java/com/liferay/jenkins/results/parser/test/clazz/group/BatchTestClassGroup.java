@@ -1245,11 +1245,12 @@ public abstract class BatchTestClassGroup extends BaseTestClassGroup {
 			return;
 		}
 
-		String path = _getBuildReportsPathName(workspaces.get(0));
+		String relativeBuildReportsPath = _getRelativeBuildReportsPath(
+			workspaces.get(0));
 
 		File baseDir = new File(
 			System.getProperty("java.io.tmpdir"),
-			"cached-build-report-files/" + path);
+			"cached-build-report-files/" + relativeBuildReportsPath);
 
 		if (!baseDir.exists()) {
 			baseDir.mkdirs();
@@ -1262,7 +1263,7 @@ public abstract class BatchTestClassGroup extends BaseTestClassGroup {
 						"cloud.ci.s3.bucket.build.reports.path"));
 
 				sb.append("/");
-				sb.append(path);
+				sb.append(relativeBuildReportsPath);
 
 				long start = System.currentTimeMillis();
 
@@ -1278,30 +1279,13 @@ public abstract class BatchTestClassGroup extends BaseTestClassGroup {
 			}
 			catch (IOException | TimeoutException exception) {
 				System.out.println(
-					"Unable to sync cached build reports for " + path + ":" +
-						exception.getMessage());
+					"Unable to sync cached build reports for " +
+						relativeBuildReportsPath + ":" +
+							exception.getMessage());
 			}
 		}
 
 		_buildReportsDownloaded.set(true);
-	}
-
-	private String _getBuildReportsPathName(Workspace workspace) {
-		WorkspaceGitRepository workspaceGitRepository =
-			workspace.getPrimaryWorkspaceGitRepository();
-
-		if ((workspace instanceof PortalWorkspace) &&
-			(workspaceGitRepository instanceof PortalWorkspaceGitRepository)) {
-
-			PortalWorkspace portalWorkspace = (PortalWorkspace)workspace;
-
-			return portalWorkspace.getS3ObjectPathName();
-		}
-
-		return JenkinsResultsParserUtil.combine(
-			workspaceGitRepository.getName(), "/",
-			workspaceGitRepository.getBaseBranchSHA(), "/",
-			workspaceGitRepository.getSenderBranchSHA());
 	}
 
 	private Map<String, Properties> _getJobPropertiesMap() {
@@ -1355,6 +1339,24 @@ public abstract class BatchTestClassGroup extends BaseTestClassGroup {
 		return JobPropertyFactory.newJobProperty(
 			basePropertyName, testSuiteName, testBatchName, ruleName, getJob(),
 			testBaseDir, type, useBasePropertyName);
+	}
+
+	private String _getRelativeBuildReportsPath(Workspace workspace) {
+		WorkspaceGitRepository workspaceGitRepository =
+			workspace.getPrimaryWorkspaceGitRepository();
+
+		if ((workspace instanceof PortalWorkspace) &&
+			(workspaceGitRepository instanceof PortalWorkspaceGitRepository)) {
+
+			PortalWorkspace portalWorkspace = (PortalWorkspace)workspace;
+
+			return portalWorkspace.getS3ObjectPathName();
+		}
+
+		return JenkinsResultsParserUtil.combine(
+			workspaceGitRepository.getName(), "/",
+			workspaceGitRepository.getBaseBranchSHA(), "/",
+			workspaceGitRepository.getSenderBranchSHA());
 	}
 
 	private List<File> _getRequiredModuleDirs(
@@ -1438,12 +1440,12 @@ public abstract class BatchTestClassGroup extends BaseTestClassGroup {
 			return;
 		}
 
-		String path = JenkinsResultsParserUtil.combine(
-			_getBuildReportsPathName(workspaces.get(0)), "/", getBatchName());
-
 		File baseDir = new File(
 			System.getProperty("java.io.tmpdir"),
-			"cached-build-report-files/" + path);
+			JenkinsResultsParserUtil.combine(
+				"cached-build-report-files/",
+				_getRelativeBuildReportsPath(workspaces.get(0)), "/",
+				getBatchName()));
 
 		if (!baseDir.exists()) {
 			_cachedReportsInitialized.set(true);

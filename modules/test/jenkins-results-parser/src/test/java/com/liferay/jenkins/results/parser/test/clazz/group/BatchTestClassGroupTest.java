@@ -469,14 +469,15 @@ public class BatchTestClassGroupTest
 			baseDownstreamBuild, "_getS3ObjectPath",
 			new Class<?>[] {File.class}, file);
 
-		String buildReportsPathName = ReflectionTestUtil.invoke(
-			Mockito.mock(BatchTestClassGroup.class), "_getBuildReportsPathName",
-			new Class<?>[] {Workspace.class}, workspace);
+		String relativeBuildReportsPath = ReflectionTestUtil.invoke(
+			Mockito.mock(BatchTestClassGroup.class),
+			"_getRelativeBuildReportsPath", new Class<?>[] {Workspace.class},
+			workspace);
 
 		testEquals(
 			s3ObjectPath,
 			JenkinsResultsParserUtil.combine(
-				buildReportsPath, "/", buildReportsPathName, "/", batchName,
+				buildReportsPath, "/", relativeBuildReportsPath, "/", batchName,
 				"/", file.getName()));
 	}
 

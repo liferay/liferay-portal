@@ -130,12 +130,6 @@ public class JobCacheUtilTest extends com.liferay.jenkins.results.parser.Test {
 			_testGetCachedJobJSONObject(
 				cloudBucketUtilMockedStatic,
 				JenkinsResultsParserUtil.combine(
-					_JOB_CACHE_PATH, "/", jobName, "/", s3ObjectPathName,
-					"/default.json.gz"),
-				jobName, Mockito.mock(PortalGitWorkingDirectory.class), null);
-			_testGetCachedJobJSONObject(
-				cloudBucketUtilMockedStatic,
-				JenkinsResultsParserUtil.combine(
 					_JOB_CACHE_PATH, "/", jobName, "__", jobName, "/",
 					s3ObjectPathName, "/default.json.gz"),
 				JenkinsResultsParserUtil.combine(jobName, ")/(", jobName),
@@ -147,6 +141,12 @@ public class JobCacheUtilTest extends com.liferay.jenkins.results.parser.Test {
 					s3ObjectPathName, "/", testSuiteName, ".json.gz"),
 				JenkinsResultsParserUtil.combine(jobName, "(", jobName, ")"),
 				Mockito.mock(PortalGitWorkingDirectory.class), testSuiteName);
+			_testGetCachedJobJSONObject(
+				cloudBucketUtilMockedStatic,
+				JenkinsResultsParserUtil.combine(
+					_JOB_CACHE_PATH, "/", jobName, "/", s3ObjectPathName,
+					"/default.json.gz"),
+				jobName, Mockito.mock(PortalGitWorkingDirectory.class), null);
 			_testGetCachedJobJSONObject(
 				cloudBucketUtilMockedStatic, null, jobName, null,
 				testSuiteName);

@@ -218,7 +218,10 @@ public class JobCacheUtil {
 
 			PortalWorkspace portalWorkspace = (PortalWorkspace)workspace;
 
-			if (portalWorkspace.getPrimaryWorkspaceGitRepository() instanceof
+			WorkspaceGitRepository workspaceGitRepository =
+				portalWorkspace.getPrimaryWorkspaceGitRepository();
+
+			if (workspaceGitRepository instanceof
 					PortalWorkspaceGitRepository) {
 
 				return portalWorkspace;
