@@ -370,11 +370,6 @@ public interface FriendlyURLEntryLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public FriendlyURLEntryLocalization getFriendlyURLEntryLocalization(
-			long groupId, long classNameId, String urlTitle)
-		throws NoSuchFriendlyURLEntryLocalizationException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public FriendlyURLEntryLocalization getFriendlyURLEntryLocalization(
 			long groupId, long classNameId, String languageId, String urlTitle)
 		throws NoSuchFriendlyURLEntryLocalizationException;
 
@@ -457,11 +452,6 @@ public interface FriendlyURLEntryLocalService
 
 	public FriendlyURLEntry updateFriendlyURLEntry(
 			long friendlyURLEntryId, long classNameId, long classPK,
-			String defaultLanguageId, Map<String, String> urlTitleMap)
-		throws PortalException;
-
-	public FriendlyURLEntry updateFriendlyURLEntry(
-			long friendlyURLEntryId, long classNameId, long classPK,
 			String defaultLanguageId, Map<String, String> urlTitleMap,
 			ServiceContext serviceContext)
 		throws PortalException;
@@ -479,10 +469,6 @@ public interface FriendlyURLEntryLocalService
 
 	public FriendlyURLEntryLocalization updateFriendlyURLLocalization(
 		FriendlyURLEntryLocalization friendlyURLEntryLocalization);
-
-	public FriendlyURLEntryLocalization updateFriendlyURLLocalization(
-			long friendlyURLLocalizationId, String urlTitle)
-		throws PortalException;
 
 	public void validate(
 			long groupId, long classNameId, long parentClassPK, long classPK,
@@ -532,4 +518,4 @@ public interface FriendlyURLEntryLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-945327983
+// LIFERAY-SERVICE-BUILDER-HASH:-1155925410

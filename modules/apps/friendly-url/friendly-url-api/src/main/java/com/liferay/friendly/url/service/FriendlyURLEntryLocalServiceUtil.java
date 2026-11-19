@@ -467,16 +467,6 @@ public class FriendlyURLEntryLocalServiceUtil {
 
 	public static com.liferay.friendly.url.model.FriendlyURLEntryLocalization
 			getFriendlyURLEntryLocalization(
-				long groupId, long classNameId, String urlTitle)
-		throws com.liferay.friendly.url.exception.
-			NoSuchFriendlyURLEntryLocalizationException {
-
-		return getService().getFriendlyURLEntryLocalization(
-			groupId, classNameId, urlTitle);
-	}
-
-	public static com.liferay.friendly.url.model.FriendlyURLEntryLocalization
-			getFriendlyURLEntryLocalization(
 				long groupId, long classNameId, String languageId,
 				String urlTitle)
 		throws com.liferay.friendly.url.exception.
@@ -614,16 +604,6 @@ public class FriendlyURLEntryLocalServiceUtil {
 
 	public static FriendlyURLEntry updateFriendlyURLEntry(
 			long friendlyURLEntryId, long classNameId, long classPK,
-			String defaultLanguageId, Map<String, String> urlTitleMap)
-		throws PortalException {
-
-		return getService().updateFriendlyURLEntry(
-			friendlyURLEntryId, classNameId, classPK, defaultLanguageId,
-			urlTitleMap);
-	}
-
-	public static FriendlyURLEntry updateFriendlyURLEntry(
-			long friendlyURLEntryId, long classNameId, long classPK,
 			String defaultLanguageId, Map<String, String> urlTitleMap,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws PortalException {
@@ -661,15 +641,6 @@ public class FriendlyURLEntryLocalServiceUtil {
 
 		return getService().updateFriendlyURLLocalization(
 			friendlyURLEntryLocalization);
-	}
-
-	public static com.liferay.friendly.url.model.FriendlyURLEntryLocalization
-			updateFriendlyURLLocalization(
-				long friendlyURLLocalizationId, String urlTitle)
-		throws PortalException {
-
-		return getService().updateFriendlyURLLocalization(
-			friendlyURLLocalizationId, urlTitle);
 	}
 
 	public static void validate(
@@ -739,4 +710,4 @@ public class FriendlyURLEntryLocalServiceUtil {
 			FriendlyURLEntryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-563294042
+// LIFERAY-SERVICE-BUILDER-HASH:-558833901
