@@ -10,6 +10,7 @@ import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {pageEditorPagesTest} from '../../../fixtures/pageEditorPagesTest';
+import {pageViewModePagesTest} from '../../../fixtures/pageViewModePagesTest';
 import {pagesAdminPagesTest} from '../../../fixtures/pagesAdminPagesTest';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../../utils/getRandomString';
@@ -27,6 +28,7 @@ const test = mergeTests(
 	loginTest(),
 	pagesAdminPagesTest,
 	pageEditorPagesTest,
+	pageViewModePagesTest,
 	stagingConfigurationPageTest
 );
 
@@ -215,5 +217,72 @@ test(
 		await expect(
 			page.getByRole('link', {name: 'Go Somewhere'})
 		).toBeVisible();
+	}
+);
+
+test(
+	'Staging bar refreshes once per widget added to a widget page',
+	{
+		tag: '@LPD-116289',
+	},
+	async ({
+		apiHelpers,
+		page,
+		site,
+		stagingConfigurationPage,
+		widgetPagePage,
+	}) => {
+
+		// Create a widget page
+
+		const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
+			groupId: site.id,
+			options: {
+				type: 'portlet',
+			},
+			title: getRandomString(),
+		});
+
+		// Enable staging with page versioning
+
+		await stagingConfigurationPage.gotoStagingConfiguration(
+			site.friendlyUrlPath
+		);
+
+		await stagingConfigurationPage.enableLocalStaging({versioning: true});
+
+		// Count the staging bar refresh requests
+
+		let layoutRevisionDetailsRequestsCount = 0;
+		let layoutRevisionStatusRequestsCount = 0;
+
+		page.on('request', (request) => {
+			const url = request.url();
+
+			if (url.includes('view_layout_revision_details.jsp')) {
+				layoutRevisionDetailsRequestsCount++;
+			}
+			else if (url.includes('view_layout_revision_status.jsp')) {
+				layoutRevisionStatusRequestsCount++;
+			}
+		});
+
+		await page.goto(
+			`/web${site.friendlyUrlPath}-staging${layout.friendlyURL}`
+		);
+
+		// Add widgets and assert each one refreshes the staging bar once
+
+		for (let i = 1; i <= 3; i++) {
+			await widgetPagePage.addPortlet('Web Content Display');
+
+			await expect
+				.poll(() => layoutRevisionDetailsRequestsCount, {timeout: 5000})
+				.toBe(i);
+
+			await expect
+				.poll(() => layoutRevisionStatusRequestsCount, {timeout: 5000})
+				.toBe(i);
+		}
 	}
 );
