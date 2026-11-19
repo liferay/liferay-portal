@@ -64,14 +64,36 @@ liferay.com/project: liferay-cloud-native
 {{- end -}}
 
 {{- define "liferay-platform.operators" -}}
-ackPrometheusService: ack-prometheusservice
-argoWorkflows: argo-workflows
-crossplane: crossplane
-dxpOperator: dxp-operator
-eckOperator: eck-operator
-envoyGateway: envoy-gateway
-externalSecrets: external-secrets
-keda: keda
+ackPrometheusService:
+    name: ack-prometheusservice
+    requiresObservability: true
+argoWorkflows:
+    chart: argo-workflows
+    name: argo-workflows
+crossplane:
+    chart: crossplane
+    name: crossplane
+    namespaceLabels:
+        pod-security.kubernetes.io/enforce: restricted
+dxpOperator:
+    name: dxp-operator
+    namespaceLabels:
+        pod-security.kubernetes.io/enforce: restricted
+eckOperator:
+    chart: eck-operator
+    name: eck-operator
+    namespaceLabels:
+        pod-security.kubernetes.io/enforce: restricted
+envoyGateway:
+    name: envoy-gateway
+externalSecrets:
+    chart: external-secrets
+    name: external-secrets
+keda:
+    chart: keda
+    extraDestinationNamespaces:
+        -   kube-system
+    name: keda
 {{- end -}}
 
 {{- define "liferay-platform.requireAPIServerSources" -}}

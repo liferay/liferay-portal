@@ -1,9 +1,9 @@
-{{- $repoURLs := list -}}
 {{- $operators := include "liferay-platform.operators" . | fromYaml -}}
-{{- range $key, $name := $operators -}}
-{{- $operatorApplication := index $.Values $key -}}
-{{- $repoURLs = append $repoURLs $operatorApplication.repoURL -}}
-{{- with $operatorApplication.crds -}}
+{{- $repoURLs := list -}}
+{{- range $key, $operator := $operators -}}
+{{- $config := index $.Values $key -}}
+{{- $repoURLs = append $repoURLs $config.repoURL -}}
+{{- with $config.crds -}}
 {{- $repoURLs = append $repoURLs .repoURL -}}
 {{- end -}}
 {{- end -}}
@@ -24,11 +24,10 @@ spec:
     description:
         ArgoCD project for Liferay cloud native operators.
     destinations:
-        {{- range $key, $name := $operators }}
-        {{- $operatorApplication := index $.Values $key }}
-        -   namespace: {{ $operatorApplication.namespace }}
+        {{- range $key, $operator := $operators }}
+        -   namespace: {{ (index $.Values $key).namespace }}
             server: https://kubernetes.default.svc
-        {{- range $extraDestinationNamespace := $operatorApplication.extraDestinationNamespaces }}
+        {{- range $extraDestinationNamespace := $operator.extraDestinationNamespaces }}
         -   namespace: {{ $extraDestinationNamespace }}
             server: https://kubernetes.default.svc
         {{- end }}

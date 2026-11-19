@@ -388,19 +388,13 @@ tests:
     -   asserts:
             -   contains:
                     content:
-                        namespace: elastic-system
+                        namespace: kube-system
                         server: https://kubernetes.default.svc
                     path: spec.destinations
                 template: templates/appproject-operator.yaml
             -   contains:
                     content:
-                        namespace: monitoring
-                        server: https://kubernetes.default.svc
-                    path: spec.destinations
-                template: templates/appproject-operator.yaml
-            -   notContains:
-                    content:
-                        namespace: kube-system
+                        namespace: keda-system
                         server: https://kubernetes.default.svc
                     path: spec.destinations
                 template: templates/appproject-operator.yaml
@@ -408,11 +402,7 @@ tests:
                     count: 9
                     path: spec.destinations
                 template: templates/appproject-operator.yaml
-        it: Permits the extra destination namespaces declared by an operator
-        set:
-            eckOperator.extraDestinationNamespaces:
-                -   monitoring
-            keda.extraDestinationNamespaces: null
+        it: Permits KEDA's extra destination namespace
     -   asserts:
             -   contains:
                     content: https://charts.example.com

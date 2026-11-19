@@ -5,7 +5,6 @@ ackPrometheusService:
     enabled: false
     namespace: ack-system
     repoURL: oci://public.ecr.aws/aws-controllers-k8s/prometheusservice-chart
-    requiresObservability: true
     targetRevision: 1.4.1
     values: {}
 appProjects:
@@ -14,7 +13,6 @@ appProjects:
     infrastructure:
         enabled: true
 argoWorkflows:
-    chart: argo-workflows
     enabled: true
     gateway:
         annotations: {}
@@ -111,7 +109,6 @@ clusterBootstrap:
             memory: 8Mi
 clusterSecretStores: {}
 crossplane:
-    chart: crossplane
     clusterProviderConfig:
         enabled: true
     enabled: true
@@ -149,8 +146,6 @@ crossplane:
                     cpu: 15m
                     memory: 128Mi
     namespace: crossplane-system
-    namespaceLabels:
-        pod-security.kubernetes.io/enforce: restricted
     providers:
         provider-kubernetes:
             package: xpkg.upbound.io/upbound/provider-kubernetes:v1.2.0
@@ -208,8 +203,6 @@ deploymentContext:
 dxpOperator:
     enabled: true
     namespace: dxp-operator-system
-    namespaceLabels:
-        pod-security.kubernetes.io/enforce: restricted
     repoURL: oci://us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart/liferay-dxp-operator
     targetRevision: 0.2.0
     values:
@@ -219,11 +212,8 @@ dxpOperator:
         onlineActivationWorkflow:
             enabled: true
 eckOperator:
-    chart: eck-operator
     enabled: true
     namespace: elastic-system
-    namespaceLabels:
-        pod-security.kubernetes.io/enforce: restricted
     repoURL: https://helm.elastic.co
     targetRevision: 3.5.0
     values:
@@ -252,7 +242,6 @@ eckOperator:
 envoyGateway:
     crds:
         enabled: true
-        name: envoy-gateway-crds
         repoURL: oci://docker.io/envoyproxy/gateway-crds-helm
         targetRevision: 1.9.3
         values:
@@ -285,7 +274,6 @@ envoyGateway:
         podDisruptionBudget:
             maxUnavailable: 1
 externalSecrets:
-    chart: external-secrets
     enabled: true
     namespace: external-secrets-system
     repoURL: https://charts.external-secrets.io
@@ -371,10 +359,7 @@ infrastructureProvider:
     repoURL: ""
     targetRevision: ""
 keda:
-    chart: keda
     enabled: false
-    extraDestinationNamespaces:
-        -   kube-system
     namespace: keda-system
     repoURL: https://kedacore.github.io/charts
     targetRevision: 2.21.0

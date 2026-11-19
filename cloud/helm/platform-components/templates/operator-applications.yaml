@@ -1,6 +1,6 @@
-{{- range $key, $name := include "liferay-platform.operators" . | fromYaml }}
-{{- $application := index $.Values $key }}
-{{- if and $application.enabled (or (not $application.requiresObservability) $.Values.observability.enabled) }}
+{{- range $key, $operator := include "liferay-platform.operators" . | fromYaml }}
+{{- $config := index $.Values $key }}
+{{- if and $config.enabled (or (not $operator.requiresObservability) $.Values.observability.enabled) }}
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -11,17 +11,17 @@ metadata:
         -   resources-finalizer.argocd.argoproj.io
     labels:
         {{- include "liferay-platform.labels" $ | nindent 8 }}
-        app.kubernetes.io/name: {{ $name }}
-    name: {{ $name }}
+        app.kubernetes.io/name: {{ $operator.name }}
+    name: {{ $operator.name }}
     namespace: {{ $.Release.Namespace }}
 spec:
     destination:
-        namespace: {{ $application.namespace }}
+        namespace: {{ $config.namespace }}
         server: https://kubernetes.default.svc
     project: liferay-operator
     source:
-        {{- include "liferay-platform.chartSource" $application | nindent 8 }}
-        {{- with $application.values }}
+        {{- include "liferay-platform.chartSource" (dict "chart" $operator.chart "repoURL" $config.repoURL "targetRevision" $config.targetRevision) | nindent 8 }}
+        {{- with $config.values }}
         helm:
             valuesObject:
                 {{- toYaml . | nindent 16 }}
@@ -30,7 +30,7 @@ spec:
         automated:
             prune: true
             selfHeal: true
-        {{- with $application.namespaceLabels }}
+        {{- with $operator.namespaceLabels }}
         managedNamespaceMetadata:
             labels:
                 {{- toYaml . | nindent 16 }}
