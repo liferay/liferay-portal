@@ -24,7 +24,7 @@
 {{- if $i }}
 ---
 {{- end }}
-apiVersion: {{ $databaseAPIVersion }}
+apiVersion: {{ $databaseEngine.apiVersion }}
 kind: FlexibleServer
 metadata:
     annotations:
@@ -71,12 +71,12 @@ spec:
     initProvider:
         createMode: PointInTimeRestore
         pointInTimeRestoreTimeInUtc: {{ $restorePointInTime }}
-        sourceServerId: /subscriptions/{{ $env.subscriptionId }}/resourceGroups/{{ $env.resourceGroupName }}/providers/{{ $databaseServerType }}/{{ $restoreSourceDatabaseServerName }}
+        sourceServerId: /subscriptions/{{ $env.subscriptionId }}/resourceGroups/{{ $env.resourceGroupName }}/providers/{{ $databaseEngine.serverType }}/{{ $restoreSourceDatabaseServerName }}
     {{- end }}
     managementPolicies: {{ $isDemotedDataPlane | ternary $demotedManagementPolicies $managementPolicies }}
 ---
-apiVersion: {{ $databaseAPIVersion }}
-kind: {{ $databaseKind }}
+apiVersion: {{ $databaseEngine.apiVersion }}
+kind: {{ $databaseEngine.databaseKind }}
 metadata:
     annotations:
         crossplane.io/external-name: {{ $databaseName }}
@@ -93,7 +93,7 @@ spec:
 {{- if not (has $retainedDataPlaneKey $renderedDataPlaneKeys) }}
 {{- $retainedDatabaseServerName := index $dataPlaneNames $retainedDataPlaneKey "databaseServer" }}
 ---
-apiVersion: {{ $databaseAPIVersion }}
+apiVersion: {{ $databaseEngine.apiVersion }}
 kind: FlexibleServer
 metadata:
     annotations:
@@ -120,14 +120,14 @@ metadata:
     namespace: {{ $namespace }}
 spec:
     by:
-        apiVersion: {{ $databaseAPIVersion }}
-        kind: {{ $databaseKind }}
+        apiVersion: {{ $databaseEngine.apiVersion }}
+        kind: {{ $databaseEngine.databaseKind }}
         resourceSelector:
             matchControllerRef: true
             matchLabels:
                 dataPlane: {{ $dataPlane }}
     of:
-        apiVersion: {{ $databaseAPIVersion }}
+        apiVersion: {{ $databaseEngine.apiVersion }}
         kind: FlexibleServer
         resourceSelector:
             matchControllerRef: true
