@@ -24,6 +24,7 @@ import com.liferay.object.internal.layout.tab.screen.navigation.category.ObjectL
 import com.liferay.object.internal.layout.tab.screen.navigation.entry.ObjectLayoutTabScreenNavigationEntry;
 import com.liferay.object.internal.notification.handler.ObjectDefinitionNotificationHandler;
 import com.liferay.object.internal.notification.term.contributor.ObjectDefinitionNotificationTermEvaluator;
+import com.liferay.object.internal.related.models.ObjectEntry1to1ObjectRelatedModelsPredicateProviderImpl;
 import com.liferay.object.internal.related.models.ObjectEntry1to1ObjectRelatedModelsProviderImpl;
 import com.liferay.object.internal.related.models.ObjectEntry1toMObjectRelatedModelsPredicateProviderImpl;
 import com.liferay.object.internal.related.models.ObjectEntry1toMObjectRelatedModelsProviderImpl;
@@ -394,6 +395,11 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 				HashMapDictionaryBuilder.<String, Object>put(
 					"class.name", objectDefinition.getClassName()
 				).build()),
+			_bundleContext.registerService(
+				ObjectRelatedModelsPredicateProvider.class,
+				new ObjectEntry1to1ObjectRelatedModelsPredicateProviderImpl(
+					objectDefinition, _objectFieldLocalService),
+				null),
 			_bundleContext.registerService(
 				ObjectRelatedModelsPredicateProvider.class,
 				new ObjectEntry1toMObjectRelatedModelsPredicateProviderImpl(
