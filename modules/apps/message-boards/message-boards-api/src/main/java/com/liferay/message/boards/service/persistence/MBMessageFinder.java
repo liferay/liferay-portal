@@ -19,6 +19,11 @@ public interface MBMessageFinder {
 		com.liferay.portal.kernel.dao.orm.QueryDefinition
 			<com.liferay.message.boards.model.MBMessage> queryDefinition);
 
+	public int countByThreadId(
+		long threadId,
+		com.liferay.portal.kernel.dao.orm.QueryDefinition
+			<com.liferay.message.boards.model.MBMessage> queryDefinition);
+
 	public int filterCountByG_U_C_S(
 		long groupId, long userId, long[] categoryIds, int status);
 
@@ -63,4 +68,4 @@ public interface MBMessageFinder {
 				<com.liferay.message.boards.model.MBMessage> queryDefinition);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-971677681
+// LIFERAY-SERVICE-BUILDER-HASH:-760672794
