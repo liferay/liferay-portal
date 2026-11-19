@@ -5,9 +5,12 @@
 
 package com.liferay.osb.faro.rest.internal.jaxrs.container.request.filter;
 
+import com.liferay.osb.faro.rest.resource.v1_0.AccountLifecycleResource;
 import com.liferay.osb.faro.rest.resource.v1_0.AccountLifecycleStageTransitionResource;
 import com.liferay.osb.faro.rest.resource.v1_0.IndividualSegmentMembershipResource;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.vulcan.jaxrs.exception.mapper.Problem;
 
 import jakarta.ws.rs.container.ContainerRequestContext;
@@ -58,6 +61,9 @@ public class ParameterContainerRequestFilterTest {
 		Assert.assertNull(_filter(null, null));
 
 		_assertTitle(
+			"\"accountLifecycleId\" must be a numeric ID",
+			_filter("accountLifecycleId", RandomTestUtil.randomString()));
+		_assertTitle(
 			"Date range must be at most 180 days",
 			_filter(_getRangeQueryParameters("2026-10-02", "2026-04-05")));
 		_assertTitle(
@@ -92,6 +98,22 @@ public class ParameterContainerRequestFilterTest {
 			"\"sort\" must be a comma separated list of \"column:asc\" or " +
 				"\"column:desc\" expressions",
 			_filter("sort", "accountName:sideways"));
+	}
+
+	@Test
+	public void testFilterWithAccountLifecycleResourceMethod() {
+		_setResourceMethod(
+			AccountLifecycleResource.class,
+			"getWorkspaceGroupChannelAccountLifecyclesPage");
+
+		String fieldName = RandomTestUtil.randomString();
+
+		_assertTitle(
+			StringBundler.concat(
+				"\"", fieldName,
+				"\" is not a sortable column. Sortable columns: dateModified, ",
+				"id, name"),
+			_filter("sort", fieldName + ":asc"));
 	}
 
 	@Test

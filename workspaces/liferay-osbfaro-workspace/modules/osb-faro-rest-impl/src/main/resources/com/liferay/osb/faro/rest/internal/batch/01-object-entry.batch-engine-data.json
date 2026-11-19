@@ -31,9 +31,27 @@
 			"toolSetName": "faro-rest-v1.0"
 		},
 		{
+			"externalReferenceCode": "LDP_MCP_TOOL_getWorkspaceGroupChannelAccountAccountLifecycleHistory",
+			"r_mcpServerProfileToTools_l_mcpServerProfileERC": "LDP_MCP_SERVER_PROFILE",
+			"toolName": "getWorkspaceGroupChannelAccountAccountLifecycleHistory",
+			"toolSetName": "faro-rest-v1.0"
+		},
+		{
 			"externalReferenceCode": "LDP_MCP_TOOL_getWorkspaceGroupChannelAccountEventMetric",
 			"r_mcpServerProfileToTools_l_mcpServerProfileERC": "LDP_MCP_SERVER_PROFILE",
 			"toolName": "getWorkspaceGroupChannelAccountEventMetric",
+			"toolSetName": "faro-rest-v1.0"
+		},
+		{
+			"externalReferenceCode": "LDP_MCP_TOOL_getWorkspaceGroupChannelAccountLifecycleStageMetricsPage",
+			"r_mcpServerProfileToTools_l_mcpServerProfileERC": "LDP_MCP_SERVER_PROFILE",
+			"toolName": "getWorkspaceGroupChannelAccountLifecycleStageMetricsPage",
+			"toolSetName": "faro-rest-v1.0"
+		},
+		{
+			"externalReferenceCode": "LDP_MCP_TOOL_getWorkspaceGroupChannelAccountLifecyclesPage",
+			"r_mcpServerProfileToTools_l_mcpServerProfileERC": "LDP_MCP_SERVER_PROFILE",
+			"toolName": "getWorkspaceGroupChannelAccountLifecyclesPage",
 			"toolSetName": "faro-rest-v1.0"
 		},
 		{
