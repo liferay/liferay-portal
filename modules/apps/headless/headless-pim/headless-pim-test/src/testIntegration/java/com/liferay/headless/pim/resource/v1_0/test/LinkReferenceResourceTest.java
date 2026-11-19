@@ -228,19 +228,20 @@ public class LinkReferenceResourceTest
 	}
 
 	private ObjectEntry _addImageObjectEntry(
-			ObjectEntry objectEntry, boolean withFile)
+			boolean addFileEntry, ObjectEntry pimProductObjectEntry)
 		throws Exception {
 
 		Map<String, Serializable> values =
 			HashMapBuilder.<String, Serializable>put(
-				"r_images_l_pimBasicProductId", objectEntry.getObjectEntryId()
+				"r_images_l_pimBasicProductId",
+				pimProductObjectEntry.getObjectEntryId()
 			).put(
 				"title", RandomTestUtil.randomString()
 			).build();
 
-		if (withFile) {
+		if (addFileEntry) {
 			FileEntry fileEntry = TempFileEntryUtil.addTempFileEntry(
-				objectEntry.getGroupId(), TestPropsValues.getUserId(),
+				pimProductObjectEntry.getGroupId(), TestPropsValues.getUserId(),
 				RandomTestUtil.randomString(),
 				TempFileEntryUtil.getTempFileName(
 					RandomTestUtil.randomString() + ".png"),
@@ -255,26 +256,27 @@ public class LinkReferenceResourceTest
 				getObjectDefinitionByExternalReferenceCode(
 					PIMObjectDefinitionConstants.
 						EXTERNAL_REFERENCE_CODE_BASIC_PRODUCT_IMAGE,
-					objectEntry.getCompanyId());
+					pimProductObjectEntry.getCompanyId());
 
 		return _objectEntryLocalService.addObjectEntry(
-			objectEntry.getGroupId(), TestPropsValues.getUserId(),
+			pimProductObjectEntry.getGroupId(), TestPropsValues.getUserId(),
 			objectDefinition.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			null, values,
-			ServiceContextTestUtil.getServiceContext(objectEntry.getGroupId()));
+			ServiceContextTestUtil.getServiceContext(
+				pimProductObjectEntry.getGroupId()));
 	}
 
 	private void _assertImageURL(
-			ObjectEntry imageObjectEntry, ObjectEntry productObjectEntry)
+			ObjectEntry imageObjectEntry, ObjectEntry pimProductObjectEntry)
 		throws Exception {
 
 		Page<LinkReference> linkReferencesPage = _getLinkReferencesPage(
-			productObjectEntry, Pagination.of(1, 20));
+			pimProductObjectEntry, Pagination.of(1, 20));
 
 		LinkReference linkReference = _getLinkReference(
 			(List<LinkReference>)linkReferencesPage.getItems(),
-			productObjectEntry);
+			pimProductObjectEntry);
 
 		if (imageObjectEntry == null) {
 			Assert.assertNull(linkReference.getImageURL());
@@ -390,19 +392,23 @@ public class LinkReferenceResourceTest
 
 		_assertImageURL(null, targetObjectEntry);
 
-		_addImageObjectEntry(targetObjectEntry, false);
+		_addImageObjectEntry(false, targetObjectEntry);
 
 		ObjectEntry imageObjectEntry1 = _addImageObjectEntry(
-			targetObjectEntry, true);
+			true, targetObjectEntry);
 		ObjectEntry imageObjectEntry2 = _addImageObjectEntry(
-			targetObjectEntry, true);
+			true, targetObjectEntry);
 
+		_assertImageURL(null, sourceObjectEntry);
 		_assertImageURL(imageObjectEntry1, targetObjectEntry);
 
 		_objectEntryLocalService.deleteObjectEntry(imageObjectEntry1);
 
 		_assertImageURL(imageObjectEntry2, targetObjectEntry);
-		_assertImageURL(null, sourceObjectEntry);
+
+		_objectEntryLocalService.deleteObjectEntry(imageObjectEntry2);
+
+		_assertImageURL(null, targetObjectEntry);
 	}
 
 	private void _testGetScopeScopeKeyLinksPageWithTrashedObjectEntry()
