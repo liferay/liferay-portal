@@ -46,6 +46,83 @@ public abstract class BasePublishPreviewResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
+	 * curl -X 'GET' 'http://localhost:8080/o/export-import/v1.0/asset-libraries/{assetLibraryExternalReferenceCode}/publish-preview'  -u 'test@liferay.com:test'
+	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Retrieves the portlet data handlers and change counts for a Publish to Live of the specified asset library, or of one of its portlets."
+	)
+	@io.swagger.v3.oas.annotations.Parameters(
+		value = {
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
+				name = "assetLibraryExternalReferenceCode", required = true
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The date filter's type. Without it, all the content is counted.",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "dateFilterType"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The end date of a DateRange filter.",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "endDate"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The number of hours of a LastHours filter.",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "hours"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The ID of a portlet to narrow the process to (e.g., com_liferay_journal_web_portlet_JournalPortlet).",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "portletId"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The start date of a DateRange filter.",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "startDate"
+			)
+		}
+	)
+	@io.swagger.v3.oas.annotations.tags.Tags(
+		value = {
+			@io.swagger.v3.oas.annotations.tags.Tag(name = "PublishPreview")
+		}
+	)
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path(
+		"/asset-libraries/{assetLibraryExternalReferenceCode}/publish-preview"
+	)
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
+	@Override
+	public PublishPreview getAssetLibraryPublishPreview(
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("assetLibraryExternalReferenceCode")
+			String assetLibraryExternalReferenceCode,
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.ws.rs.QueryParam("dateFilterType")
+			String dateFilterType,
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.ws.rs.QueryParam("endDate")
+			Date endDate,
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.ws.rs.QueryParam("hours")
+			Integer hours,
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.ws.rs.QueryParam("portletId")
+			String portletId,
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.ws.rs.QueryParam("startDate")
+			Date startDate)
+		throws Exception {
+
+		return new PublishPreview();
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/export-import/v1.0/sites/{siteExternalReferenceCode}/publish-preview'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
@@ -571,4 +648,4 @@ public abstract class BasePublishPreviewResourceImpl
 		LogFactoryUtil.getLog(BasePublishPreviewResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1441196538
+// LIFERAY-REST-BUILDER-HASH:-603388171

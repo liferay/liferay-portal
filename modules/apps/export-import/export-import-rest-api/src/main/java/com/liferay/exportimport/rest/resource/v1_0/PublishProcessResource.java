@@ -53,6 +53,13 @@ public interface PublishProcessResource {
 	public Response deletePublishProcessBatch(String callbackURL, Object object)
 		throws Exception;
 
+	public Page<PublishProcess> getAssetLibraryPublishProcessesPage(
+			String assetLibraryExternalReferenceCode, Long creatorId,
+			String portletId, String search, Integer status,
+			Pagination pagination,
+			com.liferay.portal.kernel.search.Sort[] sorts)
+		throws Exception;
+
 	public PublishProcess getPublishProcess(Long publishProcessId)
 		throws Exception;
 
@@ -64,6 +71,24 @@ public interface PublishProcessResource {
 			String search, String sitePageExternalReferenceCode, Integer status,
 			Pagination pagination,
 			com.liferay.portal.kernel.search.Sort[] sorts)
+		throws Exception;
+
+	public PublishProcess postAssetLibraryPublishProcess(
+			String assetLibraryExternalReferenceCode, String portletId,
+			PublishProcessRequest publishProcessRequest)
+		throws Exception;
+
+	public Response postAssetLibraryPublishProcessBatch(
+			String assetLibraryExternalReferenceCode, String portletId,
+			PublishProcessRequest publishProcessRequest, String callbackURL,
+			Object object)
+		throws Exception;
+
+	public Response postAssetLibraryPublishProcessesPageExportBatch(
+			String assetLibraryExternalReferenceCode, Long creatorId,
+			String portletId, String search, Integer status,
+			com.liferay.portal.kernel.search.Sort[] sorts, String callbackURL,
+			String contentType, String fieldNames)
 		throws Exception;
 
 	public PublishProcess postPublishProcessRelaunch(Long publishProcessId)
@@ -185,4 +210,4 @@ public interface PublishProcessResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1354930339
+// LIFERAY-REST-BUILDER-HASH:-1940297465

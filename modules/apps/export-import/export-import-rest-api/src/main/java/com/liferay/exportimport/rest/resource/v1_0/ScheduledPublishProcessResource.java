@@ -47,8 +47,25 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface ScheduledPublishProcessResource {
 
+	public void deleteAssetLibraryScheduledPublishProcess(
+			String assetLibraryExternalReferenceCode,
+			Long scheduledPublishProcessId)
+		throws Exception;
+
 	public void deleteSiteScheduledPublishProcess(
 			String siteExternalReferenceCode, Long scheduledPublishProcessId)
+		throws Exception;
+
+	public ScheduledPublishProcess getAssetLibraryScheduledPublishProcess(
+			String assetLibraryExternalReferenceCode,
+			Long scheduledPublishProcessId)
+		throws Exception;
+
+	public Page<ScheduledPublishProcess>
+			getAssetLibraryScheduledPublishProcessesPage(
+				String assetLibraryExternalReferenceCode, String search,
+				Pagination pagination,
+				com.liferay.portal.kernel.search.Sort[] sorts)
 		throws Exception;
 
 	public ScheduledPublishProcess getSiteScheduledPublishProcess(
@@ -59,6 +76,23 @@ public interface ScheduledPublishProcessResource {
 			String siteExternalReferenceCode, String search,
 			Pagination pagination,
 			com.liferay.portal.kernel.search.Sort[] sorts)
+		throws Exception;
+
+	public ScheduledPublishProcess postAssetLibraryScheduledPublishProcess(
+			String assetLibraryExternalReferenceCode,
+			ScheduledPublishProcessRequest scheduledPublishProcessRequest)
+		throws Exception;
+
+	public Response postAssetLibraryScheduledPublishProcessBatch(
+			String assetLibraryExternalReferenceCode,
+			ScheduledPublishProcessRequest scheduledPublishProcessRequest,
+			String callbackURL, Object object)
+		throws Exception;
+
+	public Response postAssetLibraryScheduledPublishProcessesPageExportBatch(
+			String assetLibraryExternalReferenceCode, String search,
+			com.liferay.portal.kernel.search.Sort[] sorts, String callbackURL,
+			String contentType, String fieldNames)
 		throws Exception;
 
 	public ScheduledPublishProcess postSiteScheduledPublishProcess(
@@ -174,4 +208,4 @@ public interface ScheduledPublishProcessResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-53018269
+// LIFERAY-REST-BUILDER-HASH:1187501020

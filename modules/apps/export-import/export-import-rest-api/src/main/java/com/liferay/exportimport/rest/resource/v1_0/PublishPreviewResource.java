@@ -42,6 +42,11 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface PublishPreviewResource {
 
+	public PublishPreview getAssetLibraryPublishPreview(
+			String assetLibraryExternalReferenceCode, String dateFilterType,
+			Date endDate, Integer hours, String portletId, Date startDate)
+		throws Exception;
+
 	public PublishPreview getSitePublishPreview(
 			String siteExternalReferenceCode, String dateFilterType,
 			Date endDate, Integer hours, String portletId,
@@ -136,4 +141,4 @@ public interface PublishPreviewResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1938061207
+// LIFERAY-REST-BUILDER-HASH:-1482481218

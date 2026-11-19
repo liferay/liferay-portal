@@ -35,6 +35,18 @@ public interface PublishPreviewResource {
 		return new Builder();
 	}
 
+	public PublishPreview getAssetLibraryPublishPreview(
+			String assetLibraryExternalReferenceCode, String dateFilterType,
+			java.util.Date endDate, Integer hours, String portletId,
+			java.util.Date startDate)
+		throws Exception;
+
+	public HttpInvoker.HttpResponse getAssetLibraryPublishPreviewHttpResponse(
+			String assetLibraryExternalReferenceCode, String dateFilterType,
+			java.util.Date endDate, Integer hours, String portletId,
+			java.util.Date startDate)
+		throws Exception;
+
 	public PublishPreview getSitePublishPreview(
 			String siteExternalReferenceCode, String dateFilterType,
 			java.util.Date endDate, Integer hours, String portletId,
@@ -155,6 +167,147 @@ public interface PublishPreviewResource {
 
 	public static class PublishPreviewResourceImpl
 		implements PublishPreviewResource {
+
+		public PublishPreview getAssetLibraryPublishPreview(
+				String assetLibraryExternalReferenceCode, String dateFilterType,
+				java.util.Date endDate, Integer hours, String portletId,
+				java.util.Date startDate)
+			throws Exception {
+
+			HttpInvoker.HttpResponse httpResponse =
+				getAssetLibraryPublishPreviewHttpResponse(
+					assetLibraryExternalReferenceCode, dateFilterType, endDate,
+					hours, portletId, startDate);
+
+			String content = httpResponse.getContent();
+
+			if ((httpResponse.getStatusCode() / 100) != 2) {
+				_logger.log(
+					Level.WARNING,
+					"Unable to process HTTP response content: " + content);
+				_logger.log(
+					Level.WARNING,
+					"HTTP response message: " + httpResponse.getMessage());
+				_logger.log(
+					Level.WARNING,
+					"HTTP response status code: " +
+						httpResponse.getStatusCode());
+
+				Problem.ProblemException problemException = null;
+
+				if (Objects.equals(
+						httpResponse.getContentType(), "application/json")) {
+
+					problemException = new Problem.ProblemException(
+						Problem.toDTO(content));
+				}
+				else {
+					_logger.log(
+						Level.WARNING,
+						"Unable to process content type: " +
+							httpResponse.getContentType());
+
+					Problem problem = new Problem();
+
+					problem.setStatus(
+						String.valueOf(httpResponse.getStatusCode()));
+
+					problemException = new Problem.ProblemException(problem);
+				}
+
+				throw problemException;
+			}
+			else {
+				_logger.fine("HTTP response content: " + content);
+				_logger.fine(
+					"HTTP response message: " + httpResponse.getMessage());
+				_logger.fine(
+					"HTTP response status code: " +
+						httpResponse.getStatusCode());
+			}
+
+			try {
+				return PublishPreviewSerDes.toDTO(content);
+			}
+			catch (Exception e) {
+				_logger.log(
+					Level.WARNING,
+					"Unable to process HTTP response: " + content, e);
+
+				throw new Problem.ProblemException(Problem.toDTO(content));
+			}
+		}
+
+		public HttpInvoker.HttpResponse
+				getAssetLibraryPublishPreviewHttpResponse(
+					String assetLibraryExternalReferenceCode,
+					String dateFilterType, java.util.Date endDate,
+					Integer hours, String portletId, java.util.Date startDate)
+			throws Exception {
+
+			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
+
+			if (_builder._locale != null) {
+				httpInvoker.header(
+					"Accept-Language", _builder._locale.toLanguageTag());
+			}
+
+			for (Map.Entry<String, String> entry :
+					_builder._headers.entrySet()) {
+
+				httpInvoker.header(entry.getKey(), entry.getValue());
+			}
+
+			for (Map.Entry<String, String> entry :
+					_builder._parameters.entrySet()) {
+
+				httpInvoker.parameter(entry.getKey(), entry.getValue());
+			}
+
+			httpInvoker.httpMethod(HttpInvoker.HttpMethod.GET);
+
+			DateFormat liferayToJSONDateFormat = new SimpleDateFormat(
+				"yyyy-MM-dd'T'HH:mm:ssXX");
+
+			if (dateFilterType != null) {
+				httpInvoker.parameter(
+					"dateFilterType", String.valueOf(dateFilterType));
+			}
+
+			if (endDate != null) {
+				httpInvoker.parameter(
+					"endDate", liferayToJSONDateFormat.format(endDate));
+			}
+
+			if (hours != null) {
+				httpInvoker.parameter("hours", String.valueOf(hours));
+			}
+
+			if (portletId != null) {
+				httpInvoker.parameter("portletId", String.valueOf(portletId));
+			}
+
+			if (startDate != null) {
+				httpInvoker.parameter(
+					"startDate", liferayToJSONDateFormat.format(startDate));
+			}
+
+			httpInvoker.path(
+				_builder._scheme + "://" + _builder._host + ":" +
+					_builder._port + _builder._contextPath +
+						"/o/export-import/v1.0/asset-libraries/{assetLibraryExternalReferenceCode}/publish-preview");
+
+			httpInvoker.path(
+				"assetLibraryExternalReferenceCode",
+				assetLibraryExternalReferenceCode);
+
+			if ((_builder._login != null) && (_builder._password != null)) {
+				httpInvoker.userNameAndPassword(
+					_builder._login + ":" + _builder._password);
+			}
+
+			return httpInvoker.invoke();
+		}
 
 		public PublishPreview getSitePublishPreview(
 				String siteExternalReferenceCode, String dateFilterType,
@@ -313,4 +466,4 @@ public interface PublishPreviewResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:451427822
+// LIFERAY-REST-BUILDER-HASH:516610505

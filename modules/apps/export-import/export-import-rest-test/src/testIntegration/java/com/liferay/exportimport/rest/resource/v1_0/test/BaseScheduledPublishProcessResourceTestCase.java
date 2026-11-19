@@ -13,6 +13,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
+import com.liferay.depot.constants.DepotConstants;
+import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.service.DepotEntryLocalServiceUtil;
 import com.liferay.exportimport.rest.client.dto.v1_0.ScheduledPublishProcess;
 import com.liferay.exportimport.rest.client.dto.v1_0.Type;
 import com.liferay.exportimport.rest.client.http.HttpInvoker;
@@ -29,9 +32,11 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.JAXRSWhiteboardTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
@@ -102,6 +107,29 @@ public abstract class BaseScheduledPublishProcessResourceTestCase {
 		testCompany = CompanyLocalServiceUtil.getCompany(
 			testGroup.getCompanyId());
 
+		irrelevantDepotEntry = DepotEntryLocalServiceUtil.addDepotEntry(
+			Collections.singletonMap(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
+			null, DepotConstants.TYPE_ASSET_LIBRARY,
+			new ServiceContext() {
+				{
+					setCompanyId(testCompany.getCompanyId());
+					setUserId(TestPropsValues.getUserId());
+				}
+			});
+		irrelevantDepotEntryGroup = irrelevantDepotEntry.getGroup();
+		testDepotEntry = DepotEntryLocalServiceUtil.addDepotEntry(
+			Collections.singletonMap(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
+			null, DepotConstants.TYPE_ASSET_LIBRARY,
+			new ServiceContext() {
+				{
+					setCompanyId(testCompany.getCompanyId());
+					setUserId(TestPropsValues.getUserId());
+				}
+			});
+		testDepotEntryGroup = testDepotEntry.getGroup();
+
 		_scheduledPublishProcessResource.setContextCompany(testCompany);
 
 		_testCompanyAdminUser = UserTestUtil.getAdminUser(
@@ -122,6 +150,9 @@ public abstract class BaseScheduledPublishProcessResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		DepotEntryLocalServiceUtil.deleteDepotEntry(irrelevantDepotEntry);
+		DepotEntryLocalServiceUtil.deleteDepotEntry(testDepotEntry);
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -195,6 +226,50 @@ public abstract class BaseScheduledPublishProcessResourceTestCase {
 	}
 
 	@Test
+	public void testDeleteAssetLibraryScheduledPublishProcess()
+		throws Exception {
+
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		ScheduledPublishProcess scheduledPublishProcess =
+			testDeleteAssetLibraryScheduledPublishProcess_addScheduledPublishProcess();
+
+		assertHttpResponseStatusCode(
+			204,
+			scheduledPublishProcessResource.
+				deleteAssetLibraryScheduledPublishProcessHttpResponse(
+					testDeleteAssetLibraryScheduledPublishProcess_getAssetLibraryExternalReferenceCode(),
+					scheduledPublishProcess.getId()));
+
+		assertHttpResponseStatusCode(
+			404,
+			scheduledPublishProcessResource.
+				getAssetLibraryScheduledPublishProcessHttpResponse(
+					testDeleteAssetLibraryScheduledPublishProcess_getAssetLibraryExternalReferenceCode(),
+					scheduledPublishProcess.getId()));
+		assertHttpResponseStatusCode(
+			404,
+			scheduledPublishProcessResource.
+				getAssetLibraryScheduledPublishProcessHttpResponse(
+					testDeleteAssetLibraryScheduledPublishProcess_getAssetLibraryExternalReferenceCode(),
+					0L));
+	}
+
+	protected ScheduledPublishProcess
+			testDeleteAssetLibraryScheduledPublishProcess_addScheduledPublishProcess()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected String
+			testDeleteAssetLibraryScheduledPublishProcess_getAssetLibraryExternalReferenceCode()
+		throws Exception {
+
+		return testDepotEntryGroup.getExternalReferenceCode();
+	}
+
+	@Test
 	public void testDeleteSiteScheduledPublishProcess() throws Exception {
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		ScheduledPublishProcess scheduledPublishProcess =
@@ -234,6 +309,440 @@ public abstract class BaseScheduledPublishProcessResourceTestCase {
 		throws Exception {
 
 		return testGroup.getExternalReferenceCode();
+	}
+
+	@Test
+	public void testGetAssetLibraryScheduledPublishProcess() throws Exception {
+		ScheduledPublishProcess postScheduledPublishProcess =
+			testGetAssetLibraryScheduledPublishProcess_addScheduledPublishProcess();
+
+		ScheduledPublishProcess getScheduledPublishProcess =
+			scheduledPublishProcessResource.
+				getAssetLibraryScheduledPublishProcess(
+					testGetAssetLibraryScheduledPublishProcess_getAssetLibraryExternalReferenceCode(),
+					postScheduledPublishProcess.getId());
+
+		assertEquals(postScheduledPublishProcess, getScheduledPublishProcess);
+		assertValid(getScheduledPublishProcess);
+	}
+
+	protected ScheduledPublishProcess
+			testGetAssetLibraryScheduledPublishProcess_addScheduledPublishProcess()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected String
+			testGetAssetLibraryScheduledPublishProcess_getAssetLibraryExternalReferenceCode()
+		throws Exception {
+
+		return testDepotEntryGroup.getExternalReferenceCode();
+	}
+
+	@Test
+	public void testGetAssetLibraryScheduledPublishProcessesPage()
+		throws Exception {
+
+		String assetLibraryExternalReferenceCode =
+			testGetAssetLibraryScheduledPublishProcessesPage_getAssetLibraryExternalReferenceCode();
+		String irrelevantAssetLibraryExternalReferenceCode =
+			testGetAssetLibraryScheduledPublishProcessesPage_getIrrelevantAssetLibraryExternalReferenceCode();
+
+		Page<ScheduledPublishProcess> page =
+			scheduledPublishProcessResource.
+				getAssetLibraryScheduledPublishProcessesPage(
+					assetLibraryExternalReferenceCode, null,
+					Pagination.of(1, 10), null);
+
+		long totalCount = page.getTotalCount();
+
+		if (irrelevantAssetLibraryExternalReferenceCode != null) {
+			ScheduledPublishProcess irrelevantScheduledPublishProcess =
+				testGetAssetLibraryScheduledPublishProcessesPage_addScheduledPublishProcess(
+					irrelevantAssetLibraryExternalReferenceCode,
+					randomIrrelevantScheduledPublishProcess());
+
+			page =
+				scheduledPublishProcessResource.
+					getAssetLibraryScheduledPublishProcessesPage(
+						irrelevantAssetLibraryExternalReferenceCode, null,
+						Pagination.of(1, (int)totalCount + 1), null);
+
+			Assert.assertEquals(totalCount + 1, page.getTotalCount());
+
+			assertContains(
+				irrelevantScheduledPublishProcess,
+				(List<ScheduledPublishProcess>)page.getItems());
+			assertValid(
+				page,
+				testGetAssetLibraryScheduledPublishProcessesPage_getExpectedActions(
+					irrelevantAssetLibraryExternalReferenceCode));
+		}
+
+		ScheduledPublishProcess scheduledPublishProcess1 =
+			testGetAssetLibraryScheduledPublishProcessesPage_addScheduledPublishProcess(
+				assetLibraryExternalReferenceCode,
+				randomScheduledPublishProcess());
+
+		ScheduledPublishProcess scheduledPublishProcess2 =
+			testGetAssetLibraryScheduledPublishProcessesPage_addScheduledPublishProcess(
+				assetLibraryExternalReferenceCode,
+				randomScheduledPublishProcess());
+
+		page =
+			scheduledPublishProcessResource.
+				getAssetLibraryScheduledPublishProcessesPage(
+					assetLibraryExternalReferenceCode, null,
+					Pagination.of(1, (int)totalCount + 2), null);
+
+		Assert.assertEquals(totalCount + 2, page.getTotalCount());
+
+		assertContains(
+			scheduledPublishProcess1,
+			(List<ScheduledPublishProcess>)page.getItems());
+		assertContains(
+			scheduledPublishProcess2,
+			(List<ScheduledPublishProcess>)page.getItems());
+		assertValid(
+			page,
+			testGetAssetLibraryScheduledPublishProcessesPage_getExpectedActions(
+				assetLibraryExternalReferenceCode));
+	}
+
+	protected Map<String, Map<String, String>>
+			testGetAssetLibraryScheduledPublishProcessesPage_getExpectedActions(
+				String assetLibraryExternalReferenceCode)
+		throws Exception {
+
+		Map<String, Map<String, String>> expectedActions = new HashMap<>();
+
+		Map createBatchAction = new HashMap<>();
+		createBatchAction.put("method", "POST");
+		createBatchAction.put(
+			"href",
+			("http://localhost:" + PortalUtil.getPortalServerPort(false) +
+				"/o/export-import/v1.0/asset-libraries/{assetLibraryExternalReferenceCode}/scheduled-publish-processes/batch").
+					replace(
+						"{assetLibraryExternalReferenceCode}",
+						String.valueOf(assetLibraryExternalReferenceCode)));
+
+		expectedActions.put("createBatch", createBatchAction);
+
+		return expectedActions;
+	}
+
+	@Test
+	public void testGetAssetLibraryScheduledPublishProcessesPageWithPagination()
+		throws Exception {
+
+		String assetLibraryExternalReferenceCode =
+			testGetAssetLibraryScheduledPublishProcessesPage_getAssetLibraryExternalReferenceCode();
+
+		Page<ScheduledPublishProcess> scheduledPublishProcessesPage =
+			scheduledPublishProcessResource.
+				getAssetLibraryScheduledPublishProcessesPage(
+					assetLibraryExternalReferenceCode, null, null, null);
+
+		int totalCount = GetterUtil.getInteger(
+			scheduledPublishProcessesPage.getTotalCount());
+
+		ScheduledPublishProcess scheduledPublishProcess1 =
+			testGetAssetLibraryScheduledPublishProcessesPage_addScheduledPublishProcess(
+				assetLibraryExternalReferenceCode,
+				randomScheduledPublishProcess());
+
+		ScheduledPublishProcess scheduledPublishProcess2 =
+			testGetAssetLibraryScheduledPublishProcessesPage_addScheduledPublishProcess(
+				assetLibraryExternalReferenceCode,
+				randomScheduledPublishProcess());
+
+		ScheduledPublishProcess scheduledPublishProcess3 =
+			testGetAssetLibraryScheduledPublishProcessesPage_addScheduledPublishProcess(
+				assetLibraryExternalReferenceCode,
+				randomScheduledPublishProcess());
+
+		// See com.liferay.portal.vulcan.internal.configuration.HeadlessAPICompanyConfiguration#pageSizeLimit
+
+		int pageSizeLimit = 500;
+
+		if (totalCount >= (pageSizeLimit - 2)) {
+			Page<ScheduledPublishProcess> page1 =
+				scheduledPublishProcessResource.
+					getAssetLibraryScheduledPublishProcessesPage(
+						assetLibraryExternalReferenceCode, null,
+						Pagination.of(
+							(int)Math.ceil((totalCount + 1.0) / pageSizeLimit),
+							pageSizeLimit),
+						null);
+
+			Assert.assertEquals(totalCount + 3, page1.getTotalCount());
+
+			assertContains(
+				scheduledPublishProcess1,
+				(List<ScheduledPublishProcess>)page1.getItems());
+
+			Page<ScheduledPublishProcess> page2 =
+				scheduledPublishProcessResource.
+					getAssetLibraryScheduledPublishProcessesPage(
+						assetLibraryExternalReferenceCode, null,
+						Pagination.of(
+							(int)Math.ceil((totalCount + 2.0) / pageSizeLimit),
+							pageSizeLimit),
+						null);
+
+			assertContains(
+				scheduledPublishProcess2,
+				(List<ScheduledPublishProcess>)page2.getItems());
+
+			Page<ScheduledPublishProcess> page3 =
+				scheduledPublishProcessResource.
+					getAssetLibraryScheduledPublishProcessesPage(
+						assetLibraryExternalReferenceCode, null,
+						Pagination.of(
+							(int)Math.ceil((totalCount + 3.0) / pageSizeLimit),
+							pageSizeLimit),
+						null);
+
+			assertContains(
+				scheduledPublishProcess3,
+				(List<ScheduledPublishProcess>)page3.getItems());
+		}
+		else {
+			Page<ScheduledPublishProcess> page1 =
+				scheduledPublishProcessResource.
+					getAssetLibraryScheduledPublishProcessesPage(
+						assetLibraryExternalReferenceCode, null,
+						Pagination.of(1, totalCount + 2), null);
+
+			List<ScheduledPublishProcess> scheduledPublishProcesses1 =
+				(List<ScheduledPublishProcess>)page1.getItems();
+
+			Assert.assertEquals(
+				scheduledPublishProcesses1.toString(), totalCount + 2,
+				scheduledPublishProcesses1.size());
+
+			Page<ScheduledPublishProcess> page2 =
+				scheduledPublishProcessResource.
+					getAssetLibraryScheduledPublishProcessesPage(
+						assetLibraryExternalReferenceCode, null,
+						Pagination.of(2, totalCount + 2), null);
+
+			Assert.assertEquals(totalCount + 3, page2.getTotalCount());
+
+			List<ScheduledPublishProcess> scheduledPublishProcesses2 =
+				(List<ScheduledPublishProcess>)page2.getItems();
+
+			Assert.assertEquals(
+				scheduledPublishProcesses2.toString(), 1,
+				scheduledPublishProcesses2.size());
+
+			Page<ScheduledPublishProcess> page3 =
+				scheduledPublishProcessResource.
+					getAssetLibraryScheduledPublishProcessesPage(
+						assetLibraryExternalReferenceCode, null,
+						Pagination.of(1, (int)totalCount + 3), null);
+
+			assertContains(
+				scheduledPublishProcess1,
+				(List<ScheduledPublishProcess>)page3.getItems());
+			assertContains(
+				scheduledPublishProcess2,
+				(List<ScheduledPublishProcess>)page3.getItems());
+			assertContains(
+				scheduledPublishProcess3,
+				(List<ScheduledPublishProcess>)page3.getItems());
+		}
+	}
+
+	@Test
+	public void testGetAssetLibraryScheduledPublishProcessesPageWithSortDateTime()
+		throws Exception {
+
+		testGetAssetLibraryScheduledPublishProcessesPageWithSort(
+			EntityField.Type.DATE_TIME,
+			(entityField, scheduledPublishProcess1, scheduledPublishProcess2) ->{
+				BeanTestUtil.setProperty(
+					scheduledPublishProcess1, entityField.getName(),
+					new Date(System.currentTimeMillis() - (2 * Time.MINUTE)));
+			});
+	}
+
+	@Test
+	public void testGetAssetLibraryScheduledPublishProcessesPageWithSortDouble()
+		throws Exception {
+
+		testGetAssetLibraryScheduledPublishProcessesPageWithSort(
+			EntityField.Type.DOUBLE,
+			(entityField, scheduledPublishProcess1, scheduledPublishProcess2) ->{
+				BeanTestUtil.setProperty(
+					scheduledPublishProcess1, entityField.getName(), 0.1);
+				BeanTestUtil.setProperty(
+					scheduledPublishProcess2, entityField.getName(), 0.5);
+			});
+	}
+
+	@Test
+	public void testGetAssetLibraryScheduledPublishProcessesPageWithSortInteger()
+		throws Exception {
+
+		testGetAssetLibraryScheduledPublishProcessesPageWithSort(
+			EntityField.Type.INTEGER,
+			(entityField, scheduledPublishProcess1, scheduledPublishProcess2) ->{
+				BeanTestUtil.setProperty(
+					scheduledPublishProcess1, entityField.getName(), 0);
+				BeanTestUtil.setProperty(
+					scheduledPublishProcess2, entityField.getName(), 1);
+			});
+	}
+
+	@Test
+	public void testGetAssetLibraryScheduledPublishProcessesPageWithSortString()
+		throws Exception {
+
+		testGetAssetLibraryScheduledPublishProcessesPageWithSort(
+			EntityField.Type.STRING,
+			(entityField, scheduledPublishProcess1, scheduledPublishProcess2) ->{
+				Class<?> clazz = scheduledPublishProcess1.getClass();
+
+				String entityFieldName = entityField.getName();
+
+				Method method = clazz.getMethod(
+					"get" + StringUtil.upperCaseFirstLetter(entityFieldName));
+
+				Class<?> returnType = method.getReturnType();
+
+				if (returnType.isAssignableFrom(Map.class)) {
+					BeanTestUtil.setProperty(
+						scheduledPublishProcess1, entityFieldName,
+						Collections.singletonMap("Aaa", "Aaa"));
+					BeanTestUtil.setProperty(
+						scheduledPublishProcess2, entityFieldName,
+						Collections.singletonMap("Bbb", "Bbb"));
+				}
+				else if (entityFieldName.contains("email")) {
+					BeanTestUtil.setProperty(
+						scheduledPublishProcess1, entityFieldName,
+						"aaa" +
+							StringUtil.toLowerCase(
+								RandomTestUtil.randomString()) +
+									"@liferay.com");
+					BeanTestUtil.setProperty(
+						scheduledPublishProcess2, entityFieldName,
+						"bbb" +
+							StringUtil.toLowerCase(
+								RandomTestUtil.randomString()) +
+									"@liferay.com");
+				}
+				else {
+					BeanTestUtil.setProperty(
+						scheduledPublishProcess1, entityFieldName,
+						"aaa" +
+							StringUtil.toLowerCase(
+								RandomTestUtil.randomString()));
+					BeanTestUtil.setProperty(
+						scheduledPublishProcess2, entityFieldName,
+						"bbb" +
+							StringUtil.toLowerCase(
+								RandomTestUtil.randomString()));
+				}
+			});
+	}
+
+	protected void testGetAssetLibraryScheduledPublishProcessesPageWithSort(
+			EntityField.Type type,
+			UnsafeTriConsumer
+				<EntityField, ScheduledPublishProcess, ScheduledPublishProcess,
+				 Exception> unsafeTriConsumer)
+		throws Exception {
+
+		List<EntityField> entityFields = getEntityFields(type);
+
+		if (entityFields.isEmpty()) {
+			return;
+		}
+
+		String assetLibraryExternalReferenceCode =
+			testGetAssetLibraryScheduledPublishProcessesPage_getAssetLibraryExternalReferenceCode();
+
+		ScheduledPublishProcess scheduledPublishProcess1 =
+			randomScheduledPublishProcess();
+		ScheduledPublishProcess scheduledPublishProcess2 =
+			randomScheduledPublishProcess();
+
+		for (EntityField entityField : entityFields) {
+			unsafeTriConsumer.accept(
+				entityField, scheduledPublishProcess1,
+				scheduledPublishProcess2);
+		}
+
+		scheduledPublishProcess1 =
+			testGetAssetLibraryScheduledPublishProcessesPage_addScheduledPublishProcess(
+				assetLibraryExternalReferenceCode, scheduledPublishProcess1);
+
+		scheduledPublishProcess2 =
+			testGetAssetLibraryScheduledPublishProcessesPage_addScheduledPublishProcess(
+				assetLibraryExternalReferenceCode, scheduledPublishProcess2);
+
+		Page<ScheduledPublishProcess> page =
+			scheduledPublishProcessResource.
+				getAssetLibraryScheduledPublishProcessesPage(
+					assetLibraryExternalReferenceCode, null, null, null);
+
+		for (EntityField entityField : entityFields) {
+			Page<ScheduledPublishProcess> ascPage =
+				scheduledPublishProcessResource.
+					getAssetLibraryScheduledPublishProcessesPage(
+						assetLibraryExternalReferenceCode, null,
+						Pagination.of(1, (int)page.getTotalCount() + 1),
+						entityField.getName() + ":asc");
+
+			assertContains(
+				scheduledPublishProcess1,
+				(List<ScheduledPublishProcess>)ascPage.getItems());
+			assertContains(
+				scheduledPublishProcess2,
+				(List<ScheduledPublishProcess>)ascPage.getItems());
+
+			Page<ScheduledPublishProcess> descPage =
+				scheduledPublishProcessResource.
+					getAssetLibraryScheduledPublishProcessesPage(
+						assetLibraryExternalReferenceCode, null,
+						Pagination.of(1, (int)page.getTotalCount() + 1),
+						entityField.getName() + ":desc");
+
+			assertContains(
+				scheduledPublishProcess2,
+				(List<ScheduledPublishProcess>)descPage.getItems());
+			assertContains(
+				scheduledPublishProcess1,
+				(List<ScheduledPublishProcess>)descPage.getItems());
+		}
+	}
+
+	protected ScheduledPublishProcess
+			testGetAssetLibraryScheduledPublishProcessesPage_addScheduledPublishProcess(
+				String assetLibraryExternalReferenceCode,
+				ScheduledPublishProcess scheduledPublishProcess)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected String
+			testGetAssetLibraryScheduledPublishProcessesPage_getAssetLibraryExternalReferenceCode()
+		throws Exception {
+
+		return testDepotEntryGroup.getExternalReferenceCode();
+	}
+
+	protected String
+			testGetAssetLibraryScheduledPublishProcessesPage_getIrrelevantAssetLibraryExternalReferenceCode()
+		throws Exception {
+
+		return irrelevantDepotEntryGroup.getExternalReferenceCode();
 	}
 
 	@Test
@@ -660,6 +1169,29 @@ public abstract class BaseScheduledPublishProcessResourceTestCase {
 		throws Exception {
 
 		return irrelevantGroup.getExternalReferenceCode();
+	}
+
+	@Test
+	public void testPostAssetLibraryScheduledPublishProcess() throws Exception {
+		ScheduledPublishProcess randomScheduledPublishProcess =
+			randomScheduledPublishProcess();
+
+		ScheduledPublishProcess postScheduledPublishProcess =
+			testPostAssetLibraryScheduledPublishProcess_addScheduledPublishProcess(
+				randomScheduledPublishProcess);
+
+		assertEquals(
+			randomScheduledPublishProcess, postScheduledPublishProcess);
+		assertValid(postScheduledPublishProcess);
+	}
+
+	protected ScheduledPublishProcess
+			testPostAssetLibraryScheduledPublishProcess_addScheduledPublishProcess(
+				ScheduledPublishProcess scheduledPublishProcess)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test
@@ -1437,6 +1969,10 @@ public abstract class BaseScheduledPublishProcessResourceTestCase {
 	protected ScheduledPublishProcessResource scheduledPublishProcessResource;
 	protected com.liferay.portal.kernel.model.Group irrelevantGroup;
 	protected com.liferay.portal.kernel.model.Company testCompany;
+	protected DepotEntry irrelevantDepotEntry;
+	protected com.liferay.portal.kernel.model.Group irrelevantDepotEntryGroup;
+	protected DepotEntry testDepotEntry;
+	protected com.liferay.portal.kernel.model.Group testDepotEntryGroup;
 	protected com.liferay.portal.kernel.model.Group testGroup;
 
 	protected static class BeanTestUtil {
@@ -1646,4 +2182,4 @@ public abstract class BaseScheduledPublishProcessResourceTestCase {
 			ScheduledPublishProcessResource _scheduledPublishProcessResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-238724286
+// LIFERAY-REST-BUILDER-HASH:-1070160465

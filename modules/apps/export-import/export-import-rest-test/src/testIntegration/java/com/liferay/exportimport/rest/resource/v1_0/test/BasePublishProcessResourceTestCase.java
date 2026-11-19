@@ -13,6 +13,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
+import com.liferay.depot.constants.DepotConstants;
+import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.service.DepotEntryLocalServiceUtil;
 import com.liferay.exportimport.rest.client.dto.v1_0.ProcessProgress;
 import com.liferay.exportimport.rest.client.dto.v1_0.PublishProcess;
 import com.liferay.exportimport.rest.client.dto.v1_0.Type;
@@ -38,11 +41,13 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.JAXRSWhiteboardTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
@@ -131,6 +136,29 @@ public abstract class BasePublishProcessResourceTestCase {
 		testCompany = CompanyLocalServiceUtil.getCompany(
 			testGroup.getCompanyId());
 
+		irrelevantDepotEntry = DepotEntryLocalServiceUtil.addDepotEntry(
+			Collections.singletonMap(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
+			null, DepotConstants.TYPE_ASSET_LIBRARY,
+			new ServiceContext() {
+				{
+					setCompanyId(testCompany.getCompanyId());
+					setUserId(TestPropsValues.getUserId());
+				}
+			});
+		irrelevantDepotEntryGroup = irrelevantDepotEntry.getGroup();
+		testDepotEntry = DepotEntryLocalServiceUtil.addDepotEntry(
+			Collections.singletonMap(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
+			null, DepotConstants.TYPE_ASSET_LIBRARY,
+			new ServiceContext() {
+				{
+					setCompanyId(testCompany.getCompanyId());
+					setUserId(TestPropsValues.getUserId());
+				}
+			});
+		testDepotEntryGroup = testDepotEntry.getGroup();
+
 		_publishProcessResource.setContextCompany(testCompany);
 
 		_testCompanyAdminUser = UserTestUtil.getAdminUser(
@@ -161,6 +189,9 @@ public abstract class BasePublishProcessResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		DepotEntryLocalServiceUtil.deleteDepotEntry(irrelevantDepotEntry);
+		DepotEntryLocalServiceUtil.deleteDepotEntry(testDepotEntry);
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -293,6 +324,377 @@ public abstract class BasePublishProcessResourceTestCase {
 		waitForFinish(
 			"COMPLETED",
 			JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+	}
+
+	@Test
+	public void testGetAssetLibraryPublishProcessesPage() throws Exception {
+		String assetLibraryExternalReferenceCode =
+			testGetAssetLibraryPublishProcessesPage_getAssetLibraryExternalReferenceCode();
+		String irrelevantAssetLibraryExternalReferenceCode =
+			testGetAssetLibraryPublishProcessesPage_getIrrelevantAssetLibraryExternalReferenceCode();
+
+		Page<PublishProcess> page =
+			publishProcessResource.getAssetLibraryPublishProcessesPage(
+				assetLibraryExternalReferenceCode, null,
+				RandomTestUtil.randomString(), null, null, Pagination.of(1, 10),
+				null);
+
+		long totalCount = page.getTotalCount();
+
+		if (irrelevantAssetLibraryExternalReferenceCode != null) {
+			PublishProcess irrelevantPublishProcess =
+				testGetAssetLibraryPublishProcessesPage_addPublishProcess(
+					irrelevantAssetLibraryExternalReferenceCode,
+					randomIrrelevantPublishProcess());
+
+			page = publishProcessResource.getAssetLibraryPublishProcessesPage(
+				irrelevantAssetLibraryExternalReferenceCode, null, null, null,
+				null, Pagination.of(1, (int)totalCount + 1), null);
+
+			Assert.assertEquals(totalCount + 1, page.getTotalCount());
+
+			assertContains(
+				irrelevantPublishProcess,
+				(List<PublishProcess>)page.getItems());
+			assertValid(
+				page,
+				testGetAssetLibraryPublishProcessesPage_getExpectedActions(
+					irrelevantAssetLibraryExternalReferenceCode));
+		}
+
+		PublishProcess publishProcess1 =
+			testGetAssetLibraryPublishProcessesPage_addPublishProcess(
+				assetLibraryExternalReferenceCode, randomPublishProcess());
+
+		PublishProcess publishProcess2 =
+			testGetAssetLibraryPublishProcessesPage_addPublishProcess(
+				assetLibraryExternalReferenceCode, randomPublishProcess());
+
+		page = publishProcessResource.getAssetLibraryPublishProcessesPage(
+			assetLibraryExternalReferenceCode, null, null, null, null,
+			Pagination.of(1, (int)totalCount + 2), null);
+
+		Assert.assertEquals(totalCount + 2, page.getTotalCount());
+
+		assertContains(publishProcess1, (List<PublishProcess>)page.getItems());
+		assertContains(publishProcess2, (List<PublishProcess>)page.getItems());
+		assertValid(
+			page,
+			testGetAssetLibraryPublishProcessesPage_getExpectedActions(
+				assetLibraryExternalReferenceCode));
+
+		publishProcessResource.deletePublishProcess(publishProcess1.getId());
+
+		publishProcessResource.deletePublishProcess(publishProcess2.getId());
+	}
+
+	protected Map<String, Map<String, String>>
+			testGetAssetLibraryPublishProcessesPage_getExpectedActions(
+				String assetLibraryExternalReferenceCode)
+		throws Exception {
+
+		Map<String, Map<String, String>> expectedActions = new HashMap<>();
+
+		Map createBatchAction = new HashMap<>();
+		createBatchAction.put("method", "POST");
+		createBatchAction.put(
+			"href",
+			("http://localhost:" + PortalUtil.getPortalServerPort(false) +
+				"/o/export-import/v1.0/asset-libraries/{assetLibraryExternalReferenceCode}/publish-processes/batch").
+					replace(
+						"{assetLibraryExternalReferenceCode}",
+						String.valueOf(assetLibraryExternalReferenceCode)));
+
+		expectedActions.put("createBatch", createBatchAction);
+
+		return expectedActions;
+	}
+
+	@Test
+	public void testGetAssetLibraryPublishProcessesPageWithPagination()
+		throws Exception {
+
+		String assetLibraryExternalReferenceCode =
+			testGetAssetLibraryPublishProcessesPage_getAssetLibraryExternalReferenceCode();
+
+		Page<PublishProcess> publishProcessesPage =
+			publishProcessResource.getAssetLibraryPublishProcessesPage(
+				assetLibraryExternalReferenceCode, null, null, null, null, null,
+				null);
+
+		int totalCount = GetterUtil.getInteger(
+			publishProcessesPage.getTotalCount());
+
+		PublishProcess publishProcess1 =
+			testGetAssetLibraryPublishProcessesPage_addPublishProcess(
+				assetLibraryExternalReferenceCode, randomPublishProcess());
+
+		PublishProcess publishProcess2 =
+			testGetAssetLibraryPublishProcessesPage_addPublishProcess(
+				assetLibraryExternalReferenceCode, randomPublishProcess());
+
+		PublishProcess publishProcess3 =
+			testGetAssetLibraryPublishProcessesPage_addPublishProcess(
+				assetLibraryExternalReferenceCode, randomPublishProcess());
+
+		// See com.liferay.portal.vulcan.internal.configuration.HeadlessAPICompanyConfiguration#pageSizeLimit
+
+		int pageSizeLimit = 500;
+
+		if (totalCount >= (pageSizeLimit - 2)) {
+			Page<PublishProcess> page1 =
+				publishProcessResource.getAssetLibraryPublishProcessesPage(
+					assetLibraryExternalReferenceCode, null, null, null, null,
+					Pagination.of(
+						(int)Math.ceil((totalCount + 1.0) / pageSizeLimit),
+						pageSizeLimit),
+					null);
+
+			Assert.assertEquals(totalCount + 3, page1.getTotalCount());
+
+			assertContains(
+				publishProcess1, (List<PublishProcess>)page1.getItems());
+
+			Page<PublishProcess> page2 =
+				publishProcessResource.getAssetLibraryPublishProcessesPage(
+					assetLibraryExternalReferenceCode, null, null, null, null,
+					Pagination.of(
+						(int)Math.ceil((totalCount + 2.0) / pageSizeLimit),
+						pageSizeLimit),
+					null);
+
+			assertContains(
+				publishProcess2, (List<PublishProcess>)page2.getItems());
+
+			Page<PublishProcess> page3 =
+				publishProcessResource.getAssetLibraryPublishProcessesPage(
+					assetLibraryExternalReferenceCode, null, null, null, null,
+					Pagination.of(
+						(int)Math.ceil((totalCount + 3.0) / pageSizeLimit),
+						pageSizeLimit),
+					null);
+
+			assertContains(
+				publishProcess3, (List<PublishProcess>)page3.getItems());
+		}
+		else {
+			Page<PublishProcess> page1 =
+				publishProcessResource.getAssetLibraryPublishProcessesPage(
+					assetLibraryExternalReferenceCode, null, null, null, null,
+					Pagination.of(1, totalCount + 2), null);
+
+			List<PublishProcess> publishProcesses1 =
+				(List<PublishProcess>)page1.getItems();
+
+			Assert.assertEquals(
+				publishProcesses1.toString(), totalCount + 2,
+				publishProcesses1.size());
+
+			Page<PublishProcess> page2 =
+				publishProcessResource.getAssetLibraryPublishProcessesPage(
+					assetLibraryExternalReferenceCode, null, null, null, null,
+					Pagination.of(2, totalCount + 2), null);
+
+			Assert.assertEquals(totalCount + 3, page2.getTotalCount());
+
+			List<PublishProcess> publishProcesses2 =
+				(List<PublishProcess>)page2.getItems();
+
+			Assert.assertEquals(
+				publishProcesses2.toString(), 1, publishProcesses2.size());
+
+			Page<PublishProcess> page3 =
+				publishProcessResource.getAssetLibraryPublishProcessesPage(
+					assetLibraryExternalReferenceCode, null, null, null, null,
+					Pagination.of(1, (int)totalCount + 3), null);
+
+			assertContains(
+				publishProcess1, (List<PublishProcess>)page3.getItems());
+			assertContains(
+				publishProcess2, (List<PublishProcess>)page3.getItems());
+			assertContains(
+				publishProcess3, (List<PublishProcess>)page3.getItems());
+		}
+	}
+
+	@Test
+	public void testGetAssetLibraryPublishProcessesPageWithSortDateTime()
+		throws Exception {
+
+		testGetAssetLibraryPublishProcessesPageWithSort(
+			EntityField.Type.DATE_TIME,
+			(entityField, publishProcess1, publishProcess2) -> {
+				BeanTestUtil.setProperty(
+					publishProcess1, entityField.getName(),
+					new Date(System.currentTimeMillis() - (2 * Time.MINUTE)));
+			});
+	}
+
+	@Test
+	public void testGetAssetLibraryPublishProcessesPageWithSortDouble()
+		throws Exception {
+
+		testGetAssetLibraryPublishProcessesPageWithSort(
+			EntityField.Type.DOUBLE,
+			(entityField, publishProcess1, publishProcess2) -> {
+				BeanTestUtil.setProperty(
+					publishProcess1, entityField.getName(), 0.1);
+				BeanTestUtil.setProperty(
+					publishProcess2, entityField.getName(), 0.5);
+			});
+	}
+
+	@Test
+	public void testGetAssetLibraryPublishProcessesPageWithSortInteger()
+		throws Exception {
+
+		testGetAssetLibraryPublishProcessesPageWithSort(
+			EntityField.Type.INTEGER,
+			(entityField, publishProcess1, publishProcess2) -> {
+				BeanTestUtil.setProperty(
+					publishProcess1, entityField.getName(), 0);
+				BeanTestUtil.setProperty(
+					publishProcess2, entityField.getName(), 1);
+			});
+	}
+
+	@Test
+	public void testGetAssetLibraryPublishProcessesPageWithSortString()
+		throws Exception {
+
+		testGetAssetLibraryPublishProcessesPageWithSort(
+			EntityField.Type.STRING,
+			(entityField, publishProcess1, publishProcess2) -> {
+				Class<?> clazz = publishProcess1.getClass();
+
+				String entityFieldName = entityField.getName();
+
+				Method method = clazz.getMethod(
+					"get" + StringUtil.upperCaseFirstLetter(entityFieldName));
+
+				Class<?> returnType = method.getReturnType();
+
+				if (returnType.isAssignableFrom(Map.class)) {
+					BeanTestUtil.setProperty(
+						publishProcess1, entityFieldName,
+						Collections.singletonMap("Aaa", "Aaa"));
+					BeanTestUtil.setProperty(
+						publishProcess2, entityFieldName,
+						Collections.singletonMap("Bbb", "Bbb"));
+				}
+				else if (entityFieldName.contains("email")) {
+					BeanTestUtil.setProperty(
+						publishProcess1, entityFieldName,
+						"aaa" +
+							StringUtil.toLowerCase(
+								RandomTestUtil.randomString()) +
+									"@liferay.com");
+					BeanTestUtil.setProperty(
+						publishProcess2, entityFieldName,
+						"bbb" +
+							StringUtil.toLowerCase(
+								RandomTestUtil.randomString()) +
+									"@liferay.com");
+				}
+				else {
+					BeanTestUtil.setProperty(
+						publishProcess1, entityFieldName,
+						"aaa" +
+							StringUtil.toLowerCase(
+								RandomTestUtil.randomString()));
+					BeanTestUtil.setProperty(
+						publishProcess2, entityFieldName,
+						"bbb" +
+							StringUtil.toLowerCase(
+								RandomTestUtil.randomString()));
+				}
+			});
+	}
+
+	protected void testGetAssetLibraryPublishProcessesPageWithSort(
+			EntityField.Type type,
+			UnsafeTriConsumer
+				<EntityField, PublishProcess, PublishProcess, Exception>
+					unsafeTriConsumer)
+		throws Exception {
+
+		List<EntityField> entityFields = getEntityFields(type);
+
+		if (entityFields.isEmpty()) {
+			return;
+		}
+
+		String assetLibraryExternalReferenceCode =
+			testGetAssetLibraryPublishProcessesPage_getAssetLibraryExternalReferenceCode();
+
+		PublishProcess publishProcess1 = randomPublishProcess();
+		PublishProcess publishProcess2 = randomPublishProcess();
+
+		for (EntityField entityField : entityFields) {
+			unsafeTriConsumer.accept(
+				entityField, publishProcess1, publishProcess2);
+		}
+
+		publishProcess1 =
+			testGetAssetLibraryPublishProcessesPage_addPublishProcess(
+				assetLibraryExternalReferenceCode, publishProcess1);
+
+		publishProcess2 =
+			testGetAssetLibraryPublishProcessesPage_addPublishProcess(
+				assetLibraryExternalReferenceCode, publishProcess2);
+
+		Page<PublishProcess> page =
+			publishProcessResource.getAssetLibraryPublishProcessesPage(
+				assetLibraryExternalReferenceCode, null, null, null, null, null,
+				null);
+
+		for (EntityField entityField : entityFields) {
+			Page<PublishProcess> ascPage =
+				publishProcessResource.getAssetLibraryPublishProcessesPage(
+					assetLibraryExternalReferenceCode, null, null, null, null,
+					Pagination.of(1, (int)page.getTotalCount() + 1),
+					entityField.getName() + ":asc");
+
+			assertContains(
+				publishProcess1, (List<PublishProcess>)ascPage.getItems());
+			assertContains(
+				publishProcess2, (List<PublishProcess>)ascPage.getItems());
+
+			Page<PublishProcess> descPage =
+				publishProcessResource.getAssetLibraryPublishProcessesPage(
+					assetLibraryExternalReferenceCode, null, null, null, null,
+					Pagination.of(1, (int)page.getTotalCount() + 1),
+					entityField.getName() + ":desc");
+
+			assertContains(
+				publishProcess2, (List<PublishProcess>)descPage.getItems());
+			assertContains(
+				publishProcess1, (List<PublishProcess>)descPage.getItems());
+		}
+	}
+
+	protected PublishProcess
+			testGetAssetLibraryPublishProcessesPage_addPublishProcess(
+				String assetLibraryExternalReferenceCode,
+				PublishProcess publishProcess)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected String
+			testGetAssetLibraryPublishProcessesPage_getAssetLibraryExternalReferenceCode()
+		throws Exception {
+
+		return testDepotEntryGroup.getExternalReferenceCode();
+	}
+
+	protected String
+			testGetAssetLibraryPublishProcessesPage_getIrrelevantAssetLibraryExternalReferenceCode()
+		throws Exception {
+
+		return irrelevantDepotEntryGroup.getExternalReferenceCode();
 	}
 
 	@Test
@@ -879,6 +1281,27 @@ public abstract class BasePublishProcessResourceTestCase {
 		throws Exception {
 
 		return irrelevantGroup.getExternalReferenceCode();
+	}
+
+	@Test
+	public void testPostAssetLibraryPublishProcess() throws Exception {
+		PublishProcess randomPublishProcess = randomPublishProcess();
+
+		PublishProcess postPublishProcess =
+			testPostAssetLibraryPublishProcess_addPublishProcess(
+				randomPublishProcess);
+
+		assertEquals(randomPublishProcess, postPublishProcess);
+		assertValid(postPublishProcess);
+	}
+
+	protected PublishProcess
+			testPostAssetLibraryPublishProcess_addPublishProcess(
+				PublishProcess publishProcess)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test
@@ -1826,6 +2249,10 @@ public abstract class BasePublishProcessResourceTestCase {
 	protected ImportTaskResource importTaskResource;
 	protected com.liferay.portal.kernel.model.Group irrelevantGroup;
 	protected com.liferay.portal.kernel.model.Company testCompany;
+	protected DepotEntry irrelevantDepotEntry;
+	protected com.liferay.portal.kernel.model.Group irrelevantDepotEntryGroup;
+	protected DepotEntry testDepotEntry;
+	protected com.liferay.portal.kernel.model.Group testDepotEntryGroup;
 	protected com.liferay.portal.kernel.model.Group testGroup;
 
 	protected static class BeanTestUtil {
@@ -2055,4 +2482,4 @@ public abstract class BasePublishProcessResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1893296688
+// LIFERAY-REST-BUILDER-HASH:274094886
