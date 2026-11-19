@@ -32,8 +32,12 @@ public class CommerceReturnsRolesObjectDefinitionLocalServiceWrapper
 		ObjectDefinition objectDefinition = super.publishSystemObjectDefinition(
 			userId, objectDefinitionId);
 
-		if (!Objects.equals(objectDefinition.getName(), "CommerceReturn") &&
-			!Objects.equals(objectDefinition.getName(), "CommerceReturnItem")) {
+		if (!Objects.equals(
+				objectDefinition.getExternalReferenceCode(),
+				"L_COMMERCE_RETURN") &&
+			!Objects.equals(
+				objectDefinition.getExternalReferenceCode(),
+				"L_COMMERCE_RETURN_ITEM")) {
 
 			return objectDefinition;
 		}

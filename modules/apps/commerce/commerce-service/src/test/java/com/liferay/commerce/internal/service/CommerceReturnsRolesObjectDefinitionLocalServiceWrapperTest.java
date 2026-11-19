@@ -69,7 +69,8 @@ public class CommerceReturnsRolesObjectDefinitionLocalServiceWrapperTest {
 
 		long companyId = RandomTestUtil.randomLong();
 
-		objectDefinition = _mockObjectDefinition(companyId, "CommerceReturn");
+		objectDefinition = _mockObjectDefinition(
+			companyId, "L_COMMERCE_RETURN");
 
 		Mockito.when(
 			objectDefinitionLocalService.publishSystemObjectDefinition(
@@ -92,7 +93,7 @@ public class CommerceReturnsRolesObjectDefinitionLocalServiceWrapperTest {
 	}
 
 	private ObjectDefinition _mockObjectDefinition(
-		long companyId, String name) {
+		long companyId, String externalReferenceCode) {
 
 		ObjectDefinition objectDefinition = Mockito.mock(
 			ObjectDefinition.class);
@@ -104,9 +105,9 @@ public class CommerceReturnsRolesObjectDefinitionLocalServiceWrapperTest {
 		);
 
 		Mockito.when(
-			objectDefinition.getName()
+			objectDefinition.getExternalReferenceCode()
 		).thenReturn(
-			name
+			externalReferenceCode
 		);
 
 		return objectDefinition;
