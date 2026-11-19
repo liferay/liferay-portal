@@ -11,4 +11,5 @@ dependencies {
 	compileOnly project(":core:petra:petra-io")
 	compileOnly project(":core:petra:petra-lang")
 	compileOnly project(":core:petra:petra-string")
+	testImplementation project(":apps:portal-cache:portal-cache-test-util")
 }
