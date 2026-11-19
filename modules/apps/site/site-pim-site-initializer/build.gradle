@@ -38,6 +38,7 @@ dependencies {
 	compileOnly project(":core:petra:petra-lang")
 	compileOnly project(":core:petra:petra-sql-dsl-api")
 	compileOnly project(":core:petra:petra-string")
+	testImplementation project(":apps:frontend-token:frontend-token-definition-api")
 	testImplementation project(":apps:static:osgi:osgi-util")
 	testImplementation project(":apps:trash:trash-api")
 }
