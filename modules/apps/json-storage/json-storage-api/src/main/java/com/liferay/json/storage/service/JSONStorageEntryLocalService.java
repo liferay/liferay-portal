@@ -214,18 +214,6 @@ public interface JSONStorageEntryLocalService
 		long companyId, long classNameId, int start, int end);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<Long> getClassPKs(
-		long companyId, long classNameId, Object[] pathParts, Object value,
-		int start, int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getClassPKsCount(long companyId, long classNameId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getClassPKsCount(
-		long companyId, long classNameId, Object[] pathParts, Object value);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -321,4 +309,4 @@ public interface JSONStorageEntryLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1623018831
+// LIFERAY-SERVICE-BUILDER-HASH:292767297

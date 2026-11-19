@@ -262,29 +262,6 @@ public class JSONStorageEntryLocalServiceWrapper
 	}
 
 	@Override
-	public java.util.List<Long> getClassPKs(
-		long companyId, long classNameId, Object[] pathParts, Object value,
-		int start, int end) {
-
-		return _jsonStorageEntryLocalService.getClassPKs(
-			companyId, classNameId, pathParts, value, start, end);
-	}
-
-	@Override
-	public int getClassPKsCount(long companyId, long classNameId) {
-		return _jsonStorageEntryLocalService.getClassPKsCount(
-			companyId, classNameId);
-	}
-
-	@Override
-	public int getClassPKsCount(
-		long companyId, long classNameId, Object[] pathParts, Object value) {
-
-		return _jsonStorageEntryLocalService.getClassPKsCount(
-			companyId, classNameId, pathParts, value);
-	}
-
-	@Override
 	public com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery
 		getIndexableActionableDynamicQuery() {
 
@@ -450,4 +427,4 @@ public class JSONStorageEntryLocalServiceWrapper
 	private JSONStorageEntryLocalService _jsonStorageEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:834568959
+// LIFERAY-SERVICE-BUILDER-HASH:-571562418
