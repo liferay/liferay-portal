@@ -1691,16 +1691,11 @@ public abstract class BaseTestrayContext implements TestrayContext {
 	private boolean _isDownstreamTestResultsImported(
 		AxisTestClassGroup axisTestClassGroup) {
 
-		try {
-			return GetterUtil.getBoolean(
-				JenkinsResultsParserUtil.getProperty(
-					JenkinsResultsParserUtil.getBuildProperties(),
-					"testray.import.downstream.test.results", false,
-					axisTestClassGroup.getBatchName()));
-		}
-		catch (IOException ioException) {
-			throw new RuntimeException(ioException);
-		}
+		JobProperty jobProperty = JobPropertyFactory.newJobProperty(
+			"testray.import.downstream.test.results",
+			axisTestClassGroup.getBatchName(), axisTestClassGroup.getJob());
+
+		return GetterUtil.getBoolean(jobProperty.getValue());
 	}
 
 	private String _replace(String string) {
