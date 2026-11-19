@@ -35,8 +35,10 @@ import com.liferay.object.rest.internal.jaxrs.exception.mapper.RequiredObjectEnt
 import com.liferay.object.rest.internal.jaxrs.exception.mapper.RequiredObjectRelationshipExceptionMapper;
 import com.liferay.object.rest.internal.jaxrs.exception.mapper.RestoreEntryExceptionMapper;
 import com.liferay.object.rest.internal.jaxrs.exception.mapper.UnsupportedOperationExceptionMapper;
+import com.liferay.object.rest.internal.manager.v1_0.ObjectEntry1to1ObjectRelationshipElementsParserImpl;
 import com.liferay.object.rest.internal.manager.v1_0.ObjectEntry1toMObjectRelationshipElementsParserImpl;
 import com.liferay.object.rest.internal.manager.v1_0.ObjectEntryMtoMObjectRelationshipElementsParserImpl;
+import com.liferay.object.rest.internal.manager.v1_0.SystemObjectEntry1to1ObjectRelationshipElementsParserImpl;
 import com.liferay.object.rest.internal.manager.v1_0.SystemObjectEntry1toMObjectRelationshipElementsParserImpl;
 import com.liferay.object.rest.internal.manager.v1_0.SystemObjectEntryMtoMObjectRelationshipElementsParserImpl;
 import com.liferay.object.rest.internal.openapi.v1_0.ObjectEntryOpenAPIResourceImpl;
@@ -688,6 +690,13 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 							).build()),
 						_bundleContext.registerService(
 							ObjectRelationshipElementsParser.class,
+							new ObjectEntry1to1ObjectRelationshipElementsParserImpl(
+								objectDefinition),
+							HashMapDictionaryBuilder.<String, Object>put(
+								"companyId", objectDefinition.getCompanyId()
+							).build()),
+						_bundleContext.registerService(
+							ObjectRelationshipElementsParser.class,
 							new ObjectEntry1toMObjectRelationshipElementsParserImpl(
 								objectDefinition),
 							HashMapDictionaryBuilder.<String, Object>put(
@@ -916,6 +925,13 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 				serviceRegistrationsMap.computeIfAbsent(
 					objectDefinition.getCompanyId(),
 					key2 -> Arrays.asList(
+						_bundleContext.registerService(
+							ObjectRelationshipElementsParser.class,
+							new SystemObjectEntry1to1ObjectRelationshipElementsParserImpl(
+								objectDefinition),
+							HashMapDictionaryBuilder.<String, Object>put(
+								"companyId", objectDefinition.getCompanyId()
+							).build()),
 						_bundleContext.registerService(
 							ObjectRelationshipElementsParser.class,
 							new SystemObjectEntry1toMObjectRelationshipElementsParserImpl(
