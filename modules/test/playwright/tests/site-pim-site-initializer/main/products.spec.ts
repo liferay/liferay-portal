@@ -476,7 +476,7 @@ test(
 
 test(
 	'Show the first image of a product as its icon',
-	{tag: '@LPD-114148'},
+	{tag: ['@LPD-114148', '@LPD-116526']},
 	async ({
 		apiHelpers,
 		productPage,
@@ -563,6 +563,11 @@ test(
 		await test.step('The relationship selector and the relationships show the first image', async () => {
 			await openRelationships(productTitle);
 
+			await expect(productPage.icon.locator('img')).toHaveCount(0);
+			await expect(
+				productPage.icon.locator('.lexicon-icon-product')
+			).toBeVisible();
+
 			await clickAndExpectToBeVisible({
 				target: productRelationshipsPage.selectorConfirmButton,
 				trigger: productRelationshipsPage.addRelationshipButton,
@@ -600,6 +605,11 @@ test(
 
 			await productsPage.openProductEditor(imageProductTitle);
 
+			await expect(productPage.icon.locator('img')).toHaveAttribute(
+				'src',
+				/file_upload_image_1\.jpg/
+			);
+
 			await expect(images).toHaveCount(2);
 
 			await images.first().getByTitle('Remove', {exact: true}).click();
@@ -613,6 +623,13 @@ test(
 					productsPage.dataSetFragmentPage.getRow(imageProductTitle)
 				)
 			).toHaveAttribute('src', /sample_small_wide_400x300\.jpg/);
+
+			await productsPage.openProductEditor(imageProductTitle);
+
+			await expect(productPage.icon.locator('img')).toHaveAttribute(
+				'src',
+				/sample_small_wide_400x300\.jpg/
+			);
 
 			await openRelationships(productTitle);
 
