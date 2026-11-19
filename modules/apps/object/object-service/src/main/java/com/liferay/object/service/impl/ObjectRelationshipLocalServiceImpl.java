@@ -177,6 +177,25 @@ public class ObjectRelationshipLocalServiceImpl
 			externalReferenceCode, 0L, user.getCompanyId(),
 			objectDefinitionId1);
 
+		String objectFieldRelationshipType = objectField.getRelationshipType();
+
+		if (Validator.isNull(objectFieldRelationshipType)) {
+			objectFieldRelationshipType =
+				ObjectRelationshipConstants.TYPE_ONE_TO_MANY;
+		}
+		else if (!Objects.equals(
+					objectFieldRelationshipType,
+					ObjectRelationshipConstants.TYPE_ONE_TO_MANY) &&
+				 (!Objects.equals(
+					 objectFieldRelationshipType,
+					 ObjectRelationshipConstants.TYPE_ONE_TO_ONE) ||
+				  !FeatureFlagManagerUtil.isEnabled(
+					  user.getCompanyId(), "LPD-108620"))) {
+
+			throw new ObjectRelationshipTypeException(
+				"Invalid type " + objectFieldRelationshipType);
+		}
+
 		String objectFieldName = objectField.getName();
 
 		return _addObjectRelationship(
@@ -186,8 +205,7 @@ public class ObjectRelationshipLocalServiceImpl
 			0, ObjectRelationshipConstants.DELETION_TYPE_PREVENT, null, false,
 			LocalizedMapUtil.getLocalizedMap(externalReferenceCode),
 			objectFieldName.split(StringPool.UNDERLINE)[1], false,
-			objectField.isSystem(),
-			ObjectRelationshipConstants.TYPE_ONE_TO_MANY, objectField);
+			objectField.isSystem(), objectFieldRelationshipType, objectField);
 	}
 
 	@Override

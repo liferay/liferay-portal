@@ -275,7 +275,6 @@ components:
                     type: string
                 relationshipType:
                     enum: [oneToMany, oneToOne]
-                    readOnly: true
                     type: string
                 required:
                     type: boolean

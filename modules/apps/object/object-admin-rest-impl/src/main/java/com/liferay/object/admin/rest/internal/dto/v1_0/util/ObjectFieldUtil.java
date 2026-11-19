@@ -283,6 +283,8 @@ public class ObjectFieldUtil {
 			objectField.getReadOnlyAsString());
 		serviceBuilderObjectField.setReadOnlyConditionExpression(
 			objectField.getReadOnlyConditionExpression());
+		serviceBuilderObjectField.setRelationshipType(
+			objectField.getRelationshipTypeAsString());
 		serviceBuilderObjectField.setRequired(
 			GetterUtil.getBoolean(objectField.getRequired()));
 
