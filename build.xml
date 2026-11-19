@@ -1350,6 +1350,18 @@ This target has been renamed to "snapshot-bundle". Please call "snapshot-bundle"
 		</gradle-execute>
 	</target>
 
+	<target name="update-feature-flag-keys">
+		<fail message="Please set the property private.dir." unless="private.dir" />
+
+		<property location="${private.dir}" name="private.dir.absolute.path" />
+
+		<ant dir="portal-impl" inheritAll="false" target="format-source-files">
+			<property name="source.check.names" value="PropertiesFeatureFlagsCheck" />
+			<property name="source.files" value="${project.dir}/portal-impl/src/portal.properties" />
+			<property name="source.formatter.properties" value="source.check.PropertiesFeatureFlagsCheck.privateDirName=${private.dir.absolute.path}" />
+		</ant>
+	</target>
+
 	<target name="update-gradle-cache">
 		<execute>
 			git reset --hard HEAD

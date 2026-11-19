@@ -11,6 +11,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.NaturalOrderStringComparator;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.tools.ToolsUtil;
 import com.liferay.source.formatter.check.util.BNDSourceUtil;
 import com.liferay.source.formatter.check.util.JavaSourceUtil;
@@ -52,7 +53,24 @@ public class PropertiesFeatureFlagsCheck extends BaseFileCheck {
 
 		_checkUnnecessaryFeatureFlags(fileName, content);
 
-		content = _generateFeatureFlagProperties(absolutePath, content);
+		List<String> additionalFeatureFlagKeys = getAttributeValues(
+			_ADDITIONAL_FEATURE_FLAG_KEYS_KEY, absolutePath);
+
+		String privateDirName = getAttributeValue(
+			_PRIVATE_DIR_NAME_KEY, absolutePath);
+
+		if (Validator.isNotNull(privateDirName)) {
+			additionalFeatureFlagKeys = _getFeatureFlagKeys(
+				SourceFormatterUtil.scanForFileNames(
+					privateDirName, _EXCLUDES, _INCLUDES,
+					getSourceFormatterExcludes(), true));
+
+			_updateAdditionalFeatureFlagKeys(
+				absolutePath, additionalFeatureFlagKeys);
+		}
+
+		content = _generateFeatureFlagProperties(
+			additionalFeatureFlagKeys, content);
 		content = _generateFeatureFlagUIProperties(
 			fileName, absolutePath, content);
 
@@ -90,78 +108,14 @@ public class PropertiesFeatureFlagsCheck extends BaseFileCheck {
 	}
 
 	private String _generateFeatureFlagProperties(
-		String absolutePath, String content) {
+		List<String> additionalFeatureFlagKeys, String content) {
 
-		List<String> featureFlagKeys = new ArrayList<>(
-			getAttributeValues(
-				_ADDITIONAL_FEATURE_FLAG_KEYS_KEY, absolutePath));
+		List<String> featureFlagKeys = _getFeatureFlagKeys(
+			SourceFormatterUtil.filterFileNames(
+				_allFileNames, _EXCLUDES, _INCLUDES,
+				getSourceFormatterExcludes(), true));
 
-		List<String> fileNames = SourceFormatterUtil.filterFileNames(
-			_allFileNames, new String[] {"**/*-test-*/**", "**/test/**"},
-			new String[] {
-				"**/bnd.bnd", "**/rest-openapi*.yaml", "**/*.java", "**/*.js",
-				"**/*.json", "**/*.jsp", "**/*.jspf", "**/*.jsx", "**/*.ts",
-				"**/*.tsx"
-			},
-			getSourceFormatterExcludes(), true);
-
-		for (String fileName : fileNames) {
-			fileName = StringUtil.replace(
-				fileName, CharPool.BACK_SLASH, CharPool.SLASH);
-
-			String fileContent = FileUtil.read(new File(fileName));
-
-			if (fileName.endsWith("bnd.bnd")) {
-				String liferaySiteInitializerFeatureFlagKey =
-					BNDSourceUtil.getDefinitionValue(
-						fileContent, "Liferay-Site-Initializer-Feature-Flag");
-
-				if (liferaySiteInitializerFeatureFlagKey == null) {
-					continue;
-				}
-
-				featureFlagKeys.add(liferaySiteInitializerFeatureFlagKey);
-			}
-			else if (fileName.endsWith(".java")) {
-				featureFlagKeys.addAll(
-					_getFeatureFlagKeys(fileContent, _featureFlagPattern1));
-				featureFlagKeys.addAll(
-					_getFeatureFlagKeys(fileContent, _featureFlagPattern4));
-				featureFlagKeys.addAll(
-					_getFeatureFlagKeys(fileContent, _featureFlagPattern5));
-				featureFlagKeys.addAll(
-					_getFeatureFlagKeysByFeatureFlagManagerUtilCall(
-						fileContent, true, "checkEnabled"));
-				featureFlagKeys.addAll(
-					_getFeatureFlagKeysByFeatureFlagManagerUtilCall(
-						fileContent, true, "isEnabled"));
-				featureFlagKeys.addAll(
-					_getFeatureFlagKeysByMapUtilSingletonDictionaryCall(
-						fileContent));
-			}
-			else if (fileName.endsWith(".json")) {
-				featureFlagKeys.addAll(
-					_getFeatureFlagKeys(fileContent, _featureFlagPattern3));
-			}
-			else if (fileName.endsWith(".jsp") || fileName.endsWith(".jspf")) {
-				featureFlagKeys.addAll(
-					_getFeatureFlagKeys(fileContent, _featureFlagPattern2));
-				featureFlagKeys.addAll(
-					_getFeatureFlagKeysByFeatureFlagManagerUtilCall(
-						fileContent, false, "checkEnabled"));
-				featureFlagKeys.addAll(
-					_getFeatureFlagKeysByFeatureFlagManagerUtilCall(
-						fileContent, false, "isEnabled"));
-			}
-			else if (fileName.endsWith(".yaml")) {
-				featureFlagKeys.addAll(
-					_getFeatureFlagKeys(fileContent, _featureFlagPattern6));
-			}
-			else {
-				featureFlagKeys.addAll(
-					_getFeatureFlagKeys(fileContent, _featureFlagPattern2));
-			}
-		}
+		featureFlagKeys.addAll(additionalFeatureFlagKeys);
 
 		ListUtil.distinct(featureFlagKeys, new NaturalOrderStringComparator());
 
@@ -346,6 +300,72 @@ public class PropertiesFeatureFlagsCheck extends BaseFileCheck {
 		return content;
 	}
 
+	private List<String> _getFeatureFlagKeys(List<String> fileNames) {
+		List<String> featureFlagKeys = new ArrayList<>();
+
+		for (String fileName : fileNames) {
+			fileName = StringUtil.replace(
+				fileName, CharPool.BACK_SLASH, CharPool.SLASH);
+
+			String fileContent = FileUtil.read(new File(fileName));
+
+			if (fileName.endsWith("bnd.bnd")) {
+				String liferaySiteInitializerFeatureFlagKey =
+					BNDSourceUtil.getDefinitionValue(
+						fileContent, "Liferay-Site-Initializer-Feature-Flag");
+
+				if (liferaySiteInitializerFeatureFlagKey == null) {
+					continue;
+				}
+
+				featureFlagKeys.add(liferaySiteInitializerFeatureFlagKey);
+			}
+			else if (fileName.endsWith(".java")) {
+				featureFlagKeys.addAll(
+					_getFeatureFlagKeys(fileContent, _featureFlagPattern1));
+				featureFlagKeys.addAll(
+					_getFeatureFlagKeys(fileContent, _featureFlagPattern4));
+				featureFlagKeys.addAll(
+					_getFeatureFlagKeys(fileContent, _featureFlagPattern5));
+				featureFlagKeys.addAll(
+					_getFeatureFlagKeysByFeatureFlagManagerUtilCall(
+						fileContent, true, "checkEnabled"));
+				featureFlagKeys.addAll(
+					_getFeatureFlagKeysByFeatureFlagManagerUtilCall(
+						fileContent, true, "isEnabled"));
+				featureFlagKeys.addAll(
+					_getFeatureFlagKeysByMapUtilSingletonDictionaryCall(
+						fileContent));
+			}
+			else if (fileName.endsWith(".json")) {
+				featureFlagKeys.addAll(
+					_getFeatureFlagKeys(fileContent, _featureFlagPattern3));
+			}
+			else if (fileName.endsWith(".jsp") || fileName.endsWith(".jspf")) {
+				featureFlagKeys.addAll(
+					_getFeatureFlagKeys(fileContent, _featureFlagPattern2));
+				featureFlagKeys.addAll(
+					_getFeatureFlagKeysByFeatureFlagManagerUtilCall(
+						fileContent, false, "checkEnabled"));
+				featureFlagKeys.addAll(
+					_getFeatureFlagKeysByFeatureFlagManagerUtilCall(
+						fileContent, false, "isEnabled"));
+			}
+			else if (fileName.endsWith(".yaml")) {
+				featureFlagKeys.addAll(
+					_getFeatureFlagKeys(fileContent, _featureFlagPattern6));
+			}
+			else {
+				featureFlagKeys.addAll(
+					_getFeatureFlagKeys(fileContent, _featureFlagPattern2));
+			}
+		}
+
+		ListUtil.distinct(featureFlagKeys, new NaturalOrderStringComparator());
+
+		return featureFlagKeys;
+	}
+
 	private List<String> _getFeatureFlagKeys(String content, Pattern pattern) {
 		List<String> featureFlagKeys = new ArrayList<>();
 
@@ -476,6 +496,47 @@ public class PropertiesFeatureFlagsCheck extends BaseFileCheck {
 		return properties;
 	}
 
+	private void _updateAdditionalFeatureFlagKeys(
+			String absolutePath, List<String> additionalFeatureFlagKeys)
+		throws IOException {
+
+		File file = new File(
+			StringUtil.replaceLast(
+				absolutePath, "portal-impl/src/portal.properties",
+				"source-formatter.properties"));
+
+		String content = FileUtil.read(file);
+
+		Matcher matcher = _additionalFeatureFlagKeysPattern.matcher(content);
+
+		if (!matcher.find()) {
+			return;
+		}
+
+		StringBundler sb = new StringBundler(
+			(additionalFeatureFlagKeys.size() * 3) + 2);
+
+		sb.append(content.substring(0, matcher.start(1)));
+
+		for (String additionalFeatureFlagKey : additionalFeatureFlagKeys) {
+			sb.append("\\\n        ");
+			sb.append(additionalFeatureFlagKey);
+			sb.append(StringPool.COMMA);
+		}
+
+		if (!additionalFeatureFlagKeys.isEmpty()) {
+			sb.setIndex(sb.index() - 1);
+		}
+
+		sb.append(content.substring(matcher.end(1)));
+
+		String newContent = sb.toString();
+
+		if (!StringUtil.equals(content, newContent)) {
+			FileUtil.write(file, newContent);
+		}
+	}
+
 	private static final String _ADDITIONAL_FEATURE_FLAG_KEYS_KEY =
 		"additionalFeatureFlagKeys";
 
@@ -483,9 +544,22 @@ public class PropertiesFeatureFlagsCheck extends BaseFileCheck {
 		"description", "title"
 	};
 
+	private static final String[] _EXCLUDES = {"**/*-test-*/**", "**/test/**"};
+
+	private static final String[] _INCLUDES = {
+		"**/bnd.bnd", "**/rest-openapi*.yaml", "**/*.java", "**/*.js",
+		"**/*.json", "**/*.jsp", "**/*.jspf", "**/*.jsx", "**/*.ts", "**/*.tsx"
+	};
+
 	private static final String _PORTAL_LANGUAGE_PROPERTIES_FILE_NAME_KEY =
 		"portalLanguagePropertiesFileName";
 
+	private static final String _PRIVATE_DIR_NAME_KEY = "privateDirName";
+
+	private static final Pattern _additionalFeatureFlagKeysPattern =
+		Pattern.compile(
+			"source\\.check\\.PropertiesFeatureFlagsCheck\\." +
+				"additionalFeatureFlagKeys=((\\\\\n +[^\\\\\n]+)*)");
 	private static final Pattern _deprecationFeatureFlagPattern =
 		Pattern.compile("feature\\.flag\\.([A-Z]+-\\d+)\\.type=deprecation");
 	private static final Pattern _featureFlagPattern1 = Pattern.compile(
