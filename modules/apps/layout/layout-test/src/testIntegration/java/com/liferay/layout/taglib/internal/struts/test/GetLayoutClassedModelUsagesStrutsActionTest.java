@@ -262,6 +262,119 @@ public class GetLayoutClassedModelUsagesStrutsActionTest {
 					layoutClassedModelUsage.getPlid())));
 	}
 
+	private void _testExecuteWithWidgets() throws Exception {
+		ServiceContextThreadLocal.pushServiceContext(
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), TestPropsValues.getUserId()));
+
+		JournalArticle journalArticle = JournalTestUtil.addArticle(
+			_group.getGroupId(),
+			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID);
+
+		Layout journalContentLayout = LayoutTestUtil.addTypePortletLayout(
+			_group);
+		Map<String, String[]> journalContentPreferenceMap = HashMapBuilder.put(
+			"articleExternalReferenceCode",
+			new String[] {journalArticle.getExternalReferenceCode()}
+		).build();
+
+		String journalContentPortletId = _addPortletToLayout(
+			journalContentLayout, JournalContentPortletKeys.JOURNAL_CONTENT,
+			journalContentPreferenceMap);
+
+		AssetEntry assetEntry = _assetEntryLocalService.getEntry(
+			JournalArticle.class.getName(),
+			journalArticle.getResourcePrimKey());
+
+		Map<String, String[]> assetPublisherPreferenceMap = HashMapBuilder.put(
+			"assetEntryXml",
+			new String[] {_getAssetEntryXML(assetEntry.getClassUuid())}
+		).put(
+			"selectionStyle", new String[] {"manual"}
+		).build();
+
+		Layout assetPublisherLayout = LayoutTestUtil.addTypePortletLayout(
+			_group);
+
+		String assetPublisherPortletId = _addPortletToLayout(
+			assetPublisherLayout, AssetPublisherPortletKeys.ASSET_PUBLISHER,
+			assetPublisherPreferenceMap);
+
+		Layout layout = LayoutTestUtil.addTypePortletLayout(_group);
+
+		String layoutAssetPublisherPortletId = _addPortletToLayout(
+			layout, AssetPublisherPortletKeys.ASSET_PUBLISHER,
+			assetPublisherPreferenceMap);
+		String layoutJournalContentPortletId = _addPortletToLayout(
+			layout, JournalContentPortletKeys.JOURNAL_CONTENT,
+			journalContentPreferenceMap);
+
+		Layout unusedLayout = LayoutTestUtil.addTypePortletLayout(_group);
+
+		_addPortletToLayout(
+			unusedLayout, AssetPublisherPortletKeys.ASSET_PUBLISHER, null);
+		_addPortletToLayout(
+			unusedLayout, JournalContentPortletKeys.JOURNAL_CONTENT, null);
+
+		Assert.assertEquals(
+			ListUtil.sort(
+				Arrays.asList(
+					_getUsageKey(
+						assetPublisherPortletId,
+						assetPublisherLayout.getPlid()),
+					_getUsageKey(
+						journalContentPortletId,
+						journalContentLayout.getPlid()),
+					_getUsageKey(
+						layoutAssetPublisherPortletId, layout.getPlid()),
+					_getUsageKey(
+						layoutJournalContentPortletId, layout.getPlid()))),
+			_getUsageKeys(journalArticle));
+
+		JSONObject jsonObject = _execute(journalArticle);
+
+		JSONArray jsonArray = jsonObject.getJSONArray("usages");
+
+		Assert.assertEquals(
+			ListUtil.sort(
+				Arrays.asList(
+					assetPublisherLayout.getName(LocaleUtil.getDefault()),
+					journalContentLayout.getName(LocaleUtil.getDefault()),
+					layout.getName(LocaleUtil.getDefault()),
+					layout.getName(LocaleUtil.getDefault()))),
+			ListUtil.sort(JSONUtil.toStringList(jsonArray, "name")));
+		Assert.assertEquals(
+			Arrays.asList("Page", "Page", "Page", "Page"),
+			JSONUtil.toStringList(jsonArray, "type"));
+
+		layout = _layoutLocalService.getLayout(layout.getPlid());
+
+		LayoutTypePortlet layoutTypePortlet =
+			(LayoutTypePortlet)layout.getLayoutType();
+
+		layoutTypePortlet.removePortletId(
+			TestPropsValues.getUserId(), layoutAssetPublisherPortletId);
+		layoutTypePortlet.removePortletId(
+			TestPropsValues.getUserId(), layoutJournalContentPortletId);
+
+		_layoutLocalService.updateTypeSettings(
+			layout.getGroupId(), layout.isPrivateLayout(), layout.getLayoutId(),
+			layout.getTypeSettings());
+
+		Assert.assertEquals(
+			ListUtil.sort(
+				Arrays.asList(
+					_getUsageKey(
+						assetPublisherPortletId,
+						assetPublisherLayout.getPlid()),
+					_getUsageKey(
+						journalContentPortletId,
+						journalContentLayout.getPlid()))),
+			_getUsageKeys(journalArticle));
+
+		ServiceContextThreadLocal.popServiceContext();
+	}
+
 	private void _testExecuteWithoutInfoItemPermissionProvider()
 		throws Exception {
 
@@ -439,119 +552,6 @@ public class GetLayoutClassedModelUsagesStrutsActionTest {
 		Assert.assertEquals(0, jsonArray.length());
 
 		PermissionThreadLocal.setPermissionChecker(permissionChecker);
-	}
-
-	private void _testExecuteWithWidgets() throws Exception {
-		ServiceContextThreadLocal.pushServiceContext(
-			ServiceContextTestUtil.getServiceContext(
-				_group.getGroupId(), TestPropsValues.getUserId()));
-
-		JournalArticle journalArticle = JournalTestUtil.addArticle(
-			_group.getGroupId(),
-			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID);
-
-		Layout journalContentLayout = LayoutTestUtil.addTypePortletLayout(
-			_group);
-		Map<String, String[]> journalContentPreferenceMap = HashMapBuilder.put(
-			"articleExternalReferenceCode",
-			new String[] {journalArticle.getExternalReferenceCode()}
-		).build();
-
-		String journalContentPortletId = _addPortletToLayout(
-			journalContentLayout, JournalContentPortletKeys.JOURNAL_CONTENT,
-			journalContentPreferenceMap);
-
-		AssetEntry assetEntry = _assetEntryLocalService.getEntry(
-			JournalArticle.class.getName(),
-			journalArticle.getResourcePrimKey());
-
-		Map<String, String[]> assetPublisherPreferenceMap = HashMapBuilder.put(
-			"assetEntryXml",
-			new String[] {_getAssetEntryXML(assetEntry.getClassUuid())}
-		).put(
-			"selectionStyle", new String[] {"manual"}
-		).build();
-
-		Layout assetPublisherLayout = LayoutTestUtil.addTypePortletLayout(
-			_group);
-
-		String assetPublisherPortletId = _addPortletToLayout(
-			assetPublisherLayout, AssetPublisherPortletKeys.ASSET_PUBLISHER,
-			assetPublisherPreferenceMap);
-
-		Layout layout = LayoutTestUtil.addTypePortletLayout(_group);
-
-		String layoutAssetPublisherPortletId = _addPortletToLayout(
-			layout, AssetPublisherPortletKeys.ASSET_PUBLISHER,
-			assetPublisherPreferenceMap);
-		String layoutJournalContentPortletId = _addPortletToLayout(
-			layout, JournalContentPortletKeys.JOURNAL_CONTENT,
-			journalContentPreferenceMap);
-
-		Layout unusedLayout = LayoutTestUtil.addTypePortletLayout(_group);
-
-		_addPortletToLayout(
-			unusedLayout, AssetPublisherPortletKeys.ASSET_PUBLISHER, null);
-		_addPortletToLayout(
-			unusedLayout, JournalContentPortletKeys.JOURNAL_CONTENT, null);
-
-		Assert.assertEquals(
-			ListUtil.sort(
-				Arrays.asList(
-					_getUsageKey(
-						assetPublisherPortletId,
-						assetPublisherLayout.getPlid()),
-					_getUsageKey(
-						journalContentPortletId,
-						journalContentLayout.getPlid()),
-					_getUsageKey(
-						layoutAssetPublisherPortletId, layout.getPlid()),
-					_getUsageKey(
-						layoutJournalContentPortletId, layout.getPlid()))),
-			_getUsageKeys(journalArticle));
-
-		JSONObject jsonObject = _execute(journalArticle);
-
-		JSONArray jsonArray = jsonObject.getJSONArray("usages");
-
-		Assert.assertEquals(
-			ListUtil.sort(
-				Arrays.asList(
-					assetPublisherLayout.getName(LocaleUtil.getDefault()),
-					journalContentLayout.getName(LocaleUtil.getDefault()),
-					layout.getName(LocaleUtil.getDefault()),
-					layout.getName(LocaleUtil.getDefault()))),
-			ListUtil.sort(JSONUtil.toStringList(jsonArray, "name")));
-		Assert.assertEquals(
-			Arrays.asList("Page", "Page", "Page", "Page"),
-			JSONUtil.toStringList(jsonArray, "type"));
-
-		layout = _layoutLocalService.getLayout(layout.getPlid());
-
-		LayoutTypePortlet layoutTypePortlet =
-			(LayoutTypePortlet)layout.getLayoutType();
-
-		layoutTypePortlet.removePortletId(
-			TestPropsValues.getUserId(), layoutAssetPublisherPortletId);
-		layoutTypePortlet.removePortletId(
-			TestPropsValues.getUserId(), layoutJournalContentPortletId);
-
-		_layoutLocalService.updateTypeSettings(
-			layout.getGroupId(), layout.isPrivateLayout(), layout.getLayoutId(),
-			layout.getTypeSettings());
-
-		Assert.assertEquals(
-			ListUtil.sort(
-				Arrays.asList(
-					_getUsageKey(
-						assetPublisherPortletId,
-						assetPublisherLayout.getPlid()),
-					_getUsageKey(
-						journalContentPortletId,
-						journalContentLayout.getPlid()))),
-			_getUsageKeys(journalArticle));
-
-		ServiceContextThreadLocal.popServiceContext();
 	}
 
 	@Inject
