@@ -143,16 +143,11 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro assertDataInRichTextField(fieldLabel = null, index = null, content = null) {
-		if (!(isSet(index))) {
-			var index = 1;
-		}
-
-		if (IsElementPresent(index = ${index}, key_fieldLabel = ${fieldLabel}, locator1 = "CKEditor#ANY_BODY_FIELD_IFRAME_WEB_CONTENT_ARTICLE")) {
+	macro assertDataInRichTextField(fieldLabel = null, content = null) {
+		if (IsElementPresent(key_fieldLabel = ${fieldLabel}, locator1 = "CKEditor#BODY_FIELD_IFRAME_WEB_CONTENT_ARTICLE")) {
 			SelectFrame.selectFrameNoLoading(
-				index = ${index},
 				key_fieldLabel = ${fieldLabel},
-				locator1 = "CKEditor#ANY_BODY_FIELD_IFRAME_WEB_CONTENT_ARTICLE");
+				locator1 = "CKEditor#BODY_FIELD_IFRAME_WEB_CONTENT_ARTICLE");
 
 			AssertTextEquals(
 				locator1 = "CKEditor#BODY",
@@ -162,9 +157,8 @@ definition {
 		}
 		else {
 			AssertTextEquals(
-				index = ${index},
 				key_fieldLabel = ${fieldLabel},
-				locator1 = "CKEditor#ANY_BODY_FIELD_CONTENTEDITABLE_WEB_CONTENT_ARTICLE",
+				locator1 = "CKEditor#BODY_FIELD_CONTENTEDITABLE_WEB_CONTENT_ARTICLE",
 				value1 = ${content});
 		}
 	}
@@ -527,15 +521,10 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro inputDataInRichTextField(fieldLabel = null, index = null, content = null) {
-		if (!(isSet(index))) {
-			var index = 1;
-		}
-
-		CKEditor.addContentInRepeatableWebContent(
+	macro inputDataInRichTextField(fieldLabel = null, content = null) {
+		CKEditor.addContentInWebContent(
 			content = ${content},
-			fieldLabel = ${fieldLabel},
-			index = ${index});
+			fieldLabel = ${fieldLabel});
 	}
 
 	@summary = "Default summary"
