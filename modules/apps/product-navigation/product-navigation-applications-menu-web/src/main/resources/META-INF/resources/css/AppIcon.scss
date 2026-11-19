@@ -1,0 +1,82 @@
+@import 'atlas-custom-properties/_variables';
+
+$app-icon-tile-active: map-get($card-interactive, active);
+$app-icon-tile-focus: map-get($card-interactive, focus);
+$app-icon-tile-hover: map-get($card-interactive, hover);
+
+.app-icon {
+	align-items: center;
+	color: $dark;
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+	text-align: center;
+	text-decoration: none;
+
+	.app-icon-label {
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: 2;
+		display: -webkit-box;
+		font-size: 1rem;
+		font-weight: $font-weight-semi-bold;
+		line-height: 1.5rem;
+		overflow: hidden;
+		width: 100%;
+	}
+
+	.app-icon-tile {
+		align-items: center;
+		background-color: $primary-l3;
+		border-radius: $card-border-radius;
+		color: $primary;
+		display: flex;
+		font-size: 2.5rem;
+		height: 4.875rem;
+		justify-content: center;
+		outline-color: transparent;
+		outline-offset: map-get($app-icon-tile-focus, outline-offset);
+		outline-style: map-get($app-icon-tile-focus, outline-style);
+		outline-width: calc(#{$card-border-width} * 2);
+		transition:
+			box-shadow 0.25s ease-out,
+			outline-color 0.15s ease,
+			transform 0.25s ease-out;
+		width: 4.875rem;
+
+		img {
+			height: 2.5rem;
+			width: 2.5rem;
+		}
+
+		@media (prefers-reduced-motion: reduce) {
+			transition: none;
+		}
+	}
+
+	&:hover {
+		color: $dark;
+		text-decoration: none;
+
+		.app-icon-tile {
+			box-shadow: $card-hover-box-shadow;
+			outline-color: map-get($app-icon-tile-hover, outline-color);
+			transform: translateY(-0.125rem);
+		}
+	}
+
+	&.focus,
+	&:focus-visible,
+	.c-prefers-focus &:focus {
+		box-shadow: none;
+		outline: 0;
+
+		.app-icon-tile {
+			outline-color: map-get($app-icon-tile-focus, outline-color);
+		}
+	}
+
+	&:active .app-icon-tile {
+		outline-color: map-get($app-icon-tile-active, outline-color);
+		transform: scale(0.97);
+	}
+}

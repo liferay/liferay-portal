@@ -5,6 +5,7 @@
 
 export type CategoryItem = {
 	href: string;
+	iconURL?: string;
 	id: string;
 	label: string;
 	leadingIcon: string;
