@@ -9,6 +9,4 @@ export {default as GlobalMenu} from './GlobalMenu';
 
 export {default as ApplicationsHome} from './homes/ApplicationsHome';
 
-export {default as CommerceHome} from './homes/CommerceHome';
-
-export {default as ControlPanelHome} from './homes/ControlPanelHome';
+export {default as PanelCategoriesHome} from './homes/PanelCategoriesHome';

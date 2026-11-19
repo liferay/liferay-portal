@@ -12,6 +12,6 @@ HomeDisplayContext homeDisplayContext = new HomeDisplayContext(request);
 %>
 
 <react:component
-	module="{ControlPanelHome} from product-navigation-applications-menu-web"
+	module="{PanelCategoriesHome} from product-navigation-applications-menu-web"
 	props="<%= homeDisplayContext.getProps() %>"
 />
