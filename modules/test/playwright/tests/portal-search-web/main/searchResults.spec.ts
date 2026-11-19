@@ -868,8 +868,8 @@ for (const reactPaginatorEnabled of [false, true]) {
 	const maximumSearchDepthTest = mergeTests(
 		test,
 		featureFlagsTest({
+			'LPD-64988': {enabled: true},
 			'LPD-98858': {enabled: reactPaginatorEnabled},
-			'LPD-114635': {enabled: true},
 		})
 	);
 
