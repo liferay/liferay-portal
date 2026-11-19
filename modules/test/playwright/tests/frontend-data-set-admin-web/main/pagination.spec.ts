@@ -128,6 +128,58 @@ test('Update pagination configuration', async ({paginationPage}) => {
 	});
 });
 
+test(
+	'Pagination can be hidden',
+	{
+		tag: ['@LPD-112739'],
+	},
+	async ({paginationPage}) => {
+		await test.step('Check the pagination is shown by default', async () => {
+			await expect(paginationPage.showPaginationToggle).toBeChecked();
+
+			await expect(
+				paginationPage.listOfItemsPerPageTextarea
+			).toBeEnabled();
+		});
+
+		await test.step('Hide the pagination', async () => {
+			await paginationPage.showPaginationToggle.click();
+
+			await expect(paginationPage.showPaginationToggle).not.toBeChecked();
+		});
+
+		await test.step('Check only the list of items per page is disabled', async () => {
+			await expect(
+				paginationPage.listOfItemsPerPageTextarea
+			).toBeDisabled();
+
+			await expect(paginationPage.defaultItemsPerPageInput).toBeEnabled();
+		});
+
+		await test.step('Save and reload', async () => {
+			await paginationPage.saveButton.click();
+
+			await paginationPage.page
+				.getByText('Success:Your request completed successfully.')
+				.waitFor();
+
+			await paginationPage.page.reload();
+
+			await paginationPage.goto({
+				dataSetLabel,
+			});
+		});
+
+		await test.step('Check the setting is kept', async () => {
+			await expect(paginationPage.showPaginationToggle).not.toBeChecked();
+
+			await expect(
+				paginationPage.listOfItemsPerPageTextarea
+			).toBeDisabled();
+		});
+	}
+);
+
 test('Pagination configuration limits', async ({paginationPage}) => {
 	await test.step('Check list items per page cannot be empty', async () => {
 		await paginationPage.listOfItemsPerPageTextarea.clear();

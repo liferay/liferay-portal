@@ -982,6 +982,21 @@ public class CustomFDSSerializerTest extends BaseFDSSerializerTestCase {
 	}
 
 	@Test
+	public void testSerializeShowPagination() throws Exception {
+		_mockSerializeShowPagination(FDS_NAMES[0], false);
+		_mockSerializeShowPagination(FDS_NAMES[1], true);
+
+		Assert.assertFalse(
+			_customFDSSerializer.serializeShowPagination(
+				FDS_NAMES[0], httpServletRequest));
+		Assert.assertTrue(
+			_customFDSSerializer.serializeShowPagination(
+				FDS_NAMES[1], httpServletRequest));
+
+		_resetFDSSerializer();
+	}
+
+	@Test
 	public void testSerializeShowSearch() throws Exception {
 		_mockSerializeShowSearch(FDS_NAMES[0], false);
 		_mockSerializeShowSearch(FDS_NAMES[1], true);
@@ -1969,6 +1984,24 @@ public class CustomFDSSerializerTest extends BaseFDSSerializerTestCase {
 
 		Mockito.when(
 			_customFDSSerializer.serializeSearchSuggestionsEnabled(
+				fdsName, httpServletRequest)
+		).thenCallRealMethod();
+	}
+
+	private void _mockSerializeShowPagination(
+		String fdsName, boolean showPagination) {
+
+		Mockito.when(
+			_customFDSSerializer.getDataSetObjectEntryProperties(
+				fdsName, httpServletRequest)
+		).thenReturn(
+			HashMapBuilder.<String, Object>put(
+				"showPagination", showPagination
+			).build()
+		);
+
+		Mockito.when(
+			_customFDSSerializer.serializeShowPagination(
 				fdsName, httpServletRequest)
 		).thenCallRealMethod();
 	}

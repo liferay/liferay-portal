@@ -20,6 +20,7 @@ export class PaginationPage {
 	readonly header: Locator;
 	readonly page: Page;
 	readonly saveButton: Locator;
+	readonly showPaginationToggle: Locator;
 	readonly toastContainer: Locator;
 
 	constructor(page: Page) {
@@ -44,6 +45,7 @@ export class PaginationPage {
 		this.page = page;
 		this.header = page.getByRole('heading', {name: 'Pagination'});
 		this.saveButton = page.getByRole('button', {name: 'Save'});
+		this.showPaginationToggle = page.getByLabel('Show Pagination');
 		this.toastContainer = page.locator('.alert-container');
 	}
 

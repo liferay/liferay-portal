@@ -313,6 +313,85 @@ test('Search Bar is shown/hidden according to FDS configuration', async ({
 });
 
 test(
+	'Pagination is hidden and only the first page is shown according to FDS configuration',
+	{
+		tag: ['@LPD-112739'],
+	},
+	async ({dataSetManagerApiHelpers, fdsSamplePage, page}) => {
+		const defaultItemsPerPage = 4;
+		const erc =
+			'com_liferay_frontend_data_set_sample_web_internal_portlet_FDSSamplePortlet-advanced';
+
+		const response = await dataSetManagerApiHelpers.getResponse(
+			getDataSetResourceURL({dataSetERC: erc})
+		);
+
+		const originalDataSet = response.ok() ? await response.json() : null;
+
+		let createdDataSet = false;
+
+		try {
+			await test.step('Pagination is shown by default', async () => {
+				await expect(
+					page.locator('.data-set-pagination-wrapper')
+				).toBeVisible();
+			});
+
+			await test.step('Hide the pagination', async () => {
+				if (originalDataSet) {
+					await dataSetManagerApiHelpers.updateDataSet({
+						defaultItemsPerPage,
+						erc,
+						listOfItemsPerPage: '4, 8, 20',
+						showPagination: false,
+					});
+				}
+				else {
+					await dataSetManagerApiHelpers.createDataSet({
+						defaultItemsPerPage,
+						erc,
+						label: 'Advanced Sample',
+						listOfItemsPerPage: '4, 8, 20',
+						restApplication: '/c/fdssamples',
+						restEndpoint: '/',
+						restSchema: 'FDSSample',
+						showPagination: false,
+						snapshotsEnabled: true,
+					});
+
+					createdDataSet = true;
+				}
+			});
+
+			await test.step('Only the first page is shown', async () => {
+				await page.reload();
+
+				await expect(fdsSamplePage.table.bodyRows).toHaveCount(
+					defaultItemsPerPage
+				);
+
+				await expect(
+					page.locator('.data-set-pagination-wrapper')
+				).not.toBeVisible();
+			});
+		}
+		finally {
+			if (createdDataSet) {
+				await dataSetManagerApiHelpers.deleteDataSet({erc});
+			}
+			else if (originalDataSet) {
+				await dataSetManagerApiHelpers.updateDataSet({
+					defaultItemsPerPage: originalDataSet.defaultItemsPerPage,
+					erc,
+					listOfItemsPerPage: originalDataSet.listOfItemsPerPage,
+					showPagination: originalDataSet.showPagination,
+				});
+			}
+		}
+	}
+);
+
+test(
 	'Search suggestions',
 	{
 		tag: ['@LPD-89792'],

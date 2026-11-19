@@ -37,6 +37,7 @@ export class DataSetManagerApiHelpers extends ApiHelpers {
 		restApplication = API_ENDPOINT_PATH,
 		restEndpoint = `/by-external-reference-code/${erc}/dataSetToDataSetTableSections`,
 		restSchema = 'DataSetTableSection',
+		showPagination = true,
 		showSearch = true,
 		snapshotsEnabled,
 	}: {
@@ -51,6 +52,7 @@ export class DataSetManagerApiHelpers extends ApiHelpers {
 		restApplication?: string;
 		restEndpoint?: string;
 		restSchema?: string;
+		showPagination?: boolean;
 		showSearch?: boolean;
 		snapshotsEnabled?: boolean;
 	}) {
@@ -68,6 +70,7 @@ export class DataSetManagerApiHelpers extends ApiHelpers {
 			restApplication,
 			restEndpoint,
 			restSchema,
+			showPagination,
 			showSearch,
 			snapshotsEnabled,
 		};
@@ -473,6 +476,7 @@ export class DataSetManagerApiHelpers extends ApiHelpers {
 		listOfItemsPerPage,
 		searchAsYouType,
 		searchSuggestionsEnabled,
+		showPagination,
 		showSearch,
 		snapshotsEnabled,
 	}: {
@@ -486,6 +490,7 @@ export class DataSetManagerApiHelpers extends ApiHelpers {
 		listOfItemsPerPage?: string;
 		searchAsYouType?: boolean;
 		searchSuggestionsEnabled?: boolean;
+		showPagination?: boolean;
 		showSearch?: boolean;
 		snapshotsEnabled?: boolean;
 	}) {
@@ -503,6 +508,7 @@ export class DataSetManagerApiHelpers extends ApiHelpers {
 			listOfItemsPerPage,
 			searchAsYouType,
 			searchSuggestionsEnabled,
+			showPagination,
 			showSearch,
 			snapshotsEnabled,
 		};

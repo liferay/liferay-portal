@@ -110,6 +110,123 @@ describe('FrontendDataSet', () => {
 		expect(container).toBeEmptyDOMElement();
 	});
 
+	it('requests the initial delta items when the pagination is hidden', async () => {
+		const requests = mockPendingRequests();
+
+		const {container} = render(
+			<FrontendDataSet
+				apiURL="/o/products"
+				id={id}
+				pagination={{initialDelta: 7}}
+				showPagination={false}
+				views={VIEWS}
+			/>
+		);
+
+		await waitFor(() => expect(requests).toHaveLength(1));
+
+		expect(new URL(requests[0].url).searchParams.get('pageSize')).toBe('7');
+
+		act(() => requests[0].resolve(itemsResponse(['first'])));
+
+		expect(await screen.findByText('first')).toBeInTheDocument();
+
+		expect(
+			container.querySelector('.data-set-pagination-wrapper')
+		).not.toBeInTheDocument();
+	});
+
+	it('ignores the page and the delta of the URL when the pagination is hidden', async () => {
+		window.history.pushState({}, '', `/?${id}_fdsConfig=(delta:50,page:3)`);
+
+		const requests = mockPendingRequests();
+
+		render(
+			<FrontendDataSet
+				apiURL="/o/products"
+				id={id}
+				pagination={{initialDelta: 7}}
+				showPagination={false}
+				views={VIEWS}
+			/>
+		);
+
+		await waitFor(() => expect(requests).toHaveLength(1));
+
+		const {searchParams} = new URL(requests[0].url);
+
+		expect(searchParams.get('page')).toBe('1');
+		expect(searchParams.get('pageSize')).toBe('7');
+	});
+
+	it('requests the default page size when the pagination is hidden without an initial delta', async () => {
+		const requests = mockPendingRequests();
+
+		render(
+			<FrontendDataSet
+				apiURL="/o/products"
+				id={id}
+				showPagination={false}
+				views={VIEWS}
+			/>
+		);
+
+		await waitFor(() => expect(requests).toHaveLength(1));
+
+		expect(new URL(requests[0].url).searchParams.get('pageSize')).toBe(
+			'20'
+		);
+	});
+
+	it('keeps the pagination hidden when a view shows it', async () => {
+		const requests = mockPendingRequests();
+
+		const {container} = render(
+			<FrontendDataSet
+				apiURL="/o/products"
+				id={id}
+				pagination={{initialDelta: 7}}
+				showPagination={false}
+				views={[{...VIEWS[0], showPagination: true}]}
+			/>
+		);
+
+		await waitFor(() => expect(requests).toHaveLength(1));
+
+		expect(new URL(requests[0].url).searchParams.get('pageSize')).toBe('7');
+
+		act(() => requests[0].resolve(itemsResponse(['first'])));
+
+		expect(await screen.findByText('first')).toBeInTheDocument();
+
+		expect(
+			container.querySelector('.data-set-pagination-wrapper')
+		).not.toBeInTheDocument();
+	});
+
+	it('hides the pagination when a view hides it', async () => {
+		const requests = mockPendingRequests();
+
+		const {container} = render(
+			<FrontendDataSet
+				apiURL="/o/products"
+				id={id}
+				pagination={{initialDelta: 7}}
+				views={[{...VIEWS[0], showPagination: false}]}
+			/>
+		);
+
+		await waitFor(() => expect(requests).toHaveLength(1));
+
+		act(() => requests[0].resolve(itemsResponse(['first'])));
+
+		expect(await screen.findByText('first')).toBeInTheDocument();
+
+		expect(
+			container.querySelector('.data-set-pagination-wrapper')
+		).not.toBeInTheDocument();
+	});
+
 	it('cancels a search request superseded by a newer one', async () => {
 		const requests = mockPendingRequests();
 

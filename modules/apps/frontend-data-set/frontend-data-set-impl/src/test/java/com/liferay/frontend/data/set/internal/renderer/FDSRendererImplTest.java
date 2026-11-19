@@ -86,10 +86,11 @@ public class FDSRendererImplTest {
 	public void testRenderWhenDataSetIsCustom() throws Exception {
 		_registerFDSSerializer(FDSSerializer.TYPE_CUSTOM);
 
-		Map<String, Object> props = _render();
+		Map<String, Object> props = _render(true);
 
 		Assert.assertTrue((boolean)props.get("searchAsYouType"));
 		Assert.assertTrue((boolean)props.get("searchSuggestionsEnabled"));
+		Assert.assertTrue((boolean)props.get("showPagination"));
 		Assert.assertTrue((boolean)props.get("showSearch"));
 	}
 
@@ -103,10 +104,11 @@ public class FDSRendererImplTest {
 			Mockito.mock(SystemFDSEntry.class)
 		);
 
-		Map<String, Object> props = _render();
+		Map<String, Object> props = _render(true);
 
 		Assert.assertTrue((boolean)props.get("searchAsYouType"));
 		Assert.assertTrue((boolean)props.get("searchSuggestionsEnabled"));
+		Assert.assertTrue((boolean)props.get("showPagination"));
 		Assert.assertTrue((boolean)props.get("showSearch"));
 	}
 
@@ -114,14 +116,43 @@ public class FDSRendererImplTest {
 	public void testRenderWhenDataSetIsViewsOnly() throws Exception {
 		_registerFDSSerializer(FDSSerializer.TYPE_SYSTEM);
 
-		Map<String, Object> props = _render();
+		Map<String, Object> props = _render(true);
 
 		Assert.assertFalse(props.containsKey("searchAsYouType"));
 		Assert.assertFalse(props.containsKey("searchSuggestionsEnabled"));
+		Assert.assertTrue((boolean)props.get("showPagination"));
 		Assert.assertFalse((boolean)props.get("showSearch"));
 	}
 
-	private void _registerFDSSerializer(String type) {
+	@Test
+	public void testRenderWhenPaginationIsHiddenByCode() throws Exception {
+		_registerFDSSerializer(FDSSerializer.TYPE_CUSTOM);
+
+		Map<String, Object> props = _render(false);
+
+		Assert.assertFalse((boolean)props.get("showPagination"));
+	}
+
+	@Test
+	public void testRenderWhenPaginationIsHiddenByTheConfiguration()
+		throws Exception {
+
+		FDSSerializer fdsSerializer = _registerFDSSerializer(
+			FDSSerializer.TYPE_CUSTOM);
+
+		Mockito.when(
+			fdsSerializer.serializeShowPagination(
+				_FDS_NAME, _httpServletRequest)
+		).thenReturn(
+			false
+		);
+
+		Map<String, Object> props = _render(true);
+
+		Assert.assertFalse((boolean)props.get("showPagination"));
+	}
+
+	private FDSSerializer _registerFDSSerializer(String type) {
 		FDSSerializer fdsSerializer = Mockito.mock(FDSSerializer.class);
 
 		Mockito.when(
@@ -145,6 +176,13 @@ public class FDSRendererImplTest {
 		);
 
 		Mockito.when(
+			fdsSerializer.serializeShowPagination(
+				_FDS_NAME, _httpServletRequest)
+		).thenReturn(
+			true
+		);
+
+		Mockito.when(
 			fdsSerializer.serializeShowSearch(_FDS_NAME, _httpServletRequest)
 		).thenReturn(
 			true
@@ -155,11 +193,17 @@ public class FDSRendererImplTest {
 		).thenReturn(
 			fdsSerializer
 		);
+
+		return fdsSerializer;
 	}
 
-	private Map<String, Object> _render() throws Exception {
+	private Map<String, Object> _render(boolean showPagination)
+		throws Exception {
+
 		_fdsRendererImpl.render(
 			HashMapBuilder.<String, Object>put(
+				"showPagination", showPagination
+			).put(
 				"showSearch", false
 			).build(),
 			RandomTestUtil.randomString(), _FDS_NAME, _httpServletRequest, null,
