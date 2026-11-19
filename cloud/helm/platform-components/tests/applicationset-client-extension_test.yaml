@@ -143,6 +143,12 @@ tests:
                                 -   forceString: true
                                     name: network.gatewayNamespace
                                     value: liferay-{{ index .path.segments 2 }}-{{ index .path.segments 4 }}
+                                -   forceString: true
+                                    name: operatorServiceAccount.name
+                                    value: dxp-operator
+                                -   forceString: true
+                                    name: operatorServiceAccount.namespace
+                                    value: dxp-operator-system
                             releaseName: "{{ .name }}"
                             valueFiles:
                                 -   "cxdescriptor://{{ trimPrefix \"oci://\" .descriptor }}:{{ .version }}"

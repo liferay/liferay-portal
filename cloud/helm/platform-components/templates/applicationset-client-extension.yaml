@@ -77,6 +77,12 @@ spec:
                         -   forceString: true
                             name: network.gatewayNamespace
                             value: {{ printf "liferay-{{ %s }}-{{ %s }}" $projectId $environmentId | quote }}
+                        -   forceString: true
+                            name: operatorServiceAccount.name
+                            value: {{ include "liferay-platform.dxpOperatorServiceAccountName" . | quote }}
+                        -   forceString: true
+                            name: operatorServiceAccount.namespace
+                            value: {{ $dxpOperator.namespace | quote }}
                     releaseName: {{ `{{ .name }}` | quote }}
                     valueFiles:
                         -   {{ `cxdescriptor://{{ trimPrefix "oci://" .descriptor }}:{{ .version }}` | quote }}
