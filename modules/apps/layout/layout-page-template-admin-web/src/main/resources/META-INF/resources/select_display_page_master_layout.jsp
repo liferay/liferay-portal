@@ -46,7 +46,7 @@ renderResponse.setTitle(LanguageUtil.get(request, "select-master-page"));
 					<clay:vertical-card
 						additionalProps='<%=
 							HashMapBuilder.<String, Object>put(
-								"addDisplayPageUrl", selectDisplayPageMasterLayoutVerticalCard.getAddDisplayPageURL()
+								"addDisplayPageURL", selectDisplayPageMasterLayoutVerticalCard.getAddDisplayPageURL()
 							).put(
 								"mappingTypes", displayPageDisplayContext.getMappingTypesJSONArray()
 							).put(

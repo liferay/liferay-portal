@@ -8,7 +8,7 @@ import {getSpritemap} from '@liferay/frontend-icons-web';
 import openContentTypeModal from '../commands/openContentTypeModal';
 
 export default function SelectDisplayPageMasterLayoutVerticalCardPropsTransformer({
-	additionalProps: {addDisplayPageUrl, mappingTypes, title},
+	additionalProps: {addDisplayPageURL, mappingTypes, title},
 	portletNamespace: namespace,
 	...otherProps
 }) {
@@ -18,7 +18,7 @@ export default function SelectDisplayPageMasterLayoutVerticalCardPropsTransforme
 			event.preventDefault();
 
 			openContentTypeModal({
-				formSubmitURL: addDisplayPageUrl,
+				formSubmitURL: addDisplayPageURL,
 				mappingTypes,
 				namespace,
 				spritemap: getSpritemap(),
