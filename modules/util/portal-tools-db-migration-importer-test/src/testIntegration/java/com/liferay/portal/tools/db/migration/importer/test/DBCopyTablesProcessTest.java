@@ -181,89 +181,85 @@ public class DBCopyTablesProcessTest {
 			new String[] {
 				"create index IX_" + RandomTestUtil.randomString(61) +
 					" on TestTable (textColumn, charColumn)",
-				"create index IX_LEFT_MATCH on TestTable (id, testColumn)",
-				"create index IX_LONG_COLUMN on TestTable (longColumn)",
+				"create index IX_TEST1 on TestTable (id, testColumn)",
+				"create index IX_TEST2 on TestTable (longColumn)",
 				"create index TestTable on TestTable (charColumn)",
-				"create unique index IX_DUPLICATE on TestTable (testColumn)",
-				"create unique index IX_UNIQUE on TestTable (testColumn, id)",
-				"create unique index IX_UNIQUE_MISMATCH on TestTable " +
-					"(charColumn, id)"
+				"create unique index IX_TEST3 on TestTable (testColumn)",
+				"create unique index IX_TEST4 on TestTable (testColumn, id)",
+				"create unique index IX_TEST5 on TestTable (charColumn, id)"
 			});
 
 		List<String> expectedIndexDefinitions = ListUtil.fromArray(
 			"CREATE INDEX ix_906fecd9 ON testtable USING btree (textcolumn, " +
 				"charcolumn)",
 			"CREATE INDEX ix_e1d669e2 ON testtable USING btree (charcolumn)",
-			"CREATE INDEX ix_left_match ON testtable USING btree (id, " +
+			"CREATE INDEX ix_test1 ON testtable USING btree (id, " +
 				"\"left\"((testcolumn)::text, 676))",
-			"CREATE INDEX ix_long_column ON testtable USING btree " +
+			"CREATE INDEX ix_test2 ON testtable USING btree " +
 				"(\"left\"((longcolumn)::text, 676))",
-			"CREATE INDEX ix_unique_mismatch ON testtable USING btree " +
-				"(charcolumn, id)",
-			"CREATE UNIQUE INDEX ix_unique ON testtable USING btree " +
+			"CREATE INDEX ix_test5 ON testtable USING btree (charcolumn, id)",
+			"CREATE UNIQUE INDEX ix_test4 ON testtable USING btree " +
 				"(testcolumn, id)",
 			"CREATE UNIQUE INDEX testtable_pkey ON testtable USING btree (id)");
 		List<String> expectedMessages = ListUtil.fromArray(
-			"created index ix_long_column on table testtable in the default " +
-				"schema as a btree index on (left(\"longcolumn\", 676))",
-			"unable to create unique index ix_unique_mismatch on table " +
-				"testtable in the default schema because index " +
-					"ix_unique_mismatch already exists on the same columns");
+			"created index ix_test2 on table testtable in the default schema " +
+				"as a btree index on (left(\"longcolumn\", 676))",
+			"unable to create unique index ix_test5 on table testtable in " +
+				"the default schema because index ix_test5 already exists on " +
+					"the same columns");
 
 		DBType dbType = _sourceDB.getDBType();
 
 		if ((dbType == DBType.MARIADB) || (dbType == DBType.MYSQL)) {
 			_sourceDB.runSQL(
-				"create fulltext index IX_TYPED on TestTable (charColumn, " +
+				"create fulltext index IX_TEST7 on TestTable (charColumn, " +
 					"longColumn)");
 
 			if (dbType == DBType.MYSQL) {
 				_sourceDB.runSQL(
-					"create index IX_EXPRESSION on TestTable " +
-						"((upper(testColumn)))");
+					"create index IX_TEST6 on TestTable ((upper(testColumn)))");
 
 				expectedMessages.add(
-					"unable to create index ix_expression on table testtable " +
-						"in the default schema because one of its columns is " +
-							"an expression");
+					"unable to create index ix_test6 on table testtable in " +
+						"the default schema because one of its columns is an " +
+							"expression");
 			}
 
 			expectedIndexDefinitions.add(
-				"CREATE INDEX ix_typed ON testtable USING btree (charcolumn, " +
+				"CREATE INDEX ix_test7 ON testtable USING btree (charcolumn, " +
 					"\"left\"((longcolumn)::text, 676))");
 			expectedMessages.add(
-				"created fulltext index ix_typed on table testtable in the " +
+				"created fulltext index ix_test7 on table testtable in the " +
 					"default schema as a btree index on (\"charcolumn\", " +
 						"left(\"longcolumn\", 676))");
 		}
 		else if (dbType == DBType.ORACLE) {
 			_sourceDB.runSQL(
 				new String[] {
-					"create index IX_EXPRESSION on TestTable " +
-						"(upper(testColumn))",
-					"create index IX_TYPED on TestTable (textColumn) " +
+					"create index IX_TEST6 on TestTable (upper(testColumn))",
+					"create index IX_TEST7 on TestTable (textColumn) " +
 						"indextype is ctxsys.context"
 				});
 
 			expectedIndexDefinitions.add(
-				"CREATE INDEX ix_typed ON testtable USING btree (textcolumn)");
+				"CREATE INDEX ix_test7 ON testtable USING btree (textcolumn)");
 			expectedMessages.add(
-				"created ctxsys.context index ix_typed on table testtable in " +
+				"created ctxsys.context index ix_test7 on table testtable in " +
 					"the default schema as a btree index on (\"textcolumn\")");
 			expectedMessages.add(
-				"unable to create index ix_expression on table testtable in " +
-					"the default schema because one of its columns is an " +
+				"unable to create index ix_test6 on table testtable in the " +
+					"default schema because one of its columns is an " +
 						"expression");
 		}
 		else if (dbType == DBType.SQLSERVER) {
 			_sourceDB.runSQL(
-				"create unique index IX_TYPED on TestTable (textColumn) " +
+				"create unique index IX_TEST7 on TestTable (textColumn) " +
 					"where textColumn is not null");
 
 			expectedIndexDefinitions.add(
-				"CREATE INDEX ix_typed ON testtable USING btree (textcolumn)");
+				"CREATE INDEX ix_test7 ON testtable USING btree (textcolumn)");
 			expectedMessages.add(
-				"created filtered index ix_typed on table testtable in the " +
+				"created filtered index ix_test7 on table testtable in the " +
 					"default schema as a btree index on (\"textcolumn\")");
 		}
 
@@ -280,10 +276,9 @@ public class DBCopyTablesProcessTest {
 			_targetDB.runSQL(
 				connection,
 				new String[] {
-					"create index ix_left_match on testtable (id, " +
+					"create index ix_test1 on testtable (id, " +
 						"left(testcolumn, 676))",
-					"create index ix_unique_mismatch on testtable " +
-						"(charcolumn, id)",
+					"create index ix_test5 on testtable (charcolumn, id)",
 					StringBundler.concat(
 						"insert into testtable (id, testcolumn) values (",
 						_TABLE_SIZE + 1, ", '", values[0], "')")
