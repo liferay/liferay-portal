@@ -111,35 +111,9 @@ public class ScheduleLaunchMVCActionCommandTest {
 	@Test
 	public void testProcessAction() throws Exception {
 
-		// Date in the past
-
-		JSONObject jsonObject = _processAction(
-			System.currentTimeMillis() - Time.MINUTE,
-			TestPropsValues.getUser());
-
-		Assert.assertEquals(
-			_language.get(
-				LocaleUtil.US,
-				"the-date-and-time-must-be-at-least-one-minute-in-the-future"),
-			jsonObject.getString("validationError"));
-
-		_assertScheduledDateAndStatus(null, WorkflowConstants.STATUS_DRAFT);
-
-		// Date less than one minute in the future
-
-		jsonObject = _processAction(
-			System.currentTimeMillis() + (Time.SECOND * 30),
-			TestPropsValues.getUser());
-
-		Assert.assertEquals(
-			_language.get(
-				LocaleUtil.US,
-				"the-date-and-time-must-be-at-least-one-minute-in-the-future"),
-			jsonObject.getString("validationError"));
-
-		_assertScheduledDateAndStatus(null, WorkflowConstants.STATUS_DRAFT);
-
 		// External redirect
+
+		JSONObject jsonObject;
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				"com.liferay.portal.util.PortalImpl", LoggerTestUtil.WARN)) {
@@ -167,6 +141,20 @@ public class ScheduleLaunchMVCActionCommandTest {
 		_launchSetPublisher.unschedulePublish(
 			_launchSetObjectEntry.getObjectEntryId());
 
+		// Past date
+
+		jsonObject = _processAction(
+			System.currentTimeMillis() - Time.MINUTE,
+			TestPropsValues.getUser());
+
+		Assert.assertEquals(
+			_language.get(
+				LocaleUtil.US,
+				"the-date-and-time-must-be-at-least-one-minute-in-the-future"),
+			jsonObject.getString("validationError"));
+
+		_assertScheduledDateAndStatus(null, WorkflowConstants.STATUS_DRAFT);
+
 		// Without permission
 
 		PermissionChecker permissionChecker =
@@ -193,6 +181,18 @@ public class ScheduleLaunchMVCActionCommandTest {
 		_assertScheduledDateAndStatus(null, WorkflowConstants.STATUS_DRAFT);
 
 		// Future date
+
+		jsonObject = _processAction(
+			System.currentTimeMillis() + (Time.SECOND * 30),
+			TestPropsValues.getUser());
+
+		Assert.assertEquals(
+			_language.get(
+				LocaleUtil.US,
+				"the-date-and-time-must-be-at-least-one-minute-in-the-future"),
+			jsonObject.getString("validationError"));
+
+		_assertScheduledDateAndStatus(null, WorkflowConstants.STATUS_DRAFT);
 
 		long publishTime = System.currentTimeMillis() + (Time.MINUTE * 2);
 

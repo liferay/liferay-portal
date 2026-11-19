@@ -489,18 +489,17 @@ public class LaunchSetPublisherTest {
 		Assert.assertThrows(
 			SchedulerException.class,
 			() -> _launchSetPublisher.schedulePublish(
+				new Date(System.currentTimeMillis() + (Time.SECOND * 30)),
+				launchSetId, TestPropsValues.getUserId()));
+		Assert.assertThrows(
+			SchedulerException.class,
+			() -> _launchSetPublisher.schedulePublish(
 				new Date(System.currentTimeMillis() - Time.MINUTE), launchSetId,
 				TestPropsValues.getUserId()));
 		Assert.assertThrows(
 			SchedulerException.class,
 			() -> _launchSetPublisher.schedulePublish(
 				null, launchSetId, TestPropsValues.getUserId()));
-
-		Assert.assertThrows(
-			SchedulerException.class,
-			() -> _launchSetPublisher.schedulePublish(
-				new Date(System.currentTimeMillis() + (Time.SECOND * 30)),
-				launchSetId, TestPropsValues.getUserId()));
 
 		_assertScheduledDateAndStatus(null, WorkflowConstants.STATUS_DRAFT);
 
