@@ -83,13 +83,13 @@ public class AddFragmentEntryLinkCommentMVCActionCommandTest {
 
 		_company = _companyLocalService.getCompany(_group.getCompanyId());
 
-		_user = UserTestUtil.addGroupAdminUser(_group);
-
 		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
 
 		_layout = layout.fetchDraftLayout();
 
 		_fragmentEntryLink = _addFragmentEntryLink(_layout);
+
+		_user = UserTestUtil.addGroupAdminUser(_group);
 	}
 
 	@Test
