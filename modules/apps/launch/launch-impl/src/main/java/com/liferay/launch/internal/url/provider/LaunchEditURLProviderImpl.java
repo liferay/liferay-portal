@@ -25,9 +25,8 @@ public class LaunchEditURLProviderImpl implements LaunchEditURLProvider {
 		}
 
 		return HttpComponentsUtil.setParameter(
-			HttpComponentsUtil.setParameter(
-				url, "p_launch_mode", Constants.EDIT),
-			"p_launch_id", launchSetId);
+			HttpComponentsUtil.setParameter(url, "p_launch_id", launchSetId),
+			"p_launch_mode", Constants.EDIT);
 	}
 
 }

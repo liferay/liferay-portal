@@ -319,10 +319,10 @@ public class LaunchFilterTest {
 
 		mockHttpServletRequest = new MockHttpServletRequest();
 
+		mockHttpServletRequest.setParameter("p_l_mode", Constants.PREVIEW);
 		mockHttpServletRequest.setParameter("p_launch_mode", Constants.PREVIEW);
 		mockHttpServletRequest.setParameter(
 			"p_launch_id", String.valueOf(launchSetId));
-		mockHttpServletRequest.setParameter("p_l_mode", Constants.PREVIEW);
 		mockHttpServletRequest.setQueryString(
 			StringBundler.concat(
 				"p_launch_mode=preview&p_launch_id=", launchSetId,
@@ -348,9 +348,9 @@ public class LaunchFilterTest {
 
 		mockHttpServletRequest = new MockHttpServletRequest();
 
+		mockHttpServletRequest.setParameter("p_l_mode", Constants.PREVIEW);
 		mockHttpServletRequest.setParameter(
 			"p_launch_id", String.valueOf(launchSetId));
-		mockHttpServletRequest.setParameter("p_l_mode", Constants.PREVIEW);
 
 		_assertProcessFilterWithPreviewMode(
 			launchSetId, null, mockHttpServletRequest,

@@ -229,8 +229,8 @@ describe('Liferay.Util.fetch', () => {
 
 			const [, init] = fetch.mock.calls[fetch.mock.calls.length - 1];
 
-			expect(init.headers.get('x-liferay-launch-mode')).toBe(launchMode);
 			expect(init.headers.get('x-liferay-launch-id')).toBe('123');
+			expect(init.headers.get('x-liferay-launch-mode')).toBe(launchMode);
 		}
 	);
 
@@ -246,7 +246,7 @@ describe('Liferay.Util.fetch', () => {
 
 		const [, init] = fetch.mock.calls[fetch.mock.calls.length - 1];
 
-		expect(init.headers.has('x-liferay-launch-mode')).toBe(false);
 		expect(init.headers.has('x-liferay-launch-id')).toBe(false);
+		expect(init.headers.has('x-liferay-launch-mode')).toBe(false);
 	});
 });
