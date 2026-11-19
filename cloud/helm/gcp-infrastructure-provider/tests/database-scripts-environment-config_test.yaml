@@ -9,6 +9,9 @@ templates:
     -   templates/database-scripts-environment-config.yaml
 tests:
     -   asserts:
+            -   equal:
+                    path: data.databaseClientImage
+                    value: mysql:8.4
             -   matchRegex:
                     path: data.databaseScripts["grant-database.sql"]
                     pattern: PREPARE grant_database
@@ -16,6 +19,9 @@ tests:
         set:
             database.engine: mysql
     -   asserts:
+            -   equal:
+                    path: data.databaseClientImage
+                    value: postgres:18-alpine
             -   matchRegex:
                     path: data.databaseScripts["grant-database.sql"]
                     pattern: pg_roles

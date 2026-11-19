@@ -1,5 +1,5 @@
 {{- define "backupRestore.databaseClientImage" -}}
-{{- $image := get .Values.images (get (dict "mysql" "mysql" "postgresql" "postgres") (include "backupRestore.databaseEngine" .)) -}}
+{{- $image := get .Values.images (include "backupRestore.databaseEngine" .) -}}
 {{- printf "%s:%s" $image.repository $image.tag -}}
 {{- end -}}
 

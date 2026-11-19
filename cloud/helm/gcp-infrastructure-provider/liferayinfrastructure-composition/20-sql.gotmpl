@@ -257,7 +257,7 @@ spec:
         (dict "name" "DATABASE_NAME" "value" $databaseName)
         (dict "name" "DATABASE_USERNAME" "value" $databaseBootstrapIamUser)
         (dict "name" "LIFERAY_DATABASE_USERNAME" "value" $databaseIamUser))
-    "image" $databaseClientImage
+    "image" $env.databaseClientImage
     "jobName" (printf "%s-db-grant-%s" $xr.metadata.name $dataPlane)
     "name" "grant"
     "namespace" $namespace
@@ -278,7 +278,7 @@ spec:
     "env" (list
         (dict "name" "DATABASE_NAME" "value" $databaseName)
         (dict "name" "DATABASE_USERNAME" "value" $databaseIamUser))
-    "image" $databaseClientImage
+    "image" $env.databaseClientImage
     "jobName" (printf "%s-db-login-check-%s" $xr.metadata.name $dataPlane)
     "name" "login-check"
     "namespace" $namespace

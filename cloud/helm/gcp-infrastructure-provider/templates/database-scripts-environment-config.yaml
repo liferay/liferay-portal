@@ -1,5 +1,7 @@
+{{- $databaseClientImage := get (index .Values "liferay-subchart-backup-restore" "images") .Values.database.engine -}}
 apiVersion: apiextensions.crossplane.io/v1beta1
 data:
+    databaseClientImage: {{ printf "%s:%s" $databaseClientImage.repository $databaseClientImage.tag | quote }}
     databaseScripts:
         {{- range $path, $_ := .Files.Glob (printf "scripts/database/%s/*" .Values.database.engine) }}
         {{ base $path }}: {{ $.Files.Get $path | toJson }}

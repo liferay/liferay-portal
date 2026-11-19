@@ -19,7 +19,7 @@ images:
     mysql:
         repository: mysql
         tag: "8.4"
-    postgres:
+    postgresql:
         repository: postgres
         tag: 18-alpine
 liferayInfrastructure:
