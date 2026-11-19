@@ -7,6 +7,8 @@ package com.liferay.content.marketing.platform.web.internal.display.context.test
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.fragment.renderer.FragmentRenderer;
+import com.liferay.frontend.data.set.constants.FDSEntityFieldTypes;
+import com.liferay.frontend.data.set.filter.FDSFilter;
 import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
 import com.liferay.frontend.data.set.test.util.FrontendDataSetTestUtil;
 import com.liferay.petra.string.StringBundler;
@@ -14,6 +16,7 @@ import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.Sync;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -109,6 +112,99 @@ public class ViewProjectTasksSectionDisplayContextTest
 			Collections.singletonMap(
 				"entryClassName", objectDefinition.getClassName()),
 			fdsActionDropdownItems.get(6));
+	}
+
+	@FeatureFlag("LPD-107678")
+	@Override
+	@Test
+	public void testGetFDSFilters() throws Exception {
+		List<FDSFilter> fdsFilters = getFDSFilters(null);
+
+		Assert.assertEquals(fdsFilters.toString(), 7, fdsFilters.size());
+
+		assertFDSFilter(
+			FDSEntityFieldTypes.STRING, "cmpAssignTo", "assignee",
+			fdsFilters.get(0));
+		assertFDSFilter(
+			FDSEntityFieldTypes.DATE_TIME, "dateCreated", "create-date",
+			fdsFilters.get(1));
+		assertFDSFilter(
+			FDSEntityFieldTypes.DATE_TIME, "cmpDueDate", "due-date",
+			fdsFilters.get(2));
+		assertFDSFilter(
+			FDSEntityFieldTypes.INTEGER, "cmpTaskCMPProjectId", "project",
+			fdsFilters.get(3));
+		assertFDSFilter(
+			FDSEntityFieldTypes.STRING, "cmpState", "state", fdsFilters.get(4));
+		assertFDSFilter(
+			FDSEntityFieldTypes.STRING, "keywords", "tag", fdsFilters.get(5));
+		assertFDSFilter(
+			FDSEntityFieldTypes.BOOLEAN, "cmpSubtask", "type",
+			fdsFilters.get(6));
+
+		fdsFilters = getFDSFilters(assetEntry);
+
+		Assert.assertEquals(fdsFilters.toString(), 6, fdsFilters.size());
+
+		assertFDSFilter(
+			FDSEntityFieldTypes.STRING, "cmpAssignTo", "assignee",
+			fdsFilters.get(0));
+		assertFDSFilter(
+			FDSEntityFieldTypes.DATE_TIME, "dateCreated", "create-date",
+			fdsFilters.get(1));
+		assertFDSFilter(
+			FDSEntityFieldTypes.DATE_TIME, "cmpDueDate", "due-date",
+			fdsFilters.get(2));
+		assertFDSFilter(
+			FDSEntityFieldTypes.STRING, "cmpState", "state", fdsFilters.get(3));
+		assertFDSFilter(
+			FDSEntityFieldTypes.STRING, "keywords", "tag", fdsFilters.get(4));
+		assertFDSFilter(
+			FDSEntityFieldTypes.BOOLEAN, "cmpSubtask", "type",
+			fdsFilters.get(5));
+	}
+
+	@FeatureFlag(enable = false, value = "LPD-107678")
+	@Test
+	public void testGetFDSFiltersWhenFeatureFlagIsDisabled() throws Exception {
+		List<FDSFilter> fdsFilters = getFDSFilters(null);
+
+		Assert.assertEquals(fdsFilters.toString(), 6, fdsFilters.size());
+
+		assertFDSFilter(
+			FDSEntityFieldTypes.STRING, "cmpAssignTo", "assignee",
+			fdsFilters.get(0));
+		assertFDSFilter(
+			FDSEntityFieldTypes.DATE_TIME, "dateCreated", "create-date",
+			fdsFilters.get(1));
+		assertFDSFilter(
+			FDSEntityFieldTypes.DATE_TIME, "cmpDueDate", "due-date",
+			fdsFilters.get(2));
+		assertFDSFilter(
+			FDSEntityFieldTypes.INTEGER, "cmpTaskCMPProjectId", "project",
+			fdsFilters.get(3));
+		assertFDSFilter(
+			FDSEntityFieldTypes.STRING, "cmpState", "state", fdsFilters.get(4));
+		assertFDSFilter(
+			FDSEntityFieldTypes.STRING, "keywords", "tag", fdsFilters.get(5));
+
+		fdsFilters = getFDSFilters(assetEntry);
+
+		Assert.assertEquals(fdsFilters.toString(), 5, fdsFilters.size());
+
+		assertFDSFilter(
+			FDSEntityFieldTypes.STRING, "cmpAssignTo", "assignee",
+			fdsFilters.get(0));
+		assertFDSFilter(
+			FDSEntityFieldTypes.DATE_TIME, "dateCreated", "create-date",
+			fdsFilters.get(1));
+		assertFDSFilter(
+			FDSEntityFieldTypes.DATE_TIME, "cmpDueDate", "due-date",
+			fdsFilters.get(2));
+		assertFDSFilter(
+			FDSEntityFieldTypes.STRING, "cmpState", "state", fdsFilters.get(3));
+		assertFDSFilter(
+			FDSEntityFieldTypes.STRING, "keywords", "tag", fdsFilters.get(4));
 	}
 
 	@Test
