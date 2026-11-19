@@ -25,6 +25,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.comment.DiscussionPermission;
 import com.liferay.portal.kernel.dao.orm.QueryDefinition;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.lock.LockManager;
@@ -755,29 +756,47 @@ public class MBMessageServiceImpl extends MBMessageServiceBaseImpl {
 
 	@Override
 	public List<MBMessage> getThreadMessages(
-		long groupId, long categoryId, long threadId, int status, int start,
-		int end) {
+			long groupId, long categoryId, long threadId, int status, int start,
+			int end)
+		throws PortalException {
 
-		if (status == WorkflowConstants.STATUS_ANY) {
-			return mbMessagePersistence.filterFindByG_C_T(
-				groupId, categoryId, threadId, start, end);
+		MBThread thread = _mbThreadPersistence.findByPrimaryKey(threadId);
+
+		if ((thread.getGroupId() != groupId) ||
+			(thread.getCategoryId() != categoryId)) {
+
+			return Collections.emptyList();
 		}
 
-		return mbMessagePersistence.filterFindByG_C_T_S(
-			groupId, categoryId, threadId, status, start, end);
+		QueryDefinition<MBMessage> queryDefinition = new QueryDefinition<>(
+			status, false, start, end, null);
+
+		_checkPermissionAndRestrictQueryDefinition(
+			thread.getRootMessageId(), queryDefinition);
+
+		return mbMessageFinder.findByThreadId(threadId, queryDefinition);
 	}
 
 	@Override
 	public int getThreadMessagesCount(
-		long groupId, long categoryId, long threadId, int status) {
+			long groupId, long categoryId, long threadId, int status)
+		throws PortalException {
 
-		if (status == WorkflowConstants.STATUS_ANY) {
-			return mbMessagePersistence.filterCountByG_C_T(
-				groupId, categoryId, threadId);
+		MBThread thread = _mbThreadPersistence.findByPrimaryKey(threadId);
+
+		if ((thread.getGroupId() != groupId) ||
+			(thread.getCategoryId() != categoryId)) {
+
+			return 0;
 		}
 
-		return mbMessagePersistence.filterCountByG_C_T_S(
-			groupId, categoryId, threadId, status);
+		QueryDefinition<MBMessage> queryDefinition = new QueryDefinition<>(
+			status, false, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+
+		_checkPermissionAndRestrictQueryDefinition(
+			thread.getRootMessageId(), queryDefinition);
+
+		return mbMessageFinder.countByThreadId(threadId, queryDefinition);
 	}
 
 	@Override
