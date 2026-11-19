@@ -79,7 +79,7 @@ public class KBArchiveFactoryUtilTest {
 		);
 
 		KBArchive kbArchive = KBArchiveFactoryUtil.createKBArchive(
-			_configurationProvider, 1234L, _zipReader);
+			_configurationProvider, 1234, _zipReader);
 
 		Collection<KBArchive.Folder> folders = kbArchive.getFolders();
 
@@ -97,7 +97,7 @@ public class KBArchiveFactoryUtilTest {
 		);
 
 		KBArchive kbArchive = KBArchiveFactoryUtil.createKBArchive(
-			_configurationProvider, 1234L, _zipReader);
+			_configurationProvider, 1234, _zipReader);
 
 		Collection<KBArchive.Folder> folders = kbArchive.getFolders();
 
@@ -121,7 +121,7 @@ public class KBArchiveFactoryUtilTest {
 		);
 
 		KBArchive kbArchive = KBArchiveFactoryUtil.createKBArchive(
-			_configurationProvider, 1234L, _zipReader);
+			_configurationProvider, 1234, _zipReader);
 
 		Collection<KBArchive.Folder> folders = kbArchive.getFolders();
 
@@ -190,7 +190,7 @@ public class KBArchiveFactoryUtilTest {
 		);
 
 		KBArchive kbArchive = KBArchiveFactoryUtil.createKBArchive(
-			_configurationProvider, 1234L, _zipReader);
+			_configurationProvider, 1234, _zipReader);
 
 		Collection<KBArchive.Folder> folders = kbArchive.getFolders();
 
@@ -238,7 +238,7 @@ public class KBArchiveFactoryUtilTest {
 		);
 
 		KBArchiveFactoryUtil.createKBArchive(
-			_configurationProvider, 1234L, _zipReader);
+			_configurationProvider, 1234, _zipReader);
 	}
 
 	@Test
@@ -250,7 +250,7 @@ public class KBArchiveFactoryUtilTest {
 		);
 
 		KBArchive kbArchive = KBArchiveFactoryUtil.createKBArchive(
-			_configurationProvider, 1234L, _zipReader);
+			_configurationProvider, 1234, _zipReader);
 
 		Collection<KBArchive.Folder> folders = kbArchive.getFolders();
 
@@ -288,7 +288,7 @@ public class KBArchiveFactoryUtilTest {
 		);
 
 		KBArchive kbArchive = KBArchiveFactoryUtil.createKBArchive(
-			_configurationProvider, 1234L, _zipReader);
+			_configurationProvider, 1234, _zipReader);
 
 		Collection<KBArchive.Folder> folders = kbArchive.getFolders();
 
