@@ -114,6 +114,9 @@ public class DLAppServiceWhenSearchingFileEntriesTest
 	public void testShouldFindViewableFileEntriesOnlyByQuery()
 		throws Exception {
 
+		FileEntry fileEntry = DLAppServiceTestUtil.addFileEntry(
+			group.getGroupId(), parentFolder.getFolderId());
+
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(group.getGroupId());
 
@@ -137,9 +140,6 @@ public class DLAppServiceWhenSearchingFileEntriesTest
 			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
 			RandomTestUtil.randomString() + ".txt", ContentTypes.TEXT_PLAIN,
 			RandomTestUtil.randomBytes(), null, null, null, serviceContext);
-
-		FileEntry fileEntry = DLAppServiceTestUtil.addFileEntry(
-			group.getGroupId(), parentFolder.getFolderId());
 
 		User user = UserTestUtil.addUser();
 
