@@ -21,7 +21,6 @@ import com.liferay.portal.kernel.servlet.InitialRequestSyncUtil;
 import com.liferay.site.initializer.SiteInitializer;
 import com.liferay.site.navigation.model.SiteNavigationMenuItem;
 import com.liferay.site.navigation.service.SiteNavigationMenuItemLocalService;
-import com.liferay.site.pim.site.initializer.internal.constants.PIMSiteInitializerConstants;
 import com.liferay.site.pim.site.initializer.internal.util.PIMObjectEntryFolderUtil;
 import com.liferay.site.pim.site.initializer.internal.util.SiteInitializerUtil;
 
@@ -82,8 +81,7 @@ public class PIMFeatureFlagListener implements FeatureFlagListener {
 			SiteNavigationMenuItem siteNavigationMenuItem =
 				_siteNavigationMenuItemLocalService.
 					fetchSiteNavigationMenuItemByExternalReferenceCode(
-						"PIMPRIMARYNAVIGATIONCONNECTORS",
-						group.getGroupId());
+						"PIMPRIMARYNAVIGATIONCONNECTORS", group.getGroupId());
 
 			if (siteNavigationMenuItem == null) {
 				SiteInitializerUtil.initialize(
