@@ -311,7 +311,7 @@ public class LaunchSetPublisherTest {
 			WorkflowConstants.STATUS_APPROVED,
 			launchSetObjectEntry.getStatus());
 
-		// Launch set whose entries can all be published
+		// Launch set with launch entries that can all be published
 
 		_objectEntryLocalService.deleteObjectEntry(
 			unknownLaunchEntryObjectEntry);
