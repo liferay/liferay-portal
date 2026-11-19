@@ -463,9 +463,18 @@ public class DBCopyTablesProcessTest {
 
 		DBCopyTablesProcess dbCopyTablesProcess = _runDBCopyTablesProcess();
 
+		String tableName = StringUtil.toLowerCase(_sourceTableName);
+
 		Assert.assertEquals(
-			Arrays.asList("custom tables: "),
-			dbCopyTablesProcess.getCustomTableAndColumnInfos());
+			Arrays.asList(
+				"custom tables: none",
+				StringBundler.concat(
+					"custom table ", tableName,
+					": not migrated because its name or the name of one of ",
+					"its columns is longer than 63 bytes")),
+			ListUtil.toList(
+				dbCopyTablesProcess.getCustomTableAndColumnInfos(),
+				StringUtil::toLowerCase));
 
 		tearDown();
 
@@ -480,8 +489,6 @@ public class DBCopyTablesProcessTest {
 			typeName = "varchar2";
 		}
 
-		String tableName = StringUtil.toLowerCase(_sourceTableName);
-
 		Assert.assertEquals(
 			Arrays.asList(
 				"custom tables: " + tableName,
@@ -495,7 +502,7 @@ public class DBCopyTablesProcessTest {
 		tearDown();
 
 		List<String> expectedCustomTableAndColumnInfos = ListUtil.fromArray(
-			"custom tables: ",
+			"custom tables: none",
 			StringBundler.concat(
 				"custom column ", tableName, ".customcolumn: source ", typeName,
 				", created as varchar(75)"));
@@ -507,7 +514,8 @@ public class DBCopyTablesProcessTest {
 			expectedCustomTableAndColumnInfos.add(
 				StringBundler.concat(
 					"custom column ", tableName,
-					".rowidcolumn: source rowid, created as text (fallback)"));
+					".rowidcolumn: source rowid, created as text (no ",
+					"equivalent postgresql type)"));
 		}
 		else if (dbType == DBType.SQLSERVER) {
 			fallbackColumnSQL = ", variantColumn sql_variant";
@@ -515,8 +523,8 @@ public class DBCopyTablesProcessTest {
 			expectedCustomTableAndColumnInfos.add(
 				StringBundler.concat(
 					"custom column ", tableName,
-					".variantcolumn: source sql_variant, created as text ",
-					"(fallback)"));
+					".variantcolumn: source sql_variant, created as text (no ",
+					"equivalent postgresql type)"));
 		}
 
 		_createTable(
@@ -524,8 +532,6 @@ public class DBCopyTablesProcessTest {
 				"create table TestTable (id INTEGER, customColumn ",
 				"VARCHAR(75), testColumn VARCHAR(75)", fallbackColumnSQL, ")"),
 			"create table TestTable (id INTEGER, testColumn VARCHAR(75))");
-
-		_insertValues(RandomTestUtil.randomStrings(_TABLE_SIZE));
 
 		dbCopyTablesProcess = _runDBCopyTablesProcess();
 
