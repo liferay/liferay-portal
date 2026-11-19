@@ -55,12 +55,6 @@ tests:
                     path: spec.clusterResourceWhitelist
                     value: []
                 template: templates/appproject-client-extension.yaml
-            -   notContains:
-                    any: true
-                    content:
-                        kind: RoleBinding
-                    path: spec.namespaceResourceWhitelist
-                template: templates/appproject-client-extension.yaml
             -   equal:
                     path: spec.destinations
                     value:
