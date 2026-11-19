@@ -5,6 +5,7 @@
 
 import {FrameLocator, Locator, Page, expect} from '@playwright/test';
 
+import {clickAndExpectToBeHidden} from '../../../utils/clickAndExpectToBeHidden';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import {waitForAlert} from '../../../utils/waitForAlert';
 import {searchTableRowByValue} from '../commerceDNDTablePage';
@@ -29,6 +30,7 @@ export class CommerceAdminProductDetailsMediaPage {
 	readonly sidePanelCustomFieldInput: (fieldName: string) => Locator;
 	readonly sidePanelDoneButton: Locator;
 	readonly sidePanelFrame: FrameLocator;
+	readonly sidePanelHeader: Locator;
 	readonly sidePanelOptionSelect: (optionName: string) => Locator;
 	readonly sidePanelSaveAsDraftButton: Locator;
 	readonly sidePanelTag: (tagName: string) => Locator;
@@ -71,6 +73,9 @@ export class CommerceAdminProductDetailsMediaPage {
 		this.page = page;
 		this.sidePanel = page.locator('.fds-side-panel.is-visible');
 		this.sidePanelFrame = page.frameLocator('.is-visible iframe');
+		this.sidePanelHeader = this.sidePanelFrame.locator(
+			'.side-panel-iframe-header'
+		);
 		this.selectFileButton = this.sidePanelFrame.getByRole('button', {
 			exact: true,
 			name: 'Select File',
@@ -170,9 +175,10 @@ export class CommerceAdminProductDetailsMediaPage {
 	}
 
 	async publishAttachment() {
-		await this.sidePanelTitleInput.click();
-
-		await expect(this.sidePanelFrame.getByRole('listbox')).toBeHidden();
+		await clickAndExpectToBeHidden({
+			target: this.sidePanelFrame.getByRole('listbox'),
+			trigger: this.sidePanelHeader,
+		});
 
 		await this.sidePanelFrame
 			.getByRole('button', {exact: true, name: 'Publish'})
