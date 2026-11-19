@@ -324,7 +324,7 @@
 				},
 				"sso": {
 					"additionalProperties": false,
-					"description": "Single sign-on for Argo CD.",
+					"description": "Single sign on for Argo CD.",
 					"properties": {
 						"credentialsSecretKey": {
 							"description": "Key in the default ClusterSecretStore holding the SSO credentials.",
@@ -399,7 +399,7 @@
 			"properties": {
 				"clusterProviderConfig": {
 					"additionalProperties": false,
-					"description": "Cluster-wide ProviderConfig for provider-kubernetes.",
+					"description": "Cluster wide ProviderConfig for provider-kubernetes.",
 					"properties": {
 						"enabled": {
 							"description": "Renders the ProviderConfig.",

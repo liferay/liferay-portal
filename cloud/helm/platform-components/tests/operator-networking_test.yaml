@@ -304,16 +304,6 @@ tests:
                     hostname: workflows.liferay.test
                 namespace: custom-workflows
     -   asserts:
-            -   hasDocuments:
-                    count: 0
-        it: Omits the Argo Workflows gateway while Argo Workflows is disabled
-        set:
-            argoWorkflows:
-                enabled: false
-                gateway:
-                    enabled: true
-                    hostname: workflows.liferay.test
-    -   asserts:
             -   documentIndex: 4
                 isKind:
                     of: HTTPRoute
@@ -323,6 +313,16 @@ tests:
         it: Omits HSTS while the gateway serves plain HTTP
         set:
             argoWorkflows:
+                gateway:
+                    enabled: true
+                    hostname: workflows.liferay.test
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+        it: Omits the Argo Workflows gateway while Argo Workflows is disabled
+        set:
+            argoWorkflows:
+                enabled: false
                 gateway:
                     enabled: true
                     hostname: workflows.liferay.test

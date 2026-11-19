@@ -8,13 +8,13 @@ tests:
     -   asserts:
             -   failedTemplate:
                     errorPattern: keda.enabled
-        it: Rejects a non-boolean operator switch
+        it: Rejects a nonboolean operator switch
         set:
             keda.enabled: "yes"
     -   asserts:
             -   failedTemplate:
                     errorPattern: argoWorkflows.gateway.envoyProxy.replicas
-        it: Rejects a non-integer gateway replica count
+        it: Rejects a noninteger gateway replica count
         set:
             argoWorkflows.gateway.envoyProxy.replicas: two
     -   asserts:
