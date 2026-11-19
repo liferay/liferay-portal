@@ -104,6 +104,19 @@ const getThumbnailProps = (item: any) => {
 		return {symbol: 'video'};
 	}
 
+	const imageURL = item.embedded?.images?.find(
+		(image: any) => image.image?.link?.href
+	)?.image.link.href;
+
+	if (imageURL) {
+		return {
+			imgProps: {
+				alt: getAssetTitle(item),
+				src: imageURL,
+			},
+		};
+	}
+
 	return {symbol: 'web-content'};
 };
 

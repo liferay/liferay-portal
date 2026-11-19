@@ -226,7 +226,7 @@ public class SectionDisplayContextUtil {
 			httpServletRequest.getAttribute(InfoDisplayWebKeys.INFO_ITEM),
 			rootObjectEntryFolderExternalReferenceCode);
 
-		StringBundler sb = new StringBundler(14);
+		StringBundler sb = new StringBundler(15);
 
 		sb.append("emptySearch=true&filter=");
 
@@ -251,13 +251,14 @@ public class SectionDisplayContextUtil {
 			sb.append(filterString);
 		}
 
-		sb.append("&nestedFields=embedded,embeddedTaxonomyCategory,");
+		sb.append("&nestedFields=embedded,embedded.images,");
+		sb.append("embeddedTaxonomyCategory,");
 		sb.append("file.metadata,file.previewURL,file.thumbnailURL,");
 		sb.append("modifiedBy,numberOfObjectEntries,");
 		sb.append("numberOfObjectEntryFolders,");
 		sb.append("systemProperties.collaboratorBrief,");
 		sb.append("systemProperties.objectDefinitionBrief");
-		sb.append("&sort=dateModified:desc");
+		sb.append("&nestedFieldsDepth=2&sort=dateModified:desc");
 
 		return sb.toString();
 	}
