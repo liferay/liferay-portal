@@ -766,6 +766,7 @@ public class CPDefinitionLocalServiceTest {
 		_testCopyCPDefinitionDoesNotCopyDraftCPDefinition();
 		_testCopyCPDefinitionOptionRelExternalReferenceCodes();
 		_testCopyCPDefinitionReturnsExistingDraftCPDefinition();
+		_testCopyCPDefinitionWithDifferentGroupId();
 		_testCopyCPDefinitionWithSKUCombinations();
 		_testCopyCPDefinitionWithVersioningDisabled();
 	}
@@ -1773,6 +1774,53 @@ public class CPDefinitionLocalServiceTest {
 					cpDefinition1.getCProductId(),
 					WorkflowConstants.STATUS_DRAFT));
 		}
+	}
+
+	private void _testCopyCPDefinitionWithDifferentGroupId() throws Exception {
+		frutillaRule.scenario(
+			"Copy a product definition into a different group"
+		).given(
+			"A published product definition in a catalog"
+		).when(
+			"the product definition is copied into a different group"
+		).then(
+			"a CPDefinitionGroupIdException is thrown"
+		).and(
+			"the product carries no new version"
+		);
+
+		CPDefinition cpDefinition = CPTestUtil.addCPDefinitionFromCatalog(
+			_commerceCatalog.getGroupId(), SimpleCPTypeConstants.NAME, false,
+			false);
+
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						TestPropsValues.getCompanyId(),
+						CProductVersionConfiguration.class.getName(),
+						HashMapDictionaryBuilder.<String, Object>put(
+							"enabled", true
+						).put(
+							"versionThreshold", 2
+						).build())) {
+
+			CommerceCatalog commerceCatalog =
+				CommerceCatalogLocalServiceUtil.addCommerceCatalog(
+					null, RandomTestUtil.randomString(),
+					RandomTestUtil.randomString(),
+					LocaleUtil.US.getDisplayLanguage(), _serviceContext);
+
+			Assert.assertThrows(
+				CPDefinitionGroupIdException.class,
+				() -> _cpDefinitionLocalService.copyCPDefinition(
+					cpDefinition.getCPDefinitionId(),
+					commerceCatalog.getGroupId(),
+					WorkflowConstants.STATUS_DRAFT));
+		}
+
+		CProduct cProduct = cpDefinition.getCProduct();
+
+		Assert.assertEquals(1, cProduct.getLatestVersion());
 	}
 
 	private void _testCopyCPDefinitionWithSKUCombinations() throws Exception {
