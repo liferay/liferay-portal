@@ -30,6 +30,8 @@ import com.liferay.object.service.ObjectDefinitionSettingLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.service.ObjectRelationshipLocalService;
+import com.liferay.object.service.persistence.ObjectDefinitionPersistence;
+import com.liferay.object.service.persistence.ObjectDefinitionUtil;
 import com.liferay.object.test.util.ObjectActionTestUtil;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.object.test.util.ObjectRelationshipTestUtil;
@@ -57,6 +59,9 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.TransactionTestUtil;
+import com.liferay.portal.kernel.transaction.Propagation;
+import com.liferay.portal.kernel.transaction.TransactionConfig;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
@@ -1012,6 +1017,41 @@ public class ObjectDefinitionTreeUtilTest {
 		Assert.assertEquals(
 			objectEntryA1.getObjectEntryId(),
 			objectEntryAA.getRootObjectEntryId());
+	}
+
+	@Test
+	public void testBindObjectDefinitionsWithTransactionRollback()
+		throws Throwable {
+
+		try {
+			ObjectDefinitionPersistence objectDefinitionPersistence =
+				ObjectDefinitionUtil.getPersistence();
+
+			TransactionTestUtil.invoke(
+				objectDefinitionPersistence.getClass(),
+				TransactionConfig.Factory.create(
+					Propagation.REQUIRED, new Class<?>[] {Exception.class}),
+				() -> {
+					TreeTestUtil.bind(
+						_objectRelationshipLocalService,
+						List.of(_objectRelationshipA_AA));
+
+					Assert.assertArrayEquals(
+						new long[] {_objectDefinitionA.getObjectDefinitionId()},
+						_objectDefinitionAA.getRootObjectDefinitionIds());
+
+					throw new UnsupportedOperationException();
+				});
+
+			Assert.fail();
+		}
+		catch (UnsupportedOperationException unsupportedOperationException) {
+		}
+
+		Assert.assertArrayEquals(
+			new long[0], _objectDefinitionA.getRootObjectDefinitionIds());
+		Assert.assertArrayEquals(
+			new long[0], _objectDefinitionAA.getRootObjectDefinitionIds());
 	}
 
 	@Test
