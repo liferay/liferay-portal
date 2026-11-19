@@ -226,11 +226,6 @@ public interface MemberRequestLocalService
 	public MemberRequest getMemberRequest(long memberRequestId)
 		throws PortalException;
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public MemberRequest getMemberRequest(
-			long groupId, long receiverUserId, int status)
-		throws PortalException;
-
 	/**
 	 * Returns a range of all the member requests.
 	 *
@@ -269,14 +264,6 @@ public interface MemberRequestLocalService
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<MemberRequest> getReceiverStatusMemberRequest(
-		long receiverUserId, int status, int start, int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getReceiverStatusMemberRequestCount(
-		long receiverUserId, int status);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public boolean hasPendingMemberRequest(long groupId, long receiverUserId);
 
 	public MemberRequest updateMemberRequest(
@@ -300,4 +287,4 @@ public interface MemberRequestLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-719210213
+// LIFERAY-SERVICE-BUILDER-HASH:-1043619525

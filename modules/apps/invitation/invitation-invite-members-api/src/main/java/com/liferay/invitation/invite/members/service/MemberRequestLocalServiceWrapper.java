@@ -298,15 +298,6 @@ public class MemberRequestLocalServiceWrapper
 		return _memberRequestLocalService.getMemberRequest(memberRequestId);
 	}
 
-	@Override
-	public com.liferay.invitation.invite.members.model.MemberRequest
-			getMemberRequest(long groupId, long receiverUserId, int status)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _memberRequestLocalService.getMemberRequest(
-			groupId, receiverUserId, status);
-	}
-
 	/**
 	 * Returns a range of all the member requests.
 	 *
@@ -355,24 +346,6 @@ public class MemberRequestLocalServiceWrapper
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _memberRequestLocalService.getPersistedModel(primaryKeyObj);
-	}
-
-	@Override
-	public java.util.List
-		<com.liferay.invitation.invite.members.model.MemberRequest>
-			getReceiverStatusMemberRequest(
-				long receiverUserId, int status, int start, int end) {
-
-		return _memberRequestLocalService.getReceiverStatusMemberRequest(
-			receiverUserId, status, start, end);
-	}
-
-	@Override
-	public int getReceiverStatusMemberRequestCount(
-		long receiverUserId, int status) {
-
-		return _memberRequestLocalService.getReceiverStatusMemberRequestCount(
-			receiverUserId, status);
 	}
 
 	@Override
@@ -438,4 +411,4 @@ public class MemberRequestLocalServiceWrapper
 	private MemberRequestLocalService _memberRequestLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2041823038
+// LIFERAY-SERVICE-BUILDER-HASH:305538221

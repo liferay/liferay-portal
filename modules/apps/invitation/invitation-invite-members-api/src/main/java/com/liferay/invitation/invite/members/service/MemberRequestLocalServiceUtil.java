@@ -261,13 +261,6 @@ public class MemberRequestLocalServiceUtil {
 		return getService().getMemberRequest(memberRequestId);
 	}
 
-	public static MemberRequest getMemberRequest(
-			long groupId, long receiverUserId, int status)
-		throws PortalException {
-
-		return getService().getMemberRequest(groupId, receiverUserId, status);
-	}
-
 	/**
 	 * Returns a range of all the member requests.
 	 *
@@ -308,20 +301,6 @@ public class MemberRequestLocalServiceUtil {
 		throws PortalException {
 
 		return getService().getPersistedModel(primaryKeyObj);
-	}
-
-	public static List<MemberRequest> getReceiverStatusMemberRequest(
-		long receiverUserId, int status, int start, int end) {
-
-		return getService().getReceiverStatusMemberRequest(
-			receiverUserId, status, start, end);
-	}
-
-	public static int getReceiverStatusMemberRequestCount(
-		long receiverUserId, int status) {
-
-		return getService().getReceiverStatusMemberRequestCount(
-			receiverUserId, status);
 	}
 
 	public static boolean hasPendingMemberRequest(
@@ -371,4 +350,4 @@ public class MemberRequestLocalServiceUtil {
 			MemberRequestLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-543090717
+// LIFERAY-SERVICE-BUILDER-HASH:-1815381077
