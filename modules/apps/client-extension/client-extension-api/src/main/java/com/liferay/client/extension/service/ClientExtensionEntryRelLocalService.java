@@ -298,10 +298,6 @@ public interface ClientExtensionEntryRelLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<ClientExtensionEntryRel> getClientExtensionEntryRels(
-		long classNameId, long classPK, String type, int start, int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<ClientExtensionEntryRel> getClientExtensionEntryRels(
 		String type);
 
 	/**
@@ -401,4 +397,4 @@ public interface ClientExtensionEntryRelLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1316836935
+// LIFERAY-SERVICE-BUILDER-HASH:-79617477

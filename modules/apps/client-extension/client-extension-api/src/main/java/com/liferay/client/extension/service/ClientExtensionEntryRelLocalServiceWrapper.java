@@ -395,14 +395,6 @@ public class ClientExtensionEntryRelLocalServiceWrapper
 
 	@Override
 	public java.util.List<ClientExtensionEntryRel> getClientExtensionEntryRels(
-		long classNameId, long classPK, String type, int start, int end) {
-
-		return _clientExtensionEntryRelLocalService.getClientExtensionEntryRels(
-			classNameId, classPK, type, start, end);
-	}
-
-	@Override
-	public java.util.List<ClientExtensionEntryRel> getClientExtensionEntryRels(
 		String type) {
 
 		return _clientExtensionEntryRelLocalService.getClientExtensionEntryRels(
@@ -579,4 +571,4 @@ public class ClientExtensionEntryRelLocalServiceWrapper
 		_clientExtensionEntryRelLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1120372855
+// LIFERAY-SERVICE-BUILDER-HASH:126017538

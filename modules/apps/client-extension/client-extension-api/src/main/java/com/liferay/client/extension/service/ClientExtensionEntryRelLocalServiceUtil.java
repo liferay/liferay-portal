@@ -352,13 +352,6 @@ public class ClientExtensionEntryRelLocalServiceUtil {
 	}
 
 	public static List<ClientExtensionEntryRel> getClientExtensionEntryRels(
-		long classNameId, long classPK, String type, int start, int end) {
-
-		return getService().getClientExtensionEntryRels(
-			classNameId, classPK, type, start, end);
-	}
-
-	public static List<ClientExtensionEntryRel> getClientExtensionEntryRels(
 		String type) {
 
 		return getService().getClientExtensionEntryRels(type);
@@ -484,4 +477,4 @@ public class ClientExtensionEntryRelLocalServiceUtil {
 			ClientExtensionEntryRelLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1474905088
+// LIFERAY-SERVICE-BUILDER-HASH:-688586136
