@@ -43,7 +43,7 @@ public class AddressImpl
 
 	@Override
 	public String getDescription() {
-		return _address.toString();
+		return Util.addressToString(_address);
 	}
 
 	@Override
@@ -65,7 +65,7 @@ public class AddressImpl
 
 	@Override
 	public String toString() {
-		return _address.toString();
+		return Util.addressToString(_address);
 	}
 
 	@Override
