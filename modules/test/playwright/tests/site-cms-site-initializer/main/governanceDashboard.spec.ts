@@ -171,6 +171,23 @@ async function updateExpirationDate(
 	await fillScheduleDateModal(page, expirationDate);
 }
 
+async function updateDateFromUpdateDatesMenu(
+	page: Page,
+	title: string,
+	action: 'Expiration Date' | 'Review Date',
+	date: string
+) {
+	await page.getByRole('button', {name: `${title} Actions`}).click();
+
+	await page
+		.getByRole('menuitem', {exact: true, name: 'Update Dates'})
+		.click();
+
+	await page.getByRole('menuitem', {exact: true, name: action}).click();
+
+	await fillScheduleDateModal(page, date);
+}
+
 async function addSpaceMember(
 	apiHelpers: DataApiHelpers,
 	space: {externalReferenceCode: string},
@@ -471,7 +488,12 @@ test.describe('Freshness section', () => {
 			});
 
 			await test.step('Update a review date from its row action', async () => {
-				await updateReviewDate(page, secondSpaceTitle, DATE_INPUT);
+				await updateDateFromUpdateDatesMenu(
+					page,
+					secondSpaceTitle,
+					'Review Date',
+					DATE_INPUT
+				);
 
 				await pollDate(apiHelpers, overdueContents[1].id, 'reviewDate');
 
@@ -657,7 +679,12 @@ test.describe('Freshness section', () => {
 			});
 
 			await test.step('Update an expiration date from its row action', async () => {
-				await updateExpirationDate(page, secondSpaceTitle, DATE_INPUT);
+				await updateDateFromUpdateDatesMenu(
+					page,
+					secondSpaceTitle,
+					'Expiration Date',
+					DATE_INPUT
+				);
 
 				await pollDate(
 					apiHelpers,
