@@ -905,7 +905,6 @@ public class DisplayPageTemplateResourceTest
 				"type",
 			LayoutPageTemplateEntryTestUtil.getBasicLayoutPageTemplateEntry(
 				serviceContext));
-
 		_assertPostSiteDisplayPageTemplatePageSpecificationProblemException(
 			"The display page template type does not match the display page " +
 				"type",

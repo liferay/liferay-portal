@@ -683,7 +683,6 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 			"The external reference code does not point to a master page",
 			LayoutPageTemplateEntryTestUtil.getBasicLayoutPageTemplateEntry(
 				serviceContext));
-
 		_assertPostSiteMasterPagePageSpecificationProblemException(
 			"The external reference code does not point to a master page",
 			LayoutPageTemplateEntryTestUtil.
