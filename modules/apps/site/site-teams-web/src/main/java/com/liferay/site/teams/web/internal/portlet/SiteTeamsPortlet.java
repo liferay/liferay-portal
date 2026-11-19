@@ -9,15 +9,19 @@ import com.liferay.item.selector.ItemSelector;
 import com.liferay.portal.kernel.exception.DuplicateTeamException;
 import com.liferay.portal.kernel.exception.NoSuchGroupException;
 import com.liferay.portal.kernel.exception.NoSuchTeamException;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.TeamNameException;
 import com.liferay.portal.kernel.model.Team;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
+import com.liferay.portal.kernel.service.TeamLocalService;
 import com.liferay.portal.kernel.service.TeamService;
 import com.liferay.portal.kernel.service.UserGroupService;
 import com.liferay.portal.kernel.service.UserService;
+import com.liferay.portal.kernel.service.permission.TeamPermissionUtil;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -32,6 +36,8 @@ import jakarta.portlet.RenderRequest;
 import jakarta.portlet.RenderResponse;
 
 import java.io.IOException;
+
+import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -185,6 +191,13 @@ public class SiteTeamsPortlet extends MVCPortlet {
 			RenderRequest renderRequest, RenderResponse renderResponse)
 		throws IOException, PortletException {
 
+		try {
+			_checkPermission(renderRequest);
+		}
+		catch (PortalException portalException) {
+			SessionErrors.add(renderRequest, portalException.getClass());
+		}
+
 		renderRequest.setAttribute(ItemSelector.class.getName(), _itemSelector);
 
 		super.render(renderRequest, renderResponse);
@@ -220,8 +233,37 @@ public class SiteTeamsPortlet extends MVCPortlet {
 		return false;
 	}
 
+	private void _checkPermission(RenderRequest renderRequest)
+		throws PortalException {
+
+		Team team = _teamLocalService.fetchTeam(
+			ParamUtil.getLong(renderRequest, "teamId"));
+
+		if (team == null) {
+			return;
+		}
+
+		String actionId = ActionKeys.ASSIGN_MEMBERS;
+
+		if (Objects.equals(
+				ParamUtil.getString(renderRequest, "mvcPath"),
+				"/edit_team.jsp")) {
+
+			actionId = ActionKeys.UPDATE;
+		}
+
+		ThemeDisplay themeDisplay = (ThemeDisplay)renderRequest.getAttribute(
+			WebKeys.THEME_DISPLAY);
+
+		TeamPermissionUtil.check(
+			themeDisplay.getPermissionChecker(), team, actionId);
+	}
+
 	@Reference
 	private ItemSelector _itemSelector;
+
+	@Reference
+	private TeamLocalService _teamLocalService;
 
 	@Reference
 	private TeamService _teamService;
