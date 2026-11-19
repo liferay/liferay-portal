@@ -500,6 +500,19 @@ public class OrganizationServiceTest {
 			TestPropsValues.getGroupId(),
 			new long[] {organization2.getOrganizationId()});
 
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				UserTestUtil.addUser())) {
+
+			Assert.assertThrows(
+				PrincipalException.class,
+				() -> _organizationService.setGroupOrganizations(
+					TestPropsValues.getGroupId(), new long[0]));
+			Assert.assertTrue(
+				_organizationLocalService.hasGroupOrganization(
+					TestPropsValues.getGroupId(),
+					organization2.getOrganizationId()));
+		}
+
 		Organization organization3 = OrganizationTestUtil.addOrganization();
 
 		_organizations.add(organization3);
@@ -528,6 +541,14 @@ public class OrganizationServiceTest {
 				() -> _organizationService.setGroupOrganizations(
 					TestPropsValues.getGroupId(),
 					new long[] {organization3.getOrganizationId()}));
+
+			_organizationService.setGroupOrganizations(
+				TestPropsValues.getGroupId(), new long[0]);
+
+			Assert.assertEquals(
+				0,
+				_organizationLocalService.getGroupOrganizationsCount(
+					TestPropsValues.getGroupId()));
 		}
 	}
 
