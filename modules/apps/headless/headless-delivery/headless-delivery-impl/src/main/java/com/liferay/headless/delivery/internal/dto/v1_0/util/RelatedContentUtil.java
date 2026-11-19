@@ -14,6 +14,8 @@ import com.liferay.asset.link.service.AssetLinkLocalService;
 import com.liferay.headless.delivery.dto.v1_0.RelatedContent;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
@@ -63,8 +65,19 @@ public class RelatedContentUtil {
 			return null;
 		}
 
-		AssetRenderer<?> assetRenderer = assetRendererFactory.getAssetRenderer(
-			assetEntry.getClassPK());
+		AssetRenderer<?> assetRenderer = null;
+
+		try {
+			assetRenderer = assetRendererFactory.getAssetRenderer(
+				assetEntry.getClassPK());
+		}
+		catch (PortalException portalException) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(portalException);
+			}
+
+			return null;
+		}
 
 		if ((assetRenderer == null) ||
 			!assetRenderer.hasViewPermission(
@@ -92,5 +105,8 @@ public class RelatedContentUtil {
 			}
 		};
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		RelatedContentUtil.class);
 
 }
