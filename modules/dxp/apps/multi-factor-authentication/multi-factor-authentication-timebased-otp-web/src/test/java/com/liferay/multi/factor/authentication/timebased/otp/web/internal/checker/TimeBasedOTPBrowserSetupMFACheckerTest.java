@@ -256,6 +256,9 @@ public class TimeBasedOTPBrowserSetupMFACheckerTest {
 
 	@Test
 	public void testVerifyBrowserRequest() throws Exception {
+		MFATimeBasedOTPEntry mfaTimeBasedOTPEntry = Mockito.mock(
+			MFATimeBasedOTPEntry.class);
+
 		User user = Mockito.mock(User.class);
 		long userId = RandomTestUtil.randomLong();
 
@@ -272,8 +275,6 @@ public class TimeBasedOTPBrowserSetupMFACheckerTest {
 		);
 
 		String algorithm = RandomTestUtil.randomString();
-		MFATimeBasedOTPEntry mfaTimeBasedOTPEntry = Mockito.mock(
-			MFATimeBasedOTPEntry.class);
 
 		Mockito.when(
 			mfaTimeBasedOTPEntry.getAlgorithm()
@@ -415,6 +416,9 @@ public class TimeBasedOTPBrowserSetupMFACheckerTest {
 	private void _testVerifyBrowserRequestWhenAlgorithmIsNull()
 		throws Exception {
 
+		MFATimeBasedOTPEntry mfaTimeBasedOTPEntry = Mockito.mock(
+			MFATimeBasedOTPEntry.class);
+
 		User user = Mockito.mock(User.class);
 		long userId = RandomTestUtil.randomLong();
 
@@ -429,9 +433,6 @@ public class TimeBasedOTPBrowserSetupMFACheckerTest {
 		).thenReturn(
 			user
 		);
-
-		MFATimeBasedOTPEntry mfaTimeBasedOTPEntry = Mockito.mock(
-			MFATimeBasedOTPEntry.class);
 
 		Mockito.when(
 			mfaTimeBasedOTPEntry.getLastValidTOTP()
