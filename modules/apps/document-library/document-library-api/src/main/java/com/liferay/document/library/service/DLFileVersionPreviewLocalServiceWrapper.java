@@ -262,14 +262,6 @@ public class DLFileVersionPreviewLocalServiceWrapper
 	}
 
 	@Override
-	public DLFileVersionPreview fetchDLFileVersionPreview(
-		long fileEntryId, long fileVersionId, int previewStatus) {
-
-		return _dlFileVersionPreviewLocalService.fetchDLFileVersionPreview(
-			fileEntryId, fileVersionId, previewStatus);
-	}
-
-	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 
@@ -290,24 +282,6 @@ public class DLFileVersionPreviewLocalServiceWrapper
 
 		return _dlFileVersionPreviewLocalService.getDLFileVersionPreview(
 			dlFileVersionPreviewId);
-	}
-
-	@Override
-	public DLFileVersionPreview getDLFileVersionPreview(
-			long fileEntryId, long fileVersionId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _dlFileVersionPreviewLocalService.getDLFileVersionPreview(
-			fileEntryId, fileVersionId);
-	}
-
-	@Override
-	public DLFileVersionPreview getDLFileVersionPreview(
-			long fileEntryId, long fileVersionId, int previewStatus)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _dlFileVersionPreviewLocalService.getDLFileVersionPreview(
-			fileEntryId, fileVersionId, previewStatus);
 	}
 
 	/**
@@ -338,14 +312,6 @@ public class DLFileVersionPreviewLocalServiceWrapper
 	public int getDLFileVersionPreviewsCount() {
 		return _dlFileVersionPreviewLocalService.
 			getDLFileVersionPreviewsCount();
-	}
-
-	@Override
-	public java.util.List<DLFileVersionPreview>
-		getFileEntryDLFileVersionPreviews(long fileEntryId) {
-
-		return _dlFileVersionPreviewLocalService.
-			getFileEntryDLFileVersionPreviews(fileEntryId);
 	}
 
 	@Override
@@ -453,4 +419,4 @@ public class DLFileVersionPreviewLocalServiceWrapper
 	private DLFileVersionPreviewLocalService _dlFileVersionPreviewLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1542864409
+// LIFERAY-SERVICE-BUILDER-HASH:-728275339

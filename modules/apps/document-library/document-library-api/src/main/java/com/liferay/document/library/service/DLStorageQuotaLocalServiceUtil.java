@@ -211,12 +211,6 @@ public class DLStorageQuotaLocalServiceUtil {
 		return getService().getActionableDynamicQuery();
 	}
 
-	public static DLStorageQuota getCompanyDLStorageQuota(long companyId)
-		throws PortalException {
-
-		return getService().getCompanyDLStorageQuota(companyId);
-	}
-
 	/**
 	 * Returns the dl storage quota with the primary key.
 	 *
@@ -319,4 +313,4 @@ public class DLStorageQuotaLocalServiceUtil {
 			DLStorageQuotaLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1519845105
+// LIFERAY-SERVICE-BUILDER-HASH:1427792208

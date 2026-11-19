@@ -238,14 +238,6 @@ public class DLStorageQuotaLocalServiceWrapper
 		return _dlStorageQuotaLocalService.getActionableDynamicQuery();
 	}
 
-	@Override
-	public com.liferay.document.library.model.DLStorageQuota
-			getCompanyDLStorageQuota(long companyId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _dlStorageQuotaLocalService.getCompanyDLStorageQuota(companyId);
-	}
-
 	/**
 	 * Returns the dl storage quota with the primary key.
 	 *
@@ -372,4 +364,4 @@ public class DLStorageQuotaLocalServiceWrapper
 	private DLStorageQuotaLocalService _dlStorageQuotaLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-559490194
+// LIFERAY-SERVICE-BUILDER-HASH:-614569874

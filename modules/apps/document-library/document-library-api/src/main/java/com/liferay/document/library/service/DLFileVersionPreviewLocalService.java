@@ -213,10 +213,6 @@ public interface DLFileVersionPreviewLocalService
 		long fileEntryId, long fileVersionId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public DLFileVersionPreview fetchDLFileVersionPreview(
-		long fileEntryId, long fileVersionId, int previewStatus);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	/**
@@ -229,16 +225,6 @@ public interface DLFileVersionPreviewLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public DLFileVersionPreview getDLFileVersionPreview(
 			long dlFileVersionPreviewId)
-		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public DLFileVersionPreview getDLFileVersionPreview(
-			long fileEntryId, long fileVersionId)
-		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public DLFileVersionPreview getDLFileVersionPreview(
-			long fileEntryId, long fileVersionId, int previewStatus)
 		throws PortalException;
 
 	/**
@@ -263,10 +249,6 @@ public interface DLFileVersionPreviewLocalService
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getDLFileVersionPreviewsCount();
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<DLFileVersionPreview> getFileEntryDLFileVersionPreviews(
-		long fileEntryId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
@@ -324,4 +306,4 @@ public interface DLFileVersionPreviewLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2023561149
+// LIFERAY-SERVICE-BUILDER-HASH:789865400

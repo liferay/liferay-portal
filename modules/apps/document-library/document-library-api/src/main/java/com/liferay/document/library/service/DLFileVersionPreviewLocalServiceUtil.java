@@ -229,13 +229,6 @@ public class DLFileVersionPreviewLocalServiceUtil {
 			fileEntryId, fileVersionId);
 	}
 
-	public static DLFileVersionPreview fetchDLFileVersionPreview(
-		long fileEntryId, long fileVersionId, int previewStatus) {
-
-		return getService().fetchDLFileVersionPreview(
-			fileEntryId, fileVersionId, previewStatus);
-	}
-
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 
@@ -254,21 +247,6 @@ public class DLFileVersionPreviewLocalServiceUtil {
 		throws PortalException {
 
 		return getService().getDLFileVersionPreview(dlFileVersionPreviewId);
-	}
-
-	public static DLFileVersionPreview getDLFileVersionPreview(
-			long fileEntryId, long fileVersionId)
-		throws PortalException {
-
-		return getService().getDLFileVersionPreview(fileEntryId, fileVersionId);
-	}
-
-	public static DLFileVersionPreview getDLFileVersionPreview(
-			long fileEntryId, long fileVersionId, int previewStatus)
-		throws PortalException {
-
-		return getService().getDLFileVersionPreview(
-			fileEntryId, fileVersionId, previewStatus);
 	}
 
 	/**
@@ -295,12 +273,6 @@ public class DLFileVersionPreviewLocalServiceUtil {
 	 */
 	public static int getDLFileVersionPreviewsCount() {
 		return getService().getDLFileVersionPreviewsCount();
-	}
-
-	public static List<DLFileVersionPreview> getFileEntryDLFileVersionPreviews(
-		long fileEntryId) {
-
-		return getService().getFileEntryDLFileVersionPreviews(fileEntryId);
 	}
 
 	public static
@@ -369,4 +341,4 @@ public class DLFileVersionPreviewLocalServiceUtil {
 			DLFileVersionPreviewLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:873167204
+// LIFERAY-SERVICE-BUILDER-HASH:1985113166

@@ -196,10 +196,6 @@ public interface DLStorageQuotaLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public DLStorageQuota getCompanyDLStorageQuota(long companyId)
-		throws PortalException;
-
 	/**
 	 * Returns the dl storage quota with the primary key.
 	 *
@@ -273,4 +269,4 @@ public interface DLStorageQuotaLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:250660950
+// LIFERAY-SERVICE-BUILDER-HASH:-1672232987
