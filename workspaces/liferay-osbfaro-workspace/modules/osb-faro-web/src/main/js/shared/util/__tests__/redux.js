@@ -1,6 +1,6 @@
+import {Distribution, RemoteData} from '../records';
 import {handleError, handleLoading} from '../redux';
 import {Map} from 'immutable';
-import {RemoteData} from '../records';
 
 describe('redux', () => {
 	describe('handleLoading', () => {
@@ -8,6 +8,15 @@ describe('redux', () => {
 			expect(handleLoading(new Map(), {payload: {id: 23}})).toEqual(
 				new Map().set(23, new RemoteData({loading: true}))
 			);
+		});
+
+		it('should set loading on a loaded Distribution record', () => {
+			const state = handleLoading(
+				new Map().set(23, new Distribution({loading: false})),
+				{payload: {id: 23}}
+			);
+
+			expect(state.get(23).loading).toBe(true);
 		});
 	});
 
@@ -23,6 +32,15 @@ describe('redux', () => {
 				errorStatus: 403,
 				payload: {id: 23},
 			});
+
+			expect(state.get(23).errorStatus).toBe(403);
+		});
+
+		it('should keep the error status on a Distribution record', () => {
+			const state = handleError(
+				new Map().set(23, new Distribution({loading: false})),
+				{errorStatus: 403, payload: {id: 23}}
+			);
 
 			expect(state.get(23).errorStatus).toBe(403);
 		});
