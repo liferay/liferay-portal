@@ -33,6 +33,10 @@ persistence:
 projectId: ""
 search:
     elasticsearch:
+        accessControl:
+            allowedIngress: []
+            eckOperatorNamespace: elastic-system
+            enabled: false
         config: {}
         env:
             ES_JAVA_OPTS: -Xms4g -Xmx4g

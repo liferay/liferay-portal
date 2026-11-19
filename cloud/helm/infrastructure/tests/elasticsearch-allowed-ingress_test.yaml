@@ -1,0 +1,180 @@
+release:
+    name: my-release
+    namespace: my-namespace
+suite: Elasticsearch Allowed Ingress
+templates:
+    -   templates/elasticsearch-allowed-ingress.yaml
+tests:
+    -   asserts:
+            -   equal:
+                    path: spec.ingress[1]
+                    value:
+                        from:
+                            -   podSelector:
+                                    matchLabels:
+                                        elasticsearch.k8s.elastic.co/cluster-name: my-release-es
+                        ports:
+                            -   port: 9300
+                                protocol: TCP
+        it: Allows Elasticsearch nodes to reach each other on the transport port
+        set:
+            search.elasticsearch.accessControl.allowedIngress:
+                -   namespace: client-extension
+                    port: 9200
+            search.elasticsearch.accessControl.enabled: true
+    -   asserts:
+            -   lengthEqual:
+                    count: 2
+                    path: spec.ingress
+        it: Allows only Liferay, the ECK operator and the Elasticsearch nodes when no ingress is allowed
+        set:
+            search.elasticsearch.accessControl.enabled: true
+    -   asserts:
+            -   equal:
+                    path: spec.ingress[2].from
+                    value:
+                        -   namespaceSelector:
+                                matchLabels:
+                                    kubernetes.io/metadata.name: client-extension
+                            podSelector:
+                                matchLabels:
+                                    app: one
+                        -   namespaceSelector:
+                                matchLabels:
+                                    kubernetes.io/metadata.name: client-extension
+                            podSelector:
+                                matchLabels:
+                                    app: two
+        it: Allows only the labeled pods of the namespace when pod labels are set
+        set:
+            search.elasticsearch.accessControl.allowedIngress:
+                -   namespace: client-extension
+                    podLabels:
+                        -   app: one
+                        -   app: two
+                    port: 9200
+            search.elasticsearch.accessControl.enabled: true
+    -   asserts:
+            -   equal:
+                    path: spec.ingress[0]
+                    value:
+                        from:
+                            -   namespaceSelector:
+                                    matchLabels:
+                                        kubernetes.io/metadata.name: my-namespace
+                            -   namespaceSelector:
+                                    matchLabels:
+                                        kubernetes.io/metadata.name: elastic-system
+                        ports:
+                            -   port: 9200
+                                protocol: TCP
+        it: Allows the ECK operator and the release namespace to reach the HTTP port
+        set:
+            search.elasticsearch.accessControl.allowedIngress:
+                -   namespace: client-extension
+                    port: 9200
+            search.elasticsearch.accessControl.enabled: true
+    -   asserts:
+            -   equal:
+                    path: spec.ingress[0].from[1].namespaceSelector.matchLabels["kubernetes.io/metadata.name"]
+                    value: eck-system
+        it: Allows the configured ECK operator namespace to reach the HTTP port
+        set:
+            search.elasticsearch.accessControl.eckOperatorNamespace: eck-system
+            search.elasticsearch.accessControl.enabled: true
+    -   asserts:
+            -   equal:
+                    path: spec.ingress[2]
+                    value:
+                        from:
+                            -   podSelector:
+                                    matchLabels:
+                                        app.kubernetes.io/name: elasticsearch-exporter
+                        ports:
+                            -   port: 9200
+                                protocol: TCP
+            -   lengthEqual:
+                    count: 4
+                    path: spec.ingress
+        it: Allows the exporter to reach the HTTP port when the exporter is enabled
+        set:
+            search.elasticsearch.accessControl.allowedIngress:
+                -   namespace: client-extension
+                    port: 9200
+            search.elasticsearch.accessControl.enabled: true
+            search.elasticsearch.exporter.enabled: true
+    -   asserts:
+            -   equal:
+                    path: spec.ingress[2]
+                    value:
+                        from:
+                            -   namespaceSelector:
+                                    matchLabels:
+                                        kubernetes.io/metadata.name: client-extension
+                        ports:
+                            -   port: 9200
+                                protocol: TCP
+            -   equal:
+                    path: metadata.annotations["argocd.argoproj.io/sync-wave"]
+                    value: "-25"
+            -   equal:
+                    path: metadata.namespace
+                    value: my-namespace-elasticsearch
+            -   equal:
+                    path: spec.podSelector.matchLabels
+                    value:
+                        elasticsearch.k8s.elastic.co/cluster-name: my-release-es
+        it: Allows the whole namespace to reach the Elasticsearch pods on the configured port
+        set:
+            search.elasticsearch.accessControl.allowedIngress:
+                -   namespace: client-extension
+                    port: 9200
+            search.elasticsearch.accessControl.enabled: true
+    -   asserts:
+            -   failedTemplate:
+                    errorPattern: "\"search.elasticsearch.accessControl.allowedIngress\\[0\\].namespace\" is required"
+        it: Fails when an allowed ingress entry has no namespace
+        set:
+            search.elasticsearch.accessControl.allowedIngress:
+                -   port: 9200
+            search.elasticsearch.accessControl.enabled: true
+    -   asserts:
+            -   failedTemplate:
+                    errorPattern: "\"search.elasticsearch.accessControl.allowedIngress\\[0\\].port\" is required"
+        it: Fails when an allowed ingress entry has no port
+        set:
+            search.elasticsearch.accessControl.allowedIngress:
+                -   namespace: client-extension
+            search.elasticsearch.accessControl.enabled: true
+    -   asserts:
+            -   failedTemplate:
+                    errorMessage: The value "search.elasticsearch.accessControl.enabled" must be true when "search.elasticsearch.accessControl.allowedIngress" is set
+        it: Fails when an allowed ingress entry is set while access control is disabled
+        set:
+            search.elasticsearch.accessControl.allowedIngress:
+                -   namespace: client-extension
+                    port: 9200
+    -   asserts:
+            -   lengthEqual:
+                    count: 3
+                    path: spec.ingress
+            -   notContains:
+                    content:
+                        from:
+                            -   podSelector:
+                                    matchLabels:
+                                        app.kubernetes.io/name: elasticsearch-exporter
+                        ports:
+                            -   port: 9200
+                                protocol: TCP
+                    path: spec.ingress
+        it: Omits the exporter rule when the exporter is disabled
+        set:
+            search.elasticsearch.accessControl.allowedIngress:
+                -   namespace: client-extension
+                    port: 9200
+            search.elasticsearch.accessControl.enabled: true
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+        it: Omits the network policy by default
