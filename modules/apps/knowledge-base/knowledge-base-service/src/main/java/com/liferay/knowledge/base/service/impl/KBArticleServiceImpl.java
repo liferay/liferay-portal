@@ -26,6 +26,7 @@ import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.lock.Lock;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
@@ -213,11 +214,11 @@ public class KBArticleServiceImpl extends KBArticleServiceBaseImpl {
 	public KBArticle fetchFirstChildKBArticle(
 		long groupId, long parentResourcePrimKey) {
 
-		List<KBArticle> kbArticles =
+		List<KBArticle> kbArticles = _getViewableLatestKBArticles(
 			kbArticlePersistence.filterFindByG_P_L_NotS(
 				groupId, parentResourcePrimKey, true,
-				WorkflowConstants.STATUS_IN_TRASH, 0, 1,
-				KBArticlePriorityComparator.getInstance(true));
+				WorkflowConstants.STATUS_IN_TRASH),
+			KBArticlePriorityComparator.getInstance(true));
 
 		if (kbArticles.isEmpty()) {
 			return null;
@@ -267,14 +268,7 @@ public class KBArticleServiceImpl extends KBArticleServiceBaseImpl {
 		KBArticle kbArticle = kbArticleLocalService.fetchLatestKBArticle(
 			resourcePrimKey, status);
 
-		if ((kbArticle != null) &&
-			_kbArticleModelResourcePermission.contains(
-				getPermissionChecker(), kbArticle, ActionKeys.VIEW)) {
-
-			return kbArticle;
-		}
-
-		return null;
+		return _getViewableKBArticle(kbArticle);
 	}
 
 	@Override
@@ -286,14 +280,7 @@ public class KBArticleServiceImpl extends KBArticleServiceBaseImpl {
 			kbArticleLocalService.fetchLatestKBArticleByExternalReferenceCode(
 				groupId, externalReferenceCode);
 
-		if ((kbArticle != null) &&
-			_kbArticleModelResourcePermission.contains(
-				getPermissionChecker(), kbArticle, ActionKeys.VIEW)) {
-
-			return kbArticle;
-		}
-
-		return null;
+		return _getViewableKBArticle(kbArticle);
 	}
 
 	@Override
@@ -305,14 +292,7 @@ public class KBArticleServiceImpl extends KBArticleServiceBaseImpl {
 			kbArticleLocalService.fetchLatestKBArticleByUrlTitle(
 				groupId, kbFolderId, urlTitle, status);
 
-		if ((kbArticle != null) &&
-			_kbArticleModelResourcePermission.contains(
-				getPermissionChecker(), kbArticle, ActionKeys.VIEW)) {
-
-			return kbArticle;
-		}
-
-		return null;
+		return _getViewableKBArticle(kbArticle);
 	}
 
 	@Override
@@ -353,9 +333,12 @@ public class KBArticleServiceImpl extends KBArticleServiceBaseImpl {
 		OrderByComparator<KBArticle> orderByComparator) {
 
 		if (status == WorkflowConstants.STATUS_ANY) {
-			return kbArticlePersistence.filterFindByG_L_NotS(
-				groupId, true, WorkflowConstants.STATUS_IN_TRASH, start, end,
-				orderByComparator);
+			return ListUtil.subList(
+				_getViewableLatestKBArticles(
+					kbArticlePersistence.filterFindByG_L_NotS(
+						groupId, true, WorkflowConstants.STATUS_IN_TRASH),
+					orderByComparator),
+				start, end);
 		}
 		else if (status == WorkflowConstants.STATUS_APPROVED) {
 			return kbArticlePersistence.filterFindByG_M_NotS(
@@ -363,22 +346,25 @@ public class KBArticleServiceImpl extends KBArticleServiceBaseImpl {
 				orderByComparator);
 		}
 
-		return kbArticlePersistence.filterFindByG_S(
-			groupId, status, start, end, orderByComparator);
+		return ListUtil.subList(
+			_getViewableKBArticles(
+				kbArticlePersistence.filterFindByG_S(
+					groupId, status, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator)),
+			start, end);
 	}
 
 	@Override
 	public int getGroupKBArticlesCount(long groupId, int status) {
-		if (status == WorkflowConstants.STATUS_ANY) {
-			return kbArticlePersistence.filterCountByG_L_NotS(
-				groupId, true, WorkflowConstants.STATUS_IN_TRASH);
-		}
-		else if (status == WorkflowConstants.STATUS_APPROVED) {
+		if (status == WorkflowConstants.STATUS_APPROVED) {
 			return kbArticlePersistence.filterCountByG_M_NotS(
 				groupId, true, WorkflowConstants.STATUS_IN_TRASH);
 		}
 
-		return kbArticlePersistence.filterCountByG_S(groupId, status);
+		List<KBArticle> kbArticles = getGroupKBArticles(
+			groupId, status, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+
+		return kbArticles.size();
 	}
 
 	@Override
@@ -555,26 +541,42 @@ public class KBArticleServiceImpl extends KBArticleServiceBaseImpl {
 		OrderByComparator<KBArticle> orderByComparator) {
 
 		if (status == WorkflowConstants.STATUS_ANY) {
-			return kbArticlePersistence.filterFindByR_G_NotS(
-				resourcePrimKey, groupId, WorkflowConstants.STATUS_IN_TRASH,
-				start, end, orderByComparator);
+			return ListUtil.subList(
+				_getViewableKBArticles(
+					kbArticlePersistence.filterFindByR_G_NotS(
+						resourcePrimKey, groupId,
+						WorkflowConstants.STATUS_IN_TRASH, QueryUtil.ALL_POS,
+						QueryUtil.ALL_POS, orderByComparator)),
+				start, end);
+		}
+		else if (status == WorkflowConstants.STATUS_APPROVED) {
+			return kbArticlePersistence.filterFindByR_G_S(
+				resourcePrimKey, groupId, status, start, end,
+				orderByComparator);
 		}
 
-		return kbArticlePersistence.filterFindByR_G_S(
-			resourcePrimKey, groupId, status, start, end, orderByComparator);
+		return ListUtil.subList(
+			_getViewableKBArticles(
+				kbArticlePersistence.filterFindByR_G_S(
+					resourcePrimKey, groupId, status, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, orderByComparator)),
+			start, end);
 	}
 
 	@Override
 	public int getKBArticleVersionsCount(
 		long groupId, long resourcePrimKey, int status) {
 
-		if (status == WorkflowConstants.STATUS_ANY) {
-			return kbArticlePersistence.filterCountByR_G_NotS(
-				resourcePrimKey, groupId, WorkflowConstants.STATUS_IN_TRASH);
+		if (status == WorkflowConstants.STATUS_APPROVED) {
+			return kbArticlePersistence.filterCountByR_G_S(
+				resourcePrimKey, groupId, status);
 		}
 
-		return kbArticlePersistence.filterCountByR_G_S(
-			resourcePrimKey, groupId, status);
+		List<KBArticle> kbArticles = getKBArticleVersions(
+			groupId, resourcePrimKey, status, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+
+		return kbArticles.size();
 	}
 
 	@Override
@@ -583,10 +585,13 @@ public class KBArticleServiceImpl extends KBArticleServiceBaseImpl {
 		int end, OrderByComparator<KBArticle> orderByComparator) {
 
 		if (status == WorkflowConstants.STATUS_ANY) {
-			return kbArticlePersistence.filterFindByG_P_L_NotS(
-				groupId, parentResourcePrimKey, true,
-				WorkflowConstants.STATUS_IN_TRASH, start, end,
-				orderByComparator);
+			return ListUtil.subList(
+				_getViewableLatestKBArticles(
+					kbArticlePersistence.filterFindByG_P_L_NotS(
+						groupId, parentResourcePrimKey, true,
+						WorkflowConstants.STATUS_IN_TRASH),
+					orderByComparator),
+				start, end);
 		}
 		else if (status == WorkflowConstants.STATUS_APPROVED) {
 			return kbArticlePersistence.filterFindByG_P_M_S(
@@ -595,9 +600,12 @@ public class KBArticleServiceImpl extends KBArticleServiceBaseImpl {
 				orderByComparator);
 		}
 
-		return kbArticlePersistence.filterFindByG_P_S(
-			groupId, parentResourcePrimKey, status, start, end,
-			orderByComparator);
+		return ListUtil.subList(
+			_getViewableKBArticles(
+				kbArticlePersistence.filterFindByG_P_S(
+					groupId, parentResourcePrimKey, status, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, orderByComparator)),
+			start, end);
 	}
 
 	@Override
@@ -613,9 +621,11 @@ public class KBArticleServiceImpl extends KBArticleServiceBaseImpl {
 			List<KBArticle> curKBArticles = null;
 
 			if (status == WorkflowConstants.STATUS_ANY) {
-				curKBArticles = kbArticlePersistence.filterFindByR_G_L_NotS(
-					ArrayUtil.toArray(params[1]), groupId, true,
-					WorkflowConstants.STATUS_IN_TRASH, start, end);
+				curKBArticles = _getViewableLatestKBArticles(
+					kbArticlePersistence.filterFindByR_G_L_NotS(
+						ArrayUtil.toArray(params[1]), groupId, true,
+						WorkflowConstants.STATUS_IN_TRASH),
+					null);
 			}
 			else if (status == WorkflowConstants.STATUS_APPROVED) {
 				curKBArticles = kbArticlePersistence.filterFindByR_G_M_NotS(
@@ -623,8 +633,9 @@ public class KBArticleServiceImpl extends KBArticleServiceBaseImpl {
 					WorkflowConstants.STATUS_IN_TRASH, start, end);
 			}
 			else {
-				curKBArticles = kbArticlePersistence.filterFindByR_G_S(
-					ArrayUtil.toArray(params[1]), groupId, status, start, end);
+				curKBArticles = _getViewableKBArticles(
+					kbArticlePersistence.filterFindByR_G_S(
+						ArrayUtil.toArray(params[1]), groupId, status));
 			}
 
 			kbArticles.addAll(curKBArticles);
@@ -635,6 +646,10 @@ public class KBArticleServiceImpl extends KBArticleServiceBaseImpl {
 		}
 		else {
 			kbArticles = KnowledgeBaseUtil.sort(resourcePrimKeys, kbArticles);
+		}
+
+		if (status != WorkflowConstants.STATUS_APPROVED) {
+			kbArticles = ListUtil.subList(kbArticles, start, end);
 		}
 
 		return Collections.unmodifiableList(kbArticles);
@@ -662,44 +677,39 @@ public class KBArticleServiceImpl extends KBArticleServiceBaseImpl {
 	public int getKBArticlesCount(
 		long groupId, long parentResourcePrimKey, int status) {
 
-		if (status == WorkflowConstants.STATUS_ANY) {
-			return kbArticlePersistence.filterCountByG_P_L_NotS(
-				groupId, parentResourcePrimKey, true,
-				WorkflowConstants.STATUS_IN_TRASH);
-		}
-		else if (status == WorkflowConstants.STATUS_APPROVED) {
+		if (status == WorkflowConstants.STATUS_APPROVED) {
 			return kbArticlePersistence.filterCountByG_P_M_NotS(
 				groupId, parentResourcePrimKey, true,
 				WorkflowConstants.STATUS_IN_TRASH);
 		}
 
-		return kbArticlePersistence.filterCountByG_P_S(
-			groupId, parentResourcePrimKey, status);
+		List<KBArticle> kbArticles = getKBArticles(
+			groupId, parentResourcePrimKey, status, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+
+		return kbArticles.size();
 	}
 
 	@Override
 	public int getKBArticlesCount(
 		long groupId, long[] resourcePrimKeys, int status) {
 
+		if (status != WorkflowConstants.STATUS_APPROVED) {
+			List<KBArticle> kbArticles = getKBArticles(
+				groupId, resourcePrimKeys, status, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS, null);
+
+			return kbArticles.size();
+		}
+
 		int count = 0;
 
 		Long[][] params = {ArrayUtil.toArray(resourcePrimKeys)};
 
 		while ((params = KnowledgeBaseUtil.getParams(params[0])) != null) {
-			if (status == WorkflowConstants.STATUS_ANY) {
-				count += kbArticlePersistence.filterCountByR_G_L_NotS(
-					ArrayUtil.toArray(params[1]), groupId, true,
-					WorkflowConstants.STATUS_IN_TRASH);
-			}
-			else if (status == WorkflowConstants.STATUS_APPROVED) {
-				count += kbArticlePersistence.filterCountByR_G_M_NotS(
-					ArrayUtil.toArray(params[1]), groupId, true,
-					WorkflowConstants.STATUS_IN_TRASH);
-			}
-			else {
-				count += kbArticlePersistence.filterCountByR_G_S(
-					ArrayUtil.toArray(params[1]), groupId, status);
-			}
+			count += kbArticlePersistence.filterCountByR_G_M_NotS(
+				ArrayUtil.toArray(params[1]), groupId, true,
+				WorkflowConstants.STATUS_IN_TRASH);
 		}
 
 		return count;
@@ -742,10 +752,17 @@ public class KBArticleServiceImpl extends KBArticleServiceBaseImpl {
 			kbArticleLocalService.getLatestKBArticleByExternalReferenceCode(
 				groupId, externalReferenceCode);
 
-		_kbArticleModelResourcePermission.check(
-			getPermissionChecker(), kbArticle, KBActionKeys.VIEW);
+		PermissionChecker permissionChecker = getPermissionChecker();
 
-		return kbArticle;
+		_kbArticleModelResourcePermission.check(
+			permissionChecker, kbArticle, KBActionKeys.VIEW);
+
+		if (_hasPermission(kbArticle, permissionChecker)) {
+			return kbArticle;
+		}
+
+		return kbArticleLocalService.getLatestKBArticle(
+			kbArticle.getResourcePrimKey(), WorkflowConstants.STATUS_APPROVED);
 	}
 
 	@Override
@@ -1145,10 +1162,11 @@ public class KBArticleServiceImpl extends KBArticleServiceBaseImpl {
 		List<KBArticle> curKBArticles = null;
 
 		if (status == WorkflowConstants.STATUS_ANY) {
-			curKBArticles = kbArticlePersistence.filterFindByG_P_L_NotS(
-				groupId, resourcePrimKey, true,
-				WorkflowConstants.STATUS_IN_TRASH, QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS, orderByComparator);
+			curKBArticles = _getViewableLatestKBArticles(
+				kbArticlePersistence.filterFindByG_P_L_NotS(
+					groupId, resourcePrimKey, true,
+					WorkflowConstants.STATUS_IN_TRASH),
+				orderByComparator);
 		}
 		else if (status == WorkflowConstants.STATUS_APPROVED) {
 			curKBArticles = kbArticlePersistence.filterFindByG_P_M_NotS(
@@ -1157,9 +1175,10 @@ public class KBArticleServiceImpl extends KBArticleServiceBaseImpl {
 				QueryUtil.ALL_POS, orderByComparator);
 		}
 		else {
-			curKBArticles = kbArticlePersistence.filterFindByG_P_S(
-				groupId, resourcePrimKey, status, QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS, orderByComparator);
+			curKBArticles = _getViewableKBArticles(
+				kbArticlePersistence.filterFindByG_P_S(
+					groupId, resourcePrimKey, status, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, orderByComparator));
 		}
 
 		for (KBArticle curKBArticle : curKBArticles) {
@@ -1217,6 +1236,90 @@ public class KBArticleServiceImpl extends KBArticleServiceBaseImpl {
 		}
 
 		return kbArticle;
+	}
+
+	private KBArticle _getViewableKBArticle(KBArticle kbArticle)
+		throws PortalException {
+
+		if (kbArticle == null) {
+			return null;
+		}
+
+		PermissionChecker permissionChecker = getPermissionChecker();
+
+		if (!_kbArticleModelResourcePermission.contains(
+				permissionChecker, kbArticle, ActionKeys.VIEW)) {
+
+			return null;
+		}
+
+		if (_hasPermission(kbArticle, permissionChecker)) {
+			return kbArticle;
+		}
+
+		return kbArticleLocalService.fetchLatestKBArticle(
+			kbArticle.getResourcePrimKey(), WorkflowConstants.STATUS_APPROVED);
+	}
+
+	private List<KBArticle> _getViewableKBArticles(List<KBArticle> kbArticles) {
+		try {
+			PermissionChecker permissionChecker = getPermissionChecker();
+
+			List<KBArticle> viewableKBArticles = new ArrayList<>();
+
+			for (KBArticle kbArticle : kbArticles) {
+				if (!_hasPermission(kbArticle, permissionChecker)) {
+					continue;
+				}
+
+				viewableKBArticles.add(kbArticle);
+			}
+
+			return viewableKBArticles;
+		}
+		catch (PortalException portalException) {
+			throw new SystemException(portalException);
+		}
+	}
+
+	private List<KBArticle> _getViewableLatestKBArticles(
+		List<KBArticle> kbArticles,
+		OrderByComparator<KBArticle> orderByComparator) {
+
+		try {
+			PermissionChecker permissionChecker = getPermissionChecker();
+
+			List<KBArticle> viewableKBArticles = new ArrayList<>();
+
+			for (KBArticle kbArticle : kbArticles) {
+				if (_hasPermission(kbArticle, permissionChecker)) {
+					viewableKBArticles.add(kbArticle);
+
+					continue;
+				}
+
+				KBArticle approvedKBArticle =
+					kbArticleLocalService.fetchLatestKBArticle(
+						kbArticle.getResourcePrimKey(),
+						WorkflowConstants.STATUS_APPROVED);
+
+				if (approvedKBArticle == null) {
+					continue;
+				}
+
+				viewableKBArticles.add(approvedKBArticle);
+			}
+
+			if (orderByComparator != null) {
+				viewableKBArticles = ListUtil.sort(
+					viewableKBArticles, orderByComparator);
+			}
+
+			return viewableKBArticles;
+		}
+		catch (PortalException portalException) {
+			throw new SystemException(portalException);
+		}
 	}
 
 	private boolean _hasPermission(
