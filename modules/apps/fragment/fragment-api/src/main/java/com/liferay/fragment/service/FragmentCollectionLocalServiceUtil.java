@@ -589,13 +589,6 @@ public class FragmentCollectionLocalServiceUtil {
 		return getService().getPersistedModel(primaryKeyObj);
 	}
 
-	public static String[] getTempFileNames(
-			long userId, long groupId, String folderName)
-		throws PortalException {
-
-		return getService().getTempFileNames(userId, groupId, folderName);
-	}
-
 	public static String getUniqueFragmentCollectionName(
 		long groupId, String name) {
 
@@ -636,4 +629,4 @@ public class FragmentCollectionLocalServiceUtil {
 			FragmentCollectionLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1740848340
+// LIFERAY-SERVICE-BUILDER-HASH:480371942

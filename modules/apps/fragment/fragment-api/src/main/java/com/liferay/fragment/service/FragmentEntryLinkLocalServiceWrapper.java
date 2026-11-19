@@ -131,15 +131,6 @@ public class FragmentEntryLinkLocalServiceWrapper
 	}
 
 	@Override
-	public FragmentEntryLink deleteFragmentEntryLink(
-			String externalReferenceCode, long groupId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _fragmentEntryLinkLocalService.deleteFragmentEntryLink(
-			externalReferenceCode, groupId);
-	}
-
-	@Override
 	public void deleteFragmentEntryLinks(long groupId) {
 		_fragmentEntryLinkLocalService.deleteFragmentEntryLinks(groupId);
 	}
@@ -436,20 +427,6 @@ public class FragmentEntryLinkLocalServiceWrapper
 				fragmentEntry, layoutPageTemplateType);
 	}
 
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 #getFragmentEntryLinksCountByPlid(long, long)}
-	 */
-	@Deprecated
-	@Override
-	public int getClassedModelFragmentEntryLinksCount(
-		long groupId, long classNameId, long classPK) {
-
-		return _fragmentEntryLinkLocalService.
-			getClassedModelFragmentEntryLinksCount(
-				groupId, classNameId, classPK);
-	}
-
 	@Override
 	public com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery
 		getExportActionableDynamicQuery(
@@ -473,15 +450,6 @@ public class FragmentEntryLinkLocalServiceWrapper
 
 		return _fragmentEntryLinkLocalService.getFragmentEntryLink(
 			fragmentEntryLinkId);
-	}
-
-	@Override
-	public FragmentEntryLink getFragmentEntryLink(
-			long groupId, String originalFragmentEntryLinkERC, long plid)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _fragmentEntryLinkLocalService.getFragmentEntryLink(
-			groupId, originalFragmentEntryLinkERC, plid);
 	}
 
 	@Override
@@ -688,18 +656,6 @@ public class FragmentEntryLinkLocalServiceWrapper
 	}
 
 	@Override
-	public int getFragmentEntryLinksCountByFragmentEntry(
-			long groupId,
-			com.liferay.fragment.model.FragmentEntry fragmentEntry,
-			boolean deleted)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _fragmentEntryLinkLocalService.
-			getFragmentEntryLinksCountByFragmentEntry(
-				groupId, fragmentEntry, deleted);
-	}
-
-	@Override
 	public int getFragmentEntryLinksCountByPlid(long groupId, long plid) {
 		return _fragmentEntryLinkLocalService.getFragmentEntryLinksCountByPlid(
 			groupId, plid);
@@ -859,4 +815,4 @@ public class FragmentEntryLinkLocalServiceWrapper
 	private FragmentEntryLinkLocalService _fragmentEntryLinkLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1810675196
+// LIFERAY-SERVICE-BUILDER-HASH:-1788862805

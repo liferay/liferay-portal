@@ -454,11 +454,6 @@ public interface FragmentCollectionLocalService
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public String[] getTempFileNames(
-			long userId, long groupId, String folderName)
-		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public String getUniqueFragmentCollectionName(long groupId, String name);
 
 	/**
@@ -496,4 +491,4 @@ public interface FragmentCollectionLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:604461299
+// LIFERAY-SERVICE-BUILDER-HASH:2135139472

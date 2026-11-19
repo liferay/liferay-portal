@@ -680,15 +680,6 @@ public class FragmentCollectionLocalServiceWrapper
 	}
 
 	@Override
-	public String[] getTempFileNames(
-			long userId, long groupId, String folderName)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _fragmentCollectionLocalService.getTempFileNames(
-			userId, groupId, folderName);
-	}
-
-	@Override
 	public String getUniqueFragmentCollectionName(long groupId, String name) {
 		return _fragmentCollectionLocalService.getUniqueFragmentCollectionName(
 			groupId, name);
@@ -761,4 +752,4 @@ public class FragmentCollectionLocalServiceWrapper
 	private FragmentCollectionLocalService _fragmentCollectionLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-590302089
+// LIFERAY-SERVICE-BUILDER-HASH:-1260433563

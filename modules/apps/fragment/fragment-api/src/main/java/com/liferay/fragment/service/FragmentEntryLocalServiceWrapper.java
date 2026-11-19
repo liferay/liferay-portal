@@ -493,16 +493,6 @@ public class FragmentEntryLocalServiceWrapper
 
 	@Override
 	public java.util.List<FragmentEntry> getFragmentEntries(
-		long groupId, long fragmentCollectionId, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<FragmentEntry>
-			orderByComparator) {
-
-		return _fragmentEntryLocalService.getFragmentEntries(
-			groupId, fragmentCollectionId, start, end, orderByComparator);
-	}
-
-	@Override
-	public java.util.List<FragmentEntry> getFragmentEntries(
 		long groupId, long fragmentCollectionId, String name, int status,
 		int start, int end,
 		com.liferay.portal.kernel.util.OrderByComparator<FragmentEntry>
@@ -526,14 +516,6 @@ public class FragmentEntryLocalServiceWrapper
 
 	@Override
 	public java.util.List<FragmentEntry> getFragmentEntriesByUuidAndCompanyId(
-		String uuid, long companyId) {
-
-		return _fragmentEntryLocalService.getFragmentEntriesByUuidAndCompanyId(
-			uuid, companyId);
-	}
-
-	@Override
-	public java.util.List<FragmentEntry> getFragmentEntriesByUuidAndCompanyId(
 		String uuid, long companyId, int start, int end,
 		com.liferay.portal.kernel.util.OrderByComparator<FragmentEntry>
 			orderByComparator) {
@@ -550,12 +532,6 @@ public class FragmentEntryLocalServiceWrapper
 	@Override
 	public int getFragmentEntriesCount() {
 		return _fragmentEntryLocalService.getFragmentEntriesCount();
-	}
-
-	@Override
-	public int getFragmentEntriesCount(long fragmentCollectionId) {
-		return _fragmentEntryLocalService.getFragmentEntriesCount(
-			fragmentCollectionId);
 	}
 
 	/**
@@ -590,15 +566,6 @@ public class FragmentEntryLocalServiceWrapper
 		return _fragmentEntryLocalService.
 			getFragmentEntryByExternalReferenceCode(
 				externalReferenceCode, groupId, head);
-	}
-
-	@Override
-	public FragmentEntry getFragmentEntryByUuidAndGroupId(
-			String uuid, long groupId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _fragmentEntryLocalService.getFragmentEntryByUuidAndGroupId(
-			uuid, groupId);
 	}
 
 	@Override
@@ -801,4 +768,4 @@ public class FragmentEntryLocalServiceWrapper
 	private FragmentEntryLocalService _fragmentEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1493991405
+// LIFERAY-SERVICE-BUILDER-HASH:1441178763

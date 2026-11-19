@@ -357,11 +357,6 @@ public interface FragmentEntryLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<FragmentEntry> getFragmentEntries(
-		long groupId, long fragmentCollectionId, int start, int end,
-		OrderByComparator<FragmentEntry> orderByComparator);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<FragmentEntry> getFragmentEntries(
 		long groupId, long fragmentCollectionId, String name, int status,
 		int start, int end, OrderByComparator<FragmentEntry> orderByComparator);
 
@@ -369,10 +364,6 @@ public interface FragmentEntryLocalService
 	public List<FragmentEntry> getFragmentEntries(
 		long groupId, long fragmentCollectionId, String name, int start,
 		int end, OrderByComparator<FragmentEntry> orderByComparator);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<FragmentEntry> getFragmentEntriesByUuidAndCompanyId(
-		String uuid, long companyId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<FragmentEntry> getFragmentEntriesByUuidAndCompanyId(
@@ -386,9 +377,6 @@ public interface FragmentEntryLocalService
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getFragmentEntriesCount();
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getFragmentEntriesCount(long fragmentCollectionId);
 
 	/**
 	 * Returns the fragment entry with the primary key.
@@ -409,11 +397,6 @@ public interface FragmentEntryLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public FragmentEntry getFragmentEntryByExternalReferenceCode(
 			String externalReferenceCode, long groupId, boolean head)
-		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public FragmentEntry getFragmentEntryByUuidAndGroupId(
-			String uuid, long groupId)
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -531,4 +514,4 @@ public interface FragmentEntryLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-91076014
+// LIFERAY-SERVICE-BUILDER-HASH:1402831277

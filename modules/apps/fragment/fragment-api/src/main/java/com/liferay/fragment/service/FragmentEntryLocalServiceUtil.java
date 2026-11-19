@@ -424,14 +424,6 @@ public class FragmentEntryLocalServiceUtil {
 	}
 
 	public static List<FragmentEntry> getFragmentEntries(
-		long groupId, long fragmentCollectionId, int start, int end,
-		OrderByComparator<FragmentEntry> orderByComparator) {
-
-		return getService().getFragmentEntries(
-			groupId, fragmentCollectionId, start, end, orderByComparator);
-	}
-
-	public static List<FragmentEntry> getFragmentEntries(
 		long groupId, long fragmentCollectionId, String name, int status,
 		int start, int end,
 		OrderByComparator<FragmentEntry> orderByComparator) {
@@ -450,13 +442,6 @@ public class FragmentEntryLocalServiceUtil {
 	}
 
 	public static List<FragmentEntry> getFragmentEntriesByUuidAndCompanyId(
-		String uuid, long companyId) {
-
-		return getService().getFragmentEntriesByUuidAndCompanyId(
-			uuid, companyId);
-	}
-
-	public static List<FragmentEntry> getFragmentEntriesByUuidAndCompanyId(
 		String uuid, long companyId, int start, int end,
 		OrderByComparator<FragmentEntry> orderByComparator) {
 
@@ -471,10 +456,6 @@ public class FragmentEntryLocalServiceUtil {
 	 */
 	public static int getFragmentEntriesCount() {
 		return getService().getFragmentEntriesCount();
-	}
-
-	public static int getFragmentEntriesCount(long fragmentCollectionId) {
-		return getService().getFragmentEntriesCount(fragmentCollectionId);
 	}
 
 	/**
@@ -504,13 +485,6 @@ public class FragmentEntryLocalServiceUtil {
 
 		return getService().getFragmentEntryByExternalReferenceCode(
 			externalReferenceCode, groupId, head);
-	}
-
-	public static FragmentEntry getFragmentEntryByUuidAndGroupId(
-			String uuid, long groupId)
-		throws PortalException {
-
-		return getService().getFragmentEntryByUuidAndGroupId(uuid, groupId);
 	}
 
 	public static
@@ -664,4 +638,4 @@ public class FragmentEntryLocalServiceUtil {
 			FragmentEntryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:895567308
+// LIFERAY-SERVICE-BUILDER-HASH:-1901975202

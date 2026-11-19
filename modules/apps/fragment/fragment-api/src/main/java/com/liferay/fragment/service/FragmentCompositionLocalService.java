@@ -134,10 +134,6 @@ public interface FragmentCompositionLocalService
 			long fragmentCompositionId)
 		throws PortalException;
 
-	public FragmentComposition deleteFragmentComposition(
-			String externalReferenceCode, long groupId)
-		throws PortalException;
-
 	/**
 	 * @throws PortalException
 	 */
@@ -306,16 +302,6 @@ public interface FragmentCompositionLocalService
 	public List<FragmentComposition> getFragmentCompositions(
 		long groupId, long fragmentCollectionId, int status);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<FragmentComposition> getFragmentCompositions(
-		long groupId, long fragmentCollectionId, int start, int end,
-		OrderByComparator<FragmentComposition> orderByComparator);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<FragmentComposition> getFragmentCompositions(
-		long groupId, long fragmentCollectionId, String name, int start,
-		int end, OrderByComparator<FragmentComposition> orderByComparator);
-
 	/**
 	 * Returns all the fragment compositions matching the UUID and company.
 	 *
@@ -351,9 +337,6 @@ public interface FragmentCompositionLocalService
 	public int getFragmentCompositionsCount();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getFragmentCompositionsCount(long fragmentCollectionId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
 
 	/**
@@ -369,11 +352,6 @@ public interface FragmentCompositionLocalService
 	@Override
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
-		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public String[] getTempFileNames(
-			long userId, long groupId, String folderName)
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -428,4 +406,4 @@ public interface FragmentCompositionLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1429190197
+// LIFERAY-SERVICE-BUILDER-HASH:-816612793

@@ -131,15 +131,6 @@ public class FragmentCompositionLocalServiceWrapper
 			fragmentCompositionId);
 	}
 
-	@Override
-	public FragmentComposition deleteFragmentComposition(
-			String externalReferenceCode, long groupId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _fragmentCompositionLocalService.deleteFragmentComposition(
-			externalReferenceCode, groupId);
-	}
-
 	/**
 	 * @throws PortalException
 	 */
@@ -404,27 +395,6 @@ public class FragmentCompositionLocalServiceWrapper
 			groupId, fragmentCollectionId, status);
 	}
 
-	@Override
-	public java.util.List<FragmentComposition> getFragmentCompositions(
-		long groupId, long fragmentCollectionId, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<FragmentComposition>
-			orderByComparator) {
-
-		return _fragmentCompositionLocalService.getFragmentCompositions(
-			groupId, fragmentCollectionId, start, end, orderByComparator);
-	}
-
-	@Override
-	public java.util.List<FragmentComposition> getFragmentCompositions(
-		long groupId, long fragmentCollectionId, String name, int start,
-		int end,
-		com.liferay.portal.kernel.util.OrderByComparator<FragmentComposition>
-			orderByComparator) {
-
-		return _fragmentCompositionLocalService.getFragmentCompositions(
-			groupId, fragmentCollectionId, name, start, end, orderByComparator);
-	}
-
 	/**
 	 * Returns all the fragment compositions matching the UUID and company.
 	 *
@@ -473,12 +443,6 @@ public class FragmentCompositionLocalServiceWrapper
 	}
 
 	@Override
-	public int getFragmentCompositionsCount(long fragmentCollectionId) {
-		return _fragmentCompositionLocalService.getFragmentCompositionsCount(
-			fragmentCollectionId);
-	}
-
-	@Override
 	public com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery
 		getIndexableActionableDynamicQuery() {
 
@@ -506,15 +470,6 @@ public class FragmentCompositionLocalServiceWrapper
 
 		return _fragmentCompositionLocalService.getPersistedModel(
 			primaryKeyObj);
-	}
-
-	@Override
-	public String[] getTempFileNames(
-			long userId, long groupId, String folderName)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _fragmentCompositionLocalService.getTempFileNames(
-			userId, groupId, folderName);
 	}
 
 	@Override
@@ -623,4 +578,4 @@ public class FragmentCompositionLocalServiceWrapper
 	private FragmentCompositionLocalService _fragmentCompositionLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:938308998
+// LIFERAY-SERVICE-BUILDER-HASH:2014393275

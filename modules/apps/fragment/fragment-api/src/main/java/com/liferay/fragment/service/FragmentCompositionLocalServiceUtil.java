@@ -125,14 +125,6 @@ public class FragmentCompositionLocalServiceUtil {
 		return getService().deleteFragmentComposition(fragmentCompositionId);
 	}
 
-	public static FragmentComposition deleteFragmentComposition(
-			String externalReferenceCode, long groupId)
-		throws PortalException {
-
-		return getService().deleteFragmentComposition(
-			externalReferenceCode, groupId);
-	}
-
 	/**
 	 * @throws PortalException
 	 */
@@ -359,22 +351,6 @@ public class FragmentCompositionLocalServiceUtil {
 			groupId, fragmentCollectionId, status);
 	}
 
-	public static List<FragmentComposition> getFragmentCompositions(
-		long groupId, long fragmentCollectionId, int start, int end,
-		OrderByComparator<FragmentComposition> orderByComparator) {
-
-		return getService().getFragmentCompositions(
-			groupId, fragmentCollectionId, start, end, orderByComparator);
-	}
-
-	public static List<FragmentComposition> getFragmentCompositions(
-		long groupId, long fragmentCollectionId, String name, int start,
-		int end, OrderByComparator<FragmentComposition> orderByComparator) {
-
-		return getService().getFragmentCompositions(
-			groupId, fragmentCollectionId, name, start, end, orderByComparator);
-	}
-
 	/**
 	 * Returns all the fragment compositions matching the UUID and company.
 	 *
@@ -417,10 +393,6 @@ public class FragmentCompositionLocalServiceUtil {
 		return getService().getFragmentCompositionsCount();
 	}
 
-	public static int getFragmentCompositionsCount(long fragmentCollectionId) {
-		return getService().getFragmentCompositionsCount(fragmentCollectionId);
-	}
-
 	public static
 		com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery
 			getIndexableActionableDynamicQuery() {
@@ -444,13 +416,6 @@ public class FragmentCompositionLocalServiceUtil {
 		throws PortalException {
 
 		return getService().getPersistedModel(primaryKeyObj);
-	}
-
-	public static String[] getTempFileNames(
-			long userId, long groupId, String folderName)
-		throws PortalException {
-
-		return getService().getTempFileNames(userId, groupId, folderName);
 	}
 
 	public static String getUniqueFragmentCompositionName(
@@ -521,4 +486,4 @@ public class FragmentCompositionLocalServiceUtil {
 			FragmentCompositionLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:823944975
+// LIFERAY-SERVICE-BUILDER-HASH:-1220338202
