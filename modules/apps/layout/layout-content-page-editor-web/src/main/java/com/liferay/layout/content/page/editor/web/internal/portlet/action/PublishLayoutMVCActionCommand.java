@@ -94,6 +94,10 @@ public class PublishLayoutMVCActionCommand
 			SessionMessages.clear(actionRequest);
 		}
 
+		if (draftLayout.getLaunchSetId() > 0) {
+			return;
+		}
+
 		MultiSessionMessages.add(actionRequest, "layoutPublished");
 	}
 
