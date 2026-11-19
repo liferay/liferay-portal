@@ -34,7 +34,10 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Marcellus Tavares
  */
-@Component(service = WorkflowHandler.class)
+@Component(
+	property = "model.class.name=com.liferay.portal.workflow.kaleo.forms.model.KaleoProcess",
+	service = WorkflowHandler.class
+)
 public class KaleoProcessWorkflowHandler
 	extends BaseWorkflowHandler<KaleoProcess> {
 

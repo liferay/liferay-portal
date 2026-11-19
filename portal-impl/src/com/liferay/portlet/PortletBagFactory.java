@@ -185,7 +185,7 @@ public class PortletBagFactory {
 			bundleContext, portlet, properties, serviceRegistrations);
 
 		_registerWorkflowHandlerInstances(
-			bundleContext, portlet, properties, serviceRegistrations);
+			bundleContext, portlet, serviceRegistrations);
 
 		_registerPreferencesValidatorInstances(
 			bundleContext, portlet, properties, serviceRegistrations);
@@ -853,7 +853,6 @@ public class PortletBagFactory {
 
 	private void _registerWorkflowHandlerInstances(
 			BundleContext bundleContext, Portlet portlet,
-			Dictionary<String, Object> properties,
 			List<ServiceRegistration<?>> serviceRegistrations)
 		throws Exception {
 
@@ -865,7 +864,13 @@ public class PortletBagFactory {
 
 			ServiceRegistration<?> serviceRegistration =
 				bundleContext.registerService(
-					WorkflowHandler.class, workflowHandlerInstance, properties);
+					WorkflowHandler.class, workflowHandlerInstance,
+					HashMapDictionaryBuilder.<String, Object>put(
+						"jakarta.portlet.name", portlet.getPortletName()
+					).put(
+						"model.class.name",
+						workflowHandlerInstance.getClassName()
+					).build());
 
 			serviceRegistrations.add(serviceRegistration);
 		}

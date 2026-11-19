@@ -35,7 +35,10 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Leonardo Barros
  */
-@Component(service = WorkflowHandler.class)
+@Component(
+	property = "model.class.name=com.liferay.dynamic.data.lists.model.DDLFormRecord",
+	service = WorkflowHandler.class
+)
 public class DDLFormWorkflowHandler extends BaseWorkflowHandler<DDLFormRecord> {
 
 	@Override

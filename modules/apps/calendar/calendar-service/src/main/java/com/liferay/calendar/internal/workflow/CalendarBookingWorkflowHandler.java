@@ -26,7 +26,10 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Adam Brandizzi
  */
-@Component(service = WorkflowHandler.class)
+@Component(
+	property = "model.class.name=com.liferay.calendar.model.CalendarBooking",
+	service = WorkflowHandler.class
+)
 public class CalendarBookingWorkflowHandler
 	extends BaseWorkflowHandler<CalendarBooking> {
 

@@ -33,7 +33,10 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Leonardo Barros
  */
-@Component(service = WorkflowHandler.class)
+@Component(
+	property = "model.class.name=com.liferay.dynamic.data.mapping.model.DDMFormInstanceRecord",
+	service = WorkflowHandler.class
+)
 public class DDMFormInstanceRecordWorkflowHandler
 	extends BaseWorkflowHandler<DDMFormInstanceRecord> {
 
