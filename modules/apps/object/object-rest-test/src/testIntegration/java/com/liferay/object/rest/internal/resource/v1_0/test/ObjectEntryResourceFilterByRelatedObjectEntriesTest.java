@@ -622,45 +622,44 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 	public void testFilterObjectEntriesByRelatedSystemObjectEntriesTaxonomyCategoryIds()
 		throws Exception {
 
-		// Many to many relationship
-
-		objectEntry1 = ObjectEntryTestUtil.addObjectEntry(
+		ObjectEntry objectEntry = ObjectEntryTestUtil.addObjectEntry(
 			getObjectDefinition1(), OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1);
 
-		userAccountJSONObject = UserAccountTestUtil.addUserAccountJSONObject(
-			systemObjectDefinitionManager, Collections.emptyMap());
+		JSONObject userAccountJSONObject =
+			UserAccountTestUtil.addUserAccountJSONObject(
+				getUserSystemObjectDefinitionManager(), Collections.emptyMap());
 
-		objectRelationship1 = addObjectRelationshipAndRelateObjectEntries(
-			getObjectDefinition1(), userSystemObjectDefinition,
-			objectEntry1.getPrimaryKey(), userAccountJSONObject.getLong("id"),
-			ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
+		// Many to many relationship
+
+		ObjectRelationship objectRelationship =
+			addObjectRelationshipAndRelateObjectEntries(
+				getObjectDefinition1(), getUserSystemObjectDefinition(),
+				objectEntry.getPrimaryKey(),
+				userAccountJSONObject.getLong("id"),
+				ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
 
 		TaxonomyCategory taxonomyCategory =
 			postTaxonomyVocabularyTaxonomyCategory();
 
 		_testFilterObjectEntriesByRelatedSystemObjectEntriesFields(
-			escape(
-				String.format(
-					"%s/taxonomyCategoryIds/any(t:t eq %s)",
-					objectRelationship1.getName(), taxonomyCategory.getId())),
-			getObjectDefinition1());
+			String.format(
+				"%s/taxonomyCategoryIds/any(t:t eq %s)",
+				objectRelationship.getName(), taxonomyCategory.getId()));
 
 		objectRelationshipLocalService.deleteObjectRelationship(
-			objectRelationship1);
+			objectRelationship);
 
 		// One to many relationship
 
-		objectRelationship1 = addObjectRelationshipAndRelateObjectEntries(
-			userSystemObjectDefinition, getObjectDefinition1(),
-			userAccountJSONObject.getLong("id"), objectEntry1.getPrimaryKey(),
+		objectRelationship = addObjectRelationshipAndRelateObjectEntries(
+			getUserSystemObjectDefinition(), getObjectDefinition1(),
+			userAccountJSONObject.getLong("id"), objectEntry.getPrimaryKey(),
 			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 
 		_testFilterObjectEntriesByRelatedSystemObjectEntriesFields(
-			escape(
-				String.format(
-					"%s/taxonomyCategoryIds/any(t:t eq %s)",
-					objectRelationship1.getName(), taxonomyCategory.getId())),
-			getObjectDefinition1());
+			String.format(
+				"%s/taxonomyCategoryIds/any(t:t eq %s)",
+				objectRelationship.getName(), taxonomyCategory.getId()));
 	}
 
 	@Test
