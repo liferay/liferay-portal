@@ -20,6 +20,7 @@ it('Return null when the variables have the expected shape', () => {
 				inputVariables: [{name: 'request', type: 'string'}],
 				label: {en_US: 'LLM'},
 				outputVariables: [],
+				question: {},
 				rag: {},
 				tools: [],
 			},
@@ -61,6 +62,20 @@ it('Return the output variables message and the node label', () => {
 	expect(getInvalidVariables(elements, 'en_US')).toStrictEqual({
 		label: 'LLM',
 		message: 'output-variables-must-be-a-valid-json-array-in-the-x-node',
+	});
+});
+
+it('Return the question message when the question is not an object', () => {
+	const elements = [
+		{
+			data: {label: {en_US: 'Ask a Human'}, question: 'not json'},
+			id: 'askAHumanNode',
+		},
+	];
+
+	expect(getInvalidVariables(elements, 'en_US')).toStrictEqual({
+		label: 'Ask a Human',
+		message: 'question-must-be-a-valid-json-object-in-the-x-node',
 	});
 });
 

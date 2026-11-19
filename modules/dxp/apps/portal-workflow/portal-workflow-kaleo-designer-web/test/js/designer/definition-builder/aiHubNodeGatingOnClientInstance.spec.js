@@ -5,6 +5,7 @@
 
 const AI_HUB_ONLY_NODE_TYPES = [
 	'ai-decision',
+	'ask-a-human',
 	'http-request',
 	'llm',
 	'service',
@@ -16,6 +17,7 @@ describe('AI Hub node gating on a client DXP instance', () => {
 	let nodeTypes;
 
 	beforeAll(() => {
+		Liferay.FeatureFlags['LPD-115774'] = true;
 		Liferay.FeatureFlags['LPD-62272'] = true;
 		Liferay.PropsValues = {
 			...Liferay.PropsValues,
@@ -31,6 +33,7 @@ describe('AI Hub node gating on a client DXP instance', () => {
 	});
 
 	afterAll(() => {
+		Liferay.FeatureFlags['LPD-115774'] = false;
 		Liferay.FeatureFlags['LPD-62272'] = false;
 
 		delete Liferay.PropsValues.ENTERPRISE_PRODUCT_AI_HUB_ENABLED;
