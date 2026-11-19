@@ -259,7 +259,9 @@ test(
 	}) => {
 		const {product, title} = await addProductImage(apiHelpers);
 
-		const tagPrefix = getRandomString().toLowerCase();
+		const randomString = getRandomString();
+
+		const tagPrefix = randomString.slice(0, 8);
 
 		const featuredTagName = `${tagPrefix}featured`;
 		const newTagName = `${tagPrefix}new`;
