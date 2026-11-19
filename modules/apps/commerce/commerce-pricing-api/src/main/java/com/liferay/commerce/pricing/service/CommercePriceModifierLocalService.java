@@ -308,15 +308,6 @@ public interface CommercePriceModifierLocalService
 	public List<CommercePriceModifier> getCommercePriceModifiers(
 		int start, int end);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CommercePriceModifier> getCommercePriceModifiers(
-		long commercePriceListId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CommercePriceModifier> getCommercePriceModifiers(
-		long commercePriceListId, int start, int end,
-		OrderByComparator<CommercePriceModifier> orderByComparator);
-
 	/**
 	 * Returns all the commerce price modifiers matching the UUID and company.
 	 *
@@ -352,9 +343,6 @@ public interface CommercePriceModifierLocalService
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getCommercePriceModifiersCount();
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCommercePriceModifiersCount(long commercePriceListId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ExportActionableDynamicQuery getExportActionableDynamicQuery(
@@ -430,4 +418,4 @@ public interface CommercePriceModifierLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1491553851
+// LIFERAY-SERVICE-BUILDER-HASH:1941927538

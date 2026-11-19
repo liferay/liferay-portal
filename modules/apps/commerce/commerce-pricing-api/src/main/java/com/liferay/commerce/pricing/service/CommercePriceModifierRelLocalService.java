@@ -133,9 +133,6 @@ public interface CommercePriceModifierRelLocalService
 	public void deleteCommercePriceModifierRels(long commercePriceModifierId)
 		throws PortalException;
 
-	public void deleteCommercePriceModifierRels(String className, long classPK)
-		throws PortalException;
-
 	/**
 	 * @throws PortalException
 	 */
@@ -220,10 +217,6 @@ public interface CommercePriceModifierRelLocalService
 		long commercePriceModifierRelId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public CommercePriceModifierRel fetchCommercePriceModifierRel(
-		long commercePriceModifierId, String className, long classPK);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -267,10 +260,6 @@ public interface CommercePriceModifierRelLocalService
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getCommercePriceModifierRelsCount();
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CommercePriceModifierRel> getCommercePriceModifiersRels(
-		String className, long classPK);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
@@ -320,4 +309,4 @@ public interface CommercePriceModifierRelLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1978720499
+// LIFERAY-SERVICE-BUILDER-HASH:-663347258

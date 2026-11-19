@@ -131,13 +131,6 @@ public class CommercePriceModifierRelLocalServiceUtil {
 		getService().deleteCommercePriceModifierRels(commercePriceModifierId);
 	}
 
-	public static void deleteCommercePriceModifierRels(
-			String className, long classPK)
-		throws PortalException {
-
-		getService().deleteCommercePriceModifierRels(className, classPK);
-	}
-
 	/**
 	 * @throws PortalException
 	 */
@@ -240,13 +233,6 @@ public class CommercePriceModifierRelLocalServiceUtil {
 			commercePriceModifierRelId);
 	}
 
-	public static CommercePriceModifierRel fetchCommercePriceModifierRel(
-		long commercePriceModifierId, String className, long classPK) {
-
-		return getService().fetchCommercePriceModifierRel(
-			commercePriceModifierId, className, classPK);
-	}
-
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 
@@ -307,12 +293,6 @@ public class CommercePriceModifierRelLocalServiceUtil {
 		return getService().getCommercePriceModifierRelsCount();
 	}
 
-	public static List<CommercePriceModifierRel> getCommercePriceModifiersRels(
-		String className, long classPK) {
-
-		return getService().getCommercePriceModifiersRels(className, classPK);
-	}
-
 	public static
 		com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery
 			getIndexableActionableDynamicQuery() {
@@ -365,4 +345,4 @@ public class CommercePriceModifierRelLocalServiceUtil {
 			CommercePriceModifierRelLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1592518001
+// LIFERAY-SERVICE-BUILDER-HASH:192425867

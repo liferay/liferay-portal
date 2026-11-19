@@ -400,24 +400,6 @@ public class CommercePriceModifierLocalServiceWrapper
 			start, end);
 	}
 
-	@Override
-	public java.util.List<CommercePriceModifier> getCommercePriceModifiers(
-		long commercePriceListId) {
-
-		return _commercePriceModifierLocalService.getCommercePriceModifiers(
-			commercePriceListId);
-	}
-
-	@Override
-	public java.util.List<CommercePriceModifier> getCommercePriceModifiers(
-		long commercePriceListId, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<CommercePriceModifier>
-			orderByComparator) {
-
-		return _commercePriceModifierLocalService.getCommercePriceModifiers(
-			commercePriceListId, start, end, orderByComparator);
-	}
-
 	/**
 	 * Returns all the commerce price modifiers matching the UUID and company.
 	 *
@@ -465,12 +447,6 @@ public class CommercePriceModifierLocalServiceWrapper
 	public int getCommercePriceModifiersCount() {
 		return _commercePriceModifierLocalService.
 			getCommercePriceModifiersCount();
-	}
-
-	@Override
-	public int getCommercePriceModifiersCount(long commercePriceListId) {
-		return _commercePriceModifierLocalService.
-			getCommercePriceModifiersCount(commercePriceListId);
 	}
 
 	@Override
@@ -617,4 +593,4 @@ public class CommercePriceModifierLocalServiceWrapper
 		_commercePriceModifierLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-656068919
+// LIFERAY-SERVICE-BUILDER-HASH:506014280

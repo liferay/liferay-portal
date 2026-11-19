@@ -355,20 +355,6 @@ public class CommercePriceModifierLocalServiceUtil {
 		return getService().getCommercePriceModifiers(start, end);
 	}
 
-	public static List<CommercePriceModifier> getCommercePriceModifiers(
-		long commercePriceListId) {
-
-		return getService().getCommercePriceModifiers(commercePriceListId);
-	}
-
-	public static List<CommercePriceModifier> getCommercePriceModifiers(
-		long commercePriceListId, int start, int end,
-		OrderByComparator<CommercePriceModifier> orderByComparator) {
-
-		return getService().getCommercePriceModifiers(
-			commercePriceListId, start, end, orderByComparator);
-	}
-
 	/**
 	 * Returns all the commerce price modifiers matching the UUID and company.
 	 *
@@ -410,10 +396,6 @@ public class CommercePriceModifierLocalServiceUtil {
 	 */
 	public static int getCommercePriceModifiersCount() {
 		return getService().getCommercePriceModifiersCount();
-	}
-
-	public static int getCommercePriceModifiersCount(long commercePriceListId) {
-		return getService().getCommercePriceModifiersCount(commercePriceListId);
 	}
 
 	public static com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery
@@ -516,4 +498,4 @@ public class CommercePriceModifierLocalServiceUtil {
 			CommercePriceModifierLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2054215823
+// LIFERAY-SERVICE-BUILDER-HASH:-479334449
