@@ -179,7 +179,7 @@ describe('Individuals List', () => {
 
 		await waitForLoadingToBeRemoved(document.body);
 
-		expect(getByText(/^no results found$/i)).toBeInTheDocument();
+		expect(getByText(/^no results were found$/i)).toBeInTheDocument();
 		expect(
 			getByText(/^review your filters and try again\.$/i)
 		).toBeInTheDocument();
