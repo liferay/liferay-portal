@@ -19,59 +19,56 @@ public class ValidateAllowedFilesFailureMessageGeneratorTest
 
 	@Test
 	public void testGetMessage() {
-		String failureLine = _getFailureLine();
-		String filePathLine1 = "> " + RandomTestUtil.randomString();
-		String filePathLine2 = "> " + RandomTestUtil.randomString();
-		String trailingLine = RandomTestUtil.randomString();
+		String failureMessage = JenkinsResultsParserUtil.combine(
+			_getFailureLine(), "\n> ", RandomTestUtil.randomString(), "\n> ",
+			RandomTestUtil.randomString());
 
 		Assert.assertEquals(
-			JenkinsResultsParserUtil.combine(
-				failureLine, "\n", filePathLine1, "\n", filePathLine2),
+			failureMessage,
 			_validateAllowedFilesFailureMessageGenerator.getMessage(
 				JenkinsResultsParserUtil.combine(
-					RandomTestUtil.randomString(), "\n", failureLine, "\n",
-					filePathLine1, "\n", filePathLine2, "\n", trailingLine,
-					"\n")));
+					RandomTestUtil.randomString(), "\n", failureMessage, "\n",
+					RandomTestUtil.randomString(), "\n")));
 	}
 
 	@Test
 	public void testGetMessageAtEndOfConsoleText() {
 		String failureLine = _getFailureLine();
-		String filePathLine = "> " + RandomTestUtil.randomString();
-
-		Assert.assertEquals(
-			JenkinsResultsParserUtil.combine(failureLine, "\n", filePathLine),
-			_validateAllowedFilesFailureMessageGenerator.getMessage(
-				JenkinsResultsParserUtil.combine(
-					RandomTestUtil.randomString(), "\n", failureLine, "\n",
-					filePathLine)));
 
 		Assert.assertEquals(
 			failureLine,
 			_validateAllowedFilesFailureMessageGenerator.getMessage(
 				JenkinsResultsParserUtil.combine(
 					RandomTestUtil.randomString(), "\n", failureLine)));
+
+		String failureMessage = JenkinsResultsParserUtil.combine(
+			_getFailureLine(), "\n> ", RandomTestUtil.randomString(), "\n> ",
+			RandomTestUtil.randomString());
+
+		Assert.assertEquals(
+			failureMessage,
+			_validateAllowedFilesFailureMessageGenerator.getMessage(
+				JenkinsResultsParserUtil.combine(
+					RandomTestUtil.randomString(), "\n", failureMessage)));
 	}
 
 	@Test
 	public void testGetMessageLastFailure() {
-		String firstFailureLine = _getFailureLine();
-		String firstFilePathLine = "> " + RandomTestUtil.randomString();
-		String lastFailureLine = _getFailureLine();
-		String lastFilePathLine = "> " + RandomTestUtil.randomString();
+		String failureMessage1 = JenkinsResultsParserUtil.combine(
+			_getFailureLine(), "\n> ", RandomTestUtil.randomString());
+		String failureMessage2 = JenkinsResultsParserUtil.combine(
+			_getFailureLine(), "\n> ", RandomTestUtil.randomString());
 
-		String message =
+		String multipleFailureMessage =
 			_validateAllowedFilesFailureMessageGenerator.getMessage(
 				JenkinsResultsParserUtil.combine(
-					firstFailureLine, "\n", firstFilePathLine, "\n",
-					RandomTestUtil.randomString(), "\n", lastFailureLine, "\n",
-					lastFilePathLine, "\n"));
+					RandomTestUtil.randomString(), "\n", failureMessage1, "\n",
+					RandomTestUtil.randomString(), "\n", failureMessage2, "\n",
+					RandomTestUtil.randomString()));
 
-		Assert.assertEquals(
-			JenkinsResultsParserUtil.combine(
-				lastFailureLine, "\n", lastFilePathLine),
-			message);
-		Assert.assertFalse(message.contains(firstFilePathLine));
+		Assert.assertEquals(failureMessage2, multipleFailureMessage);
+
+		Assert.assertFalse(multipleFailureMessage.contains(failureMessage1));
 	}
 
 	@Test

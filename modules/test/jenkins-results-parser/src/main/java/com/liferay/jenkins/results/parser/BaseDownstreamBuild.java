@@ -24,9 +24,9 @@ import com.liferay.jenkins.results.parser.failure.message.generator.RESTBuilderF
 import com.liferay.jenkins.results.parser.failure.message.generator.SemanticVersioningFailureMessageGenerator;
 import com.liferay.jenkins.results.parser.failure.message.generator.ServiceBuilderFailureMessageGenerator;
 import com.liferay.jenkins.results.parser.failure.message.generator.SourceFormatFailureMessageGenerator;
-import com.liferay.jenkins.results.parser.failure.message.generator.ValidateAllowedFilesFailureMessageGenerator;
 import com.liferay.jenkins.results.parser.failure.message.generator.StartupFailureMessageGenerator;
 import com.liferay.jenkins.results.parser.failure.message.generator.UpgradeFailureMessageGenerator;
+import com.liferay.jenkins.results.parser.failure.message.generator.ValidateAllowedFilesFailureMessageGenerator;
 import com.liferay.jenkins.results.parser.test.clazz.FunctionalTestClass;
 import com.liferay.jenkins.results.parser.test.clazz.JUnitTestClass;
 import com.liferay.jenkins.results.parser.test.clazz.TestClass;
