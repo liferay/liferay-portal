@@ -65,15 +65,15 @@ public class ChangeMasterLayoutMVCActionCommand
 		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
-		String masterLayoutPageTemplateEntryERC = ParamUtil.getString(
-			actionRequest, "masterLayoutPageTemplateEntryERC");
-		String masterLayoutPageTemplateEntryScopeERC = ParamUtil.getString(
-			actionRequest, "masterLayoutPageTemplateEntryScopeERC");
-
 		Layout layout = _layoutLocalService.fetchLayout(themeDisplay.getPlid());
 
 		LayoutPermissionUtil.checkLayoutRestrictedUpdatePermission(
 			themeDisplay.getPermissionChecker(), layout);
+
+		String masterLayoutPageTemplateEntryERC = ParamUtil.getString(
+			actionRequest, "masterLayoutPageTemplateEntryERC");
+		String masterLayoutPageTemplateEntryScopeERC = ParamUtil.getString(
+			actionRequest, "masterLayoutPageTemplateEntryScopeERC");
 
 		Layout updatedLayout =
 			_layoutLocalService.updateMasterLayoutPageTemplateEntry(
