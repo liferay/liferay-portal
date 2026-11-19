@@ -291,6 +291,50 @@ public class MBCommentManagerImplTest {
 				_createServiceContextFunction()));
 	}
 
+	@Test
+	@TestInfo("LPD-116453")
+	public void testUpdateCommentWithAnotherClassName() throws Exception {
+		Comment comment = _commentManager.fetchComment(_parentCommentId);
+
+		Assert.assertThrows(
+			NoSuchMessageException.class,
+			() -> _commentManager.updateComment(
+				_user.getUserId(), User.class.getName(),
+				_fileEntry.getFileEntryId(), _parentCommentId,
+				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+				_createServiceContextFunction()));
+
+		Comment updatedComment = _commentManager.fetchComment(_parentCommentId);
+
+		Assert.assertEquals(comment.getBody(), updatedComment.getBody());
+	}
+
+	@Test
+	@TestInfo("LPD-116453")
+	public void testUpdateCommentWithAnotherClassPK() throws Exception {
+		Comment comment = _commentManager.fetchComment(_parentCommentId);
+
+		FileEntry fileEntry = DLAppLocalServiceUtil.addFileEntry(
+			null, _user.getUserId(), _group.getGroupId(),
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			StringUtil.randomString(), ContentTypes.APPLICATION_OCTET_STREAM,
+			null, null, null, null,
+			ServiceContextTestUtil.getServiceContext(
+				_group, _user.getUserId()));
+
+		Assert.assertThrows(
+			NoSuchMessageException.class,
+			() -> _commentManager.updateComment(
+				_user.getUserId(), DLFileEntryConstants.getClassName(),
+				fileEntry.getFileEntryId(), _parentCommentId,
+				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+				_createServiceContextFunction()));
+
+		Comment updatedComment = _commentManager.fetchComment(_parentCommentId);
+
+		Assert.assertEquals(comment.getBody(), updatedComment.getBody());
+	}
+
 	private long _addComment() throws Exception {
 		User user = TestPropsValues.getUser();
 
