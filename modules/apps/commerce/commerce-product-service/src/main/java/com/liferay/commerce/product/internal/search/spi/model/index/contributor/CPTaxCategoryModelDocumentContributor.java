@@ -27,12 +27,12 @@ public class CPTaxCategoryModelDocumentContributor
 
 	@Override
 	public void contribute(Document document, CPTaxCategory cpTaxCategory) {
-		document.addDateSortable(
-			Field.CREATE_DATE, cpTaxCategory.getCreateDate());
-		document.addText(Field.DESCRIPTION, cpTaxCategory.getDescription());
 		document.addKeyword(
 			CPField.EXTERNAL_REFERENCE_CODE,
 			cpTaxCategory.getExternalReferenceCode(), true);
+		document.addDateSortable(
+			Field.CREATE_DATE, cpTaxCategory.getCreateDate());
+		document.addText(Field.DESCRIPTION, cpTaxCategory.getDescription());
 		document.addText(Field.NAME, cpTaxCategory.getName());
 
 		String[] languageIds = _localization.getAvailableLanguageIds(
