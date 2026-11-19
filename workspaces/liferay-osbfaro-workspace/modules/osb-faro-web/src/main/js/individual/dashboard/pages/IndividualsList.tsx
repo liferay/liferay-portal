@@ -218,10 +218,10 @@ const IndividualsList: React.FC<IIndividualsListProps> = ({
 					icon={{
 						border: false,
 						size: Sizes.XXXLarge,
-						symbol: 'search',
+						symbol: 'ac_no_results_found',
 					}}
 					spacer
-					title={Liferay.Language.get('no-results-found')}
+					title={Liferay.Language.get('no-results-were-found')}
 				>
 					<ClayButton
 						displayType="secondary"
