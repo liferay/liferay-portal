@@ -14,13 +14,13 @@ import com.liferay.change.tracking.service.CTCollectionLocalService;
 import com.liferay.change.tracking.service.CTEntryLocalService;
 import com.liferay.change.tracking.spi.display.CTDisplayRenderer;
 import com.liferay.change.tracking.spi.display.CTDisplayRendererRegistry;
+import com.liferay.change.tracking.util.CTPreviewURLUtil;
 import com.liferay.change.tracking.web.internal.configuration.CTConfiguration;
 import com.liferay.change.tracking.web.internal.display.BasePersistenceRegistry;
 import com.liferay.change.tracking.web.internal.display.DisplayContextImpl;
 import com.liferay.change.tracking.web.internal.util.PublicationsPortletURLUtil;
 import com.liferay.diff.DiffHtml;
 import com.liferay.knowledge.base.model.KBArticleModel;
-import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.io.unsync.UnsyncStringReader;
 import com.liferay.petra.io.unsync.UnsyncStringWriter;
 import com.liferay.petra.lang.SafeCloseable;
@@ -63,10 +63,8 @@ import com.liferay.portal.kernel.service.WorkflowInstanceLinkLocalService;
 import com.liferay.portal.kernel.servlet.PipingServletResponse;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
-import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
@@ -107,8 +105,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -169,85 +165,11 @@ public class GetEntryRenderDataMVCResourceCommand
 		for (String key : jsonObject.keySet()) {
 			previewJSONObject.put(
 				key,
-				_addPreviewCTCollectionId(
+				CTPreviewURLUtil.addPreviewCTCollectionId(
 					companyId, ctCollectionId, jsonObject.getString(key)));
 		}
 
 		return previewJSONObject;
-	}
-
-	private String _addPreviewCTCollectionId(
-		long companyId, long ctCollectionId, String html) {
-
-		if (html == null) {
-			return null;
-		}
-
-		Matcher matcher = _urlAttributePattern.matcher(html);
-
-		return matcher.replaceAll(
-			matchResult -> {
-				String value = matchResult.group(2);
-
-				if (Objects.equals(matchResult.group(1), "srcset")) {
-					List<String> candidates = TransformUtil.transformToList(
-						StringUtil.split(value),
-						candidate -> {
-							candidate = StringUtil.trim(candidate);
-
-							int index = candidate.indexOf(CharPool.SPACE);
-
-							if (index == -1) {
-								index = candidate.length();
-							}
-
-							String previewURL = _getPreviewURL(
-								companyId, ctCollectionId,
-								candidate.substring(0, index));
-
-							return previewURL + candidate.substring(index);
-						});
-
-					value = StringUtil.merge(
-						candidates, StringPool.COMMA_AND_SPACE);
-				}
-				else {
-					value = _getPreviewURL(companyId, ctCollectionId, value);
-				}
-
-				return Matcher.quoteReplacement(
-					StringBundler.concat(
-						matchResult.group(1), "=\"", value, "\""));
-			});
-	}
-
-	private String _addUnifiedPreviewCTCollectionId(
-		long companyId, String html, long leftCTCollectionId,
-		long rightCTCollectionId) {
-
-		StringBundler sb = new StringBundler();
-
-		Matcher matcher = _removedImagePattern.matcher(html);
-
-		int index = 0;
-
-		while (matcher.find()) {
-			sb.append(
-				_addPreviewCTCollectionId(
-					companyId, rightCTCollectionId,
-					html.substring(index, matcher.start())));
-			sb.append(
-				_addPreviewCTCollectionId(
-					companyId, leftCTCollectionId, matcher.group()));
-
-			index = matcher.end();
-		}
-
-		sb.append(
-			_addPreviewCTCollectionId(
-				companyId, rightCTCollectionId, html.substring(index)));
-
-		return sb.toString();
 	}
 
 	private Function<String, ServiceContext> _createServiceContextFunction() {
@@ -718,7 +640,7 @@ public class GetEntryRenderDataMVCResourceCommand
 		if (leftPreview != null) {
 			jsonObject.put(
 				"leftPreview",
-				_addPreviewCTCollectionId(
+				CTPreviewURLUtil.addPreviewCTCollectionId(
 					themeDisplay.getCompanyId(), leftCTCollectionId,
 					leftPreview));
 		}
@@ -738,7 +660,7 @@ public class GetEntryRenderDataMVCResourceCommand
 		if (rightPreview != null) {
 			jsonObject.put(
 				"rightPreview",
-				_addPreviewCTCollectionId(
+				CTPreviewURLUtil.addPreviewCTCollectionId(
 					themeDisplay.getCompanyId(), rightCTCollectionId,
 					rightPreview));
 		}
@@ -773,7 +695,7 @@ public class GetEntryRenderDataMVCResourceCommand
 
 			jsonObject.put(
 				"unifiedPreview",
-				_addUnifiedPreviewCTCollectionId(
+				CTPreviewURLUtil.addUnifiedPreviewCTCollectionId(
 					themeDisplay.getCompanyId(),
 					_diffHtml.diff(
 						new UnsyncStringReader(leftPreview),
@@ -823,7 +745,7 @@ public class GetEntryRenderDataMVCResourceCommand
 
 				unifiedLocalizedPreviewJSONObject.put(
 					languageId,
-					_addUnifiedPreviewCTCollectionId(
+					CTPreviewURLUtil.addUnifiedPreviewCTCollectionId(
 						themeDisplay.getCompanyId(),
 						_diffHtml.diff(
 							new UnsyncStringReader(leftLocalizedPreview),
@@ -1055,41 +977,6 @@ public class GetEntryRenderDataMVCResourceCommand
 
 			return null;
 		}
-	}
-
-	private String _getPreviewURL(
-		long companyId, long ctCollectionId, String url) {
-
-		Matcher matcher = _previewURLPattern.matcher(url);
-
-		if (!matcher.lookingAt()) {
-			return url;
-		}
-
-		String host = matcher.group(1);
-
-		if (((host != null) && !_portal.isValidPortalDomain(companyId, host)) ||
-			!Objects.equals(matcher.group(2), _portal.getPathContext())) {
-
-			return url;
-		}
-
-		String decodedURL = StringUtil.replace(
-			url, StringPool.AMPERSAND_ENCODED, StringPool.AMPERSAND);
-
-		if (Validator.isNotNull(
-				HttpComponentsUtil.getParameter(
-					decodedURL, "previewCTCollectionId", false))) {
-
-			url = HttpComponentsUtil.removeParameter(
-				decodedURL, "previewCTCollectionId");
-		}
-
-		url = HttpComponentsUtil.addParameter(
-			url, "p_l_mode", Constants.PREVIEW);
-
-		return HttpComponentsUtil.addParameter(
-			url, "previewCTCollectionId", ctCollectionId);
 	}
 
 	private <T extends BaseModel<T>> JSONObject
@@ -1798,15 +1685,6 @@ public class GetEntryRenderDataMVCResourceCommand
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		GetEntryRenderDataMVCResourceCommand.class);
-
-	private static final Pattern _previewURLPattern = Pattern.compile(
-		"(?:https?://([^/:\"]+)(?::\\d+)?)?(.*?)/(?:documents/" +
-			"(?:\\d+|d|portlet_file_entry)(?=[/?#]|$)|" +
-				"o/adaptive-media/image/\\d+/)");
-	private static final Pattern _removedImagePattern = Pattern.compile(
-		"<img\\b[^>]*\\bchangeType=\"diff-removed-image\"[^>]*>");
-	private static final Pattern _urlAttributePattern = Pattern.compile(
-		"(href|src|srcset)=\"([^\"]*)\"");
 
 	@Reference
 	private BasePersistenceRegistry _basePersistenceRegistry;
