@@ -36,9 +36,11 @@ const Overview = lazy(
 	() => import(/* webpackChunkName: "AssetOverview" */ './Overview')
 );
 
-const ACCOUNTS_TAB_ID = 'accounts';
+export const ACCOUNTS_TAB_ID = 'accounts';
 
-const KNOWN_INDIVIDUALS_TAB_ID = 'known-individuals';
+export const KNOWN_INDIVIDUALS_TAB_ID = 'known-individuals';
+
+export const OVERVIEW_TAB_ID = 'page';
 
 const AssetDashboard: React.FC<{
 	className: string;
