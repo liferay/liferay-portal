@@ -485,7 +485,6 @@ public class AddContentItemCommentStrutsActionTest {
 			userNotificationFeedEntry.getBody();
 
 		Assert.assertTrue(
-			userNotificationFeedEntryBody,
 			userNotificationFeedEntryBody.contains(
 				StringBundler.concat(
 					author.getFullName(), " mentioned ", userGroup.getName(),
@@ -495,7 +494,7 @@ public class AddContentItemCommentStrutsActionTest {
 
 		String to = mailMessage.getFirstHeaderValue("To");
 
-		Assert.assertTrue(to, to.contains(user1.getEmailAddress()));
+		Assert.assertTrue(to.contains(user1.getEmailAddress()));
 
 		Assert.assertEquals(
 			StringBundler.concat(
@@ -506,7 +505,6 @@ public class AddContentItemCommentStrutsActionTest {
 		String mailMessageBody = mailMessage.getBody();
 
 		Assert.assertTrue(
-			mailMessageBody,
 			mailMessageBody.contains(
 				StringBundler.concat(
 					author.getFullName(), " mentioned ", userGroup.getName(),

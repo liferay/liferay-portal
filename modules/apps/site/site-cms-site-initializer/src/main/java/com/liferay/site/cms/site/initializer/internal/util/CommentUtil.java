@@ -225,13 +225,13 @@ public class CommentUtil {
 			return body;
 		}
 
-		long groupId = _getGroupId(
-			className, classPK, themeDisplay.getCompanyId());
-
 		StringBundler sb = new StringBundler();
 
 		Matcher matcher = _mentionPattern.matcher(body);
 		int end = 0;
+
+		long groupId = _getGroupId(
+			className, classPK, themeDisplay.getCompanyId());
 
 		while (matcher.find()) {
 			sb.append(body.substring(end, matcher.start()));
