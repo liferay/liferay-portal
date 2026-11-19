@@ -4,6 +4,7 @@
  */
 
 import {expect, mergeTests} from '@playwright/test';
+import path from 'path';
 
 import {loginTest} from '../../../fixtures/loginTest';
 import {applyFDSSelectionFilter} from '../../../utils/applyFDSSelectionFilter';
@@ -81,6 +82,96 @@ test(
 		finally {
 			await productsPage.goto();
 
+			await productsPage.deleteProduct(productTitle);
+		}
+	}
+);
+
+test(
+	'Show the first image of a product as its card thumbnail in the All section',
+	{tag: ['@LPD-114149']},
+	async ({assetsPage, productPage, productsPage}) => {
+		const imageProductTitle = getRandomString();
+		const productTitle = getRandomString();
+
+		try {
+			await test.step('Add a product with two images and one without images', async () => {
+				const dependenciesPath = path.join(
+					__dirname,
+					'../../site-cms-site-initializer/main/dependencies'
+				);
+				const images = productPage.getRepeatableGroupEntries('Images');
+
+				await productsPage.goto();
+
+				await productsPage.openNewProductEditor(SPACE_NAME);
+
+				await productPage.sku.fill(getRandomString());
+				await productPage.title.fill(imageProductTitle);
+
+				await images
+					.first()
+					.locator('input[type="file"]')
+					.setInputFiles(
+						path.join(dependenciesPath, 'file_upload_image_1.jpg')
+					);
+
+				await productPage
+					.getRepeatableGroup('Images')
+					.getByRole('button', {name: 'Add New'})
+					.click();
+
+				await expect(images).toHaveCount(2);
+
+				await images
+					.last()
+					.locator('input[type="file"]')
+					.setInputFiles(
+						path.join(
+							dependenciesPath,
+							'sample_small_wide_400x300.jpg'
+						)
+					);
+
+				await productPage.save();
+
+				await expect(
+					productsPage.getProduct(imageProductTitle)
+				).toBeVisible();
+
+				await productsPage.openNewProductEditor(SPACE_NAME);
+
+				await productPage.sku.fill(getRandomString());
+				await productPage.title.fill(productTitle);
+
+				await productPage.save();
+
+				await expect(
+					productsPage.getProduct(productTitle)
+				).toBeVisible();
+			});
+
+			await test.step('The All section cards show the first image', async () => {
+				await assetsPage.gotoAll();
+
+				await assetsPage.changeVisualizationMode('Cards');
+
+				await expect(
+					assetsPage.getCardItem(imageProductTitle).locator('img')
+				).toHaveAttribute('src', /file_upload_image_1\.jpg/);
+				await expect(
+					assetsPage.getCardItem(productTitle).locator('img')
+				).toHaveCount(0);
+			});
+		}
+		finally {
+			await assetsPage.gotoAll();
+
+			await assetsPage.changeVisualizationMode('Table');
+
+			await productsPage.goto();
+
+			await productsPage.deleteProduct(imageProductTitle);
 			await productsPage.deleteProduct(productTitle);
 		}
 	}
