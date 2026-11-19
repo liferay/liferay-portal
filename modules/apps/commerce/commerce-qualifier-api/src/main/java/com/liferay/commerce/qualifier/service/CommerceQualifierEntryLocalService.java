@@ -6,7 +6,6 @@
 package com.liferay.commerce.qualifier.service;
 
 import com.liferay.commerce.qualifier.model.CommerceQualifierEntry;
-import com.liferay.commerce.qualifier.search.context.CommerceQualifierSearchContext;
 import com.liferay.petra.sql.dsl.query.DSLQuery;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
@@ -217,11 +216,6 @@ public interface CommerceQualifierEntryLocalService
 		long commerceQualifierEntryId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public CommerceQualifierEntry fetchCommerceQualifierEntry(
-		String sourceClassName, long sourceClassPK, String targetClassName,
-		long targetClassPK);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	/**
@@ -278,12 +272,6 @@ public interface CommerceQualifierEntryLocalService
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public <E> List<E> getSourceCommerceQualifierEntries(
-		long companyId, Class<E> sourceClass,
-		String sourceCommerceQualifierMetadataKey,
-		CommerceQualifierSearchContext commerceQualifierSearchContext);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CommerceQualifierEntry> getSourceCommerceQualifierEntries(
 			long companyId, String sourceClassName, long sourceClassPK,
 			String targetCommerceQualifierMetadataKey, String keywords,
@@ -324,4 +312,4 @@ public interface CommerceQualifierEntryLocalService
 		CommerceQualifierEntry commerceQualifierEntry);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1985086463
+// LIFERAY-SERVICE-BUILDER-HASH:-1840392525

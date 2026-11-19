@@ -278,16 +278,6 @@ public class CommerceQualifierEntryLocalServiceWrapper
 	}
 
 	@Override
-	public com.liferay.commerce.qualifier.model.CommerceQualifierEntry
-		fetchCommerceQualifierEntry(
-			String sourceClassName, long sourceClassPK, String targetClassName,
-			long targetClassPK) {
-
-		return _commerceQualifierEntryLocalService.fetchCommerceQualifierEntry(
-			sourceClassName, sourceClassPK, targetClassName, targetClassPK);
-	}
-
-	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 
@@ -369,19 +359,6 @@ public class CommerceQualifierEntryLocalServiceWrapper
 
 		return _commerceQualifierEntryLocalService.getPersistedModel(
 			primaryKeyObj);
-	}
-
-	@Override
-	public <E> java.util.List<E> getSourceCommerceQualifierEntries(
-		long companyId, Class<E> sourceClass,
-		String sourceCommerceQualifierMetadataKey,
-		com.liferay.commerce.qualifier.search.context.
-			CommerceQualifierSearchContext commerceQualifierSearchContext) {
-
-		return _commerceQualifierEntryLocalService.
-			getSourceCommerceQualifierEntries(
-				companyId, sourceClass, sourceCommerceQualifierMetadataKey,
-				commerceQualifierSearchContext);
 	}
 
 	@Override
@@ -480,4 +457,4 @@ public class CommerceQualifierEntryLocalServiceWrapper
 		_commerceQualifierEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1059012223
+// LIFERAY-SERVICE-BUILDER-HASH:-2075529414
