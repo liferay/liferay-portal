@@ -1233,6 +1233,282 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/ImportProcess"
             tags: ["ImportProcess"]
+    "/asset-libraries/{assetLibraryExternalReferenceCode}/publish-preview":
+        get:
+            description:
+                Retrieves the portlet data handlers and change counts for a Publish to Live of the specified asset library, or of one of its portlets.
+            operationId: getAssetLibraryPublishPreview
+            parameters:
+                -   in: path
+                    name: assetLibraryExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+                -   in: query
+                    description:
+                        The date filter's type. Without it, all the content is counted.
+                    name: dateFilterType
+                    schema:
+                        enum: [DateRange, FromLastPublishDate, LastHours]
+                        type: string
+                -   in: query
+                    description:
+                        The end date of a DateRange filter.
+                    name: endDate
+                    schema:
+                        format: date-time
+                        type: string
+                -   in: query
+                    description:
+                        The number of hours of a LastHours filter.
+                    name: hours
+                    schema:
+                        format: int32
+                        minimum: 1
+                        type: integer
+                -   in: query
+                    description:
+                        The ID of a portlet to narrow the process to (e.g., com_liferay_journal_web_portlet_JournalPortlet).
+                    name: portletId
+                    schema:
+                        type: string
+                -   in: query
+                    description:
+                        The start date of a DateRange filter.
+                    name: startDate
+                    schema:
+                        format: date-time
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/PublishPreview"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/PublishPreview"
+            tags: ["PublishPreview"]
+    "/asset-libraries/{assetLibraryExternalReferenceCode}/publish-processes":
+        get:
+            description:
+                Retrieves the Publish to Live processes of the specified asset library, or of one of its portlets.
+            operationId: getAssetLibraryPublishProcessesPage
+            parameters:
+                -   in: path
+                    name: assetLibraryExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+                -   in: query
+                    name: creatorId
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: query
+                    name: fields
+                    schema:
+                        type: string
+                -   in: query
+                    name: nestedFields
+                    schema:
+                        type: string
+                -   in: query
+                    name: page
+                    schema:
+                        type: integer
+                -   in: query
+                    name: pageSize
+                    schema:
+                        type: integer
+                -   in: query
+                    description:
+                        The ID of a portlet to list only its processes.
+                    name: portletId
+                    schema:
+                        type: string
+                -   in: query
+                    name: restrictFields
+                    schema:
+                        type: string
+                -   in: query
+                    name: search
+                    schema:
+                        type: string
+                -   in: query
+                    name: sort
+                    schema:
+                        type: string
+                -   in: query
+                    name: status
+                    schema:
+                        type: integer
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/PublishProcess"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/PublishProcess"
+                                type: array
+            tags: ["PublishProcess"]
+        post:
+            description:
+                Starts a Publish to Live of the specified asset library, or of one of its portlets.
+            operationId: postAssetLibraryPublishProcess
+            parameters:
+                -   in: path
+                    name: assetLibraryExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+                -   in: query
+                    description:
+                        The ID of a portlet to narrow the process to (e.g., com_liferay_journal_web_portlet_JournalPortlet).
+                    name: portletId
+                    schema:
+                        type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/PublishProcessRequest"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/PublishProcessRequest"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/PublishProcess"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/PublishProcess"
+            tags: ["PublishProcess"]
+    "/asset-libraries/{assetLibraryExternalReferenceCode}/scheduled-publish-processes":
+        get:
+            description:
+                Retrieves the scheduled Publish to Live processes of the specified asset library.
+            operationId: getAssetLibraryScheduledPublishProcessesPage
+            parameters:
+                -   in: path
+                    name: assetLibraryExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+                -   in: query
+                    name: page
+                    schema:
+                        type: integer
+                -   in: query
+                    name: pageSize
+                    schema:
+                        type: integer
+                -   in: query
+                    name: search
+                    schema:
+                        type: string
+                -   in: query
+                    name: sort
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/ScheduledPublishProcess"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/ScheduledPublishProcess"
+                                type: array
+            tags: ["ScheduledPublishProcess"]
+        post:
+            description:
+                Schedules a Publish to Live of the specified asset library. The publish process request runs every time the cron expression fires, between the start and end dates.
+            operationId: postAssetLibraryScheduledPublishProcess
+            parameters:
+                -   in: path
+                    name: assetLibraryExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/ScheduledPublishProcessRequest"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/ScheduledPublishProcessRequest"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ScheduledPublishProcess"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/ScheduledPublishProcess"
+            tags: ["ScheduledPublishProcess"]
+    "/asset-libraries/{assetLibraryExternalReferenceCode}/scheduled-publish-processes/{scheduledPublishProcessId}":
+        delete:
+            description:
+                Unschedules the scheduled Publish to Live process with the specified ID.
+            operationId: deleteAssetLibraryScheduledPublishProcess
+            parameters:
+                -   in: path
+                    name: assetLibraryExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+                -   in: path
+                    name: scheduledPublishProcessId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+            tags: ["ScheduledPublishProcess"]
+        get:
+            description:
+                Retrieves the scheduled Publish to Live process with the specified ID.
+            operationId: getAssetLibraryScheduledPublishProcess
+            parameters:
+                -   in: path
+                    name: assetLibraryExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+                -   in: path
+                    name: scheduledPublishProcessId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ScheduledPublishProcess"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/ScheduledPublishProcess"
+            tags: ["ScheduledPublishProcess"]
     "/export-preview":
         get:
             description:
