@@ -349,9 +349,12 @@ public class MessageBoardThreadResourceTest
 			new AssetCategory[] {assetCategory, ownerAssetCategory},
 			messageBoardThread.getTaxonomyCategoryBriefs());
 
+		MessageBoardThreadResource userWithoutPermissionsResource =
+			_getUserWithoutPermissionsMessageBoardThreadResource();
+
 		messageBoardThread =
-			_getUserWithoutPermissionsMessageBoardThreadResource().
-				getMessageBoardThread(messageBoardThread.getId());
+			userWithoutPermissionsResource.getMessageBoardThread(
+				messageBoardThread.getId());
 
 		TaxonomyCategoryTestUtil.assertTaxonomyCategoryBriefs(
 			new AssetCategory[] {assetCategory},
