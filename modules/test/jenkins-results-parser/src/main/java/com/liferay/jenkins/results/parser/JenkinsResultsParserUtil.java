@@ -2721,6 +2721,98 @@ public class JenkinsResultsParserUtil {
 		return getJobVariant(new JSONObject(json));
 	}
 
+	public static String getLatestPortalBundleOverlayGitCommitShort(
+		String basePortalBranchName, String overlayPortalBranchName) {
+
+		String s3BucketPath = null;
+		String s3FilesOutput = null;
+
+		try {
+			s3BucketPath = getBuildProperty("cloud.ci.s3.bucket.path");
+
+			Process process = executeBashCommands(
+				true,
+				combine(
+					"aws s3 ls --recursive \"", _getPortalBundlesS3ObjectPath(),
+					"/", basePortalBranchName, "_\""));
+
+			s3FilesOutput = readInputStream(process.getInputStream());
+		}
+		catch (IOException | TimeoutException exception) {
+			System.out.println(
+				combine(
+					"WARNING: Unable to list portal bundles\n",
+					String.valueOf(exception)));
+
+			return null;
+		}
+
+		List<String> dataS3ObjectLines = new ArrayList<>();
+
+		Pattern portalBundleOverlayDataS3ObjectPattern = Pattern.compile(
+			combine(
+				"\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2} +\\d+ ",
+				"(?<s3ObjectKey>.+/portal-bundle/",
+				Pattern.quote(basePortalBranchName),
+				"_[0-9a-f]{7}_[0-9a-f]{7}/",
+				Pattern.quote(overlayPortalBranchName),
+				"_(?<overlayGitCommitShort>[0-9a-f]{7})_",
+				"\\k<overlayGitCommitShort>)/data\\.json\\.gz"));
+
+		for (String s3FilesOutputLine : s3FilesOutput.split("\n")) {
+			Matcher matcher = portalBundleOverlayDataS3ObjectPattern.matcher(
+				s3FilesOutputLine.trim());
+
+			if (!matcher.matches()) {
+				continue;
+			}
+
+			dataS3ObjectLines.add(matcher.group());
+		}
+
+		Collections.sort(dataS3ObjectLines, Collections.reverseOrder());
+
+		long latestCompletedTime = Long.MIN_VALUE;
+		String latestOverlayGitCommitShort = null;
+
+		for (int index = 0; index < dataS3ObjectLines.size(); index++) {
+			if ((index >= 10) && (latestOverlayGitCommitShort != null)) {
+				break;
+			}
+
+			Matcher matcher = portalBundleOverlayDataS3ObjectPattern.matcher(
+				dataS3ObjectLines.get(index));
+
+			if (!matcher.matches()) {
+				continue;
+			}
+
+			JSONObject dataJSONObject = _getPortalBundleDataJSONObject(
+				combine(s3BucketPath, "/", matcher.group("s3ObjectKey")));
+
+			if ((dataJSONObject == null) ||
+				!Objects.equals(
+					dataJSONObject.optString("status"), "SUCCESS")) {
+
+				continue;
+			}
+
+			long completedTime = dataJSONObject.optLong("completed_time");
+
+			if ((latestOverlayGitCommitShort != null) &&
+				(completedTime <= latestCompletedTime)) {
+
+				continue;
+			}
+
+			latestCompletedTime = completedTime;
+			latestOverlayGitCommitShort = matcher.group(
+				"overlayGitCommitShort");
+		}
+
+		return latestOverlayGitCommitShort;
+	}
+
 	public static String getLatestPortalBundleS3ObjectPath(
 		String portalBranchName) {
 
