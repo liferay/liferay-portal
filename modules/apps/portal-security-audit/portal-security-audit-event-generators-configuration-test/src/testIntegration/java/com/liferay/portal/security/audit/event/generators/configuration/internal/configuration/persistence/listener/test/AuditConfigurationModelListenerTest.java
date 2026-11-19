@@ -87,11 +87,11 @@ public class AuditConfigurationModelListenerTest {
 
 	@After
 	public void tearDown() throws Exception {
-		_serviceRegistration.unregister();
-
 		for (Configuration configuration : _configurations) {
 			configuration.delete();
 		}
+
+		_serviceRegistration.unregister();
 	}
 
 	@Test
