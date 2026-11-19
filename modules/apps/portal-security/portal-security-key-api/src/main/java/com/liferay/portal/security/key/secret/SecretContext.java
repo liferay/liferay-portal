@@ -40,8 +40,7 @@ public class SecretContext {
 			throw new IllegalArgumentException("Properties are null");
 		}
 
-		return new SecretContext(
-			key, Collections.unmodifiableMap(properties), Type.CONFIGURATION);
+		return new SecretContext(key, Collections.unmodifiableMap(properties));
 	}
 
 	public String getKey() {
@@ -52,30 +51,16 @@ public class SecretContext {
 		return _properties;
 	}
 
-	public Type getType() {
-		return _type;
-	}
-
-	public enum Type {
-
-		CONFIGURATION, PORTAL_PREFERENCES, SETTINGS
-
-	}
-
-	private SecretContext(
-		String key, Map<String, Object> properties, Type type) {
-
+	private SecretContext(String key, Map<String, Object> properties) {
 		if (Validator.isNull(key)) {
 			throw new IllegalArgumentException("Key is null");
 		}
 
 		_key = key;
 		_properties = properties;
-		_type = type;
 	}
 
 	private final String _key;
 	private final Map<String, Object> _properties;
-	private final Type _type;
 
 }

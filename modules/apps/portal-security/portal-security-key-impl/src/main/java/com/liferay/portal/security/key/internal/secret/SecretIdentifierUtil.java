@@ -15,7 +15,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
-import java.util.Dictionary;
+import java.util.function.Function;
 
 import org.osgi.service.cm.ConfigurationAdmin;
 
@@ -25,12 +25,13 @@ import org.osgi.service.cm.ConfigurationAdmin;
 public class SecretIdentifierUtil {
 
 	public static String getSecretIdentifier(
-		String key, String pid, Dictionary<String, ?> properties) {
+		String key, String pid, Function<String, ?> propertyAccessorFunction) {
 
-		String configurationPid = _getConfigurationPid(pid, properties);
+		String configurationPid = _getConfigurationPid(
+			pid, propertyAccessorFunction);
 
 		String portletInstanceId = GetterUtil.getString(
-			properties.get(
+			propertyAccessorFunction.apply(
 				ExtendedObjectClassDefinition.Scope.PORTLET_INSTANCE.
 					getPropertyKey()));
 
@@ -42,7 +43,7 @@ public class SecretIdentifierUtil {
 		}
 
 		long groupId = GetterUtil.getLong(
-			properties.get(
+			propertyAccessorFunction.apply(
 				ExtendedObjectClassDefinition.Scope.GROUP.getPropertyKey()));
 
 		if (groupId > 0) {
@@ -52,7 +53,7 @@ public class SecretIdentifierUtil {
 		}
 
 		long companyId = GetterUtil.getLong(
-			properties.get(
+			propertyAccessorFunction.apply(
 				ExtendedObjectClassDefinition.Scope.COMPANY.getPropertyKey()),
 			CompanyConstants.SYSTEM);
 
@@ -68,10 +69,11 @@ public class SecretIdentifierUtil {
 	}
 
 	private static String _getConfigurationPid(
-		String pid, Dictionary<String, ?> properties) {
+		String pid, Function<String, ?> propertyAccessorFunction) {
 
 		String factoryPid = GetterUtil.getString(
-			properties.get(ConfigurationAdmin.SERVICE_FACTORYPID));
+			propertyAccessorFunction.apply(
+				ConfigurationAdmin.SERVICE_FACTORYPID));
 
 		if (factoryPid.endsWith(".scoped")) {
 			return ConfigurationPidUtil.getRawPid(factoryPid);

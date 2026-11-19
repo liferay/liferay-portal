@@ -16,8 +16,7 @@ import com.liferay.portal.kernel.cache.PortalCacheManagerNames;
 import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.security.fips.FIPSAuditEvent;
 import com.liferay.portal.kernel.security.fips.FIPSAuditUtil;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.HashMapDictionary;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -31,11 +30,8 @@ import com.liferay.portal.security.key.secret.exception.SecretException;
 import com.liferay.portal.security.key.spi.profile.KeyManagerProfile;
 import com.liferay.portal.security.key.spi.profile.KeyManagerProfileRegistry;
 
-import java.util.Dictionary;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.SequencedMap;
 
 import org.osgi.framework.Constants;
 import org.osgi.service.component.annotations.Activate;
@@ -70,7 +66,7 @@ public class SecretResolverImpl implements SecretResolver {
 
 			long scopeCompanyId = _getScopeCompanyId(
 				companyId, keyReference.getIdentifier(), "resolve",
-				_getSecretIdentifierMap(secretContext));
+				secretContext);
 
 			String key = getKey(scopeCompanyId, value);
 
@@ -162,31 +158,27 @@ public class SecretResolverImpl implements SecretResolver {
 		}
 
 		try {
-			SequencedMap<String, Long> secretIdentifierMap =
-				_getSecretIdentifierMap(secretContext);
-
 			if (KeyReferenceUtil.isKeyReference(value)) {
 				KeyReference keyReference = _getKeyReference(value);
 
 				_getScopeCompanyId(
 					companyId, keyReference.getIdentifier(), "store",
-					secretIdentifierMap);
+					secretContext);
 
 				return value;
 			}
 
-			Map.Entry<String, Long> entry = secretIdentifierMap.firstEntry();
-
-			String identifier = entry.getKey();
+			String secretIdentifier = _getSecretIdentifier(secretContext);
 
 			try (Secret secret = new Secret(
 					new KeyReference(
-						identifier, StringPool.STAR, KeyReference.Type.SECRET),
+						secretIdentifier, StringPool.STAR,
+						KeyReference.Type.SECRET),
 					value)) {
 
 				return _putSecret(
 					_getScopeCompanyId(
-						companyId, identifier, "store", secretIdentifierMap),
+						companyId, secretIdentifier, "store", secretContext),
 					secret);
 			}
 		}
@@ -285,12 +277,15 @@ public class SecretResolverImpl implements SecretResolver {
 
 	private long _getScopeCompanyId(
 			long companyId, String identifier, String operation,
-			Map<String, Long> secretIdentifierMap)
+			SecretContext secretContext)
 		throws SecretException {
 
-		Long scopeCompanyId = secretIdentifierMap.get(identifier);
+		long scopeCompanyId = MapUtil.getLong(
+			secretContext.getProperties(),
+			ExtendedObjectClassDefinition.Scope.COMPANY.getPropertyKey(),
+			CompanyConstants.SYSTEM);
 
-		if ((scopeCompanyId != null) &&
+		if (Objects.equals(identifier, _getSecretIdentifier(secretContext)) &&
 			((scopeCompanyId == CompanyConstants.SYSTEM) ||
 			 (scopeCompanyId == companyId))) {
 
@@ -312,28 +307,13 @@ public class SecretResolverImpl implements SecretResolver {
 				"\" in this secret context"));
 	}
 
-	private SequencedMap<String, Long> _getSecretIdentifierMap(
-		SecretContext secretContext) {
+	private String _getSecretIdentifier(SecretContext secretContext) {
+		Map<String, Object> properties = secretContext.getProperties();
 
-		SequencedMap<String, Long> secretIdentifierMap = new LinkedHashMap<>();
-
-		if (secretContext.getType() == SecretContext.Type.CONFIGURATION) {
-			Dictionary<String, Object> properties = new HashMapDictionary<>(
-				secretContext.getProperties());
-
-			secretIdentifierMap.put(
-				SecretIdentifierUtil.getSecretIdentifier(
-					secretContext.getKey(),
-					GetterUtil.getString(properties.get(Constants.SERVICE_PID)),
-					properties),
-				GetterUtil.getLong(
-					properties.get(
-						ExtendedObjectClassDefinition.Scope.COMPANY.
-							getPropertyKey()),
-					CompanyConstants.SYSTEM));
-		}
-
-		return secretIdentifierMap;
+		return SecretIdentifierUtil.getSecretIdentifier(
+			secretContext.getKey(),
+			MapUtil.getString(properties, Constants.SERVICE_PID),
+			properties::get);
 	}
 
 	private String _putSecret(long companyId, Secret secret)

@@ -102,7 +102,7 @@ public class ConfigurationSecretConfigurationModelListener
 
 					if (!identifier.equals(
 							SecretIdentifierUtil.getSecretIdentifier(
-								key, pid, properties))) {
+								key, pid, properties::get))) {
 
 						continue;
 					}

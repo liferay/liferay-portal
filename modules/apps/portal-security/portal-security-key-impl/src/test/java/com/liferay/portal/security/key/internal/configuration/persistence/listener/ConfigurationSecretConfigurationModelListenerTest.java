@@ -246,13 +246,12 @@ public class ConfigurationSecretConfigurationModelListenerTest {
 		return extendedAttributeDefinition;
 	}
 
-	private boolean _isCredentialConfigurationSecretContext(
+	private boolean _isCredentialSecretContext(
 		Map<String, Object> properties, SecretContext secretContext) {
 
 		if ((secretContext != null) &&
 			Objects.equals(secretContext.getKey(), "credential") &&
-			Objects.equals(secretContext.getProperties(), properties) &&
-			(secretContext.getType() == SecretContext.Type.CONFIGURATION)) {
+			Objects.equals(secretContext.getProperties(), properties)) {
 
 			return true;
 		}
@@ -441,9 +440,8 @@ public class ConfigurationSecretConfigurationModelListenerTest {
 			_secretResolver.store(
 				Mockito.eq(CompanyConstants.SYSTEM),
 				Mockito.argThat(
-					(SecretContext secretContext) ->
-						_isCredentialConfigurationSecretContext(
-							propertiesMap, secretContext)),
+					(SecretContext secretContext) -> _isCredentialSecretContext(
+						propertiesMap, secretContext)),
 				Mockito.eq(value))
 		).thenReturn(
 			storedValue
@@ -549,9 +547,8 @@ public class ConfigurationSecretConfigurationModelListenerTest {
 		).store(
 			Mockito.eq(companyId),
 			Mockito.argThat(
-				(SecretContext secretContext) ->
-					_isCredentialConfigurationSecretContext(
-						propertiesMap, secretContext)),
+				(SecretContext secretContext) -> _isCredentialSecretContext(
+					propertiesMap, secretContext)),
 			Mockito.eq(value)
 		);
 	}
@@ -576,9 +573,8 @@ public class ConfigurationSecretConfigurationModelListenerTest {
 		).store(
 			Mockito.eq(companyId),
 			Mockito.argThat(
-				(SecretContext secretContext) ->
-					_isCredentialConfigurationSecretContext(
-						propertiesMap, secretContext)),
+				(SecretContext secretContext) -> _isCredentialSecretContext(
+					propertiesMap, secretContext)),
 			Mockito.eq(value)
 		);
 	}
