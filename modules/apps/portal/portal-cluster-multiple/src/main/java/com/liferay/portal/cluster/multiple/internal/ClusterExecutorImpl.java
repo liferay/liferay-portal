@@ -8,7 +8,6 @@ package com.liferay.portal.cluster.multiple.internal;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerList;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerListFactory;
 import com.liferay.petra.concurrent.ConcurrentReferenceValueHashMap;
-import com.liferay.petra.concurrent.DefaultNoticeableFuture;
 import com.liferay.petra.executor.PortalExecutorManager;
 import com.liferay.petra.lang.HashUtil;
 import com.liferay.petra.memory.FinalizeManager;
@@ -391,10 +390,6 @@ public class ClusterExecutorImpl implements ClusterExecutor {
 	}
 
 	protected void memberRemoved(List<Address> departAddresses) {
-		for (Address address : departAddresses) {
-			_clusterNodeIdDefaultNoticeableFutures.remove(address);
-		}
-
 		List<ClusterNode> departClusterNodes = new ArrayList<>();
 
 		Collection<ClusterNodeStatus> clusterNodeStatuses =
@@ -505,13 +500,6 @@ public class ClusterExecutorImpl implements ClusterExecutor {
 	}
 
 	private boolean _memberJoined(ClusterNodeStatus clusterNodeStatus) {
-		DefaultNoticeableFuture<String> defaultNoticeableFuture =
-			_clusterNodeIdDefaultNoticeableFutures.computeIfAbsent(
-				clusterNodeStatus.getAddress(),
-				key -> new DefaultNoticeableFuture<>());
-
-		defaultNoticeableFuture.set(clusterNodeStatus.getClusterNodeId());
-
 		ClusterNodeStatus oldClusterNodeStatus = _clusterNodeStatuses.put(
 			clusterNodeStatus.getClusterNodeId(), clusterNodeStatus);
 
@@ -540,8 +528,6 @@ public class ClusterExecutorImpl implements ClusterExecutor {
 
 	private ClusterChannel _clusterChannel;
 	private volatile ClusterChannelFactory _clusterChannelFactory;
-	private final Map<Address, DefaultNoticeableFuture<String>>
-		_clusterNodeIdDefaultNoticeableFutures = new ConcurrentHashMap<>();
 	private final Map<String, ClusterNodeStatus> _clusterNodeStatuses =
 		new ConcurrentHashMap<>();
 	private boolean _enabled;
