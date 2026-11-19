@@ -71,7 +71,7 @@ const WebdavInputCopyButton = ({fields}) => {
 									ref={(element) => {
 										inputRefs.current[index] = element;
 									}}
-									symbol="paste"
+									symbol="copy"
 									title={sub(
 										Liferay.Language.get('copy-x'),
 										label

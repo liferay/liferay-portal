@@ -50,7 +50,7 @@ String sitemapURLInputId = liferayPortletResponse.getNamespace() + "sitemapURLIn
 				cssClass="lfr-portal-tooltip"
 				data-clipboard-target='<%= "#" + sitemapURLInputId %>'
 				displayType="secondary"
-				icon="paste"
+				icon="copy"
 				id='<%= liferayPortletResponse.getNamespace() + "copySitemapURLButton" %>'
 				title="copy-link"
 			/>

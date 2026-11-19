@@ -183,7 +183,7 @@ const FieldMappings = ({
 								onClick={handleCopyEditorText}
 								title={Liferay.Language.get('copy')}
 							>
-								<ClayIcon symbol="paste" />
+								<ClayIcon symbol="copy" />
 							</ClayButton>
 						</ClayLayout.SheetSection>
 

@@ -47,7 +47,7 @@ String oAuth2ApplicationName = GetterUtil.getString(request.getAttribute(ScimWeb
 							cssClass="lfr-portal-tooltip scim-infopanel-copy-clipboard"
 							data-clipboard-target='<%= "#" + oAuth2AccessTokenInputId %>'
 							displayType="secondary"
-							icon="paste"
+							icon="copy"
 							id="copyAccessToken"
 							name="copyAccessToken"
 							title="copy-link"
