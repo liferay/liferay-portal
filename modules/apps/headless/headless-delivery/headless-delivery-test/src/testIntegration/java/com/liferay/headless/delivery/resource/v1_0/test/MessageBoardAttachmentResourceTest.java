@@ -121,6 +121,7 @@ public class MessageBoardAttachmentResourceTest
 
 	@Override
 	@Test
+	@TestInfo("LPD-116076")
 	public void testPostMessageBoardMessageMessageBoardAttachment()
 		throws Exception {
 
@@ -134,36 +135,7 @@ public class MessageBoardAttachmentResourceTest
 			"text/plain", postMessageBoardAttachment.getEncodingFormat());
 
 		_testPostMessageBoardMessageMessageBoardAttachmentWithoutUpdatePermission();
-	}
-
-	@Test
-	@TestInfo("LPD-116076")
-	public void testPostMessageBoardMessageMessageBoardAttachmentWithRestrictedMessageBoardMessage()
-		throws Exception {
-
-		MessageBoardAttachment messageBoardAttachment =
-			_addRestrictedMessageBoardAttachment();
-
-		FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(
-			messageBoardAttachment.getId());
-
-		DLFileEntry dlFileEntry = (DLFileEntry)fileEntry.getModel();
-
-		Assert.assertEquals(
-			MBMessage.class.getName(), dlFileEntry.getClassName());
-		Assert.assertNotNull(
-			MBMessageLocalServiceUtil.fetchMBMessage(dlFileEntry.getClassPK()));
-
-		ModelResourcePermission<FileEntry> fileEntryModelResourcePermission =
-			ModelResourcePermissionRegistryUtil.getModelResourcePermission(
-				FileEntry.class.getName());
-
-		Assert.assertFalse(
-			fileEntryModelResourcePermission.contains(
-				PermissionCheckerFactoryUtil.create(
-					UserLocalServiceUtil.getGuestUser(
-						testGroup.getCompanyId())),
-				fileEntry.getFileEntryId(), ActionKeys.VIEW));
+		_testPostMessageBoardMessageMessageBoardAttachmentWithRestrictedMessageBoardMessage();
 	}
 
 	@Override
@@ -571,6 +543,34 @@ public class MessageBoardAttachmentResourceTest
 			userWithoutPermissionsMessageBoardAttachmentResource.
 				getMessageBoardAttachmentHttpResponse(
 					messageBoardAttachment.getId()));
+	}
+
+	private void _testPostMessageBoardMessageMessageBoardAttachmentWithRestrictedMessageBoardMessage()
+		throws Exception {
+
+		MessageBoardAttachment messageBoardAttachment =
+			_addRestrictedMessageBoardAttachment();
+
+		FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(
+			messageBoardAttachment.getId());
+
+		DLFileEntry dlFileEntry = (DLFileEntry)fileEntry.getModel();
+
+		Assert.assertEquals(
+			MBMessage.class.getName(), dlFileEntry.getClassName());
+		Assert.assertNotNull(
+			MBMessageLocalServiceUtil.fetchMBMessage(dlFileEntry.getClassPK()));
+
+		ModelResourcePermission<FileEntry> fileEntryModelResourcePermission =
+			ModelResourcePermissionRegistryUtil.getModelResourcePermission(
+				FileEntry.class.getName());
+
+		Assert.assertFalse(
+			fileEntryModelResourcePermission.contains(
+				PermissionCheckerFactoryUtil.create(
+					UserLocalServiceUtil.getGuestUser(
+						testGroup.getCompanyId())),
+				fileEntry.getFileEntryId(), ActionKeys.VIEW));
 	}
 
 	private void _testPostMessageBoardMessageMessageBoardAttachmentWithoutUpdatePermission()
