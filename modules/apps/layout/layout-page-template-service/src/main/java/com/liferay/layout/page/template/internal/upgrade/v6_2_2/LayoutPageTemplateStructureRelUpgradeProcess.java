@@ -67,6 +67,7 @@ public class LayoutPageTemplateStructureRelUpgradeProcess
 					"update LayoutPageTemplateStructureRel set data_ = ? " +
 						"where ctCollectionId = ? and " +
 							"lPageTemplateStructureRelId = ?");
+
 			ResultSet resultSet = selectPreparedStatement.executeQuery()) {
 
 			while (resultSet.next()) {

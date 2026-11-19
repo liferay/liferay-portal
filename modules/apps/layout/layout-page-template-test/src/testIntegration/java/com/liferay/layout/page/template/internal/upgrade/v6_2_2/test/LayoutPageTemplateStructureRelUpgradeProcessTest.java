@@ -117,21 +117,21 @@ public class LayoutPageTemplateStructureRelUpgradeProcessTest
 		Assert.assertEquals(
 			companyGroupFragmentEntry.getExternalReferenceCode(),
 			companyGroupFragmentEntryJSONObject.getString("fragmentEntryERC"));
+		Assert.assertFalse(
+			companyGroupFragmentEntryJSONObject.has(
+				"fragmentEntryRendererKey"));
 		Assert.assertEquals(
 			companyGroup.getExternalReferenceCode(),
 			companyGroupFragmentEntryJSONObject.getString(
 				"fragmentEntryScopeERC"));
-		Assert.assertFalse(
-			companyGroupFragmentEntryJSONObject.has(
-				"fragmentEntryRendererKey"));
 
 		JSONObject rendererFragmentJSONObject =
 			fragmentEntriesJSONArray.getJSONObject(1);
 
+		Assert.assertFalse(rendererFragmentJSONObject.has("fragmentEntryERC"));
 		Assert.assertEquals(
 			expectedFragmentEntryRendererKey,
 			rendererFragmentJSONObject.getString("fragmentEntryRendererKey"));
-		Assert.assertFalse(rendererFragmentJSONObject.has("fragmentEntryERC"));
 		Assert.assertFalse(
 			rendererFragmentJSONObject.has("fragmentEntryScopeERC"));
 
@@ -167,7 +167,9 @@ public class LayoutPageTemplateStructureRelUpgradeProcessTest
 	@Override
 	protected void runUpgrade() throws Exception {
 		UpgradeProcess upgradeProcess = UpgradeTestUtil.getUpgradeStep(
-			_upgradeStepRegistrator, _CLASS_NAME);
+			_upgradeStepRegistrator,
+			"com.liferay.layout.page.template.internal.upgrade.v6_2_2." +
+				"LayoutPageTemplateStructureRelUpgradeProcess");
 
 		upgradeProcess.upgrade();
 
@@ -285,10 +287,6 @@ public class LayoutPageTemplateStructureRelUpgradeProcessTest
 
 		return dataJSONObject.toString();
 	}
-
-	private static final String _CLASS_NAME =
-		"com.liferay.layout.page.template.internal.upgrade.v6_2_2." +
-			"LayoutPageTemplateStructureRelUpgradeProcess";
 
 	@Inject
 	private EntityCache _entityCache;

@@ -248,10 +248,10 @@ public class ExportImportMasterLayoutsTest {
 			expectedDropZoneLayoutStructureItem.isAllowNewFragmentEntries(),
 			actualDropZoneLayoutStructureItem.isAllowNewFragmentEntries());
 
-		JSONArray expectedFragmentEntriesJSONArray =
-			expectedDropZoneLayoutStructureItem.getFragmentEntriesJSONArray();
 		JSONArray actualFragmentEntriesJSONArray =
 			actualDropZoneLayoutStructureItem.getFragmentEntriesJSONArray();
+		JSONArray expectedFragmentEntriesJSONArray =
+			expectedDropZoneLayoutStructureItem.getFragmentEntriesJSONArray();
 
 		Assert.assertEquals(
 			expectedFragmentEntriesJSONArray.toString(),

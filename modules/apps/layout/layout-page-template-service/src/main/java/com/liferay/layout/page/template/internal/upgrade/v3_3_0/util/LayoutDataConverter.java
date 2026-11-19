@@ -20,6 +20,8 @@ import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -236,17 +238,12 @@ public class LayoutDataConverter {
 				inputDataJSONObject.getJSONArray("fragmentEntryKeys");
 
 			if (fragmentEntryKeysJSONArray != null) {
-				JSONArray fragmentEntriesJSONArray = JSONUtil.putAll();
-
-				for (int i = 0; i < fragmentEntryKeysJSONArray.length(); i++) {
-					fragmentEntriesJSONArray.put(
-						JSONUtil.put(
-							"fragmentEntryRendererKey",
-							fragmentEntryKeysJSONArray.getString(i)));
-				}
-
 				dropZoneLayoutStructureItem.setFragmentEntriesJSONArray(
-					fragmentEntriesJSONArray);
+					JSONUtil.toJSONArray(
+						JSONUtil.toStringList(fragmentEntryKeysJSONArray),
+						fragmentEntryKey -> JSONUtil.put(
+							"fragmentEntryRendererKey", fragmentEntryKey),
+						_log));
 			}
 
 			return;
@@ -277,5 +274,8 @@ public class LayoutDataConverter {
 
 		return JSONUtil.put("url", backgroundImage);
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		LayoutDataConverter.class);
 
 }

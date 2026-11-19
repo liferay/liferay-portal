@@ -115,10 +115,6 @@ public class UpdateItemConfigMVCActionCommandTest {
 	public void testUpdateDropZoneItemConfigNormalizesFragmentEntryKeys()
 		throws Exception {
 
-		FragmentEntry fragmentEntry = _addFragmentEntry();
-
-		MockActionRequest mockActionRequest = _getMockActionRequest();
-
 		LayoutStructure layoutStructure = _getLayoutStructure();
 
 		DropZoneLayoutStructureItem dropZoneLayoutStructureItem =
@@ -130,6 +126,10 @@ public class UpdateItemConfigMVCActionCommandTest {
 			updateLayoutPageTemplateStructureData(
 				TestPropsValues.getUserId(), _layout.getGroupId(),
 				_layout.getPlid(), layoutStructure.toString());
+
+		FragmentEntry fragmentEntry = _addFragmentEntry();
+
+		MockActionRequest mockActionRequest = _getMockActionRequest();
 
 		mockActionRequest.setParameter(
 			"itemConfig",
@@ -255,8 +255,9 @@ public class UpdateItemConfigMVCActionCommandTest {
 		return _fragmentEntryLocalService.addFragmentEntry(
 			null, TestPropsValues.getUserId(), fragmentCollection.getGroupId(),
 			fragmentCollection.getFragmentCollectionId(), StringPool.BLANK,
-			RandomTestUtil.randomString(), StringPool.BLANK, "<div>TEST</div>",
-			StringPool.BLANK, false, StringPool.BLANK, null, 0, false, false,
+			RandomTestUtil.randomString(), StringPool.BLANK,
+			RandomTestUtil.randomString(), StringPool.BLANK, false,
+			StringPool.BLANK, null, 0, false, false,
 			FragmentConstants.TYPE_COMPONENT, null,
 			WorkflowConstants.STATUS_APPROVED,
 			ServiceContextTestUtil.getServiceContext(

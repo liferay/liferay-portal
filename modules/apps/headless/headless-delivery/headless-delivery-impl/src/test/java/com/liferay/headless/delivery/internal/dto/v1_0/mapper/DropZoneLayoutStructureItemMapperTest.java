@@ -58,10 +58,9 @@ public class DropZoneLayoutStructureItemMapperTest {
 	@Test
 	@TestInfo("LPD-108786")
 	public void testGetPageElement() throws Exception {
+		String allowedFragmentEntryKey = RandomTestUtil.randomString();
 		DropZoneLayoutStructureItem dropZoneLayoutStructureItem =
 			_getDropZoneLayoutStructureItem(false);
-
-		String allowedFragmentEntryKey = RandomTestUtil.randomString();
 
 		Mockito.when(
 			_dropZoneAllowedFragmentEntriesHelper.getFragmentEntryKeys(

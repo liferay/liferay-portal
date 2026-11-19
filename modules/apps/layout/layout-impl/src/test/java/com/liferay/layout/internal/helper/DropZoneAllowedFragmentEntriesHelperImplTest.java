@@ -77,10 +77,10 @@ public class DropZoneAllowedFragmentEntriesHelperImplTest {
 	@TestInfo("LPD-108786")
 	public void testGetFragmentEntryKeys() throws Exception {
 		_testGetFragmentEntryKeys(
-			_getDropZoneLayoutStructureItem(null), Collections.emptyList());
-		_testGetFragmentEntryKeys(
 			_getDropZoneLayoutStructureItem(JSONUtil.putAll()),
 			Collections.emptyList());
+		_testGetFragmentEntryKeys(
+			_getDropZoneLayoutStructureItem(null), Collections.emptyList());
 
 		String fragmentEntryRendererKey = RandomTestUtil.randomString();
 
@@ -138,14 +138,14 @@ public class DropZoneAllowedFragmentEntriesHelperImplTest {
 		);
 
 		_testGetFragmentEntryKeys(
-			dropZoneLayoutStructureItem, Collections.emptyList());
-		_testGetFragmentEntryKeys(
 			_getDropZoneLayoutStructureItem(
 				JSONUtil.putAll(
 					JSONUtil.put(
 						"fragmentEntryScopeERC",
 						RandomTestUtil.randomString()))),
 			Collections.emptyList());
+		_testGetFragmentEntryKeys(
+			dropZoneLayoutStructureItem, Collections.emptyList());
 	}
 
 	@Test
@@ -153,10 +153,10 @@ public class DropZoneAllowedFragmentEntriesHelperImplTest {
 	public void testIsAllowedFragmentEntryKey() {
 		String fragmentEntryRendererKey = RandomTestUtil.randomString();
 
-		_testIsAllowedFragmentEntryKey(null, true, fragmentEntryRendererKey);
 		_testIsAllowedFragmentEntryKey(
 			_getDropZoneLayoutStructureItem(JSONUtil.putAll()), true,
 			fragmentEntryRendererKey);
+		_testIsAllowedFragmentEntryKey(null, true, fragmentEntryRendererKey);
 
 		DropZoneLayoutStructureItem dropZoneLayoutStructureItem =
 			_getDropZoneLayoutStructureItem(
