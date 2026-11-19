@@ -97,10 +97,15 @@ public class DBCopyTablesProcess {
 	public List<String> getCustomTableAndColumnInfos() {
 		List<String> customTableAndColumnInfos = new ArrayList<>();
 
-		String customTableNames = StringUtil.merge(
-			_customTableNames, StringPool.COMMA_AND_SPACE);
+		String customTableNamesString = "none";
 
-		customTableAndColumnInfos.add("custom tables: " + customTableNames);
+		if (!_customTableNames.isEmpty()) {
+			customTableNamesString = StringUtil.merge(
+				_customTableNames, StringPool.COMMA_AND_SPACE);
+		}
+
+		customTableAndColumnInfos.add(
+			"custom tables: " + customTableNamesString);
 
 		customTableAndColumnInfos.addAll(_customColumnInfos);
 
@@ -115,24 +120,6 @@ public class DBCopyTablesProcess {
 		_copyTables();
 	}
 
-	private void _addCustomColumnInfo(String columnName, ResultSet resultSet)
-		throws SQLException {
-
-		String columnType = _getPostgreSQLColumnType(
-			resultSet.getInt("COLUMN_SIZE"), resultSet.getInt("DATA_TYPE"),
-			resultSet.getInt("DECIMAL_DIGITS"));
-
-		if (columnType == null) {
-			columnType = "text (fallback)";
-		}
-
-		_customColumnInfos.add(
-			StringBundler.concat(
-				"custom column ", resultSet.getString("TABLE_NAME"), ".",
-				columnName, ": source ", resultSet.getString("TYPE_NAME"),
-				", created as ", columnType));
-	}
-
 	private void _addCustomColumnsAndTables() throws Exception {
 		try (Connection sourceConnection = _sourceDataSource.getConnection();
 
@@ -143,6 +130,8 @@ public class DBCopyTablesProcess {
 			DatabaseMetaData databaseMetaData = sourceConnection.getMetaData();
 
 			Map<String, List<String>> columnDefinitionsMap = new TreeMap<>(
+				String.CASE_INSENSITIVE_ORDER);
+			Map<String, List<String>> customColumnInfosMap = new TreeMap<>(
 				String.CASE_INSENSITIVE_ORDER);
 			Set<String> longNameTableNames = new TreeSet<>(
 				String.CASE_INSENSITIVE_ORDER);
@@ -170,10 +159,10 @@ public class DBCopyTablesProcess {
 							continue;
 						}
 
-						_addCustomColumnInfo(columnName, resultSet);
+						String columnType = _getPostgreSQLColumnType(resultSet);
 
 						String columnDefinition = _getColumnDefinition(
-							columnName, resultSet);
+							columnName, columnType);
 
 						if (resultSet.getInt("NULLABLE") ==
 								DatabaseMetaData.columnNoNulls) {
@@ -186,6 +175,14 @@ public class DBCopyTablesProcess {
 								tableName, newTableName -> new ArrayList<>());
 
 						columnDefinitions.add(columnDefinition);
+
+						List<String> customColumnInfos =
+							customColumnInfosMap.computeIfAbsent(
+								tableName, newTableName -> new ArrayList<>());
+
+						customColumnInfos.add(
+							_getCustomColumnInfo(
+								columnName, columnType, resultSet));
 
 						continue;
 					}
@@ -209,23 +206,30 @@ public class DBCopyTablesProcess {
 						continue;
 					}
 
-					_addCustomColumnInfo(columnName, resultSet);
+					String columnType = _getPostgreSQLColumnType(resultSet);
 
 					statement.executeUpdate(
 						StringBundler.concat(
 							"alter table ",
 							_getQuotedName(StringUtil.toLowerCase(tableName)),
 							" add ",
-							_getColumnDefinition(columnName, resultSet)));
+							_getColumnDefinition(columnName, columnType)));
+
+					_customColumnInfos.add(
+						_getCustomColumnInfo(
+							columnName, columnType, resultSet));
 				}
 			}
 
 			for (String longNameTableName : longNameTableNames) {
-				_customColumnInfos.removeIf(
-					customColumnInfo -> customColumnInfo.startsWith(
-						"custom column " + longNameTableName + "."));
-
 				columnDefinitionsMap.remove(longNameTableName);
+
+				_customColumnInfos.add(
+					StringBundler.concat(
+						"custom table ", longNameTableName,
+						": not migrated because its name or the name of one ",
+						"of its columns is longer than ",
+						_POSTGRESQL_NAME_MAX_LENGTH, " bytes"));
 
 				System.out.println(
 					StringBundler.concat(
@@ -244,6 +248,8 @@ public class DBCopyTablesProcess {
 						_getQuotedName(StringUtil.toLowerCase(entry.getKey())),
 						" (", StringUtil.merge(entry.getValue()), ")"));
 
+				_customColumnInfos.addAll(
+					customColumnInfosMap.get(entry.getKey()));
 				_customTableNames.add(entry.getKey());
 			}
 		}
@@ -894,20 +900,24 @@ public class DBCopyTablesProcess {
 		_setColumn(index, preparedStatement, targetType, valueString);
 	}
 
-	private String _getColumnDefinition(String columnName, ResultSet resultSet)
+	private String _getColumnDefinition(String columnName, String columnType) {
+		return StringBundler.concat(
+			_getQuotedName(StringUtil.toLowerCase(columnName)), " ",
+			GetterUtil.getString(columnType, "text"));
+	}
+
+	private String _getCustomColumnInfo(
+			String columnName, String columnType, ResultSet resultSet)
 		throws SQLException {
 
-		String columnType = _getPostgreSQLColumnType(
-			resultSet.getInt("COLUMN_SIZE"), resultSet.getInt("DATA_TYPE"),
-			resultSet.getInt("DECIMAL_DIGITS"));
-
 		if (columnType == null) {
-			columnType = "text";
+			columnType = "text (no equivalent PostgreSQL type)";
 		}
 
 		return StringBundler.concat(
-			_getQuotedName(StringUtil.toLowerCase(columnName)), " ",
-			columnType);
+			"custom column ", resultSet.getString("TABLE_NAME"), ".",
+			columnName, ": source ", resultSet.getString("TYPE_NAME"),
+			", created as ", columnType);
 	}
 
 	private List<IndexMetadata> _getIndexMetadatas(Connection connection)
@@ -1185,6 +1195,14 @@ public class DBCopyTablesProcess {
 		}
 
 		return null;
+	}
+
+	private String _getPostgreSQLColumnType(ResultSet resultSet)
+		throws SQLException {
+
+		return _getPostgreSQLColumnType(
+			resultSet.getInt("COLUMN_SIZE"), resultSet.getInt("DATA_TYPE"),
+			resultSet.getInt("DECIMAL_DIGITS"));
 	}
 
 	private String _getQuotedName(String name) {

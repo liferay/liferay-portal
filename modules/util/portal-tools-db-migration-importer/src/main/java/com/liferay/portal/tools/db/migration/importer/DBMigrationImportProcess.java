@@ -153,9 +153,8 @@ public class DBMigrationImportProcess {
 						_dataSourceInfos.add(
 							0,
 							_getDataSourceInfo(
-								dbCopyTablesProcess.
-									getCustomTableAndColumnInfos(),
-								null, _sourceDataSource, _targetDataSource));
+								dbCopyTablesProcess, null, _sourceDataSource,
+								_targetDataSource));
 					}
 					catch (Exception exception) {
 						throwableCollector.collect(exception);
@@ -189,10 +188,8 @@ public class DBMigrationImportProcess {
 
 							_dataSourceInfos.add(
 								_getDataSourceInfo(
-									dbCopyTablesProcess.
-										getCustomTableAndColumnInfos(),
-									partitionName, sourceDataSource,
-									targetDataSource));
+									dbCopyTablesProcess, partitionName,
+									sourceDataSource, targetDataSource));
 						}
 						catch (Exception exception) {
 							throwableCollector.collect(exception);
@@ -267,11 +264,9 @@ public class DBMigrationImportProcess {
 	}
 
 	private String _getDataSourceInfo(
-			List<String> customTableAndColumnInfos, String partitionName,
+			DBCopyTablesProcess dbCopyTablesProcess, String partitionName,
 			DataSource sourceDataSource, DataSource targetDataSource)
 		throws Exception {
-
-		List<String> lines = new ArrayList<>();
 
 		if (Validator.isNull(partitionName)) {
 			partitionName = "Default";
@@ -282,32 +277,32 @@ public class DBMigrationImportProcess {
 		Set<String> targetTableNames = _getNames(targetDataSource, "TABLE");
 		Set<String> targetViewNames = _getNames(targetDataSource, "VIEW");
 
-		Collections.addAll(
-			lines,
-			partitionName + " partition source tables: " +
-				sourceTableNames.size(),
-			partitionName + " partition source views: " +
-				sourceViewNames.size(),
-			partitionName + " partition target tables: " +
-				targetTableNames.size(),
-			partitionName + " partition target views: " +
-				targetViewNames.size(),
-			partitionName + " partition missing source tables: " +
-				_asymmetricDifference(targetTableNames, sourceTableNames),
-			partitionName + " partition missing source views: " +
-				_asymmetricDifference(targetViewNames, sourceViewNames),
-			partitionName + " partition missing target tables: " +
-				_asymmetricDifference(sourceTableNames, targetTableNames),
-			partitionName + " partition missing target views: " +
-				_asymmetricDifference(sourceViewNames, targetViewNames));
+		String customTableAndColumnInfos = StringUtil.merge(
+			dbCopyTablesProcess.getCustomTableAndColumnInfos(),
+			StringPool.NEW_LINE + partitionName + " partition ");
 
-		for (String customTableAndColumnInfo : customTableAndColumnInfos) {
-			lines.add(partitionName + " partition " + customTableAndColumnInfo);
-		}
-
-		lines.add(StringPool.NEW_LINE);
-
-		return StringUtil.merge(lines, StringPool.NEW_LINE);
+		return StringUtil.merge(
+			new Object[] {
+				partitionName + " partition source tables: " +
+					sourceTableNames.size(),
+				partitionName + " partition source views: " +
+					sourceViewNames.size(),
+				partitionName + " partition target tables: " +
+					targetTableNames.size(),
+				partitionName + " partition target views: " +
+					targetViewNames.size(),
+				partitionName + " partition missing source tables: " +
+					_asymmetricDifference(targetTableNames, sourceTableNames),
+				partitionName + " partition missing source views: " +
+					_asymmetricDifference(targetViewNames, sourceViewNames),
+				partitionName + " partition missing target tables: " +
+					_asymmetricDifference(sourceTableNames, targetTableNames),
+				partitionName + " partition missing target views: " +
+					_asymmetricDifference(sourceViewNames, targetViewNames),
+				partitionName + " partition " + customTableAndColumnInfos,
+				StringPool.NEW_LINE
+			},
+			StringPool.NEW_LINE);
 	}
 
 	private Set<String> _getNames(DataSource dataSource, String type)
