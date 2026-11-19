@@ -57,6 +57,13 @@
 		</field>
 		<field name="userEmailAddress" type="String" />
 	</model>
+	<model name="com.liferay.portal.security.audit.storage.model.AuditEventAccountEntryRel">
+		<field name="auditEventAccountEntryRelId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="createDate" type="Date" />
+		<field name="accountEntryId" type="long" />
+		<field name="auditEventId" type="long" />
+	</model>
 	<model name="com.liferay.portal.security.audit.storage.model.AuditEventPseudonymField">
 		<field name="auditEventPseudonymFieldId" type="long" />
 		<field name="companyId" type="long" />

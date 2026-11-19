@@ -297,4 +297,4 @@ public interface AuditEventLocalService
 	public AuditEvent updateAuditEvent(AuditEvent auditEvent);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1345645690
+// LIFERAY-SERVICE-BUILDER-HASH:-149333919
