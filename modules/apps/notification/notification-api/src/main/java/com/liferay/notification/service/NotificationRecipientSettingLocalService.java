@@ -211,10 +211,6 @@ public interface NotificationRecipientSettingLocalService
 	public NotificationRecipientSetting fetchNotificationRecipientSetting(
 		long notificationRecipientSettingId);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public NotificationRecipientSetting fetchNotificationRecipientSetting(
-		long notificationRecipientId, String name);
-
 	/**
 	 * Returns the notification recipient setting with the matching UUID and company.
 	 *
@@ -324,4 +320,4 @@ public interface NotificationRecipientSettingLocalService
 		NotificationRecipientSetting notificationRecipientSetting);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-138771518
+// LIFERAY-SERVICE-BUILDER-HASH:-190801541

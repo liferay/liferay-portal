@@ -237,14 +237,6 @@ public class NotificationRecipientSettingLocalServiceUtil {
 			notificationRecipientSettingId);
 	}
 
-	public static NotificationRecipientSetting
-		fetchNotificationRecipientSetting(
-			long notificationRecipientId, String name) {
-
-		return getService().fetchNotificationRecipientSetting(
-			notificationRecipientId, name);
-	}
-
 	/**
 	 * Returns the notification recipient setting with the matching UUID and company.
 	 *
@@ -400,4 +392,4 @@ public class NotificationRecipientSettingLocalServiceUtil {
 			NotificationRecipientSettingLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-220257020
+// LIFERAY-SERVICE-BUILDER-HASH:1406514440
