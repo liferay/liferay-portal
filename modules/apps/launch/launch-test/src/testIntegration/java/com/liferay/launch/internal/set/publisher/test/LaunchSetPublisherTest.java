@@ -108,7 +108,7 @@ public class LaunchSetPublisherTest {
 		for (BackgroundTask backgroundTask :
 				_backgroundTaskManager.getBackgroundTasks(
 					BackgroundTaskConstants.GROUP_ID_DEFAULT,
-					_TASK_EXECUTOR_CLASS_NAME)) {
+					_BACKGROUND_TASK_EXECUTOR_CLASS_NAME)) {
 
 			_backgroundTaskManager.deleteBackgroundTask(
 				backgroundTask.getBackgroundTaskId());
@@ -131,7 +131,7 @@ public class LaunchSetPublisherTest {
 			deletedLaunchSetObjectEntry.getObjectEntryId();
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				_TASK_EXECUTOR_CLASS_NAME, LoggerTestUtil.ERROR)) {
+				_BACKGROUND_TASK_EXECUTOR_CLASS_NAME, LoggerTestUtil.ERROR)) {
 
 			TransactionInvokerUtil.invoke(
 				_transactionConfig,
@@ -212,12 +212,13 @@ public class LaunchSetPublisherTest {
 		// Launch set that was already published when its background task runs
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				_TASK_EXECUTOR_CLASS_NAME, LoggerTestUtil.ERROR)) {
+				_BACKGROUND_TASK_EXECUTOR_CLASS_NAME, LoggerTestUtil.ERROR)) {
 
 			_backgroundTaskManager.addBackgroundTask(
 				TestPropsValues.getUserId(),
 				BackgroundTaskConstants.GROUP_ID_DEFAULT,
-				String.valueOf(publishedLaunchSetId), _TASK_EXECUTOR_CLASS_NAME,
+				String.valueOf(publishedLaunchSetId),
+				_BACKGROUND_TASK_EXECUTOR_CLASS_NAME,
 				HashMapBuilder.<String, Serializable>put(
 					"launchSetId", publishedLaunchSetId
 				).build(),
@@ -267,7 +268,7 @@ public class LaunchSetPublisherTest {
 			unscheduledLaunchSetId, TestPropsValues.getUserId());
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				_TASK_EXECUTOR_CLASS_NAME, LoggerTestUtil.ERROR)) {
+				_BACKGROUND_TASK_EXECUTOR_CLASS_NAME, LoggerTestUtil.ERROR)) {
 
 			TransactionInvokerUtil.invoke(
 				_transactionConfig,
@@ -353,7 +354,7 @@ public class LaunchSetPublisherTest {
 			"redirect", "/" + RandomTestUtil.randomString());
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				_TASK_EXECUTOR_CLASS_NAME, LoggerTestUtil.ERROR)) {
+				_BACKGROUND_TASK_EXECUTOR_CLASS_NAME, LoggerTestUtil.ERROR)) {
 
 			_mvcActionCommand.processAction(
 				mockLiferayPortletActionRequest, new MockActionResponse());
@@ -684,7 +685,7 @@ public class LaunchSetPublisherTest {
 		return ListUtil.filter(
 			_backgroundTaskManager.getBackgroundTasks(
 				BackgroundTaskConstants.GROUP_ID_DEFAULT,
-				_TASK_EXECUTOR_CLASS_NAME),
+				_BACKGROUND_TASK_EXECUTOR_CLASS_NAME),
 			backgroundTask -> Objects.equals(
 				backgroundTask.getName(), String.valueOf(launchSetId)));
 	}
@@ -747,7 +748,7 @@ public class LaunchSetPublisherTest {
 		return draftId;
 	}
 
-	private static final String _TASK_EXECUTOR_CLASS_NAME =
+	private static final String _BACKGROUND_TASK_EXECUTOR_CLASS_NAME =
 		"com.liferay.launch.internal.background.task." +
 			"LaunchSetPublishBackgroundTaskExecutor";
 
