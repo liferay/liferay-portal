@@ -1,0 +1,68 @@
+{{- $job := .Values.search.elasticsearch.snapshotsJob -}}
+{{- $snapshots := .Values.search.snapshots -}}
+{{- $snapshotsEnabled := dig "enabled" false $snapshots -}}
+{{- if and .Values.enabled (eq (include "search.engine" .) "elasticsearch") (hasKey $snapshots "enabled") (eq (dig "lifecyclePolicy" "registration" "job" $snapshots) "job") -}}
+apiVersion: batch/v1
+kind: Job
+metadata:
+    annotations:
+        argocd.argoproj.io/hook: PostSync
+        argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+    labels:
+        {{- include "elasticsearch.labels" . | nindent 8 }}
+    name: {{ include "elasticsearch.name" . }}-snapshots
+    namespace: {{ .Release.Namespace }}
+spec:
+    activeDeadlineSeconds: 900
+    backoffLimit: 5
+    template:
+        metadata:
+            labels:
+                {{- include "elasticsearch.labels" . | nindent 16 }}
+        spec:
+            automountServiceAccountToken: false
+            containers:
+                -   command:
+                        -   sh
+                        -   -c
+                        -   |-
+                            {{- .Files.Get "scripts/search-snapshots.sh" | nindent 28 }}
+                    env:
+                        {{- if $snapshotsEnabled }}
+                        -   name: SNAPSHOT_CHECKSUM
+                            value: {{ include "search.snapshotsChecksum" . }}
+                        {{- end }}
+                        -   name: SNAPSHOT_ENABLED
+                            value: {{ $snapshotsEnabled | quote }}
+                    envFrom:
+                        -   secretRef:
+                                name: search-connection-details
+                    image: {{ printf "%s:%s" $job.image.repository ($job.image.tag | toString) }}
+                    imagePullPolicy: {{ $job.image.pullPolicy }}
+                    name: search-snapshots
+                    resources:
+                        limits:
+                            cpu: 200m
+                            memory: 128Mi
+                        requests:
+                            cpu: 50m
+                            memory: 64Mi
+                    securityContext:
+                        {{- include "elasticsearch.containerSecurityContext" . | nindent 24 }}
+                    {{- if $snapshotsEnabled }}
+                    volumeMounts:
+                        -   mountPath: /etc/search-snapshots
+                            name: search-snapshots
+                            readOnly: true
+                    {{- end }}
+            restartPolicy: Never
+            securityContext:
+                {{- include "elasticsearch.podSecurityContext" . | nindent 16 }}
+            {{- if $snapshotsEnabled }}
+            volumes:
+                -   configMap:
+                        name: search-snapshots
+                        optional: true
+                    name: search-snapshots
+            {{- end }}
+{{- end -}}

@@ -1,0 +1,97 @@
+release:
+    name: my-release
+    namespace: my-namespace
+suite: Search Snapshots
+templates:
+    -   templates/search-snapshots.yaml
+tests:
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+        it: Omits the snapshots job by default so environments that never set snapshots keep their repositories
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+        it: Omits the snapshots job when a stack config policy registers the snapshots
+        set:
+            search.snapshots.enabled: true
+            search.snapshots.lifecyclePolicy.registration: stackConfigPolicy
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+        it: Omits the snapshots job when the chart is disabled
+        set:
+            enabled: false
+            search.snapshots.enabled: true
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+        it: Omits the snapshots job when the engine is OpenSearch
+        set:
+            search.engine: opensearch
+            search.snapshots.enabled: true
+            search.supportedEngines:
+                -   elasticsearch
+                -   opensearch
+    -   asserts:
+            -   equal:
+                    path: metadata.annotations["argocd.argoproj.io/hook"]
+                    value: PostSync
+            -   equal:
+                    path: metadata.name
+                    value: my-release-es-snapshots
+            -   equal:
+                    path: metadata.namespace
+                    value: my-namespace
+            -   equal:
+                    path: spec.template.spec.containers[0].env
+                    value:
+                        -   name: SNAPSHOT_CHECKSUM
+                            value: 26b3426b2593763c96d0890b4a77a0bbf66d13fc512b0c6b138a23c290f30a2a
+                        -   name: SNAPSHOT_ENABLED
+                            value: "true"
+            -   equal:
+                    path: spec.template.spec.containers[0].envFrom[0].secretRef.name
+                    value: search-connection-details
+            -   equal:
+                    path: spec.template.spec.containers[0].image
+                    value: curlimages/curl:8.22.0
+            -   equal:
+                    path: spec.template.spec.containers[0].volumeMounts
+                    value:
+                        -   mountPath: /etc/search-snapshots
+                            name: search-snapshots
+                            readOnly: true
+            -   equal:
+                    path: spec.template.spec.volumes
+                    value:
+                        -   configMap:
+                                name: search-snapshots
+                                optional: true
+                            name: search-snapshots
+            -   matchRegex:
+                    path: spec.template.spec.containers[0].command[2]
+                    pattern: put_search_api "_snapshot/snapshots" "\$\(cat /etc/search-snapshots/repository\)"
+            -   matchRegex:
+                    path: spec.template.spec.containers[0].command[2]
+                    pattern: wait_for_snapshot_config
+        it: Registers the snapshot repository and policy once the composition publishes the current settings
+        set:
+            search.snapshots.enabled: true
+    -   asserts:
+            -   equal:
+                    path: metadata.annotations["argocd.argoproj.io/hook"]
+                    value: PostSync
+            -   equal:
+                    path: spec.template.spec.containers[0].env
+                    value:
+                        -   name: SNAPSHOT_ENABLED
+                            value: "false"
+            -   notExists:
+                    path: spec.template.spec.volumes
+            -   matchRegex:
+                    path: spec.template.spec.containers[0].command[2]
+                    pattern: delete_search_api "_slm/policy/daily-snapshots"
+        it: Unregisters the snapshots after every sync when they are disabled
+        set:
+            search.snapshots.enabled: false

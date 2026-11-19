@@ -4,6 +4,10 @@
 {{- $searchUsername := "liferay_search_admin" -}}
 {{- $xr := .observed.composite.resource -}}
 
+{{- if dig "search" "snapshots" "enabled" false $xr.spec -}}
+{{- fail "Search snapshots are only available on GCP, so \"search.snapshots.enabled\" must be false" -}}
+{{- end -}}
+
 {{- $backup := $xr.spec.backup -}}
 {{- $clusterSubnetIds := $env.clusterSubnetIds | fromJson -}}
 {{- $cmkEnabled := $xr.spec.cmk.enabled -}}

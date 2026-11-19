@@ -192,6 +192,55 @@ spec:
                                                     default: 20
                                                     type: integer
                                             type: object
+                                        snapshots:
+                                            default: {}
+                                            properties:
+                                                enabled:
+                                                    default: false
+                                                    type: boolean
+                                                lifecyclePolicy:
+                                                    default: {}
+                                                    properties:
+                                                        indices:
+                                                            default: liferay-*
+                                                            minLength: 1
+                                                            type: string
+                                                        registration:
+                                                            default: job
+                                                            enum:
+                                                                -   job
+                                                                -   stackConfigPolicy
+                                                            type: string
+                                                        retention:
+                                                            default: {}
+                                                            properties:
+                                                                expireAfter:
+                                                                    default: 7d
+                                                                    pattern: ^[0-9]+(d|h|m|s)$
+                                                                    type: string
+                                                                maxCount:
+                                                                    default: 30
+                                                                    minimum: 1
+                                                                    type: integer
+                                                                minCount:
+                                                                    default: 5
+                                                                    minimum: 1
+                                                                    type: integer
+                                                            type: object
+                                                            x-kubernetes-validations:
+                                                                -   message: search.snapshots.lifecyclePolicy.retention.minCount must not exceed search.snapshots.lifecyclePolicy.retention.maxCount
+                                                                    rule: self.minCount <= self.maxCount
+                                                        schedule:
+                                                            default: 0 30 1 * * ?
+                                                            minLength: 1
+                                                            type: string
+                                                    type: object
+                                                tags:
+                                                    additionalProperties:
+                                                        type: string
+                                                    default: {}
+                                                    type: object
+                                            type: object
                                     type: object
                                 storage:
                                     default: {}

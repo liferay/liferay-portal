@@ -16,3 +16,21 @@ tests:
         it: Follows the release namespace
         release:
             namespace: custom-system
+    -   asserts:
+            -   contains:
+                    content:
+                        apiGroups:
+                            -   stackconfigpolicy.k8s.elastic.co
+                        resources:
+                            -   stackconfigpolicies
+                        verbs:
+                            -   create
+                            -   delete
+                            -   get
+                            -   list
+                            -   patch
+                            -   update
+                            -   watch
+                    path: rules
+                documentIndex: 0
+        it: Lets the provider kubernetes manage the search snapshot stack config policies

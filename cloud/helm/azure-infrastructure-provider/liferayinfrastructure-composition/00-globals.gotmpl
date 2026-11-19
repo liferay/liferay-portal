@@ -4,7 +4,11 @@
 {{- $xr := .observed.composite.resource -}}
 
 {{- if eq $xr.spec.search.engine "opensearch" -}}
-{{- fail "Azure has no managed OpenSearch, so search.engine must be elasticsearch" -}}
+{{- fail "Azure has no managed OpenSearch, so \"search.engine\" must be \"elasticsearch\"" -}}
+{{- end -}}
+
+{{- if dig "search" "snapshots" "enabled" false $xr.spec -}}
+{{- fail "Search snapshots are only available on GCP, so \"search.snapshots.enabled\" must be false" -}}
 {{- end -}}
 
 {{- $backup := $xr.spec.backup -}}

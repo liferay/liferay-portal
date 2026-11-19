@@ -25,6 +25,9 @@ rules:
     -   apiGroups: ["rbac.authorization.k8s.io"]
         resources: ["clusterrolebindings", "rolebindings"]
         verbs: ["create", "delete", "get", "list", "patch", "update", "watch"]
+    -   apiGroups: ["stackconfigpolicy.k8s.elastic.co"]
+        resources: ["stackconfigpolicies"]
+        verbs: ["create", "delete", "get", "list", "patch", "update", "watch"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding

@@ -1,0 +1,103 @@
+{{- $observedSnapshotsBucketName := dig "search-snapshots-bucket" "resource" "metadata" "name" "" $observedResources }}
+{{- $snapshots := $xr.spec.search.snapshots }}
+{{- $snapshotsBucketName := printf "%s-search-snapshots" $baseName }}
+{{- if and $isCMKKeyReady (or $snapshots.enabled $observedSnapshotsBucketName) }}
+---
+apiVersion: storage.gcp.m.upbound.io/v1beta1
+kind: Bucket
+metadata:
+    annotations:
+        gotemplating.fn.crossplane.io/composition-resource-name: search-snapshots-bucket
+    name: {{ $snapshotsBucketName }}
+spec:
+    forProvider:
+        {{- if $cmkEnabled }}
+        encryption:
+            defaultKmsKeyName: {{ $cmkKeyId | quote }}
+        {{- end }}
+        forceDestroy: {{ $forceDestroy }}
+        labels:
+            {{- merge (dict "component" "search-snapshots") $labels $snapshots.tags | toYaml | nindent 12 }}
+        location: {{ $region }}
+        storageClass: STANDARD
+        uniformBucketLevelAccess: true
+    managementPolicies: {{ $managementPolicies }}
+{{- end }}
+{{- if $snapshots.enabled }}
+{{- $searchNamespace := printf "%s-elasticsearch" $namespace }}
+---
+apiVersion: storage.gcp.m.upbound.io/v1beta1
+kind: BucketIAMMember
+metadata:
+    annotations:
+        gotemplating.fn.crossplane.io/composition-resource-name: search-snapshots-bucket-object-user
+spec:
+    forProvider:
+        bucket: {{ $snapshotsBucketName }}
+        member: {{ printf "principal://iam.googleapis.com/projects/%s/locations/global/workloadIdentityPools/%s.svc.id.goog/subject/ns/%s/sa/elasticsearch" $env.projectNumber $env.projectId $searchNamespace | quote }}
+        role: roles/storage.objectUser
+    managementPolicies: {{ $managementPolicies }}
+{{- $isSnapshotsBucketReady := false }}
+{{- range $condition := dig "search-snapshots-bucket" "resource" "status" "conditions" list $observedResources }}
+    {{- if and (eq $condition.type "Ready") (eq $condition.status "True") }}
+        {{- $isSnapshotsBucketReady = true }}
+    {{- end }}
+{{- end }}
+{{- $isSnapshotsBucketObjectUserReady := false }}
+{{- range $condition := dig "search-snapshots-bucket-object-user" "resource" "status" "conditions" list $observedResources }}
+    {{- if and (eq $condition.type "Ready") (eq $condition.status "True") }}
+        {{- $isSnapshotsBucketObjectUserReady = true }}
+    {{- end }}
+{{- end }}
+{{- if and $isSnapshotsBucketReady $isSnapshotsBucketObjectUserReady }}
+{{- $lifecyclePolicy := $snapshots.lifecyclePolicy }}
+{{- $snapshotsPolicy := dict "config" (dict "include_global_state" true "indices" $lifecyclePolicy.indices) "name" "<daily-snapshot-{now/d}>" "repository" "snapshots" "retention" (dict "expire_after" $lifecyclePolicy.retention.expireAfter "max_count" (int $lifecyclePolicy.retention.maxCount) "min_count" (int $lifecyclePolicy.retention.minCount)) "schedule" $lifecyclePolicy.schedule }}
+{{- $snapshotsRepository := dict "settings" (dict "bucket" $snapshotsBucketName) "type" "gcs" }}
+---
+apiVersion: kubernetes.m.crossplane.io/v1alpha1
+kind: Object
+metadata:
+    annotations:
+        gotemplating.fn.crossplane.io/composition-resource-name: search-snapshots-config-map
+    name: search-snapshots-config-map
+spec:
+    forProvider:
+        manifest:
+            apiVersion: v1
+            data:
+                checksum: {{ dig "metadata" "annotations" "liferay.com/search-snapshots-checksum" "" $xr | quote }}
+                policy: {{ $snapshotsPolicy | toJson | quote }}
+                repository: {{ $snapshotsRepository | toJson | quote }}
+            kind: ConfigMap
+            metadata:
+                name: search-snapshots
+                namespace: {{ $namespace }}
+    managementPolicies: {{ $managementPolicies }}
+{{- if eq $lifecyclePolicy.registration "stackConfigPolicy" }}
+---
+apiVersion: kubernetes.m.crossplane.io/v1alpha1
+kind: Object
+metadata:
+    annotations:
+        gotemplating.fn.crossplane.io/composition-resource-name: search-snapshots-stack-config-policy
+    name: search-snapshots-stack-config-policy
+spec:
+    forProvider:
+        manifest:
+            apiVersion: stackconfigpolicy.k8s.elastic.co/v1alpha1
+            kind: StackConfigPolicy
+            metadata:
+                name: search-snapshots
+                namespace: {{ $searchNamespace }}
+            spec:
+                elasticsearch:
+                    snapshotLifecyclePolicies:
+                        daily-snapshots:
+                            {{- $snapshotsPolicy | toYaml | nindent 28 }}
+                    snapshotRepositories:
+                        snapshots:
+                            {{- $snapshotsRepository | toYaml | nindent 28 }}
+    managementPolicies: {{ $managementPolicies }}
+{{- end }}
+{{- end }}
+{{- end }}

@@ -79,10 +79,16 @@ search:
             requests:
                 cpu: 500m
                 memory: 4Gi
+        snapshotsJob:
+            image:
+                pullPolicy: IfNotPresent
+                repository: curlimages/curl
+                tag: 8.22.0
         version: 8.19.11
         volumeSize: 10Gi
     engine: ""
     opensearch: {}
+    snapshots: {}
     supportedEngines:
         -   elasticsearch
 secretNames: []

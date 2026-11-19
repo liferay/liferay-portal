@@ -103,6 +103,58 @@ tests:
         it: Declares the provider neutral backup schedule contract
     -   asserts:
             -   equal:
+                    path: spec.versions[0].schema.openAPIV3Schema.properties.spec.properties.search.properties.snapshots.default
+                    value: {}
+                template: templates/crossplane-xrd-liferayinfrastructure.yaml
+            -   equal:
+                    path: spec.versions[0].schema.openAPIV3Schema.properties.spec.properties.search.properties.snapshots.properties.enabled.default
+                    value: false
+                template: templates/crossplane-xrd-liferayinfrastructure.yaml
+            -   equal:
+                    path: spec.versions[0].schema.openAPIV3Schema.properties.spec.properties.search.properties.snapshots.properties.lifecyclePolicy.default
+                    value: {}
+                template: templates/crossplane-xrd-liferayinfrastructure.yaml
+            -   equal:
+                    path: spec.versions[0].schema.openAPIV3Schema.properties.spec.properties.search.properties.snapshots.properties.lifecyclePolicy.properties.indices.default
+                    value: liferay-*
+                template: templates/crossplane-xrd-liferayinfrastructure.yaml
+            -   equal:
+                    path: spec.versions[0].schema.openAPIV3Schema.properties.spec.properties.search.properties.snapshots.properties.lifecyclePolicy.properties.registration.default
+                    value: job
+                template: templates/crossplane-xrd-liferayinfrastructure.yaml
+            -   equal:
+                    path: spec.versions[0].schema.openAPIV3Schema.properties.spec.properties.search.properties.snapshots.properties.lifecyclePolicy.properties.registration.enum
+                    value:
+                        -   job
+                        -   stackConfigPolicy
+                template: templates/crossplane-xrd-liferayinfrastructure.yaml
+            -   equal:
+                    path: spec.versions[0].schema.openAPIV3Schema.properties.spec.properties.search.properties.snapshots.properties.lifecyclePolicy.properties.retention.properties.expireAfter.default
+                    value: 7d
+                template: templates/crossplane-xrd-liferayinfrastructure.yaml
+            -   equal:
+                    path: spec.versions[0].schema.openAPIV3Schema.properties.spec.properties.search.properties.snapshots.properties.lifecyclePolicy.properties.retention.properties.maxCount.default
+                    value: 30
+                template: templates/crossplane-xrd-liferayinfrastructure.yaml
+            -   equal:
+                    path: spec.versions[0].schema.openAPIV3Schema.properties.spec.properties.search.properties.snapshots.properties.lifecyclePolicy.properties.retention.properties.minCount.default
+                    value: 5
+                template: templates/crossplane-xrd-liferayinfrastructure.yaml
+            -   equal:
+                    path: spec.versions[0].schema.openAPIV3Schema.properties.spec.properties.search.properties.snapshots.properties.lifecyclePolicy.properties.retention.x-kubernetes-validations[0].rule
+                    value: self.minCount <= self.maxCount
+                template: templates/crossplane-xrd-liferayinfrastructure.yaml
+            -   equal:
+                    path: spec.versions[0].schema.openAPIV3Schema.properties.spec.properties.search.properties.snapshots.properties.lifecyclePolicy.properties.schedule.default
+                    value: 0 30 1 * * ?
+                template: templates/crossplane-xrd-liferayinfrastructure.yaml
+            -   equal:
+                    path: spec.versions[0].schema.openAPIV3Schema.properties.spec.properties.search.properties.snapshots.properties.tags.additionalProperties.type
+                    value: string
+                template: templates/crossplane-xrd-liferayinfrastructure.yaml
+        it: Declares the provider neutral search snapshot contract
+    -   asserts:
+            -   equal:
                     path: spec.versions[0].schema.openAPIV3Schema.properties.spec.properties.restoreGeneration.nullable
                     value: true
                 template: templates/crossplane-xrd-liferayinfrastructure.yaml

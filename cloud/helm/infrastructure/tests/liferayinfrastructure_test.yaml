@@ -42,6 +42,10 @@ tests:
                     path: spec.forceDestroy
             -   notExists:
                     path: spec.orphanOnDelete
+            -   notExists:
+                    path: metadata.annotations["liferay.com/search-snapshots-checksum"]
+            -   notExists:
+                    path: spec.search.snapshots
         it: Leaves unset settings to the composite resource defaults
     -   asserts:
             -   equal:
@@ -164,6 +168,34 @@ tests:
                 instanceType: GP_Standard_B2s
                 storageGB: 64
                 version: "17"
+    -   asserts:
+            -   equal:
+                    path: metadata.annotations["liferay.com/search-snapshots-checksum"]
+                    value: 2f4ad44806ad164f73637cf2d12413bcbbddbbd73ae82a4e8d47494c4116f50b
+            -   equal:
+                    path: spec.search.snapshots
+                    value:
+                        enabled: true
+                        lifecyclePolicy:
+                            indices: liferay-0-*
+                            registration: stackConfigPolicy
+                            retention:
+                                maxCount: 60
+                            schedule: 0 0 3 * * ?
+                        tags:
+                            spend_area: search
+        it: Passes the search snapshot settings through to the composite resource with their checksum
+        set:
+            search.snapshots:
+                enabled: true
+                lifecyclePolicy:
+                    indices: liferay-0-*
+                    registration: stackConfigPolicy
+                    retention:
+                        maxCount: 60
+                    schedule: 0 0 3 * * ?
+                tags:
+                    spend_area: search
     -   asserts:
             -   isAPIVersion:
                     of: liferay.com/v1alpha1

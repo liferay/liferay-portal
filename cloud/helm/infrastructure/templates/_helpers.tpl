@@ -88,3 +88,7 @@ seccompProfile:
 {{- end -}}
 {{- $engine -}}
 {{- end -}}
+
+{{- define "search.snapshotsChecksum" -}}
+{{- .Values.search.snapshots | toJson | sha256sum -}}
+{{- end -}}

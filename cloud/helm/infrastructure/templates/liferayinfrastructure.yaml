@@ -10,6 +10,9 @@ metadata:
     annotations:
         argocd.argoproj.io/sync-options: ServerSideApply=true
         argocd.argoproj.io/sync-wave: "-20"
+        {{- if .Values.search.snapshots }}
+        liferay.com/search-snapshots-checksum: {{ include "search.snapshotsChecksum" . }}
+        {{- end }}
     name: {{ .Release.Name }}
     namespace: {{ .Release.Namespace }}
 spec:
@@ -38,6 +41,10 @@ spec:
         {{- if and (eq $searchEngine "opensearch") .Values.search.opensearch }}
         opensearch:
             {{- .Values.search.opensearch | toYaml | nindent 12 }}
+        {{- end }}
+        {{- with .Values.search.snapshots }}
+        snapshots:
+            {{- . | toYaml | nindent 12 }}
         {{- end }}
     storage:
         {{- .Values.storage | toYaml | nindent 8 }}
