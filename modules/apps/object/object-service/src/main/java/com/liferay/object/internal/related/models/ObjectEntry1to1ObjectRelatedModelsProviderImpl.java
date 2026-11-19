@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 
 import java.io.Serializable;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -108,9 +109,9 @@ public class ObjectEntry1to1ObjectRelatedModelsProviderImpl
 		throws PortalException {
 
 		ObjectEntry objectEntry = _objectEntryService.getObjectEntry(
-			primaryKey1);
+			primaryKey2);
 
-		_objectEntryService.updateObjectEntry(
+		_objectEntryService.partialUpdateObjectEntry(
 			objectEntry.getPrimaryKey(), objectEntry.getObjectEntryFolderId(),
 			HashMapBuilder.<String, Serializable>put(
 				() -> {
@@ -127,6 +128,15 @@ public class ObjectEntry1to1ObjectRelatedModelsProviderImpl
 				0
 			).build(),
 			new ServiceContext());
+	}
+
+	@Override
+	public ObjectEntry fetchRelatedModel(
+			long groupId, long objectRelationshipId, long primaryKey)
+		throws PortalException {
+
+		return _objectEntryService.fetchRelatedObjectEntry(
+			groupId, objectRelationshipId, primaryKey);
 	}
 
 	@Override
@@ -151,9 +161,13 @@ public class ObjectEntry1to1ObjectRelatedModelsProviderImpl
 			int end, Sort[] sorts)
 		throws PortalException {
 
+		if (start > 0) {
+			return Collections.emptyList();
+		}
+
 		return _objectEntryService.getRelatedObjectEntries(
-			groupId, objectRelationshipId, predicate, false, primaryKey, true,
-			search, 0, 1, sorts);
+			groupId, objectRelationshipId, predicate, preferApproved,
+			primaryKey, true, search, 0, 1, sorts);
 	}
 
 	@Override
@@ -167,6 +181,90 @@ public class ObjectEntry1to1ObjectRelatedModelsProviderImpl
 			0, 1, null);
 
 		return relatedModels.size();
+	}
+
+	@Override
+	public List<ObjectEntry> getUnrelatedModels(
+			long companyId, long groupId, ObjectDefinition objectDefinition,
+			long objectEntryId, long objectRelationshipId, String search,
+			int start, int end)
+		throws PortalException {
+
+		return _objectEntryService.getRelatedObjectEntries(
+			groupId, objectRelationshipId, null, false, objectEntryId, false,
+			search, start, end, null);
+	}
+
+	@Override
+	public int getUnrelatedModelsCount(
+			long companyId, long groupId, ObjectDefinition objectDefinition,
+			long objectEntryId, long objectRelationshipId, String search)
+		throws PortalException {
+
+		return _objectEntryService.getRelatedObjectEntriesCount(
+			groupId, objectRelationshipId, null, objectEntryId, false, search);
+	}
+
+	@Override
+	public void moveRelatedModelToTrash(
+			long userId, long groupId, long objectRelationshipId,
+			long primaryKey, String deletionType)
+		throws PortalException {
+
+		List<ObjectEntry> relatedModels = getRelatedModels(
+			groupId, objectRelationshipId, null, false, primaryKey, null, 0, 1,
+			null);
+
+		if (relatedModels.isEmpty()) {
+			return;
+		}
+
+		if (Objects.equals(
+				deletionType,
+				ObjectRelationshipConstants.DELETION_TYPE_CASCADE)) {
+
+			_objectEntryService.moveObjectEntryToTrash(
+				relatedModels.getFirst(), new ServiceContext());
+		}
+		else if (Objects.equals(
+					deletionType,
+					ObjectRelationshipConstants.DELETION_TYPE_PREVENT)) {
+
+			throw new RequiredObjectRelationshipException(
+				_objectRelationshipLocalService.getObjectRelationship(
+					objectRelationshipId));
+		}
+	}
+
+	@Override
+	public void restoreRelatedModelsFromTrash(
+			long userId, long groupId, long objectRelationshipId,
+			long primaryKey, String deletionType)
+		throws PortalException {
+
+		if (!Objects.equals(
+				deletionType,
+				ObjectRelationshipConstants.DELETION_TYPE_CASCADE)) {
+
+			return;
+		}
+
+		List<ObjectEntry> relatedModels = getRelatedModels(
+			groupId, objectRelationshipId, null, false, primaryKey, null, 0, 1,
+			null);
+
+		if (relatedModels.isEmpty()) {
+			return;
+		}
+
+		ObjectEntry objectEntry = relatedModels.getFirst();
+
+		if (!objectEntry.isInTrash()) {
+			return;
+		}
+
+		_objectEntryService.restoreObjectEntryFromTrash(
+			objectEntry, new ServiceContext());
 	}
 
 	private final String _className;
