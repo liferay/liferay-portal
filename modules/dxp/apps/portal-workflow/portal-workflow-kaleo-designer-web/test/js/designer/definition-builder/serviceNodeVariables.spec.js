@@ -88,35 +88,6 @@ describe('Service node variables', () => {
 		delete Liferay.PropsValues.ENTERPRISE_PRODUCT_AI_HUB_ENABLED;
 	});
 
-	it('Shows the input and output variables of a service node when it is selected', async () => {
-		render(
-			<MockDefinitionBuilderContext>
-				<MockDiagramBuilderContext>
-					<ServiceNode
-						data={{
-							inputVariables: INPUT_VARIABLES,
-							javaDelegate: 'javaDelegate#requestSpaceSelection',
-							label: {en_US: 'Request Space Selection'},
-							outputVariables: OUTPUT_VARIABLES,
-						}}
-						id="requestSpaceSelection"
-					/>
-
-					<Sidebar />
-				</MockDiagramBuilderContext>
-			</MockDefinitionBuilderContext>
-		);
-
-		await userEvent.click(screen.getByText('Request Space Selection'));
-
-		expect(screen.getByLabelText('input-variables')).toHaveValue(
-			JSON.stringify(INPUT_VARIABLES, null, 2)
-		);
-		expect(screen.getByLabelText('output-variables')).toHaveValue(
-			JSON.stringify(OUTPUT_VARIABLES, null, 2)
-		);
-	});
-
 	it('Keeps the variables of a service node when the definition is saved again', () => {
 		const elements = new DeserializeUtil(XML_DEFINITION).getElements();
 
@@ -152,5 +123,34 @@ describe('Service node variables', () => {
 
 		expect(positions).not.toContain(-1);
 		expect(positions).toStrictEqual([...positions].sort((a, b) => a - b));
+	});
+
+	it('Shows the input and output variables of a service node when it is selected', async () => {
+		render(
+			<MockDefinitionBuilderContext>
+				<MockDiagramBuilderContext>
+					<ServiceNode
+						data={{
+							inputVariables: INPUT_VARIABLES,
+							javaDelegate: 'javaDelegate#requestSpaceSelection',
+							label: {en_US: 'Request Space Selection'},
+							outputVariables: OUTPUT_VARIABLES,
+						}}
+						id="requestSpaceSelection"
+					/>
+
+					<Sidebar />
+				</MockDiagramBuilderContext>
+			</MockDefinitionBuilderContext>
+		);
+
+		await userEvent.click(screen.getByText('Request Space Selection'));
+
+		expect(screen.getByLabelText('input-variables')).toHaveValue(
+			JSON.stringify(INPUT_VARIABLES, null, 2)
+		);
+		expect(screen.getByLabelText('output-variables')).toHaveValue(
+			JSON.stringify(OUTPUT_VARIABLES, null, 2)
+		);
 	});
 });
