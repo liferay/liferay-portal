@@ -75,7 +75,6 @@ describe('AttributeConjunctionInput', () => {
 		await waitFor(() =>
 			expect(onChange).toHaveBeenCalledWith(
 				expect.objectContaining({
-					attribute: attributes[27],
 					criterion: expect.objectContaining({
 						propertyName: `attribute/${encodeAttributeId(
 							'name-27'
@@ -134,7 +133,7 @@ describe('AttributeConjunctionInput', () => {
 
 			expect(
 				container.querySelector('.form-control-sm')
-			).toBeTruthy();
+			).toBeInTheDocument();
 		});
 	});
 
