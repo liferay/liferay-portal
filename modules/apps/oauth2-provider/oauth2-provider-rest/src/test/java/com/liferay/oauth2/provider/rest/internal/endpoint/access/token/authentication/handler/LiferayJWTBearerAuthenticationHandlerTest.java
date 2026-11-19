@@ -6,9 +6,10 @@
 package com.liferay.oauth2.provider.rest.internal.endpoint.access.token.authentication.handler;
 
 import com.liferay.oauth2.provider.rest.internal.endpoint.constants.OAuth2ProviderRESTEndpointConstants;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -66,6 +67,18 @@ public class LiferayJWTBearerAuthenticationHandlerTest {
 	@BeforeClass
 	public static void setUpClass() throws Exception {
 		_keyPair = _createKeyPair();
+
+		PortalUtil portalUtil = new PortalUtil();
+
+		Portal portal = Mockito.mock(Portal.class);
+
+		Mockito.when(
+			portal.getPortalURL(Mockito.any(HttpServletRequest.class))
+		).thenReturn(
+			"https://" + _HOST
+		);
+
+		portalUtil.setPortal(portal);
 	}
 
 	@Before
@@ -108,6 +121,7 @@ public class LiferayJWTBearerAuthenticationHandlerTest {
 			_getAssertion(_keyPair.getPrivate(), _getJwtClaims(_CLIENT_ID)));
 
 		Assert.assertEquals(_CLIENT_ID, message.get(OAuthConstants.CLIENT_ID));
+		Assert.assertNull(message.get(JwtConstants.EXPECTED_CLAIM_AUDIENCE));
 	}
 
 	@Test
@@ -128,6 +142,18 @@ public class LiferayJWTBearerAuthenticationHandlerTest {
 	}
 
 	@Test
+	public void testFilterWithRequestURLAudience() throws Exception {
+		JwtClaims jwtClaims = _getJwtClaims(_CLIENT_ID);
+
+		jwtClaims.setAudience("http://" + _HOST + _TOKEN_PATH);
+
+		Message message = _filter(
+			_getAssertion(_keyPair.getPrivate(), jwtClaims));
+
+		Assert.assertEquals(_CLIENT_ID, message.get(OAuthConstants.CLIENT_ID));
+	}
+
+	@Test
 	public void testFilterWithUnknownClientId() throws Exception {
 		_assertInvalidClient(
 			_getAssertion(
@@ -139,7 +165,8 @@ public class LiferayJWTBearerAuthenticationHandlerTest {
 	public void testFilterWithWrongAudience() throws Exception {
 		JwtClaims jwtClaims = _getJwtClaims(_CLIENT_ID);
 
-		jwtClaims.setAudience(RandomTestUtil.randomString());
+		jwtClaims.setAudience(
+			"https://" + RandomTestUtil.randomString() + _TOKEN_PATH);
 
 		_assertInvalidClient(_getAssertion(_keyPair.getPrivate(), jwtClaims));
 	}
@@ -202,9 +229,15 @@ public class LiferayJWTBearerAuthenticationHandlerTest {
 			Constants.CLIENT_AUTH_JWT_BEARER
 		);
 
+		Mockito.when(
+			httpServletRequest.getRequestURI()
+		).thenReturn(
+			_TOKEN_PATH
+		);
+
 		message.put(AbstractHTTPDestination.HTTP_REQUEST, httpServletRequest);
 
-		message.put(Message.REQUEST_URL, _TOKEN_URL);
+		message.put(Message.REQUEST_URL, "http://" + _HOST + _TOKEN_PATH);
 
 		ThreadLocal<Message> threadLocal = _getCurrentMessageThreadLocal();
 
@@ -252,7 +285,7 @@ public class LiferayJWTBearerAuthenticationHandlerTest {
 	private JwtClaims _getJwtClaims(String clientId) {
 		JwtClaims jwtClaims = new JwtClaims();
 
-		jwtClaims.setAudience(_TOKEN_URL);
+		jwtClaims.setAudience("https://" + _HOST + _TOKEN_PATH);
 		jwtClaims.setIssuedAt(OAuthUtils.getIssuedAt());
 		jwtClaims.setExpiryTime(jwtClaims.getIssuedAt() + 3600);
 		jwtClaims.setIssuer(clientId);
@@ -263,10 +296,11 @@ public class LiferayJWTBearerAuthenticationHandlerTest {
 
 	private static final String _CLIENT_ID = RandomTestUtil.randomString();
 
+	private static final String _HOST = RandomTestUtil.randomString();
+
 	private static final String _KEY_ID = RandomTestUtil.randomString();
 
-	private static final String _TOKEN_URL = StringBundler.concat(
-		"http://", RandomTestUtil.randomString(), "/o/oauth2/token");
+	private static final String _TOKEN_PATH = "/o/oauth2/token";
 
 	private static KeyPair _keyPair;
 
