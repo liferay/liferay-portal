@@ -42,7 +42,7 @@ import org.junit.runner.RunWith;
  */
 @RunWith(Arquillian.class)
 @Sync
-public class StagedExpandoColumnStagedModelDataHandlerTest
+public class StagedExpandoColumnCompanyStagedModelDataHandlerTest
 	extends BaseCompanyStagedModelDataHandlerTestCase {
 
 	@ClassRule

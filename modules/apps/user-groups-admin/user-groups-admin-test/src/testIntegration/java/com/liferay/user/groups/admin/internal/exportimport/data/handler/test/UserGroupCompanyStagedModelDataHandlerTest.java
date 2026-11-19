@@ -30,7 +30,7 @@ import org.junit.runner.RunWith;
  * @author David Mendez Gonzalez
  */
 @RunWith(Arquillian.class)
-public class UserGroupStagedModelDataHandlerTest
+public class UserGroupCompanyStagedModelDataHandlerTest
 	extends BaseCompanyStagedModelDataHandlerTestCase {
 
 	@ClassRule

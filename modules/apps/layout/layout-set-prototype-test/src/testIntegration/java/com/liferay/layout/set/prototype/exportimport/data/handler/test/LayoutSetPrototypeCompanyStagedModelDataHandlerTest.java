@@ -44,7 +44,7 @@ import org.junit.runner.RunWith;
  * @author Daniela Zapata Riesco
  */
 @RunWith(Arquillian.class)
-public class LayoutSetPrototypeStagedModelDataHandlerTest
+public class LayoutSetPrototypeCompanyStagedModelDataHandlerTest
 	extends BaseCompanyStagedModelDataHandlerTestCase {
 
 	@ClassRule
