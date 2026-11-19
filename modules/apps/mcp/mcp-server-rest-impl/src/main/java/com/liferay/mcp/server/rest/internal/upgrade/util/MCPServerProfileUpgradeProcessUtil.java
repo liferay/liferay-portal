@@ -98,8 +98,8 @@ public class MCPServerProfileUpgradeProcessUtil {
 		if (_log.isWarnEnabled() && !name.equals(uniqueProfilePath)) {
 			_log.warn(
 				StringBundler.concat(
-					"Generated profile path \"", uniqueProfilePath,
-					"\" for MCP server profile \"", name, "\""));
+					"Profile path \"", uniqueProfilePath,
+					"\" was generated for MCP server profile \"", name, "\""));
 		}
 
 		values.put("profilePath", uniqueProfilePath);

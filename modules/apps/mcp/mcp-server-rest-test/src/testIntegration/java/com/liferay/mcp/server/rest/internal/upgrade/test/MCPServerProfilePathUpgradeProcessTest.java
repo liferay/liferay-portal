@@ -91,13 +91,13 @@ public class MCPServerProfilePathUpgradeProcessTest {
 				objectDefinition.getObjectDefinitionId(), "profilePath"));
 
 		_defaultMCPServerProfileObjectEntry = _addObjectEntry(
-			"L_MCP_SERVER_DEFAULT_PROFILE", objectDefinition, "Default");
-		_objectEntry1 = _addObjectEntry(null, objectDefinition, "My Profile/1");
-		_objectEntry2 = _addObjectEntry(null, objectDefinition, "My Profile 2");
-		_objectEntry3 = _addObjectEntry(null, objectDefinition, "My-Profile-2");
-		_objectEntry4 = _addObjectEntry(null, objectDefinition, "!!!");
-		_objectEntry5 = _addObjectEntry(null, objectDefinition, "???");
-		_objectEntry6 = _addObjectEntry(null, objectDefinition, "my-profile");
+			"L_MCP_SERVER_DEFAULT_PROFILE", "Default", objectDefinition);
+		_objectEntry1 = _addObjectEntry(null, "My Profile/1", objectDefinition);
+		_objectEntry2 = _addObjectEntry(null, "My Profile 2", objectDefinition);
+		_objectEntry3 = _addObjectEntry(null, "My-Profile-2", objectDefinition);
+		_objectEntry4 = _addObjectEntry(null, "!!!", objectDefinition);
+		_objectEntry5 = _addObjectEntry(null, "???", objectDefinition);
+		_objectEntry6 = _addObjectEntry(null, "my-profile", objectDefinition);
 
 		UpgradeProcess upgradeProcess = UpgradeTestUtil.getUpgradeStep(
 			_upgradeStepRegistrator,
@@ -113,15 +113,15 @@ public class MCPServerProfilePathUpgradeProcessTest {
 
 			Assert.assertEquals(
 				Arrays.asList(
-					"Generated profile path \"my-profile-1\" for MCP server " +
-						"profile \"My Profile/1\"",
-					"Generated profile path \"my-profile-2\" for MCP server " +
-						"profile \"My Profile 2\"",
-					"Generated profile path \"my-profile-2-2\" for MCP " +
+					"Profile path \"my-profile-1\" was generated for MCP " +
+						"server profile \"My Profile/1\"",
+					"Profile path \"my-profile-2\" was generated for MCP " +
+						"server profile \"My Profile 2\"",
+					"Profile path \"my-profile-2-2\" was generated for MCP " +
 						"server profile \"My-Profile-2\"",
-					"Generated profile path \"profile\" for MCP server " +
+					"Profile path \"profile\" was generated for MCP server " +
 						"profile \"!!!\"",
-					"Generated profile path \"profile-2\" for MCP server " +
+					"Profile path \"profile-2\" was generated for MCP server " +
 						"profile \"???\""),
 				logCapture.getMessages());
 		}
@@ -138,8 +138,8 @@ public class MCPServerProfilePathUpgradeProcessTest {
 	}
 
 	private ObjectEntry _addObjectEntry(
-			String externalReferenceCode, ObjectDefinition objectDefinition,
-			String name)
+			String externalReferenceCode, String name,
+			ObjectDefinition objectDefinition)
 		throws Exception {
 
 		return _objectEntryLocalService.addObjectEntry(
