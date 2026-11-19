@@ -129,6 +129,10 @@ public class AssetPublisherUtil {
 			redirect = PortalUtil.getCurrentURL(portletRequest);
 		}
 
+		if (Validator.isNull(redirect)) {
+			return redirect;
+		}
+
 		String anchor = StringPool.BLANK;
 
 		int index = redirect.indexOf(CharPool.POUND);
