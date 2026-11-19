@@ -289,12 +289,6 @@ public class LockLocalServiceUtil {
 		return getService().getLocks(start, end);
 	}
 
-	public static List<Lock> getLocks(
-		long companyId, long userId, String className) {
-
-		return getService().getLocks(companyId, userId, className);
-	}
-
 	public static List<Lock> getLocks(long companyId, String className) {
 		return getService().getLocks(companyId, className);
 	}
@@ -429,4 +423,4 @@ public class LockLocalServiceUtil {
 		new Snapshot<>(LockLocalServiceUtil.class, LockLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:235756908
+// LIFERAY-SERVICE-BUILDER-HASH:-1126021849

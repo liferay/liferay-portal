@@ -330,13 +330,6 @@ public class LockLocalServiceWrapper
 
 	@Override
 	public java.util.List<com.liferay.portal.lock.model.Lock> getLocks(
-		long companyId, long userId, String className) {
-
-		return _lockLocalService.getLocks(companyId, userId, className);
-	}
-
-	@Override
-	public java.util.List<com.liferay.portal.lock.model.Lock> getLocks(
 		long companyId, String className) {
 
 		return _lockLocalService.getLocks(companyId, className);
@@ -507,4 +500,4 @@ public class LockLocalServiceWrapper
 	private LockLocalService _lockLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:700314745
+// LIFERAY-SERVICE-BUILDER-HASH:760683853
