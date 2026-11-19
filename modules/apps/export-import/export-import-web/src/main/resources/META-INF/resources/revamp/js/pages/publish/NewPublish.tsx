@@ -83,6 +83,7 @@ export function NewPublish({
 	processesBackURL,
 	publishPreviewAPIURL,
 	publishProcessAPIURL,
+	remote = false,
 	remoteConnection,
 	scheduledBackURL,
 	scheduledPublishProcessAPIURL,
@@ -97,9 +98,10 @@ export function NewPublish({
 	processesBackURL: string;
 	publishPreviewAPIURL: string;
 	publishProcessAPIURL: string;
+	remote?: boolean;
 	remoteConnection?: RemoteConnection;
 	scheduledBackURL: string;
-	scheduledPublishProcessAPIURL: string;
+	scheduledPublishProcessAPIURL?: string;
 	scheduledPublishProcessId?: number;
 	timeZoneId: string;
 	timeZones: TimeZoneOption[];
@@ -261,30 +263,31 @@ export function NewPublish({
 					remoteConnection: values.remoteConnection,
 				};
 
-				const result = scheduled
-					? await postScheduledPublishProcess({
-							scheduledPublishProcessRequest: {
-								cronExpression:
-									toCronExpression(scheduleValues),
+				const result =
+					scheduled && scheduledPublishProcessAPIURL
+						? await postScheduledPublishProcess({
+								scheduledPublishProcessRequest: {
+									cronExpression:
+										toCronExpression(scheduleValues),
+									publishProcessRequest,
+									scheduleEndDate: hasEndDate(scheduleValues)
+										? toZonedDate(
+												scheduleValues.endDateTime,
+												scheduleValues.timeZoneId
+											).toISOString()
+										: undefined,
+									scheduleStartDate: toZonedDate(
+										scheduleValues.startDateTime,
+										scheduleValues.timeZoneId
+									).toISOString(),
+									timeZoneId: scheduleValues.timeZoneId,
+								},
+								url: scheduledPublishProcessAPIURL,
+							})
+						: await postPublishProcess({
 								publishProcessRequest,
-								scheduleEndDate: hasEndDate(scheduleValues)
-									? toZonedDate(
-											scheduleValues.endDateTime,
-											scheduleValues.timeZoneId
-										).toISOString()
-									: undefined,
-								scheduleStartDate: toZonedDate(
-									scheduleValues.startDateTime,
-									scheduleValues.timeZoneId
-								).toISOString(),
-								timeZoneId: scheduleValues.timeZoneId,
-							},
-							url: scheduledPublishProcessAPIURL,
-						})
-					: await postPublishProcess({
-							publishProcessRequest,
-							url: publishProcessAPIURL,
-						});
+								url: publishProcessAPIURL,
+							});
 
 				if (result.error) {
 					Liferay.Util.openToast({
@@ -357,10 +360,12 @@ export function NewPublish({
 							)}
 						/>
 
-						<FormikFieldPublishScheduler
-							name="scheduleValues"
-							timeZones={timeZones}
-						/>
+						{scheduledPublishProcessAPIURL && (
+							<FormikFieldPublishScheduler
+								name="scheduleValues"
+								timeZones={timeZones}
+							/>
+						)}
 
 						{remoteConnection && (
 							<>
@@ -455,7 +460,7 @@ export function NewPublish({
 
 						<Footer
 							actionButtonLabel={getActionButtonLabel(
-								Boolean(remoteConnection),
+								remote,
 								formik.values.scheduleValues.enabled
 							)}
 							actionButtonSymbol="change"

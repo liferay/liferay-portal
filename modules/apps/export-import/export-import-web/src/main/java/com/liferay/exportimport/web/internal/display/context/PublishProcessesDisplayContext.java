@@ -7,11 +7,13 @@ package com.liferay.exportimport.web.internal.display.context;
 
 import com.liferay.exportimport.constants.ExportImportPortletKeys;
 import com.liferay.exportimport.util.ScopeUtil;
+import com.liferay.exportimport.web.internal.util.ExportImportAPIURLUtil;
 import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenuBuilder;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItemListBuilder;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.backgroundtask.constants.BackgroundTaskConstants;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -23,6 +25,8 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.staging.constants.StagingProcessesFDSNames;
 
@@ -55,19 +59,7 @@ public class PublishProcessesDisplayContext {
 	public CreationMenu getCreationMenu() {
 		return CreationMenuBuilder.addPrimaryDropdownItem(
 			dropdownItem -> {
-				dropdownItem.setHref(
-					PortletURLBuilder.createRenderURL(
-						_liferayPortletResponse
-					).setMVCRenderCommandName(
-						"/staging_processes/view_new_publish"
-					).setBackURL(
-						_themeDisplay.getURLCurrent()
-					).setParameter(
-						"groupId", _liveGroup.getGroupId()
-					).setParameter(
-						"scheduled",
-						() -> Objects.equals(_getTabs1(), "scheduled")
-					).buildString());
+				dropdownItem.setHref(_getNewPublishURL());
 				dropdownItem.setLabel(
 					LanguageUtil.get(_httpServletRequest, "new"));
 			}
@@ -179,7 +171,9 @@ public class PublishProcessesDisplayContext {
 	}
 
 	public String getPublishProcessesAPIURL() {
-		return ScopeUtil.getAPIURL(_liveGroup, "/publish-processes");
+		return ExportImportAPIURLUtil.getPublishAPIURL(
+			"/publish-processes", _liveGroup, _themeDisplay.getPlid(),
+			_getPortletId());
 	}
 
 	public List<FDSActionDropdownItem>
@@ -222,6 +216,54 @@ public class PublishProcessesDisplayContext {
 
 	public String getScheduledPublishProcessesAPIURL() {
 		return ScopeUtil.getAPIURL(_liveGroup, "/scheduled-publish-processes");
+	}
+
+	public String getTitle() {
+		String portletId = _getPortletId();
+
+		if (Validator.isBlank(portletId)) {
+			return null;
+		}
+
+		return StringBundler.concat(
+			LanguageUtil.get(_httpServletRequest, "staging"), " - ",
+			PortalUtil.getPortletTitle(portletId, _themeDisplay.getLocale()));
+	}
+
+	private String _getNewPublishURL() {
+		String portletId = _getPortletId();
+
+		if (Validator.isBlank(portletId)) {
+			return PortletURLBuilder.createRenderURL(
+				_liferayPortletResponse
+			).setMVCRenderCommandName(
+				"/staging_processes/view_new_publish"
+			).setBackURL(
+				_themeDisplay.getURLCurrent()
+			).setParameter(
+				"groupId", _liveGroup.getGroupId()
+			).setParameter(
+				"scheduled", () -> Objects.equals(_getTabs1(), "scheduled")
+			).buildString();
+		}
+
+		return PortletURLBuilder.createRenderURL(
+			_liferayPortletResponse
+		).setMVCPath(
+			"/revamp/publish/new_publish.jsp"
+		).setBackURL(
+			_themeDisplay.getURLCurrent()
+		).setParameter(
+			"plid", _themeDisplay.getPlid()
+		).setParameter(
+			"portletId", portletId
+		).buildString();
+	}
+
+	private String _getPortletId() {
+		return ParamUtil.getString(
+			_httpServletRequest, "portletId",
+			ParamUtil.getString(_httpServletRequest, "portletResource"));
 	}
 
 	private String _getTabURL(String tabs1) {

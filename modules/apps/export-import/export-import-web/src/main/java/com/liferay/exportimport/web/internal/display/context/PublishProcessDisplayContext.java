@@ -7,6 +7,7 @@ package com.liferay.exportimport.web.internal.display.context;
 
 import com.liferay.exportimport.kernel.staging.StagingUtil;
 import com.liferay.exportimport.util.ScopeUtil;
+import com.liferay.exportimport.web.internal.util.ExportImportAPIURLUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -23,6 +24,7 @@ import com.liferay.portal.kernel.scheduler.StorageType;
 import com.liferay.portal.kernel.scheduler.messaging.SchedulerResponse;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.PropsValues;
@@ -45,10 +47,13 @@ import java.util.TreeSet;
 public class PublishProcessDisplayContext {
 
 	public PublishProcessDisplayContext(
-		Group liveGroup, Locale locale, Group publishSourceGroup) {
+		Group liveGroup, Locale locale, long plid, String portletId,
+		Group publishSourceGroup) {
 
 		_liveGroup = liveGroup;
 		_locale = locale;
+		_plid = plid;
+		_portletId = portletId;
 		_publishSourceGroup = publishSourceGroup;
 	}
 
@@ -64,15 +69,17 @@ public class PublishProcessDisplayContext {
 	}
 
 	public String getPublishPreviewAPIURL() {
-		return ScopeUtil.getAPIURL(_liveGroup, "/publish-preview");
+		return ExportImportAPIURLUtil.getPublishAPIURL(
+			"/publish-preview", _liveGroup, _plid, _portletId);
 	}
 
 	public String getPublishProcessAPIURL() {
-		return ScopeUtil.getAPIURL(_liveGroup, "/publish-processes");
+		return ExportImportAPIURLUtil.getPublishAPIURL(
+			"/publish-processes", _liveGroup, _plid, _portletId);
 	}
 
 	public JSONObject getRemoteConnectionJSONObject() {
-		if (!_liveGroup.isStagedRemotely()) {
+		if (!_liveGroup.isStagedRemotely() || !Validator.isBlank(_portletId)) {
 			return null;
 		}
 
@@ -103,6 +110,10 @@ public class PublishProcessDisplayContext {
 	}
 
 	public String getScheduledPublishProcessAPIURL() {
+		if (!Validator.isBlank(_portletId)) {
+			return null;
+		}
+
 		return ScopeUtil.getAPIURL(_liveGroup, "/scheduled-publish-processes");
 	}
 
@@ -124,6 +135,12 @@ public class PublishProcessDisplayContext {
 	}
 
 	public String getTitle(long scheduledPublishProcessId) {
+		if (!Validator.isBlank(_portletId)) {
+			return StringBundler.concat(
+				LanguageUtil.get(_locale, "new-publish-process"), " - ",
+				PortalUtil.getPortletTitle(_portletId, _locale));
+		}
+
 		if (scheduledPublishProcessId <= 0) {
 			return LanguageUtil.get(_locale, "new-publish-process");
 		}
@@ -208,6 +225,8 @@ public class PublishProcessDisplayContext {
 
 	private final Group _liveGroup;
 	private final Locale _locale;
+	private final long _plid;
+	private final String _portletId;
 	private final Group _publishSourceGroup;
 
 }

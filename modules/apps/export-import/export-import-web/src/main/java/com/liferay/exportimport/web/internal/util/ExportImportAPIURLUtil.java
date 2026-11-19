@@ -61,4 +61,29 @@ public class ExportImportAPIURLUtil {
 		return layout;
 	}
 
+	public static String getPublishAPIURL(
+		String endpoint, Group liveGroup, long plid, String portletId) {
+
+		String apiURL = ScopeUtil.getAPIURL(liveGroup, endpoint);
+
+		if (Validator.isBlank(portletId)) {
+			return apiURL;
+		}
+
+		Layout layout = getPortletLayout(plid, portletId);
+
+		if (layout == null) {
+			return StringBundler.concat(
+				apiURL, "?portletId=",
+				URLEncoder.encode(portletId, StandardCharsets.UTF_8));
+		}
+
+		return StringBundler.concat(
+			apiURL, "?portletId=",
+			URLEncoder.encode(portletId, StandardCharsets.UTF_8),
+			"&sitePageExternalReferenceCode=",
+			URLEncoder.encode(
+				layout.getExternalReferenceCode(), StandardCharsets.UTF_8));
+	}
+
 }

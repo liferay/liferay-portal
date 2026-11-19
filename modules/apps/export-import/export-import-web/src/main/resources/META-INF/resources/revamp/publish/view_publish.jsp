@@ -10,12 +10,27 @@
 <liferay-staging:defineObjects />
 
 <%
+String redirect = ParamUtil.getString(request, "redirect");
+
+if (Validator.isNotNull(redirect)) {
+	portletDisplay.setShowBackIcon(true);
+	portletDisplay.setURLBack(redirect);
+}
+
 PublishProcessesDisplayContext publishProcessesDisplayContext = new PublishProcessesDisplayContext(request, liferayPortletResponse, liveGroup);
+
+String title = publishProcessesDisplayContext.getTitle();
+
+if (title != null) {
+	renderResponse.setTitle(title);
+}
 %>
 
-<clay:navigation-bar
-	navigationItems="<%= publishProcessesDisplayContext.getNavigationItems() %>"
-/>
+<c:if test="<%= title == null %>">
+	<clay:navigation-bar
+		navigationItems="<%= publishProcessesDisplayContext.getNavigationItems() %>"
+	/>
+</c:if>
 
 <c:choose>
 	<c:when test='<%= Objects.equals(ParamUtil.getString(request, "tabs1"), "scheduled") %>'>
