@@ -34,4 +34,17 @@
 			white-space: nowrap;
 		}
 	}
+
+	&__mention-user-picker {
+		.mark {
+			background-color: transparent;
+			padding: 0;
+			white-space: inherit;
+		}
+
+		strong.mark {
+			color: $primary;
+			font-weight: inherit;
+		}
+	}
 }

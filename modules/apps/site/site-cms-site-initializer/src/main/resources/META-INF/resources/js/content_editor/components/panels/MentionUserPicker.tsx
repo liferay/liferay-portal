@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {TextHighlight} from '@clayui/core';
 import ClayDropDown from '@clayui/drop-down';
 import {useNavigation} from '@clayui/shared';
 import Sticker from '@clayui/sticker';
@@ -308,6 +309,7 @@ export default function MentionUserPicker({
 												}
 												id={`${id}-${index}`}
 												key={user.id}
+												keywords={results.keywords}
 												onMouseEnter={() =>
 													setActiveIndex(index)
 												}
@@ -348,6 +350,7 @@ export default function MentionUserPicker({
 													}
 													id={`${id}-${mentionIndex}`}
 													key={userGroup.id}
+													keywords={results.keywords}
 													onMouseEnter={() =>
 														setActiveIndex(
 															mentionIndex
@@ -407,6 +410,7 @@ function MentionItem({
 	active,
 	focus,
 	id,
+	keywords = '',
 	onMouseEnter,
 	onSelect,
 	portraitURL,
@@ -418,6 +422,7 @@ function MentionItem({
 	active: boolean;
 	focus: boolean;
 	id: string;
+	keywords?: string;
 	onMouseEnter: () => void;
 	onSelect: () => void;
 	portraitURL?: string;
@@ -453,7 +458,7 @@ function MentionItem({
 
 				<span className="autofit-col autofit-col-expand">
 					<span className="font-weight-semi-bold text-3 text-dark text-truncate">
-						{title}
+						<TextHighlight match={keywords}>{title}</TextHighlight>
 					</span>
 
 					<span className="text-2 text-secondary text-truncate">
