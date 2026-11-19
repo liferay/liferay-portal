@@ -17,11 +17,14 @@ const dlVersionNumberIncreaseValues = {
 	NONE: 'NONE',
 };
 
-function _renderCheckinComponent({checkedOut = true} = {}) {
+function _renderCheckinComponent({
+	checkedOut = true,
+	versionNumberIncreaseValues = dlVersionNumberIncreaseValues,
+} = {}) {
 	return render(
 		<Checkin
 			checkedOut={checkedOut}
-			dlVersionNumberIncreaseValues={dlVersionNumberIncreaseValues}
+			dlVersionNumberIncreaseValues={versionNumberIncreaseValues}
 			portletNamespace="_portletNamespace_"
 		/>,
 		{
@@ -155,6 +158,57 @@ describe('Checkin', () => {
 					it('the callback is called with the major version', () => {
 						expect(callback).toHaveBeenCalledWith(
 							dlVersionNumberIncreaseValues.MINOR,
+							''
+						);
+					});
+				});
+			});
+		});
+	});
+
+	describe('when the repository has no minor versions', () => {
+		describe('and the component is rendered', () => {
+			let result;
+			beforeEach(() => {
+				result = _renderCheckinComponent({
+					checkedOut: false,
+					versionNumberIncreaseValues: {
+						MAJOR: dlVersionNumberIncreaseValues.MAJOR,
+						NONE: dlVersionNumberIncreaseValues.NONE,
+					},
+				});
+			});
+
+			describe('and we call the open method on the bridge component', () => {
+				let callback;
+				beforeEach(() => {
+					callback = jest.fn();
+
+					return act(() =>
+						Liferay.componentReady(bridgeComponentId).then(
+							({open}) => open(callback)
+						)
+					);
+				});
+
+				it('does not render the minor version option', async () => {
+					await result.findByRole('form');
+
+					expect(result.queryByLabelText('minor-version')).toBeNull();
+				});
+
+				describe('and the form is submitted', () => {
+					beforeEach(async () => {
+						const form = await result.findByRole('form');
+
+						act(() => {
+							fireEvent.submit(form);
+						});
+					});
+
+					it('the callback is called with the major version', () => {
+						expect(callback).toHaveBeenCalledWith(
+							dlVersionNumberIncreaseValues.MAJOR,
 							''
 						);
 					});

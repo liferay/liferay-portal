@@ -129,6 +129,18 @@ public class SharepointURLHelperTest {
 	}
 
 	@Test
+	public void testGetListURL() {
+		SharepointURLHelper sharepointURLHelper = new SharepointURLHelper(
+			_SITE_ABSOLUTE_URL + "/sites/site", _RESULTS_SOURCE_ID);
+
+		Assert.assertEquals(
+			StringBundler.concat(
+				_SITE_ABSOLUTE_URL, "/sites/site/_api/web/GetList('/sites/site",
+				"/Owner%27%27s%20Documents')?$select=EnableMinorVersions"),
+			sharepointURLHelper.getListURL("Owner's Documents"));
+	}
+
+	@Test
 	public void testGetMoveFileURLEncodesPlusSignInTitle() {
 		Assert.assertEquals(
 			_getFileURL(
