@@ -899,6 +899,46 @@ public class DynamicRegistrationServiceTest extends BaseClientTestCase {
 	}
 
 	@Test
+	public void testRegisterWithClientSecretJWT() throws Exception {
+		long companyId = TestPropsValues.getCompanyId();
+
+		WebTarget registerWebTarget = getRegisterWebTarget();
+
+		String bodyJSON = _createOpenRegistrationJSONObject(
+			true, _getRandomRedirectURI()
+		).put(
+			"token_endpoint_auth_method", "client_secret_jwt"
+		).toString();
+
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					_createCompanyConfigurationTemporarySwapper(companyId)) {
+
+			Invocation.Builder invocationBuilder = registerWebTarget.request();
+
+			Response response = invocationBuilder.method(
+				"post", Entity.json(bodyJSON));
+
+			Assert.assertEquals(201, response.getStatus());
+
+			JSONObject responseJSONObject = parseJSONObject(response);
+
+			OAuth2Application oAuth2Application =
+				_oAuth2ApplicationLocalService.fetchOAuth2Application(
+					companyId,
+					responseJSONObject.getString(OAuthConstants.CLIENT_ID));
+
+			Assert.assertEquals(
+				"client_secret_jwt",
+				oAuth2Application.getClientAuthenticationMethod());
+			Assert.assertEquals(
+				_oAuth2ApplicationLocalService.getPlaintextClientSecret(
+					oAuth2Application),
+				responseJSONObject.getString(OAuthConstants.CLIENT_SECRET));
+		}
+	}
+
+	@Test
 	public void testRegisterWithInvalidBearerToken() throws Exception {
 		_testRegisterWithInvalidBearerToken(RandomTestUtil.randomString());
 
