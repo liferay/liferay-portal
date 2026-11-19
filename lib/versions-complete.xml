@@ -335,18 +335,6 @@
 				</licenses>
 			</library>
 			<library>
-				<file-name>com.liferay.commerce.payment.method.paypal.jar!json.jar</file-name>
-				<version>20231013</version>
-				<project-name>JSON in Java</project-name>
-				<project-url>https://github.com/douglascrockford/JSON-java</project-url>
-				<licenses>
-					<license>
-						<license-name>Public Domain</license-name>
-						<license-url>https://github.com/stleary/JSON-java/blob/master/LICENSE</license-url>
-					</license>
-				</licenses>
-			</library>
-			<library>
 				<file-name>com.liferay.commerce.payment.method.paypal.jar!paypalhttp.jar</file-name>
 				<version>1.0.1</version>
 				<project-name>paypalhttp</project-name>
@@ -1318,18 +1306,6 @@
 				</licenses>
 			</library>
 			<library>
-				<file-name>com.liferay.frontend.js.loader.modules.extender.jar!json.jar</file-name>
-				<version>20231013</version>
-				<project-name>JSON in Java</project-name>
-				<project-url>https://github.com/douglascrockford/JSON-java</project-url>
-				<licenses>
-					<license>
-						<license-name>Public Domain</license-name>
-						<license-url>https://github.com/stleary/JSON-java/blob/master/LICENSE</license-url>
-					</license>
-				</licenses>
-			</library>
-			<library>
 				<file-name>com.liferay.frontend.js.loader.modules.extender.jar!npm-semver.jar</file-name>
 				<version>1.0.0</version>
 				<project-name>com.github.yuchi#npm-semver;1.0.0</project-name>
@@ -2064,18 +2040,6 @@
 					<license>
 						<license-name>The Apache Software License, Version 2.0</license-name>
 						<license-url>http://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
-					</license>
-				</licenses>
-			</library>
-			<library>
-				<file-name>com.liferay.portal.json.validator.jar!json.jar</file-name>
-				<version>20231013</version>
-				<project-name>JSON in Java</project-name>
-				<project-url>https://github.com/douglascrockford/JSON-java</project-url>
-				<licenses>
-					<license>
-						<license-name>Public Domain</license-name>
-						<license-url>https://github.com/stleary/JSON-java/blob/master/LICENSE</license-url>
 					</license>
 				</licenses>
 			</library>
@@ -3384,18 +3348,6 @@
 					<license>
 						<license-name>The Apache Software License, Version 2.0</license-name>
 						<license-url>http://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
-					</license>
-				</licenses>
-			</library>
-			<library>
-				<file-name>com.liferay.portal.security.audit.test.util.jar!json.jar</file-name>
-				<version>20231013</version>
-				<project-name>JSON in Java</project-name>
-				<project-url>https://github.com/douglascrockford/JSON-java</project-url>
-				<licenses>
-					<license>
-						<license-name>Public Domain</license-name>
-						<license-url>https://github.com/stleary/JSON-java/blob/master/LICENSE</license-url>
 					</license>
 				</licenses>
 			</library>
@@ -4914,18 +4866,6 @@
 				</licenses>
 			</library>
 			<library>
-				<file-name>com.liferay.portal.tools.db.partition.migration.validator.jar!json.jar</file-name>
-				<version>20231013</version>
-				<project-name>JSON in Java</project-name>
-				<project-url>https://github.com/douglascrockford/JSON-java</project-url>
-				<licenses>
-					<license>
-						<license-name>Public Domain</license-name>
-						<license-url>https://github.com/stleary/JSON-java/blob/master/LICENSE</license-url>
-					</license>
-				</licenses>
-			</library>
-			<library>
 				<file-name>com.liferay.portal.tools.db.partition.migration.validator.jar!log4j-api.jar</file-name>
 				<version>2.26.1</version>
 				<project-name>Apache Log4j API</project-name>
@@ -4957,6 +4897,17 @@
 				<licenses>
 					<license>
 						<license-name>The GNU General Public License, v2 with Universal FOSS Exception, v1.0</license-name>
+					</license>
+				</licenses>
+			</library>
+			<library>
+				<file-name>com.liferay.portal.tools.db.partition.migration.validator.jar!org.json.jar</file-name>
+				<version>20260814.LIFERAY-PATCHED-1</version>
+				<project-name>JSON in Java</project-name>
+				<licenses>
+					<license>
+						<license-name>LGPL 2.1</license-name>
+						<license-url>http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt</license-url>
 					</license>
 				</licenses>
 			</library>
@@ -5249,18 +5200,6 @@
 					<license>
 						<license-name>Apache License, Version 2.0</license-name>
 						<license-url>https://www.apache.org/licenses/LICENSE-2.0</license-url>
-					</license>
-				</licenses>
-			</library>
-			<library>
-				<file-name>com.liferay.portal.workflow.kaleo.service.jar!json.jar</file-name>
-				<version>20231013</version>
-				<project-name>JSON in Java</project-name>
-				<project-url>https://github.com/douglascrockford/JSON-java</project-url>
-				<licenses>
-					<license>
-						<license-name>Public Domain</license-name>
-						<license-url>https://github.com/stleary/JSON-java/blob/master/LICENSE</license-url>
 					</license>
 				</licenses>
 			</library>
@@ -9203,7 +9142,7 @@
 			</library>
 			<library>
 				<file-name>lib/portal/json-java.jar</file-name>
-				<version>20231013.LIFERAY-PATCHED-1</version>
+				<version>20260814.LIFERAY-PATCHED-1</version>
 				<project-name>JSON in Java</project-name>
 				<project-url>https://github.com/douglascrockford/JSON-java</project-url>
 				<licenses>
