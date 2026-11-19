@@ -468,7 +468,6 @@ public class BatchTestClassGroupTest
 		String s3ObjectPath = ReflectionTestUtil.invoke(
 			baseDownstreamBuild, "_getS3ObjectPath",
 			new Class<?>[] {File.class}, file);
-
 		String relativeBuildReportsPath = ReflectionTestUtil.invoke(
 			Mockito.mock(BatchTestClassGroup.class),
 			"_getRelativeBuildReportsPath", new Class<?>[] {Workspace.class},

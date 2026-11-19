@@ -130,6 +130,12 @@ public class JobCacheUtilTest extends com.liferay.jenkins.results.parser.Test {
 			_testGetCachedJobJSONObject(
 				cloudBucketUtilMockedStatic,
 				JenkinsResultsParserUtil.combine(
+					_JOB_CACHE_PATH, "/", jobName, "/", s3ObjectPathName,
+					"/default.json.gz"),
+				jobName, Mockito.mock(PortalGitWorkingDirectory.class), null);
+			_testGetCachedJobJSONObject(
+				cloudBucketUtilMockedStatic,
+				JenkinsResultsParserUtil.combine(
 					_JOB_CACHE_PATH, "/", jobName, "__", jobName, "/",
 					s3ObjectPathName, "/default.json.gz"),
 				JenkinsResultsParserUtil.combine(jobName, ")/(", jobName),
@@ -141,12 +147,6 @@ public class JobCacheUtilTest extends com.liferay.jenkins.results.parser.Test {
 					s3ObjectPathName, "/", testSuiteName, ".json.gz"),
 				JenkinsResultsParserUtil.combine(jobName, "(", jobName, ")"),
 				Mockito.mock(PortalGitWorkingDirectory.class), testSuiteName);
-			_testGetCachedJobJSONObject(
-				cloudBucketUtilMockedStatic,
-				JenkinsResultsParserUtil.combine(
-					_JOB_CACHE_PATH, "/", jobName, "/", s3ObjectPathName,
-					"/default.json.gz"),
-				jobName, Mockito.mock(PortalGitWorkingDirectory.class), null);
 			_testGetCachedJobJSONObject(
 				cloudBucketUtilMockedStatic, null, jobName, null,
 				testSuiteName);
@@ -166,6 +166,11 @@ public class JobCacheUtilTest extends com.liferay.jenkins.results.parser.Test {
 		try (MockedStatic<CloudBucketUtil> cloudBucketUtilMockedStatic =
 				Mockito.mockStatic(CloudBucketUtil.class)) {
 
+			_testGetPortalWorkspace(cloudBucketUtilMockedStatic, null);
+			_testGetPortalWorkspace(
+				cloudBucketUtilMockedStatic, null,
+				WorkspaceTestUtil.newWorkspace(
+					Workspace.class, WorkspaceGitRepository.class));
 			_testGetPortalWorkspace(
 				cloudBucketUtilMockedStatic,
 				pluginsWorkspace.getS3ObjectPathName(), pluginsWorkspace,
@@ -178,11 +183,6 @@ public class JobCacheUtilTest extends com.liferay.jenkins.results.parser.Test {
 				cloudBucketUtilMockedStatic,
 				portalWorkspace.getS3ObjectPathName(), portalWorkspace,
 				pluginsWorkspace);
-			_testGetPortalWorkspace(
-				cloudBucketUtilMockedStatic, null,
-				WorkspaceTestUtil.newWorkspace(
-					Workspace.class, WorkspaceGitRepository.class));
-			_testGetPortalWorkspace(cloudBucketUtilMockedStatic, null);
 		}
 	}
 
