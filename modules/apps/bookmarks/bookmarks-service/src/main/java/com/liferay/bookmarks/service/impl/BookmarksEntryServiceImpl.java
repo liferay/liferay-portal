@@ -225,8 +225,15 @@ public class BookmarksEntryServiceImpl extends BookmarksEntryServiceBaseImpl {
 	public BookmarksEntry moveEntry(long entryId, long parentFolderId)
 		throws PortalException {
 
+		BookmarksEntry entry = bookmarksEntryPersistence.findByPrimaryKey(
+			entryId);
+
 		_bookmarksEntryModelResourcePermission.check(
-			getPermissionChecker(), entryId, ActionKeys.UPDATE);
+			getPermissionChecker(), entry, ActionKeys.UPDATE);
+
+		ModelResourcePermissionUtil.check(
+			_bookmarksFolderModelResourcePermission, getPermissionChecker(),
+			entry.getGroupId(), parentFolderId, ActionKeys.ADD_ENTRY);
 
 		return bookmarksEntryLocalService.moveEntry(entryId, parentFolderId);
 	}
@@ -235,8 +242,15 @@ public class BookmarksEntryServiceImpl extends BookmarksEntryServiceBaseImpl {
 	public BookmarksEntry moveEntryFromTrash(long entryId, long parentFolderId)
 		throws PortalException {
 
+		BookmarksEntry entry = bookmarksEntryPersistence.findByPrimaryKey(
+			entryId);
+
 		_bookmarksEntryModelResourcePermission.check(
-			getPermissionChecker(), entryId, ActionKeys.UPDATE);
+			getPermissionChecker(), entry, ActionKeys.UPDATE);
+
+		ModelResourcePermissionUtil.check(
+			_bookmarksFolderModelResourcePermission, getPermissionChecker(),
+			entry.getGroupId(), parentFolderId, ActionKeys.ADD_ENTRY);
 
 		return bookmarksEntryLocalService.moveEntryFromTrash(
 			getUserId(), entryId, parentFolderId);
