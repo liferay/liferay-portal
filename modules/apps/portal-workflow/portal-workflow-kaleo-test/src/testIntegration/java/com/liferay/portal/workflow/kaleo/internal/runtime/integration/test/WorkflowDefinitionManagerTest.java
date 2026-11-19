@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.DefaultWorkflowNodeSetting;
 import com.liferay.portal.kernel.workflow.NoSuchWorkflowDefinitionException;
 import com.liferay.portal.kernel.workflow.WorkflowDefinition;
+import com.liferay.portal.kernel.workflow.WorkflowDefinitionFileException;
 import com.liferay.portal.kernel.workflow.WorkflowException;
 import com.liferay.portal.kernel.workflow.WorkflowNode;
 import com.liferay.portal.kernel.workflow.WorkflowNodeSetting;
@@ -319,6 +320,124 @@ public class WorkflowDefinitionManagerTest extends BaseWorkflowManagerTestCase {
 							"L_LIFERAY_AI_HUB_MCP_SERVER")
 					).toString()),
 				_createWorkflowNodeSetting("userMessage", "User Message")),
+			workflowNode.getWorkflowNodeSettings());
+	}
+
+	@Test
+	public void testDeployWorkflowDefinitionWithAskAHumanNode()
+		throws Exception {
+
+		AssertUtils.assertFailure(
+			KaleoDefinitionValidationException.class,
+			"The Ask a Human node must have a question",
+			() -> {
+				InputStream inputStream = getResourceInputStream(
+					"ask-a-human-node-with-empty-object-question-workflow-" +
+						"definition.json");
+
+				_workflowDefinitionManager.deployWorkflowDefinition(
+					FileUtil.getBytes(inputStream),
+					TestPropsValues.getCompanyId(),
+					RandomTestUtil.randomString(),
+					"Ask a Human Node With Empty Object Question Workflow " +
+						"Definition",
+					RandomTestUtil.randomString(), TestPropsValues.getUserId());
+			});
+
+		AssertUtils.assertFailure(
+			KaleoDefinitionValidationException.class,
+			"The Ask a Human node must have a question",
+			() -> {
+				InputStream inputStream = getResourceInputStream(
+					"ask-a-human-node-with-empty-question-workflow-" +
+						"definition.json");
+
+				_workflowDefinitionManager.deployWorkflowDefinition(
+					FileUtil.getBytes(inputStream),
+					TestPropsValues.getCompanyId(),
+					RandomTestUtil.randomString(),
+					"Ask a Human Node With Empty Question Workflow Definition",
+					RandomTestUtil.randomString(), TestPropsValues.getUserId());
+			});
+
+		AssertUtils.assertFailure(
+			WorkflowDefinitionFileException.class, "Unable to parse definition",
+			() -> {
+				InputStream inputStream = getResourceInputStream(
+					"ask-a-human-node-with-invalid-question-workflow-" +
+						"definition.json");
+
+				_workflowDefinitionManager.deployWorkflowDefinition(
+					FileUtil.getBytes(inputStream),
+					TestPropsValues.getCompanyId(),
+					RandomTestUtil.randomString(),
+					"Ask a Human Node With Invalid Question Workflow " +
+						"Definition",
+					RandomTestUtil.randomString(), TestPropsValues.getUserId());
+			});
+
+		InputStream inputStream = getResourceInputStream(
+			"ask-a-human-node-workflow-definition.json");
+
+		WorkflowDefinition workflowDefinition =
+			_workflowDefinitionManager.deployWorkflowDefinition(
+				FileUtil.getBytes(inputStream), TestPropsValues.getCompanyId(),
+				RandomTestUtil.randomString(),
+				"Ask a Human Node Workflow Definition",
+				RandomTestUtil.randomString(), TestPropsValues.getUserId());
+
+		List<WorkflowNode> workflowNodes =
+			workflowDefinition.getWorkflowNodes();
+
+		WorkflowNode workflowNode = workflowNodes.get(1);
+
+		Assert.assertEquals(
+			WorkflowNode.Type.ASK_A_HUMAN, workflowNode.getType());
+
+		_assertEquals(
+			List.of(
+				_createWorkflowNodeSetting(
+					"inputVariables",
+					JSONUtil.put(
+						JSONUtil.put(
+							"name", "inputVariable"
+						).put(
+							"type", "string"
+						)
+					).toString()),
+				_createWorkflowNodeSetting(
+					"outputVariables",
+					JSONUtil.put(
+						JSONUtil.put(
+							"name", "outputVariable"
+						).put(
+							"type", "string"
+						)
+					).toString()),
+				_createWorkflowNodeSetting(
+					"question",
+					JSONUtil.put(
+						"options",
+						JSONUtil.putAll(
+							JSONUtil.put(
+								"label_i18n", JSONUtil.put("en_US", "Yes")
+							).put(
+								"output", JSONUtil.put("outputVariable", "yes")
+							).put(
+								"transition", "end-1"
+							),
+							JSONUtil.put(
+								"label_i18n", JSONUtil.put("en_US", "No")
+							).put(
+								"output", JSONUtil.put("outputVariable", "no")
+							).put(
+								"transition", "end-2"
+							))
+					).put(
+						"title_i18n", JSONUtil.put("en_US", "Do you approve?")
+					).put(
+						"type", "quick-replies"
+					).toString())),
 			workflowNode.getWorkflowNodeSettings());
 	}
 

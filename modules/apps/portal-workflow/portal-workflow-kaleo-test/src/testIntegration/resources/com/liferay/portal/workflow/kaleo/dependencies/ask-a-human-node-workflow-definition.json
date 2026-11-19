@@ -1,0 +1,286 @@
+{
+	"#child-nodes": [
+		{
+			"#tag-name": "name",
+			"#value": "Ask a Human Node Workflow Definition"
+		},
+		{
+			"#tag-name": "version",
+			"#value": "1"
+		},
+		{
+			"#child-nodes": [
+				{
+					"#tag-name": "name",
+					"#value": "start"
+				},
+				{
+					"#cdata-value": [
+						"{",
+						"    \"xy\": [",
+						"        291,",
+						"        34",
+						"    ]",
+						"}"
+					],
+					"#tag-name": "metadata"
+				},
+				{
+					"#tag-name": "initial",
+					"#value": "true"
+				},
+				{
+					"#child-nodes": [
+						{
+							"#tag-name": "label",
+							"#value": "Start",
+							"language-id": "en_US"
+						}
+					],
+					"#tag-name": "labels"
+				},
+				{
+					"#child-nodes": [
+						{
+							"#child-nodes": [
+								{
+									"#child-nodes": [
+										{
+											"#tag-name": "label",
+											"#value": "Start",
+											"language-id": "en_US"
+										}
+									],
+									"#tag-name": "labels"
+								},
+								{
+									"#tag-name": "name",
+									"#value": "start"
+								},
+								{
+									"#tag-name": "target",
+									"#value": "ask-a-human"
+								},
+								{
+									"#tag-name": "default",
+									"#value": "true"
+								}
+							],
+							"#tag-name": "transition"
+						}
+					],
+					"#tag-name": "transitions"
+				}
+			],
+			"#tag-name": "state"
+		},
+		{
+			"#child-nodes": [
+				{
+					"#tag-name": "name",
+					"#value": "end-1"
+				},
+				{
+					"#cdata-value": [
+						"{",
+						"    \"terminal\": true,",
+						"    \"xy\": [",
+						"        102,",
+						"        424",
+						"    ]",
+						"}"
+					],
+					"#tag-name": "metadata"
+				},
+				{
+					"#child-nodes": [
+						{
+							"#tag-name": "label",
+							"#value": "End 1",
+							"language-id": "en_US"
+						}
+					],
+					"#tag-name": "labels"
+				}
+			],
+			"#tag-name": "state"
+		},
+		{
+			"#child-nodes": [
+				{
+					"#tag-name": "name",
+					"#value": "end-2"
+				},
+				{
+					"#cdata-value": [
+						"{",
+						"    \"terminal\": true,",
+						"    \"xy\": [",
+						"        527,",
+						"        417",
+						"    ]",
+						"}"
+					],
+					"#tag-name": "metadata"
+				},
+				{
+					"#child-nodes": [
+						{
+							"#tag-name": "label",
+							"#value": "End 2",
+							"language-id": "en_US"
+						}
+					],
+					"#tag-name": "labels"
+				}
+			],
+			"#tag-name": "state"
+		},
+		{
+			"#child-nodes": [
+				{
+					"#tag-name": "name",
+					"#value": "ask-a-human"
+				},
+				{
+					"#cdata-value": [
+						"{",
+						"    \"xy\": [",
+						"        300,",
+						"        227",
+						"    ]",
+						"}"
+					],
+					"#tag-name": "metadata"
+				},
+				{
+					"#cdata-value": [
+						"[",
+						"    {",
+						"        \"name\": \"inputVariable\",",
+						"        \"type\": \"string\"",
+						"    }",
+						"]"
+					],
+					"#tag-name": "input-variables"
+				},
+				{
+					"#child-nodes": [
+						{
+							"#tag-name": "label",
+							"#value": "Ask a Human",
+							"language-id": "en_US"
+						}
+					],
+					"#tag-name": "labels"
+				},
+				{
+					"#cdata-value": [
+						"[",
+						"    {",
+						"        \"name\": \"outputVariable\",",
+						"        \"type\": \"string\"",
+						"    }",
+						"]"
+					],
+					"#tag-name": "output-variables"
+				},
+				{
+					"#cdata-value": [
+						"{",
+						"    \"options\": [",
+						"        {",
+						"            \"label_i18n\": {",
+						"                \"en_US\": \"Yes\"",
+						"            },",
+						"            \"output\": {",
+						"                \"outputVariable\": \"yes\"",
+						"            },",
+						"            \"transition\": \"end-1\"",
+						"        },",
+						"        {",
+						"            \"label_i18n\": {",
+						"                \"en_US\": \"No\"",
+						"            },",
+						"            \"output\": {",
+						"                \"outputVariable\": \"no\"",
+						"            },",
+						"            \"transition\": \"end-2\"",
+						"        }",
+						"    ],",
+						"    \"title_i18n\": {",
+						"        \"en_US\": \"Do you approve?\"",
+						"    },",
+						"    \"type\": \"quick-replies\"",
+						"}"
+					],
+					"#tag-name": "question"
+				},
+				{
+					"#child-nodes": [
+						{
+							"#child-nodes": [
+								{
+									"#child-nodes": [
+										{
+											"#tag-name": "label",
+											"#value": "End 1",
+											"language-id": "en_US"
+										}
+									],
+									"#tag-name": "labels"
+								},
+								{
+									"#tag-name": "name",
+									"#value": "end-1"
+								},
+								{
+									"#tag-name": "target",
+									"#value": "end-1"
+								},
+								{
+									"#tag-name": "default",
+									"#value": "true"
+								}
+							],
+							"#tag-name": "transition"
+						},
+						{
+							"#child-nodes": [
+								{
+									"#child-nodes": [
+										{
+											"#tag-name": "label",
+											"#value": "End 2",
+											"language-id": "en_US"
+										}
+									],
+									"#tag-name": "labels"
+								},
+								{
+									"#tag-name": "name",
+									"#value": "end-2"
+								},
+								{
+									"#tag-name": "target",
+									"#value": "end-2"
+								},
+								{
+									"#tag-name": "default",
+									"#value": "false"
+								}
+							],
+							"#tag-name": "transition"
+						}
+					],
+					"#tag-name": "transitions"
+				}
+			],
+			"#tag-name": "ask-a-human"
+		}
+	],
+	"#tag-name": "workflow-definition",
+	"xmlns": "urn:liferay.com:liferay-workflow_7.4.0",
+	"xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+	"xsi:schemaLocation": "urn:liferay.com:liferay-workflow_7.4.0 http://www.liferay.com/dtd/liferay-workflow-definition_7_4_0.xsd"
+}
