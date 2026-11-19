@@ -19,6 +19,7 @@ import java.net.URL;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.dom4j.Element;
@@ -446,6 +447,39 @@ public class BaseDownstreamBuildTest
 	}
 
 	@Test
+	public void testGetS3ObjectPath() {
+		PluginsWorkspace pluginsWorkspace = WorkspaceTestUtil.newWorkspace(
+			PluginsWorkspace.class, PluginsWorkspaceGitRepository.class);
+
+		_testGetS3ObjectPath(
+			_getS3ObjectPathName(
+				pluginsWorkspace.getPrimaryWorkspaceGitRepository()),
+			pluginsWorkspace);
+
+		PortalWorkspace portalWorkspace = WorkspaceTestUtil.newWorkspace(
+			PortalWorkspace.class, PortalWorkspaceGitRepository.class);
+
+		_testGetS3ObjectPath(
+			portalWorkspace.getS3ObjectPathName(), portalWorkspace);
+
+		SubrepositoryWorkspace subrepositoryWorkspace =
+			WorkspaceTestUtil.newWorkspace(
+				SubrepositoryWorkspace.class, WorkspaceGitRepository.class);
+
+		_testGetS3ObjectPath(
+			_getS3ObjectPathName(
+				subrepositoryWorkspace.getPrimaryWorkspaceGitRepository()),
+			subrepositoryWorkspace);
+
+		Workspace workspace = WorkspaceTestUtil.newWorkspace(
+			Workspace.class, WorkspaceGitRepository.class);
+
+		_testGetS3ObjectPath(
+			_getS3ObjectPathName(workspace.getPrimaryWorkspaceGitRepository()),
+			workspace);
+	}
+
+	@Test
 	public void testGetTestrayCaseResultURL() throws Exception {
 		BaseDownstreamBuild heldBaseDownstreamBuild =
 			_mockGetTestrayCaseResultURL();
@@ -853,6 +887,15 @@ public class BaseDownstreamBuildTest
 			null, RandomTestUtil.randomString(), false);
 	}
 
+	private String _getS3ObjectPathName(
+		WorkspaceGitRepository workspaceGitRepository) {
+
+		return JenkinsResultsParserUtil.combine(
+			workspaceGitRepository.getName(), "/",
+			workspaceGitRepository.getBaseBranchSHA(), "/",
+			workspaceGitRepository.getSenderBranchSHA());
+	}
+
 	private BaseDownstreamBuild _mockGetTestrayCaseResultURL() {
 		BaseDownstreamBuild baseDownstreamBuild = Mockito.mock(
 			BaseDownstreamBuild.class);
@@ -899,6 +942,48 @@ public class BaseDownstreamBuildTest
 
 		Assert.assertEquals(
 			expectedAxisName, baseDownstreamBuild.getAxisName());
+	}
+
+	private void _testGetS3ObjectPath(
+		String expectedS3ObjectPathName, Workspace workspace) {
+
+		Properties buildProperties = new Properties();
+
+		String buildReportsPath = RandomTestUtil.randomString();
+
+		buildProperties.setProperty(
+			"cloud.ci.s3.bucket.build.reports.path", buildReportsPath);
+
+		JenkinsResultsParserUtil.setBuildProperties(buildProperties);
+
+		WorkspaceTestUtil.setWorkspaces(workspace);
+
+		BaseDownstreamBuild baseDownstreamBuild = Mockito.mock(
+			BaseDownstreamBuild.class);
+
+		String batchName = RandomTestUtil.randomString();
+
+		Mockito.doReturn(
+			batchName
+		).when(
+			baseDownstreamBuild
+		).getBatchName();
+
+		Mockito.doReturn(
+			BuildDatabaseUtil.getBuildDatabase()
+		).when(
+			baseDownstreamBuild
+		).getBuildDatabase();
+
+		File file = new File(RandomTestUtil.randomString());
+
+		testEquals(
+			JenkinsResultsParserUtil.combine(
+				buildReportsPath, "/", expectedS3ObjectPathName, "/", batchName,
+				"/", file.getName()),
+			ReflectionTestUtil.invoke(
+				baseDownstreamBuild, "_getS3ObjectPath",
+				new Class<?>[] {File.class}, file));
 	}
 
 	private void _testSaveBuildURLInBuildDatabase(
