@@ -264,24 +264,24 @@ public class AnalyticsReportsProductNavigationControlMenuEntry
 
 	@Activate
 	protected void activate(BundleContext bundleContext) {
-		_portletNamespace = _portal.getPortletNamespace(
-			AnalyticsReportsPortletKeys.ANALYTICS_REPORTS);
-
-		_logoutPreActionServiceRegistration = bundleContext.registerService(
-			LifecycleAction.class, new LogoutPreAction(this),
-			MapUtil.singletonDictionary("key", "logout.events.pre"));
-		_templateContextContributorServiceRegistration =
+		_analyticsReportsTemplateContextContributorServiceRegistration =
 			bundleContext.registerService(
 				TemplateContextContributor.class,
 				new AnalyticsReportsTemplateContextContributor(this),
 				MapUtil.singletonDictionary(
 					"type", TemplateContextContributor.TYPE_THEME));
+		_logoutPreActionServiceRegistration = bundleContext.registerService(
+			LifecycleAction.class, new LogoutPreAction(this),
+			MapUtil.singletonDictionary("key", "logout.events.pre"));
+		_portletNamespace = _portal.getPortletNamespace(
+			AnalyticsReportsPortletKeys.ANALYTICS_REPORTS);
 	}
 
 	@Deactivate
 	protected void deactivate() {
+		_analyticsReportsTemplateContextContributorServiceRegistration.
+			unregister();
 		_logoutPreActionServiceRegistration.unregister();
-		_templateContextContributorServiceRegistration.unregister();
 	}
 
 	private String _getAnalyticsReportsURL(
@@ -536,6 +536,9 @@ public class AnalyticsReportsProductNavigationControlMenuEntry
 	@Reference
 	private AnalyticsReportsInfoItemRegistry _analyticsReportsInfoItemRegistry;
 
+	private ServiceRegistration<?>
+		_analyticsReportsTemplateContextContributorServiceRegistration;
+
 	@Reference
 	private AnalyticsSettingsManager _analyticsSettingsManager;
 
@@ -573,7 +576,5 @@ public class AnalyticsReportsProductNavigationControlMenuEntry
 				"com.liferay.journal",
 				"com.liferay.journal.model.JournalArticle")
 		).build();
-	private ServiceRegistration<?>
-		_templateContextContributorServiceRegistration;
 
 }
