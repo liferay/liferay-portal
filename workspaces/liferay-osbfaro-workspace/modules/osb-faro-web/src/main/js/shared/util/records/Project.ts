@@ -18,6 +18,7 @@ interface IProject {
 	state: string;
 	stateStartDate: number;
 	timeZone: TimeZone;
+	url: string;
 	userId: number;
 }
 
@@ -39,6 +40,7 @@ export default class Project
 		state: null,
 		stateStartDate: null,
 		timeZone: new TimeZone(),
+		url: null,
 		userId: null,
 	})
 	implements IProject
@@ -58,6 +60,7 @@ export default class Project
 	declare serverLocation: string;
 	declare state: string;
 	declare stateStartDate: number;
+	declare url: string;
 	declare timeZone: TimeZone;
 	declare userId: number;
 
