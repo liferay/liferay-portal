@@ -7,7 +7,6 @@ package com.liferay.object.test.util;
 
 import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.object.constants.ObjectRelationshipConstants;
-import com.liferay.object.definition.tree.util.ObjectDefinitionTreeUtil;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectField;
@@ -26,7 +25,6 @@ import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -141,14 +139,6 @@ public class TreeTestUtil {
 				objectRelationship.getDescriptionMap(), true,
 				objectRelationship.getLabelMap(), null);
 		}
-	}
-
-	public static void clearRootObjectDefinitionIds() {
-		Map<Long, long[]> rootObjectDefinitionIds =
-			ReflectionTestUtil.getFieldValue(
-				ObjectDefinitionTreeUtil.class, "_rootObjectDefinitionIds");
-
-		rootObjectDefinitionIds.clear();
 	}
 
 	public static Tree createObjectDefinitionTree(

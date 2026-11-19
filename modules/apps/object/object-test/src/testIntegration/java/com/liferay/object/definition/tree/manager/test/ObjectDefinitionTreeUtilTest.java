@@ -166,8 +166,6 @@ public class ObjectDefinitionTreeUtilTest {
 				_objectDefinitionAAA.getName(), _objectDefinitionAAAA.getName()
 			},
 			_objectEntryLocalService, _objectRelationshipLocalService);
-
-		TreeTestUtil.clearRootObjectDefinitionIds();
 	}
 
 	@Test

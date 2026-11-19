@@ -467,8 +467,6 @@ public class DefaultObjectEntryManagerImplTest
 	@Before
 	@Override
 	public void setUp() throws Exception {
-		TreeTestUtil.clearRootObjectDefinitionIds();
-
 		super.setUp();
 
 		_depotEntry = _addDepotEntry();
@@ -1131,8 +1129,6 @@ public class DefaultObjectEntryManagerImplTest
 			objectDefinitionLocalService,
 			new String[] {"C_A", "C_AA", "C_AB", "C_AAA", "C_AAB"},
 			_objectEntryLocalService, _objectRelationshipLocalService);
-
-		TreeTestUtil.clearRootObjectDefinitionIds();
 	}
 
 	@Test
