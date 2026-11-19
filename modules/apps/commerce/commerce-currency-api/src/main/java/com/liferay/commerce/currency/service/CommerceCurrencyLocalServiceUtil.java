@@ -317,16 +317,6 @@ public class CommerceCurrencyLocalServiceUtil {
 		return getService().getCommerceCurrenciesCount();
 	}
 
-	public static int getCommerceCurrenciesCount(long companyId) {
-		return getService().getCommerceCurrenciesCount(companyId);
-	}
-
-	public static int getCommerceCurrenciesCount(
-		long companyId, boolean active) {
-
-		return getService().getCommerceCurrenciesCount(companyId, active);
-	}
-
 	/**
 	 * Returns the commerce currency with the primary key.
 	 *
@@ -478,14 +468,6 @@ public class CommerceCurrencyLocalServiceUtil {
 			roundingMode, primary, priority, active, serviceContext);
 	}
 
-	public static CommerceCurrency updateCommerceCurrencyRate(
-			long commerceCurrencyId, java.math.BigDecimal rate)
-		throws PortalException {
-
-		return getService().updateCommerceCurrencyRate(
-			commerceCurrencyId, rate);
-	}
-
 	public static void updateExchangeRate(
 			long commerceCurrencyId, String exchangeRateProviderKey)
 		throws PortalException {
@@ -508,4 +490,4 @@ public class CommerceCurrencyLocalServiceUtil {
 			CommerceCurrencyLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1009874738
+// LIFERAY-SERVICE-BUILDER-HASH:-2089722503

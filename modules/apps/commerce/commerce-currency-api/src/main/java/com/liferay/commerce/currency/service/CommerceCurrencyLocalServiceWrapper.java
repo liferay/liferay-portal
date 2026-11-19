@@ -369,18 +369,6 @@ public class CommerceCurrencyLocalServiceWrapper
 		return _commerceCurrencyLocalService.getCommerceCurrenciesCount();
 	}
 
-	@Override
-	public int getCommerceCurrenciesCount(long companyId) {
-		return _commerceCurrencyLocalService.getCommerceCurrenciesCount(
-			companyId);
-	}
-
-	@Override
-	public int getCommerceCurrenciesCount(long companyId, boolean active) {
-		return _commerceCurrencyLocalService.getCommerceCurrenciesCount(
-			companyId, active);
-	}
-
 	/**
 	 * Returns the commerce currency with the primary key.
 	 *
@@ -565,16 +553,6 @@ public class CommerceCurrencyLocalServiceWrapper
 	}
 
 	@Override
-	public com.liferay.commerce.currency.model.CommerceCurrency
-			updateCommerceCurrencyRate(
-				long commerceCurrencyId, java.math.BigDecimal rate)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _commerceCurrencyLocalService.updateCommerceCurrencyRate(
-			commerceCurrencyId, rate);
-	}
-
-	@Override
 	public void updateExchangeRate(
 			long commerceCurrencyId, String exchangeRateProviderKey)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -610,4 +588,4 @@ public class CommerceCurrencyLocalServiceWrapper
 	private CommerceCurrencyLocalService _commerceCurrencyLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1418828198
+// LIFERAY-SERVICE-BUILDER-HASH:1796877497

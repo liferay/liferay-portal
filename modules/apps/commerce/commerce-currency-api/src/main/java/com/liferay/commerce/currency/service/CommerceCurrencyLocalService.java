@@ -278,12 +278,6 @@ public interface CommerceCurrencyLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getCommerceCurrenciesCount();
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCommerceCurrenciesCount(long companyId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCommerceCurrenciesCount(long companyId, boolean active);
-
 	/**
 	 * Returns the commerce currency with the primary key.
 	 *
@@ -385,10 +379,6 @@ public interface CommerceCurrencyLocalService
 			double priority, boolean active, ServiceContext serviceContext)
 		throws PortalException;
 
-	public CommerceCurrency updateCommerceCurrencyRate(
-			long commerceCurrencyId, BigDecimal rate)
-		throws PortalException;
-
 	public void updateExchangeRate(
 			long commerceCurrencyId, String exchangeRateProviderKey)
 		throws PortalException;
@@ -396,4 +386,4 @@ public interface CommerceCurrencyLocalService
 	public void updateExchangeRates() throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1967471519
+// LIFERAY-SERVICE-BUILDER-HASH:400392970
