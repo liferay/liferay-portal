@@ -1,3 +1,7 @@
+{{- define "clientExtensions.namespace" -}}
+{{- printf "%s-cx" .Release.Namespace -}}
+{{- end -}}
+
 {{- define "elasticsearch.containerSecurityContext" -}}
 allowPrivilegeEscalation: false
 capabilities:

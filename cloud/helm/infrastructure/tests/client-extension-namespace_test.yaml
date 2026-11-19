@@ -1,0 +1,35 @@
+release:
+    name: my-release
+    namespace: liferay-able-nonproduction
+set:
+    environmentId: nonproduction
+    projectId: able
+suite: Client Extension Namespace
+templates:
+    -   templates/client-extension-namespace.yaml
+tests:
+    -   asserts:
+            -   equal:
+                    path: metadata.labels["liferay.com/observable"]
+                    value: "true"
+            -   equal:
+                    path: metadata.labels["pod-security.kubernetes.io/enforce"]
+                    value: restricted
+            -   equal:
+                    path: metadata.name
+                    value: liferay-able-nonproduction-cx
+        it: Creates the separate client extension namespace when it is enabled
+        set:
+            clientExtensions:
+                separateNamespace:
+                    enabled: true
+    -   asserts:
+            -   failedTemplate:
+                    errorMessage: "The value \"environmentId\" must not be \"cx\" or end with \"-cx\", since another environment's client extension namespace, \"liferay-<project>-<environment>-cx\", can have that name: prod-cx"
+        it: Fails for an environment ID that ends with -cx
+        set:
+            environmentId: prod-cx
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+        it: Omits the namespace by default

@@ -1,0 +1,20 @@
+{{- if .Values.enabled }}
+{{- if or (eq .Values.environmentId "cx") (hasSuffix "-cx" .Values.environmentId) }}
+{{- fail (printf "The value \"environmentId\" must not be \"cx\" or end with \"-cx\", since another environment's client extension namespace, \"liferay-<project>-<environment>-cx\", can have that name: %s" .Values.environmentId) }}
+{{- end }}
+{{- if .Values.clientExtensions.separateNamespace.enabled }}
+apiVersion: v1
+kind: Namespace
+metadata:
+    annotations:
+        argocd.argoproj.io/sync-wave: "-25"
+    labels:
+        component: client-extensions
+        environmentId: {{ .Values.environmentId | quote }}
+        liferay.com/observable: "true"
+        name: {{ include "clientExtensions.namespace" . }}
+        pod-security.kubernetes.io/enforce: restricted
+        projectId: {{ .Values.projectId | quote }}
+    name: {{ include "clientExtensions.namespace" . }}
+{{- end }}
+{{- end -}}
