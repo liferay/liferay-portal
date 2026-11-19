@@ -1,4 +1,4 @@
-jest.mock('../router');
+jest.mock('../url');
 
 import 'whatwg-fetch';
 import request, {
@@ -10,7 +10,7 @@ import request, {
 	serializeQueryString,
 	stringifyValues,
 } from '../request';
-import {reloadPage} from '../router';
+import {reloadPage} from '../url';
 
 describe('addParams', () => {
 	it('should correctly append query string params', () => {

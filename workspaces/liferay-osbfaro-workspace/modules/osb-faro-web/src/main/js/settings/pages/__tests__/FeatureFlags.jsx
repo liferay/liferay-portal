@@ -5,12 +5,12 @@ import {
 	FEATURE_FLAGS,
 	FEATURE_FLAGS_STORAGE_KEY
 } from 'shared/util/feature-flags';
-import {reloadPage} from 'shared/util/router';
+import {reloadPage} from 'shared/util/url';
 
 jest.unmock('react-dom');
 
-jest.mock('shared/util/router', () => ({
-	...jest.requireActual('shared/util/router'),
+jest.mock('shared/util/url', () => ({
+	...jest.requireActual('shared/util/url'),
 	reloadPage: jest.fn()
 }));
 
