@@ -147,6 +147,13 @@ public class SharepointURLHelper {
 			_FIELDS_SELECTED_FOLDER, _FIELDS_EXPANDED_FOLDER);
 	}
 
+	public String getListURL(String libraryPath) {
+		return String.format(
+			"%s/_api/web/GetList('%s/%s')?$select=EnableMinorVersions",
+			_siteAbsoluteURL, HttpComponentsUtil.getPath(_siteAbsoluteURL),
+			_encode(libraryPath));
+	}
+
 	public String getMoveFileURL(
 		String extRepositoryFileEntryKey, String extRepositoryFolderKey,
 		String title) {

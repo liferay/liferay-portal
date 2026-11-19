@@ -10,7 +10,10 @@ import com.liferay.document.library.kernel.service.DLAppHelperLocalService;
 import com.liferay.document.library.kernel.service.DLFolderLocalService;
 import com.liferay.document.library.repository.authorization.capability.AuthorizationCapability;
 import com.liferay.document.library.repository.authorization.oauth2.TokenStore;
+import com.liferay.document.library.repository.external.MinorVersionCapability;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
+import com.liferay.portal.kernel.cache.PortalCache;
+import com.liferay.portal.kernel.cache.SingleVMPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.repository.BaseRepository;
@@ -31,6 +34,7 @@ import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.RepositoryEntryLocalService;
 import com.liferay.portal.kernel.service.RepositoryLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.util.Time;
 import com.liferay.sharepoint.rest.repository.internal.configuration.SharepointRepositoryConfiguration;
 import com.liferay.sharepoint.rest.repository.internal.document.library.repository.authorization.capability.SharepointRepositoryAuthorizationCapability;
 import com.liferay.sharepoint.rest.repository.internal.document.library.repository.authorization.oauth2.util.SharepointRepositoryTokenBrokerFactoryUtil;
@@ -40,6 +44,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 
 /**
@@ -99,6 +104,10 @@ public abstract class BaseSharepointRepositoryDefiner
 				_sharepointRepositoryConfiguration,
 				SharepointRepositoryTokenBrokerFactoryUtil.create(
 					_properties, _sharepointRepositoryConfiguration)));
+
+		capabilityRegistry.addExportedCapability(
+			MinorVersionCapability.class,
+			() -> _isMinorVersionEnabled(documentRepository.getRepositoryId()));
 	}
 
 	@Override
@@ -117,10 +126,20 @@ public abstract class BaseSharepointRepositoryDefiner
 
 	@Activate
 	protected void activate(Map<String, Object> properties) {
+		Class<?> clazz = getClass();
+
+		_portalCache = (PortalCache<Long, Boolean>)singleVMPool.getPortalCache(
+			clazz.getName());
+
 		_properties = properties;
 		_sharepointRepositoryConfiguration =
 			ConfigurableUtil.createConfigurable(
 				SharepointRepositoryConfiguration.class, properties);
+	}
+
+	@Deactivate
+	protected void deactivate() {
+		_portalCache.removeAll();
 	}
 
 	@Reference
@@ -148,11 +167,42 @@ public abstract class BaseSharepointRepositoryDefiner
 	protected RepositoryLocalService repositoryLocalService;
 
 	@Reference
+	protected SingleVMPool singleVMPool;
+
+	@Reference
 	protected TokenStore tokenStore;
 
 	@Reference
 	protected UserLocalService userLocalService;
 
+	private boolean _isMinorVersionEnabled(long repositoryId)
+		throws PortalException {
+
+		Boolean minorVersionEnabled = _portalCache.get(repositoryId);
+
+		if (minorVersionEnabled != null) {
+			return minorVersionEnabled;
+		}
+
+		com.liferay.portal.kernel.model.Repository repository =
+			repositoryLocalService.getRepository(repositoryId);
+		SharepointExtRepository sharepointExtRepository =
+			new SharepointExtRepository(
+				_properties, _sharepointRepositoryConfiguration, tokenStore);
+
+		sharepointExtRepository.initRepository(
+			repository.getTypeSettingsProperties(), null);
+
+		minorVersionEnabled = sharepointExtRepository.isMinorVersionEnabled();
+
+		_portalCache.put(
+			repositoryId, minorVersionEnabled,
+			(int)(5 * Time.MINUTE / Time.SECOND));
+
+		return minorVersionEnabled;
+	}
+
+	private PortalCache<Long, Boolean> _portalCache;
 	private Map<String, Object> _properties;
 	private SharepointRepositoryConfiguration
 		_sharepointRepositoryConfiguration;

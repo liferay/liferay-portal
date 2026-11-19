@@ -484,7 +484,9 @@ renderResponse.setTitle(headerTitle);
 								<div class="<%= updateVersionDetails ? StringPool.BLANK : "hide" %>" id="<portlet:namespace />versionDetails">
 									<aui:input checked="<%= dlVersionNumberIncrease == DLVersionNumberIncrease.MAJOR %>" label="major-version" name="versionIncrease" type="radio" value="<%= DLVersionNumberIncrease.MAJOR %>" />
 
-									<aui:input checked="<%= dlVersionNumberIncrease == DLVersionNumberIncrease.MINOR %>" label="minor-version" name="versionIncrease" type="radio" value="<%= DLVersionNumberIncrease.MINOR %>" />
+									<c:if test="<%= DLRepositoryUtil.isMinorVersionEnabled(repositoryId) %>">
+										<aui:input checked="<%= dlVersionNumberIncrease == DLVersionNumberIncrease.MINOR %>" label="minor-version" name="versionIncrease" type="radio" value="<%= DLVersionNumberIncrease.MINOR %>" />
+									</c:if>
 
 									<aui:input checked="<%= (dlVersionNumberIncrease == DLVersionNumberIncrease.AUTOMATIC) || (dlVersionNumberIncrease == DLVersionNumberIncrease.NONE) %>" label="keep-current-version-number" name="versionIncrease" type="radio" value="<%= DLVersionNumberIncrease.NONE %>" />
 
@@ -656,6 +658,7 @@ renderResponse.setTitle(headerTitle);
 
 	<%
 	request.setAttribute("edit_file_entry.jsp-checkedOut", checkedOut);
+	request.setAttribute("edit_file_entry.jsp-repositoryId", repositoryId);
 	%>
 
 	<liferay-util:include page="/document_library/version_details.jsp" servletContext="<%= application %>" />

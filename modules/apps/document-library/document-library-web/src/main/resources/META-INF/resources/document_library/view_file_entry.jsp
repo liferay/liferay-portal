@@ -151,6 +151,7 @@ if (portletTitleBasedNavigation) {
 
 	<%
 	request.setAttribute("edit_file_entry.jsp-checkedOut", fileEntry.isCheckedOut());
+	request.setAttribute("edit_file_entry.jsp-repositoryId", fileEntry.getRepositoryId());
 	%>
 
 	<liferay-util:include page="/document_library/version_details.jsp" servletContext="<%= application %>" />

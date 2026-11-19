@@ -18,7 +18,14 @@
 				HashMapBuilder.<String, Object>put(
 					"MAJOR", DLVersionNumberIncrease.MAJOR
 				).put(
-					"MINOR", DLVersionNumberIncrease.MINOR
+					"MINOR",
+					() -> {
+						if (DLRepositoryUtil.isMinorVersionEnabled(GetterUtil.getLong(request.getAttribute("edit_file_entry.jsp-repositoryId")))) {
+							return DLVersionNumberIncrease.MINOR;
+						}
+
+						return null;
+					}
 				).put(
 					"NONE", DLVersionNumberIncrease.NONE
 				).build()

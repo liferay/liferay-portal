@@ -31,6 +31,7 @@ dependencies {
 	compileOnly project(":apps:digital-signature:digital-signature-api")
 	compileOnly project(":apps:document-library:document-library-api")
 	compileOnly project(":apps:document-library:document-library-repository-authorization-api")
+	compileOnly project(":apps:document-library:document-library-repository-external-api")
 	compileOnly project(":apps:document-library:document-library-taglib")
 	compileOnly project(":apps:dynamic-data-lists:dynamic-data-lists-api")
 	compileOnly project(":apps:dynamic-data-mapping:dynamic-data-mapping-api")

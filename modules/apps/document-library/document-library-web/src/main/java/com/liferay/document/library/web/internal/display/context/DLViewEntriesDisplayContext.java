@@ -244,6 +244,10 @@ public class DLViewEntriesDisplayContext {
 		return _redirect;
 	}
 
+	public long getRepositoryId() {
+		return _dlAdminDisplayContext.getRepositoryId();
+	}
+
 	public SearchContainer<RepositoryEntry> getSearchContainer()
 		throws PortalException {
 

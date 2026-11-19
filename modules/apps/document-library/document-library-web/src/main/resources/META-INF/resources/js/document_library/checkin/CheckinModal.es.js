@@ -21,7 +21,7 @@ const CheckinModal = ({
 	const {MAJOR, MINOR, NONE} = dlVersionNumberIncreaseValues;
 	const [changeLog, setChangeLog] = useState('');
 	const [versionIncrease, setVersionIncrease] = useState(
-		checkedOut ? MAJOR : MINOR
+		checkedOut || !MINOR ? MAJOR : MINOR
 	);
 
 	const handleChangeChangeLog = (event) => {
@@ -58,22 +58,31 @@ const CheckinModal = ({
 							onChange={setVersionIncrease}
 							value={versionIncrease}
 						>
-							<ClayRadio
-								label={Liferay.Language.get('major-version')}
-								value={MAJOR}
-							/>
-
-							<ClayRadio
-								label={Liferay.Language.get('minor-version')}
-								value={MINOR}
-							/>
-
-							<ClayRadio
-								label={Liferay.Language.get(
-									'keep-current-version-number'
-								)}
-								value={NONE}
-							/>
+							{[
+								<ClayRadio
+									key={MAJOR}
+									label={Liferay.Language.get(
+										'major-version'
+									)}
+									value={MAJOR}
+								/>,
+								MINOR && (
+									<ClayRadio
+										key={MINOR}
+										label={Liferay.Language.get(
+											'minor-version'
+										)}
+										value={MINOR}
+									/>
+								),
+								<ClayRadio
+									key={NONE}
+									label={Liferay.Language.get(
+										'keep-current-version-number'
+									)}
+									value={NONE}
+								/>,
+							].filter(Boolean)}
 						</ClayRadioGroup>
 
 						{versionIncrease !== NONE && (
@@ -122,7 +131,7 @@ CheckinModal.propTypes = {
 	checkedOut: PropTypes.bool.isRequired,
 	dlVersionNumberIncreaseValues: PropTypes.shape({
 		MAJOR: PropTypes.string.isRequired,
-		MINOR: PropTypes.string.isRequired,
+		MINOR: PropTypes.string,
 		NONE: PropTypes.string.isRequired,
 	}).isRequired,
 	observer: PropTypes.object.isRequired,

@@ -47,6 +47,7 @@ page import="com.liferay.document.library.web.internal.search.DDMStructureRowChe
 page import="com.liferay.document.library.web.internal.util.DDMStructureUtil" %><%@
 page import="com.liferay.document.library.web.internal.util.DLAssetHelperUtil" %><%@
 page import="com.liferay.document.library.web.internal.util.DLFileEntryUtil" %><%@
+page import="com.liferay.document.library.web.internal.util.DLRepositoryUtil" %><%@
 page import="com.liferay.document.library.web.internal.util.DataRecordValuesUtil" %><%@
 page import="com.liferay.document.library.web.internal.util.FolderItemSelectorURLProvider" %><%@
 page import="com.liferay.document.library.web.internal.util.RepositoryClassDefinitionUtil" %><%@

@@ -589,6 +589,7 @@ DLViewEntriesDisplayContext dlViewEntriesDisplayContext = new DLViewEntriesDispl
 
 <%
 request.setAttribute("edit_file_entry.jsp-checkedOut", true);
+request.setAttribute("edit_file_entry.jsp-repositoryId", dlViewEntriesDisplayContext.getRepositoryId());
 %>
 
 <c:if test="<%= dlViewEntriesDisplayContext.isVersioningStrategyOverridable() %>">

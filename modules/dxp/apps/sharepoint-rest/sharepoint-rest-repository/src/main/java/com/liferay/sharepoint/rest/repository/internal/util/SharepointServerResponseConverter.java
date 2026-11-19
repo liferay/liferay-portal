@@ -245,6 +245,12 @@ public class SharepointServerResponseConverter {
 		return searchResults;
 	}
 
+	public boolean isMinorVersionEnabled(JSONObject jsonObject) {
+		JSONObject dJSONObject = jsonObject.getJSONObject("d");
+
+		return dJSONObject.getBoolean("EnableMinorVersions");
+	}
+
 	private SharepointFileEntry _createFileEntry(JSONObject jsonObject) {
 		String extRepositoryModelKey = jsonObject.getString(
 			"ServerRelativeUrl");
