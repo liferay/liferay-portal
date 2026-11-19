@@ -1,63 +1,25 @@
 import BundleRouter from 'route-middleware/BundleRouter';
-import CampaignDetail from '../../campaigns/pages/CampaignDetail';
-import CampaignsDashboard from '../../campaigns/pages';
-import LDPLayout from 'shared/components/LDPLayout';
+import CampaignsDashboard from 'campaigns/pages';
+import ErrorPage from 'shared/pages/ErrorPage';
+import PageApp, {IPageAppProps} from '../PageApp';
 import React from 'react';
-import SectionApp from '../SectionApp';
+import {LDPElement} from 'shared/components/LDPElement';
 
-interface ICampaignsAppProps {
-	channelId: string;
-	groupId: string;
+interface ICampaignsParams {
+	[name: string]: string | undefined;
+	accountId?: string;
+	accountName?: string;
+	rangeEnd?: string;
+	rangeKey?: string;
+	rangeStart?: string;
 }
 
-interface ICampaignAppProps extends ICampaignsAppProps {
-	params: {id: string};
-}
-
-const CampaignsApp: React.FC<ICampaignsAppProps> = (props) => (
-	<SectionApp
-		{...props}
-		path="campaigns"
-		routes={[
-			{
-				children: [
-					{
-						element: (
-							<BundleRouter
-								data={CampaignsDashboard}
-								destructured={false}
-							/>
-						),
-						path: 'campaigns',
-					},
-				],
-				element: <LDPLayout />,
-			},
-		]}
-	/>
+const CampaignsApp: React.FC<IPageAppProps<ICampaignsParams>> = (props) => (
+	<PageApp {...props}>
+		<LDPElement fallback={<ErrorPage />}>
+			<BundleRouter data={CampaignsDashboard} destructured={false} />
+		</LDPElement>
+	</PageApp>
 );
 
-const CampaignApp: React.FC<ICampaignAppProps> = ({params, ...props}) => (
-	<SectionApp
-		{...props}
-		path={`campaigns/${params.id}`}
-		routes={[
-			{
-				children: [
-					{
-						element: (
-							<BundleRouter
-								data={CampaignDetail}
-								destructured={false}
-							/>
-						),
-						path: 'campaigns/:id',
-					},
-				],
-				element: <LDPLayout />,
-			},
-		]}
-	/>
-);
-
-export {CampaignApp as Campaign, CampaignsApp as Campaigns};
+export {CampaignsApp as Campaigns};
