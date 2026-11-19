@@ -7290,7 +7290,7 @@ graphql-hooks@4.4.0:
     dequal "^1.0.0"
     extract-files "^7.0.0"
 
-graphql-language-service@^5.5.0, graphql-language-service@^5.5.2, graphql-language-service@^5.7.0:
+graphql-language-service@^5.5.2, graphql-language-service@^5.7.0:
   version "5.7.0"
   resolved "https://registry.yarnpkg.com/graphql-language-service/-/graphql-language-service-5.7.0.tgz#4e5768edae5112e381442b705eb1d616381c7100"
   integrity sha512-5mwDb9HyHxMcO9RCLLieg6rC1u9XKJKWhFuvaZFJi3broQZDz1fcFNlm96UCMrIgI6MSsb9RwwqKKp2sZOZ9Gw==
@@ -9587,14 +9587,6 @@ monaco-editor@0.52.2:
   version "0.52.2"
   resolved "https://registry.yarnpkg.com/monaco-editor/-/monaco-editor-0.52.2.tgz#53c75a6fcc6802684e99fd1b2700299857002205"
   integrity sha512-GEQWEZmfkOGLdd3XK8ryrfWz3AIP8YymVXiPHEdewrUq7mh0qrKrfHLNCXcbB6sTnMLnOZ3ztSiKcciFUkIJwQ==
-
-monaco-graphql@1.7.3:
-  version "1.7.3"
-  resolved "https://registry.yarnpkg.com/monaco-graphql/-/monaco-graphql-1.7.3.tgz#985adbcc8dcbc1bd60967f9126c98a557466da10"
-  integrity sha512-6LAIcg/vT2NGLjHnT+5iIZONsZCaCuz2orbg7qD/u4Ry9R7rDotLh0HAzIF/yKdzEA5fTZC+TofSx2O+Zi+0ow==
-  dependencies:
-    graphql-language-service "^5.5.0"
-    picomatch-browser "^2.2.6"
 
 monaco-graphql@^1.8.0:
   version "1.9.0"

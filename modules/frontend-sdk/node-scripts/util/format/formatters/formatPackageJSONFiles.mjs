@@ -550,8 +550,6 @@ const ALLOWED_NON_GLOBAL_DEPENDENCIES = [
 	'lodash',
 	'mini-css-extract-plugin',
 	'minimist',
-	'monaco-editor',
-	'monaco-graphql',
 	'os-browserify',
 	'path-browserify',
 	'path-to-regexp',
