@@ -47,7 +47,7 @@ import java.net.UnknownHostException;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -76,29 +76,42 @@ public class ClusterExecutorImpl implements ClusterExecutor {
 
 	@Override
 	public FutureClusterResponses execute(ClusterRequest clusterRequest) {
-		Set<String> clusterNodeIds = new HashSet<>();
+		Set<String> targetClusterNodeIds =
+			clusterRequest.getTargetClusterNodeIds();
 
-		if (clusterRequest.isMulticast()) {
-			clusterNodeIds = new HashSet<>(_clusterNodeStatuses.keySet());
+		ClusterReceiver clusterReceiver = _clusterChannel.getClusterReceiver();
 
-			if (clusterRequest.isSkipLocal()) {
-				clusterNodeIds.remove(
-					_localClusterNodeStatus.getClusterNodeId());
+		Map<String, Address> addresses = new HashMap<>();
+
+		for (Address address : clusterReceiver.getAddresses()) {
+			if (clusterRequest.isMulticast() && clusterRequest.isSkipLocal() &&
+				address.equals(_clusterChannel.getLocalAddress())) {
+
+				continue;
 			}
-		}
-		else {
-			clusterNodeIds.addAll(clusterRequest.getTargetClusterNodeIds());
+
+			String clusterNodeId = getClusterNodeId(address);
+
+			if (!clusterRequest.isMulticast() &&
+				!targetClusterNodeIds.contains(clusterNodeId)) {
+
+				continue;
+			}
+
+			addresses.put(clusterNodeId, address);
 		}
 
 		FutureClusterResponses futureClusterResponses =
-			new FutureClusterResponses(clusterNodeIds);
+			new FutureClusterResponses(addresses.keySet());
 
 		if (!clusterRequest.isFireAndForget()) {
 			_futureClusterResponses.put(
 				clusterRequest.getUuid(), futureClusterResponses);
 		}
 
-		if (clusterNodeIds.remove(_localClusterNodeStatus.getClusterNodeId())) {
+		Collection<Address> targetAddresses = addresses.values();
+
+		if (targetAddresses.remove(_clusterChannel.getLocalAddress())) {
 			ClusterNodeResponse clusterNodeResponse = executeClusterRequest(
 				clusterRequest);
 
@@ -112,23 +125,8 @@ public class ClusterExecutorImpl implements ClusterExecutor {
 			_clusterChannel.sendMulticastMessage(clusterRequest);
 		}
 		else {
-			for (String clusterNodeId : clusterNodeIds) {
-				ClusterNodeStatus clusterNodeStatus = _clusterNodeStatuses.get(
-					clusterNodeId);
-
-				if (clusterNodeStatus == null) {
-					if (_log.isWarnEnabled()) {
-						_log.warn(
-							StringBundler.concat(
-								"Unable to get cluster node ", clusterNodeId,
-								" while executing ", clusterRequest));
-					}
-
-					continue;
-				}
-
-				_clusterChannel.sendUnicastMessage(
-					clusterRequest, clusterNodeStatus.getAddress());
+			for (Address address : targetAddresses) {
+				_clusterChannel.sendUnicastMessage(clusterRequest, address);
 			}
 		}
 
