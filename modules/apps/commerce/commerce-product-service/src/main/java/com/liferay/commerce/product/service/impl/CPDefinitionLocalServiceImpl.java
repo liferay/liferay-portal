@@ -913,6 +913,13 @@ public class CPDefinitionLocalServiceImpl
 		CPDefinition sourceCPDefinition =
 			cpDefinitionPersistence.findByPrimaryKey(sourceCPDefinitionId);
 
+		if (sourceCPDefinition.getGroupId() != groupId) {
+			throw new CPDefinitionGroupIdException(
+				StringBundler.concat(
+					"Commerce product definition ", sourceCPDefinitionId,
+					" does not belong to group ", groupId));
+		}
+
 		CProduct sourceCProduct = _cProductPersistence.fetchByPrimaryKey(
 			sourceCPDefinition.getCProductId());
 
