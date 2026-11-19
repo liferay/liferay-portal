@@ -143,10 +143,6 @@ public interface LayoutUtilityPageEntryLocalService
 			long LayoutUtilityPageEntryId)
 		throws PortalException;
 
-	public LayoutUtilityPageEntry deleteLayoutUtilityPageEntry(
-			String externalReferenceCode, long groupId)
-		throws PortalException;
-
 	/**
 	 * @throws PortalException
 	 */
@@ -291,26 +287,6 @@ public interface LayoutUtilityPageEntryLocalService
 	public List<LayoutUtilityPageEntry> getLayoutUtilityPageEntries(
 		long groupId);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<LayoutUtilityPageEntry> getLayoutUtilityPageEntries(
-		long groupId, int start, int end,
-		OrderByComparator<LayoutUtilityPageEntry> orderByComparator);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<LayoutUtilityPageEntry> getLayoutUtilityPageEntries(
-		long groupId, String type, int start, int end,
-		OrderByComparator<LayoutUtilityPageEntry> orderByComparator);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<LayoutUtilityPageEntry> getLayoutUtilityPageEntries(
-		long groupId, String keyword, String[] types, int start, int end,
-		OrderByComparator<LayoutUtilityPageEntry> orderByComparator);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<LayoutUtilityPageEntry> getLayoutUtilityPageEntries(
-		long groupId, String[] types, int start, int end,
-		OrderByComparator<LayoutUtilityPageEntry> orderByComparator);
-
 	/**
 	 * Returns all the layout utility page entries matching the UUID and company.
 	 *
@@ -346,16 +322,6 @@ public interface LayoutUtilityPageEntryLocalService
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getLayoutUtilityPageEntriesCount();
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getLayoutUtilityPageEntriesCount(long groupId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getLayoutUtilityPageEntriesCount(
-		long groupId, String keyword, String[] types);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getLayoutUtilityPageEntriesCount(long groupId, String[] types);
 
 	/**
 	 * Returns the layout utility page entry with the primary key.
@@ -449,4 +415,4 @@ public interface LayoutUtilityPageEntryLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-578098697
+// LIFERAY-SERVICE-BUILDER-HASH:643734031

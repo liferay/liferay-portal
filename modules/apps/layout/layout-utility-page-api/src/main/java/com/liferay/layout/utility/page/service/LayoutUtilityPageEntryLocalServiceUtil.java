@@ -136,14 +136,6 @@ public class LayoutUtilityPageEntryLocalServiceUtil {
 			LayoutUtilityPageEntryId);
 	}
 
-	public static LayoutUtilityPageEntry deleteLayoutUtilityPageEntry(
-			String externalReferenceCode, long groupId)
-		throws PortalException {
-
-		return getService().deleteLayoutUtilityPageEntry(
-			externalReferenceCode, groupId);
-	}
-
 	/**
 	 * @throws PortalException
 	 */
@@ -337,38 +329,6 @@ public class LayoutUtilityPageEntryLocalServiceUtil {
 		return getService().getLayoutUtilityPageEntries(groupId);
 	}
 
-	public static List<LayoutUtilityPageEntry> getLayoutUtilityPageEntries(
-		long groupId, int start, int end,
-		OrderByComparator<LayoutUtilityPageEntry> orderByComparator) {
-
-		return getService().getLayoutUtilityPageEntries(
-			groupId, start, end, orderByComparator);
-	}
-
-	public static List<LayoutUtilityPageEntry> getLayoutUtilityPageEntries(
-		long groupId, String type, int start, int end,
-		OrderByComparator<LayoutUtilityPageEntry> orderByComparator) {
-
-		return getService().getLayoutUtilityPageEntries(
-			groupId, type, start, end, orderByComparator);
-	}
-
-	public static List<LayoutUtilityPageEntry> getLayoutUtilityPageEntries(
-		long groupId, String keyword, String[] types, int start, int end,
-		OrderByComparator<LayoutUtilityPageEntry> orderByComparator) {
-
-		return getService().getLayoutUtilityPageEntries(
-			groupId, keyword, types, start, end, orderByComparator);
-	}
-
-	public static List<LayoutUtilityPageEntry> getLayoutUtilityPageEntries(
-		long groupId, String[] types, int start, int end,
-		OrderByComparator<LayoutUtilityPageEntry> orderByComparator) {
-
-		return getService().getLayoutUtilityPageEntries(
-			groupId, types, start, end, orderByComparator);
-	}
-
 	/**
 	 * Returns all the layout utility page entries matching the UUID and company.
 	 *
@@ -410,23 +370,6 @@ public class LayoutUtilityPageEntryLocalServiceUtil {
 	 */
 	public static int getLayoutUtilityPageEntriesCount() {
 		return getService().getLayoutUtilityPageEntriesCount();
-	}
-
-	public static int getLayoutUtilityPageEntriesCount(long groupId) {
-		return getService().getLayoutUtilityPageEntriesCount(groupId);
-	}
-
-	public static int getLayoutUtilityPageEntriesCount(
-		long groupId, String keyword, String[] types) {
-
-		return getService().getLayoutUtilityPageEntriesCount(
-			groupId, keyword, types);
-	}
-
-	public static int getLayoutUtilityPageEntriesCount(
-		long groupId, String[] types) {
-
-		return getService().getLayoutUtilityPageEntriesCount(groupId, types);
 	}
 
 	/**
@@ -539,4 +482,4 @@ public class LayoutUtilityPageEntryLocalServiceUtil {
 			LayoutUtilityPageEntryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1745766292
+// LIFERAY-SERVICE-BUILDER-HASH:-579832017
