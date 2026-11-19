@@ -82,8 +82,7 @@ public class PIMFeatureFlagListener implements FeatureFlagListener {
 			SiteNavigationMenuItem siteNavigationMenuItem =
 				_siteNavigationMenuItemLocalService.
 					fetchSiteNavigationMenuItemByExternalReferenceCode(
-						PIMSiteInitializerConstants.
-							EXTERNAL_REFERENCE_CODE_SITE_NAVIGATION_MENU_ITEM_CONNECTORS,
+						"PIMPRIMARYNAVIGATIONCONNECTORS",
 						group.getGroupId());
 
 			if (siteNavigationMenuItem == null) {
