@@ -163,9 +163,9 @@ public class MCPServerProfileUpgradeProcessTest {
 				"profiles postMCPServerProfile",
 			values.get("tools"));
 
-		upgradeProcess.upgrade();
-
 		CacheRegistryUtil.clear();
+
+		upgradeProcess.upgrade();
 
 		_assertUpgrade(objectDefinition);
 
