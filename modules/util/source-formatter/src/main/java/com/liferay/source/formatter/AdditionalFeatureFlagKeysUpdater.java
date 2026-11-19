@@ -15,8 +15,6 @@ import com.liferay.source.formatter.util.SourceFormatterUtil;
 
 import java.io.File;
 
-import java.nio.file.Path;
-
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -46,23 +44,20 @@ public class AdditionalFeatureFlagKeysUpdater {
 		File sourceFormatterPropertiesFile = new File(
 			sourceFormatterPropertiesFileName);
 
-		File privateDir = new File(privateDirName);
-
-		Path privateDirPath = privateDir.toPath();
-
-		privateDirPath = privateDirPath.toRealPath();
-
 		File portalDir = sourceFormatterPropertiesFile.getParentFile();
 
-		Path portalDirPath = portalDir.toPath();
+		File privateDir = new File(privateDirName);
 
-		portalDirPath = portalDirPath.toRealPath();
+		String portalDirCanonicalPath =
+			portalDir.getCanonicalPath() + File.separator;
+		String privateDirCanonicalPath =
+			privateDir.getCanonicalPath() + File.separator;
 
-		if (privateDirPath.startsWith(portalDirPath)) {
+		if (privateDirCanonicalPath.startsWith(portalDirCanonicalPath)) {
 			throw new IllegalArgumentException(
 				StringBundler.concat(
 					"Argument \"private.dir\" must point to a master-private ",
-					"checkout outside ", portalDirPath));
+					"checkout outside ", portalDir.getCanonicalPath()));
 		}
 
 		List<String> fileNames = SourceFormatterUtil.filterFileNames(
