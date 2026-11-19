@@ -61,6 +61,33 @@
 			<finder-column name="companyId" />
 		</finder>
 	</entity>
+	<entity cache-enabled="false" local-service="false" name="AuditEventAccountEntryRel" remote-service="false" table="Audit_EventAccountEntryRel">
+
+		<!-- PK fields -->
+
+		<column name="auditEventAccountEntryRelId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="createDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="accountEntryId" type="long" />
+		<column name="auditEventId" type="long" />
+
+		<!-- Finder methods -->
+
+		<finder name="AuditEventId" return-type="Collection">
+			<finder-column name="auditEventId" />
+		</finder>
+		<finder name="C_CD_AEI" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="createDate" />
+			<finder-column name="accountEntryId" />
+		</finder>
+	</entity>
 	<entity local-service="true" name="AuditEventPseudonymField" remote-service="false">
 
 		<!-- PK fields -->
