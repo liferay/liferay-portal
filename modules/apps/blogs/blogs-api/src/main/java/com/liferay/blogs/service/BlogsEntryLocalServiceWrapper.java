@@ -90,16 +90,6 @@ public class BlogsEntryLocalServiceWrapper
 
 	@Override
 	public BlogsEntry addEntry(
-			long userId, String title, String content,
-			com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _blogsEntryLocalService.addEntry(
-			userId, title, content, serviceContext);
-	}
-
-	@Override
-	public BlogsEntry addEntry(
 			long userId, String title, String subtitle, String description,
 			String content, java.util.Date displayDate, boolean allowPingbacks,
 			boolean allowTrackbacks, String[] trackbacks,
@@ -623,23 +613,6 @@ public class BlogsEntryLocalServiceWrapper
 	}
 
 	@Override
-	public int getCompanyEntriesCount(
-		long companyId, java.util.Date displayDate,
-		com.liferay.portal.kernel.dao.orm.QueryDefinition<BlogsEntry>
-			queryDefinition) {
-
-		return _blogsEntryLocalService.getCompanyEntriesCount(
-			companyId, displayDate, queryDefinition);
-	}
-
-	@Override
-	public BlogsEntry[] getEntriesPrevAndNext(long entryId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _blogsEntryLocalService.getEntriesPrevAndNext(entryId);
-	}
-
-	@Override
 	public BlogsEntry getEntry(long entryId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
@@ -711,16 +684,6 @@ public class BlogsEntryLocalServiceWrapper
 
 		return _blogsEntryLocalService.getGroupsEntries(
 			companyId, groupId, displayDate, queryDefinition);
-	}
-
-	@Override
-	public java.util.List<BlogsEntry> getGroupUserEntries(
-		long groupId, long userId, java.util.Date displayDate,
-		com.liferay.portal.kernel.dao.orm.QueryDefinition<BlogsEntry>
-			queryDefinition) {
-
-		return _blogsEntryLocalService.getGroupUserEntries(
-			groupId, userId, displayDate, queryDefinition);
 	}
 
 	@Override
@@ -879,29 +842,6 @@ public class BlogsEntryLocalServiceWrapper
 	@Override
 	public BlogsEntry updateEntry(
 			long userId, long entryId, String title, String subtitle,
-			String description, String content, int displayDateMonth,
-			int displayDateDay, int displayDateYear, int displayDateHour,
-			int displayDateMinute, boolean allowPingbacks,
-			boolean allowTrackbacks, String[] trackbacks,
-			String coverImageCaption,
-			com.liferay.portal.kernel.servlet.taglib.ui.ImageSelector
-				coverImageImageSelector,
-			com.liferay.portal.kernel.servlet.taglib.ui.ImageSelector
-				smallImageImageSelector,
-			com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _blogsEntryLocalService.updateEntry(
-			userId, entryId, title, subtitle, description, content,
-			displayDateMonth, displayDateDay, displayDateYear, displayDateHour,
-			displayDateMinute, allowPingbacks, allowTrackbacks, trackbacks,
-			coverImageCaption, coverImageImageSelector, smallImageImageSelector,
-			serviceContext);
-	}
-
-	@Override
-	public BlogsEntry updateEntry(
-			long userId, long entryId, String title, String subtitle,
 			String urlTitle, String description, String content,
 			java.util.Date displayDate, boolean allowPingbacks,
 			boolean allowTrackbacks, String[] trackbacks,
@@ -941,26 +881,6 @@ public class BlogsEntryLocalServiceWrapper
 			displayDateMinute, allowPingbacks, allowTrackbacks, trackbacks,
 			coverImageCaption, coverImageImageSelector, smallImageImageSelector,
 			serviceContext);
-	}
-
-	@Override
-	public void updateEntryResources(
-			BlogsEntry entry,
-			com.liferay.portal.kernel.service.permission.ModelPermissions
-				modelPermissions)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		_blogsEntryLocalService.updateEntryResources(entry, modelPermissions);
-	}
-
-	@Override
-	public void updateEntryResources(
-			BlogsEntry entry, String[] groupPermissions,
-			String[] guestPermissions)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		_blogsEntryLocalService.updateEntryResources(
-			entry, groupPermissions, guestPermissions);
 	}
 
 	@Override
@@ -1014,4 +934,4 @@ public class BlogsEntryLocalServiceWrapper
 	private BlogsEntryLocalService _blogsEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-447961015
+// LIFERAY-SERVICE-BUILDER-HASH:-492598515

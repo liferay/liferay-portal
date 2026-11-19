@@ -100,11 +100,6 @@ public interface BlogsEntryLocalService
 			ServiceContext serviceContext)
 		throws PortalException;
 
-	public BlogsEntry addEntry(
-			long userId, String title, String content,
-			ServiceContext serviceContext)
-		throws PortalException;
-
 	@Indexable(type = IndexableType.REINDEX)
 	public BlogsEntry addEntry(
 			long userId, String title, String subtitle, String description,
@@ -426,15 +421,6 @@ public interface BlogsEntryLocalService
 		QueryDefinition<BlogsEntry> queryDefinition);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCompanyEntriesCount(
-		long companyId, Date displayDate,
-		QueryDefinition<BlogsEntry> queryDefinition);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public BlogsEntry[] getEntriesPrevAndNext(long entryId)
-		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public BlogsEntry getEntry(long entryId) throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -466,11 +452,6 @@ public interface BlogsEntryLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<BlogsEntry> getGroupsEntries(
 		long companyId, long groupId, Date displayDate,
-		QueryDefinition<BlogsEntry> queryDefinition);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<BlogsEntry> getGroupUserEntries(
-		long groupId, long userId, Date displayDate,
 		QueryDefinition<BlogsEntry> queryDefinition);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -569,17 +550,6 @@ public interface BlogsEntryLocalService
 			ServiceContext serviceContext)
 		throws PortalException;
 
-	public BlogsEntry updateEntry(
-			long userId, long entryId, String title, String subtitle,
-			String description, String content, int displayDateMonth,
-			int displayDateDay, int displayDateYear, int displayDateHour,
-			int displayDateMinute, boolean allowPingbacks,
-			boolean allowTrackbacks, String[] trackbacks,
-			String coverImageCaption, ImageSelector coverImageImageSelector,
-			ImageSelector smallImageImageSelector,
-			ServiceContext serviceContext)
-		throws PortalException;
-
 	@Indexable(type = IndexableType.REINDEX)
 	public BlogsEntry updateEntry(
 			long userId, long entryId, String title, String subtitle,
@@ -600,15 +570,6 @@ public interface BlogsEntryLocalService
 			String coverImageCaption, ImageSelector coverImageImageSelector,
 			ImageSelector smallImageImageSelector,
 			ServiceContext serviceContext)
-		throws PortalException;
-
-	public void updateEntryResources(
-			BlogsEntry entry, ModelPermissions modelPermissions)
-		throws PortalException;
-
-	public void updateEntryResources(
-			BlogsEntry entry, String[] groupPermissions,
-			String[] guestPermissions)
 		throws PortalException;
 
 	@Indexable(type = IndexableType.REINDEX)
@@ -634,4 +595,4 @@ public interface BlogsEntryLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:338250845
+// LIFERAY-SERVICE-BUILDER-HASH:-864538886
