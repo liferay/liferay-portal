@@ -15,6 +15,8 @@ import com.liferay.portal.kernel.dao.orm.Junction;
 import com.liferay.portal.kernel.dao.orm.Property;
 import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
+import com.liferay.portal.kernel.search.Indexable;
+import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -22,12 +24,15 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.security.audit.constants.AuditEventConstants;
 import com.liferay.portal.security.audit.storage.comparator.AuditEventCreateDateComparator;
 import com.liferay.portal.security.audit.storage.model.AuditEvent;
+import com.liferay.portal.security.audit.storage.model.AuditEventAccountEntryRel;
 import com.liferay.portal.security.audit.storage.service.base.AuditEventLocalServiceBaseImpl;
+import com.liferay.portal.security.audit.storage.service.persistence.AuditEventAccountEntryRelPersistence;
 
 import java.util.Date;
 import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Brian Wing Shun Chan
@@ -41,8 +46,16 @@ public class AuditEventLocalServiceImpl extends AuditEventLocalServiceBaseImpl {
 
 	@Override
 	public AuditEvent addAuditEvent(AuditMessage auditMessage) {
-		return auditEventPersistence.update(
+		AuditEvent auditEvent = auditEventPersistence.update(
 			_toAuditEvent(auditMessage, counterLocalService.increment()));
+
+		for (long userAccountEntryId : auditMessage.getUserAccountEntryIds()) {
+			_addAuditEventAccountEntryRel(
+				userAccountEntryId, auditEvent,
+				counterLocalService.increment());
+		}
+
+		return auditEvent;
 	}
 
 	@Override
@@ -53,13 +66,35 @@ public class AuditEventLocalServiceImpl extends AuditEventLocalServiceBaseImpl {
 
 		int size = auditMessages.size();
 
-		long startAuditEventId =
+		for (AuditMessage auditMessage : auditMessages) {
+			long[] userAccountEntryIds = auditMessage.getUserAccountEntryIds();
+
+			size += userAccountEntryIds.length;
+		}
+
+		long batchCounter =
 			counterLocalService.increment(Counter.class.getName(), size) - size;
 
 		for (AuditMessage auditMessage : auditMessages) {
-			auditEventPersistence.update(
-				_toAuditEvent(auditMessage, ++startAuditEventId));
+			AuditEvent auditEvent = auditEventPersistence.update(
+				_toAuditEvent(auditMessage, ++batchCounter));
+
+			for (long userAccountEntryId :
+					auditMessage.getUserAccountEntryIds()) {
+
+				_addAuditEventAccountEntryRel(
+					userAccountEntryId, auditEvent, ++batchCounter);
+			}
 		}
+	}
+
+	@Indexable(type = IndexableType.DELETE)
+	@Override
+	public AuditEvent deleteAuditEvent(AuditEvent auditEvent) {
+		_auditEventAccountEntryRelPersistence.removeByAuditEventId(
+			auditEvent.getAuditEventId());
+
+		return auditEventPersistence.remove(auditEvent);
 	}
 
 	@Override
@@ -129,6 +164,22 @@ public class AuditEventLocalServiceImpl extends AuditEventLocalServiceBaseImpl {
 			andSearch);
 
 		return (int)dynamicQueryCount(dynamicQuery);
+	}
+
+	private void _addAuditEventAccountEntryRel(
+		long accountEntryId, AuditEvent auditEvent,
+		long auditEventAccountEntryRelId) {
+
+		AuditEventAccountEntryRel auditEventAccountEntryRel =
+			_auditEventAccountEntryRelPersistence.create(
+				auditEventAccountEntryRelId);
+
+		auditEventAccountEntryRel.setCompanyId(auditEvent.getCompanyId());
+		auditEventAccountEntryRel.setCreateDate(auditEvent.getCreateDate());
+		auditEventAccountEntryRel.setAccountEntryId(accountEntryId);
+		auditEventAccountEntryRel.setAuditEventId(auditEvent.getAuditEventId());
+
+		_auditEventAccountEntryRelPersistence.update(auditEventAccountEntryRel);
 	}
 
 	private DynamicQuery _buildDynamicQuery(
@@ -312,5 +363,9 @@ public class AuditEventLocalServiceImpl extends AuditEventLocalServiceBaseImpl {
 
 		return auditEvent;
 	}
+
+	@Reference
+	private AuditEventAccountEntryRelPersistence
+		_auditEventAccountEntryRelPersistence;
 
 }

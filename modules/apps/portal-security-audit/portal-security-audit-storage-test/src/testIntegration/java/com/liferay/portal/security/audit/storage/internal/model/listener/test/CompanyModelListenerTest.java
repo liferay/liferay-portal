@@ -12,10 +12,12 @@ import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.TransactionTestUtil;
 import com.liferay.portal.security.audit.storage.model.AuditEvent;
 import com.liferay.portal.security.audit.storage.model.AuditEventPseudonymField;
 import com.liferay.portal.security.audit.storage.service.AuditEventLocalService;
 import com.liferay.portal.security.audit.storage.service.AuditEventPseudonymFieldLocalService;
+import com.liferay.portal.security.audit.storage.service.persistence.AuditEventAccountEntryRelUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
@@ -40,10 +42,16 @@ public class CompanyModelListenerTest {
 	public void testOnAfterRemove() throws Exception {
 		Company company = CompanyTestUtil.addCompany();
 
+		AuditMessage auditMessage = new AuditMessage(
+			company.getCompanyId(), RandomTestUtil.randomLong(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString());
+
+		auditMessage.setUserAccountEntryIds(
+			new long[] {RandomTestUtil.randomLong()});
+
 		AuditEvent auditEvent = _auditEventLocalService.addAuditEvent(
-			new AuditMessage(
-				company.getCompanyId(), RandomTestUtil.randomLong(),
-				RandomTestUtil.randomString(), RandomTestUtil.randomString()));
+			auditMessage);
+
 		AuditEventPseudonymField auditEventPseudonymField =
 			_auditEventPseudonymFieldLocalService.addAuditEventPseudonymField(
 				company.getCompanyId(), RandomTestUtil.randomString(),
@@ -54,6 +62,15 @@ public class CompanyModelListenerTest {
 		Assert.assertNull(
 			_auditEventLocalService.fetchAuditEvent(
 				auditEvent.getAuditEventId()));
+
+		Assert.assertEquals(
+			Integer.valueOf(0),
+			TransactionTestUtil.invoke(
+				AuditEventAccountEntryRelUtil.getPersistence(),
+				auditEventAccountEntryRelPersistence ->
+					auditEventAccountEntryRelPersistence.countByAuditEventId(
+						auditEvent.getAuditEventId())));
+
 		Assert.assertNull(
 			_auditEventPseudonymFieldLocalService.fetchAuditEventPseudonymField(
 				auditEventPseudonymField.getAuditEventPseudonymFieldId()));

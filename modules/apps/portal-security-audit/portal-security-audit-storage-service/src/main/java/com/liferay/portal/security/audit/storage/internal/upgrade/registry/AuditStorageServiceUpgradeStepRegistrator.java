@@ -11,6 +11,7 @@ import com.liferay.portal.kernel.upgrade.DummyUpgradeStep;
 import com.liferay.portal.kernel.upgrade.UpgradeProcessFactory;
 import com.liferay.portal.security.audit.storage.internal.upgrade.v1_0_1.util.AuditEventTable;
 import com.liferay.portal.security.audit.storage.internal.upgrade.v2_4_0.util.AuditEventPseudonymFieldTable;
+import com.liferay.portal.security.audit.storage.internal.upgrade.v2_6_0.util.AuditEventAccountEntryRelTable;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 import com.liferay.portal.upgrade.release.ReleaseRenamingUpgradeStep;
 
@@ -78,6 +79,9 @@ public class AuditStorageServiceUpgradeStepRegistrator
 			UpgradeProcessFactory.runSQL(
 				"update Audit_AuditEvent set contextName = 'INSTANCE' where " +
 					"contextName is null or contextName = ''"));
+
+		registry.register(
+			"2.5.0", "2.6.0", AuditEventAccountEntryRelTable.create());
 	}
 
 	@Reference
