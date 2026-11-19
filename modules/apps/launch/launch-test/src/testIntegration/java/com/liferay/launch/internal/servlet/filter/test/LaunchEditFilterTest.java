@@ -172,8 +172,8 @@ public class LaunchEditFilterTest {
 		String title = _journalArticle.getTitle(LocaleUtil.getSiteDefault());
 
 		_assertProcessFilter(
-			title, 0, _layout1.getPlid(), _layout2.getPlid(),
-			null, Collections.emptyMap(),
+			title, 0, _layout1.getPlid(), _layout2.getPlid(), null,
+			Collections.emptyMap(),
 			HashMapBuilder.put(
 				"editLaunchSetId", String.valueOf(RandomTestUtil.randomLong())
 			).build(),
@@ -190,8 +190,8 @@ public class LaunchEditFilterTest {
 			WorkflowConstants.STATUS_APPROVED, serviceContext);
 
 		_assertProcessFilter(
-			title, 0, _layout1.getPlid(), _layout2.getPlid(),
-			null, Collections.emptyMap(),
+			title, 0, _layout1.getPlid(), _layout2.getPlid(), null,
+			Collections.emptyMap(),
 			HashMapBuilder.put(
 				"editLaunchSetId", String.valueOf(launchSetId)
 			).build(),
@@ -206,8 +206,8 @@ public class LaunchEditFilterTest {
 		_user = UserTestUtil.addUser();
 
 		_assertProcessFilter(
-			title, 0, _layout1.getPlid(), _layout2.getPlid(),
-			null, Collections.emptyMap(),
+			title, 0, _layout1.getPlid(), _layout2.getPlid(), null,
+			Collections.emptyMap(),
 			HashMapBuilder.put(
 				"editLaunchSetId", String.valueOf(launchSetId)
 			).build(),
