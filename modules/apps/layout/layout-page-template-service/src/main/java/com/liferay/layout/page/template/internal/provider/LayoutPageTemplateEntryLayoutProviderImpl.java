@@ -57,10 +57,10 @@ public class LayoutPageTemplateEntryLayoutProviderImpl
 			if (_log.isDebugEnabled()) {
 				_log.debug(
 					StringBundler.concat(
-						"Unable to find master page with external reference ",
-						"code ", externalReferenceCode,
-						" in a design library with external reference code ",
-						layoutPageTemplateEntryScopeERC, " connected to group ",
+						"Unable to find layout page template entry with ",
+						"external reference code ", externalReferenceCode,
+						" and scope external reference code ",
+						layoutPageTemplateEntryScopeERC, " for group ",
 						scopeGroupId));
 			}
 
