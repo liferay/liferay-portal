@@ -107,7 +107,6 @@ public class PunchOutSessionResourceTest {
 			CPConstants.RESOURCE_NAME_CHANNEL, ResourceConstants.SCOPE_COMPANY,
 			String.valueOf(_group.getCompanyId()),
 			PunchOutActionKeys.START_PUNCH_OUT_SESSION);
-
 		_punchOutUser = UserTestUtil.addUser();
 
 		_roleLocalService.addUserRole(_punchOutUser.getUserId(), _punchOutRole);
@@ -205,16 +204,12 @@ public class PunchOutSessionResourceTest {
 		PunchOutSessionResource punchOutSessionResource =
 			_getPunchOutSessionResource(_user);
 
-		// Buyer is another user
-
 		Assert.assertThrows(
 			PrincipalException.MustHavePermission.class,
 			() -> punchOutSessionResource.postPunchOutSessionRequest(
 				_getPunchOutSession(
 					_punchOutUser.getEmailAddress(),
 					"https://8.8.8.8/" + RandomTestUtil.randomString())));
-
-		// Buyer is the caller
 
 		Assert.assertThrows(
 			PrincipalException.MustHavePermission.class,
