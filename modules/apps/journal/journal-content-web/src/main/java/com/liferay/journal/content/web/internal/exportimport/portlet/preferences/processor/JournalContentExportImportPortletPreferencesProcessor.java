@@ -379,10 +379,9 @@ public class JournalContentExportImportPortletPreferencesProcessor
 	@Reference
 	private JournalArticleLocalService _journalArticleLocalService;
 
-	@Reference(
-		target = "(component.name=com.liferay.journal.content.web.internal.exportimport.portlet.preferences.processor.JournalContentMetadataExporterImporterCapability)"
-	)
-	private Capability _journalContentMetadataExporterImporterCapability;
+	private final JournalContentMetadataExporterImporterCapability
+		_journalContentMetadataExporterImporterCapability =
+			new JournalContentMetadataExporterImporterCapability();
 
 	@Reference
 	private PortletLocalService _portletLocalService;
