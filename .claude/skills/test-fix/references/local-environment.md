@@ -48,7 +48,7 @@ git log --oneline <bundleSha>..<buildSha> -- <paths>
 
 The paths are:
 
-- `portal-kernel`, and every `*-api` module those modules depend on.
+- `portal-kernel`, and every `*-api` module that the modules below depend on.
 
 - The product modules the test exercises.
 
@@ -70,7 +70,7 @@ The paths are:
 
 - **Pin the browser.** The test properties name the Chrome version CI uses (`browser.chrome.version`). Point `browser.chrome.bin.file[<version>]` in `test.${USER}.properties` at a Chrome for Testing binary of that version (for example `browser.chrome.bin.file[139.0]=/path/to/chrome`); a different Chrome can hang Poshi in its first `open`.
 
-- **Run on a virtual instance** when the class does. Set `test.liferay.virtual.instance=true` in `test.${USER}.properties`; a `-D` flag on the command line is ignored, because the `get-testcase-property` macro in `build-test.xml` resets the property from the generated test properties. Run with `HOSTNAME=$(hostname)` so the test URL uses a name the virtual instance answers to, and restore both afterwards.
+- **Run on a virtual instance** when the class does. Set `test.liferay.virtual.instance=true` in `test.${USER}.properties`; a `-D` flag on the command line is ignored, because the `get-testcase-property` macro in `build-test.xml` resets the property from the generated test properties. Run with `HOSTNAME=$(hostname)` so the test URL uses a name the virtual instance answers to, and restore both afterward.
 
 - **Use the database CI used** when the failure could depend on it.
 

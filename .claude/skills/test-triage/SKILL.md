@@ -9,7 +9,7 @@ name: test-triage
 
 # Triage a Test Build
 
-Piloted by the Content Management team on `ci:test:content-management` (LPD-110398).
+The Content Management team piloted this skill on `ci:test:content-management` (LPD-110398).
 
 This skill works across a whole build: it decides **which failures to dig into and in what order**, makes sure no failure gets a second fix, and hands each one to `test-fix`. It never edits test or product code, and it does not decide whether a fix belongs in the test or the product; `test-fix` decides that from the commit that broke the test and its documented intent.
 
@@ -48,7 +48,7 @@ A triage table with one row per failure, or per cluster that shares a proven cau
 
 - **Route** is one of `test-fix`, `Environment`, `Already tracked`, or `Not dug`.
 
-Below the table, a **Needs Your Decision** list with a link and one line on what is undecided for each of these:
+Below the table, add a **Needs Your Decision** list with a link and one line on what is undecided for each of these:
 
 - Every failure whose `test-fix` run ended `Unresolved`, other than one that names an open pull request.
 
@@ -73,17 +73,17 @@ python3 "$(git rev-parse --show-toplevel)/.claude/skills/test-triage/scripts/cha
 
 Pass `--build <id>` instead of `--routine` to triage a specific build, and `--project <id>` for a routine outside the master project.
 
-Rank the work by this pattern, never by Testray's own flake category or by a single build's status. Testray's category is wrong in both directions: deterministic breaks get labelled as known flakes, and the reverse. The statuses, in priority order:
+Rank the work by this pattern, never by Testray's own flake category or by a single build's status. Testray's category is wrong in both directions: deterministic breaks get labeled as known flakes, and the reverse. The statuses are, in priority order:
 
 - `DETERMINISTIC` and `NEAR-DETERMINISTIC` failures have a real, reproducible cause. Triage them first.
 
 - `NEW-DETERMINISTIC` failures have failed in every build since they started (at least two), or in at least the last three builds. They are the newest regressions and have the cleanest commit window, so triage them with the deterministic ones.
 
-- `INTERMITTENT-*` failures are worth a look when they sit next to a deterministic cluster (same class, same helper, same page). A flaky neighbour of a known break is often the same break.
+- `INTERMITTENT-*` failures are worth a look when they sit next to a deterministic cluster (same class, same helper, same page). A flaky neighbor of a known break is often the same break.
 
 - `NEW-OR-SPORADIC` failures need a second build before they earn a dig, unless they share a signature with something new.
 
-A failure that is not dug this run (an `INTERMITTENT-*` failure with no deterministic neighbour, or a `NEW-OR-SPORADIC` one that shares no signature with a failure being dug) gets the route `Not dug` and the result "watch the next build". No ticket is filed for it.
+A failure that is not dug this run (an `INTERMITTENT-*` failure with no deterministic neighbor, or a `NEW-OR-SPORADIC` one that shares no signature with a failure being dug) gets the route `Not dug` and the result "watch the next build". No ticket is filed for it.
 
 ### Expand Aggregate Rows
 
@@ -109,11 +109,11 @@ A failure is `Already tracked` when any of these covers it:
 
 - A resolved ticket whose fix commit is not yet in the failing build, or, when it has no fix commit, that was resolved on or after the failure date (step 3).
 
-- An open pull request changes the code for it.
+- An open pull request that changes the code for it.
 
-- An open ticket for it is assigned or in progress, other than a `claude-test-fix` Task whose latest comment is a `test-fix` handover summary. That Task is waiting for a person; put the failure on the **Needs Your Decision** list instead.
+- An open ticket for it that is assigned or in progress, other than a `claude-test-fix` Task whose latest comment is a `test-fix` handover summary. That Task is waiting for a person; put the failure on the **Needs Your Decision** list instead.
 
-- An open ticket in `LRCI` or owned by another team names it.
+- An open ticket in `LRCI`, or one owned by another team, that names it.
 
 When the record is incomplete, add the test name and build to the covering ticket. An open, unassigned Bug in the triaging team's own component does not make a failure tracked; name it in the evidence file so `test-fix` reuses it instead of filing another.
 

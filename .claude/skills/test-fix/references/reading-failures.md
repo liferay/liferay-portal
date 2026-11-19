@@ -1,6 +1,6 @@
 # Reading Failures
 
-Patterns in which the error text points somewhere other than the cause. The examples come from `ci:test:content-management`.
+These are the patterns in which the error text points somewhere other than the cause. The examples come from `ci:test:content-management`.
 
 ## Screenshots and Artifacts
 
@@ -26,7 +26,7 @@ Patterns in which the error text points somewhere other than the cause. The exam
 
 - **Company settings beat `portal-ext.properties`.** Deprecation type feature flags and editor choices are stored per company. Changing the property does not change an existing company; check the company's creation date and the stored value.
 
-- **Downloads from nonlocalhost origins.** Chrome holds downloads from insecure nonlocalhost origins, so download steps stall on virtual instance hostnames.
+- **Downloads from origins other than localhost.** Chrome holds downloads from insecure origins other than localhost, so download steps stall on virtual instance hostnames.
 
 - **Virtual instances.** Many Poshi classes run inside a fresh virtual instance on CI. A local run on the default instance can pass, or fail differently, for that reason alone. Reproduce on a virtual instance before calling a failure CI only.
 
@@ -42,7 +42,7 @@ Patterns in which the error text points somewhere other than the cause. The exam
 
 ## Product or Test
 
-- **Expected values are the specification** unless the commit that changed the behaviour documents the contract change.
+- **Expected values are the specification** unless the commit that changed the behavior documents the contract change.
 
 - **Failing against product code does not make the product wrong.** Check what moved on the test side first (`git log -S` on the locator, macro, or page object). A helper that changed under the test looks exactly like a product regression.
 

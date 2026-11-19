@@ -20,7 +20,6 @@ STATUSES = (
 	"NEW-OR-SPORADIC",
 )
 
-
 def classify(fail_count, build_count, streak):
 	if fail_count == build_count:
 		return "DETERMINISTIC"
@@ -42,20 +41,19 @@ def classify(fail_count, build_count, streak):
 
 	return "NEW-OR-SPORADIC"
 
-
 def clean(value):
 	return " ".join(str(value or "").split())
-
 
 def fetch(request):
 	try:
 		with urllib.request.urlopen(request, timeout=120) as response:
 			return json.load(response)
 	except urllib.error.HTTPError as error:
-		sys.exit("HTTP %s from %s" % (error.code, request.full_url))
+		sys.exit(
+			"Unable to fetch %s: HTTP %s." % (request.full_url, error.code)
+		)
 	except urllib.error.URLError as error:
-		sys.exit("Cannot reach %s: %s" % (request.full_url, error.reason))
-
+		sys.exit("Unable to reach %s: %s." % (request.full_url, error.reason))
 
 def get(token, path, params):
 	return fetch(
@@ -67,7 +65,6 @@ def get(token, path, params):
 			},
 		)
 	)
-
 
 def get_all(token, path, params):
 	items = []
@@ -82,7 +79,6 @@ def get_all(token, path, params):
 			return items
 
 		page += 1
-
 
 def get_token():
 	client_id = os.environ.get("TESTRAY_CLIENT_ID")
@@ -103,7 +99,6 @@ def get_token():
 		)
 	)["access_token"]
 
-
 def is_complete(build):
 	total = sum(
 		build[key] or 0
@@ -122,7 +117,6 @@ def is_complete(build):
 		return False
 
 	return (build["caseResultUntested"] or 0) * 10 < total
-
 
 def main():
 	parser = argparse.ArgumentParser(
@@ -279,10 +273,8 @@ def main():
 		print()
 		print("Wrote %s" % args.tsv)
 
-
 def odata_string(value):
 	return "'%s'" % str(value).replace("'", "''")
-
 
 def resolve_builds(token, args):
 	if args.build:
@@ -302,7 +294,7 @@ def resolve_builds(token, args):
 
 		if len(routines) != 1:
 			sys.exit(
-				"Expected one routine named %s in project %s, found %d."
+				"Expected one routine named %s in project %s, but found %d."
 				% (args.routine, args.project, len(routines))
 			)
 
@@ -348,7 +340,10 @@ def resolve_builds(token, args):
 		page += 1
 
 	if len(builds) < 3:
-		sys.exit("Found %d complete builds; need at least 3." % len(builds))
+		sys.exit(
+			"Only %d complete builds were found, and at least 3 are needed."
+			% len(builds)
+		)
 
 	if len(builds) < args.builds:
 		print(
@@ -357,7 +352,6 @@ def resolve_builds(token, args):
 		)
 
 	return builds
-
 
 if __name__ == "__main__":
 	main()

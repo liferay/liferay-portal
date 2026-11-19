@@ -4,7 +4,7 @@ Every case result in Testray links to the logs and screenshots of the shard that
 
 ## Preconditions
 
-Application default credentials for Google Cloud with read access to `testray-results`. Check them with:
+The user needs application default credentials for Google Cloud with read access to `testray-results`. Check them with:
 
 ```bash
 gcloud auth application-default print-access-token > /dev/null && echo OK

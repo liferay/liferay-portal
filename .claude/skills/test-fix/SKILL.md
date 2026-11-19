@@ -102,7 +102,7 @@ When the run started from a Bug key, there is no Task: the Bug is the ticket of 
 
 Only when the test was fixed (verdict `Bug in portal` or `Outdated test`): the URL of the pull request opened for the fix.
 
-Make a commit, then find the owner of the changed files using `<repo-root>/.github/CODEOWNERS` and invoke the `pr` skill with it as the target repository. When CODEOWNERS has no entry for the changed files (Poshi files under `portal-web/test/functional`), target the team named in the `--evidence` file, or ask the user. Override the user's title-only default and pass the body content explicitly so the pull request explains the regression.
+Make a commit, then find the owner of the changed files using `<repo-root>/.github/CODEOWNERS` and invoke the `pr` skill with it as the target repository. When `.github/CODEOWNERS` has no entry for the changed files (Poshi files under `portal-web/test/functional`), target the team named in the `--evidence` file, or ask the user. Override the user's title-only default and pass the body content explicitly so the pull request explains the regression.
 
 Use this template. The browse URL on the first line points at the ticket the `pr` skill resolves (the Technical Task subtask, not the parent Task), so reviewers land on the same ticket where the pull request URL is recorded:
 
@@ -135,7 +135,7 @@ Commit `<short-sha>` ("<subject>") <one or two sentences>.
 
 ### Start From a Bug
 
-Only when the failure identifier is a Bug key. The Bug replaces the Testray case result, and the steps below change as follows:
+Run this step only when the failure identifier is a Bug key. The Bug replaces the Testray case result, and the steps below change as follows:
 
 - **Claim the Failure** — the Bug is the ticket of record, so skip the duplicate-ticket check and do not create a Task. When the Bug is assigned to someone else or already in progress, or a commit on the base branch already carries its key, stop and report who has it. Otherwise, run the open pull request search over the tests the Bug names. Do not invoke the `start-work` skill yet.
 
@@ -272,7 +272,7 @@ Once the verdict is locked in (only ever after a green local run — never commi
 
 ### Fix Without a Suspect Range
 
-When `lastPassSha` is `null`, there is no window to search: the test has always failed, or its history is gone. Diagnose from the behaviour instead, applying the same rules as **Iterate Through Suspects**:
+When `lastPassSha` is `null`, there is no window to search: the test has always failed, or its history is gone. Diagnose from the behavior instead, applying the same rules as **Iterate Through Suspects**:
 
 1. Search history for what moved under the test: the failing locator, macro, page object, or fixture (`git log -S '<string>'`). Check test side changes first; a helper that changed under the test looks exactly like a product regression.
 
@@ -290,7 +290,7 @@ Stop after **three attempts** without a green run and exit `Unresolved`, as in *
 
 ### Run the Cluster
 
-Only when the verdict is `Bug in portal` or `Outdated test` and the `--evidence` file lists other tests in the same cluster. Run each of them now, while the fix is still deployed; **Restore the Portal** removes it from the bundle. Name the ones that pass and the ones that still fail in the **Conclusion**. A test that still fails has a different cause; do not widen the fix for it.
+Run this step only when the verdict is `Bug in portal` or `Outdated test` and the `--evidence` file lists other tests in the same cluster. Run each of them now, while the fix is still deployed; **Restore the Portal** removes it from the bundle. Name the ones that pass and the ones that still fail in the **Conclusion**. A test that still fails has a different cause; do not widen the fix for it.
 
 ### Restore the Portal
 
@@ -306,4 +306,4 @@ When the run deployed anything (a candidate fix, the final fix, or another team'
 
 - When the run ends without a commit (`Unresolved`), discard the uncommitted candidate changes (`git restore` on the touched files) and redeploy each module they touched from the clean tree.
 
-Deploy `portal-kernel` and `portal-impl` the way the project `CLAUDE.md` describes for portal modules, and bounce Tomcat afterwards. Confirm the deployed artifacts no longer contain the change, with the same check that confirmed they did, so the next run starts from the code under test.
+Deploy `portal-kernel` and `portal-impl` the way the project `CLAUDE.md` describes for portal modules, and bounce Tomcat afterward. Confirm the deployed artifacts no longer contain the change, with the same check that confirmed they did, so the next run starts from the code under test.
