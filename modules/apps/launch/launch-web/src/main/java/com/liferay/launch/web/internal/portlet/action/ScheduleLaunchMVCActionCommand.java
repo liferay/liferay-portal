@@ -53,15 +53,21 @@ public class ScheduleLaunchMVCActionCommand extends BaseLaunchMVCActionCommand {
 			_objectEntryLocalService.getObjectEntry(launchSetId),
 			ActionKeys.UPDATE);
 
-		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
-			WebKeys.THEME_DISPLAY);
-
 		try {
+			ThemeDisplay themeDisplay =
+				(ThemeDisplay)actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
+
 			_launchSetPublisher.schedulePublish(
 				new Date(ParamUtil.getLong(actionRequest, "publishTime")),
 				launchSetId, themeDisplay.getUserId());
 		}
 		catch (SchedulerException schedulerException) {
+			if (schedulerException.getType() !=
+					SchedulerException.TYPE_INVALID_START_DATE) {
+
+				throw schedulerException;
+			}
+
 			if (_log.isDebugEnabled()) {
 				_log.debug(schedulerException);
 			}
