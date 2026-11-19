@@ -8,7 +8,9 @@ package com.liferay.osb.faro.rest.internal.dto.v1_0.util;
 import com.liferay.osb.faro.engine.client.util.OrderByField;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.vulcan.pagination.Pagination;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.Assert;
@@ -18,6 +20,22 @@ import org.junit.Test;
  * @author Leslie Wong
  */
 public class FaroPaginationUtilTest {
+
+	@Test
+	public void testPaginate() {
+		List<String> items = List.of(
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString());
+
+		Assert.assertEquals(
+			Collections.emptyList(),
+			FaroPaginationUtil.paginate(items, Pagination.of(2, 5)));
+		Assert.assertEquals(
+			items.subList(2, 4),
+			FaroPaginationUtil.paginate(items, Pagination.of(2, 2)));
+		Assert.assertSame(items, FaroPaginationUtil.paginate(items, null));
+	}
 
 	@Test
 	public void testToOrderByFields() {

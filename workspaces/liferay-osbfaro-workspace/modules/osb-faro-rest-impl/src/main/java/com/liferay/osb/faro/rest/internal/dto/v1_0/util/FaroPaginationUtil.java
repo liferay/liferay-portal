@@ -11,6 +11,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.vulcan.pagination.Pagination;
 
 import java.util.ArrayList;
@@ -36,6 +37,15 @@ public class FaroPaginationUtil {
 		}
 
 		return pagination.getPageSize();
+	}
+
+	public static <T> List<T> paginate(List<T> items, Pagination pagination) {
+		if (pagination == null) {
+			return items;
+		}
+
+		return ListUtil.subList(
+			items, pagination.getStartPosition(), pagination.getEndPosition());
 	}
 
 	public static Map<String, Object> toGraphQLSort(
