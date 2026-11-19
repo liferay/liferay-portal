@@ -146,25 +146,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro addFailWithoutRequiredCategoryAssetTypeCP(vocabularyName = null) {
-		PortletEntry.inputTitle(title = "Web Content Title");
-
-		CKEditor.addContentInWebContent(
-			content = "Web Content Content",
-			fieldLabel = "Content");
-
-		WebContent.publishWithPermissions();
-
-		AssertElementPresent(locator1 = "Icon#ASTERISK");
-
-		Panel.expandPanel(panel = "Categorization");
-
-		AssertTextEquals.assertPartialText(
-			locator1 = "Message#ERROR_1",
-			value1 = "Please select at least one category for ${vocabularyName}.");
-	}
-
-	@summary = "Default summary"
 	macro addFeaturedImageFromComputer(uploadFileName = null) {
 		Panel.expandPanel(panel = "Featured Image");
 

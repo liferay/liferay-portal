@@ -521,6 +521,75 @@ public class JournalArticleLocalServiceTest {
 			journalArticle.getArticleId(), true);
 	}
 
+	@Test
+	@TestInfo("LPS-202016")
+	public void testAddArticleWithRequiredAssetVocabularyFromDepotEntry()
+		throws Exception {
+
+		DepotEntry depotEntry = _addDepotEntry();
+
+		DepotEntryGroupRel depotEntryGroupRel =
+			_depotEntryGroupRelLocalService.addDepotEntryGroupRel(
+				depotEntry.getDepotEntryId(), _group.getGroupId());
+
+		AssetVocabularySettingsHelper assetVocabularySettingsHelper =
+			_getAssetVocabularySettingsHelper(
+				true, new long[] {AssetCategoryConstants.ALL_CLASS_NAME_ID},
+				new long[] {AssetCategoryConstants.ALL_CLASS_TYPE_PK},
+				new boolean[] {false}, new boolean[] {true});
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				depotEntry.getGroupId(), TestPropsValues.getUserId());
+
+		AssetVocabulary assetVocabulary =
+			_assetVocabularyLocalService.addVocabulary(
+				TestPropsValues.getUserId(), depotEntry.getGroupId(),
+				RandomTestUtil.randomString(),
+				HashMapBuilder.put(
+					LocaleUtil.US, RandomTestUtil.randomString()
+				).build(),
+				null, assetVocabularySettingsHelper.toString(), serviceContext);
+
+		_addArticle(new long[0]);
+
+		assetVocabularySettingsHelper = _getAssetVocabularySettingsHelper(
+			true, new long[] {AssetCategoryConstants.ALL_CLASS_NAME_ID},
+			new long[] {AssetCategoryConstants.ALL_CLASS_TYPE_PK},
+			new boolean[] {true}, new boolean[] {false});
+
+		assetVocabulary = _assetVocabularyLocalService.updateVocabulary(
+			assetVocabulary.getExternalReferenceCode(),
+			assetVocabulary.getVocabularyId(), assetVocabulary.getTitleMap(),
+			assetVocabulary.getDescriptionMap(),
+			assetVocabularySettingsHelper.toString());
+
+		Assert.assertThrows(
+			AssetCategoryException.class, () -> _addArticle(new long[0]));
+
+		_depotEntryGroupRelLocalService.deleteDepotEntryGroupRel(
+			depotEntryGroupRel);
+
+		_addArticle(new long[0]);
+
+		_depotEntryGroupRelLocalService.addDepotEntryGroupRel(
+			depotEntry.getDepotEntryId(), _group.getGroupId());
+
+		Assert.assertThrows(
+			AssetCategoryException.class, () -> _addArticle(new long[0]));
+
+		AssetCategory assetCategory = _assetCategoryLocalService.addCategory(
+			TestPropsValues.getUserId(), depotEntry.getGroupId(),
+			RandomTestUtil.randomString(), assetVocabulary.getVocabularyId(),
+			serviceContext);
+
+		JournalArticle journalArticle = _addArticle(
+			new long[] {assetCategory.getCategoryId()});
+
+		_assertAssetCategoryIds(
+			journalArticle.getResourcePrimKey(), assetCategory.getCategoryId());
+	}
+
 	@Test(
 		expected = FriendlyURLLocalizationUrlTitleException.MustNotHaveTrailingSlash.class
 	)
@@ -3312,6 +3381,24 @@ public class JournalArticleLocalServiceTest {
 
 		Assert.assertEquals(
 			"Predefined Value", field.getValue(unavailableLocale));
+	}
+
+	private JournalArticle _addArticle(long[] assetCategoryIds)
+		throws Exception {
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_group, TestPropsValues.getUserId());
+
+		serviceContext.setAssetCategoryIds(assetCategoryIds);
+
+		return JournalTestUtil.addArticle(
+			_group.getGroupId(),
+			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			JournalArticleConstants.CLASS_NAME_ID_DEFAULT,
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), LocaleUtil.getSiteDefault(), false,
+			false, serviceContext);
 	}
 
 	private DepotEntry _addDepotEntry() throws Exception {
