@@ -242,7 +242,7 @@ Export-Package:\
 	\
 	org.jaxen.*;version='1.1.6',\
 	\
-	org.json.*;version='20231013',\
+	org.json.*;version='20260814',\
 	\
 	org.slf4j;version='1.7.2',\
 	org.slf4j.helpers;version='1.7.2',\
