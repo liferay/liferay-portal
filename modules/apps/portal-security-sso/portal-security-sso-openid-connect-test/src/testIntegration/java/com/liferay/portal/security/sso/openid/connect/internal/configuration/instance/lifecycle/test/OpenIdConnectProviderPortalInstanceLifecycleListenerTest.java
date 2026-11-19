@@ -7,7 +7,9 @@ package com.liferay.portal.security.sso.openid.connect.internal.configuration.in
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.oauth.client.persistence.constants.OAuthClientEntryConstants;
+import com.liferay.oauth.client.persistence.model.OAuthClientASLocalMetadata;
 import com.liferay.oauth.client.persistence.model.OAuthClientEntry;
+import com.liferay.oauth.client.persistence.service.OAuthClientASLocalMetadataLocalService;
 import com.liferay.oauth.client.persistence.service.OAuthClientEntryLocalService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.configuration.test.util.ConfigurationTestUtil;
@@ -16,17 +18,24 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.service.CompanyLocalService;
+import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import java.net.URI;
 
 import java.security.MessageDigest;
+
+import java.util.Dictionary;
+import java.util.List;
+import java.util.Map;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -55,6 +64,39 @@ public class OpenIdConnectProviderPortalInstanceLifecycleListenerTest {
 		if (Validator.isNotNull(_pid2)) {
 			ConfigurationTestUtil.deleteConfiguration(_pid2);
 		}
+	}
+
+	@Test
+	public void testDuplicateIssuerURL() throws Exception {
+		String clientId = RandomTestUtil.randomString();
+		String issuerURL = "http://" + RandomTestUtil.randomString();
+		String tokenEndpoint = "http://" + RandomTestUtil.randomString();
+
+		_pid1 = ConfigurationTestUtil.createFactoryConfiguration(
+			"com.liferay.portal.security.sso.openid.connect.internal." +
+				"configuration.OpenIdConnectProviderConfiguration",
+			HashMapDictionaryBuilder.<String, Object>put(
+				"authorizationEndpoint",
+				"http://" + RandomTestUtil.randomString()
+			).put(
+				"companyId", TestPropsValues.getCompanyId()
+			).put(
+				"issuerURL", issuerURL
+			).put(
+				"jwksURI", "http://" + RandomTestUtil.randomString()
+			).put(
+				"openIdConnectClientId", clientId
+			).put(
+				"subjectTypes", new String[] {"public"}
+			).put(
+				"tokenEndpoint", tokenEndpoint
+			).put(
+				"userInfoEndpoint", "http://" + RandomTestUtil.randomString()
+			).build());
+
+		_testDuplicateIssuerURL(
+			clientId, RandomTestUtil.randomString(), issuerURL, tokenEndpoint);
+		_testDuplicateIssuerURL(clientId, clientId, issuerURL, tokenEndpoint);
 	}
 
 	@Test
@@ -271,6 +313,122 @@ public class OpenIdConnectProviderPortalInstanceLifecycleListenerTest {
 				TestPropsValues.getCompanyId(),
 				_generateLocalWellKnownURI(issuerURL, tokenEndpoint),
 				clientId));
+
+		Class<?> clazz = _portalInstanceLifecycleListener.getClass();
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				clazz.getName(), LoggerTestUtil.WARN)) {
+
+			_portalInstanceLifecycleListener.portalInstanceRegistered(company);
+
+			List<String> messages = logCapture.getMessages();
+
+			Assert.assertEquals(messages.toString(), 0, messages.size());
+		}
+	}
+
+	@Test
+	public void testUpdated() throws Exception {
+		String clientId1 = RandomTestUtil.randomString();
+		String issuerURL = "http://" + RandomTestUtil.randomString();
+		String tokenEndpoint = "http://" + RandomTestUtil.randomString();
+
+		Dictionary<String, Object> properties =
+			HashMapDictionaryBuilder.<String, Object>put(
+				"authorizationEndpoint",
+				"http://" + RandomTestUtil.randomString()
+			).put(
+				"companyId", TestPropsValues.getCompanyId()
+			).put(
+				"issuerURL", issuerURL
+			).put(
+				"jwksURI", "http://" + RandomTestUtil.randomString()
+			).put(
+				"openIdConnectClientId", clientId1
+			).put(
+				"subjectTypes", new String[] {"public"}
+			).put(
+				"tokenEndpoint", tokenEndpoint
+			).put(
+				"userInfoEndpoint", "http://" + RandomTestUtil.randomString()
+			).build();
+
+		_pid1 = ConfigurationTestUtil.createFactoryConfiguration(
+			"com.liferay.portal.security.sso.openid.connect.internal." +
+				"configuration.OpenIdConnectProviderConfiguration",
+			properties);
+
+		Map<String, Dictionary<String, ?>> pidPropertiesMap =
+			ReflectionTestUtil.getFieldValue(
+				_portalInstanceLifecycleListener, "_properties");
+
+		Dictionary<String, ?> oldProperties = pidPropertiesMap.get(_pid1);
+
+		String clientId2 = RandomTestUtil.randomString();
+
+		properties.put("openIdConnectClientId", clientId2);
+
+		ConfigurationTestUtil.saveConfiguration(_pid1, properties);
+
+		Assert.assertNull(
+			_oAuthClientEntryLocalService.fetchOAuthClientEntry(
+				TestPropsValues.getCompanyId(),
+				_generateLocalWellKnownURI(issuerURL, tokenEndpoint),
+				clientId1));
+		Assert.assertNotNull(
+			_oAuthClientEntryLocalService.fetchOAuthClientEntry(
+				TestPropsValues.getCompanyId(),
+				_generateLocalWellKnownURI(issuerURL, tokenEndpoint),
+				clientId2));
+
+		Class<?> clazz = _portalInstanceLifecycleListener.getClass();
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				clazz.getName(), LoggerTestUtil.WARN)) {
+
+			ReflectionTestUtil.invoke(
+				_portalInstanceLifecycleListener, "_updateOAuthClientEntry",
+				new Class<?>[] {long.class, Dictionary.class, Dictionary.class},
+				TestPropsValues.getCompanyId(), oldProperties,
+				pidPropertiesMap.get(_pid1));
+
+			List<String> messages = logCapture.getMessages();
+
+			Assert.assertEquals(messages.toString(), 0, messages.size());
+		}
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				clazz.getName(), LoggerTestUtil.WARN)) {
+
+			_pid2 = ConfigurationTestUtil.createFactoryConfiguration(
+				"com.liferay.portal.security.sso.openid.connect.internal." +
+					"configuration.OpenIdConnectProviderConfiguration",
+				HashMapDictionaryBuilder.<String, Object>put(
+					"authorizationEndpoint",
+					"http://" + RandomTestUtil.randomString()
+				).put(
+					"companyId", TestPropsValues.getCompanyId()
+				).put(
+					"issuerURL", "http://" + RandomTestUtil.randomString(240)
+				).put(
+					"jwksURI", "http://" + RandomTestUtil.randomString()
+				).put(
+					"openIdConnectClientId", RandomTestUtil.randomString()
+				).put(
+					"subjectTypes", new String[] {"public"}
+				).put(
+					"tokenEndpoint", "http://" + RandomTestUtil.randomString()
+				).put(
+					"userInfoEndpoint",
+					"http://" + RandomTestUtil.randomString()
+				).build());
+
+			List<String> messages = logCapture.getMessages();
+
+			Assert.assertEquals(messages.toString(), 1, messages.size());
+			Assert.assertEquals(
+				"Unable to update OAuth client entry", messages.get(0));
+		}
 	}
 
 	private String _generateLocalWellKnownURI(
@@ -287,8 +445,73 @@ public class OpenIdConnectProviderPortalInstanceLifecycleListenerTest {
 			"/local");
 	}
 
+	private void _testDuplicateIssuerURL(
+			String clientId1, String clientId2, String issuerURL,
+			String tokenEndpoint)
+		throws Exception {
+
+		Class<?> clazz = _portalInstanceLifecycleListener.getClass();
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				clazz.getName(), LoggerTestUtil.WARN)) {
+
+			_pid2 = ConfigurationTestUtil.createFactoryConfiguration(
+				"com.liferay.portal.security.sso.openid.connect.internal." +
+					"configuration.OpenIdConnectProviderConfiguration",
+				HashMapDictionaryBuilder.<String, Object>put(
+					"authorizationEndpoint",
+					"http://" + RandomTestUtil.randomString()
+				).put(
+					"companyId", TestPropsValues.getCompanyId()
+				).put(
+					"issuerURL", issuerURL
+				).put(
+					"jwksURI", "http://" + RandomTestUtil.randomString()
+				).put(
+					"openIdConnectClientId", clientId2
+				).put(
+					"subjectTypes", new String[] {"public"}
+				).put(
+					"tokenEndpoint", "http://" + RandomTestUtil.randomString()
+				).put(
+					"userInfoEndpoint",
+					"http://" + RandomTestUtil.randomString()
+				).build());
+
+			List<String> messages = logCapture.getMessages();
+
+			Assert.assertEquals(messages.toString(), 1, messages.size());
+			Assert.assertEquals(
+				"Unable to update OAuth client entry", messages.get(0));
+		}
+
+		ConfigurationTestUtil.deleteConfiguration(_pid2);
+
+		_pid2 = null;
+
+		OAuthClientASLocalMetadata oAuthClientASLocalMetadata =
+			_oAuthClientASLocalMetadataLocalService.
+				fetchOAuthClientASLocalMetadata(
+					TestPropsValues.getCompanyId(), issuerURL);
+
+		JSONObject metadataJSONObject = JSONFactoryUtil.createJSONObject(
+			oAuthClientASLocalMetadata.getMetadataJSON());
+
+		Assert.assertEquals(
+			tokenEndpoint, metadataJSONObject.getString("token_endpoint"));
+
+		Assert.assertNotNull(
+			_oAuthClientEntryLocalService.fetchOAuthClientEntry(
+				TestPropsValues.getCompanyId(),
+				oAuthClientASLocalMetadata.getLocalWellKnownURI(), clientId1));
+	}
+
 	@Inject
 	private CompanyLocalService _companyLocalService;
+
+	@Inject
+	private OAuthClientASLocalMetadataLocalService
+		_oAuthClientASLocalMetadataLocalService;
 
 	@Inject
 	private OAuthClientEntryLocalService _oAuthClientEntryLocalService;
