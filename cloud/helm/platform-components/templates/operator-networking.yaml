@@ -12,7 +12,6 @@
 {{- $tlsEnabled := or $tls.externalSecretKey $tls.secretName | empty | not }}
 {{- $tlsSecretName := ternary (printf "%s-server-tls" $gateway.name) $tls.secretName ($tls.externalSecretKey | empty | not) }}
 
-
 {{- if $tls.externalSecretKey }}
 ---
 apiVersion: external-secrets.io/v1
