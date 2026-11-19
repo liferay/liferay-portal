@@ -365,16 +365,6 @@ public class OAuth2AuthorizationLocalServiceUtil {
 			accessTokenContent);
 	}
 
-	public static OAuth2Authorization
-			getOAuth2AuthorizationByRefreshTokenContent(
-				String refreshTokenContent)
-		throws com.liferay.oauth2.provider.exception.
-			NoSuchOAuth2AuthorizationException {
-
-		return getService().getOAuth2AuthorizationByRefreshTokenContent(
-			refreshTokenContent);
-	}
-
 	/**
 	 * Returns a range of all the o auth2 authorizations.
 	 *
@@ -407,10 +397,6 @@ public class OAuth2AuthorizationLocalServiceUtil {
 	 */
 	public static int getOAuth2AuthorizationsCount() {
 		return getService().getOAuth2AuthorizationsCount();
-	}
-
-	public static int getOAuth2AuthorizationsCount(long oAuth2ApplicationId) {
-		return getService().getOAuth2AuthorizationsCount(oAuth2ApplicationId);
 	}
 
 	public static List<OAuth2Authorization>
@@ -457,13 +443,6 @@ public class OAuth2AuthorizationLocalServiceUtil {
 			oAuth2AuthorizationId);
 	}
 
-	public static java.util.Collection
-		<com.liferay.oauth2.provider.model.OAuth2ScopeGrant>
-			getOAuth2ScopeGrants(long oAuth2AuthorizationId) {
-
-		return getService().getOAuth2ScopeGrants(oAuth2AuthorizationId);
-	}
-
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -480,18 +459,6 @@ public class OAuth2AuthorizationLocalServiceUtil {
 		throws PortalException {
 
 		return getService().getPersistedModel(primaryKeyObj);
-	}
-
-	public static List<OAuth2Authorization> getUserOAuth2Authorizations(
-		long userId, int start, int end,
-		OrderByComparator<OAuth2Authorization> orderByComparator) {
-
-		return getService().getUserOAuth2Authorizations(
-			userId, start, end, orderByComparator);
-	}
-
-	public static int getUserOAuth2AuthorizationsCount(long userId) {
-		return getService().getUserOAuth2AuthorizationsCount(userId);
 	}
 
 	public static boolean hasOAuth2ScopeGrantOAuth2Authorization(
@@ -548,4 +515,4 @@ public class OAuth2AuthorizationLocalServiceUtil {
 			OAuth2AuthorizationLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-300178827
+// LIFERAY-SERVICE-BUILDER-HASH:2017828367

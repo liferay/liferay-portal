@@ -7,7 +7,6 @@ package com.liferay.oauth2.provider.service;
 
 import com.liferay.oauth2.provider.exception.NoSuchOAuth2AuthorizationException;
 import com.liferay.oauth2.provider.model.OAuth2Authorization;
-import com.liferay.oauth2.provider.model.OAuth2ScopeGrant;
 import com.liferay.petra.sql.dsl.query.DSLQuery;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
@@ -27,7 +26,6 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 
 import java.io.Serializable;
 
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -276,11 +274,6 @@ public interface OAuth2AuthorizationLocalService
 			String accessTokenContent)
 		throws NoSuchOAuth2AuthorizationException;
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public OAuth2Authorization getOAuth2AuthorizationByRefreshTokenContent(
-			String refreshTokenContent)
-		throws NoSuchOAuth2AuthorizationException;
-
 	/**
 	 * Returns a range of all the o auth2 authorizations.
 	 *
@@ -310,9 +303,6 @@ public interface OAuth2AuthorizationLocalService
 	public int getOAuth2AuthorizationsCount();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getOAuth2AuthorizationsCount(long oAuth2ApplicationId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<OAuth2Authorization> getOAuth2ScopeGrantOAuth2Authorizations(
 		long oAuth2ScopeGrantId);
 
@@ -338,10 +328,6 @@ public interface OAuth2AuthorizationLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public long[] getOAuth2ScopeGrantPrimaryKeys(long oAuth2AuthorizationId);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public Collection<OAuth2ScopeGrant> getOAuth2ScopeGrants(
-		long oAuth2AuthorizationId);
-
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -356,14 +342,6 @@ public interface OAuth2AuthorizationLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
 		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<OAuth2Authorization> getUserOAuth2Authorizations(
-		long userId, int start, int end,
-		OrderByComparator<OAuth2Authorization> orderByComparator);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getUserOAuth2AuthorizationsCount(long userId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public boolean hasOAuth2ScopeGrantOAuth2Authorization(
@@ -394,4 +372,4 @@ public interface OAuth2AuthorizationLocalService
 		String refreshTokenContent, String rememberDeviceContent);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1370160621
+// LIFERAY-SERVICE-BUILDER-HASH:1641729552

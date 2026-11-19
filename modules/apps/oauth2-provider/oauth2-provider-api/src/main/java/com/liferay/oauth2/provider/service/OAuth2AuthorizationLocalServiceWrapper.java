@@ -432,17 +432,6 @@ public class OAuth2AuthorizationLocalServiceWrapper
 			getOAuth2AuthorizationByAccessTokenContent(accessTokenContent);
 	}
 
-	@Override
-	public com.liferay.oauth2.provider.model.OAuth2Authorization
-			getOAuth2AuthorizationByRefreshTokenContent(
-				String refreshTokenContent)
-		throws com.liferay.oauth2.provider.exception.
-			NoSuchOAuth2AuthorizationException {
-
-		return _oAuth2AuthorizationLocalService.
-			getOAuth2AuthorizationByRefreshTokenContent(refreshTokenContent);
-	}
-
 	/**
 	 * Returns a range of all the o auth2 authorizations.
 	 *
@@ -482,12 +471,6 @@ public class OAuth2AuthorizationLocalServiceWrapper
 	@Override
 	public int getOAuth2AuthorizationsCount() {
 		return _oAuth2AuthorizationLocalService.getOAuth2AuthorizationsCount();
-	}
-
-	@Override
-	public int getOAuth2AuthorizationsCount(long oAuth2ApplicationId) {
-		return _oAuth2AuthorizationLocalService.getOAuth2AuthorizationsCount(
-			oAuth2ApplicationId);
 	}
 
 	@Override
@@ -541,15 +524,6 @@ public class OAuth2AuthorizationLocalServiceWrapper
 			oAuth2AuthorizationId);
 	}
 
-	@Override
-	public java.util.Collection
-		<com.liferay.oauth2.provider.model.OAuth2ScopeGrant>
-			getOAuth2ScopeGrants(long oAuth2AuthorizationId) {
-
-		return _oAuth2AuthorizationLocalService.getOAuth2ScopeGrants(
-			oAuth2AuthorizationId);
-	}
-
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -570,24 +544,6 @@ public class OAuth2AuthorizationLocalServiceWrapper
 
 		return _oAuth2AuthorizationLocalService.getPersistedModel(
 			primaryKeyObj);
-	}
-
-	@Override
-	public java.util.List<com.liferay.oauth2.provider.model.OAuth2Authorization>
-		getUserOAuth2Authorizations(
-			long userId, int start, int end,
-			com.liferay.portal.kernel.util.OrderByComparator
-				<com.liferay.oauth2.provider.model.OAuth2Authorization>
-					orderByComparator) {
-
-		return _oAuth2AuthorizationLocalService.getUserOAuth2Authorizations(
-			userId, start, end, orderByComparator);
-	}
-
-	@Override
-	public int getUserOAuth2AuthorizationsCount(long userId) {
-		return _oAuth2AuthorizationLocalService.
-			getUserOAuth2AuthorizationsCount(userId);
 	}
 
 	@Override
@@ -665,4 +621,4 @@ public class OAuth2AuthorizationLocalServiceWrapper
 	private OAuth2AuthorizationLocalService _oAuth2AuthorizationLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1568943933
+// LIFERAY-SERVICE-BUILDER-HASH:720390373

@@ -301,18 +301,6 @@ public class OAuth2ScopeGrantLocalServiceUtil {
 		return getService().getActionableDynamicQuery();
 	}
 
-	public static java.util.Collection
-		<com.liferay.oauth2.provider.scope.liferay.LiferayOAuth2Scope>
-			getFilteredLiferayOAuth2Scopes(
-				long oAuth2ApplicationScopeAliasesId,
-				java.util.Collection
-					<com.liferay.oauth2.provider.scope.liferay.
-						LiferayOAuth2Scope> liferayOAuth2Scopes) {
-
-		return getService().getFilteredLiferayOAuth2Scopes(
-			oAuth2ApplicationScopeAliasesId, liferayOAuth2Scopes);
-	}
-
 	public static
 		com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery
 			getIndexableActionableDynamicQuery() {
@@ -496,4 +484,4 @@ public class OAuth2ScopeGrantLocalServiceUtil {
 			OAuth2ScopeGrantLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1924408425
+// LIFERAY-SERVICE-BUILDER-HASH:715743679
