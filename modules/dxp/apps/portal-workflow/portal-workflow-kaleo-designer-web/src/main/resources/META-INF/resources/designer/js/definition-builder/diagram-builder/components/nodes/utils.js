@@ -10,6 +10,7 @@ import {isAIHubInstance} from '../../../util/isAIHubInstance';
 import {insertNodeAt} from '../../util/insertNodeAt';
 import AIDecisionNode from './AIDecisionNode';
 import AIHubAgentNode from './AIHubAgentNode';
+import AskAHumanNode from './AskAHumanNode';
 import ConditionNode from './ConditionNode';
 import ForkNode from './ForkNode';
 import HTTPRequestNode from './HTTPRequestNode';
@@ -46,6 +47,9 @@ const defaultNodes = [
 const nodeDescription = {
 	'ai-decision': Liferay.Language.get('make-a-decision-using-llm-models'),
 	'ai-hub-agent': Liferay.Language.get('invoke-an-ai-hub-agent'),
+	'ask-a-human': Liferay.Language.get(
+		'ask-the-user-a-question-with-fixed-choices'
+	),
 	'condition': Liferay.Language.get('execute-conditional-logic'),
 	'end': Liferay.Language.get('conclude-the-workflow'),
 	'fork': Liferay.Language.get('split-the-workflow-into-multiple-paths'),
@@ -84,6 +88,15 @@ if (Liferay.FeatureFlags['LPD-62272']) {
 		nodeTypes = insertNodeAt(nodeTypes, 'llm', LLMNode, 7);
 		nodeTypes = insertNodeAt(nodeTypes, 'http-request', HTTPRequestNode, 8);
 		nodeTypes = insertNodeAt(nodeTypes, 'service', ServiceNode, 9);
+
+		if (Liferay.FeatureFlags['LPD-115774']) {
+			nodeTypes = insertNodeAt(
+				nodeTypes,
+				'ask-a-human',
+				AskAHumanNode,
+				10
+			);
+		}
 	}
 }
 

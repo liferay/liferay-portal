@@ -149,6 +149,20 @@ DeserializeUtil.prototype = {
 					data.timeout = node.timeout || '';
 				}
 
+				if (type === 'ask-a-human') {
+					data.inputVariables = parseJSON(
+						node['input-variables'],
+						[]
+					);
+
+					data.outputVariables = parseJSON(
+						node['output-variables'],
+						[]
+					);
+
+					data.question = parseJSON(node.question);
+				}
+
 				if (type === 'condition') {
 					data.scriptLanguage =
 						node.scriptLanguage || DEFAULT_LANGUAGE;

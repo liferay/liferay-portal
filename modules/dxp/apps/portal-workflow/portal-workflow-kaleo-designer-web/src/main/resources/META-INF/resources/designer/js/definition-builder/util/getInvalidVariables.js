@@ -21,6 +21,13 @@ const VARIABLES_FIELDS = [
 		),
 	},
 	{
+		field: 'question',
+		isValid: isObject,
+		message: Liferay.Language.get(
+			'question-must-be-a-valid-json-object-in-the-x-node'
+		),
+	},
+	{
 		field: 'rag',
 		isValid: isObject,
 		message: Liferay.Language.get(

@@ -25,7 +25,13 @@ const isFeatureFlagActive = Liferay.FeatureFlags['LPD-62272'] === true;
 const COL_TYPES_FIELD = [
 	...(isFeatureFlagActive ? ['ai-hub-agent'] : []),
 	...(isFeatureFlagActive && isAIHubInstance()
-		? ['ai-decision', 'http-request', 'llm', 'service']
+		? [
+				'ai-decision',
+				...(Liferay.FeatureFlags['LPD-115774'] ? ['ask-a-human'] : []),
+				'http-request',
+				'llm',
+				'service',
+			]
 		: []),
 	'condition',
 	'fork',

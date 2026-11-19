@@ -707,7 +707,7 @@ function serializeDefinition(xmlNamespace, metadata, nodes, transitions) {
 			buffer.push(createTagWithEscapedContent('initial', initial));
 		}
 
-		if (item.type !== 'service') {
+		if (item.type !== 'ask-a-human' && item.type !== 'service') {
 			appendXMLLabels(buffer, item.data.label);
 		}
 
@@ -783,6 +783,32 @@ function serializeDefinition(xmlNamespace, metadata, nodes, transitions) {
 					createTagWithEscapedContent('timeout', item.data.timeout)
 				);
 			}
+		}
+
+		if (item.type === 'ask-a-human') {
+			buffer.push(
+				XMLUtil.create(
+					'input-variables',
+					cdata(jsonStringify(item.data.inputVariables || []))
+				)
+			);
+
+			appendXMLLabels(buffer, item.data.label);
+
+			buffer.push(
+				XMLUtil.create(
+					'output-variables',
+					cdata(jsonStringify(item.data.outputVariables || []))
+				)
+			);
+			buffer.push(
+				XMLUtil.create(
+					'question',
+					item.data.question
+						? cdata(jsonStringify(item.data.question))
+						: ''
+				)
+			);
 		}
 
 		if (xmlType === 'condition') {

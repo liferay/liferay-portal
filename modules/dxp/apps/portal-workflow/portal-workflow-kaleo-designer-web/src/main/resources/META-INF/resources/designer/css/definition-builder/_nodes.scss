@@ -61,6 +61,13 @@
 		}
 	}
 
+	&.ask-a-human-node,
+	&.task-node {
+		.node-icon svg {
+			fill: var(--kaleo-node-task-icon);
+		}
+	}
+
 	&.condition-node,
 	&.fork-node,
 	&.state-node {
@@ -85,12 +92,6 @@
 	&.service-node {
 		.node-icon svg {
 			fill: var(--kaleo-node-service-icon);
-		}
-	}
-
-	&.task-node {
-		.node-icon svg {
-			fill: var(--kaleo-node-task-icon);
 		}
 	}
 }

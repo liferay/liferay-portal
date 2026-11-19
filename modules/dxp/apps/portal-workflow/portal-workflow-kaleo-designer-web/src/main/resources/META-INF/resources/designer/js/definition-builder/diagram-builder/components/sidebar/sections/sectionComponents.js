@@ -8,6 +8,7 @@ import NodeInformation from './NodeInformation';
 import Actions from './actions/Actions';
 import ActionsSummary from './actions/ActionsSummary';
 import AIHubAgentDefinition from './ai-hub-agent/AIHubAgentDefinition';
+import Question from './ask-a-human/Question';
 import Assignments from './assignments/Assignments';
 import AssignmentsSummary from './assignments/AssignmentsSummary';
 import SourceCode from './assignments/SourceCode';
@@ -45,6 +46,7 @@ const sectionComponents = {
 	parametersSummary: ParametersSummary,
 	payload: Payload,
 	promptSummary: PromptSummary,
+	question: Question,
 	ragSummary: RAGSummary,
 	serviceConfiguration: ServiceConfiguration,
 	sourceCode: SourceCode,

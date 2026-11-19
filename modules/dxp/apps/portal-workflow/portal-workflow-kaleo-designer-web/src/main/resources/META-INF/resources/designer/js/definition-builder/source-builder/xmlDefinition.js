@@ -379,6 +379,7 @@ XMLDefinition.prototype = {
 				},
 				'output-variables',
 				'parameters',
+				'question',
 				'rag',
 				'request-body',
 				'script',

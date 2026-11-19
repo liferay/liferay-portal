@@ -163,6 +163,15 @@ if (Liferay.FeatureFlags['LPD-62272']) {
 			showDeleteButton: true,
 			title: Liferay.Language.get('ai-decision'),
 		};
+
+		if (Liferay.FeatureFlags['LPD-115774']) {
+			contents['ask-a-human'] = {
+				sections: ['nodeInformation', 'question', 'variables'],
+				showDeleteButton: true,
+				title: Liferay.Language.get('ask-a-human'),
+			};
+		}
+
 		contents['http-request'] = {
 			sections: [
 				'nodeInformation',
