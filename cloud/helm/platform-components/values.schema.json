@@ -1,0 +1,925 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"properties": {
+		"accessControl": {
+			"additionalProperties": false,
+			"description": "Restricts the operator gateways to a list of client CIDRs.",
+			"properties": {
+				"allowedCIDRs": {
+					"description": "Client CIDRs allowed to reach the operator gateways. Required when access control is enabled.",
+					"items": {
+						"type": "string"
+					},
+					"type": "array"
+				},
+				"enabled": {
+					"description": "Restricts the operator gateways to the allowed CIDRs.",
+					"type": "boolean"
+				}
+			},
+			"type": "object"
+		},
+		"ackPrometheusService": {
+			"additionalProperties": false,
+			"description": "The ACK Prometheus service controller, installed as an Argo CD Application.",
+			"properties": {
+				"enabled": {
+					"description": "Installs the ACK Prometheus service controller.",
+					"type": "boolean"
+				},
+				"namespace": {
+					"description": "Namespace the ACK Prometheus service controller is installed into.",
+					"type": "string"
+				},
+				"repoURL": {
+					"description": "Helm repository or OCI chart URL the ACK Prometheus service controller is installed from.",
+					"type": "string"
+				},
+				"targetRevision": {
+					"description": "Chart version of the ACK Prometheus service controller.",
+					"type": "string"
+				},
+				"values": {
+					"description": "Helm values passed to the ACK Prometheus service controller chart.",
+					"type": "object"
+				}
+			},
+			"type": "object"
+		},
+		"appProjects": {
+			"additionalProperties": false,
+			"description": "Argo CD AppProjects for the platform.",
+			"properties": {
+				"application": {
+					"additionalProperties": false,
+					"description": "AppProject for Liferay applications.",
+					"properties": {
+						"enabled": {
+							"description": "Renders the AppProject.",
+							"type": "boolean"
+						}
+					},
+					"type": "object"
+				},
+				"infrastructure": {
+					"additionalProperties": false,
+					"description": "AppProject for infrastructure.",
+					"properties": {
+						"enabled": {
+							"description": "Renders the AppProject.",
+							"type": "boolean"
+						}
+					},
+					"type": "object"
+				}
+			},
+			"type": "object"
+		},
+		"argoWorkflows": {
+			"additionalProperties": false,
+			"description": "Argo Workflows, installed as an Argo CD Application.",
+			"properties": {
+				"enabled": {
+					"description": "Installs Argo Workflows.",
+					"type": "boolean"
+				},
+				"gateway": {
+					"additionalProperties": false,
+					"description": "Gateway that serves the Argo Workflows web interface.",
+					"properties": {
+						"annotations": {
+							"additionalProperties": {
+								"type": "string"
+							},
+							"description": "Extra annotations for the Gateway.",
+							"type": "object"
+						},
+						"backendTrafficPolicySpec": {
+							"description": "Spec of a BackendTrafficPolicy attached to the server route.",
+							"type": "object"
+						},
+						"clientTrafficPolicySpec": {
+							"description": "Spec of a ClientTrafficPolicy attached to the Gateway.",
+							"type": "object"
+						},
+						"enabled": {
+							"description": "Serves the Argo Workflows web interface through a Gateway.",
+							"type": "boolean"
+						},
+						"envoyProxy": {
+							"additionalProperties": false,
+							"description": "Envoy proxy that serves the gateway.",
+							"properties": {
+								"podAnnotations": {
+									"description": "Annotations for the proxy pods.",
+									"type": "object"
+								},
+								"replicas": {
+									"description": "Number of proxy replicas.",
+									"type": "integer"
+								},
+								"serviceAnnotations": {
+									"description": "Annotations for the proxy Service.",
+									"type": "object"
+								}
+							},
+							"type": "object"
+						},
+						"hostname": {
+							"description": "Hostname Argo Workflows is served on. Required when the gateway is enabled.",
+							"type": "string"
+						},
+						"tls": {
+							"additionalProperties": false,
+							"description": "TLS for the Argo Workflows gateway. Set at most one key; with neither, the gateway serves plain HTTP.",
+							"properties": {
+								"externalSecretKey": {
+									"description": "Key in the default ClusterSecretStore holding the certificate; the chart creates the Secret.",
+									"type": "string"
+								},
+								"secretName": {
+									"description": "Secret holding the certificate, provided outside the chart (for example by cert-manager).",
+									"type": "string"
+								}
+							},
+							"type": "object"
+						}
+					},
+					"type": "object"
+				},
+				"namespace": {
+					"description": "Namespace Argo Workflows is installed into.",
+					"type": "string"
+				},
+				"repoURL": {
+					"description": "Helm repository or OCI chart URL Argo Workflows is installed from.",
+					"type": "string"
+				},
+				"targetRevision": {
+					"description": "Chart version of Argo Workflows.",
+					"type": "string"
+				},
+				"values": {
+					"description": "Helm values passed to the Argo Workflows chart.",
+					"type": "object"
+				}
+			},
+			"type": "object"
+		},
+		"argocd": {
+			"additionalProperties": false,
+			"description": "Argo CD, installed outside the chart.",
+			"properties": {
+				"gateway": {
+					"additionalProperties": false,
+					"description": "Gateway that serves the Argo CD web interface.",
+					"properties": {
+						"annotations": {
+							"additionalProperties": {
+								"type": "string"
+							},
+							"description": "Extra annotations for the Gateway.",
+							"type": "object"
+						},
+						"backendTrafficPolicySpec": {
+							"description": "Spec of a BackendTrafficPolicy attached to the server route.",
+							"type": "object"
+						},
+						"clientTrafficPolicySpec": {
+							"description": "Spec of a ClientTrafficPolicy attached to the Gateway.",
+							"type": "object"
+						},
+						"enabled": {
+							"description": "Serves the Argo CD web interface through a Gateway.",
+							"type": "boolean"
+						},
+						"envoyProxy": {
+							"additionalProperties": false,
+							"description": "Envoy proxy that serves the gateway.",
+							"properties": {
+								"podAnnotations": {
+									"description": "Annotations for the proxy pods.",
+									"type": "object"
+								},
+								"replicas": {
+									"description": "Number of proxy replicas.",
+									"type": "integer"
+								},
+								"serviceAnnotations": {
+									"description": "Annotations for the proxy Service.",
+									"type": "object"
+								}
+							},
+							"type": "object"
+						},
+						"hostname": {
+							"description": "Hostname Argo CD is served on. Required when the gateway is enabled.",
+							"type": "string"
+						},
+						"tls": {
+							"additionalProperties": false,
+							"description": "TLS for the Argo CD gateway. Set at most one key; with neither, the gateway serves plain HTTP.",
+							"properties": {
+								"externalSecretKey": {
+									"description": "Key in the default ClusterSecretStore holding the certificate; the chart creates the Secret.",
+									"type": "string"
+								},
+								"secretName": {
+									"description": "Secret holding the certificate, provided outside the chart (for example by cert-manager).",
+									"type": "string"
+								}
+							},
+							"type": "object"
+						}
+					},
+					"type": "object"
+				},
+				"sso": {
+					"additionalProperties": false,
+					"description": "Single sign-on for Argo CD.",
+					"properties": {
+						"credentialsSecretKey": {
+							"description": "Key in the default ClusterSecretStore holding the SSO credentials.",
+							"type": "string"
+						},
+						"enabled": {
+							"description": "Signs users in to Argo CD through SSO.",
+							"type": "boolean"
+						}
+					},
+					"type": "object"
+				}
+			},
+			"type": "object"
+		},
+		"clientExtensions": {
+			"additionalProperties": false,
+			"description": "Chart that client extension Applications are installed from.",
+			"properties": {
+				"repoURL": {
+					"description": "OCI chart URL.",
+					"type": "string"
+				},
+				"targetRevision": {
+					"description": "Chart version.",
+					"type": "string"
+				}
+			},
+			"type": "object"
+		},
+		"clusterBootstrap": {
+			"additionalProperties": false,
+			"description": "Job that prepares the cluster before the platform syncs.",
+			"properties": {
+				"enabled": {
+					"description": "Runs the bootstrap job.",
+					"type": "boolean"
+				},
+				"image": {
+					"description": "Image of the bootstrap job.",
+					"type": "string"
+				},
+				"resources": {
+					"description": "Resources of the bootstrap job.",
+					"type": "object"
+				}
+			},
+			"type": "object"
+		},
+		"clusterSecretStores": {
+			"additionalProperties": {
+				"additionalProperties": false,
+				"description": "ClusterSecretStore, keyed by name.",
+				"properties": {
+					"default": {
+						"description": "Marks the store the chart reads its own secrets from. Required when there is more than one store.",
+						"type": "boolean"
+					},
+					"spec": {
+						"description": "Spec of the ClusterSecretStore.",
+						"type": "object"
+					}
+				},
+				"type": "object"
+			},
+			"description": "External Secrets ClusterSecretStores, keyed by name.",
+			"type": "object"
+		},
+		"crossplane": {
+			"additionalProperties": false,
+			"description": "Crossplane, installed as an Argo CD Application.",
+			"properties": {
+				"clusterProviderConfig": {
+					"additionalProperties": false,
+					"description": "Cluster-wide ProviderConfig for provider-kubernetes.",
+					"properties": {
+						"enabled": {
+							"description": "Renders the ProviderConfig.",
+							"type": "boolean"
+						}
+					},
+					"type": "object"
+				},
+				"enabled": {
+					"description": "Installs Crossplane.",
+					"type": "boolean"
+				},
+				"functions": {
+					"additionalProperties": {
+						"additionalProperties": false,
+						"description": "Crossplane function, keyed by name.",
+						"properties": {
+							"package": {
+								"description": "Package of the function.",
+								"type": "string"
+							},
+							"resources": {
+								"description": "Resources of the function.",
+								"type": "object"
+							}
+						},
+						"type": "object"
+					},
+					"description": "Crossplane functions, keyed by name.",
+					"type": "object"
+				},
+				"namespace": {
+					"description": "Namespace Crossplane is installed into.",
+					"type": "string"
+				},
+				"providers": {
+					"additionalProperties": {
+						"additionalProperties": false,
+						"description": "Crossplane provider, keyed by name.",
+						"properties": {
+							"package": {
+								"description": "Package of the provider.",
+								"type": "string"
+							},
+							"resources": {
+								"description": "Resources of the provider.",
+								"type": "object"
+							},
+							"serviceAccountName": {
+								"description": "Service account of the provider.",
+								"type": "string"
+							}
+						},
+						"type": "object"
+					},
+					"description": "Crossplane providers, keyed by name.",
+					"type": "object"
+				},
+				"repoURL": {
+					"description": "Helm repository or OCI chart URL Crossplane is installed from.",
+					"type": "string"
+				},
+				"targetRevision": {
+					"description": "Chart version of Crossplane.",
+					"type": "string"
+				},
+				"values": {
+					"description": "Helm values passed to the Crossplane chart.",
+					"type": "object"
+				}
+			},
+			"type": "object"
+		},
+		"database": {
+			"additionalProperties": false,
+			"description": "Database of the deployment.",
+			"properties": {
+				"engine": {
+					"description": "Database engine.",
+					"type": "string"
+				}
+			},
+			"type": "object"
+		},
+		"deploymentContext": {
+			"description": "Facts about the deployment, passed to the infrastructure provider as deploymentContext.* parameters.",
+			"properties": {
+				"deploymentName": {
+					"description": "Name of the deployment.",
+					"type": "string"
+				}
+			},
+			"type": "object"
+		},
+		"dxpOperator": {
+			"additionalProperties": false,
+			"description": "The DXP operator, installed as an Argo CD Application.",
+			"properties": {
+				"enabled": {
+					"description": "Installs the DXP operator.",
+					"type": "boolean"
+				},
+				"namespace": {
+					"description": "Namespace the DXP operator is installed into.",
+					"type": "string"
+				},
+				"repoURL": {
+					"description": "Helm repository or OCI chart URL the DXP operator is installed from.",
+					"type": "string"
+				},
+				"targetRevision": {
+					"description": "Chart version of the DXP operator.",
+					"type": "string"
+				},
+				"values": {
+					"description": "Helm values passed to the DXP operator chart.",
+					"type": "object"
+				}
+			},
+			"type": "object"
+		},
+		"eckOperator": {
+			"additionalProperties": false,
+			"description": "The ECK operator, installed as an Argo CD Application.",
+			"properties": {
+				"enabled": {
+					"description": "Installs the ECK operator.",
+					"type": "boolean"
+				},
+				"namespace": {
+					"description": "Namespace the ECK operator is installed into.",
+					"type": "string"
+				},
+				"repoURL": {
+					"description": "Helm repository or OCI chart URL the ECK operator is installed from.",
+					"type": "string"
+				},
+				"targetRevision": {
+					"description": "Chart version of the ECK operator.",
+					"type": "string"
+				},
+				"values": {
+					"description": "Helm values passed to the ECK operator chart.",
+					"type": "object"
+				}
+			},
+			"type": "object"
+		},
+		"envoyGateway": {
+			"additionalProperties": false,
+			"description": "Envoy Gateway, installed as an Argo CD Application.",
+			"properties": {
+				"crds": {
+					"additionalProperties": false,
+					"description": "Gateway API and Envoy Gateway CRDs, installed as their own Application.",
+					"properties": {
+						"enabled": {
+							"description": "Installs the CRDs as their own Application. The Envoy Gateway chart must then not install them (values.crds.enabled: false).",
+							"type": "boolean"
+						},
+						"repoURL": {
+							"description": "OCI chart URL of the CRDs.",
+							"type": "string"
+						},
+						"targetRevision": {
+							"description": "Chart version of the CRDs.",
+							"type": "string"
+						},
+						"values": {
+							"description": "Helm values passed to the CRDs chart.",
+							"type": "object"
+						}
+					},
+					"type": "object"
+				},
+				"enabled": {
+					"description": "Installs Envoy Gateway.",
+					"type": "boolean"
+				},
+				"namespace": {
+					"description": "Namespace Envoy Gateway is installed into.",
+					"type": "string"
+				},
+				"repoURL": {
+					"description": "Helm repository or OCI chart URL Envoy Gateway is installed from.",
+					"type": "string"
+				},
+				"targetRevision": {
+					"description": "Chart version of Envoy Gateway.",
+					"type": "string"
+				},
+				"values": {
+					"description": "Helm values passed to the Envoy Gateway chart.",
+					"type": "object"
+				}
+			},
+			"type": "object"
+		},
+		"externalSecrets": {
+			"additionalProperties": false,
+			"description": "External Secrets, installed as an Argo CD Application.",
+			"properties": {
+				"enabled": {
+					"description": "Installs External Secrets.",
+					"type": "boolean"
+				},
+				"namespace": {
+					"description": "Namespace External Secrets is installed into.",
+					"type": "string"
+				},
+				"repoURL": {
+					"description": "Helm repository or OCI chart URL External Secrets is installed from.",
+					"type": "string"
+				},
+				"targetRevision": {
+					"description": "Chart version of External Secrets.",
+					"type": "string"
+				},
+				"values": {
+					"description": "Helm values passed to the External Secrets chart.",
+					"type": "object"
+				}
+			},
+			"type": "object"
+		},
+		"gateway": {
+			"additionalProperties": false,
+			"description": "Gateway for Liferay traffic.",
+			"properties": {
+				"className": {
+					"description": "GatewayClass name.",
+					"type": "string"
+				},
+				"envoyProxy": {
+					"additionalProperties": false,
+					"description": "Envoy proxy that serves Liferay traffic.",
+					"properties": {
+						"maxReplicas": {
+							"description": "Maximum number of proxy replicas.",
+							"type": "integer"
+						},
+						"minReplicas": {
+							"description": "Minimum number of proxy replicas.",
+							"type": "integer"
+						},
+						"name": {
+							"description": "Name of the EnvoyProxy.",
+							"type": "string"
+						},
+						"podAnnotations": {
+							"description": "Annotations for the proxy pods.",
+							"type": "object"
+						},
+						"serviceAnnotations": {
+							"description": "Annotations for the proxy Service.",
+							"type": "object"
+						}
+					},
+					"type": "object"
+				}
+			},
+			"type": "object"
+		},
+		"gitops": {
+			"additionalProperties": false,
+			"description": "Git repositories Argo CD reads the platform from.",
+			"properties": {
+				"infrastructureRepository": {
+					"additionalProperties": false,
+					"description": "Repository holding infrastructure. Defaults to the main repository.",
+					"properties": {
+						"credentialsSecretName": {
+							"description": "Key in the default ClusterSecretStore holding the repository credentials.",
+							"type": "string"
+						},
+						"githubAppIdProperty": {
+							"description": "Property holding the GitHub App ID.",
+							"type": "string"
+						},
+						"githubAppInstallationIdProperty": {
+							"description": "Property holding the GitHub App installation ID.",
+							"type": "string"
+						},
+						"githubAppPrivateKeyProperty": {
+							"description": "Property holding the GitHub App private key.",
+							"type": "string"
+						},
+						"internalSecretName": {
+							"description": "Name of the Secret the chart creates for Argo CD.",
+							"type": "string"
+						},
+						"method": {
+							"description": "How Argo CD authenticates to the repository.",
+							"enum": [
+								"github_app",
+								"https",
+								"ssh"
+							]
+						},
+						"registerCredentials": {
+							"description": "Registers the repository credentials with Argo CD.",
+							"type": "boolean"
+						},
+						"revision": {
+							"description": "Git revision to track.",
+							"type": "string"
+						},
+						"sshPrivateKeyProperty": {
+							"description": "Property holding the SSH private key.",
+							"type": "string"
+						},
+						"tokenProperty": {
+							"description": "Property holding the access token.",
+							"type": "string"
+						},
+						"url": {
+							"description": "Repository URL.",
+							"type": "string"
+						},
+						"usernameProperty": {
+							"description": "Property holding the user name.",
+							"type": "string"
+						}
+					},
+					"type": "object"
+				},
+				"layout": {
+					"additionalProperties": false,
+					"description": "Where projects, environments and their values files live in the repository.",
+					"properties": {
+						"base": {
+							"description": "Base directory of a project. May only use {{path[n]}} placeholders.",
+							"type": "string"
+						},
+						"environmentId": {
+							"description": "Environment ID, as a {{path[n]}} placeholder.",
+							"type": "string"
+						},
+						"environments": {
+							"description": "Glob matching environment directories.",
+							"type": "string"
+						},
+						"infrastructureProviderValuesFilename": {
+							"description": "File name of the infrastructure provider values.",
+							"type": "string"
+						},
+						"infrastructureValuesFilename": {
+							"description": "File name of the infrastructure values.",
+							"type": "string"
+						},
+						"liferayValuesFilename": {
+							"description": "File name of the Liferay values.",
+							"type": "string"
+						},
+						"observabilityValuesFilename": {
+							"description": "File name of the observability values.",
+							"type": "string"
+						},
+						"projectId": {
+							"description": "Project ID, as a {{path[n]}} placeholder.",
+							"type": "string"
+						},
+						"projectValuesFilename": {
+							"description": "File name of the project values.",
+							"type": "string"
+						},
+						"projects": {
+							"description": "Glob matching project directories.",
+							"type": "string"
+						},
+						"system": {
+							"description": "Directory of system resources.",
+							"type": "string"
+						}
+					},
+					"type": "object"
+				},
+				"repository": {
+					"additionalProperties": false,
+					"description": "Main GitOps repository.",
+					"properties": {
+						"credentialsSecretName": {
+							"description": "Key in the default ClusterSecretStore holding the repository credentials.",
+							"type": "string"
+						},
+						"githubAppIdProperty": {
+							"description": "Property holding the GitHub App ID.",
+							"type": "string"
+						},
+						"githubAppInstallationIdProperty": {
+							"description": "Property holding the GitHub App installation ID.",
+							"type": "string"
+						},
+						"githubAppPrivateKeyProperty": {
+							"description": "Property holding the GitHub App private key.",
+							"type": "string"
+						},
+						"internalSecretName": {
+							"description": "Name of the Secret the chart creates for Argo CD.",
+							"type": "string"
+						},
+						"method": {
+							"description": "How Argo CD authenticates to the repository.",
+							"enum": [
+								"github_app",
+								"https",
+								"ssh"
+							]
+						},
+						"registerCredentials": {
+							"description": "Registers the repository credentials with Argo CD.",
+							"type": "boolean"
+						},
+						"revision": {
+							"description": "Git revision to track.",
+							"type": "string"
+						},
+						"sshPrivateKeyProperty": {
+							"description": "Property holding the SSH private key.",
+							"type": "string"
+						},
+						"tokenProperty": {
+							"description": "Property holding the access token.",
+							"type": "string"
+						},
+						"url": {
+							"description": "Repository URL.",
+							"type": "string"
+						},
+						"usernameProperty": {
+							"description": "Property holding the user name.",
+							"type": "string"
+						}
+					},
+					"type": "object"
+				}
+			},
+			"type": "object"
+		},
+		"infrastructure": {
+			"additionalProperties": false,
+			"description": "Infrastructure Applications, one per environment.",
+			"properties": {
+				"enabled": {
+					"description": "Renders the Application.",
+					"type": "boolean"
+				},
+				"parameters": {
+					"description": "Extra Helm parameters for the Application.",
+					"items": {
+						"type": "object"
+					},
+					"type": "array"
+				},
+				"path": {
+					"description": "Path of the chart inside a Git repository.",
+					"type": "string"
+				},
+				"repoURL": {
+					"description": "Helm repository, OCI chart or Git repository URL.",
+					"type": "string"
+				},
+				"targetRevision": {
+					"description": "Chart version or Git revision.",
+					"type": "string"
+				}
+			},
+			"type": "object"
+		},
+		"infrastructureProvider": {
+			"additionalProperties": false,
+			"description": "Infrastructure provider Application.",
+			"properties": {
+				"enabled": {
+					"description": "Renders the Application.",
+					"type": "boolean"
+				},
+				"path": {
+					"description": "Path of the chart inside a Git repository.",
+					"type": "string"
+				},
+				"repoURL": {
+					"description": "Helm repository, OCI chart or Git repository URL.",
+					"type": "string"
+				},
+				"targetRevision": {
+					"description": "Chart version or Git revision.",
+					"type": "string"
+				}
+			},
+			"type": "object"
+		},
+		"keda": {
+			"additionalProperties": false,
+			"description": "KEDA, installed as an Argo CD Application.",
+			"properties": {
+				"enabled": {
+					"description": "Installs KEDA.",
+					"type": "boolean"
+				},
+				"namespace": {
+					"description": "Namespace KEDA is installed into.",
+					"type": "string"
+				},
+				"repoURL": {
+					"description": "Helm repository or OCI chart URL KEDA is installed from.",
+					"type": "string"
+				},
+				"targetRevision": {
+					"description": "Chart version of KEDA.",
+					"type": "string"
+				},
+				"values": {
+					"description": "Helm values passed to the KEDA chart.",
+					"type": "object"
+				}
+			},
+			"type": "object"
+		},
+		"liferay": {
+			"additionalProperties": false,
+			"description": "Liferay Applications, one per environment.",
+			"properties": {
+				"enabled": {
+					"description": "Renders the Application.",
+					"type": "boolean"
+				},
+				"parameters": {
+					"description": "Extra Helm parameters for the Application.",
+					"items": {
+						"type": "object"
+					},
+					"type": "array"
+				},
+				"path": {
+					"description": "Path of the chart inside a Git repository.",
+					"type": "string"
+				},
+				"repoURL": {
+					"description": "Helm repository, OCI chart or Git repository URL.",
+					"type": "string"
+				},
+				"targetRevision": {
+					"description": "Chart version or Git revision.",
+					"type": "string"
+				},
+				"valuesPrefix": {
+					"description": "Prefix of the Liferay values inside the chart.",
+					"type": "string"
+				}
+			},
+			"type": "object"
+		},
+		"networkPolicy": {
+			"additionalProperties": false,
+			"description": "Network policies of the operator namespaces.",
+			"properties": {
+				"apiServerSources": {
+					"description": "Peers that reach the operators from the Kubernetes API server, such as webhooks. Required while Crossplane, the ECK operator, Envoy Gateway, External Secrets or KEDA is enabled.",
+					"items": {
+						"type": "object"
+					},
+					"type": "array"
+				},
+				"metricsSources": {
+					"description": "Peers that scrape operator metrics.",
+					"items": {
+						"type": "object"
+					},
+					"type": "array"
+				}
+			},
+			"type": "object"
+		},
+		"observability": {
+			"additionalProperties": false,
+			"description": "Observability Application.",
+			"properties": {
+				"enabled": {
+					"description": "Installs observability.",
+					"type": "boolean"
+				},
+				"namespace": {
+					"description": "Namespace observability is installed into.",
+					"type": "string"
+				},
+				"parameters": {
+					"description": "Extra Helm parameters for the Application.",
+					"items": {
+						"type": "object"
+					},
+					"type": "array"
+				},
+				"path": {
+					"description": "Path of the chart inside a Git repository.",
+					"type": "string"
+				},
+				"repoURL": {
+					"description": "OCI chart URL, Helm repository or Git repository URL.",
+					"type": "string"
+				},
+				"targetRevision": {
+					"description": "Chart version or Git revision.",
+					"type": "string"
+				}
+			},
+			"type": "object"
+		}
+	},
+	"type": "object"
+}

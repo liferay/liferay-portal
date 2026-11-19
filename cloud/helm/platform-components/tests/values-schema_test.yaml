@@ -1,0 +1,37 @@
+release:
+    name: my-release
+    namespace: argocd-system
+suite: Values Schema
+templates:
+    -   templates/operator-applications.yaml
+tests:
+    -   asserts:
+            -   failedTemplate:
+                    errorPattern: keda.enabled
+        it: Rejects a non-boolean operator switch
+        set:
+            keda.enabled: "yes"
+    -   asserts:
+            -   failedTemplate:
+                    errorPattern: argoWorkflows.gateway.envoyProxy.replicas
+        it: Rejects a non-integer gateway replica count
+        set:
+            argoWorkflows.gateway.envoyProxy.replicas: two
+    -   asserts:
+            -   failedTemplate:
+                    errorPattern: argoWorkflows.*chart
+        it: Rejects a setting the chart owns in an operator section
+        set:
+            argoWorkflows.chart: workflows
+    -   asserts:
+            -   failedTemplate:
+                    errorPattern: argoWorkflows.gateway.*hostName
+        it: Rejects an unknown setting in an operator gateway
+        set:
+            argoWorkflows.gateway.hostName: tasks.example.com
+    -   asserts:
+            -   failedTemplate:
+                    errorPattern: crossplane.*nameSpace
+        it: Rejects an unknown setting in an operator section
+        set:
+            crossplane.nameSpace: xp
