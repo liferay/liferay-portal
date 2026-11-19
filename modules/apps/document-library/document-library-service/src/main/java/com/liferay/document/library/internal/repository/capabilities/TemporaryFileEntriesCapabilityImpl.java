@@ -33,6 +33,7 @@ import com.liferay.portal.kernel.repository.model.BaseRepositoryModelOperation;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.Folder;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.systemevent.SystemEventHierarchyEntryThreadLocal;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -87,11 +88,20 @@ public class TemporaryFileEntriesCapabilityImpl
 
 			file = FileUtil.createTempFile(inputStream);
 
+			ServiceContext serviceContext = new ServiceContext();
+
+			if (temporaryFileEntriesScope.getUserId() ==
+					UserLocalServiceUtil.getGuestUserId(
+						folder.getCompanyId())) {
+
+				serviceContext.setAddGuestPermissions(true);
+			}
+
 			return _documentRepository.addFileEntry(
 				externalReferenceCode, temporaryFileEntriesScope.getUserId(),
 				folder.getFolderId(), fileName, mimeType, fileName, fileName,
 				StringPool.BLANK, StringPool.BLANK, file, null, null, null,
-				new ServiceContext());
+				serviceContext);
 		}
 		catch (IOException ioException) {
 			throw new SystemException(
