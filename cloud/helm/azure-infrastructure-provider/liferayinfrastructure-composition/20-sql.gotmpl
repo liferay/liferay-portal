@@ -35,12 +35,21 @@ metadata:
     name: {{ $databaseServerName }}
 spec:
     forProvider:
-        {{- include "database-server-parameters" (dict "env" $env "isDatabaseRestoreTarget" $isDatabaseRestoreTarget "storageGB" $database.storageGB) | nindent 8 }}
         {{- if not $isDatabaseRestoreTarget }}
         administratorLogin: {{ $databaseAdminLogin }}
         administratorPasswordSecretRef:
             key: password
             name: database-admin-password
+        {{- end }}
+        {{- if eq $env.databaseEngine "postgresql" }}
+        authentication:
+            activeDirectoryAuthEnabled: true
+            passwordAuthEnabled: true
+            tenantId: {{ $env.tenantId }}
+        {{- if not $isDatabaseRestoreTarget }}
+        autoGeneratePassword: true
+        {{- end }}
+        autoGrowEnabled: true
         {{- end }}
         backupRetentionDays: {{ $backupRetentionDays }}
         {{- if $cmkEnabled }}
@@ -61,8 +70,18 @@ spec:
         {{- end }}
         location: {{ $region }}
         privateDnsZoneId: {{ $env.databasePrivateDnsZoneId }}
+        {{- if eq $env.databaseEngine "postgresql" }}
+        publicNetworkAccessEnabled: false
+        {{- end }}
         resourceGroupName: {{ $env.resourceGroupName }}
         skuName: {{ $databaseSKUName }}
+        {{- if eq $env.databaseEngine "mysql" }}
+        storage:
+            autoGrowEnabled: true
+            sizeGb: {{ $database.storageGB }}
+        {{- else }}
+        storageMb: {{ mul $database.storageGB 1024 }}
+        {{- end }}
         tags:
             active: {{ printf "%t" (eq $dataPlane $activeDataPlane) | quote }}
             should-back-up: "true"
@@ -86,7 +105,19 @@ metadata:
     name: {{ $xr.metadata.name }}-db-{{ $dataPlane }}
 spec:
     forProvider:
-        {{- include "database-parameters" (dict "dataPlane" $dataPlane "env" $env) | nindent 8 }}
+        {{- if eq $env.databaseEngine "mysql" }}
+        charset: utf8mb4
+        collation: utf8mb4_unicode_ci
+        resourceGroupName: {{ $env.resourceGroupName }}
+        serverNameSelector:
+        {{- else }}
+        charset: UTF8
+        collation: en_US.utf8
+        serverIdSelector:
+        {{- end }}
+            matchControllerRef: true
+            matchLabels:
+                dataPlane: {{ $dataPlane }}
     managementPolicies: ["Create", "Observe", "Update"]
 {{- end }}
 {{- range $retainedDataPlaneKey, $_ := $retainedDataPlanes }}
