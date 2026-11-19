@@ -10,15 +10,7 @@
 <liferay-staging:defineObjects />
 
 <%
-Date lastPublishDate = null;
-
 Group publishSourceGroup = (stagingGroup != null) ? stagingGroup : group;
-
-LayoutSet layoutSet = LayoutSetLocalServiceUtil.fetchLayoutSet(publishSourceGroup.getGroupId(), false);
-
-if (layoutSet != null) {
-	lastPublishDate = ExportImportDateUtil.getLastPublishDate(layoutSet);
-}
 
 portletDisplay.setShowBackIcon(true);
 
@@ -54,8 +46,6 @@ renderResponse.setTitle(publishProcessDisplayContext.getTitle(scheduledPublishPr
 				"commentsAndRatingsEnabled", publishProcessDisplayContext.isCommentsAndRatingsEnabled()
 			).put(
 				"defaultScheduled", ParamUtil.getBoolean(request, "scheduled")
-			).put(
-				"lastPublishDate", (lastPublishDate == null) ? null : String.valueOf(lastPublishDate.toInstant())
 			).put(
 				"pageTreeModalConfiguration", publishProcessDisplayContext.getPageTreeModalConfiguration()
 			).put(

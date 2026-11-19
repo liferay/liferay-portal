@@ -32,7 +32,6 @@ type Props = {
 			deletionsDescription: string;
 			deletionsLabel: string;
 			itemsCount?: number;
-			lastPublishDate?: string;
 			onApplyFilter: (dateFilterValues: DateFilterValues) => void;
 			permissionsDescription: string;
 			permissionsLabel: string;
@@ -43,7 +42,6 @@ type Props = {
 			deletionsDescription?: never;
 			deletionsLabel?: never;
 			itemsCount?: never;
-			lastPublishDate?: never;
 			onApplyFilter?: never;
 			permissionsDescription?: never;
 			permissionsLabel?: never;
@@ -85,9 +83,9 @@ export default function DataSelection(props: Props) {
 
 					<FormikFieldDateFilter
 						itemsCount={props.itemsCount}
-						lastPublishDate={props.lastPublishDate}
 						name="dateFilterValues"
 						onApplyFilter={props.onApplyFilter}
+						process={process}
 						timeZoneId={timeZoneId}
 					/>
 				</>

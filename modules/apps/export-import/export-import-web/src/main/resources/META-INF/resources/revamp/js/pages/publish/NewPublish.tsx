@@ -79,7 +79,6 @@ export function NewPublish({
 	backURL,
 	commentsAndRatingsEnabled = false,
 	defaultScheduled = false,
-	lastPublishDate,
 	pageTreeModalConfiguration,
 	processesBackURL,
 	publishPreviewAPIURL,
@@ -94,7 +93,6 @@ export function NewPublish({
 	backURL: string;
 	commentsAndRatingsEnabled?: boolean;
 	defaultScheduled?: boolean;
-	lastPublishDate?: string;
 	pageTreeModalConfiguration: PageTreeModalConfiguration;
 	processesBackURL: string;
 	publishPreviewAPIURL: string;
@@ -432,7 +430,6 @@ export function NewPublish({
 								portletDataHandlerSections,
 								contentSelection
 							)}
-							lastPublishDate={lastPublishDate}
 							loading={loading}
 							onApplyFilter={handleApplyFilter}
 							pageTreeModalConfiguration={{

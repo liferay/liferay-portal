@@ -6,21 +6,22 @@
 import {useField, useFormikContext} from 'formik';
 import React from 'react';
 
+import {ExportImportProcess} from '../../../types/exportImportProcess';
 import DateFilter, {DateFilterValues, Range} from '../../date_filter';
 
 interface FormikFieldDateFilterProps {
 	itemsCount?: number;
-	lastPublishDate?: string;
 	name: string;
 	onApplyFilter?: (dateFilterValues: DateFilterValues) => void;
+	process?: ExportImportProcess;
 	timeZoneId: string;
 }
 
 export function FormikFieldDateFilter({
 	itemsCount,
-	lastPublishDate,
 	name,
 	onApplyFilter,
+	process,
 	timeZoneId,
 }: FormikFieldDateFilterProps) {
 	const [field, , helpers] = useField<DateFilterValues>(name);
@@ -30,12 +31,12 @@ export function FormikFieldDateFilter({
 		<DateFilter
 			appliedValue={field.value ?? {range: Range.All}}
 			itemsCount={itemsCount}
-			lastPublishDate={lastPublishDate}
 			onApplyFilter={(dateFilterValues) => {
 				helpers.setValue(dateFilterValues);
 				setFieldTouched(name, true, false);
 				onApplyFilter?.(dateFilterValues);
 			}}
+			process={process}
 			timeZoneId={timeZoneId}
 		/>
 	);
