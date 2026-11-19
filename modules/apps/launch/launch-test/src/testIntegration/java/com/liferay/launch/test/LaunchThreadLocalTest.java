@@ -82,11 +82,15 @@ public class LaunchThreadLocalTest {
 
 		Assert.assertEquals(
 			Constants.PREVIEW,
-			HttpComponentsUtil.getParameter(preservedURL, "p_l_mode", false));
+			HttpComponentsUtil.getParameter(
+				preservedURL, "p_launch_mode", false));
 		Assert.assertEquals(
 			expectedLaunchSetId,
 			HttpComponentsUtil.getParameter(
-				preservedURL, "previewLaunchSetId", false));
+				preservedURL, "p_launch_id", false));
+		Assert.assertEquals(
+			Constants.PREVIEW,
+			HttpComponentsUtil.getParameter(preservedURL, "p_l_mode", false));
 	}
 
 }

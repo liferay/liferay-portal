@@ -8,6 +8,7 @@ package com.liferay.launch.web.internal.servlet.taglib;
 import com.liferay.launch.web.internal.constants.LaunchPortletKeys;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
+import com.liferay.portal.kernel.launch.LaunchThreadLocal;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.servlet.taglib.BaseDynamicInclude;
@@ -18,7 +19,6 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
-import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.template.react.renderer.ComponentDescriptor;
 import com.liferay.portal.template.react.renderer.ReactRenderer;
@@ -84,8 +84,7 @@ public class LaunchPreviewTopbarDynamicInclude extends BaseDynamicInclude {
 					"{LaunchPreviewTopbar} from launch-web",
 					portletNamespace + "PreviewTopbar", null, true),
 				HashMapBuilder.<String, Object>put(
-					"launchSetId",
-					ParamUtil.getLong(httpServletRequest, "previewLaunchSetId")
+					"launchSetId", LaunchThreadLocal.getLaunchSetId()
 				).put(
 					"noLaunchURL", _getNoLaunchURL(httpServletRequest)
 				).build(),
@@ -101,9 +100,7 @@ public class LaunchPreviewTopbarDynamicInclude extends BaseDynamicInclude {
 	private ThemeDisplay _getLaunchPreviewThemeDisplay(
 		HttpServletRequest httpServletRequest) {
 
-		if (Validator.isNull(
-				ParamUtil.getString(
-					httpServletRequest, "previewLaunchSetId")) ||
+		if (!LaunchThreadLocal.isPreview() ||
 			!Objects.equals(
 				Constants.PREVIEW,
 				ParamUtil.getString(httpServletRequest, "p_l_mode"))) {
@@ -127,7 +124,7 @@ public class LaunchPreviewTopbarDynamicInclude extends BaseDynamicInclude {
 
 	private String _getNoLaunchURL(HttpServletRequest httpServletRequest) {
 		return HttpComponentsUtil.setParameter(
-			_portal.getCurrentURL(httpServletRequest), "previewLaunchSetId", 0);
+			_portal.getCurrentURL(httpServletRequest), "p_launch_id", 0);
 	}
 
 	private void _writeCSSLink(

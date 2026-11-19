@@ -74,10 +74,14 @@ export default function defaultFetch(resource, init = {}) {
 			resource = setNewLocation(resource, resourceLocation);
 		}
 
-		const editLaunchSetId = Liferay.ThemeDisplay.getEditLaunchSetId?.();
+		const launchMode = Liferay.ThemeDisplay.getLaunchMode?.();
 
-		if (editLaunchSetId > 0) {
-			headers.set('x-liferay-launch-set-id', editLaunchSetId);
+		if (launchMode) {
+			headers.set('x-liferay-launch-mode', launchMode);
+			headers.set(
+				'x-liferay-launch-id',
+				Liferay.ThemeDisplay.getLaunchId()
+			);
 		}
 	}
 

@@ -6,6 +6,7 @@
 package com.liferay.launch.internal.url.provider;
 
 import com.liferay.launch.url.provider.LaunchEditURLProvider;
+import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -24,7 +25,9 @@ public class LaunchEditURLProviderImpl implements LaunchEditURLProvider {
 		}
 
 		return HttpComponentsUtil.setParameter(
-			url, "editLaunchSetId", launchSetId);
+			HttpComponentsUtil.setParameter(
+				url, "p_launch_mode", Constants.EDIT),
+			"p_launch_id", launchSetId);
 	}
 
 }

@@ -27,6 +27,7 @@ import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactory;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.Portal;
@@ -242,8 +243,9 @@ public class ItemSelectorImpl implements ItemSelector {
 
 		if (LaunchThreadLocal.isEdit()) {
 			portletURL.setParameter(
-				"editLaunchSetId",
+				"p_launch_id",
 				String.valueOf(LaunchThreadLocal.getLaunchSetId()));
+			portletURL.setParameter("p_launch_mode", Constants.EDIT);
 		}
 
 		return portletURL;

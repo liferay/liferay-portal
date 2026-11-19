@@ -215,10 +215,30 @@ describe('Liferay.Util.fetch', () => {
 		expect(fetch).toHaveBeenCalledWith(`/myportal${sameOriginUrl}`, init);
 	});
 
-	it('adds the edit launch set ID header when a launch is being edited', () => {
+	it.each(['edit', 'preview'])(
+		'adds the launch headers when a launch is in %s mode',
+		(launchMode) => {
+			window.Liferay.ThemeDisplay = {
+				getDoAsUserIdEncoded: () => '',
+				getLaunchId: () => '123',
+				getLaunchMode: () => launchMode,
+				getPathContext: () => '',
+			};
+
+			fetchWrapper(sameOriginUrl);
+
+			const [, init] = fetch.mock.calls[fetch.mock.calls.length - 1];
+
+			expect(init.headers.get('x-liferay-launch-mode')).toBe(launchMode);
+			expect(init.headers.get('x-liferay-launch-id')).toBe('123');
+		}
+	);
+
+	it('does not add the launch headers outside of a launch', () => {
 		window.Liferay.ThemeDisplay = {
 			getDoAsUserIdEncoded: () => '',
-			getEditLaunchSetId: () => '123',
+			getLaunchId: () => '0',
+			getLaunchMode: () => '',
 			getPathContext: () => '',
 		};
 
@@ -226,6 +246,7 @@ describe('Liferay.Util.fetch', () => {
 
 		const [, init] = fetch.mock.calls[fetch.mock.calls.length - 1];
 
-		expect(init.headers.get('x-liferay-launch-set-id')).toBe('123');
+		expect(init.headers.has('x-liferay-launch-mode')).toBe(false);
+		expect(init.headers.has('x-liferay-launch-id')).toBe(false);
 	});
 });

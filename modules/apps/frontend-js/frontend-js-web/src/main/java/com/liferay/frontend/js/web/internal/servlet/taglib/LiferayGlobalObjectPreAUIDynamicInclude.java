@@ -234,6 +234,16 @@ public class LiferayGlobalObjectPreAUIDynamicInclude
 		return dateFormatPattern;
 	}
 
+	private String _getLaunchMode() {
+		LaunchThreadLocal.Mode mode = LaunchThreadLocal.getMode();
+
+		if (mode == null) {
+			return StringPool.BLANK;
+		}
+
+		return StringUtil.toLowerCase(mode.name());
+	}
+
 	private LiferayGlobalObjectConfiguration
 		_getLiferayGlobalObjectConfiguration(
 			HttpServletRequest httpServletRequest) {
@@ -652,12 +662,12 @@ public class LiferayGlobalObjectPreAUIDynamicInclude
 			"getDoAsUserIdEncoded", printWriter,
 			UnicodeFormatter.toString(themeDisplay.getDoAsUserId()));
 		_renderMethod(
-			"getEditLaunchSetId", printWriter,
-			LaunchThreadLocal.isEdit() ? LaunchThreadLocal.getLaunchSetId() :
-				0);
-		_renderMethod(
 			"getLanguageId", printWriter,
 			_language.getLanguageId(httpServletRequest));
+		_renderMethod(
+			"getLaunchId", printWriter,
+			Math.max(LaunchThreadLocal.getLaunchSetId(), 0));
+		_renderMethod("getLaunchMode", printWriter, _getLaunchMode());
 		_renderMethod(
 			"getParentGroupId", printWriter, themeDisplay.getSiteGroupId());
 		_renderMethod(
