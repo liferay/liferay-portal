@@ -280,10 +280,10 @@ public class Node implements Serializable {
 	public static enum Type {
 
 		AI_DECISION("AI_DECISION"), AI_HUB_AGENT("AI_HUB_AGENT"),
-		CONDITION("CONDITION"), FORK("FORK"), HTTP_REQUEST("HTTP_REQUEST"),
-		INITIAL_STATE("INITIAL_STATE"), JOIN("JOIN"), JOIN_XOR("JOIN_XOR"),
-		LLM("LLM"), SERVICE("SERVICE"), STATE("STATE"), TASK("TASK"),
-		TERMINAL_STATE("TERMINAL_STATE");
+		ASK_A_HUMAN("ASK_A_HUMAN"), CONDITION("CONDITION"), FORK("FORK"),
+		HTTP_REQUEST("HTTP_REQUEST"), INITIAL_STATE("INITIAL_STATE"),
+		JOIN("JOIN"), JOIN_XOR("JOIN_XOR"), LLM("LLM"), SERVICE("SERVICE"),
+		STATE("STATE"), TASK("TASK"), TERMINAL_STATE("TERMINAL_STATE");
 
 		@JsonCreator
 		public static Type create(String value) {
@@ -428,4 +428,4 @@ public class Node implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-392428663
+// LIFERAY-REST-BUILDER-HASH:-1105452007
