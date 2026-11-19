@@ -100,6 +100,12 @@ public class AuditConfigurationFormRendererTest {
 	private Map<String, Object> _getRequestParameters(String portletId)
 		throws Exception {
 
+		ThemeDisplay themeDisplay = new ThemeDisplay();
+
+		themeDisplay.setCompany(
+			_companyLocalService.getCompany(TestPropsValues.getCompanyId()));
+		themeDisplay.setUser(TestPropsValues.getUser());
+
 		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
 			new MockLiferayPortletActionRequest();
 
@@ -116,18 +122,7 @@ public class AuditConfigurationFormRendererTest {
 					return null;
 				}));
 		mockLiferayPortletActionRequest.setAttribute(
-			JavaConstants.JAKARTA_PORTLET_REQUEST,
-			mockLiferayPortletActionRequest);
-
-		ThemeDisplay themeDisplay = new ThemeDisplay();
-
-		themeDisplay.setCompany(
-			_companyLocalService.getCompany(TestPropsValues.getCompanyId()));
-		themeDisplay.setUser(TestPropsValues.getUser());
-
-		mockLiferayPortletActionRequest.setAttribute(
 			WebKeys.THEME_DISPLAY, themeDisplay);
-
 		mockLiferayPortletActionRequest.setParameter("enabled", "false");
 		mockLiferayPortletActionRequest.setParameter(
 			"pseudonymizationEnabled", "false");

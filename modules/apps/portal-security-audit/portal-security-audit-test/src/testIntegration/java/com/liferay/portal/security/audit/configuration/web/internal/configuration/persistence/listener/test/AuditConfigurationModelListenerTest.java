@@ -114,11 +114,11 @@ public class AuditConfigurationModelListenerTest {
 	)
 	@Test
 	public void testOnAfterSaveWhenFeatureFlagIsDisabled() throws Exception {
+		_auditMessages.clear();
+
 		AuditConfiguration auditConfiguration =
 			_configurationProvider.getSystemConfiguration(
 				AuditConfiguration.class);
-
-		_auditMessages.clear();
 
 		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
 				new ConfigurationTemporarySwapper(
@@ -133,7 +133,7 @@ public class AuditConfigurationModelListenerTest {
 	}
 
 	private void _assertAuditMessage(
-			boolean newValue, boolean oldValue, AuditMessage auditMessage)
+			AuditMessage auditMessage, boolean newValue, boolean oldValue)
 		throws Exception {
 
 		Assert.assertEquals(
@@ -166,6 +166,12 @@ public class AuditConfigurationModelListenerTest {
 			String portletId, boolean pseudonymizationEnabled)
 		throws Exception {
 
+		ThemeDisplay themeDisplay = new ThemeDisplay();
+
+		themeDisplay.setCompany(
+			_companyLocalService.getCompany(TestPropsValues.getCompanyId()));
+		themeDisplay.setUser(TestPropsValues.getUser());
+
 		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
 			new MockLiferayPortletActionRequest();
 
@@ -182,18 +188,7 @@ public class AuditConfigurationModelListenerTest {
 					return null;
 				}));
 		mockLiferayPortletActionRequest.setAttribute(
-			JavaConstants.JAKARTA_PORTLET_REQUEST,
-			mockLiferayPortletActionRequest);
-
-		ThemeDisplay themeDisplay = new ThemeDisplay();
-
-		themeDisplay.setCompany(
-			_companyLocalService.getCompany(TestPropsValues.getCompanyId()));
-		themeDisplay.setUser(TestPropsValues.getUser());
-
-		mockLiferayPortletActionRequest.setAttribute(
 			WebKeys.THEME_DISPLAY, themeDisplay);
-
 		mockLiferayPortletActionRequest.setParameter(
 			"pseudonymizationEnabled", String.valueOf(pseudonymizationEnabled));
 
@@ -203,15 +198,15 @@ public class AuditConfigurationModelListenerTest {
 	}
 
 	private void _testOnAfterSaveWithCompanyScope() throws Exception {
-		AuditConfiguration auditConfiguration =
-			_configurationProvider.getCompanyConfiguration(
-				AuditConfiguration.class, TestPropsValues.getCompanyId());
-
-		boolean pseudonymizationEnabled =
-			auditConfiguration.pseudonymizationEnabled();
-
 		try {
 			_auditMessages.clear();
+
+			AuditConfiguration auditConfiguration =
+				_configurationProvider.getCompanyConfiguration(
+					AuditConfiguration.class, TestPropsValues.getCompanyId());
+
+			boolean pseudonymizationEnabled =
+				auditConfiguration.pseudonymizationEnabled();
 
 			_configurationProvider.saveCompanyConfiguration(
 				AuditConfiguration.class, TestPropsValues.getCompanyId(),
@@ -223,8 +218,8 @@ public class AuditConfigurationModelListenerTest {
 				_auditMessages.toString(), 1, _auditMessages.size());
 
 			_assertAuditMessage(
-				!pseudonymizationEnabled, pseudonymizationEnabled,
-				_auditMessages.get(0));
+				_auditMessages.get(0), !pseudonymizationEnabled,
+				pseudonymizationEnabled);
 
 			_auditMessages.clear();
 
@@ -244,14 +239,14 @@ public class AuditConfigurationModelListenerTest {
 	}
 
 	private void _testOnAfterSaveWithSystemScope() throws Exception {
+		_auditMessages.clear();
+
 		AuditConfiguration auditConfiguration =
 			_configurationProvider.getSystemConfiguration(
 				AuditConfiguration.class);
 
 		boolean pseudonymizationEnabled =
 			auditConfiguration.pseudonymizationEnabled();
-
-		_auditMessages.clear();
 
 		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
 				new ConfigurationTemporarySwapper(
@@ -264,20 +259,20 @@ public class AuditConfigurationModelListenerTest {
 				_auditMessages.toString(), 1, _auditMessages.size());
 
 			_assertAuditMessage(
-				!pseudonymizationEnabled, pseudonymizationEnabled,
-				_auditMessages.get(0));
+				_auditMessages.get(0), !pseudonymizationEnabled,
+				pseudonymizationEnabled);
 		}
 	}
 
 	private void _testOnAfterSaveWithoutConfigurationFormRenderer()
 		throws Exception {
 
-		AuditConfiguration auditConfiguration =
-			_configurationProvider.getCompanyConfiguration(
-				AuditConfiguration.class, TestPropsValues.getCompanyId());
-
 		try {
 			_auditMessages.clear();
+
+			AuditConfiguration auditConfiguration =
+				_configurationProvider.getCompanyConfiguration(
+					AuditConfiguration.class, TestPropsValues.getCompanyId());
 
 			_configurationProvider.saveCompanyConfiguration(
 				AuditConfiguration.class, TestPropsValues.getCompanyId(),
