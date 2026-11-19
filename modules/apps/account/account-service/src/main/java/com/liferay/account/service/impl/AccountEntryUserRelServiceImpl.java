@@ -322,6 +322,30 @@ public class AccountEntryUserRelServiceImpl
 			accountEntryId, userId);
 	}
 
+	@Override
+	public void updateAccountEntryUserRels(
+			long[] addAccountEntryIds, long[] deleteAccountEntryIds,
+			long accountUserId)
+		throws PortalException {
+
+		PermissionChecker permissionChecker = getPermissionChecker();
+
+		for (long addAccountEntryId : addAccountEntryIds) {
+			_modelResourcePermission.check(
+				permissionChecker, addAccountEntryId,
+				AccountActionKeys.ASSIGN_USERS);
+		}
+
+		for (long deleteAccountEntryId : deleteAccountEntryIds) {
+			_modelResourcePermission.check(
+				permissionChecker, deleteAccountEntryId,
+				AccountActionKeys.UNASSIGN_USERS);
+		}
+
+		accountEntryUserRelLocalService.updateAccountEntryUserRels(
+			addAccountEntryIds, deleteAccountEntryIds, accountUserId);
+	}
+
 	@Reference(
 		policy = ReferencePolicy.DYNAMIC,
 		policyOption = ReferencePolicyOption.GREEDY,
