@@ -41,16 +41,19 @@ public class DBCopyTablesProcessTest {
 	@TestInfo("LPD-110028")
 	public void testCopyTable() throws Exception {
 		DataSource dataSource = Mockito.mock(DataSource.class);
+
 		Connection connection = Mockito.mock(Connection.class);
+
 		PreparedStatement preparedStatement = Mockito.mock(
 			PreparedStatement.class);
-		JdbcStatement jdbcStatement = Mockito.mock(JdbcStatement.class);
 
 		Mockito.when(
 			preparedStatement.isWrapperFor(JdbcStatement.class)
 		).thenReturn(
 			true
 		);
+
+		JdbcStatement jdbcStatement = Mockito.mock(JdbcStatement.class);
 
 		Mockito.when(
 			preparedStatement.unwrap(JdbcStatement.class)
@@ -79,12 +82,12 @@ public class DBCopyTablesProcessTest {
 		DBCopyTablesProcess dbCopyTablesProcess = new DBCopyTablesProcess(
 			dataSource, Mockito.mock(DataSource.class));
 
-		String columnName = RandomTestUtil.randomString();
-		String tableName = RandomTestUtil.randomString();
-
 		Map<String, List<String>> sourceColumnNamesMap =
 			ReflectionTestUtil.getFieldValue(
 				dbCopyTablesProcess, "_sourceColumnNamesMap");
+
+		String columnName = RandomTestUtil.randomString();
+		String tableName = RandomTestUtil.randomString();
 
 		sourceColumnNamesMap.put(
 			tableName, new ArrayList<>(Arrays.asList(columnName)));
