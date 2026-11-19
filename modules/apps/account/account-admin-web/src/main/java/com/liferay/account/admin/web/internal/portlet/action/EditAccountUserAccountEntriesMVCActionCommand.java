@@ -6,7 +6,7 @@
 package com.liferay.account.admin.web.internal.portlet.action;
 
 import com.liferay.account.constants.AccountPortletKeys;
-import com.liferay.account.service.AccountEntryUserRelLocalService;
+import com.liferay.account.service.AccountEntryUserRelService;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
@@ -48,13 +48,13 @@ public class EditAccountUserAccountEntriesMVCActionCommand
 
 		User selectedUser = _portal.getSelectedUser(actionRequest);
 
-		_accountEntryUserRelLocalService.updateAccountEntryUserRels(
+		_accountEntryUserRelService.updateAccountEntryUserRels(
 			addAccountEntryIds, deleteAccountEntryIds,
 			selectedUser.getUserId());
 	}
 
 	@Reference
-	private AccountEntryUserRelLocalService _accountEntryUserRelLocalService;
+	private AccountEntryUserRelService _accountEntryUserRelService;
 
 	@Reference
 	private Portal _portal;
