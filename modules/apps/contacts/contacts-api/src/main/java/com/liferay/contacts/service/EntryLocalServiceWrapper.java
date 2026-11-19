@@ -253,13 +253,6 @@ public class EntryLocalServiceWrapper
 		return _entryLocalService.getEntries(start, end);
 	}
 
-	@Override
-	public java.util.List<com.liferay.contacts.model.Entry> getEntries(
-		long userId, int start, int end) {
-
-		return _entryLocalService.getEntries(userId, start, end);
-	}
-
 	/**
 	 * Returns the number of entries.
 	 *
@@ -390,4 +383,4 @@ public class EntryLocalServiceWrapper
 	private EntryLocalService _entryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:166147089
+// LIFERAY-SERVICE-BUILDER-HASH:-672388168

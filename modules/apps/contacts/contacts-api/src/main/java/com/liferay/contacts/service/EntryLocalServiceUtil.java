@@ -228,10 +228,6 @@ public class EntryLocalServiceUtil {
 		return getService().getEntries(start, end);
 	}
 
-	public static List<Entry> getEntries(long userId, int start, int end) {
-		return getService().getEntries(userId, start, end);
-	}
-
 	/**
 	 * Returns the number of entries.
 	 *
@@ -336,4 +332,4 @@ public class EntryLocalServiceUtil {
 		new Snapshot<>(EntryLocalServiceUtil.class, EntryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:897999070
+// LIFERAY-SERVICE-BUILDER-HASH:666540415

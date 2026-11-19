@@ -216,9 +216,6 @@ public interface EntryLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<Entry> getEntries(int start, int end);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<Entry> getEntries(long userId, int start, int end);
-
 	/**
 	 * Returns the number of entries.
 	 *
@@ -290,4 +287,4 @@ public interface EntryLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:671793900
+// LIFERAY-SERVICE-BUILDER-HASH:1981428924
