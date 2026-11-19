@@ -294,55 +294,55 @@ public class PropertiesFeatureFlagsCheck extends BaseFileCheck {
 
 		Matcher matcher = _featureFlagsPattern.matcher(content);
 
-		if (matcher.find()) {
-			String matchedFeatureFlags = matcher.group(2);
+		if (!matcher.find()) {
+			return content;
+		}
 
-			if (featureFlagKeys.isEmpty()) {
-				if (matchedFeatureFlags.contains("feature.flag.")) {
-					return StringUtil.replaceFirst(
-						content, matchedFeatureFlags, StringPool.BLANK,
-						matcher.start(2));
-				}
+		String matchedFeatureFlags = matcher.group(2);
 
-				return content;
-			}
-
-			List<String> deprecationFeatureFlagKeys = new ArrayList<>();
-
-			Matcher deprecationFeatureFlagKeyMatcher =
-				_deprecationFeatureFlagPattern.matcher(content);
-
-			while (deprecationFeatureFlagKeyMatcher.find()) {
-				deprecationFeatureFlagKeys.add(
-					deprecationFeatureFlagKeyMatcher.group(1));
-			}
-
-			StringBundler sb = new StringBundler(featureFlagKeys.size() * 6);
-
-			for (String featureFlagKey : featureFlagKeys) {
-				String featureFlagPropertyKey =
-					"feature.flag." + featureFlagKey;
-
-				String environmentVariable =
-					ToolsUtil.encodeEnvironmentProperty(featureFlagPropertyKey);
-
-				sb.append("\n\n    #\n    # Env: ");
-				sb.append(environmentVariable);
-				sb.append("\n    #\n    ");
-				sb.append(featureFlagPropertyKey);
-				sb.append(StringPool.EQUAL);
-				sb.append(deprecationFeatureFlagKeys.contains(featureFlagKey));
-			}
-
+		if (featureFlagKeys.isEmpty()) {
 			if (matchedFeatureFlags.contains("feature.flag.")) {
-				content = StringUtil.replaceFirst(
-					content, matchedFeatureFlags, sb.toString(),
+				return StringUtil.replaceFirst(
+					content, matchedFeatureFlags, StringPool.BLANK,
 					matcher.start(2));
 			}
-			else {
-				content = StringUtil.insert(
-					content, sb.toString(), matcher.start(2));
-			}
+
+			return content;
+		}
+
+		List<String> deprecationFeatureFlagKeys = new ArrayList<>();
+
+		Matcher deprecationFeatureFlagKeyMatcher =
+			_deprecationFeatureFlagPattern.matcher(content);
+
+		while (deprecationFeatureFlagKeyMatcher.find()) {
+			deprecationFeatureFlagKeys.add(
+				deprecationFeatureFlagKeyMatcher.group(1));
+		}
+
+		StringBundler sb = new StringBundler(featureFlagKeys.size() * 6);
+
+		for (String featureFlagKey : featureFlagKeys) {
+			String featureFlagPropertyKey = "feature.flag." + featureFlagKey;
+
+			String environmentVariable = ToolsUtil.encodeEnvironmentProperty(
+				featureFlagPropertyKey);
+
+			sb.append("\n\n    #\n    # Env: ");
+			sb.append(environmentVariable);
+			sb.append("\n    #\n    ");
+			sb.append(featureFlagPropertyKey);
+			sb.append(StringPool.EQUAL);
+			sb.append(deprecationFeatureFlagKeys.contains(featureFlagKey));
+		}
+
+		if (matchedFeatureFlags.contains("feature.flag.")) {
+			content = StringUtil.replaceFirst(
+				content, matchedFeatureFlags, sb.toString(), matcher.start(2));
+		}
+		else {
+			content = StringUtil.insert(
+				content, sb.toString(), matcher.start(2));
 		}
 
 		return content;
@@ -428,33 +428,37 @@ public class PropertiesFeatureFlagsCheck extends BaseFileCheck {
 				continue;
 			}
 
-			if (key.endsWith(".type") &&
-				StringUtil.contains("beta,deprecation,release", value)) {
+			if (!key.endsWith(".type") ||
+				!StringUtil.contains("beta,deprecation,release", value)) {
 
-				int x = key.lastIndexOf(".");
+				featureFlagUIPropertiesMap.put(key, value);
 
-				for (String enforcePropertyName : _ENFORCE_PROPERTY_NAMES) {
-					String featureFlagUIPropertyName =
-						key.substring(0, x) + "." + enforcePropertyName;
+				continue;
+			}
 
-					if (properties.containsKey(featureFlagUIPropertyName)) {
-						addMessage(
-							fileName,
-							"Property \"" + featureFlagUIPropertyName +
-								"\" must be in Language.properties");
-					}
+			int x = key.lastIndexOf(".");
 
-					if (portalLanguageProperties.containsKey(
-							featureFlagUIPropertyName)) {
+			for (String enforcePropertyName : _ENFORCE_PROPERTY_NAMES) {
+				String featureFlagUIPropertyName =
+					key.substring(0, x) + "." + enforcePropertyName;
 
-						continue;
-					}
-
+				if (properties.containsKey(featureFlagUIPropertyName)) {
 					addMessage(
 						fileName,
-						"Missing property \"" + featureFlagUIPropertyName +
-							"\" in Language.properties");
+						"Property \"" + featureFlagUIPropertyName +
+							"\" must be in Language.properties");
 				}
+
+				if (portalLanguageProperties.containsKey(
+						featureFlagUIPropertyName)) {
+
+					continue;
+				}
+
+				addMessage(
+					fileName,
+					"Missing property \"" + featureFlagUIPropertyName +
+						"\" in Language.properties");
 			}
 
 			featureFlagUIPropertiesMap.put(key, value);
