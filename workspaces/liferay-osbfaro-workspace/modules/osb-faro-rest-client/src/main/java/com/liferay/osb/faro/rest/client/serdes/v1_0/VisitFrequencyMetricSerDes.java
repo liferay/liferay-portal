@@ -1,0 +1,356 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+package com.liferay.osb.faro.rest.client.serdes.v1_0;
+
+import com.liferay.osb.faro.rest.client.dto.v1_0.VisitFrequencyMetric;
+import com.liferay.osb.faro.rest.client.json.BaseJSONParser;
+
+import jakarta.annotation.Generated;
+
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.TreeMap;
+
+/**
+ * @author Leslie Wong
+ * @generated
+ */
+@Generated("")
+public class VisitFrequencyMetricSerDes {
+
+	public static VisitFrequencyMetric toDTO(String json) {
+		VisitFrequencyMetricJSONParser visitFrequencyMetricJSONParser =
+			new VisitFrequencyMetricJSONParser();
+
+		return visitFrequencyMetricJSONParser.parseToDTO(json);
+	}
+
+	public static VisitFrequencyMetric[] toDTOs(String json) {
+		VisitFrequencyMetricJSONParser visitFrequencyMetricJSONParser =
+			new VisitFrequencyMetricJSONParser();
+
+		return visitFrequencyMetricJSONParser.parseToDTOs(json);
+	}
+
+	public static String toJSON(VisitFrequencyMetric visitFrequencyMetric) {
+		if (visitFrequencyMetric == null) {
+			return "null";
+		}
+
+		StringBuilder sb = new StringBuilder();
+
+		sb.append("{");
+
+		if (visitFrequencyMetric.getBiWeeklyVisitors() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"biWeeklyVisitors\": ");
+
+			sb.append(visitFrequencyMetric.getBiWeeklyVisitors());
+		}
+
+		if (visitFrequencyMetric.getDailyVisitors() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"dailyVisitors\": ");
+
+			sb.append(visitFrequencyMetric.getDailyVisitors());
+		}
+
+		if (visitFrequencyMetric.getMonthlyVisitors() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"monthlyVisitors\": ");
+
+			sb.append(visitFrequencyMetric.getMonthlyVisitors());
+		}
+
+		if (visitFrequencyMetric.getOccasionalVisitors() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"occasionalVisitors\": ");
+
+			sb.append(visitFrequencyMetric.getOccasionalVisitors());
+		}
+
+		if (visitFrequencyMetric.getVisitors() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"visitors\": ");
+
+			sb.append(visitFrequencyMetric.getVisitors());
+		}
+
+		if (visitFrequencyMetric.getWeeklyVisitors() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"weeklyVisitors\": ");
+
+			sb.append(visitFrequencyMetric.getWeeklyVisitors());
+		}
+
+		sb.append("}");
+
+		return sb.toString();
+	}
+
+	public static Map<String, Object> toMap(String json) {
+		VisitFrequencyMetricJSONParser visitFrequencyMetricJSONParser =
+			new VisitFrequencyMetricJSONParser();
+
+		return visitFrequencyMetricJSONParser.parseToMap(json);
+	}
+
+	public static Map<String, String> toMap(
+		VisitFrequencyMetric visitFrequencyMetric) {
+
+		if (visitFrequencyMetric == null) {
+			return null;
+		}
+
+		Map<String, String> map = new TreeMap<>();
+
+		if (visitFrequencyMetric.getBiWeeklyVisitors() == null) {
+			map.put("biWeeklyVisitors", null);
+		}
+		else {
+			map.put(
+				"biWeeklyVisitors",
+				String.valueOf(visitFrequencyMetric.getBiWeeklyVisitors()));
+		}
+
+		if (visitFrequencyMetric.getDailyVisitors() == null) {
+			map.put("dailyVisitors", null);
+		}
+		else {
+			map.put(
+				"dailyVisitors",
+				String.valueOf(visitFrequencyMetric.getDailyVisitors()));
+		}
+
+		if (visitFrequencyMetric.getMonthlyVisitors() == null) {
+			map.put("monthlyVisitors", null);
+		}
+		else {
+			map.put(
+				"monthlyVisitors",
+				String.valueOf(visitFrequencyMetric.getMonthlyVisitors()));
+		}
+
+		if (visitFrequencyMetric.getOccasionalVisitors() == null) {
+			map.put("occasionalVisitors", null);
+		}
+		else {
+			map.put(
+				"occasionalVisitors",
+				String.valueOf(visitFrequencyMetric.getOccasionalVisitors()));
+		}
+
+		if (visitFrequencyMetric.getVisitors() == null) {
+			map.put("visitors", null);
+		}
+		else {
+			map.put(
+				"visitors", String.valueOf(visitFrequencyMetric.getVisitors()));
+		}
+
+		if (visitFrequencyMetric.getWeeklyVisitors() == null) {
+			map.put("weeklyVisitors", null);
+		}
+		else {
+			map.put(
+				"weeklyVisitors",
+				String.valueOf(visitFrequencyMetric.getWeeklyVisitors()));
+		}
+
+		return map;
+	}
+
+	public static class VisitFrequencyMetricJSONParser
+		extends BaseJSONParser<VisitFrequencyMetric> {
+
+		@Override
+		protected VisitFrequencyMetric createDTO() {
+			return new VisitFrequencyMetric();
+		}
+
+		@Override
+		protected VisitFrequencyMetric[] createDTOArray(int size) {
+			return new VisitFrequencyMetric[size];
+		}
+
+		@Override
+		protected boolean parseMaps(String jsonParserFieldName) {
+			if (Objects.equals(jsonParserFieldName, "biWeeklyVisitors")) {
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "dailyVisitors")) {
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "monthlyVisitors")) {
+				return false;
+			}
+			else if (Objects.equals(
+						jsonParserFieldName, "occasionalVisitors")) {
+
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "visitors")) {
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "weeklyVisitors")) {
+				return false;
+			}
+
+			return false;
+		}
+
+		@Override
+		protected void setField(
+			VisitFrequencyMetric visitFrequencyMetric,
+			String jsonParserFieldName, Object jsonParserFieldValue) {
+
+			if (Objects.equals(jsonParserFieldName, "biWeeklyVisitors")) {
+				if (jsonParserFieldValue != null) {
+					visitFrequencyMetric.setBiWeeklyVisitors(
+						Long.valueOf((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "dailyVisitors")) {
+				if (jsonParserFieldValue != null) {
+					visitFrequencyMetric.setDailyVisitors(
+						Long.valueOf((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "monthlyVisitors")) {
+				if (jsonParserFieldValue != null) {
+					visitFrequencyMetric.setMonthlyVisitors(
+						Long.valueOf((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(
+						jsonParserFieldName, "occasionalVisitors")) {
+
+				if (jsonParserFieldValue != null) {
+					visitFrequencyMetric.setOccasionalVisitors(
+						Long.valueOf((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "visitors")) {
+				if (jsonParserFieldValue != null) {
+					visitFrequencyMetric.setVisitors(
+						Long.valueOf((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "weeklyVisitors")) {
+				if (jsonParserFieldValue != null) {
+					visitFrequencyMetric.setWeeklyVisitors(
+						Long.valueOf((String)jsonParserFieldValue));
+				}
+			}
+		}
+
+	}
+
+	private static String _escape(Object object) {
+		String string = String.valueOf(object);
+
+		for (String[] strings : BaseJSONParser.JSON_ESCAPE_STRINGS) {
+			string = string.replace(strings[0], strings[1]);
+		}
+
+		return string;
+	}
+
+	private static String _toJSON(Map<String, ?> map) {
+		StringBuilder sb = new StringBuilder("{");
+
+		@SuppressWarnings("unchecked")
+		Set set = map.entrySet();
+
+		@SuppressWarnings("unchecked")
+		Iterator<Map.Entry<String, ?>> iterator = set.iterator();
+
+		while (iterator.hasNext()) {
+			Map.Entry<String, ?> entry = iterator.next();
+
+			sb.append("\"");
+			sb.append(entry.getKey());
+			sb.append("\": ");
+
+			Object value = entry.getValue();
+
+			sb.append(_toJSON(value));
+
+			if (iterator.hasNext()) {
+				sb.append(", ");
+			}
+		}
+
+		sb.append("}");
+
+		return sb.toString();
+	}
+
+	private static String _toJSON(Object value) {
+		if (value == null) {
+			return "null";
+		}
+
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
+		if (value instanceof Map) {
+			return _toJSON((Map)value);
+		}
+
+		Class<?> clazz = value.getClass();
+
+		if (clazz.isArray()) {
+			StringBuilder sb = new StringBuilder("[");
+
+			Object[] values = (Object[])value;
+
+			for (int i = 0; i < values.length; i++) {
+				sb.append(_toJSON(values[i]));
+
+				if ((i + 1) < values.length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
+
+			return sb.toString();
+		}
+
+		if (value instanceof String) {
+			return "\"" + _escape(value) + "\"";
+		}
+
+		return String.valueOf(value);
+	}
+
+}
+// LIFERAY-REST-BUILDER-HASH:1763594826
