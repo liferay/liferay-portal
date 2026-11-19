@@ -134,7 +134,6 @@ const AttributeFilterConjunctionInput: React.FC<
 		);
 
 		onChange({
-			attribute,
 			criterion: {
 				operatorName:
 					defaultAttributeOperator as unknown as Criterion['operatorName'],
@@ -184,7 +183,6 @@ const AttributeFilterConjunctionInput: React.FC<
 				dataType={attribute.dataType}
 				onChange={(params: {criterion: Criterion}) =>
 					onChange({
-						attribute,
 						criterion: params.criterion,
 						touched,
 						valid,
@@ -198,7 +196,6 @@ const AttributeFilterConjunctionInput: React.FC<
 				dataType={attribute.dataType}
 				onChange={(params) =>
 					onChange({
-						attribute,
 						criterion: params.criterion ?? {},
 						touched: {
 							...touched,

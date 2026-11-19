@@ -1,5 +1,4 @@
 import React from 'react';
-import {Attribute} from 'event-analysis/utils/types';
 import {
 	Conjunctions,
 	CustomFunctionOperators,
@@ -44,7 +43,6 @@ export type AttributeFilterState = {
 };
 
 export type AttributeConjunctionChangeParams = {
-	attribute?: Attribute;
 	criterion: Criterion;
 	touched: AttributeFilterState;
 	valid: AttributeFilterState;
