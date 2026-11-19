@@ -337,15 +337,17 @@ public class MBMessageServiceUtil {
 	}
 
 	public static List<MBMessage> getThreadMessages(
-		long groupId, long categoryId, long threadId, int status, int start,
-		int end) {
+			long groupId, long categoryId, long threadId, int status, int start,
+			int end)
+		throws PortalException {
 
 		return getService().getThreadMessages(
 			groupId, categoryId, threadId, status, start, end);
 	}
 
 	public static int getThreadMessagesCount(
-		long groupId, long categoryId, long threadId, int status) {
+			long groupId, long categoryId, long threadId, int status)
+		throws PortalException {
 
 		return getService().getThreadMessagesCount(
 			groupId, categoryId, threadId, status);
@@ -425,4 +427,4 @@ public class MBMessageServiceUtil {
 		new Snapshot<>(MBMessageServiceUtil.class, MBMessageService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2007273742
+// LIFERAY-SERVICE-BUILDER-HASH:-1079107350

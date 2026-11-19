@@ -370,8 +370,9 @@ public class MBMessageServiceWrapper
 
 	@Override
 	public java.util.List<MBMessage> getThreadMessages(
-		long groupId, long categoryId, long threadId, int status, int start,
-		int end) {
+			long groupId, long categoryId, long threadId, int status, int start,
+			int end)
+		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _mbMessageService.getThreadMessages(
 			groupId, categoryId, threadId, status, start, end);
@@ -379,7 +380,8 @@ public class MBMessageServiceWrapper
 
 	@Override
 	public int getThreadMessagesCount(
-		long groupId, long categoryId, long threadId, int status) {
+			long groupId, long categoryId, long threadId, int status)
+		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _mbMessageService.getThreadMessagesCount(
 			groupId, categoryId, threadId, status);
@@ -474,4 +476,4 @@ public class MBMessageServiceWrapper
 	private MBMessageService _mbMessageService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2128467890
+// LIFERAY-SERVICE-BUILDER-HASH:1942198250

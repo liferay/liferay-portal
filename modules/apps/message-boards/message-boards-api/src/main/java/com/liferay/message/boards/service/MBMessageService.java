@@ -238,12 +238,14 @@ public interface MBMessageService extends BaseService {
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<MBMessage> getThreadMessages(
-		long groupId, long categoryId, long threadId, int status, int start,
-		int end);
+			long groupId, long categoryId, long threadId, int status, int start,
+			int end)
+		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getThreadMessagesCount(
-		long groupId, long categoryId, long threadId, int status);
+			long groupId, long categoryId, long threadId, int status)
+		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public String getThreadMessagesRSS(
@@ -280,4 +282,4 @@ public interface MBMessageService extends BaseService {
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-221593970
+// LIFERAY-SERVICE-BUILDER-HASH:-977784306

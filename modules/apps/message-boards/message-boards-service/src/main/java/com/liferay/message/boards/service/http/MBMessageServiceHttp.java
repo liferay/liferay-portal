@@ -1317,9 +1317,10 @@ public class MBMessageServiceHttp {
 	}
 
 	public static java.util.List<com.liferay.message.boards.model.MBMessage>
-		getThreadMessages(
-			HttpPrincipal httpPrincipal, long groupId, long categoryId,
-			long threadId, int status, int start, int end) {
+			getThreadMessages(
+				HttpPrincipal httpPrincipal, long groupId, long categoryId,
+				long threadId, int status, int start, int end)
+		throws com.liferay.portal.kernel.exception.PortalException {
 
 		try {
 			MethodKey methodKey = new MethodKey(
@@ -1335,6 +1336,13 @@ public class MBMessageServiceHttp {
 				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
 			}
 			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
 				throw new com.liferay.portal.kernel.exception.SystemException(
 					exception);
 			}
@@ -1352,8 +1360,9 @@ public class MBMessageServiceHttp {
 	}
 
 	public static int getThreadMessagesCount(
-		HttpPrincipal httpPrincipal, long groupId, long categoryId,
-		long threadId, int status) {
+			HttpPrincipal httpPrincipal, long groupId, long categoryId,
+			long threadId, int status)
+		throws com.liferay.portal.kernel.exception.PortalException {
 
 		try {
 			MethodKey methodKey = new MethodKey(
@@ -1369,6 +1378,13 @@ public class MBMessageServiceHttp {
 				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
 			}
 			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
 				throw new com.liferay.portal.kernel.exception.SystemException(
 					exception);
 			}
@@ -1859,4 +1875,4 @@ public class MBMessageServiceHttp {
 		};
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1462191668
+// LIFERAY-SERVICE-BUILDER-HASH:344526856
