@@ -67,6 +67,12 @@
 			"toolSetName": "faro-rest-v1.0"
 		},
 		{
+			"externalReferenceCode": "LDP_MCP_TOOL_getWorkspaceGroupChannelAcquisitionsPage",
+			"r_mcpServerProfileToTools_l_mcpServerProfileERC": "LDP_MCP_SERVER_PROFILE",
+			"toolName": "getWorkspaceGroupChannelAcquisitionsPage",
+			"toolSetName": "faro-rest-v1.0"
+		},
+		{
 			"externalReferenceCode": "LDP_MCP_TOOL_getWorkspaceGroupChannelAssetSummariesPage",
 			"r_mcpServerProfileToTools_l_mcpServerProfileERC": "LDP_MCP_SERVER_PROFILE",
 			"toolName": "getWorkspaceGroupChannelAssetSummariesPage",
@@ -136,6 +142,18 @@
 			"externalReferenceCode": "LDP_MCP_TOOL_getWorkspaceGroupChannelSearchTermsPage",
 			"r_mcpServerProfileToTools_l_mcpServerProfileERC": "LDP_MCP_SERVER_PROFILE",
 			"toolName": "getWorkspaceGroupChannelSearchTermsPage",
+			"toolSetName": "faro-rest-v1.0"
+		},
+		{
+			"externalReferenceCode": "LDP_MCP_TOOL_getWorkspaceGroupChannelVisitFrequencyMetric",
+			"r_mcpServerProfileToTools_l_mcpServerProfileERC": "LDP_MCP_SERVER_PROFILE",
+			"toolName": "getWorkspaceGroupChannelVisitFrequencyMetric",
+			"toolSetName": "faro-rest-v1.0"
+		},
+		{
+			"externalReferenceCode": "LDP_MCP_TOOL_getWorkspaceGroupChannelVisitorMetric",
+			"r_mcpServerProfileToTools_l_mcpServerProfileERC": "LDP_MCP_SERVER_PROFILE",
+			"toolName": "getWorkspaceGroupChannelVisitorMetric",
 			"toolSetName": "faro-rest-v1.0"
 		},
 		{

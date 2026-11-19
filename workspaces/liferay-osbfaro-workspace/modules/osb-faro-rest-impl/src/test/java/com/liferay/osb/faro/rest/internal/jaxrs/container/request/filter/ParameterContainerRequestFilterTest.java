@@ -7,9 +7,11 @@ package com.liferay.osb.faro.rest.internal.jaxrs.container.request.filter;
 
 import com.liferay.osb.faro.rest.resource.v1_0.AccountLifecycleResource;
 import com.liferay.osb.faro.rest.resource.v1_0.AccountLifecycleStageTransitionResource;
+import com.liferay.osb.faro.rest.resource.v1_0.AcquisitionResource;
 import com.liferay.osb.faro.rest.resource.v1_0.EventAttributeDefinitionResource;
 import com.liferay.osb.faro.rest.resource.v1_0.EventDefinitionResource;
 import com.liferay.osb.faro.rest.resource.v1_0.IndividualSegmentMembershipResource;
+import com.liferay.osb.faro.rest.resource.v1_0.VisitorMetricResource;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -114,6 +116,29 @@ public class ParameterContainerRequestFilterTest {
 	}
 
 	@Test
+	public void testFilterWithAcquisitionResourceMethod() {
+		_mockResourceInfo(
+			AcquisitionResource.class,
+			"getWorkspaceGroupChannelAcquisitionsPage");
+
+		Assert.assertNull(_filter("pageSize", "100"));
+		Assert.assertNull(
+			_filter("segmentId", String.valueOf(RandomTestUtil.randomLong())));
+		Assert.assertNull(_filter("type", "SOURCE_MEDIUM"));
+
+		_assertTitle(
+			"\"pageSize\" must be a whole number from 1 to 100",
+			_filter("pageSize", "101"));
+		_assertTitle(
+			"\"segmentId\" must be a numeric ID",
+			_filter("segmentId", RandomTestUtil.randomString()));
+		_assertTitle(
+			"\"type\" must be one of \"CHANNEL\", \"REFERRER\", " +
+				"\"SOURCE_MEDIUM\"",
+			_filter("type", RandomTestUtil.randomString()));
+	}
+
+	@Test
 	public void testFilterWithEventAttributeDefinitionResourceMethod() {
 		_mockResourceInfo(
 			EventAttributeDefinitionResource.class,
@@ -181,6 +206,24 @@ public class ParameterContainerRequestFilterTest {
 		_assertTitle(
 			"\"sort\" is not supported by this endpoint",
 			_filter("sort", "accountName:asc"));
+	}
+
+	@Test
+	public void testFilterWithVisitorMetricResourceMethod() {
+		_mockResourceInfo(
+			VisitorMetricResource.class,
+			"getWorkspaceGroupChannelVisitorMetric");
+
+		Assert.assertNull(_filter("rangeKey", "LAST_7_DAYS"));
+
+		_assertTitle(
+			"\"rangeEnd\" and \"rangeStart\" are not supported by this " +
+				"endpoint",
+			_filter("rangeEnd", RandomTestUtil.randomString()));
+		_assertTitle(
+			"\"rangeEnd\" and \"rangeStart\" are not supported by this " +
+				"endpoint",
+			_filter("rangeStart", RandomTestUtil.randomString()));
 	}
 
 	private void _assertTitle(String expectedTitle, Response response) {
