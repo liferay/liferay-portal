@@ -406,14 +406,6 @@ public class MBSuspiciousActivityLocalServiceWrapper
 			getMBSuspiciousActivityByUuidAndGroupId(uuid, groupId);
 	}
 
-	@Override
-	public java.util.List<MBSuspiciousActivity> getMessageSuspiciousActivities(
-		long messageId) {
-
-		return _mbSuspiciousActivityLocalService.getMessageSuspiciousActivities(
-			messageId);
-	}
-
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -434,22 +426,6 @@ public class MBSuspiciousActivityLocalServiceWrapper
 
 		return _mbSuspiciousActivityLocalService.getPersistedModel(
 			primaryKeyObj);
-	}
-
-	@Override
-	public MBSuspiciousActivity getSuspiciousActivity(long suspiciousActivityId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _mbSuspiciousActivityLocalService.getSuspiciousActivity(
-			suspiciousActivityId);
-	}
-
-	@Override
-	public java.util.List<MBSuspiciousActivity> getThreadSuspiciousActivities(
-		long threadId) {
-
-		return _mbSuspiciousActivityLocalService.getThreadSuspiciousActivities(
-			threadId);
 	}
 
 	/**
@@ -518,4 +494,4 @@ public class MBSuspiciousActivityLocalServiceWrapper
 	private MBSuspiciousActivityLocalService _mbSuspiciousActivityLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-984496049
+// LIFERAY-SERVICE-BUILDER-HASH:803444527

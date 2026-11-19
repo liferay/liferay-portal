@@ -253,13 +253,6 @@ public class MBThreadLocalServiceUtil {
 		return getService().getActionableDynamicQuery();
 	}
 
-	public static int getCategoryThreadsCount(
-		long groupId, long categoryId, int status) {
-
-		return getService().getCategoryThreadsCount(
-			groupId, categoryId, status);
-	}
-
 	public static com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery
 		getExportActionableDynamicQuery(
 			com.liferay.exportimport.kernel.lar.PortletDataContext
@@ -380,12 +373,6 @@ public class MBThreadLocalServiceUtil {
 
 	public static MBThread getThread(long threadId) throws PortalException {
 		return getService().getThread(threadId);
-	}
-
-	public static List<MBThread> getThreads(
-		long groupId, long categoryId, int status, int start, int end) {
-
-		return getService().getThreads(groupId, categoryId, status, start, end);
 	}
 
 	public static int getThreadsCount(
@@ -518,4 +505,4 @@ public class MBThreadLocalServiceUtil {
 			MBThreadLocalServiceUtil.class, MBThreadLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1403328884
+// LIFERAY-SERVICE-BUILDER-HASH:1230252362

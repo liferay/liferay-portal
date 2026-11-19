@@ -101,9 +101,6 @@ public interface MBMailingListLocalService
 	public PersistedModel createPersistedModel(Serializable primaryKeyObj)
 		throws PortalException;
 
-	public void deleteCategoryMailingList(long groupId, long categoryId)
-		throws PortalException;
-
 	public void deleteMailingList(long mailingListId) throws PortalException;
 
 	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
@@ -239,10 +236,6 @@ public interface MBMailingListLocalService
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public MBMailingList getCategoryMailingList(long groupId, long categoryId)
-		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ExportActionableDynamicQuery getExportActionableDynamicQuery(
 		PortletDataContext portletDataContext);
 
@@ -375,4 +368,4 @@ public interface MBMailingListLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1950979962
+// LIFERAY-SERVICE-BUILDER-HASH:731212753

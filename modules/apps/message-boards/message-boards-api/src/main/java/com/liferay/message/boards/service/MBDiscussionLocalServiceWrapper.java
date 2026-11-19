@@ -274,26 +274,10 @@ public class MBDiscussionLocalServiceWrapper
 	}
 
 	@Override
-	public MBDiscussion getDiscussion(long discussionId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _mbDiscussionLocalService.getDiscussion(discussionId);
-	}
-
-	@Override
 	public MBDiscussion getDiscussion(String className, long classPK)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _mbDiscussionLocalService.getDiscussion(className, classPK);
-	}
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
-	 */
-	@Deprecated
-	@Override
-	public java.util.List<MBDiscussion> getDiscussions(String className) {
-		return _mbDiscussionLocalService.getDiscussions(className);
 	}
 
 	@Override
@@ -506,4 +490,4 @@ public class MBDiscussionLocalServiceWrapper
 	private MBDiscussionLocalService _mbDiscussionLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1936673669
+// LIFERAY-SERVICE-BUILDER-HASH:1328737848

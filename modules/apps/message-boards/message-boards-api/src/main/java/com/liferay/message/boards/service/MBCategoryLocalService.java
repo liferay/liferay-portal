@@ -141,10 +141,6 @@ public interface MBCategoryLocalService
 			MBCategory category, boolean includeTrashedEntries)
 		throws PortalException;
 
-	public void deleteCategoryByExternalReferenceCode(
-			String externalReferenceCode, long groupId)
-		throws PortalException;
-
 	/**
 	 * Deletes the message boards category with the primary key from the database. Also notifies the appropriate model listeners.
 	 *
@@ -255,9 +251,6 @@ public interface MBCategoryLocalService
 	public MBCategory fetchMBCategory(long categoryId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public MBCategory fetchMBCategory(long groupId, String friendlyURL);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public MBCategory fetchMBCategoryByExternalReferenceCode(
 		String externalReferenceCode, long groupId);
 
@@ -279,9 +272,6 @@ public interface MBCategoryLocalService
 	public List<MBCategory> getCategories(long groupId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<MBCategory> getCategories(long groupId, int status);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<MBCategory> getCategories(
 		long groupId, long parentCategoryId, int start, int end);
 
@@ -291,21 +281,11 @@ public interface MBCategoryLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<MBCategory> getCategories(
-		long groupId, long excludedCategoryId, long parentCategoryId,
-		int status, int start, int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<MBCategory> getCategories(
 		long groupId, long[] parentCategoryIds, int start, int end);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<MBCategory> getCategories(
 		long groupId, long[] parentCategoryIds, int status, int start, int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<MBCategory> getCategories(
-		long groupId, long[] excludedCategoryIds, long[] parentCategoryIds,
-		int status, int start, int end);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<Object> getCategoriesAndThreads(long groupId, long categoryId);
@@ -323,34 +303,12 @@ public interface MBCategoryLocalService
 		long groupId, long categoryId, int status);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCategoriesCount(long groupId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCategoriesCount(long groupId, int status);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCategoriesCount(long groupId, long parentCategoryId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getCategoriesCount(
 		long groupId, long parentCategoryId, int status);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getCategoriesCount(
-		long groupId, long excludedCategoryId, long parentCategoryId,
-		int status);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCategoriesCount(long groupId, long[] parentCategoryIds);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCategoriesCount(
 		long groupId, long[] parentCategoryIds, int status);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCategoriesCount(
-		long groupId, long[] excludedCategoryIds, long[] parentCategoryIds,
-		int status);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public MBCategory getCategory(long categoryId) throws PortalException;
@@ -421,10 +379,6 @@ public interface MBCategoryLocalService
 	public MBCategory getMBCategory(long categoryId) throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public MBCategory getMBCategory(long groupId, String friendlyURL)
-		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public MBCategory getMBCategoryByExternalReferenceCode(
 			String externalReferenceCode, long groupId)
 		throws PortalException;
@@ -459,9 +413,6 @@ public interface MBCategoryLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<Long> getSubcategoryIds(
 		List<Long> categoryIds, long groupId, long categoryId);
-
-	public void moveCategoriesToTrash(long groupId, long userId)
-		throws PortalException;
 
 	public MBCategory moveCategory(
 			long categoryId, long parentCategoryId,
@@ -528,4 +479,4 @@ public interface MBCategoryLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1444454554
+// LIFERAY-SERVICE-BUILDER-HASH:-1157481899

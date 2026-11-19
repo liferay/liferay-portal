@@ -231,18 +231,8 @@ public interface MBDiscussionLocalService
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public MBDiscussion getDiscussion(long discussionId) throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public MBDiscussion getDiscussion(String className, long classPK)
 		throws PortalException;
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
-	 */
-	@Deprecated
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<MBDiscussion> getDiscussions(String className);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ExportActionableDynamicQuery getExportActionableDynamicQuery(
@@ -379,4 +369,4 @@ public interface MBDiscussionLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1185644198
+// LIFERAY-SERVICE-BUILDER-HASH:1546605329

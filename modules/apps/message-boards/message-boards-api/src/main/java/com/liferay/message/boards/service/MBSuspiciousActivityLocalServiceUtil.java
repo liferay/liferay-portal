@@ -358,12 +358,6 @@ public class MBSuspiciousActivityLocalServiceUtil {
 			uuid, groupId);
 	}
 
-	public static List<MBSuspiciousActivity> getMessageSuspiciousActivities(
-		long messageId) {
-
-		return getService().getMessageSuspiciousActivities(messageId);
-	}
-
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -380,19 +374,6 @@ public class MBSuspiciousActivityLocalServiceUtil {
 		throws PortalException {
 
 		return getService().getPersistedModel(primaryKeyObj);
-	}
-
-	public static MBSuspiciousActivity getSuspiciousActivity(
-			long suspiciousActivityId)
-		throws PortalException {
-
-		return getService().getSuspiciousActivity(suspiciousActivityId);
-	}
-
-	public static List<MBSuspiciousActivity> getThreadSuspiciousActivities(
-		long threadId) {
-
-		return getService().getThreadSuspiciousActivities(threadId);
 	}
 
 	/**
@@ -428,4 +409,4 @@ public class MBSuspiciousActivityLocalServiceUtil {
 			MBSuspiciousActivityLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-932988296
+// LIFERAY-SERVICE-BUILDER-HASH:-2066520967

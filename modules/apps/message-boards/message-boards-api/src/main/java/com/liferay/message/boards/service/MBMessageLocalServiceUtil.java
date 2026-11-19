@@ -106,24 +106,6 @@ public class MBMessageLocalServiceUtil {
 	@Deprecated
 	public static MBMessage addMessage(
 			long userId, String userName, long groupId, long categoryId,
-			String subject, String body,
-			com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws PortalException {
-
-		return getService().addMessage(
-			userId, userName, groupId, categoryId, subject, body,
-			serviceContext);
-	}
-
-	/**
-	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
-	 #addMessage(String, long, String, long, long, long, long,
-	 String, String, String, List, boolean, double, boolean,
-	 ServiceContext)}
-	 */
-	@Deprecated
-	public static MBMessage addMessage(
-			long userId, String userName, long groupId, long categoryId,
 			String subject, String body, String format,
 			List
 				<com.liferay.portal.kernel.util.ObjectValuePair
@@ -433,13 +415,6 @@ public class MBMessageLocalServiceUtil {
 		return getService().fetchFileEntryMessage(fileEntryId);
 	}
 
-	public static MBMessage fetchFirstMessage(
-			long threadId, long parentMessageId)
-		throws PortalException {
-
-		return getService().fetchFirstMessage(threadId, parentMessageId);
-	}
-
 	public static MBMessage fetchMBMessage(long messageId) {
 		return getService().fetchMBMessage(messageId);
 	}
@@ -449,12 +424,6 @@ public class MBMessageLocalServiceUtil {
 
 		return getService().fetchMBMessageByExternalReferenceCode(
 			externalReferenceCode, groupId);
-	}
-
-	public static MBMessage fetchMBMessageByUrlSubject(
-		long groupId, String urlSubject) {
-
-		return getService().fetchMBMessageByUrlSubject(groupId, urlSubject);
 	}
 
 	/**
@@ -491,12 +460,6 @@ public class MBMessageLocalServiceUtil {
 			groupId, categoryId, status, start, end, orderByComparator);
 	}
 
-	public static List<MBMessage> getCategoryMessages(
-		long groupId, long categoryId, long threadId) {
-
-		return getService().getCategoryMessages(groupId, categoryId, threadId);
-	}
-
 	public static int getCategoryMessagesCount(
 		long groupId, long categoryId, int status) {
 
@@ -522,21 +485,11 @@ public class MBMessageLocalServiceUtil {
 	}
 
 	public static List<MBMessage> getCompanyMessages(
-		long companyId, int status, int start, int end) {
-
-		return getService().getCompanyMessages(companyId, status, start, end);
-	}
-
-	public static List<MBMessage> getCompanyMessages(
 		long companyId, int status, int start, int end,
 		OrderByComparator<MBMessage> orderByComparator) {
 
 		return getService().getCompanyMessages(
 			companyId, status, start, end, orderByComparator);
-	}
-
-	public static int getCompanyMessagesCount(long companyId, int status) {
-		return getService().getCompanyMessagesCount(companyId, status);
 	}
 
 	public static com.liferay.message.boards.model.MBMessageDisplay
@@ -573,12 +526,6 @@ public class MBMessageLocalServiceUtil {
 			className, classPK, status);
 	}
 
-	public static List<com.liferay.message.boards.model.MBDiscussion>
-		getDiscussions(String className) {
-
-		return getService().getDiscussions(className);
-	}
-
 	public static com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery
 		getExportActionableDynamicQuery(
 			com.liferay.exportimport.kernel.lar.PortletDataContext
@@ -591,18 +538,6 @@ public class MBMessageLocalServiceUtil {
 		throws PortalException {
 
 		return getService().getFileEntryMessage(fileEntryId);
-	}
-
-	public static MBMessage getFirstMessage(long threadId, long parentMessageId)
-		throws PortalException {
-
-		return getService().getFirstMessage(threadId, parentMessageId);
-	}
-
-	public static List<MBMessage> getGroupMessages(
-		long groupId, int status, int start, int end) {
-
-		return getService().getGroupMessages(groupId, status, start, end);
 	}
 
 	public static List<MBMessage> getGroupMessages(
@@ -626,10 +561,6 @@ public class MBMessageLocalServiceUtil {
 
 		return getService().getGroupMessages(
 			groupId, userId, status, start, end, orderByComparator);
-	}
-
-	public static int getGroupMessagesCount(long groupId, int status) {
-		return getService().getGroupMessagesCount(groupId, status);
 	}
 
 	public static int getGroupMessagesCount(
@@ -818,14 +749,6 @@ public class MBMessageLocalServiceUtil {
 	}
 
 	public static List<MBMessage> getRootDiscussionMessages(
-			String className, long classPK, int status)
-		throws PortalException {
-
-		return getService().getRootDiscussionMessages(
-			className, classPK, status);
-	}
-
-	public static List<MBMessage> getRootDiscussionMessages(
 			String className, long classPK, int status, int start, int end)
 		throws PortalException {
 
@@ -875,10 +798,6 @@ public class MBMessageLocalServiceUtil {
 
 		return getService().getThreadMessages(
 			userId, threadId, status, start, end, comparator);
-	}
-
-	public static int getThreadMessagesCount(long threadId, int status) {
-		return getService().getThreadMessagesCount(threadId, status);
 	}
 
 	public static long moveMessageAttachmentToTrash(
@@ -1004,4 +923,4 @@ public class MBMessageLocalServiceUtil {
 			MBMessageLocalServiceUtil.class, MBMessageLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1766722829
+// LIFERAY-SERVICE-BUILDER-HASH:233390081

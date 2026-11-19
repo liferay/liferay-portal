@@ -244,10 +244,6 @@ public interface MBThreadLocalService
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCategoryThreadsCount(
-		long groupId, long categoryId, int status);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ExportActionableDynamicQuery getExportActionableDynamicQuery(
 		PortletDataContext portletDataContext);
 
@@ -346,10 +342,6 @@ public interface MBThreadLocalService
 	public MBThread getThread(long threadId) throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<MBThread> getThreads(
-		long groupId, long categoryId, int status, int start, int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getThreadsCount(long groupId, long categoryId, int status);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -446,4 +438,4 @@ public interface MBThreadLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1324055725
+// LIFERAY-SERVICE-BUILDER-HASH:-92397199

@@ -245,24 +245,10 @@ public class MBDiscussionLocalServiceUtil {
 		return getService().getActionableDynamicQuery();
 	}
 
-	public static MBDiscussion getDiscussion(long discussionId)
-		throws PortalException {
-
-		return getService().getDiscussion(discussionId);
-	}
-
 	public static MBDiscussion getDiscussion(String className, long classPK)
 		throws PortalException {
 
 		return getService().getDiscussion(className, classPK);
-	}
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
-	 */
-	@Deprecated
-	public static List<MBDiscussion> getDiscussions(String className) {
-		return getService().getDiscussions(className);
 	}
 
 	public static com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery
@@ -424,4 +410,4 @@ public class MBDiscussionLocalServiceUtil {
 			MBDiscussionLocalServiceUtil.class, MBDiscussionLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:211059820
+// LIFERAY-SERVICE-BUILDER-HASH:-1437353531

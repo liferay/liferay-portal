@@ -240,12 +240,6 @@ public class MBThreadFlagLocalServiceUtil {
 		return getService().fetchMBThreadFlagByUuidAndGroupId(uuid, groupId);
 	}
 
-	public static MBThreadFlag fetchThreadFlag(
-		long userId, com.liferay.message.boards.model.MBThread thread) {
-
-		return getService().fetchThreadFlag(userId, thread);
-	}
-
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 
@@ -368,13 +362,6 @@ public class MBThreadFlagLocalServiceUtil {
 		return getService().getPersistedModel(primaryKeyObj);
 	}
 
-	public static MBThreadFlag getThreadFlag(
-			long userId, com.liferay.message.boards.model.MBThread thread)
-		throws PortalException {
-
-		return getService().getThreadFlag(userId, thread);
-	}
-
 	public static boolean hasThreadFlag(
 			long userId, com.liferay.message.boards.model.MBThread thread)
 		throws PortalException {
@@ -405,4 +392,4 @@ public class MBThreadFlagLocalServiceUtil {
 			MBThreadFlagLocalServiceUtil.class, MBThreadFlagLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1748871968
+// LIFERAY-SERVICE-BUILDER-HASH:-1152941594

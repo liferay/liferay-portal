@@ -172,15 +172,6 @@ public class MBCategoryLocalServiceWrapper
 		_mbCategoryLocalService.deleteCategory(category, includeTrashedEntries);
 	}
 
-	@Override
-	public void deleteCategoryByExternalReferenceCode(
-			String externalReferenceCode, long groupId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		_mbCategoryLocalService.deleteCategoryByExternalReferenceCode(
-			externalReferenceCode, groupId);
-	}
-
 	/**
 	 * Deletes the message boards category with the primary key from the database. Also notifies the appropriate model listeners.
 	 *
@@ -333,11 +324,6 @@ public class MBCategoryLocalServiceWrapper
 	}
 
 	@Override
-	public MBCategory fetchMBCategory(long groupId, String friendlyURL) {
-		return _mbCategoryLocalService.fetchMBCategory(groupId, friendlyURL);
-	}
-
-	@Override
 	public MBCategory fetchMBCategoryByExternalReferenceCode(
 		String externalReferenceCode, long groupId) {
 
@@ -373,11 +359,6 @@ public class MBCategoryLocalServiceWrapper
 	}
 
 	@Override
-	public java.util.List<MBCategory> getCategories(long groupId, int status) {
-		return _mbCategoryLocalService.getCategories(groupId, status);
-	}
-
-	@Override
 	public java.util.List<MBCategory> getCategories(
 		long groupId, long parentCategoryId, int start, int end) {
 
@@ -395,15 +376,6 @@ public class MBCategoryLocalServiceWrapper
 
 	@Override
 	public java.util.List<MBCategory> getCategories(
-		long groupId, long excludedCategoryId, long parentCategoryId,
-		int status, int start, int end) {
-
-		return _mbCategoryLocalService.getCategories(
-			groupId, excludedCategoryId, parentCategoryId, status, start, end);
-	}
-
-	@Override
-	public java.util.List<MBCategory> getCategories(
 		long groupId, long[] parentCategoryIds, int start, int end) {
 
 		return _mbCategoryLocalService.getCategories(
@@ -417,16 +389,6 @@ public class MBCategoryLocalServiceWrapper
 
 		return _mbCategoryLocalService.getCategories(
 			groupId, parentCategoryIds, status, start, end);
-	}
-
-	@Override
-	public java.util.List<MBCategory> getCategories(
-		long groupId, long[] excludedCategoryIds, long[] parentCategoryIds,
-		int status, int start, int end) {
-
-		return _mbCategoryLocalService.getCategories(
-			groupId, excludedCategoryIds, parentCategoryIds, status, start,
-			end);
 	}
 
 	@Override
@@ -462,22 +424,6 @@ public class MBCategoryLocalServiceWrapper
 	}
 
 	@Override
-	public int getCategoriesCount(long groupId) {
-		return _mbCategoryLocalService.getCategoriesCount(groupId);
-	}
-
-	@Override
-	public int getCategoriesCount(long groupId, int status) {
-		return _mbCategoryLocalService.getCategoriesCount(groupId, status);
-	}
-
-	@Override
-	public int getCategoriesCount(long groupId, long parentCategoryId) {
-		return _mbCategoryLocalService.getCategoriesCount(
-			groupId, parentCategoryId);
-	}
-
-	@Override
 	public int getCategoriesCount(
 		long groupId, long parentCategoryId, int status) {
 
@@ -487,34 +433,10 @@ public class MBCategoryLocalServiceWrapper
 
 	@Override
 	public int getCategoriesCount(
-		long groupId, long excludedCategoryId, long parentCategoryId,
-		int status) {
-
-		return _mbCategoryLocalService.getCategoriesCount(
-			groupId, excludedCategoryId, parentCategoryId, status);
-	}
-
-	@Override
-	public int getCategoriesCount(long groupId, long[] parentCategoryIds) {
-		return _mbCategoryLocalService.getCategoriesCount(
-			groupId, parentCategoryIds);
-	}
-
-	@Override
-	public int getCategoriesCount(
 		long groupId, long[] parentCategoryIds, int status) {
 
 		return _mbCategoryLocalService.getCategoriesCount(
 			groupId, parentCategoryIds, status);
-	}
-
-	@Override
-	public int getCategoriesCount(
-		long groupId, long[] excludedCategoryIds, long[] parentCategoryIds,
-		int status) {
-
-		return _mbCategoryLocalService.getCategoriesCount(
-			groupId, excludedCategoryIds, parentCategoryIds, status);
 	}
 
 	@Override
@@ -617,13 +539,6 @@ public class MBCategoryLocalServiceWrapper
 	}
 
 	@Override
-	public MBCategory getMBCategory(long groupId, String friendlyURL)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _mbCategoryLocalService.getMBCategory(groupId, friendlyURL);
-	}
-
-	@Override
 	public MBCategory getMBCategoryByExternalReferenceCode(
 			String externalReferenceCode, long groupId)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -675,13 +590,6 @@ public class MBCategoryLocalServiceWrapper
 
 		return _mbCategoryLocalService.getSubcategoryIds(
 			categoryIds, groupId, categoryId);
-	}
-
-	@Override
-	public void moveCategoriesToTrash(long groupId, long userId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		_mbCategoryLocalService.moveCategoriesToTrash(groupId, userId);
 	}
 
 	@Override
@@ -816,4 +724,4 @@ public class MBCategoryLocalServiceWrapper
 	private MBCategoryLocalService _mbCategoryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1855561538
+// LIFERAY-SERVICE-BUILDER-HASH:348612671

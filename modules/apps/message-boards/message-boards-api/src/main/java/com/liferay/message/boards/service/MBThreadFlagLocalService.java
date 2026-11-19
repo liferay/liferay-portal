@@ -229,9 +229,6 @@ public interface MBThreadFlagLocalService
 		String uuid, long groupId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public MBThreadFlag fetchThreadFlag(long userId, MBThread thread);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -329,10 +326,6 @@ public interface MBThreadFlagLocalService
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public MBThreadFlag getThreadFlag(long userId, MBThread thread)
-		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public boolean hasThreadFlag(long userId, MBThread thread)
 		throws PortalException;
 
@@ -365,4 +358,4 @@ public interface MBThreadFlagLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1722500708
+// LIFERAY-SERVICE-BUILDER-HASH:-1022267274

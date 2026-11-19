@@ -88,12 +88,6 @@ public class MBMailingListLocalServiceUtil {
 		return getService().createPersistedModel(primaryKeyObj);
 	}
 
-	public static void deleteCategoryMailingList(long groupId, long categoryId)
-		throws PortalException {
-
-		getService().deleteCategoryMailingList(groupId, categoryId);
-	}
-
 	public static void deleteMailingList(long mailingListId)
 		throws PortalException {
 
@@ -263,13 +257,6 @@ public class MBMailingListLocalServiceUtil {
 		return getService().getActionableDynamicQuery();
 	}
 
-	public static MBMailingList getCategoryMailingList(
-			long groupId, long categoryId)
-		throws PortalException {
-
-		return getService().getCategoryMailingList(groupId, categoryId);
-	}
-
 	public static com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery
 		getExportActionableDynamicQuery(
 			com.liferay.exportimport.kernel.lar.PortletDataContext
@@ -430,4 +417,4 @@ public class MBMailingListLocalServiceUtil {
 			MBMailingListLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:168786760
+// LIFERAY-SERVICE-BUILDER-HASH:225513219

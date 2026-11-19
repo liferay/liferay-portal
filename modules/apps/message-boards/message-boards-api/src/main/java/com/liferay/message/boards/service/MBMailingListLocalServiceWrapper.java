@@ -89,14 +89,6 @@ public class MBMailingListLocalServiceWrapper
 	}
 
 	@Override
-	public void deleteCategoryMailingList(long groupId, long categoryId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		_mbMailingListLocalService.deleteCategoryMailingList(
-			groupId, categoryId);
-	}
-
-	@Override
 	public void deleteMailingList(long mailingListId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
@@ -290,14 +282,6 @@ public class MBMailingListLocalServiceWrapper
 		getActionableDynamicQuery() {
 
 		return _mbMailingListLocalService.getActionableDynamicQuery();
-	}
-
-	@Override
-	public MBMailingList getCategoryMailingList(long groupId, long categoryId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _mbMailingListLocalService.getCategoryMailingList(
-			groupId, categoryId);
 	}
 
 	@Override
@@ -503,4 +487,4 @@ public class MBMailingListLocalServiceWrapper
 	private MBMailingListLocalService _mbMailingListLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:859292285
+// LIFERAY-SERVICE-BUILDER-HASH:826995424

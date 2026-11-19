@@ -158,14 +158,6 @@ public class MBCategoryLocalServiceUtil {
 		getService().deleteCategory(category, includeTrashedEntries);
 	}
 
-	public static void deleteCategoryByExternalReferenceCode(
-			String externalReferenceCode, long groupId)
-		throws PortalException {
-
-		getService().deleteCategoryByExternalReferenceCode(
-			externalReferenceCode, groupId);
-	}
-
 	/**
 	 * Deletes the message boards category with the primary key from the database. Also notifies the appropriate model listeners.
 	 *
@@ -296,10 +288,6 @@ public class MBCategoryLocalServiceUtil {
 		return getService().fetchMBCategory(categoryId);
 	}
 
-	public static MBCategory fetchMBCategory(long groupId, String friendlyURL) {
-		return getService().fetchMBCategory(groupId, friendlyURL);
-	}
-
 	public static MBCategory fetchMBCategoryByExternalReferenceCode(
 		String externalReferenceCode, long groupId) {
 
@@ -330,10 +318,6 @@ public class MBCategoryLocalServiceUtil {
 		return getService().getCategories(groupId);
 	}
 
-	public static List<MBCategory> getCategories(long groupId, int status) {
-		return getService().getCategories(groupId, status);
-	}
-
 	public static List<MBCategory> getCategories(
 		long groupId, long parentCategoryId, int start, int end) {
 
@@ -349,14 +333,6 @@ public class MBCategoryLocalServiceUtil {
 	}
 
 	public static List<MBCategory> getCategories(
-		long groupId, long excludedCategoryId, long parentCategoryId,
-		int status, int start, int end) {
-
-		return getService().getCategories(
-			groupId, excludedCategoryId, parentCategoryId, status, start, end);
-	}
-
-	public static List<MBCategory> getCategories(
 		long groupId, long[] parentCategoryIds, int start, int end) {
 
 		return getService().getCategories(
@@ -369,15 +345,6 @@ public class MBCategoryLocalServiceUtil {
 
 		return getService().getCategories(
 			groupId, parentCategoryIds, status, start, end);
-	}
-
-	public static List<MBCategory> getCategories(
-		long groupId, long[] excludedCategoryIds, long[] parentCategoryIds,
-		int status, int start, int end) {
-
-		return getService().getCategories(
-			groupId, excludedCategoryIds, parentCategoryIds, status, start,
-			end);
 	}
 
 	public static List<Object> getCategoriesAndThreads(
@@ -407,18 +374,6 @@ public class MBCategoryLocalServiceUtil {
 			groupId, categoryId, status);
 	}
 
-	public static int getCategoriesCount(long groupId) {
-		return getService().getCategoriesCount(groupId);
-	}
-
-	public static int getCategoriesCount(long groupId, int status) {
-		return getService().getCategoriesCount(groupId, status);
-	}
-
-	public static int getCategoriesCount(long groupId, long parentCategoryId) {
-		return getService().getCategoriesCount(groupId, parentCategoryId);
-	}
-
 	public static int getCategoriesCount(
 		long groupId, long parentCategoryId, int status) {
 
@@ -427,32 +382,10 @@ public class MBCategoryLocalServiceUtil {
 	}
 
 	public static int getCategoriesCount(
-		long groupId, long excludedCategoryId, long parentCategoryId,
-		int status) {
-
-		return getService().getCategoriesCount(
-			groupId, excludedCategoryId, parentCategoryId, status);
-	}
-
-	public static int getCategoriesCount(
-		long groupId, long[] parentCategoryIds) {
-
-		return getService().getCategoriesCount(groupId, parentCategoryIds);
-	}
-
-	public static int getCategoriesCount(
 		long groupId, long[] parentCategoryIds, int status) {
 
 		return getService().getCategoriesCount(
 			groupId, parentCategoryIds, status);
-	}
-
-	public static int getCategoriesCount(
-		long groupId, long[] excludedCategoryIds, long[] parentCategoryIds,
-		int status) {
-
-		return getService().getCategoriesCount(
-			groupId, excludedCategoryIds, parentCategoryIds, status);
 	}
 
 	public static MBCategory getCategory(long categoryId)
@@ -544,12 +477,6 @@ public class MBCategoryLocalServiceUtil {
 		return getService().getMBCategory(categoryId);
 	}
 
-	public static MBCategory getMBCategory(long groupId, String friendlyURL)
-		throws PortalException {
-
-		return getService().getMBCategory(groupId, friendlyURL);
-	}
-
 	public static MBCategory getMBCategoryByExternalReferenceCode(
 			String externalReferenceCode, long groupId)
 		throws PortalException {
@@ -595,12 +522,6 @@ public class MBCategoryLocalServiceUtil {
 		List<Long> categoryIds, long groupId, long categoryId) {
 
 		return getService().getSubcategoryIds(categoryIds, groupId, categoryId);
-	}
-
-	public static void moveCategoriesToTrash(long groupId, long userId)
-		throws PortalException {
-
-		getService().moveCategoriesToTrash(groupId, userId);
 	}
 
 	public static MBCategory moveCategory(
@@ -697,4 +618,4 @@ public class MBCategoryLocalServiceUtil {
 			MBCategoryLocalServiceUtil.class, MBCategoryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1781819664
+// LIFERAY-SERVICE-BUILDER-HASH:261865502

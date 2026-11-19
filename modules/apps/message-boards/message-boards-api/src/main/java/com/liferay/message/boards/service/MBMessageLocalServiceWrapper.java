@@ -104,25 +104,6 @@ public class MBMessageLocalServiceWrapper
 	@Override
 	public MBMessage addMessage(
 			long userId, String userName, long groupId, long categoryId,
-			String subject, String body,
-			com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _mbMessageLocalService.addMessage(
-			userId, userName, groupId, categoryId, subject, body,
-			serviceContext);
-	}
-
-	/**
-	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
-	 #addMessage(String, long, String, long, long, long, long,
-	 String, String, String, List, boolean, double, boolean,
-	 ServiceContext)}
-	 */
-	@Deprecated
-	@Override
-	public MBMessage addMessage(
-			long userId, String userName, long groupId, long categoryId,
 			String subject, String body, String format,
 			java.util.List
 				<com.liferay.portal.kernel.util.ObjectValuePair
@@ -473,14 +454,6 @@ public class MBMessageLocalServiceWrapper
 	}
 
 	@Override
-	public MBMessage fetchFirstMessage(long threadId, long parentMessageId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _mbMessageLocalService.fetchFirstMessage(
-			threadId, parentMessageId);
-	}
-
-	@Override
 	public MBMessage fetchMBMessage(long messageId) {
 		return _mbMessageLocalService.fetchMBMessage(messageId);
 	}
@@ -491,14 +464,6 @@ public class MBMessageLocalServiceWrapper
 
 		return _mbMessageLocalService.fetchMBMessageByExternalReferenceCode(
 			externalReferenceCode, groupId);
-	}
-
-	@Override
-	public MBMessage fetchMBMessageByUrlSubject(
-		long groupId, String urlSubject) {
-
-		return _mbMessageLocalService.fetchMBMessageByUrlSubject(
-			groupId, urlSubject);
 	}
 
 	/**
@@ -540,14 +505,6 @@ public class MBMessageLocalServiceWrapper
 	}
 
 	@Override
-	public java.util.List<MBMessage> getCategoryMessages(
-		long groupId, long categoryId, long threadId) {
-
-		return _mbMessageLocalService.getCategoryMessages(
-			groupId, categoryId, threadId);
-	}
-
-	@Override
 	public int getCategoryMessagesCount(
 		long groupId, long categoryId, int status) {
 
@@ -578,26 +535,12 @@ public class MBMessageLocalServiceWrapper
 
 	@Override
 	public java.util.List<MBMessage> getCompanyMessages(
-		long companyId, int status, int start, int end) {
-
-		return _mbMessageLocalService.getCompanyMessages(
-			companyId, status, start, end);
-	}
-
-	@Override
-	public java.util.List<MBMessage> getCompanyMessages(
 		long companyId, int status, int start, int end,
 		com.liferay.portal.kernel.util.OrderByComparator<MBMessage>
 			orderByComparator) {
 
 		return _mbMessageLocalService.getCompanyMessages(
 			companyId, status, start, end, orderByComparator);
-	}
-
-	@Override
-	public int getCompanyMessagesCount(long companyId, int status) {
-		return _mbMessageLocalService.getCompanyMessagesCount(
-			companyId, status);
 	}
 
 	@Override
@@ -639,13 +582,6 @@ public class MBMessageLocalServiceWrapper
 	}
 
 	@Override
-	public java.util.List<com.liferay.message.boards.model.MBDiscussion>
-		getDiscussions(String className) {
-
-		return _mbMessageLocalService.getDiscussions(className);
-	}
-
-	@Override
 	public com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery
 		getExportActionableDynamicQuery(
 			com.liferay.exportimport.kernel.lar.PortletDataContext
@@ -660,22 +596,6 @@ public class MBMessageLocalServiceWrapper
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _mbMessageLocalService.getFileEntryMessage(fileEntryId);
-	}
-
-	@Override
-	public MBMessage getFirstMessage(long threadId, long parentMessageId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _mbMessageLocalService.getFirstMessage(
-			threadId, parentMessageId);
-	}
-
-	@Override
-	public java.util.List<MBMessage> getGroupMessages(
-		long groupId, int status, int start, int end) {
-
-		return _mbMessageLocalService.getGroupMessages(
-			groupId, status, start, end);
 	}
 
 	@Override
@@ -704,11 +624,6 @@ public class MBMessageLocalServiceWrapper
 
 		return _mbMessageLocalService.getGroupMessages(
 			groupId, userId, status, start, end, orderByComparator);
-	}
-
-	@Override
-	public int getGroupMessagesCount(long groupId, int status) {
-		return _mbMessageLocalService.getGroupMessagesCount(groupId, status);
 	}
 
 	@Override
@@ -922,15 +837,6 @@ public class MBMessageLocalServiceWrapper
 
 	@Override
 	public java.util.List<MBMessage> getRootDiscussionMessages(
-			String className, long classPK, int status)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _mbMessageLocalService.getRootDiscussionMessages(
-			className, classPK, status);
-	}
-
-	@Override
-	public java.util.List<MBMessage> getRootDiscussionMessages(
 			String className, long classPK, int status, int start, int end)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
@@ -993,11 +899,6 @@ public class MBMessageLocalServiceWrapper
 
 		return _mbMessageLocalService.getThreadMessages(
 			userId, threadId, status, start, end, comparator);
-	}
-
-	@Override
-	public int getThreadMessagesCount(long threadId, int status) {
-		return _mbMessageLocalService.getThreadMessagesCount(threadId, status);
 	}
 
 	@Override
@@ -1164,4 +1065,4 @@ public class MBMessageLocalServiceWrapper
 	private MBMessageLocalService _mbMessageLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1999226268
+// LIFERAY-SERVICE-BUILDER-HASH:-877360252
