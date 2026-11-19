@@ -71,7 +71,6 @@ import com.liferay.object.service.ObjectViewLocalService;
 import com.liferay.object.tree.Node;
 import com.liferay.object.tree.ObjectDefinitionTreeFactory;
 import com.liferay.object.tree.Tree;
-import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -164,8 +163,6 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 		ResourceActions resourceActions, UserLocalService userLocalService,
 		ResourcePermissionLocalService resourcePermissionLocalService,
 		SearchLocalizationHelper searchLocalizationHelper,
-		ServiceTrackerMap<String, List<ModelDocumentContributor<ObjectEntry>>>
-			serviceTrackerMap,
 		SharingModelResourcePermissionConfigurator
 			sharingModelResourcePermissionConfigurator,
 		SystemEventLocalService systemEventLocalService,
@@ -208,7 +205,6 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 		_userLocalService = userLocalService;
 		_resourcePermissionLocalService = resourcePermissionLocalService;
 		_searchLocalizationHelper = searchLocalizationHelper;
-		_serviceTrackerMap = serviceTrackerMap;
 		_sharingModelResourcePermissionConfigurator =
 			sharingModelResourcePermissionConfigurator;
 		_systemEventLocalService = systemEventLocalService;
@@ -361,7 +357,7 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 						_accountEntryOrganizationRelLocalService,
 						_dlFileEntryLocalService, _dlFileEntryTextProvider,
 						_objectEntryFolderLocalService,
-						_objectFieldBusinessTypeRegistry, _serviceTrackerMap,
+						_objectFieldBusinessTypeRegistry,
 						_textEmbeddingDocumentContributor),
 					HashMapDictionaryBuilder.<String, Object>put(
 						"indexer.class.name", objectDefinition.getClassName()
@@ -756,9 +752,6 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 	private final SearchLocalizationHelper _searchLocalizationHelper;
 	private final Map<String, List<ServiceRegistration<?>>>
 		_serviceRegistrations = new ConcurrentHashMap<>();
-	private final ServiceTrackerMap
-		<String, List<ModelDocumentContributor<ObjectEntry>>>
-			_serviceTrackerMap;
 	private final SharingModelResourcePermissionConfigurator
 		_sharingModelResourcePermissionConfigurator;
 	private final SystemEventLocalService _systemEventLocalService;

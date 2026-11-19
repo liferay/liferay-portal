@@ -203,7 +203,6 @@ import com.liferay.portal.kernel.workflow.WorkflowInstanceManager;
 import com.liferay.portal.language.override.service.PLOEntryLocalService;
 import com.liferay.portal.search.localization.SearchLocalizationHelper;
 import com.liferay.portal.search.ml.embedding.text.TextEmbeddingDocumentContributor;
-import com.liferay.portal.search.spi.model.index.contributor.ModelDocumentContributor;
 import com.liferay.portal.search.spi.model.query.contributor.ModelPreFilterContributor;
 import com.liferay.portal.service.impl.LayoutLocalServiceHelper;
 import com.liferay.portal.util.PortalInstances;
@@ -805,12 +804,11 @@ public class ObjectDefinitionLocalServiceImpl
 			_objectDefinitionDeployerServiceRegistrationsMap, objectDefinition);
 
 		for (ObjectDefinitionDeployer objectDefinitionDeployer :
-				_objectDefinitionDeployerServiceTrackerMap.keySet()) {
+				_serviceTrackerMap.keySet()) {
 
 			_deploy(
 				objectDefinitionDeployer,
-				_objectDefinitionDeployerServiceTrackerMap.getService(
-					objectDefinitionDeployer),
+				_serviceTrackerMap.getService(objectDefinitionDeployer),
 				objectDefinition);
 		}
 	}
@@ -1103,13 +1101,6 @@ public class ObjectDefinitionLocalServiceImpl
 	public void setAopProxy(Object aopProxy) {
 		super.setAopProxy(aopProxy);
 
-		_modelDocumentContributorsServiceTrackerMap =
-			ServiceTrackerMapFactory.openMultiValueMap(
-				_bundleContext,
-				(Class<ModelDocumentContributor<ObjectEntry>>)
-					(Class<?>)ModelDocumentContributor.class,
-				"root.object.entry.folder.external.reference.code");
-
 		_objectDefinitionDeployer = new ObjectDefinitionDeployerImpl(
 			_accountEntryLocalService, _accountEntryOrganizationRelLocalService,
 			_assetEntryLocalService, _bundleContext,
@@ -1126,7 +1117,6 @@ public class ObjectDefinitionLocalServiceImpl
 			_objectViewLocalService, _organizationLocalService, _portal,
 			_portletLocalService, _resourceActions, _userLocalService,
 			_resourcePermissionLocalService, _searchLocalizationHelper,
-			_modelDocumentContributorsServiceTrackerMap,
 			_sharingModelResourcePermissionConfigurator,
 			_systemEventLocalService, _textEmbeddingDocumentContributor,
 			_workflowDefinitionLinkLocalService,
@@ -1163,7 +1153,7 @@ public class ObjectDefinitionLocalServiceImpl
 
 		DependencyManagerSyncUtil.registerSyncCallable(
 			() -> {
-				_objectDefinitionDeployerServiceTrackerMap =
+				_serviceTrackerMap =
 					ServiceTrackerMapFactory.openSingleValueMap(
 						_bundleContext, ObjectDefinitionDeployer.class, null,
 						(serviceReference, emitter) -> emitter.emit(
@@ -1189,12 +1179,11 @@ public class ObjectDefinitionLocalServiceImpl
 				objectDefinition);
 
 			for (ObjectDefinitionDeployer objectDefinitionDeployer :
-					_objectDefinitionDeployerServiceTrackerMap.keySet()) {
+					_serviceTrackerMap.keySet()) {
 
 				_undeploy(
 					objectDefinitionDeployer,
-					_objectDefinitionDeployerServiceTrackerMap.getService(
-						objectDefinitionDeployer),
+					_serviceTrackerMap.getService(objectDefinitionDeployer),
 					objectDefinition);
 			}
 
@@ -1407,12 +1396,8 @@ public class ObjectDefinitionLocalServiceImpl
 	protected void deactivate() {
 		super.deactivate();
 
-		if (_modelDocumentContributorsServiceTrackerMap != null) {
-			_modelDocumentContributorsServiceTrackerMap.close();
-		}
-
-		if (_objectDefinitionDeployerServiceTrackerMap != null) {
-			_objectDefinitionDeployerServiceTrackerMap.close();
+		if (_serviceTrackerMap != null) {
+			_serviceTrackerMap.close();
 		}
 	}
 
@@ -4195,10 +4180,6 @@ public class ObjectDefinitionLocalServiceImpl
 	@Reference
 	private ListTypeLocalService _listTypeLocalService;
 
-	private ServiceTrackerMap
-		<String, List<ModelDocumentContributor<ObjectEntry>>>
-			_modelDocumentContributorsServiceTrackerMap;
-
 	@Reference
 	private ObjectActionLocalService _objectActionLocalService;
 
@@ -4206,9 +4187,6 @@ public class ObjectDefinitionLocalServiceImpl
 	private final Map<String, List<ServiceRegistration<?>>>
 		_objectDefinitionDeployerServiceRegistrationsMap =
 			new ConcurrentHashMap<>();
-	private volatile ServiceTrackerMap
-		<ObjectDefinitionDeployer, Map<String, List<ServiceRegistration<?>>>>
-			_objectDefinitionDeployerServiceTrackerMap;
 
 	@Reference
 	private ObjectDefinitionSettingLocalService
@@ -4305,6 +4283,10 @@ public class ObjectDefinitionLocalServiceImpl
 
 	@Reference
 	private SearchLocalizationHelper _searchLocalizationHelper;
+
+	private volatile ServiceTrackerMap
+		<ObjectDefinitionDeployer, Map<String, List<ServiceRegistration<?>>>>
+			_serviceTrackerMap;
 
 	@Reference
 	private SharingEntryLocalService _sharingEntryLocalService;

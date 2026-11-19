@@ -25,7 +25,6 @@ import com.liferay.object.model.ObjectFolder;
 import com.liferay.object.model.bag.ObjectFieldBag;
 import com.liferay.object.rest.dto.v1_0.ListEntry;
 import com.liferay.object.service.ObjectEntryFolderLocalService;
-import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.petra.sql.dsl.Column;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.petra.sql.dsl.base.BaseTable;
@@ -84,8 +83,6 @@ public class ObjectEntryModelDocumentContributor
 		DLFileEntryTextProvider dlFileEntryTextProvider,
 		ObjectEntryFolderLocalService objectEntryFolderLocalService,
 		ObjectFieldBusinessTypeRegistry objectFieldBusinessTypeRegistry,
-		ServiceTrackerMap<String, List<ModelDocumentContributor<ObjectEntry>>>
-			serviceTrackerMap,
 		TextEmbeddingDocumentContributor textEmbeddingDocumentContributor) {
 
 		_accountEntryOrganizationRelLocalService =
@@ -94,7 +91,6 @@ public class ObjectEntryModelDocumentContributor
 		_dlFileEntryTextProvider = dlFileEntryTextProvider;
 		_objectEntryFolderLocalService = objectEntryFolderLocalService;
 		_objectFieldBusinessTypeRegistry = objectFieldBusinessTypeRegistry;
-		_serviceTrackerMap = serviceTrackerMap;
 		_textEmbeddingDocumentContributor = textEmbeddingDocumentContributor;
 	}
 
@@ -596,7 +592,8 @@ public class ObjectEntryModelDocumentContributor
 		document.addKeyword(
 			"rootDescendantNode", objectEntry.isRootDescendantNode());
 
-		_contributeObjectEntryFolder(document, objectEntry);
+		_contributeObjectEntryFolder(
+			document, objectEntry.getObjectEntryFolderId());
 
 		if (objectDefinition.isCMP()) {
 			if (values == null) {
@@ -641,9 +638,7 @@ public class ObjectEntryModelDocumentContributor
 	}
 
 	private void _contributeObjectEntryFolder(
-		Document document, ObjectEntry objectEntry) {
-
-		long objectEntryFolderId = objectEntry.getObjectEntryFolderId();
+		Document document, long objectEntryFolderId) {
 
 		document.addKeyword(Field.FOLDER_ID, objectEntryFolderId);
 
@@ -664,24 +659,6 @@ public class ObjectEntryModelDocumentContributor
 
 		if (rootObjectEntryFolder == null) {
 			return;
-		}
-
-		for (ModelDocumentContributor<ObjectEntry> modelDocumentContributor :
-				ListUtil.fromCollection(
-					_serviceTrackerMap.getService(
-						rootObjectEntryFolder.getExternalReferenceCode()))) {
-
-			try {
-				modelDocumentContributor.contribute(document, objectEntry);
-			}
-			catch (Exception exception) {
-				if (_log.isWarnEnabled()) {
-					_log.warn(
-						"Unable to index object entry " +
-							objectEntry.getObjectEntryId(),
-						exception);
-				}
-			}
 		}
 
 		String cmsSection = _getCMSSection(
@@ -933,9 +910,6 @@ public class ObjectEntryModelDocumentContributor
 	private final ObjectEntryFolderLocalService _objectEntryFolderLocalService;
 	private final ObjectFieldBusinessTypeRegistry
 		_objectFieldBusinessTypeRegistry;
-	private final ServiceTrackerMap
-		<String, List<ModelDocumentContributor<ObjectEntry>>>
-			_serviceTrackerMap;
 	private final TextEmbeddingDocumentContributor
 		_textEmbeddingDocumentContributor;
 

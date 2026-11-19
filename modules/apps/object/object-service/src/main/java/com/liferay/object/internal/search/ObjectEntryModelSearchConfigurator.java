@@ -79,16 +79,6 @@ public class ObjectEntryModelSearchConfigurator
 
 	@Activate
 	protected void activate(BundleContext bundleContext) {
-		_indexerDocumentBuilderServiceTrackerMap =
-			ServiceTrackerMapFactory.openSingleValueMap(
-				bundleContext, IndexerDocumentBuilder.class,
-				"indexer.class.name");
-		_modelDocumentContributorsServiceTrackerMap =
-			ServiceTrackerMapFactory.openMultiValueMap(
-				bundleContext,
-				(Class<ModelDocumentContributor<ObjectEntry>>)
-					(Class<?>)ModelDocumentContributor.class,
-				"root.object.entry.folder.external.reference.code");
 		_modelIndexerWriterContributor =
 			new ObjectEntryFullReindexModelIndexerWriterContributor();
 
@@ -101,10 +91,12 @@ public class ObjectEntryModelSearchConfigurator
 					_dlFileEntryLocalService, _dlFileEntryTextProvider,
 					_objectEntryFolderLocalService,
 					_objectFieldBusinessTypeRegistry,
-					_modelDocumentContributorsServiceTrackerMap,
 					_textEmbeddingDocumentContributor),
 				MapUtil.singletonDictionary(
 					"indexer.class.name", ObjectEntry.class.getName()));
+
+		_serviceTrackerMap = ServiceTrackerMapFactory.openSingleValueMap(
+			bundleContext, IndexerDocumentBuilder.class, "indexer.class.name");
 	}
 
 	@Deactivate
@@ -113,12 +105,8 @@ public class ObjectEntryModelSearchConfigurator
 			_modelDocumentContributorServiceRegistration.unregister();
 		}
 
-		if (_indexerDocumentBuilderServiceTrackerMap != null) {
-			_indexerDocumentBuilderServiceTrackerMap.close();
-		}
-
-		if (_modelDocumentContributorsServiceTrackerMap != null) {
-			_modelDocumentContributorsServiceTrackerMap.close();
+		if (_serviceTrackerMap != null) {
+			_serviceTrackerMap.close();
 		}
 	}
 
@@ -237,13 +225,8 @@ public class ObjectEntryModelSearchConfigurator
 	@Reference
 	private DLFileEntryTextProvider _dlFileEntryTextProvider;
 
-	private ServiceTrackerMap<String, IndexerDocumentBuilder>
-		_indexerDocumentBuilderServiceTrackerMap;
 	private ServiceRegistration<ModelDocumentContributor<?>>
 		_modelDocumentContributorServiceRegistration;
-	private ServiceTrackerMap
-		<String, List<ModelDocumentContributor<ObjectEntry>>>
-			_modelDocumentContributorsServiceTrackerMap;
 	private ModelIndexerWriterContributor<ObjectEntry>
 		_modelIndexerWriterContributor;
 	private final ModelSummaryContributor _modelSummaryContributor =
@@ -266,6 +249,9 @@ public class ObjectEntryModelSearchConfigurator
 
 	@Reference
 	private ObjectFolderLocalService _objectFolderLocalService;
+
+	private ServiceTrackerMap<String, IndexerDocumentBuilder>
+		_serviceTrackerMap;
 
 	@Reference
 	private TextEmbeddingDocumentContributor _textEmbeddingDocumentContributor;
@@ -308,7 +294,7 @@ public class ObjectEntryModelSearchConfigurator
 
 					IndexerDocumentBuilder
 						objectDefinitionIndexerDocumentBuilder =
-							_indexerDocumentBuilderServiceTrackerMap.getService(
+							_serviceTrackerMap.getService(
 								objectDefinition.getClassName());
 
 					if (objectDefinitionIndexerDocumentBuilder == null) {
