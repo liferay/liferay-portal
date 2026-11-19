@@ -7,6 +7,7 @@ package com.liferay.osb.faro.internal.upgrade.registry;
 
 import com.liferay.osb.faro.internal.upgrade.v24_1_0.GroupUsersUpgradeProcess;
 import com.liferay.osb.faro.internal.upgrade.v24_2_0.GroupFriendlyURLUpgradeProcess;
+import com.liferay.osb.faro.internal.upgrade.v25_2_0.FaroUserUpgradeProcess;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
@@ -221,6 +222,8 @@ public class FaroServiceUpgradeStepRegistrator
 				"experimentEventsCount LONG"));
 
 		registry.register("25.0.0", "25.1.0", new DummyUpgradeStep());
+
+		registry.register("25.1.0", "25.2.0", new FaroUserUpgradeProcess());
 	}
 
 	@Reference
