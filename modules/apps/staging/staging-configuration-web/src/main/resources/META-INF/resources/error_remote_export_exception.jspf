@@ -12,11 +12,6 @@
 	%>
 
 	<c:if test="<%= ree.getType() == RemoteExportException.BAD_CONNECTION %>">
-
-		<%
-		invalidRemoteOptionName = "remoteAddress";
-		%>
-
 		<liferay-ui:message arguments='<%= "<em>" + HtmlUtil.escape(ree.getURL()) + "</em>" %>' key="could-not-connect-to-address-x.-please-verify-that-the-specified-port-is-correct-and-that-the-remote-server-is-configured-to-accept-requests-from-this-server" translateArguments="<%= false %>" />
 
 		<c:if test="<%= liveGroup.isStaged() && liveGroup.isStagedRemotely() %>">
@@ -86,11 +81,6 @@
 	</c:if>
 
 	<c:if test="<%= ree.getType() == RemoteExportException.NO_PERMISSIONS %>">
-
-		<%
-		invalidRemoteOptionName = "remoteGroupId";
-		%>
-
 		<liferay-ui:message arguments='<%= "<em>" + ree.getGroupId() + "</em>" %>' key="you-do-not-have-permissions-to-edit-the-site-with-id-x-on-the-remote-server.-please-verify-that-you-have-the-proper-permissions-in-both-the-live-environment-and-the-staging-environment" translateArguments="<%= false %>" />
 	</c:if>
 </liferay-ui:error>
