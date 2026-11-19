@@ -1074,7 +1074,7 @@ public class ObjectField implements Serializable {
 	}
 
 	@GraphQLField
-	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected RelationshipType relationshipType;
 
 	@JsonIgnore
@@ -2044,4 +2044,4 @@ public class ObjectField implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:2090228524
+// LIFERAY-REST-BUILDER-HASH:-517071175
