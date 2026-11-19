@@ -272,9 +272,6 @@
 
 		<!-- Finder methods -->
 
-		<finder name="CompanyId" return-type="Collection">
-			<finder-column name="companyId" />
-		</finder>
 		<finder name="CtCollectionId" return-type="Collection">
 			<finder-column name="ctCollectionId" />
 		</finder>
