@@ -8,6 +8,9 @@ package com.liferay.exportimport.rest.resource.v1_0.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.blogs.constants.BlogsPortletKeys;
 import com.liferay.blogs.test.util.BlogsTestUtil;
+import com.liferay.document.library.constants.DLPortletKeys;
+import com.liferay.document.library.test.util.DLAppTestUtil;
+import com.liferay.exportimport.kernel.service.StagingLocalService;
 import com.liferay.exportimport.rest.client.dto.v1_0.DateFilter;
 import com.liferay.exportimport.rest.client.dto.v1_0.PortletDataHandler;
 import com.liferay.exportimport.rest.client.dto.v1_0.PublishPreview;
@@ -29,6 +32,7 @@ import com.liferay.staging.StagingGroupHelper;
 
 import java.util.Date;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,7 +52,60 @@ public class PublishPreviewResourceTest
 
 		UserTestUtil.setUser(TestPropsValues.getUser());
 
+		GroupTestUtil.enableLocalStaging(testDepotEntryGroup);
 		GroupTestUtil.enableLocalStaging(testGroup);
+	}
+
+	@After
+	@Override
+	public void tearDown() throws Exception {
+		_stagingLocalService.disableStaging(
+			testDepotEntryGroup,
+			ServiceContextTestUtil.getServiceContext(
+				testDepotEntryGroup.getGroupId()));
+
+		super.tearDown();
+	}
+
+	@Override
+	@Test
+	public void testGetAssetLibraryPublishPreview() throws Exception {
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.portal.vulcan.internal.jaxrs.exception.mapper." +
+					"WebApplicationExceptionMapper",
+				LoggerTestUtil.WARN)) {
+
+			assertHttpResponseStatusCode(
+				400,
+				publishPreviewResource.
+					getAssetLibraryPublishPreviewHttpResponse(
+						irrelevantDepotEntryGroup.getExternalReferenceCode(),
+						null, null, null, null, null));
+			assertHttpResponseStatusCode(
+				404,
+				publishPreviewResource.
+					getAssetLibraryPublishPreviewHttpResponse(
+						testGroup.getExternalReferenceCode(), null, null, null,
+						null, null));
+		}
+
+		Group stagingGroup = _stagingGroupHelper.fetchLocalStagingGroup(
+			testDepotEntryGroup);
+
+		DLAppTestUtil.addFileEntry(stagingGroup.getGroupId());
+
+		PublishPreview publishPreview =
+			publishPreviewResource.getAssetLibraryPublishPreview(
+				testDepotEntryGroup.getExternalReferenceCode(), null, null,
+				null, null, null);
+
+		Assert.assertEquals(Long.valueOf(1), publishPreview.getAdditionCount());
+
+		publishPreview = publishPreviewResource.getAssetLibraryPublishPreview(
+			testDepotEntryGroup.getExternalReferenceCode(), null, null, null,
+			DLPortletKeys.DOCUMENT_LIBRARY_ADMIN, null);
+
+		Assert.assertEquals(Long.valueOf(1), publishPreview.getAdditionCount());
 	}
 
 	@Override
@@ -182,5 +239,8 @@ public class PublishPreviewResourceTest
 
 	@Inject
 	private StagingGroupHelper _stagingGroupHelper;
+
+	@Inject
+	private StagingLocalService _stagingLocalService;
 
 }

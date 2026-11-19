@@ -8,6 +8,8 @@ dependencies {
 	testIntegrationImplementation project(":apps:blogs:blogs-api")
 	testIntegrationImplementation project(":apps:blogs:blogs-test-util")
 	testIntegrationImplementation project(":apps:depot:depot-api")
+	testIntegrationImplementation project(":apps:document-library:document-library-api")
+	testIntegrationImplementation project(":apps:document-library:document-library-test-util")
 	testIntegrationImplementation project(":apps:export-import:export-import-api")
 	testIntegrationImplementation project(":apps:export-import:export-import-changeset-api")
 	testIntegrationImplementation project(":apps:export-import:export-import-report-api")

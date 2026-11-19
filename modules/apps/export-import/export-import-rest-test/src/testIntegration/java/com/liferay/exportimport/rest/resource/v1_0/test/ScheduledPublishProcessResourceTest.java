@@ -14,6 +14,7 @@ import com.liferay.exportimport.kernel.lar.ExportImportDateUtil;
 import com.liferay.exportimport.kernel.lar.PortletDataHandlerKeys;
 import com.liferay.exportimport.kernel.model.ExportImportConfiguration;
 import com.liferay.exportimport.kernel.service.ExportImportConfigurationLocalService;
+import com.liferay.exportimport.kernel.service.StagingLocalService;
 import com.liferay.exportimport.rest.client.dto.v1_0.DateFilter;
 import com.liferay.exportimport.rest.client.dto.v1_0.DateRangeDateFilter;
 import com.liferay.exportimport.rest.client.dto.v1_0.FromLastPublishDateFilter;
@@ -48,6 +49,7 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.RoleTestUtil;
+import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
@@ -72,6 +74,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.TimeZone;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -91,7 +94,51 @@ public class ScheduledPublishProcessResourceTest
 
 		UserTestUtil.setUser(TestPropsValues.getUser());
 
+		GroupTestUtil.enableLocalStaging(testDepotEntryGroup);
 		GroupTestUtil.enableLocalStaging(testGroup);
+	}
+
+	@After
+	@Override
+	public void tearDown() throws Exception {
+		_stagingLocalService.disableStaging(
+			testDepotEntryGroup,
+			ServiceContextTestUtil.getServiceContext(
+				testDepotEntryGroup.getGroupId()));
+
+		super.tearDown();
+	}
+
+	@Override
+	@Test
+	public void testDeleteAssetLibraryScheduledPublishProcess()
+		throws Exception {
+
+		ScheduledPublishProcess scheduledPublishProcess =
+			_addAssetLibraryScheduledPublishProcess(
+				testDepotEntryGroup.getExternalReferenceCode(),
+				RandomTestUtil.randomString());
+
+		assertHttpResponseStatusCode(
+			204,
+			scheduledPublishProcessResource.
+				deleteAssetLibraryScheduledPublishProcessHttpResponse(
+					testDepotEntryGroup.getExternalReferenceCode(),
+					scheduledPublishProcess.getId()));
+
+		Page<ScheduledPublishProcess> page =
+			scheduledPublishProcessResource.
+				getAssetLibraryScheduledPublishProcessesPage(
+					testDepotEntryGroup.getExternalReferenceCode(), null,
+					Pagination.of(1, 100), null);
+
+		for (ScheduledPublishProcess remainingScheduledPublishProcess :
+				page.getItems()) {
+
+			Assert.assertNotEquals(
+				scheduledPublishProcess.getId(),
+				remainingScheduledPublishProcess.getId());
+		}
 	}
 
 	@Override
@@ -124,6 +171,39 @@ public class ScheduledPublishProcessResourceTest
 		}
 
 		_testDeleteSiteScheduledPublishProcessWithRemoteStaging();
+	}
+
+	@Override
+	@Test
+	public void testGetAssetLibraryScheduledPublishProcess() throws Exception {
+		assertHttpResponseStatusCode(
+			404,
+			scheduledPublishProcessResource.
+				getAssetLibraryScheduledPublishProcessHttpResponse(
+					testDepotEntryGroup.getExternalReferenceCode(),
+					RandomTestUtil.randomLong()));
+
+		ScheduledPublishProcess scheduledPublishProcess =
+			_addAssetLibraryScheduledPublishProcess(
+				testDepotEntryGroup.getExternalReferenceCode(),
+				RandomTestUtil.randomString());
+
+		ScheduledPublishProcess getScheduledPublishProcess =
+			scheduledPublishProcessResource.
+				getAssetLibraryScheduledPublishProcess(
+					testDepotEntryGroup.getExternalReferenceCode(),
+					scheduledPublishProcess.getId());
+
+		Assert.assertEquals(
+			scheduledPublishProcess.getName(),
+			getScheduledPublishProcess.getName());
+
+		ScheduledPublishProcessRequest scheduledPublishProcessRequest =
+			getScheduledPublishProcess.getScheduledPublishProcessRequest();
+
+		Assert.assertEquals(
+			_CRON_EXPRESSION,
+			scheduledPublishProcessRequest.getCronExpression());
 	}
 
 	@Override
@@ -177,6 +257,41 @@ public class ScheduledPublishProcessResourceTest
 
 	@Override
 	@Test
+	public void testPostAssetLibraryScheduledPublishProcess() throws Exception {
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.portal.vulcan.internal.jaxrs.exception.mapper." +
+					"WebApplicationExceptionMapper",
+				LoggerTestUtil.WARN)) {
+
+			assertHttpResponseStatusCode(
+				404,
+				scheduledPublishProcessResource.
+					postAssetLibraryScheduledPublishProcessHttpResponse(
+						testGroup.getExternalReferenceCode(),
+						new ScheduledPublishProcessRequest() {
+							{
+								cronExpression = _CRON_EXPRESSION;
+								publishProcessRequest =
+									_toPublishProcessRequest(
+										RandomTestUtil.randomString());
+							}
+						}));
+		}
+
+		String publishProcessName = RandomTestUtil.randomString();
+
+		ScheduledPublishProcess scheduledPublishProcess =
+			_addAssetLibraryScheduledPublishProcess(
+				testDepotEntryGroup.getExternalReferenceCode(),
+				publishProcessName);
+
+		Assert.assertEquals(
+			publishProcessName, scheduledPublishProcess.getName());
+		Assert.assertNotNull(scheduledPublishProcess.getNextFireDate());
+	}
+
+	@Override
+	@Test
 	public void testPostSiteScheduledPublishProcess() throws Exception {
 		String publishProcessName = RandomTestUtil.randomString();
 
@@ -213,6 +328,35 @@ public class ScheduledPublishProcessResourceTest
 
 	@Override
 	protected ScheduledPublishProcess
+			testGetAssetLibraryScheduledPublishProcessesPage_addScheduledPublishProcess(
+				String assetLibraryExternalReferenceCode,
+				ScheduledPublishProcess scheduledPublishProcess)
+		throws Exception {
+
+		return _addAssetLibraryScheduledPublishProcess(
+			assetLibraryExternalReferenceCode,
+			scheduledPublishProcess.getName());
+	}
+
+	@Override
+	protected Map<String, Map<String, String>>
+			testGetAssetLibraryScheduledPublishProcessesPage_getExpectedActions(
+				String assetLibraryExternalReferenceCode)
+		throws Exception {
+
+		return new HashMap<>();
+	}
+
+	@Override
+	protected String
+			testGetAssetLibraryScheduledPublishProcessesPage_getIrrelevantAssetLibraryExternalReferenceCode()
+		throws Exception {
+
+		return null;
+	}
+
+	@Override
+	protected ScheduledPublishProcess
 			testGetSiteScheduledPublishProcessesPage_addScheduledPublishProcess(
 				String siteExternalReferenceCode,
 				ScheduledPublishProcess scheduledPublishProcess)
@@ -237,6 +381,23 @@ public class ScheduledPublishProcessResourceTest
 		throws Exception {
 
 		return null;
+	}
+
+	private ScheduledPublishProcess _addAssetLibraryScheduledPublishProcess(
+			String assetLibraryExternalReferenceCode, String publishProcessName)
+		throws Exception {
+
+		return scheduledPublishProcessResource.
+			postAssetLibraryScheduledPublishProcess(
+				assetLibraryExternalReferenceCode,
+				new ScheduledPublishProcessRequest() {
+					{
+						cronExpression = _CRON_EXPRESSION;
+						publishProcessRequest = _toPublishProcessRequest(
+							publishProcessName);
+						timeZoneId = "UTC";
+					}
+				});
 	}
 
 	private ScheduledPublishProcess _addScheduledPublishProcess(
@@ -957,6 +1118,9 @@ public class ScheduledPublishProcessResourceTest
 
 	@Inject
 	private JSONFactory _jsonFactory;
+
+	@Inject
+	private StagingLocalService _stagingLocalService;
 
 	@Inject
 	private UserLocalService _userLocalService;

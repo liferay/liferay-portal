@@ -10,11 +10,15 @@ import com.liferay.blogs.constants.BlogsPortletKeys;
 import com.liferay.blogs.model.BlogsEntry;
 import com.liferay.blogs.service.BlogsEntryLocalService;
 import com.liferay.blogs.test.util.BlogsTestUtil;
+import com.liferay.document.library.constants.DLPortletKeys;
+import com.liferay.document.library.kernel.service.DLAppLocalService;
+import com.liferay.document.library.test.util.DLAppTestUtil;
 import com.liferay.exportimport.kernel.background.task.BackgroundTaskExecutorNames;
 import com.liferay.exportimport.kernel.configuration.constants.ExportImportConfigurationConstants;
 import com.liferay.exportimport.kernel.lar.PortletDataHandlerKeys;
 import com.liferay.exportimport.kernel.model.ExportImportConfiguration;
 import com.liferay.exportimport.kernel.service.ExportImportConfigurationLocalService;
+import com.liferay.exportimport.kernel.service.StagingLocalService;
 import com.liferay.exportimport.kernel.staging.Staging;
 import com.liferay.exportimport.report.constants.ExportImportReportEntryConstants;
 import com.liferay.exportimport.report.service.ExportImportReportEntryLocalService;
@@ -55,6 +59,7 @@ import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
@@ -111,7 +116,9 @@ public class PublishProcessResourceTest
 
 		UserTestUtil.setUser(TestPropsValues.getUser());
 
+		GroupTestUtil.enableLocalStaging(irrelevantDepotEntryGroup);
 		GroupTestUtil.enableLocalStaging(irrelevantGroup);
+		GroupTestUtil.enableLocalStaging(testDepotEntryGroup);
 		GroupTestUtil.enableLocalStaging(testGroup);
 
 		User adminUser = UserTestUtil.getAdminUser(testCompany.getCompanyId());
@@ -154,9 +161,33 @@ public class PublishProcessResourceTest
 	@After
 	@Override
 	public void tearDown() throws Exception {
+		_stagingLocalService.disableStaging(
+			irrelevantDepotEntryGroup,
+			ServiceContextTestUtil.getServiceContext(
+				irrelevantDepotEntryGroup.getGroupId()));
+		_stagingLocalService.disableStaging(
+			testDepotEntryGroup,
+			ServiceContextTestUtil.getServiceContext(
+				testDepotEntryGroup.getGroupId()));
+
 		super.tearDown();
 
 		_userLocalService.deleteUser(_user);
+	}
+
+	@Override
+	@Test
+	public void testGetAssetLibraryPublishProcessesPage() throws Exception {
+		Page<PublishProcess> page =
+			publishProcessResource.getAssetLibraryPublishProcessesPage(
+				testDepotEntryGroup.getExternalReferenceCode(), null, null,
+				null, null, Pagination.of(1, 10), null);
+
+		Assert.assertTrue(page.getTotalCount() >= 1);
+
+		_deleteBackgroundTasks(irrelevantDepotEntryGroup, testDepotEntryGroup);
+
+		super.testGetAssetLibraryPublishProcessesPage();
 	}
 
 	@Override
@@ -184,6 +215,36 @@ public class PublishProcessResourceTest
 		super.testGetSitePublishProcessesPage();
 
 		_testGetSitePublishProcessesPageWithPortlet();
+	}
+
+	@Override
+	@Test
+	public void testPostAssetLibraryPublishProcess() throws Exception {
+		assertHttpResponseStatusCode(
+			403,
+			_publishProcessResource.postAssetLibraryPublishProcessHttpResponse(
+				testDepotEntryGroup.getExternalReferenceCode(), null,
+				new PublishProcessRequest() {
+					{
+						name = RandomTestUtil.randomString();
+					}
+				}));
+
+		Group stagingGroup = _stagingGroupHelper.fetchLocalStagingGroup(
+			testDepotEntryGroup);
+
+		FileEntry fileEntry = DLAppTestUtil.addFileEntry(
+			stagingGroup.getGroupId());
+
+		_addAssetLibraryPublishProcess(
+			testDepotEntryGroup.getExternalReferenceCode(),
+			RandomTestUtil.randomString());
+
+		Assert.assertNotNull(
+			_dlAppLocalService.getFileEntryByUuidAndGroupId(
+				fileEntry.getUuid(), testDepotEntryGroup.getGroupId()));
+
+		_testPostAssetLibraryPublishProcessWithPortlet();
 	}
 
 	@Override
@@ -244,6 +305,26 @@ public class PublishProcessResourceTest
 	}
 
 	@Override
+	protected PublishProcess
+			testGetAssetLibraryPublishProcessesPage_addPublishProcess(
+				String assetLibraryExternalReferenceCode,
+				PublishProcess publishProcess)
+		throws Exception {
+
+		return _addAssetLibraryPublishProcess(
+			assetLibraryExternalReferenceCode, publishProcess.getName());
+	}
+
+	@Override
+	protected Map<String, Map<String, String>>
+			testGetAssetLibraryPublishProcessesPage_getExpectedActions(
+				String assetLibraryExternalReferenceCode)
+		throws Exception {
+
+		return new HashMap<>();
+	}
+
+	@Override
 	protected PublishProcess testGetPublishProcess_addPublishProcess()
 		throws Exception {
 
@@ -289,6 +370,32 @@ public class PublishProcessResourceTest
 		throws Exception {
 
 		return new HashMap<>();
+	}
+
+	private PublishProcess _addAssetLibraryPublishProcess(
+			String assetLibraryExternalReferenceCode, String publishProcessName)
+		throws Exception {
+
+		PublishPreview publishPreview =
+			_publishPreviewResource.getAssetLibraryPublishPreview(
+				assetLibraryExternalReferenceCode, null, null, null, null,
+				null);
+
+		PublishProcess publishProcess =
+			publishProcessResource.postAssetLibraryPublishProcess(
+				assetLibraryExternalReferenceCode, null,
+				new PublishProcessRequest() {
+					{
+						name = publishProcessName;
+						portletDataHandlers =
+							publishPreview.getPortletDataHandlers();
+					}
+				});
+
+		ExportImportTestUtil.assertBackgroundTaskSuccessful(
+			publishProcess.getId());
+
+		return publishProcess;
 	}
 
 	private Layout _addLayoutWithPortlet(Group group) throws Exception {
@@ -624,6 +731,56 @@ public class PublishProcessResourceTest
 			RandomTestUtil.randomString(), null, Pagination.of(1, 10), null);
 
 		Assert.assertEquals(0, page.getTotalCount());
+	}
+
+	private void _testPostAssetLibraryPublishProcessWithPortlet()
+		throws Exception {
+
+		Group stagingGroup = _stagingGroupHelper.fetchLocalStagingGroup(
+			testDepotEntryGroup);
+
+		FileEntry fileEntry = DLAppTestUtil.addFileEntry(
+			stagingGroup.getGroupId());
+
+		String externalReferenceCode =
+			testDepotEntryGroup.getExternalReferenceCode();
+
+		PublishPreview publishPreview =
+			_publishPreviewResource.getAssetLibraryPublishPreview(
+				externalReferenceCode, null, null, null,
+				DLPortletKeys.DOCUMENT_LIBRARY_ADMIN, null);
+
+		PublishProcess publishProcess =
+			publishProcessResource.postAssetLibraryPublishProcess(
+				externalReferenceCode, DLPortletKeys.DOCUMENT_LIBRARY_ADMIN,
+				new PublishProcessRequest() {
+					{
+						name = RandomTestUtil.randomString();
+						portletDataHandlers =
+							publishPreview.getPortletDataHandlers();
+					}
+				});
+
+		ExportImportTestUtil.assertBackgroundTaskSuccessful(
+			publishProcess.getId());
+
+		Assert.assertNotNull(
+			_dlAppLocalService.getFileEntryByUuidAndGroupId(
+				fileEntry.getUuid(), testDepotEntryGroup.getGroupId()));
+		_assertTaskExecutorClassName(
+			publishProcess,
+			BackgroundTaskExecutorNames.
+				PORTLET_STAGING_BACKGROUND_TASK_EXECUTOR);
+
+		Page<PublishProcess> page =
+			publishProcessResource.getAssetLibraryPublishProcessesPage(
+				externalReferenceCode, null,
+				DLPortletKeys.DOCUMENT_LIBRARY_ADMIN, null, null,
+				Pagination.of(1, 10), null);
+
+		assertEquals(
+			Collections.singletonList(publishProcess),
+			(List<PublishProcess>)page.getItems());
 	}
 
 	private void _testPostPublishProcessRelaunchWithPortlet() throws Exception {
@@ -1622,6 +1779,9 @@ public class PublishProcessResourceTest
 	private BlogsEntryLocalService _blogsEntryLocalService;
 
 	@Inject
+	private DLAppLocalService _dlAppLocalService;
+
+	@Inject
 	private ExportImportConfigurationLocalService
 		_exportImportConfigurationLocalService;
 
@@ -1644,6 +1804,9 @@ public class PublishProcessResourceTest
 
 	@Inject
 	private StagingGroupHelper _stagingGroupHelper;
+
+	@Inject
+	private StagingLocalService _stagingLocalService;
 
 	private User _user;
 
