@@ -11194,21 +11194,21 @@ junit.jvm.override.version=21</echo>
 							return propertyValue.split("\\s*,\\s*");
 						}
 
-						public boolean isPrivateBranch() {
-							String currentBranch = getCurrentBranch();
-
-							if (currentBranch.endsWith("-private")) {
-								return true;
-							}
-
-							return false;
-						}
-
 						public boolean isMatchingFilePathPatterns(String filePath, String[] filePathPatterns) {
 							for (String filePathPattern : filePathPatterns) {
 								if (SelectorUtils.matchPath(filePathPattern, filePath)) {
 									return true;
 								}
+							}
+
+							return false;
+						}
+
+						public boolean isPrivateBranch() {
+							String currentBranch = getCurrentBranch();
+
+							if (currentBranch.endsWith("-private")) {
+								return true;
 							}
 
 							return false;
