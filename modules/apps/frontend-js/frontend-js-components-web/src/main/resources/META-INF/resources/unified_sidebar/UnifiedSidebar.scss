@@ -71,7 +71,14 @@ html#{$cadmin-selector} {
 		}
 	}
 
+	// Consumers change the width by setting --unified-sidebar-width on any
+	// ancestor. A consumer that pushes the page must shift it by the same
+	// width.
+
 	.unified-sidebar {
+		--cadmin-c-slideout-sidebar-width: var(--unified-sidebar-width, 280px);
+		--cadmin-c-slideout-transition-in: all 0.14s ease-out;
+		--cadmin-c-slideout-transition-out: all 0.14s ease-out;
 		--skeleton-shimmer-color: #{$cadmin-light-l1};
 
 		a.nav-link {
@@ -177,6 +184,27 @@ html#{$cadmin-selector} {
 			font-size: 0.75rem;
 			line-height: 0.75rem;
 			margin-top: 4px;
+		}
+	}
+
+	// The spacing between rows outranks the cadmin reset but stays below the
+	// consumers' own rules, so a consumer with extra rows, like the scopes in
+	// the Control Panel, can space them differently.
+
+	.unified-sidebar .nav[role='menu'] > li {
+		margin-top: 0.25rem;
+	}
+
+	.unified-sidebar .nav[role='menubar'] {
+		$row: 'li:where(:not(:empty))';
+
+		> #{$row} + #{$row} {
+			margin-top: 0.25rem;
+		}
+
+		> #{$row} + #{$row}:where(:has(> .collapse-icon)),
+		> #{$row}:where(:has(> .collapse-icon)) + #{$row} {
+			margin-top: 0.5rem;
 		}
 	}
 

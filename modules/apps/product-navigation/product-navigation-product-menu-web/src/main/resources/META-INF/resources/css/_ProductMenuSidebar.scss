@@ -70,23 +70,6 @@ html#{$cadmin-selector} {
 			}
 		}
 
-		.nav[role='menu'] > li {
-			margin-top: 0.25rem;
-		}
-
-		.nav[role='menubar'] {
-			$row: 'li:not(:empty)';
-
-			> #{$row} + #{$row} {
-				margin-top: 0.25rem;
-			}
-
-			> #{$row} + #{$row}:has(> .collapse-icon),
-			> #{$row}:has(> .collapse-icon) + #{$row} {
-				margin-top: 0.5rem;
-			}
-		}
-
 		button.nav-link {
 			text-align: start;
 			width: 100%;

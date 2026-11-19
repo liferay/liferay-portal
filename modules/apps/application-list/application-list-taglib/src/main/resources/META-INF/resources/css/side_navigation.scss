@@ -53,22 +53,10 @@ html#{$cadmin-selector} {
 			}
 		}
 
-		.nav[role='menu'] > li {
+		.nav[role='menubar']
+			> .side-navigation-scope-item
+			+ .side-navigation-scope-zone {
 			margin-top: 0.25rem;
-		}
-
-		.nav[role='menubar'] {
-			$row: 'li:not(.side-navigation-scope-item, :empty)';
-
-			> .side-navigation-scope-item + .side-navigation-scope-zone,
-			> #{$row} + #{$row} {
-				margin-top: 0.25rem;
-			}
-
-			> #{$row} + #{$row}:has(> .collapse-icon),
-			> #{$row}:has(> .collapse-icon) + #{$row} {
-				margin-top: 0.5rem;
-			}
 		}
 
 		.side-navigation-scope-item {
