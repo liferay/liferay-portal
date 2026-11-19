@@ -64,6 +64,11 @@ function main {
 				--output-type JUnit \
 				"${cloud_dir}/helm/${chart}"
 		fi
+
+		if [[ ${chart} == platform-components ]]
+		then
+			"${cloud_dir}/scripts/tests/client_extension_applicationset_test.sh"
+		fi
 	done
 }
 
