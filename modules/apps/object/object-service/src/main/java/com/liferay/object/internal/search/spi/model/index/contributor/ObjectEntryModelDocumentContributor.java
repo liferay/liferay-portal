@@ -711,6 +711,12 @@ public class ObjectEntryModelDocumentContributor
 			return "files";
 		}
 
+		if (externalReferenceCode.equals(
+				ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_PRODUCTS)) {
+
+			return "products";
+		}
+
 		return null;
 	}
 
