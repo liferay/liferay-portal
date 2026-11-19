@@ -203,6 +203,27 @@ test(
 				await comment.getByRole('button', {name: 'Cancel'}).click();
 			});
 
+			await test.step('The picker highlights the typed letters in the name of the member', async () => {
+				const keywords = member1.givenName.slice(0, 3);
+
+				await editor.click();
+
+				await page.keyboard.type(`@${keywords}`);
+
+				await expect(
+					picker
+						.getByRole('option')
+						.filter({hasText: member1.name})
+						.locator('strong')
+				).toHaveText([...keywords]);
+
+				for (let i = 0; i <= keywords.length; i++) {
+					await page.keyboard.press('Backspace');
+				}
+
+				await expect(picker).toBeHidden();
+			});
+
 			await test.step('The picker waits for the current search before inserting a member', async () => {
 				await editor.click();
 
