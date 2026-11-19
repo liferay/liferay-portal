@@ -3,10 +3,71 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {render, screen, waitFor} from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import fetch from 'jest-fetch-mock';
+import React from 'react';
+
+import '@testing-library/jest-dom';
+
 import SelectionFilter from '../../../../../src/main/resources/META-INF/resources/management_bar/controls/filters/implementation/SelectionFilter';
 import {EEntityFieldType} from '../../../../../src/main/resources/META-INF/resources/management_bar/controls/filters/utils/types';
 
-const {getOdataString} = SelectionFilter;
+const {Component, getOdataString} = SelectionFilter;
+
+describe('SelectionFilter', () => {
+	beforeEach(() => {
+		(window as any).IntersectionObserver = class {
+			disconnect() {}
+
+			observe() {}
+
+			unobserve() {}
+		};
+	});
+
+	afterEach(() => {
+		delete (window as any).IntersectionObserver;
+	});
+
+	it('sends the search term encoded once', async () => {
+		fetch.mockResponse(
+			JSON.stringify({
+				items: [{label: 'United States', value: 'United States'}],
+				totalCount: 20,
+			})
+		);
+
+		render(
+			<Component
+				active={false}
+				apiURL="/o/values"
+				autocompleteEnabled
+				entityFieldType={EEntityFieldType.STRING}
+				id="country"
+				inputPlaceholder="search"
+				itemKey="value"
+				itemLabel="label"
+				items={[]}
+				multiple
+				selectedData={{exclude: false, selectedItems: []}}
+				setFilter={jest.fn()}
+			/>
+		);
+
+		await userEvent.type(
+			screen.getByPlaceholderText('search'),
+			'united states'
+		);
+
+		await waitFor(() =>
+			expect(fetch).toHaveBeenLastCalledWith(
+				'/o/values?page=1&pageSize=10&search=united+states',
+				expect.anything()
+			)
+		);
+	});
+});
 
 describe('SelectionFilter.getOdataString', () => {
 	it('returns an empty string if no items are selected', () => {
