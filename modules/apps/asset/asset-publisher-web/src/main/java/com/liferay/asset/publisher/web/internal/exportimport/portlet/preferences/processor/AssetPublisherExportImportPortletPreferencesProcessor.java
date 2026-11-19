@@ -44,6 +44,7 @@ import com.liferay.exportimport.portlet.preferences.processor.ExportImportPortle
 import com.liferay.exportimport.portlet.preferences.processor.ExportImportPortletPreferencesProcessorHelper;
 import com.liferay.exportimport.portlet.preferences.processor.base.BaseExportImportPortletPreferencesProcessor;
 import com.liferay.journal.model.JournalArticle;
+import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -150,10 +151,21 @@ public class AssetPublisherExportImportPortletPreferencesProcessor
 						companyId, AssetVocabulary.class.getName(),
 						GetterUtil.getLong(primaryKey)));
 			_updateExportCategoryQueryValues(companyId, portletPreferences);
-			_updateExportOrderByColumnClassPKs(
-				companyId, "orderByColumn1", portletPreferences);
-			_updateExportOrderByColumnClassPKs(
-				companyId, "orderByColumn2", portletPreferences);
+
+			for (String key : _ORDER_BY_COLUMN_KEYS) {
+				_updateOrderByColumnClassPKs(
+					portletPreferences, key,
+					primaryKey -> {
+						if (!Validator.isNumber(primaryKey)) {
+							return null;
+						}
+
+						return _getExportReferenceValue(
+							companyId, DDMStructure.class.getName(),
+							GetterUtil.getLong(primaryKey));
+					});
+			}
+
 			_updateExportScopeIds(companyId, portletPreferences);
 		}
 		catch (Exception exception) {
@@ -1389,80 +1401,35 @@ public class AssetPublisherExportImportPortletPreferencesProcessor
 	}
 
 	private void _updateExportOrderByColumnClassPKs(
-			long companyId, String key, PortletPreferences portletPreferences)
-		throws Exception {
-
-		String oldValue = portletPreferences.getValue(key, null);
-
-		if (!StringUtil.startsWith(oldValue, DDMIndexer.DDM_FIELD_PREFIX)) {
-			return;
-		}
-
-		String[] ddmStructureFieldNameParts = StringUtil.split(
-			oldValue, DDMIndexer.DDM_FIELD_SEPARATOR);
-
-		if (ddmStructureFieldNameParts.length < 4) {
-			return;
-		}
-
-		String primaryKey = ddmStructureFieldNameParts[2];
-
-		if (!Validator.isNumber(primaryKey)) {
-			return;
-		}
-
-		String exportReferenceValue = _getExportReferenceValue(
-			companyId, DDMStructure.class.getName(),
-			GetterUtil.getLong(primaryKey));
-
-		if (Validator.isNull(exportReferenceValue)) {
-			return;
-		}
-
-		portletPreferences.setValue(
-			key,
-			StringUtil.replaceFirst(
-				oldValue, primaryKey, exportReferenceValue));
-	}
-
-	private void _updateExportOrderByColumnClassPKs(
 			PortletDataContext portletDataContext, Portlet portlet,
 			PortletPreferences portletPreferences, String key)
 		throws Exception {
 
-		String oldValue = portletPreferences.getValue(key, null);
+		_updateOrderByColumnClassPKs(
+			portletPreferences, key,
+			primaryKey -> {
+				if (!Validator.isNumber(primaryKey)) {
+					return null;
+				}
 
-		String[] ddmStructureFieldNameParts = StringUtil.split(
-			oldValue, DDMIndexer.DDM_FIELD_SEPARATOR);
+				long primaryKeyLong = GetterUtil.getLong(primaryKey);
 
-		String primaryKey = ddmStructureFieldNameParts[2];
+				String newPreferencesValue = getExportPortletPreferencesValue(
+					portletDataContext, portlet, DDMStructure.class.getName(),
+					primaryKeyLong);
 
-		if (!Validator.isNumber(primaryKey)) {
-			return;
-		}
+				if (Validator.isNull(newPreferencesValue) &&
+					_log.isWarnEnabled()) {
 
-		long primaryKeyLong = GetterUtil.getLong(primaryKey);
+					_log.warn(
+						StringBundler.concat(
+							"Unable to export portlet preferences value for ",
+							"class ", DDMStructure.class.getName(),
+							" with primary key ", primaryKeyLong));
+				}
 
-		String newPreferencesValue = getExportPortletPreferencesValue(
-			portletDataContext, portlet, DDMStructure.class.getName(),
-			primaryKeyLong);
-
-		if (Validator.isNull(newPreferencesValue)) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(
-					StringBundler.concat(
-						"Unable to export portlet preferences value for class ",
-						DDMStructure.class.getName(), " with primary key ",
-						primaryKeyLong));
-			}
-
-			return;
-		}
-
-		String newValue = StringUtil.replace(
-			oldValue, primaryKey, newPreferencesValue);
-
-		portletPreferences.setValue(key, newValue);
+				return newPreferencesValue;
+			});
 	}
 
 	private PortletPreferences _updateExportPortletPreferences(
@@ -1858,74 +1825,28 @@ public class AssetPublisherExportImportPortletPreferencesProcessor
 	}
 
 	private void _updateImportOrderByColumnClassPKs(
-			long companyId, String key, PortletPreferences portletPreferences)
-		throws Exception {
-
-		String oldValue = portletPreferences.getValue(key, null);
-
-		if (!StringUtil.startsWith(oldValue, DDMIndexer.DDM_FIELD_PREFIX)) {
-			return;
-		}
-
-		String[] ddmStructureFieldNameParts = StringUtil.split(
-			oldValue, DDMIndexer.DDM_FIELD_SEPARATOR);
-
-		if (ddmStructureFieldNameParts.length < 4) {
-			return;
-		}
-
-		String portletPreferencesOldValue = ddmStructureFieldNameParts[2];
-
-		Long importReferenceValue = _getImportReferenceValue(
-			companyId, DDMStructure.class.getName(),
-			portletPreferencesOldValue);
-
-		if (importReferenceValue == null) {
-			return;
-		}
-
-		portletPreferences.setValue(
-			key,
-			StringUtil.replace(
-				oldValue, portletPreferencesOldValue,
-				importReferenceValue.toString()));
-	}
-
-	private void _updateImportOrderByColumnClassPKs(
 			PortletDataContext portletDataContext,
 			PortletPreferences portletPreferences, String key,
 			long companyGroupId)
 		throws Exception {
 
-		String oldValue = portletPreferences.getValue(key, null);
+		_updateOrderByColumnClassPKs(
+			portletPreferences, key,
+			portletPreferencesOldValue -> {
+				Long newPrimaryKey = getImportPortletPreferencesNewValue(
+					portletDataContext, DDMStructure.class, companyGroupId,
+					(Map<Long, Long>)portletDataContext.getNewPrimaryKeysMap(
+						DDMStructure.class),
+					portletPreferencesOldValue);
 
-		Map<Long, Long> primaryKeys =
-			(Map<Long, Long>)portletDataContext.getNewPrimaryKeysMap(
-				DDMStructure.class);
+				if (Validator.isNull(newPrimaryKey) && _log.isInfoEnabled()) {
+					_log.info(
+						"Unable to import portlet preferences value " +
+							portletPreferencesOldValue);
+				}
 
-		String[] ddmStructureFieldNameParts = StringUtil.split(
-			oldValue, DDMIndexer.DDM_FIELD_SEPARATOR);
-
-		String portletPreferencesOldValue = ddmStructureFieldNameParts[2];
-
-		Long newPrimaryKey = getImportPortletPreferencesNewValue(
-			portletDataContext, DDMStructure.class, companyGroupId, primaryKeys,
-			portletPreferencesOldValue);
-
-		if (Validator.isNull(newPrimaryKey)) {
-			if (_log.isInfoEnabled()) {
-				_log.info(
-					"Unable to import portlet preferences value " +
-						portletPreferencesOldValue);
-			}
-
-			return;
-		}
-
-		String newValue = StringUtil.replace(
-			oldValue, portletPreferencesOldValue, newPrimaryKey.toString());
-
-		portletPreferences.setValue(key, newValue);
+				return newPrimaryKey;
+			});
 	}
 
 	private PortletPreferences _updateImportPortletPreferences(
@@ -2031,8 +1952,11 @@ public class AssetPublisherExportImportPortletPreferencesProcessor
 		_updateImportCategoryQueryValues(companyId, portletPreferences);
 
 		for (String key : _ORDER_BY_COLUMN_KEYS) {
-			_updateImportOrderByColumnClassPKs(
-				companyId, key, portletPreferences);
+			_updateOrderByColumnClassPKs(
+				portletPreferences, key,
+				portletPreferencesOldValue -> _getImportReferenceValue(
+					companyId, DDMStructure.class.getName(),
+					portletPreferencesOldValue));
 		}
 	}
 
@@ -2170,6 +2094,43 @@ public class AssetPublisherExportImportPortletPreferencesProcessor
 			});
 
 		portletPreferences.setValues(key, newValues.toArray(new String[0]));
+	}
+
+	private void _updateOrderByColumnClassPKs(
+			PortletPreferences portletPreferences, String key,
+			UnsafeFunction<String, Object, Exception> unsafeFunction)
+		throws Exception {
+
+		String value = portletPreferences.getValue(key, null);
+
+		if (!StringUtil.startsWith(value, DDMIndexer.DDM_FIELD_PREFIX)) {
+			return;
+		}
+
+		String[] ddmStructureFieldNameParts = StringUtil.split(
+			value, DDMIndexer.DDM_FIELD_SEPARATOR);
+
+		if (ddmStructureFieldNameParts.length < 4) {
+			return;
+		}
+
+		Object newValue = unsafeFunction.apply(ddmStructureFieldNameParts[2]);
+
+		if (Validator.isNull(newValue)) {
+			return;
+		}
+
+		portletPreferences.setValue(
+			key,
+			StringUtil.replaceFirst(
+				value,
+				StringBundler.concat(
+					DDMIndexer.DDM_FIELD_SEPARATOR,
+					ddmStructureFieldNameParts[2],
+					DDMIndexer.DDM_FIELD_SEPARATOR),
+				StringBundler.concat(
+					DDMIndexer.DDM_FIELD_SEPARATOR, newValue,
+					DDMIndexer.DDM_FIELD_SEPARATOR)));
 	}
 
 	private static final String[] _ORDER_BY_COLUMN_KEYS = {
