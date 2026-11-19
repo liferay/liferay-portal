@@ -69,8 +69,8 @@ public class EditContentItemStrutsAction implements StrutsAction {
 			_objectDefinitionLocalService.getObjectDefinition(
 				objectEntry.getObjectDefinitionId()));
 
-		// TODO Execute this only if the object entry is a launch draft
-		// (ObjectEntryConstants.TYPE_DRAFT, LPD-111152)
+		// TODO Execute this only if the object entry is a launch draft. See
+		// LPD-111152 and ObjectEntryConstants.TYPE_DRAFT.
 
 		editURL = _launchEditURLProvider.getEditURL(
 			ObjectEntry.class.getName(), objectEntry.getObjectEntryId(),

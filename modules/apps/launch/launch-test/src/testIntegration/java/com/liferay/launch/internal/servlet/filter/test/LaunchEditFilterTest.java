@@ -140,31 +140,32 @@ public class LaunchEditFilterTest {
 
 		_assertProcessFilter(
 			_launchDraftTitle, launchSetId, _launchDraftLayout1.getPlid(),
-			_launchDraftLayout2.getPlid(),
+			_launchDraftLayout2.getPlid(), null,
 			HashMapBuilder.put(
 				"X-Liferay-Launch-Set-Id", String.valueOf(launchSetId)
 			).build(),
-			Collections.emptyMap(), null, TestPropsValues.getUser());
+			Collections.emptyMap(), TestPropsValues.getUser());
 
 		// Edit launch set ID parameter
 
 		_assertProcessFilter(
 			_launchDraftTitle, launchSetId, _launchDraftLayout1.getPlid(),
-			_launchDraftLayout2.getPlid(), Collections.emptyMap(),
+			_launchDraftLayout2.getPlid(), null, Collections.emptyMap(),
 			HashMapBuilder.put(
 				"editLaunchSetId", String.valueOf(launchSetId)
 			).build(),
-			null, TestPropsValues.getUser());
+			TestPropsValues.getUser());
 
 		// Edit launch set ID parameter forwarded
 
 		_assertProcessFilter(
 			_launchDraftTitle, launchSetId, _launchDraftLayout1.getPlid(),
 			_launchDraftLayout2.getPlid(), Collections.emptyMap(),
+			Collections.emptyMap(),
 			HashMapBuilder.put(
 				"editLaunchSetId", String.valueOf(launchSetId)
 			).build(),
-			Collections.emptyMap(), TestPropsValues.getUser());
+			TestPropsValues.getUser());
 
 		// Edit launch set ID parameter of a missing launch set
 
@@ -172,11 +173,11 @@ public class LaunchEditFilterTest {
 
 		_assertProcessFilter(
 			title, 0, _layout1.getPlid(), _layout2.getPlid(),
-			Collections.emptyMap(),
+			null, Collections.emptyMap(),
 			HashMapBuilder.put(
 				"editLaunchSetId", String.valueOf(RandomTestUtil.randomLong())
 			).build(),
-			null, TestPropsValues.getUser());
+			TestPropsValues.getUser());
 
 		// Edit launch set ID parameter of an approved launch set
 
@@ -190,11 +191,11 @@ public class LaunchEditFilterTest {
 
 		_assertProcessFilter(
 			title, 0, _layout1.getPlid(), _layout2.getPlid(),
-			Collections.emptyMap(),
+			null, Collections.emptyMap(),
 			HashMapBuilder.put(
 				"editLaunchSetId", String.valueOf(launchSetId)
 			).build(),
-			null, TestPropsValues.getUser());
+			TestPropsValues.getUser());
 
 		_objectEntryLocalService.updateStatus(
 			TestPropsValues.getUserId(), launchSetId,
@@ -206,15 +207,13 @@ public class LaunchEditFilterTest {
 
 		_assertProcessFilter(
 			title, 0, _layout1.getPlid(), _layout2.getPlid(),
-			Collections.emptyMap(),
+			null, Collections.emptyMap(),
 			HashMapBuilder.put(
 				"editLaunchSetId", String.valueOf(launchSetId)
 			).build(),
-			null, _user);
+			_user);
 
 		// Launch preview
-
-		boolean[] edit = {true};
 
 		MockHttpServletRequest mockHttpServletRequest =
 			new MockHttpServletRequest();
@@ -223,6 +222,8 @@ public class LaunchEditFilterTest {
 			WebKeys.USER, TestPropsValues.getUser());
 		mockHttpServletRequest.setParameter(
 			"editLaunchSetId", String.valueOf(launchSetId));
+
+		boolean[] edit = {true};
 
 		try (SafeCloseable safeCloseable =
 				LaunchThreadLocal.setLaunchSetIdWithSafeCloseable(
@@ -242,14 +243,14 @@ public class LaunchEditFilterTest {
 
 		_assertProcessFilter(
 			_launchDraftTitle, launchSetId, _launchDraftLayout1.getPlid(),
-			_launchDraftLayout2.getPlid(), Collections.emptyMap(),
+			_launchDraftLayout2.getPlid(), null, Collections.emptyMap(),
 			HashMapBuilder.put(
 				"_" + portletId + "_editLaunchSetId",
 				String.valueOf(launchSetId)
 			).put(
 				"p_p_id", portletId
 			).build(),
-			null, TestPropsValues.getUser());
+			TestPropsValues.getUser());
 	}
 
 	private long _addLaunchEntryDraftId(
@@ -305,8 +306,8 @@ public class LaunchEditFilterTest {
 	private void _assertProcessFilter(
 			String expectedJournalArticleTitle, long expectedLaunchSetId,
 			long expectedLayout1Plid, long expectedLayout2Plid,
-			Map<String, String> headers, Map<String, String> parameters,
-			Map<String, String> forwardParameters, User user)
+			Map<String, String> forwardParameters, Map<String, String> headers,
+			Map<String, String> parameters, User user)
 		throws Exception {
 
 		MockHttpServletRequest mockHttpServletRequest =

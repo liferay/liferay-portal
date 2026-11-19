@@ -100,7 +100,6 @@ public class LaunchEditURLProviderImpl implements LaunchEditURLProvider {
 		}
 
 		Group companyGroup = _groupLocalService.getCompanyGroup(companyId);
-
 		Predicate predicate = _getEqualsPredicate(
 			"className", objectDefinition.getObjectDefinitionId(), className);
 

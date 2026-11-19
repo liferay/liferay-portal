@@ -62,7 +62,6 @@ public class LaunchEditFilter extends BaseLaunchFilter {
 		}
 
 		long companyId = CompanyThreadLocal.getCompanyId();
-
 		long launchSetId = _getLaunchSetId(httpServletRequest);
 
 		if ((launchSetId <= 0) ||
