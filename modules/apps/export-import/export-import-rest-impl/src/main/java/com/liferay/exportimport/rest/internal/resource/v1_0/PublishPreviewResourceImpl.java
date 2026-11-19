@@ -43,15 +43,40 @@ import org.osgi.service.component.annotations.ServiceScope;
 public class PublishPreviewResourceImpl extends BasePublishPreviewResourceImpl {
 
 	@Override
+	public PublishPreview getAssetLibraryPublishPreview(
+			String assetLibraryExternalReferenceCode, String dateFilterType,
+			Date endDate, Integer hours, String portletId, Date startDate)
+		throws Exception {
+
+		return _getPublishPreview(
+			dateFilterType, endDate,
+			GroupUtil.getAssetLibraryGroup(
+				contextCompany.getCompanyId(),
+				assetLibraryExternalReferenceCode),
+			hours, portletId, null, startDate);
+	}
+
+	@Override
 	public PublishPreview getSitePublishPreview(
 			String siteExternalReferenceCode, String dateFilterType,
 			Date endDate, Integer hours, String portletId,
 			String sitePageExternalReferenceCode, Date startDate)
 		throws Exception {
 
-		Group stagingGroup = GroupUtil.getStagingGroup(
+		return _getPublishPreview(
+			dateFilterType, endDate,
 			GroupUtil.getSiteGroup(
-				contextCompany.getCompanyId(), siteExternalReferenceCode));
+				contextCompany.getCompanyId(), siteExternalReferenceCode),
+			hours, portletId, sitePageExternalReferenceCode, startDate);
+	}
+
+	private PublishPreview _getPublishPreview(
+			String dateFilterType, Date endDate, Group group, Integer hours,
+			String portletId, String sitePageExternalReferenceCode,
+			Date startDate)
+		throws Exception {
+
+		Group stagingGroup = GroupUtil.getStagingGroup(group);
 
 		Layout layout = LayoutUtil.getPortletLayout(
 			stagingGroup, portletId, sitePageExternalReferenceCode);

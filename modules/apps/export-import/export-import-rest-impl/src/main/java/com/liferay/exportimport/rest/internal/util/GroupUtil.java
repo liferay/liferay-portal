@@ -140,7 +140,7 @@ public class GroupUtil {
 
 		if (stagingGroup == null) {
 			throw new BadRequestException(
-				"Staging is not enabled for site \"" +
+				"Staging is not enabled for \"" +
 					group.getExternalReferenceCode() + "\"");
 		}
 

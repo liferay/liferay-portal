@@ -99,6 +99,21 @@ public class PublishProcessResourceImpl extends BasePublishProcessResourceImpl {
 	}
 
 	@Override
+	public Page<PublishProcess> getAssetLibraryPublishProcessesPage(
+			String assetLibraryExternalReferenceCode, Long creatorId,
+			String portletId, String search, Integer status,
+			Pagination pagination, Sort[] sorts)
+		throws Exception {
+
+		return _getPublishProcessesPage(
+			creatorId,
+			GroupUtil.getAssetLibraryGroup(
+				contextCompany.getCompanyId(),
+				assetLibraryExternalReferenceCode),
+			pagination, portletId, search, null, sorts, status);
+	}
+
+	@Override
 	public PublishProcess getPublishProcess(Long publishProcessId)
 		throws Exception {
 
@@ -143,49 +158,25 @@ public class PublishProcessResourceImpl extends BasePublishProcessResourceImpl {
 			Pagination pagination, Sort[] sorts)
 		throws Exception {
 
-		Group stagingGroup = GroupUtil.getStagingGroup(
+		return _getPublishProcessesPage(
+			creatorId,
 			GroupUtil.getSiteGroup(
-				contextCompany.getCompanyId(), siteExternalReferenceCode));
+				contextCompany.getCompanyId(), siteExternalReferenceCode),
+			pagination, portletId, search, sitePageExternalReferenceCode, sorts,
+			status);
+	}
 
-		Layout layout = LayoutUtil.fetchPortletLayout(
-			stagingGroup, portletId, sitePageExternalReferenceCode);
+	@Override
+	public PublishProcess postAssetLibraryPublishProcess(
+			String assetLibraryExternalReferenceCode, String portletId,
+			PublishProcessRequest publishProcessRequest)
+		throws Exception {
 
-		if ((layout == null) &&
-			Validator.isNotNull(sitePageExternalReferenceCode)) {
-
-			return Page.of(Collections.emptyList());
-		}
-
-		Group scopeGroup = GroupUtil.getScopeGroup(
-			stagingGroup, layout, portletId);
-
-		PermissionUtil.checkPublishPermission(
-			scopeGroup.getGroupId(),
-			PermissionUtil.getViewPublishGroupActionId(portletId));
-
-		List<Long> groupIds = _getPublishGroupIds(scopeGroup);
-
-		if (Validator.isNotNull(portletId)) {
-			List<BackgroundTask> backgroundTasks = _getPortletBackgroundTasks(
-				creatorId, groupIds, portletId, search, sorts, status);
-
-			return Page.of(
-				transform(
-					ListUtil.subList(
-						backgroundTasks, pagination.getStartPosition(),
-						pagination.getEndPosition()),
-					this::_toPublishProcess),
-				pagination, backgroundTasks.size());
-		}
-
-		return Page.of(
-			transform(
-				_getBackgroundTasks(
-					creatorId, groupIds, pagination, search, sorts, status),
-				this::_toPublishProcess),
-			pagination,
-			_backgroundTaskLocalService.dynamicQueryCount(
-				_getDynamicQuery(creatorId, groupIds, null, search, status)));
+		return _postPublishProcess(
+			GroupUtil.getAssetLibraryGroup(
+				contextCompany.getCompanyId(),
+				assetLibraryExternalReferenceCode),
+			portletId, publishProcessRequest, null);
 	}
 
 	@Override
@@ -253,23 +244,10 @@ public class PublishProcessResourceImpl extends BasePublishProcessResourceImpl {
 			PublishProcessRequest publishProcessRequest)
 		throws Exception {
 
-		Group group = GroupUtil.getSiteGroup(
-			contextCompany.getCompanyId(), siteExternalReferenceCode);
-
-		Group stagingGroup = GroupUtil.getStagingGroup(group);
-
-		Layout layout = LayoutUtil.getPortletLayout(
-			stagingGroup, portletId, sitePageExternalReferenceCode);
-
-		if (layout == null) {
-			return _postLayoutPublishProcess(
-				group, publishProcessRequest, stagingGroup);
-		}
-
-		return _postPortletPublishProcess(
-			layout, portletId, publishProcessRequest,
-			GroupUtil.getScopeGroup(stagingGroup, layout, portletId),
-			stagingGroup);
+		return _postPublishProcess(
+			GroupUtil.getSiteGroup(
+				contextCompany.getCompanyId(), siteExternalReferenceCode),
+			portletId, publishProcessRequest, sitePageExternalReferenceCode);
 	}
 
 	private List<BackgroundTask> _getBackgroundTasks(
@@ -399,6 +377,55 @@ public class PublishProcessResourceImpl extends BasePublishProcessResourceImpl {
 		}
 
 		return groupIds;
+	}
+
+	private Page<PublishProcess> _getPublishProcessesPage(
+			Long creatorId, Group group, Pagination pagination,
+			String portletId, String search,
+			String sitePageExternalReferenceCode, Sort[] sorts, Integer status)
+		throws Exception {
+
+		Group stagingGroup = GroupUtil.getStagingGroup(group);
+
+		Layout layout = LayoutUtil.fetchPortletLayout(
+			stagingGroup, portletId, sitePageExternalReferenceCode);
+
+		if ((layout == null) &&
+			Validator.isNotNull(sitePageExternalReferenceCode)) {
+
+			return Page.of(Collections.emptyList());
+		}
+
+		Group scopeGroup = GroupUtil.getScopeGroup(
+			stagingGroup, layout, portletId);
+
+		PermissionUtil.checkPublishPermission(
+			scopeGroup.getGroupId(),
+			PermissionUtil.getViewPublishGroupActionId(portletId));
+
+		List<Long> groupIds = _getPublishGroupIds(scopeGroup);
+
+		if (Validator.isNotNull(portletId)) {
+			List<BackgroundTask> backgroundTasks = _getPortletBackgroundTasks(
+				creatorId, groupIds, portletId, search, sorts, status);
+
+			return Page.of(
+				transform(
+					ListUtil.subList(
+						backgroundTasks, pagination.getStartPosition(),
+						pagination.getEndPosition()),
+					this::_toPublishProcess),
+				pagination, backgroundTasks.size());
+		}
+
+		return Page.of(
+			transform(
+				_getBackgroundTasks(
+					creatorId, groupIds, pagination, search, sorts, status),
+				this::_toPublishProcess),
+			pagination,
+			_backgroundTaskLocalService.dynamicQueryCount(
+				_getDynamicQuery(creatorId, groupIds, null, search, status)));
 	}
 
 	private long _getTargetGroupId(Group scopeGroup, Group stagingGroup) {
@@ -561,7 +588,7 @@ public class PublishProcessResourceImpl extends BasePublishProcessResourceImpl {
 
 		if (publishProcessRequest.getRemoteConnection() != null) {
 			throw new BadRequestException(
-				"Remote staging is not enabled for site \"" +
+				"Remote staging is not enabled for \"" +
 					group.getExternalReferenceCode() + "\"");
 		}
 
@@ -658,6 +685,28 @@ public class PublishProcessResourceImpl extends BasePublishProcessResourceImpl {
 			_backgroundTaskLocalService.getBackgroundTask(
 				_staging.publishPortlet(
 					contextUser.getUserId(), exportImportConfiguration)));
+	}
+
+	private PublishProcess _postPublishProcess(
+			Group group, String portletId,
+			PublishProcessRequest publishProcessRequest,
+			String sitePageExternalReferenceCode)
+		throws Exception {
+
+		Group stagingGroup = GroupUtil.getStagingGroup(group);
+
+		Layout layout = LayoutUtil.getPortletLayout(
+			stagingGroup, portletId, sitePageExternalReferenceCode);
+
+		if (layout == null) {
+			return _postLayoutPublishProcess(
+				group, publishProcessRequest, stagingGroup);
+		}
+
+		return _postPortletPublishProcess(
+			layout, portletId, publishProcessRequest,
+			GroupUtil.getScopeGroup(stagingGroup, layout, portletId),
+			stagingGroup);
 	}
 
 	private PublishProcess _toPublishProcess(BackgroundTask backgroundTask) {

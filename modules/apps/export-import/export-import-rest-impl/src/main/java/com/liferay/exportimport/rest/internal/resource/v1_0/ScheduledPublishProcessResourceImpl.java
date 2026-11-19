@@ -86,13 +86,109 @@ public class ScheduledPublishProcessResourceImpl
 	extends BaseScheduledPublishProcessResourceImpl {
 
 	@Override
+	public void deleteAssetLibraryScheduledPublishProcess(
+			String assetLibraryExternalReferenceCode,
+			Long scheduledPublishProcessId)
+		throws Exception {
+
+		_deleteScheduledPublishProcess(
+			GroupUtil.getAssetLibraryGroup(
+				contextCompany.getCompanyId(),
+				assetLibraryExternalReferenceCode),
+			scheduledPublishProcessId);
+	}
+
+	@Override
 	public void deleteSiteScheduledPublishProcess(
 			String siteExternalReferenceCode, Long scheduledPublishProcessId)
 		throws Exception {
 
-		Group stagingGroup = GroupUtil.getStagingGroup(
+		_deleteScheduledPublishProcess(
 			GroupUtil.getSiteGroup(
-				contextCompany.getCompanyId(), siteExternalReferenceCode));
+				contextCompany.getCompanyId(), siteExternalReferenceCode),
+			scheduledPublishProcessId);
+	}
+
+	@Override
+	public ScheduledPublishProcess getAssetLibraryScheduledPublishProcess(
+			String assetLibraryExternalReferenceCode,
+			Long scheduledPublishProcessId)
+		throws Exception {
+
+		return _getScheduledPublishProcess(
+			GroupUtil.getAssetLibraryGroup(
+				contextCompany.getCompanyId(),
+				assetLibraryExternalReferenceCode),
+			scheduledPublishProcessId);
+	}
+
+	@Override
+	public Page<ScheduledPublishProcess>
+			getAssetLibraryScheduledPublishProcessesPage(
+				String assetLibraryExternalReferenceCode, String search,
+				Pagination pagination, Sort[] sorts)
+		throws Exception {
+
+		return _getScheduledPublishProcessesPage(
+			GroupUtil.getAssetLibraryGroup(
+				contextCompany.getCompanyId(),
+				assetLibraryExternalReferenceCode),
+			pagination, search, sorts);
+	}
+
+	@Override
+	public ScheduledPublishProcess getSiteScheduledPublishProcess(
+			String siteExternalReferenceCode, Long scheduledPublishProcessId)
+		throws Exception {
+
+		return _getScheduledPublishProcess(
+			GroupUtil.getSiteGroup(
+				contextCompany.getCompanyId(), siteExternalReferenceCode),
+			scheduledPublishProcessId);
+	}
+
+	@Override
+	public Page<ScheduledPublishProcess> getSiteScheduledPublishProcessesPage(
+			String siteExternalReferenceCode, String search,
+			Pagination pagination, Sort[] sorts)
+		throws Exception {
+
+		return _getScheduledPublishProcessesPage(
+			GroupUtil.getSiteGroup(
+				contextCompany.getCompanyId(), siteExternalReferenceCode),
+			pagination, search, sorts);
+	}
+
+	@Override
+	public ScheduledPublishProcess postAssetLibraryScheduledPublishProcess(
+			String assetLibraryExternalReferenceCode,
+			ScheduledPublishProcessRequest scheduledPublishProcessRequest)
+		throws Exception {
+
+		return _postScheduledPublishProcess(
+			GroupUtil.getAssetLibraryGroup(
+				contextCompany.getCompanyId(),
+				assetLibraryExternalReferenceCode),
+			scheduledPublishProcessRequest);
+	}
+
+	@Override
+	public ScheduledPublishProcess postSiteScheduledPublishProcess(
+			String siteExternalReferenceCode,
+			ScheduledPublishProcessRequest scheduledPublishProcessRequest)
+		throws Exception {
+
+		return _postScheduledPublishProcess(
+			GroupUtil.getSiteGroup(
+				contextCompany.getCompanyId(), siteExternalReferenceCode),
+			scheduledPublishProcessRequest);
+	}
+
+	private void _deleteScheduledPublishProcess(
+			Group group, Long scheduledPublishProcessId)
+		throws Exception {
+
+		Group stagingGroup = GroupUtil.getStagingGroup(group);
 
 		PermissionUtil.checkPublishPermission(
 			stagingGroup.getGroupId(), ActionKeys.PUBLISH_STAGING);
@@ -117,218 +213,6 @@ public class ScheduledPublishProcessResourceImpl
 
 		_exportImportConfigurationLocalService.deleteExportImportConfiguration(
 			scheduledPublishProcessId);
-	}
-
-	@Override
-	public ScheduledPublishProcess getSiteScheduledPublishProcess(
-			String siteExternalReferenceCode, Long scheduledPublishProcessId)
-		throws Exception {
-
-		Group stagingGroup = GroupUtil.getStagingGroup(
-			GroupUtil.getSiteGroup(
-				contextCompany.getCompanyId(), siteExternalReferenceCode));
-
-		PermissionUtil.checkPublishPermission(
-			stagingGroup.getGroupId(), ActionKeys.VIEW_STAGING);
-
-		return _toScheduledPublishProcess(
-			_getExportPortletDataHandlers(stagingGroup),
-			_getSchedulerResponse(
-				_getSchedulerGroupName(stagingGroup),
-				scheduledPublishProcessId));
-	}
-
-	@Override
-	public Page<ScheduledPublishProcess> getSiteScheduledPublishProcessesPage(
-			String siteExternalReferenceCode, String search,
-			Pagination pagination, Sort[] sorts)
-		throws Exception {
-
-		Group stagingGroup = GroupUtil.getStagingGroup(
-			GroupUtil.getSiteGroup(
-				contextCompany.getCompanyId(), siteExternalReferenceCode));
-
-		PermissionUtil.checkPublishPermission(
-			stagingGroup.getGroupId(), ActionKeys.VIEW_STAGING);
-
-		PortletDataHandler[] exportPortletDataHandlers =
-			_getExportPortletDataHandlers(stagingGroup);
-
-		List<ScheduledPublishProcess> scheduledPublishProcesses =
-			new ArrayList<>(
-				transform(
-					_schedulerEngineHelper.getScheduledJobs(
-						_getSchedulerGroupName(stagingGroup),
-						StorageType.PERSISTED),
-					schedulerResponse -> _toScheduledPublishProcess(
-						exportPortletDataHandlers, schedulerResponse)));
-
-		if (!Validator.isBlank(search)) {
-			scheduledPublishProcesses.removeIf(
-				scheduledPublishProcess -> !StringUtil.containsIgnoreCase(
-					GetterUtil.getString(scheduledPublishProcess.getName()),
-					search, StringPool.BLANK));
-		}
-
-		Comparator<ScheduledPublishProcess> comparator = _getComparator(sorts);
-
-		if (comparator == null) {
-			comparator = _getFieldComparator(
-				"dateCreated"
-			).reversed();
-		}
-
-		scheduledPublishProcesses.sort(comparator);
-
-		return Page.of(
-			ListUtil.subList(
-				scheduledPublishProcesses, pagination.getStartPosition(),
-				pagination.getEndPosition()),
-			pagination, scheduledPublishProcesses.size());
-	}
-
-	@Override
-	public ScheduledPublishProcess postSiteScheduledPublishProcess(
-			String siteExternalReferenceCode,
-			ScheduledPublishProcessRequest scheduledPublishProcessRequest)
-		throws Exception {
-
-		Group stagingGroup = GroupUtil.getStagingGroup(
-			GroupUtil.getSiteGroup(
-				contextCompany.getCompanyId(), siteExternalReferenceCode));
-
-		long stagingGroupId = stagingGroup.getGroupId();
-
-		PermissionUtil.checkPublishPermission(
-			stagingGroupId, ActionKeys.PUBLISH_STAGING);
-
-		PublishProcessRequest publishProcessRequest =
-			scheduledPublishProcessRequest.getPublishProcessRequest();
-
-		if (publishProcessRequest == null) {
-			throw new BadRequestException(
-				"A publish process request is required");
-		}
-
-		String cronExpression =
-			scheduledPublishProcessRequest.getCronExpression();
-
-		if (Validator.isBlank(cronExpression)) {
-			throw new BadRequestException("A cron expression is required");
-		}
-
-		Date date = new Date();
-		Date scheduleStartDate =
-			scheduledPublishProcessRequest.getScheduleStartDate();
-
-		if (scheduleStartDate == null) {
-			scheduleStartDate = date;
-		}
-		else if (scheduleStartDate.before(date)) {
-			throw new BadRequestException(
-				"The schedule start date must be in the future");
-		}
-
-		String timeZoneId = scheduledPublishProcessRequest.getTimeZoneId();
-
-		if (Validator.isBlank(timeZoneId)) {
-			TimeZone timeZone = TimeZoneUtil.getDefault();
-
-			timeZoneId = timeZone.getID();
-		}
-		else if (!ArrayUtil.contains(TimeZone.getAvailableIDs(), timeZoneId)) {
-			throw new BadRequestException(
-				"No time zone exists with ID \"" + timeZoneId + "\"");
-		}
-
-		String groupName = _getSchedulerGroupName(stagingGroup);
-
-		Trigger trigger = _getTrigger(
-			cronExpression, groupName,
-			scheduledPublishProcessRequest.getScheduleEndDate(),
-			scheduleStartDate, timeZoneId);
-
-		PortletDataHandler[] exportPortletDataHandlers =
-			_getExportPortletDataHandlers(stagingGroup);
-
-		Map<String, String[]> parameterMap =
-			ParameterMapUtil.putDateRangeParameters(
-				publishProcessRequest.getDateFilter(),
-				ParameterMapUtil.toParameterMap(
-					publishProcessRequest, exportPortletDataHandlers),
-				contextUser);
-
-		parameterMap =
-			_exportImportConfigurationParameterMapFactory.buildParameterMap(
-				parameterMap);
-
-		parameterMap.put(
-			ParameterMapUtil.CRON_EXPRESSION, new String[] {cronExpression});
-		parameterMap.put(
-			ParameterMapUtil.TIME_ZONE_ID, new String[] {timeZoneId});
-
-		ExportImportConfiguration exportImportConfiguration = null;
-
-		if (stagingGroup.isStagedRemotely()) {
-			exportImportConfiguration =
-				_exportImportConfigurationLocalService.
-					addDraftExportImportConfiguration(
-						contextUser.getUserId(),
-						publishProcessRequest.getName(),
-						ExportImportConfigurationConstants.
-							TYPE_SCHEDULED_PUBLISH_LAYOUT_REMOTE,
-						RemoteStagingUtil.buildPublishLayoutRemoteSettingsMap(
-							parameterMap,
-							publishProcessRequest.getRemoteConnection(),
-							stagingGroup, contextUser));
-		}
-		else {
-			if (publishProcessRequest.getRemoteConnection() != null) {
-				throw new BadRequestException(
-					"Remote staging is not enabled for site \"" +
-						siteExternalReferenceCode + "\"");
-			}
-
-			parameterMap.put(
-				PortletDataHandlerKeys.PERFORM_DIRECT_BINARY_IMPORT,
-				new String[] {Boolean.TRUE.toString()});
-
-			Group liveGroup = GroupUtil.getLiveGroup(stagingGroup);
-			boolean privateLayout = LayoutUtil.isPrivateLayout(parameterMap);
-
-			exportImportConfiguration =
-				_exportImportConfigurationLocalService.
-					addDraftExportImportConfiguration(
-						contextUser.getUserId(),
-						publishProcessRequest.getName(),
-						ExportImportConfigurationConstants.
-							TYPE_SCHEDULED_PUBLISH_LAYOUT_LOCAL,
-						_exportImportConfigurationSettingsMapFactory.
-							buildPublishLayoutLocalSettingsMap(
-								contextUser, stagingGroupId,
-								liveGroup.getGroupId(), privateLayout,
-								LayoutUtil.getLayoutIds(
-									_layoutLocalService.getLayouts(
-										stagingGroupId, privateLayout),
-									parameterMap),
-								parameterMap));
-		}
-
-		Message message = new Message();
-
-		message.put("companyId", contextCompany.getCompanyId());
-		message.setPayload(
-			exportImportConfiguration.getExportImportConfigurationId());
-
-		_schedulerEngineHelper.schedule(
-			trigger, StorageType.PERSISTED, publishProcessRequest.getName(),
-			_getDestinationName(stagingGroup), message);
-
-		return _toScheduledPublishProcess(
-			exportPortletDataHandlers,
-			_getSchedulerResponse(
-				groupName,
-				exportImportConfiguration.getExportImportConfigurationId()));
 	}
 
 	private Comparator<ScheduledPublishProcess> _getComparator(Sort[] sorts) {
@@ -427,6 +311,67 @@ public class ScheduledPublishProcessResourceImpl
 		return (Map<String, String[]>)settingsMap.get("parameterMap");
 	}
 
+	private ScheduledPublishProcess _getScheduledPublishProcess(
+			Group group, Long scheduledPublishProcessId)
+		throws Exception {
+
+		Group stagingGroup = GroupUtil.getStagingGroup(group);
+
+		PermissionUtil.checkPublishPermission(
+			stagingGroup.getGroupId(), ActionKeys.VIEW_STAGING);
+
+		return _toScheduledPublishProcess(
+			_getExportPortletDataHandlers(stagingGroup),
+			_getSchedulerResponse(
+				_getSchedulerGroupName(stagingGroup),
+				scheduledPublishProcessId));
+	}
+
+	private Page<ScheduledPublishProcess> _getScheduledPublishProcessesPage(
+			Group group, Pagination pagination, String search, Sort[] sorts)
+		throws Exception {
+
+		Group stagingGroup = GroupUtil.getStagingGroup(group);
+
+		PermissionUtil.checkPublishPermission(
+			stagingGroup.getGroupId(), ActionKeys.VIEW_STAGING);
+
+		PortletDataHandler[] exportPortletDataHandlers =
+			_getExportPortletDataHandlers(stagingGroup);
+
+		List<ScheduledPublishProcess> scheduledPublishProcesses =
+			new ArrayList<>(
+				transform(
+					_schedulerEngineHelper.getScheduledJobs(
+						_getSchedulerGroupName(stagingGroup),
+						StorageType.PERSISTED),
+					schedulerResponse -> _toScheduledPublishProcess(
+						exportPortletDataHandlers, schedulerResponse)));
+
+		if (!Validator.isBlank(search)) {
+			scheduledPublishProcesses.removeIf(
+				scheduledPublishProcess -> !StringUtil.containsIgnoreCase(
+					GetterUtil.getString(scheduledPublishProcess.getName()),
+					search, StringPool.BLANK));
+		}
+
+		Comparator<ScheduledPublishProcess> comparator = _getComparator(sorts);
+
+		if (comparator == null) {
+			comparator = _getFieldComparator(
+				"dateCreated"
+			).reversed();
+		}
+
+		scheduledPublishProcesses.sort(comparator);
+
+		return Page.of(
+			ListUtil.subList(
+				scheduledPublishProcesses, pagination.getStartPosition(),
+				pagination.getEndPosition()),
+			pagination, scheduledPublishProcesses.size());
+	}
+
 	private String _getSchedulerGroupName(Group stagingGroup) {
 		if (stagingGroup.isStagedRemotely()) {
 			return _staging.getSchedulerGroupName(
@@ -490,6 +435,147 @@ public class ScheduledPublishProcessResourceImpl
 		}
 
 		return trigger;
+	}
+
+	private ScheduledPublishProcess _postScheduledPublishProcess(
+			Group group,
+			ScheduledPublishProcessRequest scheduledPublishProcessRequest)
+		throws Exception {
+
+		Group stagingGroup = GroupUtil.getStagingGroup(group);
+
+		long stagingGroupId = stagingGroup.getGroupId();
+
+		PermissionUtil.checkPublishPermission(
+			stagingGroupId, ActionKeys.PUBLISH_STAGING);
+
+		PublishProcessRequest publishProcessRequest =
+			scheduledPublishProcessRequest.getPublishProcessRequest();
+
+		if (publishProcessRequest == null) {
+			throw new BadRequestException(
+				"A publish process request is required");
+		}
+
+		String cronExpression =
+			scheduledPublishProcessRequest.getCronExpression();
+
+		if (Validator.isBlank(cronExpression)) {
+			throw new BadRequestException("A cron expression is required");
+		}
+
+		Date date = new Date();
+		Date scheduleStartDate =
+			scheduledPublishProcessRequest.getScheduleStartDate();
+
+		if (scheduleStartDate == null) {
+			scheduleStartDate = date;
+		}
+		else if (scheduleStartDate.before(date)) {
+			throw new BadRequestException(
+				"The schedule start date must be in the future");
+		}
+
+		String timeZoneId = scheduledPublishProcessRequest.getTimeZoneId();
+
+		if (Validator.isBlank(timeZoneId)) {
+			TimeZone timeZone = TimeZoneUtil.getDefault();
+
+			timeZoneId = timeZone.getID();
+		}
+		else if (!ArrayUtil.contains(TimeZone.getAvailableIDs(), timeZoneId)) {
+			throw new BadRequestException(
+				"No time zone exists with ID \"" + timeZoneId + "\"");
+		}
+
+		String groupName = _getSchedulerGroupName(stagingGroup);
+
+		Trigger trigger = _getTrigger(
+			cronExpression, groupName,
+			scheduledPublishProcessRequest.getScheduleEndDate(),
+			scheduleStartDate, timeZoneId);
+
+		PortletDataHandler[] exportPortletDataHandlers =
+			_getExportPortletDataHandlers(stagingGroup);
+
+		Map<String, String[]> parameterMap =
+			ParameterMapUtil.putDateRangeParameters(
+				publishProcessRequest.getDateFilter(),
+				ParameterMapUtil.toParameterMap(
+					publishProcessRequest, exportPortletDataHandlers),
+				contextUser);
+
+		parameterMap =
+			_exportImportConfigurationParameterMapFactory.buildParameterMap(
+				parameterMap);
+
+		parameterMap.put(
+			ParameterMapUtil.CRON_EXPRESSION, new String[] {cronExpression});
+		parameterMap.put(
+			ParameterMapUtil.TIME_ZONE_ID, new String[] {timeZoneId});
+
+		ExportImportConfiguration exportImportConfiguration = null;
+
+		if (stagingGroup.isStagedRemotely()) {
+			exportImportConfiguration =
+				_exportImportConfigurationLocalService.
+					addDraftExportImportConfiguration(
+						contextUser.getUserId(),
+						publishProcessRequest.getName(),
+						ExportImportConfigurationConstants.
+							TYPE_SCHEDULED_PUBLISH_LAYOUT_REMOTE,
+						RemoteStagingUtil.buildPublishLayoutRemoteSettingsMap(
+							parameterMap,
+							publishProcessRequest.getRemoteConnection(),
+							stagingGroup, contextUser));
+		}
+		else {
+			if (publishProcessRequest.getRemoteConnection() != null) {
+				throw new BadRequestException(
+					"Remote staging is not enabled for \"" +
+						group.getExternalReferenceCode() + "\"");
+			}
+
+			parameterMap.put(
+				PortletDataHandlerKeys.PERFORM_DIRECT_BINARY_IMPORT,
+				new String[] {Boolean.TRUE.toString()});
+
+			Group liveGroup = GroupUtil.getLiveGroup(stagingGroup);
+			boolean privateLayout = LayoutUtil.isPrivateLayout(parameterMap);
+
+			exportImportConfiguration =
+				_exportImportConfigurationLocalService.
+					addDraftExportImportConfiguration(
+						contextUser.getUserId(),
+						publishProcessRequest.getName(),
+						ExportImportConfigurationConstants.
+							TYPE_SCHEDULED_PUBLISH_LAYOUT_LOCAL,
+						_exportImportConfigurationSettingsMapFactory.
+							buildPublishLayoutLocalSettingsMap(
+								contextUser, stagingGroupId,
+								liveGroup.getGroupId(), privateLayout,
+								LayoutUtil.getLayoutIds(
+									_layoutLocalService.getLayouts(
+										stagingGroupId, privateLayout),
+									parameterMap),
+								parameterMap));
+		}
+
+		Message message = new Message();
+
+		message.put("companyId", contextCompany.getCompanyId());
+		message.setPayload(
+			exportImportConfiguration.getExportImportConfigurationId());
+
+		_schedulerEngineHelper.schedule(
+			trigger, StorageType.PERSISTED, publishProcessRequest.getName(),
+			_getDestinationName(stagingGroup), message);
+
+		return _toScheduledPublishProcess(
+			exportPortletDataHandlers,
+			_getSchedulerResponse(
+				groupName,
+				exportImportConfiguration.getExportImportConfigurationId()));
 	}
 
 	private ScheduledPublishProcess _toScheduledPublishProcess(
