@@ -121,9 +121,14 @@ public class PublishLayoutMVCActionCommand
 			long userId)
 		throws Exception {
 
-		if (_workflowDefinitionLinkLocalService.hasWorkflowDefinitionLink(
-				layout.getCompanyId(), layout.getGroupId(),
-				Layout.class.getName())) {
+		if (draftLayout.getLaunchSetId() > 0) {
+			_layoutLocalService.updateStatus(
+				userId, draftLayout.getPlid(),
+				WorkflowConstants.STATUS_READY_TO_PUBLISH, serviceContext);
+		}
+		else if (_workflowDefinitionLinkLocalService.hasWorkflowDefinitionLink(
+					layout.getCompanyId(), layout.getGroupId(),
+					Layout.class.getName())) {
 
 			WorkflowHandlerRegistryUtil.startWorkflowInstance(
 				layout.getCompanyId(), layout.getGroupId(), userId,
@@ -131,11 +136,6 @@ public class PublishLayoutMVCActionCommand
 				serviceContext, Collections.emptyMap());
 
 			layoutLockManager.unlock(draftLayout, userId);
-		}
-		else if (draftLayout.getLaunchSetId() > 0) {
-			_layoutLocalService.updateStatus(
-				userId, draftLayout.getPlid(),
-				WorkflowConstants.STATUS_READY_TO_PUBLISH, serviceContext);
 		}
 		else {
 			UnicodeProperties originalTypeSettingsUnicodeProperties =
