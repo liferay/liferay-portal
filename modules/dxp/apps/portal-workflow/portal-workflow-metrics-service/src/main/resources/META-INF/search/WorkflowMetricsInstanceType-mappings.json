@@ -481,6 +481,9 @@
 			},
 			"type": "nested"
 		},
+		"timestamp": {
+			"type": "date"
+		},
 		"uid": {
 			"type": "keyword"
 		},

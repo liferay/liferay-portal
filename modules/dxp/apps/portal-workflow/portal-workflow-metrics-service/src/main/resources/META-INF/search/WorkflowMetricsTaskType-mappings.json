@@ -456,6 +456,9 @@
 		"taskId": {
 			"type": "long"
 		},
+		"timestamp": {
+			"type": "date"
+		},
 		"uid": {
 			"type": "keyword"
 		},

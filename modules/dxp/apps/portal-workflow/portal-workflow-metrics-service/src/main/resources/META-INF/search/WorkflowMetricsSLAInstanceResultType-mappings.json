@@ -60,6 +60,9 @@
 		"status": {
 			"type": "keyword"
 		},
+		"timestamp": {
+			"type": "date"
+		},
 		"uid": {
 			"type": "keyword"
 		}

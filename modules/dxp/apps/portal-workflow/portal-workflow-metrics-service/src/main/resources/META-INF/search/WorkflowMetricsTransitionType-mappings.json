@@ -50,6 +50,9 @@
 		"targetNodeName": {
 			"type": "keyword"
 		},
+		"timestamp": {
+			"type": "date"
+		},
 		"transitionId": {
 			"type": "long"
 		},

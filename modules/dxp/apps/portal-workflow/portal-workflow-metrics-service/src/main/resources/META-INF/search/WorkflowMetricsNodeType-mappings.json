@@ -54,6 +54,9 @@
 		"terminal": {
 			"type": "boolean"
 		},
+		"timestamp": {
+			"type": "date"
+		},
 		"type": {
 			"type": "keyword"
 		},

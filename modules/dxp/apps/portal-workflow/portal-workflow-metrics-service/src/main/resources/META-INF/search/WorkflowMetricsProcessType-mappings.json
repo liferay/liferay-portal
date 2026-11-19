@@ -410,6 +410,9 @@
 		"processId": {
 			"type": "long"
 		},
+		"timestamp": {
+			"type": "date"
+		},
 		"title": {
 			"term_vector": "with_positions_offsets",
 			"type": "text"
