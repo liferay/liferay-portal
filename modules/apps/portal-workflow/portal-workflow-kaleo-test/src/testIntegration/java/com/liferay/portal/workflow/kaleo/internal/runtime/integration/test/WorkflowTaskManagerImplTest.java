@@ -1201,8 +1201,8 @@ public class WorkflowTaskManagerImplTest extends BaseWorkflowManagerTestCase {
 			Assert.assertEquals(
 				WorkflowConstants.STATUS_PENDING, blogsEntry.getStatus());
 
-			_checkUserNotificationEventsByUsers(0, _siteMemberUser);
 			_checkUserNotificationEventsByUsers(1, childSiteMemberUser);
+			_checkUserNotificationEventsByUsers(0, _siteMemberUser);
 		}
 	}
 
