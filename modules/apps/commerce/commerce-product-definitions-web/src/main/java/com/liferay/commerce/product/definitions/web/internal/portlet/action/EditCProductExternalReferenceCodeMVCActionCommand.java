@@ -9,12 +9,17 @@ import com.liferay.commerce.product.constants.CPPortletKeys;
 import com.liferay.commerce.product.exception.DuplicateCProductExternalReferenceCodeException;
 import com.liferay.commerce.product.exception.NoSuchCProductException;
 import com.liferay.commerce.product.model.CProduct;
+import com.liferay.commerce.product.model.CommerceCatalog;
 import com.liferay.commerce.product.service.CProductLocalService;
+import com.liferay.commerce.product.service.CommerceCatalogLocalService;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.util.ParamUtil;
 
@@ -74,6 +79,12 @@ public class EditCProductExternalReferenceCodeMVCActionCommand
 
 		CProduct cProduct = _cProductLocalService.getCProduct(cProductId);
 
+		_commerceCatalogModelResourcePermission.check(
+			PermissionThreadLocal.getPermissionChecker(),
+			_commerceCatalogLocalService.fetchCommerceCatalogByGroupId(
+				cProduct.getGroupId()),
+			ActionKeys.UPDATE);
+
 		String externalReferenceCode = ParamUtil.getString(
 			actionRequest, "externalReferenceCode");
 
@@ -86,5 +97,14 @@ public class EditCProductExternalReferenceCodeMVCActionCommand
 
 	@Reference
 	private CProductLocalService _cProductLocalService;
+
+	@Reference
+	private CommerceCatalogLocalService _commerceCatalogLocalService;
+
+	@Reference(
+		target = "(model.class.name=com.liferay.commerce.product.model.CommerceCatalog)"
+	)
+	private ModelResourcePermission<CommerceCatalog>
+		_commerceCatalogModelResourcePermission;
 
 }
