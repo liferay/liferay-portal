@@ -462,16 +462,6 @@ public class LayoutClassedModelUsageLocalServiceUtil {
 			layoutClassedModelUsage);
 	}
 
-	public static LayoutClassedModelUsage updateLayoutClassedModelUsage(
-			long classNameId, long classPK, String containerKey,
-			long containerType, long layoutClassedModelUsageId, long plid)
-		throws PortalException {
-
-		return getService().updateLayoutClassedModelUsage(
-			classNameId, classPK, containerKey, containerType,
-			layoutClassedModelUsageId, plid);
-	}
-
 	public static LayoutClassedModelUsageLocalService getService() {
 		return _serviceSnapshot.get();
 	}
@@ -482,4 +472,4 @@ public class LayoutClassedModelUsageLocalServiceUtil {
 			LayoutClassedModelUsageLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-781914343
+// LIFERAY-SERVICE-BUILDER-HASH:-1987555391

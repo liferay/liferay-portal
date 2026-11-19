@@ -22,7 +22,6 @@ import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.service.BaseLocalService;
 import com.liferay.portal.kernel.service.PersistedModelLocalService;
-import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.change.tracking.CTService;
 import com.liferay.portal.kernel.service.persistence.change.tracking.CTPersistence;
 import com.liferay.portal.kernel.transaction.Isolation;
@@ -75,10 +74,6 @@ public interface LayoutLocalizationLocalService
 	@Indexable(type = IndexableType.REINDEX)
 	public LayoutLocalization addLayoutLocalization(
 		LayoutLocalization layoutLocalization);
-
-	public LayoutLocalization addLayoutLocalization(
-		long groupId, String content, String languageId, long plid,
-		ServiceContext serviceContext);
 
 	/**
 	 * Creates a new layout localization with the primary key. Does not add the layout localization to the database.
@@ -245,11 +240,6 @@ public interface LayoutLocalizationLocalService
 	public LayoutLocalization getLayoutLocalization(long layoutLocalizationId)
 		throws PortalException;
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public LayoutLocalization getLayoutLocalization(
-			String languageId, long plid)
-		throws PortalException;
-
 	/**
 	 * Returns the layout localization matching the UUID and group.
 	 *
@@ -340,10 +330,6 @@ public interface LayoutLocalizationLocalService
 	public LayoutLocalization updateLayoutLocalization(
 		LayoutLocalization layoutLocalization);
 
-	public LayoutLocalization updateLayoutLocalization(
-		String content, String languageId, long plid,
-		ServiceContext serviceContext);
-
 	@Override
 	@Transactional(enabled = false)
 	public CTPersistence<LayoutLocalization> getCTPersistence();
@@ -360,4 +346,4 @@ public interface LayoutLocalizationLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1344437624
+// LIFERAY-SERVICE-BUILDER-HASH:1267029101

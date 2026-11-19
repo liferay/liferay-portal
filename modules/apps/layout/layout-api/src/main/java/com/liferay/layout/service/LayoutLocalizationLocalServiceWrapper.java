@@ -50,15 +50,6 @@ public class LayoutLocalizationLocalServiceWrapper
 			layoutLocalization);
 	}
 
-	@Override
-	public LayoutLocalization addLayoutLocalization(
-		long groupId, String content, String languageId, long plid,
-		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
-
-		return _layoutLocalizationLocalService.addLayoutLocalization(
-			groupId, content, languageId, plid, serviceContext);
-	}
-
 	/**
 	 * Creates a new layout localization with the primary key. Does not add the layout localization to the database.
 	 *
@@ -309,15 +300,6 @@ public class LayoutLocalizationLocalServiceWrapper
 			layoutLocalizationId);
 	}
 
-	@Override
-	public LayoutLocalization getLayoutLocalization(
-			String languageId, long plid)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _layoutLocalizationLocalService.getLayoutLocalization(
-			languageId, plid);
-	}
-
 	/**
 	 * Returns the layout localization matching the UUID and group.
 	 *
@@ -441,15 +423,6 @@ public class LayoutLocalizationLocalServiceWrapper
 	}
 
 	@Override
-	public LayoutLocalization updateLayoutLocalization(
-		String content, String languageId, long plid,
-		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
-
-		return _layoutLocalizationLocalService.updateLayoutLocalization(
-			content, languageId, plid, serviceContext);
-	}
-
-	@Override
 	public BasePersistence<?> getBasePersistence() {
 		return _layoutLocalizationLocalService.getBasePersistence();
 	}
@@ -489,4 +462,4 @@ public class LayoutLocalizationLocalServiceWrapper
 	private LayoutLocalizationLocalService _layoutLocalizationLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2099013791
+// LIFERAY-SERVICE-BUILDER-HASH:124192294

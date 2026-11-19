@@ -53,14 +53,6 @@ public class LayoutLocalizationLocalServiceUtil {
 		return getService().addLayoutLocalization(layoutLocalization);
 	}
 
-	public static LayoutLocalization addLayoutLocalization(
-		long groupId, String content, String languageId, long plid,
-		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
-
-		return getService().addLayoutLocalization(
-			groupId, content, languageId, plid, serviceContext);
-	}
-
 	/**
 	 * Creates a new layout localization with the primary key. Does not add the layout localization to the database.
 	 *
@@ -273,13 +265,6 @@ public class LayoutLocalizationLocalServiceUtil {
 		return getService().getLayoutLocalization(layoutLocalizationId);
 	}
 
-	public static LayoutLocalization getLayoutLocalization(
-			String languageId, long plid)
-		throws PortalException {
-
-		return getService().getLayoutLocalization(languageId, plid);
-	}
-
 	/**
 	 * Returns the layout localization matching the UUID and group.
 	 *
@@ -389,14 +374,6 @@ public class LayoutLocalizationLocalServiceUtil {
 		return getService().updateLayoutLocalization(layoutLocalization);
 	}
 
-	public static LayoutLocalization updateLayoutLocalization(
-		String content, String languageId, long plid,
-		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
-
-		return getService().updateLayoutLocalization(
-			content, languageId, plid, serviceContext);
-	}
-
 	public static LayoutLocalizationLocalService getService() {
 		return _serviceSnapshot.get();
 	}
@@ -407,4 +384,4 @@ public class LayoutLocalizationLocalServiceUtil {
 			LayoutLocalizationLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-506589787
+// LIFERAY-SERVICE-BUILDER-HASH:-579695769

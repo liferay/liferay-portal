@@ -377,11 +377,6 @@ public interface LayoutClassedModelUsageLocalService
 	public LayoutClassedModelUsage updateLayoutClassedModelUsage(
 		LayoutClassedModelUsage layoutClassedModelUsage);
 
-	public LayoutClassedModelUsage updateLayoutClassedModelUsage(
-			long classNameId, long classPK, String containerKey,
-			long containerType, long layoutClassedModelUsageId, long plid)
-		throws PortalException;
-
 	@Override
 	@Transactional(enabled = false)
 	public CTPersistence<LayoutClassedModelUsage> getCTPersistence();
@@ -398,4 +393,4 @@ public interface LayoutClassedModelUsageLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:237564382
+// LIFERAY-SERVICE-BUILDER-HASH:262073888
