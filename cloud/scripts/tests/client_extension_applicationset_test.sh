@@ -27,8 +27,9 @@ function main {
 
 	_run_test _test_an_entry_overrides_the_defaults
 	_run_test _test_an_entry_turns_on_a_separate_namespace
+	_run_test _test_an_entry_value_replaces_the_default_value
 	_run_test _test_nothing_set_stays_in_the_dxp_namespace
-	_run_test _test_the_defaults_merge_under_each_entry
+	_run_test _test_the_default_values_fill_in_an_entry
 	_run_test _test_the_defaults_turn_on_a_separate_namespace
 
 	echo ""
@@ -98,11 +99,15 @@ function _test_an_entry_turns_on_a_separate_namespace {
 	_assert "$(_make_parameters '{"separateNamespace": true}')" namespace "liferay-sample-etc-node liferay-able-nonproduction-cx"
 }
 
+function _test_an_entry_value_replaces_the_default_value {
+	_assert "$(_make_parameters '{"values": {"imagePullSecrets": [], "network": {"enabled": false}, "replicaCount": 0}}' '{"values": {"imagePullSecrets": [{"name": "ghcr-pull"}], "network": {"enabled": true, "port": 8080}, "replicaCount": 2}}')" values '{"imagePullSecrets":[],"network":{"enabled":false},"replicaCount":0}'
+}
+
 function _test_nothing_set_stays_in_the_dxp_namespace {
 	_assert "$(_make_parameters)" namespace "liferay-sample-etc-node liferay-able-nonproduction"
 }
 
-function _test_the_defaults_merge_under_each_entry {
+function _test_the_default_values_fill_in_an_entry {
 	_assert "$(_make_parameters '{"values": {"replicaCount": 2}}' '{"values": {"imagePullSecrets": [{"name": "ghcr-pull"}], "replicaCount": 1}}')" values '{"imagePullSecrets":[{"name":"ghcr-pull"}],"replicaCount":2}'
 }
 

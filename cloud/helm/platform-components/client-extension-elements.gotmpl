@@ -9,11 +9,18 @@
         {{- if not (kindIs "map" $clientExtension) }}
             {{- continue }}
         {{- end }}
-        {{- $merged := merge (deepCopy $clientExtension) (deepCopy $clientExtensionDefaults) }}
+        {{- $merged := deepCopy $clientExtensionDefaults }}
         {{- range $key, $value := $clientExtension }}
-            {{- if not (kindIs "map" $value) }}
-                {{- $_ := set $merged $key $value }}
+            {{- $_ := set $merged $key $value }}
+        {{- end }}
+        {{- $defaultValues := get $clientExtensionDefaults "values" }}
+        {{- $entryValues := get $clientExtension "values" }}
+        {{- if and (kindIs "map" $defaultValues) (kindIs "map" $entryValues) }}
+            {{- $values := deepCopy $defaultValues }}
+            {{- range $key, $value := $entryValues }}
+                {{- $_ := set $values $key $value }}
             {{- end }}
+            {{- $_ := set $merged "values" $values }}
         {{- end }}
         {{- $clientExtension = $merged }}
         {{- if eq (toString (get $clientExtension "enabled")) "false" }}
