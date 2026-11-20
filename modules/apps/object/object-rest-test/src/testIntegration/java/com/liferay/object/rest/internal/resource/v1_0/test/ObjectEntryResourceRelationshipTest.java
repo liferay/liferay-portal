@@ -1001,7 +1001,7 @@ public class ObjectEntryResourceRelationshipTest
 					NAME_OBJECT_RELATIONSHIP_ERC_OBJECT_FIELD_NAME,
 				objectField);
 
-		// Priority(ERC) > priority(invalid ID)
+		// Priority: external reference code > invalid ID
 
 		ObjectDefinition objectDefinition = getObjectDefinition2();
 
@@ -1027,7 +1027,7 @@ public class ObjectEntryResourceRelationshipTest
 			).toString(),
 			JSONCompareMode.LENIENT);
 
-		// Priority(ID) > priority(ERC)
+		// Priority: ID > external reference code
 
 		JSONAssert.assertEquals(
 			JSONUtil.put(
@@ -1051,7 +1051,7 @@ public class ObjectEntryResourceRelationshipTest
 			).toString(),
 			JSONCompareMode.LENIENT);
 
-		// Priority(relationshipName) > priority(ID) > priority(ERC)
+		// Priority: relationshipName > ID > external reference code
 
 		String objectRelationshipName = objectRelationship.getName();
 
@@ -1126,7 +1126,7 @@ public class ObjectEntryResourceRelationshipTest
 				).toString(),
 				JSONCompareMode.LENIENT);
 
-			// Priority(invalid ID) > priority(invalid ERC)
+			// Priority: invalid ID > invalid external reference code
 
 			JSONAssert.assertEquals(
 				JSONUtil.put(
