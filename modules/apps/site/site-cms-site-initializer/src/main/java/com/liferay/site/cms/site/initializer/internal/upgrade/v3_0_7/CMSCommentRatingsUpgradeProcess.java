@@ -58,7 +58,7 @@ public class CMSCommentRatingsUpgradeProcess extends UpgradeProcess {
 			return;
 		}
 
-		long discussionClassNameId = _classNameLocalService.getClassNameId(
+		long mbDiscussionClassNameId = _classNameLocalService.getClassNameId(
 			"com.liferay.message.boards.model.MBDiscussion");
 
 		for (ObjectDefinition objectDefinition :
@@ -68,19 +68,19 @@ public class CMSCommentRatingsUpgradeProcess extends UpgradeProcess {
 			long classNameId = _classNameLocalService.getClassNameId(
 				objectDefinition.getClassName());
 
-			_upgradeTable(classNameId, discussionClassNameId, "RatingsEntry");
-			_upgradeTable(classNameId, discussionClassNameId, "RatingsStats");
+			_upgradeTable(classNameId, mbDiscussionClassNameId, "RatingsEntry");
+			_upgradeTable(classNameId, mbDiscussionClassNameId, "RatingsStats");
 		}
 	}
 
 	private void _upgradeTable(
-			long classNameId, long discussionClassNameId, String tableName)
+			long classNameId, long mbDiscussionClassNameId, String tableName)
 		throws Exception {
 
 		runSQL(
 			StringBundler.concat(
 				"update ", tableName, " set classNameId = ",
-				discussionClassNameId, " where classNameId = ", classNameId,
+				mbDiscussionClassNameId, " where classNameId = ", classNameId,
 				" and classPK in (select messageId from MBMessage where ",
 				"classNameId = ", classNameId, ")"));
 	}
