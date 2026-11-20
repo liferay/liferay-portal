@@ -8,7 +8,9 @@ package com.liferay.site.memberships.web.internal.portlet;
 import com.liferay.item.selector.ItemSelector;
 import com.liferay.portal.kernel.exception.MembershipRequestCommentsException;
 import com.liferay.portal.kernel.exception.NoSuchGroupException;
+import com.liferay.portal.kernel.exception.NoSuchMembershipRequestException;
 import com.liferay.portal.kernel.exception.NoSuchRoleException;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.RequiredUserException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.MembershipRequest;
@@ -55,6 +57,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import org.osgi.service.component.annotations.Component;
@@ -340,6 +343,8 @@ public class SiteMembershipsPortlet extends MVCPortlet {
 
 		renderRequest.setAttribute(ItemSelector.class.getName(), _itemSelector);
 
+		_setMembershipRequest(renderRequest, renderResponse);
+
 		super.render(renderRequest, renderResponse);
 	}
 
@@ -408,6 +413,9 @@ public class SiteMembershipsPortlet extends MVCPortlet {
 		if (SessionErrors.contains(
 				renderRequest, NoSuchGroupException.class.getName()) ||
 			SessionErrors.contains(
+				renderRequest,
+				NoSuchMembershipRequestException.class.getName()) ||
+			SessionErrors.contains(
 				renderRequest, NoSuchRoleException.class.getName()) ||
 			SessionErrors.contains(
 				renderRequest, PrincipalException.getNestedClasses())) {
@@ -472,6 +480,28 @@ public class SiteMembershipsPortlet extends MVCPortlet {
 				_portal.getLiferayPortletResponse(portletResponse));
 
 		return siteMembershipsDisplayContext.getGroup();
+	}
+
+	private void _setMembershipRequest(
+		RenderRequest renderRequest, RenderResponse renderResponse) {
+
+		String path = getPath(renderRequest, renderResponse);
+
+		if (!Objects.equals(path, "/preview_membership_request.jsp") &&
+			!Objects.equals(path, "/reply_membership_request.jsp")) {
+
+			return;
+		}
+
+		try {
+			renderRequest.setAttribute(
+				WebKeys.MEMBERSHIP_REQUEST,
+				_membershipRequestService.getMembershipRequest(
+					ParamUtil.getLong(renderRequest, "membershipRequestId")));
+		}
+		catch (PortalException portalException) {
+			SessionErrors.add(renderRequest, portalException.getClass());
+		}
 	}
 
 	@Reference

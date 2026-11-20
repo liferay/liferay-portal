@@ -18,9 +18,7 @@ if (Validator.isNull(redirect)) {
 	).buildString();
 }
 
-long membershipRequestId = ParamUtil.getLong(request, "membershipRequestId");
-
-MembershipRequest membershipRequest = MembershipRequestLocalServiceUtil.getMembershipRequest(membershipRequestId);
+MembershipRequest membershipRequest = (MembershipRequest)request.getAttribute(WebKeys.MEMBERSHIP_REQUEST);
 
 String userName = PortalUtil.getUserName(membershipRequest.getUserId(), StringPool.BLANK);
 
