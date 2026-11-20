@@ -9,13 +9,10 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.expando.kernel.model.ExpandoColumn;
 import com.liferay.expando.kernel.model.ExpandoColumnConstants;
 import com.liferay.expando.kernel.model.ExpandoTable;
-import com.liferay.expando.kernel.model.adapter.StagedExpandoColumn;
 import com.liferay.expando.kernel.service.ExpandoColumnLocalService;
 import com.liferay.expando.kernel.service.ExpandoColumnLocalServiceUtil;
 import com.liferay.expando.test.util.ExpandoTestUtil;
 import com.liferay.exportimport.kernel.lar.StagedModelDataHandlerUtil;
-import com.liferay.exportimport.staged.model.repository.StagedModelRepository;
-import com.liferay.exportimport.staged.model.repository.StagedModelRepositoryRegistryUtil;
 import com.liferay.exportimport.test.util.lar.BaseStagedModelDataHandlerTestCase;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
@@ -32,10 +29,8 @@ import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
-import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
-import com.liferay.portal.model.adapter.util.ModelAdapterUtil;
 import com.liferay.portal.odata.normalizer.Normalizer;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -77,11 +72,6 @@ public class SegmentsEntryStagedModelDataHandlerTest
 
 		_expandoTable = ExpandoTestUtil.addTable(
 			PortalUtil.getClassNameId(User.class), "CUSTOM_FIELDS");
-
-		_stagedModelRepository =
-			(StagedModelRepository<StagedExpandoColumn>)
-				StagedModelRepositoryRegistryUtil.getStagedModelRepository(
-					StagedExpandoColumn.class.getName());
 	}
 
 	@Test
@@ -289,12 +279,6 @@ public class SegmentsEntryStagedModelDataHandlerTest
 			ExpandoColumnConstants.STRING,
 			ExpandoColumnConstants.INDEX_TYPE_KEYWORD);
 
-		StagedExpandoColumn stagedExpandoColumn = ModelAdapterUtil.adapt(
-			expandoColumn, ExpandoColumn.class, StagedExpandoColumn.class);
-
-		StagedModelDataHandlerUtil.exportStagedModel(
-			portletDataContext, stagedExpandoColumn);
-
 		String columnValue = RandomTestUtil.randomString();
 
 		String filterString = String.format(
@@ -309,23 +293,10 @@ public class SegmentsEntryStagedModelDataHandlerTest
 		_expandoColumnLocalService.deleteColumn(expandoColumn.getColumnId());
 
 		try (SafeCloseable safeCloseable = initImportWithSafeCloseable()) {
-			StagedExpandoColumn exportedStagedExpandoColumn =
-				(StagedExpandoColumn)readExportedStagedModel(
-					stagedExpandoColumn);
-
-			StagedModelDataHandlerUtil.importStagedModel(
-				portletDataContext, exportedStagedExpandoColumn);
-
-			List<StagedExpandoColumn> stagedExpandoColumns =
-				_stagedModelRepository.fetchStagedModelsByUuidAndCompanyId(
-					stagedExpandoColumn.getUuid(), liveGroup.getCompanyId());
-
-			if (ListUtil.isEmpty(stagedExpandoColumns)) {
-				return;
-			}
-
-			StagedExpandoColumn importedStagedExpandoColumn =
-				stagedExpandoColumns.get(0);
+			ExpandoColumn importedExpandoColumn = _addExpandoColumn(
+				_expandoTable, expandoColumn.getName(),
+				ExpandoColumnConstants.STRING,
+				ExpandoColumnConstants.INDEX_TYPE_KEYWORD);
 
 			SegmentsEntry exportedSegmentsEntry =
 				(SegmentsEntry)readExportedStagedModel(_segmentsEntry);
@@ -341,8 +312,8 @@ public class SegmentsEntryStagedModelDataHandlerTest
 
 			Assert.assertEquals(
 				String.format(
-					filterStringFormat,
-					_encodeName(importedStagedExpandoColumn), columnValue),
+					filterStringFormat, _encodeName(importedExpandoColumn),
+					columnValue),
 				importedFilterString);
 		}
 	}
@@ -358,8 +329,6 @@ public class SegmentsEntryStagedModelDataHandlerTest
 
 	@Inject
 	private SegmentsEntryLocalService _segmentsEntryLocalService;
-
-	private StagedModelRepository<StagedExpandoColumn> _stagedModelRepository;
 
 	@Inject(
 		filter = "segments.criteria.contributor.key=user",
