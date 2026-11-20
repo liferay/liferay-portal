@@ -694,16 +694,15 @@ public class FragmentEntryServicePermissionTest {
 		FragmentEntry fragmentEntry = FragmentEntryTestUtil.addFragmentEntry(
 			_fragmentCollection.getFragmentCollectionId());
 
-		FragmentEntry draftFragmentEntry = _fragmentEntryLocalService.getDraft(
-			fragmentEntry.getFragmentEntryId());
+		_fragmentEntryLocalService.getDraft(fragmentEntry.getFragmentEntryId());
 
 		UserTestUtil.setUser(_user);
 
+		FragmentEntry draftFragmentEntry = _fragmentEntryService.fetchDraft(
+			fragmentEntry.getFragmentEntryId());
+
 		Assert.assertEquals(
-			draftFragmentEntry.getFragmentEntryId(),
-			_fragmentEntryService.fetchDraft(
-				fragmentEntry.getFragmentEntryId()
-			).getFragmentEntryId());
+			fragmentEntry.getFragmentEntryId(), draftFragmentEntry.getHeadId());
 	}
 
 	private void _testFetchFragmentEntryWithFragmentEntryFromAnotherGroup()
@@ -736,11 +735,13 @@ public class FragmentEntryServicePermissionTest {
 
 		UserTestUtil.setUser(_user);
 
+		FragmentEntry fetchedFragmentEntry =
+			_fragmentEntryService.fetchFragmentEntry(
+				fragmentEntry.getFragmentEntryId());
+
 		Assert.assertEquals(
 			fragmentEntry.getFragmentEntryId(),
-			_fragmentEntryService.fetchFragmentEntry(
-				fragmentEntry.getFragmentEntryId()
-			).getFragmentEntryId());
+			fetchedFragmentEntry.getFragmentEntryId());
 	}
 
 	private void _testGetDraftWithFragmentEntryFromAnotherGroup()
