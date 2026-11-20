@@ -286,9 +286,7 @@ public class JenkinsResultsParserUtilTest
 	}
 
 	@Test
-	public void testGetLatestPortalBundleOverlayGitCommitShort()
-		throws Exception {
-
+	public void testGetLatestPortalBundleOverlaySHAShort() throws Exception {
 		Properties buildProperties = new Properties();
 
 		String s3BucketPath = "s3://" + RandomTestUtil.randomString();
@@ -307,24 +305,23 @@ public class JenkinsResultsParserUtilTest
 			basePortalBranchName);
 
 		String failedS3ObjectKey = _getPortalBundleOverlayS3ObjectKey(
-			baseS3ObjectKey, _getRandomPortalGitCommitShort(),
-			overlayPortalBranchName);
+			baseS3ObjectKey, overlayPortalBranchName,
+			_getRandomPortalGitCommitShort());
 		String otherOverlayS3ObjectKey = _getPortalBundleOverlayS3ObjectKey(
-			baseS3ObjectKey, _getRandomPortalGitCommitShort(),
-			RandomTestUtil.randomString());
+			baseS3ObjectKey, RandomTestUtil.randomString(),
+			_getRandomPortalGitCommitShort());
 		String pullRequestS3ObjectKey = JenkinsResultsParserUtil.combine(
 			baseS3ObjectKey, "/", overlayPortalBranchName, "_",
 			_getRandomPortalGitCommitShort(), "_",
 			_getRandomPortalGitCommitShort());
 		String reusedS3ObjectKey = _getPortalBundleOverlayS3ObjectKey(
-			baseS3ObjectKey, _getRandomPortalGitCommitShort(),
-			overlayPortalBranchName);
+			baseS3ObjectKey, overlayPortalBranchName,
+			_getRandomPortalGitCommitShort());
 
-		String successOverlayGitCommitShort = _getRandomPortalGitCommitShort();
+		String successOverlaySHAShort = _getRandomPortalGitCommitShort();
 
 		String successS3ObjectKey = _getPortalBundleOverlayS3ObjectKey(
-			baseS3ObjectKey, successOverlayGitCommitShort,
-			overlayPortalBranchName);
+			baseS3ObjectKey, overlayPortalBranchName, successOverlaySHAShort);
 
 		Shell shell = mockShell();
 
@@ -404,10 +401,9 @@ public class JenkinsResultsParserUtilTest
 				_mockCloudBucketUtil(dataJSONObjects)) {
 
 			testEquals(
-				successOverlayGitCommitShort,
-				JenkinsResultsParserUtil.
-					getLatestPortalBundleOverlayGitCommitShort(
-						basePortalBranchName, overlayPortalBranchName));
+				successOverlaySHAShort,
+				JenkinsResultsParserUtil.getLatestPortalBundleOverlaySHAShort(
+					basePortalBranchName, overlayPortalBranchName));
 		}
 
 		Mockito.verify(
@@ -423,15 +419,14 @@ public class JenkinsResultsParserUtilTest
 
 		dataJSONObjects.clear();
 
-		List<String> overlayGitCommitShorts = new ArrayList<>();
+		List<String> overlaySHAShorts = new ArrayList<>();
 		List<String> s3FilesOutputLines = new ArrayList<>();
 
 		for (int index = 0; index < 11; index++) {
-			String overlayGitCommitShort = _getRandomPortalGitCommitShort();
+			String overlaySHAShort = _getRandomPortalGitCommitShort();
 
 			String s3ObjectKey = _getPortalBundleOverlayS3ObjectKey(
-				baseS3ObjectKey, overlayGitCommitShort,
-				overlayPortalBranchName);
+				baseS3ObjectKey, overlayPortalBranchName, overlaySHAShort);
 
 			dataJSONObjects.put(
 				s3BucketPath + "/" + s3ObjectKey,
@@ -443,7 +438,7 @@ public class JenkinsResultsParserUtilTest
 					"status", "SUCCESS"
 				));
 
-			overlayGitCommitShorts.add(overlayGitCommitShort);
+			overlaySHAShorts.add(overlaySHAShort);
 			s3FilesOutputLines.add(
 				JenkinsResultsParserUtil.combine(
 					"2026-11-", String.valueOf(20 - index),
@@ -458,17 +453,16 @@ public class JenkinsResultsParserUtilTest
 				_mockCloudBucketUtil(dataJSONObjects)) {
 
 			testEquals(
-				overlayGitCommitShorts.get(9),
-				JenkinsResultsParserUtil.
-					getLatestPortalBundleOverlayGitCommitShort(
-						basePortalBranchName, overlayPortalBranchName));
+				overlaySHAShorts.get(9),
+				JenkinsResultsParserUtil.getLatestPortalBundleOverlaySHAShort(
+					basePortalBranchName, overlayPortalBranchName));
 		}
 
 		setShellCommandOutput("aws s3 ls --recursive", shell, "");
 
 		testEquals(
 			null,
-			JenkinsResultsParserUtil.getLatestPortalBundleOverlayGitCommitShort(
+			JenkinsResultsParserUtil.getLatestPortalBundleOverlaySHAShort(
 				basePortalBranchName, overlayPortalBranchName));
 	}
 
@@ -1885,12 +1879,12 @@ public class JenkinsResultsParserUtilTest
 	}
 
 	private String _getPortalBundleOverlayS3ObjectKey(
-		String baseS3ObjectKey, String overlayGitCommitShort,
-		String overlayPortalBranchName) {
+		String baseS3ObjectKey, String overlayPortalBranchName,
+		String overlaySHAShort) {
 
 		return JenkinsResultsParserUtil.combine(
 			baseS3ObjectKey, "/", overlayPortalBranchName, "_",
-			overlayGitCommitShort, "_", overlayGitCommitShort);
+			overlaySHAShort, "_", overlaySHAShort);
 	}
 
 	private String _getRandomPortalBundleS3ObjectKey(String portalBranchName) {
