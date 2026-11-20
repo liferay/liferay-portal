@@ -100,8 +100,8 @@ public class LaunchFilterTest {
 
 		_launchDraftLayout1 = _layoutLocalService.getLayout(
 			_addLaunchEntryDraftId(
-				Layout.class.getName(), _layout1.getPlid(),
-				String.valueOf(_layout1.getPlid())));
+				String.valueOf(_layout1.getPlid()), Layout.class.getName(),
+				_layout1.getPlid()));
 
 		_layout2 = LayoutTestUtil.addTypeContentPublishedLayout(
 			_group, RandomTestUtil.randomString(),
@@ -109,8 +109,8 @@ public class LaunchFilterTest {
 
 		_launchDraftLayout2 = _layoutLocalService.getLayout(
 			_addLaunchEntryDraftId(
-				Layout.class.getName(), _layout2.getPlid(),
-				String.valueOf(_layout2.getPlid())));
+				String.valueOf(_layout2.getPlid()), Layout.class.getName(),
+				_layout2.getPlid()));
 	}
 
 	@After
@@ -360,7 +360,7 @@ public class LaunchFilterTest {
 	}
 
 	private long _addLaunchEntryDraftId(
-			String className, long classPK, String baseVersionKey)
+			String baseVersionKey, String className, long classPK)
 		throws Exception {
 
 		ObjectEntry launchEntryObjectEntry = _addObjectEntry(

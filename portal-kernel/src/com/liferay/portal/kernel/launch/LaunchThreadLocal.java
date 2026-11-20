@@ -47,7 +47,6 @@ public class LaunchThreadLocal {
 
 		return () -> {
 			modeSafeCloseable.close();
-
 			launchSetIdSafeCloseable.close();
 		};
 	}
