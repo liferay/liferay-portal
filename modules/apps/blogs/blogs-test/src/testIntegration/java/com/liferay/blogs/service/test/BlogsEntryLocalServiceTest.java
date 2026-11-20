@@ -159,16 +159,16 @@ public class BlogsEntryLocalServiceTest {
 
 		FileEntry fileEntry = _addAttachmentFileEntry(entry);
 
-		Assert.assertTrue(_containsViewPermission(fileEntry, _creatorUser));
-		Assert.assertFalse(_containsViewPermission(fileEntry, _groupUser));
-		Assert.assertFalse(_containsGuestViewPermission(fileEntry));
+		Assert.assertTrue(_hasViewPermission(fileEntry, _creatorUser));
+		Assert.assertFalse(_hasViewPermission(fileEntry, _groupUser));
+		Assert.assertFalse(_hasGuestViewPermission(fileEntry));
 
 		_blogsEntryLocalService.updateStatus(
 			_creatorUser.getUserId(), entry.getEntryId(),
 			WorkflowConstants.STATUS_APPROVED, serviceContext,
 			new HashMap<String, Serializable>());
 
-		Assert.assertTrue(_containsGuestViewPermission(fileEntry));
+		Assert.assertTrue(_hasGuestViewPermission(fileEntry));
 	}
 
 	@Test
@@ -791,7 +791,7 @@ public class BlogsEntryLocalServiceTest {
 		Assert.assertEquals(0, dlFileEntry.getClassNameId());
 		Assert.assertEquals(0, dlFileEntry.getClassPK());
 
-		Assert.assertTrue(_containsGuestViewPermission(portletFileEntry));
+		Assert.assertTrue(_hasGuestViewPermission(portletFileEntry));
 
 		FileEntry otherPortletFileEntry =
 			PortletFileRepositoryUtil.getPortletFileEntry(
@@ -803,7 +803,7 @@ public class BlogsEntryLocalServiceTest {
 		Assert.assertEquals(
 			otherEntry.getEntryId(), otherDLFileEntry.getClassPK());
 
-		Assert.assertFalse(_containsGuestViewPermission(otherPortletFileEntry));
+		Assert.assertFalse(_hasGuestViewPermission(otherPortletFileEntry));
 	}
 
 	@Test
@@ -1510,21 +1510,6 @@ public class BlogsEntryLocalServiceTest {
 			serviceContext);
 	}
 
-	private boolean _containsGuestViewPermission(FileEntry fileEntry)
-		throws Exception {
-
-		return _containsViewPermission(
-			fileEntry, _userLocalService.getGuestUser(_group.getCompanyId()));
-	}
-
-	private boolean _containsViewPermission(FileEntry fileEntry, User user)
-		throws Exception {
-
-		return _fileEntryModelResourcePermission.contains(
-			PermissionCheckerFactoryUtil.create(user),
-			fileEntry.getFileEntryId(), ActionKeys.VIEW);
-	}
-
 	private AssetVocabularySettingsHelper _getAssetVocabularySettingsHelper(
 		boolean multiValued, long[] classNameIds, long[] classTypePKs,
 		boolean[] depotRequireds, boolean[] requireds) {
@@ -1537,6 +1522,21 @@ public class BlogsEntryLocalServiceTest {
 		assetVocabularySettingsHelper.setMultiValued(multiValued);
 
 		return assetVocabularySettingsHelper;
+	}
+
+	private boolean _hasGuestViewPermission(FileEntry fileEntry)
+		throws Exception {
+
+		return _hasViewPermission(
+			fileEntry, _userLocalService.getGuestUser(_group.getCompanyId()));
+	}
+
+	private boolean _hasViewPermission(FileEntry fileEntry, User user)
+		throws Exception {
+
+		return _fileEntryModelResourcePermission.contains(
+			PermissionCheckerFactoryUtil.create(user),
+			fileEntry.getFileEntryId(), ActionKeys.VIEW);
 	}
 
 	private String _repeat(String string, int times) {
