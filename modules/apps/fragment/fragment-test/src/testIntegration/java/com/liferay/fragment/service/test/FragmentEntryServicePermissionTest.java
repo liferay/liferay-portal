@@ -441,8 +441,8 @@ public class FragmentEntryServicePermissionTest {
 		_setRolePermissions(FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
 
 		_testFetchDraftWithFragmentEntryFromAnotherGroup();
+		_testFetchDraftWithNonexistentDraft();
 		_testFetchDraftWithPermissions();
-		_testFetchDraftWithoutDraft();
 	}
 
 	@Test
@@ -690,6 +690,19 @@ public class FragmentEntryServicePermissionTest {
 		}
 	}
 
+	private void _testFetchDraftWithNonexistentDraft() throws Exception {
+		UserTestUtil.setUser(TestPropsValues.getUser());
+
+		FragmentEntry fragmentEntry = FragmentEntryTestUtil.addFragmentEntry(
+			_fragmentCollection.getFragmentCollectionId());
+
+		UserTestUtil.setUser(_user);
+
+		Assert.assertNull(
+			_fragmentEntryService.fetchDraft(
+				fragmentEntry.getFragmentEntryId()));
+	}
+
 	private void _testFetchDraftWithPermissions() throws Exception {
 		UserTestUtil.setUser(TestPropsValues.getUser());
 
@@ -705,19 +718,6 @@ public class FragmentEntryServicePermissionTest {
 
 		Assert.assertEquals(
 			fragmentEntry.getFragmentEntryId(), draftFragmentEntry.getHeadId());
-	}
-
-	private void _testFetchDraftWithoutDraft() throws Exception {
-		UserTestUtil.setUser(TestPropsValues.getUser());
-
-		FragmentEntry fragmentEntry = FragmentEntryTestUtil.addFragmentEntry(
-			_fragmentCollection.getFragmentCollectionId());
-
-		UserTestUtil.setUser(_user);
-
-		Assert.assertNull(
-			_fragmentEntryService.fetchDraft(
-				fragmentEntry.getFragmentEntryId()));
 	}
 
 	private void _testFetchFragmentEntryWithFragmentEntryFromAnotherGroup()
