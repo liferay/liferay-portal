@@ -35,6 +35,7 @@ import com.liferay.portal.kernel.settings.GroupServiceSettingsLocator;
 import com.liferay.portal.kernel.settings.ModifiableSettings;
 import com.liferay.portal.kernel.settings.Settings;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.CountryTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -153,8 +154,9 @@ public class CommerceCheckoutStepHttpHelperTest {
 
 		if (_country == null) {
 			_country = _countryLocalService.addCountry(
-				null, "ZZ", "ZZZ", true, true, null,
-				RandomTestUtil.randomString(), "000",
+				null, CountryTestUtil.randomA2(_serviceContext.getCompanyId()),
+				CountryTestUtil.randomA3(_serviceContext.getCompanyId()), true,
+				true, null, RandomTestUtil.randomString(), "000",
 				RandomTestUtil.randomDouble(), true, false, false,
 				_serviceContext);
 

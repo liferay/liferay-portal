@@ -34,6 +34,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionRequest;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.CountryTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -101,12 +102,13 @@ public class CommerceCheckoutStepTest {
 			_commerceCurrency.getCode(), _serviceContext);
 
 		_country = _countryLocalService.addCountry(
-			null, "AA", "AAA", RandomTestUtil.randomBoolean(),
-			RandomTestUtil.randomBoolean(), RandomTestUtil.randomString(),
-			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-			RandomTestUtil.randomDouble(), RandomTestUtil.randomBoolean(),
+			null, CountryTestUtil.randomA2(_group.getCompanyId()),
+			CountryTestUtil.randomA3(_group.getCompanyId()),
 			RandomTestUtil.randomBoolean(), RandomTestUtil.randomBoolean(),
-			_serviceContext);
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomDouble(),
+			RandomTestUtil.randomBoolean(), RandomTestUtil.randomBoolean(),
+			RandomTestUtil.randomBoolean(), _serviceContext);
 
 		_region = _regionLocalService.addRegion(
 			null, _country.getCountryId(), RandomTestUtil.randomBoolean(),

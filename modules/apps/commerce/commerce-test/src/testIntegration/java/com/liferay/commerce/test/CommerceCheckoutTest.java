@@ -71,6 +71,7 @@ import com.liferay.portal.kernel.settings.Settings;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.rule.Sync;
+import com.liferay.portal.kernel.test.util.CountryTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.RoleTestUtil;
@@ -801,23 +802,12 @@ public class CommerceCheckoutTest {
 			CommerceOrder commerceOrder, int addressType)
 		throws Exception {
 
-		String a2 = RandomTestUtil.randomString(2);
-		String a3 = RandomTestUtil.randomString(3);
-
-		Country country = CountryLocalServiceUtil.fetchCountryByA2(
-			commerceOrder.getCompanyId(), a2);
-
-		if (country == null) {
-			country = CountryLocalServiceUtil.fetchCountryByA3(
-				commerceOrder.getCompanyId(), a3);
-		}
-
-		if (country == null) {
-			country = CountryLocalServiceUtil.addCountry(
-				null, a2, a3, true, true, RandomTestUtil.randomString(),
-				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-				0D, true, true, false, _serviceContext);
-		}
+		Country country = CountryLocalServiceUtil.addCountry(
+			null, CountryTestUtil.randomA2(commerceOrder.getCompanyId()),
+			CountryTestUtil.randomA3(commerceOrder.getCompanyId()), true, true,
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), 0D, true, true, false,
+			_serviceContext);
 
 		return CommerceAddressLocalServiceUtil.addCommerceAddress(
 			StringPool.BLANK, AccountEntry.class.getName(),

@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.service.CountryLocalService;
 import com.liferay.portal.kernel.service.RegionLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.CountryTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -68,22 +69,26 @@ public class CommerceAddressImplTest {
 			_serviceContext);
 
 		_country1 = _countryLocalService.addCountry(
-			null, "AA", "AAA", true, RandomTestUtil.randomBoolean(),
+			null, CountryTestUtil.randomA2(group.getCompanyId()),
+			CountryTestUtil.randomA3(group.getCompanyId()), true,
+			RandomTestUtil.randomBoolean(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-			RandomTestUtil.randomString(), RandomTestUtil.randomDouble(),
+			RandomTestUtil.randomDouble(), RandomTestUtil.randomBoolean(),
 			RandomTestUtil.randomBoolean(), RandomTestUtil.randomBoolean(),
-			RandomTestUtil.randomBoolean(), _serviceContext);
+			_serviceContext);
 
 		_regionLocalService.addRegion(
 			null, _country1.getCountryId(), true, RandomTestUtil.randomString(),
 			1, RandomTestUtil.randomString(), _serviceContext);
 
 		_country2 = _countryLocalService.addCountry(
-			null, "ZZ", "ZZZ", true, RandomTestUtil.randomBoolean(),
+			null, CountryTestUtil.randomA2(group.getCompanyId()),
+			CountryTestUtil.randomA3(group.getCompanyId()), true,
+			RandomTestUtil.randomBoolean(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-			RandomTestUtil.randomString(), RandomTestUtil.randomDouble(),
+			RandomTestUtil.randomDouble(), RandomTestUtil.randomBoolean(),
 			RandomTestUtil.randomBoolean(), RandomTestUtil.randomBoolean(),
-			RandomTestUtil.randomBoolean(), _serviceContext);
+			_serviceContext);
 
 		_regionLocalService.addRegion(
 			null, _country2.getCountryId(), true, RandomTestUtil.randomString(),

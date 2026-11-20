@@ -41,6 +41,7 @@ import com.liferay.portal.kernel.service.ListTypeLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.CountryTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -84,8 +85,9 @@ public class CommerceAddressServiceTest {
 
 		if (_country == null) {
 			_country = _countryLocalService.addCountry(
-				null, "ZZ", "ZZZ", true, true, null,
-				RandomTestUtil.randomString(), "000",
+				null, CountryTestUtil.randomA2(TestPropsValues.getCompanyId()),
+				CountryTestUtil.randomA3(TestPropsValues.getCompanyId()), true,
+				true, null, RandomTestUtil.randomString(), "000",
 				RandomTestUtil.randomDouble(), true, false, false,
 				ServiceContextTestUtil.getServiceContext(
 					TestPropsValues.getGroupId()));
