@@ -17,21 +17,14 @@ import java.util.Map;
  */
 public class MonitorEngine {
 
-	public MonitorEngine(
-		MonitorResultStore monitorResultStore, List<Monitor> monitors) {
-
+	public MonitorEngine(List<Monitor> monitors) {
 		MonitorIdValidator.validate(monitors);
 
-		_monitorResultStore = monitorResultStore;
 		_monitors = Collections.unmodifiableList(new ArrayList<>(monitors));
-
-		_monitorScheduler = new MonitorScheduler(monitorResultStore);
 	}
 
 	public Map<Monitor, MonitorResult> runCycle() {
-		List<Monitor> dueMonitors = _monitorScheduler.getDueMonitors(_monitors);
-
-		for (Monitor monitor : dueMonitors) {
+		for (Monitor monitor : _monitors) {
 			try {
 				monitor.prepareCycle();
 			}
@@ -45,7 +38,7 @@ public class MonitorEngine {
 		}
 
 		Map<Monitor, MonitorResult> monitorResultsMap = _monitorRunner.run(
-			dueMonitors);
+			_monitors);
 
 		long currentTimeMillis =
 			JenkinsResultsParserUtil.getCurrentTimeMillis();
@@ -53,26 +46,20 @@ public class MonitorEngine {
 		for (Map.Entry<Monitor, MonitorResult> entry :
 				monitorResultsMap.entrySet()) {
 
-			Monitor monitor = entry.getKey();
-
 			MonitorResult monitorResult = entry.getValue();
 
-			monitorResult = new MonitorResult(
-				monitorResult.getDurationMillis(), monitorResult.getLinkURLs(),
-				monitorResult.getMessage(), monitorResult.getMetrics(),
-				monitorResult.getStatus(), currentTimeMillis);
-
-			entry.setValue(monitorResult);
-
-			_monitorResultStore.store(monitor.getId(), monitorResult);
+			entry.setValue(
+				new MonitorResult(
+					monitorResult.getDurationMillis(),
+					monitorResult.getLinkURLs(), monitorResult.getMessage(),
+					monitorResult.getMetrics(), monitorResult.getStatus(),
+					currentTimeMillis));
 		}
 
 		return monitorResultsMap;
 	}
 
-	private final MonitorResultStore _monitorResultStore;
 	private final MonitorRunner _monitorRunner = new MonitorRunner();
-	private final MonitorScheduler _monitorScheduler;
 	private final List<Monitor> _monitors;
 
 }

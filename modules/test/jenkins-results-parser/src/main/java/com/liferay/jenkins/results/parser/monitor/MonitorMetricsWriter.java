@@ -23,6 +23,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -33,14 +34,14 @@ import java.util.Map;
 public class MonitorMetricsWriter {
 
 	public MonitorMetricsWriter(
-		File metricsFile, MonitorResultStore monitorResultStore,
-		List<Monitor> monitors) {
+		File metricsFile, Map<Monitor, MonitorResult> monitorResultsMap) {
 
-		MonitorIdValidator.validate(monitors);
+		MonitorIdValidator.validate(
+			new ArrayList<>(monitorResultsMap.keySet()));
 
 		_metricsFile = metricsFile;
-		_monitorResultStore = monitorResultStore;
-		_monitors = Collections.unmodifiableList(new ArrayList<>(monitors));
+		_monitorResultsMap = Collections.unmodifiableMap(
+			new LinkedHashMap<>(monitorResultsMap));
 	}
 
 	public void write() throws IOException {
@@ -74,14 +75,7 @@ public class MonitorMetricsWriter {
 			StandardCopyOption.ATOMIC_MOVE);
 	}
 
-	private double _getDurationSeconds(Monitor monitor) {
-		MonitorResult monitorResult =
-			_monitorResultStore.getLatestMonitorResult(monitor.getId());
-
-		if (monitorResult == null) {
-			return 0;
-		}
-
+	private double _getDurationSeconds(MonitorResult monitorResult) {
 		long durationMillis = monitorResult.getDurationMillis();
 
 		if (durationMillis < 0) {
@@ -127,20 +121,8 @@ public class MonitorMetricsWriter {
 		return labels;
 	}
 
-	private long _getLastRunTimestampSeconds(Monitor monitor) {
-		MonitorResult monitorResult =
-			_monitorResultStore.getLatestMonitorResult(monitor.getId());
-
-		if (monitorResult == null) {
-			return 0;
-		}
-
-		return monitorResult.getTimestamp() / 1000;
-	}
-
-	private List<String> _getLinkURLs(Monitor monitor) {
-		MonitorResult monitorResult =
-			_monitorResultStore.getLatestMonitorResult(monitor.getId());
+	private List<String> _getLinkURLs(
+		Monitor monitor, MonitorResult monitorResult) {
 
 		List<String> linkURLs = monitorResult.getLinkURLs();
 
@@ -151,13 +133,8 @@ public class MonitorMetricsWriter {
 		return monitor.getLinkURLs();
 	}
 
-	private String _getMessage(Monitor monitor) {
-		MonitorResult monitorResult =
-			_monitorResultStore.getLatestMonitorResult(monitor.getId());
-
-		if ((monitorResult == null) ||
-			(monitorResult.getStatus() == MonitorResult.Status.OK)) {
-
+	private String _getMessage(Monitor monitor, MonitorResult monitorResult) {
+		if (monitorResult.getStatus() == MonitorResult.Status.OK) {
 			return null;
 		}
 
@@ -188,14 +165,7 @@ public class MonitorMetricsWriter {
 		return truncatedMessage;
 	}
 
-	private int _getSeverityRank(Monitor monitor) {
-		MonitorResult monitorResult =
-			_monitorResultStore.getLatestMonitorResult(monitor.getId());
-
-		if (monitorResult == null) {
-			return MonitorResult.Status.CRITICAL.getSeverityRank();
-		}
-
+	private int _getSeverityRank(MonitorResult monitorResult) {
 		MonitorResult.Status status = monitorResult.getStatus();
 
 		if (status == null) {
@@ -208,15 +178,16 @@ public class MonitorMetricsWriter {
 	private GaugeSnapshot _newDurationGaugeSnapshot() {
 		GaugeSnapshot.Builder gaugeSnapshotBuilder = GaugeSnapshot.builder();
 
-		for (Monitor monitor : _monitors) {
+		for (Map.Entry<Monitor, MonitorResult> entry :
+				_monitorResultsMap.entrySet()) {
+
 			gaugeSnapshotBuilder.dataPoint(
 				_newGaugeDataPointSnapshot(
-					monitor, _getDurationSeconds(monitor)));
+					entry.getKey(), _getDurationSeconds(entry.getValue())));
 		}
 
 		gaugeSnapshotBuilder.help(
-			"Seconds the last monitor run took, 0 if never run or not " +
-				"measured");
+			"Seconds the last monitor run took, 0 if not measured");
 		gaugeSnapshotBuilder.name("monitor_duration_seconds");
 
 		return gaugeSnapshotBuilder.build();
@@ -256,14 +227,17 @@ public class MonitorMetricsWriter {
 	private GaugeSnapshot _newLastRunTimestampSnapshot() {
 		GaugeSnapshot.Builder gaugeSnapshotBuilder = GaugeSnapshot.builder();
 
-		for (Monitor monitor : _monitors) {
+		for (Map.Entry<Monitor, MonitorResult> entry :
+				_monitorResultsMap.entrySet()) {
+
+			MonitorResult monitorResult = entry.getValue();
+
 			gaugeSnapshotBuilder.dataPoint(
 				_newGaugeDataPointSnapshot(
-					monitor, _getLastRunTimestampSeconds(monitor)));
+					entry.getKey(), monitorResult.getTimestamp() / 1000));
 		}
 
-		gaugeSnapshotBuilder.help(
-			"Unix timestamp of the last monitor run, 0 if never run");
+		gaugeSnapshotBuilder.help("Unix timestamp of the last monitor run");
 		gaugeSnapshotBuilder.name("monitor_last_run_timestamp_seconds");
 
 		return gaugeSnapshotBuilder.build();
@@ -276,8 +250,13 @@ public class MonitorMetricsWriter {
 			"Message of the last monitor run, for each monitor that is not OK");
 		gaugeSnapshotBuilder.name("monitor_message_info");
 
-		for (Monitor monitor : _monitors) {
-			String message = _getMessage(monitor);
+		for (Map.Entry<Monitor, MonitorResult> entry :
+				_monitorResultsMap.entrySet()) {
+
+			Monitor monitor = entry.getKey();
+			MonitorResult monitorResult = entry.getValue();
+
+			String message = _getMessage(monitor, monitorResult);
 
 			if (message == null) {
 				continue;
@@ -290,7 +269,7 @@ public class MonitorMetricsWriter {
 			Labels labels = Labels.of(
 				"message", message, "monitor", monitor.getId());
 
-			List<String> linkURLs = _getLinkURLs(monitor);
+			List<String> linkURLs = _getLinkURLs(monitor, monitorResult);
 
 			if (!linkURLs.isEmpty()) {
 				labels = labels.add(
@@ -315,9 +294,12 @@ public class MonitorMetricsWriter {
 			"Monitor status severity rank, 0 OK, 2 WARN, 3 CRITICAL");
 		gaugeSnapshotBuilder.name("monitor_status");
 
-		for (Monitor monitor : _monitors) {
+		for (Map.Entry<Monitor, MonitorResult> entry :
+				_monitorResultsMap.entrySet()) {
+
 			gaugeSnapshotBuilder.dataPoint(
-				_newGaugeDataPointSnapshot(monitor, _getSeverityRank(monitor)));
+				_newGaugeDataPointSnapshot(
+					entry.getKey(), _getSeverityRank(entry.getValue())));
 		}
 
 		return gaugeSnapshotBuilder.build();
@@ -342,7 +324,6 @@ public class MonitorMetricsWriter {
 		};
 
 	private final File _metricsFile;
-	private final MonitorResultStore _monitorResultStore;
-	private final List<Monitor> _monitors;
+	private final Map<Monitor, MonitorResult> _monitorResultsMap;
 
 }
