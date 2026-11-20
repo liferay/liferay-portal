@@ -359,6 +359,9 @@ public class SystemObjectRelatedObjectEntriesTest {
 			ObjectFieldConstants.DB_TYPE_STRING, _userSystemObjectDefinition,
 			"a" + RandomTestUtil.randomString());
 
+		long titleObjectFieldId =
+			_userSystemObjectDefinition.getTitleObjectFieldId();
+
 		_userSystemObjectDefinition =
 			_objectDefinitionLocalService.updateTitleObjectFieldId(
 				_userSystemObjectDefinition.getObjectDefinitionId(),
@@ -394,6 +397,10 @@ public class SystemObjectRelatedObjectEntriesTest {
 				{_SYSTEM_OBJECT_FIELD_NAME, _SYSTEM_OBJECT_FIELD_VALUE}
 			},
 			Type.ONE_TO_MANY);
+
+		_objectDefinitionLocalService.updateTitleObjectFieldId(
+			_userSystemObjectDefinition.getObjectDefinitionId(),
+			titleObjectFieldId);
 	}
 
 	@Test
