@@ -92,11 +92,12 @@ public class PrivateFeatureFlagKeysUpdater {
 	private static List<String> _getAdditionalFeatureFlagKeys(String content) {
 		Matcher matcher = _getMatcher(content, "additionalFeatureFlagKeys");
 
-		String featureFlagKeys = matcher.group(1);
+		String featureFlagKeysString = matcher.group(1);
 
 		return ListUtil.fromArray(
 			StringUtil.split(
-				featureFlagKeys.replaceAll("[\\\\\\s]", StringPool.BLANK)));
+				featureFlagKeysString.replaceAll(
+					"[\\\\\\s]", StringPool.BLANK)));
 	}
 
 	private static Matcher _getMatcher(String content, String attributeName) {
@@ -112,7 +113,7 @@ public class PrivateFeatureFlagKeysUpdater {
 
 		throw new IllegalStateException(
 			"Unable to find " + attributeName +
-				" in source-formatter.properties");
+				" in \"source-formatter.properties\"");
 	}
 
 	private static String _replaceFeatureFlagKeys(
