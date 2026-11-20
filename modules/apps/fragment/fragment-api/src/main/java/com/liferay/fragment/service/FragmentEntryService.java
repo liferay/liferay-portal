@@ -78,7 +78,7 @@ public interface FragmentEntryService extends BaseService {
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public FragmentEntry fetchDraft(long primaryKey);
+	public FragmentEntry fetchDraft(long primaryKey) throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public FragmentEntry fetchFragmentEntry(long fragmentEntryId)
@@ -243,4 +243,4 @@ public interface FragmentEntryService extends BaseService {
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2026087120
+// LIFERAY-SERVICE-BUILDER-HASH:-1233753348

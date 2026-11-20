@@ -95,7 +95,9 @@ public class FragmentEntryServiceWrapper
 	}
 
 	@Override
-	public FragmentEntry fetchDraft(long primaryKey) {
+	public FragmentEntry fetchDraft(long primaryKey)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
 		return _fragmentEntryService.fetchDraft(primaryKey);
 	}
 
@@ -429,4 +431,4 @@ public class FragmentEntryServiceWrapper
 	private FragmentEntryService _fragmentEntryService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1319418075
+// LIFERAY-SERVICE-BUILDER-HASH:-321530515

@@ -297,7 +297,8 @@ public class FragmentEntryServiceHttp {
 	}
 
 	public static com.liferay.fragment.model.FragmentEntry fetchDraft(
-		HttpPrincipal httpPrincipal, long primaryKey) {
+			HttpPrincipal httpPrincipal, long primaryKey)
+		throws com.liferay.portal.kernel.exception.PortalException {
 
 		try {
 			MethodKey methodKey = new MethodKey(
@@ -313,6 +314,13 @@ public class FragmentEntryServiceHttp {
 				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
 			}
 			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
 				throw new com.liferay.portal.kernel.exception.SystemException(
 					exception);
 			}
@@ -1855,4 +1863,4 @@ public class FragmentEntryServiceHttp {
 		new Class[] {long.class, String.class};
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1425033567
+// LIFERAY-SERVICE-BUILDER-HASH:1516605403

@@ -90,7 +90,9 @@ public class FragmentEntryServiceUtil {
 		return getService().deleteFragmentEntry(externalReferenceCode, groupId);
 	}
 
-	public static FragmentEntry fetchDraft(long primaryKey) {
+	public static FragmentEntry fetchDraft(long primaryKey)
+		throws PortalException {
+
 		return getService().fetchDraft(primaryKey);
 	}
 
@@ -373,4 +375,4 @@ public class FragmentEntryServiceUtil {
 			FragmentEntryServiceUtil.class, FragmentEntryService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-812016971
+// LIFERAY-SERVICE-BUILDER-HASH:1151110343
