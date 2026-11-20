@@ -238,7 +238,7 @@ function ProfileForm({
 						helpMessage={
 							isDefaultProfile
 								? Liferay.Language.get(
-										'the-default-profile-has-no-profile-path'
+										'the-default-mcp-server-profile-has-no-profile-path'
 									)
 								: Liferay.Language.get(
 										'the-url-can-be-modified'

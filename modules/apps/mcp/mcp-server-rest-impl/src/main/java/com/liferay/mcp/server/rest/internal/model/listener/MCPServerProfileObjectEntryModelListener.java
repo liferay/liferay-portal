@@ -276,7 +276,7 @@ public class MCPServerProfileObjectEntryModelListener
 			throw new ModelListenerException(
 				new ObjectEntryValuesException.InvalidObjectField(
 					null, "The default MCP server profile has no profile path",
-					"the-default-profile-has-no-profile-path"));
+					"the-default-mcp-server-profile-has-no-profile-path"));
 		}
 	}
 

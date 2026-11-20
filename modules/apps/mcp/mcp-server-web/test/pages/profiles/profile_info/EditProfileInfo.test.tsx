@@ -113,7 +113,9 @@ describe('EditProfileInfo', () => {
 			screen.getByText('http://localhost:8080/o/mcp')
 		).toBeInTheDocument();
 		expect(
-			screen.getByText('the-default-profile-has-no-profile-path')
+			screen.getByText(
+				'the-default-mcp-server-profile-has-no-profile-path'
+			)
 		).toBeInTheDocument();
 	});
 
