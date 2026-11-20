@@ -22,11 +22,6 @@
 		},
 		{
 			"accountEntryRestricted": true,
-			"accountEntryRestrictedObjectFieldName": "r_accountToAIHubApplication_accountEntryId",
-			"externalReferenceCode": "C_AI_HUB_APPLICATION"
-		},
-		{
-			"accountEntryRestricted": true,
 			"accountEntryRestrictedObjectFieldName": "r_accountEntryToContract_accountEntryId",
 			"externalReferenceCode": "C_CONTRACT"
 		},
@@ -34,6 +29,11 @@
 			"accountEntryRestricted": true,
 			"accountEntryRestrictedObjectFieldName": "r_accountEntryToEntitlement_accountEntryId",
 			"externalReferenceCode": "C_ENTITLEMENT"
+		},
+		{
+			"accountEntryRestricted": true,
+			"accountEntryRestrictedObjectFieldName": "r_accountEntryToEnvironment_accountEntryId",
+			"externalReferenceCode": "C_ENVIRONMENT"
 		},
 		{
 			"accountEntryRestricted": true,
@@ -57,6 +57,11 @@
 		},
 		{
 			"accountEntryRestricted": true,
+			"accountEntryRestrictedObjectFieldName": "r_accountEntryToProperty_accountEntryId",
+			"externalReferenceCode": "C_PROPERTY"
+		},
+		{
+			"accountEntryRestricted": true,
 			"accountEntryRestrictedObjectFieldName": "r_accountEntryToPublisherAsset_accountEntryId",
 			"externalReferenceCode": "C_PUBLISHER_ASSET"
 		},
@@ -69,6 +74,11 @@
 			"accountEntryRestricted": true,
 			"accountEntryRestrictedObjectFieldName": "r_accountEntryToTrialExtensionRequest_accountEntryId",
 			"externalReferenceCode": "C_TRIAL_EXTENSION_REQUEST"
+		},
+		{
+			"accountEntryRestricted": true,
+			"accountEntryRestrictedObjectFieldName": "r_accountEntryToUsageEvent_accountEntryId",
+			"externalReferenceCode": "C_USAGE_EVENT"
 		}
 	]
 }

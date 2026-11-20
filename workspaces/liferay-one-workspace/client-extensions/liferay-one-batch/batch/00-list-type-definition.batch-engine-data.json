@@ -280,6 +280,32 @@
 			"name": "Payment Status"
 		},
 		{
+			"externalReferenceCode": "LT_PORTAL_VERSION",
+			"listTypeEntries": [
+				{
+					"externalReferenceCode": "LT_PORTAL_VERSION_6_1_GA1",
+					"key": "61GA1",
+					"name": "6.1 GA1"
+				},
+				{
+					"externalReferenceCode": "LT_PORTAL_VERSION_6_1_GA2",
+					"key": "61GA2",
+					"name": "6.1 GA2"
+				},
+				{
+					"externalReferenceCode": "LT_PORTAL_VERSION_6_1_GA3",
+					"key": "61GA3",
+					"name": "6.1 GA3"
+				},
+				{
+					"externalReferenceCode": "LT_PORTAL_VERSION_6_2_EE",
+					"key": "62EE",
+					"name": "6.2 EE"
+				}
+			],
+			"name": "Portal Version"
+		},
+		{
 			"externalReferenceCode": "LT_PRODUCT_FAMILY",
 			"listTypeEntries": [
 				{

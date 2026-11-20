@@ -629,6 +629,24 @@
 					"type": "Date"
 				},
 				{
+					"DBType": "String",
+					"businessType": "Text",
+					"externalReferenceCode": "C_ACTIVATION_KEY_LICENSE_KEY_FAMILY",
+					"indexed": true,
+					"indexedAsKeyword": true,
+					"indexedLanguageId": "",
+					"label": {
+						"en_US": "License Key Family"
+					},
+					"name": "licenseKeyFamily",
+					"objectFieldSettings": [
+					],
+					"required": false,
+					"state": false,
+					"system": false,
+					"type": "String"
+				},
+				{
 					"DBType": "Date",
 					"businessType": "DateTime",
 					"externalReferenceCode": "C_ACTIVATION_KEY_START_DATE",
@@ -731,123 +749,7 @@
 				"label": "approved",
 				"label_i18n": "Approved"
 			},
-			"titleObjectFieldName": "name"
-		},
-		{
-			"active": true,
-			"className": "com.liferay.object.model.ObjectDefinition#C_AI_HUB_APPLICATION",
-			"enableCategorization": false,
-			"externalReferenceCode": "C_AI_HUB_APPLICATION",
-			"friendlyURLSeparator": "l",
-			"label": {
-				"en_US": "AI Hub Application"
-			},
-			"name": "AIHubApplication",
-			"objectFields": [
-				{
-					"DBType": "Long",
-					"businessType": "LongInteger",
-					"externalReferenceCode": "C_AI_HUB_APPLICATION_ACCOUNT_ENTRY_ID",
-					"indexed": true,
-					"indexedAsKeyword": false,
-					"indexedLanguageId": "",
-					"label": {
-						"en_US": "AI Hub Account Entry ID"
-					},
-					"name": "accountEntryId",
-					"objectFieldSettings": [
-					],
-					"required": false,
-					"state": false,
-					"system": false,
-					"type": "Long"
-				},
-				{
-					"DBType": "String",
-					"businessType": "Text",
-					"externalReferenceCode": "C_AI_HUB_APPLICATION_ACCOUNT_NAME",
-					"indexed": true,
-					"indexedAsKeyword": false,
-					"indexedLanguageId": "en_US",
-					"label": {
-						"en_US": "Account Name"
-					},
-					"name": "accountName",
-					"objectFieldSettings": [
-					],
-					"required": false,
-					"state": false,
-					"system": false,
-					"type": "String"
-				},
-				{
-					"DBType": "String",
-					"businessType": "Text",
-					"externalReferenceCode": "C_AI_HUB_APPLICATION_ADMINISTRATOR_EMAIL_ADDRESS",
-					"indexed": true,
-					"indexedAsKeyword": false,
-					"indexedLanguageId": "en_US",
-					"label": {
-						"en_US": "Administrator Email Address"
-					},
-					"name": "administratorEmailAddress",
-					"objectFieldSettings": [
-					],
-					"required": false,
-					"state": false,
-					"system": false,
-					"type": "String"
-				}
-			],
-			"objectFolderExternalReferenceCode": "C_LIFERAY_ONE_FOLDER",
-			"objectRelationships": [
-			],
-			"objectValidationRules": [
-			],
-			"objectViews": [
-				{
-					"defaultObjectView": true,
-					"name": {
-						"en_US": "Default View"
-					},
-					"objectDefinitionExternalReferenceCode": "C_AI_HUB_APPLICATION",
-					"objectViewColumns": [
-						{
-							"label": {
-								"en_US": "ERC"
-							},
-							"objectFieldName": "externalReferenceCode",
-							"priority": 0
-						},
-						{
-							"label": {
-								"en_US": "Account Name"
-							},
-							"objectFieldName": "accountName",
-							"priority": 1
-						},
-						{
-							"label": {
-								"en_US": "Administrator Email Address"
-							},
-							"objectFieldName": "administratorEmailAddress",
-							"priority": 2
-						}
-					]
-				}
-			],
-			"panelCategoryKey": "applications_menu.applications.content",
-			"pluralLabel": {
-				"en_US": "AI Hub Applications"
-			},
-			"portlet": true,
-			"scope": "company",
-			"status": {
-				"code": 0,
-				"label": "approved",
-				"label_i18n": "Approved"
-			},
-			"titleObjectFieldName": "accountName"
+			"titleObjectFieldName": "id"
 		},
 		{
 			"active": true,
@@ -1454,6 +1356,24 @@
 					"state": false,
 					"system": false,
 					"type": "Date"
+				},
+				{
+					"DBType": "String",
+					"businessType": "Text",
+					"externalReferenceCode": "C_CONTRACT_NAME",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"indexedLanguageId": "en_US",
+					"label": {
+						"en_US": "Name"
+					},
+					"name": "name",
+					"objectFieldSettings": [
+					],
+					"required": false,
+					"state": false,
+					"system": false,
+					"type": "String"
 				},
 				{
 					"DBType": "String",
@@ -2278,6 +2198,28 @@
 				{
 					"DBType": "Date",
 					"businessType": "DateTime",
+					"externalReferenceCode": "C_ENTITLEMENT_EFFECTIVE_END_DATE",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"indexedLanguageId": "",
+					"label": {
+						"en_US": "Effective End Date"
+					},
+					"name": "effectiveEndDate",
+					"objectFieldSettings": [
+						{
+							"name": "timeStorage",
+							"value": "convertToUTC"
+						}
+					],
+					"required": false,
+					"state": false,
+					"system": false,
+					"type": "Date"
+				},
+				{
+					"DBType": "Date",
+					"businessType": "DateTime",
 					"externalReferenceCode": "C_ENTITLEMENT_END_DATE",
 					"indexed": true,
 					"indexedAsKeyword": false,
@@ -2298,6 +2240,25 @@
 					"type": "Date"
 				},
 				{
+					"DBType": "Boolean",
+					"businessType": "Boolean",
+					"defaultValue": "false",
+					"externalReferenceCode": "C_ENTITLEMENT_GENERATES_ACTIVATION_KEY",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"indexedLanguageId": "",
+					"label": {
+						"en_US": "Generates Activation Key"
+					},
+					"name": "generatesActivationKey",
+					"objectFieldSettings": [
+					],
+					"required": false,
+					"state": false,
+					"system": false,
+					"type": "Boolean"
+				},
+				{
 					"DBType": "String",
 					"businessType": "Text",
 					"externalReferenceCode": "C_ENTITLEMENT_GRANT_TYPE",
@@ -2308,6 +2269,60 @@
 						"en_US": "Grant Type"
 					},
 					"name": "grantType",
+					"objectFieldSettings": [
+					],
+					"required": false,
+					"state": false,
+					"system": false,
+					"type": "String"
+				},
+				{
+					"DBType": "Integer",
+					"businessType": "Integer",
+					"externalReferenceCode": "C_ENTITLEMENT_LICENSE_KEY_DURATION_DAYS",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"indexedLanguageId": "",
+					"label": {
+						"en_US": "License Key Duration Days"
+					},
+					"name": "licenseKeyDurationDays",
+					"objectFieldSettings": [
+					],
+					"required": false,
+					"state": false,
+					"system": false,
+					"type": "Integer"
+				},
+				{
+					"DBType": "String",
+					"businessType": "Text",
+					"externalReferenceCode": "C_ENTITLEMENT_LICENSE_KEY_FAMILY",
+					"indexed": true,
+					"indexedAsKeyword": true,
+					"indexedLanguageId": "",
+					"label": {
+						"en_US": "License Key Family"
+					},
+					"name": "licenseKeyFamily",
+					"objectFieldSettings": [
+					],
+					"required": false,
+					"state": false,
+					"system": false,
+					"type": "String"
+				},
+				{
+					"DBType": "String",
+					"businessType": "Text",
+					"externalReferenceCode": "C_ENTITLEMENT_LICENSE_KEY_TYPE",
+					"indexed": true,
+					"indexedAsKeyword": true,
+					"indexedLanguageId": "",
+					"label": {
+						"en_US": "License Key Type"
+					},
+					"name": "licenseKeyType",
 					"objectFieldSettings": [
 					],
 					"required": false,
@@ -2424,6 +2439,24 @@
 					"type": "Double"
 				},
 				{
+					"DBType": "String",
+					"businessType": "Text",
+					"externalReferenceCode": "C_ENTITLEMENT_SKU_EXTERNAL_REFERENCE_CODE",
+					"indexed": true,
+					"indexedAsKeyword": true,
+					"indexedLanguageId": "",
+					"label": {
+						"en_US": "SKU External Reference Code"
+					},
+					"name": "skuExternalReferenceCode",
+					"objectFieldSettings": [
+					],
+					"required": false,
+					"state": false,
+					"system": false,
+					"type": "String"
+				},
+				{
 					"DBType": "Date",
 					"businessType": "DateTime",
 					"externalReferenceCode": "C_ENTITLEMENT_START_DATE",
@@ -2472,14 +2505,27 @@
 					"active": true,
 					"engine": "ddm",
 					"errorLabel": {
-						"en_US": "Overage Rate and Overage SKU External Reference Code must be set together or not at all."
+						"en_US": "License Key Duration Days cannot be negative. Leave it empty for a key that expires with its entitlement."
+					},
+					"externalReferenceCode": "C_ENTITLEMENT_LICENSE_KEY_DURATION_RANGE",
+					"name": {
+						"en_US": "Entitlement License Key Duration Range"
+					},
+					"outputType": "fullValidation",
+					"script": "licenseKeyDurationDays >= 0"
+				},
+				{
+					"active": true,
+					"engine": "ddm",
+					"errorLabel": {
+						"en_US": "An Overage Rate requires an Overage SKU External Reference Code."
 					},
 					"externalReferenceCode": "C_ENTITLEMENT_OVERAGE_PRICING_PAIR",
 					"name": {
 						"en_US": "Entitlement Overage Pricing Pair"
 					},
 					"outputType": "fullValidation",
-					"script": "(overageRate <= 0) == isEmpty(overageSkuExternalReferenceCode)"
+					"script": "(overageRate <= 0) OR NOT isEmpty(overageSkuExternalReferenceCode)"
 				}
 			],
 			"objectViews": [
@@ -2796,24 +2842,6 @@
 				{
 					"DBType": "String",
 					"businessType": "Text",
-					"externalReferenceCode": "C_ENTITLEMENT_DEFINITION_SKU_EXTERNAL_REFERENCE_CODE",
-					"indexed": true,
-					"indexedAsKeyword": true,
-					"indexedLanguageId": "",
-					"label": {
-						"en_US": "SKU External Reference Code"
-					},
-					"name": "skuExternalReferenceCode",
-					"objectFieldSettings": [
-					],
-					"required": true,
-					"state": false,
-					"system": false,
-					"type": "String"
-				},
-				{
-					"DBType": "String",
-					"businessType": "Text",
 					"externalReferenceCode": "C_ENTITLEMENT_DEFINITION_UNIT",
 					"indexed": true,
 					"indexedAsKeyword": true,
@@ -2838,14 +2866,27 @@
 					"active": true,
 					"engine": "ddm",
 					"errorLabel": {
-						"en_US": "Overage Rate and Overage SKU External Reference Code must be set together or not at all."
+						"en_US": "License Key Duration Days cannot be negative. Leave it empty for a key that expires with its entitlement."
+					},
+					"externalReferenceCode": "C_ENTITLEMENT_DEFINITION_LICENSE_KEY_DURATION_RANGE",
+					"name": {
+						"en_US": "Entitlement Definition License Key Duration Range"
+					},
+					"outputType": "fullValidation",
+					"script": "licenseKeyDurationDays >= 0"
+				},
+				{
+					"active": true,
+					"engine": "ddm",
+					"errorLabel": {
+						"en_US": "An Overage Rate requires an Overage SKU External Reference Code."
 					},
 					"externalReferenceCode": "C_ENTITLEMENT_DEFINITION_OVERAGE_PRICING_PAIR",
 					"name": {
 						"en_US": "Entitlement Definition Overage Pricing Pair"
 					},
 					"outputType": "fullValidation",
-					"script": "(overageRate <= 0) == isEmpty(overageSkuExternalReferenceCode)"
+					"script": "(overageRate <= 0) OR NOT isEmpty(overageSkuExternalReferenceCode)"
 				}
 			],
 			"objectViews": [
@@ -2913,6 +2954,79 @@
 				"label_i18n": "Approved"
 			},
 			"titleObjectFieldName": "name"
+		},
+		{
+			"active": true,
+			"className": "com.liferay.object.model.ObjectDefinition#C_ENTITLEMENT_DEFINITION_SKU",
+			"enableCategorization": false,
+			"externalReferenceCode": "C_ENTITLEMENT_DEFINITION_SKU",
+			"friendlyURLSeparator": "l",
+			"label": {
+				"en_US": "Entitlement Definition SKU"
+			},
+			"name": "EntitlementDefinitionSku",
+			"objectFields": [
+				{
+					"DBType": "String",
+					"businessType": "Text",
+					"externalReferenceCode": "C_ENTITLEMENT_DEFINITION_SKU_SKU_EXTERNAL_REFERENCE_CODE",
+					"indexed": true,
+					"indexedAsKeyword": true,
+					"indexedLanguageId": "",
+					"label": {
+						"en_US": "SKU External Reference Code"
+					},
+					"name": "skuExternalReferenceCode",
+					"objectFieldSettings": [
+					],
+					"required": true,
+					"state": false,
+					"system": false,
+					"type": "String"
+				}
+			],
+			"objectFolderExternalReferenceCode": "C_LIFERAY_ONE_FOLDER",
+			"objectRelationships": [
+			],
+			"objectValidationRules": [
+			],
+			"objectViews": [
+				{
+					"defaultObjectView": true,
+					"name": {
+						"en_US": "Default View"
+					},
+					"objectDefinitionExternalReferenceCode": "C_ENTITLEMENT_DEFINITION_SKU",
+					"objectViewColumns": [
+						{
+							"label": {
+								"en_US": "ERC"
+							},
+							"objectFieldName": "externalReferenceCode",
+							"priority": 0
+						},
+						{
+							"label": {
+								"en_US": "SKU External Reference Code"
+							},
+							"objectFieldName": "skuExternalReferenceCode",
+							"priority": 1
+						}
+					]
+				}
+			],
+			"panelCategoryKey": "applications_menu.applications.content",
+			"pluralLabel": {
+				"en_US": "Entitlement Definition SKUs"
+			},
+			"portlet": true,
+			"scope": "company",
+			"status": {
+				"code": 0,
+				"label": "approved",
+				"label_i18n": "Approved"
+			},
+			"titleObjectFieldName": "skuExternalReferenceCode"
 		},
 		{
 			"active": true,
@@ -3135,6 +3249,24 @@
 						"en_US": "Domains"
 					},
 					"name": "domains",
+					"objectFieldSettings": [
+					],
+					"required": false,
+					"state": false,
+					"system": false,
+					"type": "String"
+				},
+				{
+					"DBType": "String",
+					"businessType": "Text",
+					"externalReferenceCode": "C_ENVIRONMENT_EXTERNAL_ENVIRONMENT_ID",
+					"indexed": true,
+					"indexedAsKeyword": true,
+					"indexedLanguageId": "",
+					"label": {
+						"en_US": "External Environment ID"
+					},
+					"name": "externalEnvironmentId",
 					"objectFieldSettings": [
 					],
 					"required": false,
@@ -3991,24 +4123,6 @@
 				{
 					"DBType": "String",
 					"businessType": "Text",
-					"externalReferenceCode": "C_LICENSE_KEY_DATA_CENTER_LOCATION",
-					"indexed": true,
-					"indexedAsKeyword": false,
-					"indexedLanguageId": "en_US",
-					"label": {
-						"en_US": "Data Center Location"
-					},
-					"name": "dataCenterLocation",
-					"objectFieldSettings": [
-					],
-					"required": false,
-					"state": false,
-					"system": false,
-					"type": "String"
-				},
-				{
-					"DBType": "String",
-					"businessType": "Text",
 					"externalReferenceCode": "C_LICENSE_KEY_DESCRIPTION",
 					"indexed": true,
 					"indexedAsKeyword": false,
@@ -4131,6 +4245,24 @@
 					"state": false,
 					"system": false,
 					"type": "Clob"
+				},
+				{
+					"DBType": "String",
+					"businessType": "Text",
+					"externalReferenceCode": "C_LICENSE_KEY_LICENSE_KEY_FAMILY",
+					"indexed": true,
+					"indexedAsKeyword": true,
+					"indexedLanguageId": "",
+					"label": {
+						"en_US": "License Key Family"
+					},
+					"name": "licenseKeyFamily",
+					"objectFieldSettings": [
+					],
+					"required": false,
+					"state": false,
+					"system": false,
+					"type": "String"
 				},
 				{
 					"DBType": "String",
@@ -4477,42 +4609,6 @@
 					"state": false,
 					"system": false,
 					"type": "Date"
-				},
-				{
-					"DBType": "String",
-					"businessType": "Text",
-					"externalReferenceCode": "C_LICENSE_KEY_WORKSPACE_NAME",
-					"indexed": true,
-					"indexedAsKeyword": false,
-					"indexedLanguageId": "en_US",
-					"label": {
-						"en_US": "Workspace Name"
-					},
-					"name": "workspaceName",
-					"objectFieldSettings": [
-					],
-					"required": false,
-					"state": false,
-					"system": false,
-					"type": "String"
-				},
-				{
-					"DBType": "String",
-					"businessType": "Text",
-					"externalReferenceCode": "C_LICENSE_KEY_WORKSPACE_OWNER_EMAIL",
-					"indexed": true,
-					"indexedAsKeyword": false,
-					"indexedLanguageId": "en_US",
-					"label": {
-						"en_US": "Workspace Owner Email"
-					},
-					"name": "workspaceOwnerEmail",
-					"objectFieldSettings": [
-					],
-					"required": false,
-					"state": false,
-					"system": false,
-					"type": "String"
 				}
 			],
 			"objectFolderExternalReferenceCode": "C_LIFERAY_ONE_FOLDER",
@@ -4585,103 +4681,6 @@
 				"label_i18n": "Approved"
 			},
 			"titleObjectFieldName": "name"
-		},
-		{
-			"active": true,
-			"enableCategorization": false,
-			"externalReferenceCode": "C_LIFERAY_BUNDLE",
-			"friendlyURLSeparator": "l",
-			"label": {
-				"en_US": "Liferay Bundle"
-			},
-			"name": "LiferayBundle",
-			"objectFields": [
-				{
-					"DBType": "String",
-					"businessType": "Text",
-					"externalReferenceCode": "C_LIFERAY_BUNDLE_BUNDLE_LINK",
-					"indexed": true,
-					"indexedAsKeyword": false,
-					"indexedLanguageId": "en_US",
-					"label": {
-						"en_US": "Bundle Link"
-					},
-					"name": "bundleLink",
-					"objectFieldSettings": [
-					],
-					"required": false,
-					"state": false,
-					"system": false,
-					"type": "String"
-				},
-				{
-					"DBType": "String",
-					"businessType": "Text",
-					"externalReferenceCode": "C_LIFERAY_BUNDLE_BUNDLE_NAME",
-					"indexed": true,
-					"indexedAsKeyword": false,
-					"indexedLanguageId": "en_US",
-					"label": {
-						"en_US": "Bundle Name"
-					},
-					"name": "bundleName",
-					"objectFieldSettings": [
-					],
-					"required": false,
-					"state": false,
-					"system": false,
-					"type": "String"
-				}
-			],
-			"objectFolderExternalReferenceCode": "C_LIFERAY_ONE_FOLDER",
-			"objectRelationships": [
-			],
-			"objectValidationRules": [
-			],
-			"objectViews": [
-				{
-					"defaultObjectView": true,
-					"name": {
-						"en_US": "Default View"
-					},
-					"objectDefinitionExternalReferenceCode": "C_LIFERAY_BUNDLE",
-					"objectViewColumns": [
-						{
-							"label": {
-								"en_US": "ERC"
-							},
-							"objectFieldName": "externalReferenceCode",
-							"priority": 0
-						},
-						{
-							"label": {
-								"en_US": "Bundle Name"
-							},
-							"objectFieldName": "bundleName",
-							"priority": 1
-						},
-						{
-							"label": {
-								"en_US": "Bundle Link"
-							},
-							"objectFieldName": "bundleLink",
-							"priority": 2
-						}
-					]
-				}
-			],
-			"panelCategoryKey": "applications_menu.applications.content",
-			"pluralLabel": {
-				"en_US": "Liferay Bundles"
-			},
-			"portlet": true,
-			"scope": "company",
-			"status": {
-				"code": 0,
-				"label": "approved",
-				"label_i18n": "Approved"
-			},
-			"titleObjectFieldName": "bundleName"
 		},
 		{
 			"active": true,
@@ -5066,6 +5065,43 @@
 				{
 					"DBType": "String",
 					"businessType": "Text",
+					"externalReferenceCode": "C_PRODUCT_VERSION_BUNDLE_URL",
+					"indexed": true,
+					"indexedAsKeyword": true,
+					"indexedLanguageId": "",
+					"label": {
+						"en_US": "Bundle URL"
+					},
+					"name": "bundleURL",
+					"objectFieldSettings": [
+					],
+					"required": false,
+					"state": false,
+					"system": false,
+					"type": "String"
+				},
+				{
+					"DBType": "Boolean",
+					"businessType": "Boolean",
+					"defaultValue": "false",
+					"externalReferenceCode": "C_PRODUCT_VERSION_FREE_TIER",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"indexedLanguageId": "",
+					"label": {
+						"en_US": "Free Tier"
+					},
+					"name": "freeTier",
+					"objectFieldSettings": [
+					],
+					"required": false,
+					"state": false,
+					"system": false,
+					"type": "Boolean"
+				},
+				{
+					"DBType": "String",
+					"businessType": "Text",
 					"externalReferenceCode": "C_PRODUCT_VERSION_PRODUCT_GROUP",
 					"indexed": true,
 					"indexedAsKeyword": true,
@@ -5229,6 +5265,20 @@
 							},
 							"objectFieldName": "supported",
 							"priority": 5
+						},
+						{
+							"label": {
+								"en_US": "Bundle URL"
+							},
+							"objectFieldName": "bundleURL",
+							"priority": 6
+						},
+						{
+							"label": {
+								"en_US": "Free Tier"
+							},
+							"objectFieldName": "freeTier",
+							"priority": 7
 						}
 					]
 				}
@@ -5437,6 +5487,28 @@
 				"en_US": "Project Membership"
 			},
 			"name": "ProjectMembership",
+			"objectActions": [
+				{
+					"active": true,
+					"description": "Triggers Spring Boot CX to update the member's Support Customers and Partners user groups when a project membership is created.",
+					"externalReferenceCode": "OA_PROJECT_MEMBERSHIP_USER_GROUP_ADD",
+					"name": "UserGroupAdd",
+					"objectActionExecutorKey": "function#liferay-one-etc-spring-boot-object-action-project-membership-user-group-add",
+					"objectActionTriggerKey": "onAfterAdd",
+					"parameters": {
+					}
+				},
+				{
+					"active": true,
+					"description": "Triggers Spring Boot CX to update the member's Support Customers and Partners user groups when a project membership is deleted. Skips users that no longer exist.",
+					"externalReferenceCode": "OA_PROJECT_MEMBERSHIP_USER_GROUP_REMOVE",
+					"name": "UserGroupRemove",
+					"objectActionExecutorKey": "function#liferay-one-etc-spring-boot-object-action-project-membership-user-group-remove",
+					"objectActionTriggerKey": "onAfterDelete",
+					"parameters": {
+					}
+				}
+			],
 			"objectFields": [
 				{
 					"DBType": "String",
@@ -6177,9 +6249,9 @@
 			"enableCategorization": false,
 			"externalReferenceCode": "C_PUBLISHER_DETAILS",
 			"label": {
-				"en_US": "Publisher Details"
+				"en_US": "Publisher Detail"
 			},
-			"name": "PublisherDetails",
+			"name": "PublisherDetail",
 			"objectFields": [
 				{
 					"DBType": "String",
@@ -6282,60 +6354,6 @@
 						"en_US": "Location"
 					},
 					"name": "location",
-					"objectFieldSettings": [
-					],
-					"required": false,
-					"state": false,
-					"system": false,
-					"type": "String"
-				},
-				{
-					"DBType": "String",
-					"businessType": "Text",
-					"externalReferenceCode": "C_PUBLISHER_DETAILS_PAYPAL_ACCOUNT",
-					"indexed": true,
-					"indexedAsKeyword": false,
-					"indexedLanguageId": "",
-					"label": {
-						"en_US": "PayPal Account"
-					},
-					"name": "paypalAccount",
-					"objectFieldSettings": [
-					],
-					"required": false,
-					"state": false,
-					"system": false,
-					"type": "String"
-				},
-				{
-					"DBType": "String",
-					"businessType": "Text",
-					"externalReferenceCode": "C_PUBLISHER_DETAILS_PHONE",
-					"indexed": true,
-					"indexedAsKeyword": false,
-					"indexedLanguageId": "",
-					"label": {
-						"en_US": "Phone"
-					},
-					"name": "phone",
-					"objectFieldSettings": [
-					],
-					"required": false,
-					"state": false,
-					"system": false,
-					"type": "String"
-				},
-				{
-					"DBType": "String",
-					"businessType": "Text",
-					"externalReferenceCode": "C_PUBLISHER_DETAILS_PRIVATE_EMAIL",
-					"indexed": true,
-					"indexedAsKeyword": false,
-					"indexedLanguageId": "",
-					"label": {
-						"en_US": "Private Email"
-					},
-					"name": "privateEmail",
 					"objectFieldSettings": [
 					],
 					"required": false,
@@ -7631,6 +7649,60 @@
 					"state": false,
 					"system": false,
 					"type": "String"
+				},
+				{
+					"DBType": "String",
+					"businessType": "Text",
+					"externalReferenceCode": "C_USAGE_DEFINITION_USAGE_SOURCE",
+					"indexed": true,
+					"indexedAsKeyword": true,
+					"indexedLanguageId": "",
+					"label": {
+						"en_US": "Usage Source"
+					},
+					"name": "usageSource",
+					"objectFieldSettings": [
+					],
+					"required": false,
+					"state": false,
+					"system": false,
+					"type": "String"
+				},
+				{
+					"DBType": "String",
+					"businessType": "Text",
+					"externalReferenceCode": "C_USAGE_DEFINITION_USAGE_SOURCE_METRIC_KEY",
+					"indexed": true,
+					"indexedAsKeyword": true,
+					"indexedLanguageId": "",
+					"label": {
+						"en_US": "Usage Source Metric Key"
+					},
+					"name": "usageSourceMetricKey",
+					"objectFieldSettings": [
+					],
+					"required": false,
+					"state": false,
+					"system": false,
+					"type": "String"
+				},
+				{
+					"DBType": "String",
+					"businessType": "Text",
+					"externalReferenceCode": "C_USAGE_DEFINITION_USAGE_SOURCE_UNIT",
+					"indexed": true,
+					"indexedAsKeyword": true,
+					"indexedLanguageId": "",
+					"label": {
+						"en_US": "Usage Source Unit"
+					},
+					"name": "usageSourceUnit",
+					"objectFieldSettings": [
+					],
+					"required": false,
+					"state": false,
+					"system": false,
+					"type": "String"
 				}
 			],
 			"objectFolderExternalReferenceCode": "C_LIFERAY_ONE_FOLDER",
@@ -8090,6 +8162,42 @@
 				},
 				{
 					"DBType": "String",
+					"businessType": "Text",
+					"externalReferenceCode": "C_USAGE_REPORT_PRODUCT_EXTERNAL_REFERENCE_CODE",
+					"indexed": true,
+					"indexedAsKeyword": true,
+					"indexedLanguageId": "",
+					"label": {
+						"en_US": "Product External Reference Code"
+					},
+					"name": "productExternalReferenceCode",
+					"objectFieldSettings": [
+					],
+					"required": false,
+					"state": false,
+					"system": false,
+					"type": "String"
+				},
+				{
+					"DBType": "String",
+					"businessType": "Text",
+					"externalReferenceCode": "C_USAGE_REPORT_PRODUCT_NAME",
+					"indexed": true,
+					"indexedAsKeyword": true,
+					"indexedLanguageId": "",
+					"label": {
+						"en_US": "Product Name"
+					},
+					"name": "productName",
+					"objectFieldSettings": [
+					],
+					"required": false,
+					"state": false,
+					"system": false,
+					"type": "String"
+				},
+				{
+					"DBType": "String",
 					"businessType": "Picklist",
 					"defaultValue": "readyForReview",
 					"externalReferenceCode": "C_USAGE_REPORT_REVIEW_STATUS",
@@ -8287,6 +8395,13 @@
 							},
 							"objectFieldName": "generatedAt",
 							"priority": 8
+						},
+						{
+							"label": {
+								"en_US": "Product Name"
+							},
+							"objectFieldName": "productName",
+							"priority": 9
 						}
 					]
 				}

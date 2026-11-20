@@ -11,26 +11,8 @@
 	},
 	"items": [
 		{
-			"externalReferenceCode": "C_CUSTOMERS",
-			"name": "Customers",
-			"roleBriefs": [
-				{
-					"externalReferenceCode": "C_CUSTOMER",
-					"name": "Customer",
-					"roleType": 1
-				}
-			]
-		},
-		{
 			"externalReferenceCode": "C_EMPLOYEES",
-			"name": "Employees",
-			"roleBriefs": [
-				{
-					"externalReferenceCode": "C_LIFERAY_STAFF",
-					"name": "Liferay Staff",
-					"roleType": 1
-				}
-			]
+			"name": "Employees"
 		},
 		{
 			"externalReferenceCode": "C_EVERYONE",
@@ -43,6 +25,17 @@
 				{
 					"externalReferenceCode": "C_PARTNER",
 					"name": "Partner",
+					"roleType": 1
+				}
+			]
+		},
+		{
+			"externalReferenceCode": "C_SUPPORT_CUSTOMERS",
+			"name": "Support Customers",
+			"roleBriefs": [
+				{
+					"externalReferenceCode": "C_CUSTOMER",
+					"name": "Customer",
 					"roleType": 1
 				}
 			]

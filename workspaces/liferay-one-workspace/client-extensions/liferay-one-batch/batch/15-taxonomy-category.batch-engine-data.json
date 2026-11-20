@@ -116,6 +116,18 @@
 			"viewableBy": "Anyone"
 		},
 		{
+			"description": "Used to automate Liferay DXP",
+			"description_i18n": {
+				"en_US": "Used to automate Liferay DXP"
+			},
+			"externalReferenceCode": "MARKETPLACE_APP_TAGS_AUTOMATION",
+			"name": "automation",
+			"parentTaxonomyVocabulary": {
+				"externalReferenceCode": "MARKETPLACE_APP_TAGS"
+			},
+			"viewableBy": "Anyone"
+		},
+		{
 			"externalReferenceCode": "MARKETPLACE_APP_TAGS_BUSINESS_USE",
 			"name": "business-use",
 			"parentTaxonomyVocabulary": {
@@ -126,6 +138,170 @@
 		{
 			"externalReferenceCode": "MARKETPLACE_APP_TAGS_CLIENT_EXTENSION_TYPE",
 			"name": "client-extension-type",
+			"parentTaxonomyVocabulary": {
+				"externalReferenceCode": "MARKETPLACE_APP_TAGS"
+			},
+			"viewableBy": "Anyone"
+		},
+		{
+			"description": "Used to configure Liferay DXP",
+			"description_i18n": {
+				"en_US": "Used to configure Liferay DXP"
+			},
+			"externalReferenceCode": "MARKETPLACE_APP_TAGS_CONFIGURATION",
+			"name": "configuration",
+			"parentTaxonomyVocabulary": {
+				"externalReferenceCode": "MARKETPLACE_APP_TAGS"
+			},
+			"viewableBy": "Anyone"
+		},
+		{
+			"externalReferenceCode": "MARKETPLACE_APP_TAGS_DATA_ANALYZERS",
+			"name": "data-analyzers",
+			"parentTaxonomyVocabulary": {
+				"externalReferenceCode": "MARKETPLACE_APP_TAGS"
+			},
+			"viewableBy": "Anyone"
+		},
+		{
+			"description": "A data set is an importable, structured set of data that can be imported into Liferay DXP.",
+			"description_i18n": {
+				"en_US": "A data set is an importable, structured set of data that can be imported into Liferay DXP."
+			},
+			"externalReferenceCode": "MARKETPLACE_APP_TAGS_DATA_SETS",
+			"name": "data-sets",
+			"parentTaxonomyVocabulary": {
+				"externalReferenceCode": "MARKETPLACE_APP_TAGS"
+			},
+			"viewableBy": "Anyone"
+		},
+		{
+			"description": "An app or solution having a finance application",
+			"description_i18n": {
+				"en_US": "An app or solution having a finance application"
+			},
+			"externalReferenceCode": "MARKETPLACE_APP_TAGS_FINANCE",
+			"name": "finance",
+			"parentTaxonomyVocabulary": {
+				"externalReferenceCode": "MARKETPLACE_APP_TAGS"
+			},
+			"viewableBy": "Anyone"
+		},
+		{
+			"description": "An app or solution having an insurance application",
+			"description_i18n": {
+				"en_US": "An app or solution having an insurance application"
+			},
+			"externalReferenceCode": "MARKETPLACE_APP_TAGS_INSURANCE",
+			"name": "insurance",
+			"parentTaxonomyVocabulary": {
+				"externalReferenceCode": "MARKETPLACE_APP_TAGS"
+			},
+			"viewableBy": "Anyone"
+		},
+		{
+			"externalReferenceCode": "MARKETPLACE_APP_TAGS_LOGGING_AND_MONITORING",
+			"name": "logging-&-monitoring",
+			"parentTaxonomyVocabulary": {
+				"externalReferenceCode": "MARKETPLACE_APP_TAGS"
+			},
+			"viewableBy": "Anyone"
+		},
+		{
+			"description": "An app or solution leveraging a low code approach",
+			"description_i18n": {
+				"en_US": "An app or solution leveraging a low code approach"
+			},
+			"externalReferenceCode": "MARKETPLACE_APP_TAGS_LOW_CODE",
+			"name": "low-code",
+			"parentTaxonomyVocabulary": {
+				"externalReferenceCode": "MARKETPLACE_APP_TAGS"
+			},
+			"viewableBy": "Anyone"
+		},
+		{
+			"description": "An app or solution having a manufacturing application",
+			"description_i18n": {
+				"en_US": "An app or solution having a manufacturing application"
+			},
+			"externalReferenceCode": "MARKETPLACE_APP_TAGS_MANUFACTURING",
+			"name": "manufacturing",
+			"parentTaxonomyVocabulary": {
+				"externalReferenceCode": "MARKETPLACE_APP_TAGS"
+			},
+			"viewableBy": "Anyone"
+		},
+		{
+			"externalReferenceCode": "MARKETPLACE_APP_TAGS_MICROSERVICE",
+			"name": "microservice",
+			"parentTaxonomyVocabulary": {
+				"externalReferenceCode": "MARKETPLACE_APP_TAGS"
+			},
+			"viewableBy": "Anyone"
+		},
+		{
+			"description": "An app or solution using Liferay Objects",
+			"description_i18n": {
+				"en_US": "An app or solution using Liferay Objects"
+			},
+			"externalReferenceCode": "MARKETPLACE_APP_TAGS_OBJECTS",
+			"name": "objects",
+			"parentTaxonomyVocabulary": {
+				"externalReferenceCode": "MARKETPLACE_APP_TAGS"
+			},
+			"viewableBy": "Anyone"
+		},
+		{
+			"externalReferenceCode": "MARKETPLACE_APP_TAGS_SECURITY",
+			"name": "security",
+			"parentTaxonomyVocabulary": {
+				"externalReferenceCode": "MARKETPLACE_APP_TAGS"
+			},
+			"viewableBy": "Anyone"
+		},
+		{
+			"description": "A Style Book is a group of Styles (CSS rules) you can create using the Style editor UI. Style Books provide “design systems” for UX designers who want to create consistent user experiences across Pages, by leveraging reusable and sharable styles and style rules.",
+			"description_i18n": {
+				"en_US": "A Style Book is a group of Styles (CSS rules) you can create using the Style editor UI. Style Books provide “design systems” for UX designers who want to create consistent user experiences across Pages, by leveraging reusable and sharable styles and style rules."
+			},
+			"externalReferenceCode": "MARKETPLACE_APP_TAGS_STYLE_BOOK",
+			"name": "style-book",
+			"parentTaxonomyVocabulary": {
+				"externalReferenceCode": "MARKETPLACE_APP_TAGS"
+			},
+			"viewableBy": "Anyone"
+		},
+		{
+			"description": "Used to improve your Liferay DXP UI",
+			"description_i18n": {
+				"en_US": "Used to improve your Liferay DXP UI"
+			},
+			"externalReferenceCode": "MARKETPLACE_APP_TAGS_UI",
+			"name": "ui",
+			"parentTaxonomyVocabulary": {
+				"externalReferenceCode": "MARKETPLACE_APP_TAGS"
+			},
+			"viewableBy": "Anyone"
+		},
+		{
+			"description": "Used to improve your Liferay DXP UX",
+			"description_i18n": {
+				"en_US": "Used to improve your Liferay DXP UX"
+			},
+			"externalReferenceCode": "MARKETPLACE_APP_TAGS_UX",
+			"name": "ux",
+			"parentTaxonomyVocabulary": {
+				"externalReferenceCode": "MARKETPLACE_APP_TAGS"
+			},
+			"viewableBy": "Anyone"
+		},
+		{
+			"description": "An app or solution using Liferay workflow",
+			"description_i18n": {
+				"en_US": "An app or solution using Liferay workflow"
+			},
+			"externalReferenceCode": "MARKETPLACE_APP_TAGS_WORKFLOW",
+			"name": "workflow",
 			"parentTaxonomyVocabulary": {
 				"externalReferenceCode": "MARKETPLACE_APP_TAGS"
 			},

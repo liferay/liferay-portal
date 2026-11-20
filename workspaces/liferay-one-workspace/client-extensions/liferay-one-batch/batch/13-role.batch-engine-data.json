@@ -11,23 +11,18 @@
 	},
 	"items": [
 		{
+			"externalReferenceCode": "C_ACCOUNT_APP_PUBLISHER",
+			"name": "Account App Publisher",
+			"roleType": "account"
+		},
+		{
 			"externalReferenceCode": "C_ACCOUNT_BUYER",
 			"name": "Account Buyer",
 			"roleType": "account"
 		},
 		{
-			"externalReferenceCode": "C_ACCOUNT_REQUESTER",
-			"name": "Account Requester",
-			"roleType": "account"
-		},
-		{
 			"externalReferenceCode": "C_ACCOUNT_SOLUTION_PUBLISHER",
 			"name": "Account Solution Publisher",
-			"roleType": "account"
-		},
-		{
-			"externalReferenceCode": "C_ANALYTICS_CLOUD_OWNER",
-			"name": "Analytics Cloud Owner",
 			"roleType": "account"
 		},
 		{
@@ -91,14 +86,14 @@
 			"roleType": "regular"
 		},
 		{
+			"externalReferenceCode": "C_MARKETPLACE_ACCOUNT_ADMIN",
+			"name": "Marketplace Account Administrator",
+			"roleType": "account"
+		},
+		{
 			"externalReferenceCode": "C_MARKETPLACE_PUBLISHER",
 			"name": "Marketplace Publisher",
 			"roleType": "regular"
-		},
-		{
-			"externalReferenceCode": "C_MEMBER",
-			"name": "Member",
-			"roleType": "account"
 		},
 		{
 			"externalReferenceCode": "C_PAAS_USER",
@@ -171,26 +166,6 @@
 			"roleType": "regular"
 		},
 		{
-			"externalReferenceCode": "C_PROVISIONING_CONTACT_WORKER",
-			"name": "Provisioning Contact Worker",
-			"roleType": "regular"
-		},
-		{
-			"externalReferenceCode": "C_PROVISIONING_MEMBER",
-			"name": "Provisioning Member",
-			"roleType": "regular"
-		},
-		{
-			"externalReferenceCode": "C_PROVISIONING_SUBSCRIPTION_WORKER",
-			"name": "Provisioning Subscription Worker",
-			"roleType": "regular"
-		},
-		{
-			"externalReferenceCode": "C_PROVISIONING_WATCHER",
-			"name": "Provisioning Watcher",
-			"roleType": "regular"
-		},
-		{
 			"externalReferenceCode": "C_PROVISIONING_WORKER",
 			"name": "Provisioning Worker",
 			"roleType": "regular"
@@ -228,11 +203,6 @@
 		{
 			"externalReferenceCode": "C_SSA_USER",
 			"name": "SSA User",
-			"roleType": "account"
-		},
-		{
-			"externalReferenceCode": "C_SUPPORT_ADMIN",
-			"name": "Support Administrator",
 			"roleType": "account"
 		},
 		{

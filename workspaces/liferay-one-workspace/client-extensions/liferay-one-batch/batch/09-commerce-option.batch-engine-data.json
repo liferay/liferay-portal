@@ -3,7 +3,7 @@
 		"className": "com.liferay.headless.commerce.admin.catalog.dto.v1_0.Option",
 		"parameters": {
 			"containsHeaders": "true",
-			"createStrategy": "UPSERT",
+			"createStrategy": "INSERT",
 			"onErrorFail": "false",
 			"taskItemDelegateName": "DEFAULT",
 			"updateStrategy": "PARTIAL_UPDATE"
@@ -12,72 +12,24 @@
 	"items": [
 		{
 			"description": {
-				"en_US": "AI Hub tiers and token blocks can be purchased using this type."
-			},
-			"externalReferenceCode": "LO_OPTION_AI_HUB_LICENSE_USAGE",
-			"facetable": false,
-			"fieldType": "radio",
-			"key": "ai-hub-license-usage-type",
-			"name": {
-				"en_US": "AI Hub License Usage Type"
-			},
-			"optionValues": [
-				{
-					"externalReferenceCode": "LO_OPTION_AI_HUB_LICENSE_USAGE_1000000_LR_TOKENS",
-					"key": "1000000-lr-tokens",
-					"name": {
-						"en_US": "1,000,000 Liferay Tokens"
-					},
-					"priority": 0
-				},
-				{
-					"externalReferenceCode": "LO_OPTION_AI_HUB_LICENSE_USAGE_10000000_LR_TOKENS",
-					"key": "10000000-lr-tokens",
-					"name": {
-						"en_US": "10,000,000 Liferay Tokens"
-					},
-					"priority": 2
-				},
-				{
-					"externalReferenceCode": "LO_OPTION_AI_HUB_LICENSE_USAGE_5000000_LR_TOKENS",
-					"key": "5000000-lr-tokens",
-					"name": {
-						"en_US": "5,000,000 Liferay Tokens"
-					},
-					"priority": 1
-				},
-				{
-					"externalReferenceCode": "LO_OPTION_AI_HUB_LICENSE_USAGE_ACTIVATE",
-					"key": "activate",
-					"name": {
-						"en_US": "Activate"
-					},
-					"priority": 3
-				},
-				{
-					"externalReferenceCode": "LO_OPTION_AI_HUB_LICENSE_USAGE_STUDIO",
-					"key": "studio",
-					"name": {
-						"en_US": "Studio"
-					},
-					"priority": 4
-				}
-			],
-			"required": false,
-			"skuContributor": true
-		},
-		{
-			"description": {
-				"en_US": "Apps that are not DXP or Cloud can be licensed using this base type."
+				"en_US": "Products and apps can be licensed using this type."
 			},
 			"externalReferenceCode": "LO_OPTION_BASE_LICENSE_USAGE",
 			"facetable": false,
 			"fieldType": "radio",
 			"key": "base-license-usage-type",
 			"name": {
-				"en_US": "Base License Usage Type"
+				"en_US": "License Usage Type"
 			},
 			"optionValues": [
+				{
+					"externalReferenceCode": "LO_OPTION_BASE_LICENSE_USAGE_ACTIVATE",
+					"key": "plan-activate",
+					"name": {
+						"en_US": "Plan Activate"
+					},
+					"priority": 4
+				},
 				{
 					"externalReferenceCode": "LO_OPTION_BASE_LICENSE_USAGE_DEVELOPER",
 					"key": "developer",
@@ -87,87 +39,47 @@
 					"priority": 0
 				},
 				{
+					"externalReferenceCode": "LO_OPTION_BASE_LICENSE_USAGE_ENTERPRISE",
+					"key": "plan-enterprise",
+					"name": {
+						"en_US": "Plan Enterprise"
+					},
+					"priority": 6
+				},
+				{
+					"externalReferenceCode": "LO_OPTION_BASE_LICENSE_USAGE_PRODUCTION",
+					"key": "production",
+					"name": {
+						"en_US": "Production"
+					},
+					"priority": 3
+				},
+				{
 					"externalReferenceCode": "LO_OPTION_BASE_LICENSE_USAGE_STANDARD",
 					"key": "standard",
 					"name": {
 						"en_US": "Standard"
 					},
 					"priority": 1
-				}
-			],
-			"required": true,
-			"skuContributor": true
-		},
-		{
-			"description": {
-				"en_US": "Apps that run on Liferay Cloud can be licensed using this type."
-			},
-			"externalReferenceCode": "LO_OPTION_CLOUD_LICENSE_USAGE",
-			"facetable": false,
-			"fieldType": "radio",
-			"key": "cloud-license-usage-type",
-			"name": {
-				"en_US": "Cloud License Usage Type"
-			},
-			"optionValues": [
-				{
-					"externalReferenceCode": "LO_OPTION_CLOUD_LICENSE_USAGE_STANDARD",
-					"key": "standard",
-					"name": {
-						"en_US": "Standard"
-					},
-					"priority": 0
 				},
 				{
-					"externalReferenceCode": "LO_OPTION_CLOUD_LICENSE_USAGE_TRIAL",
+					"externalReferenceCode": "LO_OPTION_BASE_LICENSE_USAGE_STUDIO",
+					"key": "plan-studio",
+					"name": {
+						"en_US": "Plan Studio"
+					},
+					"priority": 5
+				},
+				{
+					"externalReferenceCode": "LO_OPTION_BASE_LICENSE_USAGE_TRIAL",
 					"key": "trial",
 					"name": {
 						"en_US": "Trial"
-					},
-					"priority": 1
-				}
-			],
-			"required": true,
-			"skuContributor": true
-		},
-		{
-			"description": {
-				"en_US": "Content Marketing Platform can be licensed using this type."
-			},
-			"externalReferenceCode": "LO_OPTION_CMP_LICENSE_USAGE",
-			"facetable": false,
-			"fieldType": "radio",
-			"key": "cmp-license-usage-type",
-			"name": {
-				"en_US": "CMP License Usage Type"
-			},
-			"optionValues": [
-				{
-					"externalReferenceCode": "LO_OPTION_CMP_LICENSE_USAGE_DEVELOPER",
-					"key": "developer",
-					"name": {
-						"en_US": "Developer"
-					},
-					"priority": 0
-				},
-				{
-					"externalReferenceCode": "LO_OPTION_CMP_LICENSE_USAGE_PRODUCTION",
-					"key": "production",
-					"name": {
-						"en_US": "Production"
 					},
 					"priority": 2
-				},
-				{
-					"externalReferenceCode": "LO_OPTION_CMP_LICENSE_USAGE_TRIAL",
-					"key": "trial",
-					"name": {
-						"en_US": "Trial"
-					},
-					"priority": 1
 				}
 			],
-			"required": false,
+			"required": true,
 			"skuContributor": true
 		},
 		{
@@ -212,66 +124,18 @@
 		},
 		{
 			"description": {
-				"en_US": "Digital Sales Room can be licensed using this type."
+				"en_US": "The Salesforce product that each SKU of a grouped product mirrors."
 			},
-			"externalReferenceCode": "LO_OPTION_DSR_LICENSE_USAGE",
+			"externalReferenceCode": "LO_OPTION_SALESFORCE_PRODUCT",
 			"facetable": false,
-			"fieldType": "radio",
-			"key": "dsr-license-usage-type",
+			"fieldType": "select",
+			"key": "salesforce-product",
 			"name": {
-				"en_US": "DSR License Usage Type"
+				"en_US": "Salesforce Product"
 			},
 			"optionValues": [
-				{
-					"externalReferenceCode": "LO_OPTION_DSR_LICENSE_USAGE_DEVELOPER",
-					"key": "developer",
-					"name": {
-						"en_US": "Developer"
-					},
-					"priority": 0
-				}
 			],
 			"required": false,
-			"skuContributor": true
-		},
-		{
-			"description": {
-				"en_US": "Apps built for Liferay DXP can be licensed using this type."
-			},
-			"externalReferenceCode": "LO_OPTION_DXP_LICENSE_USAGE",
-			"facetable": false,
-			"fieldType": "radio",
-			"key": "dxp-license-usage-type",
-			"name": {
-				"en_US": "DXP License Usage Type"
-			},
-			"optionValues": [
-				{
-					"externalReferenceCode": "LO_OPTION_DXP_LICENSE_USAGE_DEVELOPER",
-					"key": "developer",
-					"name": {
-						"en_US": "Developer"
-					},
-					"priority": 0
-				},
-				{
-					"externalReferenceCode": "LO_OPTION_DXP_LICENSE_USAGE_STANDARD",
-					"key": "standard",
-					"name": {
-						"en_US": "Standard"
-					},
-					"priority": 1
-				},
-				{
-					"externalReferenceCode": "LO_OPTION_DXP_LICENSE_USAGE_TRIAL",
-					"key": "trial",
-					"name": {
-						"en_US": "Trial"
-					},
-					"priority": 2
-				}
-			],
-			"required": true,
 			"skuContributor": true
 		}
 	]
