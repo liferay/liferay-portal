@@ -104,11 +104,11 @@ public class CommerceInventoryWarehouseItemServiceTest {
 					BigDecimal.TEN, BigDecimal.ZERO, _cpInstance.getSku(),
 					StringPool.BLANK);
 
-		String externalReferenceCode =
-			commerceInventoryWarehouseItem.getExternalReferenceCode();
-
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				_user, PermissionCheckerFactoryUtil.create(_user))) {
+
+			String externalReferenceCode =
+				commerceInventoryWarehouseItem.getExternalReferenceCode();
 
 			PrincipalException principalException = Assert.assertThrows(
 				PrincipalException.class,
