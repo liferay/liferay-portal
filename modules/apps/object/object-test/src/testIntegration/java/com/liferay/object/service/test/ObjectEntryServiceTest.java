@@ -13,6 +13,7 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
+import com.liferay.document.library.test.util.DLTestUtil;
 import com.liferay.list.type.entry.util.ListTypeEntryUtil;
 import com.liferay.list.type.model.ListTypeDefinition;
 import com.liferay.list.type.service.ListTypeDefinitionLocalService;
@@ -156,7 +157,7 @@ public class ObjectEntryServiceTest {
 				).name(
 					ObjectFieldSettingConstants.NAME_ACCEPTED_FILE_EXTENSIONS
 				).value(
-					"png"
+					"txt"
 				).build(),
 				new ObjectFieldSettingBuilder(
 				).name(
@@ -198,7 +199,7 @@ public class ObjectEntryServiceTest {
 							ObjectFieldSettingConstants.
 								NAME_ACCEPTED_FILE_EXTENSIONS
 						).value(
-							"png"
+							"txt"
 						).build(),
 						new ObjectFieldSettingBuilder(
 						).name(
@@ -1902,8 +1903,8 @@ public class ObjectEntryServiceTest {
 		return _dlAppLocalService.addFileEntry(
 			null, _adminUser.getUserId(), _group.getGroupId(),
 			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
-			RandomTestUtil.randomString() + ".png", ContentTypes.IMAGE_PNG,
-			RandomTestUtil.randomBytes(), null, null, null, serviceContext);
+			RandomTestUtil.randomString() + ".txt", ContentTypes.TEXT_PLAIN,
+			DLTestUtil.randomTextFileBytes(), null, null, null, serviceContext);
 	}
 
 	private ObjectEntry _addObjectEntry(User user) throws Exception {
