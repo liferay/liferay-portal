@@ -111,9 +111,50 @@ public class ScheduleLaunchMVCActionCommandTest {
 	@Test
 	public void testProcessAction() throws Exception {
 
-		// External redirect
+		// Already scheduled
+
+		long publishTime = System.currentTimeMillis() + Time.DAY;
+
+		_launchSetPublisher.schedulePublish(
+			new Date(publishTime), _launchSetObjectEntry.getObjectEntryId(),
+			TestPropsValues.getUserId());
 
 		JSONObject jsonObject;
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.launch.web.internal.portlet.action." +
+					"BaseLaunchMVCActionCommand",
+				LoggerTestUtil.WARN)) {
+
+			jsonObject = _processAction(
+				System.currentTimeMillis() + Time.DAY,
+				TestPropsValues.getUser());
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
+
+			LogEntry logEntry = logEntries.get(0);
+
+			Throwable throwable = logEntry.getThrowable();
+
+			Assert.assertEquals(
+				"Launch set " + _launchSetObjectEntry.getObjectEntryId() +
+					" must be open to be scheduled",
+				throwable.getMessage());
+		}
+
+		Assert.assertEquals(
+			_language.get(LocaleUtil.US, "an-unexpected-error-occurred"),
+			jsonObject.getString("error"));
+
+		_assertScheduledDateAndStatus(
+			new Date(publishTime), WorkflowConstants.STATUS_SCHEDULED);
+
+		_launchSetPublisher.unschedulePublish(
+			_launchSetObjectEntry.getObjectEntryId());
+
+		// External redirect
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				"com.liferay.portal.util.PortalImpl", LoggerTestUtil.WARN)) {
@@ -137,6 +178,32 @@ public class ScheduleLaunchMVCActionCommandTest {
 		}
 
 		Assert.assertTrue(Validator.isNull(jsonObject.getString("redirect")));
+
+		_launchSetPublisher.unschedulePublish(
+			_launchSetObjectEntry.getObjectEntryId());
+
+		// Future date
+
+		jsonObject = _processAction(
+			System.currentTimeMillis() + (Time.SECOND * 30),
+			TestPropsValues.getUser());
+
+		Assert.assertEquals(
+			_language.get(
+				LocaleUtil.US,
+				"the-date-and-time-must-be-at-least-one-minute-in-the-future"),
+			jsonObject.getString("validationError"));
+
+		_assertScheduledDateAndStatus(null, WorkflowConstants.STATUS_DRAFT);
+
+		publishTime = System.currentTimeMillis() + (Time.MINUTE * 2);
+
+		jsonObject = _processAction(publishTime, TestPropsValues.getUser());
+
+		Assert.assertEquals(_REDIRECT, jsonObject.getString("redirect"));
+
+		_assertScheduledDateAndStatus(
+			new Date(publishTime), WorkflowConstants.STATUS_SCHEDULED);
 
 		_launchSetPublisher.unschedulePublish(
 			_launchSetObjectEntry.getObjectEntryId());
@@ -179,61 +246,6 @@ public class ScheduleLaunchMVCActionCommandTest {
 		}
 
 		_assertScheduledDateAndStatus(null, WorkflowConstants.STATUS_DRAFT);
-
-		// Future date
-
-		jsonObject = _processAction(
-			System.currentTimeMillis() + (Time.SECOND * 30),
-			TestPropsValues.getUser());
-
-		Assert.assertEquals(
-			_language.get(
-				LocaleUtil.US,
-				"the-date-and-time-must-be-at-least-one-minute-in-the-future"),
-			jsonObject.getString("validationError"));
-
-		_assertScheduledDateAndStatus(null, WorkflowConstants.STATUS_DRAFT);
-
-		long publishTime = System.currentTimeMillis() + (Time.MINUTE * 2);
-
-		jsonObject = _processAction(publishTime, TestPropsValues.getUser());
-
-		Assert.assertEquals(_REDIRECT, jsonObject.getString("redirect"));
-
-		_assertScheduledDateAndStatus(
-			new Date(publishTime), WorkflowConstants.STATUS_SCHEDULED);
-
-		// Already scheduled
-
-		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				"com.liferay.launch.web.internal.portlet.action." +
-					"BaseLaunchMVCActionCommand",
-				LoggerTestUtil.WARN)) {
-
-			jsonObject = _processAction(
-				System.currentTimeMillis() + Time.DAY,
-				TestPropsValues.getUser());
-
-			List<LogEntry> logEntries = logCapture.getLogEntries();
-
-			Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
-
-			LogEntry logEntry = logEntries.get(0);
-
-			Throwable throwable = logEntry.getThrowable();
-
-			Assert.assertEquals(
-				"Launch set " + _launchSetObjectEntry.getObjectEntryId() +
-					" must be open to be scheduled",
-				throwable.getMessage());
-		}
-
-		Assert.assertEquals(
-			_language.get(LocaleUtil.US, "an-unexpected-error-occurred"),
-			jsonObject.getString("error"));
-
-		_assertScheduledDateAndStatus(
-			new Date(publishTime), WorkflowConstants.STATUS_SCHEDULED);
 	}
 
 	private void _assertScheduledDateAndStatus(
