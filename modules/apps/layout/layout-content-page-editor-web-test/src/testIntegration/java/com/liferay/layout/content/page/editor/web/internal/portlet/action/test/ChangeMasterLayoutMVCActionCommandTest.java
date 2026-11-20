@@ -66,30 +66,25 @@ public class ChangeMasterLayoutMVCActionCommandTest {
 
 		Group group = _groupLocalService.getGroup(TestPropsValues.getGroupId());
 
+		Company company = _companyLocalService.getCompany(group.getCompanyId());
 		Group designLibraryGroup = DesignLibraryTestUtil.addDesignLibraryGroup(
 			group.getGroupId(), true);
-
-		LayoutPageTemplateEntry designLibraryMasterLayoutPageTemplateEntry =
-			LayoutPageTemplateTestUtil.addLayoutPageTemplateEntry(
-				designLibraryGroup.getGroupId(),
-				LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT,
-				WorkflowConstants.STATUS_APPROVED);
-
-		Company company = _companyLocalService.getCompany(group.getCompanyId());
 		Layout layout = LayoutTestUtil.addTypeContentLayout(group);
 
 		_testChangeMasterLayout(
-			company, group, layout, designLibraryMasterLayoutPageTemplateEntry,
+			company, group, layout,
+			LayoutPageTemplateTestUtil.addLayoutPageTemplateEntry(
+				designLibraryGroup.getGroupId(),
+				LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT,
+				WorkflowConstants.STATUS_APPROVED),
 			designLibraryGroup.getExternalReferenceCode());
 
-		LayoutPageTemplateEntry siteMasterLayoutPageTemplateEntry =
+		_testChangeMasterLayout(
+			company, group, layout,
 			LayoutPageTemplateTestUtil.addLayoutPageTemplateEntry(
 				group.getGroupId(),
 				LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT,
-				WorkflowConstants.STATUS_APPROVED);
-
-		_testChangeMasterLayout(
-			company, group, layout, siteMasterLayoutPageTemplateEntry,
+				WorkflowConstants.STATUS_APPROVED),
 			StringPool.BLANK);
 	}
 
