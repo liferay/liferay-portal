@@ -14,6 +14,7 @@ import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.portal.kernel.license.util.App;
 import com.liferay.portal.kernel.license.util.LicenseManagerUtil;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -21,6 +22,7 @@ import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
+import com.liferay.portal.workflow.kaleo.model.KaleoTaskAssignmentInstance;
 import com.liferay.portal.workflow.kaleo.model.KaleoTaskInstanceToken;
 
 import java.io.Serializable;
@@ -171,6 +173,66 @@ public class CMPKaleoTaskInstanceTokenModelDocumentContributorTest {
 			document, _kaleoTaskInstanceToken);
 
 		Mockito.verifyNoInteractions(document);
+	}
+
+	@Test
+	public void testContributeWhenTaskIsAssignedAndObjectEntryIsNotLinkedToCMPTask()
+		throws Exception {
+
+		long classNameId = RandomTestUtil.randomLong();
+
+		Mockito.when(
+			_classNameLocalService.getClassNameId(User.class.getName())
+		).thenReturn(
+			classNameId
+		);
+
+		KaleoTaskAssignmentInstance kaleoTaskAssignmentInstance = Mockito.mock(
+			KaleoTaskAssignmentInstance.class);
+
+		Mockito.when(
+			kaleoTaskAssignmentInstance.getAssigneeClassName()
+		).thenReturn(
+			User.class.getName()
+		);
+
+		long userId = RandomTestUtil.randomLong();
+
+		Mockito.when(
+			kaleoTaskAssignmentInstance.getAssigneeClassPK()
+		).thenReturn(
+			userId
+		);
+
+		Mockito.when(
+			_kaleoTaskInstanceToken.getKaleoTaskAssignmentInstances()
+		).thenReturn(
+			List.of(kaleoTaskAssignmentInstance)
+		);
+
+		Mockito.when(
+			_objectEntryLocalService.getPrimaryKeys(
+				Mockito.any(), Mockito.anyLong(), Mockito.anyLong(),
+				Mockito.anyLong(), Mockito.any(), Mockito.anyBoolean(),
+				Mockito.any(), Mockito.anyInt(), Mockito.anyInt(),
+				Mockito.any())
+		).thenReturn(
+			Collections.emptyList()
+		);
+
+		Document document = Mockito.mock(Document.class);
+
+		_cmpKaleoTaskInstanceTokenModelDocumentContributor.contribute(
+			document, _kaleoTaskInstanceToken);
+
+		Mockito.verify(
+			document
+		).addKeyword(
+			Mockito.eq("cmpAssignTo"),
+			AdditionalMatchers.aryEq(new String[] {classNameId + "_" + userId})
+		);
+
+		Mockito.verifyNoMoreInteractions(document);
 	}
 
 	private void _setUpGroupLocalService() {
