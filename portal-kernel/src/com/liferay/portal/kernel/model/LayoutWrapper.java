@@ -422,6 +422,11 @@ public class LayoutWrapper
 		return model.fetchDraftLayout();
 	}
 
+	@Override
+	public java.util.List<Layout> fetchDraftLayouts() {
+		return model.fetchDraftLayouts();
+	}
+
 	/**
 	 * Returns all layouts that are direct or indirect children of the current
 	 * layout.
@@ -2927,4 +2932,4 @@ public class LayoutWrapper
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1659655228
+// LIFERAY-SERVICE-BUILDER-HASH:-1051018930

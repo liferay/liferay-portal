@@ -589,6 +589,9 @@ public interface LayoutLocalService
 	public Map<Layout, Layout> fetchDraftLayouts(List<Layout> layouts);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<Layout> fetchDraftLayouts(long plid);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Layout fetchFirstLayout(
 		long groupId, boolean privateLayout, long parentLayoutId);
 
@@ -1745,4 +1748,4 @@ public interface LayoutLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1167632332
+// LIFERAY-SERVICE-BUILDER-HASH:-1407315814

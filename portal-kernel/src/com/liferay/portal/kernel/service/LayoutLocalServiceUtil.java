@@ -654,6 +654,10 @@ public class LayoutLocalServiceUtil {
 		return getService().fetchDraftLayouts(layouts);
 	}
 
+	public static List<Layout> fetchDraftLayouts(long plid) {
+		return getService().fetchDraftLayouts(plid);
+	}
+
 	public static Layout fetchFirstLayout(
 		long groupId, boolean privateLayout, long parentLayoutId) {
 
@@ -2156,4 +2160,4 @@ public class LayoutLocalServiceUtil {
 	private static volatile LayoutLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-368504883
+// LIFERAY-SERVICE-BUILDER-HASH:-1651792520

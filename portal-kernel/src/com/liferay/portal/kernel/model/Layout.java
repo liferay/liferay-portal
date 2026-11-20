@@ -67,6 +67,8 @@ public interface Layout extends LayoutModel, PersistedModel {
 
 	public Layout fetchDraftLayout();
 
+	public java.util.List<Layout> fetchDraftLayouts();
+
 	/**
 	 * Returns all layouts that are direct or indirect children of the current
 	 * layout.
@@ -465,4 +467,4 @@ public interface Layout extends LayoutModel, PersistedModel {
 			typeSettingsUnicodeProperties);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1586302573
+// LIFERAY-SERVICE-BUILDER-HASH:222421773
