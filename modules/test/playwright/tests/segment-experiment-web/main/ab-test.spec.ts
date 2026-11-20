@@ -23,7 +23,6 @@ import {
 import getFragmentDefinition from '../../layout-content-page-editor-web/main/utils/getFragmentDefinition';
 import getPageDefinition from '../../layout-content-page-editor-web/main/utils/getPageDefinition';
 import {faroConfig} from '../../osb-faro-web/main/faro.config';
-import {clickOnLink} from '../../osb-faro-web/main/utils/actions';
 import {createABTest, createVariant, openABTesSidebar} from './utils/ab-test';
 
 const test = mergeTests(
@@ -62,13 +61,10 @@ test(
 			'#_com_liferay_segments_experiment_web_internal_portlet_SegmentsExperimentPortlet_-segments-experiment-root a'
 		);
 
-		const href = (await tagA.getAttribute('href')) || '';
+		const url = new URL(await tagA.getAttribute('href'), page.url());
 
 		await page.goto(
-			href.replace(
-				liferayConfig.environment.baseUrl,
-				faroConfig.environment.baseUrl
-			)
+			`${faroConfig.environment.baseUrl}${url.pathname}${url.search}${url.hash}`
 		);
 
 		const title = await page.locator('h1.title');
@@ -153,11 +149,16 @@ test(
 			'Confidence Level:95%'
 		);
 
-		await clickOnLink({
-			baseUrl: faroConfig.environment.baseUrl,
-			name: 'View Data in Liferay Data Platform',
-			page,
-		});
+		const url = new URL(
+			await page
+				.locator('a', {hasText: 'View Data in Liferay Data Platform'})
+				.getAttribute('href'),
+			page.url()
+		);
+
+		await page.goto(
+			`${faroConfig.environment.baseUrl}${url.pathname}${url.search}${url.hash}`
+		);
 
 		await page.waitForTimeout(3000);
 
