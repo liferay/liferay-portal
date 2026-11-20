@@ -9,6 +9,7 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.message.boards.constants.MBCategoryConstants;
 import com.liferay.message.boards.constants.MBMessageConstants;
 import com.liferay.message.boards.exception.NoSuchMessageException;
+import com.liferay.message.boards.exception.NoSuchThreadException;
 import com.liferay.message.boards.model.MBCategory;
 import com.liferay.message.boards.model.MBMessage;
 import com.liferay.message.boards.service.MBBanLocalServiceUtil;
@@ -400,6 +401,20 @@ public class MBMessageServiceTest {
 		Assert.assertEquals(
 			threadMessages.toString(), 3, threadMessages.size());
 
+		Assert.assertThrows(
+			NoSuchThreadException.class,
+			() -> MBMessageServiceUtil.getThreadMessages(
+				TestPropsValues.getGroupId(), _category.getCategoryId(),
+				mbMessage.getThreadId(), WorkflowConstants.STATUS_ANY,
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS));
+		Assert.assertThrows(
+			NoSuchThreadException.class,
+			() -> MBMessageServiceUtil.getThreadMessages(
+				_group.getGroupId(),
+				MBCategoryConstants.DEFAULT_PARENT_CATEGORY_ID,
+				mbMessage.getThreadId(), WorkflowConstants.STATUS_ANY,
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS));
+
 		User user = _users[0];
 
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
@@ -459,6 +474,18 @@ public class MBMessageServiceTest {
 			3,
 			MBMessageServiceUtil.getThreadMessagesCount(
 				_group.getGroupId(), _category.getCategoryId(),
+				mbMessage.getThreadId(), WorkflowConstants.STATUS_ANY));
+
+		Assert.assertThrows(
+			NoSuchThreadException.class,
+			() -> MBMessageServiceUtil.getThreadMessagesCount(
+				TestPropsValues.getGroupId(), _category.getCategoryId(),
+				mbMessage.getThreadId(), WorkflowConstants.STATUS_ANY));
+		Assert.assertThrows(
+			NoSuchThreadException.class,
+			() -> MBMessageServiceUtil.getThreadMessagesCount(
+				_group.getGroupId(),
+				MBCategoryConstants.DEFAULT_PARENT_CATEGORY_ID,
 				mbMessage.getThreadId(), WorkflowConstants.STATUS_ANY));
 
 		User user = _users[0];
