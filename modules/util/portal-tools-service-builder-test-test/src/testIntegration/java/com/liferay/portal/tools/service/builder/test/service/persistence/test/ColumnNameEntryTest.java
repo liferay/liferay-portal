@@ -7,11 +7,13 @@ package com.liferay.portal.tools.service.builder.test.service.persistence.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.dao.orm.Dialect;
 import com.liferay.portal.kernel.dao.orm.ORMException;
 import com.liferay.portal.kernel.dao.orm.Query;
-import com.liferay.portal.kernel.dao.orm.SessionCustomizer;
+import com.liferay.portal.kernel.dao.orm.Session;
+import com.liferay.portal.kernel.dao.orm.SessionFactory;
 import com.liferay.portal.kernel.dao.orm.SessionWrapper;
-import com.liferay.portal.kernel.module.util.SystemBundleUtil;
+import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
@@ -23,6 +25,8 @@ import com.liferay.portal.tools.service.builder.test.service.persistence.ColumnN
 import com.liferay.portal.tools.service.builder.test.service.persistence.ColumnNameEntryUtil;
 
 import java.io.Serializable;
+
+import java.sql.Connection;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -36,9 +40,6 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceRegistration;
 
 /**
  * @author Jeff Wu
@@ -72,24 +73,52 @@ public class ColumnNameEntryTest {
 
 		List<String> queryStrings = new ArrayList<>();
 
-		BundleContext bundleContext = SystemBundleUtil.getBundleContext();
+		SessionFactory sessionFactory = ReflectionTestUtil.getFieldValue(
+			_columnNameEntryPersistence, "_sessionFactory");
 
-		ServiceRegistration<SessionCustomizer> serviceRegistration =
-			bundleContext.registerService(
-				SessionCustomizer.class,
-				session -> new SessionWrapper(session) {
+		ReflectionTestUtil.setFieldValue(
+			_columnNameEntryPersistence, "_sessionFactory",
+			new SessionFactory() {
 
-					@Override
-					public Query createQuery(String queryString)
-						throws ORMException {
+				@Override
+				public void closeSession(Session session) throws ORMException {
+					sessionFactory.closeSession(session);
+				}
 
-						queryStrings.add(queryString);
+				@Override
+				public Session getCurrentSession() throws ORMException {
+					return sessionFactory.getCurrentSession();
+				}
 
-						return super.createQuery(queryString);
-					}
+				@Override
+				public Dialect getDialect() throws ORMException {
+					return sessionFactory.getDialect();
+				}
 
-				},
-				null);
+				@Override
+				public Session openNewSession(Connection connection)
+					throws ORMException {
+
+					return sessionFactory.openNewSession(connection);
+				}
+
+				@Override
+				public Session openSession() throws ORMException {
+					return new SessionWrapper(sessionFactory.openSession()) {
+
+						@Override
+						public Query createQuery(String queryString)
+							throws ORMException {
+
+							queryStrings.add(queryString);
+
+							return super.createQuery(queryString);
+						}
+
+					};
+				}
+
+			});
 
 		Map<Serializable, ColumnNameEntry> columnNameEntries = null;
 
@@ -100,7 +129,8 @@ public class ColumnNameEntryTest {
 				primaryKeys);
 		}
 		finally {
-			serviceRegistration.unregister();
+			ReflectionTestUtil.setFieldValue(
+				_columnNameEntryPersistence, "_sessionFactory", sessionFactory);
 		}
 
 		Assert.assertEquals(queryStrings.toString(), 1, queryStrings.size());
