@@ -27,6 +27,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 /**
@@ -48,12 +49,8 @@ public class EventDefinitionResourceImplTest {
 				Mockito.eq(_faroProject),
 				Mockito.eq("getWorkspaceGroupEventDefinitionsPage"),
 				Mockito.anyMap())
-		).thenAnswer(
-			invocation -> {
-				_variables = invocation.getArgument(3);
-
-				return _getWorkspaceGroupEventDefinitionsPageResponse;
-			}
+		).thenReturn(
+			_getWorkspaceGroupEventDefinitionsPageResponse
 		);
 
 		Mockito.when(
@@ -103,19 +100,21 @@ public class EventDefinitionResourceImplTest {
 			List.of(_eventDefinition), eventDefinitionsPage.getItems());
 		Assert.assertEquals(total, eventDefinitionsPage.getTotalCount());
 
-		Assert.assertEquals(blocked, _variables.get("blocked"));
-		Assert.assertEquals(eventType, _variables.get("eventType"));
-		Assert.assertEquals(hidden, _variables.get("hidden"));
-		Assert.assertEquals(search, _variables.get("keyword"));
-		Assert.assertEquals(page - 1, _variables.get("page"));
-		Assert.assertEquals(pageSize, _variables.get("size"));
+		Map<String, Object> variables = _getVariables();
+
+		Assert.assertEquals(blocked, variables.get("blocked"));
+		Assert.assertEquals(eventType, variables.get("eventType"));
+		Assert.assertEquals(hidden, variables.get("hidden"));
+		Assert.assertEquals(search, variables.get("keyword"));
+		Assert.assertEquals(page - 1, variables.get("page"));
+		Assert.assertEquals(pageSize, variables.get("size"));
 		Assert.assertEquals(
 			HashMapBuilder.<String, Object>put(
 				"column", fieldName
 			).put(
 				"type", "DESC"
 			).build(),
-			_variables.get("sort"));
+			variables.get("sort"));
 	}
 
 	@Test
@@ -144,15 +143,21 @@ public class EventDefinitionResourceImplTest {
 
 		Assert.assertEquals(0, eventDefinitionsPage.getTotalCount());
 
-		Assert.assertEquals("ALL", _variables.get("eventType"));
-		Assert.assertEquals(0, _variables.get("page"));
+		Map<String, Object> variables = _getVariables();
+
+		Assert.assertNull(variables.get("blocked"));
+		Assert.assertEquals("ALL", variables.get("eventType"));
+		Assert.assertNull(variables.get("hidden"));
+		Assert.assertNull(variables.get("keyword"));
+		Assert.assertEquals(0, variables.get("page"));
+		Assert.assertEquals(20, variables.get("size"));
 		Assert.assertEquals(
 			HashMapBuilder.<String, Object>put(
 				"column", "name"
 			).put(
 				"type", "ASC"
 			).build(),
-			_variables.get("sort"));
+			variables.get("sort"));
 	}
 
 	private GetWorkspaceGroupEventDefinitionsPageResponse.EventDefinitionBag
@@ -168,6 +173,22 @@ public class EventDefinitionResourceImplTest {
 		eventDefinitionBag.setTotal(total);
 
 		return eventDefinitionBag;
+	}
+
+	private Map<String, Object> _getVariables() throws Exception {
+		ArgumentCaptor<Map<String, Object>> argumentCaptor =
+			ArgumentCaptor.forClass(Map.class);
+
+		Mockito.verify(
+			_faroGraphQLClient
+		).execute(
+			Mockito.eq(GetWorkspaceGroupEventDefinitionsPageResponse.class),
+			Mockito.eq(_faroProject),
+			Mockito.eq("getWorkspaceGroupEventDefinitionsPage"),
+			argumentCaptor.capture()
+		);
+
+		return argumentCaptor.getValue();
 	}
 
 	private static final long _GROUP_ID = RandomTestUtil.randomLong();
@@ -190,6 +211,5 @@ public class EventDefinitionResourceImplTest {
 	private final GetWorkspaceGroupEventDefinitionsPageResponse.EventDefinition
 		_responseEventDefinition =
 			new GetWorkspaceGroupEventDefinitionsPageResponse.EventDefinition();
-	private Map<String, Object> _variables;
 
 }
