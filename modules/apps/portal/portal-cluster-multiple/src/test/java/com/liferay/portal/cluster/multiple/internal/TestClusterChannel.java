@@ -79,6 +79,15 @@ public class TestClusterChannel implements ClusterChannel {
 
 		clusterChannels.put(_localAddress, this);
 
+		List<Address> addresses = new ArrayList<>(clusterChannels.keySet());
+
+		for (TestClusterChannel clusterChannel : clusterChannels.values()) {
+			ClusterReceiver curClusterReceiver =
+				clusterChannel.getClusterReceiver();
+
+			curClusterReceiver.addressesUpdated(addresses);
+		}
+
 		_clusterReceiver.coordinatorAddressUpdated(clusterChannels.firstKey());
 	}
 

@@ -175,11 +175,11 @@ public class ClusterExecutorImplTest extends BaseClusterTestCase {
 		ClusterExecutorImpl newClusterExecutorImpl = _getClusterExecutorImpl();
 
 		Assert.assertEquals(
-			multicastMessages.toString(), 1, multicastMessages.size());
+			multicastMessages.toString(), 2, multicastMessages.size());
 		Assert.assertTrue(
 			unicastMessages.toString(), unicastMessages.isEmpty());
 
-		Serializable serializable = multicastMessages.get(0);
+		Serializable serializable = multicastMessages.get(1);
 
 		clusterExecutorImpl.handleReceivedClusterRequest(
 			(ClusterRequest)serializable);
