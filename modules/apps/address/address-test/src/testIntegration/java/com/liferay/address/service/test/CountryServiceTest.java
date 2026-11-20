@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.CountryTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -62,11 +63,12 @@ public class CountryServiceTest {
 				_user, PermissionCheckerFactoryUtil.create(_user))) {
 
 			_country = _countryService.addCountry(
-				null, "aa", "aaa", true, RandomTestUtil.randomBoolean(),
+				null, CountryTestUtil.randomA2(TestPropsValues.getCompanyId()),
+				CountryTestUtil.randomA3(TestPropsValues.getCompanyId()), true,
+				RandomTestUtil.randomBoolean(), RandomTestUtil.randomString(),
 				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-				RandomTestUtil.randomString(), RandomTestUtil.randomDouble(),
+				RandomTestUtil.randomDouble(), RandomTestUtil.randomBoolean(),
 				RandomTestUtil.randomBoolean(), RandomTestUtil.randomBoolean(),
-				RandomTestUtil.randomBoolean(),
 				ServiceContextTestUtil.getServiceContext());
 
 			Assert.fail();
@@ -87,11 +89,12 @@ public class CountryServiceTest {
 				_user, PermissionCheckerFactoryUtil.create(_user))) {
 
 			_country = _countryService.addCountry(
-				null, "aa", "aaa", true, RandomTestUtil.randomBoolean(),
+				null, CountryTestUtil.randomA2(TestPropsValues.getCompanyId()),
+				CountryTestUtil.randomA3(TestPropsValues.getCompanyId()), true,
+				RandomTestUtil.randomBoolean(), RandomTestUtil.randomString(),
 				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-				RandomTestUtil.randomString(), RandomTestUtil.randomDouble(),
+				RandomTestUtil.randomDouble(), RandomTestUtil.randomBoolean(),
 				RandomTestUtil.randomBoolean(), RandomTestUtil.randomBoolean(),
-				RandomTestUtil.randomBoolean(),
 				ServiceContextTestUtil.getServiceContext());
 		}
 	}
@@ -99,11 +102,12 @@ public class CountryServiceTest {
 	@Test
 	public void testDeleteCountry() throws Exception {
 		_country = _countryLocalService.addCountry(
-			null, "aa", "aaa", true, RandomTestUtil.randomBoolean(),
+			null, CountryTestUtil.randomA2(TestPropsValues.getCompanyId()),
+			CountryTestUtil.randomA3(TestPropsValues.getCompanyId()), true,
+			RandomTestUtil.randomBoolean(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-			RandomTestUtil.randomString(), RandomTestUtil.randomDouble(),
+			RandomTestUtil.randomDouble(), RandomTestUtil.randomBoolean(),
 			RandomTestUtil.randomBoolean(), RandomTestUtil.randomBoolean(),
-			RandomTestUtil.randomBoolean(),
 			ServiceContextTestUtil.getServiceContext());
 
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
@@ -135,11 +139,12 @@ public class CountryServiceTest {
 	@Test
 	public void testUpdateActive() throws Exception {
 		_country = _countryLocalService.addCountry(
-			null, "aa", "aaa", true, RandomTestUtil.randomBoolean(),
+			null, CountryTestUtil.randomA2(TestPropsValues.getCompanyId()),
+			CountryTestUtil.randomA3(TestPropsValues.getCompanyId()), true,
+			RandomTestUtil.randomBoolean(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-			RandomTestUtil.randomString(), RandomTestUtil.randomDouble(),
+			RandomTestUtil.randomDouble(), RandomTestUtil.randomBoolean(),
 			RandomTestUtil.randomBoolean(), RandomTestUtil.randomBoolean(),
-			RandomTestUtil.randomBoolean(),
 			ServiceContextTestUtil.getServiceContext());
 
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
@@ -173,11 +178,12 @@ public class CountryServiceTest {
 	@Test
 	public void testUpdateCountry() throws Exception {
 		_country = _countryLocalService.addCountry(
-			null, "aa", "aaa", true, RandomTestUtil.randomBoolean(),
+			null, CountryTestUtil.randomA2(TestPropsValues.getCompanyId()),
+			CountryTestUtil.randomA3(TestPropsValues.getCompanyId()), true,
+			RandomTestUtil.randomBoolean(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-			RandomTestUtil.randomString(), RandomTestUtil.randomDouble(),
+			RandomTestUtil.randomDouble(), RandomTestUtil.randomBoolean(),
 			RandomTestUtil.randomBoolean(), RandomTestUtil.randomBoolean(),
-			RandomTestUtil.randomBoolean(),
 			ServiceContextTestUtil.getServiceContext());
 
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
@@ -221,11 +227,12 @@ public class CountryServiceTest {
 	@Test
 	public void testUpdateGroupFilterEnabled() throws Exception {
 		_country = _countryLocalService.addCountry(
-			null, "aa", "aaa", true, RandomTestUtil.randomBoolean(),
+			null, CountryTestUtil.randomA2(TestPropsValues.getCompanyId()),
+			CountryTestUtil.randomA3(TestPropsValues.getCompanyId()), true,
+			RandomTestUtil.randomBoolean(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-			RandomTestUtil.randomString(), RandomTestUtil.randomDouble(),
+			RandomTestUtil.randomDouble(), RandomTestUtil.randomBoolean(),
 			RandomTestUtil.randomBoolean(), RandomTestUtil.randomBoolean(),
-			RandomTestUtil.randomBoolean(),
 			ServiceContextTestUtil.getServiceContext());
 
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(

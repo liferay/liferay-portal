@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.service.ResourceLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.CountryTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.RoleTestUtil;
@@ -65,9 +66,11 @@ public class CountryResourcePermissionUpgradeProcessTest {
 			group.getCompanyId(), group.getGroupId(), user.getUserId());
 
 		_country = _countryLocalService.addCountry(
-			null, "XX", "XXX", true, true, RandomTestUtil.randomString(3),
-			RandomTestUtil.randomString(), RandomTestUtil.randomString(), 0L,
-			true, true, true, _serviceContext);
+			null, CountryTestUtil.randomA2(_serviceContext.getCompanyId()),
+			CountryTestUtil.randomA3(_serviceContext.getCompanyId()), true,
+			true, RandomTestUtil.randomString(3), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), 0L, true, true, true,
+			_serviceContext);
 
 		_role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
 	}

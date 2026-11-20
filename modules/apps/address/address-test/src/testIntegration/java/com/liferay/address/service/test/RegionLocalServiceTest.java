@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.service.OrganizationLocalService;
 import com.liferay.portal.kernel.service.RegionLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.rule.DataGuard;
+import com.liferay.portal.kernel.test.util.CountryTestUtil;
 import com.liferay.portal.kernel.test.util.OrganizationTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -156,8 +157,8 @@ public class RegionLocalServiceTest {
 	public void testSearchRegions() throws Exception {
 		String keywords = RandomTestUtil.randomString();
 
-		Country country1 = _addCountry("a1", "a11");
-		Country country2 = _addCountry("a2", "a22");
+		Country country1 = _addCountry();
+		Country country2 = _addCountry();
 
 		Region region1 = _addRegion(
 			true, country1.getCountryId(), RandomTestUtil.randomString());
@@ -296,16 +297,13 @@ public class RegionLocalServiceTest {
 	}
 
 	private Country _addCountry() throws Exception {
-		return _addCountry("aa", "aaa");
-	}
-
-	private Country _addCountry(String a2, String a3) throws Exception {
 		return _countryLocalService.addCountry(
-			null, a2, a3, true, RandomTestUtil.randomBoolean(),
+			null, CountryTestUtil.randomA2(TestPropsValues.getCompanyId()),
+			CountryTestUtil.randomA3(TestPropsValues.getCompanyId()), true,
+			RandomTestUtil.randomBoolean(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-			RandomTestUtil.randomString(), RandomTestUtil.randomDouble(),
+			RandomTestUtil.randomDouble(), RandomTestUtil.randomBoolean(),
 			RandomTestUtil.randomBoolean(), RandomTestUtil.randomBoolean(),
-			RandomTestUtil.randomBoolean(),
 			ServiceContextTestUtil.getServiceContext());
 	}
 

@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.service.OrganizationLocalService;
 import com.liferay.portal.kernel.service.RegionLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.rule.DataGuard;
+import com.liferay.portal.kernel.test.util.CountryTestUtil;
 import com.liferay.portal.kernel.test.util.OrganizationTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -152,13 +153,13 @@ public class CountryLocalServiceTest {
 	@Test
 	public void testSearchCountries() throws Exception {
 		Country country1 = _addCountry(
-			"a1", "a11", true, RandomTestUtil.randomString() + "_a11");
+			true, RandomTestUtil.randomString() + "_a11");
 
 		String keywords = RandomTestUtil.randomString();
 
-		Country country2 = _addCountry("a2", "a22", true, keywords + "_a22");
-		Country country3 = _addCountry("a3", "a33", true, keywords + "_a33");
-		Country country4 = _addCountry("a4", "a44", false, keywords + "_a44");
+		Country country2 = _addCountry(true, keywords + "_a22");
+		Country country3 = _addCountry(true, keywords + "_a33");
+		Country country4 = _addCountry(false, keywords + "_a44");
 
 		_testSearchCountries(keywords, true, country2, country3);
 		_testSearchCountries(keywords, false, country4);
@@ -174,8 +175,8 @@ public class CountryLocalServiceTest {
 
 	@Test
 	public void testSearchCountriesByISOCodes() throws Exception {
-		String a2 = "a1";
-		String a3 = "a11";
+		String a2 = CountryTestUtil.randomA2(TestPropsValues.getCompanyId());
+		String a3 = CountryTestUtil.randomA3(TestPropsValues.getCompanyId());
 		String number = "aaa";
 
 		Country country = _addCountry(
@@ -191,19 +192,13 @@ public class CountryLocalServiceTest {
 		String keywords = RandomTestUtil.randomString();
 
 		List<Country> expectedCountries = Arrays.asList(
-			_addCountry(
-				"a1", "a11", true, keywords + RandomTestUtil.randomString()),
-			_addCountry(
-				"a2", "a22", true, keywords + RandomTestUtil.randomString()),
-			_addCountry(
-				"a3", "a33", true, keywords + RandomTestUtil.randomString()),
-			_addCountry(
-				"a4", "a44", true, keywords + RandomTestUtil.randomString()),
-			_addCountry(
-				"a5", "a55", true, keywords + RandomTestUtil.randomString()));
+			_addCountry(true, keywords + RandomTestUtil.randomString()),
+			_addCountry(true, keywords + RandomTestUtil.randomString()),
+			_addCountry(true, keywords + RandomTestUtil.randomString()),
+			_addCountry(true, keywords + RandomTestUtil.randomString()),
+			_addCountry(true, keywords + RandomTestUtil.randomString()));
 
-		_addCountry(
-			"a6", "a66", false, keywords + RandomTestUtil.randomString());
+		_addCountry(false, keywords + RandomTestUtil.randomString());
 
 		_assertSearchCountriesPaginationSort(
 			expectedCountries, keywords,
@@ -259,8 +254,7 @@ public class CountryLocalServiceTest {
 
 	@Test
 	public void testUpdateCountryWhenStatusIsEmpty() throws Exception {
-		Country country = _addCountry(
-			"aa", "aaa", false, RandomTestUtil.randomString());
+		Country country = _addCountry(false, RandomTestUtil.randomString());
 
 		country.setStatus(WorkflowConstants.STATUS_EMPTY);
 
@@ -282,23 +276,25 @@ public class CountryLocalServiceTest {
 		_countryLocalService.deleteCountry(country);
 	}
 
+	private Country _addCountry(boolean active, String name) throws Exception {
+		return _addCountry(
+			CountryTestUtil.randomA2(TestPropsValues.getCompanyId()),
+			CountryTestUtil.randomA3(TestPropsValues.getCompanyId()), active,
+			name, RandomTestUtil.randomString());
+	}
+
 	private Country _addCountry(
 			boolean billingAllowed, String number, double position,
 			boolean shippingAllowed, boolean subjectToVAT, boolean zipRequired)
 		throws Exception {
 
 		return _countryLocalService.addCountry(
-			null, "aa", "aaa", true, billingAllowed,
-			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-			number, position, shippingAllowed, subjectToVAT, zipRequired,
+			null, CountryTestUtil.randomA2(TestPropsValues.getCompanyId()),
+			CountryTestUtil.randomA3(TestPropsValues.getCompanyId()), true,
+			billingAllowed, RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), number, position, shippingAllowed,
+			subjectToVAT, zipRequired,
 			ServiceContextTestUtil.getServiceContext());
-	}
-
-	private Country _addCountry(
-			String a2, String a3, boolean active, String name)
-		throws Exception {
-
-		return _addCountry(a2, a3, active, name, RandomTestUtil.randomString());
 	}
 
 	private Country _addCountry(
