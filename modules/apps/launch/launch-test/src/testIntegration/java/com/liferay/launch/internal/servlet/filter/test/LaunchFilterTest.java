@@ -6,10 +6,6 @@
 package com.liferay.launch.internal.servlet.filter.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.journal.constants.JournalFolderConstants;
-import com.liferay.journal.model.JournalArticle;
-import com.liferay.journal.service.JournalArticleLocalService;
-import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
@@ -96,19 +92,6 @@ public class LaunchFilterTest {
 				"name", RandomTestUtil.randomString()
 			).build());
 
-		_journalArticle = JournalTestUtil.addArticle(
-			_group.getGroupId(),
-			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID);
-
-		_launchDraftTitle = RandomTestUtil.randomString();
-
-		_updateLaunchDraftJournalArticle(
-			_addLaunchEntryDraftId(
-				JournalArticle.class.getName(),
-				_journalArticle.getResourcePrimKey(),
-				String.valueOf(_journalArticle.getVersion())),
-			_launchDraftTitle);
-
 		_layout1 = LayoutTestUtil.addTypeContentPublishedLayout(
 			_group, RandomTestUtil.randomString(),
 			WorkflowConstants.STATUS_APPROVED);
@@ -143,7 +126,7 @@ public class LaunchFilterTest {
 		long launchSetId = _launchSetObjectEntry.getObjectEntryId();
 
 		_assertProcessFilter(
-			_launchDraftTitle, launchSetId, _launchDraftLayout1.getPlid(),
+			launchSetId, _launchDraftLayout1.getPlid(),
 			_launchDraftLayout2.getPlid(), null,
 			HashMapBuilder.put(
 				"X-Liferay-Launch-Id", String.valueOf(launchSetId)
@@ -154,10 +137,8 @@ public class LaunchFilterTest {
 
 		// Launch mode header without a launch set ID
 
-		String title = _journalArticle.getTitle(LocaleUtil.getSiteDefault());
-
 		_assertProcessFilter(
-			title, 0, _layout1.getPlid(), _layout2.getPlid(), null,
+			0, _layout1.getPlid(), _layout2.getPlid(), null,
 			HashMapBuilder.put(
 				"X-Liferay-Launch-Mode", Constants.EDIT
 			).build(),
@@ -166,7 +147,7 @@ public class LaunchFilterTest {
 		// Launch set ID parameter
 
 		_assertProcessFilter(
-			_launchDraftTitle, launchSetId, _launchDraftLayout1.getPlid(),
+			launchSetId, _launchDraftLayout1.getPlid(),
 			_launchDraftLayout2.getPlid(), null, Collections.emptyMap(),
 			HashMapBuilder.put(
 				"p_launch_id", String.valueOf(launchSetId)
@@ -178,7 +159,7 @@ public class LaunchFilterTest {
 		// Launch set ID parameter forwarded
 
 		_assertProcessFilter(
-			_launchDraftTitle, launchSetId, _launchDraftLayout1.getPlid(),
+			launchSetId, _launchDraftLayout1.getPlid(),
 			_launchDraftLayout2.getPlid(), Collections.emptyMap(),
 			Collections.emptyMap(),
 			HashMapBuilder.put(
@@ -191,7 +172,7 @@ public class LaunchFilterTest {
 		// Launch set ID parameter of a missing launch set
 
 		_assertProcessFilter(
-			title, 0, _layout1.getPlid(), _layout2.getPlid(), null,
+			0, _layout1.getPlid(), _layout2.getPlid(), null,
 			Collections.emptyMap(),
 			HashMapBuilder.put(
 				"p_launch_id", String.valueOf(RandomTestUtil.randomLong())
@@ -211,7 +192,7 @@ public class LaunchFilterTest {
 			WorkflowConstants.STATUS_APPROVED, serviceContext);
 
 		_assertProcessFilter(
-			title, 0, _layout1.getPlid(), _layout2.getPlid(), null,
+			0, _layout1.getPlid(), _layout2.getPlid(), null,
 			Collections.emptyMap(),
 			HashMapBuilder.put(
 				"p_launch_id", String.valueOf(launchSetId)
@@ -229,7 +210,7 @@ public class LaunchFilterTest {
 		_user = UserTestUtil.addUser();
 
 		_assertProcessFilter(
-			title, 0, _layout1.getPlid(), _layout2.getPlid(), null,
+			0, _layout1.getPlid(), _layout2.getPlid(), null,
 			Collections.emptyMap(),
 			HashMapBuilder.put(
 				"p_launch_id", String.valueOf(launchSetId)
@@ -268,7 +249,7 @@ public class LaunchFilterTest {
 		String portletId = RandomTestUtil.randomString();
 
 		_assertProcessFilter(
-			title, 0, _layout1.getPlid(), _layout2.getPlid(), null,
+			0, _layout1.getPlid(), _layout2.getPlid(), null,
 			Collections.emptyMap(),
 			HashMapBuilder.put(
 				"_" + portletId + "_p_launch_id", String.valueOf(launchSetId)
@@ -426,10 +407,10 @@ public class LaunchFilterTest {
 	}
 
 	private void _assertProcessFilter(
-			String expectedJournalArticleTitle, long expectedLaunchSetId,
-			long expectedLayout1Plid, long expectedLayout2Plid,
-			Map<String, String> forwardParameters, Map<String, String> headers,
-			Map<String, String> parameters, User user)
+			long expectedLaunchSetId, long expectedLayout1Plid,
+			long expectedLayout2Plid, Map<String, String> forwardParameters,
+			Map<String, String> headers, Map<String, String> parameters,
+			User user)
 		throws Exception {
 
 		MockHttpServletRequest mockHttpServletRequest =
@@ -443,32 +424,26 @@ public class LaunchFilterTest {
 
 		mockHttpServletRequest.setParameters(parameters);
 
-		Object[] values = new Object[5];
+		Object[] values = new Object[4];
 
 		FilterChain filterChain = (servletRequest, servletResponse) -> {
-			JournalArticle journalArticle =
-				_journalArticleLocalService.fetchLatestArticle(
-					_journalArticle.getResourcePrimKey());
-
-			values[0] = journalArticle.getTitle(LocaleUtil.getSiteDefault());
-
 			try {
 				Layout layout1 = _layoutLocalService.getLayout(
 					_layout1.getPlid());
 
-				values[1] = layout1.getPlid();
+				values[0] = layout1.getPlid();
 
 				Layout layout2 = _layoutLocalService.getLayout(
 					_layout2.getPlid());
 
-				values[2] = layout2.getPlid();
+				values[1] = layout2.getPlid();
 			}
 			catch (PortalException portalException) {
 				throw new ServletException(portalException);
 			}
 
-			values[3] = LaunchThreadLocal.getLaunchSetId();
-			values[4] = LaunchThreadLocal.getMode();
+			values[2] = LaunchThreadLocal.getLaunchSetId();
+			values[3] = LaunchThreadLocal.getMode();
 		};
 
 		if (forwardParameters == null) {
@@ -487,17 +462,16 @@ public class LaunchFilterTest {
 				});
 		}
 
-		Assert.assertEquals(expectedJournalArticleTitle, values[0]);
-		Assert.assertEquals(expectedLayout1Plid, values[1]);
-		Assert.assertEquals(expectedLayout2Plid, values[2]);
+		Assert.assertEquals(expectedLayout1Plid, values[0]);
+		Assert.assertEquals(expectedLayout2Plid, values[1]);
 
 		if (expectedLaunchSetId > 0) {
-			Assert.assertEquals(expectedLaunchSetId, values[3]);
-			Assert.assertEquals(LaunchThreadLocal.Mode.EDIT, values[4]);
+			Assert.assertEquals(expectedLaunchSetId, values[2]);
+			Assert.assertEquals(LaunchThreadLocal.Mode.EDIT, values[3]);
 		}
 		else {
-			Assert.assertEquals(-1L, values[3]);
-			Assert.assertNull(values[4]);
+			Assert.assertEquals(-1L, values[2]);
+			Assert.assertNull(values[3]);
 		}
 
 		Assert.assertNull(PreviewableResolverUtil.getPreviewId());
@@ -539,46 +513,14 @@ public class LaunchFilterTest {
 		Assert.assertNull(PreviewableResolverUtil.getPreviewId());
 	}
 
-	private void _updateLaunchDraftJournalArticle(long draftId, String title)
-		throws Exception {
-
-		JournalArticle launchDraftJournalArticle =
-			_journalArticleLocalService.getLatestArticle(
-				draftId, WorkflowConstants.STATUS_ANY, false);
-
-		ServiceContext serviceContext =
-			ServiceContextTestUtil.getServiceContext(
-				_group.getGroupId(), TestPropsValues.getUserId());
-
-		serviceContext.setWorkflowAction(WorkflowConstants.ACTION_SAVE_DRAFT);
-
-		_journalArticleLocalService.updateArticle(
-			TestPropsValues.getUserId(), launchDraftJournalArticle.getGroupId(),
-			launchDraftJournalArticle.getFolderId(),
-			launchDraftJournalArticle.getArticleId(),
-			launchDraftJournalArticle.getVersion(),
-			HashMapBuilder.put(
-				LocaleUtil.getSiteDefault(), title
-			).build(),
-			launchDraftJournalArticle.getDescriptionMap(),
-			launchDraftJournalArticle.getContent(),
-			launchDraftJournalArticle.getLayoutUuid(), serviceContext);
-	}
-
 	@Inject(filter = "servlet-filter-name=Launch Filter")
 	private Filter _filter;
 
 	@DeleteAfterTestRun
 	private Group _group;
 
-	private JournalArticle _journalArticle;
-
-	@Inject
-	private JournalArticleLocalService _journalArticleLocalService;
-
 	private Layout _launchDraftLayout1;
 	private Layout _launchDraftLayout2;
-	private String _launchDraftTitle;
 	private ObjectEntry _launchSetObjectEntry;
 	private Layout _layout1;
 	private Layout _layout2;
