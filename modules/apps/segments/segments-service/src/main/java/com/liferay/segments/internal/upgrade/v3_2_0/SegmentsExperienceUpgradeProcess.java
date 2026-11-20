@@ -28,25 +28,11 @@ public class SegmentsExperienceUpgradeProcess extends UpgradeProcess {
 
 	@Override
 	protected void doUpgrade() throws Exception {
-		String fragmentEntryLinkColumnName = "plid";
+		_addDraftLayoutSegmentsExperiences();
+		_updateSegmentsExperienceIds();
+	}
 
-		if (!hasColumn("FragmentEntryLink", "plid")) {
-			fragmentEntryLinkColumnName = "classPK";
-		}
-
-		boolean hasFragmentEntryLinkCTCollectionId = hasColumn(
-			"FragmentEntryLink", "ctCollectionId");
-		boolean hasFragmentEntryLinkSegmentsExperienceId = hasColumn(
-			"FragmentEntryLink", "segmentsExperienceId");
-		boolean hasLayoutPageTemplateStructureRelCTCollectionId = hasColumn(
-			"LayoutPageTemplateStructureRel", "ctCollectionId");
-
-		String layoutPageTemplateStructureColumnName = "plid";
-
-		if (!hasColumn("LayoutPageTemplateStructure", "plid")) {
-			layoutPageTemplateStructureColumnName = "classPK";
-		}
-
+	private void _addDraftLayoutSegmentsExperiences() throws Exception {
 		try (PreparedStatement preparedStatement1 = connection.prepareStatement(
 				"select * from SegmentsExperience");
 			PreparedStatement preparedStatement2 =
@@ -61,40 +47,27 @@ public class SegmentsExperienceUpgradeProcess extends UpgradeProcess {
 						"active_, typeSettings, lastPublishDate) values (?, ",
 						"?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ",
 						"?)"));
-			PreparedStatement preparedStatement3 =
-				AutoBatchPreparedStatementUtil.concurrentAutoBatch(
-					connection,
-					_getUpdateFragmentEntryLinkSQL(
-						fragmentEntryLinkColumnName,
-						hasFragmentEntryLinkCTCollectionId));
-			PreparedStatement preparedStatement4 =
-				AutoBatchPreparedStatementUtil.concurrentAutoBatch(
-					connection,
-					_getUpdateLayoutPageTemplateStructureRelSQL(
-						layoutPageTemplateStructureColumnName,
-						hasLayoutPageTemplateStructureRelCTCollectionId));
 			ResultSet resultSet = preparedStatement1.executeQuery()) {
 
 			while (resultSet.next()) {
-				Layout layout = _layoutLocalService.fetchLayout(
+				Layout draftLayout = _fetchDraftLayout(
 					resultSet.getLong("plid"));
 
-				if (layout == null) {
+				if (draftLayout == null) {
 					continue;
 				}
-
-				Layout draftLayout = layout.fetchDraftLayout();
 
 				long ctCollectionId = resultSet.getLong("ctCollectionId");
 				long groupId = resultSet.getLong("groupId");
 				String segmentsExperienceKey = resultSet.getString(
 					"segmentsExperienceKey");
 
-				if ((draftLayout == null) ||
-					_existDraftLayoutSegmentsExperience(
+				long draftLayoutSegmentsExperienceId =
+					_getDraftLayoutSegmentsExperienceId(
 						ctCollectionId, groupId, segmentsExperienceKey,
-						draftLayout.getPlid())) {
+						draftLayout.getPlid());
 
+				if (draftLayoutSegmentsExperienceId > 0) {
 					continue;
 				}
 
@@ -106,10 +79,7 @@ public class SegmentsExperienceUpgradeProcess extends UpgradeProcess {
 				preparedStatement2.setString(3, uuid);
 				preparedStatement2.setString(4, uuid);
 
-				long draftLayoutSegmentsExperienceId = increment();
-
-				preparedStatement2.setLong(5, draftLayoutSegmentsExperienceId);
-
+				preparedStatement2.setLong(5, increment());
 				preparedStatement2.setLong(6, groupId);
 				preparedStatement2.setLong(7, resultSet.getLong("companyId"));
 				preparedStatement2.setLong(8, resultSet.getLong("userId"));
@@ -132,59 +102,32 @@ public class SegmentsExperienceUpgradeProcess extends UpgradeProcess {
 					19, resultSet.getDate("lastPublishDate"));
 
 				preparedStatement2.addBatch();
-
-				long segmentsExperienceId = resultSet.getLong(
-					"segmentsExperienceId");
-
-				int index = 1;
-
-				if (hasFragmentEntryLinkSegmentsExperienceId) {
-					preparedStatement3.setLong(
-						index++, draftLayoutSegmentsExperienceId);
-
-					if (hasFragmentEntryLinkCTCollectionId) {
-						preparedStatement3.setLong(index++, ctCollectionId);
-					}
-
-					preparedStatement3.setLong(index++, segmentsExperienceId);
-					preparedStatement3.setLong(index, draftLayout.getPlid());
-
-					preparedStatement3.addBatch();
-
-					index = 1;
-				}
-
-				preparedStatement4.setLong(
-					index++, draftLayoutSegmentsExperienceId);
-
-				if (hasLayoutPageTemplateStructureRelCTCollectionId) {
-					preparedStatement4.setLong(index++, ctCollectionId);
-				}
-
-				preparedStatement4.setLong(index++, segmentsExperienceId);
-				preparedStatement4.setLong(index, draftLayout.getPlid());
-
-				preparedStatement4.addBatch();
 			}
 
 			preparedStatement2.executeBatch();
-
-			preparedStatement3.executeBatch();
-
-			preparedStatement4.executeBatch();
 		}
 	}
 
-	private boolean _existDraftLayoutSegmentsExperience(
+	private Layout _fetchDraftLayout(long plid) {
+		Layout layout = _layoutLocalService.fetchLayout(plid);
+
+		if (layout == null) {
+			return null;
+		}
+
+		return layout.fetchDraftLayout();
+	}
+
+	private long _getDraftLayoutSegmentsExperienceId(
 			long ctCollectionId, long groupId, String segmentsExperienceKey,
 			long plid)
 		throws Exception {
 
 		try (PreparedStatement preparedStatement = connection.prepareStatement(
 				StringBundler.concat(
-					"select 1 from SegmentsExperience where ctCollectionId = ",
-					"? and groupId = ? and segmentsExperienceKey = ? and plid ",
-					"= ?"))) {
+					"select segmentsExperienceId from SegmentsExperience ",
+					"where ctCollectionId = ? and groupId = ? and ",
+					"segmentsExperienceKey = ? and plid = ?"))) {
 
 			preparedStatement.setLong(1, ctCollectionId);
 			preparedStatement.setLong(2, groupId);
@@ -192,7 +135,11 @@ public class SegmentsExperienceUpgradeProcess extends UpgradeProcess {
 			preparedStatement.setLong(4, plid);
 
 			try (ResultSet resultSet = preparedStatement.executeQuery()) {
-				return resultSet.next();
+				if (resultSet.next()) {
+					return resultSet.getLong("segmentsExperienceId");
+				}
+
+				return 0;
 			}
 		}
 	}
@@ -203,7 +150,7 @@ public class SegmentsExperienceUpgradeProcess extends UpgradeProcess {
 		StringBundler sb = new StringBundler(6);
 
 		sb.append("update FragmentEntryLink set segmentsExperienceId = ? ");
-		sb.append("where ");
+		sb.append("where groupId = ? and ");
 
 		if (hasCTCollectionId) {
 			sb.append("ctCollectionId = ? and ");
@@ -231,11 +178,111 @@ public class SegmentsExperienceUpgradeProcess extends UpgradeProcess {
 		sb.append("segmentsExperienceId = ? and ");
 		sb.append("layoutPageTemplateStructureId in (select ");
 		sb.append("layoutPageTemplateStructureId from ");
-		sb.append("LayoutPageTemplateStructure where ");
+		sb.append("LayoutPageTemplateStructure where groupId = ? and ");
 		sb.append(columnName);
 		sb.append(" = ?)");
 
 		return sb.toString();
+	}
+
+	private void _updateSegmentsExperienceIds() throws Exception {
+		String fragmentEntryLinkColumnName = "plid";
+
+		if (!hasColumn("FragmentEntryLink", "plid")) {
+			fragmentEntryLinkColumnName = "classPK";
+		}
+
+		boolean hasFragmentEntryLinkCTCollectionId = hasColumn(
+			"FragmentEntryLink", "ctCollectionId");
+		boolean hasFragmentEntryLinkSegmentsExperienceId = hasColumn(
+			"FragmentEntryLink", "segmentsExperienceId");
+		boolean hasLayoutPageTemplateStructureRelCTCollectionId = hasColumn(
+			"LayoutPageTemplateStructureRel", "ctCollectionId");
+
+		String layoutPageTemplateStructureColumnName = "plid";
+
+		if (!hasColumn("LayoutPageTemplateStructure", "plid")) {
+			layoutPageTemplateStructureColumnName = "classPK";
+		}
+
+		try (PreparedStatement preparedStatement1 = connection.prepareStatement(
+				"select * from SegmentsExperience");
+			PreparedStatement preparedStatement2 =
+				AutoBatchPreparedStatementUtil.concurrentAutoBatch(
+					connection,
+					_getUpdateFragmentEntryLinkSQL(
+						fragmentEntryLinkColumnName,
+						hasFragmentEntryLinkCTCollectionId));
+			PreparedStatement preparedStatement3 =
+				AutoBatchPreparedStatementUtil.concurrentAutoBatch(
+					connection,
+					_getUpdateLayoutPageTemplateStructureRelSQL(
+						layoutPageTemplateStructureColumnName,
+						hasLayoutPageTemplateStructureRelCTCollectionId));
+
+			ResultSet resultSet = preparedStatement1.executeQuery()) {
+
+			while (resultSet.next()) {
+				Layout draftLayout = _fetchDraftLayout(
+					resultSet.getLong("plid"));
+
+				if (draftLayout == null) {
+					continue;
+				}
+
+				long ctCollectionId = resultSet.getLong("ctCollectionId");
+				long groupId = resultSet.getLong("groupId");
+
+				long draftLayoutSegmentsExperienceId =
+					_getDraftLayoutSegmentsExperienceId(
+						ctCollectionId, groupId,
+						resultSet.getString("segmentsExperienceKey"),
+						draftLayout.getPlid());
+
+				if (draftLayoutSegmentsExperienceId <= 0) {
+					continue;
+				}
+
+				long segmentsExperienceId = resultSet.getLong(
+					"segmentsExperienceId");
+
+				int index = 1;
+
+				if (hasFragmentEntryLinkSegmentsExperienceId) {
+					preparedStatement2.setLong(
+						index++, draftLayoutSegmentsExperienceId);
+					preparedStatement2.setLong(index++, groupId);
+
+					if (hasFragmentEntryLinkCTCollectionId) {
+						preparedStatement2.setLong(index++, ctCollectionId);
+					}
+
+					preparedStatement2.setLong(index++, segmentsExperienceId);
+					preparedStatement2.setLong(index, draftLayout.getPlid());
+
+					preparedStatement2.addBatch();
+
+					index = 1;
+				}
+
+				preparedStatement3.setLong(
+					index++, draftLayoutSegmentsExperienceId);
+
+				if (hasLayoutPageTemplateStructureRelCTCollectionId) {
+					preparedStatement3.setLong(index++, ctCollectionId);
+				}
+
+				preparedStatement3.setLong(index++, segmentsExperienceId);
+				preparedStatement3.setLong(index++, groupId);
+				preparedStatement3.setLong(index, draftLayout.getPlid());
+
+				preparedStatement3.addBatch();
+			}
+
+			preparedStatement2.executeBatch();
+
+			preparedStatement3.executeBatch();
+		}
 	}
 
 	private final LayoutLocalService _layoutLocalService;
