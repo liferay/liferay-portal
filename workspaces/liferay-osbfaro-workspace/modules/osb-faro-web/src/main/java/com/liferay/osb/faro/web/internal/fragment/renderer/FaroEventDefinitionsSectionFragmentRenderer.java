@@ -22,7 +22,7 @@ import org.osgi.service.component.annotations.Component;
  */
 @Component(service = FragmentRenderer.class)
 public class FaroEventDefinitionsSectionFragmentRenderer
-	extends BaseSettingsSectionFragmentRenderer {
+	extends BaseSectionFragmentRenderer {
 
 	@Override
 	protected String getLabelKey() {

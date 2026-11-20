@@ -121,9 +121,6 @@ public abstract class BaseFragmentRenderer implements FragmentRenderer {
 				).put(
 					"params", getParams(httpServletRequest)
 				).put(
-					"sidebarNavigationItems",
-					() -> getSidebarNavigationItems(httpServletRequest)
-				).put(
 					"signOutURL", themeDisplay.getURLSignOut()
 				).build());
 			componentTag.setServletContext(servletContext);
@@ -187,13 +184,6 @@ public abstract class BaseFragmentRenderer implements FragmentRenderer {
 		).put(
 			"sortOrder", ParamUtil.getString(httpServletRequest, "sortOrder")
 		).build();
-	}
-
-	protected NavigationItemList getSidebarNavigationItems(
-			HttpServletRequest httpServletRequest)
-		throws Exception {
-
-		return null;
 	}
 
 	@Reference

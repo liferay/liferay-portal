@@ -14,7 +14,7 @@ import org.osgi.service.component.annotations.Component;
  */
 @Component(service = FragmentRenderer.class)
 public class FaroBehaviorsSectionFragmentRenderer
-	extends BaseSettingsSectionFragmentRenderer {
+	extends BaseSectionFragmentRenderer {
 
 	@Override
 	protected String getLabelKey() {
