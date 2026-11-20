@@ -178,14 +178,14 @@ public class RestrictedLiferayObjectWrapper extends LiferayObjectWrapper {
 			return liferayFreeMarkerStringModel;
 		}
 
-		String className = clazz.getName();
-
-		if (_serviceProxyClassNames.contains(className)) {
-			return _SERVICE_PROXY_STRING_MODEL_FACTORY.create(object, this);
-		}
-
 		if (object instanceof BaseLocalService ||
 			object instanceof BaseService) {
+
+			String className = clazz.getName();
+
+			if (_serviceProxyClassNames.contains(className)) {
+				return _SERVICE_PROXY_STRING_MODEL_FACTORY.create(object, this);
+			}
 
 			AopInvocationHandler aopInvocationHandler =
 				ProxyUtil.fetchInvocationHandler(
