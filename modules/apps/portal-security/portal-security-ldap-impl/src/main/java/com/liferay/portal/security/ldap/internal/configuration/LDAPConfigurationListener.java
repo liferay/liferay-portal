@@ -5,22 +5,27 @@
 
 package com.liferay.portal.security.ldap.internal.configuration;
 
-import com.liferay.osgi.service.tracker.collections.EagerServiceTrackerCustomizer;
-import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
-import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.security.ldap.authenticator.configuration.LDAPAuthConfiguration;
+import com.liferay.portal.security.ldap.configuration.CompanyScopedConfigurationProvider;
 import com.liferay.portal.security.ldap.configuration.ConfigurationProvider;
+import com.liferay.portal.security.ldap.configuration.SystemLDAPConfiguration;
+import com.liferay.portal.security.ldap.exportimport.configuration.LDAPExportConfiguration;
+import com.liferay.portal.security.ldap.exportimport.configuration.LDAPImportConfiguration;
 
 import java.io.IOException;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
-import org.osgi.service.cm.Configuration;
+import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.cm.ConfigurationEvent;
 import org.osgi.service.cm.ConfigurationListener;
@@ -32,7 +37,7 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Michael C. Han
  */
-@Component(service = ConfigurationListener.class)
+@Component(service = {})
 public class LDAPConfigurationListener implements ConfigurationListener {
 
 	@Override
@@ -49,7 +54,7 @@ public class LDAPConfigurationListener implements ConfigurationListener {
 		}
 
 		ConfigurationProvider<?> configurationProvider =
-			_serviceTrackerMap.getService(factoryPid);
+			_configurationProviders.get(factoryPid);
 
 		if (configurationProvider == null) {
 			return;
@@ -75,98 +80,62 @@ public class LDAPConfigurationListener implements ConfigurationListener {
 
 	@Activate
 	protected void activate(BundleContext bundleContext) {
-		_serviceTrackerMap = ServiceTrackerMapFactory.openSingleValueMap(
+		_serviceRegistrations.add(
+			bundleContext.registerService(
+				ConfigurationListener.class, this, null));
+
+		_register(
 			bundleContext,
-			(Class<ConfigurationProvider<?>>)
-				(Class<?>)ConfigurationProvider.class,
-			null,
-			(serviceReference, emitter) -> {
-				String factoryPid = (String)serviceReference.getProperty(
-					"factoryPid");
-
-				if (Validator.isNull(factoryPid)) {
-					throw new IllegalArgumentException(
-						"No factory PID specified for configuration provider " +
-							serviceReference);
-				}
-
-				emitter.emit(factoryPid);
-			},
-			new LDAPConfigurationListenerServiceTrackerCustomizer(
-				bundleContext));
+			new CompanyScopedConfigurationProvider<>(
+				_configurationAdmin, LDAPAuthConfiguration.class));
+		_register(
+			bundleContext,
+			new CompanyScopedConfigurationProvider<>(
+				_configurationAdmin, LDAPExportConfiguration.class));
+		_register(
+			bundleContext,
+			new CompanyScopedConfigurationProvider<>(
+				_configurationAdmin, LDAPImportConfiguration.class));
+		_register(
+			bundleContext,
+			new CompanyScopedConfigurationProvider<>(
+				_configurationAdmin, SystemLDAPConfiguration.class));
+		_register(
+			bundleContext,
+			new LDAPServerConfigurationProviderImpl(_configurationAdmin));
 	}
 
 	@Deactivate
 	protected void deactivate() {
-		_serviceTrackerMap.close();
+		for (ServiceRegistration<?> serviceRegistration :
+				_serviceRegistrations) {
+
+			serviceRegistration.unregister();
+		}
 	}
 
-	private static final Log _log = LogFactoryUtil.getLog(
-		LDAPConfigurationListener.class);
+	private void _register(
+		BundleContext bundleContext,
+		ConfigurationProvider<?> configurationProvider) {
+
+		Class<?> metatype = configurationProvider.getMetatype();
+
+		String factoryPid = metatype.getName();
+
+		_configurationProviders.put(factoryPid, configurationProvider);
+
+		_serviceRegistrations.add(
+			bundleContext.registerService(
+				ConfigurationProvider.class.getName(), configurationProvider,
+				MapUtil.singletonDictionary("factoryPid", factoryPid)));
+	}
 
 	@Reference
 	private ConfigurationAdmin _configurationAdmin;
 
-	private ServiceTrackerMap<String, ConfigurationProvider<?>>
-		_serviceTrackerMap;
-
-	private class LDAPConfigurationListenerServiceTrackerCustomizer
-		implements EagerServiceTrackerCustomizer
-			<ConfigurationProvider<?>, ConfigurationProvider<?>> {
-
-		public LDAPConfigurationListenerServiceTrackerCustomizer(
-			BundleContext bundleContext) {
-
-			_bundleContext = bundleContext;
-		}
-
-		@Override
-		public ConfigurationProvider<?> addingService(
-			ServiceReference<ConfigurationProvider<?>> serviceReference) {
-
-			ConfigurationProvider<?> configurationProvider =
-				_bundleContext.getService(serviceReference);
-
-			String factoryPid = (String)serviceReference.getProperty(
-				"factoryPid");
-
-			try {
-				Configuration[] configurations =
-					_configurationAdmin.listConfigurations(
-						"(service.factoryPid=" + factoryPid + "*)");
-
-				if (configurations != null) {
-					for (Configuration configuration : configurations) {
-						configurationProvider.registerConfiguration(
-							configuration);
-					}
-				}
-			}
-			catch (Exception exception) {
-				if (_log.isWarnEnabled()) {
-					_log.warn("Unable to register configurations", exception);
-				}
-			}
-
-			return configurationProvider;
-		}
-
-		@Override
-		public void modifiedService(
-			ServiceReference<ConfigurationProvider<?>> serviceReference,
-			ConfigurationProvider<?> service) {
-		}
-
-		@Override
-		public void removedService(
-			ServiceReference<ConfigurationProvider<?>> serviceReference,
-			ConfigurationProvider<?> service) {
-
-			_bundleContext.ungetService(serviceReference);
-		}
-
-		private final BundleContext _bundleContext;
-
-	}
+	private final Map<String, ConfigurationProvider<?>>
+		_configurationProviders = new HashMap<>();
+	private final List<ServiceRegistration<?>> _serviceRegistrations =
+		new ArrayList<>();
 
 }

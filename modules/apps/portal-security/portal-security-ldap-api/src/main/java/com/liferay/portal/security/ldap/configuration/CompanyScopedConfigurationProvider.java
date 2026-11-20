@@ -30,10 +30,21 @@ import org.osgi.service.cm.ConfigurationAdmin;
 /**
  * @author Michael C. Han
  */
-public abstract class CompanyScopedConfigurationProvider
+public class CompanyScopedConfigurationProvider
 	<T extends CompanyScopedConfiguration>
 		extends BaseConfigurationProvider<T>
 		implements ConfigurationProvider<T> {
+
+	public CompanyScopedConfigurationProvider(
+		ConfigurationAdmin configurationAdmin, Class<T> metatype) {
+
+		super(configurationAdmin);
+
+		_metatype = metatype;
+
+		_defaultConfiguration = ConfigurableUtil.createConfigurable(
+			metatype, Collections.emptyMap());
+	}
 
 	@Override
 	public boolean delete(long companyId) {
@@ -178,6 +189,11 @@ public abstract class CompanyScopedConfigurationProvider
 	}
 
 	@Override
+	public Class<T> getMetatype() {
+		return _metatype;
+	}
+
+	@Override
 	public synchronized void registerConfiguration(
 		Configuration configuration) {
 
@@ -223,8 +239,6 @@ public abstract class CompanyScopedConfigurationProvider
 			Configuration configuration = null;
 
 			if (objectValuePair == null) {
-				ConfigurationAdmin configurationAdmin = getConfigurationAdmin();
-
 				configuration = configurationAdmin.createFactoryConfiguration(
 					getMetatypeId(), StringPool.QUESTION);
 			}
@@ -255,15 +269,13 @@ public abstract class CompanyScopedConfigurationProvider
 		updateProperties(companyId, properties);
 	}
 
-	protected abstract ConfigurationAdmin getConfigurationAdmin();
-
 	private static final Log _log = LogFactoryUtil.getLog(
 		CompanyScopedConfigurationProvider.class);
 
 	private final Map<Long, ObjectValuePair<Configuration, T>> _configurations =
 		new HashMap<>();
-	private final T _defaultConfiguration = ConfigurableUtil.createConfigurable(
-		getMetatype(), Collections.emptyMap());
+	private final T _defaultConfiguration;
+	private final Class<T> _metatype;
 	private final Map<String, Long> _pidCompanyConfigurations = new HashMap<>();
 
 }
