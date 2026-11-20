@@ -277,51 +277,45 @@ if (hints != null) {
 					var checkbox = A.one('#<portlet:namespace /><%= formName + fieldParam %>');
 
 					if (checkbox) {
-						checkbox.once(
-							'click',
-							function () {
-								Liferay.component('<portlet:namespace /><%= fieldParam %>DatePicker');
-							}
-						);
+						checkbox.once('click', function () {
+							Liferay.component('<portlet:namespace /><%= fieldParam %>DatePicker');
+						});
 
 						var form = document.<portlet:namespace /><%= formName %>;
 
-						checkbox.on(
-							'click',
-							function(event) {
-								var checked = checkbox.get('checked');
+						checkbox.on('click', function (event) {
+							var checked = checkbox.get('checked');
 
-								var elements = [
-									Liferay.Util.getFormElement(form, '<%= fieldParam %>'),
-									Liferay.Util.getFormElement(form, '<%= fieldParam %>Day'),
-									Liferay.Util.getFormElement(form, '<%= fieldParam %>Month'),
-									Liferay.Util.getFormElement(form, '<%= fieldParam %>Year'),
-									Liferay.Util.getFormElement(form, '<%= fieldParam %>Time'),
-									Liferay.Util.getFormElement(form, '<%= fieldParam %>Hour'),
-									Liferay.Util.getFormElement(form, '<%= fieldParam %>Minute'),
-									Liferay.Util.getFormElement(form, '<%= fieldParam %>AmPm')
-								].filter(Boolean);
+							var elements = [
+								Liferay.Util.getFormElement(form, '<%= fieldParam %>'),
+								Liferay.Util.getFormElement(form, '<%= fieldParam %>Day'),
+								Liferay.Util.getFormElement(form, '<%= fieldParam %>Month'),
+								Liferay.Util.getFormElement(form, '<%= fieldParam %>Year'),
+								Liferay.Util.getFormElement(form, '<%= fieldParam %>Time'),
+								Liferay.Util.getFormElement(form, '<%= fieldParam %>Hour'),
+								Liferay.Util.getFormElement(form, '<%= fieldParam %>Minute'),
+								Liferay.Util.getFormElement(form, '<%= fieldParam %>AmPm'),
+							].filter(Boolean);
 
-								elements.forEach(
-									function(element) {
-										if (checked) {
-											element.setAttribute('disabled', '');
-										}
-										else {
-											element.removeAttribute('disabled');
-										}
-
-										A.one(element).toggleClass('disabled', checked);
-									}
-								);
-
-								var label = A.one('label[for="<portlet:namespace /><%= fieldParam %>"]');
-
-								if (label) {
-									label.toggleClass('disabled', checked);
+							elements.forEach(function (element) {
+								if (checked) {
+									element.setAttribute('disabled', '');
 								}
+								else {
+									element.removeAttribute('disabled');
+								}
+
+								A.one(element).toggleClass('disabled', checked);
+							});
+
+							var label = A.one(
+								'label[for="<portlet:namespace /><%= fieldParam %>"]'
+							);
+
+							if (label) {
+								label.toggleClass('disabled', checked);
 							}
-						);
+						});
 					}
 				</aui:script>
 			</c:if>
@@ -571,14 +565,11 @@ if (hints != null) {
 
 					<c:if test="<%= autoSize && !localized %>">
 						<aui:script use="aui-autosize">
-							A.one('#<%= namespace %><%= id %>').plug(
-								A.Plugin.Autosize,
-								{
-									<c:if test="<%= Validator.isDigit(displayHeight) %>">
-										minHeight: <%= displayHeight %>
-									</c:if>
-								}
-							);
+							A.one('#<%= namespace %><%= id %>').plug(A.Plugin.Autosize, {
+								<c:if test="<%= Validator.isDigit(displayHeight) %>">
+									minHeight: <%= displayHeight %>,
+								</c:if>
+							});
 						</aui:script>
 					</c:if>
 				</c:otherwise>
@@ -597,14 +588,18 @@ if (hints != null) {
 
 <aui:script sandbox="<%= true %>">
 	var state = null;
-	var textarea = document.querySelector('textarea#<portlet:namespace /><%= id %>')
-	var counterWrapper = document.querySelector('#<portlet:namespace /><%= id %>_counterWrapper')
+	var textarea = document.querySelector(
+		'textarea#<portlet:namespace /><%= id %>'
+	);
+	var counterWrapper = document.querySelector(
+		'#<portlet:namespace /><%= id %>_counterWrapper'
+	);
 
 	var setCounter = (textarea) => {
-		var counter = counterWrapper.querySelector('.form-feedback-counter')
+		var counter = counterWrapper.querySelector('.form-feedback-counter');
 
-		counter.innerHTML = textarea.value.length + "/" + maxLength;
-	}
+		counter.innerHTML = textarea.value.length + '/' + maxLength;
+	};
 
 	if (textarea) {
 		var maxLength = parseInt(textarea.getAttribute('maxLength'));
@@ -617,23 +612,27 @@ if (hints != null) {
 		'keyup',
 		'textarea[id=<portlet:namespace /><%= id %>]',
 		({target}) => {
-			var indicator = counterWrapper.querySelector('.form-feedback-indicator');
+			var indicator = counterWrapper.querySelector(
+				'.form-feedback-indicator'
+			);
 			var message = counterWrapper.querySelector('.form-feedback-message');
 
 			var feedback = {
 				success: {
-					message: "<%= LanguageUtil.get(resourceBundle, "the-characters-are-under-the-limit") %>",
-					indicator: "<%= UnicodeFormatter.toString(successHTML) %>"
+					message:
+						'<%= LanguageUtil.get(resourceBundle, "the-characters-are-under-the-limit") %>',
+					indicator: '<%= UnicodeFormatter.toString(successHTML) %>',
 				},
 				info: {
-					message: "<%= LanguageUtil.get(resourceBundle, "the-character-limit-has-been-reached-you-cannot-continue-typing") %>",
-					indicator: "<%= UnicodeFormatter.toString(infoHTML) %>"
+					message:
+						'<%= LanguageUtil.get(resourceBundle, "the-character-limit-has-been-reached-you-cannot-continue-typing") %>',
+					indicator: '<%= UnicodeFormatter.toString(infoHTML) %>',
 				},
-			}
+			};
 
 			var setStatus = (nextState) => {
 				if (state !== nextState) {
-					counterWrapper.removeAttribute('class')
+					counterWrapper.removeAttribute('class');
 					counterWrapper.classList.add('label-' + nextState);
 
 					indicator.innerHTML = feedback[nextState].indicator;
@@ -641,7 +640,7 @@ if (hints != null) {
 
 					state = nextState;
 				}
-			}
+			};
 
 			if (state !== 'info' && target.value.length === maxLength) {
 				setStatus('info');
