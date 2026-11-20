@@ -588,7 +588,7 @@ test(
 	}
 );
 
-test.skip(
+test(
 	'Add segment using an individual property "user group"',
 	{
 		tag: '@Legacy',
@@ -659,7 +659,7 @@ test.skip(
 				projectID: project.groupId,
 			});
 
-			await createDynamicSegment(page);
+			await createBatchSegment(page);
 
 			await addSegmentField({
 				criterionName: 'User Group',
