@@ -30,6 +30,24 @@ definition {
 		AntCommands.runCommand("modules/util/portal-tools-db-migration-importer-test/src/testFunctional/ant/build-test-db-migration-importer.xml", "import-database -Dpath=${liferayHome} -Dsource.jdbc.url=${sourceJdbcURL} -Dsource.password=${sourcePassword} -Dsource.user=${sourceUser} -Dtarget.jdbc.url=${targetJdbcURL} -Dtarget.password=${targetPassword} -Dtarget.user=${targetUser}");
 	}
 
+	@summary = "Opens Server Administration on the default instance, signing in there first when the test runs on a virtual instance"
+	macro openDefaultInstanceServerAdmin() {
+		var portalURL = JSONCompany.getDefaultPortalURL();
+		var testLiferayVirtualInstance = PropsUtil.get("test.liferay.virtual.instance");
+
+		if (${testLiferayVirtualInstance} == "true") {
+			var superAdminUserEmail = JSONUtil2.getSuperAdminUserEmail();
+			var superAdminUserPassword = JSONUtil2.getSuperAdminUserPassword();
+
+			User.loginPG(
+				password = ${superAdminUserPassword},
+				userEmailAddress = ${superAdminUserEmail},
+				virtualHostsURL = ${portalURL});
+		}
+
+		ServerAdministration.openServerAdmin(baseURL = ${portalURL});
+	}
+
 	@summary = "Sets up the resources for db schema import/export tests (mainly PostgreSQL database)"
 	macro startPostgreSQLDB() {
 		AntCommands.runCommand("build-test.xml", "start-docker-database -Ddatabase.type=postgresql");
