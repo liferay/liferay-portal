@@ -1883,8 +1883,8 @@ public class JenkinsResultsParserUtilTest
 		String overlaySHAShort) {
 
 		return JenkinsResultsParserUtil.combine(
-			baseS3ObjectKey, "/", overlayPortalBranchName, "_",
-			overlaySHAShort, "_", overlaySHAShort);
+			baseS3ObjectKey, "/", overlayPortalBranchName, "_", overlaySHAShort,
+			"_", overlaySHAShort);
 	}
 
 	private String _getRandomPortalBundleS3ObjectKey(String portalBranchName) {
