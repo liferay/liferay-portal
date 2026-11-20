@@ -113,6 +113,7 @@ import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.FeatureFlagTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
@@ -247,7 +248,9 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 	@FeatureFlag("LPD-57283")
 	@Override
 	@Test
-	@TestInfo({"LPD-67244", "LPD-75168", "LPD-75364", "LPD-108819"})
+	@TestInfo(
+		{"LPD-67244", "LPD-75168", "LPD-75364", "LPD-108819", "LPD-116117"}
+	)
 	public void testGetSiteSitePage() throws Exception {
 		super.testGetSiteSitePage();
 
@@ -261,6 +264,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		_testGetSiteSitePageWithLocalization();
 		_testGetSiteSitePageWithMasterPage();
 		_testGetSiteSitePageWithoutPermissions();
+		_testGetSiteSitePageWithPagePermissions();
 	}
 
 	@Override
@@ -427,7 +431,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 
 	@Override
 	@Test
-	@TestInfo("LPD-35928")
+	@TestInfo({"LPD-35928", "LPD-116117"})
 	public void testGetSiteSitePagesPage() throws Exception {
 		Page<SitePage> sitePagePage = sitePageResource.getSiteSitePagesPage(
 			testGroup.getGroupId(), null, null, null, null, null);
@@ -437,6 +441,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			sitePagePage.getTotalCount());
 
 		_testGetSiteSitePagesPagePageSet();
+		_testGetSiteSitePagesPageWithPagePermissions();
 	}
 
 	@Ignore
@@ -695,6 +700,18 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 				LayoutFriendlyURLRandomizerBumper.INSTANCE));
 
 		return StringPool.FORWARD_SLASH + urlTitle;
+	}
+
+	private SitePageResource _getSitePageResource(String password, User user) {
+		return SitePageResource.builder(
+		).authentication(
+			user.getEmailAddress(), password
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).build();
 	}
 
 	private VulcanCRUDItemDelegate _getVulcanCRUDItemDelegate(Locale locale)
@@ -1226,6 +1243,39 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			layoutPageTemplateEntry.getName());
 	}
 
+	private void _testGetSiteSitePageWithPagePermissions() throws Exception {
+		String password = RandomTestUtil.randomString();
+
+		User user = UserTestUtil.addUser(testCompany, password);
+
+		SitePageResource userSitePageResource = _getSitePageResource(
+			password, user);
+
+		Layout layout = LayoutTestUtil.addTypePortletLayout(testGroup);
+
+		String friendlyURL = layout.getFriendlyURL();
+
+		SitePage sitePage = userSitePageResource.getSiteSitePage(
+			testGroup.getGroupId(), friendlyURL.substring(1));
+
+		Assert.assertNull(sitePage.getPagePermissions());
+
+		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		_resourcePermissionLocalService.setResourcePermissions(
+			layout.getCompanyId(), Layout.class.getName(),
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(layout.getPlid()), role.getRoleId(),
+			new String[] {ActionKeys.PERMISSIONS});
+
+		_roleLocalService.addUserRole(user.getUserId(), role.getRoleId());
+
+		sitePage = userSitePageResource.getSiteSitePage(
+			testGroup.getGroupId(), friendlyURL.substring(1));
+
+		Assert.assertFalse(ArrayUtil.isEmpty(sitePage.getPagePermissions()));
+	}
+
 	private void _testGetSiteSitePageWithoutPermissions() throws Exception {
 		Layout layout = LayoutTestUtil.addTypeContentLayout(testGroup);
 
@@ -1304,6 +1354,46 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			sitePagePage.getItems(), SitePage::getPageType);
 
 		Assert.assertTrue(pageTypes.contains("Page Set"));
+	}
+
+	private void _testGetSiteSitePagesPageWithPagePermissions()
+		throws Exception {
+
+		String password = RandomTestUtil.randomString();
+
+		User user = UserTestUtil.addUser(testCompany, password);
+
+		SitePageResource userSitePageResource = _getSitePageResource(
+			password, user);
+
+		Layout layout = LayoutTestUtil.addTypePortletLayout(testGroup);
+
+		Page<SitePage> sitePagesPage =
+			userSitePageResource.getSiteSitePagesPage(
+				testGroup.getGroupId(), layout.getName(LocaleUtil.getDefault()),
+				null, null, null, null);
+
+		SitePage sitePage = sitePagesPage.fetchFirstItem();
+
+		Assert.assertNull(sitePage.getPagePermissions());
+
+		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		_resourcePermissionLocalService.setResourcePermissions(
+			layout.getCompanyId(), Layout.class.getName(),
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(layout.getPlid()), role.getRoleId(),
+			new String[] {ActionKeys.PERMISSIONS});
+
+		_roleLocalService.addUserRole(user.getUserId(), role.getRoleId());
+
+		sitePagesPage = userSitePageResource.getSiteSitePagesPage(
+			testGroup.getGroupId(), layout.getName(LocaleUtil.getDefault()),
+			null, null, null, null);
+
+		sitePage = sitePagesPage.fetchFirstItem();
+
+		Assert.assertFalse(ArrayUtil.isEmpty(sitePage.getPagePermissions()));
 	}
 
 	private void _testPostSiteSitePageFailureDuplicateFriendlyURL()
