@@ -1109,7 +1109,7 @@ public class ObjectEntryResourceRelationshipTest
 					"WebApplicationExceptionMapper",
 				LoggerTestUtil.WARN)) {
 
-			// Invalid ERC
+			// Invalid external reference code
 
 			JSONAssert.assertEquals(
 				JSONUtil.put(
