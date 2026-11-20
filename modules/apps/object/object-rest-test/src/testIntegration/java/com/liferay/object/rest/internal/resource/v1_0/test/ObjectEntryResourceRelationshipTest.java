@@ -291,13 +291,13 @@ public class ObjectEntryResourceRelationshipTest
 			));
 
 		_testPostCustomObjectEntryWithNonexistentRelatedObjectEntryId(
-			objectDefinition1, objectRelationship);
-		_testPostCustomObjectEntryWithNonexistentRelatedObjectEntryId(
 			getUserSystemObjectDefinition(),
 			ObjectRelationshipTestUtil.addObjectRelationship(
 				getUserSystemObjectDefinition(), objectDefinition2,
 				TestPropsValues.getUserId(),
 				ObjectRelationshipConstants.TYPE_ONE_TO_MANY));
+		_testPostCustomObjectEntryWithNonexistentRelatedObjectEntryId(
+			objectDefinition1, objectRelationship);
 	}
 
 	@Test
@@ -1001,33 +1001,9 @@ public class ObjectEntryResourceRelationshipTest
 					NAME_OBJECT_RELATIONSHIP_ERC_OBJECT_FIELD_NAME,
 				objectField);
 
-		// Priority: external reference code > invalid ID
+		// Priority: ID > external reference code
 
 		ObjectDefinition objectDefinition = getObjectDefinition2();
-
-		JSONAssert.assertEquals(
-			JSONUtil.put(
-				OBJECT_FIELD_NAME_2, String.valueOf(OBJECT_FIELD_VALUE_2)
-			).put(
-				objectFieldName, Long.valueOf(jsonObject1.getLong("id"))
-			).put(
-				objectRelationshipERCObjectFieldName,
-				jsonObject1.getString("externalReferenceCode")
-			).toString(),
-			HTTPTestUtil.invokeToJSONObject(
-				JSONUtil.put(
-					OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2
-				).put(
-					objectFieldName, RandomTestUtil.randomLong()
-				).put(
-					objectRelationshipERCObjectFieldName,
-					jsonObject1.getString("externalReferenceCode")
-				).toString(),
-				objectDefinition.getRESTContextPath(), Http.Method.POST
-			).toString(),
-			JSONCompareMode.LENIENT);
-
-		// Priority: ID > external reference code
 
 		JSONAssert.assertEquals(
 			JSONUtil.put(
@@ -1046,6 +1022,30 @@ public class ObjectEntryResourceRelationshipTest
 				).put(
 					objectRelationshipERCObjectFieldName,
 					jsonObject2.getString("externalReferenceCode")
+				).toString(),
+				objectDefinition.getRESTContextPath(), Http.Method.POST
+			).toString(),
+			JSONCompareMode.LENIENT);
+
+		// Priority: external reference code > invalid ID
+
+		JSONAssert.assertEquals(
+			JSONUtil.put(
+				OBJECT_FIELD_NAME_2, String.valueOf(OBJECT_FIELD_VALUE_2)
+			).put(
+				objectFieldName, Long.valueOf(jsonObject1.getLong("id"))
+			).put(
+				objectRelationshipERCObjectFieldName,
+				jsonObject1.getString("externalReferenceCode")
+			).toString(),
+			HTTPTestUtil.invokeToJSONObject(
+				JSONUtil.put(
+					OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2
+				).put(
+					objectFieldName, RandomTestUtil.randomLong()
+				).put(
+					objectRelationshipERCObjectFieldName,
+					jsonObject1.getString("externalReferenceCode")
 				).toString(),
 				objectDefinition.getRESTContextPath(), Http.Method.POST
 			).toString(),

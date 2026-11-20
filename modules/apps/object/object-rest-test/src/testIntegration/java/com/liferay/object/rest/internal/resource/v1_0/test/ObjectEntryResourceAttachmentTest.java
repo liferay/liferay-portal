@@ -1776,6 +1776,7 @@ public class ObjectEntryResourceAttachmentTest
 					UniqueStringRandomizerBumper.INSTANCE),
 				RandomTestUtil.randomString(),
 				ServiceContextTestUtil.getServiceContext());
+
 		byte[] fileContent = DLTestUtil.randomTextFileBytes();
 
 		DLFileEntry existingDLFileEntry = _addDLFileEntry(
@@ -2303,14 +2304,6 @@ public class ObjectEntryResourceAttachmentTest
 
 		// CMS basic document source, file from Base64
 
-		FileEntry tempFileEntry = TempFileEntryUtil.addTempFileEntry(
-			testGroupId, TestPropsValues.getUserId(),
-			RandomTestUtil.randomString(),
-			TempFileEntryUtil.getTempFileName(
-				RandomTestUtil.randomString() + ".txt"),
-			FileUtil.createTempFile(DLTestUtil.randomTextFileBytes()),
-			ContentTypes.TEXT_PLAIN);
-
 		DepotEntry depotEntry = depotEntryLocalService.addDepotEntry(
 			RandomTestUtil.randomLocaleStringMap(),
 			RandomTestUtil.randomLocaleStringMap(),
@@ -2417,6 +2410,7 @@ public class ObjectEntryResourceAttachmentTest
 					UniqueStringRandomizerBumper.INSTANCE),
 				RandomTestUtil.randomString(),
 				ServiceContextTestUtil.getServiceContext());
+
 		byte[] fileContent = DLTestUtil.randomTextFileBytes();
 
 		DLFileEntry existingDLFileEntry = _addDLFileEntry(
@@ -2673,6 +2667,14 @@ public class ObjectEntryResourceAttachmentTest
 
 			// Documents and media source, file from local URL with local
 			// network access enabled
+
+			FileEntry tempFileEntry = TempFileEntryUtil.addTempFileEntry(
+				testGroupId, TestPropsValues.getUserId(),
+				RandomTestUtil.randomString(),
+				TempFileEntryUtil.getTempFileName(
+					RandomTestUtil.randomString() + ".txt"),
+				FileUtil.createTempFile(DLTestUtil.randomTextFileBytes()),
+				ContentTypes.TEXT_PLAIN);
 
 			_assertPostCustomObjectEntryWithAttachmentObjectField(
 				fileEntry -> JSONUtil.put(

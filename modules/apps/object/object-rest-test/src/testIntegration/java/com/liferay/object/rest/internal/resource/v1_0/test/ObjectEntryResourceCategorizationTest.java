@@ -764,20 +764,6 @@ public class ObjectEntryResourceCategorizationTest
 
 		assetVocabularyLocalService.deleteVocabulary(allSpacesAssetVocabulary);
 
-		// Cannot add a taxonomy category from an irrelevant site
-
-		Assert.assertEquals(
-			400,
-			HTTPTestUtil.invokeToHttpCode(
-				JSONUtil.put(
-					OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
-				).put(
-					"taxonomyCategoryIds",
-					JSONUtil.putAll(siteTaxonomyCategory.getId())
-				).toString(),
-				getEndpoint(getSiteScopedObjectDefinition1(), testGroupId),
-				Http.Method.POST));
-
 		// Cannot add a taxonomy category from an irrelevant asset vocabulary
 
 		AssetVocabulary irrelevantAssetVocabulary =
@@ -818,6 +804,20 @@ public class ObjectEntryResourceCategorizationTest
 				Http.Method.POST));
 
 		assetVocabularyLocalService.deleteVocabulary(irrelevantAssetVocabulary);
+
+		// Cannot add a taxonomy category from an irrelevant site
+
+		Assert.assertEquals(
+			400,
+			HTTPTestUtil.invokeToHttpCode(
+				JSONUtil.put(
+					OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
+				).put(
+					"taxonomyCategoryIds",
+					JSONUtil.putAll(siteTaxonomyCategory.getId())
+				).toString(),
+				getEndpoint(getSiteScopedObjectDefinition1(), testGroupId),
+				Http.Method.POST));
 
 		// Cannot add a taxonomy category to a company scoped entry
 
