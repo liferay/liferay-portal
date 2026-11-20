@@ -36,14 +36,14 @@ type Metric = {
 	metricName: string;
 };
 
-function expectMatchMetricValues(metrics: Metric[], page: Page) {
-	metrics.forEach(async ({expectedValue, metricName}) => {
+async function expectMatchMetricValues(metrics: Metric[], page: Page) {
+	for (const {expectedValue, metricName} of metrics) {
 		const metric = page.getByTestId(`overview__${metricName}-metric`);
 
-		expect(
-			await metric.locator('.overview-metric__value').innerText()
-		).toBe(String(expectedValue));
-	});
+		await expect(metric.locator('.overview-metric__value')).toHaveText(
+			String(expectedValue)
+		);
+	}
 }
 
 const assetTitle = getRandomString();
@@ -147,7 +147,7 @@ test.skip('Overview Metrics - User is able to filter Overview Metric by individu
 		});
 	});
 
-	test.step('User is able to see metrics by all individuals (all individuals filter selected by default)', () => {
+	await test.step('User is able to see metrics by all individuals (all individuals filter selected by default)', async () => {
 		const metrics = [
 			{
 				expectedValue: 2,
@@ -159,7 +159,7 @@ test.skip('Overview Metrics - User is able to filter Overview Metric by individu
 			},
 		];
 
-		expectMatchMetricValues(metrics, page);
+		await expectMatchMetricValues(metrics, page);
 	});
 
 	await test.step('Change individuals filter to filter by known individuals', async () => {
@@ -180,7 +180,7 @@ test.skip('Overview Metrics - User is able to filter Overview Metric by individu
 			},
 		];
 
-		expectMatchMetricValues(metrics, page);
+		await expectMatchMetricValues(metrics, page);
 	});
 
 	await test.step('Change individuals filter to filter by anonymous individuals', async () => {
@@ -201,7 +201,7 @@ test.skip('Overview Metrics - User is able to filter Overview Metric by individu
 			},
 		];
 
-		expectMatchMetricValues(metrics, page);
+		await expectMatchMetricValues(metrics, page);
 	});
 });
 
@@ -273,7 +273,7 @@ test('Overview Metrics - User is able to filter Overview Metric by range selecto
 			},
 		];
 
-		expectMatchMetricValues(metrics, page);
+		await expectMatchMetricValues(metrics, page);
 	});
 
 	await test.step('Change individuals filter to filter by known individuals to last 30 days', async () => {
@@ -294,7 +294,7 @@ test('Overview Metrics - User is able to filter Overview Metric by range selecto
 			},
 		];
 
-		expectMatchMetricValues(metrics, page);
+		await expectMatchMetricValues(metrics, page);
 	});
 
 	await test.step('Change individuals filter to filter by known individuals to last 28 days', async () => {
@@ -315,7 +315,7 @@ test('Overview Metrics - User is able to filter Overview Metric by range selecto
 			},
 		];
 
-		expectMatchMetricValues(metrics, page);
+		await expectMatchMetricValues(metrics, page);
 	});
 
 	await test.step('Change individuals filter to filter by known individuals to last 7 days', async () => {
@@ -336,6 +336,6 @@ test('Overview Metrics - User is able to filter Overview Metric by range selecto
 			},
 		];
 
-		expectMatchMetricValues(metrics, page);
+		await expectMatchMetricValues(metrics, page);
 	});
 });
