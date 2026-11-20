@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.servlet.ServletInputStreamAdapter;
 import com.liferay.portal.kernel.settings.FallbackKeysSettingsUtil;
 import com.liferay.portal.kernel.settings.GroupServiceSettingsLocator;
 import com.liferay.portal.kernel.settings.ModifiableSettings;
@@ -41,7 +42,10 @@ import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.portal.util.PortalImpl;
 
 import jakarta.servlet.Servlet;
+import jakarta.servlet.ServletInputStream;
 import jakarta.servlet.http.HttpServletResponse;
+
+import java.io.ByteArrayInputStream;
 
 import java.nio.charset.StandardCharsets;
 
@@ -250,6 +254,9 @@ public class CompletePaymentAuthorizeNetServletTest {
 			CommerceOrderPaymentConstants.STATUS_COMPLETED,
 			commerceOrder.getPaymentStatus());
 		Assert.assertEquals(transactionId, commerceOrder.getTransactionId());
+
+		_testDoPostWithOversizedPayload(false);
+		_testDoPostWithOversizedPayload(true);
 	}
 
 	private MockHttpServletResponse _post(byte[] bytes, String signatureKey)
@@ -276,6 +283,51 @@ public class CompletePaymentAuthorizeNetServletTest {
 		_servlet.service(mockHttpServletRequest, mockHttpServletResponse);
 
 		return mockHttpServletResponse;
+	}
+
+	private void _testDoPostWithOversizedPayload(boolean setContent)
+		throws Exception {
+
+		String json = JSONUtil.put(
+			"eventType", RandomTestUtil.randomString()
+		).put(
+			"padding", RandomTestUtil.randomString(2 * 1024 * 1024)
+		).toString();
+
+		byte[] bytes = json.getBytes(StandardCharsets.UTF_8);
+
+		ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(
+			bytes);
+
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest("POST", "") {
+
+				@Override
+				public ServletInputStream getInputStream() {
+					return new ServletInputStreamAdapter(byteArrayInputStream);
+				}
+
+			};
+
+		if (setContent) {
+			mockHttpServletRequest.setContent(bytes);
+		}
+
+		MockHttpServletResponse mockHttpServletResponse =
+			new MockHttpServletResponse();
+
+		_servlet.service(mockHttpServletRequest, mockHttpServletResponse);
+
+		Assert.assertEquals(
+			HttpServletResponse.SC_REQUEST_ENTITY_TOO_LARGE,
+			mockHttpServletResponse.getStatus());
+
+		if (setContent) {
+			Assert.assertEquals(bytes.length, byteArrayInputStream.available());
+		}
+		else {
+			Assert.assertTrue(byteArrayInputStream.available() > 0);
+		}
 	}
 
 	@DeleteAfterTestRun
