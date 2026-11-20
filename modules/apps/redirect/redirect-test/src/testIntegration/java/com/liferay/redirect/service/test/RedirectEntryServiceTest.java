@@ -11,6 +11,7 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
@@ -69,6 +70,30 @@ public class RedirectEntryServiceTest {
 					ServiceContextTestUtil.getServiceContext());
 
 				Assert.assertNotNull(_redirectEntry);
+			});
+	}
+
+	@Test(expected = PrincipalException.MustHavePermission.class)
+	@TestInfo("LPD-116171")
+	public void testAddRedirectEntryWithoutChainedRedirectEntryPermissions()
+		throws Exception {
+
+		_destinationRedirectEntry = _redirectEntryService.addRedirectEntry(
+			_group.getGroupId(), "groupBaseURL/sourceurl", null, false,
+			"destinationsourceurl", ServiceContextTestUtil.getServiceContext());
+
+		RedirectTestUtil.withRegularUser(
+			(user, role) -> {
+				RoleTestUtil.addResourcePermission(
+					role, RedirectConstants.RESOURCE_NAME,
+					ResourceConstants.SCOPE_COMPANY,
+					String.valueOf(TestPropsValues.getCompanyId()),
+					ActionKeys.ADD_ENTRY);
+
+				_redirectEntry = _redirectEntryService.addRedirectEntry(
+					_group.getGroupId(), "destinationURL", null, "groupBaseURL",
+					false, "sourceurl", true,
+					ServiceContextTestUtil.getServiceContext());
 			});
 	}
 
@@ -239,6 +264,35 @@ public class RedirectEntryServiceTest {
 					RandomTestUtil.randomBoolean());
 
 				Assert.assertNotNull(_redirectEntry);
+			});
+	}
+
+	@Test(expected = PrincipalException.MustHavePermission.class)
+	@TestInfo("LPD-116171")
+	public void testUpdateRedirectEntryWithoutChainedRedirectEntryPermissions()
+		throws Exception {
+
+		_destinationRedirectEntry = _redirectEntryService.addRedirectEntry(
+			_group.getGroupId(), "groupBaseURL/sourceurl", null, false,
+			"destinationsourceurl", ServiceContextTestUtil.getServiceContext());
+
+		RedirectTestUtil.withRegularUser(
+			(user, role) -> {
+				RoleTestUtil.addResourcePermission(
+					role, RedirectConstants.RESOURCE_NAME,
+					ResourceConstants.SCOPE_COMPANY,
+					String.valueOf(TestPropsValues.getCompanyId()),
+					ActionKeys.ADD_ENTRY);
+
+				_redirectEntry = _redirectEntryService.addRedirectEntry(
+					_group.getGroupId(), "destinationURL", null, false,
+					RandomTestUtil.randomString(),
+					ServiceContextTestUtil.getServiceContext(
+						_group.getGroupId(), user.getUserId()));
+
+				_redirectEntry = _redirectEntryService.updateRedirectEntry(
+					_redirectEntry.getRedirectEntryId(), "destinationURL", null,
+					"groupBaseURL", false, "sourceurl", true);
 			});
 	}
 
