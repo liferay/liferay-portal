@@ -74,7 +74,7 @@ public class PrivateFeatureFlagKeysUpdater {
 		String content = FileUtil.read(sourceFormatterPropertiesFile);
 
 		List<String> additionalFeatureFlagKeys = _getAdditionalFeatureFlagKeys(
-			content, "additionalFeatureFlagKeys");
+			content);
 
 		additionalFeatureFlagKeys.removeAll(privateFeatureFlagKeys);
 
@@ -89,10 +89,8 @@ public class PrivateFeatureFlagKeysUpdater {
 		}
 	}
 
-	private static List<String> _getAdditionalFeatureFlagKeys(
-		String content, String attributeName) {
-
-		Matcher matcher = _getMatcher(content, attributeName);
+	private static List<String> _getAdditionalFeatureFlagKeys(String content) {
+		Matcher matcher = _getMatcher(content, "additionalFeatureFlagKeys");
 
 		String featureFlagKeys = matcher.group(1);
 
