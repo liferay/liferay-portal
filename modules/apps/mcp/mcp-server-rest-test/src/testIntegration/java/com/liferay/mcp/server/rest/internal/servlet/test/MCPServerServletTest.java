@@ -1648,7 +1648,7 @@ public class MCPServerServletTest {
 
 			List<LogEntry> logEntries = logCapture.getLogEntries();
 
-			Assert.assertTrue(logEntries.toString(), logEntries.isEmpty());
+			Assert.assertTrue(logEntries.isEmpty());
 		}
 
 		Http.Response response = options.getResponse();
