@@ -443,7 +443,6 @@ public class LiferayGlobalObjectPreAUIDynamicInclude
 					Time.getDate(CalendarFactoryUtil.getCalendar(timeZone))));
 
 			printWriter.print(StringPool.SPACE);
-
 			printWriter.print(
 				timeZone.getDisplayName(false, TimeZone.SHORT, locale));
 
