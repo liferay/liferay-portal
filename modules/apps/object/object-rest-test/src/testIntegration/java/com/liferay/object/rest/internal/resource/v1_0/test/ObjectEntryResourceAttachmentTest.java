@@ -1663,14 +1663,6 @@ public class ObjectEntryResourceAttachmentTest
 
 		// CMS basic document source, file from Base64
 
-		FileEntry tempFileEntry = TempFileEntryUtil.addTempFileEntry(
-			testGroupId, TestPropsValues.getUserId(),
-			RandomTestUtil.randomString(),
-			TempFileEntryUtil.getTempFileName(
-				RandomTestUtil.randomString() + ".txt"),
-			FileUtil.createTempFile(DLTestUtil.randomTextFileBytes()),
-			ContentTypes.TEXT_PLAIN);
-
 		DepotEntry depotEntry = depotEntryLocalService.addDepotEntry(
 			RandomTestUtil.randomLocaleStringMap(),
 			RandomTestUtil.randomLocaleStringMap(),
@@ -1953,7 +1945,7 @@ public class ObjectEntryResourceAttachmentTest
 
 		Company company = companyLocalService.getCompany(
 			TestPropsValues.getCompanyId());
-		FileEntry customFileEntry2 = _addFileEntry(
+		FileEntry textFileEntry = _addFileEntry(
 			DLTestUtil.randomTextFileBytes(),
 			RandomTestUtil.randomString() + ".txt", ContentTypes.TEXT_PLAIN);
 
@@ -1961,7 +1953,7 @@ public class ObjectEntryResourceAttachmentTest
 			"http://", company.getVirtualHostname(), ":",
 			PortalUtil.getPortalServerPort(false),
 			_dlURLHelper.getPreviewURL(
-				customFileEntry2, customFileEntry2.getFileVersion(), null,
+				textFileEntry, textFileEntry.getFileVersion(), null,
 				StringPool.BLANK, false, true));
 
 		String hostNotAllowedMessage = StringBundler.concat(
@@ -2620,7 +2612,7 @@ public class ObjectEntryResourceAttachmentTest
 
 		Company company = companyLocalService.getCompany(
 			TestPropsValues.getCompanyId());
-		FileEntry customFileEntry3 = _addFileEntry(
+		FileEntry textFileEntry = _addFileEntry(
 			DLTestUtil.randomTextFileBytes(),
 			RandomTestUtil.randomString() + ".txt", ContentTypes.TEXT_PLAIN);
 
@@ -2628,7 +2620,7 @@ public class ObjectEntryResourceAttachmentTest
 			"http://", company.getVirtualHostname(), ":",
 			PortalUtil.getPortalServerPort(false),
 			_dlURLHelper.getPreviewURL(
-				customFileEntry3, customFileEntry3.getFileVersion(), null,
+				textFileEntry, textFileEntry.getFileVersion(), null,
 				StringPool.BLANK, false, true));
 
 		String hostNotAllowedMessage = StringBundler.concat(
