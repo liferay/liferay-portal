@@ -2724,178 +2724,33 @@ public class JenkinsResultsParserUtil {
 	public static String getLatestPortalBundleOverlayGitCommitShort(
 		String basePortalBranchName, String overlayPortalBranchName) {
 
-		String s3BucketPath = null;
-		String s3FilesOutput = null;
+		String latestPortalBundleS3ObjectPath =
+			_getLatestPortalBundleS3ObjectPath(
+				basePortalBranchName,
+				Pattern.compile(
+					combine(
+						"\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2} +\\d+ ",
+						"(?<s3ObjectKey>.+/portal-bundle/",
+						Pattern.quote(basePortalBranchName),
+						"_[0-9a-f]{7}_[0-9a-f]{7}/",
+						Pattern.quote(overlayPortalBranchName),
+						"_(?<overlayGitCommitShort>[0-9a-f]{7})_",
+						"\\k<overlayGitCommitShort>)/data\\.json\\.gz")),
+				false);
 
-		try {
-			s3BucketPath = getBuildProperty("cloud.ci.s3.bucket.path");
-
-			Process process = executeBashCommands(
-				true,
-				combine(
-					"aws s3 ls --recursive \"", _getPortalBundlesS3ObjectPath(),
-					"/", basePortalBranchName, "_\""));
-
-			s3FilesOutput = readInputStream(process.getInputStream());
-		}
-		catch (IOException | TimeoutException exception) {
-			System.out.println(
-				combine(
-					"WARNING: Unable to list portal bundles\n",
-					String.valueOf(exception)));
-
+		if (latestPortalBundleS3ObjectPath == null) {
 			return null;
 		}
 
-		List<String> dataS3ObjectLines = new ArrayList<>();
-
-		Pattern portalBundleOverlayDataS3ObjectPattern = Pattern.compile(
-			combine(
-				"\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2} +\\d+ ",
-				"(?<s3ObjectKey>.+/portal-bundle/",
-				Pattern.quote(basePortalBranchName),
-				"_[0-9a-f]{7}_[0-9a-f]{7}/",
-				Pattern.quote(overlayPortalBranchName),
-				"_(?<overlayGitCommitShort>[0-9a-f]{7})_",
-				"\\k<overlayGitCommitShort>)/data\\.json\\.gz"));
-
-		for (String s3FilesOutputLine : s3FilesOutput.split("\n")) {
-			Matcher matcher = portalBundleOverlayDataS3ObjectPattern.matcher(
-				s3FilesOutputLine.trim());
-
-			if (!matcher.matches()) {
-				continue;
-			}
-
-			dataS3ObjectLines.add(matcher.group());
-		}
-
-		Collections.sort(dataS3ObjectLines, Collections.reverseOrder());
-
-		long latestCompletedTime = Long.MIN_VALUE;
-		String latestOverlayGitCommitShort = null;
-
-		for (int index = 0; index < dataS3ObjectLines.size(); index++) {
-			if ((index >= 10) && (latestOverlayGitCommitShort != null)) {
-				break;
-			}
-
-			Matcher matcher = portalBundleOverlayDataS3ObjectPattern.matcher(
-				dataS3ObjectLines.get(index));
-
-			if (!matcher.matches()) {
-				continue;
-			}
-
-			JSONObject dataJSONObject = _getPortalBundleDataJSONObject(
-				combine(s3BucketPath, "/", matcher.group("s3ObjectKey")));
-
-			if ((dataJSONObject == null) ||
-				!Objects.equals(
-					dataJSONObject.optString("status"), "SUCCESS")) {
-
-				continue;
-			}
-
-			long completedTime = dataJSONObject.optLong("completed_time");
-
-			if ((latestOverlayGitCommitShort != null) &&
-				(completedTime <= latestCompletedTime)) {
-
-				continue;
-			}
-
-			latestCompletedTime = completedTime;
-			latestOverlayGitCommitShort = matcher.group(
-				"overlayGitCommitShort");
-		}
-
-		return latestOverlayGitCommitShort;
+		return latestPortalBundleS3ObjectPath.substring(
+			latestPortalBundleS3ObjectPath.lastIndexOf("_") + 1);
 	}
 
 	public static String getLatestPortalBundleS3ObjectPath(
 		String portalBranchName) {
 
-		String s3BucketPath = null;
-		String s3FilesOutput = null;
-
-		try {
-			s3BucketPath = getBuildProperty("cloud.ci.s3.bucket.path");
-
-			Process process = executeBashCommands(
-				true,
-				combine(
-					"aws s3 ls --recursive \"", _getPortalBundlesS3ObjectPath(),
-					"/", portalBranchName, "_\""));
-
-			s3FilesOutput = readInputStream(process.getInputStream());
-		}
-		catch (IOException | TimeoutException exception) {
-			System.out.println(
-				combine(
-					"WARNING: Unable to list portal bundles\n",
-					String.valueOf(exception)));
-
-			return null;
-		}
-
-		List<String> dataS3ObjectLines = new ArrayList<>();
-
-		for (String s3FilesOutputLine : s3FilesOutput.split("\n")) {
-			Matcher matcher = _portalBundleDataS3ObjectPattern.matcher(
-				s3FilesOutputLine.trim());
-
-			if (!matcher.matches()) {
-				continue;
-			}
-
-			dataS3ObjectLines.add(matcher.group());
-		}
-
-		Collections.sort(dataS3ObjectLines, Collections.reverseOrder());
-
-		long latestCompletedTime = Long.MIN_VALUE;
-		String latestPortalBundleS3ObjectPath = null;
-
-		for (int index = 0; index < dataS3ObjectLines.size(); index++) {
-			if ((index >= 10) && (latestPortalBundleS3ObjectPath != null)) {
-				break;
-			}
-
-			Matcher matcher = _portalBundleDataS3ObjectPattern.matcher(
-				dataS3ObjectLines.get(index));
-
-			if (!matcher.matches()) {
-				continue;
-			}
-
-			String portalBundleS3ObjectPath = combine(
-				s3BucketPath, "/", matcher.group("s3ObjectKey"));
-
-			JSONObject dataJSONObject = _getPortalBundleDataJSONObject(
-				portalBundleS3ObjectPath);
-
-			if ((dataJSONObject == null) ||
-				!Objects.equals(
-					dataJSONObject.optString("status"), "SUCCESS") ||
-				isNullOrEmpty(dataJSONObject.optString("portal_git_commit"))) {
-
-				continue;
-			}
-
-			long completedTime = dataJSONObject.optLong("completed_time");
-
-			if ((latestPortalBundleS3ObjectPath != null) &&
-				(completedTime <= latestCompletedTime)) {
-
-				continue;
-			}
-
-			latestCompletedTime = completedTime;
-			latestPortalBundleS3ObjectPath = portalBundleS3ObjectPath;
-		}
-
-		return latestPortalBundleS3ObjectPath;
+		return _getLatestPortalBundleS3ObjectPath(
+			portalBranchName, _portalBundleDataS3ObjectPattern, true);
 	}
 
 	public static LocalDate getLocalDate(Date date) {
@@ -6860,6 +6715,94 @@ public class JenkinsResultsParserUtil {
 
 	private static String _getJenkinsRepositoryURL() {
 		return _getCacheURL() + "/" + JENKINS_REPOSITORY_NAME;
+	}
+
+	private static String _getLatestPortalBundleS3ObjectPath(
+		String portalBranchName, Pattern portalBundleDataS3ObjectPattern,
+		boolean portalGitCommitRequired) {
+
+		String s3BucketPath = null;
+		String s3FilesOutput = null;
+
+		try {
+			s3BucketPath = getBuildProperty("cloud.ci.s3.bucket.path");
+
+			Process process = executeBashCommands(
+				true,
+				combine(
+					"aws s3 ls --recursive \"", _getPortalBundlesS3ObjectPath(),
+					"/", portalBranchName, "_\""));
+
+			s3FilesOutput = readInputStream(process.getInputStream());
+		}
+		catch (IOException | TimeoutException exception) {
+			System.out.println(
+				combine(
+					"WARNING: Unable to list portal bundles\n",
+					String.valueOf(exception)));
+
+			return null;
+		}
+
+		List<String> dataS3ObjectLines = new ArrayList<>();
+
+		for (String s3FilesOutputLine : s3FilesOutput.split("\n")) {
+			Matcher matcher = portalBundleDataS3ObjectPattern.matcher(
+				s3FilesOutputLine.trim());
+
+			if (!matcher.matches()) {
+				continue;
+			}
+
+			dataS3ObjectLines.add(matcher.group());
+		}
+
+		Collections.sort(dataS3ObjectLines, Collections.reverseOrder());
+
+		long latestCompletedTime = Long.MIN_VALUE;
+		String latestPortalBundleS3ObjectPath = null;
+
+		for (int index = 0; index < dataS3ObjectLines.size(); index++) {
+			if ((index >= 10) && (latestPortalBundleS3ObjectPath != null)) {
+				break;
+			}
+
+			Matcher matcher = portalBundleDataS3ObjectPattern.matcher(
+				dataS3ObjectLines.get(index));
+
+			if (!matcher.matches()) {
+				continue;
+			}
+
+			String portalBundleS3ObjectPath = combine(
+				s3BucketPath, "/", matcher.group("s3ObjectKey"));
+
+			JSONObject dataJSONObject = _getPortalBundleDataJSONObject(
+				portalBundleS3ObjectPath);
+
+			if ((dataJSONObject == null) ||
+				!Objects.equals(
+					dataJSONObject.optString("status"), "SUCCESS") ||
+				(portalGitCommitRequired &&
+				 isNullOrEmpty(
+					 dataJSONObject.optString("portal_git_commit")))) {
+
+				continue;
+			}
+
+			long completedTime = dataJSONObject.optLong("completed_time");
+
+			if ((latestPortalBundleS3ObjectPath != null) &&
+				(completedTime <= latestCompletedTime)) {
+
+				continue;
+			}
+
+			latestCompletedTime = completedTime;
+			latestPortalBundleS3ObjectPath = portalBundleS3ObjectPath;
+		}
+
+		return latestPortalBundleS3ObjectPath;
 	}
 
 	private static Set<Set<String>> _getOrderedOptSets(String... opts) {
