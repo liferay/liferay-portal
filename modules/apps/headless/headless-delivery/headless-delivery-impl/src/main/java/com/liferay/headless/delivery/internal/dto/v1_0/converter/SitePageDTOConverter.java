@@ -38,12 +38,16 @@ import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.ResourcePermission;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.Team;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.LayoutService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.TeamLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.service.permission.LayoutPermission;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -187,6 +191,17 @@ public class SitePageDTOConverter implements DTOConverter<Layout, SitePage> {
 					});
 				setPagePermissions(
 					() -> {
+						PermissionChecker permissionChecker =
+							PermissionThreadLocal.getPermissionChecker();
+
+						if ((permissionChecker == null) ||
+							!_layoutPermission.contains(
+								permissionChecker, layout,
+								ActionKeys.PERMISSIONS)) {
+
+							return null;
+						}
+
 						List<ResourcePermission> resourcePermissions =
 							_resourcePermissionLocalService.
 								getResourcePermissions(
@@ -367,6 +382,9 @@ public class SitePageDTOConverter implements DTOConverter<Layout, SitePage> {
 	@Reference
 	private LayoutPageTemplateStructureLocalService
 		_layoutPageTemplateStructureLocalService;
+
+	@Reference
+	private LayoutPermission _layoutPermission;
 
 	@Reference
 	private LayoutSEOEntryLocalService _layoutSEOEntryLocalService;
