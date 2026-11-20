@@ -1,5 +1,5 @@
 {{- define "clientExtensions.namespace" -}}
-{{- .Values.clientExtensions.separateNamespace.name | required (printf "The value %q must not be empty when %q is true" "clientExtensions.separateNamespace.name" "clientExtensions.separateNamespace.enabled") -}}
+{{- .Values.clientExtensions.separateNamespace.name | required "clientExtensions.separateNamespace.name is required when clientExtensions.separateNamespace.enabled is true" -}}
 {{- end -}}
 
 {{- define "elasticsearch.containerSecurityContext" -}}
