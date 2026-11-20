@@ -73,7 +73,7 @@ public class IncludeTag extends AttributesTagSupport {
 				return processEndTag();
 			}
 
-			doInclude(page, false);
+			doInclude(page);
 
 			return EVAL_PAGE;
 		}
@@ -104,7 +104,7 @@ public class IncludeTag extends AttributesTagSupport {
 				return processStartTag();
 			}
 
-			doInclude(page, true);
+			doInclude(page);
 
 			return EVAL_BODY_INCLUDE;
 		}
@@ -197,12 +197,9 @@ public class IncludeTag extends AttributesTagSupport {
 		cleanUp();
 	}
 
-	protected void doInclude(
-			String page, boolean dynamicIncludeAscendingPriority)
-		throws JspException {
-
+	protected void doInclude(String page) throws JspException {
 		try {
-			include(page, dynamicIncludeAscendingPriority);
+			include(page);
 		}
 		catch (Exception exception) {
 			HttpServletRequest httpServletRequest = getRequest();
@@ -319,7 +316,7 @@ public class IncludeTag extends AttributesTagSupport {
 		return null;
 	}
 
-	protected void include(String page, boolean doStartTag) throws Exception {
+	protected void include(String page) throws Exception {
 		HttpServletRequest httpServletRequest = getRequest();
 
 		if (_useCustomPage) {

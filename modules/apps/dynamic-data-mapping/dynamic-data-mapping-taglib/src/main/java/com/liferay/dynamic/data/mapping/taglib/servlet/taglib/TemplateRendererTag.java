@@ -42,7 +42,7 @@ public class TemplateRendererTag extends BaseTemplateRendererTag {
 				logUnavailablePage(page);
 			}
 
-			doInclude(page, true);
+			doInclude(page);
 
 			if (_portletDisplayDDMTemplate != null) {
 				return SKIP_BODY;

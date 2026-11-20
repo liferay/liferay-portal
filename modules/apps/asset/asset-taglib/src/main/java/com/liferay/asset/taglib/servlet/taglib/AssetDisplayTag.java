@@ -35,7 +35,7 @@ public class AssetDisplayTag extends IncludeTag {
 		try {
 			callSetAttributes();
 
-			doInclude(null, false);
+			doInclude(null);
 
 			return EVAL_PAGE;
 		}
