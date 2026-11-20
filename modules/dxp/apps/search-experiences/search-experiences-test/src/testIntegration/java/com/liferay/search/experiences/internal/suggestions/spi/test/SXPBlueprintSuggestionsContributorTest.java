@@ -79,6 +79,15 @@ public class SXPBlueprintSuggestionsContributorTest {
 	public void setUp() throws Exception {
 		_group = GroupTestUtil.addGroup();
 
+		_journalArticle = JournalTestUtil.addArticle(
+			_group.getGroupId(), StringUtil.randomString(),
+			StringUtil.randomString());
+		_layout = LayoutTestUtil.addTypePortletLayout(_group);
+
+		_locale = LocaleUtil.getSiteDefault();
+		_serviceContext = ServiceContextTestUtil.getServiceContext(
+			_group, TestPropsValues.getUserId());
+
 		Company company = _companyLocalService.getCompany(
 			_group.getCompanyId());
 
@@ -94,14 +103,6 @@ public class SXPBlueprintSuggestionsContributorTest {
 		).locale(
 			LocaleUtil.getDefault()
 		).build();
-
-		_journalArticle = JournalTestUtil.addArticle(
-			_group.getGroupId(), StringUtil.randomString(),
-			StringUtil.randomString());
-		_layout = LayoutTestUtil.addTypePortletLayout(_group);
-		_locale = LocaleUtil.getSiteDefault();
-		_serviceContext = ServiceContextTestUtil.getServiceContext(
-			_group, TestPropsValues.getUserId());
 	}
 
 	@Test

@@ -85,6 +85,8 @@ public class HighlightSXPSearchRequestBodyContributorTest {
 	@Before
 	public void setUp() throws Exception {
 		_group = GroupTestUtil.addGroup();
+		_locale = LocaleUtil.getSiteDefault();
+		_searchEngine = _searchEngineHelper.getSearchEngine();
 
 		Company company = _companyLocalService.getCompany(
 			_group.getCompanyId());
@@ -101,9 +103,6 @@ public class HighlightSXPSearchRequestBodyContributorTest {
 		).locale(
 			LocaleUtil.getDefault()
 		).build();
-
-		_locale = LocaleUtil.getSiteDefault();
-		_searchEngine = _searchEngineHelper.getSearchEngine();
 
 		_user = TestPropsValues.getUser();
 
