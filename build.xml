@@ -1356,7 +1356,7 @@ This target has been renamed to "snapshot-bundle". Please call "snapshot-bundle"
 		<property location="${liferay.portal.private.dir}" name="liferay.portal.private.dir.absolute.path" />
 
 		<java
-			classname="com.liferay.source.formatter.AdditionalFeatureFlagKeysUpdater"
+			classname="com.liferay.source.formatter.PrivateFeatureFlagKeysUpdater"
 			dir="${project.dir}"
 			failonerror="true"
 			fork="true"

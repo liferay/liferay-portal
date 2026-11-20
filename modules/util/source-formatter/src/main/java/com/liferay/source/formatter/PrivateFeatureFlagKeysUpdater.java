@@ -7,6 +7,7 @@ package com.liferay.source.formatter;
 
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.tools.ArgumentsUtil;
 import com.liferay.source.formatter.check.PropertiesFeatureFlagsCheck;
@@ -23,7 +24,7 @@ import java.util.regex.Pattern;
 /**
  * @author Alan Huang
  */
-public class AdditionalFeatureFlagKeysUpdater {
+public class PrivateFeatureFlagKeysUpdater {
 
 	public static void main(String[] args) throws Exception {
 		Map<String, String> arguments = ArgumentsUtil.parseArguments(args);
@@ -68,51 +69,78 @@ public class AdditionalFeatureFlagKeysUpdater {
 			PropertiesFeatureFlagsCheck.INCLUDES, new SourceFormatterExcludes(),
 			true);
 
-		_updateAdditionalFeatureFlagKeys(
-			PropertiesFeatureFlagsCheck.getFeatureFlagKeys(fileNames),
-			sourceFormatterPropertiesFile);
+		List<String> privateFeatureFlagKeys =
+			PropertiesFeatureFlagsCheck.getFeatureFlagKeys(fileNames);
+
+		String content = FileUtil.read(sourceFormatterPropertiesFile);
+
+		List<String> additionalFeatureFlagKeys = _getFeatureFlagKeys(
+			content, "additionalFeatureFlagKeys");
+
+		additionalFeatureFlagKeys.removeAll(privateFeatureFlagKeys);
+
+		String newContent = _replaceFeatureFlagKeys(
+			content, "additionalFeatureFlagKeys", additionalFeatureFlagKeys);
+
+		newContent = _replaceFeatureFlagKeys(
+			newContent, "privateFeatureFlagKeys", privateFeatureFlagKeys);
+
+		if (!StringUtil.equals(content, newContent)) {
+			FileUtil.write(sourceFormatterPropertiesFile, newContent);
+		}
 	}
 
-	private static void _updateAdditionalFeatureFlagKeys(
-			List<String> additionalFeatureFlagKeys, File file)
-		throws Exception {
+	private static List<String> _getFeatureFlagKeys(
+		String content, String attributeName) {
 
-		String content = FileUtil.read(file);
+		Matcher matcher = _getMatcher(content, attributeName);
 
-		Matcher matcher = _additionalFeatureFlagKeysPattern.matcher(content);
+		String featureFlagKeys = matcher.group(1);
+
+		return ListUtil.fromArray(
+			StringUtil.split(
+				featureFlagKeys.replaceAll("[\\\\\\s]", StringPool.BLANK)));
+	}
+
+	private static Matcher _getMatcher(String content, String attributeName) {
+		Pattern pattern = Pattern.compile(
+			StringBundler.concat(
+				"source\\.check\\.PropertiesFeatureFlagsCheck\\.",
+				attributeName, "=((\\\\\n +[^\\\\\n]+)*)"));
+
+		Matcher matcher = pattern.matcher(content);
 
 		if (!matcher.find()) {
 			throw new IllegalStateException(
-				"Unable to find additionalFeatureFlagKeys in " + file);
+				"Unable to find " + attributeName +
+					" in source-formatter.properties");
 		}
 
-		StringBundler sb = new StringBundler(
-			(additionalFeatureFlagKeys.size() * 3) + 2);
+		return matcher;
+	}
+
+	private static String _replaceFeatureFlagKeys(
+		String content, String attributeName, List<String> featureFlagKeys) {
+
+		Matcher matcher = _getMatcher(content, attributeName);
+
+		StringBundler sb = new StringBundler((featureFlagKeys.size() * 3) + 2);
 
 		sb.append(content.substring(0, matcher.start(1)));
 
-		for (String additionalFeatureFlagKey : additionalFeatureFlagKeys) {
+		for (String featureFlagKey : featureFlagKeys) {
 			sb.append("\\\n        ");
-			sb.append(additionalFeatureFlagKey);
+			sb.append(featureFlagKey);
 			sb.append(StringPool.COMMA);
 		}
 
-		if (!additionalFeatureFlagKeys.isEmpty()) {
+		if (!featureFlagKeys.isEmpty()) {
 			sb.setIndex(sb.index() - 1);
 		}
 
 		sb.append(content.substring(matcher.end(1)));
 
-		String newContent = sb.toString();
-
-		if (!StringUtil.equals(content, newContent)) {
-			FileUtil.write(file, newContent);
-		}
+		return sb.toString();
 	}
-
-	private static final Pattern _additionalFeatureFlagKeysPattern =
-		Pattern.compile(
-			"source\\.check\\.PropertiesFeatureFlagsCheck\\." +
-				"additionalFeatureFlagKeys=((\\\\\n +[^\\\\\n]+)*)");
 
 }

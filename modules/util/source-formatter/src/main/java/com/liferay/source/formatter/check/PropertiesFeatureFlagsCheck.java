@@ -125,9 +125,15 @@ public class PropertiesFeatureFlagsCheck extends BaseFileCheck {
 
 		_checkUnnecessaryFeatureFlags(fileName, content);
 
+		List<String> additionalFeatureFlagKeys = new ArrayList<>(
+			getAttributeValues(
+				_ADDITIONAL_FEATURE_FLAG_KEYS_KEY, absolutePath));
+
+		additionalFeatureFlagKeys.addAll(
+			getAttributeValues(_PRIVATE_FEATURE_FLAG_KEYS_KEY, absolutePath));
+
 		content = _generateFeatureFlagProperties(
-			getAttributeValues(_ADDITIONAL_FEATURE_FLAG_KEYS_KEY, absolutePath),
-			content);
+			additionalFeatureFlagKeys, content);
 		content = _generateFeatureFlagUIProperties(
 			fileName, absolutePath, content);
 
@@ -502,6 +508,9 @@ public class PropertiesFeatureFlagsCheck extends BaseFileCheck {
 
 	private static final String _PORTAL_LANGUAGE_PROPERTIES_FILE_NAME_KEY =
 		"portalLanguagePropertiesFileName";
+
+	private static final String _PRIVATE_FEATURE_FLAG_KEYS_KEY =
+		"privateFeatureFlagKeys";
 
 	private static final Pattern _deprecationFeatureFlagPattern =
 		Pattern.compile("feature\\.flag\\.([A-Z]+-\\d+)\\.type=deprecation");
