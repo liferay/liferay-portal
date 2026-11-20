@@ -23,7 +23,6 @@ import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.portlet.MockLiferayResourceRequest;
 import com.liferay.portal.kernel.test.portlet.MockLiferayResourceResponse;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
-import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -187,9 +186,7 @@ public class GetDropZoneAllowedFragmentEntryKeysMVCResourceCommandTest {
 	@Inject
 	private CompanyLocalService _companyLocalService;
 
-	@DeleteAfterTestRun
 	private Group _group;
-
 	private Layout _layout;
 
 	@Inject

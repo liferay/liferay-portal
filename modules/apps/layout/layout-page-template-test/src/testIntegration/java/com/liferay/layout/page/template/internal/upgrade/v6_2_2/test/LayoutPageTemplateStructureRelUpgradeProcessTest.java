@@ -34,7 +34,6 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.change.tracking.CTService;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
-import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -299,7 +298,6 @@ public class LayoutPageTemplateStructureRelUpgradeProcessTest
 	@Inject
 	private FragmentEntryLocalService _fragmentEntryLocalService;
 
-	@DeleteAfterTestRun
 	private Group _group;
 
 	@Inject
