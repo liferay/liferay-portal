@@ -6,6 +6,7 @@
 package com.liferay.account.service.impl;
 
 import com.liferay.account.constants.AccountActionKeys;
+import com.liferay.account.constants.AccountConstants;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.model.AccountRole;
 import com.liferay.account.role.AccountRolePermissionThreadLocal;
@@ -14,6 +15,7 @@ import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.search.BaseModelSearchResult;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
@@ -183,6 +185,30 @@ public class AccountRoleServiceImpl extends AccountRoleServiceBaseImpl {
 
 		accountRoleLocalService.unassociateUser(
 			accountEntryId, accountRoleId, userId);
+	}
+
+	@Override
+	public AccountRole updateAccountRole(
+			long accountRoleId, String name, Map<Locale, String> titleMap,
+			Map<Locale, String> descriptionMap)
+		throws PortalException {
+
+		AccountRole accountRole = accountRolePersistence.findByPrimaryKey(
+			accountRoleId);
+
+		if (accountRole.getAccountEntryId() ==
+				AccountConstants.ACCOUNT_ENTRY_ID_DEFAULT) {
+
+			throw new PrincipalException.MustHavePermission(
+				getPermissionChecker(), AccountRole.class.getName(),
+				accountRoleId, ActionKeys.UPDATE);
+		}
+
+		_accountRoleModelResourcePermission.check(
+			getPermissionChecker(), accountRole, ActionKeys.UPDATE);
+
+		return accountRoleLocalService.updateAccountRole(
+			accountRoleId, name, titleMap, descriptionMap);
 	}
 
 	@Reference(

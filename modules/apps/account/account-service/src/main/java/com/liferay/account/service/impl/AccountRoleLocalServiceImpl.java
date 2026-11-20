@@ -322,6 +322,21 @@ public class AccountRoleLocalServiceImpl
 			new long[] {accountRole.getRoleId()});
 	}
 
+	@Override
+	public AccountRole updateAccountRole(
+			long accountRoleId, String name, Map<Locale, String> titleMap,
+			Map<Locale, String> descriptionMap)
+		throws PortalException {
+
+		AccountRole accountRole = getAccountRole(accountRoleId);
+
+		_roleLocalService.updateRole(
+			accountRole.getExternalReferenceCode(), accountRole.getRoleId(),
+			name, titleMap, descriptionMap, null, null);
+
+		return accountRole;
+	}
+
 	private SearchRequest _getSearchRequest(
 		long companyId, long[] accountEntryIds, String keywords,
 		LinkedHashMap<String, Object> params, int start, int end,
