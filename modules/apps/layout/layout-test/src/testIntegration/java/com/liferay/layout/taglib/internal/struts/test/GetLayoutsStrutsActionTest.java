@@ -104,10 +104,6 @@ public class GetLayoutsStrutsActionTest {
 
 		_role = RoleTestUtil.addRole(RoleConstants.TYPE_SITE);
 
-		RoleTestUtil.addResourcePermission(
-			_role, Layout.class.getName(), ResourceConstants.SCOPE_GROUP,
-			String.valueOf(_group.getGroupId()), ActionKeys.VIEW);
-
 		_themeDisplay = ContentLayoutTestUtil.getThemeDisplay(
 			_companyLocalService.getCompany(_group.getCompanyId()), _group,
 			_layoutLocalService.getLayout(
