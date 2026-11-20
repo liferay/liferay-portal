@@ -1,0 +1,9 @@
+@import 'atlas-variables';
+@import 'cadmin-variables';
+
+html#{$cadmin-selector}
+	.cadmin
+	.label
+	.sticker.design-library-name-label__sticker {
+	border-radius: 4px;
+}

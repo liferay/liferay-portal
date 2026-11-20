@@ -8,6 +8,8 @@ import {ContentLabel} from '@clayui/label';
 import ClaySticker from '@clayui/sticker';
 import React from 'react';
 
+import './DesignLibraryNameLabel.scss';
+
 interface Props {
 	ariaLabel: string;
 	className?: string;
@@ -31,7 +33,10 @@ export default function DesignLibraryNameLabel({
 			withClose={false}
 		>
 			<ContentLabel.ItemBefore>
-				<ClaySticker className="bg-white rounded" size="xs">
+				<ClaySticker
+					className="bg-white design-library-name-label__sticker"
+					size="xs"
+				>
 					<ClayIcon symbol="books-brush" />
 				</ClaySticker>
 			</ContentLabel.ItemBefore>
