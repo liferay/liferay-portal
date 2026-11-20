@@ -139,7 +139,6 @@ public class KBArticleServiceTest {
 		_testDeleteKBArticlesWithKBArticlesFromDifferentGroups();
 	}
 
-	@FeatureFlag("LPD-11003")
 	@Test
 	@TestInfo("LPD-115385")
 	public void testFetchFirstChildKBArticle() throws Exception {
@@ -279,6 +278,7 @@ public class KBArticleServiceTest {
 		}
 	}
 
+	@FeatureFlag("LPD-11003")
 	@Test
 	public void testForceLockKBArticle() throws Exception {
 		KBArticle kbArticle = _addKBArticle(new Date());
