@@ -334,8 +334,9 @@ public class DLItemSelectorViewDisplayContext<T extends ItemSelectorCriterion> {
 
 		List<AssetVocabulary> assetVocabularies =
 			_assetVocabularyService.getGroupVocabularies(
-				PortalUtil.getCurrentAndAncestorSiteGroupIds(
-					_themeDisplay.getScopeGroupId()));
+				SiteConnectedGroupGroupProviderUtil.
+					getCurrentAndAncestorSiteAndDepotGroupIds(
+						_themeDisplay.getScopeGroupId()));
 
 		if (!assetVocabularies.isEmpty()) {
 			long classNameId = _classNameLocalService.getClassNameId(
