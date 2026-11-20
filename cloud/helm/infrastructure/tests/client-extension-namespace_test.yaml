@@ -23,11 +23,17 @@ tests:
             clientExtensions:
                 separateNamespace:
                     enabled: true
+                    name: liferay-able-nonproduction-cx
     -   asserts:
             -   failedTemplate:
-                    errorMessage: "The value \"environmentId\" must not be \"cx\" or end with \"-cx\", since another environment's client extension namespace, \"liferay-<project>-<environment>-cx\", can have that name: prod-cx"
-        it: Fails for an environment ID that ends with -cx
+                    errorMessage: "The namespace \"liferay-able-prod-cx\" must not end with \"-cx\", since another environment's client extension namespace can have that name"
+        it: Fails for a namespace that ends with the client extension namespace suffix
+        release:
+            namespace: liferay-able-prod-cx
         set:
+            clientExtensions:
+                separateNamespace:
+                    name: liferay-able-prod-cx-cx
             environmentId: prod-cx
     -   asserts:
             -   hasDocuments:

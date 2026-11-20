@@ -1,6 +1,6 @@
 {{- $allowedNamespaces := .Values.clientExtensions.policy.allowedNamespaces -}}
-{{- if .Values.clientExtensions.policy.allowSeparateNamespace -}}
-{{- $allowedNamespaces = append $allowedNamespaces (printf "%s-cx" (include "liferay.namespace" .)) -}}
+{{- with .Values.clientExtensions.policy.separateNamespace -}}
+{{- $allowedNamespaces = append $allowedNamespaces . -}}
 {{- end -}}
 {{- with $allowedNamespaces -}}
 apiVersion: v1

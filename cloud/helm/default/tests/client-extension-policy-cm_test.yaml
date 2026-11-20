@@ -9,12 +9,12 @@ tests:
             -   equal:
                     path: data.allowedNamespaces
                     value: liferay-acme-prd-cx,team-a
-        it: Allows the separate client extension namespace when allowSeparateNamespace is set
+        it: Allows the separate client extension namespace along with the listed ones
         set:
             clientExtensions.policy:
-                allowSeparateNamespace: true
                 allowedNamespaces:
                     -   team-a
+                separateNamespace: liferay-acme-prd-cx
     -   asserts:
             -   equal:
                     path: data.allowedNamespaces

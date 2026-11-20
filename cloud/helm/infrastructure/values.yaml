@@ -4,6 +4,7 @@ backup:
 clientExtensions:
     separateNamespace:
         enabled: false
+        name: ""
 clusterSecretStoreName: ""
 cmk: {}
 commonTags: {}

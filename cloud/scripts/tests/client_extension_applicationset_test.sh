@@ -4,13 +4,6 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-# The client extension ApplicationSet builds its elements and chooses each
-# Application's namespace in Go templates that only Argo CD evaluates, so helm
-# unittest can compare their text but not their result. This renders the
-# ApplicationSet, then evaluates its elements and destination with Helm's
-# sprig, the same function library Argo CD uses, against the parameters of
-# each case.
-
 CLOUD_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)
 
 readonly CLOUD_DIR

@@ -1,8 +1,12 @@
 {{- if .Values.enabled }}
-{{- if or (eq .Values.environmentId "cx") (hasSuffix "-cx" .Values.environmentId) }}
-{{- fail (printf "The value \"environmentId\" must not be \"cx\" or end with \"-cx\", since another environment's client extension namespace, \"liferay-<project>-<environment>-cx\", can have that name: %s" .Values.environmentId) }}
+{{- $separateNamespace := .Values.clientExtensions.separateNamespace }}
+{{- if and (hasPrefix .Release.Namespace $separateNamespace.name) (ne .Release.Namespace $separateNamespace.name) }}
+{{- $suffix := trimPrefix .Release.Namespace $separateNamespace.name }}
+{{- if hasSuffix $suffix .Release.Namespace }}
+{{- fail (printf "The namespace %q must not end with %q, since another environment's client extension namespace can have that name" .Release.Namespace $suffix) }}
 {{- end }}
-{{- if .Values.clientExtensions.separateNamespace.enabled }}
+{{- end }}
+{{- if $separateNamespace.enabled }}
 apiVersion: v1
 kind: Namespace
 metadata:

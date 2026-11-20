@@ -18,6 +18,10 @@ repoURL: {{ .repoURL }}
 targetRevision: {{ .targetRevision | quote }}
 {{- end -}}
 
+{{- define "liferay-platform.clientExtensionNamespace" -}}
+{{- printf "%s-cx" . -}}
+{{- end -}}
+
 {{- define "liferay-platform.clusterSecretStoreName" -}}
 {{- $clusterSecretStoreNames := list -}}
 {{- range $name, $clusterSecretStore := .Values.clusterSecretStores -}}
