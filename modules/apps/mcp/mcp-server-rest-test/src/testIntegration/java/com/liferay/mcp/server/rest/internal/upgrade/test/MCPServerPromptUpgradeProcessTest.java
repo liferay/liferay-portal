@@ -63,6 +63,7 @@ public class MCPServerPromptUpgradeProcessTest {
 	@Before
 	public void setUp() throws Exception {
 		MCPServerTestUtil.deleteObjectDefinition("L_MCP_SERVER_PROFILE_TOOL");
+
 		MCPServerTestUtil.deleteObjectDefinition("L_MCP_SERVER_PROFILE");
 		MCPServerTestUtil.deleteObjectDefinition("L_MCP_SERVER_PROMPT");
 
@@ -91,8 +92,8 @@ public class MCPServerPromptUpgradeProcessTest {
 				getObjectDefinitionByExternalReferenceCode(
 					"L_MCP_SERVER_PROMPT", TestPropsValues.getCompanyId());
 
-		_objectEntry1 = _addObjectEntry(objectDefinition, "My Prompt");
-		_objectEntry2 = _addObjectEntry(objectDefinition, "My- Prompt!");
+		_objectEntry1 = _addObjectEntry("My Prompt", objectDefinition);
+		_objectEntry2 = _addObjectEntry("My- Prompt!", objectDefinition);
 
 		UpgradeProcess upgradeProcess = UpgradeTestUtil.getUpgradeStep(
 			_upgradeStepRegistrator,
@@ -109,7 +110,7 @@ public class MCPServerPromptUpgradeProcessTest {
 	}
 
 	private ObjectEntry _addObjectEntry(
-			ObjectDefinition objectDefinition, String name)
+			String name, ObjectDefinition objectDefinition)
 		throws Exception {
 
 		return _objectEntryLocalService.addObjectEntry(

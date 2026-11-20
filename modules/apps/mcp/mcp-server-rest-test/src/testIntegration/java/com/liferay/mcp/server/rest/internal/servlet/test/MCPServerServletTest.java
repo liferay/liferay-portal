@@ -1160,15 +1160,15 @@ public class MCPServerServletTest {
 	private void _testServiceWithProfilePath(String authorization)
 		throws Exception {
 
-		String name = StringBundler.concat(
-			RandomTestUtil.randomString(), " / ",
-			RandomTestUtil.randomString());
 		String profilePath = StringUtil.toLowerCase(
 			RandomTestUtil.randomString());
 
 		MCPServerTestUtil.addMCPServerProfileObjectEntry(
-			RandomTestUtil.randomString(), null, name, profilePath,
-			"mcp-server-profiles getMCPServerProfilesPage");
+			RandomTestUtil.randomString(), null,
+			StringBundler.concat(
+				RandomTestUtil.randomString(), " / ",
+				RandomTestUtil.randomString()),
+			profilePath, "mcp-server-profiles getMCPServerProfilesPage");
 
 		Assert.assertEquals(200, _getResponseCode(authorization, profilePath));
 
