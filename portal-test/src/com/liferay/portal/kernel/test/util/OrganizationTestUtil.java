@@ -56,16 +56,11 @@ public class OrganizationTestUtil {
 			Organization organization, ServiceContext serviceContext)
 		throws Exception {
 
-		Country country = CountryLocalServiceUtil.fetchCountryByA2(
-			organization.getCompanyId(), "ZZ");
-
-		if (country == null) {
-			country = CountryLocalServiceUtil.addCountry(
-				null, "ZZ", "ZZZ", true, true, null,
-				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-				RandomTestUtil.randomDouble(), true, false, false,
-				serviceContext);
-		}
+		Country country = CountryLocalServiceUtil.addCountry(
+			null, CountryTestUtil.randomA2(organization.getCompanyId()),
+			CountryTestUtil.randomA3(organization.getCompanyId()), true, true,
+			null, RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomDouble(), true, false, false, serviceContext);
 
 		OrganizationLocalServiceUtil.updateOrganization(
 			organization.getExternalReferenceCode(),
