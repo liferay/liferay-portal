@@ -62,6 +62,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.CountryLocalServiceUtil;
 import com.liferay.portal.kernel.service.RegionLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.test.util.CountryTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TransactionTestUtil;
@@ -738,8 +739,9 @@ public class CommerceTestUtil {
 
 		if (country == null) {
 			country = CountryLocalServiceUtil.addCountry(
-				null, "ZZ", "ZZZ", true, true, null,
-				RandomTestUtil.randomString(), "000",
+				null, CountryTestUtil.randomA2(serviceContext.getCompanyId()),
+				CountryTestUtil.randomA3(serviceContext.getCompanyId()), true,
+				true, null, RandomTestUtil.randomString(), "000",
 				RandomTestUtil.randomDouble(), true, false, false,
 				serviceContext);
 		}
