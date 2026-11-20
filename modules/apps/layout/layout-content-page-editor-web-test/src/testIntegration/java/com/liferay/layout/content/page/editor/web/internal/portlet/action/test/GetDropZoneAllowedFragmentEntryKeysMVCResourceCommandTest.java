@@ -65,26 +65,6 @@ public class GetDropZoneAllowedFragmentEntryKeysMVCResourceCommandTest {
 	@Test
 	@TestInfo("LPD-108786")
 	public void testDoServeResource() throws Exception {
-		String fragmentEntryRendererKey1 = RandomTestUtil.randomString();
-		String fragmentEntryRendererKey2 = RandomTestUtil.randomString();
-
-		_testDoServeResource(
-			_addDropZoneLayoutStructureItem(
-				JSONUtil.putAll(
-					JSONUtil.put(
-						"fragmentEntryRendererKey", fragmentEntryRendererKey1),
-					JSONUtil.put(
-						"fragmentEntryRendererKey",
-						fragmentEntryRendererKey2))),
-			fragmentEntryRendererKey1, fragmentEntryRendererKey2);
-
-		_testDoServeResource(_addRootOnlyLayoutStructureItem());
-	}
-
-	private String _addDropZoneLayoutStructureItem(
-			JSONArray fragmentEntriesJSONArray)
-		throws Exception {
-
 		LayoutStructure layoutStructure = new LayoutStructure();
 
 		LayoutStructureItem rootLayoutStructureItem =
@@ -96,8 +76,16 @@ public class GetDropZoneAllowedFragmentEntryKeysMVCResourceCommandTest {
 					rootLayoutStructureItem.getItemId(), 0);
 
 		dropZoneLayoutStructureItem.setAllowNewFragmentEntries(false);
+
+		String fragmentEntryRendererKey1 = RandomTestUtil.randomString();
+		String fragmentEntryRendererKey2 = RandomTestUtil.randomString();
+
 		dropZoneLayoutStructureItem.setFragmentEntriesJSONArray(
-			fragmentEntriesJSONArray);
+			JSONUtil.putAll(
+				JSONUtil.put(
+					"fragmentEntryRendererKey", fragmentEntryRendererKey1),
+				JSONUtil.put(
+					"fragmentEntryRendererKey", fragmentEntryRendererKey2)));
 
 		_layoutPageTemplateStructureLocalService.
 			updateLayoutPageTemplateStructureData(
@@ -107,24 +95,10 @@ public class GetDropZoneAllowedFragmentEntryKeysMVCResourceCommandTest {
 					fetchDefaultSegmentsExperienceId(_layout.getPlid()),
 				layoutStructure.toString());
 
-		return dropZoneLayoutStructureItem.getItemId();
-	}
-
-	private String _addRootOnlyLayoutStructureItem() throws Exception {
-		LayoutStructure layoutStructure = new LayoutStructure();
-
-		LayoutStructureItem rootLayoutStructureItem =
-			layoutStructure.addRootLayoutStructureItem();
-
-		_layoutPageTemplateStructureLocalService.
-			updateLayoutPageTemplateStructureData(
-				TestPropsValues.getUserId(), _group.getGroupId(),
-				_layout.getPlid(),
-				_segmentsExperienceLocalService.
-					fetchDefaultSegmentsExperienceId(_layout.getPlid()),
-				layoutStructure.toString());
-
-		return rootLayoutStructureItem.getItemId();
+		_testDoServeResource(
+			dropZoneLayoutStructureItem.getItemId(), fragmentEntryRendererKey1,
+			fragmentEntryRendererKey2);
+		_testDoServeResource(rootLayoutStructureItem.getItemId());
 	}
 
 	private JSONArray _getFragmentEntryKeysJSONArray(
@@ -168,19 +142,12 @@ public class GetDropZoneAllowedFragmentEntryKeysMVCResourceCommandTest {
 		_mvcResourceCommand.serveResource(
 			mockLiferayResourceRequest, mockLiferayResourceResponse);
 
-		JSONArray fragmentEntryKeysJSONArray = _getFragmentEntryKeysJSONArray(
-			mockLiferayResourceResponse);
-
-		for (int i = 0; i < expectedFragmentEntryKeys.length; i++) {
-			Assert.assertEquals(
-				expectedFragmentEntryKeys[i],
-				fragmentEntryKeysJSONArray.getString(i));
-		}
-
 		Assert.assertEquals(
-			fragmentEntryKeysJSONArray.toString(),
-			expectedFragmentEntryKeys.length,
-			fragmentEntryKeysJSONArray.length());
+			JSONUtil.putAll(
+				(Object[])expectedFragmentEntryKeys
+			).toString(),
+			String.valueOf(
+				_getFragmentEntryKeysJSONArray(mockLiferayResourceResponse)));
 	}
 
 	@Inject
