@@ -12,6 +12,7 @@ import com.liferay.portal.kernel.model.ExternalReferenceCodeModel;
 import com.liferay.portal.kernel.model.Region;
 import com.liferay.portal.kernel.service.CountryLocalService;
 import com.liferay.portal.kernel.service.RegionLocalService;
+import com.liferay.portal.kernel.test.util.CountryTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
@@ -44,7 +45,9 @@ public class RegionExternalReferenceCodeUpgradeProcessTest
 		throws PortalException {
 
 		_country = _countryLocalService.addCountry(
-			null, "ZZ", "ZZZ", true, true, null, RandomTestUtil.randomString(),
+			null, CountryTestUtil.randomA2(group.getCompanyId()),
+			CountryTestUtil.randomA3(group.getCompanyId()), true, true, null,
+			RandomTestUtil.randomString(),
 			String.valueOf(RandomTestUtil.nextInt()), 0D, true, false, true,
 			ServiceContextTestUtil.getServiceContext(group.getGroupId()));
 
