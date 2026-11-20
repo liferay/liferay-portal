@@ -33,6 +33,7 @@ import com.liferay.portal.kernel.service.ListTypeServiceUtil;
 import com.liferay.portal.kernel.service.RegionLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.CountryTestUtil;
 import com.liferay.portal.kernel.test.util.OrganizationTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -90,9 +91,9 @@ public class PostalAddressResourceTest
 			null, AccountConstants.ACCOUNT_ENTRY_TYPE_BUSINESS,
 			WorkflowConstants.STATUS_APPROVED, serviceContext);
 		_country1 = _countryLocalService.addCountry(
-			null, "X" + RandomTestUtil.randomString(1),
-			"X" + RandomTestUtil.randomString(2), true, true,
-			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			null, CountryTestUtil.randomA2(TestPropsValues.getCompanyId()),
+			CountryTestUtil.randomA3(TestPropsValues.getCompanyId()), true,
+			true, RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), RandomTestUtil.nextLong(), true,
 			false, false, serviceContext);
 
@@ -461,9 +462,9 @@ public class PostalAddressResourceTest
 
 	private void _testPatchPostalAddressWithAddressRegion() throws Exception {
 		_country2 = _countryLocalService.addCountry(
-			null, "X" + RandomTestUtil.randomString(1),
-			"X" + RandomTestUtil.randomString(2), true, true,
-			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			null, CountryTestUtil.randomA2(TestPropsValues.getCompanyId()),
+			CountryTestUtil.randomA3(TestPropsValues.getCompanyId()), true,
+			true, RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), RandomTestUtil.nextLong(), true,
 			false, false, ServiceContextTestUtil.getServiceContext());
 
