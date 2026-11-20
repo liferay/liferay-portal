@@ -97,5 +97,141 @@
 			}
 		],
 		"name": "Liferay Data Platform Primary Navigation"
+	},
+	{
+		"externalReferenceCode": "LDPSETTINGSNAVIGATION",
+		"menuItems": [
+			{
+				"displayIcon": "angle-left",
+				"externalReferenceCode": "LDPSETTINGSNAVIGATION1",
+				"friendlyURL": "/sites",
+				"name_i18n": {
+					"en_US": "Back to Workspace"
+				},
+				"privateLayout": false,
+				"type": "layout",
+				"useCustomName": true
+			},
+			{
+				"externalReferenceCode": "LDPSETTINGSNAVIGATION2",
+				"menuItems": [
+					{
+						"displayIcon": "code",
+						"externalReferenceCode": "LDPSETTINGSNAVIGATION3",
+						"friendlyURL": "/tokens",
+						"name_i18n": {
+							"en_US": "APIs"
+						},
+						"privateLayout": false,
+						"type": "layout",
+						"useCustomName": true
+					},
+					{
+						"displayIcon": "books",
+						"externalReferenceCode": "LDPSETTINGSNAVIGATION4",
+						"friendlyURL": "/definitions",
+						"name_i18n": {
+							"en_US": "Definitions"
+						},
+						"privateLayout": false,
+						"type": "layout",
+						"useCustomName": true
+					},
+					{
+						"displayIcon": "data-privacy",
+						"externalReferenceCode": "LDPSETTINGSNAVIGATION5",
+						"friendlyURL": "/data-privacy",
+						"name_i18n": {
+							"en_US": "Data Control & Privacy"
+						},
+						"privateLayout": false,
+						"type": "layout",
+						"useCustomName": true
+					},
+					{
+						"displayIcon": "database",
+						"externalReferenceCode": "LDPSETTINGSNAVIGATION6",
+						"friendlyURL": "/data-sources",
+						"name_i18n": {
+							"en_US": "Data Sources"
+						},
+						"privateLayout": false,
+						"type": "layout",
+						"useCustomName": true
+					},
+					{
+						"displayIcon": "star",
+						"externalReferenceCode": "LDPSETTINGSNAVIGATION7",
+						"friendlyURL": "/recommendations",
+						"name_i18n": {
+							"en_US": "Recommendations"
+						},
+						"privateLayout": false,
+						"type": "layout",
+						"useCustomName": true
+					}
+				],
+				"name_i18n": {
+					"en_US": "Workspace Data"
+				},
+				"title": "Workspace Data",
+				"type": "node"
+			},
+			{
+				"externalReferenceCode": "LDPSETTINGSNAVIGATION8",
+				"menuItems": [
+					{
+						"displayIcon": "users",
+						"externalReferenceCode": "LDPSETTINGSNAVIGATION9",
+						"friendlyURL": "/users",
+						"name_i18n": {
+							"en_US": "User Management"
+						},
+						"privateLayout": false,
+						"type": "layout",
+						"useCustomName": true
+					},
+					{
+						"displayIcon": "page",
+						"externalReferenceCode": "LDPSETTINGSNAVIGATION10",
+						"friendlyURL": "/properties",
+						"name_i18n": {
+							"en_US": "Properties"
+						},
+						"privateLayout": false,
+						"type": "layout",
+						"useCustomName": true
+					},
+					{
+						"displayIcon": "chart-bar",
+						"externalReferenceCode": "LDPSETTINGSNAVIGATION11",
+						"friendlyURL": "/usage",
+						"name_i18n": {
+							"en_US": "Subscription & Usage"
+						},
+						"privateLayout": false,
+						"type": "layout",
+						"useCustomName": true
+					},
+					{
+						"displayIcon": "cog",
+						"externalReferenceCode": "LDPSETTINGSNAVIGATION12",
+						"friendlyURL": "/workspace-settings",
+						"name_i18n": {
+							"en_US": "Workspace"
+						},
+						"privateLayout": false,
+						"type": "layout",
+						"useCustomName": true
+					}
+				],
+				"name_i18n": {
+					"en_US": "Workspace Settings"
+				},
+				"title": "Workspace Settings",
+				"type": "node"
+			}
+		],
+		"name": "Liferay Data Platform Settings Navigation"
 	}
 ]

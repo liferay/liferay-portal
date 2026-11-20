@@ -1,6 +1,6 @@
 {
 	"friendlyURL": "/definitions",
-	"hidden": true,
+	"hidden": false,
 	"name": "Definitions",
 	"permissions": [
 		{

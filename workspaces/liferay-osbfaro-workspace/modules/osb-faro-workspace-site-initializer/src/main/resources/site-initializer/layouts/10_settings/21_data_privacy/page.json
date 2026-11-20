@@ -1,6 +1,6 @@
 {
 	"friendlyURL": "/data-privacy",
-	"hidden": true,
+	"hidden": false,
 	"name": "Data Privacy",
 	"permissions": [
 		{

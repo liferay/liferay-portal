@@ -1,6 +1,6 @@
 {
 	"friendlyURL": "/usage",
-	"hidden": true,
+	"hidden": false,
 	"name": "Usage",
 	"permissions": [
 		{

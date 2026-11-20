@@ -1,6 +1,6 @@
 {
 	"friendlyURL": "/data-sources",
-	"hidden": true,
+	"hidden": false,
 	"name": "Data Sources",
 	"permissions": [
 		{

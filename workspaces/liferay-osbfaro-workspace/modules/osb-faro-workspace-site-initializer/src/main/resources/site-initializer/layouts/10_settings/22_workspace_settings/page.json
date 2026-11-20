@@ -1,6 +1,6 @@
 {
 	"friendlyURL": "/workspace-settings",
-	"hidden": true,
+	"hidden": false,
 	"name": "Workspace Settings",
 	"permissions": [
 		{

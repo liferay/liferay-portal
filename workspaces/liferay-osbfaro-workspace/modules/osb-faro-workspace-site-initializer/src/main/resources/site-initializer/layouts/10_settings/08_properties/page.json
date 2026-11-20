@@ -1,6 +1,6 @@
 {
 	"friendlyURL": "/properties",
-	"hidden": true,
+	"hidden": false,
 	"name": "Properties",
 	"permissions": [
 		{

@@ -1,6 +1,6 @@
 {
 	"friendlyURL": "/tokens",
-	"hidden": true,
+	"hidden": false,
 	"name": "API Tokens",
 	"permissions": [
 		{
