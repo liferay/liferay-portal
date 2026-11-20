@@ -159,16 +159,12 @@ public class CommerceCheckoutStepHttpHelperTest {
 				true, null, RandomTestUtil.randomString(), "000",
 				RandomTestUtil.randomDouble(), true, false, false,
 				_serviceContext);
+		}
 
-			_region = _regionLocalService.addRegion(
-				null, _country.getCountryId(), true,
-				RandomTestUtil.randomString(), RandomTestUtil.randomDouble(),
-				"ZZ", _serviceContext);
-		}
-		else {
-			_region = _regionLocalService.getRegion(
-				_country.getCountryId(), "ZZ");
-		}
+		_region = _regionLocalService.addRegion(
+			null, _country.getCountryId(), true, RandomTestUtil.randomString(),
+			RandomTestUtil.randomDouble(), RandomTestUtil.randomString(),
+			_serviceContext);
 
 		return _commerceAddressLocalService.addCommerceAddress(
 			StringPool.BLANK, AccountEntry.class.getName(), commerceAccountId,
