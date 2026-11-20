@@ -6,6 +6,8 @@
 --%>
 
 <%
+String invalidRemoteOptionName = null;
+
 boolean showRemoteOptions = stagedRemotely;
 
 int stagingType = ParamUtil.getInteger(request, "stagingType");
@@ -13,8 +15,6 @@ int stagingType = ParamUtil.getInteger(request, "stagingType");
 if (stagingType == StagingConstants.TYPE_REMOTE_STAGING) {
 	showRemoteOptions = true;
 }
-
-String invalidRemoteOptionName = null;
 %>
 
 <div class="<%= showRemoteOptions ? StringPool.BLANK : "hide" %>" id="<portlet:namespace />remoteStagingOptions">
