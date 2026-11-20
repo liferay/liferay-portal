@@ -8766,11 +8766,17 @@ ${docker.start.error}</fail>
 				${docker.add.host.hostname.arg} \
 				${docker.add.host.node.name.arg} \
 				--add-host www.able.com:${ip.address} \
+				--add-host www.able.com::: \
 				--add-host www.baker.com:${ip.address} \
+				--add-host www.baker.com::: \
 				--add-host www.charlie.com:${ip.address} \
+				--add-host www.charlie.com::: \
 				--add-host www.dog.com:${ip.address} \
+				--add-host www.dog.com::: \
 				--add-host www.easy.com:${ip.address} \
+				--add-host www.easy.com::: \
 				--add-host www.fox.com:${ip.address} \
+				--add-host www.fox.com::: \
 				${env.ci.arg} \
 				${env.click.to.chat.chatwoot.password} \
 				${env.click.to.chat.crisp.password} \
