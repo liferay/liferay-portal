@@ -44,7 +44,6 @@ import freemarker.template.TemplateNumberModel;
 import java.io.Serializable;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -303,38 +302,33 @@ public class RestrictedLiferayObjectWrapperTest
 		Assert.assertFalse(
 			_isMatch(
 				Collections.emptyList(), TestLiferayObject.class,
-				new HashMap<>(), Collections.emptyList()));
+				Collections.emptyList()));
 		Assert.assertFalse(
 			_isMatch(
 				Collections.emptyList(), TestLiferayObject.class,
-				new HashMap<>(),
 				Collections.singletonList("com.liferay.portal.cache")));
 		Assert.assertFalse(
 			_isMatch(
-				Collections.emptyList(), byte.class, new HashMap<>(),
+				Collections.emptyList(), byte.class,
 				Collections.singletonList(
 					"com.liferay.portal.template.freemarker")));
 		Assert.assertFalse(
 			_isMatch(
 				Collections.singletonList(String.class),
-				TestLiferayObject.class, new HashMap<>(),
-				Collections.emptyList()));
+				TestLiferayObject.class, Collections.emptyList()));
 		Assert.assertTrue(
 			_isMatch(
 				Collections.emptyList(), TestLiferayObject.class,
-				new HashMap<>(),
 				Collections.singletonList("com.liferay.portal.")));
 		Assert.assertTrue(
 			_isMatch(
 				Collections.emptyList(), TestLiferayObject.class,
-				new HashMap<>(),
 				Collections.singletonList(
 					"com.liferay.portal.template.freemarker")));
 		Assert.assertTrue(
 			_isMatch(
 				Collections.singletonList(TestLiferayObject.class),
-				TestLiferayObject.class, new HashMap<>(),
-				Collections.emptyList()));
+				TestLiferayObject.class, Collections.emptyList()));
 	}
 
 	@Test
@@ -655,13 +649,12 @@ public class RestrictedLiferayObjectWrapperTest
 	}
 
 	private boolean _isMatch(
-		List<Class<?>> classes, Class<?> clazz,
-		Map<String, Boolean> matchResults, List<String> packageNames) {
+		List<Class<?>> classes, Class<?> clazz, List<String> packageNames) {
 
 		return ReflectionTestUtil.invoke(
 			new RestrictedLiferayObjectWrapper(null, null, null), "_isMatch",
-			new Class<?>[] {List.class, Class.class, Map.class, List.class},
-			classes, clazz, matchResults, packageNames);
+			new Class<?>[] {List.class, Class.class, List.class}, classes,
+			clazz, packageNames);
 	}
 
 	private void _testGetWithAllowedClass(

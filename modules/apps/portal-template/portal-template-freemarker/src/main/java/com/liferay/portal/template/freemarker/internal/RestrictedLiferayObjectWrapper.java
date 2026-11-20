@@ -160,7 +160,8 @@ public class RestrictedLiferayObjectWrapper extends LiferayObjectWrapper {
 
 		Class<?> clazz = object.getClass();
 
-		Set<String> restrictedMethodNames = _getRestrictedMethodNames(clazz);
+		Set<String> restrictedMethodNames =
+			_restrictedMethodNamesClassValue.get(clazz);
 
 		if (restrictedMethodNames == null) {
 			return _RESTRICTED_STRING_MODEL_FACTORY.create(object, this);
@@ -202,9 +203,7 @@ public class RestrictedLiferayObjectWrapper extends LiferayObjectWrapper {
 
 	private Set<String> _getRestrictedMethodNames(Class<?> clazz) {
 		if (_allowAllClasses ||
-			_isMatch(
-				_allowedClasses, clazz, _allowedMatchResults,
-				_allowedPackageNames)) {
+			_isMatch(_allowedClasses, clazz, _allowedPackageNames)) {
 
 			return Collections.emptySet();
 		}
@@ -214,9 +213,7 @@ public class RestrictedLiferayObjectWrapper extends LiferayObjectWrapper {
 				clazz, _restrictedMethodNames.get(clazz.getName()));
 
 		if ((restrictedMethodNames == null) ||
-			_isMatch(
-				_restrictedClasses, clazz, _restrictedMatchResults,
-				_restrictedPackageNames)) {
+			_isMatch(_restrictedClasses, clazz, _restrictedPackageNames)) {
 
 			return null;
 		}
@@ -225,32 +222,19 @@ public class RestrictedLiferayObjectWrapper extends LiferayObjectWrapper {
 	}
 
 	private boolean _isMatch(
-		List<Class<?>> classes, Class<?> clazz,
-		Map<String, Boolean> matchResults, List<String> packageNames) {
-
-		String className = clazz.getName();
-
-		Boolean matched = matchResults.get(className);
-
-		if (matched != null) {
-			return matched;
-		}
+		List<Class<?>> classes, Class<?> clazz, List<String> packageNames) {
 
 		for (Class<?> curClass : classes) {
-			if (!curClass.isAssignableFrom(clazz)) {
-				continue;
+			if (curClass.isAssignableFrom(clazz)) {
+				return true;
 			}
-
-			matchResults.putIfAbsent(className, true);
-
-			return true;
 		}
+
+		String className = clazz.getName();
 
 		int index = className.lastIndexOf(StringPool.PERIOD);
 
 		if (index == -1) {
-			matchResults.putIfAbsent(className, false);
-
 			return false;
 		}
 
@@ -259,16 +243,10 @@ public class RestrictedLiferayObjectWrapper extends LiferayObjectWrapper {
 		packageName = packageName.concat(StringPool.PERIOD);
 
 		for (String curPackageName : packageNames) {
-			if (!packageName.startsWith(curPackageName)) {
-				continue;
+			if (packageName.startsWith(curPackageName)) {
+				return true;
 			}
-
-			matchResults.putIfAbsent(className, true);
-
-			return true;
 		}
-
-		matchResults.putIfAbsent(className, false);
 
 		return false;
 	}
@@ -367,13 +345,20 @@ public class RestrictedLiferayObjectWrapper extends LiferayObjectWrapper {
 
 	private final boolean _allowAllClasses;
 	private final List<Class<?>> _allowedClasses;
-	private final Map<String, Boolean> _allowedMatchResults =
-		new ConcurrentHashMap<>();
 	private final List<String> _allowedPackageNames;
 	private final List<Class<?>> _restrictedClasses;
-	private final Map<String, Boolean> _restrictedMatchResults =
-		new ConcurrentHashMap<>();
 	private final Map<String, Set<String>> _restrictedMethodNames;
+
+	private final ClassValue<Set<String>> _restrictedMethodNamesClassValue =
+		new ClassValue<>() {
+
+			@Override
+			protected Set<String> computeValue(Class<?> clazz) {
+				return _getRestrictedMethodNames(clazz);
+			}
+
+		};
+
 	private final List<String> _restrictedPackageNames;
 	private final Set<String> _serviceProxyClassNames =
 		Collections.newSetFromMap(new ConcurrentHashMap<>());
