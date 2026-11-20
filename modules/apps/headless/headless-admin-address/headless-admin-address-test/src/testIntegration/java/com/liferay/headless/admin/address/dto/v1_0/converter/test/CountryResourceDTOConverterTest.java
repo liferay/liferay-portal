@@ -11,6 +11,7 @@ import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.CountryLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.CountryTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -53,8 +54,10 @@ public class CountryResourceDTOConverterTest {
 	@Before
 	public void setUp() throws Exception {
 		_serviceBuilderCountry = _countryLocalService.addCountry(
-			null, "XY", "XYZ", RandomTestUtil.randomBoolean(),
-			RandomTestUtil.randomBoolean(), RandomTestUtil.randomString(),
+			null, CountryTestUtil.randomA2(TestPropsValues.getCompanyId()),
+			CountryTestUtil.randomA3(TestPropsValues.getCompanyId()),
+			RandomTestUtil.randomBoolean(), RandomTestUtil.randomBoolean(),
+			RandomTestUtil.randomString(),
 			StringUtil.toLowerCase(RandomTestUtil.randomString()),
 			RandomTestUtil.randomString(), RandomTestUtil.randomDouble(),
 			RandomTestUtil.randomBoolean(), RandomTestUtil.randomBoolean(),

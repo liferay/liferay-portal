@@ -15,6 +15,7 @@ import com.liferay.portal.kernel.service.RegionLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.CountryTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -61,8 +62,10 @@ public class RegionResourceDTOConverterTest {
 				GroupTestUtil.addGroup(), TestPropsValues.getUserId());
 
 		_serviceBuilderCountry = _countryLocalService.addCountry(
-			null, "XY", "XYZ", RandomTestUtil.randomBoolean(),
-			RandomTestUtil.randomBoolean(), RandomTestUtil.randomString(),
+			null, CountryTestUtil.randomA2(serviceContext.getCompanyId()),
+			CountryTestUtil.randomA3(serviceContext.getCompanyId()),
+			RandomTestUtil.randomBoolean(), RandomTestUtil.randomBoolean(),
+			RandomTestUtil.randomString(),
 			StringUtil.toLowerCase(RandomTestUtil.randomString()),
 			RandomTestUtil.randomString(), RandomTestUtil.randomDouble(),
 			RandomTestUtil.randomBoolean(), RandomTestUtil.randomBoolean(),

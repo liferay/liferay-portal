@@ -33,7 +33,7 @@ import com.liferay.portal.kernel.service.RegionLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
-import com.liferay.portal.kernel.test.randomizerbumpers.RandomizerBumper;
+import com.liferay.portal.kernel.test.util.CountryTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -54,7 +54,6 @@ import jakarta.ws.rs.core.Response;
 
 import java.text.DateFormat;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -78,9 +77,7 @@ public class CountryResourceTest extends BaseCountryResourceTestCase {
 		Page<Country> countriesPage = countryResource.getCountriesPage(
 			null, null, null, Pagination.of(1, -1), null);
 
-		for (Country country : countriesPage.getItems()) {
-			_addCountryA2AndA3(country.getA2(), country.getA3());
-		}
+		_count = (int)countriesPage.getTotalCount();
 	}
 
 	@Override
@@ -252,10 +249,8 @@ public class CountryResourceTest extends BaseCountryResourceTestCase {
 	protected Country randomCountry() throws Exception {
 		Country country = super.randomCountry();
 
-		country.setA2(
-			RandomTestUtil.randomString(2, _getRandomizerBumper(_countryA2s)));
-		country.setA3(
-			RandomTestUtil.randomString(3, _getRandomizerBumper(_countryA3s)));
+		country.setA2(CountryTestUtil.randomA2(testCompany.getCompanyId()));
+		country.setA3(CountryTestUtil.randomA3(testCompany.getCompanyId()));
 		country.setNumber(RandomTestUtil.nextInt());
 
 		return country;
@@ -429,26 +424,13 @@ public class CountryResourceTest extends BaseCountryResourceTestCase {
 	private Country _addCountry(Country country) throws Exception {
 		country = countryResource.postCountry(country);
 
-		_addCountryA2AndA3(country.getA2(), country.getA3());
+		_count++;
 
 		return country;
 	}
 
-	private void _addCountryA2AndA3(String a2, String a3) {
-		_countryA2s.add(StringUtil.toLowerCase(a2));
-		_countryA3s.add(StringUtil.toLowerCase(a3));
-	}
-
 	private int _getPageSize() {
-		return _countryA2s.size() + 10;
-	}
-
-	private RandomizerBumper<String> _getRandomizerBumper(
-		List<String> existingValues) {
-
-		return randomValue ->
-			StringUtil.isLowerCase(randomValue) &&
-			!existingValues.contains(randomValue);
+		return _count + 10;
 	}
 
 	private void _testGetCountriesPageWithFilter() throws Exception {
@@ -793,8 +775,7 @@ public class CountryResourceTest extends BaseCountryResourceTestCase {
 		}
 	}
 
-	private final List<String> _countryA2s = new ArrayList<>();
-	private final List<String> _countryA3s = new ArrayList<>();
+	private int _count;
 
 	@Inject
 	private JSONFactory _jsonFactory;
