@@ -53,7 +53,7 @@ public class RegionExternalReferenceCodeUpgradeProcessTest
 
 		Region region = _regionLocalService.addRegion(
 			null, _country.getCountryId(), true, RandomTestUtil.randomString(),
-			0D, "ZZ-1",
+			0D, RandomTestUtil.randomString(),
 			ServiceContextTestUtil.getServiceContext(group.getGroupId()));
 
 		return new ExternalReferenceCodeModel[] {region};
