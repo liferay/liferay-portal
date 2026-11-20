@@ -11,13 +11,15 @@ import com.liferay.portal.kernel.model.Release;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
-import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.site.initializer.SiteInitializerRegistry;
 
 import jakarta.portlet.ActionRequest;
 import jakarta.portlet.ActionResponse;
 import jakarta.portlet.Portlet;
 import jakarta.portlet.PortletException;
+import jakarta.portlet.PortletRequest;
 import jakarta.portlet.RenderRequest;
 import jakarta.portlet.RenderResponse;
 import jakarta.portlet.ResourceRequest;
@@ -61,7 +63,7 @@ public class PortalInstancesPortlet extends MVCPortlet {
 			ActionRequest actionRequest, ActionResponse actionResponse)
 		throws IOException, PortletException {
 
-		_checkOmniadmin();
+		_checkOmniadmin(actionRequest);
 
 		super.processAction(actionRequest, actionResponse);
 	}
@@ -71,7 +73,7 @@ public class PortalInstancesPortlet extends MVCPortlet {
 			RenderRequest renderRequest, RenderResponse renderResponse)
 		throws IOException, PortletException {
 
-		_checkOmniadmin();
+		_checkOmniadmin(renderRequest);
 
 		super.render(renderRequest, renderResponse);
 	}
@@ -81,7 +83,7 @@ public class PortalInstancesPortlet extends MVCPortlet {
 			ResourceRequest resourceRequest, ResourceResponse resourceResponse)
 		throws IOException, PortletException {
 
-		_checkOmniadmin();
+		_checkOmniadmin(resourceRequest);
 
 		super.serveResource(resourceRequest, resourceResponse);
 	}
@@ -98,9 +100,14 @@ public class PortalInstancesPortlet extends MVCPortlet {
 		super.doDispatch(renderRequest, renderResponse);
 	}
 
-	private void _checkOmniadmin() throws PortletException {
+	private void _checkOmniadmin(PortletRequest portletRequest)
+		throws PortletException {
+
+		ThemeDisplay themeDisplay = (ThemeDisplay)portletRequest.getAttribute(
+			WebKeys.THEME_DISPLAY);
+
 		PermissionChecker permissionChecker =
-			PermissionThreadLocal.getPermissionChecker();
+			themeDisplay.getPermissionChecker();
 
 		if (!permissionChecker.isOmniadmin()) {
 			PrincipalException principalException =
