@@ -150,16 +150,16 @@ public class TestrayFactory {
 		AxisTestClassGroup axisTestClassGroup, TestReport testReport,
 		TestrayBuild testrayBuild, TopLevelBuildReport topLevelBuildReport) {
 
+		if (axisTestClassGroup == null) {
+			throw new RuntimeException("Axis test class group is null");
+		}
+
 		if (testrayBuild == null) {
 			throw new RuntimeException("Testray build is null");
 		}
 
 		if (topLevelBuildReport == null) {
 			throw new RuntimeException("Top level build report is null");
-		}
-
-		if (axisTestClassGroup == null) {
-			throw new RuntimeException("Axis test class group is null");
 		}
 
 		return new DownstreamTestClassBuildTestrayCaseResult(
