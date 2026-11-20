@@ -61,9 +61,11 @@ public class MBDiscussionPermissionImplTest {
 	@Before
 	public void setUp() throws Exception {
 		_group = GroupTestUtil.addGroup();
-		_user = TestPropsValues.getUser();
+
 		_siteUser1 = UserTestUtil.addUser(_group.getGroupId());
 		_siteUser2 = UserTestUtil.addUser(_group.getGroupId());
+
+		_user = TestPropsValues.getUser();
 	}
 
 	@Test
