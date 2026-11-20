@@ -227,7 +227,7 @@ public class ProductTypesCMSStructureObjectFolderContributorTest {
 	@Inject
 	private CompanyLocalService _companyLocalService;
 
-	private MockHttpServletRequest _mockHttpServletRequest =
+	private final MockHttpServletRequest _mockHttpServletRequest =
 		new MockHttpServletRequest();
 	private ObjectEntryFolder _objectEntryFolder;
 
