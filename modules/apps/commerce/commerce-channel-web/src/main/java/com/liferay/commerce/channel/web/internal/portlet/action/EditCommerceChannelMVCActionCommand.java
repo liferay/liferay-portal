@@ -25,6 +25,7 @@ import com.liferay.document.library.kernel.exception.InvalidFileException;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.model.DLVersionNumberIncrease;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
+import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
@@ -423,18 +424,14 @@ public class EditCommerceChannelMVCActionCommand
 			return;
 		}
 
-		FileEntry newFileEntry = _dlAppLocalService.getFileEntry(fileEntryId);
+		FileEntry newFileEntry = _dlAppService.getFileEntry(fileEntryId);
 
 		if (!Objects.equals(newFileEntry.getExtension(), "jrxml")) {
-			_dlAppLocalService.deleteFileEntry(newFileEntry.getFileEntryId());
-
 			throw new FileExtensionException.InvalidExtension();
 		}
 
 		if (!_commerceReportExporter.isValidJRXMLTemplate(
 				newFileEntry.getContentStream())) {
-
-			_dlAppLocalService.deleteFileEntry(newFileEntry.getFileEntryId());
 
 			throw new InvalidFileException();
 		}
@@ -449,20 +446,14 @@ public class EditCommerceChannelMVCActionCommand
 				System.currentTimeMillis(), StringPool.PERIOD,
 				newFileEntry.getExtension());
 
-			try {
-				_dlAppLocalService.addFileEntry(
-					"ORDER_PRINT_TEMPLATE", commerceChannel.getUserId(),
-					commerceChannel.getGroupId(),
-					DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
-					newFileEntry.getFileName(), newFileEntry.getMimeType(),
-					formattedFileName, StringPool.BLANK, StringPool.BLANK,
-					StringPool.BLANK, newFileEntry.getContentStream(),
-					newFileEntry.getSize(), null, null, null,
-					new ServiceContext());
-			}
-			finally {
-				_dlAppLocalService.deleteFileEntry(fileEntryId);
-			}
+			_dlAppLocalService.addFileEntry(
+				"ORDER_PRINT_TEMPLATE", commerceChannel.getUserId(),
+				commerceChannel.getGroupId(),
+				DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+				newFileEntry.getFileName(), newFileEntry.getMimeType(),
+				formattedFileName, StringPool.BLANK, StringPool.BLANK,
+				StringPool.BLANK, newFileEntry.getContentStream(),
+				newFileEntry.getSize(), null, null, null, new ServiceContext());
 		}
 		else {
 			_dlAppLocalService.updateFileEntry(
@@ -492,6 +483,9 @@ public class EditCommerceChannelMVCActionCommand
 
 	@Reference
 	private DLAppLocalService _dlAppLocalService;
+
+	@Reference
+	private DLAppService _dlAppService;
 
 	@Reference
 	private Portal _portal;
