@@ -536,7 +536,22 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 				ObjectDefinition relatedObjectDefinition)
 		throws Exception {
 
+		ObjectRelationship blankERCObjectRelationship =
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				relatedObjectDefinition, objectDefinition,
+				TestPropsValues.getUserId(),
+				ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 		ObjectRelationship emptyObjectEntryObjectRelationship =
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				relatedObjectDefinition, objectDefinition,
+				TestPropsValues.getUserId(),
+				ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+		ObjectRelationship nullERCObjectRelationship =
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				relatedObjectDefinition, objectDefinition,
+				TestPropsValues.getUserId(),
+				ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+		ObjectRelationship nullIdObjectRelationship =
 			ObjectRelationshipTestUtil.addObjectRelationship(
 				relatedObjectDefinition, objectDefinition,
 				TestPropsValues.getUserId(),
@@ -551,26 +566,23 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 				relatedObjectDefinition, objectDefinition,
 				TestPropsValues.getUserId(),
 				ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
-		ObjectRelationship nullIdObjectRelationship =
-			ObjectRelationshipTestUtil.addObjectRelationship(
-				relatedObjectDefinition, objectDefinition,
-				TestPropsValues.getUserId(),
-				ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
-		ObjectRelationship blankERCObjectRelationship =
-			ObjectRelationshipTestUtil.addObjectRelationship(
-				relatedObjectDefinition, objectDefinition,
-				TestPropsValues.getUserId(),
-				ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
-		ObjectRelationship nullERCObjectRelationship =
-			ObjectRelationshipTestUtil.addObjectRelationship(
-				relatedObjectDefinition, objectDefinition,
-				TestPropsValues.getUserId(),
-				ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 
 		try {
 			JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
 				JSONUtil.put(
+					blankERCObjectRelationship.getName(),
+					JSONUtil.put(
+						OBJECT_FIELD_NAME_2, RandomTestUtil.randomString())
+				).put(
 					emptyObjectEntryObjectRelationship.getName(),
+					JSONUtil.put(
+						OBJECT_FIELD_NAME_2, RandomTestUtil.randomString())
+				).put(
+					nullERCObjectRelationship.getName(),
+					JSONUtil.put(
+						OBJECT_FIELD_NAME_2, RandomTestUtil.randomString())
+				).put(
+					nullIdObjectRelationship.getName(),
 					JSONUtil.put(
 						OBJECT_FIELD_NAME_2, RandomTestUtil.randomString())
 				).put(
@@ -579,18 +591,6 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 						OBJECT_FIELD_NAME_2, RandomTestUtil.randomString())
 				).put(
 					zeroIdObjectRelationship.getName(),
-					JSONUtil.put(
-						OBJECT_FIELD_NAME_2, RandomTestUtil.randomString())
-				).put(
-					nullIdObjectRelationship.getName(),
-					JSONUtil.put(
-						OBJECT_FIELD_NAME_2, RandomTestUtil.randomString())
-				).put(
-					blankERCObjectRelationship.getName(),
-					JSONUtil.put(
-						OBJECT_FIELD_NAME_2, RandomTestUtil.randomString())
-				).put(
-					nullERCObjectRelationship.getName(),
 					JSONUtil.put(
 						OBJECT_FIELD_NAME_2, RandomTestUtil.randomString())
 				).toString(),
@@ -604,8 +604,23 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 
 			jsonObject = HTTPTestUtil.invokeToJSONObject(
 				JSONUtil.put(
+					StringBundler.concat(
+						"r_", blankERCObjectRelationship.getName(), "_",
+						ercObjectFieldName),
+					""
+				).put(
 					emptyObjectEntryObjectRelationship.getName(),
 					JSONFactoryUtil.createJSONObject()
+				).put(
+					StringBundler.concat(
+						"r_", nullERCObjectRelationship.getName(), "_",
+						ercObjectFieldName),
+					org.json.JSONObject.NULL
+				).put(
+					StringBundler.concat(
+						"r_", nullIdObjectRelationship.getName(), "_",
+						pkObjectFieldName),
+					org.json.JSONObject.NULL
 				).put(
 					nullObjectEntryObjectRelationship.getName(),
 					org.json.JSONObject.NULL
@@ -614,21 +629,6 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 						"r_", zeroIdObjectRelationship.getName(), "_",
 						pkObjectFieldName),
 					0
-				).put(
-					StringBundler.concat(
-						"r_", nullIdObjectRelationship.getName(), "_",
-						pkObjectFieldName),
-					org.json.JSONObject.NULL
-				).put(
-					StringBundler.concat(
-						"r_", blankERCObjectRelationship.getName(), "_",
-						ercObjectFieldName),
-					""
-				).put(
-					StringBundler.concat(
-						"r_", nullERCObjectRelationship.getName(), "_",
-						ercObjectFieldName),
-					org.json.JSONObject.NULL
 				).toString(),
 				endpointUnsafeFunction.apply(jsonObject), method);
 
@@ -657,12 +657,42 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 			JSONAssert.assertEquals(
 				JSONUtil.put(
 					StringBundler.concat(
+						"r_", blankERCObjectRelationship.getName(), "_",
+						pkObjectFieldName),
+					0
+				).put(
+					StringBundler.concat(
+						"r_", blankERCObjectRelationship.getName(), "_",
+						ercObjectFieldName),
+					""
+				).put(
+					StringBundler.concat(
 						"r_", emptyObjectEntryObjectRelationship.getName(), "_",
 						pkObjectFieldName),
 					0
 				).put(
 					StringBundler.concat(
 						"r_", emptyObjectEntryObjectRelationship.getName(), "_",
+						ercObjectFieldName),
+					""
+				).put(
+					StringBundler.concat(
+						"r_", nullERCObjectRelationship.getName(), "_",
+						pkObjectFieldName),
+					0
+				).put(
+					StringBundler.concat(
+						"r_", nullERCObjectRelationship.getName(), "_",
+						ercObjectFieldName),
+					""
+				).put(
+					StringBundler.concat(
+						"r_", nullIdObjectRelationship.getName(), "_",
+						pkObjectFieldName),
+					0
+				).put(
+					StringBundler.concat(
+						"r_", nullIdObjectRelationship.getName(), "_",
 						ercObjectFieldName),
 					""
 				).put(
@@ -683,36 +713,6 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 				).put(
 					StringBundler.concat(
 						"r_", zeroIdObjectRelationship.getName(), "_",
-						ercObjectFieldName),
-					""
-				).put(
-					StringBundler.concat(
-						"r_", nullIdObjectRelationship.getName(), "_",
-						pkObjectFieldName),
-					0
-				).put(
-					StringBundler.concat(
-						"r_", nullIdObjectRelationship.getName(), "_",
-						ercObjectFieldName),
-					""
-				).put(
-					StringBundler.concat(
-						"r_", blankERCObjectRelationship.getName(), "_",
-						pkObjectFieldName),
-					0
-				).put(
-					StringBundler.concat(
-						"r_", blankERCObjectRelationship.getName(), "_",
-						ercObjectFieldName),
-					""
-				).put(
-					StringBundler.concat(
-						"r_", nullERCObjectRelationship.getName(), "_",
-						pkObjectFieldName),
-					0
-				).put(
-					StringBundler.concat(
-						"r_", nullERCObjectRelationship.getName(), "_",
 						ercObjectFieldName),
 					""
 				).toString(),
@@ -720,17 +720,17 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 		}
 		finally {
 			objectRelationshipLocalService.deleteObjectRelationship(
+				blankERCObjectRelationship);
+			objectRelationshipLocalService.deleteObjectRelationship(
 				emptyObjectEntryObjectRelationship);
+			objectRelationshipLocalService.deleteObjectRelationship(
+				nullERCObjectRelationship);
+			objectRelationshipLocalService.deleteObjectRelationship(
+				nullIdObjectRelationship);
 			objectRelationshipLocalService.deleteObjectRelationship(
 				nullObjectEntryObjectRelationship);
 			objectRelationshipLocalService.deleteObjectRelationship(
 				zeroIdObjectRelationship);
-			objectRelationshipLocalService.deleteObjectRelationship(
-				nullIdObjectRelationship);
-			objectRelationshipLocalService.deleteObjectRelationship(
-				blankERCObjectRelationship);
-			objectRelationshipLocalService.deleteObjectRelationship(
-				nullERCObjectRelationship);
 		}
 	}
 
