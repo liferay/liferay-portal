@@ -13,9 +13,9 @@ import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.bean.ClassLoaderBeanHandler;
+import com.liferay.portal.kernel.dao.orm.Dialect;
 import com.liferay.portal.kernel.dao.orm.ORMException;
 import com.liferay.portal.kernel.dao.orm.Session;
-import com.liferay.portal.kernel.dao.orm.SessionCustomizer;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
 import com.liferay.portal.kernel.dao.orm.SessionWrapper;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -50,9 +50,12 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
+import java.sql.Connection;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -66,7 +69,6 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleReference;
 import org.osgi.framework.ServiceReference;
-import org.osgi.framework.ServiceRegistration;
 
 /**
  * @author Matthew Tambara
@@ -83,10 +85,9 @@ public class DataGuardTestRuleUtil {
 			DataBag dataBag, String testClassName, boolean autoDelete)
 		throws Throwable {
 
-		ServiceRegistration<SessionCustomizer> serviceRegistration =
-			dataBag._serviceRegistration;
+		Closeable closeable = dataBag._closeable;
 
-		serviceRegistration.unregister();
+		closeable.close();
 
 		_records.remove();
 
@@ -111,21 +112,14 @@ public class DataGuardTestRuleUtil {
 	}
 
 	public static DataBag beforeClass() {
-		BundleContext bundleContext = SystemBundleUtil.getBundleContext();
-
 		Map<String, Map<Serializable, String>> records =
 			new ConcurrentHashMap<>();
 
 		_records.set(records);
 
-		ServiceRegistration<SessionCustomizer> serviceRegistration =
-			bundleContext.registerService(
-				SessionCustomizer.class,
-				new RecordingSessionCustomizer(records), null);
-
 		return new DataBag(
 			_captureDataMap(), PortletLocalServiceUtil.getPortlets(), records,
-			serviceRegistration);
+			_installRecordingSessionFactories(records));
 	}
 
 	public static DataBag beforeMethod() {
@@ -249,19 +243,18 @@ public class DataGuardTestRuleUtil {
 		private DataBag(
 			Map<String, List<BaseModel<?>>> dataMap, List<Portlet> portlets,
 			Map<String, Map<Serializable, String>> records,
-			ServiceRegistration<SessionCustomizer> serviceRegistration) {
+			Closeable closeable) {
 
 			_dataMap = dataMap;
 			_portlets = portlets;
 			_records = records;
-			_serviceRegistration = serviceRegistration;
+			_closeable = closeable;
 		}
 
+		private final Closeable _closeable;
 		private final Map<String, List<BaseModel<?>>> _dataMap;
 		private final List<Portlet> _portlets;
 		private final Map<String, Map<Serializable, String>> _records;
-		private final ServiceRegistration<SessionCustomizer>
-			_serviceRegistration;
 
 	}
 
@@ -585,6 +578,47 @@ public class DataGuardTestRuleUtil {
 		return null;
 	}
 
+	private static Closeable _installRecordingSessionFactories(
+		Map<String, Map<Serializable, String>> records) {
+
+		Map<String, PersistedModelLocalService> persistedModelLocalServices =
+			_getPersistedModelLocalServices();
+
+		Map<BasePersistence<?>, SessionFactory> sessionFactories =
+			new HashMap<>();
+
+		for (PersistedModelLocalService persistedModelLocalService :
+				persistedModelLocalServices.values()) {
+
+			BasePersistence<?> basePersistence = _getBasePersistence(
+				persistedModelLocalService);
+
+			if ((basePersistence == null) ||
+				sessionFactories.containsKey(basePersistence)) {
+
+				continue;
+			}
+
+			SessionFactory sessionFactory = ReflectionTestUtil.getFieldValue(
+				basePersistence, "_sessionFactory");
+
+			sessionFactories.put(basePersistence, sessionFactory);
+
+			ReflectionTestUtil.setFieldValue(
+				basePersistence, "_sessionFactory",
+				new RecordingSessionFactory(records, sessionFactory));
+		}
+
+		return () -> {
+			for (Map.Entry<BasePersistence<?>, SessionFactory> entry :
+					sessionFactories.entrySet()) {
+
+				ReflectionTestUtil.setFieldValue(
+					entry.getKey(), "_sessionFactory", entry.getValue());
+			}
+		};
+	}
+
 	private static Closeable _installTransactionExecutor(
 			String originBundleSymbolicName)
 		throws Exception {
@@ -654,7 +688,18 @@ public class DataGuardTestRuleUtil {
 			ReflectionTestUtil.getFieldValue(
 				basePersistence, "_sessionFactory");
 
-		Class<?> clazz = originalSessionFactory.getClass();
+		SessionFactory sessionFactory = originalSessionFactory;
+
+		Map<String, Map<Serializable, String>> records = null;
+
+		if (sessionFactory instanceof
+				RecordingSessionFactory recordingSessionFactory) {
+
+			records = recordingSessionFactory._records;
+			sessionFactory = recordingSessionFactory._sessionFactory;
+		}
+
+		Class<?> clazz = sessionFactory.getClass();
 
 		if (!Objects.equals(
 				clazz.getName(),
@@ -665,8 +710,13 @@ public class DataGuardTestRuleUtil {
 			};
 		}
 
-		SessionFactory sessionFactory = ReflectionTestUtil.getFieldValue(
-			originalSessionFactory, "_sessionFactoryImpl");
+		sessionFactory = ReflectionTestUtil.getFieldValue(
+			sessionFactory, "_sessionFactoryImpl");
+
+		if (records != null) {
+			sessionFactory = new RecordingSessionFactory(
+				records, sessionFactory);
+		}
 
 		ReflectionTestUtil.setFieldValue(
 			basePersistence, "_sessionFactory", sessionFactory);
@@ -691,21 +741,56 @@ public class DataGuardTestRuleUtil {
 			Propagation.SUPPORTS,
 			new Class<?>[] {PortalException.class, SystemException.class});
 
-	private static class RecordingSessionCustomizer
-		implements SessionCustomizer {
+	private static class RecordingSessionFactory implements SessionFactory {
 
 		@Override
-		public Session customize(Session session) {
-			return new RecordingSessionWrapper(session, _records);
+		public void closeSession(Session session) throws ORMException {
+			if (session instanceof
+					RecordingSessionWrapper recordingSessionWrapper) {
+
+				_sessionFactory.closeSession(
+					recordingSessionWrapper._getSession());
+			}
+			else {
+				_sessionFactory.closeSession(session);
+			}
 		}
 
-		private RecordingSessionCustomizer(
-			Map<String, Map<Serializable, String>> records) {
+		@Override
+		public Session getCurrentSession() throws ORMException {
+			return new RecordingSessionWrapper(
+				_sessionFactory.getCurrentSession(), _records);
+		}
+
+		@Override
+		public Dialect getDialect() throws ORMException {
+			return _sessionFactory.getDialect();
+		}
+
+		@Override
+		public Session openNewSession(Connection connection)
+			throws ORMException {
+
+			return new RecordingSessionWrapper(
+				_sessionFactory.openNewSession(connection), _records);
+		}
+
+		@Override
+		public Session openSession() throws ORMException {
+			return new RecordingSessionWrapper(
+				_sessionFactory.openSession(), _records);
+		}
+
+		private RecordingSessionFactory(
+			Map<String, Map<Serializable, String>> records,
+			SessionFactory sessionFactory) {
 
 			_records = records;
+			_sessionFactory = sessionFactory;
 		}
 
 		private final Map<String, Map<Serializable, String>> _records;
+		private final SessionFactory _sessionFactory;
 
 	}
 
@@ -738,6 +823,10 @@ public class DataGuardTestRuleUtil {
 			super(session);
 
 			_records = records;
+		}
+
+		private Session _getSession() {
+			return session;
 		}
 
 		private void _record(Object object) {

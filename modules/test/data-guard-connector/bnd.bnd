@@ -8,5 +8,5 @@ Import-Package:\
 -includeresource:\
 	@com.liferay.portal.test-*.jar!/com/liferay/portal/kernel/test/rule/DataGuardTestRuleUtil.class,\
 	@com.liferay.portal.test-*.jar!/com/liferay/portal/kernel/test/rule/DataGuardTestRuleUtil$DataBag.class,\
-	@com.liferay.portal.test-*.jar!/com/liferay/portal/kernel/test/rule/DataGuardTestRuleUtil$RecordingSessionCustomizer.class,\
+	@com.liferay.portal.test-*.jar!/com/liferay/portal/kernel/test/rule/DataGuardTestRuleUtil$RecordingSessionFactory.class,\
 	@com.liferay.portal.test-*.jar!/com/liferay/portal/kernel/test/rule/DataGuardTestRuleUtil$RecordingSessionWrapper.class
