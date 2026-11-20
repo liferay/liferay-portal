@@ -12,12 +12,15 @@ import com.liferay.commerce.model.CommerceShipmentItem;
 import com.liferay.commerce.service.CommerceOrderItemService;
 import com.liferay.commerce.service.base.CommerceShipmentItemServiceBaseImpl;
 import com.liferay.commerce.service.persistence.CommerceOrderItemPersistence;
+import com.liferay.commerce.service.persistence.CommerceShipmentPersistence;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.math.BigDecimal;
 
@@ -47,8 +50,7 @@ public class CommerceShipmentItemServiceImpl
 			boolean validateInventory, ServiceContext serviceContext)
 		throws PortalException {
 
-		_commerceShipmentModelResourcePermission.check(
-			getPermissionChecker(), commerceShipmentId, ActionKeys.UPDATE);
+		_checkPermission(commerceOrderItemId, commerceShipmentId);
 
 		return commerceShipmentItemLocalService.addCommerceShipmentItem(
 			externalReferenceCode, commerceShipmentId, commerceOrderItemId,
@@ -64,8 +66,22 @@ public class CommerceShipmentItemServiceImpl
 			boolean validateInventory, ServiceContext serviceContext)
 		throws PortalException {
 
-		_commerceShipmentModelResourcePermission.check(
-			getPermissionChecker(), commerceShipmentId, ActionKeys.UPDATE);
+		CommerceShipmentItem commerceShipmentItem = null;
+
+		if (Validator.isNotNull(externalReferenceCode)) {
+			commerceShipmentItem = commerceShipmentItemPersistence.fetchByERC_C(
+				externalReferenceCode, serviceContext.getCompanyId());
+		}
+
+		if (commerceShipmentItem == null) {
+			_checkPermission(commerceOrderItemId, commerceShipmentId);
+		}
+		else {
+			_commerceShipmentModelResourcePermission.check(
+				getPermissionChecker(),
+				commerceShipmentItem.getCommerceShipmentId(),
+				ActionKeys.UPDATE);
+		}
 
 		return commerceShipmentItemLocalService.addOrUpdateCommerceShipmentItem(
 			externalReferenceCode, commerceShipmentId, commerceOrderItemId,
@@ -223,8 +239,13 @@ public class CommerceShipmentItemServiceImpl
 			boolean validateInventory)
 		throws PortalException {
 
+		CommerceShipmentItem commerceShipmentItem =
+			commerceShipmentItemPersistence.findByPrimaryKey(
+				commerceShipmentItemId);
+
 		_commerceShipmentModelResourcePermission.check(
-			getPermissionChecker(), commerceShipmentId, ActionKeys.UPDATE);
+			getPermissionChecker(),
+			commerceShipmentItem.getCommerceShipmentId(), ActionKeys.UPDATE);
 
 		return commerceShipmentItemLocalService.updateCommerceShipmentItem(
 			commerceShipmentItemId, commerceInventoryWarehouseId, quantity,
@@ -237,11 +258,41 @@ public class CommerceShipmentItemServiceImpl
 			String externalReferenceCode)
 		throws PortalException {
 
+		CommerceShipmentItem commerceShipmentItem =
+			commerceShipmentItemPersistence.findByPrimaryKey(
+				commerceShipmentItemId);
+
 		_commerceShipmentModelResourcePermission.check(
-			getPermissionChecker(), commerceShipmentId, ActionKeys.UPDATE);
+			getPermissionChecker(),
+			commerceShipmentItem.getCommerceShipmentId(), ActionKeys.UPDATE);
 
 		return commerceShipmentItemLocalService.updateExternalReferenceCode(
 			commerceShipmentItemId, externalReferenceCode);
+	}
+
+	private void _checkPermission(
+			long commerceOrderItemId, long commerceShipmentId)
+		throws PortalException {
+
+		_commerceShipmentModelResourcePermission.check(
+			getPermissionChecker(), commerceShipmentId, ActionKeys.UPDATE);
+
+		CommerceOrderItem commerceOrderItem =
+			_commerceOrderItemPersistence.findByPrimaryKey(commerceOrderItemId);
+
+		CommerceOrder commerceOrder = commerceOrderItem.getCommerceOrder();
+
+		CommerceShipment commerceShipment =
+			_commerceShipmentPersistence.findByPrimaryKey(commerceShipmentId);
+
+		if ((commerceOrder.getCommerceAccountId() !=
+				commerceShipment.getCommerceAccountId()) ||
+			(commerceOrder.getGroupId() != commerceShipment.getGroupId())) {
+
+			throw new PrincipalException.MustHavePermission(
+				getPermissionChecker(), CommerceOrder.class.getName(),
+				commerceOrder.getCommerceOrderId(), ActionKeys.UPDATE);
+		}
 	}
 
 	@Reference
@@ -261,5 +312,8 @@ public class CommerceShipmentItemServiceImpl
 	)
 	private ModelResourcePermission<CommerceShipment>
 		_commerceShipmentModelResourcePermission;
+
+	@Reference
+	private CommerceShipmentPersistence _commerceShipmentPersistence;
 
 }
