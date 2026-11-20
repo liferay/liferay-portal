@@ -731,7 +731,7 @@ test(
 	}
 );
 
-test.skip(
+test(
 	'Path analysis shows the outside pages that were interacted with in DXP',
 	{
 		tag: '@LRAC-14827',
