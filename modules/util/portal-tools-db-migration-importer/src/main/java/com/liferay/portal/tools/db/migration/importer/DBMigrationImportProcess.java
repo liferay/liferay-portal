@@ -272,14 +272,14 @@ public class DBMigrationImportProcess {
 			partitionName = "Default";
 		}
 
+		String customTableAndColumnInfos = StringUtil.merge(
+			dbCopyTablesProcess.getCustomTableAndColumnInfos(),
+			StringPool.NEW_LINE + partitionName + " partition ");
+
 		Set<String> sourceTableNames = _getNames(sourceDataSource, "TABLE");
 		Set<String> sourceViewNames = _getNames(sourceDataSource, "VIEW");
 		Set<String> targetTableNames = _getNames(targetDataSource, "TABLE");
 		Set<String> targetViewNames = _getNames(targetDataSource, "VIEW");
-
-		String customTableAndColumnInfos = StringUtil.merge(
-			dbCopyTablesProcess.getCustomTableAndColumnInfos(),
-			StringPool.NEW_LINE + partitionName + " partition ");
 
 		return StringUtil.merge(
 			new Object[] {
