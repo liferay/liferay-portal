@@ -5,7 +5,10 @@
 
 package com.liferay.commerce.service.test;
 
+import com.liferay.account.model.AccountEntry;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.commerce.constants.CommerceOrderActionKeys;
+import com.liferay.commerce.constants.CommerceOrderConstants;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.test.util.CommerceCurrencyTestUtil;
 import com.liferay.commerce.model.CommerceOrder;
@@ -14,6 +17,7 @@ import com.liferay.commerce.model.CommerceShipmentItem;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.test.util.CPTestUtil;
 import com.liferay.commerce.service.CommerceShipmentItemService;
+import com.liferay.commerce.service.CommerceShipmentLocalService;
 import com.liferay.commerce.shipment.test.util.CommerceShipmentTestUtil;
 import com.liferay.commerce.test.util.CommerceTestUtil;
 import com.liferay.commerce.test.util.context.TestCommerceContext;
@@ -71,17 +75,29 @@ public class CommerceShipmentItemServiceTest {
 		_commerceShipmentItem1 = _addCommerceShipmentItem(commerceCurrency);
 		_commerceShipmentItem2 = _addCommerceShipmentItem(commerceCurrency);
 
-		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+		_role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
 
 		_resourcePermissionLocalService.setResourcePermissions(
 			TestPropsValues.getCompanyId(), CommerceShipment.class.getName(),
 			ResourceConstants.SCOPE_INDIVIDUAL,
 			String.valueOf(_commerceShipmentItem1.getCommerceShipmentId()),
-			role.getRoleId(), new String[] {ActionKeys.UPDATE});
+			_role.getRoleId(), new String[] {ActionKeys.UPDATE});
+
+		CommerceShipment commerceShipment =
+			_commerceShipmentItem1.getCommerceShipment();
+
+		AccountEntry accountEntry = commerceShipment.getAccountEntry();
+
+		_resourcePermissionLocalService.setResourcePermissions(
+			TestPropsValues.getCompanyId(),
+			CommerceOrderConstants.RESOURCE_NAME, ResourceConstants.SCOPE_GROUP,
+			String.valueOf(accountEntry.getAccountEntryGroupId()),
+			_role.getRoleId(),
+			new String[] {CommerceOrderActionKeys.MANAGE_COMMERCE_ORDERS});
 
 		_user = UserTestUtil.addUser();
 
-		_roleLocalService.addUserRole(_user.getUserId(), role);
+		_roleLocalService.addUserRole(_user.getUserId(), _role);
 
 		_serviceContext = ServiceContextTestUtil.getServiceContext(
 			_commerceShipmentItem1.getGroupId(), _user.getUserId());
@@ -103,6 +119,44 @@ public class CommerceShipmentItemServiceTest {
 					null, _commerceShipmentItem1.getCommerceShipmentId(),
 					_commerceShipmentItem2.getCommerceOrderItemId(), 0,
 					BigDecimal.ONE, null, false, _serviceContext));
+
+			CommerceShipment commerceShipment2 =
+				_commerceShipmentItem2.getCommerceShipment();
+
+			CommerceShipment commerceShipment3 =
+				_commerceShipmentLocalService.addCommerceShipment(
+					null, commerceShipment2.getGroupId(),
+					commerceShipment2.getCommerceAccountId(), 0, 0, null,
+					_serviceContext);
+
+			Assert.assertThrows(
+				PrincipalException.class,
+				() -> _commerceShipmentItemService.addCommerceShipmentItem(
+					null, commerceShipment3.getCommerceShipmentId(),
+					_commerceShipmentItem2.getCommerceOrderItemId(), 0,
+					BigDecimal.ONE, null, false, _serviceContext));
+
+			AccountEntry accountEntry = commerceShipment2.getAccountEntry();
+
+			_resourcePermissionLocalService.setResourcePermissions(
+				TestPropsValues.getCompanyId(),
+				CommerceOrderConstants.RESOURCE_NAME,
+				ResourceConstants.SCOPE_GROUP,
+				String.valueOf(accountEntry.getAccountEntryGroupId()),
+				_role.getRoleId(),
+				new String[] {CommerceOrderActionKeys.MANAGE_COMMERCE_ORDERS});
+
+			Assert.assertThrows(
+				PrincipalException.class,
+				() -> _commerceShipmentItemService.addCommerceShipmentItem(
+					null, _commerceShipmentItem1.getCommerceShipmentId(),
+					_commerceShipmentItem2.getCommerceOrderItemId(), 0,
+					BigDecimal.ONE, null, false, _serviceContext));
+
+			_commerceShipmentItemService.addCommerceShipmentItem(
+				null, commerceShipment3.getCommerceShipmentId(),
+				_commerceShipmentItem2.getCommerceOrderItemId(), 0,
+				BigDecimal.ONE, null, false, _serviceContext);
 		}
 	}
 
@@ -218,7 +272,12 @@ public class CommerceShipmentItemServiceTest {
 	private CommerceShipmentItemService _commerceShipmentItemService;
 
 	@Inject
+	private CommerceShipmentLocalService _commerceShipmentLocalService;
+
+	@Inject
 	private ResourcePermissionLocalService _resourcePermissionLocalService;
+
+	private Role _role;
 
 	@Inject
 	private RoleLocalService _roleLocalService;
