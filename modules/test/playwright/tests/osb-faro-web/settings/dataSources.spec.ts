@@ -232,7 +232,7 @@ test(
 			await goToDataSources();
 
 			await expect(
-				page.getByText('No Data Sources Connected')
+				page.getByText('No Data Sources Are Connected')
 			).toBeVisible();
 
 			await expect(

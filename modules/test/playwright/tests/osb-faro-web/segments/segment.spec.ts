@@ -858,9 +858,7 @@ test(
 				searchTerm: 'NonExistentSegment',
 			});
 
-			await expect(
-				page.getByText('No results were found.')
-			).toBeVisible();
+			await expect(page.getByText('No Results Were Found')).toBeVisible();
 
 			// Sort by Name ascending then toggle to descending
 

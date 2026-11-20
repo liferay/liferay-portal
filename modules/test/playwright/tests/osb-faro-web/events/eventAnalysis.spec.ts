@@ -1379,7 +1379,7 @@ test(
 
 		await page.keyboard.press('Enter');
 
-		await expect(page.getByText('No results were found.')).toBeVisible();
+		await expect(page.getByText('No Results Were Found')).toBeVisible();
 	}
 );
 
@@ -1794,7 +1794,7 @@ test(
 
 		await page.keyboard.press('Enter');
 
-		await expect(page.getByText('No results were found.')).toBeVisible();
+		await expect(page.getByText('No Results Were Found')).toBeVisible();
 	}
 );
 
@@ -3003,7 +3003,7 @@ test(
 
 		await page.goto(deletedAnalysisURL);
 
-		await expect(page.getByText('Analysis Not Found')).toBeVisible();
+		await expect(page.getByText('Analysis Was Not Found')).toBeVisible();
 
 		// Bulk delete the remaining analyses
 

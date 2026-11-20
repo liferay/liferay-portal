@@ -54,7 +54,7 @@ test(
 			});
 
 			await expect(
-				page.getByText('No Data Sources Connected')
+				page.getByText('No Data Sources Are Connected')
 			).toBeVisible();
 			await expect(
 				page.getByText('Add a data source to get started.')
@@ -87,7 +87,9 @@ test(
 				projectID: project.groupId,
 			});
 
-			await expect(page.getByText('No Properties Found')).toBeVisible();
+			await expect(
+				page.getByText('No Properties Were Found')
+			).toBeVisible();
 			await expect(
 				page.getByText('Create a property to get started.')
 			).toBeVisible();
@@ -148,7 +150,9 @@ test(
 
 			await page.goto(`${faroConfig.environment.baseUrl}${href}`);
 
-			await expect(page.getByText('No Sample Data Found')).toBeVisible();
+			await expect(
+				page.getByText('No Sample Data Was Found')
+			).toBeVisible();
 			await expect(
 				page.getByText(
 					'You can come back later and check if there is any data received from your events.Learn more about event tracking'
@@ -181,7 +185,7 @@ test(
 			});
 
 			await expect(
-				page.getByText('No Custom Events Found')
+				page.getByText('No Custom Events Were Found')
 			).toBeVisible();
 			await expect(
 				page.getByText('Create some custom events to get started.')
@@ -241,7 +245,9 @@ test(
 				projectID: project.groupId,
 			});
 
-			await expect(page.getByText('No Requests Found')).toBeVisible();
+			await expect(
+				page.getByText('No Requests Were Found')
+			).toBeVisible();
 			await expect(
 				page.getByText('Create a request to get started.')
 			).toBeVisible();
