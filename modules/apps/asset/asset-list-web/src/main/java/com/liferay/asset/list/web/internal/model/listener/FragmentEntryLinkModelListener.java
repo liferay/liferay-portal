@@ -24,8 +24,10 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -109,6 +111,9 @@ public class FragmentEntryLinkModelListener
 			_getCollectionSelectorFragmentConfigurationFields(
 				fragmentEntryLink);
 
+		Set<String> assetListEntryClassPKs = new HashSet<>();
+		Set<String> infoCollectionProviderKeys = new HashSet<>();
+
 		for (FragmentConfigurationField fragmentConfigurationField :
 				fragmentConfigurationFields) {
 
@@ -125,24 +130,31 @@ public class FragmentEntryLinkModelListener
 			JSONObject fieldValueJSONObject = (JSONObject)fieldValue;
 
 			if (fieldValueJSONObject.has("key")) {
-				_addAssetListEntryUsage(
-					_portal.getClassNameId(
-						InfoCollectionProvider.class.getName()),
-					fragmentEntryLink.getFragmentEntryLinkId(),
-					fragmentEntryLink.getGroupId(),
-					fieldValueJSONObject.getString("key"),
-					fragmentEntryLink.getPlid(), fragmentEntryLink.getUserId());
+				infoCollectionProviderKeys.add(
+					fieldValueJSONObject.getString("key"));
 			}
 
 			if (!fieldValueJSONObject.has("classPK")) {
 				continue;
 			}
 
+			assetListEntryClassPKs.add(
+				fieldValueJSONObject.getString("classPK"));
+		}
+
+		for (String key : infoCollectionProviderKeys) {
+			_addAssetListEntryUsage(
+				_portal.getClassNameId(InfoCollectionProvider.class.getName()),
+				fragmentEntryLink.getFragmentEntryLinkId(),
+				fragmentEntryLink.getGroupId(), key,
+				fragmentEntryLink.getPlid(), fragmentEntryLink.getUserId());
+		}
+
+		for (String classPK : assetListEntryClassPKs) {
 			_addAssetListEntryUsage(
 				_portal.getClassNameId(AssetListEntry.class.getName()),
 				fragmentEntryLink.getFragmentEntryLinkId(),
-				fragmentEntryLink.getGroupId(),
-				fieldValueJSONObject.getString("classPK"),
+				fragmentEntryLink.getGroupId(), classPK,
 				fragmentEntryLink.getPlid(), fragmentEntryLink.getUserId());
 		}
 	}
