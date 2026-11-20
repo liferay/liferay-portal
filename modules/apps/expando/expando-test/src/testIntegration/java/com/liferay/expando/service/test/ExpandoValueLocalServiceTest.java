@@ -198,6 +198,16 @@ public class ExpandoValueLocalServiceTest {
 		ExpandoTestUtil.addValues(_expandoTable, classPK, attributes);
 
 		Assert.assertEquals(
+			attributes,
+			_expandoValueLocalService.getData(
+				_expandoTable.getCompanyId(), _expandoTable.getClassName(),
+				_expandoTable.getName(), attributes.keySet(), classPK));
+		Assert.assertEquals(
+			attributes,
+			_expandoValueLocalService.getData(
+				_expandoTable.getCompanyId(), _expandoTable.getClassName(),
+				_expandoTable.getName(), classPK));
+		Assert.assertEquals(
 			data1,
 			_expandoValueLocalService.getData(
 				_expandoTable.getCompanyId(), _expandoTable.getClassName(),
@@ -212,16 +222,6 @@ public class ExpandoValueLocalServiceTest {
 			_expandoValueLocalService.getData(
 				_expandoTable.getCompanyId(), _expandoTable.getClassName(),
 				_expandoTable.getName(), column3.getName(), classPK));
-		Assert.assertEquals(
-			attributes,
-			_expandoValueLocalService.getData(
-				_expandoTable.getCompanyId(), _expandoTable.getClassName(),
-				_expandoTable.getName(), attributes.keySet(), classPK));
-		Assert.assertEquals(
-			attributes,
-			_expandoValueLocalService.getData(
-				_expandoTable.getCompanyId(), _expandoTable.getClassName(),
-				_expandoTable.getName(), classPK));
 	}
 
 	@Test
