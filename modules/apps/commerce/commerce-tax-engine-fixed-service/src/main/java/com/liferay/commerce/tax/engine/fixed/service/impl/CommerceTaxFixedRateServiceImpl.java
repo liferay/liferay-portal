@@ -5,10 +5,17 @@
 
 package com.liferay.commerce.tax.engine.fixed.service.impl;
 
+import com.liferay.commerce.product.exception.NoSuchCPTaxCategoryException;
+import com.liferay.commerce.product.model.CPTaxCategory;
 import com.liferay.commerce.product.model.CommerceChannel;
+import com.liferay.commerce.product.service.CPTaxCategoryLocalService;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.tax.engine.fixed.model.CommerceTaxFixedRate;
 import com.liferay.commerce.tax.engine.fixed.service.base.CommerceTaxFixedRateServiceBaseImpl;
+import com.liferay.commerce.tax.exception.NoSuchTaxMethodException;
+import com.liferay.commerce.tax.model.CommerceTaxMethod;
+import com.liferay.commerce.tax.service.CommerceTaxMethodLocalService;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
@@ -56,10 +63,24 @@ public class CommerceTaxFixedRateServiceImpl
 			double rate)
 		throws PortalException {
 
-		_checkCommerceChannel(groupId);
+		CommerceTaxMethod commerceTaxMethod =
+			_commerceTaxMethodLocalService.getCommerceTaxMethod(
+				commerceTaxMethodId);
+
+		_checkPermission(groupId, commerceTaxMethod);
+
+		CPTaxCategory cpTaxCategory =
+			_cpTaxCategoryLocalService.getCPTaxCategory(cpTaxCategoryId);
+
+		if (commerceTaxMethod.getCompanyId() != cpTaxCategory.getCompanyId()) {
+			throw new NoSuchCPTaxCategoryException(
+				"No CPTaxCategory exists with the primary key " +
+					cpTaxCategoryId);
+		}
 
 		return commerceTaxFixedRateLocalService.addCommerceTaxFixedRate(
-			getUserId(), groupId, commerceTaxMethodId, cpTaxCategoryId, rate);
+			getUserId(), commerceTaxMethod.getGroupId(), commerceTaxMethodId,
+			cpTaxCategoryId, rate);
 	}
 
 	@Override
@@ -70,7 +91,10 @@ public class CommerceTaxFixedRateServiceImpl
 			commerceTaxFixedRatePersistence.findByPrimaryKey(
 				commerceTaxFixedRateId);
 
-		_checkCommerceChannel(commerceTaxFixedRate.getGroupId());
+		_checkPermission(
+			0,
+			_commerceTaxMethodLocalService.getCommerceTaxMethod(
+				commerceTaxFixedRate.getCommerceTaxMethodId()));
 
 		commerceTaxFixedRateLocalService.deleteCommerceTaxFixedRate(
 			commerceTaxFixedRate);
@@ -86,7 +110,10 @@ public class CommerceTaxFixedRateServiceImpl
 				commerceTaxFixedRateId);
 
 		if (commerceTaxFixedRate != null) {
-			_checkCommerceChannel(commerceTaxFixedRate.getGroupId());
+			_checkPermission(
+				0,
+				_commerceTaxMethodLocalService.getCommerceTaxMethod(
+					commerceTaxFixedRate.getCommerceTaxMethodId()));
 		}
 
 		return commerceTaxFixedRate;
@@ -102,7 +129,10 @@ public class CommerceTaxFixedRateServiceImpl
 				cpTaxCategoryId, commerceTaxMethodId);
 
 		if (commerceTaxFixedRate != null) {
-			_checkCommerceChannel(commerceTaxFixedRate.getGroupId());
+			_checkPermission(
+				0,
+				_commerceTaxMethodLocalService.getCommerceTaxMethod(
+					commerceTaxFixedRate.getCommerceTaxMethodId()));
 		}
 
 		return commerceTaxFixedRate;
@@ -114,7 +144,10 @@ public class CommerceTaxFixedRateServiceImpl
 			OrderByComparator<CommerceTaxFixedRate> orderByComparator)
 		throws PortalException {
 
-		_checkCommerceChannel(groupId);
+		_checkPermission(
+			groupId,
+			_commerceTaxMethodLocalService.getCommerceTaxMethod(
+				commerceTaxMethodId));
 
 		return commerceTaxFixedRatePersistence.findByCommerceTaxMethodId(
 			commerceTaxMethodId, start, end, orderByComparator);
@@ -125,7 +158,10 @@ public class CommerceTaxFixedRateServiceImpl
 			long groupId, long commerceTaxMethodId)
 		throws PortalException {
 
-		_checkCommerceChannel(groupId);
+		_checkPermission(
+			groupId,
+			_commerceTaxMethodLocalService.getCommerceTaxMethod(
+				commerceTaxMethodId));
 
 		return commerceTaxFixedRatePersistence.countByCommerceTaxMethodId(
 			commerceTaxMethodId);
@@ -140,15 +176,30 @@ public class CommerceTaxFixedRateServiceImpl
 			commerceTaxFixedRatePersistence.findByPrimaryKey(
 				commerceTaxFixedRateId);
 
-		_checkCommerceChannel(commerceTaxFixedRate.getGroupId());
+		_checkPermission(
+			0,
+			_commerceTaxMethodLocalService.getCommerceTaxMethod(
+				commerceTaxFixedRate.getCommerceTaxMethodId()));
 
 		return commerceTaxFixedRateLocalService.updateCommerceTaxFixedRate(
 			commerceTaxFixedRateId, rate);
 	}
 
-	private void _checkCommerceChannel(long groupId) throws PortalException {
+	private void _checkPermission(
+			long groupId, CommerceTaxMethod commerceTaxMethod)
+		throws PortalException {
+
+		if ((groupId > 0) && (commerceTaxMethod.getGroupId() != groupId)) {
+			throw new NoSuchTaxMethodException(
+				StringBundler.concat(
+					"No CommerceTaxMethod exists with the primary key ",
+					commerceTaxMethod.getCommerceTaxMethodId(), " in group ",
+					groupId));
+		}
+
 		CommerceChannel commerceChannel =
-			_commerceChannelLocalService.getCommerceChannelByGroupId(groupId);
+			_commerceChannelLocalService.getCommerceChannelByGroupId(
+				commerceTaxMethod.getGroupId());
 
 		_commerceChannelModelResourcePermission.check(
 			getPermissionChecker(), commerceChannel, ActionKeys.UPDATE);
@@ -162,5 +213,11 @@ public class CommerceTaxFixedRateServiceImpl
 	)
 	private ModelResourcePermission<CommerceChannel>
 		_commerceChannelModelResourcePermission;
+
+	@Reference
+	private CommerceTaxMethodLocalService _commerceTaxMethodLocalService;
+
+	@Reference
+	private CPTaxCategoryLocalService _cpTaxCategoryLocalService;
 
 }
