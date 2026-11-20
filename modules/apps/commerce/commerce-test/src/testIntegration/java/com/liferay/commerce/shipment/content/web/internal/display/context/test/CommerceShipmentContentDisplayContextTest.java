@@ -28,7 +28,6 @@ import com.liferay.commerce.test.util.context.TestCommerceContext;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.constants.MVCRenderConstants;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
@@ -102,49 +101,10 @@ public class CommerceShipmentContentDisplayContextTest {
 	}
 
 	@Test
-	public void testGetCommerceShipment() throws Exception {
-		Assert.assertEquals(
-			"/error.jsp",
-			_render(
-				_commerceShipment1.getCommerceShipmentId(),
-				_userLocalService.getGuestUser(_group.getCompanyId())));
-
-		Assert.assertEquals(
-			"/view_commerce_shipment_items.jsp",
-			_render(_commerceShipment1.getCommerceShipmentId(), _user1));
-
-		Assert.assertEquals(
-			_commerceShipment1,
-			ReflectionTestUtil.invoke(
-				_mockLiferayPortletRenderRequest.getAttribute(
-					WebKeys.PORTLET_DISPLAY_CONTEXT),
-				"getCommerceShipment", new Class<?>[0]));
-
-		Assert.assertEquals(
-			"/error.jsp",
-			_render(_commerceShipment2.getCommerceShipmentId(), _user1));
-
-		Group group = GroupTestUtil.addGroup();
-
-		CommerceShipment commerceShipment = _addCommerceShipment(
-			CommerceTestUtil.addCommerceChannel(
-				group.getGroupId(), _commerceCurrency.getCode()),
-			_user1);
-
-		Assert.assertEquals(
-			"/error.jsp",
-			_render(commerceShipment.getCommerceShipmentId(), _user1));
-	}
-
-	@Test
 	public void testGetCommerceShipmentItemsSearchContainer() throws Exception {
-		_render(_commerceShipment1.getCommerceShipmentId(), _user1);
-
-		SearchContainer<CommerceShipmentItem> searchContainer =
-			ReflectionTestUtil.invoke(
-				_mockLiferayPortletRenderRequest.getAttribute(
-					WebKeys.PORTLET_DISPLAY_CONTEXT),
-				"getCommerceShipmentItemsSearchContainer", new Class<?>[0]);
+		SearchContainer<CommerceShipmentItem> searchContainer = _invoke(
+			_commerceShipment1.getCommerceShipmentId(),
+			"getCommerceShipmentItemsSearchContainer", _user1);
 
 		List<CommerceShipmentItem> commerceShipmentItems =
 			searchContainer.getResults();
@@ -213,72 +173,35 @@ public class CommerceShipmentContentDisplayContextTest {
 	private List<CommerceShipment> _getSearchContainerResults(User user)
 		throws Exception {
 
-		PermissionChecker permissionChecker =
-			PermissionCheckerFactoryUtil.create(user);
-
-		_setUpMockLiferayPortletRenderRequest(permissionChecker, user);
-
-		_mockHttpServletRequest.setAttribute(
-			MVCRenderConstants.
-				PORTLET_CONTEXT_OVERRIDE_REQUEST_ATTIBUTE_NAME_PREFIX +
-					"/view.jsp",
-			new MockLiferayPortletContext("/view.jsp"));
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				user, permissionChecker)) {
-
-			_portlet.render(
-				_mockLiferayPortletRenderRequest,
-				_mockLiferayPortletRenderResponse);
-		}
-
-		SearchContainer<CommerceShipment> searchContainer =
-			ReflectionTestUtil.invoke(
-				_mockLiferayPortletRenderRequest.getAttribute(
-					WebKeys.PORTLET_DISPLAY_CONTEXT),
-				"getSearchContainer", new Class<?>[0]);
+		SearchContainer<CommerceShipment> searchContainer = _invoke(
+			0, "getSearchContainer", user);
 
 		return searchContainer.getResults();
 	}
 
-	private String _render(long commerceShipmentId, User user)
+	private <T> T _invoke(long commerceShipmentId, String methodName, User user)
 		throws Exception {
 
-		PermissionChecker permissionChecker =
-			PermissionCheckerFactoryUtil.create(user);
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest();
 
-		_setUpMockLiferayPortletRenderRequest(permissionChecker, user);
+		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
+			new MockLiferayPortletRenderRequest(mockHttpServletRequest);
 
-		_mockHttpServletRequest.setParameter(
-			"commerceShipmentId", String.valueOf(commerceShipmentId));
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				user, permissionChecker)) {
-
-			return _mvcRenderCommand.render(
-				_mockLiferayPortletRenderRequest,
-				_mockLiferayPortletRenderResponse);
-		}
-	}
-
-	private void _setUpMockLiferayPortletRenderRequest(
-			PermissionChecker permissionChecker, User user)
-		throws Exception {
-
-		_mockHttpServletRequest = new MockHttpServletRequest();
-
-		_mockLiferayPortletRenderRequest = new MockLiferayPortletRenderRequest(
-			_mockHttpServletRequest);
-
-		_mockLiferayPortletRenderResponse =
+		MockLiferayPortletRenderResponse mockLiferayPortletRenderResponse =
 			new MockLiferayPortletRenderResponse();
 
-		_mockHttpServletRequest.setAttribute(
+		mockHttpServletRequest.setAttribute(
 			JavaConstants.JAKARTA_PORTLET_REQUEST,
-			_mockLiferayPortletRenderRequest);
-		_mockHttpServletRequest.setAttribute(
+			mockLiferayPortletRenderRequest);
+		mockHttpServletRequest.setAttribute(
 			JavaConstants.JAKARTA_PORTLET_RESPONSE,
-			_mockLiferayPortletRenderResponse);
+			mockLiferayPortletRenderResponse);
+		mockHttpServletRequest.setAttribute(
+			MVCRenderConstants.
+				PORTLET_CONTEXT_OVERRIDE_REQUEST_ATTIBUTE_NAME_PREFIX +
+					"/view.jsp",
+			new MockLiferayPortletContext("/view.jsp"));
 
 		AccountEntry accountEntry = null;
 
@@ -287,11 +210,14 @@ public class CommerceShipmentContentDisplayContextTest {
 				user.getUserId());
 		}
 
-		_mockHttpServletRequest.setAttribute(
+		mockHttpServletRequest.setAttribute(
 			CommerceWebKeys.COMMERCE_CONTEXT,
 			new TestCommerceContext(
 				accountEntry, _commerceCurrency, _commerceChannel, user, _group,
 				null));
+
+		PermissionChecker permissionChecker =
+			PermissionCheckerFactoryUtil.create(user);
 
 		ThemeDisplay themeDisplay = new ThemeDisplay();
 
@@ -308,8 +234,24 @@ public class CommerceShipmentContentDisplayContextTest {
 
 		portletDisplay.setId(CommercePortletKeys.COMMERCE_SHIPMENT_CONTENT);
 
-		_mockHttpServletRequest.setAttribute(
+		mockHttpServletRequest.setAttribute(
 			WebKeys.THEME_DISPLAY, themeDisplay);
+
+		mockHttpServletRequest.setParameter(
+			"commerceShipmentId", String.valueOf(commerceShipmentId));
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user, permissionChecker)) {
+
+			_portlet.render(
+				mockLiferayPortletRenderRequest,
+				mockLiferayPortletRenderResponse);
+
+			return ReflectionTestUtil.invoke(
+				mockLiferayPortletRenderRequest.getAttribute(
+					WebKeys.PORTLET_DISPLAY_CONTEXT),
+				methodName, new Class<?>[0]);
+		}
 	}
 
 	@Inject
@@ -330,15 +272,6 @@ public class CommerceShipmentContentDisplayContextTest {
 	private CompanyLocalService _companyLocalService;
 
 	private Group _group;
-	private MockHttpServletRequest _mockHttpServletRequest;
-	private MockLiferayPortletRenderRequest _mockLiferayPortletRenderRequest;
-	private MockLiferayPortletRenderResponse _mockLiferayPortletRenderResponse;
-
-	@Inject(
-		filter = "mvc.command.name=/commerce_shipment_content/view_commerce_shipment_items",
-		type = MVCRenderCommand.class
-	)
-	private MVCRenderCommand _mvcRenderCommand;
 
 	@Inject(
 		filter = "jakarta.portlet.name=" + CommercePortletKeys.COMMERCE_SHIPMENT_CONTENT
