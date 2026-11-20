@@ -174,9 +174,6 @@ public class AopConfigurableApplicationContextConfigurator
 			sessionFactoryImpl.setSessionFactoryImplementor(
 				liferayHibernateSessionFactory);
 
-			defaultSingletonBeanRegistry.registerDisposableBean(
-				"liferaySessionFactoryDestroyer", sessionFactoryImpl::destroy);
-
 			SessionFactory sessionFactory =
 				VerifySessionFactoryWrapper.createVerifySessionFactoryWrapper(
 					sessionFactoryImpl);
