@@ -540,7 +540,7 @@ public class ObjectEntryResourceCategorizationTest
 	private void _testPostObjectEntryWithCrossSiteTaxonomyCategories()
 		throws Exception {
 
-		// Can add a category from a connected depot entry
+		// Can add a taxonomy category from a connected depot entry
 
 		DepotEntry depotEntry = depotEntryLocalService.addDepotEntry(
 			RandomTestUtil.randomLocaleStringMap(),
@@ -579,7 +579,7 @@ public class ObjectEntryResourceCategorizationTest
 		_depotEntryGroupRelLocalService.deleteDepotEntryGroupRel(
 			depotEntryGroupRel.getDepotEntryGroupRelId());
 
-		// Can add a category from a parent site
+		// Can add a taxonomy category from a parent site
 
 		AssetVocabulary siteAssetVocabulary =
 			assetVocabularyLocalService.addVocabulary(
@@ -611,7 +611,7 @@ public class ObjectEntryResourceCategorizationTest
 
 		groupLocalService.deleteGroup(childGroup);
 
-		// Can add a category from a space associated vocabulary
+		// Can add a taxonomy category from a space associated asset vocabulary
 
 		AssetVocabulary sharedAssetVocabulary =
 			assetVocabularyLocalService.addVocabulary(
@@ -663,7 +663,7 @@ public class ObjectEntryResourceCategorizationTest
 
 		assetVocabularyLocalService.deleteVocabulary(sharedAssetVocabulary);
 
-		// Can add a category from a system vocabulary
+		// Can add a taxonomy category from a system asset vocabulary
 
 		AssetVocabularySettingsHelper assetVocabularySettingsHelper =
 			new AssetVocabularySettingsHelper();
@@ -729,7 +729,7 @@ public class ObjectEntryResourceCategorizationTest
 			GroupThreadLocal.setDeleteInProcess(deleteInProcess);
 		}
 
-		// Can add a category from an all spaces vocabulary
+		// Can add a taxonomy category from an all spaces asset vocabulary
 
 		AssetVocabulary allSpacesAssetVocabulary =
 			assetVocabularyLocalService.addVocabulary(
@@ -764,7 +764,7 @@ public class ObjectEntryResourceCategorizationTest
 
 		assetVocabularyLocalService.deleteVocabulary(allSpacesAssetVocabulary);
 
-		// Cannot add a category from a foreign site
+		// Cannot add a taxonomy category from an irrelevant site
 
 		Assert.assertEquals(
 			400,
@@ -778,19 +778,19 @@ public class ObjectEntryResourceCategorizationTest
 				getEndpoint(getSiteScopedObjectDefinition1(), testGroupId),
 				Http.Method.POST));
 
-		// Cannot add a category from an unassociated vocabulary
+		// Cannot add a taxonomy category from an irrelevant asset vocabulary
 
-		AssetVocabulary foreignAssetVocabulary =
+		AssetVocabulary irrelevantAssetVocabulary =
 			assetVocabularyLocalService.addVocabulary(
 				TestPropsValues.getUserId(), group.getGroupId(),
 				RandomTestUtil.randomString(
 					UniqueStringRandomizerBumper.INSTANCE),
 				new ServiceContext());
 
-		TaxonomyCategory foreignTaxonomyCategory =
+		TaxonomyCategory irrelevantTaxonomyCategory =
 			postTaxonomyVocabularyTaxonomyCategory(
-				foreignAssetVocabulary.getGroupId(),
-				foreignAssetVocabulary.getVocabularyId());
+				irrelevantAssetVocabulary.getGroupId(),
+				irrelevantAssetVocabulary.getVocabularyId());
 
 		Assert.assertEquals(
 			400,
@@ -810,15 +810,16 @@ public class ObjectEntryResourceCategorizationTest
 							)
 						).put(
 							"taxonomyCategoryExternalReferenceCode",
-							foreignTaxonomyCategory.getExternalReferenceCode()
+							irrelevantTaxonomyCategory.
+								getExternalReferenceCode()
 						))
 				).toString(),
 				getEndpoint(getSiteScopedObjectDefinition1(), testGroupId),
 				Http.Method.POST));
 
-		assetVocabularyLocalService.deleteVocabulary(foreignAssetVocabulary);
+		assetVocabularyLocalService.deleteVocabulary(irrelevantAssetVocabulary);
 
-		// Cannot add a category to a company scoped entry
+		// Cannot add a taxonomy category to a company scoped entry
 
 		ObjectDefinition objectDefinition = getObjectDefinition1();
 
@@ -833,7 +834,7 @@ public class ObjectEntryResourceCategorizationTest
 				).toString(),
 				objectDefinition.getRESTContextPath(), Http.Method.POST));
 
-		// Cannot add a category via UPSERT
+		// Cannot add a taxonomy category via UPSERT
 
 		Assert.assertEquals(
 			400,
@@ -850,7 +851,7 @@ public class ObjectEntryResourceCategorizationTest
 					RandomTestUtil.randomString()),
 				Http.Method.PUT));
 
-		// No empty category is created
+		// No empty taxonomy category is created
 
 		String externalReferenceCode = RandomTestUtil.randomString(
 			UniqueStringRandomizerBumper.INSTANCE);
