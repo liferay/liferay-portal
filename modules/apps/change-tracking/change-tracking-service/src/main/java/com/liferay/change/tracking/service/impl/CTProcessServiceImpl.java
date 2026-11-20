@@ -129,7 +129,7 @@ public class CTProcessServiceImpl extends CTProcessServiceBaseImpl {
 	private Predicate _getPredicate(
 		long companyId, String keywords, int status, long userId) {
 
-		Predicate predicate = CTProcessTable.INSTANCE.companyId.eq(
+		Predicate predicate = CTCollectionTable.INSTANCE.companyId.eq(
 			companyId
 		).and(
 			() -> {
