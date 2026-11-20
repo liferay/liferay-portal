@@ -143,12 +143,7 @@ public class ObjectEntryServiceImpl extends ObjectEntryServiceBaseImpl {
 			_checkAttachmentPermissions(null, objectDefinitionId, values);
 		}
 		else {
-			checkModelResourcePermission(
-				objectDefinitionId, objectEntry.getObjectEntryId(),
-				ActionKeys.UPDATE);
-
-			_checkAttachmentPermissions(
-				objectEntry.getValues(), objectDefinitionId, values);
+			_checkUpdatePermissions(objectEntry, values);
 		}
 
 		return objectEntryLocalService.addOrUpdateObjectEntry(
@@ -191,13 +186,7 @@ public class ObjectEntryServiceImpl extends ObjectEntryServiceBaseImpl {
 		ObjectEntry objectEntry = objectEntryPersistence.findByPrimaryKey(
 			objectEntryId);
 
-		checkModelResourcePermission(
-			objectEntry.getObjectDefinitionId(), objectEntry.getObjectEntryId(),
-			ActionKeys.UPDATE);
-
-		_checkAttachmentPermissions(
-			objectEntry.getValues(), objectEntry.getObjectDefinitionId(),
-			values);
+		_checkUpdatePermissions(objectEntry, values);
 
 		if (objectEntryFolderId !=
 				ObjectEntryFolderConstants.
@@ -589,13 +578,7 @@ public class ObjectEntryServiceImpl extends ObjectEntryServiceBaseImpl {
 		ObjectEntry objectEntry = objectEntryPersistence.findByPrimaryKey(
 			objectEntryId);
 
-		checkModelResourcePermission(
-			objectEntry.getObjectDefinitionId(), objectEntry.getObjectEntryId(),
-			ActionKeys.UPDATE);
-
-		_checkAttachmentPermissions(
-			objectEntry.getValues(), objectEntry.getObjectDefinitionId(),
-			values);
+		_checkUpdatePermissions(objectEntry, values);
 
 		if (objectEntryFolderId !=
 				ObjectEntryFolderConstants.
@@ -641,13 +624,7 @@ public class ObjectEntryServiceImpl extends ObjectEntryServiceBaseImpl {
 			objectEntryId);
 
 		if (!ObjectEntryThreadLocal.isSkipObjectEntryResourcePermission()) {
-			checkModelResourcePermission(
-				objectEntry.getObjectDefinitionId(),
-				objectEntry.getObjectEntryId(), ActionKeys.UPDATE);
-
-			_checkAttachmentPermissions(
-				objectEntry.getValues(), objectEntry.getObjectDefinitionId(),
-				values);
+			_checkUpdatePermissions(objectEntry, values);
 		}
 
 		return objectEntryLocalService.partialUpdateObjectEntry(
@@ -708,13 +685,7 @@ public class ObjectEntryServiceImpl extends ObjectEntryServiceBaseImpl {
 			objectEntryId);
 
 		if (!ObjectEntryThreadLocal.isSkipObjectEntryResourcePermission()) {
-			checkModelResourcePermission(
-				objectEntry.getObjectDefinitionId(),
-				objectEntry.getObjectEntryId(), ActionKeys.UPDATE);
-
-			_checkAttachmentPermissions(
-				objectEntry.getValues(), objectEntry.getObjectDefinitionId(),
-				values);
+			_checkUpdatePermissions(objectEntry, values);
 		}
 
 		return objectEntryLocalService.updateObjectEntry(
@@ -912,6 +883,19 @@ public class ObjectEntryServiceImpl extends ObjectEntryServiceBaseImpl {
 
 		modelResourcePermission.check(
 			getPermissionChecker(), objectEntry, actionId);
+	}
+
+	private void _checkUpdatePermissions(
+			ObjectEntry objectEntry, Map<String, Serializable> values)
+		throws PortalException {
+
+		checkModelResourcePermission(
+			objectEntry.getObjectDefinitionId(), objectEntry.getObjectEntryId(),
+			ActionKeys.UPDATE);
+
+		_checkAttachmentPermissions(
+			objectEntry.getValues(), objectEntry.getObjectDefinitionId(),
+			values);
 	}
 
 	private List<ObjectEntry> _getObjectEntries(
