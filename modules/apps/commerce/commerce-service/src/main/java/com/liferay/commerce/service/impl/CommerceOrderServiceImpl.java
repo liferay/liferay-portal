@@ -1100,6 +1100,9 @@ public class CommerceOrderServiceImpl extends CommerceOrderServiceBaseImpl {
 		CommerceOrder commerceOrder = commerceOrderPersistence.findByPrimaryKey(
 			commerceOrderId);
 
+		_commerceOrderModelResourcePermission.check(
+			getPermissionChecker(), commerceOrder, ActionKeys.UPDATE);
+
 		if (deliveryCommerceTermEntryId > 0) {
 			_portletResourcePermission.check(
 				getPermissionChecker(), commerceOrder.getGroupId(),
