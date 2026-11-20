@@ -5,6 +5,7 @@
 
 package com.liferay.redirect.service.impl;
 
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
@@ -13,6 +14,7 @@ import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.FriendlyURLNormalizer;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.redirect.constants.RedirectConstants;
 import com.liferay.redirect.model.RedirectEntry;
@@ -61,6 +63,10 @@ public class RedirectEntryServiceImpl extends RedirectEntryServiceBaseImpl {
 
 		_portletResourcePermission.check(
 			getPermissionChecker(), groupId, ActionKeys.ADD_ENTRY);
+
+		if (updateChainedRedirectEntries) {
+			_checkChainedRedirectEntries(groupId, groupBaseURL, sourceURL);
+		}
 
 		return redirectEntryLocalService.addRedirectEntry(
 			groupId, destinationURL, expirationDate, groupBaseURL, permanent,
@@ -153,10 +159,38 @@ public class RedirectEntryServiceImpl extends RedirectEntryServiceBaseImpl {
 		_redirectEntryModelResourcePermission.check(
 			getPermissionChecker(), redirectEntryId, ActionKeys.UPDATE);
 
+		if (updateChainedRedirectEntries) {
+			RedirectEntry redirectEntry =
+				redirectEntryPersistence.findByPrimaryKey(redirectEntryId);
+
+			_checkChainedRedirectEntries(
+				redirectEntry.getGroupId(), groupBaseURL, sourceURL);
+		}
+
 		return redirectEntryLocalService.updateRedirectEntry(
 			redirectEntryId, destinationURL, expirationDate, groupBaseURL,
 			permanent, sourceURL, updateChainedRedirectEntries);
 	}
+
+	private void _checkChainedRedirectEntries(
+			long groupId, String groupBaseURL, String sourceURL)
+		throws PortalException {
+
+		List<RedirectEntry> chainedRedirectEntries =
+			redirectEntryLocalService.getRedirectEntries(
+				groupId,
+				groupBaseURL + StringPool.SLASH +
+					_friendlyURLNormalizer.normalizeWithEncoding(sourceURL));
+
+		for (RedirectEntry chainedRedirectEntry : chainedRedirectEntries) {
+			_redirectEntryModelResourcePermission.check(
+				getPermissionChecker(), chainedRedirectEntry,
+				ActionKeys.UPDATE);
+		}
+	}
+
+	@Reference
+	private FriendlyURLNormalizer _friendlyURLNormalizer;
 
 	@Reference(
 		policy = ReferencePolicy.DYNAMIC,
