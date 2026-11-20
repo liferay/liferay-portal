@@ -71,14 +71,14 @@ public class LayoutPageTemplateStructureRelUpgradeProcess
 			ResultSet resultSet = selectPreparedStatement.executeQuery()) {
 
 			while (resultSet.next()) {
-				String data = resultSet.getString("data_");
+				String dataJSON = resultSet.getString("data_");
 
-				if (Validator.isNull(data)) {
+				if (Validator.isNull(dataJSON)) {
 					continue;
 				}
 
 				JSONObject dataJSONObject = JSONFactoryUtil.createJSONObject(
-					data);
+					dataJSON);
 
 				JSONObject itemsJSONObject = dataJSONObject.getJSONObject(
 					"items");
