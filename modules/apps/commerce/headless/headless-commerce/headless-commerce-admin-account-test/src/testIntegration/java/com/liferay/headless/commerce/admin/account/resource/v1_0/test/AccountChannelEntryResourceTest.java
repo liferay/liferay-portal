@@ -40,6 +40,7 @@ import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.CountryTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
@@ -84,9 +85,10 @@ public class AccountChannelEntryResourceTest
 			AccountConstants.ACCOUNT_ENTRY_TYPE_BUSINESS, 10, serviceContext);
 
 		_country = CountryLocalServiceUtil.addCountry(
-			null, "XY", "XYZ", true, true, null, RandomTestUtil.randomString(),
-			RandomTestUtil.randomString(), RandomTestUtil.randomDouble(), true,
-			false, false, serviceContext);
+			null, CountryTestUtil.randomA2(testCompany.getCompanyId()),
+			CountryTestUtil.randomA3(testCompany.getCompanyId()), true, true,
+			null, RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomDouble(), true, false, false, serviceContext);
 
 		_region = RegionLocalServiceUtil.addRegion(
 			null, _country.getCountryId(), true, RandomTestUtil.randomString(),
