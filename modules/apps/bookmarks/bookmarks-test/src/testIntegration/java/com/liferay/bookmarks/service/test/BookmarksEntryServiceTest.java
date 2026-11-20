@@ -99,7 +99,6 @@ public class BookmarksEntryServiceTest {
 	public void testMoveEntry() throws Exception {
 		BookmarksEntry entry = BookmarksTestUtil.addEntry(
 			_group.getGroupId(), true);
-
 		BookmarksFolder folder = BookmarksTestUtil.addFolder(
 			_group.getGroupId(), RandomTestUtil.randomString());
 
