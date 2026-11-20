@@ -2721,7 +2721,7 @@ public class JenkinsResultsParserUtil {
 		return getJobVariant(new JSONObject(json));
 	}
 
-	public static String getLatestPortalBundleOverlayGitCommitShort(
+	public static String getLatestPortalBundleOverlaySHAShort(
 		String basePortalBranchName, String overlayPortalBranchName) {
 
 		String latestPortalBundleS3ObjectPath =
@@ -2734,8 +2734,8 @@ public class JenkinsResultsParserUtil {
 						Pattern.quote(basePortalBranchName),
 						"_[0-9a-f]{7}_[0-9a-f]{7}/",
 						Pattern.quote(overlayPortalBranchName),
-						"_(?<overlayGitCommitShort>[0-9a-f]{7})_",
-						"\\k<overlayGitCommitShort>)/data\\.json\\.gz")),
+						"_(?<overlaySHAShort>[0-9a-f]{7})_",
+						"\\k<overlaySHAShort>)/data\\.json\\.gz")),
 				false);
 
 		if (latestPortalBundleS3ObjectPath == null) {
