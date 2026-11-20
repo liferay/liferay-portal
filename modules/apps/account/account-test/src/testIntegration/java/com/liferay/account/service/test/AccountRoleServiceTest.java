@@ -286,6 +286,43 @@ public class AccountRoleServiceTest {
 		}
 	}
 
+	@Test
+	public void testUpdateAccountRole() throws Exception {
+		AccountRole accountRole = _addAccountRole();
+
+		Assert.assertThrows(
+			PrincipalException.class,
+			() -> _accountRoleService.updateAccountRole(
+				accountRole.getAccountRoleId(), RandomTestUtil.randomString(),
+				RandomTestUtil.randomLocaleStringMap(),
+				RandomTestUtil.randomLocaleStringMap()));
+
+		UserRoleTestUtil.addResourcePermission(
+			ActionKeys.UPDATE, AccountRole.class.getName(), _user.getUserId());
+
+		String name = RandomTestUtil.randomString();
+
+		_accountRoleService.updateAccountRole(
+			accountRole.getAccountRoleId(), name,
+			RandomTestUtil.randomLocaleStringMap(),
+			RandomTestUtil.randomLocaleStringMap());
+
+		Role role = accountRole.getRole();
+
+		Assert.assertEquals(name, role.getName());
+
+		AccountRole sharedAccountRole = _addAccountRole(
+			AccountConstants.ACCOUNT_ENTRY_ID_DEFAULT);
+
+		Assert.assertThrows(
+			PrincipalException.class,
+			() -> _accountRoleService.updateAccountRole(
+				sharedAccountRole.getAccountRoleId(),
+				RandomTestUtil.randomString(),
+				RandomTestUtil.randomLocaleStringMap(),
+				RandomTestUtil.randomLocaleStringMap()));
+	}
+
 	private AccountRole _addAccountRole() throws Exception {
 		return _addAccountRole(_accountEntry.getAccountEntryId());
 	}
