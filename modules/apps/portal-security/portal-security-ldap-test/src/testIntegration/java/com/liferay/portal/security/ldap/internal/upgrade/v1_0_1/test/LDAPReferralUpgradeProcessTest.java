@@ -78,8 +78,8 @@ public class LDAPReferralUpgradeProcessTest {
 		_componentDescriptionDTO =
 			_serviceComponentRuntime.getComponentDescriptionDTO(
 				serviceReference.getBundle(),
-				"com.liferay.portal.security.ldap.internal.configuration." +
-					"LDAPConfigurationListener");
+				"com.liferay.portal.security.ldap.internal.scheduler." +
+					"UserImportSchedulerComponentFactory");
 
 		_enabled = _serviceComponentRuntime.isComponentEnabled(
 			_componentDescriptionDTO);
