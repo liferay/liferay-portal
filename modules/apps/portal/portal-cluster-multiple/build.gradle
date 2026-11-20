@@ -10,6 +10,7 @@ dependencies {
 	compileOnly project(":core:osgi-service-tracker-collections")
 	compileOnly project(":core:petra:petra-concurrent")
 	compileOnly project(":core:petra:petra-executor")
+	compileOnly project(":core:petra:petra-function")
 	compileOnly project(":core:petra:petra-io")
 	compileOnly project(":core:petra:petra-lang")
 	compileOnly project(":core:petra:petra-memory")

@@ -9,6 +9,7 @@ import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerList;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerListFactory;
 import com.liferay.petra.concurrent.ConcurrentReferenceValueHashMap;
 import com.liferay.petra.executor.PortalExecutorManager;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.lang.HashUtil;
 import com.liferay.petra.memory.FinalizeManager;
 import com.liferay.petra.string.CharPool;
@@ -417,18 +418,18 @@ public class ClusterExecutorImpl implements ClusterExecutor {
 	}
 
 	protected void memberRemoved(List<Address> departAddresses) {
-		List<ClusterNode> departClusterNodes = new ArrayList<>();
+		List<ClusterNode> departClusterNodes = TransformUtil.transform(
+			departAddresses,
+			departAddress -> {
+				ClusterNodeStatus clusterNodeStatus =
+					_clusterNodeStatuses.remove(departAddress);
 
-		for (Address departAddress : departAddresses) {
-			ClusterNodeStatus clusterNodeStatus = _clusterNodeStatuses.remove(
-				departAddress);
+				if (clusterNodeStatus == null) {
+					return null;
+				}
 
-			if (clusterNodeStatus == null) {
-				continue;
-			}
-
-			departClusterNodes.add(clusterNodeStatus.getClusterNode());
-		}
+				return clusterNodeStatus.getClusterNode();
+			});
 
 		if (departClusterNodes.isEmpty()) {
 			return;

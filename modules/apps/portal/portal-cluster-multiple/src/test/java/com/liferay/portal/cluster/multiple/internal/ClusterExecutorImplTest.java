@@ -289,7 +289,7 @@ public class ClusterExecutorImplTest extends BaseClusterTestCase {
 
 			List<LogEntry> logEntries = logCapture.getLogEntries();
 
-			Assert.assertTrue(logEntries.toString(), logEntries.isEmpty());
+			Assert.assertTrue(logEntries.isEmpty());
 
 			// Test 2, view has a node whose status has not arrived
 
