@@ -9,16 +9,11 @@ import com.liferay.launch.set.details.LaunchSetDetails;
 import com.liferay.launch.set.details.provider.LaunchSetDetailsProvider;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
-import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
-import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 
-import java.io.Serializable;
-
-import java.util.Map;
 import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
@@ -39,37 +34,26 @@ public class LaunchSetDetailsProviderImpl implements LaunchSetDetailsProvider {
 			return null;
 		}
 
-		try {
-			ObjectDefinition objectDefinition =
-				_objectDefinitionLocalService.getObjectDefinition(
-					objectEntry.getObjectDefinitionId());
+		ObjectDefinition objectDefinition = objectEntry.getObjectDefinition();
 
-			if (!Objects.equals(
-					objectDefinition.getExternalReferenceCode(),
-					"L_LAUNCH_SET")) {
+		if ((objectDefinition == null) ||
+			!Objects.equals(
+				objectDefinition.getExternalReferenceCode(), "L_LAUNCH_SET")) {
 
-				return null;
-			}
-
-			Map<String, Serializable> values = objectEntry.getValues();
-
-			return new LaunchSetDetails(
-				launchSetId, MapUtil.getString(values, "name"));
-		}
-		catch (PortalException portalException) {
 			if (_log.isDebugEnabled()) {
-				_log.debug(portalException);
+				_log.debug(
+					"The object entry " + launchSetId + " is not a launch set");
 			}
 
 			return null;
 		}
+
+		return new LaunchSetDetails(
+			launchSetId, MapUtil.getString(objectEntry.getValues(), "name"));
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		LaunchSetDetailsProviderImpl.class);
-
-	@Reference
-	private ObjectDefinitionLocalService _objectDefinitionLocalService;
 
 	@Reference
 	private ObjectEntryLocalService _objectEntryLocalService;

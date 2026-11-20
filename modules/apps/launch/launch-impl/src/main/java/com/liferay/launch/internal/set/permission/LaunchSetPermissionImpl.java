@@ -8,7 +8,6 @@ package com.liferay.launch.internal.set.permission;
 import com.liferay.launch.set.permission.LaunchSetPermission;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
-import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectEntryService;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -40,18 +39,21 @@ public class LaunchSetPermissionImpl implements LaunchSetPermission {
 			return false;
 		}
 
-		try {
-			ObjectDefinition objectDefinition =
-				_objectDefinitionLocalService.getObjectDefinition(
-					objectEntry.getObjectDefinitionId());
+		ObjectDefinition objectDefinition = objectEntry.getObjectDefinition();
 
-			if (!Objects.equals(
-					objectDefinition.getExternalReferenceCode(),
-					"L_LAUNCH_SET")) {
+		if ((objectDefinition == null) ||
+			!Objects.equals(
+				objectDefinition.getExternalReferenceCode(), "L_LAUNCH_SET")) {
 
-				return false;
+			if (_log.isDebugEnabled()) {
+				_log.debug(
+					"The object entry " + launchSetId + " is not a launch set");
 			}
 
+			return false;
+		}
+
+		try {
 			ModelResourcePermission<ObjectEntry> modelResourcePermission =
 				_objectEntryService.getModelResourcePermission(
 					objectDefinition.getObjectDefinitionId());
@@ -70,9 +72,6 @@ public class LaunchSetPermissionImpl implements LaunchSetPermission {
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		LaunchSetPermissionImpl.class);
-
-	@Reference
-	private ObjectDefinitionLocalService _objectDefinitionLocalService;
 
 	@Reference
 	private ObjectEntryLocalService _objectEntryLocalService;
