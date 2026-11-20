@@ -557,7 +557,7 @@ test(
 	}
 );
 
-test.skip(
+test(
 	'Create the page name with special characters makes the correct name appear in the path part of AC pages',
 	{
 		tag: '@LRAC-8988',
