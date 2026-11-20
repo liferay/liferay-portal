@@ -7,7 +7,6 @@ package com.liferay.portal.security.audit.router.internal.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.function.transform.TransformUtil;
-import com.liferay.petra.string.CharPool;
 import com.liferay.portal.configuration.test.util.ConfigurationTemporarySwapper;
 import com.liferay.portal.file.install.properties.ConfigurationHandler;
 import com.liferay.portal.kernel.audit.AuditMessage;
@@ -31,9 +30,7 @@ import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
-import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.io.PrintStream;
 
 import java.util.Dictionary;
 import java.util.List;
@@ -99,62 +96,18 @@ public class LoggingAuditMessageProcessorTest {
 				});
 
 			Assert.assertEquals(messages.toString(), 1, messages.size());
+
+			_testProcessWhenAuditIsDisabled(logCapture);
+			_testProcessWhenProcessorIsDisabled(logCapture);
 		}
 	}
 
-	@Test
-	public void testProcessAuditConfigChangeWhileDisabled() throws Exception {
-		PrintStream printStream = System.out;
-
-		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
-				new ConfigurationTemporarySwapper(
-					LoggingAuditMessageProcessorConfiguration.class.getName(),
-					HashMapDictionaryBuilder.<String, Object>put(
-						"enabled", true
-					).put(
-						"logMessageFormat", "JSON"
-					).put(
-						"outputToConsole", true
-					).build())) {
-
-			ByteArrayOutputStream byteArrayOutputStream =
-				new ByteArrayOutputStream();
-
-			System.setOut(new PrintStream(byteArrayOutputStream));
-
-			_testProcess(
-				byteArrayOutputStream, AuditConfiguration.class.getName(),
-				HashMapDictionaryBuilder.<String, Object>put(
-					"enabled", false
-				).build());
-			_testProcess(
-				byteArrayOutputStream,
-				LoggingAuditMessageProcessorConfiguration.class.getName(),
-				HashMapDictionaryBuilder.<String, Object>put(
-					"enabled", false
-				).put(
-					"logMessageFormat", "JSON"
-				).put(
-					"outputToConsole", true
-				).build());
-		}
-		finally {
-			System.setOut(printStream);
-		}
-	}
-
-	private List<String> _getActions(
-		ByteArrayOutputStream byteArrayOutputStream, String pid) {
-
-		return TransformUtil.transformToList(
-			StringUtil.splitLines(byteArrayOutputStream.toString()),
-			line -> {
-				if (!line.startsWith("LoggingAuditMessageProcessor: ")) {
-					return null;
-				}
-
+	private List<String> _getActions(LogCapture logCapture, String pid) {
+		return TransformUtil.transform(
+			logCapture.getMessages(),
+			message -> {
 				JSONObject jsonObject = JSONFactoryUtil.createJSONObject(
-					line.substring(line.indexOf(CharPool.OPEN_CURLY_BRACE)));
+					message);
 
 				JSONObject additionalInfoJSONObject = jsonObject.getJSONObject(
 					"additionalInfo");
@@ -202,22 +155,54 @@ public class LoggingAuditMessageProcessorTest {
 		return fedRAMPProperties;
 	}
 
-	private void _testProcess(
-			ByteArrayOutputStream byteArrayOutputStream, String pid,
-			Dictionary<String, Object> properties)
+	private void _testProcessWhenAuditIsDisabled(LogCapture logCapture)
 		throws Exception {
 
-		byteArrayOutputStream.reset();
+		logCapture.resetPriority(LoggerTestUtil.INFO);
 
 		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
-				new ConfigurationTemporarySwapper(pid, properties)) {
+				new ConfigurationTemporarySwapper(
+					AuditConfiguration.class.getName(),
+					HashMapDictionaryBuilder.<String, Object>put(
+						"enabled", false
+					).build())) {
 
-			List<String> actions = _getActions(byteArrayOutputStream, pid);
+			List<String> actions = _getActions(
+				logCapture, AuditConfiguration.class.getName());
 
 			Assert.assertEquals(actions.toString(), 1, actions.size());
 		}
 
-		List<String> actions = _getActions(byteArrayOutputStream, pid);
+		List<String> actions = _getActions(
+			logCapture, AuditConfiguration.class.getName());
+
+		Assert.assertEquals(actions.toString(), 2, actions.size());
+	}
+
+	private void _testProcessWhenProcessorIsDisabled(LogCapture logCapture)
+		throws Exception {
+
+		logCapture.resetPriority(LoggerTestUtil.INFO);
+
+		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
+				new ConfigurationTemporarySwapper(
+					LoggingAuditMessageProcessorConfiguration.class.getName(),
+					HashMapDictionaryBuilder.<String, Object>put(
+						"enabled", false
+					).put(
+						"logMessageFormat", "JSON"
+					).build())) {
+
+			List<String> actions = _getActions(
+				logCapture,
+				LoggingAuditMessageProcessorConfiguration.class.getName());
+
+			Assert.assertEquals(actions.toString(), 1, actions.size());
+		}
+
+		List<String> actions = _getActions(
+			logCapture,
+			LoggingAuditMessageProcessorConfiguration.class.getName());
 
 		Assert.assertEquals(actions.toString(), 2, actions.size());
 	}
