@@ -278,10 +278,10 @@ public class ExpandoBridgeImpl implements ExpandoBridge {
 	public Map<String, Serializable> getAttributes(
 		Collection<String> names, boolean secure) {
 
-		Map<String, Serializable> attributeValues = null;
+		Map<String, Serializable> attributes = null;
 
 		try {
-			attributeValues = ExpandoValueLocalServiceUtil.getData(
+			attributes = ExpandoValueLocalServiceUtil.getData(
 				_companyId, _className,
 				ExpandoTableConstants.DEFAULT_TABLE_NAME, names, _classPK);
 
@@ -298,7 +298,7 @@ public class ExpandoBridgeImpl implements ExpandoBridge {
 						continue;
 					}
 
-					attributeValues.remove(name);
+					attributes.remove(name);
 				}
 			}
 		}
@@ -306,7 +306,7 @@ public class ExpandoBridgeImpl implements ExpandoBridge {
 			ReflectionUtil.throwException(exception);
 		}
 
-		return attributeValues;
+		return attributes;
 	}
 
 	@Override
