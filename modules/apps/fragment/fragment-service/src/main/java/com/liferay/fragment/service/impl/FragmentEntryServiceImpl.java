@@ -140,19 +140,44 @@ public class FragmentEntryServiceImpl extends FragmentEntryServiceBaseImpl {
 	}
 
 	@Override
-	public FragmentEntry fetchDraft(long primaryKey) {
-		return fragmentEntryLocalService.fetchDraft(primaryKey);
+	public FragmentEntry fetchDraft(long primaryKey) throws PortalException {
+		FragmentEntry draftFragmentEntry = fragmentEntryLocalService.fetchDraft(
+			primaryKey);
+
+		if (draftFragmentEntry != null) {
+			_portletResourcePermission.check(
+				getPermissionChecker(), draftFragmentEntry.getGroupId(),
+				FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
+		}
+
+		return draftFragmentEntry;
 	}
 
 	@Override
 	public FragmentEntry fetchFragmentEntry(long fragmentEntryId)
 		throws PortalException {
 
-		return fragmentEntryPersistence.fetchByPrimaryKey(fragmentEntryId);
+		FragmentEntry fragmentEntry =
+			fragmentEntryPersistence.fetchByPrimaryKey(fragmentEntryId);
+
+		if (fragmentEntry != null) {
+			_portletResourcePermission.check(
+				getPermissionChecker(), fragmentEntry.getGroupId(),
+				FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
+		}
+
+		return fragmentEntry;
 	}
 
 	@Override
 	public FragmentEntry getDraft(long primaryKey) throws PortalException {
+		FragmentEntry fragmentEntry = fragmentEntryPersistence.findByPrimaryKey(
+			primaryKey);
+
+		_portletResourcePermission.check(
+			getPermissionChecker(), fragmentEntry.getGroupId(),
+			FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
+
 		return fragmentEntryLocalService.getDraft(primaryKey);
 	}
 
