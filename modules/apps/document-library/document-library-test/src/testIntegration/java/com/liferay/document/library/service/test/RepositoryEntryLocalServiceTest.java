@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
+import java.util.List;
 import java.util.concurrent.FutureTask;
 
 import org.junit.Assert;
@@ -48,6 +49,7 @@ public class RepositoryEntryLocalServiceTest {
 	@TestInfo("LPD-115672")
 	public void testGetRepositoryEntryWhenAddedConcurrently() throws Exception {
 		long groupId = TestPropsValues.getGroupId();
+		String mappedId = RandomTestUtil.randomString();
 		long repositoryId = RandomTestUtil.randomLong();
 		long userId = TestPropsValues.getUserId();
 
@@ -66,8 +68,7 @@ public class RepositoryEntryLocalServiceTest {
 		try {
 			RepositoryEntry repositoryEntry =
 				_repositoryEntryLocalService.getRepositoryEntry(
-					userId, groupId, repositoryId,
-					RandomTestUtil.randomString());
+					userId, groupId, repositoryId, mappedId);
 
 			RepositoryEntry concurrentRepositoryEntry =
 				concurrentAddModelListener._repositoryEntry;
@@ -78,6 +79,9 @@ public class RepositoryEntryLocalServiceTest {
 		}
 		finally {
 			serviceRegistration.unregister();
+
+			_repositoryEntryLocalService.deleteRepositoryEntries(
+				repositoryId, List.of(mappedId));
 		}
 	}
 
