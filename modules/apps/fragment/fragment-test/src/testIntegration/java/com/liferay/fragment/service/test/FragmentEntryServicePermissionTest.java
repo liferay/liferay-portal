@@ -73,7 +73,6 @@ public class FragmentEntryServicePermissionTest {
 
 		_fragmentCollection = FragmentTestUtil.addFragmentCollection(
 			_group1.getGroupId());
-
 		_user = UserTestUtil.addGroupUser(_group1, RoleConstants.POWER_USER);
 	}
 
@@ -518,7 +517,6 @@ public class FragmentEntryServicePermissionTest {
 
 		_testMoveFragmentEntryWithFragmentCollectionFromAnotherGroup();
 		_testMoveFragmentEntryWithPermissions();
-
 		_testMoveFragmentEntryWithoutPermissions();
 	}
 
@@ -554,14 +552,13 @@ public class FragmentEntryServicePermissionTest {
 		_setRolePermissions(FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
 
 		_testUpdateFragmentEntryNameWithPermissions();
+		_testUpdateFragmentEntryNameWithoutPermissions();
 		_testUpdateFragmentEntryValuesAndPreviewFileEntryIdWithPermissions();
+		_testUpdateFragmentEntryValuesAndPreviewFileEntryIdWithoutPermissions();
 		_testUpdateFragmentEntryValuesWithFragmentCollectionFromAnotherGroup();
 		_testUpdateFragmentEntryValuesWithPermissions();
-		_testUpdateFragmentEntryWithFragmentEntryFromAnotherGroup();
-
-		_testUpdateFragmentEntryNameWithoutPermissions();
-		_testUpdateFragmentEntryValuesAndPreviewFileEntryIdWithoutPermissions();
 		_testUpdateFragmentEntryValuesWithoutPermissions();
+		_testUpdateFragmentEntryWithFragmentEntryFromAnotherGroup();
 	}
 
 	@Test
