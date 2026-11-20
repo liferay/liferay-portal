@@ -5,7 +5,9 @@
 
 package com.liferay.segments.service.impl;
 
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.aop.AopService;
+import com.liferay.portal.kernel.exception.NoSuchLayoutException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
@@ -50,11 +52,7 @@ public class SegmentsExperienceServiceImpl
 			ServiceContext serviceContext)
 		throws PortalException {
 
-		if (!_hasUpdateLayoutPermission(plid)) {
-			_portletResourcePermission.check(
-				getPermissionChecker(), serviceContext.getScopeGroupId(),
-				SegmentsActionKeys.MANAGE_SEGMENTS_ENTRIES);
-		}
+		_checkPermission(groupId, plid);
 
 		return segmentsExperienceLocalService.addSegmentsExperience(
 			externalReferenceCode, getUserId(), groupId, segmentsEntryERC,
@@ -71,11 +69,7 @@ public class SegmentsExperienceServiceImpl
 			ServiceContext serviceContext)
 		throws PortalException {
 
-		if (!_hasUpdateLayoutPermission(plid)) {
-			_portletResourcePermission.check(
-				getPermissionChecker(), serviceContext.getScopeGroupId(),
-				SegmentsActionKeys.MANAGE_SEGMENTS_ENTRIES);
-		}
+		_checkPermission(groupId, plid);
 
 		return segmentsExperienceLocalService.addSegmentsExperience(
 			externalReferenceCode, getUserId(), groupId, segmentsEntryERC,
@@ -103,11 +97,7 @@ public class SegmentsExperienceServiceImpl
 			ServiceContext serviceContext)
 		throws PortalException {
 
-		if (!_hasUpdateLayoutPermission(plid)) {
-			_portletResourcePermission.check(
-				getPermissionChecker(), serviceContext.getScopeGroupId(),
-				SegmentsActionKeys.MANAGE_SEGMENTS_ENTRIES);
-		}
+		_checkPermission(groupId, plid);
 
 		return segmentsExperienceLocalService.appendSegmentsExperience(
 			getUserId(), groupId, segmentsEntryERC, segmentsEntryScopeERC, plid,
@@ -326,6 +316,31 @@ public class SegmentsExperienceServiceImpl
 
 		return segmentsExperienceLocalService.updateSegmentsExperiencePriority(
 			getUserId(), segmentsExperienceId, newPriority);
+	}
+
+	private void _checkPermission(long groupId, long plid)
+		throws PortalException {
+
+		Layout layout = _layoutLocalService.fetchLayout(plid);
+
+		if (layout != null) {
+			if (layout.getGroupId() != groupId) {
+				throw new NoSuchLayoutException(
+					StringBundler.concat(
+						"No layout exists with primary key ", plid,
+						" in group ", groupId));
+			}
+
+			if (_layoutPermission.containsLayoutRestrictedUpdatePermission(
+					getPermissionChecker(), layout)) {
+
+				return;
+			}
+		}
+
+		_portletResourcePermission.check(
+			getPermissionChecker(), groupId,
+			SegmentsActionKeys.MANAGE_SEGMENTS_ENTRIES);
 	}
 
 	private boolean _hasUpdateLayoutPermission(long plid)
