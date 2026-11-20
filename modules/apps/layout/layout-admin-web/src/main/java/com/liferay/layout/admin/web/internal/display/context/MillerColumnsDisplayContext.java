@@ -520,7 +520,7 @@ public class MillerColumnsDisplayContext {
 		String restrictedLaunchName = LanguageUtil.get(
 			_httpServletRequest, "restricted-launch");
 
-		List<LaunchSetDetails> launchSetDetailsList = TransformUtil.transform(
+		List<LaunchSetDetails> launchSetDetails = TransformUtil.transform(
 			layout.fetchDraftLayouts(),
 			draftLayout -> {
 				long launchSetId = draftLayout.getLaunchSetId();
@@ -540,10 +540,10 @@ public class MillerColumnsDisplayContext {
 					launchSetId);
 			});
 
-		launchSetDetailsList.sort(LaunchSetDetailsNameComparator.INSTANCE);
+		launchSetDetails.sort(LaunchSetDetailsNameComparator.INSTANCE);
 
 		return JSONUtil.toJSONArray(
-			launchSetDetailsList, LaunchSetDetails::getName);
+			launchSetDetails, LaunchSetDetails::getName);
 	}
 
 	private String _getLayoutPageTemplateCollectionsURL() {
