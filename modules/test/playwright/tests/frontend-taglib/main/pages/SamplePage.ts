@@ -45,7 +45,7 @@ export class SamplePage extends POM {
 
 			[TabName.LOGO_SELECTOR]: this.page.getByText('First Logo'),
 
-			[TabName.SEARCH_ITERATOR]: this.page.getByRole('cell', {
+			[TabName.SEARCH_ITERATOR]: this.page.getByRole('columnheader', {
 				exact: true,
 				name: 'Name',
 			}),
