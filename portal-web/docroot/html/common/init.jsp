@@ -22,7 +22,6 @@ page import="com.liferay.petra.string.CharPool" %><%@
 page import="com.liferay.petra.string.StringBundler" %><%@
 page import="com.liferay.petra.string.StringPool" %><%@
 page import="com.liferay.portal.kernel.bean.BeanParamUtil" %><%@
-page import="com.liferay.portal.kernel.bean.BeanPropertiesUtil" %><%@
 page import="com.liferay.portal.kernel.configuration.Filter" %><%@
 page import="com.liferay.portal.kernel.cookies.CookiesManagerUtil" %><%@
 page import="com.liferay.portal.kernel.dao.search.DisplayTerms" %><%@

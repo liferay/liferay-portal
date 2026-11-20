@@ -23,12 +23,50 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class BeanGetterUtil {
 
+	public static boolean getBooleanSilent(
+		Object bean, String name, boolean defaultValue) {
+
+		return GetterUtil.getBoolean(_getValue(bean, name, true), defaultValue);
+	}
+
+	public static double getDoubleSilent(
+		Object bean, String name, double defaultValue) {
+
+		return GetterUtil.getDouble(_getValue(bean, name, true), defaultValue);
+	}
+
+	public static int getIntegerSilent(
+		Object bean, String name, int defaultValue) {
+
+		return GetterUtil.getInteger(_getValue(bean, name, true), defaultValue);
+	}
+
 	public static long getLong(Object bean, String name) {
 		return GetterUtil.getLong(_getValue(bean, name, false));
 	}
 
+	public static long getLongSilent(
+		Object bean, String name, long defaultValue) {
+
+		return GetterUtil.getLong(_getValue(bean, name, true), defaultValue);
+	}
+
+	public static Object getObject(Object bean, String name) {
+		return _getValue(bean, name, false);
+	}
+
 	public static Object getObjectSilent(Object bean, String name) {
 		return _getValue(bean, name, true);
+	}
+
+	public static String getString(Object bean, String name) {
+		Object value = _getValue(bean, name, false);
+
+		if (value == null) {
+			return GetterUtil.DEFAULT_STRING;
+		}
+
+		return String.valueOf(value);
 	}
 
 	public static String getStringSilent(Object bean, String name) {

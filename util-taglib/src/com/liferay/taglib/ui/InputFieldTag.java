@@ -5,7 +5,11 @@
 
 package com.liferay.taglib.ui;
 
+import com.liferay.portal.kernel.model.ModelHintsUtil;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.taglib.util.BeanGetterUtil;
 import com.liferay.taglib.util.IncludeTag;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -236,6 +240,24 @@ public class InputFieldTag extends IncludeTag {
 			id = fieldParam;
 		}
 
+		String className = _model.getName();
+		long groupId = 0;
+
+		if (ModelHintsUtil.isLocalized(className, _field) &&
+			ModelHintsUtil.hasField(className, "groupId")) {
+
+			if (_bean == null) {
+				ThemeDisplay themeDisplay =
+					(ThemeDisplay)httpServletRequest.getAttribute(
+						WebKeys.THEME_DISPLAY);
+
+				groupId = themeDisplay.getSiteGroupId();
+			}
+			else {
+				groupId = BeanGetterUtil.getLong(_bean, "groupId");
+			}
+		}
+
 		httpServletRequest.setAttribute(
 			"liferay-ui:input-field:activeLanguageIds", _activeLanguageIds);
 		httpServletRequest.setAttribute(
@@ -267,6 +289,8 @@ public class InputFieldTag extends IncludeTag {
 			"liferay-ui:input-field:format", _format);
 		httpServletRequest.setAttribute(
 			"liferay-ui:input-field:formName", _formName);
+		httpServletRequest.setAttribute(
+			"liferay-ui:input-field:groupId", groupId);
 		httpServletRequest.setAttribute("liferay-ui:input-field:id", id);
 		httpServletRequest.setAttribute(
 			"liferay-ui:input-field:ignoreRequestValue",
@@ -277,7 +301,7 @@ public class InputFieldTag extends IncludeTag {
 			"liferay-ui:input-field:languagesDropdownDirection",
 			_languagesDropdownDirection);
 		httpServletRequest.setAttribute(
-			"liferay-ui:input-field:model", _model.getName());
+			"liferay-ui:input-field:model", className);
 		httpServletRequest.setAttribute(
 			"liferay-ui:input-field:placeholder", _placeholder);
 	}

@@ -33,6 +33,96 @@ public class BeanGetterUtilTest {
 		LiferayUnitTestRule.INSTANCE;
 
 	@Test
+	public void testGetBooleanSilent() {
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				BeanGetterUtil.class.getName(), LoggerTestUtil.WARN)) {
+
+			Assert.assertTrue(
+				BeanGetterUtil.getBooleanSilent(null, "active", true));
+
+			Bean bean = new Bean();
+
+			Assert.assertTrue(
+				BeanGetterUtil.getBooleanSilent(bean, "active", false));
+			Assert.assertTrue(
+				BeanGetterUtil.getBooleanSilent(bean, "description", true));
+			Assert.assertTrue(
+				BeanGetterUtil.getBooleanSilent(bean, "failure", true));
+			Assert.assertTrue(
+				BeanGetterUtil.getBooleanSilent(bean, "missing", true));
+			Assert.assertFalse(
+				BeanGetterUtil.getBooleanSilent(bean, "name", true));
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertEquals(logEntries.toString(), 0, logEntries.size());
+		}
+	}
+
+	@Test
+	public void testGetDoubleSilent() {
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				BeanGetterUtil.class.getName(), LoggerTestUtil.WARN)) {
+
+			Assert.assertEquals(
+				1.5, BeanGetterUtil.getDoubleSilent(null, "ratio", 1.5), 0);
+
+			Bean bean = new Bean();
+
+			Assert.assertEquals(
+				7, BeanGetterUtil.getDoubleSilent(bean, "count", 1.5), 0);
+			Assert.assertEquals(
+				1.5, BeanGetterUtil.getDoubleSilent(bean, "description", 1.5),
+				0);
+			Assert.assertEquals(
+				1.5, BeanGetterUtil.getDoubleSilent(bean, "failure", 1.5), 0);
+			Assert.assertEquals(
+				1.5, BeanGetterUtil.getDoubleSilent(bean, "missing", 1.5), 0);
+			Assert.assertEquals(
+				12, BeanGetterUtil.getDoubleSilent(bean, "number", 1.5), 0);
+			Assert.assertEquals(
+				12.5, BeanGetterUtil.getDoubleSilent(bean, "price", 1.5), 0);
+			Assert.assertEquals(
+				3.75, BeanGetterUtil.getDoubleSilent(bean, "ratio", 1.5), 0);
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertEquals(logEntries.toString(), 0, logEntries.size());
+		}
+	}
+
+	@Test
+	public void testGetIntegerSilent() {
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				BeanGetterUtil.class.getName(), LoggerTestUtil.WARN)) {
+
+			Assert.assertEquals(
+				5, BeanGetterUtil.getIntegerSilent(null, "count", 5));
+
+			Bean bean = new Bean();
+
+			Assert.assertEquals(
+				7, BeanGetterUtil.getIntegerSilent(bean, "count", 5));
+			Assert.assertEquals(
+				5, BeanGetterUtil.getIntegerSilent(bean, "description", 5));
+			Assert.assertEquals(
+				5, BeanGetterUtil.getIntegerSilent(bean, "failure", 5));
+			Assert.assertEquals(
+				42, BeanGetterUtil.getIntegerSilent(bean, "id", 5));
+			Assert.assertEquals(
+				5, BeanGetterUtil.getIntegerSilent(bean, "missing", 5));
+			Assert.assertEquals(
+				12, BeanGetterUtil.getIntegerSilent(bean, "number", 5));
+			Assert.assertEquals(
+				3, BeanGetterUtil.getIntegerSilent(bean, "ratio", 5));
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertEquals(logEntries.toString(), 0, logEntries.size());
+		}
+	}
+
+	@Test
 	public void testGetLong() {
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				BeanGetterUtil.class.getName(), LoggerTestUtil.ERROR)) {
@@ -51,30 +141,56 @@ public class BeanGetterUtilTest {
 			Assert.assertEquals(12, BeanGetterUtil.getLong(bean, "number"));
 			Assert.assertEquals(3, BeanGetterUtil.getLong(bean, "ratio"));
 
+			_assertLogEntries(bean, logCapture.getLogEntries());
+		}
+	}
+
+	@Test
+	public void testGetLongSilent() {
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				BeanGetterUtil.class.getName(), LoggerTestUtil.WARN)) {
+
+			Assert.assertEquals(5, BeanGetterUtil.getLongSilent(null, "id", 5));
+
+			Bean bean = new Bean();
+
+			Assert.assertEquals(
+				7, BeanGetterUtil.getLongSilent(bean, "count", 5));
+			Assert.assertEquals(
+				5, BeanGetterUtil.getLongSilent(bean, "description", 5));
+			Assert.assertEquals(
+				5, BeanGetterUtil.getLongSilent(bean, "failure", 5));
+			Assert.assertEquals(
+				42, BeanGetterUtil.getLongSilent(bean, "id", 5));
+			Assert.assertEquals(
+				5, BeanGetterUtil.getLongSilent(bean, "missing", 5));
+			Assert.assertEquals(
+				12, BeanGetterUtil.getLongSilent(bean, "number", 5));
+			Assert.assertEquals(
+				3, BeanGetterUtil.getLongSilent(bean, "ratio", 5));
+
 			List<LogEntry> logEntries = logCapture.getLogEntries();
 
-			Assert.assertEquals(logEntries.toString(), 2, logEntries.size());
+			Assert.assertEquals(logEntries.toString(), 0, logEntries.size());
+		}
+	}
 
-			LogEntry logEntry = logEntries.get(0);
+	@Test
+	public void testGetObject() {
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				BeanGetterUtil.class.getName(), LoggerTestUtil.ERROR)) {
 
-			Assert.assertEquals(
-				"Unable to get property failure of " + Bean.class.getName(),
-				logEntry.getMessage());
-			Assert.assertEquals("ERROR", logEntry.getPriority());
+			Assert.assertNull(BeanGetterUtil.getObject(null, "id"));
 
-			Throwable throwable = logEntry.getThrowable();
-
-			Assert.assertSame(
-				InvocationTargetException.class, throwable.getClass());
-			Assert.assertSame(bean.illegalStateException, throwable.getCause());
-
-			logEntry = logEntries.get(1);
+			Bean bean = new Bean();
 
 			Assert.assertEquals(
-				"Unable to get property missing of " + Bean.class.getName(),
-				logEntry.getMessage());
-			Assert.assertEquals("ERROR", logEntry.getPriority());
-			Assert.assertNull(logEntry.getThrowable());
+				Boolean.TRUE, BeanGetterUtil.getObject(bean, "active"));
+			Assert.assertNull(BeanGetterUtil.getObject(bean, "failure"));
+			Assert.assertEquals(42L, BeanGetterUtil.getObject(bean, "id"));
+			Assert.assertNull(BeanGetterUtil.getObject(bean, "missing"));
+
+			_assertLogEntries(bean, logCapture.getLogEntries());
 		}
 	}
 
@@ -99,6 +215,31 @@ public class BeanGetterUtilTest {
 			List<LogEntry> logEntries = logCapture.getLogEntries();
 
 			Assert.assertEquals(logEntries.toString(), 0, logEntries.size());
+		}
+	}
+
+	@Test
+	public void testGetString() {
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				BeanGetterUtil.class.getName(), LoggerTestUtil.ERROR)) {
+
+			Assert.assertEquals("", BeanGetterUtil.getString(null, "name"));
+
+			Bean bean = new Bean();
+
+			Assert.assertEquals(
+				"true", BeanGetterUtil.getString(bean, "active"));
+			Assert.assertEquals(
+				"", BeanGetterUtil.getString(bean, "description"));
+			Assert.assertEquals("", BeanGetterUtil.getString(bean, "failure"));
+			Assert.assertEquals("42", BeanGetterUtil.getString(bean, "id"));
+			Assert.assertEquals("", BeanGetterUtil.getString(bean, "missing"));
+			Assert.assertEquals(
+				"Alice", BeanGetterUtil.getString(bean, "name"));
+			Assert.assertEquals(
+				"12.50", BeanGetterUtil.getString(bean, "price"));
+
+			_assertLogEntries(bean, logCapture.getLogEntries());
 		}
 	}
 
@@ -226,6 +367,31 @@ public class BeanGetterUtilTest {
 
 		public String getName();
 
+	}
+
+	private void _assertLogEntries(Bean bean, List<LogEntry> logEntries) {
+		Assert.assertEquals(logEntries.toString(), 2, logEntries.size());
+
+		LogEntry logEntry = logEntries.get(0);
+
+		Assert.assertEquals(
+			"Unable to get property failure of " + Bean.class.getName(),
+			logEntry.getMessage());
+		Assert.assertEquals("ERROR", logEntry.getPriority());
+
+		Throwable throwable = logEntry.getThrowable();
+
+		Assert.assertSame(
+			InvocationTargetException.class, throwable.getClass());
+		Assert.assertSame(bean.illegalStateException, throwable.getCause());
+
+		logEntry = logEntries.get(1);
+
+		Assert.assertEquals(
+			"Unable to get property missing of " + Bean.class.getName(),
+			logEntry.getMessage());
+		Assert.assertEquals("ERROR", logEntry.getPriority());
+		Assert.assertNull(logEntry.getThrowable());
 	}
 
 	private static class HiddenBean implements Named {

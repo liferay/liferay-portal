@@ -24,6 +24,7 @@ String field = (String)request.getAttribute("liferay-ui:input-field:field");
 String fieldParam = GetterUtil.getString((String)request.getAttribute("liferay-ui:input-field:fieldParam"));
 Format format = (Format)request.getAttribute("liferay-ui:input-field:format");
 String formName = (String)request.getAttribute("liferay-ui:input-field:formName");
+long groupId = GetterUtil.getLong(request.getAttribute("liferay-ui:input-field:groupId"));
 String id = GetterUtil.getString((String)request.getAttribute("liferay-ui:input-field:id"));
 boolean ignoreRequestValue = GetterUtil.getBoolean((String)request.getAttribute("liferay-ui:input-field:ignoreRequestValue"));
 String languageId = (String)request.getAttribute("liferay-ui:input-field:languageId");
@@ -76,7 +77,7 @@ if (hints != null) {
 				}
 			}
 
-			boolean value = BeanPropertiesUtil.getBooleanSilent(bean, methodName, defaultBoolean);
+			boolean value = BeanGetterUtil.getBooleanSilent(bean, methodName, defaultBoolean);
 
 			if (!ignoreRequestValue && Validator.isNotNull(ParamUtil.getString(request, "checkboxNames"))) {
 				value = ParamUtil.getBoolean(request, fieldParam, value);
@@ -106,7 +107,7 @@ if (hints != null) {
 			else {
 				cal = CalendarFactoryUtil.getCalendar(timeZone, locale);
 
-				Date date = (Date)BeanPropertiesUtil.getObject(bean, methodName);
+				Date date = (Date)BeanGetterUtil.getObject(bean, methodName);
 
 				if (date == null) {
 					checkDefaultDelta = true;
@@ -332,7 +333,7 @@ if (hints != null) {
 			String value = null;
 
 			if (type.equals("double")) {
-				double doubleValue = BeanPropertiesUtil.getDoubleSilent(bean, methodName, GetterUtil.getDouble(defaultString));
+				double doubleValue = BeanGetterUtil.getDoubleSilent(bean, methodName, GetterUtil.getDouble(defaultString));
 
 				if (!ignoreRequestValue) {
 					doubleValue = ParamUtil.getDouble(request, fieldParam, doubleValue, locale);
@@ -346,7 +347,7 @@ if (hints != null) {
 				}
 			}
 			else if (type.equals("int")) {
-				int intValue = BeanPropertiesUtil.getIntegerSilent(bean, methodName, GetterUtil.getInteger(defaultString));
+				int intValue = BeanGetterUtil.getIntegerSilent(bean, methodName, GetterUtil.getInteger(defaultString));
 
 				if (!ignoreRequestValue) {
 					intValue = ParamUtil.getInteger(request, fieldParam, intValue);
@@ -360,7 +361,7 @@ if (hints != null) {
 				}
 			}
 			else if (type.equals("long")) {
-				long longValue = BeanPropertiesUtil.getLongSilent(bean, methodName, GetterUtil.getLong(defaultString));
+				long longValue = BeanGetterUtil.getLongSilent(bean, methodName, GetterUtil.getLong(defaultString));
 
 				if (!ignoreRequestValue) {
 					longValue = ParamUtil.getLong(request, fieldParam, longValue);
@@ -374,7 +375,7 @@ if (hints != null) {
 				}
 			}
 			else {
-				value = BeanPropertiesUtil.getStringSilent(bean, methodName, defaultString);
+				value = BeanGetterUtil.getStringSilent(bean, methodName, defaultString);
 
 				if (!ignoreRequestValue) {
 					value = ParamUtil.getString(request, fieldParam, value);
@@ -421,15 +422,10 @@ if (hints != null) {
 			String xml = StringPool.BLANK;
 
 			if (localized) {
-				if (ModelHintsUtil.hasField(model, "groupId")) {
-					availableLocales = LanguageUtil.getAvailableLocales(BeanPropertiesUtil.getLongSilent(bean, "groupId", themeDisplay.getSiteGroupId()));
-				}
-				else {
-					availableLocales = LanguageUtil.getAvailableLocales();
-				}
+				availableLocales = LanguageUtil.getAvailableLocales(groupId);
 
 				if (Validator.isNotNull(bean)) {
-					xml = BeanPropertiesUtil.getString(bean, methodName);
+					xml = BeanGetterUtil.getString(bean, methodName);
 				}
 			}
 			%>
