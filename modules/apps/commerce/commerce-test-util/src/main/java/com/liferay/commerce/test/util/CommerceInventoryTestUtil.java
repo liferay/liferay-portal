@@ -74,7 +74,7 @@ public class CommerceInventoryTestUtil {
 
 		Country country = _setUpCountry(serviceContext);
 
-		Region region = _setUpRegion(country, serviceContext);
+		Region region = addRegion(country.getCountryId(), serviceContext);
 
 		return CommerceInventoryWarehouseLocalServiceUtil.
 			addCommerceInventoryWarehouse(
@@ -93,7 +93,7 @@ public class CommerceInventoryTestUtil {
 
 		Country country = _setUpCountry(serviceContext);
 
-		Region region = _setUpRegion(country, serviceContext);
+		Region region = addRegion(country.getCountryId(), serviceContext);
 
 		return CommerceInventoryWarehouseLocalServiceUtil.
 			addCommerceInventoryWarehouse(
@@ -224,23 +224,6 @@ public class CommerceInventoryTestUtil {
 		}
 
 		return country;
-	}
-
-	private static Region _setUpRegion(
-			Country country, ServiceContext serviceContext)
-		throws Exception {
-
-		Region region = RegionLocalServiceUtil.fetchRegion(
-			country.getCountryId(), "ZZ");
-
-		if (region != null) {
-			return region;
-		}
-
-		return RegionLocalServiceUtil.addRegion(
-			null, country.getCountryId(), true, RandomTestUtil.randomString(),
-			RandomTestUtil.randomDouble(), RandomTestUtil.randomString(),
-			serviceContext);
 	}
 
 }

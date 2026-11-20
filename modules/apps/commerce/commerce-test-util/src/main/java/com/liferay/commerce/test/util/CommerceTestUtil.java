@@ -60,7 +60,6 @@ import com.liferay.portal.kernel.model.Country;
 import com.liferay.portal.kernel.model.Region;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.CountryLocalServiceUtil;
-import com.liferay.portal.kernel.service.RegionLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.util.CountryTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -556,7 +555,8 @@ public class CommerceTestUtil {
 
 		Country country = _setUpCountry(serviceContext);
 
-		Region region = _setUpRegion(country, serviceContext);
+		Region region = CommerceInventoryTestUtil.addRegion(
+			country.getCountryId(), serviceContext);
 
 		return CommerceAddressLocalServiceUtil.addCommerceAddress(
 			StringPool.BLANK, User.class.getName(), userId,
@@ -747,23 +747,6 @@ public class CommerceTestUtil {
 		}
 
 		return country;
-	}
-
-	private static Region _setUpRegion(
-			Country country, ServiceContext serviceContext)
-		throws Exception {
-
-		Region region = RegionLocalServiceUtil.fetchRegion(
-			country.getCountryId(), "ZZ");
-
-		if (region != null) {
-			return region;
-		}
-
-		return RegionLocalServiceUtil.addRegion(
-			null, country.getCountryId(), true, RandomTestUtil.randomString(),
-			RandomTestUtil.randomDouble(), RandomTestUtil.randomString(),
-			serviceContext);
 	}
 
 }
