@@ -5,19 +5,13 @@
 
 package com.liferay.launch.internal.set.details;
 
+import com.liferay.launch.internal.set.util.LaunchSetUtil;
 import com.liferay.launch.set.details.LaunchSetDetails;
 import com.liferay.launch.set.details.provider.LaunchSetDetailsProvider;
-import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
-import com.liferay.object.service.ObjectEntryLocalService;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 
-import java.util.Objects;
-
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Lourdes Fernández Besada
@@ -27,35 +21,15 @@ public class LaunchSetDetailsProviderImpl implements LaunchSetDetailsProvider {
 
 	@Override
 	public LaunchSetDetails fetchLaunchSetDetails(long launchSetId) {
-		ObjectEntry objectEntry = _objectEntryLocalService.fetchObjectEntry(
+		ObjectEntry objectEntry = LaunchSetUtil.fetchLaunchSetObjectEntry(
 			launchSetId);
 
 		if (objectEntry == null) {
 			return null;
 		}
 
-		ObjectDefinition objectDefinition = objectEntry.getObjectDefinition();
-
-		if ((objectDefinition == null) ||
-			!Objects.equals(
-				objectDefinition.getExternalReferenceCode(), "L_LAUNCH_SET")) {
-
-			if (_log.isDebugEnabled()) {
-				_log.debug(
-					"The object entry " + launchSetId + " is not a launch set");
-			}
-
-			return null;
-		}
-
 		return new LaunchSetDetails(
 			launchSetId, MapUtil.getString(objectEntry.getValues(), "name"));
 	}
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		LaunchSetDetailsProviderImpl.class);
-
-	@Reference
-	private ObjectEntryLocalService _objectEntryLocalService;
 
 }
