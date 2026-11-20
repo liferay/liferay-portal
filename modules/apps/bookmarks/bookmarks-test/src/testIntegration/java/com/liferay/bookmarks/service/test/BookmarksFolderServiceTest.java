@@ -110,10 +110,11 @@ public class BookmarksFolderServiceTest {
 	public void testMergeFolders() throws Exception {
 		BookmarksFolder folder = BookmarksTestUtil.addFolder(
 			_group.getGroupId(), RandomTestUtil.randomString());
-		BookmarksFolder parentFolder = BookmarksTestUtil.addFolder(
-			_group.getGroupId(), RandomTestUtil.randomString());
 
 		User user = _addUser(folder);
+
+		BookmarksFolder parentFolder = BookmarksTestUtil.addFolder(
+			_group.getGroupId(), RandomTestUtil.randomString());
 
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				user, PermissionCheckerFactoryUtil.create(user))) {
@@ -130,10 +131,11 @@ public class BookmarksFolderServiceTest {
 	public void testMoveFolder() throws Exception {
 		BookmarksFolder folder = BookmarksTestUtil.addFolder(
 			_group.getGroupId(), RandomTestUtil.randomString());
-		BookmarksFolder parentFolder = BookmarksTestUtil.addFolder(
-			_group.getGroupId(), RandomTestUtil.randomString());
 
 		User user = _addUser(folder);
+
+		BookmarksFolder parentFolder = BookmarksTestUtil.addFolder(
+			_group.getGroupId(), RandomTestUtil.randomString());
 
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				user, PermissionCheckerFactoryUtil.create(user))) {
@@ -154,10 +156,10 @@ public class BookmarksFolderServiceTest {
 		BookmarksFolderLocalServiceUtil.moveFolderToTrash(
 			TestPropsValues.getUserId(), folder.getFolderId());
 
+		User user = _addUser(folder);
+
 		BookmarksFolder parentFolder = BookmarksTestUtil.addFolder(
 			_group.getGroupId(), RandomTestUtil.randomString());
-
-		User user = _addUser(folder);
 
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				user, PermissionCheckerFactoryUtil.create(user))) {
@@ -330,7 +332,7 @@ public class BookmarksFolderServiceTest {
 		catch (PrincipalException.MustHavePermission principalException) {
 			String message = principalException.getMessage();
 
-			Assert.assertTrue(message, message.contains(actionId));
+			Assert.assertTrue(message.contains(actionId));
 		}
 	}
 
