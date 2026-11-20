@@ -110,7 +110,7 @@ public class LayoutPageTemplateStructureRelUpgradeProcess
 				long companyId = resultSet.getLong("companyId");
 				long scopeGroupId = resultSet.getLong("groupId");
 
-				if (!_normalize(
+				if (!_hasNormalized(
 						companyId, dropZoneItemConfigJSONObject,
 						scopeGroupId)) {
 
@@ -213,7 +213,7 @@ public class LayoutPageTemplateStructureRelUpgradeProcess
 				DepotEntry::getGroupId));
 	}
 
-	private boolean _normalize(
+	private boolean _hasNormalized(
 			long companyId, JSONObject itemConfigJSONObject, long scopeGroupId)
 		throws PortalException {
 
