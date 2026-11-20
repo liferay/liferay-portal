@@ -7,7 +7,6 @@ package com.liferay.account.admin.web.internal.portlet.action;
 
 import com.liferay.account.constants.AccountPortletKeys;
 import com.liferay.account.model.AccountRole;
-import com.liferay.account.service.AccountRoleLocalService;
 import com.liferay.account.service.AccountRoleService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
@@ -106,9 +105,6 @@ public class EditAccountRoleMVCActionCommand extends BaseMVCActionCommand {
 
 		long accountRoleId = ParamUtil.getLong(actionRequest, "accountRoleId");
 
-		AccountRole accountRole = _accountRoleLocalService.fetchAccountRole(
-			accountRoleId);
-
 		String name = ParamUtil.getString(actionRequest, "name");
 
 		_roleLocalService.validateName(name);
@@ -118,13 +114,9 @@ public class EditAccountRoleMVCActionCommand extends BaseMVCActionCommand {
 		Map<Locale, String> descriptionMap = _localization.getLocalizationMap(
 			actionRequest, "description");
 
-		_roleLocalService.updateRole(
-			accountRole.getExternalReferenceCode(), accountRole.getRoleId(),
-			name, titleMap, descriptionMap, null, null);
+		_accountRoleService.updateAccountRole(
+			accountRoleId, name, titleMap, descriptionMap);
 	}
-
-	@Reference
-	private AccountRoleLocalService _accountRoleLocalService;
 
 	@Reference
 	private AccountRoleService _accountRoleService;
