@@ -42,7 +42,7 @@ public class RemoteStagingGroupExporter {
 		}
 
 		UnicodeProperties typeSettingsUnicodeProperties =
-			group.getTypeSettingsProperties();
+			group.getParentLiveGroupTypeSettingsProperties();
 
 		Element groupExternalReferenceCodeMappingsElement =
 			headerElement.addElement("group-external-reference-code-mappings");
