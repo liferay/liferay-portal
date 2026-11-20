@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutPrototype;
 import com.liferay.portal.kernel.model.LayoutSet;
@@ -38,10 +39,10 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
-import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.segments.service.SegmentsExperienceLocalService;
@@ -127,11 +128,8 @@ public class LayoutSetPrototypeExportImportTest
 
 		User companyAdminUser = UserTestUtil.addCompanyAdminUser(company);
 
-		Group companyGroup = GroupTestUtil.addGroupToCompany(
-			company.getCompanyId());
-
-		Layout companyLayout = LayoutTestUtil.addTypePortletLayout(
-			companyGroup);
+		Group controlPanelGroup = GroupLocalServiceUtil.getGroup(
+			company.getCompanyId(), GroupConstants.CONTROL_PANEL);
 
 		exportImportConfiguration =
 			ExportImportConfigurationLocalServiceUtil.
@@ -141,8 +139,10 @@ public class LayoutSetPrototypeExportImportTest
 					StringPool.BLANK, StringPool.BLANK,
 					ExportImportConfigurationSettingsMapFactoryUtil.
 						buildImportPortletSettingsMap(
-							companyAdminUser, companyLayout.getPlid(),
-							companyGroup.getGroupId(), getPortletId(),
+							companyAdminUser,
+							PortalUtil.getControlPanelPlid(
+								company.getCompanyId()),
+							controlPanelGroup.getGroupId(), getPortletId(),
 							getImportParameterMap()),
 					new ServiceContext());
 
@@ -240,7 +240,8 @@ public class LayoutSetPrototypeExportImportTest
 		LayoutSetPrototypeLocalServiceUtil.deleteLayoutSetPrototype(
 			exportedLayoutSetPrototype);
 
-		importedLayout = LayoutTestUtil.addTypePortletLayout(importedGroup);
+		Group controlPanelGroup = GroupLocalServiceUtil.getGroup(
+			companyId, GroupConstants.CONTROL_PANEL);
 
 		exportImportConfiguration =
 			ExportImportConfigurationLocalServiceUtil.
@@ -250,8 +251,8 @@ public class LayoutSetPrototypeExportImportTest
 					StringPool.BLANK, StringPool.BLANK,
 					ExportImportConfigurationSettingsMapFactoryUtil.
 						buildImportPortletSettingsMap(
-							user, importedLayout.getPlid(),
-							importedGroup.getGroupId(), getPortletId(),
+							user, PortalUtil.getControlPanelPlid(companyId),
+							controlPanelGroup.getGroupId(), getPortletId(),
 							getImportParameterMap()),
 					new ServiceContext());
 
@@ -326,7 +327,8 @@ public class LayoutSetPrototypeExportImportTest
 		LayoutSetPrototypeLocalServiceUtil.deleteLayoutSetPrototype(
 			exportedLayoutSetPrototype);
 
-		importedLayout = LayoutTestUtil.addTypePortletLayout(importedGroup);
+		Group controlPanelGroup = GroupLocalServiceUtil.getGroup(
+			companyId, GroupConstants.CONTROL_PANEL);
 
 		exportImportConfiguration =
 			ExportImportConfigurationLocalServiceUtil.
@@ -336,8 +338,8 @@ public class LayoutSetPrototypeExportImportTest
 					StringPool.BLANK, StringPool.BLANK,
 					ExportImportConfigurationSettingsMapFactoryUtil.
 						buildImportPortletSettingsMap(
-							user, importedLayout.getPlid(),
-							importedGroup.getGroupId(), getPortletId(),
+							user, PortalUtil.getControlPanelPlid(companyId),
+							controlPanelGroup.getGroupId(), getPortletId(),
 							getImportParameterMap()),
 					new ServiceContext());
 
@@ -412,7 +414,44 @@ public class LayoutSetPrototypeExportImportTest
 				exportedLayoutSetPrototypeGroup, true);
 		}
 
-		exportImportPortlet(LayoutSetPrototypePortletKeys.LAYOUT_SET_PROTOTYPE);
+		User user = TestPropsValues.getUser();
+
+		ExportImportConfiguration exportImportConfiguration =
+			ExportImportConfigurationLocalServiceUtil.
+				addDraftExportImportConfiguration(
+					user.getUserId(),
+					ExportImportConfigurationConstants.
+						TYPE_PUBLISH_PORTLET_LOCAL,
+					ExportImportConfigurationSettingsMapFactoryUtil.
+						buildExportPortletSettingsMap(
+							user, layout.getPlid(), layout.getGroupId(),
+							getPortletId(), getExportParameterMap(),
+							StringPool.BLANK));
+
+		larFile = ExportImportLocalServiceUtil.exportPortletInfoAsFile(
+			exportImportConfiguration);
+
+		Group controlPanelGroup = GroupLocalServiceUtil.getGroup(
+			exportedLayoutSetPrototype.getCompanyId(),
+			GroupConstants.CONTROL_PANEL);
+
+		exportImportConfiguration =
+			ExportImportConfigurationLocalServiceUtil.
+				updateExportImportConfiguration(
+					user.getUserId(),
+					exportImportConfiguration.getExportImportConfigurationId(),
+					StringPool.BLANK, StringPool.BLANK,
+					ExportImportConfigurationSettingsMapFactoryUtil.
+						buildImportPortletSettingsMap(
+							user,
+							PortalUtil.getControlPanelPlid(
+								exportedLayoutSetPrototype.getCompanyId()),
+							controlPanelGroup.getGroupId(), getPortletId(),
+							getImportParameterMap()),
+					new ServiceContext());
+
+		ExportImportLocalServiceUtil.importPortletInfo(
+			exportImportConfiguration, larFile);
 
 		LayoutSetPrototype importedLayoutSetPrototype =
 			LayoutSetPrototypeLocalServiceUtil.
