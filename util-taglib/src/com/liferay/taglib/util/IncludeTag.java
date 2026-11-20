@@ -5,8 +5,6 @@
 
 package com.liferay.taglib.util;
 
-import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
-import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
@@ -14,14 +12,11 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.log.LogUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Theme;
-import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.portlet.PortletBag;
 import com.liferay.portal.kernel.portlet.PortletBagPool;
 import com.liferay.portal.kernel.portlet.PortletIdCodec;
 import com.liferay.portal.kernel.servlet.DirectRequestDispatcherFactoryUtil;
 import com.liferay.portal.kernel.servlet.FileAvailabilityUtil;
-import com.liferay.portal.kernel.servlet.taglib.TagDynamicIdFactory;
-import com.liferay.portal.kernel.servlet.taglib.TagDynamicIncludeUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.CustomJspRegistryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -325,40 +320,7 @@ public class IncludeTag extends AttributesTagSupport {
 	}
 
 	protected void include(String page, boolean doStartTag) throws Exception {
-		HttpServletResponse httpServletResponse = null;
-
-		Class<?> clazz = getClass();
-
-		String tagClassName = clazz.getName();
-
-		String tagDynamicId = null;
-
-		String tagPointPrefix = null;
-
-		if (doStartTag) {
-			tagPointPrefix = "doStartTag#";
-		}
-		else {
-			tagPointPrefix = "doEndTag#";
-		}
-
-		TagDynamicIdFactory tagDynamicIdFactory =
-			_tagDynamicIdFactories.getService(tagClassName);
-
 		HttpServletRequest httpServletRequest = getRequest();
-
-		if (tagDynamicIdFactory != null) {
-			httpServletResponse =
-				PipingServletResponseFactory.createPipingServletResponse(
-					pageContext);
-
-			tagDynamicId = tagDynamicIdFactory.getTagDynamicId(
-				httpServletRequest, httpServletResponse, this);
-
-			TagDynamicIncludeUtil.include(
-				httpServletRequest, httpServletResponse, tagClassName,
-				tagDynamicId, tagPointPrefix + "before", doStartTag);
-		}
 
 		if (_useCustomPage) {
 			String customPage = getCustomPage(
@@ -382,12 +344,6 @@ public class IncludeTag extends AttributesTagSupport {
 		if (_THEME_JSP_OVERRIDE_ENABLED) {
 			httpServletRequest.removeAttribute(
 				WebKeys.SERVLET_CONTEXT_INCLUDE_FILTER_STRICT);
-		}
-
-		if (tagDynamicIdFactory != null) {
-			TagDynamicIncludeUtil.include(
-				httpServletRequest, httpServletResponse, tagClassName,
-				tagDynamicId, tagPointPrefix + "after", doStartTag);
 		}
 	}
 
@@ -536,11 +492,6 @@ public class IncludeTag extends AttributesTagSupport {
 			PropsUtil.get(PropsKeys.THEME_JSP_OVERRIDE_ENABLED));
 
 	private static final Log _log = LogFactoryUtil.getLog(IncludeTag.class);
-
-	private static final ServiceTrackerMap<String, TagDynamicIdFactory>
-		_tagDynamicIdFactories = ServiceTrackerMapFactory.openSingleValueMap(
-			SystemBundleUtil.getBundleContext(), TagDynamicIdFactory.class,
-			"tagClassName");
 
 	private String _page;
 	private Set<String> _setAttributeNames;
