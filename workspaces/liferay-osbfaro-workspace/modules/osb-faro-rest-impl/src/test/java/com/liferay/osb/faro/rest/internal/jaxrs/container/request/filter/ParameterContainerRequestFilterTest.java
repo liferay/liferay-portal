@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Objects;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
 import org.mockito.ArgumentCaptor;
@@ -39,18 +38,12 @@ import org.mockito.Mockito;
  */
 public class ParameterContainerRequestFilterTest {
 
-	@Before
-	public void setUp() {
-		_setResourceMethod(
+	@Test
+	public void testFilter() {
+		_mockResourceInfo(
 			AccountLifecycleStageTransitionResource.class,
 			"getWorkspaceGroupAccountLifecycleStageTransitionsPage");
 
-		ReflectionTestUtil.setFieldValue(
-			_parameterContainerRequestFilter, "_resourceInfo", _resourceInfo);
-	}
-
-	@Test
-	public void testFilter() {
 		Assert.assertNull(_filter("pageSize", "100"));
 		Assert.assertNull(_filter("rangeKey", "LAST_30_DAYS"));
 		Assert.assertNull(
@@ -66,27 +59,16 @@ public class ParameterContainerRequestFilterTest {
 			"\"accountLifecycleId\" must be a numeric ID",
 			_filter("accountLifecycleId", RandomTestUtil.randomString()));
 		_assertTitle(
-			"Date range must be at most 180 days",
-			_filter(_getRangeQueryParameters("2026-10-02", "2026-04-05")));
-		_assertTitle(
-			"\"bogusColumn\" is not a sortable column. Sortable columns: " +
-				"accountId, accountName, fromAccountLifecycleStageId, " +
-					"toAccountLifecycleStageId, transitionDate",
-			_filter("sort", "bogusColumn:desc"));
-		_assertTitle(
 			"\"pageSize\" must be a whole number from 1 to 100",
 			_filter("pageSize", "101"));
-		_assertTitle(
-			"\"rangeEnd\" and \"rangeStart\" must be set together",
-			_filter("rangeStart", "2026-10-01"));
 		_assertTitle(
 			"\"rangeKey\" must be one of LAST_180_DAYS, LAST_24_HOURS, " +
 				"LAST_28_DAYS, LAST_30_DAYS, LAST_7_DAYS, LAST_90_DAYS, " +
 					"YESTERDAY",
 			_filter("rangeKey", "LAST_YEAR"));
 		_assertTitle(
-			"\"rangeStart\" must not be after \"rangeEnd\"",
-			_filter(_getRangeQueryParameters("2026-10-01", "2026-10-20")));
+			"\"rangeEnd\" and \"rangeStart\" must be set together",
+			_filter("rangeStart", "2026-10-01"));
 		_assertTitle(
 			"\"selectedMetrics\" must be one of accountsTouched, " +
 				"campaignCount, closedWonAmount, openPipelineAmount",
@@ -100,11 +82,22 @@ public class ParameterContainerRequestFilterTest {
 			"\"sort\" must be a comma separated list of \"column:asc\" or " +
 				"\"column:desc\" expressions",
 			_filter("sort", "accountName:sideways"));
+		_assertTitle(
+			"\"bogusColumn\" is not a sortable column. Sortable columns: " +
+				"accountId, accountName, fromAccountLifecycleStageId, " +
+					"toAccountLifecycleStageId, transitionDate",
+			_filter("sort", "bogusColumn:desc"));
+		_assertTitle(
+			"\"rangeStart\" must not be after \"rangeEnd\"",
+			_filter(_getRangeQueryParameters("2026-10-01", "2026-10-20")));
+		_assertTitle(
+			"Date range must be at most 180 days",
+			_filter(_getRangeQueryParameters("2026-10-02", "2026-04-05")));
 	}
 
 	@Test
 	public void testFilterWithAccountLifecycleResourceMethod() {
-		_setResourceMethod(
+		_mockResourceInfo(
 			AccountLifecycleResource.class,
 			"getWorkspaceGroupChannelAccountLifecyclesPage");
 
@@ -120,7 +113,7 @@ public class ParameterContainerRequestFilterTest {
 
 	@Test
 	public void testFilterWithEventAttributeDefinitionResourceMethod() {
-		_setResourceMethod(
+		_mockResourceInfo(
 			EventAttributeDefinitionResource.class,
 			"getWorkspaceGroupEventAttributeDefinitionsPage");
 
@@ -134,19 +127,19 @@ public class ParameterContainerRequestFilterTest {
 			"\"attributeType\" must be one of ALL, GLOBAL, LOCAL",
 			_filter("attributeType", RandomTestUtil.randomString()));
 		_assertTitle(
-			"\"displayName\" is not a sortable column. Sortable columns: name",
-			_filter("sort", "displayName:asc"));
-		_assertTitle(
 			"\"eventDefinitionId\" must be a numeric ID",
 			_filter("eventDefinitionId", RandomTestUtil.randomString()));
 		_assertTitle(
 			"\"pageSize\" must be a whole number from 1 to 100",
 			_filter("pageSize", "101"));
+		_assertTitle(
+			"\"displayName\" is not a sortable column. Sortable columns: name",
+			_filter("sort", "displayName:asc"));
 	}
 
 	@Test
 	public void testFilterWithEventDefinitionResourceMethod() {
-		_setResourceMethod(
+		_mockResourceInfo(
 			EventDefinitionResource.class,
 			"getWorkspaceGroupEventDefinitionsPage");
 
@@ -160,10 +153,6 @@ public class ParameterContainerRequestFilterTest {
 			"\"blocked\" must be one of false, true",
 			_filter("blocked", "yes"));
 		_assertTitle(
-			"\"blockedLastSeenDate\" is not a sortable column. Sortable " +
-				"columns: displayName, name",
-			_filter("sort", "blockedLastSeenDate:desc"));
-		_assertTitle(
 			"\"eventType\" must be one of ALL, CUSTOM, DEFAULT",
 			_filter("eventType", RandomTestUtil.randomString()));
 		_assertTitle(
@@ -171,11 +160,15 @@ public class ParameterContainerRequestFilterTest {
 		_assertTitle(
 			"\"pageSize\" must be a whole number from 1 to 100",
 			_filter("pageSize", "101"));
+		_assertTitle(
+			"\"blockedLastSeenDate\" is not a sortable column. Sortable " +
+				"columns: displayName, name",
+			_filter("sort", "blockedLastSeenDate:desc"));
 	}
 
 	@Test
 	public void testFilterWithUnsortableResourceMethod() {
-		_setResourceMethod(
+		_mockResourceInfo(
 			IndividualSegmentMembershipResource.class,
 			"getWorkspaceGroupIndividualSegmentMembershipsPage");
 
@@ -198,9 +191,6 @@ public class ParameterContainerRequestFilterTest {
 	}
 
 	private Response _filter(MultivaluedMap<String, String> queryParameters) {
-		ContainerRequestContext containerRequestContext = Mockito.mock(
-			ContainerRequestContext.class);
-
 		UriInfo uriInfo = Mockito.mock(UriInfo.class);
 
 		Mockito.when(
@@ -214,6 +204,9 @@ public class ParameterContainerRequestFilterTest {
 		).thenReturn(
 			queryParameters
 		);
+
+		ContainerRequestContext containerRequestContext = Mockito.mock(
+			ContainerRequestContext.class);
 
 		Mockito.when(
 			containerRequestContext.getUriInfo()
@@ -266,32 +259,38 @@ public class ParameterContainerRequestFilterTest {
 	private MultivaluedMap<String, String> _getRangeQueryParameters(
 		String rangeEnd, String rangeStart) {
 
-		MultivaluedMap<String, String> queryParameters =
+		MultivaluedMap<String, String> rangeQueryParameters =
 			new MultivaluedHashMap<>();
 
-		queryParameters.putSingle("rangeEnd", rangeEnd);
-		queryParameters.putSingle("rangeStart", rangeStart);
+		rangeQueryParameters.putSingle("rangeEnd", rangeEnd);
+		rangeQueryParameters.putSingle("rangeStart", rangeStart);
 
-		return queryParameters;
+		return rangeQueryParameters;
 	}
 
-	private void _setResourceMethod(Class<?> clazz, String methodName) {
-		for (Method method : clazz.getMethods()) {
-			if (!Objects.equals(method.getName(), methodName)) {
-				continue;
-			}
+	private ResourceInfo _mockResourceInfo(Class<?> clazz, String methodName) {
+		ResourceInfo resourceInfo = Mockito.mock(ResourceInfo.class);
 
-			Mockito.when(
-				_resourceInfo.getResourceMethod()
-			).thenReturn(
-				method
-			);
+		for (Method method : clazz.getMethods()) {
+			if (Objects.equals(method.getName(), methodName)) {
+				Mockito.when(
+					resourceInfo.getResourceMethod()
+				).thenReturn(
+					method
+				);
+
+				break;
+			}
 		}
+
+		ReflectionTestUtil.setFieldValue(
+			_parameterContainerRequestFilter, "_resourceInfo", resourceInfo);
+
+		return resourceInfo;
 	}
 
 	private final ParameterContainerRequestFilter
 		_parameterContainerRequestFilter =
 			new ParameterContainerRequestFilter();
-	private final ResourceInfo _resourceInfo = Mockito.mock(ResourceInfo.class);
 
 }
