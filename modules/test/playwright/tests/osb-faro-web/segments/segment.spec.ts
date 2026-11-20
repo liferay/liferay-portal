@@ -13,6 +13,7 @@ import {loginAnalyticsCloudTest} from '../../../fixtures/loginAnalyticsCloudTest
 import {loginTest} from '../../../fixtures/loginTest';
 import {liferayConfig} from '../../../liferay.config';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
+import {getRandomInt} from '../../../utils/getRandomInt';
 import getRandomString from '../../../utils/getRandomString';
 import performLogin, {
 	performLogout,
@@ -159,7 +160,7 @@ test(
 	}
 );
 
-test.skip(
+test(
 	'Create a segment with behavior of commenting on a blog',
 	{
 		tag: '@Legacy',
@@ -191,10 +192,10 @@ test.skip(
 			]);
 		});
 
-		const pageName = 'Liferay Blog - AC Page';
+		const pageName = getRandomString();
 
 		await test.step('Create blogViewed and posted events for known and anonymous individuals', async () => {
-			const blogId = '1905';
+			const blogId = String(getRandomInt());
 
 			await apiHelpers.jsonWebServicesOSBAsah.createEvents(
 				knownIndividual.map((individual) => ({
@@ -278,16 +279,17 @@ test.skip(
 				projectID: project.groupId,
 			});
 
-			await createDynamicSegment(page);
+			await createBatchSegment(page);
 
 			await addSegmentField({
-				criterionName: 'Commented on Blog',
+				criterionName: 'Comment',
 				criterionType: 'Events',
 				page,
 			});
 
-			await selectAsset({
+			await selectBehaviorAsset({
 				assetName: pageName,
+				assetType: 'Blogs',
 				page,
 			});
 
@@ -312,40 +314,29 @@ test.skip(
 			});
 		});
 
-		await test.step('Reload the segment page to clear the cache', async () => {
-			await waitForLoading(page);
-
-			await page.reload();
-
-			await waitForLoading(page);
-		});
-
 		await test.step('Check the segment member count in the membership', async () => {
 			await navigateTo({
 				page,
 				pageName: 'Membership',
 			});
 
-			await expect(
-				page
-					.locator('li')
-					.filter({hasText: 'Known Members:'})
-					.locator('b')
-			).toHaveText('1');
+			await expect(async () => {
+				await page.reload();
 
-			await expect(
-				page
-					.locator('li')
-					.filter({hasText: 'Anonymous Members:'})
-					.locator('b')
-			).toHaveText('1');
+				await expect(
+					page
+						.locator('li')
+						.filter({hasText: 'Total Members:'})
+						.locator('b')
+				).toHaveText('2', {timeout: 5000});
+			}).toPass({timeout: 60000});
 
-			await expect(
-				page
-					.locator('li')
-					.filter({hasText: 'Total Members:'})
-					.locator('b')
-			).toHaveText('2');
+			await viewSegmentMembershipCount({
+				anonymousMemberCount: '1',
+				knownMemberCount: '1',
+				page,
+				totalMemberCount: '2',
+			});
 		});
 
 		await test.step('Check that the correct known member appears in the membership tab', async () => {
