@@ -64,12 +64,12 @@ CalendarResource calendarResource = (CalendarResource)request.getAttribute(Calen
 				name="color"
 			>
 				<aui:style type="text/css">
-					.calendar-portlet-color-box {
+					.calendar-portlet-color-box-<%= calendar.getCalendarId() %> {
 						background-color: <%= ColorUtil.toHexString(calendar.getColor()) %>;
 					}
 				</aui:style>
 
-				<span class="calendar-portlet-color-box">&nbsp;</span>
+				<span class="calendar-portlet-color-box calendar-portlet-color-box-<%= calendar.getCalendarId() %>">&nbsp;</span>
 			</liferay-ui:search-container-column-text>
 
 			<liferay-ui:search-container-column-text
