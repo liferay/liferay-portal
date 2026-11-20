@@ -5,6 +5,7 @@
 
 package com.liferay.portal.cluster.multiple.internal;
 
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.cluster.multiple.configuration.ClusterExecutorConfiguration;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
@@ -23,6 +24,9 @@ import com.liferay.portal.kernel.util.MethodKey;
 import com.liferay.portal.kernel.util.ObjectValuePair;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LogEntry;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import java.io.Serializable;
@@ -266,6 +270,53 @@ public class ClusterExecutorImplTest extends BaseClusterTestCase {
 		Assert.assertFalse((Boolean)clusterNodeResponse.getResult());
 
 		Assert.assertTrue(ClusterInvokeThreadLocal.isEnabled());
+	}
+
+	@Test
+	public void testGetClusterNodes() {
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				ClusterExecutorImpl.class.getName(), LoggerTestUtil.WARN)) {
+
+			// Test 1, statuses match the view
+
+			ClusterExecutorImpl clusterExecutorImpl = _getClusterExecutorImpl();
+
+			List<ClusterNode> clusterNodes =
+				clusterExecutorImpl.getClusterNodes();
+
+			Assert.assertEquals(
+				clusterNodes.toString(), 1, clusterNodes.size());
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertTrue(logEntries.toString(), logEntries.isEmpty());
+
+			// Test 2, view has a node whose status has not arrived
+
+			_getClusterExecutorImpl();
+
+			clusterNodes = clusterExecutorImpl.getClusterNodes();
+
+			Assert.assertEquals(
+				clusterNodes.toString(), 1, clusterNodes.size());
+
+			Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
+
+			ClusterChannel clusterChannel =
+				clusterExecutorImpl.getClusterChannel();
+
+			ClusterReceiver clusterReceiver =
+				clusterChannel.getClusterReceiver();
+
+			LogEntry logEntry = logEntries.get(0);
+
+			Assert.assertEquals(
+				StringBundler.concat(
+					"Cluster node statuses are stored for [",
+					clusterChannel.getLocalAddress(), "] while the view has ",
+					clusterReceiver.getAddresses()),
+				logEntry.getMessage());
+		}
 	}
 
 	private ClusterExecutorImpl _getClusterExecutorImpl() {

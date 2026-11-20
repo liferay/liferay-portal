@@ -55,6 +55,11 @@ public class TestAddress implements Address, Comparable<TestAddress> {
 		return _address;
 	}
 
+	@Override
+	public String toString() {
+		return String.valueOf(_address);
+	}
+
 	private final int _address;
 
 }
