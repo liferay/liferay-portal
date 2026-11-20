@@ -240,7 +240,9 @@ public class DefaultUserFieldExpressionHandler
 		currentUser = _userLocalService.getUserById(currentUser.getUserId());
 
 		if (!StringUtil.equals(
-				currentUser.getEmailAddress(), newUser.getEmailAddress())) {
+				currentUser.getEmailAddress(),
+				StringUtil.toLowerCase(
+					StringUtil.trim(newUser.getEmailAddress())))) {
 
 			currentUser = _userLocalService.updateEmailAddress(
 				currentUser.getUserId(), StringPool.BLANK,

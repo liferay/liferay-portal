@@ -28,6 +28,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.PrefsProps;
 import com.liferay.portal.kernel.util.PropertiesUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.language.LanguageImpl;
 import com.liferay.portal.model.impl.UserGroupImpl;
@@ -371,6 +372,7 @@ public class DefaultUserResolverTest extends BaseSamlTestCase {
 	@Test
 	public void testResolveUser() throws Exception {
 		_testResolveUserWhenEmailAddressAttributeIsMissing();
+		_testResolveUserWhenEmailAddressAttributeIsUppercase();
 		_testResolveUserWhenUserEmailAddressVerifiedIsFalse();
 		_testResolveUserWhenUserEmailAddressVerifiedIsTrue();
 	}
@@ -1130,6 +1132,41 @@ public class DefaultUserResolverTest extends BaseSamlTestCase {
 			_userLocalService, Mockito.never()
 		).updateEmailAddressVerified(
 			Mockito.anyLong(), Mockito.anyBoolean()
+		);
+	}
+
+	private void _testResolveUserWhenEmailAddressAttributeIsUppercase()
+		throws Exception {
+
+		User user = _initMatchingUserHandling();
+
+		Mockito.when(
+			_userLocalService.getUserById(Mockito.any(Long.class))
+		).thenReturn(
+			(User)user.clone()
+		);
+
+		_initMessageContext(
+			false, true, NameIDType.UNSPECIFIED, _SAML_NAME_IDENTIFIER_VALUE);
+
+		_attributes.add(
+			OpenSamlUtil.buildAttribute(
+				"emailAddress",
+				StringUtil.toUpperCase(
+					_SUBJECT_NAME_IDENTIFIER_EMAIL_ADDRESS)));
+
+		_testUserFieldExpressionResolver.setUserFieldExpression("screenName");
+
+		Assert.assertNotNull(
+			_defaultUserResolver.resolveUser(
+				new UserResolverSAMLContextImpl(_messageContext),
+				new ServiceContext()));
+
+		Mockito.verify(
+			_userLocalService, Mockito.never()
+		).updateEmailAddress(
+			Mockito.anyLong(), Mockito.anyString(), Mockito.anyString(),
+			Mockito.anyString()
 		);
 	}
 
