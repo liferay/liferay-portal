@@ -57,6 +57,7 @@ import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.URLCodec;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LogEntry;
 import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.FeatureFlags;
@@ -1644,10 +1645,15 @@ public class MCPServerServletTest {
 				"portal_web.docroot.errors.code_jsp", LoggerTestUtil.WARN)) {
 
 			_http.URLtoString(options);
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertTrue(logEntries.toString(), logEntries.isEmpty());
 		}
 
 		Http.Response response = options.getResponse();
 
+		Assert.assertEquals("POST", response.getHeader("Allow"));
 		Assert.assertEquals(405, response.getResponseCode());
 
 		options = new Http.Options();

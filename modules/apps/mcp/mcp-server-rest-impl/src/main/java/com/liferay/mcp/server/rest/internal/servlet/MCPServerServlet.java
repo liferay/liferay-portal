@@ -267,6 +267,20 @@ public class MCPServerServlet extends HttpServlet {
 					ServletResponse servletResponse)
 				throws IOException, ServletException {
 
+				HttpServletRequest httpServletRequest =
+					(HttpServletRequest)servletRequest;
+
+				if (Objects.equals(httpServletRequest.getMethod(), "GET")) {
+					HttpServletResponse httpServletResponse =
+						(HttpServletResponse)servletResponse;
+
+					httpServletResponse.setHeader("Allow", "POST");
+					httpServletResponse.setStatus(
+						HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+
+					return;
+				}
+
 				httpServletStatelessServerTransport.service(
 					servletRequest, servletResponse);
 			}
