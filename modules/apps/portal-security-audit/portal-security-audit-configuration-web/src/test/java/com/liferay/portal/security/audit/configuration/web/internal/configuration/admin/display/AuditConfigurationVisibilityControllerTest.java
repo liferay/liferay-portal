@@ -5,7 +5,9 @@
 
 package com.liferay.portal.security.audit.configuration.web.internal.configuration.admin.display;
 
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
+import com.liferay.portal.kernel.test.util.FeatureFlagTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
@@ -28,28 +30,32 @@ public class AuditConfigurationVisibilityControllerTest {
 	@FeatureFlag("LPD-6417")
 	@Test
 	public void testIsVisible() {
-		_testIsVisible(true, ExtendedObjectClassDefinition.Scope.COMPANY);
-		_testIsVisible(true, ExtendedObjectClassDefinition.Scope.SYSTEM);
-	}
-
-	@FeatureFlag(enable = false, value = "LPD-6417")
-	@Test
-	public void testIsVisibleWhenFeatureFlagIsDisabled() {
-		_testIsVisible(false, ExtendedObjectClassDefinition.Scope.COMPANY);
-		_testIsVisible(true, ExtendedObjectClassDefinition.Scope.SYSTEM);
-	}
-
-	private void _testIsVisible(
-		boolean expectedVisible, ExtendedObjectClassDefinition.Scope scope) {
-
 		AuditConfigurationVisibilityController
 			auditConfigurationVisibilityController =
 				new AuditConfigurationVisibilityController();
 
-		Assert.assertEquals(
-			expectedVisible,
+		Assert.assertTrue(
 			auditConfigurationVisibilityController.isVisible(
-				scope, RandomTestUtil.randomLong()));
+				ExtendedObjectClassDefinition.Scope.COMPANY,
+				RandomTestUtil.randomLong()));
+		Assert.assertTrue(
+			auditConfigurationVisibilityController.isVisible(
+				ExtendedObjectClassDefinition.Scope.SYSTEM,
+				RandomTestUtil.randomLong()));
+
+		try (SafeCloseable safeCloseable =
+				FeatureFlagTestUtil.setFeatureFlagsWithSafeCloseable(
+					false, "LPD-6417")) {
+
+			Assert.assertFalse(
+				auditConfigurationVisibilityController.isVisible(
+					ExtendedObjectClassDefinition.Scope.COMPANY,
+					RandomTestUtil.randomLong()));
+			Assert.assertTrue(
+				auditConfigurationVisibilityController.isVisible(
+					ExtendedObjectClassDefinition.Scope.SYSTEM,
+					RandomTestUtil.randomLong()));
+		}
 	}
 
 }

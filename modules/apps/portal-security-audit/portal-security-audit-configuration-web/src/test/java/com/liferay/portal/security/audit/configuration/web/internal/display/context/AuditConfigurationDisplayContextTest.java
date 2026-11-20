@@ -56,7 +56,8 @@ public class AuditConfigurationDisplayContextTest {
 		_mockOverrideProperties("enabled");
 
 		Assert.assertEquals(
-			_HELP_MESSAGE,
+			"this-field-has-been-set-by-a-portal-property-and-cannot-be-" +
+				"changed-here",
 			_auditConfigurationDisplayContext.getEnabledHelpMessage());
 	}
 
@@ -70,7 +71,8 @@ public class AuditConfigurationDisplayContextTest {
 		_mockOverrideProperties("pseudonymizationEnabled");
 
 		Assert.assertEquals(
-			_HELP_MESSAGE,
+			"this-field-has-been-set-by-a-portal-property-and-cannot-be-" +
+				"changed-here",
 			_auditConfigurationDisplayContext.
 				getPseudonymizationEnabledHelpMessage());
 	}
@@ -109,10 +111,6 @@ public class AuditConfigurationDisplayContextTest {
 			).build()
 		);
 	}
-
-	private static final String _HELP_MESSAGE =
-		"this-field-has-been-set-by-a-portal-property-and-cannot-be-changed-" +
-			"here";
 
 	private AuditConfigurationDisplayContext _auditConfigurationDisplayContext;
 	private MockedStatic<ConfigurationOverridePropertiesUtil>

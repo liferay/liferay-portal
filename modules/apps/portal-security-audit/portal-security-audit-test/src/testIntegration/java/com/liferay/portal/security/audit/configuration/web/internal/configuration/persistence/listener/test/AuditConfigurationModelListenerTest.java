@@ -8,6 +8,7 @@ package com.liferay.portal.security.audit.configuration.web.internal.configurati
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.configuration.admin.constants.ConfigurationAdminPortletKeys;
 import com.liferay.configuration.admin.display.ConfigurationFormRenderer;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.configuration.test.util.ConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.audit.AuditMessage;
@@ -17,6 +18,7 @@ import com.liferay.portal.kernel.portlet.LiferayPortletConfig;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionRequest;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.FeatureFlagTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapDictionary;
@@ -101,35 +103,11 @@ public class AuditConfigurationModelListenerTest {
 	)
 	@Test
 	public void testOnAfterSave() throws Exception {
+		_testOnAfterSaveWhenFeatureFlagIsDisabled();
 		_testOnAfterSaveWithCompanyScope();
 		_testOnAfterSaveWithSystemScope();
+		_testOnAfterSaveWithUnchangedPseudonymizationEnabled();
 		_testOnAfterSaveWithoutConfigurationFormRenderer();
-	}
-
-	@FeatureFlags(
-		featureFlags = {
-			@FeatureFlag("LPD-6417"),
-			@FeatureFlag(enable = false, value = "LPD-96921")
-		}
-	)
-	@Test
-	public void testOnAfterSaveWhenFeatureFlagIsDisabled() throws Exception {
-		_auditMessages.clear();
-
-		AuditConfiguration auditConfiguration =
-			_configurationProvider.getSystemConfiguration(
-				AuditConfiguration.class);
-
-		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
-				new ConfigurationTemporarySwapper(
-					AuditConfiguration.class.getName(),
-					_getRequestParameters(
-						ConfigurationAdminPortletKeys.SYSTEM_SETTINGS,
-						!auditConfiguration.pseudonymizationEnabled()))) {
-
-			Assert.assertEquals(
-				_auditMessages.toString(), 0, _auditMessages.size());
-		}
 	}
 
 	private void _assertAuditMessage(
@@ -138,9 +116,6 @@ public class AuditConfigurationModelListenerTest {
 
 		Assert.assertEquals(
 			AuditConfiguration.class.getName(), auditMessage.getClassName());
-		Assert.assertEquals(
-			String.valueOf(TestPropsValues.getCompanyId()),
-			auditMessage.getClassPK());
 		Assert.assertEquals(
 			TestPropsValues.getCompanyId(), auditMessage.getCompanyId());
 		Assert.assertEquals(
@@ -197,10 +172,32 @@ public class AuditConfigurationModelListenerTest {
 				mockLiferayPortletActionRequest.getHttpServletRequest()));
 	}
 
-	private void _testOnAfterSaveWithCompanyScope() throws Exception {
-		try {
-			_auditMessages.clear();
+	private void _testOnAfterSaveWhenFeatureFlagIsDisabled() throws Exception {
+		_auditMessages.clear();
 
+		AuditConfiguration auditConfiguration =
+			_configurationProvider.getSystemConfiguration(
+				AuditConfiguration.class);
+
+		try (SafeCloseable safeCloseable =
+				FeatureFlagTestUtil.setFeatureFlagsWithSafeCloseable(
+					false, "LPD-96921");
+			ConfigurationTemporarySwapper configurationTemporarySwapper =
+				new ConfigurationTemporarySwapper(
+					AuditConfiguration.class.getName(),
+					_getRequestParameters(
+						ConfigurationAdminPortletKeys.SYSTEM_SETTINGS,
+						!auditConfiguration.pseudonymizationEnabled()))) {
+
+			Assert.assertEquals(
+				_auditMessages.toString(), 0, _auditMessages.size());
+		}
+	}
+
+	private void _testOnAfterSaveWithCompanyScope() throws Exception {
+		_auditMessages.clear();
+
+		try {
 			AuditConfiguration auditConfiguration =
 				_configurationProvider.getCompanyConfiguration(
 					AuditConfiguration.class, TestPropsValues.getCompanyId());
@@ -220,17 +217,6 @@ public class AuditConfigurationModelListenerTest {
 			_assertAuditMessage(
 				_auditMessages.get(0), !pseudonymizationEnabled,
 				pseudonymizationEnabled);
-
-			_auditMessages.clear();
-
-			_configurationProvider.saveCompanyConfiguration(
-				AuditConfiguration.class, TestPropsValues.getCompanyId(),
-				_getRequestParameters(
-					ConfigurationAdminPortletKeys.INSTANCE_SETTINGS,
-					!pseudonymizationEnabled));
-
-			Assert.assertEquals(
-				_auditMessages.toString(), 0, _auditMessages.size());
 		}
 		finally {
 			_configurationProvider.deleteCompanyConfiguration(
@@ -264,12 +250,37 @@ public class AuditConfigurationModelListenerTest {
 		}
 	}
 
+	private void _testOnAfterSaveWithUnchangedPseudonymizationEnabled()
+		throws Exception {
+
+		_auditMessages.clear();
+
+		try {
+			AuditConfiguration auditConfiguration =
+				_configurationProvider.getCompanyConfiguration(
+					AuditConfiguration.class, TestPropsValues.getCompanyId());
+
+			_configurationProvider.saveCompanyConfiguration(
+				AuditConfiguration.class, TestPropsValues.getCompanyId(),
+				_getRequestParameters(
+					ConfigurationAdminPortletKeys.INSTANCE_SETTINGS,
+					auditConfiguration.pseudonymizationEnabled()));
+
+			Assert.assertEquals(
+				_auditMessages.toString(), 0, _auditMessages.size());
+		}
+		finally {
+			_configurationProvider.deleteCompanyConfiguration(
+				AuditConfiguration.class, TestPropsValues.getCompanyId());
+		}
+	}
+
 	private void _testOnAfterSaveWithoutConfigurationFormRenderer()
 		throws Exception {
 
-		try {
-			_auditMessages.clear();
+		_auditMessages.clear();
 
+		try {
 			AuditConfiguration auditConfiguration =
 				_configurationProvider.getCompanyConfiguration(
 					AuditConfiguration.class, TestPropsValues.getCompanyId());

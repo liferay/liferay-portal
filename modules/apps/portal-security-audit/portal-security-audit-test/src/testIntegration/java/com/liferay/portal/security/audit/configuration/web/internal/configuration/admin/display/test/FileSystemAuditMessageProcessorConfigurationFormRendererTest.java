@@ -137,7 +137,7 @@ public class FileSystemAuditMessageProcessorConfigurationFormRendererTest {
 				Collections.emptyMap(),
 				_getRequestParameters(
 					RandomTestUtil.randomString(),
-					ConfigurationAdminPortletKeys.INSTANCE_SETTINGS));
+					ConfigurationAdminPortletKeys.SYSTEM_SETTINGS));
 		}
 		finally {
 			overridePropertiesMap.remove(

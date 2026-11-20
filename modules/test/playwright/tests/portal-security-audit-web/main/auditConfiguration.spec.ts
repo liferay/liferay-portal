@@ -5,7 +5,7 @@
 
 import {expect, mergeTests} from '@playwright/test';
 
-import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
+import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {instanceSettingsPagesTest} from '../../../fixtures/instanceSettingsPagesTest';
 import {loginTest} from '../../../fixtures/loginTest';
@@ -14,6 +14,7 @@ import {performLoginViaApi} from '../../../utils/performLogin';
 import {waitForAlert} from '../../../utils/waitForAlert';
 
 const test = mergeTests(
+	dataApiHelpersTest,
 	instanceSettingsPagesTest,
 	loginTest(),
 	systemSettingsPageTest
@@ -29,7 +30,6 @@ const testWithFeatureFlag = mergeTests(
 );
 
 const testWithoutFeatureFlag = mergeTests(
-	apiHelpersTest,
 	featureFlagsTest({
 		'LPD-6417': {enabled: false},
 	}),
@@ -133,8 +133,8 @@ testWithFeatureFlag(
 	}
 );
 
-testWithoutFeatureFlag.describe('Audit system configuration', () => {
-	testWithoutFeatureFlag.afterEach(async ({page, systemSettingsPage}) => {
+test.describe('Audit system configuration', () => {
+	test.afterEach(async ({page, systemSettingsPage}) => {
 		await systemSettingsPage.goToSystemSetting('Audit', 'Audit');
 
 		await page.getByLabel('Enabled', {exact: true}).setChecked(true);
@@ -142,8 +142,9 @@ testWithoutFeatureFlag.describe('Audit system configuration', () => {
 		await systemSettingsPage.saveAndWaitForAlert();
 	});
 
-	testWithoutFeatureFlag(
+	test(
 		'Assert that audit events are recorded only while audit is enabled on the system scope',
+		{tag: '@LPD-114745'},
 		async ({apiHelpers, browser, page, systemSettingsPage}) => {
 			const startDate = new Date().toISOString();
 

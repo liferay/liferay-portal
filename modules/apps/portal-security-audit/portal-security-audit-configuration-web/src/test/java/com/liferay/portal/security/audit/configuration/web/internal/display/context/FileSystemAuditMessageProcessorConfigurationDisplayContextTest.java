@@ -58,7 +58,8 @@ public class FileSystemAuditMessageProcessorConfigurationDisplayContextTest {
 		_mockOverrideProperties("enabled");
 
 		Assert.assertEquals(
-			_HELP_MESSAGE,
+			"this-field-has-been-set-by-a-portal-property-and-cannot-be-" +
+				"changed-here",
 			_fileSystemAuditMessageProcessorConfigurationDisplayContext.
 				getEnabledHelpMessage());
 	}
@@ -73,7 +74,8 @@ public class FileSystemAuditMessageProcessorConfigurationDisplayContextTest {
 		_mockOverrideProperties("generateChecksum");
 
 		Assert.assertEquals(
-			_HELP_MESSAGE,
+			"this-field-has-been-set-by-a-portal-property-and-cannot-be-" +
+				"changed-here",
 			_fileSystemAuditMessageProcessorConfigurationDisplayContext.
 				getGenerateChecksumHelpMessage());
 	}
@@ -88,7 +90,8 @@ public class FileSystemAuditMessageProcessorConfigurationDisplayContextTest {
 		_mockOverrideProperties("outputDirectory");
 
 		Assert.assertEquals(
-			_HELP_MESSAGE,
+			"this-field-has-been-set-by-a-portal-property-and-cannot-be-" +
+				"changed-here",
 			_fileSystemAuditMessageProcessorConfigurationDisplayContext.
 				getOutputDirectoryHelpMessage());
 	}
@@ -103,7 +106,8 @@ public class FileSystemAuditMessageProcessorConfigurationDisplayContextTest {
 		_mockOverrideProperties("outputFormat");
 
 		Assert.assertEquals(
-			_HELP_MESSAGE,
+			"this-field-has-been-set-by-a-portal-property-and-cannot-be-" +
+				"changed-here",
 			_fileSystemAuditMessageProcessorConfigurationDisplayContext.
 				getOutputFormatHelpMessage());
 	}
@@ -170,10 +174,6 @@ public class FileSystemAuditMessageProcessorConfigurationDisplayContextTest {
 			).build()
 		);
 	}
-
-	private static final String _HELP_MESSAGE =
-		"this-field-has-been-set-by-a-portal-property-and-cannot-be-changed-" +
-			"here";
 
 	private MockedStatic<ConfigurationOverridePropertiesUtil>
 		_configurationOverridePropertiesUtilMockedStatic;

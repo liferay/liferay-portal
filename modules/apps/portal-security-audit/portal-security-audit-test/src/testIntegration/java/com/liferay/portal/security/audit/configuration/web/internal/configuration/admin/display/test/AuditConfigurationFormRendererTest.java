@@ -8,12 +8,15 @@ package com.liferay.portal.security.audit.configuration.web.internal.configurati
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.configuration.admin.constants.ConfigurationAdminPortletKeys;
 import com.liferay.configuration.admin.display.ConfigurationFormRenderer;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.configuration.persistence.ConfigurationOverridePropertiesUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletConfig;
 import com.liferay.portal.kernel.service.CompanyLocalService;
+import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionRequest;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.FeatureFlagTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -53,48 +56,9 @@ public class AuditConfigurationFormRendererTest {
 	@FeatureFlag("LPD-6417")
 	@Test
 	public void testGetRequestParameters() throws Exception {
-		Assert.assertEquals(
-			HashMapBuilder.<String, Object>put(
-				"pseudonymizationEnabled", false
-			).build(),
-			_getRequestParameters(
-				ConfigurationAdminPortletKeys.INSTANCE_SETTINGS));
-		Assert.assertEquals(
-			HashMapBuilder.<String, Object>put(
-				"enabled", false
-			).put(
-				"pseudonymizationEnabled", false
-			).build(),
-			_getRequestParameters(
-				ConfigurationAdminPortletKeys.SYSTEM_SETTINGS));
-
+		_testGetRequestParameters();
+		_testGetRequestParametersWhenFeatureFlagIsDisabled();
 		_testGetRequestParametersWithOverriddenProperties();
-	}
-
-	@FeatureFlag(enable = false, value = "LPD-6417")
-	@Test
-	public void testGetRequestParametersWhenFeatureFlagIsDisabled()
-		throws Exception {
-
-		try {
-			_getRequestParameters(
-				ConfigurationAdminPortletKeys.INSTANCE_SETTINGS);
-
-			Assert.fail();
-		}
-		catch (UnsupportedOperationException unsupportedOperationException) {
-			Assert.assertEquals(
-				"Feature flag LPD-6417 is disabled for company " +
-					TestPropsValues.getCompanyId(),
-				unsupportedOperationException.getMessage());
-		}
-
-		Assert.assertEquals(
-			HashMapBuilder.<String, Object>put(
-				"enabled", false
-			).build(),
-			_getRequestParameters(
-				ConfigurationAdminPortletKeys.SYSTEM_SETTINGS));
 	}
 
 	private Map<String, Object> _getRequestParameters(String portletId)
@@ -129,6 +93,46 @@ public class AuditConfigurationFormRendererTest {
 
 		return _configurationFormRenderer.getRequestParameters(
 			mockLiferayPortletActionRequest.getHttpServletRequest());
+	}
+
+	private void _testGetRequestParameters() throws Exception {
+		Assert.assertEquals(
+			HashMapBuilder.<String, Object>put(
+				"pseudonymizationEnabled", false
+			).build(),
+			_getRequestParameters(
+				ConfigurationAdminPortletKeys.INSTANCE_SETTINGS));
+		Assert.assertEquals(
+			HashMapBuilder.<String, Object>put(
+				"enabled", false
+			).put(
+				"pseudonymizationEnabled", false
+			).build(),
+			_getRequestParameters(
+				ConfigurationAdminPortletKeys.SYSTEM_SETTINGS));
+	}
+
+	private void _testGetRequestParametersWhenFeatureFlagIsDisabled()
+		throws Exception {
+
+		try (SafeCloseable safeCloseable =
+				FeatureFlagTestUtil.setFeatureFlagsWithSafeCloseable(
+					false, "LPD-6417")) {
+
+			AssertUtils.assertFailure(
+				UnsupportedOperationException.class,
+				"Feature flag LPD-6417 is disabled for company " +
+					TestPropsValues.getCompanyId(),
+				() -> _getRequestParameters(
+					ConfigurationAdminPortletKeys.INSTANCE_SETTINGS));
+
+			Assert.assertEquals(
+				HashMapBuilder.<String, Object>put(
+					"enabled", false
+				).build(),
+				_getRequestParameters(
+					ConfigurationAdminPortletKeys.SYSTEM_SETTINGS));
+		}
 	}
 
 	private void _testGetRequestParametersWithOverriddenProperties()
