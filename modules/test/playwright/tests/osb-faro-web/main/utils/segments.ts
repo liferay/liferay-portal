@@ -71,11 +71,6 @@ export async function createBatchSegment(page: Page) {
 	});
 }
 
-export async function createDynamicSegment(page: Page) {
-	await page.getByRole('banner').getByLabel('Menu').click();
-	await page.getByRole('menuitem', {name: 'Dynamic Segment'}).click();
-}
-
 export async function deleteSegment({
 	page,
 	segmentName,

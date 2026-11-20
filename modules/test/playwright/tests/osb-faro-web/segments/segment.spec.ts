@@ -38,7 +38,6 @@ import {
 	addNestedSegmentField,
 	addSegmentField,
 	createBatchSegment,
-	createDynamicSegment,
 	editCriteriaAttributeValue,
 	editCriteriaConjunction,
 	editSegment,
