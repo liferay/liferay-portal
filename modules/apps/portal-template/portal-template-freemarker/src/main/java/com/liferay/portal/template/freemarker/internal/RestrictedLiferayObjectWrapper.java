@@ -160,36 +160,24 @@ public class RestrictedLiferayObjectWrapper extends LiferayObjectWrapper {
 
 		Class<?> clazz = object.getClass();
 
-		String className = clazz.getName();
+		Set<String> restrictedMethodNames = _getRestrictedMethodNames(clazz);
 
-		if (!_allowAllClasses &&
-			!_isMatch(
-				_allowedClasses, clazz, _allowedMatchResults,
-				_allowedPackageNames)) {
-
-			Set<String> restrictedMethodNames =
-				TemplateRestrictedUtil.getRestrictedMethodNames(
-					clazz, _restrictedMethodNames.get(className));
-
-			if ((restrictedMethodNames == null) ||
-				_isMatch(
-					_restrictedClasses, clazz, _restrictedMatchResults,
-					_restrictedPackageNames)) {
-
-				return _RESTRICTED_STRING_MODEL_FACTORY.create(object, this);
-			}
-
-			if (!restrictedMethodNames.isEmpty()) {
-				LiferayFreeMarkerStringModel liferayFreeMarkerStringModel =
-					(LiferayFreeMarkerStringModel)
-						_RESTRICTED_STRING_MODEL_FACTORY.create(object, this);
-
-				liferayFreeMarkerStringModel.setRestrictedMethodNames(
-					restrictedMethodNames);
-
-				return liferayFreeMarkerStringModel;
-			}
+		if (restrictedMethodNames == null) {
+			return _RESTRICTED_STRING_MODEL_FACTORY.create(object, this);
 		}
+
+		if (!restrictedMethodNames.isEmpty()) {
+			LiferayFreeMarkerStringModel liferayFreeMarkerStringModel =
+				(LiferayFreeMarkerStringModel)
+					_RESTRICTED_STRING_MODEL_FACTORY.create(object, this);
+
+			liferayFreeMarkerStringModel.setRestrictedMethodNames(
+				restrictedMethodNames);
+
+			return liferayFreeMarkerStringModel;
+		}
+
+		String className = clazz.getName();
 
 		if (_serviceProxyClassNames.contains(className)) {
 			return _SERVICE_PROXY_STRING_MODEL_FACTORY.create(object, this);
@@ -210,6 +198,30 @@ public class RestrictedLiferayObjectWrapper extends LiferayObjectWrapper {
 		}
 
 		return super.wrap(object);
+	}
+
+	private Set<String> _getRestrictedMethodNames(Class<?> clazz) {
+		if (_allowAllClasses ||
+			_isMatch(
+				_allowedClasses, clazz, _allowedMatchResults,
+				_allowedPackageNames)) {
+
+			return Collections.emptySet();
+		}
+
+		Set<String> restrictedMethodNames =
+			TemplateRestrictedUtil.getRestrictedMethodNames(
+				clazz, _restrictedMethodNames.get(clazz.getName()));
+
+		if ((restrictedMethodNames == null) ||
+			_isMatch(
+				_restrictedClasses, clazz, _restrictedMatchResults,
+				_restrictedPackageNames)) {
+
+			return null;
+		}
+
+		return restrictedMethodNames;
 	}
 
 	private boolean _isMatch(
