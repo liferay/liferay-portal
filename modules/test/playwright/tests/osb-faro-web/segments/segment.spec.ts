@@ -464,7 +464,7 @@ test(
 	}
 );
 
-test.skip(
+test(
 	'Add segment using an organization property "organization"',
 	{
 		tag: '@Legacy',
@@ -521,11 +521,11 @@ test.skip(
 				projectID: project.groupId,
 			});
 
-			await createDynamicSegment(page);
+			await createBatchSegment(page);
 
 			await addSegmentField({
 				criterionName: 'Organization',
-				criterionType: 'Organization Attributes',
+				criterionType: 'Organization',
 				page,
 			});
 
