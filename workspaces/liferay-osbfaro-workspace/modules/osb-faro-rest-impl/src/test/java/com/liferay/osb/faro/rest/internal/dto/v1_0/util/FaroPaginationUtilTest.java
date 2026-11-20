@@ -29,18 +29,11 @@ public class FaroPaginationUtilTest {
 			page - 1,
 			FaroPaginationUtil.getPageIndex(
 				Pagination.of(page, RandomTestUtil.randomInt())));
-	}
 
-	@Test
-	public void testGetPageIndexWithPageZero() {
 		Assert.assertEquals(
 			0,
 			FaroPaginationUtil.getPageIndex(
 				Pagination.of(0, RandomTestUtil.randomInt())));
-	}
-
-	@Test
-	public void testGetPageIndexWithoutPagination() {
 		Assert.assertEquals(0, FaroPaginationUtil.getPageIndex(null));
 	}
 
