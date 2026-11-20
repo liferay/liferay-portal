@@ -62,6 +62,24 @@ public class CMPKaleoTaskInstanceTokenModelDocumentContributor
 			return;
 		}
 
+		Set<String> cmpAssignTos = new HashSet<>();
+
+		for (KaleoTaskAssignmentInstance kaleoTaskAssignmentInstance :
+				kaleoTaskInstanceToken.getKaleoTaskAssignmentInstances()) {
+
+			cmpAssignTos.add(
+				StringBundler.concat(
+					_classNameLocalService.getClassNameId(
+						kaleoTaskAssignmentInstance.getAssigneeClassName()),
+					StringPool.UNDERLINE,
+					kaleoTaskAssignmentInstance.getAssigneeClassPK()));
+		}
+
+		if (!cmpAssignTos.isEmpty()) {
+			document.addKeyword(
+				"cmpAssignTo", cmpAssignTos.toArray(new String[0]));
+		}
+
 		ObjectEntry objectEntry = _objectEntryLocalService.fetchObjectEntry(
 			kaleoTaskInstanceToken.getClassPK());
 
@@ -80,24 +98,6 @@ public class CMPKaleoTaskInstanceTokenModelDocumentContributor
 		}
 
 		document.addKeyword("cmpTaskObjectEntryIds", cmpTaskObjectEntryIds);
-
-		Set<String> cmpAssignTos = new HashSet<>();
-
-		for (KaleoTaskAssignmentInstance kaleoTaskAssignmentInstance :
-				kaleoTaskInstanceToken.getKaleoTaskAssignmentInstances()) {
-
-			cmpAssignTos.add(
-				StringBundler.concat(
-					_classNameLocalService.getClassNameId(
-						kaleoTaskAssignmentInstance.getAssigneeClassName()),
-					StringPool.UNDERLINE,
-					kaleoTaskAssignmentInstance.getAssigneeClassPK()));
-		}
-
-		if (!cmpAssignTos.isEmpty()) {
-			document.addKeyword(
-				"cmpAssignTo", cmpAssignTos.toArray(new String[0]));
-		}
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
