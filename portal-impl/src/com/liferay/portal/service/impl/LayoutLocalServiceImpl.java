@@ -1281,12 +1281,6 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 	}
 
 	@Override
-	public List<Layout> fetchDraftLayouts(long plid) {
-		return layoutPersistence.findByC_C(
-			_classNameLocalService.getClassNameId(Layout.class), plid);
-	}
-
-	@Override
 	public Map<Layout, Layout> fetchDraftLayouts(List<Layout> layouts) {
 		if (layouts.isEmpty()) {
 			return Collections.emptyMap();
@@ -1318,6 +1312,12 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 		}
 
 		return draftLayouts;
+	}
+
+	@Override
+	public List<Layout> fetchDraftLayouts(long plid) {
+		return layoutPersistence.findByC_C(
+			_classNameLocalService.getClassNameId(Layout.class), plid);
 	}
 
 	@Override
