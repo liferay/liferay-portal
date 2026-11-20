@@ -158,7 +158,7 @@ test(
 			projectID: project.groupId,
 		});
 
-		await expect(page.getByText('There are no tests found.')).toBeVisible();
+		await expect(page.getByText('No tests were found.')).toBeVisible();
 	}
 );
 
