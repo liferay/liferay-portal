@@ -9,6 +9,7 @@ import com.liferay.message.boards.constants.MBCategoryConstants;
 import com.liferay.message.boards.constants.MBMessageConstants;
 import com.liferay.message.boards.constants.MBThreadConstants;
 import com.liferay.message.boards.exception.LockedThreadException;
+import com.liferay.message.boards.exception.NoSuchThreadException;
 import com.liferay.message.boards.internal.util.MBUtil;
 import com.liferay.message.boards.model.MBCategory;
 import com.liferay.message.boards.model.MBMessage;
@@ -765,7 +766,7 @@ public class MBMessageServiceImpl extends MBMessageServiceBaseImpl {
 		if ((thread.getGroupId() != groupId) ||
 			(thread.getCategoryId() != categoryId)) {
 
-			return Collections.emptyList();
+			throw new NoSuchThreadException("{threadId=" + threadId + "}");
 		}
 
 		QueryDefinition<MBMessage> queryDefinition = new QueryDefinition<>(
@@ -787,7 +788,7 @@ public class MBMessageServiceImpl extends MBMessageServiceBaseImpl {
 		if ((thread.getGroupId() != groupId) ||
 			(thread.getCategoryId() != categoryId)) {
 
-			return 0;
+			throw new NoSuchThreadException("{threadId=" + threadId + "}");
 		}
 
 		QueryDefinition<MBMessage> queryDefinition = new QueryDefinition<>(
