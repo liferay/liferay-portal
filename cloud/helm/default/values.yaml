@@ -52,6 +52,7 @@ clientExtensions:
             name: dxp-operator
             namespace: dxp-operator-system
     policy:
+        allowSeparateNamespace: false
         allowedNamespaces: []
 configmap:
     annotations: {}

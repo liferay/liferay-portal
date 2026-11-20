@@ -73,6 +73,8 @@ spec:
                                 value: {{ include "liferay-platform.dxpOperatorServiceAccountName" . | quote }}
                             -   name: {{ printf "%sclientExtensions.delivery.operatorServiceAccount.namespace" .Values.liferay.valuesPrefix }}
                                 value: {{ $dxpOperator.namespace | quote }}
+                            -   name: {{ printf "%sclientExtensions.policy.allowSeparateNamespace" .Values.liferay.valuesPrefix }}
+                                value: "true"
                             {{- end }}
                             {{- if and $dxpOperator.enabled (dig "onlineActivationWorkflow" "enabled" false ($dxpOperator.values | default dict)) }}
                             -   name: {{ printf "%slicensing.onlineActivationWorkflow.enabled" .Values.liferay.valuesPrefix }}

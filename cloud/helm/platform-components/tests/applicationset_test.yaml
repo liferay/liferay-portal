@@ -157,7 +157,13 @@ tests:
                         value: liferay-operators
                     path: spec.template.spec.sources[0].helm.parameters
                 template: templates/applicationset-liferay.yaml
-        it: Grants the DXP operator delivery access to the Liferay namespace
+            -   contains:
+                    content:
+                        name: liferay-default.clientExtensions.policy.allowSeparateNamespace
+                        value: "true"
+                    path: spec.template.spec.sources[0].helm.parameters
+                template: templates/applicationset-liferay.yaml
+        it: Grants the DXP operator delivery access and lets DXP accept the separate client extension namespace
         set:
             dxpOperator:
                 namespace: liferay-operators

@@ -8,15 +8,24 @@ tests:
     -   asserts:
             -   equal:
                     path: data.allowedNamespaces
-                    value: liferay-acme-prd-cx
-        it: Allows the environment's separate client extension namespace by default
+                    value: liferay-acme-prd-cx,team-a
+        it: Allows the separate client extension namespace when allowSeparateNamespace is set
+        set:
+            clientExtensions.policy:
+                allowSeparateNamespace: true
+                allowedNamespaces:
+                    -   team-a
     -   asserts:
             -   equal:
                     path: data.allowedNamespaces
-                    value: liferay-acme-prd-cx,team-a,team-b
+                    value: team-a,team-b
         it: Lists each allowed namespace once in sorted order
         set:
             clientExtensions.policy.allowedNamespaces:
                 -   team-b
                 -   team-a
                 -   team-a
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+        it: Omits the ConfigMap by default, so DXP accepts client extensions only from its own namespace

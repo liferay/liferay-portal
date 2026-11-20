@@ -1,11 +1,16 @@
-{{- $allowedNamespaces := append .Values.clientExtensions.policy.allowedNamespaces (printf "%s-cx" (include "liferay.namespace" .)) -}}
+{{- $allowedNamespaces := .Values.clientExtensions.policy.allowedNamespaces -}}
+{{- if .Values.clientExtensions.policy.allowSeparateNamespace -}}
+{{- $allowedNamespaces = append $allowedNamespaces (printf "%s-cx" (include "liferay.namespace" .)) -}}
+{{- end -}}
+{{- with $allowedNamespaces -}}
 apiVersion: v1
 data:
-    allowedNamespaces: {{ $allowedNamespaces | uniq | sortAlpha | join "," | quote }}
+    allowedNamespaces: {{ . | uniq | sortAlpha | join "," | quote }}
 kind: ConfigMap
 metadata:
     labels:
-        {{- include "liferay.labels" . | nindent 8 }}
+        {{- include "liferay.labels" $ | nindent 8 }}
         lxc.liferay.com/metadataType: client-extension-policy
     name: client-extension-policy
-    namespace: {{ include "liferay.namespace" . }}
+    namespace: {{ include "liferay.namespace" $ }}
+{{- end -}}
