@@ -621,6 +621,41 @@ public class FragmentEntryFragmentRendererTest {
 	}
 
 	@Test
+	public void testRenderWithLaunchEditMode() throws Exception {
+		FragmentEntry fragmentEntry = _getFragmentEntry(true);
+
+		FragmentEntryLink fragmentEntryLink =
+			_fragmentEntryLinkLocalService.addFragmentEntryLink(
+				null, TestPropsValues.getUserId(), _group.getGroupId(), null,
+				fragmentEntry.getExternalReferenceCode(),
+				ScopeUtil.getItemScopeExternalReferenceCode(
+					fragmentEntry.getGroupId(), _group.getGroupId()),
+				_defaultSegmentsExperienceId, _layout.getPlid(),
+				fragmentEntry.getCss(), fragmentEntry.getHtml(),
+				fragmentEntry.getJs(), fragmentEntry.getConfiguration(), null,
+				StringPool.BLANK, 0, null, fragmentEntry.getType(),
+				_serviceContext);
+
+		try (SafeCloseable safeCloseable =
+				LaunchThreadLocal.setLaunchSetIdWithSafeCloseable(
+					RandomTestUtil.randomLong(), LaunchThreadLocal.Mode.EDIT)) {
+
+			_renderFragmentEntryLink(fragmentEntryLink);
+		}
+
+		Assert.assertNull(
+			_fragmentEntryLinkCache.getFragmentEntryLinkContent(
+				fragmentEntryLink, _locale));
+
+		_renderFragmentEntryLink(fragmentEntryLink);
+
+		String content = _fragmentEntryLinkCache.getFragmentEntryLinkContent(
+			fragmentEntryLink, _locale);
+
+		Assert.assertTrue(content.contains(fragmentEntry.getHtml()));
+	}
+
+	@Test
 	@TestInfo("LPD-112147")
 	public void testRenderWithSelectInfoFieldType() throws Exception {
 		FragmentEntry fragmentEntry =
@@ -717,43 +752,6 @@ public class FragmentEntryFragmentRendererTest {
 		Assert.assertFalse(content.contains("<script>alert(2)"));
 		Assert.assertTrue(
 			content.contains("value=\"" + HtmlUtil.escape(html) + "\""));
-	}
-
-	@Test
-	public void testShouldNotCacheFragmentEntryLinkWhileEditingInsideLaunch()
-		throws Exception {
-
-		FragmentEntry fragmentEntry = _getFragmentEntry(true);
-
-		FragmentEntryLink fragmentEntryLink =
-			_fragmentEntryLinkLocalService.addFragmentEntryLink(
-				null, TestPropsValues.getUserId(), _group.getGroupId(), null,
-				fragmentEntry.getExternalReferenceCode(),
-				ScopeUtil.getItemScopeExternalReferenceCode(
-					fragmentEntry.getGroupId(), _group.getGroupId()),
-				_defaultSegmentsExperienceId, _layout.getPlid(),
-				fragmentEntry.getCss(), fragmentEntry.getHtml(),
-				fragmentEntry.getJs(), fragmentEntry.getConfiguration(), null,
-				StringPool.BLANK, 0, null, fragmentEntry.getType(),
-				_serviceContext);
-
-		try (SafeCloseable safeCloseable =
-				LaunchThreadLocal.setLaunchSetIdWithSafeCloseable(
-					RandomTestUtil.randomLong(), LaunchThreadLocal.Mode.EDIT)) {
-
-			_renderFragmentEntryLink(fragmentEntryLink);
-		}
-
-		Assert.assertNull(
-			_fragmentEntryLinkCache.getFragmentEntryLinkContent(
-				fragmentEntryLink, _locale));
-
-		_renderFragmentEntryLink(fragmentEntryLink);
-
-		String content = _fragmentEntryLinkCache.getFragmentEntryLinkContent(
-			fragmentEntryLink, _locale);
-
-		Assert.assertTrue(content.contains(fragmentEntry.getHtml()));
 	}
 
 	@Test
