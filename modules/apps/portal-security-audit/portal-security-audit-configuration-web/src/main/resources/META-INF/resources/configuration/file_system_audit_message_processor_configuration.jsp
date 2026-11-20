@@ -18,6 +18,6 @@ FileSystemAuditMessageProcessorConfigurationDisplayContext fileSystemAuditMessag
 <aui:input disabled="<%= fileSystemAuditMessageProcessorConfigurationDisplayContext.isOutputDirectoryOverridden() %>" helpMessage="<%= fileSystemAuditMessageProcessorConfigurationDisplayContext.getOutputDirectoryHelpMessage() %>" label="output-directory" name="outputDirectory" type="text" value="<%= fileSystemAuditMessageProcessorConfigurationDisplayContext.getOutputDirectory() %>" />
 
 <aui:select disabled="<%= fileSystemAuditMessageProcessorConfigurationDisplayContext.isOutputFormatOverridden() %>" helpMessage="<%= fileSystemAuditMessageProcessorConfigurationDisplayContext.getOutputFormatHelpMessage() %>" label="output-format" name="outputFormat">
-	<aui:option label="NDJSON" selected='<%= "NDJSON".equals(fileSystemAuditMessageProcessorConfigurationDisplayContext.getOutputFormat()) %>' value="NDJSON" />
 	<aui:option label="CSV" selected='<%= "CSV".equals(fileSystemAuditMessageProcessorConfigurationDisplayContext.getOutputFormat()) %>' value="CSV" />
+	<aui:option label="NDJSON" selected='<%= "NDJSON".equals(fileSystemAuditMessageProcessorConfigurationDisplayContext.getOutputFormat()) %>' value="NDJSON" />
 </aui:select>
