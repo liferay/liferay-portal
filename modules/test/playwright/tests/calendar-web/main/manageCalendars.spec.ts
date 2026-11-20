@@ -160,6 +160,60 @@ test(
 	}
 );
 
+test(
+	'color column in manage calendar page shows each calendar color',
+	{tag: '@LPD-116783'},
+	async ({apiHelpers, calendarWidgetPage, page, site}) => {
+		const {classNameId} =
+			await apiHelpers.jsonWebServicesClassName.fetchClassName(
+				'com.liferay.portal.kernel.model.Group'
+			);
+
+		const {calendarResourceId} =
+			await apiHelpers.jsonWebServicesCalendarResource.fetchCalendarResource(
+				{
+					classNameId,
+					classPK: site.id,
+				}
+			);
+
+		const calendarName = getRandomString();
+
+		await apiHelpers.jsonWebServicesCalendar.addCalendar({
+			calendarResourceId,
+			color: 0x85aaa5,
+			descriptionMap: `{"en_US": "${getRandomString()}"}`,
+			groupId: site.id,
+			nameMap: `{"en_US": "${calendarName}"}`,
+		});
+
+		await page.reload();
+
+		await calendarWidgetPage.unhideSidebar();
+
+		await calendarWidgetPage.openCalendarGroupActionsDropdownMenu(siteName);
+
+		await calendarWidgetPage.manageCalendarsMenuItem.click();
+
+		const colorBox = page
+			.getByRole('row', {name: calendarName})
+			.locator('.calendar-portlet-color-box');
+
+		const siteColorBox = page
+			.getByRole('row', {name: siteName})
+			.locator('.calendar-portlet-color-box');
+
+		await expect(colorBox).toHaveCSS(
+			'background-color',
+			'rgb(133, 170, 165)'
+		);
+		await expect(siteColorBox).not.toHaveCSS(
+			'background-color',
+			'rgb(133, 170, 165)'
+		);
+	}
+);
+
 test('color column in manage calendar page is updated when the user changes the calendar color', async ({
 	calendarWidgetPage,
 }) => {
