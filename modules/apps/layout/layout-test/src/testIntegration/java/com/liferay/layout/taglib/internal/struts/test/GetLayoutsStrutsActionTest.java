@@ -30,6 +30,7 @@ import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUti
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.struts.StrutsAction;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.TestInfo;
@@ -144,10 +145,11 @@ public class GetLayoutsStrutsActionTest {
 		_assertLayoutInTree(true, publishedLayout, false);
 		_assertLayoutInTree(true, publishedLayout, true);
 
-		RoleTestUtil.addResourcePermission(
-			_role, Layout.class.getName(), ResourceConstants.SCOPE_INDIVIDUAL,
-			String.valueOf(unpublishedLayout.getPlid()),
-			ActionKeys.PREVIEW_DRAFT);
+		_resourcePermissionLocalService.setResourcePermissions(
+			_group.getCompanyId(), Layout.class.getName(),
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(unpublishedLayout.getPlid()), _role.getRoleId(),
+			new String[] {ActionKeys.PREVIEW_DRAFT});
 
 		_assertLayoutInTree(false, unpublishedLayout, false);
 		_assertLayoutInTree(true, unpublishedLayout, true);
@@ -440,6 +442,9 @@ public class GetLayoutsStrutsActionTest {
 
 	@Inject
 	private Portal _portal;
+
+	@Inject
+	private ResourcePermissionLocalService _resourcePermissionLocalService;
 
 	@DeleteAfterTestRun
 	private Role _role;
