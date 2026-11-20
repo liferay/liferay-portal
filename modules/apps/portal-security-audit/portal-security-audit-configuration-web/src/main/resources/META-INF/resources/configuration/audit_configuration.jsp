@@ -16,7 +16,7 @@ AuditConfigurationDisplayContext auditConfigurationDisplayContext = (AuditConfig
 </c:if>
 
 <c:if test='<%= FeatureFlagManagerUtil.isEnabled(company.getCompanyId(), "LPD-6417") %>'>
-	<aui:input disabled="<%= auditConfigurationDisplayContext.isPseudonymizationEnabledOverridden() %>" helpMessage="<%= auditConfigurationDisplayContext.getPseudonymizationEnabledHelpMessage() %>" label="pseudonymization-enabled" name="pseudonymizationEnabled" type="checkbox" value="<%= auditConfigurationDisplayContext.isPseudonymizationEnabled() %>" />
+	<aui:input disabled="<%= auditConfigurationDisplayContext.isPseudonymizationEnabledOverridden() %>" helpMessage="<%= auditConfigurationDisplayContext.getPseudonymizationEnabledHelpMessage() %>" name="pseudonymizationEnabled" type="checkbox" value="<%= auditConfigurationDisplayContext.isPseudonymizationEnabled() %>" />
 
 	<aui:script>
 		(function () {

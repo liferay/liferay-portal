@@ -13,11 +13,11 @@ FileSystemAuditMessageProcessorConfigurationDisplayContext fileSystemAuditMessag
 
 <aui:input disabled="<%= fileSystemAuditMessageProcessorConfigurationDisplayContext.isEnabledOverridden() %>" helpMessage="<%= fileSystemAuditMessageProcessorConfigurationDisplayContext.getEnabledHelpMessage() %>" label="enable-file-system-processor" name="enabled" type="checkbox" value="<%= fileSystemAuditMessageProcessorConfigurationDisplayContext.isEnabled() %>" />
 
-<aui:input disabled="<%= fileSystemAuditMessageProcessorConfigurationDisplayContext.isGenerateChecksumOverridden() %>" helpMessage="<%= fileSystemAuditMessageProcessorConfigurationDisplayContext.getGenerateChecksumHelpMessage() %>" label="generate-checksum" name="generateChecksum" type="checkbox" value="<%= fileSystemAuditMessageProcessorConfigurationDisplayContext.isGenerateChecksum() %>" />
+<aui:input disabled="<%= fileSystemAuditMessageProcessorConfigurationDisplayContext.isGenerateChecksumOverridden() %>" helpMessage="<%= fileSystemAuditMessageProcessorConfigurationDisplayContext.getGenerateChecksumHelpMessage() %>" name="generateChecksum" type="checkbox" value="<%= fileSystemAuditMessageProcessorConfigurationDisplayContext.isGenerateChecksum() %>" />
 
-<aui:input disabled="<%= fileSystemAuditMessageProcessorConfigurationDisplayContext.isOutputDirectoryOverridden() %>" helpMessage="<%= fileSystemAuditMessageProcessorConfigurationDisplayContext.getOutputDirectoryHelpMessage() %>" label="output-directory" name="outputDirectory" type="text" value="<%= fileSystemAuditMessageProcessorConfigurationDisplayContext.getOutputDirectory() %>" />
+<aui:input disabled="<%= fileSystemAuditMessageProcessorConfigurationDisplayContext.isOutputDirectoryOverridden() %>" helpMessage="<%= fileSystemAuditMessageProcessorConfigurationDisplayContext.getOutputDirectoryHelpMessage() %>" name="outputDirectory" type="text" value="<%= fileSystemAuditMessageProcessorConfigurationDisplayContext.getOutputDirectory() %>" />
 
-<aui:select disabled="<%= fileSystemAuditMessageProcessorConfigurationDisplayContext.isOutputFormatOverridden() %>" helpMessage="<%= fileSystemAuditMessageProcessorConfigurationDisplayContext.getOutputFormatHelpMessage() %>" label="output-format" name="outputFormat">
-	<aui:option label="CSV" selected='<%= "CSV".equals(fileSystemAuditMessageProcessorConfigurationDisplayContext.getOutputFormat()) %>' value="CSV" />
-	<aui:option label="NDJSON" selected='<%= "NDJSON".equals(fileSystemAuditMessageProcessorConfigurationDisplayContext.getOutputFormat()) %>' value="NDJSON" />
+<aui:select disabled="<%= fileSystemAuditMessageProcessorConfigurationDisplayContext.isOutputFormatOverridden() %>" helpMessage="<%= fileSystemAuditMessageProcessorConfigurationDisplayContext.getOutputFormatHelpMessage() %>" name="outputFormat" value="<%= fileSystemAuditMessageProcessorConfigurationDisplayContext.getOutputFormat() %>">
+	<aui:option label="CSV" />
+	<aui:option label="NDJSON" />
 </aui:select>

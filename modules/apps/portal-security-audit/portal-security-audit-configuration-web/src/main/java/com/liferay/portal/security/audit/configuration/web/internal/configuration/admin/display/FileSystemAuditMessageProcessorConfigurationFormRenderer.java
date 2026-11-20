@@ -49,7 +49,6 @@ public class FileSystemAuditMessageProcessorConfigurationFormRenderer
 
 		Map<String, Object> requestParameters = new HashMap<>();
 
-		boolean systemScope = _isSystemScope(httpServletRequest);
 		ThemeDisplay themeDisplay =
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
@@ -57,7 +56,8 @@ public class FileSystemAuditMessageProcessorConfigurationFormRenderer
 		FileSystemAuditMessageProcessorConfiguration
 			fileSystemAuditMessageProcessorConfiguration =
 				_getFileSystemAuditMessageProcessorConfiguration(
-					themeDisplay.getCompanyId(), systemScope);
+					themeDisplay.getCompanyId(),
+					_isSystemScope(httpServletRequest));
 
 		if (!_isOverridden("enabled")) {
 			requestParameters.put(
