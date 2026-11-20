@@ -282,6 +282,9 @@ public class CommerceShipmentItemServiceImpl
 
 		CommerceOrder commerceOrder = commerceOrderItem.getCommerceOrder();
 
+		_commerceOrderModelResourcePermission.check(
+			getPermissionChecker(), commerceOrder, ActionKeys.VIEW);
+
 		CommerceShipment commerceShipment =
 			_commerceShipmentPersistence.findByPrimaryKey(commerceShipmentId);
 
