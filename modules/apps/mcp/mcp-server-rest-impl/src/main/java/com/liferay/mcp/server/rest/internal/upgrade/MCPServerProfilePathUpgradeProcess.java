@@ -171,8 +171,8 @@ public class MCPServerProfilePathUpgradeProcess extends UpgradeProcess {
 					setSkipBundleAllowedCheckWithSafeCloseable(true)) {
 
 			_addObjectField(objectDefinition);
-			_updateObjectEntries(objectDefinition);
 			_addObjectValidationRule(objectDefinition);
+			_updateObjectEntries(objectDefinition);
 		}
 	}
 
