@@ -8,19 +8,27 @@ package com.liferay.company.service.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.instance.PortalInstancePool;
 import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.GroupConstants;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.CompanyService;
+import com.liferay.portal.kernel.service.LayoutSetLocalService;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
+import com.liferay.portal.kernel.test.util.GroupTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.TreeMapBuilder;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -94,6 +102,32 @@ public class CompanyServiceTest {
 		_testGetCompany(
 			company -> _companyService.getCompanyByVirtualHost(
 				company.getVirtualHostname()));
+
+		Company company = CompanyTestUtil.addCompany();
+		String virtualHostname = RandomTestUtil.randomString() + ".com";
+
+		try (SafeCloseable safeCloseable =
+				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
+					company.getCompanyId())) {
+
+			User user = UserTestUtil.getAdminUser(company.getCompanyId());
+
+			Group group = GroupTestUtil.addGroup(
+				company.getCompanyId(), user.getUserId(),
+				GroupConstants.DEFAULT_PARENT_GROUP_ID);
+
+			_layoutSetLocalService.updateVirtualHosts(
+				group.getGroupId(), false,
+				TreeMapBuilder.put(
+					virtualHostname, StringPool.BLANK
+				).build());
+		}
+
+		UserTestUtil.setUser(UserTestUtil.addUser());
+
+		Assert.assertThrows(
+			PrincipalException.class,
+			() -> _companyService.getCompanyByVirtualHost(virtualHostname));
 	}
 
 	@Test
@@ -145,5 +179,8 @@ public class CompanyServiceTest {
 
 	@Inject
 	private CompanyService _companyService;
+
+	@Inject
+	private LayoutSetLocalService _layoutSetLocalService;
 
 }
