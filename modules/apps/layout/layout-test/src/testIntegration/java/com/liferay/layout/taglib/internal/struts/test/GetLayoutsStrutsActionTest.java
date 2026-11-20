@@ -112,7 +112,7 @@ public class GetLayoutsStrutsActionTest {
 	}
 
 	@Test
-	@TestInfo("LPD-112154")
+	@TestInfo({"LPD-112154", "LPD-116822"})
 	public void testGetLayoutsStrutsActionWithIncludeDraftLayouts()
 		throws Exception {
 
