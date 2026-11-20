@@ -62,14 +62,14 @@
 								disabled="<%= useTermsOfUseJournal %>"
 								name="termsOfUseContent"
 								type="editor"
-								xml='<%= BeanPropertiesUtil.getString(cpDefinitionVirtualSetting, "termsOfUseContent") %>'
+								xml='<%= BeanGetterUtil.getString(cpDefinitionVirtualSetting, "termsOfUseContent") %>'
 							/>
 						</c:when>
 						<c:otherwise>
 							<liferay-editor:input-localized
 								defaultLanguageId="<%= themeDisplay.getLanguageId() %>"
 								name="termsOfUseContent"
-								xml='<%= BeanPropertiesUtil.getString(cpDefinitionVirtualSetting, "termsOfUseContent") %>'
+								xml='<%= BeanGetterUtil.getString(cpDefinitionVirtualSetting, "termsOfUseContent") %>'
 							/>
 						</c:otherwise>
 					</c:choose>
