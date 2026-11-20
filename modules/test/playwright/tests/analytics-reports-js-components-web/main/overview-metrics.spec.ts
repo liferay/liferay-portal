@@ -103,10 +103,7 @@ test.beforeEach(async ({analyticsChannel, apiHelpers, page, project, site}) => {
 	});
 });
 
-// This test is failing because the createBlogsDaily event
-// is taking too long to ingest events and display them in the UI.
-
-test.skip('Overview Metrics - User is able to filter Overview Metric by individuals', async ({
+test('Overview Metrics - User is able to filter Overview Metric by individuals', async ({
 	analyticsChannel: channel,
 	apiHelpers,
 	contentDashboardPage,
@@ -116,7 +113,7 @@ test.skip('Overview Metrics - User is able to filter Overview Metric by individu
 	await test.step('Generate Blog events for known / anonymous individuals', async () => {
 		const date = new Date();
 
-		date.setDate(date.getDate() - 30);
+		date.setDate(date.getDate() - 3);
 
 		const blogEvents = individualIdentities.map((identity) => ({
 			assetId,
