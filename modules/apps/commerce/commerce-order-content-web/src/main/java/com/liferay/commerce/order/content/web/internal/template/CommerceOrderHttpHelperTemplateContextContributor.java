@@ -21,7 +21,6 @@ import org.osgi.service.component.annotations.Reference;
 @Component(
 	property = {
 		"template.context.keys=commerceOrderHttpHelper",
-		"template.context.keys=commerceReturnsEnabled",
 		"type=" + TemplateContextContributor.TYPE_GLOBAL
 	},
 	service = TemplateContextContributor.class
