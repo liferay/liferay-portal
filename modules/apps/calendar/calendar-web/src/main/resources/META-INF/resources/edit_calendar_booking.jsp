@@ -26,13 +26,13 @@ userStartTimeJCalendar.add(java.util.Calendar.HOUR, 1);
 
 userStartTimeJCalendar.set(java.util.Calendar.MINUTE, 0);
 
-long calendarBookingId = BeanPropertiesUtil.getLong(calendarBooking, "calendarBookingId");
+long calendarBookingId = BeanGetterUtil.getLong(calendarBooking, "calendarBookingId");
 
 int instanceIndex = BeanParamUtil.getInteger(calendarBooking, request, "instanceIndex", CalendarBooking::getInstanceIndex);
 
 long calendarId = BeanParamUtil.getLong(calendarBooking, request, "calendarId", CalendarBooking::getCalendarId, defaultCalendar.getCalendarId());
 
-long startTime = BeanPropertiesUtil.getLong(calendarBooking, "startTime", defaultStartTimeJCalendar.getTimeInMillis());
+long startTime = BeanGetterUtil.getLong(calendarBooking, "startTime", defaultStartTimeJCalendar.getTimeInMillis());
 
 java.util.Calendar startTimeJCalendar = JCalendarUtil.getJCalendar(startTime, calendarBookingTimeZone);
 
@@ -58,7 +58,7 @@ java.util.Calendar defaultEndTimeJCalendar = (java.util.Calendar)startTimeJCalen
 
 defaultEndTimeJCalendar.add(java.util.Calendar.MINUTE, defaultDuration);
 
-long endTime = BeanPropertiesUtil.getLong(calendarBooking, "endTime", defaultEndTimeJCalendar.getTimeInMillis());
+long endTime = BeanGetterUtil.getLong(calendarBooking, "endTime", defaultEndTimeJCalendar.getTimeInMillis());
 
 java.util.Calendar endTimeJCalendar = JCalendarUtil.getJCalendar(endTime, calendarBookingTimeZone);
 

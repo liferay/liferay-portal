@@ -73,7 +73,6 @@ page import="com.liferay.frontend.taglib.clay.servlet.taglib.util.JSPNavigationI
 page import="com.liferay.petra.string.StringBundler" %><%@
 page import="com.liferay.petra.string.StringPool" %><%@
 page import="com.liferay.portal.kernel.bean.BeanParamUtil" %><%@
-page import="com.liferay.portal.kernel.bean.BeanPropertiesUtil" %><%@
 page import="com.liferay.portal.kernel.dao.orm.QueryUtil" %><%@
 page import="com.liferay.portal.kernel.dao.search.SearchContainer" %><%@
 page import="com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil" %><%@
@@ -116,7 +115,8 @@ page import="com.liferay.portal.kernel.util.Validator" %><%@
 page import="com.liferay.portal.kernel.util.WebKeys" %><%@
 page import="com.liferay.portal.kernel.workflow.WorkflowConstants" %><%@
 page import="com.liferay.rss.util.RSSUtil" %><%@
-page import="com.liferay.taglib.search.ResultRow" %>
+page import="com.liferay.taglib.search.ResultRow" %><%@
+page import="com.liferay.taglib.util.BeanGetterUtil" %>
 
 <%@ page import="jakarta.portlet.PortletRequest" %><%@
 page import="jakarta.portlet.PortletURL" %>

@@ -128,14 +128,18 @@ public class BeanGetterUtilTest {
 				BeanGetterUtil.class.getName(), LoggerTestUtil.ERROR)) {
 
 			Assert.assertEquals(0, BeanGetterUtil.getLong(null, "id"));
+			Assert.assertEquals(5, BeanGetterUtil.getLong(null, "id", 5));
 
 			Bean bean = new Bean();
 
 			Assert.assertEquals(0, BeanGetterUtil.getLong(bean, "active"));
 			Assert.assertEquals(7, BeanGetterUtil.getLong(bean, "count"));
 			Assert.assertEquals(0, BeanGetterUtil.getLong(bean, "description"));
+			Assert.assertEquals(
+				5, BeanGetterUtil.getLong(bean, "description", 5));
 			Assert.assertEquals(0, BeanGetterUtil.getLong(bean, "failure"));
 			Assert.assertEquals(42, BeanGetterUtil.getLong(bean, "id"));
+			Assert.assertEquals(42, BeanGetterUtil.getLong(bean, "id", 5));
 			Assert.assertEquals(0, BeanGetterUtil.getLong(bean, "missing"));
 			Assert.assertEquals(0, BeanGetterUtil.getLong(bean, "name"));
 			Assert.assertEquals(12, BeanGetterUtil.getLong(bean, "number"));
@@ -224,6 +228,8 @@ public class BeanGetterUtilTest {
 				BeanGetterUtil.class.getName(), LoggerTestUtil.ERROR)) {
 
 			Assert.assertEquals("", BeanGetterUtil.getString(null, "name"));
+			Assert.assertEquals(
+				"default", BeanGetterUtil.getString(null, "name", "default"));
 
 			Bean bean = new Bean();
 
@@ -231,11 +237,20 @@ public class BeanGetterUtilTest {
 				"true", BeanGetterUtil.getString(bean, "active"));
 			Assert.assertEquals(
 				"", BeanGetterUtil.getString(bean, "description"));
-			Assert.assertEquals("", BeanGetterUtil.getString(bean, "failure"));
+			Assert.assertEquals(
+				"default",
+				BeanGetterUtil.getString(bean, "description", "default"));
+			Assert.assertEquals(
+				"default",
+				BeanGetterUtil.getString(bean, "failure", "default"));
 			Assert.assertEquals("42", BeanGetterUtil.getString(bean, "id"));
-			Assert.assertEquals("", BeanGetterUtil.getString(bean, "missing"));
+			Assert.assertEquals(
+				"default",
+				BeanGetterUtil.getString(bean, "missing", "default"));
 			Assert.assertEquals(
 				"Alice", BeanGetterUtil.getString(bean, "name"));
+			Assert.assertEquals(
+				"Alice", BeanGetterUtil.getString(bean, "name", "default"));
 			Assert.assertEquals(
 				"12.50", BeanGetterUtil.getString(bean, "price"));
 

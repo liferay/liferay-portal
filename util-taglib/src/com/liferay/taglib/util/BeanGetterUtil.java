@@ -42,7 +42,11 @@ public class BeanGetterUtil {
 	}
 
 	public static long getLong(Object bean, String name) {
-		return GetterUtil.getLong(_getValue(bean, name, false));
+		return getLong(bean, name, GetterUtil.DEFAULT_LONG);
+	}
+
+	public static long getLong(Object bean, String name, long defaultValue) {
+		return GetterUtil.getLong(_getValue(bean, name, false), defaultValue);
 	}
 
 	public static long getLongSilent(
@@ -60,10 +64,16 @@ public class BeanGetterUtil {
 	}
 
 	public static String getString(Object bean, String name) {
+		return getString(bean, name, GetterUtil.DEFAULT_STRING);
+	}
+
+	public static String getString(
+		Object bean, String name, String defaultValue) {
+
 		Object value = _getValue(bean, name, false);
 
 		if (value == null) {
-			return GetterUtil.DEFAULT_STRING;
+			return defaultValue;
 		}
 
 		return String.valueOf(value);
