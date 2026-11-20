@@ -106,7 +106,7 @@ public class MonitorFactoryTest
 	public void testNewMonitorNullType() {
 		_testNewMonitorExpectedIllegalArgumentException(
 			new MonitorConfig(
-				"a", 0, null, MonitorConfig.Severity.MEDIUM, null, 60, null));
+				"a", null, MonitorConfig.Severity.MEDIUM, null, 60, null));
 	}
 
 	@Test
@@ -207,7 +207,7 @@ public class MonitorFactoryTest
 	public void testNewMonitorUnknownType() {
 		_testNewMonitorExpectedIllegalArgumentException(
 			new MonitorConfig(
-				"a", 0, null, MonitorConfig.Severity.MEDIUM, null, 60,
+				"a", null, MonitorConfig.Severity.MEDIUM, null, 60,
 				"unknown-type"));
 	}
 

@@ -22,7 +22,6 @@ public class MonitorConfigLoaderTest
 	public void testGetMonitorConfigs() {
 		Properties buildProperties = new Properties();
 
-		buildProperties.setProperty("monitor[masters].interval", "900");
 		buildProperties.setProperty(
 			"monitor[masters].parameter[target]",
 			"https://test-1-0.liferay.com/computer/api/json");
@@ -40,7 +39,6 @@ public class MonitorConfigLoaderTest
 		MonitorConfig monitorConfig = monitorConfigs.get(0);
 
 		testEquals("masters", monitorConfig.getId());
-		testEquals(900L, monitorConfig.getIntervalSeconds());
 
 		Map<String, String> parameters = monitorConfig.getParameters();
 
@@ -87,30 +85,10 @@ public class MonitorConfigLoaderTest
 	}
 
 	@Test
-	public void testGetMonitorConfigsInterval() {
-		Properties buildProperties = new Properties();
-
-		buildProperties.setProperty("monitor[a].interval", "not-a-number");
-		buildProperties.setProperty("monitor[a].type", "http-endpoint");
-
-		_testGetMonitorConfigsExpectedIllegalArgumentException(buildProperties);
-	}
-
-	@Test
 	public void testGetMonitorConfigsMissingType() {
 		Properties buildProperties = new Properties();
 
 		buildProperties.setProperty("monitor[a].severity", "high");
-
-		_testGetMonitorConfigsExpectedIllegalArgumentException(buildProperties);
-	}
-
-	@Test
-	public void testGetMonitorConfigsNegativeInterval() {
-		Properties buildProperties = new Properties();
-
-		buildProperties.setProperty("monitor[a].interval", "-1");
-		buildProperties.setProperty("monitor[a].type", "http-endpoint");
 
 		_testGetMonitorConfigsExpectedIllegalArgumentException(buildProperties);
 	}
@@ -146,10 +124,10 @@ public class MonitorConfigLoaderTest
 	}
 
 	@Test
-	public void testGetMonitorConfigsZeroInterval() {
+	public void testGetMonitorConfigsZeroTimeout() {
 		Properties buildProperties = new Properties();
 
-		buildProperties.setProperty("monitor[a].interval", "0");
+		buildProperties.setProperty("monitor[a].timeout", "0");
 		buildProperties.setProperty("monitor[a].type", "http-endpoint");
 
 		List<MonitorConfig> monitorConfigs =
@@ -157,7 +135,7 @@ public class MonitorConfigLoaderTest
 
 		MonitorConfig monitorConfig = monitorConfigs.get(0);
 
-		testEquals(0L, monitorConfig.getIntervalSeconds());
+		testEquals(0L, monitorConfig.getTimeoutSeconds());
 	}
 
 	private void _testGetMonitorConfigsExpectedIllegalArgumentException(

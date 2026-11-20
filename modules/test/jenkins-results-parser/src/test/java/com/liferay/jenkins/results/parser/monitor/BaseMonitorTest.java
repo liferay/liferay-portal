@@ -270,7 +270,7 @@ public class BaseMonitorTest extends com.liferay.jenkins.results.parser.Test {
 	private BaseMonitor _newBaseMonitor(long timeoutSeconds) {
 		return new BaseMonitor(
 			new MonitorConfig(
-				RandomTestUtil.randomString(), 0, null,
+				RandomTestUtil.randomString(), null,
 				MonitorConfig.Severity.MEDIUM, null, timeoutSeconds,
 				RandomTestUtil.randomString())) {
 
@@ -291,7 +291,7 @@ public class BaseMonitorTest extends com.liferay.jenkins.results.parser.Test {
 
 		return new BaseMonitor(
 			new MonitorConfig(
-				_MONITOR_ID, 0, parameters, MonitorConfig.Severity.MEDIUM, null,
+				_MONITOR_ID, parameters, MonitorConfig.Severity.MEDIUM, null,
 				60, RandomTestUtil.randomString())) {
 
 			@Override

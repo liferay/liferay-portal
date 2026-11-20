@@ -703,8 +703,7 @@ public class MonitorRunnerTest extends com.liferay.jenkins.results.parser.Test {
 
 	private MonitorConfig _newMonitorConfig(String id, long timeoutSeconds) {
 		return new MonitorConfig(
-			id, RandomTestUtil.randomLong(), null,
-			MonitorConfig.Severity.MEDIUM, null, timeoutSeconds,
+			id, null, MonitorConfig.Severity.MEDIUM, null, timeoutSeconds,
 			RandomTestUtil.randomString());
 	}
 

@@ -57,8 +57,7 @@ public class MonitorIdValidatorTest
 	private Monitor _newMonitor(String id) {
 		return new TestMonitor(
 			new MonitorConfig(
-				id, RandomTestUtil.randomLong(), null,
-				MonitorConfig.Severity.MEDIUM, null,
+				id, null, MonitorConfig.Severity.MEDIUM, null,
 				RandomTestUtil.randomLong(), RandomTestUtil.randomString()));
 	}
 

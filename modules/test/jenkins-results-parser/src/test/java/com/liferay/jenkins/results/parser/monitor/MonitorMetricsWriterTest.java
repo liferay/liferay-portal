@@ -16,11 +16,11 @@ import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -42,19 +42,28 @@ public class MonitorMetricsWriterTest
 	@Test
 	public void testMonitorMetricsWriterDuplicateIds() {
 		try {
+			Map<Monitor, MonitorResult> monitorResultsMap =
+				new LinkedHashMap<>();
+
+			monitorResultsMap.put(
+				new TestMonitor(
+					_newMonitorConfig(
+						"disk", MonitorConfig.Severity.MEDIUM,
+						RandomTestUtil.randomString())),
+				_newMonitorResult(
+					MonitorResult.Status.OK, RandomTestUtil.randomLong()));
+			monitorResultsMap.put(
+				new TestMonitor(
+					_newMonitorConfig(
+						"disk", MonitorConfig.Severity.MEDIUM,
+						RandomTestUtil.randomString())),
+				_newMonitorResult(
+					MonitorResult.Status.OK, RandomTestUtil.randomLong()));
+
 			new MonitorMetricsWriter(
 				new File(
 					temporaryFolder.getRoot(), RandomTestUtil.randomString()),
-				new MonitorResultStore(),
-				Arrays.<Monitor>asList(
-					new TestMonitor(
-						_newMonitorConfig(
-							"disk", MonitorConfig.Severity.MEDIUM,
-							RandomTestUtil.randomString())),
-					new TestMonitor(
-						_newMonitorConfig(
-							"disk", MonitorConfig.Severity.MEDIUM,
-							RandomTestUtil.randomString()))));
+				monitorResultsMap);
 
 			Assert.fail();
 		}
@@ -64,30 +73,45 @@ public class MonitorMetricsWriterTest
 
 	@Test
 	public void testWrite() throws Exception {
-		MonitorResultStore monitorResultStore = new MonitorResultStore();
+		Map<Monitor, MonitorResult> monitorResultsMap = new LinkedHashMap<>();
 
-		String message = RandomTestUtil.randomString();
+		String diskMessage = "disk " + RandomTestUtil.randomString();
 
-		monitorResultStore.store(
-			"disk",
+		monitorResultsMap.put(
+			new TestMonitor(
+				_newMonitorConfig(
+					"disk", MonitorConfig.Severity.HIGH, "resource-threshold")),
 			new MonitorResult(
-				message, null, MonitorResult.Status.CRITICAL, 1750000000999L));
+				diskMessage, null, MonitorResult.Status.CRITICAL,
+				1750000000999L));
 
-		monitorResultStore.store(
-			"queue",
+		monitorResultsMap.put(
+			new TestMonitor(
+				_newMonitorConfig(
+					"queue", MonitorConfig.Severity.MEDIUM, "job-health")),
 			_newMonitorResult(MonitorResult.Status.OK, 1749999000000L));
+
+		String testrayMessage = "testray " + RandomTestUtil.randomString();
+
+		monitorResultsMap.put(
+			new TestMonitor(
+				_newMonitorConfig(
+					"testray", MonitorConfig.Severity.LOW, "external-status")),
+			new MonitorResult(
+				testrayMessage, null, MonitorResult.Status.WARN,
+				1748000000000L));
 
 		File metricsFile = new File(
 			temporaryFolder.getRoot(),
 			RandomTestUtil.randomString() + "/" +
 				RandomTestUtil.randomString());
 
-		_write(metricsFile, monitorResultStore, _newMonitors());
+		_write(metricsFile, monitorResultsMap);
 
 		testEquals(
 			JenkinsResultsParserUtil.combine(
 				"# HELP monitor_duration_seconds Seconds the last monitor run ",
-				"took, 0 if never run or not measured\n",
+				"took, 0 if not measured\n",
 				"# TYPE monitor_duration_seconds gauge\n",
 				"monitor_duration_seconds{monitor=\"disk\",",
 				"severity=\"high\",type=\"resource-threshold\"} 0.0\n",
@@ -100,19 +124,20 @@ public class MonitorMetricsWriterTest
 				"# TYPE monitor_heartbeat_timestamp_seconds gauge\n",
 				"monitor_heartbeat_timestamp_seconds 1.75E9\n",
 				"# HELP monitor_last_run_timestamp_seconds Unix ",
-				"timestamp of the last monitor run, 0 if never run\n",
+				"timestamp of the last monitor run\n",
 				"# TYPE monitor_last_run_timestamp_seconds gauge\n",
 				"monitor_last_run_timestamp_seconds{monitor=\"disk\",",
 				"severity=\"high\",type=\"resource-threshold\"} 1.75E9\n",
 				"monitor_last_run_timestamp_seconds{monitor=\"queue\",",
 				"severity=\"medium\",type=\"job-health\"} 1.749999E9\n",
 				"monitor_last_run_timestamp_seconds{monitor=\"testray\",",
-				"severity=\"low\",type=\"external-status\"} 0.0\n",
+				"severity=\"low\",type=\"external-status\"} 1.748E9\n",
 				"# HELP monitor_message_info Message of the last monitor run, ",
 				"for each monitor that is not OK\n",
 				"# TYPE monitor_message_info gauge\n",
-				"monitor_message_info{message=\"", message,
-				"\",monitor=\"disk\"} 1.0\n",
+				"monitor_message_info{message=\"", diskMessage,
+				"\",monitor=\"disk\"} 1.0\n", "monitor_message_info{message=\"",
+				testrayMessage, "\",monitor=\"testray\"} 1.0\n",
 				"# HELP monitor_status Monitor status severity rank, ",
 				"0 OK, 2 WARN, 3 CRITICAL\n", "# TYPE monitor_status gauge\n",
 				"monitor_status{monitor=\"disk\",severity=\"high\",",
@@ -120,29 +145,25 @@ public class MonitorMetricsWriterTest
 				"monitor_status{monitor=\"queue\",severity=\"medium\",",
 				"type=\"job-health\"} 0.0\n",
 				"monitor_status{monitor=\"testray\",severity=\"low\",",
-				"type=\"external-status\"} 3.0\n"),
+				"type=\"external-status\"} 2.0\n"),
 			read(metricsFile));
 	}
 
 	@Test
 	public void testWriteDurationSeconds() throws Exception {
-		MonitorResultStore monitorResultStore = new MonitorResultStore();
-
-		monitorResultStore.store(
-			"disk",
-			_newMonitorResult(
-				250, MonitorResult.Status.OK, RandomTestUtil.randomLong()));
-
 		File metricsFile = new File(
 			temporaryFolder.getRoot(), RandomTestUtil.randomString());
 
 		_write(
-			metricsFile, monitorResultStore,
-			Arrays.<Monitor>asList(
+			metricsFile,
+			Collections.<Monitor, MonitorResult>singletonMap(
 				new TestMonitor(
 					_newMonitorConfig(
 						"disk", MonitorConfig.Severity.HIGH,
-						"resource-threshold"))));
+						"resource-threshold")),
+				_newMonitorResult(
+					250, MonitorResult.Status.OK,
+					RandomTestUtil.randomLong())));
 
 		String content = read(metricsFile);
 
@@ -158,9 +179,7 @@ public class MonitorMetricsWriterTest
 		File metricsFile = new File(
 			temporaryFolder.getRoot(), RandomTestUtil.randomString());
 
-		_write(
-			metricsFile, new MonitorResultStore(),
-			Collections.<Monitor>emptyList());
+		_write(metricsFile, Collections.<Monitor, MonitorResult>emptyMap());
 
 		String content = read(metricsFile);
 
@@ -172,22 +191,16 @@ public class MonitorMetricsWriterTest
 
 	@Test
 	public void testWriteEmptyType() throws Exception {
-		MonitorResultStore monitorResultStore = new MonitorResultStore();
-
-		monitorResultStore.store(
-			"disk",
-			_newMonitorResult(
-				MonitorResult.Status.OK, RandomTestUtil.randomLong()));
-
 		File metricsFile = new File(
 			temporaryFolder.getRoot(), RandomTestUtil.randomString());
 
 		_write(
-			metricsFile, monitorResultStore,
-			Arrays.<Monitor>asList(
+			metricsFile,
+			Collections.<Monitor, MonitorResult>singletonMap(
 				new TestMonitor(
-					_newMonitorConfig(
-						"disk", MonitorConfig.Severity.HIGH, ""))));
+					_newMonitorConfig("disk", MonitorConfig.Severity.HIGH, "")),
+				_newMonitorResult(
+					MonitorResult.Status.OK, RandomTestUtil.randomLong())));
 
 		String content = read(metricsFile);
 
@@ -200,22 +213,17 @@ public class MonitorMetricsWriterTest
 
 	@Test
 	public void testWriteEscapesLabelValues() throws Exception {
-		MonitorResultStore monitorResultStore = new MonitorResultStore();
-
-		monitorResultStore.store(
-			"a\"b\\c",
-			_newMonitorResult(
-				MonitorResult.Status.WARN, RandomTestUtil.randomLong()));
-
 		File metricsFile = new File(
 			temporaryFolder.getRoot(), RandomTestUtil.randomString());
 
 		_write(
-			metricsFile, monitorResultStore,
-			Arrays.<Monitor>asList(
+			metricsFile,
+			Collections.<Monitor, MonitorResult>singletonMap(
 				new TestMonitor(
 					_newMonitorConfig(
-						"a\"b\\c", MonitorConfig.Severity.MEDIUM, "d\ne"))));
+						"a\"b\\c", MonitorConfig.Severity.MEDIUM, "d\ne")),
+				_newMonitorResult(
+					MonitorResult.Status.WARN, RandomTestUtil.randomLong())));
 
 		String content = read(metricsFile);
 
@@ -230,25 +238,29 @@ public class MonitorMetricsWriterTest
 	public void testWriteIgnoresMonitorsAddedAfterConstruction()
 		throws Exception {
 
-		List<Monitor> monitors = new ArrayList<>();
+		Map<Monitor, MonitorResult> monitorResultsMap = new LinkedHashMap<>();
 
-		monitors.add(
+		monitorResultsMap.put(
 			new TestMonitor(
 				_newMonitorConfig(
 					"disk", MonitorConfig.Severity.MEDIUM,
-					RandomTestUtil.randomString())));
+					RandomTestUtil.randomString())),
+			_newMonitorResult(
+				MonitorResult.Status.OK, RandomTestUtil.randomLong()));
 
 		File metricsFile = new File(
 			temporaryFolder.getRoot(), RandomTestUtil.randomString());
 
 		MonitorMetricsWriter monitorMetricsWriter = new MonitorMetricsWriter(
-			metricsFile, new MonitorResultStore(), monitors);
+			metricsFile, monitorResultsMap);
 
-		monitors.add(
+		monitorResultsMap.put(
 			new TestMonitor(
 				_newMonitorConfig(
 					"queue", MonitorConfig.Severity.MEDIUM,
-					RandomTestUtil.randomString())));
+					RandomTestUtil.randomString())),
+			_newMonitorResult(
+				MonitorResult.Status.OK, RandomTestUtil.randomLong()));
 
 		_write(monitorMetricsWriter);
 
@@ -317,24 +329,15 @@ public class MonitorMetricsWriterTest
 
 	@Test
 	public void testWriteLinks() throws Exception {
-		MonitorResultStore monitorResultStore = new MonitorResultStore();
-
-		String message = RandomTestUtil.randomString();
-
-		monitorResultStore.store(
-			"disk",
-			new MonitorResult(
-				message, null, MonitorResult.Status.CRITICAL,
-				RandomTestUtil.randomLong()));
-
 		File metricsFile = new File(
 			temporaryFolder.getRoot(), RandomTestUtil.randomString());
 
 		String linkURL = "https://" + RandomTestUtil.randomString();
+		String message = RandomTestUtil.randomString();
 
 		_write(
-			metricsFile, monitorResultStore,
-			Arrays.<Monitor>asList(
+			metricsFile,
+			Collections.<Monitor, MonitorResult>singletonMap(
 				new TestMonitor(
 					_newMonitorConfig(
 						"disk", MonitorConfig.Severity.HIGH,
@@ -346,7 +349,10 @@ public class MonitorMetricsWriterTest
 							linkURL + "/job/a (b)\"c", linkURL);
 					}
 
-				}));
+				},
+				new MonitorResult(
+					message, null, MonitorResult.Status.CRITICAL,
+					RandomTestUtil.randomLong())));
 
 		String content = read(metricsFile);
 
@@ -403,23 +409,18 @@ public class MonitorMetricsWriterTest
 
 	@Test
 	public void testWriteNullSeverityAndType() throws Exception {
-		MonitorResultStore monitorResultStore = new MonitorResultStore();
-
-		monitorResultStore.store(
-			"disk",
-			_newMonitorResult(
-				MonitorResult.Status.OK, RandomTestUtil.randomLong()));
-
 		File metricsFile = new File(
 			temporaryFolder.getRoot(), RandomTestUtil.randomString());
 
 		_write(
-			metricsFile, monitorResultStore,
-			Arrays.<Monitor>asList(
+			metricsFile,
+			Collections.<Monitor, MonitorResult>singletonMap(
 				new TestMonitor(
 					new MonitorConfig(
-						"disk", RandomTestUtil.randomLong(), null, null, null,
-						RandomTestUtil.randomLong(), null))));
+						"disk", null, null, null, RandomTestUtil.randomLong(),
+						null)),
+				_newMonitorResult(
+					MonitorResult.Status.OK, RandomTestUtil.randomLong())));
 
 		String content = read(metricsFile);
 
@@ -432,21 +433,17 @@ public class MonitorMetricsWriterTest
 
 	@Test
 	public void testWriteNullStatus() throws Exception {
-		MonitorResultStore monitorResultStore = new MonitorResultStore();
-
-		monitorResultStore.store(
-			"disk", _newMonitorResult(null, RandomTestUtil.randomLong()));
-
 		File metricsFile = new File(
 			temporaryFolder.getRoot(), RandomTestUtil.randomString());
 
 		_write(
-			metricsFile, monitorResultStore,
-			Arrays.<Monitor>asList(
+			metricsFile,
+			Collections.<Monitor, MonitorResult>singletonMap(
 				new TestMonitor(
 					_newMonitorConfig(
 						"disk", MonitorConfig.Severity.HIGH,
-						"resource-threshold"))));
+						"resource-threshold")),
+				_newMonitorResult(null, RandomTestUtil.randomLong())));
 
 		String content = read(metricsFile);
 
@@ -467,7 +464,11 @@ public class MonitorMetricsWriterTest
 
 		JenkinsResultsParserUtil.write(metricsFile, randomString);
 
-		_write(metricsFile, new MonitorResultStore(), _newMonitors());
+		_write(
+			metricsFile,
+			_newMonitorResultsMap(
+				_newMonitorResult(
+					MonitorResult.Status.OK, RandomTestUtil.randomLong())));
 
 		String content = read(metricsFile);
 
@@ -497,21 +498,17 @@ public class MonitorMetricsWriterTest
 	@Test
 	public void testWriteStatus() throws Exception {
 		for (MonitorResult.Status status : MonitorResult.Status.values()) {
-			MonitorResultStore monitorResultStore = new MonitorResultStore();
-
-			monitorResultStore.store(
-				"disk", _newMonitorResult(status, RandomTestUtil.randomLong()));
-
 			File metricsFile = new File(
 				temporaryFolder.getRoot(), RandomTestUtil.randomString());
 
 			_write(
-				metricsFile, monitorResultStore,
-				Arrays.<Monitor>asList(
+				metricsFile,
+				Collections.<Monitor, MonitorResult>singletonMap(
 					new TestMonitor(
 						_newMonitorConfig(
 							"disk", MonitorConfig.Severity.HIGH,
-							"resource-threshold"))));
+							"resource-threshold")),
+					_newMonitorResult(status, RandomTestUtil.randomLong())));
 
 			String content = read(metricsFile);
 
@@ -528,26 +525,21 @@ public class MonitorMetricsWriterTest
 
 	@Test
 	public void testWriteUTF8() throws Exception {
-		MonitorResultStore monitorResultStore = new MonitorResultStore();
-
-		String message = RandomTestUtil.randomString() + "\u00e9";
-
-		monitorResultStore.store(
-			"disk",
-			new MonitorResult(
-				message, null, MonitorResult.Status.CRITICAL,
-				RandomTestUtil.randomLong()));
-
 		File metricsFile = new File(
 			temporaryFolder.getRoot(), RandomTestUtil.randomString());
 
+		String message = RandomTestUtil.randomString() + "\u00e9";
+
 		_write(
-			metricsFile, monitorResultStore,
-			Arrays.<Monitor>asList(
+			metricsFile,
+			Collections.<Monitor, MonitorResult>singletonMap(
 				new TestMonitor(
 					_newMonitorConfig(
 						"disk", MonitorConfig.Severity.HIGH,
-						"resource-threshold"))));
+						"resource-threshold")),
+				new MonitorResult(
+					message, null, MonitorResult.Status.CRITICAL,
+					RandomTestUtil.randomLong())));
 
 		String content = new String(
 			Files.readAllBytes(metricsFile.toPath()), StandardCharsets.UTF_8);
@@ -579,8 +571,7 @@ public class MonitorMetricsWriterTest
 		String id, MonitorConfig.Severity severity, String type) {
 
 		return new MonitorConfig(
-			id, RandomTestUtil.randomLong(), null, severity, null,
-			RandomTestUtil.randomLong(), type);
+			id, null, severity, null, RandomTestUtil.randomLong(), type);
 	}
 
 	private MonitorResult _newMonitorResult(
@@ -598,17 +589,30 @@ public class MonitorMetricsWriterTest
 			RandomTestUtil.randomString(), null, status, timestamp);
 	}
 
-	private List<Monitor> _newMonitors() {
-		return Arrays.<Monitor>asList(
+	private Map<Monitor, MonitorResult> _newMonitorResultsMap(
+		MonitorResult diskMonitorResult) {
+
+		Map<Monitor, MonitorResult> monitorResultsMap = new LinkedHashMap<>();
+
+		monitorResultsMap.put(
 			new TestMonitor(
 				_newMonitorConfig(
 					"disk", MonitorConfig.Severity.HIGH, "resource-threshold")),
+			diskMonitorResult);
+		monitorResultsMap.put(
 			new TestMonitor(
 				_newMonitorConfig(
 					"queue", MonitorConfig.Severity.MEDIUM, "job-health")),
+			_newMonitorResult(
+				MonitorResult.Status.OK, RandomTestUtil.randomLong()));
+		monitorResultsMap.put(
 			new TestMonitor(
 				_newMonitorConfig(
-					"testray", MonitorConfig.Severity.LOW, "external-status")));
+					"testray", MonitorConfig.Severity.LOW, "external-status")),
+			_newMonitorResult(
+				MonitorResult.Status.OK, RandomTestUtil.randomLong()));
+
+		return monitorResultsMap;
 	}
 
 	private void _testWriteLabels(
@@ -622,27 +626,21 @@ public class MonitorMetricsWriterTest
 				parameterNamesAndValues[i], parameterNamesAndValues[i + 1]);
 		}
 
-		MonitorResultStore monitorResultStore = new MonitorResultStore();
-
-		monitorResultStore.store(
-			"disk",
-			_newMonitorResult(
-				MonitorResult.Status.OK, RandomTestUtil.randomLong()));
-
 		File metricsFile = new File(
 			temporaryFolder.getRoot(), RandomTestUtil.randomString());
 
 		_write(
-			metricsFile, monitorResultStore,
-			Arrays.<Monitor>asList(
+			metricsFile,
+			Collections.<Monitor, MonitorResult>singletonMap(
 				new TestMonitor(
 					new MonitorConfig(
-						"disk", RandomTestUtil.randomLong(), parameters,
-						MonitorConfig.Severity.HIGH,
+						"disk", parameters, MonitorConfig.Severity.HIGH,
 						Collections.singletonMap(
 							RandomTestUtil.randomString(),
 							RandomTestUtil.randomString()),
-						RandomTestUtil.randomLong(), "resource-threshold"))));
+						RandomTestUtil.randomLong(), "resource-threshold")),
+				_newMonitorResult(
+					MonitorResult.Status.OK, RandomTestUtil.randomLong())));
 
 		String content = read(metricsFile);
 
@@ -663,17 +661,14 @@ public class MonitorMetricsWriterTest
 			String expectedMessage, String message, MonitorResult.Status status)
 		throws Exception {
 
-		MonitorResultStore monitorResultStore = new MonitorResultStore();
-
-		monitorResultStore.store(
-			"disk",
-			new MonitorResult(
-				message, null, status, RandomTestUtil.randomLong()));
-
 		File metricsFile = new File(
 			temporaryFolder.getRoot(), RandomTestUtil.randomString());
 
-		_write(metricsFile, monitorResultStore, _newMonitors());
+		_write(
+			metricsFile,
+			_newMonitorResultsMap(
+				new MonitorResult(
+					message, null, status, RandomTestUtil.randomLong())));
 
 		String content = read(metricsFile);
 
@@ -707,14 +702,6 @@ public class MonitorMetricsWriterTest
 			String expectedMessage, String message)
 		throws Exception {
 
-		MonitorResultStore monitorResultStore = new MonitorResultStore();
-
-		monitorResultStore.store(
-			"disk",
-			new MonitorResult(
-				message, null, MonitorResult.Status.CRITICAL,
-				RandomTestUtil.randomLong()));
-
 		File metricsFile = new File(
 			temporaryFolder.getRoot(), RandomTestUtil.randomString());
 
@@ -727,12 +714,15 @@ public class MonitorMetricsWriterTest
 
 		try {
 			_write(
-				metricsFile, monitorResultStore,
-				Arrays.<Monitor>asList(
+				metricsFile,
+				Collections.<Monitor, MonitorResult>singletonMap(
 					new TestMonitor(
 						_newMonitorConfig(
 							"disk", MonitorConfig.Severity.HIGH,
-							"resource-threshold"))));
+							"resource-threshold")),
+					new MonitorResult(
+						message, null, MonitorResult.Status.CRITICAL,
+						RandomTestUtil.randomLong())));
 		}
 		finally {
 			System.setOut(printStream);
@@ -756,13 +746,10 @@ public class MonitorMetricsWriterTest
 	}
 
 	private void _write(
-			File metricsFile, MonitorResultStore monitorResultStore,
-			List<Monitor> monitors)
+			File metricsFile, Map<Monitor, MonitorResult> monitorResultsMap)
 		throws Exception {
 
-		_write(
-			new MonitorMetricsWriter(
-				metricsFile, monitorResultStore, monitors));
+		_write(new MonitorMetricsWriter(metricsFile, monitorResultsMap));
 	}
 
 	private void _write(MonitorMetricsWriter monitorMetricsWriter)
@@ -784,20 +771,12 @@ public class MonitorMetricsWriterTest
 	}
 
 	private String _writeResultLinks(List<String> linkURLs) throws Exception {
-		MonitorResultStore monitorResultStore = new MonitorResultStore();
-
-		monitorResultStore.store(
-			"disk",
-			new MonitorResult(
-				linkURLs, RandomTestUtil.randomString(), null,
-				MonitorResult.Status.CRITICAL, RandomTestUtil.randomLong()));
-
 		File metricsFile = new File(
 			temporaryFolder.getRoot(), RandomTestUtil.randomString());
 
 		_write(
-			metricsFile, monitorResultStore,
-			Arrays.<Monitor>asList(
+			metricsFile,
+			Collections.<Monitor, MonitorResult>singletonMap(
 				new TestMonitor(
 					_newMonitorConfig(
 						"disk", MonitorConfig.Severity.HIGH,
@@ -809,7 +788,11 @@ public class MonitorMetricsWriterTest
 							"https://" + RandomTestUtil.randomString());
 					}
 
-				}));
+				},
+				new MonitorResult(
+					linkURLs, RandomTestUtil.randomString(), null,
+					MonitorResult.Status.CRITICAL,
+					RandomTestUtil.randomLong())));
 
 		return read(metricsFile);
 	}

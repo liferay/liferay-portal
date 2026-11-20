@@ -30,17 +30,13 @@ public class MonitorEngineTest extends com.liferay.jenkins.results.parser.Test {
 
 	@Test
 	public void testMonitorEngineDuplicateIds() {
-		MonitorResultStore monitorResultStore = new MonitorResultStore();
-
 		new MonitorEngine(
-			monitorResultStore,
 			Arrays.<Monitor>asList(
 				new TestMonitor(_newMonitorConfig("a")),
 				new TestMonitor(_newMonitorConfig("b"))));
 
 		try {
 			new MonitorEngine(
-				monitorResultStore,
 				Arrays.<Monitor>asList(
 					new TestMonitor(_newMonitorConfig("a")),
 					new TestMonitor(_newMonitorConfig("a"))));
@@ -53,12 +49,8 @@ public class MonitorEngineTest extends com.liferay.jenkins.results.parser.Test {
 
 	@Test(timeout = 10000)
 	public void testRunCycle() {
-		MonitorResultStore monitorResultStore = new MonitorResultStore();
-
-		long intervalMillis = 1000L * 10L;
-
 		TestMonitor hangingTestMonitor = new TestMonitor(
-			_newMonitorConfig("a", intervalMillis / 1000, 1)) {
+			_newMonitorConfig("a", 1)) {
 
 			@Override
 			public MonitorResult execute() {
@@ -77,10 +69,10 @@ public class MonitorEngineTest extends com.liferay.jenkins.results.parser.Test {
 		};
 
 		TestMonitor passingTestMonitor = new TestMonitor(
-			_newMonitorConfig("b", intervalMillis / 1000, 0));
+			_newMonitorConfig("b", 0));
 
 		TestMonitor throwingTestMonitor = new TestMonitor(
-			_newMonitorConfig("c", intervalMillis / 1000, 0)) {
+			_newMonitorConfig("c", 0)) {
 
 			@Override
 			public MonitorResult execute() {
@@ -90,7 +82,6 @@ public class MonitorEngineTest extends com.liferay.jenkins.results.parser.Test {
 		};
 
 		MonitorEngine monitorEngine = new MonitorEngine(
-			monitorResultStore,
 			Arrays.<Monitor>asList(
 				hangingTestMonitor, passingTestMonitor, throwingTestMonitor));
 
@@ -113,7 +104,7 @@ public class MonitorEngineTest extends com.liferay.jenkins.results.parser.Test {
 				}
 			);
 
-			long virtualCurrentTime = intervalMillis + 1L;
+			long virtualCurrentTime = RandomTestUtil.randomLong();
 
 			jenkinsResultsParserUtilMockedStatic.when(
 				JenkinsResultsParserUtil::getCurrentTimeMillis
@@ -126,66 +117,39 @@ public class MonitorEngineTest extends com.liferay.jenkins.results.parser.Test {
 
 			testEquals(3, monitorResultsMap.size());
 
-			MonitorResult latestMonitorResult =
-				monitorResultStore.getLatestMonitorResult(
-					hangingTestMonitor.getId());
+			MonitorResult monitorResult = monitorResultsMap.get(
+				hangingTestMonitor);
 
-			testEquals(
-				MonitorResult.Status.CRITICAL, latestMonitorResult.getStatus());
 			testEquals(
 				"Monitor a timed out after 1000 ms",
-				latestMonitorResult.getMessage());
-			testEquals(virtualCurrentTime, latestMonitorResult.getTimestamp());
-
-			latestMonitorResult = monitorResultStore.getLatestMonitorResult(
-				passingTestMonitor.getId());
-
+				monitorResult.getMessage());
 			testEquals(
-				MonitorResult.Status.OK, latestMonitorResult.getStatus());
-			testEquals(virtualCurrentTime, latestMonitorResult.getTimestamp());
+				MonitorResult.Status.CRITICAL, monitorResult.getStatus());
+			testEquals(virtualCurrentTime, monitorResult.getTimestamp());
 
-			latestMonitorResult = monitorResultStore.getLatestMonitorResult(
-				throwingTestMonitor.getId());
+			monitorResult = monitorResultsMap.get(passingTestMonitor);
 
-			testEquals(
-				MonitorResult.Status.CRITICAL, latestMonitorResult.getStatus());
+			testEquals(MonitorResult.Status.OK, monitorResult.getStatus());
+			testEquals(virtualCurrentTime, monitorResult.getTimestamp());
+
+			monitorResult = monitorResultsMap.get(throwingTestMonitor);
+
 			testEquals(
 				"Monitor c failed: Unable to execute the monitor",
-				latestMonitorResult.getMessage());
-
-			monitorResultsMap = monitorEngine.runCycle();
-
-			testEquals(0, monitorResultsMap.size());
-
-			List<MonitorResult> monitorResults =
-				monitorResultStore.getMonitorResults(
-					passingTestMonitor.getId());
-
-			testEquals(1, monitorResults.size());
-
-			virtualCurrentTime += intervalMillis;
-
-			jenkinsResultsParserUtilMockedStatic.when(
-				JenkinsResultsParserUtil::getCurrentTimeMillis
-			).thenReturn(
-				virtualCurrentTime
-			);
+				monitorResult.getMessage());
+			testEquals(
+				MonitorResult.Status.CRITICAL, monitorResult.getStatus());
 
 			monitorResultsMap = monitorEngine.runCycle();
 
 			testEquals(3, monitorResultsMap.size());
-
-			monitorResults = monitorResultStore.getMonitorResults(
-				passingTestMonitor.getId());
-
-			testEquals(2, monitorResults.size());
 		}
 	}
 
 	@Test(timeout = 10000)
 	public void testRunCycleContinuesWhenPrepareCycleFails() {
 		TestMonitor failingTestMonitor = Mockito.spy(
-			new TestMonitor(_newMonitorConfig("a", 0, 0)));
+			new TestMonitor(_newMonitorConfig("a", 0)));
 
 		Mockito.doThrow(
 			new RuntimeException()
@@ -194,10 +158,9 @@ public class MonitorEngineTest extends com.liferay.jenkins.results.parser.Test {
 		).prepareCycle();
 
 		TestMonitor testMonitor = Mockito.spy(
-			new TestMonitor(_newMonitorConfig("b", 0, 0)));
+			new TestMonitor(_newMonitorConfig("b", 0)));
 
 		MonitorEngine monitorEngine = new MonitorEngine(
-			new MonitorResultStore(),
 			Arrays.<Monitor>asList(failingTestMonitor, testMonitor));
 
 		PrintStream printStream = System.out;
@@ -231,12 +194,11 @@ public class MonitorEngineTest extends com.liferay.jenkins.results.parser.Test {
 	public void testRunCycleIgnoresMonitorsAddedAfterConstruction() {
 		List<Monitor> monitors = new ArrayList<>();
 
-		monitors.add(new TestMonitor(_newMonitorConfig("a", 0, 0)));
+		monitors.add(new TestMonitor(_newMonitorConfig("a", 0)));
 
-		MonitorEngine monitorEngine = new MonitorEngine(
-			new MonitorResultStore(), monitors);
+		MonitorEngine monitorEngine = new MonitorEngine(monitors);
 
-		monitors.add(new TestMonitor(_newMonitorConfig("b", 0, 0)));
+		monitors.add(new TestMonitor(_newMonitorConfig("b", 0)));
 
 		Map<Monitor, MonitorResult> monitorResultsMap =
 			monitorEngine.runCycle();
@@ -246,10 +208,8 @@ public class MonitorEngineTest extends com.liferay.jenkins.results.parser.Test {
 
 	@Test(timeout = 10000)
 	public void testRunCycleKeepsDurationMillis() {
-		MonitorResultStore monitorResultStore = new MonitorResultStore();
-
 		TestMonitor testMonitor = new TestMonitor(
-			_newMonitorConfig(RandomTestUtil.randomString(), 10, 0)) {
+			_newMonitorConfig(RandomTestUtil.randomString(), 10)) {
 
 			@Override
 			public MonitorResult execute() {
@@ -266,7 +226,6 @@ public class MonitorEngineTest extends com.liferay.jenkins.results.parser.Test {
 		};
 
 		MonitorEngine monitorEngine = new MonitorEngine(
-			monitorResultStore,
 			Collections.<Monitor>singletonList(testMonitor));
 
 		Map<Monitor, MonitorResult> monitorResultsMap =
@@ -277,24 +236,15 @@ public class MonitorEngineTest extends com.liferay.jenkins.results.parser.Test {
 		Assert.assertTrue(
 			String.valueOf(monitorResult.getDurationMillis()),
 			monitorResult.getDurationMillis() >= 200);
-
-		monitorResult = monitorResultStore.getLatestMonitorResult(
-			testMonitor.getId());
-
-		Assert.assertTrue(
-			String.valueOf(monitorResult.getDurationMillis()),
-			monitorResult.getDurationMillis() >= 200);
 	}
 
 	@Test
 	public void testRunCycleKeepsLinkURLs() {
-		MonitorResultStore monitorResultStore = new MonitorResultStore();
-
 		List<String> linkURLs = Collections.singletonList(
 			"https://" + RandomTestUtil.randomString());
 
 		TestMonitor testMonitor = new TestMonitor(
-			_newMonitorConfig(RandomTestUtil.randomString(), 10, 0)) {
+			_newMonitorConfig(RandomTestUtil.randomString(), 10)) {
 
 			@Override
 			public MonitorResult execute() {
@@ -306,13 +256,12 @@ public class MonitorEngineTest extends com.liferay.jenkins.results.parser.Test {
 		};
 
 		MonitorEngine monitorEngine = new MonitorEngine(
-			monitorResultStore,
 			Collections.<Monitor>singletonList(testMonitor));
 
-		monitorEngine.runCycle();
+		Map<Monitor, MonitorResult> monitorResultsMap =
+			monitorEngine.runCycle();
 
-		MonitorResult monitorResult = monitorResultStore.getLatestMonitorResult(
-			testMonitor.getId());
+		MonitorResult monitorResult = monitorResultsMap.get(testMonitor);
 
 		testEquals(linkURLs, monitorResult.getLinkURLs());
 	}
@@ -323,7 +272,7 @@ public class MonitorEngineTest extends com.liferay.jenkins.results.parser.Test {
 			new TestMonitor(_newMonitorConfig("a")));
 
 		MonitorEngine monitorEngine = new MonitorEngine(
-			new MonitorResultStore(), Arrays.<Monitor>asList(testMonitor));
+			Arrays.<Monitor>asList(testMonitor));
 
 		monitorEngine.runCycle();
 
@@ -333,16 +282,13 @@ public class MonitorEngineTest extends com.liferay.jenkins.results.parser.Test {
 	}
 
 	private MonitorConfig _newMonitorConfig(String id) {
-		return _newMonitorConfig(
-			id, RandomTestUtil.randomLong(), RandomTestUtil.randomLong());
+		return _newMonitorConfig(id, RandomTestUtil.randomLong());
 	}
 
-	private MonitorConfig _newMonitorConfig(
-		String id, long intervalSeconds, long timeoutSeconds) {
-
+	private MonitorConfig _newMonitorConfig(String id, long timeoutSeconds) {
 		return new MonitorConfig(
-			id, intervalSeconds, null, MonitorConfig.Severity.MEDIUM, null,
-			timeoutSeconds, RandomTestUtil.randomString());
+			id, null, MonitorConfig.Severity.MEDIUM, null, timeoutSeconds,
+			RandomTestUtil.randomString());
 	}
 
 }
