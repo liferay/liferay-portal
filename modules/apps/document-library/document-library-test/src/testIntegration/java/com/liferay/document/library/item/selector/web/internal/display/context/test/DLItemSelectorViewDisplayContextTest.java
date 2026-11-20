@@ -6,21 +6,34 @@
 package com.liferay.document.library.item.selector.web.internal.display.context.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.asset.kernel.model.AssetCategoryConstants;
+import com.liferay.asset.test.util.AssetTestUtil;
+import com.liferay.depot.constants.DepotConstants;
+import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.service.DepotEntryGroupRelLocalService;
+import com.liferay.depot.service.DepotEntryLocalService;
+import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.test.util.DLAppTestUtil;
 import com.liferay.item.selector.ItemSelectorView;
 import com.liferay.item.selector.criteria.file.criterion.FileItemSelectorCriterion;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.repository.model.Folder;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.test.TestInfo;
+import com.liferay.portal.kernel.test.portlet.MockLiferayPortletRenderResponse;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletURL;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -62,6 +75,28 @@ public class DLItemSelectorViewDisplayContextTest {
 		_testGetRepositoryEntriesWhenCurIsOutOfRange();
 	}
 
+	@Test
+	@TestInfo("LPD-116823")
+	public void testGetUploadURL() throws Exception {
+		_depotEntry = _depotEntryLocalService.addDepotEntry(
+			RandomTestUtil.randomLocaleStringMap(),
+			RandomTestUtil.randomLocaleStringMap(),
+			DepotConstants.TYPE_ASSET_LIBRARY,
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+
+		_depotEntryGroupRelLocalService.addDepotEntryGroupRel(
+			_depotEntry.getDepotEntryId(), _group.getGroupId());
+
+		Assert.assertNotNull(_getUploadURL());
+
+		AssetTestUtil.addVocabulary(
+			_depotEntry.getGroupId(),
+			PortalUtil.getClassNameId(DLFileEntry.class),
+			AssetCategoryConstants.ALL_CLASS_TYPE_PK, true, false);
+
+		Assert.assertNull(_getUploadURL());
+	}
+
 	private List<Object> _getRepositoryEntries(
 			long folderId, int cur, int delta)
 		throws Exception {
@@ -94,10 +129,38 @@ public class DLItemSelectorViewDisplayContextTest {
 
 		themeDisplay.setCompany(
 			_companyLocalService.getCompany(_group.getCompanyId()));
+		themeDisplay.setPermissionChecker(
+			PermissionThreadLocal.getPermissionChecker());
 		themeDisplay.setScopeGroupId(_group.getGroupId());
 		themeDisplay.setUser(TestPropsValues.getUser());
 
 		return themeDisplay;
+	}
+
+	private Object _getUploadURL() throws Exception {
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest();
+
+		mockHttpServletRequest.setAttribute(
+			WebKeys.THEME_DISPLAY, _getThemeDisplay());
+
+		_itemSelectorView.renderHTML(
+			mockHttpServletRequest, new MockHttpServletResponse(),
+			new FileItemSelectorCriterion(), new MockLiferayPortletURL(),
+			RandomTestUtil.randomString(), false);
+
+		Object dlItemSelectorViewDisplayContext =
+			mockHttpServletRequest.getAttribute(
+				"DL_ITEM_SELECTOR_VIEW_DISPLAY_CONTEXT");
+
+		ReflectionTestUtil.invoke(
+			dlItemSelectorViewDisplayContext, "getRepositoryEntries",
+			new Class<?>[0]);
+
+		return ReflectionTestUtil.invoke(
+			dlItemSelectorViewDisplayContext, "getUploadURL",
+			new Class<?>[] {LiferayPortletResponse.class},
+			new MockLiferayPortletRenderResponse());
 	}
 
 	private void _testGetRepositoryEntriesWhenCurIsInRange() throws Exception {
@@ -130,6 +193,15 @@ public class DLItemSelectorViewDisplayContextTest {
 
 	@Inject
 	private CompanyLocalService _companyLocalService;
+
+	@DeleteAfterTestRun
+	private DepotEntry _depotEntry;
+
+	@Inject
+	private DepotEntryGroupRelLocalService _depotEntryGroupRelLocalService;
+
+	@Inject
+	private DepotEntryLocalService _depotEntryLocalService;
 
 	@DeleteAfterTestRun
 	private Group _group;
