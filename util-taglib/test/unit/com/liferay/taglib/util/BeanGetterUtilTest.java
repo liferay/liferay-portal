@@ -33,6 +33,25 @@ public class BeanGetterUtilTest {
 		LiferayUnitTestRule.INSTANCE;
 
 	@Test
+	public void testGetBoolean() {
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				BeanGetterUtil.class.getName(), LoggerTestUtil.ERROR)) {
+
+			Assert.assertFalse(BeanGetterUtil.getBoolean(null, "active"));
+
+			Bean bean = new Bean();
+
+			Assert.assertTrue(BeanGetterUtil.getBoolean(bean, "active"));
+			Assert.assertFalse(BeanGetterUtil.getBoolean(bean, "description"));
+			Assert.assertFalse(BeanGetterUtil.getBoolean(bean, "failure"));
+			Assert.assertFalse(BeanGetterUtil.getBoolean(bean, "missing"));
+			Assert.assertFalse(BeanGetterUtil.getBoolean(bean, "name"));
+
+			_assertLogEntries(bean, logCapture.getLogEntries());
+		}
+	}
+
+	@Test
 	public void testGetBooleanSilent() {
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				BeanGetterUtil.class.getName(), LoggerTestUtil.WARN)) {

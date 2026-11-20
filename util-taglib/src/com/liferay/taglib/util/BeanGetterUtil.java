@@ -23,6 +23,10 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class BeanGetterUtil {
 
+	public static boolean getBoolean(Object bean, String name) {
+		return GetterUtil.getBoolean(_getValue(bean, name, false));
+	}
+
 	public static boolean getBooleanSilent(
 		Object bean, String name, boolean defaultValue) {
 
