@@ -22,7 +22,7 @@ tests:
                 template: templates/applicationset-client-extension.yaml
             -   equal:
                     path: spec.template.spec.destination.namespace
-                    value: "liferay-{{ index .path.segments 2 }}-{{ index .path.segments 4 }}{{ if eq (toString (ternary (get . \"separateNamespace\") (get . \"clientExtensionsSeparateNamespace\") (hasKey . \"separateNamespace\"))) \"true\" }}-cx{{ end }}"
+                    value: "liferay-{{ index .path.segments 2 }}-{{ index .path.segments 4 }}{{ if eq (toString (get . \"separateNamespace\")) \"true\" }}-cx{{ end }}"
                 template: templates/applicationset-client-extension.yaml
             -   contains:
                     content:

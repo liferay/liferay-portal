@@ -9,7 +9,7 @@
 {{- $segmentPattern := "^\\{\\{path\\[(\\d+)\\]\\}\\}$" -}}
 {{- $environmentId := regexReplaceAll $segmentPattern $layout.environmentId "index .path.segments $1" -}}
 {{- $projectId := regexReplaceAll $segmentPattern $layout.projectId "index .path.segments $1" -}}
-{{- $separateNamespaceCondition := `eq (toString (ternary (get . "separateNamespace") (get . "clientExtensionsSeparateNamespace") (hasKey . "separateNamespace"))) "true"` -}}
+{{- $separateNamespaceCondition := `eq (toString (get . "separateNamespace")) "true"` -}}
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:

@@ -4,11 +4,12 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-# The client extension ApplicationSet chooses each Application's namespace in
-# a Go template that only Argo CD evaluates, so helm unittest can compare its
-# text but not its result. This renders the ApplicationSet, then evaluates its
-# destination with Helm's sprig, the same function library Argo CD uses,
-# against the parameters of each case.
+# The client extension ApplicationSet builds its elements and chooses each
+# Application's namespace in Go templates that only Argo CD evaluates, so helm
+# unittest can compare their text but not their result. This renders the
+# ApplicationSet, then evaluates its elements and destination with Helm's
+# sprig, the same function library Argo CD uses, against the parameters of
+# each case.
 
 CLOUD_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)
 
@@ -24,10 +25,11 @@ function main {
 	local fail=0
 	local pass=0
 
-	_run_test _test_an_entry_overrides_the_environment
+	_run_test _test_an_entry_overrides_the_defaults
 	_run_test _test_an_entry_turns_on_a_separate_namespace
 	_run_test _test_nothing_set_stays_in_the_dxp_namespace
-	_run_test _test_the_environment_turns_on_a_separate_namespace
+	_run_test _test_the_defaults_merge_under_each_entry
+	_run_test _test_the_defaults_turn_on_a_separate_namespace
 
 	echo ""
 	echo "Results: ${pass} passed, ${fail} failed."
@@ -41,14 +43,15 @@ function main {
 }
 
 function _assert {
-	local expected="${2}"
+	local expected="${3}"
+	local key="${2}"
 	local parameters="${1}"
 
 	local actual
 
-	actual=$(helm template evaluation "${_TEMP_DIR}/chart" --set-json "parameters=${parameters}" | sed --quiet 's/^result: //p')
+	actual=$(helm template evaluation "${_TEMP_DIR}/chart" --set-json "parameters=${parameters}" | sed --quiet "s/^${key}: //p")
 
-	if [[ ${actual} != ${expected} ]]
+	if [[ ${actual} != "${expected}" ]]
 	then
 		echo "Assertion failed for ${parameters}: expected \"${expected}\", got \"${actual}\"" >&2
 
@@ -57,17 +60,15 @@ function _assert {
 }
 
 function _make_parameters {
-	local environment="${2}"
-	local project="${1}"
-	local settings="${3:-{\}}"
+	local client_extension="${1:-{\}}"
+	local client_extension_defaults="${2:-{\}}"
 
 	jq \
-		--arg environment "${environment}" \
-		--arg project "${project}" \
-		--argjson settings "${settings}" \
+		--argjson client_extension "${client_extension}" \
+		--argjson client_extension_defaults "${client_extension_defaults}" \
 		--compact-output \
 		--null-input \
-		'{path: {segments: ["liferay", "projects", $project, "environments", $environment]}} + $settings'
+		'{clientExtensionDefaults: $client_extension_defaults, clientExtensions: {"liferay-sample-etc-node": ({descriptor: "oci://ghcr.io/able/etc-node", version: "1.0.0"} + $client_extension)}, path: {segments: ["liferay", "projects", "able", "environments", "nonproduction"]}}'
 }
 
 function _run_test {
@@ -89,20 +90,24 @@ function _run_test {
 	fi
 }
 
-function _test_an_entry_overrides_the_environment {
-	_assert "$(_make_parameters able nonproduction '{"clientExtensionsSeparateNamespace": true, "separateNamespace": false}')" "liferay-able-nonproduction"
+function _test_an_entry_overrides_the_defaults {
+	_assert "$(_make_parameters '{"separateNamespace": false}' '{"separateNamespace": true}')" namespace "liferay-sample-etc-node liferay-able-nonproduction"
 }
 
 function _test_an_entry_turns_on_a_separate_namespace {
-	_assert "$(_make_parameters able nonproduction '{"separateNamespace": true}')" "liferay-able-nonproduction-cx"
+	_assert "$(_make_parameters '{"separateNamespace": true}')" namespace "liferay-sample-etc-node liferay-able-nonproduction-cx"
 }
 
 function _test_nothing_set_stays_in_the_dxp_namespace {
-	_assert "$(_make_parameters able nonproduction)" "liferay-able-nonproduction"
+	_assert "$(_make_parameters)" namespace "liferay-sample-etc-node liferay-able-nonproduction"
 }
 
-function _test_the_environment_turns_on_a_separate_namespace {
-	_assert "$(_make_parameters able nonproduction '{"clientExtensionsSeparateNamespace": true}')" "liferay-able-nonproduction-cx"
+function _test_the_defaults_merge_under_each_entry {
+	_assert "$(_make_parameters '{"values": {"replicaCount": 2}}' '{"values": {"imagePullSecrets": [{"name": "ghcr-pull"}], "replicaCount": 1}}')" values '{"imagePullSecrets":[{"name":"ghcr-pull"}],"replicaCount":2}'
+}
+
+function _test_the_defaults_turn_on_a_separate_namespace {
+	_assert "$(_make_parameters '{}' '{"separateNamespace": true}')" namespace "liferay-sample-etc-node liferay-able-nonproduction-cx"
 }
 
 function _write_evaluation_chart {
@@ -123,7 +128,17 @@ function _write_evaluation_chart {
 
 	printf 'apiVersion: v2\nname: evaluation\nversion: 0.0.0\n' > "${_TEMP_DIR}/chart/Chart.yaml"
 
-	printf '{{- with .Values.parameters }}\nresult: %s\n{{- end }}\n' "${namespace}" > "${_TEMP_DIR}/chart/templates/evaluation.yaml"
+	{
+		printf '{{- define "destination" }}%s{{- end }}\n' "${namespace}"
+		printf '{{- define "elements" }}\n'
+		cat "${CLOUD_DIR}/helm/platform-components/client-extension-elements.gotmpl"
+		printf '\n{{- end }}\n'
+		printf '{{- $parameters := .Values.parameters }}\n'
+		printf '{{- range include "elements" $parameters | fromJsonArray }}\n'
+		printf 'namespace: {{ .name }} {{ include "destination" (merge (deepCopy .) $parameters) }}\n'
+		printf 'values: {{ toJson .values }}\n'
+		printf '{{- end }}\n'
+	} > "${_TEMP_DIR}/chart/templates/evaluation.yaml"
 }
 
 main "${@}"
