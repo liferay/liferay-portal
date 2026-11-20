@@ -56,10 +56,9 @@ public class PrivateFeatureFlagKeysUpdater {
 
 		if (privateDirCanonicalPath.startsWith(portalDirCanonicalPath)) {
 			throw new IllegalArgumentException(
-				StringBundler.concat(
-					"Argument \"liferay.portal.private.dir\" must point to a ",
-					"master-private checkout outside ",
-					portalDir.getCanonicalPath()));
+				"Argument \"liferay.portal.private.dir\" must point to a " +
+					"master-private checkout outside " +
+						portalDir.getCanonicalPath());
 		}
 
 		List<String> fileNames = SourceFormatterUtil.filterFileNames(
@@ -74,7 +73,7 @@ public class PrivateFeatureFlagKeysUpdater {
 
 		String content = FileUtil.read(sourceFormatterPropertiesFile);
 
-		List<String> additionalFeatureFlagKeys = _getFeatureFlagKeys(
+		List<String> additionalFeatureFlagKeys = _getAdditionalFeatureFlagKeys(
 			content, "additionalFeatureFlagKeys");
 
 		additionalFeatureFlagKeys.removeAll(privateFeatureFlagKeys);
@@ -90,7 +89,7 @@ public class PrivateFeatureFlagKeysUpdater {
 		}
 	}
 
-	private static List<String> _getFeatureFlagKeys(
+	private static List<String> _getAdditionalFeatureFlagKeys(
 		String content, String attributeName) {
 
 		Matcher matcher = _getMatcher(content, attributeName);
@@ -104,19 +103,18 @@ public class PrivateFeatureFlagKeysUpdater {
 
 	private static Matcher _getMatcher(String content, String attributeName) {
 		Pattern pattern = Pattern.compile(
-			StringBundler.concat(
-				"source\\.check\\.PropertiesFeatureFlagsCheck\\.",
-				attributeName, "=((\\\\\n +[^\\\\\n]+)*)"));
+			"source\\.check\\.PropertiesFeatureFlagsCheck\\." + attributeName +
+				"=((\\\\\n +[^\\\\\n]+)*)");
 
 		Matcher matcher = pattern.matcher(content);
 
-		if (!matcher.find()) {
-			throw new IllegalStateException(
-				"Unable to find " + attributeName +
-					" in source-formatter.properties");
+		if (matcher.find()) {
+			return matcher;
 		}
 
-		return matcher;
+		throw new IllegalStateException(
+			"Unable to find " + attributeName +
+				" in source-formatter.properties");
 	}
 
 	private static String _replaceFeatureFlagKeys(
