@@ -463,6 +463,17 @@ public class AccountRoleLocalServiceWrapper
 	}
 
 	@Override
+	public com.liferay.account.model.AccountRole updateAccountRole(
+			long accountRoleId, String name,
+			java.util.Map<java.util.Locale, String> titleMap,
+			java.util.Map<java.util.Locale, String> descriptionMap)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _accountRoleLocalService.updateAccountRole(
+			accountRoleId, name, titleMap, descriptionMap);
+	}
+
+	@Override
 	public BasePersistence<?> getBasePersistence() {
 		return _accountRoleLocalService.getBasePersistence();
 	}
@@ -482,4 +493,4 @@ public class AccountRoleLocalServiceWrapper
 	private AccountRoleLocalService _accountRoleLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1819734048
+// LIFERAY-SERVICE-BUILDER-HASH:1644151268

@@ -331,5 +331,10 @@ public interface AccountRoleLocalService
 	@Indexable(type = IndexableType.REINDEX)
 	public AccountRole updateAccountRole(AccountRole accountRole);
 
+	public AccountRole updateAccountRole(
+			long accountRoleId, String name, Map<Locale, String> titleMap,
+			Map<Locale, String> descriptionMap)
+		throws PortalException;
+
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1755458467
+// LIFERAY-SERVICE-BUILDER-HASH:352743412

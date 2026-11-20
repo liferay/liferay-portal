@@ -91,5 +91,10 @@ public interface AccountRoleService extends BaseService {
 			long accountEntryId, long accountRoleId, long userId)
 		throws PortalException;
 
+	public AccountRole updateAccountRole(
+			long accountRoleId, String name, Map<Locale, String> titleMap,
+			Map<Locale, String> descriptionMap)
+		throws PortalException;
+
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1435157455
+// LIFERAY-SERVICE-BUILDER-HASH:-767151962

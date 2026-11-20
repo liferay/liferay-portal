@@ -401,6 +401,48 @@ public class AccountRoleServiceHttp {
 		}
 	}
 
+	public static com.liferay.account.model.AccountRole updateAccountRole(
+			HttpPrincipal httpPrincipal, long accountRoleId, String name,
+			java.util.Map<java.util.Locale, String> titleMap,
+			java.util.Map<java.util.Locale, String> descriptionMap)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		try {
+			MethodKey methodKey = new MethodKey(
+				AccountRoleServiceUtil.class, "updateAccountRole",
+				_updateAccountRoleParameterTypes9);
+
+			MethodHandler methodHandler = new MethodHandler(
+				methodKey, accountRoleId, name, titleMap, descriptionMap);
+
+			Object returnObj = null;
+
+			try {
+				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
+			}
+			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
+				throw new com.liferay.portal.kernel.exception.SystemException(
+					exception);
+			}
+
+			return (com.liferay.account.model.AccountRole)returnObj;
+		}
+		catch (com.liferay.portal.kernel.exception.SystemException
+					systemException) {
+
+			_log.error(systemException, systemException);
+
+			throw systemException;
+		}
+	}
+
 	private static Log _log = LogFactoryUtil.getLog(
 		AccountRoleServiceHttp.class);
 
@@ -429,6 +471,10 @@ public class AccountRoleServiceHttp {
 		new Class[] {long.class, long[].class, long.class};
 	private static final Class<?>[] _unassociateUserParameterTypes8 =
 		new Class[] {long.class, long.class, long.class};
+	private static final Class<?>[] _updateAccountRoleParameterTypes9 =
+		new Class[] {
+			long.class, String.class, java.util.Map.class, java.util.Map.class
+		};
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-715490538
+// LIFERAY-SERVICE-BUILDER-HASH:548931147

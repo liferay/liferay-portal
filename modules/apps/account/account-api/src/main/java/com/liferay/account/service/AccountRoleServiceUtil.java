@@ -110,6 +110,16 @@ public class AccountRoleServiceUtil {
 		getService().unassociateUser(accountEntryId, accountRoleId, userId);
 	}
 
+	public static AccountRole updateAccountRole(
+			long accountRoleId, String name,
+			Map<java.util.Locale, String> titleMap,
+			Map<java.util.Locale, String> descriptionMap)
+		throws PortalException {
+
+		return getService().updateAccountRole(
+			accountRoleId, name, titleMap, descriptionMap);
+	}
+
 	public static AccountRoleService getService() {
 		return _serviceSnapshot.get();
 	}
@@ -118,4 +128,4 @@ public class AccountRoleServiceUtil {
 		new Snapshot<>(AccountRoleServiceUtil.class, AccountRoleService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1965524121
+// LIFERAY-SERVICE-BUILDER-HASH:-1658161794

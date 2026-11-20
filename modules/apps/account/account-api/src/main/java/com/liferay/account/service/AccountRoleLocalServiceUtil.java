@@ -400,6 +400,16 @@ public class AccountRoleLocalServiceUtil {
 		return getService().updateAccountRole(accountRole);
 	}
 
+	public static AccountRole updateAccountRole(
+			long accountRoleId, String name,
+			Map<java.util.Locale, String> titleMap,
+			Map<java.util.Locale, String> descriptionMap)
+		throws PortalException {
+
+		return getService().updateAccountRole(
+			accountRoleId, name, titleMap, descriptionMap);
+	}
+
 	public static AccountRoleLocalService getService() {
 		return _serviceSnapshot.get();
 	}
@@ -409,4 +419,4 @@ public class AccountRoleLocalServiceUtil {
 			AccountRoleLocalServiceUtil.class, AccountRoleLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:607334737
+// LIFERAY-SERVICE-BUILDER-HASH:1723651560
