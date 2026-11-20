@@ -284,6 +284,52 @@ public class CommerceOrderServiceTest {
 		_testUpdateCommercePaymentMethodKeyWithManageCommerceOrderPaymentMethodsPermission();
 	}
 
+	@Test
+	public void testUpdateTermsAndConditions() throws Exception {
+		CommerceOrder commerceOrder = _addCommerceOrder(
+			RandomTestUtil.randomString(),
+			CommerceOrderConstants.ORDER_STATUS_OPEN);
+		User user = UserTestUtil.addUser();
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user, PermissionCheckerFactoryUtil.create(user))) {
+
+			_commerceOrderService.updateTermsAndConditions(
+				commerceOrder.getCommerceOrderId(), 0, 0,
+				RandomTestUtil.randomString());
+
+			Assert.fail();
+		}
+		catch (Exception exception) {
+			_assertMessage(
+				ActionKeys.UPDATE, exception.getMessage(), user.getUserId());
+		}
+
+		AccountEntry accountEntry = _accountEntryLocalService.getAccountEntry(
+			commerceOrder.getCommerceAccountId());
+
+		_accountEntryUserRelLocalService.addAccountEntryUserRel(
+			accountEntry.getAccountEntryId(), user.getUserId());
+
+		Role role = _roleLocalService.getRole(
+			TestPropsValues.getCompanyId(),
+			AccountRoleConstants.ROLE_NAME_ACCOUNT_BUYER);
+
+		_userGroupRoleLocalService.addUserGroupRole(
+			user.getUserId(), accountEntry.getAccountEntryGroupId(),
+			role.getRoleId());
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user, PermissionCheckerFactoryUtil.create(user))) {
+
+			Assert.assertEquals(
+				commerceOrder,
+				_commerceOrderService.updateTermsAndConditions(
+					commerceOrder.getCommerceOrderId(), 0, 0,
+					RandomTestUtil.randomString()));
+		}
+	}
+
 	private CommerceOrder _addCommerceOrder(
 			String commercePaymentMethodKey, int orderStatus)
 		throws Exception {
