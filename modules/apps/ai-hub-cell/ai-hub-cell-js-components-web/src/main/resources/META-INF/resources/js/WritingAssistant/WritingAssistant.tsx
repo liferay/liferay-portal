@@ -288,6 +288,7 @@ export default class WritingAssistant extends Plugin {
 		this.balloonView = reactView;
 
 		balloon.add({
+			balloonClassName: 'lfr-writing-assistant-balloon',
 			position: this._getBalloonPosition(editor),
 			view: this.balloonView,
 			withArrow: false,
@@ -413,6 +414,7 @@ export default class WritingAssistant extends Plugin {
 		this.balloonView = reactView;
 
 		balloon.add({
+			balloonClassName: 'lfr-writing-assistant-balloon',
 			position: this._getBalloonPosition(editor),
 			view: this.balloonView,
 			withArrow: false,
