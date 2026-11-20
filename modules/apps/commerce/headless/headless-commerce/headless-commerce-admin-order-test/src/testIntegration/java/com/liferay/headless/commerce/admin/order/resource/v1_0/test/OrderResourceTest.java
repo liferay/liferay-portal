@@ -213,6 +213,9 @@ public class OrderResourceTest extends BaseOrderResourceTestCase {
 		OrderResource orderResource = OrderResource.builder(
 		).authentication(
 			omniadminUser.getEmailAddress(), password
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
 		).locale(
 			LocaleUtil.getDefault()
 		).parameters(

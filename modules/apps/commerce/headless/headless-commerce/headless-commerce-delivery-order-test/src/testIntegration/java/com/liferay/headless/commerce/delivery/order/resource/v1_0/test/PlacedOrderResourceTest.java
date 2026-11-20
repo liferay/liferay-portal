@@ -764,6 +764,9 @@ public class PlacedOrderResourceTest extends BasePlacedOrderResourceTestCase {
 		PlacedOrderResource placedOrderResource = PlacedOrderResource.builder(
 		).authentication(
 			omniadminUser.getEmailAddress(), password
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
 		).locale(
 			LocaleUtil.getDefault()
 		).parameters(
