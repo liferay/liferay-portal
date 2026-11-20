@@ -202,7 +202,7 @@ public class RegionLocalServiceTest {
 	public void testSearchRegionsByRegionCode() throws Exception {
 		Country country = _addCountry();
 
-		String regionCode = "regionCode";
+		String regionCode = RandomTestUtil.randomString();
 
 		Region region = _addRegion(
 			true, country.getCountryId(), RandomTestUtil.randomString(),

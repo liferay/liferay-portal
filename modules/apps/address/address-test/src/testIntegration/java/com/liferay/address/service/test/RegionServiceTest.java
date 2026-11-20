@@ -78,7 +78,8 @@ public class RegionServiceTest {
 			_region = _regionService.addRegion(
 				null, _country.getCountryId(), true,
 				RandomTestUtil.randomString(), RandomTestUtil.nextDouble(),
-				"aa", ServiceContextTestUtil.getServiceContext());
+				RandomTestUtil.randomString(),
+				ServiceContextTestUtil.getServiceContext());
 
 			Assert.fail();
 		}
@@ -100,7 +101,8 @@ public class RegionServiceTest {
 			_region = _regionService.addRegion(
 				null, _country.getCountryId(), true,
 				RandomTestUtil.randomString(), RandomTestUtil.nextDouble(),
-				"aa", ServiceContextTestUtil.getServiceContext());
+				RandomTestUtil.randomString(),
+				ServiceContextTestUtil.getServiceContext());
 		}
 	}
 
@@ -108,7 +110,7 @@ public class RegionServiceTest {
 	public void testDeleteRegion() throws Exception {
 		_region = _regionService.addRegion(
 			null, _country.getCountryId(), true, RandomTestUtil.randomString(),
-			RandomTestUtil.nextDouble(), "aa",
+			RandomTestUtil.nextDouble(), RandomTestUtil.randomString(),
 			ServiceContextTestUtil.getServiceContext());
 
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
@@ -141,7 +143,7 @@ public class RegionServiceTest {
 	public void testUpdateActive() throws Exception {
 		_region = _regionService.addRegion(
 			null, _country.getCountryId(), true, RandomTestUtil.randomString(),
-			RandomTestUtil.nextDouble(), "aa",
+			RandomTestUtil.nextDouble(), RandomTestUtil.randomString(),
 			ServiceContextTestUtil.getServiceContext());
 
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
@@ -174,7 +176,7 @@ public class RegionServiceTest {
 	public void testUpdateRegion() throws Exception {
 		_region = _regionService.addRegion(
 			null, _country.getCountryId(), true, RandomTestUtil.randomString(),
-			RandomTestUtil.nextDouble(), "aa",
+			RandomTestUtil.nextDouble(), RandomTestUtil.randomString(),
 			ServiceContextTestUtil.getServiceContext());
 
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
