@@ -71,6 +71,7 @@ import com.liferay.portal.kernel.settings.ModifiableSettings;
 import com.liferay.portal.kernel.settings.Settings;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.CountryTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -168,9 +169,11 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 			true, _serviceContext);
 
 		_country = _countryLocalService.addCountry(
-			null, "XY", "XYZ", true, true, RandomTestUtil.randomString(),
+			null, CountryTestUtil.randomA2(testCompany.getCompanyId()),
+			CountryTestUtil.randomA3(testCompany.getCompanyId()), true, true,
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-			RandomTestUtil.nextDouble(), true, true, false, _serviceContext);
+			RandomTestUtil.randomString(), RandomTestUtil.nextDouble(), true,
+			true, false, _serviceContext);
 
 		_region = _regionLocalService.addRegion(
 			null, _country.getCountryId(), true, RandomTestUtil.randomString(),

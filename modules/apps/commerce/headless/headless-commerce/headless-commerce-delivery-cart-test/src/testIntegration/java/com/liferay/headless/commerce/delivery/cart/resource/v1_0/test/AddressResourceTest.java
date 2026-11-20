@@ -28,6 +28,7 @@ import com.liferay.portal.kernel.service.RegionLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.CountryTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
@@ -82,8 +83,9 @@ public class AddressResourceTest extends BaseAddressResourceTestCase {
 
 		if (_country == null) {
 			_country = _countryLocalService.addCountry(
-				null, "ZZ", "ZZZ", true, true, null,
-				RandomTestUtil.randomString(), "000",
+				null, CountryTestUtil.randomA2(_serviceContext.getCompanyId()),
+				CountryTestUtil.randomA3(_serviceContext.getCompanyId()), true,
+				true, null, RandomTestUtil.randomString(), "000",
 				RandomTestUtil.randomDouble(), true, false, false,
 				_serviceContext);
 
