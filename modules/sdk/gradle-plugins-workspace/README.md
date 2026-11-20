@@ -13,7 +13,7 @@ To use the plugin, include it in your `settings.gradle`:
 ```gradle
 buildscript {
 	dependencies {
-		classpath group: "com.liferay", name: "com.liferay.gradle.plugins.workspace", version: "17.1.13"
+		classpath group: "com.liferay", name: "com.liferay.gradle.plugins.workspace", version: "17.2.0"
 	}
 
 	repositories {
