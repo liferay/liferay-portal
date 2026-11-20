@@ -12,7 +12,6 @@ taglib uri="http://liferay.com/tld/portlet" prefix="liferay-portlet" %>
 
 <%@ page import="com.liferay.petra.string.StringPool" %><%@
 page import="com.liferay.portal.kernel.bean.BeanParamUtil" %><%@
-page import="com.liferay.portal.kernel.bean.BeanPropertiesUtil" %><%@
 page import="com.liferay.portal.kernel.dao.search.ResultRow" %><%@
 page import="com.liferay.portal.kernel.exception.NoSuchRoleException" %><%@
 page import="com.liferay.portal.kernel.language.LanguageUtil" %><%@
@@ -32,7 +31,8 @@ page import="com.liferay.portal.kernel.workflow.WorkflowException" %><%@
 page import="com.liferay.portal.workflow.exception.IncompleteWorkflowInstancesException" %><%@
 page import="com.liferay.portal.workflow.web.internal.dao.search.WorkflowDefinitionResultRowSplitter" %><%@
 page import="com.liferay.portal.workflow.web.internal.display.context.WorkflowDefinitionDisplayContext" %><%@
-page import="com.liferay.portal.workflow.web.internal.display.context.WorkflowDefinitionManagementToolbarDisplayContext" %>
+page import="com.liferay.portal.workflow.web.internal.display.context.WorkflowDefinitionManagementToolbarDisplayContext" %><%@
+page import="com.liferay.taglib.util.BeanGetterUtil" %>
 
 <%@ page import="java.text.Format" %>
 
