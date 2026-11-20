@@ -165,12 +165,12 @@ test(
 
 		await exportImportDataSelectionPage.expandSection('Site Builder');
 
-		await page.getByRole('button', {name: 'Select Public Pages'}).click();
+		await page.getByRole('button', {name: 'Select Pages'}).click();
 
 		const pageTreePicker = page.getByRole('dialog');
 
 		await pageTreePicker
-			.getByRole('checkbox', {exact: true, name: 'Public Pages'})
+			.getByRole('checkbox', {exact: true, name: 'Pages'})
 			.click();
 
 		await pageTreePicker
