@@ -82,9 +82,7 @@ public class ProductMenuSidebarStagingDisplayContextTest {
 
 		GroupURLProvider groupURLProvider = Mockito.mock(
 			GroupURLProvider.class);
-
 		Group liveGroup = Mockito.mock(Group.class);
-
 		String liveURL = RandomTestUtil.randomString();
 
 		Mockito.when(
