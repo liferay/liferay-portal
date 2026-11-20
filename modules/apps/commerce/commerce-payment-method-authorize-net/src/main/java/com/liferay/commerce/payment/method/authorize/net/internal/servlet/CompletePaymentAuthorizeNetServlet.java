@@ -147,10 +147,20 @@ public class CompletePaymentAuthorizeNetServlet extends HttpServlet {
 		HttpServletResponse httpServletResponse) {
 
 		try {
-			ServletInputStream servletInputStream =
-				httpServletRequest.getInputStream();
+			byte[] bytes = _getBytes(httpServletRequest);
 
-			byte[] bytes = servletInputStream.readAllBytes();
+			if (bytes == null) {
+				if (_log.isDebugEnabled()) {
+					_log.debug(
+						"The Authorize.net webhook payload exceeds " +
+							_MAX_CONTENT_LENGTH + " bytes");
+				}
+
+				httpServletResponse.setStatus(
+					HttpServletResponse.SC_REQUEST_ENTITY_TOO_LARGE);
+
+				return;
+			}
 
 			JSONObject jsonObject = null;
 
@@ -313,6 +323,25 @@ public class CompletePaymentAuthorizeNetServlet extends HttpServlet {
 				AuthorizeNetCommercePaymentMethodConstants.SERVICE_NAME));
 	}
 
+	private byte[] _getBytes(HttpServletRequest httpServletRequest)
+		throws IOException {
+
+		if (httpServletRequest.getContentLengthLong() > _MAX_CONTENT_LENGTH) {
+			return null;
+		}
+
+		ServletInputStream servletInputStream =
+			httpServletRequest.getInputStream();
+
+		byte[] bytes = servletInputStream.readNBytes(_MAX_CONTENT_LENGTH + 1);
+
+		if (bytes.length > _MAX_CONTENT_LENGTH) {
+			return null;
+		}
+
+		return bytes;
+	}
+
 	private boolean _isValidSignature(
 			byte[] bytes, String signatureHeader, String signatureKey)
 		throws Exception {
@@ -332,6 +361,8 @@ public class CompletePaymentAuthorizeNetServlet extends HttpServlet {
 			generatedSignature.getBytes(StandardCharsets.UTF_8),
 			headerSignature.getBytes(StandardCharsets.UTF_8));
 	}
+
+	private static final int _MAX_CONTENT_LENGTH = 64 * 1024;
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		CompletePaymentAuthorizeNetServlet.class);
