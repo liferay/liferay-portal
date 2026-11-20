@@ -26,6 +26,8 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 
 import java.io.Serializable;
 
+import java.util.function.Supplier;
+
 import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Rule;
@@ -75,37 +77,18 @@ public class ObjectMapperProviderUtilTest {
 
 	@Test
 	public void testGetBatchEngineObjectMapperWithJSONStringMaxLength() {
-		try (SafeCloseable safeCloseable =
-				PropsValuesTestUtil.swapWithSafeCloseable(
-					"JSON_STRING_MAX_LENGTH", 10)) {
-
-			_assertMaxStringLength(
-				10, ObjectMapperProviderUtil.getBatchEngineObjectMapper());
-		}
-
-		_assertMaxStringLength(
-			PropsValues.JSON_STRING_MAX_LENGTH,
-			ObjectMapperProviderUtil.getBatchEngineObjectMapper());
+		_testJSONStringMaxLength(
+			ObjectMapperProviderUtil::getBatchEngineObjectMapper);
 	}
 
 	@Test
 	public void testGetObjectMapperWithJSONStringMaxLength() {
-		try (SafeCloseable safeCloseable =
-				PropsValuesTestUtil.swapWithSafeCloseable(
-					"JSON_STRING_MAX_LENGTH", 10)) {
+		_testJSONStringMaxLength(
+			() -> {
+				ObjectMapperProviderUtil.getBatchEngineObjectMapper();
 
-			_assertMaxStringLength(
-				10, ObjectMapperProviderUtil.getBatchEngineObjectMapper());
-			_assertMaxStringLength(
-				10, ObjectMapperProviderUtil.getObjectMapper());
-		}
-
-		_assertMaxStringLength(
-			PropsValues.JSON_STRING_MAX_LENGTH,
-			ObjectMapperProviderUtil.getBatchEngineObjectMapper());
-		_assertMaxStringLength(
-			PropsValues.JSON_STRING_MAX_LENGTH,
-			ObjectMapperProviderUtil.getObjectMapper());
+				return ObjectMapperProviderUtil.getObjectMapper();
+			});
 	}
 
 	@JsonSubTypes(
@@ -132,8 +115,8 @@ public class ObjectMapperProviderUtilTest {
 	public static class TestSubclass extends TestClass {
 	}
 
-	private void _assertMaxStringLength(
-		int expectedMaxStringLength, ObjectMapper objectMapper) {
+	private void _assertJSONStringMaxLength(
+		int expectedJSONStringMaxLength, ObjectMapper objectMapper) {
 
 		JsonFactory jsonFactory = objectMapper.getFactory();
 
@@ -141,8 +124,20 @@ public class ObjectMapperProviderUtilTest {
 			jsonFactory.streamReadConstraints();
 
 		Assert.assertEquals(
-			expectedMaxStringLength,
+			expectedJSONStringMaxLength,
 			streamReadConstraints.getMaxStringLength());
+	}
+
+	private void _testJSONStringMaxLength(Supplier<ObjectMapper> supplier) {
+		try (SafeCloseable safeCloseable =
+				PropsValuesTestUtil.swapWithSafeCloseable(
+					"JSON_STRING_MAX_LENGTH", 10)) {
+
+			_assertJSONStringMaxLength(10, supplier.get());
+		}
+
+		_assertJSONStringMaxLength(
+			PropsValues.JSON_STRING_MAX_LENGTH, supplier.get());
 	}
 
 	private final ObjectMapper _objectMapper =
