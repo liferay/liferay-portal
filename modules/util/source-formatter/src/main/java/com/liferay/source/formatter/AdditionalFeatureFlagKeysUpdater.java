@@ -29,7 +29,7 @@ public class AdditionalFeatureFlagKeysUpdater {
 		Map<String, String> arguments = ArgumentsUtil.parseArguments(args);
 
 		String privateDirName = ArgumentsUtil.getString(
-			arguments, "private.dir", null);
+			arguments, "liferay.portal.private.dir", null);
 		String sourceFormatterPropertiesFileName = ArgumentsUtil.getString(
 			arguments, "source.formatter.properties.file", null);
 
@@ -37,7 +37,7 @@ public class AdditionalFeatureFlagKeysUpdater {
 			(sourceFormatterPropertiesFileName == null)) {
 
 			throw new IllegalArgumentException(
-				"Arguments \"private.dir\" and " +
+				"Arguments \"liferay.portal.private.dir\" and " +
 					"\"source.formatter.properties.file\" are required");
 		}
 
@@ -56,8 +56,9 @@ public class AdditionalFeatureFlagKeysUpdater {
 		if (privateDirCanonicalPath.startsWith(portalDirCanonicalPath)) {
 			throw new IllegalArgumentException(
 				StringBundler.concat(
-					"Argument \"private.dir\" must point to a master-private ",
-					"checkout outside ", portalDir.getCanonicalPath()));
+					"Argument \"liferay.portal.private.dir\" must point to a ",
+					"master-private checkout outside ",
+					portalDir.getCanonicalPath()));
 		}
 
 		List<String> fileNames = SourceFormatterUtil.filterFileNames(
