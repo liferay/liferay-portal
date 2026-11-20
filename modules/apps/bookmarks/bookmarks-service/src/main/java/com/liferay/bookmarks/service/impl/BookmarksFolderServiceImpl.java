@@ -228,10 +228,15 @@ public class BookmarksFolderServiceImpl extends BookmarksFolderServiceBaseImpl {
 	public void mergeFolders(long folderId, long parentFolderId)
 		throws PortalException {
 
+		BookmarksFolder folder = bookmarksFolderPersistence.findByPrimaryKey(
+			folderId);
+
 		_bookmarksFolderModelResourcePermission.check(
-			getPermissionChecker(),
-			bookmarksFolderPersistence.findByPrimaryKey(folderId),
-			ActionKeys.UPDATE);
+			getPermissionChecker(), folder, ActionKeys.UPDATE);
+
+		ModelResourcePermissionUtil.check(
+			_bookmarksFolderModelResourcePermission, getPermissionChecker(),
+			folder.getGroupId(), parentFolderId, ActionKeys.ADD_ENTRY);
 
 		bookmarksFolderLocalService.mergeFolders(folderId, parentFolderId);
 	}
@@ -240,10 +245,15 @@ public class BookmarksFolderServiceImpl extends BookmarksFolderServiceBaseImpl {
 	public BookmarksFolder moveFolder(long folderId, long parentFolderId)
 		throws PortalException {
 
+		BookmarksFolder folder = bookmarksFolderPersistence.findByPrimaryKey(
+			folderId);
+
 		_bookmarksFolderModelResourcePermission.check(
-			getPermissionChecker(),
-			bookmarksFolderPersistence.findByPrimaryKey(folderId),
-			ActionKeys.UPDATE);
+			getPermissionChecker(), folder, ActionKeys.UPDATE);
+
+		ModelResourcePermissionUtil.check(
+			_bookmarksFolderModelResourcePermission, getPermissionChecker(),
+			folder.getGroupId(), parentFolderId, ActionKeys.ADD_FOLDER);
 
 		return bookmarksFolderLocalService.moveFolder(folderId, parentFolderId);
 	}
@@ -253,10 +263,15 @@ public class BookmarksFolderServiceImpl extends BookmarksFolderServiceBaseImpl {
 			long folderId, long parentFolderId)
 		throws PortalException {
 
+		BookmarksFolder folder = bookmarksFolderPersistence.findByPrimaryKey(
+			folderId);
+
 		_bookmarksFolderModelResourcePermission.check(
-			getPermissionChecker(),
-			bookmarksFolderPersistence.findByPrimaryKey(folderId),
-			ActionKeys.UPDATE);
+			getPermissionChecker(), folder, ActionKeys.UPDATE);
+
+		ModelResourcePermissionUtil.check(
+			_bookmarksFolderModelResourcePermission, getPermissionChecker(),
+			folder.getGroupId(), parentFolderId, ActionKeys.ADD_FOLDER);
 
 		return bookmarksFolderLocalService.moveFolderFromTrash(
 			getUserId(), folderId, parentFolderId);
