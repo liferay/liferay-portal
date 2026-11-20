@@ -528,7 +528,7 @@ components:
             type: object
         EventAttributeDefinition:
             description:
-                "An attribute key that events of an LDP workspace carry in `Event.attributes`, with its data type and a sample value. Use `getWorkspaceGroupEventAttributeDefinitionsPage` to list them."
+                "An attribute recorded on events of an LDP workspace, with its data type and a sample value. Use `getWorkspaceGroupEventAttributeDefinitionsPage` to list them."
             properties:
                 dataType:
                     description:
@@ -543,7 +543,7 @@ components:
                     type: string
                 displayName:
                     description:
-                        "Display name shown in Analytics Cloud."
+                        "Display name of the attribute."
                     readOnly: true
                     type: string
                 id:
@@ -553,24 +553,24 @@ components:
                     type: string
                 name:
                     description:
-                        "Attribute key, as found in `Event.attributes`."
+                        "Name of the attribute."
                     readOnly: true
                     type: string
                 sampleValue:
                     description:
-                        "One example value seen for the attribute."
+                        "Sample value of the attribute. It may come from an event other than the one passed as `eventDefinitionId`."
                     readOnly: true
                     type: string
                 type:
                     description:
-                        "GLOBAL for attributes every event carries, LOCAL for attributes specific to some events."
+                        "Attribute scope. GLOBAL attributes are shared by all events; LOCAL attributes belong to specific events."
                     enum: [GLOBAL, LOCAL]
                     readOnly: true
                     type: string
             type: object
         EventDefinition:
             description:
-                "An event name that an LDP workspace has seen, across all channels, with its display name and whether it is a DEFAULT or CUSTOM event. Use `getWorkspaceGroupEventDefinitionsPage` to list them."
+                "An event of an LDP workspace: one of the DEFAULT events that LDP predefines, or a CUSTOM event the workspace has seen across all channels, with its display name. Use `getWorkspaceGroupEventDefinitionsPage` to list them."
             properties:
                 description:
                     description:
@@ -579,27 +579,27 @@ components:
                     type: string
                 displayName:
                     description:
-                        "Display name shown in Analytics Cloud."
+                        "Display name of the event."
                     readOnly: true
                     type: string
                 hidden:
                     description:
-                        "Whether the definition is hidden from the Analytics Cloud pickers."
+                        "True if the definition is hidden from the LDP pickers."
                     readOnly: true
                     type: boolean
                 id:
                     description:
-                        "Event definition ID. Use it as `eventDefinitionId` in `getWorkspaceGroupEventAttributeDefinitionsPage`."
+                        "Event definition ID. Use it as `eventDefinitionId` to list the attributes of the event."
                     readOnly: true
                     type: string
                 name:
                     description:
-                        "Event name as sent by the tracker; it is the `name` that `getWorkspaceGroupChannelEventsPage` returns on each event."
+                        "Name of the event (e.g. 'pageViewed', 'formSubmitted'). It is the `Event.name` of the matching events."
                     readOnly: true
                     type: string
                 type:
                     description:
-                        "DEFAULT for events Analytics Cloud tracks out of the box, CUSTOM for events a site sends itself."
+                        "Event classification. DEFAULT events are tracked by LDP out of the box; CUSTOM events are sent by a site itself."
                     enum: [CUSTOM, DEFAULT]
                     readOnly: true
                     type: string
@@ -2761,7 +2761,7 @@ paths:
     "/workspace/{groupId}/event-attribute-definitions":
         get:
             description:
-                "List the event attribute definitions of an LDP workspace: the attribute keys events carry, with their data type and a sample value. Pass `eventDefinitionId` (from `getWorkspaceGroupEventDefinitionsPage`) to list only the attributes of that event; an unknown ID returns an empty list. Use this to learn which keys appear in `Event.attributes` and how to read their values."
+                "List the event attribute definitions of an LDP workspace, with their data types and sample values. Optionally narrow results to the attributes of a single event with `eventDefinitionId`; an unknown ID returns an empty page. Use this to learn which attributes events carry and how to read their values. To list the events and their IDs, use `getWorkspaceGroupEventDefinitionsPage`."
             operationId: getWorkspaceGroupEventAttributeDefinitionsPage
             parameters:
                 -   in: path
@@ -2774,7 +2774,7 @@ paths:
                         type: integer
                 -   in: query
                     description:
-                        "Only include GLOBAL or LOCAL attributes. Defaults to ALL."
+                        "Only include attributes of this scope. Defaults to ALL."
                     example: ALL
                     name: attributeType
                     schema:
@@ -2782,7 +2782,7 @@ paths:
                         type: string
                 -   in: query
                     description:
-                        "ID of an event definition, from `getWorkspaceGroupEventDefinitionsPage`."
+                        "ID of an event definition. When set, narrow the results to the attributes of that event."
                     name: eventDefinitionId
                     schema:
                         type: string
@@ -2803,13 +2803,13 @@ paths:
                         type: integer
                 -   in: query
                     description:
-                        "Only include attributes whose name, display name or description contains this text, ignoring case."
+                        "Free-text search across attribute name, display name, and description, ignoring case. Empty or null returns all attributes."
                     name: search
                     schema:
                         type: string
                 -   in: query
                     description:
-                        "Sort expression `column:asc|desc`. Defaults to `name:asc`. Sortable column: name. Only one column is accepted."
+                        "Sort expression `column:asc|desc`. Defaults to `name:asc` when omitted. Sortable column: name. Only one column is accepted."
                     example: name:asc
                     name: sort
                     schema:
@@ -2831,7 +2831,7 @@ paths:
     "/workspace/{groupId}/event-definitions":
         get:
             description:
-                "List the event definitions of an LDP workspace: every event name that the workspace has seen, across all channels, with its display name and whether it is a DEFAULT or CUSTOM event. Use this to find out which events exist before querying events, and to find the `eventDefinitionId` that `getWorkspaceGroupEventAttributeDefinitionsPage` takes."
+                "List the event definitions of an LDP workspace: the DEFAULT events that LDP predefines and every CUSTOM event the workspace has seen, across all channels, with their display names. Use this to find out which events exist before querying events. To list the attributes of an event, use `getWorkspaceGroupEventAttributeDefinitionsPage` with its ID as `eventDefinitionId`."
             operationId: getWorkspaceGroupEventDefinitionsPage
             parameters:
                 -   in: path
@@ -2844,13 +2844,13 @@ paths:
                         type: integer
                 -   in: query
                     description:
-                        "If true, lists only blocked custom events, which are not collected; if false, leaves them out. Omit to include both."
+                        "If true, lists only blocked custom events, which are not collected; if false, leaves them out. Both are returned when omitted."
                     name: blocked
                     schema:
                         type: boolean
                 -   in: query
                     description:
-                        "Only include DEFAULT or CUSTOM events. Defaults to ALL."
+                        "Only include events of this type. Defaults to ALL."
                     example: ALL
                     name: eventType
                     schema:
@@ -2858,7 +2858,7 @@ paths:
                         type: string
                 -   in: query
                     description:
-                        "If true, lists only hidden definitions; if false, only visible ones. Omit to include both."
+                        "If true, lists only hidden definitions; if false, only visible ones. Both are returned when omitted."
                     name: hidden
                     schema:
                         type: boolean
@@ -2879,13 +2879,13 @@ paths:
                         type: integer
                 -   in: query
                     description:
-                        "Only include definitions whose name, display name or description contains this text, ignoring case (name only when `blocked` is true)."
+                        "Free-text search across event name, display name, and description, ignoring case (name only when `blocked` is true). Empty or null returns all event definitions."
                     name: search
                     schema:
                         type: string
                 -   in: query
                     description:
-                        "Sort expression `column:asc|desc`. Defaults to `name:asc`. Sortable columns: displayName, name. Only one column is accepted."
+                        "Sort expression `column:asc|desc`. Defaults to `name:asc` when omitted. Sortable columns: displayName, name. Only one column is accepted."
                     example: name:asc
                     name: sort
                     schema:
