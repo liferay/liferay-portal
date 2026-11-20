@@ -21,6 +21,7 @@ import com.liferay.knowledge.base.service.base.KBArticleServiceBaseImpl;
 import com.liferay.knowledge.base.util.KnowledgeBaseUtil;
 import com.liferay.knowledge.base.util.comparator.KBArticleModifiedDateComparator;
 import com.liferay.knowledge.base.util.comparator.KBArticlePriorityComparator;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -1265,17 +1266,15 @@ public class KBArticleServiceImpl extends KBArticleServiceBaseImpl {
 		try {
 			PermissionChecker permissionChecker = getPermissionChecker();
 
-			List<KBArticle> viewableKBArticles = new ArrayList<>();
+			return TransformUtil.transform(
+				kbArticles,
+				kbArticle -> {
+					if (_hasPermission(kbArticle, permissionChecker)) {
+						return kbArticle;
+					}
 
-			for (KBArticle kbArticle : kbArticles) {
-				if (!_hasPermission(kbArticle, permissionChecker)) {
-					continue;
-				}
-
-				viewableKBArticles.add(kbArticle);
-			}
-
-			return viewableKBArticles;
+					return null;
+				});
 		}
 		catch (PortalException portalException) {
 			throw new SystemException(portalException);
@@ -1289,26 +1288,17 @@ public class KBArticleServiceImpl extends KBArticleServiceBaseImpl {
 		try {
 			PermissionChecker permissionChecker = getPermissionChecker();
 
-			List<KBArticle> viewableKBArticles = new ArrayList<>();
+			List<KBArticle> viewableKBArticles = TransformUtil.transform(
+				kbArticles,
+				kbArticle -> {
+					if (_hasPermission(kbArticle, permissionChecker)) {
+						return kbArticle;
+					}
 
-			for (KBArticle kbArticle : kbArticles) {
-				if (_hasPermission(kbArticle, permissionChecker)) {
-					viewableKBArticles.add(kbArticle);
-
-					continue;
-				}
-
-				KBArticle approvedKBArticle =
-					kbArticleLocalService.fetchLatestKBArticle(
+					return kbArticleLocalService.fetchLatestKBArticle(
 						kbArticle.getResourcePrimKey(),
 						WorkflowConstants.STATUS_APPROVED);
-
-				if (approvedKBArticle == null) {
-					continue;
-				}
-
-				viewableKBArticles.add(approvedKBArticle);
-			}
+				});
 
 			if (orderByComparator != null) {
 				viewableKBArticles = ListUtil.sort(
