@@ -21,8 +21,11 @@ export async function addNestedSegmentField({
 	nestedSegmentField: string;
 	page: Page;
 }) {
-	await page.locator('button.dropdown-toggle.btn-outline-secondary').click();
-	await page.getByRole('menuitem', {name: criterionType}).click();
+	await clickAndExpectToBeVisible({
+		autoClick: true,
+		target: page.getByRole('option', {name: criterionType}),
+		trigger: page.getByRole('combobox', {name: 'Condition Type'}),
+	});
 
 	await dragAndDropCriteriaItem({
 		nestedSegmentField,

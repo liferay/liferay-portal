@@ -357,7 +357,7 @@ test.skip(
 	}
 );
 
-test.skip(
+test(
 	'Segment criterias nest correctly in the criteria card',
 	{
 		tag: '@Legacy',
@@ -371,11 +371,11 @@ test.skip(
 				projectID: project.groupId,
 			});
 
-			await createDynamicSegment(page);
+			await createBatchSegment(page);
 
 			await test.step('Add email criteria and fill in', async () => {
 				await addSegmentField({
-					criterionName: 'email',
+					criterionName: 'Email Address',
 					criterionType: 'Individual',
 					page,
 				});
@@ -390,11 +390,13 @@ test.skip(
 					attributeValue: '@liferay.com',
 					page,
 				});
+
+				await page.keyboard.press('Escape');
 			});
 
 			await test.step('Add jobTitle criteria and fill in', async () => {
 				await addSegmentField({
-					criterionName: 'jobTitle',
+					criterionName: 'Job Title',
 					criterionType: 'Individual',
 					page,
 				});
@@ -411,13 +413,15 @@ test.skip(
 					index: 1,
 					page,
 				});
+
+				await page.keyboard.press('Escape');
 			});
 
 			await test.step('Add the familyName criteria as a nested criteria of the jobTitle and fill in', async () => {
 				await addNestedSegmentField({
-					criterionName: 'familyName',
+					criterionName: 'Last Name',
 					criterionType: 'Individual',
-					nestedSegmentField: 'jobTitle',
+					nestedSegmentField: 'Job Title',
 					page,
 				});
 
@@ -426,6 +430,8 @@ test.skip(
 					index: 2,
 					page,
 				});
+
+				await page.keyboard.press('Escape');
 
 				await editCriteriaConjunction({
 					index: 1,
@@ -444,21 +450,22 @@ test.skip(
 		await test.step('Check the criteria in the Segment Criteria card and verify if two of the criteria are nested', async () => {
 			await viewSegmentCriteriaCard({
 				criteriaRowIndex: 0,
-				criteriaRowValue: 'Individual email contains "@liferay.com"',
+				criteriaRowValue:
+					'Individual Email Address contains "@liferay.com"',
 				page,
 			});
 
 			await viewSegmentCriteriaCard({
 				criteriaRowIndex: 0,
 				criteriaRowValue:
-					'Individual jobTitle does not contain "engineer"',
+					'Individual Job Title does not contain "engineer"',
 				page,
 				parent: page.locator('.criteria-group').nth(1),
 			});
 
 			await viewSegmentCriteriaCard({
 				criteriaRowIndex: 1,
-				criteriaRowValue: 'Individual familyName is "Smith"',
+				criteriaRowValue: 'Individual Last Name is "Smith"',
 				page,
 				parent: page.locator('.criteria-group').nth(1),
 			});
