@@ -6,13 +6,18 @@
 package com.liferay.headless.commerce.admin.inventory.internal.jaxrs.exception.mapper;
 
 import com.liferay.commerce.product.exception.DuplicateCommerceChannelRelException;
+import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.jaxrs.exception.mapper.BaseExceptionMapper;
 import com.liferay.portal.vulcan.jaxrs.exception.mapper.Problem;
 
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
+import jakarta.ws.rs.ext.Provider;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Brian I. Kim
@@ -21,11 +26,12 @@ import org.osgi.service.component.annotations.Component;
 	property = {
 		"osgi.jaxrs.application.select=(osgi.jaxrs.name=Liferay.Headless.Commerce.Admin.Inventory)",
 		"osgi.jaxrs.extension=true",
-		"osgi.jaxrs.name=Liferay.Headless.Commerce.Admin.Inventory.DuplicateChannelRelExceptionMapper"
+		"osgi.jaxrs.name=Liferay.Headless.Commerce.Admin.Inventory.DuplicateWarehouseChannelExceptionMapper"
 	},
 	service = ExceptionMapper.class
 )
-public class DuplicateChannelRelExceptionMapper
+@Provider
+public class DuplicateWarehouseChannelExceptionMapper
 	extends BaseExceptionMapper<DuplicateCommerceChannelRelException> {
 
 	@Override
@@ -34,7 +40,16 @@ public class DuplicateChannelRelExceptionMapper
 			duplicateCommerceChannelRelException) {
 
 		return new Problem(
-			Response.Status.CONFLICT, "The channel relation already exists.");
+			Response.Status.CONFLICT,
+			_language.get(
+				_acceptLanguage.getPreferredLocale(),
+				"the-channel-relation-already-exists"));
 	}
+
+	@Context
+	private AcceptLanguage _acceptLanguage;
+
+	@Reference
+	private Language _language;
 
 }

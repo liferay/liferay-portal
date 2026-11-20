@@ -68,15 +68,9 @@ export default function ({
 				});
 			})
 			.catch((error) => {
-				const errorsMap = {
-					'please-enter-a-valid-name': Liferay.Language.get(
-						'please-enter-a-valid-name'
-					),
-				};
-
 				openToast({
 					message:
-						errorsMap[error.message] ||
+						error.title ||
 						Liferay.Language.get('an-unexpected-error-occurred'),
 					title: Liferay.Language.get('error'),
 					type: 'danger',
