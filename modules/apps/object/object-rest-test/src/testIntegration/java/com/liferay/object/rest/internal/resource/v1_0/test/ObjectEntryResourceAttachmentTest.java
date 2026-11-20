@@ -1907,7 +1907,6 @@ public class ObjectEntryResourceAttachmentTest
 
 		Company company = companyLocalService.getCompany(
 			TestPropsValues.getCompanyId());
-
 		FileEntry customFileEntry2 = _addFileEntry(
 			DLTestUtil.randomTextFileBytes(),
 			RandomTestUtil.randomString() + ".txt", ContentTypes.TEXT_PLAIN);
@@ -2734,7 +2733,6 @@ public class ObjectEntryResourceAttachmentTest
 
 		Company company = companyLocalService.getCompany(
 			TestPropsValues.getCompanyId());
-
 		FileEntry customFileEntry3 = _addFileEntry(
 			DLTestUtil.randomTextFileBytes(),
 			RandomTestUtil.randomString() + ".txt", ContentTypes.TEXT_PLAIN);
