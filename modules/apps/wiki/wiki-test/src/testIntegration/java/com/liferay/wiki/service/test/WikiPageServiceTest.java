@@ -130,10 +130,10 @@ public class WikiPageServiceTest {
 	@Test
 	@TestInfo("LPD-116194")
 	public void testGetPagesRSS() throws Exception {
+		String approvedContent = RandomTestUtil.randomString();
+
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId());
-
-		String approvedContent = RandomTestUtil.randomString();
 
 		WikiPage approvedPage = WikiTestUtil.addPage(
 			TestPropsValues.getUserId(), _node.getNodeId(),
