@@ -9,6 +9,7 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.exception.NoSuchLayoutException;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
@@ -27,9 +28,11 @@ import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalServiceUtil;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -178,6 +181,62 @@ public class SegmentsExperienceServiceTest {
 		}
 	}
 
+	@Test
+	@TestInfo("LPD-116164")
+	public void testAddSegmentsExperienceWithManageSegmentsEntriesPermissionInAnotherGroup()
+		throws Exception {
+
+		_otherGroup = GroupTestUtil.addGroup();
+
+		_otherGroupUser = UserTestUtil.addGroupUser(
+			_otherGroup, _role.getName());
+
+		ResourcePermissionLocalServiceUtil.addResourcePermission(
+			_otherGroup.getCompanyId(), "com.liferay.segments",
+			ResourceConstants.SCOPE_GROUP,
+			String.valueOf(_otherGroup.getGroupId()), _role.getRoleId(),
+			SegmentsActionKeys.MANAGE_SEGMENTS_ENTRIES);
+
+		SegmentsEntry otherGroupSegmentsEntry =
+			SegmentsTestUtil.addSegmentsEntry(_otherGroup.getGroupId());
+
+		SegmentsEntry segmentsEntry = SegmentsTestUtil.addSegmentsEntry(
+			_group.getGroupId());
+
+		int segmentsExperiencesCount =
+			_segmentsExperienceLocalService.getSegmentsExperiencesCount(
+				_group.getGroupId(), _classPK);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_otherGroupUser,
+				PermissionCheckerFactoryUtil.create(_otherGroupUser))) {
+
+			ServiceContext serviceContext =
+				ServiceContextTestUtil.getServiceContext(
+					_otherGroup, _otherGroupUser.getUserId());
+
+			Assert.assertThrows(
+				NoSuchLayoutException.class,
+				() -> _segmentsExperienceService.addSegmentsExperience(
+					null, _otherGroup.getGroupId(),
+					otherGroupSegmentsEntry.getExternalReferenceCode(), null,
+					_classPK, RandomTestUtil.randomLocaleStringMap(), true,
+					new UnicodeProperties(true), serviceContext));
+			Assert.assertThrows(
+				PrincipalException.MustHavePermission.class,
+				() -> _segmentsExperienceService.addSegmentsExperience(
+					null, _group.getGroupId(),
+					segmentsEntry.getExternalReferenceCode(), null, _classPK,
+					RandomTestUtil.randomLocaleStringMap(), true,
+					new UnicodeProperties(true), serviceContext));
+		}
+
+		Assert.assertEquals(
+			segmentsExperiencesCount,
+			_segmentsExperienceLocalService.getSegmentsExperiencesCount(
+				_group.getGroupId(), _classPK));
+	}
+
 	@Test(expected = PrincipalException.MustHavePermission.class)
 	public void testAddSegmentsExperienceWithoutManageSegmentsEntriesPermission()
 		throws Exception {
@@ -254,6 +313,62 @@ public class SegmentsExperienceServiceTest {
 		Assert.assertEquals(
 			"value",
 			actualTypeSettingsUnicodeProperties.getProperty("property"));
+	}
+
+	@Test
+	@TestInfo("LPD-116164")
+	public void testAppendSegmentsExperienceWithManageSegmentsEntriesPermissionInAnotherGroup()
+		throws Exception {
+
+		_otherGroup = GroupTestUtil.addGroup();
+
+		_otherGroupUser = UserTestUtil.addGroupUser(
+			_otherGroup, _role.getName());
+
+		ResourcePermissionLocalServiceUtil.addResourcePermission(
+			_otherGroup.getCompanyId(), "com.liferay.segments",
+			ResourceConstants.SCOPE_GROUP,
+			String.valueOf(_otherGroup.getGroupId()), _role.getRoleId(),
+			SegmentsActionKeys.MANAGE_SEGMENTS_ENTRIES);
+
+		SegmentsEntry otherGroupSegmentsEntry =
+			SegmentsTestUtil.addSegmentsEntry(_otherGroup.getGroupId());
+
+		SegmentsEntry segmentsEntry = SegmentsTestUtil.addSegmentsEntry(
+			_group.getGroupId());
+
+		int segmentsExperiencesCount =
+			_segmentsExperienceLocalService.getSegmentsExperiencesCount(
+				_group.getGroupId(), _classPK);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_otherGroupUser,
+				PermissionCheckerFactoryUtil.create(_otherGroupUser))) {
+
+			ServiceContext serviceContext =
+				ServiceContextTestUtil.getServiceContext(
+					_otherGroup, _otherGroupUser.getUserId());
+
+			Assert.assertThrows(
+				NoSuchLayoutException.class,
+				() -> _segmentsExperienceService.appendSegmentsExperience(
+					_otherGroup.getGroupId(),
+					otherGroupSegmentsEntry.getExternalReferenceCode(), null,
+					_classPK, RandomTestUtil.randomLocaleStringMap(), true,
+					serviceContext));
+			Assert.assertThrows(
+				PrincipalException.MustHavePermission.class,
+				() -> _segmentsExperienceService.appendSegmentsExperience(
+					_group.getGroupId(),
+					segmentsEntry.getExternalReferenceCode(), null, _classPK,
+					RandomTestUtil.randomLocaleStringMap(), true,
+					serviceContext));
+		}
+
+		Assert.assertEquals(
+			segmentsExperiencesCount,
+			_segmentsExperienceLocalService.getSegmentsExperiencesCount(
+				_group.getGroupId(), _classPK));
 	}
 
 	@Test
@@ -1001,6 +1116,12 @@ public class SegmentsExperienceServiceTest {
 
 	@Inject
 	private LayoutLocalService _layoutLocalService;
+
+	@DeleteAfterTestRun
+	private Group _otherGroup;
+
+	@DeleteAfterTestRun
+	private User _otherGroupUser;
 
 	@DeleteAfterTestRun
 	private Role _role;
