@@ -63,8 +63,6 @@ public class ProductTypesCMSStructureObjectFolderContributorTest {
 
 	@Before
 	public void setUp() throws Exception {
-		_mockHttpServletRequest = new MockHttpServletRequest();
-
 		_mockHttpServletRequest.setAttribute(
 			WebKeys.THEME_DISPLAY, _getThemeDisplay());
 
@@ -229,7 +227,8 @@ public class ProductTypesCMSStructureObjectFolderContributorTest {
 	@Inject
 	private CompanyLocalService _companyLocalService;
 
-	private MockHttpServletRequest _mockHttpServletRequest;
+	private MockHttpServletRequest _mockHttpServletRequest =
+		new MockHttpServletRequest();
 	private ObjectEntryFolder _objectEntryFolder;
 
 	@Inject
