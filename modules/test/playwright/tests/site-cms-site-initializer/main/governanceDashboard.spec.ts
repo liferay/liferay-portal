@@ -151,39 +151,17 @@ async function pollDate(
 		.toBe(DATE_DISPLAYED);
 }
 
-async function updateReviewDate(page: Page, title: string, reviewDate: string) {
-	await page.getByRole('button', {name: `${title} Actions`}).click();
-
-	await page.getByRole('menuitem', {name: 'Update Review Date'}).click();
-
-	await fillScheduleDateModal(page, reviewDate);
-}
-
-async function updateExpirationDate(
+async function updateDate(
 	page: Page,
 	title: string,
-	expirationDate: string
-) {
-	await page.getByRole('button', {name: `${title} Actions`}).click();
-
-	await page.getByRole('menuitem', {name: 'Update Expiration Date'}).click();
-
-	await fillScheduleDateModal(page, expirationDate);
-}
-
-async function updateDateFromUpdateDatesMenu(
-	page: Page,
-	title: string,
-	action: 'Expiration Date' | 'Review Date',
+	menuItems: string[],
 	date: string
 ) {
 	await page.getByRole('button', {name: `${title} Actions`}).click();
 
-	await page
-		.getByRole('menuitem', {exact: true, name: 'Update Dates'})
-		.click();
-
-	await page.getByRole('menuitem', {exact: true, name: action}).click();
+	for (const menuItem of menuItems) {
+		await page.getByRole('menuitem', {exact: true, name: menuItem}).click();
+	}
 
 	await fillScheduleDateModal(page, date);
 }
@@ -357,7 +335,7 @@ test.describe('Freshness section', () => {
 
 			await page.getByRole('button', {name: /^Overdue Reviews/}).click();
 
-			await updateReviewDate(page, title, DATE_INPUT);
+			await updateDate(page, title, ['Update Review Date'], DATE_INPUT);
 
 			await pollDate(apiHelpers, overdueContent.id, 'reviewDate');
 		}
@@ -464,7 +442,12 @@ test.describe('Freshness section', () => {
 			});
 
 			await test.step('Update a review date from the list', async () => {
-				await updateReviewDate(page, listTitle, DATE_INPUT);
+				await updateDate(
+					page,
+					listTitle,
+					['Update Review Date'],
+					DATE_INPUT
+				);
 
 				await pollDate(apiHelpers, overdueContents[2].id, 'reviewDate');
 
@@ -488,10 +471,10 @@ test.describe('Freshness section', () => {
 			});
 
 			await test.step('Update a review date from its row action', async () => {
-				await updateDateFromUpdateDatesMenu(
+				await updateDate(
 					page,
 					secondSpaceTitle,
-					'Review Date',
+					['Update Dates', 'Review Date'],
 					DATE_INPUT
 				);
 
@@ -647,7 +630,12 @@ test.describe('Freshness section', () => {
 			});
 
 			await test.step('Update an expiration date from the list', async () => {
-				await updateExpirationDate(page, listTitle, DATE_INPUT);
+				await updateDate(
+					page,
+					listTitle,
+					['Update Expiration Date'],
+					DATE_INPUT
+				);
 
 				await pollDate(
 					apiHelpers,
@@ -679,10 +667,10 @@ test.describe('Freshness section', () => {
 			});
 
 			await test.step('Update an expiration date from its row action', async () => {
-				await updateDateFromUpdateDatesMenu(
+				await updateDate(
 					page,
 					secondSpaceTitle,
-					'Expiration Date',
+					['Update Dates', 'Expiration Date'],
 					DATE_INPUT
 				);
 
