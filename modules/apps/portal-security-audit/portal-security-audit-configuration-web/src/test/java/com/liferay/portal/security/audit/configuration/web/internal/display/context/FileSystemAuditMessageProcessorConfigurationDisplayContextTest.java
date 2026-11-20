@@ -12,10 +12,9 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.security.audit.router.configuration.FileSystemAuditMessageProcessorConfiguration;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
-import java.util.function.Function;
-import java.util.function.Predicate;
-
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -33,59 +32,136 @@ public class FileSystemAuditMessageProcessorConfigurationDisplayContextTest {
 	public static final LiferayUnitTestRule liferayUnitTestRule =
 		LiferayUnitTestRule.INSTANCE;
 
-	@Test
-	public void testGetHelpMessage() {
-		_testGetHelpMessage(
-			FileSystemAuditMessageProcessorConfigurationDisplayContext::
-				getEnabledHelpMessage,
-			"enabled");
-		_testGetHelpMessage(
-			FileSystemAuditMessageProcessorConfigurationDisplayContext::
-				getGenerateChecksumHelpMessage,
-			"generateChecksum");
-		_testGetHelpMessage(
-			FileSystemAuditMessageProcessorConfigurationDisplayContext::
-				getOutputDirectoryHelpMessage,
-			"outputDirectory");
-		_testGetHelpMessage(
-			FileSystemAuditMessageProcessorConfigurationDisplayContext::
-				getOutputFormatHelpMessage,
-			"outputFormat");
+	@Before
+	public void setUp() {
+		_configurationOverridePropertiesUtilMockedStatic = Mockito.mockStatic(
+			ConfigurationOverridePropertiesUtil.class);
+
+		_fileSystemAuditMessageProcessorConfigurationDisplayContext =
+			new FileSystemAuditMessageProcessorConfigurationDisplayContext(
+				Mockito.mock(
+					FileSystemAuditMessageProcessorConfiguration.class));
+	}
+
+	@After
+	public void tearDown() {
+		_configurationOverridePropertiesUtilMockedStatic.close();
 	}
 
 	@Test
-	public void testIsOverridden() {
-		_testIsOverridden(
-			"enabled",
-			FileSystemAuditMessageProcessorConfigurationDisplayContext::
-				isEnabledOverridden);
-		_testIsOverridden(
-			"generateChecksum",
-			FileSystemAuditMessageProcessorConfigurationDisplayContext::
-				isGenerateChecksumOverridden);
-		_testIsOverridden(
-			"outputDirectory",
-			FileSystemAuditMessageProcessorConfigurationDisplayContext::
-				isOutputDirectoryOverridden);
-		_testIsOverridden(
-			"outputFormat",
-			FileSystemAuditMessageProcessorConfigurationDisplayContext::
-				isOutputFormatOverridden);
+	public void testGetEnabledHelpMessage() {
+		Assert.assertEquals(
+			StringPool.BLANK,
+			_fileSystemAuditMessageProcessorConfigurationDisplayContext.
+				getEnabledHelpMessage());
+
+		_mockOverrideProperties("enabled");
+
+		Assert.assertEquals(
+			_HELP_MESSAGE,
+			_fileSystemAuditMessageProcessorConfigurationDisplayContext.
+				getEnabledHelpMessage());
 	}
 
-	private FileSystemAuditMessageProcessorConfigurationDisplayContext
-		_createFileSystemAuditMessageProcessorConfigurationDisplayContext() {
+	@Test
+	public void testGetGenerateChecksumHelpMessage() {
+		Assert.assertEquals(
+			StringPool.BLANK,
+			_fileSystemAuditMessageProcessorConfigurationDisplayContext.
+				getGenerateChecksumHelpMessage());
 
-		return new FileSystemAuditMessageProcessorConfigurationDisplayContext(
-			Mockito.mock(FileSystemAuditMessageProcessorConfiguration.class));
+		_mockOverrideProperties("generateChecksum");
+
+		Assert.assertEquals(
+			_HELP_MESSAGE,
+			_fileSystemAuditMessageProcessorConfigurationDisplayContext.
+				getGenerateChecksumHelpMessage());
 	}
 
-	private void _mockOverrideProperties(
-		MockedStatic<ConfigurationOverridePropertiesUtil>
-			configurationOverridePropertiesUtilMockedStatic,
-		String key) {
+	@Test
+	public void testGetOutputDirectoryHelpMessage() {
+		Assert.assertEquals(
+			StringPool.BLANK,
+			_fileSystemAuditMessageProcessorConfigurationDisplayContext.
+				getOutputDirectoryHelpMessage());
 
-		configurationOverridePropertiesUtilMockedStatic.when(
+		_mockOverrideProperties("outputDirectory");
+
+		Assert.assertEquals(
+			_HELP_MESSAGE,
+			_fileSystemAuditMessageProcessorConfigurationDisplayContext.
+				getOutputDirectoryHelpMessage());
+	}
+
+	@Test
+	public void testGetOutputFormatHelpMessage() {
+		Assert.assertEquals(
+			StringPool.BLANK,
+			_fileSystemAuditMessageProcessorConfigurationDisplayContext.
+				getOutputFormatHelpMessage());
+
+		_mockOverrideProperties("outputFormat");
+
+		Assert.assertEquals(
+			_HELP_MESSAGE,
+			_fileSystemAuditMessageProcessorConfigurationDisplayContext.
+				getOutputFormatHelpMessage());
+	}
+
+	@Test
+	public void testIsEnabledOverridden() {
+		Assert.assertFalse(
+			_fileSystemAuditMessageProcessorConfigurationDisplayContext.
+				isEnabledOverridden());
+
+		_mockOverrideProperties("enabled");
+
+		Assert.assertTrue(
+			_fileSystemAuditMessageProcessorConfigurationDisplayContext.
+				isEnabledOverridden());
+	}
+
+	@Test
+	public void testIsGenerateChecksumOverridden() {
+		Assert.assertFalse(
+			_fileSystemAuditMessageProcessorConfigurationDisplayContext.
+				isGenerateChecksumOverridden());
+
+		_mockOverrideProperties("generateChecksum");
+
+		Assert.assertTrue(
+			_fileSystemAuditMessageProcessorConfigurationDisplayContext.
+				isGenerateChecksumOverridden());
+	}
+
+	@Test
+	public void testIsOutputDirectoryOverridden() {
+		Assert.assertFalse(
+			_fileSystemAuditMessageProcessorConfigurationDisplayContext.
+				isOutputDirectoryOverridden());
+
+		_mockOverrideProperties("outputDirectory");
+
+		Assert.assertTrue(
+			_fileSystemAuditMessageProcessorConfigurationDisplayContext.
+				isOutputDirectoryOverridden());
+	}
+
+	@Test
+	public void testIsOutputFormatOverridden() {
+		Assert.assertFalse(
+			_fileSystemAuditMessageProcessorConfigurationDisplayContext.
+				isOutputFormatOverridden());
+
+		_mockOverrideProperties("outputFormat");
+
+		Assert.assertTrue(
+			_fileSystemAuditMessageProcessorConfigurationDisplayContext.
+				isOutputFormatOverridden());
+	}
+
+	private void _mockOverrideProperties(String key) {
+		_configurationOverridePropertiesUtilMockedStatic.when(
 			() -> ConfigurationOverridePropertiesUtil.getOverrideProperties(
 				FileSystemAuditMessageProcessorConfiguration.class.getName())
 		).thenReturn(
@@ -95,62 +171,13 @@ public class FileSystemAuditMessageProcessorConfigurationDisplayContextTest {
 		);
 	}
 
-	private void _testGetHelpMessage(
-		Function
-			<FileSystemAuditMessageProcessorConfigurationDisplayContext, String>
-				function,
-		String key) {
+	private static final String _HELP_MESSAGE =
+		"this-field-has-been-set-by-a-portal-property-and-cannot-be-changed-" +
+			"here";
 
-		try (MockedStatic<ConfigurationOverridePropertiesUtil>
-				configurationOverridePropertiesUtilMockedStatic =
-					Mockito.mockStatic(
-						ConfigurationOverridePropertiesUtil.class)) {
-
-			FileSystemAuditMessageProcessorConfigurationDisplayContext
-				fileSystemAuditMessageProcessorConfigurationDisplayContext =
-					_createFileSystemAuditMessageProcessorConfigurationDisplayContext();
-
-			Assert.assertEquals(
-				StringPool.BLANK,
-				function.apply(
-					fileSystemAuditMessageProcessorConfigurationDisplayContext));
-
-			_mockOverrideProperties(
-				configurationOverridePropertiesUtilMockedStatic, key);
-
-			Assert.assertEquals(
-				"this-field-has-been-set-by-a-portal-property-and-cannot-be-" +
-					"changed-here",
-				function.apply(
-					fileSystemAuditMessageProcessorConfigurationDisplayContext));
-		}
-	}
-
-	private void _testIsOverridden(
-		String key,
-		Predicate<FileSystemAuditMessageProcessorConfigurationDisplayContext>
-			predicate) {
-
-		try (MockedStatic<ConfigurationOverridePropertiesUtil>
-				configurationOverridePropertiesUtilMockedStatic =
-					Mockito.mockStatic(
-						ConfigurationOverridePropertiesUtil.class)) {
-
-			FileSystemAuditMessageProcessorConfigurationDisplayContext
-				fileSystemAuditMessageProcessorConfigurationDisplayContext =
-					_createFileSystemAuditMessageProcessorConfigurationDisplayContext();
-
-			Assert.assertFalse(
-				predicate.test(
-					fileSystemAuditMessageProcessorConfigurationDisplayContext));
-
-			_mockOverrideProperties(
-				configurationOverridePropertiesUtilMockedStatic, key);
-
-			Assert.assertTrue(
-				predicate.test(
-					fileSystemAuditMessageProcessorConfigurationDisplayContext));
-		}
-	}
+	private MockedStatic<ConfigurationOverridePropertiesUtil>
+		_configurationOverridePropertiesUtilMockedStatic;
+	private FileSystemAuditMessageProcessorConfigurationDisplayContext
+		_fileSystemAuditMessageProcessorConfigurationDisplayContext;
 
 }

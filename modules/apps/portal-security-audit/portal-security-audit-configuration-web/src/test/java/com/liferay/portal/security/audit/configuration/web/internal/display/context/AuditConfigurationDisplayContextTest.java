@@ -12,10 +12,9 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.security.audit.configuration.AuditConfiguration;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
-import java.util.function.Function;
-import java.util.function.Predicate;
-
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -33,39 +32,75 @@ public class AuditConfigurationDisplayContextTest {
 	public static final LiferayUnitTestRule liferayUnitTestRule =
 		LiferayUnitTestRule.INSTANCE;
 
-	@Test
-	public void testGetHelpMessage() {
-		_testGetHelpMessage(
-			AuditConfigurationDisplayContext::getEnabledHelpMessage, "enabled");
-		_testGetHelpMessage(
-			AuditConfigurationDisplayContext::
-				getPseudonymizationEnabledHelpMessage,
-			"pseudonymizationEnabled");
+	@Before
+	public void setUp() {
+		_configurationOverridePropertiesUtilMockedStatic = Mockito.mockStatic(
+			ConfigurationOverridePropertiesUtil.class);
+
+		_auditConfigurationDisplayContext =
+			new AuditConfigurationDisplayContext(
+				Mockito.mock(AuditConfiguration.class), false);
+	}
+
+	@After
+	public void tearDown() {
+		_configurationOverridePropertiesUtilMockedStatic.close();
 	}
 
 	@Test
-	public void testIsOverridden() {
-		_testIsOverridden(
-			"enabled", AuditConfigurationDisplayContext::isEnabledOverridden);
-		_testIsOverridden(
-			"pseudonymizationEnabled",
-			AuditConfigurationDisplayContext::
-				isPseudonymizationEnabledOverridden);
+	public void testGetEnabledHelpMessage() {
+		Assert.assertEquals(
+			StringPool.BLANK,
+			_auditConfigurationDisplayContext.getEnabledHelpMessage());
+
+		_mockOverrideProperties("enabled");
+
+		Assert.assertEquals(
+			_HELP_MESSAGE,
+			_auditConfigurationDisplayContext.getEnabledHelpMessage());
 	}
 
-	private AuditConfigurationDisplayContext
-		_createAuditConfigurationDisplayContext() {
+	@Test
+	public void testGetPseudonymizationEnabledHelpMessage() {
+		Assert.assertEquals(
+			StringPool.BLANK,
+			_auditConfigurationDisplayContext.
+				getPseudonymizationEnabledHelpMessage());
 
-		return new AuditConfigurationDisplayContext(
-			Mockito.mock(AuditConfiguration.class), false);
+		_mockOverrideProperties("pseudonymizationEnabled");
+
+		Assert.assertEquals(
+			_HELP_MESSAGE,
+			_auditConfigurationDisplayContext.
+				getPseudonymizationEnabledHelpMessage());
 	}
 
-	private void _mockOverrideProperties(
-		MockedStatic<ConfigurationOverridePropertiesUtil>
-			configurationOverridePropertiesUtilMockedStatic,
-		String key) {
+	@Test
+	public void testIsEnabledOverridden() {
+		Assert.assertFalse(
+			_auditConfigurationDisplayContext.isEnabledOverridden());
 
-		configurationOverridePropertiesUtilMockedStatic.when(
+		_mockOverrideProperties("enabled");
+
+		Assert.assertTrue(
+			_auditConfigurationDisplayContext.isEnabledOverridden());
+	}
+
+	@Test
+	public void testIsPseudonymizationEnabledOverridden() {
+		Assert.assertFalse(
+			_auditConfigurationDisplayContext.
+				isPseudonymizationEnabledOverridden());
+
+		_mockOverrideProperties("pseudonymizationEnabled");
+
+		Assert.assertTrue(
+			_auditConfigurationDisplayContext.
+				isPseudonymizationEnabledOverridden());
+	}
+
+	private void _mockOverrideProperties(String key) {
+		_configurationOverridePropertiesUtilMockedStatic.when(
 			() -> ConfigurationOverridePropertiesUtil.getOverrideProperties(
 				AuditConfiguration.class.getName())
 		).thenReturn(
@@ -75,51 +110,12 @@ public class AuditConfigurationDisplayContextTest {
 		);
 	}
 
-	private void _testGetHelpMessage(
-		Function<AuditConfigurationDisplayContext, String> function,
-		String key) {
+	private static final String _HELP_MESSAGE =
+		"this-field-has-been-set-by-a-portal-property-and-cannot-be-changed-" +
+			"here";
 
-		try (MockedStatic<ConfigurationOverridePropertiesUtil>
-				configurationOverridePropertiesUtilMockedStatic =
-					Mockito.mockStatic(
-						ConfigurationOverridePropertiesUtil.class)) {
-
-			AuditConfigurationDisplayContext auditConfigurationDisplayContext =
-				_createAuditConfigurationDisplayContext();
-
-			Assert.assertEquals(
-				StringPool.BLANK,
-				function.apply(auditConfigurationDisplayContext));
-
-			_mockOverrideProperties(
-				configurationOverridePropertiesUtilMockedStatic, key);
-
-			Assert.assertEquals(
-				"this-field-has-been-set-by-a-portal-property-and-cannot-be-" +
-					"changed-here",
-				function.apply(auditConfigurationDisplayContext));
-		}
-	}
-
-	private void _testIsOverridden(
-		String key, Predicate<AuditConfigurationDisplayContext> predicate) {
-
-		try (MockedStatic<ConfigurationOverridePropertiesUtil>
-				configurationOverridePropertiesUtilMockedStatic =
-					Mockito.mockStatic(
-						ConfigurationOverridePropertiesUtil.class)) {
-
-			AuditConfigurationDisplayContext auditConfigurationDisplayContext =
-				_createAuditConfigurationDisplayContext();
-
-			Assert.assertFalse(
-				predicate.test(auditConfigurationDisplayContext));
-
-			_mockOverrideProperties(
-				configurationOverridePropertiesUtilMockedStatic, key);
-
-			Assert.assertTrue(predicate.test(auditConfigurationDisplayContext));
-		}
-	}
+	private AuditConfigurationDisplayContext _auditConfigurationDisplayContext;
+	private MockedStatic<ConfigurationOverridePropertiesUtil>
+		_configurationOverridePropertiesUtilMockedStatic;
 
 }
