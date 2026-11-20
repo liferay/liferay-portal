@@ -2803,7 +2803,7 @@ paths:
                         type: integer
                 -   in: query
                     description:
-                        "Free-text search across attribute name, display name, and description, ignoring case. Empty or null returns all attributes."
+                        "Free text search across attribute name, display name, and description, ignoring case. Empty or null returns all attributes."
                     name: search
                     schema:
                         type: string
@@ -2879,7 +2879,7 @@ paths:
                         type: integer
                 -   in: query
                     description:
-                        "Free-text search across event name, display name, and description, ignoring case (name only when `blocked` is true). Empty or null returns all event definitions."
+                        "Free text search across event name, display name, and description, ignoring case (name only when `blocked` is true). Empty or null returns all event definitions."
                     name: search
                     schema:
                         type: string
