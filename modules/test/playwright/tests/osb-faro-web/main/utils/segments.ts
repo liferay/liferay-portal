@@ -230,7 +230,7 @@ export async function selectBehaviorAsset({
 
 	await page
 		.getByRole('dialog')
-		.getByRole('button', {exact: true, name: 'Select'})
+		.getByRole('button', {exact: true, name: 'Add'})
 		.click();
 }
 
@@ -257,7 +257,7 @@ export async function selectBehaviorPage({
 
 	await page
 		.getByRole('dialog')
-		.getByRole('button', {exact: true, name: 'Select'})
+		.getByRole('button', {exact: true, name: 'Add'})
 		.click();
 }
 
