@@ -78,7 +78,6 @@ public class ChangeMasterLayoutMVCActionCommandTest {
 				LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT,
 				WorkflowConstants.STATUS_APPROVED),
 			designLibraryGroup.getExternalReferenceCode());
-
 		_testChangeMasterLayout(
 			company, group, layout,
 			LayoutPageTemplateTestUtil.addLayoutPageTemplateEntry(
