@@ -57,8 +57,7 @@ public class EventResourceImpl extends BaseEventResourceImpl {
 					).put(
 						"keywords", search
 					).put(
-						"page",
-						Math.max(0, FaroPaginationUtil.getCur(pagination) - 1)
+						"page", FaroPaginationUtil.getGraphQLPage(pagination)
 					).put(
 						"rangeEnd", rangeEnd
 					).put(

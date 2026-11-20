@@ -39,7 +39,7 @@ public class FaroPaginationUtil {
 		return pagination.getPageSize();
 	}
 
-	public static int getPageIndex(Pagination pagination) {
+	public static int getGraphQLPage(Pagination pagination) {
 		return Math.max(0, getCur(pagination) - 1);
 	}
 
