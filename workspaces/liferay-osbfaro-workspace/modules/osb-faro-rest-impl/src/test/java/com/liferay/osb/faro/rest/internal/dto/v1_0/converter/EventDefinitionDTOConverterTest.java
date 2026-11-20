@@ -34,7 +34,7 @@ public class EventDefinitionDTOConverterTest {
 			responseEventDefinition.getDisplayName(),
 			eventDefinition.getDisplayName());
 		Assert.assertEquals(
-			responseEventDefinition.getHidden(), eventDefinition.getHidden());
+			responseEventDefinition.isHidden(), eventDefinition.getHidden());
 		Assert.assertEquals(
 			responseEventDefinition.getId(), eventDefinition.getId());
 		Assert.assertEquals(

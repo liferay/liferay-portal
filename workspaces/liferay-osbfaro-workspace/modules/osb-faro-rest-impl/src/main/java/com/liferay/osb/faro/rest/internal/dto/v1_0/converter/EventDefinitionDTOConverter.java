@@ -44,7 +44,7 @@ public class EventDefinitionDTOConverter
 			{
 				setDescription(eventDefinition::getDescription);
 				setDisplayName(eventDefinition::getDisplayName);
-				setHidden(eventDefinition::getHidden);
+				setHidden(eventDefinition::isHidden);
 				setId(eventDefinition::getId);
 				setName(eventDefinition::getName);
 				setType(

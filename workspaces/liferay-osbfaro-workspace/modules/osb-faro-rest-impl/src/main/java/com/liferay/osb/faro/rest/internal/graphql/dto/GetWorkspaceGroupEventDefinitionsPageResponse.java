@@ -34,10 +34,6 @@ public class GetWorkspaceGroupEventDefinitionsPageResponse {
 			return _displayName;
 		}
 
-		public Boolean getHidden() {
-			return _hidden;
-		}
-
 		public String getId() {
 			return _id;
 		}
@@ -48,6 +44,10 @@ public class GetWorkspaceGroupEventDefinitionsPageResponse {
 
 		public String getType() {
 			return _type;
+		}
+
+		public Boolean isHidden() {
+			return _hidden;
 		}
 
 		public void setDescription(String description) {
