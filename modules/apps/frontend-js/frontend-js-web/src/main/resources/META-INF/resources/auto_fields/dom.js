@@ -46,10 +46,12 @@ export function guid() {
  * AlloyUI's <code>Node.hide()</code> both adds the <code>hide</code> CSS class
  * and sets an inline <code>display: none</code>. Both are reproduced here
  * because rows are located by CSS class but their visibility is asserted
- * through the computed style.
+ * through the computed style. It also sets the <code>hidden</code> attribute,
+ * which callers check to skip deleted rows.
  */
 export function hide(element) {
 	element.classList.add('hide');
+	element.setAttribute('hidden', 'hidden');
 
 	element.style.display = 'none';
 }
@@ -60,6 +62,7 @@ export function isHidden(element) {
 
 export function show(element) {
 	element.classList.remove('hide');
+	element.removeAttribute('hidden');
 
 	element.style.display = '';
 }
