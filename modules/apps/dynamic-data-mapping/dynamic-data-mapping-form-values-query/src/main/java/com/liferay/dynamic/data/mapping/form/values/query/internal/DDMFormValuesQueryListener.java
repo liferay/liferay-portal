@@ -12,7 +12,6 @@ import com.liferay.dynamic.data.mapping.form.values.query.internal.model.DDMForm
 import com.liferay.dynamic.data.mapping.form.values.query.internal.model.DDMFormFieldValueTypeMatcher;
 import com.liferay.dynamic.data.mapping.form.values.query.internal.model.DDMFormFieldValueValueMatcher;
 import com.liferay.dynamic.data.mapping.form.values.query.internal.model.DDMFormValuesFilter;
-import com.liferay.dynamic.data.mapping.form.values.query.internal.model.DDMFormValuesFilterImpl;
 import com.liferay.dynamic.data.mapping.form.values.query.internal.parser.DDMFormValuesQueryBaseListener;
 import com.liferay.dynamic.data.mapping.form.values.query.internal.parser.DDMFormValuesQueryParser;
 import com.liferay.dynamic.data.mapping.form.values.query.internal.parser.DDMFormValuesQueryParser.AttributeTypeContext;
@@ -80,7 +79,7 @@ public class DDMFormValuesQueryListener extends DDMFormValuesQueryBaseListener {
 	public void enterSelectorExpression(
 		SelectorExpressionContext selectorExpressionContext) {
 
-		ddmFormValuesFilters.add(new DDMFormValuesFilterImpl());
+		ddmFormValuesFilters.add(new DDMFormValuesFilter());
 	}
 
 	@Override

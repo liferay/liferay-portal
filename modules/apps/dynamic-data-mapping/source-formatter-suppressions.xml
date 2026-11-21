@@ -21,7 +21,7 @@
 		<suppress checks="FTLWhitespaceCheck" files="dynamic-data-mapping-test/src/testIntegration/resources/com/liferay/dynamic/data/mapping/dependencies/upgrade.v5_3_3/expected-ddm-template-browser-sniffer-content\.ftl" />
 		<suppress checks="IllegalImportsCheck" files="dynamic-data-mapping-api/src/main/java/com/liferay/dynamic/data/mapping/model/DDMFormField\.java" />
 		<suppress checks="IllegalTaglibsCheck" files="dynamic-data-mapping-web/src/main/resources/META-INF/resources/form_builder\.jspf" />
-		<suppress checks="JavaForLoopCheck" files="dynamic-data-mapping-form-values-query/src/main/java/com/liferay/dynamic/data/mapping/form/values/query/internal/model/DDMFormValuesFilterImpl\.java" />
+		<suppress checks="JavaForLoopCheck" files="dynamic-data-mapping-form-values-query/src/main/java/com/liferay/dynamic/data/mapping/form/values/query/internal/model/DDMFormValuesFilter\.java" />
 		<suppress checks="JavaUpgradeIndexCheck" files="dynamic-data-mapping-service/src/main/java/com/liferay/dynamic/data/mapping/internal/upgrade/v4_3_0/DLFileEntryTypeDataDefinitionIdUpgradeProcess\.java" />
 	</source-check>
 </suppressions>
