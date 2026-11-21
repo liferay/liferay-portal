@@ -252,9 +252,9 @@ public class SourceFormatBuildTest
 
 		mockURLReaders();
 
-		Properties buildProperties = new Properties();
-
 		String upstreamRemoteGitBranchName = RandomTestUtil.randomString();
+
+		Properties buildProperties = new Properties();
 
 		if (overrideUsername != null) {
 			buildProperties.setProperty(
@@ -313,7 +313,6 @@ public class SourceFormatBuildTest
 
 		if (!ownerUpstream) {
 			_setCompareJSON(overrideCompareJSON, overrideCompareURL);
-
 			_setCompareJSON(ownerCompareJSON, ownerCompareURL);
 			_setCompareJSON(upstreamCompareJSON, upstreamCompareURL);
 		}
@@ -411,7 +410,6 @@ public class SourceFormatBuildTest
 			}
 			else {
 				_setCompareJSON(null, overrideCompareURL);
-
 				_setCompareJSON(ownerCompareJSON, upstreamCompareURL);
 				_setCompareJSON(upstreamCompareJSON, ownerCompareURL);
 			}
