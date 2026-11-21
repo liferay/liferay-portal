@@ -268,8 +268,10 @@ public class LayoutPageTemplateServiceUpgradeStepRegistrator
 
 		registry.register("6.0.0", "6.0.1", new DummyUpgradeStep());
 
+		registry.register("6.0.1", "6.0.2", new DummyUpgradeStep());
+
 		registry.register(
-			"6.0.1", "6.1.0",
+			"6.0.2", "6.1.0",
 			LayoutPageTemplateStructureRelElementVariationAudienceEntryRelTable.
 				create(),
 			LayoutPageTemplateStructureRelElementVariationTable.create());
