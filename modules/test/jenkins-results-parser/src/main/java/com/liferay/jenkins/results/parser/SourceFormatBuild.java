@@ -362,14 +362,6 @@ public class SourceFormatBuild
 		int ownerAheadBy = _getAheadBy(
 			pullRequest, senderBranchSHA, ownerUsername);
 
-		StringBuilder sb = new StringBuilder();
-
-		sb.append(senderBranchSHA);
-		sb.append(" is ");
-		sb.append(ownerAheadBy);
-		sb.append(" commits ahead of ");
-		sb.append(ownerUsername);
-
 		String overrideUsername = null;
 
 		try {
@@ -378,10 +370,15 @@ public class SourceFormatBuild
 				pullRequest.getUpstreamRemoteGitBranchName());
 		}
 		catch (IOException ioException) {
-			System.out.println(ioException.getMessage());
+			System.out.println(
+				JenkinsResultsParserUtil.combine(
+					"Unable to get the upstream override username for ",
+					pullRequest.getUpstreamRemoteGitBranchName(), ": ",
+					ioException.getMessage()));
 		}
 
 		int overrideAheadBy = -1;
+		String overrideMessage = "";
 
 		if (!JenkinsResultsParserUtil.isNullOrEmpty(overrideUsername) &&
 			!overrideUsername.equals(ownerUsername) &&
@@ -390,21 +387,20 @@ public class SourceFormatBuild
 			overrideAheadBy = _getAheadBy(
 				pullRequest, senderBranchSHA, overrideUsername);
 
-			sb.append(", ");
-			sb.append(overrideAheadBy);
-			sb.append(" commits ahead of ");
-			sb.append(overrideUsername);
+			overrideMessage = JenkinsResultsParserUtil.combine(
+				", ", String.valueOf(overrideAheadBy), " commits ahead of ",
+				overrideUsername);
 		}
 
 		int upstreamAheadBy = _getAheadBy(
 			pullRequest, senderBranchSHA, upstreamUsername);
 
-		sb.append(" and ");
-		sb.append(upstreamAheadBy);
-		sb.append(" commits ahead of ");
-		sb.append(upstreamUsername);
-
-		System.out.println(sb);
+		System.out.println(
+			JenkinsResultsParserUtil.combine(
+				senderBranchSHA, " is ", String.valueOf(ownerAheadBy),
+				" commits ahead of ", ownerUsername, overrideMessage, " and ",
+				String.valueOf(upstreamAheadBy), " commits ahead of ",
+				upstreamUsername));
 
 		String baseBranchUsername = upstreamUsername;
 
