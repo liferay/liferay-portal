@@ -9,10 +9,17 @@ import com.liferay.fragment.renderer.FragmentRenderer;
 import com.liferay.fragment.renderer.FragmentRendererContext;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItemList;
 import com.liferay.frontend.taglib.react.servlet.taglib.ComponentTag;
+import com.liferay.osb.faro.engine.client.util.OrderByField;
+import com.liferay.osb.faro.service.FaroChannelLocalService;
 import com.liferay.osb.faro.web.internal.display.context.ChannelSelectorDisplayContext;
+import com.liferay.osb.faro.web.internal.model.display.asah.FaroChannelDisplay;
 import com.liferay.osb.faro.web.internal.util.FaroFragmentRendererUtil;
 import com.liferay.osb.faro.web.internal.util.FaroNavigationUtil;
+import com.liferay.osb.faro.web.internal.util.JSONUtil;
+import com.liferay.osb.faro.web.internal.util.comparator.FaroChannelComparator;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
@@ -35,6 +42,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.jsp.JspWriter;
 import jakarta.servlet.jsp.PageContext;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -96,6 +104,17 @@ public abstract class BaseFragmentRenderer implements FragmentRenderer {
 
 						return channelSelectorDisplayContext.getFaroChannelId();
 					}
+				).put(
+					"channels",
+					() -> TransformUtil.transform(
+						faroChannelLocalService.search(
+							themeDisplay.getScopeGroupId(), null,
+							QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+							new FaroChannelComparator(
+								Collections.singletonList(
+									new OrderByField("name", "asc")))),
+						faroChannel -> JSONUtil.convertValue(
+							new FaroChannelDisplay(faroChannel), Map.class))
 				).put(
 					"friendlyURL",
 					() -> {
@@ -193,6 +212,9 @@ public abstract class BaseFragmentRenderer implements FragmentRenderer {
 			"sortOrder", ParamUtil.getString(httpServletRequest, "sortOrder")
 		).build();
 	}
+
+	@Reference
+	protected FaroChannelLocalService faroChannelLocalService;
 
 	@Reference
 	protected GroupLocalService groupLocalService;
