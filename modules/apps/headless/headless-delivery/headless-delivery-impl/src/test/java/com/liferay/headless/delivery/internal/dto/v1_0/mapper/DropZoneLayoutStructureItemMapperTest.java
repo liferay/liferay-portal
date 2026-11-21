@@ -117,9 +117,6 @@ public class DropZoneLayoutStructureItemMapperTest {
 		Map<?, ?> fragmentSettings =
 			(Map<?, ?>)pageDropZoneDefinition.getFragmentSettings();
 
-		Assert.assertEquals(
-			fragmentSettings.toString(), 1, fragmentSettings.size());
-
 		Fragment[] fragments = (Fragment[])fragmentSettings.get(
 			expectedFragmentSettingsKey);
 
@@ -131,6 +128,9 @@ public class DropZoneLayoutStructureItemMapperTest {
 			Assert.assertEquals(
 				expectedFragmentEntryKeys.get(i), fragments[i].getKey());
 		}
+
+		Assert.assertEquals(
+			fragmentSettings.toString(), 1, fragmentSettings.size());
 	}
 
 	private static final long _COMPANY_ID = RandomTestUtil.randomLong();

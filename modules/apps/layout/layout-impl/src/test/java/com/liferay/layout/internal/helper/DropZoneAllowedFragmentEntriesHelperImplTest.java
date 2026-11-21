@@ -48,9 +48,6 @@ public class DropZoneAllowedFragmentEntriesHelperImplTest {
 
 	@Before
 	public void setUp() {
-		_dropZoneAllowedFragmentEntriesHelperImpl =
-			new DropZoneAllowedFragmentEntriesHelperImpl();
-
 		ReflectionTestUtil.setFieldValue(
 			_dropZoneAllowedFragmentEntriesHelperImpl,
 			"_fragmentCollectionContributorRegistry",
@@ -424,7 +421,8 @@ public class DropZoneAllowedFragmentEntriesHelperImplTest {
 		Mockito.mockStatic(ScopeUtil.class);
 
 	private DropZoneAllowedFragmentEntriesHelperImpl
-		_dropZoneAllowedFragmentEntriesHelperImpl;
+		_dropZoneAllowedFragmentEntriesHelperImpl =
+			new DropZoneAllowedFragmentEntriesHelperImpl();
 	private final FragmentCollectionContributorRegistry
 		_fragmentCollectionContributorRegistry = Mockito.mock(
 			FragmentCollectionContributorRegistry.class);
