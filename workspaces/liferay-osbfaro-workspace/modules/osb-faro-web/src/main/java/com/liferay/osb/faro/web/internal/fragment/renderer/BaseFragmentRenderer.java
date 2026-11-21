@@ -54,11 +54,6 @@ public abstract class BaseFragmentRenderer implements FragmentRenderer {
 				httpServletRequest, httpServletResponse,
 				"/o/osb-faro-web/dist/main.css");
 			FaroFragmentRendererUtil.renderScriptTag(
-				httpServletRequest, httpServletResponse, "inline",
-				"window.faroConstants = " +
-					FaroFragmentRendererUtil.getFaroConstants() + ";",
-				null, null);
-			FaroFragmentRendererUtil.renderScriptTag(
 				httpServletRequest, httpServletResponse, null,
 				StringBundler.concat(
 					"document.addEventListener('DOMContentLoaded', () => {",
