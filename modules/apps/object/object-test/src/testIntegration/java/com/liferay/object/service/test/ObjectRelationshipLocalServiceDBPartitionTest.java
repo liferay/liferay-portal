@@ -65,48 +65,44 @@ public class ObjectRelationshipLocalServiceDBPartitionTest {
 		Company company1 = CompanyTestUtil.addCompany();
 		Company company2 = CompanyTestUtil.addCompany();
 
-		try {
-			_resetCounter(company1, _getCurrentId(company2));
+		_resetCounter(company1, _getCurrentId(company2));
 
-			ObjectDefinition objectDefinition1 = _addCustomObjectDefinition(
-				company1);
-			ObjectDefinition objectDefinition2 = _addCustomObjectDefinition(
-				company1);
+		ObjectDefinition objectDefinition1 = _addCustomObjectDefinition(
+			company1);
+		ObjectDefinition objectDefinition2 = _addCustomObjectDefinition(
+			company1);
 
-			_addObjectRelationship(objectDefinition1, objectDefinition2);
+		_addObjectRelationship(objectDefinition1, objectDefinition2);
 
-			_resetCounter(
-				company2, objectDefinition2.getObjectDefinitionId() - 1);
+		_resetCounter(company2, objectDefinition2.getObjectDefinitionId() - 1);
 
-			ObjectDefinition objectDefinition3 = _addCustomObjectDefinition(
-				company2);
+		ObjectDefinition objectDefinition3 = _addCustomObjectDefinition(
+			company2);
 
-			Assert.assertEquals(
-				objectDefinition2.getObjectDefinitionId(),
-				objectDefinition3.getObjectDefinitionId());
+		Assert.assertEquals(
+			objectDefinition2.getObjectDefinitionId(),
+			objectDefinition3.getObjectDefinitionId());
 
-			ObjectDefinition objectDefinition4 = _addCustomObjectDefinition(
-				company2);
+		ObjectDefinition objectDefinition4 = _addCustomObjectDefinition(
+			company2);
 
-			_addObjectRelationship(objectDefinition4, objectDefinition3);
+		_addObjectRelationship(objectDefinition4, objectDefinition3);
 
-			try (SafeCloseable safeCloseable =
-					CompanyThreadLocal.setCompanyIdWithSafeCloseable(
-						company2.getCompanyId())) {
+		try (SafeCloseable safeCloseable =
+				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
+					company2.getCompanyId())) {
 
-				objectDefinition3 =
-					_objectDefinitionLocalService.getObjectDefinition(
-						objectDefinition3.getObjectDefinitionId());
+			objectDefinition3 =
+				_objectDefinitionLocalService.getObjectDefinition(
+					objectDefinition3.getObjectDefinitionId());
 
-				Assert.assertArrayEquals(
-					new long[] {objectDefinition4.getObjectDefinitionId()},
-					objectDefinition3.getRootObjectDefinitionIds());
-			}
+			Assert.assertArrayEquals(
+				new long[] {objectDefinition4.getObjectDefinitionId()},
+				objectDefinition3.getRootObjectDefinitionIds());
 		}
-		finally {
-			_companyLocalService.deleteCompany(company1);
-			_companyLocalService.deleteCompany(company2);
-		}
+
+		_companyLocalService.deleteCompany(company1);
+		_companyLocalService.deleteCompany(company2);
 	}
 
 	private ObjectDefinition _addCustomObjectDefinition(Company company)
