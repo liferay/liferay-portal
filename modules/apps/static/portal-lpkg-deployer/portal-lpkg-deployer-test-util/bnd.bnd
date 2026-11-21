@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Portal LPKG Deployer Test Utilities
 Bundle-SymbolicName: com.liferay.portal.lpkg.deployer.test.util
-Bundle-Version: 5.0.10
+Bundle-Version: 5.0.11
 Export-Package: com.liferay.portal.lpkg.deployer.test.util
