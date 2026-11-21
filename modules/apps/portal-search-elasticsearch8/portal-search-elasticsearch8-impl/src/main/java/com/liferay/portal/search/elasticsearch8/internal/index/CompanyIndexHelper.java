@@ -21,6 +21,7 @@ import co.elastic.clients.transport.endpoints.BooleanResponse;
 import com.liferay.osgi.service.tracker.collections.EagerServiceTrackerCustomizer;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerList;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerListFactory;
+import com.liferay.petra.io.unsync.UnsyncStringReader;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactory;
@@ -47,11 +48,7 @@ import com.liferay.portal.search.spi.index.listener.CompanyIndexListener;
 
 import jakarta.json.spi.JsonProvider;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-
-import java.nio.charset.StandardCharsets;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -241,21 +238,7 @@ public class CompanyIndexHelper {
 				indexName
 			);
 
-		JsonpMapper jsonpMapper =
-			_elasticsearchConnectionManager.getJsonpMapper(null);
-
-		JsonProvider jsonProvider = jsonpMapper.jsonProvider();
-
-		try (InputStream inputStream = new ByteArrayInputStream(
-				settings.getBytes(StandardCharsets.UTF_8))) {
-
-			builder.settings(
-				IndexSettings._DESERIALIZER.deserialize(
-					jsonProvider.createParser(inputStream), jsonpMapper));
-		}
-		catch (IOException ioException) {
-			throw new RuntimeException(ioException);
-		}
+		builder.settings(_getIndexSettings(settings));
 
 		return builder.build();
 	}
@@ -306,6 +289,17 @@ public class CompanyIndexHelper {
 			_executeCompanyIndexListenerBeforeDelete(
 				companyIndexListener, indexName);
 		}
+	}
+
+	private IndexSettings _getIndexSettings(String settingsJSON) {
+		JsonpMapper jsonpMapper =
+			_elasticsearchConnectionManager.getJsonpMapper(null);
+
+		JsonProvider jsonProvider = jsonpMapper.jsonProvider();
+
+		return IndexSettings._DESERIALIZER.deserialize(
+			jsonProvider.createParser(new UnsyncStringReader(settingsJSON)),
+			jsonpMapper);
 	}
 
 	private void _loadAdditionalSettings(
@@ -493,29 +487,9 @@ public class CompanyIndexHelper {
 
 		_loadAdditionalSettings(companyId, settingsHelperImpl, true);
 
-		_setSettings(
-			builder,
-			String.valueOf(settingsHelperImpl.getSettingsJSONObject()));
-	}
-
-	private void _setSettings(
-		CreateIndexRequest.Builder builder, String settings) {
-
-		JsonpMapper jsonpMapper =
-			_elasticsearchConnectionManager.getJsonpMapper(null);
-
-		JsonProvider jsonProvider = jsonpMapper.jsonProvider();
-
-		try (InputStream inputStream = new ByteArrayInputStream(
-				settings.getBytes(StandardCharsets.UTF_8))) {
-
-			builder.settings(
-				IndexSettings._DESERIALIZER.deserialize(
-					jsonProvider.createParser(inputStream), jsonpMapper));
-		}
-		catch (IOException ioException) {
-			throw new RuntimeException(ioException);
-		}
+		builder.settings(
+			_getIndexSettings(
+				String.valueOf(settingsHelperImpl.getSettingsJSONObject())));
 	}
 
 	private void _updateSettings(
