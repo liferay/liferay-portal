@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Commerce Product Type Virtual Test Utilities
 Bundle-SymbolicName: com.liferay.commerce.product.type.virtual.test.util
-Bundle-Version: 5.0.1
+Bundle-Version: 5.0.2
 Export-Package: com.liferay.commerce.product.type.virtual.test.util
