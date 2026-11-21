@@ -82,3 +82,8 @@ ae76a6e0b6eb210336460e004f4722302d70a9ad^..9e83dffd8498fa0c5ef4819dbce11a90a94d2
 # Bundle Version 5.3.9
 #
 8c456a036fef1fb33005e3cb0a08e51f8871c52b^..67e523d7ad0755baeab1fd6edd608d56beefd5f6=LPD-49616
+
+#
+# Bundle Version 5.4.0
+#
+67e523d7ad0755baeab1fd6edd608d56beefd5f6^..1b6bf31deb8acc11b09f183a45f4bd6e1a163df8=LPD-111482 LPD-112926 LPD-115030
