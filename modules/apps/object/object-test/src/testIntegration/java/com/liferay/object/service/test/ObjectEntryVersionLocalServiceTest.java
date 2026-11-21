@@ -27,7 +27,6 @@ import com.liferay.portal.kernel.audit.AuditMessage;
 import com.liferay.portal.kernel.audit.AuditRouter;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -57,7 +56,6 @@ import com.liferay.portal.kernel.workflow.WorkflowTaskManager;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
-import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
 import com.liferay.portal.workflow.manager.WorkflowDefinitionManager;
 
 import java.io.Serializable;
@@ -1255,12 +1253,6 @@ public class ObjectEntryVersionLocalServiceTest {
 
 	@Inject
 	private CounterLocalService _counterLocalService;
-
-	@Inject
-	private DTOConverterRegistry _dtoConverterRegistry;
-
-	@Inject
-	private JSONFactory _jsonFactory;
 
 	@Inject
 	private ObjectEntryLocalService _objectEntryLocalService;
