@@ -41,7 +41,6 @@ public class CommentDisplayContextProviderUtil {
 	}
 
 	private static final CommentDisplayContextProvider
-		_commentDisplayContextProvider =
-			new CommentDisplayContextProviderImpl();
+		_commentDisplayContextProvider = new CommentDisplayContextProvider();
 
 }
