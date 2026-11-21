@@ -885,21 +885,13 @@ public class AssetPublisherExportImportTest extends BaseExportImportTestCase {
 			TestPropsValues.getUserId(), layout, getPortletId(), "column-1",
 			preferenceMap);
 
-		ExportImportThreadLocal.setPortletStagingInProcess(true);
+		Map<String, Object> portletConfiguration = _getPortletConfiguration(
+			portletId);
 
-		try {
-			Map<String, Object> portletConfiguration =
-				_portletPreferencesPortletConfigurationExporter.
-					getPortletConfiguration(layout.getPlid(), portletId);
-
-			Assert.assertArrayEquals(
-				new String[] {JournalArticle.class.getName()},
-				_getValues(portletConfiguration, "anyAssetType"));
-			Assert.assertNull(portletConfiguration.get("classNameIds"));
-		}
-		finally {
-			ExportImportThreadLocal.setPortletStagingInProcess(false);
-		}
+		Assert.assertArrayEquals(
+			new String[] {JournalArticle.class.getName()},
+			_getValues(portletConfiguration, "anyAssetType"));
+		Assert.assertNull(portletConfiguration.get("classNameIds"));
 
 		PortletPreferences importedPortletPreferences =
 			_getRemoteStagingImportedPortletPreferences(preferenceMap);
@@ -1435,43 +1427,19 @@ public class AssetPublisherExportImportTest extends BaseExportImportTestCase {
 				"orderByColumn1", new String[] {orderByColumn}
 			).build());
 
-		ExportImportThreadLocal.setPortletStagingInProcess(true);
-
-		Map<String, Object> portletConfiguration;
-
-		try {
-			portletConfiguration =
-				_portletPreferencesPortletConfigurationExporter.
-					getPortletConfiguration(layout.getPlid(), portletId);
-		}
-		finally {
-			ExportImportThreadLocal.setPortletStagingInProcess(false);
-		}
-
-		importedLayout = LayoutTestUtil.addTypePortletLayout(importedGroup);
-
-		ExportImportThreadLocal.setPortletStagingInProcess(true);
-
-		try {
-			_portletPreferencesPortletConfigurationImporter.
-				importPortletConfiguration(
-					importedLayout.getPlid(), portletId,
-					HashMapBuilder.<String, Object>put(
-						"orderByColumn1",
-						Collections.singletonList(
-							StringUtil.replace(
-								_getValues(
-									portletConfiguration, "orderByColumn1")[0],
-								ddmStructure.getUuid(),
-								RandomTestUtil.randomString()))
-					).build());
-		}
-		finally {
-			ExportImportThreadLocal.setPortletStagingInProcess(false);
-		}
-
 		PortletPreferences importedPortletPreferences =
-			LayoutTestUtil.getPortletPreferences(importedLayout, portletId);
+			_importPortletConfiguration(
+				HashMapBuilder.<String, Object>put(
+					"orderByColumn1",
+					Collections.singletonList(
+						StringUtil.replace(
+							_getValues(
+								_getPortletConfiguration(portletId),
+								"orderByColumn1")[0],
+							ddmStructure.getUuid(),
+							RandomTestUtil.randomString()))
+				).build(),
+				portletId);
 
 		Assert.assertEquals(
 			orderByColumn,
@@ -1857,31 +1825,19 @@ public class AssetPublisherExportImportTest extends BaseExportImportTestCase {
 			TestPropsValues.getUserId(), layout, getPortletId(), "column-1",
 			new HashMap<>());
 
-		importedLayout = LayoutTestUtil.addTypePortletLayout(importedGroup);
-
 		String journalArticleClassNameId = String.valueOf(
 			_portal.getClassNameId(JournalArticle.class));
 
-		ExportImportThreadLocal.setPortletStagingInProcess(true);
-
-		try {
-			_portletPreferencesPortletConfigurationImporter.
-				importPortletConfiguration(
-					importedLayout.getPlid(), portletId,
-					HashMapBuilder.<String, Object>put(
-						"anyAssetType",
-						Collections.singletonList(journalArticleClassNameId)
-					).put(
-						"classNameIds",
-						Collections.singletonList(journalArticleClassNameId)
-					).build());
-		}
-		finally {
-			ExportImportThreadLocal.setPortletStagingInProcess(false);
-		}
-
 		PortletPreferences importedPortletPreferences =
-			LayoutTestUtil.getPortletPreferences(importedLayout, portletId);
+			_importPortletConfiguration(
+				HashMapBuilder.<String, Object>put(
+					"anyAssetType",
+					Collections.singletonList(journalArticleClassNameId)
+				).put(
+					"classNameIds",
+					Collections.singletonList(journalArticleClassNameId)
+				).build(),
+				portletId);
 
 		Assert.assertEquals(
 			journalArticleClassNameId,
@@ -2590,6 +2546,20 @@ public class AssetPublisherExportImportTest extends BaseExportImportTestCase {
 			DDMIndexer.DDM_FIELD_SEPARATOR, fieldName, "_en_US");
 	}
 
+	private Map<String, Object> _getPortletConfiguration(String portletId)
+		throws Exception {
+
+		ExportImportThreadLocal.setPortletStagingInProcess(true);
+
+		try {
+			return _portletPreferencesPortletConfigurationExporter.
+				getPortletConfiguration(layout.getPlid(), portletId);
+		}
+		finally {
+			ExportImportThreadLocal.setPortletStagingInProcess(false);
+		}
+	}
+
 	private Map<String, String[]> _getPreferenceMap(
 		String assetListEntryExternalReferenceCode,
 		String assetListEntryGroupExternalReferenceCode) {
@@ -2630,18 +2600,8 @@ public class AssetPublisherExportImportTest extends BaseExportImportTestCase {
 			TestPropsValues.getUserId(), layout, getPortletId(), "column-1",
 			preferenceMap);
 
-		ExportImportThreadLocal.setPortletStagingInProcess(true);
-
-		Map<String, Object> portletConfiguration;
-
-		try {
-			portletConfiguration =
-				_portletPreferencesPortletConfigurationExporter.
-					getPortletConfiguration(layout.getPlid(), portletId);
-		}
-		finally {
-			ExportImportThreadLocal.setPortletStagingInProcess(false);
-		}
+		Map<String, Object> portletConfiguration = _getPortletConfiguration(
+			portletId);
 
 		portletConfiguration.replaceAll(
 			(key, value) -> {
@@ -2661,6 +2621,25 @@ public class AssetPublisherExportImportTest extends BaseExportImportTestCase {
 			portletConfiguration.put("scopeIds", scopeIds);
 		}
 
+		return _importPortletConfiguration(portletConfiguration, portletId);
+	}
+
+	private String[] _getValues(
+		Map<String, Object> portletConfiguration, String key) {
+
+		Object value = portletConfiguration.get(key);
+
+		if (value instanceof String[]) {
+			return (String[])value;
+		}
+
+		return new String[] {GetterUtil.getString(value)};
+	}
+
+	private PortletPreferences _importPortletConfiguration(
+			Map<String, Object> portletConfiguration, String portletId)
+		throws Exception {
+
 		importedLayout = LayoutTestUtil.addTypePortletLayout(importedGroup);
 
 		ExportImportThreadLocal.setPortletStagingInProcess(true);
@@ -2675,18 +2654,6 @@ public class AssetPublisherExportImportTest extends BaseExportImportTestCase {
 		}
 
 		return LayoutTestUtil.getPortletPreferences(importedLayout, portletId);
-	}
-
-	private String[] _getValues(
-		Map<String, Object> portletConfiguration, String key) {
-
-		Object value = portletConfiguration.get(key);
-
-		if (value instanceof String[]) {
-			return (String[])value;
-		}
-
-		return new String[] {GetterUtil.getString(value)};
 	}
 
 	private void _publishLayouts(Group stagingGroup) throws Exception {
@@ -2733,21 +2700,9 @@ public class AssetPublisherExportImportTest extends BaseExportImportTestCase {
 				key, new String[] {String.valueOf(classTypeId)}
 			).build());
 
-		ExportImportThreadLocal.setPortletStagingInProcess(true);
-
-		Map<String, Object> portletConfiguration;
-
-		try {
-			portletConfiguration =
-				_portletPreferencesPortletConfigurationExporter.
-					getPortletConfiguration(layout.getPlid(), portletId);
-		}
-		finally {
-			ExportImportThreadLocal.setPortletStagingInProcess(false);
-		}
-
 		String[] values = StringUtil.split(
-			_getValues(portletConfiguration, key)[0], StringPool.POUND);
+			_getValues(_getPortletConfiguration(portletId), key)[0],
+			StringPool.POUND);
 
 		Group companyGroup = _groupLocalService.getCompanyGroup(
 			group.getCompanyId());
@@ -2758,31 +2713,19 @@ public class AssetPublisherExportImportTest extends BaseExportImportTestCase {
 			},
 			values);
 
-		importedLayout = LayoutTestUtil.addTypePortletLayout(importedGroup);
-
-		ExportImportThreadLocal.setPortletStagingInProcess(true);
-
-		try {
-			_portletPreferencesPortletConfigurationImporter.
-				importPortletConfiguration(
-					importedLayout.getPlid(), portletId,
-					HashMapBuilder.<String, Object>put(
-						key,
-						Collections.singletonList(
-							StringUtil.merge(
-								new String[] {
-									RandomTestUtil.randomString(), values[1],
-									values[2]
-								},
-								StringPool.POUND))
-					).build());
-		}
-		finally {
-			ExportImportThreadLocal.setPortletStagingInProcess(false);
-		}
-
 		PortletPreferences importedPortletPreferences =
-			LayoutTestUtil.getPortletPreferences(importedLayout, portletId);
+			_importPortletConfiguration(
+				HashMapBuilder.<String, Object>put(
+					key,
+					Collections.singletonList(
+						StringUtil.merge(
+							new String[] {
+								RandomTestUtil.randomString(), values[1],
+								values[2]
+							},
+							StringPool.POUND))
+				).build(),
+				portletId);
 
 		Assert.assertEquals(
 			String.valueOf(classTypeId),
