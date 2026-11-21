@@ -1,6 +1,6 @@
 Bundle-Name: Liferay View Count API
 Bundle-SymbolicName: com.liferay.view.count.api
-Bundle-Version: 6.0.2
+Bundle-Version: 6.0.3
 Export-Package:\
 	com.liferay.view.count.configuration,\
 	com.liferay.view.count.exception,\
