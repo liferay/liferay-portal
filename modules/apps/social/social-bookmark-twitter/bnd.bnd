@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Social Bookmark Twitter
 Bundle-SymbolicName: com.liferay.social.bookmark.twitter
-Bundle-Version: 4.0.28
+Bundle-Version: 4.0.29
 Web-ContextPath: /social-bookmark-twitter
