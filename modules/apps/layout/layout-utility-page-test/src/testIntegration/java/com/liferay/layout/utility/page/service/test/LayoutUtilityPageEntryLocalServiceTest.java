@@ -21,11 +21,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
-import com.liferay.portal.kernel.model.Role;
-import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.LayoutLocalService;
-import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
-import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.test.TestInfo;
@@ -424,20 +420,8 @@ public class LayoutUtilityPageEntryLocalServiceTest {
 	private LayoutUtilityPageEntryService _layoutUtilityPageEntryService;
 
 	@Inject
-	private ResourcePermissionLocalService _resourcePermissionLocalService;
-
-	@DeleteAfterTestRun
-	private Role _role;
-
-	@Inject
-	private RoleLocalService _roleLocalService;
-
-	@Inject
 	private SegmentsExperienceLocalService _segmentsExperienceLocalService;
 
 	private ServiceContext _serviceContext;
-
-	@DeleteAfterTestRun
-	private User _user;
 
 }
