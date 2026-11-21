@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Portal Settings Authentication OpenID Connect Web
 Bundle-SymbolicName: com.liferay.portal.settings.authentication.openid.connect.web
-Bundle-Version: 6.0.21
+Bundle-Version: 6.0.22
 Web-ContextPath: /portal-settings-authentication-openid-connect-web
