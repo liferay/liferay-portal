@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Commerce Product Item Selector Web
 Bundle-SymbolicName: com.liferay.commerce.product.item.selector.web
-Bundle-Version: 4.0.48
+Bundle-Version: 4.0.49
 Web-ContextPath: /commerce-product-item-selector-web
