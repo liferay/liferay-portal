@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Portal Cache Test Utilities
 Bundle-SymbolicName: com.liferay.portal.cache.test.util
-Bundle-Version: 10.0.8
+Bundle-Version: 10.0.9
 Export-Package: com.liferay.portal.cache.test.util
