@@ -16,7 +16,6 @@ import com.liferay.commerce.currency.test.util.CommerceCurrencyTestUtil;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.model.CommerceSubscriptionEntry;
 import com.liferay.commerce.notification.model.CommerceNotificationTemplate;
-import com.liferay.commerce.notification.service.CommerceNotificationQueueEntryLocalService;
 import com.liferay.commerce.notification.service.CommerceNotificationTemplateLocalService;
 import com.liferay.commerce.notification.service.CommerceNotificationTemplateLocalServiceUtil;
 import com.liferay.commerce.notification.test.util.CommerceNotificationTestUtil;
@@ -243,11 +242,6 @@ public class CommerceSubscriptionsNotificationTest {
 	private CommerceChannelLocalService _commerceChannelLocalService;
 
 	private CommerceCurrency _commerceCurrency;
-
-	@Inject
-	private CommerceNotificationQueueEntryLocalService
-		_commerceNotificationQueueEntryLocalService;
-
 	private List<CommerceNotificationTemplate>
 		_commerceNotificationTemplateList;
 

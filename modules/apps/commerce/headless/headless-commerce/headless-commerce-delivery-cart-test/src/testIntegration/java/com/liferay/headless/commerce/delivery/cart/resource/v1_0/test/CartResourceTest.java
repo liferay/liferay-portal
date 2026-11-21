@@ -1906,9 +1906,6 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 	@Inject
 	private CommerceDiscountLocalService _commerceDiscountLocalService;
 
-	@DeleteAfterTestRun
-	private CommerceOrder _commerceOrder;
-
 	@Inject
 	private CommerceOrderHttpHelper _commerceOrderHttpHelper;
 
