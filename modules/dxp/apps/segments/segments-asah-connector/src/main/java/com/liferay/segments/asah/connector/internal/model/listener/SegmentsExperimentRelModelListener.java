@@ -14,7 +14,7 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.Portal;
-import com.liferay.segments.asah.connector.internal.client.AsahFaroBackendClientImpl;
+import com.liferay.segments.asah.connector.internal.client.AsahFaroBackendClient;
 import com.liferay.segments.asah.connector.internal.processor.AsahSegmentsExperimentProcessor;
 import com.liferay.segments.asah.connector.internal.util.AsahUtil;
 import com.liferay.segments.model.SegmentsExperiment;
@@ -86,7 +86,7 @@ public class SegmentsExperimentRelModelListener
 	protected void activate() {
 		_asahSegmentsExperimentProcessor = new AsahSegmentsExperimentProcessor(
 			_analyticsSettingsManager,
-			new AsahFaroBackendClientImpl(_analyticsSettingsManager, _http),
+			new AsahFaroBackendClient(_analyticsSettingsManager, _http),
 			_companyLocalService, _groupLocalService, _layoutLocalService,
 			_portal, _segmentsEntryLocalService,
 			_segmentsExperienceLocalService);

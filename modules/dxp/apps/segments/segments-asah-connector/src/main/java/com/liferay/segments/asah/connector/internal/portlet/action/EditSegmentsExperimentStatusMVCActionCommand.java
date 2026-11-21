@@ -29,7 +29,6 @@ import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.segments.asah.connector.internal.client.AsahFaroBackendClient;
-import com.liferay.segments.asah.connector.internal.client.AsahFaroBackendClientImpl;
 import com.liferay.segments.asah.connector.internal.client.model.Experiment;
 import com.liferay.segments.asah.connector.internal.client.model.util.ExperimentUtil;
 import com.liferay.segments.asah.connector.internal.util.SegmentsExperimentUtil;
@@ -67,7 +66,7 @@ public class EditSegmentsExperimentStatusMVCActionCommand
 
 	@Activate
 	protected void activate() {
-		_asahFaroBackendClient = new AsahFaroBackendClientImpl(
+		_asahFaroBackendClient = new AsahFaroBackendClient(
 			_analyticsSettingsManager, _http);
 	}
 

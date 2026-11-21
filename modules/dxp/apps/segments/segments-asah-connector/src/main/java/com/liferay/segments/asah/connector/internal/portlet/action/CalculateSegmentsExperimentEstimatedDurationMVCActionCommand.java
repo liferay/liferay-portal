@@ -23,7 +23,6 @@ import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.segments.asah.connector.internal.client.AsahFaroBackendClient;
-import com.liferay.segments.asah.connector.internal.client.AsahFaroBackendClientImpl;
 import com.liferay.segments.asah.connector.internal.client.model.util.ExperimentSettingsUtil;
 import com.liferay.segments.constants.SegmentsPortletKeys;
 import com.liferay.segments.model.SegmentsExperiment;
@@ -60,7 +59,7 @@ public class CalculateSegmentsExperimentEstimatedDurationMVCActionCommand
 
 	@Activate
 	protected void activate() {
-		_asahFaroBackendClient = new AsahFaroBackendClientImpl(
+		_asahFaroBackendClient = new AsahFaroBackendClient(
 			_analyticsSettingsManager, _http);
 	}
 

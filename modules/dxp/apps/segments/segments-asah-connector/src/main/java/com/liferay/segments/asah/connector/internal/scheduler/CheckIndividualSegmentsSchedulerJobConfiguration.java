@@ -31,7 +31,6 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.segments.asah.connector.cache.AsahSegmentsEntryCache;
 import com.liferay.segments.asah.connector.internal.client.AsahFaroBackendClient;
-import com.liferay.segments.asah.connector.internal.client.AsahFaroBackendClientImpl;
 import com.liferay.segments.asah.connector.internal.client.model.Individual;
 import com.liferay.segments.asah.connector.internal.client.model.IndividualSegment;
 import com.liferay.segments.asah.connector.internal.client.model.Results;
@@ -79,7 +78,7 @@ public class CheckIndividualSegmentsSchedulerJobConfiguration
 
 	@Activate
 	protected void activate(Map<String, Object> properties) {
-		_asahFaroBackendClient = new AsahFaroBackendClientImpl(
+		_asahFaroBackendClient = new AsahFaroBackendClient(
 			_analyticsSettingsManager, _http);
 
 		modified(properties);

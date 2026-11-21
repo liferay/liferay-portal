@@ -33,7 +33,6 @@ import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.segments.asah.connector.internal.client.AsahFaroBackendClient;
-import com.liferay.segments.asah.connector.internal.client.AsahFaroBackendClientImpl;
 import com.liferay.segments.asah.connector.internal.client.model.Experiment;
 import com.liferay.segments.asah.connector.internal.client.model.ExperimentStatus;
 import com.liferay.segments.asah.connector.internal.configuration.SegmentsExperimentConfiguration;
@@ -81,7 +80,7 @@ public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
 		_segmentsExperimentConfiguration = ConfigurableUtil.createConfigurable(
 			SegmentsExperimentConfiguration.class, properties);
 
-		_asahFaroBackendClient = new AsahFaroBackendClientImpl(
+		_asahFaroBackendClient = new AsahFaroBackendClient(
 			_analyticsSettingsManager, _http);
 	}
 

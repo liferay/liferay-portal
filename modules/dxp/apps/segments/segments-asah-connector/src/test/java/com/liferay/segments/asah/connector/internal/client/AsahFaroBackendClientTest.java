@@ -51,7 +51,7 @@ import org.mockito.Mockito;
 /**
  * @author Sarai Díaz
  */
-public class AsahFaroBackendClientImplTest {
+public class AsahFaroBackendClientTest {
 
 	@ClassRule
 	@Rule
@@ -84,15 +84,14 @@ public class AsahFaroBackendClientImplTest {
 
 	@Test
 	public void testAddExperiment() throws Exception {
-		AsahFaroBackendClient asahFaroBackendClient =
-			new AsahFaroBackendClientImpl(
-				_analyticsSettingsManager,
-				new MockHttp(
-					Collections.singletonMap(
-						"/api/1.0/experiments",
-						() -> JSONUtil.put(
-							"id", "123456"
-						).toString())));
+		AsahFaroBackendClient asahFaroBackendClient = new AsahFaroBackendClient(
+			_analyticsSettingsManager,
+			new MockHttp(
+				Collections.singletonMap(
+					"/api/1.0/experiments",
+					() -> JSONUtil.put(
+						"id", "123456"
+					).toString())));
 
 		Experiment experiment = asahFaroBackendClient.addExperiment(
 			RandomTestUtil.randomLong(), new Experiment());
@@ -105,15 +104,14 @@ public class AsahFaroBackendClientImplTest {
 		String days = "14";
 		String experimentId = RandomTestUtil.randomString();
 
-		AsahFaroBackendClient asahFaroBackendClient =
-			new AsahFaroBackendClientImpl(
-				_analyticsSettingsManager,
-				new MockHttp(
-					Collections.singletonMap(
-						StringBundler.concat(
-							"/api/1.0/experiments/", experimentId,
-							"/estimated-days-duration"),
-						() -> days)));
+		AsahFaroBackendClient asahFaroBackendClient = new AsahFaroBackendClient(
+			_analyticsSettingsManager,
+			new MockHttp(
+				Collections.singletonMap(
+					StringBundler.concat(
+						"/api/1.0/experiments/", experimentId,
+						"/estimated-days-duration"),
+					() -> days)));
 
 		Assert.assertEquals(
 			Long.valueOf(days),
@@ -128,15 +126,14 @@ public class AsahFaroBackendClientImplTest {
 
 		String experimentId = RandomTestUtil.randomString();
 
-		AsahFaroBackendClient asahFaroBackendClient =
-			new AsahFaroBackendClientImpl(
-				_analyticsSettingsManager,
-				new MockHttp(
-					Collections.singletonMap(
-						StringBundler.concat(
-							"/api/1.0/experiments/", experimentId,
-							"/estimated-days-duration"),
-						() -> StringPool.BLANK)));
+		AsahFaroBackendClient asahFaroBackendClient = new AsahFaroBackendClient(
+			_analyticsSettingsManager,
+			new MockHttp(
+				Collections.singletonMap(
+					StringBundler.concat(
+						"/api/1.0/experiments/", experimentId,
+						"/estimated-days-duration"),
+					() -> StringPool.BLANK)));
 
 		Assert.assertNull(
 			asahFaroBackendClient.calculateExperimentEstimatedDaysDuration(
@@ -150,15 +147,14 @@ public class AsahFaroBackendClientImplTest {
 
 		String experimentId = RandomTestUtil.randomString();
 
-		AsahFaroBackendClient asahFaroBackendClient =
-			new AsahFaroBackendClientImpl(
-				_analyticsSettingsManager,
-				new MockHttp(
-					Collections.singletonMap(
-						StringBundler.concat(
-							"api/1.0/experiments/", experimentId,
-							"/estimated-days-duration"),
-						RandomTestUtil::randomString)));
+		AsahFaroBackendClient asahFaroBackendClient = new AsahFaroBackendClient(
+			_analyticsSettingsManager,
+			new MockHttp(
+				Collections.singletonMap(
+					StringBundler.concat(
+						"api/1.0/experiments/", experimentId,
+						"/estimated-days-duration"),
+					RandomTestUtil::randomString)));
 
 		asahFaroBackendClient.calculateExperimentEstimatedDaysDuration(
 			RandomTestUtil.randomLong(), experimentId,
@@ -169,15 +165,14 @@ public class AsahFaroBackendClientImplTest {
 	public void testDeleteExperiment() throws Exception {
 		String experimentId = RandomTestUtil.randomString();
 
-		AsahFaroBackendClient asahFaroBackendClient =
-			new AsahFaroBackendClientImpl(
-				_analyticsSettingsManager,
-				new MockHttp(
-					Collections.singletonMap(
-						"/api/1.0/experiments/" + experimentId,
-						() -> JSONUtil.put(
-							"id", "123456"
-						).toString())));
+		AsahFaroBackendClient asahFaroBackendClient = new AsahFaroBackendClient(
+			_analyticsSettingsManager,
+			new MockHttp(
+				Collections.singletonMap(
+					"/api/1.0/experiments/" + experimentId,
+					() -> JSONUtil.put(
+						"id", "123456"
+					).toString())));
 
 		asahFaroBackendClient.deleteExperiment(
 			RandomTestUtil.randomLong(), experimentId);
@@ -187,19 +182,18 @@ public class AsahFaroBackendClientImplTest {
 	public void testGetExperiment() throws Exception {
 		String experimentId = RandomTestUtil.randomString();
 
-		AsahFaroBackendClient asahFaroBackendClient =
-			new AsahFaroBackendClientImpl(
-				_analyticsSettingsManager,
-				new MockHttp(
-					Collections.singletonMap(
-						"/api/1.0/experiments/" + experimentId,
-						() -> JSONUtil.put(
-							"channelId", "637850400632477181"
-						).put(
-							"goal", JSONUtil.put("metric", "BOUNCE_RATE")
-						).put(
-							"status", "RUNNING"
-						).toString())));
+		AsahFaroBackendClient asahFaroBackendClient = new AsahFaroBackendClient(
+			_analyticsSettingsManager,
+			new MockHttp(
+				Collections.singletonMap(
+					"/api/1.0/experiments/" + experimentId,
+					() -> JSONUtil.put(
+						"channelId", "637850400632477181"
+					).put(
+						"goal", JSONUtil.put("metric", "BOUNCE_RATE")
+					).put(
+						"status", "RUNNING"
+					).toString())));
 
 		Experiment experiment = asahFaroBackendClient.getExperiment(
 			RandomTestUtil.randomLong(), experimentId);
@@ -210,31 +204,30 @@ public class AsahFaroBackendClientImplTest {
 
 	@Test
 	public void testGetIndividual() throws Exception {
-		AsahFaroBackendClient asahFaroBackendClient =
-			new AsahFaroBackendClientImpl(
-				_analyticsSettingsManager,
-				new MockHttp(
-					Collections.singletonMap(
-						"/api/1.0/individuals",
-						() -> JSONUtil.put(
-							"_embedded",
-							JSONUtil.put(
-								"individuals",
-								JSONUtil.putAll(JSONUtil.put("id", "1234567")))
+		AsahFaroBackendClient asahFaroBackendClient = new AsahFaroBackendClient(
+			_analyticsSettingsManager,
+			new MockHttp(
+				Collections.singletonMap(
+					"/api/1.0/individuals",
+					() -> JSONUtil.put(
+						"_embedded",
+						JSONUtil.put(
+							"individuals",
+							JSONUtil.putAll(JSONUtil.put("id", "1234567")))
+					).put(
+						"page",
+						JSONUtil.put(
+							"number", 0
 						).put(
-							"page",
-							JSONUtil.put(
-								"number", 0
-							).put(
-								"size", 100
-							).put(
-								"totalElements", 1
-							).put(
-								"totalPages", 1
-							)
+							"size", 100
 						).put(
-							"total", 0
-						).toString())));
+							"totalElements", 1
+						).put(
+							"totalPages", 1
+						)
+					).put(
+						"total", 0
+					).toString())));
 
 		Individual individual = asahFaroBackendClient.getIndividual(
 			RandomTestUtil.randomLong(), RandomTestUtil.randomString());
@@ -246,42 +239,41 @@ public class AsahFaroBackendClientImplTest {
 	public void testGetIndividualResults() throws Exception {
 		String individualSegmentId = RandomTestUtil.randomString();
 
-		AsahFaroBackendClient asahFaroBackendClient =
-			new AsahFaroBackendClientImpl(
-				_analyticsSettingsManager,
-				new MockHttp(
-					Collections.singletonMap(
-						StringBundler.concat(
-							"/api/1.0/individual-segments/",
-							individualSegmentId, "/individuals"),
-						() -> JSONUtil.put(
-							"_embedded",
-							JSONUtil.put(
-								"individuals",
-								JSONUtil.putAll(
-									JSONUtil.put(
-										"dataSourceIndividualPKs",
-										JSONUtil.putAll(
-											JSONUtil.put(
-												"dataSourceId", "123456789"
-											).put(
-												"individualPKs",
-												JSONUtil.putAll("userUuid")
-											)))))
+		AsahFaroBackendClient asahFaroBackendClient = new AsahFaroBackendClient(
+			_analyticsSettingsManager,
+			new MockHttp(
+				Collections.singletonMap(
+					StringBundler.concat(
+						"/api/1.0/individual-segments/", individualSegmentId,
+						"/individuals"),
+					() -> JSONUtil.put(
+						"_embedded",
+						JSONUtil.put(
+							"individuals",
+							JSONUtil.putAll(
+								JSONUtil.put(
+									"dataSourceIndividualPKs",
+									JSONUtil.putAll(
+										JSONUtil.put(
+											"dataSourceId", "123456789"
+										).put(
+											"individualPKs",
+											JSONUtil.putAll("userUuid")
+										)))))
+					).put(
+						"page",
+						JSONUtil.put(
+							"number", 0
 						).put(
-							"page",
-							JSONUtil.put(
-								"number", 0
-							).put(
-								"size", 100
-							).put(
-								"totalElements", 1
-							).put(
-								"totalPages", 1
-							)
+							"size", 100
 						).put(
-							"total", 0
-						).toString())));
+							"totalElements", 1
+						).put(
+							"totalPages", 1
+						)
+					).put(
+						"total", 0
+					).toString())));
 
 		Results<Individual> individualResults =
 			asahFaroBackendClient.getIndividualResults(
@@ -314,36 +306,35 @@ public class AsahFaroBackendClientImplTest {
 
 	@Test
 	public void testGetIndividualSegmentResults() throws Exception {
-		AsahFaroBackendClient asahFaroBackendClient =
-			new AsahFaroBackendClientImpl(
-				_analyticsSettingsManager,
-				new MockHttp(
-					Collections.singletonMap(
-						"/api/1.0/individual-segments",
-						() -> JSONUtil.put(
-							"_embedded",
-							JSONUtil.put(
-								"individual-segments",
-								JSONUtil.putAll(
-									JSONUtil.put(
-										"id", "1234567"
-									).put(
-										"name", "Test segment"
-									)))
+		AsahFaroBackendClient asahFaroBackendClient = new AsahFaroBackendClient(
+			_analyticsSettingsManager,
+			new MockHttp(
+				Collections.singletonMap(
+					"/api/1.0/individual-segments",
+					() -> JSONUtil.put(
+						"_embedded",
+						JSONUtil.put(
+							"individual-segments",
+							JSONUtil.putAll(
+								JSONUtil.put(
+									"id", "1234567"
+								).put(
+									"name", "Test segment"
+								)))
+					).put(
+						"page",
+						JSONUtil.put(
+							"number", 0
 						).put(
-							"page",
-							JSONUtil.put(
-								"number", 0
-							).put(
-								"size", 100
-							).put(
-								"totalElements", 1
-							).put(
-								"totalPages", 1
-							)
+							"size", 100
 						).put(
-							"total", 0
-						).toString())));
+							"totalElements", 1
+						).put(
+							"totalPages", 1
+						)
+					).put(
+						"total", 0
+					).toString())));
 
 		Results<IndividualSegment> individualSegmentResults =
 			asahFaroBackendClient.getIndividualSegmentResults(
@@ -386,8 +377,8 @@ public class AsahFaroBackendClientImplTest {
 			}
 		);
 
-		AsahFaroBackendClient asahFaroBackendClient =
-			new AsahFaroBackendClientImpl(_analyticsSettingsManager, http);
+		AsahFaroBackendClient asahFaroBackendClient = new AsahFaroBackendClient(
+			_analyticsSettingsManager, http);
 
 		asahFaroBackendClient.getIndividualSegmentResults(
 			RandomTestUtil.randomLong(), 1, 100,
@@ -462,8 +453,8 @@ public class AsahFaroBackendClientImplTest {
 			}
 		);
 
-		AsahFaroBackendClient asahFaroBackendClient =
-			new AsahFaroBackendClientImpl(_analyticsSettingsManager, http);
+		AsahFaroBackendClient asahFaroBackendClient = new AsahFaroBackendClient(
+			_analyticsSettingsManager, http);
 
 		asahFaroBackendClient.getIndividualSegmentResults(
 			companyId, RandomTestUtil.randomInt(), RandomTestUtil.randomInt(),
@@ -491,13 +482,12 @@ public class AsahFaroBackendClientImplTest {
 	public void testUpdateExperiment() throws Exception {
 		String experimentId = RandomTestUtil.randomString();
 
-		AsahFaroBackendClient asahFaroBackendClient =
-			new AsahFaroBackendClientImpl(
-				_analyticsSettingsManager,
-				new MockHttp(
-					Collections.singletonMap(
-						"/api/1.0/experiments/" + experimentId,
-						() -> StringPool.BLANK)));
+		AsahFaroBackendClient asahFaroBackendClient = new AsahFaroBackendClient(
+			_analyticsSettingsManager,
+			new MockHttp(
+				Collections.singletonMap(
+					"/api/1.0/experiments/" + experimentId,
+					() -> StringPool.BLANK)));
 
 		Experiment experiment = new Experiment();
 
@@ -511,15 +501,13 @@ public class AsahFaroBackendClientImplTest {
 	public void testUpdateExperimentDXPVariants() throws Exception {
 		String experimentId = RandomTestUtil.randomString();
 
-		AsahFaroBackendClient asahFaroBackendClient =
-			new AsahFaroBackendClientImpl(
-				_analyticsSettingsManager,
-				new MockHttp(
-					Collections.singletonMap(
-						StringBundler.concat(
-							"/api/1.0/experiments/", experimentId,
-							"/dxp-variants"),
-						() -> StringPool.BLANK)));
+		AsahFaroBackendClient asahFaroBackendClient = new AsahFaroBackendClient(
+			_analyticsSettingsManager,
+			new MockHttp(
+				Collections.singletonMap(
+					StringBundler.concat(
+						"/api/1.0/experiments/", experimentId, "/dxp-variants"),
+					() -> StringPool.BLANK)));
 
 		DXPVariant dxpVariant = new DXPVariant();
 
@@ -538,15 +526,13 @@ public class AsahFaroBackendClientImplTest {
 
 		String experimentId = RandomTestUtil.randomString();
 
-		AsahFaroBackendClient asahFaroBackendClient =
-			new AsahFaroBackendClientImpl(
-				_analyticsSettingsManager,
-				new MockHttp(
-					Collections.singletonMap(
-						StringBundler.concat(
-							"/api/1.0/experiments/", experimentId,
-							"/dxp-variants"),
-						() -> StringPool.BLANK)));
+		AsahFaroBackendClient asahFaroBackendClient = new AsahFaroBackendClient(
+			_analyticsSettingsManager,
+			new MockHttp(
+				Collections.singletonMap(
+					StringBundler.concat(
+						"/api/1.0/experiments/", experimentId, "/dxp-variants"),
+					() -> StringPool.BLANK)));
 
 		asahFaroBackendClient.updateExperimentDXPVariants(
 			RandomTestUtil.randomLong(), experimentId, null);
@@ -556,13 +542,12 @@ public class AsahFaroBackendClientImplTest {
 	public void testUpdateExperimentDXPVariantsWithoutExperimentId()
 		throws Exception {
 
-		AsahFaroBackendClient asahFaroBackendClient =
-			new AsahFaroBackendClientImpl(
-				_analyticsSettingsManager,
-				new MockHttp(
-					Collections.singletonMap(
-						"/api/1.0/experiments/123456/dxp-variants",
-						() -> StringPool.BLANK)));
+		AsahFaroBackendClient asahFaroBackendClient = new AsahFaroBackendClient(
+			_analyticsSettingsManager,
+			new MockHttp(
+				Collections.singletonMap(
+					"/api/1.0/experiments/123456/dxp-variants",
+					() -> StringPool.BLANK)));
 
 		DXPVariant dxpVariant = new DXPVariant();
 
@@ -577,13 +562,11 @@ public class AsahFaroBackendClientImplTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testUpdateExperimentWithoutExperimentId() throws Exception {
-		AsahFaroBackendClient asahFaroBackendClient =
-			new AsahFaroBackendClientImpl(
-				_analyticsSettingsManager,
-				new MockHttp(
-					Collections.singletonMap(
-						"/api/1.0/experiments/123456",
-						() -> StringPool.BLANK)));
+		AsahFaroBackendClient asahFaroBackendClient = new AsahFaroBackendClient(
+			_analyticsSettingsManager,
+			new MockHttp(
+				Collections.singletonMap(
+					"/api/1.0/experiments/123456", () -> StringPool.BLANK)));
 
 		asahFaroBackendClient.updateExperiment(
 			RandomTestUtil.randomLong(), new Experiment());
