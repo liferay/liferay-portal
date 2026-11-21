@@ -22,5 +22,5 @@
 		"format": "node-scripts format",
 		"test": "node-scripts test"
 	},
-	"version": "8.0.24"
+	"version": "8.0.25"
 }
