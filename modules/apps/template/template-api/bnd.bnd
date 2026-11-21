@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Template API
 Bundle-SymbolicName: com.liferay.template.api
-Bundle-Version: 9.0.1
+Bundle-Version: 9.0.2
 Export-Package:\
 	com.liferay.template.constants,\
 	com.liferay.template.exception,\
