@@ -107,12 +107,12 @@ public class FragmentEntryLinkModelListener
 			_portal.getClassNameId(FragmentEntryLink.class.getName()),
 			fragmentEntryLink.getPlid());
 
+		Set<String> assetListEntryClassPKs = new HashSet<>();
+		Set<String> infoCollectionProviderKeys = new HashSet<>();
+
 		List<FragmentConfigurationField> fragmentConfigurationFields =
 			_getCollectionSelectorFragmentConfigurationFields(
 				fragmentEntryLink);
-
-		Set<String> assetListEntryClassPKs = new HashSet<>();
-		Set<String> infoCollectionProviderKeys = new HashSet<>();
 
 		for (FragmentConfigurationField fragmentConfigurationField :
 				fragmentConfigurationFields) {
