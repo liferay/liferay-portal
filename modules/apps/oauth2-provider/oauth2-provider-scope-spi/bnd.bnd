@@ -1,6 +1,6 @@
 Bundle-Name: Liferay OAuth2 Provider Scope SPI
 Bundle-SymbolicName: com.liferay.oauth2.provider.scope.spi
-Bundle-Version: 4.0.8
+Bundle-Version: 4.0.9
 Export-Package:\
 	com.liferay.oauth2.provider.scope.spi.application.descriptor,\
 	com.liferay.oauth2.provider.scope.spi.prefix.handler,\
