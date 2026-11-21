@@ -42,8 +42,7 @@ public class DuplicateLayoutPageTemplateCollectionNameExceptionProblemMapper
 		if (Validator.isNull(
 				duplicateLayoutPageTemplateCollectionException.getName())) {
 
-			return StringBundler.concat(
-				"A ", typeLabel, " with the same name already exists");
+			return "A " + typeLabel + " with the same name already exists";
 		}
 
 		return StringBundler.concat(
