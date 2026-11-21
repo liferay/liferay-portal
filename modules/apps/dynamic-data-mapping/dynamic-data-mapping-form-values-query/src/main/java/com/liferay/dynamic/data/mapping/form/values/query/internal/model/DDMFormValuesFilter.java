@@ -9,7 +9,10 @@ import com.liferay.dynamic.data.mapping.storage.DDMFormFieldValue;
 import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
 import com.liferay.portal.kernel.util.ListUtil;
 
+import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
 
 /**
  * @author Pablo Carvalho
@@ -17,23 +20,36 @@ import java.util.List;
 public class DDMFormValuesFilter {
 
 	public List<DDMFormFieldValue> filter(DDMFormValues ddmFormValues) {
-		List<DDMFormFieldValue> ddmFormFieldValues = ListUtil.copy(
-			ddmFormValues.getDDMFormFieldValues());
-
-		return filter(ddmFormFieldValues);
+		return filter(ddmFormValues.getDDMFormFieldValues());
 	}
 
 	public List<DDMFormFieldValue> filter(
 		List<DDMFormFieldValue> ddmFormFieldValues) {
 
-		if (_greedy) {
-			_addNestedDDMFormFieldValues(ddmFormFieldValues);
+		if (!_greedy) {
+			return ListUtil.filter(
+				ddmFormFieldValues,
+				ddmFormFieldValue -> _ddmFormFieldValueMatcher.matches(
+					ddmFormFieldValue));
 		}
 
-		return ListUtil.filter(
-			ddmFormFieldValues,
-			ddmFormFieldValue -> _ddmFormFieldValueMatcher.matches(
-				ddmFormFieldValue));
+		List<DDMFormFieldValue> filteredDDMFormFieldValues = new ArrayList<>();
+
+		Queue<DDMFormFieldValue> queue = new ArrayDeque<>(ddmFormFieldValues);
+
+		DDMFormFieldValue ddmFormFieldValue = null;
+
+		while ((ddmFormFieldValue = queue.poll()) != null) {
+			queue.addAll(ddmFormFieldValue.getNestedDDMFormFieldValues());
+
+			if (!_ddmFormFieldValueMatcher.matches(ddmFormFieldValue)) {
+				continue;
+			}
+
+			filteredDDMFormFieldValues.add(ddmFormFieldValue);
+		}
+
+		return filteredDDMFormFieldValues;
 	}
 
 	public boolean isGreedy() {
@@ -48,17 +64,6 @@ public class DDMFormValuesFilter {
 
 	public void setGreedy(boolean greedy) {
 		_greedy = greedy;
-	}
-
-	private void _addNestedDDMFormFieldValues(
-		List<DDMFormFieldValue> ddmFormFieldValues) {
-
-		for (int i = 0; i < ddmFormFieldValues.size(); i++) {
-			DDMFormFieldValue ddmFormFieldValue = ddmFormFieldValues.get(i);
-
-			ddmFormFieldValues.addAll(
-				ddmFormFieldValue.getNestedDDMFormFieldValues());
-		}
 	}
 
 	private DDMFormFieldValueMatcher _ddmFormFieldValueMatcher;
