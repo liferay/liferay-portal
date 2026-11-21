@@ -561,13 +561,13 @@ describe('AssetsFDSPropsTransformer', () => {
 			(getScopeExternalReferenceCode as jest.Mock).mockReset();
 		});
 
-		it('does not pass actions to the title for an asset from another Space', () => {
+		it('does not pass actions to the title for an object entry from another Space', () => {
 			expect(getTitleRendererElement(lockedItem).props.actions).toEqual(
 				[]
 			);
 		});
 
-		it('excludes assets from other Spaces from the asset navigation modal', async () => {
+		it('excludes object entries from other Spaces from the navigation modal', async () => {
 			const items = [memberItem, lockedItem];
 
 			await getTransformedProps().onActionDropdownItemClick({
@@ -585,7 +585,7 @@ describe('AssetsFDSPropsTransformer', () => {
 			);
 		});
 
-		it('hides the edit action for an asset from another Space', () => {
+		it('hides the edit action for an object entry from another Space', () => {
 			const {itemsActions} = getTransformedProps([
 				{data: {id: 'actionLink'}},
 			]);
@@ -596,7 +596,7 @@ describe('AssetsFDSPropsTransformer', () => {
 			expect(editAction.isVisible(memberItem)).toBe(true);
 		});
 
-		it('hides the edit image action for an asset from another Space', () => {
+		it('hides the edit image action for an object entry from another Space', () => {
 			const {itemsActions} = getTransformedProps([
 				{data: {id: 'edit-image'}},
 			]);
@@ -619,7 +619,7 @@ describe('AssetsFDSPropsTransformer', () => {
 			).toBe(true);
 		});
 
-		it('hides the translation actions for an asset from another Space', () => {
+		it('hides the translation actions for an object entry from another Space', () => {
 			const {itemsActions} = getTransformedProps([
 				{data: {id: 'export-for-translation'}},
 				{data: {id: 'import-translation'}},
@@ -632,7 +632,7 @@ describe('AssetsFDSPropsTransformer', () => {
 			});
 		});
 
-		it('hides the view content action for an asset from another Space', () => {
+		it('hides the view content action for an object entry from another Space', () => {
 			const {itemsActions} = getTransformedProps([
 				{data: {id: 'view-content'}},
 			]);
@@ -643,7 +643,7 @@ describe('AssetsFDSPropsTransformer', () => {
 			expect(viewContentAction.isVisible(memberItem)).toBe(true);
 		});
 
-		it('hides the view file action for an asset from another Space', () => {
+		it('hides the view file action for an object entry from another Space', () => {
 			const {itemsActions} = getTransformedProps([
 				{data: {id: 'view-file'}},
 			]);
@@ -664,7 +664,7 @@ describe('AssetsFDSPropsTransformer', () => {
 			expect(viewFileAction.isVisible(memberFileItem)).toBe(true);
 		});
 
-		it('passes actions to the title for an asset from a Space the user is a member of', () => {
+		it('passes actions to the title for an object entry from a Space the user is a member of', () => {
 			expect(getTitleRendererElement(memberItem).props.actions).toBe(
 				titleActions
 			);

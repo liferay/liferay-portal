@@ -735,7 +735,7 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 		throw new ValidationException(
 			StringBundler.concat(
 				"User ", userId, " must be a member of space ",
-				group.getGroupId(), " to link its assets"));
+				group.getGroupId(), " to link its object entries"));
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

@@ -200,7 +200,7 @@ public class ViewRelatedAssetsSectionDisplayContextTest
 	@Test
 	public void testGetCreationMenuFiltersBySpaceMembership() throws Exception {
 
-		// A member of a space sees assets from that space only
+		// A member of a space sees object entries from that space only
 
 		DepotEntry memberDepotEntry = _addDepotEntry();
 		User user1 = UserTestUtil.addUser();
@@ -217,7 +217,7 @@ public class ViewRelatedAssetsSectionDisplayContextTest
 				"groupIds/any(g:g in (" + memberDepotEntry.getGroupId() +
 					"))"));
 
-		// A user who is not a member of any space sees no space's assets
+		// A user outside every space sees no space's object entries
 
 		User user2 = UserTestUtil.addUser();
 

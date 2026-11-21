@@ -335,7 +335,7 @@ public class ObjectEntryModelListenerTest {
 	@Test
 	public void testOnBeforeCreate() throws Exception {
 
-		// A member of the linked asset's space can link the asset
+		// A member of the linked object entry's space can link it
 
 		ObjectEntry cmpTaskObjectEntry = CMPTestUtil.addCMPTaskObjectEntry();
 
@@ -353,8 +353,8 @@ public class ObjectEntryModelListenerTest {
 				cmpTaskObjectEntry, cmsBasicWebContentObjectEntry,
 				user1.getUserId()));
 
-		// A user who is not a member of the linked asset's space cannot link
-		// the asset
+		// A user who is not a member of the linked object entry's space cannot
+		// link it
 
 		User user2 = UserTestUtil.addUser(cmpTaskObjectEntry.getGroupId());
 
@@ -371,7 +371,7 @@ public class ObjectEntryModelListenerTest {
 			Assert.assertEquals(
 				StringBundler.concat(
 					"User ", user2.getUserId(), " must be a member of space ",
-					_depotEntry.getGroupId(), " to link its assets"),
+					_depotEntry.getGroupId(), " to link its object entries"),
 				throwable.getMessage());
 		}
 	}
@@ -436,8 +436,8 @@ public class ObjectEntryModelListenerTest {
 	@Test
 	public void testOnBeforeUpdate() throws Exception {
 
-		// A member of the linked asset's space can repoint another user's link
-		// to an asset in that space
+		// A member of the linked object entry's space can repoint another
+		// user's link to an object entry in that space
 
 		ObjectEntry cmpTaskObjectEntry = CMPTestUtil.addCMPTaskObjectEntry();
 
@@ -477,8 +477,8 @@ public class ObjectEntryModelListenerTest {
 					depotEntry, RandomTestUtil.randomString()),
 				user2.getUserId()));
 
-		// A user who is not a member of the linked asset's space cannot repoint
-		// another user's link to that asset
+		// A user who is not a member of the linked object entry's space cannot
+		// repoint another user's link to that object entry
 
 		try {
 			_updateCMPTaskLinkObjectEntry(
@@ -495,12 +495,12 @@ public class ObjectEntryModelListenerTest {
 			Assert.assertEquals(
 				StringBundler.concat(
 					"User ", user2.getUserId(), " must be a member of space ",
-					_depotEntry.getGroupId(), " to link its assets"),
+					_depotEntry.getGroupId(), " to link its object entries"),
 				throwable.getMessage());
 		}
 
-		// With no principal, a link can be repointed to an asset in its owner's
-		// space
+		// With no principal, a link can be repointed to an object entry in its
+		// owner's space
 
 		ObjectEntry cmsBasicWebContentObjectEntry =
 			CMPTestUtil.addCMSBasicWebContentObjectEntry(
