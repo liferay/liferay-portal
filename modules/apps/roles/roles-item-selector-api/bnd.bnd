@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Roles Item Selector API
 Bundle-SymbolicName: com.liferay.roles.item.selector.api
-Bundle-Version: 5.0.2
+Bundle-Version: 5.0.3
 Export-Package: com.liferay.roles.item.selector
