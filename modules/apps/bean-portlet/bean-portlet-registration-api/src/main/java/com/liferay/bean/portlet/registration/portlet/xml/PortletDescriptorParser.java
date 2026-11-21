@@ -11,7 +11,6 @@ import com.liferay.bean.portlet.extension.BeanPortletMethodType;
 import com.liferay.bean.portlet.registration.portlet.BeanPortlet;
 import com.liferay.bean.portlet.registration.portlet.BeanPortletImpl;
 import com.liferay.bean.portlet.registration.portlet.Event;
-import com.liferay.bean.portlet.registration.portlet.EventImpl;
 import com.liferay.bean.portlet.registration.portlet.MultipartConfig;
 import com.liferay.bean.portlet.registration.portlet.PortletDependency;
 import com.liferay.bean.portlet.registration.portlet.Preference;
@@ -231,7 +230,7 @@ public class PortletDescriptorParser {
 				defaultNamespace, qNameElement, nameElement);
 
 			events.add(
-				new EventImpl(
+				new Event(
 					TransformUtil.transform(
 						eventDefinitionElement.elements("alias"),
 						alias -> PortletQNameUtil.getQName(

@@ -12,12 +12,28 @@ import javax.xml.namespace.QName;
 /**
  * @author Neil Griffin
  */
-public interface Event {
+public class Event {
 
-	public List<QName> getAliasQNames();
+	public Event(List<QName> aliasQNames, QName qName, String valueType) {
+		_aliasQNames = aliasQNames;
+		_qName = qName;
+		_valueType = valueType;
+	}
 
-	public QName getQName();
+	public List<QName> getAliasQNames() {
+		return _aliasQNames;
+	}
 
-	public String getValueType();
+	public QName getQName() {
+		return _qName;
+	}
+
+	public String getValueType() {
+		return _valueType;
+	}
+
+	private final List<QName> _aliasQNames;
+	private final QName _qName;
+	private final String _valueType;
 
 }
