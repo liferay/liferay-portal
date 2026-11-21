@@ -9,7 +9,6 @@ import com.liferay.bean.portlet.extension.BeanPortletMethod;
 import com.liferay.bean.portlet.extension.BeanPortletMethodFactory;
 import com.liferay.bean.portlet.extension.BeanPortletMethodType;
 import com.liferay.bean.portlet.registration.portlet.BeanPortlet;
-import com.liferay.bean.portlet.registration.portlet.BeanPortletImpl;
 import com.liferay.bean.portlet.registration.portlet.Event;
 import com.liferay.bean.portlet.registration.portlet.MultipartConfig;
 import com.liferay.bean.portlet.registration.portlet.PortletDependency;
@@ -587,7 +586,7 @@ public class PortletDescriptorParser {
 					-1));
 		}
 
-		return new BeanPortletImpl(
+		return new BeanPortlet(
 			asyncSupported, beanMethodMap, containerRuntimeOptions,
 			descriptions, categoryName, displayNames, expirationCache,
 			initParams, keywords, liferayConfiguration, multipartConfig,

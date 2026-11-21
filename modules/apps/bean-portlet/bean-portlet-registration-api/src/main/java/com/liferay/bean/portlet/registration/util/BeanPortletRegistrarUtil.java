@@ -14,7 +14,6 @@ import com.liferay.bean.portlet.extension.BeanPortletMethodFactory;
 import com.liferay.bean.portlet.extension.BeanPortletMethodInvoker;
 import com.liferay.bean.portlet.extension.BeanPortletMethodType;
 import com.liferay.bean.portlet.registration.portlet.BeanPortlet;
-import com.liferay.bean.portlet.registration.portlet.BeanPortletImpl;
 import com.liferay.bean.portlet.registration.portlet.DiscoveredBeanMethod;
 import com.liferay.bean.portlet.registration.portlet.Event;
 import com.liferay.bean.portlet.registration.portlet.MultipartConfig;
@@ -752,7 +751,7 @@ public class BeanPortletRegistrarUtil {
 		}
 
 		if (descriptorBeanPortlet == null) {
-			BeanPortlet annotatedBeanPortlet = new BeanPortletImpl(
+			BeanPortlet annotatedBeanPortlet = new BeanPortlet(
 				portletConfiguration.asyncSupported(), beanMethodMap,
 				containerRuntimeOptions, descriptions, displayCategory,
 				displayNames, portletConfiguration.cacheExpirationTime(),
@@ -905,7 +904,7 @@ public class BeanPortletRegistrarUtil {
 			liferayConfiguration.putAll(descriptorLiferayConfiguration);
 		}
 
-		BeanPortlet mergedBeanPortlet = new BeanPortletImpl(
+		BeanPortlet mergedBeanPortlet = new BeanPortlet(
 			asyncSupport, beanMethodMap, containerRuntimeOptions, descriptions,
 			displayCategory, displayNames, expirationCache, initParams,
 			keywords, liferayConfiguration, multipartConfig, portletClassName,
@@ -1013,7 +1012,7 @@ public class BeanPortletRegistrarUtil {
 				beanMethodMap, supportedProcessingEvents,
 				supportedPublishingEvents);
 
-			beanPortlet = new BeanPortletImpl(
+			beanPortlet = new BeanPortlet(
 				beanMethodMap, descriptorDisplayCategories.get(portletName),
 				entry.getValue(), portletName, supportedProcessingEvents,
 				supportedPublishingEvents);
@@ -1060,7 +1059,7 @@ public class BeanPortletRegistrarUtil {
 				beanMethodMap, supportedProcessingEvents,
 				supportedPublishingEvents);
 
-			beanPortlet = new BeanPortletImpl(
+			beanPortlet = new BeanPortlet(
 				beanMethodMap, descriptorDisplayCategories.get(portletName),
 				descriptorLiferayConfigurations.get(portletName), portletName,
 				supportedProcessingEvents, supportedPublishingEvents);
