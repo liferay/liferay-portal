@@ -23,7 +23,7 @@ import org.osgi.framework.Constants;
 /**
  * @author Shuyang Zhou
  */
-public class BeanFilterImplTest {
+public class BeanFilterTest {
 
 	@ClassRule
 	@Rule
@@ -34,12 +34,12 @@ public class BeanFilterImplTest {
 	public void testToDictionary() {
 		int ordinal = RandomTestUtil.randomInt();
 
-		BeanFilterImpl beanFilterImpl = new BeanFilterImpl(
+		BeanFilter beanFilter = new BeanFilter(
 			RenderFilter.class, RandomTestUtil.randomString(),
 			Collections.emptyMap(), Collections.emptySet(), ordinal,
 			Collections.emptySet());
 
-		Dictionary<String, Object> dictionary = beanFilterImpl.toDictionary();
+		Dictionary<String, Object> dictionary = beanFilter.toDictionary();
 
 		Assert.assertEquals(
 			dictionary.toString(), ordinal,

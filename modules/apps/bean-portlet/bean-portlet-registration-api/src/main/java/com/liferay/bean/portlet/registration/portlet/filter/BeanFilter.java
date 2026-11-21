@@ -5,29 +5,90 @@
 
 package com.liferay.bean.portlet.registration.portlet.filter;
 
+import com.liferay.portal.kernel.util.HashMapDictionary;
+
 import jakarta.portlet.filter.PortletFilter;
 
 import java.util.Dictionary;
 import java.util.Map;
 import java.util.Set;
 
+import org.osgi.framework.Constants;
+
 /**
  * @author Neil Griffin
  */
-public interface BeanFilter {
+public class BeanFilter {
 
-	public Class<? extends PortletFilter> getFilterClass();
+	public BeanFilter(
+		Class<? extends PortletFilter> filterClass, String filterName,
+		Map<String, String> initParams, Set<String> lifecycles, int ordinal,
+		Set<String> portletNames) {
 
-	public String getFilterName();
+		_filterClass = filterClass;
+		_filterName = filterName;
+		_initParams = initParams;
+		_lifecycles = lifecycles;
+		_ordinal = ordinal;
+		_portletNames = portletNames;
+	}
 
-	public Map<String, String> getInitParams();
+	public Class<? extends PortletFilter> getFilterClass() {
+		return _filterClass;
+	}
 
-	public Set<String> getLifecycles();
+	public String getFilterName() {
+		return _filterName;
+	}
 
-	public int getOrdinal();
+	public Map<String, String> getInitParams() {
+		return _initParams;
+	}
 
-	public Set<String> getPortletNames();
+	public Set<String> getLifecycles() {
+		return _lifecycles;
+	}
 
-	public Dictionary<String, Object> toDictionary();
+	public int getOrdinal() {
+		return _ordinal;
+	}
+
+	public Set<String> getPortletNames() {
+		return _portletNames;
+	}
+
+	public Dictionary<String, Object> toDictionary() {
+		Dictionary<String, Object> dictionary = new HashMapDictionary<>();
+
+		Set<String> lifecycles = getLifecycles();
+
+		if (!lifecycles.isEmpty()) {
+			dictionary.put("filter.lifecycles", lifecycles);
+		}
+
+		Map<String, String> initParams = getInitParams();
+
+		for (Map.Entry<String, String> entry : initParams.entrySet()) {
+			String value = entry.getValue();
+
+			if (value == null) {
+				continue;
+			}
+
+			dictionary.put(
+				"jakarta.portlet.init-param.".concat(entry.getKey()), value);
+		}
+
+		dictionary.put(Constants.SERVICE_RANKING, getOrdinal());
+
+		return dictionary;
+	}
+
+	private final Class<? extends PortletFilter> _filterClass;
+	private final String _filterName;
+	private final Map<String, String> _initParams;
+	private final Set<String> _lifecycles;
+	private final int _ordinal;
+	private final Set<String> _portletNames;
 
 }

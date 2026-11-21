@@ -23,7 +23,6 @@ import com.liferay.bean.portlet.registration.portlet.Preference;
 import com.liferay.bean.portlet.registration.portlet.PublicRenderParameter;
 import com.liferay.bean.portlet.registration.portlet.app.BeanApp;
 import com.liferay.bean.portlet.registration.portlet.filter.BeanFilter;
-import com.liferay.bean.portlet.registration.portlet.filter.BeanFilterImpl;
 import com.liferay.bean.portlet.registration.portlet.util.BeanMethodIndexUtil;
 import com.liferay.bean.portlet.registration.portlet.util.PortletQNameUtil;
 import com.liferay.bean.portlet.registration.portlet.util.PortletScannerUtil;
@@ -404,7 +403,7 @@ public class BeanPortletRegistrarUtil {
 			BeanFilter beanFilter = beanFilters.get(filterName);
 
 			if (beanFilter == null) {
-				beanFilter = new BeanFilterImpl(
+				beanFilter = new BeanFilter(
 					discoveredClass.asSubclass(PortletFilter.class), filterName,
 					initParams, lifecycles, portletLifecycleFilter.ordinal(),
 					portletNames);
@@ -416,7 +415,7 @@ public class BeanPortletRegistrarUtil {
 
 				initParams.putAll(beanFilter.getInitParams());
 
-				beanFilter = new BeanFilterImpl(
+				beanFilter = new BeanFilter(
 					beanFilter.getFilterClass(), beanFilter.getFilterName(),
 					initParams, lifecycles, beanFilter.getOrdinal(),
 					portletNames);
