@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Reading Time Editor Plugin
 Bundle-SymbolicName: com.liferay.reading.time.editor.plugin
-Bundle-Version: 4.0.8
+Bundle-Version: 4.0.9
 Fragment-Host: com.liferay.frontend.editor.ckeditor.web
