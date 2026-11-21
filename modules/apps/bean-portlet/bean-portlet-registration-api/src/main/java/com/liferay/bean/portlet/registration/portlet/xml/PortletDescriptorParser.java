@@ -16,7 +16,6 @@ import com.liferay.bean.portlet.registration.portlet.PortletDependency;
 import com.liferay.bean.portlet.registration.portlet.Preference;
 import com.liferay.bean.portlet.registration.portlet.PublicRenderParameter;
 import com.liferay.bean.portlet.registration.portlet.app.BeanApp;
-import com.liferay.bean.portlet.registration.portlet.app.BeanAppImpl;
 import com.liferay.bean.portlet.registration.portlet.filter.BeanFilter;
 import com.liferay.bean.portlet.registration.portlet.filter.BeanFilterImpl;
 import com.liferay.bean.portlet.registration.portlet.util.BeanMethodIndexUtil;
@@ -304,7 +303,7 @@ public class PortletDescriptorParser {
 					ordinal, listenerClassName));
 		}
 
-		return new BeanAppImpl(
+		return new BeanApp(
 			containerRuntimeOptions, validCustomPortletModes, defaultNamespace,
 			events, portletListeners, publicRenderParameters, specVersion);
 	}

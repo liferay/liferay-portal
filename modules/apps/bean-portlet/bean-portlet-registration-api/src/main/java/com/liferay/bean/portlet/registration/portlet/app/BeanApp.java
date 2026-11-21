@@ -15,37 +15,92 @@ import java.util.Set;
 /**
  * @author Neil Griffin
  */
-public interface BeanApp {
+public class BeanApp {
 
-	public Map<String, List<String>> getContainerRuntimeOptions();
+	public BeanApp(
+		Map<String, List<String>> containerRuntimeOptions,
+		Set<String> customPortletModes, String defaultNamespace,
+		List<Event> events, List<Map.Entry<Integer, String>> portletListeners,
+		Map<String, PublicRenderParameter> publicRenderParameters,
+		String specVersion) {
 
-	public Set<String> getCustomPortletModes();
+		_containerRuntimeOptions = containerRuntimeOptions;
+		_customPortletModes = customPortletModes;
+		_defaultNamespace = defaultNamespace;
+		_events = events;
+		_portletListeners = portletListeners;
+		_publicRenderParameters = publicRenderParameters;
+		_specVersion = specVersion;
+	}
 
-	public String getDefaultNamespace();
+	public Map<String, List<String>> getContainerRuntimeOptions() {
+		return _containerRuntimeOptions;
+	}
 
-	public List<Event> getEvents();
+	public Set<String> getCustomPortletModes() {
+		return _customPortletModes;
+	}
 
-	public List<Map.Entry<Integer, String>> getPortletListeners();
+	public String getDefaultNamespace() {
+		return _defaultNamespace;
+	}
 
-	public Map<String, PublicRenderParameter> getPublicRenderParameters();
+	public List<Event> getEvents() {
+		return _events;
+	}
 
-	public String getSpecVersion();
+	public List<Map.Entry<Integer, String>> getPortletListeners() {
+		return _portletListeners;
+	}
+
+	public Map<String, PublicRenderParameter> getPublicRenderParameters() {
+		return _publicRenderParameters;
+	}
+
+	public String getSpecVersion() {
+		return _specVersion;
+	}
 
 	public void setContainerRuntimeOptions(
-		Map<String, List<String>> containerRuntimeOptions);
+		Map<String, List<String>> containerRuntimeOptions) {
 
-	public void setCustomPortletModes(Set<String> customPortletModes);
+		_containerRuntimeOptions = containerRuntimeOptions;
+	}
 
-	public void setDefaultNamespace(String defaultNamespace);
+	public void setCustomPortletModes(Set<String> customPortletModes) {
+		_customPortletModes = customPortletModes;
+	}
 
-	public void setEvents(List<Event> events);
+	public void setDefaultNamespace(String defaultNamespace) {
+		_defaultNamespace = defaultNamespace;
+	}
+
+	public void setEvents(List<Event> events) {
+		_events = events;
+	}
 
 	public void setPortletListeners(
-		List<Map.Entry<Integer, String>> portletListeners);
+		List<Map.Entry<Integer, String>> portletListeners) {
+
+		_portletListeners = portletListeners;
+	}
 
 	public void setPublicRenderParameters(
-		Map<String, PublicRenderParameter> publicRenderParameters);
+		Map<String, PublicRenderParameter> publicRenderParameters) {
 
-	public void setSpecVersion(String specVersion);
+		_publicRenderParameters = publicRenderParameters;
+	}
+
+	public void setSpecVersion(String specVersion) {
+		_specVersion = specVersion;
+	}
+
+	private Map<String, List<String>> _containerRuntimeOptions;
+	private Set<String> _customPortletModes;
+	private String _defaultNamespace;
+	private List<Event> _events;
+	private List<Map.Entry<Integer, String>> _portletListeners;
+	private Map<String, PublicRenderParameter> _publicRenderParameters;
+	private String _specVersion;
 
 }
