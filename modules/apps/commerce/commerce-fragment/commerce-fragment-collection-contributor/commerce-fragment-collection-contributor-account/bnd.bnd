@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Commerce Fragment Collection Contributor Account
 Bundle-SymbolicName: com.liferay.commerce.fragment.collection.contributor.account
-Bundle-Version: 1.0.4
+Bundle-Version: 1.0.5
 Web-ContextPath: /commerce-fragment-collection-contributor-account
 -dsannotations-options: inherit
