@@ -191,7 +191,9 @@ public class CompanyIndexHelper {
 							companyIndexConfigurationContributor =
 								bundleContext.getService(serviceReference);
 
-						_processCompanyIndexConfigurationContributor(
+						_processCompanyIndexSettingsContributor(
+							companyIndexConfigurationContributor);
+						_processCompanyIndexMappingsContributor(
 							companyIndexConfigurationContributor);
 
 						return companyIndexConfigurationContributor;
@@ -291,6 +293,22 @@ public class CompanyIndexHelper {
 		}
 	}
 
+	private ElasticsearchIndicesClient _getElasticsearchIndicesClient() {
+		try {
+			ElasticsearchClient elasticsearchClient =
+				_elasticsearchConnectionManager.getElasticsearchClient();
+
+			return elasticsearchClient.indices();
+		}
+		catch (ElasticsearchConnectionNotInitializedException
+					elasticsearchConnectionNotInitializedException) {
+
+			_log.error(elasticsearchConnectionNotInitializedException);
+		}
+
+		return null;
+	}
+
 	private IndexSettings _getIndexSettings(String settingsJSON) {
 		JsonpMapper jsonpMapper =
 			_elasticsearchConnectionManager.getJsonpMapper(null);
@@ -370,31 +388,44 @@ public class CompanyIndexHelper {
 		settingsHelperImpl.put("index.translog.sync_interval", "100ms");
 	}
 
-	private void _processCompanyIndexConfigurationContributor(
+	private void _processCompanyIndexMappingsContributor(
 		CompanyIndexConfigurationContributor
 			companyIndexConfigurationContributor) {
 
-		ElasticsearchClient elasticsearchClient = null;
+		ElasticsearchIndicesClient elasticsearchIndicesClient =
+			_getElasticsearchIndicesClient();
 
-		try {
-			elasticsearchClient =
-				_elasticsearchConnectionManager.getElasticsearchClient();
-		}
-		catch (ElasticsearchConnectionNotInitializedException
-					elasticsearchConnectionNotInitializedException) {
-
-			_log.error(elasticsearchConnectionNotInitializedException);
-
+		if (elasticsearchIndicesClient == null) {
 			return;
 		}
-
-		ElasticsearchIndicesClient elasticsearchIndicesClient =
-			elasticsearchClient.indices();
 
 		for (long companyId :
 				IndexFactoryCompanyIdRegistryUtil.getCompanyIds()) {
 
-			String indexName = getIndexName(companyId);
+			companyIndexConfigurationContributor.contributeMappings(
+				companyId,
+				new MappingsHelperImpl(
+					elasticsearchIndicesClient, getIndexName(companyId),
+					_jsonFactory,
+					_elasticsearchConnectionManager.getJsonpMapper(null),
+					_elasticsearchConfigurationWrapper.overrideTypeMappings(),
+					_searchEngineInformation));
+		}
+	}
+
+	private void _processCompanyIndexSettingsContributor(
+		CompanyIndexConfigurationContributor
+			companyIndexConfigurationContributor) {
+
+		ElasticsearchIndicesClient elasticsearchIndicesClient =
+			_getElasticsearchIndicesClient();
+
+		if (elasticsearchIndicesClient == null) {
+			return;
+		}
+
+		for (long companyId :
+				IndexFactoryCompanyIdRegistryUtil.getCompanyIds()) {
 
 			SettingsHelperImpl settingsHelperImpl = new SettingsHelperImpl();
 
@@ -404,38 +435,34 @@ public class CompanyIndexHelper {
 			JSONObject settingsJSONObject =
 				settingsHelperImpl.getSettingsJSONObject();
 
-			if (SetUtil.isNotEmpty(settingsJSONObject.keySet())) {
-				try {
-					elasticsearchIndicesClient.close(
-						CloseIndexRequest.of(
-							closeIndexRequest -> closeIndexRequest.index(
-								indexName)));
-
-					elasticsearchIndicesClient.putSettings(
-						_buildPutIndicesSettingsRequest(
-							indexName, settingsJSONObject.toString()));
-
-					elasticsearchIndicesClient.open(
-						OpenRequest.of(
-							openRequest -> openRequest.index(indexName)));
-				}
-				catch (Exception exception) {
-					_log.error(
-						StringBundler.concat(
-							"Unable to put settings for index ", indexName,
-							" with contributor ",
-							companyIndexConfigurationContributor),
-						exception);
-				}
+			if (SetUtil.isEmpty(settingsJSONObject.keySet())) {
+				continue;
 			}
 
-			companyIndexConfigurationContributor.contributeMappings(
-				companyId,
-				new MappingsHelperImpl(
-					elasticsearchIndicesClient, indexName, _jsonFactory,
-					_elasticsearchConnectionManager.getJsonpMapper(null),
-					_elasticsearchConfigurationWrapper.overrideTypeMappings(),
-					_searchEngineInformation));
+			String indexName = getIndexName(companyId);
+
+			try {
+				elasticsearchIndicesClient.close(
+					CloseIndexRequest.of(
+						closeIndexRequest -> closeIndexRequest.index(
+							indexName)));
+
+				elasticsearchIndicesClient.putSettings(
+					_buildPutIndicesSettingsRequest(
+						indexName, settingsJSONObject.toString()));
+
+				elasticsearchIndicesClient.open(
+					OpenRequest.of(
+						openRequest -> openRequest.index(indexName)));
+			}
+			catch (Exception exception) {
+				_log.error(
+					StringBundler.concat(
+						"Unable to put settings for index ", indexName,
+						" with contributor ",
+						companyIndexConfigurationContributor),
+					exception);
+			}
 		}
 	}
 
