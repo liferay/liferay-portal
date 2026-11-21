@@ -1637,51 +1637,7 @@ public class ProjectFaroController extends BaseFaroController {
 				faroProject);
 		}
 
-		ProjectDisplay projectDisplay = new ProjectDisplay(faroProject);
-
-		Group group = _groupLocalService.getGroup(faroProject.getGroupId());
-
-		String friendlyURL = group.getFriendlyURL();
-
-		if (!StringUtil.equals(
-				friendlyURL,
-				FaroProjectUtil.getDefaultFriendlyURL(group.getGroupId()))) {
-
-			projectDisplay.setFriendlyURL(friendlyURL);
-		}
-
-		Map<String, Object> globalStateMap = projectHelper.getGlobalStateMap(
-			faroProject);
-
-		if (globalStateMap == null) {
-			return projectDisplay;
-		}
-
-		String state = (String)globalStateMap.get("state");
-
-		if (StringUtil.equals(
-				projectDisplay.getState(),
-				FaroProjectConstants.STATE_UNAVAILABLE) &&
-			StringUtil.equals(state, FaroProjectConstants.STATE_SCHEDULED)) {
-
-			return projectDisplay;
-		}
-		else if (StringUtil.equals(
-					projectDisplay.getState(),
-					FaroProjectConstants.STATE_READY) &&
-				 StringUtil.equals(
-					 state, FaroProjectConstants.STATE_MAINTENANCE)) {
-
-			projectHelper.deleteGlobalState(faroProject.getGroupId());
-
-			return projectDisplay;
-		}
-
-		projectDisplay.setState(state);
-		projectDisplay.setStateEndDate((Date)globalStateMap.get("endDate"));
-		projectDisplay.setStateStartDate((Date)globalStateMap.get("startDate"));
-
-		return projectDisplay;
+		return projectHelper.getProjectDisplay(faroProject);
 	}
 
 	private ProjectDisplay _getProjectDisplayBySalesforceAccountId(

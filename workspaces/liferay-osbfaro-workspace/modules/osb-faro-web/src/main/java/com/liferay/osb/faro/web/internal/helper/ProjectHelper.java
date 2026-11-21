@@ -5,14 +5,21 @@
 
 package com.liferay.osb.faro.web.internal.helper;
 
+import com.liferay.osb.faro.constants.FaroProjectConstants;
 import com.liferay.osb.faro.engine.client.model.LCPProject;
 import com.liferay.osb.faro.model.FaroProject;
 import com.liferay.osb.faro.service.FaroProjectLocalService;
+import com.liferay.osb.faro.util.FaroProjectUtil;
+import com.liferay.osb.faro.web.internal.model.display.contacts.ProjectDisplay;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,6 +61,55 @@ public class ProjectHelper {
 		return _globalStateMaps.get(faroProject.getGroupId());
 	}
 
+	public ProjectDisplay getProjectDisplay(FaroProject faroProject)
+		throws PortalException {
+
+		ProjectDisplay projectDisplay = new ProjectDisplay(faroProject);
+
+		Group group = _groupLocalService.getGroup(faroProject.getGroupId());
+
+		String friendlyURL = group.getFriendlyURL();
+
+		if (!StringUtil.equals(
+				friendlyURL,
+				FaroProjectUtil.getDefaultFriendlyURL(group.getGroupId()))) {
+
+			projectDisplay.setFriendlyURL(friendlyURL);
+		}
+
+		Map<String, Object> globalStateMap = getGlobalStateMap(faroProject);
+
+		if (globalStateMap == null) {
+			return projectDisplay;
+		}
+
+		String state = (String)globalStateMap.get("state");
+
+		if (StringUtil.equals(
+				projectDisplay.getState(),
+				FaroProjectConstants.STATE_UNAVAILABLE) &&
+			StringUtil.equals(state, FaroProjectConstants.STATE_SCHEDULED)) {
+
+			return projectDisplay;
+		}
+		else if (StringUtil.equals(
+					projectDisplay.getState(),
+					FaroProjectConstants.STATE_READY) &&
+				 StringUtil.equals(
+					 state, FaroProjectConstants.STATE_MAINTENANCE)) {
+
+			deleteGlobalState(faroProject.getGroupId());
+
+			return projectDisplay;
+		}
+
+		projectDisplay.setState(state);
+		projectDisplay.setStateEndDate((Date)globalStateMap.get("endDate"));
+		projectDisplay.setStateStartDate((Date)globalStateMap.get("startDate"));
+
+		return projectDisplay;
+	}
+
 	private List<Long> _getGroupIds(List<String> keys) {
 		String key = keys.get(0);
 
@@ -83,5 +139,8 @@ public class ProjectHelper {
 
 	@Reference
 	private FaroProjectLocalService _faroProjectLocalService;
+
+	@Reference
+	private GroupLocalService _groupLocalService;
 
 }
