@@ -10,10 +10,22 @@ import javax.xml.namespace.QName;
 /**
  * @author Neil Griffin
  */
-public interface PublicRenderParameter {
+public class PublicRenderParameter {
 
-	public String getIdentifier();
+	public PublicRenderParameter(String identifier, QName qName) {
+		_identifier = identifier;
+		_qName = qName;
+	}
 
-	public QName getQName();
+	public String getIdentifier() {
+		return _identifier;
+	}
+
+	public QName getQName() {
+		return _qName;
+	}
+
+	private final String _identifier;
+	private final QName _qName;
 
 }

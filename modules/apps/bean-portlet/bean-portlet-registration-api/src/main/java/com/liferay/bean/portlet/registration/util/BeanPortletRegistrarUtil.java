@@ -21,7 +21,6 @@ import com.liferay.bean.portlet.registration.portlet.MultipartConfig;
 import com.liferay.bean.portlet.registration.portlet.PortletDependency;
 import com.liferay.bean.portlet.registration.portlet.Preference;
 import com.liferay.bean.portlet.registration.portlet.PublicRenderParameter;
-import com.liferay.bean.portlet.registration.portlet.PublicRenderParameterImpl;
 import com.liferay.bean.portlet.registration.portlet.app.BeanApp;
 import com.liferay.bean.portlet.registration.portlet.app.BeanAppImpl;
 import com.liferay.bean.portlet.registration.portlet.filter.BeanFilter;
@@ -516,7 +515,7 @@ public class BeanPortletRegistrarUtil {
 			PortletQName portletQName = publicRenderParameterDefinition.qname();
 
 			PublicRenderParameter publicRenderParameter =
-				new PublicRenderParameterImpl(
+				new PublicRenderParameter(
 					publicRenderParameterDefinition.identifier(),
 					new QName(
 						portletQName.namespaceURI(), portletQName.localPart()));
