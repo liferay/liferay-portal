@@ -9,7 +9,6 @@ import com.liferay.dynamic.data.mapping.storage.DDMFormFieldValue;
 import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
 import com.liferay.portal.kernel.util.ListUtil;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -60,35 +59,6 @@ public class DDMFormValuesFilter {
 			ddmFormFieldValues.addAll(
 				ddmFormFieldValue.getNestedDDMFormFieldValues());
 		}
-	}
-
-	private List<DDMFormFieldValue> _getDDMFormFieldValues(
-		DDMFormFieldValue ddmFormFieldValue) {
-
-		List<DDMFormFieldValue> ddmFormFieldValues = new ArrayList<>();
-
-		ddmFormFieldValues.add(ddmFormFieldValue);
-
-		if (_greedy) {
-			ddmFormFieldValues.addAll(
-				_getDDMFormFieldValues(
-					ddmFormFieldValue.getNestedDDMFormFieldValues()));
-		}
-
-		return ddmFormFieldValues;
-	}
-
-	private List<DDMFormFieldValue> _getDDMFormFieldValues(
-		List<DDMFormFieldValue> baseDDMFormFieldValues) {
-
-		List<DDMFormFieldValue> ddmFormFieldValues = new ArrayList<>();
-
-		for (DDMFormFieldValue ddmFormFieldValue : baseDDMFormFieldValues) {
-			ddmFormFieldValues.addAll(
-				_getDDMFormFieldValues(ddmFormFieldValue));
-		}
-
-		return ddmFormFieldValues;
 	}
 
 	private DDMFormFieldValueMatcher _ddmFormFieldValueMatcher;
