@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Commerce Product Subscription Type Web
 Bundle-SymbolicName: com.liferay.commerce.product.subscription.type.web
-Bundle-Version: 4.0.26
+Bundle-Version: 4.0.27
 Web-ContextPath: /commerce-product-subscription-type-web
