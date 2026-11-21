@@ -542,14 +542,14 @@ public class JavaComponentAnnotationsCheck extends JavaAnnotationsCheck {
 		if (absolutePath.contains("-test/") ||
 			absolutePath.contains("-test-util/")) {
 
-			return annotation;
+			return _removeEnabledAttribute(annotation);
 		}
 
 		List<String> enterpriseAppModulePathNames = getAttributeValues(
 			_ENTERPRISE_APP_MODULE_PATH_NAMES_KEY, absolutePath);
 
 		if (enterpriseAppModulePathNames.isEmpty()) {
-			return annotation;
+			return _removeEnabledAttribute(annotation);
 		}
 
 		for (String enterpriseAppModulePathName :
@@ -565,9 +565,11 @@ public class JavaComponentAnnotationsCheck extends JavaAnnotationsCheck {
 			if (enabledAttributeValue == null) {
 				return _addAttribute(annotation, "enabled", "false");
 			}
+
+			return annotation;
 		}
 
-		return annotation;
+		return _removeEnabledAttribute(annotation);
 	}
 
 	private String _formatMVCPortletPropertyAttribute(
@@ -899,6 +901,24 @@ public class JavaComponentAnnotationsCheck extends JavaAnnotationsCheck {
 		return true;
 	}
 
+	private String _removeEnabledAttribute(String annotation) {
+		Matcher matcher = _enabledTrueAttributePattern.matcher(annotation);
+
+		if (!matcher.find()) {
+			return annotation;
+		}
+
+		if (Objects.equals(matcher.group(1), StringPool.COMMA)) {
+			return matcher.replaceFirst("$2");
+		}
+
+		if (Objects.equals(matcher.group(2), StringPool.COMMA)) {
+			return matcher.replaceFirst("$1");
+		}
+
+		return matcher.replaceFirst(StringPool.BLANK);
+	}
+
 	private String _removePropertyAttribute(String annotation) {
 		if (!annotation.contains("(")) {
 			return annotation;
@@ -979,6 +999,8 @@ public class JavaComponentAnnotationsCheck extends JavaAnnotationsCheck {
 		Pattern.compile("\\s(\\w+) = \\{");
 	private static final Pattern _attributePattern = Pattern.compile(
 		"\\W(\\w+)\\s*=");
+	private static final Pattern _enabledTrueAttributePattern = Pattern.compile(
+		"(\\(|,)\\s*enabled = true\\s*(\\)|,)");
 
 	private String _rootDirName;
 

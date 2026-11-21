@@ -132,6 +132,14 @@ public class JavaSourceProcessorTest extends BaseSourceProcessorTestCase {
 	}
 
 	@Test
+	public void testComponentEnabledAttribute() throws Exception {
+		test("ComponentEnabledAttribute1.testjava");
+		test("ComponentEnabledAttribute2.testjava");
+		test("ComponentEnabledAttribute3.testjava");
+		test("ComponentEnabledAttribute4.testjava");
+	}
+
+	@Test
 	public void testConstructorParameterOrder() throws Exception {
 		test("ConstructorParameterOrder.testjava");
 	}
