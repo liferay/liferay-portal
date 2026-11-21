@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Blogs UAD
 Bundle-SymbolicName: com.liferay.blogs.uad
-Bundle-Version: 6.0.18
+Bundle-Version: 6.0.19
 -dsannotations-options: inherit
