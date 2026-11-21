@@ -5,11 +5,15 @@
 
 package com.liferay.comment.taglib.internal.context;
 
+import com.liferay.comment.taglib.internal.context.helper.DiscussionRequestHelper;
+import com.liferay.comment.taglib.internal.context.helper.DiscussionTaglibHelper;
 import com.liferay.portal.kernel.comment.Discussion;
 import com.liferay.portal.kernel.comment.DiscussionComment;
 import com.liferay.portal.kernel.comment.DiscussionPermission;
+import com.liferay.portal.kernel.comment.display.context.CommentDisplayContextFactory;
 import com.liferay.portal.kernel.comment.display.context.CommentSectionDisplayContext;
 import com.liferay.portal.kernel.comment.display.context.CommentTreeDisplayContext;
+import com.liferay.portal.kernel.display.context.BaseDisplayContextProvider;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -24,9 +28,26 @@ public class CommentDisplayContextProviderUtil {
 		HttpServletResponse httpServletResponse,
 		DiscussionPermission discussionPermission, Discussion discussion) {
 
-		return _commentDisplayContextProvider.getCommentSectionDisplayContext(
-			httpServletRequest, httpServletResponse, discussionPermission,
-			discussion);
+		DiscussionRequestHelper discussionRequestHelper =
+			new DiscussionRequestHelper(httpServletRequest);
+		DiscussionTaglibHelper discussionTaglibHelper =
+			new DiscussionTaglibHelper(httpServletRequest);
+
+		CommentSectionDisplayContext commentSectionDisplayContext =
+			new DefaultCommentSectionDisplayContext(
+				discussionRequestHelper, discussionTaglibHelper,
+				discussionPermission, discussion);
+
+		for (CommentDisplayContextFactory commentDisplayContextFactory :
+				_baseDisplayContextProvider.getDisplayContextFactories()) {
+
+			commentSectionDisplayContext =
+				commentDisplayContextFactory.getCommentSectionDisplayContext(
+					commentSectionDisplayContext, httpServletRequest,
+					httpServletResponse, discussionPermission, discussion);
+		}
+
+		return commentSectionDisplayContext;
 	}
 
 	public static CommentTreeDisplayContext getCommentTreeDisplayContext(
@@ -35,12 +56,32 @@ public class CommentDisplayContextProviderUtil {
 		DiscussionPermission discussionPermission,
 		DiscussionComment discussionComment) {
 
-		return _commentDisplayContextProvider.getCommentTreeDisplayContext(
-			httpServletRequest, httpServletResponse, discussionPermission,
-			discussionComment);
+		DiscussionRequestHelper discussionRequestHelper =
+			new DiscussionRequestHelper(httpServletRequest);
+		DiscussionTaglibHelper discussionTaglibHelper =
+			new DiscussionTaglibHelper(httpServletRequest);
+
+		CommentTreeDisplayContext commentTreeDisplayContext =
+			new DefaultCommentTreeDisplayContext(
+				discussionRequestHelper, discussionTaglibHelper,
+				discussionPermission, discussionComment);
+
+		for (CommentDisplayContextFactory commentDisplayContextFactory :
+				_baseDisplayContextProvider.getDisplayContextFactories()) {
+
+			commentTreeDisplayContext =
+				commentDisplayContextFactory.getCommentTreeDisplayContext(
+					commentTreeDisplayContext, httpServletRequest,
+					httpServletResponse, discussionPermission,
+					discussionComment);
+		}
+
+		return commentTreeDisplayContext;
 	}
 
-	private static final CommentDisplayContextProvider
-		_commentDisplayContextProvider = new CommentDisplayContextProvider();
+	private static final BaseDisplayContextProvider
+		<CommentDisplayContextFactory> _baseDisplayContextProvider =
+			new BaseDisplayContextProvider<>(
+				CommentDisplayContextFactory.class);
 
 }
