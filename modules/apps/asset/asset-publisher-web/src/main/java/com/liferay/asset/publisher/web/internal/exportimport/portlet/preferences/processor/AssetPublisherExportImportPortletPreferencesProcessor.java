@@ -95,6 +95,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.TreeMap;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -142,30 +143,7 @@ public class AssetPublisherExportImportPortletPreferencesProcessor
 
 			_updateExportClassNameIds(portletPreferences, "anyAssetType");
 			_updateExportClassNameIds(portletPreferences, "classNameIds");
-			_updateExportClassTypeIds(companyId, portletPreferences);
-			exportImportPortletPreferencesProcessorHelper.
-				updateExportPortletPreferencesClassPKs(
-					portletPreferences, "assetVocabularyId",
-					AssetVocabulary.class.getName(),
-					primaryKey -> _getExportReferenceValue(
-						companyId, AssetVocabulary.class.getName(),
-						GetterUtil.getLong(primaryKey)));
-			_updateExportCategoryQueryValues(companyId, portletPreferences);
-
-			for (String key : _ORDER_BY_COLUMN_KEYS) {
-				_updateOrderByColumnClassPKs(
-					portletPreferences, key,
-					primaryKey -> {
-						if (!Validator.isNumber(primaryKey)) {
-							return null;
-						}
-
-						return _getExportReferenceValue(
-							companyId, DDMStructure.class.getName(),
-							GetterUtil.getLong(primaryKey));
-					});
-			}
-
+			_updateExportReferenceValues(companyId, portletPreferences);
 			_updateExportScopeIds(companyId, portletPreferences);
 		}
 		catch (Exception exception) {
@@ -763,39 +741,6 @@ public class AssetPublisherExportImportPortletPreferencesProcessor
 		return assetEntryQuery;
 	}
 
-	private String _getClassTypeIdsClassName(
-		PortletPreferences portletPreferences) {
-
-		String anyAssetType = portletPreferences.getValue("anyAssetType", null);
-
-		if (Objects.equals(anyAssetType, "false")) {
-			String[] classNameIds = portletPreferences.getValues(
-				"classNameIds", StringPool.EMPTY_ARRAY);
-
-			if (classNameIds.length == 1) {
-				anyAssetType = classNameIds[0];
-			}
-		}
-
-		if (Objects.equals(anyAssetType, DLFileEntry.class.getName()) ||
-			Objects.equals(
-				anyAssetType,
-				String.valueOf(portal.getClassNameId(DLFileEntry.class)))) {
-
-			return DLFileEntryType.class.getName();
-		}
-
-		if (Objects.equals(anyAssetType, JournalArticle.class.getName()) ||
-			Objects.equals(
-				anyAssetType,
-				String.valueOf(portal.getClassNameId(JournalArticle.class)))) {
-
-			return DDMStructure.class.getName();
-		}
-
-		return null;
-	}
-
 	private String _getExportReferenceValue(
 		long companyId, String className, long primaryKeyLong) {
 
@@ -1145,6 +1090,62 @@ public class AssetPublisherExportImportPortletPreferencesProcessor
 		return scopeId;
 	}
 
+	private Map<String, String> _getReferenceClassNames(
+		PortletPreferences portletPreferences) {
+
+		Map<String, String> referenceClassNames = new TreeMap<>(
+			_referenceClassNames);
+
+		String anyAssetType = portletPreferences.getValue("anyAssetType", null);
+
+		if (Objects.equals(anyAssetType, "false")) {
+			String[] classNameIds = portletPreferences.getValues(
+				"classNameIds", StringPool.EMPTY_ARRAY);
+
+			if (classNameIds.length == 1) {
+				anyAssetType = classNameIds[0];
+			}
+		}
+
+		if (Objects.equals(anyAssetType, DLFileEntry.class.getName()) ||
+			Objects.equals(
+				anyAssetType,
+				String.valueOf(portal.getClassNameId(DLFileEntry.class)))) {
+
+			referenceClassNames.put(
+				"classTypeIds", DLFileEntryType.class.getName());
+		}
+		else if (Objects.equals(anyAssetType, JournalArticle.class.getName()) ||
+				 Objects.equals(
+					 anyAssetType,
+					 String.valueOf(
+						 portal.getClassNameId(JournalArticle.class)))) {
+
+			referenceClassNames.put(
+				"classTypeIds", DDMStructure.class.getName());
+		}
+
+		Enumeration<String> enumeration = portletPreferences.getNames();
+
+		while (enumeration.hasMoreElements()) {
+			String name = enumeration.nextElement();
+
+			if (!name.startsWith("queryName") ||
+				!StringUtil.equalsIgnoreCase(
+					portletPreferences.getValue(name, null),
+					"assetCategories")) {
+
+				continue;
+			}
+
+			referenceClassNames.put(
+				"queryValues" + name.substring(9),
+				AssetCategory.class.getName());
+		}
+
+		return referenceClassNames;
+	}
+
 	private boolean _hasImportReferenceValue(
 		PortletPreferences portletPreferences, String key) {
 
@@ -1162,17 +1163,11 @@ public class AssetPublisherExportImportPortletPreferencesProcessor
 	private boolean _hasImportReferenceValues(
 		PortletPreferences portletPreferences) {
 
-		Enumeration<String> enumeration = portletPreferences.getNames();
+		Map<String, String> referenceClassNames = _getReferenceClassNames(
+			portletPreferences);
 
-		while (enumeration.hasMoreElements()) {
-			String name = enumeration.nextElement();
-
-			if ((_classTypeIdsClassNames.containsKey(name) ||
-				 name.equals("assetVocabularyId") ||
-				 name.equals("classTypeIds") ||
-				 name.startsWith("queryValues")) &&
-				_hasImportReferenceValue(portletPreferences, name)) {
-
+		for (String key : referenceClassNames.keySet()) {
+			if (_hasImportReferenceValue(portletPreferences, key)) {
 				return true;
 			}
 		}
@@ -1287,33 +1282,6 @@ public class AssetPublisherExportImportPortletPreferencesProcessor
 		portletPreferences.setValues(name, values);
 	}
 
-	private void _updateExportCategoryQueryValues(
-			long companyId, PortletPreferences portletPreferences)
-		throws Exception {
-
-		Enumeration<String> enumeration = portletPreferences.getNames();
-
-		while (enumeration.hasMoreElements()) {
-			String name = enumeration.nextElement();
-
-			if (!name.startsWith("queryName") ||
-				!StringUtil.equalsIgnoreCase(
-					portletPreferences.getValue(name, null),
-					"assetCategories")) {
-
-				continue;
-			}
-
-			exportImportPortletPreferencesProcessorHelper.
-				updateExportPortletPreferencesClassPKs(
-					portletPreferences, "queryValues" + name.substring(9),
-					AssetCategory.class.getName(),
-					primaryKey -> _getExportReferenceValue(
-						companyId, AssetCategory.class.getName(),
-						GetterUtil.getLong(primaryKey)));
-		}
-	}
-
 	private void _updateExportClassNameIds(
 			PortletPreferences portletPreferences, String key)
 		throws Exception {
@@ -1366,38 +1334,6 @@ public class AssetPublisherExportImportPortletPreferencesProcessor
 		}
 
 		portletPreferences.setValues(key, newValues);
-	}
-
-	private void _updateExportClassTypeIds(
-			long companyId, PortletPreferences portletPreferences)
-		throws Exception {
-
-		for (Map.Entry<String, String> entry :
-				_classTypeIdsClassNames.entrySet()) {
-
-			_updateExportClassTypeIds(
-				entry.getValue(), companyId, entry.getKey(),
-				portletPreferences);
-		}
-
-		String className = _getClassTypeIdsClassName(portletPreferences);
-
-		if (className != null) {
-			_updateExportClassTypeIds(
-				className, companyId, "classTypeIds", portletPreferences);
-		}
-	}
-
-	private void _updateExportClassTypeIds(
-			String className, long companyId, String key,
-			PortletPreferences portletPreferences)
-		throws Exception {
-
-		exportImportPortletPreferencesProcessorHelper.
-			updateExportPortletPreferencesClassPKs(
-				portletPreferences, key, className,
-				primaryKey -> _getExportReferenceValue(
-					companyId, className, GetterUtil.getLong(primaryKey)));
 	}
 
 	private void _updateExportOrderByColumnClassPKs(
@@ -1674,6 +1610,38 @@ public class AssetPublisherExportImportPortletPreferencesProcessor
 		return portletPreferences;
 	}
 
+	private void _updateExportReferenceValues(
+			long companyId, PortletPreferences portletPreferences)
+		throws Exception {
+
+		Map<String, String> referenceClassNames = _getReferenceClassNames(
+			portletPreferences);
+
+		for (Map.Entry<String, String> entry : referenceClassNames.entrySet()) {
+			String value = entry.getValue();
+
+			exportImportPortletPreferencesProcessorHelper.
+				updateExportPortletPreferencesClassPKs(
+					portletPreferences, entry.getKey(), value,
+					primaryKey -> _getExportReferenceValue(
+						companyId, value, GetterUtil.getLong(primaryKey)));
+		}
+
+		for (String key : _ORDER_BY_COLUMN_KEYS) {
+			_updateOrderByColumnClassPKs(
+				portletPreferences, key,
+				primaryKey -> {
+					if (!Validator.isNumber(primaryKey)) {
+						return null;
+					}
+
+					return _getExportReferenceValue(
+						companyId, DDMStructure.class.getName(),
+						GetterUtil.getLong(primaryKey));
+				});
+		}
+	}
+
 	private void _updateExportScopeIds(
 			long companyId, PortletPreferences portletPreferences)
 		throws Exception {
@@ -1720,32 +1688,6 @@ public class AssetPublisherExportImportPortletPreferencesProcessor
 		portletPreferences.setValues(key, newValues);
 	}
 
-	private void _updateImportCategoryQueryValues(
-			long companyId, PortletPreferences portletPreferences)
-		throws Exception {
-
-		Enumeration<String> enumeration = portletPreferences.getNames();
-
-		while (enumeration.hasMoreElements()) {
-			String name = enumeration.nextElement();
-
-			if (!name.startsWith("queryName") ||
-				!StringUtil.equalsIgnoreCase(
-					portletPreferences.getValue(name, null),
-					"assetCategories")) {
-
-				continue;
-			}
-
-			exportImportPortletPreferencesProcessorHelper.
-				updateImportPortletPreferencesClassPKs(
-					portletPreferences, "queryValues" + name.substring(9),
-					portletPreferencesOldValue -> _getImportReferenceValue(
-						companyId, AssetCategory.class.getName(),
-						portletPreferencesOldValue));
-		}
-	}
-
 	private void _updateImportClassNameIds(
 			PortletPreferences portletPreferences, String key)
 		throws Exception {
@@ -1790,38 +1732,6 @@ public class AssetPublisherExportImportPortletPreferencesProcessor
 		}
 
 		portletPreferences.setValues(key, newValues);
-	}
-
-	private void _updateImportClassTypeIds(
-			long companyId, PortletPreferences portletPreferences)
-		throws Exception {
-
-		for (Map.Entry<String, String> entry :
-				_classTypeIdsClassNames.entrySet()) {
-
-			_updateImportClassTypeIds(
-				entry.getValue(), companyId, entry.getKey(),
-				portletPreferences);
-		}
-
-		String className = _getClassTypeIdsClassName(portletPreferences);
-
-		if (className != null) {
-			_updateImportClassTypeIds(
-				className, companyId, "classTypeIds", portletPreferences);
-		}
-	}
-
-	private void _updateImportClassTypeIds(
-			String className, long companyId, String key,
-			PortletPreferences portletPreferences)
-		throws Exception {
-
-		exportImportPortletPreferencesProcessorHelper.
-			updateImportPortletPreferencesClassPKs(
-				portletPreferences, key,
-				portletPreferencesOldValue -> _getImportReferenceValue(
-					companyId, className, portletPreferencesOldValue));
 	}
 
 	private void _updateImportOrderByColumnClassPKs(
@@ -1942,14 +1852,18 @@ public class AssetPublisherExportImportPortletPreferencesProcessor
 			long companyId, PortletPreferences portletPreferences)
 		throws Exception {
 
-		_updateImportClassTypeIds(companyId, portletPreferences);
-		exportImportPortletPreferencesProcessorHelper.
-			updateImportPortletPreferencesClassPKs(
-				portletPreferences, "assetVocabularyId",
-				portletPreferencesOldValue -> _getImportReferenceValue(
-					companyId, AssetVocabulary.class.getName(),
-					portletPreferencesOldValue));
-		_updateImportCategoryQueryValues(companyId, portletPreferences);
+		Map<String, String> referenceClassNames = _getReferenceClassNames(
+			portletPreferences);
+
+		for (Map.Entry<String, String> entry : referenceClassNames.entrySet()) {
+			String value = entry.getValue();
+
+			exportImportPortletPreferencesProcessorHelper.
+				updateImportPortletPreferencesClassPKs(
+					portletPreferences, entry.getKey(),
+					portletPreferencesOldValue -> _getImportReferenceValue(
+						companyId, value, portletPreferencesOldValue));
+		}
 
 		for (String key : _ORDER_BY_COLUMN_KEYS) {
 			_updateOrderByColumnClassPKs(
@@ -2146,13 +2060,15 @@ public class AssetPublisherExportImportPortletPreferencesProcessor
 	private static final Log _log = LogFactoryUtil.getLog(
 		AssetPublisherExportImportPortletPreferencesProcessor.class);
 
-	private static final Map<String, String> _classTypeIdsClassNames =
+	private static final Map<String, String> _referenceClassNames =
 		HashMapBuilder.put(
 			"anyClassTypeDLFileEntryAssetRendererFactory",
 			DLFileEntryType.class.getName()
 		).put(
 			"anyClassTypeJournalArticleAssetRendererFactory",
 			DDMStructure.class.getName()
+		).put(
+			"assetVocabularyId", AssetVocabulary.class.getName()
 		).put(
 			"classTypeIdsDLFileEntryAssetRendererFactory",
 			DLFileEntryType.class.getName()
