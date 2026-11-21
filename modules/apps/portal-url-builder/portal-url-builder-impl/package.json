@@ -6,5 +6,5 @@
 		"format": "node-scripts format",
 		"test": "node-scripts test"
 	},
-	"version": "4.0.26"
+	"version": "4.0.27"
 }
