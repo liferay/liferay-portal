@@ -5096,6 +5096,11 @@
 					"title": "Include Category URLs in the XML Sitemap",
 					"type": "boolean"
 				},
+				"includeCommerceProducts": {
+					"default": true,
+					"title": "Include Commerce Product URLs in the XML Sitemap",
+					"type": "boolean"
+				},
 				"includePages": {
 					"default": true,
 					"title": "Include Page URLs in the XML Sitemap",
