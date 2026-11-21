@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Social Bookmark Facebook
 Bundle-SymbolicName: com.liferay.social.bookmark.facebook
-Bundle-Version: 4.0.27
+Bundle-Version: 4.0.28
 Web-ContextPath: /social-bookmark-facebook
