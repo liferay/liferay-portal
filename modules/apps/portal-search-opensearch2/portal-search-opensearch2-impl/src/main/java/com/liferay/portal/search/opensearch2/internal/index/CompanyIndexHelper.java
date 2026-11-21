@@ -191,7 +191,9 @@ public class CompanyIndexHelper {
 							companyIndexConfigurationContributor =
 								bundleContext.getService(serviceReference);
 
-						_processCompanyIndexConfigurationContributor(
+						_processCompanyIndexSettingsContributor(
+							companyIndexConfigurationContributor);
+						_processCompanyIndexMappingsContributor(
 							companyIndexConfigurationContributor);
 
 						return companyIndexConfigurationContributor;
@@ -302,6 +304,22 @@ public class CompanyIndexHelper {
 			jsonpMapper);
 	}
 
+	private OpenSearchIndicesClient _getOpenSearchIndicesClient() {
+		try {
+			OpenSearchClient openSearchClient =
+				_openSearchConnectionManager.getOpenSearchClient();
+
+			return openSearchClient.indices();
+		}
+		catch (OpenSearchConnectionNotInitializedException
+					openSearchConnectionNotInitializedException) {
+
+			_log.error(openSearchConnectionNotInitializedException);
+		}
+
+		return null;
+	}
+
 	private void _loadAdditionalSettings(
 		long companyId, SettingsHelperImpl settingsHelperImpl,
 		boolean includeStaticProperties) {
@@ -370,31 +388,43 @@ public class CompanyIndexHelper {
 		settingsHelperImpl.put("index.translog.sync_interval", "100ms");
 	}
 
-	private void _processCompanyIndexConfigurationContributor(
+	private void _processCompanyIndexMappingsContributor(
 		CompanyIndexConfigurationContributor
 			companyIndexConfigurationContributor) {
 
-		OpenSearchClient openSearchClient = null;
+		OpenSearchIndicesClient openSearchIndicesClient =
+			_getOpenSearchIndicesClient();
 
-		try {
-			openSearchClient =
-				_openSearchConnectionManager.getOpenSearchClient();
-		}
-		catch (OpenSearchConnectionNotInitializedException
-					openSearchConnectionNotInitializedException) {
-
-			_log.error(openSearchConnectionNotInitializedException);
-
+		if (openSearchIndicesClient == null) {
 			return;
 		}
-
-		OpenSearchIndicesClient openSearchIndicesClient =
-			openSearchClient.indices();
 
 		for (long companyId :
 				IndexFactoryCompanyIdRegistryUtil.getCompanyIds()) {
 
-			String indexName = getIndexName(companyId);
+			companyIndexConfigurationContributor.contributeMappings(
+				companyId,
+				new MappingsHelperImpl(
+					getIndexName(companyId), _jsonFactory,
+					openSearchIndicesClient,
+					_openSearchConfigurationWrapper.overrideTypeMappings(),
+					_searchEngineInformation));
+		}
+	}
+
+	private void _processCompanyIndexSettingsContributor(
+		CompanyIndexConfigurationContributor
+			companyIndexConfigurationContributor) {
+
+		OpenSearchIndicesClient openSearchIndicesClient =
+			_getOpenSearchIndicesClient();
+
+		if (openSearchIndicesClient == null) {
+			return;
+		}
+
+		for (long companyId :
+				IndexFactoryCompanyIdRegistryUtil.getCompanyIds()) {
 
 			SettingsHelperImpl settingsHelperImpl = new SettingsHelperImpl();
 
@@ -404,37 +434,34 @@ public class CompanyIndexHelper {
 			JSONObject settingsJSONObject =
 				settingsHelperImpl.getSettingsJSONObject();
 
-			if (SetUtil.isNotEmpty(settingsJSONObject.keySet())) {
-				try {
-					openSearchIndicesClient.close(
-						CloseIndexRequest.of(
-							closeIndexRequest -> closeIndexRequest.index(
-								indexName)));
-
-					openSearchIndicesClient.putSettings(
-						_buildPutIndicesSettingsRequest(
-							indexName, settingsJSONObject.toString()));
-
-					openSearchIndicesClient.open(
-						OpenRequest.of(
-							openRequest -> openRequest.index(indexName)));
-				}
-				catch (Exception exception) {
-					_log.error(
-						StringBundler.concat(
-							"Unable to put settings for index ", indexName,
-							" with contributor ",
-							companyIndexConfigurationContributor),
-						exception);
-				}
+			if (SetUtil.isEmpty(settingsJSONObject.keySet())) {
+				continue;
 			}
 
-			companyIndexConfigurationContributor.contributeMappings(
-				companyId,
-				new MappingsHelperImpl(
-					indexName, _jsonFactory, openSearchIndicesClient,
-					_openSearchConfigurationWrapper.overrideTypeMappings(),
-					_searchEngineInformation));
+			String indexName = getIndexName(companyId);
+
+			try {
+				openSearchIndicesClient.close(
+					CloseIndexRequest.of(
+						closeIndexRequest -> closeIndexRequest.index(
+							indexName)));
+
+				openSearchIndicesClient.putSettings(
+					_buildPutIndicesSettingsRequest(
+						indexName, settingsJSONObject.toString()));
+
+				openSearchIndicesClient.open(
+					OpenRequest.of(
+						openRequest -> openRequest.index(indexName)));
+			}
+			catch (Exception exception) {
+				_log.error(
+					StringBundler.concat(
+						"Unable to put settings for index ", indexName,
+						" with contributor ",
+						companyIndexConfigurationContributor),
+					exception);
+			}
 		}
 	}
 
