@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Analytics Machine Learning Implementation
 Bundle-SymbolicName: com.liferay.analytics.machine.learning.impl
-Bundle-Version: 1.0.15
+Bundle-Version: 1.0.16
 -dsannotations-options: inherit
