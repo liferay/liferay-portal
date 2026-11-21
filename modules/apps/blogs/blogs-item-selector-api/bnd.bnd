@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Blogs Item Selector API
 Bundle-SymbolicName: com.liferay.blogs.item.selector.api
-Bundle-Version: 6.0.2
+Bundle-Version: 6.0.3
 Export-Package:\
 	com.liferay.blogs.item.selector,\
 	com.liferay.blogs.item.selector.constants
