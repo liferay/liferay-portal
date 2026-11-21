@@ -25,7 +25,7 @@ import com.liferay.calendar.recurrence.Recurrence;
  * </p>
  *
  * <p>
- * This interface represents the result of this operation. If the split
+ * This class represents the result of this operation. If the split
  * operation is successful (i.e. generated two new recurrences), their values
  * can be acquired through the methods {@link #getFirstRecurrence()} and {@link
  * #getSecondRecurrence()}. In this case, {@link #isSplit()} returns
@@ -42,37 +42,32 @@ import com.liferay.calendar.recurrence.Recurrence;
  *
  * @author Adam Brandizzi
  */
-public interface RecurrenceSplit {
+public class RecurrenceSplit {
 
-	/**
-	 * Returns the recurrence that ends just before the split date. If the split
-	 * date was outside the original recurrence range, this method returns a
-	 * copy of the original recurrence.
-	 *
-	 * @return the <code>Recurrence</code> object representing either the first
-	 *         part of the split recurrence or a copy of the original
-	 *         recurrence, if no split occurred
-	 */
-	public Recurrence getFirstRecurrence();
+	public RecurrenceSplit(
+		Recurrence firstRecurrence, Recurrence secondRecurrence) {
 
-	/**
-	 * Returns the recurrence that starts after the split date and ends when the
-	 * original recurrence ended. If the split date was outside the original
-	 * recurrence range, this method returns <code>null</code>.
-	 *
-	 * @return the <code>Recurrence</code> object representing the second part
-	 *         of the split recurrence, or <code>null</code> if the split date
-	 *         was outside the original recurrence range
-	 */
-	public Recurrence getSecondRecurrence();
+		_firstRecurrence = firstRecurrence;
+		_secondRecurrence = secondRecurrence;
+	}
 
-	/**
-	 * Returns <code>true</code> if the recurrence could be split, given the
-	 * start and split dates.
-	 *
-	 * @return <code>true</code> if the operation could generate two new,
-	 *         different recurrences; <code>false</code> otherwise
-	 */
-	public boolean isSplit();
+	public Recurrence getFirstRecurrence() {
+		return _firstRecurrence;
+	}
+
+	public Recurrence getSecondRecurrence() {
+		return _secondRecurrence;
+	}
+
+	public boolean isSplit() {
+		if (_secondRecurrence != null) {
+			return true;
+		}
+
+		return false;
+	}
+
+	private final Recurrence _firstRecurrence;
+	private final Recurrence _secondRecurrence;
 
 }

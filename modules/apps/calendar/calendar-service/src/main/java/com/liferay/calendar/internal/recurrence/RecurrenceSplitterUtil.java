@@ -75,7 +75,7 @@ public class RecurrenceSplitterUtil {
 			secondRecurrence = null;
 		}
 
-		return new RecurrenceSplitImpl(firstRecurrence, secondRecurrence);
+		return new RecurrenceSplit(firstRecurrence, secondRecurrence);
 	}
 
 	private static void _copyExceptionJCalendars(
