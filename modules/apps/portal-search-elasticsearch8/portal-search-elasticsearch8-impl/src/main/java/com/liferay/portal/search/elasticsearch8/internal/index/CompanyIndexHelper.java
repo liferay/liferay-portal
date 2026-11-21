@@ -77,13 +77,13 @@ public class CompanyIndexHelper {
 
 		_setSettings(builder, companyId);
 
-		MappingsHelperImpl mappingsHelperImpl = new MappingsHelperImpl(
+		MappingsHelper mappingsHelper = new MappingsHelper(
 			elasticsearchIndicesClient, indexName, _jsonFactory,
 			_elasticsearchConnectionManager.getJsonpMapper(null),
 			_elasticsearchConfigurationWrapper.overrideTypeMappings(),
 			_searchEngineInformation);
 
-		mappingsHelperImpl.setDefaultOrOverrideMappings(builder);
+		mappingsHelper.setDefaultOrOverrideMappings(builder);
 
 		try {
 			CreateIndexResponse createIndexResponse =
@@ -95,7 +95,7 @@ public class CompanyIndexHelper {
 			throw new RuntimeException(ioException);
 		}
 
-		_putNondefaultMappings(mappingsHelperImpl);
+		_putNondefaultMappings(mappingsHelper);
 
 		_executeCompanyIndexListenersAfterCreate(indexName);
 	}
@@ -161,15 +161,15 @@ public class CompanyIndexHelper {
 
 		_updateSettings(companyId, elasticsearchIndicesClient, indexName);
 
-		MappingsHelperImpl mappingsHelperImpl = new MappingsHelperImpl(
+		MappingsHelper mappingsHelper = new MappingsHelper(
 			elasticsearchIndicesClient, indexName, _jsonFactory,
 			_elasticsearchConnectionManager.getJsonpMapper(null),
 			_elasticsearchConfigurationWrapper.overrideTypeMappings(),
 			_searchEngineInformation);
 
-		mappingsHelperImpl.putDefaultOrOverrideMappings();
+		mappingsHelper.putDefaultOrOverrideMappings();
 
-		_putNondefaultMappings(mappingsHelperImpl);
+		_putNondefaultMappings(mappingsHelper);
 	}
 
 	@Activate
@@ -405,14 +405,14 @@ public class CompanyIndexHelper {
 		for (long companyId :
 				IndexFactoryCompanyIdRegistryUtil.getCompanyIds()) {
 
-			MappingsHelperImpl mappingsHelperImpl = new MappingsHelperImpl(
+			MappingsHelper mappingsHelper = new MappingsHelper(
 				elasticsearchIndicesClient, getIndexName(companyId),
 				_jsonFactory,
 				_elasticsearchConnectionManager.getJsonpMapper(null),
 				_elasticsearchConfigurationWrapper.overrideTypeMappings(),
 				_searchEngineInformation);
 
-			mappingsHelperImpl.putMappings(mappings);
+			mappingsHelper.putMappings(mappings);
 		}
 	}
 
@@ -467,38 +467,36 @@ public class CompanyIndexHelper {
 		}
 	}
 
-	private void _putAdditionalMappings(MappingsHelperImpl mappingsHelperImpl) {
+	private void _putAdditionalMappings(MappingsHelper mappingsHelper) {
 		if (Validator.isNull(
 				_elasticsearchConfigurationWrapper.additionalTypeMappings())) {
 
 			return;
 		}
 
-		mappingsHelperImpl.putMappings(
+		mappingsHelper.putMappings(
 			_elasticsearchConfigurationWrapper.additionalTypeMappings());
 	}
 
-	private void _putContributedMappings(
-		MappingsHelperImpl mappingsHelperImpl) {
-
+	private void _putContributedMappings(MappingsHelper mappingsHelper) {
 		for (CompanyIndexMappingsContributor companyIndexMappingsContributor :
 				_companyIndexMappingsContributorServiceTrackerList) {
 
-			mappingsHelperImpl.putMappings(
+			mappingsHelper.putMappings(
 				companyIndexMappingsContributor.contributeMappings());
 		}
 	}
 
-	private void _putNondefaultMappings(MappingsHelperImpl mappingsHelperImpl) {
+	private void _putNondefaultMappings(MappingsHelper mappingsHelper) {
 		if (Validator.isNotNull(
 				_elasticsearchConfigurationWrapper.overrideTypeMappings())) {
 
 			return;
 		}
 
-		_putContributedMappings(mappingsHelperImpl);
+		_putContributedMappings(mappingsHelper);
 
-		_putAdditionalMappings(mappingsHelperImpl);
+		_putAdditionalMappings(mappingsHelper);
 	}
 
 	private void _setSettings(
