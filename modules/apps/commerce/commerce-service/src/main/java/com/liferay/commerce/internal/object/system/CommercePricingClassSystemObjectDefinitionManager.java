@@ -42,7 +42,7 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Gleice Lisbino
  */
-@Component(enabled = true, service = SystemObjectDefinitionManager.class)
+@Component(service = SystemObjectDefinitionManager.class)
 public class CommercePricingClassSystemObjectDefinitionManager
 	extends BaseSystemObjectDefinitionManager {
 

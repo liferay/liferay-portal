@@ -55,7 +55,7 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author José Abelenda
  */
-@Component(enabled = true, service = SystemObjectDefinitionManager.class)
+@Component(service = SystemObjectDefinitionManager.class)
 public class CPDefinitionSystemObjectDefinitionManager
 	extends BaseSystemObjectDefinitionManager {
 
