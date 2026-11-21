@@ -8,7 +8,6 @@ package com.liferay.saml.opensaml.integration.internal.field.expression.handler.
 import com.liferay.saml.opensaml.integration.field.expression.handler.UserFieldExpressionHandler;
 import com.liferay.saml.opensaml.integration.field.expression.handler.registry.UserFieldExpressionHandlerRegistry;
 import com.liferay.saml.opensaml.integration.internal.service.tracker.collections.OrderedServiceTrackerMap;
-import com.liferay.saml.opensaml.integration.internal.service.tracker.collections.OrderedServiceTrackerMapFactory;
 
 import java.util.List;
 import java.util.Map;
@@ -50,7 +49,7 @@ public class UserFieldExpressionHandlerRegistryImpl
 
 	@Activate
 	protected void activate(BundleContext bundleContext) {
-		_orderedServiceTrackerMap = OrderedServiceTrackerMapFactory.create(
+		_orderedServiceTrackerMap = new OrderedServiceTrackerMap<>(
 			bundleContext, UserFieldExpressionHandler.class, "prefix");
 	}
 

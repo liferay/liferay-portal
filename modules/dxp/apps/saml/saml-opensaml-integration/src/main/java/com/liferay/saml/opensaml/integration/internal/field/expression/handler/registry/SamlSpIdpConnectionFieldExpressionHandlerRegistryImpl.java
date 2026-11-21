@@ -8,7 +8,6 @@ package com.liferay.saml.opensaml.integration.internal.field.expression.handler.
 import com.liferay.saml.opensaml.integration.field.expression.handler.SamlSpIdpConnectionFieldExpressionHandler;
 import com.liferay.saml.opensaml.integration.field.expression.handler.registry.SamlSpIdpConnectionFieldExpressionHandlerRegistry;
 import com.liferay.saml.opensaml.integration.internal.service.tracker.collections.OrderedServiceTrackerMap;
-import com.liferay.saml.opensaml.integration.internal.service.tracker.collections.OrderedServiceTrackerMapFactory;
 
 import java.util.List;
 import java.util.Map;
@@ -52,7 +51,7 @@ public class SamlSpIdpConnectionFieldExpressionHandlerRegistryImpl
 
 	@Activate
 	protected void activate(BundleContext bundleContext) {
-		_orderedServiceTrackerMap = OrderedServiceTrackerMapFactory.create(
+		_orderedServiceTrackerMap = new OrderedServiceTrackerMap<>(
 			bundleContext, SamlSpIdpConnectionFieldExpressionHandler.class,
 			"prefix");
 	}
