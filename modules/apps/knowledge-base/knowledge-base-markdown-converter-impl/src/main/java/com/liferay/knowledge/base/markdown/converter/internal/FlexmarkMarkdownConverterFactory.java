@@ -13,7 +13,7 @@ import org.osgi.service.component.annotations.Component;
 /**
  * @author Adolfo Pérez
  */
-@Component(enabled = true, service = MarkdownConverterFactory.class)
+@Component(service = MarkdownConverterFactory.class)
 public class FlexmarkMarkdownConverterFactory
 	implements MarkdownConverterFactory {
 
