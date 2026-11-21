@@ -11,9 +11,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.search.engine.adapter.SearchEngineAdapter;
-import com.liferay.portal.search.spi.index.configuration.contributor.CompanyIndexConfigurationContributor;
-import com.liferay.portal.search.spi.index.configuration.contributor.helper.MappingsHelper;
-import com.liferay.portal.search.spi.index.configuration.contributor.helper.SettingsHelper;
+import com.liferay.portal.search.spi.index.configuration.contributor.CompanyIndexSettingsContributor;
 import com.liferay.portal.search.tuning.synonyms.index.name.SynonymSetIndexNameBuilder;
 import com.liferay.portal.search.tuning.synonyms.web.internal.configuration.SynonymsConfiguration;
 import com.liferay.portal.search.tuning.synonyms.web.internal.filter.SynonymSetFilterWriterUtil;
@@ -32,22 +30,15 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	configurationPid = "com.liferay.portal.search.tuning.synonyms.web.internal.configuration.SynonymsConfiguration",
-	service = CompanyIndexConfigurationContributor.class
+	service = CompanyIndexSettingsContributor.class
 )
 public class SynonymsCompanyIndexSettingsContributor
-	implements CompanyIndexConfigurationContributor {
+	implements CompanyIndexSettingsContributor {
 
 	@Override
-	public void contributeMappings(
-		long companyId, MappingsHelper mappingsHelper) {
-	}
-
-	@Override
-	public void contributeSettings(
-		long companyId, SettingsHelper settingsHelper) {
-
+	public String contributeSettings(long companyId) {
 		if (companyId == CompanyConstants.SYSTEM) {
-			return;
+			return null;
 		}
 
 		try {
@@ -55,13 +46,12 @@ public class SynonymsCompanyIndexSettingsContributor
 				new SynonymSetIndexReader(_searchEngineAdapter);
 
 			synchronized (_synonymSetIndexNameBuilder) {
-				settingsHelper.loadFromSource(
-					_buildSettings(
-						TransformUtil.transformToArray(
-							synonymSetIndexReader.search(
-								_synonymSetIndexNameBuilder.
-									getSynonymSetIndexName(companyId)),
-							SynonymSet::getSynonyms, String.class)));
+				return _buildSettings(
+					TransformUtil.transformToArray(
+						synonymSetIndexReader.search(
+							_synonymSetIndexNameBuilder.getSynonymSetIndexName(
+								companyId)),
+						SynonymSet::getSynonyms, String.class));
 			}
 		}
 		catch (Exception exception) {
@@ -72,6 +62,8 @@ public class SynonymsCompanyIndexSettingsContributor
 					exception);
 			}
 		}
+
+		return null;
 	}
 
 	@Activate

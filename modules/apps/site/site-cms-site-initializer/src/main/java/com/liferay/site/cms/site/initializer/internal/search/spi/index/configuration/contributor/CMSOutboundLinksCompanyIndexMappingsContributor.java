@@ -6,31 +6,21 @@
 package com.liferay.site.cms.site.initializer.internal.search.spi.index.configuration.contributor;
 
 import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.search.spi.index.configuration.contributor.CompanyIndexConfigurationContributor;
-import com.liferay.portal.search.spi.index.configuration.contributor.helper.MappingsHelper;
-import com.liferay.portal.search.spi.index.configuration.contributor.helper.SettingsHelper;
+import com.liferay.portal.search.spi.index.configuration.contributor.CompanyIndexMappingsContributor;
 
 import org.osgi.service.component.annotations.Component;
 
 /**
  * @author Jürgen Kappler
  */
-@Component(service = CompanyIndexConfigurationContributor.class)
+@Component(service = CompanyIndexMappingsContributor.class)
 public class CMSOutboundLinksCompanyIndexMappingsContributor
-	implements CompanyIndexConfigurationContributor {
+	implements CompanyIndexMappingsContributor {
 
 	@Override
-	public void contributeMappings(
-		long companyId, MappingsHelper mappingsHelper) {
-
-		mappingsHelper.putMappings(
-			StringUtil.read(
-				getClass(), "dependencies/outbound-links-type-mappings.json"));
-	}
-
-	@Override
-	public void contributeSettings(
-		long companyId, SettingsHelper settingsHelper) {
+	public String contributeMappings() {
+		return StringUtil.read(
+			getClass(), "dependencies/outbound-links-type-mappings.json");
 	}
 
 }

@@ -7,17 +7,12 @@ package com.liferay.site.cms.site.initializer.internal.search.spi.index.configur
 
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.test.util.RandomTestUtil;
-import com.liferay.portal.search.spi.index.configuration.contributor.helper.MappingsHelper;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
-
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mockito;
 
 /**
  * @author Mikel Lorza
@@ -35,22 +30,9 @@ public class CMSMissingRequiredFieldsCompanyIndexMappingsContributorTest {
 			cmsMissingRequiredFieldsCompanyIndexMappingsContributor =
 				new CMSMissingRequiredFieldsCompanyIndexMappingsContributor();
 
-		MappingsHelper mappingsHelper = Mockito.mock(MappingsHelper.class);
-
-		cmsMissingRequiredFieldsCompanyIndexMappingsContributor.
-			contributeMappings(RandomTestUtil.randomLong(), mappingsHelper);
-
-		ArgumentCaptor<String> argumentCaptor = ArgumentCaptor.forClass(
-			String.class);
-
-		Mockito.verify(
-			mappingsHelper
-		).putMappings(
-			argumentCaptor.capture()
-		);
-
 		JSONObject jsonObject = JSONFactoryUtil.createJSONObject(
-			argumentCaptor.getValue());
+			cmsMissingRequiredFieldsCompanyIndexMappingsContributor.
+				contributeMappings());
 
 		Assert.assertEquals(
 			"integer",
