@@ -581,11 +581,11 @@ public class DataGuardTestRuleUtil {
 	private static Closeable _installRecordingSessionFactories(
 		Map<String, Map<Serializable, String>> records) {
 
-		Map<String, PersistedModelLocalService> persistedModelLocalServices =
-			_getPersistedModelLocalServices();
-
 		Map<BasePersistence<?>, SessionFactory> sessionFactories =
 			new HashMap<>();
+
+		Map<String, PersistedModelLocalService> persistedModelLocalServices =
+			_getPersistedModelLocalServices();
 
 		for (PersistedModelLocalService persistedModelLocalService :
 				persistedModelLocalServices.values()) {
@@ -684,13 +684,13 @@ public class DataGuardTestRuleUtil {
 	private static Closeable _removeSessionFactoryVerifier(
 		BasePersistence<?> basePersistence) {
 
+		Map<String, Map<Serializable, String>> records = null;
+
 		SessionFactory originalSessionFactory =
 			ReflectionTestUtil.getFieldValue(
 				basePersistence, "_sessionFactory");
 
 		SessionFactory sessionFactory = originalSessionFactory;
-
-		Map<String, Map<Serializable, String>> records = null;
 
 		if (sessionFactory instanceof
 				RecordingSessionFactory recordingSessionFactory) {
