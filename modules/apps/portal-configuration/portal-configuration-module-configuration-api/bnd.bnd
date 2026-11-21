@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Portal Configuration Module Configuration API
 Bundle-SymbolicName: com.liferay.portal.configuration.module.configuration.api
-Bundle-Version: 2.1.2
+Bundle-Version: 2.1.3
 Export-Package: com.liferay.portal.configuration.module.configuration
