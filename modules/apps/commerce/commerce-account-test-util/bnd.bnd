@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Commerce Account Test Utilities
 Bundle-SymbolicName: com.liferay.commerce.account.test.util
-Bundle-Version: 6.0.0
+Bundle-Version: 6.0.1
 Export-Package: com.liferay.commerce.account.test.util
