@@ -18,7 +18,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Javier Moral
  */
 @Component(service = ProblemMapper.class)
-public class DuplicateLayoutPageTemplateCollectionNameExceptionProblemMapper
+public class DuplicatePageTemplateSetNameExceptionProblemMapper
 	implements ProblemMapper<DuplicateLayoutPageTemplateCollectionException> {
 
 	@Override
