@@ -59,25 +59,32 @@ public class ParameterContainerRequestFilterTest {
 			"\"accountLifecycleId\" must be a numeric ID",
 			_filter("accountLifecycleId", RandomTestUtil.randomString()));
 		_assertTitle(
+			"Date range must be at most 180 days",
+			_filter(_getRangeQueryParameters("2026-10-02", "2026-04-05")));
+		_assertTitle(
+			"\"bogusColumn\" is not a sortable column. The sortable columns " +
+				"are \"accountId\", \"accountName\", " +
+					"\"fromAccountLifecycleStageId\", " +
+						"\"toAccountLifecycleStageId\", \"transitionDate\".",
+			_filter("sort", "bogusColumn:desc"));
+		_assertTitle(
 			"\"pageSize\" must be a whole number from 1 to 100",
 			_filter("pageSize", "101"));
-		_assertTitle(
-			"\"rangeKey\" must be one of LAST_180_DAYS, LAST_24_HOURS, " +
-				"LAST_28_DAYS, LAST_30_DAYS, LAST_7_DAYS, LAST_90_DAYS, " +
-					"YESTERDAY",
-			_filter("rangeKey", "LAST_YEAR"));
 		_assertTitle(
 			"\"rangeEnd\" and \"rangeStart\" must be set together",
 			_filter("rangeStart", "2026-10-01"));
 		_assertTitle(
+			"\"rangeKey\" must be one of \"LAST_180_DAYS\", " +
+				"\"LAST_24_HOURS\", \"LAST_28_DAYS\", \"LAST_30_DAYS\", " +
+					"\"LAST_7_DAYS\", \"LAST_90_DAYS\", \"YESTERDAY\"",
+			_filter("rangeKey", "LAST_YEAR"));
+		_assertTitle(
 			"\"rangeStart\" must not be after \"rangeEnd\"",
 			_filter(_getRangeQueryParameters("2026-10-01", "2026-10-20")));
 		_assertTitle(
-			"Date range must be at most 180 days",
-			_filter(_getRangeQueryParameters("2026-10-02", "2026-04-05")));
-		_assertTitle(
-			"\"selectedMetrics\" must be one of accountsTouched, " +
-				"campaignCount, closedWonAmount, openPipelineAmount",
+			"\"selectedMetrics\" must be one of \"accountsTouched\", " +
+				"\"campaignCount\", \"closedWonAmount\", " +
+					"\"openPipelineAmount\"",
 			_filter(
 				_getQueryParameters(
 					"selectedMetrics", "accountsTouched", "bogusMetric")));
@@ -88,11 +95,6 @@ public class ParameterContainerRequestFilterTest {
 			"\"sort\" must be a comma separated list of \"column:asc\" or " +
 				"\"column:desc\" expressions",
 			_filter("sort", "accountName:sideways"));
-		_assertTitle(
-			"\"bogusColumn\" is not a sortable column. Sortable columns: " +
-				"accountId, accountName, fromAccountLifecycleStageId, " +
-					"toAccountLifecycleStageId, transitionDate",
-			_filter("sort", "bogusColumn:desc"));
 	}
 
 	@Test
@@ -106,8 +108,8 @@ public class ParameterContainerRequestFilterTest {
 		_assertTitle(
 			StringBundler.concat(
 				"\"", fieldName,
-				"\" is not a sortable column. Sortable columns: dateModified, ",
-				"id, name"),
+				"\" is not a sortable column. The sortable columns are ",
+				"\"dateModified\", \"id\", \"name\"."),
 			_filter("sort", fieldName + ":asc"));
 	}
 
@@ -124,17 +126,18 @@ public class ParameterContainerRequestFilterTest {
 				String.valueOf(RandomTestUtil.randomLong())));
 
 		_assertTitle(
-			"\"attributeType\" must be one of ALL, GLOBAL, LOCAL",
+			"\"attributeType\" must be one of \"ALL\", \"GLOBAL\", \"LOCAL\"",
 			_filter("attributeType", RandomTestUtil.randomString()));
+		_assertTitle(
+			"\"displayName\" is not a sortable column. The sortable columns " +
+				"are \"name\".",
+			_filter("sort", "displayName:asc"));
 		_assertTitle(
 			"\"eventDefinitionId\" must be a numeric ID",
 			_filter("eventDefinitionId", RandomTestUtil.randomString()));
 		_assertTitle(
 			"\"pageSize\" must be a whole number from 1 to 100",
 			_filter("pageSize", "101"));
-		_assertTitle(
-			"\"displayName\" is not a sortable column. Sortable columns: name",
-			_filter("sort", "displayName:asc"));
 	}
 
 	@Test
@@ -150,10 +153,14 @@ public class ParameterContainerRequestFilterTest {
 		Assert.assertNull(_filter("sort", "displayName:desc"));
 
 		_assertTitle(
+			"\"blockedLastSeenDate\" is not a sortable column. The sortable " +
+				"columns are \"displayName\", \"name\".",
+			_filter("sort", "blockedLastSeenDate:desc"));
+		_assertTitle(
 			"\"blocked\" must be one of \"false\", \"true\"",
 			_filter("blocked", RandomTestUtil.randomString()));
 		_assertTitle(
-			"\"eventType\" must be one of ALL, CUSTOM, DEFAULT",
+			"\"eventType\" must be one of \"ALL\", \"CUSTOM\", \"DEFAULT\"",
 			_filter("eventType", RandomTestUtil.randomString()));
 		_assertTitle(
 			"\"hidden\" must be one of \"false\", \"true\"",
@@ -161,10 +168,6 @@ public class ParameterContainerRequestFilterTest {
 		_assertTitle(
 			"\"pageSize\" must be a whole number from 1 to 100",
 			_filter("pageSize", "101"));
-		_assertTitle(
-			"\"blockedLastSeenDate\" is not a sortable column. Sortable " +
-				"columns: displayName, name",
-			_filter("sort", "blockedLastSeenDate:desc"));
 	}
 
 	@Test
