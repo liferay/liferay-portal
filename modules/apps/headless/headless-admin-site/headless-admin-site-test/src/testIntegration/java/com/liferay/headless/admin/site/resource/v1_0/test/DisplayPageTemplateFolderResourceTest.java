@@ -1026,7 +1026,7 @@ public class DisplayPageTemplateFolderResourceTest
 
 		displayPageTemplateFolder.setName(name);
 
-		_assertProblemException(
+		ProblemExceptionTestUtil.assertProblemException(
 			status, title,
 			() ->
 				displayPageTemplateFolderResource.
