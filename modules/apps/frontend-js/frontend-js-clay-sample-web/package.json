@@ -13,5 +13,5 @@
 		"checkFormat": "node-scripts format --check",
 		"format": "node-scripts format"
 	},
-	"version": "2.0.52"
+	"version": "2.0.53"
 }
