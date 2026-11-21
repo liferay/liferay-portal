@@ -6,7 +6,6 @@
 /* eslint-disable no-undef */
 
 const sidebarId = `${fragmentEntryLinkNamespace}sidebar`;
-const sidebarOpenKey = `${fragmentEntryLinkNamespace}sidebarOpen`;
 
 const sidebar = fragmentElement.querySelector('.sidebar-container');
 const sidebarCloseButton = fragmentElement.querySelector(
@@ -26,16 +25,7 @@ if (sidebarCloseButton) {
 	addSidebarToggleClickEventListener(sidebarCloseButton);
 }
 
-const sidebarOpenString = Liferay.Util.LocalStorage.getItem(
-	sidebarOpenKey,
-	Liferay.Util.LocalStorage.TYPES.FUNCTIONAL
-);
-
-let sidebarOpen = sidebarOpenString === 'false' ? false : true;
-
-if (!sidebarOpen) {
-	toggleSidebar(false);
-}
+let sidebarOpen = sidebarContainer.classList.contains('open');
 
 function addSidebarToggleClickEventListener(node) {
 	node.addEventListener('click', () => handleSidebarToggleClick());
@@ -48,14 +38,13 @@ function handleSidebarToggleClick() {
 
 	toggleSidebar();
 
-	Liferay.Util.LocalStorage.setItem(
-		sidebarOpenKey,
-		sidebarOpen,
-		Liferay.Util.LocalStorage.TYPES.FUNCTIONAL
-	);
+	Liferay.Util.Session.set(
+		'com.liferay.osb.faro.workspace.site.initializer_sidebarOpen',
+		String(sidebarOpen)
+	).catch(() => {});
 }
 
-function toggleSidebar(moveFocus = true) {
+function toggleSidebar() {
 	sidebarContainer.classList.toggle('open');
 
 	sidebar.toggleAttribute('inert');
@@ -65,8 +54,8 @@ function toggleSidebar(moveFocus = true) {
 			.querySelectorAll('.inline-item')
 			.forEach((node) => node.classList.toggle('hide'));
 
-		sidebarTrigger.toggleAttribute('aria-expanded');
-		sidebarTrigger.toggleAttribute('aria-pressed');
+		sidebarTrigger.setAttribute('aria-expanded', String(sidebarOpen));
+		sidebarTrigger.setAttribute('aria-pressed', String(sidebarOpen));
 
 		if (sidebarOpen) {
 			sidebarTrigger.setAttribute(
@@ -82,9 +71,7 @@ function toggleSidebar(moveFocus = true) {
 		}
 	}
 
-	if (moveFocus) {
-		if (sidebarTrigger) {
-			sidebarTrigger.focus();
-		}
+	if (sidebarTrigger) {
+		sidebarTrigger.focus();
 	}
 }

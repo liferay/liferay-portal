@@ -1,8 +1,10 @@
-<button aria-expanded="true" aria-pressed="true" class="btn btn-monospaced btn-secondary btn-sm btn-unstyled lfr-portal-tooltip sidebar-toggle" data-titleclose="${languageUtil.get(locale, 'close-sidebar')}" data-titleopen="${languageUtil.get(locale, 'open-sidebar')}" disabled title="${languageUtil.get(locale, 'close-sidebar')}" type="button">
-	<span class="inline-item">
+[#assign sidebarOpen = sessionClicks.get(request, "com.liferay.osb.faro.workspace.site.initializer_sidebarOpen", "true") == "true" /]
+
+<button aria-expanded="${sidebarOpen?c}" aria-pressed="${sidebarOpen?c}" class="btn btn-monospaced btn-secondary btn-sm btn-unstyled lfr-portal-tooltip sidebar-toggle" data-titleclose="${languageUtil.get(locale, 'close-sidebar')}" data-titleopen="${languageUtil.get(locale, 'open-sidebar')}" disabled title="[#if sidebarOpen]${languageUtil.get(locale, 'close-sidebar')}[#else]${languageUtil.get(locale, 'open-sidebar')}[/#if]" type="button">
+	<span class="[#if !sidebarOpen]hide [/#if]inline-item">
 		[@clay["icon"] symbol="product-menu-open" /]
 	</span>
-	<span class="hide inline-item">
+	<span class="[#if sidebarOpen]hide [/#if]inline-item">
 		[@clay["icon"] symbol="product-menu-closed" /]
 	</span>
 </button>

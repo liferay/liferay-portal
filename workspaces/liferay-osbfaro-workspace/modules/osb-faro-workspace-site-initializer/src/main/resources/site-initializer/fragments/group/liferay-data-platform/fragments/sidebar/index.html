@@ -1,9 +1,11 @@
+[#assign sidebarOpen = sessionClicks.get(request, "com.liferay.osb.faro.workspace.site.initializer_sidebarOpen", "true") == "true" /]
+
 <div class="[#if layoutMode != "edit"]sticky-top [/#if]top-bar">
 	<lfr-drop-zone data-lfr-drop-zone-id="topBar"></lfr-drop-zone>
 </div>
 
-<div class="open sidebar-layout">
-	<nav aria-label="${configuration.sidebarAriaLabel}" class="sidebar-container">
+<div class="[#if sidebarOpen]open [/#if]sidebar-layout">
+	<nav aria-label="${configuration.sidebarAriaLabel}" class="sidebar-container"[#if !sidebarOpen] inert[/#if]>
 		<div class="position-relative sidebar">
 			<button class="close lfr-portal-tooltip m-2 p-2 rounded-lg sidebar-close-button sr-only sr-only-focusable" disabled title="${languageUtil.get(locale, 'close-product-menu')}" type="button">
 				[@clay["icon"] symbol="times" /]
