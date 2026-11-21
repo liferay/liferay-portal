@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Frontend Icons Web
 Bundle-SymbolicName: com.liferay.frontend.icons.web
-Bundle-Version: 1.0.40
+Bundle-Version: 1.0.41
 Web-ContextPath: /frontend-icons-web
