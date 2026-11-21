@@ -23,6 +23,11 @@ public class FaroPaginationUtilTest {
 
 	@Test
 	public void testGetGraphQLPage() {
+		Assert.assertEquals(
+			0,
+			FaroPaginationUtil.getGraphQLPage(
+				Pagination.of(0, RandomTestUtil.randomInt())));
+
 		int page = RandomTestUtil.randomInt();
 
 		Assert.assertEquals(
@@ -30,10 +35,6 @@ public class FaroPaginationUtilTest {
 			FaroPaginationUtil.getGraphQLPage(
 				Pagination.of(page, RandomTestUtil.randomInt())));
 
-		Assert.assertEquals(
-			0,
-			FaroPaginationUtil.getGraphQLPage(
-				Pagination.of(0, RandomTestUtil.randomInt())));
 		Assert.assertEquals(0, FaroPaginationUtil.getGraphQLPage(null));
 	}
 

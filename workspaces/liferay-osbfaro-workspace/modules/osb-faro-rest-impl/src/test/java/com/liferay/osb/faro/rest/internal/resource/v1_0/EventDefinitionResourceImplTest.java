@@ -20,6 +20,7 @@ import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -77,6 +78,11 @@ public class EventDefinitionResourceImplTest {
 
 	@Test
 	public void testGetWorkspaceGroupEventDefinitionsPage() throws Exception {
+		int total = RandomTestUtil.randomInt();
+
+		_getWorkspaceGroupEventDefinitionsPageResponse.setEventDefinitionBag(
+			_createEventDefinitionBag(total));
+
 		boolean blocked = RandomTestUtil.randomBoolean();
 		String eventType = RandomTestUtil.randomString();
 		String fieldName = RandomTestUtil.randomString();
@@ -84,11 +90,6 @@ public class EventDefinitionResourceImplTest {
 		int page = RandomTestUtil.randomInt();
 		int pageSize = RandomTestUtil.randomInt();
 		String search = RandomTestUtil.randomString();
-
-		int total = RandomTestUtil.randomInt();
-
-		_getWorkspaceGroupEventDefinitionsPageResponse.setEventDefinitionBag(
-			_createEventDefinitionBag(total));
 
 		Page<EventDefinition> eventDefinitionsPage =
 			_eventDefinitionResourceImpl.getWorkspaceGroupEventDefinitionsPage(
@@ -123,10 +124,13 @@ public class EventDefinitionResourceImplTest {
 
 		Page<EventDefinition> eventDefinitionsPage =
 			_eventDefinitionResourceImpl.getWorkspaceGroupEventDefinitionsPage(
-				_GROUP_ID, null, null, null, null, Pagination.of(1, 20), null);
+				_GROUP_ID, null, null, null, null,
+				Pagination.of(
+					RandomTestUtil.randomInt(), RandomTestUtil.randomInt()),
+				null);
 
 		Assert.assertEquals(
-			List.of(), (List<?>)eventDefinitionsPage.getItems());
+			Collections.emptyList(), eventDefinitionsPage.getItems());
 		Assert.assertEquals(0, eventDefinitionsPage.getTotalCount());
 	}
 

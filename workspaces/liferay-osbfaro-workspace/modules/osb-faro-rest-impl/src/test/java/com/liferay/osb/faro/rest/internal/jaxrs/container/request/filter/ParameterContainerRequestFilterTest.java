@@ -150,13 +150,14 @@ public class ParameterContainerRequestFilterTest {
 		Assert.assertNull(_filter("sort", "displayName:desc"));
 
 		_assertTitle(
-			"\"blocked\" must be one of false, true",
-			_filter("blocked", "yes"));
+			"\"blocked\" must be one of \"false\", \"true\"",
+			_filter("blocked", RandomTestUtil.randomString()));
 		_assertTitle(
 			"\"eventType\" must be one of ALL, CUSTOM, DEFAULT",
 			_filter("eventType", RandomTestUtil.randomString()));
 		_assertTitle(
-			"\"hidden\" must be one of false, true", _filter("hidden", "1"));
+			"\"hidden\" must be one of \"false\", \"true\"",
+			_filter("hidden", RandomTestUtil.randomString()));
 		_assertTitle(
 			"\"pageSize\" must be a whole number from 1 to 100",
 			_filter("pageSize", "101"));
@@ -191,6 +192,9 @@ public class ParameterContainerRequestFilterTest {
 	}
 
 	private Response _filter(MultivaluedMap<String, String> queryParameters) {
+		ContainerRequestContext containerRequestContext = Mockito.mock(
+			ContainerRequestContext.class);
+
 		UriInfo uriInfo = Mockito.mock(UriInfo.class);
 
 		Mockito.when(
@@ -204,9 +208,6 @@ public class ParameterContainerRequestFilterTest {
 		).thenReturn(
 			queryParameters
 		);
-
-		ContainerRequestContext containerRequestContext = Mockito.mock(
-			ContainerRequestContext.class);
 
 		Mockito.when(
 			containerRequestContext.getUriInfo()

@@ -149,7 +149,7 @@ public class ParameterContainerRequestFilter implements ContainerRequestFilter {
 
 			throw new BadRequestException(
 				StringBundler.concat(
-					"\"", name, "\" must be one of false, true"));
+					"\"", name, "\" must be one of \"false\", \"true\""));
 		}
 	}
 
