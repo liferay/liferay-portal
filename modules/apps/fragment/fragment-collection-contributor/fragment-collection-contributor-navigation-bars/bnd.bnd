@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Fragment Collection Contributor Navigation Bars
 Bundle-SymbolicName: com.liferay.fragment.collection.contributor.navigation.bars
-Bundle-Version: 2.0.15
+Bundle-Version: 2.0.16
 Web-ContextPath: /fragment-collection-contributor-navigation-bars
 -dsannotations-options: inherit
