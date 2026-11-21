@@ -35,7 +35,8 @@ renderResponse.setTitle((layoutPageTemplateCollection != null) ? layoutPageTempl
 
 	<liferay-frontend:edit-form-body>
 		<liferay-ui:error exception="<%= DuplicateLayoutPageTemplateCollectionException.class %>" message="please-enter-a-unique-name" />
-		<liferay-ui:error exception="<%= LayoutPageTemplateCollectionNameException.class %>" message="please-enter-a-valid-name" />
+		<liferay-ui:error exception="<%= LayoutPageTemplateCollectionNameException.MustNotBeNull.class %>" message="please-enter-a-valid-name" />
+		<liferay-ui:error exception="<%= LayoutPageTemplateCollectionNameException.MustNotExceedMaximumSize.class %>" message="please-enter-a-valid-name" />
 
 		<aui:model-context bean="<%= layoutPageTemplateCollection %>" model="<%= LayoutPageTemplateCollection.class %>" />
 
