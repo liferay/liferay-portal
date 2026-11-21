@@ -420,7 +420,7 @@ public class DropZoneAllowedFragmentEntriesHelperImplTest {
 	private static final MockedStatic<ScopeUtil> _scopeUtilMockedStatic =
 		Mockito.mockStatic(ScopeUtil.class);
 
-	private DropZoneAllowedFragmentEntriesHelperImpl
+	private final DropZoneAllowedFragmentEntriesHelperImpl
 		_dropZoneAllowedFragmentEntriesHelperImpl =
 			new DropZoneAllowedFragmentEntriesHelperImpl();
 	private final FragmentCollectionContributorRegistry
