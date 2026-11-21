@@ -92,6 +92,15 @@ public class PunchOutSessionResourceTest {
 
 		modifiableSettings.store();
 
+		_punchOutRole = RoleTestUtil.addRole(
+			RandomTestUtil.randomString(), RoleConstants.TYPE_REGULAR,
+			CPConstants.RESOURCE_NAME_CHANNEL, ResourceConstants.SCOPE_COMPANY,
+			String.valueOf(_group.getCompanyId()),
+			PunchOutActionKeys.START_PUNCH_OUT_SESSION);
+		_punchOutUser = UserTestUtil.addUser();
+
+		_roleLocalService.addUserRole(_punchOutUser.getUserId(), _punchOutRole);
+
 		Role role = _roleLocalService.fetchRole(
 			_group.getCompanyId(),
 			PunchOutConstants.ROLE_NAME_ACCOUNT_PUNCH_OUT);
@@ -101,15 +110,6 @@ public class PunchOutSessionResourceTest {
 				PunchOutConstants.ROLE_NAME_ACCOUNT_PUNCH_OUT,
 				RoleConstants.TYPE_ACCOUNT);
 		}
-
-		_punchOutRole = RoleTestUtil.addRole(
-			RandomTestUtil.randomString(), RoleConstants.TYPE_REGULAR,
-			CPConstants.RESOURCE_NAME_CHANNEL, ResourceConstants.SCOPE_COMPANY,
-			String.valueOf(_group.getCompanyId()),
-			PunchOutActionKeys.START_PUNCH_OUT_SESSION);
-		_punchOutUser = UserTestUtil.addUser();
-
-		_roleLocalService.addUserRole(_punchOutUser.getUserId(), _punchOutRole);
 	}
 
 	@Test
@@ -210,7 +210,6 @@ public class PunchOutSessionResourceTest {
 				_getPunchOutSession(
 					_punchOutUser.getEmailAddress(),
 					"https://8.8.8.8/" + RandomTestUtil.randomString())));
-
 		Assert.assertThrows(
 			PrincipalException.MustHavePermission.class,
 			() -> punchOutSessionResource.postPunchOutSessionRequest(
