@@ -33,7 +33,7 @@ public class
 				mustNotContainInvalidCharacters.
 					getLayoutPageTemplateCollectionKey(),
 				"\" of the ",
-				LayoutPageTemplateCollectionUtil.getName(
+				LayoutPageTemplateCollectionUtil.getTypeLabel(
 					mustNotContainInvalidCharacters.getType()),
 				" must contain only alphanumeric characters, dashes, and ",
 				"underscores"),

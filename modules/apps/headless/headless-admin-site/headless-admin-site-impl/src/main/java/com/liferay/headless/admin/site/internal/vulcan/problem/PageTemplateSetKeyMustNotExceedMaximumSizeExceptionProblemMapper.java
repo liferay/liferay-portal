@@ -32,7 +32,7 @@ public class PageTemplateSetKeyMustNotExceedMaximumSizeExceptionProblemMapper
 				"The key \"",
 				mustNotExceedMaximumSize.getLayoutPageTemplateCollectionKey(),
 				"\" of the ",
-				LayoutPageTemplateCollectionUtil.getName(
+				LayoutPageTemplateCollectionUtil.getTypeLabel(
 					mustNotExceedMaximumSize.getType()),
 				" must not exceed ",
 				mustNotExceedMaximumSize.

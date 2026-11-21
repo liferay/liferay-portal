@@ -12,7 +12,7 @@ import com.liferay.layout.page.template.constants.LayoutPageTemplateCollectionTy
  */
 public class LayoutPageTemplateCollectionUtil {
 
-	public static String getName(int type) {
+	public static String getTypeLabel(int type) {
 		if (type == LayoutPageTemplateCollectionTypeConstants.DISPLAY_PAGE) {
 			return "display page template folder";
 		}

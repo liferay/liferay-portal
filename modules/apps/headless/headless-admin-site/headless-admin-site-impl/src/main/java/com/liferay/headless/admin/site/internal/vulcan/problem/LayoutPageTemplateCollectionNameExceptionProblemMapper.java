@@ -35,7 +35,7 @@ public class LayoutPageTemplateCollectionNameExceptionProblemMapper
 		LayoutPageTemplateCollectionNameException
 			layoutPageTemplateCollectionNameException) {
 
-		String name = LayoutPageTemplateCollectionUtil.getName(
+		String name = LayoutPageTemplateCollectionUtil.getTypeLabel(
 			layoutPageTemplateCollectionNameException.getType());
 
 		if (layoutPageTemplateCollectionNameException instanceof

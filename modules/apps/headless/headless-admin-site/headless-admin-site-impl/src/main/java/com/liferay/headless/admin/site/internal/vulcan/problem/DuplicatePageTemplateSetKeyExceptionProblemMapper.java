@@ -30,7 +30,7 @@ public class DuplicatePageTemplateSetKeyExceptionProblemMapper
 		return ProblemUtil.getProblem(
 			StringBundler.concat(
 				"A ",
-				LayoutPageTemplateCollectionUtil.getName(
+				LayoutPageTemplateCollectionUtil.getTypeLabel(
 					mustNotBeDuplicate.getType()),
 				" with the key \"",
 				mustNotBeDuplicate.getLayoutPageTemplateCollectionKey(),

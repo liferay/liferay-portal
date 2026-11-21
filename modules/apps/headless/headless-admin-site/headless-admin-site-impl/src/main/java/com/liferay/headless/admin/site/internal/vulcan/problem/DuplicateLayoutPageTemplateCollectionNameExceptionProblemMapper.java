@@ -36,18 +36,18 @@ public class DuplicateLayoutPageTemplateCollectionNameExceptionProblemMapper
 		DuplicateLayoutPageTemplateCollectionException
 			duplicateLayoutPageTemplateCollectionException) {
 
-		String name = LayoutPageTemplateCollectionUtil.getName(
+		String typeLabel = LayoutPageTemplateCollectionUtil.getTypeLabel(
 			duplicateLayoutPageTemplateCollectionException.getType());
 
 		if (Validator.isNull(
 				duplicateLayoutPageTemplateCollectionException.getName())) {
 
 			return StringBundler.concat(
-				"A ", name, " with the same name already exists");
+				"A ", typeLabel, " with the same name already exists");
 		}
 
 		return StringBundler.concat(
-			"A ", name, " with the name \"",
+			"A ", typeLabel, " with the name \"",
 			duplicateLayoutPageTemplateCollectionException.getName(),
 			"\" already exists");
 	}
