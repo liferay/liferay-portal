@@ -6,43 +6,173 @@
 package com.liferay.social.activities.web.internal.portlet.display.context;
 
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
+import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
+import com.liferay.portal.kernel.resource.bundle.ResourceBundleLoader;
+import com.liferay.portal.kernel.util.HtmlUtil;
+import com.liferay.social.activities.web.internal.helper.SocialActivitiesQueryHelper;
+import com.liferay.social.activities.web.internal.portlet.display.context.helper.SocialActivitiesRequestHelper;
 import com.liferay.social.kernel.model.SocialActivitySet;
 
 import jakarta.portlet.ResourceURL;
 
 import java.util.List;
+import java.util.ResourceBundle;
 
 /**
  * @author Adolfo Pérez
  */
-public interface SocialActivitiesDisplayContext {
+public class SocialActivitiesDisplayContext {
 
-	public int getMax();
+	public SocialActivitiesDisplayContext(
+		SocialActivitiesRequestHelper socialActivitiesRequestHelper,
+		SocialActivitiesQueryHelper socialActivitiesQueryHelper) {
 
-	public String getPaginationURL();
+		_socialActivitiesRequestHelper = socialActivitiesRequestHelper;
+		_socialActivitiesQueryHelper = socialActivitiesQueryHelper;
+	}
 
-	public int getRSSDelta();
+	public int getMax() {
+		return _socialActivitiesRequestHelper.getMax();
+	}
 
-	public String getRSSDisplayStyle();
+	public String getPaginationURL() {
+		return PortletURLBuilder.createRenderURL(
+			_socialActivitiesRequestHelper.getLiferayPortletResponse()
+		).setTabs1(
+			getSelectedTabName()
+		).setParameter(
+			"end",
+			_socialActivitiesRequestHelper.getEnd() +
+				_socialActivitiesRequestHelper.getMax()
+		).buildString();
+	}
 
-	public String getRSSFeedType();
+	public int getRSSDelta() {
+		return _socialActivitiesRequestHelper.getRSSDelta();
+	}
 
-	public ResourceURL getRSSResourceURL() throws PortalException;
+	public String getRSSDisplayStyle() {
+		return _socialActivitiesRequestHelper.getRSSDisplayStyle();
+	}
 
-	public String getSelectedTabName();
+	public String getRSSFeedType() {
+		return _socialActivitiesRequestHelper.getRSSFeedType();
+	}
 
-	public List<SocialActivitySet> getSocialActivitySets();
+	public ResourceURL getRSSResourceURL() throws PortalException {
+		Group group = _socialActivitiesRequestHelper.getScopeGroup();
 
-	public String getTabsNames();
+		String groupDescriptiveName = HtmlUtil.escape(
+			group.getDescriptiveName(
+				_socialActivitiesRequestHelper.getLocale()));
 
-	public String getTabsURL();
+		String feedTitle = LanguageUtil.format(
+			_getResourceBundle(), "x's-activities", groupDescriptiveName,
+			false);
 
-	public String getTaglibFeedTitle() throws PortalException;
+		LiferayPortletResponse liferayPortletResponse =
+			_socialActivitiesRequestHelper.getLiferayPortletResponse();
 
-	public boolean isRSSEnabled();
+		ResourceURL rssURL = liferayPortletResponse.createResourceURL();
 
-	public boolean isSeeMoreControlVisible();
+		rssURL.setParameter("feedTitle", feedTitle);
+		rssURL.setParameter(
+			"max",
+			String.valueOf(_socialActivitiesRequestHelper.getRSSDelta()));
+		rssURL.setResourceID("/social_activities/rss");
 
-	public boolean isTabsVisible();
+		return rssURL;
+	}
+
+	public String getSelectedTabName() {
+		return _socialActivitiesRequestHelper.getTabs1();
+	}
+
+	public List<SocialActivitySet> getSocialActivitySets() {
+		if (_socialActivitySets != null) {
+			return _socialActivitySets;
+		}
+
+		Group group = _socialActivitiesRequestHelper.getScopeGroup();
+		SocialActivitiesQueryHelper.Scope scope =
+			SocialActivitiesQueryHelper.Scope.fromValue(getSelectedTabName());
+
+		_socialActivitySets =
+			_socialActivitiesQueryHelper.getSocialActivitySets(
+				group, _socialActivitiesRequestHelper.getLayout(), scope, 0,
+				_socialActivitiesRequestHelper.getEnd());
+
+		return _socialActivitySets;
+	}
+
+	public String getTabsNames() {
+		return "all,connections,following,my-sites,me";
+	}
+
+	public String getTabsURL() {
+		return PortletURLBuilder.createRenderURL(
+			_socialActivitiesRequestHelper.getLiferayPortletResponse()
+		).setTabs1(
+			getSelectedTabName()
+		).buildString();
+	}
+
+	public String getTaglibFeedTitle() throws PortalException {
+		return LanguageUtil.get(_getResourceBundle(), "rss");
+	}
+
+	public boolean isRSSEnabled() {
+		return _socialActivitiesRequestHelper.isRSSEnabled();
+	}
+
+	public boolean isSeeMoreControlVisible() {
+		Group group = _socialActivitiesRequestHelper.getScopeGroup();
+		SocialActivitiesQueryHelper.Scope scope =
+			SocialActivitiesQueryHelper.Scope.fromValue(getSelectedTabName());
+
+		int count = _socialActivitiesQueryHelper.getSocialActivitySetsCount(
+			group, _socialActivitiesRequestHelper.getLayout(), scope);
+
+		if (_socialActivitiesRequestHelper.getEnd() < count) {
+			return true;
+		}
+
+		return false;
+	}
+
+	public boolean isTabsVisible() {
+		Group group = _socialActivitiesRequestHelper.getScopeGroup();
+
+		Layout layout = _socialActivitiesRequestHelper.getLayout();
+
+		if (group.isUser() && layout.isPrivateLayout()) {
+			return true;
+		}
+
+		return false;
+	}
+
+	private ResourceBundle _getResourceBundle() {
+		if (_resourceBundle != null) {
+			return _resourceBundle;
+		}
+
+		ResourceBundleLoader resourceBundleLoader =
+			LanguageUtil.getResourceBundleLoader();
+
+		_resourceBundle = resourceBundleLoader.loadResourceBundle(
+			_socialActivitiesRequestHelper.getLocale());
+
+		return _resourceBundle;
+	}
+
+	private ResourceBundle _resourceBundle;
+	private final SocialActivitiesQueryHelper _socialActivitiesQueryHelper;
+	private final SocialActivitiesRequestHelper _socialActivitiesRequestHelper;
+	private List<SocialActivitySet> _socialActivitySets;
 
 }
