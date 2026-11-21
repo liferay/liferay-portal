@@ -8,7 +8,6 @@ package com.liferay.portal.search.elasticsearch8.internal.settings;
 import com.liferay.portal.search.test.util.settings.BaseSettingsHelperTestCase;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
-import org.junit.Before;
 import org.junit.ClassRule;
 
 /**
@@ -20,12 +19,21 @@ public class SettingsHelperTest extends BaseSettingsHelperTestCase {
 	public static final LiferayUnitTestRule liferayUnitTestRule =
 		LiferayUnitTestRule.INSTANCE;
 
-	@Before
 	@Override
-	public void setUp() {
-		super.setUp();
-
-		settingsHelper = new SettingsHelperImpl();
+	protected String get(String key) {
+		return _settingsHelper.get(key);
 	}
+
+	@Override
+	protected void loadFromSource(String source) {
+		_settingsHelper.loadFromSource(source);
+	}
+
+	@Override
+	protected void put(String key, String value) {
+		_settingsHelper.put(key, value);
+	}
+
+	private final SettingsHelper _settingsHelper = new SettingsHelper();
 
 }

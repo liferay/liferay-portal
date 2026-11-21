@@ -1,9 +1,9 @@
 /**
- * SPDX-FileCopyrightText: (c) 2024 Liferay, Inc. https://liferay.com
+ * SPDX-FileCopyrightText: (c) 2025 Liferay, Inc. https://liferay.com
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.portal.search.opensearch2.internal.settings;
+package com.liferay.portal.search.elasticsearch8.internal.settings;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
@@ -15,17 +15,18 @@ import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
-import com.liferay.portal.search.opensearch2.internal.util.IndexUtil;
-import com.liferay.portal.search.spi.index.configuration.contributor.helper.SettingsHelper;
+import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.search.elasticsearch8.internal.util.IndexUtil;
+
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
 /**
- * @author Bryan Engler
+ * @author André de Oliveira
  */
-public class SettingsHelperImpl implements SettingsHelper {
+public class SettingsHelper {
 
-	@Override
 	public String get(String key) {
 		String[] keyParts = key.split("\\.");
 
@@ -47,7 +48,6 @@ public class SettingsHelperImpl implements SettingsHelper {
 		return _settingsJSONObject;
 	}
 
-	@Override
 	public void loadFromSource(String source) {
 		if (StringUtils.isBlank(source)) {
 			return;
@@ -108,7 +108,25 @@ public class SettingsHelperImpl implements SettingsHelper {
 		put(key, String.valueOf(value));
 	}
 
-	@Override
+	public void put(String key, List<String> values) {
+		JSONObject settingJSONObject = JSONFactoryUtil.createJSONObject();
+
+		String[] settingParts = key.split("\\.");
+
+		for (int i = settingParts.length - 1; i >= 0; i--) {
+			if (i == (settingParts.length - 1)) {
+				settingJSONObject.put(
+					settingParts[i], ArrayUtil.toStringArray(values));
+			}
+			else {
+				settingJSONObject = JSONUtil.put(
+					settingParts[i], settingJSONObject);
+			}
+		}
+
+		IndexUtil.mergeToJSONObject(_settingsJSONObject, settingJSONObject);
+	}
+
 	public void put(String key, String value) {
 		if (!StringUtils.isBlank(value)) {
 			JSONObject settingJSONObject = JSONFactoryUtil.createJSONObject();

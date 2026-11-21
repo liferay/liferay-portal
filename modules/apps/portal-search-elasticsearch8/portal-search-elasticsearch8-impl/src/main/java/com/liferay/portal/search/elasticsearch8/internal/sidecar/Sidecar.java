@@ -22,7 +22,7 @@ import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.SystemProperties;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.search.elasticsearch8.internal.configuration.ElasticsearchConfigurationWrapper;
-import com.liferay.portal.search.elasticsearch8.internal.settings.SettingsHelperImpl;
+import com.liferay.portal.search.elasticsearch8.internal.settings.SettingsHelper;
 import com.liferay.portal.search.elasticsearch8.internal.sidecar.activator.SearchElasticsearch8ImplBundleActivator;
 import com.liferay.portal.search.elasticsearch8.internal.sidecar.constants.SidecarConstants;
 import com.liferay.portal.search.elasticsearch8.internal.util.ResourceUtil;
@@ -440,43 +440,43 @@ public class Sidecar {
 	}
 
 	private String _getSettings() {
-		SettingsHelperImpl settingsHelperImpl = new SettingsHelperImpl();
+		SettingsHelper settingsHelper = new SettingsHelper();
 
 		String defaultConfigurations = ResourceUtil.getResourceAsString(
 			getClass(),
 			SidecarConstants.ELASTICSEARCH_OPTIONAL_DEFAULTS_FILE_NAME);
 
-		settingsHelperImpl.loadFromSource(defaultConfigurations);
+		settingsHelper.loadFromSource(defaultConfigurations);
 
-		settingsHelperImpl.put("action.auto_create_index", false);
-		settingsHelperImpl.put(
+		settingsHelper.put("action.auto_create_index", false);
+		settingsHelper.put(
 			"bootstrap.memory_lock",
 			_elasticsearchConfigurationWrapper.bootstrapMlockAll());
 
 		// Configure clustering
 
-		settingsHelperImpl.put("cluster.name", _getClusterName());
-		settingsHelperImpl.put(
+		settingsHelper.put("cluster.name", _getClusterName());
+		settingsHelper.put(
 			"cluster.routing.allocation.disk.threshold_enabled", false);
-		settingsHelperImpl.put("discovery.type", "single-node");
+		settingsHelper.put("discovery.type", "single-node");
 
 		// Configure HTTP
 
 		HttpPortRange httpPortRange = new HttpPortRange(
 			_elasticsearchConfigurationWrapper);
 
-		settingsHelperImpl.put("http.port", httpPortRange.toSettingsString());
+		settingsHelper.put("http.port", httpPortRange.toSettingsString());
 
-		settingsHelperImpl.put(
+		settingsHelper.put(
 			"http.cors.enabled",
 			_elasticsearchConfigurationWrapper.httpCORSEnabled());
 
 		if (_elasticsearchConfigurationWrapper.httpCORSEnabled()) {
-			settingsHelperImpl.put(
+			settingsHelper.put(
 				"http.cors.allow-origin",
 				_elasticsearchConfigurationWrapper.httpCORSAllowOrigin());
 
-			settingsHelperImpl.loadFromSource(
+			settingsHelper.loadFromSource(
 				_elasticsearchConfigurationWrapper.httpCORSConfigurations());
 		}
 
@@ -489,51 +489,50 @@ public class Sidecar {
 			_elasticsearchConfigurationWrapper.networkPublishHost();
 
 		if (Validator.isNotNull(networkBindHost)) {
-			settingsHelperImpl.put("network.bind_host", networkBindHost);
+			settingsHelper.put("network.bind_host", networkBindHost);
 		}
 
 		if (Validator.isNotNull(networkHost)) {
-			settingsHelperImpl.put("network.host", networkHost);
+			settingsHelper.put("network.host", networkHost);
 		}
 
 		if (Validator.isNotNull(networkPublishHost)) {
-			settingsHelperImpl.put("network.publish_host", networkPublishHost);
+			settingsHelper.put("network.publish_host", networkPublishHost);
 		}
 
 		String transportTcpPort =
 			_elasticsearchConfigurationWrapper.transportTcpPort();
 
 		if (Validator.isNotNull(transportTcpPort)) {
-			settingsHelperImpl.put("transport.port", transportTcpPort);
+			settingsHelper.put("transport.port", transportTcpPort);
 		}
 
-		settingsHelperImpl.put("node.name", _getNodeName());
-		settingsHelperImpl.put(
-			"node.roles", List.of("master", "ingest", "data"));
+		settingsHelper.put("node.name", _getNodeName());
+		settingsHelper.put("node.roles", List.of("master", "ingest", "data"));
 
 		// Configure paths
 
 		Path dataParentPath = _sidecarWorkPath.resolve("data/elasticsearch8");
 
-		settingsHelperImpl.put(
+		settingsHelper.put(
 			"path.data", String.valueOf(dataParentPath.resolve("indices")));
 
-		settingsHelperImpl.put(
+		settingsHelper.put(
 			"path.home", String.valueOf(_sidecarHomePath.toAbsolutePath()));
 
-		settingsHelperImpl.put(
+		settingsHelper.put(
 			"path.logs", String.valueOf(_sidecarWorkPath.resolve("logs")));
 
-		settingsHelperImpl.put(
+		settingsHelper.put(
 			"path.repo", String.valueOf(dataParentPath.resolve("repo")));
 
-		settingsHelperImpl.put("thread_pool.warmer.max", "20");
-		settingsHelperImpl.put("node.store.allow_mmap", false);
+		settingsHelper.put("thread_pool.warmer.max", "20");
+		settingsHelper.put("node.store.allow_mmap", false);
 
-		settingsHelperImpl.loadFromSource(
+		settingsHelper.loadFromSource(
 			_elasticsearchConfigurationWrapper.additionalConfigurations());
 
-		return String.valueOf(settingsHelperImpl.getSettingsJSONObject());
+		return String.valueOf(settingsHelper.getSettingsJSONObject());
 	}
 
 	private String _getSidecarVersion() {

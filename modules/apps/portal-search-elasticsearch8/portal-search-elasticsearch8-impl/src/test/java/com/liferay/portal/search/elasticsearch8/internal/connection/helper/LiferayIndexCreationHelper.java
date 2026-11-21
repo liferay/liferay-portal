@@ -12,7 +12,7 @@ import com.liferay.portal.json.JSONFactoryImpl;
 import com.liferay.portal.search.elasticsearch8.internal.connection.ElasticsearchClientResolver;
 import com.liferay.portal.search.elasticsearch8.internal.index.MappingsHelper;
 import com.liferay.portal.search.elasticsearch8.internal.index.constants.IndexSettingsConstants;
-import com.liferay.portal.search.elasticsearch8.internal.settings.SettingsHelperImpl;
+import com.liferay.portal.search.elasticsearch8.internal.settings.SettingsHelper;
 import com.liferay.portal.search.elasticsearch8.internal.util.ResourceUtil;
 import com.liferay.portal.search.engine.SearchEngineInformation;
 
@@ -43,8 +43,8 @@ public class LiferayIndexCreationHelper implements IndexCreationHelper {
 	}
 
 	@Override
-	public void contributeIndexSettings(SettingsHelperImpl settingsHelperImpl) {
-		settingsHelperImpl.loadFromSource(
+	public void contributeIndexSettings(SettingsHelper settingsHelper) {
+		settingsHelper.loadFromSource(
 			ResourceUtil.getResourceAsString(
 				getClass(), IndexSettingsConstants.INDEX_SETTINGS_FILE_NAME));
 	}

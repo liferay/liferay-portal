@@ -5,7 +5,7 @@
 
 package com.liferay.portal.search.opensearch2.internal.connection.helper;
 
-import com.liferay.portal.search.opensearch2.internal.settings.SettingsHelperImpl;
+import com.liferay.portal.search.opensearch2.internal.settings.SettingsHelper;
 
 import org.opensearch.client.opensearch.indices.CreateIndexRequest;
 
@@ -16,7 +16,7 @@ public interface IndexCreationHelper {
 
 	public void contribute(CreateIndexRequest.Builder builder);
 
-	public void contributeIndexSettings(SettingsHelperImpl settingsHelperImpl);
+	public void contributeIndexSettings(SettingsHelper settingsHelper);
 
 	public void whenIndexCreated(String indexName);
 

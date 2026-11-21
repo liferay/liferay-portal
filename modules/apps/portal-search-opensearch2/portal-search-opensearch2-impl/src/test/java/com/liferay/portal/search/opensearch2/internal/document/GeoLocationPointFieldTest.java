@@ -13,7 +13,7 @@ import com.liferay.portal.search.opensearch2.internal.connection.OpenSearchConne
 import com.liferay.portal.search.opensearch2.internal.connection.helper.IndexCreationHelper;
 import com.liferay.portal.search.opensearch2.internal.indexing.LiferayOpenSearchIndexingFixtureFactory;
 import com.liferay.portal.search.opensearch2.internal.indexing.OpenSearchIndexingFixture;
-import com.liferay.portal.search.opensearch2.internal.settings.SettingsHelperImpl;
+import com.liferay.portal.search.opensearch2.internal.settings.SettingsHelper;
 import com.liferay.portal.search.opensearch2.internal.util.IndexUtil;
 import com.liferay.portal.search.test.util.DocumentsAssert;
 import com.liferay.portal.search.test.util.indexing.BaseIndexingTestCase;
@@ -112,8 +112,7 @@ public class GeoLocationPointFieldTest extends BaseIndexingTestCase {
 		}
 
 		@Override
-		public void contributeIndexSettings(
-			SettingsHelperImpl settingsHelperImpl) {
+		public void contributeIndexSettings(SettingsHelper settingsHelper) {
 		}
 
 		@Override

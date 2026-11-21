@@ -8,7 +8,7 @@ package com.liferay.portal.search.opensearch2.internal.connection;
 import com.liferay.portal.search.engine.SearchEngineInformation;
 import com.liferay.portal.search.opensearch2.internal.connection.helper.IndexCreationHelper;
 import com.liferay.portal.search.opensearch2.internal.connection.helper.LiferayIndexCreationHelper;
-import com.liferay.portal.search.opensearch2.internal.settings.SettingsHelperImpl;
+import com.liferay.portal.search.opensearch2.internal.settings.SettingsHelper;
 
 import jakarta.json.spi.JsonProvider;
 
@@ -50,12 +50,12 @@ public class IndexCreator {
 
 		indexCreationHelper.contribute(builder);
 
-		SettingsHelperImpl settingsHelperImpl = new SettingsHelperImpl();
+		SettingsHelper settingsHelper = new SettingsHelper();
 
-		settingsHelperImpl.put("index.number_of_replicas", "0");
-		settingsHelperImpl.put("index.number_of_shards", "1");
+		settingsHelper.put("index.number_of_replicas", "0");
+		settingsHelper.put("index.number_of_shards", "1");
 
-		indexCreationHelper.contributeIndexSettings(settingsHelperImpl);
+		indexCreationHelper.contributeIndexSettings(settingsHelper);
 
 		JsonpMapper jsonpMapper = _openSearchConnectionManager.getJsonpMapper(
 			null);
@@ -63,7 +63,7 @@ public class IndexCreator {
 		JsonProvider jsonProvider = jsonpMapper.jsonProvider();
 
 		String settings = String.valueOf(
-			settingsHelperImpl.getSettingsJSONObject());
+			settingsHelper.getSettingsJSONObject());
 
 		try (InputStream inputStream = new ByteArrayInputStream(
 				settings.getBytes(StandardCharsets.UTF_8))) {
@@ -164,14 +164,11 @@ public class IndexCreator {
 			}
 
 			@Override
-			public void contributeIndexSettings(
-				SettingsHelperImpl settingsHelperImpl) {
-
-				_indexCreationHelper.contributeIndexSettings(
-					settingsHelperImpl);
+			public void contributeIndexSettings(SettingsHelper settingsHelper) {
+				_indexCreationHelper.contributeIndexSettings(settingsHelper);
 
 				liferayIndexCreationHelper.contributeIndexSettings(
-					settingsHelperImpl);
+					settingsHelper);
 			}
 
 			@Override

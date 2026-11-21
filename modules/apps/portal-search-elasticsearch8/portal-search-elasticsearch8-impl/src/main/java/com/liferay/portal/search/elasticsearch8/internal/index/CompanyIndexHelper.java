@@ -38,7 +38,7 @@ import com.liferay.portal.search.elasticsearch8.internal.connection.Elasticsearc
 import com.liferay.portal.search.elasticsearch8.internal.connection.ElasticsearchConnectionNotInitializedException;
 import com.liferay.portal.search.elasticsearch8.internal.index.constants.IndexSettingsConstants;
 import com.liferay.portal.search.elasticsearch8.internal.index.util.IndexFactoryCompanyIdRegistryUtil;
-import com.liferay.portal.search.elasticsearch8.internal.settings.SettingsHelperImpl;
+import com.liferay.portal.search.elasticsearch8.internal.settings.SettingsHelper;
 import com.liferay.portal.search.elasticsearch8.internal.util.JsonpUtil;
 import com.liferay.portal.search.elasticsearch8.internal.util.ResourceUtil;
 import com.liferay.portal.search.engine.SearchEngineInformation;
@@ -293,70 +293,67 @@ public class CompanyIndexHelper {
 	}
 
 	private void _loadAdditionalSettings(
-		long companyId, SettingsHelperImpl settingsHelperImpl,
+		long companyId, SettingsHelper settingsHelper,
 		boolean includeStaticProperties) {
 
-		_loadContributedSettings(companyId, settingsHelperImpl);
+		_loadContributedSettings(companyId, settingsHelper);
 
-		_loadConfigurationSettings(settingsHelperImpl, includeStaticProperties);
+		_loadConfigurationSettings(settingsHelper, includeStaticProperties);
 
 		if (Validator.isNotNull(
-				settingsHelperImpl.get("index.number_of_replicas"))) {
+				settingsHelper.get("index.number_of_replicas"))) {
 
-			settingsHelperImpl.put("index.auto_expand_replicas", false);
+			settingsHelper.put("index.auto_expand_replicas", false);
 		}
 	}
 
 	private void _loadConfigurationSettings(
-		SettingsHelperImpl settingsHelperImpl,
-		boolean includeStaticProperties) {
+		SettingsHelper settingsHelper, boolean includeStaticProperties) {
 
-		settingsHelperImpl.put(
+		settingsHelper.put(
 			"index.max_result_window",
 			String.valueOf(
 				_elasticsearchConfigurationWrapper.indexMaxResultWindow()));
-		settingsHelperImpl.put(
+		settingsHelper.put(
 			"index.number_of_replicas",
 			_elasticsearchConfigurationWrapper.indexNumberOfReplicas());
 
 		if (includeStaticProperties) {
-			settingsHelperImpl.put(
+			settingsHelper.put(
 				"index.number_of_shards",
 				_elasticsearchConfigurationWrapper.indexNumberOfShards());
 		}
 
-		settingsHelperImpl.loadFromSource(
+		settingsHelper.loadFromSource(
 			_elasticsearchConfigurationWrapper.additionalIndexConfigurations());
 	}
 
 	private void _loadContributedSettings(
-		long companyId, SettingsHelperImpl settingsHelperImpl) {
+		long companyId, SettingsHelper settingsHelper) {
 
 		for (CompanyIndexSettingsContributor companyIndexSettingsContributor :
 				_companyIndexSettingsContributorServiceTrackerList) {
 
-			settingsHelperImpl.loadFromSource(
+			settingsHelper.loadFromSource(
 				companyIndexSettingsContributor.contributeSettings(companyId));
 		}
 	}
 
-	private void _loadDefaultSettings(SettingsHelperImpl settingsHelperImpl) {
-		settingsHelperImpl.loadFromSource(
+	private void _loadDefaultSettings(SettingsHelper settingsHelper) {
+		settingsHelper.loadFromSource(
 			ResourceUtil.getResourceAsString(
 				getClass(), IndexSettingsConstants.INDEX_SETTINGS_FILE_NAME));
 	}
 
-	private void _loadTestModeSettings(SettingsHelperImpl settingsHelperImpl) {
+	private void _loadTestModeSettings(SettingsHelper settingsHelper) {
 		if (!PortalRunMode.isTestMode()) {
 			return;
 		}
 
-		settingsHelperImpl.put("index.refresh_interval", "1ms");
-		settingsHelperImpl.put(
-			"index.search.slowlog.threshold.fetch.warn", "-1");
-		settingsHelperImpl.put(
-			"index.search.slowlog.threshold.query.warn", "-1");
-		settingsHelperImpl.put("index.translog.sync_interval", "100ms");
+		settingsHelper.put("index.refresh_interval", "1ms");
+		settingsHelper.put("index.search.slowlog.threshold.fetch.warn", "-1");
+		settingsHelper.put("index.search.slowlog.threshold.query.warn", "-1");
+		settingsHelper.put("index.translog.sync_interval", "100ms");
 	}
 
 	private <T> ServiceTrackerList<T> _openServiceTrackerList(
@@ -429,13 +426,13 @@ public class CompanyIndexHelper {
 		for (long companyId :
 				IndexFactoryCompanyIdRegistryUtil.getCompanyIds()) {
 
-			SettingsHelperImpl settingsHelperImpl = new SettingsHelperImpl();
+			SettingsHelper settingsHelper = new SettingsHelper();
 
-			settingsHelperImpl.loadFromSource(
+			settingsHelper.loadFromSource(
 				companyIndexSettingsContributor.contributeSettings(companyId));
 
 			JSONObject settingsJSONObject =
-				settingsHelperImpl.getSettingsJSONObject();
+				settingsHelper.getSettingsJSONObject();
 
 			if (SetUtil.isEmpty(settingsJSONObject.keySet())) {
 				continue;
@@ -502,31 +499,30 @@ public class CompanyIndexHelper {
 	private void _setSettings(
 		CreateIndexRequest.Builder builder, long companyId) {
 
-		SettingsHelperImpl settingsHelperImpl = new SettingsHelperImpl();
+		SettingsHelper settingsHelper = new SettingsHelper();
 
-		_loadDefaultSettings(settingsHelperImpl);
+		_loadDefaultSettings(settingsHelper);
 
-		_loadTestModeSettings(settingsHelperImpl);
+		_loadTestModeSettings(settingsHelper);
 
-		_loadAdditionalSettings(companyId, settingsHelperImpl, true);
+		_loadAdditionalSettings(companyId, settingsHelper, true);
 
 		builder.settings(
 			_getIndexSettings(
-				String.valueOf(settingsHelperImpl.getSettingsJSONObject())));
+				String.valueOf(settingsHelper.getSettingsJSONObject())));
 	}
 
 	private void _updateSettings(
 		long companyId, ElasticsearchIndicesClient elasticsearchIndicesClient,
 		String indexName) {
 
-		SettingsHelperImpl settingsHelperImpl = new SettingsHelperImpl();
+		SettingsHelper settingsHelper = new SettingsHelper();
 
-		_loadDefaultSettings(settingsHelperImpl);
+		_loadDefaultSettings(settingsHelper);
 
-		_loadAdditionalSettings(companyId, settingsHelperImpl, false);
+		_loadAdditionalSettings(companyId, settingsHelper, false);
 
-		JSONObject settingsJSONObject =
-			settingsHelperImpl.getSettingsJSONObject();
+		JSONObject settingsJSONObject = settingsHelper.getSettingsJSONObject();
 
 		try {
 			elasticsearchIndicesClient.close(
