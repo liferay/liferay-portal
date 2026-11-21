@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Portal Settings API
 Bundle-SymbolicName: com.liferay.portal.settings.api
-Bundle-Version: 8.1.2
+Bundle-Version: 8.1.3
 Export-Package:\
 	com.liferay.portal.settings.configuration.admin.display,\
 	com.liferay.portal.settings.constants,\
