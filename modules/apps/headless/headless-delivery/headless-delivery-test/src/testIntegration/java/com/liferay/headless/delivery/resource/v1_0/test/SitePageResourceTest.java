@@ -227,6 +227,9 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 
 		sitePageResource = builder.authentication(
 			"test@liferay.com", PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
 		).header(
 			"X-Liferay-Accept-All-Languages", "true"
 		).locale(
@@ -944,6 +947,9 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		SitePageResource sitePageResource = SitePageResource.builder(
 		).authentication(
 			"test@liferay.com", PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
 		).locale(
 			locale
 		).build();
@@ -1215,6 +1221,9 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		SitePageResource sitePageResource = SitePageResource.builder(
 		).authentication(
 			"test@liferay.com", PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
 		).header(
 			"X-Liferay-Accept-All-Languages", "true"
 		).locale(
@@ -1314,6 +1323,9 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 
 		SitePageResource noPermissionsSitePageResource = builder.authentication(
 			user.getEmailAddress(), user.getPasswordUnencrypted()
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
 		).header(
 			"X-Liferay-Accept-All-Languages", "true"
 		).locale(
