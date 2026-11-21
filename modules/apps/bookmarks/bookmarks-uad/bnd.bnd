@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Bookmarks UAD
 Bundle-SymbolicName: com.liferay.bookmarks.uad
-Bundle-Version: 6.0.15
+Bundle-Version: 6.0.16
 -dsannotations-options: inherit
