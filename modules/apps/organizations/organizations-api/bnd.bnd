@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Organizations API
 Bundle-SymbolicName: com.liferay.organizations.api
-Bundle-Version: 7.0.2
+Bundle-Version: 7.0.3
 Export-Package:\
 	com.liferay.organizations.configuration,\
 	com.liferay.organizations.search
