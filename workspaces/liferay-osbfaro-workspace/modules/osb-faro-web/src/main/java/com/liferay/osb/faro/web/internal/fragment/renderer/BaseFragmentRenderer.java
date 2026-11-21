@@ -167,7 +167,7 @@ public abstract class BaseFragmentRenderer implements FragmentRenderer {
 						).build();
 					}
 				).put(
-					"params", getParams(httpServletRequest)
+					"params", _getParams(httpServletRequest)
 				).put(
 					"project",
 					() -> {
@@ -210,46 +210,6 @@ public abstract class BaseFragmentRenderer implements FragmentRenderer {
 		return null;
 	}
 
-	protected Map<String, String> getParams(
-		HttpServletRequest httpServletRequest) {
-
-		return HashMapBuilder.put(
-			"accountId", ParamUtil.getString(httpServletRequest, "accountId")
-		).put(
-			"accountName",
-			ParamUtil.getString(httpServletRequest, "accountName")
-		).put(
-			"campaignId", ParamUtil.getString(httpServletRequest, "campaignId")
-		).put(
-			"campaignName",
-			ParamUtil.getString(httpServletRequest, "campaignName")
-		).put(
-			"delta", ParamUtil.getString(httpServletRequest, "delta")
-		).put(
-			"downloadReport",
-			ParamUtil.getString(httpServletRequest, "downloadReport")
-		).put(
-			"field", ParamUtil.getString(httpServletRequest, "field")
-		).put(
-			"page", ParamUtil.getString(httpServletRequest, "page")
-		).put(
-			"query", ParamUtil.getString(httpServletRequest, "query")
-		).put(
-			"rangeEnd", ParamUtil.getString(httpServletRequest, "rangeEnd")
-		).put(
-			"rangeKey", ParamUtil.getString(httpServletRequest, "rangeKey")
-		).put(
-			"rangeStart", ParamUtil.getString(httpServletRequest, "rangeStart")
-		).put(
-			"segmentId", ParamUtil.getString(httpServletRequest, "segmentId")
-		).put(
-			"segmentName",
-			ParamUtil.getString(httpServletRequest, "segmentName")
-		).put(
-			"sortOrder", ParamUtil.getString(httpServletRequest, "sortOrder")
-		).build();
-	}
-
 	@Reference
 	protected FaroChannelLocalService faroChannelLocalService;
 
@@ -287,6 +247,21 @@ public abstract class BaseFragmentRenderer implements FragmentRenderer {
 		}
 
 		return pageURLs;
+	}
+
+	private Map<String, String> _getParams(
+		HttpServletRequest httpServletRequest) {
+
+		Map<String, String> params = new HashMap<>();
+
+		Map<String, String[]> parameterMap =
+			httpServletRequest.getParameterMap();
+
+		for (String name : parameterMap.keySet()) {
+			params.put(name, ParamUtil.getString(httpServletRequest, name));
+		}
+
+		return params;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

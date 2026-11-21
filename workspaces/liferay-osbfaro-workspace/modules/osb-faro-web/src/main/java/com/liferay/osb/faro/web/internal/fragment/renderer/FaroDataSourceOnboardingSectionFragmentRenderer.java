@@ -6,12 +6,8 @@
 package com.liferay.osb.faro.web.internal.fragment.renderer;
 
 import com.liferay.fragment.renderer.FragmentRenderer;
-import com.liferay.portal.kernel.util.HashMapBuilder;
-import com.liferay.portal.kernel.util.ParamUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
-
-import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -30,22 +26,6 @@ public class FaroDataSourceOnboardingSectionFragmentRenderer
 	@Override
 	protected String getModule(HttpServletRequest httpServletRequest) {
 		return "{DataSourceOnboarding} from osb-faro-web/settings";
-	}
-
-	@Override
-	protected Map<String, String> getParams(
-		HttpServletRequest httpServletRequest) {
-
-		return HashMapBuilder.putAll(
-			super.getParams(httpServletRequest)
-		).put(
-			"dataSourceId",
-			ParamUtil.getString(httpServletRequest, "dataSourceId")
-		).put(
-			"id", ParamUtil.getString(httpServletRequest, "id")
-		).put(
-			"stepIndex", ParamUtil.getString(httpServletRequest, "stepIndex")
-		).build();
 	}
 
 }
