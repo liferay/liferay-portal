@@ -9,7 +9,6 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.portal.kernel.exception.NoSuchTicketException;
 import com.liferay.portal.kernel.exception.NoSuchUserGroupException;
 import com.liferay.portal.kernel.json.JSONUtil;
-import com.liferay.portal.kernel.messaging.MessageBus;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Ticket;
 import com.liferay.portal.kernel.model.TicketConstants;
@@ -1592,9 +1591,6 @@ public class SharingEntryLocalServiceTest {
 
 	@Inject
 	private GroupLocalService _groupLocalService;
-
-	@Inject
-	private MessageBus _messageBus;
 
 	private ServiceContext _serviceContext;
 
