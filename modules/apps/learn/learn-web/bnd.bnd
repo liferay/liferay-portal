@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Learn Web
 Bundle-SymbolicName: com.liferay.learn.web
-Bundle-Version: 3.0.7
+Bundle-Version: 3.0.8
 Web-ContextPath: /learn-web
