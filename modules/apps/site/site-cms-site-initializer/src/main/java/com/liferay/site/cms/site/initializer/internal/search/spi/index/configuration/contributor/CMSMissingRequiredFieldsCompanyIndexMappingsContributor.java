@@ -1,9 +1,9 @@
 /**
- * SPDX-FileCopyrightText: (c) 2024 Liferay, Inc. https://liferay.com
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.redirect.internal.search.spi.index.configuration.contributor;
+package com.liferay.site.cms.site.initializer.internal.search.spi.index.configuration.contributor;
 
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.search.spi.index.configuration.contributor.CompanyIndexConfigurationContributor;
@@ -13,10 +13,10 @@ import com.liferay.portal.search.spi.index.configuration.contributor.helper.Sett
 import org.osgi.service.component.annotations.Component;
 
 /**
- * @author Adolfo Pérez
+ * @author Mikel Lorza
  */
 @Component(service = CompanyIndexConfigurationContributor.class)
-public class RedirectCompanyIndexConfigurationContributor
+public class CMSMissingRequiredFieldsCompanyIndexMappingsContributor
 	implements CompanyIndexConfigurationContributor {
 
 	@Override
@@ -25,7 +25,8 @@ public class RedirectCompanyIndexConfigurationContributor
 
 		mappingsHelper.putMappings(
 			StringUtil.read(
-				getClass(), "dependencies/additional-type-mappings.json"));
+				getClass(),
+				"dependencies/missing-required-fields-type-mappings.json"));
 	}
 
 	@Override

@@ -16,7 +16,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Murilo Stodolni
  */
 @Component(service = CompanyIndexConfigurationContributor.class)
-public class ObjectCompanyIndexConfigurationContributor
+public class ObjectCompanyIndexMappingsContributor
 	implements CompanyIndexConfigurationContributor {
 
 	@Override

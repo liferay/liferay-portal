@@ -22,7 +22,7 @@ import org.mockito.Mockito;
 /**
  * @author Jürgen Kappler
  */
-public class CMSOutboundLinksCompanyIndexConfigurationContributorTest {
+public class CMSOutboundLinksCompanyIndexMappingsContributorTest {
 
 	@ClassRule
 	@Rule
@@ -31,13 +31,13 @@ public class CMSOutboundLinksCompanyIndexConfigurationContributorTest {
 
 	@Test
 	public void testContributeMappings() {
-		CMSOutboundLinksCompanyIndexConfigurationContributor
-			cmsOutboundLinksCompanyIndexConfigurationContributor =
-				new CMSOutboundLinksCompanyIndexConfigurationContributor();
+		CMSOutboundLinksCompanyIndexMappingsContributor
+			cmsOutboundLinksCompanyIndexMappingsContributor =
+				new CMSOutboundLinksCompanyIndexMappingsContributor();
 
 		MappingsHelper mappingsHelper = Mockito.mock(MappingsHelper.class);
 
-		cmsOutboundLinksCompanyIndexConfigurationContributor.contributeMappings(
+		cmsOutboundLinksCompanyIndexMappingsContributor.contributeMappings(
 			RandomTestUtil.randomLong(), mappingsHelper);
 
 		ArgumentCaptor<String> argumentCaptor = ArgumentCaptor.forClass(

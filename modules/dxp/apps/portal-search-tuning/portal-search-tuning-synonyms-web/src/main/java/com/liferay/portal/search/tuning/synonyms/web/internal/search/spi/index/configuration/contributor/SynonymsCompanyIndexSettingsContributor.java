@@ -34,7 +34,7 @@ import org.osgi.service.component.annotations.Reference;
 	configurationPid = "com.liferay.portal.search.tuning.synonyms.web.internal.configuration.SynonymsConfiguration",
 	service = CompanyIndexConfigurationContributor.class
 )
-public class SynonymsCompanyIndexConfigurationContributor
+public class SynonymsCompanyIndexSettingsContributor
 	implements CompanyIndexConfigurationContributor {
 
 	@Override
@@ -90,7 +90,7 @@ public class SynonymsCompanyIndexConfigurationContributor
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
-		SynonymsCompanyIndexConfigurationContributor.class);
+		SynonymsCompanyIndexSettingsContributor.class);
 
 	private static volatile String[] _filterNames;
 

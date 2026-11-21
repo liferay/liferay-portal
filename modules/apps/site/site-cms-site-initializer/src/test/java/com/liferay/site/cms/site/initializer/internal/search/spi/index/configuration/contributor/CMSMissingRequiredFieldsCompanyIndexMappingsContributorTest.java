@@ -22,7 +22,7 @@ import org.mockito.Mockito;
 /**
  * @author Mikel Lorza
  */
-public class CMSMissingRequiredFieldsCompanyIndexConfigurationContributorTest {
+public class CMSMissingRequiredFieldsCompanyIndexMappingsContributorTest {
 
 	@ClassRule
 	@Rule
@@ -31,13 +31,13 @@ public class CMSMissingRequiredFieldsCompanyIndexConfigurationContributorTest {
 
 	@Test
 	public void testContributeMappings() throws Exception {
-		CMSMissingRequiredFieldsCompanyIndexConfigurationContributor
-			cmsMissingRequiredFieldsCompanyIndexConfigurationContributor =
-				new CMSMissingRequiredFieldsCompanyIndexConfigurationContributor();
+		CMSMissingRequiredFieldsCompanyIndexMappingsContributor
+			cmsMissingRequiredFieldsCompanyIndexMappingsContributor =
+				new CMSMissingRequiredFieldsCompanyIndexMappingsContributor();
 
 		MappingsHelper mappingsHelper = Mockito.mock(MappingsHelper.class);
 
-		cmsMissingRequiredFieldsCompanyIndexConfigurationContributor.
+		cmsMissingRequiredFieldsCompanyIndexMappingsContributor.
 			contributeMappings(RandomTestUtil.randomLong(), mappingsHelper);
 
 		ArgumentCaptor<String> argumentCaptor = ArgumentCaptor.forClass(
