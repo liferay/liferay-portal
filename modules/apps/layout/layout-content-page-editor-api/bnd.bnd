@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Layout Content Page Editor API
 Bundle-SymbolicName: com.liferay.layout.content.page.editor.api
-Bundle-Version: 6.0.3
+Bundle-Version: 6.0.4
 Export-Package:\
 	com.liferay.layout.content.page.editor.constants,\
 	com.liferay.layout.content.page.editor.sidebar.panel
