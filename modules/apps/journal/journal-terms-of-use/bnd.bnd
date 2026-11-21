@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Journal Terms Of Use
 Bundle-SymbolicName: com.liferay.journal.terms.of.use
-Bundle-Version: 6.0.20
+Bundle-Version: 6.0.21
 Web-ContextPath: /journal-terms-of-use
