@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Mentions Web
 Bundle-SymbolicName: com.liferay.mentions.web
-Bundle-Version: 6.0.41
+Bundle-Version: 6.0.42
 Web-ContextPath: /mentions-web
