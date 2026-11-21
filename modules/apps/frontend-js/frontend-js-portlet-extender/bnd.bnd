@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Frontend JS Portlet Extender
 Bundle-SymbolicName: com.liferay.frontend.js.portlet.extender
-Bundle-Version: 4.0.20
+Bundle-Version: 4.0.21
 Provide-Capability:\
 	osgi.extender;\
 		osgi.extender="liferay.frontend.js.portlet";\
