@@ -868,9 +868,8 @@ public class PageTemplateSetResourceTest
 	private void _testPostSitePageTemplateSetWithDuplicateExternalReferenceCode()
 		throws Exception {
 
-		PageTemplateSet pageTemplateSet1 =
-			pageTemplateSetResource.postSitePageTemplateSet(
-				testGroup.getExternalReferenceCode(), randomPageTemplateSet());
+		PageTemplateSet pageTemplateSet1 = _testPostSitePageTemplateSet(
+			randomPageTemplateSet());
 
 		PageTemplateSet pageTemplateSet2 = randomPageTemplateSet();
 
