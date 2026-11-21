@@ -10,9 +10,12 @@ import com.liferay.fragment.renderer.FragmentRendererContext;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItemList;
 import com.liferay.frontend.taglib.react.servlet.taglib.ComponentTag;
 import com.liferay.osb.faro.engine.client.util.OrderByField;
+import com.liferay.osb.faro.model.FaroUser;
 import com.liferay.osb.faro.service.FaroChannelLocalService;
+import com.liferay.osb.faro.service.FaroUserLocalService;
 import com.liferay.osb.faro.web.internal.display.context.ChannelSelectorDisplayContext;
 import com.liferay.osb.faro.web.internal.model.display.asah.FaroChannelDisplay;
+import com.liferay.osb.faro.web.internal.model.display.contacts.FaroUserDisplay;
 import com.liferay.osb.faro.web.internal.util.FaroFragmentRendererUtil;
 import com.liferay.osb.faro.web.internal.util.FaroNavigationUtil;
 import com.liferay.osb.faro.web.internal.util.JSONUtil;
@@ -116,6 +119,22 @@ public abstract class BaseFragmentRenderer implements FragmentRenderer {
 						faroChannel -> JSONUtil.convertValue(
 							new FaroChannelDisplay(faroChannel), Map.class))
 				).put(
+					"currentUser",
+					() -> {
+						FaroUser faroUser = faroUserLocalService.fetchFaroUser(
+							themeDisplay.getScopeGroupId(),
+							themeDisplay.getUserId());
+
+						if (faroUser == null) {
+							return JSONUtil.convertValue(
+								new FaroUserDisplay(themeDisplay.getUser()),
+								Map.class);
+						}
+
+						return JSONUtil.convertValue(
+							new FaroUserDisplay(faroUser), Map.class);
+					}
+				).put(
 					"friendlyURL",
 					() -> {
 						Layout layout = themeDisplay.getLayout();
@@ -215,6 +234,9 @@ public abstract class BaseFragmentRenderer implements FragmentRenderer {
 
 	@Reference
 	protected FaroChannelLocalService faroChannelLocalService;
+
+	@Reference
+	protected FaroUserLocalService faroUserLocalService;
 
 	@Reference
 	protected GroupLocalService groupLocalService;
