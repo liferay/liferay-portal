@@ -19,7 +19,6 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.segments.model.SegmentsEntry;
 import com.liferay.segments.model.SegmentsEntryRel;
-import com.liferay.segments.service.SegmentsEntryLocalService;
 import com.liferay.segments.service.SegmentsEntryRelLocalService;
 import com.liferay.segments.test.util.SegmentsTestUtil;
 
@@ -168,9 +167,6 @@ public class SegmentsEntryRelLocalServiceTest {
 
 	@DeleteAfterTestRun
 	private Group _group;
-
-	@Inject
-	private SegmentsEntryLocalService _segmentsEntryLocalService;
 
 	@Inject
 	private SegmentsEntryRelLocalService _segmentsEntryRelLocalService;
