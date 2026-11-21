@@ -1454,6 +1454,8 @@ This target has been renamed to "snapshot-bundle". Please call "snapshot-bundle"
 		<gradle-execute dir="${workspace.module.dir}" task="formatSource">
 			<arg value="-Psource.files=${instance.settings.schema.json.file}" />
 		</gradle-execute>
+
+		<antcall target="update-feature-flag-keys" />
 	</target>
 
 	<target name="validate-xml">
