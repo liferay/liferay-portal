@@ -54,15 +54,15 @@ public class SiteTeamsPortletTest {
 		Team team = _addTeam(group);
 		User user = UserTestUtil.addGroupAdminUser(group);
 
-		Assert.assertFalse(_hasPermissionError("/edit_team.jsp", team, user));
+		Assert.assertFalse(_testRender("/edit_team.jsp", team, user));
 		Assert.assertFalse(
-			_hasPermissionError("/edit_team_assignments.jsp", team, user));
+			_testRender("/edit_team_assignments.jsp", team, user));
 
 		team = _addTeam(GroupTestUtil.addGroup());
 
-		Assert.assertTrue(_hasPermissionError("/edit_team.jsp", team, user));
+		Assert.assertTrue(_testRender("/edit_team.jsp", team, user));
 		Assert.assertTrue(
-			_hasPermissionError("/edit_team_assignments.jsp", team, user));
+			_testRender("/edit_team_assignments.jsp", team, user));
 	}
 
 	private Team _addTeam(Group group) throws Exception {
@@ -72,7 +72,7 @@ public class SiteTeamsPortletTest {
 			ServiceContextTestUtil.getServiceContext(group.getGroupId()));
 	}
 
-	private boolean _hasPermissionError(String mvcPath, Team team, User user)
+	private boolean _testRender(String mvcPath, Team team, User user)
 		throws Exception {
 
 		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
