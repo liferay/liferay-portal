@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Commerce Product Measurement Unit Web
 Bundle-SymbolicName: com.liferay.commerce.product.measurement.unit.web
-Bundle-Version: 4.0.54
+Bundle-Version: 4.0.55
 Web-ContextPath: /commerce-product-measurement-unit-web
