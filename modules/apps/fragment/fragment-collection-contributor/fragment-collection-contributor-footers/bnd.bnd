@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Fragment Collection Contributor Footers
 Bundle-SymbolicName: com.liferay.fragment.collection.contributor.footers
-Bundle-Version: 2.0.15
+Bundle-Version: 2.0.16
 Web-ContextPath: /fragment-collection-contributor-footers
 -dsannotations-options: inherit
