@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Portal Relationship API
 Bundle-SymbolicName: com.liferay.portal.relationship.api
-Bundle-Version: 5.0.4
+Bundle-Version: 5.0.5
 Export-Package: com.liferay.portal.relationship
