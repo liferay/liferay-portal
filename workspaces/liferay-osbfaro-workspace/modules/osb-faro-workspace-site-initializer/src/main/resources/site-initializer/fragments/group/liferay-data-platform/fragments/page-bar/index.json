@@ -9,14 +9,6 @@
 					"localizable": true,
 					"name": "pagebarAriaLabel",
 					"type": "text"
-				},
-				{
-					"dataType": "string",
-					"defaultValue": "Site Logo",
-					"label": "header-image-alt-description",
-					"localizable": true,
-					"name": "alt",
-					"type": "text"
 				}
 			]
 		}

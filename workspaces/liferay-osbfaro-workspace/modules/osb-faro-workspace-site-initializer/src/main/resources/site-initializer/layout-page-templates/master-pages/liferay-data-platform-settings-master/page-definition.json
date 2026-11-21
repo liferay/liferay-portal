@@ -48,34 +48,36 @@
 										"key": "page-bar"
 									},
 									"fragmentConfig": {
-										"alt": "Site Logo"
 									},
 									"fragmentFields": [
-										{
-											"id": "sidebarImage",
-											"value": {
-												"fragmentImage": {
-													"url": {
-														"value_i18n": {
-														}
-													}
-												},
-												"fragmentLink": {
-												}
-											}
-										},
-										{
-											"id": "sidebarTitle",
-											"value": {
-												"fragmentLink": {
-												}
-											}
-										}
 									],
 									"indexed": true
 								},
 								"id": "92aa2408-bc28-4aaf-9f72-4dfed0811f7f",
 								"pageElements": [
+									{
+										"definition": {
+											"fragmentDropZoneId": "brand"
+										},
+										"id": "94736190-e96f-4054-8f70-98f3cde337da",
+										"pageElements": [
+											{
+												"definition": {
+													"fragment": {
+														"key": "com.liferay.osb.faro.web.internal.fragment.renderer.FaroPageBarBrandFragmentRenderer"
+													},
+													"fragmentConfig": {
+													},
+													"fragmentFields": [
+													],
+													"indexed": true
+												},
+												"id": "9a8a1e0c-aa36-43d8-ad8d-c04ccad04d71",
+												"type": "Fragment"
+											}
+										],
+										"type": "FragmentDropZone"
+									},
 									{
 										"definition": {
 											"fragmentDropZoneId": "sidebarTrigger"
