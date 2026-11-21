@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Social Bookmark LinkedIn
 Bundle-SymbolicName: com.liferay.social.bookmark.linkedin
-Bundle-Version: 4.0.27
+Bundle-Version: 4.0.28
 Web-ContextPath: /social-bookmark-linkedin
