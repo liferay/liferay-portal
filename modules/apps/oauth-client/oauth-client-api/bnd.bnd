@@ -1,4 +1,4 @@
 Bundle-Name: Liferay OAuth Client API
 Bundle-SymbolicName: com.liferay.oauth.client.api
-Bundle-Version: 1.1.5
+Bundle-Version: 1.1.6
 Export-Package: com.liferay.oauth.client
