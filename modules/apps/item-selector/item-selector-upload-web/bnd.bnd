@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Item Selector Upload Web
 Bundle-SymbolicName: com.liferay.item.selector.upload.web
-Bundle-Version: 6.0.35
+Bundle-Version: 6.0.36
 Web-ContextPath: /item-selector-upload-web
