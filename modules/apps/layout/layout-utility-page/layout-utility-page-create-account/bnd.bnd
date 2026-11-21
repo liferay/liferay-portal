@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Layout Utility Page Create Account
 Bundle-SymbolicName: com.liferay.layout.utility.page.create.account
-Bundle-Version: 1.0.6
+Bundle-Version: 1.0.7
 Web-ContextPath: /layout-utility-page-create-account
