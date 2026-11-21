@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Petra SQL DSL API
 Bundle-SymbolicName: com.liferay.petra.sql.dsl.api
-Bundle-Version: 9.0.2
+Bundle-Version: 9.0.3
 Export-Package:\
 	com.liferay.petra.sql.dsl,\
 	com.liferay.petra.sql.dsl.ast,\
