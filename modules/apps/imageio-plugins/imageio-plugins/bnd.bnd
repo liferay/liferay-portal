@@ -1,7 +1,7 @@
 Bundle-Activator: com.liferay.imageio.plugins.internal.activator.ImageIOPluginsBundleActivator
 Bundle-Name: Liferay ImageIO Plugins
 Bundle-SymbolicName: com.liferay.imageio.plugins
-Bundle-Version: 5.0.11
+Bundle-Version: 5.0.12
 Import-Package:\
 	!com.sun.awt,\
 	!com.sun.imageio.plugins.jpeg,\
