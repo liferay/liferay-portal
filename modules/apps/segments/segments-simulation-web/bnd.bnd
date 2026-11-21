@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Segments Simulation Web
 Bundle-SymbolicName: com.liferay.segments.simulation.web
-Bundle-Version: 3.0.89
+Bundle-Version: 3.0.90
 Web-ContextPath: /segments-simulation-web
