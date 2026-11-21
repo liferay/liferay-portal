@@ -10,10 +10,13 @@ import com.liferay.fragment.renderer.FragmentRendererContext;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItemList;
 import com.liferay.frontend.taglib.react.servlet.taglib.ComponentTag;
 import com.liferay.osb.faro.engine.client.util.OrderByField;
+import com.liferay.osb.faro.model.FaroProject;
 import com.liferay.osb.faro.model.FaroUser;
 import com.liferay.osb.faro.service.FaroChannelLocalService;
+import com.liferay.osb.faro.service.FaroProjectLocalService;
 import com.liferay.osb.faro.service.FaroUserLocalService;
 import com.liferay.osb.faro.web.internal.display.context.ChannelSelectorDisplayContext;
+import com.liferay.osb.faro.web.internal.helper.ProjectHelper;
 import com.liferay.osb.faro.web.internal.model.display.asah.FaroChannelDisplay;
 import com.liferay.osb.faro.web.internal.model.display.contacts.FaroUserDisplay;
 import com.liferay.osb.faro.web.internal.util.FaroFragmentRendererUtil;
@@ -166,6 +169,21 @@ public abstract class BaseFragmentRenderer implements FragmentRenderer {
 				).put(
 					"params", getParams(httpServletRequest)
 				).put(
+					"project",
+					() -> {
+						FaroProject faroProject =
+							faroProjectLocalService.fetchFaroProjectByGroupId(
+								themeDisplay.getScopeGroupId());
+
+						if (faroProject == null) {
+							return null;
+						}
+
+						return JSONUtil.convertValue(
+							projectHelper.getProjectDisplay(faroProject),
+							Map.class);
+					}
+				).put(
 					"signOutURL", themeDisplay.getURLSignOut()
 				).build());
 			componentTag.setServletContext(servletContext);
@@ -236,6 +254,9 @@ public abstract class BaseFragmentRenderer implements FragmentRenderer {
 	protected FaroChannelLocalService faroChannelLocalService;
 
 	@Reference
+	protected FaroProjectLocalService faroProjectLocalService;
+
+	@Reference
 	protected FaroUserLocalService faroUserLocalService;
 
 	@Reference
@@ -246,6 +267,9 @@ public abstract class BaseFragmentRenderer implements FragmentRenderer {
 
 	@Reference
 	protected Portal portal;
+
+	@Reference
+	protected ProjectHelper projectHelper;
 
 	@Reference(target = "(osgi.web.symbolicname=com.liferay.osb.faro.web)")
 	protected ServletContext servletContext;
