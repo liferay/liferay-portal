@@ -60,56 +60,51 @@ public class ViewConflictsMVCRenderCommandTest {
 			ServiceContextTestUtil.getServiceContext(
 				TestPropsValues.getGroupId(), TestPropsValues.getUserId()));
 
-		try {
-			CTCollection ctCollection =
-				_ctCollectionLocalService.addCTCollection(
-					null, TestPropsValues.getCompanyId(),
-					TestPropsValues.getUserId(), 0,
-					RandomTestUtil.randomString(), null);
+		CTCollection ctCollection = _ctCollectionLocalService.addCTCollection(
+			null, TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
+			0, RandomTestUtil.randomString(), null);
 
-			MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
-				_getMockLiferayPortletRenderRequest(
-					ctCollection.getCtCollectionId(),
-					"https://" + RandomTestUtil.randomString() + ".com");
-
-			Assert.assertEquals(
-				"/publications/view_conflicts.jsp",
-				_mvcRenderCommand.render(
-					mockLiferayPortletRenderRequest,
-					new MockLiferayPortletRenderResponse()));
-
-			String viewChangesURL = PortletURLBuilder.createRenderURL(
-				(RenderResponse)new MockLiferayPortletRenderResponse()
-			).setMVCRenderCommandName(
-				"/change_tracking/view_changes"
-			).setParameter(
-				"ctCollectionId", ctCollection.getCtCollectionId()
-			).buildString();
-
-			Assert.assertEquals(
-				viewChangesURL,
-				ReflectionTestUtil.invoke(
-					mockLiferayPortletRenderRequest.getAttribute(
-						"VIEW_CONFLICTS_DISPLAY_CONTEXT"),
-					"getRedirect", new Class<?>[0]));
-
-			ctCollection.setStatus(WorkflowConstants.STATUS_APPROVED);
-
-			ctCollection = _ctCollectionLocalService.updateCTCollection(
-				ctCollection);
-
-			_testRender(
-				ctCollection.getCtCollectionId(), viewChangesURL,
+		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
+			_getMockLiferayPortletRenderRequest(
+				ctCollection.getCtCollectionId(),
 				"https://" + RandomTestUtil.randomString() + ".com");
-			_testRender(ctCollection.getCtCollectionId(), viewChangesURL, null);
 
-			String redirect = "/" + RandomTestUtil.randomString();
+		Assert.assertEquals(
+			"/publications/view_conflicts.jsp",
+			_mvcRenderCommand.render(
+				mockLiferayPortletRenderRequest,
+				new MockLiferayPortletRenderResponse()));
 
-			_testRender(ctCollection.getCtCollectionId(), redirect, redirect);
-		}
-		finally {
-			ServiceContextThreadLocal.popServiceContext();
-		}
+		String viewChangesURL = PortletURLBuilder.createRenderURL(
+			(RenderResponse)new MockLiferayPortletRenderResponse()
+		).setMVCRenderCommandName(
+			"/change_tracking/view_changes"
+		).setParameter(
+			"ctCollectionId", ctCollection.getCtCollectionId()
+		).buildString();
+
+		Assert.assertEquals(
+			viewChangesURL,
+			ReflectionTestUtil.invoke(
+				mockLiferayPortletRenderRequest.getAttribute(
+					"VIEW_CONFLICTS_DISPLAY_CONTEXT"),
+				"getRedirect", new Class<?>[0]));
+
+		ctCollection.setStatus(WorkflowConstants.STATUS_APPROVED);
+
+		ctCollection = _ctCollectionLocalService.updateCTCollection(
+			ctCollection);
+
+		_testRender(
+			ctCollection.getCtCollectionId(), viewChangesURL,
+			"https://" + RandomTestUtil.randomString() + ".com");
+		_testRender(ctCollection.getCtCollectionId(), viewChangesURL, null);
+
+		String redirect = "/" + RandomTestUtil.randomString();
+
+		_testRender(ctCollection.getCtCollectionId(), redirect, redirect);
+
+		ServiceContextThreadLocal.popServiceContext();
 	}
 
 	private MockLiferayPortletRenderRequest _getMockLiferayPortletRenderRequest(

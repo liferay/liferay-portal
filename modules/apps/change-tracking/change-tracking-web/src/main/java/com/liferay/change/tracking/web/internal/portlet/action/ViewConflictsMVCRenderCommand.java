@@ -84,6 +84,9 @@ public class ViewConflictsMVCRenderCommand implements MVCRenderCommand {
 				_ctCollectionLocalService.getCTCollection(ctCollectionId);
 
 			if (ctCollection.getStatus() == WorkflowConstants.STATUS_APPROVED) {
+				HttpServletResponse httpServletResponse =
+					_portal.getHttpServletResponse(renderResponse);
+
 				String redirect = _portal.escapeRedirect(
 					ParamUtil.getString(renderRequest, "redirect"));
 
@@ -96,9 +99,6 @@ public class ViewConflictsMVCRenderCommand implements MVCRenderCommand {
 						"ctCollectionId", ctCollectionId
 					).buildString();
 				}
-
-				HttpServletResponse httpServletResponse =
-					_portal.getHttpServletResponse(renderResponse);
 
 				httpServletResponse.sendRedirect(redirect);
 
