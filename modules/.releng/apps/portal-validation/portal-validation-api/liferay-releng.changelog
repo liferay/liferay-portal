@@ -27,3 +27,8 @@
 # Bundle Version 4.0.7
 #
 eafc33ef8c4ee94c93d73585ac57e48d73cad0ec^..69bda1e99a0a89f5cb29b196a802c6347c4be347=LPD-92633
+
+#
+# Bundle Version 5.0.0
+#
+69bda1e99a0a89f5cb29b196a802c6347c4be347^..761c3b6ddafbd14a43421940a208acac87f81306=LPD-112986 LPD-115659
