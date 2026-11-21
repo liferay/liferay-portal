@@ -54,7 +54,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Petteri Karttunen
  */
 @Component(
-	enabled = true, property = "search.suggestions.contributor.name=basic",
+	property = "search.suggestions.contributor.name=basic",
 	service = SuggestionsContributor.class
 )
 public class BasicSuggestionsContributor implements SuggestionsContributor {
