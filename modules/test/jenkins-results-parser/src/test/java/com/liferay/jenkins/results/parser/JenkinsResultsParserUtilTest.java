@@ -299,14 +299,16 @@ public class JenkinsResultsParserUtilTest
 		JenkinsResultsParserUtil.setBuildProperties(buildProperties);
 
 		String basePortalBranchName = RandomTestUtil.randomString();
-		String overlayPortalBranchName = RandomTestUtil.randomString();
 
 		String baseS3ObjectKey = _getRandomPortalBundleS3ObjectKey(
 			basePortalBranchName);
 
+		String overlayPortalBranchName = RandomTestUtil.randomString();
+
 		String failedS3ObjectKey = _getPortalBundleOverlayS3ObjectKey(
 			baseS3ObjectKey, overlayPortalBranchName,
 			_getRandomPortalGitCommitShort());
+
 		String otherOverlayS3ObjectKey = _getPortalBundleOverlayS3ObjectKey(
 			baseS3ObjectKey, RandomTestUtil.randomString(),
 			_getRandomPortalGitCommitShort());
