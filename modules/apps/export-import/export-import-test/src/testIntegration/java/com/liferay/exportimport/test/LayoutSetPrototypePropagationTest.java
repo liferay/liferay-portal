@@ -91,7 +91,6 @@ import com.liferay.portal.kernel.portlet.PortletPreferencesFactory;
 import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
-import com.liferay.portal.kernel.security.permission.ResourceActions;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
@@ -2605,9 +2604,6 @@ public class LayoutSetPrototypePropagationTest
 	private LayoutSetPrototype _privateLayoutSetPrototype;
 
 	private Layout _prototypeLayout;
-
-	@Inject
-	private ResourceActions _resourceActions;
 
 	@Inject
 	private SegmentsExperienceLocalService _segmentsExperienceLocalService;

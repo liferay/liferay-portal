@@ -20,7 +20,6 @@ import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.order.engine.CommerceOrderEngine;
 import com.liferay.commerce.product.constants.CommerceChannelConstants;
 import com.liferay.commerce.product.model.CommerceChannel;
-import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.product.service.CommerceChannelLocalServiceUtil;
 import com.liferay.commerce.service.CommerceOrderLocalService;
 import com.liferay.commerce.test.util.CommerceTestUtil;
@@ -2407,9 +2406,6 @@ public class WorkflowTaskManagerImplTest extends BaseWorkflowManagerTestCase {
 
 	@DeleteAfterTestRun
 	private Group _childGroup;
-
-	@Inject
-	private CommerceChannelLocalService _commerceChannelLocalService;
 
 	@Inject
 	private CommerceOrderEngine _commerceOrderEngine;
