@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Commerce Tax Web
 Bundle-SymbolicName: com.liferay.commerce.tax.web
-Bundle-Version: 4.0.30
+Bundle-Version: 4.0.31
 Web-ContextPath: /commerce-tax-web
 -dsannotations-options: inherit
