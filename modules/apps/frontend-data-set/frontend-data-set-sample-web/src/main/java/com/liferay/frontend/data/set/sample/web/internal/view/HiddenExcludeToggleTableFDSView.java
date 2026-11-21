@@ -21,7 +21,6 @@ import org.osgi.service.component.annotations.Reference;
  * @author Miguel Arroyo
  */
 @Component(
-	enabled = true,
 	property = "frontend.data.set.name=" + FDSSampleFDSNames.HIDDEN_EXCLUDE_TOGGLE,
 	service = FDSView.class
 )

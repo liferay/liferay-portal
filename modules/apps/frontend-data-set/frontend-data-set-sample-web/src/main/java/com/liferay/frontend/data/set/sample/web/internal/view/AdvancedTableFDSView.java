@@ -38,7 +38,6 @@ import org.osgi.service.component.annotations.Reference;
  * @author Javier de Arcos
  */
 @Component(
-	enabled = true,
 	property = {
 		"frontend.data.set.name=" + FDSSampleFDSNames.ADVANCED,
 		"frontend.data.set.name=" + FDSSampleFDSNames.DELEGATED_FILTERS,

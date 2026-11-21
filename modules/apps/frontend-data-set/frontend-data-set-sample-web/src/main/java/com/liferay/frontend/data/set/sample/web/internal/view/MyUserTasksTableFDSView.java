@@ -21,7 +21,6 @@ import org.osgi.service.component.annotations.Reference;
  * @author Juanjo Fernandez
  */
 @Component(
-	enabled = true,
 	property = "frontend.data.set.name=" + FDSSampleFDSNames.MY_USER_TASKS,
 	service = FDSView.class
 )

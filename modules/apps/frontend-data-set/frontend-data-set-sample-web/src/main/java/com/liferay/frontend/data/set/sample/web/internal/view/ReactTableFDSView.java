@@ -21,7 +21,6 @@ import org.osgi.service.component.annotations.Reference;
  * @author Marko Cikos
  */
 @Component(
-	enabled = true,
 	property = "frontend.data.set.name=" + FDSSampleFDSNames.REACT,
 	service = FDSView.class
 )
