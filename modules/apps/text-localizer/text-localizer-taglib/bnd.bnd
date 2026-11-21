@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Text Localizer Taglib
 Bundle-SymbolicName: com.liferay.text.localizer.taglib
-Bundle-Version: 4.0.18
+Bundle-Version: 4.0.19
 Export-Package: com.liferay.text.localizer.taglib.servlet.taglib
 Provide-Capability:\
 	osgi.extender;\
