@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Portal Rules Engine API
 Bundle-SymbolicName: com.liferay.portal.rules.engine.api
-Bundle-Version: 7.0.3
+Bundle-Version: 7.0.4
 Export-Package: com.liferay.portal.rules.engine
