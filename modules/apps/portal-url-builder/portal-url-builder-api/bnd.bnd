@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Portal URL Builder API
 Bundle-SymbolicName: com.liferay.portal.url.builder.api
-Bundle-Version: 8.0.3
+Bundle-Version: 8.0.4
 Export-Package:\
 	com.liferay.portal.url.builder,\
 	com.liferay.portal.url.builder.facet
