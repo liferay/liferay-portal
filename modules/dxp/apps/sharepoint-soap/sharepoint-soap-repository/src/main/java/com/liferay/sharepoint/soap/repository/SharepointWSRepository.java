@@ -41,7 +41,6 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.sharepoint.soap.repository.connector.SharepointConnection;
-import com.liferay.sharepoint.soap.repository.connector.SharepointConnectionFactory;
 import com.liferay.sharepoint.soap.repository.connector.SharepointException;
 import com.liferay.sharepoint.soap.repository.connector.SharepointObject;
 import com.liferay.sharepoint.soap.repository.connector.SharepointRuntimeException;
@@ -152,7 +151,7 @@ public class SharepointWSRepository
 	@Override
 	public SharepointConnection buildConnection() throws RepositoryException {
 		try {
-			return SharepointConnectionFactory.getInstance(
+			return new SharepointConnection(
 				_serverVersion, _protocol, _host, _port, _sitePath,
 				_libraryName, _libraryPath, _credentialsProvider.getLogin(),
 				_credentialsProvider.getPassword());
