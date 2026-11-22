@@ -5,6 +5,7 @@
 
 package com.liferay.sharing.web.internal.portlet;
 
+import com.liferay.portal.kernel.portlet.LiferayPortletConfig;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCCommandCache;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.constants.MVCRenderConstants;
@@ -16,6 +17,7 @@ import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.sharing.web.internal.display.context.ViewSharedAssetsDisplayContext;
 import com.liferay.sharing.web.internal.display.context.ViewSharedAssetsDisplayContextFactory;
 
+import jakarta.portlet.PortletConfig;
 import jakarta.portlet.RenderRequest;
 import jakarta.portlet.RenderResponse;
 
@@ -76,6 +78,14 @@ public class SharedAssetsPortletTest {
 			new AtomicReference<>();
 
 		SharedAssetsPortlet sharedAssetsPortlet = new SharedAssetsPortlet() {
+			{
+				configTemplate = RandomTestUtil.randomString();
+			}
+
+			@Override
+			public PortletConfig getPortletConfig() {
+				return Mockito.mock(LiferayPortletConfig.class);
+			}
 
 			@Override
 			protected String getTitle(RenderRequest renderRequest) {
