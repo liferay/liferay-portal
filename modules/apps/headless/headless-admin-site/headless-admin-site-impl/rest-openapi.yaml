@@ -6581,6 +6581,9 @@ paths:
                                 items:
                                     $ref: "#/components/schemas/DisplayPageTemplateFolder"
                                 type: array
+                404:
+                    description:
+                        "The requested site could not be found."
             tags: ["DisplayPageTemplateFolder"]
         post:
             # @review
@@ -6610,6 +6613,15 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/DisplayPageTemplateFolder"
+                400:
+                    description:
+                        "The request is invalid. For example, the name is missing or too long, the key contains an invalid character or is too long, the parent display page template folder does not exist or is not a display page template folder, or the external reference code is already in use."
+                404:
+                    description:
+                        "The requested site could not be found."
+                409:
+                    description:
+                        "A display page template folder with the same name or key already exists."
             # @review
             tags: ["DisplayPageTemplateFolder"]
     "/sites/{siteExternalReferenceCode}/display-page-template-folders/{displayPageTemplateFolderExternalReferenceCode}":
@@ -6634,6 +6646,9 @@ paths:
                     content:
                         application/json: {}
                         application/xml: {}
+                404:
+                    description:
+                        "The requested site or display page template folder could not be found."
             tags: ["DisplayPageTemplateFolder"]
         get:
             # @review
@@ -6672,6 +6687,9 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/DisplayPageTemplateFolder"
+                404:
+                    description:
+                        "The requested site or display page template folder could not be found."
             tags: ["DisplayPageTemplateFolder"]
         patch:
             # @review
@@ -6718,6 +6736,15 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/DisplayPageTemplateFolder"
+                400:
+                    description:
+                        "The request is invalid. For example, the name is missing or too long, or the parent display page template folder does not exist or is not a display page template folder."
+                404:
+                    description:
+                        "The requested site or display page template folder could not be found."
+                409:
+                    description:
+                        "A display page template folder with the same name already exists."
             tags: ["DisplayPageTemplateFolder"]
         put:
             # @review
@@ -6764,6 +6791,15 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/DisplayPageTemplateFolder"
+                400:
+                    description:
+                        "The request is invalid. For example, the name is missing or too long, the key contains an invalid character or is too long, or the parent display page template folder does not exist or is not a display page template folder."
+                404:
+                    description:
+                        "The requested site could not be found."
+                409:
+                    description:
+                        "A display page template folder with the same name or key already exists."
             tags: ["DisplayPageTemplateFolder"]
     "/sites/{siteExternalReferenceCode}/display-page-template-folders/{displayPageTemplateFolderExternalReferenceCode}/display-page-templates":
         get:
