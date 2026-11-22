@@ -16,6 +16,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 
 import java.util.Locale;
 
@@ -60,12 +61,23 @@ public class FaroChannelSelectorFragmentRenderer implements FragmentRenderer {
 			return;
 		}
 
+		PrintWriter printWriter = httpServletResponse.getWriter();
+
+		printWriter.write("<div class=\"c-mb-3 c-px-3\"><div class=\"c-mb-2 ");
+		printWriter.write("font-weight-semi-bold small text-secondary ");
+		printWriter.write("text-uppercase\">");
+		printWriter.write(_language.get(httpServletRequest, "property"));
+		printWriter.write("</div>");
+
 		DropdownMenuTag dropdownMenuTag = new DropdownMenuTag();
 
 		dropdownMenuTag.setBlock(true);
-		dropdownMenuTag.setCssClass("mb-3");
+		dropdownMenuTag.setCssClass(
+			"align-items-center d-flex justify-content-between");
 		dropdownMenuTag.setDisplayType("secondary");
+		dropdownMenuTag.setIcon("caret-double");
 		dropdownMenuTag.setLabel(faroChannel.getName());
+		dropdownMenuTag.setSwapIconSide(true);
 
 		try {
 			dropdownMenuTag.setDropdownItems(
@@ -76,6 +88,8 @@ public class FaroChannelSelectorFragmentRenderer implements FragmentRenderer {
 		catch (Exception exception) {
 			throw new IOException(exception);
 		}
+
+		printWriter.write("</div>");
 	}
 
 	@Reference
