@@ -12,6 +12,7 @@ import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.test.util.CommerceCurrencyTestUtil;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.payment.constants.CommercePaymentEntryActionKeys;
+import com.liferay.commerce.payment.exception.CommercePaymentEntryCommerceChannelIdException;
 import com.liferay.commerce.payment.model.CommercePaymentEntry;
 import com.liferay.commerce.payment.service.CommercePaymentEntryLocalService;
 import com.liferay.commerce.payment.service.CommercePaymentEntryService;
@@ -70,12 +71,6 @@ public class CommercePaymentEntryServiceTest {
 
 		_commerceChannel1 = _addCommerceChannel(_commerceCurrency, group1);
 
-		User user1 = UserTestUtil.addUser();
-
-		_commerceOrder1 = CommerceTestUtil.addB2CCommerceOrder(
-			user1.getUserId(), _commerceChannel1.getGroupId(),
-			_commerceCurrency);
-
 		Role role = _roleLocalService.addRole(
 			RandomTestUtil.randomString(), TestPropsValues.getUserId(), null, 0,
 			RandomTestUtil.randomString(), null, null,
@@ -88,6 +83,17 @@ public class CommercePaymentEntryServiceTest {
 			ResourceConstants.SCOPE_GROUP,
 			String.valueOf(_commerceChannel1.getGroupId()),
 			CommercePaymentEntryActionKeys.ADD_PAYMENT);
+		RoleTestUtil.addResourcePermission(
+			role, CommercePaymentEntryConstants.RESOURCE_NAME,
+			ResourceConstants.SCOPE_GROUP,
+			String.valueOf(_commerceChannel1.getGroupId()),
+			CommercePaymentEntryActionKeys.ADD_REFUND);
+
+		User user1 = UserTestUtil.addUser();
+
+		_commerceOrder1 = CommerceTestUtil.addB2CCommerceOrder(
+			user1.getUserId(), _commerceChannel1.getGroupId(),
+			_commerceCurrency);
 
 		User user2 = UserTestUtil.addUser();
 
@@ -111,11 +117,30 @@ public class CommercePaymentEntryServiceTest {
 
 			Assert.assertNotNull(
 				_addCommercePaymentEntry(
-					_commerceOrder1, _commerceChannel1.getGroupId()));
+					_commerceOrder1.getCommerceOrderId(), CommerceOrder.class,
+					_commerceChannel1, _commerceChannel1.getGroupId(),
+					CommercePaymentEntryConstants.TYPE_PAYMENT));
 
 			try {
 				_addCommercePaymentEntry(
-					_commerceOrder2, _commerceChannel1.getGroupId());
+					_commerceOrder1.getCommerceOrderId(), CommerceOrder.class,
+					_commerceChannel2, _commerceChannel1.getGroupId(),
+					CommercePaymentEntryConstants.TYPE_PAYMENT);
+
+				Assert.fail();
+			}
+			catch (CommercePaymentEntryCommerceChannelIdException
+						commercePaymentEntryCommerceChannelIdException) {
+
+				Assert.assertNotNull(
+					commercePaymentEntryCommerceChannelIdException);
+			}
+
+			try {
+				_addCommercePaymentEntry(
+					_commerceOrder2.getCommerceOrderId(), CommerceOrder.class,
+					_commerceChannel1, _commerceChannel1.getGroupId(),
+					CommercePaymentEntryConstants.TYPE_PAYMENT);
 
 				Assert.fail();
 			}
@@ -125,12 +150,147 @@ public class CommercePaymentEntryServiceTest {
 
 			try {
 				_addCommercePaymentEntry(
-					_commerceOrder2, _commerceChannel2.getGroupId());
+					_commerceOrder2.getCommerceOrderId(), CommerceOrder.class,
+					_commerceChannel1, _commerceChannel2.getGroupId(),
+					CommercePaymentEntryConstants.TYPE_PAYMENT);
 
 				Assert.fail();
 			}
 			catch (PrincipalException principalException) {
 				Assert.assertNotNull(principalException);
+			}
+		}
+
+		Assert.assertEquals(
+			0,
+			_commercePaymentEntryLocalService.getCommercePaymentEntriesCount(
+				_commerceOrder2.getCompanyId(),
+				_classNameLocalService.getClassNameId(CommerceOrder.class),
+				_commerceOrder2.getCommerceOrderId(),
+				CommercePaymentEntryConstants.TYPE_PAYMENT));
+
+		CommercePaymentEntry commercePaymentEntry1 = _addCommercePaymentEntry(
+			_commerceOrder1.getCommerceOrderId(), CommerceOrder.class,
+			_commerceChannel1, _commerceChannel1.getGroupId(),
+			CommercePaymentEntryConstants.TYPE_PAYMENT);
+
+		commercePaymentEntry1.setPaymentStatus(
+			CommercePaymentEntryConstants.STATUS_COMPLETED);
+
+		commercePaymentEntry1 =
+			_commercePaymentEntryLocalService.updateCommercePaymentEntry(
+				commercePaymentEntry1);
+
+		CommercePaymentEntry commercePaymentEntry2 = _addCommercePaymentEntry(
+			_commerceOrder2.getCommerceOrderId(), CommerceOrder.class,
+			_commerceChannel2, _commerceChannel2.getGroupId(),
+			CommercePaymentEntryConstants.TYPE_PAYMENT);
+
+		commercePaymentEntry2.setPaymentStatus(
+			CommercePaymentEntryConstants.STATUS_COMPLETED);
+
+		commercePaymentEntry2 =
+			_commercePaymentEntryLocalService.updateCommercePaymentEntry(
+				commercePaymentEntry2);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_user, PermissionCheckerFactoryUtil.create(_user))) {
+
+			Assert.assertNotNull(
+				_addCommercePaymentEntry(
+					commercePaymentEntry1.getCommercePaymentEntryId(),
+					CommercePaymentEntry.class, _commerceChannel1,
+					_commerceChannel1.getGroupId(),
+					CommercePaymentEntryConstants.TYPE_REFUND));
+
+			try {
+				_addCommercePaymentEntry(
+					commercePaymentEntry1.getCommercePaymentEntryId(),
+					CommercePaymentEntry.class, _commerceChannel2,
+					_commerceChannel1.getGroupId(),
+					CommercePaymentEntryConstants.TYPE_REFUND);
+
+				Assert.fail();
+			}
+			catch (CommercePaymentEntryCommerceChannelIdException
+						commercePaymentEntryCommerceChannelIdException) {
+
+				Assert.assertNotNull(
+					commercePaymentEntryCommerceChannelIdException);
+			}
+
+			try {
+				_addCommercePaymentEntry(
+					commercePaymentEntry2.getCommercePaymentEntryId(),
+					CommercePaymentEntry.class, _commerceChannel1,
+					_commerceChannel1.getGroupId(),
+					CommercePaymentEntryConstants.TYPE_REFUND);
+
+				Assert.fail();
+			}
+			catch (PrincipalException principalException) {
+				Assert.assertNotNull(principalException);
+			}
+		}
+
+		Assert.assertEquals(
+			0,
+			_commercePaymentEntryLocalService.getCommercePaymentEntriesCount(
+				commercePaymentEntry2.getCompanyId(),
+				_classNameLocalService.getClassNameId(
+					CommercePaymentEntry.class),
+				commercePaymentEntry2.getCommercePaymentEntryId(),
+				CommercePaymentEntryConstants.TYPE_REFUND));
+	}
+
+	@Test
+	public void testAddOrUpdateCommercePaymentEntry() throws Exception {
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_user, PermissionCheckerFactoryUtil.create(_user))) {
+
+			Assert.assertNotNull(
+				_addOrUpdateCommercePaymentEntry(
+					_commerceChannel1, _commerceOrder1,
+					RandomTestUtil.randomString(),
+					_commerceChannel1.getGroupId()));
+
+			try {
+				_addOrUpdateCommercePaymentEntry(
+					_commerceChannel1, _commerceOrder2,
+					RandomTestUtil.randomString(),
+					_commerceChannel1.getGroupId());
+
+				Assert.fail();
+			}
+			catch (PrincipalException principalException) {
+				Assert.assertNotNull(principalException);
+			}
+
+			try {
+				_addOrUpdateCommercePaymentEntry(
+					_commerceChannel1, _commerceOrder2,
+					RandomTestUtil.randomString(),
+					_commerceChannel2.getGroupId());
+
+				Assert.fail();
+			}
+			catch (PrincipalException principalException) {
+				Assert.assertNotNull(principalException);
+			}
+
+			try {
+				_addOrUpdateCommercePaymentEntry(
+					_commerceChannel2, _commerceOrder1,
+					RandomTestUtil.randomString(),
+					_commerceChannel1.getGroupId());
+
+				Assert.fail();
+			}
+			catch (CommercePaymentEntryCommerceChannelIdException
+						commercePaymentEntryCommerceChannelIdException) {
+
+				Assert.assertNotNull(
+					commercePaymentEntryCommerceChannelIdException);
 			}
 		}
 
@@ -144,45 +304,41 @@ public class CommercePaymentEntryServiceTest {
 	}
 
 	@Test
-	public void testAddOrUpdateCommercePaymentEntry() throws Exception {
+	public void testUpdateCommercePaymentEntry() throws Exception {
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				_user, PermissionCheckerFactoryUtil.create(_user))) {
 
+			CommercePaymentEntry commercePaymentEntry =
+				_addCommercePaymentEntry(
+					_commerceOrder1.getCommerceOrderId(), CommerceOrder.class,
+					_commerceChannel1, _commerceChannel1.getGroupId(),
+					CommercePaymentEntryConstants.TYPE_PAYMENT);
+
 			Assert.assertNotNull(
-				_addOrUpdateCommercePaymentEntry(
-					_commerceOrder1, RandomTestUtil.randomString(),
-					_commerceChannel1.getGroupId()));
+				_updateCommercePaymentEntry(
+					_commerceChannel1, commercePaymentEntry));
 
 			try {
-				_addOrUpdateCommercePaymentEntry(
-					_commerceOrder2, RandomTestUtil.randomString(),
-					_commerceChannel1.getGroupId());
+				_updateCommercePaymentEntry(
+					_commerceChannel2, commercePaymentEntry);
 
 				Assert.fail();
 			}
-			catch (PrincipalException principalException) {
-				Assert.assertNotNull(principalException);
+			catch (CommercePaymentEntryCommerceChannelIdException
+						commercePaymentEntryCommerceChannelIdException) {
+
+				Assert.assertNotNull(
+					commercePaymentEntryCommerceChannelIdException);
 			}
 
-			try {
-				_addOrUpdateCommercePaymentEntry(
-					_commerceOrder2, RandomTestUtil.randomString(),
-					_commerceChannel2.getGroupId());
+			commercePaymentEntry =
+				_commercePaymentEntryLocalService.getCommercePaymentEntry(
+					commercePaymentEntry.getCommercePaymentEntryId());
 
-				Assert.fail();
-			}
-			catch (PrincipalException principalException) {
-				Assert.assertNotNull(principalException);
-			}
+			Assert.assertEquals(
+				_commerceChannel1.getCommerceChannelId(),
+				commercePaymentEntry.getCommerceChannelId());
 		}
-
-		Assert.assertEquals(
-			0,
-			_commercePaymentEntryLocalService.getCommercePaymentEntriesCount(
-				_commerceOrder2.getCompanyId(),
-				_classNameLocalService.getClassNameId(CommerceOrder.class),
-				_commerceOrder2.getCommerceOrderId(),
-				CommercePaymentEntryConstants.TYPE_PAYMENT));
 	}
 
 	private CommerceChannel _addCommerceChannel(
@@ -198,36 +354,49 @@ public class CommercePaymentEntryServiceTest {
 	}
 
 	private CommercePaymentEntry _addCommercePaymentEntry(
-			CommerceOrder commerceOrder, long groupId)
+			long classPK, Class<?> clazz, CommerceChannel commerceChannel,
+			long groupId, int type)
 		throws Exception {
 
 		return _commercePaymentEntryService.addCommercePaymentEntry(
-			_classNameLocalService.getClassNameId(CommerceOrder.class),
-			commerceOrder.getCommerceOrderId(),
-			_commerceChannel1.getCommerceChannelId(), BigDecimal.TEN, null,
-			null, _commerceCurrency.getCode(), _user.getLanguageId(), null,
-			null, null, 0, null, RandomTestUtil.randomString(),
-			CommercePaymentEntryConstants.TYPE_PAYMENT,
+			_classNameLocalService.getClassNameId(clazz), classPK,
+			commerceChannel.getCommerceChannelId(), BigDecimal.TEN, null, null,
+			_commerceCurrency.getCode(), _user.getLanguageId(), null, null,
+			null, 0, null, RandomTestUtil.randomString(), type,
 			ServiceContextTestUtil.getServiceContext(
 				groupId, _user.getUserId()));
 	}
 
 	private CommercePaymentEntry _addOrUpdateCommercePaymentEntry(
-			CommerceOrder commerceOrder, String externalReferenceCode,
-			long groupId)
+			CommerceChannel commerceChannel, CommerceOrder commerceOrder,
+			String externalReferenceCode, long groupId)
 		throws Exception {
 
 		return _commercePaymentEntryService.addOrUpdateCommercePaymentEntry(
 			externalReferenceCode,
 			_classNameLocalService.getClassNameId(CommerceOrder.class),
 			commerceOrder.getCommerceOrderId(),
-			_commerceChannel1.getCommerceChannelId(), BigDecimal.TEN, null,
-			null, _commerceCurrency.getCode(), null, _user.getLanguageId(),
-			null, null, null, 0, CommercePaymentEntryConstants.STATUS_PENDING,
-			null, null, RandomTestUtil.randomString(),
+			commerceChannel.getCommerceChannelId(), BigDecimal.TEN, null, null,
+			_commerceCurrency.getCode(), null, _user.getLanguageId(), null,
+			null, null, 0, CommercePaymentEntryConstants.STATUS_PENDING, null,
+			null, RandomTestUtil.randomString(),
 			CommercePaymentEntryConstants.TYPE_PAYMENT,
 			ServiceContextTestUtil.getServiceContext(
 				groupId, _user.getUserId()));
+	}
+
+	private CommercePaymentEntry _updateCommercePaymentEntry(
+			CommerceChannel commerceChannel,
+			CommercePaymentEntry commercePaymentEntry)
+		throws Exception {
+
+		return _commercePaymentEntryService.updateCommercePaymentEntry(
+			null, commercePaymentEntry.getCommercePaymentEntryId(),
+			commerceChannel.getCommerceChannelId(), BigDecimal.TEN, null, null,
+			_commerceCurrency.getCode(), null, _user.getLanguageId(), null,
+			null, null, 0, CommercePaymentEntryConstants.STATUS_PENDING, null,
+			null, RandomTestUtil.randomString(),
+			CommercePaymentEntryConstants.TYPE_PAYMENT);
 	}
 
 	@Inject
