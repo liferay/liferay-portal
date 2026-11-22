@@ -540,33 +540,32 @@ public class AssetPublisherDisplayContextTest {
 			String audienceEntryERC, PortletPreferences portletPreferences)
 		throws Exception {
 
-		Object assetPublisherDisplayContext = _getAssetPublisherDisplayContext(
-			LayoutTestUtil.addTypePortletLayout(_group), portletPreferences);
-
-		MockHttpServletRequest mockHttpServletRequest =
-			(MockHttpServletRequest)_portal.getHttpServletRequest(
-				_mockLiferayPortletRenderRequest);
-
-		mockHttpServletRequest.setCookies(
-			new Cookie(
-				"com.liferay.frontend.js.audiences",
-				URLCodec.encodeURL(
-					JSONUtil.putAll(
-						audienceEntryERC
-					).toString())));
-
 		return ReflectionTestUtil.invoke(
-			assetPublisherDisplayContext, "getAssetEntryResults",
-			new Class<?>[0]);
+			_getAssetPublisherDisplayContext(
+				LayoutTestUtil.addTypePortletLayout(_group), portletPreferences,
+				new Cookie(
+					"com.liferay.frontend.js.audiences",
+					URLCodec.encodeURL(
+						JSONUtil.putAll(
+							audienceEntryERC
+						).toString()))),
+			"getAssetEntryResults", new Class<?>[0]);
 	}
 
 	private Object _getAssetPublisherDisplayContext(
-			Layout layout, PortletPreferences portletPreferences)
+			Layout layout, PortletPreferences portletPreferences,
+			Cookie... cookies)
 		throws Exception {
 
 		_mockLiferayPortletRenderRequest =
 			new TestMockLiferayPortletRenderRequest(
 				new MockHttpServletRequest());
+
+		MockHttpServletRequest mockHttpServletRequest =
+			(MockHttpServletRequest)_portal.getHttpServletRequest(
+				_mockLiferayPortletRenderRequest);
+
+		mockHttpServletRequest.setCookies(cookies);
 
 		com.liferay.portal.kernel.model.Portlet portlet =
 			_portletLocalService.getPortletById(
