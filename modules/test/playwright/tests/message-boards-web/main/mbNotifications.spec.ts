@@ -221,12 +221,20 @@ test(
 			'iframe[title="Permissions"]'
 		);
 
+		const searchInput =
+			replyPermissionsFrame.getByPlaceholder('Search for');
+
+		await searchInput.fill('user');
+		await searchInput.press('Enter');
+
 		await replyPermissionsFrame.locator('#user_ACTION_VIEW').check();
 
 		await replyPermissionsFrame.getByRole('button', {name: 'Save'}).click();
 
 		await expect(
-			page.getByText('Your request completed successfully.')
+			replyPermissionsFrame.getByText(
+				'Your request completed successfully.'
+			)
 		).toBeVisible();
 
 		// The subscriber opens the thread and can read the reply

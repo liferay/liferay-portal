@@ -202,7 +202,7 @@ export class MessageBoardsPage {
 			.first()
 			.click();
 
-		await this.page.waitForLoadState('networkidle');
+		await this.page.waitForURL(/view_message/);
 
 		await clickAndExpectToBeVisible({
 			autoClick: true,
@@ -213,6 +213,11 @@ export class MessageBoardsPage {
 		const permissionsFrame = this.page.frameLocator(
 			'iframe[title="Permissions"]'
 		);
+
+		const searchInput = permissionsFrame.getByPlaceholder('Search for');
+
+		await searchInput.fill(roleName);
+		await searchInput.press('Enter');
 
 		if (permissions.view !== undefined) {
 			await permissionsFrame
@@ -227,6 +232,10 @@ export class MessageBoardsPage {
 		}
 
 		await permissionsFrame.getByRole('button', {name: 'Save'}).click();
+
+		await expect(
+			permissionsFrame.getByText('Your request completed successfully.')
+		).toBeVisible();
 
 		await this.page.getByLabel('Close', {exact: true}).click();
 	}
