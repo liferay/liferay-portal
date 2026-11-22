@@ -15,6 +15,8 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.SearchContext;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.MapUtil;
@@ -31,6 +33,8 @@ import com.liferay.search.experiences.blueprint.exception.InvalidElementInstance
 import com.liferay.search.experiences.blueprint.exception.InvalidWebCacheItemException;
 import com.liferay.search.experiences.blueprint.exception.PrivateIPAddressException;
 import com.liferay.search.experiences.blueprint.search.request.enhancer.SXPBlueprintSearchRequestEnhancer;
+import com.liferay.search.experiences.constants.SXPActionKeys;
+import com.liferay.search.experiences.constants.SXPConstants;
 import com.liferay.search.experiences.exception.SXPExceptionUtil;
 import com.liferay.search.experiences.rest.dto.v1_0.DocumentField;
 import com.liferay.search.experiences.rest.dto.v1_0.Hit;
@@ -72,6 +76,12 @@ public class SearchResponseResourceImpl extends BaseSearchResponseResourceImpl {
 			String queryString, Pagination pagination,
 			SXPBlueprint sxpBlueprint)
 		throws Exception {
+
+		if (sxpBlueprint != null) {
+			_portletResourcePermission.check(
+				PermissionThreadLocal.getPermissionChecker(), null,
+				SXPActionKeys.ADD_SXP_BLUEPRINT);
+		}
 
 		try {
 			return search(pagination, queryString, sxpBlueprint);
@@ -409,6 +419,9 @@ public class SearchResponseResourceImpl extends BaseSearchResponseResourceImpl {
 
 	@Reference
 	private JSONFactory _jsonFactory;
+
+	@Reference(target = "(resource.name=" + SXPConstants.RESOURCE_NAME + ")")
+	private PortletResourcePermission _portletResourcePermission;
 
 	@Reference
 	private SearchRequestBuilderFactory _searchRequestBuilderFactory;
