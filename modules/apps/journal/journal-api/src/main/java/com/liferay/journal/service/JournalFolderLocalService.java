@@ -283,16 +283,6 @@ public interface JournalFolderLocalService
 	public JournalFolder getFolder(long folderId) throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<JournalFolder> getFolders(long groupId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<JournalFolder> getFolders(long groupId, long parentFolderId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<JournalFolder> getFolders(
-		long groupId, long parentFolderId, int status);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<JournalFolder> getFolders(
 		long groupId, long parentFolderId, int start, int end);
 
@@ -450,21 +440,12 @@ public interface JournalFolderLocalService
 	public JournalFolder moveFolderToTrash(long userId, long folderId)
 		throws PortalException;
 
-	public void rebuildTree(long companyId) throws PortalException;
-
 	public void rebuildTree(
 			long companyId, long parentFolderId, String parentTreePath,
 			boolean reindex)
 		throws PortalException;
 
 	public void restoreFolderFromTrash(long userId, long folderId)
-		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<DDMStructure> searchDDMStructures(
-			long companyId, long[] groupIds, long folderId, int restrictionType,
-			String keywords, int start, int end,
-			OrderByComparator<DDMStructure> orderByComparator)
 		throws PortalException;
 
 	public void subscribe(long userId, long groupId, long folderId)
@@ -533,4 +514,4 @@ public interface JournalFolderLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:91856135
+// LIFERAY-SERVICE-BUILDER-HASH:62556810

@@ -121,8 +121,6 @@ public interface JournalFeedLocalService
 
 	public void deleteFeed(long feedId) throws PortalException;
 
-	public void deleteFeed(long groupId, String feedId) throws PortalException;
-
 	/**
 	 * Deletes the journal feed from the database. Also notifies the appropriate model listeners.
 	 *
@@ -261,9 +259,6 @@ public interface JournalFeedLocalService
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<JournalFeed> getFeeds();
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
 
 	/**
@@ -397,4 +392,4 @@ public interface JournalFeedLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1551547002
+// LIFERAY-SERVICE-BUILDER-HASH:934495411

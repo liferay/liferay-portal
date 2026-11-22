@@ -318,22 +318,6 @@ public class JournalFolderLocalServiceUtil {
 		return getService().getFolder(folderId);
 	}
 
-	public static List<JournalFolder> getFolders(long groupId) {
-		return getService().getFolders(groupId);
-	}
-
-	public static List<JournalFolder> getFolders(
-		long groupId, long parentFolderId) {
-
-		return getService().getFolders(groupId, parentFolderId);
-	}
-
-	public static List<JournalFolder> getFolders(
-		long groupId, long parentFolderId, int status) {
-
-		return getService().getFolders(groupId, parentFolderId, status);
-	}
-
 	public static List<JournalFolder> getFolders(
 		long groupId, long parentFolderId, int start, int end) {
 
@@ -558,10 +542,6 @@ public class JournalFolderLocalServiceUtil {
 		return getService().moveFolderToTrash(userId, folderId);
 	}
 
-	public static void rebuildTree(long companyId) throws PortalException {
-		getService().rebuildTree(companyId);
-	}
-
 	public static void rebuildTree(
 			long companyId, long parentFolderId, String parentTreePath,
 			boolean reindex)
@@ -575,20 +555,6 @@ public class JournalFolderLocalServiceUtil {
 		throws PortalException {
 
 		getService().restoreFolderFromTrash(userId, folderId);
-	}
-
-	public static List<com.liferay.dynamic.data.mapping.model.DDMStructure>
-			searchDDMStructures(
-				long companyId, long[] groupIds, long folderId,
-				int restrictionType, String keywords, int start, int end,
-				OrderByComparator
-					<com.liferay.dynamic.data.mapping.model.DDMStructure>
-						orderByComparator)
-		throws PortalException {
-
-		return getService().searchDDMStructures(
-			companyId, groupIds, folderId, restrictionType, keywords, start,
-			end, orderByComparator);
 	}
 
 	public static void subscribe(long userId, long groupId, long folderId)
@@ -684,4 +650,4 @@ public class JournalFolderLocalServiceUtil {
 			JournalFolderLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-155323935
+// LIFERAY-SERVICE-BUILDER-HASH:1870887410

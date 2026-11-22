@@ -362,26 +362,6 @@ public class JournalFolderLocalServiceWrapper
 	}
 
 	@Override
-	public java.util.List<JournalFolder> getFolders(long groupId) {
-		return _journalFolderLocalService.getFolders(groupId);
-	}
-
-	@Override
-	public java.util.List<JournalFolder> getFolders(
-		long groupId, long parentFolderId) {
-
-		return _journalFolderLocalService.getFolders(groupId, parentFolderId);
-	}
-
-	@Override
-	public java.util.List<JournalFolder> getFolders(
-		long groupId, long parentFolderId, int status) {
-
-		return _journalFolderLocalService.getFolders(
-			groupId, parentFolderId, status);
-	}
-
-	@Override
 	public java.util.List<JournalFolder> getFolders(
 		long groupId, long parentFolderId, int start, int end) {
 
@@ -641,13 +621,6 @@ public class JournalFolderLocalServiceWrapper
 	}
 
 	@Override
-	public void rebuildTree(long companyId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		_journalFolderLocalService.rebuildTree(companyId);
-	}
-
-	@Override
 	public void rebuildTree(
 			long companyId, long parentFolderId, String parentTreePath,
 			boolean reindex)
@@ -662,21 +635,6 @@ public class JournalFolderLocalServiceWrapper
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		_journalFolderLocalService.restoreFolderFromTrash(userId, folderId);
-	}
-
-	@Override
-	public java.util.List<com.liferay.dynamic.data.mapping.model.DDMStructure>
-			searchDDMStructures(
-				long companyId, long[] groupIds, long folderId,
-				int restrictionType, String keywords, int start, int end,
-				com.liferay.portal.kernel.util.OrderByComparator
-					<com.liferay.dynamic.data.mapping.model.DDMStructure>
-						orderByComparator)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _journalFolderLocalService.searchDDMStructures(
-			companyId, groupIds, folderId, restrictionType, keywords, start,
-			end, orderByComparator);
 	}
 
 	@Override
@@ -810,4 +768,4 @@ public class JournalFolderLocalServiceWrapper
 	private JournalFolderLocalService _journalFolderLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1791476286
+// LIFERAY-SERVICE-BUILDER-HASH:1522281798

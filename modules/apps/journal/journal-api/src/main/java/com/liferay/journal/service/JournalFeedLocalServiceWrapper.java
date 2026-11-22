@@ -131,13 +131,6 @@ public class JournalFeedLocalServiceWrapper
 		_journalFeedLocalService.deleteFeed(feedId);
 	}
 
-	@Override
-	public void deleteFeed(long groupId, String feedId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		_journalFeedLocalService.deleteFeed(groupId, feedId);
-	}
-
 	/**
 	 * Deletes the journal feed from the database. Also notifies the appropriate model listeners.
 	 *
@@ -338,11 +331,6 @@ public class JournalFeedLocalServiceWrapper
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _journalFeedLocalService.getFeed(groupId, feedId);
-	}
-
-	@Override
-	public java.util.List<JournalFeed> getFeeds() {
-		return _journalFeedLocalService.getFeeds();
 	}
 
 	@Override
@@ -553,4 +541,4 @@ public class JournalFeedLocalServiceWrapper
 	private JournalFeedLocalService _journalFeedLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1110997716
+// LIFERAY-SERVICE-BUILDER-HASH:1416066979

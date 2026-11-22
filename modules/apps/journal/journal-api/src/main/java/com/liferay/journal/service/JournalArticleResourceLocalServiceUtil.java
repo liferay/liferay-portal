@@ -75,12 +75,6 @@ public class JournalArticleResourceLocalServiceUtil {
 		return getService().createPersistedModel(primaryKeyObj);
 	}
 
-	public static void deleteArticleResource(long groupId, String articleId)
-		throws PortalException {
-
-		getService().deleteArticleResource(groupId, articleId);
-	}
-
 	/**
 	 * Deletes the journal article resource from the database. Also notifies the appropriate model listeners.
 	 *
@@ -416,4 +410,4 @@ public class JournalArticleResourceLocalServiceUtil {
 			JournalArticleResourceLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-221852016
+// LIFERAY-SERVICE-BUILDER-HASH:915998774

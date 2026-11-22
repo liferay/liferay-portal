@@ -89,9 +89,6 @@ public interface JournalArticleResourceLocalService
 	public PersistedModel createPersistedModel(Serializable primaryKeyObj)
 		throws PortalException;
 
-	public void deleteArticleResource(long groupId, String articleId)
-		throws PortalException;
-
 	/**
 	 * Deletes the journal article resource from the database. Also notifies the appropriate model listeners.
 	 *
@@ -366,4 +363,4 @@ public interface JournalArticleResourceLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2018651658
+// LIFERAY-SERVICE-BUILDER-HASH:-1250804130

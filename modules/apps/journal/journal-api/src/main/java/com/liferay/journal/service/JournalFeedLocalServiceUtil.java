@@ -122,12 +122,6 @@ public class JournalFeedLocalServiceUtil {
 		getService().deleteFeed(feedId);
 	}
 
-	public static void deleteFeed(long groupId, String feedId)
-		throws PortalException {
-
-		getService().deleteFeed(groupId, feedId);
-	}
-
 	/**
 	 * Deletes the journal feed from the database. Also notifies the appropriate model listeners.
 	 *
@@ -299,10 +293,6 @@ public class JournalFeedLocalServiceUtil {
 		return getService().getFeed(groupId, feedId);
 	}
 
-	public static List<JournalFeed> getFeeds() {
-		return getService().getFeeds();
-	}
-
 	public static
 		com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery
 			getIndexableActionableDynamicQuery() {
@@ -463,4 +453,4 @@ public class JournalFeedLocalServiceUtil {
 			JournalFeedLocalServiceUtil.class, JournalFeedLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-270094806
+// LIFERAY-SERVICE-BUILDER-HASH:-1628630075

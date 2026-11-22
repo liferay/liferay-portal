@@ -77,14 +77,6 @@ public class JournalArticleResourceLocalServiceWrapper
 			primaryKeyObj);
 	}
 
-	@Override
-	public void deleteArticleResource(long groupId, String articleId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		_journalArticleResourceLocalService.deleteArticleResource(
-			groupId, articleId);
-	}
-
 	/**
 	 * Deletes the journal article resource from the database. Also notifies the appropriate model listeners.
 	 *
@@ -506,4 +498,4 @@ public class JournalArticleResourceLocalServiceWrapper
 		_journalArticleResourceLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-707811426
+// LIFERAY-SERVICE-BUILDER-HASH:1716045863
