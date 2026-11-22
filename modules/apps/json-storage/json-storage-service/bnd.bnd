@@ -1,6 +1,6 @@
 Bundle-Name: Liferay JSON Storage Service
 Bundle-SymbolicName: com.liferay.json.storage.service
-Bundle-Version: 1.0.42
+Bundle-Version: 1.0.43
 Liferay-Require-SchemaVersion: 1.0.0
 Liferay-Service: true
 -dsannotations-options: inherit
