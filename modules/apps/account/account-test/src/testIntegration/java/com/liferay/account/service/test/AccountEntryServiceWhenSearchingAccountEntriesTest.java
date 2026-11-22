@@ -11,7 +11,6 @@ import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.account.service.AccountEntryOrganizationRelLocalService;
 import com.liferay.account.service.AccountEntryService;
 import com.liferay.account.service.AccountEntryUserRelLocalService;
-import com.liferay.account.service.persistence.AccountEntryUtil;
 import com.liferay.account.service.test.util.AccountEntryArgs;
 import com.liferay.account.service.test.util.AccountEntryTestUtil;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
@@ -37,7 +36,6 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
-import com.liferay.portal.kernel.test.util.TransactionTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -74,7 +72,12 @@ public class AccountEntryServiceWhenSearchingAccountEntriesTest {
 
 	@BeforeClass
 	public static void setUpClass() throws Exception {
-		for (AccountEntry accountEntry : _getAllAccountEntries()) {
+		for (AccountEntry accountEntry :
+				AccountEntryTestUtil.getAccountEntries(
+					TestPropsValues.getCompanyId(),
+					WorkflowConstants.STATUS_APPROVED, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, null)) {
+
 			_accountEntryLocalService.deleteAccountEntry(accountEntry);
 		}
 	}
@@ -132,7 +135,11 @@ public class AccountEntryServiceWhenSearchingAccountEntriesTest {
 
 		_userLocalService.addRoleUser(role.getRoleId(), _user);
 
-		_assertSearch(_getAllAccountEntries());
+		_assertSearch(
+			AccountEntryTestUtil.getAccountEntries(
+				TestPropsValues.getCompanyId(),
+				WorkflowConstants.STATUS_APPROVED, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS, null));
 	}
 
 	@Test
@@ -149,7 +156,11 @@ public class AccountEntryServiceWhenSearchingAccountEntriesTest {
 
 		_userLocalService.addRoleUser(role.getRoleId(), _user.getUserId());
 
-		_assertSearch(_getAllAccountEntries());
+		_assertSearch(
+			AccountEntryTestUtil.getAccountEntries(
+				TestPropsValues.getCompanyId(),
+				WorkflowConstants.STATUS_APPROVED, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS, null));
 	}
 
 	@Test
@@ -299,15 +310,6 @@ public class AccountEntryServiceWhenSearchingAccountEntriesTest {
 
 	@Rule
 	public SearchTestRule searchTestRule = new SearchTestRule();
-
-	private static List<AccountEntry> _getAllAccountEntries() throws Exception {
-		return TransactionTestUtil.invoke(
-			AccountEntryUtil.getPersistence(),
-			accountEntryPersistence -> accountEntryPersistence.findByC_S(
-				TestPropsValues.getCompanyId(),
-				WorkflowConstants.STATUS_APPROVED, QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS, null));
-	}
 
 	private Role _addOrganizationRole() throws Exception {
 		return _roleLocalService.addRole(

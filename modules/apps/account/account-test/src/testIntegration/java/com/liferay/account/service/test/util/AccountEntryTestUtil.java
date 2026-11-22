@@ -11,6 +11,7 @@ import com.liferay.account.service.AccountEntryLocalServiceUtil;
 import com.liferay.account.service.AccountEntryOrganizationRelLocalServiceUtil;
 import com.liferay.account.service.AccountEntryUserRelLocalServiceUtil;
 import com.liferay.account.service.AccountGroupRelLocalServiceUtil;
+import com.liferay.account.service.persistence.AccountEntryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Organization;
@@ -19,8 +20,10 @@ import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
+import com.liferay.portal.kernel.test.util.TransactionTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.OrderByComparator;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -55,6 +58,17 @@ public class AccountEntryTestUtil {
 		}
 
 		return _addAccountEntry(accountEntryArgs);
+	}
+
+	public static List<AccountEntry> getAccountEntries(
+			long companyId, int status, int start, int end,
+			OrderByComparator<AccountEntry> orderByComparator)
+		throws Exception {
+
+		return TransactionTestUtil.invoke(
+			AccountEntryUtil.getPersistence(),
+			accountEntryPersistence -> accountEntryPersistence.findByC_S(
+				companyId, status, start, end, orderByComparator));
 	}
 
 	private static AccountEntry _addAccountEntry(
