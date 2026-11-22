@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Commerce Punch Out API
 Bundle-SymbolicName: com.liferay.commerce.punchout.api
-Bundle-Version: 5.1.0
+Bundle-Version: 5.1.1
 Export-Package:\
 	com.liferay.commerce.punchout.configuration,\
 	com.liferay.commerce.punchout.constants,\
