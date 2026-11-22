@@ -105,7 +105,7 @@
 				</li>
 
 				[#assign
-					navItemsJSON = navItemsJSON + '"icon": "${(navItem.getDisplayIcon??)?then(navItem.getDisplayIcon(), "")}", "id": "${navItem.getLayoutId()}", "label": "${navItem.getName()}"}'
+					navItemsJSON = navItemsJSON + '"icon": "${(navItem.getDisplayIcon??)?then(navItem.getDisplayIcon(), "")}", "id": "${navItem.getLayoutId()}", "label": "${navItem.getUnescapedName()?json_string}"}'
 				/]
 			[/#if]
 		[/#list]
