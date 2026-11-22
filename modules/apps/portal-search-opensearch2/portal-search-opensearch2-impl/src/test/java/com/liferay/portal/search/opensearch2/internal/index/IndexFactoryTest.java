@@ -5,6 +5,7 @@
 
 package com.liferay.portal.search.opensearch2.internal.index;
 
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
@@ -23,6 +24,9 @@ import com.liferay.portal.search.opensearch2.internal.util.ResourceUtil;
 import com.liferay.portal.search.spi.index.configuration.contributor.CompanyIndexMappingsContributor;
 import com.liferay.portal.search.spi.index.configuration.contributor.CompanyIndexSettingsContributor;
 import com.liferay.portal.search.spi.index.listener.CompanyIndexListener;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LogEntry;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
@@ -334,6 +338,65 @@ public class IndexFactoryTest extends BaseOpenSearchTestCase {
 
 				},
 				null));
+
+		initializeIndex();
+
+		_assertAdditionalTypeMappings();
+	}
+
+	@Test
+	public void testContributeMappingsAfterFailedLatePut() throws Exception {
+		long companyId = RandomTestUtil.randomLong();
+
+		IndexFactoryCompanyIdRegistryUtil.registerCompanyId(companyId);
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				CompanyIndexHelper.class.getName(), LoggerTestUtil.ERROR)) {
+
+			_serviceRegistrations.add(
+				_bundleContext.registerService(
+					CompanyIndexMappingsContributor.class,
+					new CompanyIndexMappingsContributor() {
+
+						@Override
+						public String contributeMappings() {
+							return _getAdditionalTypeMappings();
+						}
+
+						@Override
+						public String toString() {
+							return "TestCompanyIndexMappingsContributor";
+						}
+
+					},
+					null));
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
+
+			LogEntry logEntry = logEntries.get(0);
+
+			Assert.assertEquals(LoggerTestUtil.ERROR, logEntry.getPriority());
+
+			CompanyIndexHelper companyIndexHelper =
+				_indexFactoryFixture.getCompanyIndexHelper();
+
+			Assert.assertEquals(
+				StringBundler.concat(
+					"Unable to put mappings for index ",
+					companyIndexHelper.getIndexName(companyId),
+					" with contributor TestCompanyIndexMappingsContributor"),
+				logEntry.getMessage());
+
+			Throwable throwable = logEntry.getThrowable();
+
+			String message = throwable.getMessage();
+
+			Assert.assertTrue(message.contains("index_not_found_exception"));
+		}
+
+		IndexFactoryCompanyIdRegistryUtil.unregisterCompanyId(companyId);
 
 		initializeIndex();
 
