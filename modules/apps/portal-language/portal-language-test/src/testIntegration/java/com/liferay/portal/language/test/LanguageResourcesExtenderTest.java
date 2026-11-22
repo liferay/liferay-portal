@@ -12,9 +12,9 @@ import com.liferay.petra.io.unsync.UnsyncByteArrayOutputStream;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.petra.string.StringUtil;
-import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.resource.bundle.ResourceBundleLoader;
 import com.liferay.portal.kernel.resource.bundle.ResourceBundleLoaderUtil;
+import com.liferay.portal.kernel.test.util.BundleContextTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -276,7 +276,9 @@ public class LanguageResourcesExtenderTest {
 		try {
 			bundle.start();
 
-			BundleContext bundleContext = SystemBundleUtil.getBundleContext();
+			BundleContext bundleContext =
+				BundleContextTestUtil.getBundleContext(
+					LanguageResourcesExtenderTest.class);
 
 			List<ServiceReference<ResourceBundleLoader>> serviceReferences =
 				new ArrayList<>(
