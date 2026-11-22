@@ -97,10 +97,6 @@ public class WebDAVPropsLocalServiceUtil {
 		return getService().deleteWebDAVProps(webDavPropsId);
 	}
 
-	public static void deleteWebDAVProps(String className, long classPK) {
-		getService().deleteWebDAVProps(className, classPK);
-	}
-
 	/**
 	 * Deletes the web dav props from the database. Also notifies the appropriate model listeners.
 	 *
@@ -309,4 +305,4 @@ public class WebDAVPropsLocalServiceUtil {
 	private static volatile WebDAVPropsLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:962572260
+// LIFERAY-SERVICE-BUILDER-HASH:668960260

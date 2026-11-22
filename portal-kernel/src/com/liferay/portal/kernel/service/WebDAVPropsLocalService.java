@@ -105,8 +105,6 @@ public interface WebDAVPropsLocalService
 	public WebDAVProps deleteWebDAVProps(long webDavPropsId)
 		throws PortalException;
 
-	public void deleteWebDAVProps(String className, long classPK);
-
 	/**
 	 * Deletes the web dav props from the database. Also notifies the appropriate model listeners.
 	 *
@@ -270,4 +268,4 @@ public interface WebDAVPropsLocalService
 	public WebDAVProps updateWebDAVProps(WebDAVProps webDAVProps);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1247267662
+// LIFERAY-SERVICE-BUILDER-HASH:-704962498

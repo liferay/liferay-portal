@@ -51,10 +51,6 @@ public class PortletLocalServiceUtil {
 		return getService().addPortlet(portlet);
 	}
 
-	public static void addPortletCategory(long companyId, String categoryName) {
-		getService().addPortletCategory(companyId, categoryName);
-	}
-
 	public static void checkPortlet(Portlet portlet) throws PortalException {
 		getService().checkPortlet(portlet);
 	}
@@ -69,10 +65,6 @@ public class PortletLocalServiceUtil {
 
 	public static void clearPortletsMap() {
 		getService().clearPortletsMap();
-	}
-
-	public static Portlet clonePortlet(String portletId) {
-		return getService().clonePortlet(portletId);
 	}
 
 	/**
@@ -161,34 +153,8 @@ public class PortletLocalServiceUtil {
 			companyIds, portlet, categoryNames, eagerDestroy, clearCache);
 	}
 
-	public static Portlet deployRemotePortlet(
-			Portlet portlet, String categoryName)
-		throws PortalException {
-
-		return getService().deployRemotePortlet(portlet, categoryName);
-	}
-
-	public static Portlet deployRemotePortlet(
-			Portlet portlet, String[] categoryNames)
-		throws PortalException {
-
-		return getService().deployRemotePortlet(portlet, categoryNames);
-	}
-
-	public static Portlet deployRemotePortlet(
-			Portlet portlet, String[] categoryNames, boolean eagerDestroy)
-		throws PortalException {
-
-		return getService().deployRemotePortlet(
-			portlet, categoryNames, eagerDestroy);
-	}
-
 	public static void destroyPortlet(Portlet portlet) {
 		getService().destroyPortlet(portlet);
-	}
-
-	public static void destroyRemotePortlet(Portlet portlet) {
-		getService().destroyRemotePortlet(portlet);
 	}
 
 	public static <T> T dslQuery(DSLQuery dslQuery) {
@@ -294,12 +260,6 @@ public class PortletLocalServiceUtil {
 		getCustomAttributesDisplays() {
 
 		return getService().getCustomAttributesDisplays();
-	}
-
-	public static com.liferay.portal.kernel.model.PortletCategory getEARDisplay(
-		String xml) {
-
-		return getService().getEARDisplay(xml);
 	}
 
 	public static List<Portlet> getFriendlyURLMapperPortlets() {
@@ -413,14 +373,6 @@ public class PortletLocalServiceUtil {
 		return getService().getPortletsCount();
 	}
 
-	public static int getPortletsCount(long companyId) {
-		return getService().getPortletsCount(companyId);
-	}
-
-	public static List<Portlet> getScopablePortlets() {
-		return getService().getScopablePortlets();
-	}
-
 	public static com.liferay.portal.kernel.model.PortletCategory getWARDisplay(
 		String servletContextName, String xml) {
 
@@ -498,4 +450,4 @@ public class PortletLocalServiceUtil {
 	private static volatile PortletLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:823056039
+// LIFERAY-SERVICE-BUILDER-HASH:607240323

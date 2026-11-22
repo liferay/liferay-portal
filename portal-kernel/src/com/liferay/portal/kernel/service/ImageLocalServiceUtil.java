@@ -227,14 +227,6 @@ public class ImageLocalServiceUtil {
 		return getService().getImageInputStream(companyId, imageId, type);
 	}
 
-	public static Image getImageOrDefault(long imageId) {
-		return getService().getImageOrDefault(imageId);
-	}
-
-	public static List<Image> getImages() {
-		return getService().getImages();
-	}
-
 	/**
 	 * Returns a range of all the images.
 	 *
@@ -353,4 +345,4 @@ public class ImageLocalServiceUtil {
 	private static volatile ImageLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2111681932
+// LIFERAY-SERVICE-BUILDER-HASH:1917214311

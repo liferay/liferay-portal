@@ -220,12 +220,6 @@ public interface ImageLocalService
 			long companyId, long imageId, String type)
 		throws PortalException;
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public Image getImageOrDefault(long imageId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<Image> getImages();
-
 	/**
 	 * Returns a range of all the images.
 	 *
@@ -316,4 +310,4 @@ public interface ImageLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1455960755
+// LIFERAY-SERVICE-BUILDER-HASH:-948481086

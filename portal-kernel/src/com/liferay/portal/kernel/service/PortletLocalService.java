@@ -80,9 +80,6 @@ public interface PortletLocalService
 	@Indexable(type = IndexableType.REINDEX)
 	public Portlet addPortlet(Portlet portlet);
 
-	@Transactional(enabled = false)
-	public void addPortletCategory(long companyId, String categoryName);
-
 	public void checkPortlet(Portlet portlet) throws PortalException;
 
 	public void checkPortlets(long companyId) throws PortalException;
@@ -93,9 +90,6 @@ public interface PortletLocalService
 	@Clusterable
 	@Transactional(enabled = false)
 	public void clearPortletsMap();
-
-	@Transactional(enabled = false)
-	public Portlet clonePortlet(String portletId);
 
 	/**
 	 * @throws PortalException
@@ -162,21 +156,8 @@ public interface PortletLocalService
 			boolean eagerDestroy, boolean clearCache)
 		throws PortalException;
 
-	public Portlet deployRemotePortlet(Portlet portlet, String categoryName)
-		throws PortalException;
-
-	public Portlet deployRemotePortlet(Portlet portlet, String[] categoryNames)
-		throws PortalException;
-
-	public Portlet deployRemotePortlet(
-			Portlet portlet, String[] categoryNames, boolean eagerDestroy)
-		throws PortalException;
-
 	@Transactional(enabled = false)
 	public void destroyPortlet(Portlet portlet);
-
-	@Transactional(enabled = false)
-	public void destroyRemotePortlet(Portlet portlet);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public <T> T dslQuery(DSLQuery dslQuery);
@@ -263,9 +244,6 @@ public interface PortletLocalService
 	public List<CustomAttributesDisplay> getCustomAttributesDisplays();
 
 	@Transactional(enabled = false)
-	public PortletCategory getEARDisplay(String xml);
-
-	@Transactional(enabled = false)
 	public List<Portlet> getFriendlyURLMapperPortlets();
 
 	@Transactional(enabled = false)
@@ -347,12 +325,6 @@ public interface PortletLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getPortletsCount();
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getPortletsCount(long companyId);
-
-	@Transactional(enabled = false)
-	public List<Portlet> getScopablePortlets();
-
 	@Transactional(enabled = false)
 	public PortletCategory getWARDisplay(String servletContextName, String xml);
 
@@ -398,4 +370,4 @@ public interface PortletLocalService
 	public void visitPortlets(long companyId, Consumer<Portlet> consumer);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:705430672
+// LIFERAY-SERVICE-BUILDER-HASH:-1937540125

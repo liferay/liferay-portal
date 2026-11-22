@@ -87,8 +87,6 @@ public interface RepositoryLocalService
 			ServiceContext serviceContext)
 		throws PortalException;
 
-	public void checkRepository(long repositoryId);
-
 	/**
 	 * @throws PortalException
 	 */
@@ -402,4 +400,4 @@ public interface RepositoryLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-819740494
+// LIFERAY-SERVICE-BUILDER-HASH:1618700945

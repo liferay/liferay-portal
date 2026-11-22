@@ -61,11 +61,6 @@ public class RepositoryLocalServiceWrapper
 			serviceContext);
 	}
 
-	@Override
-	public void checkRepository(long repositoryId) {
-		_repositoryLocalService.checkRepository(repositoryId);
-	}
-
 	/**
 	 * @throws PortalException
 	 */
@@ -544,4 +539,4 @@ public class RepositoryLocalServiceWrapper
 	private RepositoryLocalService _repositoryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:830024770
+// LIFERAY-SERVICE-BUILDER-HASH:-225571941

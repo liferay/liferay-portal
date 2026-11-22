@@ -43,11 +43,6 @@ public class PortletLocalServiceWrapper
 	}
 
 	@Override
-	public void addPortletCategory(long companyId, String categoryName) {
-		_portletLocalService.addPortletCategory(companyId, categoryName);
-	}
-
-	@Override
 	public void checkPortlet(com.liferay.portal.kernel.model.Portlet portlet)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
@@ -69,13 +64,6 @@ public class PortletLocalServiceWrapper
 	@Override
 	public void clearPortletsMap() {
 		_portletLocalService.clearPortletsMap();
-	}
-
-	@Override
-	public com.liferay.portal.kernel.model.Portlet clonePortlet(
-		String portletId) {
-
-		return _portletLocalService.clonePortlet(portletId);
 	}
 
 	/**
@@ -178,45 +166,10 @@ public class PortletLocalServiceWrapper
 	}
 
 	@Override
-	public com.liferay.portal.kernel.model.Portlet deployRemotePortlet(
-			com.liferay.portal.kernel.model.Portlet portlet,
-			String categoryName)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _portletLocalService.deployRemotePortlet(portlet, categoryName);
-	}
-
-	@Override
-	public com.liferay.portal.kernel.model.Portlet deployRemotePortlet(
-			com.liferay.portal.kernel.model.Portlet portlet,
-			String[] categoryNames)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _portletLocalService.deployRemotePortlet(portlet, categoryNames);
-	}
-
-	@Override
-	public com.liferay.portal.kernel.model.Portlet deployRemotePortlet(
-			com.liferay.portal.kernel.model.Portlet portlet,
-			String[] categoryNames, boolean eagerDestroy)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _portletLocalService.deployRemotePortlet(
-			portlet, categoryNames, eagerDestroy);
-	}
-
-	@Override
 	public void destroyPortlet(
 		com.liferay.portal.kernel.model.Portlet portlet) {
 
 		_portletLocalService.destroyPortlet(portlet);
-	}
-
-	@Override
-	public void destroyRemotePortlet(
-		com.liferay.portal.kernel.model.Portlet portlet) {
-
-		_portletLocalService.destroyRemotePortlet(portlet);
 	}
 
 	@Override
@@ -345,13 +298,6 @@ public class PortletLocalServiceWrapper
 			getCustomAttributesDisplays() {
 
 		return _portletLocalService.getCustomAttributesDisplays();
-	}
-
-	@Override
-	public com.liferay.portal.kernel.model.PortletCategory getEARDisplay(
-		String xml) {
-
-		return _portletLocalService.getEARDisplay(xml);
 	}
 
 	@Override
@@ -497,18 +443,6 @@ public class PortletLocalServiceWrapper
 	}
 
 	@Override
-	public int getPortletsCount(long companyId) {
-		return _portletLocalService.getPortletsCount(companyId);
-	}
-
-	@Override
-	public java.util.List<com.liferay.portal.kernel.model.Portlet>
-		getScopablePortlets() {
-
-		return _portletLocalService.getScopablePortlets();
-	}
-
-	@Override
 	public com.liferay.portal.kernel.model.PortletCategory getWARDisplay(
 		String servletContextName, String xml) {
 
@@ -607,4 +541,4 @@ public class PortletLocalServiceWrapper
 	private PortletLocalService _portletLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:751490583
+// LIFERAY-SERVICE-BUILDER-HASH:1831637837

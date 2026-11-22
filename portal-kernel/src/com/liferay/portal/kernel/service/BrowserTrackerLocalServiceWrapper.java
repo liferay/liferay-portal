@@ -256,14 +256,6 @@ public class BrowserTrackerLocalServiceWrapper
 		return _browserTrackerLocalService.getBrowserTracker(browserTrackerId);
 	}
 
-	@Override
-	public com.liferay.portal.kernel.model.BrowserTracker getBrowserTracker(
-		long userId, long browserKey) {
-
-		return _browserTrackerLocalService.getBrowserTracker(
-			userId, browserKey);
-	}
-
 	/**
 	 * Returns a range of all the browser trackers.
 	 *
@@ -338,14 +330,6 @@ public class BrowserTrackerLocalServiceWrapper
 	}
 
 	@Override
-	public com.liferay.portal.kernel.model.BrowserTracker updateBrowserTracker(
-		long userId, long browserKey) {
-
-		return _browserTrackerLocalService.updateBrowserTracker(
-			userId, browserKey);
-	}
-
-	@Override
 	public BasePersistence<?> getBasePersistence() {
 		return _browserTrackerLocalService.getBasePersistence();
 	}
@@ -365,4 +349,4 @@ public class BrowserTrackerLocalServiceWrapper
 	private BrowserTrackerLocalService _browserTrackerLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-351393939
+// LIFERAY-SERVICE-BUILDER-HASH:-865336705

@@ -211,9 +211,6 @@ public interface BrowserTrackerLocalService
 	public BrowserTracker getBrowserTracker(long browserTrackerId)
 		throws PortalException;
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public BrowserTracker getBrowserTracker(long userId, long browserKey);
-
 	/**
 	 * Returns a range of all the browser trackers.
 	 *
@@ -267,7 +264,5 @@ public interface BrowserTrackerLocalService
 	@Indexable(type = IndexableType.REINDEX)
 	public BrowserTracker updateBrowserTracker(BrowserTracker browserTracker);
 
-	public BrowserTracker updateBrowserTracker(long userId, long browserKey);
-
 }
-// LIFERAY-SERVICE-BUILDER-HASH:639780135
+// LIFERAY-SERVICE-BUILDER-HASH:43064884

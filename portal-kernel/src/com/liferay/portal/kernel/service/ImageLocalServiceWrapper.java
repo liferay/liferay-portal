@@ -249,16 +249,6 @@ public class ImageLocalServiceWrapper
 		return _imageLocalService.getImageInputStream(companyId, imageId, type);
 	}
 
-	@Override
-	public Image getImageOrDefault(long imageId) {
-		return _imageLocalService.getImageOrDefault(imageId);
-	}
-
-	@Override
-	public java.util.List<Image> getImages() {
-		return _imageLocalService.getImages();
-	}
-
 	/**
 	 * Returns a range of all the images.
 	 *
@@ -414,4 +404,4 @@ public class ImageLocalServiceWrapper
 	private ImageLocalService _imageLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1089434203
+// LIFERAY-SERVICE-BUILDER-HASH:1809353196

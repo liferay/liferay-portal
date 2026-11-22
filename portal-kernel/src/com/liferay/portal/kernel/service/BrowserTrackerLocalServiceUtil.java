@@ -227,12 +227,6 @@ public class BrowserTrackerLocalServiceUtil {
 		return getService().getBrowserTracker(browserTrackerId);
 	}
 
-	public static BrowserTracker getBrowserTracker(
-		long userId, long browserKey) {
-
-		return getService().getBrowserTracker(userId, browserKey);
-	}
-
 	/**
 	 * Returns a range of all the browser trackers.
 	 *
@@ -298,12 +292,6 @@ public class BrowserTrackerLocalServiceUtil {
 		return getService().updateBrowserTracker(browserTracker);
 	}
 
-	public static BrowserTracker updateBrowserTracker(
-		long userId, long browserKey) {
-
-		return getService().updateBrowserTracker(userId, browserKey);
-	}
-
 	public static BrowserTrackerLocalService getService() {
 		return _service;
 	}
@@ -315,4 +303,4 @@ public class BrowserTrackerLocalServiceUtil {
 	private static volatile BrowserTrackerLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1034296279
+// LIFERAY-SERVICE-BUILDER-HASH:-1824444315

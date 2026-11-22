@@ -65,10 +65,6 @@ public class RepositoryLocalServiceUtil {
 			serviceContext);
 	}
 
-	public static void checkRepository(long repositoryId) {
-		getService().checkRepository(repositoryId);
-	}
-
 	/**
 	 * @throws PortalException
 	 */
@@ -460,4 +456,4 @@ public class RepositoryLocalServiceUtil {
 	private static volatile RepositoryLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:374552720
+// LIFERAY-SERVICE-BUILDER-HASH:1730358215

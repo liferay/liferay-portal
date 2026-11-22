@@ -99,11 +99,6 @@ public class WebDAVPropsLocalServiceWrapper
 		return _webDAVPropsLocalService.deleteWebDAVProps(webDavPropsId);
 	}
 
-	@Override
-	public void deleteWebDAVProps(String className, long classPK) {
-		_webDAVPropsLocalService.deleteWebDAVProps(className, classPK);
-	}
-
 	/**
 	 * Deletes the web dav props from the database. Also notifies the appropriate model listeners.
 	 *
@@ -361,4 +356,4 @@ public class WebDAVPropsLocalServiceWrapper
 	private WebDAVPropsLocalService _webDAVPropsLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-911162027
+// LIFERAY-SERVICE-BUILDER-HASH:-1455854710
