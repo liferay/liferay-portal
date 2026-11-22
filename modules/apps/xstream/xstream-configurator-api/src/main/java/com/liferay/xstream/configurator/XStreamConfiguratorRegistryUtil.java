@@ -8,7 +8,6 @@ package com.liferay.xstream.configurator;
 import com.liferay.exportimport.kernel.xstream.XStreamAlias;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerList;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerListFactory;
-import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.util.AggregateClassLoader;
 
 import java.util.HashSet;
@@ -58,11 +57,8 @@ public class XStreamConfiguratorRegistryUtil {
 		return _xStreamConfigurators.toList();
 	}
 
-	private static final BundleContext _bundleContext =
-		SystemBundleUtil.getBundleContext();
 	private static final AtomicLong _modifiedCount = new AtomicLong(0);
-	private static final ServiceTrackerList<XStreamAlias> _xStreamAliases =
-		ServiceTrackerListFactory.open(_bundleContext, XStreamAlias.class);
+	private static final ServiceTrackerList<XStreamAlias> _xStreamAliases;
 	private static final ServiceTrackerList<XStreamConfigurator>
 		_xStreamConfigurators;
 
@@ -72,6 +68,8 @@ public class XStreamConfiguratorRegistryUtil {
 
 		BundleContext bundleContext = bundle.getBundleContext();
 
+		_xStreamAliases = ServiceTrackerListFactory.open(
+			bundleContext, XStreamAlias.class);
 		_xStreamConfigurators = ServiceTrackerListFactory.open(
 			bundleContext, XStreamConfigurator.class, null,
 			new ServiceTrackerCustomizer
