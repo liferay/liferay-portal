@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Multi-Factor Authentication FIDO2 Credential API
 Bundle-SymbolicName: com.liferay.multi.factor.authentication.fido2.credential.api
-Bundle-Version: 8.0.2
+Bundle-Version: 8.0.3
 Export-Package:\
 	com.liferay.multi.factor.authentication.fido2.credential.exception,\
 	com.liferay.multi.factor.authentication.fido2.credential.model,\
