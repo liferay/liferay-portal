@@ -25,11 +25,11 @@ import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.messaging.MessageListener;
 import com.liferay.portal.kernel.messaging.MessageListenerException;
 import com.liferay.portal.kernel.model.Group;
-import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.scheduler.SchedulerJobConfiguration;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.constants.TestDataConstants;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.BundleContextTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -77,6 +77,9 @@ public class AntivirusAsyncFileStoreSchedulerJobConfigurationTest {
 
 	@Before
 	public void setUp() throws Exception {
+		_bundleContext = BundleContextTestUtil.getBundleContext(
+			AntivirusAsyncFileStoreSchedulerJobConfigurationTest.class);
+
 		_antivirusScannerServiceRegistration = _bundleContext.registerService(
 			AntivirusScanner.class,
 			(AntivirusScanner)ProxyUtil.newProxyInstance(
@@ -254,11 +257,9 @@ public class AntivirusAsyncFileStoreSchedulerJobConfigurationTest {
 
 	private static final int _SLEEP_TIME = 2000;
 
-	private static final BundleContext _bundleContext =
-		SystemBundleUtil.getBundleContext();
-
 	private ServiceRegistration<AntivirusScanner>
 		_antivirusScannerServiceRegistration;
+	private BundleContext _bundleContext;
 	private Configuration _configuration;
 
 	@Inject
