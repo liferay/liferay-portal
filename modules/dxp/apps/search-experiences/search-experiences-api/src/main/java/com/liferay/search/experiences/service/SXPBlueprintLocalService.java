@@ -306,9 +306,6 @@ public interface SXPBlueprintLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getSXPBlueprintsCount();
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getSXPBlueprintsCount(long companyId);
-
 	@Indexable(type = IndexableType.REINDEX)
 	public SXPBlueprint updateStatus(
 			long userId, long sxpBlueprintId, int status,
@@ -337,4 +334,4 @@ public interface SXPBlueprintLocalService
 	public SXPBlueprint updateSXPBlueprint(SXPBlueprint sxpBlueprint);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1785651009
+// LIFERAY-SERVICE-BUILDER-HASH:-1970449374

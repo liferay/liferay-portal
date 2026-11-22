@@ -347,10 +347,6 @@ public class SXPBlueprintLocalServiceUtil {
 		return getService().getSXPBlueprintsCount();
 	}
 
-	public static int getSXPBlueprintsCount(long companyId) {
-		return getService().getSXPBlueprintsCount(companyId);
-	}
-
 	public static SXPBlueprint updateStatus(
 			long userId, long sxpBlueprintId, int status,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
@@ -398,4 +394,4 @@ public class SXPBlueprintLocalServiceUtil {
 			SXPBlueprintLocalServiceUtil.class, SXPBlueprintLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1353866247
+// LIFERAY-SERVICE-BUILDER-HASH:-797102294

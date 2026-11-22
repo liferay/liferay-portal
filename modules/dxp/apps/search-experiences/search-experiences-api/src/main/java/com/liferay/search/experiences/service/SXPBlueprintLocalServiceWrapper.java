@@ -397,11 +397,6 @@ public class SXPBlueprintLocalServiceWrapper
 	}
 
 	@Override
-	public int getSXPBlueprintsCount(long companyId) {
-		return _sxpBlueprintLocalService.getSXPBlueprintsCount(companyId);
-	}
-
-	@Override
 	public com.liferay.search.experiences.model.SXPBlueprint updateStatus(
 			long userId, long sxpBlueprintId, int status,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
@@ -464,4 +459,4 @@ public class SXPBlueprintLocalServiceWrapper
 	private SXPBlueprintLocalService _sxpBlueprintLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1288154632
+// LIFERAY-SERVICE-BUILDER-HASH:-212745653
