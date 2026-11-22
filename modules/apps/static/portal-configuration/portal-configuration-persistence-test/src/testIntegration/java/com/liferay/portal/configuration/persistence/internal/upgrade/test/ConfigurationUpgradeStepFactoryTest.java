@@ -10,8 +10,8 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.configuration.persistence.upgrade.ConfigurationUpgradeStepFactory;
 import com.liferay.portal.configuration.test.util.ConfigurationTestUtil;
 import com.liferay.portal.file.install.constants.FileInstallConstants;
-import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.BundleContextTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.upgrade.UpgradeStep;
 import com.liferay.portal.kernel.util.HashMapDictionary;
@@ -295,7 +295,8 @@ public class ConfigurationUpgradeStepFactoryTest {
 
 		List<String> pids = new ArrayList<>();
 
-		BundleContext bundleContext = SystemBundleUtil.getBundleContext();
+		BundleContext bundleContext = BundleContextTestUtil.getBundleContext(
+			ConfigurationUpgradeStepFactoryTest.class);
 
 		ServiceRegistration<SynchronousConfigurationListener>
 			serviceRegistration = bundleContext.registerService(
