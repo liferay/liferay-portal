@@ -6,6 +6,7 @@
 package com.liferay.segments.web.internal.display.context;
 
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -13,8 +14,13 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.service.permission.UserPermissionUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -31,6 +37,8 @@ import jakarta.portlet.RenderRequest;
 import jakarta.portlet.RenderResponse;
 
 import jakarta.servlet.http.HttpServletRequest;
+
+import java.util.List;
 
 /**
  * @author Eduardo García
@@ -76,36 +84,61 @@ public class PreviewSegmentsEntryUsersDisplayContext {
 
 		try {
 			Criteria criteria = _getCriteriaFromSession();
-
+			PermissionChecker permissionChecker =
+				PermissionThreadLocal.getPermissionChecker();
 			SegmentsEntry segmentsEntry = getSegmentsEntry();
 
 			if ((criteria != null) &&
 				Validator.isNotNull(
 					criteria.getFilterString(Criteria.Type.MODEL))) {
 
-				userSearchContainer.setResultsAndTotal(
-					() -> _userODataRetriever.getResults(
-						_themeDisplay.getCompanyId(),
-						criteria.getFilterString(Criteria.Type.MODEL),
-						_themeDisplay.getLocale(),
-						userSearchContainer.getStart(),
-						userSearchContainer.getEnd()),
-					_userODataRetriever.getResultsCount(
-						_themeDisplay.getCompanyId(),
-						criteria.getFilterString(Criteria.Type.MODEL),
-						_themeDisplay.getLocale()));
-			}
-			else if ((criteria == null) && (segmentsEntry != null)) {
-				userSearchContainer.setResultsAndTotal(
-					() -> TransformUtil.transformToList(
-						_segmentsEntryProviderRegistry.getSegmentsEntryClassPKs(
-							segmentsEntry.getSegmentsEntryId(),
+				if (permissionChecker.isCompanyAdmin()) {
+					userSearchContainer.setResultsAndTotal(
+						() -> _userODataRetriever.getResults(
+							_themeDisplay.getCompanyId(),
+							criteria.getFilterString(Criteria.Type.MODEL),
+							_themeDisplay.getLocale(),
 							userSearchContainer.getStart(),
 							userSearchContainer.getEnd()),
-						_userLocalService::fetchUser),
-					_segmentsEntryProviderRegistry.
-						getSegmentsEntryClassPKsCount(
-							segmentsEntry.getSegmentsEntryId()));
+						_userODataRetriever.getResultsCount(
+							_themeDisplay.getCompanyId(),
+							criteria.getFilterString(Criteria.Type.MODEL),
+							_themeDisplay.getLocale()));
+				}
+				else {
+					_setResultsAndTotal(
+						permissionChecker, userSearchContainer,
+						_userODataRetriever.getResults(
+							_themeDisplay.getCompanyId(),
+							criteria.getFilterString(Criteria.Type.MODEL),
+							_themeDisplay.getLocale(), QueryUtil.ALL_POS,
+							QueryUtil.ALL_POS));
+				}
+			}
+			else if ((criteria == null) && (segmentsEntry != null)) {
+				if (permissionChecker.isCompanyAdmin()) {
+					userSearchContainer.setResultsAndTotal(
+						() -> TransformUtil.transformToList(
+							_segmentsEntryProviderRegistry.
+								getSegmentsEntryClassPKs(
+									segmentsEntry.getSegmentsEntryId(),
+									userSearchContainer.getStart(),
+									userSearchContainer.getEnd()),
+							_userLocalService::fetchUser),
+						_segmentsEntryProviderRegistry.
+							getSegmentsEntryClassPKsCount(
+								segmentsEntry.getSegmentsEntryId()));
+				}
+				else {
+					_setResultsAndTotal(
+						permissionChecker, userSearchContainer,
+						TransformUtil.transformToList(
+							_segmentsEntryProviderRegistry.
+								getSegmentsEntryClassPKs(
+									segmentsEntry.getSegmentsEntryId(),
+									QueryUtil.ALL_POS, QueryUtil.ALL_POS),
+							_userLocalService::fetchUser));
+				}
 			}
 		}
 		catch (PortalException portalException) {
@@ -170,6 +203,26 @@ public class PreviewSegmentsEntryUsersDisplayContext {
 				return null;
 			}
 		).buildPortletURL();
+	}
+
+	private void _setResultsAndTotal(
+		PermissionChecker permissionChecker,
+		SearchContainer<User> userSearchContainer, List<User> users) {
+
+		List<User> visibleUsers = ListUtil.filter(
+			users,
+			user ->
+				(user != null) &&
+				(UserPermissionUtil.contains(
+					permissionChecker, user.getUserId(), ActionKeys.VIEW) ||
+				 _userLocalService.hasGroupUser(
+					 _themeDisplay.getScopeGroupId(), user.getUserId())));
+
+		userSearchContainer.setResultsAndTotal(
+			() -> ListUtil.subList(
+				visibleUsers, userSearchContainer.getStart(),
+				userSearchContainer.getEnd()),
+			visibleUsers.size());
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
