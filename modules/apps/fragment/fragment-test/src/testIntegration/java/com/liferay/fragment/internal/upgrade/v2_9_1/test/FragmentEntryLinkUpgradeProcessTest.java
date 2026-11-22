@@ -10,7 +10,7 @@ import com.liferay.change.tracking.test.util.BaseCTUpgradeProcessTestCase;
 import com.liferay.fragment.entry.processor.constants.FragmentEntryProcessorConstants;
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.service.FragmentEntryLinkLocalService;
-import com.liferay.fragment.test.util.FragmentTestUtil;
+import com.liferay.fragment.test.util.FragmentEntryLinkTestUtil;
 import com.liferay.layout.test.util.ContentLayoutTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.portal.kernel.cache.MultiVMPool;
@@ -228,7 +228,7 @@ public class FragmentEntryLinkUpgradeProcessTest
 		throws Exception {
 
 		FragmentEntryLink fragmentEntryLink =
-			FragmentTestUtil.getFragmentEntryLink(
+			FragmentEntryLinkTestUtil.getFragmentEntryLink(
 				_group.getGroupId(), originalFragmentEntryLinkERC,
 				_layout.getPlid());
 

@@ -11,7 +11,6 @@ import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.service.FragmentCollectionLocalServiceUtil;
 import com.liferay.fragment.service.FragmentEntryLinkLocalServiceUtil;
 import com.liferay.fragment.service.FragmentEntryLocalServiceUtil;
-import com.liferay.fragment.service.persistence.FragmentEntryLinkUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
@@ -19,7 +18,6 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
-import com.liferay.portal.kernel.test.util.TransactionTestUtil;
 import com.liferay.portal.kernel.util.ScopeUtil;
 import com.liferay.segments.service.SegmentsExperienceLocalServiceUtil;
 
@@ -152,17 +150,6 @@ public class FragmentTestUtil {
 
 		return FragmentEntryLinkLocalServiceUtil.
 			fetchFragmentEntryLinkByUuidAndGroupId(uuid, groupId);
-	}
-
-	public static FragmentEntryLink getFragmentEntryLink(
-			long groupId, String originalFragmentEntryLinkERC, long plid)
-		throws Exception {
-
-		return TransactionTestUtil.invoke(
-			FragmentEntryLinkUtil.getPersistence(),
-			fragmentEntryLinkPersistence ->
-				fragmentEntryLinkPersistence.findByG_OFELERC_P_First(
-					groupId, originalFragmentEntryLinkERC, plid, null));
 	}
 
 }

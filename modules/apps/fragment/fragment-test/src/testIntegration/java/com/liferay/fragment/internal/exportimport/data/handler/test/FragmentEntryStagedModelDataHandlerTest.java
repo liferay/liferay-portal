@@ -21,6 +21,7 @@ import com.liferay.fragment.renderer.DefaultFragmentRendererContext;
 import com.liferay.fragment.renderer.FragmentRenderer;
 import com.liferay.fragment.service.FragmentEntryLinkLocalService;
 import com.liferay.fragment.service.FragmentEntryLocalService;
+import com.liferay.fragment.test.util.FragmentEntryLinkTestUtil;
 import com.liferay.fragment.test.util.FragmentTestUtil;
 import com.liferay.layout.provider.LayoutStructureProvider;
 import com.liferay.layout.test.util.ContentLayoutTestUtil;
@@ -278,7 +279,7 @@ public class FragmentEntryStagedModelDataHandlerTest
 				fragmentStyledLayoutStructureItem.getFragmentEntryLinkId());
 
 		FragmentEntryLink publishedFragmentEntryLink =
-			FragmentTestUtil.getFragmentEntryLink(
+			FragmentEntryLinkTestUtil.getFragmentEntryLink(
 				stagingGroup.getGroupId(),
 				originalFragmentEntryLink.getExternalReferenceCode(),
 				_layout.getPlid());

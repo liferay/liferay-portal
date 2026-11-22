@@ -16,6 +16,7 @@ import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.service.FragmentEntryLinkLocalService;
 import com.liferay.fragment.service.FragmentEntryLinkLocalServiceUtil;
 import com.liferay.fragment.service.FragmentEntryLocalService;
+import com.liferay.fragment.test.util.FragmentEntryLinkTestUtil;
 import com.liferay.fragment.test.util.FragmentEntryTestUtil;
 import com.liferay.fragment.test.util.FragmentTestUtil;
 import com.liferay.layout.test.util.ContentLayoutTestUtil;
@@ -169,13 +170,13 @@ public class FragmentEntryLinkUpgradeProcessTest
 			fragmentEntryLinks.toString(), 2, fragmentEntryLinks.size());
 
 		FragmentEntryLink globalPublishedLayoutFragmentEntryLink =
-			FragmentTestUtil.getFragmentEntryLink(
+			FragmentEntryLinkTestUtil.getFragmentEntryLink(
 				_layout.getGroupId(),
 				globalDraftLayoutFragmentEntryLink.getExternalReferenceCode(),
 				_layout.getPlid());
 
 		FragmentEntryLink publishedLayoutFragmentEntryLink =
-			FragmentTestUtil.getFragmentEntryLink(
+			FragmentEntryLinkTestUtil.getFragmentEntryLink(
 				_layout.getGroupId(),
 				draftLayoutFragmentEntryLink.getExternalReferenceCode(),
 				_layout.getPlid());
