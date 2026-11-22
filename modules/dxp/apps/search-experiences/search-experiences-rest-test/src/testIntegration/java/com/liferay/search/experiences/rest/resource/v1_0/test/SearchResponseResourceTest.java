@@ -10,7 +10,6 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.ConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
@@ -50,6 +49,7 @@ public class SearchResponseResourceTest
 		super.testPostSearch();
 
 		_testPostSearch();
+		_testPostSearchWithoutPermission();
 		_testPostSearchZeroResults();
 
 		if (false) {
@@ -67,37 +67,6 @@ public class SearchResponseResourceTest
 			// TODO SXPBlueprint.toDTO with bad JSON returns a half empty DTO
 
 			_testPostSearchThrowsUnrecognizedPropertyException();
-		}
-	}
-
-	@Test
-	@TestInfo("LPD-115720")
-	public void testPostSearchWithoutPermission() throws Exception {
-		String password = RandomTestUtil.randomString();
-
-		_user = UserTestUtil.addUser(testCompany, password);
-
-		SearchResponseResource searchResponseResource =
-			SearchResponseResource.builder(
-			).authentication(
-				_user.getEmailAddress(), password
-			).endpoint(
-				testCompany.getVirtualHostname(),
-				PortalUtil.getPortalServerPort(false), "http"
-			).locale(
-				LocaleUtil.getDefault()
-			).build();
-
-		try {
-			searchResponseResource.postSearch(
-				null, _PAGINATION, SXPBlueprintUtil.toSXPBlueprint("{}"));
-
-			Assert.fail();
-		}
-		catch (Problem.ProblemException problemException) {
-			Problem problem = problemException.getProblem();
-
-			Assert.assertEquals("FORBIDDEN", problem.getStatus());
 		}
 	}
 
@@ -252,6 +221,35 @@ public class SearchResponseResourceTest
 						"SXPBlueprint. The property \"general\" is not ",
 						"defined in Configuration. The property \"INVALID_1\" ",
 						"is not defined in General.")));
+		}
+	}
+
+	private void _testPostSearchWithoutPermission() throws Exception {
+		String password = RandomTestUtil.randomString();
+
+		_user = UserTestUtil.addUser(testCompany, password);
+
+		SearchResponseResource searchResponseResource =
+			SearchResponseResource.builder(
+			).authentication(
+				_user.getEmailAddress(), password
+			).endpoint(
+				testCompany.getVirtualHostname(),
+				PortalUtil.getPortalServerPort(false), "http"
+			).locale(
+				LocaleUtil.getDefault()
+			).build();
+
+		try {
+			searchResponseResource.postSearch(
+				null, _PAGINATION, SXPBlueprintUtil.toSXPBlueprint("{}"));
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("FORBIDDEN", problem.getStatus());
 		}
 	}
 
