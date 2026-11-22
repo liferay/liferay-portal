@@ -402,14 +402,24 @@ public class CompanyIndexHelper {
 		for (long companyId :
 				IndexFactoryCompanyIdRegistryUtil.getCompanyIds()) {
 
+			String indexName = getIndexName(companyId);
+
 			MappingsHelper mappingsHelper = new MappingsHelper(
-				elasticsearchIndicesClient, getIndexName(companyId),
-				_jsonFactory,
+				elasticsearchIndicesClient, indexName, _jsonFactory,
 				_elasticsearchConnectionManager.getJsonpMapper(null),
 				_elasticsearchConfigurationWrapper.overrideTypeMappings(),
 				_searchEngineInformation);
 
-			mappingsHelper.putMappings(mappings);
+			try {
+				mappingsHelper.putMappings(mappings);
+			}
+			catch (Exception exception) {
+				_log.error(
+					StringBundler.concat(
+						"Unable to put mappings for index ", indexName,
+						" with contributor ", companyIndexMappingsContributor),
+					exception);
+			}
 		}
 	}
 
