@@ -20,7 +20,6 @@ import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.service.BaseLocalService;
 import com.liferay.portal.kernel.service.PersistedModelLocalService;
-import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.Propagation;
@@ -31,8 +30,6 @@ import com.liferay.site.model.SiteFriendlyURL;
 import java.io.Serializable;
 
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 
 import org.osgi.annotation.versioning.ProviderType;
 
@@ -59,10 +56,6 @@ public interface SiteFriendlyURLLocalService
 	 *
 	 * Never modify this interface directly. Add custom service methods to <code>com.liferay.site.service.impl.SiteFriendlyURLLocalServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface. Consume the site friendly url local service via injection or a <code>org.osgi.util.tracker.ServiceTracker</code>. Use {@link SiteFriendlyURLLocalServiceUtil} if injection and service tracking are not available.
 	 */
-	public SiteFriendlyURL addSiteFriendlyURL(
-			long userId, long companyId, long groupId, String friendlyURL,
-			String languageId, ServiceContext serviceContext)
-		throws PortalException;
 
 	/**
 	 * Adds the site friendly url to the database. Also notifies the appropriate model listeners.
@@ -76,11 +69,6 @@ public interface SiteFriendlyURLLocalService
 	 */
 	@Indexable(type = IndexableType.REINDEX)
 	public SiteFriendlyURL addSiteFriendlyURL(SiteFriendlyURL siteFriendlyURL);
-
-	public List<SiteFriendlyURL> addSiteFriendlyURLs(
-			long userId, long companyId, long groupId,
-			Map<Locale, String> friendlyURLMap, ServiceContext serviceContext)
-		throws PortalException;
 
 	/**
 	 * @throws PortalException
@@ -119,10 +107,6 @@ public interface SiteFriendlyURLLocalService
 	public SiteFriendlyURL deleteSiteFriendlyURL(long siteFriendlyURLId)
 		throws PortalException;
 
-	public SiteFriendlyURL deleteSiteFriendlyURL(
-			long companyId, long groupId, String languageId)
-		throws PortalException;
-
 	/**
 	 * Deletes the site friendly url from the database. Also notifies the appropriate model listeners.
 	 *
@@ -137,8 +121,6 @@ public interface SiteFriendlyURLLocalService
 	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
 	public SiteFriendlyURL deleteSiteFriendlyURL(
 		SiteFriendlyURL siteFriendlyURL);
-
-	public void deleteSiteFriendlyURLs(long companyId, long groupId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public <T> T dslQuery(DSLQuery dslQuery);
@@ -335,11 +317,6 @@ public interface SiteFriendlyURLLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getSiteFriendlyURLsCount();
 
-	public SiteFriendlyURL updateSiteFriendlyURL(
-			long userId, long companyId, long groupId, String friendlyURL,
-			String languageId, ServiceContext serviceContext)
-		throws PortalException;
-
 	/**
 	 * Updates the site friendly url in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	 *
@@ -354,10 +331,5 @@ public interface SiteFriendlyURLLocalService
 	public SiteFriendlyURL updateSiteFriendlyURL(
 		SiteFriendlyURL siteFriendlyURL);
 
-	public List<SiteFriendlyURL> updateSiteFriendlyURLs(
-			long userId, long companyId, long groupId,
-			Map<Locale, String> friendlyURLMap, ServiceContext serviceContext)
-		throws PortalException;
-
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1701140381
+// LIFERAY-SERVICE-BUILDER-HASH:885198608

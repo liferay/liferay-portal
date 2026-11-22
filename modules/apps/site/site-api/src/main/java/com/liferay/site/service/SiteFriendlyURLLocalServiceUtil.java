@@ -16,7 +16,6 @@ import com.liferay.site.model.SiteFriendlyURL;
 import java.io.Serializable;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Provides the local service utility for SiteFriendlyURL. This utility wraps
@@ -37,16 +36,6 @@ public class SiteFriendlyURLLocalServiceUtil {
 	 *
 	 * Never modify this class directly. Add custom service methods to <code>com.liferay.site.service.impl.SiteFriendlyURLLocalServiceImpl</code> and rerun ServiceBuilder to regenerate this class.
 	 */
-	public static SiteFriendlyURL addSiteFriendlyURL(
-			long userId, long companyId, long groupId, String friendlyURL,
-			String languageId,
-			com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws PortalException {
-
-		return getService().addSiteFriendlyURL(
-			userId, companyId, groupId, friendlyURL, languageId,
-			serviceContext);
-	}
 
 	/**
 	 * Adds the site friendly url to the database. Also notifies the appropriate model listeners.
@@ -62,16 +51,6 @@ public class SiteFriendlyURLLocalServiceUtil {
 		SiteFriendlyURL siteFriendlyURL) {
 
 		return getService().addSiteFriendlyURL(siteFriendlyURL);
-	}
-
-	public static List<SiteFriendlyURL> addSiteFriendlyURLs(
-			long userId, long companyId, long groupId,
-			Map<java.util.Locale, String> friendlyURLMap,
-			com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws PortalException {
-
-		return getService().addSiteFriendlyURLs(
-			userId, companyId, groupId, friendlyURLMap, serviceContext);
 	}
 
 	/**
@@ -123,14 +102,6 @@ public class SiteFriendlyURLLocalServiceUtil {
 		return getService().deleteSiteFriendlyURL(siteFriendlyURLId);
 	}
 
-	public static SiteFriendlyURL deleteSiteFriendlyURL(
-			long companyId, long groupId, String languageId)
-		throws PortalException {
-
-		return getService().deleteSiteFriendlyURL(
-			companyId, groupId, languageId);
-	}
-
 	/**
 	 * Deletes the site friendly url from the database. Also notifies the appropriate model listeners.
 	 *
@@ -145,10 +116,6 @@ public class SiteFriendlyURLLocalServiceUtil {
 		SiteFriendlyURL siteFriendlyURL) {
 
 		return getService().deleteSiteFriendlyURL(siteFriendlyURL);
-	}
-
-	public static void deleteSiteFriendlyURLs(long companyId, long groupId) {
-		getService().deleteSiteFriendlyURLs(companyId, groupId);
 	}
 
 	public static <T> T dslQuery(DSLQuery dslQuery) {
@@ -398,17 +365,6 @@ public class SiteFriendlyURLLocalServiceUtil {
 		return getService().getSiteFriendlyURLsCount();
 	}
 
-	public static SiteFriendlyURL updateSiteFriendlyURL(
-			long userId, long companyId, long groupId, String friendlyURL,
-			String languageId,
-			com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws PortalException {
-
-		return getService().updateSiteFriendlyURL(
-			userId, companyId, groupId, friendlyURL, languageId,
-			serviceContext);
-	}
-
 	/**
 	 * Updates the site friendly url in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	 *
@@ -425,16 +381,6 @@ public class SiteFriendlyURLLocalServiceUtil {
 		return getService().updateSiteFriendlyURL(siteFriendlyURL);
 	}
 
-	public static List<SiteFriendlyURL> updateSiteFriendlyURLs(
-			long userId, long companyId, long groupId,
-			Map<java.util.Locale, String> friendlyURLMap,
-			com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws PortalException {
-
-		return getService().updateSiteFriendlyURLs(
-			userId, companyId, groupId, friendlyURLMap, serviceContext);
-	}
-
 	public static SiteFriendlyURLLocalService getService() {
 		return _serviceSnapshot.get();
 	}
@@ -445,4 +391,4 @@ public class SiteFriendlyURLLocalServiceUtil {
 			SiteFriendlyURLLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:845151514
+// LIFERAY-SERVICE-BUILDER-HASH:899427762
