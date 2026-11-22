@@ -2,6 +2,10 @@
 	"friendlyURL": "/account-individuals",
 	"hidden": true,
 	"name": "Account Individuals",
+	"name_i18n": {
+		"en_US": "Account Individuals",
+		"lo_LA": "ບຸກຄົນໃນບັນຊີ"
+	},
 	"permissions": [
 		{
 			"actionIds": [

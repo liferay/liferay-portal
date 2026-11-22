@@ -2,6 +2,17 @@
 	"friendlyURL": "/delete-data-source",
 	"hidden": true,
 	"name": "Delete Data Source",
+	"name_i18n": {
+		"en_US": "Delete Data Source",
+		"es_AR": "Eliminar origen de datos",
+		"es_CO": "Eliminar origen de datos",
+		"es_ES": "Eliminar origen de datos",
+		"es_MX": "Eliminar origen de datos",
+		"ja_JP": "データソースを削除",
+		"lo_LA": "ລຶບແຫຼ່ງຂໍ້ມູນ",
+		"pt_BR": "Excluir Fonte de Dados",
+		"pt_PT": "Excluir Fonte de Dados"
+	},
 	"permissions": [
 		{
 			"actionIds": [

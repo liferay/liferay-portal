@@ -2,6 +2,17 @@
 	"friendlyURL": "/events",
 	"hidden": false,
 	"name": "Events",
+	"name_i18n": {
+		"en_US": "Events",
+		"es_AR": "Eventos",
+		"es_CO": "Eventos",
+		"es_ES": "Eventos",
+		"es_MX": "Eventos",
+		"ja_JP": "イベント",
+		"lo_LA": "ເຫດການ",
+		"pt_BR": "Eventos",
+		"pt_PT": "Eventos"
+	},
 	"permissions": [
 		{
 			"actionIds": [

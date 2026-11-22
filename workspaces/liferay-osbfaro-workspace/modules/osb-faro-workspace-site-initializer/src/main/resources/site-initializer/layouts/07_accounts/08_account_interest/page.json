@@ -2,6 +2,9 @@
 	"friendlyURL": "/account-interest",
 	"hidden": true,
 	"name": "Account Interest",
+	"name_i18n": {
+		"en_US": "Account Interest"
+	},
 	"permissions": [
 		{
 			"actionIds": [

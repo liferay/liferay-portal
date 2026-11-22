@@ -2,6 +2,17 @@
 	"friendlyURL": "/configure-csv",
 	"hidden": true,
 	"name": "Configure CSV",
+	"name_i18n": {
+		"en_US": "Configure CSV",
+		"es_AR": "Configurar CSV",
+		"es_CO": "Configurar CSV",
+		"es_ES": "Configurar CSV",
+		"es_MX": "Configurar CSV",
+		"ja_JP": "CSV を構成",
+		"lo_LA": "ຕັ້ງຄ່າ CSV",
+		"pt_BR": "Configurar CSV",
+		"pt_PT": "Configurar CSV"
+	},
 	"permissions": [
 		{
 			"actionIds": [

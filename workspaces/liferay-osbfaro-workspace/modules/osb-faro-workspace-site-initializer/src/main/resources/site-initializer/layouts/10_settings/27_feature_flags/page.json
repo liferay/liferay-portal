@@ -2,6 +2,9 @@
 	"friendlyURL": "/feature-flags",
 	"hidden": true,
 	"name": "Feature Flags",
+	"name_i18n": {
+		"en_US": "Feature Flags"
+	},
 	"permissions": [
 		{
 			"actionIds": [

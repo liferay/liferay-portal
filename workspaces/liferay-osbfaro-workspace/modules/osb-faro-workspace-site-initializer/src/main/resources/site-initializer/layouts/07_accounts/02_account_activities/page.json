@@ -2,6 +2,17 @@
 	"friendlyURL": "/account-activities",
 	"hidden": true,
 	"name": "Account Activities",
+	"name_i18n": {
+		"en_US": "Account Activities",
+		"es_AR": "Actividades de la cuenta",
+		"es_CO": "Actividades de la cuenta",
+		"es_ES": "Actividades de la cuenta",
+		"es_MX": "Actividades de la cuenta",
+		"ja_JP": "アカウントのアクティビティ",
+		"lo_LA": "ກິດຈະກຳຂອງບັນຊີ",
+		"pt_BR": "Atividades da Conta",
+		"pt_PT": "Atividades da Conta"
+	},
 	"permissions": [
 		{
 			"actionIds": [

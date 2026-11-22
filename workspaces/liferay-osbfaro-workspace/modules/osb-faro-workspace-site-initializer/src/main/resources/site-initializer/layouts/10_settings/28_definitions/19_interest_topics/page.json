@@ -2,6 +2,17 @@
 	"friendlyURL": "/interest-topics",
 	"hidden": true,
 	"name": "Interest Topics",
+	"name_i18n": {
+		"en_US": "Interest Topics",
+		"es_AR": "Temas de interés",
+		"es_CO": "Temas de interés",
+		"es_ES": "Temas de interés",
+		"es_MX": "Temas de interés",
+		"ja_JP": "関心トピック",
+		"lo_LA": "ຫົວຂໍ້ຄວາມສົນໃຈ",
+		"pt_BR": "Tópicos de Interesse",
+		"pt_PT": "Tópicos de Interesse"
+	},
 	"permissions": [
 		{
 			"actionIds": [

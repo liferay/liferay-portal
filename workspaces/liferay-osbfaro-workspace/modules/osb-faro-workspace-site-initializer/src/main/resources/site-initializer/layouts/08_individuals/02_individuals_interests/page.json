@@ -2,6 +2,9 @@
 	"friendlyURL": "/individuals-interests",
 	"hidden": true,
 	"name": "Individuals Interests",
+	"name_i18n": {
+		"en_US": "Individuals Interests"
+	},
 	"permissions": [
 		{
 			"actionIds": [

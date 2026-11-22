@@ -2,6 +2,17 @@
 	"friendlyURL": "/assets",
 	"hidden": false,
 	"name": "Assets",
+	"name_i18n": {
+		"en_US": "Assets",
+		"es_AR": "Recursos",
+		"es_CO": "Recursos",
+		"es_ES": "Recursos",
+		"es_MX": "Recursos",
+		"ja_JP": "アセット",
+		"lo_LA": "ຊັບສິນທັງໝົດ",
+		"pt_BR": "Recursos",
+		"pt_PT": "Recursos"
+	},
 	"permissions": [
 		{
 			"actionIds": [

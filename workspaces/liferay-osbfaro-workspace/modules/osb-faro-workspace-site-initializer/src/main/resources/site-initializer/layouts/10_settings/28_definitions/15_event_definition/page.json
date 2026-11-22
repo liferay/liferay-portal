@@ -2,6 +2,9 @@
 	"friendlyURL": "/event-definition",
 	"hidden": true,
 	"name": "Event Definition",
+	"name_i18n": {
+		"en_US": "Event Definition"
+	},
 	"permissions": [
 		{
 			"actionIds": [

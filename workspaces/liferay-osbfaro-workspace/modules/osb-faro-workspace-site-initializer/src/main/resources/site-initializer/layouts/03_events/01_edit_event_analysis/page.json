@@ -2,6 +2,9 @@
 	"friendlyURL": "/edit-event-analysis",
 	"hidden": true,
 	"name": "Edit Event Analysis",
+	"name_i18n": {
+		"en_US": "Edit Event Analysis"
+	},
 	"permissions": [
 		{
 			"actionIds": [

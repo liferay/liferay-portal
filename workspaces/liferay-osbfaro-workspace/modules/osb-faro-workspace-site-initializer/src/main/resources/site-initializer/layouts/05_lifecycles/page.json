@@ -2,6 +2,10 @@
 	"friendlyURL": "/lifecycles",
 	"hidden": false,
 	"name": "Lifecycles",
+	"name_i18n": {
+		"en_US": "Lifecycles",
+		"lo_LA": "ວົງຈອນຊີວິດ"
+	},
 	"permissions": [
 		{
 			"actionIds": [

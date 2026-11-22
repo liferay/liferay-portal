@@ -2,6 +2,17 @@
 	"friendlyURL": "/event-attributes",
 	"hidden": true,
 	"name": "Event Attributes",
+	"name_i18n": {
+		"en_US": "Event Attributes",
+		"es_AR": "Atributos de evento",
+		"es_CO": "Atributos de evento",
+		"es_ES": "Atributos de evento",
+		"es_MX": "Atributos de evento",
+		"ja_JP": "イベント属性",
+		"lo_LA": "ຄຸນລັກສະນະຂອງເຫດການ",
+		"pt_BR": "Atributos de evento",
+		"pt_PT": "Atributos de evento"
+	},
 	"permissions": [
 		{
 			"actionIds": [

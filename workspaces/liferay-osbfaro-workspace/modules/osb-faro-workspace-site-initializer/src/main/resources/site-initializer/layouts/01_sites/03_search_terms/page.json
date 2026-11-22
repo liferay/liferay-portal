@@ -2,6 +2,17 @@
 	"friendlyURL": "/search-terms",
 	"hidden": true,
 	"name": "Search Terms",
+	"name_i18n": {
+		"en_US": "Search Terms",
+		"es_AR": "Términos de búsqueda",
+		"es_CO": "Términos de búsqueda",
+		"es_ES": "Términos de búsqueda",
+		"es_MX": "Términos de búsqueda",
+		"ja_JP": "検索条件",
+		"lo_LA": "ຄຳຄົ້ນຫາຕ່າງໆ",
+		"pt_BR": "Termos Pesquisados",
+		"pt_PT": "Termos Pesquisados"
+	},
 	"permissions": [
 		{
 			"actionIds": [

@@ -2,6 +2,17 @@
 	"friendlyURL": "/segment-membership",
 	"hidden": true,
 	"name": "Segment Membership",
+	"name_i18n": {
+		"en_US": "Segment Membership",
+		"es_AR": "Pertenencia al segmento",
+		"es_CO": "Pertenencia al segmento",
+		"es_ES": "Pertenencia al segmento",
+		"es_MX": "Pertenencia al segmento",
+		"ja_JP": "セグメント メンバーシップ",
+		"lo_LA": "ສະມາຊິກພາບໃນກຸ່ມເປົ້າໝາຍ",
+		"pt_BR": "Associação de segmento",
+		"pt_PT": "Associação de segmento"
+	},
 	"permissions": [
 		{
 			"actionIds": [

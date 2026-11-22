@@ -2,6 +2,17 @@
 	"friendlyURL": "/individual-attributes",
 	"hidden": true,
 	"name": "Individual Attributes",
+	"name_i18n": {
+		"en_US": "Individual Attributes",
+		"es_AR": "Atributos de personas",
+		"es_CO": "Atributos de personas",
+		"es_ES": "Atributos de personas",
+		"es_MX": "Atributos de personas",
+		"ja_JP": "個人の属性",
+		"lo_LA": "ຄຸນລັກສະນະສ່ວນບຸກຄົນ",
+		"pt_BR": "Atributos de Indivíduos",
+		"pt_PT": "Atributos de Indivíduos"
+	},
 	"permissions": [
 		{
 			"actionIds": [

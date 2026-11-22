@@ -2,6 +2,9 @@
 	"friendlyURL": "/asset-known-individuals",
 	"hidden": true,
 	"name": "Asset Known Individuals",
+	"name_i18n": {
+		"en_US": "Asset Known Individuals"
+	},
 	"permissions": [
 		{
 			"actionIds": [

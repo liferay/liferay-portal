@@ -2,6 +2,17 @@
 	"friendlyURL": "/definitions",
 	"hidden": false,
 	"name": "Definitions",
+	"name_i18n": {
+		"en_US": "Definitions",
+		"es_AR": "Definiciones",
+		"es_CO": "Definiciones",
+		"es_ES": "Definiciones",
+		"es_MX": "Definiciones",
+		"ja_JP": "定義",
+		"lo_LA": "ຄຳນິຍາມ",
+		"pt_BR": "Definições",
+		"pt_PT": "Definições"
+	},
 	"permissions": [
 		{
 			"actionIds": [

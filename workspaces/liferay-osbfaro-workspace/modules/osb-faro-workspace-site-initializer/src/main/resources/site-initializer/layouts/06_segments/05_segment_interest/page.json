@@ -2,6 +2,9 @@
 	"friendlyURL": "/segment-interest",
 	"hidden": true,
 	"name": "Segment Interest",
+	"name_i18n": {
+		"en_US": "Segment Interest"
+	},
 	"permissions": [
 		{
 			"actionIds": [

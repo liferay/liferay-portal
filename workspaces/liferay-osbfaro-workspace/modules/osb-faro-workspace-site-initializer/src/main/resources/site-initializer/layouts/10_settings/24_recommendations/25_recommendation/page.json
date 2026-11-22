@@ -2,6 +2,9 @@
 	"friendlyURL": "/recommendation",
 	"hidden": true,
 	"name": "Recommendation",
+	"name_i18n": {
+		"en_US": "Recommendation"
+	},
 	"permissions": [
 		{
 			"actionIds": [

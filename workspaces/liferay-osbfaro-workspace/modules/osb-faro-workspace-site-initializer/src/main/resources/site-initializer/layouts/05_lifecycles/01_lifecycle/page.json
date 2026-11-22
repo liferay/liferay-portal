@@ -2,6 +2,9 @@
 	"friendlyURL": "/lifecycle",
 	"hidden": true,
 	"name": "Lifecycle",
+	"name_i18n": {
+		"en_US": "Lifecycle"
+	},
 	"permissions": [
 		{
 			"actionIds": [

@@ -2,6 +2,17 @@
 	"friendlyURL": "/recommendations",
 	"hidden": true,
 	"name": "Recommendations",
+	"name_i18n": {
+		"en_US": "Recommendations",
+		"es_AR": "Recomendaciones",
+		"es_CO": "Recomendaciones",
+		"es_ES": "Recomendaciones",
+		"es_MX": "Recomendaciones",
+		"ja_JP": "レコメンド",
+		"lo_LA": "ການແນະນຳ",
+		"pt_BR": "Recomendações",
+		"pt_PT": "Recomendações"
+	},
 	"permissions": [
 		{
 			"actionIds": [

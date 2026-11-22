@@ -2,6 +2,9 @@
 	"friendlyURL": "/page-known-individuals",
 	"hidden": true,
 	"name": "Page Known Individuals",
+	"name_i18n": {
+		"en_US": "Page Known Individuals"
+	},
 	"permissions": [
 		{
 			"actionIds": [

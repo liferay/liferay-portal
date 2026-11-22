@@ -2,6 +2,17 @@
 	"friendlyURL": "/tests",
 	"hidden": false,
 	"name": "Tests",
+	"name_i18n": {
+		"en_US": "Tests",
+		"es_AR": "Pruebas",
+		"es_CO": "Pruebas",
+		"es_ES": "Pruebas",
+		"es_MX": "Pruebas",
+		"ja_JP": "テスト",
+		"lo_LA": "ການທົດສອບທັງໝົດ",
+		"pt_BR": "Testes",
+		"pt_PT": "Testes"
+	},
 	"permissions": [
 		{
 			"actionIds": [

@@ -2,6 +2,17 @@
 	"friendlyURL": "/accounts",
 	"hidden": false,
 	"name": "Accounts",
+	"name_i18n": {
+		"en_US": "Accounts",
+		"es_AR": "Cuentas",
+		"es_CO": "Cuentas",
+		"es_ES": "Cuentas",
+		"es_MX": "Cuentas",
+		"ja_JP": "アカウント",
+		"lo_LA": "ບັນຊີທັງໝົດ",
+		"pt_BR": "Contas",
+		"pt_PT": "Contas"
+	},
 	"permissions": [
 		{
 			"actionIds": [

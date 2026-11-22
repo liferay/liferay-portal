@@ -2,6 +2,17 @@
 	"friendlyURL": "/data-sources",
 	"hidden": false,
 	"name": "Data Sources",
+	"name_i18n": {
+		"en_US": "Data Sources",
+		"es_AR": "Orígenes de datos",
+		"es_CO": "Orígenes de datos",
+		"es_ES": "Orígenes de datos",
+		"es_MX": "Orígenes de datos",
+		"ja_JP": "データ ソース",
+		"lo_LA": "ແຫຼ່ງຂໍ້ມູນທັງໝົດ",
+		"pt_BR": "Fontes de Dados",
+		"pt_PT": "Fontes de Dados"
+	},
 	"permissions": [
 		{
 			"actionIds": [

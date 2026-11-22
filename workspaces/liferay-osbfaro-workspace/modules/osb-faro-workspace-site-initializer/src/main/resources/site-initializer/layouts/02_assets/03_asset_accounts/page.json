@@ -2,6 +2,9 @@
 	"friendlyURL": "/asset-accounts",
 	"hidden": true,
 	"name": "Asset Accounts",
+	"name_i18n": {
+		"en_US": "Asset Accounts"
+	},
 	"permissions": [
 		{
 			"actionIds": [

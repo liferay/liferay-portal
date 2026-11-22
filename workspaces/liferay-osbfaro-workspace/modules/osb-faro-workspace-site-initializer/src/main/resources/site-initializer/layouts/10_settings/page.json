@@ -2,6 +2,17 @@
 	"friendlyURL": "/settings",
 	"hidden": true,
 	"name": "Settings",
+	"name_i18n": {
+		"en_US": "Settings",
+		"es_AR": "Ajustes",
+		"es_CO": "Ajustes",
+		"es_ES": "Ajustes",
+		"es_MX": "Ajustes",
+		"ja_JP": "設定",
+		"lo_LA": "ການຕັ້ງຄ່າ",
+		"pt_BR": "Configurações",
+		"pt_PT": "Configurações"
+	},
 	"permissions": [
 		{
 			"actionIds": [

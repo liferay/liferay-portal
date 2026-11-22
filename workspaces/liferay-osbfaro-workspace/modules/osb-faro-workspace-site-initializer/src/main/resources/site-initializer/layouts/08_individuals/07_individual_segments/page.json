@@ -2,6 +2,9 @@
 	"friendlyURL": "/individual-segments",
 	"hidden": true,
 	"name": "Individual Segments",
+	"name_i18n": {
+		"en_US": "Individual Segments"
+	},
 	"permissions": [
 		{
 			"actionIds": [

@@ -2,6 +2,17 @@
 	"friendlyURL": "/usage",
 	"hidden": false,
 	"name": "Usage",
+	"name_i18n": {
+		"en_US": "Usage",
+		"es_AR": "Uso",
+		"es_CO": "Uso",
+		"es_ES": "Uso",
+		"es_MX": "Uso",
+		"ja_JP": "使用量",
+		"lo_LA": "ການນຳໃຊ້",
+		"pt_BR": "Uso",
+		"pt_PT": "Uso"
+	},
 	"permissions": [
 		{
 			"actionIds": [

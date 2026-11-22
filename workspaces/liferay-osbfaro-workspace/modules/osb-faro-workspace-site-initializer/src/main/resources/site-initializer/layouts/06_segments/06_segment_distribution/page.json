@@ -2,6 +2,9 @@
 	"friendlyURL": "/segment-distribution",
 	"hidden": true,
 	"name": "Segment Distribution",
+	"name_i18n": {
+		"en_US": "Segment Distribution"
+	},
 	"permissions": [
 		{
 			"actionIds": [

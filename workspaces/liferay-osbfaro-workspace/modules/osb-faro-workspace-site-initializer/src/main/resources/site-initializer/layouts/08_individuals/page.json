@@ -2,6 +2,17 @@
 	"friendlyURL": "/individuals",
 	"hidden": false,
 	"name": "Individuals",
+	"name_i18n": {
+		"en_US": "Individuals",
+		"es_AR": "Personas",
+		"es_CO": "Personas",
+		"es_ES": "Personas",
+		"es_MX": "Personas",
+		"ja_JP": "個人",
+		"lo_LA": "ສ່ວນບຸກຄົນ",
+		"pt_BR": "Indivíduos",
+		"pt_PT": "Indivíduos"
+	},
 	"permissions": [
 		{
 			"actionIds": [

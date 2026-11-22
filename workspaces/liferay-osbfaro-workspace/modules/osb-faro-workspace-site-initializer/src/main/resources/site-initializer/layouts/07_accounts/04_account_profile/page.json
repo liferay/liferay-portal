@@ -2,6 +2,9 @@
 	"friendlyURL": "/account-profile",
 	"hidden": true,
 	"name": "Account Profile",
+	"name_i18n": {
+		"en_US": "Account Profile"
+	},
 	"permissions": [
 		{
 			"actionIds": [

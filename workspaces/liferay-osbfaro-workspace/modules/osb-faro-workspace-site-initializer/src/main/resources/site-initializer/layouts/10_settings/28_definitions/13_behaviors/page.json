@@ -2,6 +2,17 @@
 	"friendlyURL": "/behaviors",
 	"hidden": true,
 	"name": "Behaviors",
+	"name_i18n": {
+		"en_US": "Behaviors",
+		"es_AR": "Comportamientos",
+		"es_CO": "Comportamientos",
+		"es_ES": "Comportamientos",
+		"es_MX": "Comportamientos",
+		"ja_JP": "ビヘイビア",
+		"lo_LA": "ພຶດຕິກຳທັງໝົດ",
+		"pt_BR": "Comportamentos",
+		"pt_PT": "Comportamentos"
+	},
 	"permissions": [
 		{
 			"actionIds": [

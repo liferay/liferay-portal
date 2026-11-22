@@ -2,6 +2,17 @@
 	"friendlyURL": "/sites",
 	"hidden": false,
 	"name": "Sites",
+	"name_i18n": {
+		"en_US": "Sites",
+		"es_AR": "Sitios",
+		"es_CO": "Sitios",
+		"es_ES": "Sitios",
+		"es_MX": "Sitios",
+		"ja_JP": "サイト",
+		"lo_LA": "ເວັບໄຊ",
+		"pt_BR": "Sites",
+		"pt_PT": "Sites"
+	},
 	"permissions": [
 		{
 			"actionIds": [

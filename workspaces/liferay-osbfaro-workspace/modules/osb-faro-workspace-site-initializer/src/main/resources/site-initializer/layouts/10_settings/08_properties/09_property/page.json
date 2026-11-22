@@ -2,6 +2,9 @@
 	"friendlyURL": "/property",
 	"hidden": true,
 	"name": "Property",
+	"name_i18n": {
+		"en_US": "Property"
+	},
 	"permissions": [
 		{
 			"actionIds": [

@@ -2,6 +2,9 @@
 	"friendlyURL": "/edit-lifecycle",
 	"hidden": true,
 	"name": "Edit Lifecycle",
+	"name_i18n": {
+		"en_US": "Edit Lifecycle"
+	},
 	"permissions": [
 		{
 			"actionIds": [

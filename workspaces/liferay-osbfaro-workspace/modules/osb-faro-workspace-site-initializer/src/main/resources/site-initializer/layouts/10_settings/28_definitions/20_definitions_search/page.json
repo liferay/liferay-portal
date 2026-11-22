@@ -2,6 +2,9 @@
 	"friendlyURL": "/definitions-search",
 	"hidden": true,
 	"name": "Definitions Search",
+	"name_i18n": {
+		"en_US": "Definitions Search"
+	},
 	"permissions": [
 		{
 			"actionIds": [

@@ -2,6 +2,17 @@
 	"friendlyURL": "/segments",
 	"hidden": false,
 	"name": "Segments",
+	"name_i18n": {
+		"en_US": "Segments",
+		"es_AR": "Segmentos",
+		"es_CO": "Segmentos",
+		"es_ES": "Segmentos",
+		"es_MX": "Segmentos",
+		"ja_JP": "セグメント",
+		"lo_LA": "ກຸ່ມເປົ້າໝາຍຕ່າງໆ",
+		"pt_BR": "Segmentos",
+		"pt_PT": "Segmentos"
+	},
 	"permissions": [
 		{
 			"actionIds": [
