@@ -31,6 +31,16 @@
 	<td></td>
 </tr>
 <tr>
+	<td>CARD_TITLE_LINK_EXACT_MATCH</td>
+	<td>//*[contains(@class,'card-title')]//a[normalize-space(.)='${key_card}']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CARD_ELLIPSIS_EXACT_MATCH</td>
+	<td>//*[contains(@class,'card-title')]//a[normalize-space(.)='${key_card}']/ancestor::div[contains(concat(' ',normalize-space(@class),' '),' card ')][1]//*[contains(@class,'dropdown-toggle')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>CARD_SUBTITLE</td>
 	<td>//div[contains(@class,'card')][contains(.,'${key_card}')]//*[contains(@class,'card-subtitle')] | //div[contains(@class,'card')][contains(.,'${key_card}')]//*[contains(@class,'card-detail')]</td>
 	<td></td>

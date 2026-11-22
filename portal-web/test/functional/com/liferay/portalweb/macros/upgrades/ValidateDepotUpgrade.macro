@@ -34,6 +34,20 @@ definition {
 			assetContent = "DM Document Description",
 			assetTitle = "DM Document Title Without Publish");
 
+		Navigator.gotoSitePage(
+			pageName = "Test Page Collections",
+			siteName = "Site Name");
+
+		AssetPublisherPortlet.gotoConfigurationPG(portletIndex = 1);
+
+		Click(
+			ariaLabel = "Clear Collection",
+			locator1 = "Button#ANY_WITH_ARIA_LABEL");
+
+		PortletEntry.save();
+
+		IFrame.closeFrame();
+
 		DepotNavigator.openDepotAssetListsAdmin(depotName = "Test Depot Name");
 
 		AssetListsAdmin.deleteEntry(assetListTitle = "Depot Manual Asset List");

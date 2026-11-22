@@ -476,7 +476,11 @@ definition {
 			AssertElementNotPresent(locator1 = "Button#BACK");
 		}
 		else {
-			DepotNavigator.gotoEdit(depotName = ${depotName});
+			Click.waitForMenuToggleJSClick(
+				key_card = ${depotName},
+				locator1 = "Card#CARD_ELLIPSIS_EXACT_MATCH");
+
+			MenuItem.click(menuItem = "Edit");
 		}
 
 		if (isSet(depotNameEdit)) {

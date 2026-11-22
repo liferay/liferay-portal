@@ -20,7 +20,7 @@ definition {
 			var key_card = ${depotName};
 
 			Click(
-				locator1 = "Card#CARD_TITLE_LINK",
+				locator1 = "Card#CARD_TITLE_LINK_EXACT_MATCH",
 				value1 = ${depotName});
 		}
 
