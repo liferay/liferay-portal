@@ -31,7 +31,6 @@ import com.liferay.portal.kernel.model.LayoutSet;
 import com.liferay.portal.kernel.model.LayoutTypeController;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
-import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.scheduler.SchedulerEngineHelper;
 import com.liferay.portal.kernel.scheduler.SchedulerException;
 import com.liferay.portal.kernel.scheduler.StorageType;
@@ -568,7 +567,7 @@ public class SitemapManagerImpl implements SitemapManager {
 	}
 
 	@Activate
-	protected void activate() {
+	protected void activate(BundleContext bundleContext) {
 		_maximumEntries = MAXIMUM_ENTRIES;
 
 		Map<String, Long> assetTypeClassNameIds = new HashMap<>();
@@ -589,10 +588,10 @@ public class SitemapManagerImpl implements SitemapManager {
 		_assetTypeKeys = Collections.unmodifiableMap(assetTypeKeys);
 
 		_serviceTrackerMap = ServiceTrackerMapFactory.openSingleValueMap(
-			_bundleContext, SitemapURLProvider.class, null,
+			bundleContext, SitemapURLProvider.class, null,
 			(serviceReference, emitter) -> {
 				SitemapURLProvider sitemapURLProvider =
-					_bundleContext.getService(serviceReference);
+					bundleContext.getService(serviceReference);
 
 				emitter.emit(
 					_classNameLocalService.getClassNameId(
@@ -2201,8 +2200,6 @@ public class SitemapManagerImpl implements SitemapManager {
 		SitemapConstants.ASSET_TYPE_KEY_WEB_CONTENT, Layout.class.getName(),
 		SitemapConstants.ASSET_TYPE_KEY_PAGES, ObjectEntry.class.getName(),
 		SitemapConstants.ASSET_TYPE_KEY_OBJECT_ENTRIES);
-	private static final BundleContext _bundleContext =
-		SystemBundleUtil.getBundleContext();
 
 	private Map<String, Long> _assetTypeClassNameIds;
 	private Map<Long, String> _assetTypeKeys;
