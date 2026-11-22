@@ -11,6 +11,7 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItemList;
 import com.liferay.frontend.taglib.react.servlet.taglib.ComponentTag;
 import com.liferay.osb.faro.web.internal.display.context.ChannelSelectorDisplayContext;
 import com.liferay.osb.faro.web.internal.util.FaroFragmentRendererUtil;
+import com.liferay.osb.faro.web.internal.util.FaroNavigationUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
@@ -104,6 +105,10 @@ public abstract class BaseFragmentRenderer implements FragmentRenderer {
 					}
 				).put(
 					"groupId", String.valueOf(themeDisplay.getScopeGroupId())
+				).put(
+					"ldpEnabled",
+					FaroNavigationUtil.isLDPEnabled(
+						themeDisplay.getScopeGroupId())
 				).put(
 					"navigationItems",
 					() -> getNavigationItems(httpServletRequest)
