@@ -10,7 +10,7 @@ import com.liferay.commerce.pricing.model.CommercePricingClass;
 import com.liferay.commerce.pricing.model.CommercePricingClassCPDefinitionRel;
 import com.liferay.commerce.pricing.service.CommercePricingClassCPDefinitionRelLocalService;
 import com.liferay.commerce.pricing.service.CommercePricingClassLocalService;
-import com.liferay.commerce.pricing.service.persistence.CommercePricingClassCPDefinitionRelUtil;
+import com.liferay.commerce.pricing.test.util.CommercePricingClassCPDefinitionRelTestUtil;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CommerceCatalog;
 import com.liferay.commerce.product.service.CPDefinitionLocalService;
@@ -23,7 +23,6 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
-import com.liferay.portal.kernel.test.util.TransactionTestUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -86,24 +85,19 @@ public class CPDefinitionModelListenerTest {
 				cpDefinition2.getCPDefinitionId(), serviceContext);
 
 		Assert.assertEquals(
-			Integer.valueOf(2),
-			TransactionTestUtil.invoke(
-				CommercePricingClassCPDefinitionRelUtil.getPersistence(),
-				commercePricingClassCPDefinitionRelPersistence ->
-					commercePricingClassCPDefinitionRelPersistence.
-						countByCommercePricingClassId(
-							commercePricingClass.getCommercePricingClassId())));
+			2,
+			CommercePricingClassCPDefinitionRelTestUtil.
+				getCommercePricingClassCPDefinitionRelsCount(
+					commercePricingClass.getCommercePricingClassId()));
 
 		_cpDefinitionLocalService.deleteCPDefinition(
 			cpDefinition2.getCPDefinitionId());
 
 		List<CommercePricingClassCPDefinitionRel>
-			commercePricingClassCPDefinitionRels = TransactionTestUtil.invoke(
-				CommercePricingClassCPDefinitionRelUtil.getPersistence(),
-				commercePricingClassCPDefinitionRelPersistence ->
-					commercePricingClassCPDefinitionRelPersistence.
-						findByCommercePricingClassId(
-							commercePricingClass.getCommercePricingClassId()));
+			commercePricingClassCPDefinitionRels =
+				CommercePricingClassCPDefinitionRelTestUtil.
+					getCommercePricingClassCPDefinitionRels(
+						commercePricingClass.getCommercePricingClassId());
 
 		Assert.assertEquals(
 			commercePricingClassCPDefinitionRels.toString(), 1,

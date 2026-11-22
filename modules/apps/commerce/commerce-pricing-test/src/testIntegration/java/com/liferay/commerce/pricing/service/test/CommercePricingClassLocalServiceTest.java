@@ -12,7 +12,7 @@ import com.liferay.commerce.pricing.model.CommercePricingClass;
 import com.liferay.commerce.pricing.model.CommercePricingClassCPDefinitionRel;
 import com.liferay.commerce.pricing.service.CommercePricingClassCPDefinitionRelLocalService;
 import com.liferay.commerce.pricing.service.CommercePricingClassLocalService;
-import com.liferay.commerce.pricing.service.persistence.CommercePricingClassCPDefinitionRelUtil;
+import com.liferay.commerce.pricing.test.util.CommercePricingClassCPDefinitionRelTestUtil;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.model.CommerceCatalog;
@@ -31,7 +31,6 @@ import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
-import com.liferay.portal.kernel.test.util.TransactionTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -117,12 +116,10 @@ public class CommercePricingClassLocalServiceTest {
 				cpDefinition.getCPDefinitionId(), _serviceContext);
 
 		List<CommercePricingClassCPDefinitionRel>
-			commercePricingClassCPDefinitionRels = TransactionTestUtil.invoke(
-				CommercePricingClassCPDefinitionRelUtil.getPersistence(),
-				commercePricingClassCPDefinitionRelPersistence ->
-					commercePricingClassCPDefinitionRelPersistence.
-						findByCommercePricingClassId(
-							commercePricingClass.getCommercePricingClassId()));
+			commercePricingClassCPDefinitionRels =
+				CommercePricingClassCPDefinitionRelTestUtil.
+					getCommercePricingClassCPDefinitionRels(
+						commercePricingClass.getCommercePricingClassId());
 
 		Assert.assertEquals(
 			commercePricingClassCPDefinitionRels.toString(), 1,
@@ -236,8 +233,9 @@ public class CommercePricingClassLocalServiceTest {
 				cpDefinition.getCPDefinitionId(), _serviceContext);
 
 		int commercePricingClassRelsCount =
-			_getCommercePricingClassCPDefinitionRelsCount(
-				commercePricingClass.getCommercePricingClassId());
+			CommercePricingClassCPDefinitionRelTestUtil.
+				getCommercePricingClassCPDefinitionRelsCount(
+					commercePricingClass.getCommercePricingClassId());
 
 		Assert.assertEquals(1, commercePricingClassRelsCount);
 
@@ -245,8 +243,9 @@ public class CommercePricingClassLocalServiceTest {
 			commercePricingClass.getCommercePricingClassId());
 
 		commercePricingClassRelsCount =
-			_getCommercePricingClassCPDefinitionRelsCount(
-				commercePricingClass.getCommercePricingClassId());
+			CommercePricingClassCPDefinitionRelTestUtil.
+				getCommercePricingClassCPDefinitionRelsCount(
+					commercePricingClass.getCommercePricingClassId());
 
 		Assert.assertEquals(0, commercePricingClassRelsCount);
 	}
@@ -324,17 +323,6 @@ public class CommercePricingClassLocalServiceTest {
 
 	@Rule
 	public FrutillaRule frutillaRule = new FrutillaRule();
-
-	private int _getCommercePricingClassCPDefinitionRelsCount(
-			long commercePricingClassId)
-		throws Exception {
-
-		return TransactionTestUtil.invoke(
-			CommercePricingClassCPDefinitionRelUtil.getPersistence(),
-			commercePricingClassCPDefinitionRelPersistence ->
-				commercePricingClassCPDefinitionRelPersistence.
-					countByCommercePricingClassId(commercePricingClassId));
-	}
 
 	@Inject
 	private CommerceCatalogLocalService _commerceCatalogLocalService;
