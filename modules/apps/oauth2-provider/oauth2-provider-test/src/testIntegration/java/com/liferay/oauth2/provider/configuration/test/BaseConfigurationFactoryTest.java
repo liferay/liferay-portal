@@ -20,11 +20,11 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.UserConstants;
-import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.BundleContextTestUtil;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.JAXRSWhiteboardTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -129,7 +129,8 @@ public class BaseConfigurationFactoryTest {
 		try (SafeCloseable safeCloseable = CompanyThreadLocal.lock(
 				TestPropsValues.getCompanyId())) {
 
-			BundleContext bundleContext = SystemBundleUtil.getBundleContext();
+			BundleContext bundleContext =
+				BundleContextTestUtil.getBundleContext(getClass());
 
 			serviceRegistration = bundleContext.registerService(
 				Application.class,
@@ -255,7 +256,8 @@ public class BaseConfigurationFactoryTest {
 	}
 
 	private void _testActivateWithUnregisteredCompany() throws Exception {
-		BundleContext bundleContext = SystemBundleUtil.getBundleContext();
+		BundleContext bundleContext = BundleContextTestUtil.getBundleContext(
+			getClass());
 
 		Semaphore semaphore = new Semaphore(0);
 
@@ -307,7 +309,8 @@ public class BaseConfigurationFactoryTest {
 	private void _testActivateWithUnresolvedScopeAliases() throws Exception {
 		JAXRSWhiteboardTestUtil.ensureReady();
 
-		BundleContext bundleContext = SystemBundleUtil.getBundleContext();
+		BundleContext bundleContext = BundleContextTestUtil.getBundleContext(
+			getClass());
 
 		String name = RandomTestUtil.randomString();
 

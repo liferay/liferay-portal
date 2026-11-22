@@ -12,11 +12,11 @@ import com.liferay.oauth2.provider.service.OAuth2ApplicationLocalService;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.ConfigurationTestUtil;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.BundleContextTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
@@ -61,7 +61,10 @@ public class OAuth2ApplicationLocalServiceTest {
 
 	@Before
 	public void setUp() throws Exception {
-		_serviceRegistration = _bundleContext.registerService(
+		BundleContext bundleContext = BundleContextTestUtil.getBundleContext(
+			OAuth2ApplicationLocalServiceTest.class);
+
+		_serviceRegistration = bundleContext.registerService(
 			SecretProvider.class, new TestSecretProvider(),
 			HashMapDictionaryBuilder.<String, Object>put(
 				"secret.provider.id", _PROVIDER_ID
@@ -144,9 +147,6 @@ public class OAuth2ApplicationLocalServiceTest {
 			"KeyManagerCustomProfileConfiguration";
 
 	private static final String _PROVIDER_ID = "test-oauth2-secret";
-
-	private static final BundleContext _bundleContext =
-		SystemBundleUtil.getBundleContext();
 
 	private OAuth2Application _oAuth2Application;
 
