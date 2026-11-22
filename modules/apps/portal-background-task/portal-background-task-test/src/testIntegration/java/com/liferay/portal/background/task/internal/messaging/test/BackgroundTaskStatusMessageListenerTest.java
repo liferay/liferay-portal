@@ -22,9 +22,9 @@ import com.liferay.portal.kernel.messaging.MessageBus;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.UserNotificationEvent;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.UserNotificationEventLocalService;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.UserNotificationEventTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.ProxyUtil;
@@ -158,7 +158,7 @@ public class BackgroundTaskStatusMessageListenerTest {
 		_backgroundTaskIds.add(backgroundTask.getBackgroundTaskId());
 
 		List<UserNotificationEvent> userNotificationEvents =
-			_userNotificationEventLocalService.getUserNotificationEvents(
+			UserNotificationEventTestUtil.getUserNotificationEvents(
 				_user.getUserId());
 
 		Assert.assertEquals(
@@ -328,7 +328,7 @@ public class BackgroundTaskStatusMessageListenerTest {
 			_getStatus(backgroundTaskId));
 
 		List<UserNotificationEvent> userNotificationEvents =
-			_userNotificationEventLocalService.getUserNotificationEvents(
+			UserNotificationEventTestUtil.getUserNotificationEvents(
 				_user.getUserId());
 
 		Assert.assertEquals(
@@ -377,9 +377,5 @@ public class BackgroundTaskStatusMessageListenerTest {
 
 	@DeleteAfterTestRun
 	private User _user;
-
-	@Inject
-	private UserNotificationEventLocalService
-		_userNotificationEventLocalService;
 
 }

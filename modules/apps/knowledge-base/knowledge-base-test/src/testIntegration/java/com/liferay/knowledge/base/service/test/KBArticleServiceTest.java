@@ -24,7 +24,6 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
-import com.liferay.portal.kernel.model.Subscription;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.repository.model.FileEntry;
@@ -676,8 +675,8 @@ public class KBArticleServiceTest {
 				fileEntry.getFileEntryId()));
 	}
 
-	private Subscription _fetchGroupSubscription(long userId) throws Exception {
-		return _subscriptionLocalService.fetchSubscription(
+	private boolean _isGroupSubscribed(long userId) throws Exception {
+		return _subscriptionLocalService.isSubscribed(
 			TestPropsValues.getCompanyId(), userId, KBArticle.class.getName(),
 			_group1.getGroupId());
 	}
@@ -1241,8 +1240,7 @@ public class KBArticleServiceTest {
 				_group1.getGroupId(), portletId);
 		}
 
-		Assert.assertNotNull(
-			_fetchGroupSubscription(_siteMemberUser.getUserId()));
+		Assert.assertTrue(_isGroupSubscribed(_siteMemberUser.getUserId()));
 
 		_kbArticleLocalService.unsubscribeGroupKBArticles(
 			_siteMemberUser.getUserId(), _group1.getGroupId());
@@ -1266,7 +1264,7 @@ public class KBArticleServiceTest {
 				principalException.getMessage());
 		}
 
-		Assert.assertNull(_fetchGroupSubscription(_siteMemberUser.getUserId()));
+		Assert.assertFalse(_isGroupSubscribed(_siteMemberUser.getUserId()));
 	}
 
 	private void _testSubscribeGroupKBArticlesWithoutSubscribePermission(
@@ -1290,7 +1288,7 @@ public class KBArticleServiceTest {
 			Assert.assertEquals(resourceName, mustHavePermission.resourceName);
 		}
 
-		Assert.assertNull(_fetchGroupSubscription(_user.getUserId()));
+		Assert.assertFalse(_isGroupSubscribed(_user.getUserId()));
 	}
 
 	private void _testUnsubscribeGroupKBArticles(String portletId)
@@ -1306,7 +1304,7 @@ public class KBArticleServiceTest {
 				_group1.getGroupId(), portletId);
 		}
 
-		Assert.assertNull(_fetchGroupSubscription(_siteMemberUser.getUserId()));
+		Assert.assertFalse(_isGroupSubscribed(_siteMemberUser.getUserId()));
 	}
 
 	private void _testUnsubscribeGroupKBArticlesWithInvalidPortletId()
@@ -1330,8 +1328,7 @@ public class KBArticleServiceTest {
 				principalException.getMessage());
 		}
 
-		Assert.assertNotNull(
-			_fetchGroupSubscription(_siteMemberUser.getUserId()));
+		Assert.assertTrue(_isGroupSubscribed(_siteMemberUser.getUserId()));
 
 		_kbArticleLocalService.unsubscribeGroupKBArticles(
 			_siteMemberUser.getUserId(), _group1.getGroupId());
@@ -1361,7 +1358,7 @@ public class KBArticleServiceTest {
 			Assert.assertEquals(resourceName, mustHavePermission.resourceName);
 		}
 
-		Assert.assertNotNull(_fetchGroupSubscription(_user.getUserId()));
+		Assert.assertTrue(_isGroupSubscribed(_user.getUserId()));
 
 		_kbArticleLocalService.unsubscribeGroupKBArticles(
 			_user.getUserId(), _group1.getGroupId());

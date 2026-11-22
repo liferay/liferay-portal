@@ -12,6 +12,7 @@ import com.liferay.bookmarks.constants.BookmarksFolderConstants;
 import com.liferay.bookmarks.model.BookmarksFolder;
 import com.liferay.bookmarks.service.BookmarksFolderLocalServiceUtil;
 import com.liferay.bookmarks.test.util.BookmarksTestUtil;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
@@ -213,7 +214,8 @@ public class BookmarksFolderLocalServiceTest {
 
 		List<Subscription> subscriptions =
 			SubscriptionLocalServiceUtil.getUserSubscriptions(
-				TestPropsValues.getUserId(), BookmarksFolder.class.getName());
+				TestPropsValues.getUserId(), QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS, null);
 
 		for (Subscription subscription : subscriptions) {
 			if (Objects.equals(
@@ -251,7 +253,8 @@ public class BookmarksFolderLocalServiceTest {
 
 		List<Subscription> subscriptions =
 			SubscriptionLocalServiceUtil.getUserSubscriptions(
-				TestPropsValues.getUserId(), BookmarksFolder.class.getName());
+				TestPropsValues.getUserId(), QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS, null);
 
 		for (Subscription subscription : subscriptions) {
 			Assert.assertFalse(

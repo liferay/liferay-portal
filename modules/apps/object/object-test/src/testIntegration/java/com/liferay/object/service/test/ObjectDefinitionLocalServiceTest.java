@@ -1046,7 +1046,7 @@ public class ObjectDefinitionLocalServiceTest {
 				workflowDefinitionLinks);
 
 		workflowDefinitionLink =
-			_workflowDefinitionLinkLocalService.getWorkflowDefinitionLink(
+			_workflowDefinitionLinkLocalService.fetchWorkflowDefinitionLink(
 				TestPropsValues.getCompanyId(), 0,
 				objectDefinition.getClassName(), 0, 0, true);
 
@@ -1070,7 +1070,7 @@ public class ObjectDefinitionLocalServiceTest {
 				kaleoDefinition.getTitle(), TestPropsValues.getUserId());
 
 		workflowDefinitionLink =
-			_workflowDefinitionLinkLocalService.getWorkflowDefinitionLink(
+			_workflowDefinitionLinkLocalService.fetchWorkflowDefinitionLink(
 				TestPropsValues.getCompanyId(), 0,
 				objectDefinition.getClassName(), 0, 0, true);
 

@@ -19,11 +19,11 @@ import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.UserGroupRoleLocalService;
-import com.liferay.portal.kernel.service.UserNotificationEventLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserNotificationEventTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -79,7 +79,7 @@ public class PublicationUserNotificationTest {
 			_ctCollection.getCtCollectionId());
 
 		List<UserNotificationEvent> userNotificationEvents =
-			_userNotificationEventLocalService.getUserNotificationEvents(
+			UserNotificationEventTestUtil.getUserNotificationEvents(
 				_user.getUserId());
 
 		Assert.assertEquals(
@@ -95,7 +95,7 @@ public class PublicationUserNotificationTest {
 			_ctCollection.getCtCollectionId());
 
 		List<UserNotificationEvent> userNotificationEvents =
-			_userNotificationEventLocalService.getUserNotificationEvents(
+			UserNotificationEventTestUtil.getUserNotificationEvents(
 				_user.getUserId());
 
 		Assert.assertEquals(
@@ -112,7 +112,7 @@ public class PublicationUserNotificationTest {
 			ctCollection.getCtCollectionId());
 
 		List<UserNotificationEvent> userNotificationEvents =
-			_userNotificationEventLocalService.getUserNotificationEvents(
+			UserNotificationEventTestUtil.getUserNotificationEvents(
 				_user.getUserId());
 
 		Assert.assertEquals(
@@ -128,7 +128,7 @@ public class PublicationUserNotificationTest {
 			_ctCollection.getCtCollectionId());
 
 		List<UserNotificationEvent> userNotificationEvents =
-			_userNotificationEventLocalService.getUserNotificationEvents(
+			UserNotificationEventTestUtil.getUserNotificationEvents(
 				_user.getUserId());
 
 		Assert.assertEquals(
@@ -144,7 +144,7 @@ public class PublicationUserNotificationTest {
 			_ctCollection.getCtCollectionId());
 
 		List<UserNotificationEvent> userNotificationEvents =
-			_userNotificationEventLocalService.getUserNotificationEvents(
+			UserNotificationEventTestUtil.getUserNotificationEvents(
 				_user.getUserId());
 
 		Assert.assertEquals(
@@ -164,7 +164,7 @@ public class PublicationUserNotificationTest {
 			_ctCollection.getCtCollectionId());
 
 		List<UserNotificationEvent> userNotificationEvents =
-			_userNotificationEventLocalService.getUserNotificationEvents(
+			UserNotificationEventTestUtil.getUserNotificationEvents(
 				_user.getUserId());
 
 		Assert.assertEquals(
@@ -199,9 +199,5 @@ public class PublicationUserNotificationTest {
 
 	@Inject
 	private UserGroupRoleLocalService _userGroupRoleLocalService;
-
-	@Inject
-	private UserNotificationEventLocalService
-		_userNotificationEventLocalService;
 
 }

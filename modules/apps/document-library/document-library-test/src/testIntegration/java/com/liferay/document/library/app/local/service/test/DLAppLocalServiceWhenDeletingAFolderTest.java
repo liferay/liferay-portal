@@ -55,15 +55,15 @@ public class DLAppLocalServiceWhenDeletingAFolderTest {
 			TestPropsValues.getUserId(), _group.getGroupId(),
 			_folder.getFolderId());
 
-		Assert.assertNotNull(
-			SubscriptionLocalServiceUtil.fetchSubscription(
+		Assert.assertTrue(
+			SubscriptionLocalServiceUtil.isSubscribed(
 				_group.getCompanyId(), TestPropsValues.getUserId(),
 				DLFolderConstants.getClassName(), _folder.getFolderId()));
 
 		DLAppLocalServiceUtil.deleteFolder(_folder.getFolderId());
 
-		Assert.assertNull(
-			SubscriptionLocalServiceUtil.fetchSubscription(
+		Assert.assertFalse(
+			SubscriptionLocalServiceUtil.isSubscribed(
 				_group.getCompanyId(), TestPropsValues.getUserId(),
 				DLFolderConstants.getClassName(), _folder.getFolderId()));
 	}

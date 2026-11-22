@@ -30,12 +30,12 @@ import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserGroupRoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
-import com.liferay.portal.kernel.service.UserNotificationEventLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserNotificationEventTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HtmlUtil;
@@ -221,7 +221,7 @@ public class CMSObjectEntryReviewUserNotificationTest {
 		List<UserNotificationEvent> userNotificationEvents = new ArrayList<>();
 
 		for (UserNotificationEvent userNotificationEvent :
-				_userNotificationEventLocalService.getUserNotificationEvents(
+				UserNotificationEventTestUtil.getUserNotificationEvents(
 					user.getUserId())) {
 
 			JSONObject payloadJSONObject = JSONFactoryUtil.createJSONObject(
@@ -289,9 +289,5 @@ public class CMSObjectEntryReviewUserNotificationTest {
 
 	@Inject
 	private UserLocalService _userLocalService;
-
-	@Inject
-	private UserNotificationEventLocalService
-		_userNotificationEventLocalService;
 
 }

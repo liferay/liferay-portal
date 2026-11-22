@@ -8,9 +8,8 @@ package com.liferay.portal.workflow.kaleo.runtime.notification.recipient.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.blogs.model.BlogsEntry;
 import com.liferay.portal.kernel.model.UserNotificationEvent;
-import com.liferay.portal.kernel.service.UserNotificationEventLocalService;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
-import com.liferay.portal.test.rule.Inject;
+import com.liferay.portal.kernel.test.util.UserNotificationEventTestUtil;
 
 import java.util.List;
 
@@ -28,7 +27,7 @@ public class AssigneeNotificationRecipientBuilderTest
 	@Test
 	public void testProcessKaleoNotificationRecipient() throws Exception {
 		List<UserNotificationEvent> userNotificationEvents =
-			_userNotificationEventLocalService.getUserNotificationEvents(
+			UserNotificationEventTestUtil.getUserNotificationEvents(
 				TestPropsValues.getUserId());
 
 		Assert.assertTrue(userNotificationEvents.isEmpty());
@@ -38,7 +37,7 @@ public class AssigneeNotificationRecipientBuilderTest
 		Assert.assertTrue(blogsEntry.isPending());
 
 		userNotificationEvents =
-			_userNotificationEventLocalService.getUserNotificationEvents(
+			UserNotificationEventTestUtil.getUserNotificationEvents(
 				TestPropsValues.getUserId());
 
 		Assert.assertEquals(
@@ -50,9 +49,5 @@ public class AssigneeNotificationRecipientBuilderTest
 	protected String getFileName() {
 		return "dependencies/assignee-workflow-definition.json";
 	}
-
-	@Inject
-	private UserNotificationEventLocalService
-		_userNotificationEventLocalService;
 
 }

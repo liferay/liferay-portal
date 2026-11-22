@@ -30,13 +30,13 @@ import com.liferay.portal.kernel.notifications.UserNotificationHandler;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.UserNotificationEventLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.Sync;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserNotificationEventTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Portal;
@@ -379,8 +379,7 @@ public class PublicationUserNotificationHandlerTest {
 		throws Exception {
 
 		List<UserNotificationEvent> userNotificationEvents =
-			_userNotificationEventLocalService.getUserNotificationEvents(
-				userId);
+			UserNotificationEventTestUtil.getUserNotificationEvents(userId);
 
 		for (UserNotificationEvent userNotificationEvent :
 				userNotificationEvents) {
@@ -456,10 +455,6 @@ public class PublicationUserNotificationHandlerTest {
 
 	@Inject
 	private Portal _portal;
-
-	@Inject
-	private UserNotificationEventLocalService
-		_userNotificationEventLocalService;
 
 	@Inject(filter = "jakarta.portlet.name=" + CTPortletKeys.PUBLICATIONS)
 	private UserNotificationHandler _userNotificationHandler;

@@ -30,7 +30,6 @@ import com.liferay.portal.kernel.scheduler.SchedulerJobConfiguration;
 import com.liferay.portal.kernel.scheduler.TimeUnit;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.UserNotificationEventLocalService;
 import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.Sync;
@@ -38,6 +37,7 @@ import com.liferay.portal.kernel.test.rule.SynchronousDestinationTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserNotificationEventTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
@@ -473,7 +473,7 @@ public class CheckObjectEntrySchedulerJobConfigurationTest {
 			new ArrayList<>();
 
 		for (UserNotificationEvent userNotificationEvent :
-				_userNotificationEventLocalService.getUserNotificationEvents(
+				UserNotificationEventTestUtil.getUserNotificationEvents(
 					objectEntry1.getUserId())) {
 
 			JSONObject jsonObject = JSONFactoryUtil.createJSONObject(
@@ -707,7 +707,7 @@ public class CheckObjectEntrySchedulerJobConfigurationTest {
 		int count = 0;
 
 		for (UserNotificationEvent userNotificationEvent :
-				_userNotificationEventLocalService.getUserNotificationEvents(
+				UserNotificationEventTestUtil.getUserNotificationEvents(
 					objectEntry.getUserId())) {
 
 			JSONObject jsonObject = JSONFactoryUtil.createJSONObject(
@@ -791,9 +791,5 @@ public class CheckObjectEntrySchedulerJobConfigurationTest {
 
 	@Inject
 	private ObjectEntryVersionLocalService _objectEntryVersionLocalService;
-
-	@Inject
-	private UserNotificationEventLocalService
-		_userNotificationEventLocalService;
 
 }

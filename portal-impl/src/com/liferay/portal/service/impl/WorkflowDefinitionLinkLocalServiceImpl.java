@@ -9,7 +9,6 @@ import com.liferay.exportimport.kernel.staging.StagingUtil;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.bean.BeanReference;
-import com.liferay.portal.kernel.exception.NoSuchWorkflowDefinitionLinkException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -145,41 +144,11 @@ public class WorkflowDefinitionLinkLocalServiceImpl
 	}
 
 	@Override
-	public WorkflowDefinitionLink getWorkflowDefinitionLink(
-			long companyId, long groupId, String className, long classPK,
-			long typePK, boolean strict)
-		throws PortalException {
-
-		WorkflowDefinitionLink workflowDefinitionLink =
-			fetchWorkflowDefinitionLink(
-				companyId, groupId, className, classPK, typePK, strict);
-
-		if (workflowDefinitionLink == null) {
-			throw new NoSuchWorkflowDefinitionLinkException(
-				StringBundler.concat(
-					"No workflow exists with the key {groupId=",
-					StagingUtil.getLiveGroupId(groupId), ", companyId=",
-					companyId, ", and className=", className, "}"));
-		}
-
-		return workflowDefinitionLink;
-	}
-
-	@Override
 	public List<WorkflowDefinitionLink> getWorkflowDefinitionLinks(
 		long companyId, long groupId, long classPK) {
 
 		return workflowDefinitionLinkPersistence.findByG_C_CPK(
 			groupId, companyId, classPK);
-	}
-
-	@Override
-	public List<WorkflowDefinitionLink> getWorkflowDefinitionLinks(
-		long companyId, long groupId, String className, long classPK) {
-
-		return workflowDefinitionLinkPersistence.findByG_C_C_C(
-			companyId, StagingUtil.getLiveGroupId(groupId),
-			_classNameLocalService.getClassNameId(className), classPK);
 	}
 
 	@Override

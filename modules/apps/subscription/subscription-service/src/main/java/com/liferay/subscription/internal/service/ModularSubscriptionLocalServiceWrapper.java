@@ -58,14 +58,6 @@ public class ModularSubscriptionLocalServiceWrapper
 	}
 
 	@Override
-	public void deleteSubscription(long userId, String className, long classPK)
-		throws PortalException {
-
-		_subscriptionLocalService.deleteSubscription(
-			userId, className, classPK);
-	}
-
-	@Override
 	public Subscription deleteSubscription(Subscription subscription)
 		throws PortalException {
 
@@ -76,60 +68,8 @@ public class ModularSubscriptionLocalServiceWrapper
 	}
 
 	@Override
-	public void deleteSubscriptions(long userId) throws PortalException {
-		_subscriptionLocalService.deleteSubscriptions(userId);
-	}
-
-	@Override
-	public void deleteSubscriptions(long userId, long groupId)
-		throws PortalException {
-
-		_subscriptionLocalService.deleteSubscriptions(userId, groupId);
-	}
-
-	@Override
-	public void deleteSubscriptions(
-			long companyId, String className, long classPK)
-		throws PortalException {
-
-		_subscriptionLocalService.deleteSubscriptions(
-			companyId, className, classPK);
-	}
-
-	@Override
-	public Subscription fetchSubscription(
-		long companyId, long userId, String className, long classPK) {
-
-		return ModelAdapterUtil.adapt(
-			Subscription.class,
-			_subscriptionLocalService.fetchSubscription(
-				companyId, userId, className, classPK));
-	}
-
-	@Override
 	public String getOSGiServiceIdentifier() {
 		return _subscriptionLocalService.getOSGiServiceIdentifier();
-	}
-
-	@Override
-	public Subscription getSubscription(
-			long companyId, long userId, String className, long classPK)
-		throws PortalException {
-
-		return ModelAdapterUtil.adapt(
-			Subscription.class,
-			_subscriptionLocalService.getSubscription(
-				companyId, userId, className, classPK));
-	}
-
-	@Override
-	public List<Subscription> getSubscriptions(
-		long companyId, long userId, String className, long[] classPKs) {
-
-		return ModelAdapterUtil.adapt(
-			Subscription.class,
-			_subscriptionLocalService.getSubscriptions(
-				companyId, userId, className, classPKs));
 	}
 
 	@Override
@@ -152,15 +92,6 @@ public class ModularSubscriptionLocalServiceWrapper
 			_subscriptionLocalService.getUserSubscriptions(
 				userId, start, end,
 				ModelAdapterUtil.adapt(Subscription.class, orderByComparator)));
-	}
-
-	@Override
-	public List<Subscription> getUserSubscriptions(
-		long userId, String className) {
-
-		return ModelAdapterUtil.adapt(
-			Subscription.class,
-			_subscriptionLocalService.getUserSubscriptions(userId, className));
 	}
 
 	@Override

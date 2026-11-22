@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.service.UserNotificationDeliveryLocalService;
 import com.liferay.portal.kernel.service.UserNotificationEventLocalService;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
+import com.liferay.portal.kernel.test.util.UserNotificationEventTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.test.mail.MailServiceTestUtil;
@@ -292,8 +293,7 @@ public abstract class BaseUserNotificationTestCase {
 		throws Exception {
 
 		return TransformUtil.transform(
-			_userNotificationEventLocalService.getUserNotificationEvents(
-				userId),
+			UserNotificationEventTestUtil.getUserNotificationEvents(userId),
 			userNotificationEvent -> _jsonFactory.createJSONObject(
 				userNotificationEvent.getPayload()));
 	}
@@ -325,10 +325,9 @@ public abstract class BaseUserNotificationTestCase {
 			user.getUserId());
 	}
 
-	private void _deleteUserNotificationEvents(long userId) {
+	private void _deleteUserNotificationEvents(long userId) throws Exception {
 		List<UserNotificationEvent> userNotificationEvents =
-			_userNotificationEventLocalService.getUserNotificationEvents(
-				userId);
+			UserNotificationEventTestUtil.getUserNotificationEvents(userId);
 
 		for (UserNotificationEvent userNotificationEvent :
 				userNotificationEvents) {

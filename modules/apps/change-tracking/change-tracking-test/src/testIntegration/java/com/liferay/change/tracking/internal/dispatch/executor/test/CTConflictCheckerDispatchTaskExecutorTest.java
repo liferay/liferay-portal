@@ -28,11 +28,11 @@ import com.liferay.portal.kernel.notifications.UserNotificationDefinition;
 import com.liferay.portal.kernel.notifications.UserNotificationFeedEntry;
 import com.liferay.portal.kernel.notifications.UserNotificationHandler;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.UserNotificationEventLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.SynchronousDestinationTestRule;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserNotificationEventTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
@@ -122,8 +122,7 @@ public class CTConflictCheckerDispatchTaskExecutorTest {
 		throws Exception {
 
 		List<UserNotificationEvent> userNotificationEvents =
-			_userNotificationEventLocalService.getUserNotificationEvents(
-				userId);
+			UserNotificationEventTestUtil.getUserNotificationEvents(userId);
 
 		for (UserNotificationEvent userNotificationEvent :
 				userNotificationEvents) {
@@ -178,10 +177,6 @@ public class CTConflictCheckerDispatchTaskExecutorTest {
 		filter = "destination.name=" + DispatchConstants.EXECUTOR_DESTINATION_NAME
 	)
 	private MessageListener _messageListener;
-
-	@Inject
-	private UserNotificationEventLocalService
-		_userNotificationEventLocalService;
 
 	@Inject(filter = "jakarta.portlet.name=" + CTPortletKeys.PUBLICATIONS)
 	private UserNotificationHandler _userNotificationHandler;

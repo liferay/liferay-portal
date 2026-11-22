@@ -238,8 +238,8 @@ public class MBCommentManagerImplTest {
 			TestPropsValues.getUserId(), _group.getGroupId(),
 			DLFileEntryConstants.getClassName(), _fileEntry.getFileEntryId());
 
-		Assert.assertNotNull(
-			_subscriptionLocalService.fetchSubscription(
+		Assert.assertTrue(
+			_subscriptionLocalService.isSubscribed(
 				TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
 				MBDiscussion.class.getName() + StringPool.UNDERLINE +
 					DLFileEntryConstants.getClassName(),
@@ -270,8 +270,8 @@ public class MBCommentManagerImplTest {
 			TestPropsValues.getUserId(), DLFileEntryConstants.getClassName(),
 			_fileEntry.getFileEntryId());
 
-		Assert.assertNull(
-			_subscriptionLocalService.fetchSubscription(
+		Assert.assertFalse(
+			_subscriptionLocalService.isSubscribed(
 				TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
 				DLFileEntryConstants.getClassName(),
 				_fileEntry.getFileEntryId()));

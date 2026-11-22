@@ -106,6 +106,7 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserNotificationEventTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.ContentTypes;
@@ -1905,13 +1906,14 @@ public class WorkflowTaskManagerImplTest extends BaseWorkflowManagerTestCase {
 	}
 
 	private void _checkUserNotificationEventsByUsers(
-		long expected, User... users) {
+			long expected, User... users)
+		throws Exception {
 
 		for (User user : users) {
 			List<UserNotificationEvent> userNotificationEvents =
 				TransformUtil.transform(
-					_userNotificationEventLocalService.
-						getUserNotificationEvents(user.getUserId()),
+					UserNotificationEventTestUtil.getUserNotificationEvents(
+						user.getUserId()),
 					userNotificationEvent -> {
 						if ((userNotificationEvent.getDeliveryType() !=
 								UserNotificationDeliveryConstants.

@@ -20,7 +20,6 @@ import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.service.persistence.UserPersistence;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
-import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.workflow.DefaultWorkflowNode;
@@ -237,29 +236,6 @@ public class WorkflowInstanceLinkLocalServiceImpl
 	}
 
 	@Override
-	public boolean isEnded(
-			long companyId, long groupId, String className, long classPK)
-		throws PortalException {
-
-		WorkflowInstanceLink workflowInstanceLink = fetchWorkflowInstanceLink(
-			companyId, groupId, className, classPK);
-
-		if (workflowInstanceLink == null) {
-			return false;
-		}
-
-		WorkflowInstance workflowInstance =
-			WorkflowInstanceManagerUtil.getWorkflowInstance(
-				companyId, workflowInstanceLink.getWorkflowInstanceId());
-
-		if (workflowInstance.getEndDate() != null) {
-			return true;
-		}
-
-		return false;
-	}
-
-	@Override
 	public void startWorkflowInstance(
 			long companyId, long groupId, long userId, String className,
 			long classPK, Map<String, Serializable> workflowContext)
@@ -331,44 +307,6 @@ public class WorkflowInstanceLinkLocalServiceImpl
 		addWorkflowInstanceLink(
 			userId, companyId, groupId, className, classPK,
 			workflowInstance.getWorkflowInstanceId());
-	}
-
-	@Override
-	public void updateClassPK(
-			long companyId, long groupId, String className, long oldClassPK,
-			long newClassPK)
-		throws PortalException {
-
-		if (!WorkflowThreadLocal.isEnabled()) {
-			return;
-		}
-
-		List<WorkflowInstanceLink> workflowInstanceLinks =
-			getWorkflowInstanceLinks(companyId, groupId, className, oldClassPK);
-
-		for (WorkflowInstanceLink workflowInstanceLink :
-				workflowInstanceLinks) {
-
-			WorkflowInstance workflowInstance =
-				WorkflowInstanceManagerUtil.getWorkflowInstance(
-					workflowInstanceLink.getCompanyId(),
-					workflowInstanceLink.getWorkflowInstanceId());
-
-			workflowInstanceLink.setClassPK(newClassPK);
-
-			workflowInstanceLink = workflowInstanceLinkPersistence.update(
-				workflowInstanceLink);
-
-			WorkflowInstanceManagerUtil.updateWorkflowContext(
-				workflowInstanceLink.getCompanyId(),
-				workflowInstanceLink.getWorkflowInstanceId(),
-				HashMapBuilder.create(
-					workflowInstance.getWorkflowContext()
-				).put(
-					WorkflowConstants.CONTEXT_ENTRY_CLASS_PK,
-					String.valueOf(newClassPK)
-				).build());
-		}
 	}
 
 	@BeanReference(type = ClassNameLocalService.class)

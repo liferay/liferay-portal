@@ -110,24 +110,6 @@ public class SubscriptionLocalServiceImpl
 	}
 
 	/**
-	 * Deletes the user's subscription to the entity. A social activity with the
-	 * unsubscribe action is created.
-	 *
-	 * @param userId the primary key of the user
-	 * @param className the entity's class name
-	 * @param classPK the primary key of the entity's instance
-	 */
-	@Override
-	public void deleteSubscription(long userId, String className, long classPK)
-		throws PortalException {
-
-		throw new UnsupportedOperationException(
-			"This class is deprecated and replaced by " +
-				"com.liferay.subscription.service.impl." +
-					"SubscriptionLocalServiceImpl");
-	}
-
-	/**
 	 * Deletes the subscription. A social activity with the unsubscribe action
 	 * is created.
 	 *
@@ -137,96 +119,6 @@ public class SubscriptionLocalServiceImpl
 	@Override
 	public Subscription deleteSubscription(Subscription subscription)
 		throws PortalException {
-
-		throw new UnsupportedOperationException(
-			"This class is deprecated and replaced by " +
-				"com.liferay.subscription.service.impl." +
-					"SubscriptionLocalServiceImpl");
-	}
-
-	/**
-	 * Deletes all the subscriptions of the user.
-	 *
-	 * @param userId the primary key of the user
-	 */
-	@Override
-	public void deleteSubscriptions(long userId) throws PortalException {
-		throw new UnsupportedOperationException(
-			"This class is deprecated and replaced by " +
-				"com.liferay.subscription.service.impl." +
-					"SubscriptionLocalServiceImpl");
-	}
-
-	@Override
-	public void deleteSubscriptions(long userId, long groupId)
-		throws PortalException {
-
-		throw new UnsupportedOperationException(
-			"This class is deprecated and replaced by " +
-				"com.liferay.subscription.service.impl." +
-					"SubscriptionLocalServiceImpl");
-	}
-
-	/**
-	 * Deletes all the subscriptions to the entity.
-	 *
-	 * @param companyId the primary key of the company
-	 * @param className the entity's class name
-	 * @param classPK the primary key of the entity's instance
-	 */
-	@Override
-	public void deleteSubscriptions(
-			long companyId, String className, long classPK)
-		throws PortalException {
-
-		throw new UnsupportedOperationException(
-			"This class is deprecated and replaced by " +
-				"com.liferay.subscription.service.impl." +
-					"SubscriptionLocalServiceImpl");
-	}
-
-	@Override
-	public Subscription fetchSubscription(
-		long companyId, long userId, String className, long classPK) {
-
-		throw new UnsupportedOperationException(
-			"This class is deprecated and replaced by " +
-				"com.liferay.subscription.service.impl." +
-					"SubscriptionLocalServiceImpl");
-	}
-
-	/**
-	 * Returns the subscription of the user to the entity.
-	 *
-	 * @param  companyId the primary key of the company
-	 * @param  userId the primary key of the user
-	 * @param  className the entity's class name
-	 * @param  classPK the primary key of the entity's instance
-	 * @return the subscription of the user to the entity
-	 */
-	@Override
-	public Subscription getSubscription(
-			long companyId, long userId, String className, long classPK)
-		throws PortalException {
-
-		throw new UnsupportedOperationException(
-			"This class is deprecated and replaced by " +
-				"com.liferay.subscription.service.impl." +
-					"SubscriptionLocalServiceImpl");
-	}
-
-	/**
-	 * Returns all the subscriptions of the user to the entities.
-	 *
-	 * @param  companyId the primary key of the company
-	 * @param  userId the primary key of the user
-	 * @param  className the entity's class name
-	 * @param  classPKs the primary key of the entities
-	 * @return the subscriptions of the user to the entities
-	 */
-	@Override
-	public List<Subscription> getSubscriptions(
-		long companyId, long userId, String className, long[] classPKs) {
 
 		throw new UnsupportedOperationException(
 			"This class is deprecated and replaced by " +
@@ -265,24 +157,6 @@ public class SubscriptionLocalServiceImpl
 	public List<Subscription> getUserSubscriptions(
 		long userId, int start, int end,
 		OrderByComparator<Subscription> orderByComparator) {
-
-		throw new UnsupportedOperationException(
-			"This class is deprecated and replaced by " +
-				"com.liferay.subscription.service.impl." +
-					"SubscriptionLocalServiceImpl");
-	}
-
-	/**
-	 * Returns all the subscriptions of the user to the entities with the class
-	 * name.
-	 *
-	 * @param  userId the primary key of the user
-	 * @param  className the entity's class name
-	 * @return the subscriptions of the user to the entities with the class name
-	 */
-	@Override
-	public List<Subscription> getUserSubscriptions(
-		long userId, String className) {
 
 		throw new UnsupportedOperationException(
 			"This class is deprecated and replaced by " +

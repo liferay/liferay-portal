@@ -34,13 +34,13 @@ import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
-import com.liferay.portal.kernel.service.UserNotificationEventLocalService;
 import com.liferay.portal.kernel.service.VirtualHostLocalService;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.PrefsPropsTestUtil;
 import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserNotificationEventTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
@@ -454,7 +454,7 @@ public class PortalInstanceResourceTest
 				PortalInstancePool.getDefaultCompanyId());
 
 			userNotificationEvents =
-				_userNotificationEventLocalService.getUserNotificationEvents(
+				UserNotificationEventTestUtil.getUserNotificationEvents(
 					user.getUserId());
 		}
 
@@ -1168,10 +1168,6 @@ public class PortalInstanceResourceTest
 
 	@Inject
 	private UserLocalService _userLocalService;
-
-	@Inject
-	private UserNotificationEventLocalService
-		_userNotificationEventLocalService;
 
 	@Inject
 	private VirtualHostLocalService _virtualHostLocalService;

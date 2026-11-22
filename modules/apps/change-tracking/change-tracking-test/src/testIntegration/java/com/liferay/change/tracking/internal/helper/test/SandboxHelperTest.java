@@ -30,10 +30,10 @@ import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.UserGroupRoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
-import com.liferay.portal.kernel.service.UserNotificationEventLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserNotificationEventTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.Portal;
@@ -214,7 +214,7 @@ public class SandboxHelperTest {
 					false));
 
 			List<UserNotificationEvent> userNotificationEvents =
-				_userNotificationEventLocalService.getUserNotificationEvents(
+				UserNotificationEventTestUtil.getUserNotificationEvents(
 					publisherUser.getUserId());
 
 			Assert.assertEquals(
@@ -347,9 +347,5 @@ public class SandboxHelperTest {
 
 	@Inject
 	private UserLocalService _userLocalService;
-
-	@Inject
-	private UserNotificationEventLocalService
-		_userNotificationEventLocalService;
 
 }
