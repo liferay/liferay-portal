@@ -34,6 +34,9 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LogEntry;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
@@ -105,10 +108,17 @@ public class DDMFieldAttributeUpgradeProcessTest {
 
 		String url = _getImageGalleryURL(RandomTestUtil.randomString());
 
-		DDMFormValues ddmFormValues = _upgrade(
-			JournalArticle.class.getName(), url);
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				_CLASS_NAME, LoggerTestUtil.WARN)) {
 
-		Assert.assertEquals(url, _getValueString(ddmFormValues, LocaleUtil.US));
+			DDMFormValues ddmFormValues = _upgrade(
+				JournalArticle.class.getName(), url);
+
+			_assertLogEntries(logCapture, url);
+
+			Assert.assertEquals(
+				url, _getValueString(ddmFormValues, LocaleUtil.US));
+		}
 	}
 
 	@Test
@@ -116,14 +126,20 @@ public class DDMFieldAttributeUpgradeProcessTest {
 	public void testUpgradeLocalizedImageGalleryURLs() throws Exception {
 		String url = _getImageGalleryURL(RandomTestUtil.randomString());
 
-		DDMFormValues ddmFormValues = _upgrade(
-			JournalArticle.class.getName(),
-			_getImageGalleryURL(_fileEntry.getUuid()), url);
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				_CLASS_NAME, LoggerTestUtil.WARN)) {
 
-		_assertDocumentLibraryValue(ddmFormValues, LocaleUtil.US);
+			DDMFormValues ddmFormValues = _upgrade(
+				JournalArticle.class.getName(),
+				_getImageGalleryURL(_fileEntry.getUuid()), url);
 
-		Assert.assertEquals(
-			url, _getValueString(ddmFormValues, LocaleUtil.SPAIN));
+			_assertLogEntries(logCapture, url);
+
+			_assertDocumentLibraryValue(ddmFormValues, LocaleUtil.US);
+
+			Assert.assertEquals(
+				url, _getValueString(ddmFormValues, LocaleUtil.SPAIN));
+		}
 	}
 
 	@Test
@@ -168,6 +184,17 @@ public class DDMFieldAttributeUpgradeProcessTest {
 
 		Assert.assertEquals(
 			ddmFieldAttributes.toString(), 1, ddmFieldAttributes.size());
+	}
+
+	private void _assertLogEntries(LogCapture logCapture, String url) {
+		List<LogEntry> logEntries = logCapture.getLogEntries();
+
+		Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
+
+		LogEntry logEntry = logEntries.get(0);
+
+		Assert.assertEquals(
+			"Unable to get file entry from URL " + url, logEntry.getMessage());
 	}
 
 	private String _getImageGalleryURL(String uuid) {
@@ -241,6 +268,10 @@ public class DDMFieldAttributeUpgradeProcessTest {
 		return _ddmFieldLocalService.getDDMFormValues(
 			ddmStructure.getDDMForm(), _storageId);
 	}
+
+	private static final String _CLASS_NAME =
+		"com.liferay.journal.internal.upgrade.helper." +
+			"JournalArticleImageUpgradeHelper";
 
 	private static final String _FIELD_NAME = "DocumentLibrary";
 
