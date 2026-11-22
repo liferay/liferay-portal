@@ -5,9 +5,11 @@ Keeps each persistence read that tests make through `TransactionTestUtil.invoke`
 - A call site inside a test util method needs shared usage, which means two or more classes call that method. A test util method that no class calls is dead code and is removed. A test util method that one test class calls is moved into that test.
 - A call site in a test class stays there only while no other test class makes the same call. When two or more test classes call the same persistence and method, the call moves into one test util method that all of them call.
 
+A third rule places a test util method by the entity whose persistence it reads. A method of a class named `*TestUtil` that reads `<Entity>Util.getPersistence()` belongs in `<Entity>TestUtil`, not in the test util of another entity or of an area: a method that reads `ObjectDefinitionSettingUtil.getPersistence()` belongs in `ObjectDefinitionSettingTestUtil`, not in `ObjectDefinitionTestUtil`. The rule applies to the read in any shape, with or without `TransactionTestUtil`, and only to a class named `*TestUtil`.
+
 A test util class is a class in a `-test-util` module, a class in `portal-test`, or a class named `*TestUtil`. Every other class that calls `TransactionTestUtil.invoke` counts as a test class.
 
-The validation judges the branch, not the repository. A repeated call is reported only when the branch changes one of the test classes that make it, and a test util method is reported only when the branch changes a line of that method or takes one of its callers away. An offender that already exists on the base and that the branch leaves alone does not fail it.
+The validation judges the branch, not the repository. A repeated call is reported only when the branch changes one of the test classes that make it, a test util method is reported only when the branch changes a line of that method or takes one of its callers away, and a method that reads the persistence of another entity is reported only when the branch changes a line of that method. An offender that already exists on the base and that the branch leaves alone does not fail it.
 
 The scan reads one call shape, `TransactionTestUtil.invoke(<Name>.getPersistence(), <parameter> -> <parameter>.<method>(`, and identifies a persistence by the simple name of its `*Util` class. A call in any other shape, such as one that passes a persistence held in a field, a lambda with a block body, or a `TransactionConfig`, cannot be identified, so the scan lists it as a candidate for judgment when the branch changes it rather than passing it silently. A test util method whose own class names it again, through an overload or a call from another method, is listed the same way, since its callers cannot be counted mechanically. The scan does not report a test class that repeats a call a test util method already wraps, and it counts only the callers that name the test util class, so a caller that reaches the method through a static import or a subclass is not counted.
 
@@ -27,10 +29,11 @@ The match takes test code only, which is any Java file under a module whose name
 
 ## Command
 
-This check is static and needs no build. It lists every `TransactionTestUtil.invoke` call in the Java files of the repository, since a call the branch adds can repeat one in a file the branch never touched, and then reports only what the branch changes. A call is identified by the persistence and the method it reads, and it sits either in a test util class, which is a class under a `-test-util` module or `portal-test` or one named `*TestUtil`, or in a test class, which is every other class. It uses `command grep` so the callers are counted by the system grep rather than the shell's `grep` wrapper, which some environments route to another tool with its own defaults.
+This check is static and needs no build. It lists every `TransactionTestUtil.invoke` call in the Java files of the repository, since a call the branch adds can repeat one in a file the branch never touched, and then reports only what the branch changes. A call is identified by the persistence and the method it reads, and it sits either in a test util class, which is a class under a `-test-util` module or `portal-test` or one named `*TestUtil`, or in a test class, which is every other class. It also reads every `*TestUtil` class the branch changes for `<Entity>Util.getPersistence()`, in any shape. It uses `command grep` so the callers are counted by the system grep rather than the shell's `grep` wrapper, which some environments route to another tool with its own defaults.
 
 - A call that two or more test classes make to the same persistence and method, when the branch changes at least one of those test classes. Each changed test class prints as `<path>:<line>: repeats <persistence>.<method>, which is also called at <path>:<line>`, with every other test class that makes the call at the end.
 - A call inside a test util method that fewer than two other classes call, when the branch changes a line of that method or leaves it with fewer callers than it had at the merge base. It prints as `<path>:<line>: <class>.<method> wraps <persistence>.<method> and no other class calls it` or `<path>:<line>: <class>.<method> wraps <persistence>.<method> and only <path> calls it`.
+- A method of a `*TestUtil` class that reads `<Entity>Util.getPersistence()` while the class is not named `<Entity>TestUtil`, when the branch changes a line of that method. It prints as `<path>:<line>: <class>.<method> reads <Entity>Util.getPersistence() and belongs in <Entity>TestUtil`, where `<line>` is the line of the read. A read in a field initializer or a nested class is not reported, the same as in the Source Formatter check.
 - A candidate for judgment, which prints with `candidate,` after the line number: a call in a shape the scan cannot read, a call in a test util class outside a method the scan can name, or a test util method that its own class names again.
 
 A caller of a test util method is another Java file that names the class with its package, or sits in that package, and calls the method on the class or passes it as a method reference. The method of a call site is the run of lines between two blank lines at class level, which is one member in formatted code. The scan drops comments and string literals before it reads a file, so a brace or a call inside one is never counted.
@@ -38,7 +41,49 @@ A caller of a test util method is another Java file that names the class with it
 The callers at the merge base are counted only in the files whose diff adds or removes a line that names the test util class or the method, so the base is never searched as a whole.
 
 ```bash
-CALL_SITES='
+SOURCE='
+	function findMember(line,    header, k, text) {
+		enclosing = "?"
+		first = line
+		internal = 0
+
+		while ((first > 1) && (depths[first - 2] > 0) && ((depths[first - 1] > 1) || (lines[first - 1] ~ /[^[:space:]]/))) {
+			first--
+		}
+
+		last = line
+
+		while ((last < NR) && (depths[last] > 1)) {
+			last++
+		}
+
+		if (depths[line - 1] > 1) {
+			header = ""
+
+			for (k = first; k <= line; k++) {
+				header = header " " lines[k]
+
+				if (depths[k] > 1) {
+					break
+				}
+			}
+
+			sub(/\{.*/, "", header)
+
+			gsub(/@[A-Za-z0-9_$.]+(\([^()]*\))?/, " ", header)
+
+			if ((header !~ /=|(^|[^[:alnum:]_$])(class|enum|interface|record)[[:space:]]/) && match(header, /[A-Za-z_$][A-Za-z0-9_$]*[[:space:]]*\(/)) {
+				enclosing = substr(header, RSTART, RLENGTH - 1)
+
+				gsub(/[[:space:]]/, "", enclosing)
+
+				text = all
+
+				internal = gsub("(^|[^[:alnum:]_$.])" enclosing "[[:space:]]*\\(", "", text) - 1
+			}
+		}
+	}
+
 	function getRow(position,    text) {
 		text = substr(all, 1, position)
 
@@ -114,7 +159,9 @@ CALL_SITES='
 		depth += gsub(/\{/, "", text) - gsub(/\}/, "", text)
 		depths[NR] = depth
 	}
+'
 
+CALL_SITES="${SOURCE}"'
 	END {
 		p = 0
 		rest = all
@@ -141,9 +188,7 @@ CALL_SITES='
 				}
 			}
 
-			enclosing = "?"
 			finder = "?"
-			internal = 0
 			line = getRow(start)
 			persistence = "?"
 			text = substr(all, p + 1, i - p - 1)
@@ -162,43 +207,7 @@ CALL_SITES='
 				}
 			}
 
-			first = line
-
-			while ((first > 1) && (depths[first - 2] > 0) && ((depths[first - 1] > 1) || (lines[first - 1] ~ /[^[:space:]]/))) {
-				first--
-			}
-
-			last = line
-
-			while ((last < NR) && (depths[last] > 1)) {
-				last++
-			}
-
-			if (depths[line - 1] > 1) {
-				header = ""
-
-				for (k = first; k <= line; k++) {
-					header = header " " lines[k]
-
-					if (depths[k] > 1) {
-						break
-					}
-				}
-
-				sub(/\{.*/, "", header)
-
-				gsub(/@[A-Za-z0-9_$.]+(\([^()]*\))?/, " ", header)
-
-				if ((header !~ /=|(^|[^[:alnum:]_$])(class|enum|interface|record)[[:space:]]/) && match(header, /[A-Za-z_$][A-Za-z0-9_$]*[[:space:]]*\(/)) {
-					enclosing = substr(header, RSTART, RLENGTH - 1)
-
-					gsub(/[[:space:]]/, "", enclosing)
-
-					text = all
-
-					internal = gsub("(^|[^[:alnum:]_$.])" enclosing "[[:space:]]*\\(", "", text) - 1
-				}
-			}
+			findMember(line)
 
 			print FILENAME "\t" line "\t" getRow(i) "\t" persistence "\t" finder "\t" enclosing "\t" first "\t" last "\t" internal
 		}
@@ -263,6 +272,26 @@ DUPLICATES='
 	}
 '
 
+LOOKUPS="${SOURCE}"'
+	END {
+		p = 0
+		rest = all
+
+		while (match(rest, /[A-Za-z_$][A-Za-z0-9_$]*Util[[:space:]]*\.[[:space:]]*getPersistence[[:space:]]*\([[:space:]]*\)/)) {
+			entity = substr(rest, RSTART, RLENGTH)
+			line = getRow(p + RSTART)
+			p += RSTART + RLENGTH - 1
+			rest = substr(rest, RSTART + RLENGTH)
+
+			sub(/Util[[:space:]]*\.[^.]*$/, "", entity)
+
+			findMember(line)
+
+			print FILENAME "\t" line "\t" entity "\t" enclosing "\t" first "\t" last
+		}
+	}
+'
+
 TOUCHED='
 	/^@@/ {
 		size = split(substr($3, 2), range, ",")
@@ -285,6 +314,17 @@ TOUCHED='
 	}
 '
 
+CHANGED=$(bash "${SKILL_DIR}/select_paths.sh" "${MERGE_BASE}" "${VALIDATION_FILE}")
+
+READS=$(
+	printf '%s\n' "${CHANGED}" | while IFS= read -r FILE
+	do
+		[[ ${FILE} == *TestUtil.java && -f ${FILE} ]] || continue
+
+		awk "${LOOKUPS}" "${FILE}"
+	done
+)
+
 SITES=$(
 	git grep --files-with-matches --fixed-strings --word-regexp 'TransactionTestUtil' -- '*.java' | while IFS= read -r FILE
 	do
@@ -293,8 +333,6 @@ SITES=$(
 		awk "${CALL_SITES}" "${FILE}"
 	done
 )
-
-CHANGED=$(bash "${SKILL_DIR}/select_paths.sh" "${MERGE_BASE}" "${VALIDATION_FILE}")
 
 FINDINGS=$(
 	{
@@ -394,6 +432,20 @@ FINDINGS=$(
 				echo "${FILE}:${LINE}: ${CLASS}.${ENCLOSING} wraps ${PERSISTENCE}.${FINDER} and ${USAGE}"
 			fi
 		done <<< "${SITES}"
+
+		while IFS=$'\t' read -r FILE LINE ENTITY ENCLOSING FIRST LAST
+		do
+			[[ -z ${FILE} || ${ENCLOSING} == "?" ]] && continue
+
+			CLASS=$(basename "${FILE}" .java)
+
+			[[ ${CLASS} == "${ENTITY}TestUtil" ]] && continue
+
+			if git diff --unified=0 "${MERGE_BASE}...HEAD" -- "${FILE}" | awk -v first="${FIRST}" -v last="${LAST}" "${TOUCHED}"
+			then
+				echo "${FILE}:${LINE}: ${CLASS}.${ENCLOSING} reads ${ENTITY}Util.getPersistence() and belongs in ${ENTITY}TestUtil"
+			fi
+		done <<< "${READS}"
 	} | sort --unique
 )
 
@@ -406,7 +458,7 @@ Run the command from `${REPO_ROOT}`, with the branch checked out and the working
 
 Use `while read` rather than a `for` over an unquoted substitution, so a path holding whitespace stays one file rather than splitting into several.
 
-When `${FINDINGS}` is empty, the branch adds no repeated call and leaves no test util method without shared usage, so the validation passes.
+When `${FINDINGS}` is empty, the branch adds no repeated call, leaves no test util method without shared usage, and puts no persistence read in the test util of another entity, so the validation passes.
 
 Otherwise, a line without `candidate,` is a finding as printed. A line with it is a candidate, not a finding. Read the code it names, then classify it.
 
@@ -419,11 +471,11 @@ When every line is a candidate and none is a finding, the validation passes.
 When any line is a finding, the validation fails. Report the message below to the developer with one row for each finding and return it as the failure note.
 
 ```markdown
-**A `TransactionTestUtil.invoke` call site is not kept in one shared place.** A test util method that wraps a persistence read must be called by two or more classes: remove one that no class calls, and move one that a single test class calls into that test, as a private method when the test calls it more than once. A persistence read that two or more test classes repeat must move into one test util method that all of them call. For additional questions, use #t-core-infrastructure on Slack.
+**A `TransactionTestUtil.invoke` call site is not kept in one shared place.** A test util method that wraps a persistence read must be called by two or more classes: remove one that no class calls, and move one that a single test class calls into that test, as a private method when the test calls it more than once. A persistence read that two or more test classes repeat must move into one test util method that all of them call. A test util method that reads `<Entity>Util.getPersistence()` belongs in `<Entity>TestUtil`. For additional questions, use #t-core-infrastructure on Slack.
 
 | File | Line | Call | Fix |
 | --- | --- | --- | --- |
-| <file> | <line> | <persistence>.<method> | <remove the test util method, inline it into the named test, or share one test util method with the named tests> |
+| <file> | <line> | <persistence>.<method>, or <Entity>Util.getPersistence() for a read in the wrong test util | <remove the test util method, inline it into the named test, share one test util method with the named tests, or move the method into <Entity>TestUtil> |
 ```
 
 ## Time Estimate
