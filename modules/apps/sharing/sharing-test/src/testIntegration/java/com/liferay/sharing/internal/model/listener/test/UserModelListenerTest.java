@@ -38,6 +38,7 @@ import com.liferay.portal.test.rule.SynchronousMailTestRule;
 import com.liferay.sharing.model.SharingEntry;
 import com.liferay.sharing.security.permission.SharingEntryAction;
 import com.liferay.sharing.service.SharingEntryLocalService;
+import com.liferay.sharing.test.util.SharingEntryTestUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -223,7 +224,7 @@ public class UserModelListenerTest {
 			_ticketLocalService.fetchTicket(ticket2.getTicketId()));
 
 		List<SharingEntry> toUserSharingEntries =
-			_sharingEntryLocalService.getToUserSharingEntries(user.getUserId());
+			SharingEntryTestUtil.getToUserSharingEntries(user.getUserId());
 
 		Assert.assertEquals(
 			toUserSharingEntries.toString(), 1, toUserSharingEntries.size());
@@ -417,7 +418,7 @@ public class UserModelListenerTest {
 		_assertToTicketSharingEntriesCount(0, ticket);
 
 		List<SharingEntry> toUserSharingEntries =
-			_sharingEntryLocalService.getToUserSharingEntries(user.getUserId());
+			SharingEntryTestUtil.getToUserSharingEntries(user.getUserId());
 
 		Assert.assertEquals(
 			toUserSharingEntries.toString(), 1, toUserSharingEntries.size());
@@ -485,17 +486,15 @@ public class UserModelListenerTest {
 				_group1.getGroupId(), TestPropsValues.getUserId()));
 
 		List<SharingEntry> toUserSharingEntries =
-			_sharingEntryLocalService.getToUserSharingEntries(
-				toUser.getUserId());
+			SharingEntryTestUtil.getToUserSharingEntries(toUser.getUserId());
 
 		Assert.assertEquals(
 			toUserSharingEntries.toString(), 1, toUserSharingEntries.size());
 
 		_userLocalService.deleteUser(toUser.getUserId());
 
-		toUserSharingEntries =
-			_sharingEntryLocalService.getToUserSharingEntries(
-				toUser.getUserId());
+		toUserSharingEntries = SharingEntryTestUtil.getToUserSharingEntries(
+			toUser.getUserId());
 
 		Assert.assertEquals(
 			toUserSharingEntries.toString(), 0, toUserSharingEntries.size());
@@ -521,17 +520,15 @@ public class UserModelListenerTest {
 				_group1.getGroupId(), TestPropsValues.getUserId()));
 
 		List<SharingEntry> toUserSharingEntries =
-			_sharingEntryLocalService.getToUserSharingEntries(
-				toUser.getUserId());
+			SharingEntryTestUtil.getToUserSharingEntries(toUser.getUserId());
 
 		Assert.assertEquals(
 			toUserSharingEntries.toString(), 1, toUserSharingEntries.size());
 
 		_userLocalService.deleteUser(unrelatedUser.getUserId());
 
-		toUserSharingEntries =
-			_sharingEntryLocalService.getToUserSharingEntries(
-				toUser.getUserId());
+		toUserSharingEntries = SharingEntryTestUtil.getToUserSharingEntries(
+			toUser.getUserId());
 
 		Assert.assertEquals(
 			toUserSharingEntries.toString(), 1, toUserSharingEntries.size());

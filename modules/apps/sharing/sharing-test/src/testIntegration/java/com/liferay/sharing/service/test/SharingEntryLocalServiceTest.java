@@ -30,6 +30,7 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.TransactionTestUtil;
 import com.liferay.portal.kernel.test.util.UserGroupTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -53,6 +54,7 @@ import com.liferay.sharing.exception.SharingEntryToUserIdException;
 import com.liferay.sharing.model.SharingEntry;
 import com.liferay.sharing.security.permission.SharingEntryAction;
 import com.liferay.sharing.service.SharingEntryLocalService;
+import com.liferay.sharing.service.persistence.SharingEntryUtil;
 import com.liferay.sharing.util.comparator.SharingEntryModifiedDateComparator;
 
 import java.time.Instant;
@@ -645,14 +647,14 @@ public class SharingEntryLocalServiceTest {
 			Assert.assertEquals(
 				2,
 				_sharingEntryLocalService.getToUserSharingEntriesCount(
-					_toUser.getUserId()));
+					_toUser.getUserId(), 0));
 
 			_sharingEntryLocalService.deleteExpiredEntries();
 
 			Assert.assertEquals(
 				1,
 				_sharingEntryLocalService.getToUserSharingEntriesCount(
-					_toUser.getUserId()));
+					_toUser.getUserId(), 0));
 		}
 		finally {
 			_groupLocalService.deleteGroup(group);
@@ -677,17 +679,13 @@ public class SharingEntryLocalServiceTest {
 		}
 
 		Assert.assertEquals(
-			3,
-			_sharingEntryLocalService.getGroupSharingEntriesCount(
-				_group.getGroupId()));
+			3, _getGroupSharingEntriesCount(_group.getGroupId()));
 
 		_sharingEntryLocalService.deleteGroupSharingEntries(
 			_group.getGroupId());
 
 		Assert.assertEquals(
-			0,
-			_sharingEntryLocalService.getGroupSharingEntriesCount(
-				_group.getGroupId()));
+			0, _getGroupSharingEntriesCount(_group.getGroupId()));
 	}
 
 	@Test
@@ -709,27 +707,19 @@ public class SharingEntryLocalServiceTest {
 				Arrays.asList(SharingEntryAction.VIEW), null, _serviceContext);
 
 			Assert.assertEquals(
-				1,
-				_sharingEntryLocalService.getGroupSharingEntriesCount(
-					group1.getGroupId()));
+				1, _getGroupSharingEntriesCount(group1.getGroupId()));
 
 			Assert.assertEquals(
-				1,
-				_sharingEntryLocalService.getGroupSharingEntriesCount(
-					group2.getGroupId()));
+				1, _getGroupSharingEntriesCount(group2.getGroupId()));
 
 			_sharingEntryLocalService.deleteGroupSharingEntries(
 				group1.getGroupId());
 
 			Assert.assertEquals(
-				0,
-				_sharingEntryLocalService.getGroupSharingEntriesCount(
-					group1.getGroupId()));
+				0, _getGroupSharingEntriesCount(group1.getGroupId()));
 
 			Assert.assertEquals(
-				1,
-				_sharingEntryLocalService.getGroupSharingEntriesCount(
-					group2.getGroupId()));
+				1, _getGroupSharingEntriesCount(group2.getGroupId()));
 		}
 		finally {
 			_groupLocalService.deleteGroup(group2);
@@ -817,38 +807,6 @@ public class SharingEntryLocalServiceTest {
 	}
 
 	@Test
-	public void testDeleteSharingEntryByExternalReferenceCode()
-		throws Exception {
-
-		String externalReferenceCode = RandomTestUtil.randomString();
-
-		_sharingEntryLocalService.addSharingEntry(
-			externalReferenceCode, _fromUser.getUserId(), 0, 0,
-			_toUser.getUserId(), _classNameId, _group.getGroupId(),
-			_group.getGroupId(), true, Arrays.asList(SharingEntryAction.VIEW),
-			null, _serviceContext);
-
-		Assert.assertNotNull(
-			_sharingEntryLocalService.fetchSharingEntryByExternalReferenceCode(
-				externalReferenceCode, _group.getGroupId()));
-
-		_sharingEntryLocalService.deleteSharingEntryByExternalReferenceCode(
-			externalReferenceCode, _group.getGroupId());
-
-		Assert.assertNull(
-			_sharingEntryLocalService.fetchSharingEntryByExternalReferenceCode(
-				externalReferenceCode, _group.getGroupId()));
-	}
-
-	@Test(expected = NoSuchEntryException.class)
-	public void testDeleteSharingEntryByExternalReferenceCodeWithNonexistingExternalReferenceCode()
-		throws Exception {
-
-		_sharingEntryLocalService.deleteSharingEntryByExternalReferenceCode(
-			RandomTestUtil.randomString(), _group.getGroupId());
-	}
-
-	@Test
 	public void testDeleteToUserSharingEntries() throws Exception {
 		for (int i = 0; i < 3; i++) {
 			Group group = GroupTestUtil.addGroup();
@@ -868,7 +826,7 @@ public class SharingEntryLocalServiceTest {
 		Assert.assertEquals(
 			3,
 			_sharingEntryLocalService.getToUserSharingEntriesCount(
-				_toUser.getUserId()));
+				_toUser.getUserId(), 0));
 
 		_sharingEntryLocalService.deleteToUserSharingEntries(
 			_toUser.getUserId());
@@ -876,7 +834,7 @@ public class SharingEntryLocalServiceTest {
 		Assert.assertEquals(
 			0,
 			_sharingEntryLocalService.getToUserSharingEntriesCount(
-				_toUser.getUserId()));
+				_toUser.getUserId(), 0));
 	}
 
 	@Test
@@ -953,8 +911,12 @@ public class SharingEntryLocalServiceTest {
 			_classNameId, _group.getGroupId(), _group.getGroupId(), true,
 			Arrays.asList(SharingEntryAction.VIEW), null, _serviceContext);
 
-		SharingEntry sharingEntry = _sharingEntryLocalService.getSharingEntry(
-			ticket.getTicketId(), 0, 0, _classNameId, _group.getGroupId());
+		SharingEntry sharingEntry = TransactionTestUtil.invoke(
+			SharingEntryUtil.getPersistence(),
+			sharingEntryPersistence ->
+				sharingEntryPersistence.findByTT_TUG_TU_C_C(
+					ticket.getTicketId(), 0, 0, _classNameId,
+					_group.getGroupId()));
 
 		Assert.assertEquals(ticket.getTicketId(), sharingEntry.getToTicketId());
 		Assert.assertEquals(0, sharingEntry.getToUserGroupId());
@@ -965,7 +927,7 @@ public class SharingEntryLocalServiceTest {
 	@TestInfo("LPD-48130")
 	public void testGetSharingEntryThrowsWhenNotFound() throws Exception {
 		_sharingEntryLocalService.getSharingEntry(
-			0, 0, _toUser.getUserId(), _classNameId, _group.getGroupId());
+			_toUser.getUserId(), _classNameId, _group.getGroupId());
 	}
 
 	@Test
@@ -1583,6 +1545,13 @@ public class SharingEntryLocalServiceTest {
 			Date.from(instant.minus(1, ChronoUnit.DAYS)));
 
 		_sharingEntryLocalService.updateSharingEntry(sharingEntry);
+	}
+
+	private int _getGroupSharingEntriesCount(long groupId) throws Exception {
+		return TransactionTestUtil.invoke(
+			SharingEntryUtil.getPersistence(),
+			sharingEntryPersistence -> sharingEntryPersistence.countByGroupId(
+				groupId));
 	}
 
 	private MockHttpServletRequest _getMockHttpServletRequest()

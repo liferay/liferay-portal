@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.TransactionTestUtil;
 import com.liferay.portal.kernel.test.util.UserGroupTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.test.rule.Inject;
@@ -28,6 +29,7 @@ import com.liferay.portal.test.rule.SynchronousMailTestRule;
 import com.liferay.sharing.model.SharingEntry;
 import com.liferay.sharing.security.permission.SharingEntryAction;
 import com.liferay.sharing.service.SharingEntryLocalService;
+import com.liferay.sharing.service.persistence.SharingEntryUtil;
 
 import java.util.Arrays;
 import java.util.List;
@@ -84,18 +86,15 @@ public class GroupModelListenerTest {
 				ServiceContextTestUtil.getServiceContext(
 					_group.getGroupId(), TestPropsValues.getUserId()));
 
-			List<SharingEntry> groupSharingEntries =
-				_sharingEntryLocalService.getGroupSharingEntries(
-					_group.getGroupId());
+			List<SharingEntry> groupSharingEntries = _getGroupSharingEntries(
+				_group.getGroupId());
 
 			Assert.assertEquals(
 				groupSharingEntries.toString(), 2, groupSharingEntries.size());
 
 			_groupLocalService.deleteGroup(_group.getGroupId());
 
-			groupSharingEntries =
-				_sharingEntryLocalService.getGroupSharingEntries(
-					_group.getGroupId());
+			groupSharingEntries = _getGroupSharingEntries(_group.getGroupId());
 
 			Assert.assertEquals(
 				groupSharingEntries.toString(), 0, groupSharingEntries.size());
@@ -129,17 +128,15 @@ public class GroupModelListenerTest {
 				classNameId, group2.getGroupId(), group2.getGroupId(), true,
 				Arrays.asList(SharingEntryAction.VIEW), null, serviceContext);
 
-			List<SharingEntry> groupSharingEntries1 =
-				_sharingEntryLocalService.getGroupSharingEntries(
-					_group.getGroupId());
+			List<SharingEntry> groupSharingEntries1 = _getGroupSharingEntries(
+				_group.getGroupId());
 
 			Assert.assertEquals(
 				groupSharingEntries1.toString(), 1,
 				groupSharingEntries1.size());
 
-			List<SharingEntry> groupSharingEntries2 =
-				_sharingEntryLocalService.getGroupSharingEntries(
-					group2.getGroupId());
+			List<SharingEntry> groupSharingEntries2 = _getGroupSharingEntries(
+				group2.getGroupId());
 
 			Assert.assertEquals(
 				groupSharingEntries2.toString(), 1,
@@ -147,17 +144,13 @@ public class GroupModelListenerTest {
 
 			_groupLocalService.deleteGroup(_group.getGroupId());
 
-			groupSharingEntries1 =
-				_sharingEntryLocalService.getGroupSharingEntries(
-					_group.getGroupId());
+			groupSharingEntries1 = _getGroupSharingEntries(_group.getGroupId());
 
 			Assert.assertEquals(
 				groupSharingEntries1.toString(), 0,
 				groupSharingEntries1.size());
 
-			groupSharingEntries2 =
-				_sharingEntryLocalService.getGroupSharingEntries(
-					group2.getGroupId());
+			groupSharingEntries2 = _getGroupSharingEntries(group2.getGroupId());
 
 			Assert.assertEquals(
 				groupSharingEntries2.toString(), 1,
@@ -166,6 +159,15 @@ public class GroupModelListenerTest {
 		finally {
 			_groupLocalService.deleteGroup(group2);
 		}
+	}
+
+	private List<SharingEntry> _getGroupSharingEntries(long groupId)
+		throws Exception {
+
+		return TransactionTestUtil.invoke(
+			SharingEntryUtil.getPersistence(),
+			sharingEntryPersistence -> sharingEntryPersistence.findByGroupId(
+				groupId));
 	}
 
 	@Inject

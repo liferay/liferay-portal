@@ -3,6 +3,7 @@ dependencies {
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.test", version: "default"
 	compileOnly project(":apps:portal-security:portal-security-permission-api")
 	compileOnly project(":apps:sharing:sharing-api")
+	compileOnly project(":core:petra:petra-function")
 	compileOnly project(":core:petra:petra-string")
 }
 

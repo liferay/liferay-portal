@@ -335,16 +335,6 @@ public class SharingEntryLocalServiceImpl
 	}
 
 	@Override
-	public SharingEntry deleteSharingEntryByExternalReferenceCode(
-			String externalReferenceCode, long groupId)
-		throws PortalException {
-
-		return sharingEntryLocalService.deleteSharingEntry(
-			getSharingEntryByExternalReferenceCode(
-				externalReferenceCode, groupId));
-	}
-
-	@Override
 	public void deleteToTicketSharingEntries(long toTicketId) {
 		List<SharingEntry> sharingEntries =
 			sharingEntryPersistence.findByToTicketId(toTicketId);
@@ -450,28 +440,6 @@ public class SharingEntryLocalServiceImpl
 	}
 
 	/**
-	 * Returns the the group's sharing entries.
-	 *
-	 * @param  groupId the primary key of the group
-	 * @return the sharing entries
-	 */
-	@Override
-	public List<SharingEntry> getGroupSharingEntries(long groupId) {
-		return sharingEntryPersistence.findByGroupId(groupId);
-	}
-
-	/**
-	 * Returns the the group's sharing entries count.
-	 *
-	 * @param  groupId the primary key of the group
-	 * @return the sharing entries count
-	 */
-	@Override
-	public int getGroupSharingEntriesCount(long groupId) {
-		return sharingEntryPersistence.countByGroupId(groupId);
-	}
-
-	/**
 	 * Returns the resource's sharing entries. The class name ID and class
 	 * primary key identify the resource's type and instance, respectively.
 	 *
@@ -541,16 +509,6 @@ public class SharingEntryLocalServiceImpl
 	}
 
 	@Override
-	public SharingEntry getSharingEntry(
-			long toTicketId, long toUserGroupId, long toUserId,
-			long classNameId, long classPK)
-		throws PortalException {
-
-		return sharingEntryPersistence.findByTT_TUG_TU_C_C(
-			toTicketId, toUserGroupId, toUserId, classNameId, classPK);
-	}
-
-	@Override
 	public List<SharingEntry> getToTicketSharingEntries(long toTicketId) {
 		return sharingEntryPersistence.findByToTicketId(toTicketId);
 	}
@@ -558,32 +516,6 @@ public class SharingEntryLocalServiceImpl
 	@Override
 	public List<SharingEntry> getToUserGroupSharingEntries(long toUserGroupId) {
 		return sharingEntryPersistence.findByToUserGroupId(toUserGroupId);
-	}
-
-	/**
-	 * Returns the list of sharing entries for resources shared with the user.
-	 *
-	 * @param  toUserId the user's ID
-	 * @return the list of sharing entries
-	 */
-	@Override
-	public List<SharingEntry> getToUserSharingEntries(long toUserId) {
-		return sharingEntryPersistence.findByToUserId(toUserId);
-	}
-
-	/**
-	 * Returns the range of sharing entries for resources shared with the user.
-	 *
-	 * @param  toUserId the user's ID
-	 * @param  start the range's lower bound
-	 * @param  end the range's upper bound (not inclusive)
-	 * @return the range of sharing entries
-	 */
-	@Override
-	public List<SharingEntry> getToUserSharingEntries(
-		long toUserId, int start, int end) {
-
-		return sharingEntryPersistence.findByToUserId(toUserId, start, end);
 	}
 
 	/**
@@ -625,17 +557,6 @@ public class SharingEntryLocalServiceImpl
 
 		return sharingEntryPersistence.findByToUserId(
 			toUserId, start, end, orderByComparator);
-	}
-
-	/**
-	 * Returns the number of sharing entries for resources shared with the user.
-	 *
-	 * @param  toUserId the user's ID
-	 * @return the number of sharing entries
-	 */
-	@Override
-	public int getToUserSharingEntriesCount(long toUserId) {
-		return sharingEntryPersistence.countByToUserId(toUserId);
 	}
 
 	/**
@@ -710,39 +631,6 @@ public class SharingEntryLocalServiceImpl
 		}
 
 		return false;
-	}
-
-	/**
-	 * Updates the sharing entry in the database.
-	 *
-	 * @param      sharingEntryId the primary key of the sharing entry
-	 * @param      sharingEntryActions the sharing entry actions
-	 * @param      shareable whether the user the resource is shared with can
-	 *             also share it
-	 * @param      expirationDate the date when the sharing entry expires
-	 * @param      serviceContext the service context
-	 * @return     the sharing entry
-	 * @throws     PortalException if the sharing entry does not exist, if the
-	 *             sharing entry actions are invalid (e.g., empty, don't contain
-	 *             {@code SharingEntryAction#VIEW}, or contain a {@code null}
-	 *             value), or if the expiration date is a past value
-	 * @deprecated As of Mueller (7.2.x), replaced by {@link
-	 *             com.liferay.sharing.service.SharingEntryLocalService#updateSharingEntry(
-	 *             long, long, Collection, boolean, Date, ServiceContext)}
-	 * @review
-	 */
-	@Deprecated
-	@Override
-	public SharingEntry updateSharingEntry(
-			long sharingEntryId,
-			Collection<SharingEntryAction> sharingEntryActions,
-			boolean shareable, Date expirationDate,
-			ServiceContext serviceContext)
-		throws PortalException {
-
-		return sharingEntryLocalService.updateSharingEntry(
-			serviceContext.getUserId(), sharingEntryId, sharingEntryActions,
-			shareable, expirationDate, serviceContext);
 	}
 
 	/**

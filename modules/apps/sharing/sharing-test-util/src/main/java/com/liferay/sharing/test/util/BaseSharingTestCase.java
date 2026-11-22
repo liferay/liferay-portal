@@ -140,7 +140,7 @@ public abstract class BaseSharingTestCase<T extends ClassedModel> {
 			null, serviceContext);
 
 		List<SharingEntry> toUserSharingEntries =
-			_sharingEntryLocalService.getToUserSharingEntries(
+			SharingEntryTestUtil.getToUserSharingEntries(
 				_groupUser.getUserId());
 
 		Assert.assertEquals(
@@ -148,9 +148,8 @@ public abstract class BaseSharingTestCase<T extends ClassedModel> {
 
 		deleteModel(model);
 
-		toUserSharingEntries =
-			_sharingEntryLocalService.getToUserSharingEntries(
-				_groupUser.getUserId());
+		toUserSharingEntries = SharingEntryTestUtil.getToUserSharingEntries(
+			_groupUser.getUserId());
 
 		Assert.assertEquals(
 			toUserSharingEntries.toString(), 0, toUserSharingEntries.size());
@@ -189,7 +188,7 @@ public abstract class BaseSharingTestCase<T extends ClassedModel> {
 			null, serviceContext);
 
 		List<SharingEntry> toUserSharingEntries =
-			_sharingEntryLocalService.getToUserSharingEntries(
+			SharingEntryTestUtil.getToUserSharingEntries(
 				_groupUser.getUserId());
 
 		Assert.assertEquals(
@@ -197,9 +196,8 @@ public abstract class BaseSharingTestCase<T extends ClassedModel> {
 
 		deleteModel(model1);
 
-		toUserSharingEntries =
-			_sharingEntryLocalService.getToUserSharingEntries(
-				_groupUser.getUserId());
+		toUserSharingEntries = SharingEntryTestUtil.getToUserSharingEntries(
+			_groupUser.getUserId());
 
 		Assert.assertEquals(
 			toUserSharingEntries.toString(), 1, toUserSharingEntries.size());
@@ -343,7 +341,7 @@ public abstract class BaseSharingTestCase<T extends ClassedModel> {
 			null, serviceContext);
 
 		List<SharingEntry> toUserSharingEntries =
-			_sharingEntryLocalService.getToUserSharingEntries(
+			SharingEntryTestUtil.getToUserSharingEntries(
 				_groupUser.getUserId());
 
 		Assert.assertEquals(
@@ -351,9 +349,8 @@ public abstract class BaseSharingTestCase<T extends ClassedModel> {
 
 		moveModelToTrash(model);
 
-		toUserSharingEntries =
-			_sharingEntryLocalService.getToUserSharingEntries(
-				_groupUser.getUserId());
+		toUserSharingEntries = SharingEntryTestUtil.getToUserSharingEntries(
+			_groupUser.getUserId());
 
 		Assert.assertEquals(
 			toUserSharingEntries.toString(), 1, toUserSharingEntries.size());

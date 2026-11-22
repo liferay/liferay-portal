@@ -80,26 +80,6 @@ public class NotificationsSharingEntryLocalServiceWrapper
 
 	@Override
 	public SharingEntry updateSharingEntry(
-			long sharingEntryId,
-			Collection<SharingEntryAction> sharingEntryActions,
-			boolean shareable, Date expirationDate,
-			ServiceContext serviceContext)
-		throws PortalException {
-
-		SharingEntry sharingEntry = super.updateSharingEntry(
-			sharingEntryId, sharingEntryActions, shareable, expirationDate,
-			serviceContext);
-
-		_sendNotificationEvent(
-			sharingEntry,
-			UserNotificationDefinition.NOTIFICATION_TYPE_UPDATE_ENTRY,
-			serviceContext);
-
-		return sharingEntry;
-	}
-
-	@Override
-	public SharingEntry updateSharingEntry(
 			long userId, long sharingEntryId,
 			Collection<SharingEntryAction> sharingEntryActions,
 			boolean shareable, Date expirationDate,
