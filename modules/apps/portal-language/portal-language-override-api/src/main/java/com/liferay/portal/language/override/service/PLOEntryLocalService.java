@@ -280,9 +280,6 @@ public interface PLOEntryLocalService
 	public int getPLOEntriesCount();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getPLOEntriesCount(long companyId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getPLOEntriesCount(long companyId, String keywords);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -328,4 +325,4 @@ public interface PLOEntryLocalService
 	public PLOEntry updatePLOEntry(PLOEntry ploEntry);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1404533960
+// LIFERAY-SERVICE-BUILDER-HASH:-1723913295

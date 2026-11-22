@@ -383,11 +383,6 @@ public class PLOEntryLocalServiceWrapper
 	}
 
 	@Override
-	public int getPLOEntriesCount(long companyId) {
-		return _ploEntryLocalService.getPLOEntriesCount(companyId);
-	}
-
-	@Override
 	public int getPLOEntriesCount(long companyId, String keywords) {
 		return _ploEntryLocalService.getPLOEntriesCount(companyId, keywords);
 	}
@@ -481,4 +476,4 @@ public class PLOEntryLocalServiceWrapper
 	private PLOEntryLocalService _ploEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1286585973
+// LIFERAY-SERVICE-BUILDER-HASH:-1806720149
