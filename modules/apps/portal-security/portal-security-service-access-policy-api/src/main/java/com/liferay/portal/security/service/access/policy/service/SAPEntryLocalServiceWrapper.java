@@ -293,24 +293,6 @@ public class SAPEntryLocalServiceWrapper
 	@Override
 	public java.util.List
 		<com.liferay.portal.security.service.access.policy.model.SAPEntry>
-			getCompanySAPEntries(
-				long companyId, int start, int end,
-				com.liferay.portal.kernel.util.OrderByComparator
-					<com.liferay.portal.security.service.access.policy.model.
-						SAPEntry> orderByComparator) {
-
-		return _sapEntryLocalService.getCompanySAPEntries(
-			companyId, start, end, orderByComparator);
-	}
-
-	@Override
-	public int getCompanySAPEntriesCount(long companyId) {
-		return _sapEntryLocalService.getCompanySAPEntriesCount(companyId);
-	}
-
-	@Override
-	public java.util.List
-		<com.liferay.portal.security.service.access.policy.model.SAPEntry>
 			getDefaultSAPEntries(long companyId, boolean defaultSAPEntry) {
 
 		return _sapEntryLocalService.getDefaultSAPEntries(
@@ -475,4 +457,4 @@ public class SAPEntryLocalServiceWrapper
 	private SAPEntryLocalService _sapEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:430723341
+// LIFERAY-SERVICE-BUILDER-HASH:-2028804625

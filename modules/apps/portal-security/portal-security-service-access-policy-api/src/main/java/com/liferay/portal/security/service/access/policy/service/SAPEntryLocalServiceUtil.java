@@ -251,18 +251,6 @@ public class SAPEntryLocalServiceUtil {
 		return getService().getCompanySAPEntries(companyId, start, end);
 	}
 
-	public static List<SAPEntry> getCompanySAPEntries(
-		long companyId, int start, int end,
-		OrderByComparator<SAPEntry> orderByComparator) {
-
-		return getService().getCompanySAPEntries(
-			companyId, start, end, orderByComparator);
-	}
-
-	public static int getCompanySAPEntriesCount(long companyId) {
-		return getService().getCompanySAPEntriesCount(companyId);
-	}
-
 	public static List<SAPEntry> getDefaultSAPEntries(
 		long companyId, boolean defaultSAPEntry) {
 
@@ -393,4 +381,4 @@ public class SAPEntryLocalServiceUtil {
 			SAPEntryLocalServiceUtil.class, SAPEntryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:640343752
+// LIFERAY-SERVICE-BUILDER-HASH:511641560

@@ -228,14 +228,6 @@ public interface SAPEntryLocalService
 		long companyId, int start, int end);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<SAPEntry> getCompanySAPEntries(
-		long companyId, int start, int end,
-		OrderByComparator<SAPEntry> orderByComparator);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCompanySAPEntriesCount(long companyId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<SAPEntry> getDefaultSAPEntries(
 		long companyId, boolean defaultSAPEntry);
 
@@ -329,4 +321,4 @@ public interface SAPEntryLocalService
 	public SAPEntry updateSAPEntry(SAPEntry sapEntry);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:274824020
+// LIFERAY-SERVICE-BUILDER-HASH:1075378778
