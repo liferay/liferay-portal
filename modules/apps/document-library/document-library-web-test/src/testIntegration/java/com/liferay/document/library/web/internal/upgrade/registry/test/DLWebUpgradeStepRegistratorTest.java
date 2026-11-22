@@ -6,9 +6,9 @@
 package com.liferay.document.library.web.internal.upgrade.registry.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.repository.RepositoryFactory;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.BundleContextTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
@@ -42,7 +42,8 @@ public class DLWebUpgradeStepRegistratorTest {
 
 	@Test
 	public void testRegister() throws Exception {
-		BundleContext bundleContext = SystemBundleUtil.getBundleContext();
+		BundleContext bundleContext = BundleContextTestUtil.getBundleContext(
+			DLWebUpgradeStepRegistratorTest.class);
 
 		Collection<ServiceReference<UpgradeStepRegistrator>> serviceReferences =
 			bundleContext.getServiceReferences(
