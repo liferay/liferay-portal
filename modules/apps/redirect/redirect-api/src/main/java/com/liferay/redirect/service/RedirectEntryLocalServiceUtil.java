@@ -331,14 +331,6 @@ public class RedirectEntryLocalServiceUtil {
 	}
 
 	public static List<RedirectEntry> getRedirectEntries(
-		long groupId, int start, int end,
-		OrderByComparator<RedirectEntry> orderByComparator) {
-
-		return getService().getRedirectEntries(
-			groupId, start, end, orderByComparator);
-	}
-
-	public static List<RedirectEntry> getRedirectEntries(
 		long groupId, String destinationURL) {
 
 		return getService().getRedirectEntries(groupId, destinationURL);
@@ -465,4 +457,4 @@ public class RedirectEntryLocalServiceUtil {
 			RedirectEntryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1930830259
+// LIFERAY-SERVICE-BUILDER-HASH:-1647597098

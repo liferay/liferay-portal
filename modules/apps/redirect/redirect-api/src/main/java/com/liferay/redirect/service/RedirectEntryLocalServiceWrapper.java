@@ -377,17 +377,6 @@ public class RedirectEntryLocalServiceWrapper
 
 	@Override
 	public java.util.List<com.liferay.redirect.model.RedirectEntry>
-		getRedirectEntries(
-			long groupId, int start, int end,
-			com.liferay.portal.kernel.util.OrderByComparator
-				<com.liferay.redirect.model.RedirectEntry> orderByComparator) {
-
-		return _redirectEntryLocalService.getRedirectEntries(
-			groupId, start, end, orderByComparator);
-	}
-
-	@Override
-	public java.util.List<com.liferay.redirect.model.RedirectEntry>
 		getRedirectEntries(long groupId, String destinationURL) {
 
 		return _redirectEntryLocalService.getRedirectEntries(
@@ -538,4 +527,4 @@ public class RedirectEntryLocalServiceWrapper
 	private RedirectEntryLocalService _redirectEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:500715199
+// LIFERAY-SERVICE-BUILDER-HASH:-742217886

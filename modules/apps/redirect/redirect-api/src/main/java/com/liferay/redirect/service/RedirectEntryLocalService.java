@@ -280,11 +280,6 @@ public interface RedirectEntryLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<RedirectEntry> getRedirectEntries(
-		long groupId, int start, int end,
-		OrderByComparator<RedirectEntry> orderByComparator);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<RedirectEntry> getRedirectEntries(
 		long groupId, String destinationURL);
 
 	/**
@@ -375,4 +370,4 @@ public interface RedirectEntryLocalService
 	public RedirectEntry updateRedirectEntry(RedirectEntry redirectEntry);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-655149554
+// LIFERAY-SERVICE-BUILDER-HASH:-1119207528

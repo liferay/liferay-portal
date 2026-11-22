@@ -225,12 +225,6 @@ public class RedirectNotFoundEntryLocalServiceUtil {
 		return getService().fetchRedirectNotFoundEntry(redirectNotFoundEntryId);
 	}
 
-	public static RedirectNotFoundEntry fetchRedirectNotFoundEntry(
-		long groupId, String url) {
-
-		return getService().fetchRedirectNotFoundEntry(groupId, url);
-	}
-
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 
@@ -296,14 +290,6 @@ public class RedirectNotFoundEntryLocalServiceUtil {
 			groupId, minModifiedDate, start, end, orderByComparator);
 	}
 
-	public static List<RedirectNotFoundEntry> getRedirectNotFoundEntries(
-		long groupId, int start, int end,
-		OrderByComparator<RedirectNotFoundEntry> orderByComparator) {
-
-		return getService().getRedirectNotFoundEntries(
-			groupId, start, end, orderByComparator);
-	}
-
 	/**
 	 * Returns the number of redirect not found entries.
 	 *
@@ -311,10 +297,6 @@ public class RedirectNotFoundEntryLocalServiceUtil {
 	 */
 	public static int getRedirectNotFoundEntriesCount() {
 		return getService().getRedirectNotFoundEntriesCount();
-	}
-
-	public static int getRedirectNotFoundEntriesCount(long groupId) {
-		return getService().getRedirectNotFoundEntriesCount(groupId);
 	}
 
 	public static int getRedirectNotFoundEntriesCount(
@@ -379,4 +361,4 @@ public class RedirectNotFoundEntryLocalServiceUtil {
 			RedirectNotFoundEntryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:972034836
+// LIFERAY-SERVICE-BUILDER-HASH:-1227992874
