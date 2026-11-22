@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Dynamic Data Mapping Form Values Query
 Bundle-SymbolicName: com.liferay.dynamic.data.mapping.form.values.query
-Bundle-Version: 6.0.17
+Bundle-Version: 6.0.18
 Import-Package:\
 	!javax.imageio.*,\
 	\
