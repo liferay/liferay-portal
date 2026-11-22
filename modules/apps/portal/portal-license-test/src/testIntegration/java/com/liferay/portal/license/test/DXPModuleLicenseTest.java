@@ -8,7 +8,7 @@ package com.liferay.portal.license.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.function.UnsafeSupplier;
 import com.liferay.petra.lang.SafeCloseable;
-import com.liferay.portal.kernel.module.util.SystemBundleUtil;
+import com.liferay.portal.kernel.test.util.BundleContextTestUtil;
 import com.liferay.portal.kernel.util.Time;
 
 import java.io.File;
@@ -74,7 +74,8 @@ public class DXPModuleLicenseTest extends BaseLicenseTestCase {
 	public void testLicenseFreeTierWithManualDeploy() throws Exception {
 		assertLicensePropertiesNotExisted(getPortalProductId());
 
-		BundleContext bundleContext = SystemBundleUtil.getBundleContext();
+		BundleContext bundleContext = BundleContextTestUtil.getBundleContext(
+			DXPModuleLicenseTest.class);
 
 		Bundle dxpOnlyBundle = null;
 		Bundle enterpriseAppBundle = null;

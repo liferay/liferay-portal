@@ -16,10 +16,10 @@ import com.liferay.portal.catapult.PortalCatapultHeaderContributor;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.BundleContextTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
@@ -105,7 +105,8 @@ public class PortalCatapultTest {
 			PortalCatapultHeaderContributor portalCatapultHeaderContributor)
 		throws Exception {
 
-		BundleContext bundleContext = SystemBundleUtil.getBundleContext();
+		BundleContext bundleContext = BundleContextTestUtil.getBundleContext(
+			PortalCatapultTest.class);
 
 		ServiceRegistration<PortalCatapultHeaderContributor>
 			serviceRegistration = bundleContext.registerService(

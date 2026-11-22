@@ -9,7 +9,7 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.configuration.test.util.ConfigurationTestUtil;
 import com.liferay.portal.kernel.module.util.BundleUtil;
-import com.liferay.portal.kernel.module.util.SystemBundleUtil;
+import com.liferay.portal.kernel.test.util.BundleContextTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
@@ -138,7 +138,9 @@ public class DXPFreeTierCKEditorLicenseTest extends BaseLicenseTestCase {
 
 	private String _getCKEditorPublicLicenseKey() throws Exception {
 		Bundle bundle = BundleUtil.getBundle(
-			SystemBundleUtil.getBundleContext(), _CK_EDITOR_BUNDLE_NAME);
+			BundleContextTestUtil.getBundleContext(
+				DXPFreeTierCKEditorLicenseTest.class),
+			_CK_EDITOR_BUNDLE_NAME);
 
 		Enumeration<URL> enumeration = bundle.findEntries(
 			"/OSGI-INF/metatype", _CKEDITOR_CONFIG_ID + ".xml", false);

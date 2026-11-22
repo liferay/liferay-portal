@@ -20,13 +20,13 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.VirtualHost;
 import com.liferay.portal.kernel.module.util.BundleUtil;
-import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.VirtualHostLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.AssumeTestRule;
 import com.liferay.portal.kernel.test.rule.DataGuard;
+import com.liferay.portal.kernel.test.util.BundleContextTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
@@ -183,7 +183,8 @@ public class UpgradePartitionedConfigurationTableTest
 			}
 
 			Bundle bundle = BundleUtil.getBundle(
-				SystemBundleUtil.getBundleContext(),
+				BundleContextTestUtil.getBundleContext(
+					UpgradePartitionedConfigurationTableTest.class),
 				"com.liferay.portal.configuration.persistence.impl");
 
 			Class<?> upgradeProcessClass = bundle.loadClass(

@@ -25,13 +25,13 @@ import com.liferay.portal.kernel.model.ClassName;
 import com.liferay.portal.kernel.model.Release;
 import com.liferay.portal.kernel.model.ReleaseConstants;
 import com.liferay.portal.kernel.module.util.BundleUtil;
-import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ReleaseLocalService;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.BundleContextTestUtil;
 import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.upgrade.DeleteDuplicateUniqueFinderRowsUpgradeProcess;
@@ -1395,7 +1395,7 @@ public abstract class BaseUpgradeLogAppenderTestCase {
 		throws Exception {
 
 		Bundle bundle = BundleUtil.getBundle(
-			SystemBundleUtil.getBundleContext(),
+			BundleContextTestUtil.getBundleContext(getClass()),
 			"com.liferay.data.cleanup.impl");
 
 		Class<?> clazz = bundle.loadClass(

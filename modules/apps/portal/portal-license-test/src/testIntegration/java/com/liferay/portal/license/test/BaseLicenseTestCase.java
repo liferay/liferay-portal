@@ -17,6 +17,7 @@ import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.AssumeTestRule;
+import com.liferay.portal.kernel.test.util.BundleContextTestUtil;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.HttpUtil;
@@ -790,7 +791,8 @@ public abstract class BaseLicenseTestCase implements Serializable {
 	private Set<String> _getBundleSymbolicNames() {
 		Set<String> bundleSymbolicNames = new HashSet<>();
 
-		BundleContext bundleContext = SystemBundleUtil.getBundleContext();
+		BundleContext bundleContext = BundleContextTestUtil.getBundleContext(
+			getClass());
 
 		for (Bundle bundle : bundleContext.getBundles()) {
 			bundleSymbolicNames.add(bundle.getSymbolicName());

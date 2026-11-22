@@ -11,8 +11,8 @@ import com.liferay.petra.io.unsync.UnsyncByteArrayInputStream;
 import com.liferay.petra.io.unsync.UnsyncByteArrayOutputStream;
 import com.liferay.petra.string.CharPool;
 import com.liferay.portal.kernel.module.service.Snapshot;
-import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.BundleContextTestUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
@@ -54,7 +54,8 @@ public class SnapshotIntegrationTest {
 
 	@Before
 	public void setUp() throws Exception {
-		BundleContext bundleContext = SystemBundleUtil.getBundleContext();
+		BundleContext bundleContext = BundleContextTestUtil.getBundleContext(
+			SnapshotIntegrationTest.class);
 
 		_bundle = bundleContext.installBundle(
 			SnapshotIntegrationTest.class.getName(),
