@@ -15,7 +15,6 @@ import com.liferay.portal.kernel.model.ClassName;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.DocumentHelper;
 import com.liferay.portal.kernel.search.DocumentImpl;
@@ -46,22 +45,18 @@ import jakarta.portlet.PortletURL;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.util.Collections;
 import java.util.Locale;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
-
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceRegistration;
 
 /**
  * @author Lino Alves
@@ -74,29 +69,13 @@ public class SearchResultSummaryDisplayContextBuilderTest {
 	public static final LiferayUnitTestRule liferayUnitTestRule =
 		LiferayUnitTestRule.INSTANCE;
 
-	@BeforeClass
-	public static void setUpClass() throws Exception {
-		BundleContext bundleContext = SystemBundleUtil.getBundleContext();
-
-		_searchResultContributorServiceRegistration =
-			bundleContext.registerService(
-				SearchResultContributor.class,
-				Mockito.mock(SearchResultContributor.class), null);
-	}
-
-	@AfterClass
-	public static void tearDownClass() {
-		if (_searchResultContributorServiceRegistration != null) {
-			_searchResultContributorServiceRegistration.unregister();
-		}
-	}
-
 	@Before
 	public void setUp() throws Exception {
 		_setUpAssetRenderer();
 		_setUpAssetRendererFactory();
 		_setUpGroupLocalService();
 		_setUpLocaleThreadLocal();
+		_setUpSearchResultContributor();
 		_setUpUser();
 		_setUpUserLocalService();
 
@@ -496,6 +475,8 @@ public class SearchResultSummaryDisplayContextBuilderTest {
 			_portletURLFactory);
 		searchResultSummaryDisplayContextBuilder.setResourceActions(
 			Mockito.mock(ResourceActions.class));
+		searchResultSummaryDisplayContextBuilder.setSearchResultContributors(
+			Collections.singletonList(_searchResultContributor));
 		searchResultSummaryDisplayContextBuilder.setSearchResultPreferences(
 			Mockito.mock(SearchResultPreferences.class));
 		searchResultSummaryDisplayContextBuilder.setSummaryBuilderFactory(
@@ -618,6 +599,14 @@ public class SearchResultSummaryDisplayContextBuilderTest {
 		LocaleThreadLocal.setThemeDisplayLocale(LocaleUtil.US);
 	}
 
+	private void _setUpSearchResultContributor() {
+		Mockito.doReturn(
+			_className
+		).when(
+			_searchResultContributor
+		).getEntryClassName();
+	}
+
 	private void _setUpSearchUtilMockedStatic(String className, long classPK) {
 		_searchUtilMockedStatic.when(
 			() -> SearchUtil.getSearchResultViewURL(
@@ -725,9 +714,6 @@ public class SearchResultSummaryDisplayContextBuilderTest {
 
 	private static final String _SUMMARY_TITLE = RandomTestUtil.randomString();
 
-	private static ServiceRegistration<SearchResultContributor>
-		_searchResultContributorServiceRegistration;
-
 	private final AssetEntryLocalService _assetEntryLocalService = Mockito.mock(
 		AssetEntryLocalService.class);
 	private final AssetRenderer<?> _assetRenderer = Mockito.mock(
@@ -753,6 +739,8 @@ public class SearchResultSummaryDisplayContextBuilderTest {
 		PermissionChecker.class);
 	private final PortletURLFactory _portletURLFactory = Mockito.mock(
 		PortletURLFactory.class);
+	private final SearchResultContributor _searchResultContributor =
+		Mockito.mock(SearchResultContributor.class);
 	private final MockedStatic<SearchUtil> _searchUtilMockedStatic =
 		Mockito.mockStatic(SearchUtil.class);
 	private ThemeDisplay _themeDisplay;

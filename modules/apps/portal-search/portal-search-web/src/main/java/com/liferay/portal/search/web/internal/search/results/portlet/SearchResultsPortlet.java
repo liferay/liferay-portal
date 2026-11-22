@@ -8,6 +8,8 @@ package com.liferay.portal.search.web.internal.search.results.portlet;
 import com.liferay.asset.kernel.service.AssetEntryLocalService;
 import com.liferay.asset.util.AssetRendererFactoryLookup;
 import com.liferay.object.service.ObjectDefinitionLocalService;
+import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerList;
+import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerListFactory;
 import com.liferay.portal.kernel.dao.search.DisplayTerms;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
@@ -17,6 +19,7 @@ import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.IndexerRegistry;
+import com.liferay.portal.kernel.search.result.SearchResultContributor;
 import com.liferay.portal.kernel.security.permission.ResourceActions;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -57,7 +60,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.osgi.framework.BundleContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 
 /**
@@ -111,6 +117,17 @@ public class SearchResultsPortlet extends MVCPortlet {
 			searchResultsPortletDisplayContext);
 
 		super.render(renderRequest, renderResponse);
+	}
+
+	@Activate
+	protected void activate(BundleContext bundleContext) {
+		_searchResultContributors = ServiceTrackerListFactory.open(
+			bundleContext, SearchResultContributor.class);
+	}
+
+	@Deactivate
+	protected void deactivate() {
+		_searchResultContributors.close();
 	}
 
 	protected HttpServletRequest getHttpServletRequest(
@@ -378,6 +395,8 @@ public class SearchResultsPortlet extends MVCPortlet {
 			getHttpServletRequest(renderRequest)
 		).setResourceActions(
 			resourceActions
+		).setSearchResultContributors(
+			_searchResultContributors
 		).setSearchResultPreferences(
 			searchResultPreferences
 		).setSummaryBuilderFactory(
@@ -472,5 +491,8 @@ public class SearchResultsPortlet extends MVCPortlet {
 
 	@Reference
 	private Portal _portal;
+
+	private ServiceTrackerList<SearchResultContributor>
+		_searchResultContributors;
 
 }

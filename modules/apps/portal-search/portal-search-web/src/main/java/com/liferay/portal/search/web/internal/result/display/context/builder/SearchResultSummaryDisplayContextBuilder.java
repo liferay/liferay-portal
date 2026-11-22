@@ -14,6 +14,7 @@ import com.liferay.asset.util.AssetRendererFactoryLookup;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.service.ObjectDefinitionLocalService;
+import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerList;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -24,7 +25,6 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.ClassName;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistry;
@@ -69,7 +69,6 @@ import java.text.SimpleDateFormat;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -77,10 +76,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.InvalidSyntaxException;
-import org.osgi.framework.ServiceReference;
 
 /**
  * @author André de Oliveira
@@ -265,6 +260,14 @@ public class SearchResultSummaryDisplayContextBuilder {
 		ResourceActions resourceActions) {
 
 		_resourceActions = resourceActions;
+
+		return this;
+	}
+
+	public SearchResultSummaryDisplayContextBuilder setSearchResultContributors(
+		ServiceTrackerList<SearchResultContributor> searchResultContributors) {
+
+		_searchResultContributors = searchResultContributors;
 
 		return this;
 	}
@@ -1063,33 +1066,15 @@ public class SearchResultSummaryDisplayContextBuilder {
 	}
 
 	private boolean _hasSearchResultContributor(String entryClassName) {
-		BundleContext bundleContext = SystemBundleUtil.getBundleContext();
+		for (SearchResultContributor searchResultContributor :
+				_searchResultContributors) {
 
-		try {
-			Collection<ServiceReference<SearchResultContributor>>
-				serviceReferences = bundleContext.getServiceReferences(
-					SearchResultContributor.class, null);
+			if (StringUtil.equals(
+					entryClassName,
+					searchResultContributor.getEntryClassName())) {
 
-			if (!serviceReferences.isEmpty()) {
 				return true;
 			}
-
-			for (ServiceReference<SearchResultContributor> serviceReference :
-					serviceReferences) {
-
-				SearchResultContributor searchResultContributor =
-					bundleContext.getService(serviceReference);
-
-				if (StringUtil.equals(
-						entryClassName,
-						searchResultContributor.getEntryClassName())) {
-
-					return true;
-				}
-			}
-		}
-		catch (InvalidSyntaxException invalidSyntaxException) {
-			_log.error(invalidSyntaxException);
 		}
 
 		return false;
@@ -1141,6 +1126,8 @@ public class SearchResultSummaryDisplayContextBuilder {
 	private RenderRequest _renderRequest;
 	private RenderResponse _renderResponse;
 	private ResourceActions _resourceActions;
+	private ServiceTrackerList<SearchResultContributor>
+		_searchResultContributors;
 	private SearchResultPreferences _searchResultPreferences;
 	private SearchResultViewURLSupplier _searchResultViewURLSupplier;
 	private SummaryBuilderFactory _summaryBuilderFactory;
