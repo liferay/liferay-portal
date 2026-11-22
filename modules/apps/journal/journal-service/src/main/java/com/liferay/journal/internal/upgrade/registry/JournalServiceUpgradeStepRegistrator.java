@@ -490,6 +490,14 @@ public class JournalServiceUpgradeStepRegistrator
 			"6.1.11", "6.1.12",
 			new DDMFieldAttributeLanguageIdUpgradeProcess(
 				_classNameLocalService));
+
+		registry.register(
+			"6.1.12", "7.0.0",
+			UpgradeProcessFactory.runSQL(
+				"delete from CTEntry where modelClassNameId in (select " +
+					"classNameId from ClassName_ where value = " +
+						"'com.liferay.journal.model.JournalContentSearch')"),
+			UpgradeProcessFactory.dropTables("JournalContentSearch"));
 	}
 
 	private void _deleteTempImages() throws Exception {
