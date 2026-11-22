@@ -294,11 +294,6 @@ public interface WorkflowMetricsSLADefinitionVersionLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<WorkflowMetricsSLADefinitionVersion>
 		getWorkflowMetricsSLADefinitionVersions(
-			long workflowMetricsSLADefinitionId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<WorkflowMetricsSLADefinitionVersion>
-		getWorkflowMetricsSLADefinitionVersions(
 			long workflowMetricsSLADefinitionId,
 			OrderByComparator<WorkflowMetricsSLADefinitionVersion>
 				orderByComparator);
@@ -357,4 +352,4 @@ public interface WorkflowMetricsSLADefinitionVersionLocalService
 				workflowMetricsSLADefinitionVersion);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1633137912
+// LIFERAY-SERVICE-BUILDER-HASH:-733834235

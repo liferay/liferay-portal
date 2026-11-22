@@ -340,14 +340,6 @@ public class WorkflowMetricsSLADefinitionVersionLocalServiceUtil {
 
 	public static List<WorkflowMetricsSLADefinitionVersion>
 		getWorkflowMetricsSLADefinitionVersions(
-			long workflowMetricsSLADefinitionId) {
-
-		return getService().getWorkflowMetricsSLADefinitionVersions(
-			workflowMetricsSLADefinitionId);
-	}
-
-	public static List<WorkflowMetricsSLADefinitionVersion>
-		getWorkflowMetricsSLADefinitionVersions(
 			long workflowMetricsSLADefinitionId,
 			OrderByComparator<WorkflowMetricsSLADefinitionVersion>
 				orderByComparator) {
@@ -432,4 +424,4 @@ public class WorkflowMetricsSLADefinitionVersionLocalServiceUtil {
 				WorkflowMetricsSLADefinitionVersionLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1110709861
+// LIFERAY-SERVICE-BUILDER-HASH:-1841594504

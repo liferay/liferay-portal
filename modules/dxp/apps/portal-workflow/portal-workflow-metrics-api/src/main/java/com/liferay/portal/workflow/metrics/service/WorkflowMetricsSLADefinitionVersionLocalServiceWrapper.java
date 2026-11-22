@@ -404,18 +404,6 @@ public class WorkflowMetricsSLADefinitionVersionLocalServiceWrapper
 		<com.liferay.portal.workflow.metrics.model.
 			WorkflowMetricsSLADefinitionVersion>
 				getWorkflowMetricsSLADefinitionVersions(
-					long workflowMetricsSLADefinitionId) {
-
-		return _workflowMetricsSLADefinitionVersionLocalService.
-			getWorkflowMetricsSLADefinitionVersions(
-				workflowMetricsSLADefinitionId);
-	}
-
-	@Override
-	public java.util.List
-		<com.liferay.portal.workflow.metrics.model.
-			WorkflowMetricsSLADefinitionVersion>
-				getWorkflowMetricsSLADefinitionVersions(
 					long workflowMetricsSLADefinitionId,
 					com.liferay.portal.kernel.util.OrderByComparator
 						<com.liferay.portal.workflow.metrics.model.
@@ -530,4 +518,4 @@ public class WorkflowMetricsSLADefinitionVersionLocalServiceWrapper
 		_workflowMetricsSLADefinitionVersionLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-891262354
+// LIFERAY-SERVICE-BUILDER-HASH:-1209979368
