@@ -47,7 +47,6 @@ import com.liferay.portal.kernel.model.Ticket;
 import com.liferay.portal.kernel.model.TicketConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.VirtualHost;
-import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.repository.LocalRepository;
 import com.liferay.portal.kernel.repository.RepositoryFactory;
 import com.liferay.portal.kernel.repository.registry.RepositoryDefiner;
@@ -69,6 +68,7 @@ import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.AssumeTestRule;
 import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.BundleContextTestUtil;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -1258,7 +1258,8 @@ public class CompanyLocalServiceDBPartitionTest
 
 		Assert.assertEquals(dbPartitionsCount - 1, _getDBPartitionsCount());
 
-		BundleContext bundleContext = SystemBundleUtil.getBundleContext();
+		BundleContext bundleContext = BundleContextTestUtil.getBundleContext(
+			CompanyLocalServiceDBPartitionTest.class);
 
 		Collection<ServiceReference<Portlet>> serviceReferences =
 			bundleContext.getServiceReferences(
@@ -1797,7 +1798,8 @@ public class CompanyLocalServiceDBPartitionTest
 	}
 
 	private void _createRepositories(Company company) throws Exception {
-		BundleContext bundleContext = SystemBundleUtil.getBundleContext();
+		BundleContext bundleContext = BundleContextTestUtil.getBundleContext(
+			CompanyLocalServiceDBPartitionTest.class);
 
 		_serviceRegistration = bundleContext.registerService(
 			RepositoryDefiner.class,
