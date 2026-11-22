@@ -51,6 +51,7 @@ import com.liferay.commerce.product.service.CProductLocalService;
 import com.liferay.commerce.product.service.CommerceCatalogLocalServiceUtil;
 import com.liferay.commerce.product.service.CommerceChannelAccountEntryRelLocalService;
 import com.liferay.commerce.product.service.CommerceChannelRelLocalService;
+import com.liferay.commerce.product.test.util.CPDefinitionTestUtil;
 import com.liferay.commerce.product.test.util.CPTestUtil;
 import com.liferay.commerce.product.type.simple.constants.SimpleCPTypeConstants;
 import com.liferay.commerce.product.util.comparator.CPDefinitionModifiedDateComparator;
@@ -1770,7 +1771,7 @@ public class CPDefinitionLocalServiceTest {
 
 			Assert.assertEquals(
 				1,
-				CPTestUtil.getCProductCPDefinitionsCount(
+				CPDefinitionTestUtil.getCProductCPDefinitionsCount(
 					cpDefinition1.getCProductId(),
 					WorkflowConstants.STATUS_DRAFT));
 		}
@@ -1956,7 +1957,7 @@ public class CPDefinitionLocalServiceTest {
 
 		Assert.assertEquals(
 			1,
-			CPTestUtil.getCProductCPDefinitionsCount(
+			CPDefinitionTestUtil.getCProductCPDefinitionsCount(
 				cpDefinition1.getCProductId(), WorkflowConstants.STATUS_DRAFT));
 	}
 
@@ -2687,7 +2688,7 @@ public class CPDefinitionLocalServiceTest {
 
 			Assert.assertEquals(
 				1,
-				CPTestUtil.getCProductCPDefinitionsCount(
+				CPDefinitionTestUtil.getCProductCPDefinitionsCount(
 					cpDefinition1.getCProductId(),
 					WorkflowConstants.STATUS_DRAFT));
 		}
@@ -3016,7 +3017,7 @@ public class CPDefinitionLocalServiceTest {
 
 			Assert.assertEquals(
 				1,
-				CPTestUtil.getCProductCPDefinitionsCount(
+				CPDefinitionTestUtil.getCProductCPDefinitionsCount(
 					cpDefinition1.getCProductId(),
 					WorkflowConstants.STATUS_DRAFT));
 		}

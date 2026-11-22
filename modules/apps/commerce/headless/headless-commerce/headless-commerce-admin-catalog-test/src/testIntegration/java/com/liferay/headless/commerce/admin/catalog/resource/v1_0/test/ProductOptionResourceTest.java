@@ -15,6 +15,7 @@ import com.liferay.commerce.product.model.CommerceCatalog;
 import com.liferay.commerce.product.service.CPDefinitionLocalService;
 import com.liferay.commerce.product.service.CPDefinitionOptionRelLocalService;
 import com.liferay.commerce.product.service.CPOptionLocalService;
+import com.liferay.commerce.product.test.util.CPDefinitionTestUtil;
 import com.liferay.commerce.product.test.util.CPTestUtil;
 import com.liferay.exportimport.test.util.LazyReferencingTestUtil;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.ProductOption;
@@ -379,7 +380,7 @@ public class ProductOptionResourceTest
 
 			Assert.assertEquals(
 				1,
-				CPTestUtil.getCProductCPDefinitionsCount(
+				CPDefinitionTestUtil.getCProductCPDefinitionsCount(
 					cpDefinition1.getCProductId(),
 					WorkflowConstants.STATUS_APPROVED));
 
@@ -402,7 +403,7 @@ public class ProductOptionResourceTest
 
 			Assert.assertEquals(
 				1,
-				CPTestUtil.getCProductCPDefinitionsCount(
+				CPDefinitionTestUtil.getCProductCPDefinitionsCount(
 					cpDefinition1.getCProductId(),
 					WorkflowConstants.STATUS_APPROVED));
 
@@ -413,7 +414,7 @@ public class ProductOptionResourceTest
 						cpDefinition1.getCPDefinitionId()));
 
 			List<CPDefinition> cpDefinitions =
-				CPTestUtil.getCProductCPDefinitions(
+				CPDefinitionTestUtil.getCProductCPDefinitions(
 					cpDefinition1.getCProductId(),
 					WorkflowConstants.STATUS_DRAFT, QueryUtil.ALL_POS,
 					QueryUtil.ALL_POS);
@@ -444,13 +445,13 @@ public class ProductOptionResourceTest
 
 			Assert.assertEquals(
 				1,
-				CPTestUtil.getCProductCPDefinitionsCount(
+				CPDefinitionTestUtil.getCProductCPDefinitionsCount(
 					cpDefinition1.getCProductId(),
 					WorkflowConstants.STATUS_APPROVED));
 
 			Assert.assertEquals(
 				1,
-				CPTestUtil.getCProductCPDefinitionsCount(
+				CPDefinitionTestUtil.getCProductCPDefinitionsCount(
 					cpDefinition1.getCProductId(),
 					WorkflowConstants.STATUS_DRAFT));
 

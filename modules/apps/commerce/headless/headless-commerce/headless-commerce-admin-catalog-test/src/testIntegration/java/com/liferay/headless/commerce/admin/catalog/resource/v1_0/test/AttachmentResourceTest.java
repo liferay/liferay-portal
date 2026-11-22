@@ -17,6 +17,7 @@ import com.liferay.commerce.product.model.CPDefinitionOptionValueRel;
 import com.liferay.commerce.product.model.CProduct;
 import com.liferay.commerce.product.model.CommerceCatalog;
 import com.liferay.commerce.product.service.CPAttachmentFileEntryLocalService;
+import com.liferay.commerce.product.test.util.CPDefinitionTestUtil;
 import com.liferay.commerce.product.test.util.CPTestUtil;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
@@ -968,7 +969,7 @@ public class AttachmentResourceTest extends BaseAttachmentResourceTestCase {
 
 			Assert.assertEquals(
 				1,
-				CPTestUtil.getCProductCPDefinitionsCount(
+				CPDefinitionTestUtil.getCProductCPDefinitionsCount(
 					cpDefinition1.getCProductId(),
 					WorkflowConstants.STATUS_APPROVED));
 
@@ -1000,12 +1001,12 @@ public class AttachmentResourceTest extends BaseAttachmentResourceTestCase {
 
 			Assert.assertEquals(
 				1,
-				CPTestUtil.getCProductCPDefinitionsCount(
+				CPDefinitionTestUtil.getCProductCPDefinitionsCount(
 					cpDefinition1.getCProductId(),
 					WorkflowConstants.STATUS_APPROVED));
 
 			List<CPDefinition> cpDefinitions =
-				CPTestUtil.getCProductCPDefinitions(
+				CPDefinitionTestUtil.getCProductCPDefinitions(
 					cpDefinition1.getCProductId(),
 					WorkflowConstants.STATUS_DRAFT, QueryUtil.ALL_POS,
 					QueryUtil.ALL_POS);
