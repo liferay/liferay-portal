@@ -15,7 +15,6 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.ReleaseConstants;
 import com.liferay.portal.kernel.model.ServiceComponent;
 import com.liferay.portal.kernel.module.util.BundleUtil;
-import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.service.ServiceComponentLocalService;
 import com.liferay.portal.kernel.upgrade.data.cleanup.util.DataCleanupLoggingUtil;
 import com.liferay.portal.kernel.util.PropertiesUtil;
@@ -35,6 +34,8 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
 
 /**
  * @author Luis Ortiz
@@ -63,6 +64,11 @@ public class ServiceComponentPostUpgradeDataCleanupProcess
 
 		String tableName = dbInspector.normalizeName("ServiceComponent");
 
+		Bundle currentBundle = FrameworkUtil.getBundle(
+			ServiceComponentPostUpgradeDataCleanupProcess.class);
+
+		BundleContext bundleContext = currentBundle.getBundleContext();
+
 		for (ServiceComponent serviceComponent : serviceComponents) {
 			String buildNamespace = serviceComponent.getBuildNamespace();
 
@@ -79,7 +85,7 @@ public class ServiceComponentPostUpgradeDataCleanupProcess
 			}
 			else if (buildNamespace.startsWith("com.liferay.")) {
 				Bundle bundle = BundleUtil.getBundle(
-					SystemBundleUtil.getBundleContext(), buildNamespace);
+					bundleContext, buildNamespace);
 
 				if (bundle == null) {
 					_serviceComponentLocalService.deleteServiceComponent(

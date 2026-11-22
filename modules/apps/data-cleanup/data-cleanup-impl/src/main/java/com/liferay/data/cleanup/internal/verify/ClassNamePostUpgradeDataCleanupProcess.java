@@ -21,7 +21,6 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.ClassName;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.ModelHintsUtil;
-import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.CompanyLocalService;
@@ -45,6 +44,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.wiring.BundleCapability;
 import org.osgi.framework.wiring.BundleRevision;
 import org.osgi.framework.wiring.BundleWiring;
@@ -82,12 +82,15 @@ public class ClassNamePostUpgradeDataCleanupProcess
 			return;
 		}
 
-		BundleContext bundleContext = SystemBundleUtil.getBundleContext();
+		Bundle bundle = FrameworkUtil.getBundle(
+			ClassNamePostUpgradeDataCleanupProcess.class);
+
+		BundleContext bundleContext = bundle.getBundleContext();
+
 		DBInspector dbInspector = new DBInspector(connection);
 		Map<String, List<Bundle>> packageNameBundlesMap =
 			_packageNameBundlesMapDCLSingleton.getSingleton(
-				ClassNamePostUpgradeDataCleanupProcess::
-					_createPackageNameBundlesMap);
+				() -> _createPackageNameBundlesMap(bundleContext));
 		StringBundler sb = new StringBundler();
 		List<String> tableNames = new ArrayList<>();
 
@@ -205,10 +208,10 @@ public class ClassNamePostUpgradeDataCleanupProcess
 		}
 	}
 
-	private static Map<String, List<Bundle>> _createPackageNameBundlesMap() {
-		Map<String, List<Bundle>> packageNameBundlesMap = new HashMap<>();
+	private Map<String, List<Bundle>> _createPackageNameBundlesMap(
+		BundleContext bundleContext) {
 
-		BundleContext bundleContext = SystemBundleUtil.getBundleContext();
+		Map<String, List<Bundle>> packageNameBundlesMap = new HashMap<>();
 
 		for (Bundle bundle : bundleContext.getBundles()) {
 			BundleWiring bundleWiring = bundle.adapt(BundleWiring.class);
