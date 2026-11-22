@@ -15,6 +15,7 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
+import com.liferay.portal.kernel.test.util.BundleContextTestUtil;
 import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.PropsValues;
@@ -89,7 +90,8 @@ public class FIPSTestUtil {
 		ServiceTracker
 			<PortalInstanceLifecycleListener, PortalInstanceLifecycleListener>
 				serviceTracker = ServiceTrackerFactory.open(
-					SystemBundleUtil.getBundleContext(), filterString);
+					BundleContextTestUtil.getBundleContext(FIPSTestUtil.class),
+					filterString);
 
 		try {
 			int timeout = 10000;
@@ -127,7 +129,8 @@ public class FIPSTestUtil {
 			boolean enabled, ServiceComponentRuntime serviceComponentRuntime)
 		throws Exception {
 
-		BundleContext bundleContext = SystemBundleUtil.getBundleContext();
+		BundleContext bundleContext = BundleContextTestUtil.getBundleContext(
+			FIPSTestUtil.class);
 
 		for (Bundle bundle : bundleContext.getBundles()) {
 			if (!ArrayUtil.contains(
