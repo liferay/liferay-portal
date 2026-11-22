@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Portal Lock API
 Bundle-SymbolicName: com.liferay.portal.lock.api
-Bundle-Version: 11.0.0
+Bundle-Version: 11.0.1
 Export-Package:\
 	com.liferay.portal.lock.exception,\
 	com.liferay.portal.lock.model,\
