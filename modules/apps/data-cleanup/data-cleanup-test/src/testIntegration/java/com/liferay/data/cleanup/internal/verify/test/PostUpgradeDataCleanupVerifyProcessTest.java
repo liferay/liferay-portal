@@ -9,9 +9,9 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.module.util.BundleUtil;
-import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.BundleContextTestUtil;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -42,7 +42,8 @@ public class PostUpgradeDataCleanupVerifyProcessTest {
 	@Test
 	public void testGetPostUpgradeDataCleanupProcesses() throws Exception {
 		Bundle bundle = BundleUtil.getBundle(
-			SystemBundleUtil.getBundleContext(),
+			BundleContextTestUtil.getBundleContext(
+				PostUpgradeDataCleanupVerifyProcessTest.class),
 			"com.liferay.data.cleanup.impl");
 
 		Class<?> clazz = bundle.loadClass(

@@ -17,11 +17,11 @@ import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.model.ClassName;
 import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.module.util.BundleUtil;
-import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
 import com.liferay.portal.kernel.service.ClassNameLocalServiceUtil;
 import com.liferay.portal.kernel.service.PortletLocalServiceUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.BundleContextTestUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.lpkg.deployer.LPKGDeployer;
@@ -243,7 +243,7 @@ public abstract class BasePostUpgradeDataCleanupProcessTestCase {
 
 	private void _runPostUpgradeDataCleanUpVerifyProcess() throws Exception {
 		Bundle bundle = BundleUtil.getBundle(
-			SystemBundleUtil.getBundleContext(),
+			BundleContextTestUtil.getBundleContext(getClass()),
 			"com.liferay.data.cleanup.impl");
 
 		Class<?> postUpgradeDataCleanupProcessClass = bundle.loadClass(

@@ -15,13 +15,13 @@ import com.liferay.portal.kernel.model.ResourceAction;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.role.RoleConstants;
-import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.permission.ResourceActions;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
+import com.liferay.portal.kernel.test.util.BundleContextTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -72,7 +72,8 @@ public class ResourceActionPostUpgradeDataCleanupProcessTest
 			},
 			() -> bundleAtomicReference.set(
 				stopBundle(
-					SystemBundleUtil.getBundleContext(),
+					BundleContextTestUtil.getBundleContext(
+						ResourceActionPostUpgradeDataCleanupProcessTest.class),
 					"com.liferay.dynamic.data.mapping.service")));
 	}
 
@@ -326,12 +327,17 @@ public class ResourceActionPostUpgradeDataCleanupProcessTest
 				Bundle bundle = bundleAtomicReference.get();
 
 				if (bundle != null) {
-					installBundle(bundle, SystemBundleUtil.getBundleContext());
+					installBundle(
+						bundle,
+						BundleContextTestUtil.getBundleContext(
+							ResourceActionPostUpgradeDataCleanupProcessTest.
+								class));
 				}
 			},
 			() -> bundleAtomicReference.set(
 				uninstallBundle(
-					SystemBundleUtil.getBundleContext(),
+					BundleContextTestUtil.getBundleContext(
+						ResourceActionPostUpgradeDataCleanupProcessTest.class),
 					"com.liferay.dynamic.data.mapping.service")));
 	}
 

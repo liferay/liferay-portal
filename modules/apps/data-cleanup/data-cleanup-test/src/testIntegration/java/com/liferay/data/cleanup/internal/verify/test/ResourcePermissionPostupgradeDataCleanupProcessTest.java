@@ -11,9 +11,9 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.model.ResourceConstants;
-import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.service.PortletLocalServiceUtil;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
+import com.liferay.portal.kernel.test.util.BundleContextTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.upgrade.data.cleanup.util.OrphanReferencesDataCleanupUtil;
 import com.liferay.portal.test.log.LogCapture;
@@ -178,12 +178,18 @@ public class ResourcePermissionPostupgradeDataCleanupProcessTest
 				Bundle bundle = bundleAtomicReference.get();
 
 				if (bundle != null) {
-					installBundle(bundle, SystemBundleUtil.getBundleContext());
+					installBundle(
+						bundle,
+						BundleContextTestUtil.getBundleContext(
+							ResourcePermissionPostupgradeDataCleanupProcessTest.
+								class));
 				}
 			},
 			() -> bundleAtomicReference.set(
 				uninstallBundle(
-					SystemBundleUtil.getBundleContext(),
+					BundleContextTestUtil.getBundleContext(
+						ResourcePermissionPostupgradeDataCleanupProcessTest.
+							class),
 					"com.liferay.dynamic.data.mapping.service")));
 	}
 

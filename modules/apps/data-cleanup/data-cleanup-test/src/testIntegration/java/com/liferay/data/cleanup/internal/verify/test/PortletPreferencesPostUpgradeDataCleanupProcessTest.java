@@ -8,9 +8,9 @@ package com.liferay.data.cleanup.internal.verify.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.model.Portlet;
-import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.service.PortletLocalService;
 import com.liferay.portal.kernel.service.PortletLocalServiceUtil;
+import com.liferay.portal.kernel.test.util.BundleContextTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.upgrade.data.cleanup.util.OrphanReferencesDataCleanupUtil;
 import com.liferay.portal.kernel.util.PortletKeys;
@@ -513,12 +513,18 @@ public class PortletPreferencesPostUpgradeDataCleanupProcessTest
 				Bundle bundle = bundleAtomicReference.get();
 
 				if (bundle != null) {
-					installBundle(bundle, SystemBundleUtil.getBundleContext());
+					installBundle(
+						bundle,
+						BundleContextTestUtil.getBundleContext(
+							PortletPreferencesPostUpgradeDataCleanupProcessTest.
+								class));
 				}
 			},
 			() -> bundleAtomicReference.set(
 				uninstallBundle(
-					SystemBundleUtil.getBundleContext(),
+					BundleContextTestUtil.getBundleContext(
+						PortletPreferencesPostUpgradeDataCleanupProcessTest.
+							class),
 					"com.liferay.dynamic.data.mapping.service")));
 	}
 
