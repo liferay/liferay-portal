@@ -658,17 +658,6 @@ public class CommerceTestUtil {
 					commerceOrderItemId));
 	}
 
-	public static int getValidCommerceShipmentItemsCount(
-			long commerceShipmentId)
-		throws Exception {
-
-		return TransactionTestUtil.invoke(
-			CommerceShipmentItemUtil.getPersistence(),
-			commerceShipmentItemPersistence ->
-				commerceShipmentItemPersistence.countByC_NotC_GteQ(
-					commerceShipmentId, 0, BigDecimal.ONE));
-	}
-
 	public static void runWithGuestBrowsingDisabled(
 			long groupId, UnsafeRunnable<Exception> unsafeRunnable)
 		throws Exception {

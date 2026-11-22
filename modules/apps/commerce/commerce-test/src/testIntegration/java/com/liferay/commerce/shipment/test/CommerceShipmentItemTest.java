@@ -26,6 +26,7 @@ import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.product.test.util.CPTestUtil;
 import com.liferay.commerce.service.CommerceShipmentItemLocalService;
 import com.liferay.commerce.service.CommerceShipmentLocalService;
+import com.liferay.commerce.service.persistence.CommerceShipmentItemUtil;
 import com.liferay.commerce.shipment.test.util.CommerceShipmentTestUtil;
 import com.liferay.commerce.test.util.CommerceTestUtil;
 import com.liferay.commerce.test.util.context.TestCommerceContext;
@@ -38,6 +39,7 @@ import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
+import com.liferay.portal.kernel.test.util.TransactionTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.BigDecimalUtil;
 import com.liferay.portal.test.rule.Inject;
@@ -134,9 +136,13 @@ public class CommerceShipmentItemTest {
 			commerceShipmentItems.toString(), 1, commerceShipmentItems.size());
 
 		Assert.assertEquals(
-			commerceShipmentItems.toString(), 1,
-			CommerceTestUtil.getValidCommerceShipmentItemsCount(
-				_commerceShipment.getCommerceShipmentId()));
+			commerceShipmentItems.toString(), Integer.valueOf(1),
+			TransactionTestUtil.invoke(
+				CommerceShipmentItemUtil.getPersistence(),
+				commerceShipmentItemPersistence ->
+					commerceShipmentItemPersistence.countByC_NotC_GteQ(
+						_commerceShipment.getCommerceShipmentId(), 0,
+						BigDecimal.ONE)));
 
 		CommerceShipmentItem actualCommerceShipmentItem =
 			commerceShipmentItems.get(0);
