@@ -11,9 +11,9 @@ import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.ModelListener;
-import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.BundleContextTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.TransactionConfig;
@@ -362,7 +362,8 @@ public class RedirectNotFoundEntryLocalServiceTest {
 	}
 
 	private AutoCloseable _registerRedirectNotFoundEntryModelListener() {
-		BundleContext bundleContext = SystemBundleUtil.getBundleContext();
+		BundleContext bundleContext = BundleContextTestUtil.getBundleContext(
+			RedirectNotFoundEntryLocalServiceTest.class);
 
 		ServiceRegistration<?> serviceRegistration =
 			bundleContext.registerService(
