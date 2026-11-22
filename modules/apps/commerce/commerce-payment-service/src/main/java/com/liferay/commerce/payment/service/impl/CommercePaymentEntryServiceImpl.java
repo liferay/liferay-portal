@@ -6,9 +6,11 @@
 package com.liferay.commerce.payment.service.impl;
 
 import com.liferay.commerce.constants.CommercePaymentEntryConstants;
+import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.payment.constants.CommercePaymentEntryActionKeys;
 import com.liferay.commerce.payment.model.CommercePaymentEntry;
 import com.liferay.commerce.payment.service.base.CommercePaymentEntryServiceBaseImpl;
+import com.liferay.commerce.service.CommerceOrderLocalService;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.search.BaseModelSearchResult;
@@ -18,6 +20,7 @@ import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
+import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 import com.liferay.portal.kernel.util.OrderByComparator;
@@ -53,14 +56,7 @@ public class CommercePaymentEntryServiceImpl
 			ServiceContext serviceContext)
 		throws PortalException {
 
-		String actionId = CommercePaymentEntryActionKeys.ADD_PAYMENT;
-
-		if (type == CommercePaymentEntryConstants.TYPE_REFUND) {
-			actionId = CommercePaymentEntryActionKeys.ADD_REFUND;
-		}
-
-		_portletResourcePermission.check(
-			getPermissionChecker(), serviceContext.getScopeGroupId(), actionId);
+		_checkPermission(classNameId, classPK, type, serviceContext);
 
 		return commercePaymentEntryLocalService.addCommercePaymentEntry(
 			getUserId(), classNameId, classPK, commerceChannelId, amount,
@@ -85,15 +81,7 @@ public class CommercePaymentEntryServiceImpl
 				externalReferenceCode, serviceContext.getCompanyId());
 
 		if (commercePaymentEntry == null) {
-			String actionId = CommercePaymentEntryActionKeys.ADD_PAYMENT;
-
-			if (type == CommercePaymentEntryConstants.TYPE_REFUND) {
-				actionId = CommercePaymentEntryActionKeys.ADD_REFUND;
-			}
-
-			_portletResourcePermission.check(
-				getPermissionChecker(), serviceContext.getScopeGroupId(),
-				actionId);
+			_checkPermission(classNameId, classPK, type, serviceContext);
 		}
 		else {
 			_commercePaymentEntryModelResourcePermission.check(
@@ -339,6 +327,55 @@ public class CommercePaymentEntryServiceImpl
 		return commercePaymentEntryLocalService.updateReasonKey(
 			commercePaymentEntryId, reasonKey);
 	}
+
+	private void _checkPermission(
+			long classNameId, long classPK, int type,
+			ServiceContext serviceContext)
+		throws PortalException {
+
+		String actionId = CommercePaymentEntryActionKeys.ADD_PAYMENT;
+
+		if (type == CommercePaymentEntryConstants.TYPE_REFUND) {
+			actionId = CommercePaymentEntryActionKeys.ADD_REFUND;
+		}
+
+		_portletResourcePermission.check(
+			getPermissionChecker(),
+			_getGroupId(classNameId, classPK, serviceContext), actionId);
+	}
+
+	private long _getGroupId(
+			long classNameId, long classPK, ServiceContext serviceContext)
+		throws PortalException {
+
+		if (classNameId == _classNameLocalService.getClassNameId(
+				CommerceOrder.class)) {
+
+			CommerceOrder commerceOrder =
+				_commerceOrderLocalService.getCommerceOrder(classPK);
+
+			return commerceOrder.getGroupId();
+		}
+
+		if (classNameId == _classNameLocalService.getClassNameId(
+				CommercePaymentEntry.class)) {
+
+			CommercePaymentEntry commercePaymentEntry =
+				commercePaymentEntryPersistence.findByPrimaryKey(classPK);
+
+			return _getGroupId(
+				commercePaymentEntry.getClassNameId(),
+				commercePaymentEntry.getClassPK(), serviceContext);
+		}
+
+		return serviceContext.getScopeGroupId();
+	}
+
+	@Reference
+	private ClassNameLocalService _classNameLocalService;
+
+	@Reference
+	private CommerceOrderLocalService _commerceOrderLocalService;
 
 	@Reference(
 		target = "(model.class.name=com.liferay.commerce.payment.model.CommercePaymentEntry)"
