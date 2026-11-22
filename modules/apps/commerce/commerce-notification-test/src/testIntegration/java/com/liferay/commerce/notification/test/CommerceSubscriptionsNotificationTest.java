@@ -18,6 +18,7 @@ import com.liferay.commerce.model.CommerceSubscriptionEntry;
 import com.liferay.commerce.notification.model.CommerceNotificationTemplate;
 import com.liferay.commerce.notification.service.CommerceNotificationTemplateLocalService;
 import com.liferay.commerce.notification.service.CommerceNotificationTemplateLocalServiceUtil;
+import com.liferay.commerce.notification.test.util.CommerceNotificationQueueEntryTestUtil;
 import com.liferay.commerce.notification.test.util.CommerceNotificationTestUtil;
 import com.liferay.commerce.order.engine.CommerceOrderEngine;
 import com.liferay.commerce.payment.engine.CommerceSubscriptionEngine;
@@ -207,7 +208,7 @@ public class CommerceSubscriptionsNotificationTest {
 
 		List<String> commerceNotificationTemplateTypes =
 			TransformUtil.transform(
-				CommerceNotificationTestUtil.
+				CommerceNotificationQueueEntryTestUtil.
 					getCommerceNotificationQueueEntries(
 						_group.getGroupId(), QueryUtil.ALL_POS,
 						QueryUtil.ALL_POS, null),

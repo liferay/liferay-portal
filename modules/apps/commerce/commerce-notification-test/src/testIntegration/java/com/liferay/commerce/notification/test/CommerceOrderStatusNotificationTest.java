@@ -23,6 +23,7 @@ import com.liferay.commerce.notification.model.CommerceNotificationTemplate;
 import com.liferay.commerce.notification.service.CommerceNotificationQueueEntryLocalService;
 import com.liferay.commerce.notification.service.CommerceNotificationTemplateLocalService;
 import com.liferay.commerce.notification.service.CommerceNotificationTemplateLocalServiceUtil;
+import com.liferay.commerce.notification.test.util.CommerceNotificationQueueEntryTestUtil;
 import com.liferay.commerce.notification.test.util.CommerceNotificationTestUtil;
 import com.liferay.commerce.order.engine.CommerceOrderEngine;
 import com.liferay.commerce.payment.engine.CommercePaymentEngine;
@@ -146,7 +147,7 @@ public class CommerceOrderStatusNotificationTest {
 
 		Assert.assertEquals(
 			1,
-			CommerceNotificationTestUtil.
+			CommerceNotificationQueueEntryTestUtil.
 				getCommerceNotificationQueueEntriesCount(
 					_commerceChannel.getGroupId()));
 
@@ -168,7 +169,7 @@ public class CommerceOrderStatusNotificationTest {
 
 		Assert.assertEquals(
 			1,
-			CommerceNotificationTestUtil.
+			CommerceNotificationQueueEntryTestUtil.
 				getCommerceNotificationQueueEntriesCount(
 					_commerceChannel.getGroupId()));
 
@@ -181,7 +182,7 @@ public class CommerceOrderStatusNotificationTest {
 
 		Assert.assertEquals(
 			2,
-			CommerceNotificationTestUtil.
+			CommerceNotificationQueueEntryTestUtil.
 				getCommerceNotificationQueueEntriesCount(
 					_commerceChannel.getGroupId()));
 
@@ -218,7 +219,7 @@ public class CommerceOrderStatusNotificationTest {
 
 		Assert.assertEquals(
 			3,
-			CommerceNotificationTestUtil.
+			CommerceNotificationQueueEntryTestUtil.
 				getCommerceNotificationQueueEntriesCount(
 					_commerceChannel.getGroupId()));
 
@@ -234,7 +235,7 @@ public class CommerceOrderStatusNotificationTest {
 
 		Assert.assertEquals(
 			4,
-			CommerceNotificationTestUtil.
+			CommerceNotificationQueueEntryTestUtil.
 				getCommerceNotificationQueueEntriesCount(
 					_commerceChannel.getGroupId()));
 
@@ -265,7 +266,7 @@ public class CommerceOrderStatusNotificationTest {
 
 		List<String> commerceNotificationTemplateTypes =
 			TransformUtil.transform(
-				CommerceNotificationTestUtil.
+				CommerceNotificationQueueEntryTestUtil.
 					getCommerceNotificationQueueEntries(
 						_commerceChannel.getGroupId(), QueryUtil.ALL_POS,
 						QueryUtil.ALL_POS, null),
