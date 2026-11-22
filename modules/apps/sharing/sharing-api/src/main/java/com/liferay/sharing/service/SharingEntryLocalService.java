@@ -221,10 +221,6 @@ public interface SharingEntryLocalService
 	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
 	public SharingEntry deleteSharingEntry(SharingEntry sharingEntry);
 
-	public SharingEntry deleteSharingEntryByExternalReferenceCode(
-			String externalReferenceCode, long groupId)
-		throws PortalException;
-
 	public void deleteToTicketSharingEntries(long toTicketId);
 
 	public void deleteToUserGroupSharingEntries(long toUserGroupId);
@@ -386,24 +382,6 @@ public interface SharingEntryLocalService
 	public int getFromUserSharingEntriesCount(
 		long fromUserId, long classNameId);
 
-	/**
-	 * Returns the the group's sharing entries.
-	 *
-	 * @param groupId the primary key of the group
-	 * @return the sharing entries
-	 */
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<SharingEntry> getGroupSharingEntries(long groupId);
-
-	/**
-	 * Returns the the group's sharing entries count.
-	 *
-	 * @param groupId the primary key of the group
-	 * @return the sharing entries count
-	 */
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getGroupSharingEntriesCount(long groupId);
-
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
 
@@ -537,12 +515,6 @@ public interface SharingEntryLocalService
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public SharingEntry getSharingEntry(
-			long toTicketId, long toUserGroupId, long toUserId,
-			long classNameId, long classPK)
-		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public SharingEntry getSharingEntryByExternalReferenceCode(
 			String externalReferenceCode, long groupId)
 		throws PortalException;
@@ -565,27 +537,6 @@ public interface SharingEntryLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<SharingEntry> getToUserGroupSharingEntries(long toUserGroupId);
-
-	/**
-	 * Returns the list of sharing entries for resources shared with the user.
-	 *
-	 * @param toUserId the user's ID
-	 * @return the list of sharing entries
-	 */
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<SharingEntry> getToUserSharingEntries(long toUserId);
-
-	/**
-	 * Returns the range of sharing entries for resources shared with the user.
-	 *
-	 * @param toUserId the user's ID
-	 * @param start the range's lower bound
-	 * @param end the range's upper bound (not inclusive)
-	 * @return the range of sharing entries
-	 */
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<SharingEntry> getToUserSharingEntries(
-		long toUserId, int start, int end);
 
 	/**
 	 * Returns the list of sharing entries for the type of resource shared with
@@ -615,15 +566,6 @@ public interface SharingEntryLocalService
 	public List<SharingEntry> getToUserSharingEntries(
 		long toUserId, long classNameId, int start, int end,
 		OrderByComparator<SharingEntry> orderByComparator);
-
-	/**
-	 * Returns the number of sharing entries for resources shared with the user.
-	 *
-	 * @param toUserId the user's ID
-	 * @return the number of sharing entries
-	 */
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getToUserSharingEntriesCount(long toUserId);
 
 	/**
 	 * Returns the number of sharing entries for the type of resource shared
@@ -676,33 +618,6 @@ public interface SharingEntryLocalService
 	/**
 	 * Updates the sharing entry in the database.
 	 *
-	 * @param sharingEntryId the primary key of the sharing entry
-	 * @param sharingEntryActions the sharing entry actions
-	 * @param shareable whether the user the resource is shared with can
-	 also share it
-	 * @param expirationDate the date when the sharing entry expires
-	 * @param serviceContext the service context
-	 * @return the sharing entry
-	 * @throws PortalException if the sharing entry does not exist, if the
-	 sharing entry actions are invalid (e.g., empty, don't contain
-	 {@code SharingEntryAction#VIEW}, or contain a {@code null}
-	 value), or if the expiration date is a past value
-	 * @deprecated As of Mueller (7.2.x), replaced by {@link
-	 SharingEntryLocalService#updateSharingEntry(
-	 long, long, Collection, boolean, Date, ServiceContext)}
-	 * @review
-	 */
-	@Deprecated
-	public SharingEntry updateSharingEntry(
-			long sharingEntryId,
-			Collection<SharingEntryAction> sharingEntryActions,
-			boolean shareable, Date expirationDate,
-			ServiceContext serviceContext)
-		throws PortalException;
-
-	/**
-	 * Updates the sharing entry in the database.
-	 *
 	 * @param userId the primary key of the user updating the sharing entry
 	 * @param sharingEntryId the primary key of the sharing entry
 	 * @param sharingEntryActions the sharing entry actions
@@ -739,4 +654,4 @@ public interface SharingEntryLocalService
 	public SharingEntry updateSharingEntry(SharingEntry sharingEntry);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-720703128
+// LIFERAY-SERVICE-BUILDER-HASH:1892359946

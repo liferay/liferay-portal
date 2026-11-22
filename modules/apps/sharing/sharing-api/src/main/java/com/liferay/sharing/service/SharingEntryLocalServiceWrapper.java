@@ -251,17 +251,6 @@ public class SharingEntryLocalServiceWrapper
 	}
 
 	@Override
-	public com.liferay.sharing.model.SharingEntry
-			deleteSharingEntryByExternalReferenceCode(
-				String externalReferenceCode, long groupId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _sharingEntryLocalService.
-			deleteSharingEntryByExternalReferenceCode(
-				externalReferenceCode, groupId);
-	}
-
-	@Override
 	public void deleteToTicketSharingEntries(long toTicketId) {
 		_sharingEntryLocalService.deleteToTicketSharingEntries(toTicketId);
 	}
@@ -507,30 +496,6 @@ public class SharingEntryLocalServiceWrapper
 			fromUserId, classNameId);
 	}
 
-	/**
-	 * Returns the the group's sharing entries.
-	 *
-	 * @param groupId the primary key of the group
-	 * @return the sharing entries
-	 */
-	@Override
-	public java.util.List<com.liferay.sharing.model.SharingEntry>
-		getGroupSharingEntries(long groupId) {
-
-		return _sharingEntryLocalService.getGroupSharingEntries(groupId);
-	}
-
-	/**
-	 * Returns the the group's sharing entries count.
-	 *
-	 * @param groupId the primary key of the group
-	 * @return the sharing entries count
-	 */
-	@Override
-	public int getGroupSharingEntriesCount(long groupId) {
-		return _sharingEntryLocalService.getGroupSharingEntriesCount(groupId);
-	}
-
 	@Override
 	public com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery
 		getIndexableActionableDynamicQuery() {
@@ -712,16 +677,6 @@ public class SharingEntryLocalServiceWrapper
 	}
 
 	@Override
-	public com.liferay.sharing.model.SharingEntry getSharingEntry(
-			long toTicketId, long toUserGroupId, long toUserId,
-			long classNameId, long classPK)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _sharingEntryLocalService.getSharingEntry(
-			toTicketId, toUserGroupId, toUserId, classNameId, classPK);
-	}
-
-	@Override
 	public com.liferay.sharing.model.SharingEntry
 			getSharingEntryByExternalReferenceCode(
 				String externalReferenceCode, long groupId)
@@ -764,35 +719,6 @@ public class SharingEntryLocalServiceWrapper
 	}
 
 	/**
-	 * Returns the list of sharing entries for resources shared with the user.
-	 *
-	 * @param toUserId the user's ID
-	 * @return the list of sharing entries
-	 */
-	@Override
-	public java.util.List<com.liferay.sharing.model.SharingEntry>
-		getToUserSharingEntries(long toUserId) {
-
-		return _sharingEntryLocalService.getToUserSharingEntries(toUserId);
-	}
-
-	/**
-	 * Returns the range of sharing entries for resources shared with the user.
-	 *
-	 * @param toUserId the user's ID
-	 * @param start the range's lower bound
-	 * @param end the range's upper bound (not inclusive)
-	 * @return the range of sharing entries
-	 */
-	@Override
-	public java.util.List<com.liferay.sharing.model.SharingEntry>
-		getToUserSharingEntries(long toUserId, int start, int end) {
-
-		return _sharingEntryLocalService.getToUserSharingEntries(
-			toUserId, start, end);
-	}
-
-	/**
 	 * Returns the list of sharing entries for the type of resource shared with
 	 * the user. The class name ID identifies the resource type.
 	 *
@@ -829,17 +755,6 @@ public class SharingEntryLocalServiceWrapper
 
 		return _sharingEntryLocalService.getToUserSharingEntries(
 			toUserId, classNameId, start, end, orderByComparator);
-	}
-
-	/**
-	 * Returns the number of sharing entries for resources shared with the user.
-	 *
-	 * @param toUserId the user's ID
-	 * @return the number of sharing entries
-	 */
-	@Override
-	public int getToUserSharingEntriesCount(long toUserId) {
-		return _sharingEntryLocalService.getToUserSharingEntriesCount(toUserId);
 	}
 
 	/**
@@ -901,41 +816,6 @@ public class SharingEntryLocalServiceWrapper
 
 		return _sharingEntryLocalService.hasSharingPermission(
 			toUserId, classNameId, classPK, sharingEntryAction);
-	}
-
-	/**
-	 * Updates the sharing entry in the database.
-	 *
-	 * @param sharingEntryId the primary key of the sharing entry
-	 * @param sharingEntryActions the sharing entry actions
-	 * @param shareable whether the user the resource is shared with can
-	 also share it
-	 * @param expirationDate the date when the sharing entry expires
-	 * @param serviceContext the service context
-	 * @return the sharing entry
-	 * @throws PortalException if the sharing entry does not exist, if the
-	 sharing entry actions are invalid (e.g., empty, don't contain
-	 {@code SharingEntryAction#VIEW}, or contain a {@code null}
-	 value), or if the expiration date is a past value
-	 * @deprecated As of Mueller (7.2.x), replaced by {@link
-	 SharingEntryLocalService#updateSharingEntry(
-	 long, long, Collection, boolean, Date, ServiceContext)}
-	 * @review
-	 */
-	@Deprecated
-	@Override
-	public com.liferay.sharing.model.SharingEntry updateSharingEntry(
-			long sharingEntryId,
-			java.util.Collection
-				<com.liferay.sharing.security.permission.SharingEntryAction>
-					sharingEntryActions,
-			boolean shareable, java.util.Date expirationDate,
-			com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _sharingEntryLocalService.updateSharingEntry(
-			sharingEntryId, sharingEntryActions, shareable, expirationDate,
-			serviceContext);
 	}
 
 	/**
@@ -1007,4 +887,4 @@ public class SharingEntryLocalServiceWrapper
 	private SharingEntryLocalService _sharingEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-612691477
+// LIFERAY-SERVICE-BUILDER-HASH:1079082298
