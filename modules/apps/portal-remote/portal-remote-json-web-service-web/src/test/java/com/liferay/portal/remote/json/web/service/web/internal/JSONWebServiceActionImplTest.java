@@ -123,7 +123,8 @@ public class JSONWebServiceActionImplTest {
 		jsonWebServiceActionParametersMap.put(parameterName, value);
 
 		JSONWebServiceActionImpl jsonWebServiceActionImpl =
-			new JSONWebServiceActionImpl(null, jsonWebServiceActionParameters);
+			new JSONWebServiceActionImpl(
+				null, jsonWebServiceActionParameters, null);
 
 		ReflectionTestUtil.invoke(
 			jsonWebServiceActionImpl, "_injectInnerParametersIntoValue",

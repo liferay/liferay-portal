@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.MethodParameter;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -187,7 +188,8 @@ public class JSONWebServiceActionsManagerImpl
 				jsonWebServiceActionParameters);
 
 		return new JSONWebServiceActionImpl(
-			jsonWebServiceActionConfig, jsonWebServiceActionParameters);
+			jsonWebServiceActionConfig, jsonWebServiceActionParameters,
+			_parameterTypeWhitelistServiceTracker);
 	}
 
 	@Override
@@ -210,7 +212,8 @@ public class JSONWebServiceActionsManagerImpl
 				jsonWebServiceActionParameters);
 
 		return new JSONWebServiceActionImpl(
-			jsonWebServiceActionConfig, jsonWebServiceActionParameters);
+			jsonWebServiceActionConfig, jsonWebServiceActionParameters,
+			_parameterTypeWhitelistServiceTracker);
 	}
 
 	@Override
@@ -270,6 +273,13 @@ public class JSONWebServiceActionsManagerImpl
 
 	@Activate
 	protected void activate(BundleContext bundleContext) {
+		_parameterTypeWhitelistServiceTracker = ServiceTrackerFactory.create(
+			bundleContext,
+			StringBundler.concat(
+				"(",
+				PropsKeys.
+					JSONWS_WEB_SERVICE_PARAMETER_TYPE_WHITELIST_CLASS_NAMES,
+				"=*)"));
 		_serviceTracker = ServiceTrackerFactory.create(
 			bundleContext,
 			StringBundler.concat(
@@ -280,7 +290,11 @@ public class JSONWebServiceActionsManagerImpl
 
 	@Deactivate
 	protected void deactivate() {
-		_openedServiceTrackerDCLSingleton.destroy(ServiceTracker::close);
+		_openedServiceTrackerDCLSingleton.destroy(
+			serviceTracker -> {
+				_parameterTypeWhitelistServiceTracker.close();
+				serviceTracker.close();
+			});
 	}
 
 	private boolean _addJSONWebServiceActionConfig(
@@ -339,6 +353,7 @@ public class JSONWebServiceActionsManagerImpl
 	private void _ensureOpen() {
 		_openedServiceTrackerDCLSingleton.getSingleton(
 			() -> {
+				_parameterTypeWhitelistServiceTracker.open();
 				_serviceTracker.open();
 
 				return _serviceTracker;
@@ -731,6 +746,8 @@ public class JSONWebServiceActionsManagerImpl
 			new ConcurrentHashMap<>();
 	private final DCLSingleton<ServiceTracker<?, ?>>
 		_openedServiceTrackerDCLSingleton = new DCLSingleton<>();
+	private ServiceTracker<Object, Object>
+		_parameterTypeWhitelistServiceTracker;
 	private final Map<String, List<JSONWebServiceActionConfig>>
 		_pathIndexedJSONWebServiceActionConfigs = new ConcurrentHashMap<>();
 
