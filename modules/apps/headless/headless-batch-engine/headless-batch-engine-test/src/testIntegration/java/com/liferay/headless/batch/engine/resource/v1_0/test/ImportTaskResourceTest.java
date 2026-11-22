@@ -28,7 +28,6 @@ import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.filter.Filter;
 import com.liferay.portal.kernel.security.pwd.PasswordEncryptorUtil;
@@ -38,6 +37,7 @@ import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.test.randomizerbumpers.UniqueStringRandomizerBumper;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.BundleContextTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -458,7 +458,9 @@ public class ImportTaskResourceTest {
 		implements AutoCloseable {
 
 		public BatchEngineTaskItemDelegateAutoCloseable() throws Exception {
-			BundleContext bundleContext = SystemBundleUtil.getBundleContext();
+			BundleContext bundleContext =
+				BundleContextTestUtil.getBundleContext(
+					ImportTaskResourceTest.class);
 
 			BatchEngineTaskItemDelegate<TestEntity>
 				batchEngineTaskItemDelegate =
