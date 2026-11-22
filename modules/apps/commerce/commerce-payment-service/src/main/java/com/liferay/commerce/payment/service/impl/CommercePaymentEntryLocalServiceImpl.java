@@ -6,11 +6,13 @@
 package com.liferay.commerce.payment.service.impl;
 
 import com.liferay.commerce.constants.CommercePaymentEntryConstants;
+import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.payment.entry.CommercePaymentEntryRefundType;
 import com.liferay.commerce.payment.entry.CommercePaymentEntryRefundTypeRegistry;
 import com.liferay.commerce.payment.exception.CommercePaymentEntryAmountException;
 import com.liferay.commerce.payment.exception.CommercePaymentEntryClassNameIdException;
 import com.liferay.commerce.payment.exception.CommercePaymentEntryClassPKException;
+import com.liferay.commerce.payment.exception.CommercePaymentEntryCommerceChannelIdException;
 import com.liferay.commerce.payment.exception.CommercePaymentEntryPaymentIntegrationTypeException;
 import com.liferay.commerce.payment.exception.CommercePaymentEntryPaymentStatusException;
 import com.liferay.commerce.payment.exception.CommercePaymentEntryReasonKeyException;
@@ -18,6 +20,9 @@ import com.liferay.commerce.payment.model.CommercePaymentEntry;
 import com.liferay.commerce.payment.model.CommercePaymentEntryTable;
 import com.liferay.commerce.payment.service.CommercePaymentEntryAuditLocalService;
 import com.liferay.commerce.payment.service.base.CommercePaymentEntryLocalServiceBaseImpl;
+import com.liferay.commerce.product.model.CommerceChannel;
+import com.liferay.commerce.product.service.CommerceChannelLocalService;
+import com.liferay.commerce.service.CommerceOrderLocalService;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.sql.dsl.DSLFunctionFactoryUtil;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
@@ -98,6 +103,8 @@ public class CommercePaymentEntryLocalServiceImpl
 			commercePaymentEntryRefundType, classNameId, classPK, amount,
 			paymentIntegrationType,
 			CommercePaymentEntryConstants.STATUS_PENDING, reasonKey, type);
+
+		_validateCommerceChannelId(classNameId, classPK, commerceChannelId);
 
 		CommercePaymentEntry commercePaymentEntry =
 			commercePaymentEntryPersistence.create(
@@ -375,6 +382,12 @@ public class CommercePaymentEntryLocalServiceImpl
 			commercePaymentEntry.getClassNameId(),
 			commercePaymentEntry.getClassPK(), amount, paymentIntegrationType,
 			commercePaymentEntry.getPaymentStatus(), reasonKey, type);
+
+		if (commercePaymentEntry.getCommerceChannelId() != commerceChannelId) {
+			_validateCommerceChannelId(
+				commercePaymentEntry.getClassNameId(),
+				commercePaymentEntry.getClassPK(), commerceChannelId);
+		}
 
 		commercePaymentEntry.setExternalReferenceCode(externalReferenceCode);
 		commercePaymentEntry.setCommerceChannelId(commerceChannelId);
@@ -659,8 +672,51 @@ public class CommercePaymentEntryLocalServiceImpl
 		}
 	}
 
+	private void _validateCommerceChannelId(
+			long classNameId, long classPK, long commerceChannelId)
+		throws PortalException {
+
+		if (commerceChannelId == 0) {
+			return;
+		}
+
+		if (classNameId == _classNameLocalService.getClassNameId(
+				CommerceOrder.class)) {
+
+			CommerceOrder commerceOrder =
+				_commerceOrderLocalService.getCommerceOrder(classPK);
+
+			CommerceChannel commerceChannel =
+				_commerceChannelLocalService.getCommerceChannelByOrderGroupId(
+					commerceOrder.getGroupId());
+
+			if (commerceChannel.getCommerceChannelId() != commerceChannelId) {
+				throw new CommercePaymentEntryCommerceChannelIdException();
+			}
+		}
+
+		if (classNameId == _classNameLocalService.getClassNameId(
+				CommercePaymentEntry.class)) {
+
+			CommercePaymentEntry commercePaymentEntry =
+				commercePaymentEntryPersistence.findByPrimaryKey(classPK);
+
+			if (commercePaymentEntry.getCommerceChannelId() !=
+					commerceChannelId) {
+
+				throw new CommercePaymentEntryCommerceChannelIdException();
+			}
+		}
+	}
+
 	@Reference
 	private ClassNameLocalService _classNameLocalService;
+
+	@Reference
+	private CommerceChannelLocalService _commerceChannelLocalService;
+
+	@Reference
+	private CommerceOrderLocalService _commerceOrderLocalService;
 
 	@Reference
 	private CommercePaymentEntryAuditLocalService

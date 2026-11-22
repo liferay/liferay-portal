@@ -7,7 +7,7 @@ package com.liferay.commerce.payment.exception;
 import com.liferay.portal.kernel.exception.PortalException;
 
 /**
- * @author Luca Pellizzon
+ * @author Stefano Motta
  */
 public class CommercePaymentEntryCommerceChannelIdException extends PortalException {
 
