@@ -366,4 +366,4 @@ public interface CommercePaymentEntryLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:910008949
+// LIFERAY-SERVICE-BUILDER-HASH:772985549
