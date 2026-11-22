@@ -11,7 +11,6 @@ import com.liferay.portal.kernel.dao.db.DB;
 import com.liferay.portal.kernel.dao.db.DBFactory;
 import com.liferay.portal.kernel.dao.db.DBType;
 import com.liferay.portal.kernel.db.DBResourceUtil;
-import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.plugin.PluginPackage;
 import com.liferay.portal.kernel.servlet.ServletContextPool;
 import com.liferay.portal.kernel.util.Validator;
@@ -27,7 +26,9 @@ import java.util.HashSet;
 import java.util.ServiceLoader;
 import java.util.Set;
 
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
 
 /**
@@ -58,7 +59,9 @@ public abstract class BaseSQLProvider implements SQLProvider {
 	protected final DB db;
 
 	private void _appendModulesSQL() throws Exception {
-		BundleContext bundleContext = SystemBundleUtil.getBundleContext();
+		Bundle bundle = FrameworkUtil.getBundle(BaseSQLProvider.class);
+
+		BundleContext bundleContext = bundle.getBundleContext();
 
 		Collection<ServiceReference<SchemaCreator>> serviceReferences =
 			bundleContext.getServiceReferences(SchemaCreator.class, null);
