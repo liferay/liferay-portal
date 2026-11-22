@@ -11,7 +11,7 @@ import com.liferay.captcha.simplecaptcha.SimpleCaptchaImpl;
 import com.liferay.configuration.admin.definition.ConfigurationFieldOptionsProvider;
 import com.liferay.portal.configuration.test.util.ConfigurationTestUtil;
 import com.liferay.portal.kernel.captcha.Captcha;
-import com.liferay.portal.kernel.module.util.SystemBundleUtil;
+import com.liferay.portal.kernel.test.util.BundleContextTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
@@ -49,7 +49,8 @@ public class CaptchaConfigurationFieldOptionsProviderTest {
 
 	@BeforeClass
 	public static void setUpClass() throws Exception {
-		_bundleContext = SystemBundleUtil.getBundleContext();
+		_bundleContext = BundleContextTestUtil.getBundleContext(
+			CaptchaConfigurationFieldOptionsProviderTest.class);
 
 		_serviceRegistration = _bundleContext.registerService(
 			Captcha.class, new TestCaptcha(),
