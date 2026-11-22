@@ -12,10 +12,10 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.ConfigurationTestUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.BundleContextTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
@@ -63,7 +63,10 @@ public class MFATimeBasedOTPEntryLocalServiceTest {
 
 	@Before
 	public void setUp() throws Exception {
-		_serviceRegistration = _bundleContext.registerService(
+		BundleContext bundleContext = BundleContextTestUtil.getBundleContext(
+			MFATimeBasedOTPEntryLocalServiceTest.class);
+
+		_serviceRegistration = bundleContext.registerService(
 			SecretProvider.class, _testSecretProvider,
 			HashMapDictionaryBuilder.<String, Object>put(
 				"secret.provider.id", _PROVIDER_ID
@@ -321,8 +324,6 @@ public class MFATimeBasedOTPEntryLocalServiceTest {
 	private static final String _PUT_SECRET_FAILURE_MESSAGE =
 		"Unable to put secret";
 
-	private static final BundleContext _bundleContext =
-		SystemBundleUtil.getBundleContext();
 	private static final Pattern _portableSecretIdentifierPattern =
 		Pattern.compile("[\\p{Alnum}\\-/_+=.@]+");
 
