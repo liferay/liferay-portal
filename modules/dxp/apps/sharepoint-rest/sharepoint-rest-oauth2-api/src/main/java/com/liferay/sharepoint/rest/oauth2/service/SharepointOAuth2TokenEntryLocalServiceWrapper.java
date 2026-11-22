@@ -365,15 +365,6 @@ public class SharepointOAuth2TokenEntryLocalServiceWrapper
 	}
 
 	@Override
-	public com.liferay.sharepoint.rest.oauth2.model.SharepointOAuth2TokenEntry
-			getSharepointOAuth2TokenEntry(long userId, String configurationPid)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _sharepointOAuth2TokenEntryLocalService.
-			getSharepointOAuth2TokenEntry(userId, configurationPid);
-	}
-
-	@Override
 	public int getUserSharepointOAuth2TokenEntriesCount(long userId) {
 		return _sharepointOAuth2TokenEntryLocalService.
 			getUserSharepointOAuth2TokenEntriesCount(userId);
@@ -422,4 +413,4 @@ public class SharepointOAuth2TokenEntryLocalServiceWrapper
 		_sharepointOAuth2TokenEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:742116142
+// LIFERAY-SERVICE-BUILDER-HASH:-238136631

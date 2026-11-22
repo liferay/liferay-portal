@@ -268,11 +268,6 @@ public interface SharepointOAuth2TokenEntryLocalService
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public SharepointOAuth2TokenEntry getSharepointOAuth2TokenEntry(
-			long userId, String configurationPid)
-		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getUserSharepointOAuth2TokenEntriesCount(long userId);
 
 	/**
@@ -290,4 +285,4 @@ public interface SharepointOAuth2TokenEntryLocalService
 		SharepointOAuth2TokenEntry sharepointOAuth2TokenEntry);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-164025860
+// LIFERAY-SERVICE-BUILDER-HASH:111914599

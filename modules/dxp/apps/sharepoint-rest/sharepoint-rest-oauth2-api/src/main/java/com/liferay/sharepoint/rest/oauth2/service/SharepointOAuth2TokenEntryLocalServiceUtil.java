@@ -314,14 +314,6 @@ public class SharepointOAuth2TokenEntryLocalServiceUtil {
 			sharepointOAuth2TokenEntryId);
 	}
 
-	public static SharepointOAuth2TokenEntry getSharepointOAuth2TokenEntry(
-			long userId, String configurationPid)
-		throws PortalException {
-
-		return getService().getSharepointOAuth2TokenEntry(
-			userId, configurationPid);
-	}
-
 	public static int getUserSharepointOAuth2TokenEntriesCount(long userId) {
 		return getService().getUserSharepointOAuth2TokenEntriesCount(userId);
 	}
@@ -353,4 +345,4 @@ public class SharepointOAuth2TokenEntryLocalServiceUtil {
 			SharepointOAuth2TokenEntryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1297471777
+// LIFERAY-SERVICE-BUILDER-HASH:1852000999
