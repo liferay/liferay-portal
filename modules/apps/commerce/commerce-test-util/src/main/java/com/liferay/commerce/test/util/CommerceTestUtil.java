@@ -43,7 +43,6 @@ import com.liferay.commerce.service.CommerceAddressLocalServiceUtil;
 import com.liferay.commerce.service.CommerceOrderItemLocalServiceUtil;
 import com.liferay.commerce.service.CommerceOrderLocalServiceUtil;
 import com.liferay.commerce.service.CommerceShippingMethodLocalServiceUtil;
-import com.liferay.commerce.service.persistence.CommerceOrderAttachmentUtil;
 import com.liferay.commerce.service.persistence.CommerceShipmentItemUtil;
 import com.liferay.commerce.shipping.engine.fixed.model.CommerceShippingFixedOption;
 import com.liferay.commerce.shipping.engine.fixed.service.CommerceShippingFixedOptionLocalServiceUtil;
@@ -634,16 +633,6 @@ public class CommerceTestUtil {
 			commerceShippingFixedOption.getNameCurrentValue());
 
 		return CommerceOrderLocalServiceUtil.updateCommerceOrder(commerceOrder);
-	}
-
-	public static int getCommerceOrderAttachmentsCount(long commerceOrderId)
-		throws Exception {
-
-		return TransactionTestUtil.invoke(
-			CommerceOrderAttachmentUtil.getPersistence(),
-			commerceOrderAttachmentPersistence ->
-				commerceOrderAttachmentPersistence.countByCommerceOrderId(
-					commerceOrderId));
 	}
 
 	public static List<CommerceShipmentItem>

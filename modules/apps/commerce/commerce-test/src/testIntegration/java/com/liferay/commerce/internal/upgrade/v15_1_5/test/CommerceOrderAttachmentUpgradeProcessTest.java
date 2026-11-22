@@ -15,6 +15,7 @@ import com.liferay.commerce.model.CommerceOrderAttachment;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.service.CommerceOrderAttachmentLocalService;
 import com.liferay.commerce.service.CommerceOrderLocalService;
+import com.liferay.commerce.service.persistence.CommerceOrderAttachmentUtil;
 import com.liferay.commerce.test.util.CommerceOrderAttachmentTestUtil;
 import com.liferay.commerce.test.util.CommerceTestUtil;
 import com.liferay.portal.kernel.dao.orm.EntityCacheUtil;
@@ -30,6 +31,7 @@ import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
+import com.liferay.portal.kernel.test.util.TransactionTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.test.rule.Inject;
@@ -104,8 +106,11 @@ public class CommerceOrderAttachmentUpgradeProcessTest {
 				RandomTestUtil.randomString(),
 				new ByteArrayInputStream("Liferay".getBytes()));
 
-		int count = CommerceTestUtil.getCommerceOrderAttachmentsCount(
-			_commerceOrder.getCommerceOrderId());
+		int count = TransactionTestUtil.invoke(
+			CommerceOrderAttachmentUtil.getPersistence(),
+			commerceOrderAttachmentPersistence ->
+				commerceOrderAttachmentPersistence.countByCommerceOrderId(
+					_commerceOrder.getCommerceOrderId()));
 
 		_runUpgrade();
 
@@ -137,9 +142,12 @@ public class CommerceOrderAttachmentUpgradeProcessTest {
 		_runUpgrade();
 
 		Assert.assertEquals(
-			count + 2,
-			CommerceTestUtil.getCommerceOrderAttachmentsCount(
-				_commerceOrder.getCommerceOrderId()));
+			Integer.valueOf(count + 2),
+			TransactionTestUtil.invoke(
+				CommerceOrderAttachmentUtil.getPersistence(),
+				commerceOrderAttachmentPersistence ->
+					commerceOrderAttachmentPersistence.countByCommerceOrderId(
+						_commerceOrder.getCommerceOrderId())));
 	}
 
 	private void _assertCommerceOrderAttachment(
