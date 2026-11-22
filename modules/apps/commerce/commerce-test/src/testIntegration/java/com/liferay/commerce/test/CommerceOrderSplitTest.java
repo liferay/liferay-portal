@@ -48,6 +48,7 @@ import com.liferay.commerce.service.CommerceShipmentItemLocalService;
 import com.liferay.commerce.service.CommerceShipmentLocalService;
 import com.liferay.commerce.shipment.test.util.CommerceShipmentTestUtil;
 import com.liferay.commerce.test.util.CommerceInventoryTestUtil;
+import com.liferay.commerce.test.util.CommerceShipmentItemTestUtil;
 import com.liferay.commerce.test.util.CommerceTestUtil;
 import com.liferay.object.action.trigger.ObjectActionTriggerRegistry;
 import com.liferay.object.constants.ObjectActionConstants;
@@ -738,8 +739,9 @@ public class CommerceOrderSplitTest {
 		commerceOrderItem = commerceOrderItems.get(0);
 
 		List<CommerceShipmentItem> commerceShipmentItems =
-			CommerceTestUtil.getCommerceShipmentItemsByCommerceOrderItemId(
-				commerceOrderItem.getCommerceOrderItemId());
+			CommerceShipmentItemTestUtil.
+				getCommerceShipmentItemsByCommerceOrderItemId(
+					commerceOrderItem.getCommerceOrderItemId());
 
 		CommerceShipmentItem commerceShipmentItem = commerceShipmentItems.get(
 			0);

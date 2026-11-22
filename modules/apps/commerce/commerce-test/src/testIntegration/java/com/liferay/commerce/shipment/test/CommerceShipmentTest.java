@@ -46,6 +46,7 @@ import com.liferay.commerce.service.CommerceShipmentLocalService;
 import com.liferay.commerce.shipment.test.util.CommerceShipmentTestUtil;
 import com.liferay.commerce.tax.model.CommerceTaxMethod;
 import com.liferay.commerce.test.util.CommerceInventoryTestUtil;
+import com.liferay.commerce.test.util.CommerceShipmentItemTestUtil;
 import com.liferay.commerce.test.util.CommerceTaxTestUtil;
 import com.liferay.commerce.test.util.CommerceTestUtil;
 import com.liferay.commerce.test.util.context.TestCommerceContext;
@@ -702,8 +703,9 @@ public class CommerceShipmentTest {
 
 		for (CommerceOrderItem commerceOrderItem : commerceOrderItems) {
 			List<CommerceShipmentItem> commerceShipmentItems =
-				CommerceTestUtil.getCommerceShipmentItemsByCommerceOrderItemId(
-					commerceOrderItem.getCommerceOrderItemId());
+				CommerceShipmentItemTestUtil.
+					getCommerceShipmentItemsByCommerceOrderItemId(
+						commerceOrderItem.getCommerceOrderItemId());
 
 			Assert.assertEquals(
 				commerceShipmentItems.toString(), 1,
@@ -1087,8 +1089,9 @@ public class CommerceShipmentTest {
 			commerceInventoryWarehouse.getCommerceInventoryWarehouseId());
 
 		List<CommerceShipmentItem> commerceShipmentItems =
-			CommerceTestUtil.getCommerceShipmentItemsByCommerceOrderItemId(
-				commerceOrderItem.getCommerceOrderItemId());
+			CommerceShipmentItemTestUtil.
+				getCommerceShipmentItemsByCommerceOrderItemId(
+					commerceOrderItem.getCommerceOrderItemId());
 
 		CommerceShipmentItem commerceShipmentItem = commerceShipmentItems.get(
 			0);
