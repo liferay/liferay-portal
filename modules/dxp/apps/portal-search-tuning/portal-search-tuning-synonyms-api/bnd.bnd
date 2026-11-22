@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Portal Search Tuning Synonyms API
 Bundle-SymbolicName: com.liferay.portal.search.tuning.synonyms.api
-Bundle-Version: 2.1.5
+Bundle-Version: 2.1.6
 Export-Package:\
 	com.liferay.portal.search.tuning.synonyms.index.name,\
 	com.liferay.portal.search.tuning.synonyms.storage
