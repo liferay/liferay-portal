@@ -15,17 +15,19 @@ import com.liferay.commerce.product.exception.DuplicateCommerceChannelAccountEnt
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.model.CommerceChannelAccountEntryRel;
 import com.liferay.commerce.product.service.CommerceChannelAccountEntryRelLocalService;
-import com.liferay.commerce.product.test.util.CPTestUtil;
+import com.liferay.commerce.product.service.persistence.CommerceChannelAccountEntryRelUtil;
 import com.liferay.commerce.test.util.CommerceTestUtil;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.ClassNameLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
+import com.liferay.portal.kernel.test.util.TransactionTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -221,10 +223,15 @@ public class CommerceChannelAccountEntryRelLocalServiceTest {
 
 	private List<Long> _getAccountEntryIds(User user) throws Exception {
 		return TransformUtil.transform(
-			CPTestUtil.getCommerceChannelAccountEntryRels(
-				User.class.getName(), user.getUserId(),
-				_commerceChannel.getCommerceChannelId(),
-				CommerceChannelAccountEntryRelConstants.TYPE_USER),
+			TransactionTestUtil.invoke(
+				CommerceChannelAccountEntryRelUtil.getPersistence(),
+				commerceChannelAccountEntryRelPersistence ->
+					commerceChannelAccountEntryRelPersistence.findByC_C_C_T(
+						ClassNameLocalServiceUtil.getClassNameId(
+							User.class.getName()),
+						user.getUserId(),
+						_commerceChannel.getCommerceChannelId(),
+						CommerceChannelAccountEntryRelConstants.TYPE_USER)),
 			CommerceChannelAccountEntryRel::getAccountEntryId);
 	}
 
