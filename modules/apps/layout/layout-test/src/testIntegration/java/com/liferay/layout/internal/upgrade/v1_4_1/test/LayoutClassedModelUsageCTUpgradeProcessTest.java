@@ -14,7 +14,6 @@ import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.service.FragmentEntryLinkLocalService;
 import com.liferay.journal.constants.JournalFolderConstants;
 import com.liferay.journal.model.JournalArticle;
-import com.liferay.journal.service.JournalContentSearchLocalService;
 import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.layout.model.LayoutClassedModelUsage;
 import com.liferay.layout.service.LayoutClassedModelUsageLocalService;
@@ -382,9 +381,6 @@ public class LayoutClassedModelUsageCTUpgradeProcessTest
 
 	private JournalArticle _journalArticle;
 	private long _journalArticleClassNameId;
-
-	@Inject
-	private JournalContentSearchLocalService _journalContentSearchLocalService;
 
 	@Inject
 	private JSONFactory _jsonFactory;
