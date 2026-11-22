@@ -11,7 +11,6 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.ConfigurationTestUtil;
 import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.model.Group;
-import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -21,6 +20,7 @@ import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionRequest;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionResponse;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.BundleContextTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -74,7 +74,10 @@ public class SecretResolverTest {
 	public void setUp() throws Exception {
 		_group = GroupTestUtil.addGroup();
 
-		_secretProviderServiceRegistration = _bundleContext.registerService(
+		BundleContext bundleContext = BundleContextTestUtil.getBundleContext(
+			SecretResolverTest.class);
+
+		_secretProviderServiceRegistration = bundleContext.registerService(
 			SecretProvider.class, new TestSecretProvider(_SECRET_PROVIDER_ID),
 			HashMapDictionaryBuilder.<String, Object>put(
 				"secret.provider.id", _SECRET_PROVIDER_ID
@@ -307,9 +310,6 @@ public class SecretResolverTest {
 
 	private static final String _SECRET_PROVIDER_ID =
 		RandomTestUtil.randomString();
-
-	private static final BundleContext _bundleContext =
-		SystemBundleUtil.getBundleContext();
 
 	@Inject
 	private CompanyLocalService _companyLocalService;
