@@ -11,7 +11,6 @@
 
 	--menubar-primary-nav-link-active-class-background-color: var(--menubar-primary-nav-link-hover-background-color);
 
-	column-gap: .05rem;
 	display: grid;
 	grid-template-areas: 'sidebar content';
 	grid-template-columns: 0px minmax(0, 1fr);
@@ -31,6 +30,7 @@
 	}
 
 	&.open {
+		column-gap: .05rem;
 		grid-template-columns: var(--sidebar-layout-width) minmax(0, 1fr);
 	}
 
@@ -69,6 +69,7 @@
 
 	@media (max-width: 575px) {
 		&.open {
+			column-gap: 0;
 			grid-template-columns: 0px 1fr;
 
 			.sidebar-container {
