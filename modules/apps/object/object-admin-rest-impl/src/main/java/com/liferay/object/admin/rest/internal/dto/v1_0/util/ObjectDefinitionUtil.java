@@ -43,7 +43,6 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.PermissionService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
@@ -72,7 +71,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
-import org.osgi.framework.BundleContext;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.FrameworkUtil;
 
 /**
  * @author Carolina Barbosa
@@ -567,10 +567,14 @@ public class ObjectDefinitionUtil {
 	private static final Log _log = LogFactoryUtil.getLog(
 		ObjectDefinitionUtil.class);
 
-	private static final BundleContext _bundleContext =
-		SystemBundleUtil.getBundleContext();
 	private static final ServiceTrackerList<ObjectDefinitionLabelKeyProvider>
+		_serviceTrackerList;
+
+	static {
+		Bundle bundle = FrameworkUtil.getBundle(ObjectDefinitionUtil.class);
+
 		_serviceTrackerList = ServiceTrackerListFactory.open(
-			_bundleContext, ObjectDefinitionLabelKeyProvider.class);
+			bundle.getBundleContext(), ObjectDefinitionLabelKeyProvider.class);
+	}
 
 }
