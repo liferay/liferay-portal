@@ -59,26 +59,6 @@ public class EntryLocalServiceWrapper
 			portletId, pageURL, reportName, reportParameters, serviceContext);
 	}
 
-	@Override
-	public void addEntryResources(
-			com.liferay.portal.reports.engine.console.model.Entry entry,
-			boolean addCommunityPermissions, boolean addGuestPermissions)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		_entryLocalService.addEntryResources(
-			entry, addCommunityPermissions, addGuestPermissions);
-	}
-
-	@Override
-	public void addEntryResources(
-			com.liferay.portal.reports.engine.console.model.Entry entry,
-			String[] communityPermissions, String[] guestPermissions)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		_entryLocalService.addEntryResources(
-			entry, communityPermissions, guestPermissions);
-	}
-
 	/**
 	 * Creates a new entry with the primary key. Does not add the entry to the database.
 	 *
@@ -268,13 +248,6 @@ public class EntryLocalServiceWrapper
 	}
 
 	@Override
-	public void generateReport(long entryId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		_entryLocalService.generateReport(entryId);
-	}
-
-	@Override
 	public void generateReport(long entryId, String reportName)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
@@ -437,4 +410,4 @@ public class EntryLocalServiceWrapper
 	private EntryLocalService _entryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:931924345
+// LIFERAY-SERVICE-BUILDER-HASH:-675549174

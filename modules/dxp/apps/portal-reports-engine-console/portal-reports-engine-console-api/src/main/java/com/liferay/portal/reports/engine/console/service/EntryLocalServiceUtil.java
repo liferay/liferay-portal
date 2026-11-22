@@ -66,24 +66,6 @@ public class EntryLocalServiceUtil {
 			portletId, pageURL, reportName, reportParameters, serviceContext);
 	}
 
-	public static void addEntryResources(
-			Entry entry, boolean addCommunityPermissions,
-			boolean addGuestPermissions)
-		throws PortalException {
-
-		getService().addEntryResources(
-			entry, addCommunityPermissions, addGuestPermissions);
-	}
-
-	public static void addEntryResources(
-			Entry entry, String[] communityPermissions,
-			String[] guestPermissions)
-		throws PortalException {
-
-		getService().addEntryResources(
-			entry, communityPermissions, guestPermissions);
-	}
-
 	/**
 	 * Creates a new entry with the primary key. Does not add the entry to the database.
 	 *
@@ -239,10 +221,6 @@ public class EntryLocalServiceUtil {
 		return getService().fetchEntry(entryId);
 	}
 
-	public static void generateReport(long entryId) throws PortalException {
-		getService().generateReport(entryId);
-	}
-
 	public static void generateReport(long entryId, String reportName)
 		throws PortalException {
 
@@ -371,4 +349,4 @@ public class EntryLocalServiceUtil {
 		new Snapshot<>(EntryLocalServiceUtil.class, EntryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-516966523
+// LIFERAY-SERVICE-BUILDER-HASH:2038581598

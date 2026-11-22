@@ -80,16 +80,6 @@ public interface EntryLocalService
 			ServiceContext serviceContext)
 		throws PortalException;
 
-	public void addEntryResources(
-			Entry entry, boolean addCommunityPermissions,
-			boolean addGuestPermissions)
-		throws PortalException;
-
-	public void addEntryResources(
-			Entry entry, String[] communityPermissions,
-			String[] guestPermissions)
-		throws PortalException;
-
 	/**
 	 * Creates a new entry with the primary key. Does not add the entry to the database.
 	 *
@@ -219,8 +209,6 @@ public interface EntryLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Entry fetchEntry(long entryId);
 
-	public void generateReport(long entryId) throws PortalException;
-
 	public void generateReport(long entryId, String reportName)
 		throws PortalException;
 
@@ -309,4 +297,4 @@ public interface EntryLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-539474478
+// LIFERAY-SERVICE-BUILDER-HASH:-1385983608
