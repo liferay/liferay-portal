@@ -264,9 +264,6 @@ public interface RatingsStatsLocalService
 	public int getRatingsStatsesCount();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public RatingsStats getStats(long statsId) throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public RatingsStats getStats(String className, long classPK)
 		throws PortalException;
 
@@ -302,4 +299,4 @@ public interface RatingsStatsLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:750036284
+// LIFERAY-SERVICE-BUILDER-HASH:-797502991

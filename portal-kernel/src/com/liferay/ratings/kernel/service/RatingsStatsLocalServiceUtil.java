@@ -281,10 +281,6 @@ public class RatingsStatsLocalServiceUtil {
 		return getService().getRatingsStatsesCount();
 	}
 
-	public static RatingsStats getStats(long statsId) throws PortalException {
-		return getService().getStats(statsId);
-	}
-
 	public static RatingsStats getStats(String className, long classPK)
 		throws PortalException {
 
@@ -322,4 +318,4 @@ public class RatingsStatsLocalServiceUtil {
 	private static volatile RatingsStatsLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2144988377
+// LIFERAY-SERVICE-BUILDER-HASH:-559253777

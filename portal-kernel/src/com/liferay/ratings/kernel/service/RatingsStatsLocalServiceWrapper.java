@@ -311,13 +311,6 @@ public class RatingsStatsLocalServiceWrapper
 	}
 
 	@Override
-	public RatingsStats getStats(long statsId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _ratingsStatsLocalService.getStats(statsId);
-	}
-
-	@Override
 	public RatingsStats getStats(String className, long classPK)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
@@ -386,4 +379,4 @@ public class RatingsStatsLocalServiceWrapper
 	private RatingsStatsLocalService _ratingsStatsLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1290369778
+// LIFERAY-SERVICE-BUILDER-HASH:-2048491459
