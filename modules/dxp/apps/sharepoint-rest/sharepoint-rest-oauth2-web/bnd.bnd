@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Sharepoint REST OAuth2 Web
 Bundle-SymbolicName: com.liferay.sharepoint.rest.oauth2.web
-Bundle-Version: 3.0.14
+Bundle-Version: 3.0.15
 Liferay-Releng-Module-Group-Title: Sharepoint
 Web-ContextPath: /sharepoint-rest-oauth2-web
