@@ -382,52 +382,6 @@ public class KaleoProcessLocalServiceWrapper
 	}
 
 	/**
-	 * Returns all the Kaleo processes belonging to the group.
-	 *
-	 * @param groupId the primary key of the Kaleo processes's group
-	 * @return the Kaleo processes
-	 */
-	@Override
-	public java.util.List
-		<com.liferay.portal.workflow.kaleo.forms.model.KaleoProcess>
-			getKaleoProcesses(long groupId) {
-
-		return _kaleoProcessLocalService.getKaleoProcesses(groupId);
-	}
-
-	/**
-	 * Returns an ordered range of all Kaleo processes belonging to the group.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end -
-	 * start</code> instances. <code>start</code> and <code>end</code> are not
-	 * primary keys, they are indexes in the result set. Thus, <code>0</code>
-	 * refers to the first result in the set. Setting both <code>start</code>
-	 * and <code>end</code> to <code>QueryUtil#ALL_POS</code>, which resides in
-	 * <code>portal-kernel</code>, will return the full result set.
-	 * </p>
-	 *
-	 * @param groupId the primary key of the Kaleo processes' group
-	 * @param start the lower bound of the range of Kaleo processes to return
-	 * @param end the upper bound of the range of Kaleo processes to return
-	 (not inclusive)
-	 * @param orderByComparator the comparator to order the Kaleo processes
-	 * @return the range of matching Kaleo processes ordered by the comparator
-	 */
-	@Override
-	public java.util.List
-		<com.liferay.portal.workflow.kaleo.forms.model.KaleoProcess>
-			getKaleoProcesses(
-				long groupId, int start, int end,
-				com.liferay.portal.kernel.util.OrderByComparator
-					<com.liferay.portal.workflow.kaleo.forms.model.KaleoProcess>
-						orderByComparator) {
-
-		return _kaleoProcessLocalService.getKaleoProcesses(
-			groupId, start, end, orderByComparator);
-	}
-
-	/**
 	 * Returns all the kaleo processes matching the UUID and company.
 	 *
 	 * @param uuid the UUID of the kaleo processes
@@ -474,17 +428,6 @@ public class KaleoProcessLocalServiceWrapper
 	@Override
 	public int getKaleoProcessesCount() {
 		return _kaleoProcessLocalService.getKaleoProcessesCount();
-	}
-
-	/**
-	 * Returns the number of Kaleo processes belonging to the group.
-	 *
-	 * @param groupId the primary key of the Kaleo processes' group
-	 * @return the number of Kaleo processes
-	 */
-	@Override
-	public int getKaleoProcessesCount(long groupId) {
-		return _kaleoProcessLocalService.getKaleoProcessesCount(groupId);
 	}
 
 	/**
@@ -588,4 +531,4 @@ public class KaleoProcessLocalServiceWrapper
 	private KaleoProcessLocalService _kaleoProcessLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1850655551
+// LIFERAY-SERVICE-BUILDER-HASH:-981113341

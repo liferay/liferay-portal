@@ -409,53 +409,6 @@ public class KaleoProcessLinkLocalServiceWrapper
 	}
 
 	/**
-	 * Updates the Kaleo process link, setting the primary key of the associated
-	 * Kaleo process.
-	 *
-	 * @param kaleoProcessLinkId the primary key of the Kaleo process link
-	 * @param kaleoProcessId the primary key of the Kaleo process link's Kaleo
-	 process
-	 * @return the Kaleo process link
-	 * @throws PortalException if a portal exception occurred
-	 */
-	@Override
-	public com.liferay.portal.workflow.kaleo.forms.model.KaleoProcessLink
-			updateKaleoProcessLink(long kaleoProcessLinkId, long kaleoProcessId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _kaleoProcessLinkLocalService.updateKaleoProcessLink(
-			kaleoProcessLinkId, kaleoProcessId);
-	}
-
-	/**
-	 * Updates the Kaleo process link, replacing its values with new ones. New
-	 * values are set for the primary key of the associated Kaleo process, the
-	 * name of the associated workflow task, and the primary key of the
-	 * associated DDM Template.
-	 *
-	 * @param kaleoProcessLinkId the primary key of the Kaleo process link
-	 * @param kaleoProcessId the primary key of the Kaleo process link's Kaleo
-	 process
-	 * @param workflowTaskName the name of the Kaleo process link's workflow
-	 task
-	 * @param ddmTemplateId the primary key of the Kaleo process link's DDM
-	 template
-	 * @return the Kaleo process link
-	 * @throws PortalException if a portal exception occurred
-	 */
-	@Override
-	public com.liferay.portal.workflow.kaleo.forms.model.KaleoProcessLink
-			updateKaleoProcessLink(
-				long kaleoProcessLinkId, long kaleoProcessId,
-				String workflowTaskName, long ddmTemplateId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _kaleoProcessLinkLocalService.updateKaleoProcessLink(
-			kaleoProcessLinkId, kaleoProcessId, workflowTaskName,
-			ddmTemplateId);
-	}
-
-	/**
 	 * Updates the Kaleo process link. If no Kaleo process link is found
 	 * matching the primary key of the Kaleo process and the workflow task name,
 	 * a new link is created.
@@ -497,4 +450,4 @@ public class KaleoProcessLinkLocalServiceWrapper
 	private KaleoProcessLinkLocalService _kaleoProcessLinkLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1084784759
+// LIFERAY-SERVICE-BUILDER-HASH:501788555

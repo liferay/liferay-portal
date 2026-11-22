@@ -306,39 +306,6 @@ public interface KaleoProcessLocalService
 	public List<KaleoProcess> getKaleoProcesses(int start, int end);
 
 	/**
-	 * Returns all the Kaleo processes belonging to the group.
-	 *
-	 * @param groupId the primary key of the Kaleo processes's group
-	 * @return the Kaleo processes
-	 */
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<KaleoProcess> getKaleoProcesses(long groupId);
-
-	/**
-	 * Returns an ordered range of all Kaleo processes belonging to the group.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end -
-	 * start</code> instances. <code>start</code> and <code>end</code> are not
-	 * primary keys, they are indexes in the result set. Thus, <code>0</code>
-	 * refers to the first result in the set. Setting both <code>start</code>
-	 * and <code>end</code> to <code>QueryUtil#ALL_POS</code>, which resides in
-	 * <code>portal-kernel</code>, will return the full result set.
-	 * </p>
-	 *
-	 * @param groupId the primary key of the Kaleo processes' group
-	 * @param start the lower bound of the range of Kaleo processes to return
-	 * @param end the upper bound of the range of Kaleo processes to return
-	 (not inclusive)
-	 * @param orderByComparator the comparator to order the Kaleo processes
-	 * @return the range of matching Kaleo processes ordered by the comparator
-	 */
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<KaleoProcess> getKaleoProcesses(
-		long groupId, int start, int end,
-		OrderByComparator<KaleoProcess> orderByComparator);
-
-	/**
 	 * Returns all the kaleo processes matching the UUID and company.
 	 *
 	 * @param uuid the UUID of the kaleo processes
@@ -371,15 +338,6 @@ public interface KaleoProcessLocalService
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getKaleoProcessesCount();
-
-	/**
-	 * Returns the number of Kaleo processes belonging to the group.
-	 *
-	 * @param groupId the primary key of the Kaleo processes' group
-	 * @return the number of Kaleo processes
-	 */
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getKaleoProcessesCount(long groupId);
 
 	/**
 	 * Returns the OSGi service identifier.
@@ -441,4 +399,4 @@ public interface KaleoProcessLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:572957636
+// LIFERAY-SERVICE-BUILDER-HASH:-1156921652
