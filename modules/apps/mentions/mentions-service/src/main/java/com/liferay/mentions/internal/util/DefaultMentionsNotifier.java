@@ -184,6 +184,17 @@ public class DefaultMentionsNotifier implements MentionsNotifier {
 		mentionsSubscriptionSender.setLocalizedSubjectMap(
 			_localization.getMap(subjectLocalizedValuesMap));
 
+		boolean discussion = false;
+
+		if (Objects.equals(className, MBMessage.class.getName())) {
+			MBMessage mbMessage = _mbMessageLocalService.fetchMBMessage(
+				classPK);
+
+			if ((mbMessage != null) && mbMessage.isDiscussion()) {
+				discussion = true;
+			}
+		}
+
 		for (String mentionedUserScreenName : mentionedUsersScreenNames) {
 			User mentionedUser = _userLocalService.fetchUserByScreenName(
 				user.getCompanyId(), mentionedUserScreenName);
@@ -221,6 +232,13 @@ public class DefaultMentionsNotifier implements MentionsNotifier {
 						continue;
 					}
 				}
+			}
+			else if (discussion &&
+					 !_hasDiscussionViewPermission(
+						 classPK,
+						 _permissionCheckerFactory.create(mentionedUser))) {
+
+				continue;
 			}
 
 			mentionsSubscriptionSender.addRuntimeSubscribers(
