@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Push Notifications API
 Bundle-SymbolicName: com.liferay.push.notifications.api
-Bundle-Version: 10.0.3
+Bundle-Version: 11.0.0
 Export-Package:\
 	com.liferay.push.notifications.constants,\
 	com.liferay.push.notifications.exception,\
