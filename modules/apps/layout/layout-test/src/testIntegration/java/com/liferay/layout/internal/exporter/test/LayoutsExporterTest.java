@@ -14,6 +14,9 @@ import com.liferay.layout.page.template.model.LayoutPageTemplateCollection;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateCollectionLocalService;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
+import com.liferay.layout.utility.page.kernel.constants.LayoutUtilityPageEntryConstants;
+import com.liferay.layout.utility.page.model.LayoutUtilityPageEntry;
+import com.liferay.layout.utility.page.service.LayoutUtilityPageEntryLocalService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Company;
@@ -104,6 +107,22 @@ public class LayoutsExporterTest {
 			"User ", _user.getUserId(), " must have VIEW permission for ",
 			LayoutPageTemplateEntry.class.getName(), " ",
 			_layoutPageTemplateEntryId);
+
+		LayoutUtilityPageEntry layoutUtilityPageEntry =
+			_layoutUtilityPageEntryLocalService.addLayoutUtilityPageEntry(
+				null, serviceContext.getUserId(),
+				serviceContext.getScopeGroupId(), 0, 0, false,
+				RandomTestUtil.randomString(),
+				LayoutUtilityPageEntryConstants.TYPE_SC_NOT_FOUND, null,
+				serviceContext);
+
+		_layoutUtilityPageEntryId =
+			layoutUtilityPageEntry.getLayoutUtilityPageEntryId();
+
+		_layoutUtilityPageEntryMessage = StringBundler.concat(
+			"User ", _user.getUserId(), " must have VIEW permission for ",
+			LayoutUtilityPageEntry.class.getName(), " ",
+			_layoutUtilityPageEntryId);
 	}
 
 	@AfterClass
@@ -228,6 +247,34 @@ public class LayoutsExporterTest {
 		}
 	}
 
+	@Test
+	@TestInfo("LPD-116046")
+	public void testExportLayoutUtilityPageEntries() throws Exception {
+		PermissionChecker permissionChecker =
+			PermissionCheckerFactoryUtil.create(_user);
+
+		PermissionChecker originalPermissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		PermissionThreadLocal.setPermissionChecker(permissionChecker);
+
+		try {
+			_layoutsExporter.exportLayoutUtilityPageEntries(
+				new long[] {_layoutUtilityPageEntryId});
+
+			Assert.fail();
+		}
+		catch (PrincipalException principalException) {
+			Assert.assertEquals(
+				_layoutUtilityPageEntryMessage,
+				principalException.getMessage());
+		}
+		finally {
+			PermissionThreadLocal.setPermissionChecker(
+				originalPermissionChecker);
+		}
+	}
+
 	private static Company _company;
 
 	@Inject
@@ -252,6 +299,13 @@ public class LayoutsExporterTest {
 		_layoutPageTemplateEntryLocalService;
 
 	private static String _layoutPageTemplateEntryMessage;
+	private static long _layoutUtilityPageEntryId;
+
+	@Inject
+	private static LayoutUtilityPageEntryLocalService
+		_layoutUtilityPageEntryLocalService;
+
+	private static String _layoutUtilityPageEntryMessage;
 	private static User _user;
 
 	@Inject
