@@ -409,15 +409,6 @@ public class WorkflowInstanceLinkLocalServiceWrapper
 	}
 
 	@Override
-	public boolean isEnded(
-			long companyId, long groupId, String className, long classPK)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _workflowInstanceLinkLocalService.isEnded(
-			companyId, groupId, className, classPK);
-	}
-
-	@Override
 	public void startWorkflowInstance(
 			long companyId, long groupId, long userId, String className,
 			long classPK,
@@ -439,16 +430,6 @@ public class WorkflowInstanceLinkLocalServiceWrapper
 		_workflowInstanceLinkLocalService.startWorkflowInstance(
 			companyId, groupId, userId, className, classPK, workflowContext,
 			waitForCompletion);
-	}
-
-	@Override
-	public void updateClassPK(
-			long companyId, long groupId, String className, long oldClassPK,
-			long newClassPK)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		_workflowInstanceLinkLocalService.updateClassPK(
-			companyId, groupId, className, oldClassPK, newClassPK);
 	}
 
 	/**
@@ -509,4 +490,4 @@ public class WorkflowInstanceLinkLocalServiceWrapper
 	private WorkflowInstanceLinkLocalService _workflowInstanceLinkLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:921561046
+// LIFERAY-SERVICE-BUILDER-HASH:-1809648939

@@ -15,7 +15,6 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 import java.io.Serializable;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Provides the local service utility for UserNotificationEvent. This utility wraps
@@ -94,25 +93,6 @@ public class UserNotificationEventLocalServiceUtil {
 		return getService().addUserNotificationEvent(userNotificationEvent);
 	}
 
-	public static List<UserNotificationEvent> addUserNotificationEvents(
-			long userId,
-			java.util.Collection
-				<com.liferay.portal.kernel.notifications.NotificationEvent>
-					notificationEvents)
-		throws PortalException {
-
-		return getService().addUserNotificationEvents(
-			userId, notificationEvents);
-	}
-
-	public static void archiveUserNotificationEvents(
-			long userId, int deliveryType, boolean actionRequired)
-		throws PortalException {
-
-		getService().archiveUserNotificationEvents(
-			userId, deliveryType, actionRequired);
-	}
-
 	/**
 	 * @throws PortalException
 	 */
@@ -165,12 +145,6 @@ public class UserNotificationEventLocalServiceUtil {
 			userNotificationEventId);
 	}
 
-	public static void deleteUserNotificationEvent(String uuid, long companyId)
-		throws PortalException {
-
-		getService().deleteUserNotificationEvent(uuid, companyId);
-	}
-
 	/**
 	 * Deletes the user notification event from the database. Also notifies the appropriate model listeners.
 	 *
@@ -185,13 +159,6 @@ public class UserNotificationEventLocalServiceUtil {
 		UserNotificationEvent userNotificationEvent) {
 
 		return getService().deleteUserNotificationEvent(userNotificationEvent);
-	}
-
-	public static void deleteUserNotificationEvents(
-			java.util.Collection<String> uuids, long companyId)
-		throws PortalException {
-
-		getService().deleteUserNotificationEvents(uuids, companyId);
 	}
 
 	public static void deleteUserNotificationEvents(long userId)
@@ -314,15 +281,6 @@ public class UserNotificationEventLocalServiceUtil {
 
 	public static List<UserNotificationEvent> getArchivedUserNotificationEvents(
 		long userId, int deliveryType, boolean delivered,
-		boolean actionRequired, boolean archived, int start, int end) {
-
-		return getService().getArchivedUserNotificationEvents(
-			userId, deliveryType, delivered, actionRequired, archived, start,
-			end);
-	}
-
-	public static List<UserNotificationEvent> getArchivedUserNotificationEvents(
-		long userId, int deliveryType, boolean delivered,
 		boolean actionRequired, boolean archived, int start, int end,
 		OrderByComparator<UserNotificationEvent> orderByComparator) {
 
@@ -344,24 +302,6 @@ public class UserNotificationEventLocalServiceUtil {
 
 		return getService().getDeliveredArchivedUserNotificationEventsCount(
 			userId, deliveryType, delivered, archived);
-	}
-
-	public static List<UserNotificationEvent>
-		getDeliveredUserNotificationEvents(
-			long userId, int deliveryType, boolean delivered,
-			boolean actionRequired) {
-
-		return getService().getDeliveredUserNotificationEvents(
-			userId, deliveryType, delivered, actionRequired);
-	}
-
-	public static List<UserNotificationEvent>
-		getDeliveredUserNotificationEvents(
-			long userId, int deliveryType, boolean delivered,
-			boolean actionRequired, int start, int end) {
-
-		return getService().getDeliveredUserNotificationEvents(
-			userId, deliveryType, delivered, actionRequired, start, end);
 	}
 
 	public static List<UserNotificationEvent>
@@ -463,18 +403,6 @@ public class UserNotificationEventLocalServiceUtil {
 	}
 
 	public static List<UserNotificationEvent> getUserNotificationEvents(
-		long userId) {
-
-		return getService().getUserNotificationEvents(userId);
-	}
-
-	public static List<UserNotificationEvent> getUserNotificationEvents(
-		long userId, int start, int end) {
-
-		return getService().getUserNotificationEvents(userId, start, end);
-	}
-
-	public static List<UserNotificationEvent> getUserNotificationEvents(
 		long userId, int start, int end,
 		OrderByComparator<UserNotificationEvent> orderByComparator) {
 
@@ -515,13 +443,6 @@ public class UserNotificationEventLocalServiceUtil {
 
 		return getService().getUserNotificationEventsCount(
 			userId, type, deliveryType, delivered, archived);
-	}
-
-	public static int getUserNotificationEventsCount(
-		long userId, String type, Map<String, String> payloadParameters) {
-
-		return getService().getUserNotificationEventsCount(
-			userId, type, payloadParameters);
 	}
 
 	public static UserNotificationEvent sendUserNotificationEvents(
@@ -581,13 +502,6 @@ public class UserNotificationEventLocalServiceUtil {
 		return getService().updateUserNotificationEvent(userNotificationEvent);
 	}
 
-	public static List<UserNotificationEvent> updateUserNotificationEvents(
-		java.util.Collection<String> uuids, long companyId, boolean archive) {
-
-		return getService().updateUserNotificationEvents(
-			uuids, companyId, archive);
-	}
-
 	public static UserNotificationEventLocalService getService() {
 		return _service;
 	}
@@ -599,4 +513,4 @@ public class UserNotificationEventLocalServiceUtil {
 	private static volatile UserNotificationEventLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-573044822
+// LIFERAY-SERVICE-BUILDER-HASH:522450444

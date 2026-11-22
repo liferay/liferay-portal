@@ -160,17 +160,6 @@ public interface SubscriptionLocalService
 		throws PortalException;
 
 	/**
-	 * Deletes the user's subscription to the entity. A social activity with the
-	 * unsubscribe action is created.
-	 *
-	 * @param userId the primary key of the user
-	 * @param className the entity's class name
-	 * @param classPK the primary key of the entity's instance
-	 */
-	public void deleteSubscription(long userId, String className, long classPK)
-		throws PortalException;
-
-	/**
 	 * Deletes the subscription from the database. Also notifies the appropriate model listeners.
 	 *
 	 * <p>
@@ -183,27 +172,6 @@ public interface SubscriptionLocalService
 	 */
 	@Indexable(type = IndexableType.DELETE)
 	public Subscription deleteSubscription(Subscription subscription)
-		throws PortalException;
-
-	/**
-	 * Deletes all the subscriptions of the user.
-	 *
-	 * @param userId the primary key of the user
-	 */
-	public void deleteSubscriptions(long userId) throws PortalException;
-
-	public void deleteSubscriptions(long userId, long groupId)
-		throws PortalException;
-
-	/**
-	 * Deletes all the subscriptions to the entity.
-	 *
-	 * @param companyId the primary key of the company
-	 * @param className the entity's class name
-	 * @param classPK the primary key of the entity's instance
-	 */
-	public void deleteSubscriptions(
-			long companyId, String className, long classPK)
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -282,10 +250,6 @@ public interface SubscriptionLocalService
 	public Subscription fetchSubscription(long subscriptionId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public Subscription fetchSubscription(
-		long companyId, long userId, String className, long classPK);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -318,20 +282,6 @@ public interface SubscriptionLocalService
 		throws PortalException;
 
 	/**
-	 * Returns the subscription of the user to the entity.
-	 *
-	 * @param companyId the primary key of the company
-	 * @param userId the primary key of the user
-	 * @param className the entity's class name
-	 * @param classPK the primary key of the entity's instance
-	 * @return the subscription of the user to the entity
-	 */
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public Subscription getSubscription(
-			long companyId, long userId, String className, long classPK)
-		throws PortalException;
-
-	/**
 	 * Returns a range of all the subscriptions.
 	 *
 	 * <p>
@@ -344,19 +294,6 @@ public interface SubscriptionLocalService
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<Subscription> getSubscriptions(int start, int end);
-
-	/**
-	 * Returns all the subscriptions of the user to the entities.
-	 *
-	 * @param companyId the primary key of the company
-	 * @param userId the primary key of the user
-	 * @param className the entity's class name
-	 * @param classPKs the primary key of the entities
-	 * @return the subscriptions of the user to the entities
-	 */
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<Subscription> getSubscriptions(
-		long companyId, long userId, String className, long[] classPKs);
 
 	/**
 	 * Returns all the subscriptions to the entity.
@@ -391,18 +328,6 @@ public interface SubscriptionLocalService
 	public List<Subscription> getUserSubscriptions(
 		long userId, int start, int end,
 		OrderByComparator<Subscription> orderByComparator);
-
-	/**
-	 * Returns all the subscriptions of the user to the entities with the class
-	 * name.
-	 *
-	 * @param userId the primary key of the user
-	 * @param className the entity's class name
-	 * @return the subscriptions of the user to the entities with the class name
-	 */
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<Subscription> getUserSubscriptions(
-		long userId, String className);
 
 	/**
 	 * Returns the number of subscriptions of the user.
@@ -456,4 +381,4 @@ public interface SubscriptionLocalService
 	public Subscription updateSubscription(Subscription subscription);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1868457183
+// LIFERAY-SERVICE-BUILDER-HASH:32621697

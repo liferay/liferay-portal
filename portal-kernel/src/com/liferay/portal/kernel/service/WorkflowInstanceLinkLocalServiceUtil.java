@@ -356,13 +356,6 @@ public class WorkflowInstanceLinkLocalServiceUtil {
 			companyId, groupId, className, classPK);
 	}
 
-	public static boolean isEnded(
-			long companyId, long groupId, String className, long classPK)
-		throws PortalException {
-
-		return getService().isEnded(companyId, groupId, className, classPK);
-	}
-
 	public static void startWorkflowInstance(
 			long companyId, long groupId, long userId, String className,
 			long classPK, Map<String, Serializable> workflowContext)
@@ -381,15 +374,6 @@ public class WorkflowInstanceLinkLocalServiceUtil {
 		getService().startWorkflowInstance(
 			companyId, groupId, userId, className, classPK, workflowContext,
 			waitForCompletion);
-	}
-
-	public static void updateClassPK(
-			long companyId, long groupId, String className, long oldClassPK,
-			long newClassPK)
-		throws PortalException {
-
-		getService().updateClassPK(
-			companyId, groupId, className, oldClassPK, newClassPK);
 	}
 
 	/**
@@ -419,4 +403,4 @@ public class WorkflowInstanceLinkLocalServiceUtil {
 	private static volatile WorkflowInstanceLinkLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1698515198
+// LIFERAY-SERVICE-BUILDER-HASH:-238662783

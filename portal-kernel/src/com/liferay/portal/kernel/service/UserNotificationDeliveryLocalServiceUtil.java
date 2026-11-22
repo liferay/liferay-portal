@@ -118,14 +118,6 @@ public class UserNotificationDeliveryLocalServiceUtil {
 			userNotificationDeliveryId);
 	}
 
-	public static void deleteUserNotificationDelivery(
-		long userId, String portletId, long classNameId, int notificationType,
-		int deliveryType) {
-
-		getService().deleteUserNotificationDelivery(
-			userId, portletId, classNameId, notificationType, deliveryType);
-	}
-
 	/**
 	 * Deletes the user notification delivery from the database. Also notifies the appropriate model listeners.
 	 *
@@ -362,4 +354,4 @@ public class UserNotificationDeliveryLocalServiceUtil {
 	private static volatile UserNotificationDeliveryLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1292309648
+// LIFERAY-SERVICE-BUILDER-HASH:95245258

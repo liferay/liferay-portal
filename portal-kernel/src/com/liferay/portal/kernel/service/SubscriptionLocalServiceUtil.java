@@ -160,21 +160,6 @@ public class SubscriptionLocalServiceUtil {
 	}
 
 	/**
-	 * Deletes the user's subscription to the entity. A social activity with the
-	 * unsubscribe action is created.
-	 *
-	 * @param userId the primary key of the user
-	 * @param className the entity's class name
-	 * @param classPK the primary key of the entity's instance
-	 */
-	public static void deleteSubscription(
-			long userId, String className, long classPK)
-		throws PortalException {
-
-		getService().deleteSubscription(userId, className, classPK);
-	}
-
-	/**
 	 * Deletes the subscription from the database. Also notifies the appropriate model listeners.
 	 *
 	 * <p>
@@ -189,35 +174,6 @@ public class SubscriptionLocalServiceUtil {
 		throws PortalException {
 
 		return getService().deleteSubscription(subscription);
-	}
-
-	/**
-	 * Deletes all the subscriptions of the user.
-	 *
-	 * @param userId the primary key of the user
-	 */
-	public static void deleteSubscriptions(long userId) throws PortalException {
-		getService().deleteSubscriptions(userId);
-	}
-
-	public static void deleteSubscriptions(long userId, long groupId)
-		throws PortalException {
-
-		getService().deleteSubscriptions(userId, groupId);
-	}
-
-	/**
-	 * Deletes all the subscriptions to the entity.
-	 *
-	 * @param companyId the primary key of the company
-	 * @param className the entity's class name
-	 * @param classPK the primary key of the entity's instance
-	 */
-	public static void deleteSubscriptions(
-			long companyId, String className, long classPK)
-		throws PortalException {
-
-		getService().deleteSubscriptions(companyId, className, classPK);
 	}
 
 	public static <T> T dslQuery(DSLQuery dslQuery) {
@@ -309,13 +265,6 @@ public class SubscriptionLocalServiceUtil {
 		return getService().fetchSubscription(subscriptionId);
 	}
 
-	public static Subscription fetchSubscription(
-		long companyId, long userId, String className, long classPK) {
-
-		return getService().fetchSubscription(
-			companyId, userId, className, classPK);
-	}
-
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 
@@ -361,23 +310,6 @@ public class SubscriptionLocalServiceUtil {
 	}
 
 	/**
-	 * Returns the subscription of the user to the entity.
-	 *
-	 * @param companyId the primary key of the company
-	 * @param userId the primary key of the user
-	 * @param className the entity's class name
-	 * @param classPK the primary key of the entity's instance
-	 * @return the subscription of the user to the entity
-	 */
-	public static Subscription getSubscription(
-			long companyId, long userId, String className, long classPK)
-		throws PortalException {
-
-		return getService().getSubscription(
-			companyId, userId, className, classPK);
-	}
-
-	/**
 	 * Returns a range of all the subscriptions.
 	 *
 	 * <p>
@@ -390,22 +322,6 @@ public class SubscriptionLocalServiceUtil {
 	 */
 	public static List<Subscription> getSubscriptions(int start, int end) {
 		return getService().getSubscriptions(start, end);
-	}
-
-	/**
-	 * Returns all the subscriptions of the user to the entities.
-	 *
-	 * @param companyId the primary key of the company
-	 * @param userId the primary key of the user
-	 * @param className the entity's class name
-	 * @param classPKs the primary key of the entities
-	 * @return the subscriptions of the user to the entities
-	 */
-	public static List<Subscription> getSubscriptions(
-		long companyId, long userId, String className, long[] classPKs) {
-
-		return getService().getSubscriptions(
-			companyId, userId, className, classPKs);
 	}
 
 	/**
@@ -446,20 +362,6 @@ public class SubscriptionLocalServiceUtil {
 
 		return getService().getUserSubscriptions(
 			userId, start, end, orderByComparator);
-	}
-
-	/**
-	 * Returns all the subscriptions of the user to the entities with the class
-	 * name.
-	 *
-	 * @param userId the primary key of the user
-	 * @param className the entity's class name
-	 * @return the subscriptions of the user to the entities with the class name
-	 */
-	public static List<Subscription> getUserSubscriptions(
-		long userId, String className) {
-
-		return getService().getUserSubscriptions(userId, className);
 	}
 
 	/**
@@ -531,4 +433,4 @@ public class SubscriptionLocalServiceUtil {
 	private static volatile SubscriptionLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:447792095
+// LIFERAY-SERVICE-BUILDER-HASH:262712126

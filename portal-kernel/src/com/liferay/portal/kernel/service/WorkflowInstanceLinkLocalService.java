@@ -309,11 +309,6 @@ public interface WorkflowInstanceLinkLocalService
 	public boolean hasWorkflowInstanceLink(
 		long companyId, long groupId, String className, long classPK);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public boolean isEnded(
-			long companyId, long groupId, String className, long classPK)
-		throws PortalException;
-
 	public void startWorkflowInstance(
 			long companyId, long groupId, long userId, String className,
 			long classPK, Map<String, Serializable> workflowContext)
@@ -323,11 +318,6 @@ public interface WorkflowInstanceLinkLocalService
 			long companyId, long groupId, long userId, String className,
 			long classPK, Map<String, Serializable> workflowContext,
 			boolean waitForCompletion)
-		throws PortalException;
-
-	public void updateClassPK(
-			long companyId, long groupId, String className, long oldClassPK,
-			long newClassPK)
 		throws PortalException;
 
 	/**
@@ -360,4 +350,4 @@ public interface WorkflowInstanceLinkLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1046929510
+// LIFERAY-SERVICE-BUILDER-HASH:-392027225

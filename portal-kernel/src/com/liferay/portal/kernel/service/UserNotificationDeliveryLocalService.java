@@ -116,10 +116,6 @@ public interface UserNotificationDeliveryLocalService
 			long userNotificationDeliveryId)
 		throws PortalException;
 
-	public void deleteUserNotificationDelivery(
-		long userId, String portletId, long classNameId, int notificationType,
-		int deliveryType);
-
 	/**
 	 * Deletes the user notification delivery from the database. Also notifies the appropriate model listeners.
 	 *
@@ -295,4 +291,4 @@ public interface UserNotificationDeliveryLocalService
 		UserNotificationDelivery userNotificationDelivery);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:360536499
+// LIFERAY-SERVICE-BUILDER-HASH:-1305431065

@@ -26,9 +26,7 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 
 import java.io.Serializable;
 
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import org.osgi.annotation.versioning.ProviderType;
 
@@ -97,14 +95,6 @@ public interface UserNotificationEventLocalService
 	public UserNotificationEvent addUserNotificationEvent(
 		UserNotificationEvent userNotificationEvent);
 
-	public List<UserNotificationEvent> addUserNotificationEvents(
-			long userId, Collection<NotificationEvent> notificationEvents)
-		throws PortalException;
-
-	public void archiveUserNotificationEvents(
-			long userId, int deliveryType, boolean actionRequired)
-		throws PortalException;
-
 	/**
 	 * @throws PortalException
 	 */
@@ -144,9 +134,6 @@ public interface UserNotificationEventLocalService
 			long userNotificationEventId)
 		throws PortalException;
 
-	public void deleteUserNotificationEvent(String uuid, long companyId)
-		throws PortalException;
-
 	/**
 	 * Deletes the user notification event from the database. Also notifies the appropriate model listeners.
 	 *
@@ -160,10 +147,6 @@ public interface UserNotificationEventLocalService
 	@Indexable(type = IndexableType.DELETE)
 	public UserNotificationEvent deleteUserNotificationEvent(
 		UserNotificationEvent userNotificationEvent);
-
-	public void deleteUserNotificationEvents(
-			Collection<String> uuids, long companyId)
-		throws PortalException;
 
 	public void deleteUserNotificationEvents(long userId)
 		throws PortalException;
@@ -261,11 +244,6 @@ public interface UserNotificationEventLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<UserNotificationEvent> getArchivedUserNotificationEvents(
 		long userId, int deliveryType, boolean delivered,
-		boolean actionRequired, boolean archived, int start, int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<UserNotificationEvent> getArchivedUserNotificationEvents(
-		long userId, int deliveryType, boolean delivered,
 		boolean actionRequired, boolean archived, int start, int end,
 		OrderByComparator<UserNotificationEvent> orderByComparator);
 
@@ -277,16 +255,6 @@ public interface UserNotificationEventLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getDeliveredArchivedUserNotificationEventsCount(
 		long userId, int deliveryType, boolean delivered, boolean archived);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<UserNotificationEvent> getDeliveredUserNotificationEvents(
-		long userId, int deliveryType, boolean delivered,
-		boolean actionRequired);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<UserNotificationEvent> getDeliveredUserNotificationEvents(
-		long userId, int deliveryType, boolean delivered,
-		boolean actionRequired, int start, int end);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<UserNotificationEvent> getDeliveredUserNotificationEvents(
@@ -361,13 +329,6 @@ public interface UserNotificationEventLocalService
 		int start, int end);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<UserNotificationEvent> getUserNotificationEvents(long userId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<UserNotificationEvent> getUserNotificationEvents(
-		long userId, int start, int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<UserNotificationEvent> getUserNotificationEvents(
 		long userId, int start, int end,
 		OrderByComparator<UserNotificationEvent> orderByComparator);
@@ -395,10 +356,6 @@ public interface UserNotificationEventLocalService
 	public int getUserNotificationEventsCount(
 		long userId, String type, int deliveryType, boolean delivered,
 		boolean archived);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getUserNotificationEventsCount(
-		long userId, String type, Map<String, String> payloadParameters);
 
 	public UserNotificationEvent sendUserNotificationEvents(
 			long userId, String portletId, int deliveryType, boolean delivered,
@@ -433,8 +390,5 @@ public interface UserNotificationEventLocalService
 	public UserNotificationEvent updateUserNotificationEvent(
 		UserNotificationEvent userNotificationEvent);
 
-	public List<UserNotificationEvent> updateUserNotificationEvents(
-		Collection<String> uuids, long companyId, boolean archive);
-
 }
-// LIFERAY-SERVICE-BUILDER-HASH:933702910
+// LIFERAY-SERVICE-BUILDER-HASH:1535595605

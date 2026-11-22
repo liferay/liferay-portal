@@ -127,15 +127,6 @@ public class UserNotificationDeliveryLocalServiceWrapper
 			deleteUserNotificationDelivery(userNotificationDeliveryId);
 	}
 
-	@Override
-	public void deleteUserNotificationDelivery(
-		long userId, String portletId, long classNameId, int notificationType,
-		int deliveryType) {
-
-		_userNotificationDeliveryLocalService.deleteUserNotificationDelivery(
-			userId, portletId, classNameId, notificationType, deliveryType);
-	}
-
 	/**
 	 * Deletes the user notification delivery from the database. Also notifies the appropriate model listeners.
 	 *
@@ -429,4 +420,4 @@ public class UserNotificationDeliveryLocalServiceWrapper
 		_userNotificationDeliveryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1401276372
+// LIFERAY-SERVICE-BUILDER-HASH:460150652
