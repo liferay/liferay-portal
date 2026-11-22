@@ -197,6 +197,7 @@
 		<exception>CommercePaymentEntryAmount</exception>
 		<exception>CommercePaymentEntryClassNameId</exception>
 		<exception>CommercePaymentEntryClassPK</exception>
+		<exception>CommercePaymentEntryCommerceChannelId</exception>
 		<exception>CommercePaymentEntryPaymentIntegrationType</exception>
 		<exception>CommercePaymentEntryPaymentStatus</exception>
 		<exception>CommercePaymentEntryReasonKey</exception>
