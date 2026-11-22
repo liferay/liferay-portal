@@ -12,8 +12,8 @@ import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.messaging.MessageBus;
 import com.liferay.portal.kernel.messaging.MessageListener;
 import com.liferay.portal.kernel.messaging.MessageListenerException;
-import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.BundleContextTestUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -42,8 +42,11 @@ public class CTPublishMessageBusInterceptorTest {
 	public void testInterceptBackgroundTaskStatusMessage() throws Exception {
 		TestMessageListener testMessageListener = new TestMessageListener();
 
+		BundleContext bundleContext = BundleContextTestUtil.getBundleContext(
+			CTPublishMessageBusInterceptorTest.class);
+
 		ServiceRegistration<MessageListener> serviceRegistration =
-			_bundleContext.registerService(
+			bundleContext.registerService(
 				MessageListener.class, testMessageListener,
 				HashMapDictionaryBuilder.<String, Object>put(
 					"destination.name", DestinationNames.BACKGROUND_TASK_STATUS
@@ -87,9 +90,6 @@ public class CTPublishMessageBusInterceptorTest {
 		Assert.assertEquals(
 			expectedSentMessageCount, testMessageListener._count);
 	}
-
-	private static final BundleContext _bundleContext =
-		SystemBundleUtil.getBundleContext();
 
 	@Inject
 	private MessageBus _messageBus;

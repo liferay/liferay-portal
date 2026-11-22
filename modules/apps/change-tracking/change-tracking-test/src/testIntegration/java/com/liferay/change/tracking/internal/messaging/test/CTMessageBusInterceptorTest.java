@@ -20,9 +20,9 @@ import com.liferay.portal.kernel.messaging.DestinationFactory;
 import com.liferay.portal.kernel.messaging.DestinationNames;
 import com.liferay.portal.kernel.messaging.DestinationStatistics;
 import com.liferay.portal.kernel.messaging.Message;
-import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.BundleContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.SubscriptionSender;
@@ -65,7 +65,10 @@ public class CTMessageBusInterceptorTest {
 					DestinationConfiguration.DESTINATION_TYPE_SYNCHRONOUS,
 					DestinationNames.SUBSCRIPTION_SENDER)));
 
-		_serviceRegistration = _bundleContext.registerService(
+		BundleContext bundleContext = BundleContextTestUtil.getBundleContext(
+			CTMessageBusInterceptorTest.class);
+
+		_serviceRegistration = bundleContext.registerService(
 			Destination.class, _testDestination,
 			HashMapDictionaryBuilder.<String, Object>put(
 				"destination.name", DestinationNames.SUBSCRIPTION_SENDER
@@ -160,9 +163,6 @@ public class CTMessageBusInterceptorTest {
 
 		_ctCollection = null;
 	}
-
-	private static final BundleContext _bundleContext =
-		SystemBundleUtil.getBundleContext();
 
 	@DeleteAfterTestRun
 	private CTCollection _ctCollection;
