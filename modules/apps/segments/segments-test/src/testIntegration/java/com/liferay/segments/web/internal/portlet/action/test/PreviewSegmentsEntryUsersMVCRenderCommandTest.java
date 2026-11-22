@@ -12,9 +12,12 @@ import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.PortletConfigFactoryUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
+import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.PortletLocalService;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletRenderRequest;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletRenderResponse;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -66,6 +69,46 @@ public class PreviewSegmentsEntryUsersMVCRenderCommandTest {
 
 		_user1 = UserTestUtil.addUser(_group.getGroupId());
 		_user2 = UserTestUtil.addUser(_group.getGroupId());
+	}
+
+	@Test
+	@TestInfo("LPD-116067")
+	public void testGetSearchContainerAsSiteAdministrator() throws Exception {
+		_user3 = UserTestUtil.addUser();
+
+		Criteria criteria = new Criteria();
+
+		_userSegmentsCriteriaContributor.contribute(
+			criteria,
+			String.format(
+				"(firstName eq '%s') or (firstName eq '%s')",
+				_user1.getFirstName(), _user3.getFirstName()),
+			Criteria.Conjunction.AND);
+
+		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
+			_getMockLiferayPortletRenderRequest();
+
+		PortletSession portletSession =
+			mockLiferayPortletRenderRequest.getPortletSession();
+
+		portletSession.setAttribute(
+			"PREVIEW_SEGMENTS_ENTRY_CRITERIA", criteria);
+
+		_siteAdministratorUser = UserTestUtil.addGroupAdminUser(_group);
+
+		PermissionThreadLocal.setPermissionChecker(
+			PermissionCheckerFactoryUtil.create(_siteAdministratorUser));
+
+		_mvcRenderCommand.render(
+			mockLiferayPortletRenderRequest,
+			new MockLiferayPortletRenderResponse());
+
+		SearchContainer<User> searchContainer = ReflectionTestUtil.invoke(
+			mockLiferayPortletRenderRequest.getAttribute(_CLASS_NAME),
+			"getSearchContainer", new Class<?>[0]);
+
+		Assert.assertEquals(List.of(_user1), searchContainer.getResults());
+		Assert.assertEquals(1, searchContainer.getTotal());
 	}
 
 	@Test
@@ -305,6 +348,7 @@ public class PreviewSegmentsEntryUsersMVCRenderCommandTest {
 		themeDisplay.setCompany(
 			_companyLocalService.getCompany(TestPropsValues.getCompanyId()));
 		themeDisplay.setLocale(LocaleUtil.US);
+		themeDisplay.setScopeGroupId(_group.getGroupId());
 
 		return themeDisplay;
 	}
@@ -329,10 +373,16 @@ public class PreviewSegmentsEntryUsersMVCRenderCommandTest {
 	private PortletLocalService _portletLocalService;
 
 	@DeleteAfterTestRun
+	private User _siteAdministratorUser;
+
+	@DeleteAfterTestRun
 	private User _user1;
 
 	@DeleteAfterTestRun
 	private User _user2;
+
+	@DeleteAfterTestRun
+	private User _user3;
 
 	@Inject(
 		filter = "segments.criteria.contributor.key=user",
