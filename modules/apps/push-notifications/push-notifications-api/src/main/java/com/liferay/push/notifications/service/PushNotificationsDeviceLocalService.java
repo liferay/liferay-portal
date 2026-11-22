@@ -286,8 +286,5 @@ public interface PushNotificationsDeviceLocalService
 	public PushNotificationsDevice updatePushNotificationsDevice(
 		PushNotificationsDevice pushNotificationsDevice);
 
-	public void updateToken(String oldToken, String newToken)
-		throws PortalException;
-
 }
-// LIFERAY-SERVICE-BUILDER-HASH:432866710
+// LIFERAY-SERVICE-BUILDER-HASH:-37953410

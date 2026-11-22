@@ -398,13 +398,6 @@ public class PushNotificationsDeviceLocalServiceWrapper
 	}
 
 	@Override
-	public void updateToken(String oldToken, String newToken)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		_pushNotificationsDeviceLocalService.updateToken(oldToken, newToken);
-	}
-
-	@Override
 	public BasePersistence<?> getBasePersistence() {
 		return _pushNotificationsDeviceLocalService.getBasePersistence();
 	}
@@ -427,4 +420,4 @@ public class PushNotificationsDeviceLocalServiceWrapper
 		_pushNotificationsDeviceLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:377183958
+// LIFERAY-SERVICE-BUILDER-HASH:-1241995209

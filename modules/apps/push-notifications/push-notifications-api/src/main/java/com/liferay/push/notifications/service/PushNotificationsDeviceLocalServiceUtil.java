@@ -340,12 +340,6 @@ public class PushNotificationsDeviceLocalServiceUtil {
 			pushNotificationsDevice);
 	}
 
-	public static void updateToken(String oldToken, String newToken)
-		throws PortalException {
-
-		getService().updateToken(oldToken, newToken);
-	}
-
 	public static PushNotificationsDeviceLocalService getService() {
 		return _serviceSnapshot.get();
 	}
@@ -356,4 +350,4 @@ public class PushNotificationsDeviceLocalServiceUtil {
 			PushNotificationsDeviceLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1041589818
+// LIFERAY-SERVICE-BUILDER-HASH:367389541
