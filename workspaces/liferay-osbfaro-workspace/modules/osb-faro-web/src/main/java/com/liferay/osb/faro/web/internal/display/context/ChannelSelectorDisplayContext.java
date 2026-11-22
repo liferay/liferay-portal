@@ -48,8 +48,8 @@ public class ChannelSelectorDisplayContext {
 	public List<DropdownItem> getDropdownItems() throws PortalException {
 		DropdownItemList dropdownItemList = new DropdownItemList();
 
-		String layoutFullURL = PortalUtil.getLayoutFullURL(
-			_themeDisplay.getLayout(), _themeDisplay);
+		String currentCompleteURL = PortalUtil.getCurrentCompleteURL(
+			_httpServletRequest);
 
 		for (FaroChannel faroChannel : _getFaroChannels()) {
 			dropdownItemList.add(
@@ -58,8 +58,8 @@ public class ChannelSelectorDisplayContext {
 						Objects.equals(
 							faroChannel.getChannelId(), getFaroChannelId()));
 					dropdownItem.setHref(
-						HttpComponentsUtil.addParameter(
-							layoutFullURL, "channelId",
+						HttpComponentsUtil.setParameter(
+							currentCompleteURL, "channelId",
 							faroChannel.getChannelId()));
 					dropdownItem.setLabel(faroChannel.getName());
 				});
