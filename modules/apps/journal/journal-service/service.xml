@@ -214,37 +214,6 @@
 			<finder-column name="articleId" />
 		</finder>
 	</entity>
-	<entity local-service="true" name="JournalContentSearch" plural-name="JournalContentSearchs" remote-service="false">
-
-		<!-- PK fields -->
-
-		<column name="contentSearchId" primary="true" type="long" />
-
-		<!-- Group instance -->
-
-		<column name="groupId" type="long" />
-
-		<!-- Audit fields -->
-
-		<column name="companyId" type="long" />
-
-		<!-- Other fields -->
-
-		<column name="privateLayout" type="boolean" />
-		<column name="layoutId" type="long" />
-		<column name="portletId" type="String" />
-		<column name="articleId" type="String" />
-
-		<!-- Finder methods -->
-
-		<finder name="G_P_L_P_A" return-type="JournalContentSearch" unique="true">
-			<finder-column name="groupId" />
-			<finder-column name="privateLayout" />
-			<finder-column name="layoutId" />
-			<finder-column name="portletId" />
-			<finder-column name="articleId" />
-		</finder>
-	</entity>
 	<entity local-service="true" name="JournalFeed" remote-service="true" uuid="true">
 
 		<!-- PK fields -->

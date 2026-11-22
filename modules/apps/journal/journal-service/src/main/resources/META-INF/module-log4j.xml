@@ -10,7 +10,6 @@
 		<Logger level="WARN" name="com.liferay.journal.internal.upgrade.v5_1_1.JournalArticleAssetEntryClassTypeIdUpgradeProcess" />
 		<Logger level="WARN" name="com.liferay.journal.internal.upgrade.v5_2_0.JournalFeedDDMStructureIdUpgradeProcess" />
 		<Logger level="ERROR" name="com.liferay.journal.internal.util.JournalUtil" />
-		<Logger level="INFO" name="com.liferay.journal.service.impl.JournalContentSearchLocalServiceImpl" />
 		<Logger level="ERROR" name="com.liferay.journal.util.JournalContent" />
 	</Loggers>
 </Configuration>
