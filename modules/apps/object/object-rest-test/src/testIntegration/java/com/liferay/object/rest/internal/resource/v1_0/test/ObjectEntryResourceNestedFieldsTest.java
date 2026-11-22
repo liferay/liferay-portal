@@ -46,7 +46,6 @@ import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
-import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
@@ -60,6 +59,7 @@ import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.randomizerbumpers.UniqueStringRandomizerBumper;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.BundleContextTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.HTTPTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -1488,7 +1488,8 @@ public class ObjectEntryResourceNestedFieldsTest
 
 		AtomicInteger atomicInteger = new AtomicInteger();
 
-		BundleContext bundleContext = SystemBundleUtil.getBundleContext();
+		BundleContext bundleContext = BundleContextTestUtil.getBundleContext(
+			ObjectEntryResourceNestedFieldsTest.class);
 
 		ServiceRegistration<?> serviceRegistration =
 			bundleContext.registerService(

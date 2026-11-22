@@ -10,8 +10,8 @@ import com.liferay.object.label.key.provider.ObjectDefinitionLabelKeyProvider;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerList;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerListFactory;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.BundleContextTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -22,9 +22,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceRegistration;
 
 /**
@@ -40,16 +38,13 @@ public class ObjectDefinitionLabelKeyProviderTest {
 
 	@Test
 	public void testGetObjectDefinitionLabelKey() {
-		BundleContext bundleContext = SystemBundleUtil.getBundleContext();
-
-		Bundle bundle = FrameworkUtil.getBundle(
+		BundleContext bundleContext = BundleContextTestUtil.getBundleContext(
 			ObjectDefinitionLabelKeyProviderTest.class);
 
 		ServiceTrackerList<ObjectDefinitionLabelKeyProvider>
 			systemObjectDefinitionLabelKeyProviders =
 				ServiceTrackerListFactory.open(
-					bundle.getBundleContext(),
-					ObjectDefinitionLabelKeyProvider.class);
+					bundleContext, ObjectDefinitionLabelKeyProvider.class);
 
 		String externalReferenceCode = RandomTestUtil.randomString();
 
