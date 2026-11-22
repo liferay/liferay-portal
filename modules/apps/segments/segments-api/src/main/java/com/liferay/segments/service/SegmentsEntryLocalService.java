@@ -292,11 +292,6 @@ public interface SegmentsEntryLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<SegmentsEntry> getSegmentsEntries(
-		long groupId, int start, int end,
-		OrderByComparator<SegmentsEntry> orderByComparator);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<SegmentsEntry> getSegmentsEntries(
 		long groupId, String[] sources, int[] types, int start, int end,
 		OrderByComparator<SegmentsEntry> orderByComparator);
 
@@ -436,4 +431,4 @@ public interface SegmentsEntryLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-705145171
+// LIFERAY-SERVICE-BUILDER-HASH:-109628493

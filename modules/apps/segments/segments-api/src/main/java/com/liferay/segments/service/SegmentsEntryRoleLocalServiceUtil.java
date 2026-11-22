@@ -305,12 +305,6 @@ public class SegmentsEntryRoleLocalServiceUtil {
 		return getService().getSegmentsEntryRoles(segmentsEntryId);
 	}
 
-	public static List<SegmentsEntryRole> getSegmentsEntryRolesByRoleId(
-		long roleId) {
-
-		return getService().getSegmentsEntryRolesByRoleId(roleId);
-	}
-
 	/**
 	 * Returns the number of segments entry roles.
 	 *
@@ -318,10 +312,6 @@ public class SegmentsEntryRoleLocalServiceUtil {
 	 */
 	public static int getSegmentsEntryRolesCount() {
 		return getService().getSegmentsEntryRolesCount();
-	}
-
-	public static int getSegmentsEntryRolesCount(long segmentsEntryId) {
-		return getService().getSegmentsEntryRolesCount(segmentsEntryId);
 	}
 
 	public static int getSegmentsEntryRolesCountByRoleId(long roleId) {
@@ -369,4 +359,4 @@ public class SegmentsEntryRoleLocalServiceUtil {
 			SegmentsEntryRoleLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:987115331
+// LIFERAY-SERVICE-BUILDER-HASH:-2056851552

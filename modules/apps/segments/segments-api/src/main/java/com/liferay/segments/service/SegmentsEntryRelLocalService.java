@@ -140,8 +140,6 @@ public interface SegmentsEntryRelLocalService
 
 	public void deleteSegmentsEntryRels(long segmentsEntryId);
 
-	public void deleteSegmentsEntryRels(long classNameId, long classPK);
-
 	public void deleteSegmentsEntryRels(
 			long segmentsEntryId, long classNameId, long[] classPKs)
 		throws PortalException;
@@ -283,10 +281,6 @@ public interface SegmentsEntryRelLocalService
 	public List<SegmentsEntryRel> getSegmentsEntryRels(
 		long classNameId, long classPK);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<SegmentsEntryRel> getSegmentsEntryRels(
-		long groupId, long classNameId, long classPK);
-
 	/**
 	 * Returns the number of segments entry rels.
 	 *
@@ -297,13 +291,6 @@ public interface SegmentsEntryRelLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getSegmentsEntryRelsCount(long segmentsEntryId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getSegmentsEntryRelsCount(long classNameId, long classPK);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getSegmentsEntryRelsCount(
-		long groupId, long classNameId, long classPK);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public boolean hasSegmentsEntryRel(
@@ -339,4 +326,4 @@ public interface SegmentsEntryRelLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1823059753
+// LIFERAY-SERVICE-BUILDER-HASH:22252223

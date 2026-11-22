@@ -368,16 +368,6 @@ public class SegmentsEntryLocalServiceWrapper
 
 	@Override
 	public java.util.List<SegmentsEntry> getSegmentsEntries(
-		long groupId, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<SegmentsEntry>
-			orderByComparator) {
-
-		return _segmentsEntryLocalService.getSegmentsEntries(
-			groupId, start, end, orderByComparator);
-	}
-
-	@Override
-	public java.util.List<SegmentsEntry> getSegmentsEntries(
 		long groupId, String[] sources, int[] types, int start, int end,
 		com.liferay.portal.kernel.util.OrderByComparator<SegmentsEntry>
 			orderByComparator) {
@@ -612,4 +602,4 @@ public class SegmentsEntryLocalServiceWrapper
 	private SegmentsEntryLocalService _segmentsEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1876414601
+// LIFERAY-SERVICE-BUILDER-HASH:2039612784

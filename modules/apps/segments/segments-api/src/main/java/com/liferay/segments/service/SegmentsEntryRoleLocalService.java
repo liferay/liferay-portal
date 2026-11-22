@@ -267,9 +267,6 @@ public interface SegmentsEntryRoleLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<SegmentsEntryRole> getSegmentsEntryRoles(long segmentsEntryId);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<SegmentsEntryRole> getSegmentsEntryRolesByRoleId(long roleId);
-
 	/**
 	 * Returns the number of segments entry roles.
 	 *
@@ -277,9 +274,6 @@ public interface SegmentsEntryRoleLocalService
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getSegmentsEntryRolesCount();
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getSegmentsEntryRolesCount(long segmentsEntryId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getSegmentsEntryRolesCountByRoleId(long roleId);
@@ -322,4 +316,4 @@ public interface SegmentsEntryRoleLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-727354260
+// LIFERAY-SERVICE-BUILDER-HASH:286412188

@@ -148,10 +148,6 @@ public class SegmentsEntryRelLocalServiceUtil {
 		getService().deleteSegmentsEntryRels(segmentsEntryId);
 	}
 
-	public static void deleteSegmentsEntryRels(long classNameId, long classPK) {
-		getService().deleteSegmentsEntryRels(classNameId, classPK);
-	}
-
 	public static void deleteSegmentsEntryRels(
 			long segmentsEntryId, long classNameId, long[] classPKs)
 		throws PortalException {
@@ -339,12 +335,6 @@ public class SegmentsEntryRelLocalServiceUtil {
 		return getService().getSegmentsEntryRels(classNameId, classPK);
 	}
 
-	public static List<SegmentsEntryRel> getSegmentsEntryRels(
-		long groupId, long classNameId, long classPK) {
-
-		return getService().getSegmentsEntryRels(groupId, classNameId, classPK);
-	}
-
 	/**
 	 * Returns the number of segments entry rels.
 	 *
@@ -356,19 +346,6 @@ public class SegmentsEntryRelLocalServiceUtil {
 
 	public static int getSegmentsEntryRelsCount(long segmentsEntryId) {
 		return getService().getSegmentsEntryRelsCount(segmentsEntryId);
-	}
-
-	public static int getSegmentsEntryRelsCount(
-		long classNameId, long classPK) {
-
-		return getService().getSegmentsEntryRelsCount(classNameId, classPK);
-	}
-
-	public static int getSegmentsEntryRelsCount(
-		long groupId, long classNameId, long classPK) {
-
-		return getService().getSegmentsEntryRelsCount(
-			groupId, classNameId, classPK);
 	}
 
 	public static boolean hasSegmentsEntryRel(
@@ -404,4 +381,4 @@ public class SegmentsEntryRelLocalServiceUtil {
 			SegmentsEntryRelLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:616206585
+// LIFERAY-SERVICE-BUILDER-HASH:1565249543
