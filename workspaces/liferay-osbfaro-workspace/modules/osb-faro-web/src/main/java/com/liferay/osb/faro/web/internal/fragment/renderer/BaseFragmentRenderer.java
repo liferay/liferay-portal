@@ -36,9 +36,11 @@ import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.SessionClicks;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.taglib.servlet.PageContextFactoryUtil;
 
@@ -138,6 +140,9 @@ public abstract class BaseFragmentRenderer implements FragmentRenderer {
 							new FaroUserDisplay(faroUser), Map.class);
 					}
 				).put(
+					"dismissedAlerts",
+					_getDismissedAlerts(httpServletRequest)
+				).put(
 					"friendlyURL",
 					() -> {
 						Layout layout = themeDisplay.getLayout();
@@ -233,6 +238,18 @@ public abstract class BaseFragmentRenderer implements FragmentRenderer {
 
 	@Reference(target = "(osgi.web.symbolicname=com.liferay.osb.faro.web)")
 	protected ServletContext servletContext;
+
+	private Map<String, Object> _getDismissedAlerts(
+		HttpServletRequest httpServletRequest) {
+
+		return HashMapBuilder.<String, Object>put(
+			"unassignedSegments",
+			GetterUtil.getBoolean(
+				SessionClicks.get(
+					httpServletRequest.getSession(),
+					"osb-faro-web_dismissedAlerts_unassignedSegments", null))
+		).build();
+	}
 
 	private Map<String, String> _getPageURLs(
 			long groupId, ThemeDisplay themeDisplay)
