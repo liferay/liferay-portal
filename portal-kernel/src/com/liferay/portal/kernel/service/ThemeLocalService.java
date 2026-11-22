@@ -44,14 +44,6 @@ public interface ThemeLocalService extends BaseLocalService {
 	 * Never modify this interface directly. Add custom service methods to <code>com.liferay.portal.service.impl.ThemeLocalServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface. Consume the theme local service via injection or a <code>org.osgi.util.tracker.ServiceTracker</code>. Use {@link ThemeLocalServiceUtil} if injection and service tracking are not available.
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public ColorScheme fetchColorScheme(
-		long companyId, String themeId, String colorSchemeId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public PortletDecorator fetchPortletDecorator(
-		long companyId, String themeId, String colorSchemeId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Theme fetchTheme(long companyId, String themeId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -85,11 +77,6 @@ public interface ThemeLocalService extends BaseLocalService {
 	public List<Theme> getWARThemes();
 
 	public List<Theme> init(
-		ServletContext servletContext, String themesPath,
-		boolean loadFromServletContext, String[] xmls,
-		PluginPackage pluginPackage);
-
-	public List<Theme> init(
 		String servletContextName, ServletContext servletContext,
 		String themesPath, boolean loadFromServletContext, String[] xmls,
 		PluginPackage pluginPackage);
@@ -97,4 +84,4 @@ public interface ThemeLocalService extends BaseLocalService {
 	public void uninstallThemes(List<Theme> themes);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:381387833
+// LIFERAY-SERVICE-BUILDER-HASH:-1058387440

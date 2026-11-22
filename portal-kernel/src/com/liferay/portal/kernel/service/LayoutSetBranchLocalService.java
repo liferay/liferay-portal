@@ -137,9 +137,6 @@ public interface LayoutSetBranchLocalService
 			long currentLayoutPlid, long layoutSetBranchId)
 		throws PortalException;
 
-	public void deleteLayoutSetBranches(long groupId, boolean privateLayout)
-		throws PortalException;
-
 	public void deleteLayoutSetBranches(
 			long groupId, boolean privateLayout, boolean includeMaster)
 		throws PortalException;
@@ -227,10 +224,6 @@ public interface LayoutSetBranchLocalService
 	public LayoutSetBranch fetchLayoutSetBranch(long layoutSetBranchId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public LayoutSetBranch fetchLayoutSetBranch(
-		long groupId, boolean privateLayout, String name);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -245,11 +238,6 @@ public interface LayoutSetBranchLocalService
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public LayoutSetBranch getLayoutSetBranch(long layoutSetBranchId)
-		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public LayoutSetBranch getLayoutSetBranch(
-			long groupId, boolean privateLayout, String name)
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -329,4 +317,4 @@ public interface LayoutSetBranchLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-829104492
+// LIFERAY-SERVICE-BUILDER-HASH:626481197

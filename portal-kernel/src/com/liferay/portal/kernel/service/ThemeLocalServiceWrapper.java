@@ -24,25 +24,6 @@ public class ThemeLocalServiceWrapper
 	}
 
 	@Override
-	public com.liferay.portal.kernel.model.ColorScheme fetchColorScheme(
-		long companyId, java.lang.String themeId,
-		java.lang.String colorSchemeId) {
-
-		return _themeLocalService.fetchColorScheme(
-			companyId, themeId, colorSchemeId);
-	}
-
-	@Override
-	public com.liferay.portal.kernel.model.PortletDecorator
-		fetchPortletDecorator(
-			long companyId, java.lang.String themeId,
-			java.lang.String colorSchemeId) {
-
-		return _themeLocalService.fetchPortletDecorator(
-			companyId, themeId, colorSchemeId);
-	}
-
-	@Override
 	public com.liferay.portal.kernel.model.Theme fetchTheme(
 		long companyId, java.lang.String themeId) {
 
@@ -114,18 +95,6 @@ public class ThemeLocalServiceWrapper
 
 	@Override
 	public java.util.List<com.liferay.portal.kernel.model.Theme> init(
-		jakarta.servlet.ServletContext servletContext,
-		java.lang.String themesPath, boolean loadFromServletContext,
-		java.lang.String[] xmls,
-		com.liferay.portal.kernel.plugin.PluginPackage pluginPackage) {
-
-		return _themeLocalService.init(
-			servletContext, themesPath, loadFromServletContext, xmls,
-			pluginPackage);
-	}
-
-	@Override
-	public java.util.List<com.liferay.portal.kernel.model.Theme> init(
 		java.lang.String servletContextName,
 		jakarta.servlet.ServletContext servletContext,
 		java.lang.String themesPath, boolean loadFromServletContext,
@@ -157,4 +126,4 @@ public class ThemeLocalServiceWrapper
 	private ThemeLocalService _themeLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1979901694
+// LIFERAY-SERVICE-BUILDER-HASH:1184449171

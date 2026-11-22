@@ -307,12 +307,6 @@ public interface LayoutSetLocalService
 			String layoutSetPrototypeUuid)
 		throws PortalException;
 
-	public void updateLayoutSetPrototypeLinkEnabled(
-			long groupId, boolean privateLayout,
-			boolean layoutSetPrototypeLinkEnabled,
-			String layoutSetPrototypeUuid)
-		throws PortalException;
-
 	public LayoutSet updateLogo(
 			long groupId, boolean privateLayout, boolean hasLogo, byte[] bytes)
 		throws PortalException;
@@ -364,4 +358,4 @@ public interface LayoutSetLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1798830565
+// LIFERAY-SERVICE-BUILDER-HASH:-1921920782

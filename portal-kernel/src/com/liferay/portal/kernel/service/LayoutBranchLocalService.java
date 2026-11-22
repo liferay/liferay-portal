@@ -250,10 +250,6 @@ public interface LayoutBranchLocalService
 	public int getLayoutBranchsCount();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<LayoutBranch> getLayoutSetBranchLayoutBranches(
-		long layoutSetBranchId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public LayoutBranch getMasterLayoutBranch(long layoutSetBranchId, long plid)
 		throws PortalException;
 
@@ -296,4 +292,4 @@ public interface LayoutBranchLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:511415203
+// LIFERAY-SERVICE-BUILDER-HASH:344010263

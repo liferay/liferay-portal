@@ -138,9 +138,6 @@ public interface LayoutPrototypeLocalService
 	public LayoutPrototype deleteLayoutPrototype(long layoutPrototypeId)
 		throws PortalException;
 
-	public void deleteNondefaultLayoutPrototypes(long companyId)
-		throws PortalException;
-
 	/**
 	 * @throws PortalException
 	 */
@@ -263,10 +260,6 @@ public interface LayoutPrototypeLocalService
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public LayoutPrototype getLayoutPrototype(long companyId, String name)
-		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public LayoutPrototype getLayoutPrototype(
 			long companyId, String name, Locale locale)
 		throws PortalException;
@@ -326,9 +319,6 @@ public interface LayoutPrototypeLocalService
 		long companyId, Boolean active, int start, int end,
 		OrderByComparator<LayoutPrototype> orderByComparator);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int searchCount(long companyId, Boolean active);
-
 	/**
 	 * Updates the layout prototype in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	 *
@@ -365,4 +355,4 @@ public interface LayoutPrototypeLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-486829276
+// LIFERAY-SERVICE-BUILDER-HASH:779964547

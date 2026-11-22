@@ -26,20 +26,6 @@ public class ThemeLocalServiceUtil {
 	 *
 	 * Never modify this class directly. Add custom service methods to <code>com.liferay.portal.service.impl.ThemeLocalServiceImpl</code> and rerun ServiceBuilder to regenerate this class.
 	 */
-	public static com.liferay.portal.kernel.model.ColorScheme fetchColorScheme(
-		long companyId, String themeId, String colorSchemeId) {
-
-		return getService().fetchColorScheme(companyId, themeId, colorSchemeId);
-	}
-
-	public static com.liferay.portal.kernel.model.PortletDecorator
-		fetchPortletDecorator(
-			long companyId, String themeId, String colorSchemeId) {
-
-		return getService().fetchPortletDecorator(
-			companyId, themeId, colorSchemeId);
-	}
-
 	public static com.liferay.portal.kernel.model.Theme fetchTheme(
 		long companyId, String themeId) {
 
@@ -98,16 +84,6 @@ public class ThemeLocalServiceUtil {
 	}
 
 	public static List<com.liferay.portal.kernel.model.Theme> init(
-		jakarta.servlet.ServletContext servletContext, String themesPath,
-		boolean loadFromServletContext, String[] xmls,
-		com.liferay.portal.kernel.plugin.PluginPackage pluginPackage) {
-
-		return getService().init(
-			servletContext, themesPath, loadFromServletContext, xmls,
-			pluginPackage);
-	}
-
-	public static List<com.liferay.portal.kernel.model.Theme> init(
 		String servletContextName,
 		jakarta.servlet.ServletContext servletContext, String themesPath,
 		boolean loadFromServletContext, String[] xmls,
@@ -135,4 +111,4 @@ public class ThemeLocalServiceUtil {
 	private static volatile ThemeLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-500135856
+// LIFERAY-SERVICE-BUILDER-HASH:-679597708

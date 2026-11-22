@@ -391,18 +391,6 @@ public class LayoutSetLocalServiceWrapper
 	}
 
 	@Override
-	public void updateLayoutSetPrototypeLinkEnabled(
-			long groupId, boolean privateLayout,
-			boolean layoutSetPrototypeLinkEnabled,
-			String layoutSetPrototypeUuid)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		_layoutSetLocalService.updateLayoutSetPrototypeLinkEnabled(
-			groupId, privateLayout, layoutSetPrototypeLinkEnabled,
-			layoutSetPrototypeUuid);
-	}
-
-	@Override
 	public LayoutSet updateLogo(
 			long groupId, boolean privateLayout, boolean hasLogo, byte[] bytes)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -516,4 +504,4 @@ public class LayoutSetLocalServiceWrapper
 	private LayoutSetLocalService _layoutSetLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-146223509
+// LIFERAY-SERVICE-BUILDER-HASH:-1596769649

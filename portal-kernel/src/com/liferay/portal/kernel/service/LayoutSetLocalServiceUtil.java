@@ -354,17 +354,6 @@ public class LayoutSetLocalServiceUtil {
 			layoutSetPrototypeLinkEnabled, layoutSetPrototypeUuid);
 	}
 
-	public static void updateLayoutSetPrototypeLinkEnabled(
-			long groupId, boolean privateLayout,
-			boolean layoutSetPrototypeLinkEnabled,
-			String layoutSetPrototypeUuid)
-		throws PortalException {
-
-		getService().updateLayoutSetPrototypeLinkEnabled(
-			groupId, privateLayout, layoutSetPrototypeLinkEnabled,
-			layoutSetPrototypeUuid);
-	}
-
 	public static LayoutSet updateLogo(
 			long groupId, boolean privateLayout, boolean hasLogo, byte[] bytes)
 		throws PortalException {
@@ -441,4 +430,4 @@ public class LayoutSetLocalServiceUtil {
 	private static volatile LayoutSetLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-446021051
+// LIFERAY-SERVICE-BUILDER-HASH:1926681041

@@ -64,17 +64,6 @@ public class LayoutFriendlyURLLocalServiceUtil {
 			languageId, serviceContext);
 	}
 
-	public static List<LayoutFriendlyURL> addLayoutFriendlyURLs(
-			long userId, long companyId, long groupId, long plid,
-			boolean privateLayout, Map<java.util.Locale, String> friendlyURLMap,
-			ServiceContext serviceContext)
-		throws PortalException {
-
-		return getService().addLayoutFriendlyURLs(
-			userId, companyId, groupId, plid, privateLayout, friendlyURLMap,
-			serviceContext);
-	}
-
 	/**
 	 * Creates a new layout friendly url with the primary key. Does not add the layout friendly url to the database.
 	 *
@@ -129,10 +118,6 @@ public class LayoutFriendlyURLLocalServiceUtil {
 		throws PortalException {
 
 		return getService().deleteLayoutFriendlyURL(layoutFriendlyURLId);
-	}
-
-	public static void deleteLayoutFriendlyURL(long plid, String languageId) {
-		getService().deleteLayoutFriendlyURL(plid, languageId);
 	}
 
 	public static void deleteLayoutFriendlyURLs(long plid) {
@@ -256,12 +241,6 @@ public class LayoutFriendlyURLLocalServiceUtil {
 	}
 
 	public static LayoutFriendlyURL fetchLayoutFriendlyURL(
-		long plid, String languageId) {
-
-		return getService().fetchLayoutFriendlyURL(plid, languageId);
-	}
-
-	public static LayoutFriendlyURL fetchLayoutFriendlyURL(
 		long plid, String languageId, boolean useDefault) {
 
 		return getService().fetchLayoutFriendlyURL(
@@ -315,16 +294,6 @@ public class LayoutFriendlyURLLocalServiceUtil {
 		throws PortalException {
 
 		return getService().getLayoutFriendlyURL(layoutFriendlyURLId);
-	}
-
-	public static LayoutFriendlyURL getLayoutFriendlyURL(
-			long groupId, boolean privateLayout, String friendlyURL,
-			String languageId)
-		throws com.liferay.portal.kernel.exception.
-			NoSuchLayoutFriendlyURLException {
-
-		return getService().getLayoutFriendlyURL(
-			groupId, privateLayout, friendlyURL, languageId);
 	}
 
 	public static LayoutFriendlyURL getLayoutFriendlyURL(
@@ -508,4 +477,4 @@ public class LayoutFriendlyURLLocalServiceUtil {
 	private static volatile LayoutFriendlyURLLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1532032385
+// LIFERAY-SERVICE-BUILDER-HASH:-1477020219

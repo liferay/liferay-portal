@@ -141,8 +141,6 @@ public interface LayoutSetPrototypeLocalService
 			long layoutSetPrototypeId)
 		throws PortalException;
 
-	public void deleteLayoutSetPrototypes() throws PortalException;
-
 	public void deleteNondefaultLayoutSetPrototypes(long companyId)
 		throws PortalException;
 
@@ -362,4 +360,4 @@ public interface LayoutSetPrototypeLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:627579735
+// LIFERAY-SERVICE-BUILDER-HASH:-1168474135

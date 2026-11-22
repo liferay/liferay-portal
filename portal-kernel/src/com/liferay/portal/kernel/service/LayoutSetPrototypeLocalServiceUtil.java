@@ -122,10 +122,6 @@ public class LayoutSetPrototypeLocalServiceUtil {
 		return getService().deleteLayoutSetPrototype(layoutSetPrototypeId);
 	}
 
-	public static void deleteLayoutSetPrototypes() throws PortalException {
-		getService().deleteLayoutSetPrototypes();
-	}
-
 	public static void deleteNondefaultLayoutSetPrototypes(long companyId)
 		throws PortalException {
 
@@ -406,4 +402,4 @@ public class LayoutSetPrototypeLocalServiceUtil {
 	private static volatile LayoutSetPrototypeLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:921485973
+// LIFERAY-SERVICE-BUILDER-HASH:-1130463637

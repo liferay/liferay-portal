@@ -120,14 +120,6 @@ public class LayoutPrototypeLocalServiceWrapper
 			layoutPrototypeId);
 	}
 
-	@Override
-	public void deleteNondefaultLayoutPrototypes(long companyId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		_layoutPrototypeLocalService.deleteNondefaultLayoutPrototypes(
-			companyId);
-	}
-
 	/**
 	 * @throws PortalException
 	 */
@@ -319,13 +311,6 @@ public class LayoutPrototypeLocalServiceWrapper
 	}
 
 	@Override
-	public LayoutPrototype getLayoutPrototype(long companyId, String name)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _layoutPrototypeLocalService.getLayoutPrototype(companyId, name);
-	}
-
-	@Override
 	public LayoutPrototype getLayoutPrototype(
 			long companyId, String name, java.util.Locale locale)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -410,11 +395,6 @@ public class LayoutPrototypeLocalServiceWrapper
 			companyId, active, start, end, orderByComparator);
 	}
 
-	@Override
-	public int searchCount(long companyId, Boolean active) {
-		return _layoutPrototypeLocalService.searchCount(companyId, active);
-	}
-
 	/**
 	 * Updates the layout prototype in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	 *
@@ -485,4 +465,4 @@ public class LayoutPrototypeLocalServiceWrapper
 	private LayoutPrototypeLocalService _layoutPrototypeLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1388124474
+// LIFERAY-SERVICE-BUILDER-HASH:1566913786

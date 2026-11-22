@@ -130,13 +130,6 @@ public class LayoutSetPrototypeLocalServiceWrapper
 	}
 
 	@Override
-	public void deleteLayoutSetPrototypes()
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		_layoutSetPrototypeLocalService.deleteLayoutSetPrototypes();
-	}
-
-	@Override
 	public void deleteNondefaultLayoutSetPrototypes(long companyId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
@@ -493,4 +486,4 @@ public class LayoutSetPrototypeLocalServiceWrapper
 	private LayoutSetPrototypeLocalService _layoutSetPrototypeLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1796530927
+// LIFERAY-SERVICE-BUILDER-HASH:-1887584991

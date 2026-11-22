@@ -61,19 +61,6 @@ public class LayoutFriendlyURLLocalServiceWrapper
 			languageId, serviceContext);
 	}
 
-	@Override
-	public java.util.List<LayoutFriendlyURL> addLayoutFriendlyURLs(
-			long userId, long companyId, long groupId, long plid,
-			boolean privateLayout,
-			java.util.Map<java.util.Locale, String> friendlyURLMap,
-			ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _layoutFriendlyURLLocalService.addLayoutFriendlyURLs(
-			userId, companyId, groupId, plid, privateLayout, friendlyURLMap,
-			serviceContext);
-	}
-
 	/**
 	 * Creates a new layout friendly url with the primary key. Does not add the layout friendly url to the database.
 	 *
@@ -133,12 +120,6 @@ public class LayoutFriendlyURLLocalServiceWrapper
 
 		return _layoutFriendlyURLLocalService.deleteLayoutFriendlyURL(
 			layoutFriendlyURLId);
-	}
-
-	@Override
-	public void deleteLayoutFriendlyURL(long plid, String languageId) {
-		_layoutFriendlyURLLocalService.deleteLayoutFriendlyURL(
-			plid, languageId);
 	}
 
 	@Override
@@ -286,14 +267,6 @@ public class LayoutFriendlyURLLocalServiceWrapper
 
 	@Override
 	public LayoutFriendlyURL fetchLayoutFriendlyURL(
-		long plid, String languageId) {
-
-		return _layoutFriendlyURLLocalService.fetchLayoutFriendlyURL(
-			plid, languageId);
-	}
-
-	@Override
-	public LayoutFriendlyURL fetchLayoutFriendlyURL(
 		long plid, String languageId, boolean useDefault) {
 
 		return _layoutFriendlyURLLocalService.fetchLayoutFriendlyURL(
@@ -353,17 +326,6 @@ public class LayoutFriendlyURLLocalServiceWrapper
 
 		return _layoutFriendlyURLLocalService.getLayoutFriendlyURL(
 			layoutFriendlyURLId);
-	}
-
-	@Override
-	public LayoutFriendlyURL getLayoutFriendlyURL(
-			long groupId, boolean privateLayout, String friendlyURL,
-			String languageId)
-		throws com.liferay.portal.kernel.exception.
-			NoSuchLayoutFriendlyURLException {
-
-		return _layoutFriendlyURLLocalService.getLayoutFriendlyURL(
-			groupId, privateLayout, friendlyURL, languageId);
 	}
 
 	@Override
@@ -598,4 +560,4 @@ public class LayoutFriendlyURLLocalServiceWrapper
 	private LayoutFriendlyURLLocalService _layoutFriendlyURLLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2015417429
+// LIFERAY-SERVICE-BUILDER-HASH:-1701198509

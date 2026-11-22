@@ -320,14 +320,6 @@ public class LayoutBranchLocalServiceWrapper
 	}
 
 	@Override
-	public java.util.List<com.liferay.portal.kernel.model.LayoutBranch>
-		getLayoutSetBranchLayoutBranches(long layoutSetBranchId) {
-
-		return _layoutBranchLocalService.getLayoutSetBranchLayoutBranches(
-			layoutSetBranchId);
-	}
-
-	@Override
 	public com.liferay.portal.kernel.model.LayoutBranch getMasterLayoutBranch(
 			long layoutSetBranchId, long plid)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -413,4 +405,4 @@ public class LayoutBranchLocalServiceWrapper
 	private LayoutBranchLocalService _layoutBranchLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:362908122
+// LIFERAY-SERVICE-BUILDER-HASH:2014460855

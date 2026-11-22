@@ -159,14 +159,6 @@ public class LayoutSetBranchLocalServiceWrapper
 	}
 
 	@Override
-	public void deleteLayoutSetBranches(long groupId, boolean privateLayout)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		_layoutSetBranchLocalService.deleteLayoutSetBranches(
-			groupId, privateLayout);
-	}
-
-	@Override
 	public void deleteLayoutSetBranches(
 			long groupId, boolean privateLayout, boolean includeMaster)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -299,14 +291,6 @@ public class LayoutSetBranchLocalServiceWrapper
 	}
 
 	@Override
-	public com.liferay.portal.kernel.model.LayoutSetBranch fetchLayoutSetBranch(
-		long groupId, boolean privateLayout, String name) {
-
-		return _layoutSetBranchLocalService.fetchLayoutSetBranch(
-			groupId, privateLayout, name);
-	}
-
-	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 
@@ -335,15 +319,6 @@ public class LayoutSetBranchLocalServiceWrapper
 
 		return _layoutSetBranchLocalService.getLayoutSetBranch(
 			layoutSetBranchId);
-	}
-
-	@Override
-	public com.liferay.portal.kernel.model.LayoutSetBranch getLayoutSetBranch(
-			long groupId, boolean privateLayout, String name)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _layoutSetBranchLocalService.getLayoutSetBranch(
-			groupId, privateLayout, name);
 	}
 
 	@Override
@@ -483,4 +458,4 @@ public class LayoutSetBranchLocalServiceWrapper
 	private LayoutSetBranchLocalService _layoutSetBranchLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1833154521
+// LIFERAY-SERVICE-BUILDER-HASH:1819612184

@@ -148,13 +148,6 @@ public class LayoutSetBranchLocalServiceUtil {
 	}
 
 	public static void deleteLayoutSetBranches(
-			long groupId, boolean privateLayout)
-		throws PortalException {
-
-		getService().deleteLayoutSetBranches(groupId, privateLayout);
-	}
-
-	public static void deleteLayoutSetBranches(
 			long groupId, boolean privateLayout, boolean includeMaster)
 		throws PortalException {
 
@@ -261,12 +254,6 @@ public class LayoutSetBranchLocalServiceUtil {
 		return getService().fetchLayoutSetBranch(layoutSetBranchId);
 	}
 
-	public static LayoutSetBranch fetchLayoutSetBranch(
-		long groupId, boolean privateLayout, String name) {
-
-		return getService().fetchLayoutSetBranch(groupId, privateLayout, name);
-	}
-
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 
@@ -291,13 +278,6 @@ public class LayoutSetBranchLocalServiceUtil {
 		throws PortalException {
 
 		return getService().getLayoutSetBranch(layoutSetBranchId);
-	}
-
-	public static LayoutSetBranch getLayoutSetBranch(
-			long groupId, boolean privateLayout, String name)
-		throws PortalException {
-
-		return getService().getLayoutSetBranch(groupId, privateLayout, name);
 	}
 
 	public static List<LayoutSetBranch> getLayoutSetBranches(
@@ -411,4 +391,4 @@ public class LayoutSetBranchLocalServiceUtil {
 	private static volatile LayoutSetBranchLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:825448309
+// LIFERAY-SERVICE-BUILDER-HASH:1816575936

@@ -14,7 +14,6 @@ import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.Projection;
-import com.liferay.portal.kernel.exception.NoSuchLayoutFriendlyURLException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.model.Group;
@@ -92,12 +91,6 @@ public interface LayoutFriendlyURLLocalService
 			ServiceContext serviceContext)
 		throws PortalException;
 
-	public List<LayoutFriendlyURL> addLayoutFriendlyURLs(
-			long userId, long companyId, long groupId, long plid,
-			boolean privateLayout, Map<Locale, String> friendlyURLMap,
-			ServiceContext serviceContext)
-		throws PortalException;
-
 	/**
 	 * Creates a new layout friendly url with the primary key. Does not add the layout friendly url to the database.
 	 *
@@ -142,8 +135,6 @@ public interface LayoutFriendlyURLLocalService
 	@Indexable(type = IndexableType.DELETE)
 	public LayoutFriendlyURL deleteLayoutFriendlyURL(long layoutFriendlyURLId)
 		throws PortalException;
-
-	public void deleteLayoutFriendlyURL(long plid, String languageId);
 
 	public void deleteLayoutFriendlyURLs(long plid);
 
@@ -240,10 +231,6 @@ public interface LayoutFriendlyURLLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public LayoutFriendlyURL fetchLayoutFriendlyURL(
-		long plid, String languageId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public LayoutFriendlyURL fetchLayoutFriendlyURL(
 		long plid, String languageId, boolean useDefault);
 
 	/**
@@ -277,12 +264,6 @@ public interface LayoutFriendlyURLLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public LayoutFriendlyURL getLayoutFriendlyURL(long layoutFriendlyURLId)
 		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public LayoutFriendlyURL getLayoutFriendlyURL(
-			long groupId, boolean privateLayout, String friendlyURL,
-			String languageId)
-		throws NoSuchLayoutFriendlyURLException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public LayoutFriendlyURL getLayoutFriendlyURL(long plid, String languageId)
@@ -425,4 +406,4 @@ public interface LayoutFriendlyURLLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1663719588
+// LIFERAY-SERVICE-BUILDER-HASH:2136461663

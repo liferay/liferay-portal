@@ -283,12 +283,6 @@ public class LayoutBranchLocalServiceUtil {
 		return getService().getLayoutBranchsCount();
 	}
 
-	public static List<LayoutBranch> getLayoutSetBranchLayoutBranches(
-		long layoutSetBranchId) {
-
-		return getService().getLayoutSetBranchLayoutBranches(layoutSetBranchId);
-	}
-
 	public static LayoutBranch getMasterLayoutBranch(
 			long layoutSetBranchId, long plid)
 		throws PortalException {
@@ -356,4 +350,4 @@ public class LayoutBranchLocalServiceUtil {
 	private static volatile LayoutBranchLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1066047502
+// LIFERAY-SERVICE-BUILDER-HASH:-1744410265
