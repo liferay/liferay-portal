@@ -10,6 +10,7 @@ import com.liferay.asset.kernel.model.AssetRenderer;
 import com.liferay.asset.kernel.model.AssetRendererFactory;
 import com.liferay.asset.kernel.service.AssetEntryLocalService;
 import com.liferay.asset.util.AssetRendererFactoryLookup;
+import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerList;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.ClassName;
 import com.liferay.portal.kernel.model.Company;
@@ -46,6 +47,8 @@ import jakarta.portlet.PortletURL;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 
 import org.junit.After;
@@ -306,6 +309,41 @@ public class SearchResultSummaryDisplayContextBuilderTest {
 			searchResultSummaryDisplayContext.getViewURL());
 	}
 
+	@Test
+	public void testViewURL3() throws Exception {
+		_setUpSearchUtilMockedStatic(_className, _classPK);
+
+		String className = RandomTestUtil.randomString();
+		long classNameId = RandomTestUtil.randomLong();
+
+		_setUpClassNameLocalService(classNameId, className);
+
+		long classPK = RandomTestUtil.randomLong();
+
+		_setUpSearchUtilMockedStatic(className, classPK);
+
+		_whenAssetRendererFactoryLookupGetAssetRendererFactoryByClassName(
+			className);
+
+		Mockito.doReturn(
+			RandomTestUtil.randomString()
+		).when(
+			_searchResultContributor
+		).getEntryClassName();
+
+		Document document = _createDocument();
+
+		document.addKeyword(Field.CLASS_NAME_ID, classNameId);
+		document.addKeyword(Field.CLASS_PK, classPK);
+
+		SearchResultSummaryDisplayContext searchResultSummaryDisplayContext =
+			_build(document);
+
+		Assert.assertEquals(
+			_className + _classPK,
+			searchResultSummaryDisplayContext.getViewURL());
+	}
+
 	private void _assertAssetRendererURLDownloadVisible(
 		SearchResultSummaryDisplayContext searchResultSummaryDisplayContext,
 		String urlDownload) {
@@ -476,7 +514,37 @@ public class SearchResultSummaryDisplayContextBuilderTest {
 		searchResultSummaryDisplayContextBuilder.setResourceActions(
 			Mockito.mock(ResourceActions.class));
 		searchResultSummaryDisplayContextBuilder.setSearchResultContributors(
-			Collections.singletonList(_searchResultContributor));
+			new ServiceTrackerList<SearchResultContributor>() {
+
+				@Override
+				public void close() {
+				}
+
+				@Override
+				public Iterator<SearchResultContributor> iterator() {
+					return _searchResultContributors.iterator();
+				}
+
+				@Override
+				public int size() {
+					return _searchResultContributors.size();
+				}
+
+				@Override
+				public <E> E[] toArray(E[] array) {
+					return _searchResultContributors.toArray(array);
+				}
+
+				@Override
+				public List<SearchResultContributor> toList() {
+					return _searchResultContributors;
+				}
+
+				private final List<SearchResultContributor>
+					_searchResultContributors = Collections.singletonList(
+						_searchResultContributor);
+
+			});
 		searchResultSummaryDisplayContextBuilder.setSearchResultPreferences(
 			Mockito.mock(SearchResultPreferences.class));
 		searchResultSummaryDisplayContextBuilder.setSummaryBuilderFactory(
