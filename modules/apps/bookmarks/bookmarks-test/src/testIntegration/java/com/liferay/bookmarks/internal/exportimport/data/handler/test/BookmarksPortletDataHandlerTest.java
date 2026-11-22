@@ -10,6 +10,7 @@ import com.liferay.bookmarks.constants.BookmarksPortletKeys;
 import com.liferay.bookmarks.model.BookmarksFolder;
 import com.liferay.bookmarks.service.BookmarksEntryServiceUtil;
 import com.liferay.bookmarks.service.BookmarksFolderServiceUtil;
+import com.liferay.bookmarks.service.persistence.BookmarksFolderUtil;
 import com.liferay.bookmarks.test.util.BookmarksTestUtil;
 import com.liferay.exportimport.kernel.lar.DataLevel;
 import com.liferay.exportimport.test.util.lar.BasePortletDataHandlerTestCase;
@@ -22,6 +23,7 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.TransactionTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
@@ -75,8 +77,10 @@ public class BookmarksPortletDataHandlerTest
 
 		GroupLocalServiceUtil.deleteGroup(group);
 
-		List<BookmarksFolder> folders = BookmarksTestUtil.getFolders(
-			group.getGroupId());
+		List<BookmarksFolder> folders = TransactionTestUtil.invoke(
+			BookmarksFolderUtil.getPersistence(),
+			bookmarksFolderPersistence ->
+				bookmarksFolderPersistence.findByGroupId(group.getGroupId()));
 
 		Assert.assertEquals(folders.toString(), 0, folders.size());
 	}
