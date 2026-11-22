@@ -74,11 +74,11 @@ public class BlogsActivityInterpreterTest
 
 		serviceContext.setCommand(Constants.UPDATE);
 
-		BlogsTestUtil.updateEntry(
+		BlogsEntryLocalServiceUtil.updateEntry(
 			_entry.getUserId(), _entry.getEntryId(), _entry.getTitle(),
-			_entry.getSubtitle(), _entry.getDescription(), _entry.getContent(),
-			1, 1, 2012, 12, 00, true, true, new String[0], StringPool.BLANK,
-			null, null, serviceContext);
+			_entry.getSubtitle(), _entry.getUrlTitle(), _entry.getDescription(),
+			_entry.getContent(), 1, 1, 2012, 12, 00, true, true, new String[0],
+			StringPool.BLANK, null, null, serviceContext);
 	}
 
 	@Override

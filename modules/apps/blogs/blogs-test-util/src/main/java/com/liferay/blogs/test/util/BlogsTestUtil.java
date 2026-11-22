@@ -12,7 +12,6 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.editor.constants.EditorConstants;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.servlet.taglib.ui.ImageSelector;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.CalendarFactoryUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -121,25 +120,6 @@ public class BlogsTestUtil {
 		serviceContext.setLayoutFullURL("http://localhost");
 	}
 
-	public static BlogsEntry updateEntry(
-			long userId, long entryId, String title, String subtitle,
-			String description, String content, int displayDateMonth,
-			int displayDateDay, int displayDateYear, int displayDateHour,
-			int displayDateMinute, boolean allowPingbacks,
-			boolean allowTrackbacks, String[] trackbacks,
-			String coverImageCaption, ImageSelector coverImageImageSelector,
-			ImageSelector smallImageImageSelector,
-			ServiceContext serviceContext)
-		throws PortalException {
-
-		return BlogsEntryLocalServiceUtil.updateEntry(
-			userId, entryId, title, subtitle, _getURLTitle(entryId),
-			description, content, displayDateMonth, displayDateDay,
-			displayDateYear, displayDateHour, displayDateMinute, allowPingbacks,
-			allowTrackbacks, trackbacks, coverImageCaption,
-			coverImageImageSelector, smallImageImageSelector, serviceContext);
-	}
-
 	protected static BlogsEntry updateStatus(
 			BlogsEntry entry, ServiceContext serviceContext)
 		throws Exception {
@@ -154,16 +134,6 @@ public class BlogsTestUtil {
 			).put(
 				WorkflowConstants.CONTEXT_USER_URL, "http://localhost"
 			).build());
-	}
-
-	private static String _getURLTitle(long entryId) {
-		BlogsEntry entry = BlogsEntryLocalServiceUtil.fetchBlogsEntry(entryId);
-
-		if (entry != null) {
-			return entry.getUrlTitle();
-		}
-
-		return StringPool.BLANK;
 	}
 
 }
