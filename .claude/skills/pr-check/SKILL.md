@@ -216,6 +216,8 @@ The procedure runs in two passes over the validations, in the order below. The o
 
 1. [Component Enabled Default](validations/branch/component-enabled-default.md)
 
+1. [TransactionTestUtil Usage](validations/branch/transaction-test-util-usage.md)
+
 1. [Full Portal Build](validations/portal/full-portal-build.md)
 
 1. [Per-Module Compile](validations/portal/per-module-compile.md)
