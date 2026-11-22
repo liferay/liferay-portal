@@ -25,7 +25,22 @@ if (sidebarCloseButton) {
 	addSidebarToggleClickEventListener(sidebarCloseButton);
 }
 
+const mobileMediaQueryList = window.matchMedia('(max-width: 991.98px)');
+
+let mobileSidebarOpen = false;
 let sidebarOpen = sidebarContainer.classList.contains('open');
+
+const content = sidebarContainer.querySelector('.content');
+
+content.addEventListener('click', () => {
+	if (mobileMediaQueryList.matches && mobileSidebarOpen) {
+		handleSidebarToggleClick();
+	}
+});
+
+mobileMediaQueryList.addEventListener('change', () => updateSidebar());
+
+updateSidebar();
 
 function addSidebarToggleClickEventListener(node) {
 	node.addEventListener('click', () => handleSidebarToggleClick());
@@ -34,44 +49,55 @@ function addSidebarToggleClickEventListener(node) {
 }
 
 function handleSidebarToggleClick() {
-	sidebarOpen = !sidebarOpen;
+	if (mobileMediaQueryList.matches) {
+		mobileSidebarOpen = !mobileSidebarOpen;
 
-	toggleSidebar();
-
-	Liferay.Util.Session.set(
-		'com.liferay.osb.faro.workspace.site.initializer_sidebarOpen',
-		String(sidebarOpen)
-	).catch(() => {});
-}
-
-function toggleSidebar() {
-	sidebarContainer.classList.toggle('open');
-
-	sidebar.toggleAttribute('inert');
-
-	if (sidebarTrigger) {
-		sidebarTrigger
-			.querySelectorAll('.inline-item')
-			.forEach((node) => node.classList.toggle('hide'));
-
-		sidebarTrigger.setAttribute('aria-expanded', String(sidebarOpen));
-		sidebarTrigger.setAttribute('aria-pressed', String(sidebarOpen));
-
-		if (sidebarOpen) {
-			sidebarTrigger.setAttribute(
-				'title',
-				sidebarTrigger.dataset.titleclose
-			);
-		}
-		else {
-			sidebarTrigger.setAttribute(
-				'title',
-				sidebarTrigger.dataset.titleopen
-			);
-		}
+		sidebarContainer.classList.toggle('open-mobile', mobileSidebarOpen);
 	}
+	else {
+		sidebarOpen = !sidebarOpen;
+
+		sidebarContainer.classList.toggle('open', sidebarOpen);
+
+		Liferay.Util.Session.set(
+			'com.liferay.osb.faro.workspace.site.initializer_sidebarOpen',
+			String(sidebarOpen)
+		).catch(() => {});
+	}
+
+	updateSidebar();
 
 	if (sidebarTrigger) {
 		sidebarTrigger.focus();
+	}
+}
+
+function updateSidebar() {
+	let open = sidebarOpen;
+
+	if (mobileMediaQueryList.matches) {
+		open = mobileSidebarOpen;
+	}
+
+	sidebar.toggleAttribute('inert', !open);
+
+	if (!sidebarTrigger) {
+		return;
+	}
+
+	const [openIcon, closedIcon] =
+		sidebarTrigger.querySelectorAll('.inline-item');
+
+	openIcon.classList.toggle('hide', !open);
+	closedIcon.classList.toggle('hide', open);
+
+	sidebarTrigger.setAttribute('aria-expanded', String(open));
+	sidebarTrigger.setAttribute('aria-pressed', String(open));
+
+	if (open) {
+		sidebarTrigger.setAttribute('title', sidebarTrigger.dataset.titleclose);
+	}
+	else {
+		sidebarTrigger.setAttribute('title', sidebarTrigger.dataset.titleopen);
 	}
 }
