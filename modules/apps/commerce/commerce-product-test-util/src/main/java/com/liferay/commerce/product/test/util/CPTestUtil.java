@@ -20,7 +20,6 @@ import com.liferay.commerce.price.list.service.CommercePriceListLocalServiceUtil
 import com.liferay.commerce.product.configuration.CPOptionConfiguration;
 import com.liferay.commerce.product.constants.CPConstants;
 import com.liferay.commerce.product.constants.CPInstanceConstants;
-import com.liferay.commerce.product.model.CPConfigurationEntry;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPDefinitionOptionRel;
 import com.liferay.commerce.product.model.CPDefinitionOptionValueRel;
@@ -41,7 +40,6 @@ import com.liferay.commerce.product.service.CPOptionLocalServiceUtil;
 import com.liferay.commerce.product.service.CPOptionValueLocalServiceUtil;
 import com.liferay.commerce.product.service.CPSpecificationOptionLocalServiceUtil;
 import com.liferay.commerce.product.service.CommerceCatalogLocalServiceUtil;
-import com.liferay.commerce.product.service.persistence.CPConfigurationEntryUtil;
 import com.liferay.commerce.product.service.persistence.CPDefinitionUtil;
 import com.liferay.commerce.product.type.simple.constants.SimpleCPTypeConstants;
 import com.liferay.commerce.service.CPDefinitionInventoryLocalServiceUtil;
@@ -790,17 +788,6 @@ public class CPTestUtil {
 			cpDefinition.getCPDefinitionId(),
 			ServiceContextTestUtil.getServiceContext(
 				cpDefinition.getGroupId()));
-	}
-
-	public static List<CPConfigurationEntry> getCPConfigurationEntries(
-			long cpConfigurationListId)
-		throws Exception {
-
-		return TransactionTestUtil.invoke(
-			CPConfigurationEntryUtil.getPersistence(),
-			cpConfigurationEntryPersistence ->
-				cpConfigurationEntryPersistence.findByCPConfigurationListId(
-					cpConfigurationListId));
 	}
 
 	public static String[] getCPOptionFieldTypes()

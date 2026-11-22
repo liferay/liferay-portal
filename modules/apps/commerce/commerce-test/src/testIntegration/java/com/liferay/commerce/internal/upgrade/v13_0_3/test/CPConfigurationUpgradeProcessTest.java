@@ -17,6 +17,7 @@ import com.liferay.commerce.product.service.CPConfigurationEntryLocalService;
 import com.liferay.commerce.product.service.CPConfigurationListLocalService;
 import com.liferay.commerce.product.service.CPDefinitionLocalService;
 import com.liferay.commerce.product.service.CommerceCatalogLocalService;
+import com.liferay.commerce.product.test.util.CPConfigurationEntryTestUtil;
 import com.liferay.commerce.product.test.util.CPTestUtil;
 import com.liferay.commerce.product.type.simple.constants.SimpleCPTypeConstants;
 import com.liferay.petra.lang.SafeCloseable;
@@ -92,7 +93,7 @@ public class CPConfigurationUpgradeProcessTest {
 		Assert.assertNotNull(cpConfigurationList);
 
 		List<CPConfigurationEntry> cpConfigurationEntries =
-			CPTestUtil.getCPConfigurationEntries(
+			CPConfigurationEntryTestUtil.getCPConfigurationEntries(
 				cpConfigurationList.getCPConfigurationListId());
 
 		Assert.assertFalse(cpConfigurationEntries.isEmpty());
@@ -160,7 +161,7 @@ public class CPConfigurationUpgradeProcessTest {
 			Assert.assertNotNull(cpConfigurationList);
 
 			List<CPConfigurationEntry> cpConfigurationEntries =
-				CPTestUtil.getCPConfigurationEntries(
+				CPConfigurationEntryTestUtil.getCPConfigurationEntries(
 					cpConfigurationList.getCPConfigurationListId());
 
 			Assert.assertFalse(cpConfigurationEntries.isEmpty());

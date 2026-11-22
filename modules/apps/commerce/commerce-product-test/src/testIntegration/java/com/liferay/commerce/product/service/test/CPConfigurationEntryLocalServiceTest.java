@@ -20,6 +20,7 @@ import com.liferay.commerce.product.service.CPConfigurationEntryLocalService;
 import com.liferay.commerce.product.service.CPConfigurationEntrySettingLocalService;
 import com.liferay.commerce.product.service.CPConfigurationListLocalService;
 import com.liferay.commerce.product.service.CommerceCatalogService;
+import com.liferay.commerce.product.test.util.CPConfigurationEntryTestUtil;
 import com.liferay.commerce.product.test.util.CPTestUtil;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -143,7 +144,7 @@ public class CPConfigurationEntryLocalServiceTest {
 			cpConfigurationEntry1.getExternalReferenceCode());
 
 		List<CPConfigurationEntry> cpConfigurationEntries =
-			CPTestUtil.getCPConfigurationEntries(
+			CPConfigurationEntryTestUtil.getCPConfigurationEntries(
 				_cpConfigurationList.getCPConfigurationListId());
 
 		CPConfigurationEntry cpConfigurationEntry2 = cpConfigurationEntries.get(
@@ -238,7 +239,7 @@ public class CPConfigurationEntryLocalServiceTest {
 
 		Assert.assertTrue(
 			ListUtil.isEmpty(
-				CPTestUtil.getCPConfigurationEntries(
+				CPConfigurationEntryTestUtil.getCPConfigurationEntries(
 					cpConfigurationList1.getCPConfigurationListId())));
 
 		CPConfigurationEntrySetting cpConfigurationEntrySetting =
@@ -268,7 +269,7 @@ public class CPConfigurationEntryLocalServiceTest {
 
 		Assert.assertTrue(
 			ListUtil.isEmpty(
-				CPTestUtil.getCPConfigurationEntries(
+				CPConfigurationEntryTestUtil.getCPConfigurationEntries(
 					cpConfigurationList2.getCPConfigurationListId())));
 
 		cpConfigurationEntrySetting =
@@ -299,7 +300,7 @@ public class CPConfigurationEntryLocalServiceTest {
 
 		Assert.assertFalse(
 			ListUtil.isEmpty(
-				CPTestUtil.getCPConfigurationEntries(
+				CPConfigurationEntryTestUtil.getCPConfigurationEntries(
 					cpConfigurationList2.getCPConfigurationListId())));
 
 		cpConfigurationEntrySetting =
@@ -579,7 +580,7 @@ public class CPConfigurationEntryLocalServiceTest {
 
 		Assert.assertTrue(
 			ListUtil.isEmpty(
-				CPTestUtil.getCPConfigurationEntries(
+				CPConfigurationEntryTestUtil.getCPConfigurationEntries(
 					cpConfigurationList.getCPConfigurationListId())));
 
 		CPConfigurationEntrySetting cpConfigurationEntrySetting =
