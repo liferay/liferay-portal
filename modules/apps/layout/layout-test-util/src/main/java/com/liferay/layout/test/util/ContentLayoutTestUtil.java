@@ -33,7 +33,6 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutSet;
 import com.liferay.portal.kernel.model.LayoutTypePortlet;
-import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
@@ -44,6 +43,7 @@ import com.liferay.portal.kernel.servlet.PortletServlet;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionRequest;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionResponse;
+import com.liferay.portal.kernel.test.util.BundleContextTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -497,7 +497,9 @@ public class ContentLayoutTestUtil {
 
 	public static MVCActionCommand getMVCActionCommand(String mvcCommandName) {
 		try {
-			BundleContext bundleContext = SystemBundleUtil.getBundleContext();
+			BundleContext bundleContext =
+				BundleContextTestUtil.getBundleContext(
+					ContentLayoutTestUtil.class);
 
 			Collection<ServiceReference<MVCActionCommand>>
 				mvcActionCommandReferences = bundleContext.getServiceReferences(
