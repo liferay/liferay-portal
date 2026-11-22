@@ -455,13 +455,6 @@ public class ExpandoTableLocalServiceWrapper
 	}
 
 	@Override
-	public ExpandoTable updateTable(long tableId, String name)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _expandoTableLocalService.updateTable(tableId, name);
-	}
-
-	@Override
 	public BasePersistence<?> getBasePersistence() {
 		return _expandoTableLocalService.getBasePersistence();
 	}
@@ -501,4 +494,4 @@ public class ExpandoTableLocalServiceWrapper
 	private ExpandoTableLocalService _expandoTableLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:867980182
+// LIFERAY-SERVICE-BUILDER-HASH:137269797

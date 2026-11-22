@@ -116,20 +116,6 @@ public class ExpandoColumnLocalServiceUtil {
 		getService().deleteColumns(tableId);
 	}
 
-	public static void deleteColumns(
-			long companyId, long classNameId, String tableName)
-		throws PortalException {
-
-		getService().deleteColumns(companyId, classNameId, tableName);
-	}
-
-	public static void deleteColumns(
-			long companyId, String className, String tableName)
-		throws PortalException {
-
-		getService().deleteColumns(companyId, className, tableName);
-	}
-
 	/**
 	 * Deletes the expando column from the database. Also notifies the appropriate model listeners.
 	 *
@@ -309,23 +295,9 @@ public class ExpandoColumnLocalServiceUtil {
 	}
 
 	public static List<ExpandoColumn> getColumns(
-		long tableId, java.util.Collection<String> names) {
-
-		return getService().getColumns(tableId, names);
-	}
-
-	public static List<ExpandoColumn> getColumns(
 		long companyId, long classNameId, String tableName) {
 
 		return getService().getColumns(companyId, classNameId, tableName);
-	}
-
-	public static List<ExpandoColumn> getColumns(
-		long companyId, long classNameId, String tableName,
-		java.util.Collection<String> names) {
-
-		return getService().getColumns(
-			companyId, classNameId, tableName, names);
 	}
 
 	public static List<ExpandoColumn> getColumns(
@@ -334,28 +306,8 @@ public class ExpandoColumnLocalServiceUtil {
 		return getService().getColumns(companyId, className, tableName);
 	}
 
-	public static List<ExpandoColumn> getColumns(
-		long companyId, String className, String tableName,
-		java.util.Collection<String> columnNames) {
-
-		return getService().getColumns(
-			companyId, className, tableName, columnNames);
-	}
-
 	public static int getColumnsCount(long tableId) {
 		return getService().getColumnsCount(tableId);
-	}
-
-	public static int getColumnsCount(
-		long companyId, long classNameId, String tableName) {
-
-		return getService().getColumnsCount(companyId, classNameId, tableName);
-	}
-
-	public static int getColumnsCount(
-		long companyId, String className, String tableName) {
-
-		return getService().getColumnsCount(companyId, className, tableName);
 	}
 
 	public static ExpandoColumn getDefaultTableColumn(
@@ -380,18 +332,6 @@ public class ExpandoColumnLocalServiceUtil {
 		long companyId, String className) {
 
 		return getService().getDefaultTableColumns(companyId, className);
-	}
-
-	public static int getDefaultTableColumnsCount(
-		long companyId, long classNameId) {
-
-		return getService().getDefaultTableColumnsCount(companyId, classNameId);
-	}
-
-	public static int getDefaultTableColumnsCount(
-		long companyId, String className) {
-
-		return getService().getDefaultTableColumnsCount(companyId, className);
 	}
 
 	/**
@@ -504,4 +444,4 @@ public class ExpandoColumnLocalServiceUtil {
 	private static volatile ExpandoColumnLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1947747122
+// LIFERAY-SERVICE-BUILDER-HASH:478554864

@@ -332,9 +332,6 @@ public interface ExpandoTableLocalService
 	@Indexable(type = IndexableType.REINDEX)
 	public ExpandoTable updateExpandoTable(ExpandoTable expandoTable);
 
-	public ExpandoTable updateTable(long tableId, String name)
-		throws PortalException;
-
 	@Override
 	@Transactional(enabled = false)
 	public CTPersistence<ExpandoTable> getCTPersistence();
@@ -351,4 +348,4 @@ public interface ExpandoTableLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-631146688
+// LIFERAY-SERVICE-BUILDER-HASH:-503634948

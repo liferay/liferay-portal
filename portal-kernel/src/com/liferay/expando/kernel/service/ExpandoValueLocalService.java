@@ -263,13 +263,9 @@ public interface ExpandoValueLocalService
 
 	public void deleteRowValues(long rowId);
 
-	public void deleteTableValues(long tableId);
-
 	public void deleteValue(ExpandoValue value);
 
 	public void deleteValue(long valueId) throws PortalException;
-
-	public void deleteValue(long columnId, long rowId) throws PortalException;
 
 	public void deleteValue(
 			long companyId, long classNameId, String tableName,
@@ -383,43 +379,12 @@ public interface ExpandoValueLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<ExpandoValue> getColumnValues(
 		long companyId, long classNameId, String tableName, String columnName,
-		int start, int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<ExpandoValue> getColumnValues(
-		long companyId, long classNameId, String tableName, String columnName,
 		String data, int start, int end);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<ExpandoValue> getColumnValues(
 		long companyId, String className, String tableName, String columnName,
-		int start, int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<ExpandoValue> getColumnValues(
-		long companyId, String className, String tableName, String columnName,
 		String data, int start, int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getColumnValuesCount(long columnId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getColumnValuesCount(
-		long companyId, long classNameId, String tableName, String columnName);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getColumnValuesCount(
-		long companyId, long classNameId, String tableName, String columnName,
-		String data);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getColumnValuesCount(
-		long companyId, String className, String tableName, String columnName);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getColumnValuesCount(
-		long companyId, String className, String tableName, String columnName,
-		String data);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Map<String, Serializable> getData(
@@ -558,24 +523,6 @@ public interface ExpandoValueLocalService
 			String columnName, long classPK, String[] defaultData)
 		throws PortalException;
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<ExpandoValue> getDefaultTableColumnValues(
-		long companyId, long classNameId, String columnName, int start,
-		int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<ExpandoValue> getDefaultTableColumnValues(
-		long companyId, String className, String columnName, int start,
-		int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getDefaultTableColumnValuesCount(
-		long companyId, long classNameId, String columnName);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getDefaultTableColumnValuesCount(
-		long companyId, String className, String columnName);
-
 	/**
 	 * Returns the expando value with the primary key.
 	 *
@@ -630,9 +577,6 @@ public interface ExpandoValueLocalService
 	public List<ExpandoValue> getRowValues(long rowId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<ExpandoValue> getRowValues(long rowId, int start, int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<ExpandoValue> getRowValues(
 		long companyId, long classNameId, String tableName, long classPK,
 		int start, int end);
@@ -643,17 +587,6 @@ public interface ExpandoValueLocalService
 		int start, int end);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getRowValuesCount(long rowId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getRowValuesCount(
-		long companyId, long classNameId, String tableName, long classPK);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getRowValuesCount(
-		long companyId, String className, String tableName, long classPK);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ExpandoValue getValue(long valueId) throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -662,18 +595,6 @@ public interface ExpandoValueLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ExpandoValue getValue(long tableId, long columnId, long classPK)
-		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public ExpandoValue getValue(
-			long companyId, long classNameId, String tableName,
-			String columnName, long classPK)
-		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public ExpandoValue getValue(
-			long companyId, String className, String tableName,
-			String columnName, long classPK)
 		throws PortalException;
 
 	/**
@@ -705,4 +626,4 @@ public interface ExpandoValueLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-320815187
+// LIFERAY-SERVICE-BUILDER-HASH:1298747196

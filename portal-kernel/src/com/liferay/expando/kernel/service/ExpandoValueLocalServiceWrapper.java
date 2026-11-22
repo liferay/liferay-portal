@@ -381,11 +381,6 @@ public class ExpandoValueLocalServiceWrapper
 	}
 
 	@Override
-	public void deleteTableValues(long tableId) {
-		_expandoValueLocalService.deleteTableValues(tableId);
-	}
-
-	@Override
 	public void deleteValue(ExpandoValue value) {
 		_expandoValueLocalService.deleteValue(value);
 	}
@@ -395,13 +390,6 @@ public class ExpandoValueLocalServiceWrapper
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		_expandoValueLocalService.deleteValue(valueId);
-	}
-
-	@Override
-	public void deleteValue(long columnId, long rowId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		_expandoValueLocalService.deleteValue(columnId, rowId);
 	}
 
 	@Override
@@ -581,15 +569,6 @@ public class ExpandoValueLocalServiceWrapper
 	@Override
 	public java.util.List<ExpandoValue> getColumnValues(
 		long companyId, long classNameId, String tableName, String columnName,
-		int start, int end) {
-
-		return _expandoValueLocalService.getColumnValues(
-			companyId, classNameId, tableName, columnName, start, end);
-	}
-
-	@Override
-	public java.util.List<ExpandoValue> getColumnValues(
-		long companyId, long classNameId, String tableName, String columnName,
 		String data, int start, int end) {
 
 		return _expandoValueLocalService.getColumnValues(
@@ -599,58 +578,10 @@ public class ExpandoValueLocalServiceWrapper
 	@Override
 	public java.util.List<ExpandoValue> getColumnValues(
 		long companyId, String className, String tableName, String columnName,
-		int start, int end) {
-
-		return _expandoValueLocalService.getColumnValues(
-			companyId, className, tableName, columnName, start, end);
-	}
-
-	@Override
-	public java.util.List<ExpandoValue> getColumnValues(
-		long companyId, String className, String tableName, String columnName,
 		String data, int start, int end) {
 
 		return _expandoValueLocalService.getColumnValues(
 			companyId, className, tableName, columnName, data, start, end);
-	}
-
-	@Override
-	public int getColumnValuesCount(long columnId) {
-		return _expandoValueLocalService.getColumnValuesCount(columnId);
-	}
-
-	@Override
-	public int getColumnValuesCount(
-		long companyId, long classNameId, String tableName, String columnName) {
-
-		return _expandoValueLocalService.getColumnValuesCount(
-			companyId, classNameId, tableName, columnName);
-	}
-
-	@Override
-	public int getColumnValuesCount(
-		long companyId, long classNameId, String tableName, String columnName,
-		String data) {
-
-		return _expandoValueLocalService.getColumnValuesCount(
-			companyId, classNameId, tableName, columnName, data);
-	}
-
-	@Override
-	public int getColumnValuesCount(
-		long companyId, String className, String tableName, String columnName) {
-
-		return _expandoValueLocalService.getColumnValuesCount(
-			companyId, className, tableName, columnName);
-	}
-
-	@Override
-	public int getColumnValuesCount(
-		long companyId, String className, String tableName, String columnName,
-		String data) {
-
-		return _expandoValueLocalService.getColumnValuesCount(
-			companyId, className, tableName, columnName, data);
 	}
 
 	@Override
@@ -884,40 +815,6 @@ public class ExpandoValueLocalServiceWrapper
 			companyId, className, tableName, columnName, classPK, defaultData);
 	}
 
-	@Override
-	public java.util.List<ExpandoValue> getDefaultTableColumnValues(
-		long companyId, long classNameId, String columnName, int start,
-		int end) {
-
-		return _expandoValueLocalService.getDefaultTableColumnValues(
-			companyId, classNameId, columnName, start, end);
-	}
-
-	@Override
-	public java.util.List<ExpandoValue> getDefaultTableColumnValues(
-		long companyId, String className, String columnName, int start,
-		int end) {
-
-		return _expandoValueLocalService.getDefaultTableColumnValues(
-			companyId, className, columnName, start, end);
-	}
-
-	@Override
-	public int getDefaultTableColumnValuesCount(
-		long companyId, long classNameId, String columnName) {
-
-		return _expandoValueLocalService.getDefaultTableColumnValuesCount(
-			companyId, classNameId, columnName);
-	}
-
-	@Override
-	public int getDefaultTableColumnValuesCount(
-		long companyId, String className, String columnName) {
-
-		return _expandoValueLocalService.getDefaultTableColumnValuesCount(
-			companyId, className, columnName);
-	}
-
 	/**
 	 * Returns the expando value with the primary key.
 	 *
@@ -993,13 +890,6 @@ public class ExpandoValueLocalServiceWrapper
 
 	@Override
 	public java.util.List<ExpandoValue> getRowValues(
-		long rowId, int start, int end) {
-
-		return _expandoValueLocalService.getRowValues(rowId, start, end);
-	}
-
-	@Override
-	public java.util.List<ExpandoValue> getRowValues(
 		long companyId, long classNameId, String tableName, long classPK,
 		int start, int end) {
 
@@ -1014,27 +904,6 @@ public class ExpandoValueLocalServiceWrapper
 
 		return _expandoValueLocalService.getRowValues(
 			companyId, className, tableName, classPK, start, end);
-	}
-
-	@Override
-	public int getRowValuesCount(long rowId) {
-		return _expandoValueLocalService.getRowValuesCount(rowId);
-	}
-
-	@Override
-	public int getRowValuesCount(
-		long companyId, long classNameId, String tableName, long classPK) {
-
-		return _expandoValueLocalService.getRowValuesCount(
-			companyId, classNameId, tableName, classPK);
-	}
-
-	@Override
-	public int getRowValuesCount(
-		long companyId, String className, String tableName, long classPK) {
-
-		return _expandoValueLocalService.getRowValuesCount(
-			companyId, className, tableName, classPK);
 	}
 
 	@Override
@@ -1056,26 +925,6 @@ public class ExpandoValueLocalServiceWrapper
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _expandoValueLocalService.getValue(tableId, columnId, classPK);
-	}
-
-	@Override
-	public ExpandoValue getValue(
-			long companyId, long classNameId, String tableName,
-			String columnName, long classPK)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _expandoValueLocalService.getValue(
-			companyId, classNameId, tableName, columnName, classPK);
-	}
-
-	@Override
-	public ExpandoValue getValue(
-			long companyId, String className, String tableName,
-			String columnName, long classPK)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _expandoValueLocalService.getValue(
-			companyId, className, tableName, columnName, classPK);
 	}
 
 	/**
@@ -1133,4 +982,4 @@ public class ExpandoValueLocalServiceWrapper
 	private ExpandoValueLocalService _expandoValueLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1023640156
+// LIFERAY-SERVICE-BUILDER-HASH:-987740009

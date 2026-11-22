@@ -131,24 +131,6 @@ public class ExpandoColumnLocalServiceWrapper
 		_expandoColumnLocalService.deleteColumns(tableId);
 	}
 
-	@Override
-	public void deleteColumns(
-			long companyId, long classNameId, String tableName)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		_expandoColumnLocalService.deleteColumns(
-			companyId, classNameId, tableName);
-	}
-
-	@Override
-	public void deleteColumns(
-			long companyId, String className, String tableName)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		_expandoColumnLocalService.deleteColumns(
-			companyId, className, tableName);
-	}
-
 	/**
 	 * Deletes the expando column from the database. Also notifies the appropriate model listeners.
 	 *
@@ -359,13 +341,6 @@ public class ExpandoColumnLocalServiceWrapper
 
 	@Override
 	public java.util.List<ExpandoColumn> getColumns(
-		long tableId, java.util.Collection<String> names) {
-
-		return _expandoColumnLocalService.getColumns(tableId, names);
-	}
-
-	@Override
-	public java.util.List<ExpandoColumn> getColumns(
 		long companyId, long classNameId, String tableName) {
 
 		return _expandoColumnLocalService.getColumns(
@@ -374,49 +349,15 @@ public class ExpandoColumnLocalServiceWrapper
 
 	@Override
 	public java.util.List<ExpandoColumn> getColumns(
-		long companyId, long classNameId, String tableName,
-		java.util.Collection<String> names) {
-
-		return _expandoColumnLocalService.getColumns(
-			companyId, classNameId, tableName, names);
-	}
-
-	@Override
-	public java.util.List<ExpandoColumn> getColumns(
 		long companyId, String className, String tableName) {
 
 		return _expandoColumnLocalService.getColumns(
 			companyId, className, tableName);
-	}
-
-	@Override
-	public java.util.List<ExpandoColumn> getColumns(
-		long companyId, String className, String tableName,
-		java.util.Collection<String> columnNames) {
-
-		return _expandoColumnLocalService.getColumns(
-			companyId, className, tableName, columnNames);
 	}
 
 	@Override
 	public int getColumnsCount(long tableId) {
 		return _expandoColumnLocalService.getColumnsCount(tableId);
-	}
-
-	@Override
-	public int getColumnsCount(
-		long companyId, long classNameId, String tableName) {
-
-		return _expandoColumnLocalService.getColumnsCount(
-			companyId, classNameId, tableName);
-	}
-
-	@Override
-	public int getColumnsCount(
-		long companyId, String className, String tableName) {
-
-		return _expandoColumnLocalService.getColumnsCount(
-			companyId, className, tableName);
 	}
 
 	@Override
@@ -448,18 +389,6 @@ public class ExpandoColumnLocalServiceWrapper
 		long companyId, String className) {
 
 		return _expandoColumnLocalService.getDefaultTableColumns(
-			companyId, className);
-	}
-
-	@Override
-	public int getDefaultTableColumnsCount(long companyId, long classNameId) {
-		return _expandoColumnLocalService.getDefaultTableColumnsCount(
-			companyId, classNameId);
-	}
-
-	@Override
-	public int getDefaultTableColumnsCount(long companyId, String className) {
-		return _expandoColumnLocalService.getDefaultTableColumnsCount(
 			companyId, className);
 	}
 
@@ -610,4 +539,4 @@ public class ExpandoColumnLocalServiceWrapper
 	private ExpandoColumnLocalService _expandoColumnLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1234589817
+// LIFERAY-SERVICE-BUILDER-HASH:1107485510

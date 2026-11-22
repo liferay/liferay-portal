@@ -349,22 +349,12 @@ public class ExpandoValueLocalServiceUtil {
 		getService().deleteRowValues(rowId);
 	}
 
-	public static void deleteTableValues(long tableId) {
-		getService().deleteTableValues(tableId);
-	}
-
 	public static void deleteValue(ExpandoValue value) {
 		getService().deleteValue(value);
 	}
 
 	public static void deleteValue(long valueId) throws PortalException {
 		getService().deleteValue(valueId);
-	}
-
-	public static void deleteValue(long columnId, long rowId)
-		throws PortalException {
-
-		getService().deleteValue(columnId, rowId);
 	}
 
 	public static void deleteValue(
@@ -518,14 +508,6 @@ public class ExpandoValueLocalServiceUtil {
 
 	public static List<ExpandoValue> getColumnValues(
 		long companyId, long classNameId, String tableName, String columnName,
-		int start, int end) {
-
-		return getService().getColumnValues(
-			companyId, classNameId, tableName, columnName, start, end);
-	}
-
-	public static List<ExpandoValue> getColumnValues(
-		long companyId, long classNameId, String tableName, String columnName,
 		String data, int start, int end) {
 
 		return getService().getColumnValues(
@@ -534,52 +516,10 @@ public class ExpandoValueLocalServiceUtil {
 
 	public static List<ExpandoValue> getColumnValues(
 		long companyId, String className, String tableName, String columnName,
-		int start, int end) {
-
-		return getService().getColumnValues(
-			companyId, className, tableName, columnName, start, end);
-	}
-
-	public static List<ExpandoValue> getColumnValues(
-		long companyId, String className, String tableName, String columnName,
 		String data, int start, int end) {
 
 		return getService().getColumnValues(
 			companyId, className, tableName, columnName, data, start, end);
-	}
-
-	public static int getColumnValuesCount(long columnId) {
-		return getService().getColumnValuesCount(columnId);
-	}
-
-	public static int getColumnValuesCount(
-		long companyId, long classNameId, String tableName, String columnName) {
-
-		return getService().getColumnValuesCount(
-			companyId, classNameId, tableName, columnName);
-	}
-
-	public static int getColumnValuesCount(
-		long companyId, long classNameId, String tableName, String columnName,
-		String data) {
-
-		return getService().getColumnValuesCount(
-			companyId, classNameId, tableName, columnName, data);
-	}
-
-	public static int getColumnValuesCount(
-		long companyId, String className, String tableName, String columnName) {
-
-		return getService().getColumnValuesCount(
-			companyId, className, tableName, columnName);
-	}
-
-	public static int getColumnValuesCount(
-		long companyId, String className, String tableName, String columnName,
-		String data) {
-
-		return getService().getColumnValuesCount(
-			companyId, className, tableName, columnName, data);
 	}
 
 	public static Map<String, Serializable> getData(
@@ -789,36 +729,6 @@ public class ExpandoValueLocalServiceUtil {
 			companyId, className, tableName, columnName, classPK, defaultData);
 	}
 
-	public static List<ExpandoValue> getDefaultTableColumnValues(
-		long companyId, long classNameId, String columnName, int start,
-		int end) {
-
-		return getService().getDefaultTableColumnValues(
-			companyId, classNameId, columnName, start, end);
-	}
-
-	public static List<ExpandoValue> getDefaultTableColumnValues(
-		long companyId, String className, String columnName, int start,
-		int end) {
-
-		return getService().getDefaultTableColumnValues(
-			companyId, className, columnName, start, end);
-	}
-
-	public static int getDefaultTableColumnValuesCount(
-		long companyId, long classNameId, String columnName) {
-
-		return getService().getDefaultTableColumnValuesCount(
-			companyId, classNameId, columnName);
-	}
-
-	public static int getDefaultTableColumnValuesCount(
-		long companyId, String className, String columnName) {
-
-		return getService().getDefaultTableColumnValuesCount(
-			companyId, className, columnName);
-	}
-
 	/**
 	 * Returns the expando value with the primary key.
 	 *
@@ -886,12 +796,6 @@ public class ExpandoValueLocalServiceUtil {
 	}
 
 	public static List<ExpandoValue> getRowValues(
-		long rowId, int start, int end) {
-
-		return getService().getRowValues(rowId, start, end);
-	}
-
-	public static List<ExpandoValue> getRowValues(
 		long companyId, long classNameId, String tableName, long classPK,
 		int start, int end) {
 
@@ -905,24 +809,6 @@ public class ExpandoValueLocalServiceUtil {
 
 		return getService().getRowValues(
 			companyId, className, tableName, classPK, start, end);
-	}
-
-	public static int getRowValuesCount(long rowId) {
-		return getService().getRowValuesCount(rowId);
-	}
-
-	public static int getRowValuesCount(
-		long companyId, long classNameId, String tableName, long classPK) {
-
-		return getService().getRowValuesCount(
-			companyId, classNameId, tableName, classPK);
-	}
-
-	public static int getRowValuesCount(
-		long companyId, String className, String tableName, long classPK) {
-
-		return getService().getRowValuesCount(
-			companyId, className, tableName, classPK);
 	}
 
 	public static ExpandoValue getValue(long valueId) throws PortalException {
@@ -940,24 +826,6 @@ public class ExpandoValueLocalServiceUtil {
 		throws PortalException {
 
 		return getService().getValue(tableId, columnId, classPK);
-	}
-
-	public static ExpandoValue getValue(
-			long companyId, long classNameId, String tableName,
-			String columnName, long classPK)
-		throws PortalException {
-
-		return getService().getValue(
-			companyId, classNameId, tableName, columnName, classPK);
-	}
-
-	public static ExpandoValue getValue(
-			long companyId, String className, String tableName,
-			String columnName, long classPK)
-		throws PortalException {
-
-		return getService().getValue(
-			companyId, className, tableName, columnName, classPK);
 	}
 
 	/**
@@ -985,4 +853,4 @@ public class ExpandoValueLocalServiceUtil {
 	private static volatile ExpandoValueLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:38832824
+// LIFERAY-SERVICE-BUILDER-HASH:670382919

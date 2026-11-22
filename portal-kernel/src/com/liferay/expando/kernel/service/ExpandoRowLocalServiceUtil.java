@@ -50,12 +50,6 @@ public class ExpandoRowLocalServiceUtil {
 		return getService().addExpandoRow(expandoRow);
 	}
 
-	public static ExpandoRow addRow(long tableId, long classPK)
-		throws PortalException {
-
-		return getService().addRow(tableId, classPK);
-	}
-
 	/**
 	 * Creates a new expando row with the primary key. Does not add the expando row to the database.
 	 *
@@ -129,20 +123,6 @@ public class ExpandoRowLocalServiceUtil {
 		throws PortalException {
 
 		getService().deleteRow(tableId, classPK);
-	}
-
-	public static void deleteRow(
-			long companyId, long classNameId, String tableName, long classPK)
-		throws PortalException {
-
-		getService().deleteRow(companyId, classNameId, tableName, classPK);
-	}
-
-	public static void deleteRow(
-			long companyId, String className, String tableName, long classPK)
-		throws PortalException {
-
-		getService().deleteRow(companyId, className, tableName, classPK);
 	}
 
 	public static void deleteRows(long classPK) {
@@ -254,32 +234,6 @@ public class ExpandoRowLocalServiceUtil {
 		return getService().getActionableDynamicQuery();
 	}
 
-	public static List<ExpandoRow> getDefaultTableRows(
-		long companyId, long classNameId, int start, int end) {
-
-		return getService().getDefaultTableRows(
-			companyId, classNameId, start, end);
-	}
-
-	public static List<ExpandoRow> getDefaultTableRows(
-		long companyId, String className, int start, int end) {
-
-		return getService().getDefaultTableRows(
-			companyId, className, start, end);
-	}
-
-	public static int getDefaultTableRowsCount(
-		long companyId, long classNameId) {
-
-		return getService().getDefaultTableRowsCount(companyId, classNameId);
-	}
-
-	public static int getDefaultTableRowsCount(
-		long companyId, String className) {
-
-		return getService().getDefaultTableRowsCount(companyId, className);
-	}
-
 	/**
 	 * Returns the expando row with the primary key.
 	 *
@@ -340,66 +294,6 @@ public class ExpandoRowLocalServiceUtil {
 		return getService().getPersistedModel(primaryKeyObj);
 	}
 
-	public static ExpandoRow getRow(long rowId) throws PortalException {
-		return getService().getRow(rowId);
-	}
-
-	public static ExpandoRow getRow(long tableId, long classPK)
-		throws PortalException {
-
-		return getService().getRow(tableId, classPK);
-	}
-
-	public static ExpandoRow getRow(
-			long companyId, long classNameId, String tableName, long classPK)
-		throws PortalException {
-
-		return getService().getRow(companyId, classNameId, tableName, classPK);
-	}
-
-	public static ExpandoRow getRow(
-			long companyId, String className, String tableName, long classPK)
-		throws PortalException {
-
-		return getService().getRow(companyId, className, tableName, classPK);
-	}
-
-	public static List<ExpandoRow> getRows(long tableId, int start, int end) {
-		return getService().getRows(tableId, start, end);
-	}
-
-	public static List<ExpandoRow> getRows(
-		long companyId, long classNameId, String tableName, int start,
-		int end) {
-
-		return getService().getRows(
-			companyId, classNameId, tableName, start, end);
-	}
-
-	public static List<ExpandoRow> getRows(
-		long companyId, String className, String tableName, int start,
-		int end) {
-
-		return getService().getRows(
-			companyId, className, tableName, start, end);
-	}
-
-	public static int getRowsCount(long tableId) {
-		return getService().getRowsCount(tableId);
-	}
-
-	public static int getRowsCount(
-		long companyId, long classNameId, String tableName) {
-
-		return getService().getRowsCount(companyId, classNameId, tableName);
-	}
-
-	public static int getRowsCount(
-		long companyId, String className, String tableName) {
-
-		return getService().getRowsCount(companyId, className, tableName);
-	}
-
 	/**
 	 * Updates the expando row in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	 *
@@ -425,4 +319,4 @@ public class ExpandoRowLocalServiceUtil {
 	private static volatile ExpandoRowLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-156443079
+// LIFERAY-SERVICE-BUILDER-HASH:2010269554

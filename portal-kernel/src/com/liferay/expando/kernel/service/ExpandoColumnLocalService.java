@@ -30,7 +30,6 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 
 import java.io.Serializable;
 
-import java.util.Collection;
 import java.util.List;
 
 import org.osgi.annotation.versioning.ProviderType;
@@ -115,14 +114,6 @@ public interface ExpandoColumnLocalService
 		throws PortalException;
 
 	public void deleteColumns(long tableId) throws PortalException;
-
-	public void deleteColumns(
-			long companyId, long classNameId, String tableName)
-		throws PortalException;
-
-	public void deleteColumns(
-			long companyId, String className, String tableName)
-		throws PortalException;
 
 	/**
 	 * Deletes the expando column from the database. Also notifies the appropriate model listeners.
@@ -265,36 +256,14 @@ public interface ExpandoColumnLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<ExpandoColumn> getColumns(
-		long tableId, Collection<String> names);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<ExpandoColumn> getColumns(
 		long companyId, long classNameId, String tableName);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<ExpandoColumn> getColumns(
-		long companyId, long classNameId, String tableName,
-		Collection<String> names);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<ExpandoColumn> getColumns(
 		long companyId, String className, String tableName);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<ExpandoColumn> getColumns(
-		long companyId, String className, String tableName,
-		Collection<String> columnNames);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getColumnsCount(long tableId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getColumnsCount(
-		long companyId, long classNameId, String tableName);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getColumnsCount(
-		long companyId, String className, String tableName);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ExpandoColumn getDefaultTableColumn(
@@ -311,12 +280,6 @@ public interface ExpandoColumnLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<ExpandoColumn> getDefaultTableColumns(
 		long companyId, String className);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getDefaultTableColumnsCount(long companyId, long classNameId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getDefaultTableColumnsCount(long companyId, String className);
 
 	/**
 	 * Returns the expando column with the primary key.
@@ -407,4 +370,4 @@ public interface ExpandoColumnLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1352778454
+// LIFERAY-SERVICE-BUILDER-HASH:668027393

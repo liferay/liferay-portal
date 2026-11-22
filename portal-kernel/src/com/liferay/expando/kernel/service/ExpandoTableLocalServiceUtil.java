@@ -404,12 +404,6 @@ public class ExpandoTableLocalServiceUtil {
 		return getService().updateExpandoTable(expandoTable);
 	}
 
-	public static ExpandoTable updateTable(long tableId, String name)
-		throws PortalException {
-
-		return getService().updateTable(tableId, name);
-	}
-
 	public static ExpandoTableLocalService getService() {
 		return _service;
 	}
@@ -421,4 +415,4 @@ public class ExpandoTableLocalServiceUtil {
 	private static volatile ExpandoTableLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1832626414
+// LIFERAY-SERVICE-BUILDER-HASH:1664331316
