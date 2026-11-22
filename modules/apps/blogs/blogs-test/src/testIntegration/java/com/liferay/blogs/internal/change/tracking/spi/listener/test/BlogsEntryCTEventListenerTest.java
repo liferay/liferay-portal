@@ -23,6 +23,8 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -68,8 +70,14 @@ public class BlogsEntryCTEventListenerTest {
 				ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 		}
 
-		CTCollectionServiceUtil.publishCTCollection(
-			TestPropsValues.getUserId(), ctCollection.getCtCollectionId());
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.portal.json.jabsorb.serializer." +
+					"LiferayJSONDeserializationWhitelist",
+				LoggerTestUtil.OFF)) {
+
+			CTCollectionServiceUtil.publishCTCollection(
+				TestPropsValues.getUserId(), ctCollection.getCtCollectionId());
+		}
 
 		BlogsEntry publishedBlogsEntry = _blogsEntryLocalService.getEntry(
 			blogsEntry.getEntryId());
