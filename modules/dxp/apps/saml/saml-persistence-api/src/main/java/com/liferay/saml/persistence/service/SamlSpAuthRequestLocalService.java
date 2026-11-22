@@ -236,11 +236,6 @@ public interface SamlSpAuthRequestLocalService
 	public SamlSpAuthRequest getSamlSpAuthRequest(long samlSpAuthnRequestId)
 		throws PortalException;
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public SamlSpAuthRequest getSamlSpAuthRequest(
-			String samlIdpEntityId, String samlSpAuthRequestKey)
-		throws PortalException;
-
 	/**
 	 * Returns a range of all the saml sp auth requests.
 	 *
@@ -278,4 +273,4 @@ public interface SamlSpAuthRequestLocalService
 		SamlSpAuthRequest samlSpAuthRequest);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1392957542
+// LIFERAY-SERVICE-BUILDER-HASH:-210244803

@@ -259,14 +259,6 @@ public class SamlSpSessionLocalServiceWrapper
 	}
 
 	@Override
-	public com.liferay.saml.persistence.model.SamlSpSession
-		fetchSamlSpSessionBySessionIndex(long companyId, String sessionIndex) {
-
-		return _samlSpSessionLocalService.fetchSamlSpSessionBySessionIndex(
-			companyId, sessionIndex);
-	}
-
-	@Override
 	public java.util.List<com.liferay.saml.persistence.model.SamlSpSession>
 		fetchSamlSpSessionsBySessionIndex(long companyId, String sessionIndex) {
 
@@ -322,24 +314,6 @@ public class SamlSpSessionLocalServiceWrapper
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _samlSpSessionLocalService.getSamlSpSession(samlSpSessionId);
-	}
-
-	@Override
-	public com.liferay.saml.persistence.model.SamlSpSession
-			getSamlSpSessionByJSessionId(String jSessionId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _samlSpSessionLocalService.getSamlSpSessionByJSessionId(
-			jSessionId);
-	}
-
-	@Override
-	public com.liferay.saml.persistence.model.SamlSpSession
-			getSamlSpSessionBySamlSpSessionKey(String samlSpSessionKey)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _samlSpSessionLocalService.getSamlSpSessionBySamlSpSessionKey(
-			samlSpSessionKey);
 	}
 
 	@Override
@@ -453,4 +427,4 @@ public class SamlSpSessionLocalServiceWrapper
 	private SamlSpSessionLocalService _samlSpSessionLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1701253848
+// LIFERAY-SERVICE-BUILDER-HASH:1443371981

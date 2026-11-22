@@ -235,11 +235,6 @@ public interface SamlSpMessageLocalService
 	public SamlSpMessage getSamlSpMessage(long samlSpMessageId)
 		throws PortalException;
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public SamlSpMessage getSamlSpMessage(
-			String samlIdpEntityId, String samlIdpResponseKey)
-		throws PortalException;
-
 	/**
 	 * Returns a range of all the saml sp messages.
 	 *
@@ -276,4 +271,4 @@ public interface SamlSpMessageLocalService
 	public SamlSpMessage updateSamlSpMessage(SamlSpMessage samlSpMessage);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1941063503
+// LIFERAY-SERVICE-BUILDER-HASH:120524274

@@ -268,11 +268,6 @@ public interface SamlSpIdpConnectionLocalService
 	public List<SamlSpIdpConnection> getSamlSpIdpConnections(
 		long companyId, int start, int end);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<SamlSpIdpConnection> getSamlSpIdpConnections(
-		long companyId, int start, int end,
-		OrderByComparator<SamlSpIdpConnection> orderByComparator);
-
 	/**
 	 * Returns the number of saml sp idp connections.
 	 *
@@ -312,4 +307,4 @@ public interface SamlSpIdpConnectionLocalService
 		SamlSpIdpConnection samlSpIdpConnection);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2105863607
+// LIFERAY-SERVICE-BUILDER-HASH:1721402667

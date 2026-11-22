@@ -230,13 +230,6 @@ public class SamlSpSessionLocalServiceUtil {
 			samlSpSessionKey);
 	}
 
-	public static SamlSpSession fetchSamlSpSessionBySessionIndex(
-		long companyId, String sessionIndex) {
-
-		return getService().fetchSamlSpSessionBySessionIndex(
-			companyId, sessionIndex);
-	}
-
 	public static List<SamlSpSession> fetchSamlSpSessionsBySessionIndex(
 		long companyId, String sessionIndex) {
 
@@ -286,20 +279,6 @@ public class SamlSpSessionLocalServiceUtil {
 		throws PortalException {
 
 		return getService().getSamlSpSession(samlSpSessionId);
-	}
-
-	public static SamlSpSession getSamlSpSessionByJSessionId(String jSessionId)
-		throws PortalException {
-
-		return getService().getSamlSpSessionByJSessionId(jSessionId);
-	}
-
-	public static SamlSpSession getSamlSpSessionBySamlSpSessionKey(
-			String samlSpSessionKey)
-		throws PortalException {
-
-		return getService().getSamlSpSessionBySamlSpSessionKey(
-			samlSpSessionKey);
 	}
 
 	public static SamlSpSession getSamlSpSessionBySessionIndex(
@@ -392,4 +371,4 @@ public class SamlSpSessionLocalServiceUtil {
 			SamlSpSessionLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:730234186
+// LIFERAY-SERVICE-BUILDER-HASH:1913976465

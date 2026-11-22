@@ -308,14 +308,6 @@ public class SamlIdpSpConnectionLocalServiceUtil {
 		return getService().getSamlIdpSpConnections(companyId, start, end);
 	}
 
-	public static List<SamlIdpSpConnection> getSamlIdpSpConnections(
-		long companyId, int start, int end,
-		OrderByComparator<SamlIdpSpConnection> orderByComparator) {
-
-		return getService().getSamlIdpSpConnections(
-			companyId, start, end, orderByComparator);
-	}
-
 	/**
 	 * Returns the number of saml idp sp connections.
 	 *
@@ -378,4 +370,4 @@ public class SamlIdpSpConnectionLocalServiceUtil {
 			SamlIdpSpConnectionLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1386259657
+// LIFERAY-SERVICE-BUILDER-HASH:-1663978092

@@ -316,16 +316,6 @@ public class SamlSpAuthRequestLocalServiceWrapper
 			samlSpAuthnRequestId);
 	}
 
-	@Override
-	public com.liferay.saml.persistence.model.SamlSpAuthRequest
-			getSamlSpAuthRequest(
-				String samlIdpEntityId, String samlSpAuthRequestKey)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _samlSpAuthRequestLocalService.getSamlSpAuthRequest(
-			samlIdpEntityId, samlSpAuthRequestKey);
-	}
-
 	/**
 	 * Returns a range of all the saml sp auth requests.
 	 *
@@ -394,4 +384,4 @@ public class SamlSpAuthRequestLocalServiceWrapper
 	private SamlSpAuthRequestLocalService _samlSpAuthRequestLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1177573966
+// LIFERAY-SERVICE-BUILDER-HASH:-1378356746

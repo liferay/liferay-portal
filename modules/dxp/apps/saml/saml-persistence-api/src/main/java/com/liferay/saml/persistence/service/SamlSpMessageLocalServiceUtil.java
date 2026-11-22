@@ -268,14 +268,6 @@ public class SamlSpMessageLocalServiceUtil {
 		return getService().getSamlSpMessage(samlSpMessageId);
 	}
 
-	public static SamlSpMessage getSamlSpMessage(
-			String samlIdpEntityId, String samlIdpResponseKey)
-		throws PortalException {
-
-		return getService().getSamlSpMessage(
-			samlIdpEntityId, samlIdpResponseKey);
-	}
-
 	/**
 	 * Returns a range of all the saml sp messages.
 	 *
@@ -326,4 +318,4 @@ public class SamlSpMessageLocalServiceUtil {
 			SamlSpMessageLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1352081650
+// LIFERAY-SERVICE-BUILDER-HASH:-949230933

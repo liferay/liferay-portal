@@ -227,10 +227,6 @@ public interface SamlIdpSsoSessionLocalService
 	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
 		throws PortalException;
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public SamlIdpSsoSession getSamlIdpSso(String samlIdpSsoSessionKey)
-		throws PortalException;
-
 	/**
 	 * Returns the saml idp sso session with the primary key.
 	 *
@@ -282,4 +278,4 @@ public interface SamlIdpSsoSessionLocalService
 		SamlIdpSsoSession samlIdpSsoSession);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:792912482
+// LIFERAY-SERVICE-BUILDER-HASH:172262981

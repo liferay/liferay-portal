@@ -264,12 +264,6 @@ public class SamlIdpSsoSessionLocalServiceUtil {
 		return getService().getPersistedModel(primaryKeyObj);
 	}
 
-	public static SamlIdpSsoSession getSamlIdpSso(String samlIdpSsoSessionKey)
-		throws PortalException {
-
-		return getService().getSamlIdpSso(samlIdpSsoSessionKey);
-	}
-
 	/**
 	 * Returns the saml idp sso session with the primary key.
 	 *
@@ -343,4 +337,4 @@ public class SamlIdpSsoSessionLocalServiceUtil {
 			SamlIdpSsoSessionLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1158652530
+// LIFERAY-SERVICE-BUILDER-HASH:-1625732648

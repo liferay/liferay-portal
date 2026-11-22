@@ -276,14 +276,6 @@ public class SamlSpAuthRequestLocalServiceUtil {
 		return getService().getSamlSpAuthRequest(samlSpAuthnRequestId);
 	}
 
-	public static SamlSpAuthRequest getSamlSpAuthRequest(
-			String samlIdpEntityId, String samlSpAuthRequestKey)
-		throws PortalException {
-
-		return getService().getSamlSpAuthRequest(
-			samlIdpEntityId, samlSpAuthRequestKey);
-	}
-
 	/**
 	 * Returns a range of all the saml sp auth requests.
 	 *
@@ -336,4 +328,4 @@ public class SamlSpAuthRequestLocalServiceUtil {
 			SamlSpAuthRequestLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1774444755
+// LIFERAY-SERVICE-BUILDER-HASH:-1541856422

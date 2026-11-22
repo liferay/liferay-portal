@@ -358,19 +358,6 @@ public class SamlSpIdpConnectionLocalServiceWrapper
 			companyId, start, end);
 	}
 
-	@Override
-	public java.util.List
-		<com.liferay.saml.persistence.model.SamlSpIdpConnection>
-			getSamlSpIdpConnections(
-				long companyId, int start, int end,
-				com.liferay.portal.kernel.util.OrderByComparator
-					<com.liferay.saml.persistence.model.SamlSpIdpConnection>
-						orderByComparator) {
-
-		return _samlSpIdpConnectionLocalService.getSamlSpIdpConnections(
-			companyId, start, end, orderByComparator);
-	}
-
 	/**
 	 * Returns the number of saml sp idp connections.
 	 *
@@ -455,4 +442,4 @@ public class SamlSpIdpConnectionLocalServiceWrapper
 	private SamlSpIdpConnectionLocalService _samlSpIdpConnectionLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-264460628
+// LIFERAY-SERVICE-BUILDER-HASH:-841678588

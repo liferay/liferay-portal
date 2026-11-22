@@ -301,15 +301,6 @@ public class SamlSpMessageLocalServiceWrapper
 		return _samlSpMessageLocalService.getSamlSpMessage(samlSpMessageId);
 	}
 
-	@Override
-	public com.liferay.saml.persistence.model.SamlSpMessage getSamlSpMessage(
-			String samlIdpEntityId, String samlIdpResponseKey)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _samlSpMessageLocalService.getSamlSpMessage(
-			samlIdpEntityId, samlIdpResponseKey);
-	}
-
 	/**
 	 * Returns a range of all the saml sp messages.
 	 *
@@ -375,4 +366,4 @@ public class SamlSpMessageLocalServiceWrapper
 	private SamlSpMessageLocalService _samlSpMessageLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:776497597
+// LIFERAY-SERVICE-BUILDER-HASH:1156258873

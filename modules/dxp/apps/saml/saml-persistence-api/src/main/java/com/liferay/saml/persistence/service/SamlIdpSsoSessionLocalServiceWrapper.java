@@ -305,15 +305,6 @@ public class SamlIdpSsoSessionLocalServiceWrapper
 		return _samlIdpSsoSessionLocalService.getPersistedModel(primaryKeyObj);
 	}
 
-	@Override
-	public com.liferay.saml.persistence.model.SamlIdpSsoSession getSamlIdpSso(
-			String samlIdpSsoSessionKey)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _samlIdpSsoSessionLocalService.getSamlIdpSso(
-			samlIdpSsoSessionKey);
-	}
-
 	/**
 	 * Returns the saml idp sso session with the primary key.
 	 *
@@ -407,4 +398,4 @@ public class SamlIdpSsoSessionLocalServiceWrapper
 	private SamlIdpSsoSessionLocalService _samlIdpSsoSessionLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1548077031
+// LIFERAY-SERVICE-BUILDER-HASH:-1673058066

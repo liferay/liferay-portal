@@ -207,10 +207,6 @@ public interface SamlSpSessionLocalService
 		String samlSpSessionKey);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public SamlSpSession fetchSamlSpSessionBySessionIndex(
-		long companyId, String sessionIndex);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<SamlSpSession> fetchSamlSpSessionsBySessionIndex(
 		long companyId, String sessionIndex);
 
@@ -244,15 +240,6 @@ public interface SamlSpSessionLocalService
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public SamlSpSession getSamlSpSession(long samlSpSessionId)
-		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public SamlSpSession getSamlSpSessionByJSessionId(String jSessionId)
-		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public SamlSpSession getSamlSpSessionBySamlSpSessionKey(
-			String samlSpSessionKey)
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -314,4 +301,4 @@ public interface SamlSpSessionLocalService
 	public SamlSpSession updateSamlSpSession(SamlSpSession samlSpSession);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1988507534
+// LIFERAY-SERVICE-BUILDER-HASH:-902459965
