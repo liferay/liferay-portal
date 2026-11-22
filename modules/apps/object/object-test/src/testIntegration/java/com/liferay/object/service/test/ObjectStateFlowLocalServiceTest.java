@@ -30,6 +30,7 @@ import com.liferay.object.service.ObjectStateFlowLocalService;
 import com.liferay.object.service.ObjectStateLocalService;
 import com.liferay.object.service.ObjectStateTransitionLocalService;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
+import com.liferay.object.test.util.ObjectStateTransitionTestUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -344,8 +345,9 @@ public class ObjectStateFlowLocalServiceTest {
 
 		for (ObjectState objectState : objectStates) {
 			objectState.setObjectStateTransitions(
-				ObjectDefinitionTestUtil.getObjectStateObjectStateTransitions(
-					objectState.getObjectStateId()));
+				ObjectStateTransitionTestUtil.
+					getObjectStateObjectStateTransitions(
+						objectState.getObjectStateId()));
 		}
 
 		_objectStateFlow.setObjectStates(objectStates);
@@ -357,8 +359,9 @@ public class ObjectStateFlowLocalServiceTest {
 
 		for (ObjectState objectState : objectStates) {
 			List<ObjectStateTransition> objectStateTransitions =
-				ObjectDefinitionTestUtil.getObjectStateObjectStateTransitions(
-					objectState.getObjectStateId());
+				ObjectStateTransitionTestUtil.
+					getObjectStateObjectStateTransitions(
+						objectState.getObjectStateId());
 
 			if (objectStateTransitions.isEmpty()) {
 				continue;
@@ -457,8 +460,9 @@ public class ObjectStateFlowLocalServiceTest {
 			List<ObjectStateTransition> objectStateTransitions1 =
 				objectState1.getObjectStateTransitions();
 			List<ObjectStateTransition> objectStateTransitions2 =
-				ObjectDefinitionTestUtil.getObjectStateObjectStateTransitions(
-					objectState2.getObjectStateId());
+				ObjectStateTransitionTestUtil.
+					getObjectStateObjectStateTransitions(
+						objectState2.getObjectStateId());
 
 			Assert.assertEquals(
 				objectStateTransitions1.toString(),

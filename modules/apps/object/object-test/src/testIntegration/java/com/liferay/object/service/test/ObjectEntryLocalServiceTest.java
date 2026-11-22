@@ -145,6 +145,7 @@ import com.liferay.object.test.util.EncryptedObjectFieldTestUtil;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.object.test.util.ObjectEntryFolderTestUtil;
 import com.liferay.object.test.util.ObjectRelationshipTestUtil;
+import com.liferay.object.test.util.ObjectStateTransitionTestUtil;
 import com.liferay.object.test.util.TreeTestUtil;
 import com.liferay.object.tree.Node;
 import com.liferay.object.tree.Tree;
@@ -13209,8 +13210,9 @@ public class ObjectEntryLocalServiceTest {
 
 		for (ObjectState objectState : objectStates) {
 			List<ObjectStateTransition> objectStateTransitions =
-				ObjectDefinitionTestUtil.getObjectStateObjectStateTransitions(
-					objectState.getObjectStateId());
+				ObjectStateTransitionTestUtil.
+					getObjectStateObjectStateTransitions(
+						objectState.getObjectStateId());
 
 			objectState.setObjectStateTransitions(
 				Collections.singletonList(objectStateTransitions.get(0)));
@@ -13792,8 +13794,9 @@ public class ObjectEntryLocalServiceTest {
 
 		for (ObjectState objectState : objectStates) {
 			List<ObjectStateTransition> objectStateTransitions =
-				ObjectDefinitionTestUtil.getObjectStateObjectStateTransitions(
-					objectState.getObjectStateId());
+				ObjectStateTransitionTestUtil.
+					getObjectStateObjectStateTransitions(
+						objectState.getObjectStateId());
 
 			objectState.setObjectStateTransitions(
 				Collections.singletonList(objectStateTransitions.get(0)));

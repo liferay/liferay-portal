@@ -110,6 +110,7 @@ import com.liferay.object.service.test.system.TestSystemObjectDefinitionManager;
 import com.liferay.object.system.BaseSystemObjectDefinitionManager;
 import com.liferay.object.system.JaxRsApplicationDescriptor;
 import com.liferay.object.system.SystemObjectDefinitionManager;
+import com.liferay.object.test.util.ObjectDefinitionSettingTestUtil;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.object.test.util.ObjectRelationshipTestUtil;
 import com.liferay.object.test.util.TreeTestUtil;
@@ -2907,7 +2908,7 @@ public class ObjectDefinitionLocalServiceTest {
 			StringPool.TRUE);
 
 		Assert.assertNotNull(
-			ObjectDefinitionTestUtil.getObjectDefinitionSetting(
+			ObjectDefinitionSettingTestUtil.getObjectDefinitionSetting(
 				objectDefinition.getObjectDefinitionId(),
 				ObjectDefinitionSettingConstants.NAME_ACCEPT_ALL_GROUPS));
 
