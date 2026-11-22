@@ -98,8 +98,20 @@ testWithoutFeatureFlag(
 			'Virtual Instance Scope'
 		);
 
+		const menubar = page
+			.locator('div')
+			.filter({hasText: 'Virtual Instance Scope'})
+			.locator('+ div')
+			.getByRole('menubar');
+
 		await expect(
-			page.getByRole('menuitem', {exact: true, name: 'Audit'})
+			menubar.getByRole('menuitem', {
+				exact: true,
+				name: 'File System Audit Message Processor',
+			})
+		).toBeVisible();
+		await expect(
+			menubar.getByRole('menuitem', {exact: true, name: 'Audit'})
 		).toBeHidden();
 
 		await systemSettingsPage.goToSystemSetting('Audit', 'Audit');
