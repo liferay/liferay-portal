@@ -248,12 +248,6 @@ public class AuditEventLocalServiceUtil {
 	}
 
 	public static List<AuditEvent> getAuditEvents(
-		long companyId, int start, int end) {
-
-		return getService().getAuditEvents(companyId, start, end);
-	}
-
-	public static List<AuditEvent> getAuditEvents(
 		long companyId, int start, int end,
 		OrderByComparator<AuditEvent> orderByComparator) {
 
@@ -368,4 +362,4 @@ public class AuditEventLocalServiceUtil {
 			AuditEventLocalServiceUtil.class, AuditEventLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1872448875
+// LIFERAY-SERVICE-BUILDER-HASH:1374424710

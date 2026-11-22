@@ -289,14 +289,6 @@ public class AuditEventLocalServiceWrapper
 	@Override
 	public java.util.List
 		<com.liferay.portal.security.audit.storage.model.AuditEvent>
-			getAuditEvents(long companyId, int start, int end) {
-
-		return _auditEventLocalService.getAuditEvents(companyId, start, end);
-	}
-
-	@Override
-	public java.util.List
-		<com.liferay.portal.security.audit.storage.model.AuditEvent>
 			getAuditEvents(
 				long companyId, int start, int end,
 				com.liferay.portal.kernel.util.OrderByComparator
@@ -444,4 +436,4 @@ public class AuditEventLocalServiceWrapper
 	private AuditEventLocalService _auditEventLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:473000766
+// LIFERAY-SERVICE-BUILDER-HASH:1098962820

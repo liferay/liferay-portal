@@ -225,9 +225,6 @@ public interface AuditEventLocalService
 	public List<AuditEvent> getAuditEvents(int start, int end);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<AuditEvent> getAuditEvents(long companyId, int start, int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<AuditEvent> getAuditEvents(
 		long companyId, int start, int end,
 		OrderByComparator<AuditEvent> orderByComparator);
@@ -300,4 +297,4 @@ public interface AuditEventLocalService
 	public AuditEvent updateAuditEvent(AuditEvent auditEvent);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1681841474
+// LIFERAY-SERVICE-BUILDER-HASH:-1345645690
