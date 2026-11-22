@@ -61,19 +61,6 @@ create table JournalArticleResource (
 	primary key (resourcePrimKey, ctCollectionId)
 );
 
-create table JournalContentSearch (
-	mvccVersion LONG default 0 not null,
-	ctCollectionId LONG default 0 not null,
-	contentSearchId LONG not null,
-	groupId LONG,
-	companyId LONG,
-	privateLayout BOOLEAN,
-	layoutId LONG,
-	portletId VARCHAR(200) null,
-	articleId VARCHAR(75) null,
-	primary key (contentSearchId, ctCollectionId)
-);
-
 create table JournalFeed (
 	mvccVersion LONG default 0 not null,
 	ctCollectionId LONG default 0 not null,

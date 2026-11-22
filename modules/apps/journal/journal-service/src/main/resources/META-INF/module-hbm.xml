@@ -5,7 +5,6 @@
 	<import class="com.liferay.journal.model.JournalArticle" />
 	<import class="com.liferay.journal.model.JournalArticleLocalization" />
 	<import class="com.liferay.journal.model.JournalArticleResource" />
-	<import class="com.liferay.journal.model.JournalContentSearch" />
 	<import class="com.liferay.journal.model.JournalFeed" />
 	<import class="com.liferay.journal.model.JournalFolder" />
 	<class dynamic-update="true" name="com.liferay.journal.model.impl.JournalArticleImpl" table="JournalArticle">
@@ -69,19 +68,6 @@
 		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" column="uuid_" name="uuid" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="groupId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="companyId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
-		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="articleId" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-	</class>
-	<class dynamic-update="true" name="com.liferay.journal.model.impl.JournalContentSearchImpl" table="JournalContentSearch">
-		<id access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="contentSearchId" type="long">
-			<generator class="assigned" />
-		</id>
-		<version access="com.liferay.portal.dao.orm.hibernate.PrivateFieldPropertyAccessor" name="mvccVersion" type="long" />
-		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="ctCollectionId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
-		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="groupId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
-		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="companyId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
-		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="privateLayout" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
-		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="layoutId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
-		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="portletId" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="articleId" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
 	<class dynamic-update="true" name="com.liferay.journal.model.impl.JournalFeedImpl" table="JournalFeed">

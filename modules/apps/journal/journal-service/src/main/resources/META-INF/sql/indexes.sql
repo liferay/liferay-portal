@@ -25,8 +25,6 @@ create unique index IX_9B44D13C on JournalArticleLocalization (companyId, articl
 create unique index IX_57129BA8 on JournalArticleResource (groupId, articleId[$COLUMN_LENGTH:75$], ctCollectionId);
 create unique index IX_37A8A767 on JournalArticleResource (uuid_[$COLUMN_LENGTH:75$], groupId, ctCollectionId);
 
-create unique index IX_49A6FA16 on JournalContentSearch (groupId, privateLayout, layoutId, portletId[$COLUMN_LENGTH:200$], articleId[$COLUMN_LENGTH:75$], ctCollectionId);
-
 create unique index IX_53294B1A on JournalFeed (groupId, feedId[$COLUMN_LENGTH:75$], ctCollectionId);
 create unique index IX_800F33AF on JournalFeed (uuid_[$COLUMN_LENGTH:75$], groupId, ctCollectionId);
 
