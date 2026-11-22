@@ -155,6 +155,10 @@ definition {
 
 		SelectFrame(locator1 = "IFrame#MODAL_BODY");
 
+		if (IsElementNotPresent(key_tableEntry = ${roleTitle}, locator1 = "LexiconTable#TABLE_ENTRY_EXACT_MATCH")) {
+			Search.searchCP(searchTerm = ${roleTitle});
+		}
+
 		if (isSet(permissionsList)) {
 			for (var permissionDefinitionKey : list ${permissionsList}) {
 				ScrollWebElementIntoView(locator1 = "Permissions#${permissionDefinitionKey}");
