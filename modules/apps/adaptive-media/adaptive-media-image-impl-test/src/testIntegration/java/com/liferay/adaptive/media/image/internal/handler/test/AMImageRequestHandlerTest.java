@@ -21,7 +21,6 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.role.RoleConstants;
-import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.FileVersion;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
@@ -34,6 +33,7 @@ import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.BundleContextTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -98,7 +98,8 @@ public class AMImageRequestHandlerTest {
 	@Test
 	public void testHandleRequest() throws Exception {
 		_serviceTrackerMap = ServiceTrackerMapFactory.openSingleValueMap(
-			SystemBundleUtil.getBundleContext(),
+			BundleContextTestUtil.getBundleContext(
+				AMImageRequestHandlerTest.class),
 			(Class<AMRequestHandler<?>>)(Class<?>)AMRequestHandler.class,
 			"adaptive.media.handler.pattern");
 
@@ -156,7 +157,8 @@ public class AMImageRequestHandlerTest {
 	@TestInfo("LPD-116066")
 	public void testHandleRequestWithDraftFileVersion() throws Exception {
 		_serviceTrackerMap = ServiceTrackerMapFactory.openSingleValueMap(
-			SystemBundleUtil.getBundleContext(),
+			BundleContextTestUtil.getBundleContext(
+				AMImageRequestHandlerTest.class),
 			(Class<AMRequestHandler<?>>)(Class<?>)AMRequestHandler.class,
 			"adaptive.media.handler.pattern");
 
