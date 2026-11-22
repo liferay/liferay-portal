@@ -42,7 +42,15 @@
 					}
 				],
 				"name_i18n": {
-					"en_US": "Touchpoints"
+					"en_US": "Touchpoints",
+					"es_AR": "Puntos de contacto",
+					"es_CO": "Puntos de contacto",
+					"es_ES": "Puntos de contacto",
+					"es_MX": "Puntos de contacto",
+					"ja_JP": "タッチ ポイント",
+					"lo_LA": "ຈຸດສຳຜັດ (Touchpoints)",
+					"pt_BR": "Pontos de contato",
+					"pt_PT": "Pontos de contato"
 				},
 				"title": "Touchpoints",
 				"type": "node"
@@ -73,7 +81,15 @@
 					}
 				],
 				"name_i18n": {
-					"en_US": "People"
+					"en_US": "People",
+					"es_AR": "Personas",
+					"es_CO": "Personas",
+					"es_ES": "Personas",
+					"es_MX": "Personas",
+					"ja_JP": "ユーザー",
+					"lo_LA": "ຄົນ/ບຸກຄົນ",
+					"pt_BR": "Pessoas",
+					"pt_PT": "Pessoas"
 				},
 				"title": "People",
 				"type": "node"
@@ -90,7 +106,15 @@
 					}
 				],
 				"name_i18n": {
-					"en_US": "Optimize"
+					"en_US": "Optimize",
+					"es_AR": "Optimizar",
+					"es_CO": "Optimizar",
+					"es_ES": "Optimizar",
+					"es_MX": "Optimizar",
+					"ja_JP": "最適化",
+					"lo_LA": "ປັບໃຫ້ເໝາະສົມ",
+					"pt_BR": "Otimizar",
+					"pt_PT": "Otimizar"
 				},
 				"title": "Optimize",
 				"type": "node"
@@ -120,7 +144,15 @@
 						"externalReferenceCode": "LDPSETTINGSNAVIGATION3",
 						"friendlyURL": "/tokens",
 						"name_i18n": {
-							"en_US": "APIs"
+							"en_US": "APIs",
+							"es_AR": "API",
+							"es_CO": "API",
+							"es_ES": "API",
+							"es_MX": "API",
+							"ja_JP": "API",
+							"lo_LA": "APIs",
+							"pt_BR": "APIs",
+							"pt_PT": "APIs"
 						},
 						"privateLayout": false,
 						"type": "layout",
@@ -130,19 +162,23 @@
 						"displayIcon": "books",
 						"externalReferenceCode": "LDPSETTINGSNAVIGATION4",
 						"friendlyURL": "/definitions",
-						"name_i18n": {
-							"en_US": "Definitions"
-						},
 						"privateLayout": false,
-						"type": "layout",
-						"useCustomName": true
+						"type": "layout"
 					},
 					{
 						"displayIcon": "data-privacy",
 						"externalReferenceCode": "LDPSETTINGSNAVIGATION5",
 						"friendlyURL": "/data-privacy",
 						"name_i18n": {
-							"en_US": "Data Control & Privacy"
+							"en_US": "Data Control & Privacy",
+							"es_AR": "Privacidad y control de datos",
+							"es_CO": "Privacidad y control de datos",
+							"es_ES": "Privacidad y control de datos",
+							"es_MX": "Privacidad y control de datos",
+							"ja_JP": "データ管理とプライバシー",
+							"lo_LA": "ການຄວບຄຸມຂໍ້ມູນ ແລະ ຄວາມເປັນສ່ວນຕົວ",
+							"pt_BR": "Controle e Privacidade de Dados",
+							"pt_PT": "Controle e Privacidade de Dados"
 						},
 						"privateLayout": false,
 						"type": "layout",
@@ -152,27 +188,27 @@
 						"displayIcon": "database",
 						"externalReferenceCode": "LDPSETTINGSNAVIGATION6",
 						"friendlyURL": "/data-sources",
-						"name_i18n": {
-							"en_US": "Data Sources"
-						},
 						"privateLayout": false,
-						"type": "layout",
-						"useCustomName": true
+						"type": "layout"
 					},
 					{
 						"displayIcon": "star",
 						"externalReferenceCode": "LDPSETTINGSNAVIGATION7",
 						"friendlyURL": "/recommendations",
-						"name_i18n": {
-							"en_US": "Recommendations"
-						},
 						"privateLayout": false,
-						"type": "layout",
-						"useCustomName": true
+						"type": "layout"
 					}
 				],
 				"name_i18n": {
-					"en_US": "Workspace Data"
+					"en_US": "Workspace Data",
+					"es_AR": "Datos del espacio de trabajo",
+					"es_CO": "Datos del espacio de trabajo",
+					"es_ES": "Datos del espacio de trabajo",
+					"es_MX": "Datos del espacio de trabajo",
+					"ja_JP": "ワークスペース データ",
+					"lo_LA": "ຂໍ້ມູນພື້ນທີ່ເຮັດວຽກ",
+					"pt_BR": "Dados de espaço de trabalho",
+					"pt_PT": "Dados de espaço de trabalho"
 				},
 				"title": "Workspace Data",
 				"type": "node"
@@ -185,7 +221,15 @@
 						"externalReferenceCode": "LDPSETTINGSNAVIGATION9",
 						"friendlyURL": "/users",
 						"name_i18n": {
-							"en_US": "User Management"
+							"en_US": "User Management",
+							"es_AR": "Administración de usuarios",
+							"es_CO": "Administración de usuarios",
+							"es_ES": "Administración de usuarios",
+							"es_MX": "Administración de usuarios",
+							"ja_JP": "ユーザー管理",
+							"lo_LA": "ການຈັດການຜູ້ໃຊ້",
+							"pt_BR": "Gestão de Usuários",
+							"pt_PT": "Gestão de Usuários"
 						},
 						"privateLayout": false,
 						"type": "layout",
@@ -195,19 +239,16 @@
 						"displayIcon": "page",
 						"externalReferenceCode": "LDPSETTINGSNAVIGATION10",
 						"friendlyURL": "/properties",
-						"name_i18n": {
-							"en_US": "Properties"
-						},
 						"privateLayout": false,
-						"type": "layout",
-						"useCustomName": true
+						"type": "layout"
 					},
 					{
 						"displayIcon": "chart-bar",
 						"externalReferenceCode": "LDPSETTINGSNAVIGATION11",
 						"friendlyURL": "/usage",
 						"name_i18n": {
-							"en_US": "Subscription & Usage"
+							"en_US": "Subscription & Usage",
+							"lo_LA": "ການສະໝັກໃຊ້ ແລະ ການນຳໃຊ້"
 						},
 						"privateLayout": false,
 						"type": "layout",
@@ -218,7 +259,15 @@
 						"externalReferenceCode": "LDPSETTINGSNAVIGATION12",
 						"friendlyURL": "/workspace-settings",
 						"name_i18n": {
-							"en_US": "Workspace"
+							"en_US": "Workspace",
+							"es_AR": "Espacio de trabajo",
+							"es_CO": "Espacio de trabajo",
+							"es_ES": "Espacio de trabajo",
+							"es_MX": "Espacio de trabajo",
+							"ja_JP": "ワークスペース",
+							"lo_LA": "ພື້ນທີ່ເຮັດວຽກ",
+							"pt_BR": "Espaço de Trabalho",
+							"pt_PT": "Espaço de Trabalho"
 						},
 						"privateLayout": false,
 						"type": "layout",
@@ -226,7 +275,15 @@
 					}
 				],
 				"name_i18n": {
-					"en_US": "Workspace Settings"
+					"en_US": "Workspace Settings",
+					"es_AR": "Ajustes del espacio de trabajo",
+					"es_CO": "Ajustes del espacio de trabajo",
+					"es_ES": "Ajustes del espacio de trabajo",
+					"es_MX": "Ajustes del espacio de trabajo",
+					"ja_JP": "ワークスペース設定",
+					"lo_LA": "ການຕັ້ງຄ່າພື້ນທີ່ເຮັດວຽກ",
+					"pt_BR": "Configurações do espaço de trabalho",
+					"pt_PT": "Configurações do espaço de trabalho"
 				},
 				"title": "Workspace Settings",
 				"type": "node"
