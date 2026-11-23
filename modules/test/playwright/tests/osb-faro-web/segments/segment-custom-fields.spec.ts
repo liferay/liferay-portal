@@ -221,6 +221,7 @@ test(
 			await addSegmentField({
 				criterionName: customFieldName,
 				criterionType: 'Individual',
+				customField: true,
 				page,
 			});
 
