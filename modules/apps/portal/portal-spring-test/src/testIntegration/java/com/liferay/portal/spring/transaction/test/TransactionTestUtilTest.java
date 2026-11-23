@@ -144,19 +144,19 @@ public class TransactionTestUtilTest {
 
 			Assert.assertEquals(logEntries.toString(), 0, logEntries.size());
 
-			Error error = new Error();
+			Error expectedError = new Error();
 
 			try {
 				TransactionTestUtil.invoke(
 					ploEntryPersistence,
 					curPLOEntryPersistence -> {
-						throw error;
+						throw expectedError;
 					});
 
 				Assert.fail();
 			}
-			catch (Exception exception) {
-				Assert.assertSame(error, exception.getCause());
+			catch (Error error) {
+				Assert.assertSame(expectedError, error);
 			}
 		}
 		finally {
