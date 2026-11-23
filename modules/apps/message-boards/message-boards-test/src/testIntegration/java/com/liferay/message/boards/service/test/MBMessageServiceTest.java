@@ -285,10 +285,10 @@ public class MBMessageServiceTest {
 	@Test
 	@TestInfo("LPD-115514")
 	public void testGetChildMessages() throws Exception {
-		MBMessage mbMessage = _addMessageWithChildMessages();
+		MBMessage message = _addMessage();
 
 		List<MBMessage> childMessages = MBMessageServiceUtil.getChildMessages(
-			mbMessage.getMessageId(), false,
+			message.getMessageId(), false,
 			new QueryDefinition<>(WorkflowConstants.STATUS_ANY));
 
 		Assert.assertEquals(childMessages.toString(), 2, childMessages.size());
@@ -299,7 +299,7 @@ public class MBMessageServiceTest {
 				user, PermissionCheckerFactoryUtil.create(user))) {
 
 			childMessages = MBMessageServiceUtil.getChildMessages(
-				mbMessage.getMessageId(), false,
+				message.getMessageId(), false,
 				new QueryDefinition<>(WorkflowConstants.STATUS_ANY));
 
 			Assert.assertEquals(
@@ -326,13 +326,13 @@ public class MBMessageServiceTest {
 				Assert.assertThrows(
 					PrincipalException.MustHavePermission.class,
 					() -> MBMessageServiceUtil.getChildMessages(
-						mbMessage.getMessageId(), false,
+						message.getMessageId(), false,
 						new QueryDefinition<>(WorkflowConstants.STATUS_ANY)));
 
 			Assert.assertArrayEquals(
 				new String[] {ActionKeys.VIEW}, mustHavePermission.actionId);
 			Assert.assertEquals(
-				mbMessage.getMessageId(), mustHavePermission.resourceId);
+				message.getMessageId(), mustHavePermission.resourceId);
 			Assert.assertEquals(
 				MBMessage.class.getName(), mustHavePermission.resourceName);
 		}
@@ -341,12 +341,12 @@ public class MBMessageServiceTest {
 	@Test
 	@TestInfo("LPD-115514")
 	public void testGetChildMessagesCount() throws Exception {
-		MBMessage mbMessage = _addMessageWithChildMessages();
+		MBMessage message = _addMessage();
 
 		Assert.assertEquals(
 			2,
 			MBMessageServiceUtil.getChildMessagesCount(
-				mbMessage.getMessageId(), false,
+				message.getMessageId(), false,
 				new QueryDefinition<>(WorkflowConstants.STATUS_ANY)));
 
 		User user = _users[0];
@@ -357,7 +357,7 @@ public class MBMessageServiceTest {
 			Assert.assertEquals(
 				1,
 				MBMessageServiceUtil.getChildMessagesCount(
-					mbMessage.getMessageId(), false,
+					message.getMessageId(), false,
 					new QueryDefinition<>(WorkflowConstants.STATUS_ANY)));
 		}
 
@@ -376,13 +376,13 @@ public class MBMessageServiceTest {
 				Assert.assertThrows(
 					PrincipalException.MustHavePermission.class,
 					() -> MBMessageServiceUtil.getChildMessagesCount(
-						mbMessage.getMessageId(), false,
+						message.getMessageId(), false,
 						new QueryDefinition<>(WorkflowConstants.STATUS_ANY)));
 
 			Assert.assertArrayEquals(
 				new String[] {ActionKeys.VIEW}, mustHavePermission.actionId);
 			Assert.assertEquals(
-				mbMessage.getMessageId(), mustHavePermission.resourceId);
+				message.getMessageId(), mustHavePermission.resourceId);
 			Assert.assertEquals(
 				MBMessage.class.getName(), mustHavePermission.resourceName);
 		}
@@ -391,11 +391,11 @@ public class MBMessageServiceTest {
 	@Test
 	@TestInfo("LPD-116228")
 	public void testGetThreadMessages() throws Exception {
-		MBMessage mbMessage = _addMessageWithChildMessages();
+		MBMessage message = _addMessage();
 
 		List<MBMessage> threadMessages = MBMessageServiceUtil.getThreadMessages(
 			_group.getGroupId(), _category.getCategoryId(),
-			mbMessage.getThreadId(), WorkflowConstants.STATUS_ANY,
+			message.getThreadId(), WorkflowConstants.STATUS_ANY,
 			QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 
 		Assert.assertEquals(
@@ -405,14 +405,14 @@ public class MBMessageServiceTest {
 			NoSuchThreadException.class,
 			() -> MBMessageServiceUtil.getThreadMessages(
 				TestPropsValues.getGroupId(), _category.getCategoryId(),
-				mbMessage.getThreadId(), WorkflowConstants.STATUS_ANY,
+				message.getThreadId(), WorkflowConstants.STATUS_ANY,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS));
 		Assert.assertThrows(
 			NoSuchThreadException.class,
 			() -> MBMessageServiceUtil.getThreadMessages(
 				_group.getGroupId(),
 				MBCategoryConstants.DEFAULT_PARENT_CATEGORY_ID,
-				mbMessage.getThreadId(), WorkflowConstants.STATUS_ANY,
+				message.getThreadId(), WorkflowConstants.STATUS_ANY,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS));
 
 		User user = _users[0];
@@ -422,7 +422,7 @@ public class MBMessageServiceTest {
 
 			threadMessages = MBMessageServiceUtil.getThreadMessages(
 				_group.getGroupId(), _category.getCategoryId(),
-				mbMessage.getThreadId(), WorkflowConstants.STATUS_ANY,
+				message.getThreadId(), WorkflowConstants.STATUS_ANY,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 
 			Assert.assertEquals(
@@ -436,7 +436,7 @@ public class MBMessageServiceTest {
 
 			threadMessages = MBMessageServiceUtil.getThreadMessages(
 				_group.getGroupId(), _category.getCategoryId(),
-				mbMessage.getThreadId(), WorkflowConstants.STATUS_DRAFT,
+				message.getThreadId(), WorkflowConstants.STATUS_DRAFT,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 
 			Assert.assertEquals(
@@ -453,13 +453,13 @@ public class MBMessageServiceTest {
 					PrincipalException.MustHavePermission.class,
 					() -> MBMessageServiceUtil.getThreadMessages(
 						_group.getGroupId(), _category.getCategoryId(),
-						mbMessage.getThreadId(), WorkflowConstants.STATUS_ANY,
+						message.getThreadId(), WorkflowConstants.STATUS_ANY,
 						QueryUtil.ALL_POS, QueryUtil.ALL_POS));
 
 			Assert.assertArrayEquals(
 				new String[] {ActionKeys.VIEW}, mustHavePermission.actionId);
 			Assert.assertEquals(
-				mbMessage.getMessageId(), mustHavePermission.resourceId);
+				message.getMessageId(), mustHavePermission.resourceId);
 			Assert.assertEquals(
 				MBMessage.class.getName(), mustHavePermission.resourceName);
 		}
@@ -468,25 +468,25 @@ public class MBMessageServiceTest {
 	@Test
 	@TestInfo("LPD-116228")
 	public void testGetThreadMessagesCount() throws Exception {
-		MBMessage mbMessage = _addMessageWithChildMessages();
+		MBMessage message = _addMessage();
 
 		Assert.assertEquals(
 			3,
 			MBMessageServiceUtil.getThreadMessagesCount(
 				_group.getGroupId(), _category.getCategoryId(),
-				mbMessage.getThreadId(), WorkflowConstants.STATUS_ANY));
+				message.getThreadId(), WorkflowConstants.STATUS_ANY));
 
 		Assert.assertThrows(
 			NoSuchThreadException.class,
 			() -> MBMessageServiceUtil.getThreadMessagesCount(
 				TestPropsValues.getGroupId(), _category.getCategoryId(),
-				mbMessage.getThreadId(), WorkflowConstants.STATUS_ANY));
+				message.getThreadId(), WorkflowConstants.STATUS_ANY));
 		Assert.assertThrows(
 			NoSuchThreadException.class,
 			() -> MBMessageServiceUtil.getThreadMessagesCount(
 				_group.getGroupId(),
 				MBCategoryConstants.DEFAULT_PARENT_CATEGORY_ID,
-				mbMessage.getThreadId(), WorkflowConstants.STATUS_ANY));
+				message.getThreadId(), WorkflowConstants.STATUS_ANY));
 
 		User user = _users[0];
 
@@ -497,12 +497,12 @@ public class MBMessageServiceTest {
 				2,
 				MBMessageServiceUtil.getThreadMessagesCount(
 					_group.getGroupId(), _category.getCategoryId(),
-					mbMessage.getThreadId(), WorkflowConstants.STATUS_ANY));
+					message.getThreadId(), WorkflowConstants.STATUS_ANY));
 			Assert.assertEquals(
 				2,
 				MBMessageServiceUtil.getThreadMessagesCount(
 					_group.getGroupId(), _category.getCategoryId(),
-					mbMessage.getThreadId(), WorkflowConstants.STATUS_DRAFT));
+					message.getThreadId(), WorkflowConstants.STATUS_DRAFT));
 		}
 
 		_user = UserTestUtil.addUser();
@@ -515,42 +515,42 @@ public class MBMessageServiceTest {
 					PrincipalException.MustHavePermission.class,
 					() -> MBMessageServiceUtil.getThreadMessagesCount(
 						_group.getGroupId(), _category.getCategoryId(),
-						mbMessage.getThreadId(), WorkflowConstants.STATUS_ANY));
+						message.getThreadId(), WorkflowConstants.STATUS_ANY));
 
 			Assert.assertArrayEquals(
 				new String[] {ActionKeys.VIEW}, mustHavePermission.actionId);
 			Assert.assertEquals(
-				mbMessage.getMessageId(), mustHavePermission.resourceId);
+				message.getMessageId(), mustHavePermission.resourceId);
 			Assert.assertEquals(
 				MBMessage.class.getName(), mustHavePermission.resourceName);
 		}
 	}
 
-	private MBMessage _addMessageWithChildMessages() throws Exception {
+	private MBMessage _addMessage() throws Exception {
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId());
 
 		serviceContext.setAddGuestPermissions(false);
 
-		MBMessage mbMessage = MBMessageServiceUtil.addMessage(
+		MBMessage message = MBMessageServiceUtil.addMessage(
 			_group.getGroupId(), _category.getCategoryId(),
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 			MBMessageConstants.DEFAULT_FORMAT, new ArrayList<>(), false, 0.0,
 			false, serviceContext);
 
 		MBMessageServiceUtil.addMessage(
-			null, mbMessage.getMessageId(), RandomTestUtil.randomString(),
+			null, message.getMessageId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), MBMessageConstants.DEFAULT_FORMAT,
 			new ArrayList<>(), false, 0.0, false, serviceContext);
 
 		serviceContext.setWorkflowAction(WorkflowConstants.ACTION_SAVE_DRAFT);
 
 		MBMessageServiceUtil.addMessage(
-			null, mbMessage.getMessageId(), RandomTestUtil.randomString(),
+			null, message.getMessageId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), MBMessageConstants.DEFAULT_FORMAT,
 			new ArrayList<>(), false, 0.0, false, serviceContext);
 
-		return mbMessage;
+		return message;
 	}
 
 	private MBCategory _category;
