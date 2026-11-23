@@ -10,7 +10,6 @@ import com.liferay.asset.kernel.model.AssetRenderer;
 import com.liferay.asset.kernel.model.AssetRendererFactory;
 import com.liferay.asset.kernel.model.BaseAssetRendererFactory;
 import com.liferay.asset.kernel.model.ClassTypeReader;
-import com.liferay.document.library.asset.model.DLFileEntryClassTypeReader;
 import com.liferay.document.library.constants.DLPortletKeys;
 import com.liferay.document.library.helper.DLURLHelper;
 import com.liferay.document.library.kernel.model.DLFileEntry;
