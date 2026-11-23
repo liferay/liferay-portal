@@ -17,6 +17,7 @@ dependencies {
 	compileOnly project(":apps:portal-workflow:portal-workflow-api")
 	compileOnly project(":apps:product-navigation:product-navigation-personal-menu-api")
 	compileOnly project(":apps:site-navigation:site-navigation-taglib")
+	compileOnly project(":apps:static:osgi:osgi-util")
 	compileOnly project(":core:osgi-service-tracker-collections")
 	compileOnly project(":core:petra:petra-function")
 	compileOnly project(":core:petra:petra-io")

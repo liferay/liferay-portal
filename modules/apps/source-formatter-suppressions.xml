@@ -64,7 +64,7 @@
 		<suppress checks="ModifiedServiceMethodCheck" files="portal-remote/portal-remote-json-web-service-web/src/main/java/com/liferay/portal/remote/json/web/service/web/internal/JSONWebServiceActionsManagerImpl\.java" />
 		<suppress checks="ModifiedServiceMethodCheck" files="portal-search/portal-search/src/main/java/com/liferay/portal/search/internal/osgi/util/tracker/ModelSearchConfiguratorServiceTrackerCustomizer\.java" />
 		<suppress checks="ModifiedServiceMethodCheck" files="portal-validation/portal-validation-api/src/main/java/com/liferay/portal/validation/ModelValidatorRegistryUtil\.java" />
-		<suppress checks="ModifiedServiceMethodCheck" files="portal-workflow/portal-workflow-api/src/main/java/com/liferay/portal/workflow/definition/link/update/handler/WorkflowDefinitionLinkUpdateHandlerRegistryUtil\.java" />
+		<suppress checks="ModifiedServiceMethodCheck" files="portal-workflow/portal-workflow-web/src/main/java/com/liferay/portal/workflow/web/internal/handler/WorkflowDefinitionLinkUpdateHandlerRegistryUtil\.java" />
 		<suppress checks="ModifiedServiceMethodCheck" files="segments/segments-service/src/main/java/com/liferay/segments/internal/context/RequestContextMapperImpl\.java" />
 		<suppress checks="ModifiedServiceMethodCheck" files="site-navigation/site-navigation-menu-item-display-page/src/main/java/com/liferay/site/navigation/menu/item/display/page/internal/type/provider/DisplayPageSiteNavigationMenuItemTypeProviderTracker\.java" />
 		<suppress checks="ModifiedServiceMethodCheck" files="template/template-service/src/main/java/com/liferay/template/internal/info/item/provider/TemplateInfoItemCapabilitiesProviderTracker\.java" />
