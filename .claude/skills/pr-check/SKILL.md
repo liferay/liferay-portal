@@ -430,7 +430,7 @@ A validation may qualify its verdict, as **Baseline** does when it names the uni
 
 Every row whose validation returned a note appends it below the table, separated by a blank line. A `FAIL`, a `NO COVERAGE`, and a `NOT VERIFIED` always carry one. A `PASS` carries one only when the run left something unexamined, as **Module Registration** does when a diff pairs an addition it verified with a removal it can only report. A `PASS` that examined the whole change carries none. The notes travel verbatim into the PR description through the `pr` skill and into any comment the `pr-check-publish` skill posts, so keep each to one short sentence naming what failed or what went unexamined. Leave out why a gap is acceptable or what else covers it, and leave out how the run went, such as the commands, flags, task counts, and modules built. Nothing else goes below the table.
 
-After the Results Summary block, tell the developer to run the `test-plan` skill in either of these cases. This message is not part of the block.
+Before emitting the Results Summary block, ask the developer whether to run the `test-plan` skill in either of these cases, and wait for the answer. When they decline, end the block with a `Test plan: needed, not run.` line below the notes, so that the pull request records it.
 
 - **Java Unit Tests** names a changed class that has no unit test.
 - The diff changes a `*.batch-engine-data.json` file, a `resource-actions/*.xml` file, or a file under `src/main/resources/site-initializer`.
