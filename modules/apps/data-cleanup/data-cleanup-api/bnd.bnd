@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Data Cleanup API
 Bundle-SymbolicName: com.liferay.data.cleanup.api
-Bundle-Version: 2.0.2
+Bundle-Version: 3.0.0
 Export-Package:\
 	com.liferay.data.cleanup,\
 	com.liferay.data.cleanup.util
