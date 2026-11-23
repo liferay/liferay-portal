@@ -26,38 +26,36 @@ public class WorkspacesTestTaskTest
 
 	@Test
 	public void testGetLongestDuration() {
-		long longestDuration = _randomDuration();
 		long defaultTestTaskDuration = _randomDuration();
 
 		_testGetLongestDuration(
 			_getBatchHistory(_getTestTaskHistory(false, 0)),
 			defaultTestTaskDuration, defaultTestTaskDuration);
+
+		long longestDuration = _randomDuration();
+
 		_testGetLongestDuration(
 			_getBatchHistory(_getTestTaskHistory(false, longestDuration)),
 			defaultTestTaskDuration, longestDuration);
+
 		_testGetLongestDuration(
 			_getBatchHistory(null), defaultTestTaskDuration,
 			defaultTestTaskDuration);
+		_testGetLongestDuration(null, 0, 0);
 		_testGetLongestDuration(
 			null, defaultTestTaskDuration, defaultTestTaskDuration);
-
-		_testGetLongestDuration(null, 0, 0);
 	}
 
 	@Test
 	public void testIsIsolated() {
-		long defaultTestTaskDuration = _randomDuration();
-
 		_testIsIsolated(
 			_getBatchHistory(_getTestTaskHistory(false, _randomDuration())),
-			defaultTestTaskDuration, false);
+			false);
 		_testIsIsolated(
 			_getBatchHistory(_getTestTaskHistory(true, _randomDuration())),
-			defaultTestTaskDuration, true);
-		_testIsIsolated(_getBatchHistory(null), defaultTestTaskDuration, false);
-		_testIsIsolated(null, defaultTestTaskDuration, false);
-
-		_testIsIsolated(null, 0, false);
+			true);
+		_testIsIsolated(_getBatchHistory(null), false);
+		_testIsIsolated(null, false);
 	}
 
 	private BatchHistory _getBatchHistory(TestTaskHistory testTaskHistory) {
@@ -134,18 +132,19 @@ public class WorkspacesTestTaskTest
 		Assert.assertEquals(
 			expectedLongestDuration, workspacesTestTask.getWeight());
 
-		JSONObject jsonObject = workspacesTestTask.getJSONObject();
+		JSONObject workspacesTestTaskJSONObject =
+			workspacesTestTask.getJSONObject();
 
 		Assert.assertEquals(
-			expectedLongestDuration, jsonObject.getLong("longest_duration"));
+			expectedLongestDuration,
+			workspacesTestTaskJSONObject.getLong("longest_duration"));
 	}
 
 	private void _testIsIsolated(
-		BatchHistory batchHistory, long defaultTestTaskDuration,
-		boolean expectedIsolated) {
+		BatchHistory batchHistory, boolean expectedIsolated) {
 
 		WorkspacesTestTask workspacesTestTask = _getWorkspacesTestTask(
-			batchHistory, defaultTestTaskDuration);
+			batchHistory, _randomDuration());
 
 		Assert.assertEquals(expectedIsolated, workspacesTestTask.isIsolated());
 	}

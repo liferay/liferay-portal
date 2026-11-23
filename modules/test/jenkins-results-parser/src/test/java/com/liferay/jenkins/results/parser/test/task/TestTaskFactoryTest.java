@@ -111,7 +111,7 @@ public class TestTaskFactoryTest
 			testTaskHistory
 		).getLongestDuration();
 
-		String name = JenkinsResultsParserUtil.combine(
+		String testTaskName = JenkinsResultsParserUtil.combine(
 			"workspaces/", RandomTestUtil.randomString(), ":modules:",
 			RandomTestUtil.randomString(), ":test");
 
@@ -122,7 +122,7 @@ public class TestTaskFactoryTest
 		).when(
 			batchHistory
 		).getTestTaskHistory(
-			name
+			testTaskName
 		);
 
 		BatchTestClassGroup batchTestClassGroup = Mockito.mock(
@@ -136,17 +136,19 @@ public class TestTaskFactoryTest
 
 		TestTask testTask = TestTaskFactory.newTestTask(
 			batchTestClassGroup,
-			TestClassGroup.GroupingStrategy.TEST_TASK_AVERAGE_DURATION, name);
+			TestClassGroup.GroupingStrategy.TEST_TASK_AVERAGE_DURATION,
+			testTaskName);
 
 		Assert.assertSame(batchHistory, testTask.getBatchHistory());
 		Assert.assertSame(expectedTestTaskClass, testTask.getClass());
 
 		Assert.assertEquals(averageDuration, testTask.getWeight());
-		Assert.assertEquals(name, testTask.getName());
+		Assert.assertEquals(testTaskName, testTask.getName());
 
 		TestTask longestDurationTestTask = TestTaskFactory.newTestTask(
 			batchTestClassGroup,
-			TestClassGroup.GroupingStrategy.TEST_TASK_LONGEST_DURATION, name);
+			TestClassGroup.GroupingStrategy.TEST_TASK_LONGEST_DURATION,
+			testTaskName);
 
 		Assert.assertEquals(
 			longestDuration, longestDurationTestTask.getWeight());
