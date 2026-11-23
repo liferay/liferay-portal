@@ -9,6 +9,19 @@ const GROUP_OPERATOR_OPTIONS = [
 	{label: Liferay.Language.get('any'), value: Conjunctions.Or},
 ];
 
+const getSelectedOption = (conjunctionName: string) =>
+	GROUP_OPERATOR_OPTIONS.find(({value}) => value === conjunctionName) ??
+	GROUP_OPERATOR_OPTIONS[0];
+
+/**
+ * The operator of a group as a plain sentence, such as "All of these criteria
+ * must be met.", used as the accessible name of the group.
+ */
+export const getGroupOperatorLabel = (conjunctionName: string): string =>
+	sub(Liferay.Language.get('x-of-these-criteria-must-be-met'), [
+		getSelectedOption(conjunctionName).label,
+	]) as string;
+
 interface IGroupOperatorProps {
 	conjunctionName: string;
 	id: string;
@@ -25,9 +38,7 @@ const GroupOperator: React.FC<IGroupOperatorProps> = ({
 	id,
 	onChange,
 }) => {
-	const selectedOption =
-		GROUP_OPERATOR_OPTIONS.find(({value}) => value === conjunctionName) ??
-		GROUP_OPERATOR_OPTIONS[0];
+	const selectedOption = getSelectedOption(conjunctionName);
 
 	const parts = sub(
 		Liferay.Language.get('x-of-these-criteria-must-be-met'),

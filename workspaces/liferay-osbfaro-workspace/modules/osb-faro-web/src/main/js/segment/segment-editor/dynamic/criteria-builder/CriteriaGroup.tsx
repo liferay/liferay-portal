@@ -5,7 +5,7 @@ import CriteriaRow from './CriteriaRow';
 import DropZone from './DropZone';
 import EmptyDropZone from './EmptyDropZone';
 import getCN from 'classnames';
-import GroupOperator from './GroupOperator';
+import GroupOperator, {getGroupOperatorLabel} from './GroupOperator';
 import React, {Fragment} from 'react';
 import {
 	NESTED_OR_LIMIT_ALERT,
@@ -343,8 +343,20 @@ class CriteriaGroup extends React.Component<ICriteriaGroupProps> {
 			);
 		}
 
+		// A group names itself with its operator sentence. A single item or a
+		// sequential group has no operator to announce, so it stays unnamed.
+
+		const hasOperator = !sequential && !singleRow;
+		const groupLabel = hasOperator
+			? getGroupOperatorLabel(criteria.conjunctionName)
+			: undefined;
+
 		return connectDragPreview(
-			<div className={classes}>
+			<div
+				aria-label={groupLabel}
+				className={classes}
+				role={groupLabel ? 'group' : undefined}
+			>
 				<>
 					<DropZone
 						criteriaGroupId={criteriaGroupId}
@@ -364,7 +376,7 @@ class CriteriaGroup extends React.Component<ICriteriaGroupProps> {
 							</div>
 						)}
 
-					{!sequential && !singleRow && (
+					{hasOperator && (
 						<GroupOperator
 							conjunctionName={criteria.conjunctionName}
 							id={`${criteriaGroupId}-operator`}

@@ -61,6 +61,7 @@ import {
 import {Criterion, CriterionGroup, OnMove, Operator} from '../utils/types';
 import {DragTypes} from '../utils/drag-types';
 import {get} from 'lodash';
+import {getCriterionLabel} from '../utils/getCriterionLabel';
 import {Map} from 'immutable';
 import {Option, Picker} from '@clayui/core';
 import {Property} from 'shared/util/records';
@@ -422,6 +423,7 @@ class CriteriaRow extends React.Component<
 					supportedOperators[0].label
 				) : (
 					<Picker
+						aria-label={Liferay.Language.get('operator')}
 						className="criterion-input operator-input"
 						items={supportedOperators.map(({key, label}) => ({
 							label,
@@ -524,6 +526,7 @@ class CriteriaRow extends React.Component<
 				connectDragPreview,
 				connectDragSource,
 				connectDropTarget,
+				criterion,
 				dragging,
 				hover,
 				keyboardTarget,
@@ -540,7 +543,14 @@ class CriteriaRow extends React.Component<
 
 		return connectDropTarget(
 			connectDragPreview(
-				<div className={classes}>
+				<div
+					aria-label={
+						getCriterionLabel(criterion, selectedProperty) ||
+						undefined
+					}
+					className={classes}
+					role="group"
+				>
 					<div
 						className={`color-stripe color--${get(
 							selectedProperty,
