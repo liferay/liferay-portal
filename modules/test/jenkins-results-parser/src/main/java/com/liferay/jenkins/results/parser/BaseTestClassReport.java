@@ -63,13 +63,13 @@ public abstract class BaseTestClassReport implements TestClassReport {
 
 	@Override
 	public long getOverheadDuration() {
-		StopWatchRecord stopWatchRecord = null;
-
 		DownstreamBuildReport downstreamBuildReport =
 			getDownstreamBuildReport();
 
 		StopWatchRecordsGroup stopWatchRecordsGroup =
 			downstreamBuildReport.getStopWatchRecordsGroup();
+
+		StopWatchRecord stopWatchRecord = null;
 
 		if (stopWatchRecordsGroup != null) {
 			stopWatchRecord = stopWatchRecordsGroup.get(
