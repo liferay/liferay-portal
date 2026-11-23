@@ -14,8 +14,6 @@ import com.liferay.portal.instance.lifecycle.BasePortalInstanceLifecycleListener
 import com.liferay.portal.instance.lifecycle.EveryNodeEveryStartup;
 import com.liferay.portal.instance.lifecycle.PortalInstanceLifecycleListener;
 import com.liferay.portal.kernel.cluster.ClusterMasterExecutor;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -24,11 +22,8 @@ import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.ModelHintsUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.security.sso.openid.connect.internal.util.OpenIdConnectProviderUtil;
-import com.liferay.portal.security.sso.openid.connect.persistence.model.OpenIdConnectSession;
-import com.liferay.portal.security.sso.openid.connect.persistence.service.OpenIdConnectSessionLocalService;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.osgi.service.component.annotations.Component;
@@ -93,59 +88,6 @@ public class UpdateLocalWellKnownURIsPortalInstanceLifecycleListener
 		}
 	}
 
-	private void _updateLocalWellKnownURI(
-			String newLocalWellKnownURI,
-			OAuthClientASLocalMetadata oAuthClientASLocalMetadata)
-		throws Exception {
-
-		String localWellKnownURI =
-			oAuthClientASLocalMetadata.getLocalWellKnownURI();
-
-		for (OAuthClientEntry oAuthClientEntry :
-				_oAuthClientEntryLocalService.getCompanyOAuthClientEntries(
-					oAuthClientASLocalMetadata.getCompanyId())) {
-
-			if (!localWellKnownURI.equals(
-					oAuthClientEntry.getAuthServerWellKnownURI())) {
-
-				continue;
-			}
-
-			oAuthClientEntry.setAuthServerWellKnownURI(newLocalWellKnownURI);
-
-			_oAuthClientEntryLocalService.updateOAuthClientEntry(
-				oAuthClientEntry);
-		}
-
-		DynamicQuery dynamicQuery =
-			_openIdConnectSessionLocalService.dynamicQuery();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"authServerWellKnownURI", localWellKnownURI));
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"companyId", oAuthClientASLocalMetadata.getCompanyId()));
-
-		List<OpenIdConnectSession> openIdConnectSessions =
-			_openIdConnectSessionLocalService.dynamicQuery(dynamicQuery);
-
-		for (OpenIdConnectSession openIdConnectSession :
-				openIdConnectSessions) {
-
-			openIdConnectSession.setAuthServerWellKnownURI(
-				newLocalWellKnownURI);
-
-			_openIdConnectSessionLocalService.updateOpenIdConnectSession(
-				openIdConnectSession);
-		}
-
-		oAuthClientASLocalMetadata.setLocalWellKnownURI(newLocalWellKnownURI);
-
-		_oAuthClientASLocalMetadataLocalService.
-			updateOAuthClientASLocalMetadata(oAuthClientASLocalMetadata);
-	}
-
 	private void _updateLocalWellKnownURIs(long companyId) {
 		for (OAuthClientASLocalMetadata oAuthClientASLocalMetadata :
 				_oAuthClientASLocalMetadataLocalService.
@@ -197,8 +139,13 @@ public class UpdateLocalWellKnownURIsPortalInstanceLifecycleListener
 					continue;
 				}
 
-				_updateLocalWellKnownURI(
-					newLocalWellKnownURI, oAuthClientASLocalMetadata);
+				oAuthClientASLocalMetadata.setLocalWellKnownURI(
+					newLocalWellKnownURI);
+
+				oAuthClientASLocalMetadata =
+					_oAuthClientASLocalMetadataLocalService.
+						updateOAuthClientASLocalMetadata(
+							oAuthClientASLocalMetadata);
 			}
 			catch (Exception exception) {
 				if (_log.isWarnEnabled()) {
@@ -230,8 +177,5 @@ public class UpdateLocalWellKnownURIsPortalInstanceLifecycleListener
 
 	@Reference
 	private OAuthClientEntryLocalService _oAuthClientEntryLocalService;
-
-	@Reference
-	private OpenIdConnectSessionLocalService _openIdConnectSessionLocalService;
 
 }
