@@ -19,7 +19,9 @@ import org.osgi.service.component.annotations.Reference;
 @Component(service = WorkspaceSiteHelper.class)
 public class WorkspaceSiteHelper {
 
-	public void initialize(FaroProject faroProject) throws Exception {
+	public synchronized void initialize(FaroProject faroProject)
+		throws Exception {
+
 		SiteInitializerUtil.initialize(
 			_groupLocalService.getGroup(faroProject.getGroupId()),
 			_siteInitializer, _SITE_INITIALIZER_VERSION);
