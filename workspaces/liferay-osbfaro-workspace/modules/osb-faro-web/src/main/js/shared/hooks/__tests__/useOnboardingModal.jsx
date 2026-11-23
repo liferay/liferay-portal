@@ -11,9 +11,11 @@ import {useOnboardingModal} from 'shared/hooks/useOnboardingModal';
 
 jest.unmock('react-dom');
 
-jest.mock('shared/components/modals/onboarding-modal', () => ({groupId}) => (
-	<div data-testid="onboarding-modal">{groupId}</div>
-));
+jest.mock('shared/components/modals/onboarding-modal', () => ({
+	__esModule: true,
+	...jest.requireActual('shared/components/modals/onboarding-modal'),
+	default: ({groupId}) => <div data-testid="onboarding-modal">{groupId}</div>,
+}));
 
 const getModal = result => result.current.modal;
 
@@ -53,6 +55,8 @@ const renderUseOnboardingModal = ({
 describe('useOnboardingModal', () => {
 	beforeEach(() => {
 		jest.clearAllMocks();
+
+		window.sessionStorage.clear();
 	});
 
 	it('returns the onboarding modal when the workspace has no data sources', async () => {
@@ -101,6 +105,34 @@ describe('useOnboardingModal', () => {
 	});
 
 	it('does not return the onboarding modal twice', async () => {
+		const {result} = renderUseOnboardingModal({onboardingTriggered: true});
+
+		await waitFor(() => expect(result.current.loading).toBe(false));
+
+		expect(getModal(result)).toBeNull();
+	});
+
+	it('resumes the onboarding a previous page of the workspace left open', async () => {
+		const onboardingState = {dxpConnected: true, groupId: '23', step: 3};
+
+		window.sessionStorage.setItem(
+			'onboardingState',
+			JSON.stringify(onboardingState)
+		);
+
+		const {result} = renderUseOnboardingModal({onboardingTriggered: true});
+
+		await waitFor(() => expect(getModal(result)).not.toBeNull());
+
+		expect(getModal(result).props.initialState).toEqual(onboardingState);
+	});
+
+	it('does not resume the onboarding of another workspace', async () => {
+		window.sessionStorage.setItem(
+			'onboardingState',
+			JSON.stringify({dxpConnected: true, groupId: '24', step: 3})
+		);
+
 		const {result} = renderUseOnboardingModal({onboardingTriggered: true});
 
 		await waitFor(() => expect(result.current.loading).toBe(false));
