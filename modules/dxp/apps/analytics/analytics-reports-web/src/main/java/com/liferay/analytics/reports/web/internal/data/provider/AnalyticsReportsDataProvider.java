@@ -11,7 +11,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 
-import com.liferay.analytics.reports.web.internal.client.AsahFaroBackendClient;
 import com.liferay.analytics.reports.web.internal.model.AcquisitionChannel;
 import com.liferay.analytics.reports.web.internal.model.HistoricalMetric;
 import com.liferay.analytics.reports.web.internal.model.PageExperience;
@@ -21,8 +20,11 @@ import com.liferay.analytics.reports.web.internal.model.TimeRange;
 import com.liferay.analytics.reports.web.internal.model.TimeSpan;
 import com.liferay.analytics.reports.web.internal.model.TrafficChannel;
 import com.liferay.analytics.reports.web.internal.model.TrafficSource;
+import com.liferay.analytics.settings.configuration.AnalyticsConfiguration;
 import com.liferay.analytics.settings.rest.manager.AnalyticsSettingsManager;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.exception.NestableRuntimeException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -30,6 +32,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.security.key.secret.SecretResolverUtil;
 
 import java.time.format.DateTimeFormatter;
 
@@ -38,6 +41,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.http.HttpStatus;
 
 /**
  * @author David Arques
@@ -51,8 +56,8 @@ public class AnalyticsReportsDataProvider {
 			throw new IllegalArgumentException("Http is null");
 		}
 
-		_asahFaroBackendClient = new AsahFaroBackendClient(
-			analyticsSettingsManager, http);
+		_analyticsSettingsManager = analyticsSettingsManager;
+		_http = http;
 	}
 
 	public Map<String, AcquisitionChannel> getAcquisitionChannels(
@@ -64,7 +69,7 @@ public class AnalyticsReportsDataProvider {
 			Map<String, AcquisitionChannel> acquisitionChannels =
 				new HashMap<>();
 
-			String response = _asahFaroBackendClient.doGet(
+			String response = _get(
 				companyId,
 				_getPagesEndpoint(
 					experienceId, "acquisition-channels", timeRange, url));
@@ -110,7 +115,7 @@ public class AnalyticsReportsDataProvider {
 		throws PortalException {
 
 		try {
-			String response = _asahFaroBackendClient.doGet(
+			String response = _get(
 				companyId,
 				_getPagesEndpoint(
 					experienceId, "page-referrer-hosts", timeRange, url));
@@ -140,7 +145,7 @@ public class AnalyticsReportsDataProvider {
 		throws PortalException {
 
 		try {
-			String response = _asahFaroBackendClient.doGet(
+			String response = _get(
 				companyId,
 				_getPagesEndpoint(experienceId, "read-counts", timeRange, url));
 
@@ -158,7 +163,7 @@ public class AnalyticsReportsDataProvider {
 		throws PortalException {
 
 		try {
-			String response = _asahFaroBackendClient.doGet(
+			String response = _get(
 				companyId,
 				_getPagesEndpoint(experienceId, "view-counts", timeRange, url));
 
@@ -174,7 +179,7 @@ public class AnalyticsReportsDataProvider {
 		throws PortalException {
 
 		try {
-			String response = _asahFaroBackendClient.doGet(
+			String response = _get(
 				companyId,
 				"api/1.0/pages/page-experiences?canonicalUrl=" +
 					HtmlUtil.escapeURL(url));
@@ -198,7 +203,7 @@ public class AnalyticsReportsDataProvider {
 		throws PortalException {
 
 		try {
-			String response = _asahFaroBackendClient.doGet(
+			String response = _get(
 				companyId,
 				_getPagesEndpoint(
 					experienceId, "page-referrers", timeRange, url));
@@ -228,7 +233,7 @@ public class AnalyticsReportsDataProvider {
 		throws PortalException {
 
 		try {
-			String response = _asahFaroBackendClient.doGet(
+			String response = _get(
 				companyId,
 				_getPagesEndpoint(
 					experienceId, "social-page-referrers", timeRange, url));
@@ -257,7 +262,7 @@ public class AnalyticsReportsDataProvider {
 
 		try {
 			long totalReads = GetterUtil.getLong(
-				_asahFaroBackendClient.doGet(
+				_get(
 					companyId,
 					_getPagesEndpoint(experienceId, "read-count", null, url)));
 
@@ -274,7 +279,7 @@ public class AnalyticsReportsDataProvider {
 
 		try {
 			long totalViews = GetterUtil.getLong(
-				_asahFaroBackendClient.doGet(
+				_get(
 					companyId,
 					_getPagesEndpoint(experienceId, "view-count", null, url)));
 
@@ -329,7 +334,7 @@ public class AnalyticsReportsDataProvider {
 		try {
 			Map<String, TrafficSource> trafficSources = new HashMap<>();
 
-			String response = _asahFaroBackendClient.doGet(
+			String response = _get(
 				companyId, "api/seo/1.0/traffic-sources?url=" + url);
 
 			TypeFactory typeFactory = _objectMapper.getTypeFactory();
@@ -353,7 +358,25 @@ public class AnalyticsReportsDataProvider {
 	}
 
 	public boolean isValidAnalyticsConnection(long companyId) throws Exception {
-		return _asahFaroBackendClient.isValidConnection(companyId);
+		return _isValidConnection(companyId);
+	}
+
+	private String _get(long companyId, String path) {
+		try {
+			AnalyticsConfiguration analyticsConfiguration =
+				_analyticsSettingsManager.getAnalyticsConfiguration(companyId);
+
+			return _getResponse(
+				companyId,
+				String.format(
+					"%s/%s",
+					analyticsConfiguration.liferayAnalyticsFaroBackendURL(),
+					path));
+		}
+		catch (Exception exception) {
+			throw new NestableRuntimeException(
+				"Request to Asah Faro backend failed", exception);
+		}
 	}
 
 	private String _getPagesEndpoint(
@@ -382,6 +405,44 @@ public class AnalyticsReportsDataProvider {
 		return endpoint;
 	}
 
+	private String _getResponse(long companyId, String url) throws Exception {
+		Http.Options options = new Http.Options();
+
+		options.addHeader("Accept", "application/json");
+
+		AnalyticsConfiguration analyticsConfiguration =
+			_analyticsSettingsManager.getAnalyticsConfiguration(companyId);
+
+		options.addHeader(
+			"OSB-Asah-Faro-Backend-Security-Signature",
+			SecretResolverUtil.resolve(
+				companyId,
+				analyticsConfiguration.
+					liferayAnalyticsFaroBackendSecuritySignature()));
+
+		String projectId = analyticsConfiguration.liferayAnalyticsProjectId();
+
+		if (projectId != null) {
+			options.addHeader("OSB-Asah-Project-ID", projectId);
+		}
+
+		options.setLocation(url);
+
+		String response = _http.URLtoString(options);
+
+		Http.Response httpResponse = options.getResponse();
+
+		if (httpResponse.getResponseCode() != HttpStatus.SC_OK) {
+			throw new NestableRuntimeException(
+				StringBundler.concat(
+					"Unexpected response status ",
+					httpResponse.getResponseCode(), " with response message: ",
+					response));
+		}
+
+		return response;
+	}
+
 	private long _getTodayReads(long companyId, String experienceId, String url)
 		throws PortalException {
 
@@ -404,6 +465,31 @@ public class AnalyticsReportsDataProvider {
 		return value.longValue();
 	}
 
+	private boolean _isValidConnection(long companyId) throws Exception {
+		if (!_analyticsSettingsManager.isAnalyticsEnabled(companyId)) {
+			return false;
+		}
+
+		try {
+			AnalyticsConfiguration analyticsConfiguration =
+				_analyticsSettingsManager.getAnalyticsConfiguration(companyId);
+
+			_get(
+				companyId,
+				"api/1.0/data-sources/" +
+					analyticsConfiguration.liferayAnalyticsDataSourceId());
+
+			return true;
+		}
+		catch (Exception exception) {
+			if (_log.isDebugEnabled()) {
+				_log.debug("Invalid Asah Faro backend connection", exception);
+			}
+
+			return false;
+		}
+	}
+
 	private static final Log _log = LogFactoryUtil.getLog(
 		AnalyticsReportsDataProvider.class);
 
@@ -416,6 +502,7 @@ public class AnalyticsReportsDataProvider {
 		}
 	};
 
-	private final AsahFaroBackendClient _asahFaroBackendClient;
+	private final AnalyticsSettingsManager _analyticsSettingsManager;
+	private final Http _http;
 
 }
