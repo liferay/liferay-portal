@@ -219,11 +219,11 @@ public class MCPServerServletTest {
 			Assert.assertTrue(
 				wwwAuthenticate,
 				wwwAuthenticate.startsWith("Bearer realm=\"mcp\""));
+			Assert.assertFalse(
+				wwwAuthenticate, wwwAuthenticate.contains("error="));
 			Assert.assertTrue(
 				wwwAuthenticate,
 				wwwAuthenticate.contains("resource_metadata="));
-			Assert.assertFalse(
-				wwwAuthenticate, wwwAuthenticate.contains("error="));
 
 			_assertInvalidTokenChallenge(
 				_getResponse(RandomTestUtil.randomString()),
@@ -1220,8 +1220,8 @@ public class MCPServerServletTest {
 			).build(),
 			mcpSyncClient, name);
 
-		Assert.assertEquals(name, itemJSONObject.getString("name"));
 		Assert.assertFalse(itemJSONObject.has("description"));
+		Assert.assertEquals(name, itemJSONObject.getString("name"));
 
 		JSONObject creatorJSONObject = itemJSONObject.getJSONObject("creator");
 
@@ -1236,8 +1236,8 @@ public class MCPServerServletTest {
 			).build(),
 			mcpSyncClient, name);
 
-		Assert.assertEquals(name, itemJSONObject.getString("name"));
 		Assert.assertFalse(itemJSONObject.has("description"));
+		Assert.assertEquals(name, itemJSONObject.getString("name"));
 
 		_assertRestrictedQueryParameters(
 			HashMapBuilder.<String, Object>put(
@@ -1304,8 +1304,8 @@ public class MCPServerServletTest {
 		JSONObject postItemJSONObject = JSONFactoryUtil.createJSONObject(
 			textContent.text());
 
-		Assert.assertEquals(entryName, postItemJSONObject.getString("name"));
 		Assert.assertFalse(postItemJSONObject.has("description"));
+		Assert.assertEquals(entryName, postItemJSONObject.getString("name"));
 
 		MCPServerTestUtil.updateMCPServerProfileToolRestrictFields(
 			getMCPServerProfileToolObjectEntry, "creator,description");
@@ -1320,8 +1320,8 @@ public class MCPServerServletTest {
 			).build(),
 			mcpSyncClient, name);
 
-		Assert.assertEquals(name, itemJSONObject.getString("name"));
 		Assert.assertFalse(itemJSONObject.has("creator"));
+		Assert.assertEquals(name, itemJSONObject.getString("name"));
 
 		MCPServerTestUtil.updateMCPServerProfileToolRestrictFields(
 			getMCPServerProfileToolObjectEntry, null);
@@ -1616,9 +1616,9 @@ public class MCPServerServletTest {
 		JSONObject toolJSONObject = JSONFactoryUtil.createJSONObject(
 			textContent.text());
 
+		Assert.assertNotNull(toolJSONObject.getJSONObject("inputSchema"));
 		Assert.assertEquals(
 			"getMCPServerProfilesPage", toolJSONObject.getString("name"));
-		Assert.assertNotNull(toolJSONObject.getJSONObject("inputSchema"));
 
 		callToolResult = mcpSyncClient.callTool(
 			new McpSchema.CallToolRequest(
