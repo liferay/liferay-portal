@@ -88,6 +88,8 @@ function ToolbarBody({className}: {className?: string}) {
 		}
 	};
 
+	const onAddToLaunch = () => {};
+
 	const isCMSFreeTier = config.isCMS && config.freeTier;
 
 	let publishButtonLabel = Liferay.Language.get('publish');
@@ -246,6 +248,15 @@ function ToolbarBody({className}: {className?: string}) {
 						formRef={formRef}
 						icon={icon}
 						label={publishButtonLabel}
+						onAddToLaunch={
+							Liferay.FeatureFlags['LPD-72278'] &&
+							config.layoutType === LAYOUT_TYPES.content &&
+							!config.isCMS &&
+							!config.singleSegmentsExperienceMode &&
+							!isLaunchDraft()
+								? onAddToLaunch
+								: undefined
+						}
 						onPublish={onPublish}
 					/>
 				</li>
