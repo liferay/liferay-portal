@@ -240,12 +240,12 @@ public class CommerceShipmentItemServiceTest {
 			CommerceCurrency commerceCurrency)
 		throws Exception {
 
+		User user = UserTestUtil.addUser();
+
 		Group group = GroupTestUtil.addGroup();
 
 		CommerceChannel commerceChannel = CommerceTestUtil.addCommerceChannel(
 			group.getGroupId(), commerceCurrency.getCode());
-
-		User user = UserTestUtil.addUser();
 
 		CommerceOrder commerceOrder = CommerceTestUtil.addB2CCommerceOrder(
 			user.getUserId(), commerceChannel.getGroupId(),
