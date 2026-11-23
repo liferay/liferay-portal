@@ -362,11 +362,11 @@ public class OpenIdConnectProviderPortalInstanceLifecycleListenerTest {
 				fetchOAuthClientASLocalMetadata(
 					TestPropsValues.getCompanyId(), issuerURL);
 
-		JSONObject metadataJSONObject = JSONFactoryUtil.createJSONObject(
+		JSONObject jsonObject = JSONFactoryUtil.createJSONObject(
 			oAuthClientASLocalMetadata.getMetadataJSON());
 
 		Assert.assertEquals(
-			tokenEndpoint, metadataJSONObject.getString("token_endpoint"));
+			tokenEndpoint, jsonObject.getString("token_endpoint"));
 
 		Assert.assertNotNull(
 			_oAuthClientEntryLocalService.fetchOAuthClientEntry(
