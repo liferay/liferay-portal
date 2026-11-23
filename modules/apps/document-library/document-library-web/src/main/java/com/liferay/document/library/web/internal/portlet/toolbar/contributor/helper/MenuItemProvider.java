@@ -344,10 +344,6 @@ public class MenuItemProvider {
 		_serviceTrackerMap.close();
 
 		_dlFileEntryTypeIconProviderServiceTrackerMap.close();
-
-		_serviceTrackerMap = null;
-
-		_dlFileEntryTypeLocalService = null;
 	}
 
 	private long _getDefaultFileEntryTypeId(long folderId) {
