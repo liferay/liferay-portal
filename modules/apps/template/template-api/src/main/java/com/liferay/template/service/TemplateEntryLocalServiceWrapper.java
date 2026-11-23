@@ -116,14 +116,6 @@ public class TemplateEntryLocalServiceWrapper
 		return _templateEntryLocalService.deleteTemplateEntry(templateEntryId);
 	}
 
-	@Override
-	public TemplateEntry deleteTemplateEntry(
-		String externalReferenceCode, long groupId) {
-
-		return _templateEntryLocalService.deleteTemplateEntry(
-			externalReferenceCode, groupId);
-	}
-
 	/**
 	 * Deletes the template entry from the database. Also notifies the appropriate model listeners.
 	 *
@@ -363,11 +355,6 @@ public class TemplateEntryLocalServiceWrapper
 	}
 
 	@Override
-	public java.util.List<TemplateEntry> getTemplateEntries(long[] groupIds) {
-		return _templateEntryLocalService.getTemplateEntries(groupIds);
-	}
-
-	@Override
 	public java.util.List<TemplateEntry> getTemplateEntries(
 		long[] groupIds, String infoItemClassName,
 		String infoItemFormVariationKey, int start, int end,
@@ -477,15 +464,6 @@ public class TemplateEntryLocalServiceWrapper
 		return _templateEntryLocalService.updateTemplateEntry(templateEntryId);
 	}
 
-	@Override
-	public TemplateEntry updateTemplateEntry(
-			String externalReferenceCode, long groupId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _templateEntryLocalService.updateTemplateEntry(
-			externalReferenceCode, groupId);
-	}
-
 	/**
 	 * Updates the template entry in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	 *
@@ -541,4 +519,4 @@ public class TemplateEntryLocalServiceWrapper
 	private TemplateEntryLocalService _templateEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2105821859
+// LIFERAY-SERVICE-BUILDER-HASH:542573647

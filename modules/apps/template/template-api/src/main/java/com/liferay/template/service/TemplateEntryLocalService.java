@@ -119,9 +119,6 @@ public interface TemplateEntryLocalService
 	public TemplateEntry deleteTemplateEntry(long templateEntryId)
 		throws PortalException;
 
-	public TemplateEntry deleteTemplateEntry(
-		String externalReferenceCode, long groupId);
-
 	/**
 	 * Deletes the template entry from the database. Also notifies the appropriate model listeners.
 	 *
@@ -278,9 +275,6 @@ public interface TemplateEntryLocalService
 		int start, int end, OrderByComparator<TemplateEntry> orderByComparator);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<TemplateEntry> getTemplateEntries(long[] groupIds);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<TemplateEntry> getTemplateEntries(
 		long[] groupIds, String infoItemClassName,
 		String infoItemFormVariationKey, int start, int end,
@@ -355,10 +349,6 @@ public interface TemplateEntryLocalService
 	public TemplateEntry updateTemplateEntry(long templateEntryId)
 		throws PortalException;
 
-	public TemplateEntry updateTemplateEntry(
-			String externalReferenceCode, long groupId)
-		throws PortalException;
-
 	/**
 	 * Updates the template entry in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	 *
@@ -388,4 +378,4 @@ public interface TemplateEntryLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1202629838
+// LIFERAY-SERVICE-BUILDER-HASH:-177280571
