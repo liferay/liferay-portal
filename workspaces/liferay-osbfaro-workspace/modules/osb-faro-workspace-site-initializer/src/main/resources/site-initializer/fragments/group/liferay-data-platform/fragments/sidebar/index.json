@@ -3,6 +3,13 @@
 		{
 			"fields": [
 				{
+					"dataType": "boolean",
+					"defaultValue": true,
+					"label": "collapsible",
+					"name": "collapsible",
+					"type": "checkbox"
+				},
+				{
 					"dataType": "string",
 					"defaultValue": "Product Menu",
 					"label": "sidebar-aria-label",

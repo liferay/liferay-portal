@@ -83,6 +83,15 @@
 			z-index: 989;
 		}
 
+		&.fixed {
+			grid-template-columns: var(--sidebar-layout-width) minmax(0, 1fr);
+
+			.sidebar-container {
+				left: 0;
+				position: static;
+			}
+		}
+
 		&.open-mobile {
 			.content::before {
 				background-color: rgba(0, 0, 0, 0.5);

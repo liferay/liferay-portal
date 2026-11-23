@@ -14,33 +14,35 @@ const sidebarCloseButton = fragmentElement.querySelector(
 const sidebarContainer = fragmentElement.querySelector('.sidebar-layout');
 const sidebarTrigger = fragmentElement.querySelector('.sidebar-toggle');
 
-if (sidebarTrigger) {
-	sidebar.setAttribute('id', sidebarId);
-	sidebarTrigger.setAttribute('aria-controls', sidebarId);
-
-	addSidebarToggleClickEventListener(sidebarTrigger);
-}
-
-if (sidebarCloseButton) {
-	addSidebarToggleClickEventListener(sidebarCloseButton);
-}
-
 const mobileMediaQueryList = window.matchMedia('(max-width: 991.98px)');
 
 let mobileSidebarOpen = false;
 let sidebarOpen = sidebarContainer.classList.contains('open');
 
-const content = sidebarContainer.querySelector('.content');
+if (!sidebarContainer.classList.contains('fixed')) {
+	if (sidebarTrigger) {
+		sidebar.setAttribute('id', sidebarId);
+		sidebarTrigger.setAttribute('aria-controls', sidebarId);
 
-content.addEventListener('click', () => {
-	if (mobileMediaQueryList.matches && mobileSidebarOpen) {
-		handleSidebarToggleClick();
+		addSidebarToggleClickEventListener(sidebarTrigger);
 	}
-});
 
-mobileMediaQueryList.addEventListener('change', () => updateSidebar());
+	if (sidebarCloseButton) {
+		addSidebarToggleClickEventListener(sidebarCloseButton);
+	}
 
-updateSidebar();
+	const content = sidebarContainer.querySelector('.content');
+
+	content.addEventListener('click', () => {
+		if (mobileMediaQueryList.matches && mobileSidebarOpen) {
+			handleSidebarToggleClick();
+		}
+	});
+
+	mobileMediaQueryList.addEventListener('change', () => updateSidebar());
+
+	updateSidebar();
+}
 
 function addSidebarToggleClickEventListener(node) {
 	node.addEventListener('click', () => handleSidebarToggleClick());
