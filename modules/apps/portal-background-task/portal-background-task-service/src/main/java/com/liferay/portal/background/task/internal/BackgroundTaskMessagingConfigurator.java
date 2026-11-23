@@ -68,9 +68,9 @@ public class BackgroundTaskMessagingConfigurator {
 			bundleContext, DestinationConfiguration.DESTINATION_TYPE_SERIAL,
 			DestinationNames.BACKGROUND_TASK_STATUS, 1, 1,
 			new BackgroundTaskStatusMessageListener(
-				_backgroundTaskLocalService, _backgroundTaskStatusRegistry,
-				_lockManager, _roleLocalService, _userLocalService,
-				_userNotificationEventLocalService));
+				_backgroundTaskExecutorRegistry, _backgroundTaskLocalService,
+				_backgroundTaskStatusRegistry, _lockManager, _roleLocalService,
+				_userLocalService, _userNotificationEventLocalService));
 	}
 
 	@Deactivate

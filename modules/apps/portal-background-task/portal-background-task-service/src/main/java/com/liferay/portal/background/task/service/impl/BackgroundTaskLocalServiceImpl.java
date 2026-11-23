@@ -13,6 +13,7 @@ import com.liferay.portal.background.task.internal.BackgroundTaskInExecutionUtil
 import com.liferay.portal.background.task.internal.lock.helper.BackgroundTaskLockHelper;
 import com.liferay.portal.background.task.model.BackgroundTask;
 import com.liferay.portal.background.task.service.base.BackgroundTaskLocalServiceBaseImpl;
+import com.liferay.portal.kernel.backgroundtask.BackgroundTaskExecutorRegistry;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTaskStatus;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTaskStatusRegistry;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTaskThreadLocalManager;
@@ -722,7 +723,8 @@ public class BackgroundTaskLocalServiceImpl
 
 	@Activate
 	protected void activate() {
-		_backgroundTaskLockHelper = new BackgroundTaskLockHelper(_lockManager);
+		_backgroundTaskLockHelper = new BackgroundTaskLockHelper(
+			_backgroundTaskExecutorRegistry, _lockManager);
 	}
 
 	private BackgroundTask _addBackgroundTask(
@@ -787,6 +789,9 @@ public class BackgroundTaskLocalServiceImpl
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		BackgroundTaskLocalServiceImpl.class);
+
+	@Reference
+	private BackgroundTaskExecutorRegistry _backgroundTaskExecutorRegistry;
 
 	private BackgroundTaskLockHelper _backgroundTaskLockHelper;
 

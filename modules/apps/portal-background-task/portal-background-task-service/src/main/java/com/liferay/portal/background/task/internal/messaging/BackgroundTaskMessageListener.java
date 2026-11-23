@@ -290,7 +290,8 @@ public class BackgroundTaskMessageListener extends BaseMessageListener {
 
 		if (backgroundTaskExecutor.isSerial()) {
 			backgroundTaskExecutor = new SerialBackgroundTaskExecutor(
-				backgroundTaskExecutor, _lockManager);
+				backgroundTaskExecutor, _backgroundTaskExecutorRegistry,
+				_lockManager);
 		}
 
 		return new ThreadLocalAwareBackgroundTaskExecutor(

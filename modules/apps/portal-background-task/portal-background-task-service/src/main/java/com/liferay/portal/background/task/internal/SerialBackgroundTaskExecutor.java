@@ -8,6 +8,7 @@ package com.liferay.portal.background.task.internal;
 import com.liferay.portal.background.task.internal.lock.helper.BackgroundTaskLockHelper;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTask;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTaskExecutor;
+import com.liferay.portal.kernel.backgroundtask.BackgroundTaskExecutorRegistry;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTaskResult;
 import com.liferay.portal.kernel.backgroundtask.DelegatingBackgroundTaskExecutor;
 import com.liferay.portal.kernel.lock.DuplicateLockException;
@@ -22,19 +23,23 @@ public class SerialBackgroundTaskExecutor
 
 	public SerialBackgroundTaskExecutor(
 		BackgroundTaskExecutor backgroundTaskExecutor,
+		BackgroundTaskExecutorRegistry backgroundTaskExecutorRegistry,
 		LockManager lockManager) {
 
 		super(backgroundTaskExecutor);
 
+		_backgroundTaskExecutorRegistry = backgroundTaskExecutorRegistry;
 		_lockManager = lockManager;
 
-		_backgroundTaskLockHelper = new BackgroundTaskLockHelper(lockManager);
+		_backgroundTaskLockHelper = new BackgroundTaskLockHelper(
+			backgroundTaskExecutorRegistry, lockManager);
 	}
 
 	@Override
 	public BackgroundTaskExecutor clone() {
 		return new SerialBackgroundTaskExecutor(
-			getBackgroundTaskExecutor(), _lockManager);
+			getBackgroundTaskExecutor(), _backgroundTaskExecutorRegistry,
+			_lockManager);
 	}
 
 	@Override
@@ -73,6 +78,8 @@ public class SerialBackgroundTaskExecutor
 		return lock;
 	}
 
+	private final BackgroundTaskExecutorRegistry
+		_backgroundTaskExecutorRegistry;
 	private final BackgroundTaskLockHelper _backgroundTaskLockHelper;
 	private final LockManager _lockManager;
 

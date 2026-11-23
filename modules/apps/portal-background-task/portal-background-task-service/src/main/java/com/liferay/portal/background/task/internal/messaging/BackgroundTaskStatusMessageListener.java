@@ -12,7 +12,7 @@ import com.liferay.portal.background.task.internal.lock.helper.BackgroundTaskLoc
 import com.liferay.portal.background.task.model.BackgroundTask;
 import com.liferay.portal.background.task.service.BackgroundTaskLocalService;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTaskExecutor;
-import com.liferay.portal.kernel.backgroundtask.BackgroundTaskExecutorRegistryUtil;
+import com.liferay.portal.kernel.backgroundtask.BackgroundTaskExecutorRegistry;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTaskStatus;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTaskStatusMessageTranslator;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTaskStatusRegistry;
@@ -47,16 +47,19 @@ import java.util.Objects;
 public class BackgroundTaskStatusMessageListener extends BaseMessageListener {
 
 	public BackgroundTaskStatusMessageListener(
+		BackgroundTaskExecutorRegistry backgroundTaskExecutorRegistry,
 		BackgroundTaskLocalService backgroundTaskLocalService,
 		BackgroundTaskStatusRegistry backgroundTaskStatusRegistry,
 		LockManager lockManager, RoleLocalService roleLocalService,
 		UserLocalService userLocalService,
 		UserNotificationEventLocalService userNotificationEventLocalService) {
 
+		_backgroundTaskExecutorRegistry = backgroundTaskExecutorRegistry;
 		_backgroundTaskLocalService = backgroundTaskLocalService;
 		_backgroundTaskStatusRegistry = backgroundTaskStatusRegistry;
 
-		_backgroundTaskLockHelper = new BackgroundTaskLockHelper(lockManager);
+		_backgroundTaskLockHelper = new BackgroundTaskLockHelper(
+			backgroundTaskExecutorRegistry, lockManager);
 
 		_roleLocalService = roleLocalService;
 		_userLocalService = userLocalService;
@@ -188,7 +191,7 @@ public class BackgroundTaskStatusMessageListener extends BaseMessageListener {
 		}
 
 		BackgroundTaskExecutor backgroundTaskExecutor =
-			BackgroundTaskExecutorRegistryUtil.getBackgroundTaskExecutor(
+			_backgroundTaskExecutorRegistry.getBackgroundTaskExecutor(
 				backgroundTask.getTaskExecutorClassName());
 
 		if (backgroundTaskExecutor == null) {
@@ -274,6 +277,8 @@ public class BackgroundTaskStatusMessageListener extends BaseMessageListener {
 	private static final Log _log = LogFactoryUtil.getLog(
 		BackgroundTaskStatusMessageListener.class);
 
+	private final BackgroundTaskExecutorRegistry
+		_backgroundTaskExecutorRegistry;
 	private final BackgroundTaskLocalService _backgroundTaskLocalService;
 	private final BackgroundTaskLockHelper _backgroundTaskLockHelper;
 	private final BackgroundTaskStatusRegistry _backgroundTaskStatusRegistry;

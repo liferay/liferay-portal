@@ -8,7 +8,7 @@ package com.liferay.portal.background.task.internal.lock.helper;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTask;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTaskExecutor;
-import com.liferay.portal.kernel.backgroundtask.BackgroundTaskExecutorRegistryUtil;
+import com.liferay.portal.kernel.backgroundtask.BackgroundTaskExecutorRegistry;
 import com.liferay.portal.kernel.backgroundtask.constants.BackgroundTaskConstants;
 import com.liferay.portal.kernel.lock.Lock;
 import com.liferay.portal.kernel.lock.LockManager;
@@ -18,13 +18,17 @@ import com.liferay.portal.kernel.lock.LockManager;
  */
 public class BackgroundTaskLockHelper {
 
-	public BackgroundTaskLockHelper(LockManager lockManager) {
+	public BackgroundTaskLockHelper(
+		BackgroundTaskExecutorRegistry backgroundTaskExecutorRegistry,
+		LockManager lockManager) {
+
+		_backgroundTaskExecutorRegistry = backgroundTaskExecutorRegistry;
 		_lockManager = lockManager;
 	}
 
 	public String getLockKey(BackgroundTask backgroundTask) {
 		BackgroundTaskExecutor backgroundTaskExecutor =
-			BackgroundTaskExecutorRegistryUtil.getBackgroundTaskExecutor(
+			_backgroundTaskExecutorRegistry.getBackgroundTaskExecutor(
 				backgroundTask.getTaskExecutorClassName());
 
 		String lockKey = StringPool.BLANK;
@@ -94,6 +98,8 @@ public class BackgroundTaskLockHelper {
 			owner);
 	}
 
+	private final BackgroundTaskExecutorRegistry
+		_backgroundTaskExecutorRegistry;
 	private final LockManager _lockManager;
 
 }
