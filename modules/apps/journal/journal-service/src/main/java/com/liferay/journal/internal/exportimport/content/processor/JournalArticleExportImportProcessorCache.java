@@ -37,7 +37,7 @@ public class JournalArticleExportImportProcessorCache {
 				JournalArticleExportImportProcessorCache.class.getName());
 	}
 
-	private static PortalCache<String, String> _portalCache;
+	private PortalCache<String, String> _portalCache;
 
 	@Reference
 	private SingleVMPool _singleVMPool;
