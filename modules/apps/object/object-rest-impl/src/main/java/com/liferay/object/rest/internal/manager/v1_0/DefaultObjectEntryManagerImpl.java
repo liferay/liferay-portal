@@ -1771,12 +1771,23 @@ public class DefaultObjectEntryManagerImpl
 				serviceBuilderObjectEntry);
 		}
 
-		if (missingObjectEntryIds.isEmpty()) {
-			return serviceBuilderObjectEntry;
+		try (SafeCloseable safeCloseable =
+				ObjectEntryThreadLocal.
+					setSkipRootObjectEntryVersionWithSafeCloseable(true)) {
+
+			for (long missingObjectEntryId : missingObjectEntryIds) {
+				_objectEntryService.deleteObjectEntry(missingObjectEntryId);
+			}
 		}
 
-		for (long missingObjectEntryId : missingObjectEntryIds) {
-			_objectEntryService.deleteObjectEntry(missingObjectEntryId);
+		if (!ObjectEntryThreadLocal.isSkipRootObjectEntryVersion()) {
+			objectEntryLocalService.updateLatestRootObjectEntryVersion(
+				dtoConverterContext.getUserId(),
+				serviceBuilderObjectEntry.getObjectEntryId());
+		}
+
+		if (missingObjectEntryIds.isEmpty()) {
+			return serviceBuilderObjectEntry;
 		}
 
 		return objectEntryLocalService.getObjectEntry(
@@ -1833,19 +1844,24 @@ public class DefaultObjectEntryManagerImpl
 						nestedObjectEntry.getExternalReferenceCode(), groupId,
 						relatedObjectDefinition.getObjectDefinitionId());
 
-			if (nestedServiceBuilderObjectEntry == null) {
-				nestedObjectEntry = addRelatedObjectEntry(
-					dtoConverterContext,
-					serviceBuilderObjectEntry.getExternalReferenceCode(),
-					nestedObjectEntry, objectRelationship, nestedScopeKey);
-			}
-			else {
-				nestedObjectEntry = _updateRelatedObjectEntry(
-					dtoConverterContext,
-					nestedObjectEntry.getExternalReferenceCode(),
-					nestedObjectEntry, objectRelationship,
-					serviceBuilderObjectEntry.getExternalReferenceCode(),
-					partialUpdate, nestedScopeKey);
+			try (SafeCloseable safeCloseable =
+					ObjectEntryThreadLocal.
+						setSkipRootObjectEntryVersionWithSafeCloseable(true)) {
+
+				if (nestedServiceBuilderObjectEntry == null) {
+					nestedObjectEntry = addRelatedObjectEntry(
+						dtoConverterContext,
+						serviceBuilderObjectEntry.getExternalReferenceCode(),
+						nestedObjectEntry, objectRelationship, nestedScopeKey);
+				}
+				else {
+					nestedObjectEntry = _updateRelatedObjectEntry(
+						dtoConverterContext,
+						nestedObjectEntry.getExternalReferenceCode(),
+						nestedObjectEntry, objectRelationship,
+						serviceBuilderObjectEntry.getExternalReferenceCode(),
+						partialUpdate, nestedScopeKey);
+				}
 			}
 		}
 		else if (LazyReferencingThreadLocal.isEnabled()) {
