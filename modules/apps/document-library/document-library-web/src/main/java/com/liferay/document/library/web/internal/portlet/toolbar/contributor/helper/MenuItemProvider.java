@@ -573,11 +573,11 @@ public class MenuItemProvider {
 	private static final Log _log = LogFactoryUtil.getLog(
 		MenuItemProvider.class);
 
-	private static ServiceTrackerMap<String, DLFileEntryTypeIconProvider>
-		_dlFileEntryTypeIconProviderServiceTrackerMap;
-
 	@Reference
 	private AICreatorOpenAIMenuItemFactory _aiCreatorOpenAIMenuItemFactory;
+
+	private ServiceTrackerMap<String, DLFileEntryTypeIconProvider>
+		_dlFileEntryTypeIconProviderServiceTrackerMap;
 
 	@Reference
 	private DLFileEntryTypeLocalService _dlFileEntryTypeLocalService;
