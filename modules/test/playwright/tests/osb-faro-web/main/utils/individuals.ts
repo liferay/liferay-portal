@@ -20,9 +20,11 @@ export type Individual = {
 
 export async function createIndividuals({
 	apiHelpers,
+	channelId,
 	individuals,
 }: {
 	apiHelpers: ApiHelpers;
+	channelId?: string;
 	individuals: Individual[];
 }) {
 	const formattedIndividuals = individuals.map(
@@ -79,6 +81,23 @@ export async function createIndividuals({
 
 	await apiHelpers.jsonWebServicesOSBAsah.createIdentities(
 		individualIdentities
+	);
+
+	if (!channelId) {
+		return;
+	}
+
+	await apiHelpers.jsonWebServicesOSBAsah.createIdentityActivitiesSummary(
+		individuals.map(({dataSourceId = 0, id}) => ({
+			activitiesCount: 1,
+			channelId,
+			dataSourceId,
+			eventId: 'pageViewed',
+			firstActivityDate: modifiedDate,
+			identityId: id,
+			individualId: id,
+			lastActivityDate: modifiedDate,
+		}))
 	);
 }
 
