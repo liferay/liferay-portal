@@ -239,8 +239,6 @@ public class ClusterMasterExecutorImpl implements ClusterMasterExecutor {
 	private static final Log _log = LogFactoryUtil.getLog(
 		ClusterMasterExecutorImpl.class);
 
-	private static volatile boolean _master;
-
 	@Reference
 	private ClusterExecutor _clusterExecutor;
 
@@ -248,6 +246,7 @@ public class ClusterMasterExecutorImpl implements ClusterMasterExecutor {
 		_clusterMasterTokenTransitionListeners = new CopyOnWriteArraySet<>();
 	private boolean _enabled;
 	private volatile String _localClusterNodeId;
+	private volatile boolean _master;
 	private ServiceRegistration<ClusterEventListener> _serviceRegistration;
 
 	private class ClusterMasterTokenClusterEventListener
