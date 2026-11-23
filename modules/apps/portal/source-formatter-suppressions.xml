@@ -7,6 +7,7 @@
 		<suppress checks="MethodNameCheck" files="portal-http-impl/src/main/java/com/liferay/portal/http/internal/HttpImpl\.java" />
 		<suppress checks="PersistenceCallCheck" files="portal-dao-test/src/testIntegration/java/com/liferay/portal/dao/orm/hibernate/test/SuspendedSessionConnectionTest\.java" />
 		<suppress checks="PersistenceCallCheck" files="portal-upgrade-test/src/testIntegration/java/com/liferay/portal/upgrade/test/BaseBuildAutoUpgradeTestCase\.java" />
+		<suppress checks="TestClassStaticVariableCheck" files="portal-cluster-multiple-test/src/testIntegration/java/com/liferay/portal/cluster/multiple/test/ClusterLinkTest\.java" />
 		<suppress checks="UnprocessedExceptionCheck" files="portal-proxy/src/main/java/com/liferay/portal/proxy/internal/ASMDelegateProxyFactory\.java" />
 	</checkstyle>
 	<source-check>

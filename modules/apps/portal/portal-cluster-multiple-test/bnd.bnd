@@ -1,0 +1,3 @@
+Bundle-Name: Liferay Portal Cluster Multiple Test
+Bundle-SymbolicName: com.liferay.portal.cluster.multiple.test
+Bundle-Version: 1.0.0
