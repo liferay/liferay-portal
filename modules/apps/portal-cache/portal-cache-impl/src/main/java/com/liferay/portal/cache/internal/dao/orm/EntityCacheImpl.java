@@ -179,7 +179,7 @@ public class EntityCacheImpl
 			return null;
 		}
 
-		Serializable result = null;
+		Object result = null;
 
 		Map<Serializable, Serializable> localCache = null;
 
@@ -204,7 +204,7 @@ public class EntityCacheImpl
 			}
 
 			if (localCache != null) {
-				localCache.put(localCacheKey, result);
+				localCache.put(localCacheKey, (Serializable)result);
 			}
 		}
 
@@ -482,7 +482,7 @@ public class EntityCacheImpl
 		portalCache.remove(primaryKey);
 	}
 
-	private Serializable _toEntityModel(Serializable result) {
+	private Serializable _toEntityModel(Object result) {
 		if (result == StringPool.BLANK) {
 			return null;
 		}
