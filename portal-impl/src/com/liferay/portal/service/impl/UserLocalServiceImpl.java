@@ -36,8 +36,6 @@ import com.liferay.portal.kernel.dao.orm.EntityCacheUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.WildcardMode;
-import com.liferay.portal.kernel.encryptor.EncryptorException;
-import com.liferay.portal.kernel.encryptor.EncryptorUtil;
 import com.liferay.portal.kernel.exception.CompanyMaxUsersException;
 import com.liferay.portal.kernel.exception.ContactBirthdayException;
 import com.liferay.portal.kernel.exception.ContactNameException;
@@ -1654,109 +1652,6 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 	}
 
 	/**
-	 * Attempts to authenticate the user using HTTP basic access authentication,
-	 * without using the AuthPipeline. Primarily used for authenticating users
-	 * of <code>tunnel-web</code>.
-	 *
-	 * <p>
-	 * Authentication type specifies what <code>login</code> contains.The valid
-	 * values are:
-	 * </p>
-	 *
-	 * <ul>
-	 * <li>
-	 * <code>CompanyConstants.AUTH_TYPE_EA</code> - <code>login</code> is the
-	 * user's email address
-	 * </li>
-	 * <li>
-	 * <code>CompanyConstants.AUTH_TYPE_SN</code> - <code>login</code> is the
-	 * user's screen name
-	 * </li>
-	 * <li>
-	 * <code>CompanyConstants.AUTH_TYPE_ID</code> - <code>login</code> is the
-	 * user's primary key
-	 * </li>
-	 * </ul>
-	 *
-	 * @param  companyId the primary key of the user's company
-	 * @param  authType the type of authentication to perform
-	 * @param  login either the user's email address, screen name, or primary
-	 *         key depending on the value of <code>authType</code>
-	 * @param  password the user's password
-	 * @return the user's primary key if authentication is successful;
-	 *         <code>0</code> otherwise
-	 */
-	@Override
-	@Transactional(propagation = Propagation.SUPPORTS)
-	public long authenticateForBasic(
-			long companyId, String authType, String login, String password)
-		throws PortalException {
-
-		if (PropsValues.AUTH_LOGIN_DISABLED) {
-			return 0;
-		}
-
-		User user = null;
-
-		if (authType.equals(CompanyConstants.AUTH_TYPE_EA)) {
-			user = fetchUserByEmailAddress(companyId, login);
-		}
-		else if (authType.equals(CompanyConstants.AUTH_TYPE_SN)) {
-			user = fetchUserByScreenName(companyId, login);
-		}
-		else if (authType.equals(CompanyConstants.AUTH_TYPE_ID)) {
-			user = userPersistence.fetchByPrimaryKey(GetterUtil.getLong(login));
-		}
-
-		if ((user == null) || !isUserAllowedToAuthenticate(user)) {
-			return 0;
-		}
-
-		user = (User)user.clone();
-
-		try {
-			user = _checkPasswordPolicy(user);
-		}
-		finally {
-			user = _updateUser(user);
-		}
-
-		if (!PropsValues.BASIC_AUTH_PASSWORD_REQUIRED) {
-			return user.getUserId();
-		}
-
-		String userPassword = user.getPassword();
-
-		if (!user.isPasswordEncrypted()) {
-			userPassword = PasswordEncryptorUtil.encrypt(userPassword);
-		}
-
-		String encPassword = PasswordEncryptorUtil.encrypt(
-			password, userPassword);
-
-		boolean encPasswordMatches = MessageDigest.isEqual(
-			encPassword.getBytes(StandardCharsets.UTF_8),
-			userPassword.getBytes(StandardCharsets.UTF_8));
-
-		boolean passwordMatches = MessageDigest.isEqual(
-			password.getBytes(StandardCharsets.UTF_8),
-			userPassword.getBytes(StandardCharsets.UTF_8));
-
-		if (encPasswordMatches || passwordMatches) {
-			_updateUser(resetFailedLoginAttempts(user));
-
-			return user.getUserId();
-		}
-
-		handleAuthenticationFailure(
-			companyId, authType, login, user,
-			Collections.<String, String[]>emptyMap(),
-			Collections.<String, String[]>emptyMap());
-
-		return 0;
-	}
-
-	/**
 	 * Attempts to authenticate the user using HTTP digest access
 	 * authentication, without using the AuthPipeline. Primarily used for
 	 * authenticating users of <code>tunnel-web</code>.
@@ -1927,23 +1822,6 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		PasswordPolicy passwordPolicy = user.getPasswordPolicy();
 
 		checkLoginFailure(_unlockOutUser(user, passwordPolicy));
-	}
-
-	/**
-	 * Checks if the user's password is expired based on the password policy,
-	 * and performs maintenance on the user's grace login and password reset
-	 * data.
-	 *
-	 * @param user the user
-	 */
-	@Override
-	public void checkPasswordExpired(User user) throws PortalException {
-		try {
-			doCheckPasswordExpired(user, user.getPasswordPolicy());
-		}
-		finally {
-			_updateUser(user);
-		}
 	}
 
 	/**
@@ -2551,31 +2429,6 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 	}
 
 	/**
-	 * Encrypts the primary key of the user. Used when encrypting the user's
-	 * credentials for storage in an automatic login cookie.
-	 *
-	 * @param  name the primary key of the user
-	 * @return the user's encrypted primary key
-	 */
-	@Override
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public String encryptUserId(String name) throws PortalException {
-		long userId = GetterUtil.getLong(name);
-
-		User user = userPersistence.findByPrimaryKey(userId);
-
-		Company company = _companyPersistence.findByPrimaryKey(
-			user.getCompanyId());
-
-		try {
-			return EncryptorUtil.encrypt(company.getKeyObj(), name);
-		}
-		catch (EncryptorException encryptorException) {
-			throw new SystemException(encryptorException);
-		}
-	}
-
-	/**
 	 * Returns the guest user for the company.
 	 *
 	 * @param  companyId the primary key of the company
@@ -2706,39 +2559,6 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		screenName = getLogin(screenName);
 
 		return userPersistence.fetchByC_SN(companyId, screenName);
-	}
-
-	/**
-	 * Returns a range of all the users belonging to the company.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end -
-	 * start</code> instances. <code>start</code> and <code>end</code> are not
-	 * primary keys, they are indexes in the result set. Thus, <code>0</code>
-	 * refers to the first result in the set. Setting both <code>start</code>
-	 * and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full
-	 * result set.
-	 * </p>
-	 *
-	 * @param  companyId the primary key of the company
-	 * @param  start the lower bound of the range of users
-	 * @param  end the upper bound of the range of users (not inclusive)
-	 * @return the range of users belonging to the company
-	 */
-	@Override
-	public List<User> getCompanyUsers(long companyId, int start, int end) {
-		return userPersistence.findByCompanyId(companyId, start, end);
-	}
-
-	/**
-	 * Returns the number of users belonging to the company.
-	 *
-	 * @param  companyId the primary key of the company
-	 * @return the number of users belonging to the company
-	 */
-	@Override
-	public int getCompanyUsersCount(long companyId) {
-		return userPersistence.countByCompanyId(companyId);
 	}
 
 	/**
@@ -3185,27 +3005,6 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		return userFinder.countBySocialUsers(
 			user.getCompanyId(), user.getUserId(), socialRelationType,
 			socialRelationTypeComparator, WorkflowConstants.STATUS_APPROVED);
-	}
-
-	/**
-	 * Returns the number of users with a mutual social relation with both of
-	 * the given users.
-	 *
-	 * @param  userId1 the primary key of the first user
-	 * @param  userId2 the primary key of the second user
-	 * @return the number of users with a mutual social relation with the user
-	 */
-	@Override
-	public int getSocialUsersCount(long userId1, long userId2)
-		throws PortalException {
-
-		User user1 = userPersistence.findByPrimaryKey(userId1);
-
-		return searchCount(
-			user1.getCompanyId(), null, WorkflowConstants.STATUS_APPROVED,
-			LinkedHashMapBuilder.<String, Object>put(
-				"socialMutualRelation", new Long[] {userId1, userId2}
-			).build());
 	}
 
 	/**
@@ -4085,93 +3884,6 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		return counts;
 	}
 
-	@Override
-	public BaseModelSearchResult<User> searchUsers(
-			long companyId, String keywords, int status,
-			LinkedHashMap<String, Object> params, int start, int end, Sort sort)
-		throws PortalException {
-
-		return searchUsers(
-			companyId, keywords, status, params, start, end, new Sort[] {sort});
-	}
-
-	@Override
-	public BaseModelSearchResult<User> searchUsers(
-			long companyId, String keywords, int status,
-			LinkedHashMap<String, Object> params, int start, int end,
-			Sort[] sorts)
-		throws PortalException {
-
-		String firstName = null;
-		String middleName = null;
-		String lastName = null;
-		String fullName = null;
-		String screenName = null;
-		String street = null;
-		String city = null;
-		String zip = null;
-		String region = null;
-		String country = null;
-		boolean andOperator = false;
-
-		if (Validator.isNotNull(keywords)) {
-			firstName = keywords;
-			middleName = keywords;
-			lastName = keywords;
-			fullName = keywords;
-			screenName = keywords;
-			street = keywords;
-			city = keywords;
-			zip = keywords;
-			region = keywords;
-			country = keywords;
-		}
-		else {
-			andOperator = true;
-		}
-
-		if (params != null) {
-			params.put("keywords", keywords);
-		}
-
-		SearchContext searchContext = buildSearchContext(
-			companyId, firstName, middleName, lastName, fullName, screenName,
-			null, street, city, zip, region, country, status, params,
-			andOperator, start, end, sorts);
-
-		return searchUsers(searchContext);
-	}
-
-	@Override
-	public BaseModelSearchResult<User> searchUsers(
-			long companyId, String firstName, String middleName,
-			String lastName, String screenName, String emailAddress, int status,
-			LinkedHashMap<String, Object> params, boolean andSearch, int start,
-			int end, Sort sort)
-		throws PortalException {
-
-		return searchUsers(
-			companyId, firstName, middleName, lastName, screenName,
-			emailAddress, status, params, andSearch, start, end,
-			new Sort[] {sort});
-	}
-
-	@Override
-	public BaseModelSearchResult<User> searchUsers(
-			long companyId, String firstName, String middleName,
-			String lastName, String screenName, String emailAddress, int status,
-			LinkedHashMap<String, Object> params, boolean andSearch, int start,
-			int end, Sort[] sorts)
-		throws PortalException {
-
-		SearchContext searchContext = buildSearchContext(
-			companyId, firstName, middleName, lastName, null, screenName,
-			emailAddress, null, null, null, null, null, status, params,
-			andSearch, start, end, sorts);
-
-		return searchUsers(searchContext);
-	}
-
 	/**
 	 * Sends an email address verification to the user.
 	 *
@@ -4978,24 +4690,6 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 	}
 
 	/**
-	 * Updates the user's creation date.
-	 *
-	 * @param  userId the primary key of the user
-	 * @param  createDate the new creation date
-	 * @return the user
-	 */
-	@Override
-	public User updateCreateDate(long userId, Date createDate)
-		throws PortalException {
-
-		User user = userPersistence.findByPrimaryKey(userId);
-
-		user.setCreateDate(createDate);
-
-		return userPersistence.update(user);
-	}
-
-	/**
 	 * Updates the user's email address.
 	 *
 	 * @param  userId the primary key of the user
@@ -5312,34 +5006,6 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 			user, workflowServiceContext);
 
 		return getUserByEmailAddress(companyId, emailAddress);
-	}
-
-	/**
-	 * Updates the user's job title.
-	 *
-	 * @param  userId the primary key of the user
-	 * @param  jobTitle the user's job title
-	 * @return the user
-	 */
-	@Indexable(type = IndexableType.REINDEX)
-	@Override
-	public User updateJobTitle(long userId, String jobTitle)
-		throws PortalException {
-
-		User user = userPersistence.findByPrimaryKey(userId);
-
-		user.setJobTitle(jobTitle);
-
-		user = userPersistence.update(user);
-
-		Contact contact = _contactPersistence.findByPrimaryKey(
-			user.getContactId());
-
-		contact.setJobTitle(jobTitle);
-
-		_contactPersistence.update(contact);
-
-		return user;
 	}
 
 	@CTAware(onProduction = true)
@@ -5676,40 +5342,6 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 				user, user.getCompanyId(), password1, null, null, null, null,
 				null, serviceContext);
 		}
-
-		_invalidateTicket(user);
-
-		return user;
-	}
-
-	/**
-	 * Updates the user's password with manually input information. This method
-	 * should only be used when performing maintenance.
-	 *
-	 * @param  userId the primary key of the user
-	 * @param  password the user's new password
-	 * @param  passwordEncrypted the user's new encrypted password
-	 * @param  passwordReset whether the user should be asked to reset their
-	 *         password the next time they login
-	 * @param  passwordModifiedDate the new password modified date
-	 * @return the user
-	 */
-	@Override
-	public User updatePasswordManually(
-			long userId, String password, boolean passwordEncrypted,
-			boolean passwordReset, Date passwordModifiedDate)
-		throws PortalException {
-
-		// This method should only be used to manually massage data
-
-		User user = userPersistence.findByPrimaryKey(userId);
-
-		user.setPassword(password);
-		user.setPasswordEncrypted(passwordEncrypted);
-		user.setPasswordReset(passwordReset);
-		user.setPasswordModifiedDate(passwordModifiedDate);
-
-		user = userPersistence.update(user);
 
 		_invalidateTicket(user);
 

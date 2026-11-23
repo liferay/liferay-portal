@@ -701,89 +701,6 @@ public class UserLocalServiceTest {
 	}
 
 	@Test
-	public void testCheckPasswordExpiredLDAPUserWithLDAPPasswordPolicy()
-		throws Exception {
-
-		try (LDAPAuthConfigurationProviderTemporarySwapper
-				ldapAuthConfigurationProviderTemporarySwapper =
-					new LDAPAuthConfigurationProviderTemporarySwapper(
-						TestPropsValues.getCompanyId(), true);
-			SafeCloseable safeCloseable =
-				_updateDefaultPasswordPolicyWithSafeCloseable(
-					passwordPolicy -> passwordPolicy.setChangeRequired(true))) {
-
-			User user = _addUser(true, "Liferay123");
-
-			_userLocalService.checkPasswordExpired(user);
-
-			user = _userLocalService.fetchUser(user.getUserId());
-
-			Assert.assertFalse(
-				"LDAP user is not bypassing password policy check",
-				user.isPasswordReset());
-		}
-	}
-
-	@Test
-	public void testCheckPasswordExpiredLDAPUserWithoutLDAPPasswordPolicy()
-		throws Exception {
-
-		try (LDAPAuthConfigurationProviderTemporarySwapper
-				ldapAuthConfigurationProviderTemporarySwapper =
-					new LDAPAuthConfigurationProviderTemporarySwapper(
-						TestPropsValues.getCompanyId(), false);
-			SafeCloseable safeCloseable =
-				_updateDefaultPasswordPolicyWithSafeCloseable(
-					passwordPolicy -> passwordPolicy.setChangeRequired(true))) {
-
-			User user = _addUser(true, "Liferay123");
-
-			_userLocalService.checkPasswordExpired(user);
-
-			user = _userLocalService.fetchUser(user.getUserId());
-
-			Assert.assertTrue(
-				"LDAP user is not adhering to password policy check",
-				user.isPasswordReset());
-		}
-	}
-
-	@Test
-	public void testCheckPasswordExpiredPortalUser() throws Exception {
-		try (LDAPAuthConfigurationProviderTemporarySwapper
-				ldapAuthConfigurationProviderTemporarySwapper =
-					new LDAPAuthConfigurationProviderTemporarySwapper(
-						TestPropsValues.getCompanyId(), true)) {
-
-			User user = null;
-
-			try (SafeCloseable safeCloseable =
-					_updateDefaultPasswordPolicyWithSafeCloseable(
-						passwordPolicy -> passwordPolicy.setChangeRequired(
-							false))) {
-
-				user = UserTestUtil.addUser();
-
-				Assert.assertFalse(user.isPasswordReset());
-			}
-
-			try (SafeCloseable safeCloseable =
-					_updateDefaultPasswordPolicyWithSafeCloseable(
-						passwordPolicy -> passwordPolicy.setChangeRequired(
-							true))) {
-
-				_userLocalService.checkPasswordExpired(user);
-
-				user = _userLocalService.fetchUser(user.getUserId());
-
-				Assert.assertTrue(
-					"User should have to reset their password on first login",
-					user.isPasswordReset());
-			}
-		}
-	}
-
-	@Test
 	public void testClearGroupUsers() throws Exception {
 		Group group = GroupTestUtil.addGroup();
 		User user = UserTestUtil.addUser();
@@ -1141,26 +1058,6 @@ public class UserLocalServiceTest {
 		Assert.assertEquals(Collections.emptyList(), _search(userGroup));
 
 		_assertSearchUserGroup(false, user2, userGroup);
-	}
-
-	@Test
-	public void testGetCompanyUsers() throws Exception {
-		_company = CompanyTestUtil.addCompany();
-
-		try (SafeCloseable safeCloseable =
-				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
-					_company.getCompanyId())) {
-
-			List<User> companyUsers = _userLocalService.getCompanyUsers(
-				_company.getCompanyId(), QueryUtil.ALL_POS, QueryUtil.ALL_POS);
-
-			Assert.assertEquals(
-				companyUsers.toString(), 1, companyUsers.size());
-
-			User user = companyUsers.get(0);
-
-			Assert.assertFalse(user.isGuestUser());
-		}
 	}
 
 	@Test

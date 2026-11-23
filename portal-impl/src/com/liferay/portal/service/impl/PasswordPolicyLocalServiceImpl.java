@@ -9,7 +9,6 @@ import com.liferay.petra.string.CharPool;
 import com.liferay.portal.kernel.bean.BeanReference;
 import com.liferay.portal.kernel.cache.thread.local.ThreadLocalCachable;
 import com.liferay.portal.kernel.exception.DuplicatePasswordPolicyException;
-import com.liferay.portal.kernel.exception.NoSuchPasswordPolicyException;
 import com.liferay.portal.kernel.exception.PasswordPolicyNameException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.RequiredPasswordPolicyException;
@@ -313,29 +312,6 @@ public class PasswordPolicyLocalServiceImpl
 		}
 
 		return getDefaultPasswordPolicy(companyId);
-	}
-
-	@Override
-	public PasswordPolicy getPasswordPolicyByUser(User user)
-		throws PortalException {
-
-		PasswordPolicy passwordPolicy = fetchPasswordPolicyByUser(user);
-
-		if (passwordPolicy == null) {
-			throw new NoSuchPasswordPolicyException(
-				"No password policy exists for user " + user.getUserId());
-		}
-
-		return passwordPolicy;
-	}
-
-	@Override
-	@ThreadLocalCachable
-	public PasswordPolicy getPasswordPolicyByUserId(long userId)
-		throws PortalException {
-
-		return getPasswordPolicyByUser(
-			_userPersistence.findByPrimaryKey(userId));
 	}
 
 	@Override

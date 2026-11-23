@@ -12,12 +12,13 @@ import com.liferay.portal.kernel.cache.PortalCacheException;
 import com.liferay.portal.kernel.cache.PortalCacheHelperUtil;
 import com.liferay.portal.kernel.cache.PortalCacheListener;
 import com.liferay.portal.kernel.cache.PortalCacheManagerNames;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.model.UserGroup;
 import com.liferay.portal.kernel.service.UserGroupLocalServiceUtil;
 import com.liferay.portal.kernel.test.rule.TomcatClusterTestRule;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserGroupTestUtil;
+import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.cluster.tomcat.TomcatCluster;
 import com.liferay.portal.test.cluster.tomcat.TomcatNode;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -188,9 +189,11 @@ public class ClusterCacheReplicationTest implements Serializable {
 
 		TomcatNode.ClusterExecutable<ArrayList<UserGroup>>
 			getUserGroupsClusterExecutable = () -> new ArrayList<>(
-				UserGroupLocalServiceUtil.getUserGroups(
-					TestPropsValues.getCompanyId(), userGroupNamePrefix + "%",
-					QueryUtil.ALL_POS, QueryUtil.ALL_POS));
+				ListUtil.filter(
+					UserGroupLocalServiceUtil.getUserGroups(
+						TestPropsValues.getCompanyId()),
+					userGroup -> StringUtil.startsWith(
+						userGroup.getName(), userGroupNamePrefix)));
 
 		List<UserGroup> userGroups = _tomcatNode1.syncExecute(
 			getUserGroupsClusterExecutable);

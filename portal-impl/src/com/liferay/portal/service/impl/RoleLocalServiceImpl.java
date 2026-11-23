@@ -40,7 +40,6 @@ import com.liferay.portal.kernel.model.Groups_UserGroupsTable;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.model.ResourceAction;
-import com.liferay.portal.kernel.model.ResourceActionTable;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.ResourcePermission;
 import com.liferay.portal.kernel.model.ResourcePermissionTable;
@@ -290,16 +289,6 @@ public class RoleLocalServiceImpl extends RoleLocalServiceBaseImpl {
 		reindex(userId);
 
 		return true;
-	}
-
-	/**
-	 * Checks to ensure that the system roles map has appropriate default roles
-	 * in each company.
-	 */
-	@Override
-	public void checkSystemRoles() throws PortalException {
-		_companyLocalService.forEachCompanyId(
-			companyId -> checkSystemRoles(companyId));
 	}
 
 	/**
@@ -874,67 +863,6 @@ public class RoleLocalServiceImpl extends RoleLocalServiceBaseImpl {
 	}
 
 	/**
-	 * Returns a map of role names to associated action IDs for the named
-	 * resource in the company within the permission scope.
-	 *
-	 * @param  companyId the primary key of the company
-	 * @param  name the resource name
-	 * @param  scope the permission scope
-	 * @param  primKey the primary key of the resource's class
-	 * @return the role names and action IDs
-	 */
-	@Override
-	public Map<String, List<String>> getResourceRoles(
-		long companyId, String name, int scope, String primKey) {
-
-		Map<String, List<String>> rolesMap = new HashMap<>();
-
-		for (Object[] array :
-				rolePersistence.<List<Object[]>>dslQuery(
-					DSLQueryFactoryUtil.select(
-						RoleTable.INSTANCE.name.as("roleName"),
-						ResourceActionTable.INSTANCE.actionId.as("actionId")
-					).from(
-						ResourcePermissionTable.INSTANCE
-					).innerJoinON(
-						RoleTable.INSTANCE,
-						RoleTable.INSTANCE.roleId.eq(
-							ResourcePermissionTable.INSTANCE.roleId)
-					).innerJoinON(
-						ResourceActionTable.INSTANCE,
-						ResourceActionTable.INSTANCE.name.eq(
-							ResourcePermissionTable.INSTANCE.name
-						).and(
-							ResourceActionTable.INSTANCE.bitwiseValue.eq(
-								DSLFunctionFactoryUtil.bitAnd(
-									ResourcePermissionTable.INSTANCE.actionIds,
-									ResourceActionTable.INSTANCE.bitwiseValue))
-						)
-					).where(
-						ResourcePermissionTable.INSTANCE.companyId.eq(
-							companyId
-						).and(
-							ResourcePermissionTable.INSTANCE.name.eq(name)
-						).and(
-							ResourcePermissionTable.INSTANCE.scope.eq(scope)
-						).and(
-							ResourcePermissionTable.INSTANCE.primKey.eq(primKey)
-						)
-					))) {
-
-			String roleName = (String)array[0];
-			String actionId = (String)array[1];
-
-			List<String> roles = rolesMap.computeIfAbsent(
-				roleName, key -> new ArrayList<>());
-
-			roles.add(actionId);
-		}
-
-		return rolesMap;
-	}
-
-	/**
 	 * Returns all the roles associated with the action ID in the company within
 	 * the permission scope.
 	 *
@@ -1152,31 +1080,6 @@ public class RoleLocalServiceImpl extends RoleLocalServiceBaseImpl {
 	}
 
 	/**
-	 * Returns a range of all the roles of the type.
-	 *
-	 * @param  type the role's type (optionally <code>0</code>)
-	 * @param  start the lower bound of the range of roles to return
-	 * @param  end the upper bound of the range of roles to return (not
-	 *         inclusive)
-	 * @return the range of the roles of the type
-	 */
-	@Override
-	public List<Role> getTypeRoles(int type, int start, int end) {
-		return rolePersistence.findByType(type, start, end);
-	}
-
-	/**
-	 * Returns the number of roles of the type.
-	 *
-	 * @param  type the role's type (optionally <code>0</code>)
-	 * @return the number of roles of the type
-	 */
-	@Override
-	public int getTypeRolesCount(int type) {
-		return rolePersistence.countByType(type);
-	}
-
-	/**
 	 * Returns all the user's roles within the user group.
 	 *
 	 * @param  userId the primary key of the user
@@ -1214,29 +1117,6 @@ public class RoleLocalServiceImpl extends RoleLocalServiceBaseImpl {
 				)
 			).limit(
 				start, end
-			));
-	}
-
-	@Override
-	public int getUserGroupGroupRolesCount(long userId, long groupId) {
-		return rolePersistence.dslQueryCount(
-			DSLQueryFactoryUtil.count(
-			).from(
-				RoleTable.INSTANCE
-			).innerJoinON(
-				UserGroupGroupRoleTable.INSTANCE,
-				UserGroupGroupRoleTable.INSTANCE.roleId.eq(
-					RoleTable.INSTANCE.roleId)
-			).innerJoinON(
-				Users_UserGroupsTable.INSTANCE,
-				Users_UserGroupsTable.INSTANCE.userGroupId.eq(
-					UserGroupGroupRoleTable.INSTANCE.userGroupId)
-			).where(
-				Users_UserGroupsTable.INSTANCE.userId.eq(
-					userId
-				).and(
-					UserGroupGroupRoleTable.INSTANCE.groupId.eq(groupId)
-				)
 			));
 	}
 

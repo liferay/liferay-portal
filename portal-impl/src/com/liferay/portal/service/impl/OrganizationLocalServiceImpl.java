@@ -8,7 +8,6 @@ package com.liferay.portal.service.impl;
 import com.liferay.asset.kernel.service.AssetEntryLocalService;
 import com.liferay.expando.kernel.service.ExpandoRowLocalService;
 import com.liferay.exportimport.kernel.empty.model.EmptyModelManagerUtil;
-import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.bean.BeanReference;
@@ -72,8 +71,6 @@ import com.liferay.portal.kernel.service.persistence.UserFinder;
 import com.liferay.portal.kernel.service.persistence.UserGroupRolePersistence;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
-import com.liferay.portal.kernel.tree.TreeModelTasksAdapter;
-import com.liferay.portal.kernel.tree.TreePathUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -84,7 +81,6 @@ import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.kernel.util.comparator.OrganizationIdComparator;
 import com.liferay.portal.kernel.util.comparator.OrganizationNameComparator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.service.base.OrganizationLocalServiceBaseImpl;
@@ -1127,51 +1123,6 @@ public class OrganizationLocalServiceImpl
 	}
 
 	/**
-	 * Returns the number of organizations belonging to the parent organization.
-	 *
-	 * @param  companyId the primary key of the organization's company
-	 * @param  parentOrganizationId the primary key of the organization's parent
-	 *         organization
-	 * @return the number of organizations belonging to the parent organization
-	 */
-	@Override
-	public int getOrganizationsCount(
-		long companyId, long parentOrganizationId) {
-
-		if (parentOrganizationId ==
-				OrganizationConstants.ANY_PARENT_ORGANIZATION_ID) {
-
-			return organizationPersistence.countByCompanyId(companyId);
-		}
-
-		return organizationPersistence.countByC_P(
-			companyId, parentOrganizationId);
-	}
-
-	@Override
-	public int getOrganizationsCount(
-		long companyId, long parentOrganizationId, String name) {
-
-		if (Validator.isNull(name)) {
-			return organizationPersistence.countByC_P(
-				companyId, parentOrganizationId);
-		}
-
-		return organizationPersistence.countByC_P_LikeN(
-			companyId, parentOrganizationId, name);
-	}
-
-	@Override
-	public int getOrganizationsCount(long companyId, String name) {
-		if (Validator.isNull(name)) {
-			return organizationPersistence.countByCompanyId(companyId);
-		}
-
-		return organizationPersistence.countByC_LikeN(
-			companyId, StringUtil.quote(name, StringPool.PERCENT));
-	}
-
-	/**
 	 * Returns the parent organizations in order by closest ancestor. The list
 	 * starts with the organization itself.
 	 *
@@ -1243,31 +1194,6 @@ public class OrganizationLocalServiceImpl
 	@Override
 	public int getSuborganizationsCount(long companyId, long organizationId) {
 		return organizationPersistence.countByC_P(companyId, organizationId);
-	}
-
-	/**
-	 * Returns the intersection of <code>allOrganizations</code> and
-	 * <code>availableOrganizations</code>.
-	 *
-	 * @param  allOrganizations the organizations to check for availability
-	 * @param  availableOrganizations the available organizations
-	 * @return the intersection of <code>allOrganizations</code> and
-	 *         <code>availableOrganizations</code>
-	 */
-	@Override
-	public List<Organization> getSubsetOrganizations(
-		List<Organization> allOrganizations,
-		List<Organization> availableOrganizations) {
-
-		return TransformUtil.transform(
-			allOrganizations,
-			organization -> {
-				if (availableOrganizations.contains(organization)) {
-					return organization;
-				}
-
-				return null;
-			});
 	}
 
 	@Override
@@ -1513,38 +1439,6 @@ public class OrganizationLocalServiceImpl
 	}
 
 	/**
-	 * Rebuilds the organization's tree.
-	 *
-	 * <p>
-	 * Only call this method if the tree has become stale through operations
-	 * other than normal CRUD. Under normal circumstances the tree is
-	 * automatically rebuilt whenever necessary.
-	 * </p>
-	 *
-	 * @param companyId the primary key of the organization's company
-	 */
-	@Override
-	public void rebuildTree(long companyId) throws PortalException {
-		TreePathUtil.rebuildTree(
-			companyId, OrganizationConstants.DEFAULT_PARENT_ORGANIZATION_ID,
-			StringPool.SLASH,
-			new TreeModelTasksAdapter<Organization>() {
-
-				@Override
-				public List<Organization> findTreeModels(
-					long previousId, long companyId, long parentPrimaryKey,
-					int size) {
-
-					return organizationPersistence.findByGtO_C_P(
-						previousId, companyId, parentPrimaryKey,
-						QueryUtil.ALL_POS, size,
-						OrganizationIdComparator.getInstance(true));
-				}
-
-			});
-	}
-
-	/**
 	 * Returns a name ordered range of all the organizations that match the
 	 * keywords, type, region, and country, without using the indexer. It is
 	 * preferable to use the indexed version {@link #searchOrganizations(long,
@@ -1648,64 +1542,6 @@ public class OrganizationLocalServiceImpl
 			companyId, parentOrganizationId, parentOrganizationIdComparator,
 			keywords, type, regionId, countryId, params, start, end,
 			orderByComparator);
-	}
-
-	/**
-	 * Returns an ordered range of all the organizations whose name, type, or
-	 * location fields match the keywords specified for them, using the indexer.
-	 * It is preferable to use this method instead of the non-indexed version
-	 * whenever possible for performance reasons.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end -
-	 * start</code> instances. <code>start</code> and <code>end</code> are not
-	 * primary keys, they are indexes in the result set. Thus, <code>0</code>
-	 * refers to the first result in the set. Setting both <code>start</code>
-	 * and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full
-	 * result set.
-	 * </p>
-	 *
-	 * @param  companyId the primary key of the organization's company
-	 * @param  parentOrganizationId the primary key of the organization's parent
-	 *         organization
-	 * @param  name the name keywords (space separated, optionally
-	 *         <code>null</code>)
-	 * @param  type the type keywords (optionally <code>null</code>)
-	 * @param  street the street keywords (optionally <code>null</code>)
-	 * @param  city the city keywords (optionally <code>null</code>)
-	 * @param  zip the zipcode keywords (optionally <code>null</code>)
-	 * @param  region the region keywords (optionally <code>null</code>)
-	 * @param  country the country keywords (optionally <code>null</code>)
-	 * @param  params the finder parameters (optionally <code>null</code>).
-	 * @param  andSearch whether every field must match its keywords or just one
-	 *         field
-	 * @param  start the lower bound of the range of organizations to return
-	 * @param  end the upper bound of the range of organizations to return (not
-	 *         inclusive)
-	 * @param  sort the field and direction by which to sort (optionally
-	 *         <code>null</code>)
-	 * @return the matching organizations ordered by <code>sort</code>
-	 */
-	@Override
-	public Hits search(
-		long companyId, long parentOrganizationId, String name, String type,
-		String street, String city, String zip, String region, String country,
-		LinkedHashMap<String, Object> params, boolean andSearch, int start,
-		int end, Sort sort) {
-
-		try {
-			Indexer<Organization> indexer =
-				IndexerRegistryUtil.nullSafeGetIndexer(Organization.class);
-
-			SearchContext searchContext = buildSearchContext(
-				companyId, parentOrganizationId, name, type, street, city, zip,
-				region, country, params, andSearch, start, end, sort);
-
-			return indexer.search(searchContext);
-		}
-		catch (Exception exception) {
-			throw new SystemException(exception);
-		}
 	}
 
 	/**

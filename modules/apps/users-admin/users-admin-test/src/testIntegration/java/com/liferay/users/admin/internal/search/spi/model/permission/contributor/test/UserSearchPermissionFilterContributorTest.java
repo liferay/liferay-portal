@@ -6,7 +6,6 @@
 package com.liferay.users.admin.internal.search.spi.model.permission.contributor.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
@@ -17,8 +16,6 @@ import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.Team;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
-import com.liferay.portal.kernel.search.BaseModelSearchResult;
-import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
@@ -99,13 +96,9 @@ public class UserSearchPermissionFilterContributorTest {
 			PermissionThreadLocal.setPermissionChecker(
 				PermissionCheckerFactoryUtil.create(user));
 
-			BaseModelSearchResult<User> userBaseModelSearchResult =
-				_userLocalService.searchUsers(
-					TestPropsValues.getCompanyId(), null,
-					WorkflowConstants.STATUS_APPROVED, null, QueryUtil.ALL_POS,
-					QueryUtil.ALL_POS, (Sort)null);
-
-			return userBaseModelSearchResult.getLength();
+			return _userLocalService.searchCount(
+				TestPropsValues.getCompanyId(), null,
+				WorkflowConstants.STATUS_APPROVED, null);
 		}
 		finally {
 			PermissionThreadLocal.setPermissionChecker(

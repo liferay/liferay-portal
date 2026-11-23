@@ -792,11 +792,12 @@ public class CompanyLocalServiceTest {
 
 	@Test
 	public void testDeleteCompanyDeletesOrganizations() throws Exception {
-		Assert.assertEquals(
-			0,
-			_organizationLocalService.getOrganizationsCount(
+		List<Organization> organizations =
+			_organizationLocalService.getOrganizations(
 				_deletedCompany.getCompanyId(),
-				OrganizationConstants.DEFAULT_PARENT_ORGANIZATION_ID));
+				OrganizationConstants.DEFAULT_PARENT_ORGANIZATION_ID);
+
+		Assert.assertEquals(organizations.toString(), 0, organizations.size());
 	}
 
 	@Test
@@ -876,11 +877,9 @@ public class CompanyLocalServiceTest {
 
 	@Test
 	public void testDeleteCompanyDeletesUsers() throws Exception {
-		List<User> users = _userLocalService.getCompanyUsers(
-			_deletedCompany.getCompanyId(), QueryUtil.ALL_POS,
-			QueryUtil.ALL_POS);
-
-		Assert.assertEquals(users.toString(), 0, users.size());
+		Assert.assertEquals(
+			0,
+			UserTestUtil.getCompanyUsersCount(_deletedCompany.getCompanyId()));
 	}
 
 	@Test(expected = NoSuchVirtualHostException.class)

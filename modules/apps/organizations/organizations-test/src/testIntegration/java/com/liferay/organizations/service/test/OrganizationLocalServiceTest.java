@@ -60,6 +60,7 @@ import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
+import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.search.test.rule.SearchTestRule;
@@ -135,18 +136,15 @@ public class OrganizationLocalServiceTest {
 			_organizationLocalService.hasUserOrganization(
 				user.getUserId(), organization.getOrganizationId()));
 
-		BaseModelSearchResult<User> baseModelSearchResult =
-			_userLocalService.searchUsers(
-				user.getCompanyId(), null, WorkflowConstants.STATUS_APPROVED,
-				LinkedHashMapBuilder.<String, Object>put(
-					"usersOrgs", Long.valueOf(organization.getOrganizationId())
-				).build(),
-				QueryUtil.ALL_POS, QueryUtil.ALL_POS,
-				new Sort("userId", false));
+		List<User> users = _userLocalService.search(
+			user.getCompanyId(), null, WorkflowConstants.STATUS_APPROVED,
+			LinkedHashMapBuilder.<String, Object>put(
+				"usersOrgs", Long.valueOf(organization.getOrganizationId())
+			).build(),
+			QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+			(OrderByComparator<User>)null);
 
-		Assert.assertEquals(1, baseModelSearchResult.getLength());
-
-		List<User> users = baseModelSearchResult.getBaseModels();
+		Assert.assertEquals(users.toString(), 1, users.size());
 
 		Assert.assertEquals(user, users.get(0));
 
@@ -157,14 +155,15 @@ public class OrganizationLocalServiceTest {
 			_organizationLocalService.hasUserOrganization(
 				user.getUserId(), organization.getOrganizationId()));
 
-		baseModelSearchResult = _userLocalService.searchUsers(
+		users = _userLocalService.search(
 			user.getCompanyId(), null, WorkflowConstants.STATUS_APPROVED,
 			LinkedHashMapBuilder.<String, Object>put(
 				"usersOrgs", Long.valueOf(organization.getOrganizationId())
 			).build(),
-			QueryUtil.ALL_POS, QueryUtil.ALL_POS, new Sort("userId", false));
+			QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+			(OrderByComparator<User>)null);
 
-		Assert.assertEquals(0, baseModelSearchResult.getLength());
+		Assert.assertEquals(users.toString(), 0, users.size());
 	}
 
 	@Test

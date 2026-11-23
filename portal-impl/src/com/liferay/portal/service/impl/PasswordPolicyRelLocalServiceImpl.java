@@ -5,11 +5,8 @@
 
 package com.liferay.portal.service.impl;
 
-import com.liferay.petra.string.StringBundler;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.bean.BeanReference;
 import com.liferay.portal.kernel.exception.NoSuchPasswordPolicyRelException;
-import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.PasswordPolicyRel;
@@ -123,39 +120,6 @@ public class PasswordPolicyRelLocalServiceImpl
 		String className, long classPK) {
 
 		return passwordPolicyRelPersistence.fetchByC_C(
-			_classNameLocalService.getClassNameId(className), classPK);
-	}
-
-	@Override
-	public PasswordPolicyRel getPasswordPolicyRel(
-			long passwordPolicyId, String className, long classPK)
-		throws PortalException {
-
-		long classNameId = _classNameLocalService.getClassNameId(className);
-
-		PasswordPolicyRel passwordPolicyRel =
-			passwordPolicyRelPersistence.fetchByC_C(classNameId, classPK);
-
-		if ((passwordPolicyRel != null) &&
-			(passwordPolicyRel.getPasswordPolicyId() == passwordPolicyId)) {
-
-			return passwordPolicyRel;
-		}
-
-		throw new NoSuchPasswordPolicyRelException(
-			StringBundler.concat(
-				"No PasswordPolicyRel exists with the key {",
-				"passwordPolicyId=", passwordPolicyId, ", classNameId=",
-				classNameId, ", classPK=", classPK,
-				StringPool.CLOSE_CURLY_BRACE));
-	}
-
-	@Override
-	public PasswordPolicyRel getPasswordPolicyRel(
-			String className, long classPK)
-		throws PortalException {
-
-		return passwordPolicyRelPersistence.findByC_C(
 			_classNameLocalService.getClassNameId(className), classPK);
 	}
 

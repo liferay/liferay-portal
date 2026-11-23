@@ -64,7 +64,6 @@ import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.SetUtil;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.service.base.UserGroupLocalServiceBaseImpl;
@@ -819,32 +818,6 @@ public class UserGroupLocalServiceImpl extends UserGroupLocalServiceBaseImpl {
 		return userGroupPersistence.findByCompanyId(companyId);
 	}
 
-	@Override
-	public List<UserGroup> getUserGroups(
-		long companyId, String name, int start, int end) {
-
-		if (Validator.isNull(name)) {
-			return userGroupPersistence.findByCompanyId(companyId, start, end);
-		}
-
-		return userGroupPersistence.findByC_LikeN(companyId, name, start, end);
-	}
-
-	@Override
-	public List<UserGroup> getUserGroups(
-		long companyId, String name, int start, int end,
-		OrderByComparator<UserGroup> orderByComparator) {
-
-		if (Validator.isNull(name)) {
-			return userGroupPersistence.findByCompanyId(
-				companyId, start, end, orderByComparator);
-		}
-
-		return userGroupPersistence.findByC_LikeN(
-			companyId, StringUtil.quote(name, StringPool.PERCENT), start, end,
-			orderByComparator);
-	}
-
 	/**
 	 * Returns all the user groups with the primary keys.
 	 *
@@ -862,16 +835,6 @@ public class UserGroupLocalServiceImpl extends UserGroupLocalServiceBaseImpl {
 		}
 
 		return userGroups;
-	}
-
-	@Override
-	public int getUserGroupsCount(long companyId, String name) {
-		if (Validator.isNull(name)) {
-			return userGroupPersistence.countByCompanyId(companyId);
-		}
-
-		return userGroupPersistence.countByC_LikeN(
-			companyId, StringUtil.quote(name, StringPool.PERCENT));
 	}
 
 	/**

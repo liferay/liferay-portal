@@ -9,8 +9,6 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.UserIdMapper;
 import com.liferay.portal.service.base.UserIdMapperLocalServiceBaseImpl;
 
-import java.util.List;
-
 /**
  * @author Brian Wing Shun Chan
  */
@@ -23,23 +21,11 @@ public class UserIdMapperLocalServiceImpl
 	}
 
 	@Override
-	public UserIdMapper getUserIdMapper(long userId, String type)
-		throws PortalException {
-
-		return userIdMapperPersistence.findByU_T(userId, type);
-	}
-
-	@Override
 	public UserIdMapper getUserIdMapperByExternalUserId(
 			String type, String externalUserId)
 		throws PortalException {
 
 		return userIdMapperPersistence.findByT_E(type, externalUserId);
-	}
-
-	@Override
-	public List<UserIdMapper> getUserIdMappers(long userId) {
-		return userIdMapperPersistence.findByUserId(userId);
 	}
 
 	@Override

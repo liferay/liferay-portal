@@ -11,8 +11,6 @@ import com.liferay.on.demand.admin.test.util.OnDemandAdminTestUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.search.BaseModelSearchResult;
-import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
@@ -20,12 +18,14 @@ import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -69,19 +69,17 @@ public class UserModelPreFilterContributorTest {
 		UserTestUtil.addUser(company);
 		UserTestUtil.addUser(company);
 
-		BaseModelSearchResult<User> baseModelSearchResult =
-			_userLocalService.searchUsers(
-				company.getCompanyId(), null, WorkflowConstants.STATUS_APPROVED,
-				new LinkedHashMap<String, Object>(), QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS, new Sort("userId", false));
-
-		int companyUsersCount = _userLocalService.getCompanyUsersCount(
-			company.getCompanyId());
+		List<User> users = _userLocalService.search(
+			company.getCompanyId(), null, WorkflowConstants.STATUS_APPROVED,
+			new LinkedHashMap<String, Object>(), QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, (OrderByComparator<User>)null);
 
 		Assert.assertEquals(
-			companyUsersCount - 2, baseModelSearchResult.getLength());
+			users.toString(),
+			UserTestUtil.getCompanyUsersCount(company.getCompanyId()) - 2,
+			users.size());
 
-		for (User user : baseModelSearchResult.getBaseModels()) {
+		for (User user : users) {
 			Assert.assertFalse(_onDemandAdminManager.isOnDemandAdminUser(user));
 		}
 

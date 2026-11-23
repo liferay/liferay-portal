@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserGroupRoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.service.UserServiceUtil;
+import com.liferay.portal.kernel.service.persistence.UserUtil;
 import com.liferay.portal.kernel.test.randomizerbumpers.NumericStringRandomizerBumper;
 import com.liferay.portal.kernel.test.randomizerbumpers.UniqueStringRandomizerBumper;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -353,6 +354,12 @@ public class UserTestUtil {
 		}
 
 		return null;
+	}
+
+	public static int getCompanyUsersCount(long companyId) throws Exception {
+		return TransactionTestUtil.invoke(
+			UserUtil.getPersistence(),
+			userPersistence -> userPersistence.countByCompanyId(companyId));
 	}
 
 	public static void setUser(User user) {

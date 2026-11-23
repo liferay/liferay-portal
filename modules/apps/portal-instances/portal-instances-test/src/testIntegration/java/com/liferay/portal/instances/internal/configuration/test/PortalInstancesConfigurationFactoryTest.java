@@ -16,6 +16,7 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.PropsKeys;
@@ -130,7 +131,7 @@ public class PortalInstancesConfigurationFactoryTest {
 		_company = _companyLocalService.getCompanyByWebId(_webId);
 
 		Assert.assertEquals(
-			0, _userLocalService.getCompanyUsersCount(_company.getCompanyId()));
+			0, UserTestUtil.getCompanyUsersCount(_company.getCompanyId()));
 	}
 
 	private void _testAddCompany(Dictionary<String, Object> properties)

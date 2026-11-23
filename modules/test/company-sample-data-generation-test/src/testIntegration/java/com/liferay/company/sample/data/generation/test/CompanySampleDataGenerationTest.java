@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DataGuard;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.CSVUtil;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -158,8 +159,7 @@ public class CompanySampleDataGenerationTest {
 						company.getCompanyId())) {
 
 				int originalCompanyUsersCount =
-					_userLocalService.getCompanyUsersCount(
-						company.getCompanyId());
+					UserTestUtil.getCompanyUsersCount(company.getCompanyId());
 
 				_addUsers(
 					companyIndex, company.getCompanyId(), company.getGroupId(),
@@ -170,8 +170,7 @@ public class CompanySampleDataGenerationTest {
 						"User count for ", webId, " should be ",
 						_USER_PER_COMPANY_COUNT + originalCompanyUsersCount),
 					_USER_PER_COMPANY_COUNT + originalCompanyUsersCount,
-					_userLocalService.getCompanyUsersCount(
-						company.getCompanyId()));
+					UserTestUtil.getCompanyUsersCount(company.getCompanyId()));
 			}
 		}
 	}

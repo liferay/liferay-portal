@@ -77,7 +77,6 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -420,46 +419,6 @@ public class RoleLocalServiceTest {
 			"The method getResourceActionRoles should have returned the role " +
 				_arbitraryRole.getRoleId(),
 			roles.contains(_arbitraryRole));
-	}
-
-	@Test
-	public void testGetResourceRoles() throws Exception {
-		long companyId = _resourcePermission.getCompanyId();
-		String name = _resourcePermission.getName();
-		int scope = _resourcePermission.getScope();
-		String primKey = _resourcePermission.getPrimKey();
-
-		Map<String, List<String>> actionIdsLists = new HashMap<>();
-
-		List<ResourceAction> resourceActions =
-			_resourceActionLocalService.getResourceActions(name);
-
-		for (ResourcePermission resourcePermission :
-				_resourcePermissionLocalService.getResourcePermissions(
-					companyId, name, scope, primKey)) {
-
-			Role role = _roleLocalService.getRole(
-				resourcePermission.getRoleId());
-
-			long actionIds = resourcePermission.getActionIds();
-
-			List<String> actionIdsList = new ArrayList<>();
-
-			for (ResourceAction resourceAction : resourceActions) {
-				if ((resourceAction.getBitwiseValue() & actionIds) == 0) {
-					continue;
-				}
-
-				actionIdsList.add(resourceAction.getActionId());
-			}
-
-			actionIdsLists.put(role.getName(), actionIdsList);
-		}
-
-		Assert.assertEquals(
-			actionIdsLists,
-			_roleLocalService.getResourceRoles(
-				companyId, name, scope, primKey));
 	}
 
 	@Test

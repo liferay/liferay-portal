@@ -45,9 +45,10 @@ public class UserJobTitleTableReferenceDefinitionTest
 
 	@Override
 	protected CTModel<?> addCTModel() throws Exception {
-		return _userLocalService.updateJobTitle(
-			_user.getUserId(),
+		_user.setJobTitle(
 			UserJobTitleTableReferenceDefinitionTest.class.getSimpleName());
+
+		return _userLocalService.updateUser(_user);
 	}
 
 	private User _user;
