@@ -23,6 +23,7 @@ import {
 import LayoutService, {
 	StyleBookTokenValueMap,
 } from '../../../app/services/LayoutService';
+import {isLaunchDraft} from '../../../app/utils/isLaunchDraft';
 import SidebarPanelHeader from '../../../common/components/SidebarPanelHeader';
 
 type StyleBook = {
@@ -178,7 +179,8 @@ export default function PageDesignOptionsSidebar() {
 		<>
 			<SidebarPanelHeader
 				iconRight={
-					config.lookAndFeelURL && (
+					config.lookAndFeelURL &&
+					!isLaunchDraft() && (
 						<ClayLink
 							displayType="secondary"
 							href={config.lookAndFeelURL}
