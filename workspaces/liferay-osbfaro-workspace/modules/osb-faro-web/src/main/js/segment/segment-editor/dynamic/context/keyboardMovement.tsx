@@ -12,16 +12,22 @@ import {
 	findPropertyByCriterion,
 	isCriterionGroup,
 } from '../utils/utils';
+import {Criteria, Criterion, CriterionGroup} from '../utils/types';
+import {getCriterionLabel} from '../utils/getCriterionLabel';
+import {getGroupOperatorLabel} from '../criteria-builder/GroupOperator';
 import {
 	applyMoveTarget,
 	getMoveTargets,
 	MovePosition,
 	MoveTarget,
 } from '../utils/keyboardMovement';
-import {Criterion, CriterionGroup} from '../utils/types';
 import {Property} from 'shared/util/records';
-import {ReferencedObjectsContext} from './referencedObjects';
+import {
+	ReferencedObjectsContext,
+	ReferencedProperties,
+} from './referencedObjects';
 import {sub} from 'shared/util/lang';
+import {useAnnouncement} from 'shared/components/condition-chip/AnnounceContext';
 
 export interface MovementSource {
 	criterion: Criterion;
@@ -48,6 +54,28 @@ const POSITION_LABELS: Record<MovePosition, string> = {
 	top: Liferay.Language.get('top'),
 };
 
+/**
+ * Names a drop target the way the canvas names it to a screen reader: a row by
+ * its full condition, so two rows with the same attribute can be told apart,
+ * and a group by the sentence of its operator.
+ */
+const getTargetLabel = (
+	node: Criteria,
+	referencedProperties: ReferencedProperties,
+	sequential: boolean
+): string => {
+	if (isCriterionGroup(node)) {
+		return sequential
+			? Liferay.Language.get('group')
+			: getGroupOperatorLabel(node.conjunctionName);
+	}
+
+	return getCriterionLabel(
+		node,
+		findPropertyByCriterion(node, referencedProperties)
+	);
+};
+
 interface IKeyboardMovementProviderProps {
 	children: React.ReactNode;
 	criteria: CriterionGroup | null;
@@ -70,7 +98,7 @@ export function KeyboardMovementProvider({
 		ReferencedObjectsContext
 	);
 
-	const [announcement, setAnnouncement] = useState('');
+	const {announce, announcement} = useAnnouncement();
 	const [source, setSource] = useState<MovementSource | null>(null);
 	const [targetIndex, setTargetIndex] = useState(0);
 
@@ -103,7 +131,7 @@ export function KeyboardMovementProvider({
 
 			latestRef.current.onChange(newCriteria);
 
-			setAnnouncement(
+			announce(
 				sub(
 					Liferay.Language.get('x-was-added-to-the-segment-criteria'),
 					[property.label]
@@ -112,7 +140,7 @@ export function KeyboardMovementProvider({
 
 			setSource(null);
 		},
-		[]
+		[announce]
 	);
 
 	const startMovement = useCallback(
@@ -131,7 +159,7 @@ export function KeyboardMovementProvider({
 			setSource(movementSource);
 			setTargetIndex(targets.length - 1);
 
-			setAnnouncement(
+			announce(
 				sub(
 					Liferay.Language.get(
 						'use-the-arrow-keys-to-choose-where-to-add-x-and-press-enter-to-confirm-or-escape-to-cancel'
@@ -140,7 +168,7 @@ export function KeyboardMovementProvider({
 				) as string
 			);
 		},
-		[drop]
+		[announce, drop]
 	);
 
 	const target = source ? targets[targetIndex] ?? null : null;
@@ -163,7 +191,8 @@ export function KeyboardMovementProvider({
 		let currentIndex = latestRef.current.targets.length - 1;
 
 		const moveTo = (index: number) => {
-			const {referencedProperties, targets} = latestRef.current;
+			const {referencedProperties, sequential, targets} =
+				latestRef.current;
 
 			currentIndex = Math.min(Math.max(index, 0), targets.length - 1);
 
@@ -171,15 +200,10 @@ export function KeyboardMovementProvider({
 
 			setTargetIndex(currentIndex);
 
-			setAnnouncement(
+			announce(
 				sub(Liferay.Language.get('targeting-x-of-x'), [
 					POSITION_LABELS[position],
-					isCriterionGroup(node)
-						? Liferay.Language.get('group')
-						: findPropertyByCriterion(node, referencedProperties)
-								?.label ??
-							node.propertyName ??
-							'',
+					getTargetLabel(node, referencedProperties, sequential),
 				]) as string
 			);
 		};
@@ -214,7 +238,7 @@ export function KeyboardMovementProvider({
 				);
 			}
 			else if (event.key === 'Escape') {
-				setAnnouncement('');
+				announce('');
 				setSource(null);
 			}
 		};
@@ -222,7 +246,7 @@ export function KeyboardMovementProvider({
 		window.addEventListener('keydown', handleKeyDown, true);
 
 		return () => window.removeEventListener('keydown', handleKeyDown, true);
-	}, [drop, source]);
+	}, [announce, drop, source]);
 
 	const value = useMemo(
 		() => ({source, startMovement, target}),
@@ -231,7 +255,7 @@ export function KeyboardMovementProvider({
 
 	return (
 		<KeyboardMovementContext.Provider value={value}>
-			<div aria-live="assertive" className="sr-only">
+			<div className="sr-only" role="status">
 				{announcement}
 			</div>
 
