@@ -14,6 +14,7 @@ import java.io.File;
 import java.nio.file.PathMatcher;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.json.JSONObject;
@@ -38,19 +39,19 @@ public class WorkspacesJSUnitModulesBatchTestClassGroup
 
 	@Override
 	protected List<File> getBaseModuleDirs() {
-		List<File> workspacesDirs = new ArrayList<>();
+		File portalDir = portalGitWorkingDirectory.getPortalPrivateDir();
 
-		for (File portalDir : _getPortalDirs()) {
-			File workspacesDir = new File(portalDir, "workspaces");
-
-			if (!workspacesDir.exists()) {
-				continue;
-			}
-
-			workspacesDirs.add(workspacesDir);
+		if (portalDir == null) {
+			portalDir = portalGitWorkingDirectory.getWorkingDirectory();
 		}
 
-		return workspacesDirs;
+		File workspacesDir = new File(portalDir, "workspaces");
+
+		if (!workspacesDir.exists()) {
+			return new ArrayList<>();
+		}
+
+		return Collections.singletonList(workspacesDir);
 	}
 
 	@Override

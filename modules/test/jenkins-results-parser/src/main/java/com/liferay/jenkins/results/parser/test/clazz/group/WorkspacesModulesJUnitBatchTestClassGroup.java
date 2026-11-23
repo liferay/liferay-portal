@@ -15,6 +15,8 @@ import java.io.File;
 import java.nio.file.PathMatcher;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -161,23 +163,16 @@ public class WorkspacesModulesJUnitBatchTestClassGroup
 
 	@Override
 	protected List<File> getTestClassRootDirs() {
-		List<File> testClassRootDirs = new ArrayList<>();
-
-		testClassRootDirs.add(
-			new File(
-				portalGitWorkingDirectory.getWorkingDirectory(), "workspaces"));
-
-		File portalPrivateWorkspacesDir = getPortalPrivateWorkspacesDir();
-
-		if (portalPrivateWorkspacesDir != null) {
-			testClassRootDirs.add(portalPrivateWorkspacesDir);
-		}
-
-		return testClassRootDirs;
+		return Collections.singletonList(_getWorkspacesDir());
 	}
 
 	private File _getPortalPrivateDir() {
 		return portalGitWorkingDirectory.getPortalPrivateDir();
+	}
+
+	private File _getPortalWorkspacesDir() {
+		return new File(
+			portalGitWorkingDirectory.getWorkingDirectory(), "workspaces");
 	}
 
 	private File _getWorkspaceModuleDir(File modifiedFile, File workspaceDir) {
@@ -203,16 +198,23 @@ public class WorkspacesModulesJUnitBatchTestClassGroup
 		String modifiedFilePath = JenkinsResultsParserUtil.getCanonicalPath(
 			canonicalModifiedFile);
 
-		for (File workspacesDir : getTestClassRootDirs()) {
-			String workspacesDirPath =
-				JenkinsResultsParserUtil.getCanonicalPath(workspacesDir);
+		File workspacesDir = _getWorkspacesDir();
 
-			if (!modifiedFilePath.startsWith(workspacesDirPath + "/")) {
+		for (File modifiedFileWorkspacesDir :
+				Arrays.asList(_getPortalWorkspacesDir(), workspacesDir)) {
+
+			String modifiedFileWorkspacesDirPath =
+				JenkinsResultsParserUtil.getCanonicalPath(
+					modifiedFileWorkspacesDir);
+
+			if (!modifiedFilePath.startsWith(
+					modifiedFileWorkspacesDirPath + "/")) {
+
 				continue;
 			}
 
 			String relativePath = modifiedFilePath.substring(
-				workspacesDirPath.length() + 1);
+				modifiedFileWorkspacesDirPath.length() + 1);
 
 			String[] relativePathParts = relativePath.split("/");
 
@@ -221,11 +223,21 @@ public class WorkspacesModulesJUnitBatchTestClassGroup
 			}
 
 			return _getWorkspaceModuleDir(
-				canonicalModifiedFile,
+				new File(workspacesDir, relativePath),
 				new File(workspacesDir, relativePathParts[0]));
 		}
 
 		return null;
+	}
+
+	private File _getWorkspacesDir() {
+		File portalPrivateWorkspacesDir = getPortalPrivateWorkspacesDir();
+
+		if (portalPrivateWorkspacesDir != null) {
+			return portalPrivateWorkspacesDir;
+		}
+
+		return _getPortalWorkspacesDir();
 	}
 
 }
