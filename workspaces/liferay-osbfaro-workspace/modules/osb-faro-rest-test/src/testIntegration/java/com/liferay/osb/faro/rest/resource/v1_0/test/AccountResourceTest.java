@@ -6,26 +6,37 @@
 package com.liferay.osb.faro.rest.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.osb.faro.constants.FaroProjectConstants;
 import com.liferay.osb.faro.engine.client.ContactsEngineClient;
 import com.liferay.osb.faro.engine.client.model.AccountLifecycle;
 import com.liferay.osb.faro.engine.client.model.AccountLifecycleStage;
 import com.liferay.osb.faro.engine.client.model.Results;
+import com.liferay.osb.faro.model.FaroProject;
+import com.liferay.osb.faro.rest.client.dto.v1_0.Account;
+import com.liferay.osb.faro.rest.client.problem.Problem;
 import com.liferay.osb.faro.rest.resource.v1_0.AccountResource;
+import com.liferay.osb.faro.rest.resource.v1_0.test.util.ContactsEngineHttpServer;
 import com.liferay.osb.faro.service.FaroProjectLocalService;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.ProxyUtil;
+import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.vulcan.pagination.Pagination;
 
 import jakarta.ws.rs.BadRequestException;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,17 +47,46 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class AccountResourceTest extends BaseAccountResourceTestCase {
 
-	@Ignore
+	@Before
+	@Override
+	public void setUp() throws Exception {
+		super.setUp();
+
+		_contactsEngineHttpServer = new ContactsEngineHttpServer(
+			_contactsEngineClient, "/accounts", "account");
+
+		_faroProject = _faroProjectLocalService.addFaroProject(
+			TestPropsValues.getUserId(), RandomTestUtil.randomString(), null,
+			null, null, null, Collections.emptyList(), null, null, null, null,
+			null, FaroProjectConstants.STATE_READY, "{}", "UTC",
+			RandomTestUtil.randomString());
+	}
+
+	@After
+	@Override
+	public void tearDown() throws Exception {
+		_contactsEngineHttpServer.close();
+
+		_faroProjectLocalService.deleteFaroProjectByGroupId(
+			_faroProject.getGroupId());
+
+		super.tearDown();
+	}
+
 	@Override
 	@Test
 	public void testGetWorkspaceGroupAccount() throws Exception {
 		super.testGetWorkspaceGroupAccount();
+
+		_testGetWorkspaceGroupAccountWithEmptyAccount();
+		_testGetWorkspaceGroupAccountWithMissingAccount();
 	}
 
 	@Override
 	@Test
 	public void testGetWorkspaceGroupChannelAccountsPage() throws Exception {
 		_testGetWorkspaceGroupChannelAccountsPageWithAccountLifecycleId();
+		_testGetWorkspaceGroupChannelAccountsPageWithEmptyAccountLifecycle();
 		_testGetWorkspaceGroupChannelAccountsPageWithLifecycleStage();
 		_testGetWorkspaceGroupChannelAccountsPageWithUnknownLifecycleStage();
 		_testGetWorkspaceGroupChannelAccountsPageWithoutLifecycleStage();
@@ -204,6 +244,47 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 		super.testGetWorkspaceGroupChannelCampaignAccountsPageWithSortString();
 	}
 
+	@Override
+	protected String[] getAdditionalAssertFieldNames() {
+		return new String[] {
+			"accountName", "accountType", "country", "industry", "website"
+		};
+	}
+
+	@Override
+	protected Account testGetWorkspaceGroupAccount_addAccount()
+		throws Exception {
+
+		Account account = randomAccount();
+
+		Date dateModified = account.getDateModified();
+
+		_contactsEngineHttpServer.addJSON(
+			account.getId(),
+			JSONUtil.put(
+				"accountName", account.getAccountName()
+			).put(
+				"accountType", account.getAccountType()
+			).put(
+				"country", account.getCountry()
+			).put(
+				"id", account.getId()
+			).put(
+				"industry", account.getIndustry()
+			).put(
+				"modifiedDate", dateModified.getTime()
+			).put(
+				"website", account.getWebsite()
+			).toString());
+
+		return account;
+	}
+
+	@Override
+	protected Long testGetWorkspaceGroupAccount_getGroupId() throws Exception {
+		return _faroProject.getGroupId();
+	}
+
 	private AccountLifecycle _addAccountLifecycle(
 		String accountLifecycleId,
 		Map<String, AccountLifecycle> accountLifecycles) {
@@ -245,6 +326,8 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 
 		_addAccountLifecycle("2", accountLifecycles);
 
+		accountLifecycles.put("3", new AccountLifecycle());
+
 		AccountResource accountResource = ReflectionTestUtil.getFieldValue(
 			this, "_accountResource");
 
@@ -270,29 +353,65 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 
 						return new Results<>();
 					}));
-		FaroProjectLocalService faroProjectLocalService =
-			ReflectionTestUtil.getAndSetFieldValue(
-				accountResource, "_faroProjectLocalService",
-				(FaroProjectLocalService)ProxyUtil.newProxyInstance(
-					FaroProjectLocalService.class.getClassLoader(),
-					new Class<?>[] {FaroProjectLocalService.class},
-					(proxy, method, arguments) -> null));
 
 		try {
 			accountResource.getWorkspaceGroupChannelAccountsPage(
-				testGroup.getGroupId(), RandomTestUtil.randomString(),
+				_faroProject.getGroupId(), RandomTestUtil.randomString(),
 				accountLifecycleId, lifecycleStage, null, null, null, null,
 				Pagination.of(1, 20), null);
 		}
 		finally {
 			ReflectionTestUtil.setFieldValue(
 				accountResource, "_contactsEngineClient", contactsEngineClient);
-			ReflectionTestUtil.setFieldValue(
-				accountResource, "_faroProjectLocalService",
-				faroProjectLocalService);
 		}
 
 		return argumentsAtomicReference.get();
+	}
+
+	private void _testGetWorkspaceGroupAccountWithEmptyAccount()
+		throws Exception {
+
+		String accountId = RandomTestUtil.randomString();
+
+		_contactsEngineHttpServer.addJSON(accountId, "{}");
+
+		try {
+			accountResource.getWorkspaceGroupAccount(
+				_faroProject.getGroupId(), accountId);
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("NOT_FOUND", problem.getStatus());
+			Assert.assertEquals(
+				"No account was found with ID " + accountId,
+				problem.getTitle());
+			Assert.assertNull(problem.getType());
+		}
+	}
+
+	private void _testGetWorkspaceGroupAccountWithMissingAccount()
+		throws Exception {
+
+		String accountId = RandomTestUtil.randomString();
+
+		try {
+			accountResource.getWorkspaceGroupAccount(
+				_faroProject.getGroupId(), accountId);
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("NOT_FOUND", problem.getStatus());
+			Assert.assertEquals(
+				"No account was found with ID " + accountId,
+				problem.getTitle());
+			Assert.assertNull(problem.getType());
+		}
 	}
 
 	private void _testGetWorkspaceGroupChannelAccountsPageWithAccountLifecycleId()
@@ -304,6 +423,22 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 		Assert.assertEquals("2", objects[1]);
 		Assert.assertEquals(
 			"(lifecycleStatus@lifecycle-2 in ('stage-2'))", objects[4]);
+	}
+
+	private void _testGetWorkspaceGroupChannelAccountsPageWithEmptyAccountLifecycle()
+		throws Exception {
+
+		try {
+			_getWorkspaceGroupChannelAccountsPage("3", "PIPELINE");
+
+			Assert.fail();
+		}
+		catch (BadRequestException badRequestException) {
+			Assert.assertEquals(
+				"No account lifecycle stage was found with the name " +
+					"\"PIPELINE\"",
+				badRequestException.getMessage());
+		}
 	}
 
 	private void _testGetWorkspaceGroupChannelAccountsPageWithLifecycleStage()
@@ -341,5 +476,14 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 		Assert.assertNull(objects[1]);
 		Assert.assertNull(objects[4]);
 	}
+
+	@Inject
+	private ContactsEngineClient _contactsEngineClient;
+
+	private ContactsEngineHttpServer _contactsEngineHttpServer;
+	private FaroProject _faroProject;
+
+	@Inject
+	private FaroProjectLocalService _faroProjectLocalService;
 
 }
