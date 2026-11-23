@@ -5225,7 +5225,6 @@ com/liferay/commerce/shipping/engine/fixed/service/persistence/impl/CommerceShip
 com/liferay/commerce/shipping/engine/fixed/service/persistence/impl/CommerceShippingFixedOptionRelPersistenceImpl.create(J)Lcom/liferay/commerce/shipping/engine/fixed/model/CommerceShippingFixedOptionRel;:SAFE
 com/liferay/commerce/shipping/engine/fixed/service/persistence/impl/CommerceShippingFixedOptionRelPersistenceImpl.getPKDBName()Ljava/lang/String;:SAFE
 com/liferay/commerce/shipping/engine/fixed/service/persistence/impl/CommerceShippingFixedOptionRelPersistenceImpl.getSelectSQL()Ljava/lang/String;:SAFE
-com/liferay/commerce/shipping/engine/fixed/util/CommerceShippingEngineFixedUtil.getCommerceShippingFixedOptionRelOrderByComparator(Ljava/lang/String;Ljava/lang/String;)Lcom/liferay/portal/kernel/util/OrderByComparator;:SAFE
 com/liferay/commerce/shipping/engine/fixed/util/comparator/CommerceShippingFixedOptionPriorityComparator.getOrderBy()Ljava/lang/String;:SAFE
 com/liferay/commerce/shipping/engine/fixed/util/comparator/CommerceShippingFixedOptionPriorityComparator.getOrderByFields()[Ljava/lang/String;:SAFE
 com/liferay/commerce/shipping/engine/fixed/util/comparator/CommerceShippingFixedOptionRelCommerceCountryIdComparator.getOrderBy()Ljava/lang/String;:SAFE
