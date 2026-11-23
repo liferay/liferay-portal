@@ -10,6 +10,7 @@ import {commercePagesTest} from '../../../../fixtures/commercePagesTest';
 import {dataApiHelpersTest} from '../../../../fixtures/dataApiHelpersTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import {DataApiHelpers} from '../../../../helpers/ApiHelpers';
+import {clickAndExpectToBeVisible} from '../../../../utils/clickAndExpectToBeVisible';
 import {getRandomInt} from '../../../../utils/getRandomInt';
 import getRandomString from '../../../../utils/getRandomString';
 import {
@@ -1475,22 +1476,33 @@ test(
 
 		await page.keyboard.press('Escape');
 
-		await expect(async () => {
-			await commerceChannelDefaultsPage.defaultDeliveryCommerceTermEntriesButton.click();
-			await commerceChannelDefaultsPage.editFrameChannelSelect.selectOption(
-				channel.name
-			);
-			await commerceChannelDefaultsPage.editFrameTermSelect.selectOption(
-				String(term1.id)
-			);
-			await commerceChannelDefaultsPage.editFrameSaveButton.click();
+		await expect(
+			commerceChannelDefaultsPage.editFrameTermSelect
+		).toBeHidden();
 
-			await expect(
-				commerceChannelDefaultsPage.defaultDeliveryCommerceTermEntriesCell(
-					term1.label['en_US']
-				)
-			).toBeVisible({timeout: 500});
-		}).toPass({timeout: 5000});
+		await clickAndExpectToBeVisible({
+			target: commerceChannelDefaultsPage.editFrameTermSelect,
+			trigger:
+				commerceChannelDefaultsPage.defaultDeliveryCommerceTermEntriesButton,
+		});
+
+		await commerceChannelDefaultsPage.editFrameChannelSelect.selectOption(
+			channel.name
+		);
+		await commerceChannelDefaultsPage.editFrameTermSelect.selectOption(
+			String(term1.id)
+		);
+		await commerceChannelDefaultsPage.editFrameSaveButton.click();
+
+		await expect(
+			commerceChannelDefaultsPage.editFrameTermSelect
+		).toBeHidden();
+
+		await expect(
+			commerceChannelDefaultsPage.defaultDeliveryCommerceTermEntriesCell(
+				term1.label['en_US']
+			)
+		).toBeVisible();
 
 		await commerceChannelDefaultsPage.defaultDeliveryCommerceTermEntriesButton.click();
 
@@ -1507,42 +1519,60 @@ test(
 
 		await page.keyboard.press('Escape');
 
+		await expect(
+			commerceChannelDefaultsPage.editFrameTermSelect
+		).toBeHidden();
+
 		page.on('dialog', (dialog) => dialog.accept());
 
 		await commerceChannelDefaultsPage.defaultDeliveryCommerceTermEntriesActionsButton.click();
 		await commerceChannelDefaultsPage.deleteMenuItem.click();
 
-		await expect(async () => {
-			await commerceChannelDefaultsPage.defaultDeliveryCommerceTermEntriesButton.click();
-			await commerceChannelDefaultsPage.editFrameTermSelect.selectOption(
-				String(term1.id)
-			);
-			await commerceChannelDefaultsPage.editFrameSaveButton.click();
+		await clickAndExpectToBeVisible({
+			target: commerceChannelDefaultsPage.editFrameTermSelect,
+			trigger:
+				commerceChannelDefaultsPage.defaultDeliveryCommerceTermEntriesButton,
+		});
 
-			await expect(
-				commerceChannelDefaultsPage.defaultDeliveryCommerceTermEntriesCell(
-					'All Channels',
-					true
-				)
-			).toBeVisible({timeout: 500});
-		}).toPass({timeout: 5000});
+		await commerceChannelDefaultsPage.editFrameTermSelect.selectOption(
+			String(term1.id)
+		);
+		await commerceChannelDefaultsPage.editFrameSaveButton.click();
 
-		await expect(async () => {
-			await commerceChannelDefaultsPage.defaultDeliveryCommerceTermEntriesButton.click();
-			await commerceChannelDefaultsPage.editFrameChannelSelect.selectOption(
-				channel.name
-			);
-			await commerceChannelDefaultsPage.editFrameTermSelect.selectOption(
-				String(term2.id)
-			);
-			await commerceChannelDefaultsPage.editFrameSaveButton.click();
+		await expect(
+			commerceChannelDefaultsPage.editFrameTermSelect
+		).toBeHidden();
 
-			await expect(
-				commerceChannelDefaultsPage.defaultDeliveryCommerceTermEntriesCell(
-					term2.label['en_US']
-				)
-			).toBeVisible({timeout: 500});
-		}).toPass({timeout: 5000});
+		await expect(
+			commerceChannelDefaultsPage.defaultDeliveryCommerceTermEntriesCell(
+				'All Channels',
+				true
+			)
+		).toBeVisible();
+
+		await clickAndExpectToBeVisible({
+			target: commerceChannelDefaultsPage.editFrameTermSelect,
+			trigger:
+				commerceChannelDefaultsPage.defaultDeliveryCommerceTermEntriesButton,
+		});
+
+		await commerceChannelDefaultsPage.editFrameChannelSelect.selectOption(
+			channel.name
+		);
+		await commerceChannelDefaultsPage.editFrameTermSelect.selectOption(
+			String(term2.id)
+		);
+		await commerceChannelDefaultsPage.editFrameSaveButton.click();
+
+		await expect(
+			commerceChannelDefaultsPage.editFrameTermSelect
+		).toBeHidden();
+
+		await expect(
+			commerceChannelDefaultsPage.defaultDeliveryCommerceTermEntriesCell(
+				term2.label['en_US']
+			)
+		).toBeVisible();
 
 		await expect(
 			commerceChannelDefaultsPage.defaultDeliveryCommerceTermEntriesCell(
@@ -2054,22 +2084,33 @@ test(
 
 		await page.keyboard.press('Escape');
 
-		await expect(async () => {
-			await commerceChannelDefaultsPage.defaultPaymentCommerceTermEntriesButton.click();
-			await commerceChannelDefaultsPage.editFrameChannelSelect.selectOption(
-				channel.name
-			);
-			await commerceChannelDefaultsPage.editFrameTermSelect.selectOption(
-				String(term1.id)
-			);
-			await commerceChannelDefaultsPage.editFrameSaveButton.click();
+		await expect(
+			commerceChannelDefaultsPage.editFrameTermSelect
+		).toBeHidden();
 
-			await expect(
-				commerceChannelDefaultsPage.defaultPaymentCommerceTermEntriesCell(
-					term1.label['en_US']
-				)
-			).toBeVisible({timeout: 500});
-		}).toPass({timeout: 5000});
+		await clickAndExpectToBeVisible({
+			target: commerceChannelDefaultsPage.editFrameTermSelect,
+			trigger:
+				commerceChannelDefaultsPage.defaultPaymentCommerceTermEntriesButton,
+		});
+
+		await commerceChannelDefaultsPage.editFrameChannelSelect.selectOption(
+			channel.name
+		);
+		await commerceChannelDefaultsPage.editFrameTermSelect.selectOption(
+			String(term1.id)
+		);
+		await commerceChannelDefaultsPage.editFrameSaveButton.click();
+
+		await expect(
+			commerceChannelDefaultsPage.editFrameTermSelect
+		).toBeHidden();
+
+		await expect(
+			commerceChannelDefaultsPage.defaultPaymentCommerceTermEntriesCell(
+				term1.label['en_US']
+			)
+		).toBeVisible();
 
 		await commerceChannelDefaultsPage.defaultPaymentCommerceTermEntriesButton.click();
 
@@ -2086,42 +2127,60 @@ test(
 
 		await page.keyboard.press('Escape');
 
+		await expect(
+			commerceChannelDefaultsPage.editFrameTermSelect
+		).toBeHidden();
+
 		page.on('dialog', (dialog) => dialog.accept());
 
 		await commerceChannelDefaultsPage.defaultPaymentCommerceTermEntriesActionsButton.click();
 		await commerceChannelDefaultsPage.deleteMenuItem.click();
 
-		await expect(async () => {
-			await commerceChannelDefaultsPage.defaultPaymentCommerceTermEntriesButton.click();
-			await commerceChannelDefaultsPage.editFrameTermSelect.selectOption(
-				String(term1.id)
-			);
-			await commerceChannelDefaultsPage.editFrameSaveButton.click();
+		await clickAndExpectToBeVisible({
+			target: commerceChannelDefaultsPage.editFrameTermSelect,
+			trigger:
+				commerceChannelDefaultsPage.defaultPaymentCommerceTermEntriesButton,
+		});
 
-			await expect(
-				commerceChannelDefaultsPage.defaultPaymentCommerceTermEntriesCell(
-					'All Channels',
-					true
-				)
-			).toBeVisible({timeout: 500});
-		}).toPass({timeout: 5000});
+		await commerceChannelDefaultsPage.editFrameTermSelect.selectOption(
+			String(term1.id)
+		);
+		await commerceChannelDefaultsPage.editFrameSaveButton.click();
 
-		await expect(async () => {
-			await commerceChannelDefaultsPage.defaultPaymentCommerceTermEntriesButton.click();
-			await commerceChannelDefaultsPage.editFrameChannelSelect.selectOption(
-				channel.name
-			);
-			await commerceChannelDefaultsPage.editFrameTermSelect.selectOption(
-				String(term2.id)
-			);
-			await commerceChannelDefaultsPage.editFrameSaveButton.click();
+		await expect(
+			commerceChannelDefaultsPage.editFrameTermSelect
+		).toBeHidden();
 
-			await expect(
-				commerceChannelDefaultsPage.defaultPaymentCommerceTermEntriesCell(
-					term2.label['en_US']
-				)
-			).toBeVisible({timeout: 500});
-		}).toPass({timeout: 5000});
+		await expect(
+			commerceChannelDefaultsPage.defaultPaymentCommerceTermEntriesCell(
+				'All Channels',
+				true
+			)
+		).toBeVisible();
+
+		await clickAndExpectToBeVisible({
+			target: commerceChannelDefaultsPage.editFrameTermSelect,
+			trigger:
+				commerceChannelDefaultsPage.defaultPaymentCommerceTermEntriesButton,
+		});
+
+		await commerceChannelDefaultsPage.editFrameChannelSelect.selectOption(
+			channel.name
+		);
+		await commerceChannelDefaultsPage.editFrameTermSelect.selectOption(
+			String(term2.id)
+		);
+		await commerceChannelDefaultsPage.editFrameSaveButton.click();
+
+		await expect(
+			commerceChannelDefaultsPage.editFrameTermSelect
+		).toBeHidden();
+
+		await expect(
+			commerceChannelDefaultsPage.defaultPaymentCommerceTermEntriesCell(
+				term2.label['en_US']
+			)
+		).toBeVisible();
 
 		await expect(
 			commerceChannelDefaultsPage.defaultPaymentCommerceTermEntriesCell(
