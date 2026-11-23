@@ -7,18 +7,29 @@ package com.liferay.analytics.settings.internal.model.listener;
 
 import com.liferay.analytics.batch.exportimport.model.listener.BaseAnalyticsDXPEntityModelListener;
 import com.liferay.analytics.settings.configuration.AnalyticsConfiguration;
-import com.liferay.analytics.settings.data.control.tasks.UsersDataControlTasks;
+import com.liferay.analytics.settings.internal.scheduler.AnalyticsDataControlTasksSchedulerJobConfiguration;
 import com.liferay.analytics.settings.security.constants.AnalyticsSecurityConstants;
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.scheduler.SchedulerJobConfiguration;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.Http;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 
 /**
@@ -34,8 +45,26 @@ public class UserModelListener
 			return;
 		}
 
-		_usersDataControlTasks.addEmailAddress(
-			user.getCompanyId(), user.getEmailAddress());
+		_emailAddresses.putIfAbsent(
+			user.getCompanyId(), Collections.synchronizedSet(new HashSet<>()));
+
+		Set<String> emailAddresses = _emailAddresses.get(user.getCompanyId());
+
+		emailAddresses.add(user.getEmailAddress());
+	}
+
+	@Activate
+	protected void activate(BundleContext bundleContext) {
+		_serviceRegistration = bundleContext.registerService(
+			SchedulerJobConfiguration.class,
+			new AnalyticsDataControlTasksSchedulerJobConfiguration(
+				analyticsConfigurationRegistry, _emailAddresses, _http),
+			null);
+	}
+
+	@Deactivate
+	protected void deactivate() {
+		_serviceRegistration.unregister();
 	}
 
 	@Override
@@ -93,7 +122,12 @@ public class UserModelListener
 	private static final Log _log = LogFactoryUtil.getLog(
 		UserModelListener.class);
 
+	private final Map<Long, Set<String>> _emailAddresses =
+		new ConcurrentHashMap<>();
+
 	@Reference
-	private UsersDataControlTasks _usersDataControlTasks;
+	private Http _http;
+
+	private ServiceRegistration<SchedulerJobConfiguration> _serviceRegistration;
 
 }

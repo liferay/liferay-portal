@@ -7,7 +7,6 @@ package com.liferay.analytics.settings.internal.scheduler;
 
 import com.liferay.analytics.settings.configuration.AnalyticsConfiguration;
 import com.liferay.analytics.settings.configuration.AnalyticsConfigurationRegistry;
-import com.liferay.analytics.settings.data.control.tasks.UsersDataControlTasks;
 import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -24,18 +23,25 @@ import com.liferay.portal.security.key.secret.SecretResolverUtil;
 
 import java.net.HttpURLConnection;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Marcos Martins
  */
-@Component(service = SchedulerJobConfiguration.class)
 public class AnalyticsDataControlTasksSchedulerJobConfiguration
 	implements SchedulerJobConfiguration {
+
+	public AnalyticsDataControlTasksSchedulerJobConfiguration(
+		AnalyticsConfigurationRegistry analyticsConfigurationRegistry,
+		Map<Long, Set<String>> emailAddresses, Http http) {
+
+		_analyticsConfigurationRegistry = analyticsConfigurationRegistry;
+		_emailAddresses = emailAddresses;
+		_http = http;
+	}
 
 	@Override
 	public UnsafeRunnable<Exception> getJobExecutorUnsafeRunnable() {
@@ -50,14 +56,15 @@ public class AnalyticsDataControlTasksSchedulerJobConfiguration
 			for (Map.Entry<Long, AnalyticsConfiguration> entry :
 					analyticsConfigurations.entrySet()) {
 
-				Set<String> emailAddresses =
-					_usersDataControlTasks.getEmailAddresses(entry.getKey());
+				Set<String> emailAddresses = new HashSet<>(
+					_emailAddresses.getOrDefault(
+						entry.getKey(), Collections.emptySet()));
 
 				if (emailAddresses.isEmpty()) {
 					continue;
 				}
 
-				_usersDataControlTasks.clean(entry.getKey());
+				_emailAddresses.remove(entry.getKey());
 
 				_createDataControlTasks(
 					entry.getValue(), entry.getKey(), emailAddresses,
@@ -129,13 +136,9 @@ public class AnalyticsDataControlTasksSchedulerJobConfiguration
 	private static final Log _log = LogFactoryUtil.getLog(
 		AnalyticsDataControlTasksSchedulerJobConfiguration.class);
 
-	@Reference
-	private AnalyticsConfigurationRegistry _analyticsConfigurationRegistry;
-
-	@Reference
-	private Http _http;
-
-	@Reference
-	private UsersDataControlTasks _usersDataControlTasks;
+	private final AnalyticsConfigurationRegistry
+		_analyticsConfigurationRegistry;
+	private final Map<Long, Set<String>> _emailAddresses;
+	private final Http _http;
 
 }
