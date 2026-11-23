@@ -5,19 +5,29 @@
 
 package com.liferay.object.entry.util;
 
+import com.liferay.object.definition.tree.util.ObjectDefinitionTreeUtil;
 import com.liferay.object.model.ObjectEntry;
+import com.liferay.object.service.ObjectDefinitionLocalServiceUtil;
+import com.liferay.object.service.ObjectRelationshipLocalServiceUtil;
 import com.liferay.object.system.JaxRsApplicationDescriptor;
 import com.liferay.object.system.SystemObjectDefinitionManager;
 import com.liferay.object.system.SystemObjectDefinitionManagerRegistry;
+import com.liferay.object.tree.ObjectDefinitionTreeFactory;
+import com.liferay.object.tree.Tree;
+import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
 import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
+import com.liferay.portal.vulcan.fields.NestedFieldsContext;
+import com.liferay.portal.vulcan.fields.NestedFieldsContextThreadLocal;
 import com.liferay.portal.vulcan.util.ObjectMapperUtil;
 
 import jakarta.ws.rs.InternalServerErrorException;
@@ -91,10 +101,42 @@ public class ObjectEntryDTOConverterUtil {
 				false, null, dtoConverterRegistry, null, user.getLocale(), null,
 				user);
 
-		Object dto = dtoConverter.toDTO(
-			defaultDTOConverterContext, objectEntry);
+		NestedFieldsContext nestedFieldsContext =
+			NestedFieldsContextThreadLocal.getNestedFieldsContext();
 
-		JSONObject dtoJSONObject = jsonFactory.createJSONObject(dto.toString());
+		if (FeatureFlagManagerUtil.isEnabled(
+				objectEntry.getCompanyId(), "LPD-116183") &&
+			(objectEntry.getRootObjectEntryId() ==
+				objectEntry.getObjectEntryId())) {
+
+			ObjectDefinitionTreeFactory objectDefinitionTreeFactory =
+				new ObjectDefinitionTreeFactory(
+					ObjectDefinitionLocalServiceUtil.getService(),
+					ObjectRelationshipLocalServiceUtil.getService());
+
+			Tree tree = objectDefinitionTreeFactory.create(
+				objectEntry.getObjectDefinitionId());
+
+			nestedFieldsContext = new NestedFieldsContext(
+				tree.getHeight(tree.getRootNode()) + 1,
+				ListUtil.concat(
+					ObjectDefinitionTreeUtil.getObjectRelationshipNames(
+						ObjectRelationshipLocalServiceUtil.getService(), tree),
+					Collections.singletonList("rootModelHierarchy")));
+		}
+
+		JSONObject dtoJSONObject = null;
+
+		try (SafeCloseable safeCloseable =
+				NestedFieldsContextThreadLocal.
+					setNestedFieldsContextWithSafeCloseable(
+						nestedFieldsContext)) {
+
+			Object dto = dtoConverter.toDTO(
+				defaultDTOConverterContext, objectEntry);
+
+			dtoJSONObject = jsonFactory.createJSONObject(dto.toString());
+		}
 
 		dtoJSONObject.remove("actions");
 		dtoJSONObject.remove("creator");
