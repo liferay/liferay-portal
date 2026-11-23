@@ -142,8 +142,8 @@ public class TestTaskFactoryTest
 		Assert.assertSame(batchHistory, testTask.getBatchHistory());
 		Assert.assertSame(expectedTestTaskClass, testTask.getClass());
 
-		Assert.assertEquals(averageDuration, testTask.getWeight());
 		Assert.assertEquals(testTaskName, testTask.getName());
+		Assert.assertEquals(averageDuration, testTask.getWeight());
 
 		TestTask longestDurationTestTask = TestTaskFactory.newTestTask(
 			batchTestClassGroup,
