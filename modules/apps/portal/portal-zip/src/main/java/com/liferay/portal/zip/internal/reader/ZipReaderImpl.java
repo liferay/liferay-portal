@@ -27,13 +27,13 @@ import java.util.zip.ZipFile;
 /**
  * @author Raymond Augé
  */
-public class IOZipReader extends BaseZipReader {
+public class ZipReaderImpl extends BaseZipReader {
 
-	public IOZipReader(File file) {
+	public ZipReaderImpl(File file) {
 		super(file);
 	}
 
-	public IOZipReader(InputStream inputStream) throws IOException {
+	public ZipReaderImpl(InputStream inputStream) throws IOException {
 		super(inputStream);
 	}
 
@@ -140,7 +140,7 @@ public class IOZipReader extends BaseZipReader {
 		return _zipFile;
 	}
 
-	private static final Log _log = LogFactoryUtil.getLog(IOZipReader.class);
+	private static final Log _log = LogFactoryUtil.getLog(ZipReaderImpl.class);
 
 	private ZipFile _zipFile;
 

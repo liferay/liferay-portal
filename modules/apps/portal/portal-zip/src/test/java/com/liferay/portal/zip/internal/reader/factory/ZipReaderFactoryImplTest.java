@@ -12,7 +12,7 @@ import com.liferay.portal.kernel.zip.ZipReaderFactory;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.portal.util.FastDateFormatFactoryImpl;
 import com.liferay.portal.zip.internal.reader.BaseZipReaderTestCase;
-import com.liferay.portal.zip.internal.reader.IOZipReader;
+import com.liferay.portal.zip.internal.reader.ZipReaderImpl;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -45,14 +45,14 @@ public class ZipReaderFactoryImplTest {
 				DependenciesTestUtil.getDependencyAsFile(
 					BaseZipReaderTestCase.class, "file.zip"))) {
 
-			Assert.assertTrue(zipReader instanceof IOZipReader);
+			Assert.assertTrue(zipReader instanceof ZipReaderImpl);
 		}
 
 		try (ZipReader zipReader = zipReaderFactory.getZipReader(
 				DependenciesTestUtil.getDependencyAsInputStream(
 					BaseZipReaderTestCase.class, "file.zip"))) {
 
-			Assert.assertTrue(zipReader instanceof IOZipReader);
+			Assert.assertTrue(zipReader instanceof ZipReaderImpl);
 		}
 	}
 

@@ -12,7 +12,7 @@ import com.liferay.portal.kernel.util.SystemProperties;
 import com.liferay.portal.kernel.zip.ZipReader;
 import com.liferay.portal.kernel.zip.ZipWriter;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
-import com.liferay.portal.zip.internal.reader.IOZipReader;
+import com.liferay.portal.zip.internal.reader.ZipReaderImpl;
 
 import java.io.File;
 import java.io.IOException;
@@ -69,7 +69,7 @@ public class ZipWriterImplTest {
 
 		Assert.assertTrue(file.exists());
 
-		ZipReader zipReader = new IOZipReader(file);
+		ZipReader zipReader = new ZipReaderImpl(file);
 
 		Assert.assertEquals(
 			_expectedEntryContent,
@@ -88,7 +88,7 @@ public class ZipWriterImplTest {
 
 		File file = zipWriter.getFile();
 
-		ZipReader zipReader = new IOZipReader(file);
+		ZipReader zipReader = new ZipReaderImpl(file);
 
 		Assert.assertEquals("", zipReader.getEntryAsString("empty.txt"));
 
@@ -108,7 +108,7 @@ public class ZipWriterImplTest {
 
 		File file = zipWriter.getFile();
 
-		ZipReader zipReader = new IOZipReader(file);
+		ZipReader zipReader = new ZipReaderImpl(file);
 
 		Assert.assertEquals(
 			_expectedEntryContent,
@@ -127,7 +127,7 @@ public class ZipWriterImplTest {
 
 		File file = zipWriter.getFile();
 
-		ZipReader zipReader = new IOZipReader(file);
+		ZipReader zipReader = new ZipReaderImpl(file);
 
 		Assert.assertNull(zipReader.getEntryAsString("null.txt"));
 
@@ -149,7 +149,7 @@ public class ZipWriterImplTest {
 
 		File file = zipWriter.getFile();
 
-		ZipReader zipReader = new IOZipReader(file);
+		ZipReader zipReader = new ZipReaderImpl(file);
 
 		Assert.assertEquals(
 			_expectedEntryContent,
@@ -168,7 +168,7 @@ public class ZipWriterImplTest {
 
 		File file = zipWriter.getFile();
 
-		ZipReader zipReader = new IOZipReader(file);
+		ZipReader zipReader = new ZipReaderImpl(file);
 
 		Assert.assertEquals(
 			"This is a string.", zipReader.getEntryAsString("string.txt"));
@@ -190,7 +190,7 @@ public class ZipWriterImplTest {
 
 		File file = zipWriter.getFile();
 
-		ZipReader zipReader = new IOZipReader(file);
+		ZipReader zipReader = new ZipReaderImpl(file);
 
 		Assert.assertEquals(
 			"This is a string.", zipReader.getEntryAsString("string.txt"));
@@ -208,7 +208,7 @@ public class ZipWriterImplTest {
 
 		File file = zipWriter.getFile();
 
-		ZipReader zipReader = new IOZipReader(file);
+		ZipReader zipReader = new ZipReaderImpl(file);
 
 		Assert.assertEquals("", zipReader.getEntryAsString("empty.txt"));
 
@@ -225,7 +225,7 @@ public class ZipWriterImplTest {
 
 		File file = zipWriter.getFile();
 
-		ZipReader zipReader = new IOZipReader(file);
+		ZipReader zipReader = new ZipReaderImpl(file);
 
 		Assert.assertNull(zipReader.getEntryAsString("null.txt"));
 
@@ -242,7 +242,7 @@ public class ZipWriterImplTest {
 
 		File file = zipWriter.getFile();
 
-		ZipReader zipReader = new IOZipReader(file);
+		ZipReader zipReader = new ZipReaderImpl(file);
 
 		Assert.assertEquals("", zipReader.getEntryAsString("empty.txt"));
 
@@ -259,7 +259,7 @@ public class ZipWriterImplTest {
 
 		File file = zipWriter.getFile();
 
-		ZipReader zipReader = new IOZipReader(file);
+		ZipReader zipReader = new ZipReaderImpl(file);
 
 		Assert.assertNull(zipReader.getEntryAsString("null.txt"));
 

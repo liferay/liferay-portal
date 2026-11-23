@@ -7,7 +7,7 @@ package com.liferay.portal.zip.internal.reader.factory;
 
 import com.liferay.portal.kernel.zip.ZipReader;
 import com.liferay.portal.kernel.zip.ZipReaderFactory;
-import com.liferay.portal.zip.internal.reader.IOZipReader;
+import com.liferay.portal.zip.internal.reader.ZipReaderImpl;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,12 +23,12 @@ public class ZipReaderFactoryImpl implements ZipReaderFactory {
 
 	@Override
 	public ZipReader getZipReader(File file) {
-		return new IOZipReader(file);
+		return new ZipReaderImpl(file);
 	}
 
 	@Override
 	public ZipReader getZipReader(InputStream inputStream) throws IOException {
-		return new IOZipReader(inputStream);
+		return new ZipReaderImpl(inputStream);
 	}
 
 }

@@ -22,7 +22,7 @@ import org.junit.Test;
 /**
  * @author Alejandro Tardín
  */
-public class IOZipReaderTest extends BaseZipReaderTestCase {
+public class ZipReaderImplTest extends BaseZipReaderTestCase {
 
 	@ClassRule
 	public static LiferayUnitTestRule liferayUnitTestRule =
@@ -50,14 +50,14 @@ public class IOZipReaderTest extends BaseZipReaderTestCase {
 
 	@Override
 	protected ZipReader getZipReader(File file) {
-		return new IOZipReader(file);
+		return new ZipReaderImpl(file);
 	}
 
 	@Override
 	protected ZipReader getZipReader(InputStream inputStream)
 		throws IOException {
 
-		return new IOZipReader(inputStream);
+		return new ZipReaderImpl(inputStream);
 	}
 
 }
