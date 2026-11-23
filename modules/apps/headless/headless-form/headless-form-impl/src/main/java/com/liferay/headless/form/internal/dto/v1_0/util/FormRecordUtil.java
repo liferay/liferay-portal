@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.headless.form.dto.v1_0.util;
+package com.liferay.headless.form.internal.dto.v1_0.util;
 
 import com.liferay.document.library.helper.DLURLHelper;
 import com.liferay.document.library.kernel.service.DLAppService;
@@ -13,6 +13,8 @@ import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
 import com.liferay.headless.form.dto.v1_0.FormDocument;
 import com.liferay.headless.form.dto.v1_0.FormFieldValue;
 import com.liferay.headless.form.dto.v1_0.FormRecord;
+import com.liferay.headless.form.dto.v1_0.util.CreatorUtil;
+import com.liferay.headless.form.dto.v1_0.util.FormDocumentUtil;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
