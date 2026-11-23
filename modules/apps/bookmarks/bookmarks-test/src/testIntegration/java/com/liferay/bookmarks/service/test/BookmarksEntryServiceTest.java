@@ -166,7 +166,7 @@ public class BookmarksEntryServiceTest {
 		catch (PrincipalException.MustHavePermission principalException) {
 			String message = principalException.getMessage();
 
-			Assert.assertTrue(message, message.contains(actionId));
+			Assert.assertTrue(message.contains(actionId));
 		}
 	}
 
