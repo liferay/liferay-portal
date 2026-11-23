@@ -63,6 +63,10 @@ public class TransactionTestUtil {
 
 		Bundle bundle = FrameworkUtil.getBundle(clazz);
 
+		if (bundle == null) {
+			return TransactionInvokerUtil.invoke(transactionConfig, callable);
+		}
+
 		try (Closeable closeable = installTransactionExecutor(
 				bundle.getSymbolicName())) {
 
