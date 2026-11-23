@@ -165,7 +165,6 @@ public class AccountEntryUserRelServiceTest {
 	@Test
 	public void testUpdateAccountEntryUserRels() throws Exception {
 		long accountEntryId = _accountEntry.getAccountEntryId();
-
 		User user = UserTestUtil.addUser();
 
 		try {
