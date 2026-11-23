@@ -9,6 +9,7 @@ import com.liferay.portal.kernel.model.Country;
 import com.liferay.portal.kernel.service.CountryLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 /**
  * @author Stefano Motta
@@ -33,7 +34,9 @@ public class CountryTestUtil {
 			RandomTestUtil.randomString(
 				2,
 				randomString -> {
-					if (!Character.isDigit(randomString.charAt(0))) {
+					if (!Character.isDigit(randomString.charAt(0)) ||
+						!Validator.isChar(randomString.substring(1))) {
+
 						return false;
 					}
 
@@ -49,7 +52,9 @@ public class CountryTestUtil {
 			RandomTestUtil.randomString(
 				3,
 				randomString -> {
-					if (!Character.isDigit(randomString.charAt(0))) {
+					if (!Character.isDigit(randomString.charAt(0)) ||
+						!Validator.isChar(randomString.substring(1))) {
+
 						return false;
 					}
 
