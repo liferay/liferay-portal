@@ -1,7 +1,6 @@
 Bundle-Name: Liferay Analytics Settings API
 Bundle-SymbolicName: com.liferay.analytics.settings.api
-Bundle-Version: 12.0.3
+Bundle-Version: 13.0.0
 Export-Package:\
 	com.liferay.analytics.settings.configuration,\
-	com.liferay.analytics.settings.data.control.tasks,\
 	com.liferay.analytics.settings.security.constants
