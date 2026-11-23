@@ -300,8 +300,8 @@ public class SalesforceObjectEntryManagerImplTest
 					objectEntryManagerHttpException) {
 
 			Assume.assumeNoException(
-				"Unable to authenticate with Salesforce using the password " +
-					"grant type",
+				"Unable to authenticate with Salesforce using the " +
+					"\"password\" grant type",
 				objectEntryManagerHttpException);
 		}
 		finally {
