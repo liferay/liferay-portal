@@ -12,5 +12,7 @@ on:
             -   cloud/helm/client-extension/**
             -   cloud/helm/default/**
             -   cloud/helm/dxp-operator/**
+            -   cloud/helm/platform-components/**
             -   cloud/operator/**
             -   cloud/scripts/tests/render-values/client-extension.yaml
+            -   cloud/scripts/tests/render-values/platform-components.yaml

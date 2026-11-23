@@ -184,6 +184,46 @@ jobs:
             -   if: ${{failure()}}
                 name: Print LiferayEnvironment
                 run: kubectl get liferayenvironment liferay --namespace liferay --output yaml
+    test-platform-components:
+        runs-on: ubuntu-latest
+        steps:
+            -   name: Checkout code
+                uses: actions/checkout@v4
+            -   name: Create kind cluster
+                uses: helm/kind-action@v1
+            -   name: Install Helm
+                uses: azure/setup-helm@v4
+                with:
+                    version: 4.2.4
+            -   name: Validate the XRD schemas against the API server
+                run: |
+                    set -o errexit
+                    set -o nounset
+                    set -o pipefail
+
+                    function main {
+                        helm \
+                            template \
+                            liferay \
+                            . \
+                            --show-only \
+                            templates/crossplane-xrd-liferayinfrastructure.yaml \
+                            --show-only \
+                            templates/crossplane-xrd-liferayoverlay.yaml \
+                            --values \
+                            ../../scripts/tests/render-values/platform-components.yaml \
+                            | yq \
+                                '.apiVersion = "apiextensions.k8s.io/v1"
+                                | .kind = "CustomResourceDefinition"
+                                | .metadata = {"name": .metadata.name}
+                                | .spec |= pick(["group", "names", "scope", "versions"])
+                                | .spec.scope = (.spec.scope // "Namespaced")
+                                | .spec.versions |= map({"name": .name, "schema": .schema, "served": .served, "storage": .referenceable})' \
+                            | kubectl apply --dry-run=server --filename - --server-side
+                    }
+
+                    main "${@}"
+                working-directory: ./cloud/helm/platform-components
 on:
     workflow_call:
 permissions:
