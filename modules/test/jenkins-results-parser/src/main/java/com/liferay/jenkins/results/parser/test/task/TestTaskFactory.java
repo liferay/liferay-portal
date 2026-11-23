@@ -7,6 +7,7 @@ package com.liferay.jenkins.results.parser.test.task;
 
 import com.liferay.jenkins.results.parser.test.clazz.group.BatchTestClassGroup;
 import com.liferay.jenkins.results.parser.test.clazz.group.TestClassGroup;
+import com.liferay.jenkins.results.parser.test.clazz.group.WorkspacesModulesJUnitBatchTestClassGroup;
 
 /**
  * @author Michael Hashimoto
@@ -16,6 +17,13 @@ public class TestTaskFactory {
 	public static TestTask newTestTask(
 		BatchTestClassGroup batchTestClassGroup,
 		TestClassGroup.GroupingStrategy groupingStrategy, String name) {
+
+		if (batchTestClassGroup instanceof
+				WorkspacesModulesJUnitBatchTestClassGroup) {
+
+			return new WorkspacesTestTask(
+				batchTestClassGroup, groupingStrategy, name);
+		}
 
 		return new DefaultTestTask(batchTestClassGroup, groupingStrategy, name);
 	}

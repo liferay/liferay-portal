@@ -233,6 +233,10 @@ public class BaseTestTask implements TestTask {
 		_name = name;
 	}
 
+	protected BatchTestClassGroup getBatchTestClassGroup() {
+		return _batchTestClassGroup;
+	}
+
 	private final BatchTestClassGroup _batchTestClassGroup;
 	private final TestClassGroup.GroupingStrategy _groupingStrategy;
 	private final String _name;
