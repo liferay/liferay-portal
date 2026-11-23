@@ -7,14 +7,12 @@ package com.liferay.portal.zip.internal.reader.factory;
 
 import com.liferay.portal.kernel.test.util.DependenciesTestUtil;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
-import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.zip.ZipReader;
 import com.liferay.portal.kernel.zip.ZipReaderFactory;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.portal.util.FastDateFormatFactoryImpl;
 import com.liferay.portal.zip.internal.reader.BaseZipReaderTestCase;
 import com.liferay.portal.zip.internal.reader.IOZipReader;
-import com.liferay.portal.zip.internal.reader.NIOZipReader;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -40,12 +38,6 @@ public class ZipReaderFactoryImplTest {
 	}
 
 	@Test
-	public void testNioZipReader() throws Exception {
-		_testNioZipReader(NIOZipReader.class, true);
-		_testNioZipReader(IOZipReader.class, false);
-	}
-
-	@Test
 	public void testZipReader() throws Exception {
 		ZipReaderFactory zipReaderFactory = new ZipReaderFactoryImpl();
 
@@ -61,39 +53,6 @@ public class ZipReaderFactoryImplTest {
 					BaseZipReaderTestCase.class, "file.zip"))) {
 
 			Assert.assertTrue(zipReader instanceof IOZipReader);
-		}
-	}
-
-	private void _testNioZipReader(
-			Class<? extends ZipReader> expectedClass,
-			boolean featureFlagEnabled)
-		throws Exception {
-
-		String featureFlagKey = "feature.flag.LPD-75525";
-
-		String originalValue = PropsUtil.get(featureFlagKey);
-
-		try {
-			PropsUtil.set(featureFlagKey, Boolean.toString(featureFlagEnabled));
-
-			ZipReaderFactory zipReaderFactory = new ZipReaderFactoryImpl();
-
-			try (ZipReader zipReader = zipReaderFactory.getZipReader(
-					DependenciesTestUtil.getDependencyAsFile(
-						BaseZipReaderTestCase.class, "file.zip"))) {
-
-				Assert.assertTrue(expectedClass.isInstance(zipReader));
-			}
-
-			try (ZipReader zipReader = zipReaderFactory.getZipReader(
-					DependenciesTestUtil.getDependencyAsInputStream(
-						BaseZipReaderTestCase.class, "file.zip"))) {
-
-				Assert.assertTrue(expectedClass.isInstance(zipReader));
-			}
-		}
-		finally {
-			PropsUtil.set(featureFlagKey, originalValue);
 		}
 	}
 
