@@ -67,39 +67,6 @@ public class OpenIdConnectProviderPortalInstanceLifecycleListenerTest {
 	}
 
 	@Test
-	public void testDuplicateIssuerURL() throws Exception {
-		String clientId = RandomTestUtil.randomString();
-		String issuerURL = "http://" + RandomTestUtil.randomString();
-		String tokenEndpoint = "http://" + RandomTestUtil.randomString();
-
-		_pid1 = ConfigurationTestUtil.createFactoryConfiguration(
-			"com.liferay.portal.security.sso.openid.connect.internal." +
-				"configuration.OpenIdConnectProviderConfiguration",
-			HashMapDictionaryBuilder.<String, Object>put(
-				"authorizationEndpoint",
-				"http://" + RandomTestUtil.randomString()
-			).put(
-				"companyId", TestPropsValues.getCompanyId()
-			).put(
-				"issuerURL", issuerURL
-			).put(
-				"jwksURI", "http://" + RandomTestUtil.randomString()
-			).put(
-				"openIdConnectClientId", clientId
-			).put(
-				"subjectTypes", new String[] {"public"}
-			).put(
-				"tokenEndpoint", tokenEndpoint
-			).put(
-				"userInfoEndpoint", "http://" + RandomTestUtil.randomString()
-			).build());
-
-		_testDuplicateIssuerURL(
-			clientId, RandomTestUtil.randomString(), issuerURL, tokenEndpoint);
-		_testDuplicateIssuerURL(clientId, clientId, issuerURL, tokenEndpoint);
-	}
-
-	@Test
 	public void testGetTokenConnectionTimeout() throws Exception {
 		String clientId1 = RandomTestUtil.randomString();
 		String issuerURL1 = "http://" + RandomTestUtil.randomString();
@@ -429,23 +396,17 @@ public class OpenIdConnectProviderPortalInstanceLifecycleListenerTest {
 			Assert.assertEquals(
 				"Unable to update OAuth client entry", messages.get(0));
 		}
+
+		ConfigurationTestUtil.deleteConfiguration(_pid1);
+		ConfigurationTestUtil.deleteConfiguration(_pid2);
+
+		_pid1 = null;
+		_pid2 = null;
+
+		_testUpdatedWithDuplicateIssuerURL();
 	}
 
-	private String _generateLocalWellKnownURI(
-			String issuerURL, String tokenEndpoint)
-		throws Exception {
-
-		MessageDigest messageDigest = MessageDigest.getInstance("MD5");
-		URI issuerURI = URI.create(issuerURL);
-
-		return StringBundler.concat(
-			issuerURI.getScheme(), "://", issuerURI.getAuthority(),
-			"/.well-known/openid-configuration", issuerURI.getPath(), '/',
-			Base64.encodeToURL(messageDigest.digest(tokenEndpoint.getBytes())),
-			"/local");
-	}
-
-	private void _testDuplicateIssuerURL(
+	private void _assertDuplicateIssuerURL(
 			String clientId1, String clientId2, String issuerURL,
 			String tokenEndpoint)
 		throws Exception {
@@ -504,6 +465,52 @@ public class OpenIdConnectProviderPortalInstanceLifecycleListenerTest {
 			_oAuthClientEntryLocalService.fetchOAuthClientEntry(
 				TestPropsValues.getCompanyId(),
 				oAuthClientASLocalMetadata.getLocalWellKnownURI(), clientId1));
+	}
+
+	private String _generateLocalWellKnownURI(
+			String issuerURL, String tokenEndpoint)
+		throws Exception {
+
+		MessageDigest messageDigest = MessageDigest.getInstance("MD5");
+		URI issuerURI = URI.create(issuerURL);
+
+		return StringBundler.concat(
+			issuerURI.getScheme(), "://", issuerURI.getAuthority(),
+			"/.well-known/openid-configuration", issuerURI.getPath(), '/',
+			Base64.encodeToURL(messageDigest.digest(tokenEndpoint.getBytes())),
+			"/local");
+	}
+
+	private void _testUpdatedWithDuplicateIssuerURL() throws Exception {
+		String clientId = RandomTestUtil.randomString();
+		String issuerURL = "http://" + RandomTestUtil.randomString();
+		String tokenEndpoint = "http://" + RandomTestUtil.randomString();
+
+		_pid1 = ConfigurationTestUtil.createFactoryConfiguration(
+			"com.liferay.portal.security.sso.openid.connect.internal." +
+				"configuration.OpenIdConnectProviderConfiguration",
+			HashMapDictionaryBuilder.<String, Object>put(
+				"authorizationEndpoint",
+				"http://" + RandomTestUtil.randomString()
+			).put(
+				"companyId", TestPropsValues.getCompanyId()
+			).put(
+				"issuerURL", issuerURL
+			).put(
+				"jwksURI", "http://" + RandomTestUtil.randomString()
+			).put(
+				"openIdConnectClientId", clientId
+			).put(
+				"subjectTypes", new String[] {"public"}
+			).put(
+				"tokenEndpoint", tokenEndpoint
+			).put(
+				"userInfoEndpoint", "http://" + RandomTestUtil.randomString()
+			).build());
+
+		_assertDuplicateIssuerURL(
+			clientId, RandomTestUtil.randomString(), issuerURL, tokenEndpoint);
+		_assertDuplicateIssuerURL(clientId, clientId, issuerURL, tokenEndpoint);
 	}
 
 	@Inject
