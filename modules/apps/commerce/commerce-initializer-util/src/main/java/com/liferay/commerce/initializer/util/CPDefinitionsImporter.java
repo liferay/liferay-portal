@@ -14,7 +14,9 @@ import com.liferay.account.model.AccountGroup;
 import com.liferay.account.service.AccountGroupLocalService;
 import com.liferay.account.service.AccountGroupRelLocalService;
 import com.liferay.asset.kernel.model.AssetCategory;
+import com.liferay.asset.kernel.model.AssetTag;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
+import com.liferay.asset.kernel.service.AssetTagLocalService;
 import com.liferay.commerce.constants.CPDefinitionInventoryConstants;
 import com.liferay.commerce.inventory.service.CommerceInventoryWarehouseItemLocalService;
 import com.liferay.commerce.model.CPDAvailabilityEstimate;
@@ -337,6 +339,37 @@ public class CPDefinitionsImporter {
 		).build();
 	}
 
+	private List<AssetTag> _importAssetTags(
+			JSONArray jsonArray, long scopeGroupId, long userId)
+		throws Exception {
+
+		User user = _userLocalService.getUser(userId);
+
+		ServiceContext serviceContext = new ServiceContext();
+
+		serviceContext.setCompanyId(user.getCompanyId());
+		serviceContext.setScopeGroupId(scopeGroupId);
+		serviceContext.setUserId(userId);
+
+		List<AssetTag> assetTags = new ArrayList<>(jsonArray.length());
+
+		for (int i = 0; i < jsonArray.length(); i++) {
+			String tagName = jsonArray.getString(i);
+
+			AssetTag assetTag = _assetTagLocalService.fetchTag(
+				scopeGroupId, tagName);
+
+			if (assetTag == null) {
+				assetTag = _assetTagLocalService.addTag(
+					null, userId, scopeGroupId, tagName, serviceContext);
+			}
+
+			assetTags.add(assetTag);
+		}
+
+		return assetTags;
+	}
+
 	private CPDefinition _importCPDefinition(
 			JSONObject jsonObject, String assetVocabularyName,
 			long catalogGroupId, long commerceChannelId,
@@ -365,7 +398,7 @@ public class CPDefinitionsImporter {
 		JSONArray tagsJSONArray = jsonObject.getJSONArray("tags");
 
 		if (tagsJSONArray != null) {
-			_assetTagsImporter.importAssetTags(
+			_importAssetTags(
 				tagsJSONArray, company.getGroupId(),
 				serviceContext.getUserId());
 		}
@@ -1101,7 +1134,7 @@ public class CPDefinitionsImporter {
 	private AssetCategoryLocalService _assetCategoryLocalService;
 
 	@Reference
-	private AssetTagsImporter _assetTagsImporter;
+	private AssetTagLocalService _assetTagLocalService;
 
 	@Reference
 	private CommerceAvailabilityEstimateLocalService
