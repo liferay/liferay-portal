@@ -1301,8 +1301,8 @@ public class HeadlessBuilderResourceTest extends BaseTestCase {
 			1, null, objectDefinition3, "value1",
 			RandomTestUtil.randomString());
 
-		_relateObjectEntries(objectEntry1, objectEntry2, objectRelationship1);
-		_relateObjectEntries(objectEntry1, objectEntry3, objectRelationship2);
+		_relateObjectEntries(objectEntry2, objectEntry1, objectRelationship1);
+		_relateObjectEntries(objectEntry2, objectEntry3, objectRelationship2);
 
 		assertSuccessfulJSONObject(
 			null,
