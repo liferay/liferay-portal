@@ -137,8 +137,8 @@ public class RatingsSiteSettingsConfigurationScreenWrapperTest {
 	@TestInfo("LPD-116328")
 	public void testImportProperties() throws Exception {
 		_testImportPropertiesWithInvalidRatingsType();
+		_testImportPropertiesWithMissingRatingsType();
 		_testImportPropertiesWithStagingGroup();
-		_testImportPropertiesWithoutRatingsType();
 	}
 
 	private void _testImportPropertiesWithInvalidRatingsType()
@@ -167,6 +167,31 @@ public class RatingsSiteSettingsConfigurationScreenWrapperTest {
 		Assert.assertTrue(properties.isEmpty());
 	}
 
+	private void _testImportPropertiesWithMissingRatingsType()
+		throws Exception {
+
+		Group group = GroupTestUtil.addGroup();
+
+		ConfigurationScreen configurationScreen = _serviceTrackerMap.getService(
+			"site-configuration-ratings");
+
+		configurationScreen.importProperties(
+			HashMapDictionaryBuilder.<String, Object>put(
+				_PROPERTY_KEY, RatingsType.STACKED_STARS.getValue()
+			).build(),
+			group.getGroupId());
+
+		configurationScreen.importProperties(
+			new HashMapDictionary<>(), group.getGroupId());
+
+		Dictionary<String, Object> properties =
+			configurationScreen.exportProperties(group.getGroupId());
+
+		Assert.assertEquals(
+			RatingsType.STACKED_STARS.getValue(),
+			properties.get(_PROPERTY_KEY));
+	}
+
 	private void _testImportPropertiesWithStagingGroup() throws Exception {
 		Group group = GroupTestUtil.addGroup();
 
@@ -190,29 +215,6 @@ public class RatingsSiteSettingsConfigurationScreenWrapperTest {
 		Group stagingGroup = group.getStagingGroup();
 
 		Assert.assertNull(stagingGroup.getTypeSettingsProperty(_PROPERTY_KEY));
-	}
-
-	private void _testImportPropertiesWithoutRatingsType() throws Exception {
-		Group group = GroupTestUtil.addGroup();
-
-		ConfigurationScreen configurationScreen = _serviceTrackerMap.getService(
-			"site-configuration-ratings");
-
-		configurationScreen.importProperties(
-			HashMapDictionaryBuilder.<String, Object>put(
-				_PROPERTY_KEY, RatingsType.STACKED_STARS.getValue()
-			).build(),
-			group.getGroupId());
-
-		configurationScreen.importProperties(
-			new HashMapDictionary<>(), group.getGroupId());
-
-		Dictionary<String, Object> properties =
-			configurationScreen.exportProperties(group.getGroupId());
-
-		Assert.assertEquals(
-			RatingsType.STACKED_STARS.getValue(),
-			properties.get(_PROPERTY_KEY));
 	}
 
 	private static final String _PROPERTY_KEY =
