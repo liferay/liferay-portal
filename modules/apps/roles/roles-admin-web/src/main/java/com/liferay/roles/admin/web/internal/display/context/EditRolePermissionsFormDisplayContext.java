@@ -31,8 +31,8 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portlet.display.template.util.PortletDisplayTemplateUtil;
-import com.liferay.roles.admin.search.ResourceActionRowChecker;
 import com.liferay.roles.admin.web.internal.group.type.contributor.util.GroupTypeContributorUtil;
+import com.liferay.roles.admin.web.internal.search.ResourceActionRowChecker;
 import com.liferay.taglib.search.ResultRow;
 
 import jakarta.servlet.ServletContext;

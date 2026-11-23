@@ -3,24 +3,24 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.roles.admin.search;
+package com.liferay.roles.admin.web.internal.search;
 
 import com.liferay.portal.kernel.dao.search.EmptyOnClickRowChecker;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.model.Role;
-import com.liferay.portal.kernel.model.UserGroup;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 
 import jakarta.portlet.RenderResponse;
 
 /**
- * @author Charles May
+ * @author Brian Wing Shun Chan
  */
-public class UserGroupRoleChecker extends EmptyOnClickRowChecker {
+public class OrganizationRoleChecker extends EmptyOnClickRowChecker {
 
-	public UserGroupRoleChecker(RenderResponse renderResponse, Role role) {
+	public OrganizationRoleChecker(RenderResponse renderResponse, Role role) {
 		super(renderResponse);
 
 		_role = role;
@@ -28,13 +28,13 @@ public class UserGroupRoleChecker extends EmptyOnClickRowChecker {
 
 	@Override
 	public boolean isChecked(Object object) {
-		UserGroup userGroup = (UserGroup)object;
+		Organization organization = (Organization)object;
 
 		try {
-			Group userGroupGroup = userGroup.getGroup();
+			Group group = organization.getGroup();
 
 			return GroupLocalServiceUtil.hasRoleGroup(
-				_role.getRoleId(), userGroupGroup.getGroupId());
+				_role.getRoleId(), group.getGroupId());
 		}
 		catch (Exception exception) {
 			_log.error(exception);
@@ -45,13 +45,13 @@ public class UserGroupRoleChecker extends EmptyOnClickRowChecker {
 
 	@Override
 	public boolean isDisabled(Object object) {
-		UserGroup userGroup = (UserGroup)object;
+		Organization organization = (Organization)object;
 
-		return isChecked(userGroup);
+		return isChecked(organization);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
-		UserGroupRoleChecker.class);
+		OrganizationRoleChecker.class);
 
 	private final Role _role;
 

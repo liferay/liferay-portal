@@ -50,12 +50,12 @@ import com.liferay.portal.service.persistence.constants.UserGroupFinderConstants
 import com.liferay.portlet.usersadmin.util.UsersAdminUtil;
 import com.liferay.roles.admin.constants.RolesAdminPortletKeys;
 import com.liferay.roles.admin.constants.RolesAdminWebKeys;
-import com.liferay.roles.admin.search.GroupRoleChecker;
-import com.liferay.roles.admin.search.OrganizationRoleChecker;
 import com.liferay.roles.admin.search.SetUserRoleChecker;
 import com.liferay.roles.admin.search.UnsetUserRoleChecker;
-import com.liferay.roles.admin.search.UserGroupRoleChecker;
 import com.liferay.roles.admin.web.internal.dao.search.SegmentsEntrySearchContainerFactory;
+import com.liferay.roles.admin.web.internal.search.GroupRoleChecker;
+import com.liferay.roles.admin.web.internal.search.OrganizationRoleChecker;
+import com.liferay.roles.admin.web.internal.search.UserGroupRoleChecker;
 import com.liferay.segments.model.SegmentsEntry;
 import com.liferay.site.search.GroupSearch;
 import com.liferay.users.admin.search.UserSearch;
