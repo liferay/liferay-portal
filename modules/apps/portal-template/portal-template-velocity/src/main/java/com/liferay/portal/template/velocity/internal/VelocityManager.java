@@ -289,7 +289,6 @@ public class VelocityManager extends BaseTemplateManager {
 	private VelocityEngine _velocityEngine;
 	private volatile VelocityEngineConfiguration _velocityEngineConfiguration;
 	private VelocityTemplateResourceCache _velocityTemplateResourceCache;
-	private volatile VelocityTemplateResourceLoader
-		_velocityTemplateResourceLoader;
+	private VelocityTemplateResourceLoader _velocityTemplateResourceLoader;
 
 }
