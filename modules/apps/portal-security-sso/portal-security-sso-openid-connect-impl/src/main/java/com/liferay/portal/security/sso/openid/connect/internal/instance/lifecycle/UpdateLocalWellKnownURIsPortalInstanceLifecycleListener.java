@@ -101,10 +101,10 @@ public class UpdateLocalWellKnownURIsPortalInstanceLifecycleListener
 			}
 
 			try {
-				JSONObject metadataJSONObject = _jsonFactory.createJSONObject(
+				JSONObject jsonObject = _jsonFactory.createJSONObject(
 					oAuthClientASLocalMetadata.getMetadataJSON());
 
-				String tokenEndpoint = metadataJSONObject.getString(
+				String tokenEndpoint = jsonObject.getString(
 					"token_endpoint");
 
 				if (Validator.isNull(tokenEndpoint)) {

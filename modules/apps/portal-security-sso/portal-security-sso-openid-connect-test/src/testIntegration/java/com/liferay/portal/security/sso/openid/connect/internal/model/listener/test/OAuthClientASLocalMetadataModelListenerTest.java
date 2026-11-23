@@ -104,10 +104,10 @@ public class OAuthClientASLocalMetadataModelListenerTest {
 		try {
 			String metadataJSON = oAuthClientASLocalMetadata.getMetadataJSON();
 
-			JSONObject metadataJSONObject = JSONFactoryUtil.createJSONObject(
+			JSONObject jsonObject = JSONFactoryUtil.createJSONObject(
 				metadataJSON);
 
-			metadataJSONObject.put(
+			jsonObject.put(
 				"token_endpoint", "http://" + RandomTestUtil.randomString());
 
 			oAuthClientASLocalMetadata =
@@ -115,7 +115,7 @@ public class OAuthClientASLocalMetadataModelListenerTest {
 					updateOAuthClientASLocalMetadata(
 						oAuthClientASLocalMetadata.
 							getOAuthClientASLocalMetadataId(),
-						metadataJSONObject.toString(), "openid-configuration");
+						jsonObject.toString(), "openid-configuration");
 
 			Assert.assertNotEquals(
 				localWellKnownURI,
