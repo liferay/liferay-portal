@@ -455,23 +455,35 @@ public class OpenIdConnectProviderPortalInstanceLifecycleListener
 		}
 
 		try {
-			OAuthClientEntry oldOAuthClientEntry = null;
+			OAuthClientEntry oAuthClientEntry = null;
 
 			if (oldProperties != null) {
 				String oldAuthServerWellKnownURI =
 					_updateOAuthClientASLocalMetadata(
 						companyId, guestUserId, oldProperties);
 
-				oldOAuthClientEntry =
+				oAuthClientEntry =
 					_oAuthClientEntryLocalService.fetchOAuthClientEntry(
 						companyId, oldAuthServerWellKnownURI,
 						_getPropertyAsString(
 							"openIdConnectClientId", oldProperties));
 			}
 
-			if (oldOAuthClientEntry != null) {
+			if (oAuthClientEntry == null) {
+				String authServerWellKnownURI =
+					_updateOAuthClientASLocalMetadata(
+						companyId, guestUserId, properties);
+
+				oAuthClientEntry =
+					_oAuthClientEntryLocalService.fetchOAuthClientEntry(
+						companyId, authServerWellKnownURI,
+						_getPropertyAsString(
+							"openIdConnectClientId", properties));
+			}
+
+			if (oAuthClientEntry != null) {
 				_oAuthClientEntryLocalService.updateOAuthClientEntry(
-					oldOAuthClientEntry.getOAuthClientEntryId(),
+					oAuthClientEntry.getOAuthClientEntryId(),
 					_generateAuthRequestParametersJSON(properties),
 					_updateOAuthClientASLocalMetadata(
 						companyId, guestUserId, properties),
@@ -480,7 +492,7 @@ public class OpenIdConnectProviderPortalInstanceLifecycleListener
 					GetterUtil.getString(properties.get("matcherField")),
 					GetterUtil.getLong(
 						properties.get("discoveryEndpointCacheInMillis")),
-					oldOAuthClientEntry.getOIDCUserInfoMapperJSON(),
+					oAuthClientEntry.getOIDCUserInfoMapperJSON(),
 					GetterUtil.getInteger(
 						properties.get("tokenConnectionTimeout"),
 						OAuthClientEntryConstants.
@@ -488,19 +500,7 @@ public class OpenIdConnectProviderPortalInstanceLifecycleListener
 					_generateTokenRequestParametersJSON(properties));
 			}
 			else {
-				String authServerWellKnownURI =
-					_updateOAuthClientASLocalMetadata(
-						companyId, guestUserId, properties);
-
-				OAuthClientEntry oAuthClientEntry =
-					_oAuthClientEntryLocalService.fetchOAuthClientEntry(
-						companyId, authServerWellKnownURI,
-						_getPropertyAsString(
-							"openIdConnectClientId", properties));
-
-				if (oAuthClientEntry == null) {
-					_addOAuthClientEntry(companyId, properties, guestUserId);
-				}
+				_addOAuthClientEntry(companyId, properties, guestUserId);
 			}
 
 			OpenIdConnectProviderUtil.removeOAuthClientEntryIdsByCompanyId(

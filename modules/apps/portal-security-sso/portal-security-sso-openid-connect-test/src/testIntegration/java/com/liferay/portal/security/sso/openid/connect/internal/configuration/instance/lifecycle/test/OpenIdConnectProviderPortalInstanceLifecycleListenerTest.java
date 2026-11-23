@@ -232,6 +232,7 @@ public class OpenIdConnectProviderPortalInstanceLifecycleListenerTest {
 	public void testPortalInstanceRegistered() throws Exception {
 		String clientId = RandomTestUtil.randomString();
 		String issuerURL = "http://" + RandomTestUtil.randomString();
+		int tokenConnectionTimeout = RandomTestUtil.randomInt();
 		String tokenEndpoint = "http://" + RandomTestUtil.randomString();
 
 		Company company = _companyLocalService.getCompany(
@@ -257,6 +258,8 @@ public class OpenIdConnectProviderPortalInstanceLifecycleListenerTest {
 				).put(
 					"subjectTypes", new String[] {"public"}
 				).put(
+					"tokenConnectionTimeout", tokenConnectionTimeout
+				).put(
 					"tokenEndpoint", tokenEndpoint
 				).put(
 					"userInfoEndpoint",
@@ -273,11 +276,15 @@ public class OpenIdConnectProviderPortalInstanceLifecycleListenerTest {
 			_portalInstanceLifecycleListener.portalInstanceRegistered(company);
 		}
 
-		Assert.assertNotNull(
+		OAuthClientEntry oAuthClientEntry =
 			_oAuthClientEntryLocalService.fetchOAuthClientEntry(
 				TestPropsValues.getCompanyId(),
-				_generateLocalWellKnownURI(issuerURL, tokenEndpoint),
-				clientId));
+				_generateLocalWellKnownURI(issuerURL, tokenEndpoint), clientId);
+
+		oAuthClientEntry.setTokenConnectionTimeout(RandomTestUtil.randomInt());
+
+		oAuthClientEntry = _oAuthClientEntryLocalService.updateOAuthClientEntry(
+			oAuthClientEntry);
 
 		Class<?> clazz = _portalInstanceLifecycleListener.getClass();
 
@@ -290,6 +297,13 @@ public class OpenIdConnectProviderPortalInstanceLifecycleListenerTest {
 
 			Assert.assertEquals(messages.toString(), 0, messages.size());
 		}
+
+		oAuthClientEntry = _oAuthClientEntryLocalService.getOAuthClientEntry(
+			oAuthClientEntry.getOAuthClientEntryId());
+
+		Assert.assertEquals(
+			tokenConnectionTimeout,
+			oAuthClientEntry.getTokenConnectionTimeout());
 	}
 
 	@Test
