@@ -2128,6 +2128,8 @@ definition {
 			locator1 = "Portlet#BODY",
 			value1 = "Web Content Content");
 
+		DownloadTempFile();
+
 		DMDocument.assertDownloadedFileContent(
 			downloadedContent = "This is a *.doc file.",
 			fileName = "Document_1.doc");
@@ -2146,6 +2148,8 @@ definition {
 			key_portletName = "Web Content Display",
 			locator1 = "Portlet#BODY",
 			value1 = "Web Content Content");
+
+		DownloadTempFile();
 
 		DMDocument.assertDownloadedFileContent(
 			downloadedContent = "This is a test document 2.",
