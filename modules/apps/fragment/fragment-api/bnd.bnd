@@ -22,5 +22,4 @@ Export-Package:\
 	com.liferay.fragment.service.persistence,\
 	com.liferay.fragment.util.comparator,\
 	com.liferay.fragment.util.configuration,\
-	com.liferay.fragment.util.exportimport.content.processor,\
 	com.liferay.fragment.validator
