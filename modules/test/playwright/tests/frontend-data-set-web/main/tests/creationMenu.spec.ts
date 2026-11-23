@@ -6,6 +6,7 @@
 import {expect, mergeTests} from '@playwright/test';
 
 import {apiHelpersTest} from '../../../../fixtures/apiHelpersTest';
+import {dataSetManagerApiHelpersTest} from '../../../../fixtures/dataSetManagerApiHelpersTest';
 import {featureFlagsTest} from '../../../../fixtures/featureFlagsTest';
 import {isolatedSiteTest} from '../../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../../fixtures/loginTest';
@@ -17,6 +18,7 @@ import {fdsSamplePageTest} from '../fixtures/fdsSamplePageTest';
 
 const test = mergeTests(
 	apiHelpersTest,
+	dataSetManagerApiHelpersTest,
 	fdsSamplePageTest,
 	featureFlagsTest({
 		'LPS-178052': {enabled: true},
@@ -25,6 +27,8 @@ const test = mergeTests(
 	loginTest()
 );
 
+const ADVANCED_SAMPLE_ERC =
+	'com_liferay_frontend_data_set_sample_web_internal_portlet_FDSSamplePortlet-advanced';
 const DATA_SET_WRAPPER_SELECTOR = '.data-set-wrapper';
 const FOCUS_TRAP_HIDDEN_SELECTOR = '[data-aria-hidden="true"]';
 const MENU_SELECTOR = '.dropdown-menu.show:has([aria-haspopup="true"])';
@@ -32,7 +36,9 @@ const OPEN_DROPDOWN_SELECTOR = '.dropdown-menu.show';
 const SUBMENU_SELECTOR =
 	'.dropdown-menu.show:not(:has([aria-haspopup="true"]))';
 
-test.beforeEach(async ({fdsSamplePage, site}) => {
+test.beforeEach(async ({dataSetManagerApiHelpers, fdsSamplePage, site}) => {
+	await dataSetManagerApiHelpers.deleteDataSet({erc: ADVANCED_SAMPLE_ERC});
+
 	await fdsSamplePage.setupFDSSampleWidget({site});
 });
 

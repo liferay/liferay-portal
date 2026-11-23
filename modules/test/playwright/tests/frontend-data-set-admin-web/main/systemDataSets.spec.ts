@@ -774,6 +774,12 @@ test(
 
 			await advancedSampleListItem.click();
 
+			dataSetERCs.push(
+
+				// eslint-disable-next-line @liferay/no-get-data-attribute
+				await advancedSampleListItem.getAttribute('data-erc')
+			);
+
 			await creationModal.createButton.click();
 
 			await waitForAlert(systemDataSetsPage.page);
