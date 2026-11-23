@@ -144,8 +144,35 @@ public class MapsSiteSettingsConfigurationScreenWrapperTest {
 	@Test
 	@TestInfo("LPD-116327")
 	public void testImportProperties() throws Exception {
+		_testImportPropertiesWithMissingMapProviderKey();
 		_testImportPropertiesWithStagingGroup();
-		_testImportPropertiesWithoutMapProviderKey();
+	}
+
+	private void _testImportPropertiesWithMissingMapProviderKey()
+		throws Exception {
+
+		Group group = GroupTestUtil.addGroup();
+
+		ConfigurationScreen configurationScreen = _serviceTrackerMap.getService(
+			"site-settings-maps");
+
+		String mapProviderKey = RandomTestUtil.randomString();
+
+		configurationScreen.importProperties(
+			HashMapDictionaryBuilder.<String, Object>put(
+				MapProviderWebKeys.MAP_PROVIDER_KEY, mapProviderKey
+			).build(),
+			group.getGroupId());
+
+		configurationScreen.importProperties(
+			new HashMapDictionary<>(), group.getGroupId());
+
+		Dictionary<String, Object> properties =
+			configurationScreen.exportProperties(group.getGroupId());
+
+		Assert.assertEquals(
+			mapProviderKey,
+			properties.get(MapProviderWebKeys.MAP_PROVIDER_KEY));
 	}
 
 	private void _testImportPropertiesWithStagingGroup() throws Exception {
@@ -176,31 +203,6 @@ public class MapsSiteSettingsConfigurationScreenWrapperTest {
 			mapProviderKey,
 			stagingGroup.getTypeSettingsProperty(
 				MapProviderWebKeys.MAP_PROVIDER_KEY));
-	}
-
-	private void _testImportPropertiesWithoutMapProviderKey() throws Exception {
-		Group group = GroupTestUtil.addGroup();
-
-		ConfigurationScreen configurationScreen = _serviceTrackerMap.getService(
-			"site-settings-maps");
-
-		String mapProviderKey = RandomTestUtil.randomString();
-
-		configurationScreen.importProperties(
-			HashMapDictionaryBuilder.<String, Object>put(
-				MapProviderWebKeys.MAP_PROVIDER_KEY, mapProviderKey
-			).build(),
-			group.getGroupId());
-
-		configurationScreen.importProperties(
-			new HashMapDictionary<>(), group.getGroupId());
-
-		Dictionary<String, Object> properties =
-			configurationScreen.exportProperties(group.getGroupId());
-
-		Assert.assertEquals(
-			mapProviderKey,
-			properties.get(MapProviderWebKeys.MAP_PROVIDER_KEY));
 	}
 
 	@Inject
