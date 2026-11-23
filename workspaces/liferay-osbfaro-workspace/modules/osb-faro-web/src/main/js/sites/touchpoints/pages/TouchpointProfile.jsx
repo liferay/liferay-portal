@@ -23,7 +23,7 @@ import {useLDPEnabled} from 'shared/hooks/useLDPEnabled';
 import {getAPIRangeParams} from 'shared/hooks/useRangeQueryValues';
 import {useQueryRangeSelectors} from 'shared/hooks/useQueryRangeSelectors';
 import {useSegmentFilter} from 'shared/hooks/useSegmentFilter';
-import {config} from 'shared/util/config';
+import {usePageConfig} from 'shared/context/pageConfig';
 
 function TouchpointProfile({className, renderContent, router}) {
 	const dataSourceStates = useDataSources();
@@ -41,7 +41,7 @@ function TouchpointProfile({className, renderContent, router}) {
 	const [pathRangeSelectors, setPathRangeSelectors] =
 		useState(rangeSelectors);
 	const {selectedChannel} = useChannelContext();
-	const friendlyURL = config.friendlyURL;
+	const {friendlyURL} = usePageConfig();
 	const decodedTitle = getSafeDecodedURIComponent(title);
 	const decodedTouchpoint = getSafeDecodedURIComponent(touchpoint);
 	const [experienceId, setExperienceId] = useState(experienceIdfromURL);

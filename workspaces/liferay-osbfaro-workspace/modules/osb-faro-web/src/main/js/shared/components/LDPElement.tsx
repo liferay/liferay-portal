@@ -1,6 +1,6 @@
 import React from 'react';
 import {useLDPEnabled} from 'shared/hooks/useLDPEnabled';
-import {config} from 'shared/util/config';
+import {usePageConfig} from 'shared/context/pageConfig';
 
 interface ILDPElementProps {
 	children: React.ReactNode;
@@ -11,7 +11,7 @@ export const LDPElement: React.FC<ILDPElementProps> = ({
 	children,
 	fallback,
 }) => {
-	const {groupId = ''} = config;
+	const {groupId} = usePageConfig();
 
 	const LDPEnabled = useLDPEnabled({groupId});
 

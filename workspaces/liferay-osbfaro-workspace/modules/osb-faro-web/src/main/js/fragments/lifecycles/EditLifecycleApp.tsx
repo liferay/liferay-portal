@@ -6,10 +6,10 @@ import LifecycleEdit from 'lifecycle/pages/EditLifecycle';
 import PageApp, {IPageAppProps} from '../PageApp';
 import React from 'react';
 import {LDPElement} from 'shared/components/LDPElement';
-import {config} from 'shared/util/config';
+import {usePageConfig} from 'shared/context/pageConfig';
 
 const LifecycleEditor = () => {
-	const {lifecycleId, sourceLifecycleId} = config.params;
+	const {lifecycleId, sourceLifecycleId} = usePageConfig().params;
 
 	let lifecycleEditor: React.ComponentType = LifecycleCreate;
 

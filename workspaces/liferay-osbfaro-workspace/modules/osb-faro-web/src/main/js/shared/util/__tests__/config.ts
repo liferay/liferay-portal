@@ -1,12 +1,12 @@
-import {config, initializeConfig} from '../config';
+import {buildConfig} from '../config';
 
-describe('initializeConfig', () => {
+describe('buildConfig', () => {
 	it.each([
 		['/segments', 'segmentsURL'],
 		['/edit-segment', 'editSegmentURL'],
 		['/data-source-onboarding', 'dataSourceOnboardingURL'],
 	])('exposes the URL of the %s page as config.%s', (friendlyURL, key) => {
-		initializeConfig({
+		const config = buildConfig({
 			pageURLs: {[friendlyURL]: `/web/my-workspace${friendlyURL}`},
 		});
 
@@ -16,13 +16,15 @@ describe('initializeConfig', () => {
 	});
 
 	it('keeps the params that have a value', () => {
-		initializeConfig({params: {id: '123', query: '', tabId: undefined}});
+		const config = buildConfig({
+			params: {id: '123', query: '', tabId: undefined},
+		});
 
 		expect(config.params).toEqual({id: '123'});
 	});
 
 	it('keeps the values that the renderer passes', () => {
-		initializeConfig({
+		const config = buildConfig({
 			channelId: '321',
 			friendlyURL: '/segment',
 			groupId: '23',
@@ -38,12 +40,21 @@ describe('initializeConfig', () => {
 	});
 
 	it('defaults the values that the renderer does not pass', () => {
-		initializeConfig({});
+		const config = buildConfig({});
 
 		expect(config.channelId).toBe('');
+		expect(config.friendlyURL).toBe('');
 		expect(config.groupId).toBe('');
 		expect(config.navigationItems).toBeNull();
 		expect(config.params).toEqual({});
 		expect(config.sidebarNavigationItems).toBeNull();
+		expect(config.signOutURL).toBe('');
+	});
+
+	it('freezes the config and its params', () => {
+		const config = buildConfig({params: {id: '123'}});
+
+		expect(Object.isFrozen(config)).toBe(true);
+		expect(Object.isFrozen(config.params)).toBe(true);
 	});
 });

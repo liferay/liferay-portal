@@ -22,26 +22,18 @@ export interface IBackendConfig {
 }
 
 export type Config = {
-	[key: `${string}URL`]: string;
+	readonly [key: `${string}URL`]: string;
 } & {
-	channelId: string;
-	groupId: string;
-	navigationItems: INavigationItem[] | null;
-	params: {[name: string]: string};
-	sidebarNavigationItems: INavigationItem[] | null;
+	readonly channelId: string;
+	readonly friendlyURL: string;
+	readonly groupId: string;
+	readonly navigationItems: INavigationItem[] | null;
+	readonly params: Readonly<{[name: string]: string}>;
+	readonly sidebarNavigationItems: INavigationItem[] | null;
+	readonly signOutURL: string;
 };
 
-export let config = {
-	channelId: '',
-	friendlyURL: '',
-	groupId: '',
-	navigationItems: null,
-	params: {},
-	sidebarNavigationItems: null,
-	signOutURL: '',
-} as Config;
-
-export function initializeConfig({
+export function buildConfig({
 	channelId = '',
 	friendlyURL = '',
 	groupId = '',
@@ -50,7 +42,7 @@ export function initializeConfig({
 	params,
 	sidebarNavigationItems,
 	signOutURL = '',
-}: IBackendConfig) {
+}: IBackendConfig): Config {
 	const pageParams: {[name: string]: string} = {};
 
 	for (const [name, value] of Object.entries(params ?? {})) {
@@ -65,14 +57,14 @@ export function initializeConfig({
 		urls[`${camelCase(pageFriendlyURL)}URL`] = url;
 	}
 
-	config = {
+	return Object.freeze({
 		...urls,
 		channelId,
 		friendlyURL,
 		groupId,
 		navigationItems: navigationItems ?? null,
-		params: pageParams,
+		params: Object.freeze(pageParams),
 		sidebarNavigationItems: sidebarNavigationItems ?? null,
 		signOutURL,
-	} as Config;
+	}) as Config;
 }

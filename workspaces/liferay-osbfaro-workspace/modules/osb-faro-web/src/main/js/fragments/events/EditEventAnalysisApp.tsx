@@ -3,10 +3,10 @@ import EventAnalysisCreate from 'event-analysis/pages/Create';
 import EventAnalysisEdit from 'event-analysis/pages/Edit';
 import PageApp, {IPageAppProps} from '../PageApp';
 import React from 'react';
-import {config} from 'shared/util/config';
+import {usePageConfig} from 'shared/context/pageConfig';
 
 const EventAnalysisEditor = () => {
-	const {id} = config.params;
+	const {id} = usePageConfig().params;
 
 	return (
 		<BundleRouter

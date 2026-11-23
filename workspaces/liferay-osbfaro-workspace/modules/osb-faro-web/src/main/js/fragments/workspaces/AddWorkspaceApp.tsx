@@ -4,7 +4,7 @@ import ErrorPage from 'shared/pages/ErrorPage';
 import GuestPageApp, {IGuestPageAppProps} from '../GuestPageApp';
 import React from 'react';
 import {ENABLE_ADD_TRIAL_WORKSPACE} from 'shared/util/constants';
-import {config} from 'shared/util/config';
+import {usePageConfig} from 'shared/context/pageConfig';
 
 interface IAddWorkspaceParams {
 	[name: string]: string | undefined;
@@ -12,7 +12,7 @@ interface IAddWorkspaceParams {
 }
 
 const AddWorkspacePage = () => {
-	const {corpProjectUuid} = config.params;
+	const {corpProjectUuid} = usePageConfig().params;
 
 	if (!corpProjectUuid && !ENABLE_ADD_TRIAL_WORKSPACE) {
 		return <ErrorPage />;

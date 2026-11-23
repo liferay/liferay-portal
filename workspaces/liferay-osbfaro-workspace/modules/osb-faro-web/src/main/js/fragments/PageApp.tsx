@@ -5,7 +5,8 @@ import Loading from 'shared/components/Loading';
 import NoPropertiesAvailable from 'shared/pages/NoPropertiesAvailable';
 import React, {Suspense, useState} from 'react';
 import WorkspaceGate from 'shared/components/WorkspaceGate';
-import {INavigationItem, initializeConfig} from 'shared/util/config';
+import {INavigationItem, buildConfig} from 'shared/util/config';
+import {PageConfigProvider} from 'shared/context/pageConfig';
 import {setDefaultGroupId} from 'shared/apollo/client';
 import {useChannelContext} from 'shared/context/channel';
 import {useCurrentUser} from 'shared/hooks/useCurrentUser';
@@ -75,10 +76,10 @@ const PageApp: React.FC<IPageAppProps & {children: React.ReactNode}> = ({
 	sidebarNavigationItems,
 	signOutURL,
 }) => {
-	useState(() => {
+	const [config] = useState(() => {
 		setDefaultGroupId(groupId);
 
-		initializeConfig({
+		return buildConfig({
 			channelId,
 			friendlyURL,
 			groupId,
@@ -91,21 +92,23 @@ const PageApp: React.FC<IPageAppProps & {children: React.ReactNode}> = ({
 	});
 
 	return (
-		<AppProviders>
-			<AppShell groupId={groupId}>
-				<PageLayout groupId={groupId}>
-					<WorkspaceGate>
-						{channelScoped ? (
-							<PropertyGate groupId={groupId}>
-								{children}
-							</PropertyGate>
-						) : (
-							children
-						)}
-					</WorkspaceGate>
-				</PageLayout>
-			</AppShell>
-		</AppProviders>
+		<PageConfigProvider config={config}>
+			<AppProviders>
+				<AppShell groupId={groupId}>
+					<PageLayout groupId={groupId}>
+						<WorkspaceGate>
+							{channelScoped ? (
+								<PropertyGate groupId={groupId}>
+									{children}
+								</PropertyGate>
+							) : (
+								children
+							)}
+						</WorkspaceGate>
+					</PageLayout>
+				</AppShell>
+			</AppProviders>
+		</PageConfigProvider>
 	);
 };
 

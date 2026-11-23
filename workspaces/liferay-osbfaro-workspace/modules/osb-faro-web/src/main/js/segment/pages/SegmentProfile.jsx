@@ -29,7 +29,7 @@ import {
 import {useDeleteSegments} from 'segment/hooks/useDeleteSegments';
 import {useModal} from '@clayui/modal';
 import {useRequest} from 'shared/hooks/useRequest';
-import {config} from 'shared/util/config';
+import {usePageConfig} from 'shared/context/pageConfig';
 import {setUriQueryValues} from 'shared/util/url';
 
 const AccountProfile = lazy(() =>
@@ -45,9 +45,16 @@ const SEGMENTS_LANGUAGE_MAP = {
 const SegmentProfile = ({renderContent}) => {
 	const {selectedChannel} = useContext(ChannelContext);
 
-	const {channelId, groupId} = config;
+	const {
+		channelId,
+		editSegmentURL,
+		friendlyURL,
+		groupId,
+		params,
+		segmentsURL
+	} = usePageConfig();
 
-	const {id} = config.params;
+	const {id} = params;
 
 
 	const {deleteSegments, deleteSegmentsModal} = useDeleteSegments(groupId);
@@ -86,7 +93,7 @@ const SegmentProfile = ({renderContent}) => {
 	if (error) {
 		return (
 			<ErrorPage
-				href={config.segmentsURL}
+				href={segmentsURL}
 				linkLabel={Liferay.Language.get('go-to-segments')}
 				message={Liferay.Language.get(
 					'the-segment-you-are-looking-for-does-not-exist'
@@ -116,7 +123,7 @@ const SegmentProfile = ({renderContent}) => {
 		deleteSegments({
 			ids: [id],
 			name: segmentDetails.name,
-			onSuccess: () => window.location.assign(config.segmentsURL)
+			onSuccess: () => window.location.assign(segmentsURL)
 		});
 	};
 
@@ -138,7 +145,7 @@ const SegmentProfile = ({renderContent}) => {
 						groupId,
 						label: selectedChannel && selectedChannel.name
 					}),
-					breadcrumbs.getSegments(config.segmentsURL),
+					breadcrumbs.getSegments(segmentsURL),
 					breadcrumbs.getEntityName({label: segmentDetails.name})
 				]}
 				groupId={groupId}
@@ -157,13 +164,13 @@ const SegmentProfile = ({renderContent}) => {
 						<BasePage.Header.PageActionsToolbar
 							actions={[
 								{
-									href: setUriQueryValues({id}, config.editSegmentURL),
+									href: setUriQueryValues({id}, editSegmentURL),
 									icon: {symbol: 'pencil'},
 									label: Liferay.Language.get(
 										'edit-segment'
 									)
 								},
-								...(isBatch && config.friendlyURL === '/segment'
+								...(isBatch && friendlyURL === '/segment'
 									? [
 											{
 												icon: {symbol: 'download'},
@@ -186,7 +193,7 @@ const SegmentProfile = ({renderContent}) => {
 										]
 									: []),
 								...(isBatch &&
-								config.friendlyURL ===
+								friendlyURL ===
 									'/segment-membership'
 									? [
 											{
