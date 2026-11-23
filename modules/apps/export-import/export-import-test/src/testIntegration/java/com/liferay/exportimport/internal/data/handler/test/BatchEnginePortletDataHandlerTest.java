@@ -100,6 +100,7 @@ import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
+import com.liferay.object.test.util.ObjectEntryTestUtil;
 import com.liferay.object.test.util.ObjectRelationshipTestUtil;
 import com.liferay.object.test.util.TreeTestUtil;
 import com.liferay.object.tree.Tree;
@@ -131,6 +132,7 @@ import com.liferay.portal.kernel.model.SystemEvent;
 import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.UserGroup;
+import com.liferay.portal.kernel.model.WorkflowDefinitionLink;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.sanitizer.SanitizerUtil;
@@ -149,10 +151,12 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.SystemEventLocalService;
 import com.liferay.portal.kernel.service.UserGroupLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalService;
 import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.FeatureFlagTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.RoleTestUtil;
@@ -3102,6 +3106,567 @@ public class BatchEnginePortletDataHandlerTest {
 		_assertObjectDefinition(objectDefinition, 1, objectFields[2]);
 	}
 
+	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-49856"))
+	@Test
+	@TestInfo("LPD-114638")
+	public void testExportImportObjectDefinitionsWithWorkflowDefinitionLinks()
+		throws Exception {
+
+		// Published workflow definition
+
+		ObjectDefinition objectDefinition = _addTextObjectDefinition(
+			ObjectDefinitionConstants.SCOPE_COMPANY);
+		WorkflowDefinition workflowDefinition1 = _addWorkflowDefinition(true);
+
+		_addOrUpdateWorkflowDefinitionLinks(
+			objectDefinition,
+			HashMapBuilder.put(
+				0L, workflowDefinition1.getName()
+			).build());
+
+		objectDefinition = _updateModifiedDate(objectDefinition);
+
+		File larFile1 = _exportObjectDefinitions(
+			objectDefinition.getModifiedDate());
+
+		File larFile2 = _exportWorkflowDefinitions();
+
+		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
+
+		_deleteWorkflowDefinition(workflowDefinition1);
+
+		new ExportImportExecutor(
+		).withGroupId(
+			_getCompanyGroupId()
+		).withIncludeWorkflowDefinitions(
+		).withLARFile(
+			larFile2
+		).executeImport();
+
+		_importObjectDefinitions(larFile1);
+
+		objectDefinition =
+			_objectDefinitionLocalService.
+				getObjectDefinitionByExternalReferenceCode(
+					objectDefinition.getExternalReferenceCode(),
+					TestPropsValues.getCompanyId());
+
+		_assertWorkflowDefinitionLinks(
+			HashMapBuilder.put(
+				0L, workflowDefinition1.getName()
+			).build(),
+			objectDefinition);
+
+		ObjectEntry objectEntry = ObjectEntryTestUtil.addObjectEntry(
+			objectDefinition);
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_PENDING, objectEntry.getStatus());
+
+		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
+
+		// Workflow definition with a different external reference code
+
+		objectDefinition = _addTextObjectDefinition(
+			ObjectDefinitionConstants.SCOPE_COMPANY);
+		WorkflowDefinition workflowDefinition2 = _addWorkflowDefinition(true);
+
+		_addOrUpdateWorkflowDefinitionLinks(
+			objectDefinition,
+			HashMapBuilder.put(
+				0L, workflowDefinition2.getName()
+			).build());
+
+		objectDefinition = _updateModifiedDate(objectDefinition);
+
+		larFile1 = _exportObjectDefinitions(objectDefinition.getModifiedDate());
+
+		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
+
+		_updateWorkflowDefinitionExternalReferenceCode(
+			RandomTestUtil.randomString(), workflowDefinition2);
+
+		_importObjectDefinitions(larFile1);
+
+		objectDefinition =
+			_objectDefinitionLocalService.
+				getObjectDefinitionByExternalReferenceCode(
+					objectDefinition.getExternalReferenceCode(),
+					TestPropsValues.getCompanyId());
+
+		_assertWorkflowDefinitionLinks(
+			HashMapBuilder.put(
+				0L, workflowDefinition2.getName()
+			).build(),
+			objectDefinition);
+
+		Assert.assertNull(
+			_kaleoDefinitionLocalService.
+				fetchKaleoDefinitionByExternalReferenceCode(
+					workflowDefinition2.getExternalReferenceCode(),
+					TestPropsValues.getCompanyId()));
+
+		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
+
+		_deleteWorkflowDefinition(workflowDefinition2);
+
+		// Workflow definition with a different name
+
+		objectDefinition = _addTextObjectDefinition(
+			ObjectDefinitionConstants.SCOPE_COMPANY);
+		WorkflowDefinition workflowDefinition3 = _addWorkflowDefinition(true);
+
+		_addOrUpdateWorkflowDefinitionLinks(
+			objectDefinition,
+			HashMapBuilder.put(
+				0L, workflowDefinition3.getName()
+			).build());
+
+		objectDefinition = _updateModifiedDate(objectDefinition);
+
+		larFile1 = _exportObjectDefinitions(objectDefinition.getModifiedDate());
+
+		_updateWorkflowDefinitionExternalReferenceCode(
+			RandomTestUtil.randomString(), workflowDefinition3);
+
+		WorkflowDefinition workflowDefinition4 = _addWorkflowDefinition(true);
+
+		_updateWorkflowDefinitionExternalReferenceCode(
+			workflowDefinition3.getExternalReferenceCode(),
+			workflowDefinition4);
+
+		_importObjectDefinitions(larFile1);
+
+		_assertWorkflowDefinitionLinks(
+			HashMapBuilder.put(
+				0L, workflowDefinition4.getName()
+			).build(),
+			objectDefinition);
+
+		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
+
+		_deleteWorkflowDefinition(workflowDefinition3);
+		_deleteWorkflowDefinition(workflowDefinition4);
+
+		// Workflow definition without an external reference code
+
+		objectDefinition = _addTextObjectDefinition(
+			ObjectDefinitionConstants.SCOPE_COMPANY);
+
+		_addOrUpdateWorkflowDefinitionLinks(
+			objectDefinition,
+			HashMapBuilder.put(
+				0L, WorkflowDefinitionConstants.NAME_SINGLE_APPROVER
+			).build());
+
+		objectDefinition = _updateModifiedDate(objectDefinition);
+
+		try (SafeCloseable safeCloseable =
+				FeatureFlagTestUtil.setFeatureFlagsWithSafeCloseable(
+					false, "LPD-49856")) {
+
+			larFile1 = _exportObjectDefinitions(
+				objectDefinition.getModifiedDate());
+		}
+
+		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
+
+		_importObjectDefinitions(larFile1);
+
+		objectDefinition =
+			_objectDefinitionLocalService.
+				getObjectDefinitionByExternalReferenceCode(
+					objectDefinition.getExternalReferenceCode(),
+					TestPropsValues.getCompanyId());
+
+		_objectDefinitions.add(objectDefinition);
+
+		_assertWorkflowDefinitionLinks(
+			HashMapBuilder.put(
+				0L, WorkflowDefinitionConstants.NAME_SINGLE_APPROVER
+			).build(),
+			objectDefinition);
+	}
+
+	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-49856"))
+	@Test
+	@TestInfo("LPD-114638")
+	public void testExportImportObjectDefinitionsWithWorkflowDefinitionLinksWithInvalidGroupAndMissingGroup()
+		throws Exception {
+
+		// Invalid group
+
+		ObjectDefinition objectDefinition = _addTextObjectDefinition(
+			ObjectDefinitionConstants.SCOPE_DEPOT);
+
+		_objectDefinitionSettingLocalService.addObjectDefinitionSetting(
+			objectDefinition.getUserId(),
+			objectDefinition.getObjectDefinitionId(),
+			ObjectDefinitionSettingConstants.NAME_ACCEPT_ALL_GROUPS,
+			StringPool.TRUE);
+
+		objectDefinition = _objectDefinitionLocalService.getObjectDefinition(
+			objectDefinition.getObjectDefinitionId());
+
+		DepotEntry depotEntry = _addDepotEntry();
+
+		_addOrUpdateWorkflowDefinitionLinks(
+			objectDefinition,
+			HashMapBuilder.put(
+				depotEntry.getGroupId(),
+				WorkflowDefinitionConstants.NAME_SINGLE_APPROVER
+			).build());
+
+		objectDefinition = _updateModifiedDate(objectDefinition);
+
+		File larFile = _exportObjectDefinitions(
+			objectDefinition.getModifiedDate());
+
+		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
+
+		Group group1 = depotEntry.getGroup();
+
+		_depotEntryLocalService.deleteDepotEntry(depotEntry);
+
+		Group group2 = GroupTestUtil.addGroup();
+
+		group2.setExternalReferenceCode(group1.getExternalReferenceCode());
+
+		group2 = _groupLocalService.updateGroup(group2);
+
+		ExportImportConfiguration exportImportConfiguration =
+			_importObjectDefinitions(larFile);
+
+		objectDefinition =
+			_objectDefinitionLocalService.
+				getObjectDefinitionByExternalReferenceCode(
+					objectDefinition.getExternalReferenceCode(),
+					TestPropsValues.getCompanyId());
+
+		_objectDefinitions.add(objectDefinition);
+
+		_assertWorkflowDefinitionLinks(
+			Collections.emptyMap(), objectDefinition);
+
+		List<ExportImportReportEntry> exportImportReportEntries =
+			_exportImportReportEntryLocalService.getExportImportReportEntries(
+				TestPropsValues.getCompanyId(),
+				exportImportConfiguration.getExportImportConfigurationId());
+
+		Assert.assertEquals(
+			exportImportReportEntries.toString(), 1,
+			exportImportReportEntries.size());
+
+		ExportImportReportEntry exportImportReportEntry =
+			_getExportImportReportEntry(
+				objectDefinition.getExternalReferenceCode(),
+				exportImportConfiguration);
+
+		_assertExportImportReportEntry(
+			_portal.getClassNameId(ObjectDefinition.class), 0,
+			objectDefinition.getExternalReferenceCode(), 0, "object-definition",
+			ExportImportReportEntryConstants.STATUS_UNRESOLVED,
+			ExportImportReportEntryConstants.TYPE_WARNING,
+			exportImportReportEntry);
+
+		Assert.assertEquals(
+			LanguageUtil.format(
+				LocaleUtil.getDefault(),
+				StringBundler.concat(
+					"the-following-sites-or-asset-libraries-are-not-valid-for-",
+					"the-object-definition-scope-and-their-workflow-",
+					"definition-links-were-removed-from-the-object-definition-",
+					"x-x"),
+				new Object[] {
+					group2.getExternalReferenceCode(),
+					objectDefinition.getLabel(LocaleUtil.getDefault())
+				}),
+			exportImportReportEntry.getErrorMessage());
+
+		// Missing group
+
+		objectDefinition = _addTextObjectDefinition(
+			ObjectDefinitionConstants.SCOPE_SITE);
+
+		Group group3 = GroupTestUtil.addGroup();
+
+		_addOrUpdateWorkflowDefinitionLinks(
+			objectDefinition,
+			HashMapBuilder.put(
+				0L, WorkflowDefinitionConstants.NAME_SINGLE_APPROVER
+			).put(
+				group3.getGroupId(),
+				WorkflowDefinitionConstants.NAME_SINGLE_APPROVER
+			).build());
+
+		objectDefinition = _updateModifiedDate(objectDefinition);
+
+		larFile = _exportObjectDefinitions(objectDefinition.getModifiedDate());
+
+		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
+
+		_groupLocalService.deleteGroup(group3);
+
+		exportImportConfiguration = _importObjectDefinitions(larFile);
+
+		objectDefinition =
+			_objectDefinitionLocalService.
+				getObjectDefinitionByExternalReferenceCode(
+					objectDefinition.getExternalReferenceCode(),
+					TestPropsValues.getCompanyId());
+
+		_objectDefinitions.add(objectDefinition);
+
+		_assertWorkflowDefinitionLinks(
+			HashMapBuilder.put(
+				0L, WorkflowDefinitionConstants.NAME_SINGLE_APPROVER
+			).build(),
+			objectDefinition);
+
+		exportImportReportEntries =
+			_exportImportReportEntryLocalService.getExportImportReportEntries(
+				TestPropsValues.getCompanyId(),
+				exportImportConfiguration.getExportImportConfigurationId());
+
+		Assert.assertEquals(
+			exportImportReportEntries.toString(), 1,
+			exportImportReportEntries.size());
+
+		exportImportReportEntry = _getExportImportReportEntry(
+			objectDefinition.getExternalReferenceCode(),
+			exportImportConfiguration);
+
+		_assertExportImportReportEntry(
+			_portal.getClassNameId(ObjectDefinition.class), 0,
+			objectDefinition.getExternalReferenceCode(), 0, "object-definition",
+			ExportImportReportEntryConstants.STATUS_UNRESOLVED,
+			ExportImportReportEntryConstants.TYPE_WARNING,
+			exportImportReportEntry);
+
+		Assert.assertEquals(
+			LanguageUtil.format(
+				LocaleUtil.getDefault(),
+				"the-following-sites-or-asset-libraries-do-not-exist-and-" +
+					"were-removed-from-the-workflow-definition-links-of-the-" +
+						"object-definition-x-x",
+				new Object[] {
+					group3.getExternalReferenceCode(),
+					objectDefinition.getLabel(LocaleUtil.getDefault())
+				}),
+			exportImportReportEntry.getErrorMessage());
+	}
+
+	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-49856"))
+	@Test
+	@TestInfo("LPD-114638")
+	public void testExportImportObjectDefinitionsWithWorkflowDefinitionLinksWithMissingWorkflowDefinition()
+		throws Exception {
+
+		// Missing workflow definition
+
+		ObjectDefinition objectDefinition = _addTextObjectDefinition(
+			ObjectDefinitionConstants.SCOPE_COMPANY);
+		WorkflowDefinition workflowDefinition1 = _addWorkflowDefinition(true);
+
+		_addOrUpdateWorkflowDefinitionLinks(
+			objectDefinition,
+			HashMapBuilder.put(
+				0L, workflowDefinition1.getName()
+			).build());
+
+		objectDefinition = _updateModifiedDate(objectDefinition);
+
+		File larFile1 = _exportObjectDefinitions(
+			objectDefinition.getModifiedDate());
+
+		File larFile2 = _exportWorkflowDefinitions();
+
+		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
+
+		_deleteWorkflowDefinition(workflowDefinition1);
+
+		ExportImportConfiguration exportImportConfiguration =
+			_importObjectDefinitions(larFile1);
+
+		KaleoDefinition kaleoDefinition =
+			_kaleoDefinitionLocalService.
+				getKaleoDefinitionByExternalReferenceCode(
+					workflowDefinition1.getExternalReferenceCode(),
+					TestPropsValues.getCompanyId());
+
+		Assert.assertEquals(
+			workflowDefinition1.getName(), kaleoDefinition.getName());
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_EMPTY, kaleoDefinition.getStatus());
+
+		objectDefinition =
+			_objectDefinitionLocalService.
+				getObjectDefinitionByExternalReferenceCode(
+					objectDefinition.getExternalReferenceCode(),
+					TestPropsValues.getCompanyId());
+
+		_assertWorkflowDefinitionLinks(
+			HashMapBuilder.put(
+				0L, workflowDefinition1.getName()
+			).build(),
+			objectDefinition);
+
+		List<ExportImportReportEntry> exportImportReportEntries =
+			_exportImportReportEntryLocalService.getExportImportReportEntries(
+				TestPropsValues.getCompanyId(),
+				exportImportConfiguration.getExportImportConfigurationId());
+
+		Assert.assertEquals(
+			exportImportReportEntries.toString(), 1,
+			exportImportReportEntries.size());
+
+		_assertExportImportReportEntry(
+			_portal.getClassNameId(KaleoDefinition.class), 0,
+			workflowDefinition1.getExternalReferenceCode(), 0,
+			KaleoDefinition.class.getName(),
+			ExportImportReportEntryConstants.STATUS_UNRESOLVED,
+			ExportImportReportEntryConstants.TYPE_EMPTY,
+			exportImportReportEntries.get(0));
+
+		new ExportImportExecutor(
+		).withGroupId(
+			_getCompanyGroupId()
+		).withIncludeWorkflowDefinitions(
+		).withLARFile(
+			larFile2
+		).executeImport();
+
+		kaleoDefinition =
+			_kaleoDefinitionLocalService.
+				getKaleoDefinitionByExternalReferenceCode(
+					workflowDefinition1.getExternalReferenceCode(),
+					TestPropsValues.getCompanyId());
+
+		Assert.assertEquals(
+			workflowDefinition1.getContent(), kaleoDefinition.getContent());
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_APPROVED, kaleoDefinition.getStatus());
+
+		_assertWorkflowDefinitionLinks(
+			HashMapBuilder.put(
+				0L, workflowDefinition1.getName()
+			).build(),
+			objectDefinition);
+
+		ExportImportReportEntry exportImportReportEntry =
+			_getExportImportReportEntry(
+				workflowDefinition1.getExternalReferenceCode(),
+				exportImportConfiguration);
+
+		Assert.assertEquals(
+			ExportImportReportEntryConstants.STATUS_RESOLVED,
+			exportImportReportEntry.getStatus());
+
+		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
+
+		// Missing workflow definition without an external reference code
+
+		objectDefinition = _addTextObjectDefinition(
+			ObjectDefinitionConstants.SCOPE_COMPANY);
+		WorkflowDefinition workflowDefinition2 = _addWorkflowDefinition(true);
+
+		_addOrUpdateWorkflowDefinitionLinks(
+			objectDefinition,
+			HashMapBuilder.put(
+				0L, workflowDefinition2.getName()
+			).build());
+
+		objectDefinition = _updateModifiedDate(objectDefinition);
+
+		try (SafeCloseable safeCloseable =
+				FeatureFlagTestUtil.setFeatureFlagsWithSafeCloseable(
+					false, "LPD-49856")) {
+
+			larFile1 = _exportObjectDefinitions(
+				objectDefinition.getModifiedDate());
+		}
+
+		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
+
+		_deleteWorkflowDefinition(workflowDefinition2);
+
+		exportImportConfiguration = _importObjectDefinitions(larFile1);
+
+		objectDefinition =
+			_objectDefinitionLocalService.
+				getObjectDefinitionByExternalReferenceCode(
+					objectDefinition.getExternalReferenceCode(),
+					TestPropsValues.getCompanyId());
+
+		_objectDefinitions.add(objectDefinition);
+
+		_assertWorkflowDefinitionLinks(
+			Collections.emptyMap(), objectDefinition);
+
+		Assert.assertNull(
+			_kaleoDefinitionLocalService.fetchKaleoDefinition(
+				workflowDefinition2.getName(),
+				ServiceContextTestUtil.getServiceContext()));
+
+		exportImportReportEntries =
+			_exportImportReportEntryLocalService.getExportImportReportEntries(
+				TestPropsValues.getCompanyId(),
+				exportImportConfiguration.getExportImportConfigurationId());
+
+		Assert.assertEquals(
+			exportImportReportEntries.toString(), 1,
+			exportImportReportEntries.size());
+
+		exportImportReportEntry = _getExportImportReportEntry(
+			objectDefinition.getExternalReferenceCode(),
+			exportImportConfiguration);
+
+		_assertExportImportReportEntry(
+			_portal.getClassNameId(ObjectDefinition.class), 0,
+			objectDefinition.getExternalReferenceCode(), 0, "object-definition",
+			ExportImportReportEntryConstants.STATUS_UNRESOLVED,
+			ExportImportReportEntryConstants.TYPE_WARNING,
+			exportImportReportEntry);
+
+		Assert.assertEquals(
+			LanguageUtil.format(
+				LocaleUtil.getDefault(),
+				"the-following-workflow-definitions-do-not-exist-and-were-" +
+					"removed-from-the-workflow-definition-links-of-the-" +
+						"object-definition-x-x",
+				new Object[] {
+					workflowDefinition2.getName(),
+					objectDefinition.getLabel(LocaleUtil.getDefault())
+				}),
+			exportImportReportEntry.getErrorMessage());
+	}
+
+	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-49856"))
+	@Test
+	@TestInfo("LPD-114638")
+	public void testExportImportObjectDefinitionsWithoutWorkflowDefinitionLinks()
+		throws Exception {
+
+		ObjectDefinition objectDefinition = _addTextObjectDefinition(
+			ObjectDefinitionConstants.SCOPE_COMPANY);
+
+		objectDefinition = _updateModifiedDate(objectDefinition);
+
+		File larFile = _exportObjectDefinitions(
+			objectDefinition.getModifiedDate());
+
+		_addOrUpdateWorkflowDefinitionLinks(
+			objectDefinition,
+			HashMapBuilder.put(
+				0L, WorkflowDefinitionConstants.NAME_SINGLE_APPROVER
+			).build());
+
+		_importObjectDefinitions(larFile);
+
+		_assertWorkflowDefinitionLinks(
+			Collections.emptyMap(), objectDefinition);
+	}
+
 	@FeatureFlag("LPD-43996")
 	@Test
 	public void testExportImportObjectEntriesWithComments() throws Exception {
@@ -5437,6 +6002,30 @@ public class BatchEnginePortletDataHandlerTest {
 		return notificationTemplate;
 	}
 
+	private void _addOrUpdateWorkflowDefinitionLinks(
+			ObjectDefinition objectDefinition,
+			Map<Long, String> workflowDefinitionNames)
+		throws Exception {
+
+		_objectDefinitionLocalService.addOrUpdateWorkflowDefinitionLinks(
+			objectDefinition,
+			TransformUtil.transform(
+				workflowDefinitionNames.entrySet(),
+				entry -> {
+					WorkflowDefinitionLink workflowDefinitionLink =
+						_workflowDefinitionLinkLocalService.
+							createWorkflowDefinitionLink(0);
+
+					workflowDefinitionLink.setGroupId(entry.getKey());
+					workflowDefinitionLink.setUserId(
+						TestPropsValues.getUserId());
+					workflowDefinitionLink.setWorkflowDefinitionName(
+						entry.getValue());
+
+					return workflowDefinitionLink;
+				}));
+	}
+
 	private PLOEntry _addPLOEntry(long userId, String languageId)
 		throws Exception {
 
@@ -5974,6 +6563,26 @@ public class BatchEnginePortletDataHandlerTest {
 		Assert.assertEquals(version, importedWorkflowDefinition.getVersion());
 	}
 
+	private void _assertWorkflowDefinitionLinks(
+		Map<Long, String> expectedWorkflowDefinitionNames,
+		ObjectDefinition objectDefinition) {
+
+		Map<Long, String> workflowDefinitionNames = new HashMap<>();
+
+		for (WorkflowDefinitionLink workflowDefinitionLink :
+				_workflowDefinitionLinkLocalService.getWorkflowDefinitionLinks(
+					objectDefinition.getCompanyId(),
+					objectDefinition.getClassName())) {
+
+			workflowDefinitionNames.put(
+				workflowDefinitionLink.getGroupId(),
+				workflowDefinitionLink.getWorkflowDefinitionName());
+		}
+
+		Assert.assertEquals(
+			expectedWorkflowDefinitionNames, workflowDefinitionNames);
+	}
+
 	private void _deleteObjectEntries(ObjectEntry... objectEntries)
 		throws Exception {
 
@@ -6030,6 +6639,17 @@ public class BatchEnginePortletDataHandlerTest {
 		).withGroupId(
 			_getCompanyGroupId()
 		).withIncludeNotificationTemplates(
+		).executeExport();
+	}
+
+	private File _exportObjectDefinitions(Date modifiedDate) throws Exception {
+		return new ExportImportExecutor(
+		).withDateRange(
+			new Date(modifiedDate.getTime() - Time.DAY),
+			new Date(modifiedDate.getTime() + Time.DAY)
+		).withGroupId(
+			_getCompanyGroupId()
+		).withIncludeObjectDefinitions(
 		).executeExport();
 	}
 
@@ -6486,6 +7106,18 @@ public class BatchEnginePortletDataHandlerTest {
 			larFile
 		).withUserIdStrategy(
 			userIdStrategy
+		).executeImport();
+	}
+
+	private ExportImportConfiguration _importObjectDefinitions(File larFile)
+		throws Exception {
+
+		return new ExportImportExecutor(
+		).withGroupId(
+			_getCompanyGroupId()
+		).withIncludeObjectDefinitions(
+		).withLARFile(
+			larFile
 		).executeImport();
 	}
 
@@ -7332,6 +7964,29 @@ public class BatchEnginePortletDataHandlerTest {
 		return _layoutLocalService.updateLayout(layout);
 	}
 
+	private ObjectDefinition _updateModifiedDate(
+		ObjectDefinition objectDefinition) {
+
+		objectDefinition.setModifiedDate(
+			new Date(System.currentTimeMillis() - (2 * Time.DAY)));
+
+		return _objectDefinitionLocalService.updateObjectDefinition(
+			objectDefinition);
+	}
+
+	private void _updateWorkflowDefinitionExternalReferenceCode(
+			String externalReferenceCode, WorkflowDefinition workflowDefinition)
+		throws Exception {
+
+		KaleoDefinition kaleoDefinition =
+			_kaleoDefinitionLocalService.getKaleoDefinition(
+				workflowDefinition.getWorkflowDefinitionId());
+
+		kaleoDefinition.setExternalReferenceCode(externalReferenceCode);
+
+		_kaleoDefinitionLocalService.updateKaleoDefinition(kaleoDefinition);
+	}
+
 	private static final String _FILE_NAME_PREFIX_NOTIFICATION_TEMPLATES =
 		"com.liferay.notification.rest.internal.resource.v1_0." +
 			"NotificationTemplateResourceImpl";
@@ -7415,6 +8070,9 @@ public class BatchEnginePortletDataHandlerTest {
 
 	@Inject
 	private FriendlyURLEntryLocalService _friendlyURLEntryLocalService;
+
+	@Inject
+	private GroupLocalService _groupLocalService;
 
 	@Inject
 	private KaleoDefinitionLocalService _kaleoDefinitionLocalService;
@@ -7510,6 +8168,10 @@ public class BatchEnginePortletDataHandlerTest {
 
 	@DeleteAfterTestRun
 	private List<User> _users = new ArrayList<>();
+
+	@Inject
+	private WorkflowDefinitionLinkLocalService
+		_workflowDefinitionLinkLocalService;
 
 	@Inject
 	private WorkflowDefinitionManager _workflowDefinitionManager;
