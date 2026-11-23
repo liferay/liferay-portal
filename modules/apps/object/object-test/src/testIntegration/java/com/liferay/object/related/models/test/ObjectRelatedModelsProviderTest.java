@@ -65,9 +65,12 @@ import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.PortletCategoryKeys;
+import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
@@ -84,7 +87,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -155,18 +157,23 @@ public class ObjectRelatedModelsProviderTest {
 		PermissionThreadLocal.setPermissionChecker(_originalPermissionChecker);
 	}
 
+	@FeatureFlag("LPD-108620")
 	@Test
 	public void testMoveObjectEntryToTrash() throws Exception {
 		_testMoveObjectEntryToTrash(
 			ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
 		_testMoveObjectEntryToTrash(
 			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+		_testMoveObjectEntryToTrash(
+			ObjectRelationshipConstants.TYPE_ONE_TO_ONE);
 	}
 
-	@Ignore
+	@FeatureFlag("LPD-108620")
 	@Test
 	public void testObjectEntry1to1ObjectRelatedModelsProviderImpl()
 		throws Exception {
+
+		// Get related models with database
 
 		_addObjectRelationship(
 			_objectDefinition1, _objectDefinition2,
@@ -225,6 +232,8 @@ public class ObjectRelatedModelsProviderTest {
 		_updateObjectEntry(
 			objectEntry3.getObjectEntryId(),
 			HashMapBuilder.<String, Serializable>put(
+				"text", "First Entry"
+			).put(
 				_relationshipObjectField.getName(),
 				objectEntry1.getObjectEntryId()
 			).build());
@@ -233,6 +242,26 @@ public class ObjectRelatedModelsProviderTest {
 			1, _objectRelatedModelsProvider,
 			_objectRelationship.getObjectRelationshipId(),
 			objectEntry1.getObjectEntryId());
+
+		// Get related models with search
+
+		ObjectRelationshipTestUtil.assertSearchRelatedModels(
+			0, _objectRelatedModelsProvider,
+			_objectRelationship.getObjectRelationshipId(),
+			objectEntry1.getObjectEntryId(), StringUtil.randomString());
+		ObjectRelationshipTestUtil.assertSearchRelatedModels(
+			1, _objectRelatedModelsProvider,
+			_objectRelationship.getObjectRelationshipId(),
+			objectEntry1.getObjectEntryId(), "Entry");
+		ObjectRelationshipTestUtil.assertSearchRelatedModels(
+			1, _objectRelatedModelsProvider,
+			_objectRelationship.getObjectRelationshipId(),
+			objectEntry1.getObjectEntryId(), "First ");
+		ObjectRelationshipTestUtil.assertSearchRelatedModels(
+			1, _objectRelatedModelsProvider,
+			_objectRelationship.getObjectRelationshipId(),
+			objectEntry1.getObjectEntryId(),
+			String.valueOf(objectEntry3.getObjectEntryId()));
 
 		_updateObjectEntry(
 			objectEntry3.getObjectEntryId(),
@@ -245,8 +274,133 @@ public class ObjectRelatedModelsProviderTest {
 			_objectRelationship.getObjectRelationshipId(),
 			objectEntry1.getObjectEntryId());
 
-		_objectRelationshipLocalService.deleteObjectRelationship(
-			_objectRelationship);
+		// Object relationship deletion type cascade
+
+		_addObjectRelationship(
+			_objectDefinition1, _objectDefinition2,
+			ObjectRelationshipConstants.DELETION_TYPE_CASCADE,
+			ObjectRelationshipConstants.TYPE_ONE_TO_ONE);
+
+		ObjectEntry objectEntry4 = _addObjectEntry(
+			_objectDefinition1, Collections.emptyMap());
+
+		ObjectEntry objectEntry5 = _addRelatedObjectEntry(
+			_objectDefinition2, objectEntry4,
+			ObjectRelationshipConstants.TYPE_ONE_TO_ONE);
+
+		_objectRelatedModelsProvider.deleteRelatedModel(
+			TestPropsValues.getUserId(), 0,
+			_objectRelationship.getObjectRelationshipId(),
+			objectEntry4.getObjectEntryId(),
+			ObjectRelationshipConstants.DELETION_TYPE_CASCADE);
+
+		Assert.assertNull(
+			_objectEntryLocalService.fetchObjectEntry(
+				objectEntry5.getObjectEntryId()));
+
+		// Object relationship deletion type disassociate
+
+		_addObjectRelationship(
+			_objectDefinition1, _objectDefinition2,
+			ObjectRelationshipConstants.DELETION_TYPE_DISASSOCIATE,
+			ObjectRelationshipConstants.TYPE_ONE_TO_ONE);
+
+		ObjectEntry objectEntry6 = _addObjectEntry(
+			_objectDefinition1, Collections.emptyMap());
+
+		ObjectEntry objectEntry7 = _addRelatedObjectEntry(
+			_objectDefinition2, objectEntry6,
+			ObjectRelationshipConstants.TYPE_ONE_TO_ONE);
+
+		_objectRelatedModelsProvider.deleteRelatedModel(
+			TestPropsValues.getUserId(), 0,
+			_objectRelationship.getObjectRelationshipId(),
+			objectEntry6.getObjectEntryId(),
+			ObjectRelationshipConstants.DELETION_TYPE_DISASSOCIATE);
+
+		Assert.assertEquals(
+			0,
+			MapUtil.getLong(
+				_objectEntryLocalService.getValues(
+					objectEntry7.getObjectEntryId()),
+				_relationshipObjectField.getName()));
+
+		ObjectRelationshipTestUtil.assertGetRelatedModels(
+			0, _objectRelatedModelsProvider,
+			_objectRelationship.getObjectRelationshipId(),
+			objectEntry6.getObjectEntryId());
+
+		// Object relationship deletion type prevent
+
+		_addObjectRelationship(
+			_objectDefinition1, _objectDefinition2,
+			ObjectRelationshipConstants.DELETION_TYPE_PREVENT,
+			ObjectRelationshipConstants.TYPE_ONE_TO_ONE);
+
+		ObjectEntry objectEntry8 = _addObjectEntry(
+			_objectDefinition1, Collections.emptyMap());
+
+		_addRelatedObjectEntry(
+			_objectDefinition2, objectEntry8,
+			ObjectRelationshipConstants.TYPE_ONE_TO_ONE);
+
+		AssertUtils.assertFailure(
+			RequiredObjectRelationshipException.class,
+			StringBundler.concat(
+				"Object relationship ",
+				_objectRelationship.getObjectRelationshipId(),
+				" does not allow deletes"),
+			() -> _objectRelatedModelsProvider.deleteRelatedModel(
+				TestPropsValues.getUserId(), 0,
+				_objectRelationship.getObjectRelationshipId(),
+				objectEntry8.getObjectEntryId(),
+				ObjectRelationshipConstants.DELETION_TYPE_PREVENT));
+	}
+
+	@FeatureFlag("LPD-108620")
+	@Test
+	public void testObjectEntry1to1ObjectUnrelatedModelsProviderImpl()
+		throws Exception {
+
+		_addObjectRelationship(
+			_objectDefinition1, _objectDefinition2,
+			ObjectRelationshipConstants.DELETION_TYPE_PREVENT,
+			ObjectRelationshipConstants.TYPE_ONE_TO_ONE);
+
+		ObjectEntry objectEntry1 = _addObjectEntry(
+			_objectDefinition1, Collections.emptyMap());
+
+		ObjectEntry objectEntry2 = _addObjectEntry(
+			_objectDefinition2,
+			HashMapBuilder.<String, Serializable>put(
+				_relationshipObjectField.getName(),
+				objectEntry1.getObjectEntryId()
+			).build());
+
+		ObjectEntry objectEntry3 = _addObjectEntry(
+			_objectDefinition2, Collections.emptyMap());
+
+		Assert.assertEquals(
+			SetUtil.fromList(Collections.singletonList(objectEntry3)),
+			SetUtil.fromList(
+				_objectRelatedModelsProvider.getUnrelatedModels(
+					0, 0, _objectDefinition1, objectEntry1.getObjectEntryId(),
+					_objectRelationship.getObjectRelationshipId(), null,
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS)));
+
+		_updateObjectEntry(
+			objectEntry2.getObjectEntryId(),
+			HashMapBuilder.<String, Serializable>put(
+				_relationshipObjectField.getName(), 0
+			).build());
+
+		Assert.assertEquals(
+			SetUtil.fromList(Arrays.asList(objectEntry2, objectEntry3)),
+			SetUtil.fromList(
+				_objectRelatedModelsProvider.getUnrelatedModels(
+					0, 0, _objectDefinition1, objectEntry1.getObjectEntryId(),
+					_objectRelationship.getObjectRelationshipId(), null,
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS)));
 	}
 
 	@Test
@@ -704,12 +858,15 @@ public class ObjectRelatedModelsProviderTest {
 				objectRelationship.getObjectRelationshipId(), null));
 	}
 
+	@FeatureFlag("LPD-108620")
 	@Test
 	public void testRestoreObjectEntryFromTrash() throws Exception {
 		_testRestoreObjectEntryFromTrash(
 			ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
 		_testRestoreObjectEntryFromTrash(
 			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+		_testRestoreObjectEntryFromTrash(
+			ObjectRelationshipConstants.TYPE_ONE_TO_ONE);
 	}
 
 	private AccountEntry _addAccountEntry(long userId) throws Exception {
