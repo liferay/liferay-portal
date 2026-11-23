@@ -305,12 +305,6 @@ public interface KaleoDefinitionLocalService
 	public List<KaleoDefinition> getKaleoDefinitions(
 		boolean active, int start, int end);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<KaleoDefinition> getKaleoDefinitions(
-		boolean active, int start, int end,
-		OrderByComparator<KaleoDefinition> orderByComparator,
-		ServiceContext serviceContext);
-
 	/**
 	 * Returns a range of all the kaleo definitions.
 	 *
@@ -324,12 +318,6 @@ public interface KaleoDefinitionLocalService
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<KaleoDefinition> getKaleoDefinitions(int start, int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<KaleoDefinition> getKaleoDefinitions(
-		int start, int end,
-		OrderByComparator<KaleoDefinition> orderByComparator,
-		ServiceContext serviceContext);
 
 	/**
 	 * Returns all the kaleo definitions matching the UUID and company.
@@ -364,17 +352,6 @@ public interface KaleoDefinitionLocalService
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getKaleoDefinitionsCount();
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getKaleoDefinitionsCount(
-		boolean active, ServiceContext serviceContext);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getKaleoDefinitionsCount(ServiceContext serviceContext);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getKaleoDefinitionsCount(
-		String name, boolean active, ServiceContext serviceContext);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getKaleoDefinitionsCount(
@@ -457,4 +434,4 @@ public interface KaleoDefinitionLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:771821584
+// LIFERAY-SERVICE-BUILDER-HASH:-181361721

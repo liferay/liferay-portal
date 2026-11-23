@@ -284,11 +284,6 @@ public interface KaleoDefinitionVersionLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<KaleoDefinitionVersion> getKaleoDefinitionVersions(
-		long companyId, int start, int end,
-		OrderByComparator<KaleoDefinitionVersion> orderByComparator);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<KaleoDefinitionVersion> getKaleoDefinitionVersions(
 			long companyId, String name)
 		throws PortalException;
 
@@ -304,9 +299,6 @@ public interface KaleoDefinitionVersionLocalService
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getKaleoDefinitionVersionsCount();
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getKaleoDefinitionVersionsCount(long companyId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getKaleoDefinitionVersionsCount(long companyId, String name);
@@ -375,4 +367,4 @@ public interface KaleoDefinitionVersionLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1775282479
+// LIFERAY-SERVICE-BUILDER-HASH:-1149647751

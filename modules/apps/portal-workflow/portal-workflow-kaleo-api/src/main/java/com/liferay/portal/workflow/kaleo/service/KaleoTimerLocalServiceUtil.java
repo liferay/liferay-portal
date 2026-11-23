@@ -267,13 +267,6 @@ public class KaleoTimerLocalServiceUtil {
 		return getService().getKaleoTimers(kaleoClassName, kaleoClassPK);
 	}
 
-	public static List<KaleoTimer> getKaleoTimers(
-		String kaleoClassName, long kaleoClassPK, boolean blocking) {
-
-		return getService().getKaleoTimers(
-			kaleoClassName, kaleoClassPK, blocking);
-	}
-
 	/**
 	 * Returns the number of kaleo timers.
 	 *
@@ -324,4 +317,4 @@ public class KaleoTimerLocalServiceUtil {
 			KaleoTimerLocalServiceUtil.class, KaleoTimerLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-593709228
+// LIFERAY-SERVICE-BUILDER-HASH:1807976811

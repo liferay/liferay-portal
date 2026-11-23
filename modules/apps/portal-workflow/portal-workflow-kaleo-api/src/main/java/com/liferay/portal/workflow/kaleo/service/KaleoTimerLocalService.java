@@ -243,10 +243,6 @@ public interface KaleoTimerLocalService
 	public List<KaleoTimer> getKaleoTimers(
 		String kaleoClassName, long kaleoClassPK);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<KaleoTimer> getKaleoTimers(
-		String kaleoClassName, long kaleoClassPK, boolean blocking);
-
 	/**
 	 * Returns the number of kaleo timers.
 	 *
@@ -299,4 +295,4 @@ public interface KaleoTimerLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1632933328
+// LIFERAY-SERVICE-BUILDER-HASH:513910106

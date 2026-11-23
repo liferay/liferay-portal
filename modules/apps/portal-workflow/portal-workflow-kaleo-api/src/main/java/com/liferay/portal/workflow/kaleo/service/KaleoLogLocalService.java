@@ -115,13 +115,6 @@ public interface KaleoLogLocalService
 		throws PortalException;
 
 	@Indexable(type = IndexableType.REINDEX)
-	public KaleoLog addNodeUsageMetadataKaleoLog(
-			KaleoInstanceToken kaleoInstanceToken,
-			Map<String, Serializable> workflowContext,
-			ServiceContext serviceContext)
-		throws PortalException;
-
-	@Indexable(type = IndexableType.REINDEX)
 	public KaleoLog addTaskAssignmentKaleoLog(
 			List<KaleoTaskAssignmentInstance>
 				previousKaleoTaskAssignmentInstances,
@@ -397,4 +390,4 @@ public interface KaleoLogLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1643917422
+// LIFERAY-SERVICE-BUILDER-HASH:1566976472

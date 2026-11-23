@@ -418,17 +418,6 @@ public class KaleoDefinitionLocalServiceWrapper
 			active, start, end);
 	}
 
-	@Override
-	public java.util.List<KaleoDefinition> getKaleoDefinitions(
-		boolean active, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<KaleoDefinition>
-			orderByComparator,
-		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
-
-		return _kaleoDefinitionLocalService.getKaleoDefinitions(
-			active, start, end, orderByComparator, serviceContext);
-	}
-
 	/**
 	 * Returns a range of all the kaleo definitions.
 	 *
@@ -445,17 +434,6 @@ public class KaleoDefinitionLocalServiceWrapper
 		int start, int end) {
 
 		return _kaleoDefinitionLocalService.getKaleoDefinitions(start, end);
-	}
-
-	@Override
-	public java.util.List<KaleoDefinition> getKaleoDefinitions(
-		int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<KaleoDefinition>
-			orderByComparator,
-		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
-
-		return _kaleoDefinitionLocalService.getKaleoDefinitions(
-			start, end, orderByComparator, serviceContext);
 	}
 
 	/**
@@ -503,32 +481,6 @@ public class KaleoDefinitionLocalServiceWrapper
 	@Override
 	public int getKaleoDefinitionsCount() {
 		return _kaleoDefinitionLocalService.getKaleoDefinitionsCount();
-	}
-
-	@Override
-	public int getKaleoDefinitionsCount(
-		boolean active,
-		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
-
-		return _kaleoDefinitionLocalService.getKaleoDefinitionsCount(
-			active, serviceContext);
-	}
-
-	@Override
-	public int getKaleoDefinitionsCount(
-		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
-
-		return _kaleoDefinitionLocalService.getKaleoDefinitionsCount(
-			serviceContext);
-	}
-
-	@Override
-	public int getKaleoDefinitionsCount(
-		String name, boolean active,
-		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
-
-		return _kaleoDefinitionLocalService.getKaleoDefinitionsCount(
-			name, active, serviceContext);
 	}
 
 	@Override
@@ -682,4 +634,4 @@ public class KaleoDefinitionLocalServiceWrapper
 	private KaleoDefinitionLocalService _kaleoDefinitionLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:199045023
+// LIFERAY-SERVICE-BUILDER-HASH:-16835407

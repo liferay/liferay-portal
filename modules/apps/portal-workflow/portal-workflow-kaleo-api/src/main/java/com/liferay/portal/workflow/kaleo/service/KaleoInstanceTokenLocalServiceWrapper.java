@@ -387,15 +387,6 @@ public class KaleoInstanceTokenLocalServiceWrapper
 			parentKaleoInstanceTokenId, completionDate, serviceContext);
 	}
 
-	@Override
-	public int getKaleoInstanceTokensCount(
-		long parentKaleoInstanceTokenId,
-		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
-
-		return _kaleoInstanceTokenLocalService.getKaleoInstanceTokensCount(
-			parentKaleoInstanceTokenId, serviceContext);
-	}
-
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -426,35 +417,6 @@ public class KaleoInstanceTokenLocalServiceWrapper
 
 		return _kaleoInstanceTokenLocalService.getRootKaleoInstanceToken(
 			kaleoInstanceId, workflowContext, serviceContext);
-	}
-
-	@Override
-	public com.liferay.portal.kernel.search.Hits search(
-		Long userId, String assetClassName, String assetTitle,
-		String assetDescription, String currentKaleoNodeName,
-		String kaleoDefinitionName, Boolean completed,
-		boolean searchByActiveWorkflowHandlers, int start, int end,
-		com.liferay.portal.kernel.search.Sort[] sorts,
-		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
-
-		return _kaleoInstanceTokenLocalService.search(
-			userId, assetClassName, assetTitle, assetDescription,
-			currentKaleoNodeName, kaleoDefinitionName, completed,
-			searchByActiveWorkflowHandlers, start, end, sorts, serviceContext);
-	}
-
-	@Override
-	public int searchCount(
-		Long userId, String assetClassName, String assetTitle,
-		String assetDescription, String currentKaleoNodeName,
-		String kaleoDefinitionName, Boolean completed,
-		boolean searchByActiveWorkflowHandlers,
-		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
-
-		return _kaleoInstanceTokenLocalService.searchCount(
-			userId, assetClassName, assetTitle, assetDescription,
-			currentKaleoNodeName, kaleoDefinitionName, completed,
-			searchByActiveWorkflowHandlers, serviceContext);
 	}
 
 	/**
@@ -525,4 +487,4 @@ public class KaleoInstanceTokenLocalServiceWrapper
 	private KaleoInstanceTokenLocalService _kaleoInstanceTokenLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:135910369
+// LIFERAY-SERVICE-BUILDER-HASH:-1946792462

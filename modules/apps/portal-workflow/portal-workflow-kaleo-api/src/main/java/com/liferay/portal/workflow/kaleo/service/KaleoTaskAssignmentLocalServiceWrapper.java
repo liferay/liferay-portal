@@ -325,14 +325,6 @@ public class KaleoTaskAssignmentLocalServiceWrapper
 
 	@Override
 	public java.util.List<KaleoTaskAssignment> getKaleoTaskAssignments(
-		long kaleoTaskId, String assigneeClassName) {
-
-		return _kaleoTaskAssignmentLocalService.getKaleoTaskAssignments(
-			kaleoTaskId, assigneeClassName);
-	}
-
-	@Override
-	public java.util.List<KaleoTaskAssignment> getKaleoTaskAssignments(
 		String kaleoClassName, long kaleoClassPK) {
 
 		return _kaleoTaskAssignmentLocalService.getKaleoTaskAssignments(
@@ -347,20 +339,6 @@ public class KaleoTaskAssignmentLocalServiceWrapper
 	@Override
 	public int getKaleoTaskAssignmentsCount() {
 		return _kaleoTaskAssignmentLocalService.getKaleoTaskAssignmentsCount();
-	}
-
-	@Override
-	public int getKaleoTaskAssignmentsCount(long kaleoTaskId) {
-		return _kaleoTaskAssignmentLocalService.getKaleoTaskAssignmentsCount(
-			kaleoTaskId);
-	}
-
-	@Override
-	public int getKaleoTaskAssignmentsCount(
-		long kaleoTaskId, String assigneeClassName) {
-
-		return _kaleoTaskAssignmentLocalService.getKaleoTaskAssignmentsCount(
-			kaleoTaskId, assigneeClassName);
 	}
 
 	/**
@@ -443,4 +421,4 @@ public class KaleoTaskAssignmentLocalServiceWrapper
 	private KaleoTaskAssignmentLocalService _kaleoTaskAssignmentLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1596951580
+// LIFERAY-SERVICE-BUILDER-HASH:-1678096351

@@ -248,13 +248,6 @@ public interface KaleoTaskInstanceTokenLocalService
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<KaleoTaskInstanceToken> getCompanyKaleoTaskInstanceTokens(
-		long companyId, int start, int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCompanyKaleoTaskInstanceTokensCount(long companyId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
 
 	/**
@@ -292,12 +285,6 @@ public interface KaleoTaskInstanceTokenLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<KaleoTaskInstanceToken> getKaleoTaskInstanceTokens(
-		List<Long> roleIds, Boolean completed, int start, int end,
-		OrderByComparator<KaleoTaskInstanceToken> orderByComparator,
-		ServiceContext serviceContext);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<KaleoTaskInstanceToken> getKaleoTaskInstanceTokens(
 		long kaleoInstanceId, Boolean completed, int start, int end,
 		OrderByComparator<KaleoTaskInstanceToken> orderByComparator,
 		ServiceContext serviceContext);
@@ -329,10 +316,6 @@ public interface KaleoTaskInstanceTokenLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getKaleoTaskInstanceTokensCount(
 		Boolean completed, ServiceContext serviceContext);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getKaleoTaskInstanceTokensCount(
-		List<Long> roleIds, Boolean completed, ServiceContext serviceContext);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getKaleoTaskInstanceTokensCount(
@@ -398,13 +381,6 @@ public interface KaleoTaskInstanceTokenLocalService
 		Long[] assetPrimaryKeys, Date dueDateGT, Date dueDateLT,
 		Boolean completed, Boolean searchByUserRoles, boolean andOperator,
 		int start, int end,
-		OrderByComparator<KaleoTaskInstanceToken> orderByComparator,
-		ServiceContext serviceContext);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<KaleoTaskInstanceToken> search(
-		String keywords, String[] assetTypes, Boolean completed,
-		Boolean searchByUserRoles, int start, int end,
 		OrderByComparator<KaleoTaskInstanceToken> orderByComparator,
 		ServiceContext serviceContext);
 
@@ -522,4 +498,4 @@ public interface KaleoTaskInstanceTokenLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:573371394
+// LIFERAY-SERVICE-BUILDER-HASH:1028764665

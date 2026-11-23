@@ -329,14 +329,6 @@ public class KaleoDefinitionVersionLocalServiceUtil {
 	}
 
 	public static List<KaleoDefinitionVersion> getKaleoDefinitionVersions(
-		long companyId, int start, int end,
-		OrderByComparator<KaleoDefinitionVersion> orderByComparator) {
-
-		return getService().getKaleoDefinitionVersions(
-			companyId, start, end, orderByComparator);
-	}
-
-	public static List<KaleoDefinitionVersion> getKaleoDefinitionVersions(
 			long companyId, String name)
 		throws PortalException {
 
@@ -358,10 +350,6 @@ public class KaleoDefinitionVersionLocalServiceUtil {
 	 */
 	public static int getKaleoDefinitionVersionsCount() {
 		return getService().getKaleoDefinitionVersionsCount();
-	}
-
-	public static int getKaleoDefinitionVersionsCount(long companyId) {
-		return getService().getKaleoDefinitionVersionsCount(companyId);
 	}
 
 	public static int getKaleoDefinitionVersionsCount(
@@ -447,4 +435,4 @@ public class KaleoDefinitionVersionLocalServiceUtil {
 			KaleoDefinitionVersionLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-163742919
+// LIFERAY-SERVICE-BUILDER-HASH:334459637

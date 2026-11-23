@@ -287,17 +287,6 @@ public class KaleoTaskInstanceTokenLocalServiceUtil {
 		return getService().getActionableDynamicQuery();
 	}
 
-	public static List<KaleoTaskInstanceToken>
-		getCompanyKaleoTaskInstanceTokens(long companyId, int start, int end) {
-
-		return getService().getCompanyKaleoTaskInstanceTokens(
-			companyId, start, end);
-	}
-
-	public static int getCompanyKaleoTaskInstanceTokensCount(long companyId) {
-		return getService().getCompanyKaleoTaskInstanceTokensCount(companyId);
-	}
-
 	public static
 		com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery
 			getIndexableActionableDynamicQuery() {
@@ -343,15 +332,6 @@ public class KaleoTaskInstanceTokenLocalServiceUtil {
 		int start, int end) {
 
 		return getService().getKaleoTaskInstanceTokens(start, end);
-	}
-
-	public static List<KaleoTaskInstanceToken> getKaleoTaskInstanceTokens(
-		List<Long> roleIds, Boolean completed, int start, int end,
-		OrderByComparator<KaleoTaskInstanceToken> orderByComparator,
-		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
-
-		return getService().getKaleoTaskInstanceTokens(
-			roleIds, completed, start, end, orderByComparator, serviceContext);
 	}
 
 	public static List<KaleoTaskInstanceToken> getKaleoTaskInstanceTokens(
@@ -404,14 +384,6 @@ public class KaleoTaskInstanceTokenLocalServiceUtil {
 
 		return getService().getKaleoTaskInstanceTokensCount(
 			completed, serviceContext);
-	}
-
-	public static int getKaleoTaskInstanceTokensCount(
-		List<Long> roleIds, Boolean completed,
-		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
-
-		return getService().getKaleoTaskInstanceTokensCount(
-			roleIds, completed, serviceContext);
 	}
 
 	public static int getKaleoTaskInstanceTokensCount(
@@ -514,17 +486,6 @@ public class KaleoTaskInstanceTokenLocalServiceUtil {
 		return getService().search(
 			assetTitle, taskName, assetTypes, assetPrimaryKeys, dueDateGT,
 			dueDateLT, completed, searchByUserRoles, andOperator, start, end,
-			orderByComparator, serviceContext);
-	}
-
-	public static List<KaleoTaskInstanceToken> search(
-		String keywords, String[] assetTypes, Boolean completed,
-		Boolean searchByUserRoles, int start, int end,
-		OrderByComparator<KaleoTaskInstanceToken> orderByComparator,
-		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
-
-		return getService().search(
-			keywords, assetTypes, completed, searchByUserRoles, start, end,
 			orderByComparator, serviceContext);
 	}
 
@@ -696,4 +657,4 @@ public class KaleoTaskInstanceTokenLocalServiceUtil {
 			KaleoTaskInstanceTokenLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1984201992
+// LIFERAY-SERVICE-BUILDER-HASH:1976468245

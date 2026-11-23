@@ -325,20 +325,6 @@ public class KaleoTaskInstanceTokenLocalServiceWrapper
 	}
 
 	@Override
-	public java.util.List<KaleoTaskInstanceToken>
-		getCompanyKaleoTaskInstanceTokens(long companyId, int start, int end) {
-
-		return _kaleoTaskInstanceTokenLocalService.
-			getCompanyKaleoTaskInstanceTokens(companyId, start, end);
-	}
-
-	@Override
-	public int getCompanyKaleoTaskInstanceTokensCount(long companyId) {
-		return _kaleoTaskInstanceTokenLocalService.
-			getCompanyKaleoTaskInstanceTokensCount(companyId);
-	}
-
-	@Override
 	public com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery
 		getIndexableActionableDynamicQuery() {
 
@@ -390,17 +376,6 @@ public class KaleoTaskInstanceTokenLocalServiceWrapper
 
 		return _kaleoTaskInstanceTokenLocalService.getKaleoTaskInstanceTokens(
 			start, end);
-	}
-
-	@Override
-	public java.util.List<KaleoTaskInstanceToken> getKaleoTaskInstanceTokens(
-		java.util.List<Long> roleIds, Boolean completed, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<KaleoTaskInstanceToken>
-			orderByComparator,
-		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
-
-		return _kaleoTaskInstanceTokenLocalService.getKaleoTaskInstanceTokens(
-			roleIds, completed, start, end, orderByComparator, serviceContext);
 	}
 
 	@Override
@@ -463,15 +438,6 @@ public class KaleoTaskInstanceTokenLocalServiceWrapper
 
 		return _kaleoTaskInstanceTokenLocalService.
 			getKaleoTaskInstanceTokensCount(completed, serviceContext);
-	}
-
-	@Override
-	public int getKaleoTaskInstanceTokensCount(
-		java.util.List<Long> roleIds, Boolean completed,
-		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
-
-		return _kaleoTaskInstanceTokenLocalService.
-			getKaleoTaskInstanceTokensCount(roleIds, completed, serviceContext);
 	}
 
 	@Override
@@ -597,19 +563,6 @@ public class KaleoTaskInstanceTokenLocalServiceWrapper
 		return _kaleoTaskInstanceTokenLocalService.search(
 			assetTitle, taskName, assetTypes, assetPrimaryKeys, dueDateGT,
 			dueDateLT, completed, searchByUserRoles, andOperator, start, end,
-			orderByComparator, serviceContext);
-	}
-
-	@Override
-	public java.util.List<KaleoTaskInstanceToken> search(
-		String keywords, String[] assetTypes, Boolean completed,
-		Boolean searchByUserRoles, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<KaleoTaskInstanceToken>
-			orderByComparator,
-		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
-
-		return _kaleoTaskInstanceTokenLocalService.search(
-			keywords, assetTypes, completed, searchByUserRoles, start, end,
 			orderByComparator, serviceContext);
 	}
 
@@ -829,4 +782,4 @@ public class KaleoTaskInstanceTokenLocalServiceWrapper
 		_kaleoTaskInstanceTokenLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:734348315
+// LIFERAY-SERVICE-BUILDER-HASH:107372611

@@ -368,15 +368,6 @@ public class KaleoDefinitionLocalServiceUtil {
 		return getService().getKaleoDefinitions(active, start, end);
 	}
 
-	public static List<KaleoDefinition> getKaleoDefinitions(
-		boolean active, int start, int end,
-		OrderByComparator<KaleoDefinition> orderByComparator,
-		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
-
-		return getService().getKaleoDefinitions(
-			active, start, end, orderByComparator, serviceContext);
-	}
-
 	/**
 	 * Returns a range of all the kaleo definitions.
 	 *
@@ -392,15 +383,6 @@ public class KaleoDefinitionLocalServiceUtil {
 		int start, int end) {
 
 		return getService().getKaleoDefinitions(start, end);
-	}
-
-	public static List<KaleoDefinition> getKaleoDefinitions(
-		int start, int end,
-		OrderByComparator<KaleoDefinition> orderByComparator,
-		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
-
-		return getService().getKaleoDefinitions(
-			start, end, orderByComparator, serviceContext);
 	}
 
 	/**
@@ -442,27 +424,6 @@ public class KaleoDefinitionLocalServiceUtil {
 	 */
 	public static int getKaleoDefinitionsCount() {
 		return getService().getKaleoDefinitionsCount();
-	}
-
-	public static int getKaleoDefinitionsCount(
-		boolean active,
-		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
-
-		return getService().getKaleoDefinitionsCount(active, serviceContext);
-	}
-
-	public static int getKaleoDefinitionsCount(
-		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
-
-		return getService().getKaleoDefinitionsCount(serviceContext);
-	}
-
-	public static int getKaleoDefinitionsCount(
-		String name, boolean active,
-		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
-
-		return getService().getKaleoDefinitionsCount(
-			name, active, serviceContext);
 	}
 
 	public static int getKaleoDefinitionsCount(
@@ -571,4 +532,4 @@ public class KaleoDefinitionLocalServiceUtil {
 			KaleoDefinitionLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-481623133
+// LIFERAY-SERVICE-BUILDER-HASH:1188379310

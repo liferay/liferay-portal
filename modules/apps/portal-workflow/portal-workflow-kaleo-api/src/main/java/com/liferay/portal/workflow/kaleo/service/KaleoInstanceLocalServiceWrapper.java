@@ -291,14 +291,6 @@ public class KaleoInstanceLocalServiceWrapper
 		return _kaleoInstanceLocalService.getIndexableActionableDynamicQuery();
 	}
 
-	@Override
-	public int getKaleoDefinitionKaleoInstancesCount(
-		long kaleoDefinitionId, boolean completed) {
-
-		return _kaleoInstanceLocalService.getKaleoDefinitionKaleoInstancesCount(
-			kaleoDefinitionId, completed);
-	}
-
 	/**
 	 * Returns the kaleo instance with the primary key.
 	 *
@@ -383,14 +375,6 @@ public class KaleoInstanceLocalServiceWrapper
 
 	@Override
 	public int getKaleoInstancesCount(
-		long kaleoDefinitionVersionId, boolean completed) {
-
-		return _kaleoInstanceLocalService.getKaleoInstancesCount(
-			kaleoDefinitionVersionId, completed);
-	}
-
-	@Override
-	public int getKaleoInstancesCount(
 		Long userId, String assetClassName, Long assetClassPK,
 		Boolean completed,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
@@ -438,21 +422,6 @@ public class KaleoInstanceLocalServiceWrapper
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _kaleoInstanceLocalService.getPersistedModel(primaryKeyObj);
-	}
-
-	@Override
-	public java.util.List<KaleoInstance> search(
-		Long userId, Boolean active, String assetClassName, String assetTitle,
-		String assetDescription, String nodeName, String kaleoDefinitionName,
-		Boolean completed, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<KaleoInstance>
-			orderByComparator,
-		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
-
-		return _kaleoInstanceLocalService.search(
-			userId, active, assetClassName, assetTitle, assetDescription,
-			nodeName, kaleoDefinitionName, completed, start, end,
-			orderByComparator, serviceContext);
 	}
 
 	@Override
@@ -512,15 +481,6 @@ public class KaleoInstanceLocalServiceWrapper
 
 	@Override
 	public KaleoInstance updateKaleoInstance(
-			long kaleoInstanceId, long rootKaleoInstanceTokenId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _kaleoInstanceLocalService.updateKaleoInstance(
-			kaleoInstanceId, rootKaleoInstanceTokenId);
-	}
-
-	@Override
-	public KaleoInstance updateKaleoInstance(
 			long kaleoInstanceId,
 			java.util.Map<String, java.io.Serializable> workflowContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -569,4 +529,4 @@ public class KaleoInstanceLocalServiceWrapper
 	private KaleoInstanceLocalService _kaleoInstanceLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1667521244
+// LIFERAY-SERVICE-BUILDER-HASH:-1563029669

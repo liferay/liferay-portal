@@ -236,10 +236,6 @@ public interface KaleoInstanceLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getKaleoDefinitionKaleoInstancesCount(
-		long kaleoDefinitionId, boolean completed);
-
 	/**
 	 * Returns the kaleo instance with the primary key.
 	 *
@@ -298,10 +294,6 @@ public interface KaleoInstanceLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getKaleoInstancesCount(
-		long kaleoDefinitionVersionId, boolean completed);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getKaleoInstancesCount(
 		Long userId, String assetClassName, Long assetClassPK,
 		Boolean completed, ServiceContext serviceContext);
 
@@ -329,14 +321,6 @@ public interface KaleoInstanceLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
 		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<KaleoInstance> search(
-		Long userId, Boolean active, String assetClassName, String assetTitle,
-		String assetDescription, String nodeName, String kaleoDefinitionName,
-		Boolean completed, int start, int end,
-		OrderByComparator<KaleoInstance> orderByComparator,
-		ServiceContext serviceContext);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int searchCount(
@@ -373,11 +357,6 @@ public interface KaleoInstanceLocalService
 	public KaleoInstance updateKaleoInstance(KaleoInstance kaleoInstance);
 
 	@Indexable(type = IndexableType.REINDEX)
-	public KaleoInstance updateKaleoInstance(
-			long kaleoInstanceId, long rootKaleoInstanceTokenId)
-		throws PortalException;
-
-	@Indexable(type = IndexableType.REINDEX)
 	@Retry(
 		acceptor = ExceptionRetryAcceptor.class,
 		properties = {
@@ -407,4 +386,4 @@ public interface KaleoInstanceLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2068388726
+// LIFERAY-SERVICE-BUILDER-HASH:1240782708

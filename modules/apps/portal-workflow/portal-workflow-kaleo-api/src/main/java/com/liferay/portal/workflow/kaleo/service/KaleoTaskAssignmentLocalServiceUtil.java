@@ -284,13 +284,6 @@ public class KaleoTaskAssignmentLocalServiceUtil {
 	}
 
 	public static List<KaleoTaskAssignment> getKaleoTaskAssignments(
-		long kaleoTaskId, String assigneeClassName) {
-
-		return getService().getKaleoTaskAssignments(
-			kaleoTaskId, assigneeClassName);
-	}
-
-	public static List<KaleoTaskAssignment> getKaleoTaskAssignments(
 		String kaleoClassName, long kaleoClassPK) {
 
 		return getService().getKaleoTaskAssignments(
@@ -304,17 +297,6 @@ public class KaleoTaskAssignmentLocalServiceUtil {
 	 */
 	public static int getKaleoTaskAssignmentsCount() {
 		return getService().getKaleoTaskAssignmentsCount();
-	}
-
-	public static int getKaleoTaskAssignmentsCount(long kaleoTaskId) {
-		return getService().getKaleoTaskAssignmentsCount(kaleoTaskId);
-	}
-
-	public static int getKaleoTaskAssignmentsCount(
-		long kaleoTaskId, String assigneeClassName) {
-
-		return getService().getKaleoTaskAssignmentsCount(
-			kaleoTaskId, assigneeClassName);
 	}
 
 	/**
@@ -361,4 +343,4 @@ public class KaleoTaskAssignmentLocalServiceUtil {
 			KaleoTaskAssignmentLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:416639313
+// LIFERAY-SERVICE-BUILDER-HASH:-530636658

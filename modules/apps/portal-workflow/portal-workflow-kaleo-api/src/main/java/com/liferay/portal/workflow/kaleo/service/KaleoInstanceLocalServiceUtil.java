@@ -265,13 +265,6 @@ public class KaleoInstanceLocalServiceUtil {
 		return getService().getIndexableActionableDynamicQuery();
 	}
 
-	public static int getKaleoDefinitionKaleoInstancesCount(
-		long kaleoDefinitionId, boolean completed) {
-
-		return getService().getKaleoDefinitionKaleoInstancesCount(
-			kaleoDefinitionId, completed);
-	}
-
 	/**
 	 * Returns the kaleo instance with the primary key.
 	 *
@@ -345,13 +338,6 @@ public class KaleoInstanceLocalServiceUtil {
 	}
 
 	public static int getKaleoInstancesCount(
-		long kaleoDefinitionVersionId, boolean completed) {
-
-		return getService().getKaleoInstancesCount(
-			kaleoDefinitionVersionId, completed);
-	}
-
-	public static int getKaleoInstancesCount(
 		Long userId, String assetClassName, Long assetClassPK,
 		Boolean completed,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
@@ -394,19 +380,6 @@ public class KaleoInstanceLocalServiceUtil {
 		throws PortalException {
 
 		return getService().getPersistedModel(primaryKeyObj);
-	}
-
-	public static List<KaleoInstance> search(
-		Long userId, Boolean active, String assetClassName, String assetTitle,
-		String assetDescription, String nodeName, String kaleoDefinitionName,
-		Boolean completed, int start, int end,
-		OrderByComparator<KaleoInstance> orderByComparator,
-		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
-
-		return getService().search(
-			userId, active, assetClassName, assetTitle, assetDescription,
-			nodeName, kaleoDefinitionName, completed, start, end,
-			orderByComparator, serviceContext);
 	}
 
 	public static int searchCount(
@@ -461,14 +434,6 @@ public class KaleoInstanceLocalServiceUtil {
 	}
 
 	public static KaleoInstance updateKaleoInstance(
-			long kaleoInstanceId, long rootKaleoInstanceTokenId)
-		throws PortalException {
-
-		return getService().updateKaleoInstance(
-			kaleoInstanceId, rootKaleoInstanceTokenId);
-	}
-
-	public static KaleoInstance updateKaleoInstance(
 			long kaleoInstanceId, Map<String, Serializable> workflowContext)
 		throws PortalException {
 
@@ -486,4 +451,4 @@ public class KaleoInstanceLocalServiceUtil {
 			KaleoInstanceLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1636303169
+// LIFERAY-SERVICE-BUILDER-HASH:-621439210

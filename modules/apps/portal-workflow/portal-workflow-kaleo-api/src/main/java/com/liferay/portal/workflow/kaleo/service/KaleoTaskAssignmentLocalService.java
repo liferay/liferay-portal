@@ -253,10 +253,6 @@ public interface KaleoTaskAssignmentLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<KaleoTaskAssignment> getKaleoTaskAssignments(
-		long kaleoTaskId, String assigneeClassName);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<KaleoTaskAssignment> getKaleoTaskAssignments(
 		String kaleoClassName, long kaleoClassPK);
 
 	/**
@@ -266,13 +262,6 @@ public interface KaleoTaskAssignmentLocalService
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getKaleoTaskAssignmentsCount();
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getKaleoTaskAssignmentsCount(long kaleoTaskId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getKaleoTaskAssignmentsCount(
-		long kaleoTaskId, String assigneeClassName);
 
 	/**
 	 * Returns the OSGi service identifier.
@@ -319,4 +308,4 @@ public interface KaleoTaskAssignmentLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1760578331
+// LIFERAY-SERVICE-BUILDER-HASH:-320000207
