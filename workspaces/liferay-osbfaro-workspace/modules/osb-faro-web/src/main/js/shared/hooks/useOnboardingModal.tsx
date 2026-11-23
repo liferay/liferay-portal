@@ -1,5 +1,7 @@
-import OnboardingModal from 'shared/components/modals/onboarding-modal';
-import React, {useContext, useEffect} from 'react';
+import OnboardingModal, {
+	getOnboardingState,
+} from 'shared/components/modals/onboarding-modal';
+import React, {useContext, useEffect, useState} from 'react';
 import SitesDashboardQuery from 'shared/queries/SitesDashboardQuery';
 import {isArray} from 'lodash';
 import {OnboardingContext} from 'shared/context/onboarding';
@@ -9,7 +11,8 @@ import {useQuery} from '@apollo/client';
 
 /**
  * Opens the onboarding for an administrator of a workspace with no data
- * sources, once. The caller renders the returned modal.
+ * sources, once, and resumes the onboarding a previous page left open. The
+ * caller renders the returned modal.
  */
 export const useOnboardingModal = ({
 	groupId,
@@ -27,8 +30,13 @@ export const useOnboardingModal = ({
 		variables: {type: null},
 	});
 
+	const [onboardingState] = useState(() => getOnboardingState(groupId));
+
 	useEffect(() => {
-		if (
+		if (onboardingState) {
+			modal.onOpenChange(true);
+		}
+		else if (
 			!onboardingTriggered &&
 			currentUser.isAdmin() &&
 			!loading &&
@@ -48,6 +56,7 @@ export const useOnboardingModal = ({
 	return (
 		<OnboardingModal
 			groupId={groupId}
+			initialState={onboardingState}
 			observer={modal.observer}
 			onClose={() => modal.onOpenChange(false)}
 		/>
