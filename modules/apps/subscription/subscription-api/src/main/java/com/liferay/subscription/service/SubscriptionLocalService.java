@@ -380,30 +380,12 @@ public interface SubscriptionLocalService
 		long companyId, String className, long classPK);
 
 	/**
-	 * @param className the entity's class name
-	 * @return the subscriptions to the class name
-	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
-	 */
-	@Deprecated
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<Subscription> getSubscriptions(String className);
-
-	/**
 	 * Returns the number of subscriptions.
 	 *
 	 * @return the number of subscriptions
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getSubscriptionsCount();
-
-	/**
-	 * @param className the entity's class name
-	 * @return the subscriptions to the class name
-	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
-	 */
-	@Deprecated
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getSubscriptionsCount(String className);
 
 	/**
 	 * Returns an ordered range of all the subscriptions of the user.
@@ -501,4 +483,4 @@ public interface SubscriptionLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1599653404
+// LIFERAY-SERVICE-BUILDER-HASH:-1568204200

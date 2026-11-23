@@ -472,17 +472,6 @@ public class SubscriptionLocalServiceWrapper
 	}
 
 	/**
-	 * @param className the entity's class name
-	 * @return the subscriptions to the class name
-	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
-	 */
-	@Deprecated
-	@Override
-	public java.util.List<Subscription> getSubscriptions(String className) {
-		return _subscriptionLocalService.getSubscriptions(className);
-	}
-
-	/**
 	 * Returns the number of subscriptions.
 	 *
 	 * @return the number of subscriptions
@@ -490,17 +479,6 @@ public class SubscriptionLocalServiceWrapper
 	@Override
 	public int getSubscriptionsCount() {
 		return _subscriptionLocalService.getSubscriptionsCount();
-	}
-
-	/**
-	 * @param className the entity's class name
-	 * @return the subscriptions to the class name
-	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
-	 */
-	@Deprecated
-	@Override
-	public int getSubscriptionsCount(String className) {
-		return _subscriptionLocalService.getSubscriptionsCount(className);
 	}
 
 	/**
@@ -649,4 +627,4 @@ public class SubscriptionLocalServiceWrapper
 	private SubscriptionLocalService _subscriptionLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1035496999
+// LIFERAY-SERVICE-BUILDER-HASH:763980518
