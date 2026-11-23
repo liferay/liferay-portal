@@ -220,8 +220,8 @@ public class UpdateLocalWellKnownURIsPortalInstanceLifecycleListenerTest {
 							newOAuthClientEntry.getOAuthClientEntryId(),
 							" points to the local well known URI ",
 							orphanedLocalWellKnownURI,
-							", which has no OAuth client authorization server ",
-							"local metadata")));
+							", which has no OAuth 2 client authorization ",
+							"server local metadata")));
 			}
 
 			newOAuthClientEntry.setAuthServerWellKnownURI(newLocalWellKnownURI);

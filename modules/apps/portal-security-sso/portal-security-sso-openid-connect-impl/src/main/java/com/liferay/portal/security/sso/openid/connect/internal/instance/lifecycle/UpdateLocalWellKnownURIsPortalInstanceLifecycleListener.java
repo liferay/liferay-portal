@@ -87,7 +87,7 @@ public class UpdateLocalWellKnownURIsPortalInstanceLifecycleListener
 						oAuthClientEntry.getOAuthClientEntryId(),
 						" points to the local well known URI ",
 						authServerWellKnownURI,
-						", which has no OAuth client authorization server ",
+						", which has no OAuth 2 client authorization server ",
 						"local metadata"));
 			}
 		}
@@ -185,7 +185,7 @@ public class UpdateLocalWellKnownURIsPortalInstanceLifecycleListener
 						_log.warn(
 							StringBundler.concat(
 								"Unable to update the local well known URI of ",
-								"OAuth client authorization server local ",
+								"OAuth 2 client authorization server local ",
 								"metadata ",
 								oAuthClientASLocalMetadata.
 									getOAuthClientASLocalMetadataId(),
@@ -204,7 +204,8 @@ public class UpdateLocalWellKnownURIsPortalInstanceLifecycleListener
 					_log.warn(
 						StringBundler.concat(
 							"Unable to update the local well known URI of ",
-							"OAuth client authorization server local metadata ",
+							"OAuth 2 client authorization server local ",
+							"metadata ",
 							oAuthClientASLocalMetadata.
 								getOAuthClientASLocalMetadataId()),
 						exception);
