@@ -26,7 +26,6 @@ import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.version.Version;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -75,7 +74,7 @@ public class
 	}
 
 	@Test
-	@TestInfo("LPD-74327")
+	@TestInfo({"LPD-74327", "LPD-117047"})
 	public void testUpgradeProcess() throws Exception {
 		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
 
@@ -169,12 +168,10 @@ public class
 	}
 
 	private void _runUpgrade() throws Exception {
-		UpgradeProcess[] upgradeProcesses = UpgradeTestUtil.getUpgradeSteps(
-			_upgradeStepRegistrator, new Version(1, 4, 2));
+		UpgradeProcess upgradeProcess = UpgradeTestUtil.getUpgradeStep(
+			_upgradeStepRegistrator, _CLASS_NAME);
 
-		for (UpgradeProcess upgradeProcess : upgradeProcesses) {
-			upgradeProcess.upgrade();
-		}
+		upgradeProcess.upgrade();
 
 		_entityCache.clearCache();
 	}
@@ -225,6 +222,10 @@ public class
 		Assert.assertEquals(
 			externalReferenceCode, layout.getExternalReferenceCode());
 	}
+
+	private static final String _CLASS_NAME =
+		"com.liferay.layout.utility.page.internal.upgrade.v1_4_2." +
+			"LayoutUtilityPageEntryLayoutExternalReferenceCodeUpgradeProcess";
 
 	@Inject
 	private EntityCache _entityCache;
