@@ -9,6 +9,8 @@ import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerList;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerListFactory;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
+import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
@@ -21,7 +23,6 @@ import com.liferay.portal.kernel.search.filter.BooleanFilter;
 import com.liferay.portal.kernel.search.filter.Filter;
 import com.liferay.portal.search.internal.indexer.IncludeExcludeUtil;
 import com.liferay.portal.search.internal.indexer.IndexerProvidedClausesUtil;
-import com.liferay.portal.search.internal.indexer.ModelPreFilterContributorsRegistry;
 import com.liferay.portal.search.internal.indexer.ModelSearchSettingsImpl;
 import com.liferay.portal.search.permission.SearchPermissionFilterContributor;
 import com.liferay.portal.search.spi.model.query.contributor.ModelPreFilterContributor;
@@ -30,6 +31,7 @@ import com.liferay.portal.search.spi.model.registrar.ModelSearchConfigurator;
 import com.liferay.portal.search.spi.model.registrar.ModelSearchSettings;
 import com.liferay.portal.search.util.SearchStringUtil;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -95,10 +97,6 @@ public class PreFilterContributorHelperImpl
 				bundleContext, ModelPreFilterContributor.class,
 				"indexer.clauses.mandatory");
 
-		_modelPreFilterContributorsRegistry =
-			new ModelPreFilterContributorsRegistry(
-				_classNameServiceTrackerMap, _mandatoryServiceTrackerMap);
-
 		_queryPreFilterContributorServiceTrackerList =
 			ServiceTrackerListFactory.open(
 				bundleContext, QueryPreFilterContributor.class,
@@ -126,6 +124,17 @@ public class PreFilterContributorHelperImpl
 
 	@Reference
 	protected SearchPermissionChecker searchPermissionChecker;
+
+	private void _addAll(
+		List<ModelPreFilterContributor> list1,
+		List<ModelPreFilterContributor> list2) {
+
+		if (list2 == null) {
+			return;
+		}
+
+		list1.addAll(list2);
+	}
 
 	private void _addIndexerProvidedPreFilters(
 		BooleanFilter booleanFilter, Indexer<?> indexer,
@@ -159,7 +168,7 @@ public class PreFilterContributorHelperImpl
 		SearchContext searchContext) {
 
 		List<ModelPreFilterContributor> modelPreFilterContributors =
-			_modelPreFilterContributorsRegistry.filterModelPreFilterContributor(
+			_filterModelPreFilterContributor(
 				modelSearchSettings.getClassName(),
 				getStrings(
 					"search.full.query.clause.contributors.excludes",
@@ -231,10 +240,88 @@ public class PreFilterContributorHelperImpl
 		return booleanFilter;
 	}
 
+	private List<ModelPreFilterContributor> _filterModelPreFilterContributor(
+		String entryClassName, Collection<String> excludes,
+		Collection<String> includes, boolean mandatoryOnly) {
+
+		List<ModelPreFilterContributor> modelPreFilterContributors =
+			new ArrayList<>();
+
+		_addAll(modelPreFilterContributors, _getAllClassesContributors());
+		_addAll(
+			modelPreFilterContributors, _getClassContributors(entryClassName));
+
+		if ((excludes != null) && (excludes.size() == 1) &&
+			excludes.contains(StringPool.STAR)) {
+
+			mandatoryOnly = true;
+		}
+
+		if (mandatoryOnly) {
+			_retainAll(modelPreFilterContributors, _getMandatoryContributors());
+		}
+		else {
+			List<String> mandatoryContributorClassNames =
+				_getMandatoryContributorNames(_getMandatoryContributors());
+
+			if ((includes != null) && !includes.isEmpty() &&
+				!((includes.size() == 1) &&
+				  includes.contains(StringPool.STAR))) {
+
+				modelPreFilterContributors.removeIf(
+					modelPreFilterContributor -> {
+						String className = _getClassName(
+							modelPreFilterContributor);
+
+						return !mandatoryContributorClassNames.contains(
+							className) &&
+							   !includes.contains(className);
+					});
+			}
+
+			if ((excludes != null) && !excludes.isEmpty()) {
+				modelPreFilterContributors.removeIf(
+					modelPreFilterContributor -> {
+						String className = _getClassName(
+							modelPreFilterContributor);
+
+						return !mandatoryContributorClassNames.contains(
+							className) &&
+							   excludes.contains(className);
+					});
+			}
+		}
+
+		return modelPreFilterContributors;
+	}
+
+	private List<ModelPreFilterContributor> _getAllClassesContributors() {
+		return _classNameServiceTrackerMap.getService("ALL");
+	}
+
+	private List<ModelPreFilterContributor> _getClassContributors(
+		String entryClassName) {
+
+		return _classNameServiceTrackerMap.getService(entryClassName);
+	}
+
 	private String _getClassName(Object object) {
 		Class<?> clazz = object.getClass();
 
 		return clazz.getName();
+	}
+
+	private List<String> _getMandatoryContributorNames(
+		List<ModelPreFilterContributor> mandatoryContributors) {
+
+		return TransformUtil.transform(
+			mandatoryContributors,
+			modelPreFilterContributor -> _getClassName(
+				modelPreFilterContributor));
+	}
+
+	private List<ModelPreFilterContributor> _getMandatoryContributors() {
+		return _mandatoryServiceTrackerMap.getService("true");
 	}
 
 	private ModelSearchSettings _getModelSearchSettings(Indexer<?> indexer) {
@@ -274,12 +361,21 @@ public class PreFilterContributorHelperImpl
 		return entryClassName;
 	}
 
+	private void _retainAll(
+		List<ModelPreFilterContributor> list1,
+		List<ModelPreFilterContributor> list2) {
+
+		if (list2 == null) {
+			return;
+		}
+
+		list1.retainAll(list2);
+	}
+
 	private ServiceTrackerMap<String, List<ModelPreFilterContributor>>
 		_classNameServiceTrackerMap;
 	private ServiceTrackerMap<String, List<ModelPreFilterContributor>>
 		_mandatoryServiceTrackerMap;
-	private ModelPreFilterContributorsRegistry
-		_modelPreFilterContributorsRegistry;
 	private ServiceTrackerList<QueryPreFilterContributor>
 		_queryPreFilterContributorServiceTrackerList;
 	private ServiceTrackerList<SearchPermissionFilterContributor>
