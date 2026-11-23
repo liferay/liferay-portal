@@ -64,6 +64,43 @@ public class UpdateLocalWellKnownURIsPortalInstanceLifecycleListenerTest {
 
 	@Test
 	public void testPortalInstanceRegistered() throws Exception {
+		_testPortalInstanceRegistered();
+		_testPortalInstanceRegisteredWithLongIssuerURL();
+	}
+
+	private void _disableComponentDescriptionDTO(
+			ComponentDescriptionDTO componentDescriptionDTO)
+		throws Exception {
+
+		if (!_serviceComponentRuntime.isComponentEnabled(
+				componentDescriptionDTO)) {
+
+			return;
+		}
+
+		Promise<Void> promise = _serviceComponentRuntime.disableComponent(
+			componentDescriptionDTO);
+
+		promise.getValue();
+	}
+
+	private void _enableComponentDescriptionDTO(
+			ComponentDescriptionDTO componentDescriptionDTO)
+		throws Exception {
+
+		if (_serviceComponentRuntime.isComponentEnabled(
+				componentDescriptionDTO)) {
+
+			return;
+		}
+
+		Promise<Void> promise = _serviceComponentRuntime.enableComponent(
+			componentDescriptionDTO);
+
+		promise.getValue();
+	}
+
+	private void _testPortalInstanceRegistered() throws Exception {
 		String clientId = RandomTestUtil.randomString();
 		String issuerURL = "http://" + RandomTestUtil.randomString();
 
@@ -267,36 +304,83 @@ public class UpdateLocalWellKnownURIsPortalInstanceLifecycleListenerTest {
 		}
 	}
 
-	private void _disableComponentDescriptionDTO(
-			ComponentDescriptionDTO componentDescriptionDTO)
+	private void _testPortalInstanceRegisteredWithLongIssuerURL()
 		throws Exception {
 
-		if (!_serviceComponentRuntime.isComponentEnabled(
-				componentDescriptionDTO)) {
+		String issuerURL = "http://" + RandomTestUtil.randomString(180);
 
-			return;
+		_pid = ConfigurationTestUtil.createFactoryConfiguration(
+			"com.liferay.portal.security.sso.openid.connect.internal." +
+				"configuration.OpenIdConnectProviderConfiguration",
+			HashMapDictionaryBuilder.<String, Object>put(
+				"authorizationEndpoint",
+				"http://" + RandomTestUtil.randomString()
+			).put(
+				"companyId", TestPropsValues.getCompanyId()
+			).put(
+				"issuerURL", issuerURL
+			).put(
+				"jwksURI", "http://" + RandomTestUtil.randomString()
+			).put(
+				"openIdConnectClientId", RandomTestUtil.randomString()
+			).put(
+				"subjectTypes", new String[] {"public"}
+			).put(
+				"tokenEndpoint", "http://" + RandomTestUtil.randomString()
+			).put(
+				"userInfoEndpoint", "http://" + RandomTestUtil.randomString()
+			).build());
+
+		OAuthClientASLocalMetadata oAuthClientASLocalMetadata =
+			_oAuthClientASLocalMetadataLocalService.
+				fetchOAuthClientASLocalMetadata(
+					TestPropsValues.getCompanyId(), issuerURL);
+
+		String localWellKnownURI =
+			oAuthClientASLocalMetadata.getLocalWellKnownURI();
+
+		ComponentDescriptionDTO componentDescriptionDTO =
+			_serviceComponentRuntime.getComponentDescriptionDTO(
+				BundleUtil.getBundle(
+					SystemBundleUtil.getBundleContext(),
+					"com.liferay.portal.security.sso.openid.connect.impl"),
+				_CLASS_NAME);
+
+		try (SafeCloseable safeCloseable =
+				PropsValuesTestUtil.swapWithSafeCloseable("FIPS_ENABLED", true);
+			LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				_CLASS_NAME, LoggerTestUtil.WARN)) {
+
+			_enableComponentDescriptionDTO(componentDescriptionDTO);
+
+			List<String> messages = logCapture.getMessages();
+
+			Assert.assertTrue(
+				messages.contains(
+					StringBundler.concat(
+						"Unable to update the local well known URI of OAuth 2 ",
+						"client authorization server local metadata ",
+						oAuthClientASLocalMetadata.
+							getOAuthClientASLocalMetadataId(),
+						" because it would exceed 255 characters")));
+		}
+		finally {
+			_disableComponentDescriptionDTO(componentDescriptionDTO);
 		}
 
-		Promise<Void> promise = _serviceComponentRuntime.disableComponent(
-			componentDescriptionDTO);
+		oAuthClientASLocalMetadata =
+			_oAuthClientASLocalMetadataLocalService.
+				getOAuthClientASLocalMetadata(
+					oAuthClientASLocalMetadata.
+						getOAuthClientASLocalMetadataId());
 
-		promise.getValue();
-	}
+		Assert.assertEquals(
+			localWellKnownURI,
+			oAuthClientASLocalMetadata.getLocalWellKnownURI());
 
-	private void _enableComponentDescriptionDTO(
-			ComponentDescriptionDTO componentDescriptionDTO)
-		throws Exception {
+		ConfigurationTestUtil.deleteConfiguration(_pid);
 
-		if (_serviceComponentRuntime.isComponentEnabled(
-				componentDescriptionDTO)) {
-
-			return;
-		}
-
-		Promise<Void> promise = _serviceComponentRuntime.enableComponent(
-			componentDescriptionDTO);
-
-		promise.getValue();
+		_pid = null;
 	}
 
 	private static final String _CLASS_NAME =
