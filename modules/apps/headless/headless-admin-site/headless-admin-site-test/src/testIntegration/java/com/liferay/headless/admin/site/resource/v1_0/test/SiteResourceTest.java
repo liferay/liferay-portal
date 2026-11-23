@@ -41,6 +41,7 @@ import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutSet;
 import com.liferay.portal.kernel.model.LayoutSetPrototype;
+import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
@@ -58,6 +59,7 @@ import com.liferay.portal.kernel.test.constants.TestDataConstants;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.HTTPTestUtil;
+import com.liferay.portal.kernel.test.util.OrganizationTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -94,6 +96,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -210,6 +213,7 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 		_testGetSitesPageWithExcludedExternalReferenceCodes();
 		_testGetSitesPageWithExternalReferenceCodes();
 		_testGetSitesPageWithInactiveSites();
+		_testGetSitesPageWithOrganizationSites();
 		_testGetSitesPageWithoutAuthentication();
 		_testGetSitesPageWithoutSiteMembership();
 		_testGetSitesPageWithSearch();
@@ -845,6 +849,48 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 		for (Site site2 : sites) {
 			Assert.assertEquals(site2.getActive(), false);
 		}
+	}
+
+	private void _testGetSitesPageWithOrganizationSites() throws Exception {
+		Organization parentOrganization = OrganizationTestUtil.addOrganization(
+			true);
+
+		Organization childOrganization = OrganizationTestUtil.addOrganization(
+			parentOrganization.getOrganizationId(),
+			RandomTestUtil.randomString(), true);
+
+		_organizations.add(childOrganization);
+
+		_organizations.add(parentOrganization);
+
+		Group childGroup = childOrganization.getGroup();
+		Group parentGroup = parentOrganization.getGroup();
+
+		Page<Site> sitesPage = siteResource.getSitesPage(
+			null, null,
+			new String[] {
+				childGroup.getExternalReferenceCode(),
+				parentGroup.getExternalReferenceCode()
+			},
+			null, Pagination.of(1, 100));
+
+		Map<String, Site> sites = new HashMap<>();
+
+		for (Site site : sitesPage.getItems()) {
+			sites.put(site.getExternalReferenceCode(), site);
+		}
+
+		Assert.assertEquals(sites.toString(), 2, sites.size());
+
+		Site childSite = sites.get(childGroup.getExternalReferenceCode());
+
+		Assert.assertEquals(
+			parentGroup.getExternalReferenceCode(),
+			childSite.getParentSiteExternalReferenceCode());
+
+		Site parentSite = sites.get(parentGroup.getExternalReferenceCode());
+
+		Assert.assertEquals(parentOrganization.getName(), parentSite.getName());
 	}
 
 	private void _testGetSitesPageWithSearch() throws Exception {
@@ -2491,6 +2537,9 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 
 	@Inject
 	private LayoutSetPrototypeLocalService _layoutSetPrototypeLocalService;
+
+	@DeleteAfterTestRun
+	private final List<Organization> _organizations = new ArrayList<>();
 
 	@Inject
 	private RoleLocalService _roleLocalService;
