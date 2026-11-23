@@ -23,6 +23,7 @@ import co.elastic.clients.json.JsonpMapper;
 import co.elastic.clients.transport.endpoints.BooleanResponse;
 import co.elastic.clients.transport.rest_client.RestClientTransport;
 
+import com.liferay.petra.io.unsync.UnsyncStringReader;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -68,11 +69,7 @@ import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import jakarta.json.spi.JsonProvider;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-
-import java.nio.charset.StandardCharsets;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -743,9 +740,7 @@ public class ElasticsearchSearchEngineAdapterIndexRequestTest {
 	}
 
 	private void _putMapping(String mappingSource) {
-		try (InputStream inputStream = new ByteArrayInputStream(
-				mappingSource.getBytes(StandardCharsets.UTF_8))) {
-
+		try {
 			JsonpMapper jsonpMapper = _elasticsearchFixture.getJsonpMapper(
 				null);
 
@@ -755,7 +750,9 @@ public class ElasticsearchSearchEngineAdapterIndexRequestTest {
 			).index(
 				_INDEX_NAME
 			).withJson(
-				jsonProvider.createParser(inputStream), jsonpMapper
+				jsonProvider.createParser(
+					new UnsyncStringReader(mappingSource)),
+				jsonpMapper
 			);
 
 			_elasticsearchIndicesClient.putMapping(builder.build());
@@ -772,9 +769,7 @@ public class ElasticsearchSearchEngineAdapterIndexRequestTest {
 
 		JsonProvider jsonProvider = jsonpMapper.jsonProvider();
 
-		try (InputStream inputStream = new ByteArrayInputStream(
-				settingsSource.getBytes(StandardCharsets.UTF_8))) {
-
+		try {
 			_elasticsearchIndicesClient.putSettings(
 				PutIndicesSettingsRequest.of(
 					putIndicesSettingsRequest ->
@@ -782,7 +777,8 @@ public class ElasticsearchSearchEngineAdapterIndexRequestTest {
 							_INDEX_NAME
 						).settings(
 							IndexSettings._DESERIALIZER.deserialize(
-								jsonProvider.createParser(inputStream),
+								jsonProvider.createParser(
+									new UnsyncStringReader(settingsSource)),
 								jsonpMapper)
 						)));
 		}

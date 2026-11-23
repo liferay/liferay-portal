@@ -5,6 +5,7 @@
 
 package com.liferay.portal.search.opensearch2.internal.search.engine.adapter.index;
 
+import com.liferay.petra.io.unsync.UnsyncStringReader;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -18,11 +19,7 @@ import com.liferay.portal.search.opensearch2.internal.util.JsonpUtil;
 
 import jakarta.json.spi.JsonProvider;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-
-import java.nio.charset.StandardCharsets;
 
 import org.opensearch.client.json.JsonpMapper;
 import org.opensearch.client.opensearch.OpenSearchClient;
@@ -112,16 +109,10 @@ public class CreateIndexRequestExecutor {
 
 		JsonProvider jsonProvider = jsonpMapper.jsonProvider();
 
-		try (InputStream inputStream = new ByteArrayInputStream(
-				mappings.getBytes(StandardCharsets.UTF_8))) {
-
-			builder.mappings(
-				TypeMapping._DESERIALIZER.deserialize(
-					jsonProvider.createParser(inputStream), jsonpMapper));
-		}
-		catch (IOException ioException) {
-			throw new RuntimeException(ioException);
-		}
+		builder.mappings(
+			TypeMapping._DESERIALIZER.deserialize(
+				jsonProvider.createParser(new UnsyncStringReader(mappings)),
+				jsonpMapper));
 	}
 
 	private void _setSettings(
@@ -131,16 +122,10 @@ public class CreateIndexRequestExecutor {
 
 		JsonProvider jsonProvider = jsonpMapper.jsonProvider();
 
-		try (InputStream inputStream = new ByteArrayInputStream(
-				settings.getBytes(StandardCharsets.UTF_8))) {
-
-			builder.settings(
-				IndexSettings._DESERIALIZER.deserialize(
-					jsonProvider.createParser(inputStream), jsonpMapper));
-		}
-		catch (IOException ioException) {
-			throw new RuntimeException(ioException);
-		}
+		builder.settings(
+			IndexSettings._DESERIALIZER.deserialize(
+				jsonProvider.createParser(new UnsyncStringReader(settings)),
+				jsonpMapper));
 	}
 
 	private void _setSource(

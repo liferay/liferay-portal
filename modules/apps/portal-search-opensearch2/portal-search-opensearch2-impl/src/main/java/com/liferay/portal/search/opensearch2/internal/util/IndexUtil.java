@@ -5,6 +5,7 @@
 
 package com.liferay.portal.search.opensearch2.internal.util;
 
+import com.liferay.petra.io.unsync.UnsyncStringReader;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -12,12 +13,6 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.StringUtil;
 
 import jakarta.json.spi.JsonProvider;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-
-import java.nio.charset.StandardCharsets;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -64,23 +59,15 @@ public class IndexUtil {
 
 				_convertOpenSearchDynamicTemplate(templateJSONObject);
 
-				String dynamicTemplateString = templateJSONObject.toString();
-
-				try (InputStream inputStream = new ByteArrayInputStream(
-						dynamicTemplateString.getBytes(
-							StandardCharsets.UTF_8))) {
-
-					dynamicTemplates.add(
-						HashMapBuilder.<String, DynamicTemplate>put(
-							dynamicTemplateName,
-							DynamicTemplate._DESERIALIZER.deserialize(
-								jsonProvider.createParser(inputStream),
-								jsonpMapper)
-						).build());
-				}
-				catch (IOException ioException) {
-					throw new RuntimeException(ioException);
-				}
+				dynamicTemplates.add(
+					HashMapBuilder.<String, DynamicTemplate>put(
+						dynamicTemplateName,
+						DynamicTemplate._DESERIALIZER.deserialize(
+							jsonProvider.createParser(
+								new UnsyncStringReader(
+									templateJSONObject.toString())),
+							jsonpMapper)
+					).build());
 			}
 		}
 
@@ -104,20 +91,14 @@ public class IndexUtil {
 		Map<String, Property> properties = new HashMap<>();
 
 		for (String fieldName : propertiesJSONObject.keySet()) {
-			String fieldProperties = String.valueOf(
-				propertiesJSONObject.get(fieldName));
-
-			try (InputStream inputStream = new ByteArrayInputStream(
-					fieldProperties.getBytes(StandardCharsets.UTF_8))) {
-
-				properties.put(
-					fieldName,
-					Property._DESERIALIZER.deserialize(
-						jsonProvider.createParser(inputStream), jsonpMapper));
-			}
-			catch (IOException ioException) {
-				throw new RuntimeException(ioException);
-			}
+			properties.put(
+				fieldName,
+				Property._DESERIALIZER.deserialize(
+					jsonProvider.createParser(
+						new UnsyncStringReader(
+							String.valueOf(
+								propertiesJSONObject.get(fieldName)))),
+					jsonpMapper));
 		}
 
 		return properties;

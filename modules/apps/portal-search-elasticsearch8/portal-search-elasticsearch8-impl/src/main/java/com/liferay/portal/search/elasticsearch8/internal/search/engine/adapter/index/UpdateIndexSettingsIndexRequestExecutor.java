@@ -12,6 +12,7 @@ import co.elastic.clients.elasticsearch.indices.PutIndicesSettingsRequest;
 import co.elastic.clients.elasticsearch.indices.PutIndicesSettingsResponse;
 import co.elastic.clients.json.JsonpMapper;
 
+import com.liferay.petra.io.unsync.UnsyncStringReader;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.search.elasticsearch8.internal.connection.ElasticsearchClientResolver;
 import com.liferay.portal.search.engine.adapter.index.IndicesOptions;
@@ -20,11 +21,7 @@ import com.liferay.portal.search.engine.adapter.index.UpdateIndexSettingsIndexRe
 
 import jakarta.json.spi.JsonProvider;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-
-import java.nio.charset.StandardCharsets;
 
 /**
  * @author Michael C. Han
@@ -73,18 +70,12 @@ public class UpdateIndexSettingsIndexRequestExecutor {
 
 		JsonProvider jsonProvider = jsonpMapper.jsonProvider();
 
-		String settings = updateIndexSettingsIndexRequest.getSettings();
-
-		try (InputStream inputStream = new ByteArrayInputStream(
-				settings.getBytes(StandardCharsets.UTF_8))) {
-
-			builder.settings(
-				IndexSettings._DESERIALIZER.deserialize(
-					jsonProvider.createParser(inputStream), jsonpMapper));
-		}
-		catch (IOException ioException) {
-			throw new RuntimeException(ioException);
-		}
+		builder.settings(
+			IndexSettings._DESERIALIZER.deserialize(
+				jsonProvider.createParser(
+					new UnsyncStringReader(
+						updateIndexSettingsIndexRequest.getSettings())),
+				jsonpMapper));
 
 		return builder.build();
 	}

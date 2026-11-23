@@ -15,6 +15,7 @@ import co.elastic.clients.elasticsearch.indices.IndexSettings;
 import co.elastic.clients.json.JsonpMapper;
 import co.elastic.clients.transport.endpoints.BooleanResponse;
 
+import com.liferay.petra.io.unsync.UnsyncStringReader;
 import com.liferay.portal.search.elasticsearch8.internal.connection.helper.IndexCreationHelper;
 import com.liferay.portal.search.elasticsearch8.internal.connection.helper.LiferayIndexCreationHelper;
 import com.liferay.portal.search.elasticsearch8.internal.settings.SettingsHelper;
@@ -22,11 +23,7 @@ import com.liferay.portal.search.engine.SearchEngineInformation;
 
 import jakarta.json.spi.JsonProvider;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-
-import java.nio.charset.StandardCharsets;
 
 import org.mockito.Mockito;
 
@@ -63,19 +60,13 @@ public class IndexCreator {
 
 		JsonProvider jsonProvider = jsonpMapper.jsonProvider();
 
-		String settings = String.valueOf(
-			settingsHelper.getSettingsJSONObject());
-
-		try (InputStream inputStream = new ByteArrayInputStream(
-				settings.getBytes(StandardCharsets.UTF_8))) {
-
-			builder.settings(
-				IndexSettings._DESERIALIZER.deserialize(
-					jsonProvider.createParser(inputStream), jsonpMapper));
-		}
-		catch (IOException ioException) {
-			throw new RuntimeException(ioException);
-		}
+		builder.settings(
+			IndexSettings._DESERIALIZER.deserialize(
+				jsonProvider.createParser(
+					new UnsyncStringReader(
+						String.valueOf(
+							settingsHelper.getSettingsJSONObject()))),
+				jsonpMapper));
 
 		try {
 			elasticsearchIndicesClient.create(builder.build());

@@ -5,6 +5,7 @@
 
 package com.liferay.portal.search.opensearch2.internal.search.engine.adapter.index;
 
+import com.liferay.petra.io.unsync.UnsyncStringReader;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.search.engine.adapter.index.IndicesOptions;
 import com.liferay.portal.search.engine.adapter.index.UpdateIndexSettingsIndexRequest;
@@ -13,11 +14,7 @@ import com.liferay.portal.search.opensearch2.internal.connection.OpenSearchConne
 
 import jakarta.json.spi.JsonProvider;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-
-import java.nio.charset.StandardCharsets;
 
 import org.opensearch.client.json.JsonpMapper;
 import org.opensearch.client.opensearch.OpenSearchClient;
@@ -73,18 +70,12 @@ public class UpdateIndexSettingsIndexRequestExecutor {
 
 		JsonProvider jsonProvider = jsonpMapper.jsonProvider();
 
-		String settings = updateIndexSettingsIndexRequest.getSettings();
-
-		try (InputStream inputStream = new ByteArrayInputStream(
-				settings.getBytes(StandardCharsets.UTF_8))) {
-
-			builder.settings(
-				IndexSettings._DESERIALIZER.deserialize(
-					jsonProvider.createParser(inputStream), jsonpMapper));
-		}
-		catch (IOException ioException) {
-			throw new RuntimeException(ioException);
-		}
+		builder.settings(
+			IndexSettings._DESERIALIZER.deserialize(
+				jsonProvider.createParser(
+					new UnsyncStringReader(
+						updateIndexSettingsIndexRequest.getSettings())),
+				jsonpMapper));
 
 		return builder.build();
 	}
