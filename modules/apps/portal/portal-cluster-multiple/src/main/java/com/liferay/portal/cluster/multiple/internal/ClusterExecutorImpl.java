@@ -85,7 +85,7 @@ public class ClusterExecutorImpl implements ClusterExecutor {
 
 		for (Address address : clusterReceiver.getAddresses()) {
 			if (clusterRequest.isMulticast() && clusterRequest.isSkipLocal() &&
-				address.equals(_clusterChannel.getLocalAddress())) {
+				address.equals(_localAddress)) {
 
 				continue;
 			}
@@ -111,7 +111,7 @@ public class ClusterExecutorImpl implements ClusterExecutor {
 
 		Collection<Address> targetAddresses = addresses.values();
 
-		if (targetAddresses.remove(_clusterChannel.getLocalAddress())) {
+		if (targetAddresses.remove(_localAddress)) {
 			ClusterNodeResponse clusterNodeResponse = executeClusterRequest(
 				clusterRequest);
 
@@ -168,6 +168,10 @@ public class ClusterExecutorImpl implements ClusterExecutor {
 
 	@Override
 	public boolean isClusterNodeAlive(String clusterNodeId) {
+		if (clusterNodeId.equals(_localClusterNodeId)) {
+			return true;
+		}
+
 		ClusterReceiver clusterReceiver = _clusterChannel.getClusterReceiver();
 
 		for (Address address : clusterReceiver.getAddresses()) {
@@ -377,14 +381,15 @@ public class ClusterExecutorImpl implements ClusterExecutor {
 			_executorService, channelLogicName, channelPropertiesLocation,
 			channelName, clusterReceiver);
 
-		Address localAddress = _clusterChannel.getLocalAddress();
+		_localAddress = _clusterChannel.getLocalAddress();
+
+		_localClusterNodeId = getClusterNodeId(_localAddress);
 
 		ClusterNode localClusterNode = new ClusterNode(
-			getClusterNodeId(localAddress),
-			_clusterChannel.getBindInetAddress());
+			_localClusterNodeId, _clusterChannel.getBindInetAddress());
 
 		_localClusterNodeStatus = new ClusterNodeStatus(
-			localClusterNode, localAddress);
+			localClusterNode, _localAddress);
 
 		_memberJoined(_localClusterNodeStatus);
 
@@ -541,6 +546,8 @@ public class ClusterExecutorImpl implements ClusterExecutor {
 	private final Map<String, FutureClusterResponses> _futureClusterResponses =
 		new ConcurrentReferenceValueHashMap<>(
 			FinalizeManager.WEAK_REFERENCE_FACTORY);
+	private Address _localAddress;
+	private String _localClusterNodeId;
 	private ClusterNodeStatus _localClusterNodeStatus;
 
 	@Reference
