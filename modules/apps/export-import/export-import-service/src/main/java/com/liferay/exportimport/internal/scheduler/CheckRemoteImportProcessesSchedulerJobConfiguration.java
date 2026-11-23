@@ -6,6 +6,7 @@
 package com.liferay.exportimport.internal.scheduler;
 
 import com.liferay.exportimport.internal.constants.RemoteInstanceConstants;
+import com.liferay.exportimport.internal.notifications.RemoteImportUserNotificationUtil;
 import com.liferay.exportimport.internal.util.RemoteImportHttpUtil;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
@@ -213,10 +214,12 @@ public class CheckRemoteImportProcessesSchedulerJobConfiguration
 			ObjectEntry objectEntry, Map<String, Serializable> values)
 		throws Exception {
 
-		_objectEntryLocalService.partialUpdateObjectEntry(
-			objectEntry.getUserId(), objectEntry.getObjectEntryId(),
-			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
-			values, new ServiceContext());
+		RemoteImportUserNotificationUtil.sendUserNotificationEvent(
+			_objectEntryLocalService.partialUpdateObjectEntry(
+				objectEntry.getUserId(), objectEntry.getObjectEntryId(),
+				ObjectEntryFolderConstants.
+					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+				values, new ServiceContext()));
 	}
 
 	private static final int[] _FINAL_STATUSES = {

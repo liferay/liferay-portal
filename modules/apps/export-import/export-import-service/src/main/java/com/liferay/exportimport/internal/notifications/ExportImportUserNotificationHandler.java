@@ -70,6 +70,10 @@ public class ExportImportUserNotificationHandler
 		JSONObject jsonObject = _jsonFactory.createJSONObject(
 			userNotificationEvent.getPayload());
 
+		if (jsonObject.getBoolean("remoteImport")) {
+			return jsonObject.getString("remoteImportURL");
+		}
+
 		long backgroundTaskId = jsonObject.getLong("backgroundTaskId");
 
 		BackgroundTask backgroundTask =
@@ -113,6 +117,10 @@ public class ExportImportUserNotificationHandler
 
 		JSONObject jsonObject = _jsonFactory.createJSONObject(
 			userNotificationEvent.getPayload());
+
+		if (jsonObject.getBoolean("remoteImport")) {
+			return _getRemoteImportMessage(jsonObject, locale);
+		}
 
 		ExportImportConfiguration exportImportConfiguration = null;
 
@@ -160,6 +168,36 @@ public class ExportImportUserNotificationHandler
 			serviceContext.getRequest());
 
 		return _language.format(locale, message, processName);
+	}
+
+	private String _getRemoteImportMessage(
+		JSONObject jsonObject, Locale locale) {
+
+		String key = "remote-import-to-x-failed";
+
+		int status = jsonObject.getInt("status");
+
+		if (status == BackgroundTaskConstants.STATUS_CANCELLED) {
+			key = "remote-import-to-x-was-cancelled";
+		}
+		else if (status ==
+					BackgroundTaskConstants.STATUS_COMPLETED_WITH_ERRORS) {
+
+			key = "remote-import-to-x-finished-with-errors";
+		}
+		else if (status == BackgroundTaskConstants.STATUS_IN_PROGRESS) {
+			key = "remote-import-to-x-has-started";
+		}
+		else if (status == BackgroundTaskConstants.STATUS_SUCCESSFUL) {
+			key = "remote-import-to-x-finished-successfully";
+		}
+		else if (jsonObject.getLong("remoteImportProcessId") == 0) {
+			key = "remote-import-to-x-failed-to-start";
+		}
+
+		return _language.format(
+			locale, key,
+			HtmlUtil.escape(jsonObject.getString("remoteInstanceName")), false);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
