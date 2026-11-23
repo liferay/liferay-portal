@@ -68,6 +68,10 @@ public class ObjectEntryThreadLocal {
 		return _skipReadOnlyObjectFieldsValidation.get();
 	}
 
+	public static boolean isSkipRootObjectEntryVersion() {
+		return _skipRootObjectEntryVersion.get();
+	}
+
 	public static boolean isValidatedObjectEntry(long objectEntryId) {
 		Set<Long> validatedObjectEntryIds = _validatedObjectEntryIds.get();
 
@@ -126,6 +130,13 @@ public class ObjectEntryThreadLocal {
 		_skipReadOnlyObjectFieldsValidation.set(skipReadOnlyValidation);
 	}
 
+	public static SafeCloseable setSkipRootObjectEntryVersionWithSafeCloseable(
+		boolean skipRootObjectEntryVersion) {
+
+		return _skipRootObjectEntryVersion.setWithSafeCloseable(
+			skipRootObjectEntryVersion);
+	}
+
 	private static final CentralizedThreadLocal<Boolean>
 		_disassociateRelatedModels = new CentralizedThreadLocal<>(
 			ObjectEntryThreadLocal.class + "._disassociateRelatedModels",
@@ -157,6 +168,10 @@ public class ObjectEntryThreadLocal {
 		_skipReadOnlyObjectFieldsValidation = new CentralizedThreadLocal<>(
 			ObjectEntryThreadLocal.class +
 				"._skipReadOnlyObjectFieldsValidation",
+			() -> false);
+	private static final CentralizedThreadLocal<Boolean>
+		_skipRootObjectEntryVersion = new CentralizedThreadLocal<>(
+			ObjectEntryThreadLocal.class + "._skipRootObjectEntryVersion",
 			() -> false);
 	private static final ThreadLocal<Set<Long>> _validatedObjectEntryIds =
 		new CentralizedThreadLocal<>(
