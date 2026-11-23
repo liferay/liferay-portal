@@ -36,50 +36,60 @@ public interface ContentSetElementResource {
 
 	public Page<ContentSetElement>
 			getAssetLibraryContentSetByKeyContentSetElementsPage(
-				Long assetLibraryId, String key, Pagination pagination)
+				Long assetLibraryId, String key,
+				String[] audienceExternalReferenceCodes, Pagination pagination)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse
 			getAssetLibraryContentSetByKeyContentSetElementsPageHttpResponse(
-				Long assetLibraryId, String key, Pagination pagination)
+				Long assetLibraryId, String key,
+				String[] audienceExternalReferenceCodes, Pagination pagination)
 		throws Exception;
 
 	public Page<ContentSetElement>
 			getAssetLibraryContentSetByUuidContentSetElementsPage(
-				Long assetLibraryId, String uuid, Pagination pagination)
+				Long assetLibraryId, String uuid,
+				String[] audienceExternalReferenceCodes, Pagination pagination)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse
 			getAssetLibraryContentSetByUuidContentSetElementsPageHttpResponse(
-				Long assetLibraryId, String uuid, Pagination pagination)
+				Long assetLibraryId, String uuid,
+				String[] audienceExternalReferenceCodes, Pagination pagination)
 		throws Exception;
 
 	public Page<ContentSetElement> getContentSetContentSetElementsPage(
-			Long contentSetId, Pagination pagination)
+			Long contentSetId, String[] audienceExternalReferenceCodes,
+			Pagination pagination)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse
 			getContentSetContentSetElementsPageHttpResponse(
-				Long contentSetId, Pagination pagination)
+				Long contentSetId, String[] audienceExternalReferenceCodes,
+				Pagination pagination)
 		throws Exception;
 
 	public Page<ContentSetElement> getSiteContentSetByKeyContentSetElementsPage(
-			Long siteId, String key, Pagination pagination)
+			Long siteId, String key, String[] audienceExternalReferenceCodes,
+			Pagination pagination)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse
 			getSiteContentSetByKeyContentSetElementsPageHttpResponse(
-				Long siteId, String key, Pagination pagination)
+				Long siteId, String key,
+				String[] audienceExternalReferenceCodes, Pagination pagination)
 		throws Exception;
 
 	public Page<ContentSetElement>
 			getSiteContentSetByUuidContentSetElementsPage(
-				Long siteId, String uuid, Pagination pagination)
+				Long siteId, String uuid,
+				String[] audienceExternalReferenceCodes, Pagination pagination)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse
 			getSiteContentSetByUuidContentSetElementsPageHttpResponse(
-				Long siteId, String uuid, Pagination pagination)
+				Long siteId, String uuid,
+				String[] audienceExternalReferenceCodes, Pagination pagination)
 		throws Exception;
 
 	public Page<ContentSetElement>
@@ -203,12 +213,15 @@ public interface ContentSetElementResource {
 
 		public Page<ContentSetElement>
 				getAssetLibraryContentSetByKeyContentSetElementsPage(
-					Long assetLibraryId, String key, Pagination pagination)
+					Long assetLibraryId, String key,
+					String[] audienceExternalReferenceCodes,
+					Pagination pagination)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
 				getAssetLibraryContentSetByKeyContentSetElementsPageHttpResponse(
-					assetLibraryId, key, pagination);
+					assetLibraryId, key, audienceExternalReferenceCodes,
+					pagination);
 
 			String content = httpResponse.getContent();
 
@@ -271,7 +284,9 @@ public interface ContentSetElementResource {
 
 		public HttpInvoker.HttpResponse
 				getAssetLibraryContentSetByKeyContentSetElementsPageHttpResponse(
-					Long assetLibraryId, String key, Pagination pagination)
+					Long assetLibraryId, String key,
+					String[] audienceExternalReferenceCodes,
+					Pagination pagination)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -294,6 +309,16 @@ public interface ContentSetElementResource {
 			}
 
 			httpInvoker.httpMethod(HttpInvoker.HttpMethod.GET);
+
+			if (audienceExternalReferenceCodes != null) {
+				for (int i = 0; i < audienceExternalReferenceCodes.length;
+					 i++) {
+
+					httpInvoker.parameter(
+						"audienceExternalReferenceCodes",
+						String.valueOf(audienceExternalReferenceCodes[i]));
+				}
+			}
 
 			if (pagination != null) {
 				httpInvoker.parameter(
@@ -320,12 +345,15 @@ public interface ContentSetElementResource {
 
 		public Page<ContentSetElement>
 				getAssetLibraryContentSetByUuidContentSetElementsPage(
-					Long assetLibraryId, String uuid, Pagination pagination)
+					Long assetLibraryId, String uuid,
+					String[] audienceExternalReferenceCodes,
+					Pagination pagination)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
 				getAssetLibraryContentSetByUuidContentSetElementsPageHttpResponse(
-					assetLibraryId, uuid, pagination);
+					assetLibraryId, uuid, audienceExternalReferenceCodes,
+					pagination);
 
 			String content = httpResponse.getContent();
 
@@ -388,7 +416,9 @@ public interface ContentSetElementResource {
 
 		public HttpInvoker.HttpResponse
 				getAssetLibraryContentSetByUuidContentSetElementsPageHttpResponse(
-					Long assetLibraryId, String uuid, Pagination pagination)
+					Long assetLibraryId, String uuid,
+					String[] audienceExternalReferenceCodes,
+					Pagination pagination)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -411,6 +441,16 @@ public interface ContentSetElementResource {
 			}
 
 			httpInvoker.httpMethod(HttpInvoker.HttpMethod.GET);
+
+			if (audienceExternalReferenceCodes != null) {
+				for (int i = 0; i < audienceExternalReferenceCodes.length;
+					 i++) {
+
+					httpInvoker.parameter(
+						"audienceExternalReferenceCodes",
+						String.valueOf(audienceExternalReferenceCodes[i]));
+				}
+			}
 
 			if (pagination != null) {
 				httpInvoker.parameter(
@@ -436,12 +476,13 @@ public interface ContentSetElementResource {
 		}
 
 		public Page<ContentSetElement> getContentSetContentSetElementsPage(
-				Long contentSetId, Pagination pagination)
+				Long contentSetId, String[] audienceExternalReferenceCodes,
+				Pagination pagination)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
 				getContentSetContentSetElementsPageHttpResponse(
-					contentSetId, pagination);
+					contentSetId, audienceExternalReferenceCodes, pagination);
 
 			String content = httpResponse.getContent();
 
@@ -504,7 +545,8 @@ public interface ContentSetElementResource {
 
 		public HttpInvoker.HttpResponse
 				getContentSetContentSetElementsPageHttpResponse(
-					Long contentSetId, Pagination pagination)
+					Long contentSetId, String[] audienceExternalReferenceCodes,
+					Pagination pagination)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -527,6 +569,16 @@ public interface ContentSetElementResource {
 			}
 
 			httpInvoker.httpMethod(HttpInvoker.HttpMethod.GET);
+
+			if (audienceExternalReferenceCodes != null) {
+				for (int i = 0; i < audienceExternalReferenceCodes.length;
+					 i++) {
+
+					httpInvoker.parameter(
+						"audienceExternalReferenceCodes",
+						String.valueOf(audienceExternalReferenceCodes[i]));
+				}
+			}
 
 			if (pagination != null) {
 				httpInvoker.parameter(
@@ -552,12 +604,14 @@ public interface ContentSetElementResource {
 
 		public Page<ContentSetElement>
 				getSiteContentSetByKeyContentSetElementsPage(
-					Long siteId, String key, Pagination pagination)
+					Long siteId, String key,
+					String[] audienceExternalReferenceCodes,
+					Pagination pagination)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
 				getSiteContentSetByKeyContentSetElementsPageHttpResponse(
-					siteId, key, pagination);
+					siteId, key, audienceExternalReferenceCodes, pagination);
 
 			String content = httpResponse.getContent();
 
@@ -620,7 +674,9 @@ public interface ContentSetElementResource {
 
 		public HttpInvoker.HttpResponse
 				getSiteContentSetByKeyContentSetElementsPageHttpResponse(
-					Long siteId, String key, Pagination pagination)
+					Long siteId, String key,
+					String[] audienceExternalReferenceCodes,
+					Pagination pagination)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -643,6 +699,16 @@ public interface ContentSetElementResource {
 			}
 
 			httpInvoker.httpMethod(HttpInvoker.HttpMethod.GET);
+
+			if (audienceExternalReferenceCodes != null) {
+				for (int i = 0; i < audienceExternalReferenceCodes.length;
+					 i++) {
+
+					httpInvoker.parameter(
+						"audienceExternalReferenceCodes",
+						String.valueOf(audienceExternalReferenceCodes[i]));
+				}
+			}
 
 			if (pagination != null) {
 				httpInvoker.parameter(
@@ -669,12 +735,14 @@ public interface ContentSetElementResource {
 
 		public Page<ContentSetElement>
 				getSiteContentSetByUuidContentSetElementsPage(
-					Long siteId, String uuid, Pagination pagination)
+					Long siteId, String uuid,
+					String[] audienceExternalReferenceCodes,
+					Pagination pagination)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
 				getSiteContentSetByUuidContentSetElementsPageHttpResponse(
-					siteId, uuid, pagination);
+					siteId, uuid, audienceExternalReferenceCodes, pagination);
 
 			String content = httpResponse.getContent();
 
@@ -737,7 +805,9 @@ public interface ContentSetElementResource {
 
 		public HttpInvoker.HttpResponse
 				getSiteContentSetByUuidContentSetElementsPageHttpResponse(
-					Long siteId, String uuid, Pagination pagination)
+					Long siteId, String uuid,
+					String[] audienceExternalReferenceCodes,
+					Pagination pagination)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -760,6 +830,16 @@ public interface ContentSetElementResource {
 			}
 
 			httpInvoker.httpMethod(HttpInvoker.HttpMethod.GET);
+
+			if (audienceExternalReferenceCodes != null) {
+				for (int i = 0; i < audienceExternalReferenceCodes.length;
+					 i++) {
+
+					httpInvoker.parameter(
+						"audienceExternalReferenceCodes",
+						String.valueOf(audienceExternalReferenceCodes[i]));
+				}
+			}
 
 			if (pagination != null) {
 				httpInvoker.parameter(
@@ -913,4 +993,4 @@ public interface ContentSetElementResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1418935268
+// LIFERAY-REST-BUILDER-HASH:-181661652

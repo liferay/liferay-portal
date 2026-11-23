@@ -909,12 +909,14 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {assetLibraryContentSetByKeyContentSetElements(assetLibraryId: ___, key: ___, page: ___, pageSize: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {assetLibraryContentSetByKeyContentSetElements(assetLibraryId: ___, audienceExternalReferenceCodes: ___, key: ___, page: ___, pageSize: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField
 	public ContentSetElementPage assetLibraryContentSetByKeyContentSetElements(
 			@GraphQLName("assetLibraryId") @NotEmpty String assetLibraryId,
 			@GraphQLName("key") String key,
+			@GraphQLName("audienceExternalReferenceCodes") String[]
+				audienceExternalReferenceCodes,
 			@GraphQLName("pageSize") int pageSize,
 			@GraphQLName("page") int page)
 		throws Exception {
@@ -926,18 +928,21 @@ public class Query {
 				contentSetElementResource.
 					getAssetLibraryContentSetByKeyContentSetElementsPage(
 						Long.valueOf(assetLibraryId), key,
+						audienceExternalReferenceCodes,
 						Pagination.of(page, pageSize))));
 	}
 
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {assetLibraryContentSetByUuidContentSetElements(assetLibraryId: ___, page: ___, pageSize: ___, uuid: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {assetLibraryContentSetByUuidContentSetElements(assetLibraryId: ___, audienceExternalReferenceCodes: ___, page: ___, pageSize: ___, uuid: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField
 	public ContentSetElementPage assetLibraryContentSetByUuidContentSetElements(
 			@GraphQLName("assetLibraryId") @NotEmpty String assetLibraryId,
 			@GraphQLName("uuid") String uuid,
+			@GraphQLName("audienceExternalReferenceCodes") String[]
+				audienceExternalReferenceCodes,
 			@GraphQLName("pageSize") int pageSize,
 			@GraphQLName("page") int page)
 		throws Exception {
@@ -949,19 +954,22 @@ public class Query {
 				contentSetElementResource.
 					getAssetLibraryContentSetByUuidContentSetElementsPage(
 						Long.valueOf(assetLibraryId), uuid,
+						audienceExternalReferenceCodes,
 						Pagination.of(page, pageSize))));
 	}
 
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {contentSetContentSetElements(contentSetId: ___, page: ___, pageSize: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {contentSetContentSetElements(audienceExternalReferenceCodes: ___, contentSetId: ___, page: ___, pageSize: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
 		description = "Retrieves the content set's elements (e.g., structured content, blogs, etc.). Results can be paginated. The set of available headers are: Accept-Language (string), Host (string), User-Agent (string), X-Browser (string), X-Cookies (collection string), X-Device-Brand (string), X-Device-Model (string), X-Device-Screen-Resolution-Height (double), X-Device-Screen-Resolution-Width (double), X-Last-Sign-In-Date-Time (date time) and X-Signed-In (boolean). Local date will be always present in the request."
 	)
 	public ContentSetElementPage contentSetContentSetElements(
 			@GraphQLName("contentSetId") Long contentSetId,
+			@GraphQLName("audienceExternalReferenceCodes") String[]
+				audienceExternalReferenceCodes,
 			@GraphQLName("pageSize") int pageSize,
 			@GraphQLName("page") int page)
 		throws Exception {
@@ -971,13 +979,14 @@ public class Query {
 			this::_populateResourceContext,
 			contentSetElementResource -> new ContentSetElementPage(
 				contentSetElementResource.getContentSetContentSetElementsPage(
-					contentSetId, Pagination.of(page, pageSize))));
+					contentSetId, audienceExternalReferenceCodes,
+					Pagination.of(page, pageSize))));
 	}
 
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {contentSetByKeyContentSetElements(key: ___, page: ___, pageSize: ___, siteKey: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {contentSetByKeyContentSetElements(audienceExternalReferenceCodes: ___, key: ___, page: ___, pageSize: ___, siteKey: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
 		description = "Retrieves the content set elements by key. Results can be paginated."
@@ -985,6 +994,8 @@ public class Query {
 	public ContentSetElementPage contentSetByKeyContentSetElements(
 			@GraphQLName("siteKey") @NotEmpty String siteKey,
 			@GraphQLName("key") String key,
+			@GraphQLName("audienceExternalReferenceCodes") String[]
+				audienceExternalReferenceCodes,
 			@GraphQLName("pageSize") int pageSize,
 			@GraphQLName("page") int page)
 		throws Exception {
@@ -996,13 +1007,14 @@ public class Query {
 				contentSetElementResource.
 					getSiteContentSetByKeyContentSetElementsPage(
 						Long.valueOf(siteKey), key,
+						audienceExternalReferenceCodes,
 						Pagination.of(page, pageSize))));
 	}
 
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {contentSetByUuidContentSetElements(page: ___, pageSize: ___, siteKey: ___, uuid: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {contentSetByUuidContentSetElements(audienceExternalReferenceCodes: ___, page: ___, pageSize: ___, siteKey: ___, uuid: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
 		description = "Retrieves the content set elements by UUID. Results can be paginated."
@@ -1010,6 +1022,8 @@ public class Query {
 	public ContentSetElementPage contentSetByUuidContentSetElements(
 			@GraphQLName("siteKey") @NotEmpty String siteKey,
 			@GraphQLName("uuid") String uuid,
+			@GraphQLName("audienceExternalReferenceCodes") String[]
+				audienceExternalReferenceCodes,
 			@GraphQLName("pageSize") int pageSize,
 			@GraphQLName("page") int page)
 		throws Exception {
@@ -1021,6 +1035,7 @@ public class Query {
 				contentSetElementResource.
 					getSiteContentSetByUuidContentSetElementsPage(
 						Long.valueOf(siteKey), uuid,
+						audienceExternalReferenceCodes,
 						Pagination.of(page, pageSize))));
 	}
 
@@ -7730,4 +7745,4 @@ public class Query {
 	private com.liferay.portal.kernel.model.User _user;
 
 }
-// LIFERAY-REST-BUILDER-HASH:961325294
+// LIFERAY-REST-BUILDER-HASH:1182050871

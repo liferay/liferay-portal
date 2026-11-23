@@ -234,7 +234,7 @@ public abstract class BaseContentSetElementResourceTestCase {
 		Page<ContentSetElement> page =
 			contentSetElementResource.
 				getAssetLibraryContentSetByKeyContentSetElementsPage(
-					assetLibraryId, key, Pagination.of(1, 10));
+					assetLibraryId, key, null, Pagination.of(1, 10));
 
 		long totalCount = page.getTotalCount();
 
@@ -247,7 +247,7 @@ public abstract class BaseContentSetElementResourceTestCase {
 			page =
 				contentSetElementResource.
 					getAssetLibraryContentSetByKeyContentSetElementsPage(
-						irrelevantAssetLibraryId, irrelevantKey,
+						irrelevantAssetLibraryId, irrelevantKey, null,
 						Pagination.of(1, (int)totalCount + 1));
 
 			Assert.assertEquals(totalCount + 1, page.getTotalCount());
@@ -272,7 +272,8 @@ public abstract class BaseContentSetElementResourceTestCase {
 		page =
 			contentSetElementResource.
 				getAssetLibraryContentSetByKeyContentSetElementsPage(
-					assetLibraryId, key, Pagination.of(1, (int)totalCount + 2));
+					assetLibraryId, key, null,
+					Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -308,7 +309,7 @@ public abstract class BaseContentSetElementResourceTestCase {
 		Page<ContentSetElement> contentSetElementsPage =
 			contentSetElementResource.
 				getAssetLibraryContentSetByKeyContentSetElementsPage(
-					assetLibraryId, key, null);
+					assetLibraryId, key, null, null);
 
 		int totalCount = GetterUtil.getInteger(
 			contentSetElementsPage.getTotalCount());
@@ -333,7 +334,7 @@ public abstract class BaseContentSetElementResourceTestCase {
 			Page<ContentSetElement> page1 =
 				contentSetElementResource.
 					getAssetLibraryContentSetByKeyContentSetElementsPage(
-						assetLibraryId, key,
+						assetLibraryId, key, null,
 						Pagination.of(
 							(int)Math.ceil((totalCount + 1.0) / pageSizeLimit),
 							pageSizeLimit));
@@ -346,7 +347,7 @@ public abstract class BaseContentSetElementResourceTestCase {
 			Page<ContentSetElement> page2 =
 				contentSetElementResource.
 					getAssetLibraryContentSetByKeyContentSetElementsPage(
-						assetLibraryId, key,
+						assetLibraryId, key, null,
 						Pagination.of(
 							(int)Math.ceil((totalCount + 2.0) / pageSizeLimit),
 							pageSizeLimit));
@@ -357,7 +358,7 @@ public abstract class BaseContentSetElementResourceTestCase {
 			Page<ContentSetElement> page3 =
 				contentSetElementResource.
 					getAssetLibraryContentSetByKeyContentSetElementsPage(
-						assetLibraryId, key,
+						assetLibraryId, key, null,
 						Pagination.of(
 							(int)Math.ceil((totalCount + 3.0) / pageSizeLimit),
 							pageSizeLimit));
@@ -369,7 +370,8 @@ public abstract class BaseContentSetElementResourceTestCase {
 			Page<ContentSetElement> page1 =
 				contentSetElementResource.
 					getAssetLibraryContentSetByKeyContentSetElementsPage(
-						assetLibraryId, key, Pagination.of(1, totalCount + 2));
+						assetLibraryId, key, null,
+						Pagination.of(1, totalCount + 2));
 
 			List<ContentSetElement> contentSetElements1 =
 				(List<ContentSetElement>)page1.getItems();
@@ -381,7 +383,8 @@ public abstract class BaseContentSetElementResourceTestCase {
 			Page<ContentSetElement> page2 =
 				contentSetElementResource.
 					getAssetLibraryContentSetByKeyContentSetElementsPage(
-						assetLibraryId, key, Pagination.of(2, totalCount + 2));
+						assetLibraryId, key, null,
+						Pagination.of(2, totalCount + 2));
 
 			Assert.assertEquals(totalCount + 3, page2.getTotalCount());
 
@@ -394,7 +397,7 @@ public abstract class BaseContentSetElementResourceTestCase {
 			Page<ContentSetElement> page3 =
 				contentSetElementResource.
 					getAssetLibraryContentSetByKeyContentSetElementsPage(
-						assetLibraryId, key,
+						assetLibraryId, key, null,
 						Pagination.of(1, (int)totalCount + 3));
 
 			assertContains(
@@ -461,7 +464,7 @@ public abstract class BaseContentSetElementResourceTestCase {
 		Page<ContentSetElement> page =
 			contentSetElementResource.
 				getAssetLibraryContentSetByUuidContentSetElementsPage(
-					assetLibraryId, uuid, Pagination.of(1, 10));
+					assetLibraryId, uuid, null, Pagination.of(1, 10));
 
 		long totalCount = page.getTotalCount();
 
@@ -474,7 +477,7 @@ public abstract class BaseContentSetElementResourceTestCase {
 			page =
 				contentSetElementResource.
 					getAssetLibraryContentSetByUuidContentSetElementsPage(
-						irrelevantAssetLibraryId, irrelevantUuid,
+						irrelevantAssetLibraryId, irrelevantUuid, null,
 						Pagination.of(1, (int)totalCount + 1));
 
 			Assert.assertEquals(totalCount + 1, page.getTotalCount());
@@ -499,7 +502,7 @@ public abstract class BaseContentSetElementResourceTestCase {
 		page =
 			contentSetElementResource.
 				getAssetLibraryContentSetByUuidContentSetElementsPage(
-					assetLibraryId, uuid,
+					assetLibraryId, uuid, null,
 					Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
@@ -536,7 +539,7 @@ public abstract class BaseContentSetElementResourceTestCase {
 		Page<ContentSetElement> contentSetElementsPage =
 			contentSetElementResource.
 				getAssetLibraryContentSetByUuidContentSetElementsPage(
-					assetLibraryId, uuid, null);
+					assetLibraryId, uuid, null, null);
 
 		int totalCount = GetterUtil.getInteger(
 			contentSetElementsPage.getTotalCount());
@@ -561,7 +564,7 @@ public abstract class BaseContentSetElementResourceTestCase {
 			Page<ContentSetElement> page1 =
 				contentSetElementResource.
 					getAssetLibraryContentSetByUuidContentSetElementsPage(
-						assetLibraryId, uuid,
+						assetLibraryId, uuid, null,
 						Pagination.of(
 							(int)Math.ceil((totalCount + 1.0) / pageSizeLimit),
 							pageSizeLimit));
@@ -574,7 +577,7 @@ public abstract class BaseContentSetElementResourceTestCase {
 			Page<ContentSetElement> page2 =
 				contentSetElementResource.
 					getAssetLibraryContentSetByUuidContentSetElementsPage(
-						assetLibraryId, uuid,
+						assetLibraryId, uuid, null,
 						Pagination.of(
 							(int)Math.ceil((totalCount + 2.0) / pageSizeLimit),
 							pageSizeLimit));
@@ -585,7 +588,7 @@ public abstract class BaseContentSetElementResourceTestCase {
 			Page<ContentSetElement> page3 =
 				contentSetElementResource.
 					getAssetLibraryContentSetByUuidContentSetElementsPage(
-						assetLibraryId, uuid,
+						assetLibraryId, uuid, null,
 						Pagination.of(
 							(int)Math.ceil((totalCount + 3.0) / pageSizeLimit),
 							pageSizeLimit));
@@ -597,7 +600,8 @@ public abstract class BaseContentSetElementResourceTestCase {
 			Page<ContentSetElement> page1 =
 				contentSetElementResource.
 					getAssetLibraryContentSetByUuidContentSetElementsPage(
-						assetLibraryId, uuid, Pagination.of(1, totalCount + 2));
+						assetLibraryId, uuid, null,
+						Pagination.of(1, totalCount + 2));
 
 			List<ContentSetElement> contentSetElements1 =
 				(List<ContentSetElement>)page1.getItems();
@@ -609,7 +613,8 @@ public abstract class BaseContentSetElementResourceTestCase {
 			Page<ContentSetElement> page2 =
 				contentSetElementResource.
 					getAssetLibraryContentSetByUuidContentSetElementsPage(
-						assetLibraryId, uuid, Pagination.of(2, totalCount + 2));
+						assetLibraryId, uuid, null,
+						Pagination.of(2, totalCount + 2));
 
 			Assert.assertEquals(totalCount + 3, page2.getTotalCount());
 
@@ -622,7 +627,7 @@ public abstract class BaseContentSetElementResourceTestCase {
 			Page<ContentSetElement> page3 =
 				contentSetElementResource.
 					getAssetLibraryContentSetByUuidContentSetElementsPage(
-						assetLibraryId, uuid,
+						assetLibraryId, uuid, null,
 						Pagination.of(1, (int)totalCount + 3));
 
 			assertContains(
@@ -682,7 +687,7 @@ public abstract class BaseContentSetElementResourceTestCase {
 
 		Page<ContentSetElement> page =
 			contentSetElementResource.getContentSetContentSetElementsPage(
-				contentSetId, Pagination.of(1, 10));
+				contentSetId, null, Pagination.of(1, 10));
 
 		long totalCount = page.getTotalCount();
 
@@ -694,7 +699,7 @@ public abstract class BaseContentSetElementResourceTestCase {
 
 			page =
 				contentSetElementResource.getContentSetContentSetElementsPage(
-					irrelevantContentSetId,
+					irrelevantContentSetId, null,
 					Pagination.of(1, (int)totalCount + 1));
 
 			Assert.assertEquals(totalCount + 1, page.getTotalCount());
@@ -717,7 +722,7 @@ public abstract class BaseContentSetElementResourceTestCase {
 				contentSetId, randomContentSetElement());
 
 		page = contentSetElementResource.getContentSetContentSetElementsPage(
-			contentSetId, Pagination.of(1, (int)totalCount + 2));
+			contentSetId, null, Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -750,7 +755,7 @@ public abstract class BaseContentSetElementResourceTestCase {
 
 		Page<ContentSetElement> contentSetElementsPage =
 			contentSetElementResource.getContentSetContentSetElementsPage(
-				contentSetId, null);
+				contentSetId, null, null);
 
 		int totalCount = GetterUtil.getInteger(
 			contentSetElementsPage.getTotalCount());
@@ -774,7 +779,7 @@ public abstract class BaseContentSetElementResourceTestCase {
 		if (totalCount >= (pageSizeLimit - 2)) {
 			Page<ContentSetElement> page1 =
 				contentSetElementResource.getContentSetContentSetElementsPage(
-					contentSetId,
+					contentSetId, null,
 					Pagination.of(
 						(int)Math.ceil((totalCount + 1.0) / pageSizeLimit),
 						pageSizeLimit));
@@ -786,7 +791,7 @@ public abstract class BaseContentSetElementResourceTestCase {
 
 			Page<ContentSetElement> page2 =
 				contentSetElementResource.getContentSetContentSetElementsPage(
-					contentSetId,
+					contentSetId, null,
 					Pagination.of(
 						(int)Math.ceil((totalCount + 2.0) / pageSizeLimit),
 						pageSizeLimit));
@@ -796,7 +801,7 @@ public abstract class BaseContentSetElementResourceTestCase {
 
 			Page<ContentSetElement> page3 =
 				contentSetElementResource.getContentSetContentSetElementsPage(
-					contentSetId,
+					contentSetId, null,
 					Pagination.of(
 						(int)Math.ceil((totalCount + 3.0) / pageSizeLimit),
 						pageSizeLimit));
@@ -807,7 +812,7 @@ public abstract class BaseContentSetElementResourceTestCase {
 		else {
 			Page<ContentSetElement> page1 =
 				contentSetElementResource.getContentSetContentSetElementsPage(
-					contentSetId, Pagination.of(1, totalCount + 2));
+					contentSetId, null, Pagination.of(1, totalCount + 2));
 
 			List<ContentSetElement> contentSetElements1 =
 				(List<ContentSetElement>)page1.getItems();
@@ -818,7 +823,7 @@ public abstract class BaseContentSetElementResourceTestCase {
 
 			Page<ContentSetElement> page2 =
 				contentSetElementResource.getContentSetContentSetElementsPage(
-					contentSetId, Pagination.of(2, totalCount + 2));
+					contentSetId, null, Pagination.of(2, totalCount + 2));
 
 			Assert.assertEquals(totalCount + 3, page2.getTotalCount());
 
@@ -830,7 +835,7 @@ public abstract class BaseContentSetElementResourceTestCase {
 
 			Page<ContentSetElement> page3 =
 				contentSetElementResource.getContentSetContentSetElementsPage(
-					contentSetId, Pagination.of(1, (int)totalCount + 3));
+					contentSetId, null, Pagination.of(1, (int)totalCount + 3));
 
 			assertContains(
 				contentSetElement1, (List<ContentSetElement>)page3.getItems());
@@ -879,7 +884,7 @@ public abstract class BaseContentSetElementResourceTestCase {
 		Page<ContentSetElement> page =
 			contentSetElementResource.
 				getSiteContentSetByKeyContentSetElementsPage(
-					siteId, key, Pagination.of(1, 10));
+					siteId, key, null, Pagination.of(1, 10));
 
 		long totalCount = page.getTotalCount();
 
@@ -892,7 +897,7 @@ public abstract class BaseContentSetElementResourceTestCase {
 			page =
 				contentSetElementResource.
 					getSiteContentSetByKeyContentSetElementsPage(
-						irrelevantSiteId, irrelevantKey,
+						irrelevantSiteId, irrelevantKey, null,
 						Pagination.of(1, (int)totalCount + 1));
 
 			Assert.assertEquals(totalCount + 1, page.getTotalCount());
@@ -917,7 +922,7 @@ public abstract class BaseContentSetElementResourceTestCase {
 		page =
 			contentSetElementResource.
 				getSiteContentSetByKeyContentSetElementsPage(
-					siteId, key, Pagination.of(1, (int)totalCount + 2));
+					siteId, key, null, Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -951,7 +956,8 @@ public abstract class BaseContentSetElementResourceTestCase {
 
 		Page<ContentSetElement> contentSetElementsPage =
 			contentSetElementResource.
-				getSiteContentSetByKeyContentSetElementsPage(siteId, key, null);
+				getSiteContentSetByKeyContentSetElementsPage(
+					siteId, key, null, null);
 
 		int totalCount = GetterUtil.getInteger(
 			contentSetElementsPage.getTotalCount());
@@ -976,7 +982,7 @@ public abstract class BaseContentSetElementResourceTestCase {
 			Page<ContentSetElement> page1 =
 				contentSetElementResource.
 					getSiteContentSetByKeyContentSetElementsPage(
-						siteId, key,
+						siteId, key, null,
 						Pagination.of(
 							(int)Math.ceil((totalCount + 1.0) / pageSizeLimit),
 							pageSizeLimit));
@@ -989,7 +995,7 @@ public abstract class BaseContentSetElementResourceTestCase {
 			Page<ContentSetElement> page2 =
 				contentSetElementResource.
 					getSiteContentSetByKeyContentSetElementsPage(
-						siteId, key,
+						siteId, key, null,
 						Pagination.of(
 							(int)Math.ceil((totalCount + 2.0) / pageSizeLimit),
 							pageSizeLimit));
@@ -1000,7 +1006,7 @@ public abstract class BaseContentSetElementResourceTestCase {
 			Page<ContentSetElement> page3 =
 				contentSetElementResource.
 					getSiteContentSetByKeyContentSetElementsPage(
-						siteId, key,
+						siteId, key, null,
 						Pagination.of(
 							(int)Math.ceil((totalCount + 3.0) / pageSizeLimit),
 							pageSizeLimit));
@@ -1012,7 +1018,7 @@ public abstract class BaseContentSetElementResourceTestCase {
 			Page<ContentSetElement> page1 =
 				contentSetElementResource.
 					getSiteContentSetByKeyContentSetElementsPage(
-						siteId, key, Pagination.of(1, totalCount + 2));
+						siteId, key, null, Pagination.of(1, totalCount + 2));
 
 			List<ContentSetElement> contentSetElements1 =
 				(List<ContentSetElement>)page1.getItems();
@@ -1024,7 +1030,7 @@ public abstract class BaseContentSetElementResourceTestCase {
 			Page<ContentSetElement> page2 =
 				contentSetElementResource.
 					getSiteContentSetByKeyContentSetElementsPage(
-						siteId, key, Pagination.of(2, totalCount + 2));
+						siteId, key, null, Pagination.of(2, totalCount + 2));
 
 			Assert.assertEquals(totalCount + 3, page2.getTotalCount());
 
@@ -1037,7 +1043,8 @@ public abstract class BaseContentSetElementResourceTestCase {
 			Page<ContentSetElement> page3 =
 				contentSetElementResource.
 					getSiteContentSetByKeyContentSetElementsPage(
-						siteId, key, Pagination.of(1, (int)totalCount + 3));
+						siteId, key, null,
+						Pagination.of(1, (int)totalCount + 3));
 
 			assertContains(
 				contentSetElement1, (List<ContentSetElement>)page3.getItems());
@@ -1100,7 +1107,7 @@ public abstract class BaseContentSetElementResourceTestCase {
 		Page<ContentSetElement> page =
 			contentSetElementResource.
 				getSiteContentSetByUuidContentSetElementsPage(
-					siteId, uuid, Pagination.of(1, 10));
+					siteId, uuid, null, Pagination.of(1, 10));
 
 		long totalCount = page.getTotalCount();
 
@@ -1113,7 +1120,7 @@ public abstract class BaseContentSetElementResourceTestCase {
 			page =
 				contentSetElementResource.
 					getSiteContentSetByUuidContentSetElementsPage(
-						irrelevantSiteId, irrelevantUuid,
+						irrelevantSiteId, irrelevantUuid, null,
 						Pagination.of(1, (int)totalCount + 1));
 
 			Assert.assertEquals(totalCount + 1, page.getTotalCount());
@@ -1138,7 +1145,7 @@ public abstract class BaseContentSetElementResourceTestCase {
 		page =
 			contentSetElementResource.
 				getSiteContentSetByUuidContentSetElementsPage(
-					siteId, uuid, Pagination.of(1, (int)totalCount + 2));
+					siteId, uuid, null, Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1174,7 +1181,7 @@ public abstract class BaseContentSetElementResourceTestCase {
 		Page<ContentSetElement> contentSetElementsPage =
 			contentSetElementResource.
 				getSiteContentSetByUuidContentSetElementsPage(
-					siteId, uuid, null);
+					siteId, uuid, null, null);
 
 		int totalCount = GetterUtil.getInteger(
 			contentSetElementsPage.getTotalCount());
@@ -1199,7 +1206,7 @@ public abstract class BaseContentSetElementResourceTestCase {
 			Page<ContentSetElement> page1 =
 				contentSetElementResource.
 					getSiteContentSetByUuidContentSetElementsPage(
-						siteId, uuid,
+						siteId, uuid, null,
 						Pagination.of(
 							(int)Math.ceil((totalCount + 1.0) / pageSizeLimit),
 							pageSizeLimit));
@@ -1212,7 +1219,7 @@ public abstract class BaseContentSetElementResourceTestCase {
 			Page<ContentSetElement> page2 =
 				contentSetElementResource.
 					getSiteContentSetByUuidContentSetElementsPage(
-						siteId, uuid,
+						siteId, uuid, null,
 						Pagination.of(
 							(int)Math.ceil((totalCount + 2.0) / pageSizeLimit),
 							pageSizeLimit));
@@ -1223,7 +1230,7 @@ public abstract class BaseContentSetElementResourceTestCase {
 			Page<ContentSetElement> page3 =
 				contentSetElementResource.
 					getSiteContentSetByUuidContentSetElementsPage(
-						siteId, uuid,
+						siteId, uuid, null,
 						Pagination.of(
 							(int)Math.ceil((totalCount + 3.0) / pageSizeLimit),
 							pageSizeLimit));
@@ -1235,7 +1242,7 @@ public abstract class BaseContentSetElementResourceTestCase {
 			Page<ContentSetElement> page1 =
 				contentSetElementResource.
 					getSiteContentSetByUuidContentSetElementsPage(
-						siteId, uuid, Pagination.of(1, totalCount + 2));
+						siteId, uuid, null, Pagination.of(1, totalCount + 2));
 
 			List<ContentSetElement> contentSetElements1 =
 				(List<ContentSetElement>)page1.getItems();
@@ -1247,7 +1254,7 @@ public abstract class BaseContentSetElementResourceTestCase {
 			Page<ContentSetElement> page2 =
 				contentSetElementResource.
 					getSiteContentSetByUuidContentSetElementsPage(
-						siteId, uuid, Pagination.of(2, totalCount + 2));
+						siteId, uuid, null, Pagination.of(2, totalCount + 2));
 
 			Assert.assertEquals(totalCount + 3, page2.getTotalCount());
 
@@ -1260,7 +1267,8 @@ public abstract class BaseContentSetElementResourceTestCase {
 			Page<ContentSetElement> page3 =
 				contentSetElementResource.
 					getSiteContentSetByUuidContentSetElementsPage(
-						siteId, uuid, Pagination.of(1, (int)totalCount + 3));
+						siteId, uuid, null,
+						Pagination.of(1, (int)totalCount + 3));
 
 			assertContains(
 				contentSetElement1, (List<ContentSetElement>)page3.getItems());
@@ -2334,4 +2342,4 @@ public abstract class BaseContentSetElementResourceTestCase {
 			_contentSetElementResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1020416431
+// LIFERAY-REST-BUILDER-HASH:-1115407527

@@ -82,6 +82,11 @@ public abstract class BaseContentSetElementResourceImpl
 				name = "key", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The external reference codes of the audiences the user matches, as detected in the browser. When present, they replace the audiences read from the com.liferay.frontend.js.audiences cookie.",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "audienceExternalReferenceCodes"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "fields"
 			),
@@ -120,6 +125,9 @@ public abstract class BaseContentSetElementResourceImpl
 				@jakarta.validation.constraints.NotNull
 				@jakarta.ws.rs.PathParam("key")
 				String key,
+				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+				@jakarta.ws.rs.QueryParam("audienceExternalReferenceCodes")
+				String[] audienceExternalReferenceCodes,
 				@jakarta.ws.rs.core.Context Pagination pagination)
 		throws Exception {
 
@@ -140,6 +148,11 @@ public abstract class BaseContentSetElementResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "uuid", required = true
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The external reference codes of the audiences the user matches, as detected in the browser. When present, they replace the audiences read from the com.liferay.frontend.js.audiences cookie.",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "audienceExternalReferenceCodes"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -180,6 +193,9 @@ public abstract class BaseContentSetElementResourceImpl
 				@jakarta.validation.constraints.NotNull
 				@jakarta.ws.rs.PathParam("uuid")
 				String uuid,
+				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+				@jakarta.ws.rs.QueryParam("audienceExternalReferenceCodes")
+				String[] audienceExternalReferenceCodes,
 				@jakarta.ws.rs.core.Context Pagination pagination)
 		throws Exception {
 
@@ -199,6 +215,11 @@ public abstract class BaseContentSetElementResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "contentSetId", required = true
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The external reference codes of the audiences the user matches, as detected in the browser. When present, they replace the audiences read from the com.liferay.frontend.js.audiences cookie.",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "audienceExternalReferenceCodes"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -232,6 +253,9 @@ public abstract class BaseContentSetElementResourceImpl
 			@jakarta.validation.constraints.NotNull
 			@jakarta.ws.rs.PathParam("contentSetId")
 			Long contentSetId,
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.ws.rs.QueryParam("audienceExternalReferenceCodes")
+			String[] audienceExternalReferenceCodes,
 			@jakarta.ws.rs.core.Context Pagination pagination)
 		throws Exception {
 
@@ -255,6 +279,11 @@ public abstract class BaseContentSetElementResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "key", required = true
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The external reference codes of the audiences the user matches, as detected in the browser. When present, they replace the audiences read from the com.liferay.frontend.js.audiences cookie.",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "audienceExternalReferenceCodes"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -294,6 +323,9 @@ public abstract class BaseContentSetElementResourceImpl
 			@jakarta.validation.constraints.NotNull
 			@jakarta.ws.rs.PathParam("key")
 			String key,
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.ws.rs.QueryParam("audienceExternalReferenceCodes")
+			String[] audienceExternalReferenceCodes,
 			@jakarta.ws.rs.core.Context Pagination pagination)
 		throws Exception {
 
@@ -317,6 +349,11 @@ public abstract class BaseContentSetElementResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "uuid", required = true
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The external reference codes of the audiences the user matches, as detected in the browser. When present, they replace the audiences read from the com.liferay.frontend.js.audiences cookie.",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "audienceExternalReferenceCodes"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -357,6 +394,9 @@ public abstract class BaseContentSetElementResourceImpl
 				@jakarta.validation.constraints.NotNull
 				@jakarta.ws.rs.PathParam("uuid")
 				String uuid,
+				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+				@jakarta.ws.rs.QueryParam("audienceExternalReferenceCodes")
+				String[] audienceExternalReferenceCodes,
 				@jakarta.ws.rs.core.Context Pagination pagination)
 		throws Exception {
 
@@ -1085,4 +1125,4 @@ public abstract class BaseContentSetElementResourceImpl
 		LogFactoryUtil.getLog(BaseContentSetElementResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1814510966
+// LIFERAY-REST-BUILDER-HASH:377571026

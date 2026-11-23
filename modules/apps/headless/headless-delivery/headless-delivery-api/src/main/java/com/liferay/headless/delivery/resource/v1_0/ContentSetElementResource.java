@@ -49,25 +49,30 @@ public interface ContentSetElementResource {
 
 	public Page<ContentSetElement>
 			getAssetLibraryContentSetByKeyContentSetElementsPage(
-				Long assetLibraryId, String key, Pagination pagination)
+				Long assetLibraryId, String key,
+				String[] audienceExternalReferenceCodes, Pagination pagination)
 		throws Exception;
 
 	public Page<ContentSetElement>
 			getAssetLibraryContentSetByUuidContentSetElementsPage(
-				Long assetLibraryId, String uuid, Pagination pagination)
+				Long assetLibraryId, String uuid,
+				String[] audienceExternalReferenceCodes, Pagination pagination)
 		throws Exception;
 
 	public Page<ContentSetElement> getContentSetContentSetElementsPage(
-			Long contentSetId, Pagination pagination)
+			Long contentSetId, String[] audienceExternalReferenceCodes,
+			Pagination pagination)
 		throws Exception;
 
 	public Page<ContentSetElement> getSiteContentSetByKeyContentSetElementsPage(
-			Long siteId, String key, Pagination pagination)
+			Long siteId, String key, String[] audienceExternalReferenceCodes,
+			Pagination pagination)
 		throws Exception;
 
 	public Page<ContentSetElement>
 			getSiteContentSetByUuidContentSetElementsPage(
-				Long siteId, String uuid, Pagination pagination)
+				Long siteId, String uuid,
+				String[] audienceExternalReferenceCodes, Pagination pagination)
 		throws Exception;
 
 	public Page<ContentSetElement>
@@ -171,4 +176,4 @@ public interface ContentSetElementResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1585648301
+// LIFERAY-REST-BUILDER-HASH:-855149184
