@@ -55,6 +55,17 @@ public class KaleoDefinitionUpgradeProcessTest {
 
 			preparedStatement.executeUpdate();
 		}
+
+		try (Connection connection = DataAccess.getConnection()) {
+			DBInspector dbInspector = new DBInspector(connection);
+
+			if (!dbInspector.hasColumn("KaleoDefinition", "system_")) {
+				DB db = DBManagerUtil.getDB();
+
+				db.alterTableAddColumn(
+					connection, "KaleoDefinition", "system_", "BOOLEAN");
+			}
+		}
 	}
 
 	@Test
@@ -97,12 +108,14 @@ public class KaleoDefinitionUpgradeProcessTest {
 		try (Connection connection = DataAccess.getConnection();
 
 			PreparedStatement preparedStatement = connection.prepareStatement(
-				"insert into KaleoDefinition (kaleoDefinitionId, companyId, " +
-					"name) values (?, ?, ?)")) {
+				"insert into KaleoDefinition (uuid_, kaleoDefinitionId, " +
+					"groupId, companyId, name) values (?, ?, ?, ?, ?)")) {
 
-			preparedStatement.setLong(1, kaleoDefinitionId);
-			preparedStatement.setLong(2, RandomTestUtil.randomLong());
-			preparedStatement.setString(3, name);
+			preparedStatement.setString(1, RandomTestUtil.randomString());
+			preparedStatement.setLong(2, kaleoDefinitionId);
+			preparedStatement.setLong(3, RandomTestUtil.randomLong());
+			preparedStatement.setLong(4, RandomTestUtil.randomLong());
+			preparedStatement.setString(5, name);
 
 			preparedStatement.executeUpdate();
 		}
