@@ -130,11 +130,10 @@ public class RecycleBinSiteSettingsConfigurationScreenWrapper
 			}
 
 			if (trashEntriesMaxAge != null) {
-				int groupTrashEntriesMaxAge = GetterUtil.getInteger(
-					trashEntriesMaxAge);
-
 				int companyTrashEntriesMaxAge = PrefsPropsUtil.getInteger(
 					group.getCompanyId(), PropsKeys.TRASH_ENTRIES_MAX_AGE);
+				int groupTrashEntriesMaxAge = GetterUtil.getInteger(
+					trashEntriesMaxAge);
 
 				if ((groupTrashEntriesMaxAge <= 0) ||
 					(groupTrashEntriesMaxAge == companyTrashEntriesMaxAge)) {
