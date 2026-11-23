@@ -13,10 +13,12 @@ import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.site.initializer.SiteInitializer;
 
 import java.util.List;
@@ -26,7 +28,8 @@ import java.util.List;
  */
 public class SiteInitializerUtil {
 
-	public static void initialize(Group group, SiteInitializer siteInitializer)
+	public static void initialize(
+			Group group, SiteInitializer siteInitializer, String version)
 		throws Exception {
 
 		String name = PrincipalThreadLocal.getName();
@@ -44,6 +47,19 @@ public class SiteInitializerUtil {
 
 		try {
 			siteInitializer.initialize(group.getGroupId());
+
+			group = GroupLocalServiceUtil.getGroup(group.getGroupId());
+
+			UnicodeProperties typeSettingsUnicodeProperties =
+				group.getTypeSettingsProperties();
+
+			typeSettingsUnicodeProperties.setProperty(
+				"siteInitializerKey", siteInitializer.getKey());
+			typeSettingsUnicodeProperties.setProperty(
+				"siteInitializerVersion", version);
+
+			GroupLocalServiceUtil.updateGroup(
+				group.getGroupId(), typeSettingsUnicodeProperties.toString());
 		}
 		finally {
 			PrincipalThreadLocal.setName(name);

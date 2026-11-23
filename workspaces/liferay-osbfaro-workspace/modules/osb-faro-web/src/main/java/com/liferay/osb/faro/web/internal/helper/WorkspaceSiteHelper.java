@@ -22,8 +22,10 @@ public class WorkspaceSiteHelper {
 	public void initialize(FaroProject faroProject) throws Exception {
 		SiteInitializerUtil.initialize(
 			_groupLocalService.getGroup(faroProject.getGroupId()),
-			_siteInitializer);
+			_siteInitializer, _SITE_INITIALIZER_VERSION);
 	}
+
+	private static final String _SITE_INITIALIZER_VERSION = "0.1";
 
 	@Reference
 	private GroupLocalService _groupLocalService;
