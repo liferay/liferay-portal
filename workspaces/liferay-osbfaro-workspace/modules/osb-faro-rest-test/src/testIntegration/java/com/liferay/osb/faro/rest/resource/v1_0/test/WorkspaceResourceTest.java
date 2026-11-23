@@ -30,6 +30,11 @@ import org.junit.runner.RunWith;
 public class WorkspaceResourceTest extends BaseWorkspaceResourceTestCase {
 
 	@Override
+	protected String[] getAdditionalAssertFieldNames() {
+		return new String[] {"groupId", "name"};
+	}
+
+	@Override
 	protected Workspace testGetWorkspacesPage_addWorkspace(Workspace workspace)
 		throws Exception {
 
