@@ -496,8 +496,17 @@ jobs:
         with:
             provider: azure
     push-rc-bootstrap-gcp:
-        if: ${{needs.check-bootstrap-gcp.outputs.should_release == 'true'}}
-        needs: check-bootstrap-gcp
+        if: ${{!cancelled() && !failure() && needs.check-bootstrap-gcp.outputs.should_release == 'true'}}
+        needs:
+            -   check-bootstrap-gcp
+            -   push-rc-dxp-operator
+            -   push-rc-gcp
+            -   push-rc-gcp-infrastructure-provider
+            -   push-rc-image-dxp-operator
+            -   push-rc-infrastructure
+            -   push-rc-observability
+            -   push-rc-platform
+            -   push-rc-platform-components
         uses: ./.github/workflows/ci-reusable-push-bootstrap-tarball.yaml
         with:
             provider: gcp
