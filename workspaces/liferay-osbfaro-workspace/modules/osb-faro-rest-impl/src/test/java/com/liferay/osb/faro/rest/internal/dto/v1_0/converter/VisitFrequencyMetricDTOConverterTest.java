@@ -24,19 +24,21 @@ public class VisitFrequencyMetricDTOConverterTest {
 	public void testToDTO() {
 		Assert.assertNull(_visitFrequencyMetricDTOConverter.toDTO(null, null));
 
-		long biWeeklyVisitors = RandomTestUtil.randomLong();
-		long dailyVisitors = RandomTestUtil.randomLong();
-		long monthlyVisitors = RandomTestUtil.randomLong();
-		long occasionalVisitors = RandomTestUtil.randomLong();
-		long totalCount = RandomTestUtil.randomLong();
-		long weeklyVisitors = RandomTestUtil.randomLong();
-
 		GetWorkspaceGroupChannelVisitFrequencyMetricResponse.VisitFrequencyBag
 			visitFrequencyBag =
 				new GetWorkspaceGroupChannelVisitFrequencyMetricResponse.
 					VisitFrequencyBag();
 
+		long totalCount = RandomTestUtil.randomLong();
+
 		visitFrequencyBag.setTotalCount(totalCount);
+
+		long biWeeklyVisitors = RandomTestUtil.randomLong();
+		long dailyVisitors = RandomTestUtil.randomLong();
+		long monthlyVisitors = RandomTestUtil.randomLong();
+		long occasionalVisitors = RandomTestUtil.randomLong();
+		long weeklyVisitors = RandomTestUtil.randomLong();
+
 		visitFrequencyBag.setVisitFrequency(
 			Arrays.asList(
 				_createComposition(dailyVisitors, "daily"),
@@ -69,12 +71,12 @@ public class VisitFrequencyMetricDTOConverterTest {
 
 	@Test
 	public void testToDTOWithMissingBuckets() {
-		long weeklyVisitors = RandomTestUtil.randomLong();
-
 		GetWorkspaceGroupChannelVisitFrequencyMetricResponse.VisitFrequencyBag
 			visitFrequencyBag =
 				new GetWorkspaceGroupChannelVisitFrequencyMetricResponse.
 					VisitFrequencyBag();
+
+		long weeklyVisitors = RandomTestUtil.randomLong();
 
 		visitFrequencyBag.setTotalCount(weeklyVisitors);
 		visitFrequencyBag.setVisitFrequency(
