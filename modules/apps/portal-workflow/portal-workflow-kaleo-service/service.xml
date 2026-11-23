@@ -159,10 +159,6 @@
 			<finder-column name="companyId" />
 			<finder-column name="name" />
 		</finder>
-		<finder name="C_A" return-type="Collection">
-			<finder-column name="companyId" />
-			<finder-column name="active" />
-		</finder>
 		<finder name="G_C_S" return-type="Collection">
 			<finder-column name="groupId" />
 			<finder-column name="companyId" />
@@ -172,11 +168,6 @@
 			<finder-column name="companyId" />
 			<finder-column name="name" />
 			<finder-column name="version" />
-		</finder>
-		<finder name="C_N_A" return-type="KaleoDefinition">
-			<finder-column name="companyId" />
-			<finder-column name="name" />
-			<finder-column name="active" />
 		</finder>
 		<finder name="G_C_S_A" return-type="Collection">
 			<finder-column name="groupId" />
@@ -705,11 +696,6 @@
 			<finder-column name="kaleoClassName" />
 			<finder-column name="kaleoClassPK" />
 		</finder>
-		<finder name="KCN_KCPK_ACN" return-type="Collection">
-			<finder-column name="kaleoClassName" />
-			<finder-column name="kaleoClassPK" />
-			<finder-column name="assigneeClassName" />
-		</finder>
 	</entity>
 	<entity local-service="true" name="KaleoTaskAssignmentInstance" remote-service="false">
 
@@ -1001,11 +987,6 @@
 		<finder name="KCN_KDVI" return-type="Collection">
 			<finder-column name="kaleoClassName" />
 			<finder-column name="kaleoDefinitionVersionId" />
-		</finder>
-		<finder name="KCN_KCPK_Blocking" return-type="Collection">
-			<finder-column name="kaleoClassName" />
-			<finder-column name="kaleoClassPK" />
-			<finder-column name="blocking" />
 		</finder>
 	</entity>
 	<entity local-service="true" name="KaleoTimerInstanceToken" remote-service="false">
