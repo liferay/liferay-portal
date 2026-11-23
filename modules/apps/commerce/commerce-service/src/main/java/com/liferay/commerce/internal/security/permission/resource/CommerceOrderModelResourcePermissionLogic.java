@@ -104,6 +104,12 @@ public class CommerceOrderModelResourcePermissionLogic
 				return false;
 			}
 
+			if (actionId.equals(ActionKeys.DELETE)) {
+				return _hasPermission(
+					permissionChecker, 0,
+					CommerceOrderActionKeys.DELETE_COMMERCE_ORDERS);
+			}
+
 			return _hasPermission(
 				permissionChecker, 0,
 				CommerceOrderActionKeys.MANAGE_COMMERCE_ORDERS);
@@ -129,16 +135,21 @@ public class CommerceOrderModelResourcePermissionLogic
 		}
 
 		if (permissionChecker.isCompanyAdmin(commerceOrder.getCompanyId()) ||
-			permissionChecker.isGroupAdmin(commerceOrder.getGroupId()) ||
-			((accountEntry.getAccountEntryId() !=
+			permissionChecker.isGroupAdmin(commerceOrder.getGroupId())) {
+
+			return true;
+		}
+
+		if (!actionId.equals(ActionKeys.DELETE) &&
+			(accountEntry.getAccountEntryId() !=
 				AccountConstants.ACCOUNT_ENTRY_ID_GUEST) &&
-			 (_hasAncestorPermission(
+			(_hasAncestorPermission(
+				permissionChecker, accountEntry.getAccountEntryGroupId(),
+				CommerceOrderActionKeys.MANAGE_COMMERCE_ORDERS) ||
+			 _hasAncestorPermission(
 				 permissionChecker, accountEntry.getAccountEntryGroupId(),
-				 CommerceOrderActionKeys.MANAGE_COMMERCE_ORDERS) ||
-			  _hasAncestorPermission(
-				  permissionChecker, accountEntry.getAccountEntryGroupId(),
-				  CommerceOrderActionKeys.
-					  MANAGE_ACCOUNTS_SCOPED_COMMERCE_ORDERS)))) {
+				 CommerceOrderActionKeys.
+					 MANAGE_ACCOUNTS_SCOPED_COMMERCE_ORDERS))) {
 
 			return true;
 		}
