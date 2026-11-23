@@ -284,7 +284,7 @@ components:
             type: object
         Acquisition:
             description:
-                "Number of sessions that came from one acquisition channel, referrer or source / medium. Use `getWorkspaceGroupChannelAcquisitionsPage` to list them."
+                "A source of the sessions of a channel: an acquisition channel, a referrer, or a `source / medium` pair, with the number of sessions that came from it. Use `getWorkspaceGroupChannelAcquisitionsPage` to list them."
             properties:
                 count:
                     description:
@@ -294,7 +294,7 @@ components:
                     type: integer
                 name:
                     description:
-                        "Acquisition channel, referrer URL, or `source / medium` pair, depending on the `type` the list was requested with. Channel and source / medium values are lowercase."
+                        "Name of the acquisition channel, referrer URL, or `source / medium` pair, depending on the `type` the list was requested with. Channel and source / medium values are lowercase."
                     readOnly: true
                     type: string
             type: object
@@ -1122,7 +1122,7 @@ components:
             type: object
         VisitFrequencyMetric:
             description:
-                "Unique visitors of a channel over a date range, split by how often they came back. Use `getWorkspaceGroupChannelVisitFrequencyMetric` to retrieve it. Buckets compare the number of sessions of each visitor to the number of days in the range: a visitor is daily with at least as many sessions as days, weekly with at least one session per 7 days, biweekly with at least one per 14 days, monthly with at least one per 30 days, and occasional otherwise. Each threshold is at least one session, so ranges shorter than 14, 28 or 60 days leave the biweekly, monthly or occasional bucket empty. Each visitor is counted in the most frequent bucket they qualify for."
+                "A split of the unique visitors of a channel over a date range by how often they came back. Buckets compare the number of sessions of each visitor to the number of days in the range: a visitor is daily with at least as many sessions as days, weekly with at least one session per 7 days, biweekly with at least one per 14 days, monthly with at least one per 30 days, and occasional otherwise. Each threshold is at least one session, so ranges shorter than 14, 28 or 60 days leave the biweekly, monthly or occasional bucket empty. Each visitor is counted in the most frequent bucket they qualify for. Use `getWorkspaceGroupChannelVisitFrequencyMetric` to retrieve it."
             properties:
                 biWeeklyVisitors:
                     description:
@@ -1163,7 +1163,7 @@ components:
             type: object
         VisitorMetric:
             description:
-                "Visitor totals of a channel over a date range. Use `getWorkspaceGroupChannelVisitorMetric` to retrieve it."
+                "A set of visitor totals of a channel over a date range. Use `getWorkspaceGroupChannelVisitorMetric` to retrieve it."
             properties:
                 averageSessionDuration:
                     description:
@@ -1854,7 +1854,7 @@ paths:
     "/workspace/{groupId}/channels/{channelId}/acquisitions":
         get:
             description:
-                "List where the sessions of a channel (also known as property) came from in a date range, in descending order of number of sessions. `type` picks the breakdown: CHANNEL (the acquisition channel LDP assigns to each session, such as direct), REFERRER (referring URL), or SOURCE_MEDIUM (`source / medium` pairs from UTM parameters); it defaults to CHANNEL. Optionally narrow to the individuals of an account with `accountId` or of a segment with `segmentId`. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, or pass both `rangeStart` and `rangeEnd` as `yyyy-MM-dd` dates for a custom window of at most 180 days; a custom window takes precedence over `rangeKey`. Without either, the last 30 days are used. Use this for 'top traffic sources' or 'top referrers' style queries. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
+                "List the acquisitions of a channel (also known as property) in a date range: where its sessions came from, in descending order of number of sessions. `type` picks the breakdown: CHANNEL (the acquisition channel LDP assigns to each session, such as direct), REFERRER (referring URL), or SOURCE_MEDIUM (`source / medium` pairs from UTM parameters); it defaults to CHANNEL. Optionally narrow results to the sessions of the individuals in an account with `accountId` or in a segment with `segmentId`. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, or pass both `rangeStart` and `rangeEnd` as `yyyy-MM-dd` dates for a custom window of at most 180 days; a custom window takes precedence over `rangeKey`. Without either, the last 30 days are used. Use this for 'top traffic sources' or 'top referrers' style queries. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
             operationId: getWorkspaceGroupChannelAcquisitionsPage
             parameters:
                 -   in: path
@@ -1874,7 +1874,7 @@ paths:
                         type: string
                 -   in: query
                     description:
-                        "ID of an account. When set, count only sessions of the individuals in that account."
+                        "ID of an account. When set, narrow the acquisitions to the sessions of the individuals in that account."
                     name: accountId
                     schema:
                         type: string
@@ -1895,7 +1895,7 @@ paths:
                         type: integer
                 -   in: query
                     description:
-                        "Custom range end as a `yyyy-MM-dd` date (e.g. 2026-01-31). Set together with `rangeStart`; together they take precedence over `rangeKey`. The window can span at most 180 days."
+                        "Custom range end as a `yyyy-MM-dd` date (e.g. 2026-01-31). Set together with `rangeStart`; together they take precedence over `rangeKey`."
                     name: rangeEnd
                     schema:
                         type: string
@@ -1909,13 +1909,13 @@ paths:
                         type: string
                 -   in: query
                     description:
-                        "Custom range start as a `yyyy-MM-dd` date (e.g. 2026-01-01). Set together with `rangeEnd`; together they take precedence over `rangeKey`. The window can span at most 180 days."
+                        "Custom range start as a `yyyy-MM-dd` date (e.g. 2026-01-01). Set together with `rangeEnd`; together they take precedence over `rangeKey`."
                     name: rangeStart
                     schema:
                         type: string
                 -   in: query
                     description:
-                        "ID of a segment. When set, count only sessions of the individuals in that segment."
+                        "ID of a segment. When set, narrow the acquisitions to the sessions of the individuals in that segment."
                     name: segmentId
                     schema:
                         type: string
@@ -2937,7 +2937,7 @@ paths:
     "/workspace/{groupId}/channels/{channelId}/visit-frequency-metrics":
         get:
             description:
-                "Get how often the visitors of a channel (also known as property) came back in a date range, as counts of daily, weekly, biweekly, monthly and occasional visitors. The buckets are relative to the length of the range, so compare ranges of the same length. Each threshold is at least one session, so short ranges leave the less frequent buckets empty: under 14 days there are no biweekly visitors, under 28 days no monthly ones and under 60 days no occasional ones, and a single day such as LAST_24_HOURS or YESTERDAY counts every visitor as daily. Use LAST_90_DAYS or LAST_180_DAYS for a full split. It cannot be narrowed to a segment or an account. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, or pass both `rangeStart` and `rangeEnd` as `yyyy-MM-dd` dates for a custom window of at most 180 days; a custom window takes precedence over `rangeKey`. Without either, the last 30 days are used. Use this for 'how loyal are our visitors' style queries. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
+                "Fetch how often the visitors of a channel (also known as property) came back in a date range, as counts of daily, weekly, biweekly, monthly and occasional visitors. The buckets are relative to the length of the range, so compare ranges of the same length. Each threshold is at least one session, so short ranges leave the less frequent buckets empty: under 14 days there are no biweekly visitors, under 28 days no monthly ones and under 60 days no occasional ones, and a single day such as LAST_24_HOURS or YESTERDAY counts every visitor as daily. Use LAST_90_DAYS or LAST_180_DAYS for a full split. It cannot be narrowed to a segment or an account. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, or pass both `rangeStart` and `rangeEnd` as `yyyy-MM-dd` dates for a custom window of at most 180 days; a custom window takes precedence over `rangeKey`. Without either, the last 30 days are used. Use this for 'how loyal are our visitors' style queries. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
             operationId: getWorkspaceGroupChannelVisitFrequencyMetric
             parameters:
                 -   in: path
@@ -2957,7 +2957,7 @@ paths:
                         type: string
                 -   in: query
                     description:
-                        "Custom range end as a `yyyy-MM-dd` date (e.g. 2026-01-31). Set together with `rangeStart`; together they take precedence over `rangeKey`. The window can span at most 180 days."
+                        "Custom range end as a `yyyy-MM-dd` date (e.g. 2026-01-31). Set together with `rangeStart`; together they take precedence over `rangeKey`."
                     name: rangeEnd
                     schema:
                         type: string
@@ -2971,7 +2971,7 @@ paths:
                         type: string
                 -   in: query
                     description:
-                        "Custom range start as a `yyyy-MM-dd` date (e.g. 2026-01-01). Set together with `rangeEnd`; together they take precedence over `rangeKey`. The window can span at most 180 days."
+                        "Custom range start as a `yyyy-MM-dd` date (e.g. 2026-01-01). Set together with `rangeEnd`; together they take precedence over `rangeKey`."
                     name: rangeStart
                     schema:
                         type: string
@@ -2988,7 +2988,7 @@ paths:
     "/workspace/{groupId}/channels/{channelId}/visitor-metrics":
         get:
             description:
-                "Get the visitor totals of a channel (also known as property) for a date range: unique visitors, known visitors (identified by email), and the average and total session duration. Optionally narrow to the individuals in a segment with `segmentId`. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS; this tool does not support custom `rangeStart`/`rangeEnd` windows and returns 400 when they are set. Without `rangeKey`, the last 30 days are used. Use this for 'how many visitors did the site have' style queries. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
+                "Fetch the visitor totals of a channel (also known as property) for a date range: unique visitors, known visitors (identified by email), and the average and total session duration. Optionally narrow results to the individuals in a segment with `segmentId`. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS; this tool does not support custom `rangeStart`/`rangeEnd` windows and returns 400 when they are set. Without `rangeKey`, the last 30 days are used. Use this for 'how many visitors did the site have' style queries. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
             operationId: getWorkspaceGroupChannelVisitorMetric
             parameters:
                 -   in: path
@@ -3016,7 +3016,7 @@ paths:
                         type: string
                 -   in: query
                     description:
-                        "ID of a segment. When set, count only the individuals in that segment."
+                        "ID of a segment. When set, narrow the metrics to activity from the individuals in that segment."
                     name: segmentId
                     schema:
                         type: string
