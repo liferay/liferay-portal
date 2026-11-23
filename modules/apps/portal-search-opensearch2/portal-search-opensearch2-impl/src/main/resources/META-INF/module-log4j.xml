@@ -4,6 +4,6 @@
 	<Loggers>
 		<Logger level="ERROR" name="com.liferay.portal.search.opensearch2" />
 		<Logger level="WARN" name="com.liferay.portal.search.opensearch2.internal.index.CompanyIndexHelper" />
-		<Logger level="WARN" name="com.liferay.portal.search.opensearch2.internal.index.MappingsHelperImpl" />
+		<Logger level="WARN" name="com.liferay.portal.search.opensearch2.internal.index.MappingsHelper" />
 	</Loggers>
 </Configuration>

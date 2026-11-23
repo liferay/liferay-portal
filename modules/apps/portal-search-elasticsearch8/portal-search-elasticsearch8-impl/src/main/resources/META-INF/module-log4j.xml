@@ -5,7 +5,7 @@
 		<Logger level="ERROR" name="com.liferay.portal.search.elasticsearch8" />
 		<Logger level="WARN" name="com.liferay.portal.search.elasticsearch8.internal.ElasticsearchSearchEngine" />
 		<Logger level="WARN" name="com.liferay.portal.search.elasticsearch8.internal.index.CompanyIndexHelper" />
-		<Logger level="WARN" name="com.liferay.portal.search.elasticsearch8.internal.index.MappingsHelperImpl" />
+		<Logger level="WARN" name="com.liferay.portal.search.elasticsearch8.internal.index.MappingsHelper" />
 		<Logger level="INFO" name="com.liferay.portal.search.elasticsearch8.internal.sidecar" />
 		<Logger level="WARN" name="com.liferay.portal.search.elasticsearch8.internal.upgrade.v1_0_0.ElasticsearchConfigurationUpgradeProcess" />
 	</Loggers>
