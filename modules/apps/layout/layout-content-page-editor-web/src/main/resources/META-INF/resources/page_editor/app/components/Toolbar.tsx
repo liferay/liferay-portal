@@ -9,13 +9,14 @@ import ClayIcon from '@clayui/icon';
 import ClayLayout from '@clayui/layout';
 import ClayLink from '@clayui/link';
 import {ReactPortal, useIsMounted} from '@liferay/frontend-js-react-web';
+import {openConfirmModal as openLayoutConfirmModal} from '@liferay/layout-js-components-web';
 import classNames from 'classnames';
 import {
 	FeatureIndicator,
 	openConfirmModal,
 	openToast,
 } from 'frontend-js-components-web';
-import {fetch} from 'frontend-js-web';
+import {escapeHTML, fetch, sub} from 'frontend-js-web';
 import React, {useEffect, useRef, useState} from 'react';
 
 import * as Actions from '../actions/index';
@@ -43,6 +44,8 @@ import EditModeSelector from './EditModeSelector';
 import PublishButton from './PublishButton';
 import ToggleConfigurationSidebarButton from './ToggleConfigurationSidebarButton';
 import ViewportSizeSelector from './ViewportSizeSelector';
+
+const IN_LAUNCH = false;
 
 function ToolbarBody({className}: {className?: string}) {
 	const discardDraftFormRef = useRef<HTMLFormElement>(null);
@@ -88,7 +91,39 @@ function ToolbarBody({className}: {className?: string}) {
 		}
 	};
 
-	const onAddToLaunch = () => {};
+	const onAddToLaunch = () => {
+		const launch = {name: 'Launch'};
+		const page = config.layoutName;
+
+		const addToLaunch = () => {
+			openToast({
+				message: sub(
+					Liferay.Language.get('x-was-successfully-added-to-x'),
+					escapeHTML(page),
+					escapeHTML(launch.name)
+				),
+				type: 'success',
+			});
+		};
+
+		if (IN_LAUNCH) {
+			openLayoutConfirmModal({
+				buttonLabel: Liferay.Language.get('update-launch'),
+				onConfirm: async () => addToLaunch(),
+				status: 'warning',
+				text: sub(
+					Liferay.Language.get('x-launch-already-includes-x'),
+					escapeHTML(launch.name),
+					escapeHTML(page)
+				),
+				title: Liferay.Language.get('update-launch'),
+			});
+
+			return;
+		}
+
+		addToLaunch();
+	};
 
 	const isCMSFreeTier = config.isCMS && config.freeTier;
 

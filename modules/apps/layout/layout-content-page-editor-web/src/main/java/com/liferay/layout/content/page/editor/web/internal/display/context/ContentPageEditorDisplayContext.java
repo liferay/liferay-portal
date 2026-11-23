@@ -641,6 +641,13 @@ public class ContentPageEditorDisplayContext {
 			).put(
 				"layoutItemSelectorURL", _getLayoutItemSelectorURL()
 			).put(
+				"layoutName",
+				() -> {
+					Layout layout = themeDisplay.getLayout();
+
+					return layout.getName(themeDisplay.getLocale());
+				}
+			).put(
 				"layoutType", String.valueOf(_getLayoutType())
 			).put(
 				"lookAndFeelURL", getLookAndFeelURL()

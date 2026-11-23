@@ -192,6 +192,7 @@ export interface Config {
 	launchSetId: number;
 	layoutConversionWarningMessages: string[] | null;
 	layoutItemSelectorURL: String;
+	layoutName: string;
 	layoutType: LayoutType;
 	lookAndFeelURL: string;
 	mappingFieldsURL: string;
