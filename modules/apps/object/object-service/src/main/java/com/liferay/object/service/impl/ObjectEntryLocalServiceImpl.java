@@ -978,9 +978,31 @@ public class ObjectEntryLocalServiceImpl
 			}
 		}
 
-		deleteRelatedObjectEntries(
-			objectEntry.getGroupId(), objectDefinition.getObjectDefinitionId(),
-			objectEntry.getPrimaryKey());
+		try (SafeCloseable safeCloseable =
+				ObjectEntryThreadLocal.
+					setSkipRootObjectEntryVersionWithSafeCloseable(
+						objectEntry.isRootDescendantNode() ||
+						ObjectEntryThreadLocal.
+							isSkipRootObjectEntryVersion())) {
+
+			deleteRelatedObjectEntries(
+				objectEntry.getGroupId(),
+				objectDefinition.getObjectDefinitionId(),
+				objectEntry.getPrimaryKey());
+		}
+
+		if (FeatureFlagManagerUtil.isEnabled(
+				objectEntry.getCompanyId(), "LPD-116183") &&
+			objectEntry.isHead() && objectEntry.isRootDescendantNode()) {
+
+			long userId = PrincipalThreadLocal.getUserId();
+
+			if (userId == 0) {
+				userId = objectEntry.getUserId();
+			}
+
+			_addOrUpdateRootObjectEntryVersion(userId, objectEntry);
+		}
 
 		if (!objectDefinition.isActive() ||
 			!objectDefinition.isEnableIndexSearch()) {
@@ -2737,7 +2759,11 @@ public class ObjectEntryLocalServiceImpl
 			(originalObjectEntry.isScheduled() &&
 			 (status == WorkflowConstants.STATUS_APPROVED))) {
 
-			if (objectDefinition.isEnableObjectEntryVersioning()) {
+			if (objectDefinition.isEnableObjectEntryVersioning() &&
+				(!FeatureFlagManagerUtil.isEnabled(
+					objectEntry.getCompanyId(), "LPD-116183") ||
+				 !objectEntry.isRootDescendantNode())) {
+
 				int count = _objectEntryVersionPersistence.countByObjectEntryId(
 					objectEntry.getObjectEntryId());
 
@@ -2748,7 +2774,10 @@ public class ObjectEntryLocalServiceImpl
 			}
 		}
 		else if (!skipStatusChangeSideEffects && !objectEntry.isInTrash() &&
-				 !originalObjectEntry.isInTrash()) {
+				 !originalObjectEntry.isInTrash() &&
+				 (!FeatureFlagManagerUtil.isEnabled(
+					 objectEntry.getCompanyId(), "LPD-116183") ||
+				  !objectEntry.isRootDescendantNode())) {
 
 			objectEntry = _addObjectEntryVersion(
 				userId, objectDefinition, objectEntry);
@@ -3250,9 +3279,20 @@ public class ObjectEntryLocalServiceImpl
 			ObjectEntry objectEntry)
 		throws PortalException {
 
-		if (!objectDefinition.isEnableObjectEntryVersioning() ||
-			objectEntry.isTypeDraft()) {
+		if (objectEntry.isTypeDraft()) {
+			return objectEntry;
+		}
 
+		if (FeatureFlagManagerUtil.isEnabled(
+				objectEntry.getCompanyId(), "LPD-116183") &&
+			objectEntry.isRootDescendantNode()) {
+
+			_addOrUpdateRootObjectEntryVersion(userId, objectEntry);
+
+			return objectEntry;
+		}
+
+		if (!objectDefinition.isEnableObjectEntryVersioning()) {
 			return objectEntry;
 		}
 
@@ -3579,6 +3619,63 @@ public class ObjectEntryLocalServiceImpl
 		for (Long deleteCommentId : deleteCommentIds) {
 			_commentManager.deleteComment(deleteCommentId);
 		}
+	}
+
+	private void _addOrUpdateRootObjectEntryVersion(
+			long userId, ObjectEntry objectEntry)
+		throws PortalException {
+
+		if (ObjectEntryThreadLocal.isSkipRootObjectEntryVersion()) {
+			return;
+		}
+
+		ObjectEntry rootObjectEntry = objectEntryPersistence.fetchByPrimaryKey(
+			objectEntry.getRootObjectEntryId());
+
+		if ((rootObjectEntry == null) ||
+			ObjectDefinitionThreadLocal.isDeleteObjectDefinitionId(
+				objectEntry.getObjectDefinitionId())) {
+
+			return;
+		}
+
+		rootObjectEntry = objectEntryPersistence.reassociateIfAbsent(
+			rootObjectEntry);
+
+		if (rootObjectEntry.isScheduled()) {
+			return;
+		}
+
+		ObjectDefinition objectDefinition =
+			_objectDefinitionPersistence.findByPrimaryKey(
+				rootObjectEntry.getObjectDefinitionId());
+
+		if (rootObjectEntry.isExpired() || rootObjectEntry.isPending()) {
+			_updateLatestObjectEntryVersion(
+				userId, objectDefinition, rootObjectEntry);
+
+			return;
+		}
+
+		if (rootObjectEntry.isDraft()) {
+			ObjectEntryVersion objectEntryVersion =
+				_objectEntryVersionPersistence.fetchByObjectEntryId_First(
+					rootObjectEntry.getObjectEntryId(),
+					ObjectEntryVersionVersionComparator.getInstance(false));
+
+			if (objectEntryVersion == null) {
+				return;
+			}
+
+			if (objectEntryVersion.isDraft()) {
+				_updateLatestObjectEntryVersion(
+					userId, objectDefinition, rootObjectEntry);
+
+				return;
+			}
+		}
+
+		_addObjectEntryVersion(userId, objectDefinition, rootObjectEntry);
 	}
 
 	private void _addResourcePermissions(
@@ -8479,9 +8576,20 @@ public class ObjectEntryLocalServiceImpl
 			ObjectEntry objectEntry)
 		throws PortalException {
 
-		if (!objectDefinition.isEnableObjectEntryVersioning() ||
-			objectEntry.isTypeDraft()) {
+		if (objectEntry.isTypeDraft()) {
+			return;
+		}
 
+		if (FeatureFlagManagerUtil.isEnabled(
+				objectEntry.getCompanyId(), "LPD-116183") &&
+			objectEntry.isRootDescendantNode()) {
+
+			_addOrUpdateRootObjectEntryVersion(userId, objectEntry);
+
+			return;
+		}
+
+		if (!objectDefinition.isEnableObjectEntryVersioning()) {
 			return;
 		}
 
