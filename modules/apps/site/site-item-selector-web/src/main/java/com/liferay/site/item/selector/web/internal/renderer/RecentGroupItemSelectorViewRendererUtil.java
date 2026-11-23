@@ -26,45 +26,35 @@ import java.io.IOException;
 /**
  * @author Cristina González
  */
-public class RecentGroupItemSelectorViewRenderer {
+public class RecentGroupItemSelectorViewRendererUtil {
 
-	public RecentGroupItemSelectorViewRenderer(
-		GroupURLProvider groupURLProvider,
-		RecentGroupManager recentGroupManager, ServletContext servletContext) {
-
-		_groupURLProvider = groupURLProvider;
-		_recentGroupManager = recentGroupManager;
-		_servletContext = servletContext;
-	}
-
-	public void renderHTML(
-			ServletRequest servletRequest, ServletResponse servletResponse,
+	public static void renderHTML(
+			GroupURLProvider groupURLProvider,
+			RecentGroupManager recentGroupManager,
+			ServletContext servletContext, ServletRequest servletRequest,
+			ServletResponse servletResponse,
 			GroupItemSelectorCriterion groupItemSelectorCriterion,
 			PortletURL portletURL, String itemSelectedEventName)
 		throws IOException, ServletException {
 
 		servletRequest.setAttribute(
-			SiteWebKeys.GROUP_URL_PROVIDER, _groupURLProvider);
+			SiteWebKeys.GROUP_URL_PROVIDER, groupURLProvider);
 
 		RecentSitesItemSelectorViewDisplayContext
 			siteItemSelectorViewDisplayContext =
 				new RecentSitesItemSelectorViewDisplayContext(
 					(HttpServletRequest)servletRequest,
 					groupItemSelectorCriterion, itemSelectedEventName,
-					portletURL, _recentGroupManager);
+					portletURL, recentGroupManager);
 
 		servletRequest.setAttribute(
 			SitesItemSelectorWebKeys.SITES_ITEM_SELECTOR_DISPLAY_CONTEXT,
 			siteItemSelectorViewDisplayContext);
 
 		RequestDispatcher requestDispatcher =
-			_servletContext.getRequestDispatcher("/view_sites.jsp");
+			servletContext.getRequestDispatcher("/view_sites.jsp");
 
 		requestDispatcher.include(servletRequest, servletResponse);
 	}
-
-	private final GroupURLProvider _groupURLProvider;
-	private final RecentGroupManager _recentGroupManager;
-	private final ServletContext _servletContext;
 
 }
