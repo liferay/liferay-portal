@@ -5,8 +5,9 @@
 
 package com.liferay.portal.search.similar.results.web.internal.portlet;
 
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.search.similar.results.web.internal.helper.PortletPreferencesHelper;
+import com.liferay.portal.search.similar.results.web.internal.util.SearchStringUtil;
 
 import jakarta.portlet.PortletPreferences;
 
@@ -20,8 +21,7 @@ public class SimilarResultsPortletPreferencesImpl
 	public SimilarResultsPortletPreferencesImpl(
 		PortletPreferences portletPreferences) {
 
-		_portletPreferencesHelper = new PortletPreferencesHelper(
-			portletPreferences);
+		_portletPreferences = portletPreferences;
 	}
 
 	@Override
@@ -36,8 +36,7 @@ public class SimilarResultsPortletPreferencesImpl
 
 	@Override
 	public String getFederatedSearchKey() {
-		return _portletPreferencesHelper.getString(
-			PREFERENCE_KEY_FEDERATED_SEARCH_KEY, "morelikethis");
+		return _getString(PREFERENCE_KEY_FEDERATED_SEARCH_KEY, "morelikethis");
 	}
 
 	@Override
@@ -52,8 +51,7 @@ public class SimilarResultsPortletPreferencesImpl
 
 	@Override
 	public String getLinkBehavior() {
-		return _portletPreferencesHelper.getString(
-			PREFERENCE_KEY_LINK_BEHAVIOR, "show-content");
+		return _getString(PREFERENCE_KEY_LINK_BEHAVIOR, "show-content");
 	}
 
 	@Override
@@ -63,8 +61,7 @@ public class SimilarResultsPortletPreferencesImpl
 
 	@Override
 	public Integer getMaxItemDisplay() {
-		return _portletPreferencesHelper.getInteger(
-			PREFERENCE_KEY_MAX_ITEM_DISPLAY, 10);
+		return _getInteger(PREFERENCE_KEY_MAX_ITEM_DISPLAY, 10);
 	}
 
 	@Override
@@ -99,8 +96,7 @@ public class SimilarResultsPortletPreferencesImpl
 
 	@Override
 	public String getSearchScope() {
-		return _portletPreferencesHelper.getString(
-			PREFERENCE_KEY_SEARCH_SCOPE, "this-site");
+		return _getString(PREFERENCE_KEY_SEARCH_SCOPE, "this-site");
 	}
 
 	@Override
@@ -110,8 +106,7 @@ public class SimilarResultsPortletPreferencesImpl
 
 	@Override
 	public Float getTermBoost() {
-		String string = _portletPreferencesHelper.getString(
-			PREFERENCE_KEY_TERM_BOOST);
+		String string = _getString(PREFERENCE_KEY_TERM_BOOST);
 
 		if (string == null) {
 			return null;
@@ -120,14 +115,51 @@ public class SimilarResultsPortletPreferencesImpl
 		return GetterUtil.getFloat(string);
 	}
 
+	private Integer _getInteger(String key) {
+		String stringValue = _getStringValue(key);
+
+		if (stringValue == null) {
+			return null;
+		}
+
+		return GetterUtil.getInteger(stringValue);
+	}
+
+	private int _getInteger(String key, int defaultValue) {
+		return GetterUtil.getInteger(_getStringValue(key), defaultValue);
+	}
+
 	private Integer _getIntegerNullable(String key) {
-		return _portletPreferencesHelper.getInteger(key);
+		return _getInteger(key);
+	}
+
+	private String _getString(String key) {
+		return _getStringValue(key);
+	}
+
+	private String _getString(String key, String defaultValue) {
+		String string = _getStringValue(key);
+
+		if (string == null) {
+			return defaultValue;
+		}
+
+		return string;
 	}
 
 	private String _getStringNullable(String key) {
-		return _portletPreferencesHelper.getString(key, null);
+		return _getString(key, null);
 	}
 
-	private final PortletPreferencesHelper _portletPreferencesHelper;
+	private String _getStringValue(String key) {
+		if (_portletPreferences == null) {
+			return null;
+		}
+
+		return SearchStringUtil.maybe(
+			_portletPreferences.getValue(key, StringPool.BLANK));
+	}
+
+	private final PortletPreferences _portletPreferences;
 
 }
