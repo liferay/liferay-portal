@@ -12,7 +12,6 @@ dependencies {
 	compileOnly project(":apps:portal-vulcan:portal-vulcan-api")
 	compileOnly project(":apps:site-navigation:site-navigation-api")
 	compileOnly project(":apps:site-navigation:site-navigation-taglib")
-	compileOnly project(":apps:staging:staging-api")
 	compileOnly project(":apps:static:portal-configuration:portal-configuration-metatype-api")
 	compileOnly project(":core:petra:petra-function")
 	compileOnly project(":core:petra:petra-io")
