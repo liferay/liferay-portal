@@ -13,6 +13,9 @@ import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
+import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.site.settings.configuration.admin.display.SiteSettingsConfigurationScreenContributor;
 import com.liferay.site.settings.configuration.admin.display.SiteSettingsConfigurationScreenFactory;
@@ -21,6 +24,9 @@ import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import java.io.Serializable;
+
+import java.util.Dictionary;
 import java.util.Locale;
 
 import org.osgi.service.component.annotations.Component;
@@ -56,6 +62,21 @@ public class MapsSiteSettingsConfigurationScreenWrapper
 		implements SiteSettingsConfigurationScreenContributor {
 
 		@Override
+		public Dictionary<String, Object> exportProperties(
+			Serializable scopePK) {
+
+			return HashMapDictionaryBuilder.<String, Object>put(
+				MapProviderWebKeys.MAP_PROVIDER_KEY,
+				() -> {
+					Group group = _groupLocalService.fetchGroup((long)scopePK);
+
+					return group.getTypeSettingsProperty(
+						MapProviderWebKeys.MAP_PROVIDER_KEY);
+				}
+			).build();
+		}
+
+		@Override
 		public String getCategoryKey() {
 			return "maps";
 		}
@@ -78,6 +99,27 @@ public class MapsSiteSettingsConfigurationScreenWrapper
 		@Override
 		public ServletContext getServletContext() {
 			return _servletContext;
+		}
+
+		@Override
+		public void importProperties(
+				Dictionary<String, Object> properties, Serializable scopePK)
+			throws Exception {
+
+			String mapProviderKey = GetterUtil.getString(
+				properties.get(MapProviderWebKeys.MAP_PROVIDER_KEY), null);
+
+			if (mapProviderKey == null) {
+				return;
+			}
+
+			Group group = _groupLocalService.fetchGroup((long)scopePK);
+
+			if (group.hasStagingGroup()) {
+				_updateMapProviderKey(group.getStagingGroup(), mapProviderKey);
+			}
+
+			_updateMapProviderKey(group, mapProviderKey);
 		}
 
 		@Override
@@ -108,6 +150,19 @@ public class MapsSiteSettingsConfigurationScreenWrapper
 				MapProviderHelperUtil.getMapProviderKey(
 					_groupLocalService, themeDisplay.getCompanyId(),
 					liveGroup.getGroupId()));
+		}
+
+		private void _updateMapProviderKey(Group group, String mapProviderKey)
+			throws Exception {
+
+			UnicodeProperties typeSettingsUnicodeProperties =
+				group.getTypeSettingsProperties();
+
+			typeSettingsUnicodeProperties.put(
+				MapProviderWebKeys.MAP_PROVIDER_KEY, mapProviderKey);
+
+			_groupLocalService.updateGroup(
+				group.getGroupId(), typeSettingsUnicodeProperties.toString());
 		}
 
 	}
