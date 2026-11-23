@@ -9,13 +9,23 @@ import com.liferay.configuration.admin.display.ConfigurationScreen;
 import com.liferay.configuration.admin.display.ConfigurationScreenWrapper;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.GroupService;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HashMapDictionary;
+import com.liferay.portal.kernel.util.UnicodeProperties;
+import com.liferay.ratings.kernel.RatingsType;
 import com.liferay.ratings.kernel.definition.PortletRatingsDefinitionUtil;
 import com.liferay.ratings.kernel.definition.PortletRatingsDefinitionValues;
+import com.liferay.ratings.kernel.transformer.RatingsDataTransformerUtil;
 import com.liferay.site.settings.configuration.admin.display.SiteSettingsConfigurationScreenContributor;
 import com.liferay.site.settings.configuration.admin.display.SiteSettingsConfigurationScreenFactory;
 
 import jakarta.servlet.ServletContext;
 
+import java.io.Serializable;
+
+import java.util.Dictionary;
 import java.util.Locale;
 import java.util.Map;
 
@@ -36,6 +46,12 @@ public class RatingsSiteSettingsConfigurationScreenWrapper
 	}
 
 	@Reference
+	private GroupLocalService _groupLocalService;
+
+	@Reference
+	private GroupService _groupService;
+
+	@Reference
 	private Language _language;
 
 	@Reference(target = "(osgi.web.symbolicname=com.liferay.site.admin.web)")
@@ -47,6 +63,38 @@ public class RatingsSiteSettingsConfigurationScreenWrapper
 
 	private class RatingsSiteSettingsConfigurationScreenContributor
 		implements SiteSettingsConfigurationScreenContributor {
+
+		@Override
+		public Dictionary<String, Object> exportProperties(
+			Serializable scopePK) {
+
+			Group group = _groupLocalService.fetchGroup((long)scopePK);
+
+			Dictionary<String, Object> properties = new HashMapDictionary<>();
+
+			Map<String, PortletRatingsDefinitionValues>
+				portletRatingsDefinitionValuesMap =
+					PortletRatingsDefinitionUtil.
+						getPortletRatingsDefinitionValuesMap();
+
+			for (String className :
+					portletRatingsDefinitionValuesMap.keySet()) {
+
+				String propertyKey = RatingsDataTransformerUtil.getPropertyKey(
+					className);
+
+				String ratingsTypeString = group.getTypeSettingsProperty(
+					propertyKey);
+
+				if (ratingsTypeString == null) {
+					continue;
+				}
+
+				properties.put(propertyKey, ratingsTypeString);
+			}
+
+			return properties;
+		}
 
 		@Override
 		public String getCategoryKey() {
@@ -76,6 +124,47 @@ public class RatingsSiteSettingsConfigurationScreenWrapper
 		@Override
 		public ServletContext getServletContext() {
 			return _servletContext;
+		}
+
+		@Override
+		public void importProperties(
+				Dictionary<String, Object> properties, Serializable scopePK)
+			throws Exception {
+
+			Group group = _groupLocalService.fetchGroup((long)scopePK);
+
+			UnicodeProperties typeSettingsUnicodeProperties =
+				group.getTypeSettingsProperties();
+
+			Map<String, PortletRatingsDefinitionValues>
+				portletRatingsDefinitionValuesMap =
+					PortletRatingsDefinitionUtil.
+						getPortletRatingsDefinitionValuesMap();
+
+			for (String className :
+					portletRatingsDefinitionValuesMap.keySet()) {
+
+				String propertyKey = RatingsDataTransformerUtil.getPropertyKey(
+					className);
+
+				String ratingsTypeString = GetterUtil.getString(
+					properties.get(propertyKey), null);
+
+				if (ratingsTypeString == null) {
+					continue;
+				}
+
+				if (RatingsType.isValid(ratingsTypeString)) {
+					typeSettingsUnicodeProperties.put(
+						propertyKey, ratingsTypeString);
+				}
+				else {
+					typeSettingsUnicodeProperties.remove(propertyKey);
+				}
+			}
+
+			_groupService.updateGroup(
+				group.getGroupId(), typeSettingsUnicodeProperties.toString());
 		}
 
 		@Override
