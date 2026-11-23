@@ -360,8 +360,7 @@ public class FragmentEntryInputTemplateNodeContextHelperImpl
 		}
 		else {
 			Object infoFieldValue = _getValue(
-				value, httpServletRequest, infoField, infoForm.getName(),
-				currentLocale);
+				value, httpServletRequest, infoField, infoForm.getName());
 
 			if (infoFieldValue instanceof KeyValuePair) {
 				KeyValuePair keyValuePair = (KeyValuePair)infoFieldValue;
@@ -1194,7 +1193,7 @@ public class FragmentEntryInputTemplateNodeContextHelperImpl
 
 	private Object _getValue(
 		String defaultValue, HttpServletRequest httpServletRequest,
-		InfoField infoField, String infoFormName, Locale locale) {
+		InfoField infoField, String infoFormName) {
 
 		if (httpServletRequest == null) {
 			return defaultValue;
@@ -1258,8 +1257,7 @@ public class FragmentEntryInputTemplateNodeContextHelperImpl
 			return defaultValue;
 		}
 
-		return _parseValue(
-			defaultValue, infoField, locale, infoFieldValue.getValue());
+		return _parseValue(defaultValue, infoField, infoFieldValue.getValue());
 	}
 
 	private boolean _isCMSGroup(Group group) {
@@ -1323,15 +1321,14 @@ public class FragmentEntryInputTemplateNodeContextHelperImpl
 				entry.getKey(),
 				String.valueOf(
 					_parseValue(
-						StringPool.BLANK, infoField, entry.getKey(),
-						entry.getValue())));
+						StringPool.BLANK, infoField, entry.getValue())));
 		}
 
 		return localizedValues;
 	}
 
 	private Object _parseValue(
-		String defaultValue, InfoField infoField, Locale locale, Object value) {
+		String defaultValue, InfoField infoField, Object value) {
 
 		if (infoField.isLocalizable() &&
 			(value instanceof InfoLocalizedValue)) {
@@ -1347,8 +1344,7 @@ public class FragmentEntryInputTemplateNodeContextHelperImpl
 			for (Map.Entry<Locale, Object> entry : values.entrySet()) {
 				parsedValues.put(
 					entry.getKey(),
-					_parseValue(
-						defaultValue, infoField, locale, entry.getValue()));
+					_parseValue(defaultValue, infoField, entry.getValue()));
 			}
 
 			return parsedValues;
@@ -1358,7 +1354,7 @@ public class FragmentEntryInputTemplateNodeContextHelperImpl
 			try {
 				DateFormat dateFormat =
 					DateFormatFactoryUtil.getSimpleDateFormat(
-						"yyyy-MM-dd", locale);
+						"yyyy-MM-dd", LocaleUtil.US);
 
 				return dateFormat.format(value);
 			}
