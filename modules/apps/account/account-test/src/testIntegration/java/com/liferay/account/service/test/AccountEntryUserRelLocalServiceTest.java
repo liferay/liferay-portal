@@ -373,16 +373,16 @@ public class AccountEntryUserRelLocalServiceTest {
 		User user = _userLocalService.fetchUser(
 			accountEntryUserRel.getAccountUserId());
 
-		Assert.assertFalse(
-			ArrayUtil.contains(user.getGroupIds(), group.getGroupId()));
-		Assert.assertEquals(
-			user,
-			_userLocalService.fetchUserByEmailAddress(
-				TestPropsValues.getCompanyId(), _userInfo.emailAddress));
 		Assert.assertTrue(
 			_accountRoleLocalService.hasUserAccountRole(
 				_accountEntry.getAccountEntryId(),
 				accountRole.getAccountRoleId(), user.getUserId()));
+		Assert.assertEquals(
+			user,
+			_userLocalService.fetchUserByEmailAddress(
+				TestPropsValues.getCompanyId(), _userInfo.emailAddress));
+		Assert.assertFalse(
+			ArrayUtil.contains(user.getGroupIds(), group.getGroupId()));
 	}
 
 	@Test
