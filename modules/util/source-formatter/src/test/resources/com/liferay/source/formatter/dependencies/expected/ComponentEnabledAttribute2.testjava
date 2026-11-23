@@ -6,12 +6,13 @@
 package com.liferay.source.formatter.dependencies;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
 
 /**
  * @author Shuyang Zhou
  */
 @Component(
-	property = "search.suggestions.contributor.name=basic",
+	configurationPolicy = ConfigurationPolicy.REQUIRE,
 	service = ComponentEnabledAttribute2.class
 )
 public class ComponentEnabledAttribute2 {
