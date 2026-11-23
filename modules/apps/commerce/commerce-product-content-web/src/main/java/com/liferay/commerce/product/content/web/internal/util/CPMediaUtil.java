@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portlet.documentlibrary.lar.FileEntryUtil;
 
@@ -118,11 +119,14 @@ public class CPMediaUtil {
 
 			String originalImgTag = StringBundler.concat(
 				"<img aria-label=\"",
-				cpAttachmentFileEntry.getTitle(httpServletRequest.getLocale()),
+				HtmlUtil.escapeAttribute(
+					cpAttachmentFileEntry.getTitle(
+						httpServletRequest.getLocale())),
 				"\" class=\"product-img\" src=\"",
-				commerceMediaResolver.getURL(
-					commerceAccountId,
-					cpAttachmentFileEntry.getCPAttachmentFileEntryId()),
+				HtmlUtil.escapeAttribute(
+					commerceMediaResolver.getURL(
+						commerceAccountId,
+						cpAttachmentFileEntry.getCPAttachmentFileEntryId())),
 				"\" />");
 
 			if (!cpAttachmentFileEntry.isCDNEnabled()) {
