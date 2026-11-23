@@ -224,15 +224,12 @@ public class FormManagerImpl implements FormManager {
 
 		FragmentEntryLink fragmentEntryLink =
 			_fragmentEntryLinkService.addFragmentEntryLink(
-				null, layout.getGroupId(), null,
+				null, layout.getGroupId(),
 				fragmentEntry.getExternalReferenceCode(),
 				ScopeUtil.getItemScopeExternalReferenceCode(
 					fragmentEntry.getGroupId(), layout.getGroupId()),
-				segmentsExperienceId, layout.getPlid(), fragmentEntry.getCss(),
-				fragmentEntry.getHtml(), fragmentEntry.getJs(),
-				fragmentEntry.getConfiguration(), null, StringPool.BLANK, 0,
-				fragmentEntry.getFragmentEntryKey(), fragmentEntry.getType(),
-				serviceContext);
+				segmentsExperienceId, layout.getPlid(), null,
+				fragmentEntry.getFragmentEntryKey(), serviceContext);
 
 		if (Validator.isNotNull(infoFieldUniqueId)) {
 			JSONObject editableValuesJSONObject = _jsonFactory.createJSONObject(

@@ -12,7 +12,6 @@ import com.liferay.fragment.listener.FragmentEntryLinkListener;
 import com.liferay.fragment.listener.FragmentEntryLinkListenerRegistry;
 import com.liferay.fragment.model.FragmentEntry;
 import com.liferay.fragment.model.FragmentEntryLink;
-import com.liferay.fragment.renderer.DefaultFragmentRendererContext;
 import com.liferay.fragment.renderer.FragmentRenderer;
 import com.liferay.fragment.renderer.FragmentRendererRegistry;
 import com.liferay.fragment.service.FragmentEntryLinkLocalServiceUtil;
@@ -1592,18 +1591,10 @@ public class ActionUtil {
 			fragmentRendererRegistry.getFragmentRenderer(fragmentEntryKey);
 
 		if (fragmentRenderer != null) {
-			DefaultFragmentRendererContext defaultFragmentRendererContext =
-				new DefaultFragmentRendererContext(null);
-
 			return fragmentEntryLinkService.addFragmentEntryLink(
-				null, layout.getGroupId(), null, null, null,
-				segmentsExperienceId, layout.getPlid(), StringPool.BLANK,
-				StringPool.BLANK, StringPool.BLANK,
-				JSONFactoryUtil.toString(
-					fragmentRenderer.getConfigurationJSONObject(
-						defaultFragmentRendererContext)),
-				editableValues, StringPool.BLANK, 0, fragmentEntryKey,
-				fragmentRenderer.getType(), serviceContext);
+				null, layout.getGroupId(), null, null, segmentsExperienceId,
+				layout.getPlid(), editableValues, fragmentEntryKey,
+				serviceContext);
 		}
 
 		FragmentEntry fragmentEntry =
@@ -1621,14 +1612,11 @@ public class ActionUtil {
 		}
 
 		return fragmentEntryLinkService.addFragmentEntryLink(
-			null, layout.getGroupId(), null,
-			fragmentEntry.getExternalReferenceCode(),
+			null, layout.getGroupId(), fragmentEntry.getExternalReferenceCode(),
 			ScopeUtil.getItemScopeExternalReferenceCode(
 				fragmentEntry.getGroupId(), layout.getGroupId()),
-			segmentsExperienceId, layout.getPlid(), fragmentEntry.getCss(),
-			fragmentEntry.getHtml(), fragmentEntry.getJs(),
-			fragmentEntry.getConfiguration(), editableValues, StringPool.BLANK,
-			0, contributedRendererKey, fragmentEntry.getType(), serviceContext);
+			segmentsExperienceId, layout.getPlid(), editableValues,
+			contributedRendererKey, serviceContext);
 	}
 
 	private static void _addFriendlyURLHelpFragmentEntryLink(

@@ -9,7 +9,6 @@ import com.liferay.fragment.entry.processor.constants.FragmentEntryProcessorCons
 import com.liferay.fragment.exception.NoSuchEntryLinkException;
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.service.FragmentEntryLinkLocalService;
-import com.liferay.fragment.service.FragmentEntryLinkService;
 import com.liferay.layout.content.page.editor.web.internal.exception.FormContainerParentItemRequiredException;
 import com.liferay.layout.content.page.editor.web.internal.exception.NoninstanceablePortletException;
 import com.liferay.layout.content.page.editor.web.internal.manager.FragmentEntryLinkManager;
@@ -40,6 +39,7 @@ import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
+import com.liferay.portal.kernel.service.permission.LayoutPermissionUtil;
 import com.liferay.portal.kernel.service.permission.PortletPermissionUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Portal;
@@ -80,6 +80,13 @@ public abstract class BaseDuplicateItemMVCActionCommand
 				fragmentEntryLinkLocalService.getFragmentEntryLink(
 					fragmentEntryLinkId);
 
+			ThemeDisplay themeDisplay =
+				(ThemeDisplay)actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
+
+			LayoutPermissionUtil.checkLayoutRestrictedUpdatePermission(
+				themeDisplay.getPermissionChecker(),
+				fragmentEntryLink.getPlid());
+
 			JSONObject editableValuesJSONObject = jsonFactory.createJSONObject(
 				fragmentEntryLink.getEditableValues());
 
@@ -113,8 +120,9 @@ public abstract class BaseDuplicateItemMVCActionCommand
 				}
 
 				FragmentEntryLink duplicatedFragmentEntryLink =
-					fragmentEntryLinkService.addFragmentEntryLink(
-						null, fragmentEntryLink.getGroupId(), null,
+					fragmentEntryLinkLocalService.addFragmentEntryLink(
+						null, serviceContext.getUserId(),
+						fragmentEntryLink.getGroupId(), null,
 						fragmentEntryLink.getFragmentEntryERC(),
 						fragmentEntryLink.getFragmentEntryScopeERC(),
 						fragmentEntryLink.getSegmentsExperienceId(),
@@ -166,8 +174,9 @@ public abstract class BaseDuplicateItemMVCActionCommand
 			}
 
 			FragmentEntryLink duplicatedFragmentEntryLink =
-				fragmentEntryLinkService.addFragmentEntryLink(
-					null, fragmentEntryLink.getGroupId(), null,
+				fragmentEntryLinkLocalService.addFragmentEntryLink(
+					null, serviceContext.getUserId(),
+					fragmentEntryLink.getGroupId(), null,
 					fragmentEntryLink.getFragmentEntryERC(),
 					fragmentEntryLink.getFragmentEntryScopeERC(),
 					fragmentEntryLink.getSegmentsExperienceId(),
@@ -262,9 +271,6 @@ public abstract class BaseDuplicateItemMVCActionCommand
 
 	@Reference
 	protected FragmentEntryLinkManager fragmentEntryLinkManager;
-
-	@Reference
-	protected FragmentEntryLinkService fragmentEntryLinkService;
 
 	@Reference
 	protected JSONFactory jsonFactory;

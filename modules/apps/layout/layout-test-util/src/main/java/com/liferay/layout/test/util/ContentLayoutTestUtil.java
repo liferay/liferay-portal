@@ -9,8 +9,8 @@ import com.liferay.fragment.constants.FragmentConstants;
 import com.liferay.fragment.entry.processor.constants.FragmentEntryProcessorConstants;
 import com.liferay.fragment.model.FragmentEntry;
 import com.liferay.fragment.model.FragmentEntryLink;
-import com.liferay.fragment.renderer.DefaultFragmentRendererContext;
 import com.liferay.fragment.renderer.FragmentRenderer;
+import com.liferay.fragment.service.FragmentEntryLinkLocalServiceUtil;
 import com.liferay.fragment.service.FragmentEntryLinkServiceUtil;
 import com.liferay.fragment.service.FragmentEntryLocalServiceUtil;
 import com.liferay.info.field.InfoField;
@@ -26,7 +26,6 @@ import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.layout.util.structure.LayoutStructureItem;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Company;
@@ -297,19 +296,10 @@ public class ContentLayoutTestUtil {
 			long segmentsExperienceId)
 		throws Exception {
 
-		DefaultFragmentRendererContext defaultFragmentRendererContext =
-			new DefaultFragmentRendererContext(null);
-
 		FragmentEntryLink fragmentEntryLink =
 			FragmentEntryLinkServiceUtil.addFragmentEntryLink(
-				null, layout.getGroupId(), null, null, null,
-				segmentsExperienceId, layout.getPlid(), StringPool.BLANK,
-				StringPool.BLANK, StringPool.BLANK,
-				JSONFactoryUtil.toString(
-					fragmentRenderer.getConfigurationJSONObject(
-						defaultFragmentRendererContext)),
-				editableValues, StringPool.BLANK, 0, fragmentRenderer.getKey(),
-				fragmentRenderer.getType(),
+				null, layout.getGroupId(), null, null, segmentsExperienceId,
+				layout.getPlid(), editableValues, fragmentRenderer.getKey(),
 				ServiceContextTestUtil.getServiceContext(
 					layout.getGroupId(), TestPropsValues.getUserId()));
 
@@ -363,11 +353,11 @@ public class ContentLayoutTestUtil {
 		throws Exception {
 
 		FragmentEntryLink fragmentEntryLink =
-			FragmentEntryLinkServiceUtil.addFragmentEntryLink(
-				null, layout.getGroupId(), null, fragmentEntryERC,
-				fragmentEntryScopeERC, segmentsExperienceId, layout.getPlid(),
-				css, html, js, configuration, editableValues, StringPool.BLANK,
-				0, rendererKey, type,
+			FragmentEntryLinkLocalServiceUtil.addFragmentEntryLink(
+				null, TestPropsValues.getUserId(), layout.getGroupId(), null,
+				fragmentEntryERC, fragmentEntryScopeERC, segmentsExperienceId,
+				layout.getPlid(), css, html, js, configuration, editableValues,
+				StringPool.BLANK, 0, rendererKey, type,
 				ServiceContextTestUtil.getServiceContext(
 					layout.getGroupId(), TestPropsValues.getUserId()));
 

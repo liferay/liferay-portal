@@ -11,7 +11,6 @@ import com.liferay.fragment.listener.FragmentEntryLinkListener;
 import com.liferay.fragment.listener.FragmentEntryLinkListenerRegistry;
 import com.liferay.fragment.model.FragmentEntry;
 import com.liferay.fragment.model.FragmentEntryLink;
-import com.liferay.fragment.renderer.DefaultFragmentRendererContext;
 import com.liferay.fragment.renderer.FragmentRenderer;
 import com.liferay.fragment.renderer.FragmentRendererRegistry;
 import com.liferay.fragment.service.FragmentEntryLinkService;
@@ -83,18 +82,10 @@ public class AddStepperFragmentEntryLinkMVCActionCommand
 			actionRequest);
 
 		if (fragmentRenderer != null) {
-			DefaultFragmentRendererContext defaultFragmentRendererContext =
-				new DefaultFragmentRendererContext(null);
-
 			return _fragmentEntryLinkService.addFragmentEntryLink(
-				null, serviceContext.getScopeGroupId(), null, null, null,
+				null, serviceContext.getScopeGroupId(), null, null,
 				segmentsExperienceId, serviceContext.getPlid(),
-				StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
-				_jsonFactory.toString(
-					fragmentRenderer.getConfigurationJSONObject(
-						defaultFragmentRendererContext)),
-				StringPool.BLANK, StringPool.BLANK, 0, fragmentEntryKey,
-				fragmentRenderer.getType(), serviceContext);
+				StringPool.BLANK, fragmentEntryKey, serviceContext);
 		}
 
 		FragmentEntry fragmentEntry =
@@ -113,15 +104,12 @@ public class AddStepperFragmentEntryLinkMVCActionCommand
 		}
 
 		return _fragmentEntryLinkService.addFragmentEntryLink(
-			null, serviceContext.getScopeGroupId(), null,
+			null, serviceContext.getScopeGroupId(),
 			fragmentEntry.getExternalReferenceCode(),
 			ScopeUtil.getItemScopeExternalReferenceCode(
 				fragmentEntry.getGroupId(), serviceContext.getScopeGroupId()),
-			segmentsExperienceId, serviceContext.getPlid(),
-			fragmentEntry.getCss(), fragmentEntry.getHtml(),
-			fragmentEntry.getJs(), fragmentEntry.getConfiguration(), null,
-			StringPool.BLANK, 0, contributedRendererKey,
-			fragmentEntry.getType(), serviceContext);
+			segmentsExperienceId, serviceContext.getPlid(), null,
+			contributedRendererKey, serviceContext);
 	}
 
 	@Override

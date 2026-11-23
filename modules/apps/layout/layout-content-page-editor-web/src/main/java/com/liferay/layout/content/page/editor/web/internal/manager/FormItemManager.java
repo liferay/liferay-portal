@@ -31,7 +31,6 @@ import com.liferay.layout.util.structure.FragmentStyledLayoutStructureItem;
 import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.layout.util.structure.LayoutStructureItem;
 import com.liferay.layout.util.structure.LayoutStructureItemUtil;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
@@ -826,15 +825,12 @@ public class FormItemManager {
 
 		FragmentEntryLink fragmentEntryLink =
 			_fragmentEntryLinkService.addFragmentEntryLink(
-				null, layout.getGroupId(), null,
+				null, layout.getGroupId(),
 				fragmentEntry.getExternalReferenceCode(),
 				ScopeUtil.getItemScopeExternalReferenceCode(
 					fragmentEntry.getGroupId(), layout.getGroupId()),
-				segmentsExperienceId, layout.getPlid(), fragmentEntry.getCss(),
-				fragmentEntry.getHtml(), fragmentEntry.getJs(),
-				fragmentEntry.getConfiguration(), null, StringPool.BLANK, 0,
-				fragmentEntry.getFragmentEntryKey(), fragmentEntry.getType(),
-				serviceContext);
+				segmentsExperienceId, layout.getPlid(), null,
+				fragmentEntry.getFragmentEntryKey(), serviceContext);
 
 		JSONObject editableValuesJSONObject =
 			_fragmentEntryLinkManager.mergeEditableValuesJSONObject(
