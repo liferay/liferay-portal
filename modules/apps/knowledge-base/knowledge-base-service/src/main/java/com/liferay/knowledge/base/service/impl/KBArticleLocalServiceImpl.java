@@ -2276,6 +2276,9 @@ public class KBArticleLocalServiceImpl extends KBArticleLocalServiceBaseImpl {
 						WorkflowConstants.STATUS_EXPIRED)
 				).and(
 					KBArticleTable.INSTANCE.status.neq(
+						WorkflowConstants.STATUS_IN_TRASH)
+				).and(
+					KBArticleTable.INSTANCE.status.neq(
 						WorkflowConstants.STATUS_PENDING)
 				).and(
 					KBArticleTable.INSTANCE.status.neq(
