@@ -581,49 +581,50 @@ class CriteriaRow extends React.Component<
 						{selectedProperty ? (
 							this.renderValueInput()
 						) : (
-							<div className="align-items-center d-flex flex-grow-1 non-existent-property">
-								<div
-									className="align-items-center d-flex non-existent-property-message"
-									role="alert"
-								>
-									<ClayIcon
-										className="flex-shrink-0 mr-2"
-										symbol="exclamation-full"
-									/>
-
-									{Liferay.Language.get(
-										'attribute-no-longer-exists'
-									)}
-								</div>
-
-								<ClayButtonWithIcon
-									aria-label={Liferay.Language.get('delete')}
-									borderless
-									className="ml-2"
-									displayType="secondary"
-									onClick={this.handleDelete}
-									size="xs"
-									symbol="trash"
-									title={Liferay.Language.get('delete')}
+							<div
+								className="align-items-center d-flex flex-grow-1 non-existent-property-message"
+								role="alert"
+							>
+								<ClayIcon
+									className="flex-shrink-0 mr-2"
+									symbol="exclamation-full"
 								/>
+
+								{Liferay.Language.get(
+									'attribute-no-longer-exists'
+								)}
 							</div>
 						)}
 
 						<div className="actions">
-							<RowActions
-								actions={[
-									{
-										label: Liferay.Language.get(
-											'duplicate'
-										),
-										onClick: this.handleDuplicate,
-									},
-									{
-										label: Liferay.Language.get('delete'),
-										onClick: this.handleDelete,
-									},
-								]}
-							/>
+							{selectedProperty ? (
+								<RowActions
+									actions={[
+										{
+											label: Liferay.Language.get(
+												'duplicate'
+											),
+											onClick: this.handleDuplicate,
+										},
+										{
+											label: Liferay.Language.get(
+												'delete'
+											),
+											onClick: this.handleDelete,
+										},
+									]}
+								/>
+							) : (
+								<ClayButtonWithIcon
+									aria-label={Liferay.Language.get('delete')}
+									borderless
+									displayType="secondary"
+									onClick={this.handleDelete}
+									size="sm"
+									symbol="trash"
+									title={Liferay.Language.get('delete')}
+								/>
+							)}
 						</div>
 					</div>
 				</div>
