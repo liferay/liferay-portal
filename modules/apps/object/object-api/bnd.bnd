@@ -13,7 +13,6 @@ Export-Package:\
 	com.liferay.object.definition.notification.term.util,\
 	com.liferay.object.definition.processor,\
 	com.liferay.object.definition.security.permission.resource,\
-	com.liferay.object.definition.security.permission.resource.util,\
 	com.liferay.object.definition.setting.builder,\
 	com.liferay.object.definition.setting.util,\
 	com.liferay.object.definition.tree.util,\
