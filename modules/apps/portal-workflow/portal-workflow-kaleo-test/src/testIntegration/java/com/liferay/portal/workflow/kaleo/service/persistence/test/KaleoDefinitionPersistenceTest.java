@@ -288,14 +288,6 @@ public class KaleoDefinitionPersistenceTest {
 	}
 
 	@Test
-	public void testCountByC_A() throws Exception {
-		_persistence.countByC_A(
-			RandomTestUtil.nextLong(), RandomTestUtil.randomBoolean());
-
-		_persistence.countByC_A(0L, RandomTestUtil.randomBoolean());
-	}
-
-	@Test
 	public void testCountByG_C_S() throws Exception {
 		_persistence.countByG_C_S(
 			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(), "");
@@ -313,17 +305,6 @@ public class KaleoDefinitionPersistenceTest {
 		_persistence.countByC_N_V(0L, "null", 0);
 
 		_persistence.countByC_N_V(0L, (String)null, 0);
-	}
-
-	@Test
-	public void testCountByC_N_A() throws Exception {
-		_persistence.countByC_N_A(
-			RandomTestUtil.nextLong(), "", RandomTestUtil.randomBoolean());
-
-		_persistence.countByC_N_A(0L, "null", RandomTestUtil.randomBoolean());
-
-		_persistence.countByC_N_A(
-			0L, (String)null, RandomTestUtil.randomBoolean());
 	}
 
 	@Test
@@ -687,22 +668,6 @@ public class KaleoDefinitionPersistenceTest {
 				new Class<?>[] {String.class}, "version"));
 
 		Assert.assertEquals(
-			Long.valueOf(kaleoDefinition.getCompanyId()),
-			ReflectionTestUtil.<Long>invoke(
-				kaleoDefinition, "getColumnOriginalValue",
-				new Class<?>[] {String.class}, "companyId"));
-		Assert.assertEquals(
-			kaleoDefinition.getName(),
-			ReflectionTestUtil.invoke(
-				kaleoDefinition, "getColumnOriginalValue",
-				new Class<?>[] {String.class}, "name"));
-		Assert.assertEquals(
-			Boolean.valueOf(kaleoDefinition.getActive()),
-			ReflectionTestUtil.<Boolean>invoke(
-				kaleoDefinition, "getColumnOriginalValue",
-				new Class<?>[] {String.class}, "active_"));
-
-		Assert.assertEquals(
 			kaleoDefinition.getExternalReferenceCode(),
 			ReflectionTestUtil.invoke(
 				kaleoDefinition, "getColumnOriginalValue",
@@ -766,4 +731,4 @@ public class KaleoDefinitionPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1131396648
+// LIFERAY-SERVICE-BUILDER-HASH:-1673932388

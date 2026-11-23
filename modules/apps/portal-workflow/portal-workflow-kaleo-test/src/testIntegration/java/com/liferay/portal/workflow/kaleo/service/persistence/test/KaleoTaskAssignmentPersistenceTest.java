@@ -250,15 +250,6 @@ public class KaleoTaskAssignmentPersistenceTest {
 	}
 
 	@Test
-	public void testCountByKCN_KCPK_ACN() throws Exception {
-		_persistence.countByKCN_KCPK_ACN("", RandomTestUtil.nextLong(), "");
-
-		_persistence.countByKCN_KCPK_ACN("null", 0L, "null");
-
-		_persistence.countByKCN_KCPK_ACN((String)null, 0L, (String)null);
-	}
-
-	@Test
 	public void testFindByPrimaryKeyExisting() throws Exception {
 		KaleoTaskAssignment newKaleoTaskAssignment = addKaleoTaskAssignment();
 
@@ -575,4 +566,4 @@ public class KaleoTaskAssignmentPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1600151037
+// LIFERAY-SERVICE-BUILDER-HASH:-1280889474

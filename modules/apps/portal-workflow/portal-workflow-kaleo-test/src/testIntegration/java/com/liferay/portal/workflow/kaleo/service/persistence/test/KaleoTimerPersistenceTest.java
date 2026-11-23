@@ -229,18 +229,6 @@ public class KaleoTimerPersistenceTest {
 	}
 
 	@Test
-	public void testCountByKCN_KCPK_Blocking() throws Exception {
-		_persistence.countByKCN_KCPK_Blocking(
-			"", RandomTestUtil.nextLong(), RandomTestUtil.randomBoolean());
-
-		_persistence.countByKCN_KCPK_Blocking(
-			"null", 0L, RandomTestUtil.randomBoolean());
-
-		_persistence.countByKCN_KCPK_Blocking(
-			(String)null, 0L, RandomTestUtil.randomBoolean());
-	}
-
-	@Test
 	public void testFindByPrimaryKeyExisting() throws Exception {
 		KaleoTimer newKaleoTimer = addKaleoTimer();
 
@@ -534,4 +522,4 @@ public class KaleoTimerPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-465052835
+// LIFERAY-SERVICE-BUILDER-HASH:-549555053

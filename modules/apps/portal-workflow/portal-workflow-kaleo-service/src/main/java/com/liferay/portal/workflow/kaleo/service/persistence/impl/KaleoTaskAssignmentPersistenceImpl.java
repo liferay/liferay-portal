@@ -350,114 +350,6 @@ public class KaleoTaskAssignmentPersistenceImpl
 			finderCache, new Object[] {kaleoClassName, kaleoClassPK});
 	}
 
-	private CollectionPersistenceFinder
-		<KaleoTaskAssignment, NoSuchTaskAssignmentException>
-			_collectionPersistenceFinderByKCN_KCPK_ACN;
-
-	/**
-	 * Returns an ordered range of all the kaleo task assignments where kaleoClassName = &#63; and kaleoClassPK = &#63; and assigneeClassName = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>KaleoTaskAssignmentModelImpl</code>.
-	 * </p>
-	 *
-	 * @param kaleoClassName the kaleo class name
-	 * @param kaleoClassPK the kaleo class pk
-	 * @param assigneeClassName the assignee class name
-	 * @param start the lower bound of the range of kaleo task assignments
-	 * @param end the upper bound of the range of kaleo task assignments (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching kaleo task assignments
-	 */
-	@Override
-	public List<KaleoTaskAssignment> findByKCN_KCPK_ACN(
-		String kaleoClassName, long kaleoClassPK, String assigneeClassName,
-		int start, int end,
-		OrderByComparator<KaleoTaskAssignment> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByKCN_KCPK_ACN.find(
-			finderCache,
-			new Object[] {kaleoClassName, kaleoClassPK, assigneeClassName},
-			start, end, orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first kaleo task assignment in the ordered set where kaleoClassName = &#63; and kaleoClassPK = &#63; and assigneeClassName = &#63;.
-	 *
-	 * @param kaleoClassName the kaleo class name
-	 * @param kaleoClassPK the kaleo class pk
-	 * @param assigneeClassName the assignee class name
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching kaleo task assignment
-	 * @throws NoSuchTaskAssignmentException if a matching kaleo task assignment could not be found
-	 */
-	@Override
-	public KaleoTaskAssignment findByKCN_KCPK_ACN_First(
-			String kaleoClassName, long kaleoClassPK, String assigneeClassName,
-			OrderByComparator<KaleoTaskAssignment> orderByComparator)
-		throws NoSuchTaskAssignmentException {
-
-		return _collectionPersistenceFinderByKCN_KCPK_ACN.findFirst(
-			finderCache,
-			new Object[] {kaleoClassName, kaleoClassPK, assigneeClassName},
-			orderByComparator);
-	}
-
-	/**
-	 * Returns the first kaleo task assignment in the ordered set where kaleoClassName = &#63; and kaleoClassPK = &#63; and assigneeClassName = &#63;.
-	 *
-	 * @param kaleoClassName the kaleo class name
-	 * @param kaleoClassPK the kaleo class pk
-	 * @param assigneeClassName the assignee class name
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching kaleo task assignment, or <code>null</code> if a matching kaleo task assignment could not be found
-	 */
-	@Override
-	public KaleoTaskAssignment fetchByKCN_KCPK_ACN_First(
-		String kaleoClassName, long kaleoClassPK, String assigneeClassName,
-		OrderByComparator<KaleoTaskAssignment> orderByComparator) {
-
-		return _collectionPersistenceFinderByKCN_KCPK_ACN.fetchFirst(
-			finderCache,
-			new Object[] {kaleoClassName, kaleoClassPK, assigneeClassName},
-			orderByComparator);
-	}
-
-	/**
-	 * Removes all the kaleo task assignments where kaleoClassName = &#63; and kaleoClassPK = &#63; and assigneeClassName = &#63; from the database.
-	 *
-	 * @param kaleoClassName the kaleo class name
-	 * @param kaleoClassPK the kaleo class pk
-	 * @param assigneeClassName the assignee class name
-	 */
-	@Override
-	public void removeByKCN_KCPK_ACN(
-		String kaleoClassName, long kaleoClassPK, String assigneeClassName) {
-
-		_collectionPersistenceFinderByKCN_KCPK_ACN.remove(
-			finderCache,
-			new Object[] {kaleoClassName, kaleoClassPK, assigneeClassName});
-	}
-
-	/**
-	 * Returns the number of kaleo task assignments where kaleoClassName = &#63; and kaleoClassPK = &#63; and assigneeClassName = &#63;.
-	 *
-	 * @param kaleoClassName the kaleo class name
-	 * @param kaleoClassPK the kaleo class pk
-	 * @param assigneeClassName the assignee class name
-	 * @return the number of matching kaleo task assignments
-	 */
-	@Override
-	public int countByKCN_KCPK_ACN(
-		String kaleoClassName, long kaleoClassPK, String assigneeClassName) {
-
-		return _collectionPersistenceFinderByKCN_KCPK_ACN.count(
-			finderCache,
-			new Object[] {kaleoClassName, kaleoClassPK, assigneeClassName});
-	}
-
 	public KaleoTaskAssignmentPersistenceImpl() {
 		setModelClass(KaleoTaskAssignment.class);
 
@@ -839,61 +731,6 @@ public class KaleoTaskAssignmentPersistenceImpl
 					FinderColumn.Type.LONG, "=", true, true,
 					KaleoTaskAssignment::getKaleoClassPK));
 
-		_collectionPersistenceFinderByKCN_KCPK_ACN =
-			new CollectionPersistenceFinder<>(
-				this,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
-					"findByKCN_KCPK_ACN",
-					new String[] {
-						String.class.getName(), Long.class.getName(),
-						String.class.getName(), Integer.class.getName(),
-						Integer.class.getName(),
-						OrderByComparator.class.getName()
-					},
-					new String[] {
-						"kaleoClassName", "kaleoClassPK", "assigneeClassName"
-					},
-					true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"findByKCN_KCPK_ACN",
-					new String[] {
-						String.class.getName(), Long.class.getName(),
-						String.class.getName()
-					},
-					new String[] {
-						"kaleoClassName", "kaleoClassPK", "assigneeClassName"
-					},
-					0, 5, true, null),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"countByKCN_KCPK_ACN",
-					new String[] {
-						String.class.getName(), Long.class.getName(),
-						String.class.getName()
-					},
-					new String[] {
-						"kaleoClassName", "kaleoClassPK", "assigneeClassName"
-					},
-					0, 5, false, null),
-				_SQL_SELECT_KALEOTASKASSIGNMENT_WHERE,
-				_SQL_COUNT_KALEOTASKASSIGNMENT_WHERE,
-				KaleoTaskAssignmentModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "", null,
-				new FinderColumn<>(
-					"kaleoTaskAssignment.", "kaleoClassName",
-					FinderColumn.Type.STRING, "=", true, true,
-					KaleoTaskAssignment::getKaleoClassName),
-				new FinderColumn<>(
-					"kaleoTaskAssignment.", "kaleoClassPK",
-					FinderColumn.Type.LONG, "=", true, true,
-					KaleoTaskAssignment::getKaleoClassPK),
-				new FinderColumn<>(
-					"kaleoTaskAssignment.", "assigneeClassName",
-					FinderColumn.Type.STRING, "=", true, true,
-					KaleoTaskAssignment::getAssigneeClassName));
-
 		KaleoTaskAssignmentUtil.setPersistence(this);
 	}
 
@@ -957,4 +794,4 @@ public class KaleoTaskAssignmentPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-59293872
+// LIFERAY-SERVICE-BUILDER-HASH:928474603

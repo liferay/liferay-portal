@@ -568,97 +568,6 @@ public class KaleoDefinitionPersistenceImpl
 
 	private CollectionPersistenceFinder
 		<KaleoDefinition, NoSuchDefinitionException>
-			_collectionPersistenceFinderByC_A;
-
-	/**
-	 * Returns an ordered range of all the kaleo definitions where companyId = &#63; and active = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>KaleoDefinitionModelImpl</code>.
-	 * </p>
-	 *
-	 * @param companyId the company ID
-	 * @param active the active
-	 * @param start the lower bound of the range of kaleo definitions
-	 * @param end the upper bound of the range of kaleo definitions (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching kaleo definitions
-	 */
-	@Override
-	public List<KaleoDefinition> findByC_A(
-		long companyId, boolean active, int start, int end,
-		OrderByComparator<KaleoDefinition> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByC_A.find(
-			finderCache, new Object[] {companyId, active}, start, end,
-			orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first kaleo definition in the ordered set where companyId = &#63; and active = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param active the active
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching kaleo definition
-	 * @throws NoSuchDefinitionException if a matching kaleo definition could not be found
-	 */
-	@Override
-	public KaleoDefinition findByC_A_First(
-			long companyId, boolean active,
-			OrderByComparator<KaleoDefinition> orderByComparator)
-		throws NoSuchDefinitionException {
-
-		return _collectionPersistenceFinderByC_A.findFirst(
-			finderCache, new Object[] {companyId, active}, orderByComparator);
-	}
-
-	/**
-	 * Returns the first kaleo definition in the ordered set where companyId = &#63; and active = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param active the active
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching kaleo definition, or <code>null</code> if a matching kaleo definition could not be found
-	 */
-	@Override
-	public KaleoDefinition fetchByC_A_First(
-		long companyId, boolean active,
-		OrderByComparator<KaleoDefinition> orderByComparator) {
-
-		return _collectionPersistenceFinderByC_A.fetchFirst(
-			finderCache, new Object[] {companyId, active}, orderByComparator);
-	}
-
-	/**
-	 * Removes all the kaleo definitions where companyId = &#63; and active = &#63; from the database.
-	 *
-	 * @param companyId the company ID
-	 * @param active the active
-	 */
-	@Override
-	public void removeByC_A(long companyId, boolean active) {
-		_collectionPersistenceFinderByC_A.remove(
-			finderCache, new Object[] {companyId, active});
-	}
-
-	/**
-	 * Returns the number of kaleo definitions where companyId = &#63; and active = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param active the active
-	 * @return the number of matching kaleo definitions
-	 */
-	@Override
-	public int countByC_A(long companyId, boolean active) {
-		return _collectionPersistenceFinderByC_A.count(
-			finderCache, new Object[] {companyId, active});
-	}
-
-	private CollectionPersistenceFinder
-		<KaleoDefinition, NoSuchDefinitionException>
 			_collectionPersistenceFinderByG_C_S;
 
 	/**
@@ -823,77 +732,6 @@ public class KaleoDefinitionPersistenceImpl
 	public int countByC_N_V(long companyId, String name, int version) {
 		return _uniquePersistenceFinderByC_N_V.count(
 			finderCache, new Object[] {companyId, name, version});
-	}
-
-	private UniquePersistenceFinder<KaleoDefinition, NoSuchDefinitionException>
-		_uniquePersistenceFinderByC_N_A;
-
-	/**
-	 * Returns the kaleo definition where companyId = &#63; and name = &#63; and active = &#63; or throws a <code>NoSuchDefinitionException</code> if it could not be found.
-	 *
-	 * @param companyId the company ID
-	 * @param name the name
-	 * @param active the active
-	 * @return the matching kaleo definition
-	 * @throws NoSuchDefinitionException if a matching kaleo definition could not be found
-	 */
-	@Override
-	public KaleoDefinition findByC_N_A(
-			long companyId, String name, boolean active)
-		throws NoSuchDefinitionException {
-
-		return _uniquePersistenceFinderByC_N_A.find(
-			finderCache, new Object[] {companyId, name, active});
-	}
-
-	/**
-	 * Returns the kaleo definition where companyId = &#63; and name = &#63; and active = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
-	 *
-	 * @param companyId the company ID
-	 * @param name the name
-	 * @param active the active
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the matching kaleo definition, or <code>null</code> if a matching kaleo definition could not be found
-	 */
-	@Override
-	public KaleoDefinition fetchByC_N_A(
-		long companyId, String name, boolean active, boolean useFinderCache) {
-
-		return _uniquePersistenceFinderByC_N_A.fetch(
-			finderCache, new Object[] {companyId, name, active},
-			useFinderCache);
-	}
-
-	/**
-	 * Removes the kaleo definition where companyId = &#63; and name = &#63; and active = &#63; from the database.
-	 *
-	 * @param companyId the company ID
-	 * @param name the name
-	 * @param active the active
-	 * @return the kaleo definition that was removed
-	 */
-	@Override
-	public KaleoDefinition removeByC_N_A(
-			long companyId, String name, boolean active)
-		throws NoSuchDefinitionException {
-
-		KaleoDefinition kaleoDefinition = findByC_N_A(companyId, name, active);
-
-		return remove(kaleoDefinition);
-	}
-
-	/**
-	 * Returns the number of kaleo definitions where companyId = &#63; and name = &#63; and active = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param name the name
-	 * @param active the active
-	 * @return the number of matching kaleo definitions
-	 */
-	@Override
-	public int countByC_N_A(long companyId, String name, boolean active) {
-		return _uniquePersistenceFinderByC_N_A.count(
-			finderCache, new Object[] {companyId, name, active});
 	}
 
 	private CollectionPersistenceFinder
@@ -1593,35 +1431,6 @@ public class KaleoDefinitionPersistenceImpl
 				"kaleoDefinition.", "name", FinderColumn.Type.STRING, "=", true,
 				true, KaleoDefinition::getName));
 
-		_collectionPersistenceFinderByC_A = new CollectionPersistenceFinder<>(
-			this,
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByC_A",
-				new String[] {
-					Long.class.getName(), Boolean.class.getName(),
-					Integer.class.getName(), Integer.class.getName(),
-					OrderByComparator.class.getName()
-				},
-				new String[] {"companyId", "active_"}, true),
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByC_A",
-				new String[] {Long.class.getName(), Boolean.class.getName()},
-				new String[] {"companyId", "active_"}, true),
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByC_A",
-				new String[] {Long.class.getName(), Boolean.class.getName()},
-				new String[] {"companyId", "active_"}, false),
-			_SQL_SELECT_KALEODEFINITION_WHERE, _SQL_COUNT_KALEODEFINITION_WHERE,
-			KaleoDefinitionModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-			"", null,
-			new FinderColumn<>(
-				"kaleoDefinition.", "companyId", FinderColumn.Type.LONG, "=",
-				true, true, KaleoDefinition::getCompanyId),
-			new FinderColumn<>(
-				"kaleoDefinition.", "active", "active_",
-				FinderColumn.Type.BOOLEAN, "=", true, true,
-				KaleoDefinition::isActive));
-
 		_collectionPersistenceFinderByG_C_S = new CollectionPersistenceFinder<>(
 			this,
 			new FinderPath(
@@ -1683,30 +1492,6 @@ public class KaleoDefinitionPersistenceImpl
 			new FinderColumn<>(
 				"kaleoDefinition.", "version", FinderColumn.Type.INTEGER, "=",
 				true, true, KaleoDefinition::getVersion));
-
-		_uniquePersistenceFinderByC_N_A = new UniquePersistenceFinder<>(
-			this,
-			createUniqueFinderPath(
-				FINDER_CLASS_NAME_ENTITY, "fetchByC_N_A",
-				new String[] {
-					Long.class.getName(), String.class.getName(),
-					Boolean.class.getName()
-				},
-				new String[] {"companyId", "name", "active_"}, 0, 2, false,
-				KaleoDefinition::getCompanyId,
-				convertNullFunction(KaleoDefinition::getName),
-				KaleoDefinition::isActive),
-			_SQL_SELECT_KALEODEFINITION_WHERE, "",
-			new FinderColumn<>(
-				"kaleoDefinition.", "companyId", FinderColumn.Type.LONG, "=",
-				true, true, KaleoDefinition::getCompanyId),
-			new FinderColumn<>(
-				"kaleoDefinition.", "name", FinderColumn.Type.STRING, "=", true,
-				true, KaleoDefinition::getName),
-			new FinderColumn<>(
-				"kaleoDefinition.", "active", "active_",
-				FinderColumn.Type.BOOLEAN, "=", true, true,
-				KaleoDefinition::isActive));
 
 		_collectionPersistenceFinderByG_C_S_A =
 			new CollectionPersistenceFinder<>(
@@ -1839,4 +1624,4 @@ public class KaleoDefinitionPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-411290647
+// LIFERAY-SERVICE-BUILDER-HASH:-1066632236

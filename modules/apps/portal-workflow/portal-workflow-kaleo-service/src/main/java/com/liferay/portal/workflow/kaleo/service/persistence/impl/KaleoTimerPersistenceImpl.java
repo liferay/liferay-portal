@@ -272,107 +272,6 @@ public class KaleoTimerPersistenceImpl
 			new Object[] {kaleoClassName, kaleoDefinitionVersionId});
 	}
 
-	private CollectionPersistenceFinder<KaleoTimer, NoSuchTimerException>
-		_collectionPersistenceFinderByKCN_KCPK_Blocking;
-
-	/**
-	 * Returns an ordered range of all the kaleo timers where kaleoClassName = &#63; and kaleoClassPK = &#63; and blocking = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>KaleoTimerModelImpl</code>.
-	 * </p>
-	 *
-	 * @param kaleoClassName the kaleo class name
-	 * @param kaleoClassPK the kaleo class pk
-	 * @param blocking the blocking
-	 * @param start the lower bound of the range of kaleo timers
-	 * @param end the upper bound of the range of kaleo timers (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching kaleo timers
-	 */
-	@Override
-	public List<KaleoTimer> findByKCN_KCPK_Blocking(
-		String kaleoClassName, long kaleoClassPK, boolean blocking, int start,
-		int end, OrderByComparator<KaleoTimer> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByKCN_KCPK_Blocking.find(
-			finderCache, new Object[] {kaleoClassName, kaleoClassPK, blocking},
-			start, end, orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first kaleo timer in the ordered set where kaleoClassName = &#63; and kaleoClassPK = &#63; and blocking = &#63;.
-	 *
-	 * @param kaleoClassName the kaleo class name
-	 * @param kaleoClassPK the kaleo class pk
-	 * @param blocking the blocking
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching kaleo timer
-	 * @throws NoSuchTimerException if a matching kaleo timer could not be found
-	 */
-	@Override
-	public KaleoTimer findByKCN_KCPK_Blocking_First(
-			String kaleoClassName, long kaleoClassPK, boolean blocking,
-			OrderByComparator<KaleoTimer> orderByComparator)
-		throws NoSuchTimerException {
-
-		return _collectionPersistenceFinderByKCN_KCPK_Blocking.findFirst(
-			finderCache, new Object[] {kaleoClassName, kaleoClassPK, blocking},
-			orderByComparator);
-	}
-
-	/**
-	 * Returns the first kaleo timer in the ordered set where kaleoClassName = &#63; and kaleoClassPK = &#63; and blocking = &#63;.
-	 *
-	 * @param kaleoClassName the kaleo class name
-	 * @param kaleoClassPK the kaleo class pk
-	 * @param blocking the blocking
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching kaleo timer, or <code>null</code> if a matching kaleo timer could not be found
-	 */
-	@Override
-	public KaleoTimer fetchByKCN_KCPK_Blocking_First(
-		String kaleoClassName, long kaleoClassPK, boolean blocking,
-		OrderByComparator<KaleoTimer> orderByComparator) {
-
-		return _collectionPersistenceFinderByKCN_KCPK_Blocking.fetchFirst(
-			finderCache, new Object[] {kaleoClassName, kaleoClassPK, blocking},
-			orderByComparator);
-	}
-
-	/**
-	 * Removes all the kaleo timers where kaleoClassName = &#63; and kaleoClassPK = &#63; and blocking = &#63; from the database.
-	 *
-	 * @param kaleoClassName the kaleo class name
-	 * @param kaleoClassPK the kaleo class pk
-	 * @param blocking the blocking
-	 */
-	@Override
-	public void removeByKCN_KCPK_Blocking(
-		String kaleoClassName, long kaleoClassPK, boolean blocking) {
-
-		_collectionPersistenceFinderByKCN_KCPK_Blocking.remove(
-			finderCache, new Object[] {kaleoClassName, kaleoClassPK, blocking});
-	}
-
-	/**
-	 * Returns the number of kaleo timers where kaleoClassName = &#63; and kaleoClassPK = &#63; and blocking = &#63;.
-	 *
-	 * @param kaleoClassName the kaleo class name
-	 * @param kaleoClassPK the kaleo class pk
-	 * @param blocking the blocking
-	 * @return the number of matching kaleo timers
-	 */
-	@Override
-	public int countByKCN_KCPK_Blocking(
-		String kaleoClassName, long kaleoClassPK, boolean blocking) {
-
-		return _collectionPersistenceFinderByKCN_KCPK_Blocking.count(
-			finderCache, new Object[] {kaleoClassName, kaleoClassPK, blocking});
-	}
-
 	public KaleoTimerPersistenceImpl() {
 		setModelClass(KaleoTimer.class);
 
@@ -715,51 +614,6 @@ public class KaleoTimerPersistenceImpl
 					FinderColumn.Type.LONG, "=", true, true,
 					KaleoTimer::getKaleoDefinitionVersionId));
 
-		_collectionPersistenceFinderByKCN_KCPK_Blocking =
-			new CollectionPersistenceFinder<>(
-				this,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
-					"findByKCN_KCPK_Blocking",
-					new String[] {
-						String.class.getName(), Long.class.getName(),
-						Boolean.class.getName(), Integer.class.getName(),
-						Integer.class.getName(),
-						OrderByComparator.class.getName()
-					},
-					new String[] {"kaleoClassName", "kaleoClassPK", "blocking"},
-					true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"findByKCN_KCPK_Blocking",
-					new String[] {
-						String.class.getName(), Long.class.getName(),
-						Boolean.class.getName()
-					},
-					new String[] {"kaleoClassName", "kaleoClassPK", "blocking"},
-					0, 1, true, null),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"countByKCN_KCPK_Blocking",
-					new String[] {
-						String.class.getName(), Long.class.getName(),
-						Boolean.class.getName()
-					},
-					new String[] {"kaleoClassName", "kaleoClassPK", "blocking"},
-					0, 1, false, null),
-				_SQL_SELECT_KALEOTIMER_WHERE, _SQL_COUNT_KALEOTIMER_WHERE,
-				KaleoTimerModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null,
-				new FinderColumn<>(
-					"kaleoTimer.", "kaleoClassName", FinderColumn.Type.STRING,
-					"=", true, true, KaleoTimer::getKaleoClassName),
-				new FinderColumn<>(
-					"kaleoTimer.", "kaleoClassPK", FinderColumn.Type.LONG, "=",
-					true, true, KaleoTimer::getKaleoClassPK),
-				new FinderColumn<>(
-					"kaleoTimer.", "blocking", FinderColumn.Type.BOOLEAN, "=",
-					true, true, KaleoTimer::isBlocking));
-
 		KaleoTimerUtil.setPersistence(this);
 	}
 
@@ -823,4 +677,4 @@ public class KaleoTimerPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1978577287
+// LIFERAY-SERVICE-BUILDER-HASH:-1232351959

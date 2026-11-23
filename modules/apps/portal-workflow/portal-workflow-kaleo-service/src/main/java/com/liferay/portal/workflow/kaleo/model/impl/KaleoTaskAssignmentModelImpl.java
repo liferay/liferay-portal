@@ -125,38 +125,32 @@ public class KaleoTaskAssignmentModelImpl
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long ASSIGNEECLASSNAME_COLUMN_BITMASK = 1L;
+	public static final long COMPANYID_COLUMN_BITMASK = 1L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long COMPANYID_COLUMN_BITMASK = 2L;
+	public static final long KALEOCLASSNAME_COLUMN_BITMASK = 2L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long KALEOCLASSNAME_COLUMN_BITMASK = 4L;
+	public static final long KALEOCLASSPK_COLUMN_BITMASK = 4L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long KALEOCLASSPK_COLUMN_BITMASK = 8L;
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
-	 */
-	@Deprecated
-	public static final long KALEODEFINITIONVERSIONID_COLUMN_BITMASK = 16L;
+	public static final long KALEODEFINITIONVERSIONID_COLUMN_BITMASK = 8L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
 	 *		#getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long KALEOTASKASSIGNMENTID_COLUMN_BITMASK = 32L;
+	public static final long KALEOTASKASSIGNMENTID_COLUMN_BITMASK = 16L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
@@ -702,15 +696,6 @@ public class KaleoTaskAssignmentModelImpl
 		}
 
 		_assigneeClassName = assigneeClassName;
-	}
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *             #getColumnOriginalValue(String)}
-	 */
-	@Deprecated
-	public String getOriginalAssigneeClassName() {
-		return getColumnOriginalValue("assigneeClassName");
 	}
 
 	@Override
@@ -1333,4 +1318,4 @@ public class KaleoTaskAssignmentModelImpl
 	private KaleoTaskAssignment _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:525705249
+// LIFERAY-SERVICE-BUILDER-HASH:-1198150930
