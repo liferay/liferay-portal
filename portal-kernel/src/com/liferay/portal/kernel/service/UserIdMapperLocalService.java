@@ -228,10 +228,6 @@ public interface UserIdMapperLocalService
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public UserIdMapper getUserIdMapper(long userId, String type)
-		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public UserIdMapper getUserIdMapperByExternalUserId(
 			String type, String externalUserId)
 		throws PortalException;
@@ -249,9 +245,6 @@ public interface UserIdMapperLocalService
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<UserIdMapper> getUserIdMappers(int start, int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<UserIdMapper> getUserIdMappers(long userId);
 
 	/**
 	 * Returns the number of user ID mappers.
@@ -278,4 +271,4 @@ public interface UserIdMapperLocalService
 	public UserIdMapper updateUserIdMapper(UserIdMapper userIdMapper);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2099609593
+// LIFERAY-SERVICE-BUILDER-HASH:-1473427294

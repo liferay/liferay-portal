@@ -281,14 +281,6 @@ public class UserIdMapperLocalServiceWrapper
 	}
 
 	@Override
-	public com.liferay.portal.kernel.model.UserIdMapper getUserIdMapper(
-			long userId, String type)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _userIdMapperLocalService.getUserIdMapper(userId, type);
-	}
-
-	@Override
 	public com.liferay.portal.kernel.model.UserIdMapper
 			getUserIdMapperByExternalUserId(String type, String externalUserId)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -313,13 +305,6 @@ public class UserIdMapperLocalServiceWrapper
 		getUserIdMappers(int start, int end) {
 
 		return _userIdMapperLocalService.getUserIdMappers(start, end);
-	}
-
-	@Override
-	public java.util.List<com.liferay.portal.kernel.model.UserIdMapper>
-		getUserIdMappers(long userId) {
-
-		return _userIdMapperLocalService.getUserIdMappers(userId);
 	}
 
 	/**
@@ -377,4 +362,4 @@ public class UserIdMapperLocalServiceWrapper
 	private UserIdMapperLocalService _userIdMapperLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1880253938
+// LIFERAY-SERVICE-BUILDER-HASH:343282351

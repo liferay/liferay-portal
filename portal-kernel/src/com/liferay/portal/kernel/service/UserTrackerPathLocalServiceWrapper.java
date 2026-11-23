@@ -302,14 +302,6 @@ public class UserTrackerPathLocalServiceWrapper
 		return _userTrackerPathLocalService.getUserTrackerPaths(start, end);
 	}
 
-	@Override
-	public java.util.List<com.liferay.portal.kernel.model.UserTrackerPath>
-		getUserTrackerPaths(long userTrackerId, int start, int end) {
-
-		return _userTrackerPathLocalService.getUserTrackerPaths(
-			userTrackerId, start, end);
-	}
-
 	/**
 	 * Returns the number of user tracker paths.
 	 *
@@ -359,4 +351,4 @@ public class UserTrackerPathLocalServiceWrapper
 	private UserTrackerPathLocalService _userTrackerPathLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1842775635
+// LIFERAY-SERVICE-BUILDER-HASH:1726917870

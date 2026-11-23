@@ -309,15 +309,6 @@ public interface PasswordPolicyLocalService
 			long companyId, long[] organizationIds)
 		throws PortalException;
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public PasswordPolicy getPasswordPolicyByUser(User user)
-		throws PortalException;
-
-	@ThreadLocalCachable
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public PasswordPolicy getPasswordPolicyByUserId(long userId)
-		throws PortalException;
-
 	/**
 	 * Returns the password policy with the matching UUID and company.
 	 *
@@ -365,4 +356,4 @@ public interface PasswordPolicyLocalService
 	public PasswordPolicy updatePasswordPolicy(PasswordPolicy passwordPolicy);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-498865142
+// LIFERAY-SERVICE-BUILDER-HASH:562518314

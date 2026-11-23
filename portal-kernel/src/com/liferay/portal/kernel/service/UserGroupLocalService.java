@@ -471,15 +471,6 @@ public interface UserGroupLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<UserGroup> getUserGroups(long companyId);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<UserGroup> getUserGroups(
-		long companyId, String name, int start, int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<UserGroup> getUserGroups(
-		long companyId, String name, int start, int end,
-		OrderByComparator<UserGroup> orderByComparator);
-
 	/**
 	 * Returns all the user groups with the primary keys.
 	 *
@@ -497,9 +488,6 @@ public interface UserGroupLocalService
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getUserGroupsCount();
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getUserGroupsCount(long companyId, String name);
 
 	/**
 	 * Returns the userIds of the users associated with the user group.
@@ -807,4 +795,4 @@ public interface UserGroupLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1727923866
+// LIFERAY-SERVICE-BUILDER-HASH:1073455538

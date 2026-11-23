@@ -122,12 +122,6 @@ public interface RoleLocalService
 
 	/**
 	 * Checks to ensure that the system roles map has appropriate default roles
-	 * in each company.
-	 */
-	public void checkSystemRoles() throws PortalException;
-
-	/**
-	 * Checks to ensure that the system roles map has appropriate default roles
 	 * in the company.
 	 *
 	 * @param companyId the primary key of the company
@@ -427,20 +421,6 @@ public interface RoleLocalService
 		throws PortalException;
 
 	/**
-	 * Returns a map of role names to associated action IDs for the named
-	 * resource in the company within the permission scope.
-	 *
-	 * @param companyId the primary key of the company
-	 * @param name the resource name
-	 * @param scope the permission scope
-	 * @param primKey the primary key of the resource's class
-	 * @return the role names and action IDs
-	 */
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public Map<String, List<String>> getResourceRoles(
-		long companyId, String name, int scope, String primKey);
-
-	/**
 	 * Returns all the roles associated with the action ID in the company within
 	 * the permission scope.
 	 *
@@ -622,27 +602,6 @@ public interface RoleLocalService
 	public List<Role> getTypeRoles(int type);
 
 	/**
-	 * Returns a range of all the roles of the type.
-	 *
-	 * @param type the role's type (optionally <code>0</code>)
-	 * @param start the lower bound of the range of roles to return
-	 * @param end the upper bound of the range of roles to return (not
-	 inclusive)
-	 * @return the range of the roles of the type
-	 */
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<Role> getTypeRoles(int type, int start, int end);
-
-	/**
-	 * Returns the number of roles of the type.
-	 *
-	 * @param type the role's type (optionally <code>0</code>)
-	 * @return the number of roles of the type
-	 */
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getTypeRolesCount(int type);
-
-	/**
 	 * Returns all the user's roles within the user group.
 	 *
 	 * @param userId the primary key of the user
@@ -655,9 +614,6 @@ public interface RoleLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<Role> getUserGroupGroupRoles(
 		long userId, long groupId, int start, int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getUserGroupGroupRolesCount(long userId, long groupId);
 
 	/**
 	 * Returns all the user's roles within the user group.
@@ -1048,4 +1004,4 @@ public interface RoleLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2075590016
+// LIFERAY-SERVICE-BUILDER-HASH:-1326112335

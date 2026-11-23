@@ -537,48 +537,6 @@ public class UserLocalServiceWrapper
 	}
 
 	/**
-	 * Attempts to authenticate the user using HTTP basic access authentication,
-	 * without using the AuthPipeline. Primarily used for authenticating users
-	 * of <code>tunnel-web</code>.
-	 *
-	 * <p>
-	 * Authentication type specifies what <code>login</code> contains.The valid
-	 * values are:
-	 * </p>
-	 *
-	 * <ul>
-	 * <li>
-	 * <code>CompanyConstants.AUTH_TYPE_EA</code> - <code>login</code> is the
-	 * user's email address
-	 * </li>
-	 * <li>
-	 * <code>CompanyConstants.AUTH_TYPE_SN</code> - <code>login</code> is the
-	 * user's screen name
-	 * </li>
-	 * <li>
-	 * <code>CompanyConstants.AUTH_TYPE_ID</code> - <code>login</code> is the
-	 * user's primary key
-	 * </li>
-	 * </ul>
-	 *
-	 * @param companyId the primary key of the user's company
-	 * @param authType the type of authentication to perform
-	 * @param login either the user's email address, screen name, or primary
-	 key depending on the value of <code>authType</code>
-	 * @param password the user's password
-	 * @return the user's primary key if authentication is successful;
-	 <code>0</code> otherwise
-	 */
-	@Override
-	public long authenticateForBasic(
-			long companyId, String authType, String login, String password)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _userLocalService.authenticateForBasic(
-			companyId, authType, login, password);
-	}
-
-	/**
 	 * Attempts to authenticate the user using HTTP digest access
 	 * authentication, without using the AuthPipeline. Primarily used for
 	 * authenticating users of <code>tunnel-web</code>.
@@ -669,20 +627,6 @@ public class UserLocalServiceWrapper
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		_userLocalService.checkLoginFailureByScreenName(companyId, screenName);
-	}
-
-	/**
-	 * Checks if the user's password is expired based on the password policy,
-	 * and performs maintenance on the user's grace login and password reset
-	 * data.
-	 *
-	 * @param user the user
-	 */
-	@Override
-	public void checkPasswordExpired(User user)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		_userLocalService.checkPasswordExpired(user);
 	}
 
 	@Override
@@ -1036,20 +980,6 @@ public class UserLocalServiceWrapper
 	}
 
 	/**
-	 * Encrypts the primary key of the user. Used when encrypting the user's
-	 * credentials for storage in an automatic login cookie.
-	 *
-	 * @param name the primary key of the user
-	 * @return the user's encrypted primary key
-	 */
-	@Override
-	public String encryptUserId(String name)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _userLocalService.encryptUserId(name);
-	}
-
-	/**
 	 * Returns the guest user for the company.
 	 *
 	 * @param companyId the primary key of the company
@@ -1167,41 +1097,6 @@ public class UserLocalServiceWrapper
 		getActionableDynamicQuery() {
 
 		return _userLocalService.getActionableDynamicQuery();
-	}
-
-	/**
-	 * Returns a range of all the users belonging to the company.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end -
-	 * start</code> instances. <code>start</code> and <code>end</code> are not
-	 * primary keys, they are indexes in the result set. Thus, <code>0</code>
-	 * refers to the first result in the set. Setting both <code>start</code>
-	 * and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full
-	 * result set.
-	 * </p>
-	 *
-	 * @param companyId the primary key of the company
-	 * @param start the lower bound of the range of users
-	 * @param end the upper bound of the range of users (not inclusive)
-	 * @return the range of users belonging to the company
-	 */
-	@Override
-	public java.util.List<User> getCompanyUsers(
-		long companyId, int start, int end) {
-
-		return _userLocalService.getCompanyUsers(companyId, start, end);
-	}
-
-	/**
-	 * Returns the number of users belonging to the company.
-	 *
-	 * @param companyId the primary key of the company
-	 * @return the number of users belonging to the company
-	 */
-	@Override
-	public int getCompanyUsersCount(long companyId) {
-		return _userLocalService.getCompanyUsersCount(companyId);
 	}
 
 	/**
@@ -1696,21 +1591,6 @@ public class UserLocalServiceWrapper
 
 		return _userLocalService.getSocialUsersCount(
 			userId, socialRelationType, socialRelationTypeComparator);
-	}
-
-	/**
-	 * Returns the number of users with a mutual social relation with both of
-	 * the given users.
-	 *
-	 * @param userId1 the primary key of the first user
-	 * @param userId2 the primary key of the second user
-	 * @return the number of users with a mutual social relation with the user
-	 */
-	@Override
-	public int getSocialUsersCount(long userId1, long userId2)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _userLocalService.getSocialUsersCount(userId1, userId2);
 	}
 
 	/**
@@ -2435,60 +2315,6 @@ public class UserLocalServiceWrapper
 		return _userLocalService.searchCounts(companyId, status, groupIds);
 	}
 
-	@Override
-	public com.liferay.portal.kernel.search.BaseModelSearchResult<User>
-			searchUsers(
-				long companyId, String keywords, int status,
-				java.util.LinkedHashMap<String, Object> params, int start,
-				int end, com.liferay.portal.kernel.search.Sort sort)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _userLocalService.searchUsers(
-			companyId, keywords, status, params, start, end, sort);
-	}
-
-	@Override
-	public com.liferay.portal.kernel.search.BaseModelSearchResult<User>
-			searchUsers(
-				long companyId, String keywords, int status,
-				java.util.LinkedHashMap<String, Object> params, int start,
-				int end, com.liferay.portal.kernel.search.Sort[] sorts)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _userLocalService.searchUsers(
-			companyId, keywords, status, params, start, end, sorts);
-	}
-
-	@Override
-	public com.liferay.portal.kernel.search.BaseModelSearchResult<User>
-			searchUsers(
-				long companyId, String firstName, String middleName,
-				String lastName, String screenName, String emailAddress,
-				int status, java.util.LinkedHashMap<String, Object> params,
-				boolean andSearch, int start, int end,
-				com.liferay.portal.kernel.search.Sort sort)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _userLocalService.searchUsers(
-			companyId, firstName, middleName, lastName, screenName,
-			emailAddress, status, params, andSearch, start, end, sort);
-	}
-
-	@Override
-	public com.liferay.portal.kernel.search.BaseModelSearchResult<User>
-			searchUsers(
-				long companyId, String firstName, String middleName,
-				String lastName, String screenName, String emailAddress,
-				int status, java.util.LinkedHashMap<String, Object> params,
-				boolean andSearch, int start, int end,
-				com.liferay.portal.kernel.search.Sort[] sorts)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _userLocalService.searchUsers(
-			companyId, firstName, middleName, lastName, screenName,
-			emailAddress, status, params, andSearch, start, end, sorts);
-	}
-
 	/**
 	 * Sends an email address verification to the user.
 	 *
@@ -2803,20 +2629,6 @@ public class UserLocalServiceWrapper
 	}
 
 	/**
-	 * Updates the user's creation date.
-	 *
-	 * @param userId the primary key of the user
-	 * @param createDate the new creation date
-	 * @return the user
-	 */
-	@Override
-	public User updateCreateDate(long userId, java.util.Date createDate)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _userLocalService.updateCreateDate(userId, createDate);
-	}
-
-	/**
 	 * Updates the user's email address.
 	 *
 	 * @param userId the primary key of the user
@@ -2959,20 +2771,6 @@ public class UserLocalServiceWrapper
 			middleName, lastName, prefixListTypeId, suffixListTypeId, male,
 			birthdayMonth, birthdayDay, birthdayYear, jobTitle,
 			updateUserInformation, sendEmail, serviceContext);
-	}
-
-	/**
-	 * Updates the user's job title.
-	 *
-	 * @param userId the primary key of the user
-	 * @param jobTitle the user's job title
-	 * @return the user
-	 */
-	@Override
-	public User updateJobTitle(long userId, String jobTitle)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _userLocalService.updateJobTitle(userId, jobTitle);
 	}
 
 	@Override
@@ -3137,29 +2935,6 @@ public class UserLocalServiceWrapper
 
 		return _userLocalService.updatePassword(
 			userId, password1, password2, passwordReset, silentUpdate);
-	}
-
-	/**
-	 * Updates the user's password with manually input information. This method
-	 * should only be used when performing maintenance.
-	 *
-	 * @param userId the primary key of the user
-	 * @param password the user's new password
-	 * @param passwordEncrypted the user's new encrypted password
-	 * @param passwordReset whether the user should be asked to reset their
-	 password the next time they login
-	 * @param passwordModifiedDate the new password modified date
-	 * @return the user
-	 */
-	@Override
-	public User updatePasswordManually(
-			long userId, String password, boolean passwordEncrypted,
-			boolean passwordReset, java.util.Date passwordModifiedDate)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _userLocalService.updatePasswordManually(
-			userId, password, passwordEncrypted, passwordReset,
-			passwordModifiedDate);
 	}
 
 	/**
@@ -3394,4 +3169,4 @@ public class UserLocalServiceWrapper
 	private UserLocalService _userLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:883440578
+// LIFERAY-SERVICE-BUILDER-HASH:1215363552

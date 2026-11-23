@@ -240,16 +240,6 @@ public interface PasswordPolicyRelLocalService
 	public PasswordPolicyRel getPasswordPolicyRel(long passwordPolicyRelId)
 		throws PortalException;
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public PasswordPolicyRel getPasswordPolicyRel(
-			long passwordPolicyId, String className, long classPK)
-		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public PasswordPolicyRel getPasswordPolicyRel(
-			String className, long classPK)
-		throws PortalException;
-
 	/**
 	 * Returns a range of all the password policy rels.
 	 *
@@ -299,4 +289,4 @@ public interface PasswordPolicyRelLocalService
 		PasswordPolicyRel passwordPolicyRel);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:524470559
+// LIFERAY-SERVICE-BUILDER-HASH:1725275492

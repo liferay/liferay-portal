@@ -605,20 +605,6 @@ public class UserGroupLocalServiceUtil {
 		return getService().getUserGroups(companyId);
 	}
 
-	public static List<UserGroup> getUserGroups(
-		long companyId, String name, int start, int end) {
-
-		return getService().getUserGroups(companyId, name, start, end);
-	}
-
-	public static List<UserGroup> getUserGroups(
-		long companyId, String name, int start, int end,
-		OrderByComparator<UserGroup> orderByComparator) {
-
-		return getService().getUserGroups(
-			companyId, name, start, end, orderByComparator);
-	}
-
 	/**
 	 * Returns all the user groups with the primary keys.
 	 *
@@ -638,10 +624,6 @@ public class UserGroupLocalServiceUtil {
 	 */
 	public static int getUserGroupsCount() {
 		return getService().getUserGroupsCount();
-	}
-
-	public static int getUserGroupsCount(long companyId, String name) {
-		return getService().getUserGroupsCount(companyId, name);
 	}
 
 	/**
@@ -1012,4 +994,4 @@ public class UserGroupLocalServiceUtil {
 	private static volatile UserGroupLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:67191497
+// LIFERAY-SERVICE-BUILDER-HASH:-1238354933

@@ -331,25 +331,6 @@ public class PasswordPolicyRelLocalServiceWrapper
 			passwordPolicyRelId);
 	}
 
-	@Override
-	public com.liferay.portal.kernel.model.PasswordPolicyRel
-			getPasswordPolicyRel(
-				long passwordPolicyId, String className, long classPK)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _passwordPolicyRelLocalService.getPasswordPolicyRel(
-			passwordPolicyId, className, classPK);
-	}
-
-	@Override
-	public com.liferay.portal.kernel.model.PasswordPolicyRel
-			getPasswordPolicyRel(String className, long classPK)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _passwordPolicyRelLocalService.getPasswordPolicyRel(
-			className, classPK);
-	}
-
 	/**
 	 * Returns a range of all the password policy rels.
 	 *
@@ -437,4 +418,4 @@ public class PasswordPolicyRelLocalServiceWrapper
 	private PasswordPolicyRelLocalService _passwordPolicyRelLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:753799048
+// LIFERAY-SERVICE-BUILDER-HASH:-1934008242

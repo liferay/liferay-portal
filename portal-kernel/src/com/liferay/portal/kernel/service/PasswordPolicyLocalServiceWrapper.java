@@ -407,22 +407,6 @@ public class PasswordPolicyLocalServiceWrapper
 			companyId, organizationIds);
 	}
 
-	@Override
-	public com.liferay.portal.kernel.model.PasswordPolicy
-			getPasswordPolicyByUser(com.liferay.portal.kernel.model.User user)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _passwordPolicyLocalService.getPasswordPolicyByUser(user);
-	}
-
-	@Override
-	public com.liferay.portal.kernel.model.PasswordPolicy
-			getPasswordPolicyByUserId(long userId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _passwordPolicyLocalService.getPasswordPolicyByUserId(userId);
-	}
-
 	/**
 	 * Returns the password policy with the matching UUID and company.
 	 *
@@ -510,4 +494,4 @@ public class PasswordPolicyLocalServiceWrapper
 	private PasswordPolicyLocalService _passwordPolicyLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:141608825
+// LIFERAY-SERVICE-BUILDER-HASH:1786007859

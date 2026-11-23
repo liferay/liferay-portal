@@ -735,32 +735,6 @@ public class OrganizationLocalServiceUtil {
 	}
 
 	/**
-	 * Returns the number of organizations belonging to the parent organization.
-	 *
-	 * @param companyId the primary key of the organization's company
-	 * @param parentOrganizationId the primary key of the organization's parent
-	 organization
-	 * @return the number of organizations belonging to the parent organization
-	 */
-	public static int getOrganizationsCount(
-		long companyId, long parentOrganizationId) {
-
-		return getService().getOrganizationsCount(
-			companyId, parentOrganizationId);
-	}
-
-	public static int getOrganizationsCount(
-		long companyId, long parentOrganizationId, String name) {
-
-		return getService().getOrganizationsCount(
-			companyId, parentOrganizationId, name);
-	}
-
-	public static int getOrganizationsCount(long companyId, String name) {
-		return getService().getOrganizationsCount(companyId, name);
-	}
-
-	/**
 	 * Returns the OSGi service identifier.
 	 *
 	 * @return the OSGi service identifier
@@ -828,23 +802,6 @@ public class OrganizationLocalServiceUtil {
 		long companyId, long organizationId) {
 
 		return getService().getSuborganizationsCount(companyId, organizationId);
-	}
-
-	/**
-	 * Returns the intersection of <code>allOrganizations</code> and
-	 * <code>availableOrganizations</code>.
-	 *
-	 * @param allOrganizations the organizations to check for availability
-	 * @param availableOrganizations the available organizations
-	 * @return the intersection of <code>allOrganizations</code> and
-	 <code>availableOrganizations</code>
-	 */
-	public static List<Organization> getSubsetOrganizations(
-		List<Organization> allOrganizations,
-		List<Organization> availableOrganizations) {
-
-		return getService().getSubsetOrganizations(
-			allOrganizations, availableOrganizations);
 	}
 
 	public static String[] getTypes() {
@@ -1041,21 +998,6 @@ public class OrganizationLocalServiceUtil {
 	}
 
 	/**
-	 * Rebuilds the organization's tree.
-	 *
-	 * <p>
-	 * Only call this method if the tree has become stale through operations
-	 * other than normal CRUD. Under normal circumstances the tree is
-	 * automatically rebuilt whenever necessary.
-	 * </p>
-	 *
-	 * @param companyId the primary key of the organization's company
-	 */
-	public static void rebuildTree(long companyId) throws PortalException {
-		getService().rebuildTree(companyId);
-	}
-
-	/**
 	 * Returns a name ordered range of all the organizations that match the
 	 * keywords, type, region, and country, without using the indexer. It is
 	 * preferable to use the indexed version {@link #searchOrganizations(long,
@@ -1148,53 +1090,6 @@ public class OrganizationLocalServiceUtil {
 		return getService().search(
 			companyId, parentOrganizationId, keywords, type, regionId,
 			countryId, params, start, end, orderByComparator);
-	}
-
-	/**
-	 * Returns an ordered range of all the organizations whose name, type, or
-	 * location fields match the keywords specified for them, using the indexer.
-	 * It is preferable to use this method instead of the non-indexed version
-	 * whenever possible for performance reasons.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end -
-	 * start</code> instances. <code>start</code> and <code>end</code> are not
-	 * primary keys, they are indexes in the result set. Thus, <code>0</code>
-	 * refers to the first result in the set. Setting both <code>start</code>
-	 * and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full
-	 * result set.
-	 * </p>
-	 *
-	 * @param companyId the primary key of the organization's company
-	 * @param parentOrganizationId the primary key of the organization's parent
-	 organization
-	 * @param name the name keywords (space separated, optionally
-	 <code>null</code>)
-	 * @param type the type keywords (optionally <code>null</code>)
-	 * @param street the street keywords (optionally <code>null</code>)
-	 * @param city the city keywords (optionally <code>null</code>)
-	 * @param zip the zipcode keywords (optionally <code>null</code>)
-	 * @param region the region keywords (optionally <code>null</code>)
-	 * @param country the country keywords (optionally <code>null</code>)
-	 * @param params the finder parameters (optionally <code>null</code>).
-	 * @param andSearch whether every field must match its keywords or just one
-	 field
-	 * @param start the lower bound of the range of organizations to return
-	 * @param end the upper bound of the range of organizations to return (not
-	 inclusive)
-	 * @param sort the field and direction by which to sort (optionally
-	 <code>null</code>)
-	 * @return the matching organizations ordered by <code>sort</code>
-	 */
-	public static com.liferay.portal.kernel.search.Hits search(
-		long companyId, long parentOrganizationId, String name, String type,
-		String street, String city, String zip, String region, String country,
-		java.util.LinkedHashMap<String, Object> params, boolean andSearch,
-		int start, int end, com.liferay.portal.kernel.search.Sort sort) {
-
-		return getService().search(
-			companyId, parentOrganizationId, name, type, street, city, zip,
-			region, country, params, andSearch, start, end, sort);
 	}
 
 	/**
@@ -1435,4 +1330,4 @@ public class OrganizationLocalServiceUtil {
 	private static volatile OrganizationLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:381247866
+// LIFERAY-SERVICE-BUILDER-HASH:-155458671

@@ -242,10 +242,6 @@ public interface UserTrackerPathLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<UserTrackerPath> getUserTrackerPaths(int start, int end);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<UserTrackerPath> getUserTrackerPaths(
-		long userTrackerId, int start, int end);
-
 	/**
 	 * Returns the number of user tracker paths.
 	 *
@@ -269,4 +265,4 @@ public interface UserTrackerPathLocalService
 		UserTrackerPath userTrackerPath);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-948768363
+// LIFERAY-SERVICE-BUILDER-HASH:1066970478

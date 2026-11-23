@@ -119,17 +119,6 @@ public class RoleLocalServiceWrapper
 
 	/**
 	 * Checks to ensure that the system roles map has appropriate default roles
-	 * in each company.
-	 */
-	@Override
-	public void checkSystemRoles()
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		_roleLocalService.checkSystemRoles();
-	}
-
-	/**
-	 * Checks to ensure that the system roles map has appropriate default roles
 	 * in the company.
 	 *
 	 * @param companyId the primary key of the company
@@ -592,24 +581,6 @@ public class RoleLocalServiceWrapper
 	}
 
 	/**
-	 * Returns a map of role names to associated action IDs for the named
-	 * resource in the company within the permission scope.
-	 *
-	 * @param companyId the primary key of the company
-	 * @param name the resource name
-	 * @param scope the permission scope
-	 * @param primKey the primary key of the resource's class
-	 * @return the role names and action IDs
-	 */
-	@Override
-	public java.util.Map<String, java.util.List<String>> getResourceRoles(
-		long companyId, String name, int scope, String primKey) {
-
-		return _roleLocalService.getResourceRoles(
-			companyId, name, scope, primKey);
-	}
-
-	/**
 	 * Returns all the roles associated with the action ID in the company within
 	 * the permission scope.
 	 *
@@ -849,31 +820,6 @@ public class RoleLocalServiceWrapper
 	}
 
 	/**
-	 * Returns a range of all the roles of the type.
-	 *
-	 * @param type the role's type (optionally <code>0</code>)
-	 * @param start the lower bound of the range of roles to return
-	 * @param end the upper bound of the range of roles to return (not
-	 inclusive)
-	 * @return the range of the roles of the type
-	 */
-	@Override
-	public java.util.List<Role> getTypeRoles(int type, int start, int end) {
-		return _roleLocalService.getTypeRoles(type, start, end);
-	}
-
-	/**
-	 * Returns the number of roles of the type.
-	 *
-	 * @param type the role's type (optionally <code>0</code>)
-	 * @return the number of roles of the type
-	 */
-	@Override
-	public int getTypeRolesCount(int type) {
-		return _roleLocalService.getTypeRolesCount(type);
-	}
-
-	/**
 	 * Returns all the user's roles within the user group.
 	 *
 	 * @param userId the primary key of the user
@@ -893,11 +839,6 @@ public class RoleLocalServiceWrapper
 
 		return _roleLocalService.getUserGroupGroupRoles(
 			userId, groupId, start, end);
-	}
-
-	@Override
-	public int getUserGroupGroupRolesCount(long userId, long groupId) {
-		return _roleLocalService.getUserGroupGroupRolesCount(userId, groupId);
 	}
 
 	/**
@@ -1423,4 +1364,4 @@ public class RoleLocalServiceWrapper
 	private RoleLocalService _roleLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:26020757
+// LIFERAY-SERVICE-BUILDER-HASH:2133400366

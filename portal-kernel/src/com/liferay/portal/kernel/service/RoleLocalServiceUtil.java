@@ -116,14 +116,6 @@ public class RoleLocalServiceUtil {
 
 	/**
 	 * Checks to ensure that the system roles map has appropriate default roles
-	 * in each company.
-	 */
-	public static void checkSystemRoles() throws PortalException {
-		getService().checkSystemRoles();
-	}
-
-	/**
-	 * Checks to ensure that the system roles map has appropriate default roles
 	 * in the company.
 	 *
 	 * @param companyId the primary key of the company
@@ -521,22 +513,6 @@ public class RoleLocalServiceUtil {
 	}
 
 	/**
-	 * Returns a map of role names to associated action IDs for the named
-	 * resource in the company within the permission scope.
-	 *
-	 * @param companyId the primary key of the company
-	 * @param name the resource name
-	 * @param scope the permission scope
-	 * @param primKey the primary key of the resource's class
-	 * @return the role names and action IDs
-	 */
-	public static Map<String, List<String>> getResourceRoles(
-		long companyId, String name, int scope, String primKey) {
-
-		return getService().getResourceRoles(companyId, name, scope, primKey);
-	}
-
-	/**
 	 * Returns all the roles associated with the action ID in the company within
 	 * the permission scope.
 	 *
@@ -750,29 +726,6 @@ public class RoleLocalServiceUtil {
 	}
 
 	/**
-	 * Returns a range of all the roles of the type.
-	 *
-	 * @param type the role's type (optionally <code>0</code>)
-	 * @param start the lower bound of the range of roles to return
-	 * @param end the upper bound of the range of roles to return (not
-	 inclusive)
-	 * @return the range of the roles of the type
-	 */
-	public static List<Role> getTypeRoles(int type, int start, int end) {
-		return getService().getTypeRoles(type, start, end);
-	}
-
-	/**
-	 * Returns the number of roles of the type.
-	 *
-	 * @param type the role's type (optionally <code>0</code>)
-	 * @return the number of roles of the type
-	 */
-	public static int getTypeRolesCount(int type) {
-		return getService().getTypeRolesCount(type);
-	}
-
-	/**
 	 * Returns all the user's roles within the user group.
 	 *
 	 * @param userId the primary key of the user
@@ -787,10 +740,6 @@ public class RoleLocalServiceUtil {
 		long userId, long groupId, int start, int end) {
 
 		return getService().getUserGroupGroupRoles(userId, groupId, start, end);
-	}
-
-	public static int getUserGroupGroupRolesCount(long userId, long groupId) {
-		return getService().getUserGroupGroupRolesCount(userId, groupId);
 	}
 
 	/**
@@ -1245,4 +1194,4 @@ public class RoleLocalServiceUtil {
 	private static volatile RoleLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:309412691
+// LIFERAY-SERVICE-BUILDER-HASH:1235411792

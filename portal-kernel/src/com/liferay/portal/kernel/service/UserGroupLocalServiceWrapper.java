@@ -682,24 +682,6 @@ public class UserGroupLocalServiceWrapper
 		return _userGroupLocalService.getUserGroups(companyId);
 	}
 
-	@Override
-	public java.util.List<UserGroup> getUserGroups(
-		long companyId, String name, int start, int end) {
-
-		return _userGroupLocalService.getUserGroups(
-			companyId, name, start, end);
-	}
-
-	@Override
-	public java.util.List<UserGroup> getUserGroups(
-		long companyId, String name, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<UserGroup>
-			orderByComparator) {
-
-		return _userGroupLocalService.getUserGroups(
-			companyId, name, start, end, orderByComparator);
-	}
-
 	/**
 	 * Returns all the user groups with the primary keys.
 	 *
@@ -721,11 +703,6 @@ public class UserGroupLocalServiceWrapper
 	@Override
 	public int getUserGroupsCount() {
 		return _userGroupLocalService.getUserGroupsCount();
-	}
-
-	@Override
-	public int getUserGroupsCount(long companyId, String name) {
-		return _userGroupLocalService.getUserGroupsCount(companyId, name);
 	}
 
 	/**
@@ -1153,4 +1130,4 @@ public class UserGroupLocalServiceWrapper
 	private UserGroupLocalService _userGroupLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:536731783
+// LIFERAY-SERVICE-BUILDER-HASH:-699971003

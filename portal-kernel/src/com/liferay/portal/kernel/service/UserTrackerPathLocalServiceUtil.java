@@ -267,12 +267,6 @@ public class UserTrackerPathLocalServiceUtil {
 		return getService().getUserTrackerPaths(start, end);
 	}
 
-	public static List<UserTrackerPath> getUserTrackerPaths(
-		long userTrackerId, int start, int end) {
-
-		return getService().getUserTrackerPaths(userTrackerId, start, end);
-	}
-
 	/**
 	 * Returns the number of user tracker paths.
 	 *
@@ -309,4 +303,4 @@ public class UserTrackerPathLocalServiceUtil {
 	private static volatile UserTrackerPathLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-499234263
+// LIFERAY-SERVICE-BUILDER-HASH:1805215016

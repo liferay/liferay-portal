@@ -248,12 +248,6 @@ public class UserIdMapperLocalServiceUtil {
 		return getService().getUserIdMapper(userIdMapperId);
 	}
 
-	public static UserIdMapper getUserIdMapper(long userId, String type)
-		throws PortalException {
-
-		return getService().getUserIdMapper(userId, type);
-	}
-
 	public static UserIdMapper getUserIdMapperByExternalUserId(
 			String type, String externalUserId)
 		throws PortalException {
@@ -275,10 +269,6 @@ public class UserIdMapperLocalServiceUtil {
 	 */
 	public static List<UserIdMapper> getUserIdMappers(int start, int end) {
 		return getService().getUserIdMappers(start, end);
-	}
-
-	public static List<UserIdMapper> getUserIdMappers(long userId) {
-		return getService().getUserIdMappers(userId);
 	}
 
 	/**
@@ -322,4 +312,4 @@ public class UserIdMapperLocalServiceUtil {
 	private static volatile UserIdMapperLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1727083899
+// LIFERAY-SERVICE-BUILDER-HASH:-259254450

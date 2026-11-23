@@ -286,21 +286,6 @@ public class PasswordPolicyRelLocalServiceUtil {
 		return getService().getPasswordPolicyRel(passwordPolicyRelId);
 	}
 
-	public static PasswordPolicyRel getPasswordPolicyRel(
-			long passwordPolicyId, String className, long classPK)
-		throws PortalException {
-
-		return getService().getPasswordPolicyRel(
-			passwordPolicyId, className, classPK);
-	}
-
-	public static PasswordPolicyRel getPasswordPolicyRel(
-			String className, long classPK)
-		throws PortalException {
-
-		return getService().getPasswordPolicyRel(className, classPK);
-	}
-
 	/**
 	 * Returns a range of all the password policy rels.
 	 *
@@ -370,4 +355,4 @@ public class PasswordPolicyRelLocalServiceUtil {
 	private static volatile PasswordPolicyRelLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-346764774
+// LIFERAY-SERVICE-BUILDER-HASH:1149313670
