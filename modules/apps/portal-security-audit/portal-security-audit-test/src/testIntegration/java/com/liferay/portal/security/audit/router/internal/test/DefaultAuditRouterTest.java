@@ -38,6 +38,7 @@ import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.security.audit.AuditMessageProcessor;
 import com.liferay.portal.security.audit.configuration.AuditConfiguration;
+import com.liferay.portal.security.audit.constants.AuditEventConstants;
 import com.liferay.portal.security.audit.event.generators.constants.EventTypes;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
@@ -93,13 +94,19 @@ public class DefaultAuditRouterTest {
 	@Test
 	public void testRoute() throws Exception {
 		_testRoute(
-			User.class.getName(), "AI_HUB", "ADD", "ai_hub.user.add", "user");
+			User.class.getName(), "AI_HUB", "ADD", "AI_HUB", "ai_hub.user.add",
+			"user");
 		_testRoute(
-			User.class.getName(), null, "LOGIN", "instance.user.login", "user");
+			User.class.getName(), null, "LOGIN",
+			AuditEventConstants.CONTEXT_NAME_INSTANCE, "instance.user.login",
+			"user");
 		_testRoute(
 			User.class.getName(), null, StringPool.BLANK,
-			"instance.user.unknown", "user");
-		_testRoute(null, null, "ADD", "instance.unknown.add", "unknown");
+			AuditEventConstants.CONTEXT_NAME_INSTANCE, "instance.user.unknown",
+			"user");
+		_testRoute(
+			null, null, "ADD", AuditEventConstants.CONTEXT_NAME_INSTANCE,
+			"instance.unknown.add", "unknown");
 
 		AuditMessage auditMessage = _getAuditMessage(
 			RandomTestUtil.randomString(), null, "ASSIGN",
@@ -304,7 +311,8 @@ public class DefaultAuditRouterTest {
 
 	private void _testRoute(
 			String className, String contextName, String eventType,
-			String expectedResourceAction, String expectedResourceType)
+			String expectedContextName, String expectedResourceAction,
+			String expectedResourceType)
 		throws Exception {
 
 		AuditMessage auditMessage = _getAuditMessage(
@@ -312,6 +320,8 @@ public class DefaultAuditRouterTest {
 
 		_auditRouter.route(auditMessage);
 
+		Assert.assertTrue(_auditMessages.contains(auditMessage));
+		Assert.assertEquals(expectedContextName, auditMessage.getContextName());
 		Assert.assertEquals(
 			expectedResourceAction, auditMessage.getResourceAction());
 		Assert.assertEquals(
@@ -362,6 +372,9 @@ public class DefaultAuditRouterTest {
 
 			Assert.assertTrue(_auditMessages.contains(auditMessage));
 			Assert.assertNull(auditMessage.getAction());
+			Assert.assertEquals(
+				AuditEventConstants.CONTEXT_NAME_INSTANCE,
+				auditMessage.getContextName());
 			Assert.assertNull(auditMessage.getResourceAction());
 			Assert.assertNull(auditMessage.getResourceType());
 			Assert.assertNull(auditMessage.getRoles());
