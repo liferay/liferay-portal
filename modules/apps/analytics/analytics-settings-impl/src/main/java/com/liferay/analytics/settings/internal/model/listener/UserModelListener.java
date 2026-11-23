@@ -18,7 +18,6 @@ import com.liferay.portal.kernel.scheduler.SchedulerJobConfiguration;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Http;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
@@ -45,12 +44,17 @@ public class UserModelListener
 			return;
 		}
 
-		_emailAddresses.putIfAbsent(
-			user.getCompanyId(), Collections.synchronizedSet(new HashSet<>()));
+		_emailAddresses.compute(
+			user.getCompanyId(),
+			(key, emailAddresses) -> {
+				if (emailAddresses == null) {
+					emailAddresses = new HashSet<>();
+				}
 
-		Set<String> emailAddresses = _emailAddresses.get(user.getCompanyId());
+				emailAddresses.add(user.getEmailAddress());
 
-		emailAddresses.add(user.getEmailAddress());
+				return emailAddresses;
+			});
 	}
 
 	@Activate

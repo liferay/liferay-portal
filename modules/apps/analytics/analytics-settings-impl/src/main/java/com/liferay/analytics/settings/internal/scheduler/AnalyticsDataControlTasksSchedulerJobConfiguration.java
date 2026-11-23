@@ -23,8 +23,6 @@ import com.liferay.portal.security.key.secret.SecretResolverUtil;
 
 import java.net.HttpURLConnection;
 
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -56,15 +54,12 @@ public class AnalyticsDataControlTasksSchedulerJobConfiguration
 			for (Map.Entry<Long, AnalyticsConfiguration> entry :
 					analyticsConfigurations.entrySet()) {
 
-				Set<String> emailAddresses = new HashSet<>(
-					_emailAddresses.getOrDefault(
-						entry.getKey(), Collections.emptySet()));
+				Set<String> emailAddresses = _emailAddresses.remove(
+					entry.getKey());
 
-				if (emailAddresses.isEmpty()) {
+				if (SetUtil.isEmpty(emailAddresses)) {
 					continue;
 				}
-
-				_emailAddresses.remove(entry.getKey());
 
 				_createDataControlTasks(
 					entry.getValue(), entry.getKey(), emailAddresses,
