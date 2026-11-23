@@ -6,10 +6,16 @@
 package com.liferay.osb.faro.web.internal.fragment.renderer;
 
 import com.liferay.fragment.renderer.FragmentRenderer;
+import com.liferay.osb.faro.model.FaroProject;
+import com.liferay.osb.faro.service.FaroProjectLocalService;
+import com.liferay.osb.faro.web.internal.util.FaroNavigationUtil;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Eudaldo Alonso
@@ -24,8 +30,29 @@ public class FaroUsageSectionFragmentRenderer
 	}
 
 	@Override
-	protected String getModule(HttpServletRequest httpServletRequest) {
+	protected String getModule(HttpServletRequest httpServletRequest)
+		throws Exception {
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		FaroProject faroProject =
+			_faroProjectLocalService.fetchFaroProjectByGroupId(
+				themeDisplay.getScopeGroupId());
+
+		String subscriptionName = faroProject.getSubscriptionName();
+
+		if (FaroNavigationUtil.isLDPEnabled(themeDisplay.getScopeGroupId()) ||
+			subscriptionName.contains("SaaS")) {
+
+			return "{UsageExternal} from osb-faro-web/settings";
+		}
+
 		return "{Usage} from osb-faro-web/settings";
 	}
+
+	@Reference
+	private FaroProjectLocalService _faroProjectLocalService;
 
 }
