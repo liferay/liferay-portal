@@ -1,10 +1,9 @@
 Bundle-Name: Liferay Contacts API
 Bundle-SymbolicName: com.liferay.contacts.api
-Bundle-Version: 11.0.1
+Bundle-Version: 12.0.0
 Export-Package:\
 	com.liferay.contacts.constants,\
 	com.liferay.contacts.exception,\
 	com.liferay.contacts.model,\
 	com.liferay.contacts.service,\
-	com.liferay.contacts.service.persistence,\
-	com.liferay.contacts.util
+	com.liferay.contacts.service.persistence
