@@ -104,6 +104,7 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LogEntry;
 import com.liferay.portal.test.log.LoggerTestUtil;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
@@ -116,9 +117,11 @@ import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang3.RandomStringUtils;
 
@@ -863,6 +866,15 @@ public class ObjectEntryServiceTest {
 			() -> _objectEntryService.deleteObjectEntry(rootObjectEntryId));
 	}
 
+	@FeatureFlag("LPD-108620")
+	@Test
+	public void testFetchRelatedObjectEntry() throws Exception {
+		_testFetchRelatedObjectEntry(
+			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+		_testFetchRelatedObjectEntry(
+			ObjectRelationshipConstants.TYPE_ONE_TO_ONE);
+	}
+
 	@Test
 	public void testGetManyToManyObjectEntries() throws Exception {
 		UnsafeBiFunction<Long, Long, List<ObjectEntry>, PortalException>
@@ -1425,6 +1437,7 @@ public class ObjectEntryServiceTest {
 			() -> _testGetObjectEntry(objectEntry2, _user));
 	}
 
+	@FeatureFlag("LPD-108620")
 	@Test
 	public void testGetRelatedObjectEntries() throws Exception {
 		UnsafeBiFunction<Long, Long, List<ObjectEntry>, PortalException>
@@ -1438,14 +1451,35 @@ public class ObjectEntryServiceTest {
 			false, false, ObjectRelationshipConstants.TYPE_ONE_TO_MANY,
 			unsafeBiFunction);
 		_testGetObjectEntries(
+			false, false, ObjectRelationshipConstants.TYPE_ONE_TO_ONE,
+			unsafeBiFunction);
+		_testGetObjectEntries(
 			false, true, ObjectRelationshipConstants.TYPE_ONE_TO_MANY,
+			unsafeBiFunction);
+		_testGetObjectEntries(
+			false, true, ObjectRelationshipConstants.TYPE_ONE_TO_ONE,
 			unsafeBiFunction);
 		_testGetObjectEntries(
 			true, false, ObjectRelationshipConstants.TYPE_ONE_TO_MANY,
 			unsafeBiFunction);
 		_testGetObjectEntries(
+			true, false, ObjectRelationshipConstants.TYPE_ONE_TO_ONE,
+			unsafeBiFunction);
+		_testGetObjectEntries(
 			true, true, ObjectRelationshipConstants.TYPE_ONE_TO_MANY,
 			unsafeBiFunction);
+		_testGetObjectEntries(
+			true, true, ObjectRelationshipConstants.TYPE_ONE_TO_ONE,
+			unsafeBiFunction);
+	}
+
+	@FeatureFlag("LPD-108620")
+	@Test
+	public void testGetRelatedObjectEntriesCount() throws Exception {
+		_testGetRelatedObjectEntriesCount(
+			1, ObjectRelationshipConstants.TYPE_ONE_TO_ONE);
+		_testGetRelatedObjectEntriesCount(
+			2, ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 	}
 
 	@Test
@@ -2043,6 +2077,40 @@ public class ObjectEntryServiceTest {
 		}
 	}
 
+	private void _testFetchRelatedObjectEntry(String type) throws Exception {
+		ObjectRelationship objectRelationship =
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				_objectRelationshipLocalService, _objectDefinition,
+				_objectDefinition,
+				ObjectRelationshipConstants.DELETION_TYPE_PREVENT,
+				StringUtil.randomId(), type);
+
+		ObjectEntry objectEntry1 = _addObjectEntry(_adminUser);
+		ObjectEntry objectEntry2 = _addObjectEntry(_adminUser);
+
+		ObjectRelationshipTestUtil.relateObjectEntries(
+			objectEntry1.getObjectEntryId(), objectEntry2.getObjectEntryId(),
+			objectRelationship, TestPropsValues.getUserId());
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_adminUser)) {
+
+			ObjectEntry relatedObjectEntry =
+				_objectEntryService.fetchRelatedObjectEntry(
+					_group.getGroupId(),
+					objectRelationship.getObjectRelationshipId(),
+					objectEntry2.getObjectEntryId());
+
+			Assert.assertEquals(
+				objectEntry1.getObjectEntryId(),
+				relatedObjectEntry.getObjectEntryId());
+		}
+		finally {
+			_objectRelationshipLocalService.deleteObjectRelationship(
+				objectRelationship);
+		}
+	}
+
 	private void _testGetObjectEntries(
 			boolean hasPermission, boolean sqlCheckEnabled, String type,
 			UnsafeBiFunction<Long, Long, List<ObjectEntry>, PortalException>
@@ -2066,26 +2134,38 @@ public class ObjectEntryServiceTest {
 			objectEntry.getObjectEntryId(),
 			relatedObjectEntry1.getObjectEntryId(), objectRelationship,
 			TestPropsValues.getUserId());
-		ObjectRelationshipTestUtil.relateObjectEntries(
-			objectEntry.getObjectEntryId(),
-			relatedObjectEntry2.getObjectEntryId(), objectRelationship,
-			TestPropsValues.getUserId());
 
-		_setResourcePermissions(
-			_objectDefinition.getClassName(),
-			ResourceConstants.SCOPE_INDIVIDUAL,
-			String.valueOf(relatedObjectEntry1.getObjectEntryId()),
-			RoleConstants.USER, new String[] {ActionKeys.VIEW});
+		boolean oneToOne = StringUtil.equals(
+			type, ObjectRelationshipConstants.TYPE_ONE_TO_ONE);
 
-		if (hasPermission) {
+		if (!oneToOne) {
+			ObjectRelationshipTestUtil.relateObjectEntries(
+				objectEntry.getObjectEntryId(),
+				relatedObjectEntry2.getObjectEntryId(), objectRelationship,
+				TestPropsValues.getUserId());
+		}
+
+		Set<ObjectEntry> expectedObjectEntries = new HashSet<>();
+
+		if (hasPermission || !oneToOne) {
+			_setResourcePermissions(
+				_objectDefinition.getClassName(),
+				ResourceConstants.SCOPE_INDIVIDUAL,
+				String.valueOf(relatedObjectEntry1.getObjectEntryId()),
+				RoleConstants.USER, new String[] {ActionKeys.VIEW});
+
+			expectedObjectEntries.add(relatedObjectEntry1);
+		}
+
+		if (hasPermission && !oneToOne) {
 			_setResourcePermissions(
 				_objectDefinition.getClassName(),
 				ResourceConstants.SCOPE_INDIVIDUAL,
 				String.valueOf(relatedObjectEntry2.getObjectEntryId()),
 				RoleConstants.USER, new String[] {ActionKeys.VIEW});
-		}
 
-		_setUser(_user);
+			expectedObjectEntries.add(relatedObjectEntry2);
+		}
 
 		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
 				new ConfigurationTemporarySwapper(
@@ -2093,28 +2173,18 @@ public class ObjectEntryServiceTest {
 						"configuration.InlinePermissionConfiguration",
 					HashMapDictionaryBuilder.<String, Object>put(
 						"sqlCheckEnabled", sqlCheckEnabled
-					).build())) {
+					).build());
+			ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_user)) {
 
-			if (hasPermission) {
-				Assert.assertEquals(
-					SetUtil.fromArray(relatedObjectEntry1, relatedObjectEntry2),
-					SetUtil.fromList(
-						unsafeBiFunction.apply(
-							objectRelationship.getObjectRelationshipId(),
-							objectEntry.getObjectEntryId())));
-			}
-			else {
-				Assert.assertEquals(
-					SetUtil.fromArray(relatedObjectEntry1),
-					SetUtil.fromList(
-						unsafeBiFunction.apply(
-							objectRelationship.getObjectRelationshipId(),
-							objectEntry.getObjectEntryId())));
-			}
+			Assert.assertEquals(
+				expectedObjectEntries,
+				SetUtil.fromList(
+					unsafeBiFunction.apply(
+						objectRelationship.getObjectRelationshipId(),
+						objectEntry.getObjectEntryId())));
 		}
 		finally {
-			_setUser(_adminUser);
-
 			_objectRelationshipLocalService.deleteObjectRelationship(
 				objectRelationship);
 		}
@@ -2127,6 +2197,44 @@ public class ObjectEntryServiceTest {
 				user)) {
 
 			_objectEntryService.getObjectEntry(objectEntry.getObjectEntryId());
+		}
+	}
+
+	private void _testGetRelatedObjectEntriesCount(
+			int expectedRelatedObjectEntriesCount, String type)
+		throws Exception {
+
+		ObjectRelationship objectRelationship =
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				_objectRelationshipLocalService, _objectDefinition,
+				_objectDefinition,
+				ObjectRelationshipConstants.DELETION_TYPE_PREVENT,
+				StringUtil.randomId(), type);
+
+		ObjectEntry objectEntry1 = _addObjectEntry(_adminUser);
+
+		for (int i = 0; i < expectedRelatedObjectEntriesCount; i++) {
+			ObjectEntry objectEntry2 = _addObjectEntry(_adminUser);
+
+			ObjectRelationshipTestUtil.relateObjectEntries(
+				objectEntry1.getObjectEntryId(),
+				objectEntry2.getObjectEntryId(), objectRelationship,
+				TestPropsValues.getUserId());
+		}
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_adminUser)) {
+
+			Assert.assertEquals(
+				expectedRelatedObjectEntriesCount,
+				_objectEntryService.getRelatedObjectEntriesCount(
+					_group.getGroupId(),
+					objectRelationship.getObjectRelationshipId(), null,
+					objectEntry1.getObjectEntryId(), true, null));
+		}
+		finally {
+			_objectRelationshipLocalService.deleteObjectRelationship(
+				objectRelationship);
 		}
 	}
 
