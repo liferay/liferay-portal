@@ -26,6 +26,9 @@ import com.liferay.portal.security.key.secret.Secret;
 import com.liferay.portal.security.key.secret.exception.SecretException;
 import com.liferay.portal.security.key.spi.ProviderStatus;
 import com.liferay.portal.security.key.spi.secret.SecretProvider;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LogEntry;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
@@ -120,7 +123,11 @@ public class MFATimeBasedOTPEntryLocalServiceTest {
 	public void testAddTimeBasedOTPEntryWhenPutSecretFails() throws Exception {
 		try (AutoCloseable autoCloseable =
 				ReflectionTestUtil.setFieldValueWithAutoCloseable(
-					PropsValues.class, "FIPS_ENABLED", true)) {
+					PropsValues.class, "FIPS_ENABLED", true);
+			LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.portal.security.key.internal.secret." +
+					"SecretManagerImpl",
+				LoggerTestUtil.WARN)) {
 
 			_testSecretProvider.setPutSecretFailure(true);
 
@@ -133,6 +140,19 @@ public class MFATimeBasedOTPEntryLocalServiceTest {
 			catch (SecretException secretException) {
 				Assert.assertEquals(
 					_PUT_SECRET_FAILURE_MESSAGE, secretException.getMessage());
+
+				List<LogEntry> logEntries = logCapture.getLogEntries();
+
+				Assert.assertEquals(
+					logEntries.toString(), 1, logEntries.size());
+
+				LogEntry logEntry = logEntries.get(0);
+
+				Assert.assertEquals(
+					"Unable to put secret", logEntry.getMessage());
+				Assert.assertEquals(
+					LoggerTestUtil.WARN, logEntry.getPriority());
+				Assert.assertSame(secretException, logEntry.getThrowable());
 			}
 
 			Assert.assertNull(
