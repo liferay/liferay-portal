@@ -40,22 +40,18 @@ public class FragmentEntryLinkServiceImpl
 
 	@Override
 	public FragmentEntryLink addFragmentEntryLink(
-			String externalReferenceCode, long groupId,
-			String originalFragmentEntryLinkERC, String fragmentEntryERC,
+			String externalReferenceCode, long groupId, String fragmentEntryERC,
 			String fragmentEntryScopeERC, long segmentsExperienceId, long plid,
-			String css, String html, String js, String configuration,
-			String editableValues, String namespace, int position,
-			String rendererKey, int type, ServiceContext serviceContext)
+			String editableValues, String rendererKey,
+			ServiceContext serviceContext)
 		throws PortalException {
 
 		_checkPermission(groupId, plid, false, true);
 
 		return fragmentEntryLinkLocalService.addFragmentEntryLink(
-			externalReferenceCode, getUserId(), groupId,
-			originalFragmentEntryLinkERC, fragmentEntryERC,
-			fragmentEntryScopeERC, segmentsExperienceId, plid, css, html, js,
-			configuration, editableValues, namespace, position, rendererKey,
-			type, serviceContext);
+			externalReferenceCode, getUserId(), groupId, fragmentEntryERC,
+			fragmentEntryScopeERC, segmentsExperienceId, plid, editableValues,
+			rendererKey, serviceContext);
 	}
 
 	@Override
