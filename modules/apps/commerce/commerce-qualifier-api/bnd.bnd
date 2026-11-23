@@ -7,6 +7,5 @@ Export-Package:\
 	com.liferay.commerce.qualifier.helper,\
 	com.liferay.commerce.qualifier.metadata,\
 	com.liferay.commerce.qualifier.model,\
-	com.liferay.commerce.qualifier.search.context,\
 	com.liferay.commerce.qualifier.service,\
 	com.liferay.commerce.qualifier.service.persistence
