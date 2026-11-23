@@ -74,11 +74,13 @@ async function waitForCustomFieldAttribute({
 async function waitForKnownIndividual({
 	apiHelpers,
 	channelId,
+	filter = '',
 	groupId,
 	name,
 }: {
 	apiHelpers: ApiHelpers;
 	channelId: string;
+	filter?: string;
 	groupId: string;
 	name: string;
 }) {
@@ -87,7 +89,7 @@ async function waitForKnownIndividual({
 			`${faroConfig.environment.baseUrl}/o/faro/contacts/${groupId}` +
 				`/individual/search`,
 			{
-				form: {channelId, cur: 1, delta: 500, query: name},
+				form: {channelId, cur: 1, delta: 500, filter, query: name},
 				headers: await apiHelpers.getCSRFTokenHeader(),
 			}
 		);
@@ -199,6 +201,7 @@ test(
 			await waitForKnownIndividual({
 				apiHelpers,
 				channelId: channel.id,
+				filter: `(contains(custom/${customFieldName}/value, 'VIP AC'))`,
 				groupId: project.groupId,
 				name: `${user.givenName} ${user.familyName}`,
 			});
