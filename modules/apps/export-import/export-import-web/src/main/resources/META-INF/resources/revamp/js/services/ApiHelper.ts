@@ -139,13 +139,11 @@ async function postFormDataWithProgress<T>(
 	});
 }
 
-async function post<T>(url: string, body: unknown): Promise<RequestResult<T>> {
+async function handleRequest<T>(
+	fetcher: () => Promise<Response>
+): Promise<RequestResult<T>> {
 	try {
-		const response = await fetch(url, {
-			body: JSON.stringify(body),
-			headers: {...HEADERS, 'Content-Type': 'application/json'},
-			method: 'POST',
-		});
+		const response = await fetcher();
 
 		if (response.status === 204) {
 			return {data: {} as T, error: null};
@@ -166,6 +164,26 @@ async function post<T>(url: string, body: unknown): Promise<RequestResult<T>> {
 	catch (error) {
 		return {data: null, error: UNEXPECTED_ERROR_MESSAGE};
 	}
+}
+
+async function patch<T>(url: string, body: unknown): Promise<RequestResult<T>> {
+	return handleRequest<T>(() =>
+		fetch(url, {
+			body: JSON.stringify(body),
+			headers: {...HEADERS, 'Content-Type': 'application/json'},
+			method: 'PATCH',
+		})
+	);
+}
+
+async function post<T>(url: string, body: unknown): Promise<RequestResult<T>> {
+	return handleRequest<T>(() =>
+		fetch(url, {
+			body: JSON.stringify(body),
+			headers: {...HEADERS, 'Content-Type': 'application/json'},
+			method: 'POST',
+		})
+	);
 }
 
 async function deleteResource(url: string): Promise<RequestResult<void>> {
@@ -200,6 +218,7 @@ async function deleteResource(url: string): Promise<RequestResult<void>> {
 export default {
 	delete: deleteResource,
 	get,
+	patch,
 	post,
 	postFormDataWithProgress,
 };

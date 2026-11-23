@@ -9,5 +9,6 @@ export {FormikFieldDateFilter} from './FormikFieldDateFilter';
 export {FormikFieldFileSelector} from './FormikFieldFileSelector';
 export {FormikFieldGroups} from './FormikFieldGroups';
 export {FormikFieldMultiCheckbox} from './FormikFieldMultiCheckbox';
+export {FormikFieldPassword} from './FormikFieldPassword';
 export {FormikFieldRadioGroup} from './FormikFieldRadioGroup';
 export {FormikFieldText} from './FormikFieldText';

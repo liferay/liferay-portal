@@ -17,7 +17,7 @@ export type FieldTextProps = {
 	label: string;
 	name: string;
 	required?: boolean;
-	type?: 'text' | 'number';
+	type?: 'number' | 'password' | 'text';
 	value?: string;
 } & React.ComponentProps<typeof ClayInput>;
 
