@@ -228,14 +228,6 @@ jobs:
         uses: ./.github/workflows/ci-reusable-promote-helm-chart.yaml
         with:
             source_image_ref: ${{needs.push-rc-azure-infrastructure-provider.outputs.image_ref}}
-    promote-rc-bootstrap-gcp:
-        if: ${{!cancelled() && needs.approve-release.result == 'success' && needs.push-rc-bootstrap-gcp.result == 'success'}}
-        needs:
-            -   approve-release
-            -   push-rc-bootstrap-gcp
-        uses: ./.github/workflows/ci-reusable-promote-bootstrap-tarball.yaml
-        with:
-            source_object_name: ${{needs.push-rc-bootstrap-gcp.outputs.object_name}}
     promote-rc-client-extension:
         if: ${{!cancelled() && needs.approve-release.result == 'success' && needs.push-rc-client-extension.result == 'success'}}
         needs:
@@ -437,6 +429,15 @@ jobs:
         with:
             is_production: true
             provider: azure
+    publish-bootstrap-gcp:
+        if: ${{!cancelled() && needs.approve-release.result == 'success' && needs.push-rc-bootstrap-gcp.result == 'success'}}
+        needs:
+            -   approve-release
+            -   push-rc-bootstrap-gcp
+        uses: ./.github/workflows/ci-reusable-push-bootstrap-tarball.yaml
+        with:
+            is_production: true
+            provider: gcp
     push-rc-aws:
         if: ${{needs.check-aws.outputs.should_release == 'true'}}
         needs: check-aws
@@ -598,7 +599,6 @@ jobs:
             -   promote-rc-aws-infrastructure-provider
             -   promote-rc-azure
             -   promote-rc-azure-infrastructure-provider
-            -   promote-rc-bootstrap-gcp
             -   promote-rc-client-extension
             -   promote-rc-default
             -   promote-rc-dxp-operator
@@ -613,6 +613,7 @@ jobs:
             -   publish-aws-marketplace
             -   publish-bootstrap-aws
             -   publish-bootstrap-azure
+            -   publish-bootstrap-gcp
             -   push-rc-aws
             -   push-rc-aws-infrastructure-provider
             -   push-rc-azure
@@ -645,7 +646,7 @@ jobs:
             -   env:
                     BOOTSTRAP_SHA256_aws: ${{needs.publish-bootstrap-aws.outputs.sha256}}
                     BOOTSTRAP_SHA256_azure: ${{needs.publish-bootstrap-azure.outputs.sha256}}
-                    BOOTSTRAP_SHA256_gcp: ${{needs.promote-rc-bootstrap-gcp.outputs.sha256}}
+                    BOOTSTRAP_SHA256_gcp: ${{needs.publish-bootstrap-gcp.outputs.sha256}}
                     BOOTSTRAP_VERSION_aws: ${{needs.push-rc-bootstrap-aws.outputs.version}}
                     BOOTSTRAP_VERSION_azure: ${{needs.push-rc-bootstrap-azure.outputs.version}}
                     BOOTSTRAP_VERSION_gcp: ${{needs.push-rc-bootstrap-gcp.outputs.version}}
