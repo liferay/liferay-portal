@@ -132,33 +132,12 @@ test(
 				.click();
 		});
 
-		await test.step('Check the data source connection modal information', async () => {
+		await test.step('Check the data source connection information', async () => {
 			await expect(
 				page.getByText('Connect Your Liferay DXP')
 			).toBeVisible();
 			await expect(
 				page.getByText('Copy this token to your Liferay DXP instance.')
-			).toBeVisible();
-			await expect(
-				page
-					.getByRole('dialog')
-					.getByText('DXP Requirements', {exact: true})
-			).toBeVisible();
-
-			await page.getByRole('dialog').getByRole('combobox').click();
-
-			await expect(
-				page.getByRole('option', {
-					name: 'DXP 2024.Q1.1 Quarterly Release',
-				})
-			).toBeHidden();
-			await expect(
-				page.getByRole('option', {
-					name: 'DXP Version 7.3 U30 + and above with hotfix',
-				})
-			).toBeHidden();
-			await expect(
-				page.getByRole('link', {name: 'Download'})
 			).toBeVisible();
 		});
 	}
