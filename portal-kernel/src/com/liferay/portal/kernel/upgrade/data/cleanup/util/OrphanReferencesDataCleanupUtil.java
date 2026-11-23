@@ -109,6 +109,10 @@ public class OrphanReferencesDataCleanupUtil {
 
 			ResultSet resultSet = preparedStatement1.executeQuery()) {
 
+			if (!resultSet.next()) {
+				return;
+			}
+
 			if (!readOnly) {
 				_executeDelete(
 					connection,
@@ -124,7 +128,7 @@ public class OrphanReferencesDataCleanupUtil {
 				return;
 			}
 
-			while (resultSet.next()) {
+			do {
 				DataCleanupLoggingUtil.logDelete(
 					_log, resultSet.getLong("count"), readOnly, sourceTableName,
 					StringBundler.concat(
@@ -135,6 +139,7 @@ public class OrphanReferencesDataCleanupUtil {
 						String.join(", ", targetColumnNames), " from table ",
 						targetTableName));
 			}
+			while (resultSet.next());
 		}
 		finally {
 			for (SafeCloseable safeCloseable : safeCloseables) {
