@@ -70,7 +70,8 @@ public class LayoutUtilityPageEntryServiceUtil {
 	}
 
 	public static LayoutUtilityPageEntry fetchLayoutUtilityPageEntry(
-		long layoutUtilityPageEntryId) {
+			long layoutUtilityPageEntryId)
+		throws PortalException {
 
 		return getService().fetchLayoutUtilityPageEntry(
 			layoutUtilityPageEntryId);
@@ -209,4 +210,4 @@ public class LayoutUtilityPageEntryServiceUtil {
 			LayoutUtilityPageEntryService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1090309240
+// LIFERAY-SERVICE-BUILDER-HASH:219290470

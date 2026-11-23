@@ -221,8 +221,9 @@ public class LayoutUtilityPageEntryServiceHttp {
 	}
 
 	public static com.liferay.layout.utility.page.model.LayoutUtilityPageEntry
-		fetchLayoutUtilityPageEntry(
-			HttpPrincipal httpPrincipal, long layoutUtilityPageEntryId) {
+			fetchLayoutUtilityPageEntry(
+				HttpPrincipal httpPrincipal, long layoutUtilityPageEntryId)
+		throws com.liferay.portal.kernel.exception.PortalException {
 
 		try {
 			MethodKey methodKey = new MethodKey(
@@ -239,6 +240,13 @@ public class LayoutUtilityPageEntryServiceHttp {
 				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
 			}
 			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
 				throw new com.liferay.portal.kernel.exception.SystemException(
 					exception);
 			}
@@ -948,4 +956,4 @@ public class LayoutUtilityPageEntryServiceHttp {
 		};
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:272774366
+// LIFERAY-SERVICE-BUILDER-HASH:-2008021252

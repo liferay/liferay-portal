@@ -68,7 +68,8 @@ public interface LayoutUtilityPageEntryService extends BaseService {
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public LayoutUtilityPageEntry fetchLayoutUtilityPageEntry(
-		long layoutUtilityPageEntryId);
+			long layoutUtilityPageEntryId)
+		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public LayoutUtilityPageEntry
@@ -147,4 +148,4 @@ public interface LayoutUtilityPageEntryService extends BaseService {
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-132176084
+// LIFERAY-SERVICE-BUILDER-HASH:-1384896640

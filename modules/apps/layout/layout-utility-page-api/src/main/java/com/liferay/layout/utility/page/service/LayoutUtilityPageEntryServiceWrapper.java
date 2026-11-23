@@ -73,7 +73,8 @@ public class LayoutUtilityPageEntryServiceWrapper
 
 	@Override
 	public LayoutUtilityPageEntry fetchLayoutUtilityPageEntry(
-		long layoutUtilityPageEntryId) {
+			long layoutUtilityPageEntryId)
+		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _layoutUtilityPageEntryService.fetchLayoutUtilityPageEntry(
 			layoutUtilityPageEntryId);
@@ -241,4 +242,4 @@ public class LayoutUtilityPageEntryServiceWrapper
 	private LayoutUtilityPageEntryService _layoutUtilityPageEntryService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-507615630
+// LIFERAY-SERVICE-BUILDER-HASH:72606788
