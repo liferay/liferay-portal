@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.model.ResourcedModel;
+import com.liferay.portal.kernel.model.ShardedModel;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -85,10 +86,9 @@ public class LaunchEntryManagerServiceTrackerCustomizer
 		_serviceTracker.close();
 	}
 
-	private void _deleteLaunchEntries(String className, long classPK)
+	private void _deleteLaunchEntries(
+			String className, long classPK, long companyId)
 		throws PortalException {
-
-		long companyId = CompanyThreadLocal.getCompanyId();
 
 		ObjectDefinition objectDefinition =
 			_objectDefinitionLocalService.fetchObjectDefinition(
@@ -158,8 +158,16 @@ public class LaunchEntryManagerServiceTrackerCustomizer
 				return;
 			}
 
+			long companyId = CompanyThreadLocal.getCompanyId();
+
+			if (baseModel instanceof ShardedModel) {
+				ShardedModel shardedModel = (ShardedModel)baseModel;
+
+				companyId = shardedModel.getCompanyId();
+			}
+
 			try {
-				_deleteLaunchEntries(_className, classPK);
+				_deleteLaunchEntries(_className, classPK, companyId);
 			}
 			catch (PortalException portalException) {
 				throw new ModelListenerException(portalException);
