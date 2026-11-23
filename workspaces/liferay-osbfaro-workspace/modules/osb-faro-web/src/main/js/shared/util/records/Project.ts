@@ -10,6 +10,7 @@ interface IProject {
 	friendlyURL: string;
 	groupId: number;
 	incidentReportEmailAddresses: List<string>;
+	ldpEnabled: boolean;
 	name: string;
 	ownerEmailAddress: string;
 	recommendationsEnabled: boolean;
@@ -32,6 +33,7 @@ export default class Project
 		friendlyURL: null,
 		groupId: null,
 		incidentReportEmailAddresses: List(),
+		ldpEnabled: false,
 		name: '',
 		ownerEmailAddress: '',
 		recommendationsEnabled: false,
@@ -53,6 +55,7 @@ export default class Project
 	declare friendlyURL: string;
 	declare groupId: number;
 	declare incidentReportEmailAddresses: List<string>;
+	declare ldpEnabled: boolean;
 	declare name: string;
 	declare ownerEmailAddress: string;
 	declare recommendationsEnabled: boolean;
