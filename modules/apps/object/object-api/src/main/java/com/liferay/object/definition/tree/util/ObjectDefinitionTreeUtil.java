@@ -22,6 +22,7 @@ import com.liferay.object.service.persistence.ObjectActionPersistence;
 import com.liferay.object.service.persistence.ObjectDefinitionPersistence;
 import com.liferay.object.service.persistence.ObjectFieldPersistence;
 import com.liferay.object.service.persistence.ObjectRelationshipPersistence;
+import com.liferay.object.tree.Edge;
 import com.liferay.object.tree.Node;
 import com.liferay.object.tree.ObjectDefinitionTreeFactory;
 import com.liferay.object.tree.Tree;
@@ -185,6 +186,34 @@ public class ObjectDefinitionTreeUtil {
 			objectDefinitionLocalService.deployObjectDefinition(
 				rootObjectDefinition);
 		}
+	}
+
+	public static List<String> getObjectRelationshipNames(
+			ObjectRelationshipLocalService objectRelationshipLocalService,
+			Tree tree)
+		throws PortalException {
+
+		List<String> objectRelationshipNames = new ArrayList<>();
+
+		Iterator<Node> iterator = tree.iterator();
+
+		while (iterator.hasNext()) {
+			Node node = iterator.next();
+
+			Edge edge = node.getEdge();
+
+			if (edge == null) {
+				continue;
+			}
+
+			ObjectRelationship objectRelationship =
+				objectRelationshipLocalService.getObjectRelationship(
+					edge.getObjectRelationshipId());
+
+			objectRelationshipNames.add(objectRelationship.getName());
+		}
+
+		return objectRelationshipNames;
 	}
 
 	public static long[] getRootObjectDefinitionIds(

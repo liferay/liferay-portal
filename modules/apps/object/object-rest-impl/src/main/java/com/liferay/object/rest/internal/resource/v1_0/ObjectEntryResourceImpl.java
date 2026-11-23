@@ -9,10 +9,10 @@ import com.liferay.exportimport.constants.ExportImportConstants;
 import com.liferay.exportimport.vulcan.batch.engine.ExportImportVulcanBatchEngineTaskItemDelegate;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.constants.ObjectFieldConstants;
+import com.liferay.object.definition.tree.util.ObjectDefinitionTreeUtil;
 import com.liferay.object.exception.ObjectEntryValidationException;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectField;
-import com.liferay.object.model.ObjectRelationship;
 import com.liferay.object.model.ObjectRelationshipModel;
 import com.liferay.object.rest.dto.v1_0.ObjectEntry;
 import com.liferay.object.rest.dto.v1_0.TranslationResponse;
@@ -31,7 +31,6 @@ import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectEntryService;
 import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.service.ObjectRelationshipLocalService;
-import com.liferay.object.tree.Edge;
 import com.liferay.object.tree.Node;
 import com.liferay.object.tree.ObjectDefinitionTreeFactory;
 import com.liferay.object.tree.Tree;
@@ -187,33 +186,9 @@ public class ObjectEntryResourceImpl
 
 			treeHeight += tree.getHeight(tree.getRootNode());
 
-			Iterator<Node> iterator = tree.iterator();
-
-			while (iterator.hasNext()) {
-				Node node = iterator.next();
-
-				List<Node> childNodes = node.getChildNodes();
-
-				if (ListUtil.isEmpty(childNodes)) {
-					continue;
-				}
-
-				for (int i = childNodes.size() - 1; i >= 0; i--) {
-					Node childNode = childNodes.get(i);
-
-					Edge edge = childNode.getEdge();
-
-					if (edge == null) {
-						continue;
-					}
-
-					ObjectRelationship objectRelationship =
-						_objectRelationshipLocalService.getObjectRelationship(
-							edge.getObjectRelationshipId());
-
-					nestedFields.add(objectRelationship.getName());
-				}
-			}
+			nestedFields.addAll(
+				ObjectDefinitionTreeUtil.getObjectRelationshipNames(
+					_objectRelationshipLocalService, tree));
 		}
 		catch (Exception exception) {
 			_log.error(exception);
