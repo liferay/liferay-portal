@@ -22,7 +22,6 @@ import de.hunsicker.jalopy.storage.Convention;
 import de.hunsicker.jalopy.storage.ConventionKeys;
 import de.hunsicker.jalopy.storage.Environment;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 
@@ -464,8 +463,7 @@ public class ToolsUtil {
 		Jalopy jalopy = new Jalopy();
 
 		jalopy.setFileFormat(FileFormat.UNIX);
-		jalopy.setInput(
-			new ByteArrayInputStream(content.getBytes()), file.getPath());
+		jalopy.setInput(content, file.getPath());
 		jalopy.setOutput(sb);
 
 		File jalopyXmlFile = new File("tools/jalopy.xml");

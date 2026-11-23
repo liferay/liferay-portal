@@ -6,6 +6,7 @@
 package com.liferay.portal.tools;
 
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.petra.io.unsync.UnsyncStringReader;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
@@ -24,7 +25,6 @@ import com.liferay.portal.kernel.xml.QName;
 import com.liferay.portal.kernel.xml.SAXReaderUtil;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -119,7 +119,7 @@ public class SPDXBuilder {
 				spdxFile.getParentFile(), "versions-spdx.html");
 
 			transformer.transform(
-				new StreamSource(new ByteArrayInputStream(xml.getBytes())),
+				new StreamSource(new UnsyncStringReader(xml)),
 				new StreamResult(new FileOutputStream(versionHtmlFile)));
 		}
 		catch (Exception exception) {
