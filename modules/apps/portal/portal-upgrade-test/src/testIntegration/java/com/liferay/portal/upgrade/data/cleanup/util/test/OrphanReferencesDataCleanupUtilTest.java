@@ -128,9 +128,42 @@ public class OrphanReferencesDataCleanupUtilTest {
 
 	@Test
 	public void testCleanUpTableWithDeadlockRetry() throws Exception {
-		long companyId = RandomTestUtil.nextLong();
 		AtomicReference<String> deleteSQLAtomicReference =
 			new AtomicReference<>();
+
+		Connection connection = (Connection)ProxyUtil.newProxyInstance(
+			OrphanReferencesDataCleanupUtilTest.class.getClassLoader(),
+			new Class<?>[] {Connection.class},
+			(proxy, method, args) -> {
+				if (Objects.equals(method.getName(), "prepareStatement")) {
+					String sql = (String)args[0];
+
+					if (sql.startsWith("delete") &&
+						deleteSQLAtomicReference.compareAndSet(null, sql)) {
+
+						throw new SQLException(
+							RandomTestUtil.randomString(), "40001");
+					}
+				}
+
+				try {
+					return method.invoke(_connection, args);
+				}
+				catch (InvocationTargetException invocationTargetException) {
+					throw invocationTargetException.getCause();
+				}
+			});
+
+		_testCleanUpTable(
+			logCapture -> Assert.assertNull(deleteSQLAtomicReference.get()),
+			() -> {
+			},
+			connection, null,
+			() -> {
+			},
+			false, null, "companyId", "Portlet", "companyId", "Company");
+
+		long companyId = RandomTestUtil.nextLong();
 
 		_testCleanUpTable(
 			logCapture -> {
@@ -177,31 +210,7 @@ public class OrphanReferencesDataCleanupUtilTest {
 			() -> _db.runSQL(
 				_connection,
 				"delete from Portlet where companyId = " + companyId),
-			(Connection)ProxyUtil.newProxyInstance(
-				OrphanReferencesDataCleanupUtilTest.class.getClassLoader(),
-				new Class<?>[] {Connection.class},
-				(proxy, method, args) -> {
-					if (Objects.equals(method.getName(), "prepareStatement")) {
-						String sql = (String)args[0];
-
-						if (sql.startsWith("delete") &&
-							deleteSQLAtomicReference.compareAndSet(null, sql)) {
-
-							throw new SQLException(
-								RandomTestUtil.randomString(), "40001");
-						}
-					}
-
-					try {
-						return method.invoke(_connection, args);
-					}
-					catch (InvocationTargetException
-								invocationTargetException) {
-
-						throw invocationTargetException.getCause();
-					}
-				}),
-			null,
+			connection, null,
 			() -> _db.runSQL(
 				_connection,
 				StringBundler.concat(
