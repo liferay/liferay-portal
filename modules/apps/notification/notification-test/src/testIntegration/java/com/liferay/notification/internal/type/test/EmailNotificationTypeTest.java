@@ -2357,7 +2357,7 @@ public class EmailNotificationTypeTest extends BaseNotificationTypeTest {
 		throws Exception {
 
 		FileEntry fileEntry = TempFileEntryUtil.addTempFileEntry(
-			TestPropsValues.getGroupId(), TestPropsValues.getUserId(),
+			TestPropsValues.getGroupId(), user2.getUserId(),
 			StringUtil.randomString(),
 			TempFileEntryUtil.getTempFileName(
 				StringUtil.randomString() + ".txt"),
