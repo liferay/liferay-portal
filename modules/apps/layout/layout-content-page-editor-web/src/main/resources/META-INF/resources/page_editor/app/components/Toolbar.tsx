@@ -37,6 +37,7 @@ import {
 	useDropClear,
 } from '../js-index';
 import selectCanPublish from '../selectors/selectCanPublish';
+import {isLaunchDraft} from '../utils/isLaunchDraft';
 import DiscardDraftButton from './DiscardDraftButton';
 import EditModeSelector from './EditModeSelector';
 import PublishButton from './PublishButton';
@@ -91,10 +92,7 @@ function ToolbarBody({className}: {className?: string}) {
 
 	let publishButtonLabel = Liferay.Language.get('publish');
 
-	if (config.launchSetId > 0) {
-		publishButtonLabel = Liferay.Language.get('mark-as-ready-to-publish');
-	}
-	else if (config.layoutType === LAYOUT_TYPES.master) {
+	if (config.layoutType === LAYOUT_TYPES.master) {
 		publishButtonLabel = Liferay.Language.get('publish-master');
 	}
 	else if (config.singleSegmentsExperienceMode) {
@@ -102,6 +100,9 @@ function ToolbarBody({className}: {className?: string}) {
 	}
 	else if (config.workflowEnabled) {
 		publishButtonLabel = Liferay.Language.get('submit-for-workflow');
+	}
+	else if (isLaunchDraft()) {
+		publishButtonLabel = Liferay.Language.get('ready-to-publish');
 	}
 
 	const ariaLabel = isCMSFreeTier
