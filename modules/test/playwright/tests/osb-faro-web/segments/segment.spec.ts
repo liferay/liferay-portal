@@ -79,7 +79,7 @@ test(
 		tag: '@LRAC-11460',
 	},
 	async ({analyticsChannel: channel, apiHelpers, page, project}) => {
-		const individualName = 'ac';
+		const individualName = 'ac' + getRandomString();
 		const individuals = [
 			generateIndividual({
 				name: individualName,
@@ -152,10 +152,9 @@ test(
 				'.dropdown-menu.dropdown-menu-select.show .dropdown-item'
 			);
 
-			await expect(dropdownItems).toHaveCount(1);
-			await expect(dropdownItems).toHaveText(
-				`${individualName}@liferay.com`
-			);
+			await expect(dropdownItems).toHaveText([
+				`${individualName}@liferay.com`,
+			]);
 		});
 	}
 );
