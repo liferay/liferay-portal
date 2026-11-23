@@ -10,15 +10,20 @@ import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.FileUtil;
+import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.zip.ZipReader;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UncheckedIOException;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -27,14 +32,16 @@ import java.util.zip.ZipFile;
 /**
  * @author Raymond Augé
  */
-public class ZipReaderImpl extends BaseZipReader {
+public class ZipReaderImpl implements ZipReader {
 
 	public ZipReaderImpl(File file) {
-		super(file);
+		_file = file;
 	}
 
 	public ZipReaderImpl(InputStream inputStream) throws IOException {
-		super(inputStream);
+		this(FileUtil.createTempFile(inputStream));
+
+		_tempFile = _file;
 	}
 
 	@Override
@@ -48,11 +55,12 @@ public class ZipReaderImpl extends BaseZipReader {
 			_log.error(ioException);
 		}
 		finally {
-			super.close();
+			if (_tempFile != null) {
+				_deleteFile(_tempFile);
+			}
 		}
 	}
 
-	@Override
 	public List<String> doGetEntries() throws IOException {
 		ZipFile zipFile = _getZipFile();
 
@@ -73,12 +81,10 @@ public class ZipReaderImpl extends BaseZipReader {
 		return entries;
 	}
 
-	@Override
 	public byte[] doGetEntryAsByteArray(String name) throws IOException {
 		return StreamUtil.toByteArray(doGetEntryAsInputStream(name));
 	}
 
-	@Override
 	public InputStream doGetEntryAsInputStream(String name) throws IOException {
 		ZipFile zipFile = _getZipFile();
 
@@ -91,7 +97,6 @@ public class ZipReaderImpl extends BaseZipReader {
 		return null;
 	}
 
-	@Override
 	public List<String> doGetFolderEntries(String path) throws IOException {
 		Path javaPath = Paths.get(path);
 
@@ -132,9 +137,100 @@ public class ZipReaderImpl extends BaseZipReader {
 		return entries;
 	}
 
+	@Override
+	public final List<String> getEntries() {
+		try {
+			List<String> entries = doGetEntries();
+
+			Collections.sort(entries);
+
+			return entries;
+		}
+		catch (IOException ioException) {
+			throw new UncheckedIOException(ioException);
+		}
+	}
+
+	@Override
+	public final byte[] getEntryAsByteArray(String name) {
+		if (Validator.isNull(name)) {
+			return null;
+		}
+
+		if (name.startsWith(StringPool.SLASH)) {
+			name = name.substring(1);
+		}
+
+		try {
+			return doGetEntryAsByteArray(name);
+		}
+		catch (IOException ioException) {
+			_log.error(ioException);
+		}
+
+		return null;
+	}
+
+	@Override
+	public final InputStream getEntryAsInputStream(String name) {
+		if (Validator.isNull(name)) {
+			return null;
+		}
+
+		if (name.startsWith(StringPool.SLASH)) {
+			name = name.substring(1);
+		}
+
+		try {
+			return doGetEntryAsInputStream(name);
+		}
+		catch (IOException ioException) {
+			throw new UncheckedIOException(ioException);
+		}
+	}
+
+	@Override
+	public final String getEntryAsString(String name) {
+		byte[] bytes = getEntryAsByteArray(name);
+
+		if (bytes != null) {
+			return new String(bytes);
+		}
+
+		return null;
+	}
+
+	@Override
+	public final List<String> getFolderEntries(String path) {
+		if (Validator.isNull(path)) {
+			return Collections.emptyList();
+		}
+
+		if (path.startsWith(StringPool.SLASH)) {
+			path = path.substring(1);
+		}
+
+		try {
+			List<String> folderEntries = doGetFolderEntries(path);
+
+			Collections.sort(folderEntries);
+
+			return folderEntries;
+		}
+		catch (IOException ioException) {
+			throw new UncheckedIOException(ioException);
+		}
+	}
+
+	private void _deleteFile(File file) {
+		if (!file.delete() && _log.isWarnEnabled()) {
+			_log.warn("Unable to delete file " + file.getAbsolutePath());
+		}
+	}
+
 	private ZipFile _getZipFile() throws IOException {
 		if (_zipFile == null) {
-			_zipFile = new ZipFile(file);
+			_zipFile = new ZipFile(_file);
 		}
 
 		return _zipFile;
@@ -142,6 +238,8 @@ public class ZipReaderImpl extends BaseZipReader {
 
 	private static final Log _log = LogFactoryUtil.getLog(ZipReaderImpl.class);
 
+	private final File _file;
+	private File _tempFile;
 	private ZipFile _zipFile;
 
 }

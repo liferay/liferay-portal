@@ -584,7 +584,7 @@ public class ImportPreviewResourceTest
 					"WebApplicationExceptionMapper",
 				LoggerTestUtil.WARN);
 			LogCapture logCapture2 = LoggerTestUtil.configureLog4JLogger(
-				"com.liferay.portal.zip.internal.reader.BaseZipReader",
+				"com.liferay.portal.zip.internal.reader.ZipReaderImpl",
 				LoggerTestUtil.WARN)) {
 
 			assertHttpResponseStatusCode(400, unsafeFunction.apply(file));

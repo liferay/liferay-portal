@@ -94,7 +94,7 @@ public class LayoutSetPrototypeImportBackgroundTaskExecutorTest {
 					"BackgroundTaskMessageListener",
 				LoggerTestUtil.ERROR);
 			LogCapture logCapture3 = LoggerTestUtil.configureLog4JLogger(
-				"com.liferay.portal.zip.internal.reader.BaseZipReader",
+				"com.liferay.portal.zip.internal.reader.ZipReaderImpl",
 				LoggerTestUtil.ERROR)) {
 
 			backgroundTaskId =
