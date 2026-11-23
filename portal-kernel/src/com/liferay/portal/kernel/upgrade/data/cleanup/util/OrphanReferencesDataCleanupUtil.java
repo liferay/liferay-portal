@@ -17,6 +17,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.RetryAcceptor;
 import com.liferay.portal.kernel.service.SQLStateAcceptor;
+import com.liferay.portal.kernel.upgrade.recorder.UpgradeSQLRecorder;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 
@@ -256,6 +257,8 @@ public class OrphanReferencesDataCleanupUtil {
 				}
 
 				retryCount++;
+
+				UpgradeSQLRecorder.removeFailedSQL(sqlException);
 
 				if (_log.isDebugEnabled()) {
 					_log.debug(
