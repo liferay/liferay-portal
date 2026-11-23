@@ -13,7 +13,6 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.social.kernel.model.SocialRequest;
-import com.liferay.social.kernel.model.SocialRequestFeedEntry;
 
 import org.osgi.annotation.versioning.ProviderType;
 
@@ -47,25 +46,6 @@ public interface SocialRequestInterpreterLocalService extends BaseLocalService {
 	 * @return the OSGi service identifier
 	 */
 	public String getOSGiServiceIdentifier();
-
-	/**
-	 * Creates a human readable request feed entry for the social request using
-	 * an available compatible request interpreter.
-	 *
-	 * <p>
-	 * This method finds the appropriate interpreter for the request by going
-	 * through the available interpreters to find one that can handle the asset
-	 * type of the request.
-	 * </p>
-	 *
-	 * @param request the social request to be translated to human readable
-	 form
-	 * @param themeDisplay the theme display needed by interpreters to create
-	 links and get localized text fragments
-	 * @return the social request feed entry
-	 */
-	public SocialRequestFeedEntry interpret(
-		SocialRequest request, ThemeDisplay themeDisplay);
 
 	/**
 	 * Processes the confirmation of the social request.
@@ -103,4 +83,4 @@ public interface SocialRequestInterpreterLocalService extends BaseLocalService {
 		SocialRequest request, ThemeDisplay themeDisplay);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-96726058
+// LIFERAY-SERVICE-BUILDER-HASH:-1326740871

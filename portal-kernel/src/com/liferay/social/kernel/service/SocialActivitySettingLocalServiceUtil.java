@@ -239,12 +239,6 @@ public class SocialActivitySettingLocalServiceUtil {
 		return getService().getActivityDefinitions(groupId, className);
 	}
 
-	public static List<SocialActivitySetting> getActivitySettings(
-		long groupId) {
-
-		return getService().getActivitySettings(groupId);
-	}
-
 	public static
 		com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery
 			getIndexableActionableDynamicQuery() {
@@ -383,4 +377,4 @@ public class SocialActivitySettingLocalServiceUtil {
 	private static volatile SocialActivitySettingLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1247549823
+// LIFERAY-SERVICE-BUILDER-HASH:-1230597581

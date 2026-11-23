@@ -268,20 +268,6 @@ public class SocialActivityAchievementLocalServiceWrapper
 	}
 
 	@Override
-	public java.util.List<SocialActivityAchievement> getGroupAchievements(
-		long groupId, String name) {
-
-		return _socialActivityAchievementLocalService.getGroupAchievements(
-			groupId, name);
-	}
-
-	@Override
-	public int getGroupAchievementsCount(long groupId, String name) {
-		return _socialActivityAchievementLocalService.getGroupAchievementsCount(
-			groupId, name);
-	}
-
-	@Override
 	public com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery
 		getIndexableActionableDynamicQuery() {
 
@@ -358,20 +344,6 @@ public class SocialActivityAchievementLocalServiceWrapper
 			getSocialActivityAchievementsCount();
 	}
 
-	@Override
-	public java.util.List<SocialActivityAchievement> getUserAchievements(
-		long userId, long groupId) {
-
-		return _socialActivityAchievementLocalService.getUserAchievements(
-			userId, groupId);
-	}
-
-	@Override
-	public int getUserAchievementsCount(long userId, long groupId) {
-		return _socialActivityAchievementLocalService.getUserAchievementsCount(
-			userId, groupId);
-	}
-
 	/**
 	 * Updates the social activity achievement in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	 *
@@ -433,4 +405,4 @@ public class SocialActivityAchievementLocalServiceWrapper
 		_socialActivityAchievementLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1286381843
+// LIFERAY-SERVICE-BUILDER-HASH:-962014685

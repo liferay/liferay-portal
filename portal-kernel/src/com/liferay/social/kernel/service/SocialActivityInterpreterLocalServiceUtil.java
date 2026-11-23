@@ -8,7 +8,6 @@ package com.liferay.social.kernel.service;
 import com.liferay.portal.kernel.exception.PortalException;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Provides the local service utility for SocialActivityInterpreter. This utility wraps
@@ -29,14 +28,6 @@ public class SocialActivityInterpreterLocalServiceUtil {
 	 *
 	 * Never modify this class directly. Add custom service methods to <code>com.liferay.portlet.social.service.impl.SocialActivityInterpreterLocalServiceImpl</code> and rerun ServiceBuilder to regenerate this class.
 	 */
-	public static Map
-		<String,
-		 List<com.liferay.social.kernel.model.SocialActivityInterpreter>>
-			getActivityInterpreters() {
-
-		return getService().getActivityInterpreters();
-	}
-
 	public static List
 		<com.liferay.social.kernel.model.SocialActivityInterpreter>
 			getActivityInterpreters(String selector) {
@@ -107,4 +98,4 @@ public class SocialActivityInterpreterLocalServiceUtil {
 	private static volatile SocialActivityInterpreterLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-594324293
+// LIFERAY-SERVICE-BUILDER-HASH:-622175213

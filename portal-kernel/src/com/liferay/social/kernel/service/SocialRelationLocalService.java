@@ -325,95 +325,6 @@ public interface SocialRelationLocalService
 		throws PortalException;
 
 	/**
-	 * Returns the relation identified by its primary key.
-	 *
-	 * @param relationId the primary key of the relation
-	 * @return Returns the relation
-	 */
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public SocialRelation getRelation(long relationId) throws PortalException;
-
-	/**
-	 * Returns the relation of the given type between User1 and User2.
-	 *
-	 * @param userId1 the user that is the subject of the relation
-	 * @param userId2 the user at the other end of the relation
-	 * @param type the relation's type
-	 * @return Returns the relation
-	 */
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public SocialRelation getRelation(long userId1, long userId2, int type)
-		throws PortalException;
-
-	/**
-	 * Returns a range of all the relations of the given type where the user is
-	 * the subject of the relation.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end -
-	 * start</code> instances. <code>start</code> and <code>end</code> are not
-	 * primary keys, they are indexes in the result set. Thus, <code>0</code>
-	 * refers to the first result in the set. Setting both <code>start</code>
-	 * and <code>end</code> to {@link
-	 * com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full
-	 * result set.
-	 * </p>
-	 *
-	 * @param userId the primary key of the user
-	 * @param type the relation's type
-	 * @param start the lower bound of the range of results
-	 * @param end the upper bound of the range of results (not inclusive)
-	 * @return the range of relations
-	 */
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<SocialRelation> getRelations(
-		long userId, int type, int start, int end);
-
-	/**
-	 * Returns a range of all the relations between User1 and User2.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end -
-	 * start</code> instances. <code>start</code> and <code>end</code> are not
-	 * primary keys, they are indexes in the result set. Thus, <code>0</code>
-	 * refers to the first result in the set. Setting both <code>start</code>
-	 * and <code>end</code> to {@link
-	 * com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full
-	 * result set.
-	 * </p>
-	 *
-	 * @param userId1 the user that is the subject of the relation
-	 * @param userId2 the user at the other end of the relation
-	 * @param start the lower bound of the range of results
-	 * @param end the upper bound of the range of results (not inclusive)
-	 * @return the range of relations
-	 */
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<SocialRelation> getRelations(
-		long userId1, long userId2, int start, int end);
-
-	/**
-	 * Returns the number of relations of the given type where the user is the
-	 * subject of the relation.
-	 *
-	 * @param userId the primary key of the user
-	 * @param type the relation's type
-	 * @return the number of relations
-	 */
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getRelationsCount(long userId, int type);
-
-	/**
-	 * Returns the number of relations between User1 and User2.
-	 *
-	 * @param userId1 the user that is the subject of the relation
-	 * @param userId2 the user at the other end of the relation
-	 * @return the number of relations
-	 */
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getRelationsCount(long userId1, long userId2);
-
-	/**
 	 * Returns the social relation with the primary key.
 	 *
 	 * @param relationId the primary key of the social relation
@@ -524,4 +435,4 @@ public interface SocialRelationLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1722233106
+// LIFERAY-SERVICE-BUILDER-HASH:-2002708065

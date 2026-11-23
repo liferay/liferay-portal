@@ -571,16 +571,6 @@ public class SocialActivityLocalServiceWrapper
 		return _socialActivityLocalService.getActivitiesCount(classNameId);
 	}
 
-	@Override
-	public int getActivitiesCount(
-		long userId, long groupId, java.util.Date createDate, String className,
-		long classPK, int type, long receiverUserId) {
-
-		return _socialActivityLocalService.getActivitiesCount(
-			userId, groupId, createDate, className, classPK, type,
-			receiverUserId);
-	}
-
 	/**
 	 * Returns the number of activities done on the asset identified by the
 	 * class name ID and class primary key that are mirrors of the activity
@@ -756,19 +746,6 @@ public class SocialActivityLocalServiceWrapper
 		getIndexableActionableDynamicQuery() {
 
 		return _socialActivityLocalService.getIndexableActionableDynamicQuery();
-	}
-
-	/**
-	 * Returns the activity that has the mirror activity.
-	 *
-	 * @param mirrorActivityId the primary key of the mirror activity
-	 * @return Returns the mirror activity
-	 */
-	@Override
-	public SocialActivity getMirrorActivity(long mirrorActivityId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _socialActivityLocalService.getMirrorActivity(mirrorActivityId);
 	}
 
 	/**
@@ -1019,17 +996,6 @@ public class SocialActivityLocalServiceWrapper
 	}
 
 	/**
-	 * Returns the number of activities done by the user.
-	 *
-	 * @param userId the primary key of the user
-	 * @return the number of matching activities
-	 */
-	@Override
-	public int getUserActivitiesCount(long userId) {
-		return _socialActivityLocalService.getUserActivitiesCount(userId);
-	}
-
-	/**
 	 * Returns a range of all the activities done in the user's groups. This
 	 * method only finds activities without mirrors.
 	 *
@@ -1201,4 +1167,4 @@ public class SocialActivityLocalServiceWrapper
 	private SocialActivityLocalService _socialActivityLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1314806662
+// LIFERAY-SERVICE-BUILDER-HASH:814077982

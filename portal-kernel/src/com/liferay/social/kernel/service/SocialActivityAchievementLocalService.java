@@ -220,13 +220,6 @@ public interface SocialActivityAchievementLocalService
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<SocialActivityAchievement> getGroupAchievements(
-		long groupId, String name);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getGroupAchievementsCount(long groupId, String name);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
 
 	/**
@@ -279,13 +272,6 @@ public interface SocialActivityAchievementLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getSocialActivityAchievementsCount();
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<SocialActivityAchievement> getUserAchievements(
-		long userId, long groupId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getUserAchievementsCount(long userId, long groupId);
-
 	/**
 	 * Updates the social activity achievement in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	 *
@@ -316,4 +302,4 @@ public interface SocialActivityAchievementLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-325002159
+// LIFERAY-SERVICE-BUILDER-HASH:-641059187

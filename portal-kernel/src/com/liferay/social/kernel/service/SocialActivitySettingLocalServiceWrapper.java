@@ -277,13 +277,6 @@ public class SocialActivitySettingLocalServiceWrapper
 	}
 
 	@Override
-	public java.util.List<SocialActivitySetting> getActivitySettings(
-		long groupId) {
-
-		return _socialActivitySettingLocalService.getActivitySettings(groupId);
-	}
-
-	@Override
 	public com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery
 		getIndexableActionableDynamicQuery() {
 
@@ -471,4 +464,4 @@ public class SocialActivitySettingLocalServiceWrapper
 		_socialActivitySettingLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1704419431
+// LIFERAY-SERVICE-BUILDER-HASH:1064811105

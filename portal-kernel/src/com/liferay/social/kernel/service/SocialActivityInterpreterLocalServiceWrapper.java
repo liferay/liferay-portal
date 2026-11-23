@@ -32,13 +32,6 @@ public class SocialActivityInterpreterLocalServiceWrapper
 	}
 
 	@Override
-	public java.util.Map<String, java.util.List<SocialActivityInterpreter>>
-		getActivityInterpreters() {
-
-		return _socialActivityInterpreterLocalService.getActivityInterpreters();
-	}
-
-	@Override
 	public java.util.List<SocialActivityInterpreter> getActivityInterpreters(
 		String selector) {
 
@@ -119,4 +112,4 @@ public class SocialActivityInterpreterLocalServiceWrapper
 		_socialActivityInterpreterLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:854012920
+// LIFERAY-SERVICE-BUILDER-HASH:-2060971088

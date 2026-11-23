@@ -473,11 +473,6 @@ public interface SocialActivityLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getActivitiesCount(long classNameId);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getActivitiesCount(
-		long userId, long groupId, Date createDate, String className,
-		long classPK, int type, long receiverUserId);
-
 	/**
 	 * Returns the number of activities done on the asset identified by the
 	 * class name ID and class primary key that are mirrors of the activity
@@ -614,16 +609,6 @@ public interface SocialActivityLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
-
-	/**
-	 * Returns the activity that has the mirror activity.
-	 *
-	 * @param mirrorActivityId the primary key of the mirror activity
-	 * @return Returns the mirror activity
-	 */
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public SocialActivity getMirrorActivity(long mirrorActivityId)
-		throws PortalException;
 
 	/**
 	 * Returns a range of all the activities done in the organization. This
@@ -827,15 +812,6 @@ public interface SocialActivityLocalService
 		long userId, int start, int end);
 
 	/**
-	 * Returns the number of activities done by the user.
-	 *
-	 * @param userId the primary key of the user
-	 * @return the number of matching activities
-	 */
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getUserActivitiesCount(long userId);
-
-	/**
 	 * Returns a range of all the activities done in the user's groups. This
 	 * method only finds activities without mirrors.
 	 *
@@ -960,4 +936,4 @@ public interface SocialActivityLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-730109236
+// LIFERAY-SERVICE-BUILDER-HASH:957180637

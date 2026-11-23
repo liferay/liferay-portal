@@ -35,30 +35,6 @@ public class SocialRequestInterpreterLocalServiceUtil {
 	}
 
 	/**
-	 * Creates a human readable request feed entry for the social request using
-	 * an available compatible request interpreter.
-	 *
-	 * <p>
-	 * This method finds the appropriate interpreter for the request by going
-	 * through the available interpreters to find one that can handle the asset
-	 * type of the request.
-	 * </p>
-	 *
-	 * @param request the social request to be translated to human readable
-	 form
-	 * @param themeDisplay the theme display needed by interpreters to create
-	 links and get localized text fragments
-	 * @return the social request feed entry
-	 */
-	public static com.liferay.social.kernel.model.SocialRequestFeedEntry
-		interpret(
-			com.liferay.social.kernel.model.SocialRequest request,
-			com.liferay.portal.kernel.theme.ThemeDisplay themeDisplay) {
-
-		return getService().interpret(request, themeDisplay);
-	}
-
-	/**
 	 * Processes the confirmation of the social request.
 	 *
 	 * <p>
@@ -114,4 +90,4 @@ public class SocialRequestInterpreterLocalServiceUtil {
 	private static volatile SocialRequestInterpreterLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1673431879
+// LIFERAY-SERVICE-BUILDER-HASH:968437376

@@ -360,40 +360,6 @@ public interface SocialActivityCounterLocalService
 		throws PortalException;
 
 	/**
-	 * Returns the activity counter with the given name, owner, and end period
-	 * that belong to the given entity.
-	 *
-	 * @param groupId the primary key of the group
-	 * @param classNameId the primary key of the entity's class
-	 * @param classPK the primary key of the entity
-	 * @param name the counter name
-	 * @param ownerType the owner type
-	 * @param endPeriod the end period, <code>-1</code> for the latest one
-	 * @return the matching activity counter
-	 */
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public SocialActivityCounter fetchActivityCounterByEndPeriod(
-		long groupId, long classNameId, long classPK, String name,
-		int ownerType, int endPeriod);
-
-	/**
-	 * Returns the activity counter with the given name, owner, and start period
-	 * that belong to the given entity.
-	 *
-	 * @param groupId the primary key of the group
-	 * @param classNameId the primary key of the entity's class
-	 * @param classPK the primary key of the entity
-	 * @param name the counter name
-	 * @param ownerType the owner type
-	 * @param startPeriod the start period
-	 * @return the matching activity counter
-	 */
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public SocialActivityCounter fetchActivityCounterByStartPeriod(
-		long groupId, long classNameId, long classPK, String name,
-		int ownerType, int startPeriod);
-
-	/**
 	 * Returns the latest activity counter with the given name and owner that
 	 * belong to the given entity.
 	 *
@@ -513,4 +479,4 @@ public interface SocialActivityCounterLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:703721355
+// LIFERAY-SERVICE-BUILDER-HASH:1500271252

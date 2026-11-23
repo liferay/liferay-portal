@@ -227,9 +227,6 @@ public interface SocialActivitySettingLocalService
 		long groupId, String className);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<SocialActivitySetting> getActivitySettings(long groupId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
 
 	/**
@@ -336,4 +333,4 @@ public interface SocialActivitySettingLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-735036215
+// LIFERAY-SERVICE-BUILDER-HASH:-1761827581
