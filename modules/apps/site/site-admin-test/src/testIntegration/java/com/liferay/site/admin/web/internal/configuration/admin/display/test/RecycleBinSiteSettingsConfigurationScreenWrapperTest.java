@@ -147,8 +147,8 @@ public class RecycleBinSiteSettingsConfigurationScreenWrapperTest {
 	public void testImportProperties() throws Exception {
 		_testImportPropertiesWithDefaultTrashEntriesMaxAge();
 		_testImportPropertiesWithInvalidValues();
+		_testImportPropertiesWithMissingProperties();
 		_testImportPropertiesWithStagingGroup();
-		_testImportPropertiesWithoutProperties();
 	}
 
 	private void _testImportPropertiesWithDefaultTrashEntriesMaxAge()
@@ -213,6 +213,27 @@ public class RecycleBinSiteSettingsConfigurationScreenWrapperTest {
 			companyTrashEntriesMaxAge, _trashHelper.getMaxAge(group));
 	}
 
+	private void _testImportPropertiesWithMissingProperties() throws Exception {
+		Group group = GroupTestUtil.addGroup();
+
+		ConfigurationScreen configurationScreen = _serviceTrackerMap.getService(
+			"site-configuration-recycle-bin");
+
+		configurationScreen.importProperties(
+			HashMapDictionaryBuilder.<String, Object>put(
+				"trashEnabled", "false"
+			).build(),
+			group.getGroupId());
+
+		configurationScreen.importProperties(
+			new HashMapDictionary<>(), group.getGroupId());
+
+		Dictionary<String, Object> properties =
+			configurationScreen.exportProperties(group.getGroupId());
+
+		Assert.assertEquals("false", properties.get("trashEnabled"));
+	}
+
 	private void _testImportPropertiesWithStagingGroup() throws Exception {
 		Group group = GroupTestUtil.addGroup();
 
@@ -235,27 +256,6 @@ public class RecycleBinSiteSettingsConfigurationScreenWrapperTest {
 		Group stagingGroup = group.getStagingGroup();
 
 		Assert.assertNull(stagingGroup.getTypeSettingsProperty("trashEnabled"));
-	}
-
-	private void _testImportPropertiesWithoutProperties() throws Exception {
-		Group group = GroupTestUtil.addGroup();
-
-		ConfigurationScreen configurationScreen = _serviceTrackerMap.getService(
-			"site-configuration-recycle-bin");
-
-		configurationScreen.importProperties(
-			HashMapDictionaryBuilder.<String, Object>put(
-				"trashEnabled", "false"
-			).build(),
-			group.getGroupId());
-
-		configurationScreen.importProperties(
-			new HashMapDictionary<>(), group.getGroupId());
-
-		Dictionary<String, Object> properties =
-			configurationScreen.exportProperties(group.getGroupId());
-
-		Assert.assertEquals("false", properties.get("trashEnabled"));
 	}
 
 	@Inject
