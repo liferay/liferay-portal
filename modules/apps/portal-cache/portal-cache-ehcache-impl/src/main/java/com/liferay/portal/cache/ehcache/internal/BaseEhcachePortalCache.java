@@ -12,7 +12,7 @@ import com.liferay.portal.cache.BasePortalCache;
 import com.liferay.portal.cache.ehcache.internal.configuration.EhcachePortalCacheConfiguration;
 import com.liferay.portal.cache.ehcache.internal.events.PortalCacheCacheEventListener;
 import com.liferay.portal.cache.ehcache.internal.expiry.EhcacheExpiryValue;
-import com.liferay.portal.cache.io.SerializableObjectWrapper;
+import com.liferay.portal.cache.ehcache.internal.io.SerializableObjectWrapper;
 import com.liferay.portal.kernel.cache.PortalCacheListener;
 import com.liferay.portal.kernel.cache.PortalCacheListenerScope;
 import com.liferay.portal.kernel.log.Log;

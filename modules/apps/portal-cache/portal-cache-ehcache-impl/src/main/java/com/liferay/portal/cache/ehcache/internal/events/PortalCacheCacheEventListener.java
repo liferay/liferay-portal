@@ -10,7 +10,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.cache.AggregatedPortalCacheListener;
 import com.liferay.portal.cache.ehcache.internal.BaseEhcachePortalCache;
 import com.liferay.portal.cache.ehcache.internal.expiry.EhcacheExpiryValue;
-import com.liferay.portal.cache.io.SerializableObjectWrapper;
+import com.liferay.portal.cache.ehcache.internal.io.SerializableObjectWrapper;
 import com.liferay.portal.kernel.cache.PortalCache;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
