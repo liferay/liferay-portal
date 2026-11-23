@@ -5,12 +5,9 @@
 
 package com.liferay.launch.internal.util;
 
-import com.liferay.object.model.ObjectField;
 import com.liferay.object.service.ObjectFieldLocalServiceUtil;
 import com.liferay.petra.sql.dsl.Column;
-import com.liferay.petra.sql.dsl.Table;
 import com.liferay.petra.sql.dsl.expression.Predicate;
-import com.liferay.portal.kernel.exception.PortalException;
 
 /**
  * @author Carlos Correa
@@ -18,17 +15,11 @@ import com.liferay.portal.kernel.exception.PortalException;
 public class LaunchUtil {
 
 	public static Predicate getEqualsPredicate(
-			String fieldName, long objectDefinitionId, Object value)
-		throws PortalException {
+		String fieldName, long objectDefinitionId, Object value) {
 
-		ObjectField objectField = ObjectFieldLocalServiceUtil.getObjectField(
-			objectDefinitionId, fieldName);
-
-		Table<?> table = ObjectFieldLocalServiceUtil.getTable(
-			objectDefinitionId, objectField.getName());
-
-		Column<?, Object> column = (Column<?, Object>)table.getColumn(
-			objectField.getDBColumnName());
+		Column<?, Object> column =
+			(Column<?, Object>)ObjectFieldLocalServiceUtil.getColumn(
+				objectDefinitionId, fieldName);
 
 		return column.eq(value);
 	}
