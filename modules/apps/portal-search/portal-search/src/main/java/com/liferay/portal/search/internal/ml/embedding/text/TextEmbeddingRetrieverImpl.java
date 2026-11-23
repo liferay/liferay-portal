@@ -16,10 +16,10 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.search.configuration.SemanticSearchConfiguration;
 import com.liferay.portal.search.configuration.SemanticSearchConfigurationProvider;
+import com.liferay.portal.search.internal.ml.embedding.util.TextExtractionUtil;
 import com.liferay.portal.search.internal.web.cache.TextEmbeddingProviderWebCacheItem;
 import com.liferay.portal.search.ml.embedding.EmbeddingProviderStatus;
 import com.liferay.portal.search.ml.embedding.text.TextEmbeddingRetriever;
-import com.liferay.portal.search.ml.embedding.util.TextExtractionUtil;
 import com.liferay.portal.search.rest.dto.v1_0.EmbeddingProviderConfiguration;
 import com.liferay.portal.search.rest.text.embeddings.configuration.TextEmbeddingProvider;
 
