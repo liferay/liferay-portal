@@ -7,6 +7,7 @@ package com.liferay.portal.kernel.upgrade.data.cleanup.util;
 
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.upgrade.recorder.UpgradeSQLRecorder;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LogEntry;
 import com.liferay.portal.test.log.LoggerTestUtil;
@@ -84,6 +85,11 @@ public class OrphanReferencesDataCleanupUtilTest {
 		Mockito.verify(
 			preparedStatement, Mockito.times(expectedAttempts)
 		).executeUpdate();
+
+		List<UpgradeSQLRecorder.FailedSQL> failedSQLs =
+			UpgradeSQLRecorder.getFailedSQLs();
+
+		Assert.assertEquals(failedSQLs.toString(), 1, failedSQLs.size());
 	}
 
 	@Test
@@ -128,10 +134,17 @@ public class OrphanReferencesDataCleanupUtilTest {
 			preparedStatement
 		);
 
-		ReflectionTestUtil.invoke(
-			OrphanReferencesDataCleanupUtil.class, "_executeDelete",
-			new Class<?>[] {Connection.class, String.class}, connection,
-			deleteSQL);
+		UpgradeSQLRecorder.start();
+
+		try {
+			ReflectionTestUtil.invoke(
+				OrphanReferencesDataCleanupUtil.class, "_executeDelete",
+				new Class<?>[] {Connection.class, String.class},
+				UpgradeSQLRecorder.getConnectionWrapper(connection), deleteSQL);
+		}
+		finally {
+			UpgradeSQLRecorder.stop();
+		}
 	}
 
 	private void _testExecuteDeleteWithRetry(String priority) throws Exception {
@@ -181,6 +194,11 @@ public class OrphanReferencesDataCleanupUtilTest {
 		Mockito.verify(
 			preparedStatement, Mockito.times(2)
 		).executeUpdate();
+
+		List<UpgradeSQLRecorder.FailedSQL> failedSQLs =
+			UpgradeSQLRecorder.getFailedSQLs();
+
+		Assert.assertTrue(failedSQLs.isEmpty());
 	}
 
 	private static final String _SQL_STATE_CONSTRAINT_VIOLATION = "23000";
