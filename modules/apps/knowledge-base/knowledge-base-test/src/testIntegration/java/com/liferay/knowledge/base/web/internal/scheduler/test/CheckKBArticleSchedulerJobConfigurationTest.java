@@ -210,30 +210,8 @@ public class CheckKBArticleSchedulerJobConfigurationTest {
 
 	@Test
 	public void testExpireKBArticle() throws Exception {
-		Date expirationDate = new Date(
-			System.currentTimeMillis() + (Time.MINUTE * 5));
-
-		KBArticle kbArticle = _kbArticleLocalService.addKBArticle(
-			null, UserLocalServiceUtil.getGuestUserId(_group.getCompanyId()),
-			PortalUtil.getClassNameId(KBFolder.class.getName()), 0,
-			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-			RandomTestUtil.randomString(), RandomTestUtil.randomString(), null,
-			null, RandomTestUtil.nextDate(), expirationDate, null, null,
-			ServiceContextTestUtil.getServiceContext(
-				_group, _user.getUserId()));
-
-		kbArticle.setExpirationDate(
-			new Date(System.currentTimeMillis() - (Time.MINUTE * 10)));
-
-		kbArticle = _kbArticleLocalService.updateKBArticle(kbArticle);
-
-		_kbArticleLocalService.checkKBArticles(_group.getCompanyId());
-
-		kbArticle = _kbArticleLocalService.getLatestKBArticle(
-			kbArticle.getResourcePrimKey(), WorkflowConstants.STATUS_ANY);
-
-		Assert.assertEquals(
-			WorkflowConstants.STATUS_EXPIRED, kbArticle.getStatus());
+		_testExpireKBArticle();
+		_testExpireKBArticleWhenKBArticleIsInTrash();
 	}
 
 	@Test
@@ -458,6 +436,71 @@ public class CheckKBArticleSchedulerJobConfigurationTest {
 		serviceContext.setPortletId(KBPortletKeys.KNOWLEDGE_BASE_ADMIN);
 
 		return serviceContext;
+	}
+
+	private void _testExpireKBArticle() throws Exception {
+		Date expirationDate = new Date(
+			System.currentTimeMillis() + (Time.MINUTE * 5));
+
+		KBArticle kbArticle = _kbArticleLocalService.addKBArticle(
+			null, UserLocalServiceUtil.getGuestUserId(_group.getCompanyId()),
+			PortalUtil.getClassNameId(KBFolder.class.getName()), 0,
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(), null,
+			null, RandomTestUtil.nextDate(), expirationDate, null, null,
+			ServiceContextTestUtil.getServiceContext(
+				_group, _user.getUserId()));
+
+		kbArticle.setExpirationDate(
+			new Date(System.currentTimeMillis() - (Time.MINUTE * 10)));
+
+		kbArticle = _kbArticleLocalService.updateKBArticle(kbArticle);
+
+		_kbArticleLocalService.checkKBArticles(_group.getCompanyId());
+
+		kbArticle = _kbArticleLocalService.getLatestKBArticle(
+			kbArticle.getResourcePrimKey(), WorkflowConstants.STATUS_ANY);
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_EXPIRED, kbArticle.getStatus());
+	}
+
+	private void _testExpireKBArticleWhenKBArticleIsInTrash() throws Exception {
+		ServiceContext serviceContext = _getServiceContext(_user);
+
+		KBArticle approvedKBArticle = _addKBArticle(
+			new Date(System.currentTimeMillis() + (Time.MINUTE * 5)), null,
+			serviceContext);
+
+		serviceContext.setWorkflowAction(WorkflowConstants.ACTION_SAVE_DRAFT);
+
+		KBArticle draftKBArticle = _addKBArticle(
+			new Date(System.currentTimeMillis() + (Time.MINUTE * 5)), null,
+			serviceContext);
+
+		for (KBArticle kbArticle :
+				new KBArticle[] {approvedKBArticle, draftKBArticle}) {
+
+			kbArticle.setExpirationDate(
+				new Date(System.currentTimeMillis() - (Time.MINUTE * 10)));
+
+			kbArticle = _kbArticleLocalService.updateKBArticle(kbArticle);
+
+			_kbArticleLocalService.moveKBArticleToTrash(
+				_user.getUserId(), kbArticle.getResourcePrimKey());
+		}
+
+		_kbArticleLocalService.checkKBArticles(_group.getCompanyId());
+
+		for (KBArticle kbArticle :
+				new KBArticle[] {approvedKBArticle, draftKBArticle}) {
+
+			kbArticle = _kbArticleLocalService.getLatestKBArticle(
+				kbArticle.getResourcePrimKey(), WorkflowConstants.STATUS_ANY);
+
+			Assert.assertEquals(
+				WorkflowConstants.STATUS_IN_TRASH, kbArticle.getStatus());
+		}
 	}
 
 	@DeleteAfterTestRun
