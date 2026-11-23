@@ -6,14 +6,12 @@
 package com.liferay.osb.faro.web.internal.model.listener;
 
 import com.liferay.osb.faro.model.FaroProject;
-import com.liferay.osb.faro.web.internal.util.SiteInitializerUtil;
+import com.liferay.osb.faro.web.internal.helper.WorkspaceSiteHelper;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.ModelListener;
-import com.liferay.portal.kernel.service.GroupLocalService;
-import com.liferay.site.initializer.SiteInitializer;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -33,9 +31,7 @@ public class FaroProjectModelListener extends BaseModelListener<FaroProject> {
 		}
 
 		try {
-			SiteInitializerUtil.initialize(
-				_groupLocalService.getGroup(faroProject.getGroupId()),
-				_siteInitializer);
+			_workspaceSiteHelper.initialize(faroProject);
 		}
 		catch (Exception exception) {
 			_log.error(exception);
@@ -46,11 +42,6 @@ public class FaroProjectModelListener extends BaseModelListener<FaroProject> {
 		FaroProjectModelListener.class);
 
 	@Reference
-	private GroupLocalService _groupLocalService;
-
-	@Reference(
-		target = "(site.initializer.key=com.liferay.osb.faro.workspace.site.initializer)"
-	)
-	private SiteInitializer _siteInitializer;
+	private WorkspaceSiteHelper _workspaceSiteHelper;
 
 }
