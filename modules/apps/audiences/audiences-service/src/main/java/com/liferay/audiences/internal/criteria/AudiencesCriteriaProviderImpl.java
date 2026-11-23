@@ -8,7 +8,6 @@ package com.liferay.audiences.internal.criteria;
 import com.liferay.audiences.constants.AudiencesCriteriaKeys;
 import com.liferay.audiences.constants.AudiencesCriteriaTypeKeys;
 import com.liferay.audiences.criteria.AudiencesCriteria;
-import com.liferay.audiences.criteria.AudiencesCriteriaBuilder;
 import com.liferay.audiences.criteria.AudiencesCriteriaProvider;
 import com.liferay.audiences.criteria.AudiencesCriteriaType;
 import com.liferay.client.extension.constants.ClientExtensionEntryConstants;
