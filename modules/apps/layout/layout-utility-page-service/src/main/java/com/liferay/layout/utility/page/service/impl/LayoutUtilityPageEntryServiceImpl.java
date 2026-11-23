@@ -115,10 +115,20 @@ public class LayoutUtilityPageEntryServiceImpl
 
 	@Override
 	public LayoutUtilityPageEntry fetchLayoutUtilityPageEntry(
-		long layoutUtilityPageEntryId) {
+			long layoutUtilityPageEntryId)
+		throws PortalException {
 
-		return layoutUtilityPageEntryPersistence.fetchByPrimaryKey(
-			layoutUtilityPageEntryId);
+		LayoutUtilityPageEntry layoutUtilityPageEntry =
+			layoutUtilityPageEntryPersistence.fetchByPrimaryKey(
+				layoutUtilityPageEntryId);
+
+		if (layoutUtilityPageEntry != null) {
+			_layoutUtilityPageEntryModelResourcePermission.check(
+				getPermissionChecker(), layoutUtilityPageEntry,
+				ActionKeys.VIEW);
+		}
+
+		return layoutUtilityPageEntry;
 	}
 
 	@Override

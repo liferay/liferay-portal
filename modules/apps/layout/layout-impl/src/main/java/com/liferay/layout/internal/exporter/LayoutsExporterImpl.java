@@ -33,7 +33,7 @@ import com.liferay.layout.page.template.service.LayoutPageTemplateEntryService;
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocalService;
 import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.layout.utility.page.model.LayoutUtilityPageEntry;
-import com.liferay.layout.utility.page.service.LayoutUtilityPageEntryLocalService;
+import com.liferay.layout.utility.page.service.LayoutUtilityPageEntryService;
 import com.liferay.petra.function.UnsafeTriConsumer;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
@@ -44,9 +44,6 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.portletfilerepository.PortletFileRepositoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
-import com.liferay.portal.kernel.security.permission.ActionKeys;
-import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
-import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -207,12 +204,8 @@ public class LayoutsExporterImpl implements LayoutsExporter {
 		ZipWriter zipWriter = _zipWriterFactory.getZipWriter();
 
 		for (long layoutUtilityPageEntryId : layoutUtilityPageEntryIds) {
-			_layoutUtilityPageEntryModelResourcePermission.check(
-				PermissionThreadLocal.getPermissionChecker(),
-				layoutUtilityPageEntryId, ActionKeys.VIEW);
-
 			LayoutUtilityPageEntry layoutUtilityPageEntry =
-				_layoutUtilityPageEntryLocalService.fetchLayoutUtilityPageEntry(
+				_layoutUtilityPageEntryService.fetchLayoutUtilityPageEntry(
 					layoutUtilityPageEntryId);
 
 			_populateLayoutUtilityPageEntriesZipWriter(
@@ -688,14 +681,7 @@ public class LayoutsExporterImpl implements LayoutsExporter {
 		_layoutPageTemplateStructureLocalService;
 
 	@Reference
-	private LayoutUtilityPageEntryLocalService
-		_layoutUtilityPageEntryLocalService;
-
-	@Reference(
-		target = "(model.class.name=com.liferay.layout.utility.page.model.LayoutUtilityPageEntry)"
-	)
-	private ModelResourcePermission<LayoutUtilityPageEntry>
-		_layoutUtilityPageEntryModelResourcePermission;
+	private LayoutUtilityPageEntryService _layoutUtilityPageEntryService;
 
 	@Reference
 	private ZipWriterFactory _zipWriterFactory;
