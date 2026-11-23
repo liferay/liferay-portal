@@ -104,6 +104,7 @@ import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.portal.vulcan.permission.ModelPermissionsUtil;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 import com.liferay.portal.vulcan.util.SearchUtil;
+import com.liferay.portal.workflow.kaleo.service.KaleoDefinitionLocalService;
 
 import jakarta.ws.rs.core.MultivaluedMap;
 
@@ -432,6 +433,7 @@ public class ObjectDefinitionResourceImpl
 						objectFields,
 						WorkflowDefinitionLinkUtil.toWorkflowDefinitionLinks(
 							contextUser.getCompanyId(), _groupLocalService,
+							_kaleoDefinitionLocalService,
 							contextUser.getUserId(),
 							_workflowDefinitionLinkLocalService,
 							objectDefinition.getWorkflowDefinitionLinks()));
@@ -487,6 +489,7 @@ public class ObjectDefinitionResourceImpl
 						objectFields,
 						WorkflowDefinitionLinkUtil.toWorkflowDefinitionLinks(
 							contextUser.getCompanyId(), _groupLocalService,
+							_kaleoDefinitionLocalService,
 							contextUser.getUserId(),
 							_workflowDefinitionLinkLocalService,
 							objectDefinition.getWorkflowDefinitionLinks()),
@@ -675,6 +678,7 @@ public class ObjectDefinitionResourceImpl
 							_objectFilterLocalService),
 						WorkflowDefinitionLinkUtil.toWorkflowDefinitionLinks(
 							contextUser.getCompanyId(), _groupLocalService,
+							_kaleoDefinitionLocalService,
 							contextUser.getUserId(),
 							_workflowDefinitionLinkLocalService,
 							objectDefinition.getWorkflowDefinitionLinks()));
@@ -764,6 +768,7 @@ public class ObjectDefinitionResourceImpl
 							_objectFilterLocalService),
 						WorkflowDefinitionLinkUtil.toWorkflowDefinitionLinks(
 							contextUser.getCompanyId(), _groupLocalService,
+							_kaleoDefinitionLocalService,
 							contextUser.getUserId(),
 							_workflowDefinitionLinkLocalService,
 							objectDefinition.getWorkflowDefinitionLinks()),
@@ -1696,6 +1701,9 @@ public class ObjectDefinitionResourceImpl
 
 	@Reference
 	private JSONFactory _jsonFactory;
+
+	@Reference
+	private KaleoDefinitionLocalService _kaleoDefinitionLocalService;
 
 	@Reference
 	private ListTypeDefinitionLocalService _listTypeDefinitionLocalService;
