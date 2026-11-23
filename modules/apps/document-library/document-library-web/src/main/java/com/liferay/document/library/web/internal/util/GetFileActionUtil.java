@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.document.library.web.internal.portlet.action.helper;
+package com.liferay.document.library.web.internal.util;
 
 import com.liferay.document.library.kernel.document.conversion.DocumentConversionUtil;
 import com.liferay.document.library.kernel.exception.NoSuchFileEntryException;
@@ -49,9 +49,9 @@ import java.util.List;
 /**
  * @author Iván Zaera
  */
-public class GetFileActionHelper {
+public class GetFileActionUtil {
 
-	public void processRequest(
+	public static void processRequest(
 			HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse)
 		throws Exception {
@@ -100,7 +100,7 @@ public class GetFileActionHelper {
 		}
 	}
 
-	private void _checkFileVersion(
+	private static void _checkFileVersion(
 			FileEntry fileEntry, FileVersion fileVersion,
 			PermissionChecker permissionChecker)
 		throws PortalException {
@@ -121,7 +121,7 @@ public class GetFileActionHelper {
 				fileVersion.getFileVersionId(), "}"));
 	}
 
-	private void _getFile(
+	private static void _getFile(
 			long fileEntryId, long folderId, String name, String title,
 			String version, long fileShortcutId, String uuid, long groupId,
 			String targetExtension, HttpServletRequest httpServletRequest,
@@ -257,7 +257,7 @@ public class GetFileActionHelper {
 			contentLength, contentType, contentDispositionType);
 	}
 
-	private void _processPrincipalException(
+	private static void _processPrincipalException(
 			Throwable throwable, HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse)
 		throws IOException, ServletException {

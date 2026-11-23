@@ -5,7 +5,7 @@
 
 package com.liferay.document.library.web.internal.struts;
 
-import com.liferay.document.library.web.internal.portlet.action.helper.GetFileActionHelper;
+import com.liferay.document.library.web.internal.util.GetFileActionUtil;
 import com.liferay.portal.kernel.struts.StrutsAction;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,13 +30,10 @@ public class GetFileStrutsAction implements StrutsAction {
 			HttpServletResponse httpServletResponse)
 		throws Exception {
 
-		_getFileActionHelper.processRequest(
+		GetFileActionUtil.processRequest(
 			httpServletRequest, httpServletResponse);
 
 		return null;
 	}
-
-	private final GetFileActionHelper _getFileActionHelper =
-		new GetFileActionHelper();
 
 }
