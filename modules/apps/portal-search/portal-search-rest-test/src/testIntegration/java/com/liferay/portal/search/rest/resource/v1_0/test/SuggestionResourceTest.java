@@ -186,7 +186,7 @@ public class SuggestionResourceTest extends BaseSuggestionResourceTestCase {
 				};
 		}
 
-		Page<SuggestionsContributorResults> suggestionsPage =
+		Page<SuggestionsContributorResults> suggestionsContributorResultsPage =
 			_postSuggestionsPage(
 				"http://localhost:" + PortalUtil.getPortalServerPort(false) +
 					"/web/guest/home",
@@ -194,7 +194,7 @@ public class SuggestionResourceTest extends BaseSuggestionResourceTestCase {
 				suggestionsContributorConfigurations);
 
 		List<Integer> suggestionsCounts = TransformUtil.transform(
-			suggestionsPage.getItems(),
+			suggestionsContributorResultsPage.getItems(),
 			suggestionsContributorResults -> {
 				Suggestion[] suggestions =
 					suggestionsContributorResults.getSuggestions();
@@ -209,7 +209,7 @@ public class SuggestionResourceTest extends BaseSuggestionResourceTestCase {
 	private String _getAssetURL(Layout destinationLayout, String search)
 		throws Exception {
 
-		Page<SuggestionsContributorResults> suggestionsPage =
+		Page<SuggestionsContributorResults> suggestionsContributorResultsPage =
 			_postSuggestionsPage(
 				"http://localhost:" + PortalUtil.getPortalServerPort(false) +
 					"/web/guest/home",
@@ -225,7 +225,7 @@ public class SuggestionResourceTest extends BaseSuggestionResourceTestCase {
 				});
 
 		SuggestionsContributorResults suggestionsContributorResults =
-			suggestionsPage.fetchFirstItem();
+			suggestionsContributorResultsPage.fetchFirstItem();
 
 		Suggestion[] suggestions =
 			suggestionsContributorResults.getSuggestions();
@@ -275,12 +275,12 @@ public class SuggestionResourceTest extends BaseSuggestionResourceTestCase {
 
 		String displayGroupName = "Suggestions";
 
-		Page<SuggestionsContributorResults> suggestionsPage =
+		Page<SuggestionsContributorResults> suggestionsContributorResultsPage =
 			_postSuggestionsPageWithBasicSuggestionsContributor(
 				null, _journalArticle.getArticleId(), displayGroupName);
 
 		_assertSuggestionContributorResults(
-			displayGroupName, suggestionsPage,
+			displayGroupName, suggestionsContributorResultsPage,
 			_journalArticle.getTitle(_locale));
 	}
 
