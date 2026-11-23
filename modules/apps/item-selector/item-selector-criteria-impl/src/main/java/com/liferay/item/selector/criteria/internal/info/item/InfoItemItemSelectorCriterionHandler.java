@@ -10,7 +10,6 @@ import com.liferay.item.selector.ItemSelectorCriterion;
 import com.liferay.item.selector.ItemSelectorCriterionHandler;
 import com.liferay.item.selector.ItemSelectorView;
 import com.liferay.item.selector.criteria.info.item.criterion.InfoItemItemSelectorCriterion;
-import com.liferay.item.selector.criteria.info.item.criterion.InfoItemItemSelectorCriterionHandlerUtil;
 
 import java.util.List;
 
