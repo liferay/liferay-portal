@@ -60,9 +60,9 @@ const ParameterModal = ({onClose, onSave, parameter, parameterNames}) => {
 			<ClayModal.Header
 				closeButtonAriaLabel={Liferay.Language.get('close')}
 			>
-				{Liferay.Language.get(
-					parameter ? 'edit-parameter' : 'add-parameter'
-				)}
+				{parameter
+					? Liferay.Language.get('edit-parameter')
+					: Liferay.Language.get('add-parameter')}
 			</ClayModal.Header>
 
 			<ClayModal.Body>
