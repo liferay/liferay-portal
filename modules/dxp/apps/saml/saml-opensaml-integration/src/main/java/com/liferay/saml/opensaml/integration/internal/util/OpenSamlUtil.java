@@ -6,11 +6,11 @@
 package com.liferay.saml.opensaml.integration.internal.util;
 
 import com.liferay.petra.concurrent.DCLSingleton;
+import com.liferay.petra.io.unsync.UnsyncStringReader;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Validator;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
 
@@ -880,9 +880,9 @@ public class OpenSamlUtil {
 			ConfigurationServiceBootstrapUtil.get(
 				XMLObjectProviderRegistry.class);
 
-		return XMLObjectSupport.unmarshallFromInputStream(
+		return XMLObjectSupport.unmarshallFromReader(
 			xmlObjectProviderRegistry.getParserPool(),
-			new ByteArrayInputStream(xml.getBytes()));
+			new UnsyncStringReader(xml));
 	}
 
 	private static XMLObjectBuilderFactory _createXMLObjectBuilderFactory() {
