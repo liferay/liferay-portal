@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Portal Search Web API
 Bundle-SymbolicName: com.liferay.portal.search.web.api
-Bundle-Version: 13.0.4
+Bundle-Version: 14.0.0
 Export-Package:\
 	com.liferay.portal.search.web.application.list.constants,\
 	com.liferay.portal.search.web.constants,\
@@ -10,8 +10,7 @@ Export-Package:\
 	com.liferay.portal.search.web.layout.prototype,\
 	com.liferay.portal.search.web.portlet.shared.search,\
 	com.liferay.portal.search.web.portlet.shared.task,\
-	com.liferay.portal.search.web.search.request,\
-	com.liferay.portal.search.web.util.comparator
+	com.liferay.portal.search.web.search.request
 Import-Package:\
 	!com.liferay.util.xml,\
 	\
