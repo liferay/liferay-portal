@@ -156,11 +156,11 @@ public class RecycleBinSiteSettingsConfigurationScreenWrapperTest {
 
 		Group group = GroupTestUtil.addGroup();
 
-		ConfigurationScreen configurationScreen = _serviceTrackerMap.getService(
-			"site-configuration-recycle-bin");
-
 		int companyTrashEntriesMaxAge = PrefsPropsUtil.getInteger(
 			group.getCompanyId(), PropsKeys.TRASH_ENTRIES_MAX_AGE);
+
+		ConfigurationScreen configurationScreen = _serviceTrackerMap.getService(
+			"site-configuration-recycle-bin");
 
 		configurationScreen.importProperties(
 			HashMapDictionaryBuilder.<String, Object>put(
@@ -184,11 +184,11 @@ public class RecycleBinSiteSettingsConfigurationScreenWrapperTest {
 	private void _testImportPropertiesWithInvalidValues() throws Exception {
 		Group group = GroupTestUtil.addGroup();
 
-		ConfigurationScreen configurationScreen = _serviceTrackerMap.getService(
-			"site-configuration-recycle-bin");
-
 		int companyTrashEntriesMaxAge = PrefsPropsUtil.getInteger(
 			group.getCompanyId(), PropsKeys.TRASH_ENTRIES_MAX_AGE);
+
+		ConfigurationScreen configurationScreen = _serviceTrackerMap.getService(
+			"site-configuration-recycle-bin");
 
 		configurationScreen.importProperties(
 			HashMapDictionaryBuilder.<String, Object>put(
