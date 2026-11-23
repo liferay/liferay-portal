@@ -48,6 +48,9 @@ public class OAuth2AuthorizationServerConfigurationGeneratorTest {
 			oAuth2AuthorizationServerConfigurationGenerator =
 				new OAuth2AuthorizationServerConfigurationGenerator();
 
+		ConfigurationAdmin configurationAdmin = Mockito.mock(
+			ConfigurationAdmin.class);
+
 		Configuration configuration = Mockito.mock(Configuration.class);
 
 		Mockito.when(
@@ -55,9 +58,6 @@ public class OAuth2AuthorizationServerConfigurationGeneratorTest {
 		).thenReturn(
 			OAuth2AuthorizationServerConfiguration.class.getName()
 		);
-
-		ConfigurationAdmin configurationAdmin = Mockito.mock(
-			ConfigurationAdmin.class);
 
 		Mockito.when(
 			configurationAdmin.getConfiguration(
@@ -71,8 +71,9 @@ public class OAuth2AuthorizationServerConfigurationGeneratorTest {
 			oAuth2AuthorizationServerConfigurationGenerator,
 			"_configurationAdmin", configurationAdmin);
 
-		String keyReferenceString = RandomTestUtil.randomString();
 		SecretResolver secretResolver = Mockito.mock(SecretResolver.class);
+
+		String keyReferenceString = RandomTestUtil.randomString();
 
 		Mockito.when(
 			secretResolver.store(

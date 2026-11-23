@@ -141,17 +141,17 @@ public class SecretResolverUtilTest {
 
 	@Test
 	public void testResolveWithSecretContext() {
-		long companyId = RandomTestUtil.randomLong();
-		String keyReferenceString = _randomKeyReferenceString();
-		String resolvedValue = RandomTestUtil.randomString();
-
-		SecretContext secretContext = SecretContext.fromConfiguration(
-			RandomTestUtil.randomString(), Collections.emptyMap());
-
 		SecretResolver secretResolver = Mockito.mock(SecretResolver.class);
 
+		long companyId = RandomTestUtil.randomLong();
+		SecretContext secretContext = SecretContext.fromConfiguration(
+			RandomTestUtil.randomString(), Collections.emptyMap());
+		String value = _randomKeyReferenceString();
+
+		String resolvedValue = RandomTestUtil.randomString();
+
 		Mockito.when(
-			secretResolver.resolve(companyId, secretContext, keyReferenceString)
+			secretResolver.resolve(companyId, secretContext, value)
 		).thenReturn(
 			resolvedValue
 		);
@@ -160,8 +160,7 @@ public class SecretResolverUtilTest {
 
 		Assert.assertSame(
 			resolvedValue,
-			SecretResolverUtil.resolve(
-				companyId, secretContext, keyReferenceString));
+			SecretResolverUtil.resolve(companyId, secretContext, value));
 
 		String plainValue = RandomTestUtil.randomString();
 
