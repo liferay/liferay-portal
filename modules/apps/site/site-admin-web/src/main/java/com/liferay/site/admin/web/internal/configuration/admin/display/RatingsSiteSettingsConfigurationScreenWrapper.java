@@ -71,7 +71,6 @@ public class RatingsSiteSettingsConfigurationScreenWrapper
 			Group group = _groupLocalService.fetchGroup((long)scopePK);
 
 			Dictionary<String, Object> properties = new HashMapDictionary<>();
-
 			Map<String, PortletRatingsDefinitionValues>
 				portletRatingsDefinitionValuesMap =
 					PortletRatingsDefinitionUtil.
