@@ -16,7 +16,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
-import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.security.audit.configuration.AuditConfiguration;
 import com.liferay.portal.security.audit.configuration.web.internal.display.context.AuditConfigurationDisplayContext;
@@ -180,11 +180,14 @@ public class AuditConfigurationFormRenderer
 
 	private boolean _isSystemScope(HttpServletRequest httpServletRequest) {
 		return ConfigurationAdminPortletKeys.SYSTEM_SETTINGS.equals(
-			PortalUtil.getPortletId(httpServletRequest));
+			_portal.getPortletId(httpServletRequest));
 	}
 
 	@Reference
 	private ConfigurationProvider _configurationProvider;
+
+	@Reference
+	private Portal _portal;
 
 	@Reference(
 		target = "(osgi.web.symbolicname=com.liferay.portal.security.audit.configuration.web)"

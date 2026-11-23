@@ -12,7 +12,7 @@ import com.liferay.portal.configuration.module.configuration.ConfigurationProvid
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
-import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.security.audit.configuration.web.internal.display.context.FileSystemAuditMessageProcessorConfigurationDisplayContext;
 import com.liferay.portal.security.audit.configuration.web.internal.util.AuditConfigurationOverrideUtil;
@@ -156,11 +156,14 @@ public class FileSystemAuditMessageProcessorConfigurationFormRenderer
 
 	private boolean _isSystemScope(HttpServletRequest httpServletRequest) {
 		return ConfigurationAdminPortletKeys.SYSTEM_SETTINGS.equals(
-			PortalUtil.getPortletId(httpServletRequest));
+			_portal.getPortletId(httpServletRequest));
 	}
 
 	@Reference
 	private ConfigurationProvider _configurationProvider;
+
+	@Reference
+	private Portal _portal;
 
 	@Reference(
 		target = "(osgi.web.symbolicname=com.liferay.portal.security.audit.configuration.web)"
