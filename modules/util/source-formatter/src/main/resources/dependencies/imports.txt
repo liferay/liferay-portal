@@ -1860,7 +1860,6 @@ com.liferay.portlet.journal.model.JournalFolder=com.liferay.journal.model.Journa
 com.liferay.portlet.journal.model.JournalFolderModel=com.liferay.journal.model.JournalFolderModel
 com.liferay.portlet.journal.model.JournalFolderSoap=com.liferay.journal.model.JournalFolderSoap
 com.liferay.portlet.journal.model.JournalFolderWrapper=com.liferay.journal.model.JournalFolderWrapper
-com.liferay.portlet.journal.model.JournalSearchConstants=com.liferay.journal.model.JournalSearchConstants
 com.liferay.portlet.journal.model.JournalStructureConstants=com.liferay.journal.model.JournalStructureConstants
 com.liferay.portlet.journal.service.JournalArticleImageLocalService=com.liferay.journal.service.JournalArticleImageLocalService
 com.liferay.portlet.journal.service.JournalArticleImageLocalServiceUtil=com.liferay.journal.service.JournalArticleImageLocalServiceUtil
