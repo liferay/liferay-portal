@@ -286,6 +286,7 @@ public class PreviewSegmentsEntryUsersMVCRenderCommandTest {
 	@TestInfo("LPD-116067")
 	public void testGetSearchContainerWithSiteAdministratorUser()
 		throws Exception {
+
 		_user3 = UserTestUtil.addUser();
 
 		Criteria criteria = new Criteria();
