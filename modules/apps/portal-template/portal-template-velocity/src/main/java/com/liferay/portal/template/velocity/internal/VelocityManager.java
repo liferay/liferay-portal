@@ -279,9 +279,6 @@ public class VelocityManager extends BaseTemplateManager {
 		}
 	}
 
-	private static volatile VelocityEngineConfiguration
-		_velocityEngineConfiguration;
-
 	@Reference(
 		target = "(component.name=com.liferay.portal.template.velocity.internal.helper.VelocityTemplateContextHelper)"
 	)
@@ -290,6 +287,7 @@ public class VelocityManager extends BaseTemplateManager {
 	private ServiceRegistration<TemplateResourceLoader>
 		_templateResourceLoaderServiceRegistration;
 	private VelocityEngine _velocityEngine;
+	private volatile VelocityEngineConfiguration _velocityEngineConfiguration;
 	private VelocityTemplateResourceCache _velocityTemplateResourceCache;
 	private volatile VelocityTemplateResourceLoader
 		_velocityTemplateResourceLoader;

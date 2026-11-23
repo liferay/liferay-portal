@@ -240,7 +240,6 @@ public class VelocityTemplateContextHelper extends TemplateContextHelper {
 	private static final Log _log = LogFactoryUtil.getLog(
 		VelocityTemplateContextHelper.class);
 
-	private static volatile VelocityEngineConfiguration
-		_velocityEngineConfiguration;
+	private volatile VelocityEngineConfiguration _velocityEngineConfiguration;
 
 }
