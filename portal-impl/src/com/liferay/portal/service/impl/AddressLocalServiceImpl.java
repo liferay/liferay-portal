@@ -7,14 +7,11 @@ package com.liferay.portal.service.impl;
 
 import com.liferay.exportimport.kernel.empty.model.EmptyModelManagerUtil;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.account.configuration.manager.AccountEntryAddressSubtypeConfigurationManagerUtil;
 import com.liferay.portal.kernel.bean.BeanReference;
 import com.liferay.portal.kernel.exception.AddressCityException;
 import com.liferay.portal.kernel.exception.AddressStreetException;
-import com.liferay.portal.kernel.exception.AddressSubtypeException;
 import com.liferay.portal.kernel.exception.AddressZipException;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.list.type.manager.ListTypeEntryManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Address;
@@ -88,7 +85,7 @@ public class AddressLocalServiceImpl extends AddressLocalServiceBaseImpl {
 		if (!EmptyModelManagerUtil.isEmptyModel()) {
 			validate(
 				0, city, classNameId, classPK, user.getCompanyId(), countryId,
-				listTypeId, mailing, primary, regionId, street1, subtype, zip);
+				listTypeId, mailing, primary, regionId, street1, zip);
 		}
 
 		long addressId = counterLocalService.increment();
@@ -268,7 +265,7 @@ public class AddressLocalServiceImpl extends AddressLocalServiceBaseImpl {
 
 		validate(
 			addressId, city, 0, 0, 0, countryId, listTypeId, mailing, primary,
-			regionId, street1, subtype, zip);
+			regionId, street1, zip);
 
 		Address address = addressPersistence.findByPrimaryKey(addressId);
 
@@ -478,8 +475,7 @@ public class AddressLocalServiceImpl extends AddressLocalServiceBaseImpl {
 	protected void validate(
 			long addressId, String city, long classNameId, long classPK,
 			long companyId, long countryId, long listTypeId, boolean mailing,
-			boolean primary, long regionId, String street1, String subtype,
-			String zip)
+			boolean primary, long regionId, String street1, String zip)
 		throws PortalException {
 
 		if (Validator.isNull(street1)) {
@@ -513,34 +509,6 @@ public class AddressLocalServiceImpl extends AddressLocalServiceBaseImpl {
 
 			_listTypeLocalService.validate(
 				listTypeId, classNameId, ListTypeConstants.ADDRESS);
-		}
-
-		if (Validator.isNotNull(subtype) &&
-			((classNameId == _classNameLocalService.getClassNameId(
-				"com.liferay.account.model.AccountEntry")) ||
-			 (classNameId == _classNameLocalService.getClassNameId(
-				 "com.liferay.commerce.model.CommerceOrder")))) {
-
-			ListType listType = _listTypePersistence.findByPrimaryKey(
-				listTypeId);
-
-			String externalReferenceCode =
-				AccountEntryAddressSubtypeConfigurationManagerUtil.
-					getAddressSubtypeListTypeDefinitionExternalReferenceCode(
-						companyId, listType.getName());
-
-			if (Validator.isNull(externalReferenceCode)) {
-				throw new AddressSubtypeException();
-			}
-
-			long listTypeEntryId =
-				ListTypeEntryManagerUtil.
-					getListTypeEntryIdByListTypeDefinitionExternalReferenceCode(
-						externalReferenceCode, companyId, subtype);
-
-			if (listTypeEntryId == 0) {
-				throw new AddressSubtypeException();
-			}
 		}
 
 		validate(addressId, companyId, classNameId, classPK, mailing, primary);
