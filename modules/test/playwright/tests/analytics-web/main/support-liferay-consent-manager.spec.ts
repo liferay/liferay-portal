@@ -123,8 +123,6 @@ async function connectACToDXP({
 
 	await goNextStep(page);
 
-	await goNextStep(page);
-
 	await page.getByRole('button', {name: 'Finish'}).click();
 }
 
