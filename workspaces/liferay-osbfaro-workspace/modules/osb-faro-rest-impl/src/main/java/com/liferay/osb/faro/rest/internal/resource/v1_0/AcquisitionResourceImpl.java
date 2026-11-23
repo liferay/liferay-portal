@@ -41,6 +41,12 @@ public class AcquisitionResourceImpl extends BaseAcquisitionResourceImpl {
 			Pagination pagination)
 		throws Exception {
 
+		String acquisitionType = type;
+
+		if (Validator.isNull(acquisitionType)) {
+			acquisitionType = "CHANNEL";
+		}
+
 		GetWorkspaceGroupChannelAcquisitionsPageResponse
 			getWorkspaceGroupChannelAcquisitionsPageResponse =
 				_faroGraphQLClient.execute(
@@ -50,8 +56,7 @@ public class AcquisitionResourceImpl extends BaseAcquisitionResourceImpl {
 					HashMapBuilder.<String, Object>put(
 						"accountId", accountId
 					).put(
-						"acquisitionType",
-						Validator.isNull(type) ? "CHANNEL" : type
+						"acquisitionType", acquisitionType
 					).put(
 						"channelId", channelId
 					).put(
