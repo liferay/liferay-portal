@@ -20,7 +20,7 @@
 	},
 	"settings": {
 		"masterPage": {
-			"key": "liferay-data-platform-master"
+			"key": "liferay-data-platform-editor-master"
 		}
 	},
 	"version": 1.1

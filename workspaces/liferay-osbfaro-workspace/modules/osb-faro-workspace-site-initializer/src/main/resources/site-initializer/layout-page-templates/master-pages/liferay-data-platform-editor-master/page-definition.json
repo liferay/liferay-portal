@@ -1,0 +1,52 @@
+{
+	"pageElement": {
+		"id": "65767ae7-27d9-47ff-9130-32da39d7dd48",
+		"pageElements": [
+			{
+				"definition": {
+					"fragment": {
+						"key": "com.liferay.osb.faro.web.internal.fragment.renderer.FaroConstantsFragmentRenderer"
+					},
+					"fragmentConfig": {
+					},
+					"fragmentFields": [
+					]
+				},
+				"id": "2a3b377c-ac46-4e10-8765-5f811fba9853",
+				"type": "Fragment"
+			},
+			{
+				"definition": {
+					"fragment": {
+						"key": "com.liferay.osb.faro.web.internal.fragment.renderer.FaroExternalScriptsFragmentRenderer"
+					},
+					"fragmentConfig": {
+					},
+					"fragmentFields": [
+					]
+				},
+				"id": "5a105aa3-c033-4e1d-a9a9-02abd6a62178",
+				"type": "Fragment"
+			},
+			{
+				"definition": {
+					"fragmentSettings": {
+						"unallowedFragments": [
+						]
+					}
+				},
+				"id": "c5d07223-35c0-4031-ac95-05a32acdbd80",
+				"type": "DropZone"
+			}
+		],
+		"type": "Root"
+	},
+	"settings": {
+		"favIcon": {
+			"contentType": "Document",
+			"externalReferenceCode": "LDP_FAVICON"
+		},
+		"themeName": "CMS"
+	},
+	"version": 1.1
+}
