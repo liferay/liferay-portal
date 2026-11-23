@@ -100,6 +100,10 @@
 		font-weight: inherit;
 		max-width: none;
 		min-width: 0;
+
+		.inline-item {
+			margin-top: 0;
+		}
 	}
 
 	.filter-resume-badge {

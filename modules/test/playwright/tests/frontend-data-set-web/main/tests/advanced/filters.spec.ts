@@ -775,3 +775,24 @@ test(
 		});
 	}
 );
+
+test(
+	'Filter resume caret is vertically centered',
+	{tag: '@LPD-116248'},
+	async ({fdsSamplePage}) => {
+		const filterResume =
+			fdsSamplePage.activeFiltersToolbar.filterResume.first();
+
+		await expect(filterResume).toBeVisible();
+
+		const filterResumeBox = await filterResume.boundingBox();
+		const caretBox = await filterResume
+			.locator('.inline-item-before svg')
+			.boundingBox();
+
+		expect(caretBox.y + caretBox.height / 2).toBeCloseTo(
+			filterResumeBox.y + filterResumeBox.height / 2,
+			0
+		);
+	}
+);
