@@ -101,6 +101,7 @@ describe('CriteriaRow', () => {
 			getByRole('group', {name: /known since date.*2026/i})
 		).toBeInTheDocument();
 		expect(getByRole('combobox', {name: /^operator$/i})).toBeInTheDocument();
+		expect(getByRole('button', {name: /^menu$/i})).toBeInTheDocument();
 	});
 
 	it('should render w/ Non-Existent Property message', () => {
@@ -116,5 +117,31 @@ describe('CriteriaRow', () => {
 		);
 
 		expect(queryByText(/^attribute no longer exists\.$/i)).toBeTruthy();
+	});
+
+	it('should offer only the delete action when the attribute no longer exists', () => {
+		const onDelete = jest.fn();
+
+		const {getByRole, queryByRole} = render(
+			<WrapperComponent>
+				<DndProvider backend={HTML5Backend}>
+					<CriteriaRow
+						index={3}
+						onDelete={onDelete}
+						referencedAssetsIMap={new Map()}
+						referencedPropertiesIMap={new Map()}
+					/>
+				</DndProvider>
+			</WrapperComponent>
+		);
+
+		expect(getByRole('alert')).toHaveTextContent(
+			/^attribute no longer exists\.$/i
+		);
+		expect(queryByRole('button', {name: /^menu$/i})).not.toBeInTheDocument();
+
+		fireEvent.click(getByRole('button', {name: /^delete$/i}));
+
+		expect(onDelete).toHaveBeenCalledWith(3);
 	});
 });
