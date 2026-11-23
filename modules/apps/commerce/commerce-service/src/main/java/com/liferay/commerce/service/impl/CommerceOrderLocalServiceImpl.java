@@ -31,6 +31,7 @@ import com.liferay.commerce.exception.CommerceOrderRequestedDeliveryDateExceptio
 import com.liferay.commerce.exception.GuestCartMaxAllowedException;
 import com.liferay.commerce.model.CommerceAddress;
 import com.liferay.commerce.model.CommerceOrder;
+import com.liferay.commerce.model.CommerceOrderAttachment;
 import com.liferay.commerce.model.CommerceOrderItem;
 import com.liferay.commerce.model.CommerceOrderTable;
 import com.liferay.commerce.model.CommerceOrderType;
@@ -63,6 +64,7 @@ import com.liferay.commerce.service.CommerceOrderPaymentLocalService;
 import com.liferay.commerce.service.CommerceOrderTypeLocalService;
 import com.liferay.commerce.service.CommerceShippingOptionAccountEntryRelService;
 import com.liferay.commerce.service.base.CommerceOrderLocalServiceBaseImpl;
+import com.liferay.commerce.service.persistence.CommerceOrderAttachmentPersistence;
 import com.liferay.commerce.service.persistence.CommerceOrderItemPersistence;
 import com.liferay.commerce.service.persistence.CommerceShippingMethodPersistence;
 import com.liferay.commerce.shipping.engine.fixed.model.CommerceShippingFixedOption;
@@ -73,6 +75,7 @@ import com.liferay.commerce.util.CommerceOrderThreadLocal;
 import com.liferay.commerce.util.CommerceShippingEngineRegistry;
 import com.liferay.commerce.util.CommerceUtil;
 import com.liferay.commerce.util.comparator.CommerceShippingMethodPriorityComparator;
+import com.liferay.document.library.kernel.exception.NoSuchFileEntryException;
 import com.liferay.document.library.kernel.util.DLAppHelperThreadLocal;
 import com.liferay.expando.kernel.service.ExpandoRowLocalService;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
@@ -565,6 +568,20 @@ public class CommerceOrderLocalServiceImpl
 			commerceOrderId);
 
 		LocalRepository localRepository = commerceOrder.getLocalRepository();
+
+		FileEntry fileEntry = localRepository.getFileEntry(
+			attachmentFileEntryId);
+		Folder folder = commerceOrder.getFolder(localRepository);
+
+		if ((folder == null) ||
+			(fileEntry.getFolderId() != folder.getFolderId()) ||
+			_hasCommerceOrderAttachment(
+				commerceOrderId, attachmentFileEntryId)) {
+
+			throw new NoSuchFileEntryException(
+				"No DLFileEntry exists with the primary key " +
+					attachmentFileEntryId);
+		}
 
 		localRepository.deleteFileEntry(attachmentFileEntryId);
 	}
@@ -2513,6 +2530,21 @@ public class CommerceOrderLocalServiceImpl
 		return commerceOrder.getUserId();
 	}
 
+	private boolean _hasCommerceOrderAttachment(
+		long commerceOrderId, long fileEntryId) {
+
+		for (CommerceOrderAttachment commerceOrderAttachment :
+				_commerceOrderAttachmentPersistence.findByCommerceOrderId(
+					commerceOrderId)) {
+
+			if (commerceOrderAttachment.getFileEntryId() == fileEntryId) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	private boolean _hasWorkflowDefinition(long groupId, long typePK)
 		throws PortalException {
 
@@ -3473,6 +3505,10 @@ public class CommerceOrderLocalServiceImpl
 
 	@Reference
 	private CommerceModelAttributesProvider _commerceModelAttributesProvider;
+
+	@Reference
+	private CommerceOrderAttachmentPersistence
+		_commerceOrderAttachmentPersistence;
 
 	private CommerceOrderConfiguration _commerceOrderConfiguration;
 
