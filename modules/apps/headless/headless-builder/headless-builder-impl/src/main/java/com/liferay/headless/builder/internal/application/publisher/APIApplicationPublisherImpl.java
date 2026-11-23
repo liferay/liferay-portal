@@ -299,13 +299,12 @@ public class APIApplicationPublisherImpl
 		}
 	}
 
-	private static BundleContext _bundleContext;
-
 	@Reference
 	private APIApplicationProvider _apiApplicationProvider;
 
 	private final Map<String, ServiceRegistration<Application>>
 		_applicationServiceRegistrationsMap = new HashMap<>();
+	private BundleContext _bundleContext;
 	private final Map<String, Set<Long>> _companyIdsMap = new HashMap<>();
 	private EndpointHelper _endpointHelper;
 	private final Map<String, EndpointMatcher> _endpointMatchersMap =
