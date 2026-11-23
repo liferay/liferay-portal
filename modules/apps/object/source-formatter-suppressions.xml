@@ -6,7 +6,7 @@
 	</checkstyle>
 	<source-check>
 		<suppress checks="JavaAPISignatureCheck" files="object-api/src/main/java/com/liferay/object/scope/ObjectScopeProvider\.java" />
-		<suppress checks="JavaCompanyThreadLocalCheck" files="object-api/src/main/java/com/liferay/object/definition/security/permission/resource/util/ObjectDefinitionResourcePermissionUtil\.java" />
+		<suppress checks="JavaCompanyThreadLocalCheck" files="object-service/src/main/java/com/liferay/object/internal/definition/security/permission/resource/util/ObjectDefinitionResourcePermissionUtil\.java" />
 		<suppress checks="JavaCompanyThreadLocalCheck" files="object-service/src/main/java/com/liferay/object/service/impl/ObjectDefinitionLocalServiceImpl\.java" />
 		<suppress checks="JavaLocalServiceImplUserIdUsageCheck" files="object-service/src/main/java/com/liferay/object/service/impl/ObjectEntryLocalServiceImpl\.java" />
 		<suppress checks="JavaLocalServiceImplUserIdUsageCheck" files="object-service/src/main/java/com/liferay/object/service/impl/ObjectStateTransitionLocalServiceImpl\.java" />
