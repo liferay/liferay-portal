@@ -357,6 +357,8 @@ modules/apps/shared-dependencies/
 modules/apps/sharing/    @liferay-content-management
 modules/apps/site/    @liferay-site-management
 modules/apps/site/site-cms-site-initializer/    @liferay-content-management
+modules/apps/site/site-cms-site-initializer/src/main/resources/META-INF/resources/js/structure_builder/    @liferay-page-management
+modules/apps/site/site-cms-site-initializer/test/js/structure_builder/    @liferay-page-management
 modules/apps/site/site-cms-site-initializer-api/    @liferay-content-management
 modules/apps/site/site-cms-site-initializer-test/    @liferay-content-management
 modules/apps/site/site-cms-standalone-site-initializer/    @liferay-content-management
