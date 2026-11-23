@@ -66,10 +66,10 @@ public abstract class BaseTestClassReport implements TestClassReport {
 		DownstreamBuildReport downstreamBuildReport =
 			getDownstreamBuildReport();
 
+		StopWatchRecord stopWatchRecord = null;
+
 		StopWatchRecordsGroup stopWatchRecordsGroup =
 			downstreamBuildReport.getStopWatchRecordsGroup();
-
-		StopWatchRecord stopWatchRecord = null;
 
 		if (stopWatchRecordsGroup != null) {
 			stopWatchRecord = stopWatchRecordsGroup.get(
