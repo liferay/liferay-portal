@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.workflow.DefaultWorkflowNode;
 import com.liferay.portal.kernel.workflow.DefaultWorkflowNodeSetting;
 import com.liferay.portal.kernel.workflow.DefaultWorkflowTask;
 import com.liferay.portal.kernel.workflow.DefaultWorkflowTransition;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.workflow.WorkflowDefinition;
 import com.liferay.portal.kernel.workflow.WorkflowInstance;
 import com.liferay.portal.kernel.workflow.WorkflowLog;
@@ -93,7 +94,9 @@ public class KaleoWorkflowModelConverterImpl
 
 		String content = kaleoDefinition.getContent();
 
-		if (Validator.isNull(content)) {
+		if (Validator.isNull(content) &&
+			(kaleoDefinition.getStatus() != WorkflowConstants.STATUS_EMPTY)) {
+
 			try {
 				content = _definitionExporter.export(
 					kaleoDefinition.getKaleoDefinitionId());
@@ -114,19 +117,25 @@ public class KaleoWorkflowModelConverterImpl
 
 		defaultWorkflowDefinition.setContent(content);
 
-		try {
-			KaleoDefinitionVersion firstKaleoDefinitionVersion =
-				_kaleoDefinitionVersionLocalService.
-					getFirstKaleoDefinitionVersion(
-						kaleoDefinition.getCompanyId(),
-						kaleoDefinition.getName());
-
+		if (kaleoDefinition.getStatus() == WorkflowConstants.STATUS_EMPTY) {
 			defaultWorkflowDefinition.setCreateDate(
-				firstKaleoDefinitionVersion.getCreateDate());
+				kaleoDefinition.getCreateDate());
 		}
-		catch (PortalException portalException) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(portalException);
+		else {
+			try {
+				KaleoDefinitionVersion firstKaleoDefinitionVersion =
+					_kaleoDefinitionVersionLocalService.
+						getFirstKaleoDefinitionVersion(
+							kaleoDefinition.getCompanyId(),
+							kaleoDefinition.getName());
+
+				defaultWorkflowDefinition.setCreateDate(
+					firstKaleoDefinitionVersion.getCreateDate());
+			}
+			catch (PortalException portalException) {
+				if (_log.isWarnEnabled()) {
+					_log.warn(portalException);
+				}
 			}
 		}
 
@@ -156,6 +165,10 @@ public class KaleoWorkflowModelConverterImpl
 		defaultWorkflowDefinition.setVersion(kaleoDefinition.getVersion());
 		defaultWorkflowDefinition.setWorkflowDefinitionId(
 			kaleoDefinition.getKaleoDefinitionId());
+
+		if (kaleoDefinition.getStatus() == WorkflowConstants.STATUS_EMPTY) {
+			return defaultWorkflowDefinition;
+		}
 
 		try {
 			KaleoDefinitionVersion kaleoDefinitionVersion =
