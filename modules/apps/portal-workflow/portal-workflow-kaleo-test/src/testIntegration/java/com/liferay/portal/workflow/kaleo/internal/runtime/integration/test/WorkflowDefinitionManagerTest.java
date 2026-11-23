@@ -6,13 +6,16 @@
 package com.liferay.portal.workflow.kaleo.internal.runtime.integration.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -27,12 +30,17 @@ import com.liferay.portal.kernel.workflow.WorkflowNode;
 import com.liferay.portal.kernel.workflow.WorkflowNodeSetting;
 import com.liferay.portal.kernel.workflow.WorkflowTransition;
 import com.liferay.portal.security.script.management.test.util.ScriptManagementConfigurationTestUtil;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LogEntry;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.portal.workflow.constants.WorkflowDefinitionConstants;
 import com.liferay.portal.workflow.kaleo.definition.exception.KaleoDefinitionValidationException;
 import com.liferay.portal.workflow.kaleo.definition.util.WorkflowDefinitionContentUtil;
+import com.liferay.portal.workflow.kaleo.model.KaleoDefinition;
+import com.liferay.portal.workflow.kaleo.service.KaleoDefinitionLocalService;
 import com.liferay.portal.workflow.manager.WorkflowDefinitionManager;
 
 import java.io.Closeable;
@@ -732,6 +740,45 @@ public class WorkflowDefinitionManagerTest extends BaseWorkflowManagerTestCase {
 	}
 
 	@Test
+	public void testLiberalGetLatestWorkflowDefinitionWithEmptyKaleoDefinition()
+		throws Exception {
+
+		KaleoDefinition kaleoDefinition = null;
+
+		try (SafeCloseable safeCloseable =
+				LazyReferencingThreadLocal.setEnabledWithSafeCloseable(true)) {
+
+			kaleoDefinition =
+				_kaleoDefinitionLocalService.getOrAddEmptyKaleoDefinition(
+					RandomTestUtil.randomString(),
+					RandomTestUtil.randomString(),
+					WorkflowDefinitionConstants.SCOPE_ALL, false,
+					ServiceContextTestUtil.getServiceContext());
+		}
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.portal.workflow.kaleo.runtime.integration." +
+					"internal.KaleoWorkflowModelConverterImpl",
+				LoggerTestUtil.WARN)) {
+
+			WorkflowDefinition workflowDefinition =
+				_workflowDefinitionManager.liberalGetLatestWorkflowDefinition(
+					kaleoDefinition.getCompanyId(), kaleoDefinition.getName());
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertEquals(logEntries.toString(), 0, logEntries.size());
+
+			Assert.assertEquals(
+				kaleoDefinition.getCreateDate(),
+				workflowDefinition.getCreateDate());
+			Assert.assertEquals(
+				kaleoDefinition.getExternalReferenceCode(),
+				workflowDefinition.getExternalReferenceCode());
+		}
+	}
+
+	@Test
 	public void testSaveWorkflowDefinition() throws Exception {
 		WorkflowDefinition workflowDefinition = _saveWorkflowDefinition();
 
@@ -1242,6 +1289,9 @@ public class WorkflowDefinitionManagerTest extends BaseWorkflowManagerTestCase {
 			workflowDefinition.getExternalReferenceCode());
 		Assert.assertTrue(workflowDefinition.isActive());
 	}
+
+	@Inject
+	private KaleoDefinitionLocalService _kaleoDefinitionLocalService;
 
 	@Inject
 	private WorkflowDefinitionManager _workflowDefinitionManager;
