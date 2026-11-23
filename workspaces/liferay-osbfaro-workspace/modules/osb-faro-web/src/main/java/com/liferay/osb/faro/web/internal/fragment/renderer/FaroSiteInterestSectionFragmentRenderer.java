@@ -30,7 +30,7 @@ public class FaroSiteInterestSectionFragmentRenderer
 	}
 
 	@Override
-	protected String getModule() {
+	protected String getModule(HttpServletRequest httpServletRequest) {
 		return "{SiteInterest} from osb-faro-web/sites";
 	}
 

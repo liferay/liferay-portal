@@ -28,7 +28,7 @@ public class FaroLifecycleSectionFragmentRenderer
 	}
 
 	@Override
-	protected String getModule() {
+	protected String getModule(HttpServletRequest httpServletRequest) {
 		return "{Lifecycle} from osb-faro-web/lifecycles";
 	}
 

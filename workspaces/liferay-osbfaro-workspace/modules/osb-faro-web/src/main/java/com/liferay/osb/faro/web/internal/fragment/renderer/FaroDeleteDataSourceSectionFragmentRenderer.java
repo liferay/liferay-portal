@@ -28,7 +28,7 @@ public class FaroDeleteDataSourceSectionFragmentRenderer
 	}
 
 	@Override
-	protected String getModule() {
+	protected String getModule(HttpServletRequest httpServletRequest) {
 		return "{DeleteDataSource} from osb-faro-web/settings";
 	}
 

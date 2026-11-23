@@ -30,7 +30,7 @@ public class FaroEventAttributesSectionFragmentRenderer
 	}
 
 	@Override
-	protected String getModule() {
+	protected String getModule(HttpServletRequest httpServletRequest) {
 		return "{EventAttributes} from osb-faro-web/settings";
 	}
 

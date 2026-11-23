@@ -75,7 +75,7 @@ public abstract class BaseFragmentRenderer implements FragmentRenderer {
 
 			ComponentTag componentTag = new ComponentTag();
 
-			componentTag.setModule(getModule());
+			componentTag.setModule(getModule(httpServletRequest));
 			componentTag.setPageContext(pageContext);
 			componentTag.setProps(
 				HashMapBuilder.<String, Object>put(
@@ -132,7 +132,8 @@ public abstract class BaseFragmentRenderer implements FragmentRenderer {
 		}
 	}
 
-	protected abstract String getModule();
+	protected abstract String getModule(HttpServletRequest httpServletRequest)
+		throws Exception;
 
 	protected NavigationItemList getNavigationItems(
 			HttpServletRequest httpServletRequest)

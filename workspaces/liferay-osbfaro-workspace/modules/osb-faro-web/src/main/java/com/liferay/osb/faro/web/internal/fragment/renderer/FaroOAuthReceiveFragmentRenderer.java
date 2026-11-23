@@ -34,7 +34,7 @@ public class FaroOAuthReceiveFragmentRenderer extends BaseFragmentRenderer {
 	}
 
 	@Override
-	protected String getModule() {
+	protected String getModule(HttpServletRequest httpServletRequest) {
 		return "{OAuthReceive} from osb-faro-web/workspaces";
 	}
 

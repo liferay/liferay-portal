@@ -30,7 +30,7 @@ public class FaroAccountProfileSectionFragmentRenderer
 	}
 
 	@Override
-	protected String getModule() {
+	protected String getModule(HttpServletRequest httpServletRequest) {
 		return "{AccountProfile} from osb-faro-web/accounts";
 	}
 

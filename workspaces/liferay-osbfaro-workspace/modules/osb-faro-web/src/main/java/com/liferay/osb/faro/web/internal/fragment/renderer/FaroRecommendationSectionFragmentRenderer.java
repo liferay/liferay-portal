@@ -28,7 +28,7 @@ public class FaroRecommendationSectionFragmentRenderer
 	}
 
 	@Override
-	protected String getModule() {
+	protected String getModule(HttpServletRequest httpServletRequest) {
 		return "{Recommendation} from osb-faro-web/settings";
 	}
 

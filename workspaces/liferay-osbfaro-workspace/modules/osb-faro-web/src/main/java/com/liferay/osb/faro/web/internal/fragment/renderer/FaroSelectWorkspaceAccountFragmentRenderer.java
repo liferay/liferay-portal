@@ -8,6 +8,8 @@ package com.liferay.osb.faro.web.internal.fragment.renderer;
 import com.liferay.fragment.renderer.FragmentRenderer;
 import com.liferay.portal.kernel.language.LanguageUtil;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.util.Locale;
 
 import org.osgi.service.component.annotations.Component;
@@ -30,7 +32,7 @@ public class FaroSelectWorkspaceAccountFragmentRenderer
 	}
 
 	@Override
-	protected String getModule() {
+	protected String getModule(HttpServletRequest httpServletRequest) {
 		return "{SelectWorkspaceAccount} from osb-faro-web/workspaces";
 	}
 

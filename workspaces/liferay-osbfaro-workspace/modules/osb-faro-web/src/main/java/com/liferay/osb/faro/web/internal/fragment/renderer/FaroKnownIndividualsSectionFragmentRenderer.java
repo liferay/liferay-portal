@@ -26,7 +26,7 @@ public class FaroKnownIndividualsSectionFragmentRenderer
 	}
 
 	@Override
-	protected String getModule() {
+	protected String getModule(HttpServletRequest httpServletRequest) {
 		return "{KnownIndividuals} from osb-faro-web/individuals";
 	}
 

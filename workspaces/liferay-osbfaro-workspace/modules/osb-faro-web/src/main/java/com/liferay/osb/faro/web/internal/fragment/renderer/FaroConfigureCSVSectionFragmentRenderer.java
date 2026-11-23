@@ -28,7 +28,7 @@ public class FaroConfigureCSVSectionFragmentRenderer
 	}
 
 	@Override
-	protected String getModule() {
+	protected String getModule(HttpServletRequest httpServletRequest) {
 		return "{ConfigureCSV} from osb-faro-web/settings";
 	}
 

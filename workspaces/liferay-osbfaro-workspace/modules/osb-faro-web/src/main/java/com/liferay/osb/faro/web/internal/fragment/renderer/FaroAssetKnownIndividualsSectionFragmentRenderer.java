@@ -30,7 +30,7 @@ public class FaroAssetKnownIndividualsSectionFragmentRenderer
 	}
 
 	@Override
-	protected String getModule() {
+	protected String getModule(HttpServletRequest httpServletRequest) {
 		return "{AssetKnownIndividuals} from osb-faro-web/assets";
 	}
 

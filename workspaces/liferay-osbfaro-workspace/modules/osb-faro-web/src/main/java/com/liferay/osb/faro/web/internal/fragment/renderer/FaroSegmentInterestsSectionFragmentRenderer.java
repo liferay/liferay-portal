@@ -30,7 +30,7 @@ public class FaroSegmentInterestsSectionFragmentRenderer
 	}
 
 	@Override
-	protected String getModule() {
+	protected String getModule(HttpServletRequest httpServletRequest) {
 		return "{SegmentInterests} from osb-faro-web/segments";
 	}
 

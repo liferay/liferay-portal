@@ -30,7 +30,7 @@ public class FaroPagePathSectionFragmentRenderer
 	}
 
 	@Override
-	protected String getModule() {
+	protected String getModule(HttpServletRequest httpServletRequest) {
 		return "{PagePath} from osb-faro-web/sites";
 	}
 

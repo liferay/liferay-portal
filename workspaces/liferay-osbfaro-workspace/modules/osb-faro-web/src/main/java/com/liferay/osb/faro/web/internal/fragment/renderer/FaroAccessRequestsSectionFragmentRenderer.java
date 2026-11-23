@@ -26,7 +26,7 @@ public class FaroAccessRequestsSectionFragmentRenderer
 	}
 
 	@Override
-	protected String getModule() {
+	protected String getModule(HttpServletRequest httpServletRequest) {
 		return "{AccessRequests} from osb-faro-web/settings";
 	}
 

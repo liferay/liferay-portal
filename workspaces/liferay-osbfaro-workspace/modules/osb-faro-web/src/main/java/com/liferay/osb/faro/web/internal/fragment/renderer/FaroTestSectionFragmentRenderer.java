@@ -30,7 +30,7 @@ public class FaroTestSectionFragmentRenderer
 	}
 
 	@Override
-	protected String getModule() {
+	protected String getModule(HttpServletRequest httpServletRequest) {
 		return "{Test} from osb-faro-web/tests";
 	}
 

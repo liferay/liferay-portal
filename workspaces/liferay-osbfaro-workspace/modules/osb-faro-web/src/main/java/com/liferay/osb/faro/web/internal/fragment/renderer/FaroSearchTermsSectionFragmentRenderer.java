@@ -26,7 +26,7 @@ public class FaroSearchTermsSectionFragmentRenderer
 	}
 
 	@Override
-	protected String getModule() {
+	protected String getModule(HttpServletRequest httpServletRequest) {
 		return "{SearchTerms} from osb-faro-web/sites";
 	}
 

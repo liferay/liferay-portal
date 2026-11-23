@@ -28,7 +28,7 @@ public class FaroDataSourceSectionFragmentRenderer
 	}
 
 	@Override
-	protected String getModule() {
+	protected String getModule(HttpServletRequest httpServletRequest) {
 		return "{DataSource} from osb-faro-web/settings";
 	}
 

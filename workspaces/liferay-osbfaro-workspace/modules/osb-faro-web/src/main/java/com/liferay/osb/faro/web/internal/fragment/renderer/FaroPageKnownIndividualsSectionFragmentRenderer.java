@@ -30,7 +30,7 @@ public class FaroPageKnownIndividualsSectionFragmentRenderer
 	}
 
 	@Override
-	protected String getModule() {
+	protected String getModule(HttpServletRequest httpServletRequest) {
 		return "{PageKnownIndividuals} from osb-faro-web/sites";
 	}
 

@@ -28,7 +28,7 @@ public class FaroDataPrivacySectionFragmentRenderer
 	}
 
 	@Override
-	protected String getModule() {
+	protected String getModule(HttpServletRequest httpServletRequest) {
 		return "{DataPrivacy} from osb-faro-web/settings";
 	}
 

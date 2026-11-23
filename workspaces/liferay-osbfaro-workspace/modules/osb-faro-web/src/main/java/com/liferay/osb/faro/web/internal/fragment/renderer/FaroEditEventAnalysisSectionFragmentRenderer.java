@@ -28,7 +28,7 @@ public class FaroEditEventAnalysisSectionFragmentRenderer
 	}
 
 	@Override
-	protected String getModule() {
+	protected String getModule(HttpServletRequest httpServletRequest) {
 		return "{EditEventAnalysis} from osb-faro-web/events";
 	}
 

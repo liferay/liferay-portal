@@ -34,7 +34,7 @@ public class FaroAddWorkspaceFragmentRenderer extends BaseFragmentRenderer {
 	}
 
 	@Override
-	protected String getModule() {
+	protected String getModule(HttpServletRequest httpServletRequest) {
 		return "{AddWorkspace} from osb-faro-web/workspaces";
 	}
 

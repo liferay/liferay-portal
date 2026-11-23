@@ -30,7 +30,7 @@ public class FaroIndividualSectionFragmentRenderer
 	}
 
 	@Override
-	protected String getModule() {
+	protected String getModule(HttpServletRequest httpServletRequest) {
 		return "{Individual} from osb-faro-web/individuals";
 	}
 

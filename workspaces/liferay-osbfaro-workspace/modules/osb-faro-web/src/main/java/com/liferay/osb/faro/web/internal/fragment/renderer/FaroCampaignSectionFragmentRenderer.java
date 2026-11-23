@@ -28,7 +28,7 @@ public class FaroCampaignSectionFragmentRenderer
 	}
 
 	@Override
-	protected String getModule() {
+	protected String getModule(HttpServletRequest httpServletRequest) {
 		return "{Campaign} from osb-faro-web/campaigns";
 	}
 
