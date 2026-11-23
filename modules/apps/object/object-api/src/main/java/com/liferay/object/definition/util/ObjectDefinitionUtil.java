@@ -156,6 +156,7 @@ public class ObjectDefinitionUtil {
 		"com.liferay.content.site.generator.impl", "com.liferay.cookies.impl",
 		"com.liferay.digital.sales.room.site.initializer",
 		"com.liferay.digital.signature.impl",
+		"com.liferay.exportimport.service",
 		"com.liferay.frontend.data.set.admin.web",
 		"com.liferay.frontend.data.set.impl",
 		"com.liferay.headless.builder.impl",
@@ -287,6 +288,10 @@ public class ObjectDefinitionUtil {
 			"PIMConnectorFieldMappingRule", "/pim/connector-field-mapping-rules"
 		).put(
 			"PIMLink", "/pim/links"
+		).put(
+			"RemoteImportProcess", "/remote-import-processes"
+		).put(
+			"RemoteInstance", "/remote-instances"
 		).build();
 
 }

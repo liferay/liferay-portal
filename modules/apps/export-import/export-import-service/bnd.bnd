@@ -1,4 +1,5 @@
 Bundle-Name: Liferay Export Import Service
 Bundle-SymbolicName: com.liferay.exportimport.service
 Bundle-Version: 8.0.150
+Liferay-Client-Extension-Batch: com/liferay/exportimport/internal/batch
 -dsannotations-options: inherit

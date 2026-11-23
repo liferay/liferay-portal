@@ -1,0 +1,336 @@
+{
+	"configuration": {
+		"className": "com.liferay.object.admin.rest.dto.v1_0.ObjectDefinition",
+		"multiCompany": true,
+		"parameters": {
+			"containsHeaders": "true",
+			"createStrategy": "UPSERT",
+			"featureFlag": "LPD-71352",
+			"importStrategy": "ON_ERROR_FAIL",
+			"updateStrategy": "UPDATE"
+		},
+		"taskItemDelegateName": "DEFAULT"
+	},
+	"items": [
+		{
+			"className": "com.liferay.object.model.ObjectDefinition#R3P1",
+			"enableCategorization": false,
+			"enableIndexSearch": false,
+			"externalReferenceCode": "L_REMOTE_IMPORT_PROCESS",
+			"label": {
+				"en_US": "Remote Import Process"
+			},
+			"name": "RemoteImportProcess",
+			"objectDefinitionSettings": [
+				{
+					"name": "visible",
+					"value": "false"
+				}
+			],
+			"objectFields": [
+				{
+					"DBType": "Clob",
+					"businessType": "LongText",
+					"externalReferenceCode": "ERROR_MESSAGE",
+					"indexed": false,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "Error Message"
+					},
+					"name": "errorMessage",
+					"readOnly": "true",
+					"readOnlyConditionExpression": "",
+					"required": false,
+					"state": false,
+					"system": true,
+					"type": "String",
+					"unique": false
+				},
+				{
+					"DBType": "Long",
+					"businessType": "LongInteger",
+					"externalReferenceCode": "EXPORT_PROCESS_ID",
+					"indexed": false,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "Export Process ID"
+					},
+					"name": "exportProcessId",
+					"readOnly": "false",
+					"readOnlyConditionExpression": "",
+					"required": true,
+					"state": false,
+					"system": true,
+					"type": "Long",
+					"unique": false
+				},
+				{
+					"DBType": "Integer",
+					"businessType": "Integer",
+					"externalReferenceCode": "IMPORT_STATUS",
+					"indexed": false,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "Import Status"
+					},
+					"name": "importStatus",
+					"readOnly": "true",
+					"readOnlyConditionExpression": "",
+					"required": false,
+					"state": false,
+					"system": true,
+					"type": "Integer",
+					"unique": false
+				},
+				{
+					"DBType": "Long",
+					"businessType": "LongInteger",
+					"externalReferenceCode": "REMOTE_IMPORT_PROCESS_ID",
+					"indexed": false,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "Remote Import Process ID"
+					},
+					"name": "remoteImportProcessId",
+					"readOnly": "true",
+					"readOnlyConditionExpression": "",
+					"required": false,
+					"state": false,
+					"system": true,
+					"type": "Long",
+					"unique": false
+				},
+				{
+					"DBType": "Clob",
+					"businessType": "LongText",
+					"externalReferenceCode": "REMOTE_IMPORT_URL",
+					"indexed": false,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "Remote Import URL"
+					},
+					"name": "remoteImportURL",
+					"readOnly": "true",
+					"readOnlyConditionExpression": "",
+					"required": false,
+					"state": false,
+					"system": true,
+					"type": "String",
+					"unique": false
+				}
+			],
+			"panelCategoryKey": "",
+			"parameterRequired": false,
+			"pluralLabel": {
+				"en_US": "Remote Import Processes"
+			},
+			"portlet": false,
+			"scope": "company",
+			"status": {
+				"code": 0
+			},
+			"system": true
+		},
+		{
+			"className": "com.liferay.object.model.ObjectDefinition#R3I1",
+			"enableCategorization": false,
+			"enableIndexSearch": false,
+			"externalReferenceCode": "L_REMOTE_INSTANCE",
+			"label": {
+				"en_US": "Remote Instance"
+			},
+			"name": "RemoteInstance",
+			"objectDefinitionSettings": [
+				{
+					"name": "visible",
+					"value": "false"
+				}
+			],
+			"objectFields": [
+				{
+					"DBType": "String",
+					"businessType": "Text",
+					"externalReferenceCode": "CLIENT_ID",
+					"indexed": false,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "Client ID"
+					},
+					"name": "clientId",
+					"readOnly": "false",
+					"readOnlyConditionExpression": "",
+					"required": true,
+					"state": false,
+					"system": true,
+					"type": "String",
+					"unique": false
+				},
+				{
+					"DBType": "Clob",
+					"businessType": "LongText",
+					"externalReferenceCode": "CLIENT_SECRET",
+					"indexed": false,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "Client Secret"
+					},
+					"name": "clientSecret",
+					"readOnly": "false",
+					"readOnlyConditionExpression": "",
+					"required": true,
+					"state": false,
+					"system": true,
+					"type": "String",
+					"unique": false
+				},
+				{
+					"DBType": "String",
+					"businessType": "Text",
+					"externalReferenceCode": "HOSTNAME",
+					"indexed": false,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "Hostname"
+					},
+					"name": "hostname",
+					"readOnly": "false",
+					"readOnlyConditionExpression": "",
+					"required": true,
+					"state": false,
+					"system": true,
+					"type": "String",
+					"unique": false
+				},
+				{
+					"DBType": "String",
+					"businessType": "Text",
+					"externalReferenceCode": "NAME",
+					"indexed": false,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "Name"
+					},
+					"name": "name",
+					"objectFieldSettings": [
+						{
+							"name": "uniqueValues",
+							"value": true
+						}
+					],
+					"readOnly": "false",
+					"readOnlyConditionExpression": "",
+					"required": true,
+					"state": false,
+					"system": true,
+					"type": "String",
+					"unique": false
+				},
+				{
+					"DBType": "Integer",
+					"businessType": "Integer",
+					"externalReferenceCode": "PORT",
+					"indexed": false,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "Port"
+					},
+					"name": "port",
+					"readOnly": "false",
+					"readOnlyConditionExpression": "",
+					"required": false,
+					"state": false,
+					"system": true,
+					"type": "Integer",
+					"unique": false
+				},
+				{
+					"DBType": "Boolean",
+					"businessType": "Boolean",
+					"externalReferenceCode": "SECURE_CONNECTION",
+					"indexed": false,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "Secure Connection"
+					},
+					"name": "secureConnection",
+					"objectFieldSettings": [
+						{
+							"name": "defaultValue",
+							"value": "true"
+						},
+						{
+							"name": "defaultValueType",
+							"value": "inputAsValue"
+						}
+					],
+					"readOnly": "false",
+					"readOnlyConditionExpression": "",
+					"required": false,
+					"state": false,
+					"system": true,
+					"type": "Boolean",
+					"unique": false
+				}
+			],
+			"objectRelationships": [
+				{
+					"deletionType": "cascade",
+					"externalReferenceCode": "L_REMOTE_INSTANCE_TO_L_REMOTE_IMPORT_PROCESS",
+					"label": {
+						"en_US": "Remote Instance to Remote Import Processes"
+					},
+					"name": "remoteInstanceToRemoteImportProcesses",
+					"objectDefinitionExternalReferenceCode1": "L_REMOTE_INSTANCE",
+					"objectDefinitionExternalReferenceCode2": "L_REMOTE_IMPORT_PROCESS",
+					"objectDefinitionModifiable2": true,
+					"objectDefinitionName2": "RemoteImportProcess",
+					"objectDefinitionScope2": "company",
+					"objectDefinitionSystem2": true,
+					"objectField": {
+						"DBType": "Long",
+						"businessType": "Relationship",
+						"externalReferenceCode": "REMOTE_INSTANCE_TO_REMOTE_IMPORT_PROCESS",
+						"indexed": false,
+						"indexedAsKeyword": false,
+						"label": {
+							"en_US": "Remote Instance to Remote Import Processes"
+						},
+						"name": "r_remoteInstanceToRemoteImportProcesses_c_remoteInstanceId",
+						"objectFieldSettings": [
+							{
+								"name": "objectDefinition1ShortName",
+								"value": "RemoteInstance"
+							},
+							{
+								"name": "objectRelationshipERCObjectFieldName",
+								"value": "r_remoteInstanceToRemoteImportProcesses_c_remoteInstanceERC"
+							}
+						],
+						"readOnly": "false",
+						"readOnlyConditionExpression": "",
+						"relationshipType": "oneToMany",
+						"required": true,
+						"system": true,
+						"type": "Long"
+					},
+					"parameterObjectFieldName": "",
+					"reverse": false,
+					"system": true,
+					"type": "oneToMany"
+				}
+			],
+			"panelCategoryKey": "",
+			"parameterRequired": false,
+			"pluralLabel": {
+				"en_US": "Remote Instances"
+			},
+			"portlet": false,
+			"scope": "company",
+			"status": {
+				"code": 0
+			},
+			"system": true,
+			"titleObjectFieldName": "name"
+		}
+	]
+}
