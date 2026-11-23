@@ -717,6 +717,45 @@ public class AccountEntryUserRelServiceHttp {
 		}
 	}
 
+	public static void updateAccountEntryUserRels(
+			HttpPrincipal httpPrincipal, long[] addAccountEntryIds,
+			long[] deleteAccountEntryIds, long accountUserId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		try {
+			MethodKey methodKey = new MethodKey(
+				AccountEntryUserRelServiceUtil.class,
+				"updateAccountEntryUserRels",
+				_updateAccountEntryUserRelsParameterTypes16);
+
+			MethodHandler methodHandler = new MethodHandler(
+				methodKey, addAccountEntryIds, deleteAccountEntryIds,
+				accountUserId);
+
+			try {
+				TunnelUtil.invoke(httpPrincipal, methodHandler);
+			}
+			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
+				throw new com.liferay.portal.kernel.exception.SystemException(
+					exception);
+			}
+		}
+		catch (com.liferay.portal.kernel.exception.SystemException
+					systemException) {
+
+			_log.error(systemException, systemException);
+
+			throw systemException;
+		}
+	}
+
 	private static Log _log = LogFactoryUtil.getLog(
 		AccountEntryUserRelServiceHttp.class);
 
@@ -783,6 +822,10 @@ public class AccountEntryUserRelServiceHttp {
 		_setPersonTypeAccountEntryUserParameterTypes15 = new Class[] {
 			long.class, long.class
 		};
+	private static final Class<?>[]
+		_updateAccountEntryUserRelsParameterTypes16 = new Class[] {
+			long[].class, long[].class, long.class
+		};
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-728262876
+// LIFERAY-SERVICE-BUILDER-HASH:-496008

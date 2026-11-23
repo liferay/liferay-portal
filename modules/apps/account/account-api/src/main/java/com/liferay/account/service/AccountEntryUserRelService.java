@@ -134,5 +134,10 @@ public interface AccountEntryUserRelService extends BaseService {
 	public void setPersonTypeAccountEntryUser(long accountEntryId, long userId)
 		throws PortalException;
 
+	public void updateAccountEntryUserRels(
+			long[] addAccountEntryIds, long[] deleteAccountEntryIds,
+			long accountUserId)
+		throws PortalException;
+
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1108290442
+// LIFERAY-SERVICE-BUILDER-HASH:1889984070

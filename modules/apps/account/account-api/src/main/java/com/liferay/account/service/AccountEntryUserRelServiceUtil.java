@@ -186,6 +186,15 @@ public class AccountEntryUserRelServiceUtil {
 		getService().setPersonTypeAccountEntryUser(accountEntryId, userId);
 	}
 
+	public static void updateAccountEntryUserRels(
+			long[] addAccountEntryIds, long[] deleteAccountEntryIds,
+			long accountUserId)
+		throws PortalException {
+
+		getService().updateAccountEntryUserRels(
+			addAccountEntryIds, deleteAccountEntryIds, accountUserId);
+	}
+
 	public static AccountEntryUserRelService getService() {
 		return _serviceSnapshot.get();
 	}
@@ -196,4 +205,4 @@ public class AccountEntryUserRelServiceUtil {
 			AccountEntryUserRelService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1463414066
+// LIFERAY-SERVICE-BUILDER-HASH:-1357081817

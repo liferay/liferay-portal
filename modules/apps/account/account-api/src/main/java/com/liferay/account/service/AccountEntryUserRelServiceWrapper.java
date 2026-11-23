@@ -206,6 +206,16 @@ public class AccountEntryUserRelServiceWrapper
 	}
 
 	@Override
+	public void updateAccountEntryUserRels(
+			long[] addAccountEntryIds, long[] deleteAccountEntryIds,
+			long accountUserId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		_accountEntryUserRelService.updateAccountEntryUserRels(
+			addAccountEntryIds, deleteAccountEntryIds, accountUserId);
+	}
+
+	@Override
 	public AccountEntryUserRelService getWrappedService() {
 		return _accountEntryUserRelService;
 	}
@@ -220,4 +230,4 @@ public class AccountEntryUserRelServiceWrapper
 	private AccountEntryUserRelService _accountEntryUserRelService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-747787202
+// LIFERAY-SERVICE-BUILDER-HASH:-90987801
