@@ -82,6 +82,13 @@ public interface FragmentEntryLinkLocalService
 
 	public FragmentEntryLink addFragmentEntryLink(
 			String externalReferenceCode, long userId, long groupId,
+			String fragmentEntryERC, String fragmentEntryScopeERC,
+			long segmentsExperienceId, long plid, String editableValues,
+			String rendererKey, ServiceContext serviceContext)
+		throws PortalException;
+
+	public FragmentEntryLink addFragmentEntryLink(
+			String externalReferenceCode, long userId, long groupId,
 			String originalFragmentEntryLinkERC, String fragmentEntryERC,
 			String fragmentEntryScopeERC, long segmentsExperienceId, long plid,
 			String css, String html, String js, String configuration,
@@ -518,4 +525,4 @@ public interface FragmentEntryLinkLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-515512090
+// LIFERAY-SERVICE-BUILDER-HASH:1504279358

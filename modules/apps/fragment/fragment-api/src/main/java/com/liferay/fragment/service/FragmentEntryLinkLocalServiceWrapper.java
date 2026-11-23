@@ -53,6 +53,21 @@ public class FragmentEntryLinkLocalServiceWrapper
 	@Override
 	public FragmentEntryLink addFragmentEntryLink(
 			String externalReferenceCode, long userId, long groupId,
+			String fragmentEntryERC, String fragmentEntryScopeERC,
+			long segmentsExperienceId, long plid, String editableValues,
+			String rendererKey,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _fragmentEntryLinkLocalService.addFragmentEntryLink(
+			externalReferenceCode, userId, groupId, fragmentEntryERC,
+			fragmentEntryScopeERC, segmentsExperienceId, plid, editableValues,
+			rendererKey, serviceContext);
+	}
+
+	@Override
+	public FragmentEntryLink addFragmentEntryLink(
+			String externalReferenceCode, long userId, long groupId,
 			String originalFragmentEntryLinkERC, String fragmentEntryERC,
 			String fragmentEntryScopeERC, long segmentsExperienceId, long plid,
 			String css, String html, String js, String configuration,
@@ -815,4 +830,4 @@ public class FragmentEntryLinkLocalServiceWrapper
 	private FragmentEntryLinkLocalService _fragmentEntryLinkLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1788862805
+// LIFERAY-SERVICE-BUILDER-HASH:-530216569

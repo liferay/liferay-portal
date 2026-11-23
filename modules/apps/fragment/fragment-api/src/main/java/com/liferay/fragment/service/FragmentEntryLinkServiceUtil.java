@@ -29,20 +29,16 @@ public class FragmentEntryLinkServiceUtil {
 	 * Never modify this class directly. Add custom service methods to <code>com.liferay.fragment.service.impl.FragmentEntryLinkServiceImpl</code> and rerun ServiceBuilder to regenerate this class.
 	 */
 	public static FragmentEntryLink addFragmentEntryLink(
-			String externalReferenceCode, long groupId,
-			String originalFragmentEntryLinkERC, String fragmentEntryERC,
+			String externalReferenceCode, long groupId, String fragmentEntryERC,
 			String fragmentEntryScopeERC, long segmentsExperienceId, long plid,
-			String css, String html, String js, String configuration,
-			String editableValues, String namespace, int position,
-			String rendererKey, int type,
+			String editableValues, String rendererKey,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws PortalException {
 
 		return getService().addFragmentEntryLink(
-			externalReferenceCode, groupId, originalFragmentEntryLinkERC,
-			fragmentEntryERC, fragmentEntryScopeERC, segmentsExperienceId, plid,
-			css, html, js, configuration, editableValues, namespace, position,
-			rendererKey, type, serviceContext);
+			externalReferenceCode, groupId, fragmentEntryERC,
+			fragmentEntryScopeERC, segmentsExperienceId, plid, editableValues,
+			rendererKey, serviceContext);
 	}
 
 	public static FragmentEntryLink deleteFragmentEntryLink(
@@ -110,4 +106,4 @@ public class FragmentEntryLinkServiceUtil {
 			FragmentEntryLinkServiceUtil.class, FragmentEntryLinkService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2134443574
+// LIFERAY-SERVICE-BUILDER-HASH:1780991908
