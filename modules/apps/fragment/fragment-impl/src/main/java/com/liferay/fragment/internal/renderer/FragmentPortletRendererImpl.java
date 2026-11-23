@@ -48,31 +48,26 @@ public class FragmentPortletRendererImpl implements FragmentPortletRenderer {
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
 
-		if ((themeDisplay != null) &&
+		if ((themeDisplay != null) && (fragmentEntryLink.getPlid() != 0) &&
 			(fragmentEntryLink.getPlid() != themeDisplay.getPlid())) {
 
 			Layout layout = themeDisplay.getLayout();
 
-			long masterLayoutPlid = 0;
-
 			if (layout != null) {
-				masterLayoutPlid = layout.getMasterLayoutPlid();
-			}
+				if (fragmentEntryLink.getPlid() ==
+						layout.getMasterLayoutPlid()) {
 
-			if ((masterLayoutPlid > 0) &&
-				(fragmentEntryLink.getPlid() == masterLayoutPlid)) {
-
-				inheritedFromMaster = true;
-			}
-			else if (_log.isDebugEnabled()) {
-				_log.debug(
-					StringBundler.concat(
-						"Fragment entry link ",
-						fragmentEntryLink.getFragmentEntryLinkId(),
-						" with PLID ", fragmentEntryLink.getPlid(),
-						" rendered on PLID ", themeDisplay.getPlid(),
-						" for current URL ", themeDisplay.getURLCurrent(),
-						" will not share its preferences"));
+					inheritedFromMaster = true;
+				}
+				else if (_log.isWarnEnabled()) {
+					_log.warn(
+						StringBundler.concat(
+							"Skipping shared preferences for fragment entry ",
+							"link ", fragmentEntryLink.getFragmentEntryLinkId(),
+							" with PLID ", fragmentEntryLink.getPlid(),
+							" because it does not belong to the master of ",
+							"layout ", themeDisplay.getPlid()));
+				}
 			}
 		}
 
