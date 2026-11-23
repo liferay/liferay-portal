@@ -72,6 +72,10 @@ public class WorkspacesTestTaskTest
 		return batchHistory;
 	}
 
+	private long _getRandomDuration() {
+		return (RandomTestUtil.randomInt() & 0xFFFFFF) + 1L;
+	}
+
 	private TestTaskHistory _getTestTaskHistory(
 		boolean latestReportMissing, long longestDuration) {
 
@@ -114,10 +118,6 @@ public class WorkspacesTestTaskTest
 		return new WorkspacesTestTask(
 			workspacesModulesJUnitBatchTestClassGroup,
 			TestClassGroup.GroupingStrategy.TEST_TASK_LONGEST_DURATION, _NAME);
-	}
-
-	private long _getRandomDuration() {
-		return (RandomTestUtil.randomInt() & 0xFFFFFF) + 1L;
 	}
 
 	private void _testGetLongestDuration(
