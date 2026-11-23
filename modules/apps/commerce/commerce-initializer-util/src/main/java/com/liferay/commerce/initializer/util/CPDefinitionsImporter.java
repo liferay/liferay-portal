@@ -14,7 +14,6 @@ import com.liferay.account.model.AccountGroup;
 import com.liferay.account.service.AccountGroupLocalService;
 import com.liferay.account.service.AccountGroupRelLocalService;
 import com.liferay.asset.kernel.model.AssetCategory;
-import com.liferay.asset.kernel.model.AssetTag;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
 import com.liferay.asset.kernel.service.AssetTagLocalService;
 import com.liferay.commerce.constants.CPDefinitionInventoryConstants;
@@ -339,7 +338,7 @@ public class CPDefinitionsImporter {
 		).build();
 	}
 
-	private List<AssetTag> _importAssetTags(
+	private void _importAssetTags(
 			JSONArray jsonArray, long scopeGroupId, long userId)
 		throws Exception {
 
@@ -351,23 +350,16 @@ public class CPDefinitionsImporter {
 		serviceContext.setScopeGroupId(scopeGroupId);
 		serviceContext.setUserId(userId);
 
-		List<AssetTag> assetTags = new ArrayList<>(jsonArray.length());
-
 		for (int i = 0; i < jsonArray.length(); i++) {
 			String tagName = jsonArray.getString(i);
 
-			AssetTag assetTag = _assetTagLocalService.fetchTag(
-				scopeGroupId, tagName);
-
-			if (assetTag == null) {
-				assetTag = _assetTagLocalService.addTag(
-					null, userId, scopeGroupId, tagName, serviceContext);
+			if (_assetTagLocalService.fetchTag(scopeGroupId, tagName) != null) {
+				continue;
 			}
 
-			assetTags.add(assetTag);
+			_assetTagLocalService.addTag(
+				null, userId, scopeGroupId, tagName, serviceContext);
 		}
-
-		return assetTags;
 	}
 
 	private CPDefinition _importCPDefinition(
