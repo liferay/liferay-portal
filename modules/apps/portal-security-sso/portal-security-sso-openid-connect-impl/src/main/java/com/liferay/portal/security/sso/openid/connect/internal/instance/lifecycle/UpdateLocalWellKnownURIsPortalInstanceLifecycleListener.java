@@ -198,15 +198,6 @@ public class UpdateLocalWellKnownURIsPortalInstanceLifecycleListener
 
 				_updateLocalWellKnownURI(
 					newLocalWellKnownURI, oAuthClientASLocalMetadata);
-
-				if (_log.isInfoEnabled()) {
-					_log.info(
-						StringBundler.concat(
-							"Updated the local well known URI of OAuth client ",
-							"authorization server local metadata ",
-							oAuthClientASLocalMetadata.
-								getOAuthClientASLocalMetadataId()));
-				}
 			}
 			catch (Exception exception) {
 				if (_log.isWarnEnabled()) {
