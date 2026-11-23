@@ -10,7 +10,6 @@ import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
-import com.liferay.frontend.data.set.model.FDSDataRow;
 import com.liferay.frontend.data.set.provider.FDSActionProvider;
 import com.liferay.frontend.data.set.provider.FDSActionProviderRegistry;
 import com.liferay.frontend.data.set.provider.FDSDataProvider;
@@ -21,6 +20,7 @@ import com.liferay.frontend.data.set.provider.search.FDSPagination;
 import com.liferay.frontend.data.set.taglib.internal.jaxrs.context.provider.PaginationContextProvider;
 import com.liferay.frontend.data.set.taglib.internal.jaxrs.context.provider.SortContextProvider;
 import com.liferay.frontend.data.set.taglib.internal.jaxrs.context.provider.ThemeDisplayContextProvider;
+import com.liferay.frontend.data.set.taglib.internal.model.FDSDataRow;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
