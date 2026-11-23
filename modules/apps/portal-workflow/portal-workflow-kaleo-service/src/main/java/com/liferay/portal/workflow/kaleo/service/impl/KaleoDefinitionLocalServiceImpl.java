@@ -260,49 +260,6 @@ public class KaleoDefinitionLocalServiceImpl
 	}
 
 	@Override
-	public List<KaleoDefinition> getKaleoDefinitions(
-		boolean active, int start, int end,
-		OrderByComparator<KaleoDefinition> orderByComparator,
-		ServiceContext serviceContext) {
-
-		return kaleoDefinitionPersistence.findByC_A(
-			serviceContext.getCompanyId(), active, start, end,
-			orderByComparator);
-	}
-
-	@Override
-	public List<KaleoDefinition> getKaleoDefinitions(
-		int start, int end,
-		OrderByComparator<KaleoDefinition> orderByComparator,
-		ServiceContext serviceContext) {
-
-		return kaleoDefinitionPersistence.findByCompanyId(
-			serviceContext.getCompanyId(), start, end, orderByComparator);
-	}
-
-	@Override
-	public int getKaleoDefinitionsCount(
-		boolean active, ServiceContext serviceContext) {
-
-		return kaleoDefinitionPersistence.countByC_A(
-			serviceContext.getCompanyId(), active);
-	}
-
-	@Override
-	public int getKaleoDefinitionsCount(ServiceContext serviceContext) {
-		return kaleoDefinitionPersistence.countByCompanyId(
-			serviceContext.getCompanyId());
-	}
-
-	@Override
-	public int getKaleoDefinitionsCount(
-		String name, boolean active, ServiceContext serviceContext) {
-
-		return kaleoDefinitionPersistence.countByC_N_A(
-			serviceContext.getCompanyId(), name, active);
-	}
-
-	@Override
 	public int getKaleoDefinitionsCount(
 		String name, ServiceContext serviceContext) {
 

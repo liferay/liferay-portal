@@ -332,19 +332,6 @@ public class KaleoTaskInstanceTokenLocalServiceImpl
 	}
 
 	@Override
-	public List<KaleoTaskInstanceToken> getCompanyKaleoTaskInstanceTokens(
-		long companyId, int start, int end) {
-
-		return kaleoTaskInstanceTokenPersistence.findByCompanyId(
-			companyId, start, end);
-	}
-
-	@Override
-	public int getCompanyKaleoTaskInstanceTokensCount(long companyId) {
-		return kaleoTaskInstanceTokenPersistence.countByCompanyId(companyId);
-	}
-
-	@Override
 	public List<KaleoTaskInstanceToken> getKaleoTaskInstanceTokens(
 		Boolean completed, int start, int end,
 		OrderByComparator<KaleoTaskInstanceToken> orderByComparator,
@@ -354,25 +341,6 @@ public class KaleoTaskInstanceTokenLocalServiceImpl
 			completed, serviceContext);
 
 		return dynamicQuery(dynamicQuery, start, end, orderByComparator);
-	}
-
-	@Override
-	public List<KaleoTaskInstanceToken> getKaleoTaskInstanceTokens(
-		List<Long> roleIds, Boolean completed, int start, int end,
-		OrderByComparator<KaleoTaskInstanceToken> orderByComparator,
-		ServiceContext serviceContext) {
-
-		KaleoTaskInstanceTokenQuery kaleoTaskInstanceTokenQuery =
-			new KaleoTaskInstanceTokenQuery(serviceContext);
-
-		kaleoTaskInstanceTokenQuery.setCompleted(completed);
-		kaleoTaskInstanceTokenQuery.setEnd(end);
-		kaleoTaskInstanceTokenQuery.setOrderByComparator(orderByComparator);
-		kaleoTaskInstanceTokenQuery.setRoleIds(roleIds);
-		kaleoTaskInstanceTokenQuery.setStart(start);
-
-		return kaleoTaskInstanceTokenFinder.findKaleoTaskInstanceTokens(
-			kaleoTaskInstanceTokenQuery);
 	}
 
 	@Override
@@ -454,21 +422,6 @@ public class KaleoTaskInstanceTokenLocalServiceImpl
 			completed, serviceContext);
 
 		return (int)dynamicQueryCount(dynamicQuery);
-	}
-
-	@Override
-	public int getKaleoTaskInstanceTokensCount(
-		List<Long> roleIds, Boolean completed, ServiceContext serviceContext) {
-
-		KaleoTaskInstanceTokenQuery kaleoTaskInstanceTokenQuery =
-			new KaleoTaskInstanceTokenQuery(serviceContext);
-
-		kaleoTaskInstanceTokenQuery.setAssigneeClassName(Role.class.getName());
-		kaleoTaskInstanceTokenQuery.setCompleted(completed);
-		kaleoTaskInstanceTokenQuery.setRoleIds(roleIds);
-
-		return kaleoTaskInstanceTokenFinder.countKaleoTaskInstanceTokens(
-			kaleoTaskInstanceTokenQuery);
 	}
 
 	@Override
@@ -653,19 +606,6 @@ public class KaleoTaskInstanceTokenLocalServiceImpl
 			assetTitle, _getTaskNames(taskName), assetTypes, assetPrimaryKeys,
 			null, dueDateGT, dueDateLT, completed, null, searchByUserRoles,
 			andOperator, start, end, orderByComparator, serviceContext);
-	}
-
-	@Override
-	public List<KaleoTaskInstanceToken> search(
-		String keywords, String[] assetTypes, Boolean completed,
-		Boolean searchByUserRoles, int start, int end,
-		OrderByComparator<KaleoTaskInstanceToken> orderByComparator,
-		ServiceContext serviceContext) {
-
-		return search(
-			keywords, keywords, assetTypes, null, null, null, completed,
-			searchByUserRoles, false, start, end, orderByComparator,
-			serviceContext);
 	}
 
 	@Override

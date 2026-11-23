@@ -280,15 +280,6 @@ public class KaleoDefinitionVersionLocalServiceImpl
 
 	@Override
 	public List<KaleoDefinitionVersion> getKaleoDefinitionVersions(
-		long companyId, int start, int end,
-		OrderByComparator<KaleoDefinitionVersion> orderByComparator) {
-
-		return kaleoDefinitionVersionPersistence.findByCompanyId(
-			companyId, start, end, orderByComparator);
-	}
-
-	@Override
-	public List<KaleoDefinitionVersion> getKaleoDefinitionVersions(
 			long companyId, String name)
 		throws PortalException {
 
@@ -302,11 +293,6 @@ public class KaleoDefinitionVersionLocalServiceImpl
 
 		return kaleoDefinitionVersionPersistence.findByC_N(
 			companyId, name, start, end, orderByComparator);
-	}
-
-	@Override
-	public int getKaleoDefinitionVersionsCount(long companyId) {
-		return kaleoDefinitionVersionPersistence.countByCompanyId(companyId);
 	}
 
 	@Override

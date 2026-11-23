@@ -98,32 +98,10 @@ public class KaleoTaskAssignmentLocalServiceImpl
 
 	@Override
 	public List<KaleoTaskAssignment> getKaleoTaskAssignments(
-		long kaleoTaskId, String assigneeClassName) {
-
-		return kaleoTaskAssignmentPersistence.findByKCN_KCPK_ACN(
-			KaleoTask.class.getName(), kaleoTaskId, assigneeClassName);
-	}
-
-	@Override
-	public List<KaleoTaskAssignment> getKaleoTaskAssignments(
 		String kaleoClassName, long kaleoClassPK) {
 
 		return kaleoTaskAssignmentPersistence.findByKCN_KCPK(
 			kaleoClassName, kaleoClassPK);
-	}
-
-	@Override
-	public int getKaleoTaskAssignmentsCount(long kaleoTaskId) {
-		return kaleoTaskAssignmentPersistence.countByKCN_KCPK(
-			KaleoTask.class.getName(), kaleoTaskId);
-	}
-
-	@Override
-	public int getKaleoTaskAssignmentsCount(
-		long kaleoTaskId, String assigneeClassName) {
-
-		return kaleoTaskAssignmentPersistence.countByKCN_KCPK_ACN(
-			KaleoTask.class.getName(), kaleoTaskId, assigneeClassName);
 	}
 
 	private void _setAssignee(

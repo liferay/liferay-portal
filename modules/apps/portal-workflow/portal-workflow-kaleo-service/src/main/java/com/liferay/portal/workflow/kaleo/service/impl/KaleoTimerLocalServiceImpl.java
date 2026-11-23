@@ -139,14 +139,6 @@ public class KaleoTimerLocalServiceImpl extends KaleoTimerLocalServiceBaseImpl {
 			kaleoClassName, kaleoClassPK);
 	}
 
-	@Override
-	public List<KaleoTimer> getKaleoTimers(
-		String kaleoClassName, long kaleoClassPK, boolean blocking) {
-
-		return kaleoTimerPersistence.findByKCN_KCPK_Blocking(
-			kaleoClassName, kaleoClassPK, blocking);
-	}
-
 	@Reference
 	private KaleoActionLocalService _kaleoActionLocalService;
 

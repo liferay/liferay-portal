@@ -224,33 +224,6 @@ public class KaleoLogLocalServiceImpl extends KaleoLogLocalServiceBaseImpl {
 
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
-	public KaleoLog addNodeUsageMetadataKaleoLog(
-			KaleoInstanceToken kaleoInstanceToken,
-			Map<String, Serializable> workflowContext,
-			ServiceContext serviceContext)
-		throws PortalException {
-
-		KaleoLog kaleoLog = _createKaleoLog(
-			kaleoInstanceToken, LogType.NODE_USAGE_METADATA, serviceContext);
-
-		kaleoLog.setKaleoClassName(KaleoNode.class.getName());
-
-		KaleoNode currentKaleoNode = kaleoInstanceToken.getCurrentKaleoNode();
-
-		kaleoLog.setKaleoClassPK(currentKaleoNode.getKaleoNodeId());
-		kaleoLog.setKaleoDefinitionId(currentKaleoNode.getKaleoDefinitionId());
-		kaleoLog.setKaleoDefinitionVersionId(
-			currentKaleoNode.getKaleoDefinitionVersionId());
-		kaleoLog.setKaleoNodeName(currentKaleoNode.getName());
-
-		kaleoLog.setWorkflowContext(
-			WorkflowContextUtil.convert(workflowContext));
-
-		return kaleoLogPersistence.update(kaleoLog);
-	}
-
-	@Indexable(type = IndexableType.REINDEX)
-	@Override
 	public KaleoLog addTaskAssignmentKaleoLog(
 			List<KaleoTaskAssignmentInstance>
 				previousKaleoTaskAssignmentInstances,

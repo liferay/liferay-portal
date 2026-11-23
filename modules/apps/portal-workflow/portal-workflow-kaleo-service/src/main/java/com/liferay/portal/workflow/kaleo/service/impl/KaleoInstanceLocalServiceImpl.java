@@ -63,7 +63,6 @@ import com.liferay.portal.workflow.kaleo.service.persistence.KaleoInstanceQuery;
 
 import java.io.Serializable;
 
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -351,14 +350,6 @@ public class KaleoInstanceLocalServiceImpl
 	}
 
 	@Override
-	public int getKaleoDefinitionKaleoInstancesCount(
-		long kaleoDefinitionId, boolean completed) {
-
-		return kaleoInstancePersistence.countByKDI_C(
-			kaleoDefinitionId, completed);
-	}
-
-	@Override
 	public List<KaleoInstance> getKaleoInstances(
 			Long userId, String assetClassName, Long assetClassPK,
 			Boolean completed, int start, int end,
@@ -404,14 +395,6 @@ public class KaleoInstanceLocalServiceImpl
 
 	@Override
 	public int getKaleoInstancesCount(
-		long kaleoDefinitionVersionId, boolean completed) {
-
-		return kaleoInstancePersistence.countByKDVI_C(
-			kaleoDefinitionVersionId, completed);
-	}
-
-	@Override
-	public int getKaleoInstancesCount(
 		Long userId, String assetClassName, Long assetClassPK,
 		Boolean completed, ServiceContext serviceContext) {
 
@@ -440,32 +423,6 @@ public class KaleoInstanceLocalServiceImpl
 			null, null, null, null, null, kaleoDefinitionName,
 			kaleoDefinitionVersion, null, null, completed, false,
 			serviceContext);
-	}
-
-	@Override
-	public List<KaleoInstance> search(
-		Long userId, Boolean active, String assetClassName, String assetTitle,
-		String assetDescription, String nodeName, String kaleoDefinitionName,
-		Boolean completed, int start, int end,
-		OrderByComparator<KaleoInstance> orderByComparator,
-		ServiceContext serviceContext) {
-
-		try {
-			BaseModelSearchResult<KaleoInstance> baseModelSearchResult =
-				searchKaleoInstances(
-					userId, active, assetClassName, assetTitle,
-					assetDescription, nodeName, kaleoDefinitionName, completed,
-					false, start, end, orderByComparator, serviceContext);
-
-			return baseModelSearchResult.getBaseModels();
-		}
-		catch (PortalException portalException) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(portalException);
-			}
-		}
-
-		return Collections.emptyList();
 	}
 
 	@Override
@@ -515,20 +472,6 @@ public class KaleoInstanceLocalServiceImpl
 
 		kaleoInstance.setUserId(userId);
 		kaleoInstance.setActive(active);
-
-		return kaleoInstancePersistence.update(kaleoInstance);
-	}
-
-	@Indexable(type = IndexableType.REINDEX)
-	@Override
-	public KaleoInstance updateKaleoInstance(
-			long kaleoInstanceId, long rootKaleoInstanceTokenId)
-		throws PortalException {
-
-		KaleoInstance kaleoInstance = kaleoInstancePersistence.findByPrimaryKey(
-			kaleoInstanceId);
-
-		kaleoInstance.setRootKaleoInstanceTokenId(rootKaleoInstanceTokenId);
 
 		return kaleoInstancePersistence.update(kaleoInstance);
 	}
