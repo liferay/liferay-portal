@@ -54,6 +54,7 @@ import {sub} from 'frontend-js-web';
 import AICreator from '../plugins/AICreator';
 import HeadlessItemSelector from '../plugins/HeadlessItemSelector';
 import ItemSelector from '../plugins/ItemSelector';
+import LinkItemSelector from '../plugins/LinkItemSelector';
 import {EEditorConfigPreset, EEditorVariant} from './types';
 
 const FONT_COLORS = [
@@ -96,6 +97,7 @@ const getDefaultEditorConfig = ({
 		Image,
 		Link,
 		LinkImage,
+		LinkItemSelector,
 		List,
 		Paragraph,
 		PasteFromOffice,

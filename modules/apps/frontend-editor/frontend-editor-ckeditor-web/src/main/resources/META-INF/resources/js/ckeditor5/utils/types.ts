@@ -28,6 +28,7 @@ export interface LiferayEditorConfig extends EditorConfig {
 	editorType?: EEditorType;
 	editorVariant?: EEditorVariant;
 	editorVersion?: string;
+	filebrowserBrowseUrl?: string;
 	filebrowserImageBrowseUrl?: string;
 	filebrowserVideoBrowseUrl?: string;
 	itemSelectorAskForGroupId?: boolean;
