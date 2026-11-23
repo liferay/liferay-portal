@@ -96,7 +96,7 @@ argocd:
         enabled: false
 clientExtensions:
     repoURL: oci://us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart/liferay-client-extension
-    targetRevision: 0.1.0
+    targetRevision: 0.2.0
 clusterBootstrap:
     enabled: true
     image: alpine:3
@@ -204,7 +204,7 @@ dxpOperator:
     enabled: true
     namespace: dxp-operator-system
     repoURL: oci://us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart/liferay-dxp-operator
-    targetRevision: 0.2.0
+    targetRevision: 0.3.0
     values:
         clientExtensions:
             enabled: true
@@ -398,4 +398,4 @@ observability:
     namespace: observability
     parameters: []
     repoURL: oci://us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart/observability
-    targetRevision: 2.0.0
+    targetRevision: 2.1.0
