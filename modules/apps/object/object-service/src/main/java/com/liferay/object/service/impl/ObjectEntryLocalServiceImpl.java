@@ -2524,6 +2524,41 @@ public class ObjectEntryLocalServiceImpl
 	}
 
 	@Override
+	public void updateLatestRootObjectEntryVersion(
+			long userId, long objectEntryId)
+		throws PortalException {
+
+		ObjectEntry objectEntry = objectEntryPersistence.findByPrimaryKey(
+			objectEntryId);
+
+		if (!FeatureFlagManagerUtil.isEnabled(
+				objectEntry.getCompanyId(), "LPD-116183")) {
+
+			return;
+		}
+
+		ObjectEntry rootObjectEntry = objectEntryPersistence.fetchByPrimaryKey(
+			objectEntry.getRootObjectEntryId());
+
+		if ((rootObjectEntry == null) || rootObjectEntry.isScheduled()) {
+			return;
+		}
+
+		int count = _objectEntryVersionPersistence.countByObjectEntryId(
+			rootObjectEntry.getObjectEntryId());
+
+		if (count == 0) {
+			return;
+		}
+
+		_updateLatestObjectEntryVersion(
+			userId,
+			_objectDefinitionPersistence.findByPrimaryKey(
+				rootObjectEntry.getObjectDefinitionId()),
+			rootObjectEntry);
+	}
+
+	@Override
 	public ObjectEntry updateObjectEntry(
 			long userId, long objectEntryId, long objectEntryFolderId,
 			Map<String, Serializable> values, ServiceContext serviceContext)
@@ -8584,7 +8619,12 @@ public class ObjectEntryLocalServiceImpl
 				objectEntry.getCompanyId(), "LPD-116183") &&
 			objectEntry.isRootDescendantNode()) {
 
-			_addOrUpdateRootObjectEntryVersion(userId, objectEntry);
+			if (ObjectEntryThreadLocal.isSkipRootObjectEntryVersion()) {
+				return;
+			}
+
+			updateLatestRootObjectEntryVersion(
+				userId, objectEntry.getObjectEntryId());
 
 			return;
 		}
