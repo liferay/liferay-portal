@@ -49,5 +49,6 @@ dependencies {
 	compileOnly project(":core:petra:petra-sql-dsl-api")
 	compileOnly project(":core:petra:petra-sql-dsl-spi")
 	compileOnly project(":core:petra:petra-string")
+	testImplementation group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.18.12"
 	testImplementation project(":core:petra:petra-concurrent")
 }
