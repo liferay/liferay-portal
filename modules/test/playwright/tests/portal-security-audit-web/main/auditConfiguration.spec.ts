@@ -201,17 +201,29 @@ test.describe('Audit system configuration', () => {
 				page.getByLabel('Enabled', {exact: true})
 			).not.toBeChecked();
 
-			await loginAsUserAccount();
+			await expect(async () => {
+				const loginAuditEvents = await getLoginAuditEvents();
 
-			expect(await getLoginAuditEvents()).toHaveLength(0);
+				await loginAsUserAccount();
+
+				expect(await getLoginAuditEvents()).toHaveLength(
+					loginAuditEvents.length
+				);
+			}).toPass({timeout: 30000});
 
 			await page.getByLabel('Enabled', {exact: true}).setChecked(true);
 
 			await systemSettingsPage.saveAndWaitForAlert();
 
-			await loginAsUserAccount();
+			await expect(async () => {
+				const loginAuditEvents = await getLoginAuditEvents();
 
-			await expect.poll(getLoginAuditEvents).toHaveLength(1);
+				await loginAsUserAccount();
+
+				expect(await getLoginAuditEvents()).toHaveLength(
+					loginAuditEvents.length + 1
+				);
+			}).toPass({timeout: 30000});
 		}
 	);
 });
