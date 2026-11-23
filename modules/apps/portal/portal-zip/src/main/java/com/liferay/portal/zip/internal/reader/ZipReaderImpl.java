@@ -61,86 +61,24 @@ public class ZipReaderImpl implements ZipReader {
 		}
 	}
 
-	public List<String> doGetEntries() throws IOException {
-		ZipFile zipFile = _getZipFile();
-
-		Enumeration<? extends ZipEntry> enumeration = zipFile.entries();
-
-		List<String> entries = new ArrayList<>();
-
-		while (enumeration.hasMoreElements()) {
-			ZipEntry zipEntry = enumeration.nextElement();
-
-			if (zipEntry.isDirectory()) {
-				continue;
-			}
-
-			entries.add(zipEntry.getName());
-		}
-
-		return entries;
-	}
-
-	public byte[] doGetEntryAsByteArray(String name) throws IOException {
-		return StreamUtil.toByteArray(doGetEntryAsInputStream(name));
-	}
-
-	public InputStream doGetEntryAsInputStream(String name) throws IOException {
-		ZipFile zipFile = _getZipFile();
-
-		ZipEntry zipEntry = zipFile.getEntry(name);
-
-		if ((zipEntry != null) && !zipEntry.isDirectory()) {
-			return zipFile.getInputStream(zipEntry);
-		}
-
-		return null;
-	}
-
-	public List<String> doGetFolderEntries(String path) throws IOException {
-		Path javaPath = Paths.get(path);
-
-		javaPath = javaPath.normalize();
-
-		path = javaPath.toString();
-
-		ZipFile zipFile = _getZipFile();
-
-		Enumeration<? extends ZipEntry> enumeration = zipFile.entries();
-
-		List<String> entries = new ArrayList<>();
-
-		while (enumeration.hasMoreElements()) {
-			ZipEntry zipEntry = enumeration.nextElement();
-
-			if (zipEntry.isDirectory()) {
-				continue;
-			}
-
-			String fileName = zipEntry.getName();
-
-			int pos = fileName.lastIndexOf(CharPool.SLASH);
-
-			String folderName = StringPool.BLANK;
-
-			if (pos > 0) {
-				folderName = fileName.substring(0, pos);
-			}
-
-			if (!folderName.equals(path)) {
-				continue;
-			}
-
-			entries.add(fileName);
-		}
-
-		return entries;
-	}
-
 	@Override
 	public final List<String> getEntries() {
 		try {
-			List<String> entries = doGetEntries();
+			ZipFile zipFile = _getZipFile();
+
+			Enumeration<? extends ZipEntry> enumeration = zipFile.entries();
+
+			List<String> entries = new ArrayList<>();
+
+			while (enumeration.hasMoreElements()) {
+				ZipEntry zipEntry = enumeration.nextElement();
+
+				if (zipEntry.isDirectory()) {
+					continue;
+				}
+
+				entries.add(zipEntry.getName());
+			}
 
 			Collections.sort(entries);
 
@@ -162,7 +100,7 @@ public class ZipReaderImpl implements ZipReader {
 		}
 
 		try {
-			return doGetEntryAsByteArray(name);
+			return StreamUtil.toByteArray(_getEntryAsInputStream(name));
 		}
 		catch (IOException ioException) {
 			_log.error(ioException);
@@ -182,7 +120,7 @@ public class ZipReaderImpl implements ZipReader {
 		}
 
 		try {
-			return doGetEntryAsInputStream(name);
+			return _getEntryAsInputStream(name);
 		}
 		catch (IOException ioException) {
 			throw new UncheckedIOException(ioException);
@@ -211,7 +149,41 @@ public class ZipReaderImpl implements ZipReader {
 		}
 
 		try {
-			List<String> folderEntries = doGetFolderEntries(path);
+			Path javaPath = Paths.get(path);
+
+			javaPath = javaPath.normalize();
+
+			path = javaPath.toString();
+
+			ZipFile zipFile = _getZipFile();
+
+			Enumeration<? extends ZipEntry> enumeration = zipFile.entries();
+
+			List<String> folderEntries = new ArrayList<>();
+
+			while (enumeration.hasMoreElements()) {
+				ZipEntry zipEntry = enumeration.nextElement();
+
+				if (zipEntry.isDirectory()) {
+					continue;
+				}
+
+				String fileName = zipEntry.getName();
+
+				int index = fileName.lastIndexOf(CharPool.SLASH);
+
+				String folderName = StringPool.BLANK;
+
+				if (index > 0) {
+					folderName = fileName.substring(0, index);
+				}
+
+				if (!folderName.equals(path)) {
+					continue;
+				}
+
+				folderEntries.add(fileName);
+			}
 
 			Collections.sort(folderEntries);
 
@@ -226,6 +198,18 @@ public class ZipReaderImpl implements ZipReader {
 		if (!file.delete() && _log.isWarnEnabled()) {
 			_log.warn("Unable to delete file " + file.getAbsolutePath());
 		}
+	}
+
+	private InputStream _getEntryAsInputStream(String name) throws IOException {
+		ZipFile zipFile = _getZipFile();
+
+		ZipEntry zipEntry = zipFile.getEntry(name);
+
+		if ((zipEntry != null) && !zipEntry.isDirectory()) {
+			return zipFile.getInputStream(zipEntry);
+		}
+
+		return null;
 	}
 
 	private ZipFile _getZipFile() throws IOException {
