@@ -9828,7 +9828,6 @@ com/liferay/headless/commerce/bom/internal/resource/v1_0/factory/SpotResourceFac
 com/liferay/headless/commerce/bom/internal/resource/v1_0/factory/SpotResourceFactoryImpl$1.httpServletRequest(Ljavax/servlet/http/HttpServletRequest;)Lcom/liferay/headless/commerce/bom/resource/v1_0/SpotResource$Builder;:1
 com/liferay/headless/commerce/bom/internal/resource/v1_0/factory/SpotResourceFactoryImpl$1.preferredLocale(Ljava/util/Locale;)Lcom/liferay/headless/commerce/bom/resource/v1_0/SpotResource$Builder;:1
 com/liferay/headless/commerce/bom/internal/resource/v1_0/factory/SpotResourceFactoryImpl$1.user(Lcom/liferay/portal/kernel/model/User;)Lcom/liferay/headless/commerce/bom/resource/v1_0/SpotResource$Builder;:1
-com/liferay/headless/commerce/core/util/IdUtils.getExternalReferenceCodeFromId(Ljava/lang/String;)Ljava/lang/String;:0
 com/liferay/headless/commerce/delivery/cart/client/aggregation/Facet$FacetValue.getNumberOfOccurrences()Ljava/lang/Integer;:SAFE
 com/liferay/headless/commerce/delivery/cart/client/dto/v1_0/Address.clone()Lcom/liferay/headless/commerce/delivery/cart/client/dto/v1_0/Address;:0
 com/liferay/headless/commerce/delivery/cart/client/dto/v1_0/Address.clone()Ljava/lang/Object;:0
