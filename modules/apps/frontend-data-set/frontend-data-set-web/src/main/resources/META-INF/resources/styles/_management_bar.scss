@@ -55,22 +55,26 @@
 		}
 	}
 
-	.filter-resume {
+	.filter-resume,
+	.search-resume {
 		align-items: center;
 		color: inherit;
-		cursor: pointer;
 		font-size: inherit;
 		font-weight: $font-weight-normal;
 		min-height: $btn-monospaced-size-sm;
 		vertical-align: middle;
 
-		.dropdown {
-			min-width: 0;
-		}
-
 		.label-section {
 			overflow-wrap: break-word;
 			white-space: normal;
+		}
+	}
+
+	.filter-resume {
+		cursor: pointer;
+
+		.dropdown {
+			min-width: 0;
 		}
 
 		&.active {
@@ -100,18 +104,6 @@
 
 	.filter-resume-badge {
 		margin: 0;
-	}
-
-	.search-resume .search-resume-label {
-		align-items: center;
-		cursor: default;
-		display: inline-flex;
-
-		&:hover {
-			background-color: var(--btn-secondary-background-color, $white);
-			border-color: var(--btn-secondary-border-color, $secondary-l2);
-			color: var(--btn-secondary-color, $secondary);
-		}
 	}
 
 	.snapshot-actions {

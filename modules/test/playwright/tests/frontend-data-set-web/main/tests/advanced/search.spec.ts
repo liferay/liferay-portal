@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {expect, mergeTests} from '@playwright/test';
+import {Locator, expect, mergeTests} from '@playwright/test';
 
 import {apiHelpersTest} from '../../../../../fixtures/apiHelpersTest';
 import {dataSetManagerApiHelpersTest} from '../../../../../fixtures/dataSetManagerApiHelpersTest';
@@ -248,6 +248,37 @@ test(
 				await expect(fragmentInput).toHaveValue(sampleSearchText);
 			});
 		});
+	}
+);
+
+test(
+	'Search resume matches the filter resume style',
+	{tag: '@LPD-116248'},
+	async ({fdsSamplePage}) => {
+		await fdsSamplePage.managementToolbar.searchInput.fill('Sample55');
+
+		await fdsSamplePage.managementToolbar.searchButton.click();
+
+		const {filterResume, searchResume} = fdsSamplePage.activeFiltersToolbar;
+
+		await expect(filterResume.first()).toBeVisible();
+		await expect(searchResume).toBeVisible();
+
+		const getStyle = (locator: Locator) =>
+			locator.evaluate((element) => {
+				const computedStyle = getComputedStyle(element);
+
+				return {
+					borderColor: computedStyle.borderTopColor,
+					borderRadius: computedStyle.borderTopLeftRadius,
+					height: element.getBoundingClientRect().height,
+					padding: computedStyle.padding,
+				};
+			});
+
+		expect(await getStyle(searchResume)).toEqual(
+			await getStyle(filterResume.first())
+		);
 	}
 );
 

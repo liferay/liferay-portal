@@ -19,6 +19,7 @@ export class FDSSamplePage {
 		clearButton: Locator;
 		clearSearchButton: Locator;
 		container: Locator;
+		filterResume: Locator;
 		searchResume: Locator;
 	};
 	private readonly apiHelpers: ApiHelpers;
@@ -108,6 +109,8 @@ export class FDSSamplePage {
 				name: 'Clear Search',
 			}),
 			container: activeFiltersToolbarContainer,
+			filterResume:
+				activeFiltersToolbarContainer.locator('.filter-resume'),
 			searchResume,
 		};
 		this.apiHelpers = new ApiHelpers(page);

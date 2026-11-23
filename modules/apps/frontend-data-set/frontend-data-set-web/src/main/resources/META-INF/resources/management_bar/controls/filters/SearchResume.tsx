@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import ClayButton from '@clayui/button';
 import ClayIcon from '@clayui/icon';
+import ClayLabel from '@clayui/label';
+import classNames from 'classnames';
 import React, {useContext} from 'react';
 
 import FrontendDataSetContext from '../../../FrontendDataSetContext';
@@ -13,26 +14,41 @@ function SearchResume() {
 	const {onClearSearch, searchParam} = useContext(FrontendDataSetContext);
 
 	return (
-		<ClayButton.Group className="c-ml-2 search-resume">
-			<span className="btn btn-secondary btn-sm component-label search-resume-label tbar-label">
-				<span className="mr-1">
-					{Liferay.Language.get('search-colon')}
+		<span
+			className={classNames(
+				'c-ml-2',
+				'component-label',
+				'label',
+				'label-dismissible',
+				'label-lg',
+				'label-secondary',
+				'search-resume',
+				'tbar-label'
+			)}
+			role="group"
+		>
+			<ClayLabel.ItemExpand>
+				<span className="label-section">
+					<span className="mr-1">
+						{Liferay.Language.get('search-colon')}
+					</span>
+
+					<strong>{searchParam}</strong>
 				</span>
+			</ClayLabel.ItemExpand>
 
-				<strong>{searchParam}</strong>
-			</span>
-
-			<ClayButton
-				aria-label={Liferay.Language.get('clear-search')}
-				displayType="secondary"
-				monospaced
-				onClick={onClearSearch}
-				size="sm"
-				title={Liferay.Language.get('clear-search')}
-			>
-				<ClayIcon symbol="times-small" />
-			</ClayButton>
-		</ClayButton.Group>
+			<ClayLabel.ItemAfter>
+				<button
+					aria-label={Liferay.Language.get('clear-search')}
+					className="close"
+					onClick={onClearSearch}
+					title={Liferay.Language.get('clear-search')}
+					type="button"
+				>
+					<ClayIcon symbol="times-small" />
+				</button>
+			</ClayLabel.ItemAfter>
+		</span>
 	);
 }
 
