@@ -157,9 +157,7 @@ public class DefaultSearchResultPermissionFilter
 	}
 
 	private void _exclude(Collection<Document> documents, Facet facet) {
-		FacetCollector facetCollector = facet.getFacetCollector();
-
-		if (facetCollector == null) {
+		if (facet.getFacetCollector() == null) {
 			return;
 		}
 
