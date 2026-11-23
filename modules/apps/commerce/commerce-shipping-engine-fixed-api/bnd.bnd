@@ -1,11 +1,10 @@
 Bundle-Name: Liferay Commerce Shipping Engine Fixed API
 Bundle-SymbolicName: com.liferay.commerce.shipping.engine.fixed.api
-Bundle-Version: 17.0.1
+Bundle-Version: 18.0.0
 Export-Package:\
 	com.liferay.commerce.shipping.engine.fixed.constants,\
 	com.liferay.commerce.shipping.engine.fixed.exception,\
 	com.liferay.commerce.shipping.engine.fixed.model,\
 	com.liferay.commerce.shipping.engine.fixed.service,\
 	com.liferay.commerce.shipping.engine.fixed.service.persistence,\
-	com.liferay.commerce.shipping.engine.fixed.util,\
 	com.liferay.commerce.shipping.engine.fixed.util.comparator
