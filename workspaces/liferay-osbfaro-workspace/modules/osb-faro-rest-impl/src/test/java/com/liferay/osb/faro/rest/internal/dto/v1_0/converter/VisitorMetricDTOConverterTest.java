@@ -51,11 +51,11 @@ public class VisitorMetricDTOConverterTest {
 			new GetWorkspaceGroupChannelVisitorMetricResponse.VisitorMetric());
 
 		Assert.assertEquals(
-			Long.valueOf(0L), visitorMetric.getAverageSessionDuration());
-		Assert.assertEquals(Long.valueOf(0L), visitorMetric.getKnownVisitors());
+			Long.valueOf(0), visitorMetric.getAverageSessionDuration());
+		Assert.assertEquals(Long.valueOf(0), visitorMetric.getKnownVisitors());
 		Assert.assertEquals(
-			Long.valueOf(0L), visitorMetric.getTotalSessionDuration());
-		Assert.assertEquals(Long.valueOf(0L), visitorMetric.getVisitors());
+			Long.valueOf(0), visitorMetric.getTotalSessionDuration());
+		Assert.assertEquals(Long.valueOf(0), visitorMetric.getVisitors());
 	}
 
 	private GetWorkspaceGroupChannelVisitorMetricResponse.VisitorMetric

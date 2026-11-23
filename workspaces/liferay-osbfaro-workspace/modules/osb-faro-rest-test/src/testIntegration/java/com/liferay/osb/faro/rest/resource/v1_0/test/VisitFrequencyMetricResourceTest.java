@@ -84,7 +84,7 @@ public class VisitFrequencyMetricResourceTest
 		};
 	}
 
-	private Map<String, Object> _getComposition(Long count, String name) {
+	private Map<String, Object> _createComposition(Long count, String name) {
 		return HashMapBuilder.<String, Object>put(
 			"count", count
 		).put(
@@ -106,18 +106,18 @@ public class VisitFrequencyMetricResourceTest
 				).put(
 					"visitFrequency",
 					List.of(
-						_getComposition(
+						_createComposition(
 							visitFrequencyMetric.getBiWeeklyVisitors(),
 							"bi-weekly"),
-						_getComposition(
+						_createComposition(
 							visitFrequencyMetric.getDailyVisitors(), "daily"),
-						_getComposition(
+						_createComposition(
 							visitFrequencyMetric.getMonthlyVisitors(),
 							"monthly"),
-						_getComposition(
+						_createComposition(
 							visitFrequencyMetric.getOccasionalVisitors(),
 							"occasional"),
-						_getComposition(
+						_createComposition(
 							visitFrequencyMetric.getWeeklyVisitors(), "weekly"))
 				).build()
 			).build());

@@ -41,11 +41,11 @@ public class VisitFrequencyMetricDTOConverterTest {
 
 		visitFrequencyBag.setVisitFrequency(
 			Arrays.asList(
-				_createComposition(dailyVisitors, "daily"),
-				_createComposition(weeklyVisitors, "weekly"),
 				_createComposition(biWeeklyVisitors, "bi-weekly"),
+				_createComposition(dailyVisitors, "daily"),
 				_createComposition(monthlyVisitors, "monthly"),
-				_createComposition(occasionalVisitors, "occasional")));
+				_createComposition(occasionalVisitors, "occasional"),
+				_createComposition(weeklyVisitors, "weekly")));
 
 		VisitFrequencyMetric visitFrequencyMetric =
 			_visitFrequencyMetricDTOConverter.toDTO(null, visitFrequencyBag);
@@ -87,13 +87,13 @@ public class VisitFrequencyMetricDTOConverterTest {
 			_visitFrequencyMetricDTOConverter.toDTO(null, visitFrequencyBag);
 
 		Assert.assertEquals(
-			Long.valueOf(0L), visitFrequencyMetric.getBiWeeklyVisitors());
+			Long.valueOf(0), visitFrequencyMetric.getBiWeeklyVisitors());
 		Assert.assertEquals(
-			Long.valueOf(0L), visitFrequencyMetric.getDailyVisitors());
+			Long.valueOf(0), visitFrequencyMetric.getDailyVisitors());
 		Assert.assertEquals(
-			Long.valueOf(0L), visitFrequencyMetric.getMonthlyVisitors());
+			Long.valueOf(0), visitFrequencyMetric.getMonthlyVisitors());
 		Assert.assertEquals(
-			Long.valueOf(0L), visitFrequencyMetric.getOccasionalVisitors());
+			Long.valueOf(0), visitFrequencyMetric.getOccasionalVisitors());
 		Assert.assertEquals(
 			Long.valueOf(weeklyVisitors),
 			visitFrequencyMetric.getWeeklyVisitors());
@@ -110,7 +110,7 @@ public class VisitFrequencyMetricDTOConverterTest {
 		_assertZeroBuckets(visitFrequencyMetric);
 
 		Assert.assertEquals(
-			Long.valueOf(0L), visitFrequencyMetric.getVisitors());
+			Long.valueOf(0), visitFrequencyMetric.getVisitors());
 	}
 
 	@Test
@@ -132,15 +132,15 @@ public class VisitFrequencyMetricDTOConverterTest {
 
 	private void _assertZeroBuckets(VisitFrequencyMetric visitFrequencyMetric) {
 		Assert.assertEquals(
-			Long.valueOf(0L), visitFrequencyMetric.getBiWeeklyVisitors());
+			Long.valueOf(0), visitFrequencyMetric.getBiWeeklyVisitors());
 		Assert.assertEquals(
-			Long.valueOf(0L), visitFrequencyMetric.getDailyVisitors());
+			Long.valueOf(0), visitFrequencyMetric.getDailyVisitors());
 		Assert.assertEquals(
-			Long.valueOf(0L), visitFrequencyMetric.getMonthlyVisitors());
+			Long.valueOf(0), visitFrequencyMetric.getMonthlyVisitors());
 		Assert.assertEquals(
-			Long.valueOf(0L), visitFrequencyMetric.getOccasionalVisitors());
+			Long.valueOf(0), visitFrequencyMetric.getOccasionalVisitors());
 		Assert.assertEquals(
-			Long.valueOf(0L), visitFrequencyMetric.getWeeklyVisitors());
+			Long.valueOf(0), visitFrequencyMetric.getWeeklyVisitors());
 	}
 
 	private GetWorkspaceGroupChannelVisitFrequencyMetricResponse.Composition
