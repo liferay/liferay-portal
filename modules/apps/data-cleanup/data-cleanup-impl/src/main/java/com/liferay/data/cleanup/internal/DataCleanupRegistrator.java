@@ -9,7 +9,6 @@ import com.liferay.change.tracking.service.CTCollectionLocalService;
 import com.liferay.change.tracking.service.CTEntryLocalService;
 import com.liferay.change.tracking.store.service.CTSContentLocalService;
 import com.liferay.data.cleanup.DataCleanup;
-import com.liferay.data.cleanup.DataCleanupAdapter;
 import com.liferay.data.cleanup.internal.upgrade.AmazonRankingsUpgradeProcess;
 import com.liferay.data.cleanup.internal.upgrade.ChatUpgradeProcess;
 import com.liferay.data.cleanup.internal.upgrade.CurrencyConverterUpgradeProcess;

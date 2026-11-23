@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.data.cleanup;
+package com.liferay.data.cleanup.internal;
 
+import com.liferay.data.cleanup.DataCleanup;
 import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.verify.VerifyProcess;
