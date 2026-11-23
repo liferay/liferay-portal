@@ -18,7 +18,6 @@ import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.layout.util.structure.LayoutStructureItem;
 import com.liferay.petra.string.StringBundler;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
@@ -95,14 +94,11 @@ public class ResponsiveLayoutStructureUtilTest {
 				_layout.getPlid());
 
 		_fragmentEntryLink = _fragmentEntryLinkService.addFragmentEntryLink(
-			null, _group.getGroupId(), null,
-			fragmentEntry.getExternalReferenceCode(),
+			null, _group.getGroupId(), fragmentEntry.getExternalReferenceCode(),
 			ScopeUtil.getItemScopeExternalReferenceCode(
 				fragmentEntry.getGroupId(), _group.getGroupId()),
-			_defaultSegmentsExperienceId, _layout.getPlid(),
-			fragmentEntry.getCss(), fragmentEntry.getHtml(),
-			fragmentEntry.getJs(), fragmentEntry.getConfiguration(), null,
-			StringPool.BLANK, 0, null, fragmentEntry.getType(), serviceContext);
+			_defaultSegmentsExperienceId, _layout.getPlid(), null, null,
+			serviceContext);
 
 		_themeDisplay = new ThemeDisplay();
 

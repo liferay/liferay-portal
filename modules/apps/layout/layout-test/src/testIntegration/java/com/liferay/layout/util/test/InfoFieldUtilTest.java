@@ -9,7 +9,6 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.fragment.constants.FragmentConstants;
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.service.FragmentEntryLinkLocalService;
-import com.liferay.fragment.service.FragmentEntryLinkService;
 import com.liferay.layout.provider.LayoutStructureProvider;
 import com.liferay.layout.test.util.ContentLayoutTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
@@ -83,11 +82,12 @@ public class InfoFieldUtilTest {
 			TestPropsValues.getUserId(),
 			deletedFragmentEntryLink.getFragmentEntryLinkId(), true);
 
-		_fragmentEntryLinkService.addFragmentEntryLink(
-			null, layout.getGroupId(), null, null, null, segmentsExperienceId,
-			layout.getPlid(), StringPool.BLANK, _HTML, StringPool.BLANK,
-			StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, 0,
-			StringPool.BLANK, FragmentConstants.TYPE_COMPONENT,
+		_fragmentEntryLinkLocalService.addFragmentEntryLink(
+			null, TestPropsValues.getUserId(), layout.getGroupId(), null, null,
+			null, segmentsExperienceId, layout.getPlid(), StringPool.BLANK,
+			_HTML, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
+			StringPool.BLANK, 0, StringPool.BLANK,
+			FragmentConstants.TYPE_COMPONENT,
 			ServiceContextTestUtil.getServiceContext(
 				layout.getGroupId(), TestPropsValues.getUserId()));
 
@@ -127,9 +127,6 @@ public class InfoFieldUtilTest {
 
 	@Inject
 	private FragmentEntryLinkLocalService _fragmentEntryLinkLocalService;
-
-	@Inject
-	private FragmentEntryLinkService _fragmentEntryLinkService;
 
 	@Inject
 	private LayoutStructureProvider _layoutStructureProvider;

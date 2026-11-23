@@ -6,6 +6,7 @@
 package com.liferay.fragment.service.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.fragment.exception.NoSuchEntryException;
 import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.fragment.model.FragmentEntry;
 import com.liferay.fragment.model.FragmentEntryLink;
@@ -71,30 +72,52 @@ public class FragmentEntryLinkServiceTest {
 
 	@Test
 	public void testAddFragmentEntryLink() throws Exception {
-		String css = "div {\\ncolor: red;\\n}";
-		String html = "<div>test</div>";
-		String js = "alert(\"test\");";
-		String configuration = "{fieldSets: []}";
-
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(
 				_group, TestPropsValues.getUserId());
 
 		FragmentEntryLink fragmentEntryLink =
 			_fragmentEntryLinkService.addFragmentEntryLink(
-				null, _group.getGroupId(), null,
+				null, _group.getGroupId(),
 				_fragmentEntry.getExternalReferenceCode(), null,
 				_segmentsExperienceLocalService.
 					fetchDefaultSegmentsExperienceId(_layout.getPlid()),
-				_layout.getPlid(), css, html, js, configuration,
-				StringPool.BLANK, StringPool.BLANK, 0, null,
-				_fragmentEntry.getType(), serviceContext);
+				_layout.getPlid(), StringPool.BLANK, null, serviceContext);
 
-		Assert.assertEquals(css, fragmentEntryLink.getCss());
-		Assert.assertEquals(html, fragmentEntryLink.getHtml());
-		Assert.assertEquals(js, fragmentEntryLink.getJs());
 		Assert.assertEquals(
-			configuration, fragmentEntryLink.getConfiguration());
+			_fragmentEntry.getConfiguration(),
+			fragmentEntryLink.getConfiguration());
+		Assert.assertEquals(
+			_fragmentEntry.getCss(), fragmentEntryLink.getCss());
+		Assert.assertEquals(
+			_fragmentEntry.getHtml(), fragmentEntryLink.getHtml());
+		Assert.assertEquals(_fragmentEntry.getJs(), fragmentEntryLink.getJs());
+	}
+
+	@Test(expected = NoSuchEntryException.class)
+	public void testAddFragmentEntryLinkWithInvalidFragmentEntryERC()
+		throws Exception {
+
+		_fragmentEntryLinkService.addFragmentEntryLink(
+			null, _group.getGroupId(), RandomTestUtil.randomString(), null,
+			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
+				_layout.getPlid()),
+			_layout.getPlid(), StringPool.BLANK, null,
+			ServiceContextTestUtil.getServiceContext(
+				_group, TestPropsValues.getUserId()));
+	}
+
+	@Test(expected = NoSuchEntryException.class)
+	public void testAddFragmentEntryLinkWithInvalidRendererKey()
+		throws Exception {
+
+		_fragmentEntryLinkService.addFragmentEntryLink(
+			null, _group.getGroupId(), null, null,
+			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
+				_layout.getPlid()),
+			_layout.getPlid(), StringPool.BLANK, RandomTestUtil.randomString(),
+			ServiceContextTestUtil.getServiceContext(
+				_group, TestPropsValues.getUserId()));
 	}
 
 	@Test
@@ -104,13 +127,11 @@ public class FragmentEntryLinkServiceTest {
 				UserTestUtil.addGroupUser(_group, RoleConstants.SITE_MEMBER));
 
 			_fragmentEntryLinkService.addFragmentEntryLink(
-				null, _group.getGroupId(), null,
+				null, _group.getGroupId(),
 				_fragmentEntry.getExternalReferenceCode(), null,
 				_segmentsExperienceLocalService.
 					fetchDefaultSegmentsExperienceId(_layout.getPlid()),
-				_layout.getPlid(), null, "<div>test</div>", null, null,
-				StringPool.BLANK, StringPool.BLANK, 0, null,
-				_fragmentEntry.getType(),
+				_layout.getPlid(), StringPool.BLANK, null,
 				ServiceContextTestUtil.getServiceContext(
 					_group, TestPropsValues.getUserId()));
 
@@ -143,15 +164,13 @@ public class FragmentEntryLinkServiceTest {
 
 		FragmentEntryLink fragmentEntryLink =
 			_fragmentEntryLinkService.addFragmentEntryLink(
-				null, _group.getGroupId(), null,
+				null, _group.getGroupId(),
 				_fragmentEntry.getExternalReferenceCode(),
 				ScopeUtil.getItemScopeExternalReferenceCode(
 					_fragmentEntry.getGroupId(), _group.getGroupId()),
 				_segmentsExperienceLocalService.
 					fetchDefaultSegmentsExperienceId(_layout.getPlid()),
-				_layout.getPlid(), null, "<div>test</div>", null, null,
-				StringPool.BLANK, StringPool.BLANK, 0, null,
-				_fragmentEntry.getType(),
+				_layout.getPlid(), StringPool.BLANK, null,
 				ServiceContextTestUtil.getServiceContext(
 					_group, TestPropsValues.getUserId()));
 
@@ -170,15 +189,13 @@ public class FragmentEntryLinkServiceTest {
 
 		FragmentEntryLink fragmentEntryLink =
 			_fragmentEntryLinkService.addFragmentEntryLink(
-				null, _group.getGroupId(), null,
+				null, _group.getGroupId(),
 				_fragmentEntry.getExternalReferenceCode(),
 				ScopeUtil.getItemScopeExternalReferenceCode(
 					_fragmentEntry.getGroupId(), _group.getGroupId()),
 				_segmentsExperienceLocalService.
 					fetchDefaultSegmentsExperienceId(_layout.getPlid()),
-				_layout.getPlid(), null, "<div>test</div>", null, null,
-				StringPool.BLANK, StringPool.BLANK, 0, null,
-				_fragmentEntry.getType(),
+				_layout.getPlid(), StringPool.BLANK, null,
 				ServiceContextTestUtil.getServiceContext(
 					_group, TestPropsValues.getUserId()));
 
@@ -205,15 +222,13 @@ public class FragmentEntryLinkServiceTest {
 
 		FragmentEntryLink fragmentEntryLink =
 			_fragmentEntryLinkService.addFragmentEntryLink(
-				null, _group.getGroupId(), null,
+				null, _group.getGroupId(),
 				_fragmentEntry.getExternalReferenceCode(),
 				ScopeUtil.getItemScopeExternalReferenceCode(
 					_fragmentEntry.getGroupId(), _group.getGroupId()),
 				_segmentsExperienceLocalService.
 					fetchDefaultSegmentsExperienceId(_layout.getPlid()),
-				_layout.getPlid(), null, "<div>test</div>", null, null,
-				StringPool.BLANK, StringPool.BLANK, 0, null,
-				_fragmentEntry.getType(),
+				_layout.getPlid(), StringPool.BLANK, null,
 				ServiceContextTestUtil.getServiceContext(
 					_group, TestPropsValues.getUserId()));
 
@@ -238,15 +253,13 @@ public class FragmentEntryLinkServiceTest {
 
 		FragmentEntryLink fragmentEntryLink =
 			_fragmentEntryLinkService.addFragmentEntryLink(
-				null, _group.getGroupId(), null,
+				null, _group.getGroupId(),
 				_fragmentEntry.getExternalReferenceCode(),
 				ScopeUtil.getItemScopeExternalReferenceCode(
 					_fragmentEntry.getGroupId(), _group.getGroupId()),
 				_segmentsExperienceLocalService.
 					fetchDefaultSegmentsExperienceId(_layout.getPlid()),
-				_layout.getPlid(), null, "<div>test</div>", null, null,
-				StringPool.BLANK, StringPool.BLANK, 0, null,
-				_fragmentEntry.getType(), serviceContext);
+				_layout.getPlid(), StringPool.BLANK, null, serviceContext);
 
 		RoleTestUtil.removeResourcePermission(
 			RoleConstants.GUEST, FragmentEntryLink.class.getName(),

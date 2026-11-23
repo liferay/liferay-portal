@@ -22,7 +22,6 @@ import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.layout.util.structure.LayoutStructureItem;
 import com.liferay.petra.string.StringBundler;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -246,13 +245,10 @@ public class LayoutAdaptiveMediaProcessorTest {
 					))));
 
 		_fragmentEntryLink = _fragmentEntryLinkService.addFragmentEntryLink(
-			null, _group.getGroupId(), null,
-			fragmentEntry.getExternalReferenceCode(), null,
-			defaultSegmentsExperienceId, layout.getPlid(),
-			fragmentEntry.getCss(), fragmentEntry.getHtml(),
-			fragmentEntry.getJs(), fragmentEntry.getConfiguration(),
-			editableValuesJSONObject.toString(), StringPool.BLANK, 0, null,
-			fragmentEntry.getType(), _serviceContext);
+			null, _group.getGroupId(), fragmentEntry.getExternalReferenceCode(),
+			null, defaultSegmentsExperienceId, layout.getPlid(),
+			editableValuesJSONObject.toString(),
+			fragmentEntry.getFragmentEntryKey(), _serviceContext);
 
 		LayoutStructure layoutStructure = new LayoutStructure();
 

@@ -19,7 +19,6 @@ import com.liferay.layout.util.structure.CommonStylesUtil;
 import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.layout.util.structure.LayoutStructureItem;
 import com.liferay.layout.util.structure.StyledLayoutStructureItem;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
@@ -87,14 +86,11 @@ public class FragmentStyledLayoutStructureItemTest {
 				_layout.getPlid());
 
 		_fragmentEntryLink = _fragmentEntryLinkService.addFragmentEntryLink(
-			null, _group.getGroupId(), null,
-			fragmentEntry.getExternalReferenceCode(),
+			null, _group.getGroupId(), fragmentEntry.getExternalReferenceCode(),
 			ScopeUtil.getItemScopeExternalReferenceCode(
 				fragmentEntry.getGroupId(), _group.getGroupId()),
-			defaultSegmentsExperienceId, _layout.getPlid(),
-			fragmentEntry.getCss(), fragmentEntry.getHtml(),
-			fragmentEntry.getJs(), fragmentEntry.getConfiguration(), null,
-			StringPool.BLANK, 0, null, fragmentEntry.getType(), serviceContext);
+			defaultSegmentsExperienceId, _layout.getPlid(), null, null,
+			serviceContext);
 
 		FragmentEntry contributedFragmentEntry =
 			_fragmentCollectionContributorRegistry.getFragmentEntry(
@@ -102,16 +98,10 @@ public class FragmentStyledLayoutStructureItemTest {
 
 		_contributedFragmentEntryLink =
 			_fragmentEntryLinkService.addFragmentEntryLink(
-				null, _group.getGroupId(), null,
+				null, _group.getGroupId(),
 				contributedFragmentEntry.getExternalReferenceCode(), null,
-				defaultSegmentsExperienceId, _layout.getPlid(),
-				contributedFragmentEntry.getCss(),
-				contributedFragmentEntry.getHtml(),
-				contributedFragmentEntry.getJs(),
-				contributedFragmentEntry.getConfiguration(), null,
-				StringPool.BLANK, 0,
-				contributedFragmentEntry.getFragmentEntryKey(),
-				contributedFragmentEntry.getType(), serviceContext);
+				defaultSegmentsExperienceId, _layout.getPlid(), null,
+				contributedFragmentEntry.getFragmentEntryKey(), serviceContext);
 	}
 
 	@Test

@@ -204,17 +204,14 @@ public class LayoutPublishedSearchTest {
 
 		FragmentEntryLink fragmentEntryLink =
 			_fragmentEntryLinkService.addFragmentEntryLink(
-				null, _group.getGroupId(), null,
+				null, _group.getGroupId(),
 				fragmentEntry.getExternalReferenceCode(),
 				ScopeUtil.getItemScopeExternalReferenceCode(
 					fragmentEntry.getGroupId(), _group.getGroupId()),
 				_segmentsExperienceLocalService.
 					fetchDefaultSegmentsExperienceId(draftLayout.getPlid()),
-				draftLayout.getPlid(), fragmentEntry.getCss(),
-				fragmentEntry.getHtml(), fragmentEntry.getJs(),
-				fragmentEntry.getConfiguration(), StringPool.BLANK,
-				StringPool.BLANK, 0, fragmentEntry.getFragmentEntryKey(),
-				fragmentEntry.getType(),
+				draftLayout.getPlid(), StringPool.BLANK,
+				fragmentEntry.getFragmentEntryKey(),
 				ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 
 		LayoutStructureItem fragmentStyledLayoutStructureItem =
@@ -234,14 +231,11 @@ public class LayoutPublishedSearchTest {
 
 		FragmentEntryLink inlineFragmentEntryLink =
 			_fragmentEntryLinkService.addFragmentEntryLink(
-				null, _group.getGroupId(), null,
+				null, _group.getGroupId(),
 				contributedFragmentEntry.getExternalReferenceCode(), null,
 				_segmentsExperienceLocalService.
 					fetchDefaultSegmentsExperienceId(draftLayout.getPlid()),
-				draftLayout.getPlid(), contributedFragmentEntry.getCss(),
-				contributedFragmentEntry.getHtml(),
-				contributedFragmentEntry.getJs(),
-				contributedFragmentEntry.getConfiguration(),
+				draftLayout.getPlid(),
 				JSONUtil.put(
 					FragmentEntryProcessorConstants.
 						KEY_EDITABLE_FRAGMENT_ENTRY_PROCESSOR,
@@ -258,9 +252,7 @@ public class LayoutPublishedSearchTest {
 							"de_DE", deutschContent
 						))
 				).toString(),
-				StringPool.BLANK, 0,
 				contributedFragmentEntry.getFragmentEntryKey(),
-				contributedFragmentEntry.getType(),
 				ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 
 		layoutStructure.addFragmentStyledLayoutStructureItem(
@@ -385,13 +377,9 @@ public class LayoutPublishedSearchTest {
 
 		FragmentEntryLink inlineFragmentEntryLink =
 			_fragmentEntryLinkService.addFragmentEntryLink(
-				null, _group.getGroupId(), null,
+				null, _group.getGroupId(),
 				contributedFragmentEntry.getExternalReferenceCode(), null,
 				defaultSegmentsExperienceId, draftLayout.getPlid(),
-				contributedFragmentEntry.getCss(),
-				contributedFragmentEntry.getHtml(),
-				contributedFragmentEntry.getJs(),
-				contributedFragmentEntry.getConfiguration(),
 				JSONUtil.put(
 					FragmentEntryProcessorConstants.
 						KEY_EDITABLE_FRAGMENT_ENTRY_PROCESSOR,
@@ -405,9 +393,7 @@ public class LayoutPublishedSearchTest {
 							draftLayout.getDefaultLanguageId(), value
 						))
 				).toString(),
-				StringPool.BLANK, 0,
 				contributedFragmentEntry.getFragmentEntryKey(),
-				contributedFragmentEntry.getType(),
 				ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 
 		_addFragmentEntryLinkToLayout(
@@ -447,15 +433,12 @@ public class LayoutPublishedSearchTest {
 
 		FragmentEntryLink inlineFragmentEntryLink =
 			_fragmentEntryLinkService.addFragmentEntryLink(
-				null, _group.getGroupId(), null,
+				null, _group.getGroupId(),
 				fragmentEntry.getExternalReferenceCode(),
 				ScopeUtil.getItemScopeExternalReferenceCode(
 					fragmentEntry.getGroupId(), _group.getGroupId()),
 				defaultSegmentsExperienceId, draftLayout.getPlid(),
-				fragmentEntry.getCss(), fragmentEntry.getHtml(),
-				fragmentEntry.getJs(), fragmentEntry.getConfiguration(),
-				StringPool.BLANK, StringPool.BLANK, 0,
-				fragmentEntry.getFragmentEntryKey(), fragmentEntry.getType(),
+				StringPool.BLANK, fragmentEntry.getFragmentEntryKey(),
 				ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 
 		_addFragmentEntryLinkToLayout(
