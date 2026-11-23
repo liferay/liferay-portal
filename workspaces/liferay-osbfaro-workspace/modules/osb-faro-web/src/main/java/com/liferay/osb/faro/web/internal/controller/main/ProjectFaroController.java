@@ -1397,9 +1397,22 @@ public class ProjectFaroController extends BaseFaroController {
 			ownerEmailAddress = user.getEmailAddress();
 		}
 
-		_faroUserLocalService.addFaroUser(
-			user.getUserId(), faroProject.getGroupId(), 0, role.getRoleId(),
-			ownerEmailAddress, FaroUserConstants.STATUS_PENDING, false);
+		if (StringUtil.equalsIgnoreCase(
+				ownerEmailAddress, user.getEmailAddress())) {
+
+			_faroUserLocalService.addFaroUser(
+				user.getUserId(), faroProject.getGroupId(), user.getUserId(),
+				role.getRoleId(), ownerEmailAddress,
+				FaroUserConstants.STATUS_APPROVED, false);
+
+			_groupLocalService.addUserGroup(
+				user.getUserId(), faroProject.getGroupId());
+		}
+		else {
+			_faroUserLocalService.addFaroUser(
+				user.getUserId(), faroProject.getGroupId(), 0, role.getRoleId(),
+				ownerEmailAddress, FaroUserConstants.STATUS_PENDING, false);
+		}
 
 		faroProject.setWeDeployKey(
 			contactsEngineClient.addProject(faroProject) + ".lfr.cloud");
