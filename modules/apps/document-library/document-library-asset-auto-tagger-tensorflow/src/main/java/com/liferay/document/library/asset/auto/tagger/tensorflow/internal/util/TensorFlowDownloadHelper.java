@@ -144,7 +144,7 @@ public class TensorFlowDownloadHelper {
 
 	private static final long _COMPANY_ID = 0;
 
-	private static boolean _downloadFailed;
+	private boolean _downloadFailed;
 
 	@Reference(target = "(default=true)")
 	private Store _store;
