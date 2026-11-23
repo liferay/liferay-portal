@@ -84,7 +84,7 @@ public class SynonymsCompanyIndexSettingsContributor
 	private static final Log _log = LogFactoryUtil.getLog(
 		SynonymsCompanyIndexSettingsContributor.class);
 
-	private static volatile String[] _filterNames;
+	private volatile String[] _filterNames;
 
 	@Reference
 	private SearchEngineAdapter _searchEngineAdapter;
