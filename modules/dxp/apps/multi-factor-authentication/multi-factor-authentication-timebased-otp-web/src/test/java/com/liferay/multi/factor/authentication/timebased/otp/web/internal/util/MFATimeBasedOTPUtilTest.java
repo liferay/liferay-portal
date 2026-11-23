@@ -82,6 +82,8 @@ public class MFATimeBasedOTPUtilTest {
 	public void testVerifyTimeBasedOTP() throws Exception {
 		String sharedSecret = MFATimeBasedOTPUtil.generateSharedSecret(20);
 
+		String currentOTP = _generateCurrentOTP("HmacSHA1", sharedSecret);
+
 		try (SafeCloseable safeCloseable =
 				PropsValuesTestUtil.swapWithSafeCloseable(
 					"FIPS_ENABLED", true)) {
@@ -89,8 +91,7 @@ public class MFATimeBasedOTPUtilTest {
 			Assert.assertTrue(
 				MFATimeBasedOTPUtil.verifyTimeBasedOTP(
 					"HmacSHA1", MFATimeBasedOTPUtil.MFA_TIMEBASED_OTP_COUNTER,
-					sharedSecret,
-					_generateCurrentOTP("HmacSHA1", sharedSecret)));
+					sharedSecret, currentOTP));
 		}
 	}
 
