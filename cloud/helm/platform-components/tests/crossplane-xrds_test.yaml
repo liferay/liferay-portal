@@ -142,7 +142,7 @@ tests:
                 template: templates/crossplane-xrd-liferayinfrastructure.yaml
             -   equal:
                     path: spec.versions[0].schema.openAPIV3Schema.properties.spec.properties.search.properties.snapshots.properties.lifecyclePolicy.properties.retention.x-kubernetes-validations[0].rule
-                    value: self.minCount <= self.maxCount
+                    value: "!has(self.minCount) || !has(self.maxCount) || self.minCount <= self.maxCount"
                 template: templates/crossplane-xrd-liferayinfrastructure.yaml
             -   equal:
                     path: spec.versions[0].schema.openAPIV3Schema.properties.spec.properties.search.properties.snapshots.properties.lifecyclePolicy.properties.schedule.default

@@ -229,7 +229,7 @@ spec:
                                                             type: object
                                                             x-kubernetes-validations:
                                                                 -   message: search.snapshots.lifecyclePolicy.retention.minCount must not exceed search.snapshots.lifecyclePolicy.retention.maxCount
-                                                                    rule: self.minCount <= self.maxCount
+                                                                    rule: "!has(self.minCount) || !has(self.maxCount) || self.minCount <= self.maxCount"
                                                         schedule:
                                                             default: 0 30 1 * * ?
                                                             minLength: 1
