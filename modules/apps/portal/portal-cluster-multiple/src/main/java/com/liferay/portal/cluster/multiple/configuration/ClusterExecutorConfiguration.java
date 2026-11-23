@@ -20,11 +20,6 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
 )
 public interface ClusterExecutorConfiguration {
 
-	@Meta.AD(
-		deflt = "1000", name = "cluster-node-address-timeout", required = false
-	)
-	public long clusterNodeAddressTimeout();
-
 	@Meta.AD(deflt = "false", name = "debug-enabled", required = false)
 	public boolean debugEnabled();
 
