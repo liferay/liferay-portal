@@ -77,7 +77,7 @@
 											{
 												"definition": {
 													"fragment": {
-														"key": "com.liferay.osb.faro.web.internal.fragment.renderer.FaroPageBarBrandFragmentRenderer"
+														"key": "com.liferay.osb.faro.web.internal.fragment.renderer.FaroSettingsPageBarFragmentRenderer"
 													},
 													"fragmentConfig": {
 													},
@@ -120,20 +120,6 @@
 										},
 										"id": "dca1ba9b-06ed-4c99-b033-a7a87eb9a499",
 										"pageElements": [
-											{
-												"definition": {
-													"fragment": {
-														"key": "com.liferay.osb.faro.web.internal.fragment.renderer.FaroPageBarActionsFragmentRenderer"
-													},
-													"fragmentConfig": {
-													},
-													"fragmentFields": [
-													],
-													"indexed": true
-												},
-												"id": "30961747-d7d5-470c-965f-0b866813c617",
-												"type": "Fragment"
-											}
 										],
 										"type": "FragmentDropZone"
 									}

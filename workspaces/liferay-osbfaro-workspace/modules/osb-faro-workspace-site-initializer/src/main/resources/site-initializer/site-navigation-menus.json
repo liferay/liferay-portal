@@ -126,17 +126,6 @@
 		"externalReferenceCode": "LDPSETTINGSNAVIGATION",
 		"menuItems": [
 			{
-				"displayIcon": "angle-left",
-				"externalReferenceCode": "LDPSETTINGSNAVIGATION1",
-				"friendlyURL": "/sites",
-				"name_i18n": {
-					"en_US": "Back to Workspace"
-				},
-				"privateLayout": false,
-				"type": "layout",
-				"useCustomName": true
-			},
-			{
 				"externalReferenceCode": "LDPSETTINGSNAVIGATION2",
 				"menuItems": [
 					{
