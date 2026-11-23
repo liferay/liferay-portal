@@ -82,8 +82,11 @@ test(
 			await page.getByRole('link', {name: 'Web Content Title'}).click();
 
 			await expect(
-				page.getByRole('button', {exact: true, name: 'Views'})
-			).toBeVisible();
+				page
+					.locator('.analytics-metrics-tabs .card-tab')
+					.filter({hasText: 'Views'})
+					.locator('.metric-value')
+			).toHaveText('1');
 			await expect(page.getByText('Asset Appears On')).toBeVisible();
 			await expect(
 				page.getByRole('link', {name: 'My Page'})
