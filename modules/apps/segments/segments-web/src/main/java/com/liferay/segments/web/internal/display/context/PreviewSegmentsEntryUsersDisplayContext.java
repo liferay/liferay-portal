@@ -107,12 +107,13 @@ public class PreviewSegmentsEntryUsersDisplayContext {
 				}
 				else {
 					_setResultsAndTotal(
-						permissionChecker, userSearchContainer,
+						permissionChecker,
 						_userODataRetriever.getResults(
 							_themeDisplay.getCompanyId(),
 							criteria.getFilterString(Criteria.Type.MODEL),
 							_themeDisplay.getLocale(), QueryUtil.ALL_POS,
-							QueryUtil.ALL_POS));
+							QueryUtil.ALL_POS),
+						userSearchContainer);
 				}
 			}
 			else if ((criteria == null) && (segmentsEntry != null)) {
@@ -131,13 +132,14 @@ public class PreviewSegmentsEntryUsersDisplayContext {
 				}
 				else {
 					_setResultsAndTotal(
-						permissionChecker, userSearchContainer,
+						permissionChecker,
 						TransformUtil.transformToList(
 							_segmentsEntryProviderRegistry.
 								getSegmentsEntryClassPKs(
 									segmentsEntry.getSegmentsEntryId(),
 									QueryUtil.ALL_POS, QueryUtil.ALL_POS),
-							_userLocalService::fetchUser));
+							_userLocalService::fetchUser),
+						userSearchContainer);
 				}
 			}
 		}
@@ -206,8 +208,8 @@ public class PreviewSegmentsEntryUsersDisplayContext {
 	}
 
 	private void _setResultsAndTotal(
-		PermissionChecker permissionChecker,
-		SearchContainer<User> userSearchContainer, List<User> users) {
+		PermissionChecker permissionChecker, List<User> users,
+		SearchContainer<User> userSearchContainer) {
 
 		List<User> visibleUsers = ListUtil.filter(
 			users,

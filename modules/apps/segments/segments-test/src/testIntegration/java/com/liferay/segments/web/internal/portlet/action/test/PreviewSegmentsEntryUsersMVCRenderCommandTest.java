@@ -72,47 +72,6 @@ public class PreviewSegmentsEntryUsersMVCRenderCommandTest {
 	}
 
 	@Test
-	@TestInfo("LPD-116067")
-	public void testGetSearchContainerWithSiteAdministratorUser()
-		throws Exception {
-		_user3 = UserTestUtil.addUser();
-
-		Criteria criteria = new Criteria();
-
-		_userSegmentsCriteriaContributor.contribute(
-			criteria,
-			String.format(
-				"(firstName eq '%s') or (firstName eq '%s')",
-				_user1.getFirstName(), _user3.getFirstName()),
-			Criteria.Conjunction.AND);
-
-		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
-			_getMockLiferayPortletRenderRequest();
-
-		PortletSession portletSession =
-			mockLiferayPortletRenderRequest.getPortletSession();
-
-		portletSession.setAttribute(
-			"PREVIEW_SEGMENTS_ENTRY_CRITERIA", criteria);
-
-		_siteAdministratorUser = UserTestUtil.addGroupAdminUser(_group);
-
-		PermissionThreadLocal.setPermissionChecker(
-			PermissionCheckerFactoryUtil.create(_siteAdministratorUser));
-
-		_mvcRenderCommand.render(
-			mockLiferayPortletRenderRequest,
-			new MockLiferayPortletRenderResponse());
-
-		SearchContainer<User> searchContainer = ReflectionTestUtil.invoke(
-			mockLiferayPortletRenderRequest.getAttribute(_CLASS_NAME),
-			"getSearchContainer", new Class<?>[0]);
-
-		Assert.assertEquals(List.of(_user1), searchContainer.getResults());
-		Assert.assertEquals(1, searchContainer.getTotal());
-	}
-
-	@Test
 	public void testGetSearchContainerTwoTimesWithSessionCriteria()
 		throws Exception {
 
@@ -321,6 +280,47 @@ public class PreviewSegmentsEntryUsersMVCRenderCommandTest {
 		List<User> users = searchContainer.getResults();
 
 		Assert.assertEquals(_user2, users.get(0));
+	}
+
+	@Test
+	@TestInfo("LPD-116067")
+	public void testGetSearchContainerWithSiteAdministratorUser()
+		throws Exception {
+		_user3 = UserTestUtil.addUser();
+
+		Criteria criteria = new Criteria();
+
+		_userSegmentsCriteriaContributor.contribute(
+			criteria,
+			String.format(
+				"(firstName eq '%s') or (firstName eq '%s')",
+				_user1.getFirstName(), _user3.getFirstName()),
+			Criteria.Conjunction.AND);
+
+		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
+			_getMockLiferayPortletRenderRequest();
+
+		PortletSession portletSession =
+			mockLiferayPortletRenderRequest.getPortletSession();
+
+		portletSession.setAttribute(
+			"PREVIEW_SEGMENTS_ENTRY_CRITERIA", criteria);
+
+		_siteAdministratorUser = UserTestUtil.addGroupAdminUser(_group);
+
+		PermissionThreadLocal.setPermissionChecker(
+			PermissionCheckerFactoryUtil.create(_siteAdministratorUser));
+
+		_mvcRenderCommand.render(
+			mockLiferayPortletRenderRequest,
+			new MockLiferayPortletRenderResponse());
+
+		SearchContainer<User> searchContainer = ReflectionTestUtil.invoke(
+			mockLiferayPortletRenderRequest.getAttribute(_CLASS_NAME),
+			"getSearchContainer", new Class<?>[0]);
+
+		Assert.assertEquals(List.of(_user1), searchContainer.getResults());
+		Assert.assertEquals(1, searchContainer.getTotal());
 	}
 
 	private MockLiferayPortletRenderRequest
