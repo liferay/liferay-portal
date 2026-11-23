@@ -29,6 +29,86 @@ const cmpTask = 'cmp/tasks';
 test.use({viewport: {height: 1080, width: 1920}});
 
 test(
+	'Count the subtasks in the bulk delete confirmation',
+	{tag: ['@LPD-114773']},
+	async ({apiHelpers, page, projectPage, projectsPage, tasksPage}) => {
+		const project = await apiHelpers.objectEntry.postObjectEntry(
+			{
+				title: getRandomString(),
+			},
+			cmpProject
+		);
+
+		const parentTask = await apiHelpers.objectEntry.postObjectEntry(
+			{
+				r_cmpProjectToCMPTasks_c_cmpProjectId: project.id,
+				title: getRandomString(),
+			},
+			cmpTask,
+			project.scopeKey
+		);
+
+		const subtask = await apiHelpers.objectEntry.postObjectEntry(
+			{
+				r_cmpProjectToCMPTasks_c_cmpProjectId: project.id,
+				r_cmpTaskToCMPTasks_c_cmpTaskId: parentTask.id,
+				title: getRandomString(),
+			},
+			cmpTask,
+			project.scopeKey
+		);
+
+		await apiHelpers.objectEntry.postObjectEntry(
+			{
+				r_cmpProjectToCMPTasks_c_cmpProjectId: project.id,
+				r_cmpTaskToCMPTasks_c_cmpTaskId: subtask.id,
+				title: getRandomString(),
+			},
+			cmpTask,
+			project.scopeKey
+		);
+
+		const task = await apiHelpers.objectEntry.postObjectEntry(
+			{
+				r_cmpProjectToCMPTasks_c_cmpProjectId: project.id,
+				title: getRandomString(),
+			},
+			cmpTask,
+			project.scopeKey
+		);
+
+		await test.step('Select a task, its subtask and another task', async () => {
+			await projectsPage.goto();
+
+			await projectsPage.getProject(project.title).click();
+
+			await projectPage.tasksTab.click();
+
+			for (const selectedTask of [parentTask, subtask, task]) {
+				await tasksPage
+					.getItem(selectedTask.title)
+					.locator('input[title="Select Item"]')
+					.check();
+			}
+		});
+
+		await test.step('Count the selected subtask once and the unselected sub-subtask in the confirmation title', async () => {
+			await tasksPage.execBulkItemAction('Delete');
+
+			const deleteDialog = page.getByRole('dialog', {
+				name: 'Delete 4 Tasks',
+			});
+
+			await expect(deleteDialog).toBeVisible();
+
+			await deleteDialog.getByRole('button', {name: 'Cancel'}).click();
+
+			await expect(deleteDialog).toBeHidden();
+		});
+	}
+);
+
+test(
 	'Create subtasks from the subtask editor',
 	{tag: ['@LPD-114769']},
 	async ({apiHelpers, editTaskPage, page}) => {
