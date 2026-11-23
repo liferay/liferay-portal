@@ -69,6 +69,8 @@ public class AuditPortalPreferencesLocalServiceWrapperTest
 					"LoggingAuditMessageProcessor",
 				LoggerTestUtil.INFO)) {
 
+			auditMessages.clear();
+
 			_companyLocalService.updateSecurity(
 				company.getCompanyId(), company.getAuthType(),
 				company.isAutoLogin(), company.isSendPasswordResetLink(),
