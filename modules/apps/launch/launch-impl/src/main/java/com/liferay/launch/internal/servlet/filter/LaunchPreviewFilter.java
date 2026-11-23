@@ -7,17 +7,13 @@ package com.liferay.launch.internal.servlet.filter;
 
 import com.liferay.launch.entry.manager.LaunchEntryManager;
 import com.liferay.launch.entry.manager.LaunchEntryManagerRegistry;
+import com.liferay.launch.internal.util.LaunchUtil;
 import com.liferay.object.model.ObjectDefinition;
-import com.liferay.object.model.ObjectField;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
-import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.petra.function.UnsafeSupplier;
 import com.liferay.petra.function.UnsafeSupplierValue;
 import com.liferay.petra.lang.SafeCloseable;
-import com.liferay.petra.sql.dsl.Column;
-import com.liferay.petra.sql.dsl.Table;
-import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
@@ -126,22 +122,6 @@ public class LaunchPreviewFilter extends BasePortalFilter {
 		}
 	}
 
-	private Predicate _getEqualsPredicate(
-			String fieldName, long objectDefinitionId, Object value)
-		throws Exception {
-
-		ObjectField objectField = _objectFieldLocalService.getObjectField(
-			objectDefinitionId, fieldName);
-
-		Table<?> table = _objectFieldLocalService.getTable(
-			objectDefinitionId, objectField.getName());
-
-		Column<?, Object> column = (Column<?, Object>)table.getColumn(
-			objectField.getDBColumnName());
-
-		return column.eq(value);
-	}
-
 	private List<Map<String, Serializable>> _getLaunchEntryValuesList(
 			long companyId, long launchSetId)
 		throws Exception {
@@ -159,7 +139,7 @@ public class LaunchPreviewFilter extends BasePortalFilter {
 		return _objectEntryLocalService.getValuesList(
 			companyGroup.getGroupId(), companyId, objectDefinition.getUserId(),
 			objectDefinition.getObjectDefinitionId(),
-			_getEqualsPredicate(
+			LaunchUtil.getEqualsPredicate(
 				"r_launchSetToLaunchEntries_c_launchSetId",
 				objectDefinition.getObjectDefinitionId(), launchSetId),
 			null, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
@@ -299,9 +279,6 @@ public class LaunchPreviewFilter extends BasePortalFilter {
 
 	@Reference
 	private ObjectEntryLocalService _objectEntryLocalService;
-
-	@Reference
-	private ObjectFieldLocalService _objectFieldLocalService;
 
 	@Reference
 	private Portal _portal;

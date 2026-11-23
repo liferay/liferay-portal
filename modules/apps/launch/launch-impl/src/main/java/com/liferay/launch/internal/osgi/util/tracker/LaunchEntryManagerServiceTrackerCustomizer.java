@@ -6,14 +6,11 @@
 package com.liferay.launch.internal.osgi.util.tracker;
 
 import com.liferay.launch.entry.manager.LaunchEntryManager;
+import com.liferay.launch.internal.util.LaunchUtil;
 import com.liferay.object.model.ObjectDefinition;
-import com.liferay.object.model.ObjectField;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
-import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.osgi.util.ServiceTrackerFactory;
-import com.liferay.petra.sql.dsl.Column;
-import com.liferay.petra.sql.dsl.Table;
 import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.ModelListenerException;
@@ -103,7 +100,7 @@ public class LaunchEntryManagerServiceTrackerCustomizer
 
 		long objectDefinitionId = objectDefinition.getObjectDefinitionId();
 
-		Predicate predicate = _getEqualsPredicate(
+		Predicate predicate = LaunchUtil.getEqualsPredicate(
 			"className", objectDefinitionId, className);
 
 		Group companyGroup = _groupLocalService.getCompanyGroup(companyId);
@@ -113,28 +110,12 @@ public class LaunchEntryManagerServiceTrackerCustomizer
 					new Long[] {companyGroup.getGroupId()}, companyId,
 					objectDefinition.getUserId(), objectDefinitionId,
 					predicate.and(
-						_getEqualsPredicate(
+						LaunchUtil.getEqualsPredicate(
 							"classPK", objectDefinitionId, classPK)),
 					false, null, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 
 			_objectEntryLocalService.deleteObjectEntry(objectEntryId);
 		}
-	}
-
-	private Predicate _getEqualsPredicate(
-			String fieldName, long objectDefinitionId, Object value)
-		throws PortalException {
-
-		ObjectField objectField = _objectFieldLocalService.getObjectField(
-			objectDefinitionId, fieldName);
-
-		Table<?> table = _objectFieldLocalService.getTable(
-			objectDefinitionId, objectField.getName());
-
-		Column<?, Object> column = (Column<?, Object>)table.getColumn(
-			objectField.getDBColumnName());
-
-		return column.eq(value);
 	}
 
 	private BundleContext _bundleContext;
@@ -147,9 +128,6 @@ public class LaunchEntryManagerServiceTrackerCustomizer
 
 	@Reference
 	private ObjectEntryLocalService _objectEntryLocalService;
-
-	@Reference
-	private ObjectFieldLocalService _objectFieldLocalService;
 
 	private ServiceTracker<LaunchEntryManager, ServiceRegistration<?>>
 		_serviceTracker;

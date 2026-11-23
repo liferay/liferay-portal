@@ -5,16 +5,13 @@
 
 package com.liferay.launch.internal.object.validation.rule;
 
+import com.liferay.launch.internal.util.LaunchUtil;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntryTable;
-import com.liferay.object.model.ObjectField;
 import com.liferay.object.scope.ObjectDefinitionScoped;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
-import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.validation.rule.ObjectValidationRuleEngine;
-import com.liferay.petra.sql.dsl.Column;
-import com.liferay.petra.sql.dsl.Table;
 import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
@@ -76,22 +73,6 @@ public class LaunchEntryDuplicateObjectValidationRuleEngineImpl
 		return _language.get(locale, "launch-entry-duplicate");
 	}
 
-	private Predicate _getEqualsPredicate(
-			String fieldName, long objectDefinitionId, Object value)
-		throws PortalException {
-
-		ObjectField objectField = _objectFieldLocalService.getObjectField(
-			objectDefinitionId, fieldName);
-
-		Table<?> table = _objectFieldLocalService.getTable(
-			objectDefinitionId, objectField.getName());
-
-		Column<?, Object> column = (Column<?, Object>)table.getColumn(
-			objectField.getDBColumnName());
-
-		return column.eq(value);
-	}
-
 	private boolean _hasDuplicateLaunchEntry(Map<String, Object> inputObjects)
 		throws PortalException {
 
@@ -116,15 +97,15 @@ public class LaunchEntryDuplicateObjectValidationRuleEngineImpl
 			"properties");
 
 		predicate = predicate.and(
-			_getEqualsPredicate(
+			LaunchUtil.getEqualsPredicate(
 				"className", objectDefinitionId,
 				GetterUtil.getString(properties.get("className"))));
 		predicate = predicate.and(
-			_getEqualsPredicate(
+			LaunchUtil.getEqualsPredicate(
 				"classPK", objectDefinitionId,
 				GetterUtil.getLong(properties.get("classPK"))));
 		predicate = predicate.and(
-			_getEqualsPredicate(
+			LaunchUtil.getEqualsPredicate(
 				"r_launchSetToLaunchEntries_c_launchSetId", objectDefinitionId,
 				GetterUtil.getLong(
 					properties.get(
@@ -159,8 +140,5 @@ public class LaunchEntryDuplicateObjectValidationRuleEngineImpl
 
 	@Reference
 	private ObjectEntryLocalService _objectEntryLocalService;
-
-	@Reference
-	private ObjectFieldLocalService _objectFieldLocalService;
 
 }
