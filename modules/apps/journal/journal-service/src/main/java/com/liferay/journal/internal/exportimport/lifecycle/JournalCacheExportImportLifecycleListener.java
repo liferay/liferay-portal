@@ -10,8 +10,10 @@ import com.liferay.exportimport.kernel.lifecycle.EventAwareExportImportLifecycle
 import com.liferay.exportimport.kernel.lifecycle.ExportImportLifecycleListener;
 import com.liferay.exportimport.kernel.model.ExportImportConfiguration;
 import com.liferay.journal.constants.JournalPortletKeys;
-import com.liferay.journal.internal.exportimport.content.processor.JournalArticleExportImportProcessorCache;
+import com.liferay.journal.internal.exportimport.content.processor.JournalArticleExportImportContentProcessor;
 import com.liferay.journal.util.JournalContent;
+import com.liferay.portal.kernel.cache.PortalCache;
+import com.liferay.portal.kernel.cache.SingleVMPool;
 import com.liferay.portal.kernel.model.StagedModel;
 
 import org.osgi.service.component.annotations.Component;
@@ -34,7 +36,7 @@ public class JournalCacheExportImportLifecycleListener
 			PortletDataContext portletDataContext, Throwable throwable)
 		throws Exception {
 
-		_journalArticleExportImportCache.clear();
+		_clearProcessedContentCache();
 	}
 
 	@Override
@@ -46,7 +48,7 @@ public class JournalCacheExportImportLifecycleListener
 	public void onLayoutExportSucceeded(PortletDataContext portletDataContext)
 		throws Exception {
 
-		_journalArticleExportImportCache.clear();
+		_clearProcessedContentCache();
 	}
 
 	@Override
@@ -218,11 +220,17 @@ public class JournalCacheExportImportLifecycleListener
 		_journalContent.clearCache();
 	}
 
-	@Reference
-	private JournalArticleExportImportProcessorCache
-		_journalArticleExportImportCache;
+	private void _clearProcessedContentCache() {
+		PortalCache<?, ?> portalCache = _singleVMPool.getPortalCache(
+			JournalArticleExportImportContentProcessor.class.getName());
+
+		portalCache.removeAll();
+	}
 
 	@Reference
 	private JournalContent _journalContent;
+
+	@Reference
+	private SingleVMPool _singleVMPool;
 
 }

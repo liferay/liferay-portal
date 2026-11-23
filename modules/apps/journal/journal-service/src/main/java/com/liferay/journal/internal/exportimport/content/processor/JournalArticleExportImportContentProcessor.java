@@ -35,6 +35,8 @@ import com.liferay.layout.dynamic.data.mapping.form.field.type.constants.LayoutD
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
+import com.liferay.portal.kernel.cache.PortalCache;
+import com.liferay.portal.kernel.cache.SingleVMPool;
 import com.liferay.portal.kernel.exception.NoSuchLayoutException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONException;
@@ -63,6 +65,7 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -108,8 +111,7 @@ public class JournalArticleExportImportContentProcessor
 			sb.append(exportReferencedContent);
 			sb.append(escapeContent);
 
-			processedContent = _journalArticleExportImportCache.get(
-				sb.toString());
+			processedContent = _portalCache.get(sb.toString());
 		}
 
 		String path = ExportImportPathUtil.getModelPath(stagedModel);
@@ -176,7 +178,7 @@ public class JournalArticleExportImportContentProcessor
 					exportReferencedContent, escapeContent);
 
 		if (journalArticleExportImportCacheEnabled) {
-			_journalArticleExportImportCache.put(sb.toString(), content);
+			_portalCache.put(sb.toString(), content);
 		}
 
 		Element entityElement = portletDataContext.getExportDataElement(
@@ -290,6 +292,13 @@ public class JournalArticleExportImportContentProcessor
 
 			throw exception;
 		}
+	}
+
+	@Activate
+	protected void activate() {
+		_portalCache =
+			(PortalCache<String, String>)_singleVMPool.getPortalCache(
+				JournalArticleExportImportContentProcessor.class.getName());
 	}
 
 	private String _excludeHTMLComments(String content) {
@@ -597,10 +606,6 @@ public class JournalArticleExportImportContentProcessor
 	private GroupLocalService _groupLocalService;
 
 	@Reference
-	private JournalArticleExportImportProcessorCache
-		_journalArticleExportImportCache;
-
-	@Reference
 	private JournalArticleLocalService _journalArticleLocalService;
 
 	@Reference
@@ -608,5 +613,10 @@ public class JournalArticleExportImportContentProcessor
 
 	@Reference
 	private JSONFactory _jsonFactory;
+
+	private PortalCache<String, String> _portalCache;
+
+	@Reference
+	private SingleVMPool _singleVMPool;
 
 }
