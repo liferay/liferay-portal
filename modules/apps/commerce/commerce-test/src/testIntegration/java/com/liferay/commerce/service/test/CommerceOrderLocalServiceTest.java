@@ -45,6 +45,9 @@ import com.liferay.commerce.term.service.CommerceTermEntryLocalService;
 import com.liferay.commerce.test.util.CommerceInventoryTestUtil;
 import com.liferay.commerce.test.util.CommerceTestUtil;
 import com.liferay.commerce.test.util.context.TestCommerceContext;
+import com.liferay.document.library.kernel.exception.NoSuchFileEntryException;
+import com.liferay.document.library.kernel.model.DLFolderConstants;
+import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.model.Address;
@@ -58,12 +61,15 @@ import com.liferay.portal.kernel.repository.model.Folder;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.test.AssertUtils;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.BigDecimalUtil;
+import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Time;
@@ -461,15 +467,16 @@ public class CommerceOrderLocalServiceTest {
 	}
 
 	@Test
+	@TestInfo("LPD-115724")
 	public void testDeleteCommerceOrderAttachment() throws Exception {
 		frutillaRule.scenario(
 			"Delete an attachment from an order"
 		).given(
 			"An order with an attachment"
 		).when(
-			"I delete the attachment"
+			"I delete file entries through the order"
 		).then(
-			"The file entry does not exist anymore"
+			"Only the attachment of the order is deleted"
 		);
 
 		_accountEntry = CommerceAccountTestUtil.addPersonAccountEntry(
@@ -477,26 +484,58 @@ public class CommerceOrderLocalServiceTest {
 			ServiceContextTestUtil.getServiceContext(
 				_group.getGroupId(), _user.getUserId()));
 
-		CommerceOrder commerceOrder =
+		CommerceOrder commerceOrder1 =
 			_commerceOrderLocalService.addCommerceOrder(
 				_user.getUserId(), _commerceChannel.getGroupId(),
 				_accountEntry.getAccountEntryId(), _commerceCurrency.getCode(),
 				0);
 
-		FileEntry fileEntry = _commerceOrderLocalService.addAttachmentFileEntry(
-			RandomTestUtil.randomString(), _user.getUserId(),
-			commerceOrder.getCommerceOrderId(), RandomTestUtil.randomString(),
-			new ByteArrayInputStream("Liferay".getBytes()));
-
-		LocalRepository localRepository = commerceOrder.getLocalRepository();
+		LocalRepository localRepository = commerceOrder1.getLocalRepository();
 
 		Assert.assertNotNull(localRepository);
 
+		long fileEntryId = RandomTestUtil.nextLong();
+
+		AssertUtils.assertFailure(
+			NoSuchFileEntryException.class,
+			"No DLFileEntry exists with the primary key " + fileEntryId,
+			() -> _commerceOrderLocalService.deleteAttachmentFileEntry(
+				fileEntryId, commerceOrder1.getCommerceOrderId()));
+
+		Group group = GroupTestUtil.addGroup();
+
+		FileEntry fileEntry1 = _dlAppLocalService.addFileEntry(
+			null, _user.getUserId(), group.getGroupId(),
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			RandomTestUtil.randomString(), ContentTypes.TEXT_PLAIN,
+			RandomTestUtil.randomString(), StringPool.BLANK, StringPool.BLANK,
+			StringPool.BLANK, RandomTestUtil.randomBytes(), null, null, null,
+			ServiceContextTestUtil.getServiceContext(
+				group.getGroupId(), _user.getUserId()));
+
+		AssertUtils.assertFailure(
+			NoSuchFileEntryException.class,
+			"No DLFileEntry exists with the primary key " +
+				fileEntry1.getFileEntryId(),
+			() -> _commerceOrderLocalService.deleteAttachmentFileEntry(
+				fileEntry1.getFileEntryId(),
+				commerceOrder1.getCommerceOrderId()));
+
+		Assert.assertNotNull(
+			_dlAppLocalService.fetchFileEntry(fileEntry1.getFileEntryId()));
+
+		FileEntry fileEntry2 =
+			_commerceOrderLocalService.addAttachmentFileEntry(
+				RandomTestUtil.randomString(), _user.getUserId(),
+				commerceOrder1.getCommerceOrderId(),
+				RandomTestUtil.randomString(),
+				new ByteArrayInputStream("Liferay".getBytes()));
+
 		_commerceOrderLocalService.deleteAttachmentFileEntry(
-			fileEntry.getFileEntryId(), commerceOrder.getCommerceOrderId());
+			fileEntry2.getFileEntryId(), commerceOrder1.getCommerceOrderId());
 
 		List<FileEntry> attachmentFileEntries =
-			commerceOrder.getAttachmentFileEntries(
+			commerceOrder1.getAttachmentFileEntries(
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 
 		Assert.assertEquals(
@@ -504,7 +543,31 @@ public class CommerceOrderLocalServiceTest {
 
 		Assert.assertNull(
 			localRepository.fetchFileEntryByExternalReferenceCode(
-				fileEntry.getExternalReferenceCode()));
+				fileEntry2.getExternalReferenceCode()));
+
+		CommerceOrder commerceOrder2 =
+			_commerceOrderLocalService.addCommerceOrder(
+				_user.getUserId(), _commerceChannel.getGroupId(),
+				_accountEntry.getAccountEntryId(), _commerceCurrency.getCode(),
+				0);
+
+		FileEntry fileEntry3 =
+			_commerceOrderLocalService.addAttachmentFileEntry(
+				RandomTestUtil.randomString(), _user.getUserId(),
+				commerceOrder2.getCommerceOrderId(),
+				RandomTestUtil.randomString(),
+				new ByteArrayInputStream(RandomTestUtil.randomBytes()));
+
+		AssertUtils.assertFailure(
+			NoSuchFileEntryException.class,
+			"No DLFileEntry exists with the primary key " +
+				fileEntry3.getFileEntryId(),
+			() -> _commerceOrderLocalService.deleteAttachmentFileEntry(
+				fileEntry3.getFileEntryId(),
+				commerceOrder1.getCommerceOrderId()));
+
+		Assert.assertNotNull(
+			_dlAppLocalService.fetchFileEntry(fileEntry3.getFileEntryId()));
 	}
 
 	@Test
@@ -781,6 +844,10 @@ public class CommerceOrderLocalServiceTest {
 	private CPConfigurationEntryLocalService _cpConfigurationEntryLocalService;
 
 	private CPInstance _cpInstance;
+
+	@Inject
+	private DLAppLocalService _dlAppLocalService;
+
 	private Group _group;
 
 	@Inject

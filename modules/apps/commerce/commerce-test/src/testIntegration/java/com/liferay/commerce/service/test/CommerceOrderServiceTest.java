@@ -26,6 +26,7 @@ import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.service.CommerceOrderLocalService;
 import com.liferay.commerce.service.CommerceOrderService;
 import com.liferay.commerce.test.util.CommerceTestUtil;
+import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Company;
@@ -33,12 +34,15 @@ import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.UserGroupRoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.AssertUtils;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
@@ -52,6 +56,8 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+
+import java.io.ByteArrayInputStream;
 
 import java.math.BigDecimal;
 
@@ -220,6 +226,59 @@ public class CommerceOrderServiceTest {
 		_testAddOrUpdateCommerceOrderWithManageCommerceOrderPaymentMethodsPermission();
 		_testAddOrUpdateCommerceOrderWithRegularRole();
 		_testAddOrUpdateCommerceOrderWithSupplierRole();
+	}
+
+	@Test
+	@TestInfo("LPD-115724")
+	public void testDeleteAttachmentFileEntry() throws Exception {
+		CommerceOrder commerceOrder = _addCommerceOrder(
+			RandomTestUtil.randomString(),
+			CommerceOrderConstants.ORDER_STATUS_OPEN);
+
+		FileEntry fileEntry = _commerceOrderLocalService.addAttachmentFileEntry(
+			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+			commerceOrder.getCommerceOrderId(), RandomTestUtil.randomString(),
+			new ByteArrayInputStream(RandomTestUtil.randomBytes()));
+
+		User user = UserTestUtil.addUser();
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user, PermissionCheckerFactoryUtil.create(user))) {
+
+			_commerceOrderService.deleteAttachmentFileEntry(
+				fileEntry.getFileEntryId(), commerceOrder.getCommerceOrderId());
+
+			Assert.fail();
+		}
+		catch (PrincipalException.MustHavePermission principalException) {
+			_assertMessage(
+				ActionKeys.UPDATE, principalException.getMessage(),
+				user.getUserId());
+		}
+
+		AccountEntry accountEntry = _accountEntryLocalService.getAccountEntry(
+			commerceOrder.getCommerceAccountId());
+
+		_accountEntryUserRelLocalService.addAccountEntryUserRel(
+			accountEntry.getAccountEntryId(), user.getUserId());
+
+		Role role = _roleLocalService.getRole(
+			TestPropsValues.getCompanyId(),
+			AccountRoleConstants.ROLE_NAME_ACCOUNT_BUYER);
+
+		_userGroupRoleLocalService.addUserGroupRole(
+			user.getUserId(), accountEntry.getAccountEntryGroupId(),
+			role.getRoleId());
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user, PermissionCheckerFactoryUtil.create(user))) {
+
+			_commerceOrderService.deleteAttachmentFileEntry(
+				fileEntry.getFileEntryId(), commerceOrder.getCommerceOrderId());
+		}
+
+		Assert.assertNull(
+			_dlAppLocalService.fetchFileEntry(fileEntry.getFileEntryId()));
 	}
 
 	@Test
@@ -1201,6 +1260,9 @@ public class CommerceOrderServiceTest {
 	@Inject
 	private CommercePaymentMethodGroupRelLocalService
 		_commercePaymentMethodGroupRelLocalService;
+
+	@Inject
+	private DLAppLocalService _dlAppLocalService;
 
 	@Inject
 	private RoleLocalService _roleLocalService;
