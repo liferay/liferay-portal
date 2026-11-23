@@ -1568,6 +1568,29 @@ public class ObjectDefinitionLocalServiceTest {
 						StringPool.TRUE
 					).build()),
 				Collections.emptyList(),
+				_createWorkflowDefinitionLinks(
+					depotEntry1.getGroupId(), group.getGroupId()),
+				new ServiceContext()));
+		AssertUtils.assertFailure(
+			ObjectDefinitionScopeException.class,
+			"An object definition can only be linked to a workflow " +
+				"definition within the same scope",
+			() -> _objectDefinitionLocalService.addCustomObjectDefinition(
+				null, TestPropsValues.getUserId(), 0, null, null, true, false,
+				true, true, true, false, false, false, false, null,
+				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
+				ObjectDefinitionTestUtil.getRandomName(), null, null,
+				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
+				true, ObjectDefinitionConstants.SCOPE_DEPOT,
+				ObjectDefinitionConstants.STORAGE_TYPE_DEFAULT,
+				Collections.singletonList(
+					new ObjectDefinitionSettingBuilder(
+					).name(
+						ObjectDefinitionSettingConstants.NAME_ACCEPT_ALL_GROUPS
+					).value(
+						StringPool.TRUE
+					).build()),
+				Collections.emptyList(),
 				_createWorkflowDefinitionLinks(group.getGroupId()),
 				new ServiceContext()));
 
@@ -5616,18 +5639,23 @@ public class ObjectDefinitionLocalServiceTest {
 	}
 
 	private List<WorkflowDefinitionLink> _createWorkflowDefinitionLinks(
-			long groupId)
+			long... groupIds)
 		throws Exception {
 
-		WorkflowDefinitionLink workflowDefinitionLink =
-			_workflowDefinitionLinkLocalService.createWorkflowDefinitionLink(
-				0L);
+		return TransformUtil.transformToList(
+			groupIds,
+			groupId -> {
+				WorkflowDefinitionLink workflowDefinitionLink =
+					_workflowDefinitionLinkLocalService.
+						createWorkflowDefinitionLink(0L);
 
-		workflowDefinitionLink.setGroupId(groupId);
-		workflowDefinitionLink.setUserId(TestPropsValues.getUserId());
-		workflowDefinitionLink.setWorkflowDefinitionName("Single Approver");
+				workflowDefinitionLink.setGroupId(groupId);
+				workflowDefinitionLink.setUserId(TestPropsValues.getUserId());
+				workflowDefinitionLink.setWorkflowDefinitionName(
+					"Single Approver");
 
-		return Collections.singletonList(workflowDefinitionLink);
+				return workflowDefinitionLink;
+			});
 	}
 
 	private long _getClassNameId(String className) throws Exception {
