@@ -17,6 +17,7 @@ import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.SystemProperties;
 
 import java.security.Provider;
 import java.security.Security;
@@ -190,7 +191,8 @@ public class FIPSModeValidatorTest {
 			new Class<?>[] {String.class}, "\u0000");
 		_assertSecurityException(
 			"must be a file in FIPS mode", "_readChannelPropertiesDocument",
-			new Class<?>[] {String.class}, RandomTestUtil.randomString());
+			new Class<?>[] {String.class},
+			SystemProperties.get(SystemProperties.TMP_DIR));
 	}
 
 	@Test
