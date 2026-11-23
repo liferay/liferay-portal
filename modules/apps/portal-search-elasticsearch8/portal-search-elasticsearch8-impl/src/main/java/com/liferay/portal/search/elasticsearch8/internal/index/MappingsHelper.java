@@ -68,7 +68,8 @@ public class MappingsHelper {
 
 		_putMappings(
 			_getMappingsJSONObjectWithMergedDynamicTemplates(
-				_getCurrentMappings(_indexName), source));
+				_removeLegacyDocumentType(_getCurrentMappings(_indexName)),
+				_removeLegacyDocumentType(source)));
 	}
 
 	public void setDefaultOrOverrideMappings(
@@ -85,9 +86,7 @@ public class MappingsHelper {
 				_jsonpMapper));
 	}
 
-	private String _addTextEmbeddingDynamicTemplates(String mappings) {
-		JSONObject jsonObject = _createJSONObject(mappings);
-
+	private void _addTextEmbeddingDynamicTemplates(JSONObject jsonObject) {
 		JSONArray jsonArray = jsonObject.getJSONArray("dynamic_templates");
 
 		for (int dimension :
@@ -109,8 +108,6 @@ public class MappingsHelper {
 							"text_embedding_", dimension, StringPool.STAR)
 					)));
 		}
-
-		return jsonObject.toString();
 	}
 
 	private JSONObject _createJSONObject(String mappings) {
@@ -152,21 +149,19 @@ public class MappingsHelper {
 			return _removeLegacyDocumentType(_overrideMappings);
 		}
 
-		String defaultMappings = _addTextEmbeddingDynamicTemplates(
+		JSONObject defaultMappingsJSONObject = _createJSONObject(
 			ResourceUtil.getResourceAsString(
 				getClass(), IndexMappingsConstants.INDEX_MAPPINGS_FILE_NAME));
 
+		_addTextEmbeddingDynamicTemplates(defaultMappingsJSONObject);
+
 		return _getMappingsJSONObjectWithMergedDynamicTemplates(
-			StringPool.BLANK, defaultMappings);
+			_jsonFactory.createJSONObject(), defaultMappingsJSONObject);
 	}
 
 	private JSONObject _getMappingsJSONObjectWithMergedDynamicTemplates(
-		String currentMappings, String putMappings) {
-
-		JSONObject currentMappingsJSONObject = _removeLegacyDocumentType(
-			currentMappings);
-		JSONObject putMappingsJSONObject = _removeLegacyDocumentType(
-			putMappings);
+		JSONObject currentMappingsJSONObject,
+		JSONObject putMappingsJSONObject) {
 
 		putMappingsJSONObject.put(
 			"dynamic_templates",
