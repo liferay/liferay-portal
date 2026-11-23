@@ -3,7 +3,11 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.portal.file.install.properties;
+package com.liferay.portal.file.install.internal.configuration;
+
+import com.liferay.portal.file.install.properties.CFGProperties;
+import com.liferay.portal.file.install.properties.ConfigurationProperties;
+import com.liferay.portal.file.install.properties.TypedProperties;
 
 import java.io.File;
 import java.io.FileInputStream;
