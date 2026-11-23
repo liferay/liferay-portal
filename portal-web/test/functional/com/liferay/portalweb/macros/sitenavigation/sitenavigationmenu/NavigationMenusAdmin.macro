@@ -32,12 +32,12 @@ definition {
 
 		if (${target} == "Blank") {
 			Check.checkToggleSwitch(
-				checkboxName = "Open in a new tab.",
+				checkboxName = "Open in a New Tab",
 				locator1 = "Checkbox#ANY_CHECKBOX");
 		}
 		else if (${target} == "Self") {
 			Uncheck.uncheckToggleSwitch(
-				checkboxName = "Open in a new tab.",
+				checkboxName = "Open in a New Tab",
 				locator1 = "Checkbox#ANY_CHECKBOX");
 		}
 	}

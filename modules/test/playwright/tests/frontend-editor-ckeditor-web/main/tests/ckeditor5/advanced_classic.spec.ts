@@ -7,6 +7,7 @@ import {expect, mergeTests} from '@playwright/test';
 
 import {featureFlagsTest} from '../../../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../../../fixtures/loginTest';
+import {ApiHelpers} from '../../../../../helpers/ApiHelpers';
 import getRandomString from '../../../../../utils/getRandomString';
 import {advancedClassicPageTest} from '../../../../frontend-editor-ckeditor5-sample-web/fixtures/classicPageTest';
 
@@ -152,8 +153,10 @@ test(
 	'Can add a hyperlink to existing text',
 	{tag: '@LPS-110663'},
 	async ({classicPage, page}) => {
+		const text = getRandomString();
+
 		await test.step('Type some text in the editor', async () => {
-			await classicPage.editable.fill(getRandomString());
+			await classicPage.editable.fill(text);
 		});
 
 		await test.step('Select text and add hyperlink', async () => {
@@ -163,13 +166,17 @@ test(
 				.getByRole('button', {name: 'Link'})
 				.click();
 
-			const urlInput = page.getByLabel('Link URL');
+			const linkDialog = page.getByRole('dialog', {name: 'Link'});
 
-			await expect(urlInput).toBeVisible({timeout: 3000});
+			await expect(linkDialog.getByLabel('Display Text')).toHaveValue(
+				text
+			);
 
-			await urlInput.fill('https://www.liferay.com');
+			await linkDialog
+				.getByLabel('Link URL')
+				.fill('https://www.liferay.com');
 
-			await page.getByLabel('Insert', {exact: true}).click();
+			await linkDialog.getByRole('button', {name: 'Done'}).click();
 		});
 
 		await expect(
@@ -236,13 +243,13 @@ test(
 				.getByRole('button', {name: 'Link'})
 				.click();
 
-			const urlInput = page.getByLabel('Link URL');
+			const linkDialog = page.getByRole('dialog', {name: 'Link'});
 
-			await expect(urlInput).toBeVisible({timeout: 3000});
+			await expect(linkDialog.getByLabel('Display Text')).toHaveCount(0);
 
-			await urlInput.fill(linkURL);
+			await linkDialog.getByLabel('Link URL').fill(linkURL);
 
-			await page.getByLabel('Insert', {exact: true}).click();
+			await linkDialog.getByRole('button', {name: 'Done'}).click();
 		});
 
 		await expect(
@@ -437,5 +444,359 @@ test(
 				page.getByRole('option', {exact: true, name: color})
 			).toBeVisible();
 		}
+	}
+);
+
+test(
+	'Can browse a page from the link dialog',
+	{tag: '@LPD-91686'},
+	async ({classicPage, page, site}) => {
+		const layoutTitle = getRandomString();
+
+		const layout = await new ApiHelpers(
+			page
+		).headlessDelivery.createSitePage({
+			siteId: site.id,
+			title: layoutTitle,
+		});
+
+		await classicPage.editable.fill(getRandomString());
+
+		await classicPage.editable.selectText();
+
+		await classicPage.toolbar.container
+			.getByRole('button', {name: 'Link'})
+			.click();
+
+		const linkDialog = page.getByRole('dialog', {name: 'Link'});
+
+		await linkDialog.getByRole('button', {name: 'Browse Server'}).click();
+
+		const itemSelectorFrame = page.frameLocator(
+			'iframe[title="Select Web Content Asset"]'
+		);
+
+		await itemSelectorFrame.getByRole('link', {name: 'Pages'}).click();
+
+		await itemSelectorFrame
+			.getByRole('treeitem', {name: layoutTitle})
+			.click();
+
+		const urlInput = linkDialog.getByLabel('Link URL');
+
+		await expect(urlInput).toHaveValue(
+			new RegExp(`^/.*${layout.friendlyUrlPath}$`)
+		);
+
+		const url = await urlInput.inputValue();
+
+		await linkDialog.getByRole('button', {name: 'Done'}).click();
+
+		await expect(
+			classicPage.editable.locator(`a[href="${url}"]`)
+		).toBeVisible();
+	}
+);
+
+test(
+	'Link dialog requires a display text and a link URL',
+	{tag: '@LPD-91686'},
+	async ({classicPage, page}) => {
+		await classicPage.editable.fill(getRandomString());
+
+		await classicPage.editable.selectText();
+
+		await classicPage.toolbar.container
+			.getByRole('button', {name: 'Link'})
+			.click();
+
+		const linkDialog = page.getByRole('dialog', {name: 'Link'});
+
+		await linkDialog.getByLabel('Display Text').fill('');
+
+		await linkDialog.getByRole('button', {name: 'Done'}).click();
+
+		await expect(
+			linkDialog.getByText('This field is required.')
+		).toHaveCount(2);
+
+		await linkDialog.getByRole('button', {name: 'Cancel'}).click();
+
+		await expect(linkDialog).toBeHidden();
+
+		await expect(classicPage.editable.locator('a')).toHaveCount(0);
+	}
+);
+
+test(
+	'Edit link opens the link dialog with the current URL',
+	{tag: '@LPD-91686'},
+	async ({classicPage, page}) => {
+		const sampleRelativeURL = '/sample-relative-url';
+		const updatedURL = '/updated-relative-url';
+
+		await classicPage.editable
+			.locator(`a[href*="${sampleRelativeURL}"]`)
+			.click();
+
+		await expect(page.getByRole('button', {name: 'Unlink'})).toBeVisible();
+
+		await expect(
+			page.getByRole('button', {name: 'Link properties'})
+		).toBeHidden();
+
+		await page.getByRole('button', {name: 'Edit link'}).click();
+
+		const linkDialog = page.getByRole('dialog', {name: 'Link'});
+
+		const urlInput = linkDialog.getByLabel('Link URL');
+
+		await expect(urlInput).toHaveValue(sampleRelativeURL);
+
+		await urlInput.fill(updatedURL);
+
+		await linkDialog.getByRole('button', {name: 'Done'}).click();
+
+		await expect(
+			classicPage.editable.locator(`a[href="${updatedURL}"]`)
+		).toBeVisible();
+	}
+);
+
+test(
+	'Can browse a document from the link dialog',
+	{tag: '@LPD-91686'},
+	async ({classicPage, page, site}) => {
+		const documentTitle = `${getRandomString()}.txt`;
+
+		await new ApiHelpers(page).headlessDelivery.postDocument(
+			site.id,
+			{
+				buffer: Buffer.from(getRandomString()),
+				mimeType: 'text/plain',
+				name: documentTitle,
+			},
+			{fileName: documentTitle, title: documentTitle}
+		);
+
+		await classicPage.editable.fill(getRandomString());
+
+		await classicPage.editable.selectText();
+
+		await classicPage.toolbar.container
+			.getByRole('button', {name: 'Link'})
+			.click();
+
+		const linkDialog = page.getByRole('dialog', {name: 'Link'});
+
+		await linkDialog.getByRole('button', {name: 'Browse Server'}).click();
+
+		const documentCard = page
+			.frameLocator('iframe[title="Select Web Content Asset"]')
+			.locator(`[data-title="${documentTitle}"]`);
+
+		const urlInput = linkDialog.getByLabel('Link URL');
+
+		await expect(async () => {
+			if (await documentCard.isVisible()) {
+				await documentCard.click({timeout: 1000});
+			}
+
+			await expect(urlInput).toHaveValue(/^\/documents\//, {
+				timeout: 1000,
+			});
+		}).toPass();
+
+		const url = await urlInput.inputValue();
+
+		await linkDialog.getByRole('button', {name: 'Done'}).click();
+
+		await expect(
+			classicPage.editable.locator(`a[href="${url}"]`)
+		).toBeVisible();
+	}
+);
+
+test(
+	'Ctrl+K opens the link dialog and Enter applies the link',
+	{tag: '@LPD-91686'},
+	async ({classicPage, page}) => {
+		const url = '/keyboard-link';
+
+		await classicPage.editable.fill(getRandomString());
+
+		await classicPage.editable.selectText();
+
+		await page.keyboard.press('Control+k');
+
+		const linkDialog = page.getByRole('dialog', {name: 'Link'});
+
+		await linkDialog.getByLabel('Link URL').fill(url);
+
+		await page.keyboard.press('Enter');
+
+		await expect(linkDialog).toBeHidden();
+
+		await expect(
+			classicPage.editable.locator(`a[href="${url}"]`)
+		).toBeVisible();
+	}
+);
+
+test(
+	'Changing the display text replaces the linked text',
+	{tag: '@LPD-91686'},
+	async ({classicPage, page}) => {
+		const displayText = getRandomString();
+		const url = '/display-text-link';
+
+		await classicPage.editable.fill(getRandomString());
+
+		await classicPage.editable.selectText();
+
+		await classicPage.toolbar.container
+			.getByRole('button', {name: 'Link'})
+			.click();
+
+		const linkDialog = page.getByRole('dialog', {name: 'Link'});
+
+		await linkDialog.getByLabel('Display Text').fill(displayText);
+		await linkDialog.getByLabel('Link URL').fill(url);
+
+		await linkDialog.getByRole('button', {name: 'Done'}).click();
+
+		await expect(
+			classicPage.editable.locator(`a[href="${url}"]`)
+		).toHaveText(displayText);
+	}
+);
+
+test(
+	'Link dialog inserts a new link where the caret is',
+	{tag: '@LPD-91686'},
+	async ({classicPage, page}) => {
+		const displayText = getRandomString();
+		const url = '/caret-link';
+
+		await classicPage.editable.fill(getRandomString());
+
+		await page.keyboard.press('End');
+
+		await classicPage.toolbar.container
+			.getByRole('button', {name: 'Link'})
+			.click();
+
+		const linkDialog = page.getByRole('dialog', {name: 'Link'});
+
+		const displayTextInput = linkDialog.getByLabel('Display Text');
+
+		await expect(displayTextInput).toHaveValue('');
+
+		await displayTextInput.fill(displayText);
+		await linkDialog.getByLabel('Link URL').fill(url);
+
+		await linkDialog.getByRole('button', {name: 'Done'}).click();
+
+		await expect(
+			classicPage.editable.locator(`a[href="${url}"]`)
+		).toHaveText(displayText);
+	}
+);
+
+test(
+	'Escape closes the link dialog without applying a link',
+	{tag: '@LPD-91686'},
+	async ({classicPage, page}) => {
+		await classicPage.editable.fill(getRandomString());
+
+		await classicPage.editable.selectText();
+
+		await classicPage.toolbar.container
+			.getByRole('button', {name: 'Link'})
+			.click();
+
+		const linkDialog = page.getByRole('dialog', {name: 'Link'});
+
+		await linkDialog.getByLabel('Link URL').fill('/escaped-link');
+
+		await page.keyboard.press('Escape');
+
+		await expect(linkDialog).toBeHidden();
+
+		await expect(classicPage.editable.locator('a')).toHaveCount(0);
+	}
+);
+
+test(
+	'Unlink removes an existing link',
+	{tag: '@LPD-91686'},
+	async ({classicPage, page}) => {
+		const link = classicPage.editable.locator(
+			'a[href*="/sample-relative-url"]'
+		);
+
+		await link.click();
+
+		await page.getByRole('button', {name: 'Unlink'}).click();
+
+		await expect(link).toHaveCount(0);
+	}
+);
+
+test(
+	'Link dialog sets the link target from the open in a new tab checkbox',
+	{tag: '@LPD-91686'},
+	async ({classicPage, page}) => {
+		const url = '/target-link';
+
+		await classicPage.editable.fill(getRandomString());
+
+		await classicPage.editable.selectText();
+
+		// Create a link that opens in the same tab
+
+		await classicPage.toolbar.container
+			.getByRole('button', {name: 'Link'})
+			.click();
+
+		const linkDialog = page.getByRole('dialog', {name: 'Link'});
+
+		const openInNewTabCheckbox = linkDialog.getByLabel('Open in a New Tab');
+
+		await expect(openInNewTabCheckbox).not.toBeChecked();
+
+		await linkDialog.getByLabel('Link URL').fill(url);
+
+		await linkDialog.getByRole('button', {name: 'Done'}).click();
+
+		const link = classicPage.editable.locator(`a[href="${url}"]`);
+
+		await expect(link).toHaveAttribute('target', '_self');
+
+		// Make the link open in a new tab
+
+		await link.click();
+
+		await page.getByRole('button', {name: 'Edit link'}).click();
+
+		await openInNewTabCheckbox.check();
+
+		await linkDialog.getByRole('button', {name: 'Done'}).click();
+
+		await expect(link).toHaveAttribute('target', '_blank');
+
+		// Make the link open in the same tab again
+
+		await link.click();
+
+		await page.getByRole('button', {name: 'Edit link'}).click();
+
+		await expect(openInNewTabCheckbox).toBeChecked();
+
+		await openInNewTabCheckbox.uncheck();
+
+		await linkDialog.getByRole('button', {name: 'Done'}).click();
+
+		await expect(link).toHaveAttribute('target', '_self');
 	}
 );

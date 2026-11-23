@@ -805,7 +805,7 @@ test.describe('Image Fragment', () => {
 				.then(() => true)
 				.catch(() => false);
 
-			await page.getByLabel('Open in a new tab.', {exact: true}).check();
+			await page.getByLabel('Open in a New Tab', {exact: true}).check();
 
 			await pageEditorPage.waitForChangesSaved();
 

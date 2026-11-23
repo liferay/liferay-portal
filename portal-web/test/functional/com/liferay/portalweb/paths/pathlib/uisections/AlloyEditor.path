@@ -103,17 +103,17 @@
 </tr>
 <tr>
 	<td>TEXT_FORMATTING_LINK_BROWSE_BUTTON</td>
-	<td>//button[contains(@aria-label,'Browse')]</td>
+	<td>//button[contains(@aria-label,'Browse')] | //div[contains(@class,'modal-body')]//button[normalize-space()='Browse Server']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>TEXT_FORMATTING_LINK_INPUT</td>
-	<td>//form[contains(@class,'ck-link-form')]//div[contains(@class,'ck-labeled-field-view')][.//label[contains(text(),'Link URL')]]//input[contains(@class,'ck-input')] | //div[contains(@class,'ae-container-input')]//input[contains(@class,'ae-input')]</td>
+	<td>//form[contains(@class,'ck-link-form')]//div[contains(@class,'ck-labeled-field-view')][.//label[contains(text(),'Link URL')]]//input[contains(@class,'ck-input')] | //div[contains(@class,'ae-container-input')]//input[contains(@class,'ae-input')] | //div[contains(@class,'modal-body')]//div[contains(@class,'form-group')][.//label[contains(.,'Link URL')]]//input</td>
 	<td></td>
 </tr>
 <tr>
 	<td>TEXT_FORMATTING_LINK_INPUT_CONFIRM</td>
-	<td>//form[contains(@class,'ck-link-form')]//button[@type='submit'] | //button[contains(@aria-label,'Confirm')]</td>
+	<td>//form[contains(@class,'ck-link-form')]//button[@type='submit'] | //button[contains(@aria-label,'Confirm')] | //div[contains(@class,'modal-footer')]//button[normalize-space()='Done']</td>
 	<td></td>
 </tr>
 <tr>

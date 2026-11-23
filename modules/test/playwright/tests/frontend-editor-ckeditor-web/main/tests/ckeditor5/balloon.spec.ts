@@ -7,6 +7,7 @@ import {expect, mergeTests} from '@playwright/test';
 
 import {featureFlagsTest} from '../../../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../../../fixtures/loginTest';
+import getRandomString from '../../../../../utils/getRandomString';
 import {balloonPageTest} from '../../../../frontend-editor-ckeditor5-sample-web/fixtures/balloonPageTest';
 
 export const test = mergeTests(
@@ -63,5 +64,36 @@ test(
 			.allInnerTexts();
 
 		expect(controls).toEqual(advancedPresetControls);
+	}
+);
+
+test(
+	'Can add a relative link from the link dialog',
+	{tag: '@LPD-91686'},
+	async ({balloonPage, page}) => {
+		const relativeURL = '/home';
+		const text = getRandomString();
+
+		await balloonPage.editable.fill(text);
+
+		await balloonPage.editable.selectText();
+
+		await balloonPage.toolbar.getByRole('button', {name: 'Link'}).click();
+
+		const linkDialog = page.getByRole('dialog', {name: 'Link'});
+
+		await expect(linkDialog.getByLabel('Display Text')).toHaveValue(text);
+
+		await expect(
+			linkDialog.getByRole('button', {name: 'Browse Server'})
+		).toBeVisible();
+
+		await linkDialog.getByLabel('Link URL').fill(relativeURL);
+
+		await linkDialog.getByRole('button', {name: 'Done'}).click();
+
+		await expect(
+			balloonPage.editable.locator(`a[href="${relativeURL}"]`)
+		).toHaveText(text);
 	}
 );

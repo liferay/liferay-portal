@@ -284,7 +284,7 @@ export class JournalEditArticlePage {
 			.click();
 		await this.page.getByRole('button', {name: 'Edit link'}).click();
 		await this.page.getByRole('textbox', {name: 'Link URL'}).fill(url);
-		await this.page.getByRole('button', {name: 'Update'}).click();
+		await this.page.getByRole('button', {name: 'Done'}).click();
 	}
 
 	async expandFieldsPanel() {
