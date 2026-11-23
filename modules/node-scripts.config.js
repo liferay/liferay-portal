@@ -10,7 +10,7 @@
  */
 
 module.exports = {
-	hash: '8e2b7584fab0655ede70995a931487115f0bab1fe8a94d27ef95e20b3f3c890f',
+	hash: '5f153e06c8dc9583eee15e6af29e816b272cef5d4463b08adcb34e24c7b0a953',
 	imports: {
 		'@liferay/accessibility-menu-web': [],
 		'@liferay/accessibility-settings-state-web': [],
@@ -423,7 +423,6 @@ module.exports = {
 			'ckeditor5/ckeditor5.css',
 			'ckeditor5-premium-features/ckeditor5-premium-features.css',
 			'eventsource',
-			'frontend-editor-ckeditor-web/plugins/DocumentLinkSelector',
 		],
 		'frontend-js-aui-web': [],
 		'frontend-js-clay-sample-web': [],
@@ -589,9 +588,6 @@ module.exports = {
 		'@codemirror/theme-one-dark': ['*'],
 		'@codemirror/view': ['*'],
 		'dompurify': ['default'],
-		'frontend-editor-ckeditor-web/plugins/DocumentLinkSelector': [
-			'default',
-		],
 		'prop-types': ['*', 'bigint', 'default'],
 		'qrcode': ['create', 'toCanvas', 'toString', 'toDataURL'],
 		'ua-parser-js': ['UAParser'],

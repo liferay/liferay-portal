@@ -115,8 +115,7 @@ public class CKEditor5DynamicJSImportMapsContributor
 		"@ckeditor/ckeditor5-word-count", "@codemirror/autocomplete",
 		"@codemirror/commands", "@codemirror/lang-html",
 		"@codemirror/lang-markdown", "@codemirror/language",
-		"@codemirror/state", "@codemirror/theme-one-dark", "@codemirror/view",
-		"frontend-editor-ckeditor-web/plugins/DocumentLinkSelector"
+		"@codemirror/state", "@codemirror/theme-one-dark", "@codemirror/view"
 	};
 
 	@Reference

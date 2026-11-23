@@ -3,7 +3,7 @@ assemble:
         into: static
 liferay-sample-editor-config-contributor-5:
     editorConfigKeys:
-        -   sampleReactCKEditor5ClassicEditor
-    name: Liferay Sample Editor Config Contributor CKEditor 5 Document Link Selector
+        -   sampleReactCETPremiumEditor
+    name: Liferay Sample Editor Config Contributor CKEditor 5 Email Editing
     type: editorConfigContributor
     url: index.js

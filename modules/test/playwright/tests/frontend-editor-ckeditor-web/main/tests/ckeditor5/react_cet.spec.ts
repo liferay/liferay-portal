@@ -81,14 +81,3 @@ test(
 		).toBeVisible();
 	}
 );
-
-test(
-	'"Select Document" button appears in link dialog via DocumentLinkSelector plugin',
-	{tag: '@LPD-52631'},
-	async ({classicPage, page}) => {
-		await classicPage.editable.click();
-		await page.keyboard.press('Control+k');
-
-		await expect(page.getByRole('button', {name: 'Insert'})).toBeVisible();
-	}
-);

@@ -1,17 +1,25 @@
 {
 	"dependencies": {
+		"@ckeditor/ckeditor5-core": "49.0.0",
+		"@ckeditor/ckeditor5-email": "49.0.0",
+		"@ckeditor/ckeditor5-export-inline-styles": "49.0.0",
+		"@ckeditor/ckeditor5-html-support": "49.0.0",
+		"@ckeditor/ckeditor5-mention": "49.0.0",
+		"@ckeditor/ckeditor5-merge-fields": "49.0.0",
+		"@ckeditor/ckeditor5-table": "49.0.0",
+		"@ckeditor/ckeditor5-template": "49.0.0",
+		"@ckeditor/ckeditor5-ui": "49.0.0",
 		"@liferay/js-api": "0.8.0"
 	},
-	"description": "Liferay Sample Editor Config Contributor CKEditor 5 Document Link Selector",
+	"description": "Liferay Sample Editor Config Contributor CKEditor 5 Email Editing",
 	"devDependencies": {
-		"esbuild": "^0.20.2",
 		"serve": "^14.2.0",
 		"typescript": "^5.0.4"
 	},
 	"main": "./src/index.ts",
 	"name": "@liferay/liferay-sample-editor-config-contributor-5",
 	"scripts": {
-		"build": "esbuild src/index.ts --outdir=build --bundle --format=esm --external:@liferay/* --external:frontend-editor-ckeditor-web/plugins/DocumentLinkSelector",
+		"build": "esbuild src/index.ts --outdir=build --bundle --format=esm --external:@ckeditor/*",
 		"start": "PORT=3003 serve --cors",
 		"watch": "tsc --watch"
 	},

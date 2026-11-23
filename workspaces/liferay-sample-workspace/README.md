@@ -104,10 +104,6 @@ For `liferay-sample-etc-cron` and `liferay-sample-etc-spring-boot` the third typ
 
 - *liferay-sample-editor-config-contributor-5*
 
-	Add a document link selector button to the CKEditor 5 link dialog as an example of augmenting the link plugin for document browsing without portal dependencies.
-
-- *liferay-sample-editor-config-contributor-6*
-
 	Enable the CKEditor 5 email editing plugins (Email Configuration Helper, Merge Fields, Template, and Export with Inline Styles, plus the nonpremium Layout Tables and Empty Block) as an example of registering premium and nonpremium plugins via a client extension.
 
 - *liferay-sample-etc-cron*

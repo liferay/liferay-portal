@@ -7,8 +7,6 @@ module.exports = {
 	alias: {
 		'@ckeditor/ckeditor5-icons':
 			'./src/main/resources/META-INF/resources/js/ckeditor5/icons.ts',
-		'frontend-editor-ckeditor-web/plugins/DocumentLinkSelector':
-			'./src/main/resources/META-INF/resources/js/ckeditor5/plugins/DocumentLinkSelector.ts',
 	},
 	exports: [
 		'@ckeditor/ckeditor5-adapter-ckfinder',
@@ -93,7 +91,6 @@ module.exports = {
 		'ckeditor5/ckeditor5.css',
 		'ckeditor5-premium-features/ckeditor5-premium-features.css',
 		'eventsource',
-		'frontend-editor-ckeditor-web/plugins/DocumentLinkSelector',
 	],
 	main: './src/main/resources/META-INF/resources/js/index.ts',
 	symbols: {
@@ -105,8 +102,5 @@ module.exports = {
 		'@codemirror/state': ['*'],
 		'@codemirror/theme-one-dark': ['*'],
 		'@codemirror/view': ['*'],
-		'frontend-editor-ckeditor-web/plugins/DocumentLinkSelector': [
-			'default',
-		],
 	},
 };
