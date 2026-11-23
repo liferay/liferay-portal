@@ -7,8 +7,6 @@
 
 <%@ include file="/init.jsp" %>
 
-<%@ page import="com.liferay.staging.constants.StagingProcessesPortletKeys" %>
-
 <%
 BackgroundTask backgroundTask = (BackgroundTask)request.getAttribute("liferay-staging:process-list-menu:backgroundTask");
 boolean deleteMenu = GetterUtil.getBoolean(request.getAttribute("liferay-staging:process-list-menu:deleteMenu"));

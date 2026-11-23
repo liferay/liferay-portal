@@ -147,9 +147,34 @@
 				var="publishOnLayoutLink"
 			>
 				<div class="btn-group dropdown">
-					<button class="btn btn-primary btn-sm" href="<%= exportImportServiceConfiguration.showAdvancedStagingConfigurationByDefault() ? advancedPublishLayoutsURL : simplePublishLayoutsURL %>" id="<%= layoutSetBranchId %>publishToLiveLink" type="button">
-						<liferay-ui:message key="publish-to-live" />
-					</button>
+					<c:choose>
+						<c:when test='<%= FeatureFlagManagerUtil.isEnabled(company.getCompanyId(), "LPD-96689") %>'>
+							<clay:link
+								displayType="primary"
+								href='<%=
+									PortletURLBuilder.create(
+										PortalUtil.getControlPanelPortletURL(request, stagingGroup, StagingProcessesPortletKeys.STAGING_PROCESSES, 0, 0, PortletRequest.RENDER_PHASE)
+									).setMVCRenderCommandName(
+										"/staging_processes/view_new_publish"
+									).setRedirect(
+										PortalUtil.getControlPanelPortletURL(request, stagingGroup, StagingProcessesPortletKeys.STAGING_PROCESSES, 0, 0, PortletRequest.RENDER_PHASE)
+									).setBackURL(
+										themeDisplay.getURLCurrent()
+									).setParameter(
+										"groupId", liveGroupId
+									).buildString()
+								%>'
+								label="publish-to-live"
+								small="<%= true %>"
+								type="button"
+							/>
+						</c:when>
+						<c:otherwise>
+							<button class="btn btn-primary btn-sm" href="<%= exportImportServiceConfiguration.showAdvancedStagingConfigurationByDefault() ? advancedPublishLayoutsURL : simplePublishLayoutsURL %>" id="<%= layoutSetBranchId %>publishToLiveLink" type="button">
+								<liferay-ui:message key="publish-to-live" />
+							</button>
+						</c:otherwise>
+					</c:choose>
 
 					<c:if test="<%= branchingEnabled %>">
 						<clay:button
