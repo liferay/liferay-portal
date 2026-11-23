@@ -100,10 +100,9 @@ public class LaunchEntryManagerServiceTrackerCustomizer
 
 		long objectDefinitionId = objectDefinition.getObjectDefinitionId();
 
+		Group companyGroup = _groupLocalService.getCompanyGroup(companyId);
 		Predicate predicate = LaunchUtil.getEqualsPredicate(
 			"className", objectDefinitionId, className);
-
-		Group companyGroup = _groupLocalService.getCompanyGroup(companyId);
 
 		for (long objectEntryId :
 				_objectEntryLocalService.getPrimaryKeys(

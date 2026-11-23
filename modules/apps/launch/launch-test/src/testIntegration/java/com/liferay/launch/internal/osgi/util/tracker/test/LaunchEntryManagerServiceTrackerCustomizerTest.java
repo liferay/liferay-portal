@@ -84,7 +84,7 @@ public class LaunchEntryManagerServiceTrackerCustomizerTest {
 		// Journal article
 
 		_testOnAfterRemove(
-			JournalArticle.class.getName(), this::_addJournalArticle,
+			this::_addJournalArticle, JournalArticle.class.getName(),
 			this::_deleteJournalArticle);
 
 		// Journal article with other versions
@@ -109,7 +109,6 @@ public class LaunchEntryManagerServiceTrackerCustomizerTest {
 		// Layout
 
 		_testOnAfterRemove(
-			Layout.class.getName(),
 			() -> {
 				Layout layout = LayoutTestUtil.addTypeContentPublishedLayout(
 					_group, RandomTestUtil.randomString(),
@@ -117,7 +116,7 @@ public class LaunchEntryManagerServiceTrackerCustomizerTest {
 
 				return layout.getPlid();
 			},
-			_layoutLocalService::deleteLayout);
+			Layout.class.getName(), _layoutLocalService::deleteLayout);
 	}
 
 	private long _addJournalArticle() throws Exception {
@@ -228,8 +227,8 @@ public class LaunchEntryManagerServiceTrackerCustomizerTest {
 	}
 
 	private void _testOnAfterRemove(
-			String className,
 			UnsafeSupplier<Long, Exception> addItemUnsafeSupplier,
+			String className,
 			UnsafeConsumer<Long, Exception> deleteItemUnsafeConsumer)
 		throws Exception {
 
