@@ -73,7 +73,7 @@ boolean hasMultipleCPSkus = cpContentHelper.hasMultipleCPSkus(cpCatalogEntry);
 				}
 				%>
 
-				<p class="card-subtitle" title="<%= sku %>">
+				<p class="card-subtitle" title="<%= HtmlUtil.escapeAttribute(sku) %>">
 					<span class="text-truncate-inline">
 						<span class="text-truncate"><%= sku %></span>
 					</span>
