@@ -136,7 +136,7 @@ export function getDataSetProps(
 		href: 'handleAddItems',
 		label: Liferay.Language.get('add-item'),
 		target: 'event',
-		type: 'item',
+		type: 'item' as const,
 	};
 
 	const addItemMenu = readOnly ? [] : [addButton];
