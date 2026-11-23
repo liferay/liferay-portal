@@ -5,11 +5,10 @@
 
 package com.liferay.sharepoint.soap.repository.connector.operation;
 
-import com.liferay.petra.string.StringPool;
+import com.liferay.petra.io.unsync.UnsyncStringReader;
 import com.liferay.sharepoint.soap.repository.connector.SharepointException;
 import com.liferay.sharepoint.soap.repository.connector.operation.constants.SharepointConstants;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
 import java.util.ArrayList;
@@ -85,8 +84,7 @@ public class QueryServiceStubResult {
 
 		xmlReader.parse(
 			new InputSource(
-				new ByteArrayInputStream(
-					queryServiceSoapResultString.getBytes(StringPool.UTF8))));
+				new UnsyncStringReader(queryServiceSoapResultString)));
 	}
 
 	private void _setDebugErrorMessage(String debugErrorMessage) {

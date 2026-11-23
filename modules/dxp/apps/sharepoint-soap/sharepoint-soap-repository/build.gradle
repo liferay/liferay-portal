@@ -39,6 +39,7 @@ dependencies {
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly project(":apps:document-library:document-library-repository-external-api")
 	compileOnly project(":core:petra:petra-function")
+	compileOnly project(":core:petra:petra-io")
 	compileOnly project(":core:petra:petra-string")
 	testImplementation group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 }
