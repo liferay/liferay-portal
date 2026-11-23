@@ -81,8 +81,8 @@ exports[`SegmentEditor should render 1`] = `
         </ul>
       </nav>
       <div
-        aria-live="assertive"
         class="sr-only"
+        role="status"
       />
       <div
         class="base-edit-page-body"

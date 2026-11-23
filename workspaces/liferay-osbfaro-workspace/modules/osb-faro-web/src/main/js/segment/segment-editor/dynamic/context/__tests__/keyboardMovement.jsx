@@ -49,7 +49,7 @@ const renderProvider = (props = {}) => {
 };
 
 const getAnnouncement = () =>
-	document.querySelector('[aria-live="assertive"]').textContent;
+	document.querySelector('[role="status"]').textContent;
 
 describe('KeyboardMovementProvider', () => {
 	afterEach(cleanup);
@@ -119,5 +119,57 @@ describe('KeyboardMovementProvider', () => {
 		expect(onChange).not.toHaveBeenCalled();
 		expect(movement.source).toBeNull();
 		expect(screen.queryByText(/Targeting/)).toBeNull();
+	});
+
+	it('names a row target by its full condition', () => {
+		renderProvider({
+			criteria: {
+				conjunctionName: Conjunctions.And,
+				criteriaGroupId: 'root',
+				items: [
+					{
+						operatorName: 'eq',
+						propertyName: 'knownSinceDate',
+						rowId: 'row_a',
+						value: '2026-01-15'
+					}
+				]
+			}
+		});
+
+		act(() => movement.startMovement(source));
+
+		fireEvent.keyDown(window, {key: 'Home'});
+
+		expect(screen.getByRole('status')).toHaveTextContent(
+			/^targeting top of individual known since date .*2026/i
+		);
+	});
+
+	it('names a group target by the sentence of its operator', () => {
+		renderProvider({
+			criteria: {
+				conjunctionName: Conjunctions.And,
+				criteriaGroupId: 'root',
+				items: [
+					{
+						conjunctionName: Conjunctions.Or,
+						criteriaGroupId: 'nested',
+						items: [
+							{propertyName: 'click', rowId: 'row_a'},
+							{propertyName: 'view', rowId: 'row_b'}
+						]
+					}
+				]
+			}
+		});
+
+		act(() => movement.startMovement(source));
+
+		fireEvent.keyDown(window, {key: 'Home'});
+
+		expect(screen.getByRole('status')).toHaveTextContent(
+			/^targeting top of any of these criteria must be met\.$/i
+		);
 	});
 });
