@@ -34,6 +34,7 @@
 						"key": "sidebar"
 					},
 					"fragmentConfig": {
+						"collapsible": false,
 						"sidebarAriaLabel": "Liferay Data Platform Menu"
 					},
 					"fragmentFields": [
@@ -97,20 +98,6 @@
 										},
 										"id": "ce78a51f-7362-405d-92e6-65b17533f9b9",
 										"pageElements": [
-											{
-												"definition": {
-													"fragment": {
-														"key": "sidebar-trigger"
-													},
-													"fragmentConfig": {
-													},
-													"fragmentFields": [
-													],
-													"indexed": true
-												},
-												"id": "a83e93a1-98ba-4442-b800-dc0228c8beff",
-												"type": "Fragment"
-											}
 										],
 										"type": "FragmentDropZone"
 									},
