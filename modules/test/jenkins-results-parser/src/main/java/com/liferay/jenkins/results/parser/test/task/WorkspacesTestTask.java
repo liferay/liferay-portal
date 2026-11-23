@@ -5,6 +5,7 @@
 
 package com.liferay.jenkins.results.parser.test.task;
 
+import com.liferay.jenkins.results.parser.history.TestTaskHistory;
 import com.liferay.jenkins.results.parser.test.clazz.group.BatchTestClassGroup;
 import com.liferay.jenkins.results.parser.test.clazz.group.TestClassGroup;
 
@@ -28,7 +29,13 @@ public class WorkspacesTestTask extends BaseTestTask {
 
 	@Override
 	public boolean isIsolated() {
-		return false;
+		TestTaskHistory testTaskHistory = getTestTaskHistory();
+
+		if (testTaskHistory == null) {
+			return false;
+		}
+
+		return testTaskHistory.isLatestReportMissing();
 	}
 
 	protected WorkspacesTestTask(
