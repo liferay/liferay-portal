@@ -6,6 +6,17 @@
 import {VIEWPORT_SIZES} from '../../../../src/main/resources/META-INF/resources/page_editor/app/config/constants/viewportSizes';
 import selectAvailablePanels from '../../../../src/main/resources/META-INF/resources/page_editor/app/selectors/selectAvailablePanels';
 
+const mockConfig = {launchSetId: 0};
+
+jest.mock(
+	'../../../../src/main/resources/META-INF/resources/page_editor/app/config/index',
+	() => ({
+		get config() {
+			return mockConfig;
+		},
+	})
+);
+
 const SIDEBAR_PANELS = [
 	{
 		sidebarPanelId: 'browser',
@@ -74,5 +85,22 @@ describe('selectAvailablePanels', () => {
 		});
 
 		expect(panels).toEqual(SIDEBAR_PANELS);
+	});
+
+	it('does not return the comments panel when editing a launch draft', () => {
+		mockConfig.launchSetId = 1;
+
+		const panels = selectAvailablePanels(SIDEBAR_PANELS)({
+			permissions: {UPDATE: true},
+			selectedViewportSize: VIEWPORT_SIZES.desktop,
+		});
+
+		expect(panels).toEqual(
+			SIDEBAR_PANELS.filter(
+				({sidebarPanelId}) => sidebarPanelId !== 'comments'
+			)
+		);
+
+		mockConfig.launchSetId = 0;
 	});
 });

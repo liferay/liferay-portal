@@ -32,7 +32,11 @@ jest.mock(
 	() => jest.fn()
 );
 
-const renderComponent = ({onPublish = () => {}, canPublish = true} = {}) => {
+const renderComponent = ({
+	canPublish = true,
+	onAddToLaunch,
+	onPublish = () => {},
+} = {}) => {
 	const ref = React.createRef();
 
 	return render(
@@ -40,6 +44,7 @@ const renderComponent = ({onPublish = () => {}, canPublish = true} = {}) => {
 			canPublish={canPublish}
 			formRef={ref}
 			label="publish"
+			onAddToLaunch={onAddToLaunch}
 			onPublish={onPublish}
 		/>
 	);
@@ -106,5 +111,29 @@ describe('PublishButton', () => {
 		});
 
 		expect(onPublish).not.toHaveBeenCalled();
+	});
+
+	it('does not render the add to launch option without onAddToLaunch', () => {
+		renderComponent();
+
+		expect(
+			screen.queryByRole('button', {name: 'more-actions'})
+		).not.toBeInTheDocument();
+	});
+
+	it('calls onAddToLaunch when the add to launch option is clicked', async () => {
+		const onAddToLaunch = jest.fn();
+
+		renderComponent({onAddToLaunch});
+
+		await act(async () => {
+			fireEvent.click(screen.getByRole('button', {name: 'more-actions'}));
+		});
+
+		await act(async () => {
+			fireEvent.click(screen.getByText('add-to-launch'));
+		});
+
+		expect(onAddToLaunch).toHaveBeenCalled();
 	});
 });

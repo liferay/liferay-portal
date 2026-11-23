@@ -127,4 +127,35 @@ describe('PageDesignOptionsSidebar', () => {
 			})
 		);
 	});
+
+	it('renders the more page design options link', () => {
+		mockConfigGetter.mockImplementation(() => ({
+			...DEFAULT_CONFIG,
+			lookAndFeelURL: 'lookAndFeelURL',
+		}));
+
+		renderComponent();
+
+		expect(
+			screen.getByTitle('more-page-design-options')
+		).toBeInTheDocument();
+
+		mockConfigGetter.mockImplementation(() => DEFAULT_CONFIG);
+	});
+
+	it('does not render the more page design options link when editing a launch draft', () => {
+		mockConfigGetter.mockImplementation(() => ({
+			...DEFAULT_CONFIG,
+			launchSetId: 1,
+			lookAndFeelURL: 'lookAndFeelURL',
+		}));
+
+		renderComponent();
+
+		expect(
+			screen.queryByTitle('more-page-design-options')
+		).not.toBeInTheDocument();
+
+		mockConfigGetter.mockImplementation(() => DEFAULT_CONFIG);
+	});
 });
