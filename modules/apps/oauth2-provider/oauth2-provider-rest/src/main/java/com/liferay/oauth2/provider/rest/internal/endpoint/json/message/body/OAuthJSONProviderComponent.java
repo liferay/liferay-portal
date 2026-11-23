@@ -23,7 +23,7 @@ import org.osgi.service.component.annotations.ServiceScope;
 @Component(
 	property = {
 		Constants.SERVICE_RANKING + ":Integer=" + (Integer.MAX_VALUE - 10),
-		"osgi.jaxrs.application.select=(component.name=com.liferay.oauth2.provider.rest.internal.endpoint.OAuth2EndpointApplication)",
+		"osgi.jaxrs.application.select=(osgi.jaxrs.name=Liferay.OAuth2.Application)",
 		"osgi.jaxrs.extension=true", "osgi.jaxrs.name=OAuthJSONProvider"
 	},
 	scope = ServiceScope.PROTOTYPE,
