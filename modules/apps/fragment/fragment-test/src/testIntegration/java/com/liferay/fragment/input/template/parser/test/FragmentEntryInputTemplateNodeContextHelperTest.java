@@ -237,6 +237,36 @@ public class FragmentEntryInputTemplateNodeContextHelperTest {
 	}
 
 	@Test
+	public void testToInputTemplateNodeWithDateInfoFieldType()
+		throws Exception {
+
+		ObjectEntry objectEntry = _objectEntryLocalService.addObjectEntry(
+			_group.getGroupId(), TestPropsValues.getUserId(),
+			_objectDefinition.getObjectDefinitionId(),
+			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+			null,
+			HashMapBuilder.<String, Serializable>put(
+				"myDate",
+				DateUtil.parseDate("yyyy-MM-dd", "2021-05-31", LocaleUtil.US)
+			).put(
+				"myText", RandomTestUtil.randomString()
+			).build(),
+			ServiceContextTestUtil.getServiceContext());
+
+		InputTemplateNode inputTemplateNode = _toInputTemplateNode(
+			_objectDefinition.getClassName(), "ObjectField_myDate",
+			LocaleUtil.fromLanguageId("ar_SA"), objectEntry);
+
+		Assert.assertEquals("2021-05-31", inputTemplateNode.getInputValue());
+
+		inputTemplateNode = _toInputTemplateNode(
+			_objectDefinition.getClassName(), "ObjectField_myDate",
+			LocaleUtil.US, objectEntry);
+
+		Assert.assertEquals("2021-05-31", inputTemplateNode.getInputValue());
+	}
+
+	@Test
 	public void testToInputTemplateNodeWithFileInfoFieldType()
 		throws Exception {
 
