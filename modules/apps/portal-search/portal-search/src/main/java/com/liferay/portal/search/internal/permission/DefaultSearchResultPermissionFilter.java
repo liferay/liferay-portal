@@ -27,7 +27,6 @@ import com.liferay.portal.kernel.search.RelatedEntryIndexerRegistry;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchResultPermissionFilter;
 import com.liferay.portal.kernel.search.facet.Facet;
-import com.liferay.portal.kernel.search.facet.FacetPostProcessor;
 import com.liferay.portal.kernel.search.facet.RangeFacet;
 import com.liferay.portal.kernel.search.facet.collector.DefaultTermCollector;
 import com.liferay.portal.kernel.search.facet.collector.FacetCollector;
@@ -50,12 +49,14 @@ import com.liferay.portal.search.facet.nested.NestedFacet;
 import com.liferay.portal.search.hits.SearchHit;
 import com.liferay.portal.search.hits.SearchHits;
 import com.liferay.portal.search.hits.SearchHitsBuilder;
+import com.liferay.portal.search.internal.facet.FacetDiscounter;
 import com.liferay.portal.search.internal.facet.FacetImpl;
 import com.liferay.portal.search.internal.facet.NestedFacetImpl;
 import com.liferay.portal.search.internal.facet.SimpleFacetCollector;
 import com.liferay.portal.search.internal.searcher.SearchResponseImpl;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -75,15 +76,13 @@ public class DefaultSearchResultPermissionFilter
 	public DefaultSearchResultPermissionFilter(
 		DefaultSearchResultPermissionFilterConfiguration
 			defaultSearchResultPermissionFilterConfiguration,
-		FacetPostProcessor facetPostProcessor, IndexerRegistry indexerRegistry,
-		PermissionChecker permissionChecker,
+		IndexerRegistry indexerRegistry, PermissionChecker permissionChecker,
 		RelatedEntryIndexerRegistry relatedEntryIndexerRegistry,
 		Function<SearchContext, Hits> searchFunction,
 		ServiceTrackerMap
 			<String, ModelResourcePermission<? extends ClassedModel>>
 				serviceTrackerMap) {
 
-		_facetPostProcessor = facetPostProcessor;
 		_indexerRegistry = indexerRegistry;
 		_permissionChecker = permissionChecker;
 		_relatedEntryIndexerRegistry = relatedEntryIndexerRegistry;
@@ -157,6 +156,18 @@ public class DefaultSearchResultPermissionFilter
 		}
 	}
 
+	private void _exclude(Collection<Document> documents, Facet facet) {
+		FacetCollector facetCollector = facet.getFacetCollector();
+
+		if (facetCollector == null) {
+			return;
+		}
+
+		FacetDiscounter facetDiscounter = new FacetDiscounter(facet);
+
+		facetDiscounter.discount(documents);
+	}
+
 	private int _filterHits(
 		SlidingWindowSearcher.FacetCountHelper facetCountHelper, Hits hits,
 		SearchContext searchContext) {
@@ -195,7 +206,7 @@ public class DefaultSearchResultPermissionFilter
 			}
 
 			for (Facet facet : facets.values()) {
-				_facetPostProcessor.exclude(excludeDocs, facet);
+				_exclude(excludeDocs, facet);
 			}
 		}
 
@@ -417,7 +428,6 @@ public class DefaultSearchResultPermissionFilter
 		DefaultSearchResultPermissionFilter.class);
 
 	private final int _accurateCountThreshold;
-	private final FacetPostProcessor _facetPostProcessor;
 	private final IndexerRegistry _indexerRegistry;
 	private final PermissionChecker _permissionChecker;
 	private final RelatedEntryIndexerRegistry _relatedEntryIndexerRegistry;

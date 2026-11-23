@@ -22,7 +22,6 @@ import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermi
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.search.configuration.DefaultSearchResultPermissionFilterConfiguration;
-import com.liferay.portal.search.internal.facet.FacetPostProcessorImpl;
 import com.liferay.portal.search.internal.legacy.searcher.SearchRequestBuilderFactoryImpl;
 import com.liferay.portal.search.internal.permission.DefaultSearchResultPermissionFilter;
 import com.liferay.portal.search.legacy.searcher.SearchRequestBuilderFactory;
@@ -305,9 +304,9 @@ public abstract class BasePermissionFilteredPaginationTestCase
 			serviceTrackerMap = Mockito.mock(ServiceTrackerMap.class);
 
 		return new DefaultSearchResultPermissionFilter(
-			defaultSearchResultPermissionFilterConfiguration,
-			new FacetPostProcessorImpl(), indexerRegistry, permissionChecker,
-			relatedEntryIndexerRegistry, this::doSearch, serviceTrackerMap);
+			defaultSearchResultPermissionFilterConfiguration, indexerRegistry,
+			permissionChecker, relatedEntryIndexerRegistry, this::doSearch,
+			serviceTrackerMap);
 	}
 
 	protected void doAssertPagination(
