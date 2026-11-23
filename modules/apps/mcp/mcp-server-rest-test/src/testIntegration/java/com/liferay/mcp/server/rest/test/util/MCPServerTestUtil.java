@@ -572,6 +572,10 @@ public class MCPServerTestUtil {
 	}
 
 	private static Bundle _installBundle(String dirName) throws Exception {
+		ZipWriterFactory zipWriterFactory = _zipWriterFactorySnapshot.get();
+
+		ZipWriter zipWriter = zipWriterFactory.getZipWriter();
+
 		Bundle bundle = FrameworkUtil.getBundle(MCPServerTestUtil.class);
 
 		String path =
@@ -579,10 +583,6 @@ public class MCPServerTestUtil {
 				dirName + "/";
 
 		Enumeration<URL> enumeration = bundle.findEntries(path, "*", true);
-
-		ZipWriterFactory zipWriterFactory = _zipWriterFactorySnapshot.get();
-
-		ZipWriter zipWriter = zipWriterFactory.getZipWriter();
 
 		if (enumeration != null) {
 			while (enumeration.hasMoreElements()) {
