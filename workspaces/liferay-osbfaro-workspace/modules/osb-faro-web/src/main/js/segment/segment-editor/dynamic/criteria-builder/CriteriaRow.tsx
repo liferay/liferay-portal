@@ -33,6 +33,7 @@ import {
 	AddProperty,
 	withReferencedObjectsConsumer,
 } from '../context/referencedObjects';
+import {ClayButtonWithIcon} from '@clayui/button';
 import {compose} from 'redux';
 import {
 	Conjunctions,
@@ -580,10 +581,31 @@ class CriteriaRow extends React.Component<
 						{selectedProperty ? (
 							this.renderValueInput()
 						) : (
-							<div className="non-existent-property-message">
-								{Liferay.Language.get(
-									'attribute-no-longer-exists'
-								)}
+							<div className="align-items-center d-flex flex-grow-1 non-existent-property">
+								<div
+									className="align-items-center d-flex non-existent-property-message"
+									role="alert"
+								>
+									<ClayIcon
+										className="flex-shrink-0 mr-2"
+										symbol="exclamation-full"
+									/>
+
+									{Liferay.Language.get(
+										'attribute-no-longer-exists'
+									)}
+								</div>
+
+								<ClayButtonWithIcon
+									aria-label={Liferay.Language.get('delete')}
+									borderless
+									className="ml-2"
+									displayType="secondary"
+									onClick={this.handleDelete}
+									size="xs"
+									symbol="trash"
+									title={Liferay.Language.get('delete')}
+								/>
 							</div>
 						)}
 
