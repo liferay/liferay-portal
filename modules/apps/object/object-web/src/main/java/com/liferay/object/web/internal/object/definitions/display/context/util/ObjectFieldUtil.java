@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.object.admin.rest.dto.v1_0.util;
+package com.liferay.object.web.internal.object.definitions.display.context.util;
 
 import com.liferay.list.type.model.ListTypeDefinition;
 import com.liferay.list.type.service.ListTypeDefinitionService;
+import com.liferay.object.admin.rest.dto.v1_0.util.ObjectFieldSettingUtil;
 import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.model.ObjectField;
 import com.liferay.portal.kernel.json.JSONObject;
