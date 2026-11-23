@@ -6,9 +6,10 @@
 package com.liferay.portal.zip.internal.reader;
 
 import com.liferay.petra.io.StreamUtil;
-import com.liferay.petra.io.unsync.UnsyncFilterInputStream;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,24 +38,39 @@ public class IOZipReader extends BaseZipReader {
 	}
 
 	@Override
+	public void close() {
+		try {
+			if (_zipFile != null) {
+				_zipFile.close();
+			}
+		}
+		catch (IOException ioException) {
+			_log.error(ioException);
+		}
+		finally {
+			super.close();
+		}
+	}
+
+	@Override
 	public List<String> doGetEntries() throws IOException {
+		ZipFile zipFile = _getZipFile();
+
+		Enumeration<? extends ZipEntry> enumeration = zipFile.entries();
+
 		List<String> entries = new ArrayList<>();
 
-		try (ZipFile zipFile = new ZipFile(file)) {
-			Enumeration<? extends ZipEntry> enumeration = zipFile.entries();
+		while (enumeration.hasMoreElements()) {
+			ZipEntry zipEntry = enumeration.nextElement();
 
-			while (enumeration.hasMoreElements()) {
-				ZipEntry zipEntry = enumeration.nextElement();
-
-				if (zipEntry.isDirectory()) {
-					continue;
-				}
-
-				entries.add(zipEntry.getName());
+			if (zipEntry.isDirectory()) {
+				continue;
 			}
 
-			return entries;
+			entries.add(zipEntry.getName());
 		}
+
+		return entries;
 	}
 
 	@Override
@@ -64,25 +80,13 @@ public class IOZipReader extends BaseZipReader {
 
 	@Override
 	public InputStream doGetEntryAsInputStream(String name) throws IOException {
-		final ZipFile zipFile = new ZipFile(file);
+		ZipFile zipFile = _getZipFile();
 
 		ZipEntry zipEntry = zipFile.getEntry(name);
 
 		if ((zipEntry != null) && !zipEntry.isDirectory()) {
-			return new UnsyncFilterInputStream(
-				zipFile.getInputStream(zipEntry)) {
-
-				@Override
-				public void close() throws IOException {
-					super.close();
-
-					zipFile.close();
-				}
-
-			};
+			return zipFile.getInputStream(zipEntry);
 		}
-
-		zipFile.close();
 
 		return null;
 	}
@@ -95,37 +99,49 @@ public class IOZipReader extends BaseZipReader {
 
 		path = javaPath.toString();
 
+		ZipFile zipFile = _getZipFile();
+
+		Enumeration<? extends ZipEntry> enumeration = zipFile.entries();
+
 		List<String> entries = new ArrayList<>();
 
-		try (ZipFile zipFile = new ZipFile(file)) {
-			Enumeration<? extends ZipEntry> enumeration = zipFile.entries();
+		while (enumeration.hasMoreElements()) {
+			ZipEntry zipEntry = enumeration.nextElement();
 
-			while (enumeration.hasMoreElements()) {
-				ZipEntry zipEntry = enumeration.nextElement();
-
-				if (zipEntry.isDirectory()) {
-					continue;
-				}
-
-				String fileName = zipEntry.getName();
-
-				int pos = fileName.lastIndexOf(CharPool.SLASH);
-
-				String folderName = StringPool.BLANK;
-
-				if (pos > 0) {
-					folderName = fileName.substring(0, pos);
-				}
-
-				if (!folderName.equals(path)) {
-					continue;
-				}
-
-				entries.add(fileName);
+			if (zipEntry.isDirectory()) {
+				continue;
 			}
+
+			String fileName = zipEntry.getName();
+
+			int pos = fileName.lastIndexOf(CharPool.SLASH);
+
+			String folderName = StringPool.BLANK;
+
+			if (pos > 0) {
+				folderName = fileName.substring(0, pos);
+			}
+
+			if (!folderName.equals(path)) {
+				continue;
+			}
+
+			entries.add(fileName);
 		}
 
 		return entries;
 	}
+
+	private ZipFile _getZipFile() throws IOException {
+		if (_zipFile == null) {
+			_zipFile = new ZipFile(file);
+		}
+
+		return _zipFile;
+	}
+
+	private static final Log _log = LogFactoryUtil.getLog(IOZipReader.class);
+
+	private ZipFile _zipFile;
 
 }
