@@ -132,6 +132,11 @@ public class DefaultAuditRouter implements AuditRouter {
 	private void _populateAuditMessage(AuditMessage auditMessage)
 		throws AuditException {
 
+		if (Validator.isNull(auditMessage.getContextName())) {
+			auditMessage.setContextName(
+				AuditEventConstants.CONTEXT_NAME_INSTANCE);
+		}
+
 		long companyId = auditMessage.getCompanyId();
 
 		if ((companyId == CompanyConstants.SYSTEM) ||
@@ -205,16 +210,10 @@ public class DefaultAuditRouter implements AuditRouter {
 				StringUtil.toLowerCase(eventType);
 		}
 
-		String contextName = auditMessage.getContextName();
-
-		if (Validator.isNull(contextName)) {
-			contextName = AuditEventConstants.CONTEXT_NAME_INSTANCE;
-		}
-
 		auditMessage.setResourceAction(
 			StringBundler.concat(
-				StringUtil.toLowerCase(contextName), StringPool.PERIOD,
-				resourceType, StringPool.PERIOD, action));
+				StringUtil.toLowerCase(auditMessage.getContextName()),
+				StringPool.PERIOD, resourceType, StringPool.PERIOD, action));
 	}
 
 	private void _validateResourceAction(String resourceAction)
