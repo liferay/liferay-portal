@@ -26,13 +26,13 @@ public class WorkspacesTestTaskTest
 
 	@Test
 	public void testGetLongestDuration() {
-		long defaultTestTaskDuration = _randomDuration();
+		long defaultTestTaskDuration = _getRandomDuration();
 
 		_testGetLongestDuration(
 			_getBatchHistory(_getTestTaskHistory(false, 0)),
 			defaultTestTaskDuration, defaultTestTaskDuration);
 
-		long longestDuration = _randomDuration();
+		long longestDuration = _getRandomDuration();
 
 		_testGetLongestDuration(
 			_getBatchHistory(_getTestTaskHistory(false, longestDuration)),
@@ -49,10 +49,10 @@ public class WorkspacesTestTaskTest
 	@Test
 	public void testIsIsolated() {
 		_testIsIsolated(
-			_getBatchHistory(_getTestTaskHistory(false, _randomDuration())),
+			_getBatchHistory(_getTestTaskHistory(false, _getRandomDuration())),
 			false);
 		_testIsIsolated(
-			_getBatchHistory(_getTestTaskHistory(true, _randomDuration())),
+			_getBatchHistory(_getTestTaskHistory(true, _getRandomDuration())),
 			true);
 		_testIsIsolated(_getBatchHistory(null), false);
 		_testIsIsolated(null, false);
@@ -116,7 +116,7 @@ public class WorkspacesTestTaskTest
 			TestClassGroup.GroupingStrategy.TEST_TASK_LONGEST_DURATION, _NAME);
 	}
 
-	private long _randomDuration() {
+	private long _getRandomDuration() {
 		return (RandomTestUtil.randomInt() & 0xFFFFFF) + 1L;
 	}
 
@@ -144,7 +144,7 @@ public class WorkspacesTestTaskTest
 		BatchHistory batchHistory, boolean expectedIsolated) {
 
 		WorkspacesTestTask workspacesTestTask = _getWorkspacesTestTask(
-			batchHistory, _randomDuration());
+			batchHistory, _getRandomDuration());
 
 		Assert.assertEquals(expectedIsolated, workspacesTestTask.isIsolated());
 	}
