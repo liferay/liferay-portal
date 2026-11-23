@@ -283,7 +283,7 @@ public class CommerceOrderServiceTest {
 
 	@Test
 	public void testDeleteCommerceOrder() throws Exception {
-		CommerceOrder commerceOrder =
+		CommerceOrder commerceOrder1 =
 			_commerceOrderLocalService.addCommerceOrder(
 				TestPropsValues.getUserId(), _commerceChannel.getGroupId(),
 				AccountConstants.ACCOUNT_ENTRY_ID_GUEST,
@@ -295,7 +295,7 @@ public class CommerceOrderServiceTest {
 				user, PermissionCheckerFactoryUtil.create(user))) {
 
 			_commerceOrderService.deleteCommerceOrder(
-				commerceOrder.getCommerceOrderId());
+				commerceOrder1.getCommerceOrderId());
 
 			Assert.fail();
 		}
@@ -304,8 +304,70 @@ public class CommerceOrderServiceTest {
 				ActionKeys.DELETE, exception.getMessage(), user.getUserId());
 		}
 
-		_commerceOrderService.deleteCommerceOrder(
-			commerceOrder.getCommerceOrderId());
+		Role role = RoleTestUtil.addRole(
+			RandomTestUtil.randomString(), RoleConstants.TYPE_REGULAR);
+
+		RoleTestUtil.addResourcePermission(
+			role, CommerceOrderConstants.RESOURCE_NAME,
+			ResourceConstants.SCOPE_COMPANY,
+			String.valueOf(TestPropsValues.getCompanyId()),
+			CommerceOrderActionKeys.MANAGE_COMMERCE_ORDERS);
+
+		user = UserTestUtil.addUser();
+
+		_roleLocalService.addUserRole(user.getUserId(), role);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user, PermissionCheckerFactoryUtil.create(user))) {
+
+			_commerceOrderService.deleteCommerceOrder(
+				commerceOrder1.getCommerceOrderId());
+
+			Assert.fail();
+		}
+		catch (Exception exception) {
+			_assertMessage(
+				ActionKeys.DELETE, exception.getMessage(), user.getUserId());
+		}
+
+		CommerceOrder commerceOrder2 = _addCommerceOrder(
+			RandomTestUtil.randomString(),
+			CommerceOrderConstants.ORDER_STATUS_PENDING);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user, PermissionCheckerFactoryUtil.create(user))) {
+
+			_commerceOrderService.deleteCommerceOrder(
+				commerceOrder2.getCommerceOrderId());
+
+			Assert.fail();
+		}
+		catch (Exception exception) {
+			_assertMessage(
+				ActionKeys.DELETE, exception.getMessage(), user.getUserId());
+		}
+
+		RoleTestUtil.addResourcePermission(
+			role, CommerceOrderConstants.RESOURCE_NAME,
+			ResourceConstants.SCOPE_COMPANY,
+			String.valueOf(TestPropsValues.getCompanyId()),
+			CommerceOrderActionKeys.DELETE_COMMERCE_ORDERS);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user, PermissionCheckerFactoryUtil.create(user))) {
+
+			_commerceOrderService.deleteCommerceOrder(
+				commerceOrder1.getCommerceOrderId());
+			_commerceOrderService.deleteCommerceOrder(
+				commerceOrder2.getCommerceOrderId());
+		}
+
+		Assert.assertNull(
+			_commerceOrderLocalService.fetchCommerceOrder(
+				commerceOrder1.getCommerceOrderId()));
+		Assert.assertNull(
+			_commerceOrderLocalService.fetchCommerceOrder(
+				commerceOrder2.getCommerceOrderId()));
 	}
 
 	@Test
