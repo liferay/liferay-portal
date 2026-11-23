@@ -6,7 +6,7 @@
 package com.liferay.layout.seo.web.internal.template;
 
 import com.liferay.layout.seo.kernel.LayoutSEOLinkManager;
-import com.liferay.layout.seo.web.internal.util.TitleProvider;
+import com.liferay.layout.seo.web.internal.util.TitleProviderUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -17,7 +17,6 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Map;
 
-import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -41,16 +40,13 @@ public class HTMLTitleTemplateContextContributor
 
 		try {
 			contextObjects.put(
-				"htmlTitle", _titleProvider.getTitle(httpServletRequest));
+				"htmlTitle",
+				TitleProviderUtil.getTitle(
+					httpServletRequest, _layoutSEOLinkManager));
 		}
 		catch (PortalException portalException) {
 			_log.error("Unable to get HTML title ", portalException);
 		}
-	}
-
-	@Activate
-	protected void activate() {
-		_titleProvider = new TitleProvider(_layoutSEOLinkManager);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
@@ -58,7 +54,5 @@ public class HTMLTitleTemplateContextContributor
 
 	@Reference
 	private LayoutSEOLinkManager _layoutSEOLinkManager;
-
-	private TitleProvider _titleProvider;
 
 }

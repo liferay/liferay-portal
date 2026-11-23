@@ -45,7 +45,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 /**
  * @author Cristina González
  */
-public class TitleProviderTest {
+public class TitleProviderUtilTest {
 
 	@ClassRule
 	@Rule
@@ -61,51 +61,50 @@ public class TitleProviderTest {
 	public void setUp() {
 		_setUpPortalUtil();
 
-		_titleProvider = new TitleProvider(
-			new LayoutSEOLinkManager() {
+		_layoutSEOLinkManager = new LayoutSEOLinkManager() {
 
-				@Override
-				public LayoutSEOLink getCanonicalLayoutSEOLink(
-						Layout layout, Locale locale, String canonicalURL,
-						ThemeDisplay themeDisplay)
-					throws PortalException {
+			@Override
+			public LayoutSEOLink getCanonicalLayoutSEOLink(
+					Layout layout, Locale locale, String canonicalURL,
+					ThemeDisplay themeDisplay)
+				throws PortalException {
 
-					return null;
+				return null;
+			}
+
+			@Override
+			public String getFullPageTitle(
+				Layout layout, String portletId, String tilesTitle,
+				ListMergeable<String> titleListMergeable,
+				ListMergeable<String> subtitleListMergeable, String companyName,
+				Locale locale) {
+
+				Group group = layout.getGroup();
+
+				try {
+					return StringUtil.merge(
+						new String[] {
+							layout.getHTMLTitle(locale),
+							group.getDescriptiveName(), companyName
+						},
+						_SEPARATOR);
+				}
+				catch (PortalException portalException) {
 				}
 
-				@Override
-				public String getFullPageTitle(
-					Layout layout, String portletId, String tilesTitle,
-					ListMergeable<String> titleListMergeable,
-					ListMergeable<String> subtitleListMergeable,
-					String companyName, Locale locale) {
+				return "htmlTitle";
+			}
 
-					Group group = layout.getGroup();
+			@Override
+			public List<LayoutSEOLink> getLocalizedLayoutSEOLinks(
+					Layout layout, Locale locale, String canonicalURL,
+					Set<Locale> availableLocales)
+				throws PortalException {
 
-					try {
-						return StringUtil.merge(
-							new String[] {
-								layout.getHTMLTitle(locale),
-								group.getDescriptiveName(), companyName
-							},
-							_SEPARATOR);
-					}
-					catch (PortalException portalException) {
-					}
+				return Collections.emptyList();
+			}
 
-					return "htmlTitle";
-				}
-
-				@Override
-				public List<LayoutSEOLink> getLocalizedLayoutSEOLinks(
-						Layout layout, Locale locale, String canonicalURL,
-						Set<Locale> availableLocales)
-					throws PortalException {
-
-					return Collections.emptyList();
-				}
-
-			});
+		};
 	}
 
 	@Test
@@ -127,7 +126,8 @@ public class TitleProviderTest {
 			StringUtil.merge(
 				new String[] {htmlTitle, groupDescriptiveName, companyName},
 				_SEPARATOR),
-			_titleProvider.getTitle(mockHttpServletRequest));
+			TitleProviderUtil.getTitle(
+				mockHttpServletRequest, _layoutSEOLinkManager));
 	}
 
 	@Test
@@ -154,7 +154,8 @@ public class TitleProviderTest {
 			StringUtil.merge(
 				new String[] {htmlTitle, groupDescriptiveName, companyName},
 				_SEPARATOR),
-			_titleProvider.getTitle(mockHttpServletRequest));
+			TitleProviderUtil.getTitle(
+				mockHttpServletRequest, _layoutSEOLinkManager));
 	}
 
 	private Layout _getLayout(String groupDescriptiveName, String htmlTitle)
@@ -251,6 +252,6 @@ public class TitleProviderTest {
 		_layoutUtilityPageEntryLayoutProviderUtilMockedStatic =
 			Mockito.mockStatic(LayoutUtilityPageEntryLayoutProviderUtil.class);
 
-	private TitleProvider _titleProvider;
+	private LayoutSEOLinkManager _layoutSEOLinkManager;
 
 }

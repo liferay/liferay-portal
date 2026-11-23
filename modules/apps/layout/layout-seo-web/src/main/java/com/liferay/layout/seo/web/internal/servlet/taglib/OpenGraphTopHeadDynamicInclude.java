@@ -25,7 +25,7 @@ import com.liferay.layout.seo.service.LayoutSEOSiteLocalService;
 import com.liferay.layout.seo.template.LayoutSEOTemplateProcessor;
 import com.liferay.layout.seo.web.internal.configuration.LayoutSEODynamicRenderingConfiguration;
 import com.liferay.layout.seo.web.internal.util.OpenGraphImageProvider;
-import com.liferay.layout.seo.web.internal.util.TitleProvider;
+import com.liferay.layout.seo.web.internal.util.TitleProviderUtil;
 import com.liferay.layout.utility.page.kernel.LayoutUtilityPageEntryTypeUtil;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
@@ -327,7 +327,6 @@ public class OpenGraphTopHeadDynamicInclude extends BaseDynamicInclude {
 			_ddmFieldLocalService, _ddmStructureLocalService,
 			_dlAppLocalService, _dlFileEntryMetadataLocalService, _dlurlHelper,
 			_layoutSEOSiteLocalService, _layoutSEOTemplateProcessor, _portal);
-		_titleProvider = new TitleProvider(_layoutSEOLinkManager);
 	}
 
 	private String _addLinkTag(
@@ -446,7 +445,8 @@ public class OpenGraphTopHeadDynamicInclude extends BaseDynamicInclude {
 
 	private String _getTitle(HttpServletRequest httpServletRequest) {
 		try {
-			return _titleProvider.getTitle(httpServletRequest);
+			return TitleProviderUtil.getTitle(
+				httpServletRequest, _layoutSEOLinkManager);
 		}
 		catch (PortalException portalException) {
 			return ReflectionUtil.throwException(portalException);
@@ -496,7 +496,5 @@ public class OpenGraphTopHeadDynamicInclude extends BaseDynamicInclude {
 
 	@Reference
 	private Portal _portal;
-
-	private volatile TitleProvider _titleProvider;
 
 }

@@ -30,13 +30,11 @@ import jakarta.servlet.http.HttpServletResponse;
 /**
  * @author Cristina González
  */
-public class TitleProvider {
+public class TitleProviderUtil {
 
-	public TitleProvider(LayoutSEOLinkManager layoutSEOLinkManager) {
-		_layoutSEOLinkManager = layoutSEOLinkManager;
-	}
-
-	public String getTitle(HttpServletRequest httpServletRequest)
+	public static String getTitle(
+			HttpServletRequest httpServletRequest,
+			LayoutSEOLinkManager layoutSEOLinkManager)
 		throws PortalException {
 
 		ThemeDisplay themeDisplay =
@@ -56,7 +54,7 @@ public class TitleProvider {
 			if (layout != null) {
 				Company company = themeDisplay.getCompany();
 
-				return _layoutSEOLinkManager.getFullPageTitle(
+				return layoutSEOLinkManager.getFullPageTitle(
 					layout, null, themeDisplay.getTilesTitle(), null, null,
 					company.getName(), themeDisplay.getLocale());
 			}
@@ -74,7 +72,7 @@ public class TitleProvider {
 
 		Company company = themeDisplay.getCompany();
 
-		String title = _layoutSEOLinkManager.getFullPageTitle(
+		String title = layoutSEOLinkManager.getFullPageTitle(
 			themeDisplay.getLayout(), portletId, themeDisplay.getTilesTitle(),
 			titleListMergeable, subtitleListMergeable, company.getName(),
 			themeDisplay.getLocale());
@@ -97,7 +95,7 @@ public class TitleProvider {
 		return title;
 	}
 
-	private String _getStatusLayoutUtilityPageEntryType(
+	private static String _getStatusLayoutUtilityPageEntryType(
 		ThemeDisplay themeDisplay) {
 
 		HttpServletResponse httpServletResponse = themeDisplay.getResponse();
@@ -120,7 +118,9 @@ public class TitleProvider {
 				httpServletResponse.getStatus());
 	}
 
-	private String _getTitleModifierKey(HttpServletRequest httpServletRequest) {
+	private static String _getTitleModifierKey(
+		HttpServletRequest httpServletRequest) {
+
 		if (_isEditMode(httpServletRequest)) {
 			return "editing";
 		}
@@ -131,7 +131,7 @@ public class TitleProvider {
 		return null;
 	}
 
-	private boolean _isConfigurationMode(
+	private static boolean _isConfigurationMode(
 		HttpServletRequest httpServletRequest) {
 
 		ServiceContext serviceContext =
@@ -147,7 +147,7 @@ public class TitleProvider {
 		return mvcCommand.equals("/layout_admin/edit_layout");
 	}
 
-	private boolean _isEditMode(HttpServletRequest httpServletRequest) {
+	private static boolean _isEditMode(HttpServletRequest httpServletRequest) {
 		HttpServletRequest originalHttpServletRequest =
 			PortalUtil.getOriginalServletRequest(httpServletRequest);
 
@@ -156,7 +156,5 @@ public class TitleProvider {
 
 		return layoutMode.equals(Constants.EDIT);
 	}
-
-	private final LayoutSEOLinkManager _layoutSEOLinkManager;
 
 }
