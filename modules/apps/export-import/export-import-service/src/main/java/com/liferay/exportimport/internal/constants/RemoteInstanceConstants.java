@@ -12,4 +12,11 @@ public class RemoteInstanceConstants {
 
 	public static final String CLIENT_SECRET_PREFIX = "{AES_GCM}";
 
+	public static final String
+		OBJECT_DEFINITION_EXTERNAL_REFERENCE_CODE_REMOTE_IMPORT_PROCESS =
+			"L_REMOTE_IMPORT_PROCESS";
+
+	public static final String OBJECT_FIELD_NAME_REMOTE_INSTANCE_ID =
+		"r_remoteInstanceToRemoteImportProcesses_c_remoteInstanceId";
+
 }
