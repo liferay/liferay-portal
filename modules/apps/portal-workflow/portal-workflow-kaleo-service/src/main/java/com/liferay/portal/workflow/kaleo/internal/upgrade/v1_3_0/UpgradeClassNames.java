@@ -7,7 +7,7 @@ package com.liferay.portal.workflow.kaleo.internal.upgrade.v1_3_0;
 
 import com.liferay.portal.kernel.util.LoggingTimer;
 import com.liferay.portal.upgrade.util.Table;
-import com.liferay.portal.workflow.kaleo.internal.upgrade.helper.v1_3_0.WorkflowContextUpgradeHelper;
+import com.liferay.portal.workflow.kaleo.internal.upgrade.v1_3_0.util.WorkflowContextUpgradeUtil;
 import com.liferay.portal.workflow.kaleo.runtime.util.WorkflowContextUtil;
 
 import java.io.Serializable;
@@ -30,8 +30,7 @@ public class UpgradeClassNames extends BaseUpgradeClassNames {
 			Table table = new Table(tableName);
 
 			for (Map.Entry<String, String> entry :
-					_workflowContextUpgradeHelper.
-						getRenamedClassNamesEntrySet()) {
+					WorkflowContextUpgradeUtil.getRenamedClassNamesEntrySet()) {
 
 				table.updateColumnValue(
 					columnName, entry.getKey(), entry.getValue());
@@ -44,24 +43,20 @@ public class UpgradeClassNames extends BaseUpgradeClassNames {
 		String workflowContextJSON) {
 
 		String updatedWorkflowContextJSON =
-			_workflowContextUpgradeHelper.renamePortalClassNames(
+			WorkflowContextUpgradeUtil.renamePortalClassNames(
 				workflowContextJSON);
 
 		Map<String, Serializable> workflowContext = WorkflowContextUtil.convert(
 			updatedWorkflowContextJSON);
 
 		if (workflowContextJSON.equals(updatedWorkflowContextJSON) &&
-			!_workflowContextUpgradeHelper.isEntryClassNameRenamed(
+			!WorkflowContextUpgradeUtil.isEntryClassNameRenamed(
 				workflowContext)) {
 
 			return null;
 		}
 
-		return _workflowContextUpgradeHelper.renameEntryClassName(
-			workflowContext);
+		return WorkflowContextUpgradeUtil.renameEntryClassName(workflowContext);
 	}
-
-	private final WorkflowContextUpgradeHelper _workflowContextUpgradeHelper =
-		new WorkflowContextUpgradeHelper();
 
 }

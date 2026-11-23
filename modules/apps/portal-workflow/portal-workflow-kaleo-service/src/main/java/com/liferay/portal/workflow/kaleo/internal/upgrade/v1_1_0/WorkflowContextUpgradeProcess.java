@@ -10,7 +10,7 @@ import com.liferay.portal.kernel.model.PortletPreferencesIds;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.util.LoggingTimer;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.workflow.kaleo.internal.upgrade.helper.v1_3_0.WorkflowContextUpgradeHelper;
+import com.liferay.portal.workflow.kaleo.internal.upgrade.v1_3_0.util.WorkflowContextUpgradeUtil;
 import com.liferay.portal.workflow.kaleo.runtime.util.WorkflowContextUtil;
 
 import java.io.Serializable;
@@ -80,7 +80,7 @@ public class WorkflowContextUpgradeProcess extends UpgradeProcess {
 				long fieldValue = resultSet.getLong(fieldName);
 
 				workflowContextJSON =
-					_workflowContextUpgradeHelper.renamePortalClassNames(
+					WorkflowContextUpgradeUtil.renamePortalClassNames(
 						workflowContextJSON);
 
 				Map<String, Serializable> workflowContext =
@@ -88,7 +88,7 @@ public class WorkflowContextUpgradeProcess extends UpgradeProcess {
 						workflowContextJSON);
 
 				workflowContext =
-					_workflowContextUpgradeHelper.renameEntryClassName(
+					WorkflowContextUpgradeUtil.renameEntryClassName(
 						workflowContext);
 
 				_updateWorkflowContext(
@@ -116,8 +116,6 @@ public class WorkflowContextUpgradeProcess extends UpgradeProcess {
 	}
 
 	private JSONSerializer _jsonSerializer;
-	private final WorkflowContextUpgradeHelper _workflowContextUpgradeHelper =
-		new WorkflowContextUpgradeHelper();
 
 	private static class PortletPreferencesIdsSerializer
 		extends AbstractSerializer {
