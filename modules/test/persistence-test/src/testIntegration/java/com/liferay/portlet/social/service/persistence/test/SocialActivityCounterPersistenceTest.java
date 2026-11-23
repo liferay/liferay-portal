@@ -213,18 +213,6 @@ public class SocialActivityCounterPersistenceTest {
 	}
 
 	@Test
-	public void testCountByG_C_C_N_O_S() throws Exception {
-		_persistence.countByG_C_C_N_O_S(
-			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(),
-			RandomTestUtil.nextLong(), "", RandomTestUtil.nextInt(),
-			RandomTestUtil.nextInt());
-
-		_persistence.countByG_C_C_N_O_S(0L, 0L, 0L, "null", 0, 0);
-
-		_persistence.countByG_C_C_N_O_S(0L, 0L, 0L, (String)null, 0, 0);
-	}
-
-	@Test
 	public void testCountByG_C_C_N_O_E() throws Exception {
 		_persistence.countByG_C_C_N_O_E(
 			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(),
@@ -587,37 +575,6 @@ public class SocialActivityCounterPersistenceTest {
 				socialActivityCounter, "getColumnOriginalValue",
 				new Class<?>[] {String.class}, "ownerType"));
 		Assert.assertEquals(
-			Integer.valueOf(socialActivityCounter.getStartPeriod()),
-			ReflectionTestUtil.<Integer>invoke(
-				socialActivityCounter, "getColumnOriginalValue",
-				new Class<?>[] {String.class}, "startPeriod"));
-
-		Assert.assertEquals(
-			Long.valueOf(socialActivityCounter.getGroupId()),
-			ReflectionTestUtil.<Long>invoke(
-				socialActivityCounter, "getColumnOriginalValue",
-				new Class<?>[] {String.class}, "groupId"));
-		Assert.assertEquals(
-			Long.valueOf(socialActivityCounter.getClassNameId()),
-			ReflectionTestUtil.<Long>invoke(
-				socialActivityCounter, "getColumnOriginalValue",
-				new Class<?>[] {String.class}, "classNameId"));
-		Assert.assertEquals(
-			Long.valueOf(socialActivityCounter.getClassPK()),
-			ReflectionTestUtil.<Long>invoke(
-				socialActivityCounter, "getColumnOriginalValue",
-				new Class<?>[] {String.class}, "classPK"));
-		Assert.assertEquals(
-			socialActivityCounter.getName(),
-			ReflectionTestUtil.invoke(
-				socialActivityCounter, "getColumnOriginalValue",
-				new Class<?>[] {String.class}, "name"));
-		Assert.assertEquals(
-			Integer.valueOf(socialActivityCounter.getOwnerType()),
-			ReflectionTestUtil.<Integer>invoke(
-				socialActivityCounter, "getColumnOriginalValue",
-				new Class<?>[] {String.class}, "ownerType"));
-		Assert.assertEquals(
 			Integer.valueOf(socialActivityCounter.getEndPeriod()),
 			ReflectionTestUtil.<Integer>invoke(
 				socialActivityCounter, "getColumnOriginalValue",
@@ -668,4 +625,4 @@ public class SocialActivityCounterPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-840366426
+// LIFERAY-SERVICE-BUILDER-HASH:242135988

@@ -287,89 +287,6 @@ public class SocialActivityCounterUtil {
 	}
 
 	/**
-	 * Returns the social activity counter where groupId = &#63; and classNameId = &#63; and classPK = &#63; and name = &#63; and ownerType = &#63; and startPeriod = &#63; or throws a <code>NoSuchActivityCounterException</code> if it could not be found.
-	 *
-	 * @param groupId the group ID
-	 * @param classNameId the class name ID
-	 * @param classPK the class pk
-	 * @param name the name
-	 * @param ownerType the owner type
-	 * @param startPeriod the start period
-	 * @return the matching social activity counter
-	 * @throws NoSuchActivityCounterException if a matching social activity counter could not be found
-	 */
-	public static SocialActivityCounter findByG_C_C_N_O_S(
-			long groupId, long classNameId, long classPK, String name,
-			int ownerType, int startPeriod)
-		throws com.liferay.social.kernel.exception.
-			NoSuchActivityCounterException {
-
-		return getPersistence().findByG_C_C_N_O_S(
-			groupId, classNameId, classPK, name, ownerType, startPeriod);
-	}
-
-	/**
-	 * Returns the social activity counter where groupId = &#63; and classNameId = &#63; and classPK = &#63; and name = &#63; and ownerType = &#63; and startPeriod = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
-	 *
-	 * @param groupId the group ID
-	 * @param classNameId the class name ID
-	 * @param classPK the class pk
-	 * @param name the name
-	 * @param ownerType the owner type
-	 * @param startPeriod the start period
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the matching social activity counter, or <code>null</code> if a matching social activity counter could not be found
-	 */
-	public static SocialActivityCounter fetchByG_C_C_N_O_S(
-		long groupId, long classNameId, long classPK, String name,
-		int ownerType, int startPeriod, boolean useFinderCache) {
-
-		return getPersistence().fetchByG_C_C_N_O_S(
-			groupId, classNameId, classPK, name, ownerType, startPeriod,
-			useFinderCache);
-	}
-
-	/**
-	 * Removes the social activity counter where groupId = &#63; and classNameId = &#63; and classPK = &#63; and name = &#63; and ownerType = &#63; and startPeriod = &#63; from the database.
-	 *
-	 * @param groupId the group ID
-	 * @param classNameId the class name ID
-	 * @param classPK the class pk
-	 * @param name the name
-	 * @param ownerType the owner type
-	 * @param startPeriod the start period
-	 * @return the social activity counter that was removed
-	 */
-	public static SocialActivityCounter removeByG_C_C_N_O_S(
-			long groupId, long classNameId, long classPK, String name,
-			int ownerType, int startPeriod)
-		throws com.liferay.social.kernel.exception.
-			NoSuchActivityCounterException {
-
-		return getPersistence().removeByG_C_C_N_O_S(
-			groupId, classNameId, classPK, name, ownerType, startPeriod);
-	}
-
-	/**
-	 * Returns the number of social activity counters where groupId = &#63; and classNameId = &#63; and classPK = &#63; and name = &#63; and ownerType = &#63; and startPeriod = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param classNameId the class name ID
-	 * @param classPK the class pk
-	 * @param name the name
-	 * @param ownerType the owner type
-	 * @param startPeriod the start period
-	 * @return the number of matching social activity counters
-	 */
-	public static int countByG_C_C_N_O_S(
-		long groupId, long classNameId, long classPK, String name,
-		int ownerType, int startPeriod) {
-
-		return getPersistence().countByG_C_C_N_O_S(
-			groupId, classNameId, classPK, name, ownerType, startPeriod);
-	}
-
-	/**
 	 * Returns the social activity counter where groupId = &#63; and classNameId = &#63; and classPK = &#63; and name = &#63; and ownerType = &#63; and endPeriod = &#63; or throws a <code>NoSuchActivityCounterException</code> if it could not be found.
 	 *
 	 * @param groupId the group ID
@@ -509,25 +426,6 @@ public class SocialActivityCounterUtil {
 	}
 
 	/**
-	 * Returns the social activity counter where groupId = &#63; and classNameId = &#63; and classPK = &#63; and name = &#63; and ownerType = &#63; and startPeriod = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
-	 *
-	 * @param groupId the group ID
-	 * @param classNameId the class name ID
-	 * @param classPK the class pk
-	 * @param name the name
-	 * @param ownerType the owner type
-	 * @param startPeriod the start period
-	 * @return the matching social activity counter, or <code>null</code> if a matching social activity counter could not be found
-	 */
-	public static SocialActivityCounter fetchByG_C_C_N_O_S(
-		long groupId, long classNameId, long classPK, String name,
-		int ownerType, int startPeriod) {
-
-		return getPersistence().fetchByG_C_C_N_O_S(
-			groupId, classNameId, classPK, name, ownerType, startPeriod);
-	}
-
-	/**
 	 * Returns the social activity counter where groupId = &#63; and classNameId = &#63; and classPK = &#63; and name = &#63; and ownerType = &#63; and endPeriod = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
 	 *
 	 * @param groupId the group ID
@@ -662,4 +560,4 @@ public class SocialActivityCounterUtil {
 	private static volatile SocialActivityCounterPersistence _persistence;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:465586289
+// LIFERAY-SERVICE-BUILDER-HASH:202154039

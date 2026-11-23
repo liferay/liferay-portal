@@ -166,17 +166,11 @@ public class SocialActivityCounterModelImpl
 	public static final long OWNERTYPE_COLUMN_BITMASK = 32L;
 
 	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
-	 */
-	@Deprecated
-	public static final long STARTPERIOD_COLUMN_BITMASK = 64L;
-
-	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
 	 *		#getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long ACTIVITYCOUNTERID_COLUMN_BITMASK = 128L;
+	public static final long ACTIVITYCOUNTERID_COLUMN_BITMASK = 64L;
 
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(
 		com.liferay.portal.kernel.util.PropsUtil.get(
@@ -651,16 +645,6 @@ public class SocialActivityCounterModelImpl
 		_startPeriod = startPeriod;
 	}
 
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *             #getColumnOriginalValue(String)}
-	 */
-	@Deprecated
-	public int getOriginalStartPeriod() {
-		return GetterUtil.getInteger(
-			this.<Integer>getColumnOriginalValue("startPeriod"));
-	}
-
 	@Override
 	public int getEndPeriod() {
 		return _endPeriod;
@@ -1115,4 +1099,4 @@ public class SocialActivityCounterModelImpl
 	private SocialActivityCounter _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1050351150
+// LIFERAY-SERVICE-BUILDER-HASH:-126441414

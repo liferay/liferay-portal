@@ -258,106 +258,6 @@ public class SocialActivityCounterPersistenceImpl
 
 	private UniquePersistenceFinder
 		<SocialActivityCounter, NoSuchActivityCounterException>
-			_uniquePersistenceFinderByG_C_C_N_O_S;
-
-	/**
-	 * Returns the social activity counter where groupId = &#63; and classNameId = &#63; and classPK = &#63; and name = &#63; and ownerType = &#63; and startPeriod = &#63; or throws a <code>NoSuchActivityCounterException</code> if it could not be found.
-	 *
-	 * @param groupId the group ID
-	 * @param classNameId the class name ID
-	 * @param classPK the class pk
-	 * @param name the name
-	 * @param ownerType the owner type
-	 * @param startPeriod the start period
-	 * @return the matching social activity counter
-	 * @throws NoSuchActivityCounterException if a matching social activity counter could not be found
-	 */
-	@Override
-	public SocialActivityCounter findByG_C_C_N_O_S(
-			long groupId, long classNameId, long classPK, String name,
-			int ownerType, int startPeriod)
-		throws NoSuchActivityCounterException {
-
-		return _uniquePersistenceFinderByG_C_C_N_O_S.find(
-			FinderCacheUtil.getFinderCache(),
-			new Object[] {
-				groupId, classNameId, classPK, name, ownerType, startPeriod
-			});
-	}
-
-	/**
-	 * Returns the social activity counter where groupId = &#63; and classNameId = &#63; and classPK = &#63; and name = &#63; and ownerType = &#63; and startPeriod = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
-	 *
-	 * @param groupId the group ID
-	 * @param classNameId the class name ID
-	 * @param classPK the class pk
-	 * @param name the name
-	 * @param ownerType the owner type
-	 * @param startPeriod the start period
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the matching social activity counter, or <code>null</code> if a matching social activity counter could not be found
-	 */
-	@Override
-	public SocialActivityCounter fetchByG_C_C_N_O_S(
-		long groupId, long classNameId, long classPK, String name,
-		int ownerType, int startPeriod, boolean useFinderCache) {
-
-		return _uniquePersistenceFinderByG_C_C_N_O_S.fetch(
-			FinderCacheUtil.getFinderCache(),
-			new Object[] {
-				groupId, classNameId, classPK, name, ownerType, startPeriod
-			},
-			useFinderCache);
-	}
-
-	/**
-	 * Removes the social activity counter where groupId = &#63; and classNameId = &#63; and classPK = &#63; and name = &#63; and ownerType = &#63; and startPeriod = &#63; from the database.
-	 *
-	 * @param groupId the group ID
-	 * @param classNameId the class name ID
-	 * @param classPK the class pk
-	 * @param name the name
-	 * @param ownerType the owner type
-	 * @param startPeriod the start period
-	 * @return the social activity counter that was removed
-	 */
-	@Override
-	public SocialActivityCounter removeByG_C_C_N_O_S(
-			long groupId, long classNameId, long classPK, String name,
-			int ownerType, int startPeriod)
-		throws NoSuchActivityCounterException {
-
-		SocialActivityCounter socialActivityCounter = findByG_C_C_N_O_S(
-			groupId, classNameId, classPK, name, ownerType, startPeriod);
-
-		return remove(socialActivityCounter);
-	}
-
-	/**
-	 * Returns the number of social activity counters where groupId = &#63; and classNameId = &#63; and classPK = &#63; and name = &#63; and ownerType = &#63; and startPeriod = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param classNameId the class name ID
-	 * @param classPK the class pk
-	 * @param name the name
-	 * @param ownerType the owner type
-	 * @param startPeriod the start period
-	 * @return the number of matching social activity counters
-	 */
-	@Override
-	public int countByG_C_C_N_O_S(
-		long groupId, long classNameId, long classPK, String name,
-		int ownerType, int startPeriod) {
-
-		return _uniquePersistenceFinderByG_C_C_N_O_S.count(
-			FinderCacheUtil.getFinderCache(),
-			new Object[] {
-				groupId, classNameId, classPK, name, ownerType, startPeriod
-			});
-	}
-
-	private UniquePersistenceFinder
-		<SocialActivityCounter, NoSuchActivityCounterException>
 			_uniquePersistenceFinderByG_C_C_N_O_E;
 
 	/**
@@ -722,12 +622,6 @@ public class SocialActivityCounterPersistenceImpl
 		_uniqueIndexColumnNames.add(
 			new String[] {
 				"groupId", "classNameId", "classPK", "name", "ownerType",
-				"startPeriod"
-			});
-
-		_uniqueIndexColumnNames.add(
-			new String[] {
-				"groupId", "classNameId", "classPK", "name", "ownerType",
 				"endPeriod"
 			});
 	}
@@ -791,47 +685,6 @@ public class SocialActivityCounterPersistenceImpl
 			new FinderColumn<>(
 				"socialActivityCounter.", "classPK", FinderColumn.Type.LONG,
 				"=", true, true, SocialActivityCounter::getClassPK));
-
-		_uniquePersistenceFinderByG_C_C_N_O_S = new UniquePersistenceFinder<>(
-			this,
-			createUniqueFinderPath(
-				FINDER_CLASS_NAME_ENTITY, "fetchByG_C_C_N_O_S",
-				new String[] {
-					Long.class.getName(), Long.class.getName(),
-					Long.class.getName(), String.class.getName(),
-					Integer.class.getName(), Integer.class.getName()
-				},
-				new String[] {
-					"groupId", "classNameId", "classPK", "name", "ownerType",
-					"startPeriod"
-				},
-				0, 8, false, SocialActivityCounter::getGroupId,
-				SocialActivityCounter::getClassNameId,
-				SocialActivityCounter::getClassPK,
-				convertNullFunction(SocialActivityCounter::getName),
-				SocialActivityCounter::getOwnerType,
-				SocialActivityCounter::getStartPeriod),
-			_SQL_SELECT_SOCIALACTIVITYCOUNTER_WHERE, "",
-			new FinderColumn<>(
-				"socialActivityCounter.", "groupId", FinderColumn.Type.LONG,
-				"=", true, true, SocialActivityCounter::getGroupId),
-			new FinderColumn<>(
-				"socialActivityCounter.", "classNameId", FinderColumn.Type.LONG,
-				"=", true, true, SocialActivityCounter::getClassNameId),
-			new FinderColumn<>(
-				"socialActivityCounter.", "classPK", FinderColumn.Type.LONG,
-				"=", true, true, SocialActivityCounter::getClassPK),
-			new FinderColumn<>(
-				"socialActivityCounter.", "name", FinderColumn.Type.STRING, "=",
-				true, true, SocialActivityCounter::getName),
-			new FinderColumn<>(
-				"socialActivityCounter.", "ownerType",
-				FinderColumn.Type.INTEGER, "=", true, true,
-				SocialActivityCounter::getOwnerType),
-			new FinderColumn<>(
-				"socialActivityCounter.", "startPeriod",
-				FinderColumn.Type.INTEGER, "=", true, true,
-				SocialActivityCounter::getStartPeriod));
 
 		_uniquePersistenceFinderByG_C_C_N_O_E = new UniquePersistenceFinder<>(
 			this,
@@ -904,4 +757,4 @@ public class SocialActivityCounterPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-327644200
+// LIFERAY-SERVICE-BUILDER-HASH:-1816454595
