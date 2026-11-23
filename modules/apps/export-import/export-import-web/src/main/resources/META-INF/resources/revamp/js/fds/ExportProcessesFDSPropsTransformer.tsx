@@ -4,8 +4,10 @@
  */
 
 import {IInternalRenderer} from '@liferay/frontend-data-set-web';
+import {openModal} from 'frontend-js-components-web';
 import React from 'react';
 
+import RemoteImportModal from '../pages/remote_import/RemoteImportModal';
 import ProcessAuthorRenderer from './cell_renderers/ProcessAuthorRenderer';
 import ProcessCompletionDateRenderer from './cell_renderers/ProcessCompletionDateRenderer';
 import ProcessStatusRenderer from './cell_renderers/ProcessStatusRenderer';
@@ -64,5 +66,32 @@ export default function ExportProcessesFDSPropsTransformer({
 
 			return toLiveVisibilityAction(itemAction);
 		}),
+		onActionDropdownItemClick({
+			action,
+			event,
+			itemData,
+		}: {
+			action: {data: {id: string}};
+			event: Event;
+			itemData: {id: number};
+		}) {
+			if (action.data.id === 'executeRemoteImport') {
+				event?.preventDefault();
+
+				openModal({
+					contentComponent: ({
+						closeModal,
+					}: {
+						closeModal: () => void;
+					}) => (
+						<RemoteImportModal
+							closeModal={closeModal}
+							exportProcessId={itemData.id}
+						/>
+					),
+					disableAutoClose: true,
+				});
+			}
+		},
 	};
 }

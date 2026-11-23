@@ -34,6 +34,20 @@ export async function deleteRemoteInstance(
 	return ApiHelper.delete(`${REMOTE_INSTANCES_URL}/${remoteInstanceId}`);
 }
 
+export async function getRemoteInstances(): Promise<
+	RequestResult<Pick<RemoteInstance, 'id' | 'name'>[]>
+> {
+	const {data, error, status} = await ApiHelper.get<{
+		items: Pick<RemoteInstance, 'id' | 'name'>[];
+	}>(`${REMOTE_INSTANCES_URL}?fields=id,name&pageSize=-1`);
+
+	if (error !== null) {
+		return {data: null, error, status};
+	}
+
+	return {data: data.items, error: null};
+}
+
 export async function updateRemoteInstance(
 	remoteInstanceId: number,
 	remoteInstanceRequest: RemoteInstanceRequest

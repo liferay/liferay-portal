@@ -9,6 +9,8 @@ import com.liferay.exportimport.util.ScopeUtil;
 import com.liferay.exportimport.web.internal.constants.ExportImportFDSNames;
 import com.liferay.exportimport.web.internal.util.ExportImportAPIURLUtil;
 import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
+import com.liferay.frontend.data.set.model.FDSActionDropdownItemBuilder;
+import com.liferay.frontend.data.set.model.FDSActionDropdownItemList;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenuBuilder;
 import com.liferay.petra.function.transform.TransformUtil;
@@ -65,7 +67,7 @@ public class ExportImportProcessesDisplayContext {
 	}
 
 	public List<FDSActionDropdownItem> getExportFDSActionDropdownItems() {
-		return ListUtil.fromArray(
+		return FDSActionDropdownItemList.of(
 			new FDSActionDropdownItem(
 				ScopeUtil.getAPIURL("/export-processes/{id}/relaunch"),
 				"reload", "relaunch",
@@ -80,6 +82,7 @@ public class ExportImportProcessesDisplayContext {
 				HashMapBuilder.<String, Object>put(
 					"status.code", BackgroundTaskConstants.STATUS_SUCCESSFUL
 				).build()),
+			_getExecuteRemoteImportFDSActionDropdownItem(),
 			_getDeleteFDSActionDropdownItem("/export-processes/{id}"),
 			_getClearFDSActionDropdownItem("/export-processes/{id}"));
 	}
@@ -254,6 +257,31 @@ public class ExportImportProcessesDisplayContext {
 				_httpServletRequest, "are-you-sure-you-want-to-delete-this"));
 
 		return fdsActionDropdownItem;
+	}
+
+	private FDSActionDropdownItem
+		_getExecuteRemoteImportFDSActionDropdownItem() {
+
+		if (!FeatureFlagManagerUtil.isEnabled(
+				_themeDisplay.getCompanyId(), "LPD-71352") ||
+			!ScopeUtil.isCompanyScoped(_group)) {
+
+			return null;
+		}
+
+		return FDSActionDropdownItemBuilder.setIcon(
+			"upload"
+		).setLabel(
+			LanguageUtil.get(_httpServletRequest, "execute-remote-import")
+		).setMethod(
+			"get"
+		).setVisibilityFilters(
+			HashMapBuilder.<String, Object>put(
+				"status.code", BackgroundTaskConstants.STATUS_SUCCESSFUL
+			).build()
+		).build(
+			"executeRemoteImport"
+		);
 	}
 
 	private String _getFDSName(String companyFDSName, String fdsName) {
