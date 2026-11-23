@@ -7,10 +7,12 @@ package com.liferay.commerce.internal.model.listener;
 
 import com.liferay.account.model.AccountEntry;
 import com.liferay.commerce.exception.CommerceAccountOrdersException;
-import com.liferay.commerce.internal.search.CommerceOrderBatchReindexer;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.service.CommerceOrderLocalService;
 import com.liferay.commerce.service.CommerceShippingOptionAccountEntryRelLocalService;
+import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
+import com.liferay.portal.kernel.dao.orm.Property;
+import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -21,7 +23,6 @@ import com.liferay.portal.search.indexer.IndexerDocumentBuilder;
 import com.liferay.portal.search.indexer.IndexerWriter;
 import com.liferay.portal.util.PortalInstances;
 
-import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -43,8 +44,7 @@ public class AccountEntryModelListener extends BaseModelListener<AccountEntry> {
 			return;
 		}
 
-		_commerceOrderBatchReindexer.reindex(
-			accountEntry.getAccountEntryId(), accountEntry.getCompanyId());
+		_reindex(accountEntry.getAccountEntryId(), accountEntry.getCompanyId());
 	}
 
 	@Override
@@ -83,13 +83,24 @@ public class AccountEntryModelListener extends BaseModelListener<AccountEntry> {
 				accountEntry.getAccountEntryId());
 	}
 
-	@Activate
-	protected void activate() {
-		_commerceOrderBatchReindexer = new CommerceOrderBatchReindexer(
-			_indexerDocumentBuilder, _indexerWriter);
-	}
+	private void _reindex(long commerceAccountId, long companyId) {
+		IndexableActionableDynamicQuery indexableActionableDynamicQuery =
+			_indexerWriter.getIndexableActionableDynamicQuery();
 
-	private CommerceOrderBatchReindexer _commerceOrderBatchReindexer;
+		indexableActionableDynamicQuery.setAddCriteriaMethod(
+			dynamicQuery -> {
+				Property commerceAccountIdProperty =
+					PropertyFactoryUtil.forName("commerceAccountId");
+
+				dynamicQuery.add(
+					commerceAccountIdProperty.eq(commerceAccountId));
+			});
+		indexableActionableDynamicQuery.setCompanyId(companyId);
+		indexableActionableDynamicQuery.setPerformActionMethod(
+			_indexerDocumentBuilder::getDocument);
+
+		indexableActionableDynamicQuery.performActions();
+	}
 
 	@Reference
 	private CommerceOrderLocalService _commerceOrderLocalService;
