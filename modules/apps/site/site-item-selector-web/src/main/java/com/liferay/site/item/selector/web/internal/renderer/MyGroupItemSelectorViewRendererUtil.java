@@ -25,23 +25,17 @@ import java.io.IOException;
 /**
  * @author Cristina González
  */
-public class MyGroupItemSelectorViewRenderer {
+public class MyGroupItemSelectorViewRendererUtil {
 
-	public MyGroupItemSelectorViewRenderer(
-		GroupURLProvider groupURLProvider, ServletContext servletContext) {
-
-		_groupURLProvider = groupURLProvider;
-		_servletContext = servletContext;
-	}
-
-	public void renderHTML(
+	public static void renderHTML(
+			GroupURLProvider groupURLProvider, ServletContext servletContext,
 			ServletRequest servletRequest, ServletResponse servletResponse,
 			GroupItemSelectorCriterion t, PortletURL portletURL,
 			String itemSelectedEventName)
 		throws IOException, ServletException {
 
 		servletRequest.setAttribute(
-			SiteWebKeys.GROUP_URL_PROVIDER, _groupURLProvider);
+			SiteWebKeys.GROUP_URL_PROVIDER, groupURLProvider);
 
 		MySitesItemSelectorViewDisplayContext
 			mySitesItemSelectorViewDisplayContext =
@@ -54,12 +48,9 @@ public class MyGroupItemSelectorViewRenderer {
 			mySitesItemSelectorViewDisplayContext);
 
 		RequestDispatcher requestDispatcher =
-			_servletContext.getRequestDispatcher("/view_sites.jsp");
+			servletContext.getRequestDispatcher("/view_sites.jsp");
 
 		requestDispatcher.include(servletRequest, servletResponse);
 	}
-
-	private final GroupURLProvider _groupURLProvider;
-	private final ServletContext _servletContext;
 
 }

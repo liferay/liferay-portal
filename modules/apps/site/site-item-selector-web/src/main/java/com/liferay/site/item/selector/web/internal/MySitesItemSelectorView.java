@@ -17,7 +17,7 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.site.item.selector.SiteItemSelectorCriterion;
-import com.liferay.site.item.selector.web.internal.renderer.MyGroupItemSelectorViewRenderer;
+import com.liferay.site.item.selector.web.internal.renderer.MyGroupItemSelectorViewRendererUtil;
 import com.liferay.site.provider.GroupURLProvider;
 
 import jakarta.portlet.PortletURL;
@@ -33,9 +33,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 
 /**
@@ -83,20 +81,9 @@ public class MySitesItemSelectorView
 			PortletURL portletURL, String itemSelectedEventName, boolean search)
 		throws IOException, ServletException {
 
-		_myGroupItemSelectorViewRenderer.renderHTML(
-			servletRequest, servletResponse, siteItemSelectorCriterion,
-			portletURL, itemSelectedEventName);
-	}
-
-	@Activate
-	protected void activate() {
-		_myGroupItemSelectorViewRenderer = new MyGroupItemSelectorViewRenderer(
-			_groupURLProvider, _servletContext);
-	}
-
-	@Deactivate
-	protected void deactivate() {
-		_myGroupItemSelectorViewRenderer = null;
+		MyGroupItemSelectorViewRendererUtil.renderHTML(
+			_groupURLProvider, _servletContext, servletRequest, servletResponse,
+			siteItemSelectorCriterion, portletURL, itemSelectedEventName);
 	}
 
 	private static final List<ItemSelectorReturnType>
@@ -108,8 +95,6 @@ public class MySitesItemSelectorView
 
 	@Reference
 	private GroupURLProvider _groupURLProvider;
-
-	private MyGroupItemSelectorViewRenderer _myGroupItemSelectorViewRenderer;
 
 	@Reference
 	private Portal _portal;
