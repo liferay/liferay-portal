@@ -8,8 +8,10 @@ package com.liferay.portal.search.internal.ml.embedding.text;
 import com.liferay.blogs.model.BlogsEntry;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerList;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.search.configuration.SemanticSearchConfiguration;
 import com.liferay.portal.search.configuration.SemanticSearchConfigurationProvider;
@@ -19,6 +21,7 @@ import com.liferay.portal.search.rest.text.embeddings.configuration.TextEmbeddin
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.Assert;
@@ -27,6 +30,9 @@ import org.junit.ClassRule;
 import org.junit.Test;
 
 import org.mockito.Mockito;
+
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
 
 /**
  * @author Petteri Karttunen
@@ -45,6 +51,60 @@ public class TextEmbeddingRetrieverTest {
 		_setUpTextEmbeddingProvider();
 		_setUpTextEmbeddingProviderServiceTrackerList();
 		_setUpTextEmbeddingRetrieverImpl();
+	}
+
+	@Test
+	public void testGetAvailableProviderNames() {
+		String disabledProviderName = RandomTestUtil.randomString();
+
+		TextEmbeddingProvider disabledTextEmbeddingProvider = Mockito.mock(
+			TextEmbeddingProvider.class);
+
+		Mockito.when(
+			disabledTextEmbeddingProvider.getProviderName()
+		).thenReturn(
+			disabledProviderName
+		);
+
+		BundleContext bundleContext = SystemBundleUtil.getBundleContext();
+
+		ServiceRegistration<TextEmbeddingProvider>
+			disabledTextEmbeddingProviderServiceRegistration =
+				bundleContext.registerService(
+					TextEmbeddingProvider.class, disabledTextEmbeddingProvider,
+					null);
+
+		ServiceRegistration<TextEmbeddingProvider>
+			textEmbeddingProviderServiceRegistration =
+				bundleContext.registerService(
+					TextEmbeddingProvider.class, _textEmbeddingProvider, null);
+
+		try {
+			_textEmbeddingRetrieverImpl.activate(
+				HashMapBuilder.<String, Object>put(
+					"disabledProviders", new String[] {disabledProviderName}
+				).build(),
+				bundleContext);
+
+			Assert.assertEquals(
+				List.of(_TEST_PROVIDER_NAME),
+				_textEmbeddingRetrieverImpl.getAvailableProviderNames());
+
+			_textEmbeddingRetrieverImpl.deactivate();
+
+			_textEmbeddingRetrieverImpl.activate(
+				Collections.emptyMap(), bundleContext);
+
+			Assert.assertEquals(
+				List.of(disabledProviderName, _TEST_PROVIDER_NAME),
+				_textEmbeddingRetrieverImpl.getAvailableProviderNames());
+		}
+		finally {
+			_textEmbeddingRetrieverImpl.deactivate();
+
+			disabledTextEmbeddingProviderServiceRegistration.unregister();
+			textEmbeddingProviderServiceRegistration.unregister();
+		}
 	}
 
 	@Test
