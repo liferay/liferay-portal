@@ -91,6 +91,24 @@ export async function getTasks({
 	);
 }
 
+export async function getTasksByParentTaskIds({
+	scopeKey,
+	taskIds,
+}: {
+	scopeKey: string;
+	taskIds: number[];
+}) {
+	return await ApiHelper.get<{items: Array<{id: number}>}>(
+		`/o/cmp/tasks/scopes/${scopeKey}?${new URLSearchParams({
+			fields: 'id',
+			filter: `r_cmpTaskToCMPTasks_c_cmpTaskId in (${taskIds
+				.map((taskId) => `'${taskId}'`)
+				.join(', ')})`,
+			pageSize: '-1',
+		})}`
+	);
+}
+
 export async function getUserAccount(id: string) {
 	return ApiHelper.get(`/o/headless-admin-user/v1.0/user-accounts/${id}`)
 		.then((response) => {

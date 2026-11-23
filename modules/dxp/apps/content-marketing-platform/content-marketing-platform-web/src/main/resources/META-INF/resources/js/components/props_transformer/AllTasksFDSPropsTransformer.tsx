@@ -14,10 +14,8 @@ import {
 	StateLabel,
 	WorkflowStateRenderer,
 	addOnClickToCreationMenuItems,
-	deleteAssetEntriesBulkAction,
 	deleteItemAction,
 } from '@liferay/site-cms-site-initializer';
-import {sub} from 'frontend-js-web';
 import React from 'react';
 
 import {styleActions, styleBulkActions} from '../../utils/actionStyles';
@@ -26,6 +24,7 @@ import {
 	registerTabFDS,
 } from '../../utils/cmpTabPersistence';
 import {WORKFLOW_TASK_ACTION_LINK_ID} from '../../utils/constants';
+import deleteTasksBulkAction from '../../utils/deleteTasksBulkAction';
 import getCMPProjectObjectEntryIds from '../../utils/getCMPProjectObjectEntryIds';
 import {getFormattedLabel} from '../../utils/getFormattedText';
 import {openCMPModal} from '../../utils/openCMPModal';
@@ -410,45 +409,10 @@ export default function AllTasksFDSPropsTransformer({
 				});
 			}
 			else if (action?.data?.id === 'delete') {
-				deleteAssetEntriesBulkAction({
+				await deleteTasksBulkAction({
 					apiURL: otherProps.apiURL,
 					dataSetId: id,
-					getCustomBulkDeleteMessage: (selectedData) => {
-						if (selectedData.selectAll) {
-							return {
-								messages: [
-									Liferay.Language.get(
-										'delete-tasks-confirmation'
-									),
-								],
-								title: Liferay.Language.get('delete-all-tasks'),
-							};
-						}
-						else if (selectedData.items.length > 1) {
-							return {
-								messages: [
-									Liferay.Language.get(
-										'delete-tasks-confirmation'
-									),
-								],
-								title: sub(
-									Liferay.Language.get('delete-x-tasks'),
-									[selectedData.items.length]
-								),
-							};
-						}
-
-						return {
-							messages: [
-								Liferay.Language.get(
-									'delete-tasks-confirmation'
-								),
-							],
-							title: Liferay.Language.get('delete-task'),
-						};
-					},
 					selectedData,
-					showConfirmationModal: true,
 				});
 			}
 			else if (action?.data?.id === 'update-due-date') {
