@@ -20,17 +20,14 @@ import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.portlet.PortletRequest;
 
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-
 /**
  * @author Lino Alves
  */
-@Component(
-	property = "jakarta.portlet.name=" + DDMPortletKeys.DYNAMIC_DATA_MAPPING_FORM_ADMIN,
-	service = DDMDisplayTabItem.class
-)
 public class DDMFormAdminDataProviderTabItem implements DDMDisplayTabItem {
+
+	public DDMFormAdminDataProviderTabItem(Language language) {
+		_language = language;
+	}
 
 	@Override
 	public String getTitle(
@@ -69,7 +66,6 @@ public class DDMFormAdminDataProviderTabItem implements DDMDisplayTabItem {
 		).buildString();
 	}
 
-	@Reference
-	private Language _language;
+	private final Language _language;
 
 }

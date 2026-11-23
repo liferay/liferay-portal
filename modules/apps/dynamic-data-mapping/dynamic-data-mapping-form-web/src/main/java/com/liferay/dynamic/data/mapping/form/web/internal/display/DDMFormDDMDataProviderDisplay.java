@@ -7,6 +7,9 @@ package com.liferay.dynamic.data.mapping.form.web.internal.display;
 
 import com.liferay.dynamic.data.mapping.constants.DDMPortletKeys;
 import com.liferay.dynamic.data.mapping.data.provider.display.DDMDataProviderDisplay;
+import com.liferay.dynamic.data.mapping.form.web.internal.tab.item.DDMFormAdminDataProviderTabItem;
+import com.liferay.dynamic.data.mapping.form.web.internal.tab.item.DDMFormAdminFieldSetTabItem;
+import com.liferay.dynamic.data.mapping.form.web.internal.tab.item.DDMFormAdminTabItem;
 import com.liferay.dynamic.data.mapping.util.DDMDisplayTabItem;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
@@ -16,6 +19,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -48,19 +52,17 @@ public class DDMFormDDMDataProviderDisplay implements DDMDataProviderDisplay {
 		return _language.get(resourceBundle, "forms");
 	}
 
-	@Reference(
-		target = "(component.name=com.liferay.dynamic.data.mapping.form.web.internal.tab.item.DDMFormAdminDataProviderTabItem)"
-	)
+	@Activate
+	protected void activate() {
+		_ddmFormAdminDataProviderTabItem = new DDMFormAdminDataProviderTabItem(
+			_language);
+		_ddmFormAdminFieldSetTabItem = new DDMFormAdminFieldSetTabItem(
+			_language);
+		_ddmFormAdminTabItem = new DDMFormAdminTabItem(_language);
+	}
+
 	private DDMDisplayTabItem _ddmFormAdminDataProviderTabItem;
-
-	@Reference(
-		target = "(component.name=com.liferay.dynamic.data.mapping.form.web.internal.tab.item.DDMFormAdminFieldSetTabItem)"
-	)
 	private DDMDisplayTabItem _ddmFormAdminFieldSetTabItem;
-
-	@Reference(
-		target = "(component.name=com.liferay.dynamic.data.mapping.form.web.internal.tab.item.DDMFormAdminTabItem)"
-	)
 	private DDMDisplayTabItem _ddmFormAdminTabItem;
 
 	@Reference

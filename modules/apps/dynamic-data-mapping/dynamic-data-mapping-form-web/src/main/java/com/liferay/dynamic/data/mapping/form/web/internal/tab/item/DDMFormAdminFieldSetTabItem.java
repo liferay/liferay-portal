@@ -5,22 +5,19 @@
 
 package com.liferay.dynamic.data.mapping.form.web.internal.tab.item;
 
-import com.liferay.dynamic.data.mapping.constants.DDMPortletKeys;
-import com.liferay.dynamic.data.mapping.util.DDMDisplayTabItem;
+import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 
-import org.osgi.service.component.annotations.Component;
-
 /**
  * @author Lino Alves
  */
-@Component(
-	property = "jakarta.portlet.name=" + DDMPortletKeys.DYNAMIC_DATA_MAPPING_FORM_ADMIN,
-	service = DDMDisplayTabItem.class
-)
 public class DDMFormAdminFieldSetTabItem extends DDMFormAdminTabItem {
+
+	public DDMFormAdminFieldSetTabItem(Language language) {
+		super(language);
+	}
 
 	@Override
 	public String getTitle(
