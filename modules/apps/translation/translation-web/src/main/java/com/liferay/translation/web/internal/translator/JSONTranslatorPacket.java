@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.translation.translator;
+package com.liferay.translation.web.internal.translator;
 
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.translation.translator.TranslatorPacket;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

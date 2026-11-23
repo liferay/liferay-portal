@@ -20,10 +20,10 @@ import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.translation.exception.TranslatorException;
-import com.liferay.translation.translator.JSONTranslatorPacket;
 import com.liferay.translation.translator.Translator;
 import com.liferay.translation.translator.TranslatorPacket;
 import com.liferay.translation.translator.TranslatorRegistry;
+import com.liferay.translation.web.internal.translator.JSONTranslatorPacket;
 
 import jakarta.servlet.Servlet;
 import jakarta.servlet.http.HttpServlet;
