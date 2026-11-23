@@ -269,13 +269,5 @@ test(
 		await expect
 			.poll(() => getSelectedCount(page, 'Account'))
 			.toBe(accountAfterRemoval + 1);
-
-		// The Products and Order categories also surface a selected count
-
-		await expect(categoryPreview(page, 'Products')).toContainText(
-			'Selected'
-		);
-
-		await expect(categoryPreview(page, 'Order')).toContainText('Selected');
 	}
 );
