@@ -18,10 +18,14 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.ProxyUtil;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LogEntry;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 
 import org.junit.Assert;
@@ -95,7 +99,11 @@ public class BackgroundTaskMessageListenerTest {
 					backgroundTaskExecutorClass.getName()
 				).build());
 
-		try {
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.portal.background.task.internal.messaging." +
+					"BackgroundTaskMessageListener",
+				LoggerTestUtil.ERROR)) {
+
 			BackgroundTask backgroundTask =
 				_backgroundTaskLocalService.getBackgroundTask(
 					_backgroundTaskManager.addBackgroundTask(
@@ -123,6 +131,22 @@ public class BackgroundTaskMessageListenerTest {
 
 			Assert.assertEquals(
 				_STATUS_MESSAGE, backgroundTask.getStatusMessage());
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
+
+			LogEntry logEntry = logEntries.get(0);
+
+			Assert.assertEquals(
+				"Unable to execute background task", logEntry.getMessage());
+			Assert.assertEquals(LoggerTestUtil.ERROR, logEntry.getPriority());
+
+			Throwable throwable = logEntry.getThrowable();
+
+			Assert.assertSame(
+				IllegalStateException.class, throwable.getClass());
+			Assert.assertEquals(message, throwable.getMessage());
 		}
 		finally {
 			serviceRegistration.unregister();
