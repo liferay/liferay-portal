@@ -1616,6 +1616,29 @@ public class ObjectRelationshipLocalServiceTest {
 			ObjectRelationshipConstants.TYPE_ONE_TO_MANY, null);
 	}
 
+	private ObjectRelationship _addObjectRelationshipWithObjectField(
+			String objectFieldRelationshipType)
+		throws Exception {
+
+		return _objectRelationshipLocalService.addObjectRelationship(
+			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+			_objectDefinition1.getObjectDefinitionId(),
+			_objectDefinition2.getObjectDefinitionId(),
+			new ObjectFieldBuilder(
+			).externalReferenceCode(
+				RandomTestUtil.randomString()
+			).labelMap(
+				RandomTestUtil.randomLocaleStringMap()
+			).name(
+				ObjectRelationshipUtil.getObjectRelationshipFieldName(
+					_objectDefinition1, "a" + RandomTestUtil.randomString())
+			).readOnly(
+				ObjectFieldConstants.READ_ONLY_FALSE
+			).relationshipType(
+				objectFieldRelationshipType
+			).build());
+	}
+
 	private void _assertObjectLayoutTab(
 			int expectedSize, ObjectLayoutTab objectLayoutTab)
 		throws Exception {
@@ -1976,6 +1999,41 @@ public class ObjectRelationshipLocalServiceTest {
 				).readOnly(
 					ObjectFieldConstants.READ_ONLY_FALSE
 				).build()));
+
+		_objectRelationshipLocalService.deleteObjectRelationship(
+			objectRelationship);
+
+		AssertUtils.assertFailure(
+			ObjectRelationshipTypeException.class,
+			"Invalid type " + ObjectRelationshipConstants.TYPE_MANY_TO_MANY,
+			() -> _addObjectRelationshipWithObjectField(
+				ObjectRelationshipConstants.TYPE_MANY_TO_MANY));
+
+		_testAddObjectRelationshipWithObjectField(
+			ObjectRelationshipConstants.TYPE_ONE_TO_MANY, null);
+		_testAddObjectRelationshipWithObjectField(
+			ObjectRelationshipConstants.TYPE_ONE_TO_MANY, StringPool.BLANK);
+		_testAddObjectRelationshipWithObjectField(
+			ObjectRelationshipConstants.TYPE_ONE_TO_MANY,
+			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+		_testAddObjectRelationshipWithObjectField(
+			ObjectRelationshipConstants.TYPE_ONE_TO_ONE,
+			ObjectRelationshipConstants.TYPE_ONE_TO_ONE);
+	}
+
+	private void _testAddObjectRelationshipWithObjectField(
+			String expectedType, String objectFieldRelationshipType)
+		throws Exception {
+
+		ObjectRelationship objectRelationship =
+			_addObjectRelationshipWithObjectField(objectFieldRelationshipType);
+
+		Assert.assertEquals(expectedType, objectRelationship.getType());
+
+		ObjectField objectField = _objectFieldLocalService.getObjectField(
+			objectRelationship.getObjectFieldId2());
+
+		Assert.assertEquals(expectedType, objectField.getRelationshipType());
 
 		_objectRelationshipLocalService.deleteObjectRelationship(
 			objectRelationship);

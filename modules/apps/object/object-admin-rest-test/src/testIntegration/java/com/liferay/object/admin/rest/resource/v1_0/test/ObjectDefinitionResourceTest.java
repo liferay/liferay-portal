@@ -108,6 +108,7 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.workflow.WorkflowDefinition;
 import com.liferay.portal.language.LanguageResources;
 import com.liferay.portal.odata.entity.EntityField;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 import com.liferay.portal.workflow.constants.WorkflowDefinitionConstants;
@@ -435,6 +436,7 @@ public class ObjectDefinitionResourceTest
 		_testPatchObjectDefinitionWithPermissions();
 	}
 
+	@FeatureFlag("LPD-108620")
 	@LazyReferencing
 	@Override
 	@Test
@@ -776,6 +778,7 @@ public class ObjectDefinitionResourceTest
 		_testPostObjectDefinitionWithAllowStandaloneObjectEntry();
 		_testPostObjectDefinitionWithAssigneeObjectField();
 		_testPostObjectDefinitionWithPermissions();
+		_testPostObjectDefinitionWithRelationshipObjectField();
 		_testPostObjectDefinitionWithSystemAggregationObjectField();
 		_testPostObjectDefinitionWithWorkflowDefinitionLinks();
 	}
@@ -3378,6 +3381,63 @@ public class ObjectDefinitionResourceTest
 			ResourceConstants.SCOPE_COMPANY,
 			String.valueOf(TestPropsValues.getCompanyId()), role1.getRoleId(),
 			ActionKeys.DELETE);
+	}
+
+	private void _testPostObjectDefinitionWithRelationshipObjectField()
+		throws Exception {
+
+		_testPostObjectDefinitionWithRelationshipObjectField(
+			ObjectRelationshipConstants.TYPE_ONE_TO_MANY, null);
+		_testPostObjectDefinitionWithRelationshipObjectField(
+			ObjectRelationshipConstants.TYPE_ONE_TO_MANY,
+			ObjectField.RelationshipType.ONE_TO_MANY);
+		_testPostObjectDefinitionWithRelationshipObjectField(
+			ObjectRelationshipConstants.TYPE_ONE_TO_ONE,
+			ObjectField.RelationshipType.ONE_TO_ONE);
+	}
+
+	private void _testPostObjectDefinitionWithRelationshipObjectField(
+			String expectedObjectRelationshipType,
+			ObjectField.RelationshipType objectFieldRelationshipType)
+		throws Exception {
+
+		ObjectDefinition objectDefinition2 = randomObjectDefinition();
+
+		String objectDefinition1ExternalReferenceCode =
+			RandomTestUtil.randomString();
+
+		ObjectField relationshipObjectField = _createRelationshipObjectField(
+			objectDefinition1ExternalReferenceCode);
+
+		String objectRelationshipExternalReferenceCode =
+			RandomTestUtil.randomString();
+
+		relationshipObjectField.setObjectRelationshipExternalReferenceCode(
+			objectRelationshipExternalReferenceCode);
+
+		relationshipObjectField.setRelationshipType(
+			objectFieldRelationshipType);
+
+		objectDefinition2.setObjectFields(
+			ArrayUtil.append(
+				objectDefinition2.getObjectFields(), relationshipObjectField));
+
+		_addObjectDefinition(objectDefinition2);
+
+		ObjectDefinition objectDefinition1 =
+			objectDefinitionResource.getObjectDefinitionByExternalReferenceCode(
+				objectDefinition1ExternalReferenceCode);
+
+		com.liferay.object.model.ObjectRelationship
+			serviceBuilderObjectRelationship =
+				_objectRelationshipLocalService.
+					fetchObjectRelationshipByExternalReferenceCode(
+						objectRelationshipExternalReferenceCode,
+						objectDefinition1.getId());
+
+		Assert.assertEquals(
+			expectedObjectRelationshipType,
+			serviceBuilderObjectRelationship.getType());
 	}
 
 	private void _testPostObjectDefinitionWithSystemAggregationObjectField()
