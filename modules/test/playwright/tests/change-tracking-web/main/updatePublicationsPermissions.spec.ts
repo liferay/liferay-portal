@@ -37,7 +37,7 @@ test.describe('Enable customizable Permissions for Publication Owners and Roles'
 
 		for (const actionName of actionNames) {
 			await expect(
-				page.getByRole('cell', {exact: true, name: actionName})
+				page.getByRole('columnheader', {exact: true, name: actionName})
 			).toBeVisible();
 		}
 	});

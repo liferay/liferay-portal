@@ -268,11 +268,14 @@ test('LPD-23969 Activities tab is added to workflow info display', async ({
 	await page.getByRole('button', {exact: true, name: 'Activities'}).click();
 
 	await expect(
-		page.getByRole('cell', {exact: true, name: 'Activity Description'})
+		page.getByRole('columnheader', {
+			exact: true,
+			name: 'Activity Description',
+		})
 	).toBeVisible();
 
 	await expect(
-		page.getByRole('cell', {exact: true, name: 'Date'})
+		page.getByRole('columnheader', {exact: true, name: 'Date'})
 	).toBeVisible();
 
 	await expect(
