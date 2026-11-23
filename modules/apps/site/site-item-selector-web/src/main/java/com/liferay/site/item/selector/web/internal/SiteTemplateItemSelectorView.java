@@ -14,16 +14,20 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
+import com.liferay.site.constants.SiteWebKeys;
 import com.liferay.site.item.selector.SiteItemSelectorCriterion;
-import com.liferay.site.item.selector.web.internal.renderer.SiteTemplateItemSelectorViewRenderer;
+import com.liferay.site.item.selector.web.internal.constants.SitesItemSelectorWebKeys;
+import com.liferay.site.item.selector.web.internal.display.context.SiteTemplateItemSelectorViewDisplayContext;
 import com.liferay.site.provider.GroupURLProvider;
 
 import jakarta.portlet.PortletURL;
 
+import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
 
 import java.io.IOException;
 
@@ -31,9 +35,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 
 /**
@@ -77,21 +79,24 @@ public class SiteTemplateItemSelectorView
 			PortletURL portletURL, String itemSelectedEventName, boolean search)
 		throws IOException, ServletException {
 
-		_siteTemplateItemSelectorViewRenderer.renderHTML(
-			servletRequest, servletResponse, siteItemSelectorCriterion,
-			portletURL, itemSelectedEventName);
-	}
+		RequestDispatcher requestDispatcher =
+			_servletContext.getRequestDispatcher("/view_sites.jsp");
 
-	@Activate
-	protected void activate() {
-		_siteTemplateItemSelectorViewRenderer =
-			new SiteTemplateItemSelectorViewRenderer(
-				_groupURLProvider, _servletContext);
-	}
+		servletRequest.setAttribute(
+			SiteWebKeys.GROUP_URL_PROVIDER, _groupURLProvider);
 
-	@Deactivate
-	protected void deactivate() {
-		_siteTemplateItemSelectorViewRenderer = null;
+		SiteTemplateItemSelectorViewDisplayContext
+			siteTemplateItemSelectorViewDisplayContext =
+				new SiteTemplateItemSelectorViewDisplayContext(
+					(HttpServletRequest)servletRequest,
+					siteItemSelectorCriterion, itemSelectedEventName,
+					portletURL);
+
+		servletRequest.setAttribute(
+			SitesItemSelectorWebKeys.SITES_ITEM_SELECTOR_DISPLAY_CONTEXT,
+			siteTemplateItemSelectorViewDisplayContext);
+
+		requestDispatcher.include(servletRequest, servletResponse);
 	}
 
 	private static final List<ItemSelectorReturnType>
@@ -111,8 +116,5 @@ public class SiteTemplateItemSelectorView
 		target = "(osgi.web.symbolicname=com.liferay.site.item.selector.web)"
 	)
 	private ServletContext _servletContext;
-
-	private SiteTemplateItemSelectorViewRenderer
-		_siteTemplateItemSelectorViewRenderer;
 
 }
