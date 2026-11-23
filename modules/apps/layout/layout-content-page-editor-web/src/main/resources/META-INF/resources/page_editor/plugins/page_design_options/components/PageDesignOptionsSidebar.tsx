@@ -13,80 +13,102 @@ import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {LAYOUT_TYPES} from '../../../app/config/constants/layoutTypes';
 import {config} from '../../../app/config/index';
 import {useDispatch, useSelector} from '../../../app/contexts/StoreContext';
-import LayoutService from '../../../app/services/LayoutService';
-import changeMasterLayout from '../../../app/thunks/changeMasterLayout';
+import {
+	MasterLayoutsList,
+	StyleBooksList,
+	changeMasterLayout,
+	useSetStyleBook,
+	useStyleBook,
+} from '../../../app/js-index';
+import LayoutService, {
+	StyleBookTokenValueMap,
+} from '../../../app/services/LayoutService';
 import SidebarPanelHeader from '../../../common/components/SidebarPanelHeader';
-import {useSetStyleBook, useStyleBook} from '../hooks/useStyleBook';
-import MasterLayoutsList from './MasterLayoutsList';
-import StyleBooksList from './StyleBooksList';
+
+type StyleBook = {
+	imagePreviewURL: string;
+	name: string;
+	styleBookEntryERC: string;
+	styleBookEntryScopeERC?: string;
+};
 
 export default function PageDesignOptionsSidebar() {
 	const dispatch = useDispatch();
 	const selectedStyleBook = useStyleBook();
 	const setSelectedStyleBook = useSetStyleBook();
 
-	const [styleBooks, setStyleBooks] = useState(config.styleBooks);
+	const [styleBooks, setStyleBooks] = useState<StyleBook[]>(
+		config.styleBooks
+	);
 
 	const masterLayoutPageTemplateEntryERC = useSelector(
 		(state) => state.masterLayout?.masterLayoutPageTemplateEntryERC
 	);
 
 	const onSelectMasterLayout = useCallback(
-		(masterLayout) => {
-			dispatch(
+		async (masterLayout: {masterLayoutPageTemplateEntryERC: string}) => {
+			const {
+				styleBookEntryERC,
+				styleBookEntryScopeERC,
+				styleBooks = [],
+			}: {
+				styleBookEntryERC: string;
+				styleBookEntryScopeERC?: string;
+				styleBooks?: StyleBook[];
+			} = await dispatch(
 				changeMasterLayout({
 					masterLayoutPageTemplateEntryERC:
 						masterLayout.masterLayoutPageTemplateEntryERC,
 				})
-			).then(
-				({
-					styleBookEntryERC,
-					styleBookEntryScopeERC,
-					styleBooks = [],
-				}) => {
-					setStyleBooks(styleBooks);
-
-					if (!styleBooks.length) {
-						setSelectedStyleBook({
-							styleBookEntryERC: '',
-							styleBookEntryScopeERC: '',
-							tokenValues: {},
-						});
-
-						return;
-					}
-
-					const selectedStyleBook = styleBooks.find(
-						(styleBook) =>
-							styleBook.styleBookEntryERC === styleBookEntryERC &&
-							(styleBook.styleBookEntryScopeERC || '') ===
-								(styleBookEntryScopeERC || '')
-					);
-
-					if (selectedStyleBook) {
-						setSelectedStyleBook({...selectedStyleBook});
-					}
-					else {
-						setSelectedStyleBook({...styleBooks[0]});
-					}
-				}
 			);
+
+			setStyleBooks(styleBooks);
+
+			if (!styleBooks.length) {
+				setSelectedStyleBook({
+					styleBookEntryERC: '',
+					styleBookEntryScopeERC: '',
+					tokenValues: {},
+				});
+
+				return;
+			}
+
+			const selectedStyleBook = styleBooks.find(
+				(styleBook) =>
+					styleBook.styleBookEntryERC === styleBookEntryERC &&
+					(styleBook.styleBookEntryScopeERC || '') ===
+						(styleBookEntryScopeERC || '')
+			);
+
+			if (selectedStyleBook) {
+				setSelectedStyleBook({...selectedStyleBook});
+			}
+			else {
+				setSelectedStyleBook({...styleBooks[0]});
+			}
 		},
 		[dispatch, setSelectedStyleBook]
 	);
 
 	const onSelectStyleBook = useCallback(
-		({styleBookEntryERC, styleBookEntryScopeERC}) => {
-			LayoutService.changeStyleBookEntry({
+		async ({
+			styleBookEntryERC,
+			styleBookEntryScopeERC,
+		}: {
+			styleBookEntryERC: string;
+			styleBookEntryScopeERC?: string;
+		}) => {
+			const {tokenValues} = await LayoutService.changeStyleBookEntry({
 				onNetworkStatus: dispatch,
 				styleBookEntryERC,
 				styleBookEntryScopeERC,
-			}).then(({tokenValues}) => {
-				setSelectedStyleBook({
-					styleBookEntryERC,
-					styleBookEntryScopeERC,
-					tokenValues,
-				});
+			});
+
+			setSelectedStyleBook({
+				styleBookEntryERC,
+				styleBookEntryScopeERC,
+				tokenValues,
 			});
 		},
 		[setSelectedStyleBook, dispatch]
@@ -94,12 +116,15 @@ export default function PageDesignOptionsSidebar() {
 
 	useEffect(() => {
 		if (selectedStyleBook && document.documentElement) {
-			Object.values(selectedStyleBook.tokenValues).forEach((token) => {
+			const tokens: StyleBookTokenValueMap =
+				selectedStyleBook.tokenValues;
+
+			for (const token of Object.values(tokens)) {
 				document.documentElement.style.setProperty(
 					`--${token.cssVariable}`,
 					token.value
 				);
-			});
+			}
 		}
 	}, [selectedStyleBook]);
 
@@ -107,7 +132,7 @@ export default function PageDesignOptionsSidebar() {
 	const tabIdNamespace = useId();
 
 	const tabs = useMemo(() => {
-		const result = [];
+		const result: Array<{content: React.ReactNode; label: string}> = [];
 
 		if (config.layoutType !== LAYOUT_TYPES.master) {
 			result.push({
@@ -145,8 +170,9 @@ export default function PageDesignOptionsSidebar() {
 		styleBooks,
 	]);
 
-	const getTabId = (tabId) => `${tabIdNamespace}tab${tabId}`;
-	const getTabPanelId = (tabId) => `${tabIdNamespace}tabPanel${tabId}`;
+	const getTabId = (tabId: number) => `${tabIdNamespace}tab${tabId}`;
+	const getTabPanelId = (tabId: number) =>
+		`${tabIdNamespace}tabPanel${tabId}`;
 
 	return (
 		<>

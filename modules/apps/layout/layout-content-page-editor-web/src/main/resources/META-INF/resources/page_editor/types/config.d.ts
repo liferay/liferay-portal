@@ -189,6 +189,7 @@ export interface Config {
 	isCMS: boolean;
 	isConversionDraft: boolean;
 	isPrivateLayoutsEnabled: boolean;
+	launchSetId: number;
 	layoutConversionWarningMessages: string[] | null;
 	layoutItemSelectorURL: String;
 	layoutType: LayoutType;
@@ -215,6 +216,7 @@ export interface Config {
 	regenerateDisplayPageURL: string;
 	renderFragmentEntriesURL: string;
 	restoreCollectionDisplayConfigURL: string;
+	saveVariantSegmentsExperienceURL?: string;
 	searchContainerPageMaxDelta: number;
 
 	selectedMappingTypes?: {
@@ -245,6 +247,7 @@ export interface Config {
 	}>;
 	swapFragmentEntryLinkURL: string;
 	themeColorsCssClasses: string[];
+	themeName: string;
 	toolbarId: string;
 
 	undoUpdateFormConfigURL: string;

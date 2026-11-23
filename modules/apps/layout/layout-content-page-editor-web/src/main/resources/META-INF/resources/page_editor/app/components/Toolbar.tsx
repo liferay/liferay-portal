@@ -16,9 +16,8 @@ import {
 	openToast,
 } from 'frontend-js-components-web';
 import {fetch} from 'frontend-js-web';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 
-import ExperienceToolbarSection from '../../plugins/experience/components/ExperienceToolbarSection';
 import * as Actions from '../actions/index';
 import {LAYOUT_TYPES} from '../config/constants/layoutTypes';
 import {SERVICE_NETWORK_STATUS_TYPES} from '../config/constants/serviceNetworkStatusTypes';
@@ -26,29 +25,30 @@ import {config} from '../config/index';
 import {useSelectItem} from '../contexts/ControlsContext';
 import {useEditableProcessorUniqueId} from '../contexts/EditableProcessorContext';
 import {useDispatch, useSelector} from '../contexts/StoreContext';
+import {
+	ExperienceToolbarSection,
+	ExperimentsLabel,
+	HideSidebarButton,
+	NetworkStatusBar,
+	ToolbarActionsDropdown,
+	Translation,
+	Undo,
+	ZoomAlert,
+	useDropClear,
+} from '../js-index';
 import selectCanPublish from '../selectors/selectCanPublish';
-import {useDropClear} from '../utils/drag_and_drop/useDragAndDrop';
 import DiscardDraftButton from './DiscardDraftButton';
 import EditModeSelector from './EditModeSelector';
-import ExperimentsLabel from './ExperimentsLabel';
-import HideSidebarButton from './HideSidebarButton';
-import NetworkStatusBar from './NetworkStatusBar';
 import PublishButton from './PublishButton';
 import ToggleConfigurationSidebarButton from './ToggleConfigurationSidebarButton';
-import ToolbarActionsDropdown from './ToolbarActionsDropdown';
-import Translation from './Translation';
 import ViewportSizeSelector from './ViewportSizeSelector';
-import ZoomAlert from './ZoomAlert';
-import Undo from './undo/Undo';
 
-const {useRef} = React;
-
-function ToolbarBody({className}) {
-	const discardDraftFormRef = useRef();
+function ToolbarBody({className}: {className?: string}) {
+	const discardDraftFormRef = useRef<HTMLFormElement>(null);
 	const dispatch = useDispatch();
 	const dropClearRef = useDropClear();
 	const editableProcessorUniqueId = useEditableProcessorUniqueId();
-	const formRef = useRef();
+	const formRef = useRef<HTMLFormElement>(null);
 	const selectItem = useSelectItem();
 	const store = useSelector((state) => state);
 
@@ -81,7 +81,7 @@ function ToolbarBody({className}) {
 		}
 	};
 
-	const deselectItem = (event) => {
+	const deselectItem = (event: React.MouseEvent) => {
 		if (event.target === event.currentTarget) {
 			selectItem(null);
 		}
@@ -252,7 +252,6 @@ function ToolbarBody({className}) {
 				{config.isCMS ? (
 					<li className="nav-item">
 						<ClayDropDownWithItems
-							hasLeftSymbols
 							items={[
 								{
 									label: Liferay.Language.get(
@@ -286,7 +285,7 @@ function ToolbarBody({className}) {
 }
 
 export default function Toolbar() {
-	const container = document.getElementById(config.toolbarId);
+	const container = document.getElementById(config.toolbarId)!;
 	const isMounted = useIsMounted();
 
 	if (!isMounted()) {
@@ -305,20 +304,21 @@ export default function Toolbar() {
 	);
 }
 
-function regenerateDisplayPage() {
-	fetch(config.regenerateDisplayPageURL, {method: 'POST'}).then(
-		(response) => {
-			if (response.ok) {
-				window.location.reload();
-			}
-			else {
-				openToast({
-					message: Liferay.Language.get(
-						'an-unexpected-error-occurred-while-autogenerating-default-experience'
-					),
-					type: 'danger',
-				});
-			}
-		}
-	);
+async function regenerateDisplayPage() {
+	const response = await fetch(config.regenerateDisplayPageURL, {
+		method: 'POST',
+	});
+
+	if (response.ok) {
+		window.location.reload();
+
+		return;
+	}
+
+	openToast({
+		message: Liferay.Language.get(
+			'an-unexpected-error-occurred-while-autogenerating-default-experience'
+		),
+		type: 'danger',
+	});
 }

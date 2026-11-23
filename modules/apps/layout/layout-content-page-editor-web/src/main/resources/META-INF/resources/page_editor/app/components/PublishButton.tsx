@@ -5,12 +5,20 @@
 
 import ClayButton from '@clayui/button';
 import ClayIcon from '@clayui/icon';
-import PropTypes from 'prop-types';
 import React, {useState} from 'react';
 
 import {config} from '../config/index';
-import useCheckFormsValidity from '../utils/useCheckFormsValidity';
-import {FormValidationModal} from './FormValidationModal';
+import {FormValidationModal, useCheckFormsValidity} from '../js-index';
+
+type Props = {
+	ariaLabel: string;
+	canPublish?: boolean;
+	disabled?: boolean;
+	formRef: React.RefObject<HTMLFormElement>;
+	icon?: string | null;
+	label: string;
+	onPublish: () => void;
+};
 
 export default function PublishButton({
 	ariaLabel,
@@ -20,7 +28,7 @@ export default function PublishButton({
 	icon,
 	label,
 	onPublish,
-}) {
+}: Props) {
 	const checkFormsValidity = useCheckFormsValidity();
 
 	const [openFormValidationModal, setOpenFormValidationModal] =
@@ -45,15 +53,15 @@ export default function PublishButton({
 					aria-label={ariaLabel}
 					disabled={disabled || config.pending || !canPublish}
 					displayType="primary"
-					onClick={() => {
-						checkFormsValidity().then((valid) => {
-							if (valid) {
-								onPublish();
-							}
-							else {
-								setOpenFormValidationModal(true);
-							}
-						});
+					onClick={async () => {
+						const valid = await checkFormsValidity();
+
+						if (valid) {
+							onPublish();
+						}
+						else {
+							setOpenFormValidationModal(true);
+						}
 					}}
 					size="sm"
 				>
@@ -72,10 +80,3 @@ export default function PublishButton({
 		</>
 	);
 }
-
-PublishButton.propTypes = {
-	canPublish: PropTypes.bool,
-	formRef: PropTypes.object,
-	label: PropTypes.string,
-	onPublish: PropTypes.func,
-};
