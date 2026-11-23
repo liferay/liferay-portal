@@ -60,12 +60,31 @@ public class PasswordEncryptorUtilTest {
 			_assertIsComponentEnabled(
 				_CLASS_NAME_CRYPT_PASSWORD_ENCRYPTOR, false);
 
-			Assert.assertThrows(
-				SecurityException.class,
-				() -> _testEncrypt(PasswordEncryptor.TYPE_BCRYPT));
-			Assert.assertThrows(
-				SecurityException.class,
-				() -> _testEncrypt(PasswordEncryptor.TYPE_UFC_CRYPT));
+			try {
+				_testEncrypt(PasswordEncryptor.TYPE_BCRYPT);
+
+				Assert.fail();
+			}
+			catch (PwdEncryptorException.UnavailableAlgorithm
+						pwdEncryptorException) {
+
+				Assert.assertEquals(
+					"Algorithm \"BCRYPT\" is not available in FIPS mode",
+					pwdEncryptorException.getMessage());
+			}
+
+			try {
+				_testEncrypt(PasswordEncryptor.TYPE_UFC_CRYPT);
+
+				Assert.fail();
+			}
+			catch (PwdEncryptorException.UnavailableAlgorithm
+						pwdEncryptorException) {
+
+				Assert.assertEquals(
+					"Algorithm \"UFC-CRYPT\" is not available in FIPS mode",
+					pwdEncryptorException.getMessage());
+			}
 		}
 		finally {
 			_enableComponent(_CLASS_NAME_BCRYPT_PASSWORD_ENCRYPTOR);
