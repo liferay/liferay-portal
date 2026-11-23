@@ -327,7 +327,10 @@ public class HeadlessApplicationProviderTest {
 			Assert.assertNotNull(_getApplication("/test-vulcan-application"));
 		}
 		finally {
-			ConfigurationTestUtil.deleteFactoryConfiguration(pid, _FACTORY_PID);
+			ConfigurationTestUtil.deleteFactoryConfiguration(
+				pid,
+				"com.liferay.portal.vulcan.internal.configuration." +
+					"VulcanCompanyConfiguration");
 		}
 
 		pid = _createFactoryConfiguration(TestPropsValues.getCompanyId());
@@ -336,7 +339,10 @@ public class HeadlessApplicationProviderTest {
 			Assert.assertNull(_getApplication("/test-vulcan-application"));
 		}
 		finally {
-			ConfigurationTestUtil.deleteFactoryConfiguration(pid, _FACTORY_PID);
+			ConfigurationTestUtil.deleteFactoryConfiguration(
+				pid,
+				"com.liferay.portal.vulcan.internal.configuration." +
+					"VulcanCompanyConfiguration");
 		}
 
 		Assert.assertNotNull(_getApplication("/test-vulcan-application"));
@@ -483,7 +489,8 @@ public class HeadlessApplicationProviderTest {
 		throws Exception {
 
 		return ConfigurationTestUtil.createFactoryConfiguration(
-			_FACTORY_PID,
+			"com.liferay.portal.vulcan.internal.configuration." +
+				"VulcanCompanyConfiguration",
 			HashMapDictionaryBuilder.<String, Object>put(
 				ExtendedObjectClassDefinition.Scope.COMPANY.getPropertyKey(),
 				companyId
@@ -537,10 +544,6 @@ public class HeadlessApplicationProviderTest {
 
 		return null;
 	}
-
-	private static final String _FACTORY_PID =
-		"com.liferay.portal.vulcan.internal.configuration." +
-			"VulcanCompanyConfiguration";
 
 	private static final String _FEATURE_FLAG_KEY = "APPLICATION-123";
 

@@ -56,29 +56,29 @@ public class ConfigurationUtilTest {
 		Assert.assertTrue(_isRESTEnabled());
 
 		Configuration systemConfiguration = _createConfiguration(
-			false, VulcanConfiguration.class.getName());
+			VulcanConfiguration.class.getName(), false);
 
 		Assert.assertFalse(_isRESTEnabled(systemConfiguration));
 		Assert.assertTrue(
 			_isRESTEnabled(
 				systemConfiguration,
 				_createConfiguration(
-					true, VulcanCompanyConfiguration.class.getName())));
+					VulcanCompanyConfiguration.class.getName(), true)));
 
 		systemConfiguration = _createConfiguration(
-			true, VulcanConfiguration.class.getName());
+			VulcanConfiguration.class.getName(), true);
 
 		Assert.assertFalse(
 			_isRESTEnabled(
 				systemConfiguration,
 				_createConfiguration(
-					false, VulcanCompanyConfiguration.class.getName())));
+					VulcanCompanyConfiguration.class.getName(), false)));
 		Assert.assertFalse(
 			_isRESTEnabled(
 				systemConfiguration,
 				_createConfiguration(
-					false,
-					VulcanCompanyConfiguration.class.getName() + ".scoped")));
+					VulcanCompanyConfiguration.class.getName() + ".scoped",
+					false)));
 
 		long companyId = RandomTestUtil.randomLong();
 		String path = RandomTestUtil.randomString();
@@ -86,7 +86,7 @@ public class ConfigurationUtilTest {
 		Assert.assertTrue(_isRESTEnabled(companyId, path, systemConfiguration));
 
 		systemConfiguration = _createConfiguration(
-			false, VulcanConfiguration.class.getName());
+			VulcanConfiguration.class.getName(), false);
 
 		Assert.assertTrue(_isRESTEnabled(companyId, path, systemConfiguration));
 
@@ -101,7 +101,7 @@ public class ConfigurationUtilTest {
 	}
 
 	private Configuration _createConfiguration(
-		boolean restEnabled, String factoryPid) {
+		String factoryPid, boolean restEnabled) {
 
 		return _createConfiguration(
 			factoryPid,

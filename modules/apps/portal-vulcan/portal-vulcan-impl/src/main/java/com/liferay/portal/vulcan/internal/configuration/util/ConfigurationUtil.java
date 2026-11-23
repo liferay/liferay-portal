@@ -92,7 +92,7 @@ public class ConfigurationUtil {
 		try {
 			Map<Long, Boolean> restEnabledMap =
 				_restEnabledMaps.computeIfAbsent(
-					path, key -> new ConcurrentHashMap<>());
+					path, restPath -> new ConcurrentHashMap<>());
 
 			Boolean restEnabled = restEnabledMap.get(company.getCompanyId());
 
