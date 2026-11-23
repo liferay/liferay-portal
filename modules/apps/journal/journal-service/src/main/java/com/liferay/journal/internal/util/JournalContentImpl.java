@@ -562,8 +562,6 @@ public class JournalContentImpl implements JournalContent {
 	private static PortalCacheIndexer
 		<String, JournalContentKey, JournalArticleDisplay>
 			_journalTemplatePortalCacheIndexer;
-	private static PortalCache<JournalContentKey, JournalArticleDisplay>
-		_portalCache;
 
 	@Reference
 	private JournalArticleLocalService _journalArticleLocalService;
@@ -577,6 +575,7 @@ public class JournalContentImpl implements JournalContent {
 	@Reference
 	private MultiVMPool _multiVMPool;
 
+	private PortalCache<JournalContentKey, JournalArticleDisplay> _portalCache;
 	private ServiceRegistration<CTEventListener> _serviceRegistration;
 
 	private static class JournalContentArticleKeyIndexEncoder
