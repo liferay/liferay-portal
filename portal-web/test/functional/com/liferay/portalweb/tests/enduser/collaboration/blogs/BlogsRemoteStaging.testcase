@@ -221,7 +221,7 @@ definition {
 
 		Refresh();
 
-		while ((IsElementNotPresent(locator1 = "BlogsEntry#TITLE")) && (maxIterations = "6")) {
+		while ((IsElementNotPresent(key_entryTitle = "Blogs Entry Title", locator1 = "BlogsEntry#TITLE")) && (maxIterations = "6")) {
 
 			// Wait for the next entry check run before refreshing again. See LPS-157957.
 
