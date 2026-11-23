@@ -80,6 +80,11 @@ public class OAuth2ApplicationLocalServiceTest {
 
 	@After
 	public void tearDown() throws Exception {
+		if (_oAuth2Application != null) {
+			_oAuth2ApplicationLocalService.deleteOAuth2Application(
+				_oAuth2Application);
+		}
+
 		ConfigurationTestUtil.deleteConfiguration(
 			_KEY_MANAGER_CUSTOM_PROFILE_CONFIGURATION_PID);
 
@@ -143,7 +148,6 @@ public class OAuth2ApplicationLocalServiceTest {
 	private static final BundleContext _bundleContext =
 		SystemBundleUtil.getBundleContext();
 
-	@DeleteAfterTestRun
 	private OAuth2Application _oAuth2Application;
 
 	@Inject
