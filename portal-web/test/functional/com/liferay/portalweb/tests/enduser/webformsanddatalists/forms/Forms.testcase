@@ -1444,7 +1444,7 @@ definition {
 			repeatableFieldNumber = 4);
 
 		FormFields.addRepeatableField(
-			fieldName = "smallImageExtensions",
+			fieldName = "Small Image Extensions",
 			repeatableFieldNumber = 4);
 
 		FormFields.viewRepeatableTextMultilineField(

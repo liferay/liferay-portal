@@ -87,7 +87,7 @@
 </tr>
 <tr>
 	<td>FIELD_REPEATABLE_ADD_BUTTON_SPECIFIC</td>
-	<td>//div[@class='ddm-field'][.//*[contains(@class,'ddm-form-field-repeatable-delete-button')]][contains(@data-field-name,'${key_fieldName}') or (.//label[normalize-space(text())='${key_fieldName}'] and not(.//div[@class='ddm-field']//label[normalize-space(text())='${key_fieldName}']))][count(preceding::div[@class='ddm-field'][.//*[contains(@class,'ddm-form-field-repeatable-delete-button')]][contains(@data-field-name,'${key_fieldName}') or (.//label[normalize-space(text())='${key_fieldName}'] and not(.//div[@class='ddm-field']//label[normalize-space(text())='${key_fieldName}']))]) = ${key_repeatableFieldNumber} - 1]//button[contains(@class,'ddm-form-field-repeatable-add-button')][ancestor::div[@class='ddm-field'][1][contains(@data-field-name,'${key_fieldName}') or (.//label[normalize-space(text())='${key_fieldName}'] and not(.//div[@class='ddm-field']//label[normalize-space(text())='${key_fieldName}']))]]</td>
+	<td>//button[@aria-label='Add Duplicate Field ${key_fieldLabel}']</td>
 	<td></td>
 </tr>
 <tr>

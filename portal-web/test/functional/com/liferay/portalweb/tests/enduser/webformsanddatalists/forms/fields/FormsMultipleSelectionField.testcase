@@ -253,7 +253,7 @@ definition {
 		FormsAdminNavigator.gotoPublishedForm();
 
 		FormFields.addRepeatableField(
-			fieldName = "Multiple",
+			fieldName = "Multiple Selection",
 			repeatableFieldNumber = 1);
 
 		FormFields.viewRepeatableSingleSelectionRow(

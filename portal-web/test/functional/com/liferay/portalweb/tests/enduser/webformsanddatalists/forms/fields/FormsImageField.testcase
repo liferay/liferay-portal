@@ -246,8 +246,8 @@ definition {
 		FormPortlet.waitFormRenderer(text = "Submit");
 
 		FormFields.addRepeatableField(
-			key_fieldName = "Image",
-			key_repeatableFieldNumber = 1);
+			fieldName = "Image",
+			repeatableFieldNumber = 1);
 
 		FormFields.viewFieldRepeatableButton(
 			fieldName = "Image",

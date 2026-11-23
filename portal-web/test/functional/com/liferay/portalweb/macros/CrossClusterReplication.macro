@@ -57,7 +57,7 @@ definition {
 				repeatableFieldNumber = 1);
 
 			FormFields.addRepeatableField(
-				fieldName = "ccrLocalClusterConnectionConfigurations",
+				fieldName = "Local Cluster Configurations",
 				repeatableFieldNumber = 1);
 
 			FormFields.editRepeatableTextMultiline(

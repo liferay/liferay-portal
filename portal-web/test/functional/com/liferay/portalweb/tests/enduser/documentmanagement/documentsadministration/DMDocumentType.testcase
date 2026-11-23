@@ -634,10 +634,7 @@ definition {
 
 		Click(locator1 = "FormFields#FIELD_ADD_REMOVE");
 
-		AssertElementNotPresent(
-			key_fieldName = "Numeric",
-			key_repeatableFieldNumber = 2,
-			locator1 = "FormFields#FIELD_REPEATABLE_ADD_BUTTON_SPECIFIC");
+		AssertElementNotPresent(locator1 = "FormFields#FIELD_ADD_REMOVE");
 	}
 
 }

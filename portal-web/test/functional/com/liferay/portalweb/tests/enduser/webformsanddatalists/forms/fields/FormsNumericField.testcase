@@ -345,8 +345,8 @@ definition {
 		FormsAdminNavigator.gotoPublishedForm();
 
 		FormFields.addRepeatableField(
-			key_fieldName = "Numeric",
-			key_repeatableFieldNumber = 1);
+			fieldName = "Numeric",
+			repeatableFieldNumber = 1);
 
 		FormFields.viewFieldRepeatableButton(
 			fieldName = "Numeric",
@@ -2213,8 +2213,8 @@ definition {
 			inputMaskValue = "0,00");
 
 		FormFields.addRepeatableField(
-			key_fieldName = "Numeric",
-			key_repeatableFieldNumber = 1);
+			fieldName = "Numeric",
+			repeatableFieldNumber = 1);
 
 		FormFields.viewFieldRepeatableButton(
 			fieldName = "Numeric",

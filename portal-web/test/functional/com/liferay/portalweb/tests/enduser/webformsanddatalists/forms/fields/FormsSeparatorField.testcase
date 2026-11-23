@@ -172,8 +172,7 @@ definition {
 		FormViewBuilder.setFieldRepeatable();
 
 		AssertElementPresent(
-			key_fieldName = "Separator",
-			key_repeatableFieldNumber = 1,
+			key_fieldLabel = "Separator",
 			locator1 = "FormFields#FIELD_REPEATABLE_ADD_BUTTON_SPECIFIC");
 
 		Form.save();

@@ -21,8 +21,7 @@ definition {
 	@summary = "Default summary"
 	macro addRepeatableField(fieldName = null, repeatableFieldNumber = null) {
 		Click.javaScriptClick(
-			key_fieldName = ${fieldName},
-			key_repeatableFieldNumber = ${repeatableFieldNumber},
+			key_fieldLabel = ${fieldName},
 			locator1 = "FormFields#FIELD_REPEATABLE_ADD_BUTTON_SPECIFIC");
 	}
 

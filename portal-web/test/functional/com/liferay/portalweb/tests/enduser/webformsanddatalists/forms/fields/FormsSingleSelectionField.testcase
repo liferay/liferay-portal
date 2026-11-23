@@ -312,8 +312,8 @@ definition {
 		FormsAdminNavigator.gotoPublishedForm();
 
 		FormFields.addRepeatableField(
-			key_fieldName = ${singleSelectionFieldName},
-			key_repeatableFieldNumber = 1);
+			fieldName = "Single Selection",
+			repeatableFieldNumber = 1);
 
 		FormFields.editRepeatableSingleSelection(
 			key_fieldName = ${singleSelectionFieldName},
