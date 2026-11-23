@@ -83,10 +83,6 @@ public class OAuthClientASLocalMetadataModelListenerTest {
 		String localWellKnownURI =
 			oAuthClientASLocalMetadata.getLocalWellKnownURI();
 
-		OAuthClientEntry oAuthClientEntry =
-			_oAuthClientEntryLocalService.fetchOAuthClientEntry(
-				TestPropsValues.getCompanyId(), localWellKnownURI, clientId);
-
 		OpenIdConnectSession openIdConnectSession =
 			_openIdConnectSessionLocalService.createOpenIdConnectSession(
 				_counterLocalService.increment());
@@ -102,6 +98,11 @@ public class OAuthClientASLocalMetadataModelListenerTest {
 				openIdConnectSession);
 
 		try {
+			OAuthClientEntry oAuthClientEntry =
+				_oAuthClientEntryLocalService.fetchOAuthClientEntry(
+					TestPropsValues.getCompanyId(), localWellKnownURI,
+					clientId);
+
 			String metadataJSON = oAuthClientASLocalMetadata.getMetadataJSON();
 
 			JSONObject jsonObject = JSONFactoryUtil.createJSONObject(
