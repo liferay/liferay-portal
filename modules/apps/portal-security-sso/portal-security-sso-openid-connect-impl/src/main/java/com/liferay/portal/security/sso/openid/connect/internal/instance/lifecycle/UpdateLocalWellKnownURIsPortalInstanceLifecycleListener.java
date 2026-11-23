@@ -94,24 +94,24 @@ public class UpdateLocalWellKnownURIsPortalInstanceLifecycleListener
 	}
 
 	private void _updateLocalWellKnownURI(
-			String localWellKnownURI,
+			String newLocalWellKnownURI,
 			OAuthClientASLocalMetadata oAuthClientASLocalMetadata)
 		throws Exception {
 
-		String oldLocalWellKnownURI =
+		String localWellKnownURI =
 			oAuthClientASLocalMetadata.getLocalWellKnownURI();
 
 		for (OAuthClientEntry oAuthClientEntry :
 				_oAuthClientEntryLocalService.getCompanyOAuthClientEntries(
 					oAuthClientASLocalMetadata.getCompanyId())) {
 
-			if (!oldLocalWellKnownURI.equals(
+			if (!localWellKnownURI.equals(
 					oAuthClientEntry.getAuthServerWellKnownURI())) {
 
 				continue;
 			}
 
-			oAuthClientEntry.setAuthServerWellKnownURI(localWellKnownURI);
+			oAuthClientEntry.setAuthServerWellKnownURI(newLocalWellKnownURI);
 
 			_oAuthClientEntryLocalService.updateOAuthClientEntry(
 				oAuthClientEntry);
@@ -122,7 +122,7 @@ public class UpdateLocalWellKnownURIsPortalInstanceLifecycleListener
 
 		dynamicQuery.add(
 			RestrictionsFactoryUtil.eq(
-				"authServerWellKnownURI", oldLocalWellKnownURI));
+				"authServerWellKnownURI", localWellKnownURI));
 		dynamicQuery.add(
 			RestrictionsFactoryUtil.eq(
 				"companyId", oAuthClientASLocalMetadata.getCompanyId()));
@@ -133,13 +133,14 @@ public class UpdateLocalWellKnownURIsPortalInstanceLifecycleListener
 		for (OpenIdConnectSession openIdConnectSession :
 				openIdConnectSessions) {
 
-			openIdConnectSession.setAuthServerWellKnownURI(localWellKnownURI);
+			openIdConnectSession.setAuthServerWellKnownURI(
+				newLocalWellKnownURI);
 
 			_openIdConnectSessionLocalService.updateOpenIdConnectSession(
 				openIdConnectSession);
 		}
 
-		oAuthClientASLocalMetadata.setLocalWellKnownURI(localWellKnownURI);
+		oAuthClientASLocalMetadata.setLocalWellKnownURI(newLocalWellKnownURI);
 
 		_oAuthClientASLocalMetadataLocalService.
 			updateOAuthClientASLocalMetadata(oAuthClientASLocalMetadata);
