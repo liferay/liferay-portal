@@ -5,7 +5,6 @@
 
 package com.liferay.portal.kernel.util;
 
-import com.liferay.petra.io.unsync.UnsyncByteArrayInputStream;
 import com.liferay.petra.io.unsync.UnsyncByteArrayOutputStream;
 import com.liferay.petra.io.unsync.UnsyncStringReader;
 import com.liferay.petra.string.StringBundler;
@@ -148,7 +147,7 @@ public class PropertiesUtil {
 		s = StringUtil.replace(s, "\\u0020", " ");
 		s = StringUtil.replace(s, "\\u005c", "\\");
 
-		properties.load(new UnsyncByteArrayInputStream(s.getBytes()));
+		properties.load(new UnsyncStringReader(s));
 
 		List<String> propertyNames = Collections.list(
 			(Enumeration<String>)properties.propertyNames());
