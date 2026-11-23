@@ -12,6 +12,7 @@ import com.liferay.map.util.MapProviderHelperUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.GroupService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
@@ -47,6 +48,9 @@ public class MapsSiteSettingsConfigurationScreenWrapper
 
 	@Reference
 	private GroupLocalService _groupLocalService;
+
+	@Reference
+	private GroupService _groupService;
 
 	@Reference
 	private Language _language;
@@ -161,7 +165,7 @@ public class MapsSiteSettingsConfigurationScreenWrapper
 			typeSettingsUnicodeProperties.put(
 				MapProviderWebKeys.MAP_PROVIDER_KEY, mapProviderKey);
 
-			_groupLocalService.updateGroup(
+			_groupService.updateGroup(
 				group.getGroupId(), typeSettingsUnicodeProperties.toString());
 		}
 
