@@ -112,10 +112,6 @@ public class UpdateLocalWellKnownURIsPortalInstanceLifecycleListenerTest {
 			_openIdConnectSessionLocalService.updateOpenIdConnectSession(
 				openIdConnectSession);
 
-		OAuthClientEntry oAuthClientEntry =
-			_oAuthClientEntryLocalService.fetchOAuthClientEntry(
-				TestPropsValues.getCompanyId(), localWellKnownURI, clientId);
-
 		ComponentDescriptionDTO componentDescriptionDTO =
 			_serviceComponentRuntime.getComponentDescriptionDTO(
 				BundleUtil.getBundle(
@@ -126,6 +122,11 @@ public class UpdateLocalWellKnownURIsPortalInstanceLifecycleListenerTest {
 		try (SafeCloseable safeCloseable =
 				PropsValuesTestUtil.swapWithSafeCloseable(
 					"FIPS_ENABLED", true)) {
+
+			OAuthClientEntry oAuthClientEntry =
+				_oAuthClientEntryLocalService.fetchOAuthClientEntry(
+					TestPropsValues.getCompanyId(), localWellKnownURI,
+					clientId);
 
 			_enableComponentDescriptionDTO(componentDescriptionDTO);
 
