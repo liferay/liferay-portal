@@ -77,6 +77,32 @@ describe('CriteriaRow', () => {
 		expect(getByText('is unknown')).toBeInTheDocument();
 	});
 
+	it('should name the row with its attribute, operator and value, and its operator picker', () => {
+		const {getByRole} = render(
+			<WrapperComponent>
+				<DndProvider backend={HTML5Backend}>
+					<CriteriaRow
+						criterion={{
+							operatorName: 'eq',
+							propertyName: 'knownSinceDate',
+							rowId: 'row_0',
+							touched: false,
+							valid: true,
+							value: '2026-01-15'
+						}}
+						referencedAssetsIMap={new Map()}
+						referencedPropertiesIMap={new Map()}
+					/>
+				</DndProvider>
+			</WrapperComponent>
+		);
+
+		expect(
+			getByRole('group', {name: /known since date.*2026/i})
+		).toBeInTheDocument();
+		expect(getByRole('combobox', {name: /^operator$/i})).toBeInTheDocument();
+	});
+
 	it('should render w/ Non-Existent Property message', () => {
 		const {queryByText} = render(
 			<WrapperComponent>

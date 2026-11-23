@@ -138,8 +138,65 @@ describe('CriteriaGroup', () => {
 			});
 
 			expect(screen.queryByRole('combobox')).not.toBeInTheDocument();
+			expect(screen.queryByRole('group')).not.toBeInTheDocument();
 		}
 	);
+
+	it.each`
+		conjunction         | expectedName
+		${Conjunctions.And} | ${/^all of these criteria must be met\.$/i}
+		${Conjunctions.Or}  | ${/^any of these criteria must be met\.$/i}
+	`(
+		'should name the group with the sentence of its $conjunction operator',
+		({conjunction, expectedName}) => {
+			renderGroup({conjunction, count: 2, root: true});
+
+			expect(
+				screen.getByRole('group', {name: expectedName})
+			).toBeInTheDocument();
+		}
+	);
+
+	it('should make each nested group announce its own operator', () => {
+		const rootCriteria = {
+			conjunctionName: Conjunctions.And,
+			criteriaGroupId: 'root',
+			items: [
+				{rowId: 'r0', valid: true},
+				{
+					conjunctionName: Conjunctions.Or,
+					criteriaGroupId: 'nested',
+					items: [
+						{rowId: 'n0', valid: true},
+						{rowId: 'n1', valid: true}
+					]
+				}
+			]
+		};
+
+		render(
+			<DndProvider backend={HTML5Backend}>
+				<CriteriaGroup
+					criteria={rootCriteria}
+					criteriaGroupId='root'
+					onChange={() => {}}
+					onMove={() => {}}
+					root
+				/>
+			</DndProvider>
+		);
+
+		expect(
+			screen.getByRole('group', {
+				name: /^all of these criteria must be met\.$/i
+			})
+		).toBeInTheDocument();
+		expect(
+			screen.getByRole('group', {
+				name: /^any of these criteria must be met\.$/i
+			})
+		).toBeInTheDocument();
+	});
 
 	it('should change the conjunction of the group when another match is chosen', () => {
 		const onChange = jest.fn();
