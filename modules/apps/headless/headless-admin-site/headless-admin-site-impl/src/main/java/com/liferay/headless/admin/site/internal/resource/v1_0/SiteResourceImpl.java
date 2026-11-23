@@ -32,6 +32,7 @@ import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.LayoutSetPrototype;
+import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.filter.Filter;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
@@ -476,7 +477,8 @@ public class SiteResourceImpl
 
 		long[] classNameIds = {
 			_portal.getClassNameId(Company.class.getName()),
-			_portal.getClassNameId(Group.class.getName())
+			_portal.getClassNameId(Group.class.getName()),
+			_portal.getClassNameId(Organization.class.getName())
 		};
 
 		List<Group> groups = _groupService.search(
