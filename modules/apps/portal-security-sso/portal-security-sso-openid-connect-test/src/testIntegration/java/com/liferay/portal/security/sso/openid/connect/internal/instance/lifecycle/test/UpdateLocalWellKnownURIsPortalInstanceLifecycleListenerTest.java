@@ -14,8 +14,10 @@ import com.liferay.oauth.client.persistence.service.OAuthClientEntryLocalService
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.configuration.test.util.ConfigurationTestUtil;
+import com.liferay.portal.instance.lifecycle.PortalInstanceLifecycleListener;
 import com.liferay.portal.kernel.module.util.BundleUtil;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
+import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -157,6 +159,20 @@ public class UpdateLocalWellKnownURIsPortalInstanceLifecycleListenerTest {
 				newLocalWellKnownURI,
 				openIdConnectSession.getAuthServerWellKnownURI());
 
+			Class<?> clazz = _portalInstanceLifecycleListener.getClass();
+
+			try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+					clazz.getName(), LoggerTestUtil.WARN)) {
+
+				_portalInstanceLifecycleListener.portalInstanceRegistered(
+					_companyLocalService.getCompany(
+						TestPropsValues.getCompanyId()));
+
+				List<String> messages = logCapture.getMessages();
+
+				Assert.assertEquals(messages.toString(), 0, messages.size());
+			}
+
 			_disableComponentDescriptionDTO(componentDescriptionDTO);
 
 			try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
@@ -288,6 +304,9 @@ public class UpdateLocalWellKnownURIsPortalInstanceLifecycleListenerTest {
 			"lifecycle.UpdateLocalWellKnownURIsPortalInstanceLifecycleListener";
 
 	@Inject
+	private CompanyLocalService _companyLocalService;
+
+	@Inject
 	private CounterLocalService _counterLocalService;
 
 	@Inject
@@ -301,6 +320,11 @@ public class UpdateLocalWellKnownURIsPortalInstanceLifecycleListenerTest {
 	private OpenIdConnectSessionLocalService _openIdConnectSessionLocalService;
 
 	private String _pid;
+
+	@Inject(
+		filter = "component.name=com.liferay.portal.security.sso.openid.connect.internal.configuration.instance.lifecycle.OpenIdConnectProviderPortalInstanceLifecycleListener"
+	)
+	private PortalInstanceLifecycleListener _portalInstanceLifecycleListener;
 
 	@Inject
 	private ServiceComponentRuntime _serviceComponentRuntime;
