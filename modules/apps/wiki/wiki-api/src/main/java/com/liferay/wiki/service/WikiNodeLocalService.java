@@ -247,9 +247,6 @@ public interface WikiNodeLocalService
 	public WikiNode fetchNode(long groupId, String name);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public WikiNode fetchNodeByUuidAndGroupId(String uuid, long groupId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public WikiNode fetchWikiNode(long nodeId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -291,18 +288,7 @@ public interface WikiNodeLocalService
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<WikiNode> getNodes(long groupId, int start, int end)
-		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<WikiNode> getNodes(long groupId, int status, int start, int end)
-		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getNodesCount(long groupId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getNodesCount(long groupId, int status);
 
 	/**
 	 * Returns the OSGi service identifier.
@@ -451,4 +437,4 @@ public interface WikiNodeLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1315847947
+// LIFERAY-SERVICE-BUILDER-HASH:210441554

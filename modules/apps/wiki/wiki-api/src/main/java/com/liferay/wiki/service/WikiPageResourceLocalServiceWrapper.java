@@ -82,13 +82,6 @@ public class WikiPageResourceLocalServiceWrapper
 			resourcePrimKey);
 	}
 
-	@Override
-	public void deletePageResource(long nodeId, String title)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		_wikiPageResourceLocalService.deletePageResource(nodeId, title);
-	}
-
 	/**
 	 * @throws PortalException
 	 */
@@ -247,11 +240,6 @@ public class WikiPageResourceLocalServiceWrapper
 	}
 
 	@Override
-	public WikiPageResource fetchPageResource(String uuid) {
-		return _wikiPageResourceLocalService.fetchPageResource(uuid);
-	}
-
-	@Override
 	public WikiPageResource fetchWikiPageResource(long resourcePrimKey) {
 		return _wikiPageResourceLocalService.fetchWikiPageResource(
 			resourcePrimKey);
@@ -303,13 +291,6 @@ public class WikiPageResourceLocalServiceWrapper
 
 		return _wikiPageResourceLocalService.getPageResource(
 			pageResourcePrimKey);
-	}
-
-	@Override
-	public WikiPageResource getPageResource(long nodeId, String title)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _wikiPageResourceLocalService.getPageResource(nodeId, title);
 	}
 
 	@Override
@@ -486,4 +467,4 @@ public class WikiPageResourceLocalServiceWrapper
 	private WikiPageResourceLocalService _wikiPageResourceLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:162148068
+// LIFERAY-SERVICE-BUILDER-HASH:1372609715

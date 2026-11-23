@@ -90,9 +90,6 @@ public interface WikiPageResourceLocalService
 	@Transactional(enabled = false)
 	public WikiPageResource createWikiPageResource(long resourcePrimKey);
 
-	public void deletePageResource(long nodeId, String title)
-		throws PortalException;
-
 	/**
 	 * @throws PortalException
 	 */
@@ -205,9 +202,6 @@ public interface WikiPageResourceLocalService
 	public WikiPageResource fetchPageResource(long nodeId, String title);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public WikiPageResource fetchPageResource(String uuid);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public WikiPageResource fetchWikiPageResource(long resourcePrimKey);
 
 	/**
@@ -236,10 +230,6 @@ public interface WikiPageResourceLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public WikiPageResource getPageResource(long pageResourcePrimKey)
-		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public WikiPageResource getPageResource(long nodeId, String title)
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -355,4 +345,4 @@ public interface WikiPageResourceLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1405484147
+// LIFERAY-SERVICE-BUILDER-HASH:1545402941

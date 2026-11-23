@@ -80,12 +80,6 @@ public class WikiPageResourceLocalServiceUtil {
 		return getService().createWikiPageResource(resourcePrimKey);
 	}
 
-	public static void deletePageResource(long nodeId, String title)
-		throws PortalException {
-
-		getService().deletePageResource(nodeId, title);
-	}
-
 	/**
 	 * @throws PortalException
 	 */
@@ -220,10 +214,6 @@ public class WikiPageResourceLocalServiceUtil {
 		return getService().fetchPageResource(nodeId, title);
 	}
 
-	public static WikiPageResource fetchPageResource(String uuid) {
-		return getService().fetchPageResource(uuid);
-	}
-
 	public static WikiPageResource fetchWikiPageResource(long resourcePrimKey) {
 		return getService().fetchWikiPageResource(resourcePrimKey);
 	}
@@ -268,12 +258,6 @@ public class WikiPageResourceLocalServiceUtil {
 		throws PortalException {
 
 		return getService().getPageResource(pageResourcePrimKey);
-	}
-
-	public static WikiPageResource getPageResource(long nodeId, String title)
-		throws PortalException {
-
-		return getService().getPageResource(nodeId, title);
 	}
 
 	public static long getPageResourcePrimKey(
@@ -403,4 +387,4 @@ public class WikiPageResourceLocalServiceUtil {
 			WikiPageResourceLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1418645120
+// LIFERAY-SERVICE-BUILDER-HASH:305875388

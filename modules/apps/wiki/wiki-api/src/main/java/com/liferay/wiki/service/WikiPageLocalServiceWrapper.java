@@ -113,16 +113,6 @@ public class WikiPageLocalServiceWrapper
 
 	@Override
 	public void addPageResources(
-			long nodeId, String title, boolean addGroupPermissions,
-			boolean addGuestPermissions)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		_wikiPageLocalService.addPageResources(
-			nodeId, title, addGroupPermissions, addGuestPermissions);
-	}
-
-	@Override
-	public void addPageResources(
 			WikiPage page, boolean addGroupPermissions,
 			boolean addGuestPermissions)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -302,13 +292,6 @@ public class WikiPageLocalServiceWrapper
 	@Override
 	public WikiPage deleteWikiPage(WikiPage wikiPage) {
 		return _wikiPageLocalService.deleteWikiPage(wikiPage);
-	}
-
-	@Override
-	public void discardDraft(long nodeId, String title, double version)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		_wikiPageLocalService.discardDraft(nodeId, title, version);
 	}
 
 	@Override
@@ -632,24 +615,6 @@ public class WikiPageLocalServiceWrapper
 
 		return _wikiPageLocalService.getLatestPage(
 			nodeId, title, status, preferApproved);
-	}
-
-	/**
-	 * Returns the latest wiki page matching the group and the external
-	 * reference code
-	 *
-	 * @param groupId the primary key of the group
-	 * @param externalReferenceCode the wiki page's external reference code
-	 * @return the latest matching wiki page
-	 * @throws PortalException if a portal exception occurred
-	 */
-	@Override
-	public WikiPage getLatestPageByExternalReferenceCode(
-			long groupId, String externalReferenceCode)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _wikiPageLocalService.getLatestPageByExternalReferenceCode(
-			groupId, externalReferenceCode);
 	}
 
 	@Override
@@ -1026,11 +991,6 @@ public class WikiPageLocalServiceWrapper
 	}
 
 	@Override
-	public boolean hasDraftPage(long nodeId, String title) {
-		return _wikiPageLocalService.hasDraftPage(nodeId, title);
-	}
-
-	@Override
 	public void moveDependentToTrash(WikiPage page, long trashEntryId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
@@ -1125,20 +1085,6 @@ public class WikiPageLocalServiceWrapper
 
 		return _wikiPageLocalService.revertPage(
 			userId, nodeId, title, version, serviceContext);
-	}
-
-	@Override
-	public void subscribePage(long userId, long nodeId, String title)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		_wikiPageLocalService.subscribePage(userId, nodeId, title);
-	}
-
-	@Override
-	public void unsubscribePage(long userId, long nodeId, String title)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		_wikiPageLocalService.unsubscribePage(userId, nodeId, title);
 	}
 
 	@Override
@@ -1251,4 +1197,4 @@ public class WikiPageLocalServiceWrapper
 	private WikiPageLocalService _wikiPageLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1980032494
+// LIFERAY-SERVICE-BUILDER-HASH:-810861222

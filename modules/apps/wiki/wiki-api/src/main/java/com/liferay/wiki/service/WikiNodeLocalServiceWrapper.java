@@ -306,11 +306,6 @@ public class WikiNodeLocalServiceWrapper
 	}
 
 	@Override
-	public WikiNode fetchNodeByUuidAndGroupId(String uuid, long groupId) {
-		return _wikiNodeLocalService.fetchNodeByUuidAndGroupId(uuid, groupId);
-	}
-
-	@Override
 	public WikiNode fetchWikiNode(long nodeId) {
 		return _wikiNodeLocalService.fetchWikiNode(nodeId);
 	}
@@ -389,28 +384,8 @@ public class WikiNodeLocalServiceWrapper
 	}
 
 	@Override
-	public java.util.List<WikiNode> getNodes(long groupId, int start, int end)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _wikiNodeLocalService.getNodes(groupId, start, end);
-	}
-
-	@Override
-	public java.util.List<WikiNode> getNodes(
-			long groupId, int status, int start, int end)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _wikiNodeLocalService.getNodes(groupId, status, start, end);
-	}
-
-	@Override
 	public int getNodesCount(long groupId) {
 		return _wikiNodeLocalService.getNodesCount(groupId);
-	}
-
-	@Override
-	public int getNodesCount(long groupId, int status) {
-		return _wikiNodeLocalService.getNodesCount(groupId, status);
 	}
 
 	/**
@@ -650,4 +625,4 @@ public class WikiNodeLocalServiceWrapper
 	private WikiNodeLocalService _wikiNodeLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-491314651
+// LIFERAY-SERVICE-BUILDER-HASH:571395955

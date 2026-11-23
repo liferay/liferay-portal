@@ -119,11 +119,6 @@ public interface WikiPageLocalService
 		throws PortalException;
 
 	public void addPageResources(
-			long nodeId, String title, boolean addGroupPermissions,
-			boolean addGuestPermissions)
-		throws PortalException;
-
-	public void addPageResources(
 			WikiPage page, boolean addGroupPermissions,
 			boolean addGuestPermissions)
 		throws PortalException;
@@ -231,9 +226,6 @@ public interface WikiPageLocalService
 	 */
 	@Indexable(type = IndexableType.DELETE)
 	public WikiPage deleteWikiPage(WikiPage wikiPage);
-
-	public void discardDraft(long nodeId, String title, double version)
-		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public <T> T dslQuery(DSLQuery dslQuery);
@@ -427,20 +419,6 @@ public interface WikiPageLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public WikiPage getLatestPage(
 			long nodeId, String title, int status, boolean preferApproved)
-		throws PortalException;
-
-	/**
-	 * Returns the latest wiki page matching the group and the external
-	 * reference code
-	 *
-	 * @param groupId the primary key of the group
-	 * @param externalReferenceCode the wiki page's external reference code
-	 * @return the latest matching wiki page
-	 * @throws PortalException if a portal exception occurred
-	 */
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public WikiPage getLatestPageByExternalReferenceCode(
-			long groupId, String externalReferenceCode)
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -669,9 +647,6 @@ public interface WikiPageLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getWikiPagesCount();
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public boolean hasDraftPage(long nodeId, String title);
-
 	public void moveDependentToTrash(WikiPage page, long trashEntryId)
 		throws PortalException;
 
@@ -714,12 +689,6 @@ public interface WikiPageLocalService
 	public WikiPage revertPage(
 			long userId, long nodeId, String title, double version,
 			ServiceContext serviceContext)
-		throws PortalException;
-
-	public void subscribePage(long userId, long nodeId, String title)
-		throws PortalException;
-
-	public void unsubscribePage(long userId, long nodeId, String title)
 		throws PortalException;
 
 	public void updateAsset(
@@ -781,4 +750,4 @@ public interface WikiPageLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2094897427
+// LIFERAY-SERVICE-BUILDER-HASH:2134577916

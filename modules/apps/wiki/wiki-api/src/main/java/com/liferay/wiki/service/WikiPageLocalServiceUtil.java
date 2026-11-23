@@ -114,15 +114,6 @@ public class WikiPageLocalServiceUtil {
 	}
 
 	public static void addPageResources(
-			long nodeId, String title, boolean addGroupPermissions,
-			boolean addGuestPermissions)
-		throws PortalException {
-
-		getService().addPageResources(
-			nodeId, title, addGroupPermissions, addGuestPermissions);
-	}
-
-	public static void addPageResources(
 			WikiPage page, boolean addGroupPermissions,
 			boolean addGuestPermissions)
 		throws PortalException {
@@ -279,12 +270,6 @@ public class WikiPageLocalServiceUtil {
 	 */
 	public static WikiPage deleteWikiPage(WikiPage wikiPage) {
 		return getService().deleteWikiPage(wikiPage);
-	}
-
-	public static void discardDraft(long nodeId, String title, double version)
-		throws PortalException {
-
-		getService().discardDraft(nodeId, title, version);
 	}
 
 	public static <T> T dslQuery(DSLQuery dslQuery) {
@@ -562,23 +547,6 @@ public class WikiPageLocalServiceUtil {
 
 		return getService().getLatestPage(
 			nodeId, title, status, preferApproved);
-	}
-
-	/**
-	 * Returns the latest wiki page matching the group and the external
-	 * reference code
-	 *
-	 * @param groupId the primary key of the group
-	 * @param externalReferenceCode the wiki page's external reference code
-	 * @return the latest matching wiki page
-	 * @throws PortalException if a portal exception occurred
-	 */
-	public static WikiPage getLatestPageByExternalReferenceCode(
-			long groupId, String externalReferenceCode)
-		throws PortalException {
-
-		return getService().getLatestPageByExternalReferenceCode(
-			groupId, externalReferenceCode);
 	}
 
 	public static List<WikiPage> getOrphans(List<WikiPage> pages)
@@ -898,10 +866,6 @@ public class WikiPageLocalServiceUtil {
 		return getService().getWikiPagesCount();
 	}
 
-	public static boolean hasDraftPage(long nodeId, String title) {
-		return getService().hasDraftPage(nodeId, title);
-	}
-
 	public static void moveDependentToTrash(WikiPage page, long trashEntryId)
 		throws PortalException {
 
@@ -988,18 +952,6 @@ public class WikiPageLocalServiceUtil {
 			userId, nodeId, title, version, serviceContext);
 	}
 
-	public static void subscribePage(long userId, long nodeId, String title)
-		throws PortalException {
-
-		getService().subscribePage(userId, nodeId, title);
-	}
-
-	public static void unsubscribePage(long userId, long nodeId, String title)
-		throws PortalException {
-
-		getService().unsubscribePage(userId, nodeId, title);
-	}
-
 	public static void updateAsset(
 			long userId, WikiPage page, long[] assetCategoryIds,
 			String[] assetTagNames, long[] assetLinkEntryIds, Double priority)
@@ -1077,4 +1029,4 @@ public class WikiPageLocalServiceUtil {
 			WikiPageLocalServiceUtil.class, WikiPageLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-173878131
+// LIFERAY-SERVICE-BUILDER-HASH:1957003387
