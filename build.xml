@@ -20,7 +20,7 @@
 						includes=".liferay-home"
 					/>
 					<fileset
-						dir="${liferay.home}/data/elasticsearch8"
+						dir="${liferay.home}/data/elasticsearch9"
 					/>
 					<fileset
 						dir="${liferay.home}/data/hypersonic"
