@@ -2764,6 +2764,75 @@ public class ObjectActionLocalServiceTest {
 		_objectActionLocalService.deleteObjectAction(objectAction);
 	}
 
+	@FeatureFlag("LPD-108620")
+	@Test
+	public void testExecuteObjectActionWithOneToOneObjectRelationship()
+		throws Exception {
+
+		ObjectRelationship objectRelationship =
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				_objectRelationshipLocalService,
+				ObjectDefinitionTestUtil.publishObjectDefinition(),
+				ObjectDefinitionTestUtil.publishObjectDefinition(
+					Collections.singletonList(
+						new TextObjectFieldBuilder(
+						).labelMap(
+							RandomTestUtil.randomLocaleStringMap()
+						).name(
+							"firstName"
+						).build())),
+				ObjectRelationshipConstants.DELETION_TYPE_PREVENT,
+				StringUtil.randomId(),
+				ObjectRelationshipConstants.TYPE_ONE_TO_ONE);
+
+		_addObjectAction(
+			objectRelationship.getObjectDefinitionId1(),
+			ObjectActionExecutorConstants.KEY_ADD_OBJECT_ENTRY,
+			ObjectActionTriggerConstants.KEY_ON_AFTER_ADD,
+			UnicodePropertiesBuilder.put(
+				"objectDefinitionId",
+				objectRelationship.getObjectDefinitionId2()
+			).put(
+				"predefinedValues",
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"inputAsValue", true
+					).put(
+						"name", "firstName"
+					).put(
+						"value", RandomTestUtil.randomString()
+					)
+				).toString()
+			).put(
+				"relatedObjectEntries", "true"
+			).build());
+
+		ObjectEntry parentObjectEntry = _objectEntryLocalService.addObjectEntry(
+			0, TestPropsValues.getUserId(),
+			objectRelationship.getObjectDefinitionId1(),
+			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+			null, Collections.emptyMap(),
+			ServiceContextTestUtil.getServiceContext());
+
+		List<ObjectEntry> childObjectEntries =
+			_objectEntryLocalService.getObjectEntries(
+				0, objectRelationship.getObjectDefinitionId2(),
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+
+		Assert.assertEquals(
+			childObjectEntries.toString(), 1, childObjectEntries.size());
+
+		ObjectEntry childObjectEntry = childObjectEntries.get(0);
+
+		ObjectField objectField = _objectFieldLocalService.getObjectField(
+			objectRelationship.getObjectFieldId2());
+
+		Assert.assertEquals(
+			parentObjectEntry.getObjectEntryId(),
+			MapUtil.getLong(
+				childObjectEntry.getValues(), objectField.getName()));
+	}
+
 	@Test
 	public void testExecuteObjectActionWithUnmodifiableSystemObjectDefinition()
 		throws Exception {
