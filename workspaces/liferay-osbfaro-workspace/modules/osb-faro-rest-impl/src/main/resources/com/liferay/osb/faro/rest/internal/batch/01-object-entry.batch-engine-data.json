@@ -55,6 +55,30 @@
 			"toolSetName": "faro-rest-v1.0"
 		},
 		{
+			"externalReferenceCode": "LDP_MCP_TOOL_getWorkspaceGroupChannelCampaign",
+			"r_mcpServerProfileToTools_l_mcpServerProfileERC": "LDP_MCP_SERVER_PROFILE",
+			"toolName": "getWorkspaceGroupChannelCampaign",
+			"toolSetName": "faro-rest-v1.0"
+		},
+		{
+			"externalReferenceCode": "LDP_MCP_TOOL_getWorkspaceGroupChannelCampaignAccountsPage",
+			"r_mcpServerProfileToTools_l_mcpServerProfileERC": "LDP_MCP_SERVER_PROFILE",
+			"toolName": "getWorkspaceGroupChannelCampaignAccountsPage",
+			"toolSetName": "faro-rest-v1.0"
+		},
+		{
+			"externalReferenceCode": "LDP_MCP_TOOL_getWorkspaceGroupChannelCampaignMetricsPage",
+			"r_mcpServerProfileToTools_l_mcpServerProfileERC": "LDP_MCP_SERVER_PROFILE",
+			"toolName": "getWorkspaceGroupChannelCampaignMetricsPage",
+			"toolSetName": "faro-rest-v1.0"
+		},
+		{
+			"externalReferenceCode": "LDP_MCP_TOOL_getWorkspaceGroupChannelCampaignsPage",
+			"r_mcpServerProfileToTools_l_mcpServerProfileERC": "LDP_MCP_SERVER_PROFILE",
+			"toolName": "getWorkspaceGroupChannelCampaignsPage",
+			"toolSetName": "faro-rest-v1.0"
+		},
+		{
 			"externalReferenceCode": "LDP_MCP_TOOL_getWorkspaceGroupChannelEventsPage",
 			"r_mcpServerProfileToTools_l_mcpServerProfileERC": "LDP_MCP_SERVER_PROFILE",
 			"toolName": "getWorkspaceGroupChannelEventsPage",

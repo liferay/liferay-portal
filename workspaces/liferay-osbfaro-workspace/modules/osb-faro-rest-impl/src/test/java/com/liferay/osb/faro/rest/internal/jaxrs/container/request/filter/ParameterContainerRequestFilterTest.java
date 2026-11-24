@@ -48,6 +48,10 @@ public class ParameterContainerRequestFilterTest {
 	public void testFilter() {
 		Assert.assertNull(_filter("pageSize", "100"));
 		Assert.assertNull(_filter("rangeKey", "LAST_30_DAYS"));
+		Assert.assertNull(
+			_filter(
+				_getQueryParameters(
+					"selectedMetrics", "accountsTouched", "closedWonAmount")));
 		Assert.assertNull(_filter("sort", "transitionDate:desc"));
 		Assert.assertNull(
 			_filter(_getRangeQueryParameters("2026-10-02", "2026-04-06")));
@@ -75,6 +79,12 @@ public class ParameterContainerRequestFilterTest {
 		_assertTitle(
 			"\"rangeStart\" must not be after \"rangeEnd\"",
 			_filter(_getRangeQueryParameters("2026-10-01", "2026-10-20")));
+		_assertTitle(
+			"\"selectedMetrics\" must be one of accountsTouched, " +
+				"campaignCount, closedWonAmount, openPipelineAmount",
+			_filter(
+				_getQueryParameters(
+					"selectedMetrics", "accountsTouched", "bogusMetric")));
 		_assertTitle(
 			"\"sort\" accepts only one column on this endpoint",
 			_filter("sort", "accountName:asc,transitionDate:desc"));
@@ -161,6 +171,17 @@ public class ParameterContainerRequestFilterTest {
 		}
 
 		return _filter(queryParameters);
+	}
+
+	private MultivaluedMap<String, String> _getQueryParameters(
+		String name, String... values) {
+
+		MultivaluedMap<String, String> queryParameters =
+			new MultivaluedHashMap<>();
+
+		queryParameters.addAll(name, values);
+
+		return queryParameters;
 	}
 
 	private MultivaluedMap<String, String> _getRangeQueryParameters(

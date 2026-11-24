@@ -110,6 +110,34 @@ public class AccountResourceImpl extends BaseAccountResourceImpl {
 			pagination, results.getTotal());
 	}
 
+	@Override
+	public Page<Account> getWorkspaceGroupChannelCampaignAccountsPage(
+			Long groupId, String channelId, String campaignId, String rangeEnd,
+			String rangeKey, String rangeStart, String search,
+			Pagination pagination, Sort[] sorts)
+		throws Exception {
+
+		Results<com.liferay.osb.faro.engine.client.model.Account> results =
+			_contactsEngineClient.getCampaignAccounts(
+				_faroProjectLocalService.getFaroProjectByGroupId(groupId), null,
+				null, GetterUtil.getLong(channelId), null, campaignId, search,
+				rangeEnd, TimeRange.getRangeKey(rangeKey), rangeStart,
+				FaroPaginationUtil.toSortString(sorts),
+				FaroPaginationUtil.getCur(pagination),
+				FaroPaginationUtil.getDelta(pagination));
+
+		return Page.of(
+			transform(
+				results.getItems(),
+				account -> _accountDTOConverter.toDTO(
+					new FaroDTOConverterContext(
+						contextAcceptLanguage.isAcceptAllLanguages(),
+						account.getId(),
+						contextAcceptLanguage.getPreferredLocale()),
+					account)),
+			pagination, results.getTotal());
+	}
+
 	private AccountLifecycle _getAccountLifecycle(
 		String accountLifecycleId, String channelId, FaroProject faroProject) {
 

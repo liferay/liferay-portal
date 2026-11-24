@@ -36,6 +36,7 @@ import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -121,9 +122,15 @@ public class ParameterContainerRequestFilter implements ContainerRequestFilter {
 		}
 
 		for (Map.Entry<String, String[]> entry : _validValues.entrySet()) {
-			_validateValue(
-				entry.getKey(), entry.getValue(),
-				queryParameters.getFirst(entry.getKey()));
+			List<String> values = queryParameters.get(entry.getKey());
+
+			if (values == null) {
+				continue;
+			}
+
+			for (String value : values) {
+				_validateValue(entry.getKey(), entry.getValue(), value);
+			}
 		}
 
 		_validateInteger(
@@ -280,6 +287,20 @@ public class ParameterContainerRequestFilter implements ContainerRequestFilter {
 				"viewsMetric"
 			}
 		).put(
+			"getWorkspaceGroupChannelCampaignAccountsPage",
+			new String[] {
+				"accountName", "accountType", "activitiesCount",
+				"annualRevenue", "country", "createDate", "firstActivityDate",
+				"industry", "lastActivityDate", "modifiedDate",
+				"numberOfEmployees", "state", "yearStarted"
+			}
+		).put(
+			"getWorkspaceGroupChannelCampaignsPage",
+			new String[] {
+				"accountsTouched", "campaignType", "individualsTouched", "name",
+				"origin", "status"
+			}
+		).put(
 			"getWorkspaceGroupChannelIndividualsPage",
 			new String[] {
 				"accountName", "activitiesCount", "activityStatus", "country",
@@ -307,6 +328,12 @@ public class ParameterContainerRequestFilter implements ContainerRequestFilter {
 			"profileType", new String[] {"ANONYMOUS", "KNOWN"}
 		).put(
 			"rangeKey", _getNames(TimeRange.values())
+		).put(
+			"selectedMetrics",
+			new String[] {
+				"accountsTouched", "campaignCount", "closedWonAmount",
+				"openPipelineAmount"
+			}
 		).put(
 			"status", new String[] {"ACTIVE", "INACTIVE"}
 		).build();
