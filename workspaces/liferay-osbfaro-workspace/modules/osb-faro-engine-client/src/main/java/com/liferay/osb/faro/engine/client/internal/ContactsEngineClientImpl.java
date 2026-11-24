@@ -83,12 +83,16 @@ import com.liferay.osb.faro.engine.client.util.FilterUtil;
 import com.liferay.osb.faro.engine.client.util.OrderByField;
 import com.liferay.osb.faro.model.FaroProject;
 import com.liferay.osb.faro.model.FaroUser;
+import com.liferay.osb.faro.util.EmailUtil;
 import com.liferay.osb.faro.util.FaroPropsValues;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -4194,6 +4198,14 @@ public class ContactsEngineClientImpl
 	}
 
 	protected String getWorkspaceURL(long groupId) {
+		Group group = _groupLocalService.fetchGroup(groupId);
+
+		if (FeatureFlagManagerUtil.isEnabled(
+				group.getCompanyId(), "LPD-114293")) {
+
+			return EmailUtil.getWorkspaceURL(group);
+		}
+
 		return FaroPropsValues.FARO_URL + "/workspace/" + groupId;
 	}
 
@@ -4251,6 +4263,9 @@ public class ContactsEngineClientImpl
 	private static final String _FARO_TEMP_FIELD = "faro_temp_field";
 
 	private static final int _PAYLOAD_MAX_BYTE_SIZE = 200000;
+
+	@Reference
+	private GroupLocalService _groupLocalService;
 
 	@Reference
 	private UserLocalService _userLocalService;
