@@ -148,6 +148,9 @@ const PageActions: React.FC<IPageActionsProps> = ({
 
 				return (
 					<Button
+						aria-disabled={
+							props.href && props.disabled ? true : undefined
+						}
 						button
 						className={classNames(
 							getCN('button-root', {
