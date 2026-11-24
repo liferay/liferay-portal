@@ -48,7 +48,7 @@ import org.osgi.util.promise.Promise;
  * @author Jorge García Jiménez
  */
 @RunWith(Arquillian.class)
-public class UpdateLocalWellKnownURIsPortalInstanceLifecycleListenerTest {
+public class OAuthClientASLocalMetadataPortalInstanceLifecycleListenerTest {
 
 	@ClassRule
 	@Rule
@@ -385,7 +385,8 @@ public class UpdateLocalWellKnownURIsPortalInstanceLifecycleListenerTest {
 
 	private static final String _CLASS_NAME =
 		"com.liferay.portal.security.sso.openid.connect.internal.instance." +
-			"lifecycle.UpdateLocalWellKnownURIsPortalInstanceLifecycleListener";
+			"lifecycle." +
+				"OAuthClientASLocalMetadataPortalInstanceLifecycleListener";
 
 	@Inject
 	private CompanyLocalService _companyLocalService;

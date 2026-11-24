@@ -6,7 +6,7 @@
 package com.liferay.portal.security.sso.openid.connect.internal.component.enabler;
 
 import com.liferay.portal.kernel.util.PropsValues;
-import com.liferay.portal.security.sso.openid.connect.internal.instance.lifecycle.UpdateLocalWellKnownURIsPortalInstanceLifecycleListener;
+import com.liferay.portal.security.sso.openid.connect.internal.instance.lifecycle.OAuthClientASLocalMetadataPortalInstanceLifecycleListener;
 
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
@@ -22,7 +22,7 @@ public class ComponentEnabler {
 	protected void activate(ComponentContext componentContext) {
 		if (PropsValues.FIPS_ENABLED) {
 			componentContext.enableComponent(
-				UpdateLocalWellKnownURIsPortalInstanceLifecycleListener.class.
+				OAuthClientASLocalMetadataPortalInstanceLifecycleListener.class.
 					getName());
 		}
 	}

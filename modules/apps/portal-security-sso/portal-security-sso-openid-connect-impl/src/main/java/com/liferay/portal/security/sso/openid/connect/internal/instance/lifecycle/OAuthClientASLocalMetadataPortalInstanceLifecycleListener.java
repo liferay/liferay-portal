@@ -36,7 +36,7 @@ import org.osgi.service.component.annotations.Reference;
 	enabled = false, property = "service.ranking:Integer=100",
 	service = PortalInstanceLifecycleListener.class
 )
-public class UpdateLocalWellKnownURIsPortalInstanceLifecycleListener
+public class OAuthClientASLocalMetadataPortalInstanceLifecycleListener
 	extends BasePortalInstanceLifecycleListener
 	implements EveryNodeEveryStartup {
 
@@ -162,7 +162,7 @@ public class UpdateLocalWellKnownURIsPortalInstanceLifecycleListener
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
-		UpdateLocalWellKnownURIsPortalInstanceLifecycleListener.class);
+		OAuthClientASLocalMetadataPortalInstanceLifecycleListener.class);
 
 	@Reference
 	private ClusterMasterExecutor _clusterMasterExecutor;
