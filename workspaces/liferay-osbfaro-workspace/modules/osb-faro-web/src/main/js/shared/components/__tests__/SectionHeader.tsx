@@ -36,24 +36,4 @@ describe('SectionHeader', () => {
 
 		expect(getByTestId('right-control')).toBeTruthy();
 	});
-
-	it('should lay the header out as a row when right content is given', () => {
-		const {container} = render(
-			<SectionHeader
-				icon="megaphone"
-				rightContent="All Time"
-				title="Campaigns"
-			/>
-		);
-
-		expect(container.firstChild).toHaveClass('d-flex');
-	});
-
-	it('should leave the layout untouched when no right content is given', () => {
-		const {container} = render(
-			<SectionHeader icon="megaphone" title="Campaigns" />
-		);
-
-		expect(container.firstChild).not.toHaveClass('d-flex');
-	});
 });

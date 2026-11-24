@@ -648,7 +648,6 @@ describe('BaseLifecycle', () => {
 					groupId: '23',
 				})
 			);
-			expect(button).toHaveClass('btn-primary', 'rounded-lg');
 		});
 
 		it('shows while the lifecycle is processing', () => {

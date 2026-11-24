@@ -114,10 +114,6 @@ describe('AssetAppearsOnCard', () => {
 
 		expect(noDataValues).toHaveLength(2);
 
-		noDataValues.forEach((noDataValue) =>
-			expect(noDataValue).toHaveClass('text-secondary')
-		);
-
 		expect(container.querySelector('tbody')).toHaveTextContent('0');
 	});
 

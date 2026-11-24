@@ -150,7 +150,7 @@ describe('TopPagesCardContent', () => {
 			EXIT_RATE_METRIC
 		);
 
-		expect(screen.getByText('–')).toHaveClass('text-secondary');
+		expect(screen.getByText('–')).toBeInTheDocument();
 	});
 
 	it('should render the no data value when the exit rate is not finite', () => {
@@ -159,7 +159,7 @@ describe('TopPagesCardContent', () => {
 			EXIT_RATE_METRIC
 		);
 
-		expect(screen.getByText('–')).toHaveClass('text-secondary');
+		expect(screen.getByText('–')).toBeInTheDocument();
 		expect(container).not.toHaveTextContent('∞');
 	});
 

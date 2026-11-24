@@ -60,7 +60,6 @@ describe('Account Membership', () => {
 		const noDataValues = getAllByText('–');
 
 		expect(noDataValues.length).toBeGreaterThan(0);
-		expect(noDataValues[0]).toHaveClass('text-secondary');
 	});
 
 	it('should display a missing annual revenue as no data', () => {

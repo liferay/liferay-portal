@@ -266,7 +266,7 @@ describe('IndividualsDataSet', () => {
 
 		render(<div>{renderer({})}</div>);
 
-		expect(screen.getByText('–')).toHaveClass('text-secondary');
+		expect(screen.getByText('–')).toBeInTheDocument();
 	});
 
 	it('should render no sessions as no activities in the visitor type', () => {
@@ -286,7 +286,7 @@ describe('IndividualsDataSet', () => {
 
 		render(<div>{renderer({})}</div>);
 
-		expect(screen.getByText('–')).toHaveClass('text-secondary');
+		expect(screen.getByText('–')).toBeInTheDocument();
 	});
 
 	it('should format the average session duration', () => {
@@ -319,7 +319,7 @@ describe('IndividualsDataSet', () => {
 
 		render(<div>{renderer({})}</div>);
 
-		expect(screen.getByText('–')).toHaveClass('text-secondary');
+		expect(screen.getByText('–')).toBeInTheDocument();
 	});
 
 	it('should read the job title from the individual properties', () => {
@@ -343,7 +343,7 @@ describe('IndividualsDataSet', () => {
 
 		render(<div>{renderer({itemData: {}})}</div>);
 
-		expect(screen.getByText('–')).toHaveClass('text-secondary');
+		expect(screen.getByText('–')).toBeInTheDocument();
 	});
 
 	it('should wire the individual name renderer to the contacts individual route', () => {

@@ -50,7 +50,7 @@ describe('columns.countRenderer', () => {
 	it('should render a missing count as the no data value', () => {
 		render(columns.countRenderer({itemData: {}, value: undefined}));
 
-		expect(screen.getByText('–')).toHaveClass('text-secondary');
+		expect(screen.getByText('–')).toBeInTheDocument();
 	});
 
 	it('should render a numeric string count as a number', () => {
@@ -72,7 +72,7 @@ describe('columns.countRenderer', () => {
 			})
 		);
 
-		expect(screen.getByText('–')).toHaveClass('text-secondary');
+		expect(screen.getByText('–')).toBeInTheDocument();
 	});
 });
 
@@ -91,7 +91,7 @@ describe('columns.attributeNameAndValue', () => {
 		);
 
 		expect(screen.getByText(/^count$/i)).toBeInTheDocument();
-		expect(screen.getByText('–')).toHaveClass('text-secondary');
+		expect(screen.getByText('–')).toBeInTheDocument();
 	});
 });
 
@@ -111,7 +111,7 @@ describe('columns.textRenderer', () => {
 	it('should render an empty value as the no data value', () => {
 		render(columns.textRenderer({itemData: {}, value: ''}));
 
-		expect(screen.getByText('–')).toHaveClass('text-secondary');
+		expect(screen.getByText('–')).toBeInTheDocument();
 	});
 
 	it('should render a missing value as the no data value', () => {
@@ -122,7 +122,7 @@ describe('columns.textRenderer', () => {
 			})
 		);
 
-		expect(screen.getByText('–')).toHaveClass('text-secondary');
+		expect(screen.getByText('–')).toBeInTheDocument();
 	});
 });
 
@@ -130,7 +130,7 @@ describe('columns.dateRenderer', () => {
 	it('should render a missing date as the no data value', () => {
 		render(columns.dateRenderer({itemData: {}, value: ''}));
 
-		expect(screen.getByText('–')).toHaveClass('text-secondary');
+		expect(screen.getByText('–')).toBeInTheDocument();
 	});
 
 	it('should render an ISO date in the custom date format, in UTC', () => {

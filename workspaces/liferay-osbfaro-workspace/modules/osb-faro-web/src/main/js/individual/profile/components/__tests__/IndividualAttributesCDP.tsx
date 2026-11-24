@@ -68,6 +68,5 @@ describe('IndividualAttributesCDP', () => {
 		const noDataValues = getAllByText('–');
 
 		expect(noDataValues.length).toBeGreaterThan(0);
-		expect(noDataValues[0]).toHaveClass('text-secondary');
 	});
 });

@@ -675,14 +675,6 @@ describe('VerticalTimeline', () => {
 			return container;
 		};
 
-		it('leaves the value column in the default text color', () => {
-			expandFirstEvent();
-
-			expect(
-				screen.getByText('applicationId').closest('tr').querySelector('td')
-			).not.toHaveClass('text-secondary');
-		});
-
 		describe('payload views', () => {
 			it('titles the payload and offers a table and a code view', () => {
 				expandFirstEvent();

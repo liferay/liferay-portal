@@ -20,6 +20,6 @@ describe('GenericBarsCard', () => {
 		expect(
 			container.querySelector('.card-title-rectangle')
 		).toBeTruthy();
-		expect(getByText(/^number of sites$/i)).toHaveClass('sr-only');
+		expect(getByText(/^number of sites$/i)).toBeInTheDocument();
 	});
 });

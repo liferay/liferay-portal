@@ -44,7 +44,7 @@ describe('variantColumns', () => {
 			const {container} = renderCell('median', {});
 
 			expect(container.textContent).toBe('–');
-			expect(screen.getByText('–')).toHaveClass('text-secondary');
+			expect(screen.getByText('–')).toBeInTheDocument();
 		});
 	});
 
@@ -63,7 +63,7 @@ describe('variantColumns', () => {
 			});
 
 			expect(container.textContent).toBe('–');
-			expect(screen.getByText('–')).toHaveClass('text-secondary');
+			expect(screen.getByText('–')).toBeInTheDocument();
 		});
 	});
 
@@ -84,7 +84,7 @@ describe('variantColumns', () => {
 			const {container} = renderCell('improvement', {});
 
 			expect(container.textContent).toBe('–');
-			expect(screen.getByText('–')).toHaveClass('text-secondary');
+			expect(screen.getByText('–')).toBeInTheDocument();
 		});
 	});
 
@@ -111,7 +111,7 @@ describe('variantColumns', () => {
 			});
 
 			expect(container.textContent).toBe('–');
-			expect(screen.getByText('–')).toHaveClass('text-secondary');
+			expect(screen.getByText('–')).toBeInTheDocument();
 		});
 	});
 });

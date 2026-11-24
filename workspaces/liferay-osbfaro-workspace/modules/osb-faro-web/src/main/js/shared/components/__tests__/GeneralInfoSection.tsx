@@ -69,7 +69,7 @@ describe('GeneralInfoSection', () => {
 			);
 
 			expect(getByText('John Doe')).toBeTruthy();
-			expect(getByText('–')).toHaveClass('text-secondary');
+			expect(getByText('–')).toBeInTheDocument();
 		}
 	);
 

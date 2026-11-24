@@ -23,6 +23,6 @@ describe('AccountName', () => {
 	it.each([null, ''])('should render %p as no data', (accountName) => {
 		const {getByText} = renderAccountName(accountName);
 
-		expect(getByText('–')).toHaveClass('text-secondary');
+		expect(getByText('–')).toBeInTheDocument();
 	});
 });

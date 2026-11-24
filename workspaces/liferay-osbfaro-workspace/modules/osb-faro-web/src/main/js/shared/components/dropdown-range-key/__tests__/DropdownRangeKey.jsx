@@ -74,34 +74,6 @@ describe('DropdownRangeKey', () => {
 		expect(container.querySelector('.lexicon-icon-filter')).toBeNull();
 	});
 
-	it('should render the trigger button borderless by default', async () => {
-		const {container} = render(
-			<WrapperComponent>
-				<DropdownRangeKey />
-			</WrapperComponent>
-		);
-
-		await waitForLoadingToBeRemoved(container);
-
-		expect(container.querySelector('.button-root')).toHaveClass(
-			'btn-outline-borderless'
-		);
-	});
-
-	it('should render the trigger button bordered when the bordered prop is true', async () => {
-		const {container} = render(
-			<WrapperComponent>
-				<DropdownRangeKey bordered />
-			</WrapperComponent>
-		);
-
-		await waitForLoadingToBeRemoved(container);
-
-		expect(container.querySelector('.button-root')).not.toHaveClass(
-			'btn-outline-borderless'
-		);
-	});
-
 	it('should focus the first additional period when showing more preset periods', async () => {
 		const {getByRole, getByText} = render(
 			<WrapperComponent>

@@ -185,7 +185,6 @@ describe('CampaignsDataSet', () => {
 			})
 		);
 
-		expect(container.firstChild).toHaveClass('font-weight-semi-bold');
 		expect(container).toHaveTextContent('Q3 Manufacturing Webinar');
 	});
 

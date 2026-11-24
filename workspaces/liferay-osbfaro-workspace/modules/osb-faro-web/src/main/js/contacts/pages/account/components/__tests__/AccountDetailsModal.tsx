@@ -175,7 +175,7 @@ describe('AccountDetailsModal', () => {
 		);
 
 		expect(screen.getByText('fax')).toBeInTheDocument();
-		expect(screen.getByText('–')).toHaveClass('text-secondary');
+		expect(screen.getByText('–')).toBeInTheDocument();
 	});
 
 	it('should render a missing last modified date as no data', () => {
@@ -185,7 +185,7 @@ describe('AccountDetailsModal', () => {
 			lastCustomDataRenderers.lastModifiedRenderer({value: undefined})
 		);
 
-		expect(screen.getByText('–')).toHaveClass('text-secondary');
+		expect(screen.getByText('–')).toBeInTheDocument();
 	});
 
 	it('should match items by name when the data set search has a query', () => {

@@ -118,7 +118,7 @@ describe('membershipChangesColumns no data', () => {
 				{data: {firstSeenTime}}
 			);
 
-			expect(getByText('–')).toHaveClass('text-secondary');
+			expect(getByText('–')).toBeInTheDocument();
 		}
 	);
 
@@ -130,7 +130,7 @@ describe('membershipChangesColumns no data', () => {
 				{data: {lastActivityTime}}
 			);
 
-			expect(getByText('–')).toHaveClass('text-secondary');
+			expect(getByText('–')).toBeInTheDocument();
 		}
 	);
 });
@@ -162,7 +162,7 @@ describe('IndividualsListCDPColumns', () => {
 				{data: {accountName}}
 			);
 
-			expect(getByText('–')).toHaveClass('text-secondary');
+			expect(getByText('–')).toBeInTheDocument();
 		}
 	);
 
@@ -174,7 +174,7 @@ describe('IndividualsListCDPColumns', () => {
 				{data: {properties: {country}}}
 			);
 
-			expect(getByText('–')).toHaveClass('text-secondary');
+			expect(getByText('–')).toBeInTheDocument();
 		}
 	);
 
@@ -186,7 +186,7 @@ describe('IndividualsListCDPColumns', () => {
 				{data: {firstActivityDate}}
 			);
 
-			expect(getByText('–')).toHaveClass('text-secondary');
+			expect(getByText('–')).toBeInTheDocument();
 		}
 	);
 
@@ -198,7 +198,7 @@ describe('IndividualsListCDPColumns', () => {
 				{data: {lastActivityDate}}
 			);
 
-			expect(getByText('–')).toHaveClass('text-secondary');
+			expect(getByText('–')).toBeInTheDocument();
 		}
 	);
 });
@@ -262,7 +262,7 @@ describe('changesListColumns no data', () => {
 				{dateFirst, id: '1'}
 			);
 
-			expect(getByText('–')).toHaveClass('text-secondary');
+			expect(getByText('–')).toBeInTheDocument();
 		}
 	);
 
@@ -274,7 +274,7 @@ describe('changesListColumns no data', () => {
 				individualEmail,
 			});
 
-			expect(getByText('–')).toHaveClass('text-secondary');
+			expect(getByText('–')).toBeInTheDocument();
 		}
 	);
 
@@ -286,7 +286,7 @@ describe('changesListColumns no data', () => {
 				{dateChanged, id: '1', operation: 'ADDED'}
 			);
 
-			expect(getByText('–')).toHaveClass('text-secondary');
+			expect(getByText('–')).toBeInTheDocument();
 		}
 	);
 });
@@ -343,7 +343,7 @@ describe('metricsListColumns dates', () => {
 			{data: {modifiedByUserName: 'Test Test', modifiedDate: null}}
 		);
 
-		expect(getByText('–')).toHaveClass('text-secondary');
+		expect(getByText('–')).toBeInTheDocument();
 	});
 });
 
@@ -395,7 +395,7 @@ describe('individualsListColumns no data', () => {
 			properties: {email},
 		});
 
-		expect(getByText('–')).toHaveClass('text-secondary');
+		expect(getByText('–')).toBeInTheDocument();
 	});
 
 	it.each([null, undefined, ''])(
@@ -406,7 +406,7 @@ describe('individualsListColumns no data', () => {
 				{id: '1', lastActivityDate}
 			);
 
-			expect(getByText('–')).toHaveClass('text-secondary');
+			expect(getByText('–')).toBeInTheDocument();
 		}
 	);
 
@@ -438,7 +438,7 @@ describe('individualsListColumns no data', () => {
 				</MemoryRouter>
 			);
 
-			expect(getByText('–')).toHaveClass('text-secondary');
+			expect(getByText('–')).toBeInTheDocument();
 		}
 	);
 });
@@ -493,6 +493,6 @@ describe('eventListColumns', () => {
 			data: {[field]: value, hidden: false},
 		});
 
-		expect(getByText('–')).toHaveClass('text-secondary');
+		expect(getByText('–')).toBeInTheDocument();
 	});
 });

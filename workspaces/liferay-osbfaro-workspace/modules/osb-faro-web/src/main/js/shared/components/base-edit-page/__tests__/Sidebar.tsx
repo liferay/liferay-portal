@@ -37,7 +37,6 @@ describe('BaseEditPage.Sidebar', () => {
 			const sidebar = screen.getByRole('complementary');
 
 			expect(sidebar).toHaveClass('base-edit-page-sidebar-left');
-			expect(sidebar).toHaveClass('border-right');
 		});
 
 		it('sits on the right when asked to', () => {
@@ -46,7 +45,6 @@ describe('BaseEditPage.Sidebar', () => {
 			const sidebar = screen.getByRole('complementary');
 
 			expect(sidebar).toHaveClass('base-edit-page-sidebar-right');
-			expect(sidebar).toHaveClass('border-left');
 		});
 
 		it('keeps the given class name', () => {

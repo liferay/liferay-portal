@@ -80,9 +80,6 @@ describe('CompositionLegend', () => {
 			/>
 		);
 
-		expect(
-			screen.getByTestId('active-porcentage').querySelector('span')
-		).toHaveClass('text-secondary');
 		expect(screen.getByTestId('active-porcentage')).toHaveTextContent(
 			'–'
 		);

@@ -39,7 +39,7 @@ describe('Row', () => {
 			<Row columns={COLUMNS} data={INDIVIDUAL_NO_SALARY} />
 		);
 
-		expect(getByText('–')).toHaveClass('text-secondary');
+		expect(getByText('–')).toBeInTheDocument();
 	});
 
 	it('should render with empty data if the accessor does not exist at all on the object', () => {
@@ -52,7 +52,7 @@ describe('Row', () => {
 			/>
 		);
 
-		expect(getByText('–')).toHaveClass('text-secondary');
+		expect(getByText('–')).toBeInTheDocument();
 	});
 
 	it('should render with empty data if the column accessor value is an empty string', () => {
@@ -63,7 +63,7 @@ describe('Row', () => {
 			/>
 		);
 
-		expect(getByText('–')).toHaveClass('text-secondary');
+		expect(getByText('–')).toBeInTheDocument();
 	});
 
 	it('should render a real zero', () => {

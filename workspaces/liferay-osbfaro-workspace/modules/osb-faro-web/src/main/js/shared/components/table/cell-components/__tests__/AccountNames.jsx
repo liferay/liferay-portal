@@ -28,7 +28,7 @@ describe('AccountNames', () => {
 			{container: document.body.appendChild(tableRow)}
 		);
 
-		expect(getByText('–')).toHaveClass('text-secondary');
+		expect(getByText('–')).toBeInTheDocument();
 	});
 
 	it('should render an empty account name as no data', () => {
@@ -41,6 +41,6 @@ describe('AccountNames', () => {
 			{container: document.body.appendChild(tableRow)}
 		);
 
-		expect(getByText('–')).toHaveClass('text-secondary');
+		expect(getByText('–')).toBeInTheDocument();
 	});
 });

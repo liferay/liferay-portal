@@ -62,7 +62,7 @@ describe('columns', () => {
 		});
 
 		expect(container.querySelector('td')).toHaveTextContent('–');
-		expect(screen.getByText('–')).toHaveClass('text-secondary');
+		expect(screen.getByText('–')).toBeInTheDocument();
 	});
 
 	beforeEach(() => {

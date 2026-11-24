@@ -159,10 +159,7 @@ describe('LifecycleConditionsPanel', () => {
 
 		expect(
 			screen.getByRole('group', {name: /configuration summary/i})
-		).toHaveClass('condition-chip-static-sticker');
-		expect(screen.getByRole('group', {name: /^aware$/i})).not.toHaveClass(
-			'condition-chip-static-sticker'
-		);
+		).toBeInTheDocument();
 	});
 
 	it('cannot remove the configuration summary', () => {

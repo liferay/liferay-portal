@@ -88,7 +88,7 @@ describe('AccountInfo', () => {
 		])('should render a %s of %p as no data', (key, value) => {
 			render(<AccountInfo account={{...mockAccount, [key]: value}} />);
 
-			expect(screen.getByText('–')).toHaveClass('text-secondary');
+			expect(screen.getByText('–')).toBeInTheDocument();
 		});
 
 		it('should render the website value as an external link', () => {

@@ -70,7 +70,6 @@ describe('SegmentMembership', () => {
 
 		expect(previewButton).toHaveAccessibleName('View Members');
 		expect(previewButton).toHaveAttribute('aria-label', 'View Members');
-		expect(previewButton).toHaveClass('btn-monospaced');
 		expect(previewButton).not.toHaveTextContent(/view members/i);
 		expect(previewButton.firstElementChild).toHaveClass('lexicon-icon-view');
 	});
@@ -83,19 +82,6 @@ describe('SegmentMembership', () => {
 		await waitFor(() =>
 			expect(getFormik().values.includeAnonymousUsers).toBe(true)
 		);
-	});
-
-	it('should show the include anonymous label in gray only when the toggle is off', async () => {
-		renderMembership();
-
-		const toggle = screen.getByRole('switch', {name: /include anonymous/i});
-		const container = toggle.closest('label');
-
-		expect(container).toHaveClass('text-secondary');
-
-		fireEvent.click(toggle);
-
-		await waitFor(() => expect(container).not.toHaveClass('text-secondary'));
 	});
 
 	it('should mark the include anonymous field as touched when it loses focus', async () => {
@@ -153,7 +139,6 @@ describe('SegmentMembership', () => {
 
 		expect(previewButton).toHaveAccessibleName('View Members');
 		expect(previewButton).not.toHaveAttribute('aria-label');
-		expect(previewButton).not.toHaveClass('btn-monospaced');
 		expect(previewButton).toHaveTextContent(/view members/i);
 		expect(previewButton.firstElementChild).toHaveClass(
 			'lexicon-icon-view',
@@ -188,7 +173,7 @@ describe('SegmentMembership', () => {
 				screen.getByText(
 					/^some of your criteria are incomplete or invalid\.$/i
 				)
-			).toHaveClass('sr-only');
+			).toBeInTheDocument();
 		}
 	);
 

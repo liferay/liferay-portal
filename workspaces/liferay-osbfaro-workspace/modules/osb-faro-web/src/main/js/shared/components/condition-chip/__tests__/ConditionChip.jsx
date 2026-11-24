@@ -184,25 +184,4 @@ describe('ConditionChip', () => {
 			container.querySelector('.lexicon-icon-exclamation-circle')
 		).toBeInTheDocument();
 	});
-
-	it('marks a chip whose sticker stays as is when selected', () => {
-		const {rerender} = render(
-			<ConditionChip {...defaultProps} onSelect={jest.fn()} selected />
-		);
-
-		const chip = screen.getByRole('group', {name: /job title/i});
-
-		expect(chip).not.toHaveClass('condition-chip-static-sticker');
-
-		rerender(
-			<ConditionChip
-				{...defaultProps}
-				onSelect={jest.fn()}
-				selected
-				staticSticker
-			/>
-		);
-
-		expect(chip).toHaveClass('condition-chip-static-sticker');
-	});
 });

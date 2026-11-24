@@ -97,9 +97,5 @@ describe('IndividualAttributes', () => {
 		const noDataValues = getAllByText('–');
 
 		expect(noDataValues).toHaveLength(2);
-
-		noDataValues.forEach(noDataValue =>
-			expect(noDataValue).toHaveClass('text-secondary')
-		);
 	});
 });

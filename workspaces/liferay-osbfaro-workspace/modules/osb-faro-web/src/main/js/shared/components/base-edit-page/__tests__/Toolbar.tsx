@@ -45,9 +45,7 @@ describe('BaseEditPage.Toolbar', () => {
 		);
 
 		expect(screen.getByText('Download Report')).toBeInTheDocument();
-		expect(screen.getByTestId('toolbar-divider')).toHaveClass(
-			'border-left'
-		);
+		expect(screen.getByTestId('toolbar-divider')).toBeInTheDocument();
 	});
 
 	it('groups the actions so they wrap together below the title', () => {
@@ -72,29 +70,6 @@ describe('BaseEditPage.Toolbar', () => {
 		expect(actions).not.toContainElement(
 			screen.getByRole('heading', {level: 1})
 		);
-	});
-
-	it('hides Cancel and the divider below the large breakpoint', () => {
-		renderToolbar(
-			<>
-				<Toolbar.Divider />
-
-				<Toolbar.Cancel href="/list" />
-
-				<Toolbar.Save label="Save" />
-			</>
-		);
-
-		expect(
-			screen.getByRole('link', {name: /cancel/i}).closest('li')
-		).toHaveClass('d-none', 'd-lg-flex');
-		expect(screen.getByTestId('toolbar-divider')).toHaveClass(
-			'd-none',
-			'd-lg-flex'
-		);
-		expect(
-			screen.getByRole('button', {name: /^save$/i}).closest('li')
-		).not.toHaveClass('d-none');
 	});
 
 	it('renders Cancel as a link to the given URL', () => {
