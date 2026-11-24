@@ -1,7 +1,10 @@
 import AttributesCriteriaTabs from './AttributesCriteriaTabs';
+import CampaignsEmptyState from './CampaignsEmptyState';
+import ClayButton from '@clayui/button';
 import ClayDropDown from '@clayui/drop-down';
 import CriteriaSidebarCollapse from './CriteriaSidebarCollapse';
 import CriteriaSidebarSearchBar from './CriteriaSidebarSearchBar';
+import EmptyState from '@clayui/empty-state';
 import EventsCriteriaTabs from './EventsCriteriaTabs';
 import Loading from 'shared/components/Loading';
 import React, {useContext, useEffect, useMemo, useRef, useState} from 'react';
@@ -12,6 +15,7 @@ import {FieldOwnerTypes, SegmentTypes} from 'shared/util/constants';
 import {getPaginatedSection} from './paginatedSections';
 import {List} from 'immutable';
 import {Option, Picker} from '@clayui/core';
+import {CAMPAIGN_PROPERTY} from '../utils/properties';
 import {Property, PropertyGroup, PropertySubgroup} from 'shared/util/records';
 import {ReferencedObjectsContext} from '../context/referencedObjects';
 import {translateQueryToCriteria} from '../utils/odata';
@@ -85,6 +89,7 @@ export default function CriteriaSidebar({
 
 	const {
 		items: remoteItems,
+		keywords: remoteKeywords,
 		loading: remoteLoading,
 		page: remotePage,
 		setPage: setRemotePage,
@@ -213,6 +218,40 @@ export default function CriteriaSidebar({
 
 		if (isRemoteSection && remoteLoading) {
 			return <Loading overlay />;
+		}
+
+		// Checked against the keywords the list was fetched with, not the
+		// input's value, so the message describes the search that ran.
+
+		if (
+			selectedPropertyKey === CAMPAIGN_PROPERTY.propertyKey &&
+			remoteItems.isEmpty()
+		) {
+			if (remoteKeywords) {
+				return (
+					<div className="empty-message">
+						<EmptyState
+							className="text-center"
+							description={Liferay.Language.get(
+								'review-your-search-and-try-again'
+							)}
+							title={Liferay.Language.get(
+								'no-results-were-found'
+							)}
+						>
+							<ClayButton
+								displayType="secondary"
+								onClick={() => setSearchValue('')}
+								size="sm"
+							>
+								{Liferay.Language.get('clear-search')}
+							</ClayButton>
+						</EmptyState>
+					</div>
+				);
+			}
+
+			return <CampaignsEmptyState />;
 		}
 
 		return (
