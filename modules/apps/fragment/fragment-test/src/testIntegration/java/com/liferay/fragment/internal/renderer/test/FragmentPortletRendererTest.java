@@ -15,7 +15,6 @@ import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.test.util.LayoutPageTemplateTestUtil;
 import com.liferay.layout.test.util.ContentLayoutTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
-import com.liferay.layout.util.LayoutServiceContextHelper;
 import com.liferay.layout.utility.page.kernel.constants.LayoutUtilityPageEntryConstants;
 import com.liferay.layout.utility.page.model.LayoutUtilityPageEntry;
 import com.liferay.layout.utility.page.service.LayoutUtilityPageEntryLocalService;
@@ -26,10 +25,9 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.PortletPreferences;
 import com.liferay.portal.kernel.portlet.PortletIdCodec;
+import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.PortletPreferencesLocalService;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
@@ -42,8 +40,6 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
-import jakarta.servlet.http.HttpServletRequest;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -51,6 +47,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 /**
@@ -148,25 +145,19 @@ public class FragmentPortletRendererTest {
 		JSONObject editableValuesJSONObject =
 			fragmentEntryLink.getEditableValuesJSONObject();
 
-		try (AutoCloseable autoCloseable =
-				_layoutServiceContextHelper.getServiceContextAutoCloseable(
-					layout)) {
+		MockHttpServletRequest mockHttpServletRequest =
+			ContentLayoutTestUtil.getMockHttpServletRequest(
+				_companyLocalService.getCompany(_group.getCompanyId()), _group,
+				layout);
 
-			ServiceContext serviceContext =
-				ServiceContextThreadLocal.getServiceContext();
+		mockHttpServletRequest.setAttribute(
+			"ORIGINAL_HTTP_SERVLET_REQUEST", mockHttpServletRequest);
 
-			HttpServletRequest httpServletRequest = serviceContext.getRequest();
-
-			httpServletRequest.setAttribute(
-				"ORIGINAL_HTTP_SERVLET_REQUEST", httpServletRequest);
-
-			_fragmentPortletRenderer.renderPortlet(
-				fragmentEntryLink, httpServletRequest,
-				new MockHttpServletResponse(),
-				editableValuesJSONObject.getString("portletId"),
-				editableValuesJSONObject.getString("instanceId"),
-				StringPool.BLANK);
-		}
+		_fragmentPortletRenderer.renderPortlet(
+			fragmentEntryLink, mockHttpServletRequest,
+			new MockHttpServletResponse(),
+			editableValuesJSONObject.getString("portletId"),
+			editableValuesJSONObject.getString("instanceId"), StringPool.BLANK);
 
 		PortletPreferences portletPreferences =
 			_portletPreferencesLocalService.fetchPortletPreferences(
@@ -180,6 +171,9 @@ public class FragmentPortletRendererTest {
 	}
 
 	@Inject
+	private CompanyLocalService _companyLocalService;
+
+	@Inject
 	private FragmentEntryLinkLocalService _fragmentEntryLinkLocalService;
 
 	@Inject
@@ -189,9 +183,6 @@ public class FragmentPortletRendererTest {
 
 	@Inject
 	private LayoutLocalService _layoutLocalService;
-
-	@Inject
-	private LayoutServiceContextHelper _layoutServiceContextHelper;
 
 	@Inject
 	private LayoutUtilityPageEntryLocalService
