@@ -41,6 +41,7 @@ import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
+import com.liferay.portal.kernel.cache.CacheRegistryUtil;
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -414,6 +415,42 @@ public class ObjectEntryResourceAttachmentTest
 			_addFileEntry(
 				RandomTestUtil.randomBytes(), ContentTypes.TEXT_PLAIN, "txt"),
 			null, null);
+	}
+
+	@Test
+	@TestInfo("LPD-117334")
+	public void testGetObjectEntryWithAttachmentObjectFieldMetadataQuery()
+		throws Exception {
+
+		FileEntry fileEntry = _addFileEntry(
+			FileUtil.getBytes(
+				getClass(), "dependencies/sample_small_wide_400x300.jpg"),
+			ContentTypes.IMAGE_JPEG, "jpg");
+
+		ObjectDefinition objectDefinition = getObjectDefinition1();
+
+		JSONObject objectEntryJSONObject = HTTPTestUtil.invokeToJSONObject(
+			JSONUtil.put(
+				OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
+			).put(
+				OBJECT_FIELD_NAME_ATTACHMENT_USER_COMPUTER_TO_DOCS_AND_MEDIA_SOURCE_1,
+				fileEntry.getFileEntryId()
+			).toString(),
+			objectDefinition.getRESTContextPath(), Http.Method.POST);
+
+		RawMetadataProcessorUtil.saveMetadata(fileEntry.getFileVersion());
+
+		String endpoint =
+			objectDefinition.getRESTContextPath() + StringPool.SLASH +
+				objectEntryJSONObject.getString("id");
+
+		Assert.assertFalse(_isMetadataQueried(endpoint));
+		Assert.assertTrue(
+			_isMetadataQueried(
+				StringBundler.concat(
+					endpoint, "?nestedFields=",
+					OBJECT_FIELD_NAME_ATTACHMENT_USER_COMPUTER_TO_DOCS_AND_MEDIA_SOURCE_1,
+					".metadata")));
 	}
 
 	@Test
@@ -1495,6 +1532,26 @@ public class ObjectEntryResourceAttachmentTest
 		}
 
 		return jsonObject;
+	}
+
+	private boolean _isMetadataQueried(String endpoint) throws Exception {
+		CacheRegistryUtil.clear();
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"org.hibernate.SQL", LoggerTestUtil.DEBUG)) {
+
+			HTTPTestUtil.invokeToJSONObject(null, endpoint, Http.Method.GET);
+
+			for (LogEntry logEntry : logCapture.getLogEntries()) {
+				String message = logEntry.getMessage();
+
+				if (message.contains("DLFileEntryMetadata")) {
+					return true;
+				}
+			}
+
+			return false;
+		}
 	}
 
 	private ObjectDefinition
