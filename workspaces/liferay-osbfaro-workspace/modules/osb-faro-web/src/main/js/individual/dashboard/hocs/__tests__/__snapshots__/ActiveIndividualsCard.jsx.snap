@@ -28,18 +28,21 @@ exports[`ActiveIndividualsCard should render 1`] = `
           role="group"
         >
           <button
+            aria-pressed="true"
             class="button-root interval-option text-uppercase active btn btn-sm btn-secondary"
             type="button"
           >
             D
           </button>
           <button
+            aria-pressed="false"
             class="button-root interval-option text-uppercase btn btn-sm btn-secondary"
             type="button"
           >
             W
           </button>
           <button
+            aria-pressed="false"
             class="button-root interval-option text-uppercase btn btn-sm btn-secondary"
             type="button"
           >

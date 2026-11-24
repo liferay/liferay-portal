@@ -36,6 +36,7 @@ const IntervalSelector: React.FC<IntervalSelectorIProps> = ({
 		>
 			{[day, week, month].map((interval) => (
 				<ClayButton
+					aria-pressed={interval === activeInterval}
 					className={getCN(
 						'button-root interval-option text-uppercase',
 						{
