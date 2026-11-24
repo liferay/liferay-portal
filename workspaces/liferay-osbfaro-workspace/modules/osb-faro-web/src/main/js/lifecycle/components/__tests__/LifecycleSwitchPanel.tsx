@@ -214,15 +214,23 @@ describe('LifecycleSwitchPanel', () => {
 	it('highlights the open lifecycle', () => {
 		renderPanel();
 
-		expect(getRow('Growth and Retention Hub')).toHaveClass('active');
-		expect(getRow('Partner Lifecycle')).not.toHaveClass('active');
-		expect(getRow('Expansion Lifecycle')).not.toHaveClass('active');
+		expect(
+			screen.getByRole('link', {name: 'Growth and Retention Hub'})
+		).toHaveAttribute('aria-current', 'page');
+		expect(
+			screen.getByRole('link', {name: 'Partner Lifecycle'})
+		).not.toHaveAttribute('aria-current');
+		expect(
+			screen.getByRole('link', {name: 'Expansion Lifecycle'})
+		).not.toHaveAttribute('aria-current');
 	});
 
 	it('highlights the open lifecycle by its external reference code across versions', () => {
 		renderPanel({openLifecycle: {...LIFECYCLES[0], id: '10'}});
 
-		expect(getRow('Growth and Retention Hub')).toHaveClass('active');
+		expect(
+			screen.getByRole('link', {name: 'Growth and Retention Hub'})
+		).toHaveAttribute('aria-current', 'page');
 	});
 
 	it('shows the modified date and its author when known', () => {

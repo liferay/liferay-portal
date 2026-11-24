@@ -146,7 +146,7 @@ describe('BaseSelect', () => {
 			keyCode: 38
 		});
 
-		expect(getByText('bar')).toHaveClass('active');
+		expect(getByText('bar')).toHaveAttribute('aria-selected', 'true');
 	});
 
 	it('should focus on the next item', async () => {
@@ -172,7 +172,7 @@ describe('BaseSelect', () => {
 			keyCode: 40
 		});
 
-		expect(getByText('foo')).toHaveClass('active');
+		expect(getByText('foo')).toHaveAttribute('aria-selected', 'true');
 	});
 
 	it('should render with Graphql', async () => {

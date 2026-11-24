@@ -28,7 +28,7 @@ describe('InterestDetails', () => {
 	});
 
 	it('should render an active pages list tab', async () => {
-		const {container, getByText} = render(
+		const {container, getByRole, getByText} = render(
 			<MemoryRouter>
 				<InterestDetails {...defaultProps} />
 			</MemoryRouter>
@@ -37,11 +37,13 @@ describe('InterestDetails', () => {
 		await waitForLoadingToBeRemoved(container);
 
 		expect(getByText(/^active pages$/i)).toBeTruthy();
-		expect(getByText(/^active pages$/i).parentElement).toHaveClass('active');
+		expect(
+			getByRole('link', {name: /^active pages$/i})
+		).toHaveAttribute('aria-current', 'page');
 	});
 
 	it('should render an inactive pages list tab', async () => {
-		const {container, getByText} = render(
+		const {container, getByRole, getByText} = render(
 			<MemoryRouter>
 				<InterestDetails {...defaultProps} active='false' />
 			</MemoryRouter>
@@ -50,6 +52,8 @@ describe('InterestDetails', () => {
 		await waitForLoadingToBeRemoved(container);
 
 		expect(getByText(/^inactive pages$/i)).toBeTruthy();
-		expect(getByText(/^inactive pages$/i).parentElement).toHaveClass('active');
+		expect(
+			getByRole('link', {name: /^inactive pages$/i})
+		).toHaveAttribute('aria-current', 'page');
 	});
 });

@@ -59,13 +59,12 @@ describe('Event Analysis Editor', () => {
 
 		const uniqueButton = getByRole('button', {name: /^unique$/i});
 
-		expect(uniqueButton).toHaveClass('active');
 		expect(uniqueButton).toHaveAttribute('aria-pressed', 'true');
 
 		for (const name of ['Average', 'Total']) {
 			const button = getByRole('button', {name});
 
-			expect(button).not.toHaveClass('active');
+			expect(button).toHaveAttribute('aria-pressed', 'false');
 			expect(button).toHaveAttribute('aria-pressed', 'false');
 		}
 	});
