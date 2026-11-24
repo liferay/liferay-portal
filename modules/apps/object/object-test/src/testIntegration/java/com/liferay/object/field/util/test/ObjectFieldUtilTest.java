@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -49,6 +50,7 @@ public class ObjectFieldUtilTest {
 			new LiferayIntegrationTestRule(),
 			PermissionCheckerMethodTestRule.INSTANCE);
 
+	@FeatureFlag("LPD-108620")
 	@Test
 	public void testValidateReadOnlyObjectFields() throws PortalException {
 		long value = RandomTestUtil.randomInt();
@@ -115,7 +117,28 @@ public class ObjectFieldUtilTest {
 				objectField.getName(), RandomTestUtil.randomString()
 			).build());
 
-		// One to many relationship
+		_testValidateReadOnlyObjectFieldsWithObjectRelationship(
+			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+		_testValidateReadOnlyObjectFieldsWithObjectRelationship(
+			ObjectRelationshipConstants.TYPE_ONE_TO_ONE);
+	}
+
+	private Map<String, Object> _getValues(ObjectField objectField) {
+		return HashMapBuilder.<String, Object>put(
+			objectField.getI18nObjectFieldName(),
+			HashMapBuilder.put(
+				"en_US", RandomTestUtil.randomString()
+			).put(
+				"pt_BR", RandomTestUtil.randomString()
+			).build()
+		).put(
+			objectField.getName(), RandomTestUtil.randomString()
+		).build();
+	}
+
+	private void _testValidateReadOnlyObjectFieldsWithObjectRelationship(
+			String type)
+		throws PortalException {
 
 		String objectRelationshipERCObjectFieldName =
 			"a" + RandomTestUtil.randomString();
@@ -141,7 +164,7 @@ public class ObjectFieldUtilTest {
 		).readOnly(
 			ObjectFieldConstants.READ_ONLY_TRUE
 		).relationshipType(
-			ObjectRelationshipConstants.TYPE_ONE_TO_MANY
+			type
 		).build();
 
 		AssertUtils.assertFailure(
@@ -218,19 +241,6 @@ public class ObjectFieldUtilTest {
 				relationshipObjectField.getName(),
 				Integer.valueOf(objectRelationshipId)
 			).build());
-	}
-
-	private Map<String, Object> _getValues(ObjectField objectField) {
-		return HashMapBuilder.<String, Object>put(
-			objectField.getI18nObjectFieldName(),
-			HashMapBuilder.put(
-				"en_US", RandomTestUtil.randomString()
-			).put(
-				"pt_BR", RandomTestUtil.randomString()
-			).build()
-		).put(
-			objectField.getName(), RandomTestUtil.randomString()
-		).build();
 	}
 
 	private void _validateReadOnlyObjectFields(
