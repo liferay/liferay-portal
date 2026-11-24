@@ -100,6 +100,7 @@ export class TitleEditor extends React.Component<
 			<div className={rootClasses}>
 				<input
 					className={inputClasses}
+					hidden={!editing}
 					name={inputName}
 					onBlur={this.handleBlur}
 					onChange={onChange}
@@ -111,7 +112,7 @@ export class TitleEditor extends React.Component<
 					value={value}
 				/>
 
-				<div className={displayClasses}>
+				<div className={displayClasses} hidden={editing}>
 					<span
 						className="title-value"
 						onClick={this.handleEdit}

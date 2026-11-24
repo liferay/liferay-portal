@@ -303,6 +303,7 @@ exports[`View Channel should render 1`] = `
                 >
                   <input
                     class="title-input hide"
+                    hidden=""
                     name="name"
                     required=""
                     type="text"

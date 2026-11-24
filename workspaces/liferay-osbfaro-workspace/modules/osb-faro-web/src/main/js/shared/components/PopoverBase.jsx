@@ -69,6 +69,7 @@ class PopoverBase extends React.Component {
 			<div
 				{...omitDefinedProps(otherProps, PopoverBase.propTypes)}
 				className={classes}
+				hidden={!visible}
 				ref={this._elementRef}
 			>
 				{placement !== 'none' && <div className='arrow' />}
