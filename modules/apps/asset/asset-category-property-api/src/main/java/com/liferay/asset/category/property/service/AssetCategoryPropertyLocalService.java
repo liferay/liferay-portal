@@ -222,10 +222,6 @@ public interface AssetCategoryPropertyLocalService
 			String externalReferenceCode, long companyId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public AssetCategoryProperty fetchCategoryProperty(
-		long categoryId, String key);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	/**
@@ -328,4 +324,4 @@ public interface AssetCategoryPropertyLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:352796589
+// LIFERAY-SERVICE-BUILDER-HASH:-1292737024

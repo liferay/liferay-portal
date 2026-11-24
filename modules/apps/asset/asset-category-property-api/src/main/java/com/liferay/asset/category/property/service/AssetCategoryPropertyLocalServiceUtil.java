@@ -241,12 +241,6 @@ public class AssetCategoryPropertyLocalServiceUtil {
 			externalReferenceCode, companyId);
 	}
 
-	public static AssetCategoryProperty fetchCategoryProperty(
-		long categoryId, String key) {
-
-		return getService().fetchCategoryProperty(categoryId, key);
-	}
-
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 
@@ -373,4 +367,4 @@ public class AssetCategoryPropertyLocalServiceUtil {
 			AssetCategoryPropertyLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-584809458
+// LIFERAY-SERVICE-BUILDER-HASH:1006412527
