@@ -160,11 +160,8 @@ public class CommercePricingClassCPDefinitionRelServiceTest {
 					() ->
 						_commercePricingClassCPDefinitionRelService.
 							deleteCommercePricingClassCPDefinitionRel(
-								_createCommercePricingClassCPDefinitionRel(
-									commercePricingClassCPDefinitionRel2.
-										getCommercePricingClassCPDefinitionRelId(),
-									commercePricingClassCPDefinitionRel1.
-										getCommercePricingClassId())));
+								commercePricingClassCPDefinitionRel2.
+									getCommercePricingClassCPDefinitionRelId()));
 
 			Assert.assertEquals(
 				commercePricingClass2.getCommercePricingClassId(),
@@ -178,7 +175,8 @@ public class CommercePricingClassCPDefinitionRelServiceTest {
 
 			_commercePricingClassCPDefinitionRelService.
 				deleteCommercePricingClassCPDefinitionRel(
-					commercePricingClassCPDefinitionRel1);
+					commercePricingClassCPDefinitionRel1.
+						getCommercePricingClassCPDefinitionRelId());
 
 			Assert.assertNull(
 				_commercePricingClassCPDefinitionRelLocalService.
@@ -208,23 +206,6 @@ public class CommercePricingClassCPDefinitionRelServiceTest {
 				commercePricingClassId, cpInstance.getCPDefinitionId(),
 				ServiceContextTestUtil.getServiceContext(
 					TestPropsValues.getGroupId()));
-	}
-
-	private CommercePricingClassCPDefinitionRel
-		_createCommercePricingClassCPDefinitionRel(
-			long commercePricingClassCPDefinitionRelId,
-			long commercePricingClassId) {
-
-		CommercePricingClassCPDefinitionRel
-			commercePricingClassCPDefinitionRel =
-				_commercePricingClassCPDefinitionRelLocalService.
-					createCommercePricingClassCPDefinitionRel(
-						commercePricingClassCPDefinitionRelId);
-
-		commercePricingClassCPDefinitionRel.setCommercePricingClassId(
-			commercePricingClassId);
-
-		return commercePricingClassCPDefinitionRel;
 	}
 
 	@Inject

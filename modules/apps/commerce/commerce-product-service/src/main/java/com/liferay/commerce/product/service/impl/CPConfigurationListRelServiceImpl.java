@@ -13,12 +13,10 @@ import com.liferay.commerce.product.service.base.CPConfigurationListRelServiceBa
 import com.liferay.commerce.product.service.persistence.CPConfigurationListPersistence;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
-import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.OrderByComparator;
 
 import java.util.List;
@@ -51,14 +49,13 @@ public class CPConfigurationListRelServiceImpl
 	}
 
 	@Override
-	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
 	public CPConfigurationListRel deleteCPConfigurationListRel(
-			CPConfigurationListRel cpConfigurationListRel)
+			long cpConfigurationListRelId)
 		throws PortalException {
 
-		cpConfigurationListRel =
+		CPConfigurationListRel cpConfigurationListRel =
 			cpConfigurationListRelPersistence.findByPrimaryKey(
-				cpConfigurationListRel.getCPConfigurationListRelId());
+				cpConfigurationListRelId);
 
 		_checkCommerceCatalog(
 			cpConfigurationListRel.getCPConfigurationListId(),
@@ -66,16 +63,6 @@ public class CPConfigurationListRelServiceImpl
 
 		return cpConfigurationListRelLocalService.deleteCPConfigurationListRel(
 			cpConfigurationListRel);
-	}
-
-	@Override
-	public CPConfigurationListRel deleteCPConfigurationListRel(
-			long cpConfigurationListRelId)
-		throws PortalException {
-
-		return deleteCPConfigurationListRel(
-			cpConfigurationListRelPersistence.findByPrimaryKey(
-				cpConfigurationListRelId));
 	}
 
 	@Override

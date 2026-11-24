@@ -55,14 +55,13 @@ public class CommercePricingClassCPDefinitionRelServiceImpl
 	@Override
 	public CommercePricingClassCPDefinitionRel
 			deleteCommercePricingClassCPDefinitionRel(
-				CommercePricingClassCPDefinitionRel
-					commercePricingClassCPDefinitionRel)
+				long commercePricingClassCPDefinitionRelId)
 		throws PortalException {
 
-		commercePricingClassCPDefinitionRel =
-			commercePricingClassCPDefinitionRelPersistence.findByPrimaryKey(
-				commercePricingClassCPDefinitionRel.
-					getCommercePricingClassCPDefinitionRelId());
+		CommercePricingClassCPDefinitionRel
+			commercePricingClassCPDefinitionRel =
+				commercePricingClassCPDefinitionRelPersistence.findByPrimaryKey(
+					commercePricingClassCPDefinitionRelId);
 
 		_commercePricingClassResourcePermission.check(
 			getPermissionChecker(),
@@ -72,17 +71,6 @@ public class CommercePricingClassCPDefinitionRelServiceImpl
 		return commercePricingClassCPDefinitionRelLocalService.
 			deleteCommercePricingClassCPDefinitionRel(
 				commercePricingClassCPDefinitionRel);
-	}
-
-	@Override
-	public CommercePricingClassCPDefinitionRel
-			deleteCommercePricingClassCPDefinitionRel(
-				long commercePricingClassCPDefinitionRelId)
-		throws PortalException {
-
-		return deleteCommercePricingClassCPDefinitionRel(
-			commercePricingClassCPDefinitionRelPersistence.findByPrimaryKey(
-				commercePricingClassCPDefinitionRelId));
 	}
 
 	@Override

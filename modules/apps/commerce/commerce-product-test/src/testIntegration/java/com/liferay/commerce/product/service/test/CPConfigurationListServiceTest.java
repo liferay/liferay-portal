@@ -79,18 +79,6 @@ public class CPConfigurationListServiceTest {
 			ServiceContextTestUtil.getServiceContext(groupId));
 	}
 
-	private CPConfigurationList _createCPConfigurationList(
-		long cpConfigurationListId, long groupId) {
-
-		CPConfigurationList cpConfigurationList =
-			_cpConfigurationListLocalService.createCPConfigurationList(
-				cpConfigurationListId);
-
-		cpConfigurationList.setGroupId(groupId);
-
-		return cpConfigurationList;
-	}
-
 	private void _testDeleteCPConfigurationListMasterCPConfigurationList()
 		throws Exception {
 
@@ -114,9 +102,7 @@ public class CPConfigurationListServiceTest {
 			Assert.assertThrows(
 				RequiredCPConfigurationListException.class,
 				() -> _cpConfigurationListService.deleteCPConfigurationList(
-					_createCPConfigurationList(
-						masterCPConfigurationList.getCPConfigurationListId(),
-						commerceCatalog.getGroupId())));
+					masterCPConfigurationList.getCPConfigurationListId()));
 
 			Assert.assertNotNull(
 				_cpConfigurationListLocalService.fetchCPConfigurationList(
@@ -154,9 +140,7 @@ public class CPConfigurationListServiceTest {
 				Assert.assertThrows(
 					PrincipalException.MustHavePermission.class,
 					() -> _cpConfigurationListService.deleteCPConfigurationList(
-						_createCPConfigurationList(
-							cpConfigurationList2.getCPConfigurationListId(),
-							commerceCatalog1.getGroupId())));
+						cpConfigurationList2.getCPConfigurationListId()));
 
 			Assert.assertEquals(
 				commerceCatalog2.getCommerceCatalogId(),
@@ -167,7 +151,7 @@ public class CPConfigurationListServiceTest {
 					cpConfigurationList2.getCPConfigurationListId()));
 
 			_cpConfigurationListService.deleteCPConfigurationList(
-				cpConfigurationList1);
+				cpConfigurationList1.getCPConfigurationListId());
 
 			Assert.assertNull(
 				_cpConfigurationListLocalService.fetchCPConfigurationList(

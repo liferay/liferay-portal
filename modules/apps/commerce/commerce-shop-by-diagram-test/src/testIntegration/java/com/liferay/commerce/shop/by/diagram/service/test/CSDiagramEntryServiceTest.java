@@ -85,9 +85,7 @@ public class CSDiagramEntryServiceTest {
 				Assert.assertThrows(
 					PrincipalException.MustHavePermission.class,
 					() -> _csDiagramEntryService.deleteCSDiagramEntry(
-						_createCSDiagramEntry(
-							csDiagramEntry1.getCPDefinitionId(),
-							csDiagramEntry2.getCSDiagramEntryId())));
+						csDiagramEntry2.getCSDiagramEntryId()));
 
 			Assert.assertEquals(
 				commerceCatalog2.getCommerceCatalogId(),
@@ -97,7 +95,8 @@ public class CSDiagramEntryServiceTest {
 				_csDiagramEntryLocalService.fetchCSDiagramEntry(
 					csDiagramEntry2.getCSDiagramEntryId()));
 
-			_csDiagramEntryService.deleteCSDiagramEntry(csDiagramEntry1);
+			_csDiagramEntryService.deleteCSDiagramEntry(
+				csDiagramEntry1.getCSDiagramEntryId());
 
 			Assert.assertNull(
 				_csDiagramEntryLocalService.fetchCSDiagramEntry(
@@ -113,17 +112,6 @@ public class CSDiagramEntryServiceTest {
 			cpDefinition.getCProductId(), false, RandomTestUtil.randomInt(),
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 			ServiceContextTestUtil.getServiceContext(groupId));
-	}
-
-	private CSDiagramEntry _createCSDiagramEntry(
-		long cpDefinitionId, long csDiagramEntryId) {
-
-		CSDiagramEntry csDiagramEntry =
-			_csDiagramEntryLocalService.createCSDiagramEntry(csDiagramEntryId);
-
-		csDiagramEntry.setCPDefinitionId(cpDefinitionId);
-
-		return csDiagramEntry;
 	}
 
 	@Inject

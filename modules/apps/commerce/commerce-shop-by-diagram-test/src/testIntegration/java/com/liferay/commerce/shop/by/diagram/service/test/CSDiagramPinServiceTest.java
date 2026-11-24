@@ -84,9 +84,7 @@ public class CSDiagramPinServiceTest {
 				Assert.assertThrows(
 					PrincipalException.MustHavePermission.class,
 					() -> _csDiagramPinService.deleteCSDiagramPin(
-						_createCSDiagramPin(
-							csDiagramPin1.getCPDefinitionId(),
-							csDiagramPin2.getCSDiagramPinId())));
+						csDiagramPin2.getCSDiagramPinId()));
 
 			Assert.assertEquals(
 				commerceCatalog2.getCommerceCatalogId(),
@@ -96,7 +94,8 @@ public class CSDiagramPinServiceTest {
 				_csDiagramPinLocalService.fetchCSDiagramPin(
 					csDiagramPin2.getCSDiagramPinId()));
 
-			_csDiagramPinService.deleteCSDiagramPin(csDiagramPin1);
+			_csDiagramPinService.deleteCSDiagramPin(
+				csDiagramPin1.getCSDiagramPinId());
 
 			Assert.assertNull(
 				_csDiagramPinLocalService.fetchCSDiagramPin(
@@ -111,17 +110,6 @@ public class CSDiagramPinServiceTest {
 			TestPropsValues.getUserId(), cpDefinition.getCPDefinitionId(),
 			RandomTestUtil.randomDouble(), RandomTestUtil.randomDouble(),
 			RandomTestUtil.randomString());
-	}
-
-	private CSDiagramPin _createCSDiagramPin(
-		long cpDefinitionId, long csDiagramPinId) {
-
-		CSDiagramPin csDiagramPin =
-			_csDiagramPinLocalService.createCSDiagramPin(csDiagramPinId);
-
-		csDiagramPin.setCPDefinitionId(cpDefinitionId);
-
-		return csDiagramPin;
 	}
 
 	@Inject

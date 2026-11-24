@@ -72,10 +72,11 @@ public class PinResourceImpl extends BasePinResourceImpl {
 						csDiagramPin.getSequence(),
 						curCSDiagramPin.getSequence()))) {
 
-			_csDiagramEntryService.deleteCSDiagramEntry(csDiagramEntry);
+			_csDiagramEntryService.deleteCSDiagramEntry(
+				csDiagramEntry.getCSDiagramEntryId());
 		}
 
-		_csDiagramPinService.deleteCSDiagramPin(csDiagramPin);
+		_csDiagramPinService.deleteCSDiagramPin(pinId);
 	}
 
 	@Override

@@ -92,11 +92,8 @@ public class CPConfigurationListRelServiceTest {
 					() ->
 						_cpConfigurationListRelService.
 							deleteCPConfigurationListRel(
-								_createCPConfigurationListRel(
-									cpConfigurationListRel1.
-										getCPConfigurationListId(),
-									cpConfigurationListRel2.
-										getCPConfigurationListRelId())));
+								cpConfigurationListRel2.
+									getCPConfigurationListRelId()));
 
 			Assert.assertEquals(
 				commerceCatalog2.getCommerceCatalogId(),
@@ -107,7 +104,7 @@ public class CPConfigurationListRelServiceTest {
 					cpConfigurationListRel2.getCPConfigurationListRelId()));
 
 			_cpConfigurationListRelService.deleteCPConfigurationListRel(
-				cpConfigurationListRel1);
+				cpConfigurationListRel1.getCPConfigurationListRelId());
 
 			Assert.assertNull(
 				_cpConfigurationListRelLocalService.fetchCPConfigurationListRel(
@@ -137,18 +134,6 @@ public class CPConfigurationListRelServiceTest {
 			TestPropsValues.getUserId(), AccountGroup.class.getName(),
 			accountGroup.getAccountGroupId(),
 			cpConfigurationList.getCPConfigurationListId());
-	}
-
-	private CPConfigurationListRel _createCPConfigurationListRel(
-		long cpConfigurationListId, long cpConfigurationListRelId) {
-
-		CPConfigurationListRel cpConfigurationListRel =
-			_cpConfigurationListRelLocalService.createCPConfigurationListRel(
-				cpConfigurationListRelId);
-
-		cpConfigurationListRel.setCPConfigurationListId(cpConfigurationListId);
-
-		return cpConfigurationListRel;
 	}
 
 	@Inject
