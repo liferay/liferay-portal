@@ -5,8 +5,18 @@ import {
 	getByPlaceholderText,
 	getByTestId,
 	getByText,
+	screen,
 	waitFor,
 } from '@testing-library/react';
+
+/**
+ * Opens the Picker named `name` and chooses the option named `option`, both by
+ * their accessible names.
+ */
+export const selectPickerOption = (name, option) => {
+	fireEvent.click(screen.getByRole('combobox', {name}));
+	fireEvent.click(screen.getByRole('option', {name: option}));
+};
 
 export const inputSearchText = (container, searchText) => {
 	const searchBarInput = getByPlaceholderText(container, 'Search');
