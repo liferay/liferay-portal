@@ -114,7 +114,6 @@ public class RenderFragmentEntryLinkMVCResourceCommand
 
 		defaultFragmentRendererContext.setMode(
 			FragmentEntryLinkConstants.PREVIEW);
-
 		defaultFragmentRendererContext.setUseCachedContent(false);
 
 		HttpServletRequest httpServletRequest = _portal.getHttpServletRequest(
