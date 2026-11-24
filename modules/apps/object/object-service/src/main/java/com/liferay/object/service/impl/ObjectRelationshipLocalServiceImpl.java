@@ -2328,6 +2328,18 @@ public class ObjectRelationshipLocalServiceImpl
 					"Parameter object field ID " + parameterObjectFieldId +
 						" does not belong to a relationship object field");
 			}
+			else if (FeatureFlagManagerUtil.isEnabled(
+						objectField.getCompanyId(), "LPD-108620") &&
+					 !Objects.equals(
+						 objectField.getRelationshipType(),
+						 ObjectRelationshipConstants.TYPE_ONE_TO_MANY)) {
+
+				throw new ObjectRelationshipParameterObjectFieldIdException(
+					StringBundler.concat(
+						"Parameter object field ID ", parameterObjectFieldId,
+						" does not belong to a one to many relationship ",
+						"object field"));
+			}
 		}
 	}
 
