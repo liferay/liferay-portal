@@ -29,7 +29,7 @@ The match takes test code only, which is any Java file under a module whose name
 
 ## Command
 
-This check is static and needs no build. It lists every `TransactionTestUtil.invoke` call in the Java files of the repository, since a call the branch adds can repeat one in a file the branch never touched, and then reports only what the branch changes. A call is identified by the persistence and the method it reads, and it sits either in a test util class, which is a class under a `-test-util` module or `portal-test` or one named `*TestUtil`, or in a test class, which is every other class. It also reads every `*TestUtil` class the branch changes for `<Entity>Util.getPersistence()`, in any shape. It uses `command grep` so the callers are counted by the system grep rather than the shell's `grep` wrapper, which some environments route to another tool with its own defaults.
+This check is static and needs no build. It lists every `TransactionTestUtil.invoke` call in the Java files of the repository, since a call the branch adds can repeat one in a file the branch never touched, and then reports four kinds of lines, only for what the branch changes. A call is identified by the persistence and the method it reads, and it sits either in a test util class, which is a class under a `-test-util` module or `portal-test` or one named `*TestUtil`, or in a test class, which is every other class. It also reads every `*TestUtil` class the branch changes for `<Entity>Util.getPersistence()`, in any shape. It uses `command grep` so the callers are counted by the system grep rather than the shell's `grep` wrapper, which some environments route to another tool with its own defaults.
 
 - A call that two or more test classes make to the same persistence and method, when the branch changes at least one of those test classes. Each changed test class prints as `<path>:<line>: repeats <persistence>.<method>, which is also called at <path>:<line>`, with every other test class that makes the call at the end.
 - A call inside a test util method that fewer than two other classes call, when the branch changes a line of that method or leaves it with fewer callers than it had at the merge base. It prints as `<path>:<line>: <class>.<method> wraps <persistence>.<method> and no other class calls it` or `<path>:<line>: <class>.<method> wraps <persistence>.<method> and only <path> calls it`.
@@ -464,7 +464,7 @@ Otherwise, a line without `candidate,` is a finding as printed. A line with it i
 
 - **A call in a shape the scan cannot read.** Name the persistence and the method the call reads, then judge the call the way the scan judges one it can read. When the call sits in a test class, search the repository for the other calls to that persistence and method with `git grep`, and the candidate is a finding when another test class makes the same call. When the call sits in a test util method, count the classes that call that method, and the candidate is a finding when fewer than two do. A call that reads no persistence, such as one that runs a callable under a `TransactionConfig` or one in the tests of `TransactionTestUtil` itself, is not a finding.
 - **A call outside a method the scan can name.** The call sits in a field initializer, an initializer block, or a nested class of a test util class. Count the test classes that reach the call, and the candidate is a finding when fewer than two do.
-- **A test util method that its own class names again.** The class holds an overload of the method or calls it from another method. Count the test classes that reach the call site through any of them. The candidate is a finding when fewer than two do.
+- **A test util method that its own class names again.** The class holds an overload of the method or calls it from another method. Count the test classes that reach the call site through any of them, and the candidate is a finding when fewer than two do.
 
 When every line is a candidate and none is a finding, the validation passes.
 
@@ -475,7 +475,7 @@ When any line is a finding, the validation fails. Report the message below to th
 
 | File | Line | Call | Fix |
 | --- | --- | --- | --- |
-| <file> | <line> | <persistence>.<method>, or <Entity>Util.getPersistence() for a read in the wrong test util | <remove the test util method, inline it into the named test, share one test util method with the named tests, or move the method into <Entity>TestUtil> |
+| <file> | <line> | <persistence>.<method>, or <Entity>Util.getPersistence() for a read in the wrong test util | <remove the test util method, inline it into the named test, share one test util method with the named tests, or move the method into the test util of its entity> |
 ```
 
 ## Time Estimate
