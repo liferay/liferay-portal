@@ -86,25 +86,19 @@ public class MBDiscussionPermissionImpl extends BaseDiscussionPermission {
 		List<String> resourceActions = ResourceActionsUtil.getResourceActions(
 			className);
 
-		String modelActionId = actionId;
-
 		if (!resourceActions.contains(actionId)) {
-			modelActionId = _getModelActionId(actionId);
+			return true;
 		}
 
 		Boolean hasPermission = ModelResourcePermissionUtil.contains(
-			permissionChecker, groupId, className, classPK, modelActionId);
+			permissionChecker, groupId, className, classPK, actionId);
 
 		if (hasPermission != null) {
 			return hasPermission.booleanValue();
 		}
 
-		if (!resourceActions.contains(modelActionId)) {
-			return false;
-		}
-
 		return permissionChecker.hasPermission(
-			groupId, className, classPK, modelActionId);
+			groupId, className, classPK, actionId);
 	}
 
 	@Override
@@ -174,16 +168,6 @@ public class MBDiscussionPermissionImpl extends BaseDiscussionPermission {
 
 			return DepotConstants.TYPE_ANY;
 		}
-	}
-
-	private String _getModelActionId(String actionId) {
-		if (actionId.equals(ActionKeys.DELETE_DISCUSSION) ||
-			actionId.equals(ActionKeys.UPDATE_DISCUSSION)) {
-
-			return ActionKeys.UPDATE;
-		}
-
-		return ActionKeys.VIEW;
 	}
 
 	private boolean _hasPermission(
