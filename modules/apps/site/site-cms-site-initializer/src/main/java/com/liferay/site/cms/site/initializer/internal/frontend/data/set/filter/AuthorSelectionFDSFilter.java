@@ -11,12 +11,14 @@ import com.liferay.frontend.data.set.filter.FDSFilter;
 import com.liferay.frontend.data.set.filter.SelectionFDSFilterItem;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.site.cms.site.initializer.internal.constants.CMSSiteInitializerFDSNames;
+import com.liferay.site.cms.site.initializer.users.provider.CMSUsersProvider;
 import com.liferay.site.cms.site.initializer.util.CMSUserUtil;
 
 import java.util.List;
 import java.util.Locale;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Roberto Díaz
@@ -56,7 +58,7 @@ public class AuthorSelectionFDSFilter extends BaseSelectionFDSFilter {
 		Locale locale) {
 
 		return TransformUtil.transform(
-			CMSUserUtil.getUsers(),
+			CMSUserUtil.getUsers(_cmsUsersProvider),
 			user -> new SelectionFDSFilterItem(
 				user.getFullName(), user.getUserId()));
 	}
@@ -65,5 +67,8 @@ public class AuthorSelectionFDSFilter extends BaseSelectionFDSFilter {
 	public boolean isAutocompleteEnabled() {
 		return true;
 	}
+
+	@Reference
+	private CMSUsersProvider _cmsUsersProvider;
 
 }

@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.RoleService;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.site.cms.site.initializer.users.provider.CMSUsersProvider;
 import com.liferay.site.cms.site.initializer.util.CMSUserUtil;
 
 import java.util.List;
@@ -31,10 +32,12 @@ import java.util.Locale;
 public class AssigneeSelectionFDSFilter extends BaseSelectionFDSFilter {
 
 	public AssigneeSelectionFDSFilter(
-		ClassNameLocalService classNameLocalService, long companyId,
+		ClassNameLocalService classNameLocalService,
+		CMSUsersProvider cmsUsersProvider, long companyId,
 		RoleService roleService) {
 
 		_classNameLocalService = classNameLocalService;
+		_cmsUsersProvider = cmsUsersProvider;
 		_companyId = companyId;
 		_roleService = roleService;
 	}
@@ -83,7 +86,7 @@ public class AssigneeSelectionFDSFilter extends BaseSelectionFDSFilter {
 						_getValue(roleClassNameId, role.getRoleId()));
 				}),
 			TransformUtil.transform(
-				CMSUserUtil.getUsers(),
+				CMSUserUtil.getUsers(_cmsUsersProvider),
 				user -> new SelectionFDSFilterItem(
 					user.getFullName(),
 					_getValue(userClassNameId, user.getUserId()))));
@@ -99,6 +102,7 @@ public class AssigneeSelectionFDSFilter extends BaseSelectionFDSFilter {
 	}
 
 	private final ClassNameLocalService _classNameLocalService;
+	private final CMSUsersProvider _cmsUsersProvider;
 	private final long _companyId;
 	private final RoleService _roleService;
 

@@ -26,6 +26,7 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.site.cms.site.initializer.users.provider.CMSUsersProvider;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -40,6 +41,7 @@ public class ViewProjectsSectionDisplayContext
 
 	public ViewProjectsSectionDisplayContext(
 		AssetTagLocalService assetTagLocalService,
+		CMSUsersProvider cmsUsersProvider,
 		DepotEntryLocalService depotEntryLocalService,
 		HttpServletRequest httpServletRequest,
 		ObjectDefinition objectDefinition,
@@ -48,6 +50,7 @@ public class ViewProjectsSectionDisplayContext
 		super(httpServletRequest, objectDefinition, objectEntryService);
 
 		_assetTagLocalService = assetTagLocalService;
+		_cmsUsersProvider = cmsUsersProvider;
 		_depotEntryLocalService = depotEntryLocalService;
 	}
 
@@ -157,8 +160,9 @@ public class ViewProjectsSectionDisplayContext
 
 	public List<FDSFilter> getFDSFilters() {
 		return ListUtil.fromArray(
-			new DueDateRangeFDSFilter(), new ProjectManagerSelectionFDSFilter(),
-			new ProjectSponsorSelectionFDSFilter(),
+			new DueDateRangeFDSFilter(),
+			new ProjectManagerSelectionFDSFilter(_cmsUsersProvider),
+			new ProjectSponsorSelectionFDSFilter(_cmsUsersProvider),
 			new StateSelectionFDSFilter(),
 			new TagSelectionFDSFilter(
 				_assetTagLocalService, objectDefinition,
@@ -167,6 +171,7 @@ public class ViewProjectsSectionDisplayContext
 	}
 
 	private final AssetTagLocalService _assetTagLocalService;
+	private final CMSUsersProvider _cmsUsersProvider;
 	private final DepotEntryLocalService _depotEntryLocalService;
 
 }

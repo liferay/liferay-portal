@@ -9,6 +9,7 @@ import com.liferay.frontend.data.set.constants.FDSEntityFieldTypes;
 import com.liferay.frontend.data.set.filter.BaseSelectionFDSFilter;
 import com.liferay.frontend.data.set.filter.SelectionFDSFilterItem;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.site.cms.site.initializer.users.provider.CMSUsersProvider;
 import com.liferay.site.cms.site.initializer.util.CMSUserUtil;
 
 import java.util.List;
@@ -18,6 +19,10 @@ import java.util.Locale;
  * @author José Abelenda
  */
 public class ProjectSponsorSelectionFDSFilter extends BaseSelectionFDSFilter {
+
+	public ProjectSponsorSelectionFDSFilter(CMSUsersProvider cmsUsersProvider) {
+		_cmsUsersProvider = cmsUsersProvider;
+	}
 
 	@Override
 	public String getEntityFieldType() {
@@ -39,9 +44,11 @@ public class ProjectSponsorSelectionFDSFilter extends BaseSelectionFDSFilter {
 		Locale locale) {
 
 		return TransformUtil.transform(
-			CMSUserUtil.getUsers(),
+			CMSUserUtil.getUsers(_cmsUsersProvider),
 			user -> new SelectionFDSFilterItem(
 				user.getFullName(), user.getUserId()));
 	}
+
+	private final CMSUsersProvider _cmsUsersProvider;
 
 }

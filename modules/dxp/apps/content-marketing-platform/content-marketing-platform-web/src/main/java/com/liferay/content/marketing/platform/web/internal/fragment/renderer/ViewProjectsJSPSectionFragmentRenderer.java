@@ -13,6 +13,7 @@ import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.site.cms.site.initializer.users.provider.CMSUsersProvider;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -45,7 +46,8 @@ public class ViewProjectsJSPSectionFragmentRenderer
 				WebKeys.THEME_DISPLAY);
 
 		return new ViewProjectsSectionDisplayContext(
-			_assetTagLocalService, _depotEntryLocalService, httpServletRequest,
+			_assetTagLocalService, _cmsUsersProvider, _depotEntryLocalService,
+			httpServletRequest,
 			_objectDefinitionLocalService.
 				fetchObjectDefinitionByExternalReferenceCode(
 					"L_CMP_PROJECT", themeDisplay.getCompanyId()),
@@ -59,6 +61,9 @@ public class ViewProjectsJSPSectionFragmentRenderer
 
 	@Reference
 	private AssetTagLocalService _assetTagLocalService;
+
+	@Reference
+	private CMSUsersProvider _cmsUsersProvider;
 
 	@Reference
 	private DepotEntryLocalService _depotEntryLocalService;

@@ -45,6 +45,7 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.workflow.kaleo.model.KaleoTaskInstanceToken;
+import com.liferay.site.cms.site.initializer.users.provider.CMSUsersProvider;
 
 import jakarta.portlet.ActionRequest;
 
@@ -66,6 +67,7 @@ public abstract class BaseTasksSectionDisplayContext
 		ClassNameLocalService classNameLocalService,
 		ObjectDefinition cmpProjectObjectDefinition,
 		ObjectDefinition cmpTaskObjectDefinition,
+		CMSUsersProvider cmsUsersProvider,
 		DepotEntryLocalService depotEntryLocalService,
 		HttpServletRequest httpServletRequest,
 		ListTypeEntryLocalService listTypeEntryLocalService,
@@ -80,6 +82,7 @@ public abstract class BaseTasksSectionDisplayContext
 		this.assetTagLocalService = assetTagLocalService;
 		this.classNameLocalService = classNameLocalService;
 		this.cmpProjectObjectDefinition = cmpProjectObjectDefinition;
+		this.cmsUsersProvider = cmsUsersProvider;
 		this.depotEntryLocalService = depotEntryLocalService;
 		this.listTypeEntryLocalService = listTypeEntryLocalService;
 		this.objectFieldLocalService = objectFieldLocalService;
@@ -270,7 +273,7 @@ public abstract class BaseTasksSectionDisplayContext
 
 		fdsFilters.add(
 			new AssigneeSelectionFDSFilter(
-				classNameLocalService,
+				classNameLocalService, cmsUsersProvider,
 				cmpProjectObjectDefinition.getCompanyId(), roleService));
 		fdsFilters.add(new CreateDateFDSFilter());
 		fdsFilters.add(new DueDateRangeFDSFilter());
@@ -513,6 +516,7 @@ public abstract class BaseTasksSectionDisplayContext
 	protected final AssetTagLocalService assetTagLocalService;
 	protected final ClassNameLocalService classNameLocalService;
 	protected final ObjectDefinition cmpProjectObjectDefinition;
+	protected final CMSUsersProvider cmsUsersProvider;
 	protected final DepotEntryLocalService depotEntryLocalService;
 	protected final ListTypeEntryLocalService listTypeEntryLocalService;
 	protected final ObjectFieldLocalService objectFieldLocalService;

@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.RoleService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.site.cms.site.initializer.users.provider.CMSUsersProvider;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -58,7 +59,7 @@ public class ViewAllTasksJSPSectionFragmentRenderer
 			_objectDefinitionLocalService.
 				fetchObjectDefinitionByExternalReferenceCode(
 					"L_CMP_TASK", themeDisplay.getCompanyId()),
-			_depotEntryLocalService, httpServletRequest,
+			_cmsUsersProvider, _depotEntryLocalService, httpServletRequest,
 			_listTypeEntryLocalService, _objectEntryService,
 			_objectFieldLocalService, _objectStateFlowLocalService,
 			_objectStateLocalService, _roleService);
@@ -74,6 +75,9 @@ public class ViewAllTasksJSPSectionFragmentRenderer
 
 	@Reference
 	private ClassNameLocalService _classNameLocalService;
+
+	@Reference
+	private CMSUsersProvider _cmsUsersProvider;
 
 	@Reference
 	private DepotEntryLocalService _depotEntryLocalService;

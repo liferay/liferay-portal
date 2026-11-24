@@ -28,6 +28,7 @@ import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+import com.liferay.site.cms.site.initializer.users.provider.CMSUsersProvider;
 import com.liferay.site.cms.site.initializer.util.CMSUserUtil;
 
 import java.util.Arrays;
@@ -72,7 +73,8 @@ public class CMSUserUtilTest {
 
 		_setUser(user1);
 
-		Assert.assertTrue(SetUtil.isEmpty(CMSUserUtil.getUsers()));
+		Assert.assertTrue(
+			SetUtil.isEmpty(CMSUserUtil.getUsers(_cmsUsersProvider)));
 
 		DepotEntry depotEntry1 = _addDepotEntry();
 
@@ -154,7 +156,7 @@ public class CMSUserUtilTest {
 		Arrays.sort(expectedUserIds);
 
 		long[] actualUserIds = TransformUtil.transformToLongArray(
-			CMSUserUtil.getUsers(), User::getUserId);
+			CMSUserUtil.getUsers(_cmsUsersProvider), User::getUserId);
 
 		Arrays.sort(actualUserIds);
 
@@ -166,6 +168,9 @@ public class CMSUserUtilTest {
 			PermissionCheckerFactoryUtil.create(user));
 		PrincipalThreadLocal.setName(user.getUserId());
 	}
+
+	@Inject
+	private CMSUsersProvider _cmsUsersProvider;
 
 	@DeleteAfterTestRun
 	private Company _company;

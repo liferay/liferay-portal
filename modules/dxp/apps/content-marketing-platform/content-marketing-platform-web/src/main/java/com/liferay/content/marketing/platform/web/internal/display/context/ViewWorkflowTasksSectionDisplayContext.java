@@ -29,6 +29,7 @@ import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.RoleService;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.site.cms.site.initializer.users.provider.CMSUsersProvider;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -46,6 +47,7 @@ public class ViewWorkflowTasksSectionDisplayContext
 		ClassNameLocalService classNameLocalService,
 		ObjectDefinition cmpProjectObjectDefinition,
 		ObjectDefinition cmpTaskObjectDefinition,
+		CMSUsersProvider cmsUsersProvider,
 		DepotEntryLocalService depotEntryLocalService,
 		HttpServletRequest httpServletRequest,
 		ListTypeEntryLocalService listTypeEntryLocalService,
@@ -58,7 +60,7 @@ public class ViewWorkflowTasksSectionDisplayContext
 		super(
 			assetTagLocalService, classNameLocalService,
 			cmpProjectObjectDefinition, cmpTaskObjectDefinition,
-			depotEntryLocalService, httpServletRequest,
+			cmsUsersProvider, depotEntryLocalService, httpServletRequest,
 			listTypeEntryLocalService, objectEntryService,
 			objectFieldLocalService, objectStateFlowLocalService,
 			objectStateLocalService, roleService);
@@ -144,7 +146,7 @@ public class ViewWorkflowTasksSectionDisplayContext
 	public List<FDSFilter> getFDSFilters() {
 		return ListUtil.fromArray(
 			new AssigneeSelectionFDSFilter(
-				classNameLocalService,
+				classNameLocalService, cmsUsersProvider,
 				cmpProjectObjectDefinition.getCompanyId(), roleService),
 			new SpaceSelectionFDSFilter(),
 			new WorkflowTaskDueDateRangeFDSFilter(),

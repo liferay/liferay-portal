@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.service.RoleService;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.workflow.kaleo.model.KaleoTaskInstanceToken;
+import com.liferay.site.cms.site.initializer.users.provider.CMSUsersProvider;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -42,6 +43,7 @@ public class ViewAllTasksSectionDisplayContext
 		ClassNameLocalService classNameLocalService,
 		ObjectDefinition cmpProjectObjectDefinition,
 		ObjectDefinition cmpTaskObjectDefinition,
+		CMSUsersProvider cmsUsersProvider,
 		DepotEntryLocalService depotEntryLocalService,
 		HttpServletRequest httpServletRequest,
 		ListTypeEntryLocalService listTypeEntryLocalService,
@@ -54,7 +56,7 @@ public class ViewAllTasksSectionDisplayContext
 		super(
 			assetTagLocalService, classNameLocalService,
 			cmpProjectObjectDefinition, cmpTaskObjectDefinition,
-			depotEntryLocalService, httpServletRequest,
+			cmsUsersProvider, depotEntryLocalService, httpServletRequest,
 			listTypeEntryLocalService, objectEntryService,
 			objectFieldLocalService, objectStateFlowLocalService,
 			objectStateLocalService, roleService);
