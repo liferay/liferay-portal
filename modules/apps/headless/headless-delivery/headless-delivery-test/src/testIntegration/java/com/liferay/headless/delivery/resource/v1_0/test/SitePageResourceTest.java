@@ -266,8 +266,8 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		_testGetSiteSitePageWithInvalidFriendlyURL();
 		_testGetSiteSitePageWithLocalization();
 		_testGetSiteSitePageWithMasterPage();
-		_testGetSiteSitePageWithoutPermissions();
 		_testGetSiteSitePageWithPagePermissions();
+		_testGetSiteSitePageWithoutPermissions();
 	}
 
 	@Override
