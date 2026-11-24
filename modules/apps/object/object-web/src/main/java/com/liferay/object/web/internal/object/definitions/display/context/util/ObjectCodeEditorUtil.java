@@ -407,10 +407,15 @@ public class ObjectCodeEditorUtil {
 				ObjectDefinition.class.getName());
 
 		for (ObjectRelationship objectRelationship :
-				ObjectRelationshipLocalServiceUtil.
-					getObjectRelationshipsByObjectDefinitionId2(
-						objectDefinitionId,
-						ObjectRelationshipConstants.TYPE_ONE_TO_MANY)) {
+				ListUtil.concat(
+					ObjectRelationshipLocalServiceUtil.
+						getObjectRelationshipsByObjectDefinitionId2(
+							objectDefinitionId,
+							ObjectRelationshipConstants.TYPE_ONE_TO_MANY),
+					ObjectRelationshipLocalServiceUtil.
+						getObjectRelationshipsByObjectDefinitionId2(
+							objectDefinitionId,
+							ObjectRelationshipConstants.TYPE_ONE_TO_ONE))) {
 
 			ObjectDefinition objectDefinition =
 				ObjectDefinitionLocalServiceUtil.fetchObjectDefinition(
