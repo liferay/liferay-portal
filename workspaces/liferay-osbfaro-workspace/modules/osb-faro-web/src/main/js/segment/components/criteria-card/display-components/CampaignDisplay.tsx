@@ -1,30 +1,28 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {CustomValue} from 'shared/util/records';
+import {
+	EntityType,
+	ReferencedObjectsContext,
+} from 'segment/segment-editor/dynamic/context/referencedObjects';
 import {getCampaignIds} from 'segment/segment-editor/dynamic/utils/custom-inputs';
 import {getOperatorLabel} from '../utils';
 import {getSegmentCategoryLabel} from 'segment/utils/labels';
 import {IDisplayComponentProps} from '../types';
-import {sub} from 'shared/util/lang';
-import {useCampaignNames} from 'shared/hooks/useCampaignNames';
-import {useParams} from 'react-router-dom';
 
 /**
  * Reads as the segment builder's row does, for example "Individual campaign
- * is touched by 'Spring Sale'".
+ * is touched by 'Spring Sale'". Names come from the segment's referenced
+ * objects, the same source the segment builder reads, so a renamed campaign
+ * shows its current name.
  */
 const CampaignDisplay: React.FC<IDisplayComponentProps> = ({
 	criterion,
 	property,
 	segmentCategory,
 }) => {
-	const {channelId = '', groupId = ''} = useParams<{
-		channelId: string;
-		groupId: string;
-	}>();
+	const {referencedEntities} = useContext(ReferencedObjectsContext);
 
 	const ids = getCampaignIds(criterion.value as CustomValue);
-
-	const {loading, names} = useCampaignNames({channelId, groupId, ids});
 
 	return (
 		<>
@@ -40,22 +38,17 @@ const CampaignDisplay: React.FC<IDisplayComponentProps> = ({
 
 			<span>{Liferay.Language.get('touched-by')}</span>
 
-			{!loading &&
-				ids.map((id, index) => (
-					<React.Fragment key={id}>
-						{index > 0 && ', '}
+			{ids.map((id, index) => (
+				<React.Fragment key={id}>
+					{index > 0 && ', '}
 
-						{names[id] ? (
-							<b>{`'${names[id]}'`}</b>
-						) : (
-							<b className="undefined-entity">
-								{sub(Liferay.Language.get('undefined-x'), [
-									property.label,
-								])}
-							</b>
-						)}
-					</React.Fragment>
-				))}
+					<b>{`'${referencedEntities.getIn([
+						EntityType.Campaigns,
+						id,
+						'campaignName',
+					])}'`}</b>
+				</React.Fragment>
+			))}
 		</>
 	);
 };

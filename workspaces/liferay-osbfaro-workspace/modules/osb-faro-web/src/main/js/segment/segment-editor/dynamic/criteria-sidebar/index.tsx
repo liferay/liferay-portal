@@ -13,11 +13,14 @@ import useCriteriaItemsNavigation from './useCriteriaItemsNavigation';
 import {extractRemoteCriterionEntries} from '../criterion-types/extract';
 import {FieldOwnerTypes, SegmentTypes} from 'shared/util/constants';
 import {getPaginatedSection} from './paginatedSections';
-import {List} from 'immutable';
+import {List, Map} from 'immutable';
 import {Option, Picker} from '@clayui/core';
 import {CAMPAIGN_PROPERTY} from '../utils/properties';
 import {Property, PropertyGroup, PropertySubgroup} from 'shared/util/records';
-import {ReferencedObjectsContext} from '../context/referencedObjects';
+import {
+	EntityType,
+	ReferencedObjectsContext,
+} from '../context/referencedObjects';
 import {translateQueryToCriteria} from '../utils/odata';
 import {usePaginatedProperties} from './usePaginatedProperties';
 
@@ -79,7 +82,7 @@ export default function CriteriaSidebar({
 		string | null
 	>(() => propertyGroupsIList.first()?.propertyKey ?? null);
 
-	const {addProperty} = useContext(ReferencedObjectsContext);
+	const {addEntities, addProperty} = useContext(ReferencedObjectsContext);
 
 	const navigation = useCriteriaItemsNavigation(itemsRef);
 
@@ -105,6 +108,24 @@ export default function CriteriaSidebar({
 
 	useEffect(() => {
 		remoteItems.forEach((property) => property && addProperty?.(property));
+
+		// A campaign dropped into the builder is read back from the referenced
+		// objects, the same place a saved segment's campaigns come from.
+
+		if (selectedPropertyKey === CAMPAIGN_PROPERTY.propertyKey) {
+			addEntities?.({
+				entityType: EntityType.Campaigns,
+				payload: remoteItems
+					.filter((property) => !!property)
+					.map((property) =>
+						Map({
+							campaignName: property!.label,
+							id: property!.id,
+						})
+					)
+					.toArray(),
+			});
+		}
 	}, [remoteItems]);
 
 	useEffect(() => {
