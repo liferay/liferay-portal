@@ -1426,6 +1426,8 @@ public class SourceFormatter {
 			return;
 		}
 
+		List<String> prohibitedFilePaths = new ArrayList<>();
+
 		String gitWorkingBranchName =
 			_sourceFormatterArgs.getGitWorkingBranchName();
 
@@ -1438,8 +1440,6 @@ public class SourceFormatter {
 
 		String portalDirName =
 			SourceUtil.getAbsolutePath(portalDir.getPath()) + StringPool.SLASH;
-
-		List<String> prohibitedFilePaths = new ArrayList<>();
 
 		for (String fileName :
 				GitUtil.getCurrentBranchFileNames(
