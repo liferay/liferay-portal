@@ -247,11 +247,11 @@ public abstract class BaseBuildUpdater implements BuildUpdater {
 	}
 
 	private boolean _isApplyReinvokeRules() {
-		Build build = getBuild();
-
-		if (build instanceof ParentBuild) {
+		if (!_isReinvokeAllowed()) {
 			return false;
 		}
+
+		Build build = getBuild();
 
 		if ((isBuildCompleted() && !isBuildFailing()) || !isBuildCompleted() ||
 			build.isFromArchive() || _hasMaximumInvocationCount()) {
@@ -302,6 +302,19 @@ public abstract class BaseBuildUpdater implements BuildUpdater {
 			}
 
 			_takeSlaveOffline(slaveOfflineRule);
+
+			return true;
+		}
+
+		return false;
+	}
+
+	private boolean _isReinvokeAllowed() {
+		Build build = getBuild();
+
+		if (!(build instanceof ParentBuild) ||
+			((build instanceof SourceFormatBuild) &&
+			 (build.getParentBuild() != null))) {
 
 			return true;
 		}
@@ -365,11 +378,11 @@ public abstract class BaseBuildUpdater implements BuildUpdater {
 	}
 
 	private void _reinvoke(ReinvokeRule reinvokeRule) {
-		Build build = getBuild();
-
-		if ((build instanceof ParentBuild) || _hasMaximumInvocationCount()) {
+		if (!_isReinvokeAllowed() || _hasMaximumInvocationCount()) {
 			return;
 		}
+
+		Build build = getBuild();
 
 		Build parentBuild = build.getParentBuild();
 
@@ -473,11 +486,11 @@ public abstract class BaseBuildUpdater implements BuildUpdater {
 	}
 
 	private void _setCurrentReinvokeRule() {
-		Build build = getBuild();
-
-		if (build instanceof ParentBuild) {
+		if (!_isReinvokeAllowed()) {
 			return;
 		}
+
+		Build build = getBuild();
 
 		if ((isBuildCompleted() && !isBuildFailing()) || !isBuildCompleted() ||
 			build.isFromArchive()) {
