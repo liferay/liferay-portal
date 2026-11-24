@@ -73,7 +73,7 @@ public class SideNavigationControlMenuEntry
 				printWriter.write(" active");
 			}
 
-			printWriter.write("\"><div role=\"tablist\">");
+			printWriter.write("\"><div>");
 			printWriter.write(
 				StringBundler.concat(
 					"<button class=\"btn btn-monospaced btn-sm ",

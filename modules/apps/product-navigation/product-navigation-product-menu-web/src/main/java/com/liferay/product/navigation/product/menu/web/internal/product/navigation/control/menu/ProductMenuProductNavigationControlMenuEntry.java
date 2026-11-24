@@ -112,9 +112,9 @@ public class ProductMenuProductNavigationControlMenuEntry
 
 				writer.write(
 					StringBundler.concat(
-						"\"><div role=\"tablist\"><button class=\"btn ",
-						"btn-monospaced btn-sm control-menu-nav-link ",
-						"lfr-portal-tooltip product-menu-toast-toggle\">"));
+						"\"><div><button class=\"btn btn-monospaced btn-sm ",
+						"control-menu-nav-link lfr-portal-tooltip ",
+						"product-menu-toast-toggle\">"));
 
 				if (open) {
 					writer.write(

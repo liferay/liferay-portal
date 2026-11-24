@@ -89,7 +89,6 @@ function UnifiedSidebarToggler({
 				monospaced
 				onClick={toggle}
 				ref={buttonRef}
-				role="tab"
 				size="sm"
 				symbol={visible ? 'product-menu-open' : 'product-menu-closed'}
 				title={title}
