@@ -77,7 +77,7 @@ export default function MultipleFileUploader({
 	const [filesToUpload, setFilesToUpload] = useState<FileData[]>([]);
 	const [failedFiles, setFailedFiles] = useState<FailedFile[]>([]);
 	const [isLoading, setIsLoading] = useState(false);
-	const [dropErrorMessage, setDropErrorMessage] = useState('');
+	const [dropErrorCodes, setDropErrorCodes] = useState<string[]>([]);
 
 	const FILE_ERRORS = useMemo(
 		() => ({
@@ -109,6 +109,8 @@ export default function MultipleFileUploader({
 			return;
 		}
 
+		const errorCodes: string[] = [];
+
 		setFilesToUpload(
 			initialFilesToUpload.filter((file) => {
 				const extension = file.name.split('.').pop()?.toLowerCase();
@@ -120,17 +122,19 @@ export default function MultipleFileUploader({
 				const sizeValid = !maxFileSize || file.size <= maxFileSize;
 
 				if (!extensionValid) {
-					setDropErrorMessage(FILE_ERRORS[ErrorCode.FileInvalidType]);
+					errorCodes.push(ErrorCode.FileInvalidType);
 				}
 
 				if (!sizeValid) {
-					setDropErrorMessage(FILE_ERRORS[ErrorCode.FileTooLarge]);
+					errorCodes.push(ErrorCode.FileTooLarge);
 				}
 
 				return extensionValid && sizeValid;
 			})
 		);
-	}, [FILE_ERRORS, initialFilesToUpload, maxFileSize, validExtensions]);
+
+		setDropErrorCodes(errorCodes);
+	}, [initialFilesToUpload, maxFileSize, validExtensions]);
 
 	const {getInputProps, getRootProps, isDragActive} = useDropzone({
 		accept: validExtensions === '*' ? undefined : validExtensions,
@@ -138,12 +142,10 @@ export default function MultipleFileUploader({
 		multiple: true,
 		noKeyboard: true,
 		onDrop: (acceptedFiles, fileRejections) => {
-			const errorCode = fileRejections[0]?.errors[0]?.code;
-
-			setDropErrorMessage(
-				errorCode
-					? FILE_ERRORS[errorCode as keyof typeof FILE_ERRORS]
-					: ''
+			setDropErrorCodes(
+				fileRejections.flatMap(({errors}) =>
+					errors.map(({code}) => code)
+				)
 			);
 
 			const newFilesToUpload = acceptedFiles.map((file) => ({
@@ -166,6 +168,10 @@ export default function MultipleFileUploader({
 			});
 		},
 	});
+
+	const dropErrors = Object.entries(FILE_ERRORS).filter(([errorCode]) =>
+		dropErrorCodes.includes(errorCode)
+	);
 
 	const mergedMessages = {...DEFAULT_MESSAGES, ...messages};
 
@@ -292,13 +298,18 @@ export default function MultipleFileUploader({
 							<DragZoneBackground />
 						</div>
 
-						{dropErrorMessage && (
+						{!!dropErrors.length && (
 							<ClayForm.FeedbackGroup className="has-error">
-								<ClayForm.FeedbackItem role="alert">
-									<ClayForm.FeedbackIndicator symbol="exclamation-full" />
+								{dropErrors.map(([errorCode, errorMessage]) => (
+									<ClayForm.FeedbackItem
+										key={errorCode}
+										role="alert"
+									>
+										<ClayForm.FeedbackIndicator symbol="exclamation-full" />
 
-									{dropErrorMessage}
-								</ClayForm.FeedbackItem>
+										{errorMessage}
+									</ClayForm.FeedbackItem>
+								))}
 							</ClayForm.FeedbackGroup>
 						)}
 
