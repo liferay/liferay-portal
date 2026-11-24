@@ -24,6 +24,7 @@ type GraphqlQuery = {
 };
 
 interface IAutocompleteProps {
+	'aria-invalid'?: boolean;
 	className?: string;
 
 	/**
@@ -118,6 +119,7 @@ const GraphqlAutocompleteInput: React.FC<
 interface IBaseAutocompleteProps
 	extends Pick<
 		IAutocompleteProps,
+		| 'aria-invalid'
 		| 'className'
 		| 'disabled'
 		| 'onBlur'
@@ -131,6 +133,7 @@ interface IBaseAutocompleteProps
 }
 
 const BaseAutocomplete: React.FC<IBaseAutocompleteProps> = ({
+	'aria-invalid': ariaInvalid,
 	className,
 	disabled = false,
 	items,
@@ -143,6 +146,7 @@ const BaseAutocomplete: React.FC<IBaseAutocompleteProps> = ({
 }) => (
 	<ClayAutocomplete
 		allowsCustomValue
+		aria-invalid={ariaInvalid}
 		aria-labelledby="clay-autocomplete-label-1"
 		className={getCN('select-input-root', className)}
 		data-testid="attribute-value-string-input"

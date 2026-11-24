@@ -373,6 +373,7 @@ export default class GeolocationInput extends React.Component<
 
 					<Form.GroupItem shrink>
 						<AutocompleteInput
+							aria-invalid={(!valid && touched) || undefined}
 							className={getCN({
 								'has-error': !valid && touched,
 							})}
