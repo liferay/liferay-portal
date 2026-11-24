@@ -62,7 +62,6 @@ public class MFASystemConfigurationModelListener
 					MFACompanyConfiguration mfaCompanyConfiguration =
 						_configurationProvider.getCompanyConfiguration(
 							MFACompanyConfiguration.class, companyId);
-
 					MFAEmailOTPConfiguration mfaEmailOTPConfiguration =
 						_configurationProvider.getCompanyConfiguration(
 							MFAEmailOTPConfiguration.class, companyId);
