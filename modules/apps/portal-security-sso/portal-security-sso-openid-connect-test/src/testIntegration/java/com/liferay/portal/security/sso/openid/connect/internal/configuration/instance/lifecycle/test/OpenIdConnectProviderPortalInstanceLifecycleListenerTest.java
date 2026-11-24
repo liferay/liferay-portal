@@ -42,6 +42,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import org.osgi.service.cm.ManagedServiceFactory;
+
 /**
  * @author Christian Moura
  */
@@ -319,13 +321,13 @@ public class OpenIdConnectProviderPortalInstanceLifecycleListenerTest {
 		throws Exception {
 
 		Class<?> clazz = _portalInstanceLifecycleListener.getClass();
+		String pid = RandomTestUtil.randomString();
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				clazz.getName(), LoggerTestUtil.WARN)) {
 
-			_pid2 = ConfigurationTestUtil.createFactoryConfiguration(
-				"com.liferay.portal.security.sso.openid.connect.internal." +
-					"configuration.OpenIdConnectProviderConfiguration",
+			_managedServiceFactory.updated(
+				pid,
 				HashMapDictionaryBuilder.<String, Object>put(
 					"authorizationEndpoint",
 					"http://" + RandomTestUtil.randomString()
@@ -353,9 +355,7 @@ public class OpenIdConnectProviderPortalInstanceLifecycleListenerTest {
 				"Unable to update OAuth client entry", messages.get(0));
 		}
 
-		ConfigurationTestUtil.deleteConfiguration(_pid2);
-
-		_pid2 = null;
+		_managedServiceFactory.deleted(pid);
 
 		OAuthClientASLocalMetadata oAuthClientASLocalMetadata =
 			_oAuthClientASLocalMetadataLocalService.
@@ -413,16 +413,19 @@ public class OpenIdConnectProviderPortalInstanceLifecycleListenerTest {
 				"userInfoEndpoint", "http://" + RandomTestUtil.randomString()
 			).build();
 
-		_pid1 = ConfigurationTestUtil.createFactoryConfiguration(
-			"com.liferay.portal.security.sso.openid.connect.internal." +
-				"configuration.OpenIdConnectProviderConfiguration",
-			properties);
+		String pid = RandomTestUtil.randomString();
+
+		_managedServiceFactory.updated(pid, properties);
 
 		String clientId2 = RandomTestUtil.randomString();
 
-		properties.put("openIdConnectClientId", clientId2);
-
-		ConfigurationTestUtil.saveConfiguration(_pid1, properties);
+		_managedServiceFactory.updated(
+			pid,
+			HashMapDictionaryBuilder.<String, Object>putAll(
+				properties
+			).put(
+				"openIdConnectClientId", clientId2
+			).build());
 
 		Assert.assertNull(
 			_oAuthClientEntryLocalService.fetchOAuthClientEntry(
@@ -435,9 +438,7 @@ public class OpenIdConnectProviderPortalInstanceLifecycleListenerTest {
 				_generateLocalWellKnownURI(issuerURL, tokenEndpoint),
 				clientId2));
 
-		ConfigurationTestUtil.deleteConfiguration(_pid1);
-
-		_pid1 = null;
+		_managedServiceFactory.deleted(pid);
 	}
 
 	private void _testUpdatedWithDuplicateIssuerURL() throws Exception {
@@ -445,9 +446,10 @@ public class OpenIdConnectProviderPortalInstanceLifecycleListenerTest {
 		String issuerURL = "http://" + RandomTestUtil.randomString();
 		String tokenEndpoint = "http://" + RandomTestUtil.randomString();
 
-		_pid1 = ConfigurationTestUtil.createFactoryConfiguration(
-			"com.liferay.portal.security.sso.openid.connect.internal." +
-				"configuration.OpenIdConnectProviderConfiguration",
+		String pid = RandomTestUtil.randomString();
+
+		_managedServiceFactory.updated(
+			pid,
 			HashMapDictionaryBuilder.<String, Object>put(
 				"authorizationEndpoint",
 				"http://" + RandomTestUtil.randomString()
@@ -471,20 +473,18 @@ public class OpenIdConnectProviderPortalInstanceLifecycleListenerTest {
 			clientId, RandomTestUtil.randomString(), issuerURL, tokenEndpoint);
 		_assertDuplicateIssuerURL(clientId, clientId, issuerURL, tokenEndpoint);
 
-		ConfigurationTestUtil.deleteConfiguration(_pid1);
-
-		_pid1 = null;
+		_managedServiceFactory.deleted(pid);
 	}
 
 	private void _testUpdatedWithLongIssuerURL() throws Exception {
 		Class<?> clazz = _portalInstanceLifecycleListener.getClass();
+		String pid = RandomTestUtil.randomString();
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				clazz.getName(), LoggerTestUtil.WARN)) {
 
-			_pid1 = ConfigurationTestUtil.createFactoryConfiguration(
-				"com.liferay.portal.security.sso.openid.connect.internal." +
-					"configuration.OpenIdConnectProviderConfiguration",
+			_managedServiceFactory.updated(
+				pid,
 				HashMapDictionaryBuilder.<String, Object>put(
 					"authorizationEndpoint",
 					"http://" + RandomTestUtil.randomString()
@@ -512,13 +512,16 @@ public class OpenIdConnectProviderPortalInstanceLifecycleListenerTest {
 				"Unable to update OAuth client entry", messages.get(0));
 		}
 
-		ConfigurationTestUtil.deleteConfiguration(_pid1);
-
-		_pid1 = null;
+		_managedServiceFactory.deleted(pid);
 	}
 
 	@Inject
 	private CompanyLocalService _companyLocalService;
+
+	@Inject(
+		filter = "service.pid=com.liferay.portal.security.sso.openid.connect.internal.configuration.OpenIdConnectProviderConfiguration"
+	)
+	private ManagedServiceFactory _managedServiceFactory;
 
 	@Inject
 	private OAuthClientASLocalMetadataLocalService
