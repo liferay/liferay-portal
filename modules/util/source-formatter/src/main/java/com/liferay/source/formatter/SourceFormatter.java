@@ -356,6 +356,8 @@ public class SourceFormatter {
 
 		_init();
 
+		_validateAllowedFilePaths();
+
 		if (_sourceFormatterArgs.isValidateCommitMessages()) {
 			_validateCommitMessages();
 		}
@@ -1363,6 +1365,86 @@ public class SourceFormatter {
 			sourceProcessor.getSourceFormatterMessages());
 		_sourceMismatchExceptions.addAll(
 			sourceProcessor.getSourceMismatchExceptions());
+	}
+
+	private void _validateAllowedFilePaths() throws Exception {
+		if (!_sourceFormatterArgs.isFormatCurrentBranch()) {
+			return;
+		}
+
+		File portalDir = SourceFormatterUtil.getPortalDir(
+			_sourceFormatterArgs.getBaseDirName(),
+			_sourceFormatterArgs.getMaxDirLevel());
+
+		if (portalDir == null) {
+			return;
+		}
+
+		Properties testProperties = _getProperties(
+			new File(portalDir, "test.properties"));
+
+		String[] privateFilePaths = StringUtil.split(
+			testProperties.getProperty(
+				"working.dir.private.allowed.file.paths"));
+		String[] sharedFilePaths = StringUtil.split(
+			testProperties.getProperty(
+				"working.dir.shared.allowed.file.paths"));
+
+		if (ArrayUtil.isEmpty(privateFilePaths) &&
+			ArrayUtil.isEmpty(sharedFilePaths)) {
+
+			return;
+		}
+
+		String gitWorkingBranchName =
+			_sourceFormatterArgs.getGitWorkingBranchName();
+
+		boolean privateBranch = gitWorkingBranchName.endsWith("-private");
+
+		String[] excludes = sharedFilePaths;
+		String[] includes = privateFilePaths;
+
+		if (privateBranch) {
+			excludes = ArrayUtil.append(privateFilePaths, sharedFilePaths);
+			includes = new String[] {"**"};
+		}
+
+		List<String> prohibitedFileNames = SourceFormatterUtil.filterFileNames(
+			GitUtil.getCurrentBranchFileNames(
+				_sourceFormatterArgs.getBaseDirName(), gitWorkingBranchName),
+			excludes, includes, _sourceFormatterExcludes, true);
+
+		if (prohibitedFileNames.isEmpty()) {
+			return;
+		}
+
+		String companionBranchName = gitWorkingBranchName + "-private";
+
+		if (privateBranch) {
+			companionBranchName = StringUtil.replaceLast(
+				gitWorkingBranchName, "-private", StringPool.BLANK);
+		}
+
+		int prohibitedFileCount = prohibitedFileNames.size();
+
+		StringBundler sb = new StringBundler((prohibitedFileCount * 8) + 3);
+
+		sb.append("Found ");
+		sb.append(prohibitedFileCount);
+		sb.append(" formatting issues:");
+
+		for (int i = 0; i < prohibitedFileCount; i++) {
+			sb.append("\n");
+			sb.append(i + 1);
+			sb.append(": ./");
+			sb.append(prohibitedFileNames.get(i));
+			sb.append(" is not allowed in ");
+			sb.append(gitWorkingBranchName);
+			sb.append(", please submit it to ");
+			sb.append(companionBranchName);
+		}
+
+		throw new Exception(sb.toString());
 	}
 
 	private void _validateCommitMessages() throws Exception {
