@@ -538,6 +538,29 @@ describe('MultipleFileUploader', () => {
 		).toBeInTheDocument();
 	});
 
+	it('shows an error for each reason files are rejected in the same selection', async () => {
+		await selectFiles({
+			files: [
+				createFile('image1.png', 1024),
+				createFile('document1.pdf', 1024, 'application/pdf'),
+				createFile('image2.png', 3072),
+			],
+			validExtensions: '.png',
+		});
+
+		expect(await screen.findByText('image1.png')).toBeInTheDocument();
+
+		const alerts = screen.getAllByRole('alert');
+
+		expect(alerts).toHaveLength(2);
+		expect(alerts[0]).toHaveTextContent(
+			'please-enter-a-file-with-a-valid-e.pngtension-x'
+		);
+		expect(alerts[1]).toHaveTextContent(
+			'please-enter-a-file-with-a-valid-file-size-no-larger-than-2000 MB'
+		);
+	});
+
 	it('clears the error when the next selection has no rejected files', async () => {
 		const {input, user} = await selectFiles();
 
