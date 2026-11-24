@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.service.permission.LayoutPermissionUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -64,6 +65,10 @@ public class LayoutActionsDisplayContext {
 	}
 
 	public List<DropdownItem> getDropdownItems() {
+		if (_isLaunchDraftLayout()) {
+			return _getLaunchDraftLayoutDropdownItems();
+		}
+
 		Layout layout = _getLayout();
 
 		return DropdownItemListBuilder.addGroup(
@@ -243,6 +248,75 @@ public class LayoutActionsDisplayContext {
 		).buildString();
 	}
 
+	private List<DropdownItem> _getLaunchDraftLayoutDropdownItems() {
+		Layout launchDraftLayout = _themeDisplay.getLayout();
+
+		return DropdownItemListBuilder.addGroup(
+			dropdownGroupItem -> {
+				dropdownGroupItem.setDropdownItems(
+					DropdownItemListBuilder.add(
+						() ->
+							LayoutPermissionUtil.
+								containsLayoutPreviewDraftPermission(
+									_themeDisplay.getPermissionChecker(),
+									launchDraftLayout),
+						dropdownItem -> {
+							String previewLaunchURL =
+								HttpComponentsUtil.addParameters(
+									PortalUtil.getLayoutFullURL(
+										launchDraftLayout, _themeDisplay),
+									"p_l_mode", Constants.PREVIEW,
+									"previewLaunchSetId",
+									launchDraftLayout.getLaunchSetId());
+
+							dropdownItem.setData(
+								HashMapBuilder.<String, Object>put(
+									"page-editor-layout-preview-base-url",
+									previewLaunchURL
+								).build());
+							dropdownItem.setHref(previewLaunchURL);
+
+							dropdownItem.setIcon("shortcut");
+							dropdownItem.setLabel(
+								LanguageUtil.get(
+									_httpServletRequest, "preview-launch"));
+							dropdownItem.setTarget("_blank");
+						}
+					).build());
+				dropdownGroupItem.setSeparator(true);
+			}
+		).addGroup(
+			dropdownGroupItem -> {
+				dropdownGroupItem.setDropdownItems(
+					DropdownItemListBuilder.add(
+						() -> LayoutPermissionUtil.contains(
+							_themeDisplay.getPermissionChecker(),
+							launchDraftLayout, ActionKeys.DELETE),
+						dropdownItem -> {
+							dropdownItem.putData("action", "deleteLayout");
+							dropdownItem.putData(
+								"deleteLayoutURL",
+								_getDeleteLayoutURL(launchDraftLayout));
+							dropdownItem.putData(
+								"message",
+								LanguageUtil.format(
+									_httpServletRequest,
+									"are-you-sure-you-want-to-delete-the-" +
+										"page-x-from-this-launch",
+									HtmlUtil.escape(
+										launchDraftLayout.getName(
+											_themeDisplay.getLocale()))));
+							dropdownItem.setIcon("trash");
+							dropdownItem.setLabel(
+								LanguageUtil.get(
+									_httpServletRequest, "delete-from-launch"));
+						}
+					).build());
+				dropdownGroupItem.setSeparator(true);
+			}
+		).build();
+	}
+
 	private Layout _getLayout() {
 		Layout layout = _themeDisplay.getLayout();
 
@@ -365,6 +439,16 @@ public class LayoutActionsDisplayContext {
 		}
 
 		return _contentLayout;
+	}
+
+	private boolean _isLaunchDraftLayout() {
+		Layout layout = _themeDisplay.getLayout();
+
+		if (layout.isDraftLayout() && (layout.getLaunchSetId() > 0)) {
+			return true;
+		}
+
+		return false;
 	}
 
 	private boolean _isShowConvertToPageTemplateAction(Layout layout)
