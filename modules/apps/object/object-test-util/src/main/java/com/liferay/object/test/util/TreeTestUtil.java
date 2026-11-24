@@ -9,10 +9,12 @@ import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.object.constants.ObjectRelationshipConstants;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
+import com.liferay.object.model.ObjectEntryVersion;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.model.ObjectRelationship;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
+import com.liferay.object.service.ObjectEntryVersionLocalService;
 import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.object.tree.Edge;
@@ -25,6 +27,7 @@ import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -46,6 +49,9 @@ import java.util.Queue;
 import java.util.Set;
 
 import org.junit.Assert;
+
+import org.skyscreamer.jsonassert.JSONAssert;
+import org.skyscreamer.jsonassert.JSONCompareMode;
 
 /**
  * @author Feliphe Marinho
@@ -109,6 +115,26 @@ public class TreeTestUtil {
 					actualRootObjectDefinitionIds,
 					expectedRootObjectDefinitionIds));
 		}
+	}
+
+	public static void assertRootObjectEntryVersion(
+			JSONObject expectedJSONObject, int expectedObjectEntryVersionsCount,
+			int expectedVersion, long objectEntryId,
+			ObjectEntryVersionLocalService objectEntryVersionLocalService)
+		throws Exception {
+
+		Assert.assertEquals(
+			expectedObjectEntryVersionsCount,
+			objectEntryVersionLocalService.getObjectEntryVersionsCount(
+				objectEntryId));
+
+		ObjectEntryVersion objectEntryVersion =
+			objectEntryVersionLocalService.getObjectEntryVersion(
+				objectEntryId, expectedVersion);
+
+		JSONAssert.assertEquals(
+			expectedJSONObject.toString(), objectEntryVersion.getContent(),
+			JSONCompareMode.LENIENT);
 	}
 
 	public static ObjectRelationship bind(

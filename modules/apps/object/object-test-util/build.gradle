@@ -1,4 +1,6 @@
 dependencies {
+	compileInclude group: "org.skyscreamer", name: "jsonassert", version: "1.2.3"
+	compileOnly group: "com.liferay", name: "org.json", version: "20260814.LIFERAY-PATCHED-1"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.test", version: "default"
 	compileOnly project(":apps:notification:notification-api")

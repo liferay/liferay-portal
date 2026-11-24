@@ -10,16 +10,22 @@ import com.liferay.counter.kernel.service.CounterLocalService;
 import com.liferay.object.configuration.ObjectEntryVersionConfiguration;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
+import com.liferay.object.constants.ObjectRelationshipConstants;
 import com.liferay.object.exception.RequiredObjectEntryVersionException;
 import com.liferay.object.field.builder.TextObjectFieldBuilder;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectEntryVersion;
+import com.liferay.object.model.ObjectField;
 import com.liferay.object.related.models.test.util.ObjectEntryTestUtil;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectEntryVersionLocalService;
+import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.object.service.persistence.ObjectEntryVersionUtil;
+import com.liferay.object.test.util.ObjectDefinitionTestUtil;
+import com.liferay.object.test.util.ObjectRelationshipTestUtil;
+import com.liferay.object.test.util.TreeTestUtil;
 import com.liferay.object.util.comparator.ObjectEntryVersionVersionComparator;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
@@ -53,6 +59,7 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.workflow.WorkflowDefinition;
 import com.liferay.portal.kernel.workflow.WorkflowTask;
 import com.liferay.portal.kernel.workflow.WorkflowTaskManager;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -169,6 +176,315 @@ public class ObjectEntryVersionLocalServiceTest {
 					WorkflowConstants.STATUS_APPROVED, 2)),
 			_objectEntryVersionLocalService.getObjectEntryVersions(
 				objectEntry.getObjectEntryId()));
+	}
+
+	@FeatureFlag("LPD-116183")
+	@Test
+	public void testAddObjectEntryVersionWithHierarchy() throws Exception {
+		List<ObjectField> objectFields = Collections.singletonList(
+			new TextObjectFieldBuilder(
+			).labelMap(
+				RandomTestUtil.randomLocaleStringMap()
+			).name(
+				"textObjectFieldName"
+			).build());
+
+		ObjectDefinition objectDefinitionA =
+			ObjectDefinitionTestUtil.publishObjectDefinition(
+				true, false, true, objectFields,
+				ObjectDefinitionConstants.SCOPE_COMPANY);
+		ObjectDefinition objectDefinitionAA =
+			ObjectDefinitionTestUtil.publishObjectDefinition(
+				true, false, true, objectFields,
+				ObjectDefinitionConstants.SCOPE_COMPANY);
+		ObjectDefinition objectDefinitionAAA =
+			ObjectDefinitionTestUtil.publishObjectDefinition(
+				true, false, true, objectFields,
+				ObjectDefinitionConstants.SCOPE_COMPANY);
+
+		TreeTestUtil.bind(
+			_objectRelationshipLocalService,
+			Arrays.asList(
+				ObjectRelationshipTestUtil.addObjectRelationship(
+					_objectRelationshipLocalService, objectDefinitionA,
+					objectDefinitionAA,
+					ObjectRelationshipConstants.DELETION_TYPE_CASCADE,
+					"objectRelationship1"),
+				ObjectRelationshipTestUtil.addObjectRelationship(
+					_objectRelationshipLocalService, objectDefinitionAA,
+					objectDefinitionAAA,
+					ObjectRelationshipConstants.DELETION_TYPE_CASCADE,
+					"objectRelationship2")));
+
+		// Add root descendant object entries
+
+		ObjectEntry objectEntryA1 = ObjectEntryTestUtil.addObjectEntry(
+			0, objectDefinitionA.getObjectDefinitionId(),
+			HashMapBuilder.<String, Serializable>put(
+				"externalReferenceCode", "A1"
+			).build());
+
+		ObjectEntry objectEntryAA1 = ObjectEntryTestUtil.addObjectEntry(
+			0, objectDefinitionAA.getObjectDefinitionId(),
+			HashMapBuilder.<String, Serializable>put(
+				"externalReferenceCode", "AA1"
+			).put(
+				"r_objectRelationship1_" +
+					objectDefinitionA.getPKObjectFieldName(),
+				objectEntryA1.getObjectEntryId()
+			).build());
+		ObjectEntry objectEntryAA2 = ObjectEntryTestUtil.addObjectEntry(
+			0, objectDefinitionAA.getObjectDefinitionId(),
+			HashMapBuilder.<String, Serializable>put(
+				"externalReferenceCode", "AA2"
+			).put(
+				"r_objectRelationship1_" +
+					objectDefinitionA.getPKObjectFieldName(),
+				objectEntryA1.getObjectEntryId()
+			).build());
+
+		ObjectEntryTestUtil.addObjectEntry(
+			0, objectDefinitionAAA.getObjectDefinitionId(),
+			HashMapBuilder.<String, Serializable>put(
+				"externalReferenceCode", "AAA1"
+			).put(
+				"r_objectRelationship2_" +
+					objectDefinitionAA.getPKObjectFieldName(),
+				objectEntryAA1.getObjectEntryId()
+			).build());
+		ObjectEntryTestUtil.addObjectEntry(
+			0, objectDefinitionAAA.getObjectDefinitionId(),
+			HashMapBuilder.<String, Serializable>put(
+				"externalReferenceCode", "AAA2"
+			).put(
+				"r_objectRelationship2_" +
+					objectDefinitionAA.getPKObjectFieldName(),
+				objectEntryAA2.getObjectEntryId()
+			).build());
+
+		TreeTestUtil.assertRootObjectEntryVersion(
+			JSONUtil.put(
+				"externalReferenceCode", "A1"
+			).put(
+				"properties",
+				JSONUtil.put(
+					"objectRelationship1",
+					JSONUtil.putAll(
+						JSONUtil.put(
+							"externalReferenceCode", "AA1"
+						).put(
+							"properties",
+							JSONUtil.put(
+								"objectRelationship2",
+								JSONUtil.putAll(
+									JSONUtil.put(
+										"externalReferenceCode", "AAA1")))
+						),
+						JSONUtil.put(
+							"externalReferenceCode", "AA2"
+						).put(
+							"properties",
+							JSONUtil.put(
+								"objectRelationship2",
+								JSONUtil.putAll(
+									JSONUtil.put(
+										"externalReferenceCode", "AAA2")))
+						)))
+			),
+			5, 5, objectEntryA1.getObjectEntryId(),
+			_objectEntryVersionLocalService);
+
+		Assert.assertEquals(
+			0,
+			_objectEntryVersionLocalService.getObjectEntryVersionsCount(
+				objectEntryAA1.getObjectEntryId()));
+
+		// Delete root descendant object entry
+
+		_objectEntryLocalService.deleteObjectEntry(
+			objectEntryAA2.getObjectEntryId());
+
+		TreeTestUtil.assertRootObjectEntryVersion(
+			JSONUtil.put(
+				"externalReferenceCode", "A1"
+			).put(
+				"properties",
+				JSONUtil.put(
+					"objectRelationship1",
+					JSONUtil.putAll(
+						JSONUtil.put(
+							"externalReferenceCode", "AA1"
+						).put(
+							"properties",
+							JSONUtil.put(
+								"objectRelationship2",
+								JSONUtil.putAll(
+									JSONUtil.put(
+										"externalReferenceCode", "AAA1")))
+						)))
+			),
+			6, 6, objectEntryA1.getObjectEntryId(),
+			_objectEntryVersionLocalService);
+
+		// Update root descendant object entry
+
+		_objectEntryLocalService.updateObjectEntry(
+			TestPropsValues.getUserId(), objectEntryAA1.getObjectEntryId(),
+			objectEntryAA1.getObjectEntryFolderId(),
+			HashMapBuilder.<String, Serializable>put(
+				"r_objectRelationship1_" +
+					objectDefinitionA.getPKObjectFieldName(),
+				objectEntryA1.getObjectEntryId()
+			).put(
+				"textObjectFieldName", "textObjectFieldValue1"
+			).build(),
+			ServiceContextTestUtil.getServiceContext());
+
+		TreeTestUtil.assertRootObjectEntryVersion(
+			JSONUtil.put(
+				"externalReferenceCode", "A1"
+			).put(
+				"properties",
+				JSONUtil.put(
+					"objectRelationship1",
+					JSONUtil.putAll(
+						JSONUtil.put(
+							"externalReferenceCode", "AA1"
+						).put(
+							"properties",
+							JSONUtil.put(
+								"textObjectFieldName", "textObjectFieldValue1")
+						)))
+			),
+			7, 7, objectEntryA1.getObjectEntryId(),
+			_objectEntryVersionLocalService);
+
+		// Update root descendant object entry as draft
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext();
+
+		serviceContext.setWorkflowAction(WorkflowConstants.ACTION_SAVE_DRAFT);
+
+		_objectEntryLocalService.updateObjectEntry(
+			TestPropsValues.getUserId(), objectEntryAA1.getObjectEntryId(),
+			objectEntryAA1.getObjectEntryFolderId(),
+			HashMapBuilder.<String, Serializable>put(
+				"r_objectRelationship1_" +
+					objectDefinitionA.getPKObjectFieldName(),
+				objectEntryA1.getObjectEntryId()
+			).put(
+				"textObjectFieldName", "textObjectFieldValue2"
+			).build(),
+			serviceContext);
+
+		TreeTestUtil.assertRootObjectEntryVersion(
+			JSONUtil.put(
+				"externalReferenceCode", "A1"
+			).put(
+				"properties",
+				JSONUtil.put(
+					"objectRelationship1",
+					JSONUtil.putAll(
+						JSONUtil.put(
+							"externalReferenceCode", "AA1"
+						).put(
+							"properties",
+							JSONUtil.put(
+								"textObjectFieldName", "textObjectFieldValue2")
+						)))
+			),
+			8, 8, objectEntryA1.getObjectEntryId(),
+			_objectEntryVersionLocalService);
+
+		ObjectEntryVersion objectEntryVersion =
+			_objectEntryVersionLocalService.getObjectEntryVersion(
+				objectEntryA1.getObjectEntryId(), 7);
+
+		Assert.assertTrue(objectEntryVersion.isApproved());
+
+		// Update root descendant object entry with draft root object entry
+
+		_objectEntryLocalService.updateObjectEntry(
+			TestPropsValues.getUserId(), objectEntryAA1.getObjectEntryId(),
+			objectEntryAA1.getObjectEntryFolderId(),
+			HashMapBuilder.<String, Serializable>put(
+				"r_objectRelationship1_" +
+					objectDefinitionA.getPKObjectFieldName(),
+				objectEntryA1.getObjectEntryId()
+			).put(
+				"textObjectFieldName", "textObjectFieldValue3"
+			).build(),
+			serviceContext);
+
+		TreeTestUtil.assertRootObjectEntryVersion(
+			JSONUtil.put(
+				"externalReferenceCode", "A1"
+			).put(
+				"properties",
+				JSONUtil.put(
+					"objectRelationship1",
+					JSONUtil.putAll(
+						JSONUtil.put(
+							"externalReferenceCode", "AA1"
+						).put(
+							"properties",
+							JSONUtil.put(
+								"textObjectFieldName", "textObjectFieldValue3")
+						)))
+			),
+			8, 8, objectEntryA1.getObjectEntryId(),
+			_objectEntryVersionLocalService);
+
+		// Update root descendant object entry with expired root object entry
+
+		_objectEntryLocalService.updateObjectEntry(
+			TestPropsValues.getUserId(), objectEntryA1.getObjectEntryId(),
+			objectEntryA1.getObjectEntryFolderId(), Collections.emptyMap(),
+			ServiceContextTestUtil.getServiceContext());
+
+		_objectEntryLocalService.expireObjectEntry(
+			TestPropsValues.getUserId(), objectEntryA1.getObjectEntryId(),
+			ServiceContextTestUtil.getServiceContext());
+
+		_objectEntryLocalService.updateObjectEntry(
+			TestPropsValues.getUserId(), objectEntryAA1.getObjectEntryId(),
+			objectEntryAA1.getObjectEntryFolderId(),
+			HashMapBuilder.<String, Serializable>put(
+				"r_objectRelationship1_" +
+					objectDefinitionA.getPKObjectFieldName(),
+				objectEntryA1.getObjectEntryId()
+			).put(
+				"textObjectFieldName", "textObjectFieldValue4"
+			).build(),
+			ServiceContextTestUtil.getServiceContext());
+
+		TreeTestUtil.assertRootObjectEntryVersion(
+			JSONUtil.put(
+				"externalReferenceCode", "A1"
+			).put(
+				"properties",
+				JSONUtil.put(
+					"objectRelationship1",
+					JSONUtil.putAll(
+						JSONUtil.put(
+							"externalReferenceCode", "AA1"
+						).put(
+							"properties",
+							JSONUtil.put(
+								"textObjectFieldName", "textObjectFieldValue4")
+						)))
+			),
+			9, 9, objectEntryA1.getObjectEntryId(),
+			_objectEntryVersionLocalService);
+
+		TreeTestUtil.deleteObjectDefinitionHierarchy(
+			_objectDefinitionLocalService,
+			new String[] {
+				objectDefinitionA.getName(), objectDefinitionAA.getName(),
+				objectDefinitionAAA.getName()
+			},
+			_objectEntryLocalService, _objectRelationshipLocalService);
 	}
 
 	@Test
@@ -1264,6 +1580,9 @@ public class ObjectEntryVersionLocalServiceTest {
 		filter = "component.name=com.liferay.object.internal.model.listener.ObjectEntryVersionModelListener"
 	)
 	private ModelListener<ObjectDefinition> _objectEntryVersionModelListener;
+
+	@Inject
+	private ObjectRelationshipLocalService _objectRelationshipLocalService;
 
 	@Inject
 	private WorkflowDefinitionLinkLocalService
