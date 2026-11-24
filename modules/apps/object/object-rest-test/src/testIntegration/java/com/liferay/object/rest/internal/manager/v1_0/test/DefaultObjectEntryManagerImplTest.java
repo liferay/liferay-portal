@@ -10764,6 +10764,178 @@ public class DefaultObjectEntryManagerImplTest
 			_objectEntryLocalService, _objectRelationshipLocalService);
 	}
 
+	@FeatureFlag("LPD-116183")
+	@Test
+	public void testUpdateObjectEntryWithHierarchyAndObjectEntryVersioning()
+		throws Exception {
+
+		List<ObjectField> objectFields = Collections.singletonList(
+			new TextObjectFieldBuilder(
+			).labelMap(
+				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString())
+			).name(
+				"textObjectFieldName"
+			).build());
+
+		ObjectDefinition objectDefinitionA =
+			ObjectDefinitionTestUtil.publishObjectDefinition(
+				false, false, true, objectFields,
+				ObjectDefinitionConstants.SCOPE_COMPANY);
+		ObjectDefinition objectDefinitionAA =
+			ObjectDefinitionTestUtil.publishObjectDefinition(
+				false, false, true, objectFields,
+				ObjectDefinitionConstants.SCOPE_COMPANY);
+
+		ObjectRelationship objectRelationshipA_AA = TreeTestUtil.bind(
+			objectDefinitionA.getObjectDefinitionId(),
+			objectDefinitionAA.getObjectDefinitionId(),
+			_objectRelationshipLocalService);
+
+		ObjectDefinition objectDefinitionAAA =
+			ObjectDefinitionTestUtil.publishObjectDefinition(
+				false, false, true, objectFields,
+				ObjectDefinitionConstants.SCOPE_COMPANY);
+
+		ObjectRelationship objectRelationshipAA_AAA = TreeTestUtil.bind(
+			objectDefinitionAA.getObjectDefinitionId(),
+			objectDefinitionAAA.getObjectDefinitionId(),
+			_objectRelationshipLocalService);
+
+		objectDefinitionA = objectDefinitionLocalService.getObjectDefinition(
+			objectDefinitionA.getObjectDefinitionId());
+
+		ObjectEntry objectEntry = _defaultObjectEntryManager.addObjectEntry(
+			_simpleDTOConverterContext, objectDefinitionA,
+			new ObjectEntry() {
+				{
+					externalReferenceCode = "A1";
+					properties = HashMapBuilder.<String, Object>put(
+						"textObjectFieldName", "textObjectFieldValue1"
+					).put(
+						objectRelationshipA_AA.getName(),
+						Collections.singletonList(
+							HashMapBuilder.<String, Object>put(
+								"externalReferenceCode", "AA1"
+							).put(
+								"textObjectFieldName", "textObjectFieldValue1"
+							).put(
+								objectRelationshipAA_AAA.getName(),
+								Collections.singletonList(
+									HashMapBuilder.<String, Object>put(
+										"externalReferenceCode", "AAA1"
+									).put(
+										"textObjectFieldName",
+										"textObjectFieldValue1"
+									).build())
+							).build())
+					).build();
+				}
+			},
+			ObjectDefinitionConstants.SCOPE_COMPANY);
+
+		TreeTestUtil.assertRootObjectEntryVersion(
+			JSONUtil.put(
+				"externalReferenceCode", "A1"
+			).put(
+				"properties",
+				JSONUtil.put(
+					"textObjectFieldName", "textObjectFieldValue1"
+				).put(
+					objectRelationshipA_AA.getName(),
+					JSONUtil.putAll(
+						JSONUtil.put(
+							"externalReferenceCode", "AA1"
+						).put(
+							"properties",
+							JSONUtil.put(
+								"textObjectFieldName", "textObjectFieldValue1"
+							).put(
+								objectRelationshipAA_AAA.getName(),
+								JSONUtil.putAll(
+									JSONUtil.put(
+										"externalReferenceCode", "AAA1"
+									).put(
+										"properties",
+										JSONUtil.put(
+											"textObjectFieldName",
+											"textObjectFieldValue1")
+									))
+							)
+						))
+				)
+			),
+			1, 1, objectEntry.getId(), _objectEntryVersionLocalService);
+
+		_defaultObjectEntryManager.updateObjectEntry(
+			_simpleDTOConverterContext, objectDefinitionA, objectEntry.getId(),
+			new ObjectEntry() {
+				{
+					externalReferenceCode = "A1";
+					properties = HashMapBuilder.<String, Object>put(
+						"textObjectFieldName", "textObjectFieldValue2"
+					).put(
+						objectRelationshipA_AA.getName(),
+						Collections.singletonList(
+							HashMapBuilder.<String, Object>put(
+								"externalReferenceCode", "AA1"
+							).put(
+								"textObjectFieldName", "textObjectFieldValue2"
+							).put(
+								objectRelationshipAA_AAA.getName(),
+								Collections.singletonList(
+									HashMapBuilder.<String, Object>put(
+										"externalReferenceCode", "AAA1"
+									).put(
+										"textObjectFieldName",
+										"textObjectFieldValue2"
+									).build())
+							).build())
+					).build();
+				}
+			});
+
+		TreeTestUtil.assertRootObjectEntryVersion(
+			JSONUtil.put(
+				"externalReferenceCode", "A1"
+			).put(
+				"properties",
+				JSONUtil.put(
+					"textObjectFieldName", "textObjectFieldValue2"
+				).put(
+					objectRelationshipA_AA.getName(),
+					JSONUtil.putAll(
+						JSONUtil.put(
+							"externalReferenceCode", "AA1"
+						).put(
+							"properties",
+							JSONUtil.put(
+								"textObjectFieldName", "textObjectFieldValue2"
+							).put(
+								objectRelationshipAA_AAA.getName(),
+								JSONUtil.putAll(
+									JSONUtil.put(
+										"externalReferenceCode", "AAA1"
+									).put(
+										"properties",
+										JSONUtil.put(
+											"textObjectFieldName",
+											"textObjectFieldValue2")
+									))
+							)
+						))
+				)
+			),
+			2, 2, objectEntry.getId(), _objectEntryVersionLocalService);
+
+		TreeTestUtil.deleteObjectDefinitionHierarchy(
+			objectDefinitionLocalService,
+			new String[] {
+				objectDefinitionA.getName(), objectDefinitionAA.getName(),
+				objectDefinitionAAA.getName()
+			},
+			_objectEntryLocalService, _objectRelationshipLocalService);
+	}
+
 	@Test
 	public void testUpdateObjectEntryWithObjectEntryFolder() throws Exception {
 		ObjectEntryFolder objectEntryFolder =
