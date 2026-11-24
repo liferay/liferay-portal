@@ -4,6 +4,34 @@ import (
 	"testing"
 )
 
+const developerLicenseXML = `<?xml version="1.0"?>
+<licenses>
+    <license>
+        <description>Digital Sales Room Cloud Native Environment</description>
+        <expiration-date>Friday, March 2, 2029 12:00:00 AM GMT</expiration-date>
+        <license-type>enterprise</license-type>
+        <license-version>3</license-version>
+        <owner>Fry Some Animal</owner>
+        <product-name>Digital Sales Room</product-name>
+        <product-id>23bd2e2b-c4aa-45d7-86c9-ba0e2f890bf5</product-id>
+        <product-version>1</product-version>
+        <start-date>Wednesday, July 1, 2026 12:00:00 AM GMT</start-date>
+    </license>
+    <license>
+        <account-name>Fry Some Animal</account-name>
+        <description>DXP Development</description>
+        <expiration-date>Friday, January 1, 2027 12:00:00 AM GMT</expiration-date>
+        <license-name>DXP Development</license-name>
+        <license-type>developer</license-type>
+        <license-version>6</license-version>
+        <max-http-sessions>5</max-http-sessions>
+        <owner>env-uid-123</owner>
+        <product-name>DXP Development</product-name>
+        <product-version>2026.Q3</product-version>
+        <start-date>Thursday, January 1, 2026 12:00:00 AM GMT</start-date>
+    </license>
+</licenses>`
+
 const distinctOwnersLicenseXML = `<?xml version="1.0"?>
 <licenses>
     <license>
@@ -65,6 +93,18 @@ const validLicenseXML = `<?xml version="1.0"?>
     </license>
 </licenses>`
 
+func TestExpirationDateReturnsDeveloperDate(t *testing.T) {
+	expirationDate, error := ExpirationDate([]byte(developerLicenseXML))
+
+	if error != nil {
+		t.Fatalf("Unexpected error: %v", error)
+	}
+
+	if formatted := expirationDate.Format("2006-01-02"); formatted != "2027-01-01" {
+		t.Errorf("Expected 2027-01-01, got %s", formatted)
+	}
+}
+
 func TestExpirationDateReturnsVirtualClusterDate(t *testing.T) {
 	expirationDate, error := ExpirationDate([]byte(validLicenseXML))
 
@@ -77,7 +117,7 @@ func TestExpirationDateReturnsVirtualClusterDate(t *testing.T) {
 	}
 }
 
-func TestExpirationDateSkipsNonVirtualClusterLicenses(t *testing.T) {
+func TestExpirationDateSkipsEnterpriseLicenses(t *testing.T) {
 	expirationDate, error := ExpirationDate([]byte(skipsValidationLicenseXML))
 
 	if error != nil {
@@ -89,9 +129,21 @@ func TestExpirationDateSkipsNonVirtualClusterLicenses(t *testing.T) {
 	}
 }
 
-func TestExpirationDateWhenNoVirtualClusterLicenseReturnsError(t *testing.T) {
+func TestExpirationDateWhenNoDXPLicenseReturnsError(t *testing.T) {
 	if _, error := ExpirationDate([]byte(missingExpirationDateLicenseXML)); error == nil {
 		t.Fatal("Expected an error, got nil")
+	}
+}
+
+func TestOwnerReturnsDeveloperOwner(t *testing.T) {
+	owner, error := Owner([]byte(developerLicenseXML))
+
+	if error != nil {
+		t.Fatalf("Unexpected error: %v", error)
+	}
+
+	if owner != "env-uid-123" {
+		t.Errorf("Owner = %q, want the developer owner env-uid-123", owner)
 	}
 }
 
@@ -107,7 +159,7 @@ func TestOwnerReturnsVirtualClusterOwner(t *testing.T) {
 	}
 }
 
-func TestOwnerWhenNoVirtualClusterLicenseReturnsError(t *testing.T) {
+func TestOwnerWhenNoDXPLicenseReturnsError(t *testing.T) {
 	if _, error := Owner([]byte(missingExpirationDateLicenseXML)); error == nil {
 		t.Fatal("Expected an error, got nil")
 	}

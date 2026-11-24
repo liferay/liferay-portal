@@ -8,6 +8,7 @@ import (
 
 const (
 	dateLayout                = "Monday, January 2, 2006 3:04:05 PM MST"
+	licenseTypeDeveloper      = "developer"
 	licenseTypeVirtualCluster = "virtual-cluster"
 )
 
@@ -19,7 +20,7 @@ func ExpirationDate(licenseXML []byte) (time.Time, error) {
 	}
 
 	for _, licenseEntry := range licenseSet.Licenses {
-		if licenseEntry.LicenseType != licenseTypeVirtualCluster {
+		if !isDXPLicense(licenseEntry) {
 			continue
 		}
 
@@ -35,7 +36,7 @@ func ExpirationDate(licenseXML []byte) (time.Time, error) {
 		return expirationDate, nil
 	}
 
-	return time.Time{}, fmt.Errorf("license: no virtual-cluster license found")
+	return time.Time{}, fmt.Errorf("license: no DXP license was found")
 }
 
 func Owner(licenseXML []byte) (string, error) {
@@ -46,14 +47,19 @@ func Owner(licenseXML []byte) (string, error) {
 	}
 
 	for _, licenseEntry := range licenseSet.Licenses {
-		if licenseEntry.LicenseType != licenseTypeVirtualCluster {
+		if !isDXPLicense(licenseEntry) {
 			continue
 		}
 
 		return licenseEntry.Owner, nil
 	}
 
-	return "", fmt.Errorf("license: no virtual-cluster license found")
+	return "", fmt.Errorf("license: no DXP license was found")
+}
+
+func isDXPLicense(licenseEntry licenseEntry) bool {
+	return licenseEntry.LicenseType == licenseTypeDeveloper ||
+		licenseEntry.LicenseType == licenseTypeVirtualCluster
 }
 
 type licenseEntry struct {

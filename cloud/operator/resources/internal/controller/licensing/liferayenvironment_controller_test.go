@@ -590,6 +590,17 @@ func awaitCondition(condition func() bool, description string, t *testing.T) {
 	}
 }
 
+func developerLicenseXML(expirationDate string, owner string) string {
+	return fmt.Sprintf(
+		"<licenses><license>"+
+			"<owner>%s</owner>"+
+			"<expiration-date>%s</expiration-date>"+
+			"<license-type>developer</license-type>"+
+			"</license></licenses>",
+		owner, expirationDate,
+	)
+}
+
 func developmentObjects() []client.Object {
 	return []client.Object{
 		&corev1.Namespace{

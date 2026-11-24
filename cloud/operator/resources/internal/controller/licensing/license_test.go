@@ -73,6 +73,17 @@ func TestEvaluateLicense(t *testing.T) {
 			licenseXML:              "not a license",
 			now:                     time.Date(2029, time.March, 1, 0, 0, 0, 0, time.UTC),
 		},
+		"valid developer license": {
+			expectedMaxClusterNodes: pointerInt32(3),
+			expectedReason:          "Valid",
+			expectedReplicaCeiling:  3,
+			expectedStatus:          metav1.ConditionTrue,
+			expectedValidUntil:      true,
+			licenseXML: developerLicenseXML(
+				"Friday, March 2, 2029 12:00:00 AM GMT", "dev-namespace-uid",
+			),
+			now: time.Date(2029, time.March, 1, 0, 0, 0, 0, time.UTC),
+		},
 		"valid license": {
 			expectedMaxClusterNodes: pointerInt32(3),
 			expectedReason:          "Valid",
