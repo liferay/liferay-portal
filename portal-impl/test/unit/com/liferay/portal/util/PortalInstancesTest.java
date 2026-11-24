@@ -144,6 +144,24 @@ public class PortalInstancesTest {
 	}
 
 	@Test
+	public void testIsCompanyInCopyProcess() {
+		long fromCompanyId = RandomTestUtil.randomLong();
+		long toCompanyId = RandomTestUtil.randomLong();
+
+		try (SafeCloseable safeCloseable =
+				PortalInstances.setCopyInProcessCompanyIdWithSafeCloseable(
+					fromCompanyId, toCompanyId)) {
+
+			Assert.assertFalse(
+				PortalInstances.isCompanyInCopyProcess(fromCompanyId));
+			Assert.assertTrue(
+				PortalInstances.isCompanyInCopyProcess(toCompanyId));
+		}
+
+		Assert.assertFalse(PortalInstances.isCompanyInCopyProcess(toCompanyId));
+	}
+
+	@Test
 	public void testIsCompanyInDeletionProcessWhenClusteringIsDisabled() {
 		long companyId = RandomTestUtil.randomLong();
 
