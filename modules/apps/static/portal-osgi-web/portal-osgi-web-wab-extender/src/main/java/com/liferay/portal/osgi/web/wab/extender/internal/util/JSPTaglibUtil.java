@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.portal.osgi.web.wab.extender.internal;
+package com.liferay.portal.osgi.web.wab.extender.internal.util;
 
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.xml.Document;
@@ -26,7 +26,7 @@ import org.osgi.framework.wiring.BundleWiring;
 /**
  * @author Tina Tian
  */
-public class JSPTaglibHelperUtil {
+public class JSPTaglibUtil {
 
 	public static void scanTLDs(
 		Bundle bundle, ServletContext servletContext,
@@ -97,6 +97,6 @@ public class JSPTaglibHelperUtil {
 	}
 
 	private static final String _ANALYZED_TLDS =
-		JSPTaglibHelperUtil.class.getName() + "#ANALYZED_TLDS";
+		JSPTaglibUtil.class.getName() + "#ANALYZED_TLDS";
 
 }

@@ -31,6 +31,7 @@ import com.liferay.portal.osgi.web.wab.extender.internal.adapter.ServletExceptio
 import com.liferay.portal.osgi.web.wab.extender.internal.registration.FilterRegistrationImpl;
 import com.liferay.portal.osgi.web.wab.extender.internal.registration.ListenerServiceRegistrationComparator;
 import com.liferay.portal.osgi.web.wab.extender.internal.registration.ServletRegistrationImpl;
+import com.liferay.portal.osgi.web.wab.extender.internal.util.JSPTaglibUtil;
 import com.liferay.portal.plugin.PluginPackageUtil;
 
 import jakarta.servlet.Filter;
@@ -865,8 +866,7 @@ public class WabBundleProcessor {
 
 		List<String> listenerClassNames = new ArrayList<>();
 
-		JSPTaglibHelperUtil.scanTLDs(
-			_bundle, servletContext, listenerClassNames);
+		JSPTaglibUtil.scanTLDs(_bundle, servletContext, listenerClassNames);
 
 		for (String listenerClassName : listenerClassNames) {
 			try {
