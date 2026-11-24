@@ -1047,13 +1047,13 @@ mariadb.executable=${mariadb.executable}]]></echo>
 									continue;
 								}
 
-								if (postStartupModulesOnly && !isPostStartupTestUtilModule(testUtilModule)) {
+								if (!isPostStartupTestUtilModule(testUtilModule) && postStartupModulesOnly) {
 									System.out.println("Ignoring " + testUtilModule.replace(projectDir + "/", ""));
 
 									continue;
 								}
 
-								if (preStartupModulesOnly && isPostStartupTestUtilModule(testUtilModule)) {
+								if (isPostStartupTestUtilModule(testUtilModule) && preStartupModulesOnly) {
 									System.out.println("Ignoring " + testUtilModule.replace(projectDir + "/", ""));
 
 									continue;
@@ -1110,7 +1110,7 @@ mariadb.executable=${mariadb.executable}]]></echo>
 
 					String deprecatedModuleGroups = project.getProperty("test.batch.deprecated.module.groups");
 
-					if (!postStartupModulesOnly && (deprecatedModuleGroups != null)) {
+					if ((deprecatedModuleGroups != null) && !postStartupModulesOnly) {
 						releaseDependentModules.addAll(getModulesFromModuleGroups(deprecatedModuleGroups.split(",")));
 					}
 
