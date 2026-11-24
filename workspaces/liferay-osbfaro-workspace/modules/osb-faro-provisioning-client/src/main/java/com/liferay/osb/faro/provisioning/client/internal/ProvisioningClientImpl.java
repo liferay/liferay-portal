@@ -14,6 +14,7 @@ import com.liferay.osb.faro.provisioning.client.exception.NoSuchRoleException;
 import com.liferay.osb.faro.provisioning.client.model.OSBAccountEntry;
 import com.liferay.osb.faro.provisioning.client.model.OSBOfferingEntry;
 import com.liferay.osb.faro.provisioning.client.util.KoroneikiHttpUtil;
+import com.liferay.osb.faro.util.EmailUtil;
 import com.liferay.osb.faro.util.FaroPropsValues;
 import com.liferay.osb.koroneiki.phloem.rest.client.dto.v1_0.Account;
 import com.liferay.osb.koroneiki.phloem.rest.client.dto.v1_0.Contact;
@@ -23,7 +24,10 @@ import com.liferay.osb.koroneiki.phloem.rest.client.dto.v1_0.Product;
 import com.liferay.osb.koroneiki.phloem.rest.client.dto.v1_0.ProductConsumption;
 import com.liferay.osb.koroneiki.phloem.rest.client.dto.v1_0.ProductPurchase;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.Portal;
@@ -325,6 +329,16 @@ public class ProvisioningClientImpl implements ProvisioningClient {
 		externalLink.setEntityId(String.valueOf(groupId));
 		externalLink.setEntityName("groupId");
 
+		Group group = _groupLocalService.fetchGroup(groupId);
+
+		if (FeatureFlagManagerUtil.isEnabled(
+				group.getCompanyId(), "LPD-114293")) {
+
+			externalLink.setUrl(EmailUtil.getWorkspaceURL(group) + "/sites");
+
+			return externalLink;
+		}
+
 		StringBuilder sb = new StringBuilder();
 
 		sb.append(FaroPropsValues.FARO_URL);
@@ -607,6 +621,9 @@ public class ProvisioningClientImpl implements ProvisioningClient {
 			productPurchase.getProductKey(),
 			ProductConstants.PRODUCT_ENTRY_ID_DIGITAL_SALES_ROOM);
 	}
+
+	@Reference
+	private GroupLocalService _groupLocalService;
 
 	@Reference
 	private Portal _portal;
