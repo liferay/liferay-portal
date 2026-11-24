@@ -5,7 +5,6 @@
 
 import {SidebarPanel} from '../../types/SidebarPanel';
 import {VIEWPORT_SIZES, ViewportSize} from '../config/constants/viewportSizes';
-import {isLaunchDraft} from '../utils/isLaunchDraft';
 
 import type {PermissionsState} from '../reducers/permissionsReducer';
 
@@ -19,12 +18,6 @@ export default function selectAvailablePanels(sidebarPanels: SidebarPanel[]) {
 	}) {
 		const availablePanels = ['browser', 'comments', 'page_content'];
 
-		const panels = isLaunchDraft()
-			? sidebarPanels.filter(
-					({sidebarPanelId}) => sidebarPanelId !== 'comments'
-				)
-			: sidebarPanels;
-
 		if (
 			permissions.LOCKED_SEGMENTS_EXPERIMENT ||
 			(!permissions.UPDATE &&
@@ -32,11 +25,11 @@ export default function selectAvailablePanels(sidebarPanels: SidebarPanel[]) {
 				!permissions.UPDATE_LAYOUT_BASIC) ||
 			selectedViewportSize !== VIEWPORT_SIZES.desktop
 		) {
-			return panels.filter(({sidebarPanelId}) =>
+			return sidebarPanels.filter(({sidebarPanelId}) =>
 				availablePanels.includes(sidebarPanelId)
 			);
 		}
 
-		return panels;
+		return sidebarPanels;
 	};
 }

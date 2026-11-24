@@ -9,7 +9,9 @@ import com.liferay.layout.content.page.editor.sidebar.panel.ContentPageEditorSid
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.permission.LayoutPermission;
 
 import java.util.Locale;
@@ -47,8 +49,14 @@ public class CommentsContentPageEditorSidebarPanel
 		PermissionChecker permissionChecker, long plid, int layoutType) {
 
 		try {
+			Layout layout = _layoutLocalService.getLayout(plid);
+
+			if (layout.getLaunchSetId() > 0) {
+				return false;
+			}
+
 			if (_layoutPermission.containsLayoutUpdatePermission(
-					permissionChecker, plid)) {
+					permissionChecker, layout)) {
 
 				return true;
 			}
@@ -67,6 +75,9 @@ public class CommentsContentPageEditorSidebarPanel
 
 	@Reference
 	private Language _language;
+
+	@Reference
+	private LayoutLocalService _layoutLocalService;
 
 	@Reference
 	private LayoutPermission _layoutPermission;
