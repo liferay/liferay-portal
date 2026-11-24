@@ -2,6 +2,7 @@ import {getStickerStyle} from '../stickerColors';
 
 describe('getStickerStyle', () => {
 	it.each([
+		['campaign', 'orange-l5', 'orange'],
 		['event', 'teal-l5', 'teal'],
 		['individual', 'indigo-l5', 'indigo'],
 		['tag', 'yellow-l5', 'yellow-d4'],

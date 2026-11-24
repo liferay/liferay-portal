@@ -1,8 +1,16 @@
+import * as API from 'shared/api';
 import * as data from 'test/data';
 import apolloClient from 'shared/apollo/client';
 import CriteriaSidebar from '../index';
 import React from 'react';
-import {cleanup, fireEvent, render, screen, waitFor} from '@testing-library/react';
+import {
+	cleanup,
+	fireEvent,
+	render,
+	screen,
+	waitFor,
+	within
+} from '@testing-library/react';
 import {DndProvider} from 'react-dnd';
 import {HTML5Backend} from 'react-dnd-html5-backend';
 import {List, Map} from 'immutable';
@@ -41,6 +49,10 @@ jest.mock('@apollo/client', () => ({
 
 jest.mock('shared/hooks/useCurrentUser', () => ({
 	useCurrentUser: () => ({isAdmin: () => true})
+}));
+
+jest.mock('shared/context/dataSources', () => ({
+	useDataSources: () => ({empty: false, loading: false})
 }));
 
 jest.mock('react-router-dom', () => ({
@@ -186,6 +198,143 @@ describe('CriteriaSidebar', () => {
 		fireEvent.keyDown(pageViews, {key: 'End'});
 
 		expect(pageActions).toHaveFocus();
+	});
+
+	it('lists the Campaigns section under Behavioral', () => {
+		useQuery.mockReturnValue({
+			data: {eventDefinitions: {eventDefinitions: [], total: 0}},
+			loading: false
+		});
+
+		render(
+			<DndProvider backend={HTML5Backend}>
+				<CriteriaSidebar
+					propertyGroupsIList={new List([
+						...realTimePropertyGroupList,
+						new PropertyGroup({
+							label: 'Account',
+							propertyKey: 'account',
+							propertySubgroups: new List([
+								new PropertySubgroup({properties: new List()})
+							])
+						}),
+						new PropertyGroup({
+							label: 'Campaigns',
+							propertyKey: 'campaign',
+							propertySubgroups: new List([
+								new PropertySubgroup({properties: new List()})
+							])
+						})
+					])}
+					type={SegmentTypes.Batch}
+				/>
+			</DndProvider>
+		);
+
+		fireEvent.click(screen.getByRole('combobox', {name: 'condition-type'}));
+
+		expect(
+			within(screen.getByRole('group', {name: /behavioral/i}))
+				.getAllByRole('option')
+				.map(({textContent}) => textContent)
+		).toEqual(['Events', 'Campaigns']);
+		expect(
+			within(screen.getByRole('group', {name: /attributes/i}))
+				.getAllByRole('option')
+				.map(({textContent}) => textContent)
+		).toEqual(['Account']);
+	});
+
+	describe('Campaigns section', () => {
+		const campaignPropertyGroupList = new List([
+			new PropertyGroup({
+				label: 'Campaigns',
+				propertyKey: 'campaign',
+				propertySubgroups: new List([
+					new PropertySubgroup({properties: new List()})
+				])
+			})
+		]);
+
+		const renderCampaigns = () =>
+			render(
+				<DndProvider backend={HTML5Backend}>
+					<CriteriaSidebar
+						channelId='123'
+						groupId='456'
+						propertyGroupsIList={campaignPropertyGroupList}
+						type={SegmentTypes.Batch}
+					/>
+				</DndProvider>
+			);
+
+		it('should offer to clear a search that matches no campaign', async () => {
+			renderCampaigns();
+
+			const searchInput = screen.getByPlaceholderText('search');
+
+			fireEvent.change(searchInput, {target: {value: 'Summer Launch'}});
+
+			const clearButton = await screen.findByRole('button', {
+				name: 'clear-search'
+			});
+
+			expect(screen.getByText('No Results Were Found')).toBeInTheDocument();
+			expect(
+				screen.getByText('review-your-search-and-try-again')
+			).toBeInTheDocument();
+
+			fireEvent.click(clearButton);
+
+			expect(searchInput).toHaveValue('');
+		});
+
+		it('should register the listed campaigns as referenced objects', async () => {
+			API.campaigns.searchCampaignNames.mockResolvedValueOnce({
+				items: [{id: 'c1', name: 'Spring Sale'}],
+				totalCount: 1
+			});
+
+			const addEntities = jest.fn();
+
+			render(
+				<DndProvider backend={HTML5Backend}>
+					<ReferencedObjectsContext.Provider
+						value={{
+							addEntities,
+							addProperty: jest.fn(),
+							referencedEntities: Map(),
+							referencedProperties: Map()
+						}}
+					>
+						<CriteriaSidebar
+							channelId='123'
+							groupId='456'
+							propertyGroupsIList={campaignPropertyGroupList}
+							type={SegmentTypes.Batch}
+						/>
+					</ReferencedObjectsContext.Provider>
+				</DndProvider>
+			);
+
+			await waitFor(() =>
+				expect(addEntities).toHaveBeenCalledWith({
+					entityType: 'campaigns',
+					payload: [Map({campaignName: 'Spring Sale', id: 'c1'})]
+				})
+			);
+		});
+
+		it('should explain the empty section when nothing was searched', async () => {
+			renderCampaigns();
+
+			expect(
+				await screen.findByText('no-campaigns-were-found')
+			).toBeInTheDocument();
+			expect(
+				screen.queryByRole('button', {name: 'clear-search'})
+			).not.toBeInTheDocument();
+		});
 	});
 
 	it('should render w/ "No Results Were Found" when propertyGroupsIList is empty', () => {
