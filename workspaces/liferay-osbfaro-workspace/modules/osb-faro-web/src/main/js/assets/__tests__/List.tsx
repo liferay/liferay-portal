@@ -1259,35 +1259,19 @@ describe('List', () => {
 			expect(container.querySelector('.sticker')).toBeInTheDocument();
 		});
 
-		it('should push the page aside when the panel is open', async () => {
-			const {container} = await renderList();
+		it('should open the info panel and close it from its Close button', async () => {
+			await renderList();
 
 			fireEvent.click(screen.getByTestId('trigger-info-panel'));
 
-			expect(container.querySelector('.index-root')).toHaveClass(
-				'c-slideout-push-end'
-			);
-		});
+			const closeButton = screen.getByRole('button', {name: /^close$/i});
 
-		it('should not push the page before the panel is opened', async () => {
-			const {container} = await renderList();
+			expect(closeButton.closest('.sidebar')).not.toHaveAttribute('inert');
 
-			expect(container.querySelector('.index-root')).not.toHaveClass(
-				'c-slideout-push-end'
-			);
-		});
-
-		it('should stop pushing the page after the panel is closed', async () => {
-			const {container} = await renderList();
-
-			fireEvent.click(screen.getByTestId('trigger-info-panel'));
-
-			fireEvent.click(screen.getByRole('button', {name: /^close$/i}));
+			fireEvent.click(closeButton);
 
 			await waitFor(() =>
-				expect(container.querySelector('.index-root')).not.toHaveClass(
-					'c-slideout-push-end'
-				)
+				expect(closeButton.closest('.sidebar')).toHaveAttribute('inert')
 			);
 		});
 
