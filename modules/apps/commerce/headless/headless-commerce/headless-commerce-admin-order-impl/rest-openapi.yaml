@@ -419,7 +419,6 @@ components:
                     description:
                         Idempotency key for create and update; must be unique per address within the company. Read-only after create.
                     example: AB-34098-789-N
-                    readOnly: true
                     type: string
                 id:
                     description:
@@ -2165,7 +2164,6 @@ components:
                     description:
                         Idempotency key for create and update; must be unique per address within the company.
                     example: AB-34098-789-N
-                    readOnly: true
                     type: string
                 id:
                     description:
