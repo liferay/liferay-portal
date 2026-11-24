@@ -142,7 +142,7 @@ public class AssetEntryVerticalCardTest {
 	private final AssetEntry _assetEntry = Mockito.mock(AssetEntry.class);
 	private final AssetRendererFactory<?> _assetRendererFactory = Mockito.mock(
 		AssetRendererFactory.class);
-	private MockedStatic<GroupLocalServiceUtil>
+	private final MockedStatic<GroupLocalServiceUtil>
 		_groupLocalServiceUtilMockedStatic = Mockito.mockStatic(
 			GroupLocalServiceUtil.class);
 	private final RenderRequest _renderRequest = Mockito.mock(
