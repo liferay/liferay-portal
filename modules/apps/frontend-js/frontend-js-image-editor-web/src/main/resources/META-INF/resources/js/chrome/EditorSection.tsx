@@ -24,12 +24,11 @@ export function EditorSection({
 }: Props) {
 	return (
 		<ClayPanel
-			className="editor-panel"
+			className="editor-panel mb-2"
 			collapsable
-			collapseHeaderClassNames="mb-3"
 			defaultExpanded={defaultExpanded}
 			displayTitle={
-				<span className="editor-panel-title panel-title" id={titleId}>
+				<span className="panel-title" id={titleId}>
 					{title}
 				</span>
 			}
