@@ -3207,6 +3207,44 @@ public class DefaultObjectEntryManagerImplTest
 		}
 	}
 
+	@FeatureFlag("LPD-108620")
+	@Test
+	public void testAddObjectEntryWithOneToOneObjectRelationship()
+		throws Exception {
+
+		ObjectDefinition parentObjectDefinition = _addObjectDefinition();
+
+		ObjectEntry parentObjectEntry = _addObjectEntry(
+			parentObjectDefinition, new HashMap<>());
+
+		ObjectDefinition childObjectDefinition = _addObjectDefinition();
+
+		ObjectRelationship objectRelationship =
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				parentObjectDefinition, childObjectDefinition,
+				adminUser.getUserId(),
+				ObjectRelationshipConstants.TYPE_ONE_TO_ONE);
+
+		ObjectField objectField = objectFieldLocalService.getObjectField(
+			objectRelationship.getObjectFieldId2());
+
+		ObjectEntry childObjectEntry = _addObjectEntry(
+			childObjectDefinition,
+			HashMapBuilder.<String, Object>put(
+				objectField.getName(), parentObjectEntry.getId()
+			).build());
+
+		Map<String, Object> properties = childObjectEntry.getProperties();
+
+		Assert.assertEquals(
+			parentObjectEntry.getExternalReferenceCode(),
+			properties.get(
+				_getObjectRelationshipERCObjectFieldName(objectField)));
+		Assert.assertEquals(
+			GetterUtil.getLong(parentObjectEntry.getId()),
+			GetterUtil.getLong(properties.get(objectField.getName())));
+	}
+
 	@Test
 	public void testAddObjectEntryWithPortletImportInProcess()
 		throws Exception {
