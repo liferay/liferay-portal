@@ -16,6 +16,7 @@ $chartSeaGreen: var(--cadmin-teal-l2);
 $criteriaSidebarWidth: 320px;
 $propertyGroupsColors: (
 	'account': $chartOrange,
+	'campaign': var(--cadmin-orange-l2),
 	'disabled': $cadmin-white,
 	'event': $chartSeaGreen,
 	'individual': $chartBlue,
