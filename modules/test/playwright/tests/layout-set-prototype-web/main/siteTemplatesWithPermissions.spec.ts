@@ -12,6 +12,7 @@ import {pageEditorPagesTest} from '../../../fixtures/pageEditorPagesTest';
 import {PageEditorPage} from '../../../pages/layout-content-page-editor-web/PageEditorPage';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../../utils/getRandomString';
+import {selectMaxItemsPerPage} from '../../../utils/pagination';
 import performLogin, {performLogout} from '../../../utils/performLogin';
 import createSiteTemplateWithMessageBoards from './utils/createSiteTemplateWithMessageBoards';
 
@@ -72,6 +73,15 @@ async function assertDefaultWidgetPermissions(
 	await pageEditorPage.clickFragmentOption(widgetId, 'Permissions');
 
 	const permissionsFrame = page.frameLocator('iframe[title="Permissions"]');
+
+	await expect(
+		permissionsFrame.getByRole('button', {name: 'Save'})
+	).toBeVisible();
+
+	await selectMaxItemsPerPage(
+		permissionsFrame.getByLabel('Items per Page'),
+		permissionsFrame.locator('a[href*="_delta=60"]')
+	);
 
 	for (const {
 		addToPage,
