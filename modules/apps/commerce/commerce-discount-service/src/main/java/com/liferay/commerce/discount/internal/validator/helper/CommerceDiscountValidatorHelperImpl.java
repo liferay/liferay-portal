@@ -7,25 +7,20 @@ package com.liferay.commerce.discount.internal.validator.helper;
 
 import com.liferay.commerce.context.CommerceContext;
 import com.liferay.commerce.discount.exception.CommerceDiscountValidatorException;
-import com.liferay.commerce.discount.internal.validator.comparator.CommerceDiscountValidatorServiceWrapperPriorityComparator;
+import com.liferay.commerce.discount.internal.validator.comparator.CommerceDiscountValidatorServiceReferenceComparator;
 import com.liferay.commerce.discount.model.CommerceDiscount;
 import com.liferay.commerce.discount.validator.CommerceDiscountValidator;
 import com.liferay.commerce.discount.validator.CommerceDiscountValidatorResult;
 import com.liferay.commerce.discount.validator.helper.CommerceDiscountValidatorHelper;
-import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerCustomizerFactory;
-import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerCustomizerFactory.ServiceWrapper;
+import com.liferay.osgi.service.tracker.collections.map.PropertyServiceReferenceMapper;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.util.ArrayUtil;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.ListUtil;
 
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
@@ -98,11 +93,12 @@ public class CommerceDiscountValidatorHelperImpl
 
 	@Activate
 	protected void activate(BundleContext bundleContext) {
-		_serviceTrackerMap = ServiceTrackerMapFactory.openSingleValueMap(
+		_serviceTrackerMap = ServiceTrackerMapFactory.openMultiValueMap(
 			bundleContext, CommerceDiscountValidator.class,
-			"commerce.discount.validator.key",
-			ServiceTrackerCustomizerFactory.
-				<CommerceDiscountValidator>serviceWrapper(bundleContext));
+			"(commerce.discount.validator.type=*)",
+			new PropertyServiceReferenceMapper<>(
+				"commerce.discount.validator.type"),
+			new CommerceDiscountValidatorServiceReferenceComparator());
 	}
 
 	@Deactivate
@@ -113,44 +109,36 @@ public class CommerceDiscountValidatorHelperImpl
 	private List<CommerceDiscountValidator> _getCommerceDiscountValidators(
 		String... types) {
 
-		List<ServiceWrapper<CommerceDiscountValidator>>
-			commerceDiscountValidatorServiceWrappers = ListUtil.fromCollection(
-				_serviceTrackerMap.values());
+		List<CommerceDiscountValidator> commerceDiscountValidators =
+			new ArrayList<>();
 
-		Collections.sort(
-			commerceDiscountValidatorServiceWrappers,
-			_commerceDiscountValidatorServiceWrapperPriorityComparator);
+		if (ArrayUtil.isEmpty(types)) {
+			for (List<CommerceDiscountValidator>
+					typeCommerceDiscountValidators :
+						_serviceTrackerMap.values()) {
 
-		return TransformUtil.transform(
-			commerceDiscountValidatorServiceWrappers,
-			commerceDiscountValidatorServiceWrapper -> {
-				if (ArrayUtil.isEmpty(types)) {
-					return commerceDiscountValidatorServiceWrapper.getService();
-				}
+				commerceDiscountValidators.addAll(
+					typeCommerceDiscountValidators);
+			}
 
-				Map<String, Object>
-					commerceDiscountValidatorServiceWrapperProperties =
-						commerceDiscountValidatorServiceWrapper.getProperties();
+			return commerceDiscountValidators;
+		}
 
-				Object valueObject =
-					commerceDiscountValidatorServiceWrapperProperties.get(
-						"commerce.discount.validator.type");
+		for (String type : types) {
+			List<CommerceDiscountValidator> typeCommerceDiscountValidators =
+				_serviceTrackerMap.getService(type);
 
-				String value = GetterUtil.getString(valueObject);
+			if (typeCommerceDiscountValidators == null) {
+				continue;
+			}
 
-				if (!ArrayUtil.contains(types, value)) {
-					return null;
-				}
+			commerceDiscountValidators.addAll(typeCommerceDiscountValidators);
+		}
 
-				return commerceDiscountValidatorServiceWrapper.getService();
-			});
+		return commerceDiscountValidators;
 	}
 
-	private static final Comparator<ServiceWrapper<CommerceDiscountValidator>>
-		_commerceDiscountValidatorServiceWrapperPriorityComparator =
-			new CommerceDiscountValidatorServiceWrapperPriorityComparator();
-
-	private ServiceTrackerMap<String, ServiceWrapper<CommerceDiscountValidator>>
+	private ServiceTrackerMap<String, List<CommerceDiscountValidator>>
 		_serviceTrackerMap;
 
 }
