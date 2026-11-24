@@ -155,7 +155,6 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
-import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.BundleContextTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -2629,10 +2628,10 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 	private void _testGetSiteSitePageSitePagesPageWithSiteTemplate()
 		throws Exception {
 
-		_layoutSetPrototype = LayoutTestUtil.addLayoutSetPrototype(
-			RandomTestUtil.randomString());
+		LayoutSetPrototype layoutSetPrototype =
+			LayoutTestUtil.addLayoutSetPrototype(RandomTestUtil.randomString());
 
-		Group group = _layoutSetPrototype.getGroup();
+		Group group = layoutSetPrototype.getGroup();
 
 		Layout childLayout = LayoutTestUtil.addTypePortletLayout(group, true);
 		Layout parentLayout = LayoutTestUtil.addTypePortletLayout(group, true);
@@ -2954,15 +2953,15 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 	}
 
 	private void _testGetSiteSitePagesPageWithSiteTemplate() throws Exception {
-		_layoutSetPrototype = LayoutTestUtil.addLayoutSetPrototype(
-			RandomTestUtil.randomString());
+		LayoutSetPrototype layoutSetPrototype =
+			LayoutTestUtil.addLayoutSetPrototype(RandomTestUtil.randomString());
 
 		try (PropsTemporarySwapper propsTemporarySwapper =
 				new PropsTemporarySwapper(
 					FeatureFlagConstants.getKey("LPD-38869"),
 					Boolean.FALSE.toString())) {
 
-			Group group = _layoutSetPrototype.getGroup();
+			Group group = layoutSetPrototype.getGroup();
 
 			Layout layout = LayoutTestUtil.addTypePortletLayout(group, true);
 
@@ -4149,15 +4148,15 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 	}
 
 	private void _testPostSiteSitePageWithSiteTemplate() throws Exception {
-		_layoutSetPrototype = LayoutTestUtil.addLayoutSetPrototype(
-			RandomTestUtil.randomString());
+		LayoutSetPrototype layoutSetPrototype =
+			LayoutTestUtil.addLayoutSetPrototype(RandomTestUtil.randomString());
 
 		try (PropsTemporarySwapper propsTemporarySwapper =
 				new PropsTemporarySwapper(
 					FeatureFlagConstants.getKey("LPD-38869"),
 					Boolean.FALSE.toString())) {
 
-			Group group = _layoutSetPrototype.getGroup();
+			Group group = layoutSetPrototype.getGroup();
 
 			SitePage sitePage = sitePageResource.postSiteSitePage(
 				group.getExternalReferenceCode(), true,
@@ -5632,15 +5631,15 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 	}
 
 	private void _testPutSiteSitePageWithSiteTemplate() throws Exception {
-		_layoutSetPrototype = LayoutTestUtil.addLayoutSetPrototype(
-			RandomTestUtil.randomString());
+		LayoutSetPrototype layoutSetPrototype =
+			LayoutTestUtil.addLayoutSetPrototype(RandomTestUtil.randomString());
 
 		try (PropsTemporarySwapper propsTemporarySwapper =
 				new PropsTemporarySwapper(
 					FeatureFlagConstants.getKey("LPD-38869"),
 					Boolean.FALSE.toString())) {
 
-			Group group = _layoutSetPrototype.getGroup();
+			Group group = layoutSetPrototype.getGroup();
 
 			SitePage randomSitePage = _getRandomSitePage(
 				ServiceContextTestUtil.getServiceContext(
@@ -6234,9 +6233,6 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 
 	@Inject
 	private LayoutSEOEntryLocalService _layoutSEOEntryLocalService;
-
-	@DeleteAfterTestRun
-	private LayoutSetPrototype _layoutSetPrototype;
 
 	@Inject
 	private LayoutStructureProvider _layoutStructureProvider;
