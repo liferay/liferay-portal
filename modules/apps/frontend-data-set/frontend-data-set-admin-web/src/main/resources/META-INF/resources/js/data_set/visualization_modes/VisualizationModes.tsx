@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import ClayAlert from '@clayui/alert';
 import ClayBreadcrumb from '@clayui/breadcrumb';
 import {ClayButtonWithIcon} from '@clayui/button';
 import ClayIcon from '@clayui/icon';
@@ -21,6 +20,11 @@ import {
 	FUZZY_OPTIONS,
 } from '../../utils/constants';
 import getDataSetResourceURL from '../../utils/getDataSetResourceURL';
+import {
+	getClientExtensionSections,
+	getSectionFields,
+	hasMissingRequiredSections,
+} from '../../utils/getVisualizationModeSections';
 import getVisualizationModes, {
 	getMappedVisualizationModeNames,
 	serializeVisualizationModes,
@@ -30,6 +34,7 @@ import openDefaultSuccessToast from '../../utils/openDefaultSuccessToast';
 import {IDataSetVisualizationMode} from '../../utils/types';
 import {IDataSetSectionProps} from '../DataSet';
 import Cards from './modes/Cards';
+import ClientExtensionVisualizationMode from './modes/ClientExtensionVisualizationMode';
 import List from './modes/List';
 import Table from './modes/Table';
 
@@ -38,6 +43,7 @@ interface IVisualizationModeItem extends IDataSetVisualizationMode {
 	externalReferenceCode: string;
 	lastEnabled: boolean;
 	missingFields: boolean;
+	missingRequiredSections: boolean;
 	onEdit: () => void;
 	onToggle: () => Promise<void>;
 	toggleDisabled: boolean;
@@ -51,20 +57,6 @@ const VISUALIZATION_MODE_COMPONENT_MAP: {
 	list: List,
 	table: Table,
 };
-
-function ClientExtensionVisualizationMode() {
-	return (
-		<ClayAlert
-			displayType="info"
-			title={`${Liferay.Language.get('info')}:`}
-			variant="stripe"
-		>
-			{Liferay.Language.get(
-				'this-visualization-mode-is-provided-by-a-client-extension-and-receives-all-the-fields-of-each-item'
-			)}
-		</ClayAlert>
-	);
-}
 
 function EditCell({item}: {item: IVisualizationModeItem}) {
 	const label = Liferay.Util.sub(Liferay.Language.get('edit-x'), item.label);
@@ -112,6 +104,12 @@ function NameCell({
 			{item.missingFields && (
 				<ClayLabel className="ml-2" displayType="warning">
 					{Liferay.Language.get('no-fields-assigned')}
+				</ClayLabel>
+			)}
+
+			{item.missingRequiredSections && (
+				<ClayLabel className="ml-2" displayType="warning">
+					{Liferay.Language.get('required-elements-not-assigned')}
 				</ClayLabel>
 			)}
 		</>
@@ -260,7 +258,7 @@ export default function VisualizationModes(props: IDataSetSectionProps) {
 		const names = order.split(',');
 
 		// The order only lists the visible rows while searching, so they take
-		// the slots the visible rows held and the hidden ones stay in place
+		// the sections the visible rows held and the hidden ones stay in place
 
 		const reorderedVisualizationModes = names
 			.map((name) =>
@@ -315,6 +313,16 @@ export default function VisualizationModes(props: IDataSetSectionProps) {
 					!mappedVisualizationModeNames.includes(
 						visualizationMode.name
 					),
+				missingRequiredSections:
+					visualizationMode.enabled &&
+					visualizationMode.clientExtension &&
+					hasMissingRequiredSections(
+						getSectionFields(dataSet, visualizationMode.name),
+						getClientExtensionSections(
+							visualizationModeClientExtensions,
+							visualizationMode.name
+						)
+					),
 				onEdit: () =>
 					setActiveVisualizationModeName(visualizationMode.name),
 				onToggle: () => toggleVisualizationMode(visualizationMode.name),
@@ -349,15 +357,14 @@ export default function VisualizationModes(props: IDataSetSectionProps) {
 	}
 
 	const ActiveVisualizationModeComponent = activeVisualizationMode
-		? VISUALIZATION_MODE_COMPONENT_MAP[activeVisualizationMode.name] ||
-			ClientExtensionVisualizationMode
+		? VISUALIZATION_MODE_COMPONENT_MAP[activeVisualizationMode.name]
 		: null;
 
 	return (
 		<ClayLayout.ContainerFluid className="mt-3 visualization-modes">
 			<ClayBreadcrumb className="my-2" items={breadcrumbItems} />
 
-			{activeVisualizationMode && ActiveVisualizationModeComponent ? (
+			{activeVisualizationMode ? (
 				<ClayLayout.Sheet className="visualization-mode-detail">
 					<ClayLayout.SheetHeader className="mb-4">
 						<h2 className="mb-0">
@@ -365,7 +372,14 @@ export default function VisualizationModes(props: IDataSetSectionProps) {
 						</h2>
 					</ClayLayout.SheetHeader>
 
-					<ActiveVisualizationModeComponent {...props} />
+					{ActiveVisualizationModeComponent ? (
+						<ActiveVisualizationModeComponent {...props} />
+					) : (
+						<ClientExtensionVisualizationMode
+							{...props}
+							visualizationModeName={activeVisualizationMode.name}
+						/>
+					)}
 				</ClayLayout.Sheet>
 			) : (
 				<OrderableTable

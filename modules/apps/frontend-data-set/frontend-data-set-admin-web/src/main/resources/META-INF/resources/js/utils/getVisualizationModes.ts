@@ -17,7 +17,7 @@ interface IPersistedVisualizationMode {
 	[key: string]: unknown;
 }
 
-function parseVisualizationModes(
+export function parseVisualizationModes(
 	visualizationModes?: string
 ): IPersistedVisualizationMode[] {
 	if (!visualizationModes) {

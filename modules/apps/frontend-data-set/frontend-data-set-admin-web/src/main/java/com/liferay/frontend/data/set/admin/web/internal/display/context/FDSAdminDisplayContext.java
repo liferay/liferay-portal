@@ -184,6 +184,8 @@ public class FDSAdminDisplayContext {
 			).put(
 				"name",
 				fdsVisualizationModeCET.getName(themeDisplay.getLocale())
+			).put(
+				"sections", fdsVisualizationModeCET.getSections()
 			));
 	}
 

@@ -256,6 +256,7 @@ export interface IVisualizationModeClientExtension {
 	externalReferenceCode: string;
 	icon: string;
 	name: string;
+	sections?: string;
 }
 
 type TLocalizedValue<T> = Liferay.Language.LocalizedValue<T>;
