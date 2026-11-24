@@ -4821,10 +4821,9 @@
 		"to": "${variableName}.isPersonalAccount()"
 	},
 	{
-		"from": "ZipWriterFactory.getZipWriter",
+		"from": "ZipWriter.getZipWriter",
 		"issueKey": "LPD-48770",
-		"newReference": "ZipWriterFactory _zipWriterFactory",
-		"to": "_zipWriterFactory.getZipWriter"
+		"to": "new ZipWriter"
 	},
 	{
 		"from": "AccountConstants.ACCOUNT_TYPE_BUSINESS",
@@ -6561,6 +6560,40 @@
 		"validExtensions": [
 			"json"
 		]
+	},
+	{
+		"classNames": [
+			"ZipReaderFactory"
+		],
+		"from": "regex:(?<![\\w.])(?<variableName>\\w+)\\.getZipReader\\(",
+		"issueKey": "LPD-117105",
+		"newImports": [
+			"com.liferay.portal.kernel.zip.ZipReader"
+		],
+		"to": "new ZipReader("
+	},
+	{
+		"classNames": [
+			"ZipWriterFactory"
+		],
+		"from": "regex:(?<![\\w.])(?<variableName>\\w+)\\.getZipWriter\\(",
+		"issueKey": "LPD-117105",
+		"newImports": [
+			"com.liferay.portal.kernel.zip.ZipWriter"
+		],
+		"to": "new ZipWriter("
+	},
+	{
+		"from": "regex:\\A(?s)(?=.*?(?:\\t@(?:Inject|Reference)\\n)?\\tprivate (?:static )?(?:final )?ZipReaderFactory (\\w+);)(?!(?:.*?\\b\\1\\b){2})(.*?)(?:\\t@(?:Inject|Reference)\\n)?\\tprivate (?:static )?(?:final )?ZipReaderFactory \\1;(?:\\n\\n?)?",
+		"issueKey": "LPD-117105",
+		"skipParametersValidation": true,
+		"to": "$2"
+	},
+	{
+		"from": "regex:\\A(?s)(?=.*?(?:\\t@(?:Inject|Reference)\\n)?\\tprivate (?:static )?(?:final )?ZipWriterFactory (\\w+);)(?!(?:.*?\\b\\1\\b){2})(.*?)(?:\\t@(?:Inject|Reference)\\n)?\\tprivate (?:static )?(?:final )?ZipWriterFactory \\1;(?:\\n\\n?)?",
+		"issueKey": "LPD-117105",
+		"skipParametersValidation": true,
+		"to": "$2"
 	},
 	{
 		"from": "regex:MultiVMPoolUtil\\s*.\\s*getPortalCache\\(\\s*(?<prefixMethodName>[\\s\\S]*?)\\)",

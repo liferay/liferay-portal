@@ -5,18 +5,13 @@
 
 package com.liferay.source.formatter.dependencies.upgrade;
 
-import org.osgi.service.component.annotations.Reference;
-
 /**
  * @author Rubens Soares
  */
 public class LPD_48770 {
 
 	public void method() {
-		_zipWriterFactory.getZipWriter();
+		new ZipWriter();
 	}
-
-	@Reference
-	private ZipWriterFactory _zipWriterFactory;
 
 }

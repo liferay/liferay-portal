@@ -11,7 +11,7 @@ package com.liferay.source.formatter.dependencies.upgrade;
 public class LPD_48770 {
 
 	public void method() {
-		ZipWriterFactory.getZipWriter();
+		ZipWriter.getZipWriter();
 	}
 
 }

@@ -1,0 +1,56 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+package com.liferay.source.formatter.dependencies.upgrade;
+
+import com.liferay.portal.kernel.zip.ZipReader;
+import com.liferay.portal.kernel.zip.ZipWriter;
+
+/**
+ * @author Shuyang Zhou
+ */
+public class LPD_117105 {
+
+	public File exportLAR(String fileName) {
+		ZipWriter zipWriter = new ZipWriter(
+			new File(
+				SystemProperties.get(SystemProperties.TMP_DIR) +
+					StringPool.SLASH + fileName));
+
+		return zipWriter.getFile();
+	}
+
+	public ZipWriter getZipWriter() {
+		ZipWriterFactory zipWriterFactory = _zipWriterFactorySnapshot.get();
+
+		return new ZipWriter();
+	}
+
+	public ZipWriter getZipWriter(PortletDataContext portletDataContext) {
+		ZipWriter zipWriter = portletDataContext.getZipWriter();
+
+		if (zipWriter != null) {
+			return zipWriter;
+		}
+
+		return new ZipWriter();
+	}
+
+	public ZipReader readInputStream(
+		InputStream inputStream, ZipReaderFactory zipReaderFactory) {
+
+		return new ZipReader(inputStream);
+	}
+
+	public void readLAR() throws Exception {
+		try (ZipReader zipReader = new ZipReader(larFile)) {
+			Assert.assertNotNull(zipReader.getEntries());
+		}
+	}
+
+	private static final Snapshot<ZipWriterFactory> _zipWriterFactorySnapshot =
+		new Snapshot<>(LPD_117105.class, ZipWriterFactory.class);
+
+}
