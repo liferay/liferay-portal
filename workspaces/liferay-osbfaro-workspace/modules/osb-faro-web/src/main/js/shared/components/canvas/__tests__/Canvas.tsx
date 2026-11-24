@@ -1,6 +1,6 @@
 import Canvas from '../Canvas';
 import React from 'react';
-import {act, cleanup, render, waitFor} from '@testing-library/react';
+import {act, cleanup, render, screen, waitFor} from '@testing-library/react';
 
 const EMPTY_STATE = {
 	description: 'Drop something here.',
@@ -119,9 +119,9 @@ describe('Canvas.EmptyState', () => {
 		expect(
 			container.querySelector('.canvas-empty-state-idle')
 		).toBeInTheDocument();
-		expect(container.querySelector('.c-empty-state')).not.toHaveClass(
-			'invisible'
-		);
+		expect(
+			screen.getByRole('heading', {name: EMPTY_STATE.title})
+		).toBeInTheDocument();
 	});
 
 	it.each(['dragging', 'over'] as const)(
@@ -134,9 +134,9 @@ describe('Canvas.EmptyState', () => {
 			expect(
 				container.querySelector(`.canvas-empty-state-${dropState}`)
 			).toBeInTheDocument();
-			expect(container.querySelector('.c-empty-state')).toHaveClass(
-				'invisible'
-			);
+			expect(
+				screen.queryByRole('heading', {name: EMPTY_STATE.title})
+			).not.toBeInTheDocument();
 		}
 	);
 });
