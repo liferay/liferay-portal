@@ -307,8 +307,21 @@ public class DepotAssetRendererFactoryWrapper<T>
 	public boolean isSelectable() {
 		Group group = _getGroup(null);
 
-		if ((group != null) && group.isDepot() &&
-			!_depotApplicationController.isClassNameEnabled(
+		if ((group == null) || !group.isDepot()) {
+			return _assetRendererFactory.isSelectable();
+		}
+
+		DepotEntry depotEntry = _depotEntryLocalService.fetchGroupDepotEntry(
+			group.getGroupId());
+
+		if ((depotEntry != null) &&
+			((depotEntry.getType() == DepotConstants.TYPE_PROJECT) ||
+			 (depotEntry.getType() == DepotConstants.TYPE_SPACE))) {
+
+			return _assetRendererFactory.isSelectable();
+		}
+
+		if (!_depotApplicationController.isClassNameEnabled(
 				getClassName(), group.getGroupId())) {
 
 			return false;
