@@ -37,6 +37,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.template.info.item.provider.TemplateInfoItemFieldSetProvider;
@@ -81,10 +82,8 @@ public class ObjectEntryInfoItemFormProviderUtil {
 				objectDefinitionId, objectDefinitionLocalService);
 		}
 
-		List<ObjectRelationship> oneToManyObjectRelationships =
-			objectRelationshipLocalService.getObjectRelationships(
-				objectDefinitionId,
-				ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+		List<ObjectRelationship> objectRelationships = _getObjectRelationships(
+			objectDefinitionId, objectRelationshipLocalService);
 
 		return InfoForm.builder(
 		).infoFieldSetEntry(
@@ -107,8 +106,8 @@ public class ObjectEntryInfoItemFormProviderUtil {
 							currentObjectDefinition,
 							objectDefinitionLocalService,
 							objectFieldInfoFieldConverter,
-							objectRelationshipLocalService,
-							oneToManyObjectRelationships, null));
+							objectRelationshipLocalService, objectRelationships,
+							null));
 				}
 			}
 		).infoFieldSetEntry(
@@ -223,7 +222,7 @@ public class ObjectEntryInfoItemFormProviderUtil {
 		).infoFieldSetEntry(
 			unsafeConsumer -> {
 				for (ObjectRelationship objectRelationship :
-						oneToManyObjectRelationships) {
+						objectRelationships) {
 
 					if (!FeatureFlagManagerUtil.isEnabled(
 							objectDefinition.getCompanyId(), "LPD-60546")) {
@@ -279,12 +278,9 @@ public class ObjectEntryInfoItemFormProviderUtil {
 							objectDefinitionLocalService,
 							objectFieldInfoFieldConverter,
 							objectRelationshipLocalService,
-							objectRelationshipLocalService.
-								getObjectRelationships(
-									relatedObjectDefinition.
-										getObjectDefinitionId(),
-									ObjectRelationshipConstants.
-										TYPE_ONE_TO_MANY),
+							_getObjectRelationships(
+								relatedObjectDefinition.getObjectDefinitionId(),
+								objectRelationshipLocalService),
 							objectDefinition));
 				}
 			}
@@ -539,12 +535,9 @@ public class ObjectEntryInfoItemFormProviderUtil {
 							objectDefinitionLocalService,
 							objectFieldInfoFieldConverter,
 							objectRelationshipLocalService,
-							objectRelationshipLocalService.
-								getObjectRelationships(
-									relatedObjectDefinition.
-										getObjectDefinitionId(),
-									ObjectRelationshipConstants.
-										TYPE_ONE_TO_MANY),
+							_getObjectRelationships(
+								relatedObjectDefinition.getObjectDefinitionId(),
+								objectRelationshipLocalService),
 							objectDefinition));
 				}
 			}
@@ -579,6 +572,19 @@ public class ObjectEntryInfoItemFormProviderUtil {
 		}
 
 		return objectDefinition;
+	}
+
+	private static List<ObjectRelationship> _getObjectRelationships(
+		long objectDefinitionId,
+		ObjectRelationshipLocalService objectRelationshipLocalService) {
+
+		return ListUtil.concat(
+			objectRelationshipLocalService.getObjectRelationships(
+				objectDefinitionId,
+				ObjectRelationshipConstants.TYPE_ONE_TO_MANY),
+			objectRelationshipLocalService.getObjectRelationships(
+				objectDefinitionId,
+				ObjectRelationshipConstants.TYPE_ONE_TO_ONE));
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
