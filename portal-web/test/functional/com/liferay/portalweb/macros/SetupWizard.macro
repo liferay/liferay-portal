@@ -311,18 +311,9 @@ definition {
 
 	@summary = "Assert the default portal name"
 	macro viewDefaultPortalNamePG() {
-		var testRunEnvironment = PropsUtil.get("test.run.environment");
-
-		if (${testRunEnvironment} == "EE") {
-			AssertTextEquals.assertValue(
-				locator1 = "TextInput#PORTAL_NAME",
-				value1 = "Liferay DXP");
-		}
-		else {
-			AssertTextEquals.assertValue(
-				locator1 = "TextInput#PORTAL_NAME",
-				value1 = "Liferay");
-		}
+		AssertTextEquals.assertValue(
+			locator1 = "TextInput#PORTAL_NAME",
+			value1 = "Liferay");
 	}
 
 	@summary = "Assert the populated sample data"
