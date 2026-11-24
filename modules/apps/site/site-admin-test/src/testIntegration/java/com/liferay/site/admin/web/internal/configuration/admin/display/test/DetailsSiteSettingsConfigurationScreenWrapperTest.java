@@ -74,10 +74,9 @@ public class DetailsSiteSettingsConfigurationScreenWrapperTest {
 
 	@Test
 	public void testExportImportProperties() throws Exception {
-		Group sourceGroup = GroupTestUtil.addGroup();
-
 		ConfigurationScreen configurationScreen = _serviceTrackerMap.getService(
 			"site-configuration-details");
+		Group sourceGroup = GroupTestUtil.addGroup();
 
 		Dictionary<String, Object> properties =
 			configurationScreen.exportProperties(sourceGroup.getGroupId());
@@ -144,10 +143,9 @@ public class DetailsSiteSettingsConfigurationScreenWrapperTest {
 	public void testExportPropertiesWhenFeatureFlagIsDisabled()
 		throws Exception {
 
-		Group group = GroupTestUtil.addGroup();
-
 		ConfigurationScreen configurationScreen = _serviceTrackerMap.getService(
 			"site-configuration-details");
+		Group group = GroupTestUtil.addGroup();
 
 		Dictionary<String, Object> properties =
 			configurationScreen.exportProperties(group.getGroupId());
@@ -160,10 +158,9 @@ public class DetailsSiteSettingsConfigurationScreenWrapperTest {
 	public void testImportPropertiesWhenFeatureFlagIsDisabled()
 		throws Exception {
 
-		Group group = GroupTestUtil.addGroup();
-
 		ConfigurationScreen configurationScreen = _serviceTrackerMap.getService(
 			"site-configuration-details");
+		Group group = GroupTestUtil.addGroup();
 
 		configurationScreen.importProperties(
 			HashMapDictionaryBuilder.<String, Object>put(
