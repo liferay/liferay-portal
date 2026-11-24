@@ -13,11 +13,13 @@ import com.liferay.object.service.ObjectEntryFolderLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.module.service.Snapshot;
+import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.site.cms.site.initializer.internal.security.permission.resource.CMSDefaultPermissionObjectEntryModelResourcePermission;
+import com.liferay.site.cms.site.initializer.internal.security.permission.resource.CMSDefaultValueObjectEntryModelResourcePermission;
 
 import java.util.Collections;
 import java.util.List;
@@ -39,40 +41,63 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 	public List<ServiceRegistration<?>> deploy(
 		ObjectDefinition objectDefinition) {
 
-		if (!Objects.equals(
+		String className = objectDefinition.getClassName();
+
+		if (Objects.equals(
 				objectDefinition.getExternalReferenceCode(),
 				"L_CMS_DEFAULT_PERMISSION")) {
 
-			return Collections.emptyList();
+			return ListUtil.fromArray(
+				_bundleContext.registerService(
+					ModelResourcePermission.class,
+					new CMSDefaultPermissionObjectEntryModelResourcePermission(
+						className, _depotEntryLocalService, _groupLocalService,
+						_getModelResourcePermissionSnapshot(className),
+						_objectEntryFolderLocalService,
+						_objectEntryLocalService),
+					HashMapDictionaryBuilder.<String, Object>put(
+						"model.class.name", className
+					).put(
+						"service.ranking", Integer.valueOf(200)
+					).build()));
 		}
 
-		String className = objectDefinition.getClassName();
+		if (Objects.equals(
+				objectDefinition.getExternalReferenceCode(),
+				"L_CMS_DEFAULT_VALUE")) {
 
-		Snapshot<ModelResourcePermission<ObjectEntry>>
-			modelResourcePermissionSnapshot = new Snapshot<>(
-				CMSDefaultPermissionObjectEntryModelResourcePermission.class,
-				Snapshot.cast(ModelResourcePermission.class),
-				StringBundler.concat(
-					"(&(com.liferay.object=true)(model.class.name=", className,
-					"))"));
+			return ListUtil.fromArray(
+				_bundleContext.registerService(
+					ModelResourcePermission.class,
+					new CMSDefaultValueObjectEntryModelResourcePermission(
+						className, _depotEntryLocalService,
+						_getModelResourcePermissionSnapshot(className),
+						_objectEntryFolderLocalService,
+						_objectEntryLocalService),
+					HashMapDictionaryBuilder.<String, Object>put(
+						"model.class.name", className
+					).put(
+						"service.ranking", Integer.valueOf(200)
+					).build()));
+		}
 
-		return ListUtil.fromArray(
-			_bundleContext.registerService(
-				ModelResourcePermission.class,
-				new CMSDefaultPermissionObjectEntryModelResourcePermission(
-					className, _depotEntryLocalService, _groupLocalService,
-					modelResourcePermissionSnapshot,
-					_objectEntryFolderLocalService, _objectEntryLocalService),
-				HashMapDictionaryBuilder.<String, Object>put(
-					"model.class.name", className
-				).put(
-					"service.ranking", Integer.valueOf(200)
-				).build()));
+		return Collections.emptyList();
 	}
 
 	@Activate
 	protected void activate(BundleContext bundleContext) {
 		_bundleContext = bundleContext;
+	}
+
+	private Snapshot<ModelResourcePermission<ObjectEntry>>
+		_getModelResourcePermissionSnapshot(String className) {
+
+		return new Snapshot<>(
+			ObjectDefinitionDeployerImpl.class,
+			Snapshot.cast(ModelResourcePermission.class),
+			StringBundler.concat(
+				"(&(com.liferay.object=true)(model.class.name=",
+				SystemBundleUtil.escapeFilterValue(className), "))"));
 	}
 
 	private BundleContext _bundleContext;
