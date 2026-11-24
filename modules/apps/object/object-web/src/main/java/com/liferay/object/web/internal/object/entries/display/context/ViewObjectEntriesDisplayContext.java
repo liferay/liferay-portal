@@ -13,7 +13,7 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.object.constants.ObjectActionKeys;
 import com.liferay.object.constants.ObjectActionTriggerConstants;
-import com.liferay.object.constants.ObjectRelationshipConstants;
+import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.constants.ObjectWebKeys;
 import com.liferay.object.model.ObjectAction;
 import com.liferay.object.model.ObjectDefinition;
@@ -321,8 +321,8 @@ public class ViewObjectEntriesDisplayContext {
 					_objectDefinition.getObjectDefinitionId())) {
 
 			if (!Objects.equals(
-					ObjectRelationshipConstants.TYPE_ONE_TO_MANY,
-					objectField.getRelationshipType())) {
+					objectField.getBusinessType(),
+					ObjectFieldConstants.BUSINESS_TYPE_RELATIONSHIP)) {
 
 				continue;
 			}
