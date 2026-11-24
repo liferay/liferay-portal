@@ -11,16 +11,16 @@ import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.fragment.model.FragmentEntry;
 import com.liferay.fragment.service.FragmentCollectionLocalService;
 import com.liferay.fragment.service.FragmentEntryLocalService;
+import com.liferay.layout.test.util.ContentLayoutTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
-import com.liferay.layout.util.LayoutServiceContextHelper;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.PortletPreferences;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
+import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.PortletPreferencesLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.portlet.MockLiferayResourceRequest;
 import com.liferay.portal.kernel.test.portlet.MockLiferayResourceResponse;
@@ -29,14 +29,14 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.PortletKeys;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
-import jakarta.servlet.http.HttpServletRequest;
-
-import java.util.Collections;
 import java.util.List;
 
 import org.junit.Assert;
@@ -91,53 +91,41 @@ public class RenderFragmentEntryLinkMVCResourceCommandTest {
 
 		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
 
-		int portletPreferencesCount = _getPortletPreferencesCount();
+		MockHttpServletRequest mockHttpServletRequest =
+			ContentLayoutTestUtil.getMockHttpServletRequest(
+				_companyLocalService.getCompany(_group.getCompanyId()), _group,
+				layout);
 
-		try (AutoCloseable autoCloseable =
-				_layoutServiceContextHelper.getServiceContextAutoCloseable(
-					layout)) {
+		mockHttpServletRequest.setAttribute(
+			"ORIGINAL_HTTP_SERVLET_REQUEST", mockHttpServletRequest);
 
-			ServiceContext layoutServiceContext =
-				ServiceContextThreadLocal.getServiceContext();
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)mockHttpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
 
-			HttpServletRequest httpServletRequest =
-				layoutServiceContext.getRequest();
+		themeDisplay.setRequest(mockHttpServletRequest);
 
-			MockHttpServletRequest mockHttpServletRequest =
-				new MockHttpServletRequest();
+		MockLiferayResourceRequest mockLiferayResourceRequest =
+			new MockLiferayResourceRequest(mockHttpServletRequest);
 
-			for (String name :
-					Collections.list(httpServletRequest.getAttributeNames())) {
+		mockLiferayResourceRequest.addParameter(
+			"fragmentEntryKey", fragmentEntry.getFragmentEntryKey());
+		mockLiferayResourceRequest.addParameter(
+			"groupId", String.valueOf(_group.getGroupId()));
 
-				mockHttpServletRequest.setAttribute(
-					name, httpServletRequest.getAttribute(name));
-			}
+		_mvcResourceCommand.serveResource(
+			mockLiferayResourceRequest, new MockLiferayResourceResponse());
 
-			mockHttpServletRequest.setAttribute(
-				"ORIGINAL_HTTP_SERVLET_REQUEST", mockHttpServletRequest);
+		List<PortletPreferences> portletPreferences =
+			_portletPreferencesLocalService.getPortletPreferences(
+				_group.getGroupId(), PortletKeys.PREFS_OWNER_TYPE_LAYOUT,
+				PortletKeys.PREFS_PLID_SHARED);
 
-			MockLiferayResourceRequest mockLiferayResourceRequest =
-				new MockLiferayResourceRequest(mockHttpServletRequest);
-
-			mockLiferayResourceRequest.addParameter(
-				"fragmentEntryKey", fragmentEntry.getFragmentEntryKey());
-			mockLiferayResourceRequest.addParameter(
-				"groupId", String.valueOf(_group.getGroupId()));
-
-			_mvcResourceCommand.serveResource(
-				mockLiferayResourceRequest, new MockLiferayResourceResponse());
-		}
-
-		Assert.assertEquals(
-			portletPreferencesCount, _getPortletPreferencesCount());
+		Assert.assertTrue(portletPreferences.isEmpty());
 	}
 
-	private int _getPortletPreferencesCount() {
-		List<PortletPreferences> portletPreferencesList =
-			_portletPreferencesLocalService.getPortletPreferencesByPlid(0);
-
-		return portletPreferencesList.size();
-	}
+	@Inject
+	private CompanyLocalService _companyLocalService;
 
 	@Inject
 	private FragmentCollectionLocalService _fragmentCollectionLocalService;
@@ -146,9 +134,6 @@ public class RenderFragmentEntryLinkMVCResourceCommandTest {
 	private FragmentEntryLocalService _fragmentEntryLocalService;
 
 	private Group _group;
-
-	@Inject
-	private LayoutServiceContextHelper _layoutServiceContextHelper;
 
 	@Inject(filter = "mvc.command.name=/style_book/render_fragment_entry_link")
 	private MVCResourceCommand _mvcResourceCommand;
