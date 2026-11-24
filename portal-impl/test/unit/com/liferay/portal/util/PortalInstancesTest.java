@@ -351,11 +351,11 @@ public class PortalInstancesTest {
 			PortalInstances::setCompanyInDeletionProcessWithSafeCloseable,
 			" is already in deletion");
 		_assertUnsupportedOperationException(
-			PortalInstances::setCopyInProcessCompanyIdWithSafeCloseable,
+			this::_addCompanyIdInCopyProcess,
 			PortalInstances::setCompanyInDeletionProcessWithSafeCloseable,
 			" is being copied");
 		_assertUnsupportedOperationException(
-			this::_addCompanyIdInCopyProcess,
+			this::_setCopyInProcessCompanyIdWithSafeCloseable,
 			PortalInstances::setCompanyInDeletionProcessWithSafeCloseable,
 			" is being copied");
 	}
@@ -364,11 +364,11 @@ public class PortalInstancesTest {
 	public void testSetCopyInProcessCompanyIdWithSafeCloseableWhenInProcess() {
 		_assertUnsupportedOperationException(
 			PortalInstances::setCompanyInDeletionProcessWithSafeCloseable,
-			PortalInstances::setCopyInProcessCompanyIdWithSafeCloseable,
+			this::_setCopyInProcessCompanyIdWithSafeCloseable,
 			" is being deleted");
 		_assertUnsupportedOperationException(
 			this::_addCompanyIdInCopyProcess,
-			PortalInstances::setCopyInProcessCompanyIdWithSafeCloseable,
+			this::_setCopyInProcessCompanyIdWithSafeCloseable,
 			" is being copied");
 	}
 
@@ -421,6 +421,13 @@ public class PortalInstancesTest {
 			PortalInstances.class, "_removeCompanyIdInDeletionProcess",
 			new Class<?>[] {long.class, String.class, long.class}, companyId,
 			clusterNodeId, timestamp);
+	}
+
+	private SafeCloseable _setCopyInProcessCompanyIdWithSafeCloseable(
+		long fromCompanyId) {
+
+		return PortalInstances.setCopyInProcessCompanyIdWithSafeCloseable(
+			fromCompanyId, RandomTestUtil.randomLong());
 	}
 
 	private static final Set<String> _aliveClusterNodeIds = new HashSet<>();

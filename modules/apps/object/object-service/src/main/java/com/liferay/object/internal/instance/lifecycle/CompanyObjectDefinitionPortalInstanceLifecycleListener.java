@@ -65,7 +65,7 @@ public class CompanyObjectDefinitionPortalInstanceLifecycleListener
 	@Override
 	public void portalInstancePreregistered(Company company) throws Exception {
 		if (!PropsValues.DATABASE_PARTITION_ENABLED ||
-			!PortalInstances.isCompanyInCopyProcess()) {
+			!PortalInstances.isCompanyInCopyProcess(company.getCompanyId())) {
 
 			return;
 		}
@@ -150,7 +150,7 @@ public class CompanyObjectDefinitionPortalInstanceLifecycleListener
 	@Override
 	public void portalInstanceRegistered(Company company) throws Exception {
 		if (!PropsValues.DATABASE_PARTITION_ENABLED ||
-			!PortalInstances.isCompanyInCopyProcess()) {
+			!PortalInstances.isCompanyInCopyProcess(company.getCompanyId())) {
 
 			return;
 		}

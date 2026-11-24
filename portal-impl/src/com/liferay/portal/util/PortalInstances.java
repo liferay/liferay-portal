@@ -378,6 +378,10 @@ public class PortalInstances {
 		return false;
 	}
 
+	public static boolean isCompanyInCopyProcess(long companyId) {
+		return Objects.equals(_copyInProcessToCompanyId, companyId);
+	}
+
 	public static boolean isCompanyInDeletionProcess(long companyId) {
 		return _isCompanyInProcess(
 			companyId, _companyIdsInDeletionProcess, "deletion");
@@ -439,31 +443,35 @@ public class PortalInstances {
 	}
 
 	public static SafeCloseable setCopyInProcessCompanyIdWithSafeCloseable(
-		long companyId) {
+		long fromCompanyId, long toCompanyId) {
 
 		if (_copyInProcessCompanyId != null) {
 			throw new UnsupportedOperationException(
 				"Copying an instance is already in progress");
 		}
 
-		if (isCompanyInDeletionProcess(companyId)) {
+		if (isCompanyInDeletionProcess(fromCompanyId)) {
 			throw new UnsupportedOperationException(
-				companyId + " is being deleted");
+				fromCompanyId + " is being deleted");
 		}
 
-		if (_isCompanyInProcess(companyId, _companyIdsInCopyProcess, "copy")) {
+		if (_isCompanyInProcess(
+				fromCompanyId, _companyIdsInCopyProcess, "copy")) {
+
 			throw new UnsupportedOperationException(
-				companyId + " is being copied");
+				fromCompanyId + " is being copied");
 		}
 
 		SafeCloseable safeCloseable = _setCompanyInProcessWithSafeCloseable(
-			_addCompanyIdInCopyProcessMethodKey, companyId,
+			_addCompanyIdInCopyProcessMethodKey, fromCompanyId,
 			_companyIdsInCopyProcess, _removeCompanyIdInCopyProcessMethodKey);
 
-		_copyInProcessCompanyId = companyId;
+		_copyInProcessCompanyId = fromCompanyId;
+		_copyInProcessToCompanyId = toCompanyId;
 
 		return () -> {
 			_copyInProcessCompanyId = null;
+			_copyInProcessToCompanyId = null;
 
 			safeCloseable.close();
 		};
@@ -728,6 +736,7 @@ public class PortalInstances {
 	private static final Map<Long, CompanyProcess>
 		_companyIdsInDeletionProcess = new ConcurrentHashMap<>();
 	private static volatile Long _copyInProcessCompanyId;
+	private static volatile Long _copyInProcessToCompanyId;
 	private static Long _importInProcessCompanyId;
 	private static final MethodKey _removeCompanyIdInCopyProcessMethodKey =
 		new MethodKey(

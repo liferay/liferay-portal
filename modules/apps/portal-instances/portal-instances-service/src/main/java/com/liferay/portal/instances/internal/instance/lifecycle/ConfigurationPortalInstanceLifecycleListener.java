@@ -60,7 +60,7 @@ public class ConfigurationPortalInstanceLifecycleListener
 	@Override
 	public void portalInstanceRegistered(Company company) throws Exception {
 		if (!PropsValues.DATABASE_PARTITION_ENABLED ||
-			(!PortalInstances.isCompanyInCopyProcess() &&
+			(!PortalInstances.isCompanyInCopyProcess(company.getCompanyId()) &&
 			 !PortalInstances.isCompanyInImportProcess())) {
 
 			return;

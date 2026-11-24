@@ -620,7 +620,7 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 
 		try (SafeCloseable safeCloseable1 =
 				PortalInstances.setCopyInProcessCompanyIdWithSafeCloseable(
-					fromCompanyId)) {
+					fromCompanyId, toCompanyId)) {
 
 			DBPartitionUtil.copyDBPartition(fromCompanyId, toCompanyId);
 

@@ -318,7 +318,7 @@ public class PortalInstanceCopyResourceTest
 	private void _testPostPortalInstanceCopyInProgress() throws Exception {
 		try (SafeCloseable safeCloseable =
 				PortalInstances.setCopyInProcessCompanyIdWithSafeCloseable(
-					RandomTestUtil.randomLong());
+					RandomTestUtil.randomLong(), RandomTestUtil.randomLong());
 			LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				_CLASS_NAME_PORTAL_INSTANCE_COPY_RESOURCE_IMPL,
 				LoggerTestUtil.ERROR)) {

@@ -1019,7 +1019,7 @@ public class CompanyLocalServiceDBPartitionTest
 
 			SafeCloseable safeCloseable2 =
 				PortalInstances.setCopyInProcessCompanyIdWithSafeCloseable(
-					copiedCompanyId);
+					copiedCompanyId, RandomTestUtil.randomLong());
 
 			safeCloseable2.close();
 		}
@@ -1154,7 +1154,7 @@ public class CompanyLocalServiceDBPartitionTest
 
 			SafeCloseable safeCloseable =
 				PortalInstances.setCopyInProcessCompanyIdWithSafeCloseable(
-					toCompanyId);
+					toCompanyId, RandomTestUtil.randomLong());
 
 			safeCloseable.close();
 		}
@@ -1209,7 +1209,7 @@ public class CompanyLocalServiceDBPartitionTest
 
 			SafeCloseable safeCloseable =
 				PortalInstances.setCopyInProcessCompanyIdWithSafeCloseable(
-					toCompanyId);
+					toCompanyId, RandomTestUtil.randomLong());
 
 			safeCloseable.close();
 		}
