@@ -202,6 +202,8 @@ public class ObjectDefinitionUtil {
 		).put(
 			"CMSDefaultPermission", "/cms/default-permissions"
 		).put(
+			"CMSDefaultValue", "/cms/default-values"
+		).put(
 			"CMSExternalVideo", "/cms/external-videos"
 		).put(
 			"CommerceReturn", "/commerce/returns"
