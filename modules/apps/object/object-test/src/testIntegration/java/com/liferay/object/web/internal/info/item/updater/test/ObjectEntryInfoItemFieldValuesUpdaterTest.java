@@ -49,6 +49,7 @@ import com.liferay.object.related.models.test.util.ObjectEntryTestUtil;
 import com.liferay.object.rest.manager.v1_0.ObjectEntryManager;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryFolderLocalService;
+import com.liferay.object.service.ObjectEntryVersionLocalService;
 import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.service.ObjectFolderLocalService;
 import com.liferay.object.service.ObjectRelationshipLocalService;
@@ -84,6 +85,7 @@ import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.TempFileEntryUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.vulcan.aggregation.Aggregation;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
@@ -251,6 +253,7 @@ public class ObjectEntryInfoItemFieldValuesUpdaterTest
 			true, "/new/folder");
 	}
 
+	@FeatureFlag("LPD-116183")
 	@Test
 	public void testUpdateFromInfoItemFieldValuesWithHierarchy()
 		throws Exception {
@@ -271,6 +274,14 @@ public class ObjectEntryInfoItemFieldValuesUpdaterTest
 			).build());
 
 		Node objectDefinitionRootNode = objectDefinitionTree.getRootNode();
+
+		ObjectDefinition objectDefinitionA =
+			_objectDefinitionLocalService.getObjectDefinition(
+				objectDefinitionRootNode.getPrimaryKey());
+
+		objectDefinitionA.setEnableObjectEntryVersioning(true);
+
+		_objectDefinitionLocalService.updateObjectDefinition(objectDefinitionA);
 
 		TreeTestUtil.createObjectEntryTree(
 			"1", _objectDefinitionLocalService, objectEntryLocalService,
@@ -369,6 +380,10 @@ public class ObjectEntryInfoItemFieldValuesUpdaterTest
 			objectEntryLocalService.fetchObjectEntry(
 				siblingObjectEntryAA1.getObjectEntryId()));
 
+		int objectEntryVersionsCount =
+			_objectEntryVersionLocalService.getObjectEntryVersionsCount(
+				rootObjectEntry.getObjectEntryId());
+
 		_updateFromInfoItemFieldValues(
 			InfoItemFieldValues.builder(
 			).infoFieldValue(
@@ -390,6 +405,10 @@ public class ObjectEntryInfoItemFieldValuesUpdaterTest
 		Assert.assertNull(
 			objectEntryLocalService.fetchObjectEntry(
 				siblingObjectEntryAA1.getObjectEntryId()));
+		Assert.assertEquals(
+			objectEntryVersionsCount + 1,
+			_objectEntryVersionLocalService.getObjectEntryVersionsCount(
+				rootObjectEntry.getObjectEntryId()));
 
 		ObjectEntryTreeFactory objectEntryTreeFactory =
 			new ObjectEntryTreeFactory(
@@ -1450,6 +1469,9 @@ public class ObjectEntryInfoItemFieldValuesUpdaterTest
 
 	@Inject
 	private ObjectEntryFolderLocalService _objectEntryFolderLocalService;
+
+	@Inject
+	private ObjectEntryVersionLocalService _objectEntryVersionLocalService;
 
 	@Inject
 	private ObjectFieldLocalService _objectFieldLocalService;
