@@ -95,10 +95,10 @@ public class RatingsSiteSettingsConfigurationScreenWrapperTest {
 		Dictionary<String, Object> properties =
 			configurationScreen.exportProperties(sourceGroup.getGroupId());
 
-		Assert.assertEquals(1, properties.size());
 		Assert.assertEquals(
 			RatingsType.STACKED_STARS.getValue(),
 			properties.get(_PROPERTY_KEY));
+		Assert.assertEquals(1, properties.size());
 
 		Group targetGroup = GroupTestUtil.addGroup();
 
