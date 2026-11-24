@@ -25,7 +25,7 @@ type GraphqlQuery = {
 
 interface IAutocompleteProps {
 	'aria-invalid'?: boolean;
-	className?: string;
+	'className'?: string;
 
 	/**
 	 * Extra request identity for `paginatedDataSourceFn`, for a caller whose data
@@ -33,16 +33,16 @@ interface IAutocompleteProps {
 	 * field the values are read from). The suggestions are refetched
 	 * whenever it changes; without it, only the query invalidates them.
 	 */
-	dataSourceKey?: string;
-	disabled?: boolean;
-	graphqlQuery?: GraphqlQuery;
-	pageSize?: number;
-	paginatedDataSourceFn?: PaginatedDataSourceFn;
-	placeholder?: string;
-	testId?: string;
-	value: string;
-	onBlur?: React.FocusEventHandler<HTMLInputElement>;
-	onChange?: (value: string) => void;
+	'dataSourceKey'?: string;
+	'disabled'?: boolean;
+	'graphqlQuery'?: GraphqlQuery;
+	'pageSize'?: number;
+	'paginatedDataSourceFn'?: PaginatedDataSourceFn;
+	'placeholder'?: string;
+	'testId'?: string;
+	'value': string;
+	'onBlur'?: React.FocusEventHandler<HTMLInputElement>;
+	'onChange'?: (value: string) => void;
 }
 
 const DEBOUNCE_DELAY = 250;
