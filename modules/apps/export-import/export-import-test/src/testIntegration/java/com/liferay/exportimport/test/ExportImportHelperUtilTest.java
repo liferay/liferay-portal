@@ -69,9 +69,7 @@ import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.kernel.zip.ZipReader;
-import com.liferay.portal.kernel.zip.ZipReaderFactory;
 import com.liferay.portal.kernel.zip.ZipWriter;
-import com.liferay.portal.kernel.zip.ZipWriterFactory;
 import com.liferay.portal.model.impl.PortletImpl;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.FeatureFlags;
@@ -1507,13 +1505,11 @@ public class ExportImportHelperUtilTest {
 		String xml = replaceParameters(
 			getContent("missing_references.txt"), getFileEntry());
 
-		ZipWriter zipWriter = _zipWriterFactory.getZipWriter();
+		ZipWriter zipWriter = new ZipWriter();
 
 		zipWriter.addEntry("/manifest.xml", xml);
 
-		try (ZipReader zipReader = _zipReaderFactory.getZipReader(
-				zipWriter.getFile())) {
-
+		try (ZipReader zipReader = new ZipReader(zipWriter.getFile())) {
 			PortletDataContext portletDataContextImport =
 				PortletDataContextFactoryUtil.createImportPortletDataContext(
 					_liveGroup.getCompanyId(), _liveGroup.getGroupId(),
@@ -1545,15 +1541,13 @@ public class ExportImportHelperUtilTest {
 	private void _testValidateMissingReferencesWithUnknownClassName()
 		throws Exception {
 
-		ZipWriter zipWriter = _zipWriterFactory.getZipWriter();
+		ZipWriter zipWriter = new ZipWriter();
 
 		zipWriter.addEntry(
 			"/manifest.xml",
 			getContent("unknown_class_name_missing_references.txt"));
 
-		try (ZipReader zipReader = _zipReaderFactory.getZipReader(
-				zipWriter.getFile())) {
-
+		try (ZipReader zipReader = new ZipReader(zipWriter.getFile())) {
 			PortletDataContext portletDataContextImport =
 				PortletDataContextFactoryUtil.createImportPortletDataContext(
 					_liveGroup.getCompanyId(), _liveGroup.getGroupId(),
@@ -1602,12 +1596,6 @@ public class ExportImportHelperUtilTest {
 
 	@Inject
 	private StagingGroupHelper _stagingGroupHelper;
-
-	@Inject
-	private ZipReaderFactory _zipReaderFactory;
-
-	@Inject
-	private ZipWriterFactory _zipWriterFactory;
 
 	private static class TestPortletDataHandler extends BasePortletDataHandler {
 

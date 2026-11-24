@@ -86,7 +86,6 @@ import com.liferay.portal.kernel.xml.Node;
 import com.liferay.portal.kernel.xml.SAXReaderUtil;
 import com.liferay.portal.kernel.xml.XPath;
 import com.liferay.portal.kernel.zip.ZipReader;
-import com.liferay.portal.kernel.zip.ZipReaderFactory;
 import com.liferay.segments.model.SegmentsExperience;
 import com.liferay.site.model.adapter.StagedGroup;
 import com.liferay.staging.StagingGroupHelper;
@@ -151,7 +150,7 @@ public class LayoutImportController implements ImportController {
 			LayoutSet layoutSet = _layoutSetLocalService.getLayoutSet(
 				targetGroupId, privateLayout);
 
-			try (ZipReader zipReader = _zipReaderFactory.getZipReader(file)) {
+			try (ZipReader zipReader = new ZipReader(file)) {
 				validateFile(
 					layoutSet.getCompanyId(), targetGroupId,
 					ManifestXMLFilePathUtil.MANIFEST_XML_FILE_PATH,
@@ -199,7 +198,7 @@ public class LayoutImportController implements ImportController {
 				exportImportConfiguration.getExportImportConfigurationId());
 			ExportImportThreadLocal.setLayoutImportInProcess(true);
 
-			try (ZipReader zipReader = _zipReaderFactory.getZipReader(file)) {
+			try (ZipReader zipReader = new ZipReader(file)) {
 				portletDataContext = getPortletDataContext(
 					exportImportConfiguration, zipReader);
 
@@ -284,7 +283,7 @@ public class LayoutImportController implements ImportController {
 
 			MissingReferences missingReferences = null;
 
-			try (ZipReader zipReader = _zipReaderFactory.getZipReader(file)) {
+			try (ZipReader zipReader = new ZipReader(file)) {
 				validateFile(
 					layoutSet.getCompanyId(), targetGroupId,
 					ManifestXMLFilePathUtil.MANIFEST_XML_FILE_PATH,
@@ -1160,8 +1159,5 @@ public class LayoutImportController implements ImportController {
 
 	@Reference
 	private Staging _staging;
-
-	@Reference
-	private ZipReaderFactory _zipReaderFactory;
 
 }

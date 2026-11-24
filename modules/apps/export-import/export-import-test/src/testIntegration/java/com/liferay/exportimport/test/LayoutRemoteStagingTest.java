@@ -49,7 +49,6 @@ import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.kernel.xml.SAXReaderUtil;
 import com.liferay.portal.kernel.zip.ZipReader;
-import com.liferay.portal.kernel.zip.ZipReaderFactory;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -336,7 +335,7 @@ public class LayoutRemoteStagingTest {
 			ExportImportThreadLocal.setPortletStagingInProcess(false);
 		}
 
-		try (ZipReader zipReader = _zipReaderFactory.getZipReader(file)) {
+		try (ZipReader zipReader = new ZipReader(file)) {
 			Document document = SAXReaderUtil.read(
 				zipReader.getEntryAsString("/manifest.xml"));
 
@@ -452,8 +451,5 @@ public class LayoutRemoteStagingTest {
 
 	@Inject
 	private StagingLocalService _stagingLocalService;
-
-	@Inject
-	private ZipReaderFactory _zipReaderFactory;
 
 }

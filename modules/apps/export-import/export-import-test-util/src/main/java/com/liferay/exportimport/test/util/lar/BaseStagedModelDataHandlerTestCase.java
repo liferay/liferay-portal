@@ -55,10 +55,7 @@ import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.kernel.xml.SAXReaderUtil;
 import com.liferay.portal.kernel.zip.ZipReader;
-import com.liferay.portal.kernel.zip.ZipReaderFactory;
 import com.liferay.portal.kernel.zip.ZipWriter;
-import com.liferay.portal.kernel.zip.ZipWriterFactory;
-import com.liferay.portal.test.rule.Inject;
 import com.liferay.ratings.test.util.RatingsTestUtil;
 
 import java.io.File;
@@ -782,7 +779,7 @@ public abstract class BaseStagedModelDataHandlerTestCase {
 	}
 
 	protected void initExport(Group exportGroup) throws Exception {
-		zipWriter = _zipWriterFactory.getZipWriter();
+		zipWriter = new ZipWriter();
 
 		portletDataContext =
 			PortletDataContextFactoryUtil.createExportPortletDataContext(
@@ -1247,7 +1244,7 @@ public abstract class BaseStagedModelDataHandlerTestCase {
 	private ZipReader _getZipReader() throws Exception {
 		File zipFile = zipWriter.getFile();
 
-		ZipReader zipReader = _zipReaderFactory.getZipReader(zipFile);
+		ZipReader zipReader = new ZipReader(zipFile);
 
 		if (zipReader.getEntryAsString("/manifest.xml") != null) {
 			return zipReader;
@@ -1263,13 +1260,7 @@ public abstract class BaseStagedModelDataHandlerTestCase {
 
 		zipWriter.addEntry("/manifest.xml", document.asXML());
 
-		return _zipReaderFactory.getZipReader(zipFile);
+		return new ZipReader(zipFile);
 	}
-
-	@Inject
-	private ZipReaderFactory _zipReaderFactory;
-
-	@Inject
-	private ZipWriterFactory _zipWriterFactory;
 
 }

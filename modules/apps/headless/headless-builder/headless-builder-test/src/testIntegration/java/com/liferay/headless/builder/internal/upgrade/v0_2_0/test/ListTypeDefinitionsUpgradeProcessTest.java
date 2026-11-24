@@ -24,7 +24,6 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.zip.ZipWriter;
-import com.liferay.portal.kernel.zip.ZipWriterFactory;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -211,7 +210,7 @@ public class ListTypeDefinitionsUpgradeProcessTest {
 
 		Enumeration<URL> enumeration = bundle.findEntries(dirName, "*", true);
 
-		ZipWriter zipWriter = _zipWriterFactory.getZipWriter();
+		ZipWriter zipWriter = new ZipWriter();
 
 		if (enumeration != null) {
 			while (enumeration.hasMoreElements()) {
@@ -305,8 +304,5 @@ public class ListTypeDefinitionsUpgradeProcessTest {
 		filter = "component.name=com.liferay.headless.builder.internal.upgrade.registry.HeadlessBuilderUpgradeStepRegistrator"
 	)
 	private UpgradeStepRegistrator _upgradeStepRegistrator;
-
-	@Inject
-	private ZipWriterFactory _zipWriterFactory;
 
 }

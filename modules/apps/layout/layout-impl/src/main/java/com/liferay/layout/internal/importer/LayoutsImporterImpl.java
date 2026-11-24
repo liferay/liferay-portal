@@ -137,7 +137,6 @@ import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.zip.ZipReader;
-import com.liferay.portal.kernel.zip.ZipReaderFactory;
 import com.liferay.segments.service.SegmentsExperienceLocalService;
 import com.liferay.style.book.model.StyleBookEntry;
 import com.liferay.style.book.service.StyleBookEntryLocalService;
@@ -191,7 +190,7 @@ public class LayoutsImporterImpl implements LayoutsImporter {
 		List<LayoutsImporterResultEntry> layoutsImporterResultEntries =
 			new ArrayList<>();
 
-		try (ZipReader zipReader = _zipReaderFactory.getZipReader(file)) {
+		try (ZipReader zipReader = new ZipReader(file)) {
 			_processMasterLayoutLayoutPageTemplateEntries(
 				groupId, layoutsImporterResultEntries, layoutsImportStrategy,
 				preserveItemIds, userId, zipReader);
@@ -290,7 +289,7 @@ public class LayoutsImporterImpl implements LayoutsImporter {
 			long groupId, long layoutPageTemplateCollectionId, File file)
 		throws Exception {
 
-		try (ZipReader zipReader = _zipReaderFactory.getZipReader(file)) {
+		try (ZipReader zipReader = new ZipReader(file)) {
 			List<String> entries = zipReader.getEntries();
 
 			for (String entry : entries) {
@@ -2602,9 +2601,6 @@ public class LayoutsImporterImpl implements LayoutsImporter {
 
 	@Reference
 	private ThemeLocalService _themeLocalService;
-
-	@Reference
-	private ZipReaderFactory _zipReaderFactory;
 
 	private static class Thumbnail {
 

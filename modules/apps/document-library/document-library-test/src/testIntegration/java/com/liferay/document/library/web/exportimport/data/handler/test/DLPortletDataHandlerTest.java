@@ -81,7 +81,6 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.zip.ZipReader;
-import com.liferay.portal.kernel.zip.ZipReaderFactory;
 import com.liferay.portal.kernel.zip.ZipWriter;
 import com.liferay.portal.repository.liferayrepository.LiferayRepository;
 import com.liferay.portal.test.log.LogCapture;
@@ -460,9 +459,7 @@ public class DLPortletDataHandlerTest extends BasePortletDataHandlerTestCase {
 		portletDataContext.setScopeGroupId(_group.getGroupId());
 		portletDataContext.setUserIdStrategy(new TestUserIdStrategy());
 
-		try (ZipReader zipReader = _zipReaderFactory.getZipReader(
-				exportZipWriter.getFile())) {
-
+		try (ZipReader zipReader = new ZipReader(exportZipWriter.getFile())) {
 			portletDataContext.setZipReader(zipReader);
 
 			portletDataContext.clearScopedPrimaryKeys();
@@ -983,9 +980,6 @@ public class DLPortletDataHandlerTest extends BasePortletDataHandlerTestCase {
 	private final Collection
 		<ServiceRegistration<DLExportableRepositoryPublisher>>
 			_serviceRegistrations = new ArrayList<>();
-
-	@Inject
-	private ZipReaderFactory _zipReaderFactory;
 
 	private static class ConstantDLExportableRepositoryPublisher
 		implements DLExportableRepositoryPublisher {

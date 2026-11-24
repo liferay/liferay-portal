@@ -82,7 +82,6 @@ import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.zip.ZipWriter;
-import com.liferay.portal.kernel.zip.ZipWriterFactory;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -1333,7 +1332,7 @@ public class PageTemplatesImporterTest {
 	private File _generateZipFile(String type, Map<String, String> valuesMap)
 		throws Exception {
 
-		ZipWriter zipWriter = _zipWriterFactory.getZipWriter();
+		ZipWriter zipWriter = new ZipWriter();
 
 		Enumeration<URL> enumeration = _bundle.findEntries(
 			StringBundler.concat(
@@ -1779,9 +1778,6 @@ public class PageTemplatesImporterTest {
 		new CopyOnWriteArrayList<>();
 	private String _testPortletName;
 	private User _user;
-
-	@Inject
-	private ZipWriterFactory _zipWriterFactory;
 
 	private class TestPortlet extends GenericPortlet {
 	}

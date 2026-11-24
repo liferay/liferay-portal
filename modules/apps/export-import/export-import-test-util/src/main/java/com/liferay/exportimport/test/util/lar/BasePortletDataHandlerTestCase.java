@@ -31,9 +31,7 @@ import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.kernel.xml.Node;
 import com.liferay.portal.kernel.xml.SAXReader;
 import com.liferay.portal.kernel.zip.ZipReader;
-import com.liferay.portal.kernel.zip.ZipReaderFactory;
 import com.liferay.portal.kernel.zip.ZipWriter;
-import com.liferay.portal.kernel.zip.ZipWriterFactory;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portlet.PortletPreferencesImpl;
 
@@ -194,9 +192,7 @@ public abstract class BasePortletDataHandlerTestCase {
 				}
 			});
 
-		try (ZipReader zipReader = _zipReaderFactory.getZipReader(
-				exportZipWriter.getFile())) {
-
+		try (ZipReader zipReader = new ZipReader(exportZipWriter.getFile())) {
 			portletDataContext.setZipReader(zipReader);
 
 			portletDataContext.clearScopedPrimaryKeys();
@@ -605,7 +601,7 @@ public abstract class BasePortletDataHandlerTestCase {
 
 		addParameters(parameterMap);
 
-		zipWriter = _zipWriterFactory.getZipWriter();
+		zipWriter = new ZipWriter();
 
 		portletDataContext =
 			_portletDataContextFactory.createExportPortletDataContext(
@@ -725,11 +721,5 @@ public abstract class BasePortletDataHandlerTestCase {
 
 	@Inject
 	private SAXReader _saxReader;
-
-	@Inject
-	private ZipReaderFactory _zipReaderFactory;
-
-	@Inject
-	private ZipWriterFactory _zipWriterFactory;
 
 }

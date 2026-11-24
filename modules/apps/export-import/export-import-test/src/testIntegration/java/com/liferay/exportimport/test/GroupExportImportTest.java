@@ -56,7 +56,6 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.zip.ZipReader;
-import com.liferay.portal.kernel.zip.ZipReaderFactory;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
@@ -212,7 +211,7 @@ public class GroupExportImportTest {
 	public void testExportGroupsWithGroupManifest() throws Exception {
 		File file = _exportLayouts(_group);
 
-		try (ZipReader zipReader = _zipReaderFactory.getZipReader(file)) {
+		try (ZipReader zipReader = new ZipReader(file)) {
 			String manifest = _getManifest(
 				zipReader, _getGroupManifestPath(_group));
 
@@ -248,7 +247,7 @@ public class GroupExportImportTest {
 	public void testExportGroupsWithSelectedGroup() throws Exception {
 		File file = _exportLayouts(_group);
 
-		try (ZipReader zipReader = _zipReaderFactory.getZipReader(file)) {
+		try (ZipReader zipReader = new ZipReader(file)) {
 			String manifest = _getManifest(zipReader);
 
 			Assert.assertTrue(manifest.contains("<groups>"));
@@ -268,7 +267,7 @@ public class GroupExportImportTest {
 
 		File file = _exportLayouts(_group);
 
-		try (ZipReader zipReader = _zipReaderFactory.getZipReader(file)) {
+		try (ZipReader zipReader = new ZipReader(file)) {
 			String manifest = _getManifest(zipReader);
 
 			Assert.assertFalse(
@@ -285,7 +284,7 @@ public class GroupExportImportTest {
 	public void testExportGroupsWithoutSelectedGroups() throws Exception {
 		File file = _exportLayouts();
 
-		try (ZipReader zipReader = _zipReaderFactory.getZipReader(file)) {
+		try (ZipReader zipReader = new ZipReader(file)) {
 			String manifest = _getManifest(zipReader);
 
 			Assert.assertFalse(manifest.contains("<groups>"));
@@ -589,7 +588,7 @@ public class GroupExportImportTest {
 	private void _assertExportGroupsIsSkipped(Group group) throws Exception {
 		File file = _exportLayouts(group.getGroupId(), _group);
 
-		try (ZipReader zipReader = _zipReaderFactory.getZipReader(file)) {
+		try (ZipReader zipReader = new ZipReader(file)) {
 			String manifest = _getManifest(zipReader);
 
 			Assert.assertFalse(manifest.contains("<groups>"));
@@ -1005,8 +1004,5 @@ public class GroupExportImportTest {
 
 	@Inject
 	private StyleBookEntryLocalService _styleBookEntryLocalService;
-
-	@Inject
-	private ZipReaderFactory _zipReaderFactory;
 
 }

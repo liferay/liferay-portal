@@ -13,7 +13,7 @@ import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ZipFileTestUtil;
-import com.liferay.portal.kernel.zip.ZipWriterFactory;
+import com.liferay.portal.kernel.zip.ZipWriter;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
@@ -177,7 +177,7 @@ public class ClientExtensionConfigBundleTrackerTest {
 				StringBundler.concat(
 					"com/liferay/portal/k8s/agent/internal/test/dependencies/",
 					dirName, StringPool.SLASH),
-				_bundle, _zipWriterFactory.getZipWriter()));
+				_bundle, new ZipWriter()));
 	}
 
 	private static final String _FACTORY_PID =
@@ -191,8 +191,5 @@ public class ClientExtensionConfigBundleTrackerTest {
 
 	@Inject
 	private ConfigurationAdmin _configurationAdmin;
-
-	@Inject
-	private ZipWriterFactory _zipWriterFactory;
 
 }

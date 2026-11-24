@@ -19,7 +19,6 @@ import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.zip.ZipWriter;
-import com.liferay.portal.kernel.zip.ZipWriterFactory;
 
 import jakarta.portlet.PortletException;
 import jakarta.portlet.ResourceRequest;
@@ -78,7 +77,7 @@ public class ExportFragmentCollectionsMVCResourceCommand
 					getExportableFragmentCollections(
 						exportFragmentCollectionIds);
 
-			ZipWriter zipWriter = _zipWriterFactory.getZipWriter();
+			ZipWriter zipWriter = new ZipWriter();
 
 			for (FragmentCollection fragmentCollection : fragmentCollections) {
 				if ((fragmentCollection.getGroupId() !=
@@ -112,8 +111,5 @@ public class ExportFragmentCollectionsMVCResourceCommand
 		target = "(resource.name=" + FragmentConstants.RESOURCE_NAME + ")"
 	)
 	private PortletResourcePermission _portletResourcePermission;
-
-	@Reference
-	private ZipWriterFactory _zipWriterFactory;
 
 }

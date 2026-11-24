@@ -42,7 +42,7 @@ import com.liferay.portal.kernel.util.ClassUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
-import com.liferay.portal.kernel.zip.ZipWriterFactory;
+import com.liferay.portal.kernel.zip.ZipWriter;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.tools.DBUpgrader;
@@ -417,7 +417,7 @@ public class BatchEngineBundleTrackerTest {
 			StringPool.SLASH);
 
 		return ZipFileTestUtil.toInputStream(
-			basePath, _bundle, _zipWriterFactory.getZipWriter());
+			basePath, _bundle, new ZipWriter());
 	}
 
 	private static StopWatch _originalStopWatch;
@@ -453,9 +453,6 @@ public class BatchEngineBundleTrackerTest {
 
 	@Inject
 	private UserLocalService _userLocalService;
-
-	@Inject
-	private ZipWriterFactory _zipWriterFactory;
 
 	private class BundleBatchEngineUnitWrapper
 		implements BundleBatchEngineUnit {

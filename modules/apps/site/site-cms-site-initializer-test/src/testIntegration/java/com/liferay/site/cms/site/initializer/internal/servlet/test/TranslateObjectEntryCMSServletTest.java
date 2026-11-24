@@ -26,7 +26,6 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.zip.ZipReader;
-import com.liferay.portal.kernel.zip.ZipReaderFactory;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
@@ -302,7 +301,7 @@ public class TranslateObjectEntryCMSServletTest extends BaseCMSServletTestCase {
 		Assert.assertEquals(
 			HttpServletResponse.SC_OK, mockHttpServletResponse.getStatus());
 
-		ZipReader zipReader = _zipReaderFactory.getZipReader(
+		ZipReader zipReader = new ZipReader(
 			new ByteArrayInputStream(
 				mockHttpServletResponse.getContentAsByteArray()));
 
@@ -335,8 +334,5 @@ public class TranslateObjectEntryCMSServletTest extends BaseCMSServletTestCase {
 		filter = "osgi.http.whiteboard.servlet.name=com.liferay.site.cms.site.initializer.internal.servlet.TranslateObjectEntryCMSServlet"
 	)
 	private Servlet _servlet;
-
-	@Inject
-	private ZipReaderFactory _zipReaderFactory;
 
 }

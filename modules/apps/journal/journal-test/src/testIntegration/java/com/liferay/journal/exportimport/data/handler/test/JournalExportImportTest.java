@@ -120,7 +120,6 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.Node;
 import com.liferay.portal.kernel.xml.SAXReaderUtil;
-import com.liferay.portal.kernel.zip.ZipReaderFactory;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LogEntry;
 import com.liferay.portal.test.log.LoggerTestUtil;
@@ -2358,8 +2357,5 @@ public class JournalExportImportTest extends BasePortletExportImportTestCase {
 
 	@Inject
 	private Portal _portal;
-
-	@Inject
-	private ZipReaderFactory _zipReaderFactory;
 
 }

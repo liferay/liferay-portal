@@ -29,7 +29,6 @@ import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.zip.ZipWriter;
-import com.liferay.portal.kernel.zip.ZipWriterFactory;
 import com.liferay.site.staticexport.DisplayPageStaticSiteExportEntry;
 import com.liferay.site.staticexport.LayoutStaticSiteExportEntry;
 import com.liferay.site.staticexport.StaticSiteExport;
@@ -84,7 +83,7 @@ public class StaticSiteExportBackgroundTaskExecutor
 
 		Set<Locale> locales = _getLocales(groupId, taskContextMap);
 
-		ZipWriter zipWriter = _zipWriterFactory.getZipWriter();
+		ZipWriter zipWriter = new ZipWriter();
 
 		try (StaticSiteExport staticSiteExport = _getStaticSiteExport(
 				groupId, layoutIds, locales)) {
@@ -318,8 +317,5 @@ public class StaticSiteExportBackgroundTaskExecutor
 
 	@Reference
 	private StaticSiteExporter _staticSiteExporter;
-
-	@Reference
-	private ZipWriterFactory _zipWriterFactory;
 
 }

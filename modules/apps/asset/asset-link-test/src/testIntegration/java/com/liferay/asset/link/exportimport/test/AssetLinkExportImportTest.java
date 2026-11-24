@@ -39,7 +39,6 @@ import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.zip.ZipReader;
-import com.liferay.portal.kernel.zip.ZipReaderFactory;
 import com.liferay.portal.model.adapter.util.ModelAdapterUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -141,7 +140,7 @@ public class AssetLinkExportImportTest extends BaseExportImportTestCase {
 
 		Assert.assertFalse(assetLinks.toString(), assetLinks.isEmpty());
 
-		try (ZipReader zipReader = _zipReaderFactory.getZipReader(larFile)) {
+		try (ZipReader zipReader = new ZipReader(larFile)) {
 			PortletDataContext portletDataContext = getPortletDataContext(
 				zipReader);
 
@@ -173,7 +172,7 @@ public class AssetLinkExportImportTest extends BaseExportImportTestCase {
 
 		checkAssetLinksInLar(_journalArticle.getArticleResourceUuid());
 
-		try (ZipReader zipReader = _zipReaderFactory.getZipReader(larFile)) {
+		try (ZipReader zipReader = new ZipReader(larFile)) {
 
 			// Journal article should not be in the LAR
 
@@ -219,7 +218,7 @@ public class AssetLinkExportImportTest extends BaseExportImportTestCase {
 
 		checkAssetLinksInLar(_journalArticle.getArticleResourceUuid());
 
-		try (ZipReader zipReader = _zipReaderFactory.getZipReader(larFile)) {
+		try (ZipReader zipReader = new ZipReader(larFile)) {
 
 			// Journal article should be in the LAR
 
@@ -322,7 +321,7 @@ public class AssetLinkExportImportTest extends BaseExportImportTestCase {
 		Assert.assertNotNull(assetLinks);
 		Assert.assertTrue(assetLinks.size() == 2);
 
-		try (ZipReader zipReader = _zipReaderFactory.getZipReader(larFile)) {
+		try (ZipReader zipReader = new ZipReader(larFile)) {
 			PortletDataContext portletDataContext = getPortletDataContext(
 				zipReader);
 
@@ -362,8 +361,5 @@ public class AssetLinkExportImportTest extends BaseExportImportTestCase {
 	private ConfigurationProvider _configurationProvider;
 
 	private JournalArticle _journalArticle;
-
-	@Inject
-	private ZipReaderFactory _zipReaderFactory;
 
 }

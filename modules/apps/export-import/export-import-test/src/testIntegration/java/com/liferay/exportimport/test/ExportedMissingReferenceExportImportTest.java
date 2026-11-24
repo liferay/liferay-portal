@@ -38,8 +38,6 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.kernel.zip.ZipReader;
-import com.liferay.portal.kernel.zip.ZipReaderFactory;
-import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import java.util.ArrayList;
@@ -187,7 +185,7 @@ public class ExportedMissingReferenceExportImportTest
 	}
 
 	protected void assertMissingReferences() throws Exception {
-		try (ZipReader zipReader = _zipReaderFactory.getZipReader(larFile)) {
+		try (ZipReader zipReader = new ZipReader(larFile)) {
 			PortletDataContext portletDataContext =
 				PortletDataContextFactoryUtil.createImportPortletDataContext(
 					TestPropsValues.getCompanyId(), group.getGroupId(),
@@ -362,8 +360,5 @@ public class ExportedMissingReferenceExportImportTest
 	private StagedModelRepository<DummyReference>
 		_dummyReferenceStagedModelRepository;
 	private StagedModelRepository<Dummy> _dummyStagedModelRepository;
-
-	@Inject
-	private ZipReaderFactory _zipReaderFactory;
 
 }

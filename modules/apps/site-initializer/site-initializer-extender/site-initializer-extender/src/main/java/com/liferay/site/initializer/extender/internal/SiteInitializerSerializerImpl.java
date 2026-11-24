@@ -64,9 +64,7 @@ import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.kernel.xml.SAXReader;
 import com.liferay.portal.kernel.zip.ZipReader;
-import com.liferay.portal.kernel.zip.ZipReaderFactory;
 import com.liferay.portal.kernel.zip.ZipWriter;
-import com.liferay.portal.kernel.zip.ZipWriterFactory;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
 import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
@@ -103,7 +101,7 @@ public class SiteInitializerSerializerImpl
 		}
 
 		try {
-			ZipWriter zipWriter = _zipWriterFactory.getZipWriter();
+			ZipWriter zipWriter = new ZipWriter();
 
 			_serializeDDMStructures(groupId, zipWriter);
 			_serializeDDMTemplates(groupId, zipWriter);
@@ -432,7 +430,7 @@ public class SiteInitializerSerializerImpl
 
 		File file = _layoutsExporter.exportLayoutPageTemplateEntries(groupId);
 
-		try (ZipReader zipReader = _zipReaderFactory.getZipReader(file)) {
+		try (ZipReader zipReader = new ZipReader(file)) {
 			for (String name : zipReader.getEntries()) {
 				InputStream inputStream = zipReader.getEntryAsInputStream(name);
 
@@ -455,7 +453,7 @@ public class SiteInitializerSerializerImpl
 					groupId),
 				LayoutUtilityPageEntry.LAYOUT_UTILITY_PAGE_ENTRY_ID_ACCESSOR));
 
-		try (ZipReader zipReader = _zipReaderFactory.getZipReader(file)) {
+		try (ZipReader zipReader = new ZipReader(file)) {
 			for (String name : zipReader.getEntries()) {
 				String fileName = "layout-utility-page-entries/";
 
@@ -890,11 +888,5 @@ public class SiteInitializerSerializerImpl
 
 	@Reference
 	private UserLocalService _userLocalService;
-
-	@Reference
-	private ZipReaderFactory _zipReaderFactory;
-
-	@Reference
-	private ZipWriterFactory _zipWriterFactory;
 
 }

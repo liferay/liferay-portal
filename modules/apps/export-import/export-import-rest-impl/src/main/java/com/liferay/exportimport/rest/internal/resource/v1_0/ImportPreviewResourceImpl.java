@@ -46,7 +46,6 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.zip.ZipReader;
-import com.liferay.portal.kernel.zip.ZipReaderFactory;
 import com.liferay.portal.vulcan.multipart.BinaryFile;
 import com.liferay.portal.vulcan.multipart.MultipartBody;
 
@@ -192,7 +191,7 @@ public class ImportPreviewResourceImpl extends BaseImportPreviewResourceImpl {
 
 		_validateImportFile(file, groupId, layout, portletId);
 
-		try (ZipReader zipReader = _zipReaderFactory.getZipReader(file)) {
+		try (ZipReader zipReader = new ZipReader(file)) {
 			PortletDataContext portletDataContext =
 				_portletDataContextFactory.createImportPortletDataContext(
 					contextCompany.getCompanyId(), groupId, new HashMap<>(),
@@ -413,8 +412,5 @@ public class ImportPreviewResourceImpl extends BaseImportPreviewResourceImpl {
 
 	@Reference
 	private Staging _staging;
-
-	@Reference
-	private ZipReaderFactory _zipReaderFactory;
 
 }

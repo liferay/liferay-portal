@@ -130,9 +130,7 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.zip.ZipReader;
-import com.liferay.portal.kernel.zip.ZipReaderFactory;
 import com.liferay.portal.kernel.zip.ZipWriter;
-import com.liferay.portal.kernel.zip.ZipWriterFactory;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -308,9 +306,9 @@ public class LayoutsImporterTest {
 			},
 			LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE);
 
-		ZipWriter zipWriter = _zipWriterFactory.getZipWriter();
+		ZipWriter zipWriter = new ZipWriter();
 
-		try (ZipReader zipReader = _zipReaderFactory.getZipReader(file)) {
+		try (ZipReader zipReader = new ZipReader(file)) {
 			for (String entry : zipReader.getEntries()) {
 				zipWriter.addEntry(entry, zipReader.getEntryAsString(entry));
 			}
@@ -322,7 +320,7 @@ public class LayoutsImporterTest {
 				LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT);
 		}
 
-		try (ZipReader zipReader = _zipReaderFactory.getZipReader(file)) {
+		try (ZipReader zipReader = new ZipReader(file)) {
 			for (String entry : zipReader.getEntries()) {
 				zipWriter.addEntry(entry, zipReader.getEntryAsString(entry));
 			}
@@ -2154,7 +2152,7 @@ public class LayoutsImporterTest {
 		Enumeration<URL> enumeration = bundle.findEntries(
 			resourcePath, "*", true);
 
-		ZipWriter zipWriter = _zipWriterFactory.getZipWriter();
+		ZipWriter zipWriter = new ZipWriter();
 
 		while (enumeration.hasMoreElements()) {
 			URL url = enumeration.nextElement();
@@ -2702,11 +2700,5 @@ public class LayoutsImporterTest {
 	private StyleBookEntryLocalService _styleBookEntryLocalService;
 
 	private JSONObject _successMessageJSONObject;
-
-	@Inject
-	private ZipReaderFactory _zipReaderFactory;
-
-	@Inject
-	private ZipWriterFactory _zipWriterFactory;
 
 }

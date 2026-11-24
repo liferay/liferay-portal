@@ -49,7 +49,6 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.zip.ZipWriter;
-import com.liferay.portal.kernel.zip.ZipWriterFactory;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
@@ -74,7 +73,7 @@ public class LayoutsExporterImpl implements LayoutsExporter {
 			long[] layoutPageTemplateCollectionIds)
 		throws Exception {
 
-		ZipWriter zipWriter = _zipWriterFactory.getZipWriter();
+		ZipWriter zipWriter = new ZipWriter();
 
 		_exportLayoutPageTemplateCollections(
 			TransformUtil.transformToList(
@@ -92,7 +91,7 @@ public class LayoutsExporterImpl implements LayoutsExporter {
 	public File exportLayoutPageTemplateEntries(long groupId) throws Exception {
 		DTOConverter<LayoutStructure, PageDefinition>
 			pageDefinitionDTOConverter = _getPageDefinitionDTOConverter();
-		ZipWriter zipWriter = _zipWriterFactory.getZipWriter();
+		ZipWriter zipWriter = new ZipWriter();
 
 		List<LayoutPageTemplateEntry> layoutPageTemplateEntries =
 			_layoutPageTemplateEntryService.getLayoutPageTemplateEntries(
@@ -164,7 +163,7 @@ public class LayoutsExporterImpl implements LayoutsExporter {
 
 		DTOConverter<LayoutStructure, PageDefinition>
 			pageDefinitionDTOConverter = _getPageDefinitionDTOConverter();
-		ZipWriter zipWriter = _zipWriterFactory.getZipWriter();
+		ZipWriter zipWriter = new ZipWriter();
 
 		for (long layoutPageTemplateEntryId : layoutPageTemplateEntryIds) {
 			LayoutPageTemplateEntry layoutPageTemplateEntry =
@@ -201,7 +200,7 @@ public class LayoutsExporterImpl implements LayoutsExporter {
 
 		DTOConverter<LayoutStructure, PageDefinition>
 			pageDefinitionDTOConverter = _getPageDefinitionDTOConverter();
-		ZipWriter zipWriter = _zipWriterFactory.getZipWriter();
+		ZipWriter zipWriter = new ZipWriter();
 
 		for (long layoutUtilityPageEntryId : layoutUtilityPageEntryIds) {
 			LayoutUtilityPageEntry layoutUtilityPageEntry =
@@ -270,7 +269,7 @@ public class LayoutsExporterImpl implements LayoutsExporter {
 
 		DTOConverter<LayoutStructure, PageDefinition>
 			pageDefinitionDTOConverter = _getPageDefinitionDTOConverter();
-		ZipWriter zipWriter = _zipWriterFactory.getZipWriter();
+		ZipWriter zipWriter = new ZipWriter();
 
 		for (long layoutPageTemplateEntryId : layoutPageTemplateEntryIds) {
 			LayoutPageTemplateEntry layoutPageTemplateEntry =
@@ -682,8 +681,5 @@ public class LayoutsExporterImpl implements LayoutsExporter {
 
 	@Reference
 	private LayoutUtilityPageEntryService _layoutUtilityPageEntryService;
-
-	@Reference
-	private ZipWriterFactory _zipWriterFactory;
 
 }

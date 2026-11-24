@@ -75,7 +75,6 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.zip.ZipWriter;
-import com.liferay.portal.kernel.zip.ZipWriterFactory;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -718,7 +717,7 @@ public class MasterLayoutsImporterTest {
 	}
 
 	private File _generateZipFile(String testCaseName) throws Exception {
-		ZipWriter zipWriter = _zipWriterFactory.getZipWriter();
+		ZipWriter zipWriter = new ZipWriter();
 
 		Enumeration<URL> enumeration = _bundle.findEntries(
 			StringBundler.concat(
@@ -950,9 +949,6 @@ public class MasterLayoutsImporterTest {
 	private ServiceRegistration<FragmentCollectionContributor>
 		_serviceRegistration;
 	private User _user;
-
-	@Inject
-	private ZipWriterFactory _zipWriterFactory;
 
 	private static class TestMasterPageFragmentCollectionContributor
 		implements FragmentCollectionContributor {

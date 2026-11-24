@@ -18,7 +18,6 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.zip.ZipWriter;
-import com.liferay.portal.kernel.zip.ZipWriterFactory;
 import com.liferay.portal.language.override.constants.PLOPortletKeys;
 import com.liferay.portal.language.override.model.PLOEntry;
 import com.liferay.portal.language.override.provider.PLOOriginalTranslationProvider;
@@ -136,7 +135,7 @@ public class PLOPortlet extends MVCPortlet {
 		throws PortletException {
 
 		try {
-			ZipWriter zipWriter = _zipWriterFactory.getZipWriter();
+			ZipWriter zipWriter = new ZipWriter();
 
 			Map<String, List<PLOEntry>> keyPLOEntries = new HashMap<>();
 
@@ -224,8 +223,5 @@ public class PLOPortlet extends MVCPortlet {
 	private Portal _portal;
 
 	private ViewDisplayContextFactory _viewDisplayContextFactory;
-
-	@Reference
-	private ZipWriterFactory _zipWriterFactory;
 
 }

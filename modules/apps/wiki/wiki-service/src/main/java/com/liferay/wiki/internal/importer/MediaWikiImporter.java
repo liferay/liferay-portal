@@ -44,7 +44,6 @@ import com.liferay.portal.kernel.xml.DocumentException;
 import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.kernel.xml.SAXReaderUtil;
 import com.liferay.portal.kernel.zip.ZipReader;
-import com.liferay.portal.kernel.zip.ZipReaderFactory;
 import com.liferay.wiki.configuration.WikiGroupServiceConfiguration;
 import com.liferay.wiki.constants.WikiConstants;
 import com.liferay.wiki.constants.WikiPageConstants;
@@ -341,9 +340,7 @@ public class MediaWikiImporter {
 			return;
 		}
 
-		try (ZipReader zipReader = _zipReaderFactory.getZipReader(
-				imagesInputStream)) {
-
+		try (ZipReader zipReader = new ZipReader(imagesInputStream)) {
 			List<String> entries = zipReader.getEntries();
 
 			if (entries == null) {
@@ -819,6 +816,5 @@ public class MediaWikiImporter {
 	private final UserLocalService _userLocalService;
 	private final WikiPageLocalService _wikiPageLocalService;
 	private final WikiPageTitleValidator _wikiPageTitleValidator;
-	private final ZipReaderFactory _zipReaderFactory;
 
 }

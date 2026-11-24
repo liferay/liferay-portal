@@ -84,7 +84,6 @@ import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.kernel.zip.ZipWriter;
-import com.liferay.portal.kernel.zip.ZipWriterFactory;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
@@ -2212,7 +2211,7 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 
 		_userLocalService.addRoleUser(role.getRoleId(), user.getUserId());
 
-		ZipWriter zipWriter = _zipWriterFactory.getZipWriter();
+		ZipWriter zipWriter = new ZipWriter();
 
 		zipWriter.addEntry(
 			"site-initializer/user-roles.json",
@@ -2610,9 +2609,6 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 
 	@Inject
 	private UserLocalService _userLocalService;
-
-	@Inject
-	private ZipWriterFactory _zipWriterFactory;
 
 	private class TestSiteInitializer implements SiteInitializer {
 

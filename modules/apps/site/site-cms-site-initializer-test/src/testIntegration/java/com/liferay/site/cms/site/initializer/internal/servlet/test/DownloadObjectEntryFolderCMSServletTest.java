@@ -62,7 +62,6 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.TempFileEntryUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.zip.ZipReader;
-import com.liferay.portal.kernel.zip.ZipReaderFactory;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
@@ -234,7 +233,7 @@ public class DownloadObjectEntryFolderCMSServletTest
 		Assert.assertEquals(
 			HttpServletResponse.SC_OK, mockHttpServletResponse.getStatus());
 
-		try (ZipReader zipReader = _zipReaderFactory.getZipReader(
+		try (ZipReader zipReader = new ZipReader(
 				new ByteArrayInputStream(
 					mockHttpServletResponse.getContentAsByteArray()))) {
 
@@ -468,7 +467,7 @@ public class DownloadObjectEntryFolderCMSServletTest
 		Assert.assertEquals(
 			HttpServletResponse.SC_OK, mockHttpServletResponse.getStatus());
 
-		try (ZipReader zipReader = _zipReaderFactory.getZipReader(
+		try (ZipReader zipReader = new ZipReader(
 				new ByteArrayInputStream(
 					mockHttpServletResponse.getContentAsByteArray()))) {
 
@@ -722,7 +721,7 @@ public class DownloadObjectEntryFolderCMSServletTest
 			parentObjectEntryFolder.getName(), StringPool.SLASH,
 			childObjectEntryFolder.getName(), StringPool.SLASH);
 
-		try (ZipReader zipReader = _zipReaderFactory.getZipReader(
+		try (ZipReader zipReader = new ZipReader(
 				new ByteArrayInputStream(
 					mockHttpServletResponse.getContentAsByteArray()))) {
 
@@ -797,7 +796,7 @@ public class DownloadObjectEntryFolderCMSServletTest
 				parentObjectEntryFolder.getName(), StringPool.SLASH,
 				childObjectEntryFolder.getName(), StringPool.SLASH);
 
-			try (ZipReader zipReader = _zipReaderFactory.getZipReader(
+			try (ZipReader zipReader = new ZipReader(
 					new ByteArrayInputStream(
 						mockHttpServletResponse.getContentAsByteArray()))) {
 
@@ -856,8 +855,5 @@ public class DownloadObjectEntryFolderCMSServletTest
 
 	@DeleteAfterTestRun
 	private User _user;
-
-	@Inject
-	private ZipReaderFactory _zipReaderFactory;
 
 }

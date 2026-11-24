@@ -85,7 +85,6 @@ import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.zip.ZipWriter;
-import com.liferay.portal.kernel.zip.ZipWriterFactory;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -1575,7 +1574,7 @@ public class ExportImportLayoutPageTemplateEntriesTest {
 			Map<String, String> stringValuesMap)
 		throws Exception {
 
-		ZipWriter zipWriter = _zipWriterFactory.getZipWriter();
+		ZipWriter zipWriter = new ZipWriter();
 
 		Enumeration<URL> enumeration = _bundle.findEntries(
 			StringBundler.concat(
@@ -1921,8 +1920,5 @@ public class ExportImportLayoutPageTemplateEntriesTest {
 
 	@Inject
 	private Portal _portal;
-
-	@Inject
-	private ZipWriterFactory _zipWriterFactory;
 
 }

@@ -36,7 +36,6 @@ import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.zip.ZipReader;
-import com.liferay.portal.kernel.zip.ZipReaderFactory;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -146,9 +145,7 @@ public class ExportFragmentCollectionsMVCResourceCommandTest {
 		try {
 			Files.write(tempFile.toPath(), bytes);
 
-			try (ZipReader zipReader = _zipReaderFactory.getZipReader(
-					tempFile)) {
-
+			try (ZipReader zipReader = new ZipReader(tempFile)) {
 				boolean found = false;
 
 				for (String entry : zipReader.getEntries()) {
@@ -248,8 +245,5 @@ public class ExportFragmentCollectionsMVCResourceCommandTest {
 
 	@Inject(filter = "mvc.command.name=/fragment/export_fragment_collections")
 	private MVCResourceCommand _mvcResourceCommand;
-
-	@Inject
-	private ZipReaderFactory _zipReaderFactory;
 
 }

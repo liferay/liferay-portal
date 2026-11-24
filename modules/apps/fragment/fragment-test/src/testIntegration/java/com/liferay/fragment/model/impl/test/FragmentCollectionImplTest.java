@@ -36,9 +36,7 @@ import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.zip.ZipReader;
-import com.liferay.portal.kernel.zip.ZipReaderFactory;
 import com.liferay.portal.kernel.zip.ZipWriter;
-import com.liferay.portal.kernel.zip.ZipWriterFactory;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PersistenceTestRule;
@@ -197,13 +195,11 @@ public class FragmentCollectionImplTest {
 	@Test
 	@TestInfo("LPD-33704")
 	public void testPopulateZipWriter() throws Exception {
-		ZipWriter zipWriter = _zipWriterFactory.getZipWriter();
+		ZipWriter zipWriter = new ZipWriter();
 
 		_fragmentCollection.populateZipWriter(zipWriter, "test");
 
-		try (ZipReader zipReader = _zipReaderFactory.getZipReader(
-				zipWriter.getFile())) {
-
+		try (ZipReader zipReader = new ZipReader(zipWriter.getFile())) {
 			List<String> entries = zipReader.getEntries();
 
 			for (String entry : entries) {
@@ -236,7 +232,7 @@ public class FragmentCollectionImplTest {
 	public void testPopulateZipWriterMarketplaceFragmentEntries()
 		throws Exception {
 
-		ZipWriter zipWriter = _zipWriterFactory.getZipWriter();
+		ZipWriter zipWriter = new ZipWriter();
 
 		FragmentEntryTestUtil.addFragmentEntry(
 			_fragmentCollection.getFragmentCollectionId());
@@ -254,9 +250,7 @@ public class FragmentCollectionImplTest {
 		marketplaceFragmentEntry.populateZipWriter(
 			zipWriter, RandomTestUtil.randomString());
 
-		try (ZipReader zipReader = _zipReaderFactory.getZipReader(
-				zipWriter.getFile())) {
-
+		try (ZipReader zipReader = new ZipReader(zipWriter.getFile())) {
 			List<String> entries = zipReader.getEntries();
 
 			Assert.assertTrue(entries.isEmpty());
@@ -265,9 +259,7 @@ public class FragmentCollectionImplTest {
 		_fragmentCollection.populateZipWriter(
 			zipWriter, RandomTestUtil.randomString());
 
-		try (ZipReader zipReader = _zipReaderFactory.getZipReader(
-				zipWriter.getFile())) {
-
+		try (ZipReader zipReader = new ZipReader(zipWriter.getFile())) {
 			for (String entry : zipReader.getEntries()) {
 				Assert.assertFalse(
 					entry.contains(marketplaceFragmentEntry.getName()));
@@ -291,11 +283,5 @@ public class FragmentCollectionImplTest {
 
 	@DeleteAfterTestRun
 	private Group _group;
-
-	@Inject
-	private ZipReaderFactory _zipReaderFactory;
-
-	@Inject
-	private ZipWriterFactory _zipWriterFactory;
 
 }

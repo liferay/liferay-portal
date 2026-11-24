@@ -34,9 +34,7 @@ import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.zip.ZipReader;
-import com.liferay.portal.kernel.zip.ZipReaderFactory;
 import com.liferay.portal.kernel.zip.ZipWriter;
-import com.liferay.portal.kernel.zip.ZipWriterFactory;
 import com.liferay.segments.model.SegmentsExperience;
 import com.liferay.segments.service.SegmentsExperienceLocalService;
 import com.liferay.translation.exception.XLIFFFileException;
@@ -160,7 +158,7 @@ public class TranslationManagerImpl implements TranslationManager {
 				PropsValues.DL_CHAR_BLACKLIST),
 			StringPool.DASH, sourceLanguageId, ".zip");
 
-		ZipWriter zipWriter = _zipWriterFactory.getZipWriter(
+		ZipWriter zipWriter = new ZipWriter(
 			new File(_createTempDirectory(), fileName));
 
 		for (long classPK : classPKs) {
@@ -190,9 +188,7 @@ public class TranslationManagerImpl implements TranslationManager {
 				translation.getContentType(), ContentTypes.APPLICATION_ZIP)) {
 
 			try (InputStream inputStream1 = translation.getInputStream()) {
-				try (ZipReader zipReader = _zipReaderFactory.getZipReader(
-						inputStream1)) {
-
+				try (ZipReader zipReader = new ZipReader(inputStream1)) {
 					for (String entry : zipReader.getEntries()) {
 						try (InputStream inputStream2 =
 								zipReader.getEntryAsInputStream(entry)) {
@@ -538,11 +534,5 @@ public class TranslationManagerImpl implements TranslationManager {
 
 	@Reference
 	private TranslationSnapshotProvider _translationSnapshotProvider;
-
-	@Reference
-	private ZipReaderFactory _zipReaderFactory;
-
-	@Reference
-	private ZipWriterFactory _zipWriterFactory;
 
 }

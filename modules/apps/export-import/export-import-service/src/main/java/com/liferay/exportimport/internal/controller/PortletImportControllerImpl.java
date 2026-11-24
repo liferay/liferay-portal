@@ -105,7 +105,6 @@ import com.liferay.portal.kernel.xml.DocumentException;
 import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.kernel.xml.SAXReaderUtil;
 import com.liferay.portal.kernel.zip.ZipReader;
-import com.liferay.portal.kernel.zip.ZipReaderFactory;
 import com.liferay.portlet.PortletPreferencesImpl;
 
 import java.io.File;
@@ -243,7 +242,7 @@ public class PortletImportControllerImpl implements PortletImportController {
 
 			Layout layout = _layoutLocalService.getLayout(targetPlid);
 
-			try (ZipReader zipReader = _zipReaderFactory.getZipReader(file)) {
+			try (ZipReader zipReader = new ZipReader(file)) {
 				validateFile(
 					layout.getCompanyId(), targetGroupId, portletId, zipReader);
 
@@ -288,7 +287,7 @@ public class PortletImportControllerImpl implements PortletImportController {
 
 		PortletDataContext portletDataContext = null;
 
-		try (ZipReader zipReader = _zipReaderFactory.getZipReader(file)) {
+		try (ZipReader zipReader = new ZipReader(file)) {
 			portletDataContext = getPortletDataContext(
 				exportImportConfiguration, zipReader);
 
@@ -849,7 +848,7 @@ public class PortletImportControllerImpl implements PortletImportController {
 
 			MissingReferences missingReferences = null;
 
-			try (ZipReader zipReader = _zipReaderFactory.getZipReader(file)) {
+			try (ZipReader zipReader = new ZipReader(file)) {
 				validateFile(
 					layout.getCompanyId(), targetGroupId, portletId, zipReader);
 
@@ -1611,8 +1610,5 @@ public class PortletImportControllerImpl implements PortletImportController {
 
 	@Reference
 	private UserLocalService _userLocalService;
-
-	@Reference
-	private ZipReaderFactory _zipReaderFactory;
 
 }

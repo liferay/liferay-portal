@@ -21,7 +21,7 @@ import com.liferay.portal.kernel.test.util.ZipFileTestUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.PropsValues;
-import com.liferay.portal.kernel.zip.ZipWriterFactory;
+import com.liferay.portal.kernel.zip.ZipWriter;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
@@ -162,13 +162,10 @@ public class RESTClientTemplateContextContributorTest {
 			basePath,
 			FrameworkUtil.getBundle(
 				RESTClientTemplateContextContributorTest.class),
-			_zipWriterFactory.getZipWriter());
+			new ZipWriter());
 	}
 
 	@Inject
 	private UserLocalService _userLocalService;
-
-	@Inject
-	private ZipWriterFactory _zipWriterFactory;
 
 }

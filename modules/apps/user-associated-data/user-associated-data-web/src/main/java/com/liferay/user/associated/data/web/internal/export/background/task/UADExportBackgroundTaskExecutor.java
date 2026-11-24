@@ -27,9 +27,7 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.SystemProperties;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.zip.ZipReader;
-import com.liferay.portal.kernel.zip.ZipReaderFactory;
 import com.liferay.portal.kernel.zip.ZipWriter;
-import com.liferay.portal.kernel.zip.ZipWriterFactory;
 import com.liferay.user.associated.data.display.UADDisplay;
 import com.liferay.user.associated.data.exporter.UADExporter;
 import com.liferay.user.associated.data.web.internal.registry.UADRegistry;
@@ -122,7 +120,7 @@ public class UADExportBackgroundTaskExecutor
 				continue;
 			}
 
-			try (ZipReader zipReader = _zipReaderFactory.getZipReader(file)) {
+			try (ZipReader zipReader = new ZipReader(file)) {
 				List<String> entries = zipReader.getEntries();
 
 				for (String entry : entries) {
@@ -209,7 +207,7 @@ public class UADExportBackgroundTaskExecutor
 
 		String fileName = sb.toString();
 
-		return _zipWriterFactory.getZipWriter(
+		return new ZipWriter(
 			new File(
 				SystemProperties.get(SystemProperties.TMP_DIR) +
 					StringPool.SLASH + fileName));
@@ -262,11 +260,5 @@ public class UADExportBackgroundTaskExecutor
 
 	@Reference
 	private UserLocalService _userLocalService;
-
-	@Reference
-	private ZipReaderFactory _zipReaderFactory;
-
-	@Reference
-	private ZipWriterFactory _zipWriterFactory;
 
 }

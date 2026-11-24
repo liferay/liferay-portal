@@ -32,7 +32,6 @@ import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.kernel.xml.SAXReaderUtil;
 import com.liferay.portal.kernel.zip.ZipReader;
-import com.liferay.portal.kernel.zip.ZipReaderFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -171,7 +170,7 @@ public class LayoutImportBackgroundTaskExecutor
 
 		boolean privateLayout = false;
 
-		try (ZipReader zipReader = _zipReaderFactory.getZipReader(file)) {
+		try (ZipReader zipReader = new ZipReader(file)) {
 			Document document = SAXReaderUtil.read(
 				zipReader.getEntryAsString("/manifest.xml"));
 
@@ -215,9 +214,6 @@ public class LayoutImportBackgroundTaskExecutor
 
 	@Reference
 	private Language _language;
-
-	@Reference
-	private ZipReaderFactory _zipReaderFactory;
 
 	private class LayoutImportCallable implements Callable<Void> {
 

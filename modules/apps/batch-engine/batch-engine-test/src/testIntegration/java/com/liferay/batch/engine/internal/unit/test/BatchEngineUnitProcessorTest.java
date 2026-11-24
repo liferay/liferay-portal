@@ -25,7 +25,7 @@ import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.ZipFileTestUtil;
-import com.liferay.portal.kernel.zip.ZipWriterFactory;
+import com.liferay.portal.kernel.zip.ZipWriter;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LogEntry;
 import com.liferay.portal.test.log.LoggerTestUtil;
@@ -275,7 +275,7 @@ public class BatchEngineUnitProcessorTest {
 			dirName, StringPool.SLASH);
 
 		return ZipFileTestUtil.toInputStream(
-			basePath, _bundle, _zipWriterFactory.getZipWriter());
+			basePath, _bundle, new ZipWriter());
 	}
 
 	private static final String
@@ -303,8 +303,5 @@ public class BatchEngineUnitProcessorTest {
 
 	@Inject
 	private UserLocalService _userLocalService;
-
-	@Inject
-	private ZipWriterFactory _zipWriterFactory;
 
 }

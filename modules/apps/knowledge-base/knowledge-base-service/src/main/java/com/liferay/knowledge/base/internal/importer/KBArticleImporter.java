@@ -27,7 +27,6 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.zip.ZipReader;
-import com.liferay.portal.kernel.zip.ZipReaderFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -68,9 +67,7 @@ public class KBArticleImporter {
 			throw new KBArticleImportException("Input stream is null");
 		}
 
-		try (ZipReader zipReader = _zipReaderFactory.getZipReader(
-				inputStream)) {
-
+		try (ZipReader zipReader = new ZipReader(inputStream)) {
 			return _processKBArticleFiles(
 				userId, groupId, parentKBFolderId, prioritizeByNumericalPrefix,
 				zipReader, _getMetadata(zipReader), serviceContext);
@@ -339,6 +336,5 @@ public class KBArticleImporter {
 	private final KBArticleLocalService _kbArticleLocalService;
 	private final MarkdownConverter _markdownConverter;
 	private final Portal _portal;
-	private final ZipReaderFactory _zipReaderFactory;
 
 }

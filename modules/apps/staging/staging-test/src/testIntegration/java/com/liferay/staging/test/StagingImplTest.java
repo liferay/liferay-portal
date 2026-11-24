@@ -93,7 +93,6 @@ import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.kernel.xml.SAXReaderUtil;
 import com.liferay.portal.kernel.zip.ZipReader;
-import com.liferay.portal.kernel.zip.ZipReaderFactory;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LogEntry;
 import com.liferay.portal.test.log.LoggerTestUtil;
@@ -816,7 +815,7 @@ public class StagingImplTest {
 
 		File larFile = new File(larFileNames.get(larFileNames.size() - 1));
 
-		try (ZipReader zipReader = _zipReaderFactory.getZipReader(larFile)) {
+		try (ZipReader zipReader = new ZipReader(larFile)) {
 			PortletDataContext portletDataContext =
 				PortletDataContextFactoryUtil.createImportPortletDataContext(
 					_group.getCompanyId(), _group.getGroupId(), parameterMap,
@@ -1704,8 +1703,5 @@ public class StagingImplTest {
 
 	@Inject
 	private StagingLocalService _stagingLocalService;
-
-	@Inject
-	private ZipReaderFactory _zipReaderFactory;
 
 }
