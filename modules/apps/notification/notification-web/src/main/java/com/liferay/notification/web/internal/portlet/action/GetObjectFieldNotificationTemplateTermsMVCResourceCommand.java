@@ -8,7 +8,6 @@ package com.liferay.notification.web.internal.portlet.action;
 import com.liferay.notification.constants.NotificationPortletKeys;
 import com.liferay.notification.term.provider.NotificationTermProvider;
 import com.liferay.notification.term.provider.NotificationTermProviderRegistry;
-import com.liferay.object.constants.ObjectRelationshipConstants;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectRelationship;
 import com.liferay.object.service.ObjectDefinitionLocalService;
@@ -29,7 +28,6 @@ import jakarta.portlet.ResourceRequest;
 import jakarta.portlet.ResourceResponse;
 
 import java.util.Map;
-import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -69,10 +67,7 @@ public class GetObjectFieldNotificationTemplateTermsMVCResourceCommand
 					getObjectRelationshipsByObjectDefinitionId2(
 						objectDefinition.getObjectDefinitionId())) {
 
-			if (!Objects.equals(
-					objectRelationship.getType(),
-					ObjectRelationshipConstants.TYPE_ONE_TO_MANY)) {
-
+			if (!objectRelationship.hasRelationshipObjectField()) {
 				continue;
 			}
 
