@@ -502,7 +502,7 @@ public class ObjectEntryDTOConverter
 		return objectEntry;
 	}
 
-	private void _addManyToOneObjectRelationshipNames(
+	private void _addObjectRelationshipNames(
 		ObjectField objectField, String objectFieldName,
 		ObjectRelationship objectRelationship, long primaryKey,
 		Map<String, UnsafeSupplier<Object, Exception>> unsafeSuppliers,
@@ -528,7 +528,7 @@ public class ObjectEntryDTOConverter
 			objectRelationshipERCObjectFieldName, () -> relatedObjectEntryERC);
 	}
 
-	private void _addManyToOneRelatedObjectEntries(
+	private void _addRelatedObjectEntries(
 			DTOConverterContext dtoConverterContext, String objectFieldName,
 			ObjectRelationship objectRelationship, long primaryKey,
 			Map<String, UnsafeSupplier<Object, Exception>> unsafeSuppliers)
@@ -539,8 +539,7 @@ public class ObjectEntryDTOConverter
 				objectFieldName.lastIndexOf(StringPool.UNDERLINE) + 1),
 			"Id", "");
 
-		String manyToOneRelationshipName = StringUtil.removeLast(
-			objectFieldName, "Id");
+		String relationshipName = StringUtil.removeLast(objectFieldName, "Id");
 
 		AtomicReference<Serializable> relatedObjectEntryAtomicReference =
 			new AtomicReference<>();
@@ -557,11 +556,10 @@ public class ObjectEntryDTOConverter
 					}
 
 					if (!StringUtil.equals(
-							nestedFieldName, manyToOneRelationshipName) &&
-						!StringUtil.equals(
 							nestedFieldName, objectRelationship.getName()) &&
 						!StringUtil.equals(
 							nestedFieldName, relatedObjectDefinitionName) &&
+						!StringUtil.equals(nestedFieldName, relationshipName) &&
 						_log.isWarnEnabled()) {
 
 						_log.warn(
@@ -699,7 +697,7 @@ public class ObjectEntryDTOConverter
 				continue;
 			}
 
-			unsafeSuppliers.put(manyToOneRelationshipName, entry::getValue);
+			unsafeSuppliers.put(relationshipName, entry::getValue);
 		}
 	}
 
@@ -858,39 +856,66 @@ public class ObjectEntryDTOConverter
 								getSystemObjectDefinitionManager(
 									relatedObjectDefinition.getName());
 
-					return () -> TransformUtil.transformToArray(
+					return _getNestedFieldsUnsafeSupplier(
+						objectRelationship,
+						() -> TransformUtil.transformToArray(
+							_getRelatedModels(
+								dtoConverterContext,
+								_getRelatedObjectDefinitionGroupId(
+									groupId, relatedObjectDefinition),
+								objectRelatedModelsProvider, objectRelationship,
+								primaryKey),
+							relatedModel -> _toExtendedEntity(
+								(BaseModel<?>)relatedModel, dtoConverterContext,
+								relatedObjectDefinition,
+								systemObjectDefinitionManager),
+							Object.class));
+				}
+
+				return _getNestedFieldsUnsafeSupplier(
+					objectRelationship,
+					() -> TransformUtil.transformToArray(
 						_getRelatedModels(
 							dtoConverterContext,
 							_getRelatedObjectDefinitionGroupId(
 								groupId, relatedObjectDefinition),
 							objectRelatedModelsProvider, objectRelationship,
 							primaryKey),
-						relatedModel -> _toExtendedEntity(
-							(BaseModel<?>)relatedModel, dtoConverterContext,
-							relatedObjectDefinition,
-							systemObjectDefinitionManager),
-						Object.class);
+						relatedModel -> {
+							com.liferay.object.model.ObjectEntry objectEntry =
+								(com.liferay.object.model.ObjectEntry)
+									relatedModel;
+
+							return toDTO(
+								_getDTOConverterContext(
+									dtoConverterContext,
+									objectEntry.getObjectEntryId()),
+								objectEntry);
+						},
+						ObjectEntry.class));
+			});
+	}
+
+	private UnsafeSupplier<Object, Exception> _getNestedFieldsUnsafeSupplier(
+		ObjectRelationship objectRelationship,
+		UnsafeSupplier<Object[], Exception> unsafeSupplier) {
+
+		if (Objects.equals(
+				objectRelationship.getType(),
+				ObjectRelationshipConstants.TYPE_ONE_TO_ONE)) {
+
+			return () -> {
+				Object[] objects = unsafeSupplier.get();
+
+				if (objects.length == 0) {
+					return null;
 				}
 
-				return () -> TransformUtil.transformToArray(
-					_getRelatedModels(
-						dtoConverterContext,
-						_getRelatedObjectDefinitionGroupId(
-							groupId, relatedObjectDefinition),
-						objectRelatedModelsProvider, objectRelationship,
-						primaryKey),
-					relatedModel -> {
-						com.liferay.object.model.ObjectEntry objectEntry =
-							(com.liferay.object.model.ObjectEntry)relatedModel;
+				return objects[0];
+			};
+		}
 
-						return toDTO(
-							_getDTOConverterContext(
-								dtoConverterContext,
-								objectEntry.getObjectEntryId()),
-							objectEntry);
-					},
-					ObjectEntry.class);
-			});
+		return unsafeSupplier::get;
 	}
 
 	private ObjectDefinition _getObjectDefinition(
@@ -1219,19 +1244,7 @@ public class ObjectEntryDTOConverter
 			}
 
 			if (objectField.compareBusinessType(
-					ObjectFieldConstants.BUSINESS_TYPE_RICH_TEXT)) {
-
-				Serializable finalSerializable = serializable;
-
-				unsafeSuppliers.put(objectFieldName, () -> finalSerializable);
-				unsafeSuppliers.put(
-					objectFieldName + "RawText",
-					() -> HtmlParserUtil.extractText(
-						GetterUtil.getString(finalSerializable)));
-			}
-			else if (Objects.equals(
-						objectField.getRelationshipType(),
-						ObjectRelationshipConstants.TYPE_ONE_TO_MANY)) {
+					ObjectFieldConstants.BUSINESS_TYPE_RELATIONSHIP)) {
 
 				long primaryKey = GetterUtil.getLong(serializable);
 
@@ -1248,14 +1261,25 @@ public class ObjectEntryDTOConverter
 					(!_hasRootModelHierarchyNestedField() ||
 					 !objectRelationship.isEdge())) {
 
-					_addManyToOneRelatedObjectEntries(
+					_addRelatedObjectEntries(
 						dtoConverterContext, objectFieldName,
 						objectRelationship, primaryKey, unsafeSuppliers);
 				}
 
-				_addManyToOneObjectRelationshipNames(
+				_addObjectRelationshipNames(
 					objectField, objectFieldName, objectRelationship,
 					primaryKey, unsafeSuppliers, values);
+			}
+			else if (objectField.compareBusinessType(
+						ObjectFieldConstants.BUSINESS_TYPE_RICH_TEXT)) {
+
+				Serializable finalSerializable = serializable;
+
+				unsafeSuppliers.put(objectFieldName, () -> finalSerializable);
+				unsafeSuppliers.put(
+					objectFieldName + "RawText",
+					() -> HtmlParserUtil.extractText(
+						GetterUtil.getString(finalSerializable)));
 			}
 			else {
 				Serializable finalSerializable = serializable;
