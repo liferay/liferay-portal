@@ -23,7 +23,7 @@ import org.junit.Test;
 public class IndividualSegmentDisplayTest {
 
 	@Test
-	public void testGetReferencedObjects() {
+	public void testIndividualSegmentDisplay() {
 		Map<String, CampaignDisplay> campaignDisplays = _getCampaignDisplays(
 			HashMapBuilder.<String, Object>put(
 				"field-mappings", Collections.emptyList()
