@@ -89,7 +89,7 @@ public interface FreeMarkerEngineConfiguration {
 	public String[] restrictedMethods();
 
 	@Meta.AD(
-		deflt = "enumUtil|httpUtil|httpUtilUnsafe|objectUtil|portletConfig|propsUtil|saxReaderUtil|serviceLocator|staticFieldGetter|staticUtil",
+		deflt = "enumUtil|httpUtil|httpUtilUnsafe|objectUtil|portletConfig|prefsPropsUtil|propsUtil|saxReaderUtil|serviceLocator|staticFieldGetter|staticUtil",
 		name = "restricted-variables", required = false
 	)
 	public String[] restrictedVariables();
