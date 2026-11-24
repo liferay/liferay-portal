@@ -289,7 +289,7 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 			"LPD-107083", "LPD-107084", "LPD-107085", "LPD-107086",
 			"LPD-107087", "LPD-107088", "LPD-107149", "LPD-107185",
 			"LPD-107186", "LPD-107187", "LPD-107188", "LPD-107189",
-			"LPD-107706", "LPD-107754"
+			"LPD-107706", "LPD-107754", "LPD-117504"
 		}
 	)
 	public void testPostSiteFragment() throws Exception {
@@ -2721,6 +2721,8 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		FragmentSet fragmentSet = _randomFragmentSet(
 			fragmentSetExternalReferenceCode);
 
+		fragmentSet.setUuid(RandomTestUtil.randomString());
+
 		fragment.setFragmentSet(fragmentSet);
 
 		fragment.setFragmentSetExternalReferenceCode(
@@ -2736,11 +2738,14 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 				fragmentSet.getExternalReferenceCode(),
 				postFragment.getFragmentSetExternalReferenceCode());
 
-			Assert.assertNotNull(
+			FragmentCollection fragmentCollection =
 				_fragmentCollectionLocalService.
-					fetchFragmentCollectionByExternalReferenceCode(
+					getFragmentCollectionByExternalReferenceCode(
 						fragmentSetExternalReferenceCode,
-						testGroup.getGroupId()));
+						testGroup.getGroupId());
+
+			Assert.assertEquals(
+				fragmentSet.getUuid(), fragmentCollection.getUuid());
 		}
 	}
 
