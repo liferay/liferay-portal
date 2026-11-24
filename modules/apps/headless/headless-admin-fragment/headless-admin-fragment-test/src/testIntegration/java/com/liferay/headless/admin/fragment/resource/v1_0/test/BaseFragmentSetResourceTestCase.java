@@ -193,6 +193,7 @@ public abstract class BaseFragmentSetResourceTestCase {
 		fragmentSet.setExternalReferenceCode(regex);
 		fragmentSet.setKey(regex);
 		fragmentSet.setName(regex);
+		fragmentSet.setUuid(regex);
 
 		String json = FragmentSetSerDes.toJSON(fragmentSet);
 
@@ -204,6 +205,7 @@ public abstract class BaseFragmentSetResourceTestCase {
 		Assert.assertEquals(regex, fragmentSet.getExternalReferenceCode());
 		Assert.assertEquals(regex, fragmentSet.getKey());
 		Assert.assertEquals(regex, fragmentSet.getName());
+		Assert.assertEquals(regex, fragmentSet.getUuid());
 	}
 
 	@Test
@@ -1155,6 +1157,14 @@ public abstract class BaseFragmentSetResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("uuid", additionalAssertFieldName)) {
+				if (fragmentSet.getUuid() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			throw new IllegalArgumentException(
 				"Invalid additional assert field name " +
 					additionalAssertFieldName);
@@ -1367,6 +1377,16 @@ public abstract class BaseFragmentSetResourceTestCase {
 			if (Objects.equals("name", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
 						fragmentSet1.getName(), fragmentSet2.getName())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("uuid", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						fragmentSet1.getUuid(), fragmentSet2.getUuid())) {
 
 					return false;
 				}
@@ -1738,6 +1758,52 @@ public abstract class BaseFragmentSetResourceTestCase {
 			return sb.toString();
 		}
 
+		if (entityFieldName.equals("uuid")) {
+			Object object = fragmentSet.getUuid();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
+		}
+
 		throw new IllegalArgumentException(
 			"Invalid entity field " + entityFieldName);
 	}
@@ -1794,6 +1860,7 @@ public abstract class BaseFragmentSetResourceTestCase {
 				key = StringUtil.toLowerCase(RandomTestUtil.randomString());
 				marketplace = RandomTestUtil.randomBoolean();
 				name = StringUtil.toLowerCase(RandomTestUtil.randomString());
+				uuid = StringUtil.toLowerCase(RandomTestUtil.randomString());
 			}
 		};
 	}
@@ -2042,4 +2109,4 @@ public abstract class BaseFragmentSetResourceTestCase {
 			_fragmentSetResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1631788681
+// LIFERAY-REST-BUILDER-HASH:-1936636647

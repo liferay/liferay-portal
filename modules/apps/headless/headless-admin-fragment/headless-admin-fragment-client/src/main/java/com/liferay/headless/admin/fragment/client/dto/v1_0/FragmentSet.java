@@ -213,6 +213,25 @@ public class FragmentSet implements Cloneable, Serializable {
 
 	protected String name;
 
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
+	}
+
+	public void setUuid(UnsafeSupplier<String, Exception> uuidUnsafeSupplier) {
+		try {
+			uuid = uuidUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String uuid;
+
 	@Override
 	public FragmentSet clone() throws CloneNotSupportedException {
 		return (FragmentSet)super.clone();
@@ -245,4 +264,4 @@ public class FragmentSet implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1029282499
+// LIFERAY-REST-BUILDER-HASH:-1753333267
