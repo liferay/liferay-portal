@@ -1380,6 +1380,10 @@ public class EditAssetListDisplayContext {
 		Group group = GroupLocalServiceUtil.getGroup(
 			assetListEntry.getGroupId());
 
+		if (group.isStagingGroup()) {
+			group = group.getLiveGroup();
+		}
+
 		String groupERC = group.getExternalReferenceCode();
 
 		List<String> audienceEntryERCs = TransformUtil.transform(

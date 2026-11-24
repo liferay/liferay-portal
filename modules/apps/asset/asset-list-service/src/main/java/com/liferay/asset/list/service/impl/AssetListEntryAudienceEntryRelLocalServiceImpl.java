@@ -11,10 +11,17 @@ import com.liferay.asset.list.service.base.AssetListEntryAudienceEntryRelLocalSe
 import com.liferay.asset.list.service.persistence.AssetListEntryAssetEntryRelPersistence;
 import com.liferay.asset.list.service.persistence.AssetListEntryPersistence;
 import com.liferay.asset.list.util.comparator.AssetListEntryAudienceEntryRelPriorityComparator;
+import com.liferay.audiences.exception.NoSuchAudiencesEntryException;
+import com.liferay.audiences.model.AudiencesEntry;
+import com.liferay.audiences.service.AudiencesEntryLocalService;
+import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
@@ -46,6 +53,11 @@ public class AssetListEntryAudienceEntryRelLocalServiceImpl
 		throws PortalException {
 
 		User user = _userLocalService.getUser(userId);
+
+		if (!ExportImportThreadLocal.isImportInProcess()) {
+			_validateAudiencesEntry(
+				audienceEntryERC, user.getCompanyId(), groupId);
+		}
 
 		AssetListEntryAudienceEntryRel assetListEntryAudienceEntryRel =
 			assetListEntryAudienceEntryRelPersistence.create(
@@ -244,12 +256,47 @@ public class AssetListEntryAudienceEntryRelLocalServiceImpl
 		_assetListEntryPersistence.update(assetListEntry);
 	}
 
+	private void _validateAudiencesEntry(
+			String audienceEntryERC, long companyId, long groupId)
+		throws PortalException {
+
+		AudiencesEntry audiencesEntry =
+			_audiencesEntryLocalService.
+				getAudiencesEntryByExternalReferenceCode(
+					audienceEntryERC, companyId);
+
+		List<String> groupERCs = audiencesEntry.getGroupERCs();
+
+		if (groupERCs.isEmpty()) {
+			return;
+		}
+
+		Group group = _groupLocalService.getGroup(groupId);
+
+		if (group.isStagingGroup()) {
+			group = group.getLiveGroup();
+		}
+
+		if (!groupERCs.contains(group.getExternalReferenceCode())) {
+			throw new NoSuchAudiencesEntryException(
+				StringBundler.concat(
+					"No audiences entry exists with the external reference ",
+					"code ", audienceEntryERC, " in group ", groupId));
+		}
+	}
+
 	@Reference
 	private AssetListEntryAssetEntryRelPersistence
 		_assetListEntryAssetEntryRelPersistence;
 
 	@Reference
 	private AssetListEntryPersistence _assetListEntryPersistence;
+
+	@Reference
+	private AudiencesEntryLocalService _audiencesEntryLocalService;
+
+	@Reference
+	private GroupLocalService _groupLocalService;
 
 	@Reference
 	private UserLocalService _userLocalService;
