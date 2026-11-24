@@ -1431,15 +1431,15 @@ public class SourceFormatter {
 				gitWorkingBranchName, "-private", StringPool.BLANK);
 		}
 
-		int prohibitedFileCount = prohibitedFileNames.size();
+		int prohibitedFilesCount = prohibitedFileNames.size();
 
-		StringBundler sb = new StringBundler((prohibitedFileCount * 8) + 3);
+		StringBundler sb = new StringBundler((prohibitedFilesCount * 8) + 3);
 
 		sb.append("Found ");
-		sb.append(prohibitedFileCount);
+		sb.append(prohibitedFilesCount);
 		sb.append(" formatting issues:");
 
-		for (int i = 0; i < prohibitedFileCount; i++) {
+		for (int i = 0; i < prohibitedFilesCount; i++) {
 			sb.append("\n");
 			sb.append(i + 1);
 			sb.append(": ./");
