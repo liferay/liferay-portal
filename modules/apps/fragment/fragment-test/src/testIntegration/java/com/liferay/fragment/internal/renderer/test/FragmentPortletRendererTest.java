@@ -139,7 +139,8 @@ public class FragmentPortletRendererTest {
 	}
 
 	private void _testRenderPortlet(
-			FragmentEntryLink fragmentEntryLink, Layout layout, boolean shared)
+			FragmentEntryLink fragmentEntryLink, Layout layout,
+			boolean sharedPreferences)
 		throws Exception {
 
 		JSONObject editableValuesJSONObject =
@@ -167,7 +168,12 @@ public class FragmentPortletRendererTest {
 					editableValuesJSONObject.getString("portletId"),
 					editableValuesJSONObject.getString("instanceId")));
 
-		Assert.assertEquals(shared, portletPreferences != null);
+		if (sharedPreferences) {
+			Assert.assertNotNull(portletPreferences);
+		}
+		else {
+			Assert.assertNull(portletPreferences);
+		}
 	}
 
 	@Inject
