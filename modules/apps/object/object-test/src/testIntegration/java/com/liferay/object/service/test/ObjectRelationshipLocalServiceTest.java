@@ -2010,12 +2010,12 @@ public class ObjectRelationshipLocalServiceTest {
 				ObjectRelationshipConstants.TYPE_MANY_TO_MANY));
 
 		_testAddObjectRelationshipWithObjectField(
-			ObjectRelationshipConstants.TYPE_ONE_TO_MANY, null);
+			ObjectRelationshipConstants.TYPE_ONE_TO_MANY,
+			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 		_testAddObjectRelationshipWithObjectField(
 			ObjectRelationshipConstants.TYPE_ONE_TO_MANY, StringPool.BLANK);
 		_testAddObjectRelationshipWithObjectField(
-			ObjectRelationshipConstants.TYPE_ONE_TO_MANY,
-			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+			ObjectRelationshipConstants.TYPE_ONE_TO_MANY, null);
 		_testAddObjectRelationshipWithObjectField(
 			ObjectRelationshipConstants.TYPE_ONE_TO_ONE,
 			ObjectRelationshipConstants.TYPE_ONE_TO_ONE);
