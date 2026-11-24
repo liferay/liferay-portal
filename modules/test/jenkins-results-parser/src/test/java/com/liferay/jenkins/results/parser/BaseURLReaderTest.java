@@ -5,9 +5,12 @@
 
 package com.liferay.jenkins.results.parser;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintStream;
 
 import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
@@ -174,18 +177,41 @@ public class BaseURLReaderTest extends com.liferay.jenkins.results.parser.Test {
 	}
 
 	@Test
+	public void testToStringErrorResponse() throws Exception {
+		String errorResponse = RandomTestUtil.randomString();
+
+		String standardOut = _testToStringErrorResponse(
+			new ByteArrayInputStream(errorResponse.getBytes()));
+
+		Assert.assertTrue(
+			standardOut,
+			standardOut.contains("\nError response:\n" + errorResponse));
+
+		String message = RandomTestUtil.randomString();
+
+		standardOut = _testToStringErrorResponse(
+			new InputStream() {
+
+				@Override
+				public int read() throws IOException {
+					throw new IOException(message);
+				}
+
+			});
+
+		Assert.assertTrue(
+			standardOut,
+			standardOut.contains(
+				"\nUnable to read the error response: " + message));
+	}
+
+	@Test
 	public void testToStringFailure() throws Exception {
 		_testToStringFailure(1, IOException.class, 400);
 		_testToStringFailure(_MAX_RETRIES + 1, IOException.class, 403);
 		_testToStringFailure(_MAX_RETRIES + 1, IOException.class, 408);
 
-		RuntimeException runtimeException = _testToStringFailure(
-			1, RuntimeException.class, 422);
-
-		Throwable throwable = runtimeException.getCause();
-
-		Assert.assertTrue(throwable instanceof IOException);
-
+		_testToStringFailure(_MAX_RETRIES + 1, IOException.class, 422);
 		_testToStringFailure(_MAX_RETRIES + 1, IOException.class, 429);
 		_testToStringFailure(_MAX_RETRIES + 1, IOException.class, 500);
 
@@ -270,6 +296,58 @@ public class BaseURLReaderTest extends com.liferay.jenkins.results.parser.Test {
 	}
 
 	@Test
+	public void testToStringUnprocessableContent() throws Exception {
+		List<JenkinsResultsParserUtil.HttpRequestMethod>
+			updatingHttpRequestMethods = Arrays.asList(
+				JenkinsResultsParserUtil.HttpRequestMethod.DELETE,
+				JenkinsResultsParserUtil.HttpRequestMethod.PATCH,
+				JenkinsResultsParserUtil.HttpRequestMethod.POST,
+				JenkinsResultsParserUtil.HttpRequestMethod.PUT);
+
+		for (JenkinsResultsParserUtil.HttpRequestMethod httpRequestMethod :
+				JenkinsResultsParserUtil.HttpRequestMethod.values()) {
+
+			mockURLReaders();
+
+			setURLReaderResponseCode(422, _URL);
+
+			if (!updatingHttpRequestMethods.contains(httpRequestMethod)) {
+				Assert.assertThrows(
+					IOException.class,
+					() -> JenkinsResultsParserUtil.toString(
+						_URL, false, _MAX_RETRIES, httpRequestMethod, null, 0,
+						0, null, false));
+
+				verifyURLReaderAttemptsCount(_MAX_RETRIES + 1, _URL);
+
+				continue;
+			}
+
+			RuntimeException runtimeException = Assert.assertThrows(
+				RuntimeException.class,
+				() -> JenkinsResultsParserUtil.toString(
+					_URL, false, _MAX_RETRIES, httpRequestMethod, null, 0, 0,
+					null, false));
+
+			Throwable throwable = runtimeException.getCause();
+
+			Assert.assertTrue(throwable instanceof IOException);
+
+			verifyURLReaderAttemptsCount(1, _URL);
+		}
+
+		mockURLReaders();
+
+		setURLReaderResponseCode(422, _URL);
+
+		Assert.assertThrows(
+			IOException.class,
+			() -> JenkinsResultsParserUtil.toString(_URL, false, -1, 0, 0));
+
+		verifyURLReaderAttemptsCount(4, _URL);
+	}
+
+	@Test
 	public void testToStringWithEncodedURL() throws Exception {
 		mockURLReaders();
 
@@ -313,6 +391,70 @@ public class BaseURLReaderTest extends com.liferay.jenkins.results.parser.Test {
 				_URL, false, _MAX_RETRIES, 0, 0, false));
 
 		verifyURLReaderAttemptsCount(1, _URL);
+	}
+
+	private String _testToStringErrorResponse(InputStream errorInputStream)
+		throws Exception {
+
+		mockURLReaders();
+
+		String message = "Server returned HTTP response code: 422";
+
+		for (BaseURLReader<?> baseURLReader : getBaseURLReaders()) {
+			Mockito.doAnswer(
+				invocation -> {
+					HttpURLConnection httpURLConnection = Mockito.mock(
+						HttpURLConnection.class);
+
+					Mockito.doReturn(
+						errorInputStream
+					).when(
+						httpURLConnection
+					).getErrorStream();
+
+					Mockito.doThrow(
+						new IOException(message)
+					).when(
+						httpURLConnection
+					).getInputStream();
+
+					Mockito.doReturn(
+						422
+					).when(
+						httpURLConnection
+					).getResponseCode();
+
+					return httpURLConnection;
+				}
+			).when(
+				baseURLReader
+			).openURLConnection(
+				Mockito.any(), Mockito.anyBoolean(), Mockito.any(),
+				Mockito.any(), Mockito.anyBoolean(), Mockito.anyInt(),
+				Mockito.argThat(
+					readURL -> (readURL != null) && readURL.contains(_URL))
+			);
+		}
+
+		PrintStream printStream = System.out;
+
+		ByteArrayOutputStream byteArrayOutputStream =
+			new ByteArrayOutputStream();
+
+		System.setOut(new PrintStream(byteArrayOutputStream, true));
+
+		try {
+			IOException ioException = Assert.assertThrows(
+				IOException.class,
+				() -> JenkinsResultsParserUtil.toString(_URL, false, 0, 0, 0));
+
+			Assert.assertEquals(message, ioException.getMessage());
+		}
+		finally {
+			System.setOut(printStream);
+		}
+
+		return byteArrayOutputStream.toString();
 	}
 
 	private <T extends Throwable> T _testToStringFailure(
