@@ -11,6 +11,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 
 import com.liferay.osb.faro.engine.client.model.Asset;
 import com.liferay.osb.faro.engine.client.model.Author;
+import com.liferay.osb.faro.engine.client.model.Campaign;
 import com.liferay.osb.faro.engine.client.model.CustomEvent;
 import com.liferay.osb.faro.engine.client.model.DXPGroup;
 import com.liferay.osb.faro.engine.client.model.DXPRole;
@@ -84,6 +85,11 @@ public class IndividualSegmentDisplay implements FaroEntityDisplay {
 					referencedObjects, Asset::getId, AssetDisplay::new,
 					"assets",
 					new TypeReference<List<Asset>>() {
+					});
+				_addReferencedObject(
+					referencedObjects, Campaign::getId, CampaignDisplay::new,
+					"campaigns",
+					new TypeReference<List<Campaign>>() {
 					});
 				_addReferencedObject(
 					referencedObjects, CustomEvent::getName,
