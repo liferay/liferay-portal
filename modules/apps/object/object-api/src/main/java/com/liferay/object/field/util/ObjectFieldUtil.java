@@ -12,7 +12,6 @@ import com.liferay.dynamic.data.mapping.expression.DDMExpressionException;
 import com.liferay.dynamic.data.mapping.expression.DDMExpressionFactory;
 import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.constants.ObjectFieldSettingConstants;
-import com.liferay.object.constants.ObjectRelationshipConstants;
 import com.liferay.object.dynamic.data.mapping.expression.ObjectEntryDDMExpressionFieldAccessor;
 import com.liferay.object.entry.util.ObjectEntryThreadLocal;
 import com.liferay.object.exception.ObjectFieldReadOnlyException;
@@ -409,8 +408,8 @@ public class ObjectFieldUtil {
 				objectFieldsMap.remove(objectField.getName());
 			}
 			else if (Objects.equals(
-						objectField.getRelationshipType(),
-						ObjectRelationshipConstants.TYPE_ONE_TO_MANY)) {
+						objectField.getBusinessType(),
+						ObjectFieldConstants.BUSINESS_TYPE_RELATIONSHIP)) {
 
 				String objectRelationshipERCObjectFieldName =
 					ObjectFieldSettingUtil.getValue(
@@ -517,10 +516,7 @@ public class ObjectFieldUtil {
 
 			if (Objects.equals(
 					objectField.getBusinessType(),
-					ObjectFieldConstants.BUSINESS_TYPE_RELATIONSHIP) &&
-				Objects.equals(
-					objectField.getRelationshipType(),
-					ObjectRelationshipConstants.TYPE_ONE_TO_MANY)) {
+					ObjectFieldConstants.BUSINESS_TYPE_RELATIONSHIP)) {
 
 				if (Objects.equals(existingValue, value) ||
 					((existingValue != null) && (value != null) &&
