@@ -114,7 +114,7 @@ public class CampaignFaroController extends BaseFaroController {
 
 		return contactsEngineClient.getCampaignMetrics(
 			faroProjectLocalService.getFaroProjectByGroupId(groupId),
-			accountIds, channelId, rangeEnd, rangeKey, rangeStart);
+			accountIds, channelId, rangeEnd, rangeKey, rangeStart, null);
 	}
 
 	@GET

@@ -204,7 +204,7 @@ public class CampaignFaroControllerTest {
 		Mockito.when(
 			_contactsEngineClient.getCampaignMetrics(
 				_faroProject, accountIds, channelId, rangeEnd, rangeKey,
-				rangeStart)
+				rangeStart, null)
 		).thenReturn(
 			campaignMetrics
 		);

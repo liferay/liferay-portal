@@ -14,6 +14,10 @@ public class CampaignMetric {
 		return _metricType;
 	}
 
+	public Double getPreviousValue() {
+		return _previousValue;
+	}
+
 	public Trend getTrend() {
 		return _trend;
 	}
@@ -26,6 +30,10 @@ public class CampaignMetric {
 		_metricType = metricType;
 	}
 
+	public void setPreviousValue(Double previousValue) {
+		_previousValue = previousValue;
+	}
+
 	public void setTrend(Trend trend) {
 		_trend = trend;
 	}
@@ -35,6 +43,7 @@ public class CampaignMetric {
 	}
 
 	private String _metricType;
+	private Double _previousValue;
 	private Trend _trend;
 	private Double _value;
 

@@ -380,7 +380,8 @@ public interface ContactsEngineClient {
 
 	public List<CampaignMetric> getCampaignMetrics(
 			FaroProject faroProject, String accountIds, long channelId,
-			String rangeEnd, Integer rangeKey, String rangeStart)
+			String rangeEnd, Integer rangeKey, String rangeStart,
+			String selectedMetrics)
 		throws FaroEngineClientException;
 
 	public Results<CampaignName> getCampaignNames(

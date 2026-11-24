@@ -1967,7 +1967,8 @@ public class ContactsEngineClientImpl
 	@Override
 	public List<CampaignMetric> getCampaignMetrics(
 			FaroProject faroProject, String accountIds, long channelId,
-			String rangeEnd, Integer rangeKey, String rangeStart)
+			String rangeEnd, Integer rangeKey, String rangeStart,
+			String selectedMetrics)
 		throws FaroEngineClientException {
 
 		Map<String, Object> uriVariables = getUriVariables(faroProject);
@@ -1988,6 +1989,10 @@ public class ContactsEngineClientImpl
 
 		if (Validator.isNotNull(rangeStart)) {
 			uriVariables.put("rangeStart", rangeStart);
+		}
+
+		if (Validator.isNotNull(selectedMetrics)) {
+			uriVariables.put("selectedMetrics", selectedMetrics);
 		}
 
 		return get(
