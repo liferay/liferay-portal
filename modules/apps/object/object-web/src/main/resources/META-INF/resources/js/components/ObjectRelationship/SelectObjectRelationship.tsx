@@ -62,7 +62,11 @@ export function SelectObjectRelationship({
 				setCreationLanguageId(objectDefinition.defaultLanguageId);
 
 				const objectFieldOptions = objectFields.filter(
-					({objectFieldSettings}) => {
+					({objectFieldSettings, relationshipType}) => {
+						if (relationshipType !== 'oneToMany') {
+							return false;
+						}
+
 						const objectDefinition1ShortName =
 							objectFieldSettings?.find(
 								({name}) =>

@@ -57,7 +57,8 @@ export function AccountRestrictionContainer({
 					field.businessType === 'Relationship' &&
 					field.objectFieldSettings?.find(
 						(fieldSetting) => fieldSetting.value === 'AccountEntry'
-					)
+					) &&
+					field.relationshipType === 'oneToMany'
 				);
 			}
 		);

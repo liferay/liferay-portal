@@ -145,6 +145,7 @@ import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dependency.manager.DependencyManagerSyncUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.log.Log;
@@ -3236,6 +3237,27 @@ public class ObjectDefinitionLocalServiceImpl
 				new ObjectDefinitionAccountEntryRestrictedObjectFieldIdException(),
 				"accountEntryRestrictedObjectFieldId",
 				accountEntryRestrictedObjectFieldId);
+		}
+
+		if (FeatureFlagManagerUtil.isEnabled(
+				objectDefinition.getCompanyId(), "LPD-108620") &&
+			accountEntryRestricted &&
+			(accountEntryRestrictedObjectFieldId > 0)) {
+
+			ObjectField objectField = _objectFieldPersistence.fetchByPrimaryKey(
+				accountEntryRestrictedObjectFieldId);
+
+			if ((objectField != null) &&
+				Validator.isNotNull(objectField.getRelationshipType()) &&
+				!Objects.equals(
+					objectField.getRelationshipType(),
+					ObjectRelationshipConstants.TYPE_ONE_TO_MANY)) {
+
+				_handleException(
+					new ObjectDefinitionAccountEntryRestrictedObjectFieldIdException(),
+					"accountEntryRestrictedObjectFieldId",
+					accountEntryRestrictedObjectFieldId);
+			}
 		}
 
 		if (objectDefinition.isApproved() &&
