@@ -15,18 +15,17 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Locale;
 
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-
 /**
  * @author Luca Pellizzon
  */
-@Component(
-	property = "commerce.payment.engine.method.key=default",
-	service = CommercePaymentRequestProvider.class
-)
 public class DefaultCommercePaymentRequestProvider
 	implements CommercePaymentRequestProvider {
+
+	public DefaultCommercePaymentRequestProvider(
+		CommerceOrderLocalService commerceOrderLocalService) {
+
+		_commerceOrderLocalService = commerceOrderLocalService;
+	}
 
 	@Override
 	public CommercePaymentRequest getCommercePaymentRequest(
@@ -43,7 +42,6 @@ public class DefaultCommercePaymentRequestProvider
 			returnUrl, transactionId);
 	}
 
-	@Reference
-	private CommerceOrderLocalService _commerceOrderLocalService;
+	private final CommerceOrderLocalService _commerceOrderLocalService;
 
 }

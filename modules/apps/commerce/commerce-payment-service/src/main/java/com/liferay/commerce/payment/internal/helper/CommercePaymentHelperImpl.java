@@ -11,6 +11,7 @@ import com.liferay.commerce.model.CommerceOrderItem;
 import com.liferay.commerce.payment.helper.CommercePaymentHelper;
 import com.liferay.commerce.payment.integration.CommercePaymentIntegration;
 import com.liferay.commerce.payment.integration.CommercePaymentIntegrationRegistry;
+import com.liferay.commerce.payment.internal.request.DefaultCommercePaymentRequestProvider;
 import com.liferay.commerce.payment.method.CommercePaymentMethod;
 import com.liferay.commerce.payment.method.CommercePaymentMethodRegistry;
 import com.liferay.commerce.payment.model.CommercePaymentMethodGroupRel;
@@ -150,12 +151,11 @@ public class CommercePaymentHelperImpl implements CommercePaymentHelper {
 		CommercePaymentRequestProvider commercePaymentRequestProvider =
 			_serviceTrackerMap.getService(commercePaymentMethod.getKey());
 
-		if (commercePaymentRequestProvider == null) {
-			commercePaymentRequestProvider = _serviceTrackerMap.getService(
-				"default");
+		if (commercePaymentRequestProvider != null) {
+			return commercePaymentRequestProvider;
 		}
 
-		return commercePaymentRequestProvider;
+		return _defaultCommercePaymentRequestProvider;
 	}
 
 	@Override
@@ -173,6 +173,10 @@ public class CommercePaymentHelperImpl implements CommercePaymentHelper {
 
 	@Activate
 	protected void activate(BundleContext bundleContext) {
+		_defaultCommercePaymentRequestProvider =
+			new DefaultCommercePaymentRequestProvider(
+				_commerceOrderLocalService);
+
 		_serviceTrackerMap = ServiceTrackerMapFactory.openSingleValueMap(
 			bundleContext, CommercePaymentRequestProvider.class,
 			"commerce.payment.engine.method.key");
@@ -276,6 +280,9 @@ public class CommercePaymentHelperImpl implements CommercePaymentHelper {
 
 	@Reference
 	private CommercePaymentMethodRegistry _commercePaymentMethodRegistry;
+
+	private CommercePaymentRequestProvider
+		_defaultCommercePaymentRequestProvider;
 
 	@Reference
 	private Encryptor _encryptor;
