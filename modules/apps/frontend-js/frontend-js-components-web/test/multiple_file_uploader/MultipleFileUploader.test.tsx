@@ -502,6 +502,34 @@ describe('MultipleFileUploader', () => {
 		expect(getByRole('button', {name: 'upload-(1)'})).toBeInTheDocument();
 	});
 
+	it('shows the error of a rejected file selected together with a valid one', async () => {
+		const user = userEvent.setup();
+
+		const {container} = render(
+			<MultipleFileUploader {...DEFAULT_PROPS} maxFileSize={2000} />
+		);
+
+		const input =
+			container.querySelector<HTMLInputElement>('input[type="file"]')!;
+
+		await user.upload(input, [
+			createFile('image1.png', 1024),
+			createFile('image2.png', 3072),
+		]);
+
+		expect(await screen.findByText('image1.png')).toBeInTheDocument();
+
+		expect(
+			screen.getByText(
+				'please-enter-a-file-with-a-valid-file-size-no-larger-than-2000 MB'
+			)
+		).toBeInTheDocument();
+
+		expect(
+			screen.getByRole('button', {name: 'upload-(1)'})
+		).toBeInTheDocument();
+	});
+
 	describe('batch upload', () => {
 		it('uploads all files in parallel by default', async () => {
 			const started: string[] = [];
