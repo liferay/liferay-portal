@@ -88,18 +88,22 @@ describe('WorkspaceList', () => {
 	});
 
 	it('should render an unconfigured WorkspaceList', () => {
-		const {queryAllByText} = render(
+		const {getAllByText} = render(
 			<DefaultComponent accounts={mockAccountWithUnconfiguredList} />
 		);
 
-		expect(queryAllByText('Configuration Required')).toBeTruthy();
+		expect(getAllByText(/^finish setting up workspace$/i)).toHaveLength(
+			mockAccountWithUnconfiguredList.length
+		);
 	});
 
 	it('should render an unconfigured WorkspaceList when the state and groupId is null', () => {
-		const {queryAllByText} = render(
+		const {getAllByText} = render(
 			<DefaultComponent accounts={mockAccountWithNullStateList} />
 		);
 
-		expect(queryAllByText('Configuration Required')).toBeTruthy();
+		expect(getAllByText(/^finish setting up workspace$/i)).toHaveLength(
+			mockAccountWithNullStateList.length
+		);
 	});
 });

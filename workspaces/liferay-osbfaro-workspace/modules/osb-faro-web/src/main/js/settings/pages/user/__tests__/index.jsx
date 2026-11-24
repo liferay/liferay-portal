@@ -45,10 +45,12 @@ describe('UserRoutes', () => {
 			isAdmin: () => true
 		}));
 
-		const {queryAllByText, queryByText} = render(<DefaultComponent />);
+		const {getByRole} = render(<DefaultComponent />);
 
-		expect(queryAllByText(/^manage users$/i)).toBeTruthy();
-		expect(queryByText(/^requests$/i)).toBeTruthy();
+		expect(
+			getByRole('link', {name: /^manage users$/i})
+		).toBeInTheDocument();
+		expect(getByRole('link', {name: /^requests$/i})).toBeInTheDocument();
 	});
 
 	it('if the user is NOT an AC Admin, then the tabs for toggling between users and user requests should NOT render', () => {
@@ -56,13 +58,17 @@ describe('UserRoutes', () => {
 			isAdmin: () => false
 		}));
 
-		const {queryByText} = render(
+		const {queryByRole} = render(
 			<DefaultComponent
 				currentUser={data.getImmutableMock(User, data.mockMemberUser)}
 			/>
 		);
 
-		expect(queryByText('Manager Users')).toBeNull();
-		expect(queryByText(/^requests$/i)).toBeNull();
+		expect(
+			queryByRole('link', {name: /^manage users$/i})
+		).not.toBeInTheDocument();
+		expect(
+			queryByRole('link', {name: /^requests$/i})
+		).not.toBeInTheDocument();
 	});
 });
