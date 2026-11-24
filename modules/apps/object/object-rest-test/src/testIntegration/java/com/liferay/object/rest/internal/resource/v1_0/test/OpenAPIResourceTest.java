@@ -586,6 +586,54 @@ public class OpenAPIResourceTest {
 		Assert.assertFalse(operationJSONObject.has("description"));
 	}
 
+	@FeatureFlag("LPD-108620")
+	@Test
+	public void testGetOpenAPIWithOneToOneObjectRelationship()
+		throws Exception {
+
+		ObjectDefinition childObjectDefinition =
+			ObjectDefinitionTestUtil.publishObjectDefinition(
+				"Object2",
+				Arrays.asList(
+					new TextObjectFieldBuilder(
+					).labelMap(
+						RandomTestUtil.randomLocaleStringMap()
+					).name(
+						"a" + RandomTestUtil.randomString()
+					).build()),
+				ObjectDefinitionConstants.SCOPE_COMPANY);
+
+		_objectDefinitions.add(childObjectDefinition);
+
+		ObjectRelationshipTestUtil.addObjectRelationship(
+			ObjectRelationshipConstants.DELETION_TYPE_PREVENT,
+			_objectDefinition, childObjectDefinition,
+			TestPropsValues.getUserId(), "oneToOneRelationship",
+			ObjectRelationshipConstants.TYPE_ONE_TO_ONE);
+
+		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
+			null, _objectDefinition.getRESTContextPath() + "/openapi.json",
+			Http.Method.GET);
+
+		JSONObject oneToOneRelationshipJSONObject =
+			JSONUtil.getValueAsJSONObject(
+				jsonObject, "JSONObject/components", "JSONObject/schemas",
+				"JSONObject/Object1", "JSONObject/properties",
+				"JSONObject/oneToOneRelationship");
+
+		Assert.assertEquals(
+			"#/components/schemas/" + childObjectDefinition.getShortName(),
+			oneToOneRelationshipJSONObject.getString("$ref"));
+		Assert.assertNotEquals(
+			"array", oneToOneRelationshipJSONObject.getString("type"));
+
+		JSONObject pathsJSONObject = jsonObject.getJSONObject("paths");
+
+		Assert.assertTrue(
+			pathsJSONObject.has(
+				"/{object1Id}/oneToOneRelationship/{object2Id}"));
+	}
+
 	@Test
 	public void testGetOpenAPIWithSystemObjectRelationship() throws Exception {
 		_user = TestPropsValues.getUser();
