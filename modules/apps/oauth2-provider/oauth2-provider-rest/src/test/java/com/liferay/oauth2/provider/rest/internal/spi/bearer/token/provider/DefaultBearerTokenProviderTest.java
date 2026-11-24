@@ -76,6 +76,16 @@ public class DefaultBearerTokenProviderTest {
 		Assert.assertEquals(
 			_TOKEN_KEY_STRING_32_BYTES_HEX + _TOKEN_KEY_STRING_32_BYTES_HEX,
 			_defaultBearerTokenProvider.generateTokenKey(64));
+
+		Mockito.when(
+			SecureRandomUtil.nextLong()
+		).thenReturn(
+			0x0102030405060708L
+		);
+
+		Assert.assertEquals(
+			"0102030405060708",
+			_defaultBearerTokenProvider.generateTokenKey(8));
 	}
 
 	@Test(expected = IllegalArgumentException.class)
