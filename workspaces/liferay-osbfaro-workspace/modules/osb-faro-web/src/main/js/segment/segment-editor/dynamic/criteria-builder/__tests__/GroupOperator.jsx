@@ -1,7 +1,8 @@
 import GroupOperator from '../GroupOperator';
 import React from 'react';
-import {cleanup, fireEvent, render, screen} from '@testing-library/react';
+import {cleanup, render, screen} from '@testing-library/react';
 import {Conjunctions} from '../../utils/constants';
+import {selectPickerOption} from 'test/helpers';
 
 jest.unmock('react-dom');
 
@@ -36,34 +37,20 @@ describe('GroupOperator', () => {
 		).toHaveTextContent(/^any/i);
 	});
 
-	it('should offer the All and Any options', () => {
-		renderOperator();
+	it.each`
+		from                | option      | expected
+		${Conjunctions.And} | ${/^any$/i} | ${Conjunctions.Or}
+		${Conjunctions.Or}  | ${/^all$/i} | ${Conjunctions.And}
+	`(
+		'should call onChange with $expected when $option is chosen',
+		({expected, from, option}) => {
+			const onChange = jest.fn();
 
-		fireEvent.click(screen.getByRole('combobox', {name: /^match logic$/i}));
+			renderOperator({conjunctionName: from, onChange});
 
-		expect(screen.getByRole('option', {name: /^all$/i})).toBeInTheDocument();
-		expect(screen.getByRole('option', {name: /^any$/i})).toBeInTheDocument();
-	});
+			selectPickerOption(/^match logic$/i, option);
 
-	it('should call onChange with the OR conjunction when Any is chosen', () => {
-		const onChange = jest.fn();
-
-		renderOperator({onChange});
-
-		fireEvent.click(screen.getByRole('combobox', {name: /^match logic$/i}));
-		fireEvent.click(screen.getByRole('option', {name: /^any$/i}));
-
-		expect(onChange).toHaveBeenCalledWith(Conjunctions.Or);
-	});
-
-	it('should call onChange with the AND conjunction when All is chosen', () => {
-		const onChange = jest.fn();
-
-		renderOperator({conjunctionName: Conjunctions.Or, onChange});
-
-		fireEvent.click(screen.getByRole('combobox', {name: /^match logic$/i}));
-		fireEvent.click(screen.getByRole('option', {name: /^all$/i}));
-
-		expect(onChange).toHaveBeenCalledWith(Conjunctions.And);
-	});
+			expect(onChange).toHaveBeenCalledWith(expected);
+		}
+	);
 });

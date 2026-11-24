@@ -104,22 +104,7 @@ describe('CriteriaRow', () => {
 		expect(getByRole('button', {name: /^menu$/i})).toBeInTheDocument();
 	});
 
-	it('should render w/ Non-Existent Property message', () => {
-		const {queryByText} = render(
-			<WrapperComponent>
-				<DndProvider backend={HTML5Backend}>
-					<CriteriaRow
-						referencedAssetsIMap={new Map()}
-						referencedPropertiesIMap={new Map()}
-					/>
-				</DndProvider>
-			</WrapperComponent>
-		);
-
-		expect(queryByText(/^attribute no longer exists\.$/i)).toBeTruthy();
-	});
-
-	it('should offer only the delete action when the attribute no longer exists', () => {
+	it('should render w/ Non-Existent Property message and only the delete action', () => {
 		const onDelete = jest.fn();
 
 		const {getByRole, queryByRole} = render(

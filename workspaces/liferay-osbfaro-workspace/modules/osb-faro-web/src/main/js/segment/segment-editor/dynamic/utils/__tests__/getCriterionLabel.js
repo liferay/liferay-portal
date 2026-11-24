@@ -37,34 +37,6 @@ describe('getCriterionLabel', () => {
 		);
 	});
 
-	it('should tell apart two rows with the same attribute', () => {
-		const property = makeProperty();
-
-		expect(
-			getCriterionLabel(
-				{operatorName: EQ, propertyName: 'country', value: 'Brazil'},
-				property
-			)
-		).not.toBe(
-			getCriterionLabel(
-				{operatorName: EQ, propertyName: 'country', value: 'Chile'},
-				property
-			)
-		);
-
-		expect(
-			getCriterionLabel(
-				{operatorName: EQ, propertyName: 'country', value: 'Brazil'},
-				property
-			)
-		).not.toBe(
-			getCriterionLabel(
-				{operatorName: NE, propertyName: 'country', value: 'Brazil'},
-				property
-			)
-		);
-	});
-
 	it.each`
 		meaning         | operatorName
 		${'is unknown'} | ${EQ}

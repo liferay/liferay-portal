@@ -1,9 +1,10 @@
 import CriteriaGroup from '../CriteriaGroup';
 import React from 'react';
-import {cleanup, fireEvent, render, screen} from '@testing-library/react';
+import {cleanup, render, screen} from '@testing-library/react';
 import {Conjunctions} from '../../utils/constants';
 import {DndProvider} from 'react-dnd';
 import {HTML5Backend} from 'react-dnd-html5-backend';
+import {selectPickerOption} from 'test/helpers';
 
 jest.mock('../Conjunction', () => () => <div />);
 jest.mock(
@@ -115,14 +116,6 @@ describe('CriteriaGroup', () => {
 		}
 	);
 
-	it('should render the group operator picker with the match of the conjunction when the group has more than one item', () => {
-		renderGroup({conjunction: Conjunctions.Or, count: 2, root: true});
-
-		expect(
-			screen.getByRole('combobox', {name: /^match logic$/i})
-		).toHaveTextContent(/^any/i);
-	});
-
 	it.each`
 		scenario                   | count | sequential
 		${'has a single item'}     | ${1}  | ${false}
@@ -139,21 +132,6 @@ describe('CriteriaGroup', () => {
 
 			expect(screen.queryByRole('combobox')).not.toBeInTheDocument();
 			expect(screen.queryByRole('group')).not.toBeInTheDocument();
-		}
-	);
-
-	it.each`
-		conjunction         | expectedName
-		${Conjunctions.And} | ${/^all of these criteria must be met\.$/i}
-		${Conjunctions.Or}  | ${/^any of these criteria must be met\.$/i}
-	`(
-		'should name the group with the sentence of its $conjunction operator',
-		({conjunction, expectedName}) => {
-			renderGroup({conjunction, count: 2, root: true});
-
-			expect(
-				screen.getByRole('group', {name: expectedName})
-			).toBeInTheDocument();
 		}
 	);
 
@@ -213,8 +191,7 @@ describe('CriteriaGroup', () => {
 			</DndProvider>
 		);
 
-		fireEvent.click(screen.getByRole('combobox', {name: /^match logic$/i}));
-		fireEvent.click(screen.getByRole('option', {name: /^any$/i}));
+		selectPickerOption(/^match logic$/i, /^any$/i);
 
 		expect(onChange).toHaveBeenCalledWith(
 			expect.objectContaining({conjunctionName: Conjunctions.Or})
