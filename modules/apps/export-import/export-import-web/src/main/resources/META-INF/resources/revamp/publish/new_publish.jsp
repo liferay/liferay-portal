@@ -26,12 +26,6 @@ String backURL = ParamUtil.getString(request, "backURL", themeDisplay.getURLCurr
 
 portletDisplay.setURLBack(backURL);
 
-String redirect = PortalUtil.escapeRedirect(ParamUtil.getString(request, "redirect"));
-
-if (Validator.isNull(redirect)) {
-	redirect = backURL;
-}
-
 long scheduledPublishProcessId = ParamUtil.getLong(request, "scheduledPublishProcessId");
 
 if (liveGroup == null) {
@@ -41,6 +35,12 @@ if (liveGroup == null) {
 PublishProcessDisplayContext publishProcessDisplayContext = new PublishProcessDisplayContext(liveGroup, locale, publishSourceGroup);
 
 renderResponse.setTitle(publishProcessDisplayContext.getTitle(scheduledPublishProcessId));
+
+String redirect = PortalUtil.escapeRedirect(ParamUtil.getString(request, "redirect"));
+
+if (Validator.isNull(redirect)) {
+	redirect = backURL;
+}
 %>
 
 <clay:container-fluid
