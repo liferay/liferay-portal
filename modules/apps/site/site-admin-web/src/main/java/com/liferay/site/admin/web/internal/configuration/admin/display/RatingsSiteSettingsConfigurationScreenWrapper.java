@@ -68,9 +68,10 @@ public class RatingsSiteSettingsConfigurationScreenWrapper
 		public Dictionary<String, Object> exportProperties(
 			Serializable scopePK) {
 
+			Dictionary<String, Object> properties = new HashMapDictionary<>();
+
 			Group group = _groupLocalService.fetchGroup((long)scopePK);
 
-			Dictionary<String, Object> properties = new HashMapDictionary<>();
 			Map<String, PortletRatingsDefinitionValues>
 				portletRatingsDefinitionValuesMap =
 					PortletRatingsDefinitionUtil.
