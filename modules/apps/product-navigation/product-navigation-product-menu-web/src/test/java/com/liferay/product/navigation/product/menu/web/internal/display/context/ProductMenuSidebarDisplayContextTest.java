@@ -485,7 +485,7 @@ public class ProductMenuSidebarDisplayContextTest {
 
 			sessionClicksMockedStatic.when(
 				() -> SessionClicks.get(
-					_httpServletRequest, _SESSION_KEY_SIDEBAR_STATE, "open")
+					_httpServletRequest, _SESSION_KEY_SIDEBAR_STATE, "closed")
 			).thenReturn(
 				"open"
 			);
@@ -494,7 +494,7 @@ public class ProductMenuSidebarDisplayContextTest {
 
 			sessionClicksMockedStatic.when(
 				() -> SessionClicks.get(
-					_httpServletRequest, _SESSION_KEY_SIDEBAR_STATE, "open")
+					_httpServletRequest, _SESSION_KEY_SIDEBAR_STATE, "closed")
 			).thenReturn(
 				"closed"
 			);

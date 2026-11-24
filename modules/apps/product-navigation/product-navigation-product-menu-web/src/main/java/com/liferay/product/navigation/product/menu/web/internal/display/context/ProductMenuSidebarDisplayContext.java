@@ -169,7 +169,7 @@ public class ProductMenuSidebarDisplayContext {
 
 	public boolean isVisible() {
 		String state = SessionClicks.get(
-			_httpServletRequest, _SESSION_KEY_SIDEBAR_STATE, "open");
+			_httpServletRequest, _SESSION_KEY_SIDEBAR_STATE, "closed");
 
 		return Objects.equals(state, "open");
 	}

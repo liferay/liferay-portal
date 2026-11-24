@@ -101,6 +101,22 @@ public class ProductMenuTemplateContextContributorTest {
 		Map<String, Object> contextObjects = _prepare();
 
 		Assert.assertEquals(
+			" product-menu-unified-sidebar",
+			contextObjects.get("bodyCssClass"));
+		Assert.assertEquals(
+			"closed", contextObjects.get("liferay_product_menu_state"));
+
+		_sessionClicksMockedStatic.when(
+			() -> SessionClicks.get(
+				_httpServletRequest,
+				"com.liferay.application.list_sidebarState", "closed")
+		).thenReturn(
+			"open"
+		);
+
+		contextObjects = _prepare();
+
+		Assert.assertEquals(
 			" product-menu-unified-sidebar open product-menu-open",
 			contextObjects.get("bodyCssClass"));
 		Assert.assertEquals(
