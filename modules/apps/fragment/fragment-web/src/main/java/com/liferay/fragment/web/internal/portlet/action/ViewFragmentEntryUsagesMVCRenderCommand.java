@@ -61,17 +61,17 @@ public class ViewFragmentEntryUsagesMVCRenderCommand
 			!_isValidGroupId(
 				fragmentEntry, ParamUtil.getLong(renderRequest, "groupId"))) {
 
+			HttpServletResponse httpServletResponse =
+				_portal.getHttpServletResponse(renderResponse);
+
+			httpServletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
+
 			SessionErrors.add(renderRequest, NoSuchEntryException.class);
 
 			SessionMessages.add(
 				renderRequest,
 				_portal.getPortletId(renderRequest) +
 					SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
-
-			HttpServletResponse httpServletResponse =
-				_portal.getHttpServletResponse(renderResponse);
-
-			httpServletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
 
 			return "/error.jsp";
 		}
