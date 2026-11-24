@@ -24,6 +24,7 @@ import com.liferay.portal.vulcan.batch.engine.VulcanBatchEngineTaskItemDelegate;
 import com.liferay.portal.vulcan.fields.NestedFieldsContextThreadLocal;
 import com.liferay.portal.vulcan.util.GroupUtil;
 
+import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.core.UriInfo;
 
 import java.io.Serializable;
@@ -217,18 +218,28 @@ public class VulcanBatchEngineTaskItemDelegateAdaptor<T>
 			Serializable value = entry.getValue();
 
 			if (key.equals("assetLibraryId") && (value != null)) {
-				parameters.put(
-					key,
-					GroupUtil.getDepotGroupId(
-						String.valueOf(value), _company.getCompanyId(),
-						_depotEntryLocalService, _groupLocalService));
+				Long groupId = GroupUtil.getDepotGroupId(
+					String.valueOf(value), _company.getCompanyId(),
+					_depotEntryLocalService, _groupLocalService);
+
+				if (groupId == null) {
+					throw new NotFoundException(
+						"Unable to get a valid asset library with ID " + value);
+				}
+
+				parameters.put(key, groupId);
 			}
 			else if (key.equals("siteId") && (value != null)) {
-				parameters.put(
-					key,
-					GroupUtil.getGroupId(
-						_company.getCompanyId(), String.valueOf(value),
-						_groupLocalService));
+				Long groupId = GroupUtil.getGroupId(
+					_company.getCompanyId(), String.valueOf(value),
+					_groupLocalService);
+
+				if (groupId == null) {
+					throw new NotFoundException(
+						"Unable to get a valid site with ID " + value);
+				}
+
+				parameters.put(key, groupId);
 			}
 		}
 
