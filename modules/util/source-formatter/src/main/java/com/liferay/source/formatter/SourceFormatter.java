@@ -82,6 +82,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.StringReader;
 
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.nio.file.PathMatcher;
+import java.nio.file.Paths;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -958,6 +964,18 @@ public class SourceFormatter {
 		return JSONUtil.toString(jsonObject);
 	}
 
+	private List<PathMatcher> _getPathMatchers(String[] filePaths) {
+		List<PathMatcher> pathMatchers = new ArrayList<>();
+
+		FileSystem fileSystem = FileSystems.getDefault();
+
+		for (String filePath : filePaths) {
+			pathMatchers.add(fileSystem.getPathMatcher("glob:" + filePath));
+		}
+
+		return pathMatchers;
+	}
+
 	private List<String> _getPluginsInsideModulesDirectoryNames() {
 		List<String> pluginsInsideModulesDirectoryNames = new ArrayList<>();
 
@@ -1241,6 +1259,16 @@ public class SourceFormatter {
 		return false;
 	}
 
+	private boolean _isMatchingPath(Path path, List<PathMatcher> pathMatchers) {
+		for (PathMatcher pathMatcher : pathMatchers) {
+			if (pathMatcher.matches(path)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	private boolean _isRootTestPropertiesChanges(String recentChangesFileName) {
 		File portalDir = SourceFormatterUtil.getPortalDir(
 			_sourceFormatterArgs.getBaseDirName(),
@@ -1407,18 +1435,48 @@ public class SourceFormatter {
 
 		boolean privateBranch = gitWorkingBranchName.endsWith("-private");
 
-		String[] excludes = sharedFilePaths;
-		String[] includes = privateFilePaths;
+		List<PathMatcher> privatePathMatchers = _getPathMatchers(
+			privateFilePaths);
+		List<PathMatcher> sharedPathMatchers = _getPathMatchers(
+			sharedFilePaths);
 
-		if (privateBranch) {
-			excludes = ArrayUtil.append(privateFilePaths, sharedFilePaths);
-			includes = new String[] {"**"};
+		Path portalPath = portalDir.toPath();
+
+		portalPath = portalPath.toAbsolutePath();
+
+		portalPath = portalPath.normalize();
+
+		List<String> prohibitedFileNames = new ArrayList<>();
+
+		for (String fileName :
+				GitUtil.getCurrentBranchFileNames(
+					_sourceFormatterArgs.getBaseDirName(),
+					gitWorkingBranchName)) {
+
+			Path path = Paths.get(
+				_sourceFormatterArgs.getBaseDirName() + fileName);
+
+			path = path.toAbsolutePath();
+
+			path = portalPath.relativize(path.normalize());
+
+			if (_isMatchingPath(path, sharedPathMatchers)) {
+				continue;
+			}
+
+			boolean privateFilePath = _isMatchingPath(
+				path, privatePathMatchers);
+
+			if ((privateBranch && privateFilePath) ||
+				(!privateBranch && !privateFilePath)) {
+
+				continue;
+			}
+
+			prohibitedFileNames.add(
+				StringUtil.replace(
+					path.toString(), CharPool.BACK_SLASH, CharPool.SLASH));
 		}
-
-		List<String> prohibitedFileNames = SourceFormatterUtil.filterFileNames(
-			GitUtil.getCurrentBranchFileNames(
-				_sourceFormatterArgs.getBaseDirName(), gitWorkingBranchName),
-			excludes, includes, _sourceFormatterExcludes, true);
 
 		if (prohibitedFileNames.isEmpty()) {
 			return;
