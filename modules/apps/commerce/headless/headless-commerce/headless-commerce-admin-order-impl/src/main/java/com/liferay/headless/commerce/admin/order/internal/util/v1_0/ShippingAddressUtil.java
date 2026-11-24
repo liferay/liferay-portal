@@ -11,7 +11,6 @@ import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.service.CommerceAddressService;
 import com.liferay.commerce.service.CommerceOrderService;
 import com.liferay.headless.commerce.admin.order.dto.v1_0.ShippingAddress;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Country;
 import com.liferay.portal.kernel.model.Region;
 import com.liferay.portal.kernel.service.CountryService;
@@ -44,13 +43,8 @@ public class ShippingAddressUtil {
 			shippingAddress, serviceContext);
 
 		return commerceOrderService.updateShippingAddress(
-			commerceOrder.getCommerceOrderId(), commerceAddress.getCountryId(),
-			commerceAddress.getRegionId(), commerceAddress.getCity(),
-			commerceAddress.getDescription(), commerceAddress.getName(),
-			commerceAddress.getPhoneNumber(), commerceAddress.getStreet1(),
-			commerceAddress.getStreet2(), commerceAddress.getStreet3(),
-			commerceAddress.getSubtype(), commerceAddress.getZip(),
-			serviceContext);
+			commerceOrder.getCommerceOrderId(),
+			commerceAddress.getCommerceAddressId());
 	}
 
 	private static CommerceAddress _addCommerceAddress(
@@ -63,7 +57,8 @@ public class ShippingAddressUtil {
 			commerceOrder.getCompanyId(), shippingAddress.getCountryISOCode());
 
 		return commerceAddressService.addCommerceAddress(
-			StringPool.BLANK, commerceOrder.getModelClassName(),
+			shippingAddress.getExternalReferenceCode(),
+			commerceOrder.getModelClassName(),
 			commerceOrder.getCommerceOrderId(), country.getCountryId(),
 			_getRegionId(null, country, shippingAddress),
 			shippingAddress.getCity(), shippingAddress.getDescription(),
