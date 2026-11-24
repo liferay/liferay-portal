@@ -214,6 +214,10 @@ public class IndividualSegmentDisplay implements FaroEntityDisplay {
 		List<T> objects = JSONUtil.convertValue(
 			referencedObjects.get(name), typeReference);
 
+		if (objects == null) {
+			objects = Collections.emptyList();
+		}
+
 		Map<String, R> objectsMap = new HashMap<>();
 
 		for (T object : objects) {
