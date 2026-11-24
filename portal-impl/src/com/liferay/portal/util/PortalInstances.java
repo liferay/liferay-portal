@@ -470,6 +470,11 @@ public class PortalInstances {
 				companyId + " is already in deletion");
 		}
 
+		if (Objects.equals(_copyInProcessCompanyId, companyId)) {
+			throw new UnsupportedOperationException(
+				companyId + " is being copied");
+		}
+
 		CompanyDeletionProcess companyDeletionProcess =
 			new CompanyDeletionProcess(
 				_getLocalClusterNodeId(), System.currentTimeMillis());
@@ -674,7 +679,7 @@ public class PortalInstances {
 	private static final Set<String> _autoLoginIgnorePaths;
 	private static final Map<Long, CompanyDeletionProcess>
 		_companyIdsInDeletionProcess = new ConcurrentHashMap<>();
-	private static Long _copyInProcessCompanyId;
+	private static volatile Long _copyInProcessCompanyId;
 	private static Long _importInProcessCompanyId;
 	private static final MethodKey _removeCompanyIdInDeletionProcessMethodKey =
 		new MethodKey(
