@@ -67,6 +67,7 @@ const CanvasEmptyState: React.FC<ICanvasEmptyStateProps> = ({
 			{...otherProps}
 		>
 			<div
+				aria-hidden={dropState !== 'idle' || undefined}
 				className={getCN('c-empty-state c-empty-state-animation', {
 					invisible: dropState !== 'idle',
 				})}
