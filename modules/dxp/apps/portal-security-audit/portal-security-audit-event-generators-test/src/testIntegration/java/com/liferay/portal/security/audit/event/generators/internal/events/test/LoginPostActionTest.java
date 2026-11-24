@@ -108,8 +108,8 @@ public class LoginPostActionTest {
 		_testRunGeneratesOpaqueAuditSessionId();
 		_testRunKeepsAuditSessionIdAcrossRequests();
 		_testRunKeepsAuditSessionIdAcrossSessionRenewal();
-		_testRunSetsAccountEntryIds();
 		_testRunSetsResourceAction();
+		_testRunSetsUserAccountEntryIds();
 	}
 
 	private AccountEntry _addAccountEntry() throws Exception {
@@ -301,7 +301,22 @@ public class LoginPostActionTest {
 		}
 	}
 
-	private void _testRunSetsAccountEntryIds() throws Exception {
+	private void _testRunSetsResourceAction() throws Exception {
+		try (SafeCloseable safeCloseable =
+				FeatureFlagTestUtil.setFeatureFlagsWithSafeCloseable(
+					true, "LPD-96921")) {
+
+			_run(_createMockHttpServletRequest());
+
+			AuditMessage auditMessage = _fetchAuditMessage(EventTypes.LOGIN);
+
+			Assert.assertEquals(
+				"instance.user.login", auditMessage.getResourceAction());
+			Assert.assertEquals("user", auditMessage.getResourceType());
+		}
+	}
+
+	private void _testRunSetsUserAccountEntryIds() throws Exception {
 		try (SafeCloseable safeCloseable =
 				FeatureFlagTestUtil.setFeatureFlagsWithSafeCloseable(
 					true, "LPD-113659")) {
@@ -338,21 +353,6 @@ public class LoginPostActionTest {
 
 		Assert.assertArrayEquals(
 			new long[0], auditMessage.getUserAccountEntryIds());
-	}
-
-	private void _testRunSetsResourceAction() throws Exception {
-		try (SafeCloseable safeCloseable =
-				FeatureFlagTestUtil.setFeatureFlagsWithSafeCloseable(
-					true, "LPD-96921")) {
-
-			_run(_createMockHttpServletRequest());
-
-			AuditMessage auditMessage = _fetchAuditMessage(EventTypes.LOGIN);
-
-			Assert.assertEquals(
-				"instance.user.login", auditMessage.getResourceAction());
-			Assert.assertEquals("user", auditMessage.getResourceType());
-		}
 	}
 
 	@DeleteAfterTestRun
