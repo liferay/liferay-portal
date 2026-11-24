@@ -11,6 +11,7 @@ import com.liferay.frontend.data.set.view.FDSViewRegistry;
 import com.liferay.frontend.data.set.view.table.FDSTableSchema;
 import com.liferay.frontend.data.set.view.table.FDSTableSchemaField;
 import com.liferay.object.constants.ObjectFieldSettingConstants;
+import com.liferay.object.constants.ObjectRelationshipConstants;
 import com.liferay.object.field.builder.AggregationObjectFieldBuilder;
 import com.liferay.object.field.setting.builder.ObjectFieldSettingBuilder;
 import com.liferay.object.field.util.ObjectFieldUtil;
@@ -32,6 +33,8 @@ import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
@@ -78,78 +81,11 @@ public class ObjectEntriesTableFDSViewTest {
 		PrincipalThreadLocal.setName(_originalName);
 	}
 
+	@FeatureFlag("LPD-108620")
 	@Test
 	public void testGetFDSTableSchema() throws Exception {
-		_objectDefinition1 = ObjectDefinitionTestUtil.publishObjectDefinition();
-		_objectDefinition2 = ObjectDefinitionTestUtil.publishObjectDefinition();
-
-		ObjectRelationship objectRelationship =
-			ObjectRelationshipTestUtil.addObjectRelationship(
-				_objectRelationshipLocalService, _objectDefinition1,
-				_objectDefinition2);
-
-		ObjectField objectField = ObjectFieldUtil.addCustomObjectField(
-			new AggregationObjectFieldBuilder(
-			).labelMap(
-				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString())
-			).name(
-				"a" + RandomTestUtil.randomString()
-			).objectDefinitionId(
-				_objectDefinition1.getObjectDefinitionId()
-			).objectFieldSettings(
-				Arrays.asList(
-					new ObjectFieldSettingBuilder(
-					).name(
-						ObjectFieldSettingConstants.NAME_FUNCTION
-					).value(
-						ObjectFieldSettingConstants.VALUE_COUNT
-					).build(),
-					new ObjectFieldSettingBuilder(
-					).name(
-						ObjectFieldSettingConstants.
-							NAME_OBJECT_RELATIONSHIP_NAME
-					).value(
-						objectRelationship.getName()
-					).build())
-			).userId(
-				_user.getUserId()
-			).build());
-
-		Map<String, FDSTableSchemaField> fdsTableSchemaFieldsMap =
-			_getFDSTableSchemaFieldsMap(_objectDefinition1);
-
-		Assert.assertFalse(
-			fdsTableSchemaFieldsMap.containsKey("externalReferenceCode"));
-
-		_assertFDSTableSchemaField(
-			"Author", true, fdsTableSchemaFieldsMap, "creator.name");
-		_assertFDSTableSchemaField("ID", true, fdsTableSchemaFieldsMap, "id");
-		_assertFDSTableSchemaField(
-			"Status", true, fdsTableSchemaFieldsMap, "status");
-		_assertFDSTableSchemaField(
-			objectField.getLabel(LocaleUtil.US), false, fdsTableSchemaFieldsMap,
-			objectField.getName());
-
-		_objectViewLocalService.addObjectView(
-			null, _user.getUserId(), _objectDefinition1.getObjectDefinitionId(),
-			true,
-			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
-			Arrays.asList(
-				_createObjectViewColumn("Create Date", "createDate"),
-				_createObjectViewColumn("Modified Date", "modifiedDate")),
-			Collections.emptyList(), Collections.emptyList());
-
-		fdsTableSchemaFieldsMap = _getFDSTableSchemaFieldsMap(
-			_objectDefinition1);
-
-		_assertFDSTableSchemaField(
-			"Create Date", true, fdsTableSchemaFieldsMap, "dateCreated");
-		_assertFDSTableSchemaField(
-			"Modified Date", true, fdsTableSchemaFieldsMap, "dateModified");
-		_assertTimeZone(
-			fdsTableSchemaFieldsMap, _user.getTimeZoneId(), "dateCreated");
-		_assertTimeZone(
-			fdsTableSchemaFieldsMap, _user.getTimeZoneId(), "dateModified");
+		_testGetFDSTableSchema(ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+		_testGetFDSTableSchema(ObjectRelationshipConstants.TYPE_ONE_TO_ONE);
 	}
 
 	private void _assertFDSTableSchemaField(
@@ -210,14 +146,83 @@ public class ObjectEntriesTableFDSViewTest {
 		return fdsTableSchema.getFDSTableSchemaFieldsMap();
 	}
 
+	private void _testGetFDSTableSchema(String type) throws Exception {
+		ObjectDefinition parentObjectDefinition =
+			ObjectDefinitionTestUtil.publishObjectDefinition();
+
+		ObjectRelationship objectRelationship =
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				_objectRelationshipLocalService, parentObjectDefinition,
+				ObjectDefinitionTestUtil.publishObjectDefinition(),
+				ObjectRelationshipConstants.DELETION_TYPE_CASCADE,
+				StringUtil.randomId(), type);
+
+		ObjectField objectField = ObjectFieldUtil.addCustomObjectField(
+			new AggregationObjectFieldBuilder(
+			).labelMap(
+				RandomTestUtil.randomLocaleStringMap()
+			).name(
+				"a" + RandomTestUtil.randomString()
+			).objectDefinitionId(
+				parentObjectDefinition.getObjectDefinitionId()
+			).objectFieldSettings(
+				Arrays.asList(
+					new ObjectFieldSettingBuilder(
+					).name(
+						ObjectFieldSettingConstants.NAME_FUNCTION
+					).value(
+						ObjectFieldSettingConstants.VALUE_COUNT
+					).build(),
+					new ObjectFieldSettingBuilder(
+					).name(
+						ObjectFieldSettingConstants.
+							NAME_OBJECT_RELATIONSHIP_NAME
+					).value(
+						objectRelationship.getName()
+					).build())
+			).userId(
+				_user.getUserId()
+			).build());
+
+		Map<String, FDSTableSchemaField> fdsTableSchemaFieldsMap =
+			_getFDSTableSchemaFieldsMap(parentObjectDefinition);
+
+		Assert.assertFalse(
+			fdsTableSchemaFieldsMap.containsKey("externalReferenceCode"));
+
+		_assertFDSTableSchemaField(
+			"Author", true, fdsTableSchemaFieldsMap, "creator.name");
+		_assertFDSTableSchemaField("ID", true, fdsTableSchemaFieldsMap, "id");
+		_assertFDSTableSchemaField(
+			"Status", true, fdsTableSchemaFieldsMap, "status");
+		_assertFDSTableSchemaField(
+			objectField.getLabel(LocaleUtil.US), false, fdsTableSchemaFieldsMap,
+			objectField.getName());
+
+		_objectViewLocalService.addObjectView(
+			null, _user.getUserId(),
+			parentObjectDefinition.getObjectDefinitionId(), true,
+			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
+			Arrays.asList(
+				_createObjectViewColumn("Create Date", "createDate"),
+				_createObjectViewColumn("Modified Date", "modifiedDate")),
+			Collections.emptyList(), Collections.emptyList());
+
+		fdsTableSchemaFieldsMap = _getFDSTableSchemaFieldsMap(
+			parentObjectDefinition);
+
+		_assertFDSTableSchemaField(
+			"Create Date", true, fdsTableSchemaFieldsMap, "dateCreated");
+		_assertFDSTableSchemaField(
+			"Modified Date", true, fdsTableSchemaFieldsMap, "dateModified");
+		_assertTimeZone(
+			fdsTableSchemaFieldsMap, _user.getTimeZoneId(), "dateCreated");
+		_assertTimeZone(
+			fdsTableSchemaFieldsMap, _user.getTimeZoneId(), "dateModified");
+	}
+
 	@Inject
 	private FDSViewRegistry _fdsViewRegistry;
-
-	@DeleteAfterTestRun
-	private ObjectDefinition _objectDefinition1;
-
-	@DeleteAfterTestRun
-	private ObjectDefinition _objectDefinition2;
 
 	@Inject
 	private ObjectRelationshipLocalService _objectRelationshipLocalService;
