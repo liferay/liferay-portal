@@ -257,7 +257,7 @@ public interface ElasticsearchConfiguration {
 	public String[] sidecarJVMOptions();
 
 	@Meta.AD(
-		deflt = "aggregations|analysis-common|blob-cache|data-streams|dot-prefix-validation|health-shards-availability|ingest-attachment|ingest-common|ingest-user-agent|lang-expression|lang-mustache|lang-painless|mapper-extras|parent-join|percolator|rank-eval|reindex|rest-root|runtime-fields-common|transport-netty4",
+		deflt = "aggregations|analysis-common|blob-cache|data-streams|dot-prefix-validation|health-shards-availability|ingest-attachment|ingest-common|lang-expression|lang-mustache|lang-painless|mapper-extras|parent-join|percolator|rank-eval|reindex|rest-root|runtime-fields-common|transport-netty4|user-agent",
 		description = "sidecar-module-names-help",
 		name = "sidecar-module-names", required = false
 	)
