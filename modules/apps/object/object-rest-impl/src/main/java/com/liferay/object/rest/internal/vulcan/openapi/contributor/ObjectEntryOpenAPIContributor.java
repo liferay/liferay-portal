@@ -181,9 +181,7 @@ public class ObjectEntryOpenAPIContributor extends BaseOpenAPIContributor {
 					if (Objects.equals(
 							objectRelationship.getType(),
 							ObjectRelationshipConstants.TYPE_MANY_TO_MANY) ||
-						(Objects.equals(
-							objectRelationship.getType(),
-							ObjectRelationshipConstants.TYPE_ONE_TO_MANY) &&
+						(objectRelationship.hasRelationshipObjectField() &&
 						 (objectRelationship.getObjectDefinitionId1() ==
 							 _objectDefinition.getObjectDefinitionId()))) {
 
