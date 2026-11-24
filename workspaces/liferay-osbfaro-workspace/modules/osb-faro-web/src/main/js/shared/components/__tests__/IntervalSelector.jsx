@@ -12,11 +12,18 @@ describe('IntervalSelector', () => {
 	});
 
 	it('should render with an active item', () => {
-		const {getByText} = render(
+		const {getByRole} = render(
 			<IntervalSelector activeInterval='W' onChange={jest.fn()} />
 		);
 
-		expect(getByText(/^w$/i)).not.toHaveClass('.active');
+		expect(getByRole('button', {name: /^w$/i})).toHaveAttribute(
+			'aria-pressed',
+			'true'
+		);
+		expect(getByRole('button', {name: /^d$/i})).toHaveAttribute(
+			'aria-pressed',
+			'false'
+		);
 	});
 
 	it('should call the onChange callback when an interval is clicked', () => {
