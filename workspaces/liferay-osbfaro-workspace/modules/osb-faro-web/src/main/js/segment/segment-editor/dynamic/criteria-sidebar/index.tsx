@@ -23,6 +23,7 @@ const EVENTS_PROPERTY_KEY = 'web';
 
 const PROPERTY_KEY_TO_GROUP: Record<string, string> = {
 	account: 'attributes',
+	campaign: 'behavioral',
 	individual: 'attributes',
 	interest: 'intent-signals',
 	organization: 'attributes',
