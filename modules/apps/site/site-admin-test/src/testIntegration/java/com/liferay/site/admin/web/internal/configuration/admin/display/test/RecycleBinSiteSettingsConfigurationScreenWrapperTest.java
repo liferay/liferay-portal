@@ -102,11 +102,11 @@ public class RecycleBinSiteSettingsConfigurationScreenWrapperTest {
 		Dictionary<String, Object> properties =
 			configurationScreen.exportProperties(sourceGroup.getGroupId());
 
-		Assert.assertEquals(2, properties.size());
 		Assert.assertEquals("false", properties.get("trashEnabled"));
 		Assert.assertEquals(
 			String.valueOf(trashEntriesMaxAge),
 			properties.get("trashEntriesMaxAge"));
+		Assert.assertEquals(2, properties.size());
 
 		Group targetGroup = GroupTestUtil.addGroup();
 
