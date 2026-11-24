@@ -1,15 +1,3 @@
-<#assign
-	group = themeDisplay.getScopeGroup()
-
-	mapsAPIProvider = group.getLiveParentTypeSettingsProperty("mapsAPIProvider")!""
-
-	companyPortletPreferences = prefsPropsUtil.getPreferences(companyId)
-/>
-
-<#if validator.isNull(mapsAPIProvider)>
-	<#assign mapsAPIProvider = companyPortletPreferences.getValue("mapsAPIProvider", "Google") />
-</#if>
-
 <#assign featureCollectionJSONObject = jsonFactoryUtil.createJSONObject() />
 
 <@liferay.silently featureCollectionJSONObject.put("type", "FeatureCollection") />
@@ -62,22 +50,20 @@
 
 		<@liferay.silently propertiesJSONObject.put("abstract", entryAbstract) />
 
-		<#if stringUtil.equals(mapsAPIProvider, "Google")>
-			<#assign
-				images =
-					{
-						"com.liferay.document.library.kernel.model.DLFileEntry": "${themeDisplay.getProtocol()}://maps.google.com/mapfiles/ms/icons/green-dot.png",
-						"com.liferay.journal.model.JournalArticle": "${themeDisplay.getProtocol()}://maps.google.com/mapfiles/ms/icons/blue-dot.png",
-						"com.liferay.portlet.dynamicdatalists.model.DDLRecord": "${themeDisplay.getProtocol()}://maps.google.com/mapfiles/ms/icons/red-dot.png",
-						"default": "${themeDisplay.getProtocol()}://maps.google.com/mapfiles/ms/icons/yellow-dot.png"
-					}
-			/>
+		<#assign
+			images =
+				{
+					"com.liferay.document.library.kernel.model.DLFileEntry": "${themeDisplay.getProtocol()}://maps.google.com/mapfiles/ms/icons/green-dot.png",
+					"com.liferay.journal.model.JournalArticle": "${themeDisplay.getProtocol()}://maps.google.com/mapfiles/ms/icons/blue-dot.png",
+					"com.liferay.portlet.dynamicdatalists.model.DDLRecord": "${themeDisplay.getProtocol()}://maps.google.com/mapfiles/ms/icons/red-dot.png",
+					"default": "${themeDisplay.getProtocol()}://maps.google.com/mapfiles/ms/icons/yellow-dot.png"
+				}
+		/>
 
-			<#if images?keys?seq_contains(entry.getClassName())>
-				<@liferay.silently propertiesJSONObject.put("icon", images[entry.getClassName()]) />
-			<#else>
-				<@liferay.silently propertiesJSONObject.put("icon", images["default"]) />
-			</#if>
+		<#if images?keys?seq_contains(entry.getClassName())>
+			<@liferay.silently propertiesJSONObject.put("icon", images[entry.getClassName()]) />
+		<#else>
+			<@liferay.silently propertiesJSONObject.put("icon", images["default"]) />
 		</#if>
 
 		<@liferay.silently featureJSONObject.put("properties", propertiesJSONObject) />
