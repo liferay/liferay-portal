@@ -1102,7 +1102,7 @@ mariadb.executable=${mariadb.executable}]]></echo>
 
 					String testReleaseAdditionalDependencyModules = project.getProperty("test.release.additional.dependency.modules");
 
-					if (testReleaseAdditionalDependencyModules != null) {
+					if (!postStartupModulesOnly && (testReleaseAdditionalDependencyModules != null)) {
 						releaseDependentModules.addAll(new ArrayList(Arrays.asList(testReleaseAdditionalDependencyModules.split(","))));
 					}
 
@@ -1110,7 +1110,7 @@ mariadb.executable=${mariadb.executable}]]></echo>
 
 					String deprecatedModuleGroups = project.getProperty("test.batch.deprecated.module.groups");
 
-					if (deprecatedModuleGroups != null) {
+					if (!postStartupModulesOnly && (deprecatedModuleGroups != null)) {
 						releaseDependentModules.addAll(getModulesFromModuleGroups(deprecatedModuleGroups.split(",")));
 					}
 
