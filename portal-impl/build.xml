@@ -839,6 +839,7 @@
 					<arg value="source.formatter.properties=${source.formatter.properties}" />
 					<arg value="source.print.errors=${source.print.errors}" />
 					<arg value="use.ci.github.access.token=${use.ci.github.access.token}" />
+					<arg value="validate.allowed.file.paths=${source.formatter.validate.allowed.file.paths}" />
 					<arg value="validate.commit.messages=${validate.commit.messages}" />
 				</java>
 
