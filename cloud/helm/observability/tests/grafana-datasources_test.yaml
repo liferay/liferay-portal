@@ -17,9 +17,9 @@ tests:
                 template: templates/azure/azure-monitor-datasource.yaml
             -   matchRegex:
                     path: data["amp-datasource.yaml"]
-                    pattern: "type: \"prometheus\""
+                    pattern: "type: \"grafana-amazonprometheus-datasource\""
                 template: templates/aws/amp-datasource.yaml
-        it: Keeps the core Prometheus data source on AWS
+        it: Queries Amazon Managed Service for Prometheus with SigV4
         set:
             aws.ampWorkspaceURL: https://aps-workspaces.us-east-1.amazonaws.com/workspaces/ws-00000000
             aws.region: us-east-1
@@ -92,7 +92,7 @@ tests:
                 template: templates/azure/amw-datasource.yaml
             -   matchRegex:
                     path: data["amw-datasource.yaml"]
-                    pattern: "type: \"prometheus\""
+                    pattern: "type: \"grafana-azureprometheus-datasource\""
                 template: templates/azure/amw-datasource.yaml
             -   matchRegex:
                     path: data["amw-datasource.yaml"]

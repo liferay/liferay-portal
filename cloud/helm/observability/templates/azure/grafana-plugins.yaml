@@ -1,0 +1,11 @@
+{{- if eq (include "observability.cloudProvider" .) "azure" -}}
+apiVersion: v1
+data:
+    GF_PLUGINS_PREINSTALL_SYNC: grafana-azureprometheus-datasource@1.0.12
+kind: ConfigMap
+metadata:
+    labels:
+        {{- include "observability.labels" . | nindent 8 }}
+    name: grafana-plugins
+    namespace: {{ include "observability.namespace" . | quote }}
+{{- end -}}

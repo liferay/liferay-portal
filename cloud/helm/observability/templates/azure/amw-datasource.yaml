@@ -13,7 +13,7 @@ data:
                     httpMethod: GET
                     timeInterval: 30s
                 name: {{ .Values.datasource.name | quote }}
-                type: {{ .Values.datasource.type | quote }}
+                type: "grafana-azureprometheus-datasource"
                 uid: {{ include "observability.datasourceUid" . | quote }}
                 url: {{ $workspaceEndpoint | quote }}
 kind: ConfigMap

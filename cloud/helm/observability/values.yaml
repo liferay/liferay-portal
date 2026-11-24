@@ -614,6 +614,9 @@ grafana:
     admin:
         existingSecret: grafana-admin-credentials
     datasources: {}
+    envFromConfigMaps:
+        -   name: grafana-plugins
+            optional: true
     envFromSecrets:
         -   name: grafana-smtp-credentials
             optional: true

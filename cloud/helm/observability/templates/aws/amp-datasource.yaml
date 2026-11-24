@@ -15,7 +15,7 @@ data:
                     sigV4Region: {{ $awsRegion | quote }}
                     timeInterval: 30s
                 name: {{ .Values.datasource.name | quote }}
-                type: {{ .Values.datasource.type | quote }}
+                type: "grafana-amazonprometheus-datasource"
                 uid: {{ include "observability.datasourceUid" . | quote }}
                 url: {{ $ampURL | quote }}
 kind: ConfigMap
