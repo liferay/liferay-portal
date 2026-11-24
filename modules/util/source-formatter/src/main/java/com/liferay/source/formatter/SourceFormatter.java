@@ -294,6 +294,10 @@ public class SourceFormatter {
 					Arrays.asList(sourceFormatterProperties));
 			}
 
+			sourceFormatterArgs.setValidateAllowedFilePaths(
+				ArgumentsUtil.getBoolean(
+					arguments, "validate.allowed.file.paths",
+					SourceFormatterArgs.VALIDATE_ALLOWED_FILE_PATHS));
 			sourceFormatterArgs.setValidateCommitMessages(
 				ArgumentsUtil.getBoolean(
 					arguments, "validate.commit.messages",
@@ -356,7 +360,9 @@ public class SourceFormatter {
 
 		_init();
 
-		_validateAllowedFilePaths();
+		if (_sourceFormatterArgs.isValidateAllowedFilePaths()) {
+			_validateAllowedFilePaths();
+		}
 
 		if (_sourceFormatterArgs.isValidateCommitMessages()) {
 			_validateCommitMessages();

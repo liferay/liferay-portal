@@ -179,6 +179,14 @@ public class FormatSourceMojo extends AbstractMojo {
 	/**
 	 * @parameter
 	 */
+	public void setValidateAllowedFilePaths(boolean validateAllowedFilePaths) {
+		_sourceFormatterArgs.setValidateAllowedFilePaths(
+			validateAllowedFilePaths);
+	}
+
+	/**
+	 * @parameter
+	 */
 	public void setValidateCommitMessages(boolean validateCommitMessages) {
 		_sourceFormatterArgs.setValidateCommitMessages(validateCommitMessages);
 	}

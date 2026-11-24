@@ -136,6 +136,11 @@ public class FormatSourceTask extends Task {
 		_sourceFormatterArgs.setShowDebugInformation(showDebugInformation);
 	}
 
+	public void setValidateAllowedFilePaths(boolean validateAllowedFilePaths) {
+		_sourceFormatterArgs.setValidateAllowedFilePaths(
+			validateAllowedFilePaths);
+	}
+
 	public void setValidateCommitMessages(boolean validateCommitMessages) {
 		_sourceFormatterArgs.setValidateCommitMessages(validateCommitMessages);
 	}

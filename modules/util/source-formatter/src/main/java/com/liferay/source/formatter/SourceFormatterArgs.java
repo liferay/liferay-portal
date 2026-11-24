@@ -61,6 +61,8 @@ public class SourceFormatterArgs {
 
 	public static final boolean USE_CI_GITHUB_ACCESS_TOKEN = false;
 
+	public static final boolean VALIDATE_ALLOWED_FILE_PATHS = false;
+
 	public static final boolean VALIDATE_COMMIT_MESSAGES = false;
 
 	public void addRecentChangesFileNames(
@@ -190,6 +192,10 @@ public class SourceFormatterArgs {
 
 	public boolean isUseCiGithubAccessToken() {
 		return _useCiGithubAccessToken;
+	}
+
+	public boolean isValidateAllowedFilePaths() {
+		return _validateAllowedFilePaths;
 	}
 
 	public boolean isValidateCommitMessages() {
@@ -331,6 +337,10 @@ public class SourceFormatterArgs {
 		_useCiGithubAccessToken = useCiGithubAccessToken;
 	}
 
+	public void setValidateAllowedFilePaths(boolean validateAllowedFilePaths) {
+		_validateAllowedFilePaths = validateAllowedFilePaths;
+	}
+
 	public void setValidateCommitMessages(boolean validateCommitMessages) {
 		_validateCommitMessages = validateCommitMessages;
 	}
@@ -364,6 +374,7 @@ public class SourceFormatterArgs {
 	private List<String> _skipCheckNames = new ArrayList<>();
 	private List<String> _sourceFormatterProperties = new ArrayList<>();
 	private boolean _useCiGithubAccessToken = USE_CI_GITHUB_ACCESS_TOKEN;
+	private boolean _validateAllowedFilePaths = VALIDATE_ALLOWED_FILE_PATHS;
 	private boolean _validateCommitMessages = VALIDATE_COMMIT_MESSAGES;
 
 }

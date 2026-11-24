@@ -161,6 +161,13 @@
 					<description/>
 				</parameter>
 				<parameter>
+					<name>validateAllowedFilePaths</name>
+					<type>boolean</type>
+					<required>false</required>
+					<editable>true</editable>
+					<description/>
+				</parameter>
+				<parameter>
 					<name>validateCommitMessages</name>
 					<type>boolean</type>
 					<required>false</required>
