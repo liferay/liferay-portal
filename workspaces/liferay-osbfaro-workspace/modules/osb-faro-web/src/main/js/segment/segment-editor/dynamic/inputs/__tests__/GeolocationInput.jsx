@@ -150,8 +150,8 @@ describe('GeolocationInput', () => {
 		expect(getAllByText('on')[1]).toBeInTheDocument();
 	});
 
-	it('should render with has-error', () => {
-		const {container} = render(
+	it('should mark the country input as invalid', () => {
+		const {getByPlaceholderText} = render(
 			<WrapperComponent>
 				<GeolocationInput
 					onChange={jest.fn()}
@@ -162,9 +162,7 @@ describe('GeolocationInput', () => {
 				/>
 			</WrapperComponent>
 		);
-		expect(container.querySelector('.select-input-root')).toHaveClass(
-			'has-error'
-		);
+		expect(getByPlaceholderText(/^country$/i)).toBeInvalid();
 	});
 
 	it('should render inputs for all location values if they all have non-zero length values', () => {
