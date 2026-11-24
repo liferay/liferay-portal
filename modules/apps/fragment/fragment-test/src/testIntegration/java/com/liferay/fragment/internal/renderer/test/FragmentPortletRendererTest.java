@@ -15,6 +15,7 @@ import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.test.util.LayoutPageTemplateTestUtil;
 import com.liferay.layout.test.util.ContentLayoutTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -26,6 +27,9 @@ import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.PortletPreferencesLocalService;
 import com.liferay.portal.kernel.test.TestInfo;
+import com.liferay.portal.kernel.test.log.LogCapture;
+import com.liferay.portal.kernel.test.log.LogEntry;
+import com.liferay.portal.kernel.test.log.LoggerTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.util.PortletKeys;
@@ -33,6 +37,8 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -67,12 +73,19 @@ public class FragmentPortletRendererTest {
 	public void testRenderPortlet() throws Exception {
 		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
 
-		_testRenderPortlet(
-			_addPortletFragmentEntryLink(
-				LayoutTestUtil.addTypeContentLayout(_group)),
-			layout, false);
+		FragmentEntryLink fragmentEntryLink = _addPortletFragmentEntryLink(
+			LayoutTestUtil.addTypeContentLayout(_group));
 
-		FragmentEntryLink fragmentEntryLink =
+		_testRenderPortlet(
+			fragmentEntryLink, layout, false,
+			StringBundler.concat(
+				"Skipping shared preferences for fragment entry link ",
+				fragmentEntryLink.getFragmentEntryLinkId(), " with PLID ",
+				fragmentEntryLink.getPlid(),
+				" because it does not belong to the master of layout ",
+				layout.getPlid()));
+
+		fragmentEntryLink =
 			_fragmentEntryLinkLocalService.createFragmentEntryLink(0);
 
 		fragmentEntryLink.setGroupId(_group.getGroupId());
@@ -121,7 +134,7 @@ public class FragmentPortletRendererTest {
 
 	private void _testRenderPortlet(
 			FragmentEntryLink fragmentEntryLink, Layout layout,
-			boolean sharedPreferences)
+			boolean sharedPreferences, String... expectedWarnMessages)
 		throws Exception {
 
 		JSONObject editableValuesJSONObject =
@@ -135,11 +148,31 @@ public class FragmentPortletRendererTest {
 		mockHttpServletRequest.setAttribute(
 			"ORIGINAL_HTTP_SERVLET_REQUEST", mockHttpServletRequest);
 
-		_fragmentPortletRenderer.renderPortlet(
-			fragmentEntryLink, mockHttpServletRequest,
-			new MockHttpServletResponse(),
-			editableValuesJSONObject.getString("portletId"),
-			editableValuesJSONObject.getString("instanceId"), StringPool.BLANK);
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.fragment.internal.renderer." +
+					"FragmentPortletRendererImpl",
+				LoggerTestUtil.WARN)) {
+
+			_fragmentPortletRenderer.renderPortlet(
+				fragmentEntryLink, mockHttpServletRequest,
+				new MockHttpServletResponse(),
+				editableValuesJSONObject.getString("portletId"),
+				editableValuesJSONObject.getString("instanceId"),
+				StringPool.BLANK);
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			for (int i = 0; i < expectedWarnMessages.length; i++) {
+				LogEntry logEntry = logEntries.get(i);
+
+				Assert.assertEquals(
+					expectedWarnMessages[i], logEntry.getMessage());
+			}
+
+			Assert.assertEquals(
+				logEntries.toString(), expectedWarnMessages.length,
+				logEntries.size());
+		}
 
 		PortletPreferences portletPreferences =
 			_portletPreferencesLocalService.fetchPortletPreferences(
