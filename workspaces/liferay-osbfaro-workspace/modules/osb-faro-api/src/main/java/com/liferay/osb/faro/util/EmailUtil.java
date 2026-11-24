@@ -6,8 +6,11 @@
 package com.liferay.osb.faro.util;
 
 import com.liferay.osb.faro.model.FaroProject;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.util.PortalUtil;
 
 import java.util.Objects;
 
@@ -99,6 +102,14 @@ public class EmailUtil {
 	}
 
 	public static String getWorkspaceURL(Group group) {
+		if (FeatureFlagManagerUtil.isEnabled(
+				group.getCompanyId(), "LPD-114293")) {
+
+			return StringBundler.concat(
+				FaroPropsValues.FARO_URL, PortalUtil.getPathFriendlyURLPublic(),
+				group.getFriendlyURL());
+		}
+
 		StringBuilder sb = new StringBuilder(4);
 
 		sb.append(FaroPropsValues.FARO_URL);
