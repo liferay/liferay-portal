@@ -11,14 +11,16 @@ import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
@@ -128,6 +130,21 @@ public class LayoutActionsProductNavigationControlMenuEntryTest {
 		Assert.assertTrue(url, url.contains("p_l_id="));
 	}
 
+	@Test
+	@TestInfo("LPD-117394")
+	public void testGetDropdownItemsWithLaunchDraftLayout() throws Exception {
+		Layout launchDraftLayout = LayoutTestUtil.addLaunchDraftLayout(
+			RandomTestUtil.randomLong(), _layout);
+
+		_user = UserTestUtil.addUser();
+
+		_testGetDropdownItemsWithLaunchDraftLayout(launchDraftLayout, _user);
+
+		_testGetDropdownItemsWithLaunchDraftLayout(
+			launchDraftLayout, TestPropsValues.getUser(), "Preview Launch",
+			"Delete from Launch");
+	}
+
 	private List<DropdownItem> _getActionDropdownItems(
 		List<DropdownItem> dropdownItems) {
 
@@ -148,37 +165,65 @@ public class LayoutActionsProductNavigationControlMenuEntryTest {
 	}
 
 	private HttpServletRequest _getHttpServletRequest() throws Exception {
+		return _getHttpServletRequest(_layout, TestPropsValues.getUser());
+	}
+
+	private HttpServletRequest _getHttpServletRequest(Layout layout, User user)
+		throws Exception {
+
 		MockHttpServletRequest mockHttpServletRequest =
 			new MockHttpServletRequest();
 
-		ThemeDisplay themeDisplay = _getThemeDisplay(mockHttpServletRequest);
+		ThemeDisplay themeDisplay = new ThemeDisplay();
+
+		themeDisplay.setCompany(
+			_companyLocalService.getCompany(TestPropsValues.getCompanyId()));
+		themeDisplay.setLayout(layout);
+		themeDisplay.setLayoutSet(layout.getLayoutSet());
+		themeDisplay.setLocale(LocaleUtil.getSiteDefault());
+		themeDisplay.setPermissionChecker(
+			PermissionCheckerFactoryUtil.create(user));
+		themeDisplay.setRequest(mockHttpServletRequest);
+		themeDisplay.setScopeGroupId(_group.getGroupId());
+		themeDisplay.setSiteGroupId(_group.getGroupId());
+		themeDisplay.setUser(user);
 
 		mockHttpServletRequest.setAttribute(
-			WebKeys.CURRENT_URL, _portal.getPortalURL(_layout, themeDisplay));
+			WebKeys.CURRENT_URL, _portal.getPortalURL(layout, themeDisplay));
 		mockHttpServletRequest.setAttribute(
 			WebKeys.THEME_DISPLAY, themeDisplay);
 
 		return mockHttpServletRequest;
 	}
 
-	private ThemeDisplay _getThemeDisplay(HttpServletRequest httpServletRequest)
+	private void _testGetDropdownItemsWithLaunchDraftLayout(
+			Layout layout, User user, String... expectedLabels)
 		throws Exception {
 
-		ThemeDisplay themeDisplay = new ThemeDisplay();
+		HttpServletRequest httpServletRequest = _getHttpServletRequest(
+			layout, user);
 
-		themeDisplay.setCompany(
-			_companyLocalService.getCompany(TestPropsValues.getCompanyId()));
-		themeDisplay.setLayout(_layout);
-		themeDisplay.setLayoutSet(_layout.getLayoutSet());
-		themeDisplay.setLocale(LocaleUtil.getSiteDefault());
-		themeDisplay.setPermissionChecker(
-			PermissionThreadLocal.getPermissionChecker());
-		themeDisplay.setRequest(httpServletRequest);
-		themeDisplay.setScopeGroupId(_group.getGroupId());
-		themeDisplay.setSiteGroupId(_group.getGroupId());
-		themeDisplay.setUser(TestPropsValues.getUser());
+		_productNavigationControlMenuEntry.includeIcon(
+			httpServletRequest, new MockHttpServletResponse());
 
-		return themeDisplay;
+		Object object = httpServletRequest.getAttribute(
+			"LAYOUT_ACTIONS_DISPLAY_CONTEXT");
+
+		List<DropdownItem> dropdownItems = _getActionDropdownItems(
+			ReflectionTestUtil.invoke(
+				object, "getDropdownItems", new Class<?>[0]));
+
+		for (int i = 0; i < expectedLabels.length; i++) {
+			DropdownItem dropdownItem = dropdownItems.get(i);
+
+			Assert.assertEquals(
+				dropdownItems.toString(), expectedLabels[i],
+				dropdownItem.get("label"));
+		}
+
+		Assert.assertEquals(
+			dropdownItems.toString(), expectedLabels.length,
+			dropdownItems.size());
 	}
 
 	@Inject
