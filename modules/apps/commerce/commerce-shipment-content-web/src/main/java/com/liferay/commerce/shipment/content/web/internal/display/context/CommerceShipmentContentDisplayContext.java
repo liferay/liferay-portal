@@ -24,6 +24,7 @@ import com.liferay.commerce.shipment.content.web.internal.display.context.helper
 import com.liferay.commerce.util.CommerceShippingEngineRegistry;
 import com.liferay.commerce.util.comparator.CommerceShipmentCreateDateComparator;
 import com.liferay.commerce.util.comparator.CommerceShipmentItemCreateDateComparator;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -105,8 +106,10 @@ public class CommerceShipmentContentDisplayContext {
 	public CommerceShipment getCommerceShipment() throws PortalException {
 		if (_commerceChannel == null) {
 			throw new NoSuchShipmentException(
-				"No commerce channel exists for group " +
-					_commerceShipmentContentRequestHelper.getScopeGroupId());
+				StringBundler.concat(
+					"No commerce shipment exists with the primary key ",
+					_commerceShipmentId, " and group ID ",
+					_commerceShipmentContentRequestHelper.getScopeGroupId()));
 		}
 
 		if (_commerceShipment != null) {
