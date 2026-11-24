@@ -115,14 +115,14 @@ public class CommerceProductAccountGroupFDSDataProviderTest {
 		}
 
 		Assert.assertEquals(
+			SetUtil.fromArray(
+				_accountGroup1.getName(), _accountGroup2.getName()),
+			_getAccountGroupNames(TestPropsValues.getUser()));
+		Assert.assertEquals(
 			Collections.singleton(_accountGroup1.getName()),
 			_getAccountGroupNames(_addAccountEntryUser(_accountGroup1)));
 		Assert.assertEquals(
 			Collections.emptySet(), _getAccountGroupNames(_addUser()));
-		Assert.assertEquals(
-			SetUtil.fromArray(
-				_accountGroup1.getName(), _accountGroup2.getName()),
-			_getAccountGroupNames(TestPropsValues.getUser()));
 	}
 
 	@Test
@@ -137,10 +137,10 @@ public class CommerceProductAccountGroupFDSDataProviderTest {
 			_assertPrincipalException(principalException);
 		}
 
+		Assert.assertEquals(2, _getItemsCount(TestPropsValues.getUser()));
 		Assert.assertEquals(
 			1, _getItemsCount(_addAccountEntryUser(_accountGroup1)));
 		Assert.assertEquals(0, _getItemsCount(_addUser()));
-		Assert.assertEquals(2, _getItemsCount(TestPropsValues.getUser()));
 	}
 
 	private User _addAccountEntryUser(AccountGroup accountGroup)
