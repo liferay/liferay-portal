@@ -42,7 +42,7 @@ function renderToggler(visible: boolean) {
 		/>
 	);
 
-	return screen.getByRole('tab');
+	return screen.getByRole('button');
 }
 
 describe('UnifiedSidebarToggler', () => {

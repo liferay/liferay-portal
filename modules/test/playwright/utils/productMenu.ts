@@ -44,9 +44,13 @@ export async function closeProductMenu(page: Page) {
 		);
 
 	if (!(await isClosed())) {
-		const button = page
-			.getByRole('tab', {name: 'Close Product Menu'})
-			.or(page.getByTestId('sideNavigationToggler'));
+		const button = page.getByRole('tab', {name: 'Close Product Menu'}).or(
+			page.getByRole('button', {
+				exact: true,
+				expanded: true,
+				name: 'Close Product Menu',
+			})
+		);
 
 		await expect(async () => {
 			await button.click();

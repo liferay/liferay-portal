@@ -159,10 +159,18 @@ export class CommerceLayoutsPage {
 		this.closeFrameButton = page
 			.getByRole('dialog')
 			.getByLabel('Close', {exact: true});
-		this.closeProductMenuButton = page.getByRole('tab', {
-			exact: true,
-			name: 'Close Product Menu',
-		});
+		this.closeProductMenuButton = page
+			.getByRole('tab', {
+				exact: true,
+				name: 'Close Product Menu',
+			})
+			.or(
+				page.getByRole('button', {
+					exact: true,
+					expanded: true,
+					name: 'Close Product Menu',
+				})
+			);
 		this.configureMenuItem = page.getByRole('menuitem', {
 			exact: true,
 			name: 'Configure',
@@ -281,10 +289,18 @@ export class CommerceLayoutsPage {
 		});
 		this.labelField = page.getByLabel('Field', {exact: true});
 		this.moreActionsButton = page.getByLabel('More actions');
-		this.openProductMenuButton = page.getByRole('tab', {
-			exact: true,
-			name: 'Open Product Menu',
-		});
+		this.openProductMenuButton = page
+			.getByRole('tab', {
+				exact: true,
+				name: 'Open Product Menu',
+			})
+			.or(
+				page.getByRole('button', {
+					exact: true,
+					expanded: false,
+					name: 'Open Product Menu',
+				})
+			);
 		this.orderActionsButton = (orderActionName: string) =>
 			page.getByRole('button', {exact: true, name: orderActionName});
 		this.orderActionDropDownButton = page

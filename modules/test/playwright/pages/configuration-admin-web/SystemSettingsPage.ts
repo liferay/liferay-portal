@@ -12,11 +12,17 @@ import {GlobalMenuPage} from '../product-navigation-applications-menu/GlobalMenu
 
 export class SystemSettingsPage {
 	private readonly globalMenuPage: GlobalMenuPage;
+	readonly closeProductMenuButton: Locator;
 	readonly page: Page;
 	readonly saveButton: Locator;
 
 	constructor(page: Page) {
 		this.page = page;
+		this.closeProductMenuButton = page.getByRole('button', {
+			exact: true,
+			expanded: true,
+			name: 'Close Product Menu',
+		});
 		this.globalMenuPage = new GlobalMenuPage(page);
 		this.saveButton = page
 			.getByRole('button', {name: 'Save'})
@@ -43,14 +49,8 @@ export class SystemSettingsPage {
 		await this.globalMenuPage.goToHome();
 		await this.globalMenuPage.goToControlPanel('System Settings');
 
-		if (
-			await this.page
-				.getByRole('tab', {name: 'Close Product Menu'})
-				.isVisible()
-		) {
-			await this.page
-				.getByRole('tab', {name: 'Close Product Menu'})
-				.click();
+		if (await this.closeProductMenuButton.isVisible()) {
+			await this.closeProductMenuButton.click();
 		}
 
 		await this.page
