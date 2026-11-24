@@ -53,11 +53,24 @@ definition {
 	@description = "This is a use case for LPS-52517."
 	@priority = 3
 	test ViewCorrectNumberOfWeeksMonthView {
-		Calendar.viewMonth(dateMonth = "April 2016");
+		var portalURL = PropsUtil.get("portal.url");
+		var portletId = selenium.getAttribute("//section[starts-with(@id,'portlet_com_liferay_calendar_web_portlet_CalendarPortlet')]@id");
+
+		var portletId = StringUtil.replaceFirst(${portletId}, "portlet_", "");
+
+		Navigator.openSpecificURL(url = "${portalURL}/web/guest/calendar-page?p_p_id=${portletId}&_${portletId}_activeView=month&_${portletId}_date=1460721600000");
+
+		AssertTextEquals.assertPartialText(
+			locator1 = "Calendar#SCHEDULER_VIEW_MONTH_DATE",
+			value1 = "April 2016");
 
 		Calendar.viewWeekCountViaMonthView(weekNumber = 5);
 
-		Calendar.viewMonth(dateMonth = "July 2016");
+		Navigator.openSpecificURL(url = "${portalURL}/web/guest/calendar-page?p_p_id=${portletId}&_${portletId}_activeView=month&_${portletId}_date=1468584000000");
+
+		AssertTextEquals.assertPartialText(
+			locator1 = "Calendar#SCHEDULER_VIEW_MONTH_DATE",
+			value1 = "July 2016");
 
 		Calendar.viewWeekCountViaMonthView(weekNumber = 6);
 	}

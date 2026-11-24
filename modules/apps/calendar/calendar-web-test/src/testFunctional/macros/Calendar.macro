@@ -684,41 +684,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro viewMonth(dateMonth = null) {
-		CalendarNavigator.gotoView(viewType = "Month");
-
-		/*
-		To ensure the desired month is always reached, scroll to the desired year and back to January until the month is called.
-		If you still haven't found the month, do the reverse with the limit up to December.
-		*/
-
-		var year = StringUtil.extractLast(${dateMonth}, " ");
-
-		while ((!(IsTextEqual.isPartialText(locator1 = "Calendar#SCHEDULER_VIEW_MONTH_DATE", value1 = ${year}))) && (maxIterations = "200")) {
-			var currentYear = selenium.getText("Calendar#SCHEDULER_VIEW_MONTH_DATE");
-
-			var currentYear = StringUtil.extractLast(${currentYear}, " ");
-
-			var yearLessThan = MathUtil.isLessThan(${year}, ${currentYear});
-
-			if (${yearLessThan} == "true") {
-				Click(locator1 = "Calendar#VIEW_PREVIOUS_BUTTON");
-			}
-			else {
-				Click(locator1 = "Calendar#VIEW_NEXT_BUTTON");
-			}
-		}
-
-		while ((IsTextNotEqual(locator1 = "Calendar#SCHEDULER_VIEW_MONTH_DATE", value1 = ${dateMonth})) && !(IsTextEqual.isPartialText(locator1 = "Calendar#SCHEDULER_VIEW_MONTH_DATE", value1 = "January"))) {
-			Click(locator1 = "Calendar#VIEW_PREVIOUS_BUTTON");
-		}
-
-		while ((IsTextNotEqual(locator1 = "Calendar#SCHEDULER_VIEW_MONTH_DATE", value1 = ${dateMonth})) && !(IsTextEqual.isPartialText(locator1 = "Calendar#SCHEDULER_VIEW_MONTH_DATE", value1 = "December"))) {
-			Click(locator1 = "Calendar#VIEW_NEXT_BUTTON");
-		}
-	}
-
-	@summary = "Default summary"
 	macro viewNoRSS(rssURL = null) {
 		Navigator.openSpecificURL(url = ${rssURL});
 
