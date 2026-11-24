@@ -131,7 +131,7 @@ public abstract class BaseBuildReport implements BuildReport {
 	}
 
 	@Override
-	public synchronized JenkinsMaster getJenkinsMaster() {
+	public JenkinsMaster getJenkinsMaster() {
 		if (_jenkinsMaster != null) {
 			return _jenkinsMaster;
 		}
@@ -311,7 +311,7 @@ public abstract class BaseBuildReport implements BuildReport {
 				"(/AXIS_VARIABLE=(?<axisVariable>\\d+))?/(?<buildNumber>\\d+)");
 
 	private final URL _buildURL;
-	private JenkinsMaster _jenkinsMaster;
+	private volatile JenkinsMaster _jenkinsMaster;
 	private List<URL> _testrayAttachmentURLs;
 	private final Map<String, URL> _testrayAttachmentURLsBySuffix =
 		new HashMap<>();
