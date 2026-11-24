@@ -95,6 +95,26 @@ export const createSearchTermProperty = (name: string): Property =>
 		type: PropertyTypes.SearchTerm,
 	});
 
+/**
+ * A campaign listed in the sidebar's Campaigns section. It keeps the campaign
+ * ID so that dragging it in creates a criterion already set to that campaign.
+ */
+export const createCampaignProperty = ({
+	id,
+	name,
+}: {
+	id: string;
+	name: string;
+}): Property =>
+	new Property({
+		entityName: CAMPAIGN_PROPERTY.entityName,
+		id,
+		label: name,
+		name: CAMPAIGN_PROPERTY.name,
+		propertyKey: CAMPAIGN_PROPERTY.propertyKey,
+		type: PropertyTypes.Campaign,
+	});
+
 export const createVocabularyProperty = ({
 	id,
 	name,

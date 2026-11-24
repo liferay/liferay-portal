@@ -1,4 +1,5 @@
 import {getRemoteCriterionTypeByPropertyKey} from '../criterion-types/registry';
+import {campaignPagination} from './campaignPagination';
 import {PaginatedSource} from '../criterion-types/RemoteCriterionType';
 import {searchTermPagination} from './searchTermPagination';
 
@@ -7,6 +8,7 @@ import {searchTermPagination} from './searchTermPagination';
 // `searchTermPagination.ts` for why that registry doesn't fit here.
 
 const PAGINATED_SIDEBAR_SECTIONS: Record<string, PaginatedSource> = {
+	campaign: campaignPagination,
 	'search-term': searchTermPagination,
 };
 
