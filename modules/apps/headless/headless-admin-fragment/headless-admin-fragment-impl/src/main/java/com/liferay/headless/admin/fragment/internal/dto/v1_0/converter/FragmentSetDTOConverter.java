@@ -58,6 +58,7 @@ public class FragmentSetDTOConverter
 				setKey(fragmentCollection::getFragmentCollectionKey);
 				setMarketplace(fragmentCollection::isMarketplace);
 				setName(fragmentCollection::getName);
+				setUuid(fragmentCollection::getUuid);
 			}
 		};
 	}

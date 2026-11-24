@@ -32,6 +32,8 @@ public class FragmentSetUtil {
 			FragmentSet fragmentSet, ServiceContext serviceContext)
 		throws Exception {
 
+		serviceContext.setUuid(fragmentSet.getUuid());
+
 		return FragmentCollectionServiceUtil.addFragmentCollection(
 			fragmentSet.getExternalReferenceCode(),
 			serviceContext.getScopeGroupId(), fragmentSet.getKey(),

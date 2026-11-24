@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.search.filter.Filter;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.odata.entity.EntityModel;
@@ -197,15 +198,8 @@ public class FragmentSetResourceImpl
 			true, contextCompany.getCompanyId(), siteExternalReferenceCode);
 
 		return _toFragmentSet(
-			_fragmentCollectionService.addFragmentCollection(
-				fragmentSet.getExternalReferenceCode(), groupId,
-				fragmentSet.getKey(), fragmentSet.getName(),
-				fragmentSet.getDescription(),
-				GetterUtil.getBoolean(fragmentSet.getMarketplace()),
-				ServiceContextUtil.getServiceContext(
-					contextCompany.getCompanyId(), fragmentSet.getDateCreated(),
-					groupId, contextHttpServletRequest,
-					fragmentSet.getDateModified(), contextUser.getUserId())),
+			_addFragmentCollection(
+				fragmentSet.getExternalReferenceCode(), fragmentSet, groupId),
 			_getSiteActionsUnsafeFunction(groupId, siteExternalReferenceCode));
 	}
 
@@ -225,17 +219,8 @@ public class FragmentSetResourceImpl
 
 		if (fragmentCollection == null) {
 			return _toFragmentSet(
-				_fragmentCollectionService.addFragmentCollection(
-					fragmentSetExternalReferenceCode, groupId,
-					fragmentSet.getKey(), fragmentSet.getName(),
-					fragmentSet.getDescription(),
-					GetterUtil.getBoolean(fragmentSet.getMarketplace()),
-					ServiceContextUtil.getServiceContext(
-						contextCompany.getCompanyId(),
-						fragmentSet.getDateCreated(), groupId,
-						contextHttpServletRequest,
-						fragmentSet.getDateModified(),
-						contextUser.getUserId())),
+				_addFragmentCollection(
+					fragmentSetExternalReferenceCode, fragmentSet, groupId),
 				_getSiteActionsUnsafeFunction(
 					groupId, siteExternalReferenceCode));
 		}
@@ -257,6 +242,24 @@ public class FragmentSetResourceImpl
 		finally {
 			ServiceContextThreadLocal.popServiceContext();
 		}
+	}
+
+	private FragmentCollection _addFragmentCollection(
+			String externalReferenceCode, FragmentSet fragmentSet, long groupId)
+		throws Exception {
+
+		ServiceContext serviceContext = ServiceContextUtil.getServiceContext(
+			contextCompany.getCompanyId(), fragmentSet.getDateCreated(),
+			groupId, contextHttpServletRequest, fragmentSet.getDateModified(),
+			contextUser.getUserId());
+
+		serviceContext.setUuid(fragmentSet.getUuid());
+
+		return _fragmentCollectionService.addFragmentCollection(
+			externalReferenceCode, groupId, fragmentSet.getKey(),
+			fragmentSet.getName(), fragmentSet.getDescription(),
+			GetterUtil.getBoolean(fragmentSet.getMarketplace()),
+			serviceContext);
 	}
 
 	private UnsafeFunction
