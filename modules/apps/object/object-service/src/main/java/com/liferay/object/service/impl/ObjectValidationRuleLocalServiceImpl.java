@@ -508,10 +508,15 @@ public class ObjectValidationRuleLocalServiceImpl
 			_objectRelationshipLocalServiceSnapshot.get();
 
 		for (ObjectRelationship objectRelationship :
-				objectRelationshipLocalService.
-					getObjectRelationshipsByObjectDefinitionId2(
-						objectDefinitionId,
-						ObjectRelationshipConstants.TYPE_ONE_TO_MANY)) {
+				ListUtil.concat(
+					objectRelationshipLocalService.
+						getObjectRelationshipsByObjectDefinitionId2(
+							objectDefinitionId,
+							ObjectRelationshipConstants.TYPE_ONE_TO_MANY),
+					objectRelationshipLocalService.
+						getObjectRelationshipsByObjectDefinitionId2(
+							objectDefinitionId,
+							ObjectRelationshipConstants.TYPE_ONE_TO_ONE))) {
 
 			ObjectField relationshipObjectField =
 				_objectFieldPersistence.findByPrimaryKey(
