@@ -6,7 +6,9 @@
 package com.liferay.jenkins.results.parser;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import org.json.JSONObject;
 
@@ -51,6 +53,15 @@ public class BaseBuildUpdaterTest
 		Mockito.verify(
 			baseBuildUpdater
 		).reinvoke();
+	}
+
+	@Test
+	public void testRunReporting() {
+		_testRunReporting(Build.class, true, true);
+		_testRunReporting(DefaultTopLevelBuild.class, false, true);
+		_testRunReporting(PortalTopLevelBuild.class, false, true);
+		_testRunReporting(SourceFormatBuild.class, false, false);
+		_testRunReporting(SourceFormatBuild.class, true, true);
 	}
 
 	private BaseBuildUpdater _mockBaseBuildUpdater(
@@ -188,6 +199,118 @@ public class BaseBuildUpdaterTest
 		Mockito.verify(
 			baseBuildUpdater, Mockito.never()
 		).reinvoke();
+	}
+
+	private void _testRunReporting(
+		Class<? extends Build> buildClass, boolean expectedReinvoked,
+		boolean hasParentBuild) {
+
+		Properties buildProperties = new Properties();
+
+		buildProperties.setProperty(
+			"reinvoke.rule[" + RandomTestUtil.randomString() + "]",
+			"priority=1");
+
+		JenkinsResultsParserUtil.setBuildProperties(buildProperties);
+
+		Build build = Mockito.mock(buildClass);
+
+		Mockito.when(
+			build.getBuildURL()
+		).thenReturn(
+			RandomTestUtil.randomString()
+		);
+
+		Build.Invocation invocation = Mockito.mock(Build.Invocation.class);
+
+		Mockito.when(
+			build.getCurrentInvocation()
+		).thenReturn(
+			invocation
+		);
+
+		if (hasParentBuild) {
+			Build parentBuild = Mockito.mock(Build.class);
+
+			Mockito.when(
+				build.getParentBuild()
+			).thenReturn(
+				parentBuild
+			);
+
+			Mockito.when(
+				parentBuild.getStatus()
+			).thenReturn(
+				"running"
+			);
+		}
+
+		BaseBuildUpdater baseBuildUpdater = Mockito.mock(
+			BaseBuildUpdater.class);
+
+		Mockito.doCallRealMethod(
+		).when(
+			baseBuildUpdater
+		).getBuild();
+
+		Mockito.doCallRealMethod(
+		).when(
+			baseBuildUpdater
+		).runReporting();
+
+		Mockito.when(
+			baseBuildUpdater.isBuildCompleted()
+		).thenReturn(
+			true
+		);
+
+		Mockito.when(
+			baseBuildUpdater.isBuildFailing()
+		).thenReturn(
+			true
+		);
+
+		ReflectionTestUtil.setFieldValue(
+			JenkinsResultsParserUtil.class, "_ciNode", true);
+		ReflectionTestUtil.setFieldValue(
+			ReinvokeRule.class, "_reinvokeRules", null);
+		ReflectionTestUtil.setFieldValue(baseBuildUpdater, "_build", build);
+		ReflectionTestUtil.setFieldValue(
+			baseBuildUpdater, "_reinvokeRulesMap", new HashMap<>());
+
+		try {
+			baseBuildUpdater.runReporting();
+		}
+		finally {
+			ReflectionTestUtil.setFieldValue(
+				JenkinsResultsParserUtil.class, "_ciNode", null);
+			ReflectionTestUtil.setFieldValue(
+				ReinvokeRule.class, "_reinvokeRules", null);
+		}
+
+		String expectedStatus = "completed";
+		VerificationMode verificationMode = Mockito.never();
+
+		if (expectedReinvoked) {
+			expectedStatus = "queued";
+			verificationMode = Mockito.times(1);
+		}
+
+		Mockito.verify(
+			baseBuildUpdater, verificationMode
+		).reinvoke();
+
+		Mockito.verify(
+			invocation, verificationMode
+		).setReinvokeRule(
+			Mockito.any(ReinvokeRule.class)
+		);
+
+		Mockito.verify(
+			build
+		).setStatus(
+			expectedStatus
+		);
 	}
 
 	private static final long _BUILD_IN_PROGRESS_QUEUE_ID = 1234;
