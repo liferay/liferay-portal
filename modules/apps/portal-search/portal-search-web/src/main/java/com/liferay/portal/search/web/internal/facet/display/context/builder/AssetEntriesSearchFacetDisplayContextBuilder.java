@@ -26,7 +26,7 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.search.web.internal.facet.display.context.AssetEntriesSearchFacetDisplayContext;
 import com.liferay.portal.search.web.internal.facet.display.context.BucketDisplayContext;
 import com.liferay.portal.search.web.internal.type.facet.configuration.TypeFacetPortletInstanceConfiguration;
-import com.liferay.portal.search.web.internal.util.DisplayContextHelperUtil;
+import com.liferay.portal.search.web.internal.util.DisplayContextUtil;
 import com.liferay.portal.search.web.internal.util.comparator.BucketDisplayContextComparatorFactoryUtil;
 
 import jakarta.portlet.RenderRequest;
@@ -173,7 +173,7 @@ public class AssetEntriesSearchFacetDisplayContextBuilder
 	}
 
 	protected long getDisplayStyleGroupId() {
-		return DisplayContextHelperUtil.getDisplayStyleGroupId(
+		return DisplayContextUtil.getDisplayStyleGroupId(
 			_typeFacetPortletInstanceConfiguration.
 				displayStyleGroupExternalReferenceCode(),
 			_themeDisplay);

@@ -28,7 +28,7 @@ import com.liferay.portal.search.web.internal.modified.facet.configuration.Modif
 import com.liferay.portal.search.web.internal.modified.facet.display.context.ModifiedFacetCalendarDisplayContext;
 import com.liferay.portal.search.web.internal.modified.facet.display.context.ModifiedFacetDisplayContext;
 import com.liferay.portal.search.web.internal.util.DateRangeFactoryUtil;
-import com.liferay.portal.search.web.internal.util.DisplayContextHelperUtil;
+import com.liferay.portal.search.web.internal.util.DisplayContextUtil;
 import com.liferay.portal.search.web.internal.util.comparator.BucketDisplayContextComparatorFactoryUtil;
 
 import jakarta.portlet.RenderRequest;
@@ -142,7 +142,7 @@ public class ModifiedFacetDisplayContextBuilder implements Serializable {
 	}
 
 	protected long getDisplayStyleGroupId() {
-		return DisplayContextHelperUtil.getDisplayStyleGroupId(
+		return DisplayContextUtil.getDisplayStyleGroupId(
 			_modifiedFacetPortletInstanceConfiguration.
 				displayStyleGroupExternalReferenceCode(),
 			_themeDisplay);

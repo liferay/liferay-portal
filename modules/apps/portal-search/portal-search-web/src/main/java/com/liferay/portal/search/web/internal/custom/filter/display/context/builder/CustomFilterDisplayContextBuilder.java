@@ -13,7 +13,7 @@ import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.search.web.internal.custom.filter.configuration.CustomFilterPortletInstanceConfiguration;
 import com.liferay.portal.search.web.internal.custom.filter.display.context.CustomFilterDisplayContext;
-import com.liferay.portal.search.web.internal.util.DisplayContextHelperUtil;
+import com.liferay.portal.search.web.internal.util.DisplayContextUtil;
 
 /**
  * @author André de Oliveira
@@ -125,7 +125,7 @@ public class CustomFilterDisplayContextBuilder {
 			customFilterPortletInstanceConfiguration =
 				getCustomFilterPortletInstanceConfiguration();
 
-		return DisplayContextHelperUtil.getDisplayStyleGroupId(
+		return DisplayContextUtil.getDisplayStyleGroupId(
 			customFilterPortletInstanceConfiguration.
 				displayStyleGroupExternalReferenceCode(),
 			_themeDisplay);

@@ -23,7 +23,7 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.search.web.internal.facet.display.context.BucketDisplayContext;
 import com.liferay.portal.search.web.internal.facet.display.context.ScopeSearchFacetDisplayContext;
 import com.liferay.portal.search.web.internal.site.facet.configuration.SiteFacetPortletInstanceConfiguration;
-import com.liferay.portal.search.web.internal.util.DisplayContextHelperUtil;
+import com.liferay.portal.search.web.internal.util.DisplayContextUtil;
 import com.liferay.portal.search.web.internal.util.comparator.BucketDisplayContextComparatorFactoryUtil;
 
 import jakarta.portlet.RenderRequest;
@@ -178,7 +178,7 @@ public class ScopeSearchFacetDisplayContextBuilder {
 	}
 
 	protected long getDisplayStyleGroupId() {
-		return DisplayContextHelperUtil.getDisplayStyleGroupId(
+		return DisplayContextUtil.getDisplayStyleGroupId(
 			_siteFacetPortletInstanceConfiguration.
 				displayStyleGroupExternalReferenceCode(),
 			_themeDisplay);

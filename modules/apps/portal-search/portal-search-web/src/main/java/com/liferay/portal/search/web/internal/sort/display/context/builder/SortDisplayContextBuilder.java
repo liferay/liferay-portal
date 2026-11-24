@@ -20,7 +20,7 @@ import com.liferay.portal.search.web.internal.sort.configuration.SortPortletInst
 import com.liferay.portal.search.web.internal.sort.display.context.SortDisplayContext;
 import com.liferay.portal.search.web.internal.sort.display.context.SortTermDisplayContext;
 import com.liferay.portal.search.web.internal.sort.portlet.SortPortletPreferences;
-import com.liferay.portal.search.web.internal.util.DisplayContextHelperUtil;
+import com.liferay.portal.search.web.internal.util.DisplayContextUtil;
 
 import jakarta.portlet.RenderRequest;
 
@@ -110,7 +110,7 @@ public class SortDisplayContextBuilder {
 	}
 
 	protected long getDisplayStyleGroupId() {
-		return DisplayContextHelperUtil.getDisplayStyleGroupId(
+		return DisplayContextUtil.getDisplayStyleGroupId(
 			_sortPortletInstanceConfiguration.
 				displayStyleGroupExternalReferenceCode(),
 			_themeDisplay);

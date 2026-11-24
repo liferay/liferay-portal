@@ -32,7 +32,7 @@ import com.liferay.portal.search.web.internal.custom.facet.display.context.Custo
 import com.liferay.portal.search.web.internal.custom.facet.util.CustomFacetUtil;
 import com.liferay.portal.search.web.internal.facet.display.context.BucketDisplayContext;
 import com.liferay.portal.search.web.internal.util.DateRangeFactoryUtil;
-import com.liferay.portal.search.web.internal.util.DisplayContextHelperUtil;
+import com.liferay.portal.search.web.internal.util.DisplayContextUtil;
 import com.liferay.portal.search.web.internal.util.comparator.BucketDisplayContextComparatorFactoryUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -518,7 +518,7 @@ public class CustomFacetDisplayContextBuilder {
 	}
 
 	private long _getDisplayStyleGroupId() {
-		return DisplayContextHelperUtil.getDisplayStyleGroupId(
+		return DisplayContextUtil.getDisplayStyleGroupId(
 			_customFacetPortletInstanceConfiguration.
 				displayStyleGroupExternalReferenceCode(),
 			_themeDisplay);

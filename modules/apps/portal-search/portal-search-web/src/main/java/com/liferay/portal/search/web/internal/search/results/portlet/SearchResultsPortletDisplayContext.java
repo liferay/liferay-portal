@@ -17,7 +17,7 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.search.hits.TotalHitsRelation;
 import com.liferay.portal.search.web.internal.result.display.context.SearchResultSummaryDisplayContext;
 import com.liferay.portal.search.web.internal.search.results.configuration.SearchResultsPortletInstanceConfiguration;
-import com.liferay.portal.search.web.internal.util.DisplayContextHelperUtil;
+import com.liferay.portal.search.web.internal.util.DisplayContextUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -45,7 +45,7 @@ public class SearchResultsPortletDisplayContext implements Serializable {
 	}
 
 	public long getDisplayStyleGroupId() {
-		return DisplayContextHelperUtil.getDisplayStyleGroupId(
+		return DisplayContextUtil.getDisplayStyleGroupId(
 			_searchResultsPortletInstanceConfiguration.
 				displayStyleGroupExternalReferenceCode(),
 			_themeDisplay);

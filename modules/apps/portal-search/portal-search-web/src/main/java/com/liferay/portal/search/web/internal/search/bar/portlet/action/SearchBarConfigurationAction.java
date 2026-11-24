@@ -17,7 +17,7 @@ import com.liferay.portal.search.web.constants.SearchBarPortletKeys;
 import com.liferay.portal.search.web.internal.search.bar.portlet.configuration.SearchBarPortletInstanceConfiguration;
 import com.liferay.portal.search.web.internal.search.bar.portlet.display.context.SearchBarPortletDisplayContext;
 import com.liferay.portal.search.web.internal.search.bar.portlet.helper.SearchBarPrecedenceHelper;
-import com.liferay.portal.search.web.internal.util.DisplayContextHelperUtil;
+import com.liferay.portal.search.web.internal.util.DisplayContextUtil;
 import com.liferay.portlet.display.template.portlet.action.BaseConfigurationAction;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -90,7 +90,7 @@ public class SearchBarConfigurationAction extends BaseConfigurationAction {
 			searchBarPortletInstanceConfiguration,
 		ThemeDisplay themeDisplay) {
 
-		return DisplayContextHelperUtil.getDisplayStyleGroupId(
+		return DisplayContextUtil.getDisplayStyleGroupId(
 			searchBarPortletInstanceConfiguration.
 				displayStyleGroupExternalReferenceCode(),
 			themeDisplay);

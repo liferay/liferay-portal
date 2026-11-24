@@ -47,7 +47,7 @@ import com.liferay.portal.search.web.internal.search.bar.portlet.SearchBarPortle
 import com.liferay.portal.search.web.internal.search.bar.portlet.configuration.SearchBarPortletInstanceConfiguration;
 import com.liferay.portal.search.web.internal.search.bar.portlet.display.context.SearchBarPortletDisplayContext;
 import com.liferay.portal.search.web.internal.search.bar.portlet.helper.SearchBarPrecedenceHelper;
-import com.liferay.portal.search.web.internal.util.DisplayContextHelperUtil;
+import com.liferay.portal.search.web.internal.util.DisplayContextUtil;
 import com.liferay.portal.search.web.portlet.shared.search.PortletSharedSearchRequest;
 import com.liferay.portal.search.web.portlet.shared.search.PortletSharedSearchResponse;
 import com.liferay.portal.search.web.search.request.SearchSettings;
@@ -128,7 +128,7 @@ public class SearchBarPortletDisplayContextFactory {
 			SearchScope.THIS_SITE.getParameterString());
 		searchBarPortletDisplayContext.setDestinationFriendlyURL(destination);
 		searchBarPortletDisplayContext.setDisplayStyleGroupId(
-			DisplayContextHelperUtil.getDisplayStyleGroupId(
+			DisplayContextUtil.getDisplayStyleGroupId(
 				_searchBarPortletInstanceConfiguration.
 					displayStyleGroupExternalReferenceCode(),
 				themeDisplay));
