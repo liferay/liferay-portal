@@ -41,9 +41,6 @@ public class AssetEntryVerticalCardTest {
 
 	@Before
 	public void setUp() {
-		_groupLocalServiceUtilMockedStatic = Mockito.mockStatic(
-			GroupLocalServiceUtil.class);
-
 		Mockito.doReturn(
 			_assetRendererFactory
 		).when(
@@ -96,7 +93,7 @@ public class AssetEntryVerticalCardTest {
 		Mockito.when(
 			group.getDescriptiveName(LocaleUtil.US)
 		).thenReturn(
-			"Test & Co"
+			"A & B"
 		);
 
 		_groupLocalServiceUtilMockedStatic.when(
@@ -105,7 +102,7 @@ public class AssetEntryVerticalCardTest {
 			group
 		);
 
-		Assert.assertEquals("Test & Co", _getSubtitle());
+		Assert.assertEquals("A & B", _getSubtitle());
 	}
 
 	@Test
@@ -121,10 +118,10 @@ public class AssetEntryVerticalCardTest {
 			_assetRendererFactory.getTypeName(
 				LocaleUtil.US, _SUBTYPE_SELECTION_ID)
 		).thenReturn(
-			"Test & Co"
+			"A & B"
 		);
 
-		Assert.assertEquals("Test & Co", _getSubtitle());
+		Assert.assertEquals("A & B", _getSubtitle());
 	}
 
 	private String _getSubtitle() {
@@ -146,7 +143,8 @@ public class AssetEntryVerticalCardTest {
 	private final AssetRendererFactory<?> _assetRendererFactory = Mockito.mock(
 		AssetRendererFactory.class);
 	private MockedStatic<GroupLocalServiceUtil>
-		_groupLocalServiceUtilMockedStatic;
+		_groupLocalServiceUtilMockedStatic = Mockito.mockStatic(
+			GroupLocalServiceUtil.class);
 	private final RenderRequest _renderRequest = Mockito.mock(
 		RenderRequest.class);
 
