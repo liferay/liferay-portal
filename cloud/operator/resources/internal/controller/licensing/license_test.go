@@ -131,8 +131,8 @@ func TestEvaluateLicense(t *testing.T) {
 
 			if (licenseEvaluation.validUntil != nil) != testCase.expectedValidUntil {
 				t.Errorf(
-					"validUntil = %v, want present %t",
-					licenseEvaluation.validUntil, testCase.expectedValidUntil,
+					"validUntil present = %t, want %t",
+					licenseEvaluation.validUntil != nil, testCase.expectedValidUntil,
 				)
 			}
 		})
