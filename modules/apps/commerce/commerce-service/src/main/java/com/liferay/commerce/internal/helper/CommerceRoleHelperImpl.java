@@ -268,6 +268,23 @@ public class CommerceRoleHelperImpl implements CommerceRoleHelper {
 		}
 	}
 
+	private void _setObjectDefinitionRolePermissions(
+			long companyId, String primaryKey,
+			Map<String, String[]> resourceActionIds, Role role, int scope)
+		throws PortalException {
+
+		for (Map.Entry<String, String[]> entry : resourceActionIds.entrySet()) {
+			_resourceActionLocalService.checkResourceActions(
+				entry.getKey(), Arrays.asList(entry.getValue()));
+
+			for (String actionId : entry.getValue()) {
+				_resourcePermissionLocalService.addResourcePermission(
+					companyId, entry.getKey(), scope, primaryKey,
+					role.getRoleId(), actionId);
+			}
+		}
+	}
+
 	private void _setRolePermissions(
 			long companyId, String primaryKey,
 			Map<String, String[]> resourceActionIds, Role role, int scope)
@@ -300,6 +317,10 @@ public class CommerceRoleHelperImpl implements CommerceRoleHelper {
 
 		Map<String, String[]> companyResourceActionIds = new HashMap<>();
 		Map<String, String[]> groupResourceActionIds = new HashMap<>();
+		Map<String, String[]> objectDefinitionCompanyResourceActionIds =
+			new HashMap<>();
+		Map<String, String[]> objectDefinitionGroupResourceActionIds =
+			new HashMap<>();
 
 		String name = role.getName();
 
@@ -359,7 +380,7 @@ public class CommerceRoleHelperImpl implements CommerceRoleHelper {
 				});
 
 			if (commerceReturnItemObjectDefinition != null) {
-				groupResourceActionIds.put(
+				objectDefinitionGroupResourceActionIds.put(
 					commerceReturnItemObjectDefinition.getClassName(),
 					new String[] {ActionKeys.ADD_DISCUSSION});
 			}
@@ -437,7 +458,7 @@ public class CommerceRoleHelperImpl implements CommerceRoleHelper {
 				});
 
 			if (commerceReturnItemObjectDefinition != null) {
-				groupResourceActionIds.put(
+				objectDefinitionGroupResourceActionIds.put(
 					commerceReturnItemObjectDefinition.getClassName(),
 					new String[] {ActionKeys.ADD_DISCUSSION});
 			}
@@ -493,7 +514,7 @@ public class CommerceRoleHelperImpl implements CommerceRoleHelper {
 				});
 
 			if (commerceReturnItemObjectDefinition != null) {
-				groupResourceActionIds.put(
+				objectDefinitionGroupResourceActionIds.put(
 					commerceReturnItemObjectDefinition.getClassName(),
 					new String[] {ActionKeys.ADD_DISCUSSION});
 			}
@@ -722,10 +743,10 @@ public class CommerceRoleHelperImpl implements CommerceRoleHelper {
 					continue;
 				}
 
-				companyResourceActionIds.put(
+				objectDefinitionCompanyResourceActionIds.put(
 					objectDefinition.getResourceName(),
 					new String[] {ObjectActionKeys.ADD_OBJECT_ENTRY});
-				companyResourceActionIds.put(
+				objectDefinitionCompanyResourceActionIds.put(
 					objectDefinition.getClassName(),
 					new String[] {
 						ActionKeys.ADD_DISCUSSION, ActionKeys.DELETE,
@@ -733,7 +754,7 @@ public class CommerceRoleHelperImpl implements CommerceRoleHelper {
 						ActionKeys.UPDATE, ActionKeys.UPDATE_DISCUSSION,
 						ActionKeys.VIEW
 					});
-				companyResourceActionIds.put(
+				objectDefinitionCompanyResourceActionIds.put(
 					objectDefinition.getPortletId(),
 					new String[] {ActionKeys.VIEW});
 			}
@@ -751,7 +772,7 @@ public class CommerceRoleHelperImpl implements CommerceRoleHelper {
 					continue;
 				}
 
-				companyResourceActionIds.put(
+				objectDefinitionCompanyResourceActionIds.put(
 					objectDefinition.getResourceName(),
 					new String[] {ObjectActionKeys.ADD_OBJECT_ENTRY});
 			}
@@ -778,6 +799,16 @@ public class CommerceRoleHelperImpl implements CommerceRoleHelper {
 			}
 		}
 
+		_setObjectDefinitionRolePermissions(
+			serviceContext.getCompanyId(),
+			String.valueOf(serviceContext.getCompanyId()),
+			objectDefinitionCompanyResourceActionIds, role,
+			ResourceConstants.SCOPE_COMPANY);
+		_setObjectDefinitionRolePermissions(
+			serviceContext.getCompanyId(),
+			String.valueOf(GroupConstants.DEFAULT_PARENT_GROUP_ID),
+			objectDefinitionGroupResourceActionIds, role,
+			ResourceConstants.SCOPE_GROUP_TEMPLATE);
 		_setRolePermissions(
 			serviceContext.getCompanyId(),
 			String.valueOf(serviceContext.getCompanyId()),
