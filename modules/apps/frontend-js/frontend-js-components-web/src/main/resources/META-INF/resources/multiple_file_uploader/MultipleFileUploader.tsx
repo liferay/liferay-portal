@@ -294,7 +294,7 @@ export default function MultipleFileUploader({
 
 						{dropErrorMessage && (
 							<ClayForm.FeedbackGroup className="has-error">
-								<ClayForm.FeedbackItem>
+								<ClayForm.FeedbackItem role="alert">
 									<ClayForm.FeedbackIndicator symbol="exclamation-full" />
 
 									{dropErrorMessage}
