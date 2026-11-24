@@ -402,7 +402,7 @@ public <#if schema.discriminator?has_content>abstract</#if> class ${schemaName} 
 
 			{
 				<#list jsonMapPropertyNames as propertyName>
-					if (${propertyName}.containsKey(propertyName)) {
+					<#if propertyName?is_last>
 						Object value = ${propertyName}.get(propertyName);
 
 						if (!(value instanceof UnsafeSupplier<?, ?>)) {
@@ -417,11 +417,26 @@ public <#if schema.discriminator?has_content>abstract</#if> class ${schemaName} 
 						catch (Throwable throwable) {
 							throw new RuntimeException(throwable);
 						}
-					}
+					<#else>
+						if (${propertyName}.containsKey(propertyName)) {
+							Object value = ${propertyName}.get(propertyName);
+
+							if (!(value instanceof UnsafeSupplier<?, ?>)) {
+								return value;
+							}
+
+							UnsafeSupplier<?, ?> unsafeSupplier = (UnsafeSupplier<?, ?>)value;
+
+							try {
+								return unsafeSupplier.get();
+							}
+							catch (Throwable throwable) {
+								throw new RuntimeException(throwable);
+							}
+						}
+					</#if>
 				</#list>
 			}
-
-			return null;
 		}
 
 		public void setPropertyValue(String propertyName, Object propertyValue) {
