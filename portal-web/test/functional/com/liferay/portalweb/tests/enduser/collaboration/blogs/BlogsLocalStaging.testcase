@@ -590,11 +590,20 @@ definition {
 
 		Blogs.viewNoEntryCP();
 
-		// We need to wait for the system time to pass by 2 minutes in order for a scheduled blog entry to be published. There is currently no easy way to manipulate the system time in CI for automation. 2 minutes is the shortest value we can set while ensuring the stability of the test. See LPS-157957.
+		// We need to wait for the display date to pass and for the entry check interval to run before a scheduled blog entry is published. There is currently no easy way to manipulate the system time in CI for automation. See LPS-157957.
 
 		Pause(value1 = 120000);
 
 		Refresh();
+
+		while ((IsElementNotPresent(key_entryTitle = "Blogs Entry Title", locator1 = "BlogsEntry#TITLE")) && (maxIterations = "6")) {
+
+			// Wait for the next entry check run before refreshing again. See LPS-157957.
+
+			Pause(value1 = 30000);
+
+			Refresh();
+		}
 
 		BlogsEntry.viewEntryPG(
 			entryContent = "Blogs Entry Content",
