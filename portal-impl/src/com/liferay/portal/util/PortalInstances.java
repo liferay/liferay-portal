@@ -379,51 +379,8 @@ public class PortalInstances {
 	}
 
 	public static boolean isCompanyInDeletionProcess(long companyId) {
-		CompanyDeletionProcess companyDeletionProcess =
-			_companyIdsInDeletionProcess.get(companyId);
-
-		if (companyDeletionProcess == null) {
-			return false;
-		}
-
-		if (ClusterExecutorUtil.isEnabled() &&
-			(companyDeletionProcess._clusterNodeId != null) &&
-			!ClusterExecutorUtil.isClusterNodeAlive(
-				companyDeletionProcess._clusterNodeId)) {
-
-			if (_companyIdsInDeletionProcess.remove(
-					companyId, companyDeletionProcess) &&
-				_log.isWarnEnabled()) {
-
-				_log.warn(
-					StringBundler.concat(
-						"Removing company ", companyId,
-						" from the deletion process because cluster node \"",
-						companyDeletionProcess._clusterNodeId,
-						"\" left the cluster"));
-			}
-
-			return false;
-		}
-
-		long elapsedTime =
-			System.currentTimeMillis() - companyDeletionProcess._timestamp;
-
-		if (elapsedTime <= PropsValues.COMPANY_DELETE_IN_PROCESS_MAX_TIME) {
-			return true;
-		}
-
-		if (_companyIdsInDeletionProcess.remove(
-				companyId, companyDeletionProcess) &&
-			_log.isWarnEnabled()) {
-
-			_log.warn(
-				StringBundler.concat(
-					"Removing company ", companyId,
-					" from the deletion process after ", elapsedTime, " ms"));
-		}
-
-		return false;
+		return _isCompanyInProcess(
+			companyId, _companyIdsInDeletionProcess, "deletion");
 	}
 
 	public static boolean isCompanyInImportProcess() {
@@ -470,33 +427,15 @@ public class PortalInstances {
 				companyId + " is already in deletion");
 		}
 
-		if (Objects.equals(_copyInProcessCompanyId, companyId)) {
+		if (_isCompanyInProcess(companyId, _companyIdsInCopyProcess, "copy")) {
 			throw new UnsupportedOperationException(
 				companyId + " is being copied");
 		}
 
-		CompanyDeletionProcess companyDeletionProcess =
-			new CompanyDeletionProcess(
-				_getLocalClusterNodeId(), System.currentTimeMillis());
-
-		_companyIdsInDeletionProcess.put(companyId, companyDeletionProcess);
-
-		_notifyCluster(
-			new MethodHandler(
-				_addCompanyIdInDeletionProcessMethodKey, companyId,
-				companyDeletionProcess._clusterNodeId,
-				companyDeletionProcess._timestamp));
-
-		return () -> {
-			_companyIdsInDeletionProcess.remove(
-				companyId, companyDeletionProcess);
-
-			_notifyCluster(
-				new MethodHandler(
-					_removeCompanyIdInDeletionProcessMethodKey, companyId,
-					companyDeletionProcess._clusterNodeId,
-					companyDeletionProcess._timestamp));
-		};
+		return _setCompanyInProcessWithSafeCloseable(
+			_addCompanyIdInDeletionProcessMethodKey, companyId,
+			_companyIdsInDeletionProcess,
+			_removeCompanyIdInDeletionProcessMethodKey);
 	}
 
 	public static SafeCloseable setCopyInProcessCompanyIdWithSafeCloseable(
@@ -507,9 +446,27 @@ public class PortalInstances {
 				"Copying an instance is already in progress");
 		}
 
+		if (isCompanyInDeletionProcess(companyId)) {
+			throw new UnsupportedOperationException(
+				companyId + " is being deleted");
+		}
+
+		if (_isCompanyInProcess(companyId, _companyIdsInCopyProcess, "copy")) {
+			throw new UnsupportedOperationException(
+				companyId + " is being copied");
+		}
+
+		SafeCloseable safeCloseable = _setCompanyInProcessWithSafeCloseable(
+			_addCompanyIdInCopyProcessMethodKey, companyId,
+			_companyIdsInCopyProcess, _removeCompanyIdInCopyProcessMethodKey);
+
 		_copyInProcessCompanyId = companyId;
 
-		return () -> _copyInProcessCompanyId = null;
+		return () -> {
+			_copyInProcessCompanyId = null;
+
+			safeCloseable.close();
+		};
 	}
 
 	public static SafeCloseable setImportInProcessCompanyIdWithSafeCloseable(
@@ -525,11 +482,18 @@ public class PortalInstances {
 		return () -> _importInProcessCompanyId = null;
 	}
 
+	private static void _addCompanyIdInCopyProcess(
+		long companyId, String clusterNodeId, long timestamp) {
+
+		_companyIdsInCopyProcess.put(
+			companyId, new CompanyProcess(clusterNodeId, timestamp));
+	}
+
 	private static void _addCompanyIdInDeletionProcess(
 		long companyId, String clusterNodeId, long timestamp) {
 
 		_companyIdsInDeletionProcess.put(
-			companyId, new CompanyDeletionProcess(clusterNodeId, timestamp));
+			companyId, new CompanyProcess(clusterNodeId, timestamp));
 	}
 
 	private static long _getCompanyIdByHost(
@@ -598,6 +562,53 @@ public class PortalInstances {
 		return clusterNode.getClusterNodeId();
 	}
 
+	private static boolean _isCompanyInProcess(
+		long companyId, Map<Long, CompanyProcess> companyProcesses,
+		String processName) {
+
+		CompanyProcess companyProcess = companyProcesses.get(companyId);
+
+		if (companyProcess == null) {
+			return false;
+		}
+
+		if (ClusterExecutorUtil.isEnabled() &&
+			(companyProcess._clusterNodeId != null) &&
+			!ClusterExecutorUtil.isClusterNodeAlive(
+				companyProcess._clusterNodeId)) {
+
+			if (companyProcesses.remove(companyId, companyProcess) &&
+				_log.isWarnEnabled()) {
+
+				_log.warn(
+					StringBundler.concat(
+						"Removing company ", companyId, " from the ",
+						processName, " process because cluster node \"",
+						companyProcess._clusterNodeId, "\" left the cluster"));
+			}
+
+			return false;
+		}
+
+		long elapsedTime =
+			System.currentTimeMillis() - companyProcess._timestamp;
+
+		if (elapsedTime <= PropsValues.COMPANY_DELETE_IN_PROCESS_MAX_TIME) {
+			return true;
+		}
+
+		if (companyProcesses.remove(companyId, companyProcess) &&
+			_log.isWarnEnabled()) {
+
+			_log.warn(
+				StringBundler.concat(
+					"Removing company ", companyId, " from the ", processName,
+					" process after ", elapsedTime, " ms"));
+		}
+
+		return false;
+	}
+
 	private static boolean _isCompanyVirtualHostname(
 			long companyId, String serverName)
 		throws PortalException {
@@ -622,11 +633,18 @@ public class PortalInstances {
 		ClusterExecutorUtil.execute(clusterRequest);
 	}
 
+	private static void _removeCompanyIdInCopyProcess(
+		long companyId, String clusterNodeId, long timestamp) {
+
+		_companyIdsInCopyProcess.remove(
+			companyId, new CompanyProcess(clusterNodeId, timestamp));
+	}
+
 	private static void _removeCompanyIdInDeletionProcess(
 		long companyId, String clusterNodeId, long timestamp) {
 
 		_companyIdsInDeletionProcess.remove(
-			companyId, new CompanyDeletionProcess(clusterNodeId, timestamp));
+			companyId, new CompanyProcess(clusterNodeId, timestamp));
 	}
 
 	private static void _setAttributes(
@@ -665,22 +683,56 @@ public class PortalInstances {
 		}
 	}
 
+	private static SafeCloseable _setCompanyInProcessWithSafeCloseable(
+		MethodKey addMethodKey, long companyId,
+		Map<Long, CompanyProcess> companyProcesses, MethodKey removeMethodKey) {
+
+		CompanyProcess companyProcess = new CompanyProcess(
+			_getLocalClusterNodeId(), System.currentTimeMillis());
+
+		companyProcesses.put(companyId, companyProcess);
+
+		_notifyCluster(
+			new MethodHandler(
+				addMethodKey, companyId, companyProcess._clusterNodeId,
+				companyProcess._timestamp));
+
+		return () -> {
+			companyProcesses.remove(companyId, companyProcess);
+
+			_notifyCluster(
+				new MethodHandler(
+					removeMethodKey, companyId, companyProcess._clusterNodeId,
+					companyProcess._timestamp));
+		};
+	}
+
 	private PortalInstances() {
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		PortalInstances.class);
 
+	private static final MethodKey _addCompanyIdInCopyProcessMethodKey =
+		new MethodKey(
+			PortalInstances.class, "_addCompanyIdInCopyProcess", long.class,
+			String.class, long.class);
 	private static final MethodKey _addCompanyIdInDeletionProcessMethodKey =
 		new MethodKey(
 			PortalInstances.class, "_addCompanyIdInDeletionProcess", long.class,
 			String.class, long.class);
 	private static final Set<String> _autoLoginIgnoreHosts;
 	private static final Set<String> _autoLoginIgnorePaths;
-	private static final Map<Long, CompanyDeletionProcess>
+	private static final Map<Long, CompanyProcess> _companyIdsInCopyProcess =
+		new ConcurrentHashMap<>();
+	private static final Map<Long, CompanyProcess>
 		_companyIdsInDeletionProcess = new ConcurrentHashMap<>();
 	private static volatile Long _copyInProcessCompanyId;
 	private static Long _importInProcessCompanyId;
+	private static final MethodKey _removeCompanyIdInCopyProcessMethodKey =
+		new MethodKey(
+			PortalInstances.class, "_removeCompanyIdInCopyProcess", long.class,
+			String.class, long.class);
 	private static final MethodKey _removeCompanyIdInDeletionProcessMethodKey =
 		new MethodKey(
 			PortalInstances.class, "_removeCompanyIdInDeletionProcess",
@@ -699,7 +751,7 @@ public class PortalInstances {
 			PropsUtil.getArray(PropsKeys.VIRTUAL_HOSTS_IGNORE_PATHS));
 	}
 
-	private static class CompanyDeletionProcess {
+	private static class CompanyProcess {
 
 		@Override
 		public boolean equals(Object object) {
@@ -707,15 +759,12 @@ public class PortalInstances {
 				return true;
 			}
 
-			if (!(object instanceof
-					CompanyDeletionProcess companyDeletionProcess)) {
-
+			if (!(object instanceof CompanyProcess companyProcess)) {
 				return false;
 			}
 
-			if (Objects.equals(
-					_clusterNodeId, companyDeletionProcess._clusterNodeId) &&
-				(_timestamp == companyDeletionProcess._timestamp)) {
+			if (Objects.equals(_clusterNodeId, companyProcess._clusterNodeId) &&
+				(_timestamp == companyProcess._timestamp)) {
 
 				return true;
 			}
@@ -730,7 +779,7 @@ public class PortalInstances {
 			return HashUtil.hash(hash, _timestamp);
 		}
 
-		private CompanyDeletionProcess(String clusterNodeId, long timestamp) {
+		private CompanyProcess(String clusterNodeId, long timestamp) {
 			_clusterNodeId = clusterNodeId;
 			_timestamp = timestamp;
 		}
