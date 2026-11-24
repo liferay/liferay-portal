@@ -12,12 +12,12 @@
 <tbody>
 <tr>
 	<td>CATEGORY</td>
-	<td>//div[@data-qa-id='sideNavigation']//ul[@role='menubar']//button[@role='menuitem' and normalize-space()='${key_category}']</td>
+	<td>//*[@data-qa-id='sideNavigation']//ul[@role='menubar']//button[@role='menuitem' and normalize-space()='${key_category}']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>COLLAPSED_CATEGORY</td>
-	<td>//div[@data-qa-id='sideNavigation']//ul[@role='menubar']//button[@role='menuitem' and normalize-space()='${key_category}' and @aria-expanded='false']</td>
+	<td>//*[@data-qa-id='sideNavigation']//ul[@role='menubar']//button[@role='menuitem' and normalize-space()='${key_category}' and @aria-expanded='false']</td>
 	<td></td>
 </tr>
 <tr>
@@ -32,22 +32,22 @@
 </tr>
 <tr>
 	<td>PANEL_TITLE</td>
-	<td>//div[@data-qa-id='sideNavigation']//span[@data-qa-id='unifiedSidebarLabel' and normalize-space()='${key_panel}']</td>
+	<td>//*[@data-qa-id='sideNavigation']//span[@data-qa-id='unifiedSidebarLabel' and normalize-space()='${key_panel}']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>PORTLET</td>
-	<td>//div[@data-qa-id='sideNavigation']//ul[@role='menubar']//button[@role='menuitem' and contains(., '${key_category}')]/following-sibling::ul//a[@role='menuitem' and normalize-space()='${key_portlet}']</td>
+	<td>//*[@data-qa-id='sideNavigation']//ul[@role='menubar']//button[@role='menuitem' and contains(., '${key_category}')]/following-sibling::ul//a[@role='menuitem' and normalize-space()='${key_portlet}']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>ROOT_PORTLET</td>
-	<td>//div[@data-qa-id='sideNavigation']//ul[@role='menubar']/li/a[@role='menuitem' and normalize-space()='${key_portlet}']</td>
+	<td>//*[@data-qa-id='sideNavigation']//ul[@role='menubar']/li/a[@role='menuitem' and normalize-space()='${key_portlet}']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>SIDE_NAVIGATION</td>
-	<td>//div[@data-qa-id='sideNavigation']</td>
+	<td>//*[@data-qa-id='sideNavigation']</td>
 	<td></td>
 </tr>
 <tr>

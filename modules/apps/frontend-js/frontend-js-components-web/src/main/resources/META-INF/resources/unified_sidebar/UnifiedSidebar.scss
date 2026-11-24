@@ -34,6 +34,20 @@ html#{$cadmin-selector} {
 		box-shadow: none;
 		overflow: hidden;
 
+		&:focus {
+			outline: 0;
+		}
+
+		// Clay hides the closed panel a further tbar width past its own. This
+		// panel has no tbar, so it hides at its width and moves with the page,
+		// which shifts by the same width.
+
+		@include media-breakpoint-up(md) {
+			&:not(.c-slideout-show) {
+				left: calc(#{$cadmin-c-slideout-sidebar-width} * -1);
+			}
+		}
+
 		.menubar-primary .nav-link {
 			padding-bottom: 0.5rem;
 			padding-top: 0.5rem;
