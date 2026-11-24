@@ -44,7 +44,7 @@
 	<property name="elasticsearch.tar.url.linux" value="https://artifacts.elastic.co/downloads/elasticsearch/${elasticsearch.tar.name.linux}" />
 	<property name="elasticsearch.tar.url.mac" value="https://artifacts.elastic.co/downloads/elasticsearch/${elasticsearch.tar.name.mac}" />
 	<property name="elasticsearch.zip.url.windows" value="https://artifacts.elastic.co/downloads/elasticsearch/${elasticsearch.zip.name.windows}" />
-	<property name="elasticsearch.sidecar.version" value="8.19.23" />
+	<property name="elasticsearch.sidecar.version" value="9.5.7" />
 	<property name="elasticsearch.sidecar.analysis-icu.zip.url" value="https://artifacts.elastic.co/downloads/elasticsearch-plugins/analysis-icu/analysis-icu-${elasticsearch.sidecar.version}.zip" />
 	<property name="elasticsearch.sidecar.analysis-kuromoji.zip.url" value="https://artifacts.elastic.co/downloads/elasticsearch-plugins/analysis-kuromoji/analysis-kuromoji-${elasticsearch.sidecar.version}.zip" />
 	<property name="elasticsearch.sidecar.analysis-smartcn.zip.url" value="https://artifacts.elastic.co/downloads/elasticsearch-plugins/analysis-smartcn/analysis-smartcn-${elasticsearch.sidecar.version}.zip" />
@@ -116,7 +116,7 @@
 	<macrodef name="configure-elasticsearch-ltr-properties">
 		<sequential>
 			<echo append="true" file="${elasticsearch.dir}/config/elasticsearch.yml">${line.separator}xpack.ml.enabled: false
-path.repo: ${liferay.home}/data/elasticsearch8/repo</echo>
+path.repo: ${liferay.home}/data/elasticsearch9/repo</echo>
 		</sequential>
 	</macrodef>
 
@@ -789,10 +789,10 @@ ${line.separator}CATALINA_OPTS="${CATALINA_OPTS} -Djavax.net.ssl.trustStore=${el
 
 			<if>
 				<not>
-					<available file="${liferay.home}/data/elasticsearch8/repo" type="dir" />
+					<available file="${liferay.home}/data/elasticsearch9/repo" type="dir" />
 				</not>
 				<then>
-					<mkdir dir="${liferay.home}/data/elasticsearch8/repo" />
+					<mkdir dir="${liferay.home}/data/elasticsearch9/repo" />
 				</then>
 			</if>
 
@@ -802,7 +802,7 @@ ${line.separator}CATALINA_OPTS="${CATALINA_OPTS} -Djavax.net.ssl.trustStore=${el
 				type="both"
 			>
 				<fileset
-					dir="${liferay.home}/data/elasticsearch8/repo"
+					dir="${liferay.home}/data/elasticsearch9/repo"
 				/>
 			</chmod>
 
@@ -914,7 +914,7 @@ ${line.separator}CATALINA_OPTS="${CATALINA_OPTS} -Djavax.net.ssl.trustStore=${el
 			</if>
 
 			<unzip
-				dest="${liferay.home}/data/elasticsearch8/repo"
+				dest="${liferay.home}/data/elasticsearch9/repo"
 				src="${liferay.home}/${boston-dataset-index.zip.name}"
 			/>
 		</sequential>
@@ -1139,7 +1139,7 @@ ${line.separator}CATALINA_OPTS="${CATALINA_OPTS} -Djavax.net.ssl.trustStore=${el
 			</if>
 
 			<unzip
-				dest="${liferay.home}/data/elasticsearch8/repo"
+				dest="${liferay.home}/data/elasticsearch9/repo"
 				src="${liferay.home}/${ltr-linear-regression-model.zip.name}"
 			/>
 		</sequential>
@@ -1286,7 +1286,7 @@ ${line.separator}CATALINA_OPTS="${CATALINA_OPTS} -Djavax.net.ssl.trustStore=${el
 			<![CDATA[
 				{
 					"settings": {
-						"location": "${liferay.home}/data/elasticsearch8/repo"
+						"location": "${liferay.home}/data/elasticsearch9/repo"
 					},
 					"type": "fs"
 				}
