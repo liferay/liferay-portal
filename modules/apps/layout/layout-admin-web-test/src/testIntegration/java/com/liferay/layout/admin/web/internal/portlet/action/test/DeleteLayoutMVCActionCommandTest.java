@@ -17,6 +17,7 @@ import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionRequest;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionResponse;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -62,6 +63,7 @@ public class DeleteLayoutMVCActionCommandTest {
 	}
 
 	@Test
+	@TestInfo("LPD-117394")
 	public void testDeleteLayout() throws Exception {
 		String redirect = RandomTestUtil.randomString();
 
@@ -82,6 +84,13 @@ public class DeleteLayoutMVCActionCommandTest {
 			redirect,
 			_testDeleteLayout(
 				layoutConversionResult.getDraftLayout(), redirect));
+
+		Assert.assertEquals(
+			redirect,
+			_testDeleteLayout(
+				LayoutTestUtil.addLaunchDraftLayout(
+					RandomTestUtil.randomLong(), layout),
+				redirect));
 	}
 
 	private MockLiferayPortletActionRequest _getMockLiferayPortletActionRequest(
