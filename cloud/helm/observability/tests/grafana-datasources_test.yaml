@@ -8,6 +8,23 @@ tests:
     -   asserts:
             -   hasDocuments:
                     count: 1
+                template: templates/gcp/gmp-datasource.yaml
+            -   hasDocuments:
+                    count: 0
+                template: templates/azure/amw-datasource.yaml
+            -   hasDocuments:
+                    count: 0
+                template: templates/azure/azure-monitor-datasource.yaml
+            -   matchRegex:
+                    path: data["gmp-datasource.yaml"]
+                    pattern: "type: \"prometheus\""
+                template: templates/gcp/gmp-datasource.yaml
+        it: Keeps the core Prometheus data source on GCP
+        set:
+            cloudProvider: gcp
+    -   asserts:
+            -   hasDocuments:
+                    count: 1
                 template: templates/aws/amp-datasource.yaml
             -   hasDocuments:
                     count: 0
@@ -24,23 +41,6 @@ tests:
             aws.ampWorkspaceURL: https://aps-workspaces.us-east-1.amazonaws.com/workspaces/ws-00000000
             aws.region: us-east-1
             cloudProvider: aws
-    -   asserts:
-            -   hasDocuments:
-                    count: 1
-                template: templates/gcp/gmp-datasource.yaml
-            -   hasDocuments:
-                    count: 0
-                template: templates/azure/amw-datasource.yaml
-            -   hasDocuments:
-                    count: 0
-                template: templates/azure/azure-monitor-datasource.yaml
-            -   matchRegex:
-                    path: data["gmp-datasource.yaml"]
-                    pattern: "type: \"prometheus\""
-                template: templates/gcp/gmp-datasource.yaml
-        it: Keeps the core Prometheus data source on GCP
-        set:
-            cloudProvider: gcp
     -   asserts:
             -   hasDocuments:
                     count: 1
