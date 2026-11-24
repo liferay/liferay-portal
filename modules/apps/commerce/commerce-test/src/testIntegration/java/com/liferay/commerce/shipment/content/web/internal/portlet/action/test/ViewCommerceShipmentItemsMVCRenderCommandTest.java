@@ -160,12 +160,13 @@ public class ViewCommerceShipmentItemsMVCRenderCommandTest {
 		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
 			new MockLiferayPortletRenderRequest(mockHttpServletRequest);
 
-		MockLiferayPortletRenderResponse mockLiferayPortletRenderResponse =
-			new MockLiferayPortletRenderResponse();
-
 		mockHttpServletRequest.setAttribute(
 			JavaConstants.JAKARTA_PORTLET_REQUEST,
 			mockLiferayPortletRenderRequest);
+
+		MockLiferayPortletRenderResponse mockLiferayPortletRenderResponse =
+			new MockLiferayPortletRenderResponse();
+
 		mockHttpServletRequest.setAttribute(
 			JavaConstants.JAKARTA_PORTLET_RESPONSE,
 			mockLiferayPortletRenderResponse);

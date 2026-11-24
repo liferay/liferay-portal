@@ -188,15 +188,17 @@ public class CommerceShipmentContentDisplayContextTest {
 		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
 			new MockLiferayPortletRenderRequest(mockHttpServletRequest);
 
+		mockHttpServletRequest.setAttribute(
+			JavaConstants.JAKARTA_PORTLET_REQUEST,
+			mockLiferayPortletRenderRequest);
+
 		MockLiferayPortletRenderResponse mockLiferayPortletRenderResponse =
 			new MockLiferayPortletRenderResponse();
 
 		mockHttpServletRequest.setAttribute(
-			JavaConstants.JAKARTA_PORTLET_REQUEST,
-			mockLiferayPortletRenderRequest);
-		mockHttpServletRequest.setAttribute(
 			JavaConstants.JAKARTA_PORTLET_RESPONSE,
 			mockLiferayPortletRenderResponse);
+
 		mockHttpServletRequest.setAttribute(
 			MVCRenderConstants.
 				PORTLET_CONTEXT_OVERRIDE_REQUEST_ATTIBUTE_NAME_PREFIX +
