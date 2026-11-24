@@ -11,14 +11,23 @@ import com.liferay.list.type.model.ListTypeDefinition;
 import com.liferay.list.type.service.ListTypeDefinitionLocalService;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
+import com.liferay.object.constants.ObjectFieldSettingConstants;
+import com.liferay.object.constants.ObjectRelationshipConstants;
 import com.liferay.object.field.builder.MultiselectPicklistObjectFieldBuilder;
 import com.liferay.object.field.builder.PicklistObjectFieldBuilder;
+import com.liferay.object.field.setting.util.ObjectFieldSettingUtil;
 import com.liferay.object.model.ObjectDefinition;
+import com.liferay.object.model.ObjectEntryVersion;
+import com.liferay.object.model.ObjectField;
+import com.liferay.object.model.ObjectRelationship;
 import com.liferay.object.rest.dto.v1_0.ListEntry;
 import com.liferay.object.rest.dto.v1_0.ObjectEntry;
 import com.liferay.object.rest.dto.v1_0.SystemProperties;
+import com.liferay.object.rest.test.util.ObjectEntryTestUtil;
+import com.liferay.object.rest.test.util.ObjectRelationshipTestUtil;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectEntryVersionLocalService;
+import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -32,18 +41,22 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
 import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
+import com.liferay.portal.vulcan.fields.NestedFieldsContext;
+import com.liferay.portal.vulcan.fields.NestedFieldsContextThreadLocal;
 import com.liferay.portal.vulcan.scope.Scope;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 
 import java.io.Serializable;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -116,7 +129,8 @@ public class ObjectEntryDTOConverterTest {
 				ServiceContextTestUtil.getServiceContext(
 					TestPropsValues.getGroupId()));
 
-		ObjectEntry objectEntry = _toDTO(serviceBuilderObjectEntry);
+		ObjectEntry objectEntry = _toDTO(
+			_objectDefinition, serviceBuilderObjectEntry);
 
 		Map<String, Object> properties = objectEntry.getProperties();
 
@@ -155,7 +169,92 @@ public class ObjectEntryDTOConverterTest {
 		Assert.assertEquals(Scope.Type.SITE, scope.getType());
 	}
 
+	@FeatureFlag("LPD-108620")
+	@Test
+	public void testToDTOWithObjectRelationship() throws Exception {
+		_testToDTOWithObjectRelationship(
+			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+		_testToDTOWithObjectRelationship(
+			ObjectRelationshipConstants.TYPE_ONE_TO_ONE);
+	}
+
+	private void _testToDTOWithObjectRelationship(String type)
+		throws Exception {
+
+		ObjectDefinition parentObjectDefinition =
+			ObjectDefinitionTestUtil.publishObjectDefinition();
+
+		com.liferay.object.model.ObjectEntry parentServiceBuilderObjectEntry =
+			ObjectEntryTestUtil.addObjectEntry(
+				parentObjectDefinition, Collections.emptyMap());
+
+		ObjectDefinition childObjectDefinition =
+			ObjectDefinitionTestUtil.publishObjectDefinition();
+
+		ObjectRelationship objectRelationship =
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				parentObjectDefinition, childObjectDefinition,
+				TestPropsValues.getUserId(), type);
+
+		ObjectField objectField = _objectFieldLocalService.getObjectField(
+			objectRelationship.getObjectFieldId2());
+
+		com.liferay.object.model.ObjectEntry childServiceBuilderObjectEntry =
+			ObjectEntryTestUtil.addObjectEntry(
+				childObjectDefinition,
+				HashMapBuilder.<String, Serializable>put(
+					objectField.getName(),
+					parentServiceBuilderObjectEntry.getObjectEntryId()
+				).build());
+
+		NestedFieldsContext originalNestedFieldsContext =
+			NestedFieldsContextThreadLocal.getNestedFieldsContext();
+
+		try {
+			NestedFieldsContextThreadLocal.setNestedFieldsContext(null);
+
+			ObjectEntry childObjectEntry = _toDTO(
+				childObjectDefinition, childServiceBuilderObjectEntry);
+
+			Map<String, Object> properties = childObjectEntry.getProperties();
+
+			Assert.assertEquals(
+				parentServiceBuilderObjectEntry.getExternalReferenceCode(),
+				properties.get(
+					ObjectFieldSettingUtil.getValue(
+						ObjectFieldSettingConstants.
+							NAME_OBJECT_RELATIONSHIP_ERC_OBJECT_FIELD_NAME,
+						objectField)));
+			Assert.assertEquals(
+				parentServiceBuilderObjectEntry.getObjectEntryId(),
+				GetterUtil.getLong(properties.get(objectField.getName())));
+
+			NestedFieldsContextThreadLocal.setNestedFieldsContext(
+				new NestedFieldsContext(
+					1, null,
+					Collections.singletonList(objectRelationship.getName()),
+					null, null, null));
+
+			childObjectEntry = _toDTO(
+				childObjectDefinition, childServiceBuilderObjectEntry);
+
+			properties = childObjectEntry.getProperties();
+
+			ObjectEntry parentObjectEntry = (ObjectEntry)properties.get(
+				objectRelationship.getName());
+
+			Assert.assertEquals(
+				parentServiceBuilderObjectEntry.getExternalReferenceCode(),
+				parentObjectEntry.getExternalReferenceCode());
+		}
+		finally {
+			NestedFieldsContextThreadLocal.setNestedFieldsContext(
+				originalNestedFieldsContext);
+		}
+	}
+
 	private ObjectEntry _toDTO(
+			ObjectDefinition objectDefinition,
 			com.liferay.object.model.ObjectEntry serviceBuilderObjectEntry)
 		throws Exception {
 
@@ -173,11 +272,16 @@ public class ObjectEntryDTOConverterTest {
 				serviceBuilderObjectEntry.getObjectEntryId(),
 				LocaleUtil.getDefault(), null, null);
 
-		dtoConverterContext.setAttribute("objectDefinition", _objectDefinition);
-		dtoConverterContext.setAttribute(
-			"objectEntryVersion",
-			_objectEntryVersionLocalService.getObjectEntryVersion(
-				serviceBuilderObjectEntry.getObjectEntryId(), 1));
+		dtoConverterContext.setAttribute("objectDefinition", objectDefinition);
+
+		ObjectEntryVersion objectEntryVersion =
+			_objectEntryVersionLocalService.fetchObjectEntryVersion(
+				serviceBuilderObjectEntry.getObjectEntryId(), 1);
+
+		if (objectEntryVersion != null) {
+			dtoConverterContext.setAttribute(
+				"objectEntryVersion", objectEntryVersion);
+		}
 
 		return dtoConverter.toDTO(
 			dtoConverterContext, serviceBuilderObjectEntry);
@@ -200,5 +304,8 @@ public class ObjectEntryDTOConverterTest {
 
 	@Inject
 	private ObjectEntryVersionLocalService _objectEntryVersionLocalService;
+
+	@Inject
+	private ObjectFieldLocalService _objectFieldLocalService;
 
 }

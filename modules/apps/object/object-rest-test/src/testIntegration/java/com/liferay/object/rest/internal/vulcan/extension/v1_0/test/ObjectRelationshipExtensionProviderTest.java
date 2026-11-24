@@ -39,6 +39,7 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.service.PersistedModelLocalServiceRegistryUtil;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -66,6 +67,7 @@ import org.junit.runner.RunWith;
 /**
  * @author Carlos Correa
  */
+@FeatureFlag("LPD-108620")
 @RunWith(Arquillian.class)
 public class ObjectRelationshipExtensionProviderTest {
 
@@ -88,12 +90,23 @@ public class ObjectRelationshipExtensionProviderTest {
 
 		_user = TestPropsValues.getUser();
 
-		_objectRelationship = _addObjectRelationship(_objectDefinition);
+		_manyToManyObjectRelationship = _addObjectRelationship(
+			_objectDefinition, ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
 
 		ObjectRelationshipLocalServiceUtil.
 			addObjectRelationshipMappingTableValues(
 				_user.getUserId(),
-				_objectRelationship.getObjectRelationshipId(),
+				_manyToManyObjectRelationship.getObjectRelationshipId(),
+				_objectEntry.getPrimaryKey(), _user.getUserId(),
+				ServiceContextTestUtil.getServiceContext());
+
+		_oneToOneObjectRelationship = _addObjectRelationship(
+			_objectDefinition, ObjectRelationshipConstants.TYPE_ONE_TO_ONE);
+
+		ObjectRelationshipLocalServiceUtil.
+			addObjectRelationshipMappingTableValues(
+				_user.getUserId(),
+				_oneToOneObjectRelationship.getObjectRelationshipId(),
 				_objectEntry.getPrimaryKey(), _user.getUserId(),
 				ServiceContextTestUtil.getServiceContext());
 
@@ -105,11 +118,13 @@ public class ObjectRelationshipExtensionProviderTest {
 	public void tearDown() throws Exception {
 		ObjectRelationshipLocalServiceUtil.
 			deleteObjectRelationshipMappingTableValues(
-				_objectRelationship.getObjectRelationshipId(),
+				_manyToManyObjectRelationship.getObjectRelationshipId(),
 				_objectEntry.getPrimaryKey(), _user.getUserId());
 
 		ObjectRelationshipLocalServiceUtil.deleteObjectRelationship(
-			_objectRelationship);
+			_manyToManyObjectRelationship);
+		ObjectRelationshipLocalServiceUtil.deleteObjectRelationship(
+			_oneToOneObjectRelationship);
 
 		_objectDefinitionLocalService.deleteObjectDefinition(
 			_objectDefinition.getObjectDefinitionId());
@@ -121,44 +136,19 @@ public class ObjectRelationshipExtensionProviderTest {
 	@Test
 	public void testGetExtendedProperties() throws Exception {
 		_testGetExtendedPropertiesWithCommerceProduct();
-		_testGetExtendedPropertiesWithUserAccount();
+		_testGetExtendedPropertiesWithUserAccount(
+			_manyToManyObjectRelationship);
+		_testGetExtendedPropertiesWithUserAccount(_oneToOneObjectRelationship);
 	}
 
 	@Test
 	public void testGetExtendedPropertyDefinitions() throws Exception {
-		Map<String, PropertyDefinition> extendedPropertyDefinitions =
-			_extensionProvider.getExtendedPropertyDefinitions(
-				TestPropsValues.getCompanyId(), UserAccount.class.getName());
-
-		PropertyDefinition propertyDefinition = extendedPropertyDefinitions.get(
-			_objectRelationship.getName());
-
-		Assert.assertNull(propertyDefinition.getPropertyDescription());
-		Assert.assertEquals(
-			_objectRelationship.getName(),
-			propertyDefinition.getPropertyName());
-		Assert.assertEquals(
+		_testGetExtendedPropertyDefinitions(
 			PropertyDefinition.PropertyType.MULTIPLE_ELEMENT,
-			propertyDefinition.getPropertyType());
-
-		String description = RandomTestUtil.randomString();
-
-		_objectRelationship.setDescriptionMap(
-			Collections.singletonMap(LocaleUtil.US, description));
-
-		_objectRelationship =
-			ObjectRelationshipLocalServiceUtil.updateObjectRelationship(
-				_objectRelationship);
-
-		extendedPropertyDefinitions =
-			_extensionProvider.getExtendedPropertyDefinitions(
-				TestPropsValues.getCompanyId(), UserAccount.class.getName());
-
-		propertyDefinition = extendedPropertyDefinitions.get(
-			_objectRelationship.getName());
-
-		Assert.assertEquals(
-			description, propertyDefinition.getPropertyDescription());
+			_manyToManyObjectRelationship);
+		_testGetExtendedPropertyDefinitions(
+			PropertyDefinition.PropertyType.SINGLE_ELEMENT,
+			_oneToOneObjectRelationship);
 	}
 
 	@Test
@@ -191,7 +181,7 @@ public class ObjectRelationshipExtensionProviderTest {
 					RandomTestUtil.randomString(), objectFieldName2, false)));
 
 		ObjectRelationship objectRelationship = _addObjectRelationship(
-			objectDefinition);
+			objectDefinition, ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
 
 		String objectFieldValue1 = RandomTestUtil.randomString();
 
@@ -266,7 +256,7 @@ public class ObjectRelationshipExtensionProviderTest {
 	}
 
 	private ObjectRelationship _addObjectRelationship(
-			ObjectDefinition objectDefinition)
+			ObjectDefinition objectDefinition, String type)
 		throws Exception {
 
 		SystemObjectDefinitionManager systemObjectDefinitionManager =
@@ -284,8 +274,7 @@ public class ObjectRelationshipExtensionProviderTest {
 			userSystemObjectDefinition.getObjectDefinitionId(), 0,
 			ObjectRelationshipConstants.DELETION_TYPE_PREVENT, null, false,
 			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
-			StringUtil.randomId(), false,
-			ObjectRelationshipConstants.TYPE_MANY_TO_MANY, null);
+			StringUtil.randomId(), false, type, null);
 	}
 
 	private ObjectEntry _addRelatedObjectEntry(
@@ -455,7 +444,10 @@ public class ObjectRelationshipExtensionProviderTest {
 		}
 	}
 
-	private void _testGetExtendedPropertiesWithUserAccount() throws Exception {
+	private void _testGetExtendedPropertiesWithUserAccount(
+			ObjectRelationship objectRelationship)
+		throws Exception {
+
 		UserAccount userAccount = new UserAccount() {
 			{
 				id = _user.getUserId();
@@ -481,7 +473,7 @@ public class ObjectRelationshipExtensionProviderTest {
 		Assert.assertTrue(extendedProperties.isEmpty());
 
 		NestedFieldsContextThreadLocal.setNestedFieldsContext(
-			_getNestedFieldsContext(_objectRelationship.getName()));
+			_getNestedFieldsContext(objectRelationship.getName()));
 
 		extendedProperties = _extensionProvider.getExtendedProperties(
 			TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
@@ -490,7 +482,45 @@ public class ObjectRelationshipExtensionProviderTest {
 		Assert.assertEquals(
 			extendedProperties.toString(), 1, extendedProperties.size());
 		Assert.assertNotNull(
-			extendedProperties.get(_objectRelationship.getName()));
+			extendedProperties.get(objectRelationship.getName()));
+	}
+
+	private void _testGetExtendedPropertyDefinitions(
+			PropertyDefinition.PropertyType expectedPropertyType,
+			ObjectRelationship objectRelationship)
+		throws Exception {
+
+		Map<String, PropertyDefinition> extendedPropertyDefinitions =
+			_extensionProvider.getExtendedPropertyDefinitions(
+				TestPropsValues.getCompanyId(), UserAccount.class.getName());
+
+		PropertyDefinition propertyDefinition = extendedPropertyDefinitions.get(
+			objectRelationship.getName());
+
+		Assert.assertNull(propertyDefinition.getPropertyDescription());
+		Assert.assertEquals(
+			objectRelationship.getName(), propertyDefinition.getPropertyName());
+		Assert.assertEquals(
+			expectedPropertyType, propertyDefinition.getPropertyType());
+
+		String description = RandomTestUtil.randomString();
+
+		objectRelationship.setDescriptionMap(
+			Collections.singletonMap(LocaleUtil.US, description));
+
+		objectRelationship =
+			ObjectRelationshipLocalServiceUtil.updateObjectRelationship(
+				objectRelationship);
+
+		extendedPropertyDefinitions =
+			_extensionProvider.getExtendedPropertyDefinitions(
+				TestPropsValues.getCompanyId(), UserAccount.class.getName());
+
+		propertyDefinition = extendedPropertyDefinitions.get(
+			objectRelationship.getName());
+
+		Assert.assertEquals(
+			description, propertyDefinition.getPropertyDescription());
 	}
 
 	private static final String _OBJECT_FIELD_NAME =
@@ -504,6 +534,7 @@ public class ObjectRelationshipExtensionProviderTest {
 	)
 	private ExtensionProvider _extensionProvider;
 
+	private ObjectRelationship _manyToManyObjectRelationship;
 	private ObjectDefinition _objectDefinition;
 
 	@Inject
@@ -514,7 +545,7 @@ public class ObjectRelationshipExtensionProviderTest {
 	@Inject
 	private ObjectFieldLocalService _objectFieldLocalService;
 
-	private ObjectRelationship _objectRelationship;
+	private ObjectRelationship _oneToOneObjectRelationship;
 	private NestedFieldsContext _originalNestedFieldsContext;
 
 	@Inject
