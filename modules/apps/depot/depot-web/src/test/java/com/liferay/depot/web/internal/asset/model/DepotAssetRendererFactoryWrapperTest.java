@@ -11,11 +11,13 @@ import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.group.provider.SiteConnectedGroupGroupProvider;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
+import com.liferay.depot.web.internal.application.controller.DepotApplicationController;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.GroupThreadLocal;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
@@ -311,6 +313,67 @@ public class DepotAssetRendererFactoryWrapperTest {
 				assetRenderer,
 				depotAssetRendererFactoryWrapper.getAssetRenderer(
 					RandomTestUtil.randomLong()));
+		}
+	}
+
+	@Test
+	@TestInfo("LPD-117333")
+	public void testIsSelectableByDepotEntryType() throws Exception {
+		Mockito.when(
+			_assetRendererFactory.isSelectable()
+		).thenReturn(
+			true
+		);
+
+		DepotEntry depotEntry = Mockito.mock(DepotEntry.class);
+
+		Mockito.when(
+			depotEntry.getType()
+		).thenReturn(
+			DepotConstants.TYPE_ASSET_LIBRARY
+		);
+
+		Mockito.when(
+			_depotEntryLocalService.fetchGroupDepotEntry(Mockito.anyLong())
+		).thenReturn(
+			depotEntry
+		);
+
+		DepotAssetRendererFactoryWrapper depotAssetRendererFactoryWrapper =
+			new DepotAssetRendererFactoryWrapper(
+				_assetRendererFactory,
+				Mockito.mock(DepotApplicationController.class),
+				_depotEntryLocalService, _groupLocalService, null, null, null);
+		long depotGroupId = _setUpDepotGroup();
+
+		try (SafeCloseable safeCloseable =
+				GroupThreadLocal.setGroupIdWithSafeCloseable(depotGroupId)) {
+
+			Assert.assertFalse(depotAssetRendererFactoryWrapper.isSelectable());
+		}
+
+		Mockito.when(
+			depotEntry.getType()
+		).thenReturn(
+			DepotConstants.TYPE_PROJECT
+		);
+
+		try (SafeCloseable safeCloseable =
+				GroupThreadLocal.setGroupIdWithSafeCloseable(depotGroupId)) {
+
+			Assert.assertTrue(depotAssetRendererFactoryWrapper.isSelectable());
+		}
+
+		Mockito.when(
+			depotEntry.getType()
+		).thenReturn(
+			DepotConstants.TYPE_SPACE
+		);
+
+		try (SafeCloseable safeCloseable =
+				GroupThreadLocal.setGroupIdWithSafeCloseable(depotGroupId)) {
+
+			Assert.assertTrue(depotAssetRendererFactoryWrapper.isSelectable());
 		}
 	}
 
