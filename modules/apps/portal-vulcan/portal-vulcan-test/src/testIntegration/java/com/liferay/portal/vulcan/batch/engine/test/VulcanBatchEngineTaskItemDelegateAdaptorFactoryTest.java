@@ -6,16 +6,21 @@
 package com.liferay.portal.vulcan.batch.engine.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.batch.engine.BatchEngineTaskItemDelegate;
 import com.liferay.petra.function.UnsafeBiConsumer;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.filter.Filter;
+import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -24,11 +29,13 @@ import com.liferay.portal.vulcan.batch.engine.VulcanBatchEngineTaskItemDelegateA
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 
+import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.core.UriInfo;
 
 import java.io.Serializable;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -71,6 +78,48 @@ public class VulcanBatchEngineTaskItemDelegateAdaptorFactoryTest {
 			_roleLocalService,
 			vulcanBatchEngineTaskItemDelegate._roleLocalService);
 	}
+
+	@Test
+	public void testCreateWithUnknownAssetLibraryId() throws Exception {
+		_testCreateWithUnknownScopeKey(
+			"assetLibraryId", "Unable to get a valid asset library with ID ");
+	}
+
+	@Test
+	public void testCreateWithUnknownSiteId() throws Exception {
+		_testCreateWithUnknownScopeKey(
+			"siteId", "Unable to get a valid site with ID ");
+	}
+
+	private void _testCreateWithUnknownScopeKey(String key, String message)
+		throws Exception {
+
+		BatchEngineTaskItemDelegate<Object> batchEngineTaskItemDelegate =
+			_vulcanBatchEngineTaskItemDelegateAdaptorFactory.create(
+				new TestVulcanBatchEngineTaskItemDelegate());
+
+		batchEngineTaskItemDelegate.setContextCompany(
+			_companyLocalService.getCompany(TestPropsValues.getCompanyId()));
+
+		String value = RandomTestUtil.randomString();
+
+		try {
+			batchEngineTaskItemDelegate.create(
+				Collections.emptyList(),
+				HashMapBuilder.<String, Serializable>put(
+					key, value
+				).build());
+
+			Assert.fail();
+		}
+		catch (NotFoundException notFoundException) {
+			Assert.assertEquals(
+				message + value, notFoundException.getMessage());
+		}
+	}
+
+	@Inject
+	private CompanyLocalService _companyLocalService;
 
 	@Inject
 	private GroupLocalService _groupLocalService;
