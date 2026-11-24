@@ -1402,10 +1402,6 @@ public class SourceFormatter {
 	}
 
 	private void _validateAllowedFilePaths() throws Exception {
-		if (!_sourceFormatterArgs.isFormatCurrentBranch()) {
-			return;
-		}
-
 		File portalDir = SourceFormatterUtil.getPortalDir(
 			_sourceFormatterArgs.getBaseDirName(),
 			_sourceFormatterArgs.getMaxDirLevel());
