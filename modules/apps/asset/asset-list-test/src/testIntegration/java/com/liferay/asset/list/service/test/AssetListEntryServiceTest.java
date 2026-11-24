@@ -21,6 +21,8 @@ import com.liferay.asset.list.util.comparator.AssetListEntryCreateDateComparator
 import com.liferay.asset.list.util.comparator.AssetListEntryTitleComparator;
 import com.liferay.asset.test.util.AssetTestUtil;
 import com.liferay.asset.test.util.asset.renderer.factory.TestAssetRendererFactory;
+import com.liferay.audiences.model.AudiencesEntry;
+import com.liferay.audiences.service.AudiencesEntryLocalService;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
@@ -86,7 +88,9 @@ public class AssetListEntryServiceTest {
 	public void testAddAssetEntrySelectionsWithAudienceEntryERC()
 		throws PortalException {
 
-		String audienceEntryERC = RandomTestUtil.randomString();
+		AudiencesEntry audiencesEntry = _addAudiencesEntry();
+
+		String audienceEntryERC = audiencesEntry.getExternalReferenceCode();
 
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(
@@ -144,7 +148,9 @@ public class AssetListEntryServiceTest {
 	public void testAddAssetEntrySelectionsWithoutPermission()
 		throws Exception {
 
-		String audienceEntryERC = RandomTestUtil.randomString();
+		AudiencesEntry audiencesEntry = _addAudiencesEntry();
+
+		String audienceEntryERC = audiencesEntry.getExternalReferenceCode();
 
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(
@@ -373,7 +379,9 @@ public class AssetListEntryServiceTest {
 	public void testDeleteAssetEntrySelectionWithAudienceEntryERC()
 		throws PortalException {
 
-		String audienceEntryERC = RandomTestUtil.randomString();
+		AudiencesEntry audiencesEntry = _addAudiencesEntry();
+
+		String audienceEntryERC = audiencesEntry.getExternalReferenceCode();
 
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(
@@ -408,7 +416,9 @@ public class AssetListEntryServiceTest {
 	public void testDeleteAssetEntrySelectionWithoutPermission()
 		throws Exception {
 
-		String audienceEntryERC = RandomTestUtil.randomString();
+		AudiencesEntry audiencesEntry = _addAudiencesEntry();
+
+		String audienceEntryERC = audiencesEntry.getExternalReferenceCode();
 
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(
@@ -770,7 +780,9 @@ public class AssetListEntryServiceTest {
 	public void testMoveAssetEntrySelectionWithAudienceEntryERC()
 		throws PortalException {
 
-		String audienceEntryERC = RandomTestUtil.randomString();
+		AudiencesEntry audiencesEntry = _addAudiencesEntry();
+
+		String audienceEntryERC = audiencesEntry.getExternalReferenceCode();
 
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(
@@ -799,7 +811,9 @@ public class AssetListEntryServiceTest {
 	public void testMoveAssetEntrySelectionWithoutPermission()
 		throws Exception {
 
-		String audienceEntryERC = RandomTestUtil.randomString();
+		AudiencesEntry audiencesEntry = _addAudiencesEntry();
+
+		String audienceEntryERC = audiencesEntry.getExternalReferenceCode();
 
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(
@@ -849,7 +863,9 @@ public class AssetListEntryServiceTest {
 				RandomTestUtil.randomString(), _group.getGroupId(),
 				RandomTestUtil.randomString(), typeSettings, serviceContext);
 
-		String audienceEntryERC = RandomTestUtil.randomString();
+		AudiencesEntry audiencesEntry = _addAudiencesEntry();
+
+		String audienceEntryERC = audiencesEntry.getExternalReferenceCode();
 
 		_addAssetListEntryAudienceEntryRel(
 			assetListEntry, audienceEntryERC, typeSettings, serviceContext);
@@ -896,7 +912,9 @@ public class AssetListEntryServiceTest {
 			_getTypeSettings("com.liferay.blogs.model.BlogsEntry"),
 			serviceContext);
 
-		String audienceEntryERC = RandomTestUtil.randomString();
+		AudiencesEntry audiencesEntry = _addAudiencesEntry();
+
+		String audienceEntryERC = audiencesEntry.getExternalReferenceCode();
 
 		_addAssetListEntryAudienceEntryRel(
 			assetListEntry, audienceEntryERC, journalArticleTypeSettings,
@@ -918,7 +936,9 @@ public class AssetListEntryServiceTest {
 	public void testUpdateAssetListEntryTypeSettingsWithoutPermission()
 		throws Exception {
 
-		String audienceEntryERC = RandomTestUtil.randomString();
+		AudiencesEntry audiencesEntry = _addAudiencesEntry();
+
+		String audienceEntryERC = audiencesEntry.getExternalReferenceCode();
 
 		AssetListEntry assetListEntry = _addManualAssetListEntry(
 			audienceEntryERC,
@@ -955,7 +975,10 @@ public class AssetListEntryServiceTest {
 				_getTypeSettings("com.liferay.journal.model.JournalArticle"),
 				serviceContext);
 
-		String audienceEntryERC = RandomTestUtil.randomString();
+		AudiencesEntry audiencesEntry = _addAudiencesEntry(
+			_group.getExternalReferenceCode());
+
+		String audienceEntryERC = audiencesEntry.getExternalReferenceCode();
 
 		String typeSettings = UnicodePropertiesBuilder.put(
 			"groupIds", _group.getGroupId()
@@ -992,8 +1015,10 @@ public class AssetListEntryServiceTest {
 				RandomTestUtil.randomString(), journalArticleTypeSettings,
 				serviceContext);
 
+		AudiencesEntry audiencesEntry = _addAudiencesEntry();
+
 		_addAssetListEntryAudienceEntryRel(
-			assetListEntry, RandomTestUtil.randomString(),
+			assetListEntry, audiencesEntry.getExternalReferenceCode(),
 			_getTypeSettings("com.liferay.blogs.model.BlogsEntry"),
 			serviceContext);
 
@@ -1059,6 +1084,15 @@ public class AssetListEntryServiceTest {
 				typeSettings, serviceContext);
 	}
 
+	private AudiencesEntry _addAudiencesEntry(String... groupERCs)
+		throws PortalException {
+
+		return _audiencesEntryLocalService.addAudiencesEntry(
+			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+			"{\"conjunction\": \"AND\", \"rules\": []}",
+			RandomTestUtil.randomString(), groupERCs);
+	}
+
 	private AssetListEntry _addManualAssetListEntry(
 			String audienceEntryERC, ServiceContext serviceContext)
 		throws PortalException {
@@ -1107,6 +1141,9 @@ public class AssetListEntryServiceTest {
 
 	@Inject
 	private AssetListEntryService _assetListEntryService;
+
+	@Inject
+	private AudiencesEntryLocalService _audiencesEntryLocalService;
 
 	@DeleteAfterTestRun
 	private Group _group;

@@ -24,6 +24,8 @@ import com.liferay.asset.list.service.AssetListEntryLocalService;
 import com.liferay.asset.list.service.AssetListEntrySegmentsEntryRelLocalService;
 import com.liferay.asset.list.test.util.AssetListTestUtil;
 import com.liferay.asset.test.util.AssetTestUtil;
+import com.liferay.audiences.model.AudiencesEntry;
+import com.liferay.audiences.service.AudiencesEntryLocalService;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.test.util.DDMStructureTestUtil;
 import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
@@ -179,6 +181,13 @@ public class AssetListEntryStagedModelDataHandlerTest
 				SegmentsEntryConstants.ID_DEFAULT, typeSettings);
 
 		return assetListEntry;
+	}
+
+	private AudiencesEntry _addAudiencesEntry() throws Exception {
+		return _audiencesEntryLocalService.addAudiencesEntry(
+			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+			"{\"conjunction\": \"AND\", \"rules\": []}",
+			RandomTestUtil.randomString(), null);
 	}
 
 	private SegmentsEntry _addSegmentsEntryByFirstName(
@@ -380,7 +389,10 @@ public class AssetListEntryStagedModelDataHandlerTest
 		AssetListEntry assetListEntry = AssetListTestUtil.addAssetListEntry(
 			stagingGroup.getGroupId());
 
-		String audienceEntryERC = RandomTestUtil.randomString();
+		AudiencesEntry audiencesEntry = _addAudiencesEntry();
+
+		String audienceEntryERC = audiencesEntry.getExternalReferenceCode();
+
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(stagingGroup.getGroupId());
 
@@ -443,7 +455,10 @@ public class AssetListEntryStagedModelDataHandlerTest
 		AssetListEntry assetListEntry = (AssetListEntry)addStagedModel(
 			stagingGroup, Collections.emptyMap());
 
-		String audienceEntryERC1 = RandomTestUtil.randomString();
+		AudiencesEntry audiencesEntry1 = _addAudiencesEntry();
+
+		String audienceEntryERC1 = audiencesEntry1.getExternalReferenceCode();
+
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(stagingGroup.getGroupId());
 
@@ -457,7 +472,10 @@ public class AssetListEntryStagedModelDataHandlerTest
 					).buildString(),
 					serviceContext);
 
-		String audienceEntryERC2 = RandomTestUtil.randomString();
+		AudiencesEntry audiencesEntry2 = _addAudiencesEntry();
+
+		String audienceEntryERC2 = audiencesEntry2.getExternalReferenceCode();
+
 		long journalArticleClassNameId = _classNameLocalService.getClassNameId(
 			JournalArticle.class.getName());
 
@@ -705,6 +723,9 @@ public class AssetListEntryStagedModelDataHandlerTest
 	@Inject
 	private AssetListEntrySegmentsEntryRelLocalService
 		_assetListEntrySegmentsEntryRelLocalService;
+
+	@Inject
+	private AudiencesEntryLocalService _audiencesEntryLocalService;
 
 	@Inject
 	private ClassNameLocalService _classNameLocalService;

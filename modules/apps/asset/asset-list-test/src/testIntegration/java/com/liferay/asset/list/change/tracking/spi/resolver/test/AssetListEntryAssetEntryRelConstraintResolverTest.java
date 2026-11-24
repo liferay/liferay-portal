@@ -14,6 +14,8 @@ import com.liferay.asset.list.service.AssetListEntryAudienceEntryRelLocalService
 import com.liferay.asset.list.service.AssetListEntryLocalService;
 import com.liferay.asset.list.test.util.AssetListTestUtil;
 import com.liferay.asset.test.util.AssetTestUtil;
+import com.liferay.audiences.model.AudiencesEntry;
+import com.liferay.audiences.service.AudiencesEntryLocalService;
 import com.liferay.change.tracking.conflict.ConflictInfo;
 import com.liferay.change.tracking.model.CTCollection;
 import com.liferay.change.tracking.service.CTCollectionLocalService;
@@ -139,7 +141,9 @@ public class AssetListEntryAssetEntryRelConstraintResolverTest {
 
 	@Test
 	public void testResolveConflictWithAudienceEntryERC() throws Exception {
-		String audienceEntryERC = RandomTestUtil.randomString();
+		AudiencesEntry audiencesEntry = _addAudiencesEntry();
+
+		String audienceEntryERC = audiencesEntry.getExternalReferenceCode();
 
 		_assetListEntryAudienceEntryRelLocalService.
 			addAssetListEntryAudienceEntryRel(
@@ -214,6 +218,13 @@ public class AssetListEntryAssetEntryRelConstraintResolverTest {
 			_assetListEntryAssetEntryRels, StringPool.BLANK, 2, 0, 3);
 	}
 
+	private AudiencesEntry _addAudiencesEntry() throws Exception {
+		return _audiencesEntryLocalService.addAudiencesEntry(
+			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+			"{\"conjunction\": \"AND\", \"rules\": []}",
+			RandomTestUtil.randomString(), null);
+	}
+
 	private void _assertAssetListEntryAssetEntryRels(
 		List<AssetListEntryAssetEntryRel> assetListEntryAssetEntryRels,
 		String audienceEntryERC, int... indexes) {
@@ -286,6 +297,9 @@ public class AssetListEntryAssetEntryRelConstraintResolverTest {
 
 	@Inject
 	private AssetListEntryLocalService _assetListEntryLocalService;
+
+	@Inject
+	private AudiencesEntryLocalService _audiencesEntryLocalService;
 
 	@DeleteAfterTestRun
 	private CTCollection _ctCollection;

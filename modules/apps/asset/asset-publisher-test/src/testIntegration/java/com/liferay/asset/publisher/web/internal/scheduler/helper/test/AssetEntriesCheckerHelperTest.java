@@ -19,6 +19,8 @@ import com.liferay.asset.publisher.constants.AssetPublisherPortletKeys;
 import com.liferay.asset.publisher.test.util.AssetPublisherTestUtil;
 import com.liferay.asset.publisher.util.AssetPublisherHelper;
 import com.liferay.asset.util.AssetHelper;
+import com.liferay.audiences.model.AudiencesEntry;
+import com.liferay.audiences.service.AudiencesEntryLocalService;
 import com.liferay.blogs.model.BlogsEntry;
 import com.liferay.blogs.service.BlogsEntryLocalService;
 import com.liferay.info.collection.provider.CollectionQuery;
@@ -291,6 +293,13 @@ public class AssetEntriesCheckerHelperTest {
 			_group.getGroupId(), blogsEntry.getUuid());
 	}
 
+	private AudiencesEntry _addAudiencesEntry() throws Exception {
+		return _audiencesEntryLocalService.addAudiencesEntry(
+			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+			"{\"conjunction\": \"AND\", \"rules\": []}",
+			RandomTestUtil.randomString(), null);
+	}
+
 	private void _assertAssetEntries(
 		List<AssetEntry> expectedAssetEntries,
 		List<AssetEntry> actualAssetEntries) {
@@ -368,7 +377,9 @@ public class AssetEntriesCheckerHelperTest {
 			assetListEntry.getAssetListEntryId(), assetEntry.getEntryId(),
 			SegmentsEntryConstants.ID_DEFAULT, serviceContext);
 
-		String audienceEntryERC = RandomTestUtil.randomString();
+		AudiencesEntry audiencesEntry = _addAudiencesEntry();
+
+		String audienceEntryERC = audiencesEntry.getExternalReferenceCode();
 
 		_assetListEntryAudienceEntryRelLocalService.
 			addAssetListEntryAudienceEntryRel(
@@ -539,6 +550,9 @@ public class AssetEntriesCheckerHelperTest {
 
 	@Inject
 	private AssetPublisherHelper _assetPublisherHelper;
+
+	@Inject
+	private AudiencesEntryLocalService _audiencesEntryLocalService;
 
 	@Inject
 	private BlogsEntryLocalService _blogsEntryLocalService;

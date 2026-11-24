@@ -21,6 +21,8 @@ import com.liferay.asset.publisher.util.AssetEntryResult;
 import com.liferay.asset.publisher.util.AssetPublisherHelper;
 import com.liferay.asset.publisher.util.AssetQueryRule;
 import com.liferay.asset.test.util.AssetTestUtil;
+import com.liferay.audiences.model.AudiencesEntry;
+import com.liferay.audiences.service.AudiencesEntryLocalService;
 import com.liferay.blogs.model.BlogsEntry;
 import com.liferay.blogs.service.BlogsEntryLocalService;
 import com.liferay.info.pagination.InfoPage;
@@ -328,7 +330,9 @@ public class AssetPublisherHelperTest {
 
 		AssetEntry assetEntry = _addAssetEntry();
 
-		String audienceEntryERC = RandomTestUtil.randomString();
+		AudiencesEntry audiencesEntry = _addAudiencesEntry();
+
+		String audienceEntryERC = audiencesEntry.getExternalReferenceCode();
 
 		PortletPreferences portletPreferences = _getPortletPreferences(
 			assetEntry, _addAssetEntry(), audienceEntryERC);
@@ -351,7 +355,9 @@ public class AssetPublisherHelperTest {
 		AssetEntry assetEntry1 = _addAssetEntry();
 		AssetEntry assetEntry2 = _addAssetEntry();
 
-		String audienceEntryERC = RandomTestUtil.randomString();
+		AudiencesEntry audiencesEntry = _addAudiencesEntry();
+
+		String audienceEntryERC = audiencesEntry.getExternalReferenceCode();
 
 		PortletPreferences portletPreferences = _getPortletPreferences(
 			assetEntry1, assetEntry2, audienceEntryERC);
@@ -915,6 +921,13 @@ public class AssetPublisherHelperTest {
 			BlogsEntry.class.getName(), blogsEntry.getEntryId());
 	}
 
+	private AudiencesEntry _addAudiencesEntry() throws Exception {
+		return _audiencesEntryLocalService.addAudiencesEntry(
+			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+			"{\"conjunction\": \"AND\", \"rules\": []}",
+			RandomTestUtil.randomString(), null);
+	}
+
 	private void _checkAssetEntryResults(
 		List<AssetEntryResult> assetEntryResults, long[] classPKs) {
 
@@ -1016,6 +1029,9 @@ public class AssetPublisherHelperTest {
 
 	@Inject
 	private AssetPublisherHelper _assetPublisherHelper;
+
+	@Inject
+	private AudiencesEntryLocalService _audiencesEntryLocalService;
 
 	@Inject
 	private BlogsEntryLocalService _blogsEntryLocalService;

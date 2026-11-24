@@ -8,6 +8,7 @@ package com.liferay.layout.content.page.editor.web.internal.portlet.action.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.asset.list.constants.AssetListEntryTypeConstants;
 import com.liferay.asset.list.model.AssetListEntry;
+import com.liferay.asset.list.model.AssetListEntryAudienceEntryRel;
 import com.liferay.asset.list.service.AssetListEntryAudienceEntryRelLocalService;
 import com.liferay.asset.list.service.AssetListEntryLocalService;
 import com.liferay.asset.list.service.AssetListEntrySegmentsEntryRelLocalService;
@@ -93,9 +94,19 @@ public class GetCollectionVariationsMVCResourceCommandTest {
 		_addAssetListEntryAudienceEntryRel(
 			audiencesEntry1.getExternalReferenceCode(), 0);
 
+		AudiencesEntry audiencesEntry3 = _addAudiencesEntry();
+
+		AssetListEntryAudienceEntryRel assetListEntryAudienceEntryRel =
+			_addAssetListEntryAudienceEntryRel(
+				audiencesEntry3.getExternalReferenceCode(), 2);
+
 		String audienceEntryERC = RandomTestUtil.randomString();
 
-		_addAssetListEntryAudienceEntryRel(audienceEntryERC, 2);
+		assetListEntryAudienceEntryRel.setAudienceEntryERC(audienceEntryERC);
+
+		_assetListEntryAudienceEntryRelLocalService.
+			updateAssetListEntryAudienceEntryRel(
+				assetListEntryAudienceEntryRel);
 
 		JSONArray jsonArray = _getCollectionVariationsJSONArray();
 
@@ -169,11 +180,11 @@ public class GetCollectionVariationsMVCResourceCommandTest {
 		Assert.assertEquals(0, jsonArray.length());
 	}
 
-	private void _addAssetListEntryAudienceEntryRel(
+	private AssetListEntryAudienceEntryRel _addAssetListEntryAudienceEntryRel(
 			String audienceEntryERC, int priority)
 		throws Exception {
 
-		_assetListEntryAudienceEntryRelLocalService.
+		return _assetListEntryAudienceEntryRelLocalService.
 			addAssetListEntryAudienceEntryRel(
 				TestPropsValues.getUserId(), _group.getGroupId(),
 				_assetListEntry.getAssetListEntryId(), audienceEntryERC,

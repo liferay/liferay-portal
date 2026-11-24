@@ -20,6 +20,8 @@ import com.liferay.asset.list.service.AssetListEntryLocalService;
 import com.liferay.asset.publisher.constants.AssetPublisherPortletKeys;
 import com.liferay.asset.publisher.constants.AssetPublisherWebKeys;
 import com.liferay.asset.publisher.util.AssetEntryResult;
+import com.liferay.audiences.model.AudiencesEntry;
+import com.liferay.audiences.service.AudiencesEntryLocalService;
 import com.liferay.blogs.constants.BlogsPortletKeys;
 import com.liferay.blogs.model.BlogsEntry;
 import com.liferay.blogs.service.BlogsEntryLocalService;
@@ -258,7 +260,9 @@ public class AssetPublisherDisplayContextTest {
 
 		AssetEntry assetEntry = _addAssetEntry();
 
-		String audienceEntryERC = RandomTestUtil.randomString();
+		AudiencesEntry audiencesEntry = _addAudiencesEntry();
+
+		String audienceEntryERC = audiencesEntry.getExternalReferenceCode();
 
 		PortletPreferences portletPreferences = _getPortletPreferences(
 			assetEntry, _addAssetEntry(), audienceEntryERC);
@@ -282,7 +286,9 @@ public class AssetPublisherDisplayContextTest {
 		AssetEntry assetEntry1 = _addAssetEntry();
 		AssetEntry assetEntry2 = _addAssetEntry();
 
-		String audienceEntryERC = RandomTestUtil.randomString();
+		AudiencesEntry audiencesEntry = _addAudiencesEntry();
+
+		String audienceEntryERC = audiencesEntry.getExternalReferenceCode();
 
 		PortletPreferences portletPreferences = _getPortletPreferences(
 			assetEntry1, assetEntry2, audienceEntryERC);
@@ -492,6 +498,13 @@ public class AssetPublisherDisplayContextTest {
 		assetEntry.setPriority(priority);
 
 		return _assetEntryLocalService.updateAssetEntry(assetEntry);
+	}
+
+	private AudiencesEntry _addAudiencesEntry() throws Exception {
+		return _audiencesEntryLocalService.addAudiencesEntry(
+			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+			"{\"conjunction\": \"AND\", \"rules\": []}",
+			RandomTestUtil.randomString(), null);
 	}
 
 	private JournalArticle _addJournalArticle(
@@ -813,6 +826,9 @@ public class AssetPublisherDisplayContextTest {
 
 	@Inject
 	private AssetVocabularyLocalService _assetVocabularyLocalService;
+
+	@Inject
+	private AudiencesEntryLocalService _audiencesEntryLocalService;
 
 	@Inject
 	private BlogsEntryLocalService _blogsEntryLocalService;

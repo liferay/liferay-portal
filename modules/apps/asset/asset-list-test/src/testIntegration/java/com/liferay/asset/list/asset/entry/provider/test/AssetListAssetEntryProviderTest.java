@@ -24,6 +24,8 @@ import com.liferay.asset.list.service.AssetListEntryLocalService;
 import com.liferay.asset.list.service.AssetListEntrySegmentsEntryRelLocalService;
 import com.liferay.asset.list.test.util.AssetListTestUtil;
 import com.liferay.asset.test.util.AssetTestUtil;
+import com.liferay.audiences.model.AudiencesEntry;
+import com.liferay.audiences.service.AudiencesEntryLocalService;
 import com.liferay.blogs.model.BlogsEntry;
 import com.liferay.blogs.test.util.BlogsTestUtil;
 import com.liferay.data.engine.rest.dto.v2_0.DataDefinition;
@@ -558,7 +560,10 @@ public class AssetListAssetEntryProviderTest {
 				AssetListEntryTypeConstants.TYPE_DYNAMIC,
 				_getTypeSettings(keyword1), _serviceContext);
 
-		String audienceEntryERC1 = RandomTestUtil.randomString();
+		AudiencesEntry audiencesEntry1 = _addAudiencesEntry();
+
+		String audienceEntryERC1 = audiencesEntry1.getExternalReferenceCode();
+
 		String keyword2 = RandomTestUtil.randomString();
 
 		_assetListEntryAudienceEntryRelLocalService.
@@ -567,7 +572,9 @@ public class AssetListAssetEntryProviderTest {
 				assetListEntry.getAssetListEntryId(), audienceEntryERC1, 0,
 				_getTypeSettings(keyword2), _serviceContext);
 
-		String audienceEntryERC2 = RandomTestUtil.randomString();
+		AudiencesEntry audiencesEntry2 = _addAudiencesEntry();
+
+		String audienceEntryERC2 = audiencesEntry2.getExternalReferenceCode();
 
 		_assetListEntryAudienceEntryRelLocalService.
 			addAssetListEntryAudienceEntryRel(
@@ -1391,7 +1398,9 @@ public class AssetListAssetEntryProviderTest {
 						String.valueOf(assetCategory1.getCategoryId()))),
 				_serviceContext);
 
-		String audienceEntryERC1 = RandomTestUtil.randomString();
+		AudiencesEntry audiencesEntry1 = _addAudiencesEntry();
+
+		String audienceEntryERC1 = audiencesEntry1.getExternalReferenceCode();
 
 		_assetListEntryAudienceEntryRelLocalService.
 			addAssetListEntryAudienceEntryRel(
@@ -1403,7 +1412,9 @@ public class AssetListAssetEntryProviderTest {
 						String.valueOf(assetCategory2.getCategoryId()))),
 				_serviceContext);
 
-		String audienceEntryERC2 = RandomTestUtil.randomString();
+		AudiencesEntry audiencesEntry2 = _addAudiencesEntry();
+
+		String audienceEntryERC2 = audiencesEntry2.getExternalReferenceCode();
 
 		_assetListEntryAudienceEntryRelLocalService.
 			addAssetListEntryAudienceEntryRel(
@@ -2119,7 +2130,9 @@ public class AssetListAssetEntryProviderTest {
 			new long[] {assetEntry1.getEntryId()},
 			SegmentsEntryConstants.ID_DEFAULT, _serviceContext);
 
-		String audienceEntryERC1 = RandomTestUtil.randomString();
+		AudiencesEntry audiencesEntry1 = _addAudiencesEntry();
+
+		String audienceEntryERC1 = audiencesEntry1.getExternalReferenceCode();
 
 		_assetListEntryAudienceEntryRelLocalService.
 			addAssetListEntryAudienceEntryRel(
@@ -2137,7 +2150,9 @@ public class AssetListAssetEntryProviderTest {
 			new long[] {assetEntry2.getEntryId()}, audienceEntryERC1,
 			_serviceContext);
 
-		String audienceEntryERC2 = RandomTestUtil.randomString();
+		AudiencesEntry audiencesEntry2 = _addAudiencesEntry();
+
+		String audienceEntryERC2 = audiencesEntry2.getExternalReferenceCode();
 
 		_assetListEntryAudienceEntryRelLocalService.
 			addAssetListEntryAudienceEntryRel(
@@ -2454,6 +2469,13 @@ public class AssetListAssetEntryProviderTest {
 				infoPage.getPageItems(),
 				assetEntry ->
 					assetEntry.getEntryId() == assetEntry3.getEntryId()));
+	}
+
+	private AudiencesEntry _addAudiencesEntry() throws Exception {
+		return _audiencesEntryLocalService.addAudiencesEntry(
+			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+			"{\"conjunction\": \"AND\", \"rules\": []}",
+			RandomTestUtil.randomString(), null);
 	}
 
 	private DepotEntry _addDepotEntry() throws Exception {
@@ -2788,6 +2810,9 @@ public class AssetListAssetEntryProviderTest {
 
 	@Inject
 	private AssetVocabularyLocalService _assetVocabularyLocalService;
+
+	@Inject
+	private AudiencesEntryLocalService _audiencesEntryLocalService;
 
 	@Inject
 	private CompanyLocalService _companyLocalService;

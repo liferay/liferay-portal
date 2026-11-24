@@ -16,6 +16,8 @@ import com.liferay.asset.list.service.AssetListEntryLocalService;
 import com.liferay.asset.list.test.util.AssetListTestUtil;
 import com.liferay.asset.test.util.AssetTestUtil;
 import com.liferay.asset.test.util.asset.renderer.factory.TestAssetRendererFactory;
+import com.liferay.audiences.model.AudiencesEntry;
+import com.liferay.audiences.service.AudiencesEntryLocalService;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -74,11 +76,9 @@ public class AssetListEntryAudienceEntryRelServiceTest {
 	@Test
 	public void testAddAssetListEntryAudienceEntryRel() throws Exception {
 		AssetListEntryAudienceEntryRel assetListEntryAudienceEntryRel1 =
-			_addAssetListEntryAudienceEntryRel(
-				_assetListEntry, RandomTestUtil.randomString());
+			_addAssetListEntryAudienceEntryRel(_assetListEntry);
 		AssetListEntryAudienceEntryRel assetListEntryAudienceEntryRel2 =
-			_addAssetListEntryAudienceEntryRel(
-				_assetListEntry, RandomTestUtil.randomString());
+			_addAssetListEntryAudienceEntryRel(_assetListEntry);
 
 		Assert.assertEquals(0, assetListEntryAudienceEntryRel1.getPriority());
 		Assert.assertEquals(1, assetListEntryAudienceEntryRel2.getPriority());
@@ -93,7 +93,9 @@ public class AssetListEntryAudienceEntryRelServiceTest {
 
 	@Test
 	public void testDeleteAssetListEntryAudienceEntryRel() throws Exception {
-		String audienceEntryERC = RandomTestUtil.randomString();
+		AudiencesEntry audiencesEntry = _addAudiencesEntry();
+
+		String audienceEntryERC = audiencesEntry.getExternalReferenceCode();
 
 		AssetListEntryAudienceEntryRel assetListEntryAudienceEntryRel =
 			_addAssetListEntryAudienceEntryRel(
@@ -128,7 +130,9 @@ public class AssetListEntryAudienceEntryRelServiceTest {
 	public void testDeleteAssetListEntryAudienceEntryRelByAudienceEntryERC()
 		throws Exception {
 
-		String audienceEntryERC = RandomTestUtil.randomString();
+		AudiencesEntry audiencesEntry = _addAudiencesEntry();
+
+		String audienceEntryERC = audiencesEntry.getExternalReferenceCode();
 
 		AssetListEntryAudienceEntryRel assetListEntryAudienceEntryRel1 =
 			_addAssetListEntryAudienceEntryRel(
@@ -142,8 +146,7 @@ public class AssetListEntryAudienceEntryRelServiceTest {
 				assetListEntry, audienceEntryERC);
 
 		AssetListEntryAudienceEntryRel assetListEntryAudienceEntryRel3 =
-			_addAssetListEntryAudienceEntryRel(
-				_assetListEntry, RandomTestUtil.randomString());
+			_addAssetListEntryAudienceEntryRel(_assetListEntry);
 
 		_assetListEntryAudienceEntryRelLocalService.
 			deleteAssetListEntryAudienceEntryRelByAudienceEntryERC(
@@ -170,7 +173,9 @@ public class AssetListEntryAudienceEntryRelServiceTest {
 	public void testDeleteAssetListEntryAudienceEntryRelWithAudienceEntryERC()
 		throws Exception {
 
-		String audienceEntryERC = RandomTestUtil.randomString();
+		AudiencesEntry audiencesEntry = _addAudiencesEntry();
+
+		String audienceEntryERC = audiencesEntry.getExternalReferenceCode();
 
 		_addAssetListEntryAudienceEntryRel(_assetListEntry, audienceEntryERC);
 
@@ -202,8 +207,7 @@ public class AssetListEntryAudienceEntryRelServiceTest {
 		throws Exception {
 
 		AssetListEntryAudienceEntryRel assetListEntryAudienceEntryRel =
-			_addAssetListEntryAudienceEntryRel(
-				_assetListEntry, RandomTestUtil.randomString());
+			_addAssetListEntryAudienceEntryRel(_assetListEntry);
 
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				UserTestUtil.addGroupUser(_group, RoleConstants.SITE_MEMBER))) {
@@ -218,14 +222,11 @@ public class AssetListEntryAudienceEntryRelServiceTest {
 	@Test
 	public void testFetchAssetListEntryAudienceEntryRel() throws Exception {
 		AssetListEntryAudienceEntryRel assetListEntryAudienceEntryRel1 =
-			_addAssetListEntryAudienceEntryRel(
-				_assetListEntry, RandomTestUtil.randomString());
+			_addAssetListEntryAudienceEntryRel(_assetListEntry);
 		AssetListEntryAudienceEntryRel assetListEntryAudienceEntryRel2 =
-			_addAssetListEntryAudienceEntryRel(
-				_assetListEntry, RandomTestUtil.randomString());
+			_addAssetListEntryAudienceEntryRel(_assetListEntry);
 		AssetListEntryAudienceEntryRel assetListEntryAudienceEntryRel3 =
-			_addAssetListEntryAudienceEntryRel(
-				_assetListEntry, RandomTestUtil.randomString());
+			_addAssetListEntryAudienceEntryRel(_assetListEntry);
 
 		Assert.assertEquals(
 			assetListEntryAudienceEntryRel1,
@@ -260,15 +261,12 @@ public class AssetListEntryAudienceEntryRelServiceTest {
 	@Test
 	public void testGetAssetListEntryAudienceEntryRels() throws Exception {
 		AssetListEntryAudienceEntryRel assetListEntryAudienceEntryRel1 =
-			_addAssetListEntryAudienceEntryRel(
-				_assetListEntry, RandomTestUtil.randomString());
+			_addAssetListEntryAudienceEntryRel(_assetListEntry);
 		AssetListEntryAudienceEntryRel assetListEntryAudienceEntryRel2 =
-			_addAssetListEntryAudienceEntryRel(
-				_assetListEntry, RandomTestUtil.randomString());
+			_addAssetListEntryAudienceEntryRel(_assetListEntry);
 
 		_addAssetListEntryAudienceEntryRel(
-			AssetListTestUtil.addAssetListEntry(_group.getGroupId()),
-			RandomTestUtil.randomString());
+			AssetListTestUtil.addAssetListEntry(_group.getGroupId()));
 
 		List<AssetListEntryAudienceEntryRel> assetListEntryAudienceEntryRels =
 			_assetListEntryAudienceEntryRelLocalService.
@@ -295,10 +293,8 @@ public class AssetListEntryAudienceEntryRelServiceTest {
 				getAssetListEntryAudienceEntryRelsCount(
 					_assetListEntry.getAssetListEntryId()));
 
-		_addAssetListEntryAudienceEntryRel(
-			_assetListEntry, RandomTestUtil.randomString());
-		_addAssetListEntryAudienceEntryRel(
-			_assetListEntry, RandomTestUtil.randomString());
+		_addAssetListEntryAudienceEntryRel(_assetListEntry);
+		_addAssetListEntryAudienceEntryRel(_assetListEntry);
 
 		Assert.assertEquals(
 			2,
@@ -311,7 +307,9 @@ public class AssetListEntryAudienceEntryRelServiceTest {
 	public void testGetAssetListEntryAudienceEntryRelsCountByAudienceEntryERC()
 		throws Exception {
 
-		String audienceEntryERC = RandomTestUtil.randomString();
+		AudiencesEntry audiencesEntry = _addAudiencesEntry();
+
+		String audienceEntryERC = audiencesEntry.getExternalReferenceCode();
 
 		Assert.assertEquals(
 			0,
@@ -319,8 +317,7 @@ public class AssetListEntryAudienceEntryRelServiceTest {
 				getAssetListEntryAudienceEntryRelsCountByAudienceEntryERC(
 					_group.getCompanyId(), audienceEntryERC));
 
-		_addAssetListEntryAudienceEntryRel(
-			_assetListEntry, RandomTestUtil.randomString());
+		_addAssetListEntryAudienceEntryRel(_assetListEntry);
 		_addAssetListEntryAudienceEntryRel(
 			AssetListTestUtil.addAssetListEntry(_group.getGroupId()),
 			audienceEntryERC);
@@ -338,8 +335,7 @@ public class AssetListEntryAudienceEntryRelServiceTest {
 		throws Exception {
 
 		AssetListEntryAudienceEntryRel assetListEntryAudienceEntryRel =
-			_addAssetListEntryAudienceEntryRel(
-				_assetListEntry, RandomTestUtil.randomString());
+			_addAssetListEntryAudienceEntryRel(_assetListEntry);
 
 		String typeSettings = RandomTestUtil.randomString();
 
@@ -362,11 +358,9 @@ public class AssetListEntryAudienceEntryRelServiceTest {
 	@Test
 	public void testUpdatePriorities() throws Exception {
 		AssetListEntryAudienceEntryRel assetListEntryAudienceEntryRel1 =
-			_addAssetListEntryAudienceEntryRel(
-				_assetListEntry, RandomTestUtil.randomString());
+			_addAssetListEntryAudienceEntryRel(_assetListEntry);
 		AssetListEntryAudienceEntryRel assetListEntryAudienceEntryRel2 =
-			_addAssetListEntryAudienceEntryRel(
-				_assetListEntry, RandomTestUtil.randomString());
+			_addAssetListEntryAudienceEntryRel(_assetListEntry);
 
 		Date modifiedDate = new Date(0);
 
@@ -403,8 +397,7 @@ public class AssetListEntryAudienceEntryRelServiceTest {
 	@Test(expected = PrincipalException.MustHavePermission.class)
 	public void testUpdatePrioritiesWithoutPermission() throws Exception {
 		AssetListEntryAudienceEntryRel assetListEntryAudienceEntryRel =
-			_addAssetListEntryAudienceEntryRel(
-				_assetListEntry, RandomTestUtil.randomString());
+			_addAssetListEntryAudienceEntryRel(_assetListEntry);
 
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				UserTestUtil.addGroupUser(_group, RoleConstants.SITE_MEMBER))) {
@@ -430,6 +423,16 @@ public class AssetListEntryAudienceEntryRelServiceTest {
 	}
 
 	private AssetListEntryAudienceEntryRel _addAssetListEntryAudienceEntryRel(
+			AssetListEntry assetListEntry)
+		throws Exception {
+
+		AudiencesEntry audiencesEntry = _addAudiencesEntry();
+
+		return _addAssetListEntryAudienceEntryRel(
+			assetListEntry, audiencesEntry.getExternalReferenceCode());
+	}
+
+	private AssetListEntryAudienceEntryRel _addAssetListEntryAudienceEntryRel(
 			AssetListEntry assetListEntry, String audienceEntryERC)
 		throws Exception {
 
@@ -438,6 +441,15 @@ public class AssetListEntryAudienceEntryRelServiceTest {
 				TestPropsValues.getUserId(), _group.getGroupId(),
 				assetListEntry.getAssetListEntryId(), audienceEntryERC,
 				RandomTestUtil.randomString(), _serviceContext);
+	}
+
+	private AudiencesEntry _addAudiencesEntry(String... groupERCs)
+		throws Exception {
+
+		return _audiencesEntryLocalService.addAudiencesEntry(
+			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+			"{\"conjunction\": \"AND\", \"rules\": []}",
+			RandomTestUtil.randomString(), groupERCs);
 	}
 
 	private AssetListEntry _assetListEntry;
@@ -456,6 +468,9 @@ public class AssetListEntryAudienceEntryRelServiceTest {
 
 	@Inject
 	private AssetListEntryLocalService _assetListEntryLocalService;
+
+	@Inject
+	private AudiencesEntryLocalService _audiencesEntryLocalService;
 
 	private Group _group;
 	private ServiceContext _serviceContext;
