@@ -6,6 +6,7 @@
 import {expect, mergeTests} from '@playwright/test';
 import path from 'path';
 
+import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {applyFDSSelectionFilter} from '../../../utils/applyFDSSelectionFilter';
 import getRandomString from '../../../utils/getRandomString';
@@ -16,7 +17,12 @@ const PRODUCT_STRUCTURE_LABEL = 'PIM Basic Product';
 
 const SPACE_NAME = 'Default';
 
-const test = mergeTests(cmsPagesTest, loginTest(), pimPagesTest);
+const test = mergeTests(
+	cmsPagesTest,
+	dataApiHelpersTest,
+	loginTest(),
+	pimPagesTest
+);
 
 test(
 	'Create a product from the All section and filter by its type',
@@ -90,9 +96,12 @@ test(
 test(
 	'Show the first image of a product as its card thumbnail in the All section',
 	{tag: ['@LPD-114149']},
-	async ({assetsPage, productPage, productsPage}) => {
+	async ({apiHelpers, assetsPage, productPage, productsPage}) => {
 		const imageProductTitle = getRandomString();
 		const productTitle = getRandomString();
+		const spaceName = getRandomString();
+
+		await apiHelpers.headlessAssetLibrary.createSpace({name: spaceName});
 
 		try {
 			await test.step('Add a product with two images and one without images', async () => {
@@ -104,7 +113,7 @@ test(
 
 				await productsPage.goto();
 
-				await productsPage.openNewProductEditor(SPACE_NAME);
+				await productsPage.openNewProductEditor(spaceName);
 
 				await productPage.sku.fill(getRandomString());
 				await productPage.title.fill(imageProductTitle);
@@ -139,7 +148,7 @@ test(
 					productsPage.getProduct(imageProductTitle)
 				).toBeVisible();
 
-				await productsPage.openNewProductEditor(SPACE_NAME);
+				await productsPage.openNewProductEditor(spaceName);
 
 				await productPage.sku.fill(getRandomString());
 				await productPage.title.fill(productTitle);
@@ -168,11 +177,6 @@ test(
 			await assetsPage.gotoAll();
 
 			await assetsPage.changeVisualizationMode('Table');
-
-			await productsPage.goto();
-
-			await productsPage.deleteProduct(imageProductTitle);
-			await productsPage.deleteProduct(productTitle);
 		}
 	}
 );
