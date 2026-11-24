@@ -248,7 +248,6 @@ describe('AccountMetricsCard', () => {
 	});
 
 	describe('styling', () => {
-
 		it('should keep the class name passed by the consumer', () => {
 			const {container} = renderAccountMetricsCard({
 				className: 'custom-card',
