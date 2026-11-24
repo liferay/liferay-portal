@@ -23,6 +23,7 @@ import com.liferay.osb.faro.service.FaroUserLocalService;
 import com.liferay.osb.faro.util.EmailUtil;
 import com.liferay.osb.faro.web.internal.constants.FaroNotificationTemplateConstants;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -167,7 +168,16 @@ public class NotificationHelper {
 					"[%LIFECYCLE_RESULT_TEXT%]", accountLifecycleResultsText
 				).put(
 					"[%LIFECYCLE_URL%]",
-					EmailUtil.getWorkspaceURL(group) + "/lifecycle"
+					() -> {
+						if (FeatureFlagManagerUtil.isEnabled(
+								group.getCompanyId(), "LPD-114293")) {
+
+							return EmailUtil.getWorkspaceURL(group) +
+								"/lifecycles";
+						}
+
+						return EmailUtil.getWorkspaceURL(group) + "/lifecycle";
+					}
 				).put(
 					"[%SENDER_NAME%]", EmailUtil.getSenderName(faroProject)
 				).build();
@@ -275,7 +285,17 @@ public class NotificationHelper {
 			String.valueOf(segmentNewMembersCount)
 		).put(
 			"[%SEGMENT_URL%]",
-			EmailUtil.getWorkspaceURL(group) + "/contacts/segments/" + segmentId
+			() -> {
+				if (FeatureFlagManagerUtil.isEnabled(
+						group.getCompanyId(), "LPD-114293")) {
+
+					return EmailUtil.getWorkspaceURL(group) + "/segment?id=" +
+						segmentId;
+				}
+
+				return EmailUtil.getWorkspaceURL(group) +
+					"/contacts/segments/" + segmentId;
+			}
 		).put(
 			"[%SENDER_NAME%]", EmailUtil.getSenderName(faroProject)
 		).build();
