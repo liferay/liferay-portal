@@ -7,7 +7,6 @@ package com.liferay.object.internal.field.business.type;
 
 import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.constants.ObjectFieldSettingConstants;
-import com.liferay.object.constants.ObjectRelationshipConstants;
 import com.liferay.object.dynamic.data.mapping.form.field.type.constants.ObjectDDMFormFieldTypeConstants;
 import com.liferay.object.exception.ObjectEntryValuesException;
 import com.liferay.object.field.business.type.ObjectFieldBusinessType;
@@ -107,11 +106,7 @@ public class RelationshipObjectFieldBusinessType
 		Map.Entry<String, Object> relatedElementEntry = MapUtil.getEntry(
 			values, relationshipName);
 
-		if (Objects.equals(
-				objectField.getRelationshipType(),
-				ObjectRelationshipConstants.TYPE_ONE_TO_MANY) &&
-			(relatedElementEntry != null)) {
-
+		if (relatedElementEntry != null) {
 			ObjectRelationship objectRelationship =
 				_objectRelationshipLocalService.
 					fetchObjectRelationshipByObjectDefinitionId(
