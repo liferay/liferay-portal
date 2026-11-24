@@ -5,7 +5,6 @@
 
 package com.liferay.object.internal.sort;
 
-import com.liferay.object.constants.ObjectRelationshipConstants;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectRelationship;
 import com.liferay.object.relationship.util.ObjectRelationshipUtil;
@@ -21,7 +20,6 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.odata.sort.InvalidSortException;
 
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @author Carlos Correa
@@ -83,10 +81,7 @@ public class SortDSLQueryVisitor extends BaseSortDSLQueryVisitor {
 			ObjectDefinition relatedObjectDefinition, Sort sort)
 		throws PortalException {
 
-		if (!Objects.equals(
-				objectRelationship.getType(),
-				ObjectRelationshipConstants.TYPE_ONE_TO_MANY)) {
-
+		if (!objectRelationship.hasRelationshipObjectField()) {
 			String relationshipType = CamelCaseUtil.fromCamelCase(
 				objectRelationship.getType(), CharPool.SPACE);
 
