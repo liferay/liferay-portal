@@ -156,7 +156,7 @@ public class DeleteLayoutMVCActionCommand extends BaseMVCActionCommand {
 		try {
 			_layoutService.deleteLayout(selPlid, serviceContext);
 
-			if (!layout.isDraftLayout()) {
+			if (!layout.isDraftLayout() || (layout.getLaunchSetId() > 0)) {
 				JSONPortletResponseUtil.writeJSON(
 					actionRequest, actionResponse,
 					JSONUtil.put(
