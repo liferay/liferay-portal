@@ -345,7 +345,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 
 	@Override
 	@Test
-	@TestInfo("LPD-103862")
+	@TestInfo({"LPD-103862", "LPD-116351"})
 	public void testGetSiteSitePageSitePagesPage() throws Exception {
 		super.testGetSiteSitePageSitePagesPage();
 
@@ -361,7 +361,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 
 	@Override
 	@Test
-	@TestInfo({"LPD-103773", "LPD-103862"})
+	@TestInfo({"LPD-103773", "LPD-103862", "LPD-116351"})
 	public void testGetSiteSitePagesPage() throws Exception {
 		super.testGetSiteSitePagesPage();
 
@@ -407,7 +407,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 	@FeatureFlag("LPD-38869")
 	@Override
 	@Test
-	@TestInfo({"LPD-83094", "LPD-101791", "LPD-116313"})
+	@TestInfo({"LPD-83094", "LPD-101791", "LPD-116313", "LPD-116351"})
 	public void testPostSiteSitePage() throws Exception {
 		super.testPostSiteSitePage();
 
@@ -491,7 +491,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			"LPD-72013", "LPD-74331", "LPD-75450", "LPD-77124", "LPD-77505",
 			"LPD-77576", "LPD-77852", "LPD-78667", "LPD-79415", "LPD-80061",
 			"LPD-81793", "LPD-83094", "LPD-97454", "LPD-101044", "LPD-101791",
-			"LPD-103694", "LPD-110626", "LPD-113027", "LPD-114784"
+			"LPD-103694", "LPD-110626", "LPD-113027", "LPD-114784", "LPD-116351"
 		}
 	)
 	public void testPutSiteSitePage() throws Exception {
