@@ -204,6 +204,99 @@ components:
                     readOnly: true
                     type: number
             type: object
+        Campaign:
+            description:
+                "A marketing campaign: a CRM campaign synced from Salesforce, or a campaign that LDP tracks from the UTM campaign tag of site visits."
+            properties:
+                accountsTouched:
+                    description:
+                        "Number of distinct accounts the campaign touched. In `getWorkspaceGroupChannelCampaignsPage` it counts the touches in the requested date range; in `getWorkspaceGroupChannelCampaign` it counts every touch, with no date range."
+                    format: int64
+                    readOnly: true
+                    type: integer
+                campaignType:
+                    description:
+                        "Campaign type as set in the CRM, such as Email or Webinar. Null for campaigns tracked from site visits."
+                    readOnly: true
+                    type: string
+                endDate:
+                    description:
+                        "Planned end date of the campaign as set in the CRM. Null when none is set."
+                    format: date-time
+                    readOnly: true
+                    type: string
+                id:
+                    description:
+                        "Campaign ID. Use it as `campaignId` in the other campaign tools."
+                    readOnly: true
+                    type: string
+                individualsTouched:
+                    description:
+                        "Number of distinct individuals the campaign touched, known or anonymous. Counted over the same window as `accountsTouched`."
+                    format: int64
+                    readOnly: true
+                    type: integer
+                lastTouchDate:
+                    description:
+                        "When the campaign last touched an account in the requested date range. Only `getWorkspaceGroupChannelCampaignsPage` returns it; it is null in `getWorkspaceGroupChannelCampaign`."
+                    format: date-time
+                    readOnly: true
+                    type: string
+                name:
+                    description:
+                        "Name of the campaign."
+                    readOnly: true
+                    type: string
+                origin:
+                    description:
+                        "Where the campaign comes from: SALESFORCE for a CRM campaign, or ANALYTICS for a campaign tracked from the UTM campaign tag of site visits."
+                    readOnly: true
+                    type: string
+                startDate:
+                    description:
+                        "Planned start date of the campaign as set in the CRM. Null when none is set."
+                    format: date-time
+                    readOnly: true
+                    type: string
+                status:
+                    description:
+                        "Campaign status as set in the CRM, such as Planned, In Progress or Completed. Null for campaigns tracked from site visits."
+                    readOnly: true
+                    type: string
+            type: object
+        CampaignMetric:
+            description:
+                "An aggregated campaign metric of a channel over the selected date range, compared to the previous range of the same length."
+            properties:
+                metricType:
+                    description:
+                        "Metric: accountsTouched (distinct accounts touched by any campaign), campaignCount (distinct campaigns that touched an account), closedWonAmount or openPipelineAmount (sums of the touched accounts' Salesforce opportunity amounts over a fixed 90-day window)."
+                    readOnly: true
+                    type: string
+                previousValue:
+                    description:
+                        "Value over the previous date range of the same length."
+                    format: double
+                    readOnly: true
+                    type: number
+                trendClassification:
+                    description:
+                        "Direction of the change from the previous range: POSITIVE, NEGATIVE or NEUTRAL. Null when the previous value is 0."
+                    readOnly: true
+                    type: string
+                trendPercentage:
+                    description:
+                        "Percentage change from the previous date range. Null when the previous value is 0."
+                    format: double
+                    readOnly: true
+                    type: number
+                value:
+                    description:
+                        "Value over the selected date range."
+                    format: double
+                    readOnly: true
+                    type: number
+            type: object
         Channel:
             description:
                 "A logical grouping of data coming from configured data sources (e.g. a website, a CRM connection) under which asset metrics, events, individuals, and segments are scoped. Also known as property."
@@ -1365,6 +1458,281 @@ paths:
                                     $ref: "#/components/schemas/AssetSummaryMetric"
                                 type: array
             tags: ["AssetSummaryMetric"]
+    "/workspace/{groupId}/channels/{channelId}/campaign-metrics":
+        get:
+            description:
+                "Campaign performance totals of a channel (also known as property) over a date range, each compared to the previous range of the same length with a trend: accountsTouched, campaignCount, closedWonAmount and openPipelineAmount. The date range picks the accounts that campaigns touched; closedWonAmount and openPipelineAmount then add up those accounts' Salesforce opportunity amounts over a fixed 90-day window, not over the date range. Use this to answer 'how are our campaigns doing' style questions. To see individual campaigns, use `getWorkspaceGroupChannelCampaignsPage`. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, or pass both `rangeStart` and `rangeEnd` as `yyyy-MM-dd` dates for a custom window of at most 180 days; a custom window takes precedence over `rangeKey`. Without either, the last 30 days are used."
+            operationId: getWorkspaceGroupChannelCampaignMetricsPage
+            parameters:
+                -   in: path
+                    description:
+                        "ID of the Liferay site that owns the LDP workspace."
+                    name: groupId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: path
+                    description:
+                        "ID of the channel (also known as property) whose campaign metrics should be returned."
+                    name: channelId
+                    required: true
+                    schema:
+                        type: string
+                -   in: query
+                    description:
+                        "Custom range end as a `yyyy-MM-dd` date (e.g. 2026-01-31). Set together with `rangeStart`; together they take precedence over `rangeKey`."
+                    name: rangeEnd
+                    schema:
+                        type: string
+                -   in: query
+                    description:
+                        "Date range preset. Use one of the listed enum values. Defaults to LAST_30_DAYS. When both `rangeStart` and `rangeEnd` are set, they take precedence over `rangeKey`."
+                    example: LAST_30_DAYS
+                    name: rangeKey
+                    schema:
+                        enum: [LAST_180_DAYS, LAST_24_HOURS, LAST_28_DAYS, LAST_30_DAYS, LAST_7_DAYS, LAST_90_DAYS, YESTERDAY]
+                        type: string
+                -   in: query
+                    description:
+                        "Custom range start as a `yyyy-MM-dd` date (e.g. 2026-01-01). Set together with `rangeEnd`; together they take precedence over `rangeKey`."
+                    name: rangeStart
+                    schema:
+                        type: string
+                -   in: query
+                    description:
+                        "Metrics to return. Repeat the parameter to request several. Defaults to all of them."
+                    name: selectedMetrics
+                    schema:
+                        items:
+                            enum: [accountsTouched, campaignCount, closedWonAmount, openPipelineAmount]
+                            type: string
+                        type: array
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/CampaignMetric"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/CampaignMetric"
+                                type: array
+            tags: ["CampaignMetric"]
+    "/workspace/{groupId}/channels/{channelId}/campaigns":
+        get:
+            description:
+                "List or search the campaigns of a channel (also known as property) that touched at least one account in a date range, with how many accounts and individuals each touched in that range. Campaigns that touched no account in the range are left out. Use this to find the `campaignId` that the other campaign tools take, or to rank campaigns by reach. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, or pass both `rangeStart` and `rangeEnd` as `yyyy-MM-dd` dates for a custom window of at most 180 days; a custom window takes precedence over `rangeKey`. Without either, the last 30 days are used. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
+            operationId: getWorkspaceGroupChannelCampaignsPage
+            parameters:
+                -   in: path
+                    description:
+                        "ID of the Liferay site that owns the LDP workspace."
+                    name: groupId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: path
+                    description:
+                        "ID of the channel (also known as property) whose campaigns should be listed."
+                    name: channelId
+                    required: true
+                    schema:
+                        type: string
+                -   in: query
+                    description:
+                        "Page number (starts at 1)."
+                    name: page
+                    schema:
+                        minimum: 1
+                        type: integer
+                -   in: query
+                    description:
+                        "Page size, from 1 to 100. Larger values are rejected."
+                    name: pageSize
+                    schema:
+                        maximum: 100
+                        minimum: 1
+                        type: integer
+                -   in: query
+                    description:
+                        "Custom range end as a `yyyy-MM-dd` date (e.g. 2026-01-31). Set together with `rangeStart`; together they take precedence over `rangeKey`."
+                    name: rangeEnd
+                    schema:
+                        type: string
+                -   in: query
+                    description:
+                        "Date range preset for the touches that select and count the campaigns. Use one of the listed enum values. Defaults to LAST_30_DAYS. When both `rangeStart` and `rangeEnd` are set, they take precedence over `rangeKey`."
+                    example: LAST_30_DAYS
+                    name: rangeKey
+                    schema:
+                        enum: [LAST_180_DAYS, LAST_24_HOURS, LAST_28_DAYS, LAST_30_DAYS, LAST_7_DAYS, LAST_90_DAYS, YESTERDAY]
+                        type: string
+                -   in: query
+                    description:
+                        "Custom range start as a `yyyy-MM-dd` date (e.g. 2026-01-01). Set together with `rangeEnd`; together they take precedence over `rangeKey`."
+                    name: rangeStart
+                    schema:
+                        type: string
+                -   in: query
+                    description:
+                        "Only include campaigns whose name contains this text, ignoring case."
+                    name: search
+                    schema:
+                        type: string
+                -   in: query
+                    description:
+                        "Sort expression `column:asc|desc`. Defaults to `name:asc`. Sortable columns: accountsTouched, campaignType, individualsTouched, name, origin, status. Only one column is accepted."
+                    example: accountsTouched:desc
+                    name: sort
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/Campaign"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/Campaign"
+                                type: array
+            tags: ["Campaign"]
+    "/workspace/{groupId}/channels/{channelId}/campaigns/{campaignId}":
+        get:
+            description:
+                "Get one campaign of a channel (also known as property) by ID. Its `accountsTouched` and `individualsTouched` cover every touch of the campaign, with no date range, so they can be larger than the counts `getWorkspaceGroupChannelCampaignsPage` returns for the same campaign. It does not return `lastTouchDate`; use `getWorkspaceGroupChannelCampaignsPage` for it."
+            operationId: getWorkspaceGroupChannelCampaign
+            parameters:
+                -   in: path
+                    description:
+                        "ID of the Liferay site that owns the LDP workspace."
+                    name: groupId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: path
+                    description:
+                        "ID of the channel (also known as property) the campaign belongs to."
+                    name: channelId
+                    required: true
+                    schema:
+                        type: string
+                -   in: path
+                    description:
+                        "Campaign ID. Use `getWorkspaceGroupChannelCampaignsPage` to find it."
+                    name: campaignId
+                    required: true
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Campaign"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Campaign"
+            tags: ["Campaign"]
+    "/workspace/{groupId}/channels/{channelId}/campaigns/{campaignId}/accounts":
+        get:
+            description:
+                "List or search the accounts a campaign touched in a date range. Use this to answer 'which accounts did this campaign reach' style questions. To fetch one of the accounts with more detail, use `getWorkspaceGroupAccount`. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, or pass both `rangeStart` and `rangeEnd` as `yyyy-MM-dd` dates for a custom window of at most 180 days; a custom window takes precedence over `rangeKey`. Without either, the last 30 days are used. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
+            operationId: getWorkspaceGroupChannelCampaignAccountsPage
+            parameters:
+                -   in: path
+                    description:
+                        "ID of the Liferay site that owns the LDP workspace."
+                    name: groupId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: path
+                    description:
+                        "ID of the channel (also known as property) the campaign belongs to."
+                    name: channelId
+                    required: true
+                    schema:
+                        type: string
+                -   in: path
+                    description:
+                        "Campaign ID. Use `getWorkspaceGroupChannelCampaignsPage` to find it."
+                    name: campaignId
+                    required: true
+                    schema:
+                        type: string
+                -   in: query
+                    description:
+                        "Page number (starts at 1)."
+                    name: page
+                    schema:
+                        minimum: 1
+                        type: integer
+                -   in: query
+                    description:
+                        "Page size, from 1 to 100. Larger values are rejected."
+                    name: pageSize
+                    schema:
+                        maximum: 100
+                        minimum: 1
+                        type: integer
+                -   in: query
+                    description:
+                        "Custom range end as a `yyyy-MM-dd` date (e.g. 2026-01-31). Set together with `rangeStart`; together they take precedence over `rangeKey`."
+                    name: rangeEnd
+                    schema:
+                        type: string
+                -   in: query
+                    description:
+                        "Date range preset for the campaign touches that select the accounts. Use one of the listed enum values. Defaults to LAST_30_DAYS. When both `rangeStart` and `rangeEnd` are set, they take precedence over `rangeKey`."
+                    example: LAST_30_DAYS
+                    name: rangeKey
+                    schema:
+                        enum: [LAST_180_DAYS, LAST_24_HOURS, LAST_28_DAYS, LAST_30_DAYS, LAST_7_DAYS, LAST_90_DAYS, YESTERDAY]
+                        type: string
+                -   in: query
+                    description:
+                        "Custom range start as a `yyyy-MM-dd` date (e.g. 2026-01-01). Set together with `rangeEnd`; together they take precedence over `rangeKey`."
+                    name: rangeStart
+                    schema:
+                        type: string
+                -   in: query
+                    description:
+                        "Free text keyword search across account name and related fields. Empty or null returns all touched accounts."
+                    name: search
+                    schema:
+                        type: string
+                -   in: query
+                    description:
+                        "Sort expression `column:asc|desc`. Defaults to `accountName:asc` when omitted. Sortable columns: accountName, accountType, activitiesCount, annualRevenue, country, createDate, firstActivityDate, industry, lastActivityDate, modifiedDate, numberOfEmployees, state, yearStarted. Only one column is accepted."
+                    example: accountName:asc
+                    name: sort
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/Account"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/Account"
+                                type: array
+            tags: ["Account"]
     "/workspace/{groupId}/channels/{channelId}/events":
         get:
             description:
