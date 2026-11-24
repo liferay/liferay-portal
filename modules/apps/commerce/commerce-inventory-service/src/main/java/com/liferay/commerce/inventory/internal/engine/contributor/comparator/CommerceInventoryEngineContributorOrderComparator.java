@@ -6,20 +6,19 @@
 package com.liferay.commerce.inventory.internal.engine.contributor.comparator;
 
 import com.liferay.commerce.inventory.engine.contributor.CommerceInventoryEngineContributor;
-import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerCustomizerFactory;
-import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 
 import java.io.Serializable;
 
 import java.util.Comparator;
 
+import org.osgi.framework.ServiceReference;
+
 /**
  * @author Alessio Antonio Rendina
  */
 public class CommerceInventoryEngineContributorOrderComparator
-	implements Comparator
-		<ServiceTrackerCustomizerFactory.ServiceWrapper
-			<CommerceInventoryEngineContributor>>,
+	implements Comparator<ServiceReference<CommerceInventoryEngineContributor>>,
 			   Serializable {
 
 	public CommerceInventoryEngineContributorOrderComparator() {
@@ -34,17 +33,18 @@ public class CommerceInventoryEngineContributorOrderComparator
 
 	@Override
 	public int compare(
-		ServiceTrackerCustomizerFactory.ServiceWrapper
-			<CommerceInventoryEngineContributor> serviceWrapper1,
-		ServiceTrackerCustomizerFactory.ServiceWrapper
-			<CommerceInventoryEngineContributor> serviceWrapper2) {
+		ServiceReference<CommerceInventoryEngineContributor> serviceReference1,
+		ServiceReference<CommerceInventoryEngineContributor>
+			serviceReference2) {
 
-		int displayOrder1 = MapUtil.getInteger(
-			serviceWrapper1.getProperties(),
-			"commerce.inventory.engine.contributor.order", Integer.MAX_VALUE);
-		int displayOrder2 = MapUtil.getInteger(
-			serviceWrapper2.getProperties(),
-			"commerce.inventory.engine.contributor.order", Integer.MAX_VALUE);
+		int displayOrder1 = GetterUtil.getInteger(
+			serviceReference1.getProperty(
+				"commerce.inventory.engine.contributor.order"),
+			Integer.MAX_VALUE);
+		int displayOrder2 = GetterUtil.getInteger(
+			serviceReference2.getProperty(
+				"commerce.inventory.engine.contributor.order"),
+			Integer.MAX_VALUE);
 
 		int value = Integer.compare(displayOrder1, displayOrder2);
 

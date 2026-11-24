@@ -18,10 +18,8 @@ import com.liferay.commerce.inventory.service.CommerceInventoryWarehouseItemLoca
 import com.liferay.commerce.inventory.service.CommerceInventoryWarehouseItemService;
 import com.liferay.commerce.inventory.type.CommerceInventoryAuditType;
 import com.liferay.commerce.inventory.type.CommerceInventoryAuditTypeRegistry;
-import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerCustomizerFactory;
-import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
-import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
-import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerList;
+import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerListFactory;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
@@ -29,14 +27,10 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.util.BigDecimalUtil;
-import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 
 import java.math.BigDecimal;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -90,8 +84,7 @@ public class DefaultCommerceInventoryMethodImpl
 			unitOfMeasureKey);
 
 		for (CommerceInventoryEngineContributor
-				commerceInventoryEngineContributor :
-					_getCommerceInventoryEngineContributors()) {
+				commerceInventoryEngineContributor : _serviceTrackerList) {
 
 			commerceInventoryEngineContributor.consumeQuantityContribute(
 				userId, commerceInventoryBookedQuantityId,
@@ -128,8 +121,7 @@ public class DefaultCommerceInventoryMethodImpl
 				commerceInventoryWarehouseItem.getMvccVersion());
 
 		for (CommerceInventoryEngineContributor
-				commerceInventoryEngineContributor :
-					_getCommerceInventoryEngineContributors()) {
+				commerceInventoryEngineContributor : _serviceTrackerList) {
 
 			commerceInventoryEngineContributor.decreaseStockQuantityContribute(
 				userId, commerceInventoryWarehouseId, quantity, sku,
@@ -249,8 +241,7 @@ public class DefaultCommerceInventoryMethodImpl
 			unitOfMeasureKey);
 
 		for (CommerceInventoryEngineContributor
-				commerceInventoryEngineContributor :
-					_getCommerceInventoryEngineContributors()) {
+				commerceInventoryEngineContributor : _serviceTrackerList) {
 
 			commerceInventoryEngineContributor.increaseStockQuantityContribute(
 				userId, commerceInventoryWarehouseId, quantity, sku,
@@ -260,17 +251,14 @@ public class DefaultCommerceInventoryMethodImpl
 
 	@Activate
 	protected void activate(BundleContext bundleContext) {
-		_serviceTrackerMap = ServiceTrackerMapFactory.openSingleValueMap(
+		_serviceTrackerList = ServiceTrackerListFactory.open(
 			bundleContext, CommerceInventoryEngineContributor.class,
-			"commerce.inventory.engine.contributor.key",
-			ServiceTrackerCustomizerFactory.
-				<CommerceInventoryEngineContributor>serviceWrapper(
-					bundleContext));
+			new CommerceInventoryEngineContributorOrderComparator());
 	}
 
 	@Deactivate
 	protected void deactivate() {
-		_serviceTrackerMap.close();
+		_serviceTrackerList.close();
 	}
 
 	private String _getAvailabilityStatus(
@@ -293,33 +281,8 @@ public class DefaultCommerceInventoryMethodImpl
 		return availabilityStatus;
 	}
 
-	private List<CommerceInventoryEngineContributor>
-		_getCommerceInventoryEngineContributors() {
-
-		List
-			<ServiceTrackerCustomizerFactory.ServiceWrapper
-				<CommerceInventoryEngineContributor>>
-					commerceInventoryEngineContributorServiceWrappers =
-						ListUtil.fromCollection(_serviceTrackerMap.values());
-
-		Collections.sort(
-			commerceInventoryEngineContributorServiceWrappers,
-			_commerceInventoryEngineContributorServiceWrapperOrderComparator);
-
-		return TransformUtil.transform(
-			commerceInventoryEngineContributorServiceWrappers,
-			commerceInventoryEngineContributorServiceWrapper ->
-				commerceInventoryEngineContributorServiceWrapper.getService());
-	}
-
 	private static final Log _log = LogFactoryUtil.getLog(
 		DefaultCommerceInventoryMethodImpl.class);
-
-	private static final Comparator
-		<ServiceTrackerCustomizerFactory.ServiceWrapper
-			<CommerceInventoryEngineContributor>>
-				_commerceInventoryEngineContributorServiceWrapperOrderComparator =
-					new CommerceInventoryEngineContributorOrderComparator();
 
 	@Reference
 	private CommerceInventoryAuditLocalService
@@ -344,9 +307,7 @@ public class DefaultCommerceInventoryMethodImpl
 	@Reference
 	private Language _language;
 
-	private ServiceTrackerMap
-		<String,
-		 ServiceTrackerCustomizerFactory.ServiceWrapper
-			 <CommerceInventoryEngineContributor>> _serviceTrackerMap;
+	private ServiceTrackerList<CommerceInventoryEngineContributor>
+		_serviceTrackerList;
 
 }
