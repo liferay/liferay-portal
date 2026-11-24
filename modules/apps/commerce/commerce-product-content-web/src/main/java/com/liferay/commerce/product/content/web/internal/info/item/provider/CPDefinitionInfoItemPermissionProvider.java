@@ -20,11 +20,15 @@ import com.liferay.info.item.provider.InfoItemPermissionProvider;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 
 import jakarta.servlet.http.HttpServletRequest;
+
+import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -43,13 +47,18 @@ public class CPDefinitionInfoItemPermissionProvider
 			String actionId)
 		throws InfoItemPermissionException {
 
-		CommerceContext commerceContext = _getCommerceContext();
-
-		if (commerceContext == null) {
-			return false;
-		}
-
 		try {
+			if (!Objects.equals(actionId, ActionKeys.VIEW)) {
+				return _cpDefinitionModelResourcePermission.contains(
+					permissionChecker, cpDefinition, actionId);
+			}
+
+			CommerceContext commerceContext = _getCommerceContext();
+
+			if (commerceContext == null) {
+				return false;
+			}
+
 			return _commerceProductViewPermission.contains(
 				permissionChecker,
 				CommerceUtil.getCommerceAccountId(commerceContext),
@@ -68,12 +77,6 @@ public class CPDefinitionInfoItemPermissionProvider
 			InfoItemReference infoItemReference, String actionId)
 		throws InfoItemPermissionException {
 
-		CommerceContext commerceContext = _getCommerceContext();
-
-		if (commerceContext == null) {
-			return false;
-		}
-
 		InfoItemIdentifier infoItemIdentifier =
 			infoItemReference.getInfoItemIdentifier();
 
@@ -85,6 +88,18 @@ public class CPDefinitionInfoItemPermissionProvider
 			(ClassPKInfoItemIdentifier)infoItemIdentifier;
 
 		try {
+			if (!Objects.equals(actionId, ActionKeys.VIEW)) {
+				return _cpDefinitionModelResourcePermission.contains(
+					permissionChecker, classPKInfoItemIdentifier.getClassPK(),
+					actionId);
+			}
+
+			CommerceContext commerceContext = _getCommerceContext();
+
+			if (commerceContext == null) {
+				return false;
+			}
+
 			return _commerceProductViewPermission.contains(
 				permissionChecker,
 				CommerceUtil.getCommerceAccountId(commerceContext),
@@ -149,5 +164,11 @@ public class CPDefinitionInfoItemPermissionProvider
 
 	@Reference
 	private CommerceProductViewPermission _commerceProductViewPermission;
+
+	@Reference(
+		target = "(model.class.name=com.liferay.commerce.product.model.CPDefinition)"
+	)
+	private ModelResourcePermission<CPDefinition>
+		_cpDefinitionModelResourcePermission;
 
 }

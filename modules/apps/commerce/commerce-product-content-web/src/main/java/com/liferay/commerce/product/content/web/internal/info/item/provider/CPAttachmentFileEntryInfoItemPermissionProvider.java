@@ -18,8 +18,12 @@ import com.liferay.info.item.InfoItemIdentifier;
 import com.liferay.info.item.InfoItemReference;
 import com.liferay.info.item.provider.InfoItemPermissionProvider;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.util.Portal;
+
+import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -43,13 +47,19 @@ public class CPAttachmentFileEntryInfoItemPermissionProvider
 			return false;
 		}
 
-		CommerceContext commerceContext = CommerceContextThreadLocal.get();
-
-		if (commerceContext == null) {
-			return false;
-		}
-
 		try {
+			if (!Objects.equals(actionId, ActionKeys.VIEW)) {
+				return _cpDefinitionModelResourcePermission.contains(
+					permissionChecker, cpAttachmentFileEntry.getClassPK(),
+					actionId);
+			}
+
+			CommerceContext commerceContext = CommerceContextThreadLocal.get();
+
+			if (commerceContext == null) {
+				return false;
+			}
+
 			return _commerceProductViewPermission.contains(
 				permissionChecker,
 				CommerceUtil.getCommerceAccountId(commerceContext),
@@ -68,12 +78,6 @@ public class CPAttachmentFileEntryInfoItemPermissionProvider
 			PermissionChecker permissionChecker,
 			InfoItemReference infoItemReference, String actionId)
 		throws InfoItemPermissionException {
-
-		CommerceContext commerceContext = CommerceContextThreadLocal.get();
-
-		if (commerceContext == null) {
-			return false;
-		}
 
 		InfoItemIdentifier infoItemIdentifier =
 			infoItemReference.getInfoItemIdentifier();
@@ -96,6 +100,18 @@ public class CPAttachmentFileEntryInfoItemPermissionProvider
 				return false;
 			}
 
+			if (!Objects.equals(actionId, ActionKeys.VIEW)) {
+				return _cpDefinitionModelResourcePermission.contains(
+					permissionChecker, cpAttachmentFileEntry.getClassPK(),
+					actionId);
+			}
+
+			CommerceContext commerceContext = CommerceContextThreadLocal.get();
+
+			if (commerceContext == null) {
+				return false;
+			}
+
 			return _commerceProductViewPermission.contains(
 				permissionChecker,
 				CommerceUtil.getCommerceAccountId(commerceContext),
@@ -114,6 +130,12 @@ public class CPAttachmentFileEntryInfoItemPermissionProvider
 	@Reference
 	private CPAttachmentFileEntryLocalService
 		_cpAttachmentFileEntryLocalService;
+
+	@Reference(
+		target = "(model.class.name=com.liferay.commerce.product.model.CPDefinition)"
+	)
+	private ModelResourcePermission<CPDefinition>
+		_cpDefinitionModelResourcePermission;
 
 	@Reference
 	private Portal _portal;
