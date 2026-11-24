@@ -35,6 +35,13 @@ export const test = mergeTests(
 	loginTest()
 );
 
+const FDS_SAMPLE_PORTLET_KEY =
+	'com_liferay_frontend_data_set_sample_web_internal_portlet_FDSSamplePortlet';
+
+const ADVANCED_SAMPLE_ERC = `${FDS_SAMPLE_PORTLET_KEY}-advanced`;
+const CLASSIC_SAMPLE_ERC = `${FDS_SAMPLE_PORTLET_KEY}-classic`;
+const CUSTOM_INTERNAL_VIEW_SAMPLE_ERC = `${FDS_SAMPLE_PORTLET_KEY}-customInternalView`;
+
 const dataSetERCs: string[] = [];
 
 test.afterEach(async ({dataSetManagerApiHelpers}) => {
@@ -168,11 +175,7 @@ test(
 
 			await expect(advancedSampleListItem).toHaveClass(/selected/);
 
-			dataSetERCs.push(
-
-				// eslint-disable-next-line @liferay/no-get-data-attribute
-				await advancedSampleListItem.getAttribute('data-erc')
-			);
+			dataSetERCs.push(ADVANCED_SAMPLE_ERC);
 
 			await creationModal.createButton.click();
 
@@ -184,11 +187,7 @@ test(
 
 			await expect(classicSampleListItem).toHaveClass(/selected/);
 
-			dataSetERCs.push(
-
-				// eslint-disable-next-line @liferay/no-get-data-attribute
-				await classicSampleListItem.getAttribute('data-erc')
-			);
+			dataSetERCs.push(CLASSIC_SAMPLE_ERC);
 
 			await creationModal.createButton.click();
 
@@ -202,11 +201,7 @@ test(
 				/selected/
 			);
 
-			dataSetERCs.push(
-
-				// eslint-disable-next-line @liferay/no-get-data-attribute
-				await customInternalViewSampleListItem.getAttribute('data-erc')
-			);
+			dataSetERCs.push(CUSTOM_INTERNAL_VIEW_SAMPLE_ERC);
 
 			await creationModal.createButton.click();
 
@@ -774,11 +769,7 @@ test(
 
 			await advancedSampleListItem.click();
 
-			dataSetERCs.push(
-
-				// eslint-disable-next-line @liferay/no-get-data-attribute
-				await advancedSampleListItem.getAttribute('data-erc')
-			);
+			dataSetERCs.push(ADVANCED_SAMPLE_ERC);
 
 			await creationModal.createButton.click();
 
