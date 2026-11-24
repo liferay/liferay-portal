@@ -13,6 +13,7 @@ import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.portal.kernel.util.ListUtil;
 
 import java.util.List;
 import java.util.Objects;
@@ -36,9 +37,13 @@ public class ObjectEntryRelatedInfoItemProvider
 	@Override
 	public List<RelatedInfoItem> getRelatedInfoItems() {
 		return TransformUtil.transform(
-			_objectRelationshipLocalService.getObjectRelationships(
-				_objectDefinition.getObjectDefinitionId(),
-				ObjectRelationshipConstants.TYPE_ONE_TO_MANY),
+			ListUtil.concat(
+				_objectRelationshipLocalService.getObjectRelationships(
+					_objectDefinition.getObjectDefinitionId(),
+					ObjectRelationshipConstants.TYPE_ONE_TO_MANY),
+				_objectRelationshipLocalService.getObjectRelationships(
+					_objectDefinition.getObjectDefinitionId(),
+					ObjectRelationshipConstants.TYPE_ONE_TO_ONE)),
 			objectRelationship -> {
 				if (!objectRelationship.isSelf() &&
 					Objects.equals(
