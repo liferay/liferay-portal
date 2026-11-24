@@ -72,13 +72,13 @@ public class ConfigurationUtilTest {
 			_isRESTEnabled(
 				systemConfiguration,
 				_createConfiguration(
-					VulcanCompanyConfiguration.class.getName(), false)));
+					VulcanCompanyConfiguration.class.getName() + ".scoped",
+					false)));
 		Assert.assertFalse(
 			_isRESTEnabled(
 				systemConfiguration,
 				_createConfiguration(
-					VulcanCompanyConfiguration.class.getName() + ".scoped",
-					false)));
+					VulcanCompanyConfiguration.class.getName(), false)));
 
 		long companyId = RandomTestUtil.randomLong();
 		String path = RandomTestUtil.randomString();
