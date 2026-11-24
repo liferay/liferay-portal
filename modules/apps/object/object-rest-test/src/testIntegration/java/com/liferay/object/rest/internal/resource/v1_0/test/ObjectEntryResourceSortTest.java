@@ -2286,6 +2286,67 @@ public class ObjectEntryResourceSortTest
 		}
 	}
 
+	@FeatureFlag("LPD-108620")
+	@Test
+	public void testSortByOneToOneRelationshipCustomObjectFields()
+		throws Exception {
+
+		ObjectDefinition parentObjectDefinition = getObjectDefinition2();
+
+		String parentEndpoint = getEndpoint(
+			parentObjectDefinition, testGroupId);
+
+		JSONObject parentJSONObject1 = HTTPTestUtil.invokeToJSONObject(
+			JSONUtil.put(
+				OBJECT_FIELD_NAME_TEXT, "a" + RandomTestUtil.randomString()
+			).toString(),
+			parentEndpoint, Http.Method.POST);
+		JSONObject parentJSONObject2 = HTTPTestUtil.invokeToJSONObject(
+			JSONUtil.put(
+				OBJECT_FIELD_NAME_TEXT, "b" + RandomTestUtil.randomString()
+			).toString(),
+			parentEndpoint, Http.Method.POST);
+
+		ObjectDefinition childObjectDefinition = getObjectDefinition1();
+
+		String childEndpoint = getEndpoint(childObjectDefinition, testGroupId);
+
+		JSONObject childJSONObject1 = HTTPTestUtil.invokeToJSONObject(
+			JSONUtil.put(
+				OBJECT_FIELD_NAME_TEXT, RandomTestUtil.randomString()
+			).toString(),
+			childEndpoint, Http.Method.POST);
+		JSONObject childJSONObject2 = HTTPTestUtil.invokeToJSONObject(
+			JSONUtil.put(
+				OBJECT_FIELD_NAME_TEXT, RandomTestUtil.randomString()
+			).toString(),
+			childEndpoint, Http.Method.POST);
+
+		ObjectRelationship objectRelationship =
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				parentObjectDefinition, childObjectDefinition,
+				TestPropsValues.getUserId(),
+				ObjectRelationshipConstants.TYPE_ONE_TO_ONE);
+
+		try {
+			_relateObjectEntries(
+				parentEndpoint, parentJSONObject1, objectRelationship,
+				childJSONObject2);
+			_relateObjectEntries(
+				parentEndpoint, parentJSONObject2, objectRelationship,
+				childJSONObject1);
+
+			_testSortByFieldNames(
+				childEndpoint, childJSONObject2, childJSONObject1,
+				objectRelationship.getName() + "/" + OBJECT_FIELD_NAME_TEXT);
+		}
+		finally {
+			_deleteObjectEntries(
+				childJSONObject1, childJSONObject2, parentJSONObject1,
+				parentJSONObject2);
+		}
+	}
+
 	@Test
 	public void testSortBySystemObjectField() throws Exception {
 		_testSortBySystemObjectFieldAcrossPages();
