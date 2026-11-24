@@ -13,9 +13,11 @@ import com.liferay.asset.list.service.AssetListEntryAssetEntryRelLocalService;
 import com.liferay.asset.list.service.AssetListEntryAudienceEntryRelLocalService;
 import com.liferay.asset.list.service.AssetListEntryAudienceEntryRelService;
 import com.liferay.asset.list.service.AssetListEntryLocalService;
+import com.liferay.asset.list.test.util.AssetListStagingTestUtil;
 import com.liferay.asset.list.test.util.AssetListTestUtil;
 import com.liferay.asset.test.util.AssetTestUtil;
 import com.liferay.asset.test.util.asset.renderer.factory.TestAssetRendererFactory;
+import com.liferay.audiences.exception.NoSuchAudiencesEntryException;
 import com.liferay.audiences.model.AudiencesEntry;
 import com.liferay.audiences.service.AudiencesEntryLocalService;
 import com.liferay.petra.string.StringPool;
@@ -89,6 +91,50 @@ public class AssetListEntryAudienceEntryRelServiceTest {
 				fetchAssetListEntryAudienceEntryRel(
 					_assetListEntry.getAssetListEntryId(),
 					assetListEntryAudienceEntryRel1.getAudienceEntryERC()));
+	}
+
+	@Test
+	public void testAddAssetListEntryAudienceEntryRelWithAudienceEntryERCFromDifferentGroup()
+		throws Exception {
+
+		Group group = GroupTestUtil.addGroup();
+
+		AudiencesEntry audiencesEntry1 = _addAudiencesEntry(
+			group.getExternalReferenceCode());
+
+		Assert.assertThrows(
+			NoSuchAudiencesEntryException.class,
+			() -> _addAssetListEntryAudienceEntryRel(
+				_assetListEntry, audiencesEntry1.getExternalReferenceCode()));
+
+		AudiencesEntry audiencesEntry2 = _addAudiencesEntry(
+			_group.getExternalReferenceCode());
+
+		Assert.assertNotNull(
+			_addAssetListEntryAudienceEntryRel(
+				_assetListEntry, audiencesEntry2.getExternalReferenceCode()));
+	}
+
+	@Test
+	public void testAddAssetListEntryAudienceEntryRelWithAudienceEntryERCFromLiveGroup()
+		throws Exception {
+
+		Group stagingGroup = AssetListStagingTestUtil.enableLocalStaging(
+			_group, true);
+
+		AssetListEntry assetListEntry = AssetListTestUtil.addAssetListEntry(
+			stagingGroup.getGroupId());
+
+		AudiencesEntry audiencesEntry = _addAudiencesEntry(
+			_group.getExternalReferenceCode());
+
+		Assert.assertNotNull(
+			_assetListEntryAudienceEntryRelLocalService.
+				addAssetListEntryAudienceEntryRel(
+					TestPropsValues.getUserId(), stagingGroup.getGroupId(),
+					assetListEntry.getAssetListEntryId(),
+					audiencesEntry.getExternalReferenceCode(),
+					RandomTestUtil.randomString(), _serviceContext));
 	}
 
 	@Test
