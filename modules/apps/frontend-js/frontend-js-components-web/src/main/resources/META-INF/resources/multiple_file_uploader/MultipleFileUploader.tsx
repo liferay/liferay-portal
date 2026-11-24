@@ -137,8 +137,14 @@ export default function MultipleFileUploader({
 		maxSize: maxFileSize,
 		multiple: true,
 		noKeyboard: true,
-		onDropAccepted: (acceptedFiles) => {
-			setDropErrorMessage('');
+		onDrop: (acceptedFiles, fileRejections) => {
+			const errorCode = fileRejections[0]?.errors[0]?.code;
+
+			setDropErrorMessage(
+				errorCode
+					? FILE_ERRORS[errorCode as keyof typeof FILE_ERRORS]
+					: ''
+			);
 
 			const newFilesToUpload = acceptedFiles.map((file) => ({
 				errorMessage: '',
@@ -158,18 +164,6 @@ export default function MultipleFileUploader({
 
 				return [...prevFilesToUpload, ...uniqueNewFiles];
 			});
-		},
-		onDropRejected: (rejectedFiled) => {
-			let errorMessage = '';
-
-			if (rejectedFiled?.[0]?.errors?.[0]?.code) {
-				const key = rejectedFiled[0].errors[0]
-					.code as keyof typeof FILE_ERRORS;
-
-				errorMessage = FILE_ERRORS[key];
-			}
-
-			setDropErrorMessage(errorMessage);
 		},
 	});
 
