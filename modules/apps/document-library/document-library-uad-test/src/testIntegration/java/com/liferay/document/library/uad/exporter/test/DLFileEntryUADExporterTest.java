@@ -64,7 +64,7 @@ public class DLFileEntryUADExporterTest
 	public void testExportAll() throws Exception {
 		addBaseModel(user.getUserId());
 
-		File file = _uadExporter.exportAll(user.getUserId(), _zipWriterFactory);
+		File file = _uadExporter.exportAll(user.getUserId());
 
 		try (ZipReader zipReader = _zipReaderFactory.getZipReader(file)) {
 			List<String> entries = zipReader.getEntries();
@@ -90,7 +90,7 @@ public class DLFileEntryUADExporterTest
 			dlFileEntry.getCompanyId(), dlFileEntry.getDataRepositoryId(),
 			dlFileEntry.getName());
 
-		File file = _uadExporter.exportAll(user.getUserId(), _zipWriterFactory);
+		File file = _uadExporter.exportAll(user.getUserId());
 
 		try (ZipReader zipReader = _zipReaderFactory.getZipReader(file)) {
 			List<String> entries = zipReader.getEntries();

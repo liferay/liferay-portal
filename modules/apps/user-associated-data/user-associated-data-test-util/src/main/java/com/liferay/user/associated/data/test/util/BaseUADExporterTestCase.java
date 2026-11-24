@@ -52,7 +52,7 @@ public abstract class BaseUADExporterTestCase<T extends BaseModel> {
 	public void testExportAll() throws Exception {
 		addBaseModel(user.getUserId());
 
-		File file = uadExporter.exportAll(user.getUserId(), _zipWriterFactory);
+		File file = uadExporter.exportAll(user.getUserId());
 
 		try (ZipReader zipReader = _zipReaderFactory.getZipReader(file)) {
 			List<String> entries = zipReader.getEntries();

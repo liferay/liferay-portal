@@ -26,7 +26,6 @@ import com.liferay.exportimport.kernel.lar.PortletDataHandlerKeys;
 import com.liferay.exportimport.kernel.model.ExportImportConfiguration;
 import com.liferay.exportimport.kernel.service.ExportImportConfigurationLocalServiceUtil;
 import com.liferay.exportimport.kernel.service.ExportImportLocalServiceUtil;
-import com.liferay.exportimport.test.util.TestReaderWriter;
 import com.liferay.exportimport.test.util.TestUserIdStrategy;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.test.util.JournalTestUtil;
@@ -72,6 +71,8 @@ import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.kernel.xml.SAXReaderUtil;
+import com.liferay.portal.kernel.zip.ZipReader;
+import com.liferay.portal.kernel.zip.ZipWriter;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -142,14 +143,14 @@ public class DefaultExportImportContentProcessorTest {
 		_fileEntry = thumbnailCapability.setLargeImageId(
 			_fileEntry, _fileEntry.getFileEntryId());
 
-		TestReaderWriter testReaderWriter = new TestReaderWriter();
+		_zipWriter = new ZipWriter();
 
 		_portletDataContextExport =
 			PortletDataContextFactoryUtil.createExportPortletDataContext(
 				_stagingGroup.getCompanyId(), _stagingGroup.getGroupId(),
 				new HashMap<>(),
 				new Date(System.currentTimeMillis() - Time.HOUR), new Date(),
-				testReaderWriter);
+				_zipWriter);
 
 		Document document = SAXReaderUtil.createDocument();
 
@@ -157,7 +158,7 @@ public class DefaultExportImportContentProcessorTest {
 
 		manifestRootElement.addElement("header");
 
-		testReaderWriter.addEntry("/manifest.xml", document.asXML());
+		_zipWriter.addEntry("/manifest.xml", document.asXML());
 
 		Element rootElement = SAXReaderUtil.createElement("root");
 
@@ -172,7 +173,8 @@ public class DefaultExportImportContentProcessorTest {
 		_portletDataContextImport =
 			PortletDataContextFactoryUtil.createImportPortletDataContext(
 				_liveGroup.getCompanyId(), _liveGroup.getGroupId(),
-				new HashMap<>(), new TestUserIdStrategy(), testReaderWriter);
+				new HashMap<>(), new TestUserIdStrategy(),
+				new ZipReader(_zipWriter.getFile()));
 
 		_portletDataContextImport.setImportDataRootElement(rootElement);
 
@@ -216,7 +218,7 @@ public class DefaultExportImportContentProcessorTest {
 
 	@Test
 	public void testExportDLReferences() throws Exception {
-		_portletDataContextExport.setZipWriter(new TestReaderWriter());
+		_portletDataContextExport.setZipWriter(new ZipWriter());
 
 		String content = ExportImportContentProcessorTestUtil.replaceParameters(
 			_externalGroup,
@@ -241,30 +243,34 @@ public class DefaultExportImportContentProcessorTest {
 			Assert.assertFalse(content, content.contains(url));
 		}
 
-		TestReaderWriter testReaderWriter =
-			(TestReaderWriter)_portletDataContextExport.getZipWriter();
+		List<String> entries = _getEntries(
+			_portletDataContextExport.getZipWriter());
 
 		_assertContainsReference(
-			testReaderWriter.getEntries(), DLFileEntryConstants.getClassName(),
+			entries, DLFileEntryConstants.getClassName(),
 			_fileEntry.getFileEntryId());
 
 		_assertContainsBinary(
-			testReaderWriter.getBinaryEntries(),
-			DLFileEntryConstants.getClassName(), _fileEntry.getFileEntryId());
+			entries, DLFileEntryConstants.getClassName(),
+			_fileEntry.getFileEntryId());
 
 		int count = 0;
 
-		for (String entry : testReaderWriter.getEntries()) {
-			if (!entry.contains(DLFileEntryConstants.getClassName())) {
+		for (String entry : entries) {
+			if (!entry.contains(DLFileEntryConstants.getClassName()) ||
+				!entry.endsWith(".xml")) {
+
 				continue;
 			}
+
+			String path = StringPool.SLASH + entry;
 
 			Assert.assertTrue(
 				content,
 				content.contains(
-					"[$dl-reference=" + entry + "$,$include-uuid=false$]") ||
+					"[$dl-reference=" + path + "$,$include-uuid=false$]") ||
 				content.contains(
-					"[$dl-reference=" + entry + "$,$include-uuid=true$]"));
+					"[$dl-reference=" + path + "$,$include-uuid=true$]"));
 
 			count++;
 		}
@@ -275,7 +281,7 @@ public class DefaultExportImportContentProcessorTest {
 
 	@Test
 	public void testExportDLReferencesFriendlyURL() throws Exception {
-		_portletDataContextExport.setZipWriter(new TestReaderWriter());
+		_portletDataContextExport.setZipWriter(new ZipWriter());
 
 		_fileEntry = DLAppLocalServiceUtil.updateFileEntry(
 			TestPropsValues.getUserId(), _fileEntry.getFileEntryId(),
@@ -310,28 +316,32 @@ public class DefaultExportImportContentProcessorTest {
 				url + " must not be in :" + content, content.contains(url));
 		}
 
-		TestReaderWriter testReaderWriter =
-			(TestReaderWriter)_portletDataContextExport.getZipWriter();
+		List<String> entries = _getEntries(
+			_portletDataContextExport.getZipWriter());
 
 		_assertContainsReference(
-			testReaderWriter.getEntries(), DLFileEntryConstants.getClassName(),
+			entries, DLFileEntryConstants.getClassName(),
 			_fileEntry.getFileEntryId());
 
 		_assertContainsBinary(
-			testReaderWriter.getBinaryEntries(),
-			DLFileEntryConstants.getClassName(), _fileEntry.getFileEntryId());
+			entries, DLFileEntryConstants.getClassName(),
+			_fileEntry.getFileEntryId());
 
 		int count = 0;
 
-		for (String entry : testReaderWriter.getEntries()) {
-			if (!entry.contains(DLFileEntryConstants.getClassName())) {
+		for (String entry : entries) {
+			if (!entry.contains(DLFileEntryConstants.getClassName()) ||
+				!entry.endsWith(".xml")) {
+
 				continue;
 			}
+
+			String path = StringPool.SLASH + entry;
 
 			Assert.assertTrue(
 				content,
 				content.contains(
-					"[$dl-reference=" + entry +
+					"[$dl-reference=" + path +
 						"$,$include-friendly-url=true$]"));
 
 			count++;
@@ -343,7 +353,7 @@ public class DefaultExportImportContentProcessorTest {
 
 	@Test
 	public void testExportDLReferencesInvalidReference() throws Exception {
-		_portletDataContextExport.setZipWriter(new TestReaderWriter());
+		_portletDataContextExport.setZipWriter(new ZipWriter());
 
 		_fileEntry = DLAppLocalServiceUtil.updateFileEntry(
 			TestPropsValues.getUserId(), _fileEntry.getFileEntryId(),
@@ -586,7 +596,7 @@ public class DefaultExportImportContentProcessorTest {
 			PortletDataContextFactoryUtil.createExportPortletDataContext(
 				group.getCompanyId(), group.getGroupId(), new HashMap<>(),
 				new Date(System.currentTimeMillis() - Time.HOUR), new Date(),
-				new TestReaderWriter());
+				new ZipWriter());
 
 		Element rootElement = SAXReaderUtil.createElement("root");
 
@@ -629,7 +639,7 @@ public class DefaultExportImportContentProcessorTest {
 		fileEntry = thumbnailCapability.setLargeImageId(
 			fileEntry, fileEntry.getFileEntryId());
 
-		_portletDataContextExport.setZipWriter(new TestReaderWriter());
+		_portletDataContextExport.setZipWriter(new ZipWriter());
 
 		String content = ExportImportContentProcessorTestUtil.replaceParameters(
 			_externalGroup,
@@ -721,6 +731,9 @@ public class DefaultExportImportContentProcessorTest {
 		content = StringUtil.replace(
 			content, _externalGroup.getUuid(), uuidString);
 
+		_portletDataContextImport.setZipReader(
+			new ZipReader(_zipWriter.getFile()));
+
 		content = _exportImportContentProcessor.replaceImportContentReferences(
 			_portletDataContextImport, _referrerStagedModel, content);
 
@@ -774,6 +787,9 @@ public class DefaultExportImportContentProcessorTest {
 			_portletDataContextExport, _referrerStagedModel, content, true,
 			true);
 
+		_portletDataContextImport.setZipReader(
+			new ZipReader(_zipWriter.getFile()));
+
 		String importedContent =
 			_exportImportContentProcessor.replaceImportContentReferences(
 				_portletDataContextImport, _referrerStagedModel, content);
@@ -818,6 +834,9 @@ public class DefaultExportImportContentProcessorTest {
 			_portletDataContextExport, _referrerStagedModel, content, true,
 			true);
 
+		_portletDataContextImport.setZipReader(
+			new ZipReader(_zipWriter.getFile()));
+
 		String importedContent =
 			_exportImportContentProcessor.replaceImportContentReferences(
 				_portletDataContextImport, _referrerStagedModel, content);
@@ -848,6 +867,9 @@ public class DefaultExportImportContentProcessorTest {
 
 		String content = _replaceLinksToLayoutsParametersInLayoutSetPrototype(
 			contentInFile);
+
+		_portletDataContextImport.setZipReader(
+			new ZipReader(_zipWriter.getFile()));
 
 		String importedContent =
 			_exportImportContentProcessor.replaceImportContentReferences(
@@ -973,6 +995,9 @@ public class DefaultExportImportContentProcessorTest {
 			true);
 
 		_portletDataContextImport.setScopeGroupId(_fileEntry.getGroupId());
+
+		_portletDataContextImport.setZipReader(
+			new ZipReader(_zipWriter.getFile()));
 
 		_exportImportContentProcessor.replaceImportContentReferences(
 			_portletDataContextImport, _referrerStagedModel, content);
@@ -1131,6 +1156,12 @@ public class DefaultExportImportContentProcessorTest {
 		}
 	}
 
+	private List<String> _getEntries(ZipWriter zipWriter) {
+		try (ZipReader zipReader = new ZipReader(zipWriter.getFile())) {
+			return zipReader.getEntries();
+		}
+	}
+
 	private String _replaceLinksToLayoutsParameters(
 		String content, Layout privateLayout, Layout publicLayout) {
 
@@ -1199,6 +1230,9 @@ public class DefaultExportImportContentProcessorTest {
 			DLAppLocalServiceUtil.deleteFileEntry(_fileEntry.getFileEntryId());
 		}
 
+		_portletDataContextImport.setZipReader(
+			new ZipReader(_zipWriter.getFile()));
+
 		content = _exportImportContentProcessor.replaceImportContentReferences(
 			_portletDataContextImport, _referrerStagedModel, content);
 
@@ -1247,6 +1281,9 @@ public class DefaultExportImportContentProcessorTest {
 			DLAppLocalServiceUtil.deleteFileEntry(_fileEntry.getFileEntryId());
 		}
 
+		_portletDataContextImport.setZipReader(
+			new ZipReader(_zipWriter.getFile()));
+
 		content = _exportImportContentProcessor.replaceImportContentReferences(
 			_portletDataContextImport, _referrerStagedModel, content);
 
@@ -1269,6 +1306,10 @@ public class DefaultExportImportContentProcessorTest {
 		content = _exportImportContentProcessor.replaceExportContentReferences(
 			_portletDataContextExport, _referrerStagedModel, content, true,
 			false);
+
+		_portletDataContextImport.setZipReader(
+			new ZipReader(_zipWriter.getFile()));
+
 		content = _exportImportContentProcessor.replaceImportContentReferences(
 			_portletDataContextImport, _referrerStagedModel, content);
 
@@ -1324,5 +1365,6 @@ public class DefaultExportImportContentProcessorTest {
 
 	private Layout _stagingPrivateLayout;
 	private Layout _stagingPublicLayout;
+	private ZipWriter _zipWriter;
 
 }

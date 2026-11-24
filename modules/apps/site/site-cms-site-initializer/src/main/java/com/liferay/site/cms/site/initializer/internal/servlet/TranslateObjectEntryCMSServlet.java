@@ -28,7 +28,6 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.zip.ZipWriter;
-import com.liferay.portal.kernel.zip.ZipWriterFactory;
 import com.liferay.portal.search.document.Document;
 import com.liferay.portal.search.hits.SearchHit;
 import com.liferay.portal.search.hits.SearchHits;
@@ -194,7 +193,7 @@ public class TranslateObjectEntryCMSServlet extends BaseCMSServlet {
 		File file = null;
 		Locale locale = portal.getLocale(httpServletRequest);
 		String zipFileName = StringPool.BLANK;
-		ZipWriter zipWriter = _zipWriterFactory.getZipWriter();
+		ZipWriter zipWriter = new ZipWriter();
 
 		for (Map.Entry<String, List<Long>> entry : objectEntryIds.entrySet()) {
 			file = _translationManager.getXLIFFZipFile(
@@ -285,8 +284,5 @@ public class TranslateObjectEntryCMSServlet extends BaseCMSServlet {
 
 	@Reference
 	private TranslationManager _translationManager;
-
-	@Reference
-	private ZipWriterFactory _zipWriterFactory;
 
 }

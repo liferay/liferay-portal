@@ -119,8 +119,7 @@ public class LARValidationExportImportTest extends BaseExportImportTestCase {
 		larFile = FileUtil.createTempFile("lar");
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				"com.liferay.portal.zip.internal.reader.ZipReaderImpl",
-				LoggerTestUtil.ERROR)) {
+				ZipReader.class.getName(), LoggerTestUtil.ERROR)) {
 
 			_validateImportLayoutsFile();
 
@@ -181,8 +180,7 @@ public class LARValidationExportImportTest extends BaseExportImportTestCase {
 		larFile = FileUtil.createTempFile("lar");
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				"com.liferay.portal.zip.internal.reader.ZipReaderImpl",
-				LoggerTestUtil.ERROR)) {
+				ZipReader.class.getName(), LoggerTestUtil.ERROR)) {
 
 			_validateImportPortletInfo();
 

@@ -84,7 +84,6 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.zip.ZipWriterFactory;
 import com.liferay.portal.language.override.service.PLOEntryLocalService;
 import com.liferay.portal.security.service.access.policy.service.SAPEntryLocalService;
 import com.liferay.segments.service.SegmentsEntryLocalService;
@@ -193,7 +192,7 @@ public class SiteInitializerExtender
 				_themeLocalService, _userAccountResourceFactory,
 				_userGroupLocalService, _userLocalService,
 				_workflowDefinitionLinkLocalService,
-				_workflowDefinitionResourceFactory, _zipWriterFactory);
+				_workflowDefinitionResourceFactory);
 
 		siteInitializerExtension.start();
 
@@ -326,7 +325,7 @@ public class SiteInitializerExtender
 				_themeLocalService, _userAccountResourceFactory,
 				_userGroupLocalService, _userLocalService,
 				_workflowDefinitionLinkLocalService,
-				_workflowDefinitionResourceFactory, _zipWriterFactory);
+				_workflowDefinitionResourceFactory);
 
 		siteInitializerExtension.start();
 
@@ -619,8 +618,5 @@ public class SiteInitializerExtender
 	@Reference
 	private WorkflowDefinitionResource.Factory
 		_workflowDefinitionResourceFactory;
-
-	@Reference
-	private ZipWriterFactory _zipWriterFactory;
 
 }

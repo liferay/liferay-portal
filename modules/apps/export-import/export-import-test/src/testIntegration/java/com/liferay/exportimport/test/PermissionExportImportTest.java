@@ -12,7 +12,6 @@ import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.exportimport.kernel.lar.PortletDataContextFactoryUtil;
 import com.liferay.exportimport.kernel.lar.PortletDataHandlerKeys;
 import com.liferay.exportimport.lar.PermissionImporter;
-import com.liferay.exportimport.test.util.TestReaderWriter;
 import com.liferay.exportimport.test.util.TestUserIdStrategy;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -46,6 +45,8 @@ import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.kernel.xml.SAXReaderUtil;
+import com.liferay.portal.kernel.zip.ZipReader;
+import com.liferay.portal.kernel.zip.ZipWriter;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.util.ResourcePermissionUtil;
@@ -176,7 +177,7 @@ public class PermissionExportImportTest {
 			String.valueOf(exportDLFolder.getFolderId()), role.getRoleId(),
 			_DL_FOLDER_ACTION_IDS);
 
-		TestReaderWriter testReaderWriter = _createTestReaderWriter();
+		ZipWriter zipWriter = _createZipWriter();
 
 		PortletDataContext exportPortletDataContext =
 			PortletDataContextFactoryUtil.createExportPortletDataContext(
@@ -185,7 +186,7 @@ public class PermissionExportImportTest {
 					PortletDataHandlerKeys.PERMISSIONS,
 					new String[] {Boolean.TRUE.toString()}
 				).build(),
-				null, null, testReaderWriter);
+				null, null, zipWriter);
 
 		exportPortletDataContext.addPermissions(
 			DLFolder.class, exportDLFolder.getFolderId());
@@ -210,7 +211,7 @@ public class PermissionExportImportTest {
 					PortletDataHandlerKeys.PERMISSIONS,
 					new String[] {Boolean.TRUE.toString()}
 				).build(),
-				new TestUserIdStrategy(), testReaderWriter);
+				new TestUserIdStrategy(), new ZipReader(zipWriter.getFile()));
 
 		importPortletDataContext.setSourceGroupId(exportGroup.getGroupId());
 
@@ -431,8 +432,8 @@ public class PermissionExportImportTest {
 		}
 	}
 
-	private TestReaderWriter _createTestReaderWriter() {
-		TestReaderWriter testReaderWriter = new TestReaderWriter();
+	private ZipWriter _createZipWriter() throws Exception {
+		ZipWriter zipWriter = new ZipWriter();
 
 		Document document = SAXReaderUtil.createDocument();
 
@@ -440,9 +441,9 @@ public class PermissionExportImportTest {
 
 		rootElement.addElement("header");
 
-		testReaderWriter.addEntry("/manifest.xml", document.asXML());
+		zipWriter.addEntry("/manifest.xml", document.asXML());
 
-		return testReaderWriter;
+		return zipWriter;
 	}
 
 	private void _testPortletGuestPermissionsExportImport(

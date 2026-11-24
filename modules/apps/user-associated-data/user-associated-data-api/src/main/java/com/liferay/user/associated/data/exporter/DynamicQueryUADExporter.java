@@ -19,7 +19,6 @@ import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.SAXReaderUtil;
 import com.liferay.portal.kernel.zip.ZipWriter;
-import com.liferay.portal.kernel.zip.ZipWriterFactory;
 import com.liferay.user.associated.data.util.UADDynamicQueryUtil;
 
 import java.io.File;
@@ -59,14 +58,11 @@ public abstract class DynamicQueryUADExporter<T extends BaseModel>
 	}
 
 	@Override
-	public File exportAll(long userId, ZipWriterFactory zipWriterFactory)
-		throws PortalException {
-
+	public File exportAll(long userId) throws PortalException {
 		ActionableDynamicQuery actionableDynamicQuery =
 			getActionableDynamicQuery(userId);
 
-		ZipWriter zipWriter = getZipWriter(
-			userId, getTypeKey(), zipWriterFactory);
+		ZipWriter zipWriter = getZipWriter(userId, getTypeKey());
 
 		actionableDynamicQuery.setPerformActionMethod(
 			(T baseModel) -> {
@@ -143,12 +139,10 @@ public abstract class DynamicQueryUADExporter<T extends BaseModel>
 	 * @param  modelClassName the string representation of the model class name
 	 * @return a {@code ZipWriter} where each piece of data is written
 	 */
-	protected ZipWriter getZipWriter(
-		long userId, String modelClassName, ZipWriterFactory zipWriterFactory) {
-
+	protected ZipWriter getZipWriter(long userId, String modelClassName) {
 		File file = createFolder(userId);
 
-		return zipWriterFactory.getZipWriter(
+		return new ZipWriter(
 			new File(
 				StringBundler.concat(
 					file.getAbsolutePath(), StringPool.SLASH, modelClassName,

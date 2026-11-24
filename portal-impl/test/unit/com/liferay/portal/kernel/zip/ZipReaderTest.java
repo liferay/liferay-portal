@@ -3,13 +3,12 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.portal.zip.internal.reader;
+package com.liferay.portal.kernel.zip;
 
 import com.liferay.petra.io.StreamUtil;
 import com.liferay.portal.kernel.test.util.DependenciesTestUtil;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.zip.ZipReader;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.portal.util.FastDateFormatFactoryImpl;
 
@@ -32,7 +31,7 @@ import org.junit.Test;
 /**
  * @author Manuel de la Peña
  */
-public class ZipReaderImplTest {
+public class ZipReaderTest {
 
 	@ClassRule
 	public static LiferayUnitTestRule liferayUnitTestRule =
@@ -48,16 +47,16 @@ public class ZipReaderImplTest {
 
 		_expectedContent0 = StringUtil.read(
 			DependenciesTestUtil.getDependencyAsInputStream(
-				ZipReaderImplTest.class, _FILE_PATH_0));
+				ZipReaderTest.class, _FILE_PATH_0));
 		_expectedContent1 = StringUtil.read(
 			DependenciesTestUtil.getDependencyAsInputStream(
-				ZipReaderImplTest.class, _FILE_PATH_1));
+				ZipReaderTest.class, _FILE_PATH_1));
 		_expectedContent2 = StringUtil.read(
 			DependenciesTestUtil.getDependencyAsInputStream(
-				ZipReaderImplTest.class, _FILE_PATH_2));
+				ZipReaderTest.class, _FILE_PATH_2));
 		_expectedContent3 = StringUtil.read(
 			DependenciesTestUtil.getDependencyAsInputStream(
-				ZipReaderImplTest.class, _FILE_PATH_3));
+				ZipReaderTest.class, _FILE_PATH_3));
 	}
 
 	@Before
@@ -258,13 +257,13 @@ public class ZipReaderImplTest {
 	}
 
 	private ZipReader _getZipReader(File file) {
-		return new ZipReaderImpl(file);
+		return new ZipReader(file);
 	}
 
 	private ZipReader _getZipReader(InputStream inputStream)
 		throws IOException {
 
-		return new ZipReaderImpl(inputStream);
+		return new ZipReader(inputStream);
 	}
 
 	private void _testGetEntryAsInputStream(

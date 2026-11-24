@@ -369,8 +369,7 @@ public class BundleSiteInitializer implements SiteInitializer {
 		UserGroupLocalService userGroupLocalService,
 		UserLocalService userLocalService,
 		WorkflowDefinitionLinkLocalService workflowDefinitionLinkLocalService,
-		WorkflowDefinitionResource.Factory workflowDefinitionResourceFactory,
-		ZipWriterFactory zipWriterFactory) {
+		WorkflowDefinitionResource.Factory workflowDefinitionResourceFactory) {
 
 		_accountEntryLocalService = accountEntryLocalService;
 		_accountEntryOrganizationRelLocalService =
@@ -474,7 +473,6 @@ public class BundleSiteInitializer implements SiteInitializer {
 		_workflowDefinitionLinkLocalService =
 			workflowDefinitionLinkLocalService;
 		_workflowDefinitionResourceFactory = workflowDefinitionResourceFactory;
-		_zipWriterFactory = zipWriterFactory;
 
 		BundleWiring bundleWiring = _siteBundle.adapt(BundleWiring.class);
 

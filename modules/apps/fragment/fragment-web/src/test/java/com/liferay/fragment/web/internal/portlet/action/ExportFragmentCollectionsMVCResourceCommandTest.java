@@ -18,7 +18,6 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.zip.ZipWriter;
-import com.liferay.portal.kernel.zip.ZipWriterFactory;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import java.io.File;
@@ -26,11 +25,13 @@ import java.io.File;
 import java.util.List;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
+import org.mockito.MockedConstruction;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
@@ -68,17 +69,13 @@ public class ExportFragmentCollectionsMVCResourceCommandTest {
 
 		file.deleteOnExit();
 
-		Mockito.when(
-			_zipWriter.getFile()
-		).thenReturn(
-			file
-		);
-
-		Mockito.when(
-			_zipWriterFactory.getZipWriter()
-		).thenReturn(
-			_zipWriter
-		);
+		_zipWriterMockedConstruction = Mockito.mockConstruction(
+			ZipWriter.class,
+			(zipWriter, context) -> Mockito.when(
+				zipWriter.getFile()
+			).thenReturn(
+				file
+			));
 
 		ReflectionTestUtil.setFieldValue(
 			_exportFragmentCollectionsMVCResourceCommand,
@@ -86,14 +83,12 @@ public class ExportFragmentCollectionsMVCResourceCommandTest {
 		ReflectionTestUtil.setFieldValue(
 			_exportFragmentCollectionsMVCResourceCommand,
 			"_portletResourcePermission", _portletResourcePermission);
-		ReflectionTestUtil.setFieldValue(
-			_exportFragmentCollectionsMVCResourceCommand, "_zipWriterFactory",
-			_zipWriterFactory);
 	}
 
 	@After
 	public void tearDown() {
 		_timeMockedStatic.close();
+		_zipWriterMockedConstruction.close();
 	}
 
 	@Test
@@ -123,10 +118,14 @@ public class ExportFragmentCollectionsMVCResourceCommandTest {
 			_getMockLiferayResourceRequest(),
 			new MockLiferayResourceResponse());
 
+		List<ZipWriter> zipWriters = _zipWriterMockedConstruction.constructed();
+
+		Assert.assertEquals(zipWriters.toString(), 1, zipWriters.size());
+
 		Mockito.verify(
 			_fragmentCollection
 		).populateZipWriter(
-			_zipWriter
+			zipWriters.get(0)
 		);
 	}
 
@@ -201,8 +200,6 @@ public class ExportFragmentCollectionsMVCResourceCommandTest {
 		Mockito.mock(PortletResourcePermission.class);
 	private final MockedStatic<Time> _timeMockedStatic = Mockito.mockStatic(
 		Time.class);
-	private final ZipWriter _zipWriter = Mockito.mock(ZipWriter.class);
-	private final ZipWriterFactory _zipWriterFactory = Mockito.mock(
-		ZipWriterFactory.class);
+	private MockedConstruction<ZipWriter> _zipWriterMockedConstruction;
 
 }

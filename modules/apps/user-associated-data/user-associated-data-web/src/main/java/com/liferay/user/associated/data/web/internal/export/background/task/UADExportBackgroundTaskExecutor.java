@@ -116,7 +116,7 @@ public class UADExportBackgroundTaskExecutor
 			UADExporter<?> uadExporter = _uadRegistry.getUADExporter(
 				uadRegistryKey);
 
-			File file = uadExporter.exportAll(userId, _zipWriterFactory);
+			File file = uadExporter.exportAll(userId);
 
 			if (!file.exists()) {
 				continue;

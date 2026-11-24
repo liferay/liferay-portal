@@ -12,7 +12,6 @@ import com.liferay.exportimport.content.processor.ExportImportContentProcessor;
 import com.liferay.exportimport.kernel.exception.ExportImportContentValidationException;
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.exportimport.kernel.lar.PortletDataContextFactoryUtil;
-import com.liferay.exportimport.test.util.TestReaderWriter;
 import com.liferay.exportimport.test.util.TestUserIdStrategy;
 import com.liferay.fragment.entry.processor.constants.FragmentEntryProcessorConstants;
 import com.liferay.fragment.model.FragmentEntryLink;
@@ -53,6 +52,8 @@ import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.kernel.xml.SAXReaderUtil;
+import com.liferay.portal.kernel.zip.ZipReader;
+import com.liferay.portal.kernel.zip.ZipWriter;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -1060,7 +1061,7 @@ public class LayoutReferencesExportImportContentProcessorTest {
 			boolean exportFromDefaultGroup, boolean importToDefaultGroup)
 		throws Exception {
 
-		TestReaderWriter testReaderWriter = new TestReaderWriter();
+		ZipWriter zipWriter = new ZipWriter();
 
 		Group defaultGroup = _groupLocalService.fetchGroup(
 			exportGroup.getCompanyId(),
@@ -1094,7 +1095,7 @@ public class LayoutReferencesExportImportContentProcessorTest {
 					exportGroup.getCompanyId(), exportGroup.getGroupId(),
 					new HashMap<>(),
 					new Date(System.currentTimeMillis() - Time.HOUR),
-					new Date(), testReaderWriter);
+					new Date(), zipWriter);
 
 			Document document = SAXReaderUtil.createDocument();
 
@@ -1102,7 +1103,7 @@ public class LayoutReferencesExportImportContentProcessorTest {
 
 			manifestRootElement.addElement("header");
 
-			testReaderWriter.addEntry("/manifest.xml", document.asXML());
+			zipWriter.addEntry("/manifest.xml", document.asXML());
 
 			Element rootElement = SAXReaderUtil.createElement("root");
 
@@ -1156,7 +1157,7 @@ public class LayoutReferencesExportImportContentProcessorTest {
 				PortletDataContextFactoryUtil.createImportPortletDataContext(
 					importGroup.getCompanyId(), importGroup.getGroupId(),
 					new HashMap<>(), new TestUserIdStrategy(),
-					testReaderWriter);
+					new ZipReader(zipWriter.getFile()));
 
 			importPortletDataContext.setImportDataRootElement(rootElement);
 			importPortletDataContext.setMissingReferencesElement(

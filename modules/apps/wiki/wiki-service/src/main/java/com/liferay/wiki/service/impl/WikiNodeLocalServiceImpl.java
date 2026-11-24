@@ -41,7 +41,6 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
-import com.liferay.portal.kernel.zip.ZipReaderFactory;
 import com.liferay.subscription.service.SubscriptionLocalService;
 import com.liferay.trash.TrashHelper;
 import com.liferay.trash.exception.RestoreEntryException;
@@ -504,7 +503,7 @@ public class WikiNodeLocalServiceImpl extends WikiNodeLocalServiceBaseImpl {
 		_mediaWikiImporter = new MediaWikiImporter(
 			_assetTagLocalService, _companyLocalService, _configurationProvider,
 			_portletFileRepository, _userLocalService, _wikiPageLocalService,
-			_wikiPageTitleValidator, _zipReaderFactory);
+			_wikiPageTitleValidator);
 
 		_portalCache = _multiVMPool.getPortalCache(
 			WikiPageDisplay.class.getName());
@@ -658,8 +657,5 @@ public class WikiNodeLocalServiceImpl extends WikiNodeLocalServiceBaseImpl {
 
 	@Reference
 	private WikiPageTitleValidator _wikiPageTitleValidator;
-
-	@Reference
-	private ZipReaderFactory _zipReaderFactory;
 
 }

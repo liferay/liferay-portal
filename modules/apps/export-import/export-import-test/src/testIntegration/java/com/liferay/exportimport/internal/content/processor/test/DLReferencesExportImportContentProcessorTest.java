@@ -16,7 +16,6 @@ import com.liferay.exportimport.internal.content.processor.test.util.ExportImpor
 import com.liferay.exportimport.kernel.exception.ExportImportContentValidationException;
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.exportimport.kernel.lar.PortletDataContextFactoryUtil;
-import com.liferay.exportimport.test.util.TestReaderWriter;
 import com.liferay.exportimport.test.util.TestUserIdStrategy;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
@@ -37,6 +36,8 @@ import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.kernel.xml.SAXReaderUtil;
+import com.liferay.portal.kernel.zip.ZipReader;
+import com.liferay.portal.kernel.zip.ZipWriter;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
@@ -90,14 +91,14 @@ public class DLReferencesExportImportContentProcessorTest {
 		_fileEntry = thumbnailCapability.setLargeImageId(
 			_fileEntry, _fileEntry.getFileEntryId());
 
-		TestReaderWriter testReaderWriter = new TestReaderWriter();
+		_zipWriter = new ZipWriter();
 
 		_portletDataContextExport =
 			PortletDataContextFactoryUtil.createExportPortletDataContext(
 				_sourceGroup.getCompanyId(), _sourceGroup.getGroupId(),
 				new HashMap<>(),
 				new Date(System.currentTimeMillis() - Time.HOUR), new Date(),
-				testReaderWriter);
+				_zipWriter);
 
 		Document document = SAXReaderUtil.createDocument();
 
@@ -105,14 +106,15 @@ public class DLReferencesExportImportContentProcessorTest {
 
 		manifestRootElement.addElement("header");
 
-		testReaderWriter.addEntry("/manifest.xml", document.asXML());
+		_zipWriter.addEntry("/manifest.xml", document.asXML());
 
 		Element rootElement = SAXReaderUtil.createElement("root");
 
 		_portletDataContextImport =
 			PortletDataContextFactoryUtil.createImportPortletDataContext(
 				_targetGroup.getCompanyId(), _targetGroup.getGroupId(),
-				new HashMap<>(), new TestUserIdStrategy(), testReaderWriter);
+				new HashMap<>(), new TestUserIdStrategy(),
+				new ZipReader(_zipWriter.getFile()));
 
 		_portletDataContextImport.setExportImportProcessId(
 			String.valueOf(RandomTestUtil.randomLong()));
@@ -124,7 +126,7 @@ public class DLReferencesExportImportContentProcessorTest {
 
 	@Test
 	public void testExportDLReferences() throws Exception {
-		_portletDataContextExport.setZipWriter(new TestReaderWriter());
+		_portletDataContextExport.setZipWriter(new ZipWriter());
 
 		String content = ExportImportContentProcessorTestUtil.replaceParameters(
 			_externalGroup, null, _fileEntry, "dl_references.txt", _sourceGroup,
@@ -145,16 +147,12 @@ public class DLReferencesExportImportContentProcessorTest {
 			Assert.assertFalse(content, content.contains(url));
 		}
 
-		TestReaderWriter testReaderWriter =
-			(TestReaderWriter)_portletDataContextExport.getZipWriter();
-
-		_assertEmpty(testReaderWriter.getBinaryEntries());
-		_assertEmpty(testReaderWriter.getEntries());
+		_assertEmpty(_portletDataContextExport.getZipWriter());
 	}
 
 	@Test
 	public void testExportDLReferencesFriendlyURL() throws Exception {
-		_portletDataContextExport.setZipWriter(new TestReaderWriter());
+		_portletDataContextExport.setZipWriter(new ZipWriter());
 
 		_fileEntry = DLAppLocalServiceUtil.updateFileEntry(
 			TestPropsValues.getUserId(), _fileEntry.getFileEntryId(),
@@ -185,16 +183,12 @@ public class DLReferencesExportImportContentProcessorTest {
 			Assert.assertFalse(content, content.contains(url));
 		}
 
-		TestReaderWriter testReaderWriter =
-			(TestReaderWriter)_portletDataContextExport.getZipWriter();
-
-		_assertEmpty(testReaderWriter.getBinaryEntries());
-		_assertEmpty(testReaderWriter.getEntries());
+		_assertEmpty(_portletDataContextExport.getZipWriter());
 	}
 
 	@Test
 	public void testExportDLReferencesInvalidReference() throws Exception {
-		_portletDataContextExport.setZipWriter(new TestReaderWriter());
+		_portletDataContextExport.setZipWriter(new ZipWriter());
 
 		_fileEntry = DLAppLocalServiceUtil.updateFileEntry(
 			TestPropsValues.getUserId(), _fileEntry.getFileEntryId(),
@@ -223,11 +217,7 @@ public class DLReferencesExportImportContentProcessorTest {
 				content.contains(url));
 		}
 
-		TestReaderWriter testReaderWriter =
-			(TestReaderWriter)_portletDataContextExport.getZipWriter();
-
-		_assertEmpty(testReaderWriter.getBinaryEntries());
-		_assertEmpty(testReaderWriter.getEntries());
+		_assertEmpty(_portletDataContextExport.getZipWriter());
 	}
 
 	@Test
@@ -303,8 +293,12 @@ public class DLReferencesExportImportContentProcessorTest {
 		}
 	}
 
-	private void _assertEmpty(List<String> list) {
-		Assert.assertTrue(list.isEmpty());
+	private void _assertEmpty(ZipWriter zipWriter) {
+		try (ZipReader zipReader = new ZipReader(zipWriter.getFile())) {
+			List<String> entries = zipReader.getEntries();
+
+			Assert.assertEquals(entries.toString(), 0, entries.size());
+		}
 	}
 
 	private void _testImportDLReferences(boolean deleteFileEntryBeforeImport)
@@ -324,6 +318,9 @@ public class DLReferencesExportImportContentProcessorTest {
 		if (deleteFileEntryBeforeImport) {
 			DLAppLocalServiceUtil.deleteFileEntry(_fileEntry.getFileEntryId());
 		}
+
+		_portletDataContextImport.setZipReader(
+			new ZipReader(_zipWriter.getFile()));
 
 		content =
 			_dlReferencesExportImportContentProcessor.
@@ -362,6 +359,9 @@ public class DLReferencesExportImportContentProcessorTest {
 			DLAppLocalServiceUtil.deleteFileEntry(_fileEntry.getFileEntryId());
 		}
 
+		_portletDataContextImport.setZipReader(
+			new ZipReader(_zipWriter.getFile()));
+
 		content =
 			_dlReferencesExportImportContentProcessor.
 				replaceImportContentReferences(
@@ -386,5 +386,7 @@ public class DLReferencesExportImportContentProcessorTest {
 
 	@DeleteAfterTestRun
 	private Group _targetGroup;
+
+	private ZipWriter _zipWriter;
 
 }

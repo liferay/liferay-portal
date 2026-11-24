@@ -58,7 +58,6 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.kernel.zip.ZipReaderFactory;
 import com.liferay.portal.security.key.secret.SecretResolver;
 
 import java.io.File;
@@ -452,9 +451,6 @@ public class AnalyticsBatchExportImportManagerImpl
 
 	@Reference
 	protected BatchEngineExportTaskExecutor batchEngineExportTaskExecutor;
-
-	@Reference
-	protected ZipReaderFactory zipReaderFactory;
 
 	private HttpUriRequest _buildHttpUriRequest(
 		String body, String dataSourceId, String faroBackendSecuritySignature,

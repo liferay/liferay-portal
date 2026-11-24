@@ -83,8 +83,7 @@ public class MediaWikiImporter {
 		PortletFileRepository portletFileRepository,
 		UserLocalService userLocalService,
 		WikiPageLocalService wikiPageLocalService,
-		WikiPageTitleValidator wikiPageTitleValidator,
-		ZipReaderFactory zipReaderFactory) {
+		WikiPageTitleValidator wikiPageTitleValidator) {
 
 		_assetTagLocalService = assetTagLocalService;
 		_companyLocalService = companyLocalService;
@@ -93,7 +92,6 @@ public class MediaWikiImporter {
 		_userLocalService = userLocalService;
 		_wikiPageLocalService = wikiPageLocalService;
 		_wikiPageTitleValidator = wikiPageTitleValidator;
-		_zipReaderFactory = zipReaderFactory;
 	}
 
 	public void importPages(

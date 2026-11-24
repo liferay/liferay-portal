@@ -36,7 +36,6 @@ import com.liferay.dynamic.data.mapping.util.DDMBeanTranslatorUtil;
 import com.liferay.exportimport.content.processor.ExportImportContentProcessor;
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.exportimport.kernel.lar.PortletDataContextFactoryUtil;
-import com.liferay.exportimport.test.util.TestReaderWriter;
 import com.liferay.exportimport.test.util.TestUserIdStrategy;
 import com.liferay.journal.article.dynamic.data.mapping.form.field.type.constants.JournalArticleDDMFormFieldTypeConstants;
 import com.liferay.journal.constants.JournalFolderConstants;
@@ -73,6 +72,8 @@ import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.kernel.xml.SAXReaderUtil;
+import com.liferay.portal.kernel.zip.ZipReader;
+import com.liferay.portal.kernel.zip.ZipWriter;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -120,14 +121,14 @@ public class DDMFormValuesExportImportContentProcessorTest {
 
 		_stagingGroup = _liveGroup.getStagingGroup();
 
-		TestReaderWriter testReaderWriter = new TestReaderWriter();
+		_zipWriter = new ZipWriter();
 
 		_portletDataContextExport =
 			PortletDataContextFactoryUtil.createExportPortletDataContext(
 				_stagingGroup.getCompanyId(), _stagingGroup.getGroupId(),
 				new HashMap<>(),
 				new Date(System.currentTimeMillis() - Time.HOUR), new Date(),
-				testReaderWriter);
+				_zipWriter);
 
 		Document document = SAXReaderUtil.createDocument();
 
@@ -135,7 +136,7 @@ public class DDMFormValuesExportImportContentProcessorTest {
 
 		manifestRootElement.addElement("header");
 
-		testReaderWriter.addEntry("/manifest.xml", document.asXML());
+		_zipWriter.addEntry("/manifest.xml", document.asXML());
 
 		Element rootElement = SAXReaderUtil.createElement("root");
 
@@ -144,7 +145,8 @@ public class DDMFormValuesExportImportContentProcessorTest {
 		_portletDataContextImport =
 			PortletDataContextFactoryUtil.createImportPortletDataContext(
 				_liveGroup.getCompanyId(), _liveGroup.getGroupId(),
-				new HashMap<>(), new TestUserIdStrategy(), testReaderWriter);
+				new HashMap<>(), new TestUserIdStrategy(),
+				new ZipReader(_zipWriter.getFile()));
 
 		_portletDataContextImport.setImportDataRootElement(rootElement);
 
@@ -267,6 +269,9 @@ public class DDMFormValuesExportImportContentProcessorTest {
 			newDLFileEntry);
 
 		classPKs.put(fileEntryId, newDLFileEntry.getPrimaryKey());
+
+		_portletDataContextImport.setZipReader(
+			new ZipReader(_zipWriter.getFile()));
 
 		_exportImportContentProcessor.replaceImportContentReferences(
 			_portletDataContextImport, _journalArticle, exportDDMFormValues);
@@ -392,6 +397,9 @@ public class DDMFormValuesExportImportContentProcessorTest {
 
 		classPKs.put(fileEntryId, newDLFileEntry.getPrimaryKey());
 
+		_portletDataContextImport.setZipReader(
+			new ZipReader(_zipWriter.getFile()));
+
 		_exportImportContentProcessor.replaceImportContentReferences(
 			_portletDataContextImport, _journalArticle, exportDDMFormValues);
 
@@ -480,6 +488,9 @@ public class DDMFormValuesExportImportContentProcessorTest {
 			newJournalArticle);
 
 		classPKs.put(resourcePrimKey, newJournalArticle.getResourcePrimKey());
+
+		_portletDataContextImport.setZipReader(
+			new ZipReader(_zipWriter.getFile()));
 
 		_exportImportContentProcessor.replaceImportContentReferences(
 			_portletDataContextImport, _fileEntry, exportDDMFormValues);
@@ -640,6 +651,9 @@ public class DDMFormValuesExportImportContentProcessorTest {
 		Value value = ddmFormFieldValue.getValue();
 
 		String valueString = value.getString(LocaleUtil.US);
+
+		_portletDataContextImport.setZipReader(
+			new ZipReader(_zipWriter.getFile()));
 
 		_exportImportContentProcessor.replaceImportContentReferences(
 			_portletDataContextImport, _journalArticle, ddmFormValues);
@@ -928,5 +942,6 @@ public class DDMFormValuesExportImportContentProcessorTest {
 	private PortletDataContext _portletDataContextExport;
 	private PortletDataContext _portletDataContextImport;
 	private Group _stagingGroup;
+	private ZipWriter _zipWriter;
 
 }

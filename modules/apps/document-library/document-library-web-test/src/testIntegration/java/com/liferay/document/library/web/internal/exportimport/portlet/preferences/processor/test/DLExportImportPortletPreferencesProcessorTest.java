@@ -21,7 +21,6 @@ import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.exportimport.kernel.lar.PortletDataHandlerKeys;
 import com.liferay.exportimport.portlet.preferences.processor.ExportImportPortletPreferencesProcessor;
 import com.liferay.exportimport.test.util.ExportImportTestUtil;
-import com.liferay.exportimport.test.util.TestReaderWriter;
 import com.liferay.layout.exporter.PortletPreferencesPortletConfigurationExporter;
 import com.liferay.layout.importer.PortletPreferencesPortletConfigurationImporter;
 import com.liferay.layout.test.util.LayoutTestUtil;
@@ -353,7 +352,7 @@ public class DLExportImportPortletPreferencesProcessorTest {
 		ExportImportThreadLocal.setPortletStagingInProcess(true);
 
 		try {
-			TestReaderWriter testReaderWriter = _getTestReaderWriter();
+			ZipWriter zipWriter = _getZipWriter();
 
 			Map<String, String> portletPreferencesValues =
 				_getPortletPreferencesValues(folder);
@@ -364,11 +363,11 @@ public class DLExportImportPortletPreferencesProcessorTest {
 				_exportImportPortletPreferencesProcessor.
 					processExportPortletPreferences(
 						_getExportPortletDataContext(
-							_group.getStagingGroup(), testReaderWriter),
+							_group.getStagingGroup(), zipWriter),
 						_portletPreferences);
 
 			PortletDataContext importPortletDataContext =
-				_getImportPortletDataContext(_group, testReaderWriter);
+				_getImportPortletDataContext(_group, zipWriter);
 
 			JSONObject stagingPreferencesMappingJSONObject =
 				JSONFactoryUtil.createJSONObject(
@@ -536,7 +535,7 @@ public class DLExportImportPortletPreferencesProcessorTest {
 
 			Folder folder = DLAppTestUtil.addFolder(stagingGroup.getGroupId());
 
-			TestReaderWriter testReaderWriter = _getTestReaderWriter();
+			ZipWriter zipWriter = _getZipWriter();
 
 			Map<String, String> portletPreferencesValues =
 				_getPortletPreferencesValues(folder);
@@ -546,8 +545,7 @@ public class DLExportImportPortletPreferencesProcessorTest {
 			PortletPreferences exportedPortletPreferences =
 				_exportImportPortletPreferencesProcessor.
 					processExportPortletPreferences(
-						_getExportPortletDataContext(
-							stagingGroup, testReaderWriter),
+						_getExportPortletDataContext(stagingGroup, zipWriter),
 						_portletPreferences);
 
 			Assert.assertEquals(
@@ -555,7 +553,7 @@ public class DLExportImportPortletPreferencesProcessorTest {
 				_getPortletPreferencesValues(exportedPortletPreferences));
 
 			PortletDataContext importPortletDataContext =
-				_getImportPortletDataContext(_group, testReaderWriter);
+				_getImportPortletDataContext(_group, zipWriter);
 
 			Assert.assertNull(
 				importPortletDataContext.getZipEntryAsString(
@@ -838,7 +836,7 @@ public class DLExportImportPortletPreferencesProcessorTest {
 	}
 
 	private PortletDataContext _getImportPortletDataContext(
-			Group group, ZipReader zipReader)
+			Group group, ZipWriter zipWriter)
 		throws Exception {
 
 		PortletDataContext importPortletDataContext =
@@ -846,7 +844,8 @@ public class DLExportImportPortletPreferencesProcessorTest {
 				group.getGroupId());
 
 		importPortletDataContext.setPortletId(DLPortletKeys.DOCUMENT_LIBRARY);
-		importPortletDataContext.setZipReader(zipReader);
+		importPortletDataContext.setZipReader(
+			new ZipReader(zipWriter.getFile()));
 
 		return importPortletDataContext;
 	}
@@ -920,8 +919,8 @@ public class DLExportImportPortletPreferencesProcessorTest {
 		return repository.getExternalReferenceCode();
 	}
 
-	private TestReaderWriter _getTestReaderWriter() {
-		TestReaderWriter testReaderWriter = new TestReaderWriter();
+	private ZipWriter _getZipWriter() throws Exception {
+		ZipWriter zipWriter = new ZipWriter();
 
 		Document document = SAXReaderUtil.createDocument();
 
@@ -929,9 +928,9 @@ public class DLExportImportPortletPreferencesProcessorTest {
 
 		manifestRootElement.addElement("header");
 
-		testReaderWriter.addEntry("/manifest.xml", document.asXML());
+		zipWriter.addEntry("/manifest.xml", document.asXML());
 
-		return testReaderWriter;
+		return zipWriter;
 	}
 
 	private void _setPortletPreferences(FileEntry fileEntry) throws Exception {
@@ -996,14 +995,14 @@ public class DLExportImportPortletPreferencesProcessorTest {
 		ExportImportThreadLocal.setPortletStagingInProcess(true);
 
 		try {
-			TestReaderWriter testReaderWriter = _getTestReaderWriter();
+			ZipWriter zipWriter = _getZipWriter();
 
 			_setPortletPreferences(originalPortletPreferencesValues);
 
 			PortletPreferences exportedPortletPreferences =
 				_exportImportPortletPreferencesProcessor.
 					processExportPortletPreferences(
-						_getExportPortletDataContext(_group, testReaderWriter),
+						_getExportPortletDataContext(_group, zipWriter),
 						_portletPreferences);
 
 			Assert.assertEquals(
@@ -1011,7 +1010,7 @@ public class DLExportImportPortletPreferencesProcessorTest {
 				_getPortletPreferencesValues(exportedPortletPreferences));
 
 			PortletDataContext importPortletDataContext =
-				_getImportPortletDataContext(_group, testReaderWriter);
+				_getImportPortletDataContext(_group, zipWriter);
 
 			Assert.assertNotNull(
 				importPortletDataContext.getZipEntryAsString(

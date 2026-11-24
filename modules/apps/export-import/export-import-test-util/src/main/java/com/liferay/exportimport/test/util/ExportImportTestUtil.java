@@ -44,6 +44,8 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.kernel.xml.SAXReaderUtil;
+import com.liferay.portal.kernel.zip.ZipReader;
+import com.liferay.portal.kernel.zip.ZipWriter;
 
 import java.io.File;
 import java.io.InputStream;
@@ -179,7 +181,7 @@ public class ExportImportTestUtil {
 			Date startDate, Date endDate)
 		throws Exception {
 
-		TestReaderWriter testReaderWriter = new TestReaderWriter();
+		ZipWriter zipWriter = new ZipWriter();
 
 		Document document = SAXReaderUtil.createDocument();
 
@@ -187,12 +189,12 @@ public class ExportImportTestUtil {
 
 		manifestRootElement.addElement("header");
 
-		testReaderWriter.addEntry("/manifest.xml", document.asXML());
+		zipWriter.addEntry("/manifest.xml", document.asXML());
 
 		PortletDataContext portletDataContext =
 			PortletDataContextFactoryUtil.createExportPortletDataContext(
 				companyId, groupId, parameterMap, startDate, endDate,
-				testReaderWriter);
+				zipWriter);
 
 		Element rootElement = SAXReaderUtil.createElement("root");
 
@@ -252,7 +254,7 @@ public class ExportImportTestUtil {
 			String sourceCompanyGroupExternalReferenceCode)
 		throws Exception {
 
-		TestReaderWriter testReaderWriter = new TestReaderWriter();
+		ZipWriter zipWriter = new ZipWriter();
 
 		Document document = SAXReaderUtil.createDocument();
 
@@ -266,12 +268,12 @@ public class ExportImportTestUtil {
 				sourceCompanyGroupExternalReferenceCode);
 		}
 
-		testReaderWriter.addEntry("/manifest.xml", document.asXML());
+		zipWriter.addEntry("/manifest.xml", document.asXML());
 
 		PortletDataContext portletDataContext =
 			PortletDataContextFactoryUtil.createImportPortletDataContext(
 				companyId, groupId, parameterMap, new TestUserIdStrategy(),
-				testReaderWriter);
+				new ZipReader(zipWriter.getFile()));
 
 		Element rootElement = SAXReaderUtil.createElement("root");
 

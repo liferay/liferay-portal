@@ -23,7 +23,6 @@ $h1 Check GETTING_STARTED.md#platform.bndrun for more information.
 	osgi.service;objectClass:List<String>='com.liferay.portal.kernel.util.Props',\
 	osgi.service;objectClass:List<String>='com.liferay.portal.kernel.uuid.PortalUUID',\
 	osgi.service;objectClass:List<String>='com.liferay.portal.kernel.xml.SAXReader',\
-	osgi.service;objectClass:List<String>='com.liferay.portal.kernel.zip.ZipReaderFactory',\
 	osgi.service;objectClass:List<String>='jakarta.servlet.ServletContext',\
 	osgi.service;objectClass:List<String>='jakarta.sql.DataSource',\
 	osgi.wiring.package;osgi.wiring.package=com.sun.nio.file

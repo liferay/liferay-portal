@@ -28,7 +28,6 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.zip.ZipWriter;
-import com.liferay.portal.kernel.zip.ZipWriterFactory;
 import com.liferay.portal.security.audit.event.generators.constants.EventTypes;
 import com.liferay.portal.security.audit.storage.model.AuditEvent;
 import com.liferay.portal.security.audit.storage.service.AuditEventLocalServiceUtil;
@@ -572,9 +571,7 @@ public class MCPServerTestUtil {
 	}
 
 	private static Bundle _installBundle(String dirName) throws Exception {
-		ZipWriterFactory zipWriterFactory = _zipWriterFactorySnapshot.get();
-
-		ZipWriter zipWriter = zipWriterFactory.getZipWriter();
+		ZipWriter zipWriter = new ZipWriter();
 
 		Bundle bundle = FrameworkUtil.getBundle(MCPServerTestUtil.class);
 
@@ -622,7 +619,5 @@ public class MCPServerTestUtil {
 	private static final Snapshot<BatchEngineUnitReader>
 		_batchEngineUnitReaderSnapshot = new Snapshot<>(
 			MCPServerTestUtil.class, BatchEngineUnitReader.class);
-	private static final Snapshot<ZipWriterFactory> _zipWriterFactorySnapshot =
-		new Snapshot<>(MCPServerTestUtil.class, ZipWriterFactory.class);
 
 }

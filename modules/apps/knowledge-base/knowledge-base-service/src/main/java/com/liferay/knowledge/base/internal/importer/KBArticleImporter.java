@@ -49,14 +49,13 @@ public class KBArticleImporter {
 		ConfigurationProvider configurationProvider,
 		MarkdownConverter markdownConverter,
 		KBArticleLocalService kbArticleLocalService, Portal portal,
-		DLURLHelper dlURLHelper, ZipReaderFactory zipReaderFactory) {
+		DLURLHelper dlURLHelper) {
 
 		_configurationProvider = configurationProvider;
 		_markdownConverter = markdownConverter;
 		_kbArticleLocalService = kbArticleLocalService;
 		_portal = portal;
 		_dlURLHelper = dlURLHelper;
-		_zipReaderFactory = zipReaderFactory;
 	}
 
 	public int processZipFile(

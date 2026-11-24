@@ -40,7 +40,6 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.zip.ZipWriter;
-import com.liferay.portal.kernel.zip.ZipWriterFactory;
 import com.liferay.portal.search.document.Document;
 import com.liferay.portal.search.hits.SearchHit;
 import com.liferay.portal.search.hits.SearchHits;
@@ -141,7 +140,7 @@ public class DownloadObjectEntryFolderCMSServlet extends BaseCMSServlet {
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
 
-		ZipWriter zipWriter = _zipWriterFactory.getZipWriter();
+		ZipWriter zipWriter = new ZipWriter();
 
 		JSONObject selectionScopeJSONObject = jsonObject.getJSONObject(
 			"selectionScope");
@@ -197,7 +196,7 @@ public class DownloadObjectEntryFolderCMSServlet extends BaseCMSServlet {
 
 		long objectEntryFolderId = GetterUtil.getLong(pathArray[1]);
 
-		ZipWriter zipWriter = _zipWriterFactory.getZipWriter();
+		ZipWriter zipWriter = new ZipWriter();
 
 		try {
 			ObjectEntryFolder objectEntryFolder =
@@ -422,8 +421,5 @@ public class DownloadObjectEntryFolderCMSServlet extends BaseCMSServlet {
 
 	@Reference
 	private ObjectFieldLocalService _objectFieldLocalService;
-
-	@Reference
-	private ZipWriterFactory _zipWriterFactory;
 
 }

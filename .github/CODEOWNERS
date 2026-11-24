@@ -279,7 +279,6 @@ modules/apps/portal/portal-verify-extender    @liferay-database-infra
 modules/apps/portal/portal-verify-test    @liferay-database-infra
 modules/apps/portal/portal-verify-test-util    @liferay-database-infra
 modules/apps/portal/portal-weblogic-support/    @liferay-core-infra
-modules/apps/portal/portal-zip/    @liferay-core-infra
 modules/apps/portal-background-task/    @liferay-core-infra
 modules/apps/portal-cache/    @liferay-core-infra
 modules/apps/portal-configuration/

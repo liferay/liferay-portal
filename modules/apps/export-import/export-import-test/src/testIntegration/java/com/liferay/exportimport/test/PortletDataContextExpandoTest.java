@@ -30,6 +30,7 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.kernel.xml.SAXReaderUtil;
+import com.liferay.portal.kernel.zip.ZipReader;
 import com.liferay.portal.kernel.zip.ZipWriter;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -84,8 +85,9 @@ public class PortletDataContextExpandoTest {
 			ExportImportTestUtil.getImportPortletDataContext(
 				_group.getGroupId());
 
-		portletDataContext.setZipWriter(
-			(ZipWriter)portletDataContext.getZipReader());
+		ZipWriter zipWriter = new ZipWriter();
+
+		portletDataContext.setZipWriter(zipWriter);
 
 		ExportImportConfiguration exportImportConfiguration =
 			_addDraftExportImportConfiguration();
@@ -102,6 +104,8 @@ public class PortletDataContextExpandoTest {
 					LocaleUtil.US, RandomTestUtil.randomString()
 				).build()
 			).build());
+
+		portletDataContext.setZipReader(new ZipReader(zipWriter.getFile()));
 
 		Element element = SAXReaderUtil.createElement("staged-model");
 

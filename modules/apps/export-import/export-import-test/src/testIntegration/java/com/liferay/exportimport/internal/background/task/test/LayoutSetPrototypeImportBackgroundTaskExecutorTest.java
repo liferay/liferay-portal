@@ -39,6 +39,7 @@ import com.liferay.portal.kernel.transaction.TransactionInvokerUtil;
 import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.kernel.zip.ZipReader;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -94,8 +95,7 @@ public class LayoutSetPrototypeImportBackgroundTaskExecutorTest {
 					"BackgroundTaskMessageListener",
 				LoggerTestUtil.ERROR);
 			LogCapture logCapture3 = LoggerTestUtil.configureLog4JLogger(
-				"com.liferay.portal.zip.internal.reader.ZipReaderImpl",
-				LoggerTestUtil.ERROR)) {
+				ZipReader.class.getName(), LoggerTestUtil.ERROR)) {
 
 			backgroundTaskId =
 				ExportImportLocalServiceUtil.
