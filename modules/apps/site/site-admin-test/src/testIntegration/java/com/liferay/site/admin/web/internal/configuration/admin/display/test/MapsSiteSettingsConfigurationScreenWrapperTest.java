@@ -98,10 +98,10 @@ public class MapsSiteSettingsConfigurationScreenWrapperTest {
 		Dictionary<String, Object> properties =
 			configurationScreen.exportProperties(sourceGroup.getGroupId());
 
-		Assert.assertEquals(1, properties.size());
 		Assert.assertEquals(
 			mapProviderKey,
 			properties.get(MapProviderWebKeys.MAP_PROVIDER_KEY));
+		Assert.assertEquals(1, properties.size());
 
 		Group targetGroup = GroupTestUtil.addGroup();
 
