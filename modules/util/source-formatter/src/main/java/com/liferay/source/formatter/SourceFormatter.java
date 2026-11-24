@@ -5,6 +5,7 @@
 
 package com.liferay.source.formatter;
 
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -965,15 +966,11 @@ public class SourceFormatter {
 	}
 
 	private List<PathMatcher> _getPathMatchers(String[] filePaths) {
-		List<PathMatcher> pathMatchers = new ArrayList<>();
-
 		FileSystem fileSystem = FileSystems.getDefault();
 
-		for (String filePath : filePaths) {
-			pathMatchers.add(fileSystem.getPathMatcher("glob:" + filePath));
-		}
-
-		return pathMatchers;
+		return TransformUtil.transformToList(
+			filePaths,
+			filePath -> fileSystem.getPathMatcher("glob:" + filePath));
 	}
 
 	private List<String> _getPluginsInsideModulesDirectoryNames() {
