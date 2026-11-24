@@ -87,6 +87,7 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.props.test.util.PropsTemporarySwapper;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -264,6 +265,7 @@ public class ObjectEntryInfoItemFormProviderTest {
 			_objectEntryLocalService, _objectRelationshipLocalService);
 	}
 
+	@FeatureFlag("LPD-108620")
 	@Test
 	public void testGetInfoForm() throws Exception {
 		_testGetInfoFormWithAttachmentObjectField();
@@ -273,7 +275,10 @@ public class ObjectEntryInfoItemFormProviderTest {
 		_testGetInfoFormWithEnableObjectEntrySchedule();
 		_testGetInfoFormWithManyToManyObjectRelationship();
 		_testGetInfoFormWithObjectAction();
-		_testGetInfoFormWithObjectRelationship();
+		_testGetInfoFormWithObjectRelationship(
+			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+		_testGetInfoFormWithObjectRelationship(
+			ObjectRelationshipConstants.TYPE_ONE_TO_ONE);
 		_testGetInfoFormWithoutCategorization();
 		_testGetInfoFormWithPicklistObjectField();
 		_testGetInfoFormWithRootObjectDefinition();
@@ -609,10 +614,14 @@ public class ObjectEntryInfoItemFormProviderTest {
 			objectAction.getName(), _getInfoForm(_childObjectDefinition));
 	}
 
-	private void _testGetInfoFormWithObjectRelationship() throws Exception {
+	private void _testGetInfoFormWithObjectRelationship(String type)
+		throws Exception {
+
 		_objectRelationship = ObjectRelationshipTestUtil.addObjectRelationship(
 			_objectRelationshipLocalService, _parentObjectDefinition,
-			_childObjectDefinition);
+			_childObjectDefinition,
+			ObjectRelationshipConstants.DELETION_TYPE_CASCADE,
+			StringUtil.randomId(), type);
 
 		_childInfoForm = _getInfoForm(_childObjectDefinition);
 
