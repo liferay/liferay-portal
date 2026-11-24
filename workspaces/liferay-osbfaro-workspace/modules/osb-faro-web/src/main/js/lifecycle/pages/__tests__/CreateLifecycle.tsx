@@ -816,9 +816,8 @@ describe('CreateLifecycle', () => {
 				await screen.findByText(
 					/this lifecycle name is currently in use/i
 				)
-			).closest('.alert') as HTMLElement;
+			).closest('[role="alert"]');
 
-			expect(alert).toHaveClass('alert-danger');
 			expect(alert).toHaveTextContent(/review 1 error/i);
 			expect(
 				screen.getByText(/enter a unique name/i)

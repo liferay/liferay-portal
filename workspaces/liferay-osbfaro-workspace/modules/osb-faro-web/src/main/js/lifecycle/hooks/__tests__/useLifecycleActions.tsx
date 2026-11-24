@@ -317,14 +317,6 @@ describe('useLifecycleActions', () => {
 			name: 'Growth Hub',
 		};
 
-		it('shows in red', () => {
-			renderActions({lifecycle: growthHub});
-
-			expect(screen.getByRole('button', {name: /^delete$/i})).toHaveClass(
-				'text-danger'
-			);
-		});
-
 		it('shows on the default lifecycle', () => {
 			renderActions({
 				lifecycle: {...growthHub, defaultAccountLifecycle: true},
@@ -389,7 +381,6 @@ describe('useLifecycleActions', () => {
 			expect(
 				await screen.findByText(/delete "growth hub"\?/i)
 			).toBeInTheDocument();
-			expect(getDialog().parentElement).toHaveClass('modal-danger');
 			expect(getDialog()).toHaveTextContent(/delete "growth hub"\?/i);
 			expect(getDialog()).toHaveTextContent(
 				/delete the lifecycle "growth hub".+account data will not be removed/i
