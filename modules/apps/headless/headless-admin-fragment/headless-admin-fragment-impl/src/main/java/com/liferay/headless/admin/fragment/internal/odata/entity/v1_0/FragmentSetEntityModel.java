@@ -10,6 +10,7 @@ import com.liferay.portal.odata.entity.BooleanEntityField;
 import com.liferay.portal.odata.entity.DateTimeEntityField;
 import com.liferay.portal.odata.entity.EntityField;
 import com.liferay.portal.odata.entity.EntityModel;
+import com.liferay.portal.odata.entity.StringEntityField;
 
 import java.util.Map;
 
@@ -28,7 +29,9 @@ public class FragmentSetEntityModel implements EntityModel {
 			new DateTimeEntityField(
 				"dateModified",
 				locale -> Field.getSortableFieldName(Field.MODIFIED_DATE),
-				locale -> Field.MODIFIED_DATE));
+				locale -> Field.MODIFIED_DATE),
+			new StringEntityField(
+				"externalReferenceCode", locale -> "externalReferenceCode"));
 	}
 
 	@Override
