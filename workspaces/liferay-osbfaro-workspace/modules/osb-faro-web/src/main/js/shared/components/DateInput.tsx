@@ -39,6 +39,7 @@ interface IDateInputProps extends React.HTMLAttributes<HTMLInputElement> {
 export type OverlayAlignment = 'bottomLeft' | 'rightCenter';
 
 const DateInput: React.FC<IDateInputProps> = ({
+	'aria-required': ariaRequired,
 	className,
 	displayFormat,
 	format = DEFAULT_DATE_FORMAT,
@@ -118,6 +119,7 @@ const DateInput: React.FC<IDateInputProps> = ({
 					<Input.Group>
 						<Input.GroupItem>
 							<MaskedInput
+								aria-required={ariaRequired}
 								autoComplete="off"
 								data-testid="date-input"
 								id={id}

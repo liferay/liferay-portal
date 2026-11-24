@@ -2034,6 +2034,7 @@ exports[`MarketoCampaignOverview should render the reconnect view when the data 
                         </span>
                       </label>
                       <input
+                        aria-required="true"
                         class="input-root form-control"
                         id="marketoDataSource"
                         name="marketoDataSource"
@@ -2061,6 +2062,7 @@ exports[`MarketoCampaignOverview should render the reconnect view when the data 
                           class="input-group-item input-group-prepend"
                         >
                           <input
+                            aria-required="true"
                             class="input-root form-control"
                             id="clientId"
                             name="clientId"
@@ -2108,6 +2110,7 @@ exports[`MarketoCampaignOverview should render the reconnect view when the data 
                           class="input-group-item input-group-prepend"
                         >
                           <input
+                            aria-required="true"
                             class="input-root form-control"
                             id="clientSecret"
                             name="clientSecret"

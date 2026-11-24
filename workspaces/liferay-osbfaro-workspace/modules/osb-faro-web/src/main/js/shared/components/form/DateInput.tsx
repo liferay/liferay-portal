@@ -65,6 +65,7 @@ const FormDateInput: React.FC<IFormDateInputProps> = ({
 			)}
 
 			<DateInput
+				aria-required={required || undefined}
 				id={name}
 				name={name}
 				onDateInputChange={handleChange}

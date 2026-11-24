@@ -271,6 +271,7 @@ export default class FormInput extends React.Component<IFormInputProps> {
 					...field,
 					...omitDefinedProps(otherProps, FormInput.propTypes),
 					...getOptionalProps(optionalProps),
+					'aria-required': required || undefined,
 					id: name,
 					onChange: this.handleChange,
 				})}

@@ -56,6 +56,7 @@ exports[`DurationFilter should render 1`] = `
             class=""
           >
             <input
+              aria-required="true"
               autocomplete="off"
               class="input-root form-control"
               id="value"

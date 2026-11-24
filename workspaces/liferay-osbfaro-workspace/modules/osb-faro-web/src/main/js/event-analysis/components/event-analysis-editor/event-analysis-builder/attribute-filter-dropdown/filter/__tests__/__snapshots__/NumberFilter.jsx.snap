@@ -61,6 +61,7 @@ exports[`NumberFilter should render 1`] = `
             class=""
           >
             <input
+              aria-required="true"
               class="input-root form-control"
               id="startValue"
               name="startValue"

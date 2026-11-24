@@ -36,6 +36,7 @@ exports[`AddWorkspaceForm should render 1`] = `
                 </span>
               </label>
               <input
+                aria-required="true"
                 class="input-root form-control"
                 id="name"
                 name="name"
@@ -61,6 +62,7 @@ exports[`AddWorkspaceForm should render 1`] = `
                 </span>
               </label>
               <input
+                aria-required="true"
                 class="input-root form-control"
                 disabled=""
                 id="ownerEmailAddress"
