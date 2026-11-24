@@ -248,7 +248,7 @@ public class CETFactoryImpl implements CETFactory {
 			new FDSFilterCETImplFactoryImpl()
 		).put(
 			ClientExtensionEntryConstants.TYPE_FDS_VISUALIZATION_MODE,
-			new FDSVisualizationModeCETImplFactoryImpl()
+			new FDSVisualizationModeCETImplFactoryImpl(_jsonFactory)
 		).put(
 			ClientExtensionEntryConstants.TYPE_GLOBAL_CSS,
 			new GlobalCSSCETImplFactoryImpl()

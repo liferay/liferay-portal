@@ -10,6 +10,7 @@ import {EditClientExtensionsPage} from '../../pages/EditClientExtensionsPage';
 export class EditFDSVisualizationModePage extends EditClientExtensionsPage {
 	readonly iconInput: Locator;
 	readonly javaScriptURLInput: Locator;
+	readonly sectionsInput: Locator;
 
 	constructor(page: Page) {
 		super(page, 'fdsVisualizationMode');
@@ -17,6 +18,9 @@ export class EditFDSVisualizationModePage extends EditClientExtensionsPage {
 		this.iconInput = page.locator(`[name=_${this.portletName}_icon]`);
 		this.javaScriptURLInput = page.locator(
 			`[name=_${this.portletName}_url]`
+		);
+		this.sectionsInput = page.locator(
+			`[name=_${this.portletName}_sections]`
 		);
 	}
 

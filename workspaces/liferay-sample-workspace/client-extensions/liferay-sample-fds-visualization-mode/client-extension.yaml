@@ -4,5 +4,6 @@ assemble:
 liferay-sample-fds-visualization-mode:
     icon: date-time
     name: Liferay Sample Frontend Data Set Timeline
+    sections: "[{\"label\": \"Title\", \"name\": \"title\", \"required\": true}, {\"label\": \"Date\", \"name\": \"date\"}, {\"label\": \"Description\", \"name\": \"description\"}]"
     type: fdsVisualizationMode
     url: index.*.js

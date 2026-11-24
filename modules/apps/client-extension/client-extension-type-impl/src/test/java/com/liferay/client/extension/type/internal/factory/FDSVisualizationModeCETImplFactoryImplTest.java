@@ -8,7 +8,9 @@ package com.liferay.client.extension.type.internal.factory;
 import com.liferay.client.extension.exception.ClientExtensionEntryTypeSettingsException;
 import com.liferay.client.extension.type.FDSVisualizationModeCET;
 import com.liferay.client.extension.type.internal.FDSVisualizationModeCETImpl;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.json.JSONFactoryImpl;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
@@ -33,16 +35,54 @@ public class FDSVisualizationModeCETImplFactoryImplTest {
 	public void testValidate() throws PortalException {
 		_fdsVisualizationModeCETImplFactoryImpl.validate(
 			_createFDSVisualizationModeCET(
-				RandomTestUtil.randomString(), RandomTestUtil.randomString()),
+				RandomTestUtil.randomString(),
+				StringBundler.concat(
+					"[{\"name\": \"", RandomTestUtil.randomString(),
+					"\"}, {\"label\": \"", RandomTestUtil.randomString(),
+					"\", \"name\": \"", RandomTestUtil.randomString(), "\"}]"),
+				RandomTestUtil.randomString()),
+			null);
+		_fdsVisualizationModeCETImplFactoryImpl.validate(
+			_createFDSVisualizationModeCET(
+				RandomTestUtil.randomString(), StringPool.BLANK,
+				RandomTestUtil.randomString()),
 			null);
 
 		_assertValidateFails(
 			_createFDSVisualizationModeCET(
-				RandomTestUtil.randomString(), StringPool.BLANK),
+				RandomTestUtil.randomString(), "not json",
+				RandomTestUtil.randomString()),
+			"the-item-elements-are-not-valid-json");
+		_assertValidateFails(
+			_createFDSVisualizationModeCET(
+				RandomTestUtil.randomString(), "[]",
+				RandomTestUtil.randomString()),
+			"declare-at-least-one-item-element");
+		_assertValidateFails(
+			_createFDSVisualizationModeCET(
+				RandomTestUtil.randomString(), "[{}]",
+				RandomTestUtil.randomString()),
+			"every-item-element-must-have-a-name");
+
+		String name = RandomTestUtil.randomString();
+
+		_assertValidateFails(
+			_createFDSVisualizationModeCET(
+				RandomTestUtil.randomString(),
+				StringBundler.concat(
+					"[{\"name\": \"", name, "\"}, {\"name\": \"", name, "\"}]"),
+				RandomTestUtil.randomString()),
+			"item-element-name-x-is-duplicated");
+
+		_assertValidateFails(
+			_createFDSVisualizationModeCET(
+				RandomTestUtil.randomString(), StringPool.BLANK,
+				StringPool.BLANK),
 			"please-enter-at-least-one-javascript-url");
 		_assertValidateFails(
 			_createFDSVisualizationModeCET(
-				StringPool.BLANK, RandomTestUtil.randomString()),
+				StringPool.BLANK, StringPool.BLANK,
+				RandomTestUtil.randomString()),
 			"please-select-an-icon");
 	}
 
@@ -66,7 +106,7 @@ public class FDSVisualizationModeCETImplFactoryImplTest {
 	}
 
 	private FDSVisualizationModeCET _createFDSVisualizationModeCET(
-		String icon, String url) {
+		String icon, String sections, String url) {
 
 		return new FDSVisualizationModeCETImpl(
 			StringPool.BLANK, 0, null, StringPool.BLANK, StringPool.BLANK, null,
@@ -74,12 +114,14 @@ public class FDSVisualizationModeCETImplFactoryImplTest {
 			UnicodePropertiesBuilder.put(
 				"icon", icon
 			).put(
+				"sections", sections
+			).put(
 				"url", url
 			).build());
 	}
 
 	private final FDSVisualizationModeCETImplFactoryImpl
 		_fdsVisualizationModeCETImplFactoryImpl =
-			new FDSVisualizationModeCETImplFactoryImpl();
+			new FDSVisualizationModeCETImplFactoryImpl(new JSONFactoryImpl());
 
 }

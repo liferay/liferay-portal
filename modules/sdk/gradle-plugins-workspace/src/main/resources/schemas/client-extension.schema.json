@@ -209,6 +209,14 @@
 					"allOf": [
 						{
 							"$ref": "#/definitions/propertySets/properties/url"
+						},
+						{
+							"properties": {
+								"sections": {
+									"description": "This optional property is a JSON array that declares the sections of an item that the visualization mode draws, as [{\"label\": \"Title\", \"name\": \"title\", \"required\": true}]. Data set managers map each section to a field, and the visualization mode receives the mapping as args.schema. In client-extension.yaml, write it as a quoted string and escape its inner quotes. Sections that are not a valid JSON array or declare no sections are ignored, and the deployment does not validate them.",
+									"type": "string"
+								}
+							}
 						}
 					],
 					"description": "Description for fdsVisualizationMode"

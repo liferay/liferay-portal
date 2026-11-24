@@ -41,6 +41,11 @@ public class FDSVisualizationModeCETImpl
 	}
 
 	@Override
+	public String getSections() {
+		return getString("sections");
+	}
+
+	@Override
 	public String getType() {
 		return ClientExtensionEntryConstants.TYPE_FDS_VISUALIZATION_MODE;
 	}
