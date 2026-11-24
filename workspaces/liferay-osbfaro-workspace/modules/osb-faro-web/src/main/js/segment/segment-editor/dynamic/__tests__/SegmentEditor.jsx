@@ -239,13 +239,13 @@ describe('SegmentEditor', () => {
 			)
 			.closest('.popover');
 
-		expect(popover).toHaveClass('hide');
+		expect(popover).not.toBeVisible();
 
 		fireEvent.mouseOver(
 			container.querySelector('.canvas-header .info-popover-root')
 		);
 
-		expect(popover).not.toHaveClass('hide');
+		expect(popover).toBeVisible();
 	});
 
 	it('does not render the sequential toggle on a batch segment', () => {

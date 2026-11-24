@@ -48,11 +48,11 @@ describe('TitleEditor', () => {
 
 		const input = getByPlaceholderText(placeholder);
 
-		expect(input).toHaveClass('hide');
+		expect(input).not.toBeVisible();
 
 		fireEvent.click(container.querySelector('.btn'));
 
-		expect(input).not.toHaveClass('hide');
+		expect(input).toBeVisible();
 	});
 
 	it('should not be editable if editable prop is false', () => {
