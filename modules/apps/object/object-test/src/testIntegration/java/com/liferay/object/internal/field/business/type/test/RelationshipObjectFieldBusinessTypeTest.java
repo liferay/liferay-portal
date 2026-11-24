@@ -12,6 +12,7 @@ import com.liferay.commerce.product.service.CPDefinitionLocalService;
 import com.liferay.commerce.product.service.CommerceCatalogLocalService;
 import com.liferay.commerce.product.test.util.CPTestUtil;
 import com.liferay.object.constants.ObjectFieldConstants;
+import com.liferay.object.constants.ObjectRelationshipConstants;
 import com.liferay.object.field.business.type.ObjectFieldBusinessType;
 import com.liferay.object.field.business.type.ObjectFieldBusinessTypeRegistry;
 import com.liferay.object.model.ObjectField;
@@ -28,6 +29,8 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
@@ -56,8 +59,14 @@ public class RelationshipObjectFieldBusinessTypeTest {
 				ObjectFieldConstants.BUSINESS_TYPE_RELATIONSHIP);
 	}
 
+	@FeatureFlag("LPD-108620")
 	@Test
 	public void testGetValue() throws Exception {
+		_testGetValue(ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+		_testGetValue(ObjectRelationshipConstants.TYPE_ONE_TO_ONE);
+	}
+
+	private void _testGetValue(String type) throws Exception {
 		ObjectRelationship objectRelationship =
 			ObjectRelationshipTestUtil.addObjectRelationship(
 				_objectRelationshipLocalService,
@@ -65,7 +74,9 @@ public class RelationshipObjectFieldBusinessTypeTest {
 					fetchObjectDefinitionByExternalReferenceCode(
 						"L_COMMERCE_PRODUCT_DEFINITION",
 						TestPropsValues.getCompanyId()),
-				ObjectDefinitionTestUtil.publishObjectDefinition());
+				ObjectDefinitionTestUtil.publishObjectDefinition(),
+				ObjectRelationshipConstants.DELETION_TYPE_CASCADE,
+				StringUtil.randomId(), type);
 
 		ObjectField objectField = _objectFieldLocalService.fetchObjectField(
 			objectRelationship.getObjectFieldId2());
