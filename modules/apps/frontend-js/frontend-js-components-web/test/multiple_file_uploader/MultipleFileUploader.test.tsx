@@ -528,6 +528,30 @@ describe('MultipleFileUploader', () => {
 		).toBeInTheDocument();
 	});
 
+	it('clears the error when the next selection has no rejected files', async () => {
+		const user = userEvent.setup();
+
+		const {container} = render(
+			<MultipleFileUploader {...DEFAULT_PROPS} maxFileSize={2000} />
+		);
+
+		const input =
+			container.querySelector<HTMLInputElement>('input[type="file"]')!;
+
+		await user.upload(input, [
+			createFile('image1.png', 1024),
+			createFile('image2.png', 3072),
+		]);
+
+		expect(await screen.findByRole('alert')).toBeInTheDocument();
+
+		await user.upload(input, createFile('image3.png', 1024));
+
+		expect(await screen.findByText('image3.png')).toBeInTheDocument();
+
+		expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+	});
+
 	describe('batch upload', () => {
 		it('uploads all files in parallel by default', async () => {
 			const started: string[] = [];
