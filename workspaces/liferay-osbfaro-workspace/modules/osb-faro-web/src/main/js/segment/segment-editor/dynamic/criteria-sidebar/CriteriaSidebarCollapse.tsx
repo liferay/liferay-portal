@@ -188,7 +188,7 @@ export const getDefaultValue = (property: Property): any => {
 						{
 							operatorName: RelationalOperators.In,
 							propertyName: name,
-							value: [],
+							value: property.id ? [property.id] : [],
 						},
 					],
 				},
