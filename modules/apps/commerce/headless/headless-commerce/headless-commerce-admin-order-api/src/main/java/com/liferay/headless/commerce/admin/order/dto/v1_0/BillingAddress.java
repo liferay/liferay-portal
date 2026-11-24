@@ -235,7 +235,7 @@ public class BillingAddress implements Serializable {
 	@GraphQLField(
 		description = "Idempotency key for create and update; must be unique per address within the company. Read-only after create."
 	)
-	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String externalReferenceCode;
 
 	@JsonIgnore
@@ -1178,4 +1178,4 @@ public class BillingAddress implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:2122787761
+// LIFERAY-REST-BUILDER-HASH:1583773514

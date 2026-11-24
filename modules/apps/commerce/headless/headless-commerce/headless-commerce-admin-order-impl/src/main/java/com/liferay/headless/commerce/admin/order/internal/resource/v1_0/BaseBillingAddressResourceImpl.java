@@ -120,7 +120,7 @@ public abstract class BaseBillingAddressResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-order/v1.0/orders/by-externalReferenceCode/{externalReferenceCode}/billingAddress' -d $'{"city": ___, "countryISOCode": ___, "description": ___, "id": ___, "latitude": ___, "longitude": ___, "name": ___, "phoneNumber": ___, "regionISOCode": ___, "street1": ___, "street2": ___, "street3": ___, "subtype": ___, "vatNumber": ___, "zip": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-order/v1.0/orders/by-externalReferenceCode/{externalReferenceCode}/billingAddress' -d $'{"city": ___, "countryISOCode": ___, "description": ___, "externalReferenceCode": ___, "id": ___, "latitude": ___, "longitude": ___, "name": ___, "phoneNumber": ___, "regionISOCode": ___, "street1": ___, "street2": ___, "street3": ___, "subtype": ___, "vatNumber": ___, "zip": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Partial update of billing address for an order accessed by externalReferenceCode. Returns 204 No Content. Throws NoSuchOrderException (404) if order not found."
@@ -162,7 +162,7 @@ public abstract class BaseBillingAddressResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-order/v1.0/orders/{id}/billingAddress' -d $'{"city": ___, "countryISOCode": ___, "description": ___, "id": ___, "latitude": ___, "longitude": ___, "name": ___, "phoneNumber": ___, "regionISOCode": ___, "street1": ___, "street2": ___, "street3": ___, "subtype": ___, "vatNumber": ___, "zip": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-order/v1.0/orders/{id}/billingAddress' -d $'{"city": ___, "countryISOCode": ___, "description": ___, "externalReferenceCode": ___, "id": ___, "latitude": ___, "longitude": ___, "name": ___, "phoneNumber": ___, "regionISOCode": ___, "street1": ___, "street2": ___, "street3": ___, "subtype": ___, "vatNumber": ___, "zip": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Partial update of billing address via nested field endpoint. Returns 204 No Content."
@@ -644,4 +644,4 @@ public abstract class BaseBillingAddressResourceImpl
 		LogFactoryUtil.getLog(BaseBillingAddressResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1888237063
+// LIFERAY-REST-BUILDER-HASH:-8759559

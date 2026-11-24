@@ -156,7 +156,7 @@ public abstract class BaseShippingAddressResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-order/v1.0/orders/by-externalReferenceCode/{externalReferenceCode}/shippingAddress' -d $'{"city": ___, "countryISOCode": ___, "description": ___, "id": ___, "latitude": ___, "longitude": ___, "name": ___, "phoneNumber": ___, "regionISOCode": ___, "street1": ___, "street2": ___, "street3": ___, "subtype": ___, "zip": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-order/v1.0/orders/by-externalReferenceCode/{externalReferenceCode}/shippingAddress' -d $'{"city": ___, "countryISOCode": ___, "description": ___, "externalReferenceCode": ___, "id": ___, "latitude": ___, "longitude": ___, "name": ___, "phoneNumber": ___, "regionISOCode": ___, "street1": ___, "street2": ___, "street3": ___, "subtype": ___, "zip": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Partial update of shipping address for an order accessed by externalReferenceCode. Returns 204 No Content. Throws NoSuchOrderException (404) if order not found."
@@ -198,7 +198,7 @@ public abstract class BaseShippingAddressResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-order/v1.0/orders/{id}/shippingAddress' -d $'{"city": ___, "countryISOCode": ___, "description": ___, "id": ___, "latitude": ___, "longitude": ___, "name": ___, "phoneNumber": ___, "regionISOCode": ___, "street1": ___, "street2": ___, "street3": ___, "subtype": ___, "zip": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-order/v1.0/orders/{id}/shippingAddress' -d $'{"city": ___, "countryISOCode": ___, "description": ___, "externalReferenceCode": ___, "id": ___, "latitude": ___, "longitude": ___, "name": ___, "phoneNumber": ___, "regionISOCode": ___, "street1": ___, "street2": ___, "street3": ___, "subtype": ___, "zip": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Partial update of shipping address via nested field endpoint. Returns 204 No Content."
@@ -680,4 +680,4 @@ public abstract class BaseShippingAddressResourceImpl
 		LogFactoryUtil.getLog(BaseShippingAddressResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-192329124
+// LIFERAY-REST-BUILDER-HASH:1164923720
