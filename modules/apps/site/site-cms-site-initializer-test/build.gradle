@@ -42,6 +42,7 @@ dependencies {
 	testIntegrationImplementation project(":apps:site:site-cms-site-initializer")
 	testIntegrationImplementation project(":apps:site:site-cms-site-initializer-api")
 	testIntegrationImplementation project(":apps:static:portal:portal-upgrade-api")
+	testIntegrationImplementation project(":apps:subscription:subscription-api")
 	testIntegrationImplementation project(":apps:translation:translation-api")
 	testIntegrationImplementation project(":apps:trash:trash-api")
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
