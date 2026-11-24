@@ -154,51 +154,6 @@ public class CPConfigurationListServiceHttp {
 
 	public static com.liferay.commerce.product.model.CPConfigurationList
 			deleteCPConfigurationList(
-				HttpPrincipal httpPrincipal,
-				com.liferay.commerce.product.model.CPConfigurationList
-					cpConfigurationList)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		try {
-			MethodKey methodKey = new MethodKey(
-				CPConfigurationListServiceUtil.class,
-				"deleteCPConfigurationList",
-				_deleteCPConfigurationListParameterTypes2);
-
-			MethodHandler methodHandler = new MethodHandler(
-				methodKey, cpConfigurationList);
-
-			Object returnObj = null;
-
-			try {
-				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
-			}
-			catch (Exception exception) {
-				if (exception instanceof
-						com.liferay.portal.kernel.exception.PortalException) {
-
-					throw (com.liferay.portal.kernel.exception.PortalException)
-						exception;
-				}
-
-				throw new com.liferay.portal.kernel.exception.SystemException(
-					exception);
-			}
-
-			return (com.liferay.commerce.product.model.CPConfigurationList)
-				returnObj;
-		}
-		catch (com.liferay.portal.kernel.exception.SystemException
-					systemException) {
-
-			_log.error(systemException, systemException);
-
-			throw systemException;
-		}
-	}
-
-	public static com.liferay.commerce.product.model.CPConfigurationList
-			deleteCPConfigurationList(
 				HttpPrincipal httpPrincipal, long cpConfigurationListId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
@@ -206,7 +161,7 @@ public class CPConfigurationListServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CPConfigurationListServiceUtil.class,
 				"deleteCPConfigurationList",
-				_deleteCPConfigurationListParameterTypes3);
+				_deleteCPConfigurationListParameterTypes2);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, cpConfigurationListId);
@@ -250,7 +205,7 @@ public class CPConfigurationListServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CPConfigurationListServiceUtil.class,
 				"fetchCPConfigurationListByExternalReferenceCode",
-				_fetchCPConfigurationListByExternalReferenceCodeParameterTypes4);
+				_fetchCPConfigurationListByExternalReferenceCodeParameterTypes3);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, externalReferenceCode, companyId);
@@ -292,7 +247,7 @@ public class CPConfigurationListServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				CPConfigurationListServiceUtil.class, "getCPConfigurationList",
-				_getCPConfigurationListParameterTypes5);
+				_getCPConfigurationListParameterTypes4);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, cpConfigurationLisId);
@@ -336,7 +291,7 @@ public class CPConfigurationListServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CPConfigurationListServiceUtil.class,
 				"getCPConfigurationListByExternalReferenceCode",
-				_getCPConfigurationListByExternalReferenceCodeParameterTypes6);
+				_getCPConfigurationListByExternalReferenceCodeParameterTypes5);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, externalReferenceCode, companyId);
@@ -379,7 +334,7 @@ public class CPConfigurationListServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				CPConfigurationListServiceUtil.class, "getCPConfigurationLists",
-				_getCPConfigurationListsParameterTypes7);
+				_getCPConfigurationListsParameterTypes6);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, groupId, companyId);
@@ -423,7 +378,7 @@ public class CPConfigurationListServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CPConfigurationListServiceUtil.class,
 				"getMasterCPConfigurationList",
-				_getMasterCPConfigurationListParameterTypes8);
+				_getMasterCPConfigurationListParameterTypes7);
 
 			MethodHandler methodHandler = new MethodHandler(methodKey, groupId);
 
@@ -466,7 +421,7 @@ public class CPConfigurationListServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CPConfigurationListServiceUtil.class,
 				"getOrAddEmptyCPConfigurationList",
-				_getOrAddEmptyCPConfigurationListParameterTypes9);
+				_getOrAddEmptyCPConfigurationListParameterTypes8);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, externalReferenceCode, groupId);
@@ -518,7 +473,7 @@ public class CPConfigurationListServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CPConfigurationListServiceUtil.class,
 				"updateCPConfigurationList",
-				_updateCPConfigurationListParameterTypes10);
+				_updateCPConfigurationListParameterTypes9);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, externalReferenceCode, cpConfigurationListId,
@@ -568,7 +523,7 @@ public class CPConfigurationListServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CPConfigurationListServiceUtil.class,
 				"updateExternalReferenceCode",
-				_updateExternalReferenceCodeParameterTypes11);
+				_updateExternalReferenceCodeParameterTypes10);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, cpConfigurationListId, externalReferenceCode);
@@ -622,28 +577,24 @@ public class CPConfigurationListServiceHttp {
 			com.liferay.portal.kernel.service.ServiceContext.class
 		};
 	private static final Class<?>[] _deleteCPConfigurationListParameterTypes2 =
-		new Class[] {
-			com.liferay.commerce.product.model.CPConfigurationList.class
-		};
-	private static final Class<?>[] _deleteCPConfigurationListParameterTypes3 =
 		new Class[] {long.class};
 	private static final Class<?>[]
-		_fetchCPConfigurationListByExternalReferenceCodeParameterTypes4 =
+		_fetchCPConfigurationListByExternalReferenceCodeParameterTypes3 =
 			new Class[] {String.class, long.class};
-	private static final Class<?>[] _getCPConfigurationListParameterTypes5 =
+	private static final Class<?>[] _getCPConfigurationListParameterTypes4 =
 		new Class[] {long.class};
 	private static final Class<?>[]
-		_getCPConfigurationListByExternalReferenceCodeParameterTypes6 =
+		_getCPConfigurationListByExternalReferenceCodeParameterTypes5 =
 			new Class[] {String.class, long.class};
-	private static final Class<?>[] _getCPConfigurationListsParameterTypes7 =
+	private static final Class<?>[] _getCPConfigurationListsParameterTypes6 =
 		new Class[] {long.class, long.class};
 	private static final Class<?>[]
-		_getMasterCPConfigurationListParameterTypes8 = new Class[] {long.class};
+		_getMasterCPConfigurationListParameterTypes7 = new Class[] {long.class};
 	private static final Class<?>[]
-		_getOrAddEmptyCPConfigurationListParameterTypes9 = new Class[] {
+		_getOrAddEmptyCPConfigurationListParameterTypes8 = new Class[] {
 			String.class, long.class
 		};
-	private static final Class<?>[] _updateCPConfigurationListParameterTypes10 =
+	private static final Class<?>[] _updateCPConfigurationListParameterTypes9 =
 		new Class[] {
 			String.class, long.class, long.class, long.class, boolean.class,
 			String.class, double.class, int.class, int.class, int.class,
@@ -652,9 +603,9 @@ public class CPConfigurationListServiceHttp {
 			com.liferay.portal.kernel.service.ServiceContext.class
 		};
 	private static final Class<?>[]
-		_updateExternalReferenceCodeParameterTypes11 = new Class[] {
+		_updateExternalReferenceCodeParameterTypes10 = new Class[] {
 			long.class, String.class
 		};
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1333435035
+// LIFERAY-SERVICE-BUILDER-HASH:588472407

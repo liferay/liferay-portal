@@ -48,10 +48,10 @@ public class CSDiagramEntryServiceUtil {
 		getService().deleteCSDiagramEntries(cpDefinitionId);
 	}
 
-	public static void deleteCSDiagramEntry(CSDiagramEntry csDiagramEntry)
+	public static void deleteCSDiagramEntry(long csDiagramEntryId)
 		throws PortalException {
 
-		getService().deleteCSDiagramEntry(csDiagramEntry);
+		getService().deleteCSDiagramEntry(csDiagramEntryId);
 	}
 
 	public static CSDiagramEntry fetchCSDiagramEntry(
@@ -131,4 +131,4 @@ public class CSDiagramEntryServiceUtil {
 			CSDiagramEntryServiceUtil.class, CSDiagramEntryService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1555756497
+// LIFERAY-SERVICE-BUILDER-HASH:1956624005

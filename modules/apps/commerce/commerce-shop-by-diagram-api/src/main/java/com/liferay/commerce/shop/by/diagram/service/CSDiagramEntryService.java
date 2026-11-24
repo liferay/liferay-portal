@@ -55,7 +55,7 @@ public interface CSDiagramEntryService extends BaseService {
 	public void deleteCSDiagramEntries(long cpDefinitionId)
 		throws PortalException;
 
-	public void deleteCSDiagramEntry(CSDiagramEntry csDiagramEntry)
+	public void deleteCSDiagramEntry(long csDiagramEntryId)
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -105,4 +105,4 @@ public interface CSDiagramEntryService extends BaseService {
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1114593277
+// LIFERAY-SERVICE-BUILDER-HASH:157383040

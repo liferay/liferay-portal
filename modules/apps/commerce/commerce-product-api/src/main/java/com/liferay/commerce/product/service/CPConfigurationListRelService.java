@@ -10,10 +10,8 @@ import com.liferay.portal.kernel.change.tracking.CTAware;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.jsonwebservice.JSONWebService;
-import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.security.access.control.AccessControlled;
 import com.liferay.portal.kernel.service.BaseService;
-import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
@@ -49,11 +47,6 @@ public interface CPConfigurationListRelService extends BaseService {
 	 */
 	public CPConfigurationListRel addCPConfigurationListRel(
 			String className, long classPK, long cpConfigurationListId)
-		throws PortalException;
-
-	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
-	public CPConfigurationListRel deleteCPConfigurationListRel(
-			CPConfigurationListRel cpConfigurationListRel)
 		throws PortalException;
 
 	public CPConfigurationListRel deleteCPConfigurationListRel(
@@ -147,4 +140,4 @@ public interface CPConfigurationListRelService extends BaseService {
 	public String getOSGiServiceIdentifier();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1112933313
+// LIFERAY-SERVICE-BUILDER-HASH:-2114435550

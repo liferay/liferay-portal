@@ -48,10 +48,10 @@ public class CSDiagramEntryServiceWrapper
 	}
 
 	@Override
-	public void deleteCSDiagramEntry(CSDiagramEntry csDiagramEntry)
+	public void deleteCSDiagramEntry(long csDiagramEntryId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
-		_csDiagramEntryService.deleteCSDiagramEntry(csDiagramEntry);
+		_csDiagramEntryService.deleteCSDiagramEntry(csDiagramEntryId);
 	}
 
 	@Override
@@ -149,4 +149,4 @@ public class CSDiagramEntryServiceWrapper
 	private CSDiagramEntryService _csDiagramEntryService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-402039955
+// LIFERAY-SERVICE-BUILDER-HASH:1273106349

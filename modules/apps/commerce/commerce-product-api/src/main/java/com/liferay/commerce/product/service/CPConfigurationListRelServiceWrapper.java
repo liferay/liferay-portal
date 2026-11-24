@@ -40,15 +40,6 @@ public class CPConfigurationListRelServiceWrapper
 
 	@Override
 	public CPConfigurationListRel deleteCPConfigurationListRel(
-			CPConfigurationListRel cpConfigurationListRel)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _cpConfigurationListRelService.deleteCPConfigurationListRel(
-			cpConfigurationListRel);
-	}
-
-	@Override
-	public CPConfigurationListRel deleteCPConfigurationListRel(
 			long cpConfigurationListRelId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
@@ -236,4 +227,4 @@ public class CPConfigurationListRelServiceWrapper
 	private CPConfigurationListRelService _cpConfigurationListRelService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1659363188
+// LIFERAY-SERVICE-BUILDER-HASH:1399256063

@@ -49,8 +49,7 @@ public interface CSDiagramPinService extends BaseService {
 			String sequence)
 		throws PortalException;
 
-	public void deleteCSDiagramPin(CSDiagramPin csDiagramPin)
-		throws PortalException;
+	public void deleteCSDiagramPin(long csDiagramPinId) throws PortalException;
 
 	public void deleteCSDiagramPins(long cpDefinitionId) throws PortalException;
 
@@ -83,4 +82,4 @@ public interface CSDiagramPinService extends BaseService {
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:265143776
+// LIFERAY-SERVICE-BUILDER-HASH:-297631200

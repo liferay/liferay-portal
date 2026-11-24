@@ -55,12 +55,6 @@ public interface CommercePricingClassCPDefinitionRelService
 
 	public CommercePricingClassCPDefinitionRel
 			deleteCommercePricingClassCPDefinitionRel(
-				CommercePricingClassCPDefinitionRel
-					commercePricingClassCPDefinitionRel)
-		throws PortalException;
-
-	public CommercePricingClassCPDefinitionRel
-			deleteCommercePricingClassCPDefinitionRel(
 				long commercePricingClassCPDefinitionRelId)
 		throws PortalException;
 
@@ -118,4 +112,4 @@ public interface CommercePricingClassCPDefinitionRelService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:809586090
+// LIFERAY-SERVICE-BUILDER-HASH:2086193753

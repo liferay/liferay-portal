@@ -43,16 +43,6 @@ public class CommercePricingClassCPDefinitionRelServiceUtil {
 
 	public static CommercePricingClassCPDefinitionRel
 			deleteCommercePricingClassCPDefinitionRel(
-				CommercePricingClassCPDefinitionRel
-					commercePricingClassCPDefinitionRel)
-		throws PortalException {
-
-		return getService().deleteCommercePricingClassCPDefinitionRel(
-			commercePricingClassCPDefinitionRel);
-	}
-
-	public static CommercePricingClassCPDefinitionRel
-			deleteCommercePricingClassCPDefinitionRel(
 				long commercePricingClassCPDefinitionRelId)
 		throws PortalException {
 
@@ -148,4 +138,4 @@ public class CommercePricingClassCPDefinitionRelServiceUtil {
 			CommercePricingClassCPDefinitionRelService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-35212401
+// LIFERAY-SERVICE-BUILDER-HASH:-2049780743

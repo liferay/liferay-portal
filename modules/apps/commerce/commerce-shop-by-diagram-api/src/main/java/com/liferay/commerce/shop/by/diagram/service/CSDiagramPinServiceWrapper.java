@@ -37,10 +37,10 @@ public class CSDiagramPinServiceWrapper
 	}
 
 	@Override
-	public void deleteCSDiagramPin(CSDiagramPin csDiagramPin)
+	public void deleteCSDiagramPin(long csDiagramPinId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
-		_csDiagramPinService.deleteCSDiagramPin(csDiagramPin);
+		_csDiagramPinService.deleteCSDiagramPin(csDiagramPinId);
 	}
 
 	@Override
@@ -111,4 +111,4 @@ public class CSDiagramPinServiceWrapper
 	private CSDiagramPinService _csDiagramPinService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-846648494
+// LIFERAY-SERVICE-BUILDER-HASH:-1891200749

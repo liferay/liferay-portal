@@ -87,51 +87,6 @@ public class CPConfigurationListRelServiceHttp {
 
 	public static com.liferay.commerce.product.model.CPConfigurationListRel
 			deleteCPConfigurationListRel(
-				HttpPrincipal httpPrincipal,
-				com.liferay.commerce.product.model.CPConfigurationListRel
-					cpConfigurationListRel)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		try {
-			MethodKey methodKey = new MethodKey(
-				CPConfigurationListRelServiceUtil.class,
-				"deleteCPConfigurationListRel",
-				_deleteCPConfigurationListRelParameterTypes1);
-
-			MethodHandler methodHandler = new MethodHandler(
-				methodKey, cpConfigurationListRel);
-
-			Object returnObj = null;
-
-			try {
-				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
-			}
-			catch (Exception exception) {
-				if (exception instanceof
-						com.liferay.portal.kernel.exception.PortalException) {
-
-					throw (com.liferay.portal.kernel.exception.PortalException)
-						exception;
-				}
-
-				throw new com.liferay.portal.kernel.exception.SystemException(
-					exception);
-			}
-
-			return (com.liferay.commerce.product.model.CPConfigurationListRel)
-				returnObj;
-		}
-		catch (com.liferay.portal.kernel.exception.SystemException
-					systemException) {
-
-			_log.error(systemException, systemException);
-
-			throw systemException;
-		}
-	}
-
-	public static com.liferay.commerce.product.model.CPConfigurationListRel
-			deleteCPConfigurationListRel(
 				HttpPrincipal httpPrincipal, long cpConfigurationListRelId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
@@ -139,7 +94,7 @@ public class CPConfigurationListRelServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CPConfigurationListRelServiceUtil.class,
 				"deleteCPConfigurationListRel",
-				_deleteCPConfigurationListRelParameterTypes2);
+				_deleteCPConfigurationListRelParameterTypes1);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, cpConfigurationListRelId);
@@ -181,7 +136,7 @@ public class CPConfigurationListRelServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CPConfigurationListRelServiceUtil.class,
 				"deleteCPConfigurationListRels",
-				_deleteCPConfigurationListRelsParameterTypes3);
+				_deleteCPConfigurationListRelsParameterTypes2);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, cpConfigurationListId);
@@ -219,7 +174,7 @@ public class CPConfigurationListRelServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CPConfigurationListRelServiceUtil.class,
 				"deleteCPConfigurationListRels",
-				_deleteCPConfigurationListRelsParameterTypes4);
+				_deleteCPConfigurationListRelsParameterTypes3);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, className, cpConfigurationListId);
@@ -258,7 +213,7 @@ public class CPConfigurationListRelServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CPConfigurationListRelServiceUtil.class,
 				"fetchCPConfigurationListRel",
-				_fetchCPConfigurationListRelParameterTypes5);
+				_fetchCPConfigurationListRelParameterTypes4);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, className, classPK, cpConfigurationListId);
@@ -303,7 +258,7 @@ public class CPConfigurationListRelServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CPConfigurationListRelServiceUtil.class,
 				"getAccountEntryCPConfigurationListRels",
-				_getAccountEntryCPConfigurationListRelsParameterTypes6);
+				_getAccountEntryCPConfigurationListRelsParameterTypes5);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, cpConfigurationListId, keywords, start, end);
@@ -347,7 +302,7 @@ public class CPConfigurationListRelServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CPConfigurationListRelServiceUtil.class,
 				"getAccountEntryCPConfigurationListRelsCount",
-				_getAccountEntryCPConfigurationListRelsCountParameterTypes7);
+				_getAccountEntryCPConfigurationListRelsCountParameterTypes6);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, cpConfigurationListId, keywords);
@@ -391,7 +346,7 @@ public class CPConfigurationListRelServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CPConfigurationListRelServiceUtil.class,
 				"getAccountGroupCPConfigurationListRels",
-				_getAccountGroupCPConfigurationListRelsParameterTypes8);
+				_getAccountGroupCPConfigurationListRelsParameterTypes7);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, cpConfigurationListId, keywords, start, end);
@@ -435,7 +390,7 @@ public class CPConfigurationListRelServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CPConfigurationListRelServiceUtil.class,
 				"getAccountGroupCPConfigurationListRelsCount",
-				_getAccountGroupCPConfigurationListRelsCountParameterTypes9);
+				_getAccountGroupCPConfigurationListRelsCountParameterTypes8);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, cpConfigurationListId, keywords);
@@ -477,7 +432,7 @@ public class CPConfigurationListRelServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CPConfigurationListRelServiceUtil.class,
 				"getCPConfigurationListRel",
-				_getCPConfigurationListRelParameterTypes10);
+				_getCPConfigurationListRelParameterTypes9);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, cpConfigurationListRelId);
@@ -521,7 +476,7 @@ public class CPConfigurationListRelServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CPConfigurationListRelServiceUtil.class,
 				"getCPConfigurationListRels",
-				_getCPConfigurationListRelsParameterTypes11);
+				_getCPConfigurationListRelsParameterTypes10);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, cpConfigurationListId);
@@ -570,7 +525,7 @@ public class CPConfigurationListRelServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CPConfigurationListRelServiceUtil.class,
 				"getCPConfigurationListRels",
-				_getCPConfigurationListRelsParameterTypes12);
+				_getCPConfigurationListRelsParameterTypes11);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, cpConfigurationListId, start, end,
@@ -617,7 +572,7 @@ public class CPConfigurationListRelServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CPConfigurationListRelServiceUtil.class,
 				"getCPConfigurationListRels",
-				_getCPConfigurationListRelsParameterTypes13);
+				_getCPConfigurationListRelsParameterTypes12);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, className, cpConfigurationListId);
@@ -666,7 +621,7 @@ public class CPConfigurationListRelServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CPConfigurationListRelServiceUtil.class,
 				"getCPConfigurationListRels",
-				_getCPConfigurationListRelsParameterTypes14);
+				_getCPConfigurationListRelsParameterTypes13);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, className, cpConfigurationListId, start, end,
@@ -710,7 +665,7 @@ public class CPConfigurationListRelServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CPConfigurationListRelServiceUtil.class,
 				"getCPConfigurationListRelsCount",
-				_getCPConfigurationListRelsCountParameterTypes15);
+				_getCPConfigurationListRelsCountParameterTypes14);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, cpConfigurationListId);
@@ -752,7 +707,7 @@ public class CPConfigurationListRelServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CPConfigurationListRelServiceUtil.class,
 				"getCPConfigurationListRelsCount",
-				_getCPConfigurationListRelsCountParameterTypes16);
+				_getCPConfigurationListRelsCountParameterTypes15);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, className, cpConfigurationListId);
@@ -796,7 +751,7 @@ public class CPConfigurationListRelServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CPConfigurationListRelServiceUtil.class,
 				"getCommerceOrderTypeCPConfigurationListRels",
-				_getCommerceOrderTypeCPConfigurationListRelsParameterTypes17);
+				_getCommerceOrderTypeCPConfigurationListRelsParameterTypes16);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, cpConfigurationListId, keywords, start, end);
@@ -840,7 +795,7 @@ public class CPConfigurationListRelServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CPConfigurationListRelServiceUtil.class,
 				"getCommerceOrderTypeCPConfigurationListRelsCount",
-				_getCommerceOrderTypeCPConfigurationListRelsCountParameterTypes18);
+				_getCommerceOrderTypeCPConfigurationListRelsCountParameterTypes17);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, cpConfigurationListId, keywords);
@@ -879,69 +834,65 @@ public class CPConfigurationListRelServiceHttp {
 	private static final Class<?>[] _addCPConfigurationListRelParameterTypes0 =
 		new Class[] {String.class, long.class, long.class};
 	private static final Class<?>[]
-		_deleteCPConfigurationListRelParameterTypes1 = new Class[] {
-			com.liferay.commerce.product.model.CPConfigurationListRel.class
-		};
+		_deleteCPConfigurationListRelParameterTypes1 = new Class[] {long.class};
 	private static final Class<?>[]
-		_deleteCPConfigurationListRelParameterTypes2 = new Class[] {long.class};
-	private static final Class<?>[]
-		_deleteCPConfigurationListRelsParameterTypes3 = new Class[] {
+		_deleteCPConfigurationListRelsParameterTypes2 = new Class[] {
 			long.class
 		};
 	private static final Class<?>[]
-		_deleteCPConfigurationListRelsParameterTypes4 = new Class[] {
+		_deleteCPConfigurationListRelsParameterTypes3 = new Class[] {
 			String.class, long.class
 		};
 	private static final Class<?>[]
-		_fetchCPConfigurationListRelParameterTypes5 = new Class[] {
+		_fetchCPConfigurationListRelParameterTypes4 = new Class[] {
 			String.class, long.class, long.class
 		};
 	private static final Class<?>[]
-		_getAccountEntryCPConfigurationListRelsParameterTypes6 = new Class[] {
+		_getAccountEntryCPConfigurationListRelsParameterTypes5 = new Class[] {
 			long.class, String.class, int.class, int.class
 		};
 	private static final Class<?>[]
-		_getAccountEntryCPConfigurationListRelsCountParameterTypes7 =
+		_getAccountEntryCPConfigurationListRelsCountParameterTypes6 =
 			new Class[] {long.class, String.class};
 	private static final Class<?>[]
-		_getAccountGroupCPConfigurationListRelsParameterTypes8 = new Class[] {
+		_getAccountGroupCPConfigurationListRelsParameterTypes7 = new Class[] {
 			long.class, String.class, int.class, int.class
 		};
 	private static final Class<?>[]
-		_getAccountGroupCPConfigurationListRelsCountParameterTypes9 =
+		_getAccountGroupCPConfigurationListRelsCountParameterTypes8 =
 			new Class[] {long.class, String.class};
-	private static final Class<?>[] _getCPConfigurationListRelParameterTypes10 =
+	private static final Class<?>[] _getCPConfigurationListRelParameterTypes9 =
 		new Class[] {long.class};
 	private static final Class<?>[]
-		_getCPConfigurationListRelsParameterTypes11 = new Class[] {long.class};
+		_getCPConfigurationListRelsParameterTypes10 = new Class[] {long.class};
 	private static final Class<?>[]
-		_getCPConfigurationListRelsParameterTypes12 = new Class[] {
+		_getCPConfigurationListRelsParameterTypes11 = new Class[] {
 			long.class, int.class, int.class,
 			com.liferay.portal.kernel.util.OrderByComparator.class
 		};
 	private static final Class<?>[]
-		_getCPConfigurationListRelsParameterTypes13 = new Class[] {
+		_getCPConfigurationListRelsParameterTypes12 = new Class[] {
 			String.class, long.class
 		};
 	private static final Class<?>[]
-		_getCPConfigurationListRelsParameterTypes14 = new Class[] {
+		_getCPConfigurationListRelsParameterTypes13 = new Class[] {
 			String.class, long.class, int.class, int.class,
 			com.liferay.portal.kernel.util.OrderByComparator.class
 		};
 	private static final Class<?>[]
-		_getCPConfigurationListRelsCountParameterTypes15 = new Class[] {
+		_getCPConfigurationListRelsCountParameterTypes14 = new Class[] {
 			long.class
 		};
 	private static final Class<?>[]
-		_getCPConfigurationListRelsCountParameterTypes16 = new Class[] {
+		_getCPConfigurationListRelsCountParameterTypes15 = new Class[] {
 			String.class, long.class
 		};
 	private static final Class<?>[]
-		_getCommerceOrderTypeCPConfigurationListRelsParameterTypes17 =
+		_getCommerceOrderTypeCPConfigurationListRelsParameterTypes16 =
 			new Class[] {long.class, String.class, int.class, int.class};
 	private static final Class<?>[]
-		_getCommerceOrderTypeCPConfigurationListRelsCountParameterTypes18 =
+		_getCommerceOrderTypeCPConfigurationListRelsCountParameterTypes17 =
 			new Class[] {long.class, String.class};
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1773196083
+// LIFERAY-SERVICE-BUILDER-HASH:-1328228168

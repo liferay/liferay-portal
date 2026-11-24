@@ -124,9 +124,7 @@ public class CSDiagramEntryServiceHttp {
 	}
 
 	public static void deleteCSDiagramEntry(
-			HttpPrincipal httpPrincipal,
-			com.liferay.commerce.shop.by.diagram.model.CSDiagramEntry
-				csDiagramEntry)
+			HttpPrincipal httpPrincipal, long csDiagramEntryId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		try {
@@ -135,7 +133,7 @@ public class CSDiagramEntryServiceHttp {
 				_deleteCSDiagramEntryParameterTypes2);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, csDiagramEntry);
+				methodKey, csDiagramEntryId);
 
 			try {
 				TunnelUtil.invoke(httpPrincipal, methodHandler);
@@ -521,9 +519,7 @@ public class CSDiagramEntryServiceHttp {
 	private static final Class<?>[] _deleteCSDiagramEntriesParameterTypes1 =
 		new Class[] {long.class};
 	private static final Class<?>[] _deleteCSDiagramEntryParameterTypes2 =
-		new Class[] {
-			com.liferay.commerce.shop.by.diagram.model.CSDiagramEntry.class
-		};
+		new Class[] {long.class};
 	private static final Class<?>[] _fetchCSDiagramEntryParameterTypes3 =
 		new Class[] {long.class, String.class};
 	private static final Class<?>[]
@@ -551,4 +547,4 @@ public class CSDiagramEntryServiceHttp {
 		};
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1297501184
+// LIFERAY-SERVICE-BUILDER-HASH:1522906232

@@ -93,53 +93,6 @@ public class CommercePricingClassCPDefinitionRelServiceHttp {
 		com.liferay.commerce.pricing.model.CommercePricingClassCPDefinitionRel
 				deleteCommercePricingClassCPDefinitionRel(
 					HttpPrincipal httpPrincipal,
-					com.liferay.commerce.pricing.model.
-						CommercePricingClassCPDefinitionRel
-							commercePricingClassCPDefinitionRel)
-			throws com.liferay.portal.kernel.exception.PortalException {
-
-		try {
-			MethodKey methodKey = new MethodKey(
-				CommercePricingClassCPDefinitionRelServiceUtil.class,
-				"deleteCommercePricingClassCPDefinitionRel",
-				_deleteCommercePricingClassCPDefinitionRelParameterTypes1);
-
-			MethodHandler methodHandler = new MethodHandler(
-				methodKey, commercePricingClassCPDefinitionRel);
-
-			Object returnObj = null;
-
-			try {
-				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
-			}
-			catch (Exception exception) {
-				if (exception instanceof
-						com.liferay.portal.kernel.exception.PortalException) {
-
-					throw (com.liferay.portal.kernel.exception.PortalException)
-						exception;
-				}
-
-				throw new com.liferay.portal.kernel.exception.SystemException(
-					exception);
-			}
-
-			return (com.liferay.commerce.pricing.model.
-				CommercePricingClassCPDefinitionRel)returnObj;
-		}
-		catch (com.liferay.portal.kernel.exception.SystemException
-					systemException) {
-
-			_log.error(systemException, systemException);
-
-			throw systemException;
-		}
-	}
-
-	public static
-		com.liferay.commerce.pricing.model.CommercePricingClassCPDefinitionRel
-				deleteCommercePricingClassCPDefinitionRel(
-					HttpPrincipal httpPrincipal,
 					long commercePricingClassCPDefinitionRelId)
 			throws com.liferay.portal.kernel.exception.PortalException {
 
@@ -147,7 +100,7 @@ public class CommercePricingClassCPDefinitionRelServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CommercePricingClassCPDefinitionRelServiceUtil.class,
 				"deleteCommercePricingClassCPDefinitionRel",
-				_deleteCommercePricingClassCPDefinitionRelParameterTypes2);
+				_deleteCommercePricingClassCPDefinitionRelParameterTypes1);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, commercePricingClassCPDefinitionRelId);
@@ -192,7 +145,7 @@ public class CommercePricingClassCPDefinitionRelServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CommercePricingClassCPDefinitionRelServiceUtil.class,
 				"fetchCommercePricingClassCPDefinitionRel",
-				_fetchCommercePricingClassCPDefinitionRelParameterTypes3);
+				_fetchCommercePricingClassCPDefinitionRelParameterTypes2);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, commercePricingClassId, cpDefinitionId);
@@ -233,7 +186,7 @@ public class CommercePricingClassCPDefinitionRelServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				CommercePricingClassCPDefinitionRelServiceUtil.class,
-				"getCPDefinitionIds", _getCPDefinitionIdsParameterTypes4);
+				"getCPDefinitionIds", _getCPDefinitionIdsParameterTypes3);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, commercePricingClassId);
@@ -277,7 +230,7 @@ public class CommercePricingClassCPDefinitionRelServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CommercePricingClassCPDefinitionRelServiceUtil.class,
 				"getCommercePricingClassCPDefinitionRel",
-				_getCommercePricingClassCPDefinitionRelParameterTypes5);
+				_getCommercePricingClassCPDefinitionRelParameterTypes4);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, commercePricingClassCPDefinitionRelId);
@@ -321,7 +274,7 @@ public class CommercePricingClassCPDefinitionRelServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CommercePricingClassCPDefinitionRelServiceUtil.class,
 				"getCommercePricingClassCPDefinitionRelByClassId",
-				_getCommercePricingClassCPDefinitionRelByClassIdParameterTypes6);
+				_getCommercePricingClassCPDefinitionRelByClassIdParameterTypes5);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, commercePricingClassId);
@@ -371,7 +324,7 @@ public class CommercePricingClassCPDefinitionRelServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CommercePricingClassCPDefinitionRelServiceUtil.class,
 				"getCommercePricingClassCPDefinitionRels",
-				_getCommercePricingClassCPDefinitionRelsParameterTypes7);
+				_getCommercePricingClassCPDefinitionRelsParameterTypes6);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, commercePricingClassId, start, end,
@@ -415,7 +368,7 @@ public class CommercePricingClassCPDefinitionRelServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CommercePricingClassCPDefinitionRelServiceUtil.class,
 				"getCommercePricingClassCPDefinitionRelsCount",
-				_getCommercePricingClassCPDefinitionRelsCountParameterTypes8);
+				_getCommercePricingClassCPDefinitionRelsCountParameterTypes7);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, commercePricingClassId);
@@ -456,7 +409,7 @@ public class CommercePricingClassCPDefinitionRelServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CommercePricingClassCPDefinitionRelServiceUtil.class,
 				"getCommercePricingClassCPDefinitionRelsCount",
-				_getCommercePricingClassCPDefinitionRelsCountParameterTypes9);
+				_getCommercePricingClassCPDefinitionRelsCountParameterTypes8);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, commercePricingClassId, name, languageId);
@@ -493,7 +446,7 @@ public class CommercePricingClassCPDefinitionRelServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CommercePricingClassCPDefinitionRelServiceUtil.class,
 				"searchByCommercePricingClassId",
-				_searchByCommercePricingClassIdParameterTypes10);
+				_searchByCommercePricingClassIdParameterTypes9);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, commercePricingClassId, name, languageId, start,
@@ -539,41 +492,35 @@ public class CommercePricingClassCPDefinitionRelServiceHttp {
 		};
 	private static final Class<?>[]
 		_deleteCommercePricingClassCPDefinitionRelParameterTypes1 =
-			new Class[] {
-				com.liferay.commerce.pricing.model.
-					CommercePricingClassCPDefinitionRel.class
-			};
-	private static final Class<?>[]
-		_deleteCommercePricingClassCPDefinitionRelParameterTypes2 =
 			new Class[] {long.class};
 	private static final Class<?>[]
-		_fetchCommercePricingClassCPDefinitionRelParameterTypes3 = new Class[] {
+		_fetchCommercePricingClassCPDefinitionRelParameterTypes2 = new Class[] {
 			long.class, long.class
 		};
-	private static final Class<?>[] _getCPDefinitionIdsParameterTypes4 =
+	private static final Class<?>[] _getCPDefinitionIdsParameterTypes3 =
 		new Class[] {long.class};
 	private static final Class<?>[]
-		_getCommercePricingClassCPDefinitionRelParameterTypes5 = new Class[] {
+		_getCommercePricingClassCPDefinitionRelParameterTypes4 = new Class[] {
 			long.class
 		};
 	private static final Class<?>[]
-		_getCommercePricingClassCPDefinitionRelByClassIdParameterTypes6 =
+		_getCommercePricingClassCPDefinitionRelByClassIdParameterTypes5 =
 			new Class[] {long.class};
 	private static final Class<?>[]
-		_getCommercePricingClassCPDefinitionRelsParameterTypes7 = new Class[] {
+		_getCommercePricingClassCPDefinitionRelsParameterTypes6 = new Class[] {
 			long.class, int.class, int.class,
 			com.liferay.portal.kernel.util.OrderByComparator.class
 		};
 	private static final Class<?>[]
-		_getCommercePricingClassCPDefinitionRelsCountParameterTypes8 =
+		_getCommercePricingClassCPDefinitionRelsCountParameterTypes7 =
 			new Class[] {long.class};
 	private static final Class<?>[]
-		_getCommercePricingClassCPDefinitionRelsCountParameterTypes9 =
+		_getCommercePricingClassCPDefinitionRelsCountParameterTypes8 =
 			new Class[] {long.class, String.class, String.class};
 	private static final Class<?>[]
-		_searchByCommercePricingClassIdParameterTypes10 = new Class[] {
+		_searchByCommercePricingClassIdParameterTypes9 = new Class[] {
 			long.class, String.class, String.class, int.class, int.class
 		};
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2113053970
+// LIFERAY-SERVICE-BUILDER-HASH:773693815

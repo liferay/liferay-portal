@@ -75,15 +75,6 @@ public class CPConfigurationListServiceWrapper
 
 	@Override
 	public CPConfigurationList deleteCPConfigurationList(
-			CPConfigurationList cpConfigurationList)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _cpConfigurationListService.deleteCPConfigurationList(
-			cpConfigurationList);
-	}
-
-	@Override
-	public CPConfigurationList deleteCPConfigurationList(
 			long cpConfigurationListId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
@@ -201,4 +192,4 @@ public class CPConfigurationListServiceWrapper
 	private CPConfigurationListService _cpConfigurationListService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-248522156
+// LIFERAY-SERVICE-BUILDER-HASH:131662774

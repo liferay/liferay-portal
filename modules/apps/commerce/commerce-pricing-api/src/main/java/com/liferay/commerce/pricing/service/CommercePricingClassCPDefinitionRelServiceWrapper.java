@@ -46,18 +46,6 @@ public class CommercePricingClassCPDefinitionRelServiceWrapper
 	@Override
 	public CommercePricingClassCPDefinitionRel
 			deleteCommercePricingClassCPDefinitionRel(
-				CommercePricingClassCPDefinitionRel
-					commercePricingClassCPDefinitionRel)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _commercePricingClassCPDefinitionRelService.
-			deleteCommercePricingClassCPDefinitionRel(
-				commercePricingClassCPDefinitionRel);
-	}
-
-	@Override
-	public CommercePricingClassCPDefinitionRel
-			deleteCommercePricingClassCPDefinitionRel(
 				long commercePricingClassCPDefinitionRelId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
@@ -180,4 +168,4 @@ public class CommercePricingClassCPDefinitionRelServiceWrapper
 		_commercePricingClassCPDefinitionRelService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1484674845
+// LIFERAY-SERVICE-BUILDER-HASH:261191446

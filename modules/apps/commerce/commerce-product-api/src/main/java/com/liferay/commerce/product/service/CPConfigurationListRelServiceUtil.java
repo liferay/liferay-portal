@@ -40,14 +40,6 @@ public class CPConfigurationListRelServiceUtil {
 	}
 
 	public static CPConfigurationListRel deleteCPConfigurationListRel(
-			CPConfigurationListRel cpConfigurationListRel)
-		throws PortalException {
-
-		return getService().deleteCPConfigurationListRel(
-			cpConfigurationListRel);
-	}
-
-	public static CPConfigurationListRel deleteCPConfigurationListRel(
 			long cpConfigurationListRelId)
 		throws PortalException {
 
@@ -203,4 +195,4 @@ public class CPConfigurationListRelServiceUtil {
 			CPConfigurationListRelService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1990279094
+// LIFERAY-SERVICE-BUILDER-HASH:2001387440

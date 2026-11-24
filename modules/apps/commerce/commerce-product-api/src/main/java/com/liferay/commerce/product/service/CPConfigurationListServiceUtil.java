@@ -73,13 +73,6 @@ public class CPConfigurationListServiceUtil {
 	}
 
 	public static CPConfigurationList deleteCPConfigurationList(
-			CPConfigurationList cpConfigurationList)
-		throws PortalException {
-
-		return getService().deleteCPConfigurationList(cpConfigurationList);
-	}
-
-	public static CPConfigurationList deleteCPConfigurationList(
 			long cpConfigurationListId)
 		throws PortalException {
 
@@ -180,4 +173,4 @@ public class CPConfigurationListServiceUtil {
 			CPConfigurationListService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:716397640
+// LIFERAY-SERVICE-BUILDER-HASH:-42204578
