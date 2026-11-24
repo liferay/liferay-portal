@@ -10,7 +10,7 @@ import com.liferay.asset.kernel.service.AssetEntryLocalService;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.search.similar.results.web.internal.contributor.SimilarResultsContributor;
-import com.liferay.portal.search.similar.results.web.internal.helper.HttpHelperUtil;
+import com.liferay.portal.search.similar.results.web.internal.util.URLParameterUtil;
 import com.liferay.portal.search.similar.results.web.spi.contributor.helper.CriteriaBuilder;
 import com.liferay.portal.search.similar.results.web.spi.contributor.helper.CriteriaHelper;
 import com.liferay.portal.search.similar.results.web.spi.contributor.helper.DestinationBuilder;
@@ -40,7 +40,7 @@ public class EntryIdSimilarResultsContributor
 		routeBuilder.addAttribute(
 			ENTRY_ID,
 			Long.valueOf(
-				HttpHelperUtil.getPortletIdParameter(
+				URLParameterUtil.getPortletIdParameter(
 					HttpComponentsUtil.decodePath(routeHelper.getURLString()),
 					ENTRY_ID)));
 	}

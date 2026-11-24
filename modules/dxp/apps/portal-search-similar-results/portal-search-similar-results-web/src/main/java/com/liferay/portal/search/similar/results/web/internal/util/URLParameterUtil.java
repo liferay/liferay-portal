@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.portal.search.similar.results.web.internal.helper;
+package com.liferay.portal.search.similar.results.web.internal.util;
 
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
@@ -21,7 +21,7 @@ import java.util.Map;
  * @author Wade Cao
  * @author André de Oliveira
  */
-public class HttpHelperUtil {
+public class URLParameterUtil {
 
 	public static String[] getFriendlyURLParameters(String urlString) {
 		try {
@@ -71,6 +71,7 @@ public class HttpHelperUtil {
 		}
 	}
 
-	private static final Log _log = LogFactoryUtil.getLog(HttpHelperUtil.class);
+	private static final Log _log = LogFactoryUtil.getLog(
+		URLParameterUtil.class);
 
 }

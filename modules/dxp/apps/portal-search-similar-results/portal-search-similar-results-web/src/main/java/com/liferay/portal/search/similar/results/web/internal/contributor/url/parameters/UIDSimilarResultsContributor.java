@@ -7,7 +7,7 @@ package com.liferay.portal.search.similar.results.web.internal.contributor.url.p
 
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.search.similar.results.web.internal.contributor.SimilarResultsContributor;
-import com.liferay.portal.search.similar.results.web.internal.helper.HttpHelperUtil;
+import com.liferay.portal.search.similar.results.web.internal.util.URLParameterUtil;
 import com.liferay.portal.search.similar.results.web.spi.contributor.helper.CriteriaBuilder;
 import com.liferay.portal.search.similar.results.web.spi.contributor.helper.CriteriaHelper;
 import com.liferay.portal.search.similar.results.web.spi.contributor.helper.DestinationBuilder;
@@ -30,7 +30,7 @@ public class UIDSimilarResultsContributor implements SimilarResultsContributor {
 		routeBuilder.addAttribute(
 			UID,
 			Objects.requireNonNull(
-				HttpHelperUtil.getPortletIdParameter(
+				URLParameterUtil.getPortletIdParameter(
 					HttpComponentsUtil.decodePath(routeHelper.getURLString()),
 					UID)));
 	}

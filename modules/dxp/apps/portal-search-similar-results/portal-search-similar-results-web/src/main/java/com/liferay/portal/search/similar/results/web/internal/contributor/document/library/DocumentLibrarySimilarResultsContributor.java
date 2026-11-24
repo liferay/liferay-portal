@@ -17,8 +17,8 @@ import com.liferay.portal.kernel.repository.model.Folder;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.search.similar.results.web.internal.contributor.SimilarResultsContributor;
-import com.liferay.portal.search.similar.results.web.internal.helper.HttpHelperUtil;
 import com.liferay.portal.search.similar.results.web.internal.util.SearchStringUtil;
+import com.liferay.portal.search.similar.results.web.internal.util.URLParameterUtil;
 import com.liferay.portal.search.similar.results.web.spi.contributor.helper.CriteriaBuilder;
 import com.liferay.portal.search.similar.results.web.spi.contributor.helper.CriteriaHelper;
 import com.liferay.portal.search.similar.results.web.spi.contributor.helper.DestinationBuilder;
@@ -50,7 +50,7 @@ public class DocumentLibrarySimilarResultsContributor
 	public void detectRoute(
 		RouteBuilder routeBuilder, RouteHelper routeHelper) {
 
-		String[] parameters = HttpHelperUtil.getFriendlyURLParameters(
+		String[] parameters = URLParameterUtil.getFriendlyURLParameters(
 			HttpComponentsUtil.decodePath(routeHelper.getURLString()));
 
 		SearchStringUtil.requireEquals("document_library", parameters[0]);
