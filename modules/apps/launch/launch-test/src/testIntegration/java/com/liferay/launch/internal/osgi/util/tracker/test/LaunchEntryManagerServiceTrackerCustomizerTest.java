@@ -131,18 +131,18 @@ public class LaunchEntryManagerServiceTrackerCustomizerTest {
 			String className, long classPK)
 		throws Exception {
 
-		LaunchEntryManager launchEntryManager =
-			_launchEntryManagerRegistry.getLaunchEntryManager(className);
-
-		LaunchEntryManager.Version publishedVersion =
-			launchEntryManager.fetchPublishedVersion(classPK);
-
 		ObjectEntry launchSetObjectEntry = _addObjectEntry(
 			"LaunchSet",
 			HashMapBuilder.<String, Serializable>put(
 				"name", RandomTestUtil.randomString()
 			).build(),
 			WorkflowConstants.ACTION_SAVE_DRAFT);
+
+		LaunchEntryManager launchEntryManager =
+			_launchEntryManagerRegistry.getLaunchEntryManager(className);
+
+		LaunchEntryManager.Version publishedVersion =
+			launchEntryManager.fetchPublishedVersion(classPK);
 
 		return _addObjectEntry(
 			"LaunchEntry",

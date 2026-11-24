@@ -98,19 +98,19 @@ public class LaunchEntryManagerServiceTrackerCustomizer
 			return;
 		}
 
-		long objectDefinitionId = objectDefinition.getObjectDefinitionId();
-
 		Group companyGroup = _groupLocalService.getCompanyGroup(companyId);
 		Predicate predicate = LaunchUtil.getEqualsPredicate(
-			"className", objectDefinitionId, className);
+			"className", objectDefinition.getObjectDefinitionId(), className);
 
 		for (long objectEntryId :
 				_objectEntryLocalService.getPrimaryKeys(
 					new Long[] {companyGroup.getGroupId()}, companyId,
-					objectDefinition.getUserId(), objectDefinitionId,
+					objectDefinition.getUserId(),
+					objectDefinition.getObjectDefinitionId(),
 					predicate.and(
 						LaunchUtil.getEqualsPredicate(
-							"classPK", objectDefinitionId, classPK)),
+							"classPK", objectDefinition.getObjectDefinitionId(),
+							classPK)),
 					false, null, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 
 			_objectEntryLocalService.deleteObjectEntry(objectEntryId);
