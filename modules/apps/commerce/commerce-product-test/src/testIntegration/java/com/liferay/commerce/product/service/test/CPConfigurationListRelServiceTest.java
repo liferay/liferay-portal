@@ -115,9 +115,6 @@ public class CPConfigurationListRelServiceTest {
 	private CPConfigurationListRel _addCPConfigurationListRel(long groupId)
 		throws Exception {
 
-		AccountGroup accountGroup =
-			CommerceAccountGroupTestUtil.addAccountGroup(groupId);
-
 		Calendar calendar = CalendarFactoryUtil.getCalendar();
 
 		CPConfigurationList cpConfigurationList =
@@ -129,6 +126,9 @@ public class CPConfigurationListRelServiceTest {
 				calendar.get(Calendar.HOUR_OF_DAY),
 				calendar.get(Calendar.MINUTE), 0, 0, 0, 0, 0, true,
 				ServiceContextTestUtil.getServiceContext(groupId));
+
+		AccountGroup accountGroup =
+			CommerceAccountGroupTestUtil.addAccountGroup(groupId);
 
 		return _cpConfigurationListRelLocalService.addCPConfigurationListRel(
 			TestPropsValues.getUserId(), AccountGroup.class.getName(),
