@@ -22,7 +22,6 @@ import com.liferay.frontend.js.loader.modules.extender.npm.ModuleNameUtil;
 import com.liferay.frontend.js.loader.modules.extender.npm.NPMJavaScriptLastModifiedUtil;
 import com.liferay.frontend.js.loader.modules.extender.npm.NPMRegistry;
 import com.liferay.frontend.js.loader.modules.extender.npm.NPMRegistryUpdate;
-import com.liferay.frontend.js.loader.modules.extender.npm.NPMRegistryUpdatesListener;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerList;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerListFactory;
 import com.liferay.petra.concurrent.DCLSingleton;
@@ -90,7 +89,7 @@ public class NPMRegistryImpl implements NPMRegistry {
 	public void finishUpdate() {
 		_setDataBagSupplier(() -> _createDataBag(null));
 
-		_notifyNPMRegistryUpdatesListeners();
+		JSLoaderModulesUtil.updateETag();
 	}
 
 	@Override
@@ -345,10 +344,6 @@ public class NPMRegistryImpl implements NPMRegistry {
 
 	@Deactivate
 	protected void deactivate() {
-		if (_npmRegistryUpdatesListeners != null) {
-			_npmRegistryUpdatesListeners.close();
-		}
-
 		_serviceTrackerList.close();
 
 		_activation.set(Boolean.TRUE);
@@ -433,17 +428,6 @@ public class NPMRegistryImpl implements NPMRegistry {
 		return _dataBagDCLSingleton.getSingleton(_dataBagSupplier);
 	}
 
-	private ServiceTrackerList<NPMRegistryUpdatesListener>
-		_getNPMRegistryUpdatesListeners() {
-
-		if (_npmRegistryUpdatesListeners == null) {
-			_npmRegistryUpdatesListeners = ServiceTrackerListFactory.open(
-				_bundleContext, NPMRegistryUpdatesListener.class);
-		}
-
-		return _npmRegistryUpdatesListeners;
-	}
-
 	private JSONObject _getPackageJSONObject(Bundle bundle) {
 		try {
 			URL url = bundle.getEntry("package.json");
@@ -460,16 +444,6 @@ public class NPMRegistryImpl implements NPMRegistry {
 			}
 
 			return null;
-		}
-	}
-
-	private void _notifyNPMRegistryUpdatesListeners() {
-		JSLoaderModulesUtil.updateETag();
-
-		for (NPMRegistryUpdatesListener npmRegistryUpdatesListener :
-				_getNPMRegistryUpdatesListeners()) {
-
-			npmRegistryUpdatesListener.onAfterUpdate();
 		}
 	}
 
@@ -571,8 +545,6 @@ public class NPMRegistryImpl implements NPMRegistry {
 	@Reference
 	private JSONFactory _jsonFactory;
 
-	private ServiceTrackerList<NPMRegistryUpdatesListener>
-		_npmRegistryUpdatesListeners;
 	private volatile ServiceTrackerList<JSConfigGeneratorPackage>
 		_serviceTrackerList;
 
@@ -644,7 +616,7 @@ public class NPMRegistryImpl implements NPMRegistry {
 
 				_setDataBagSupplier(() -> _createDataBag(jsBundles));
 
-				_notifyNPMRegistryUpdatesListeners();
+				JSLoaderModulesUtil.updateETag();
 
 				NPMJavaScriptLastModifiedUtil.updateLastModified(
 					bundle.getLastModified());
@@ -665,7 +637,7 @@ public class NPMRegistryImpl implements NPMRegistry {
 			if (!_activation.get()) {
 				_setDataBagSupplier(() -> _createDataBag(null));
 
-				_notifyNPMRegistryUpdatesListeners();
+				JSLoaderModulesUtil.updateETag();
 			}
 		}
 
