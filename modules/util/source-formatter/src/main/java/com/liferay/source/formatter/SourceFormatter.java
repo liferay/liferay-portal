@@ -1439,7 +1439,7 @@ public class SourceFormatter {
 		String portalDirName =
 			SourceUtil.getAbsolutePath(portalDir.getPath()) + StringPool.SLASH;
 
-		List<String> prohibitedFileNames = new ArrayList<>();
+		List<String> prohibitedFilePaths = new ArrayList<>();
 
 		for (String fileName :
 				GitUtil.getCurrentBranchFileNames(
@@ -1467,10 +1467,10 @@ public class SourceFormatter {
 				continue;
 			}
 
-			prohibitedFileNames.add(relativePath);
+			prohibitedFilePaths.add(relativePath);
 		}
 
-		if (prohibitedFileNames.isEmpty()) {
+		if (prohibitedFilePaths.isEmpty()) {
 			return;
 		}
 
@@ -1481,19 +1481,20 @@ public class SourceFormatter {
 				gitWorkingBranchName, "-private", StringPool.BLANK);
 		}
 
-		int prohibitedFilesCount = prohibitedFileNames.size();
+		int prohibitedFilePathsCount = prohibitedFilePaths.size();
 
-		StringBundler sb = new StringBundler((prohibitedFilesCount * 8) + 3);
+		StringBundler sb = new StringBundler(
+			(prohibitedFilePathsCount * 8) + 3);
 
 		sb.append("Found ");
-		sb.append(prohibitedFilesCount);
+		sb.append(prohibitedFilePathsCount);
 		sb.append(" formatting issues:");
 
-		for (int i = 0; i < prohibitedFilesCount; i++) {
+		for (int i = 0; i < prohibitedFilePathsCount; i++) {
 			sb.append("\n");
 			sb.append(i + 1);
 			sb.append(": ./");
-			sb.append(prohibitedFileNames.get(i));
+			sb.append(prohibitedFilePaths.get(i));
 			sb.append(" is not allowed in ");
 			sb.append(gitWorkingBranchName);
 			sb.append(", please submit it to ");
