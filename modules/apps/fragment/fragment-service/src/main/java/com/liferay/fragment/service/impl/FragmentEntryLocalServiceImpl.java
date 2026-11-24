@@ -347,29 +347,8 @@ public class FragmentEntryLocalServiceImpl
 		_fragmentEntryLinkLocalService.deleteFragmentEntryLinksByFragmentEntry(
 			fragmentEntry, true);
 
-		if (fragmentEntry.getPreviewFileEntryId() > 0) {
-			boolean deletePreviewFileEntry = true;
-
-			if (fragmentEntry.isDraft() &&
-				(fragmentEntry.getHeadId() !=
-					fragmentEntry.getFragmentEntryId())) {
-
-				FragmentEntry publishedFragmentEntry = fetchFragmentEntry(
-					fragmentEntry.getHeadId());
-
-				if ((publishedFragmentEntry != null) &&
-					(fragmentEntry.getPreviewFileEntryId() ==
-						publishedFragmentEntry.getPreviewFileEntryId())) {
-
-					deletePreviewFileEntry = false;
-				}
-			}
-
-			if (deletePreviewFileEntry) {
-				PortletFileRepositoryUtil.deletePortletFileEntry(
-					fragmentEntry.getPreviewFileEntryId());
-			}
-		}
+		_deletePreviewFileEntry(
+			fragmentEntry, fragmentEntry.getPreviewFileEntryId());
 
 		if (fragmentEntry.isDraft()) {
 			return deleteDraft(fragmentEntry);
@@ -812,9 +791,8 @@ public class FragmentEntryLocalServiceImpl
 
 		fragmentEntry = fragmentEntryPersistence.update(fragmentEntry);
 
-		if ((previewFileEntryId == 0) && (previousPreviewFileEntryId > 0)) {
-			_portletFileRepository.deletePortletFileEntry(
-				previousPreviewFileEntryId);
+		if (previewFileEntryId == 0) {
+			_deletePreviewFileEntry(fragmentEntry, previousPreviewFileEntryId);
 		}
 
 		return fragmentEntry;
@@ -1058,6 +1036,31 @@ public class FragmentEntryLocalServiceImpl
 
 			deleteVersion(fragmentEntryVersions.get(i));
 		}
+	}
+
+	private void _deletePreviewFileEntry(
+			FragmentEntry fragmentEntry, long previewFileEntryId)
+		throws PortalException {
+
+		if (previewFileEntryId <= 0) {
+			return;
+		}
+
+		if (fragmentEntry.isDraft() &&
+			(fragmentEntry.getHeadId() != fragmentEntry.getFragmentEntryId())) {
+
+			FragmentEntry publishedFragmentEntry = fetchFragmentEntry(
+				fragmentEntry.getHeadId());
+
+			if ((publishedFragmentEntry != null) &&
+				(previewFileEntryId ==
+					publishedFragmentEntry.getPreviewFileEntryId())) {
+
+				return;
+			}
+		}
+
+		_portletFileRepository.deletePortletFileEntry(previewFileEntryId);
 	}
 
 	private DepotEntry _fetchGroupDepotEntry(Group group) {
