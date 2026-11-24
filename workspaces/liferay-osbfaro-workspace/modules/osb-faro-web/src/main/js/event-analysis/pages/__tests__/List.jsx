@@ -163,12 +163,13 @@ describe('Event Analysis List - Feature Limits', () => {
 
 		mockUseDataSource.useDataSources = jest.fn(() => mockSuccessState);
 
-		const {getByText} = render(
+		const {getByRole} = render(
 			<WrappedComponent eventAnalyses={eventAnalysis} />
 		);
 
-		const createButton = getByText(/^create analysis$/i).closest('a');
-		expect(createButton).not.toHaveClass('disabled');
+		expect(
+			getByRole('link', {name: /^create analysis$/i})
+		).not.toHaveAttribute('aria-disabled');
 	});
 
 	it('should disable the create button and show alert icon when limit IS reached', async () => {
@@ -185,12 +186,13 @@ describe('Event Analysis List - Feature Limits', () => {
 		);
 		mockUseDataSource.useDataSources = jest.fn(() => mockSuccessState);
 
-		const {container, getByText} = render(
+		const {container, getByRole} = render(
 			<WrappedComponent eventAnalyses={eventAnalysis} />
 		);
 
-		const createButton = getByText(/^create analysis$/i).closest('a');
-		expect(createButton).toHaveClass('disabled');
+		expect(
+			getByRole('link', {name: /^create analysis$/i})
+		).toHaveAttribute('aria-disabled', 'true');
 
 		expect(
 			container.querySelector('.lexicon-icon-exclamation-full')
@@ -212,11 +214,12 @@ describe('Event Analysis List - Feature Limits', () => {
 
 		mockUseDataSource.useDataSources = jest.fn(() => mockSuccessState);
 
-		const {getByText} = render(
+		const {getByRole} = render(
 			<WrappedComponent eventAnalyses={eventAnalysis} />
 		);
 
-		const createButton = getByText(/^create analysis$/i).closest('a');
-		expect(createButton).not.toHaveClass('disabled');
+		expect(
+			getByRole('link', {name: /^create analysis$/i})
+		).not.toHaveAttribute('aria-disabled');
 	});
 });

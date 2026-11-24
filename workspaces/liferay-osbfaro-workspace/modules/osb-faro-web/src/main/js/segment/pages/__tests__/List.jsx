@@ -84,13 +84,12 @@ describe('List', () => {
 			jest.runAllTimers();
 		});
 
-		const batchOption = screen.getByTestId('batch-segment-dropdown-item');
-		expect(batchOption.closest('a')).not.toHaveClass('disabled');
-
-		const realTimeOption = screen.getByTestId(
-			'real-time-segment-dropdown-item'
-		);
-		expect(realTimeOption.closest('a')).not.toHaveClass('disabled');
+		expect(
+			screen.getByTestId('batch-segment-dropdown-item')
+		).not.toHaveAttribute('disabled');
+		expect(
+			screen.getByTestId('real-time-segment-dropdown-item')
+		).not.toHaveAttribute('disabled');
 
 		expect(
 			screen.getByText(/^new segment$/i).closest('button')
