@@ -53,6 +53,13 @@ public interface AccountResource {
 			com.liferay.portal.kernel.search.Sort[] sorts)
 		throws Exception;
 
+	public Page<Account> getWorkspaceGroupChannelCampaignAccountsPage(
+			Long groupId, String channelId, String campaignId, String rangeEnd,
+			String rangeKey, String rangeStart, String search,
+			Pagination pagination,
+			com.liferay.portal.kernel.search.Sort[] sorts)
+		throws Exception;
+
 	public default void setContextAcceptLanguage(
 		AcceptLanguage contextAcceptLanguage) {
 	}
@@ -141,4 +148,4 @@ public interface AccountResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1356054151
+// LIFERAY-REST-BUILDER-HASH:782950223

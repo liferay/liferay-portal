@@ -91,6 +91,10 @@ public class OpenAPIResourceImpl {
 
 			add(AssetSummaryMetricResourceImpl.class);
 
+			add(CampaignResourceImpl.class);
+
+			add(CampaignMetricResourceImpl.class);
+
 			add(ChannelResourceImpl.class);
 
 			add(EventResourceImpl.class);
@@ -120,4 +124,4 @@ public class OpenAPIResourceImpl {
 	};
 
 }
-// LIFERAY-REST-BUILDER-HASH:1866428610
+// LIFERAY-REST-BUILDER-HASH:1279931058

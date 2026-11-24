@@ -560,6 +560,388 @@ public abstract class BaseAccountResourceTestCase {
 		return null;
 	}
 
+	@Test
+	public void testGetWorkspaceGroupChannelCampaignAccountsPage()
+		throws Exception {
+
+		Long groupId =
+			testGetWorkspaceGroupChannelCampaignAccountsPage_getGroupId();
+		Long irrelevantGroupId =
+			testGetWorkspaceGroupChannelCampaignAccountsPage_getIrrelevantGroupId();
+		String channelId =
+			testGetWorkspaceGroupChannelCampaignAccountsPage_getChannelId();
+		String irrelevantChannelId =
+			testGetWorkspaceGroupChannelCampaignAccountsPage_getIrrelevantChannelId();
+		String campaignId =
+			testGetWorkspaceGroupChannelCampaignAccountsPage_getCampaignId();
+		String irrelevantCampaignId =
+			testGetWorkspaceGroupChannelCampaignAccountsPage_getIrrelevantCampaignId();
+
+		Page<Account> page =
+			accountResource.getWorkspaceGroupChannelCampaignAccountsPage(
+				groupId, channelId, campaignId, RandomTestUtil.randomString(),
+				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+				null, Pagination.of(1, 10), null);
+
+		long totalCount = page.getTotalCount();
+
+		if ((irrelevantGroupId != null) && (irrelevantChannelId != null) &&
+			(irrelevantCampaignId != null)) {
+
+			Account irrelevantAccount =
+				testGetWorkspaceGroupChannelCampaignAccountsPage_addAccount(
+					irrelevantGroupId, irrelevantChannelId,
+					irrelevantCampaignId, randomIrrelevantAccount());
+
+			page = accountResource.getWorkspaceGroupChannelCampaignAccountsPage(
+				irrelevantGroupId, irrelevantChannelId, irrelevantCampaignId,
+				null, null, null, null, Pagination.of(1, (int)totalCount + 1),
+				null);
+
+			Assert.assertEquals(totalCount + 1, page.getTotalCount());
+
+			assertContains(irrelevantAccount, (List<Account>)page.getItems());
+			assertValid(
+				page,
+				testGetWorkspaceGroupChannelCampaignAccountsPage_getExpectedActions(
+					irrelevantGroupId, irrelevantChannelId,
+					irrelevantCampaignId));
+		}
+
+		Account account1 =
+			testGetWorkspaceGroupChannelCampaignAccountsPage_addAccount(
+				groupId, channelId, campaignId, randomAccount());
+
+		Account account2 =
+			testGetWorkspaceGroupChannelCampaignAccountsPage_addAccount(
+				groupId, channelId, campaignId, randomAccount());
+
+		page = accountResource.getWorkspaceGroupChannelCampaignAccountsPage(
+			groupId, channelId, campaignId, null, null, null, null,
+			Pagination.of(1, (int)totalCount + 2), null);
+
+		Assert.assertEquals(totalCount + 2, page.getTotalCount());
+
+		assertContains(account1, (List<Account>)page.getItems());
+		assertContains(account2, (List<Account>)page.getItems());
+		assertValid(
+			page,
+			testGetWorkspaceGroupChannelCampaignAccountsPage_getExpectedActions(
+				groupId, channelId, campaignId));
+	}
+
+	protected Map<String, Map<String, String>>
+			testGetWorkspaceGroupChannelCampaignAccountsPage_getExpectedActions(
+				Long groupId, String channelId, String campaignId)
+		throws Exception {
+
+		Map<String, Map<String, String>> expectedActions = new HashMap<>();
+
+		return expectedActions;
+	}
+
+	@Test
+	public void testGetWorkspaceGroupChannelCampaignAccountsPageWithPagination()
+		throws Exception {
+
+		Long groupId =
+			testGetWorkspaceGroupChannelCampaignAccountsPage_getGroupId();
+		String channelId =
+			testGetWorkspaceGroupChannelCampaignAccountsPage_getChannelId();
+		String campaignId =
+			testGetWorkspaceGroupChannelCampaignAccountsPage_getCampaignId();
+
+		Page<Account> accountsPage =
+			accountResource.getWorkspaceGroupChannelCampaignAccountsPage(
+				groupId, channelId, campaignId, null, null, null, null, null,
+				null);
+
+		int totalCount = GetterUtil.getInteger(accountsPage.getTotalCount());
+
+		Account account1 =
+			testGetWorkspaceGroupChannelCampaignAccountsPage_addAccount(
+				groupId, channelId, campaignId, randomAccount());
+
+		Account account2 =
+			testGetWorkspaceGroupChannelCampaignAccountsPage_addAccount(
+				groupId, channelId, campaignId, randomAccount());
+
+		Account account3 =
+			testGetWorkspaceGroupChannelCampaignAccountsPage_addAccount(
+				groupId, channelId, campaignId, randomAccount());
+
+		// See com.liferay.portal.vulcan.internal.configuration.HeadlessAPICompanyConfiguration#pageSizeLimit
+
+		int pageSizeLimit = 500;
+
+		if (totalCount >= (pageSizeLimit - 2)) {
+			Page<Account> page1 =
+				accountResource.getWorkspaceGroupChannelCampaignAccountsPage(
+					groupId, channelId, campaignId, null, null, null, null,
+					Pagination.of(
+						(int)Math.ceil((totalCount + 1.0) / pageSizeLimit),
+						pageSizeLimit),
+					null);
+
+			Assert.assertEquals(totalCount + 3, page1.getTotalCount());
+
+			assertContains(account1, (List<Account>)page1.getItems());
+
+			Page<Account> page2 =
+				accountResource.getWorkspaceGroupChannelCampaignAccountsPage(
+					groupId, channelId, campaignId, null, null, null, null,
+					Pagination.of(
+						(int)Math.ceil((totalCount + 2.0) / pageSizeLimit),
+						pageSizeLimit),
+					null);
+
+			assertContains(account2, (List<Account>)page2.getItems());
+
+			Page<Account> page3 =
+				accountResource.getWorkspaceGroupChannelCampaignAccountsPage(
+					groupId, channelId, campaignId, null, null, null, null,
+					Pagination.of(
+						(int)Math.ceil((totalCount + 3.0) / pageSizeLimit),
+						pageSizeLimit),
+					null);
+
+			assertContains(account3, (List<Account>)page3.getItems());
+		}
+		else {
+			Page<Account> page1 =
+				accountResource.getWorkspaceGroupChannelCampaignAccountsPage(
+					groupId, channelId, campaignId, null, null, null, null,
+					Pagination.of(1, totalCount + 2), null);
+
+			List<Account> accounts1 = (List<Account>)page1.getItems();
+
+			Assert.assertEquals(
+				accounts1.toString(), totalCount + 2, accounts1.size());
+
+			Page<Account> page2 =
+				accountResource.getWorkspaceGroupChannelCampaignAccountsPage(
+					groupId, channelId, campaignId, null, null, null, null,
+					Pagination.of(2, totalCount + 2), null);
+
+			Assert.assertEquals(totalCount + 3, page2.getTotalCount());
+
+			List<Account> accounts2 = (List<Account>)page2.getItems();
+
+			Assert.assertEquals(accounts2.toString(), 1, accounts2.size());
+
+			Page<Account> page3 =
+				accountResource.getWorkspaceGroupChannelCampaignAccountsPage(
+					groupId, channelId, campaignId, null, null, null, null,
+					Pagination.of(1, (int)totalCount + 3), null);
+
+			assertContains(account1, (List<Account>)page3.getItems());
+			assertContains(account2, (List<Account>)page3.getItems());
+			assertContains(account3, (List<Account>)page3.getItems());
+		}
+	}
+
+	@Test
+	public void testGetWorkspaceGroupChannelCampaignAccountsPageWithSortDateTime()
+		throws Exception {
+
+		testGetWorkspaceGroupChannelCampaignAccountsPageWithSort(
+			EntityField.Type.DATE_TIME,
+			(entityField, account1, account2) -> {
+				BeanTestUtil.setProperty(
+					account1, entityField.getName(),
+					new Date(System.currentTimeMillis() - (2 * Time.MINUTE)));
+			});
+	}
+
+	@Test
+	public void testGetWorkspaceGroupChannelCampaignAccountsPageWithSortDouble()
+		throws Exception {
+
+		testGetWorkspaceGroupChannelCampaignAccountsPageWithSort(
+			EntityField.Type.DOUBLE,
+			(entityField, account1, account2) -> {
+				BeanTestUtil.setProperty(account1, entityField.getName(), 0.1);
+				BeanTestUtil.setProperty(account2, entityField.getName(), 0.5);
+			});
+	}
+
+	@Test
+	public void testGetWorkspaceGroupChannelCampaignAccountsPageWithSortInteger()
+		throws Exception {
+
+		testGetWorkspaceGroupChannelCampaignAccountsPageWithSort(
+			EntityField.Type.INTEGER,
+			(entityField, account1, account2) -> {
+				BeanTestUtil.setProperty(account1, entityField.getName(), 0);
+				BeanTestUtil.setProperty(account2, entityField.getName(), 1);
+			});
+	}
+
+	@Test
+	public void testGetWorkspaceGroupChannelCampaignAccountsPageWithSortString()
+		throws Exception {
+
+		testGetWorkspaceGroupChannelCampaignAccountsPageWithSort(
+			EntityField.Type.STRING,
+			(entityField, account1, account2) -> {
+				Class<?> clazz = account1.getClass();
+
+				String entityFieldName = entityField.getName();
+
+				Method method = clazz.getMethod(
+					"get" + StringUtil.upperCaseFirstLetter(entityFieldName));
+
+				Class<?> returnType = method.getReturnType();
+
+				if (returnType.isAssignableFrom(Map.class)) {
+					BeanTestUtil.setProperty(
+						account1, entityFieldName,
+						Collections.singletonMap("Aaa", "Aaa"));
+					BeanTestUtil.setProperty(
+						account2, entityFieldName,
+						Collections.singletonMap("Bbb", "Bbb"));
+				}
+				else if (entityFieldName.contains("email")) {
+					BeanTestUtil.setProperty(
+						account1, entityFieldName,
+						"aaa" +
+							StringUtil.toLowerCase(
+								RandomTestUtil.randomString()) +
+									"@liferay.com");
+					BeanTestUtil.setProperty(
+						account2, entityFieldName,
+						"bbb" +
+							StringUtil.toLowerCase(
+								RandomTestUtil.randomString()) +
+									"@liferay.com");
+				}
+				else {
+					BeanTestUtil.setProperty(
+						account1, entityFieldName,
+						"aaa" +
+							StringUtil.toLowerCase(
+								RandomTestUtil.randomString()));
+					BeanTestUtil.setProperty(
+						account2, entityFieldName,
+						"bbb" +
+							StringUtil.toLowerCase(
+								RandomTestUtil.randomString()));
+				}
+			});
+	}
+
+	protected void testGetWorkspaceGroupChannelCampaignAccountsPageWithSort(
+			EntityField.Type type,
+			UnsafeTriConsumer<EntityField, Account, Account, Exception>
+				unsafeTriConsumer)
+		throws Exception {
+
+		List<EntityField> entityFields = getEntityFields(type);
+
+		if (entityFields.isEmpty()) {
+			return;
+		}
+
+		Long groupId =
+			testGetWorkspaceGroupChannelCampaignAccountsPage_getGroupId();
+		String channelId =
+			testGetWorkspaceGroupChannelCampaignAccountsPage_getChannelId();
+		String campaignId =
+			testGetWorkspaceGroupChannelCampaignAccountsPage_getCampaignId();
+
+		Account account1 = randomAccount();
+		Account account2 = randomAccount();
+
+		for (EntityField entityField : entityFields) {
+			unsafeTriConsumer.accept(entityField, account1, account2);
+		}
+
+		account1 = testGetWorkspaceGroupChannelCampaignAccountsPage_addAccount(
+			groupId, channelId, campaignId, account1);
+
+		account2 = testGetWorkspaceGroupChannelCampaignAccountsPage_addAccount(
+			groupId, channelId, campaignId, account2);
+
+		Page<Account> page =
+			accountResource.getWorkspaceGroupChannelCampaignAccountsPage(
+				groupId, channelId, campaignId, null, null, null, null, null,
+				null);
+
+		for (EntityField entityField : entityFields) {
+			Page<Account> ascPage =
+				accountResource.getWorkspaceGroupChannelCampaignAccountsPage(
+					groupId, channelId, campaignId, null, null, null, null,
+					Pagination.of(1, (int)page.getTotalCount() + 1),
+					entityField.getName() + ":asc");
+
+			assertContains(account1, (List<Account>)ascPage.getItems());
+			assertContains(account2, (List<Account>)ascPage.getItems());
+
+			Page<Account> descPage =
+				accountResource.getWorkspaceGroupChannelCampaignAccountsPage(
+					groupId, channelId, campaignId, null, null, null, null,
+					Pagination.of(1, (int)page.getTotalCount() + 1),
+					entityField.getName() + ":desc");
+
+			assertContains(account2, (List<Account>)descPage.getItems());
+			assertContains(account1, (List<Account>)descPage.getItems());
+		}
+	}
+
+	protected Account
+			testGetWorkspaceGroupChannelCampaignAccountsPage_addAccount(
+				Long groupId, String channelId, String campaignId,
+				Account account)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected Long testGetWorkspaceGroupChannelCampaignAccountsPage_getGroupId()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected Long
+			testGetWorkspaceGroupChannelCampaignAccountsPage_getIrrelevantGroupId()
+		throws Exception {
+
+		return null;
+	}
+
+	protected String
+			testGetWorkspaceGroupChannelCampaignAccountsPage_getChannelId()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected String
+			testGetWorkspaceGroupChannelCampaignAccountsPage_getIrrelevantChannelId()
+		throws Exception {
+
+		return null;
+	}
+
+	protected String
+			testGetWorkspaceGroupChannelCampaignAccountsPage_getCampaignId()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected String
+			testGetWorkspaceGroupChannelCampaignAccountsPage_getIrrelevantCampaignId()
+		throws Exception {
+
+		return null;
+	}
+
 	protected void assertContains(Account account, List<Account> accounts) {
 		boolean contains = false;
 
@@ -1805,4 +2187,4 @@ public abstract class BaseAccountResourceTestCase {
 		_accountResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-888639888
+// LIFERAY-REST-BUILDER-HASH:2055697808

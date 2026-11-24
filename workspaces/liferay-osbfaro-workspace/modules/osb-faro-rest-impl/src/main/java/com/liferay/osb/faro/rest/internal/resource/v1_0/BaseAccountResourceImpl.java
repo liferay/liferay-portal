@@ -203,6 +203,112 @@ public abstract class BaseAccountResourceImpl
 		return Page.of(Collections.emptyList());
 	}
 
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -X 'GET' 'http://localhost:8080/o/faro-rest/v1.0/workspace/{groupId}/channels/{channelId}/campaigns/{campaignId}/accounts'  -u 'test@liferay.com:test'
+	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "List or search the accounts a campaign touched in a date range. Use this to answer 'which accounts did this campaign reach' style questions. To fetch one of the accounts with more detail, use `getWorkspaceGroupAccount`. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, or pass both `rangeStart` and `rangeEnd` as `yyyy-MM-dd` dates for a custom window of at most 180 days; a custom window takes precedence over `rangeKey`. Without either, the last 30 days are used. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
+	)
+	@io.swagger.v3.oas.annotations.Parameters(
+		value = {
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "ID of the Liferay site that owns the LDP workspace.",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
+				name = "groupId", required = true
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "ID of the channel (also known as property) the campaign belongs to.",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
+				name = "channelId", required = true
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Campaign ID. Use `getWorkspaceGroupChannelCampaignsPage` to find it.",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
+				name = "campaignId", required = true
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Page number (starts at 1).",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "page"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Page size, from 1 to 100. Larger values are rejected.",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "pageSize"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Custom range end as a `yyyy-MM-dd` date (e.g. 2026-01-31). Set together with `rangeStart`; together they take precedence over `rangeKey`.",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "rangeEnd"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Date range preset for the campaign touches that select the accounts. Use one of the listed enum values. Defaults to LAST_30_DAYS. When both `rangeStart` and `rangeEnd` are set, they take precedence over `rangeKey`.",
+				example = "LAST_30_DAYS",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "rangeKey"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Custom range start as a `yyyy-MM-dd` date (e.g. 2026-01-01). Set together with `rangeEnd`; together they take precedence over `rangeKey`.",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "rangeStart"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Free text keyword search across account name and related fields. Empty or null returns all touched accounts.",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "search"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Sort expression `column:asc|desc`. Defaults to `accountName:asc` when omitted. Sortable columns: accountName, accountType, activitiesCount, annualRevenue, country, createDate, firstActivityDate, industry, lastActivityDate, modifiedDate, numberOfEmployees, state, yearStarted. Only one column is accepted.",
+				example = "accountName:asc",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "sort"
+			)
+		}
+	)
+	@io.swagger.v3.oas.annotations.tags.Tags(
+		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Account")}
+	)
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path(
+		"/workspace/{groupId}/channels/{channelId}/campaigns/{campaignId}/accounts"
+	)
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
+	@Override
+	public Page<Account> getWorkspaceGroupChannelCampaignAccountsPage(
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("groupId")
+			Long groupId,
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("channelId")
+			String channelId,
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("campaignId")
+			String campaignId,
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.ws.rs.QueryParam("rangeEnd")
+			String rangeEnd,
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.ws.rs.QueryParam("rangeKey")
+			String rangeKey,
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.ws.rs.QueryParam("rangeStart")
+			String rangeStart,
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.ws.rs.QueryParam("search")
+			String search,
+			@jakarta.ws.rs.core.Context Pagination pagination,
+			@jakarta.ws.rs.core.Context com.liferay.portal.kernel.search.Sort[]
+				sorts)
+		throws Exception {
+
+		return Page.of(Collections.emptyList());
+	}
+
 	@Override
 	public EntityModel getEntityModel(MultivaluedMap multivaluedMap)
 		throws Exception {
@@ -655,4 +761,4 @@ public abstract class BaseAccountResourceImpl
 		LogFactoryUtil.getLog(BaseAccountResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1253903621
+// LIFERAY-REST-BUILDER-HASH:-1902360343
