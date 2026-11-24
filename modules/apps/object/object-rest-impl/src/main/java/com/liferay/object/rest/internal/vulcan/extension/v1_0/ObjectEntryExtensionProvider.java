@@ -7,7 +7,6 @@ package com.liferay.object.rest.internal.vulcan.extension.v1_0;
 
 import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.constants.ObjectFieldSettingConstants;
-import com.liferay.object.constants.ObjectRelationshipConstants;
 import com.liferay.object.field.business.type.ObjectFieldBusinessType;
 import com.liferay.object.field.business.type.ObjectFieldBusinessTypeRegistry;
 import com.liferay.object.field.setting.util.ObjectFieldSettingUtil;
@@ -185,8 +184,8 @@ public class ObjectEntryExtensionProvider extends BaseObjectExtensionProvider {
 			}
 
 			if (Objects.equals(
-					objectField.getRelationshipType(),
-					ObjectRelationshipConstants.TYPE_ONE_TO_MANY)) {
+					objectField.getBusinessType(),
+					ObjectFieldConstants.BUSINESS_TYPE_RELATIONSHIP)) {
 
 				String objectRelationshipERCObjectFieldName =
 					ObjectFieldSettingUtil.getValue(
