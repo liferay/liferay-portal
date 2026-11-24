@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {expect, mergeTests} from '@playwright/test';
+import {Locator, expect, mergeTests} from '@playwright/test';
 import {createReadStream} from 'fs';
 import path from 'path';
 
@@ -533,7 +533,7 @@ approximateCountsDisabledTest.describe(
 					await expect(limitCheckbox).not.toBeChecked();
 					await expect(
 						page.getByText(
-							/Enable the .+ feature flag in Instance Settings/
+							/Enable the Limit Count Accuracy in the Search Results Widget feature flag in Instance Settings/
 						)
 					).toBeVisible();
 				});
@@ -563,7 +563,9 @@ approximateCountsDisabledTest.describe(
 					await expect(limitCheckbox).toBeDisabled();
 					await expect(limitCheckbox).not.toBeChecked();
 					await expect(
-						searchPage.modalIFrame.getByTitle(/feature flag/)
+						searchPage.modalIFrame.getByTitle(
+							/Limit Count Accuracy in the Search Results Widget feature flag/
+						)
 					).toBeVisible();
 				});
 
@@ -868,10 +870,12 @@ for (const reactPaginatorEnabled of [false, true]) {
 	const maximumSearchDepthTest = mergeTests(
 		test,
 		featureFlagsTest({
-			'LPD-64988': {enabled: true},
-			'LPD-98858': {enabled: reactPaginatorEnabled},
+			'LPD-64988': {enabled: true}, // Maximum Search Depth
+			'LPD-98858': {enabled: reactPaginatorEnabled}, // Limit Count Accuracy
 		})
 	);
+
+	const WEB_CONTENTS_COUNT = 25;
 
 	maximumSearchDepthTest.describe(
 		`Maximum Search Depth (React paginator ${reactPaginatorEnabled ? 'on' : 'off'})`,
@@ -885,7 +889,7 @@ for (const reactPaginatorEnabled of [false, true]) {
 					const basicWebContentStructureId =
 						await getBasicWebContentStructureId(apiHelpers);
 
-					for (let count = 0; count < 25; count++) {
+					for (let count = 0; count < WEB_CONTENTS_COUNT; count++) {
 						await apiHelpers.jsonWebServicesJournal.addWebContent({
 							ddmStructureId: basicWebContentStructureId,
 							groupId: site.id,
@@ -909,23 +913,41 @@ for (const reactPaginatorEnabled of [false, true]) {
 					await searchPage.addPortlet('Search Results', 'Search');
 
 					async function configureSearchResults(
-						options: {label: string; value: string}[]
+						input: Locator,
+						value: string
 					) {
 						await searchPage.openSearchPortletConfiguration(
 							'Search Results'
 						);
 
-						await searchPage.fillPortletConfigurationsInput(
-							options
-						);
+						await input.fill(value);
 
 						await searchPage.savePortletConfiguration();
 					}
 
+					// When the result count accuracy is limited, the count is exact
+					// only up to the maximum search depth.
+
+					function getSearchResultsTotal(maximumSearchDepth: number) {
+						return reactPaginatorEnabled
+							? `${maximumSearchDepth}+`
+							: String(WEB_CONTENTS_COUNT);
+					}
+
+					const maximumSearchDepthInput =
+						searchPage.modalIFrame.getByRole('spinbutton', {
+							name: 'Maximum Search Depth',
+						});
+					const paginationStartParameterInput =
+						searchPage.modalIFrame.getByRole('textbox', {
+							name: 'Pagination Start Parameter',
+						});
+
 					await test.step('Redirect a page beyond the maximum search depth to the last reachable page', async () => {
-						await configureSearchResults([
-							{label: 'Maximum Search Depth', value: '20'},
-						]);
+						await configureSearchResults(
+							maximumSearchDepthInput,
+							'20'
+						);
 
 						await page.goto(
 							`${layoutURL}?delta=5&q=${keyword}&start=6`
@@ -935,16 +957,16 @@ for (const reactPaginatorEnabled of [false, true]) {
 
 						await expect(
 							searchPage.searchResultsPaginationDescription
-						).toHaveText(/Showing 16 to 20 of 25 entries./);
+						).toHaveText(
+							`Showing 16 to 20 of ${getSearchResultsTotal(20)} entries.`
+						);
 					});
 
 					await test.step('Redirect using the widget pagination start parameter', async () => {
-						await configureSearchResults([
-							{
-								label: 'Pagination Start Parameter',
-								value: 'start1',
-							},
-						]);
+						await configureSearchResults(
+							paginationStartParameterInput,
+							'start1'
+						);
 
 						await page.goto(
 							`${layoutURL}?delta=5&q=${keyword}&start1=6`
@@ -954,13 +976,16 @@ for (const reactPaginatorEnabled of [false, true]) {
 
 						await expect(
 							searchPage.searchResultsPaginationDescription
-						).toHaveText(/Showing 16 to 20 of 25 entries./);
+						).toHaveText(
+							`Showing 16 to 20 of ${getSearchResultsTotal(20)} entries.`
+						);
 					});
 
 					await test.step('End the displayed range at the maximum search depth', async () => {
-						await configureSearchResults([
-							{label: 'Maximum Search Depth', value: '5'},
-						]);
+						await configureSearchResults(
+							maximumSearchDepthInput,
+							'5'
+						);
 
 						await page.goto(`${layoutURL}?delta=20&q=${keyword}`);
 
@@ -970,7 +995,9 @@ for (const reactPaginatorEnabled of [false, true]) {
 
 						await expect(
 							searchPage.searchResultsPaginationDescription
-						).toHaveText(/Showing 1 to 5 of 25 entries./);
+						).toHaveText(
+							`Showing 1 to 5 of ${getSearchResultsTotal(5)} entries.`
+						);
 					});
 				}
 			);
