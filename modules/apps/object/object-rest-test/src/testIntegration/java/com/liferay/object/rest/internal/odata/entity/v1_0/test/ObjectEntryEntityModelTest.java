@@ -36,6 +36,7 @@ import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.odata.entity.IdEntityField;
 import com.liferay.portal.odata.entity.IntegerEntityField;
 import com.liferay.portal.odata.entity.StringEntityField;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.vulcan.resource.EntityModelResource;
@@ -86,6 +87,7 @@ public class ObjectEntryEntityModelTest {
 		_serviceTrackerMap.close();
 	}
 
+	@FeatureFlag("LPD-108620")
 	@Test
 	public void testGetEntityFieldsMap() throws Exception {
 		String value = ObjectDefinitionTestUtil.getRandomName();
@@ -116,6 +118,9 @@ public class ObjectEntryEntityModelTest {
 		ObjectRelationship oneToManyObjectRelationship = _addObjectRelationship(
 			objectDefinition, relatedObjectDefinition,
 			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+		ObjectRelationship oneToOneObjectRelationship = _addObjectRelationship(
+			objectDefinition, relatedObjectDefinition,
+			ObjectRelationshipConstants.TYPE_ONE_TO_ONE);
 
 		_assertEquals(
 			HashMapBuilder.<String, EntityField>put(
@@ -175,6 +180,9 @@ public class ObjectEntryEntityModelTest {
 			).putAll(
 				_getExpectedRelationshipFieldsEntityFieldsMap(
 					oneToManyObjectRelationship, relatedObjectDefinition)
+			).putAll(
+				_getExpectedRelationshipFieldsEntityFieldsMap(
+					oneToOneObjectRelationship, relatedObjectDefinition)
 			).build(),
 			_getObjectDefinitionEntityFieldsMap(objectDefinition));
 	}
@@ -263,10 +271,7 @@ public class ObjectEntryEntityModelTest {
 				new ComplexEntityField(
 					objectRelationship.getName(), Collections.emptyList()));
 		}
-		else if (StringUtil.equals(
-					objectRelationship.getType(),
-					ObjectRelationshipConstants.TYPE_ONE_TO_MANY)) {
-
+		else if (objectRelationship.hasRelationshipObjectField()) {
 			if (objectRelationship.getObjectDefinitionId1() ==
 					relatedObjectDefinition.getObjectDefinitionId()) {
 
