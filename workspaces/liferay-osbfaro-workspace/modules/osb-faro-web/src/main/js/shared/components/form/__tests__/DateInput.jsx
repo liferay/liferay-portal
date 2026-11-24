@@ -46,12 +46,10 @@ describe('DateInput', () => {
 	});
 
 	it('should render as required', () => {
-		const {queryByText} = render(
+		const {getByLabelText} = render(
 			<DefaultComponent label={labelContent} required />
 		);
 
-		expect(queryByText(labelContent).closest('label')).toHaveClass(
-			'required'
-		);
+		expect(getByLabelText(labelContent, {exact: false})).toBeRequired();
 	});
 });

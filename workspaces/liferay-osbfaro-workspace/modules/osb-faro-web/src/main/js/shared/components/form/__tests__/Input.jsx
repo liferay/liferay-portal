@@ -84,7 +84,7 @@ describe('Input', () => {
 	});
 
 	it('should render a required input', async () => {
-		const {container, queryByText} = render(
+		const {container, getByLabelText} = render(
 			<Provider store={mockStore()}>
 				<MemoryRouter>
 					
@@ -104,8 +104,6 @@ describe('Input', () => {
 
 		await waitForLoadingToBeRemoved(container);
 
-		expect(queryByText('Input label').closest('label')).toHaveClass(
-			'required'
-		);
+		expect(getByLabelText('Input label', {exact: false})).toBeRequired();
 	});
 });
