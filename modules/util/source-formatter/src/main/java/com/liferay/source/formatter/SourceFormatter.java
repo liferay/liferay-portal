@@ -1440,11 +1440,8 @@ public class SourceFormatter {
 		List<PathMatcher> sharedPathMatchers = _getPathMatchers(
 			sharedFilePaths);
 
-		Path portalPath = portalDir.toPath();
-
-		portalPath = portalPath.toAbsolutePath();
-
-		portalPath = portalPath.normalize();
+		String portalDirName =
+			SourceUtil.getAbsolutePath(portalDir.getPath()) + StringPool.SLASH;
 
 		List<String> prohibitedFileNames = new ArrayList<>();
 
@@ -1453,12 +1450,13 @@ public class SourceFormatter {
 					_sourceFormatterArgs.getBaseDirName(),
 					gitWorkingBranchName)) {
 
-			Path path = Paths.get(
+			String absolutePath = SourceUtil.getAbsolutePath(
 				_sourceFormatterArgs.getBaseDirName() + fileName);
 
-			path = path.toAbsolutePath();
+			String relativePath = absolutePath.substring(
+				portalDirName.length());
 
-			path = portalPath.relativize(path.normalize());
+			Path path = Paths.get(relativePath);
 
 			if (_isMatchingPath(path, sharedPathMatchers)) {
 				continue;
@@ -1473,9 +1471,7 @@ public class SourceFormatter {
 				continue;
 			}
 
-			prohibitedFileNames.add(
-				StringUtil.replace(
-					path.toString(), CharPool.BACK_SLASH, CharPool.SLASH));
+			prohibitedFileNames.add(relativePath);
 		}
 
 		if (prohibitedFileNames.isEmpty()) {
