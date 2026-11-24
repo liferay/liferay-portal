@@ -621,21 +621,22 @@ public class AttachmentObjectFieldBusinessType
 			FileVersion fileVersion, Locale locale, ObjectField objectField)
 		throws Exception {
 
-		List<DLFileEntryMetadata> dlFileEntryMetadatas =
-			_dlFileEntryMetadataLocalService.getFileVersionFileEntryMetadatas(
-				fileVersion.getFileVersionId());
-
-		long tiffImageLength = _getDDMFormFieldsValueValue(
-			dlFileEntryMetadatas, "TIFF_IMAGE_LENGTH");
-		long tiffImageWidth = _getDDMFormFieldsValueValue(
-			dlFileEntryMetadatas, "TIFF_IMAGE_WIDTH");
-
 		return NestedFieldsSupplier.supply(
 			objectField.getName() + ".metadata",
 			fieldName -> {
 				if (fileVersion.getSize() == 0) {
 					return null;
 				}
+
+				List<DLFileEntryMetadata> dlFileEntryMetadatas =
+					_dlFileEntryMetadataLocalService.
+						getFileVersionFileEntryMetadatas(
+							fileVersion.getFileVersionId());
+
+				long tiffImageLength = _getDDMFormFieldsValueValue(
+					dlFileEntryMetadatas, "TIFF_IMAGE_LENGTH");
+				long tiffImageWidth = _getDDMFormFieldsValueValue(
+					dlFileEntryMetadatas, "TIFF_IMAGE_WIDTH");
 
 				return HashMapBuilder.<String, Object>put(
 					"aspectRatio",
