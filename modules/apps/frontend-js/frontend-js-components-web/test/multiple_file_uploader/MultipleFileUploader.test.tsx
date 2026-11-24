@@ -519,11 +519,9 @@ describe('MultipleFileUploader', () => {
 
 		expect(await screen.findByText('image1.png')).toBeInTheDocument();
 
-		expect(
-			screen.getByText(
-				'please-enter-a-file-with-a-valid-file-size-no-larger-than-2000 MB'
-			)
-		).toBeInTheDocument();
+		expect(screen.getByRole('alert')).toHaveTextContent(
+			'please-enter-a-file-with-a-valid-file-size-no-larger-than-2000 MB'
+		);
 
 		expect(
 			screen.getByRole('button', {name: 'upload-(1)'})
