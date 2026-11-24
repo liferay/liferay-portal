@@ -159,6 +159,7 @@ exports[`SegmentOverview should render 1`] = `
             </div>
             <button
               aria-label="Add"
+              aria-pressed="false"
               class="button-root add-tab btn btn-monospaced btn-outline-borderless btn-sm btn-outline-secondary"
               type="button"
             >
