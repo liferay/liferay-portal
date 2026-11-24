@@ -35,6 +35,28 @@ const createFile = (name: string, size: number, type = 'image/png') => {
 	return new File(['a'.repeat(size)], name, {type});
 };
 
+const selectFiles = async ({
+	files = [createFile('image1.png', 1024), createFile('image2.png', 3072)],
+	validExtensions,
+}: {files?: File[]; validExtensions?: string} = {}) => {
+	const user = userEvent.setup({applyAccept: false});
+
+	const {container} = render(
+		<MultipleFileUploader
+			{...DEFAULT_PROPS}
+			maxFileSize={2000}
+			validExtensions={validExtensions}
+		/>
+	);
+
+	const input =
+		container.querySelector<HTMLInputElement>('input[type="file"]')!;
+
+	await user.upload(input, files);
+
+	return {input, user};
+};
+
 describe('MultipleFileUploader', () => {
 	afterEach(() => {
 		jest.clearAllMocks();
@@ -503,19 +525,7 @@ describe('MultipleFileUploader', () => {
 	});
 
 	it('shows the error of a rejected file selected together with a valid one', async () => {
-		const user = userEvent.setup();
-
-		const {container} = render(
-			<MultipleFileUploader {...DEFAULT_PROPS} maxFileSize={2000} />
-		);
-
-		const input =
-			container.querySelector<HTMLInputElement>('input[type="file"]')!;
-
-		await user.upload(input, [
-			createFile('image1.png', 1024),
-			createFile('image2.png', 3072),
-		]);
+		await selectFiles();
 
 		expect(await screen.findByText('image1.png')).toBeInTheDocument();
 
@@ -529,19 +539,7 @@ describe('MultipleFileUploader', () => {
 	});
 
 	it('clears the error when the next selection has no rejected files', async () => {
-		const user = userEvent.setup();
-
-		const {container} = render(
-			<MultipleFileUploader {...DEFAULT_PROPS} maxFileSize={2000} />
-		);
-
-		const input =
-			container.querySelector<HTMLInputElement>('input[type="file"]')!;
-
-		await user.upload(input, [
-			createFile('image1.png', 1024),
-			createFile('image2.png', 3072),
-		]);
+		const {input, user} = await selectFiles();
 
 		expect(await screen.findByRole('alert')).toBeInTheDocument();
 
