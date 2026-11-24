@@ -25,7 +25,7 @@
 
 	sidenavInstance.on('closed.lexicon.sidenav', function(event) {
 		Liferay.Util.Session.set(
-			'com.liferay.product.navigation.product.menu.web_productMenuState',
+			'com.liferay.application.list_sidebarState',
 			'closed'
 		);
 
@@ -36,7 +36,7 @@
 
 	sidenavInstance.on('open.lexicon.sidenav', function(event) {
 		Liferay.Util.Session.set(
-			'com.liferay.product.navigation.product.menu.web_productMenuState',
+			'com.liferay.application.list_sidebarState',
 			'open'
 		);
 

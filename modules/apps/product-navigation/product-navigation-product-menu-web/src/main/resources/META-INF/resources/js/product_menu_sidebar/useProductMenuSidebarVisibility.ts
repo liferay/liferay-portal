@@ -12,7 +12,7 @@ const TRANSITION_TIMEOUT = 300;
 
 export function useProductMenuSidebarVisibility(
 	initialVisible: boolean,
-	visibleSessionKey: string
+	sidebarStateSessionKey: string
 ) {
 	const [closedAsOverlay] = useState(
 		() => initialVisible && window.matchMedia(OVERLAY_MEDIA_QUERY).matches
@@ -64,13 +64,11 @@ export function useProductMenuSidebarVisibility(
 	}, []);
 
 	const {updateVisible, visible} = useUnifiedSidebarVisibility({
-		hiddenSessionValue: 'closed',
 		initialVisible: initiallyVisible,
 		onVisibleChange: updateBody,
-		sessionKey: visibleSessionKey,
+		sessionKey: sidebarStateSessionKey,
 		stateChangedEventName: 'productMenuSidebarStateChanged',
 		stateRequestedEventName: 'productMenuSidebarStateRequested',
-		visibleSessionValue: 'open',
 	});
 
 	useEffect(function cleanupTransition() {

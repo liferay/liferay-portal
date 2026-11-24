@@ -10,13 +10,11 @@ import {useUnifiedSidebarVisibility} from '../../src/main/resources/META-INF/res
 function renderVisibility(onVisibleChange?: (visible: boolean) => void) {
 	return renderHook(() =>
 		useUnifiedSidebarVisibility({
-			hiddenSessionValue: 'closed',
 			initialVisible: true,
 			onVisibleChange,
 			sessionKey: 'sessionKey',
 			stateChangedEventName: 'stateChanged',
 			stateRequestedEventName: 'stateRequested',
-			visibleSessionValue: 'open',
 		})
 	);
 }

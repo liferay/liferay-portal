@@ -115,10 +115,10 @@ const renderComponent = ({
 			label="Applications"
 			navigationItemsURL="navigationItemsURL"
 			selectedPortletId={selectedPortletId}
+			sidebarStateSessionKey="sidebarStateSessionKey"
 			siteAdministrationItemSelectedEventName="siteAdministrationItemSelectedEventName"
 			siteAdministrationItemSelectorUrl="siteAdministrationItemSelectorUrl"
 			visible
-			visibleSessionKey="visibleSessionKey"
 		/>
 	);
 

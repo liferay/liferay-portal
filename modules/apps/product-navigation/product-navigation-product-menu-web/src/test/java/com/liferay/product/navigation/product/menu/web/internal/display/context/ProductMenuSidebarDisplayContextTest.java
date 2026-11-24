@@ -479,13 +479,13 @@ public class ProductMenuSidebarDisplayContextTest {
 	}
 
 	@Test
-	public void testIsVisibleReadsTheProductMenuState() {
+	public void testIsVisible() {
 		try (MockedStatic<SessionClicks> sessionClicksMockedStatic =
 				Mockito.mockStatic(SessionClicks.class)) {
 
 			sessionClicksMockedStatic.when(
 				() -> SessionClicks.get(
-					_httpServletRequest, _SESSION_KEY_VISIBLE, "open")
+					_httpServletRequest, _SESSION_KEY_SIDEBAR_STATE, "open")
 			).thenReturn(
 				"open"
 			);
@@ -494,7 +494,7 @@ public class ProductMenuSidebarDisplayContextTest {
 
 			sessionClicksMockedStatic.when(
 				() -> SessionClicks.get(
-					_httpServletRequest, _SESSION_KEY_VISIBLE, "open")
+					_httpServletRequest, _SESSION_KEY_SIDEBAR_STATE, "open")
 			).thenReturn(
 				"closed"
 			);
@@ -607,8 +607,8 @@ public class ProductMenuSidebarDisplayContextTest {
 	private static final String _SESSION_KEY_EXPANDED_KEYS =
 		"com.liferay.product.navigation.product.menu.web_sidebarExpandedKeys";
 
-	private static final String _SESSION_KEY_VISIBLE =
-		"com.liferay.product.navigation.product.menu.web_productMenuState";
+	private static final String _SESSION_KEY_SIDEBAR_STATE =
+		"com.liferay.application.list_sidebarState";
 
 	private final Group _group = Mockito.mock(Group.class);
 	private final HttpServletRequest _httpServletRequest = Mockito.mock(

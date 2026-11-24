@@ -57,18 +57,18 @@ public class ProductMenuTemplateContextContributor
 			cssClass += " product-menu-unified-sidebar";
 		}
 
-		String productMenuState = SessionClicks.get(
+		String sidebarState = SessionClicks.get(
 			httpServletRequest,
-			"com.liferay.product.navigation.product.menu.web_productMenuState",
+			"com.liferay.application.list_sidebarState",
 			unifiedSidebar ? "open" : "closed");
 
-		if (Objects.equals(productMenuState, "open")) {
+		if (Objects.equals(sidebarState, "open")) {
 			cssClass += " open product-menu-open";
 		}
 
 		contextObjects.put("bodyCssClass", cssClass);
 
-		contextObjects.put("liferay_product_menu_state", productMenuState);
+		contextObjects.put("liferay_product_menu_state", sidebarState);
 	}
 
 	@Reference

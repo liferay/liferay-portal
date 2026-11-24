@@ -275,12 +275,12 @@ public class KBAdminNavigationDisplayContext {
 		boolean unifiedSidebar = FeatureFlagManagerUtil.isEnabled(
 			_themeDisplay.getCompanyId(), "LPD-88120");
 
-		String productMenuState = SessionClicks.get(
+		String sidebarState = SessionClicks.get(
 			_httpServletRequest,
-			"com.liferay.product.navigation.product.menu.web_productMenuState",
+			"com.liferay.application.list_sidebarState",
 			unifiedSidebar ? "open" : "closed");
 
-		return Objects.equals(productMenuState, "open");
+		return Objects.equals(sidebarState, "open");
 	}
 
 	private JSONArray _getChildKBArticlesJSONArray(KBArticle parentKBArticle)

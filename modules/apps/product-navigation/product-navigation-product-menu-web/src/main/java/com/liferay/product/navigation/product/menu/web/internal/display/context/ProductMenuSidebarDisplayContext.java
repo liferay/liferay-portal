@@ -132,6 +132,8 @@ public class ProductMenuSidebarDisplayContext {
 		).put(
 			"selectedPortletId", _getSelectedPortletId()
 		).put(
+			"sidebarStateSessionKey", _SESSION_KEY_SIDEBAR_STATE
+		).put(
 			"siteItemSelectedEventName", itemSelectedEventName
 		).put(
 			"siteItemSelectorURL",
@@ -162,14 +164,12 @@ public class ProductMenuSidebarDisplayContext {
 			}
 		).put(
 			"visible", isVisible()
-		).put(
-			"visibleSessionKey", _SESSION_KEY_VISIBLE
 		).build();
 	}
 
 	public boolean isVisible() {
 		String state = SessionClicks.get(
-			_httpServletRequest, _SESSION_KEY_VISIBLE, "open");
+			_httpServletRequest, _SESSION_KEY_SIDEBAR_STATE, "open");
 
 		return Objects.equals(state, "open");
 	}
@@ -499,8 +499,8 @@ public class ProductMenuSidebarDisplayContext {
 	private static final String _SESSION_KEY_PAGE_TREE_GROUP_ID =
 		"com.liferay.product.navigation.product.menu.web_sidebarPageTree";
 
-	private static final String _SESSION_KEY_VISIBLE =
-		"com.liferay.product.navigation.product.menu.web_productMenuState";
+	private static final String _SESSION_KEY_SIDEBAR_STATE =
+		"com.liferay.application.list_sidebarState";
 
 	private static final Snapshot<GroupProvider> _groupProviderSnapshot =
 		new Snapshot<>(

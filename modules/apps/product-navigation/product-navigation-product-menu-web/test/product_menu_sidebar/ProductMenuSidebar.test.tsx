@@ -55,10 +55,10 @@ const renderComponent = (
 			label="Liferay"
 			navigationItemsURL="navigationItemsURL"
 			selectedPortletId="blogs"
+			sidebarStateSessionKey="sidebarStateSessionKey"
 			siteItemSelectedEventName="siteItemSelectedEventName"
 			siteItemSelectorURL="siteItemSelectorURL"
 			visible
-			visibleSessionKey="visibleSessionKey"
 			{...props}
 		/>
 	);
@@ -149,7 +149,7 @@ describe('ProductMenuSidebar', () => {
 		);
 
 		expect(Liferay.Util.Session.set).toHaveBeenLastCalledWith(
-			'visibleSessionKey',
+			'sidebarStateSessionKey',
 			'closed'
 		);
 	});

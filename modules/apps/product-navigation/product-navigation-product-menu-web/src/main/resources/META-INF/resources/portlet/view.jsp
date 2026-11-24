@@ -15,20 +15,20 @@
 
 		<%
 		String pagesTreeState = SessionClicks.get(request, "com.liferay.product.navigation.product.menu.web_pagesTreeState", "closed");
-		String productMenuState = SessionClicks.get(request, "com.liferay.product.navigation.product.menu.web_productMenuState", "closed");
+		String sidebarState = SessionClicks.get(request, "com.liferay.application.list_sidebarState", "closed");
 
 		ProductMenuDisplayContext productMenuDisplayContext = new ProductMenuDisplayContext(liferayPortletRequest);
 		%>
 
-		<nav aria-label="<%= LanguageUtil.get(request, "product-menu") %>" class="<%= productMenuState %><%= Objects.equals(productMenuState, "open") ? " product-menu-open" : StringPool.BLANK %> cadmin d-print-none lfr-product-menu-panel sidenav-fixed sidenav-menu-slider" id="<portlet:namespace />sidenavSliderId" tabindex="-1">
+		<nav aria-label="<%= LanguageUtil.get(request, "product-menu") %>" class="<%= sidebarState %><%= Objects.equals(sidebarState, "open") ? " product-menu-open" : StringPool.BLANK %> cadmin d-print-none lfr-product-menu-panel sidenav-fixed sidenav-menu-slider" id="<portlet:namespace />sidenavSliderId" tabindex="-1">
 			<div class="product-menu sidebar sidenav-menu">
 				<div class="lfr-applications-menu lfr-product-menu-sidebar" id="productMenuSidebar">
 					<div class="sidebar-body">
 						<c:choose>
-							<c:when test='<%= Objects.equals(productMenuState, "open") && (!Objects.equals(pagesTreeState, "open") || productMenuDisplayContext.isLayoutsTreeDisabled() || !productMenuDisplayContext.isShowLayoutsTree()) %>'>
+							<c:when test='<%= Objects.equals(sidebarState, "open") && (!Objects.equals(pagesTreeState, "open") || productMenuDisplayContext.isLayoutsTreeDisabled() || !productMenuDisplayContext.isShowLayoutsTree()) %>'>
 								<liferay-util:include page="/portlet/product_menu.jsp" servletContext="<%= application %>" />
 							</c:when>
-							<c:when test='<%= Objects.equals(productMenuState, "open") && Objects.equals(pagesTreeState, "open") %>'>
+							<c:when test='<%= Objects.equals(sidebarState, "open") && Objects.equals(pagesTreeState, "open") %>'>
 								<div class="pages-tree">
 									<liferay-util:include page="/portlet/pages_tree.jsp" servletContext="<%= application %>">
 										<liferay-util:param name="redirect" value="<%= themeDisplay.getURLCurrent() %>" />
