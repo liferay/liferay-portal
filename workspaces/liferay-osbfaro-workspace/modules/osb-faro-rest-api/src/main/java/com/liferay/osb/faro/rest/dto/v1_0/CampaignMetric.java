@@ -56,7 +56,7 @@ public class CampaignMetric implements Serializable {
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Metric: accountsTouched (distinct accounts touched by any campaign), campaignCount (distinct campaigns that touched an account), closedWonAmount or openPipelineAmount (sums of the touched accounts' Salesforce opportunity amounts over a fixed 90-day window)."
+		description = "Metric: accountsTouched (distinct accounts touched by any campaign), campaignCount (distinct campaigns that touched an account), closedWonAmount or openPipelineAmount (sums of the touched accounts' Salesforce opportunity amounts over a fixed 90 day window)."
 	)
 	public String getMetricType() {
 		if (_metricTypeSupplier != null) {
@@ -92,7 +92,7 @@ public class CampaignMetric implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Metric: accountsTouched (distinct accounts touched by any campaign), campaignCount (distinct campaigns that touched an account), closedWonAmount or openPipelineAmount (sums of the touched accounts' Salesforce opportunity amounts over a fixed 90-day window)."
+		description = "Metric: accountsTouched (distinct accounts touched by any campaign), campaignCount (distinct campaigns that touched an account), closedWonAmount or openPipelineAmount (sums of the touched accounts' Salesforce opportunity amounts over a fixed 90 day window)."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String metricType;
@@ -495,4 +495,4 @@ public class CampaignMetric implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:456003867
+// LIFERAY-REST-BUILDER-HASH:-1112514251

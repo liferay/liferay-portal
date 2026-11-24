@@ -270,7 +270,7 @@ components:
             properties:
                 metricType:
                     description:
-                        "Metric: accountsTouched (distinct accounts touched by any campaign), campaignCount (distinct campaigns that touched an account), closedWonAmount or openPipelineAmount (sums of the touched accounts' Salesforce opportunity amounts over a fixed 90-day window)."
+                        "Metric: accountsTouched (distinct accounts touched by any campaign), campaignCount (distinct campaigns that touched an account), closedWonAmount or openPipelineAmount (sums of the touched accounts' Salesforce opportunity amounts over a fixed 90 day window)."
                     readOnly: true
                     type: string
                 previousValue:
@@ -1461,7 +1461,7 @@ paths:
     "/workspace/{groupId}/channels/{channelId}/campaign-metrics":
         get:
             description:
-                "Campaign performance totals of a channel (also known as property) over a date range, each compared to the previous range of the same length with a trend: accountsTouched, campaignCount, closedWonAmount and openPipelineAmount. The date range picks the accounts that campaigns touched; closedWonAmount and openPipelineAmount then add up those accounts' Salesforce opportunity amounts over a fixed 90-day window, not over the date range. Use this to answer 'how are our campaigns doing' style questions. To see individual campaigns, use `getWorkspaceGroupChannelCampaignsPage`. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, or pass both `rangeStart` and `rangeEnd` as `yyyy-MM-dd` dates for a custom window of at most 180 days; a custom window takes precedence over `rangeKey`. Without either, the last 30 days are used."
+                "Campaign performance totals of a channel (also known as property) over a date range, each compared to the previous range of the same length with a trend: accountsTouched, campaignCount, closedWonAmount and openPipelineAmount. The date range picks the accounts that campaigns touched; closedWonAmount and openPipelineAmount then add up those accounts' Salesforce opportunity amounts over a fixed 90 day window, not over the date range. Use this to answer 'how are our campaigns doing' style questions. To see individual campaigns, use `getWorkspaceGroupChannelCampaignsPage`. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, or pass both `rangeStart` and `rangeEnd` as `yyyy-MM-dd` dates for a custom window of at most 180 days; a custom window takes precedence over `rangeKey`. Without either, the last 30 days are used."
             operationId: getWorkspaceGroupChannelCampaignMetricsPage
             parameters:
                 -   in: path

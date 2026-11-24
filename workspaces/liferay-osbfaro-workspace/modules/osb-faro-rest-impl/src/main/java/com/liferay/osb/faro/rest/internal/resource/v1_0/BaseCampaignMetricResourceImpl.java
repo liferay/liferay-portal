@@ -50,7 +50,7 @@ public abstract class BaseCampaignMetricResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/faro-rest/v1.0/workspace/{groupId}/channels/{channelId}/campaign-metrics'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Campaign performance totals of a channel (also known as property) over a date range, each compared to the previous range of the same length with a trend: accountsTouched, campaignCount, closedWonAmount and openPipelineAmount. The date range picks the accounts that campaigns touched; closedWonAmount and openPipelineAmount then add up those accounts' Salesforce opportunity amounts over a fixed 90-day window, not over the date range. Use this to answer 'how are our campaigns doing' style questions. To see individual campaigns, use `getWorkspaceGroupChannelCampaignsPage`. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, or pass both `rangeStart` and `rangeEnd` as `yyyy-MM-dd` dates for a custom window of at most 180 days; a custom window takes precedence over `rangeKey`. Without either, the last 30 days are used."
+		description = "Campaign performance totals of a channel (also known as property) over a date range, each compared to the previous range of the same length with a trend: accountsTouched, campaignCount, closedWonAmount and openPipelineAmount. The date range picks the accounts that campaigns touched; closedWonAmount and openPipelineAmount then add up those accounts' Salesforce opportunity amounts over a fixed 90 day window, not over the date range. Use this to answer 'how are our campaigns doing' style questions. To see individual campaigns, use `getWorkspaceGroupChannelCampaignsPage`. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, or pass both `rangeStart` and `rangeEnd` as `yyyy-MM-dd` dates for a custom window of at most 180 days; a custom window takes precedence over `rangeKey`. Without either, the last 30 days are used."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -569,4 +569,4 @@ public abstract class BaseCampaignMetricResourceImpl
 		LogFactoryUtil.getLog(BaseCampaignMetricResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:2138416242
+// LIFERAY-REST-BUILDER-HASH:821610975
