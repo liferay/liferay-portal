@@ -235,14 +235,14 @@ public abstract class BaseURLReader<T> implements URLReader<T> {
 				return handleResponse(
 					cacheFileKey, expectResponse, urlConnection);
 			}
-			catch (IOException ioException1) {
-				if (ioException1 instanceof FileNotFoundException ||
-					ioException1 instanceof TruncatedResponseException) {
+			catch (IOException ioException) {
+				if (ioException instanceof FileNotFoundException ||
+					ioException instanceof TruncatedResponseException) {
 
-					throw ioException1;
+					throw ioException;
 				}
 
-				if ((ioException1 instanceof UnknownHostException) &&
+				if ((ioException instanceof UnknownHostException) &&
 					url.matches("http://test-\\d+-\\d+/.*")) {
 
 					return read(
@@ -251,24 +251,29 @@ public abstract class BaseURLReader<T> implements URLReader<T> {
 						timeout, JenkinsResultsParserUtil.getRemoteURL(url));
 				}
 
-				String exceptionMessage = ioException1.getMessage();
-				int responseCode = _getResponseCode(
-					ioException1, urlConnection);
+				String exceptionMessage = ioException.getMessage();
+				int responseCode = _getResponseCode(ioException, urlConnection);
 
 				if (responseCode == 422) {
 					StringBuilder sb = new StringBuilder();
 
 					sb.append(exceptionMessage);
-					sb.append("\n");
+
+					_appendErrorResponse((HttpURLConnection)urlConnection, sb);
 
 					if (!JenkinsResultsParserUtil.isNullOrEmpty(postContent)) {
-						sb.append("Post content:\n");
+						sb.append("\nPost content:\n");
 						sb.append(postContent);
 					}
 
 					System.out.println(sb.toString());
 
-					throw new RuntimeException(exceptionMessage, ioException1);
+					if (_updatingHttpRequestMethods.contains(
+							httpRequestMethod)) {
+
+						throw new RuntimeException(
+							exceptionMessage, ioException);
+					}
 				}
 
 				Matcher testray2URLMatcher = _testray2URLPattern.matcher(url);
@@ -283,24 +288,8 @@ public abstract class BaseURLReader<T> implements URLReader<T> {
 
 					sb.append(exceptionMessage);
 
-					String errorResponse = null;
-
-					try (InputStream errorInputStream =
-							httpURLConnection.getErrorStream()) {
-
-						if (errorInputStream != null) {
-							errorResponse =
-								JenkinsResultsParserUtil.readInputStream(
-									errorInputStream);
-
-							sb.append("\nError response:\n");
-							sb.append(errorResponse);
-						}
-					}
-					catch (IOException ioException2) {
-						sb.append("\nUnable to read the error response: ");
-						sb.append(ioException2.getMessage());
-					}
+					String errorResponse = _appendErrorResponse(
+						httpURLConnection, sb);
 
 					if ((maxRetries >= 0) && (retryCount >= maxRetries) &&
 						!JenkinsResultsParserUtil.isNullOrEmpty(postContent)) {
@@ -352,14 +341,15 @@ public abstract class BaseURLReader<T> implements URLReader<T> {
 						(retryPeriodOverride > _SECONDS_RETRY_PERIOD_MAX)) {
 
 						throw new GitHubSecondaryRateLimitRuntimeException(
-							url, retryPeriodOverride, ioException1);
+							url, retryPeriodOverride, ioException);
 					}
 				}
 
 				if ((responseCode >= 400) && (responseCode < 500) &&
+					(responseCode != 422) &&
 					!_retryableResponseCodes.contains(responseCode)) {
 
-					throw ioException1;
+					throw ioException;
 				}
 
 				long retryPeriodMillis = 1000 * retryPeriod;
@@ -370,8 +360,11 @@ public abstract class BaseURLReader<T> implements URLReader<T> {
 					retryPeriodMillis = 1000 * retryPeriodOverride;
 				}
 
-				if ((maxRetries >= 0) && (retryCount >= maxRetries)) {
-					throw ioException1;
+				if (((maxRetries >= 0) && (retryCount >= maxRetries)) ||
+					((maxRetries < 0) && (responseCode == 422) &&
+					 (retryCount >= _RETRIES_SIZE_MAX_UNPROCESSABLE_CONTENT))) {
+
+					throw ioException;
 				}
 
 				System.out.println(
@@ -501,6 +494,32 @@ public abstract class BaseURLReader<T> implements URLReader<T> {
 		JenkinsResultsParserUtil.sleep(duration);
 	}
 
+	private String _appendErrorResponse(
+		HttpURLConnection httpURLConnection, StringBuilder sb) {
+
+		try (InputStream errorInputStream =
+				httpURLConnection.getErrorStream()) {
+
+			if (errorInputStream == null) {
+				return null;
+			}
+
+			String errorResponse = JenkinsResultsParserUtil.readInputStream(
+				errorInputStream);
+
+			sb.append("\nError response:\n");
+			sb.append(errorResponse);
+
+			return errorResponse;
+		}
+		catch (IOException ioException) {
+			sb.append("\nUnable to read the error response: ");
+			sb.append(ioException.getMessage());
+
+			return null;
+		}
+	}
+
 	private int _getResponseCode(
 		IOException ioException1, URLConnection urlConnection) {
 
@@ -538,6 +557,8 @@ public abstract class BaseURLReader<T> implements URLReader<T> {
 
 		return false;
 	}
+
+	private static final int _RETRIES_SIZE_MAX_UNPROCESSABLE_CONTENT = 3;
 
 	private static final int _SECONDS_RETRY_PERIOD_ESCALATION_MAX = 60;
 
