@@ -362,6 +362,33 @@ public class PortalInstancesTest {
 		}
 	}
 
+	@Test
+	public void testSetCompanyInDeletionProcessWithSafeCloseableWhenBeingCopied() {
+		long companyId = RandomTestUtil.randomLong();
+
+		try (SafeCloseable safeCloseable =
+				PortalInstances.setCopyInProcessCompanyIdWithSafeCloseable(
+					companyId)) {
+
+			try {
+				PortalInstances.setCompanyInDeletionProcessWithSafeCloseable(
+					companyId);
+
+				Assert.fail();
+			}
+			catch (UnsupportedOperationException
+						unsupportedOperationException) {
+
+				Assert.assertEquals(
+					companyId + " is being copied",
+					unsupportedOperationException.getMessage());
+			}
+		}
+
+		Assert.assertFalse(
+			PortalInstances.isCompanyInDeletionProcess(companyId));
+	}
+
 	private void _addCompanyIdInDeletionProcess(
 		long companyId, String clusterNodeId, long timestamp) {
 
