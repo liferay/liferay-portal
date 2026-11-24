@@ -31,6 +31,7 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
@@ -76,10 +77,15 @@ public class AddObjectEntryObjectActionExecutorImpl
 				parametersUnicodeProperties.get("relatedObjectEntries"))) {
 
 			for (ObjectRelationship objectRelationship :
-					_objectRelationshipLocalService.getObjectRelationships(
-						sourceObjectDefinition.getObjectDefinitionId(),
-						targetObjectDefinition.getObjectDefinitionId(),
-						ObjectRelationshipConstants.TYPE_ONE_TO_MANY)) {
+					ListUtil.concat(
+						_objectRelationshipLocalService.getObjectRelationships(
+							sourceObjectDefinition.getObjectDefinitionId(),
+							targetObjectDefinition.getObjectDefinitionId(),
+							ObjectRelationshipConstants.TYPE_ONE_TO_MANY),
+						_objectRelationshipLocalService.getObjectRelationships(
+							sourceObjectDefinition.getObjectDefinitionId(),
+							targetObjectDefinition.getObjectDefinitionId(),
+							ObjectRelationshipConstants.TYPE_ONE_TO_ONE))) {
 
 				ObjectField objectField =
 					_objectFieldLocalService.getObjectField(
