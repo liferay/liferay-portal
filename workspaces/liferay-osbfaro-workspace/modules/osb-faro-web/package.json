@@ -105,7 +105,7 @@
 		"@typescript-eslint/parser": "^5.62.0",
 		"autobind-decorator": "^2.1.0",
 		"autoprefixer": "^10.4.21",
-		"axe-core": "^4.10.0",
+		"axe-core": "4.11.4",
 		"babel-core": "^7.0.0-bridge.0",
 		"babel-jest": "^29.7.0",
 		"babel-loader": "^8.0.0",
