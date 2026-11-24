@@ -160,7 +160,7 @@ function _test_azure_enables_keda_with_identity {
 
 function _test_azure_enables_observability_with_workspace {
 	_assert "$(_render "azure" "$(_get_azure_outputs)")" '(.observability | has("enabled") | not) and (.liferay | has("parameters") | not)' &&
-	_assert "$(_render "azure" "$(_get_azure_outputs '{"prometheus_workspace_endpoint": {"value": "workspace-endpoint"}, "prometheus_workspace_id": {"value": "workspace-id"}}')")" '.observability.enabled and any(.liferay.parameters[]; .name == "liferay-default.autoscaling.keda.prometheusTriggerMetadata.serverAddress" and .value == "workspace-endpoint")'
+	_assert "$(_render "azure" "$(_get_azure_outputs '{"prometheus_workspace_endpoint": {"value": "workspace-endpoint"}, "prometheus_workspace_id": {"value": "workspace-id"}}')")" '.observability.enabled and any(.observability.parameters[]; .name == "alloy.enabled" and .value == "true") and any(.observability.parameters[]; .name == "grafana-alloy.namespaceOverride" and .value == "observability") and any(.liferay.parameters[]; .name == "liferay-default.autoscaling.keda.prometheusTriggerMetadata.serverAddress" and .value == "workspace-endpoint")'
 }
 
 function _test_customer_values_override_platform_values {

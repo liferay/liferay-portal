@@ -90,6 +90,10 @@ $configuration[0] as $configuration
 						enabled: true,
 						parameters: [
 							{
+								name: "alloy.enabled",
+								value: "true"
+							},
+							{
 								name: "alloy.iam.azureClientId",
 								value: $observability_identity_client_id
 							},
@@ -128,6 +132,10 @@ $configuration[0] as $configuration
 							{
 								name: "cloudProvider",
 								value: "azure"
+							},
+							{
+								name: "grafana-alloy.namespaceOverride",
+								value: "observability"
 							},
 							{
 								name: "grafana.grafana\\.ini.azure.workload_identity_client_id",
