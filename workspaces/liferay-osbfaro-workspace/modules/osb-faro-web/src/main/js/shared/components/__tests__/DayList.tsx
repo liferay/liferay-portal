@@ -2,8 +2,6 @@ import DayList from '../DayList';
 import React from 'react';
 import {cleanup, render, screen} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 const TIME_ZONE_ID = 'UTC';
 
 const buildDay = (

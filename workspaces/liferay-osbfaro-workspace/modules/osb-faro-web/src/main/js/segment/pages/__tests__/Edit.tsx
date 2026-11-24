@@ -3,8 +3,6 @@ import React from 'react';
 import {render, screen} from '@testing-library/react';
 import {SegmentTypes} from 'shared/util/constants';
 
-jest.unmock('react-dom');
-
 jest.mock('../edit/Dynamic', () => ({
 	__esModule: true,
 	default: ({type}: {type: string}) => (

@@ -2,8 +2,6 @@ import React from 'react';
 import UniqueVisitorsCell from '../UniqueVisitorsCell';
 import {render, screen} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 const renderUniqueVisitorsCell = (props = {}) =>
 	render(
 		<table>

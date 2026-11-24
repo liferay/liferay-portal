@@ -9,8 +9,6 @@ import {
 	waitFor,
 } from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 const ITEMS: IFilterPickerItem[] = [
 	{id: '1', name: 'Acme Corporation'},
 	{id: '2', name: 'Globex'},

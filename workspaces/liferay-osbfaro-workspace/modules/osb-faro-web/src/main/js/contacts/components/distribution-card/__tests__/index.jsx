@@ -8,8 +8,6 @@ import {Provider} from 'react-redux';
 
 jest.mock('shared/actions/preferences');
 
-jest.unmock('react-dom');
-
 describe('DistributionCard', () => {
 	afterEach(() => {
 		fetchDistributionTabs.mockClear();

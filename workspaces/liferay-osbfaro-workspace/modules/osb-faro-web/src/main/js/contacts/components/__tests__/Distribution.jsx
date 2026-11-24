@@ -6,8 +6,6 @@ import {Distribution} from '../Distribution';
 import {List} from 'immutable';
 import {User} from 'shared/util/records';
 
-jest.unmock('react-dom');
-
 const defaultProps = {
 	currentUser: new User(data.mockUser()),
 	distributionsKey: 'test',

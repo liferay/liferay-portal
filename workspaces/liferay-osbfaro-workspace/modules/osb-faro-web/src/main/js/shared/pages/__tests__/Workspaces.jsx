@@ -74,8 +74,6 @@ jest.mock('shared/hooks/useProjects', () => ({
 	useFetchProjects: jest.fn()
 }));
 
-jest.unmock('react-dom');
-
 jest.mock('shared/hooks/useIncidentAlert', () => ({
 	useIncidentAlert: jest.fn(() => ({
 		data: {incidentAlertEnabled: false},

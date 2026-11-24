@@ -4,8 +4,6 @@ import {cleanup, render, screen} from '@testing-library/react';
 import {Conjunctions} from '../../utils/constants';
 import {selectPickerOption} from 'test/helpers';
 
-jest.unmock('react-dom');
-
 const renderOperator = ({conjunctionName = Conjunctions.And, onChange} = {}) =>
 	render(
 		<GroupOperator

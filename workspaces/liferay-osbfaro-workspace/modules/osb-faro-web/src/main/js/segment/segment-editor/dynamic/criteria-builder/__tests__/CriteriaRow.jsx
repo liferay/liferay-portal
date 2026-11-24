@@ -11,8 +11,6 @@ import {MockedProvider} from '@apollo/client/testing';
 import {mockPreferenceReq} from 'test/graphql-data';
 import {Provider} from 'react-redux';
 
-jest.unmock('react-dom');
-
 const WrapperComponent = ({children}) => (
 	<ApolloProvider client={client}>
 		<Provider store={mockStore()}>

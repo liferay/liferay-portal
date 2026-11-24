@@ -10,8 +10,6 @@ import {MockedProvider} from '@apollo/client/testing';
 import {Provider} from 'react-redux';
 import {renderModal} from 'test/render-modal';
 
-jest.unmock('react-dom');
-
 jest.mock('shared/util/date', () => ({
 	...jest.requireActual('shared/util/date'),
 	getDateNow: jest.fn(() => require('moment').utc('2019-01-01T12:10:00Z'))

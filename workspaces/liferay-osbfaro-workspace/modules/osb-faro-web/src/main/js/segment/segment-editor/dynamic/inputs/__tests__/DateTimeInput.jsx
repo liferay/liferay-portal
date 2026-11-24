@@ -7,8 +7,6 @@ import {MockedProvider} from '@apollo/client/testing';
 import {mockPreferenceReq} from 'test/graphql-data';
 import {Property} from 'shared/util/records';
 
-jest.unmock('react-dom');
-
 describe('DateTimeInput', () => {
 	afterEach(cleanup);
 

@@ -2,8 +2,6 @@ import PopoverBase from '../PopoverBase';
 import React from 'react';
 import {cleanup, render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 describe('PopoverBase', () => {
 	afterEach(cleanup);
 

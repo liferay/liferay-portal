@@ -6,8 +6,6 @@ import {fireEvent, render, screen, waitFor} from '@testing-library/react';
 import {Provider} from 'react-redux';
 import {useModal} from '@clayui/modal';
 
-jest.unmock('react-dom');
-
 const DefaultComponent = ({
 	onClose = jest.fn(),
 }: {

@@ -2,8 +2,6 @@ import GroupByPicker, {GROUP_BY_METRICS, GroupByMetric} from '../GroupByPicker';
 import React from 'react';
 import {cleanup, fireEvent, render, screen} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 const renderGroupByPicker = ({
 	metrics = GROUP_BY_METRICS,
 	onGroupByChange = jest.fn(),

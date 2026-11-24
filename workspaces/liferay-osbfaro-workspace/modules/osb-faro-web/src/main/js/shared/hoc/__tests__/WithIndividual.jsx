@@ -1,8 +1,6 @@
 import withIndividual from '../WithIndividual';
 import {renderWithStore} from 'test/mock-store';
 
-jest.unmock('react-dom');
-
 jest.mock(
 	'shared/hoc/WithAction',
 	() => () => wrappedComponent => wrappedComponent

@@ -7,8 +7,6 @@ import {
 } from 'shared/util/feature-flags';
 import {reloadPage} from 'shared/util/url';
 
-jest.unmock('react-dom');
-
 jest.mock('shared/util/url', () => ({
 	...jest.requireActual('shared/util/url'),
 	reloadPage: jest.fn()

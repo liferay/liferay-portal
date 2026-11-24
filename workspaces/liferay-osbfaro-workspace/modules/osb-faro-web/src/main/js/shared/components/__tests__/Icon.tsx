@@ -6,8 +6,6 @@ import React from 'react';
 import {ClayIconSpriteContext} from '@clayui/icon';
 import {cleanup, render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 const AC_ICONS_DIR = path.join(__dirname, '..', '..', '..', '..', 'images');
 
 describe('Icon', () => {

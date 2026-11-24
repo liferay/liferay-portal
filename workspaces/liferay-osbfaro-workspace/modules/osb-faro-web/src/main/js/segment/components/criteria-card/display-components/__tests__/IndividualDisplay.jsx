@@ -9,8 +9,6 @@ import {
 } from 'segment/segment-editor/dynamic/utils/constants';
 import {ReferencedObjectsProvider} from 'segment/segment-editor/dynamic/context/referencedObjects';
 
-jest.unmock('react-dom');
-
 describe('IndividualDisplay', () => {
 	const propertyName = 'demographics/givenName/value';
 

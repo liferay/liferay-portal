@@ -7,8 +7,6 @@ import {MemoryRouter} from 'react-router-dom';
 import {MockedProvider} from '@apollo/client/testing';
 import {Provider} from 'react-redux';
 
-jest.unmock('react-dom');
-
 const DefaultWrapper = ({children}) => (
 	<Provider store={mockStore()}>
 		<MemoryRouter>

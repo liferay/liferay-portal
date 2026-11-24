@@ -7,8 +7,6 @@ import {List} from 'immutable';
 import {Property} from 'shared/util/records';
 import {PropertyTypes} from '../../utils/constants';
 
-jest.unmock('react-dom');
-
 const mockLiferayLanguage = key => {
 	const messages = {
 		custom: 'Custom',

@@ -2,8 +2,6 @@ import React from 'react';
 import ToggleSwitch from '../ToggleSwitch';
 import {cleanup, render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 describe('ToggleSwitch', () => {
 	afterEach(cleanup);
 

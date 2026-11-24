@@ -9,8 +9,6 @@ import {useDataSources} from 'shared/context/dataSources';
 import {useQuery} from '@apollo/client';
 import {useRequest} from 'shared/hooks/useRequest';
 
-jest.unmock('react-dom');
-
 jest.mock('@apollo/client', () => ({
 	...jest.requireActual('@apollo/client'),
 	useQuery: jest.fn(),

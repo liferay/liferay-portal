@@ -8,8 +8,6 @@ import {HTML5Backend} from 'react-dnd-html5-backend';
 
 const connectDnd = jest.fn((element) => element);
 
-jest.unmock('react-dom');
-
 describe('EmptyDropZone', () => {
 	afterEach(cleanup);
 

@@ -3,8 +3,6 @@ import {ConnectorConfig} from '../../types';
 import {render} from '@testing-library/react';
 import {updateSearchParams} from 'settings/components/base-page/utis';
 
-jest.unmock('react-dom');
-
 const useHistoryMock = jest.fn();
 const useWizardPageMock = jest.fn();
 

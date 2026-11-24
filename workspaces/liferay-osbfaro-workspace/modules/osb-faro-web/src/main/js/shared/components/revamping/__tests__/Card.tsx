@@ -2,8 +2,6 @@ import React from 'react';
 import {Card} from '../Card';
 import {cleanup, render, screen} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 describe('Card', () => {
 	afterEach(cleanup);
 

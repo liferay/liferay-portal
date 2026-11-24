@@ -6,8 +6,6 @@ import {RangeKeyTimeRanges} from 'shared/util/constants';
 import {RangeSelectors} from 'shared/types';
 import {TrendClassification} from 'segment/types';
 
-jest.unmock('react-dom');
-
 const buildRangeSelectors = (
 	rangeKey: RangeKeyTimeRanges,
 	rangeStart = '',

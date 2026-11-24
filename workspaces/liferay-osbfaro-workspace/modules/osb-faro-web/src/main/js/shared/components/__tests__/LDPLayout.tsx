@@ -7,8 +7,6 @@ import {MemoryRouter, Route, Routes as RouterRoutes} from 'react-router-dom';
 import {Provider} from 'react-redux';
 import {render, screen} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 const renderAtLifecycle = (storeData = mockStoreData) =>
 	render(
 		<Provider store={mockStore(storeData)}>

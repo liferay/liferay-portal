@@ -8,8 +8,6 @@ import {mockPreferenceReq} from 'test/graphql-data';
 import {Provider} from 'react-redux';
 import {render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 const WrappedComponent = props => (
 	<Provider store={mockStore()}>
 		<MemoryRouter initialEntries={['/workspace/23/event-analysis']}>

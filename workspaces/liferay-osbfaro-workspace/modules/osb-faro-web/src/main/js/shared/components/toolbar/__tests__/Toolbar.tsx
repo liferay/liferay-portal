@@ -7,8 +7,6 @@ import {MemoryRouter} from 'react-router-dom';
 import {Provider} from 'react-redux';
 import {Routes, toRoute} from 'shared/util/router';
 
-jest.unmock('react-dom');
-
 jest.mock('shared/api', () => ({
 	user: {
 		updateLanguage: jest.fn(() => Promise.resolve()),

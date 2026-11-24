@@ -7,8 +7,6 @@ import {mockRecommendationJobRunsReq} from 'test/graphql-data';
 import {render} from '@testing-library/react';
 import {waitForLoading} from 'test/helpers';
 
-jest.unmock('react-dom');
-
 describe('OutputVersionsCard', () => {
 	it('should render', async () => {
 		const {container} = render(

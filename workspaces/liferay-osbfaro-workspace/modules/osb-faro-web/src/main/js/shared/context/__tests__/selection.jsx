@@ -9,8 +9,6 @@ import {
 import {cleanup, render} from '@testing-library/react';
 import {OrderedMap} from 'immutable';
 
-jest.unmock('react-dom');
-
 const initialState = {selectedItems: new OrderedMap([['1', {}]])};
 
 describe('selectionReducer', () => {

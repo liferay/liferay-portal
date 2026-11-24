@@ -3,8 +3,6 @@ import {resetBodyWidth, setBodyWidth} from 'test/body-width';
 import {useBodyWidthBelow} from '../useBodyWidthBelow';
 import {useIsMobile} from '../useIsMobile';
 
-jest.unmock('react-dom');
-
 describe('useBodyWidthBelow', () => {
 	afterEach(resetBodyWidth);
 

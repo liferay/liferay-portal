@@ -5,8 +5,6 @@ import {MemoryRouter} from 'react-router';
 
 const ITEMS = ['one', 'two', 'three', 'four', 'five', 'six', 'seven'];
 
-jest.unmock('react-dom');
-
 const defaultProps = {
 	items: ITEMS.map((item, i) => ({
 		active: i === 0,

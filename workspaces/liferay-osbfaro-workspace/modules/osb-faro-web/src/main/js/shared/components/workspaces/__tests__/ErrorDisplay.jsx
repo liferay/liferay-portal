@@ -6,8 +6,6 @@ import {Provider} from 'react-redux';
 import {render} from '@testing-library/react';
 import {User} from 'shared/util/records';
 
-jest.unmock('react-dom');
-
 describe('WorkspacesErrorDisplay', () => {
 	it('should render', () => {
 		const {container} = render(

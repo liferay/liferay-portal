@@ -8,8 +8,6 @@ import {MemoryRouter} from 'react-router-dom';
 import {MockedProvider} from '@apollo/client/testing';
 import {PLANS} from 'shared/util/subscriptions';
 
-jest.unmock('react-dom');
-
 describe('HelpWidget', () => {
 	it('should render', () => {
 		const {getByRole} = render(

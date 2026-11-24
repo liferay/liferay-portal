@@ -3,8 +3,6 @@ import React from 'react';
 import {RelationalOperators} from 'segment/segment-editor/dynamic/utils/constants';
 import {render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 describe('OccurenceConjunctionDisplay', () => {
 	it('should render', () => {
 		const {container} = render(

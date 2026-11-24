@@ -3,8 +3,6 @@ import React from 'react';
 import {cleanup, fireEvent, render} from '@testing-library/react';
 import {PropTypes} from 'prop-types';
 
-jest.unmock('react-dom');
-
 describe('Overlay', () => {
 	afterEach(cleanup);
 

@@ -3,8 +3,6 @@ import React from 'react';
 import {DataTypes} from 'shared/types/DataTypes';
 import {render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 describe('ConditionSticker', () => {
 	it('shows the same icon for every condition of a data type', () => {
 		const {container} = render(

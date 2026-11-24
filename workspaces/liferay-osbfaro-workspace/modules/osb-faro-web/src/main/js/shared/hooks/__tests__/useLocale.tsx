@@ -10,8 +10,6 @@ import {Provider} from 'react-redux';
 import {useLocale} from 'shared/hooks/useLocale';
 import {User} from 'shared/util/records';
 
-jest.unmock('react-dom');
-
 function buildInitialState(
 	currentUserId: string,
 	users: {[id: string]: string | null}

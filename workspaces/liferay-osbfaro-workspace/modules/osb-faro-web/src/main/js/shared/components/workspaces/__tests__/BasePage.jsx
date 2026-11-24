@@ -6,8 +6,6 @@ import {MemoryRouter} from 'react-router';
 import {User} from 'shared/util/records';
 import {WorkspacesBasePage} from '../BasePage';
 
-jest.unmock('react-dom');
-
 jest.mock('shared/hooks/useLDPEnabled', () => ({
 	useLDPEnabled: jest.fn(() => false)
 }));

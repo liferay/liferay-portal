@@ -8,8 +8,6 @@ import {render, screen} from '@testing-library/react';
 import {useLDPEnabled} from 'shared/hooks/useLDPEnabled';
 import {useQueryRangeSelectors} from 'shared/hooks/useQueryRangeSelectors';
 
-jest.unmock('react-dom');
-
 jest.mock('shared/components/download-report/DownloadCSVReport', () => ({
 	__esModule: true,
 	default: () => null,

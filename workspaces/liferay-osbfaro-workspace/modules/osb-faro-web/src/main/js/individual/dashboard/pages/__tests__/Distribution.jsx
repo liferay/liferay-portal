@@ -9,8 +9,6 @@ import {Provider} from 'react-redux';
 import {MemoryRouter} from 'react-router-dom';
 import {User} from 'shared/util/records';
 
-jest.unmock('react-dom');
-
 jest.mock('react-router-dom', () => ({
 	...jest.requireActual('react-router-dom'),
 	useParams: () => ({

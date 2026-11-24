@@ -10,8 +10,6 @@ import {range} from 'lodash';
 import {render} from '@testing-library/react';
 import {waitForLoading} from 'test/helpers';
 
-jest.unmock('react-dom');
-
 describe('Items', () => {
 	it('should render', async () => {
 		const {container} = render(

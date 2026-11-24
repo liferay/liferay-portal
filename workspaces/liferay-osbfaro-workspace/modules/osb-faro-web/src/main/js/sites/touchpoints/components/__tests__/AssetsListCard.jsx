@@ -6,8 +6,6 @@ import {ApolloProvider} from '@apollo/client';
 import {BrowserRouter} from 'react-router-dom';
 import {render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 const items = [
 	{
 		assetId: '01234',

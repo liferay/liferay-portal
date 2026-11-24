@@ -6,8 +6,6 @@ import {renderHook} from '@testing-library/react';
 import {SubscriptionNames} from 'shared/util/subscriptions';
 import {useLDPEnabled} from 'shared/hooks/useLDPEnabled';
 
-jest.unmock('react-dom');
-
 describe('useLDPEnabled', () => {
 	it('should return true when the plan name contains "Data Platform"', () => {
 		const groupId = '23';

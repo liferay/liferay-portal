@@ -2,8 +2,6 @@ import React from 'react';
 import Sheet from '../Sheet';
 import {cleanup, render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 describe('Sheet', () => {
 	afterEach(cleanup);
 

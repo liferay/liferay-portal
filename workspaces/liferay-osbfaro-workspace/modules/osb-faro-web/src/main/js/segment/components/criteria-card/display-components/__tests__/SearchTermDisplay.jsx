@@ -10,8 +10,6 @@ import {List, Map} from 'immutable';
 import {Property} from 'shared/util/records';
 import {render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 describe('SearchTermDisplay', () => {
 	const mockCriterion = {
 		operatorName: CustomFunctionOperators.SearchTermsFilter,

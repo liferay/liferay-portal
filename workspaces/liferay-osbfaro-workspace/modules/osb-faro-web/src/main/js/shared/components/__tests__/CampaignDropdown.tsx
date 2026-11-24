@@ -10,8 +10,6 @@ import {
 } from '@testing-library/react';
 import {MemoryRouter, Route, Routes} from 'react-router-dom';
 
-jest.unmock('react-dom');
-
 const searchCampaignNames = API.campaigns.searchCampaignNames as jest.Mock;
 
 const Wrapper = ({children}: {children: React.ReactNode}) => (

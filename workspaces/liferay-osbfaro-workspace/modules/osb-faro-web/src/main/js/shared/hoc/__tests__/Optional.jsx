@@ -2,8 +2,6 @@ import optional from '../Optional';
 import React from 'react';
 import {render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 describe('Optional', () => {
 	it('should render the original component', () => {
 		const hoc = jest.fn(() => 'hoc component');

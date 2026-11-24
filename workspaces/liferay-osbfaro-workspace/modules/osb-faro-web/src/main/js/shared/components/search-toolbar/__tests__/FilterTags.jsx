@@ -3,8 +3,6 @@ import React from 'react';
 import {range} from 'lodash';
 import {render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 describe('FilterTags', () => {
 	it('should render a list of tags', () => {
 		const {container} = render(

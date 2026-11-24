@@ -3,8 +3,6 @@ import React from 'react';
 import {MetricType} from '../metrics';
 import {render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 describe('MetricValue', () => {
 	it('should render the component', () => {
 		const {container} = render(<MetricValue value="100K" />);

@@ -23,8 +23,6 @@ import {
 	Recommendation,
 } from '../SettingsApp';
 
-jest.unmock('react-dom');
-
 describe('SettingsApp', () => {
 	it('renders the route of ConfigureCSV', () => {
 		render(

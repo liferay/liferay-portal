@@ -19,8 +19,6 @@ import {RangeKeyTimeRanges} from 'shared/util/constants';
 import {typePolicies} from 'shared/apollo/cache';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
 
-jest.unmock('react-dom');
-
 const tooltipEnabled = jest.fn();
 
 jest.mock('recharts', () => {

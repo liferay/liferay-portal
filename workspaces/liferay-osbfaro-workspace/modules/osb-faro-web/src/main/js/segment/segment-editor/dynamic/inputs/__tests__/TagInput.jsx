@@ -15,8 +15,6 @@ import {
 import {Property} from 'shared/util/records';
 import {Provider} from 'react-redux';
 
-jest.unmock('react-dom');
-
 const TAG_ID = 'tag-id';
 const TAG_NAME = 'My Tag';
 

@@ -8,8 +8,6 @@ import {MockedProvider} from '@apollo/client/testing';
 import {Provider} from 'react-redux';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
 
-jest.unmock('react-dom');
-
 jest.mock('shared/hooks/useTimeZone', () => ({
 	useTimeZone: () => ({
 		timeZoneId: 'UTC'

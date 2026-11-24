@@ -2,8 +2,6 @@ import React from 'react';
 import RelativeMetricBar from '../RelativeMetricBar';
 import {cleanup, render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 describe('RelativeMetricBar', () => {
 	afterEach(cleanup);
 

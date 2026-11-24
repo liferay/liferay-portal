@@ -2,8 +2,6 @@ import OperatingSystem from '../OperatingSystem';
 import React from 'react';
 import {render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 const devices = [
 	{
 		data: [

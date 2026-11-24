@@ -14,8 +14,6 @@ import {Provider} from 'react-redux';
 import {RangeKeyTimeRanges} from 'shared/util/constants';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
 
-jest.unmock('react-dom');
-
 const INDIVIDUAL_ID = 'ind-1';
 
 const MOCK_CONTEXT = {

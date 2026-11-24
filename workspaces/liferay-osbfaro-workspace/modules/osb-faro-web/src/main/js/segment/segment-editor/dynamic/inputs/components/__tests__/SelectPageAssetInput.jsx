@@ -16,8 +16,6 @@ import {OrderedMap} from 'immutable';
 import {Provider} from 'react-redux';
 import {useLDPEnabled} from 'shared/hooks/useLDPEnabled';
 
-jest.unmock('react-dom');
-
 jest.mock('shared/api', () => ({
 	activities: {
 		searchAssets: jest.fn(() => Promise.resolve({items: [], totalCount: 0}))

@@ -2,8 +2,6 @@ import DataValue from '../DataValue';
 import React from 'react';
 import {cleanup, render, screen} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 describe('DataValue', () => {
 	afterEach(cleanup);
 

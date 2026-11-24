@@ -10,8 +10,6 @@ import {MemoryRouter} from 'react-router';
 
 const FRIENDLY_URL_BASE = '/faro-liferay-';
 
-jest.unmock('react-dom');
-
 const mockAccountList = range(3).map(
 	i =>
 		new Project(

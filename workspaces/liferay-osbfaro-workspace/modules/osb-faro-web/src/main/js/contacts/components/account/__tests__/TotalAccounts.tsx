@@ -4,8 +4,6 @@ import {AccountMetricType} from 'contacts/pages/account/utils/types';
 import {render} from '@testing-library/react';
 import {TrendClassification} from 'segment/types';
 
-jest.unmock('react-dom');
-
 jest.mock('react-router', () => ({
 	...jest.requireActual('react-router'),
 	useParams: () => ({channelId: '456'}),

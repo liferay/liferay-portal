@@ -2,8 +2,6 @@ import React from 'react';
 import {cleanup, render} from '@testing-library/react';
 import {SectionHeader} from '../SectionHeader';
 
-jest.unmock('react-dom');
-
 describe('SectionHeader', () => {
 	afterEach(cleanup);
 

@@ -2,8 +2,6 @@ import Checkbox from '../Checkbox';
 import React from 'react';
 import {cleanup, render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 describe('Checkbox', () => {
 	afterEach(cleanup);
 

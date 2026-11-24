@@ -7,8 +7,6 @@ import {HTML5Backend} from 'react-dnd-html5-backend';
 
 jest.mock('../CriteriaGroup', () => () => <div />);
 
-jest.unmock('react-dom');
-
 describe('CriteriaBuilder', () => {
 	afterEach(cleanup);
 

@@ -3,8 +3,6 @@ import React from 'react';
 import {render} from '@testing-library/react';
 import {MemoryRouter} from 'react-router';
 
-jest.unmock('react-dom');
-
 const FilledComponent = props => (
 	<Name
 		data={{id: 'test', name: 'foo'}}

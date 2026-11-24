@@ -27,8 +27,6 @@ function mockRecommendationJobRunsMonthlyStatisticsReq() {
 	};
 }
 
-jest.unmock('react-dom');
-
 const TestModal = props => {
 	const {observer} = useModal({defaultOpen: true});
 

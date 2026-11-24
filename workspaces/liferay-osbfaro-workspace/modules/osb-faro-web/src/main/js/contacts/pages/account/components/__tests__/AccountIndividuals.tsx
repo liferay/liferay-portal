@@ -2,8 +2,6 @@ import AccountIndividuals from '../AccountIndividuals';
 import React from 'react';
 import {cleanup, render, screen} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 jest.mock('@liferay/frontend-data-set-web', () => ({
 	...jest.requireActual('@liferay/frontend-data-set-web'),
 	FrontendDataSet: (props: any) => (

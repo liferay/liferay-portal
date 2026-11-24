@@ -4,8 +4,6 @@ import {cleanup, render} from '@testing-library/react';
 import {DistributionTab} from 'shared/util/records';
 import {List} from 'immutable';
 
-jest.unmock('react-dom');
-
 describe('DistributionCard Tabs', () => {
 	afterEach(cleanup);
 

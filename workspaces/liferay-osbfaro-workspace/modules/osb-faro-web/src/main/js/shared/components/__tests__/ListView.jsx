@@ -4,8 +4,6 @@ import {cleanup, render} from '@testing-library/react';
 import {mockIndividual} from 'test/data';
 import {times} from 'lodash';
 
-jest.unmock('react-dom');
-
 const items = times(3, i => mockIndividual(i, {total: 123}));
 
 describe('ListView', () => {

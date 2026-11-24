@@ -3,8 +3,6 @@ import ReactDOM from 'react-dom';
 import TrackedBehaviorsList from '../TrackedBehaviorsList';
 import {cleanup, render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 ReactDOM.createPortal = jest.fn();
 
 describe('TrackedBehaviorsList', () => {

@@ -10,8 +10,6 @@ import {useModal} from '@clayui/modal';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
 import {waitForModal} from 'test/render-modal';
 
-jest.unmock('react-dom');
-
 const COLUMNS = [
 	{
 		accessor: 'name',

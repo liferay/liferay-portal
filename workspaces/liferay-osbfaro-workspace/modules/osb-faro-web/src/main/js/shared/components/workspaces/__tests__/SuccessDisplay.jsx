@@ -4,8 +4,6 @@ import WorkspacesSuccessDisplay from '../SuccessDisplay';
 import {Provider} from 'react-redux';
 import {render, screen} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 describe('WorkspacesSuccessDisplay', () => {
 	it('should render', () => {
 		const {container} = render(

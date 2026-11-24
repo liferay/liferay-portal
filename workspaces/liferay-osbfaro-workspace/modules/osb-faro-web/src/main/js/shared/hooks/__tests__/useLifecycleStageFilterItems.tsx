@@ -3,8 +3,6 @@ import {LifecycleStages} from 'contacts/pages/account/utils/constants';
 import {renderHook, waitFor} from '@testing-library/react';
 import {useLifecycleStageFilterItems} from 'shared/hooks/useLifecycleStageFilterItems';
 
-jest.unmock('react-dom');
-
 jest.mock('shared/api', () => ({
 	accounts: {
 		fetchLifecycleStageFieldValues: jest.fn(),

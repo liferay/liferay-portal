@@ -3,8 +3,6 @@ import React, {useContext} from 'react';
 import {fireEvent, render, screen} from '@testing-library/react';
 import {OnboardingContext} from 'shared/context/onboarding';
 
-jest.unmock('react-dom');
-
 const OnboardingTrigger = () => {
 	const {onboardingTriggered, setOnboardingTriggered} =
 		useContext(OnboardingContext);

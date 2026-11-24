@@ -7,8 +7,6 @@ import {Provider} from 'react-redux';
 import {render, screen} from '@testing-library/react';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
 
-jest.unmock('react-dom');
-
 describe('IndividualAllAttributesCDP', () => {
 	it('renders the last modified date with the custom date format', async () => {
 		(API.individuals.fetchDetails as jest.Mock).mockReturnValueOnce(

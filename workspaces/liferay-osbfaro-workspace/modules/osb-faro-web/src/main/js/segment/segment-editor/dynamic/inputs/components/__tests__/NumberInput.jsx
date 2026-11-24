@@ -3,8 +3,6 @@ import React from 'react';
 import {FunctionalOperators} from '../../../utils/constants';
 import {render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 describe('NumberInput', () => {
 	it('should render', () => {
 		const {container} = render(

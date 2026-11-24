@@ -4,8 +4,6 @@ import React from 'react';
 import {act, cleanup, screen} from '@testing-library/react';
 import {renderModal} from 'test/render-modal';
 
-jest.unmock('react-dom');
-
 const renderFocusModal = () =>
 	renderModal(observer => (
 		<ClayModal observer={observer}>

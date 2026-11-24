@@ -1,5 +1,3 @@
-jest.unmock('react-dom');
-
 jest.mock('shared/api/connector', () => ({
 	createConnector: jest.fn(() => Promise.resolve({id: 'new-id'})),
 	generateConnectorToken: jest.fn(() =>

@@ -5,8 +5,6 @@ import {cleanup, render} from '@testing-library/react';
 import {ReferencedObjectsProvider} from 'segment/segment-editor/dynamic/context/referencedObjects';
 import {Segment} from 'shared/util/records';
 
-jest.unmock('react-dom');
-
 describe('CriteriaCard', () => {
 	const innerHeight = window.innerHeight;
 

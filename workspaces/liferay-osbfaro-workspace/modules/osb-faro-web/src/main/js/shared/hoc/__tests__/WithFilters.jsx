@@ -3,8 +3,6 @@ import withFilters from '../WithFilters';
 import {cleanup, render} from '@testing-library/react';
 import {Map, Set} from 'immutable';
 
-jest.unmock('react-dom');
-
 describe('WithFilters', () => {
 	afterEach(cleanup);
 

@@ -4,8 +4,6 @@ import RouterLink from '../RouterLink';
 import {MemoryRouter} from 'react-router-dom';
 import {render, screen} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 const renderLink = (href: string, ref: React.RefObject<HTMLAnchorElement>) =>
 	render(
 		<MemoryRouter>

@@ -4,8 +4,6 @@ import {MemoryRouter} from 'react-router-dom';
 import {render} from '@testing-library/react';
 import {useQueryPagination} from 'shared/hooks/useQueryPagination';
 
-jest.unmock('react-dom');
-
 const DefaultComponent = ({delta, orderIOMap, page, query}) => {
 	const {column, type} = getSortFromOrderIOMap(orderIOMap);
 

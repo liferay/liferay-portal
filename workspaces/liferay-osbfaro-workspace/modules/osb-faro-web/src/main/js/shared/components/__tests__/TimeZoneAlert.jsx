@@ -5,8 +5,6 @@ import {Provider} from 'react-redux';
 import {render} from '@testing-library/react';
 import {MemoryRouter} from 'react-router';
 
-jest.unmock('react-dom');
-
 jest.mock('shared/hooks/useTimeZone', () => ({
 	useTimeZone: () => ({
 		displayTimeZone: 'UTC -03:00 Brasilia Time (America/Recife)',

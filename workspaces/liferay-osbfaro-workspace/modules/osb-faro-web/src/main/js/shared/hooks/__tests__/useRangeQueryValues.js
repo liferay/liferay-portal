@@ -6,8 +6,6 @@ import {
 	useRangeQueryValues,
 } from 'shared/hooks/useRangeQueryValues';
 
-jest.unmock('react-dom');
-
 const renderRangeQueryValues = (queryString = '') => {
 	let rangeQueryValues;
 

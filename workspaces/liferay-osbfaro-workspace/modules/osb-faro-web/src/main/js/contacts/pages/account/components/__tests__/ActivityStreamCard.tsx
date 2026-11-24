@@ -13,8 +13,6 @@ import {Provider} from 'react-redux';
 import {RangeKeyTimeRanges} from 'shared/util/constants';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
 
-jest.unmock('react-dom');
-
 jest.mock('shared/hooks/useTimeZone', () => ({
 	useTimeZone: () => ({
 		timeZoneId: 'UTC',

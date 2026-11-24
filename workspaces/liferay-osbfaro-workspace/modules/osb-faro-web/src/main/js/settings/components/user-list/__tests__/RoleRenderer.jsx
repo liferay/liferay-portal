@@ -2,8 +2,6 @@ import React from 'react';
 import RoleRenderer from '../RoleRenderer';
 import {render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 const userRoleOptions = [
 	{label: 'Administrator', value: 'Site Administrator'},
 	{label: 'Member', value: 'Site Member'},

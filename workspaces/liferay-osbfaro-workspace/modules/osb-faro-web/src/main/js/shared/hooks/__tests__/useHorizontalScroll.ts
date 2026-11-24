@@ -1,8 +1,6 @@
 import {act, renderHook} from '@testing-library/react';
 import {useHorizontalScroll} from '../useHorizontalScroll';
 
-jest.unmock('react-dom');
-
 const buildTrack = ({
 	clientWidth,
 	scrollLeft = 0,

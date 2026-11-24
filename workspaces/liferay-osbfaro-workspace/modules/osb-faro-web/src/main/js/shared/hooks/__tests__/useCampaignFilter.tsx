@@ -3,8 +3,6 @@ import {act, renderHook} from '@testing-library/react';
 import {MemoryRouter} from 'react-router-dom';
 import {useCampaignFilter} from '../useCampaignFilter';
 
-jest.unmock('react-dom');
-
 const renderFilter = (initialEntry = '/') =>
 	renderHook(() => useCampaignFilter(), {
 		wrapper: ({children}: {children?: React.ReactNode}) => (

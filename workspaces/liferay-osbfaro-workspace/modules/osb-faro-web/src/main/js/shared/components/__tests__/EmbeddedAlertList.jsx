@@ -3,8 +3,6 @@ import React from 'react';
 import {AlertTypes} from '../Alert';
 import {render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 describe('EmbeddedAlertList', () => {
 	it('should render', () => {
 		const {container} = render(

@@ -11,8 +11,6 @@ import {Provider} from 'react-redux';
 import {useModal} from '@clayui/modal';
 import {waitForModal} from 'test/render-modal';
 
-jest.unmock('react-dom');
-
 // Mock DateRangeInput to simplify the test and avoid complex portal/calendar
 // logic. Tests that pin the displayed range opt into rendering the real input
 // next to the mock button through mockRenderActualDateRangeInput.

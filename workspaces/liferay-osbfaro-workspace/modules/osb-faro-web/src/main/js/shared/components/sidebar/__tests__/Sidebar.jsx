@@ -24,8 +24,6 @@ const renderSidebar = (props = {}) =>
 		</Provider>
 	);
 
-jest.unmock('react-dom');
-
 describe('Sidebar', () => {
 	afterEach(() => {
 		resetBodyWidth();

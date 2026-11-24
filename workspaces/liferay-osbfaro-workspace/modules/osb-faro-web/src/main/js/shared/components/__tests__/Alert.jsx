@@ -2,8 +2,6 @@ import Alert, {AlertTypes} from '../Alert';
 import React from 'react';
 import {cleanup, fireEvent, render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 describe('Alert', () => {
 	afterEach(cleanup);
 

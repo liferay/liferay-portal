@@ -14,8 +14,6 @@ const defaultProps = {
 	interestId: 1
 };
 
-jest.unmock('react-dom');
-
 describe('InterestDetails', () => {
 	it('should render', async () => {
 		const {container, getByText} = render(

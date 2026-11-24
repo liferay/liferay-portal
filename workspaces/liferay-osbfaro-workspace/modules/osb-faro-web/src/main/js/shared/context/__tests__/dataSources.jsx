@@ -8,8 +8,6 @@ import {
 } from '@testing-library/react';
 import {DataSourcesProvider, useDataSources} from '../dataSources';
 
-jest.unmock('react-dom');
-
 const ChildComponent = () => {
 	const {empty, error, items, loading} = useDataSources();
 

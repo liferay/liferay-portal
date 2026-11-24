@@ -4,8 +4,6 @@ import {cleanup, render} from '@testing-library/react';
 import {mockIndividual, mockSegment} from 'test/data';
 import {withStaticRouter} from 'test/mock-router';
 
-jest.unmock('react-dom');
-
 const items = [
 	mockIndividual(0, {total: 123}),
 	mockIndividual(1, {total: 123}),

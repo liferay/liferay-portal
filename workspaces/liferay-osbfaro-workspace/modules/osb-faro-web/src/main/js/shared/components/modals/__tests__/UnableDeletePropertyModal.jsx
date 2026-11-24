@@ -3,8 +3,6 @@ import UnableDeletePropertyModal from '../UnableDeletePropertyModal';
 import {cleanup, fireEvent, screen} from '@testing-library/react';
 import {renderModal} from 'test/render-modal';
 
-jest.unmock('react-dom');
-
 describe('UnableDeletePropertyModal', () => {
 	afterEach(cleanup);
 

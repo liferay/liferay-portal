@@ -6,8 +6,6 @@ import {Segment} from 'shared/util/records';
 import {MemoryRouter} from 'react-router-dom';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
 
-jest.unmock('react-dom');
-
 jest.mock('recharts', () => {
 	const OriginalModule = jest.requireActual('recharts');
 

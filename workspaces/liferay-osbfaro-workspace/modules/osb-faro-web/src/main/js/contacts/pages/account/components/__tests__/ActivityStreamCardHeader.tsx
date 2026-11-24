@@ -3,8 +3,6 @@ import React from 'react';
 import {fireEvent, render} from '@testing-library/react';
 import {RangeKeyTimeRanges} from 'shared/util/constants';
 
-jest.unmock('react-dom');
-
 const baseProps = {
 	description: 'The account activities',
 	interval: 'D' as const,

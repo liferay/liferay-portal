@@ -5,8 +5,6 @@ import {ChannelContext, ChannelProvider} from 'shared/context/channel';
 import {renderHook, waitFor} from '@testing-library/react';
 import {useChannels} from 'shared/hooks/useChannels';
 
-jest.unmock('react-dom');
-
 const CHANNELS = [
 	data.mockChannel(1, 0, {id: '1'}),
 	data.mockChannel(2, 0, {id: '2'}),

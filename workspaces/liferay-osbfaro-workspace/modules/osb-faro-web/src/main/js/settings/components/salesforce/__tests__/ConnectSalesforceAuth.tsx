@@ -10,8 +10,6 @@ import {fireEvent, render, screen, waitFor} from '@testing-library/react';
 import {Map} from 'immutable';
 import {MemoryRouter} from 'react-router-dom';
 
-jest.unmock('react-dom');
-
 describe('ConnectSalesforceAuth', () => {
 	afterEach(() => {
 		jest.restoreAllMocks();

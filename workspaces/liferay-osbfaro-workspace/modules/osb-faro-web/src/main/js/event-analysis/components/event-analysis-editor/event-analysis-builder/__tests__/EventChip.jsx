@@ -6,8 +6,6 @@ import {ApolloProvider} from '@apollo/client';
 import {fireEvent, render, screen} from '@testing-library/react';
 import {Provider} from 'react-redux';
 
-jest.unmock('react-dom');
-
 describe('EventChip', () => {
 	it('renders the event name without an overline', () => {
 		const {container} = render(

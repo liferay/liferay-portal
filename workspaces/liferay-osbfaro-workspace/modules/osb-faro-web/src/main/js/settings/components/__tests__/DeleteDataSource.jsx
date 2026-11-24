@@ -17,8 +17,6 @@ import {fromJS} from 'immutable';
 import {MemoryRouter} from 'react-router-dom';
 import {Provider} from 'react-redux';
 
-jest.unmock('react-dom');
-
 let mockEntitiesModalProps;
 
 jest.mock('shared/components/modals/SearchableEntitiesTableModal', () => ({

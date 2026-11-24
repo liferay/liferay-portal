@@ -8,8 +8,6 @@ import {MockedProvider} from '@apollo/client/testing';
 import {Provider} from 'react-redux';
 import {render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 jest.mock('shared/hooks/useCurrentUser', () => ({
 	useCurrentUser: () => ({
 		isAdmin: () => true

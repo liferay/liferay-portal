@@ -2,8 +2,6 @@ import {Routes, toRoute} from 'shared/util/router';
 import {buildHeaderSubtitle} from '../utils';
 import {cleanup, render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 describe('buildHeaderSubtitle', () => {
 	const context = {channelId: '123', groupId: 'liferay.com'};
 

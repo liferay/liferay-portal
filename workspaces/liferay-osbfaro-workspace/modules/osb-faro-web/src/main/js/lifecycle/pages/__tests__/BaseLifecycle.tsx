@@ -21,8 +21,6 @@ import {useDataSources} from 'shared/context/dataSources';
 import {useRequest} from 'shared/hooks/useRequest';
 import {setBodyWidth} from 'test/body-width';
 
-jest.unmock('react-dom');
-
 jest.mock('shared/hooks/useRequest', () => ({
 	useRequest: jest.fn(),
 }));

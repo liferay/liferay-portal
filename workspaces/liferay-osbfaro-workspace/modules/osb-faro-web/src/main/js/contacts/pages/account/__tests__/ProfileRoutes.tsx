@@ -14,8 +14,6 @@ import {Provider} from 'react-redux';
 import {Routes, toRoute} from 'shared/util/router';
 import {useRequest} from 'shared/hooks/useRequest';
 
-jest.unmock('react-dom');
-
 jest.mock('shared/hooks/useRequest', () => ({
 	useRequest: jest.fn(),
 }));

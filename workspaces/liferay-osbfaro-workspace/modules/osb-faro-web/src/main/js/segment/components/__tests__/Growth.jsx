@@ -10,8 +10,6 @@ import {render, screen} from '@testing-library/react';
 import {Routes} from 'shared/util/router';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
 
-jest.unmock('react-dom');
-
 jest.mock('recharts', () => {
 	const OriginalModule = jest.requireActual('recharts');
 

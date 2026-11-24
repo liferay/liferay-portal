@@ -7,8 +7,6 @@ import {
 	TimeSpans
 } from 'segment/segment-editor/dynamic/utils/constants';
 
-jest.unmock('react-dom');
-
 describe('DateFilterConjunctionDisplay', () => {
 	afterEach(cleanup);
 

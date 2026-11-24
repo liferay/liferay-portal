@@ -15,8 +15,6 @@ import {
 import {MemoryRouter} from 'react-router';
 import {render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 describe('accountsListColumns', () => {
 	it('activitiesCount should format a number with locale-aware grouping', () => {
 		expect(accountsListColumns.activitiesCount.dataFormatter(1234567)).toBe(

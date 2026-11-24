@@ -11,8 +11,6 @@ import {RangeKeyTimeRanges} from 'shared/util/constants';
 import {RangeSelectors} from 'shared/types';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
 
-jest.unmock('react-dom');
-
 const PREVIOUS_PATH_NODES = [
 	{
 		__typename: 'PagePathNode',

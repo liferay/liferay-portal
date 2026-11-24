@@ -4,8 +4,6 @@ import {cleanup, render} from '@testing-library/react';
 import {IOverviewMetric, OverviewMetricType} from '../../utils/types';
 import {TrendClassification} from 'segment/types';
 
-jest.unmock('react-dom');
-
 const buildMetric = (
 	metricType: OverviewMetricType,
 	value: number

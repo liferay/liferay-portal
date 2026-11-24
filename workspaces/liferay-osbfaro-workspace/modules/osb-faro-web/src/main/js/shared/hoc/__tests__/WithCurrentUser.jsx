@@ -2,8 +2,6 @@ import React from 'react';
 import withCurrentUser from '../WithCurrentUser';
 import {render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 jest.mock('shared/hooks/useCurrentUser', () => ({
 	useCurrentUser: () => ({name: 'fooUser'})
 }));

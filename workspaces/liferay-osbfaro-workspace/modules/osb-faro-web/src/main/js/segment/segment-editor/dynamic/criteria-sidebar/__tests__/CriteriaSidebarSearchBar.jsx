@@ -2,8 +2,6 @@ import CriteriaSidebarSearchBar from '../CriteriaSidebarSearchBar';
 import React from 'react';
 import {cleanup, render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 describe('CriteriaSidebarSearchBar', () => {
 	afterEach(cleanup);
 

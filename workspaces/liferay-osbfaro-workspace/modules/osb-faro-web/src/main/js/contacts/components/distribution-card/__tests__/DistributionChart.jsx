@@ -7,8 +7,6 @@ import {DistributionTab} from 'shared/util/records';
 import {FieldContexts} from 'shared/util/constants';
 import {Provider} from 'react-redux';
 
-jest.unmock('react-dom');
-
 describe('DistributionCard DistributionChart', () => {
 	afterEach(cleanup);
 

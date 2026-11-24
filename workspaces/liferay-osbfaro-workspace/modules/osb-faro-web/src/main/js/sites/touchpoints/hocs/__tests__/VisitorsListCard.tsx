@@ -7,8 +7,6 @@ import {fireEvent, render} from '@testing-library/react';
 import {MemoryRouter} from 'react-router-dom';
 import {Provider} from 'react-redux';
 
-jest.unmock('react-dom');
-
 const MOCK_ROUTER = {
 	params: {
 		channelId: '456',

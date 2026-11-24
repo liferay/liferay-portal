@@ -14,8 +14,6 @@ import {Settings} from '../Settings';
 import {SubscriptionNames} from 'shared/util/subscriptions';
 import {useCurrentUser} from 'shared/hooks/useCurrentUser';
 
-jest.unmock('react-dom');
-
 jest.mock('shared/hooks/useCurrentUser', () => ({
 	useCurrentUser: jest.fn()
 }));

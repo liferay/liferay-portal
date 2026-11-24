@@ -1,5 +1,3 @@
-jest.unmock('react-dom');
-
 import MarketoCampaignEntities from '../MarketoCampaignEntities';
 import React from 'react';
 import {render} from '@testing-library/react';

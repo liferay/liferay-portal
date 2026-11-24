@@ -11,8 +11,6 @@ import {noop} from 'lodash';
 import {Provider} from 'react-redux';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
 
-jest.unmock('react-dom');
-
 const MOCK_APOLLO_QUERY = {
 	mapResultsToProps: data => {
 		if (data) {

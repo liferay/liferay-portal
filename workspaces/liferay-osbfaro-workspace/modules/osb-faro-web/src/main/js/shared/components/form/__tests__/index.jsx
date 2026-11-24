@@ -2,8 +2,6 @@ import Form from '../index';
 import React from 'react';
 import {render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 describe('Form', () => {
 	it('should render a Form', () => {
 		const {container} = render(<Form />);

@@ -2,8 +2,6 @@ import {act, renderHook} from '@testing-library/react';
 import {useChannelLifecycles} from 'shared/hooks/useChannelLifecycles';
 import {useLifecycleSelection} from 'shared/hooks/useLifecycleSelection';
 
-jest.unmock('react-dom');
-
 jest.mock('shared/hooks/useChannelLifecycles', () => ({
 	useChannelLifecycles: jest.fn(),
 }));

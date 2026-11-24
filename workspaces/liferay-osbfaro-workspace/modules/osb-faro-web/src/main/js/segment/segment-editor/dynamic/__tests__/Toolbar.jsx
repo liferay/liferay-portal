@@ -3,8 +3,6 @@ import {cleanup, fireEvent, render, screen} from '@testing-library/react';
 import {MemoryRouter} from 'react-router';
 import {Toolbar} from '../Toolbar';
 
-jest.unmock('react-dom');
-
 const renderToolbar = (props = {}) =>
 	render(
 		<MemoryRouter>

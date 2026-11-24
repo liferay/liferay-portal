@@ -10,8 +10,6 @@ import {Provider} from 'react-redux';
 import {User} from 'shared/util/records';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
 
-jest.unmock('react-dom');
-
 const mockItems = [
 	{
 		batchId: '1',

@@ -2,8 +2,6 @@ import ActivitySection from '../ActivitySection';
 import React from 'react';
 import {cleanup, render, screen} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 const renderSection = (props?: {label?: string}) =>
 	render(
 		<ActivitySection label="Timed Activity" {...props}>

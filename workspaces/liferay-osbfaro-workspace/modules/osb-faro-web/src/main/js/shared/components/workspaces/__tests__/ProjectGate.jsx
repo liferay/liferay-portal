@@ -25,8 +25,6 @@ import {Provider} from 'react-redux';
 import {ProjectStates} from 'shared/util/constants';
 import {render, screen} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 const renderGate = (groupId) =>
 	render(
 		<Provider store={mockStore()}>

@@ -13,8 +13,6 @@ import {
 import {Property, Segment} from 'shared/util/records';
 import {ReferencedObjectsProvider} from 'segment/segment-editor/dynamic/context/referencedObjects';
 
-jest.unmock('react-dom');
-
 const mockCriterion = {
 	operatorName: CustomFunctionOperators.OrganizationsFilter,
 	propertyName: 'name',

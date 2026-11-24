@@ -11,8 +11,6 @@ import {generateConnectorToken, updateConnector} from 'shared/api/connector';
 import {Provider} from 'react-redux';
 import {revoke} from 'shared/api/api-tokens';
 
-jest.unmock('react-dom');
-
 const useParamsMock = jest.fn();
 const useCurrentUserMock = jest.fn();
 const useDisconnectDataSourceMock = jest.fn();

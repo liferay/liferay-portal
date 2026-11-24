@@ -9,8 +9,6 @@ import {
 import {cleanup, render} from '@testing-library/react';
 import {mockSegment} from 'test/data';
 
-jest.unmock('react-dom');
-
 const initialState = {
 	unassignedSegments: []
 };

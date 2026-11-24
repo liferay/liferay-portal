@@ -5,8 +5,6 @@ import {cleanup, screen} from '@testing-library/react';
 import {noop} from 'lodash';
 import {renderModal} from 'test/render-modal';
 
-jest.unmock('react-dom');
-
 describe('IssueSubmitted', () => {
 	afterEach(cleanup);
 

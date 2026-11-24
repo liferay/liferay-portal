@@ -12,8 +12,6 @@ import {fromJS} from 'immutable';
 import {LanguageIds} from 'shared/util/constants';
 import store from 'shared/store';
 
-jest.unmock('react-dom');
-
 function mockLocale(languageId) {
 	store.getState.mockReturnValue(
 		fromJS({

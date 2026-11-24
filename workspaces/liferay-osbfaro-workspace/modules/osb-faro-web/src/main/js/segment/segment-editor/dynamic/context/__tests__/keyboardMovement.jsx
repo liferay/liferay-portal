@@ -6,8 +6,6 @@ import {
 	KeyboardMovementProvider
 } from '../keyboardMovement';
 
-jest.unmock('react-dom');
-
 const source = {
 	criterion: {
 		defaultValue: 'default',

@@ -4,8 +4,6 @@ import {BrowserRouter} from 'react-router-dom';
 import {cleanup, fireEvent, render} from '@testing-library/react';
 import {noop} from 'lodash';
 
-jest.unmock('react-dom');
-
 describe('ReadyToGo', () => {
 	afterEach(cleanup);
 

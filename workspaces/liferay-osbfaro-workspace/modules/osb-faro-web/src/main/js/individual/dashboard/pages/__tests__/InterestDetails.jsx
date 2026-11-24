@@ -9,8 +9,6 @@ import {Provider} from 'react-redux';
 import {Routes} from 'shared/util/router';
 import {waitForLoading} from 'test/helpers';
 
-jest.unmock('react-dom');
-
 const mockItems = [
 	{
 		__typename: 'PageMetric',

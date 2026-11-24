@@ -16,8 +16,6 @@ import {Segment} from 'shared/util/records';
 import {SegmentCategories, SegmentTypes} from 'shared/util/constants';
 import {withReferencedObjectsProvider} from 'segment/segment-editor/dynamic/context/referencedObjects';
 
-jest.unmock('react-dom');
-
 const WrappedEventDisplay = withReferencedObjectsProvider(EventDisplay);
 
 const mockSegment = data.getImmutableMock(Segment, data.mockSegment, 0, {

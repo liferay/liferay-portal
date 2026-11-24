@@ -3,8 +3,6 @@ import React from 'react';
 import withInterval from '../WithInterval';
 import {cleanup, render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 describe('WithInterval', () => {
 	afterEach(cleanup);
 

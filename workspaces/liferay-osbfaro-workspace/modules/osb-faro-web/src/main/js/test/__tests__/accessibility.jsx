@@ -5,8 +5,6 @@ import {
 } from '../accessibility';
 import {render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 describe('accessibility helpers', () => {
 	it('should report a button without an accessible name', async () => {
 		const {container} = render(<button type='button' />);

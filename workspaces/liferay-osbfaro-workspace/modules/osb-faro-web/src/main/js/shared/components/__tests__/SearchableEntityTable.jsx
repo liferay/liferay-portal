@@ -7,8 +7,6 @@ import {times} from 'lodash';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
 import {withStaticRouter} from 'test/mock-router';
 
-jest.unmock('react-dom');
-
 const COLUMNS = [
 	{
 		accessor: 'name',

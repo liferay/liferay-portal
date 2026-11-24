@@ -2,8 +2,6 @@ import React from 'react';
 import Trend from '../Trend';
 import {render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 describe('Trend', () => {
 	it('should render', () => {
 		const {container, getByText} = render(

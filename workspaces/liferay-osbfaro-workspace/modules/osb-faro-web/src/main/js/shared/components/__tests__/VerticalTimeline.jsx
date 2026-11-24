@@ -4,8 +4,6 @@ import VerticalTimeline from '../VerticalTimeline';
 import {cleanup, fireEvent, render, screen, within} from '@testing-library/react';
 import {Provider} from 'react-redux';
 
-jest.unmock('react-dom');
-
 const TIME_ZONE_ID = 'UTC';
 
 // The raw payload view carries a copy button, which announces a successful

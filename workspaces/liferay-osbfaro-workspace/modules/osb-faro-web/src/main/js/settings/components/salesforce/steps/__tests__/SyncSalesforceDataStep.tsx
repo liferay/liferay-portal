@@ -4,8 +4,6 @@ import {fromJS} from 'immutable';
 import {SyncSalesforceDataStep} from '../SyncSalesforceDataStep';
 import {updateSalesforce} from 'shared/api/data-source';
 
-jest.unmock('react-dom');
-
 jest.mock('react-router-dom', () => ({
 	...jest.requireActual('react-router-dom'),
 	useParams: () => ({groupId: '23'}),

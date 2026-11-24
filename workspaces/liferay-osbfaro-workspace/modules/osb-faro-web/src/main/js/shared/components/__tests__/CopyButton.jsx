@@ -5,8 +5,6 @@ import StopClickPropagation from 'shared/components/table/cell-components/StopCl
 import {cleanup, fireEvent, render} from '@testing-library/react';
 import {Provider} from 'react-redux';
 
-jest.unmock('react-dom');
-
 // A successful copy announces itself through the alert store.
 
 const renderCopyButton = (children) => {

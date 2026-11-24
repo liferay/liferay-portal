@@ -8,8 +8,6 @@ import {renderWithStore} from 'test/mock-store';
 import {withChannelProvider} from 'test/mock-channel-context';
 import {withStaticRouter} from 'test/mock-router';
 
-jest.unmock('react-dom');
-
 class TestComponent extends React.Component {
 	render() {
 		return <div>{'foobar'}</div>;

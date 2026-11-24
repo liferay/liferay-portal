@@ -9,8 +9,6 @@ import {render} from '@testing-library/react';
 import {Routes} from 'shared/util/router';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
 
-jest.unmock('react-dom');
-
 const mockGroupId = '23';
 
 const Wrapper = ({children, mocks = []}) => (

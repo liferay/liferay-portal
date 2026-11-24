@@ -14,8 +14,6 @@ import {RangeKeyTimeRanges} from 'shared/util/constants';
 import {render} from '@testing-library/react';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
 
-jest.unmock('react-dom');
-
 const MOCK_CONTEXT = {
 	filters: {},
 	router: {

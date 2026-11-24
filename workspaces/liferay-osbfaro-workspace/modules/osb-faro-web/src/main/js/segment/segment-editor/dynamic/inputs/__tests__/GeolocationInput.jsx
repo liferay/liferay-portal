@@ -23,8 +23,6 @@ import {mockPreferenceReq} from 'test/graphql-data';
 import {Property} from 'shared/util/records';
 import {RelationalOperators, TimeSpans} from '../../utils/constants';
 
-jest.unmock('react-dom');
-
 const mockValue = createCustomValueMap([
 	{
 		key: 'criterionGroup',

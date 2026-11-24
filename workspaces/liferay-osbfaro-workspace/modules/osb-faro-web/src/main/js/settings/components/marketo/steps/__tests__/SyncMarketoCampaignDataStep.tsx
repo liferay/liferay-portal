@@ -5,8 +5,6 @@ import {SyncMarketoCampaignDataStep} from '../SyncMarketoCampaignDataStep';
 import {updateMarketoCampaign} from 'shared/api/data-source';
 import React from 'react';
 
-jest.unmock('react-dom');
-
 const useWizardPageMock = jest.fn();
 
 jest.mock('react-router-dom', () => ({

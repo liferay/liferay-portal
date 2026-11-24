@@ -9,8 +9,6 @@ import {
 } from '@testing-library/react';
 import {useRequest} from 'shared/hooks/useRequest';
 
-jest.unmock('react-dom');
-
 jest.mock('shared/api', () => ({
 	accounts: {
 		fetchLifecycleStatus: jest.fn(),

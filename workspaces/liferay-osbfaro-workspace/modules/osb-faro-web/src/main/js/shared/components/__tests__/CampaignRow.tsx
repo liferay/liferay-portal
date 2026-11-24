@@ -3,8 +3,6 @@ import React from 'react';
 import {CampaignTouch} from 'shared/util/activities';
 import {cleanup, fireEvent, render, screen} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 const CAMPAIGN: CampaignTouch = {
 	campaignId: 'c3',
 	campaignName: 'Q3 Manufacturing ABM',

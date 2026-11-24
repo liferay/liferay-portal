@@ -7,8 +7,6 @@ import {getMatchedRoute, Routes} from 'shared/util/router';
 import {render, screen} from '@testing-library/react';
 import {useLDPEnabled} from 'shared/hooks/useLDPEnabled';
 
-jest.unmock('react-dom');
-
 jest.mock('shared/components/download-report/DownloadCSVReport', () => ({
 	__esModule: true,
 	default: ({assetId}) => (

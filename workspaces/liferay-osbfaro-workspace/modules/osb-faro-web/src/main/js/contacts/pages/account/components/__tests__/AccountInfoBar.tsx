@@ -3,8 +3,6 @@ import React from 'react';
 import {cleanup, render, screen} from '@testing-library/react';
 import {useLifecycleSelection} from 'shared/hooks/useLifecycleSelection';
 
-jest.unmock('react-dom');
-
 jest.mock('react-router-dom', () => ({
 	...jest.requireActual('react-router-dom'),
 	useParams: () => ({channelId: '123', groupId: '23'}),

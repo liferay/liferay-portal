@@ -4,8 +4,6 @@ import {cleanup, fireEvent, render} from '@testing-library/react';
 import {noop} from 'lodash';
 import {useLDPEnabled} from 'shared/hooks/useLDPEnabled';
 
-jest.unmock('react-dom');
-
 jest.mock('shared/hooks/useLDPEnabled', () => ({
 	useLDPEnabled: jest.fn(),
 }));

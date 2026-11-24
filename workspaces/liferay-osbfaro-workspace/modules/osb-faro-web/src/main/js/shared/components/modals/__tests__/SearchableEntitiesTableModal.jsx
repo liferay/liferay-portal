@@ -9,8 +9,6 @@ import {useModal} from '@clayui/modal';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
 import {waitForModal} from 'test/render-modal';
 
-jest.unmock('react-dom');
-
 const ITEMS = [
 	{emailAddress: 'foo@liferay.com', name: 'Foo'},
 	{emailAddress: 'bar@liferay.com', name: 'Bar'}

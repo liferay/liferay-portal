@@ -11,8 +11,6 @@ import {
 } from 'test/infinite-scroll';
 import {Property} from 'shared/util/records';
 
-jest.unmock('react-dom');
-
 describe('StringInput', () => {
 	afterEach(cleanup);
 

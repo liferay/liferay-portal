@@ -3,8 +3,6 @@ import React from 'react';
 import TrailingNinetyDayRange from '../TrailingNinetyDayRange';
 import {cleanup, render, screen} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 describe('TrailingNinetyDayRange', () => {
 	afterEach(() => {
 		cleanup();

@@ -4,8 +4,6 @@ import React from 'react';
 import {fireEvent, render, screen} from '@testing-library/react';
 import {MemoryRouter} from 'react-router-dom';
 
-jest.unmock('react-dom');
-
 const fetchCampaignAcquisitionParameters = API.campaigns
 	.fetchCampaignAcquisitionParameters as jest.Mock;
 

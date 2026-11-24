@@ -2,8 +2,6 @@ import React from 'react';
 import SyncedStripe, {getTitle} from '../SyncedStripe';
 import {cleanup, render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 describe('SyncedStripe', () => {
 	afterEach(cleanup);
 

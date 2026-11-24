@@ -6,8 +6,6 @@ import {noop} from 'lodash';
 import {Provider} from 'react-redux';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
 
-jest.unmock('react-dom');
-
 const inviteSentMessage =
 	'You can see the new members invitation status and role permissions under user management in settings.';
 

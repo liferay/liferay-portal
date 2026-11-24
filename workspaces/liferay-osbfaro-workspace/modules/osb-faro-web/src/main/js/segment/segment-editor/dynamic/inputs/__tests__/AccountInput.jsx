@@ -13,8 +13,6 @@ import {fromJS} from 'immutable';
 import {Property} from 'shared/util/records';
 import {PropertyTypes, RelationalOperators} from '../../utils/constants';
 
-jest.unmock('react-dom');
-
 const {EQ} = RelationalOperators;
 
 describe('AccountInput', () => {

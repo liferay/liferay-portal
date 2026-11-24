@@ -3,8 +3,6 @@ import React, {useEffect} from 'react';
 import {render, screen} from '@testing-library/react';
 import {useAnnounce} from 'shared/components/condition-chip/AnnounceContext';
 
-jest.unmock('react-dom');
-
 const Announcer = ({message}) => {
 	const announce = useAnnounce();
 

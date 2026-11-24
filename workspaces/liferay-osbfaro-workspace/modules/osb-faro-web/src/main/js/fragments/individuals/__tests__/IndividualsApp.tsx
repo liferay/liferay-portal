@@ -16,8 +16,6 @@ import {
 	IndividualsInterest,
 } from '../IndividualsApp';
 
-jest.unmock('react-dom');
-
 describe('IndividualsApp', () => {
 	it('renders the route of Individual', () => {
 		render(<Individual channelId="321" groupId="23" params={{id: '1'}} />);

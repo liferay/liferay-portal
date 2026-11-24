@@ -3,8 +3,6 @@ import UtmParametersCard from '../UtmParametersCard';
 import {fireEvent, render, screen, within} from '@testing-library/react';
 import {UtmParameters} from 'campaigns/utils/types';
 
-jest.unmock('react-dom');
-
 const UTM_PARAMETERS: UtmParameters = {
 	utmCampaign: ['q3-manufacturing-webinar'],
 	utmContent: ['hero-banner', 'footer-cta'],

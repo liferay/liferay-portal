@@ -6,8 +6,6 @@ import React from 'react';
 import {cleanup, render} from '@testing-library/react';
 import {range} from 'lodash';
 
-jest.unmock('react-dom');
-
 describe('HeatMapChart', () => {
 	afterEach(cleanup);
 

@@ -21,8 +21,6 @@ import {RangeKeyTimeRanges} from 'shared/util/constants';
 import {useRequest} from 'shared/hooks/useRequest';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
 
-jest.unmock('react-dom');
-
 jest.mock('shared/api', () => ({
 	categories: {
 		fetchAccountTopCategories: jest.fn(),

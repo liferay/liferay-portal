@@ -2,8 +2,6 @@ import React from 'react';
 import {act, renderHook} from '@testing-library/react';
 import {LifecycleContextProvider, useLifecycle} from '../LifecycleContext';
 
-jest.unmock('react-dom');
-
 const wrapper = ({children}: {children: React.ReactNode}) => (
 	<LifecycleContextProvider lifecycleId="1">
 		{children}

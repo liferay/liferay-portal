@@ -2,8 +2,6 @@ import React from 'react';
 import {GenericBarsCard} from '../GenericBarsCard';
 import {render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 describe('GenericBarsCard', () => {
 	it('should render the card title as text by default', () => {
 		const {container, getByText} = render(

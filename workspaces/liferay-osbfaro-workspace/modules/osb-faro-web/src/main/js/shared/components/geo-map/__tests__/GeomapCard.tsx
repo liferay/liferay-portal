@@ -2,8 +2,6 @@ import React from 'react';
 import {fireEvent, render, waitFor} from '@testing-library/react';
 import {GeomapCard} from '../GeomapCard';
 
-jest.unmock('react-dom');
-
 const countries = [
 	{
 		group: 'United States',

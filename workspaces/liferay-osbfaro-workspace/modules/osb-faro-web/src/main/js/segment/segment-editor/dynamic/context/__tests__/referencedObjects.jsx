@@ -13,8 +13,6 @@ import {cleanup, render} from '@testing-library/react';
 import {fromJS, Map} from 'immutable';
 import {Property, Segment} from 'shared/util/records';
 
-jest.unmock('react-dom');
-
 const initialReferencedEntities = new Map({
 	assets: new Map(),
 	organizations: new Map()

@@ -8,8 +8,6 @@ import {Provider} from 'react-redux';
 
 Router.navigate = jest.fn();
 
-jest.unmock('react-dom');
-
 const renderWithProvider = props => (
 	<Provider store={mockStore()}>
 		<BrowserRouter>

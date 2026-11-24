@@ -1,5 +1,3 @@
-jest.unmock('react-dom');
-
 import mockStore from 'test/mock-store';
 import NumberFilter from '../NumberFilter';
 import React from 'react';

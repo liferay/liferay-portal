@@ -2,8 +2,6 @@ import React from 'react';
 import {render} from '@testing-library/react';
 import {Tooltip} from '../Tooltip';
 
-jest.unmock('react-dom');
-
 const values = {high: '12', improvement: undefined, low: '8', median: '10'};
 
 const payload = {

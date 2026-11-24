@@ -6,8 +6,6 @@ import {createCustomValueMap} from '../../utils/custom-inputs';
 import {Property} from 'shared/util/records';
 import {PropertyTypes} from '../../utils/constants';
 
-jest.unmock('react-dom');
-
 const getMockValue = (propertyName, operatorName, value) =>
 	createCustomValueMap([
 		{key: 'criterionGroup', value: [{operatorName, propertyName, value}]}

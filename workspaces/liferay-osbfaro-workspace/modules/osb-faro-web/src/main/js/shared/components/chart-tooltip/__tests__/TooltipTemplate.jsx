@@ -2,8 +2,6 @@ import React from 'react';
 import TooltipTemplate from '../TooltipTemplate';
 import {render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 describe('TooltipTemplate', () => {
 	it('should render', () => {
 		const {container} = render(

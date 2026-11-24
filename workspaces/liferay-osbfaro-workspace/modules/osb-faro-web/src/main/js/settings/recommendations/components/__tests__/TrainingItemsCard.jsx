@@ -10,8 +10,6 @@ import {range} from 'lodash';
 import {fireEvent, render, screen} from '@testing-library/react';
 import {waitForLoading} from 'test/helpers';
 
-jest.unmock('react-dom');
-
 describe('TrainingItemsCard', () => {
 	it('should render', async () => {
 		const {container} = render(

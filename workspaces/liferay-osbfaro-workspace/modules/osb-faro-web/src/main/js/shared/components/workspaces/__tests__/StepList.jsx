@@ -2,8 +2,6 @@ import React from 'react';
 import StepList from '../StepList';
 import {render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 const DefaultComponent = props => (
 	<StepList steps={['step1', 'step2']} {...props} />
 );

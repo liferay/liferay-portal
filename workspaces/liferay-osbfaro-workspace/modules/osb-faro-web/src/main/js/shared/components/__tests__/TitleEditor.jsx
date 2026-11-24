@@ -3,8 +3,6 @@ import {cleanup, fireEvent, render} from '@testing-library/react';
 import {noop} from 'lodash';
 import {TitleEditor} from '../TitleEditor';
 
-jest.unmock('react-dom');
-
 describe('TitleEditor', () => {
 	afterEach(cleanup);
 

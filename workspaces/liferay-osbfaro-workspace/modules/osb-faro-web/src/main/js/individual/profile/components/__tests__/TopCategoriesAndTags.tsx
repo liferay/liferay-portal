@@ -14,8 +14,6 @@ import {Provider} from 'react-redux';
 import {RangeKeyTimeRanges} from 'shared/util/constants';
 import {useRequest} from 'shared/hooks/useRequest';
 
-jest.unmock('react-dom');
-
 jest.mock('shared/api', () => ({
 	categories: {
 		fetchIndividualTopCategories: jest.fn(),

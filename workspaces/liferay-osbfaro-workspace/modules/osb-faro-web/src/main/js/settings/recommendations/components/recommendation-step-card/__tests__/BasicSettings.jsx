@@ -3,8 +3,6 @@ import Form from 'shared/components/form';
 import React from 'react';
 import {render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 describe('BasicSettings', () => {
 	it('should render', () => {
 		const {container} = render(

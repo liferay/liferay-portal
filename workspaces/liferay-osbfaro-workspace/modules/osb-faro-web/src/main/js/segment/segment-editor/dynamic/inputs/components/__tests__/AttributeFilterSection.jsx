@@ -7,8 +7,6 @@ import {mockEventPropertiesReq} from 'test/graphql-data';
 import {RelationalOperators} from '../../../utils/constants';
 import {render, screen, waitFor} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 let mockInputProps;
 
 jest.mock('../attribute-conjunction-input', () => (props) => {

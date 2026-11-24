@@ -17,8 +17,6 @@ import {UnassignedSegmentsContext} from 'shared/context/unassignedSegments';
 import {User} from 'shared/util/records';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
 
-jest.unmock('react-dom');
-
 const MOCK_UNASSIGNED_SEGMENTS_CONTEXT = {
 	showUnassignedAlert: false,
 	unassignedSegments: [],

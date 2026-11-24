@@ -2,8 +2,6 @@ import BarComparisonTable from '../BarComparisonTable';
 import React from 'react';
 import {render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 const getData = (comparePrevious = false) =>
 	[
 		{

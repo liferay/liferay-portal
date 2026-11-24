@@ -6,8 +6,6 @@ import {mockIndividual} from 'test/data';
 import {render} from '@testing-library/react';
 import {MemoryRouter} from 'react-router';
 
-jest.unmock('react-dom');
-
 describe('IndividualDetailsCard', () => {
 	it('should render', () => {
 		const {container} = render(

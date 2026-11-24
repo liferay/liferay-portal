@@ -7,8 +7,6 @@ import {mockChannelContext} from 'test/mock-channel-context';
 import {render} from '@testing-library/react';
 import {MemoryRouter} from 'react-router-dom';
 
-jest.unmock('react-dom');
-
 jest.mock('react-router-dom', () => ({
 	...jest.requireActual('react-router-dom'),
 	useLocation: () => ({

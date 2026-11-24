@@ -10,8 +10,6 @@ import {cleanup, render} from '@testing-library/react';
 import {mockChannel} from 'test/data';
 import {mockChannelContext} from 'test/mock-channel-context';
 
-jest.unmock('react-dom');
-
 const initialState = {
 	channels: [],
 	selectedChannel: null

@@ -9,8 +9,6 @@ jest.mock('shared/util/oauth', () => ({
 	emitToken: jest.fn()
 }));
 
-jest.unmock('react-dom');
-
 describe('OAuthReceive', () => {
 	afterEach(() => {
 		emitToken.mockReset();

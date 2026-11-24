@@ -9,8 +9,6 @@ import {
 import {isBoolean} from 'lodash';
 import {render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 describe('attributes', () => {
 	const initialAttributes = {
 		attributes: {

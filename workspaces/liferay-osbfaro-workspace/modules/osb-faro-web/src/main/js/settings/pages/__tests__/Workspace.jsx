@@ -9,8 +9,6 @@ import {Provider} from 'react-redux';
 import {useCurrentUser} from 'shared/hooks/useCurrentUser';
 import {Workspace} from '../Workspace';
 
-jest.unmock('react-dom');
-
 jest.mock('react-router-dom', () => ({
 	...jest.requireActual('react-router-dom'),
 	useBlocker: () => ({state: 'unblocked'}),

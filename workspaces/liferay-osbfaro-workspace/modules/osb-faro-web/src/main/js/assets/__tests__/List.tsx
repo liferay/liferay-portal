@@ -15,8 +15,6 @@ import {Provider} from 'react-redux';
 import {RangeKeyTimeRanges} from 'shared/util/constants';
 import {warmFrontendDataSet} from 'test/warm-frontend-data-set';
 
-jest.unmock('react-dom');
-
 jest.mock('@liferay/frontend-data-set-web', () => ({
 	...jest.requireActual('@liferay/frontend-data-set-web'),
 	FrontendDataSet: ({

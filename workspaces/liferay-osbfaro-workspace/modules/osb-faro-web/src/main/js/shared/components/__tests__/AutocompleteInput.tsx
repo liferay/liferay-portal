@@ -9,8 +9,6 @@ import {
 } from '@testing-library/react';
 import {mockListGeometry, scrollListToBottom} from 'test/infinite-scroll';
 
-jest.unmock('react-dom');
-
 const PAGE_SIZE = 2;
 
 const getOptionIds = () =>

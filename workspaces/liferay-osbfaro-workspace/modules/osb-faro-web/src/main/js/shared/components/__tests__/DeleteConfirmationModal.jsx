@@ -14,8 +14,6 @@ import {MockedProvider} from '@apollo/client/testing';
 import {Provider} from 'react-redux';
 import {useModal} from '@clayui/modal';
 
-jest.unmock('react-dom');
-
 const DefaultComponent = ({children, onClose = jest.fn(), ...props}) => {
 	const {observer, onOpenChange, open} = useModal();
 

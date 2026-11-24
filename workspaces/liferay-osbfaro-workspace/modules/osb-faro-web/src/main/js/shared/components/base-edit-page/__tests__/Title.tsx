@@ -2,8 +2,6 @@ import React from 'react';
 import Title from '../Title';
 import {fireEvent, render, screen} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 const renderTitle = (props: Partial<React.ComponentProps<typeof Title>> = {}) =>
 	render(
 		<Title

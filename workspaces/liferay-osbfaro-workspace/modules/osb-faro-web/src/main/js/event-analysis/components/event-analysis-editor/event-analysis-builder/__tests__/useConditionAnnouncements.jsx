@@ -3,8 +3,6 @@ import useConditionAnnouncements from '../useConditionAnnouncements';
 import {AttributesContext} from '../../context/attributes';
 import {render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 const attributes = {
 	1: {displayName: 'Page Title', id: '1', name: 'pageTitle'},
 	2: {displayName: '', id: '2', name: 'category'}

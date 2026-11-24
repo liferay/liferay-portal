@@ -3,8 +3,6 @@ import SegmentSticker from '../SegmentSticker';
 import {render} from '@testing-library/react';
 import {SegmentStates, SegmentTypes} from 'shared/util/constants';
 
-jest.unmock('react-dom');
-
 describe('SegmentSticker', () => {
 	it('should render', () => {
 		const {container} = render(

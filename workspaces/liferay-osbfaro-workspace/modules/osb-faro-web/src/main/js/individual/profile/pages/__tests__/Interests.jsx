@@ -5,8 +5,6 @@ import {render} from '@testing-library/react';
 import {Routes} from 'shared/util/router';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
 
-jest.unmock('react-dom');
-
 describe('Interests', () => {
 	it('should render', async () => {
 		const {getByText} = render(

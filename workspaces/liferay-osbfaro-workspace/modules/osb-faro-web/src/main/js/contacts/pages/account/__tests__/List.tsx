@@ -9,8 +9,6 @@ import {Provider} from 'react-redux';
 import {useRequest} from 'shared/hooks/useRequest';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
 
-jest.unmock('react-dom');
-
 type FakeFilter = {
 	id: string;
 	preloadedData?: {

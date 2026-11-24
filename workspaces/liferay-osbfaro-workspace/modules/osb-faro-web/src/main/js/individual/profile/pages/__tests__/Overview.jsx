@@ -15,8 +15,6 @@ import {Provider} from 'react-redux';
 import {MemoryRouter} from 'react-router';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
 
-jest.unmock('react-dom');
-
 const variables = {channelId: undefined};
 
 describe('IndividualOverview', () => {

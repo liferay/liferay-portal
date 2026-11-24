@@ -2,8 +2,6 @@ import CompositionChart, {CompositionLegend} from '../CompositionChart';
 import React from 'react';
 import {cleanup, render, screen} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 describe('CompositionChart', () => {
 	afterEach(cleanup);
 

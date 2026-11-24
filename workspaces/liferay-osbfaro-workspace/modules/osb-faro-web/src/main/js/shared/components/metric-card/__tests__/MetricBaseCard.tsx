@@ -19,8 +19,6 @@ import {
 import {render, screen} from '@testing-library/react';
 import {SitesMetricQuery, SitesTabsQuery} from '../queries';
 
-jest.unmock('react-dom');
-
 jest.mock('../MetricTabs', () => () => <div data-testid="MetricTabs" />);
 jest.mock('../MetricChart', () => () => <div data-testid="MetricChart" />);
 

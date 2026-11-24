@@ -17,8 +17,6 @@ import {range} from 'lodash';
 import {Routes} from 'shared/util/router';
 import {SelectionProvider} from 'shared/context/selection';
 
-jest.unmock('react-dom');
-
 const mockItemArray = [
 	{id: '1', name: 'orange'},
 	{id: '2', name: 'apple'},

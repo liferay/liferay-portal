@@ -3,8 +3,6 @@ import React from 'react';
 import {cleanup, fireEvent, render, screen} from '@testing-library/react';
 import {ILifecycleDetail} from 'shared/api/lifecycle';
 
-jest.unmock('react-dom');
-
 const lifecycles = [
 	{id: 'al-1', name: 'Customer'},
 	{id: 'al-2', name: 'Partner'},

@@ -12,8 +12,6 @@ import {UsageOverview} from '../UsageOverview';
 import {useCurrentUser} from 'shared/hooks/useCurrentUser';
 import {User} from 'shared/util/records';
 
-jest.unmock('react-dom');
-
 jest.mock('react-router-dom', () => ({
 	...jest.requireActual('react-router-dom'),
 	useParams: () => ({

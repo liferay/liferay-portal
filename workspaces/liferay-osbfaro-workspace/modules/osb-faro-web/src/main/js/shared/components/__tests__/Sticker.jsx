@@ -2,8 +2,6 @@ import React from 'react';
 import Sticker, {getDisplayForId, hashCode} from '../Sticker';
 import {cleanup, render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 describe('Sticker', () => {
 	afterEach(cleanup);
 

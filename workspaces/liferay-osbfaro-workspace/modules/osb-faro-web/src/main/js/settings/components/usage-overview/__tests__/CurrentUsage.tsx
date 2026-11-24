@@ -2,8 +2,6 @@ import React from 'react';
 import {CurrentUsage} from '../CurrentUsage';
 import {render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 const renderCurrentUsage = (props = {}) =>
 	render(
 		<CurrentUsage

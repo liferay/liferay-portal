@@ -16,8 +16,6 @@ import {Provider} from 'react-redux';
 import {Routes} from 'shared/util/router';
 import {TimeZone} from 'shared/util/records';
 
-jest.unmock('react-dom');
-
 describe('DataSourceList exports', () => {
 	describe('disableRow', () => {
 		it('returns true when the data source is being deleted', () => {

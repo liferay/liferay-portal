@@ -13,8 +13,6 @@ import {Routes} from 'shared/util/router';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
 import SegmentProfileRoutes from '../ProfileRoutes';
 
-jest.unmock('react-dom');
-
 jest.mock('../Overview', () => () => <div>{'SegmentOverview'}</div>);
 jest.mock('../OverviewRealTime', () => () => (
 	<div>{'SegmentOverviewRealTime'}</div>

@@ -2,8 +2,6 @@ import FilterAndOrder from '../FilterAndOrder';
 import React from 'react';
 import {cleanup, fireEvent, render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 describe('FilterAndOrder', () => {
 	afterEach(cleanup);
 

@@ -5,8 +5,6 @@ import {BrowserRouter} from 'react-router-dom';
 import {cleanup, fireEvent, render, screen} from '@testing-library/react';
 import {Provider} from 'react-redux';
 
-jest.unmock('react-dom');
-
 describe('Workspace Empty State', () => {
 	afterEach(cleanup);
 

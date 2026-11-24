@@ -1,5 +1,3 @@
-jest.unmock('react-dom');
-
 import ConnectorEntities from '../ConnectorEntities';
 import React from 'react';
 import {ConnectorStatus, Entity} from '../types';

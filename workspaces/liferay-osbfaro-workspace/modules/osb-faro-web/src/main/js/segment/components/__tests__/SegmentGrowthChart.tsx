@@ -253,8 +253,6 @@ const chartData = [
 	},
 ];
 
-jest.unmock('react-dom');
-
 /**
  * Override Recharts Responsive Container
  * width dimensions fixed to be able to render charts

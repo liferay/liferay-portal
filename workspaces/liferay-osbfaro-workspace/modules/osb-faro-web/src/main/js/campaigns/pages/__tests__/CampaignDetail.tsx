@@ -8,8 +8,6 @@ import {mockChannelContext} from 'test/mock-channel-context';
 import {Provider} from 'react-redux';
 import {render, waitFor} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 let params: Record<string, string> = {};
 
 jest.mock('react-router-dom', () => ({

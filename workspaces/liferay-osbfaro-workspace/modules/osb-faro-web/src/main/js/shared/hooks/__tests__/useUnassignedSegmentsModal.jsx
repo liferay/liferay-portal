@@ -11,8 +11,6 @@ import {Provider} from 'react-redux';
 import {renderHook, waitFor} from '@testing-library/react';
 import {useUnassignedSegmentsModal} from 'shared/hooks/useUnassignedSegmentsModal';
 
-jest.unmock('react-dom');
-
 jest.mock(
 	'shared/components/modals/unassigned-segments-modal',
 	() =>

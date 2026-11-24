@@ -1,8 +1,6 @@
 import withDataSource from '../WithDataSource';
 import {renderWithStore} from 'test/mock-store';
 
-jest.unmock('react-dom');
-
 jest.mock(
 	'shared/hoc/WithAction',
 	() => () => wrappedComponent => wrappedComponent

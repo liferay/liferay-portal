@@ -2,8 +2,6 @@ import React from 'react';
 import {render, waitFor} from '@testing-library/react';
 import {useRequest} from 'shared/hooks/useRequest';
 
-jest.unmock('react-dom');
-
 const mockRequest = jest.fn(() => Promise.resolve('passed'));
 const mockFailedRequest = jest.fn(() => Promise.reject('failed'));
 

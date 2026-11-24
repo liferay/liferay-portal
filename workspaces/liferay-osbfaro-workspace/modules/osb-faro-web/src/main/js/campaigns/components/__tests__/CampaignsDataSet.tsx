@@ -8,8 +8,6 @@ import {
 import {MemoryRouter} from 'react-router-dom';
 import {warmFrontendDataSet} from 'test/warm-frontend-data-set';
 
-jest.unmock('react-dom');
-
 let lastFDSProps: any;
 
 jest.mock('@liferay/frontend-data-set-web', () => ({

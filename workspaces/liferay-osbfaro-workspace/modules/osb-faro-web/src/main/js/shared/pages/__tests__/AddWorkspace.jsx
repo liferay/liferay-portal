@@ -18,8 +18,6 @@ const mockUnconfiguredProject = new Project(
 	fromJS(data.mockProject(0, {name: ''}))
 );
 
-jest.unmock('react-dom');
-
 jest.mock('shared/components/workspaces/AddWorkspaceForm', () => () => null);
 
 describe('AddWorkspace', () => {

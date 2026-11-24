@@ -3,8 +3,6 @@ import React from 'react';
 import {cleanup, render, screen} from '@testing-library/react';
 import {warmFrontendDataSet} from 'test/warm-frontend-data-set';
 
-jest.unmock('react-dom');
-
 let lastFDSProps: any;
 let mockSearch = '';
 

@@ -3,8 +3,6 @@ import Row from '../Row';
 import {mockIndividual} from 'test/data';
 import {render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 const INDIVIDUAL = mockIndividual();
 
 const INDIVIDUAL_NO_SALARY = mockIndividual(1, {

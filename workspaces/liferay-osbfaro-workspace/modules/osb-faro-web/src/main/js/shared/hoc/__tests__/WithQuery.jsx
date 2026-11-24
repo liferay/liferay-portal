@@ -2,8 +2,6 @@ import React from 'react';
 import withQuery from '../WithQuery';
 import {cleanup, render, waitFor} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 const mockData = {test: 'pass'};
 const mockFailData = {test: 'fail'};
 

@@ -7,8 +7,6 @@ import {Provider} from 'react-redux';
 import {renderHook, waitFor} from '@testing-library/react';
 import {useProjectState} from 'shared/hooks/useProjectState';
 
-jest.unmock('react-dom');
-
 const renderUseProjectState = (groupId, store = mockStore()) =>
 	renderHook(() => useProjectState({groupId}), {
 		wrapper: ({children}) => (

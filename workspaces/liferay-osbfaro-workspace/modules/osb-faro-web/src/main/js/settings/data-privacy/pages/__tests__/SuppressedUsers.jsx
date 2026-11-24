@@ -9,8 +9,6 @@ import {Routes} from 'shared/util/router';
 import {SuppressedUsers} from '../SuppressedUsers';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
 
-jest.unmock('react-dom');
-
 jest.mock('shared/hooks/useCurrentUser', () => ({
 	useCurrentUser: () => ({
 		id: '123',

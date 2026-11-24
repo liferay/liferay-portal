@@ -3,8 +3,6 @@ import React from 'react';
 import {cleanup, render} from '@testing-library/react';
 import {withStaticRouter} from 'test/mock-router';
 
-jest.unmock('react-dom');
-
 const DefaultComponent = withStaticRouter(Pagination);
 
 describe('Pagination', () => {

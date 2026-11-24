@@ -2,8 +2,6 @@ import React from 'react';
 import {SummaryCompletedCard} from '../SummaryCompletedCard';
 import {render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 const variants = [
 	{
 		changes: 0,

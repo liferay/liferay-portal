@@ -3,8 +3,6 @@ import React from 'react';
 import {cleanup, render} from '@testing-library/react';
 import {noop} from 'lodash';
 
-jest.unmock('react-dom');
-
 describe('ErrorDisplay', () => {
 	afterEach(cleanup);
 

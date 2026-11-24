@@ -15,8 +15,6 @@ import {
 import {List, Map} from 'immutable';
 import {Property} from 'shared/util/records';
 
-jest.unmock('react-dom');
-
 describe('SessionDisplay', () => {
 	const mockCriterion = {
 		operatorName: CustomFunctionOperators.SessionsFilter,

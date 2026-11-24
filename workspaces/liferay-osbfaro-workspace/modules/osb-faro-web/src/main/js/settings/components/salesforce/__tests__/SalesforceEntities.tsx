@@ -1,5 +1,3 @@
-jest.unmock('react-dom');
-
 import React from 'react';
 import SalesforceEntities from '../SalesforceEntities';
 import {render} from '@testing-library/react';

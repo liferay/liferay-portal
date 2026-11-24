@@ -6,8 +6,6 @@ import {MockedProvider, MockedResponse} from '@apollo/client/testing';
 import {render} from '@testing-library/react';
 import {ReviewSyncedDataStep} from '../ReviewSyncedDataStep';
 
-jest.unmock('react-dom');
-
 const defaultMock = {
 	request: {
 		query: DataSourceQuery,

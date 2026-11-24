@@ -2,8 +2,6 @@ import React from 'react';
 import WillBeRemovedCell from '../WillBeRemoved';
 import {render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 describe('WillBeRemovedCell', () => {
 	it('should render', () => {
 		const {container} = render(

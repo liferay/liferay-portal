@@ -7,8 +7,6 @@ import {mockPreferenceReq} from 'test/graphql-data';
 import {Provider} from 'react-redux';
 import {render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 const DefaultComponent = props => (
 	<Provider store={mockStore()}>
 		<MemoryRouter>

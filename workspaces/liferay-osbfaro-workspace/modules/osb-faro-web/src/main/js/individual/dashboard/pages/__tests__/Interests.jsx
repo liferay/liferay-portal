@@ -11,8 +11,6 @@ import {Provider} from 'react-redux';
 import {Routes} from 'shared/util/router';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
 
-jest.unmock('react-dom');
-
 const mockUseDataSource = useDataSources;
 
 const WrappedComponent = () => (

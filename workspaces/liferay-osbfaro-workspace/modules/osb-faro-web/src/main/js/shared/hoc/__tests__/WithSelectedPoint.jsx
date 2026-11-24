@@ -2,8 +2,6 @@ import React from 'react';
 import withSelectedPoint from '../WithSelectedPoint';
 import {fireEvent, render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 describe('withSelectedPoint', () => {
 	it('should render the wrapped component', () => {
 		const WrappedComponent = withSelectedPoint(() => <div>{'foo'}</div>);

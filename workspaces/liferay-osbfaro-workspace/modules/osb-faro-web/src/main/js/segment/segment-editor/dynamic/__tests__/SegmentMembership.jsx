@@ -8,8 +8,6 @@ import {Formik} from 'formik';
 import {Provider} from 'react-redux';
 import {SegmentCategories, SegmentTypes} from 'shared/util/constants';
 
-jest.unmock('react-dom');
-
 let mockModalProps;
 
 jest.mock('shared/components/modals/SearchableEntitiesTableModal', () => ({

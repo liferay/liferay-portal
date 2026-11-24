@@ -4,8 +4,6 @@ import {cleanup, render} from '@testing-library/react';
 import {DndProvider} from 'react-dnd';
 import {HTML5Backend} from 'react-dnd-html5-backend';
 
-jest.unmock('react-dom');
-
 describe('DropZone', () => {
 	afterEach(cleanup);
 

@@ -4,8 +4,6 @@ import {Alert} from 'shared/types';
 import {cleanup, fireEvent, screen, waitFor} from '@testing-library/react';
 import {renderModal} from 'test/render-modal';
 
-jest.unmock('react-dom');
-
 const renderDisconnect = (props) =>
 	renderModal((observer) => (
 		<DisconnectDataSourceModal

@@ -11,8 +11,6 @@ import {
 	Routes as RouterRoutes,
 } from 'react-router-dom';
 
-jest.unmock('react-dom');
-
 const renderAt = (path: string) =>
 	render(
 		<MemoryRouter initialEntries={[path]}>

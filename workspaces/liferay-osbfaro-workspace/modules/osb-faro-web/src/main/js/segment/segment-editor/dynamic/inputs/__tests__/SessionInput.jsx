@@ -17,8 +17,6 @@ import {mockPreferenceReq} from 'test/graphql-data';
 import {Property} from 'shared/util/records';
 import {PropertyTypes, RelationalOperators} from '../../utils/constants';
 
-jest.unmock('react-dom');
-
 const {EQ} = RelationalOperators;
 
 const WrapperComponent = ({children}) => (

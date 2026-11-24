@@ -7,8 +7,6 @@ import {
 	usePaginatedProperties,
 } from '../usePaginatedProperties';
 
-jest.unmock('react-dom');
-
 interface ITestItem {
 	id: string;
 	name: string;

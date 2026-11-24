@@ -1,8 +1,6 @@
 import {act, renderHook} from '@testing-library/react';
 import {useDisclosure} from '../useDisclosure';
 
-jest.unmock('react-dom');
-
 describe('useDisclosure', () => {
 	it('starts closed by default', () => {
 		const {result} = renderHook(() => useDisclosure());

@@ -10,8 +10,6 @@ import {SegmentTypes} from 'shared/util/constants';
 import {MemoryRouter} from 'react-router';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
 
-jest.unmock('react-dom');
-
 const defaultProps = {
 	channelId: '123',
 	groupId: '23',

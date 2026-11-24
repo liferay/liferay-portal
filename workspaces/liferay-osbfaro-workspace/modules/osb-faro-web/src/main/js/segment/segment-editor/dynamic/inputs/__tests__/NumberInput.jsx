@@ -3,8 +3,6 @@ import React from 'react';
 import {cleanup, render} from '@testing-library/react';
 import {Property} from 'shared/util/records';
 
-jest.unmock('react-dom');
-
 describe('NumberInput', () => {
 	afterEach(cleanup);
 

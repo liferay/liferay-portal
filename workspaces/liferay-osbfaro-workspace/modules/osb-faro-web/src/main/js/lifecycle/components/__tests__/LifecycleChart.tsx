@@ -7,8 +7,6 @@ import {
 	useLifecycle,
 } from '../../context/LifecycleContext';
 
-jest.unmock('react-dom');
-
 let stageCount = 0;
 
 const buildStage = (stage: Partial<ILifecycleStage> = {}): ILifecycleStage => {

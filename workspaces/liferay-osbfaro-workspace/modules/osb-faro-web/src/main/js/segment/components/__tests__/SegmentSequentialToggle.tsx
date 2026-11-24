@@ -3,8 +3,6 @@ import SegmentSequentialToggle from '../SegmentSequentialToggle';
 import {cleanup, fireEvent, render, waitFor} from '@testing-library/react';
 import {Form, Formik, FormikProps} from 'formik';
 
-jest.unmock('react-dom');
-
 type Values = {sequential: boolean};
 
 const renderToggle = () => {

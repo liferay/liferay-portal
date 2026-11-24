@@ -4,8 +4,6 @@ import {DataSourceStatuses, DataSourceTypes} from 'shared/util/constants';
 import {fireEvent, render, screen} from '@testing-library/react';
 import {fromJS} from 'immutable';
 
-jest.unmock('react-dom');
-
 jest.mock('react-router-dom', () => ({
 	...jest.requireActual('react-router-dom'),
 	useParams: () => ({groupId: '23'}),

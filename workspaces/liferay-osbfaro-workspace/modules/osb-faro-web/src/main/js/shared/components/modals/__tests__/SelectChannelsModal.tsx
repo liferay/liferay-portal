@@ -5,8 +5,6 @@ import {useModal} from '@clayui/modal';
 import {useRequest} from 'shared/hooks/useRequest';
 import {waitForModal} from 'test/render-modal';
 
-jest.unmock('react-dom');
-
 jest.mock('shared/hooks/useRequest', () => ({
 	useRequest: jest.fn(),
 }));

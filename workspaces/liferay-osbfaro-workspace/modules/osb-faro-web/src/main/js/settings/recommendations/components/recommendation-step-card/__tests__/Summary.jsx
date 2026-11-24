@@ -15,8 +15,6 @@ import {
 import {render} from '@testing-library/react';
 import {MemoryRouter} from 'react-router-dom';
 
-jest.unmock('react-dom');
-
 describe('Summary', () => {
 	it('should render', () => {
 		const {container} = render(

@@ -5,8 +5,6 @@ import {act, fireEvent, render, screen} from '@testing-library/react';
 import {MemoryRouter} from 'react-router';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
 
-jest.unmock('react-dom');
-
 const TestComponent = ({propertyGroupsIList}) => (
 	<div>
 		{propertyGroupsIList &&

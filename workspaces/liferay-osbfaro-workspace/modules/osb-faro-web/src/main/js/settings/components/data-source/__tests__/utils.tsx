@@ -3,8 +3,6 @@ import {disconnect} from 'shared/api/data-source';
 import {fireEvent, render, screen, waitFor} from '@testing-library/react';
 import {useDisconnectDataSource} from '../utils';
 
-jest.unmock('react-dom');
-
 jest.mock('shared/api/data-source', () => ({
 	disconnect: jest.fn(() => Promise.resolve({})),
 }));

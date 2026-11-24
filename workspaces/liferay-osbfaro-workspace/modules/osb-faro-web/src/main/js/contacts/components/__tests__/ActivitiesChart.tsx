@@ -3,8 +3,6 @@ import React from 'react';
 import {RangeKeyTimeRanges} from 'shared/util/constants';
 import {render, waitFor} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 jest.mock('recharts', () => {
 	const OriginalModule = jest.requireActual('recharts');
 

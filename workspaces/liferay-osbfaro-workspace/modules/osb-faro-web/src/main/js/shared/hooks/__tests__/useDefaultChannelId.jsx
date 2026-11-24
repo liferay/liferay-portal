@@ -6,8 +6,6 @@ import {Provider} from 'react-redux';
 import {renderHook, waitFor} from '@testing-library/react';
 import {useDefaultChannelId} from 'shared/hooks/useDefaultChannelId';
 
-jest.unmock('react-dom');
-
 const renderUseDefaultChannelId = (store = mockStore(fromJS({}))) =>
 	renderHook(() => useDefaultChannelId({groupId: '23'}), {
 		wrapper: ({children}) => (

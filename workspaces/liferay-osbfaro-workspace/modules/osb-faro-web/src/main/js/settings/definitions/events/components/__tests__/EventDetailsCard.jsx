@@ -7,8 +7,6 @@ import {Provider} from 'react-redux';
 import {range} from 'lodash';
 import {MemoryRouter} from 'react-router';
 
-jest.unmock('react-dom');
-
 describe('EventDetailsCard', () => {
 	const eventAttributes = range(5).map(i =>
 		data.mockEventAttributeDefinition(i)

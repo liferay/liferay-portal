@@ -12,8 +12,6 @@ import {User} from 'shared/util/records';
 import {UserRoleNames} from 'shared/util/constants';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
 
-jest.unmock('react-dom');
-
 const defaultProps = {
 	currentUser: new User(data.mockUser()),
 	groupId: '23'

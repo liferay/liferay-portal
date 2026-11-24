@@ -11,8 +11,6 @@ import {
 } from 'test/graphql-data';
 import {Provider} from 'react-redux';
 
-jest.unmock('react-dom');
-
 jest.mock('shared/api', () => ({
 	assets: {
 		fetchIndividualTopAssets: jest.fn(() => Promise.resolve({items: []})),

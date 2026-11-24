@@ -12,8 +12,6 @@ import {MemoryRouter} from 'react-router';
 import {Provider} from 'react-redux';
 import {useBlocker} from 'react-router-dom';
 
-jest.unmock('react-dom');
-
 jest.mock('react-router-dom', () => ({
 	...jest.requireActual('react-router-dom'),
 	useBlocker: jest.fn(),

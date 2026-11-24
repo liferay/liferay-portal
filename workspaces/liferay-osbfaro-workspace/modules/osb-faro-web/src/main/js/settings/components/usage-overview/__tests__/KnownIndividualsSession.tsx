@@ -3,8 +3,6 @@ import {Map} from 'immutable';
 import {KnownIndividualsSession} from '../KnownIndividualsSession';
 import {render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 jest.mock('shared/hooks/useTimeZone', () => ({
 	useTimeZone: () => ({timeZoneId: 'UTC'}),
 }));

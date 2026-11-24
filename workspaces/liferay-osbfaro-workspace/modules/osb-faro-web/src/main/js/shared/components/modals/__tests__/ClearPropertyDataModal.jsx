@@ -11,8 +11,6 @@ import {
 import {sub} from 'shared/util/lang';
 import {UNAUTHORIZED_ACCESS} from 'shared/util/request';
 
-jest.unmock('react-dom');
-
 jest.mock('shared/components/DeleteConfirmationModal', () => ({
 	children,
 	deleteButtonLabel,

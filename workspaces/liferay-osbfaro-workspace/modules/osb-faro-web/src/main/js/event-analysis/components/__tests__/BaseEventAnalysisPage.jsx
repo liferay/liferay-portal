@@ -28,8 +28,6 @@ import {MemoryRouter, Route, Routes as RouterRoutes} from 'react-router-dom';
 import {MockedProvider} from '@apollo/client/testing';
 import {Provider} from 'react-redux';
 
-jest.unmock('react-dom');
-
 const EVENT = {displayName: 'Page Viewed', id: '1', name: 'pageViewed'};
 
 const renderPage = () =>

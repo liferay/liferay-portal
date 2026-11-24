@@ -14,8 +14,6 @@ import {Route, Routes as RouterRoutes} from 'react-router-dom';
 import {Routes} from 'shared/util/router';
 import {waitForLoading} from 'test/helpers';
 
-jest.unmock('react-dom');
-
 const RenderWithRouter = ({children, recentValue}) => (
 	<MemoryRouter
 		initialEntries={[

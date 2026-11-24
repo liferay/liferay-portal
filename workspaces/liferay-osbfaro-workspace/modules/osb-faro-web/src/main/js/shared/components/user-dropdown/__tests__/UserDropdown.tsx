@@ -3,8 +3,6 @@ import UserDropdown, {Menus} from '../index';
 import {act, cleanup, fireEvent, render, screen} from '@testing-library/react';
 import {MemoryRouter} from 'react-router-dom';
 
-jest.unmock('react-dom');
-
 const mockMenus = (): Menus => ({
 	base: [
 		{

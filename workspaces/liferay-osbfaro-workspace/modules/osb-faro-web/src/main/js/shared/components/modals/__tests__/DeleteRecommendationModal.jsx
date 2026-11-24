@@ -4,8 +4,6 @@ import {cleanup, fireEvent, screen} from '@testing-library/react';
 import {renderModal} from 'test/render-modal';
 import {sub} from 'shared/util/lang';
 
-jest.unmock('react-dom');
-
 const renderDeleteRecommendation = (props) =>
 	renderModal((observer) => (
 		<DeleteRecommendationModal

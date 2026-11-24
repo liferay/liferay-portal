@@ -12,8 +12,6 @@ import {Segment} from 'shared/util/records';
 import {SegmentCategories, SegmentStates} from 'shared/util/constants';
 import {MemoryRouter} from 'react-router';
 
-jest.unmock('react-dom');
-
 type FakeFilter = {
 	id: string;
 	preloadedData?: {

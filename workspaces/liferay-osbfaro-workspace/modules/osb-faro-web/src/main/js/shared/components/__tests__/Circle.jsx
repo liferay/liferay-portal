@@ -2,8 +2,6 @@ import Circle from '../Circle';
 import React from 'react';
 import {cleanup, render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 describe('Circle', () => {
 	afterEach(cleanup);
 

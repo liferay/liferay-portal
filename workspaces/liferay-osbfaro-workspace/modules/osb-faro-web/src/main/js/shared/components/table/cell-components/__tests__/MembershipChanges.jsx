@@ -2,8 +2,6 @@ import MembershipChanges from '../MembershipChanges';
 import React from 'react';
 import {render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 const tableRow = document.createElement('tr');
 
 describe('MembershipChanges', () => {

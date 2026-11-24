@@ -6,8 +6,6 @@ import {fromJS} from 'immutable';
 import {Provider} from 'react-redux';
 import {render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 const faroSubscription = fromJS(data.mockSubscription());
 const wrappedComponentText = () => 'wrapped component text';
 

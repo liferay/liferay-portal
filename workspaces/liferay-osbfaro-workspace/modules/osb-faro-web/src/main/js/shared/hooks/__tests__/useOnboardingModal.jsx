@@ -9,8 +9,6 @@ import {Provider} from 'react-redux';
 import {renderHook, waitFor} from '@testing-library/react';
 import {useOnboardingModal} from 'shared/hooks/useOnboardingModal';
 
-jest.unmock('react-dom');
-
 jest.mock('shared/components/modals/onboarding-modal', () => ({
 	__esModule: true,
 	...jest.requireActual('shared/components/modals/onboarding-modal'),

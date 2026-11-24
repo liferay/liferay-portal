@@ -15,8 +15,6 @@ import {RangeKeyTimeRanges} from 'shared/util/constants';
 import {render, waitFor} from '@testing-library/react';
 import {SitesMetricQuery, SitesTabsQuery} from '../queries';
 
-jest.unmock('react-dom');
-
 jest.mock('shared/hooks/useRequest', () => ({
 	useRequest: jest.fn(() => ({
 		data: 13,

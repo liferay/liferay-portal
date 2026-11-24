@@ -4,8 +4,6 @@ import {cleanup, fireEvent, render} from '@testing-library/react';
 import {fromJS} from 'immutable';
 import {Property} from 'shared/util/records';
 
-jest.unmock('react-dom');
-
 describe('CustomBooleanInput', () => {
 	afterEach(cleanup);
 

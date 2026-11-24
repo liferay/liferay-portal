@@ -8,8 +8,6 @@ import {MockedProvider} from '@apollo/client/testing';
 import {mockPreferenceReq, mockTimeRangeReq} from 'test/graphql-data';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
 
-jest.unmock('react-dom');
-
 const DefaultComponent = ({
 	mocks = [mockTimeRangeReq(), mockPreferenceReq()],
 	onChangeInterval = jest.fn(),

@@ -8,8 +8,6 @@ import {range} from 'lodash';
 import {ReferencedObjectsProvider} from '../../../../context/referencedObjects';
 import {RelationalOperators} from '../../../../utils/constants';
 
-jest.unmock('react-dom');
-
 const renderWithProvider = props =>
 	render(
 		<ReferencedObjectsProvider>

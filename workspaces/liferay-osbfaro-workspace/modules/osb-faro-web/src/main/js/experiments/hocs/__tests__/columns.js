@@ -3,8 +3,6 @@ import React from 'react';
 import {MemoryRouter} from 'react-router-dom';
 import {render, screen} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 jest.mock('react-router-dom', () => ({
 	...jest.requireActual('react-router-dom'),
 	useParams: () => ({

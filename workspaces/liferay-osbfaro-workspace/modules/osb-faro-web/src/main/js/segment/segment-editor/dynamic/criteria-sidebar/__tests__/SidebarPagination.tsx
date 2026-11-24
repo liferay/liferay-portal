@@ -2,8 +2,6 @@ import React from 'react';
 import SidebarPagination from '../SidebarPagination';
 import {fireEvent, render, screen} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 describe('SidebarPagination', () => {
 	it('should render nothing when there is a single page', () => {
 		const {container} = render(

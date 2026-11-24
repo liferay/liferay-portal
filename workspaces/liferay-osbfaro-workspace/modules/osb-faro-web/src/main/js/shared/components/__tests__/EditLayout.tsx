@@ -22,8 +22,6 @@ import {MockedProvider} from '@apollo/client/testing';
 import {Provider} from 'react-redux';
 import {render, screen} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 const CHANNELS = [
 	data.mockChannel(1, 0, {id: '1'}),
 	data.mockChannel(2, 0, {id: '2'}),

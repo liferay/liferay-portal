@@ -5,8 +5,6 @@ import {fireEvent, render, screen} from '@testing-library/react';
 import {ICatalogField} from 'shared/api/catalog';
 import {IStageCondition} from 'lifecycle/utils/stageConfiguration';
 
-jest.unmock('react-dom');
-
 const mockFields: ICatalogField[] = [
 	{
 		dataCategory: 'Text',

@@ -10,8 +10,6 @@ import {updateProject} from 'shared/actions/projects';
 import {useCurrentUser} from 'shared/hooks/useCurrentUser';
 import {useRequest} from 'shared/hooks/useRequest';
 
-jest.unmock('react-dom');
-
 jest.mock('shared/actions/alerts', () => ({
 	actionTypes: {},
 	addAlert: jest.fn(),

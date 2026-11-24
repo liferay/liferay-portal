@@ -12,8 +12,6 @@ import {Provider} from 'react-redux';
 import {fireEvent, render, screen} from '@testing-library/react';
 import {Routes} from 'shared/util/router';
 
-jest.unmock('react-dom');
-
 const Providers = ({children}) => (
 	<Provider store={mockStore()}>
 		<MemoryRouter initialEntries={['/workspace/23/event-analysis']}>

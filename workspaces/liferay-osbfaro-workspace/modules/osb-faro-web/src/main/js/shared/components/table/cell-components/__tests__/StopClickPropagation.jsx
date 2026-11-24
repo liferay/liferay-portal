@@ -2,8 +2,6 @@ import React from 'react';
 import StopClickPropagation from '../StopClickPropagation';
 import {cleanup, fireEvent, render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 describe('StopClickPropagation', () => {
 	afterEach(cleanup);
 

@@ -74,8 +74,6 @@ const eventAnalysisResult = {
 	value: 5033
 };
 
-jest.unmock('react-dom');
-
 const event = {id: '1', name: 'View Article'};
 
 describe('BreakdownTable', () => {

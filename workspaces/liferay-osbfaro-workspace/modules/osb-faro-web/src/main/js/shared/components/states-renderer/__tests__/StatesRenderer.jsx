@@ -9,8 +9,6 @@ import {
 	mockSuccessState
 } from 'test/__mocks__/mock-objects';
 
-jest.unmock('react-dom');
-
 const emptyState = {
 	description: 'empty state description',
 	title: 'empty state title'

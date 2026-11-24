@@ -5,8 +5,6 @@ import {act, cleanup, render, screen} from '@testing-library/react';
 import {useRequest} from 'shared/hooks/useRequest';
 import {warmFrontendDataSet} from 'test/warm-frontend-data-set';
 
-jest.unmock('react-dom');
-
 let lastCustomDataRenderers: any;
 let lastOnItemsPropSearch: ((item: any, query: string) => boolean) | undefined;
 let lastViews: any[] | undefined;

@@ -7,8 +7,6 @@ import {RangeKeyTimeRanges} from 'shared/util/constants';
 import {render} from '@testing-library/react';
 import {TrendClassification} from 'segment/types';
 
-jest.unmock('react-dom');
-
 jest.mock('recharts', () => {
 	const OriginalModule = jest.requireActual('recharts');
 

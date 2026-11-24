@@ -1,5 +1,3 @@
-jest.unmock('react-dom');
-
 import CreateMappingModal from '../CreateMappingModal';
 import mockStore from 'test/mock-store';
 import React from 'react';

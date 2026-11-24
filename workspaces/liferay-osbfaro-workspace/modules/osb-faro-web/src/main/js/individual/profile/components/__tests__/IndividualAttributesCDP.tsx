@@ -3,8 +3,6 @@ import React from 'react';
 import {fromJS} from 'immutable';
 import {render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 describe('IndividualAttributesCDP', () => {
 	const mockProperties = {
 		birthDate: '2020-01-01T00:00:00.000Z',

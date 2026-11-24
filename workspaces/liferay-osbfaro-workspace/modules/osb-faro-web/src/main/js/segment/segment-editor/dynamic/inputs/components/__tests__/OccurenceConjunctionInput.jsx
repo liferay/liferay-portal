@@ -3,8 +3,6 @@ import React from 'react';
 import {fireEvent, render} from '@testing-library/react';
 import {RelationalOperators} from '../../../utils/constants';
 
-jest.unmock('react-dom');
-
 describe('OccurenceConjunctionInput', () => {
 	it('should render', () => {
 		const {container, getByRole, getByText} = render(

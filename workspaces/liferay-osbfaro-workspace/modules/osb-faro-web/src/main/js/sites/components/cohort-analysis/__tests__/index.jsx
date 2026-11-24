@@ -3,8 +3,6 @@ import React from 'react';
 import {DAY, VISITORS} from '../utils';
 import {render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 describe('CohortAnalysis', () => {
 	it('should render', () => {
 		const mockData = {

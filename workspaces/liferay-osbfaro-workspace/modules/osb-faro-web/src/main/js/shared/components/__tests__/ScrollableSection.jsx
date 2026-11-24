@@ -2,8 +2,6 @@ import React from 'react';
 import ScrollableSection from '../ScrollableSection';
 import {cleanup, render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 describe('ScrollableSection', () => {
 	afterEach(cleanup);
 

@@ -20,8 +20,6 @@ jest.mock('shared/actions/alerts', () => ({
 	})),
 }));
 
-jest.unmock('react-dom');
-
 const DefaultComponent = (
 	props: Omit<
 		React.ComponentProps<typeof EditEmailReportsModal>,

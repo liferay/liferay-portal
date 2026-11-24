@@ -3,8 +3,6 @@ import Toolbar from '../Toolbar';
 import {fireEvent, render, screen} from '@testing-library/react';
 import {MemoryRouter} from 'react-router-dom';
 
-jest.unmock('react-dom');
-
 const renderToolbar = (children?: React.ReactNode) =>
 	render(
 		<MemoryRouter>

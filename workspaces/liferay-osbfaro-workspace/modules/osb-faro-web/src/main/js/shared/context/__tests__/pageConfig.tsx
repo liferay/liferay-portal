@@ -3,8 +3,6 @@ import {buildConfig} from 'shared/util/config';
 import {PageConfigProvider, usePageConfig} from '../pageConfig';
 import {render, renderHook} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 const ChildComponent = () => {
 	const {groupId} = usePageConfig();
 

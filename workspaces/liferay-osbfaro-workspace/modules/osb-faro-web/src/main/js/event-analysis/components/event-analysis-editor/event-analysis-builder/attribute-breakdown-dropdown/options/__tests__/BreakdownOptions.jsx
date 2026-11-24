@@ -3,8 +3,6 @@ import React from 'react';
 import {AttributesProvider} from 'event-analysis/components/event-analysis-editor/context/attributes';
 import {render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 describe('FilterOptions', () => {
 	it('should render', () => {
 		const {container} = render(

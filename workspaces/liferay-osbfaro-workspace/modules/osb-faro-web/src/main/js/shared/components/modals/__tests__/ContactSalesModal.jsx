@@ -7,8 +7,6 @@ import {noop} from 'lodash';
 import {Provider} from 'react-redux';
 import {renderModal} from 'test/render-modal';
 
-jest.unmock('react-dom');
-
 const DefaultComponent = ({observer, ...props}) => (
 	<Provider store={mockStore()}>
 		<ContactSalesModal

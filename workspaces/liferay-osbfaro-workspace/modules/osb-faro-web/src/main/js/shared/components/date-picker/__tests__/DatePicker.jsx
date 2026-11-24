@@ -4,8 +4,6 @@ import moment from 'moment';
 import React from 'react';
 import {fireEvent, render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 describe('DatePicker', () => {
 	let currentDate;
 

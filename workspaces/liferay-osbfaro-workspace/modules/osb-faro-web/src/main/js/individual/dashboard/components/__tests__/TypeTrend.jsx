@@ -2,8 +2,6 @@ import React from 'react';
 import TypeTrend, {TrendItem} from '../TypeTrend';
 import {cleanup, render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 describe('TypeTrend', () => {
 	afterEach(cleanup);
 

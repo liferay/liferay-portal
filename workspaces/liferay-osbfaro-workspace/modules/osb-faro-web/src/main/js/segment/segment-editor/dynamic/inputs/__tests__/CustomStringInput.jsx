@@ -8,8 +8,6 @@ import {
 import {Property} from 'shared/util/records';
 import {PropertyTypes} from '../../utils/constants';
 
-jest.unmock('react-dom');
-
 const mockValue = createCustomValueMap([
 	{key: 'criterionGroup', value: [{operatorName: 'eq', value: ''}]}
 ]);

@@ -9,8 +9,6 @@ import {
 import {LIFECYCLE_STAGE_DEFAULT_MAX_DAYS} from 'lifecycle/utils/constants';
 import {fireEvent, render, screen, within} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 const completeCondition: Partial<IStageCondition> = {
 	conditionValue: '1000',
 	field: 'account.annualRevenue',

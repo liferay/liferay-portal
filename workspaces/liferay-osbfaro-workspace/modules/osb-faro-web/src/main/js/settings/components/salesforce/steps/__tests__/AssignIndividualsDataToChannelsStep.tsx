@@ -3,8 +3,6 @@ import {AssignIndividualsDataToPropertiesStep} from '../AssignIndividualsDataToC
 import {DataSourceTypes} from 'shared/util/constants';
 import {fireEvent, render, screen} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 const useWizardPageMock = jest.fn();
 
 let mockSelectChannelsModalProps: any;

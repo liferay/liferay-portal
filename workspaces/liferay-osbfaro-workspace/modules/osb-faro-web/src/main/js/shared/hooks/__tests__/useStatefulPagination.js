@@ -7,8 +7,6 @@ import {useStatefulPagination} from 'shared/hooks/useStatefulPagination';
 
 const {cur: DEFAULT_PAGE, delta: DEFAULT_DELTA} = Constants.pagination;
 
-jest.unmock('react-dom');
-
 describe('useStatefulPagination', () => {
 	it('should return default values', () => {
 		let result = null;

@@ -2,8 +2,6 @@ import NoResultsDisplay, {getFormattedTitle} from '../NoResultsDisplay';
 import React from 'react';
 import {cleanup, render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 describe('NoResultsDisplay', () => {
 	afterEach(cleanup);
 

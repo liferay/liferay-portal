@@ -13,8 +13,6 @@ import {MemoryRouter} from 'react-router';
 import {User} from 'shared/util/records';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
 
-jest.unmock('react-dom');
-
 const DefaultComponent = props => (
 	<Provider store={mockStore()}>
 		<MemoryRouter>

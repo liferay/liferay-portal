@@ -2,8 +2,6 @@ import Body from '../Body';
 import React from 'react';
 import {cleanup, render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 describe('BasePage.Body', () => {
 	afterEach(cleanup);
 

@@ -3,8 +3,6 @@ import React from 'react';
 import Sidebar from '../Sidebar';
 import {fireEvent, render, screen, waitFor} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 const LABEL = 'Conditions Library';
 
 const setScreenWidth = (width: number) => {

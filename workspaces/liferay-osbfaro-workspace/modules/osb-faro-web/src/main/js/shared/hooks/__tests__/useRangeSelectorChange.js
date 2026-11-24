@@ -2,8 +2,6 @@ import React from 'react';
 import {render} from '@testing-library/react';
 import {useRangeSelectorChange} from 'shared/hooks/useRangeSelectorChange';
 
-jest.unmock('react-dom');
-
 const mockPush = jest.fn();
 
 jest.mock('shared/hooks/useHistoryAdapter', () => ({

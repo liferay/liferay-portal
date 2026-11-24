@@ -9,8 +9,6 @@ import {Provider} from 'react-redux';
 import {render} from '@testing-library/react';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
 
-jest.unmock('react-dom');
-
 const WrappedComponent = props => (
 	<Provider store={mockStore()}>
 		<MemoryRouter

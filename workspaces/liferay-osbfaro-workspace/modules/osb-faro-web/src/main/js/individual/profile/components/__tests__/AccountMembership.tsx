@@ -5,8 +5,6 @@ import {fromJS} from 'immutable';
 import {Provider} from 'react-redux';
 import {render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 const renderWithStore = (children: React.ReactNode) =>
 	render(<Provider store={mockStore()}>{children}</Provider>);
 

@@ -2,8 +2,6 @@ import React from 'react';
 import TimeSelector from '../TimeSelector';
 import {cleanup, render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 describe('TimeSelector', () => {
 	afterEach(cleanup);
 

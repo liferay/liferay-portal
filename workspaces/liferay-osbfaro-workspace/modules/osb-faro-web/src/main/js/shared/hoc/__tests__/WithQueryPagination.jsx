@@ -4,8 +4,6 @@ import {createOrderIOMap, getSortFromOrderIOMap} from 'shared/util/pagination';
 import {MemoryRouter} from 'react-router-dom';
 import {render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 const DefaultComponent = ({delta, orderIOMap, page, query}) => {
 	const {column, type} = getSortFromOrderIOMap(orderIOMap);
 

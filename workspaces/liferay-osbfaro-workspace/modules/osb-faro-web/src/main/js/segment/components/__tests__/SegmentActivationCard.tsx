@@ -10,8 +10,6 @@ import {
 	SegmentActivationScheduleTypes,
 } from 'shared/util/constants';
 
-jest.unmock('react-dom');
-
 const WrapperComponent: React.FC<{children: React.ReactNode}> = ({
 	children,
 }) => (

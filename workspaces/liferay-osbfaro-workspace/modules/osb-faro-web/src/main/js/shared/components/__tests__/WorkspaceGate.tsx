@@ -44,8 +44,6 @@ import {ProjectStates} from 'shared/util/constants';
 import {Provider} from 'react-redux';
 import {useDataSources} from 'shared/context/dataSources';
 
-jest.unmock('react-dom');
-
 const CHANNELS = [
 	data.mockChannel(1, 0, {id: '1'}),
 	data.mockChannel(2, 0, {id: '2'}),

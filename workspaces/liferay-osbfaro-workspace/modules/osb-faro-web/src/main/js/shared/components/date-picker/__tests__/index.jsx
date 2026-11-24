@@ -4,8 +4,6 @@ import React from 'react';
 import {fireEvent, render} from '@testing-library/react';
 import {DEFAULT_LOCALE, setLocale} from 'shared/util/locale';
 
-jest.unmock('react-dom');
-
 const renderDatePicker = () =>
 	render(
 		<DatePicker

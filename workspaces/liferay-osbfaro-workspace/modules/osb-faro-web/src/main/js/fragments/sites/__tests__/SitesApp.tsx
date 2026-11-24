@@ -15,8 +15,6 @@ import {
 	SiteInterest,
 } from '../SitesApp';
 
-jest.unmock('react-dom');
-
 describe('SitesApp', () => {
 	it.each([
 		[

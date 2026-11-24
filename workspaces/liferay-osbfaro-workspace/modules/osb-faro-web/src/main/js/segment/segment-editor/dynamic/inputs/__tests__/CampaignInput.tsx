@@ -13,8 +13,6 @@ import {CustomValue} from 'shared/util/records';
 import {getDefaultValue} from '../../criteria-sidebar/CriteriaSidebarCollapse';
 import {List} from 'immutable';
 
-jest.unmock('react-dom');
-
 const fetchCampaign = API.campaigns.fetchCampaign as jest.Mock;
 const searchCampaignNames = API.campaigns.searchCampaignNames as jest.Mock;
 

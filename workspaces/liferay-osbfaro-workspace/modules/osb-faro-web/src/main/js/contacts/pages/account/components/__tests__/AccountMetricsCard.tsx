@@ -2,8 +2,6 @@ import AccountMetricsCard from '../AccountMetricsCard';
 import React from 'react';
 import {cleanup, fireEvent, render, screen} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 const renderAccountMetricsCard = (props = {}) =>
 	render(
 		<AccountMetricsCard

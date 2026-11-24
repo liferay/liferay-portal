@@ -14,8 +14,6 @@ import {Property, Segment} from 'shared/util/records';
 import {SegmentCategories, SegmentTypes} from 'shared/util/constants';
 import {withReferencedObjectsProvider} from 'segment/segment-editor/dynamic/context/referencedObjects';
 
-jest.unmock('react-dom');
-
 jest.mock('react-router-dom', () => ({
 	...jest.requireActual('react-router-dom'),
 	useParams: () => ({channelId: '123', groupId: '456'})

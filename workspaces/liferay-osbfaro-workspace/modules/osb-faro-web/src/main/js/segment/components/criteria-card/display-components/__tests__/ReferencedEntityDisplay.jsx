@@ -8,8 +8,6 @@ import {
 } from 'segment/segment-editor/dynamic/context/referencedObjects';
 import {Segment} from 'shared/util/records';
 
-jest.unmock('react-dom');
-
 const defaultProps = {
 	id: '123',
 	label: 'Page',

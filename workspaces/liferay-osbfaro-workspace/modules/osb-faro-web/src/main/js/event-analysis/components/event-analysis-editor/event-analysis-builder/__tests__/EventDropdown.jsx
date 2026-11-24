@@ -13,8 +13,6 @@ import {Provider} from 'react-redux';
 import {range} from 'lodash';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
 
-jest.unmock('react-dom');
-
 describe('EventDropdown', () => {
 	const defaultMocks = [
 		mockEventDefinitionsReq(

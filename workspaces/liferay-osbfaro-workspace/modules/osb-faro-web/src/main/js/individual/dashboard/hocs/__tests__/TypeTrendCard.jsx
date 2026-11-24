@@ -5,8 +5,6 @@ import {cleanup, render} from '@testing-library/react';
 import {MockedProvider} from '@apollo/client/testing';
 import {mockIndividualMetricsReq} from 'test/graphql-data';
 
-jest.unmock('react-dom');
-
 jest.mock('react-router-dom', () => ({
 	...jest.requireActual('react-router-dom'),
 	useParams: () => ({

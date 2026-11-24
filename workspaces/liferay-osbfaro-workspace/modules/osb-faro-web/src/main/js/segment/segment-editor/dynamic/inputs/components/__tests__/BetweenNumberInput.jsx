@@ -2,8 +2,6 @@ import BetweenNumberInput from '../BetweenNumberInput';
 import React from 'react';
 import {fireEvent, render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 describe('BetweenNumberInput', () => {
 	it('should render', () => {
 		const {container} = render(

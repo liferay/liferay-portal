@@ -10,8 +10,6 @@ import {Segment} from 'shared/util/records';
 import {MemoryRouter} from 'react-router';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
 
-jest.unmock('react-dom');
-
 const segment = new Segment(
 	data.mockSegment(0, {
 		criteriaString: "(demographics/middleName/value eq 'additionalName')",

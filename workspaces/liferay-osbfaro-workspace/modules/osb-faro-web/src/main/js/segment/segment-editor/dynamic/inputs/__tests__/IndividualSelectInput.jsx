@@ -5,8 +5,6 @@ import {cleanup, render} from '@testing-library/react';
 import {Property} from 'shared/util/records';
 import {Provider} from 'react-redux';
 
-jest.unmock('react-dom');
-
 const defaultProps = {
 	displayValue: 'fooProperty',
 	operatorRenderer: () => <div>{'test'}</div>,

@@ -2,8 +2,6 @@ import GenerateTokenCard from '../GenerateTokenCard';
 import React from 'react';
 import {fireEvent, render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 const defaultProps = {
 	expiresIn: '2592000',
 	groupId: '23'

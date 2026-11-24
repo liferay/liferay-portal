@@ -9,8 +9,6 @@ import {act, renderHook, waitFor} from '@testing-library/react';
 import {range} from 'lodash';
 import {useModalNotifications} from 'shared/hooks/useModalNotifications';
 
-jest.unmock('react-dom');
-
 jest.mock(
 	'shared/components/modals/TimeZoneSelectionModal',
 	() =>

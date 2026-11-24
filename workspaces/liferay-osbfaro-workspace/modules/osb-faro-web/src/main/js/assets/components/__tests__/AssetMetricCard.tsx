@@ -27,8 +27,6 @@ import {RangeKeyTimeRanges, THIRTEEN_MONTHS} from 'shared/util/constants';
 import {MemoryRouter} from 'react-router-dom';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
 
-jest.unmock('react-dom');
-
 jest.mock('react-router-dom', () => ({
 	...jest.requireActual('react-router-dom'),
 	useParams: () => ({

@@ -8,8 +8,6 @@ import {mockChannelContext} from 'test/mock-channel-context';
 import {mockSegment} from 'test/data';
 import {UnassignedSegmentsContext} from 'shared/context/unassignedSegments';
 
-jest.unmock('react-dom');
-
 jest.mock('shared/api', () => ({
 	individualSegment: {
 		delete: jest.fn(() => Promise.resolve()),

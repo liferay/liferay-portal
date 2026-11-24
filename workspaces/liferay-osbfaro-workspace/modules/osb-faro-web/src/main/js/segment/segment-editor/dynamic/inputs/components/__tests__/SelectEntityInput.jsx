@@ -10,8 +10,6 @@ import {
 import {Property, Segment} from 'shared/util/records';
 import {Provider} from 'react-redux';
 
-jest.unmock('react-dom');
-
 const mockSegment = data.getImmutableMock(Segment, data.mockSegment, 0, {
 	referencedObjects: {
 		organizations: {

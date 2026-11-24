@@ -5,8 +5,6 @@ import {render} from '@testing-library/react';
 import {MemoryRouter} from 'react-router';
 import {times} from 'lodash';
 
-jest.unmock('react-dom');
-
 const INDIVIDUALS = times(5, i => mockIndividual(i));
 
 const COLUMNS = [

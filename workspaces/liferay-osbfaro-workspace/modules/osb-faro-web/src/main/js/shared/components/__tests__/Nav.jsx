@@ -4,8 +4,6 @@ import React from 'react';
 import {cleanup, render} from '@testing-library/react';
 import {MemoryRouter} from 'react-router';
 
-jest.unmock('react-dom');
-
 const items = [
 	<Nav.Item active href='#' key={1}>
 		{'foo'}

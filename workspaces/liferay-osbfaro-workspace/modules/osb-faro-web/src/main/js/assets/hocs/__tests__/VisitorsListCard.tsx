@@ -7,8 +7,6 @@ import {getVisitorsListCard} from '../VisitorsListCard';
 import {MemoryRouter} from 'react-router-dom';
 import {Provider} from 'react-redux';
 
-jest.unmock('react-dom');
-
 const MOCK_ROUTER = {
 	params: {
 		channelId: '456',

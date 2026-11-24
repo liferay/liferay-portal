@@ -9,8 +9,6 @@ import {
 	waitFor,
 } from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 const renderMountedModal = onClose =>
 	render(
 		<MountedModal onClose={onClose}>

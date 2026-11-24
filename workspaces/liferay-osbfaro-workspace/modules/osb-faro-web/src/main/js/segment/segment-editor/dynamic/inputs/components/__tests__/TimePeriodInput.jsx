@@ -3,8 +3,6 @@ import TimePeriodInput from '../TimePeriodInput';
 import {cleanup, fireEvent, render} from '@testing-library/react';
 import {TimeSpans} from '../../../utils/constants';
 
-jest.unmock('react-dom');
-
 describe('TimePeriodInput', () => {
 	afterEach(cleanup);
 

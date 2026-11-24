@@ -3,8 +3,6 @@ import React from 'react';
 import {BrowserRouter} from 'react-router-dom';
 import {cleanup, render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 describe('DistributionCard AddDataSource', () => {
 	afterEach(cleanup);
 

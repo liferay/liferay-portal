@@ -3,8 +3,6 @@ import React from 'react';
 import {cleanup} from '@testing-library/react';
 import {renderModal} from 'test/render-modal';
 
-jest.unmock('react-dom');
-
 const renderLoadingModal = props =>
 	renderModal(observer => <LoadingModal observer={observer} {...props} />);
 

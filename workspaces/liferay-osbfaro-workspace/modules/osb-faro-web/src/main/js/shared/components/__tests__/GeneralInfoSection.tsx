@@ -2,8 +2,6 @@ import React from 'react';
 import {GeneralInfoSection} from '../GeneralInfoSection';
 import {render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 describe('GeneralInfoSection', () => {
 	const mockConfig = [
 		{

@@ -11,8 +11,6 @@ import {mockDataSourcesReq} from 'test/graphql-data';
 import {MockedProvider} from '@apollo/client/testing';
 import {Provider} from 'react-redux';
 
-jest.unmock('react-dom');
-
 jest.mock('route-middleware/BundleRouter', () => () => {
 	const {Link, useLocation} = jest.requireActual('react-router-dom');
 

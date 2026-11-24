@@ -14,8 +14,6 @@ import {Provider} from 'react-redux';
 import {ReferencedObjectsProvider} from '../../context/referencedObjects';
 import {SegmentCategories, SegmentTypes} from 'shared/util/constants';
 
-jest.unmock('react-dom');
-
 jest.mock('shared/hooks/useRequest', () => ({
 	useRequest: () => ({data: null, error: false, loading: false})
 }));

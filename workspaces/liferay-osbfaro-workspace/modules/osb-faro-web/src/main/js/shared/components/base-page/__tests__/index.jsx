@@ -6,7 +6,6 @@ import {MemoryRouter} from 'react-router';
 import {Provider} from 'react-redux';
 import {useLDPEnabled} from 'shared/hooks/useLDPEnabled';
 
-jest.unmock('react-dom');
 jest.unmock('shared/components/DocumentTitle');
 
 jest.mock('shared/hooks/useLDPEnabled', () => ({

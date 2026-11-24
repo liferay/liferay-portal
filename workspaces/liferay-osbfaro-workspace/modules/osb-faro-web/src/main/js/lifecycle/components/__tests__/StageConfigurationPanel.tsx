@@ -16,8 +16,6 @@ jest.mock('shared/util/date', () => ({
 	getDateNow: () => jest.requireActual('moment').utc('2026-03-01'),
 }));
 
-jest.unmock('react-dom');
-
 const baseValue: IStageConfig = {
 	conditions: [createStageCondition()],
 	description: '',

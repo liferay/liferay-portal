@@ -42,8 +42,6 @@ global.Liferay = {
 	}
 };
 
-jest.unmock('react-dom');
-
 describe('CriteriaSidebarCollapse', () => {
 	const ACCOUNT_KEY = FieldOwnerTypes.Account;
 

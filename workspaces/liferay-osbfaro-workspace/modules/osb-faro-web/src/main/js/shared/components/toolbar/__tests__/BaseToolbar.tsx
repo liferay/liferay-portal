@@ -2,8 +2,6 @@ import BaseToolbar from '../BaseToolbar';
 import React from 'react';
 import {render, screen} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 const renderBaseToolbar = (className?: string) =>
 	render(
 		<BaseToolbar className={className}>

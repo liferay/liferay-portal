@@ -2,8 +2,6 @@ import React from 'react';
 import SearchInput from '../SearchInput';
 import {cleanup, createEvent, fireEvent, render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 describe('SearchInput', () => {
 	afterEach(cleanup);
 

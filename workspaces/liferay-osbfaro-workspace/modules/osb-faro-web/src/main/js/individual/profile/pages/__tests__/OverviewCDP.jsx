@@ -7,8 +7,6 @@ import {Individual} from 'shared/util/records';
 import {Provider} from 'react-redux';
 import {MemoryRouter} from 'react-router';
 
-jest.unmock('react-dom');
-
 jest.mock('../../components/ContextualInformation', () => ({
 	__esModule: true,
 	default: () => <div>{'ContextualInformation'}</div>

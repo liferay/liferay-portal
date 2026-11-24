@@ -4,8 +4,6 @@ import {render} from '@testing-library/react';
 import {Routes, toRoute} from 'shared/util/router';
 import {MemoryRouter} from 'react-router';
 
-jest.unmock('react-dom');
-
 const WrapperComponent = ({route = null}) => {
 	const Component = redirectIf(() => route)(() => (
 		<div className='my-component'>{'component body'}</div>

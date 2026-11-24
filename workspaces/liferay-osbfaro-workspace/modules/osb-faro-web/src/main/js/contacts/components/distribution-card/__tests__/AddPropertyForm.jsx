@@ -2,8 +2,6 @@ import AddPropertyForm from '../AddPropertyForm';
 import React from 'react';
 import {cleanup, render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 describe('DistributionCard AddPropertyForm', () => {
 	afterEach(cleanup);
 

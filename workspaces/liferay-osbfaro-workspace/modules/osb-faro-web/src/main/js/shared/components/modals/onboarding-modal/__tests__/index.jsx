@@ -6,8 +6,6 @@ import {noop} from 'lodash';
 import {Provider} from 'react-redux';
 import {renderModal} from 'test/render-modal';
 
-jest.unmock('react-dom');
-
 const renderOnboardingModal = (props = {}) =>
 	renderModal(observer => (
 		<Provider store={mockStore()}>

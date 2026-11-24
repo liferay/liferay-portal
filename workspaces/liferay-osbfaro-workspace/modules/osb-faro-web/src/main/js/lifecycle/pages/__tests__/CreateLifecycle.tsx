@@ -26,8 +26,6 @@ import {useRequest} from 'shared/hooks/useRequest';
 import {useUnsavedChangesPrompt} from 'shared/hooks/useUnsavedChangesPrompt';
 import {AccountDataStatus} from 'lifecycle/utils/types';
 
-jest.unmock('react-dom');
-
 jest.mock('shared/hooks/useRequest', () => ({
 	useRequest: jest.fn(),
 }));

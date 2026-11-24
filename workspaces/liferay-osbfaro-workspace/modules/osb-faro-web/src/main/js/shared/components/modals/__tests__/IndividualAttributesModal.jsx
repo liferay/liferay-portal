@@ -6,8 +6,6 @@ import {renderModal} from 'test/render-modal';
 
 const {dataSources, fieldName} = mockIndividualAttributes();
 
-jest.unmock('react-dom');
-
 describe('IndividualAttributesModal', () => {
 	afterEach(cleanup);
 

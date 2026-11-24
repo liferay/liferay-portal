@@ -2,8 +2,6 @@ import React from 'react';
 import {act, fireEvent, render, within} from '@testing-library/react';
 import {SessionsCard} from '../SessionsCard';
 
-jest.unmock('react-dom');
-
 jest.mock('recharts', () => {
 	const OriginalModule = jest.requireActual('recharts');
 

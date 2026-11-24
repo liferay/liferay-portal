@@ -6,7 +6,6 @@ import {cleanup, render} from '@testing-library/react';
 import {Provider} from 'react-redux';
 import {Routes} from 'shared/util/router';
 import {MemoryRouter} from 'react-router';
-jest.unmock('react-dom');
 
 const WrappedComponent = props => (
 	<Provider store={mockStore()}>

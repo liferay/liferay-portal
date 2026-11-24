@@ -3,8 +3,6 @@ import {MemoryRouter} from 'react-router-dom';
 import {render} from '@testing-library/react';
 import {useQueryRangeSelectors} from 'shared/hooks/useQueryRangeSelectors';
 
-jest.unmock('react-dom');
-
 const DefaultComponent = ({rangeEnd, rangeKey, rangeStart}) => (
 	<>
 		{`rangeEnd ${rangeEnd}`}

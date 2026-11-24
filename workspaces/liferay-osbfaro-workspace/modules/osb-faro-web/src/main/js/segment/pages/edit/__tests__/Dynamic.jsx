@@ -6,8 +6,6 @@ import {List} from 'immutable';
 import {Provider} from 'react-redux';
 import {MemoryRouter} from 'react-router';
 
-jest.unmock('react-dom');
-
 jest.mock('contacts/hoc/segment/WithBaseEdit', () => Component => Component);
 jest.mock(
 	'segment/segment-editor/dynamic/hoc/WithPropertyGroups',

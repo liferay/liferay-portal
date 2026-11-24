@@ -4,8 +4,6 @@ import React from 'react';
 import {fireEvent, render} from '@testing-library/react';
 import {mockForm} from 'test/data';
 
-jest.unmock('react-dom');
-
 const TestComponent = () => (
 	<Form>
 		<PasswordInput field={{name: 'foo'}} form={mockForm()} />

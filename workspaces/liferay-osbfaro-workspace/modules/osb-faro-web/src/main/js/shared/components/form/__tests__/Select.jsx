@@ -1,5 +1,3 @@
-jest.unmock('react-dom');
-
 import mockStore from 'test/mock-store';
 import React from 'react';
 import Select from '../Select';

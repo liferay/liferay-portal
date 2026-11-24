@@ -2,8 +2,6 @@ import React from 'react';
 import {render} from '@testing-library/react';
 import {Tooltip} from '../Tooltip';
 
-jest.unmock('react-dom');
-
 const payload = {
 	data_control: 10,
 	data_control_traffic_split: 50,

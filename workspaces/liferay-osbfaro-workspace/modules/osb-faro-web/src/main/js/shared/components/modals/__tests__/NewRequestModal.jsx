@@ -9,8 +9,6 @@ import {Provider} from 'react-redux';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
 import {waitForModal} from 'test/render-modal';
 
-jest.unmock('react-dom');
-
 const TestModal = () => {
 	const {observer} = useModal({defaultOpen: true});
 

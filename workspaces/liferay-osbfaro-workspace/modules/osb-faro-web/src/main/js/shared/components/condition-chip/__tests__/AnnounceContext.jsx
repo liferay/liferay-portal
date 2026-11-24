@@ -1,8 +1,6 @@
 import {act, renderHook} from '@testing-library/react';
 import {useAnnouncement} from '../AnnounceContext';
 
-jest.unmock('react-dom');
-
 describe('useAnnouncement', () => {
 	it('changes the announcement when the same message is announced again', () => {
 		const {result} = renderHook(() => useAnnouncement());

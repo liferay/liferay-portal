@@ -6,8 +6,6 @@ import {Provider} from 'react-redux';
 import {useDeleteSegments} from '../useDeleteSegments';
 import {waitFor} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 jest.mock('shared/api', () => ({
 	individualSegment: {
 		delete: jest.fn(() => Promise.resolve({})),

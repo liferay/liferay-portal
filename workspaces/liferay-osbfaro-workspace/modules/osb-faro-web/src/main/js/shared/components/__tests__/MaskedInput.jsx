@@ -2,8 +2,6 @@ import MaskedInput from '../MaskedInput';
 import React from 'react';
 import {cleanup, render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 describe('MaskedInput', () => {
 	afterEach(cleanup);
 

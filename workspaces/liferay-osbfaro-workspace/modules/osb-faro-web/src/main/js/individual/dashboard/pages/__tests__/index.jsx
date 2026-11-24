@@ -8,8 +8,6 @@ import {cleanup, render} from '@testing-library/react';
 import {mockChannelContext} from 'test/mock-channel-context';
 import {Provider} from 'react-redux';
 
-jest.unmock('react-dom');
-
 jest.mock('react-router-dom', () => ({
 	...jest.requireActual('react-router-dom'),
 	useParams: () => ({

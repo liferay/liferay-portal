@@ -3,8 +3,6 @@ import React from 'react';
 import {fromJS} from 'immutable';
 import {render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 describe('ContextualInformation', () => {
 	const mockContext = {
 		browserName: 'Chrome',

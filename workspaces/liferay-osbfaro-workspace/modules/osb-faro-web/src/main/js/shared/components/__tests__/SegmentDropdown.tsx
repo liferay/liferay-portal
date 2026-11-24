@@ -11,8 +11,6 @@ import {
 import {MemoryRouter, Route, Routes} from 'react-router-dom';
 import {mockListGeometry, scrollListToBottom} from 'test/infinite-scroll';
 
-jest.unmock('react-dom');
-
 const MOCK_SEGMENT = (id: string, name: string) => ({
 	id,
 	name,

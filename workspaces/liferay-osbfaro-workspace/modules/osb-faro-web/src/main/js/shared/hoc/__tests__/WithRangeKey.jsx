@@ -3,8 +3,6 @@ import withRangeKey from '../WithRangeKey';
 import {RangeKeyTimeRanges} from 'shared/util/constants';
 import {render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 const WrappedComponent = withRangeKey(({rangeSelectors}) => {
 	const {rangeEnd, rangeKey, rangeStart} = rangeSelectors;
 

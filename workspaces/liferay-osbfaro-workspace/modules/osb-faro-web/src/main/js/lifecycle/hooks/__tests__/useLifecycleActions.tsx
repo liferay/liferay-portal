@@ -18,8 +18,6 @@ import {Routes, toRoute} from 'shared/util/router';
 import {useCurrentUser} from 'shared/hooks/useCurrentUser';
 import {useLifecycleActions} from '../useLifecycleActions';
 
-jest.unmock('react-dom');
-
 jest.mock('shared/actions/alerts', () => ({
 	...jest.requireActual('shared/actions/alerts'),
 	addAlert: jest.fn((payload) => ({payload, type: 'ADD_ALERT'})),

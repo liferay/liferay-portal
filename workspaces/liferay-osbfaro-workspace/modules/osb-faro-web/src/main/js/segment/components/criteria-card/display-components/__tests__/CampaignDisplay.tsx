@@ -10,8 +10,6 @@ import {MemoryRouter, Route, Routes} from 'react-router-dom';
 import {NotOperators} from 'segment/segment-editor/dynamic/utils/constants';
 import {SegmentTypes} from 'shared/util/constants';
 
-jest.unmock('react-dom');
-
 const fetchCampaign = API.campaigns.fetchCampaign as jest.Mock;
 
 const renderDisplay = (ids: string[]) =>

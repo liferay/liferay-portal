@@ -10,8 +10,6 @@ import {OrderByDirections} from 'shared/util/constants';
 import {Provider} from 'react-redux';
 import {range} from 'lodash';
 
-jest.unmock('react-dom');
-
 describe('AttributeBreakdownDropdown', () => {
 	const defaultMocks = [
 		mockEventAttributeDefinitionsReq(

@@ -2,8 +2,6 @@ import React from 'react';
 import {autoCancel, autoCancelWith, hasRequest} from '../request-decorator';
 import {fireEvent, render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 describe('request-decorator', () => {
 	describe('autoCancel', () => {
 		it('should cancel the request if the same request was made again', () => {

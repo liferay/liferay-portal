@@ -2,8 +2,6 @@ import React from 'react';
 import Select from '../Select';
 import {cleanup, render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 describe('Select', () => {
 	afterEach(cleanup);
 

@@ -1,5 +1,3 @@
-jest.unmock('react-dom');
-
 import SESSION_PROPERTIES, {
 	CHANNEL_OPTIONS,
 	DEFAULT_UTM_PARAMETER_OPTIONS,

@@ -14,8 +14,6 @@ import {List} from 'immutable';
 import {Property} from 'shared/util/records';
 import {PropertyTypes} from '../../utils/constants';
 
-jest.unmock('react-dom');
-
 jest.mock('shared/apollo/client', () => ({
 	__esModule: true,
 	default: {query: jest.fn()}

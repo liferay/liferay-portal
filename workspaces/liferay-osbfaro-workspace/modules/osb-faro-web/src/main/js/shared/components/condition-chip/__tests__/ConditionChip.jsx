@@ -3,8 +3,6 @@ import React from 'react';
 import {DataTypes} from 'shared/types/DataTypes';
 import {fireEvent, render, screen} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 const defaultProps = {
 	label: 'contains "manager"',
 	name: 'Job Title',

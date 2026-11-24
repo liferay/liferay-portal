@@ -8,8 +8,6 @@ import {
 } from '../recharts';
 import {render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 describe('Recharts Util', () => {
 	describe('getTextWidth', () => {
 		it('should return text width', () => {

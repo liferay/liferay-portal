@@ -7,8 +7,6 @@ import {ProjectStates} from 'shared/util/constants';
 import {MemoryRouter} from 'react-router-dom';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
 
-jest.unmock('react-dom');
-
 describe('WorkspaceListItem', () => {
 	afterEach(cleanup);
 

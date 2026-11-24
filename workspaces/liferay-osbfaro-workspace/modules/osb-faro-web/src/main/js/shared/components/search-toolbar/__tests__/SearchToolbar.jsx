@@ -4,8 +4,6 @@ import {Map, Set} from 'immutable';
 import {render} from '@testing-library/react';
 import {withStaticRouter} from 'test/mock-router';
 
-jest.unmock('react-dom');
-
 const DefaultComponent = withStaticRouter(SearchToolbar);
 
 describe('SearchToolbar', () => {

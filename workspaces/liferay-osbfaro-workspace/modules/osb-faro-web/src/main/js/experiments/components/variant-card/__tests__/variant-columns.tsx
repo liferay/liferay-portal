@@ -2,8 +2,6 @@ import React from 'react';
 import variantColumns from '../variant-columns';
 import {render, screen} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 const renderCell = (accessor: string, data: object) => {
 	const column = variantColumns({
 		bestVariant: null,

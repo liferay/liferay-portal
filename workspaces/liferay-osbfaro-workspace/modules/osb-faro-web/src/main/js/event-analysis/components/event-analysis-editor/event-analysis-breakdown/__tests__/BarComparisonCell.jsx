@@ -5,8 +5,6 @@ import {getMaxEventValue, parseBreakdownData} from 'event-analysis/utils/utils';
 import {mockBreakdownData} from 'test/data';
 import {render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 describe('BarComparisonCell', () => {
 	const orderedBreakdowns = [
 		{dataType: DataTypes.String},

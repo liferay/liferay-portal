@@ -3,8 +3,6 @@ import {cleanup, render} from '@testing-library/react';
 import {SafeResults, withEmpty, withError, withLoading} from '../util';
 import {MemoryRouter} from 'react-router';
 
-jest.unmock('react-dom');
-
 describe('HOC Util', () => {
 	afterEach(cleanup);
 

@@ -5,8 +5,6 @@ import {mockBreakdownData} from 'test/data';
 import {parseBreakdownData} from 'event-analysis/utils/utils';
 import {render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 describe('PercentOfCell', () => {
 	const orderedBreakdowns = [
 		{dataType: DataTypes.String},

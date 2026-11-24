@@ -10,8 +10,6 @@ import {MemoryRouter} from 'react-router-dom';
 import {Provider} from 'react-redux';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
 
-jest.unmock('react-dom');
-
 jest.mock('shared/actions/alerts', () => ({
 	actionTypes: {},
 	addAlert: jest.fn(() => ({meta: {}, payload: {}, type: 'addAlert'}))

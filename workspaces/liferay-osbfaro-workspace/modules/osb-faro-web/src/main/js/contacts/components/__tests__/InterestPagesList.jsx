@@ -3,8 +3,6 @@ import React from 'react';
 import {render, waitFor} from '@testing-library/react';
 import {MemoryRouter} from 'react-router';
 
-jest.unmock('react-dom');
-
 /**
  * For ActivePagesList (active: true) validation, It's possible to order by
  * unique visits count, whereas for InactivePagesList (active: false)

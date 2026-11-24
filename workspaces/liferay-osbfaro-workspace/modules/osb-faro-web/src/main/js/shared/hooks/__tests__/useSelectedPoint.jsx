@@ -2,8 +2,6 @@ import React from 'react';
 import {render} from '@testing-library/react';
 import {useSelectedPoint} from 'shared/hooks/useSelectedPoint';
 
-jest.unmock('react-dom');
-
 describe('useSelectedPoint', () => {
 	it('should not have value on the first render', () => {
 		let result = null;

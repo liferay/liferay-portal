@@ -2,8 +2,6 @@ import ComposedChartWithEmptyState from '../ComposedChartWithEmptyState';
 import React from 'react';
 import {cleanup, render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 const MockedComposedChart = () => (
 	<div data-testid="my-composed-chart">{'my composed chart content'}</div>
 );

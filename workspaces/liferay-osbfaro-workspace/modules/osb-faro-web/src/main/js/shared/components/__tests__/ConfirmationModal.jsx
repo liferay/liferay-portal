@@ -3,8 +3,6 @@ import {useModal} from '@clayui/modal';
 import React from 'react';
 import {cleanup, fireEvent, render, screen, waitFor} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 const DefaultComponent = ({onClose = jest.fn(), ...props}) => {
 	const {observer, onOpenChange, open} = useModal();
 

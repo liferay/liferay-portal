@@ -4,8 +4,6 @@ import React from 'react';
 import {Provider} from 'react-redux';
 import {render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 // The copy button announces a successful copy through the alert store.
 
 const renderCodeSnippet = (props) =>

@@ -3,8 +3,6 @@ import SourceCell from '../Source';
 import {cleanup, render, screen} from '@testing-library/react';
 import {MemoryRouter} from 'react-router';
 
-jest.unmock('react-dom');
-
 describe('SourceCell', () => {
 	afterEach(cleanup);
 

@@ -2,8 +2,6 @@ import React from 'react';
 import SubnavTbar from '../SubnavTbar';
 import {cleanup, render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 describe('SubnavTbar', () => {
 	afterEach(cleanup);
 

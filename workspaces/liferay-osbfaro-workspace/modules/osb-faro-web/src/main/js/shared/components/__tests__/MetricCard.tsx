@@ -3,8 +3,6 @@ import React from 'react';
 import {cleanup, render} from '@testing-library/react';
 import {TrendClassification} from 'segment/types';
 
-jest.unmock('react-dom');
-
 describe('MetricCard', () => {
 	afterEach(cleanup);
 

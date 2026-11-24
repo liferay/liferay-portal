@@ -2,8 +2,6 @@ import Canvas from '../Canvas';
 import React from 'react';
 import {act, cleanup, render, waitFor} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 const EMPTY_STATE = {
 	description: 'Drop something here.',
 	title: 'Nothing Here',

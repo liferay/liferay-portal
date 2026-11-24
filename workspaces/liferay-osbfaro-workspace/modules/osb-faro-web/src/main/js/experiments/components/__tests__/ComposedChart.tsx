@@ -2,8 +2,6 @@ import React from 'react';
 import {ComposedChart} from '../ComposedChart';
 import {render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 jest.mock('recharts', () => {
 	const OriginalModule = jest.requireActual('recharts');
 

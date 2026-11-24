@@ -3,8 +3,6 @@ import React from 'react';
 import {cleanup, render} from '@testing-library/react';
 import {mockIndividual, mockSegment} from 'test/data';
 
-jest.unmock('react-dom');
-
 describe('Avatar', () => {
 	afterEach(cleanup);
 

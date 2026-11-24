@@ -10,8 +10,6 @@ import {Provider} from 'react-redux';
 import {useModal} from '@clayui/modal';
 import {waitForModal} from 'test/render-modal';
 
-jest.unmock('react-dom');
-
 const mockGroupId = '23';
 
 const TestModal = props => {

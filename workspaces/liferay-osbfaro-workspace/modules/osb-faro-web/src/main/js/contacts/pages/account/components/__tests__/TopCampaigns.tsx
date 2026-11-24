@@ -3,8 +3,6 @@ import TopCampaigns from '../TopCampaigns';
 import {render, screen} from '@testing-library/react';
 import {useParams} from 'react-router-dom';
 
-jest.unmock('react-dom');
-
 jest.mock('@liferay/frontend-data-set-web', () => ({
 	...jest.requireActual('@liferay/frontend-data-set-web'),
 	FrontendDataSet: () => <div data-testid="fds-component" />,

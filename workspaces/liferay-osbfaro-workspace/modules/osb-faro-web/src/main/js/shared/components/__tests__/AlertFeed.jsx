@@ -5,8 +5,6 @@ import {cleanup, render} from '@testing-library/react';
 import {fromJS} from 'immutable';
 import {sub} from 'shared/util/lang';
 
-jest.unmock('react-dom');
-
 const defaultProps = {
 	alertsIMap: fromJS({
 		1: {

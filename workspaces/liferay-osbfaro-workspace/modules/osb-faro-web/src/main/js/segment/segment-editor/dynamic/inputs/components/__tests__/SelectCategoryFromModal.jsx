@@ -11,8 +11,6 @@ import {act, cleanup, fireEvent, render, waitFor} from '@testing-library/react';
 import {OrderedMap} from 'immutable';
 import {Provider} from 'react-redux';
 
-jest.unmock('react-dom');
-
 const defaultProps = {
 	channelId: 'ch-1',
 	groupId: 'gp-1',

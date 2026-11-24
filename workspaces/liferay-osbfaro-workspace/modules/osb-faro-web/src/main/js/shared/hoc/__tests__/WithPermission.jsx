@@ -16,8 +16,6 @@ const {userRoleNames} = FaroConstants;
 
 const mockUser = data.getImmutableMock(User, data.mockUser);
 
-jest.unmock('react-dom');
-
 jest.mock('shared/hooks/useCurrentUser', () => ({
 	useCurrentUser: () => mockUser
 }));

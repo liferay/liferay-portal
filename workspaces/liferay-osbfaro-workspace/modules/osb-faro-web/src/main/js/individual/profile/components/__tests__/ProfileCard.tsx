@@ -17,8 +17,6 @@ import {RangeKeyTimeRanges} from 'shared/util/constants';
 import {Routes} from 'shared/util/router';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
 
-jest.unmock('react-dom');
-
 const DefaultComponent = ({children}: {children: React.ReactNode}) => (
 	<Provider store={mockStore()}>
 		<MemoryRouter

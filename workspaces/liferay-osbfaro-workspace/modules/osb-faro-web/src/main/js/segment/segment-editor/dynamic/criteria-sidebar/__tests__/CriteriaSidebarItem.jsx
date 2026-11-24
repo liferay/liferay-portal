@@ -8,8 +8,6 @@ import {validateSegmentInputs} from '../../utils/utils';
 
 const connectDnd = jest.fn(el => el);
 
-jest.unmock('react-dom');
-
 describe('CriteriaSidebarItem', () => {
 	afterEach(cleanup);
 

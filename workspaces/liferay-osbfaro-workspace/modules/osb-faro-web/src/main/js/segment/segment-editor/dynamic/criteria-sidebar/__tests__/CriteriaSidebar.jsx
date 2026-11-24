@@ -47,8 +47,6 @@ jest.mock('react-router-dom', () => ({
 	useParams: () => ({groupId: '12345'})
 }));
 
-jest.unmock('react-dom');
-
 describe('CriteriaSidebar', () => {
 	const fullPropertyGroupList = new List([
 		new PropertyGroup({

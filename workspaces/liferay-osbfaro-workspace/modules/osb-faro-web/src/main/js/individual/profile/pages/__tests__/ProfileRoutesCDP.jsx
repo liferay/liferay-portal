@@ -24,8 +24,6 @@ const defaultProps = {
 	individual: data.getImmutableMock(Individual, data.mockIndividual)
 };
 
-jest.unmock('react-dom');
-
 describe('IndividualProfileRoutes', () => {
 	afterEach(cleanup);
 

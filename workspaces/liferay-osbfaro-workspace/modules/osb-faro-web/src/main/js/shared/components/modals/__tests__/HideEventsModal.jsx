@@ -4,8 +4,6 @@ import {Alert} from 'shared/types';
 import {cleanup, fireEvent, screen, waitFor} from '@testing-library/react';
 import {renderModal} from 'test/render-modal';
 
-jest.unmock('react-dom');
-
 const EVENTS = [
 	{displayName: 'First', hidden: false, id: '1'},
 	{displayName: 'Second', hidden: false, id: '2'},

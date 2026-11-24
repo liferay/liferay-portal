@@ -5,8 +5,6 @@ import {cleanup, render} from '@testing-library/react';
 import {createDateKeysIMap} from 'shared/util/intervals';
 import {RangeKeyTimeRanges} from 'shared/util/constants';
 
-jest.unmock('react-dom');
-
 describe('ActiveIndividualsChart', () => {
 	afterEach(cleanup);
 

@@ -10,8 +10,6 @@ import {MemoryRouter, Route, Routes as RouterRoutes} from 'react-router-dom';
 import {MockedProvider} from '@apollo/client/testing';
 import {Provider} from 'react-redux';
 
-jest.unmock('react-dom');
-
 const defaultProps = {
 	addAlert: jest.fn(),
 	dataSource: new DataSource(data.mockLiferayDataSource()),

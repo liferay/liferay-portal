@@ -2,8 +2,6 @@ import * as API from 'shared/api';
 import {renderHook, waitFor} from '@testing-library/react';
 import {useChannelLifecycles} from 'shared/hooks/useChannelLifecycles';
 
-jest.unmock('react-dom');
-
 describe('useChannelLifecycles', () => {
 	beforeEach(() => {
 		jest.clearAllMocks();

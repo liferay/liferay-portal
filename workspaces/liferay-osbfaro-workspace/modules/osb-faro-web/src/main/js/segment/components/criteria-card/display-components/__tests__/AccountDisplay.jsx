@@ -14,8 +14,6 @@ import {Property} from 'shared/util/records';
 import {render, waitFor} from '@testing-library/react';
 import {StaticRouter} from 'react-router';
 
-jest.unmock('react-dom');
-
 describe('AccountDisplay', () => {
 	const propertyName = 'organization/description/value';
 

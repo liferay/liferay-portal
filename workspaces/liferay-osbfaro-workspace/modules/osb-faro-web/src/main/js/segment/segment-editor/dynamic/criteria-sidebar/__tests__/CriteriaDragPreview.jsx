@@ -11,8 +11,6 @@ jest.mock('react-dnd', () => ({
 	useDragLayer: jest.fn()
 }));
 
-jest.unmock('react-dom');
-
 const property = new Property({
 	label: 'Click',
 	name: 'click',

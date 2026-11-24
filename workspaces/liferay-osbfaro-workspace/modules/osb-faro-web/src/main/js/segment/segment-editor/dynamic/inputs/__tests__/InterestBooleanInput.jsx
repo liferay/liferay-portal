@@ -5,8 +5,6 @@ import {createCustomValueMap} from '../../utils/custom-inputs';
 import {Property} from 'shared/util/records';
 import {RelationalOperators} from '../../utils/constants';
 
-jest.unmock('react-dom');
-
 describe('InterestBooleanInput', () => {
 	afterEach(cleanup);
 

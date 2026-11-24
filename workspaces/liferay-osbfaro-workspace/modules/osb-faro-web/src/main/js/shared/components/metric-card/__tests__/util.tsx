@@ -1,5 +1,3 @@
-jest.unmock('react-dom');
-
 import * as data from 'test/data';
 import {CompositeMetric, MetricType} from '../metrics';
 import {

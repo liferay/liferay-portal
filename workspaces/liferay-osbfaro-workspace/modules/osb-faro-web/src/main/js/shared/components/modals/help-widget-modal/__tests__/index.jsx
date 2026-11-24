@@ -8,8 +8,6 @@ import {Provider} from 'react-redux';
 import {renderModal} from 'test/render-modal';
 import {Routes} from 'shared/util/router';
 
-jest.unmock('react-dom');
-
 const DefaultComponent = ({observer, ...props}) => (
 	<Provider store={mockStore()}>
 		<MemoryRouter initialEntries={['/workspace/23/settings']}>

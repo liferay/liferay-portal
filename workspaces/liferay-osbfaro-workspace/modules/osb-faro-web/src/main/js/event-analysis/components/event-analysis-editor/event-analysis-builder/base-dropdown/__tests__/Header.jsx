@@ -2,8 +2,6 @@ import Header from '../Header';
 import React from 'react';
 import {render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 describe('BaseDropdownHeader', () => {
 	const WrappedComponent = props => (
 		<Header

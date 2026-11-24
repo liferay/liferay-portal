@@ -2,8 +2,6 @@ import CurrentStatusCell from '../CurrentStatus';
 import React from 'react';
 import {render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 const tableRow = document.createElement('tr');
 
 describe('CurrentStatusCell', () => {

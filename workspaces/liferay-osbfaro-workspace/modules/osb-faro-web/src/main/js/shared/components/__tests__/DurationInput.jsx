@@ -2,8 +2,6 @@ import DurationInput from '../DurationInput';
 import React from 'react';
 import {cleanup, render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 describe('DurationInput', () => {
 	afterEach(cleanup);
 

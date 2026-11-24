@@ -3,8 +3,6 @@ import React from 'react';
 import RowActions from '../RowActions';
 import {render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 const WrappedComponent = props => (
 	<td className={getCN(props.className)}>
 		<RowActions {...props} />

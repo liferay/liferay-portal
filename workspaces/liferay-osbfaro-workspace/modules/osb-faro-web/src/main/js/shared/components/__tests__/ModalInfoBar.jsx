@@ -2,8 +2,6 @@ import ModalInfoBar from '../ModalInfoBar';
 import React from 'react';
 import {cleanup, render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 describe('ModalInfoBar', () => {
 	afterEach(cleanup);
 

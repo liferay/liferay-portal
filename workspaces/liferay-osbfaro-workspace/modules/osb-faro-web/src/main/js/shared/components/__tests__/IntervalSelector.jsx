@@ -2,8 +2,6 @@ import IntervalSelector from '../IntervalSelector';
 import React from 'react';
 import {cleanup, fireEvent, render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 describe('IntervalSelector', () => {
 	afterEach(cleanup);
 

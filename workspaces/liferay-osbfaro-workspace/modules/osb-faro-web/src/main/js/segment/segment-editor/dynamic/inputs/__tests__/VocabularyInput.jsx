@@ -15,8 +15,6 @@ import {
 import {Property} from 'shared/util/records';
 import {Provider} from 'react-redux';
 
-jest.unmock('react-dom');
-
 const VOC_ID = 'vocab-id';
 const VOC_NAME = 'My Vocabulary';
 

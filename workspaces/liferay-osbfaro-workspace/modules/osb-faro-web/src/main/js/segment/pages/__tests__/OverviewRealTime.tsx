@@ -7,8 +7,6 @@ import {render, screen} from '@testing-library/react';
 import {Segment} from 'shared/util/records';
 import {MemoryRouter} from 'react-router';
 
-jest.unmock('react-dom');
-
 jest.mock('shared/hooks/useTimeZone', () => ({
 	useTimeZone: () => ({
 		timeZoneId: 'UTC',

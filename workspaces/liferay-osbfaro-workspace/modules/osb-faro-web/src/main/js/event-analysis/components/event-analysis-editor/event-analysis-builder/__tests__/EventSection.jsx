@@ -9,8 +9,6 @@ import {MockedProvider} from '@apollo/client/testing';
 import {Provider} from 'react-redux';
 import {Routes} from 'shared/util/router';
 
-jest.unmock('react-dom');
-
 const DefaultComponent = ({attributesValue, ...props}) => (
 	<Provider store={mockStore()}>
 		<MemoryRouter initialEntries={['/workspace/23/event-analysis']}>

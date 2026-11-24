@@ -2,8 +2,6 @@ import React from 'react';
 import SearchableList from '../SearchableList';
 import {fireEvent, render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 describe('BaseDropdownSearchableList', () => {
 	const WrappedComponent = props => (
 		<SearchableList

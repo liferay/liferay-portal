@@ -2,8 +2,6 @@ import CompositionCard from '../CompositionCard';
 import React from 'react';
 import {render, screen} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 describe('CompositionCard', () => {
 	it('should render', () => {
 		const {container} = render(

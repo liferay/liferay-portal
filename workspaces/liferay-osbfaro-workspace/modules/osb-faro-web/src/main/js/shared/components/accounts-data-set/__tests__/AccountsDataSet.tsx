@@ -103,8 +103,6 @@ const ALL_ATTRIBUTES_FIELD_CATALOG: ICatalogField[] = [
 	buildCatalogField('isPartner', 'Boolean'),
 ];
 
-jest.unmock('react-dom');
-
 jest.mock('shared/api', () => ({
 	accounts: {
 		fetchLifecycleStageFieldValues: jest.fn(),

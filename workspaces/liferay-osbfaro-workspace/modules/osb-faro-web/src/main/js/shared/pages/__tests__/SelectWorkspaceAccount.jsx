@@ -38,8 +38,6 @@ jest.mock('shared/hooks/useProjects', () => ({
 	useFetchProjects: jest.fn()
 }));
 
-jest.unmock('react-dom');
-
 describe('SelectWorkspaceAccount', () => {
 	it('should render', () => {
 		const mockProjects = [

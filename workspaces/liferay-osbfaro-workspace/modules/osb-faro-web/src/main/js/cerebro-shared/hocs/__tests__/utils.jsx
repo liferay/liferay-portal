@@ -2,8 +2,6 @@ import React from 'react';
 import {render} from '@testing-library/react';
 import {withEmpty, withError} from '../utils';
 
-jest.unmock('react-dom');
-
 const MyAwesomeComponent = () => <div>{'my awesome component'}</div>;
 
 describe('withEmpty', () => {

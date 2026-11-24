@@ -3,8 +3,6 @@ import CreatedByCell from '../CreatedBy';
 import React from 'react';
 import {render} from '@testing-library/react';
 
-jest.unmock('react-dom');
-
 const tableRow = document.createElement('tr');
 
 describe('CreatedByCell', () => {

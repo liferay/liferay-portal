@@ -6,8 +6,6 @@ import {MemoryRouter} from 'react-router-dom';
 import {Provider} from 'react-redux';
 import {resetBodyWidth, setBodyWidth} from 'test/body-width';
 
-jest.unmock('react-dom');
-
 const PUSH_WIDTH = 1440;
 
 const OVERLAY_WIDTH = 1024;

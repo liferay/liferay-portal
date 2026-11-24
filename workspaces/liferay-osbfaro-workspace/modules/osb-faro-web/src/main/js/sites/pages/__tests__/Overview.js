@@ -9,8 +9,6 @@ import {MemoryRouter, Route, Routes as RouterRoutes} from 'react-router-dom';
 import {mockChannelContext} from 'test/mock-channel-context';
 import {Routes} from 'shared/util/router';
 
-jest.unmock('react-dom');
-
 const MOCK_CONTEXT = {
 	rangeKey: {defaultValue: '30'},
 	router: {
