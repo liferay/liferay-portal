@@ -1899,7 +1899,7 @@ test(
 );
 
 test(
-	'View site usages returns 404 without the manage fragment entries permission',
+	'View site usages shows an error without the manage fragment entries permission',
 	{tag: '@LPD-114647'},
 	async ({apiHelpers, fragmentsPage, page}) => {
 
@@ -1962,13 +1962,11 @@ test(
 					.getByLabel('More actions')
 			).toHaveCount(0);
 
-			// Assert view site usages URL returns 404
+			// Assert view site usages URL shows an error
 
-			const response = await page.goto(
+			await page.goto(
 				`/group/global/~/control_panel/manage/-/fragments/fragment_collection/${globalFragmentCollection.fragmentCollectionId}/fragment_entry/${fragmentEntry.fragmentEntryId}/group_usages`
 			);
-
-			expect(response.status()).toBe(404);
 
 			await expect(
 				page.getByText('The fragment entry could not be found.')

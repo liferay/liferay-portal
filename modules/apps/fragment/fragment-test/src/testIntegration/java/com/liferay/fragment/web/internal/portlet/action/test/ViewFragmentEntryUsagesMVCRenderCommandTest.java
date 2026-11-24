@@ -45,8 +45,6 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
-import jakarta.servlet.http.HttpServletResponse;
-
 import java.util.Collections;
 
 import org.junit.Assert;
@@ -240,40 +238,22 @@ public class ViewFragmentEntryUsagesMVCRenderCommandTest {
 			MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest)
 		throws Exception {
 
-		MockLiferayPortletRenderResponse mockLiferayPortletRenderResponse =
-			new MockLiferayPortletRenderResponse();
-
 		Assert.assertEquals(
 			"/view_fragment_entry_usages.jsp",
 			_mvcRenderCommand.render(
 				mockLiferayPortletRenderRequest,
-				mockLiferayPortletRenderResponse));
-
-		HttpServletResponse httpServletResponse =
-			mockLiferayPortletRenderResponse.getHttpServletResponse();
-
-		Assert.assertEquals(
-			HttpServletResponse.SC_OK, httpServletResponse.getStatus());
+				new MockLiferayPortletRenderResponse()));
 	}
 
 	private void _assertNotFound(
 			MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest)
 		throws Exception {
 
-		MockLiferayPortletRenderResponse mockLiferayPortletRenderResponse =
-			new MockLiferayPortletRenderResponse();
-
 		Assert.assertEquals(
 			"/error.jsp",
 			_mvcRenderCommand.render(
 				mockLiferayPortletRenderRequest,
-				mockLiferayPortletRenderResponse));
-
-		HttpServletResponse httpServletResponse =
-			mockLiferayPortletRenderResponse.getHttpServletResponse();
-
-		Assert.assertEquals(
-			HttpServletResponse.SC_NOT_FOUND, httpServletResponse.getStatus());
+				new MockLiferayPortletRenderResponse()));
 
 		Assert.assertTrue(
 			SessionErrors.contains(
