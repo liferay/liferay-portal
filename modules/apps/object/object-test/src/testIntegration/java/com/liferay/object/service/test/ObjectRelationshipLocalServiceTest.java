@@ -636,23 +636,13 @@ public class ObjectRelationshipLocalServiceTest {
 						ServiceContextTestUtil.getServiceContext()));
 	}
 
+	@FeatureFlag("LPD-108620")
 	@Test
 	public void testAddSystemObjectRelationship() throws Exception {
 		ObjectDefinition addressObjectDefinition =
 			_objectDefinitionLocalService.fetchObjectDefinitionByClassName(
 				TestPropsValues.getCompanyId(), Address.class.getName());
 
-		AssertUtils.assertFailure(
-			ObjectRelationshipTypeException.class,
-			"Invalid type " + ObjectRelationshipConstants.TYPE_ONE_TO_ONE,
-			() -> _objectRelationshipLocalService.addObjectRelationship(
-				null, TestPropsValues.getUserId(),
-				_unmodifiableSystemObjectDefinition2.getObjectDefinitionId(),
-				_objectDefinition1.getObjectDefinitionId(), 0,
-				ObjectRelationshipConstants.DELETION_TYPE_PREVENT, null, false,
-				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
-				StringUtil.randomId(), false,
-				ObjectRelationshipConstants.TYPE_ONE_TO_ONE, null));
 		AssertUtils.assertFailure(
 			ObjectRelationshipTypeException.class,
 			"Invalid type for system object definition " +
@@ -665,6 +655,7 @@ public class ObjectRelationshipLocalServiceTest {
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 				StringUtil.randomId(), false,
 				ObjectRelationshipConstants.TYPE_MANY_TO_MANY, null));
+
 		AssertUtils.assertFailure(
 			ObjectRelationshipParameterObjectFieldIdException.class,
 			"Object relationship type " +
@@ -733,6 +724,12 @@ public class ObjectRelationshipLocalServiceTest {
 			_unmodifiableSystemObjectDefinition2, _objectDefinition1, false);
 		_testAddObjectRelationshipOneToMany(
 			_unmodifiableSystemObjectDefinition2, _objectDefinition1, true);
+		_testAddObjectRelationshipOneToOne(
+			_modifiableSystemObjectDefinition, _objectDefinition1);
+		_testAddObjectRelationshipOneToOne(
+			_objectDefinition1, _unmodifiableSystemObjectDefinition2);
+		_testAddObjectRelationshipOneToOne(
+			_unmodifiableSystemObjectDefinition2, _objectDefinition1);
 
 		_testCreateManyToManyObjectRelationshipTable(
 			_unmodifiableSystemObjectDefinition2, false);
@@ -2198,6 +2195,36 @@ public class ObjectRelationshipLocalServiceTest {
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 				StringUtil.randomId(), false,
 				ObjectRelationshipConstants.TYPE_ONE_TO_MANY, null));
+
+		ObjectRelationship objectRelationship =
+			_objectRelationshipLocalService.addObjectRelationship(
+				null, TestPropsValues.getUserId(),
+				_objectDefinition2.getObjectDefinitionId(),
+				_objectDefinition1.getObjectDefinitionId(), 0,
+				ObjectRelationshipConstants.DELETION_TYPE_PREVENT, null, false,
+				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
+				StringUtil.randomId(), false,
+				ObjectRelationshipConstants.TYPE_ONE_TO_ONE, null);
+
+		AssertUtils.assertFailure(
+			ObjectRelationshipParameterObjectFieldIdException.class,
+			StringBundler.concat(
+				"Parameter object field ID ",
+				objectRelationship.getObjectFieldId2(),
+				" does not belong to a one to many relationship object ",
+				"field"),
+			() -> _objectRelationshipLocalService.addObjectRelationship(
+				null, TestPropsValues.getUserId(),
+				_unmodifiableSystemObjectDefinition1.getObjectDefinitionId(),
+				_objectDefinition1.getObjectDefinitionId(),
+				objectRelationship.getObjectFieldId2(),
+				ObjectRelationshipConstants.DELETION_TYPE_PREVENT, null, false,
+				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
+				StringUtil.randomId(), false,
+				ObjectRelationshipConstants.TYPE_ONE_TO_MANY, null));
+
+		_objectRelationshipLocalService.deleteObjectRelationship(
+			objectRelationship);
 
 		_addObjectRelationshipSystemObjectDefinition();
 	}
