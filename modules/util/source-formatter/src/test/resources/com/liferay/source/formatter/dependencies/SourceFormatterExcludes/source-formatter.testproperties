@@ -1,0 +1,10 @@
+##
+## Exclusions
+##
+
+    run.outside.portal.excludes=\
+        **/.m2/**,\
+        **/build.gradle,\
+        **/bundles*/**,\
+        **/liferay-learn-etc-spring-boot/**,\
+        **/osgi-util/src/main/java/com/liferay/osgi/util/OSGiUtil.java

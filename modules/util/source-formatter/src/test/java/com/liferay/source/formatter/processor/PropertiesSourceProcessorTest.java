@@ -71,6 +71,24 @@ public class PropertiesSourceProcessorTest extends BaseSourceProcessorTestCase {
 	}
 
 	@Test
+	public void testSourceFormatterExcludes() throws Exception {
+		test(
+			"SourceFormatterExcludes/source-formatter.testproperties",
+			new String[] {
+				StringBundler.concat(
+					"Property value \"**/liferay-learn-etc-spring-boot/**\" ",
+					"of \"run.outside.portal.excludes\" should use the full ",
+					"path from the repository root instead of starting with ",
+					"\"**/\""),
+				StringBundler.concat(
+					"Property value \"**/osgi-util/src/main/java/com/liferay",
+					"/osgi/util/OSGiUtil.java\" of \"run.outside.portal.",
+					"excludes\" should use the full path from the repository ",
+					"root instead of starting with \"**/\"")
+			});
+	}
+
+	@Test
 	public void testStyling() throws Exception {
 		test("Styling.testproperties");
 	}

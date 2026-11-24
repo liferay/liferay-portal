@@ -8,6 +8,7 @@ package com.liferay.source.formatter.check;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -198,6 +199,37 @@ public class PropertiesSourceFormatterFileCheck extends BaseFileCheck {
 		_checkPropertiesGroupAndOrder(fileName, prefix, properties);
 	}
 
+	private void _checkWildcardDirName(
+		String fileName, String key, String propertyValue) {
+
+		if (!propertyValue.startsWith("**/")) {
+			return;
+		}
+
+		String dirName = propertyValue.substring(3);
+
+		int pos = dirName.indexOf(CharPool.SLASH);
+
+		if (pos == -1) {
+			return;
+		}
+
+		dirName = dirName.substring(0, pos);
+
+		if (dirName.contains(StringPool.STAR) ||
+			ArrayUtil.contains(_WILDCARD_DIR_NAMES, dirName)) {
+
+			return;
+		}
+
+		addMessage(
+			fileName,
+			StringBundler.concat(
+				"Property value \"", propertyValue, "\" of \"", key,
+				"\" should use the full path from the repository root instead ",
+				"of starting with \"**/\""));
+	}
+
 	private String _fixCheckProperties(String content) throws Exception {
 		Matcher matcher = _checkPropertyPattern.matcher(content);
 
@@ -261,6 +293,10 @@ public class PropertiesSourceFormatterFileCheck extends BaseFileCheck {
 			}
 
 			for (String propertyFileName : propertyValues) {
+				if (key.endsWith("excludes")) {
+					_checkWildcardDirName(fileName, key, propertyFileName);
+				}
+
 				if (propertyFileName.contains(StringPool.STAR) ||
 					propertyFileName.endsWith("-ext.properties") ||
 					(isPortalSource() && !_hasPrivateAppsDir() &&
@@ -551,6 +587,11 @@ public class PropertiesSourceFormatterFileCheck extends BaseFileCheck {
 
 		return content;
 	}
+
+	private static final String[] _WILDCARD_DIR_NAMES = {
+		".cache", ".m2", ".m2-tmp", ".task-cache", "bower_components",
+		"build_gradle", "bun dles", "gradle", "webapps"
+	};
 
 	private static final Pattern _checkPropertyPattern = Pattern.compile(
 		"\n\\s*#?(checkstyle|source\\.check)\\.(.*\\.check)\\.");
