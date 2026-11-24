@@ -9,7 +9,6 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.layout.util.BulkLayoutConverter;
 import com.liferay.layout.util.template.LayoutConversionResult;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Group;
@@ -28,6 +27,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -63,32 +63,14 @@ public class DeleteLayoutMVCActionCommandTest {
 
 	@Test
 	public void testDeleteLayout() throws Exception {
-		Layout layout = LayoutTestUtil.addTypePortletLayout(
-			_group.getGroupId());
 		String redirect = RandomTestUtil.randomString();
-		MockLiferayPortletActionResponse mockLiferayPortletActionResponse =
-			new MockLiferayPortletActionResponse();
-
-		_mvcActionCommand.processAction(
-			_getMockLiferayPortletActionRequest(layout.getPlid(), redirect),
-			mockLiferayPortletActionResponse);
-
-		Assert.assertNull(_layoutLocalService.fetchLayout(layout.getPlid()));
-
-		MockHttpServletResponse mockHttpServletResponse =
-			(MockHttpServletResponse)
-				mockLiferayPortletActionResponse.getHttpServletResponse();
-
-		JSONObject jsonObject = _jsonFactory.createJSONObject(
-			mockHttpServletResponse.getContentAsString());
 
 		Assert.assertEquals(
-			jsonObject.toString(), redirect,
-			jsonObject.getString("redirectURL"));
-	}
+			redirect,
+			_testDeleteLayout(
+				LayoutTestUtil.addTypePortletLayout(_group.getGroupId()),
+				redirect));
 
-	@Test
-	public void testDeleteLayoutWithDraftLayout() throws Exception {
 		Layout layout = LayoutTestUtil.addTypePortletLayout(
 			_group.getGroupId());
 
@@ -96,26 +78,10 @@ public class DeleteLayoutMVCActionCommandTest {
 			_bulkLayoutConverter.generatePreviewLayout(
 				layout.getPlid(), LocaleUtil.getDefault());
 
-		Layout draftLayout = layoutConversionResult.getDraftLayout();
-
-		MockLiferayPortletActionResponse mockLiferayPortletActionResponse =
-			new MockLiferayPortletActionResponse();
-
-		_mvcActionCommand.processAction(
-			_getMockLiferayPortletActionRequest(
-				draftLayout.getPlid(), RandomTestUtil.randomString()),
-			mockLiferayPortletActionResponse);
-
 		Assert.assertNull(
-			_layoutLocalService.fetchLayout(draftLayout.getPlid()));
-
-		MockHttpServletResponse mockHttpServletResponse =
-			(MockHttpServletResponse)
-				mockLiferayPortletActionResponse.getHttpServletResponse();
-
-		String content = mockHttpServletResponse.getContentAsString();
-
-		Assert.assertEquals(StringPool.BLANK, content);
+			redirect,
+			_testDeleteLayout(
+				layoutConversionResult.getDraftLayout(), redirect));
 	}
 
 	private MockLiferayPortletActionRequest _getMockLiferayPortletActionRequest(
@@ -144,6 +110,33 @@ public class DeleteLayoutMVCActionCommandTest {
 		themeDisplay.setUser(TestPropsValues.getUser());
 
 		return themeDisplay;
+	}
+
+	private String _testDeleteLayout(Layout layout, String redirect)
+		throws Exception {
+
+		MockLiferayPortletActionResponse mockLiferayPortletActionResponse =
+			new MockLiferayPortletActionResponse();
+
+		_mvcActionCommand.processAction(
+			_getMockLiferayPortletActionRequest(layout.getPlid(), redirect),
+			mockLiferayPortletActionResponse);
+
+		Assert.assertNull(_layoutLocalService.fetchLayout(layout.getPlid()));
+
+		MockHttpServletResponse mockHttpServletResponse =
+			(MockHttpServletResponse)
+				mockLiferayPortletActionResponse.getHttpServletResponse();
+
+		String content = mockHttpServletResponse.getContentAsString();
+
+		if (Validator.isNull(content)) {
+			return null;
+		}
+
+		JSONObject jsonObject = _jsonFactory.createJSONObject(content);
+
+		return jsonObject.getString("redirectURL");
 	}
 
 	@Inject
