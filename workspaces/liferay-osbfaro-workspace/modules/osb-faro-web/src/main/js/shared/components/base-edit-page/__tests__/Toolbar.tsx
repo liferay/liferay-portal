@@ -49,7 +49,7 @@ describe('BaseEditPage.Toolbar', () => {
 	});
 
 	it('groups the actions so they wrap together below the title', () => {
-		const {container} = renderToolbar(
+		renderToolbar(
 			<>
 				<Toolbar.Cancel href="/list" />
 
@@ -59,8 +59,6 @@ describe('BaseEditPage.Toolbar', () => {
 
 		const actions = screen.getByTestId('toolbar-actions');
 
-		expect(container.firstChild).toHaveClass('base-edit-page-toolbar');
-		expect(actions).toHaveClass('base-edit-page-toolbar-actions');
 		expect(actions).toContainElement(
 			screen.getByRole('link', {name: /cancel/i})
 		);

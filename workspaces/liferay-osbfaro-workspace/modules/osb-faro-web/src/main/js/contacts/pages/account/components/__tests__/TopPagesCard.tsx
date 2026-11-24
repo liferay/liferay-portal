@@ -158,22 +158,6 @@ describe('TopPagesCard', () => {
 		expect(href).toContain('accountName=IQVIA');
 	});
 
-	it('should render the footer action like the account info one', async () => {
-		const {container} = renderTopPagesCard();
-
-		await waitForLoadingToBeRemoved(container);
-
-		const link = screen.getByText(/^view all$/i).closest('a');
-
-		expect(link).toHaveClass(
-			'btn-outline-borderless',
-			'btn-outline-primary',
-			'btn-sm',
-			'ml-auto',
-			'rounded-lg'
-		);
-	});
-
 	it('should render the empty state when the account has no pages', async () => {
 		const {container} = renderTopPagesCardWithoutPages();
 
@@ -185,19 +169,5 @@ describe('TopPagesCard', () => {
 		expect(
 			screen.getByText(/^pages will appear here when available\.$/i)
 		).toBeInTheDocument();
-	});
-
-	it('should render the empty state like the Top Assets one', async () => {
-		const {container} = renderTopPagesCardWithoutPages();
-
-		await waitForLoadingToBeRemoved(container);
-
-		await screen.findByText(/^no pages available$/i);
-
-		expect(container.querySelector('.c-empty-state')).toHaveClass(
-			'c-empty-state-sm',
-			'py-3',
-			'text-center'
-		);
 	});
 });

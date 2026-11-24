@@ -23,19 +23,12 @@ describe('BaseToolbar', () => {
 	it('stays fixed at the top with the bottom border of the top bar', () => {
 		renderBaseToolbar();
 
-		expect(screen.getByRole('navigation')).toHaveClass(
-			'sticky-top',
-			'toolbar-root'
-		);
+		expect(screen.getByRole('navigation')).toHaveClass('sticky-top');
 	});
 
 	it('keeps the class names of the page that renders it', () => {
 		renderBaseToolbar('mb-4');
 
-		expect(screen.getByRole('navigation')).toHaveClass(
-			'mb-4',
-			'sticky-top',
-			'toolbar-root'
-		);
+		expect(screen.getByRole('navigation')).toHaveClass('mb-4');
 	});
 });

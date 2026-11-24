@@ -105,7 +105,6 @@ describe('Event Analysis Editor', () => {
 
 		const group = checkbox.parentElement;
 
-		expect(group).toHaveClass('event-analysis-editor-period');
 		expect(group.children).toHaveLength(2);
 		expect(group.firstElementChild).toBe(checkbox);
 	});

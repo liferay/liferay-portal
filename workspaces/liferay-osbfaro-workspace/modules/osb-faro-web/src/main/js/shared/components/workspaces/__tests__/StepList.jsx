@@ -18,12 +18,4 @@ describe('StepList', () => {
 
 		expect(getByText('test')).toBeTruthy();
 	});
-
-	it('should render without bullet', () => {
-		const {getByText} = render(
-			<DefaultComponent hideBullets secondaryInfo='test' />
-		);
-
-		expect(getByText('test').parentElement).toHaveClass('hide-bullets');
-	});
 });

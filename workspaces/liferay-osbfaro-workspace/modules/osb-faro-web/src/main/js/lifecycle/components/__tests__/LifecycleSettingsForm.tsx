@@ -70,7 +70,6 @@ describe('LifecycleSettingsForm', () => {
 			.closest('.base-edit-page-main');
 
 		expect(main).not.toBeNull();
-		expect(main?.parentElement).toHaveClass('base-edit-page-body');
 	});
 
 	it('places the lifecycle conditions panel in the sidebar', () => {

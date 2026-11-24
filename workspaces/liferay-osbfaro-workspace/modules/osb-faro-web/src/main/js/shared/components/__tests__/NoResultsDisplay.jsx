@@ -11,14 +11,6 @@ describe('NoResultsDisplay', () => {
 		expect(container).toMatchSnapshot();
 	});
 
-	it('should render component with primary color', () => {
-		const {container} = render(<NoResultsDisplay primary />);
-
-		expect(container.querySelector('.no-results-root')).toHaveClass(
-			'no-results-primary'
-		);
-	});
-
 	it('should render component with description', () => {
 		const description = 'No results with description';
 

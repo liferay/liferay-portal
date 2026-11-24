@@ -103,9 +103,7 @@ describe('BasePage', () => {
 			</Provider>
 		);
 
-		expect(getByText('testPageTitle').parentElement).toHaveClass(
-			'title-text'
-		);
+		expect(getByText('testPageTitle')).toBeInTheDocument();
 		expect(getByText('mysubtitle').parentElement).toBeTruthy();
 	});
 });

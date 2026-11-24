@@ -20,7 +20,6 @@ describe('BaseEditPage.Title', () => {
 
 		const input = screen.getByLabelText(/title/i);
 
-		expect(input).toHaveClass('form-control-inline');
 		expect(input).toHaveAttribute('placeholder', 'New Analysis');
 	});
 

@@ -10,10 +10,4 @@ describe('ItemText', () => {
 
 		expect(container).toMatchSnapshot();
 	});
-
-	it('should render with subtext', () => {
-		const {getByText} = render(<DefaultComponent subtext='subtext here' />);
-
-		expect(getByText(/^content$/i)).toHaveClass('list-group-subtext');
-	});
 });

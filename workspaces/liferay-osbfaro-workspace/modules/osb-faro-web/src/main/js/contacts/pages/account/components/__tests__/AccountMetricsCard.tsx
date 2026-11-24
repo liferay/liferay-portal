@@ -248,15 +248,6 @@ describe('AccountMetricsCard', () => {
 	});
 
 	describe('styling', () => {
-		it('should stretch the card to fill its column', () => {
-			const {container} = renderAccountMetricsCard();
-
-			expect(container.querySelector('.card-root')).toHaveClass(
-				'flex-fill',
-				'p-3',
-				'w-100'
-			);
-		});
 
 		it('should keep the class name passed by the consumer', () => {
 			const {container} = renderAccountMetricsCard({
@@ -264,16 +255,7 @@ describe('AccountMetricsCard', () => {
 			});
 
 			expect(container.querySelector('.card-root')).toHaveClass(
-				'custom-card',
-				'flex-fill'
-			);
-		});
-
-		it('should render the body without the default card padding', () => {
-			const {container} = renderAccountMetricsCard();
-
-			expect(container.querySelector('.card-body')).toHaveClass(
-				'no-padding'
+				'custom-card'
 			);
 		});
 

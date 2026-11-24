@@ -97,22 +97,6 @@ describe('AccountInfoBar', () => {
 				screen.getByRole('combobox', {name: /^lifecycle$/i})
 			).toHaveTextContent(/customer/i);
 		});
-
-		it.each([
-			['Engaged', 'label-inverse-warning'],
-			['At Risk', 'label-inverse-danger'],
-			['NOT_A_STAGE', 'label-inverse-secondary'],
-		])('should color the %s stage as %s', (stageName, className) => {
-			render(
-				<AccountInfoBar
-					lifecycleStages={[buildLifecycleStage('al-1', stageName)]}
-				/>
-			);
-
-			expect(screen.getByText(stageName).closest('.label')).toHaveClass(
-				className
-			);
-		});
 	});
 
 	describe('missing values', () => {

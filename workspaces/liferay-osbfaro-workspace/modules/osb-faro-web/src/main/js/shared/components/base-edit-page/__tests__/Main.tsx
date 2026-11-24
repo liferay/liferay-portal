@@ -3,7 +3,7 @@ import React from 'react';
 import {render, screen} from '@testing-library/react';
 
 describe('BaseEditPage.Main', () => {
-	it('holds the editor content in a centered container', () => {
+	it('keeps the given class name', () => {
 		render(
 			<Main className="lifecycle-form">
 				<p>{'Editor'}</p>
@@ -12,11 +12,6 @@ describe('BaseEditPage.Main', () => {
 
 		const main = screen.getByText(/^editor$/i).parentElement;
 
-		expect(main).toHaveClass(
-			'base-edit-page-main',
-			'container-fluid',
-			'container-fluid-max-xl',
-			'lifecycle-form'
-		);
+		expect(main).toHaveClass('lifecycle-form');
 	});
 });

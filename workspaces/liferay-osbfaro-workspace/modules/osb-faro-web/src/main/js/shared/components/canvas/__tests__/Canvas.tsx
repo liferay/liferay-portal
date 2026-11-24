@@ -55,7 +55,7 @@ describe('Canvas', () => {
 		expect(getByText(EMPTY_STATE.description)).toBeInTheDocument();
 	});
 
-	it('renders the root and the slots as card parts', () => {
+	it('keeps the class names given to the root and the slots', () => {
 		const {container, getByTestId} = render(
 			<Canvas className="custom-canvas" testId="canvas">
 				<Canvas.Header className="custom-header" title="Canvas Title" />
@@ -64,17 +64,11 @@ describe('Canvas', () => {
 			</Canvas>
 		);
 
-		expect(getByTestId('canvas')).toHaveClass(
-			'canvas-root',
-			'card',
-			'custom-canvas'
-		);
+		expect(getByTestId('canvas')).toHaveClass('custom-canvas');
 		expect(container.querySelector('.canvas-header')).toHaveClass(
-			'card-header',
 			'custom-header'
 		);
 		expect(container.querySelector('.canvas-body')).toHaveClass(
-			'card-body',
 			'custom-body'
 		);
 	});

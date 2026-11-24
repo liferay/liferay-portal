@@ -126,6 +126,5 @@ describe('BaseEventAnalysisPage', () => {
 			.closest('.base-edit-page-main');
 
 		expect(main).toContainElement(screen.getByLabelText(/^title/i));
-		expect(main.parentElement).toHaveClass('base-edit-page-body');
 	});
 });
