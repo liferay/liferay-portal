@@ -31,6 +31,7 @@ import UtmParameterInput from '../inputs/UtmParameterInput';
 import VocabularyInput from '../inputs/VocabularyInput';
 import {
 	AddProperty,
+	ReferencedEntities,
 	withReferencedObjectsConsumer,
 } from '../context/referencedObjects';
 import {ClayButtonWithIcon} from '@clayui/button';
@@ -63,6 +64,7 @@ import {Criterion, CriterionGroup, OnMove, Operator} from '../utils/types';
 import {DragTypes} from '../utils/drag-types';
 import {get} from 'lodash';
 import {getCriterionLabel} from '../utils/getCriterionLabel';
+import {getUnavailableCampaignIds} from '../utils/campaigns';
 import {Map} from 'immutable';
 import {Option, Picker} from '@clayui/core';
 import {Property} from 'shared/util/records';
@@ -230,6 +232,7 @@ interface ICriteriaRowProps extends PropsFromRedux {
 	onChange: (criterion: Criterion | Criterion[]) => void;
 	onDelete: (index: number) => void;
 	onMove: OnMove;
+	referencedEntities: ReferencedEntities;
 	referencedProperties: Map<string, Map<string, Property>>;
 	segmentCategory: SegmentCategories;
 	segmentType: SegmentTypes;
@@ -531,10 +534,19 @@ class CriteriaRow extends React.Component<
 				dragging,
 				hover,
 				keyboardTarget,
+				referencedEntities,
 				stepNumber,
 			},
 			state: {selectedProperty},
 		} = this;
+
+		// A deleted campaign cannot be edited back into the row, so the row
+		// only offers to remove it, like an attribute that no longer exists.
+
+		const unavailableCampaign =
+			getUnavailableCampaignIds(criterion, referencedEntities).length > 0;
+
+		const available = !!selectedProperty && !unavailableCampaign;
 
 		const classes = getCN('criterion-row-root', {
 			'dnd-drag': dragging,
@@ -578,7 +590,7 @@ class CriteriaRow extends React.Component<
 							</ClaySticker>
 						)}
 
-						{selectedProperty ? (
+						{available ? (
 							this.renderValueInput()
 						) : (
 							<div
@@ -590,14 +602,18 @@ class CriteriaRow extends React.Component<
 									symbol="exclamation-full"
 								/>
 
-								{Liferay.Language.get(
-									'attribute-no-longer-exists'
-								)}
+								{unavailableCampaign
+									? Liferay.Language.get(
+											'campaign-no-longer-exists'
+										)
+									: Liferay.Language.get(
+											'attribute-no-longer-exists'
+										)}
 							</div>
 						)}
 
 						<div className="actions">
-							{selectedProperty ? (
+							{available ? (
 								<RowActions
 									actions={[
 										{

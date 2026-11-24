@@ -20,6 +20,7 @@ import React from 'react';
 import SegmentMembership from './SegmentMembership';
 import SegmentSequentialToggle from 'segment/components/SegmentSequentialToggle';
 import Toolbar from './Toolbar';
+import UnavailableCampaignsAlert from './UnavailableCampaignsAlert';
 import {AlertTypes} from 'shared/components/Alert';
 import {ClayButtonWithIcon} from '@clayui/button';
 import {
@@ -594,6 +595,12 @@ class SegmentEditor extends React.Component<ISegmentEditorProps> {
 														</Canvas.Header>
 
 														<Canvas.Body>
+															<UnavailableCampaignsAlert
+																criteria={
+																	criteria
+																}
+															/>
+
 															<CriteriaBuilderForm
 																channelId={
 																	channelId
