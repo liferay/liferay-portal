@@ -15,6 +15,7 @@ import com.liferay.layout.util.structure.FragmentStyledLayoutStructureItem;
 import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.portal.kernel.comment.CommentManager;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -287,17 +288,42 @@ public class SegmentsExperienceUtil {
 	}
 
 	private static String _getNewEditableValues(
-		JSONObject editableValuesJSONObject, String namespace, long plid) {
+		JSONObject editableValuesJSONObject, String newNamespace,
+		String oldNamespace, long plid) {
 
 		String instanceId = editableValuesJSONObject.getString("instanceId");
 		String portletId = editableValuesJSONObject.getString("portletId");
 
 		if (Validator.isNull(instanceId) || Validator.isNull(portletId)) {
-			return editableValuesJSONObject.toString();
+			JSONObject newEditableValuesJSONObject =
+				JSONFactoryUtil.createJSONObject();
+
+			for (String key : editableValuesJSONObject.keySet()) {
+				Object value = editableValuesJSONObject.get(key);
+
+				if (!(value instanceof JSONObject nestedJSONObject)) {
+					newEditableValuesJSONObject.put(key, value);
+
+					continue;
+				}
+
+				JSONObject newJSONObject = JSONFactoryUtil.createJSONObject();
+
+				for (String nestedKey : nestedJSONObject.keySet()) {
+					newJSONObject.put(
+						StringUtil.replace(
+							nestedKey, oldNamespace, newNamespace),
+						nestedJSONObject.get(nestedKey));
+				}
+
+				newEditableValuesJSONObject.put(key, newJSONObject);
+			}
+
+			return newEditableValuesJSONObject.toString();
 		}
 
 		PortletPreferences portletPreferences = _getNewPortletPreferences(
-			PortletIdCodec.encode(portletId, namespace), plid,
+			PortletIdCodec.encode(portletId, newNamespace), plid,
 			PortletIdCodec.encode(portletId, instanceId));
 
 		if (portletPreferences == null) {
@@ -305,7 +331,7 @@ public class SegmentsExperienceUtil {
 		}
 
 		return JSONUtil.put(
-			"instanceId", namespace
+			"instanceId", newNamespace
 		).put(
 			"portletId", portletId
 		).toString();
@@ -441,7 +467,8 @@ public class SegmentsExperienceUtil {
 
 			newFragmentEntryLink.setEditableValues(
 				_getNewEditableValues(
-					editableValuesJSONObject, newNamespace, layout.getPlid()));
+					editableValuesJSONObject, newNamespace,
+					fragmentEntryLink.getNamespace(), layout.getPlid()));
 
 			newFragmentEntryLink.setNamespace(newNamespace);
 			newFragmentEntryLink.setLastPropagationDate(new Date());
