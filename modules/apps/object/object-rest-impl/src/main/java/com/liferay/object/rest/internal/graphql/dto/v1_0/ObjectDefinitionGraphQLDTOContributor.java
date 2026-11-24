@@ -142,13 +142,9 @@ public class ObjectDefinitionGraphQLDTOContributor
 					GraphQLDTOProperty.of(
 						objectField.getName(), ListEntry[].class));
 			}
-			else if (objectField.getListTypeDefinitionId() != 0) {
-				graphQLDTOProperties.add(
-					GraphQLDTOProperty.of(
-						objectField.getName(), ListEntry.class));
-			}
 			else if (Objects.equals(
-						objectField.getRelationshipType(), "oneToMany")) {
+						objectField.getBusinessType(),
+						ObjectFieldConstants.BUSINESS_TYPE_RELATIONSHIP)) {
 
 				String objectFieldName = objectField.getName();
 
@@ -163,6 +159,11 @@ public class ObjectDefinitionGraphQLDTOContributor
 
 				relationshipGraphQLDTOProperties.add(
 					GraphQLDTOProperty.of(relationshipName, Map.class));
+			}
+			else if (objectField.getListTypeDefinitionId() != 0) {
+				graphQLDTOProperties.add(
+					GraphQLDTOProperty.of(
+						objectField.getName(), ListEntry.class));
 			}
 			else {
 				if (objectField.isLocalized()) {
