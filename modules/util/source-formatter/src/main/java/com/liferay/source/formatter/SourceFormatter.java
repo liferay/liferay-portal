@@ -1435,8 +1435,7 @@ public class SourceFormatter {
 		List<PathMatcher> sharedPathMatchers = _getPathMatchers(
 			sharedFilePaths);
 
-		String portalDirName =
-			SourceUtil.getAbsolutePath(portalDir.getPath()) + StringPool.SLASH;
+		String portalDirName = SourceUtil.getAbsolutePath(portalDir.getPath());
 
 		for (String fileName :
 				GitUtil.getCurrentBranchFileNames(
@@ -1447,7 +1446,7 @@ public class SourceFormatter {
 				_sourceFormatterArgs.getBaseDirName() + fileName);
 
 			String relativePath = absolutePath.substring(
-				portalDirName.length());
+				portalDirName.length() + 1);
 
 			Path path = Paths.get(relativePath);
 
