@@ -87,10 +87,10 @@ public class FragmentPortletRendererImpl implements FragmentPortletRenderer {
 		if (_log.isWarnEnabled()) {
 			_log.warn(
 				StringBundler.concat(
-					"Skipping shared preferences for fragment entry ", "link ",
+					"Skipping shared preferences for fragment entry link ",
 					fragmentEntryLink.getFragmentEntryLinkId(), " with PLID ",
 					fragmentEntryLink.getPlid(),
-					" because it does not belong to the master of ", "layout ",
+					" because it does not belong to the master of layout ",
 					themeDisplay.getPlid()));
 		}
 
