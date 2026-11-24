@@ -42,8 +42,10 @@ import com.liferay.expando.kernel.model.ExpandoColumnConstants;
 import com.liferay.expando.kernel.model.ExpandoTable;
 import com.liferay.expando.kernel.service.ExpandoColumnLocalService;
 import com.liferay.expando.kernel.service.ExpandoTableLocalService;
+import com.liferay.headless.commerce.admin.order.client.dto.v1_0.BillingAddress;
 import com.liferay.headless.commerce.admin.order.client.dto.v1_0.Order;
 import com.liferay.headless.commerce.admin.order.client.dto.v1_0.OrderItem;
+import com.liferay.headless.commerce.admin.order.client.dto.v1_0.ShippingAddress;
 import com.liferay.headless.commerce.admin.order.client.pagination.Page;
 import com.liferay.headless.commerce.admin.order.client.pagination.Pagination;
 import com.liferay.headless.commerce.admin.order.client.problem.Problem;
@@ -373,6 +375,7 @@ public class OrderResourceTest extends BaseOrderResourceTestCase {
 	public void testPostOrder() throws Exception {
 		super.testPostOrder();
 
+		_testPostOrderWithBillingAddressAndShippingAddress();
 		_testPostOrderWithDateCustomField();
 		_testPostOrderWithInvalidCommerceAddressIds();
 		_testPostOrderWithMoreExternalReferenceCodes();
@@ -1178,6 +1181,59 @@ public class OrderResourceTest extends BaseOrderResourceTestCase {
 		Assert.assertEquals(
 			randomAddress.getExternalReferenceCode(),
 			getOrder.getShippingAddressExternalReferenceCode());
+	}
+
+	private void _testPostOrderWithBillingAddressAndShippingAddress()
+		throws Exception {
+
+		Order randomOrder = randomOrder();
+
+		BillingAddress billingAddress = new BillingAddress() {
+			{
+				city = RandomTestUtil.randomString();
+				countryISOCode = _country.getA2();
+				externalReferenceCode = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
+				name = RandomTestUtil.randomString();
+				regionISOCode = _region.getRegionCode();
+				street1 = RandomTestUtil.randomString();
+				zip = RandomTestUtil.randomString();
+			}
+		};
+
+		randomOrder.setBillingAddress(billingAddress);
+
+		randomOrder.setBillingAddressId(0L);
+
+		ShippingAddress shippingAddress = new ShippingAddress() {
+			{
+				city = RandomTestUtil.randomString();
+				countryISOCode = _country.getA2();
+				externalReferenceCode = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
+				name = RandomTestUtil.randomString();
+				regionISOCode = _region.getRegionCode();
+				street1 = RandomTestUtil.randomString();
+				zip = RandomTestUtil.randomString();
+			}
+		};
+
+		randomOrder.setShippingAddress(shippingAddress);
+
+		randomOrder.setShippingAddressId(0L);
+
+		Order postOrder = testPostOrder_addOrder(randomOrder);
+
+		Assert.assertEquals(
+			billingAddress.getExternalReferenceCode(),
+			postOrder.getBillingAddressExternalReferenceCode());
+		Assert.assertEquals(
+			shippingAddress.getExternalReferenceCode(),
+			postOrder.getShippingAddressExternalReferenceCode());
+		Assert.assertEquals(
+			2,
+			_commerceAddressLocalService.getCommerceAddressesCount(
+				CommerceOrder.class.getName(), postOrder.getId()));
 	}
 
 	private void _testPostOrderWithDateCustomField() throws Exception {
