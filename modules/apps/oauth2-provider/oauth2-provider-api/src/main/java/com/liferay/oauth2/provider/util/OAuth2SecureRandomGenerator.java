@@ -6,8 +6,8 @@
 package com.liferay.oauth2.provider.util;
 
 import com.liferay.petra.io.BigEndianCodec;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.security.SecureRandomUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -32,8 +32,6 @@ public class OAuth2SecureRandomGenerator {
 	protected static String generateSecureRandomString() {
 		int size = 16;
 
-		StringBundler sb = new StringBundler(size);
-
 		int count = (int)Math.ceil((double)size / 8);
 
 		byte[] buffer = new byte[count * 8];
@@ -42,11 +40,7 @@ public class OAuth2SecureRandomGenerator {
 			BigEndianCodec.putLong(buffer, i * 8, SecureRandomUtil.nextLong());
 		}
 
-		for (int i = 0; i < size; i++) {
-			sb.append(Integer.toHexString(0xFF & buffer[i]));
-		}
-
-		return sb.toString();
+		return StringUtil.bytesToHexString(buffer);
 	}
 
 	private static final Pattern _baseIdPattern = Pattern.compile(

@@ -8,10 +8,11 @@ package com.liferay.oauth2.provider.rest.internal.spi.bearer.token.provider;
 import com.liferay.oauth2.provider.rest.internal.spi.bearer.token.provider.configuration.DefaultBearerTokenProviderConfiguration;
 import com.liferay.oauth2.provider.rest.spi.bearer.token.provider.BearerTokenProvider;
 import com.liferay.petra.io.BigEndianCodec;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.security.SecureRandomUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 
+import java.util.Arrays;
 import java.util.Map;
 
 import org.osgi.service.component.annotations.Activate;
@@ -76,13 +77,7 @@ public class DefaultBearerTokenProvider implements BearerTokenProvider {
 			BigEndianCodec.putLong(buffer, i * 8, SecureRandomUtil.nextLong());
 		}
 
-		StringBundler sb = new StringBundler(size);
-
-		for (int i = 0; i < size; i++) {
-			sb.append(Integer.toHexString(0xFF & buffer[i]));
-		}
-
-		return sb.toString();
+		return StringUtil.bytesToHexString(Arrays.copyOf(buffer, size));
 	}
 
 	protected boolean isValid(long expiresIn, long issuedAt) {
