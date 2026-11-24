@@ -88,9 +88,7 @@ describe('getCriterionLabel', () => {
 					{operatorName: EQ, propertyName: name, value: ''},
 					makeProperty({label: propertyLabel, name, type})
 				)
-			).toBe(
-				`Individual ${propertyLabel} ${getOperatorLabel(type, EQ)}`
-			);
+			).toBe(`Individual ${propertyLabel} ${getOperatorLabel(type, EQ)}`);
 		}
 	);
 
