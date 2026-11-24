@@ -689,6 +689,9 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 		StyleBookResource styleBookResource = StyleBookResource.builder(
 		).authentication(
 			"test@liferay.com", PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
 		).locale(
 			LocaleUtil.getDefault()
 		).parameters(

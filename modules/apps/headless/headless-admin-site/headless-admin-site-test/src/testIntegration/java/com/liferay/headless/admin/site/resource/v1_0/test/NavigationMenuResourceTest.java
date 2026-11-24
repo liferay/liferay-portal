@@ -477,6 +477,9 @@ public class NavigationMenuResourceTest
 
 		return builder.authentication(
 			"test@liferay.com", PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			_portal.getPortalServerPort(false), "http"
 		).header(
 			"X-Accept-All-Languages", "true"
 		).locale(
@@ -1028,6 +1031,9 @@ public class NavigationMenuResourceTest
 			NavigationMenuResource.builder(
 			).authentication(
 				"test@liferay.com", PropsValues.DEFAULT_ADMIN_PASSWORD
+			).endpoint(
+				testCompany.getVirtualHostname(),
+				_portal.getPortalServerPort(false), "http"
 			).locale(
 				LocaleUtil.getDefault()
 			).parameters(
@@ -1064,6 +1070,9 @@ public class NavigationMenuResourceTest
 			NavigationMenuResource.builder(
 			).authentication(
 				"test@liferay.com", PropsValues.DEFAULT_ADMIN_PASSWORD
+			).endpoint(
+				testCompany.getVirtualHostname(),
+				_portal.getPortalServerPort(false), "http"
 			).locale(
 				LocaleUtil.getDefault()
 			).build();

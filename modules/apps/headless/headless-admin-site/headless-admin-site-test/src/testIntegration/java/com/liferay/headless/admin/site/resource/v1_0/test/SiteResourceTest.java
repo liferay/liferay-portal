@@ -930,9 +930,11 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 	}
 
 	private void _testGetSitesPageWithoutAuthentication() throws Exception {
-		SiteResource.Builder builder = SiteResource.builder();
-
-		SiteResource siteResource = builder.build();
+		SiteResource siteResource = SiteResource.builder(
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).build();
 
 		try {
 			siteResource.getSitesPage(
@@ -1813,9 +1815,11 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 	}
 
 	private void _testPostSiteWithoutAuthentication() throws Exception {
-		SiteResource.Builder builder = SiteResource.builder();
-
-		SiteResource siteResource = builder.build();
+		SiteResource siteResource = SiteResource.builder(
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).build();
 
 		try {
 			siteResource.postSite(randomSite());
@@ -1859,9 +1863,11 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 	}
 
 	private void _testPutSiteActivateWithoutAuthentication() throws Exception {
-		SiteResource.Builder builder = SiteResource.builder();
-
-		SiteResource siteResource = builder.build();
+		SiteResource siteResource = SiteResource.builder(
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).build();
 
 		Site postSite = _testPostSite_addSite(randomSite());
 
@@ -2066,9 +2072,11 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 	private void _testPutSiteDeactivateWithoutAuthentication()
 		throws Exception {
 
-		SiteResource.Builder builder = SiteResource.builder();
-
-		SiteResource siteResource = builder.build();
+		SiteResource siteResource = SiteResource.builder(
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).build();
 
 		Site postSite = _testPostSite_addSite(randomSite());
 
