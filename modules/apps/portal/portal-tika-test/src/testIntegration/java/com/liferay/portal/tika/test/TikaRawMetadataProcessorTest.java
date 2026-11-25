@@ -6,9 +6,12 @@
 package com.liferay.portal.tika.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.metadata.RawMetadataProcessor;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.util.ContentTypes;
+import com.liferay.portal.kernel.util.StackTraceUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
@@ -32,6 +35,25 @@ public class TikaRawMetadataProcessorTest {
 	@Rule
 	public static final AggregateTestRule aggregateTestRule =
 		new LiferayIntegrationTestRule();
+
+	@Test
+	@TestInfo("LPS-114470")
+	public void testGetRawMetadataWithCorruptedMP3() throws Exception {
+		SystemException systemException = Assert.assertThrows(
+			SystemException.class,
+			() -> _rawMetadataProcessor.getRawMetadata(
+				"audio/x-mpeg",
+				TikaRawMetadataProcessorTest.class.getResourceAsStream(
+					"dependencies/tika.mp3")));
+
+		String stackTrace = StackTraceUtil.getStackTrace(systemException);
+
+		Assert.assertTrue(
+			stackTrace,
+			stackTrace.contains(
+				"Record size (2147483647 bytes) is larger than the allowed " +
+					"record size"));
+	}
 
 	@Test
 	public void testGetRawMetadataWithTextPlain() throws Exception {

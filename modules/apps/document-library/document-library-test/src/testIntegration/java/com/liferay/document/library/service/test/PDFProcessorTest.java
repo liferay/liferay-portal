@@ -10,10 +10,13 @@ import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.model.DLProcessorConstants;
 import com.liferay.document.library.kernel.model.DLVersionNumberIncrease;
 import com.liferay.document.library.kernel.processor.DLProcessor;
+import com.liferay.document.library.kernel.processor.PDFProcessor;
 import com.liferay.document.library.kernel.processor.PDFProcessorUtil;
 import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.petra.function.UnsafeRunnable;
+import com.liferay.petra.process.ProcessConfig;
+import com.liferay.petra.string.CharPool;
 import com.liferay.portal.configuration.test.util.ConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.messaging.DestinationNames;
 import com.liferay.portal.kernel.messaging.MessageBus;
@@ -23,6 +26,7 @@ import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.FileVersion;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
@@ -41,7 +45,9 @@ import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
+import java.util.Arrays;
 import java.util.Dictionary;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -510,6 +516,43 @@ public class PDFProcessorTest {
 			fileEntry.getReviewDate(), _serviceContext);
 
 		Assert.assertEquals(2, count.get());
+	}
+
+	@Test
+	@TestInfo("LPS-115949")
+	public void testShouldForkProcessWithJVMOptions() throws Exception {
+		ReflectionTestUtil.setFieldValue(
+			PropsValues.class, "DL_FILE_ENTRY_PREVIEW_FORK_PROCESS_ENABLED",
+			true);
+
+		PDFProcessor pdfProcessor = PDFProcessorUtil.getPDFProcessor();
+
+		Class<?> clazz = pdfProcessor.getClass();
+
+		ClassLoader classLoader = clazz.getClassLoader();
+
+		ProcessConfig processConfig = ReflectionTestUtil.invoke(
+			classLoader.loadClass(
+				"com.liferay.document.library.preview.pdf.internal.util." +
+					"ProcessConfigUtil"),
+			"getProcessConfig", new Class<?>[0]);
+
+		List<String> arguments = processConfig.getArguments();
+
+		List<String> jvmOptions = Arrays.asList(
+			StringUtil.split(
+				StringUtil.trim(
+					PropsValues.DL_FILE_ENTRY_PREVIEW_FORK_PROCESS_JVM_OPTIONS),
+				CharPool.SPACE));
+
+		Assert.assertEquals(
+			jvmOptions,
+			arguments.subList(
+				arguments.size() - jvmOptions.size(), arguments.size()));
+
+		ReflectionTestUtil.setFieldValue(
+			PropsValues.class, "DL_FILE_ENTRY_PREVIEW_FORK_PROCESS_ENABLED",
+			false);
 	}
 
 	@Test

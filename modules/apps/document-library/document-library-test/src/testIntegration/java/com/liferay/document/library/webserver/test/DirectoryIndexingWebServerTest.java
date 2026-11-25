@@ -10,7 +10,11 @@ import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.document.library.test.util.BaseWebServerTestCase;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.servlet.ContentDispositionUtil;
+import com.liferay.portal.kernel.servlet.HttpHeaders;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -54,11 +58,6 @@ public class DirectoryIndexingWebServerTest extends BaseWebServerTestCase {
 	public void setUp() throws Exception {
 		super.setUp();
 
-		_webServerServlet.init(new MockServletConfig());
-	}
-
-	@Test
-	public void testServiceWithHTMLFileEntryTitle() throws Exception {
 		UnicodeProperties typeSettingsUnicodeProperties =
 			group.getTypeSettingsProperties();
 
@@ -68,6 +67,41 @@ public class DirectoryIndexingWebServerTest extends BaseWebServerTestCase {
 		group = _groupLocalService.updateGroup(
 			group.getGroupId(), typeSettingsUnicodeProperties.toString());
 
+		_webServerServlet.init(new MockServletConfig());
+	}
+
+	@Test
+	@TestInfo("LPS-82205")
+	public void testServiceWithHTMLFileEntry() throws Exception {
+		byte[] bytes = RandomTestUtil.randomBytes();
+
+		FileEntry fileEntry = _dlAppLocalService.addFileEntry(
+			null, TestPropsValues.getUserId(), group.getGroupId(),
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			RandomTestUtil.randomString() + ".html", ContentTypes.TEXT_HTML,
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(), bytes,
+			null, null, null,
+			ServiceContextTestUtil.getServiceContext(group.getGroupId()));
+
+		MockHttpServletResponse mockHttpServletResponse = service(
+			Method.GET,
+			group.getFriendlyURL() + StringPool.SLASH + fileEntry.getTitle(),
+			Collections.emptyMap(), Collections.emptyMap(), null, null);
+
+		Assert.assertArrayEquals(
+			bytes, mockHttpServletResponse.getContentAsByteArray());
+		Assert.assertEquals(
+			ContentDispositionUtil.getContentDispositionHeaderValue(
+				HttpHeaders.CONTENT_DISPOSITION_ATTACHMENT,
+				fileEntry.getTitle()),
+			mockHttpServletResponse.getHeader(HttpHeaders.CONTENT_DISPOSITION));
+		Assert.assertEquals(
+			HttpServletResponse.SC_OK, mockHttpServletResponse.getStatus());
+	}
+
+	@Test
+	public void testServiceWithHTMLFileEntryTitle() throws Exception {
 		String title = "<img src=x onerror=alert(1)>";
 
 		_dlAppLocalService.addFileEntry(

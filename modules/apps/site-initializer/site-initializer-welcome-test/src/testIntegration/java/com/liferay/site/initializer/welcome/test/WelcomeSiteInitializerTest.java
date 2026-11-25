@@ -6,6 +6,8 @@
 package com.liferay.site.initializer.welcome.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.document.library.kernel.model.DLFolderConstants;
+import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.fragment.constants.FragmentConstants;
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.processor.FragmentEntryProcessorRegistry;
@@ -33,6 +35,8 @@ import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.model.PortletPreferences;
+import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.repository.model.Folder;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.PortletLocalService;
@@ -46,6 +50,7 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -259,6 +264,7 @@ public class WelcomeSiteInitializerTest {
 	}
 
 	@Test
+	@TestInfo("LPS-154955")
 	public void testInitialize() throws PortalException {
 		SiteInitializer siteInitializer =
 			_siteInitializerRegistry.getSiteInitializer(
@@ -286,6 +292,15 @@ public class WelcomeSiteInitializerTest {
 				fetchDefaultLayoutUtilityPageEntry(
 					_group.getGroupId(),
 					LayoutUtilityPageEntryConstants.TYPE_LOGIN));
+
+		Folder folder = _dlAppLocalService.getFolder(
+			_group.getGroupId(), DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			"Provided by Liferay");
+
+		FileEntry fileEntry = _dlAppLocalService.getFileEntryByFileName(
+			_group.getGroupId(), folder.getFolderId(), "tree.png");
+
+		Assert.assertEquals(ContentTypes.IMAGE_PNG, fileEntry.getMimeType());
 	}
 
 	@Test
@@ -440,6 +455,9 @@ public class WelcomeSiteInitializerTest {
 
 	private static final Pattern _uuidPattern = Pattern.compile(
 		"\"[a-f0-9\\-]{36}\"");
+
+	@Inject
+	private DLAppLocalService _dlAppLocalService;
 
 	@Inject
 	private DTOConverterRegistry _dtoConverterRegistry;

@@ -9,14 +9,17 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.document.library.helper.DLURLHelper;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.model.DLVersionNumberIncrease;
+import com.liferay.document.library.kernel.processor.ImageProcessorUtil;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.configuration.test.util.ConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
@@ -25,6 +28,8 @@ import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ContentTypes;
+import com.liferay.portal.kernel.util.FileUtil;
+import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -202,6 +207,48 @@ public class DLURLHelperTest {
 			downloadURL,
 			downloadURL.startsWith(
 				"http://localhost:" + PortalUtil.getPortalServerPort(false)));
+	}
+
+	@Test
+	@TestInfo("LPS-112571")
+	public void testGetImagePreviewURL() throws Exception {
+		FileEntry fileEntry = _dlAppLocalService.addFileEntry(
+			null, _user.getUserId(), _group.getGroupId(),
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			RandomTestUtil.randomString() + ".gif", ContentTypes.IMAGE_GIF,
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			FileUtil.getBytes(getClass(), "dependencies/image.gif"), null, null,
+			null,
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), _user.getUserId()));
+
+		Assert.assertTrue(
+			ImageProcessorUtil.isSupported(ContentTypes.IMAGE_GIF));
+
+		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
+				new ConfigurationTemporarySwapper(
+					"com.liferay.adaptive.media.image.internal.configuration." +
+						"AMImageConfiguration",
+					HashMapDictionaryBuilder.<String, Object>put(
+						"supportedMimeTypes",
+						new String[] {
+							"image/bmp", "image/jpeg", "image/pjpeg",
+							"image/png", "image/svg+xml", "image/x-citrix-jpeg",
+							"image/x-citrix-png", "image/x-ms-bmp",
+							"image/x-png"
+						}
+					).build())) {
+
+			Assert.assertFalse(
+				ImageProcessorUtil.isSupported(ContentTypes.IMAGE_GIF));
+
+			String imagePreviewURL = _dlURLHelper.getImagePreviewURL(
+				fileEntry, fileEntry.getFileVersion(), _getThemeDisplay());
+
+			Assert.assertTrue(
+				imagePreviewURL, imagePreviewURL.contains("imagePreview=1"));
+		}
 	}
 
 	@Test
