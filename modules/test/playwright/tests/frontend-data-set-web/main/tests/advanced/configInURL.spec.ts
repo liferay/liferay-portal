@@ -1141,7 +1141,7 @@ for (const spaConfiguration of spaConfigurations) {
 					});
 				});
 
-				assertNoConfigInURL('singleSelection', page);
+				await assertNoConfigInURL('singleSelection', page);
 			}
 		);
 
@@ -1214,7 +1214,14 @@ for (const spaConfiguration of spaConfigurations) {
 
 					await page.goBack();
 
-					assertNoConfigInURL('advanced', page);
+					await expect(
+						fdsSamplePage.table.headerCells.filter({hasText: 'ID'})
+					).toBeVisible();
+					await expect(fdsSamplePage.table.headerCells).toHaveCount(
+						11
+					);
+
+					await assertNoConfigInURL('advanced', page);
 				});
 
 				await test.step('Check forward navigation', async () => {
