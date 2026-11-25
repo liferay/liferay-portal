@@ -7,6 +7,7 @@ package com.liferay.portal.search.opensearch2.internal.index;
 
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.search.index.IndexInformation;
 import com.liferay.portal.search.index.IndexNameBuilder;
 import com.liferay.portal.search.opensearch2.internal.connection.OpenSearchConnectionManager;
@@ -18,9 +19,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.opensearch.client.opensearch.OpenSearchClient;
+import org.opensearch.client.opensearch.indices.Alias;
 import org.opensearch.client.opensearch.indices.GetIndexRequest;
 import org.opensearch.client.opensearch.indices.GetIndexResponse;
-import org.opensearch.client.opensearch.indices.GetMappingRequest;
 import org.opensearch.client.opensearch.indices.IndexState;
 import org.opensearch.client.opensearch.indices.OpenSearchIndicesClient;
 
@@ -45,12 +46,24 @@ public class OpenSearchIndexInformation implements IndexInformation {
 			_getOpenSearchIndicesClient();
 
 		try {
-			JSONObject jsonObject = _jsonFactory.createJSONObject(
-				JsonpUtil.toString(
-					openSearchIndicesClient.getMapping(
-						GetMappingRequest.of(
-							getMappingRequest -> getMappingRequest.index(
-								indexName)))));
+			GetIndexResponse getIndexResponse = openSearchIndicesClient.get(
+				GetIndexRequest.of(
+					getIndexRequest -> getIndexRequest.index(indexName)));
+
+			Map<String, IndexState> indexStates = getIndexResponse.result();
+
+			JSONObject jsonObject = _jsonFactory.createJSONObject();
+
+			for (Map.Entry<String, IndexState> entry : indexStates.entrySet()) {
+				IndexState indexState = entry.getValue();
+
+				jsonObject.put(
+					_getIndexName(entry.getKey(), indexState, indexName),
+					JSONUtil.put(
+						"mappings",
+						_jsonFactory.createJSONObject(
+							JsonpUtil.toString(indexState.mappings()))));
+			}
 
 			return jsonObject.toString(3);
 		}
@@ -78,6 +91,18 @@ public class OpenSearchIndexInformation implements IndexInformation {
 		catch (IOException ioException) {
 			throw new RuntimeException(ioException);
 		}
+	}
+
+	private String _getIndexName(
+		String indexName, IndexState indexState, String requestIndexName) {
+
+		Map<String, Alias> aliases = indexState.aliases();
+
+		if (aliases.containsKey(requestIndexName)) {
+			return requestIndexName;
+		}
+
+		return indexName;
 	}
 
 	private OpenSearchIndicesClient _getOpenSearchIndicesClient() {

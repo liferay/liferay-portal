@@ -6,6 +6,7 @@
 package com.liferay.portal.search.elasticsearch8.internal.search.engine.adapter.index;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
+import co.elastic.clients.elasticsearch.indices.Alias;
 import co.elastic.clients.elasticsearch.indices.ElasticsearchIndicesClient;
 import co.elastic.clients.elasticsearch.indices.GetIndexRequest;
 import co.elastic.clients.elasticsearch.indices.GetIndexResponse;
@@ -48,7 +49,9 @@ public class GetIndexIndexRequestExecutor {
 		getIndexIndexResponse.setIndexNames(
 			ArrayUtil.toStringArray(indexStates.keySet()));
 
-		_translateResponse(getIndexIndexResponse, indexStates);
+		_translateResponse(
+			getIndexIndexResponse, indexStates,
+			getIndexIndexRequest.getIndexNames());
 
 		return getIndexIndexResponse;
 	}
@@ -81,9 +84,23 @@ public class GetIndexIndexRequestExecutor {
 		}
 	}
 
+	private String _getIndexName(
+		String indexName, IndexState indexState, String[] requestIndexNames) {
+
+		Map<String, Alias> aliases = indexState.aliases();
+
+		for (String requestIndexName : requestIndexNames) {
+			if (aliases.containsKey(requestIndexName)) {
+				return requestIndexName;
+			}
+		}
+
+		return indexName;
+	}
+
 	private void _translateResponse(
 		GetIndexIndexResponse getIndexIndexResponse,
-		Map<String, IndexState> indexStates) {
+		Map<String, IndexState> indexStates, String[] requestIndexNames) {
 
 		Map<String, String> settings = new HashMap<>();
 
@@ -92,10 +109,12 @@ public class GetIndexIndexRequestExecutor {
 		for (Map.Entry<String, IndexState> entry : indexStates.entrySet()) {
 			IndexState indexState = entry.getValue();
 
+			String indexName = _getIndexName(
+				entry.getKey(), indexState, requestIndexNames);
+
 			indexMappings.put(
-				entry.getKey(), JsonpUtil.toString(indexState.mappings()));
-			settings.put(
-				entry.getKey(), JsonpUtil.toString(indexState.settings()));
+				indexName, JsonpUtil.toString(indexState.mappings()));
+			settings.put(indexName, JsonpUtil.toString(indexState.settings()));
 		}
 
 		getIndexIndexResponse.setIndexMappings(indexMappings);

@@ -6,15 +6,16 @@
 package com.liferay.portal.search.elasticsearch8.internal.index;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
+import co.elastic.clients.elasticsearch.indices.Alias;
 import co.elastic.clients.elasticsearch.indices.ElasticsearchIndicesClient;
 import co.elastic.clients.elasticsearch.indices.GetIndexRequest;
 import co.elastic.clients.elasticsearch.indices.GetIndexResponse;
-import co.elastic.clients.elasticsearch.indices.GetMappingRequest;
 import co.elastic.clients.elasticsearch.indices.IndexState;
 
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.search.elasticsearch8.internal.connection.ElasticsearchClientResolver;
 import com.liferay.portal.search.elasticsearch8.internal.util.JsonpUtil;
 import com.liferay.portal.search.index.IndexInformation;
@@ -45,12 +46,24 @@ public class ElasticsearchIndexInformation implements IndexInformation {
 			_getElasticsearchIndicesClient();
 
 		try {
-			JSONObject jsonObject = _jsonFactory.createJSONObject(
-				JsonpUtil.toString(
-					elasticsearchIndicesClient.getMapping(
-						GetMappingRequest.of(
-							getMappingRequest -> getMappingRequest.index(
-								indexName)))));
+			GetIndexResponse getIndexResponse = elasticsearchIndicesClient.get(
+				GetIndexRequest.of(
+					getIndexRequest -> getIndexRequest.index(indexName)));
+
+			Map<String, IndexState> indexStates = getIndexResponse.result();
+
+			JSONObject jsonObject = _jsonFactory.createJSONObject();
+
+			for (Map.Entry<String, IndexState> entry : indexStates.entrySet()) {
+				IndexState indexState = entry.getValue();
+
+				jsonObject.put(
+					_getIndexName(entry.getKey(), indexState, indexName),
+					JSONUtil.put(
+						"mappings",
+						_jsonFactory.createJSONObject(
+							JsonpUtil.toString(indexState.mappings()))));
+			}
 
 			return jsonObject.toString(3);
 		}
@@ -85,6 +98,18 @@ public class ElasticsearchIndexInformation implements IndexInformation {
 			_elasticsearchClientResolver.getElasticsearchClient(null, true);
 
 		return elasticsearchClient.indices();
+	}
+
+	private String _getIndexName(
+		String indexName, IndexState indexState, String requestIndexName) {
+
+		Map<String, Alias> aliases = indexState.aliases();
+
+		if (aliases.containsKey(requestIndexName)) {
+			return requestIndexName;
+		}
+
+		return indexName;
 	}
 
 	@Reference
