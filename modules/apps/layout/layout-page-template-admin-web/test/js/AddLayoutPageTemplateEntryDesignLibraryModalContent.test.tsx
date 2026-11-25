@@ -205,4 +205,38 @@ describe('AddLayoutPageTemplateEntryDesignLibraryModalContent', () => {
 			'untitled-set 2'
 		);
 	});
+
+	it('shows a toast when the template fails unexpectedly', async () => {
+		(fetch as jest.Mock)
+			.mockImplementationOnce(() =>
+				Promise.resolve({
+					json: () => ({layoutPageTemplateCollectionId: 5}),
+				})
+			)
+			.mockImplementationOnce(() => Promise.reject(new Error()));
+
+		renderComponent('page-template');
+
+		await act(async () => {
+			await userEvent.type(
+				screen.getByLabelText('page-template-name'),
+				'Page Template'
+			);
+			await userEvent.click(screen.getByText('save-in-new-set'));
+		});
+
+		await act(async () => {
+			await userEvent.click(screen.getByText('save'));
+		});
+
+		expect(openToast).toHaveBeenCalledWith({
+			message: 'an-unexpected-error-occurred',
+			type: 'danger',
+		});
+		expect(
+			screen.queryByText('an-unexpected-error-occurred')
+		).not.toBeInTheDocument();
+		expect(navigate).not.toHaveBeenCalled();
+		expect(screen.getByLabelText('page-template-set')).toHaveValue('5');
+	});
 });
