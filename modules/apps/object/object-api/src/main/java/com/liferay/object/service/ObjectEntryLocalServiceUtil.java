@@ -869,6 +869,13 @@ public class ObjectEntryLocalServiceUtil {
 			assetLinkEntryIds, priority);
 	}
 
+	public static void updateLatestRootObjectEntryVersion(
+			long userId, long objectEntryId)
+		throws PortalException {
+
+		getService().updateLatestRootObjectEntryVersion(userId, objectEntryId);
+	}
+
 	public static ObjectEntry updateObjectEntry(
 			long userId, long objectEntryId, long objectEntryFolderId,
 			Map<String, Serializable> values,
@@ -942,4 +949,4 @@ public class ObjectEntryLocalServiceUtil {
 			ObjectEntryLocalServiceUtil.class, ObjectEntryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1665186001
+// LIFERAY-SERVICE-BUILDER-HASH:-754416060

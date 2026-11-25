@@ -607,6 +607,10 @@ public interface ObjectEntryLocalService
 			String[] assetTagNames, long[] assetLinkEntryIds, Double priority)
 		throws PortalException;
 
+	public void updateLatestRootObjectEntryVersion(
+			long userId, long objectEntryId)
+		throws PortalException;
+
 	public ObjectEntry updateObjectEntry(
 			long userId, long objectEntryId, long objectEntryFolderId,
 			Map<String, Serializable> values, ServiceContext serviceContext)
@@ -648,4 +652,4 @@ public interface ObjectEntryLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1410757362
+// LIFERAY-SERVICE-BUILDER-HASH:2046605314

@@ -992,6 +992,15 @@ public class ObjectEntryLocalServiceWrapper
 	}
 
 	@Override
+	public void updateLatestRootObjectEntryVersion(
+			long userId, long objectEntryId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		_objectEntryLocalService.updateLatestRootObjectEntryVersion(
+			userId, objectEntryId);
+	}
+
+	@Override
 	public com.liferay.object.model.ObjectEntry updateObjectEntry(
 			long userId, long objectEntryId, long objectEntryFolderId,
 			java.util.Map<String, java.io.Serializable> values,
@@ -1084,4 +1093,4 @@ public class ObjectEntryLocalServiceWrapper
 	private ObjectEntryLocalService _objectEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1918964230
+// LIFERAY-SERVICE-BUILDER-HASH:2040248972
