@@ -14,6 +14,8 @@ import com.liferay.document.library.kernel.processor.PDFProcessor;
 import com.liferay.document.library.kernel.processor.PDFProcessorUtil;
 import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
+import com.liferay.image.Ghostscript;
+import com.liferay.petra.concurrent.DefaultNoticeableFuture;
 import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.petra.process.ProcessConfig;
 import com.liferay.petra.string.CharPool;
@@ -30,10 +32,13 @@ import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -42,14 +47,25 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
+import java.awt.image.BufferedImage;
+
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.InputStream;
 
+import java.nio.charset.StandardCharsets;
+
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Dictionary;
+import java.util.HashSet;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import javax.imageio.ImageIO;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -111,6 +127,16 @@ public class PDFProcessorTest {
 
 		if (_messageListenerServiceRegistration != null) {
 			_messageListenerServiceRegistration.unregister();
+		}
+
+		if (_originalGhostscript != null) {
+			Object pdfProcessor = PDFProcessorUtil.getPDFProcessor();
+
+			ReflectionTestUtil.setFieldValue(
+				pdfProcessor, "_ghostscript", _originalGhostscript);
+			ReflectionTestUtil.setFieldValue(
+				pdfProcessor, "_ghostscriptInitialized",
+				_originalGhostscriptInitialized);
 		}
 	}
 
@@ -436,6 +462,59 @@ public class PDFProcessorTest {
 	}
 
 	@Test
+	@TestInfo("LPD-117466")
+	public void testShouldCreateNewPreviewOnAddWithGhostscript()
+		throws Exception {
+
+		List<String> ghostscriptInputHeaders = registerGhostscript();
+
+		FileEntry fileEntry = _dlAppService.addFileEntry(
+			null, _serviceContext.getScopeGroupId(),
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			StringUtil.randomString() + ".pdf", ContentTypes.APPLICATION_PDF,
+			StringUtil.randomString(), StringUtil.randomString(),
+			StringUtil.randomString(), StringUtil.randomString(),
+			FileUtil.getBytes(getClass(), "dependencies/test.pdf"), null, null,
+			null, _serviceContext);
+
+		Assert.assertEquals(
+			Collections.singleton("%PDF-"),
+			new HashSet<>(ghostscriptInputHeaders));
+		Assert.assertEquals(
+			1,
+			PDFProcessorUtil.getPreviewFileCount(fileEntry.getFileVersion()));
+	}
+
+	@Test
+	@TestInfo("LPD-117466")
+	public void testShouldCreateNewPreviewOnAddWithoutPDFHeader()
+		throws Exception {
+
+		List<String> ghostscriptInputHeaders = registerGhostscript();
+
+		FileEntry fileEntry = _dlAppService.addFileEntry(
+			null, _serviceContext.getScopeGroupId(),
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			StringUtil.randomString() + ".pdf", ContentTypes.APPLICATION_PDF,
+			StringUtil.randomString(), StringUtil.randomString(),
+			StringUtil.randomString(), StringUtil.randomString(),
+			ArrayUtil.append(
+				RandomTestUtil.randomBytes(),
+				FileUtil.getBytes(getClass(), "dependencies/test.pdf")),
+			null, null, null, _serviceContext);
+
+		Assert.assertEquals(
+			Collections.emptyList(),
+			ListUtil.filter(
+				ghostscriptInputHeaders,
+				ghostscriptInputHeader -> !ghostscriptInputHeader.equals(
+					"%PDF-")));
+		Assert.assertEquals(
+			1,
+			PDFProcessorUtil.getPreviewFileCount(fileEntry.getFileVersion()));
+	}
+
+	@Test
 	public void testShouldCreateNewPreviewOnCancelCheckOut() throws Exception {
 		AtomicInteger count = registerPDFProcessorMessageListener(
 			EventType.GENERATE_NEW);
@@ -654,6 +733,64 @@ public class PDFProcessorTest {
 		return cleanUp;
 	}
 
+	protected List<String> registerGhostscript() {
+		List<String> ghostscriptInputHeaders = new CopyOnWriteArrayList<>();
+		Object pdfProcessor = PDFProcessorUtil.getPDFProcessor();
+
+		_originalGhostscript = ReflectionTestUtil.getAndSetFieldValue(
+			pdfProcessor, "_ghostscript",
+			new Ghostscript() {
+
+				@Override
+				public Future<?> execute(List<String> arguments)
+					throws Exception {
+
+					byte[] bytes = FileUtil.getBytes(
+						new File(arguments.get(arguments.size() - 1)));
+
+					ghostscriptInputHeaders.add(
+						new String(
+							bytes, 0, Math.min(bytes.length, 5),
+							StandardCharsets.ISO_8859_1));
+
+					for (String argument : arguments) {
+						if (!argument.startsWith("-sOutputFile=")) {
+							continue;
+						}
+
+						ImageIO.write(
+							new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB),
+							"png",
+							new File(
+								StringUtil.replace(
+									argument.substring(13), "%d", "1")));
+					}
+
+					DefaultNoticeableFuture<Void> defaultNoticeableFuture =
+						new DefaultNoticeableFuture<>();
+
+					defaultNoticeableFuture.set(null);
+
+					return defaultNoticeableFuture;
+				}
+
+				@Override
+				public boolean isEnabled() {
+					return true;
+				}
+
+				@Override
+				public void reset() {
+				}
+
+			});
+		_originalGhostscriptInitialized =
+			ReflectionTestUtil.getAndSetFieldValue(
+				pdfProcessor, "_ghostscriptInitialized", true);
+
+		return ghostscriptInputHeaders;
+	}
+
 	protected AtomicInteger registerPDFProcessorMessageListener(
 		EventType eventType) {
 
@@ -747,6 +884,8 @@ public class PDFProcessorTest {
 
 	private ServiceRegistration<MessageListener>
 		_messageListenerServiceRegistration;
+	private Ghostscript _originalGhostscript;
+	private boolean _originalGhostscriptInitialized;
 	private ServiceContext _serviceContext;
 
 }
