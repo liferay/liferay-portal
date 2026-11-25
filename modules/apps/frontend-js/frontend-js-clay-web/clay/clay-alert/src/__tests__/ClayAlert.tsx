@@ -33,17 +33,23 @@ describe('ClayAlert', () => {
 		expect(container).toMatchSnapshot();
 	});
 
-	it('renders the times-circle-full icon for the danger type', () => {
+	it.each([
+		['danger', 'times-circle-full'],
+		['info', 'info-circle'],
+		['secondary', 'password-policies'],
+		['success', 'check-circle-full'],
+		['warning', 'warning-full'],
+	] as const)('renders the %s type with the %s icon', (displayType, icon) => {
 		const {container} = render(
 			<ClayAlert
-				displayType="danger"
+				displayType={displayType}
 				spritemap="/foo/bar"
 				title="Hello!"
 			/>
 		);
 
 		expect(
-			container.querySelector('.lexicon-icon-times-circle-full')
+			container.querySelector(`.lexicon-icon-${icon}`)
 		).toBeInTheDocument();
 	});
 
