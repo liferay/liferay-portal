@@ -675,51 +675,6 @@ definition {
 		DMDocument.viewDefault();
 	}
 
-	@description = "This case covers LPS-110213. It ensures that a document file can be downloaded after moving it between folders."
-	@priority = 5
-	@refactordone
-	test CanDownloadDocumentMovedBetweenFolders {
-		property portal.acceptance = "true";
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
-
-		JSONFolder.addFolder(
-			dmFolderDescription = "DM Folder 1 Description",
-			dmFolderName = "DM Folder 1 Name",
-			groupName = "Guest");
-
-		JSONFolder.addFolder(
-			dmFolderDescription = "DM Folder 2 Description",
-			dmFolderName = "DM Folder 2 Name",
-			groupName = "Guest");
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Document Description1",
-			dmDocumentTitle = "DM Document Title",
-			folderName = "DM Folder 1 Name",
-			groupName = "Guest",
-			mimeType = "application/msword",
-			sourceFileName = "Document_1.doc");
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
-
-		DMNavigator.gotoFolder(dmFolderName = "DM Folder 1 Name");
-
-		DMDocument.moveToFolderCP(
-			dmDocumentTitle = "DM Document Title",
-			dmFolderName = "DM Folder 2 Name");
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
-
-		DMNavigator.gotoFolder(dmFolderName = "DM Folder 2 Name");
-
-		DMDocument.downloadCP(
-			dmDocumentSize = "22 KB",
-			dmDocumentTitle = "DM Document Title");
-
-		AssertTextNotPresent(value1 = "The requested resource could not be found.");
-	}
-
 	@description = "This ensures that multiple documents can be downloaded simultaneously."
 	@priority = 5
 	@refactordone
@@ -1214,20 +1169,6 @@ definition {
 		}
 	}
 
-	@description = "This test covers LPS-115949. It validates that resource allocation for forked processes can be controlled through portal.properties."
-	@priority = 4
-	test CanLimitForkedProcessResourceAllocation {
-		property custom.properties = "dl.file.entry.preview.fork.process.jvm.options=-Xmx0m";
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentTitle = "large_file.pdf",
-			groupName = "Guest",
-			mimeType = "application/pdf",
-			sourceFileName = "large_file.pdf");
-
-		AssertConsoleTextPresent(value1 = "Unable to process file version");
-	}
-
 	@description = "This ensures that the entry can be moved to another folder via drag and drop."
 	@priority = 4
 	test CanMoveEntryToFolderViaDragAndDrop {
@@ -1391,48 +1332,6 @@ definition {
 			checkedOut = "true",
 			dmDocumentTitle = "DM Document Title",
 			userName = "Test Test");
-	}
-
-	@description = "This is a test for LPS-82205. It checks that the XSS can not be executed after accessing HTML file."
-	@priority = 4
-	test CannotExecuteXSSWhenAccessingHTMLFile {
-		DMDocument.enableDirectoryIndexing(siteURLKey = "guest");
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "The file is a basic HTML file with a simple JavaScript",
-			dmDocumentTitle = "xss_test",
-			groupName = "Guest",
-			mimeType = "code/html",
-			sourceFileName = "xss_test.html");
-
-		DMDocument.downloadWithDirectoryIndexing(
-			dmDocumentTitle = "xss_test",
-			siteURLKey = "guest");
-
-		AssertAlertNotPresent();
-
-		DMDocument.assertFileNameFromTempFolder(fileName = "xss_test");
-	}
-
-	@description = "This is a use case for LPS-114470. Validate crafted or corrupted files cannot cause out of memory errors."
-	@priority = 4
-	test CannotUploadFileThatCausesOutOfMemoryErrors {
-		task ("Add new document") {
-			JSONDocument.addFileWithUploadedFile(
-				dmDocumentDescription = "DM Document Description",
-				dmDocumentTitle = "DM Document Title",
-				groupName = "Guest",
-				mimeType = "audio/x-mpeg",
-				sourceFileName = "tika.mp3");
-		}
-
-		task ("Assert out of memory error message") {
-			AssertConsoleTextPresent(value1 = "java.io.IOException: Record size");
-
-			AssertConsoleTextPresent(value1 = "is larger than the allowed record size");
-
-			AssertConsoleTextNotPresent(value1 = "java.lang.OutOfMemoryError");
-		}
 	}
 
 	@description = "This test ensures that the guest cannot see an expired document."
@@ -1749,44 +1648,6 @@ definition {
 			dmDocumentTitle = "Document_2.txt",
 			reviewDate = "true",
 			user = "Test Test");
-	}
-
-	@description = "This test covers LPS-130154. It ensures that the user can search for a document based on the content."
-	@priority = 4
-	@refactordone
-	test CanSearchForDocumentBasedOnContent {
-		property portal.acceptance = "true";
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "Document_5.txt",
-			groupName = "Guest",
-			mimeType = "text/plain",
-			sourceFileName = "Document_5.txt");
-
-		AssertConsoleTextNotPresent(value1 = "WriteLimitReachedException");
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
-
-		Search.searchCP(searchTerm = "gJybWNXR76fTX0TlIu8mFP2dNVtTGdq");
-
-		DMDocument.viewSearchResultsCP(dmDocumentTitle = "Document_5.txt");
-	}
-
-	@description = "This ensures that the user can search for document file name using partial text."
-	@priority = 4
-	@refactordone
-	test CanSearchForDocumentWithPartialText {
-		JSONDocument.addFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "DM Document Title",
-			groupName = "Guest");
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
-
-		Search.searchCP(searchTerm = "DM");
-
-		DMDocument.viewSearchResultsCP(dmDocumentTitle = "DM Document Title");
 	}
 
 	@description = "This is a test for LPS-80857. It checks that the user will stay in the same folder context after filtering."
@@ -2290,44 +2151,6 @@ definition {
 		}
 	}
 
-	@description = "This test covers LPS-112571. It ensures that a gif file can be added to editor normally after disabling the gif mime type from the adaptive media of the system settings."
-	@priority = 3
-	@refactordone
-	test GifFileCanBeAddedToEditorAfterDisablingGifMimeTypeInAM {
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		SystemSettings.openSystemSettingsAdmin();
-
-		SystemSettings.gotoConfiguration(
-			configurationCategory = "Adaptive Media",
-			configurationName = "Images",
-			configurationScope = "System Scope");
-
-		Click(
-			key_fieldValue = "image/gif",
-			locator1 = "DDMField#REMOVE_SPECIFIC_REPEATED_FIELD");
-
-		SystemSettings.saveConfiguration();
-
-		BlogsNavigator.openToAddEntry(siteURLKey = "guest");
-
-		BlogsEntry.addTitle(entryTitle = "Blogs Entry Title");
-
-		BlogsEntry.addContentWithInlineImage(
-			entryContent = "Blogs Entry Content",
-			navTab = "Documents and Media",
-			uploadFileName = "static.gif");
-
-		PortletEntry.publish();
-
-		BlogsNavigator.openBlogsAdmin(siteURLKey = "guest");
-
-		BlogsNavigator.gotoEntryCP(entryTitle = "Blogs Entry Title");
-
-		BlogsEntry.viewInlineImage(uploadFileName = "static-gif");
-	}
-
 	@description = "This test covers LPS-144687. It validates that a temp zip is not created if NoSuchFileException occurs during a download."
 	@priority = 4
 	test NoZipFileIsCreatedIfDownloadResultsInError {
@@ -2353,25 +2176,6 @@ definition {
 		DMDocument.assertNoZipFileFromTempFolder(
 			appServer = "tomcat-10.1.61",
 			fileNamePattern = "*.zip");
-	}
-
-	@description = "This a ticket for LPS-154955. Verify tree image is available when Liferay is deployed. Skip the instance for performance improvement."
-	@priority = 4
-	test VerifyTreeImageIsAvailable {
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		task ("Go to Documents and Media Settings") {
-			DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
-		}
-
-		task ("Verify tree image is available and selectable") {
-			DMNavigator.gotoFolder(dmFolderName = "Provided by Liferay");
-
-			AssertElementPresent(
-				key_dmDocumentTitle = "tree.png",
-				locator1 = "DocumentsAndMedia#ICON_DOCUMENT_CHECKBOX");
-		}
 	}
 
 	@description = "This is a test for LPS-94829. It ensures that the wildcard can be defined with other file extensions."

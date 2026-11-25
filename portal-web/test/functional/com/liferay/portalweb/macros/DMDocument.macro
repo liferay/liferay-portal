@@ -1549,20 +1549,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro downloadWithDirectoryIndexing(dmDocumentTitle = null, siteURLKey = null) {
-		var portalURL = JSONCompany.getPortalURL();
-
-		Navigator.openSpecificURL(url = "${portalURL}/documents/${siteURLKey}/");
-
-		AssertClick(
-			key_text = ${dmDocumentTitle},
-			locator1 = "Link#ANY",
-			value1 = ${dmDocumentTitle});
-
-		DownloadTempFile();
-	}
-
-	@summary = "Default summary"
 	macro editCmd(dmDocumentFileNameEdit = null, dmDocumentTypeEdit = null, dmDocumentTitleEdit = null, dmDocumentFileEdit = null, dmDocumentDescriptionEdit = null) {
 		if (isSet(dmDocumentFileEdit)) {
 			UploadDependencyFile.uploadFile(fileName = ${dmDocumentFileEdit});
@@ -2055,19 +2041,6 @@ definition {
 		PortletEntry.save();
 
 		IFrame.closeFrame();
-	}
-
-	@summary = "Default summary"
-	macro enableDirectoryIndexing(siteURLKey = null) {
-		DMNavigator.openToConfigInSiteSettings(
-			portlet = "Documents and Media",
-			siteURLKey = ${siteURLKey});
-
-		FormFields.enableSwitch(fieldName = "Enable Directory Indexing");
-
-		Button.clickSave();
-
-		Alert.viewSuccessMessage();
 	}
 
 	@summary = "Default summary"
