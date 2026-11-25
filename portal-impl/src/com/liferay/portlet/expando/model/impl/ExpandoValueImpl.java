@@ -585,14 +585,18 @@ public class ExpandoValueImpl extends ExpandoValueBaseImpl {
 	}
 
 	protected String merge(String[] data) {
-		if (data != null) {
-			for (int i = 0; i < data.length; i++) {
-				data[i] = StringUtil.replace(
-					data[i], CharPool.COMMA, _EXPANDO_COMMA);
-			}
+		if (data == null) {
+			return null;
 		}
 
-		return StringUtil.merge(data);
+		String[] mergeData = new String[data.length];
+
+		for (int i = 0; i < data.length; i++) {
+			mergeData[i] = StringUtil.replace(
+				data[i], CharPool.COMMA, _EXPANDO_COMMA);
+		}
+
+		return StringUtil.merge(mergeData);
 	}
 
 	protected String[] split(String data) {
