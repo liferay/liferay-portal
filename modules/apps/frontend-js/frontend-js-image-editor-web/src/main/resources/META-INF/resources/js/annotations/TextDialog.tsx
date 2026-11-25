@@ -83,102 +83,92 @@ export function TextDialog({onAdd, onOpenChange, open}: Props) {
 
 	return (
 		<ClayModal observer={observer} size="sm">
-			<div
-				onKeyDown={(event: React.KeyboardEvent) => {
-					if (event.key !== 'Escape') {
-						event.stopPropagation();
-					}
-				}}
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+				withTitle
 			>
-				<ClayModal.Header
-					closeButtonAriaLabel={Liferay.Language.get('close')}
-					withTitle
-				>
-					{Liferay.Language.get('add-text')}
-				</ClayModal.Header>
+				{Liferay.Language.get('add-text')}
+			</ClayModal.Header>
 
-				<form onSubmit={submit}>
-					<ClayModal.Body>
-						<ClayForm.Group>
-							<label htmlFor={eid('text')}>
-								{Liferay.Language.get('text')}
-							</label>
+			<form onSubmit={submit}>
+				<ClayModal.Body>
+					<ClayForm.Group>
+						<label htmlFor={eid('text')}>
+							{Liferay.Language.get('text')}
+						</label>
 
-							<ClayInput
-								id={eid('text')}
-								onChange={(event) =>
-									setText(event.target.value)
-								}
-								ref={inputRef}
-								type="text"
-								value={text}
-							/>
-						</ClayForm.Group>
-
-						<ClayForm.Group>
-							<label htmlFor={eid('text-font-family')}>
-								{Liferay.Language.get('font-family')}
-							</label>
-
-							<ClaySelectWithOption
-								id={eid('text-font-family')}
-								onChange={(event) =>
-									setFontFamily(event.target.value)
-								}
-								options={FONT_FAMILIES}
-								value={fontFamily}
-							/>
-						</ClayForm.Group>
-
-						<ClayForm.Group>
-							<label htmlFor={eid('text-font-size')}>
-								{Liferay.Language.get('font-size')}
-							</label>
-
-							<ClayInput
-								id={eid('text-font-size')}
-								min={8}
-								onChange={(event) =>
-									setFontSize(event.target.value)
-								}
-								type="number"
-								value={fontSize}
-							/>
-						</ClayForm.Group>
-
-						<ColorField
-							fill
-							id={eid('text-color')}
-							label={Liferay.Language.get('text-color')}
-							onCommit={setColor}
-							onPreview={setColor}
-							value={color}
+						<ClayInput
+							id={eid('text')}
+							onChange={(event) => setText(event.target.value)}
+							ref={inputRef}
+							type="text"
+							value={text}
 						/>
-					</ClayModal.Body>
+					</ClayForm.Group>
 
-					<ClayModal.Footer
-						last={
-							<ClayButton.Group spaced>
-								<ClayButton
-									displayType="secondary"
-									onClick={onClose}
-									type="button"
-								>
-									{Liferay.Language.get('cancel')}
-								</ClayButton>
+					<ClayForm.Group>
+						<label htmlFor={eid('text-font-family')}>
+							{Liferay.Language.get('font-family')}
+						</label>
 
-								<ClayButton
-									disabled={!text.trim()}
-									displayType="primary"
-									type="submit"
-								>
-									{Liferay.Language.get('add')}
-								</ClayButton>
-							</ClayButton.Group>
-						}
+						<ClaySelectWithOption
+							id={eid('text-font-family')}
+							onChange={(event) =>
+								setFontFamily(event.target.value)
+							}
+							options={FONT_FAMILIES}
+							value={fontFamily}
+						/>
+					</ClayForm.Group>
+
+					<ClayForm.Group>
+						<label htmlFor={eid('text-font-size')}>
+							{Liferay.Language.get('font-size')}
+						</label>
+
+						<ClayInput
+							id={eid('text-font-size')}
+							min={8}
+							onChange={(event) =>
+								setFontSize(event.target.value)
+							}
+							type="number"
+							value={fontSize}
+						/>
+					</ClayForm.Group>
+
+					<ColorField
+						fill
+						id={eid('text-color')}
+						label={Liferay.Language.get('text-color')}
+						onCommit={setColor}
+						onPreview={setColor}
+						value={color}
 					/>
-				</form>
-			</div>
+				</ClayModal.Body>
+
+				<ClayModal.Footer
+					last={
+						<ClayButton.Group spaced>
+							<ClayButton
+								displayType="secondary"
+								onClick={onClose}
+								type="button"
+							>
+								{Liferay.Language.get('cancel')}
+							</ClayButton>
+
+							<ClayButton
+								disabled={!text.trim()}
+								displayType="primary"
+								type="submit"
+							>
+								{Liferay.Language.get('add')}
+							</ClayButton>
+						</ClayButton.Group>
+					}
+				/>
+			</form>
 		</ClayModal>
 	);
 }

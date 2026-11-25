@@ -26,6 +26,8 @@ export function useEditorHistory(
 		initialHistory(image.width, image.height, {ratios})
 	);
 
+	const editorRef = useRef<HTMLDivElement | null>(null);
+
 	const undo = () => {
 		const label = undoLabel(history);
 
@@ -53,7 +55,8 @@ export function useEditorHistory(
 	const handleUndoShortcut = (event: React.KeyboardEvent) => {
 		if (
 			!(event.metaKey || event.ctrlKey) ||
-			event.key.toLowerCase() !== 'z'
+			event.key.toLowerCase() !== 'z' ||
+			!editorRef.current?.contains(event.target as Node)
 		) {
 			return;
 		}
@@ -67,8 +70,6 @@ export function useEditorHistory(
 			undo();
 		}
 	};
-
-	const editorRef = useRef<HTMLDivElement | null>(null);
 
 	return {dispatch, editorRef, handleUndoShortcut, history, redo, undo};
 }

@@ -95,34 +95,26 @@ export function ShortcutsDialog({onOpenChange, open}: Props) {
 
 	return (
 		<ClayModal className="image-editor-shortcuts" observer={observer}>
-			<div
-				onKeyDown={(event: React.KeyboardEvent) => {
-					if (event.key !== 'Escape') {
-						event.stopPropagation();
-					}
-				}}
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+				withTitle
 			>
-				<ClayModal.Header
-					closeButtonAriaLabel={Liferay.Language.get('close')}
-					withTitle
-				>
-					{Liferay.Language.get('keyboard-shortcuts')}
-				</ClayModal.Header>
+				{Liferay.Language.get('keyboard-shortcuts')}
+			</ClayModal.Header>
 
-				<ClayModal.Body>
-					<dl className="editor-shortcut-list small">
-						{SHORTCUTS.map(({description, keys}) => (
-							<React.Fragment key={keys}>
-								<dt>
-									<kbd>{keys}</kbd>
-								</dt>
+			<ClayModal.Body>
+				<dl className="editor-shortcut-list small">
+					{SHORTCUTS.map(({description, keys}) => (
+						<React.Fragment key={keys}>
+							<dt>
+								<kbd>{keys}</kbd>
+							</dt>
 
-								<dd>{description}</dd>
-							</React.Fragment>
-						))}
-					</dl>
-				</ClayModal.Body>
-			</div>
+							<dd>{description}</dd>
+						</React.Fragment>
+					))}
+				</dl>
+			</ClayModal.Body>
 		</ClayModal>
 	);
 }
