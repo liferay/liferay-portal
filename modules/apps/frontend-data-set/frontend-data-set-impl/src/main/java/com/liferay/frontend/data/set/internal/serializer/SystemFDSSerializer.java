@@ -458,17 +458,14 @@ public class SystemFDSSerializer
 		_fdsBulkActionsServiceTrackerMap =
 			ServiceTrackerMapFactory.openSingleValueMap(
 				bundleContext, FDSBulkActions.class, "frontend.data.set.name");
-
 		_fdsFilterContextContributorsServiceTrackerMap =
 			ServiceTrackerMapFactory.openMultiValueMap(
 				bundleContext, FDSFilterContextContributor.class,
 				"frontend.data.set.filter.type");
-
 		_fdsViewContextContributorsServiceTrackerMap =
 			ServiceTrackerMapFactory.openMultiValueMap(
 				bundleContext, FDSViewContextContributor.class,
 				"frontend.data.set.view.name");
-
 		_groupedFDSFiltersServiceTrackerMap =
 			ServiceTrackerMapFactory.openSingleValueMap(
 				bundleContext, GroupedFDSFilters.class,
