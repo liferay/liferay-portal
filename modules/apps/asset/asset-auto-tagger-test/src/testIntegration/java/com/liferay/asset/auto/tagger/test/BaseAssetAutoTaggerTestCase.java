@@ -87,12 +87,12 @@ public abstract class BaseAssetAutoTaggerTestCase {
 			null, null, null, serviceContext);
 	}
 
-	protected AssetEntry addFileEntryAssetEntry(ServiceContext serviceContext)
+	protected AssetEntry addFileEntryAssetEntry(
+			long groupId, ServiceContext serviceContext)
 		throws PortalException {
 
 		FileEntry fileEntry = DLAppServiceUtil.addFileEntry(
-			null, group.getGroupId(),
-			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			null, groupId, DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
 			RandomTestUtil.randomString(), ContentTypes.TEXT_PLAIN,
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 			StringUtil.randomString(), StringUtil.randomString(), new byte[0],
@@ -100,6 +100,12 @@ public abstract class BaseAssetAutoTaggerTestCase {
 
 		return AssetEntryLocalServiceUtil.getEntry(
 			DLFileEntryConstants.getClassName(), fileEntry.getFileEntryId());
+	}
+
+	protected AssetEntry addFileEntryAssetEntry(ServiceContext serviceContext)
+		throws PortalException {
+
+		return addFileEntryAssetEntry(group.getGroupId(), serviceContext);
 	}
 
 	protected void applyAssetTagName(AssetEntry assetEntry, String assetTagName)
