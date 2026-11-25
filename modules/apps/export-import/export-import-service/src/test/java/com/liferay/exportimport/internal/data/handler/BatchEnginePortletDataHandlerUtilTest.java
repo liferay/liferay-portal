@@ -297,8 +297,9 @@ public class BatchEnginePortletDataHandlerUtilTest {
 
 	@Test
 	public void testBuildParametersWithGroup() {
-		_testBuildParametersWithGroup(false);
-		_testBuildParametersWithGroup(true);
+		_testBuildParametersWithGroup(false, false);
+		_testBuildParametersWithGroup(false, true);
+		_testBuildParametersWithGroup(true, true);
 	}
 
 	private Serializable _getBatchRestrictFields(
@@ -371,7 +372,9 @@ public class BatchEnginePortletDataHandlerUtilTest {
 		return exportImportDescriptor;
 	}
 
-	private Group _mockGroup(String externalReferenceCode, long groupId) {
+	private Group _mockGroup(
+		String externalReferenceCode, long groupId, boolean site) {
+
 		Group group = Mockito.mock(Group.class);
 
 		Mockito.doReturn(
@@ -387,7 +390,7 @@ public class BatchEnginePortletDataHandlerUtilTest {
 		).getGroupId();
 
 		Mockito.doReturn(
-			true
+			site
 		).when(
 			group
 		).isSite();
@@ -526,11 +529,13 @@ public class BatchEnginePortletDataHandlerUtilTest {
 			parameters.get("filter"));
 	}
 
-	private void _testBuildParametersWithGroup(boolean companyGroup) {
+	private void _testBuildParametersWithGroup(
+		boolean companyGroup, boolean site) {
+
 		String siteExternalReferenceCode = RandomTestUtil.randomString();
 		long siteId = RandomTestUtil.randomLong();
 
-		Group group = _mockGroup(siteExternalReferenceCode, siteId);
+		Group group = _mockGroup(siteExternalReferenceCode, siteId, site);
 
 		Map<String, Serializable> parameters =
 			BatchEnginePortletDataHandlerUtil.buildExportParameters(
@@ -546,7 +551,7 @@ public class BatchEnginePortletDataHandlerUtilTest {
 			expectedSiteExternalReferenceCode,
 			parameters.get("siteExternalReferenceCode"));
 
-		Long expectedSiteId = companyGroup ? null : siteId;
+		Long expectedSiteId = (companyGroup || !site) ? null : siteId;
 
 		Assert.assertEquals(expectedSiteId, parameters.get("siteId"));
 
