@@ -45,7 +45,7 @@ public interface SearchResultsPortletInstanceConfiguration {
 	public boolean limitResultCountAccuracy();
 
 	@Meta.AD(
-		deflt = "200", description = "maximum-search-depth-help", min = "1",
+		deflt = "1000", description = "maximum-search-depth-help", min = "1",
 		name = "maximum-search-depth", required = false
 	)
 	public int maximumSearchDepth();
