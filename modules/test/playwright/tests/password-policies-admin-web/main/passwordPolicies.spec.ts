@@ -19,6 +19,7 @@ import performLogin, {
 	performLoginViaApi,
 	performLogout,
 } from '../../../utils/performLogin';
+import {waitForAlert} from '../../../utils/waitForAlert';
 
 export const test = mergeTests(
 	captchaConfigPageTest,
@@ -28,11 +29,17 @@ export const test = mergeTests(
 	usersAndOrganizationsPagesTest
 );
 
+let passwordPoliciesConfigurationHasBeenUpdated = false;
 let passwordPolicyHasBeenCreated = false;
 
 test.afterEach(
 	'Reset CAPTCHA configuration',
-	async ({captchaConfigPage, page, passwordPoliciesAdminConfigPage}) => {
+	async ({
+		captchaConfigPage,
+		page,
+		passwordPoliciesAdminConfigPage,
+		systemSettingsPage,
+	}) => {
 		await page.goto('/');
 
 		if (await page.getByRole('button', {name: 'Sign In'}).isVisible()) {
@@ -51,6 +58,17 @@ test.afterEach(
 
 		if (passwordPolicyHasBeenCreated) {
 			await passwordPoliciesAdminConfigPage.deleteAllPasswordPolicies();
+		}
+
+		if (passwordPoliciesConfigurationHasBeenUpdated) {
+			await systemSettingsPage.goToSystemSetting(
+				'Users',
+				'Password Policies'
+			);
+
+			await systemSettingsPage.resetToDefaultValues();
+
+			passwordPoliciesConfigurationHasBeenUpdated = false;
 		}
 	}
 );
@@ -276,6 +294,8 @@ async function testDefaultMessageCanBeSaved(
 
 	await expect(passwordPoliciesAdminConfigPage.successMessage).toBeVisible();
 
+	passwordPoliciesConfigurationHasBeenUpdated = true;
+
 	await page.goto(liferayConfig.environment.baseUrl);
 
 	await passwordPoliciesAdminConfigPage.goTo();
@@ -284,6 +304,8 @@ async function testDefaultMessageCanBeSaved(
 		checkSyntaxToggle: true,
 		minNumbers: 1,
 	});
+
+	await waitForAlert(page);
 
 	await expect(targetLocator.last()).toContainText(defaultMessage);
 	await expect(targetLocator.last()).not.toContainText('0 weeks');
