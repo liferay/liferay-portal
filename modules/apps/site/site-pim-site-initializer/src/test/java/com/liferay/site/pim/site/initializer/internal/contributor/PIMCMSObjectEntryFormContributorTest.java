@@ -105,6 +105,11 @@ public class PIMCMSObjectEntryFormContributorTest {
 
 	@Test
 	public void testContribute() throws Exception {
+		_testContribute();
+		_testContributeWithTitle();
+	}
+
+	private void _testContribute() throws Exception {
 		try (MockedStatic<FeatureFlagManagerUtil>
 				featureFlagManagerUtilMockedStatic = Mockito.mockStatic(
 					FeatureFlagManagerUtil.class)) {
@@ -158,8 +163,7 @@ public class PIMCMSObjectEntryFormContributorTest {
 		}
 	}
 
-	@Test
-	public void testContributeWithTitle() throws Exception {
+	private void _testContributeWithTitle() throws Exception {
 		JSONFactoryUtil jsonFactoryUtil = new JSONFactoryUtil();
 
 		jsonFactoryUtil.setJSONFactory(new JSONFactoryImpl());
