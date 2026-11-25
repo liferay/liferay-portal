@@ -186,6 +186,14 @@ public class QueryUtilTest {
 	}
 
 	@Test
+	public void testSQLWithLimitWithOuterOrderMultipleColumns()
+		throws Exception {
+
+		testSQLWithLimitWithOuterOrder(
+			"ORDER BY value DESC, id ASC", 0, 10, 19, 10);
+	}
+
+	@Test
 	public void testUnionSQL1() throws Exception {
 		testUnionSQL(
 			"ASC", _SIZE / 2, _SIZE + (_SIZE / 2), _SIZE, "id", "value");
