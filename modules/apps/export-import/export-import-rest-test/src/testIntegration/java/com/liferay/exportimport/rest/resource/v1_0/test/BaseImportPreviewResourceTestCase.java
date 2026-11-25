@@ -368,6 +368,10 @@ public abstract class BaseImportPreviewResourceTestCase {
 	protected void assertValid(ImportPreview importPreview) throws Exception {
 		boolean valid = true;
 
+		if (importPreview.getId() == null) {
+			valid = false;
+		}
+
 		for (String additionalAssertFieldName :
 				getAdditionalAssertFieldNames()) {
 
@@ -511,6 +515,8 @@ public abstract class BaseImportPreviewResourceTestCase {
 	protected List<GraphQLField> getGraphQLFields() throws Exception {
 		List<GraphQLField> graphQLFields = new ArrayList<>();
 
+		graphQLFields.add(new GraphQLField("id"));
+
 		for (java.lang.reflect.Field field :
 				getDeclaredFields(
 					com.liferay.exportimport.rest.dto.v1_0.ImportPreview.
@@ -642,6 +648,16 @@ public abstract class BaseImportPreviewResourceTestCase {
 				if (!Objects.deepEquals(
 						importPreview1.getFileSize(),
 						importPreview2.getFileSize())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("id", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						importPreview1.getId(), importPreview2.getId())) {
 
 					return false;
 				}
@@ -920,6 +936,11 @@ public abstract class BaseImportPreviewResourceTestCase {
 				"Invalid entity field " + entityFieldName);
 		}
 
+		if (entityFieldName.equals("id")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
 		if (entityFieldName.equals("portletDataHandlers")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
@@ -989,6 +1010,7 @@ public abstract class BaseImportPreviewResourceTestCase {
 				fileName = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 				fileSize = RandomTestUtil.randomLong();
+				id = RandomTestUtil.randomLong();
 			}
 		};
 	}
@@ -1217,4 +1239,4 @@ public abstract class BaseImportPreviewResourceTestCase {
 		_importPreviewResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:73461298
+// LIFERAY-REST-BUILDER-HASH:1870039450

@@ -358,6 +358,49 @@ public class ImportPreview implements Serializable {
 	@JsonIgnore
 	private Supplier<Long> _fileSizeSupplier;
 
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The ID of the uploaded file. Pass it as the import process's importPreviewId to import this file."
+	)
+	public Long getId() {
+		if (_idSupplier != null) {
+			id = _idSupplier.get();
+
+			_idSupplier = null;
+		}
+
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+
+		_idSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setId(UnsafeSupplier<Long, Exception> idUnsafeSupplier) {
+		_idSupplier = () -> {
+			try {
+				return idUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "The ID of the uploaded file. Pass it as the import process's importPreviewId to import this file."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected Long id;
+
+	@JsonIgnore
+	private Supplier<Long> _idSupplier;
+
 	@io.swagger.v3.oas.annotations.media.Schema
 	@Valid
 	public PortletDataHandler[] getPortletDataHandlers() {
@@ -585,6 +628,18 @@ public class ImportPreview implements Serializable {
 			sb.append(fileSize);
 		}
 
+		Long id = getId();
+
+		if (id != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"id\": ");
+
+			sb.append(id);
+		}
+
 		PortletDataHandler[] portletDataHandlers = getPortletDataHandlers();
 
 		if (portletDataHandlers != null) {
@@ -751,4 +806,4 @@ public class ImportPreview implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1266624263
+// LIFERAY-REST-BUILDER-HASH:1533268154

@@ -118,6 +118,27 @@ public class InstanceImportProcessRequest implements Cloneable, Serializable {
 
 	protected Boolean deletions;
 
+	public Long getImportPreviewId() {
+		return importPreviewId;
+	}
+
+	public void setImportPreviewId(Long importPreviewId) {
+		this.importPreviewId = importPreviewId;
+	}
+
+	public void setImportPreviewId(
+		UnsafeSupplier<Long, Exception> importPreviewIdUnsafeSupplier) {
+
+		try {
+			importPreviewId = importPreviewIdUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Long importPreviewId;
+
 	public String getName() {
 		return name;
 	}
@@ -358,4 +379,4 @@ public class InstanceImportProcessRequest implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:738372405
+// LIFERAY-REST-BUILDER-HASH:553676340

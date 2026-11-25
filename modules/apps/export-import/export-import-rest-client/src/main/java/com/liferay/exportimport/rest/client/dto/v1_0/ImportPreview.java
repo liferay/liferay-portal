@@ -174,6 +174,25 @@ public class ImportPreview implements Cloneable, Serializable {
 
 	protected Long fileSize;
 
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public void setId(UnsafeSupplier<Long, Exception> idUnsafeSupplier) {
+		try {
+			id = idUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Long id;
+
 	public PortletDataHandler[] getPortletDataHandlers() {
 		return portletDataHandlers;
 	}
@@ -251,4 +270,4 @@ public class ImportPreview implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1966030138
+// LIFERAY-REST-BUILDER-HASH:1308380314

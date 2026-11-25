@@ -200,6 +200,51 @@ public class ImportProcessRequest implements Serializable {
 	private Supplier<Boolean> _deletionsSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The ID of the import preview whose uploaded file is imported. Defaults to the user's last uploaded file."
+	)
+	public Long getImportPreviewId() {
+		if (_importPreviewIdSupplier != null) {
+			importPreviewId = _importPreviewIdSupplier.get();
+
+			_importPreviewIdSupplier = null;
+		}
+
+		return importPreviewId;
+	}
+
+	public void setImportPreviewId(Long importPreviewId) {
+		this.importPreviewId = importPreviewId;
+
+		_importPreviewIdSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setImportPreviewId(
+		UnsafeSupplier<Long, Exception> importPreviewIdUnsafeSupplier) {
+
+		_importPreviewIdSupplier = () -> {
+			try {
+				return importPreviewIdUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "The ID of the import preview whose uploaded file is imported. Defaults to the user's last uploaded file."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected Long importPreviewId;
+
+	@JsonIgnore
+	private Supplier<Long> _importPreviewIdSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "The import process's name. Defaults to the name of the uploaded file."
 	)
 	public String getName() {
@@ -498,6 +543,18 @@ public class ImportProcessRequest implements Serializable {
 			sb.append(deletions);
 		}
 
+		Long importPreviewId = getImportPreviewId();
+
+		if (importPreviewId != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"importPreviewId\": ");
+
+			sb.append(importPreviewId);
+		}
+
 		String name = getName();
 
 		if (name != null) {
@@ -774,4 +831,4 @@ public class ImportProcessRequest implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1575541177
+// LIFERAY-REST-BUILDER-HASH:1308106727

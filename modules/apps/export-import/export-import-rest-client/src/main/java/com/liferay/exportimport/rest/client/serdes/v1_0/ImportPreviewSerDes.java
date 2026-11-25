@@ -149,6 +149,16 @@ public class ImportPreviewSerDes {
 			sb.append(importPreview.getFileSize());
 		}
 
+		if (importPreview.getId() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"id\": ");
+
+			sb.append(importPreview.getId());
+		}
+
 		if (importPreview.getPortletDataHandlers() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -271,6 +281,13 @@ public class ImportPreviewSerDes {
 			map.put("fileSize", String.valueOf(importPreview.getFileSize()));
 		}
 
+		if (importPreview.getId() == null) {
+			map.put("id", null);
+		}
+		else {
+			map.put("id", String.valueOf(importPreview.getId()));
+		}
+
 		if (importPreview.getPortletDataHandlers() == null) {
 			map.put("portletDataHandlers", null);
 		}
@@ -324,6 +341,9 @@ public class ImportPreviewSerDes {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "fileSize")) {
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "id")) {
 				return false;
 			}
 			else if (Objects.equals(
@@ -390,6 +410,12 @@ public class ImportPreviewSerDes {
 			else if (Objects.equals(jsonParserFieldName, "fileSize")) {
 				if (jsonParserFieldValue != null) {
 					importPreview.setFileSize(
+						Long.valueOf((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "id")) {
+				if (jsonParserFieldValue != null) {
+					importPreview.setId(
 						Long.valueOf((String)jsonParserFieldValue));
 				}
 			}
@@ -515,4 +541,4 @@ public class ImportPreviewSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1337216621
+// LIFERAY-REST-BUILDER-HASH:-1439116797
