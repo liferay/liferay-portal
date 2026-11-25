@@ -238,7 +238,7 @@ export class DepotStagingPage {
 		);
 	}
 
-	async selectManualAsset(assetLibraryName: string, title: string) {
+	async selectManualAsset(assetLibraryName: string, ...titles: string[]) {
 		await this.configurationFrame.getByLabel('Manual').click();
 
 		await waitForAlert(
@@ -301,9 +301,12 @@ export class DepotStagingPage {
 			name: 'Select Asset',
 		});
 
-		await selectAssetDialog
-			.getByRole('checkbox', {name: `Select ${title}`})
-			.check();
+		for (const title of titles) {
+			await selectAssetDialog
+				.getByRole('checkbox', {name: `Select ${title}`})
+				.check();
+		}
+
 		await selectAssetDialog
 			.getByRole('button', {exact: true, name: 'Select'})
 			.click();

@@ -160,8 +160,8 @@ test(
 );
 
 test(
-	'Asset Publisher on a staged site shows an asset library folder only after the site is published',
-	{tag: '@LPD-112613'},
+	'Asset Publisher on a staged site shows asset library folders and web content only after the site is published',
+	{tag: ['@LPD-112613', '@LPD-117655']},
 	async ({apiHelpers, depotStagingPage, stagedDepotSite}) => {
 		test.setTimeout(300000);
 
@@ -173,7 +173,7 @@ test(
 			stagedPageURL,
 		} = stagedDepotSite;
 
-		// Add a folder with one document to the asset library and stage both groups
+		// Add a document folder, a web content folder and a categorized web content to the asset library and stage both groups
 
 		const folderDescription = getRandomString();
 		const folderName = getRandomString();
@@ -191,41 +191,91 @@ test(
 			{fileName: documentTitle, title: documentTitle}
 		);
 
+		const contentStructureId =
+			await getBasicWebContentStructureId(apiHelpers);
+
+		const webContentFolderName = getRandomString();
+
+		const webContentFolder =
+			await apiHelpers.headlessDelivery.postStructuredContentFolder(
+				assetLibrary.siteId,
+				{name: webContentFolderName}
+			);
+
+		await apiHelpers.headlessDelivery.postStructuredContentFolderStructuredContent(
+			{
+				contentStructureId,
+				datePublished: null,
+				structuredContentFolderId: webContentFolder.id,
+				title: getRandomString(),
+			}
+		);
+
+		const vocabulary =
+			await apiHelpers.headlessAdminTaxonomy.postAssetLibraryTaxonomyVocabulary(
+				{assetLibraryId: assetLibrary.id, name: getRandomString()}
+			);
+
+		const category =
+			await apiHelpers.headlessAdminTaxonomy.postTaxonomyVocabularyTaxonomyCategory(
+				{name: getRandomString(), vocabularyId: vocabulary.id}
+			);
+
+		const webContentTitle = getRandomString();
+
+		await apiHelpers.headlessDelivery.postStructuredContent({
+			categoryIds: [category.id],
+			contentStructureId,
+			datePublished: null,
+			siteId: String(assetLibrary.siteId),
+			title: webContentTitle,
+		});
+
 		await stage();
 
 		await depotStagingPage.waitForStagedEntry(depotFriendlyURL, folderName);
 
-		// Select the folder from the asset library on the staged page
+		// Select the folders and the web content from the asset library on the staged page
 
 		const {assetPublisher, page} = depotStagingPage;
 
 		await page.goto(stagedPageURL);
 
+		const titles = [folderName, webContentFolderName, webContentTitle];
+
 		await depotStagingPage.openAssetPublisherConfiguration();
-		await depotStagingPage.selectManualAsset(assetLibrary.name, folderName);
+		await depotStagingPage.selectManualAsset(assetLibrary.name, ...titles);
 		await depotStagingPage.closeConfiguration();
 
 		await page.reload();
 
-		await expect(
-			assetPublisher.getByText(folderName, {exact: true})
-		).toBeVisible();
-		await expect(assetPublisher.getByText(folderDescription)).toBeVisible();
+		const expectAssetsToBeVisible = async () => {
+			for (const title of titles) {
+				await expect(
+					assetPublisher.getByText(title, {exact: true})
+				).toBeVisible();
+			}
 
-		// The live page shows the folder only after the site is published
+			await expect(
+				assetPublisher.getByText(folderDescription)
+			).toBeVisible();
+		};
+
+		await expectAssetsToBeVisible();
+
+		// The live page shows them only after the site is published
 
 		await page.goto(livePageURL);
 
-		await expect(assetPublisher.getByText(folderName)).toBeHidden();
+		for (const title of titles) {
+			await expect(assetPublisher.getByText(title)).toBeHidden();
+		}
 
 		await depotStagingPage.publishSiteToLive(stagedPageURL);
 
 		await page.goto(livePageURL);
 
-		await expect(
-			assetPublisher.getByText(folderName, {exact: true})
-		).toBeVisible();
-		await expect(assetPublisher.getByText(folderDescription)).toBeVisible();
+		await expectAssetsToBeVisible();
 	}
 );
 
