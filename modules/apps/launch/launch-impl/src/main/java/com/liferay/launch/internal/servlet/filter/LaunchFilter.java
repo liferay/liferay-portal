@@ -303,12 +303,13 @@ public class LaunchFilter extends BasePortalFilter {
 			LaunchMode launchMode)
 		throws Exception {
 
-		Map<Class<?>, Map<Serializable, Object>> previewableMap =
-			_getPreviewableMap(CompanyThreadLocal.getCompanyId(), launchSetId);
-
 		try (SafeCloseable safeCloseable1 =
 				LaunchThreadLocal.setLaunchSetIdWithSafeCloseable(
 					launchSetId, launchMode)) {
+
+			Map<Class<?>, Map<Serializable, Object>> previewableMap =
+				_getPreviewableMap(
+					CompanyThreadLocal.getCompanyId(), launchSetId);
 
 			if (previewableMap.isEmpty()) {
 				processFilter(
