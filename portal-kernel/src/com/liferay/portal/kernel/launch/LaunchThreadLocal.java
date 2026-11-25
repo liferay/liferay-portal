@@ -14,12 +14,12 @@ import com.liferay.petra.lang.SafeCloseable;
  */
 public class LaunchThreadLocal {
 
-	public static long getLaunchSetId() {
-		return _launchSetId.get();
-	}
-
 	public static LaunchMode getLaunchMode() {
 		return _launchMode.get();
+	}
+
+	public static long getLaunchSetId() {
+		return _launchSetId.get();
 	}
 
 	public static boolean isLaunchModeEdit() {
@@ -43,7 +43,8 @@ public class LaunchThreadLocal {
 
 		SafeCloseable launchSetIdSafeCloseable =
 			_launchSetId.setWithSafeCloseable(launchSetId);
-		SafeCloseable launchModeSafeCloseable = _launchMode.setWithSafeCloseable(launchMode);
+		SafeCloseable launchModeSafeCloseable =
+			_launchMode.setWithSafeCloseable(launchMode);
 
 		return () -> {
 			launchModeSafeCloseable.close();
@@ -54,11 +55,11 @@ public class LaunchThreadLocal {
 	private LaunchThreadLocal() {
 	}
 
-	private static final CentralizedThreadLocal<Long> _launchSetId =
-		new CentralizedThreadLocal<>(
-			LaunchThreadLocal.class.getName() + "._launchSetId", () -> -1L);
 	private static final CentralizedThreadLocal<LaunchMode> _launchMode =
 		new CentralizedThreadLocal<>(
 			LaunchThreadLocal.class.getName() + "._launchMode");
+	private static final CentralizedThreadLocal<Long> _launchSetId =
+		new CentralizedThreadLocal<>(
+			LaunchThreadLocal.class.getName() + "._launchSetId", () -> -1L);
 
 }
