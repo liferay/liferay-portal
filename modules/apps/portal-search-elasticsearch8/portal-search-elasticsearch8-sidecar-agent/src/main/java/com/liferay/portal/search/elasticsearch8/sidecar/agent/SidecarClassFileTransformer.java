@@ -93,8 +93,6 @@ public class SidecarClassFileTransformer implements ClassFileTransformer {
 			Map.entry("entitlementSelfTest", _wipingLogicMethodVisitorFunction),
 			"org/elasticsearch/common/settings/KeyStoreWrapper",
 			Map.entry("save", _wipingLogicMethodVisitorFunction),
-			"org/elasticsearch/bootstrap/Security",
-			Map.entry("configure", _wipingLogicMethodVisitorFunction),
 			"org/elasticsearch/bootstrap/Spawner",
 			Map.entry(
 				"spawnNativeControllers", _wipingLogicMethodVisitorFunction),
