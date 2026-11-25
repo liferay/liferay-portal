@@ -8,6 +8,7 @@ import {createReadStream} from 'fs';
 import path from 'path';
 
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
+import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {DocumentLibraryPage} from '../../../pages/document-library-web/DocumentLibraryPage';
@@ -16,13 +17,19 @@ import getRandomString from '../../../utils/getRandomString';
 import {PORTLET_URLS} from '../../../utils/portletUrls';
 import getBasicWebContentStructureId from '../../../utils/structured-content/getBasicWebContentStructureId';
 import {BlogsEditBlogEntryPage} from '../../blogs-web/main/pages/BlogsEditBlogEntryPage';
+import getPageDefinition from '../../layout-content-page-editor-web/main/utils/getPageDefinition';
+import getWidgetDefinition from '../../layout-content-page-editor-web/main/utils/getWidgetDefinition';
 import {depotsPagesTest} from './fixtures/depotsPagesTest';
 import addEditableDepot from './utils/addEditableDepot';
+import getBlogCoverImageURL from './utils/getBlogCoverImageURL';
 import gotoDepotInItemSelector from './utils/gotoDepotInItemSelector';
 
 const test = mergeTests(
 	dataApiHelpersTest,
 	depotsPagesTest,
+	featureFlagsTest({
+		'LPS-178052': {enabled: true},
+	}),
 	isolatedSiteTest,
 	loginTest()
 );
@@ -33,6 +40,8 @@ const APPLICATIONS = [
 	'Translation Processes',
 	'Web Content',
 ];
+
+const DOCUMENT_PATH = path.join(__dirname, 'dependencies/Document.jpg');
 
 function getApplicationCard(page: Page, application: string) {
 	return page.locator('.card-page-item-asset').filter({hasText: application});
@@ -48,7 +57,7 @@ test(
 
 		await apiHelpers.headlessDelivery.postAssetLibraryDocument(
 			depot.depotEntryId,
-			createReadStream(path.join(__dirname, 'dependencies/Document.jpg')),
+			createReadStream(DOCUMENT_PATH),
 			{fileName: `${documentTitle}.jpg`, title: documentTitle}
 		);
 
@@ -130,8 +139,8 @@ test(
 );
 
 test(
-	'A connected site cannot select depot documents once the depot disables Documents and Media',
-	{tag: '@LPD-109572'},
+	'A connected site keeps the depot content it uses but cannot select more once the depot disables its applications',
+	{tag: ['@LPD-109572', '@LPD-117652']},
 	async ({apiHelpers, depotAdminPage, page, site}) => {
 		const depot = await addEditableDepot(apiHelpers);
 
@@ -140,29 +149,105 @@ test(
 			site.externalReferenceCode
 		);
 
+		const image =
+			await apiHelpers.headlessDelivery.postAssetLibraryDocument(
+				depot.depotEntryId,
+				createReadStream(DOCUMENT_PATH),
+				{fileName: `${getRandomString()}.jpg`}
+			);
+
+		const blogHeadline = getRandomString();
+
+		await apiHelpers.headlessDelivery.postBlog(site.id, {
+			headline: blogHeadline,
+			image: {imageId: image.id},
+		});
+
+		const webContentContent = getRandomString();
+
+		const webContent =
+			await apiHelpers.headlessDelivery.postStructuredContent({
+				contentFields: [
+					{
+						contentFieldValue: {data: webContentContent},
+						name: 'content',
+					},
+				],
+				contentStructureId:
+					await getBasicWebContentStructureId(apiHelpers),
+				datePublished: null,
+				siteId: String(depot.groupId),
+				title: getRandomString(),
+			});
+
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([
+				getWidgetDefinition({
+					id: getRandomString(),
+					widgetName: 'com_liferay_blogs_web_portlet_BlogsPortlet',
+				}),
+				getWidgetDefinition({
+					id: getRandomString(),
+					widgetConfig: {
+						articleId: webContent.key,
+						groupId: String(depot.groupId),
+					},
+					widgetName:
+						'com_liferay_journal_content_web_portlet_JournalContentPortlet',
+				}),
+			]),
+			siteId: site.id,
+			title: getRandomString(),
+		});
+
 		await depotAdminPage.setApplications(
 			depot.depotEntryId,
-			['Documents and Media'],
+			['Documents and Media', 'Web Content'],
 			false
 		);
 
-		await new BlogsEditBlogEntryPage(page).goto(site.friendlyUrlPath);
+		await test.step('The site still shows the depot content it uses', async () => {
+			await page.goto(
+				`/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`
+			);
 
-		await page.getByRole('button', {name: 'Select File'}).first().click();
+			await expect(page.getByText(webContentContent)).toBeVisible();
 
-		const itemSelector = page.frameLocator('iframe[title="Select File"]');
+			await page
+				.getByRole('link', {exact: true, name: blogHeadline})
+				.click();
 
-		await itemSelector
-			.getByRole('link', {name: 'Documents and Media'})
-			.click();
+			const coverImageResponse = await page.request.get(
+				await getBlogCoverImageURL(page)
+			);
 
-		await gotoDepotInItemSelector(itemSelector, depot.name);
+			expect(coverImageResponse.ok()).toBe(true);
+		});
 
-		await expect(
-			itemSelector.getByText(
-				'This application is disabled for this scope.'
-			)
-		).toBeVisible();
+		await test.step('The site cannot select more depot documents', async () => {
+			await new BlogsEditBlogEntryPage(page).goto(site.friendlyUrlPath);
+
+			await page
+				.getByRole('button', {name: 'Select File'})
+				.first()
+				.click();
+
+			const itemSelector = page.frameLocator(
+				'iframe[title="Select File"]'
+			);
+
+			await itemSelector
+				.getByRole('link', {name: 'Documents and Media'})
+				.click();
+
+			await gotoDepotInItemSelector(itemSelector, depot.name);
+
+			await expect(
+				itemSelector.getByText(
+					'This application is disabled for this scope.'
+				)
+			).toBeVisible();
+		});
 	}
 );
 
