@@ -181,6 +181,15 @@ export function stripHTML(text) {
 	);
 }
 
+export function toCSSString(text) {
+	const specialCharacters = /[^\d A-Za-z]/gu;
+
+	return `"${text.replace(
+		specialCharacters,
+		(character) => `\\${character.codePointAt(0).toString(16)} `
+	)}"`;
+}
+
 export function getFullPath(path) {
 	const href = window.location.href;
 	const indexOf = href.indexOf('#');

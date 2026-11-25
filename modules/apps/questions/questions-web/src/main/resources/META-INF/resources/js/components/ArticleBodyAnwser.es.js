@@ -7,6 +7,7 @@ import ClayIcon from '@clayui/icon';
 import classNames from 'classnames';
 import React, {useEffect, useState} from 'react';
 
+import {toCSSString} from '../utils/utils.es';
 import {MESSAGE_TYPES} from './ActivityUI.es';
 import Highlight from './Highlight.es';
 
@@ -61,7 +62,9 @@ export default function ArticleBodyAnwser({
 					dangerouslySetInnerHTML={{
 						__html: `.questions-article-body-${id} ${
 							articleBodyContainsParagraph ? 'p' : 'div'
-						}:last-child:after {content: " - ${signature} ${_companyName}"; font-weight: bold;}`,
+						}:last-child:after {content: ${toCSSString(
+							` - ${signature} ${_companyName}`
+						)}; font-weight: bold;}`,
 					}}
 				/>
 			)}

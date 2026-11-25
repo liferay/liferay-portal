@@ -5,6 +5,7 @@
 
 import React, {useEffect, useState} from 'react';
 
+import {toCSSString} from '../utils/utils.es';
 import Highlight from './Highlight.es';
 
 export default function ArticleBodyRenderer({
@@ -46,7 +47,9 @@ export default function ArticleBodyRenderer({
 					dangerouslySetInnerHTML={{
 						__html: `.questions-article-body-${id} ${
 							articleBodyContainsParagraph ? 'p' : 'div'
-						}:last-child:after {content: " - ${signature} ${_companyName} - ${elapsedTime}"; font-weight: bold;}`,
+						}:last-child:after {content: ${toCSSString(
+							` - ${signature} ${_companyName} - ${elapsedTime}`
+						)}; font-weight: bold;}`,
 					}}
 				/>
 			)}
