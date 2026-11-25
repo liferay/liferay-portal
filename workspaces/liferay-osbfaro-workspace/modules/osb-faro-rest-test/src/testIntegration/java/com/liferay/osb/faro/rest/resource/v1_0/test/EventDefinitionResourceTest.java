@@ -184,7 +184,9 @@ public class EventDefinitionResourceTest
 
 		eventDefinition.setType(EventDefinition.Type.CUSTOM);
 
-		_setEventDefinitionBag(List.of(eventDefinition), 21);
+		int total = RandomTestUtil.randomInt();
+
+		_setEventDefinitionBag(List.of(eventDefinition), total);
 
 		boolean blocked = RandomTestUtil.randomBoolean();
 		boolean hidden = RandomTestUtil.randomBoolean();
@@ -198,7 +200,7 @@ public class EventDefinitionResourceTest
 		assertEquals(
 			List.of(eventDefinition),
 			(List<EventDefinition>)eventDefinitionsPage.getItems());
-		Assert.assertEquals(21, eventDefinitionsPage.getTotalCount());
+		Assert.assertEquals(total, eventDefinitionsPage.getTotalCount());
 
 		Assert.assertEquals(
 			"getWorkspaceGroupEventDefinitionsPage",

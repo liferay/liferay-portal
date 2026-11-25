@@ -201,7 +201,10 @@ public class EventAttributeDefinitionResourceTest
 			EventAttributeDefinition.DataType.STRING);
 		eventAttributeDefinition.setType(EventAttributeDefinition.Type.LOCAL);
 
-		_setEventAttributeDefinitionBag(List.of(eventAttributeDefinition), 21);
+		int total = RandomTestUtil.randomInt();
+
+		_setEventAttributeDefinitionBag(
+			List.of(eventAttributeDefinition), total);
 
 		String eventDefinitionId = String.valueOf(RandomTestUtil.randomLong());
 		String search = RandomTestUtil.randomString();
@@ -216,7 +219,8 @@ public class EventAttributeDefinitionResourceTest
 			List.of(eventAttributeDefinition),
 			(List<EventAttributeDefinition>)
 				eventAttributeDefinitionsPage.getItems());
-		Assert.assertEquals(21, eventAttributeDefinitionsPage.getTotalCount());
+		Assert.assertEquals(
+			total, eventAttributeDefinitionsPage.getTotalCount());
 
 		Assert.assertEquals(
 			"getWorkspaceGroupEventAttributeDefinitionsPage",
