@@ -150,7 +150,7 @@ public class BlogPostingImageResourceTest
 			dlFolder.getFolderId());
 
 		FileEntry fileEntry = BlogsEntryLocalServiceUtil.addAttachmentFileEntry(
-			null, dlFileEntry.getUserId(), dlFileEntry.getGroupId(),
+			null, dlFileEntry.getUserId(), dlFileEntry.getGroupId(), 0,
 			dlFileEntry.getFileName(), dlFileEntry.getMimeType(),
 			dlFileEntry.getContentStream());
 

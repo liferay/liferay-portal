@@ -1481,7 +1481,7 @@ public class BlogsEntryLocalServiceTest {
 		throws Exception {
 
 		return _blogsEntryLocalService.addAttachmentFileEntry(
-			externalReferenceCode, _user.getUserId(), _group.getGroupId(),
+			externalReferenceCode, _user.getUserId(), _group.getGroupId(), 0,
 			fileName, ContentTypes.APPLICATION_OCTET_STREAM,
 			new UnsyncByteArrayInputStream(new byte[0]));
 	}

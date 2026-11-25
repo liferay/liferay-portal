@@ -1273,7 +1273,7 @@ public class BlogsEntryServiceTest {
 	private FileEntry _addAttachmentFileEntry() throws Exception {
 		return _blogsEntryLocalService.addAttachmentFileEntry(
 			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
-			_group.getGroupId(), RandomTestUtil.randomString(),
+			_group.getGroupId(), 0, RandomTestUtil.randomString(),
 			ContentTypes.APPLICATION_OCTET_STREAM,
 			new UnsyncByteArrayInputStream(new byte[0]));
 	}
