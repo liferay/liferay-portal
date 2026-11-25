@@ -435,36 +435,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro addPersonalSiteCP(personalSite = null, userScreenName = null, siteTemplateName = null) {
-		UserNavigator.gotoUser(userScreenName = ${userScreenName});
-
-		UserNavigator.gotoProfileAndDashboard();
-
-		if (${personalSite} == "Public") {
-			AssertTextEquals(
-				key_subtitle = "Profile",
-				locator1 = "UsersAndOrganizationsEditUser#PERSONAL_SITE_LABEL",
-				value1 = "PROFILE");
-
-			Select(
-				locator1 = "UsersAndOrganizationsEditUser#PERSONAL_SITE_MY_PROFILE",
-				value1 = ${siteTemplateName});
-		}
-		else {
-			AssertTextEquals(
-				key_subtitle = "Dashboard",
-				locator1 = "UsersAndOrganizationsEditUser#PERSONAL_SITE_LABEL",
-				value1 = "DASHBOARD");
-
-			Select(
-				locator1 = "UsersAndOrganizationsEditUser#PERSONAL_SITE_MY_DASHBOARD",
-				value1 = ${siteTemplateName});
-		}
-
-		PortletEntry.save();
-	}
-
-	@summary = "Default summary"
 	macro addReservedEmailAddressCP(userLastName = null, userScreenName = null, userEmailAddress = null, userFirstName = null) {
 		LexiconEntry.gotoAdd();
 

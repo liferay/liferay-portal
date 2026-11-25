@@ -726,11 +726,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>RESET_CHANGES</td>
-	<td>//a[contains(@class,'btn')][contains(.,'Reset Changes')]</td>
-	<td></td>
-</tr>
-<tr>
 	<td>RESOLVE</td>
 	<td>//button/span[*[name()='svg'][contains(@class,'lexicon-icon-check-circle')]]</td>
 	<td></td>

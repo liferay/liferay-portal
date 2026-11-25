@@ -320,24 +320,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro enableActionsOnDMInSiteTemplate() {
-		Portlet.gotoPortletOptions(
-			portletName = "Documents and Media",
-			portletOption = "Configuration",
-			siteTemplate = "true");
-
-		SelectFrame(locator1 = "DocumentsAndMedia#CONFIGURATION_IFRAME");
-
-		AssertElementPresent(locator1 = "Checkbox#SHOW_ACTIONS_CHECKBOX");
-
-		Check(locator1 = "Checkbox#SHOW_ACTIONS_CHECKBOX");
-
-		Button.clickSave();
-
-		Alert.viewSuccessMessage();
-	}
-
-	@summary = "Default summary"
 	macro getPageModificationDate(pageNameFilter = null, groupName = null) {
 		Variables.assertDefined(parameterList = "${groupName},${pageNameFilter}");
 
@@ -479,40 +461,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro resetPageChanges(columnNumberTo = null, portletName = null) {
-		WaitForEditable(locator1 = "ControlMenu#INFO");
-
-		Click.waitForMenuToggleJSClick(locator1 = "ControlMenu#INFO");
-
-		AssertTextEquals.assertPartialText(
-			locator1 = "Message#CUSTOMIZED_PAGE_INFO",
-			value1 = "This page has been changed since the last update from the site template.");
-
-		AssertTextEquals(
-			locator1 = "Button#RESET_CHANGES",
-			value1 = "Reset Changes");
-
-		if (isSet(columnNumberTo)) {
-			AssertTextEquals(
-				key_pageColumnNumber = ${columnNumberTo},
-				key_portletName = ${portletName},
-				locator1 = "Portlet#PORTLET_TITLE_INSIDE_PAGE_COLUMN",
-				value1 = ${portletName});
-		}
-		else if (!(isSet(columnNumberTo)) && isSet(portletName)) {
-			AssertElementNotPresent(
-				key_portletName = ${portletName},
-				locator1 = "Home#PORTLET_BORDERLESS");
-		}
-
-		AssertClick(
-			locator1 = "Button#RESET_CHANGES",
-			value1 = "Reset Changes");
-
-		AssertElementNotPresent(locator1 = "ControlMenu#INFO");
-	}
-
-	@summary = "Default summary"
 	macro tearDownCP() {
 		ApplicationsMenu.gotoPortlet(
 			category = "Sites",
@@ -572,23 +520,6 @@ definition {
 		var key_siteTemplateName = ${siteTemplateName};
 
 		MenuItem.viewNotPresent(menuItem = ${siteTemplateName});
-	}
-
-	@summary = "Default summary"
-	macro viewResetPageChanges(columnNumberFrom = null, portletName = null) {
-		AssertTextNotPresent(
-			locator1 = "Message#CUSTOMIZED_PAGE_INFO",
-			value1 = "This page has been changed since the last update from the site template.");
-
-		AssertTextNotPresent(
-			locator1 = "Button#RESET_CHANGES",
-			value1 = "Reset Changes");
-
-		AssertTextEquals(
-			key_pageColumnNumber = ${columnNumberFrom},
-			key_portletName = ${portletName},
-			locator1 = "Portlet#PORTLET_TITLE_INSIDE_PAGE_COLUMN",
-			value1 = ${portletName});
 	}
 
 	@summary = "Default summary"
