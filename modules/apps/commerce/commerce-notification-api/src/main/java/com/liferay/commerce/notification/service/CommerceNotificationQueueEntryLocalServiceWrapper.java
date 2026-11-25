@@ -333,15 +333,6 @@ public class CommerceNotificationQueueEntryLocalServiceWrapper
 			getActionableDynamicQuery();
 	}
 
-	@Override
-	public java.util.List
-		<com.liferay.commerce.notification.model.CommerceNotificationQueueEntry>
-			getCommerceNotificationQueueEntries(boolean sent) {
-
-		return _commerceNotificationQueueEntryLocalService.
-			getCommerceNotificationQueueEntries(sent);
-	}
-
 	/**
 	 * Returns a range of all the commerce notification queue entries.
 	 *
@@ -530,4 +521,4 @@ public class CommerceNotificationQueueEntryLocalServiceWrapper
 		_commerceNotificationQueueEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:890959480
+// LIFERAY-SERVICE-BUILDER-HASH:-1556976238

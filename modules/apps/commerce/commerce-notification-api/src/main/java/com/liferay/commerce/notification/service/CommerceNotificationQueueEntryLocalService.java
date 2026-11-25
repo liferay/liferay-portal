@@ -234,10 +234,6 @@ public interface CommerceNotificationQueueEntryLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CommerceNotificationQueueEntry>
-		getCommerceNotificationQueueEntries(boolean sent);
-
 	/**
 	 * Returns a range of all the commerce notification queue entries.
 	 *
@@ -332,4 +328,4 @@ public interface CommerceNotificationQueueEntryLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-365169516
+// LIFERAY-SERVICE-BUILDER-HASH:-1698558106

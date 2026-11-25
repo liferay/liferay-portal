@@ -280,12 +280,6 @@ public class CommerceNotificationQueueEntryLocalServiceUtil {
 		return getService().getActionableDynamicQuery();
 	}
 
-	public static List<CommerceNotificationQueueEntry>
-		getCommerceNotificationQueueEntries(boolean sent) {
-
-		return getService().getCommerceNotificationQueueEntries(sent);
-	}
-
 	/**
 	 * Returns a range of all the commerce notification queue entries.
 	 *
@@ -426,4 +420,4 @@ public class CommerceNotificationQueueEntryLocalServiceUtil {
 			CommerceNotificationQueueEntryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1478914833
+// LIFERAY-SERVICE-BUILDER-HASH:2069410474
