@@ -173,13 +173,6 @@ public class CommerceNotificationQueueEntryLocalServiceImpl
 
 	@Override
 	public List<CommerceNotificationQueueEntry>
-		getCommerceNotificationQueueEntries(boolean sent) {
-
-		return commerceNotificationQueueEntryPersistence.findBySent(sent);
-	}
-
-	@Override
-	public List<CommerceNotificationQueueEntry>
 		getCommerceNotificationQueueEntries(
 			long groupId, String className, long classPK, boolean sent,
 			int start, int end,
