@@ -434,4 +434,15 @@ definition {
 			value1 = "You can only have one time-based one-time password configured for your account. Remove your existing time-based one-time password to generate a new time-based one-time password.");
 	}
 
+	@summary = "Refresh the email OTP configuration until its sender name is the given one"
+	macro waitForOTPEmailSenderName(emailSenderName = null) {
+		while ((IsTextNotEqual(locator1 = "MultiFactorAuthentication#EMAIL_OTP_SENDER_NAME_FIELD", value1 = ${emailSenderName})) && (maxIterations = "10")) {
+			Refresh();
+		}
+
+		AssertTextEquals(
+			locator1 = "MultiFactorAuthentication#EMAIL_OTP_SENDER_NAME_FIELD",
+			value1 = ${emailSenderName});
+	}
+
 }

@@ -979,9 +979,7 @@ definition {
 		task ("Enable OTP") {
 			MultiFactorAuthentication.openToConfigInInstanceSettings();
 
-			AssertTextEquals(
-				locator1 = "MultiFactorAuthentication#EMAIL_OTP_SENDER_NAME_FIELD",
-				value1 = "Joe Bloggs");
+			MultiFactorAuthentication.waitForOTPEmailSenderName(emailSenderName = "Joe Bloggs");
 
 			MultiFactorAuthentication.configureOTP(enableOtp = "true");
 		}
@@ -1040,9 +1038,7 @@ definition {
 		task ("Enable OTP") {
 			MultiFactorAuthentication.openToConfigInInstanceSettings();
 
-			AssertTextEquals(
-				locator1 = "MultiFactorAuthentication#EMAIL_OTP_SENDER_NAME_FIELD",
-				value1 = "Joe Bloggs Web Id");
+			MultiFactorAuthentication.waitForOTPEmailSenderName(emailSenderName = "Joe Bloggs Web Id");
 
 			MultiFactorAuthentication.configureOTP(enableOtp = "true");
 		}
