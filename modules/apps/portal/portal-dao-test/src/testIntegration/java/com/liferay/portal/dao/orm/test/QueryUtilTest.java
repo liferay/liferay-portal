@@ -6,6 +6,7 @@
 package com.liferay.portal.dao.orm.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.db.DB;
 import com.liferay.portal.kernel.dao.db.DBManagerUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -17,6 +18,7 @@ import com.liferay.portal.kernel.service.persistence.UserPersistence;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.TransactionalTestRule;
@@ -153,6 +155,13 @@ public class QueryUtilTest {
 	@Test
 	public void testListUnmodifiableTooBigRange() throws Exception {
 		testList(_SIZE + 1, _SIZE + 21, true, 0, 0, 0);
+	}
+
+	@Test
+	public void testSQLWithLimitWithDistinct() throws Exception {
+		_testSQLWithLimitWithDistinct("ORDER BY value ASC", 5, 15, 5, 14);
+		_testSQLWithLimitWithDistinct("ORDER BY value DESC", 5, 15, 14, 5);
+		_testSQLWithLimitWithDistinct(StringPool.BLANK, 5, 15, 5, 14);
 	}
 
 	@Test
@@ -347,6 +356,43 @@ public class QueryUtilTest {
 			Assert.assertEquals(
 				firstType, StringUtil.trim((String)firstRow[0]));
 			Assert.assertEquals(lastType, StringUtil.trim((String)lastRow[0]));
+		}
+		finally {
+			_sessionFactory.closeSession(session);
+		}
+	}
+
+	private void _testSQLWithLimitWithDistinct(
+			String orderBy, int start, int end, int expectedFirstValue,
+			int expectedLastValue)
+		throws Exception {
+
+		Session session = null;
+
+		try {
+			session = _sessionFactory.openSession();
+
+			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(
+				"SELECT DISTINCT QueryUtilTest.* FROM QueryUtilTest ".concat(
+					orderBy));
+
+			List<Object[]> result = (List<Object[]>)QueryUtil.list(
+				sqlQuery, _sessionFactory.getDialect(), start, end, true);
+
+			Assert.assertEquals(result.toString(), end - start, result.size());
+
+			if (Validator.isNull(orderBy)) {
+				return;
+			}
+
+			Object[] firstRow = result.get(0);
+			Object[] lastRow = result.get(result.size() - 1);
+
+			Number firstId = (Number)firstRow[0];
+			Number lastId = (Number)lastRow[0];
+
+			Assert.assertEquals(expectedFirstValue, firstId.intValue());
+			Assert.assertEquals(expectedLastValue, lastId.intValue());
 		}
 		finally {
 			_sessionFactory.closeSession(session);
