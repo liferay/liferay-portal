@@ -157,32 +157,6 @@ public class SocialRequestLocalServiceImpl
 	}
 
 	/**
-	 * Returns a range of all the social requests for the receiving user.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end -
-	 * start</code> instances. <code>start</code> and <code>end</code> are not
-	 * primary keys, they are indexes in the result set. Thus, <code>0</code>
-	 * refers to the first result in the set. Setting both <code>start</code>
-	 * and <code>end</code> to {@link
-	 * com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full
-	 * result set.
-	 * </p>
-	 *
-	 * @param  receiverUserId the primary key of the receiving user
-	 * @param  start the lower bound of the range of results
-	 * @param  end the upper bound of the range of results (not inclusive)
-	 * @return the range of matching social requests
-	 */
-	@Override
-	public List<SocialRequest> getReceiverUserRequests(
-		long receiverUserId, int start, int end) {
-
-		return socialRequestPersistence.findByReceiverUserId(
-			receiverUserId, start, end);
-	}
-
-	/**
 	 * Returns a range of all the social requests with the given status for the
 	 * receiving user.
 	 *
@@ -211,17 +185,6 @@ public class SocialRequestLocalServiceImpl
 	}
 
 	/**
-	 * Returns the number of social requests for the receiving user.
-	 *
-	 * @param  receiverUserId the primary key of the receiving user
-	 * @return the number of matching social requests
-	 */
-	@Override
-	public int getReceiverUserRequestsCount(long receiverUserId) {
-		return socialRequestPersistence.countByReceiverUserId(receiverUserId);
-	}
-
-	/**
 	 * Returns the number of social requests with the given status for the
 	 * receiving user.
 	 *
@@ -232,71 +195,6 @@ public class SocialRequestLocalServiceImpl
 	@Override
 	public int getReceiverUserRequestsCount(long receiverUserId, int status) {
 		return socialRequestPersistence.countByR_S(receiverUserId, status);
-	}
-
-	/**
-	 * Returns a range of all the social requests for the requesting user.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end -
-	 * start</code> instances. <code>start</code> and <code>end</code> are not
-	 * primary keys, they are indexes in the result set. Thus, <code>0</code>
-	 * refers to the first result in the set. Setting both <code>start</code>
-	 * and <code>end</code> to {@link
-	 * com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full
-	 * result set.
-	 * </p>
-	 *
-	 * @param  userId the primary key of the requesting user
-	 * @param  start the lower bound of the range of results
-	 * @param  end the upper bound of the range of results (not inclusive)
-	 * @return the range of matching social requests
-	 */
-	@Override
-	public List<SocialRequest> getUserRequests(
-		long userId, int start, int end) {
-
-		return socialRequestPersistence.findByUserId(userId, start, end);
-	}
-
-	/**
-	 * Returns the number of social requests for the requesting user.
-	 *
-	 * @param  userId the primary key of the requesting user
-	 * @return the number of matching social requests
-	 */
-	@Override
-	public int getUserRequestsCount(long userId) {
-		return socialRequestPersistence.countByUserId(userId);
-	}
-
-	/**
-	 * Returns <code>true</code> if a matching social requests exists in the
-	 * database.
-	 *
-	 * @param  userId the primary key of the requesting user
-	 * @param  className the class name of the asset that is the subject of the
-	 *         request
-	 * @param  classPK the primary key of the asset that is the subject of the
-	 *         request
-	 * @param  type the request's type
-	 * @param  status the social request's status
-	 * @return <code>true</code> if the request exists; <code>false</code>
-	 *         otherwise
-	 */
-	@Override
-	public boolean hasRequest(
-		long userId, String className, long classPK, int type, int status) {
-
-		int count = socialRequestPersistence.countByU_C_C_T_S(
-			userId, _classNameLocalService.getClassNameId(className), classPK,
-			type, status);
-
-		if (count <= 0) {
-			return false;
-		}
-
-		return true;
 	}
 
 	/**
