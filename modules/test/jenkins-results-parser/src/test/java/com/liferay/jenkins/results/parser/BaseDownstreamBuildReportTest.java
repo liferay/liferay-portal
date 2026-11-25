@@ -27,22 +27,20 @@ public class BaseDownstreamBuildReportTest
 
 	@Test
 	public void testGetTestClassReports() {
-		String basicTestClassName = RandomTestUtil.randomString();
+		String testClassName1 = RandomTestUtil.randomString();
 
-		TestClassReport basicTestClassReport = _mockTestClassReport(
-			basicTestClassName);
+		TestClassReport testClassReport1 = _mockTestClassReport(testClassName1);
 
-		String innerTestClassName =
-			basicTestClassName + "$" + RandomTestUtil.randomString();
+		String testClassName2 =
+			testClassName1 + "$" + RandomTestUtil.randomString();
 
-		TestClassReport innerTestClassReport = _mockTestClassReport(
-			innerTestClassName);
+		TestClassReport testClassReport2 = _mockTestClassReport(testClassName2);
 
-		String testSuiteTestClassName = RandomTestUtil.randomString();
+		String testClassName3 = RandomTestUtil.randomString();
 
-		TestClassReport testSuiteTestClassReport = _mockTestClassReport(
-			"junit.framework.TestSuite", innerTestClassName,
-			testSuiteTestClassName, testSuiteTestClassName);
+		TestClassReport testClassReport3 = _mockTestClassReport(
+			"junit.framework.TestSuite", testClassName2, testClassName3,
+			testClassName3);
 
 		BaseDownstreamBuildReport baseDownstreamBuildReport = Mockito.mock(
 			BaseDownstreamBuildReport.class);
@@ -56,27 +54,25 @@ public class BaseDownstreamBuildReportTest
 
 		Mockito.doReturn(
 			Arrays.asList(
-				basicTestClassReport, innerTestClassReport,
-				testSuiteTestClassReport,
+				testClassReport1, testClassReport2, testClassReport3,
 				_mockTestClassReport(RandomTestUtil.randomString()))
 		).when(
 			baseDownstreamBuildReport
 		).getTestClassReports();
 
 		testEquals(
-			Arrays.asList(basicTestClassReport, innerTestClassReport),
-			baseDownstreamBuildReport.getTestClassReports(basicTestClassName));
+			Arrays.asList(testClassReport1, testClassReport2),
+			baseDownstreamBuildReport.getTestClassReports(testClassName1));
 		testEquals(
-			Arrays.asList(basicTestClassReport, innerTestClassReport),
-			baseDownstreamBuildReport.getTestClassReports(innerTestClassName));
+			Arrays.asList(testClassReport1, testClassReport2),
+			baseDownstreamBuildReport.getTestClassReports(testClassName2));
 		testEquals(
 			Collections.emptyList(),
 			baseDownstreamBuildReport.getTestClassReports(
 				RandomTestUtil.randomString()));
 		testEquals(
-			Collections.singletonList(testSuiteTestClassReport),
-			baseDownstreamBuildReport.getTestClassReports(
-				testSuiteTestClassName));
+			Collections.singletonList(testClassReport3),
+			baseDownstreamBuildReport.getTestClassReports(testClassName3));
 	}
 
 	@Test
