@@ -268,11 +268,11 @@ exports[`ClayAlert renders as a different type 1`] = `
             class="alert-indicator"
           >
             <svg
-              class="lexicon-icon lexicon-icon-exclamation-full"
+              class="lexicon-icon lexicon-icon-times-circle-full"
               role="presentation"
             >
               <use
-                href="/foo/bar#exclamation-full"
+                href="/foo/bar#times-circle-full"
               />
             </svg>
           </span>

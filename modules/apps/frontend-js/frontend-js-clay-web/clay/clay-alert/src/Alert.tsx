@@ -97,7 +97,7 @@ export interface IClayAlertProps
 }
 
 const ICON_MAP = {
-	danger: 'exclamation-full',
+	danger: 'times-circle-full',
 	info: 'info-circle',
 	secondary: 'password-policies',
 	success: 'check-circle-full',
