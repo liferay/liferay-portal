@@ -3,7 +3,6 @@
 		{
 			"fields": [
 				{
-					"dataType": "boolean",
 					"defaultValue": true,
 					"label": "collapsible",
 					"name": "collapsible",
