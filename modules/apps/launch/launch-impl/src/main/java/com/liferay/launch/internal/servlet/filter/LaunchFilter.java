@@ -19,6 +19,7 @@ import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
+import com.liferay.portal.kernel.launch.LaunchMode;
 import com.liferay.portal.kernel.launch.LaunchThreadLocal;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -104,18 +105,20 @@ public class LaunchFilter extends BasePortalFilter {
 			launchModeString = httpServletRequest.getHeader("X-Liferay-Launch-Mode");
 		}
 
-		if (Objects.equals(launchModeString, Constants.EDIT)) {
+		LaunchMode launchMode = LaunchMode.parse(launchModeString);
+
+		if (launchMode == LaunchMode.EDIT) {
 			if ((launchSetId > 0) &&
 				_isEditable(httpServletRequest, launchSetId)) {
 
 				_processFilter(
 					filterChain, httpServletRequest, httpServletResponse,
-					launchSetId, LaunchThreadLocal.LaunchMode.EDIT);
+					launchSetId, LaunchMode.EDIT);
 
 				return;
 			}
 		}
-		else if (Objects.equals(launchModeString, Constants.PREVIEW) ||
+		else if ((launchMode == LaunchMode.PREVIEW) ||
 				 ((launchSetId != -1) && Validator.isNull(launchModeString))) {
 
 			if (!header &&
@@ -136,7 +139,7 @@ public class LaunchFilter extends BasePortalFilter {
 			if ((user != null) && !user.isGuestUser()) {
 				_processFilter(
 					filterChain, httpServletRequest, httpServletResponse,
-					Math.max(launchSetId, 0), LaunchThreadLocal.LaunchMode.PREVIEW);
+					Math.max(launchSetId, 0), LaunchMode.PREVIEW);
 
 				return;
 			}
@@ -297,7 +300,7 @@ public class LaunchFilter extends BasePortalFilter {
 	private void _processFilter(
 			FilterChain filterChain, HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse, long launchSetId,
-			LaunchThreadLocal.LaunchMode launchMode)
+			LaunchMode launchMode)
 		throws Exception {
 
 		Map<Class<?>, Map<Serializable, Object>> previewableMap =

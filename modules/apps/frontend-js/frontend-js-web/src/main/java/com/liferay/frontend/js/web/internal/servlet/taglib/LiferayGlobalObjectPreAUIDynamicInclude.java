@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlag;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManager;
 import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.kernel.launch.LaunchMode;
 import com.liferay.portal.kernel.launch.LaunchThreadLocal;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -235,13 +236,13 @@ public class LiferayGlobalObjectPreAUIDynamicInclude
 	}
 
 	private String _getLaunchMode() {
-		LaunchThreadLocal.LaunchMode launchMode = LaunchThreadLocal.getLaunchMode();
+		LaunchMode launchMode = LaunchThreadLocal.getLaunchMode();
 
 		if (launchMode == null) {
 			return StringPool.BLANK;
 		}
 
-		return StringUtil.toLowerCase(launchMode.name());
+		return launchMode.getValue();
 	}
 
 	private LiferayGlobalObjectConfiguration

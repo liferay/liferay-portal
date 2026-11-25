@@ -48,6 +48,7 @@ import com.liferay.portal.kernel.image.ImageBag;
 import com.liferay.portal.kernel.instance.PortalInstancePool;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.language.constants.LanguageConstants;
+import com.liferay.portal.kernel.launch.LaunchMode;
 import com.liferay.portal.kernel.launch.LaunchThreadLocal;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -810,12 +811,14 @@ public class PortalImpl implements Portal {
 		}
 
 		if (LaunchThreadLocal.isLaunchModePreview()) {
+			LaunchMode launchMode = LaunchThreadLocal.getLaunchMode();
+
 			url = HttpComponentsUtil.setParameter(
 				url, "p_l_mode", Constants.PREVIEW);
 			url = HttpComponentsUtil.setParameter(
-				url, "p_launch_set_id", LaunchThreadLocal.getLaunchSetId());
+				url, "p_launch_mode", launchMode.getValue());
 			url = HttpComponentsUtil.setParameter(
-				url, "p_launch_mode", Constants.PREVIEW);
+				url, "p_launch_set_id", LaunchThreadLocal.getLaunchSetId());
 		}
 
 		return url;

@@ -51,12 +51,6 @@ public class LaunchThreadLocal {
 		};
 	}
 
-	public static enum LaunchMode {
-
-		EDIT, PREVIEW,
-
-	}
-
 	private LaunchThreadLocal() {
 	}
 

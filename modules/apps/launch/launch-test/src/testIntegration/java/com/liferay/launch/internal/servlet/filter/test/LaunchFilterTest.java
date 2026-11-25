@@ -14,6 +14,7 @@ import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.launch.LaunchMode;
 import com.liferay.portal.kernel.launch.LaunchThreadLocal;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
@@ -128,7 +129,7 @@ public class LaunchFilterTest {
 		_assertProcessFilterWithLaunchModeEdit(
 			-1, _layout1.getPlid(), _layout2.getPlid(), null,
 			HashMapBuilder.put(
-				"X-Liferay-Launch-Mode", Constants.EDIT
+				"X-Liferay-Launch-Mode", LaunchMode.EDIT.getValue()
 			).build(),
 			Collections.emptyMap(), TestPropsValues.getUser());
 
@@ -143,13 +144,13 @@ public class LaunchFilterTest {
 			WebKeys.USER, TestPropsValues.getUser());
 		mockHttpServletRequest.setParameter(
 			"p_launch_set_id", String.valueOf(launchSetId));
-		mockHttpServletRequest.setParameter("p_launch_mode", Constants.EDIT);
+		mockHttpServletRequest.setParameter("p_launch_mode", LaunchMode.EDIT.getValue());
 
-		AtomicReference<LaunchThreadLocal.LaunchMode> launchMode = new AtomicReference<>();
+		AtomicReference<LaunchMode> launchMode = new AtomicReference<>();
 
 		try (SafeCloseable safeCloseable =
 				LaunchThreadLocal.setLaunchSetIdWithSafeCloseable(
-					launchSetId, LaunchThreadLocal.LaunchMode.PREVIEW)) {
+					launchSetId, LaunchMode.PREVIEW)) {
 
 			_filter.doFilter(
 				mockHttpServletRequest, new MockHttpServletResponse(),
@@ -157,7 +158,7 @@ public class LaunchFilterTest {
 					LaunchThreadLocal.getLaunchMode()));
 		}
 
-		Assert.assertEquals(LaunchThreadLocal.LaunchMode.PREVIEW, launchMode.get());
+		Assert.assertEquals(LaunchMode.PREVIEW, launchMode.get());
 
 		// Launch set ID header
 
@@ -167,7 +168,7 @@ public class LaunchFilterTest {
 			HashMapBuilder.put(
 				"X-Liferay-Launch-Set-Id", String.valueOf(launchSetId)
 			).put(
-				"X-Liferay-Launch-Mode", Constants.EDIT
+				"X-Liferay-Launch-Mode", LaunchMode.EDIT.getValue()
 			).build(),
 			Collections.emptyMap(), TestPropsValues.getUser());
 
@@ -179,7 +180,7 @@ public class LaunchFilterTest {
 			HashMapBuilder.put(
 				"p_launch_set_id", String.valueOf(launchSetId)
 			).put(
-				"p_launch_mode", Constants.EDIT
+				"p_launch_mode", LaunchMode.EDIT.getValue()
 			).build(),
 			TestPropsValues.getUser());
 
@@ -192,7 +193,7 @@ public class LaunchFilterTest {
 			HashMapBuilder.put(
 				"p_launch_set_id", String.valueOf(launchSetId)
 			).put(
-				"p_launch_mode", Constants.EDIT
+				"p_launch_mode", LaunchMode.EDIT.getValue()
 			).build(),
 			TestPropsValues.getUser());
 
@@ -204,7 +205,7 @@ public class LaunchFilterTest {
 			HashMapBuilder.put(
 				"p_launch_set_id", String.valueOf(RandomTestUtil.randomLong())
 			).put(
-				"p_launch_mode", Constants.EDIT
+				"p_launch_mode", LaunchMode.EDIT.getValue()
 			).build(),
 			TestPropsValues.getUser());
 
@@ -224,7 +225,7 @@ public class LaunchFilterTest {
 			HashMapBuilder.put(
 				"p_launch_set_id", String.valueOf(launchSetId)
 			).put(
-				"p_launch_mode", Constants.EDIT
+				"p_launch_mode", LaunchMode.EDIT.getValue()
 			).build(),
 			TestPropsValues.getUser());
 
@@ -242,7 +243,7 @@ public class LaunchFilterTest {
 			HashMapBuilder.put(
 				"p_launch_set_id", String.valueOf(launchSetId)
 			).put(
-				"p_launch_mode", Constants.EDIT
+				"p_launch_mode", LaunchMode.EDIT.getValue()
 			).build(),
 			_user);
 
@@ -256,7 +257,7 @@ public class LaunchFilterTest {
 			HashMapBuilder.put(
 				"_" + portletId + "_p_launch_set_id", String.valueOf(launchSetId)
 			).put(
-				"_" + portletId + "_p_launch_mode", Constants.EDIT
+				"_" + portletId + "_p_launch_mode", LaunchMode.EDIT.getValue()
 			).put(
 				"p_p_id", portletId
 			).build(),
@@ -276,7 +277,7 @@ public class LaunchFilterTest {
 		mockHttpServletRequest.addHeader(
 			"X-Liferay-Launch-Set-Id", String.valueOf(launchSetId));
 		mockHttpServletRequest.addHeader(
-			"X-Liferay-Launch-Mode", Constants.PREVIEW);
+			"X-Liferay-Launch-Mode", LaunchMode.PREVIEW.getValue());
 
 		_assertProcessFilterWithLaunchModePreview(
 			launchSetId, null, mockHttpServletRequest,
@@ -305,7 +306,7 @@ public class LaunchFilterTest {
 		mockHttpServletRequest.setParameter("p_l_mode", Constants.PREVIEW);
 		mockHttpServletRequest.setParameter(
 			"p_launch_set_id", String.valueOf(launchSetId));
-		mockHttpServletRequest.setParameter("p_launch_mode", Constants.PREVIEW);
+		mockHttpServletRequest.setParameter("p_launch_mode", LaunchMode.PREVIEW.getValue());
 		mockHttpServletRequest.setQueryString(
 			StringBundler.concat(
 				"p_launch_set_id=", launchSetId,
@@ -345,7 +346,7 @@ public class LaunchFilterTest {
 
 		mockHttpServletRequest.setParameter(
 			"p_launch_set_id", String.valueOf(launchSetId));
-		mockHttpServletRequest.setParameter("p_launch_mode", Constants.PREVIEW);
+		mockHttpServletRequest.setParameter("p_launch_mode", LaunchMode.PREVIEW.getValue());
 		mockHttpServletRequest.setQueryString(
 			StringBundler.concat(
 				"p_launch_set_id=", launchSetId, "&p_launch_mode=preview"));
@@ -430,7 +431,7 @@ public class LaunchFilterTest {
 		AtomicLong launchSetId = new AtomicLong();
 		AtomicLong layout1Plid = new AtomicLong();
 		AtomicLong layout2Plid = new AtomicLong();
-		AtomicReference<LaunchThreadLocal.LaunchMode> launchMode = new AtomicReference<>();
+		AtomicReference<LaunchMode> launchMode = new AtomicReference<>();
 
 		FilterChain filterChain = (servletRequest, servletResponse) -> {
 			launchSetId.set(LaunchThreadLocal.getLaunchSetId());
@@ -473,7 +474,7 @@ public class LaunchFilterTest {
 		Assert.assertEquals(expectedLayout2Plid, layout2Plid.get());
 
 		if (expectedLaunchSetId > 0) {
-			Assert.assertEquals(LaunchThreadLocal.LaunchMode.EDIT, launchMode.get());
+			Assert.assertEquals(LaunchMode.EDIT, launchMode.get());
 		}
 		else {
 			Assert.assertNull(launchMode.get());
@@ -494,7 +495,7 @@ public class LaunchFilterTest {
 		}
 
 		AtomicLong launchSetId = new AtomicLong(-1);
-		AtomicReference<LaunchThreadLocal.LaunchMode> launchMode = new AtomicReference<>();
+		AtomicReference<LaunchMode> launchMode = new AtomicReference<>();
 		MockHttpServletResponse mockHttpServletResponse =
 			new MockHttpServletResponse();
 
@@ -508,7 +509,7 @@ public class LaunchFilterTest {
 		Assert.assertEquals(expectedLaunchSetId, launchSetId.get());
 
 		if (expectedLaunchSetId > 0) {
-			Assert.assertEquals(LaunchThreadLocal.LaunchMode.PREVIEW, launchMode.get());
+			Assert.assertEquals(LaunchMode.PREVIEW, launchMode.get());
 		}
 		else {
 			Assert.assertNull(launchMode.get());
