@@ -7,6 +7,7 @@ import {Page, expect, mergeTests} from '@playwright/test';
 import {createReadStream} from 'fs';
 import path from 'path';
 
+import {collectionsPagesTest} from '../../../fixtures/collectionsPagesTest';
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
@@ -25,6 +26,7 @@ import getBlogCoverImageURL from './utils/getBlogCoverImageURL';
 import gotoDepotInItemSelector from './utils/gotoDepotInItemSelector';
 
 const test = mergeTests(
+	collectionsPagesTest,
 	dataApiHelpersTest,
 	depotsPagesTest,
 	featureFlagsTest({
@@ -278,10 +280,26 @@ test(
 );
 
 test(
-	'A manual collection offers no selection when the depot disables every application with selectable assets',
-	{tag: '@LPD-108144'},
-	async ({apiHelpers, depotAdminPage, page}) => {
+	'A manual collection keeps its items but offers no selection when the depot disables every application with selectable assets',
+	{tag: ['@LPD-108144', '@LPD-117652']},
+	async ({apiHelpers, collectionsPage, depotAdminPage, page}) => {
 		const depot = await addEditableDepot(apiHelpers);
+
+		const documentTitle = getRandomString();
+
+		await apiHelpers.headlessDelivery.postAssetLibraryDocument(
+			depot.depotEntryId,
+			createReadStream(DOCUMENT_PATH),
+			{fileName: `${documentTitle}.jpg`, title: documentTitle}
+		);
+
+		const webContentTitle = getRandomString();
+
+		await apiHelpers.jsonWebServicesJournal.addWebContent({
+			ddmStructureId: await getBasicWebContentStructureId(apiHelpers),
+			groupId: depot.groupId,
+			titleMap: {en_US: webContentTitle},
+		});
 
 		const collectionTitle = getRandomString();
 
@@ -324,6 +342,8 @@ test(
 			page.locator('.heading-text', {hasText: 'Collection Items'})
 		).toBeVisible();
 
+		await collectionsPage.selectAssets([documentTitle, webContentTitle]);
+
 		await depotAdminPage.setApplications(
 			depot.depotEntryId,
 			['Documents and Media', 'Web Content'],
@@ -331,6 +351,10 @@ test(
 		);
 
 		await openCollection();
+
+		for (const title of [documentTitle, webContentTitle]) {
+			await expect(page.getByText(title, {exact: true})).toBeVisible();
+		}
 
 		await expect(selectItemsButton).toHaveCount(0);
 
