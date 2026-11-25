@@ -431,11 +431,27 @@ public class JUnitBatchBuildTestrayCaseResult
 
 		TopLevelBuildReport topLevelBuildReport = getTopLevelBuildReport();
 
+		String axisName = getAxisName();
+
+		DownstreamBuildReport axisDownstreamBuildReport =
+			topLevelBuildReport.getDownstreamBuildReport(axisName);
+
+		if (axisDownstreamBuildReport != null) {
+			List<TestClassReport> testClassReports = _getTestClassReports(
+				axisDownstreamBuildReport);
+
+			if (!testClassReports.isEmpty()) {
+				setBuildReport(axisDownstreamBuildReport);
+
+				return;
+			}
+		}
+
 		for (DownstreamBuildReport downstreamBuildReport :
 				topLevelBuildReport.getDownstreamBuildReports()) {
 
 			if (!Objects.equals(
-					downstreamBuildReport.getAxisName(), getAxisName())) {
+					downstreamBuildReport.getAxisName(), axisName)) {
 
 				continue;
 			}
