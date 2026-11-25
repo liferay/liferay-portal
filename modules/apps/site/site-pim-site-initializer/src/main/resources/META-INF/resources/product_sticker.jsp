@@ -12,6 +12,6 @@ ProductStickerDisplayContext productStickerDisplayContext = (ProductStickerDispl
 %>
 
 <react:component
-	module="{ProductEditorSticker} from site-pim-site-initializer"
+	module="{EditorProductSticker} from site-pim-site-initializer"
 	props="<%= productStickerDisplayContext.getProps() %>"
 />

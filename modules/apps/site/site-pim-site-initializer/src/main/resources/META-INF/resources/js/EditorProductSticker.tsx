@@ -9,9 +9,9 @@ import React, {useEffect, useState} from 'react';
 import ProductSticker from './cell_renderers/ProductSticker';
 import getImageURL from './cell_renderers/getImageURL';
 
-import '../css/ProductEditorSticker.scss';
+import '../css/EditorProductSticker.scss';
 
-export default function ProductEditorSticker({
+export default function EditorProductSticker({
 	objectEntryId,
 	restContextPath,
 }: {
@@ -37,7 +37,7 @@ export default function ProductEditorSticker({
 
 	return (
 		<ProductSticker
-			className="product-editor-sticker"
+			className="editor-product-sticker"
 			imageURL={imageURL}
 			size="xxl"
 		/>
