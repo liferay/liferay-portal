@@ -4,12 +4,14 @@
  */
 
 import {
+	act,
 	fireEvent,
 	render,
 	screen,
 	waitFor,
 	within,
 } from '@testing-library/react';
+import userEvent, {UserEvent} from '@testing-library/user-event';
 import React from 'react';
 
 import '@testing-library/jest-dom';
@@ -288,5 +290,101 @@ describe('the view', () => {
 		await waitFor(() =>
 			expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
 		);
+	});
+});
+
+describe('the modals of the editor', () => {
+	const renderEditor = () =>
+		render(
+			<ImageEditor
+				image={image('blob:a')}
+				{...HOST}
+				spritemap="/icons.svg"
+			/>
+		);
+
+	const caption = () => document.querySelector('.editor-workspace text');
+
+	async function openTextDialog(user: UserEvent) {
+		await user.click(screen.getByRole('button', {name: 'add-text'}));
+
+		return screen.findByRole('textbox', {name: 'text'});
+	}
+
+	it('keeps the focus inside the Add Text modal when tabbing past its last control', async () => {
+		const user = userEvent.setup();
+
+		renderEditor();
+
+		await user.type(await openTextDialog(user), 'Liferay');
+
+		act(() => screen.getByRole('button', {name: 'add'}).focus());
+
+		await user.tab();
+
+		expect(screen.getByRole('button', {name: 'close'})).toHaveFocus();
+
+		await user.tab({shift: true});
+
+		expect(screen.getByRole('button', {name: 'add'})).toHaveFocus();
+	});
+
+	it('keeps the focus inside the Keyboard Shortcuts modal', async () => {
+		const user = userEvent.setup();
+
+		renderEditor();
+
+		await user.click(
+			screen.getByRole('button', {name: 'keyboard-shortcuts'})
+		);
+
+		const close = await screen.findByRole('button', {name: 'close'});
+
+		act(() => close.focus());
+
+		await user.tab();
+
+		expect(close).toHaveFocus();
+	});
+
+	it('undoes the last change with Ctrl+Z from the editor', async () => {
+		const user = userEvent.setup();
+
+		renderEditor();
+
+		await user.click(
+			screen.getByRole('button', {name: 'rotate-90-degrees-clockwise'})
+		);
+
+		act(() =>
+			screen.getByRole('region', {name: 'image-workspace'}).focus()
+		);
+
+		await user.keyboard('{Control>}z{/Control}');
+
+		expect(undo()).toBeDisabled();
+	});
+
+	it('leaves the canvas alone on Ctrl+Z inside the Add Text modal', async () => {
+		const user = userEvent.setup();
+
+		renderEditor();
+
+		await user.type(await openTextDialog(user), 'Liferay{Enter}');
+
+		expect(caption()).toHaveTextContent('Liferay');
+
+		await waitFor(() =>
+			expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+		);
+
+		await user.type(await openTextDialog(user), 'x');
+
+		await user.keyboard('{Control>}z{/Control}');
+
+		expect(caption()).toHaveTextContent('Liferay');
+		expect(
+			screen.getByRole('button', {hidden: true, name: 'undo'})
+		).toBeEnabled();
 	});
 });
