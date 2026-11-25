@@ -169,20 +169,6 @@ public class FragmentSetSerDes {
 			sb.append("\"");
 		}
 
-		if (fragmentSet.getUuid() != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"uuid\": ");
-
-			sb.append("\"");
-
-			sb.append(_escape(fragmentSet.getUuid()));
-
-			sb.append("\"");
-		}
-
 		sb.append("}");
 
 		return sb.toString();
@@ -276,13 +262,6 @@ public class FragmentSetSerDes {
 			map.put("name", String.valueOf(fragmentSet.getName()));
 		}
 
-		if (fragmentSet.getUuid() == null) {
-			map.put("uuid", null);
-		}
-		else {
-			map.put("uuid", String.valueOf(fragmentSet.getUuid()));
-		}
-
 		return map;
 	}
 
@@ -328,9 +307,6 @@ public class FragmentSetSerDes {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "name")) {
-				return false;
-			}
-			else if (Objects.equals(jsonParserFieldName, "uuid")) {
 				return false;
 			}
 
@@ -392,11 +368,6 @@ public class FragmentSetSerDes {
 			else if (Objects.equals(jsonParserFieldName, "name")) {
 				if (jsonParserFieldValue != null) {
 					fragmentSet.setName((String)jsonParserFieldValue);
-				}
-			}
-			else if (Objects.equals(jsonParserFieldName, "uuid")) {
-				if (jsonParserFieldValue != null) {
-					fragmentSet.setUuid((String)jsonParserFieldValue);
 				}
 			}
 		}
@@ -486,4 +457,4 @@ public class FragmentSetSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:501956577
+// LIFERAY-REST-BUILDER-HASH:795918261
