@@ -1151,8 +1151,7 @@ public abstract class BaseTestrayContext implements TestrayContext {
 		}
 
 		List<Element> testcaseElements = _getTestcaseElements(
-			axisTestClassGroup, testrayCaseResults,
-			topLevelBuildReport.getTestSuiteName());
+			axisTestClassGroup, testrayCaseResults, getTestSuiteName());
 
 		for (Element testcaseElement : testcaseElements) {
 			rootElement.add(testcaseElement);
