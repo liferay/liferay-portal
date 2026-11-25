@@ -389,13 +389,12 @@ public class RedirectEntryLocalServiceImpl
 				groupBaseURL + StringPool.SLASH + redirectEntry.getSourceURL());
 
 		for (RedirectEntry chainedRedirectEntry : chainedRedirectEntries) {
+			chainedRedirectEntry.setDestinationURL(
+				redirectEntry.getDestinationURL());
+
 			RedirectEntry updatedRedirectEntry =
 				redirectEntryLocalService.updateRedirectEntry(
-					chainedRedirectEntry.getRedirectEntryId(),
-					redirectEntry.getDestinationURL(),
-					chainedRedirectEntry.getExpirationDate(),
-					chainedRedirectEntry.isPermanent(),
-					chainedRedirectEntry.getSourceURL());
+					chainedRedirectEntry);
 
 			RedirectEntry destinationRedirectEntry =
 				redirectEntryLocalService.fetchRedirectEntry(
@@ -421,11 +420,10 @@ public class RedirectEntryLocalServiceImpl
 					groupBaseURL + StringPool.SLASH));
 
 		if (chainedRedirectEntry != null) {
-			return redirectEntryLocalService.updateRedirectEntry(
-				redirectEntry.getRedirectEntryId(),
-				chainedRedirectEntry.getDestinationURL(),
-				redirectEntry.getExpirationDate(), redirectEntry.isPermanent(),
-				redirectEntry.getSourceURL());
+			redirectEntry.setDestinationURL(
+				chainedRedirectEntry.getDestinationURL());
+
+			return redirectEntryLocalService.updateRedirectEntry(redirectEntry);
 		}
 
 		return redirectEntry;
