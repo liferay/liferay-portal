@@ -43,7 +43,6 @@ public class CommercePricingClassCPDefinitionRelServiceImpl
 
 		_commercePricingClassResourcePermission.check(
 			getPermissionChecker(), commercePricingClassId, ActionKeys.UPDATE);
-
 		_cpDefinitionModelResourcePermission.check(
 			getPermissionChecker(), cpDefinitionId, ActionKeys.VIEW);
 
