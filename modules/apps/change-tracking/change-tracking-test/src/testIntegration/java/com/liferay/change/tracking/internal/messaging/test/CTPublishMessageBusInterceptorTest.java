@@ -40,10 +40,9 @@ public class CTPublishMessageBusInterceptorTest {
 
 	@Test
 	public void testInterceptBackgroundTaskStatusMessage() throws Exception {
-		TestMessageListener testMessageListener = new TestMessageListener();
-
 		BundleContext bundleContext = BundleContextTestUtil.getBundleContext(
 			CTPublishMessageBusInterceptorTest.class);
+		TestMessageListener testMessageListener = new TestMessageListener();
 
 		ServiceRegistration<MessageListener> serviceRegistration =
 			bundleContext.registerService(
