@@ -13,21 +13,18 @@ export default function getCreationMenuItems(
 ): CreationMenuItem[] {
 	return resourceTypes.flatMap(
 		(resourceType) =>
-			resourceType.creationItems?.map(
-				(designLibraryResourceCreationItem) => {
-					if ('href' in designLibraryResourceCreationItem) {
-						return {
-							href: designLibraryResourceCreationItem.href,
-							label: designLibraryResourceCreationItem.label,
-						};
-					}
-
+			resourceType.creationItems?.map((creationItem) => {
+				if ('href' in creationItem) {
 					return {
-						label: designLibraryResourceCreationItem.label,
-						onClick: () =>
-							openModuleModal(designLibraryResourceCreationItem),
+						href: creationItem.href,
+						label: creationItem.label,
 					};
 				}
-			) ?? []
+
+				return {
+					label: creationItem.label,
+					onClick: () => openModuleModal(creationItem),
+				};
+			}) ?? []
 	);
 }
