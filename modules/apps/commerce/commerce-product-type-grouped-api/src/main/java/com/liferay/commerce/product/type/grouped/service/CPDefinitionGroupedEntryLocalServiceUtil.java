@@ -36,14 +36,6 @@ public class CPDefinitionGroupedEntryLocalServiceUtil {
 	 *
 	 * Never modify this class directly. Add custom service methods to <code>com.liferay.commerce.product.type.grouped.service.impl.CPDefinitionGroupedEntryLocalServiceImpl</code> and rerun ServiceBuilder to regenerate this class.
 	 */
-	public static void addCPDefinitionGroupedEntries(
-			long cpDefinitionId, long[] entryCProductIds,
-			com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws PortalException {
-
-		getService().addCPDefinitionGroupedEntries(
-			cpDefinitionId, entryCProductIds, serviceContext);
-	}
 
 	/**
 	 * Adds the cp definition grouped entry to the database. Also notifies the appropriate model listeners.
@@ -250,13 +242,6 @@ public class CPDefinitionGroupedEntryLocalServiceUtil {
 
 		return getService().fetchCPDefinitionGroupedEntry(
 			CPDefinitionGroupedEntryId);
-	}
-
-	public static CPDefinitionGroupedEntry fetchCPDefinitionGroupedEntry(
-		long cpDefinitionId, long entryCProductId) {
-
-		return getService().fetchCPDefinitionGroupedEntry(
-			cpDefinitionId, entryCProductId);
 	}
 
 	/**
@@ -497,4 +482,4 @@ public class CPDefinitionGroupedEntryLocalServiceUtil {
 			CPDefinitionGroupedEntryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1006030590
+// LIFERAY-SERVICE-BUILDER-HASH:832026682

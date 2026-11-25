@@ -31,16 +31,6 @@ public class CPDefinitionGroupedEntryLocalServiceWrapper
 			cpDefinitionGroupedEntryLocalService;
 	}
 
-	@Override
-	public void addCPDefinitionGroupedEntries(
-			long cpDefinitionId, long[] entryCProductIds,
-			com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		_cpDefinitionGroupedEntryLocalService.addCPDefinitionGroupedEntries(
-			cpDefinitionId, entryCProductIds, serviceContext);
-	}
-
 	/**
 	 * Adds the cp definition grouped entry to the database. Also notifies the appropriate model listeners.
 	 *
@@ -292,16 +282,6 @@ public class CPDefinitionGroupedEntryLocalServiceWrapper
 
 		return _cpDefinitionGroupedEntryLocalService.
 			fetchCPDefinitionGroupedEntry(CPDefinitionGroupedEntryId);
-	}
-
-	@Override
-	public
-		com.liferay.commerce.product.type.grouped.model.CPDefinitionGroupedEntry
-			fetchCPDefinitionGroupedEntry(
-				long cpDefinitionId, long entryCProductId) {
-
-		return _cpDefinitionGroupedEntryLocalService.
-			fetchCPDefinitionGroupedEntry(cpDefinitionId, entryCProductId);
 	}
 
 	/**
@@ -622,4 +602,4 @@ public class CPDefinitionGroupedEntryLocalServiceWrapper
 		_cpDefinitionGroupedEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-637569828
+// LIFERAY-SERVICE-BUILDER-HASH:1511664276

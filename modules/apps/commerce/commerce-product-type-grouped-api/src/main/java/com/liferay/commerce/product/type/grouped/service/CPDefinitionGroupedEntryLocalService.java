@@ -58,10 +58,6 @@ public interface CPDefinitionGroupedEntryLocalService
 	 *
 	 * Never modify this interface directly. Add custom service methods to <code>com.liferay.commerce.product.type.grouped.service.impl.CPDefinitionGroupedEntryLocalServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface. Consume the cp definition grouped entry local service via injection or a <code>org.osgi.util.tracker.ServiceTracker</code>. Use {@link CPDefinitionGroupedEntryLocalServiceUtil} if injection and service tracking are not available.
 	 */
-	public void addCPDefinitionGroupedEntries(
-			long cpDefinitionId, long[] entryCProductIds,
-			ServiceContext serviceContext)
-		throws PortalException;
 
 	/**
 	 * Adds the cp definition grouped entry to the database. Also notifies the appropriate model listeners.
@@ -219,10 +215,6 @@ public interface CPDefinitionGroupedEntryLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public CPDefinitionGroupedEntry fetchCPDefinitionGroupedEntry(
 		long CPDefinitionGroupedEntryId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public CPDefinitionGroupedEntry fetchCPDefinitionGroupedEntry(
-		long cpDefinitionId, long entryCProductId);
 
 	/**
 	 * Returns the cp definition grouped entry matching the UUID and group.
@@ -394,4 +386,4 @@ public interface CPDefinitionGroupedEntryLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1890242708
+// LIFERAY-SERVICE-BUILDER-HASH:-163577396
