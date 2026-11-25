@@ -1140,4 +1140,4 @@ public abstract class BaseLanguageOverrideResourceImpl
 		LogFactoryUtil.getLog(BaseLanguageOverrideResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1387689189
+// LIFERAY-REST-BUILDER-HASH:-695575187

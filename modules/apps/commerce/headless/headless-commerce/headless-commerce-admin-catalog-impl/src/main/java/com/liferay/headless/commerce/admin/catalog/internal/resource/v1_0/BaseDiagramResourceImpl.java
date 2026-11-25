@@ -1013,4 +1013,4 @@ public abstract class BaseDiagramResourceImpl
 		LogFactoryUtil.getLog(BaseDiagramResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-778835936
+// LIFERAY-REST-BUILDER-HASH:-793987066

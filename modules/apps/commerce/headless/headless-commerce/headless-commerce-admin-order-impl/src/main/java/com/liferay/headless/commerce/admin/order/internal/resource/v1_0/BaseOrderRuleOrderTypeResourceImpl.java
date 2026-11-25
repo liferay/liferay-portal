@@ -1107,4 +1107,4 @@ public abstract class BaseOrderRuleOrderTypeResourceImpl
 		LogFactoryUtil.getLog(BaseOrderRuleOrderTypeResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1301142189
+// LIFERAY-REST-BUILDER-HASH:1847230099

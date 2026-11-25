@@ -816,4 +816,4 @@ public abstract class BaseSearchableAssetNameResourceImpl
 		LogFactoryUtil.getLog(BaseSearchableAssetNameResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2030919722
+// LIFERAY-REST-BUILDER-HASH:1270863668

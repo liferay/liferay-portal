@@ -829,4 +829,4 @@ public abstract class BaseAsahSegmentsEntryResourceImpl
 		LogFactoryUtil.getLog(BaseAsahSegmentsEntryResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1603316439
+// LIFERAY-REST-BUILDER-HASH:-1963121215

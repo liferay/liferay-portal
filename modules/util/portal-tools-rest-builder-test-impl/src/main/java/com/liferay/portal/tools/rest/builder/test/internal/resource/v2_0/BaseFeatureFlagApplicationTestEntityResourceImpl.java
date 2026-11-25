@@ -834,4 +834,4 @@ public abstract class BaseFeatureFlagApplicationTestEntityResourceImpl
 			BaseFeatureFlagApplicationTestEntityResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-179913973
+// LIFERAY-REST-BUILDER-HASH:485785985

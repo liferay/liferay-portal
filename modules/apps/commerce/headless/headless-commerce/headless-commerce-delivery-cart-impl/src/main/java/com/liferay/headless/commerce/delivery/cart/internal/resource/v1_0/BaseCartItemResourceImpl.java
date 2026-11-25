@@ -1542,4 +1542,4 @@ public abstract class BaseCartItemResourceImpl
 		LogFactoryUtil.getLog(BaseCartItemResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-526837247
+// LIFERAY-REST-BUILDER-HASH:1910616005

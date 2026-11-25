@@ -1716,4 +1716,4 @@ public abstract class BaseNavigationMenuResourceImpl
 		LogFactoryUtil.getLog(BaseNavigationMenuResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-233033141
+// LIFERAY-REST-BUILDER-HASH:-2050310571

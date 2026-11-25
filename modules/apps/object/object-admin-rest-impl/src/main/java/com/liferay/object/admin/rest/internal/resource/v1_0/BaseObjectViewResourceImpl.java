@@ -1363,4 +1363,4 @@ public abstract class BaseObjectViewResourceImpl
 		LogFactoryUtil.getLog(BaseObjectViewResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-148796558
+// LIFERAY-REST-BUILDER-HASH:-1549005574

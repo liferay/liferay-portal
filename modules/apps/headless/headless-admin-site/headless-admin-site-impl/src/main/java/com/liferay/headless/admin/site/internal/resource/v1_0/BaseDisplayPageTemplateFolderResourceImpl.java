@@ -2266,4 +2266,4 @@ public abstract class BaseDisplayPageTemplateFolderResourceImpl
 		LogFactoryUtil.getLog(BaseDisplayPageTemplateFolderResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1304223107
+// LIFERAY-REST-BUILDER-HASH:-1664081933

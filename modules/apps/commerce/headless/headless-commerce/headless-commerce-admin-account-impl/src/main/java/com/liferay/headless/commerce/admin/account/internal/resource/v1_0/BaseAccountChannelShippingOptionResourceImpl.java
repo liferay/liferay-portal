@@ -1253,4 +1253,4 @@ public abstract class BaseAccountChannelShippingOptionResourceImpl
 			BaseAccountChannelShippingOptionResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:30802771
+// LIFERAY-REST-BUILDER-HASH:762587349

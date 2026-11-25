@@ -1121,4 +1121,4 @@ public abstract class BaseOrderRuleChannelResourceImpl
 		LogFactoryUtil.getLog(BaseOrderRuleChannelResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:472793699
+// LIFERAY-REST-BUILDER-HASH:-713391775

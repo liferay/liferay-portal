@@ -1954,4 +1954,4 @@ public abstract class BaseWikiPageResourceImpl
 		LogFactoryUtil.getLog(BaseWikiPageResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-929483580
+// LIFERAY-REST-BUILDER-HASH:711436739

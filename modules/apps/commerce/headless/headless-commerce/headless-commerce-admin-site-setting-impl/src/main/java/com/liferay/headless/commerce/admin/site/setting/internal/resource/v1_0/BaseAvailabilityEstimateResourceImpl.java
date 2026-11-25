@@ -1992,4 +1992,4 @@ public abstract class BaseAvailabilityEstimateResourceImpl
 		LogFactoryUtil.getLog(BaseAvailabilityEstimateResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-167076107
+// LIFERAY-REST-BUILDER-HASH:-928847879

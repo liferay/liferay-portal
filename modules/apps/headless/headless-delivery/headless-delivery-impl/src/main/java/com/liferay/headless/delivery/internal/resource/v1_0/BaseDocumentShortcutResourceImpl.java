@@ -1781,4 +1781,4 @@ public abstract class BaseDocumentShortcutResourceImpl
 		LogFactoryUtil.getLog(BaseDocumentShortcutResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:34658228
+// LIFERAY-REST-BUILDER-HASH:-1024375720

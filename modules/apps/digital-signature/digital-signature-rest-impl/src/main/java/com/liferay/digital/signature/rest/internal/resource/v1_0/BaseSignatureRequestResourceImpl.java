@@ -1117,4 +1117,4 @@ public abstract class BaseSignatureRequestResourceImpl
 		LogFactoryUtil.getLog(BaseSignatureRequestResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:314953557
+// LIFERAY-REST-BUILDER-HASH:332259707

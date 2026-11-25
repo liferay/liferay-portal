@@ -1737,4 +1737,4 @@ public abstract class BaseRegionResourceImpl
 		LogFactoryUtil.getLog(BaseRegionResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-324853835
+// LIFERAY-REST-BUILDER-HASH:-2129302681

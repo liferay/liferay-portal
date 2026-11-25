@@ -967,4 +967,4 @@ public abstract class BaseShippingFixedOptionOrderTypeResourceImpl
 			BaseShippingFixedOptionOrderTypeResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1779855334
+// LIFERAY-REST-BUILDER-HASH:-452938538

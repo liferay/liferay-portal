@@ -968,4 +968,4 @@ public abstract class BasePaymentMethodGroupRelOrderTypeResourceImpl
 			BasePaymentMethodGroupRelOrderTypeResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1161990856
+// LIFERAY-REST-BUILDER-HASH:-1754377624

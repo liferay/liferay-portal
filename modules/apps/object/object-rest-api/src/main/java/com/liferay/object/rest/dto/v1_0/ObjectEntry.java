@@ -2045,4 +2045,4 @@ public class ObjectEntry implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-885782539
+// LIFERAY-REST-BUILDER-HASH:1223597316

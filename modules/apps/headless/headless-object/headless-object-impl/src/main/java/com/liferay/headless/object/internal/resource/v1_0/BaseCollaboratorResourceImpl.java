@@ -1370,4 +1370,4 @@ public abstract class BaseCollaboratorResourceImpl
 		LogFactoryUtil.getLog(BaseCollaboratorResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-821025100
+// LIFERAY-REST-BUILDER-HASH:-866441786

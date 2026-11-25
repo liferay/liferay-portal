@@ -1990,4 +1990,4 @@ public abstract class BasePostalAddressResourceImpl
 		LogFactoryUtil.getLog(BasePostalAddressResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:904433948
+// LIFERAY-REST-BUILDER-HASH:110670538

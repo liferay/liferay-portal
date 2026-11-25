@@ -1745,4 +1745,4 @@ public abstract class BaseDataRecordCollectionResourceImpl
 		LogFactoryUtil.getLog(BaseDataRecordCollectionResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-433005201
+// LIFERAY-REST-BUILDER-HASH:1232884729

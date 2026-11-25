@@ -1494,4 +1494,4 @@ public abstract class BaseEmailAddressResourceImpl
 		LogFactoryUtil.getLog(BaseEmailAddressResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1443469043
+// LIFERAY-REST-BUILDER-HASH:877567031

@@ -2155,4 +2155,4 @@ public abstract class BaseObjectEntryFolderResourceImpl
 		LogFactoryUtil.getLog(BaseObjectEntryFolderResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-517962537
+// LIFERAY-REST-BUILDER-HASH:-929510475

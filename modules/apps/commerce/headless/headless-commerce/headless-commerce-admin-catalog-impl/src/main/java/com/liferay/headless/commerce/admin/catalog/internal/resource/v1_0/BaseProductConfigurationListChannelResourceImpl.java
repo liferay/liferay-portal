@@ -1165,4 +1165,4 @@ public abstract class BaseProductConfigurationListChannelResourceImpl
 			BaseProductConfigurationListChannelResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1313358717
+// LIFERAY-REST-BUILDER-HASH:-1069063205

@@ -929,4 +929,4 @@ public abstract class BaseAssetLibraryTestEntityResourceImpl
 		LogFactoryUtil.getLog(BaseAssetLibraryTestEntityResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:573783874
+// LIFERAY-REST-BUILDER-HASH:-1966582188

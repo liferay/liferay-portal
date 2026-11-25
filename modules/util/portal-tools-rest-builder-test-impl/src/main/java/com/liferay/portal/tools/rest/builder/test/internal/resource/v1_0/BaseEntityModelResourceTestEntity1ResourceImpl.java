@@ -829,4 +829,4 @@ public abstract class BaseEntityModelResourceTestEntity1ResourceImpl
 			BaseEntityModelResourceTestEntity1ResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:850488579
+// LIFERAY-REST-BUILDER-HASH:2092375297

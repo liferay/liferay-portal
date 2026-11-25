@@ -1577,4 +1577,4 @@ public abstract class BaseAccountAddressResourceImpl
 		LogFactoryUtil.getLog(BaseAccountAddressResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1507650634
+// LIFERAY-REST-BUILDER-HASH:-1252040856

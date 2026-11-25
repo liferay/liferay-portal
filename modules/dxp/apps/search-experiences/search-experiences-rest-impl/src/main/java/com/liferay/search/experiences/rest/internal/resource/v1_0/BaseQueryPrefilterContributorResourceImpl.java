@@ -818,4 +818,4 @@ public abstract class BaseQueryPrefilterContributorResourceImpl
 		LogFactoryUtil.getLog(BaseQueryPrefilterContributorResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:836314153
+// LIFERAY-REST-BUILDER-HASH:-1362325047

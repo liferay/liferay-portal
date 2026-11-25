@@ -1297,4 +1297,4 @@ public abstract class BasePublishProcessResourceImpl
 		LogFactoryUtil.getLog(BasePublishProcessResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2030878482
+// LIFERAY-REST-BUILDER-HASH:1191725956

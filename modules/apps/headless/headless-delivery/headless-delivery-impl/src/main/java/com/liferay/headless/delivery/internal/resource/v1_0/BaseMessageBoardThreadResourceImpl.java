@@ -2599,4 +2599,4 @@ public abstract class BaseMessageBoardThreadResourceImpl
 		LogFactoryUtil.getLog(BaseMessageBoardThreadResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:841891618
+// LIFERAY-REST-BUILDER-HASH:-332066696

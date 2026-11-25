@@ -2240,4 +2240,4 @@ public abstract class BaseKnowledgeBaseFolderResourceImpl
 		LogFactoryUtil.getLog(BaseKnowledgeBaseFolderResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-833377438
+// LIFERAY-REST-BUILDER-HASH:-1835764200

@@ -868,4 +868,4 @@ public abstract class BaseFieldMappingInfoResourceImpl
 		LogFactoryUtil.getLog(BaseFieldMappingInfoResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2112377312
+// LIFERAY-REST-BUILDER-HASH:-740876932

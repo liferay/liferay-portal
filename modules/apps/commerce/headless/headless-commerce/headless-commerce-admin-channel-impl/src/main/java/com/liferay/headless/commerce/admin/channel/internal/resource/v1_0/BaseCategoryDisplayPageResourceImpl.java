@@ -1219,4 +1219,4 @@ public abstract class BaseCategoryDisplayPageResourceImpl
 		LogFactoryUtil.getLog(BaseCategoryDisplayPageResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1711803102
+// LIFERAY-REST-BUILDER-HASH:-1941443054
