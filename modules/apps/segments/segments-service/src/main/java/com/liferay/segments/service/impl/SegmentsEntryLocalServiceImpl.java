@@ -622,6 +622,7 @@ public class SegmentsEntryLocalServiceImpl
 	private boolean _isActive(boolean active, String source) {
 		if (!active ||
 			SegmentsEntryConstants.SOURCE_ASAH_FARO_BACKEND.equals(source) ||
+			SegmentsEntryConstants.SOURCE_AUDIENCE.equals(source) ||
 			ExportImportThreadLocal.isImportInProcess() ||
 			FeatureFlagManagerUtil.isEnabled(
 				CompanyConstants.SYSTEM, "LPD-78863")) {

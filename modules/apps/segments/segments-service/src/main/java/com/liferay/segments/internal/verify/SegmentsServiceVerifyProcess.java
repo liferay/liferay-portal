@@ -90,7 +90,10 @@ public class SegmentsServiceVerifyProcess extends VerifyProcess {
 			if ((segmentsEntry == null) ||
 				Objects.equals(
 					segmentsEntry.getSource(),
-					SegmentsEntryConstants.SOURCE_ASAH_FARO_BACKEND)) {
+					SegmentsEntryConstants.SOURCE_ASAH_FARO_BACKEND) ||
+				Objects.equals(
+					segmentsEntry.getSource(),
+					SegmentsEntryConstants.SOURCE_AUDIENCE)) {
 
 				continue;
 			}

@@ -762,6 +762,8 @@ public class SegmentsExperienceLocalServiceImpl
 
 		if ((segmentsEntry == null) ||
 			SegmentsEntryConstants.SOURCE_ASAH_FARO_BACKEND.equals(
+				segmentsEntry.getSource()) ||
+			SegmentsEntryConstants.SOURCE_AUDIENCE.equals(
 				segmentsEntry.getSource())) {
 
 			return active;
