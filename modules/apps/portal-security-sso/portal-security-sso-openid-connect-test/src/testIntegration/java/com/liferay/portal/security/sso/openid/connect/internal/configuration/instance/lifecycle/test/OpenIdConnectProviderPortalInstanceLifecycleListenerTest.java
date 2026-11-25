@@ -320,8 +320,9 @@ public class OpenIdConnectProviderPortalInstanceLifecycleListenerTest {
 			String tokenEndpoint)
 		throws Exception {
 
-		Class<?> clazz = _portalInstanceLifecycleListener.getClass();
 		String pid = RandomTestUtil.randomString();
+
+		Class<?> clazz = _portalInstanceLifecycleListener.getClass();
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				clazz.getName(), LoggerTestUtil.WARN)) {
@@ -444,9 +445,8 @@ public class OpenIdConnectProviderPortalInstanceLifecycleListenerTest {
 	private void _testUpdatedWithDuplicateIssuerURL() throws Exception {
 		String clientId = RandomTestUtil.randomString();
 		String issuerURL = "http://" + RandomTestUtil.randomString();
-		String tokenEndpoint = "http://" + RandomTestUtil.randomString();
-
 		String pid = RandomTestUtil.randomString();
+		String tokenEndpoint = "http://" + RandomTestUtil.randomString();
 
 		_managedServiceFactory.updated(
 			pid,
@@ -477,8 +477,9 @@ public class OpenIdConnectProviderPortalInstanceLifecycleListenerTest {
 	}
 
 	private void _testUpdatedWithLongIssuerURL() throws Exception {
-		Class<?> clazz = _portalInstanceLifecycleListener.getClass();
 		String pid = RandomTestUtil.randomString();
+
+		Class<?> clazz = _portalInstanceLifecycleListener.getClass();
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				clazz.getName(), LoggerTestUtil.WARN)) {

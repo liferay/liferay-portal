@@ -129,6 +129,10 @@ public class OAuthClientASLocalMetadataPortalInstanceLifecycleListenerTest {
 				"configuration.OpenIdConnectProviderConfiguration",
 			properties);
 
+		OpenIdConnectSession openIdConnectSession =
+			_openIdConnectSessionLocalService.createOpenIdConnectSession(
+				_counterLocalService.increment());
+
 		OAuthClientASLocalMetadata oAuthClientASLocalMetadata =
 			_oAuthClientASLocalMetadataLocalService.
 				fetchOAuthClientASLocalMetadata(
@@ -136,10 +140,6 @@ public class OAuthClientASLocalMetadataPortalInstanceLifecycleListenerTest {
 
 		String localWellKnownURI =
 			oAuthClientASLocalMetadata.getLocalWellKnownURI();
-
-		OpenIdConnectSession openIdConnectSession =
-			_openIdConnectSessionLocalService.createOpenIdConnectSession(
-				_counterLocalService.increment());
 
 		openIdConnectSession.setCompanyId(TestPropsValues.getCompanyId());
 		openIdConnectSession.setUserId(TestPropsValues.getUserId());
