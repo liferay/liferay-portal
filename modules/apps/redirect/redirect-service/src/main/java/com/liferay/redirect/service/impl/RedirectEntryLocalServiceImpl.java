@@ -134,10 +134,9 @@ public class RedirectEntryLocalServiceImpl
 			boolean updateChainedRedirectEntries, ServiceContext serviceContext)
 		throws PortalException {
 
-		sourceURL = _friendlyURLNormalizer.normalizeWithEncoding(sourceURL);
-
 		_checkDestinationURLMustNotBeEqualToSourceURL(
-			destinationURL, groupBaseURL, sourceURL);
+			destinationURL, groupBaseURL,
+			_friendlyURLNormalizer.normalizeWithEncoding(sourceURL));
 
 		RedirectEntry redirectEntry = addRedirectEntry(
 			groupId, destinationURL, expirationDate, permanent, sourceURL,
@@ -280,10 +279,9 @@ public class RedirectEntryLocalServiceImpl
 			boolean updateChainedRedirectEntries)
 		throws PortalException {
 
-		sourceURL = _friendlyURLNormalizer.normalizeWithEncoding(sourceURL);
-
 		_checkDestinationURLMustNotBeEqualToSourceURL(
-			destinationURL, groupBaseURL, sourceURL);
+			destinationURL, groupBaseURL,
+			_friendlyURLNormalizer.normalizeWithEncoding(sourceURL));
 
 		RedirectEntry redirectEntry =
 			redirectEntryLocalService.updateRedirectEntry(
