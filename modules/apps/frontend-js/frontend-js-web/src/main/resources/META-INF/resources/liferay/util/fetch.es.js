@@ -77,11 +77,11 @@ export default function defaultFetch(resource, init = {}) {
 		const launchMode = Liferay.ThemeDisplay.getLaunchMode?.();
 
 		if (launchMode) {
+			headers.set('x-liferay-launch-mode', launchMode);
 			headers.set(
 				'x-liferay-launch-set-id',
 				Liferay.ThemeDisplay.getLaunchSetId()
 			);
-			headers.set('x-liferay-launch-mode', launchMode);
 		}
 	}
 

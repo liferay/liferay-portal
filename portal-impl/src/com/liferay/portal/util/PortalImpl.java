@@ -514,8 +514,8 @@ public class PortalImpl implements Portal {
 
 		// Portal launch
 
-		_reservedParams.add("p_launch_set_id");
 		_reservedParams.add("p_launch_mode");
+		_reservedParams.add("p_launch_set_id");
 
 		// Miscellaneous
 

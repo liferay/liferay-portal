@@ -665,10 +665,10 @@ public class LiferayGlobalObjectPreAUIDynamicInclude
 		_renderMethod(
 			"getLanguageId", printWriter,
 			_language.getLanguageId(httpServletRequest));
+		_renderMethod("getLaunchMode", printWriter, _getLaunchMode());
 		_renderMethod(
 			"getLaunchSetId", printWriter,
 			Math.max(LaunchThreadLocal.getLaunchSetId(), 0));
-		_renderMethod("getLaunchMode", printWriter, _getLaunchMode());
 		_renderMethod(
 			"getParentGroupId", printWriter, themeDisplay.getSiteGroupId());
 		_renderMethod(

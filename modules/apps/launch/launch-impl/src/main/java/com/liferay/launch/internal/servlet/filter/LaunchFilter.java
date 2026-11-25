@@ -94,17 +94,17 @@ public class LaunchFilter extends BasePortalFilter {
 		}
 
 		boolean header = false;
-		long launchSetId = ParamUtil.getLong(
-			httpServletRequest, "p_launch_set_id", -1);
 		String launchModeString = ParamUtil.getString(
 			httpServletRequest, "p_launch_mode");
+		long launchSetId = ParamUtil.getLong(
+			httpServletRequest, "p_launch_set_id", -1);
 
 		if ((launchSetId == -1) && Validator.isNull(launchModeString)) {
 			header = true;
-			launchSetId = GetterUtil.getLong(
-				httpServletRequest.getHeader("X-Liferay-Launch-Set-Id"), -1);
 			launchModeString = httpServletRequest.getHeader(
 				"X-Liferay-Launch-Mode");
+			launchSetId = GetterUtil.getLong(
+				httpServletRequest.getHeader("X-Liferay-Launch-Set-Id"), -1);
 		}
 
 		LaunchMode launchMode = LaunchMode.parse(launchModeString);
@@ -115,7 +115,7 @@ public class LaunchFilter extends BasePortalFilter {
 
 				_processFilter(
 					filterChain, httpServletRequest, httpServletResponse,
-					launchSetId, LaunchMode.EDIT);
+					LaunchMode.EDIT, launchSetId);
 
 				return;
 			}
@@ -141,7 +141,7 @@ public class LaunchFilter extends BasePortalFilter {
 			if ((user != null) && !user.isGuestUser()) {
 				_processFilter(
 					filterChain, httpServletRequest, httpServletResponse,
-					Math.max(launchSetId, 0), LaunchMode.PREVIEW);
+					LaunchMode.PREVIEW, Math.max(launchSetId, 0));
 
 				return;
 			}
@@ -301,13 +301,13 @@ public class LaunchFilter extends BasePortalFilter {
 
 	private void _processFilter(
 			FilterChain filterChain, HttpServletRequest httpServletRequest,
-			HttpServletResponse httpServletResponse, long launchSetId,
-			LaunchMode launchMode)
+			HttpServletResponse httpServletResponse, LaunchMode launchMode,
+			long launchSetId)
 		throws Exception {
 
 		try (SafeCloseable safeCloseable1 =
 				LaunchThreadLocal.setLaunchSetIdWithSafeCloseable(
-					launchSetId, launchMode)) {
+					launchMode, launchSetId)) {
 
 			Map<Class<?>, Map<Serializable, Object>> previewableMap =
 				_getPreviewableMap(
