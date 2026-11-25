@@ -40,6 +40,7 @@ export default function CommentsPanel({
 	getCommentsURL,
 	getMentionUsersURL,
 	highlightedCommentId,
+	onUpdateComments,
 	readOnly = false,
 }: {
 	addCommentURL: string;
@@ -50,41 +51,45 @@ export default function CommentsPanel({
 	getCommentsURL: string;
 	getMentionUsersURL?: string;
 	highlightedCommentId?: string;
+	onUpdateComments?: React.Dispatch<React.SetStateAction<Comment[]>>;
 	readOnly?: boolean;
 }) {
-	const [comments, setComments] = useState<Comment[]>([]);
-	const [commentNoLongerAvailable, setCommentNoLongerAvailable] =
-		useState(false);
+	const [fetchedComments, setFetchedComments] = useState<Comment[]>([]);
+	const [commentNoLongerAvailable, setCommentNoLongerAvailable] = useState(
+		() =>
+			!!initialComments &&
+			isCommentNoLongerAvailable(initialComments, highlightedCommentId)
+	);
+
+	const comments = initialComments ?? fetchedComments;
+	const hasInitialComments = !!initialComments;
+	const setComments = onUpdateComments ?? setFetchedComments;
 
 	useEffect(() => {
-		const loadComments = (comments: Comment[]) => {
-			setComments(comments);
+		if (hasInitialComments) {
+			return;
+		}
+
+		CommentService.getComments({
+			url: getCommentsURL,
+		}).then(({data, error}) => {
+			if (error) {
+				openToast({
+					message: escapeHTML(error),
+					type: 'danger',
+				});
+
+				return;
+			}
+
+			const comments = data ?? [];
+
+			setFetchedComments(comments);
 			setCommentNoLongerAvailable(
-				!!highlightedCommentId &&
-					!isCommentAvailable(comments, highlightedCommentId)
+				isCommentNoLongerAvailable(comments, highlightedCommentId)
 			);
-		};
-
-		if (!initialComments) {
-			CommentService.getComments({
-				url: getCommentsURL,
-			}).then(({data: comments, error}) => {
-				if (error) {
-					openToast({
-						message: escapeHTML(error),
-						type: 'danger',
-					});
-
-					return;
-				}
-
-				loadComments(comments ?? []);
-			});
-		}
-		else {
-			loadComments(initialComments);
-		}
-	}, [initialComments, getCommentsURL, highlightedCommentId]);
+		});
+	}, [getCommentsURL, hasInitialComments, highlightedCommentId]);
 
 	useEffect(() => {
 		const handleVote = ({
@@ -134,7 +139,7 @@ export default function CommentsPanel({
 		Liferay.on(EVENT_RATINGS_VOTE, handleVote);
 
 		return () => Liferay.detach(EVENT_RATINGS_VOTE, handleVote);
-	}, []);
+	}, [setComments]);
 
 	const deleteComment = async (
 		commentId: string,
@@ -724,4 +729,8 @@ function isCommentAvailable(comments: Comment[], commentId: string): boolean {
 			String(comment.commentId) === commentId ||
 			isCommentAvailable(comment.children ?? [], commentId)
 	);
+}
+
+function isCommentNoLongerAvailable(comments: Comment[], commentId?: string) {
+	return !!commentId && !isCommentAvailable(comments, commentId);
 }

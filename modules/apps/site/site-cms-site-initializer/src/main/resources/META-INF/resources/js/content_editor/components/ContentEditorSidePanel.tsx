@@ -67,6 +67,7 @@ type SidePanelProps = Props & {
 	categorizationFields: CategorizationFields | null;
 	dateConfig: datetimeUtils.DateConfig;
 	onUpdateCategorization: (props: UpdateCategorizationProps) => void;
+	onUpdateComments: React.Dispatch<React.SetStateAction<Comment[]>>;
 	onUpdateSchedule: (props: UpdateScheduleProps) => void;
 	requiredVocabularyIds: number[] | null;
 	scheduleFields: ScheduleFields;
@@ -175,6 +176,7 @@ export default function ContentEditorSidePanel(props: Props) {
 	});
 	const [categorizationFields, setCategorizationFields] =
 		useState<CategorizationFields | null>(null);
+	const [comments, setComments] = useState<Comment[]>(props.comments);
 	const [requiredVocabularyIds, setRequiredVocabularyIds] = useState<
 		number[] | null
 	>(null);
@@ -302,8 +304,10 @@ export default function ContentEditorSidePanel(props: Props) {
 			<SidePanel
 				{...props}
 				categorizationFields={categorizationFields}
+				comments={comments}
 				dateConfig={dateConfig}
 				onUpdateCategorization={onUpdateCategorization}
+				onUpdateComments={setComments}
 				onUpdateSchedule={onUpdateSchedule}
 				requiredVocabularyIds={requiredVocabularyIds}
 				scheduleFields={scheduleFields}
