@@ -20,14 +20,16 @@ The ticket ID follows the pattern `LPD-12345`, `LCD-12345`, `LRCI-1234`, and sim
 
 ## Compose the Commit Message
 
-Read the diff, understand the actual behavior change, then compose the message.
+Read the diff, understand the problem it solves, then compose the message. The reader already has the diff. The message adds only what the diff cannot show.
+
+Never describe a security concern in the title or the body. Do not mention vulnerabilities, exploits, attack vectors, or missing permission checks, and do not explain how the old code could be abused.
 
 ### Title
 
-Format: `<TICKET> <Summary of behavior change>`
+Format: `<TICKET> <Summary of the problem solved>`
 
 - Lead with the Jira ticket ID.
-- Follow with a concise summary of the outcome — the problem resolved or the behavior changed, not the code itself.
+- Follow with a concise summary of the problem solved or the behavior changed, as a user or caller sees it. Do not name the mechanism (classes, methods, selectors) unless the mechanism is the point of the change.
 - Use sentence case (capitalize the first word only).
 - Omit a trailing period.
 - Keep the full line under 72 characters, including the ticket prefix.
@@ -42,13 +44,41 @@ Examples:
 
 ### Body
 
-Add a body **only** when the title alone does not fully convey the change. Omit the body for trivial edits such as typo fixes, simple renames, or single-line changes.
+Omit the body by default. Most commits are fully explained by the title plus the diff.
+
+Add a body only when it carries something a reader cannot get from the diff:
+
+- ASCII diagrams — a flow, a state machine, a race, or a before/after data shape.
+- Behavior changes a reviewer would not expect from the title.
+- Links — related tickets, commits or pull requests, upstream bugs, specifications, documentation.
+- Non-obvious constraints, or alternatives that were considered and rejected, and why.
+- Reproduction steps or the observed failure, when the title cannot hold them.
+
+Never restate the diff. Do not narrate which files, classes, methods, selectors, or assertions changed, and do not walk through how a test works.
 
 When a body is warranted:
 
+- Do not wrap lines. Diagrams and code blocks keep their own line breaks.
+- Keep it as brief as possible: one short sentence, a few short bullets, or one diagram.
 - Separate it from the title with a blank line.
-- Explain **why** the change is needed — the problem, the prior behavior, or the motivation. Do not restate the code.
-- Do not wrap lines in the body.
-- Write plain prose rather than bullet points, matching the repository convention.
+- Write a single point as one plain sentence. Use bullets only when describing several things, one point per bullet, rather than a paragraph of prose.
 
 When the user provides a hint or description, incorporate it into the message.
+
+### Example
+
+Bad — the body retells the diff:
+
+```
+LPD-116783 Show each calendar's own color in Manage Calendars
+
+The Color column on the Manage Calendars list rendered every row with whichever calendar's color ended up last in the CSS cascade, because each iteration of the search container emitted an <aui:style> block redefining the shared .calendar-portlet-color-box selector. Target the background-color at a per-row class derived from the calendar id so each <span> binds to its own style rule and keeps the CSP-safe form from LPD-53713.
+```
+
+Good — the title states the problem, and the body keeps only the context the diff hides:
+
+```
+LPD-116783 Show each calendar's own color in Manage Calendars
+
+Keeps the CSP-safe <aui:style> form from LPD-53713 rather than going back to an inline style.
+```
