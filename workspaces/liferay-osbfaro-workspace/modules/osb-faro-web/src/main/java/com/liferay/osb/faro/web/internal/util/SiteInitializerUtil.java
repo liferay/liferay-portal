@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.site.initializer.SiteInitializer;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Eudaldo Alonso
@@ -68,6 +69,30 @@ public class SiteInitializerUtil {
 
 			ServiceContextThreadLocal.popServiceContext();
 		}
+	}
+
+	public static boolean isInitialized(
+		Group group, SiteInitializer siteInitializer, String version) {
+
+		if (version.startsWith("0.")) {
+			return false;
+		}
+
+		UnicodeProperties typeSettingsUnicodeProperties =
+			group.getTypeSettingsProperties();
+
+		if (Objects.equals(
+				typeSettingsUnicodeProperties.getProperty("siteInitializerKey"),
+				siteInitializer.getKey()) &&
+			Objects.equals(
+				typeSettingsUnicodeProperties.getProperty(
+					"siteInitializerVersion"),
+				version)) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	private static User _getUser(long companyId) throws Exception {

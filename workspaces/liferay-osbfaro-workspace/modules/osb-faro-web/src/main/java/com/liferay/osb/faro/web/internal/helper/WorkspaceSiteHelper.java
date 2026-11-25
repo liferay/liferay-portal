@@ -25,6 +25,12 @@ public class WorkspaceSiteHelper {
 			_siteInitializer, _SITE_INITIALIZER_VERSION);
 	}
 
+	public boolean isInitialized(FaroProject faroProject) throws Exception {
+		return SiteInitializerUtil.isInitialized(
+			_groupLocalService.getGroup(faroProject.getGroupId()),
+			_siteInitializer, _SITE_INITIALIZER_VERSION);
+	}
+
 	private static final String _SITE_INITIALIZER_VERSION = "0.1";
 
 	@Reference
