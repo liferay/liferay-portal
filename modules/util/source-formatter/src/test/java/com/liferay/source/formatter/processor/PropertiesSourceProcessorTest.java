@@ -73,7 +73,7 @@ public class PropertiesSourceProcessorTest extends BaseSourceProcessorTestCase {
 	@Test
 	public void testSourceFormatterExcludes() throws Exception {
 		test(
-			"SourceFormatterExcludes/source-formatter.testproperties",
+			"source-formatter.testproperties",
 			new String[] {
 				StringBundler.concat(
 					"Property value \"**/liferay-learn-etc-spring-boot/**\" ",
