@@ -145,7 +145,10 @@ const createReferencedEntitiesIMapFromSegment = (
 			EntityType.Attributes,
 			Map({})
 		),
-		[EntityType.Campaigns]: referencedObjects.get(EntityType.Campaigns),
+		[EntityType.Campaigns]: referencedObjects.get(
+			EntityType.Campaigns,
+			Map({})
+		),
 		[EntityType.CustomEvents]: referencedObjects.get(
 			EntityType.CustomEvents
 		),
