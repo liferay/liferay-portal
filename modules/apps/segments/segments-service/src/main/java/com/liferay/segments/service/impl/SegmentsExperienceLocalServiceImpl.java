@@ -46,6 +46,7 @@ import com.liferay.segments.exception.SegmentsExperiencePriorityException;
 import com.liferay.segments.model.SegmentsEntry;
 import com.liferay.segments.model.SegmentsExperience;
 import com.liferay.segments.model.SegmentsExperiment;
+import com.liferay.segments.service.SegmentsEntryLocalServiceUtil;
 import com.liferay.segments.service.SegmentsExperienceAudienceEntryRelLocalService;
 import com.liferay.segments.service.base.SegmentsExperienceLocalServiceBaseImpl;
 import com.liferay.segments.service.persistence.SegmentsEntryPersistence;
@@ -294,6 +295,26 @@ public class SegmentsExperienceLocalServiceImpl
 		segmentsExperiencePersistence.remove(segmentsExperience);
 
 		segmentsExperiencePersistence.flush();
+
+		// Segments entry
+
+		SegmentsEntry segmentsEntry =
+			_segmentsEntryPersistence.fetchByPrimaryKey(
+				segmentsExperience.getSegmentsEntryId());
+
+		if ((segmentsEntry != null) &&
+			SegmentsEntryConstants.SOURCE_AUDIENCE.equals(
+				segmentsEntry.getSource())) {
+
+			int count = segmentsExperiencePersistence.countBySEERC_SESERC(
+				segmentsExperience.getSegmentsEntryERC(),
+				segmentsExperience.getSegmentsEntryScopeERC());
+
+			if (count == 0) {
+				SegmentsEntryLocalServiceUtil.deleteSegmentsEntry(
+					segmentsEntry);
+			}
+		}
 
 		// Segments experience audience entry rels
 
