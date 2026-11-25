@@ -14,24 +14,34 @@ import com.liferay.asset.kernel.model.AssetEntry;
 import com.liferay.asset.kernel.model.AssetTag;
 import com.liferay.asset.kernel.service.AssetEntryLocalServiceUtil;
 import com.liferay.asset.kernel.service.AssetTagLocalService;
+import com.liferay.depot.constants.DepotConstants;
+import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.document.library.kernel.model.DLFileEntryConstants;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.model.DLVersionNumberIncrease;
 import com.liferay.document.library.kernel.service.DLAppServiceUtil;
 import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.rule.Sync;
 import com.liferay.portal.kernel.test.rule.SynchronousDestinationTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
+import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.Assert;
@@ -148,6 +158,38 @@ public class AssetAutoTaggerTest extends BaseAssetAutoTaggerTestCase {
 
 				Assert.assertTrue(assetTags.isEmpty());
 			});
+	}
+
+	@Test
+	@TestInfo("LPD-117653")
+	public void testDoesNotAddTagsWhenDisabledInDepotEntry() throws Exception {
+		_depotEntry = _depotEntryLocalService.addDepotEntry(
+			HashMapBuilder.put(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()
+			).build(),
+			Collections.emptyMap(), DepotConstants.TYPE_ASSET_LIBRARY,
+			ServiceContextTestUtil.getServiceContext());
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_depotEntry.getGroupId(), 0);
+
+		assertContainsAssetTagName(
+			addFileEntryAssetEntry(_depotEntry.getGroupId(), serviceContext),
+			ASSET_TAG_NAME_AUTO);
+
+		Group depotEntryGroup = _depotEntry.getGroup();
+
+		_depotEntryLocalService.updateDepotEntry(
+			_depotEntry.getDepotEntryId(), depotEntryGroup.getNameMap(),
+			depotEntryGroup.getDescriptionMap(), Collections.emptyMap(), null,
+			UnicodePropertiesBuilder.put(
+				"assetAutoTaggingEnabled", "false"
+			).build(),
+			ServiceContextTestUtil.getServiceContext());
+
+		assertHasNoTags(
+			addFileEntryAssetEntry(_depotEntry.getGroupId(), serviceContext));
 	}
 
 	@Test
@@ -294,5 +336,11 @@ public class AssetAutoTaggerTest extends BaseAssetAutoTaggerTestCase {
 
 	@Inject
 	private AssetTagLocalService _assetTagLocalService;
+
+	@DeleteAfterTestRun
+	private DepotEntry _depotEntry;
+
+	@Inject
+	private DepotEntryLocalService _depotEntryLocalService;
 
 }
