@@ -179,14 +179,16 @@ public class AccountLifecycleStageMetricResourceTest
 	private void _testGetWorkspaceGroupChannelAccountLifecycleStageMetricsPageWithoutAccountLifecycleStageMetrics()
 		throws Exception {
 
-		Page<AccountLifecycleStageMetric> page =
+		Page<AccountLifecycleStageMetric> accountLifecycleStageMetricsPage =
 			_getWorkspaceGroupChannelAccountLifecycleStageMetricsPage(
 				new AtomicReference<>(), true, null, null, null);
 
 		Assert.assertEquals(
 			Collections.emptyList(),
-			(List<AccountLifecycleStageMetric>)page.getItems());
-		Assert.assertEquals(0, page.getTotalCount());
+			(List<AccountLifecycleStageMetric>)
+				accountLifecycleStageMetricsPage.getItems());
+		Assert.assertEquals(
+			0, accountLifecycleStageMetricsPage.getTotalCount());
 	}
 
 	private static final String _ACCOUNT_LIFECYCLE_ID = String.valueOf(

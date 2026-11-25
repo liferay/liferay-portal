@@ -36,8 +36,8 @@ public class AccountLifecycleResourceTest
 		throws Exception {
 
 		_testGetWorkspaceGroupChannelAccountLifecyclesPageWithDateModifiedSort();
-		_testGetWorkspaceGroupChannelAccountLifecyclesPageWithSort();
 		_testGetWorkspaceGroupChannelAccountLifecyclesPageWithoutSort();
+		_testGetWorkspaceGroupChannelAccountLifecyclesPageWithSort();
 	}
 
 	@Ignore
