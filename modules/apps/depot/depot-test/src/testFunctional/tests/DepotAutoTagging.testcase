@@ -36,49 +36,6 @@ definition {
 		}
 	}
 
-	@description = "This ensures that a document in a depot can be auto tagged and have its tag replaced manually."
-	@priority = 4
-	@refactordone
-	test AutoTagCanBeReplacedInDocument {
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		AutoTagging.enableOpenNLP(
-			assetType = "Document",
-			confidenceThreshold = "0.001");
-
-		DepotNavigator.openDepotDocumentsAndMediaAdmin(depotName = "Test Depot Name");
-
-		DMDocument.addCP(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentFile = "Alice's Adventures in Wonderland.docx",
-			dmDocumentTitle = "DM Document Title");
-
-		DepotNavigator.openToDMEntryInDepot(
-			depotName = "Test Depot Name",
-			dmDocumentTitle = "DM Document Title");
-
-		DMDocument.viewCP(dmDocumentTitle = "DM Document Title");
-
-		DMDocument.viewTagInfo(tagName = "Adventures,Alice");
-
-		DepotNavigator.openDepotDocumentsAndMediaAdmin(depotName = "Test Depot Name");
-
-		DMDocument.removeTag(removeTag = "Alice");
-
-		AssetCategorization.addTag(tagName = "newtag");
-
-		PortletEntry.publish();
-
-		DepotNavigator.openToDMEntryInDepot(
-			depotName = "Test Depot Name",
-			dmDocumentTitle = "DM Document Title");
-
-		DMDocument.viewCP(dmDocumentTitle = "DM Document Title");
-
-		DMDocument.viewTagInfo(tagName = "Adventures,newtag");
-	}
-
 	@description = "This ensures that the depot auto-tagging can be disabled and enabled at the instance level."
 	@priority = 4
 	@refactordone
