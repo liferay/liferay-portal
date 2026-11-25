@@ -1,6 +1,6 @@
 # Redundant Contains on Race Receivers
 
-Flags an added `if` statement in hand written Java that checks a key or an element on a receiver other threads change, and then reads, adds, or removes the same key or element with a second call. On a `ServiceTrackerMap` or a concurrent map or set, the value can disappear, or another thread can add the element, between the two calls. A single call that reports presence through its result has no such window.
+Flags an added `if` statement in hand written Java that checks a key or an element on a receiver other threads change, and then reads, adds, or removes the same key or element with a second call. The value can disappear from a `ServiceTrackerMap` or a concurrent map or set between the two calls, or another thread can add the element. A single call that reports presence through its result has no such window.
 
 ## Source Formatter Candidate
 
@@ -53,7 +53,7 @@ FINDINGS=$(
 						--only-matching \
 						--regexp='[[:alnum:]_]+[[:space:]]*=[[:space:]]*(Collections[[:space:]]*\.[[:space:]]*(<[^;]*>[[:space:]]*)?synchronized|new[[:space:]]+(Concurrent|CopyOnWrite)|ConcurrentHashMap[[:space:]]*\.[[:space:]]*(<[^;]*>[[:space:]]*)?newKeySet)' \
 					| sed -E 's/^([[:alnum:]_]+).*/\1/'
-			} | sort -u | paste -d '|' -s -
+			} | sort --unique | paste -d '|' -s -
 		)
 
 		[[ -n ${NAMES} ]] || continue
@@ -106,12 +106,12 @@ Otherwise, each printed line is a candidate, not a finding. Read the file around
 - On a set: `if (!x.contains(e))` whose first statement is `x.add(e)`, `if (x.contains(e))` whose first statement is `x.remove(e)`, or a guard on `x.contains(e)` followed directly by `x.add(e);`, or on `!x.contains(e)` followed directly by `x.remove(e);`.
 - On a list or a queue: `if (x.contains(e))` whose first statement is `x.remove(e)`.
 
-Everything else is not a finding, including an `add` that comes after other work, since folding it would mark the element before that work runs.
+Any other shape is not a finding, and neither is an `add` that comes after other work, because folding the check into that `add` would mark the element before the work runs.
 
 Report every finding as a FAIL and return the block below as the failure note.
 
 ```markdown
-**A key is checked and then read or changed with a second call on a receiver other threads change.** The value can disappear, or another thread can add the element, between the two calls. Use the single call that reports presence: a `get` or `getService` with a null check, `putIfAbsent` or `computeIfAbsent`, or the boolean result of `add` or `remove`.
+**A key or an element is checked and then read or changed with a second call on a receiver that other threads change.** The value can disappear, or another thread can add the element, between the two calls. Use the single call that reports presence: a `get` or `getService` with a null check, `putIfAbsent` or `computeIfAbsent`, or the boolean result of `add` or `remove`. For additional questions, use #t-core-infrastructure on Slack.
 
 | File | Line | Receiver | Calls |
 | --- | --- | --- | --- |
