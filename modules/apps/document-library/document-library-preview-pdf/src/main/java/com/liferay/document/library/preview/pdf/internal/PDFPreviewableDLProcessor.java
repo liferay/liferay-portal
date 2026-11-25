@@ -50,6 +50,7 @@ import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 import com.liferay.portal.kernel.xml.Element;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
@@ -526,6 +527,12 @@ public class PDFPreviewableDLProcessor
 	private void _generateImagesGS(
 			FileVersion fileVersion, File file, int maxNumberOfPages)
 		throws Exception {
+
+		if (!_hasPDFHeader(file)) {
+			_generateImagesPB(fileVersion, file, maxNumberOfPages);
+
+			return;
+		}
 
 		if (_isGeneratePreview(fileVersion)) {
 			long start = System.currentTimeMillis();
@@ -1023,6 +1030,20 @@ public class PDFPreviewableDLProcessor
 		return hasThumbnails(fileVersion);
 	}
 
+	private boolean _hasPDFHeader(File file) throws Exception {
+		byte[] bytes = new byte[_PDF_HEADER.length];
+
+		try (InputStream inputStream = new FileInputStream(file)) {
+			if (inputStream.readNBytes(bytes, 0, bytes.length) !=
+					bytes.length) {
+
+				return false;
+			}
+		}
+
+		return Arrays.equals(bytes, _PDF_HEADER);
+	}
+
 	private boolean _isGeneratePreview(FileVersion fileVersion)
 		throws Exception {
 
@@ -1100,6 +1121,8 @@ public class PDFPreviewableDLProcessor
 				sourceFileVersion, destinationFileVersion);
 		}
 	}
+
+	private static final byte[] _PDF_HEADER = {'%', 'P', 'D', 'F', '-'};
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		PDFPreviewableDLProcessor.class);
