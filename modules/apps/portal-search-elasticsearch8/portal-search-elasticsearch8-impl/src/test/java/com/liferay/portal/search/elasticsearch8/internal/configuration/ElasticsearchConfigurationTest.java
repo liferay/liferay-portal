@@ -5,13 +5,21 @@
 
 package com.liferay.portal.search.elasticsearch8.internal.configuration;
 
+import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.util.PropertiesUtil;
+import com.liferay.portal.search.elasticsearch8.configuration.ElasticsearchConfiguration;
 import com.liferay.portal.search.elasticsearch8.internal.connection.ElasticsearchConnectionFixture;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import java.util.Collections;
 import java.util.Map;
 import java.util.Properties;
 
+import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Test;
 
@@ -43,6 +51,23 @@ public class ElasticsearchConfigurationTest {
 		}
 		finally {
 			elasticsearchConnectionFixture.destroyNode();
+		}
+	}
+
+	@Test
+	public void testSidecarModuleNames() {
+		ElasticsearchConfiguration elasticsearchConfiguration =
+			ConfigurableUtil.createConfigurable(
+				ElasticsearchConfiguration.class, Collections.emptyMap());
+
+		Path modulesPath = Paths.get("tmp/sidecar-elasticsearch/modules");
+
+		for (String sidecarModuleName :
+				elasticsearchConfiguration.sidecarModuleNames()) {
+
+			Assert.assertTrue(
+				sidecarModuleName,
+				Files.isDirectory(modulesPath.resolve(sidecarModuleName)));
 		}
 	}
 
