@@ -196,6 +196,12 @@ components:
                     format: int64
                     readOnly: true
                     type: integer
+                id:
+                    description:
+                        The ID of the uploaded file. Pass it as the import process's importPreviewId to import this file.
+                    format: int64
+                    readOnly: true
+                    type: integer
                 portletDataHandlers:
                     items:
                         $ref: "#/components/schemas/PortletDataHandler"
@@ -268,6 +274,11 @@ components:
                     description:
                         A flag that indicates whether the file's deletions are applied.
                     type: boolean
+                importPreviewId:
+                    description:
+                        The ID of the import preview whose uploaded file is imported. Defaults to the user's last uploaded file.
+                    format: int64
+                    type: integer
                 name:
                     description:
                         The import process's name. Defaults to the name of the uploaded file.
@@ -1087,7 +1098,7 @@ paths:
     "/asset-libraries/{assetLibraryExternalReferenceCode}/import-preview":
         post:
             description:
-                Uploads a file to import into the specified asset library and retrieves its portlet data handlers and counts. The import process of the same scope imports the user's last uploaded file.
+                Uploads a file to import into the specified asset library and retrieves its portlet data handlers and counts. Pass the returned ID as the import process's importPreviewId to import this file.
             operationId: postAssetLibraryImportPreview
             parameters:
                 -   in: path
@@ -1190,7 +1201,7 @@ paths:
             tags: ["ImportProcess"]
         post:
             description:
-                Imports the user's last uploaded file into the specified asset library, or into one of its portlets. Returns a 404 when there is no uploaded file.
+                Imports the uploaded file with the importPreviewId, or else the user's last uploaded file, into the specified asset library, or into one of its portlets. Returns a 404 when there is no uploaded file.
             operationId: postAssetLibraryImportProcess
             parameters:
                 -   in: path
@@ -1561,7 +1572,7 @@ paths:
     "/import-preview":
         post:
             description:
-                Uploads a file to import into the instance and retrieves its portlet data handlers, counts, and sites. The import process of the same scope imports the user's last uploaded file.
+                Uploads a file to import into the instance and retrieves its portlet data handlers, counts, and sites. Pass the returned ID as the import process's importPreviewId to import this file.
             operationId: postImportPreview
             parameters:
                 -   in: query
@@ -1654,7 +1665,7 @@ paths:
             tags: ["ImportProcess"]
         post:
             description:
-                Imports the user's last uploaded file into the instance, or into one of its portlets. The sites and asset libraries in the request are imported in full, unless a portlet ID is given. Returns a 404 when there is no uploaded file.
+                Imports the uploaded file with the importPreviewId, or else the user's last uploaded file, into the instance, or into one of its portlets. The sites and asset libraries in the request are imported in full, unless a portlet ID is given. Returns a 404 when there is no uploaded file.
             operationId: postImportProcess
             parameters:
                 -   in: query
@@ -2227,7 +2238,7 @@ paths:
     "/sites/{siteExternalReferenceCode}/import-preview":
         post:
             description:
-                Uploads a file to import into the specified site and retrieves its portlet data handlers and counts. The import process of the same scope imports the user's last uploaded file.
+                Uploads a file to import into the specified site and retrieves its portlet data handlers and counts. Pass the returned ID as the import process's importPreviewId to import this file.
             operationId: postSiteImportPreview
             parameters:
                 -   in: path
@@ -2342,7 +2353,7 @@ paths:
             tags: ["ImportProcess"]
         post:
             description:
-                Imports the user's last uploaded file into the specified site, or into one of its portlets. Returns a 404 when there is no uploaded file.
+                Imports the uploaded file with the importPreviewId, or else the user's last uploaded file, into the specified site, or into one of its portlets. Returns a 404 when there is no uploaded file.
             operationId: postSiteImportProcess
             parameters:
                 -   in: path
