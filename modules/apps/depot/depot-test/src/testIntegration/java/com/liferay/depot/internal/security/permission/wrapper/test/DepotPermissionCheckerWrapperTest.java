@@ -151,12 +151,26 @@ public class DepotPermissionCheckerWrapperTest {
 	}
 
 	@Test
+	@TestInfo({"LPD-117654", "LPS-151756", "LPS-151760"})
 	public void testHasPermissionWithDepotGroup() throws Exception {
-		_testHasPermissionWithDepotGroup(ActionKeys.ASSIGN_MEMBERS);
-		_testHasPermissionWithDepotGroup(ActionKeys.ASSIGN_USER_ROLES);
-		_testHasPermissionWithDepotGroup(ActionKeys.VIEW);
-		_testHasPermissionWithDepotGroup(ActionKeys.VIEW_MEMBERS);
-		_testHasPermissionWithDepotGroup(ActionKeys.VIEW_SITE_ADMINISTRATION);
+		DepotEntry depotEntry = _addDepotEntry(TestPropsValues.getUserId());
+
+		_testHasPermissionWithDepotGroup(ActionKeys.ASSIGN_MEMBERS, depotEntry);
+		_testHasPermissionWithDepotGroup(
+			ActionKeys.ASSIGN_USER_ROLES, depotEntry);
+		_testHasPermissionWithDepotGroup(ActionKeys.VIEW, depotEntry);
+		_testHasPermissionWithDepotGroup(ActionKeys.VIEW_MEMBERS, depotEntry);
+		_testHasPermissionWithDepotGroup(
+			ActionKeys.VIEW_SITE_ADMINISTRATION, depotEntry);
+
+		DepotTestUtil.withLocalStagingEnabled(
+			depotEntry,
+			stagingDepotEntry -> {
+				_testHasPermissionWithDepotGroup(
+					ActionKeys.PUBLISH_STAGING, stagingDepotEntry);
+				_testHasPermissionWithDepotGroup(
+					ActionKeys.VIEW_STAGING, stagingDepotEntry);
+			});
 	}
 
 	@Test
@@ -1167,10 +1181,9 @@ public class DepotPermissionCheckerWrapperTest {
 		return depotEntry;
 	}
 
-	private void _testHasPermissionWithDepotGroup(String actionId)
+	private void _testHasPermissionWithDepotGroup(
+			String actionId, DepotEntry depotEntry)
 		throws Exception {
-
-		DepotEntry depotEntry = _addDepotEntry(TestPropsValues.getUserId());
 
 		DepotTestUtil.withRegularUser(
 			(user, role) -> {
