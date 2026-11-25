@@ -106,7 +106,7 @@ public class SimilarResultsPortletPreferencesImpl
 
 	@Override
 	public Float getTermBoost() {
-		String string = _getString(PREFERENCE_KEY_TERM_BOOST);
+		String string = _getStringNullable(PREFERENCE_KEY_TERM_BOOST);
 
 		if (string == null) {
 			return null;
@@ -115,8 +115,12 @@ public class SimilarResultsPortletPreferencesImpl
 		return GetterUtil.getFloat(string);
 	}
 
-	private Integer _getInteger(String key) {
-		String stringValue = _getStringValue(key);
+	private int _getInteger(String key, int defaultValue) {
+		return GetterUtil.getInteger(_getStringNullable(key), defaultValue);
+	}
+
+	private Integer _getIntegerNullable(String key) {
+		String stringValue = _getStringNullable(key);
 
 		if (stringValue == null) {
 			return null;
@@ -125,20 +129,8 @@ public class SimilarResultsPortletPreferencesImpl
 		return GetterUtil.getInteger(stringValue);
 	}
 
-	private int _getInteger(String key, int defaultValue) {
-		return GetterUtil.getInteger(_getStringValue(key), defaultValue);
-	}
-
-	private Integer _getIntegerNullable(String key) {
-		return _getInteger(key);
-	}
-
-	private String _getString(String key) {
-		return _getStringValue(key);
-	}
-
 	private String _getString(String key, String defaultValue) {
-		String string = _getStringValue(key);
+		String string = _getStringNullable(key);
 
 		if (string == null) {
 			return defaultValue;
@@ -148,10 +140,6 @@ public class SimilarResultsPortletPreferencesImpl
 	}
 
 	private String _getStringNullable(String key) {
-		return _getString(key, null);
-	}
-
-	private String _getStringValue(String key) {
 		if (_portletPreferences == null) {
 			return null;
 		}
