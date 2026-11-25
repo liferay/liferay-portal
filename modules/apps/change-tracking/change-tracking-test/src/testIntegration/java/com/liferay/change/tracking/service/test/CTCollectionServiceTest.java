@@ -102,15 +102,16 @@ public class CTCollectionServiceTest {
 	@Before
 	public void setUp() throws Exception {
 		_group = GroupTestUtil.addGroup();
-		_role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
 
-		_user = UserTestUtil.addGroupUser(_group, RoleConstants.SITE_MEMBER);
+		_role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
 
 		_resourcePermissionLocalService.addResourcePermission(
 			_role.getCompanyId(), CTConstants.RESOURCE_NAME,
 			ResourceConstants.SCOPE_COMPANY,
 			String.valueOf(_role.getCompanyId()), _role.getRoleId(),
 			CTActionKeys.ADD_PUBLICATION);
+
+		_user = UserTestUtil.addGroupUser(_group, RoleConstants.SITE_MEMBER);
 
 		_roleLocalService.addUserRole(_user.getUserId(), _role);
 		_roleLocalService.addUserRole(
