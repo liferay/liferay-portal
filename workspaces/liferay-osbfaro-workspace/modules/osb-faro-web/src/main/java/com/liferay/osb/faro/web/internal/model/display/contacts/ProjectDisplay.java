@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Date;
 import java.util.List;
@@ -55,14 +56,18 @@ public class ProjectDisplay {
 
 		_groupId = faroProject.getGroupId();
 
-		try {
-			_incidentReportEmailAddresses = JSONUtil.readValue(
-				faroProject.getIncidentReportEmailAddresses(),
-				new TypeReference<List<String>>() {
-				});
-		}
-		catch (Exception exception) {
-			_log.error(exception);
+		if (Validator.isNotNull(
+				faroProject.getIncidentReportEmailAddresses())) {
+
+			try {
+				_incidentReportEmailAddresses = JSONUtil.readValue(
+					faroProject.getIncidentReportEmailAddresses(),
+					new TypeReference<List<String>>() {
+					});
+			}
+			catch (Exception exception) {
+				_log.error(exception);
+			}
 		}
 
 		_ldpEnabled = FaroNavigationUtil.isLDPEnabled(_faroSubscriptionDisplay);
