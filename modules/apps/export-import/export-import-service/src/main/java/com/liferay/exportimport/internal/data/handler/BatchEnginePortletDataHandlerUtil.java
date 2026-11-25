@@ -30,6 +30,7 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.vulcan.util.GroupUtil;
 import com.liferay.staging.StagingGroupHelper;
 
 import java.io.Serializable;
@@ -69,7 +70,9 @@ public class BatchEnginePortletDataHandlerUtil {
 		if (!_isCompanyScoped(group, stagingGroupHelper)) {
 			deleteParameters.put(
 				"siteExternalReferenceCode", group.getExternalReferenceCode());
-			deleteParameters.put("siteId", group.getGroupId());
+
+			_putSiteId(
+				group, groupLocalService, deleteParameters, group.getGroupId());
 		}
 
 		return deleteParameters;
@@ -170,10 +173,13 @@ public class BatchEnginePortletDataHandlerUtil {
 			String[] siteIds = GetterUtil.getStringValues(map.get("siteId"));
 
 			if (ArrayUtil.isNotEmpty(siteIds)) {
-				exportParameters.put("siteId", siteIds[0]);
+				_putSiteId(
+					group, groupLocalService, exportParameters, siteIds[0]);
 			}
 			else {
-				exportParameters.put("siteId", group.getGroupId());
+				_putSiteId(
+					group, groupLocalService, exportParameters,
+					group.getGroupId());
 			}
 		}
 
@@ -245,7 +251,9 @@ public class BatchEnginePortletDataHandlerUtil {
 		if (!_isCompanyScoped(group, stagingGroupHelper)) {
 			importParameters.put(
 				"siteExternalReferenceCode", group.getExternalReferenceCode());
-			importParameters.put("siteId", group.getGroupId());
+
+			_putSiteId(
+				group, groupLocalService, importParameters, group.getGroupId());
 		}
 
 		return importParameters;
@@ -363,6 +371,18 @@ public class BatchEnginePortletDataHandlerUtil {
 		}
 
 		return false;
+	}
+
+	private static void _putSiteId(
+		Group group, GroupLocalService groupLocalService,
+		Map<String, Serializable> parameters, Serializable siteId) {
+
+		Long groupId = GroupUtil.getGroupId(
+			group.getCompanyId(), String.valueOf(siteId), groupLocalService);
+
+		if (groupId != null) {
+			parameters.put("siteId", siteId);
+		}
 	}
 
 	private static final Format _format =

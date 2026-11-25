@@ -386,6 +386,12 @@ public class BatchEnginePortletDataHandlerUtilTest {
 			group
 		).getGroupId();
 
+		Mockito.doReturn(
+			true
+		).when(
+			group
+		).isSite();
+
 		return group;
 	}
 
