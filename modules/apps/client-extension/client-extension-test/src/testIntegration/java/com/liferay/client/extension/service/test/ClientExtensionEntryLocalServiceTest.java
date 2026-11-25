@@ -143,6 +143,12 @@ public class ClientExtensionEntryLocalServiceTest {
 			PortletCategoryKeys.SITE_ADMINISTRATION_CONTENT,
 			portlet.getControlPanelEntryCategory());
 
+		portlet = _portletLocalService.getPortletById(portlet.getPortletId());
+
+		Assert.assertEquals(
+			PortletCategoryKeys.SITE_ADMINISTRATION_CONTENT,
+			portlet.getControlPanelEntryCategory());
+
 		_clientExtensionEntryLocalService.deleteClientExtensionEntry(
 			clientExtensionEntry.getClientExtensionEntryId());
 	}

@@ -15,6 +15,7 @@ import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.portal.kernel.model.Portlet;
+import com.liferay.portal.kernel.service.PortletLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -50,8 +51,6 @@ public class ObjectEntriesPanelAppTest {
 
 	@Test
 	public void testGetPortlet() throws Exception {
-		Portlet portlet = null;
-
 		ObjectDefinition objectDefinition =
 			_objectDefinitionLocalService.addCustomObjectDefinition(
 				null, TestPropsValues.getUserId(), 0, null, null, true, false,
@@ -74,6 +73,20 @@ public class ObjectEntriesPanelAppTest {
 			_objectDefinitionLocalService.publishCustomObjectDefinition(
 				TestPropsValues.getUserId(),
 				objectDefinition.getObjectDefinitionId());
+
+		Portlet portlet = _portletLocalService.getPortletById(
+			objectDefinition.getCompanyId(), objectDefinition.getPortletId());
+
+		Assert.assertEquals(
+			"site_administration.content",
+			portlet.getControlPanelEntryCategory());
+
+		portlet = _portletLocalService.getPortletById(
+			objectDefinition.getPortletId());
+
+		Assert.assertEquals(
+			"site_administration.content",
+			portlet.getControlPanelEntryCategory());
 
 		List<PanelApp> panelApps = _panelAppRegistry.getPanelApps(
 			objectDefinition.getPanelCategoryKey());
@@ -115,6 +128,20 @@ public class ObjectEntriesPanelAppTest {
 				TestPropsValues.getUserId(),
 				objectDefinition.getObjectDefinitionId());
 
+		portlet = _portletLocalService.getPortletById(
+			objectDefinition.getCompanyId(), objectDefinition.getPortletId());
+
+		Assert.assertEquals(
+			"site_administration.content",
+			portlet.getControlPanelEntryCategory());
+
+		portlet = _portletLocalService.getPortletById(
+			objectDefinition.getPortletId());
+
+		Assert.assertEquals(
+			"site_administration.content",
+			portlet.getControlPanelEntryCategory());
+
 		panelApps = _panelAppRegistry.getPanelApps(
 			objectDefinition.getPanelCategoryKey());
 
@@ -140,5 +167,8 @@ public class ObjectEntriesPanelAppTest {
 
 	@Inject
 	private PanelAppRegistry _panelAppRegistry;
+
+	@Inject
+	private PortletLocalService _portletLocalService;
 
 }
