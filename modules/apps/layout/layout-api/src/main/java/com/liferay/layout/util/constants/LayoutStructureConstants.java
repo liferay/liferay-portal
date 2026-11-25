@@ -19,4 +19,8 @@ public class LayoutStructureConstants {
 
 	public static final double LATEST_PAGE_DEFINITION_VERSION = 1.1;
 
+	public static final String[] LAYOUT_ELEMENT_FRAGMENT_ENTRY_KEYS = {
+		"collection-display", "container", "form", "formRelationship", "row"
+	};
+
 }
