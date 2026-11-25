@@ -173,9 +173,9 @@ public class ExportImportUserNotificationHandler
 	private String _getRemoteImportMessage(
 		JSONObject jsonObject, Locale locale) {
 
-		String key = "remote-import-to-x-failed";
-
 		int status = jsonObject.getInt("status");
+
+		String key = "remote-import-to-x-failed";
 
 		if (status == BackgroundTaskConstants.STATUS_CANCELLED) {
 			key = "remote-import-to-x-was-cancelled";

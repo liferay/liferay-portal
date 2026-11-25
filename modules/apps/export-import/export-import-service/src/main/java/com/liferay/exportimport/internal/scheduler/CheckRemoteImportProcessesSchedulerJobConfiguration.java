@@ -95,14 +95,14 @@ public class CheckRemoteImportProcessesSchedulerJobConfiguration
 				remoteInstanceObjectEntry.getValues());
 
 		if (importProcessJSONObject == null) {
-			String errorMessage = _language.get(
-				_getLocale(objectEntry.getUserId()),
-				"the-remote-import-was-deleted-from-the-remote-instance");
-
 			_updateRemoteImportProcess(
 				objectEntry,
 				HashMapBuilder.<String, Serializable>put(
-					"errorMessage", errorMessage
+					"errorMessage",
+					_language.get(
+						_getLocale(objectEntry.getUserId()),
+						"the-remote-import-was-deleted-from-the-remote-" +
+							"instance")
 				).put(
 					"importStatus", BackgroundTaskConstants.STATUS_FAILED
 				).build());
@@ -115,7 +115,15 @@ public class CheckRemoteImportProcessesSchedulerJobConfiguration
 
 		int status = statusJSONObject.getInt("code");
 
-		if (!ArrayUtil.contains(_FINAL_STATUSES, status)) {
+		if (!ArrayUtil.contains(
+				new int[] {
+					BackgroundTaskConstants.STATUS_CANCELLED,
+					BackgroundTaskConstants.STATUS_COMPLETED_WITH_ERRORS,
+					BackgroundTaskConstants.STATUS_FAILED,
+					BackgroundTaskConstants.STATUS_SUCCESSFUL
+				},
+				status)) {
+
 			return false;
 		}
 
@@ -221,13 +229,6 @@ public class CheckRemoteImportProcessesSchedulerJobConfiguration
 					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 				values, new ServiceContext()));
 	}
-
-	private static final int[] _FINAL_STATUSES = {
-		BackgroundTaskConstants.STATUS_CANCELLED,
-		BackgroundTaskConstants.STATUS_COMPLETED_WITH_ERRORS,
-		BackgroundTaskConstants.STATUS_FAILED,
-		BackgroundTaskConstants.STATUS_SUCCESSFUL
-	};
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		CheckRemoteImportProcessesSchedulerJobConfiguration.class);

@@ -70,7 +70,7 @@ public class RemoteInstancesConfigurationScreen implements ConfigurationScreen {
 		}
 		catch (Exception exception) {
 			throw new IOException(
-				"Unable to render /revamp/remote_instances/view.jsp",
+				"Unable to render \"/revamp/remote_instances/view.jsp\"",
 				exception);
 		}
 	}

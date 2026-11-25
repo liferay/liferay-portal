@@ -68,7 +68,8 @@ public class RemoteImportHttpUtil {
 	public static String getImportURL(
 		Map<String, Serializable> remoteInstanceValues) {
 
-		return _getBaseURL(remoteInstanceValues) + _PATH_COMPANY_IMPORT;
+		return _getBaseURL(remoteInstanceValues) +
+			"/group/control_panel/manage?p_p_id=" + PortletKeys.COMPANY_IMPORT;
 	}
 
 	public static JSONObject postImportPreview(
@@ -247,7 +248,7 @@ public class RemoteImportHttpUtil {
 			HttpHeaders.AUTHORIZATION,
 			"Bearer " +
 				_getAccessToken(baseURL, companyId, remoteInstanceValues));
-		options.setLocation(baseURL + _PATH_API + path);
+		options.setLocation(baseURL + "/o/export-import/v1.0" + path);
 
 		String responseString = null;
 
@@ -291,11 +292,6 @@ public class RemoteImportHttpUtil {
 
 		return JSONFactoryUtil.createJSONObject(responseString);
 	}
-
-	private static final String _PATH_API = "/o/export-import/v1.0";
-
-	private static final String _PATH_COMPANY_IMPORT =
-		"/group/control_panel/manage?p_p_id=" + PortletKeys.COMPANY_IMPORT;
 
 	private static final int _TIMEOUT = 10 * 60 * 1000;
 

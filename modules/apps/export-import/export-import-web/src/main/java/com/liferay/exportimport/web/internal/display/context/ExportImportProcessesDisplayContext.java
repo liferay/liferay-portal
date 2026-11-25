@@ -27,7 +27,6 @@ import com.liferay.portal.kernel.security.auth.AuthTokenUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.HashMapBuilder;
-import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -121,7 +120,7 @@ public class ExportImportProcessesDisplayContext {
 					BackgroundTaskConstants.STATUS_FAILED)
 			).build();
 
-		return ListUtil.fromArray(
+		return FDSActionDropdownItemList.of(
 			new FDSActionDropdownItem(
 				PortletURLBuilder.createRenderURL(
 					_liferayPortletResponse

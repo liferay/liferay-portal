@@ -55,11 +55,11 @@ public class RemoteImportProcessRelevantObjectEntryModelListener
 	public void onAfterCreate(ObjectEntry objectEntry)
 		throws ModelListenerException {
 
-		Map<String, Serializable> values = objectEntry.getValues();
-
 		try {
 			Group group = _groupLocalService.getCompanyGroup(
 				objectEntry.getCompanyId());
+
+			Map<String, Serializable> values = objectEntry.getValues();
 
 			_backgroundTaskManager.addBackgroundTask(
 				objectEntry.getUserId(), group.getGroupId(),
@@ -88,9 +88,9 @@ public class RemoteImportProcessRelevantObjectEntryModelListener
 	public void onBeforeCreate(ObjectEntry objectEntry)
 		throws ModelListenerException {
 
-		Map<String, Serializable> values = objectEntry.getValues();
-
 		try {
+			Map<String, Serializable> values = objectEntry.getValues();
+
 			BackgroundTask exportBackgroundTask =
 				_backgroundTaskManager.fetchBackgroundTask(
 					MapUtil.getLong(values, "exportProcessId"));

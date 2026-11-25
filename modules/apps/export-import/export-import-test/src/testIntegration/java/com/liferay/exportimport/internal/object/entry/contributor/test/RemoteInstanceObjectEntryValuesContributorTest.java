@@ -83,14 +83,14 @@ public class RemoteInstanceObjectEntryValuesContributorTest {
 	}
 
 	private String _decrypt(String clientSecret) throws Exception {
-		Assert.assertTrue(clientSecret.startsWith(_CLIENT_SECRET_PREFIX));
+		Assert.assertTrue(clientSecret.startsWith("{AES_GCM}"));
 
 		Company company = _companyLocalService.getCompany(
 			TestPropsValues.getCompanyId());
 
 		return _encryptor.decryptAuthenticated(
 			company.getKeyObj(),
-			clientSecret.substring(_CLIENT_SECRET_PREFIX.length()));
+			clientSecret.substring("{AES_GCM}".length()));
 	}
 
 	private String _getClientSecret(long objectEntryId) throws Exception {
@@ -201,8 +201,6 @@ public class RemoteInstanceObjectEntryValuesContributorTest {
 			).build(),
 			ServiceContextTestUtil.getServiceContext());
 	}
-
-	private static final String _CLIENT_SECRET_PREFIX = "{AES_GCM}";
 
 	@Inject
 	private CompanyLocalService _companyLocalService;
