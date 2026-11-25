@@ -181,24 +181,6 @@ public class TrashPortletTest {
 				HashMapBuilder.put(
 					"classNameId", _getClassNameId(KBFolder.class)
 				).put(
-					"classPK",
-					() -> {
-						KBFolder kbFolder = _addTrashedKBFolder(
-							ServiceContextTestUtil.getServiceContext(
-								group.getGroupId()));
-
-						return String.valueOf(kbFolder.getKbFolderId());
-					}
-				).put(
-					"trashEntryId", String.valueOf(_trashEntry.getEntryId())
-				).build(),
-				_group.getGroupId()));
-		Assert.assertTrue(
-			_render(
-				PrincipalException.MustHavePermission.class,
-				HashMapBuilder.put(
-					"classNameId", _getClassNameId(KBFolder.class)
-				).put(
 					"classPK", String.valueOf(_kbFolder.getKbFolderId())
 				).build(),
 				group.getGroupId()));
@@ -219,6 +201,24 @@ public class TrashPortletTest {
 					}
 				).put(
 					"mvcPath", "/view_container_model.jsp"
+				).build(),
+				_group.getGroupId()));
+		Assert.assertTrue(
+			_render(
+				PrincipalException.MustHavePermission.class,
+				HashMapBuilder.put(
+					"classNameId", _getClassNameId(KBFolder.class)
+				).put(
+					"classPK",
+					() -> {
+						KBFolder kbFolder = _addTrashedKBFolder(
+							ServiceContextTestUtil.getServiceContext(
+								group.getGroupId()));
+
+						return String.valueOf(kbFolder.getKbFolderId());
+					}
+				).put(
+					"trashEntryId", String.valueOf(_trashEntry.getEntryId())
 				).build(),
 				_group.getGroupId()));
 		Assert.assertTrue(
