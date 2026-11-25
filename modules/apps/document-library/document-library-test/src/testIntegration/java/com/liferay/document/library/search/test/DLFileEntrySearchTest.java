@@ -217,7 +217,6 @@ public class DLFileEntrySearchTest extends BaseSearchTestCase {
 	public void testSearchLargeContent() throws Exception {
 		SearchContext searchContext = SearchContextTestUtil.getSearchContext(
 			group.getGroupId());
-
 		String keywords = RandomTestUtil.randomString();
 
 		assertBaseModelsCount(0, keywords, searchContext);

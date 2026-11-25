@@ -246,8 +246,7 @@ public class DLURLHelperTest {
 			String imagePreviewURL = _dlURLHelper.getImagePreviewURL(
 				fileEntry, fileEntry.getFileVersion(), _getThemeDisplay());
 
-			Assert.assertTrue(
-				imagePreviewURL, imagePreviewURL.contains("imagePreview=1"));
+			Assert.assertTrue(imagePreviewURL.contains("imagePreview=1"));
 		}
 	}
 

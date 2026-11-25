@@ -49,7 +49,6 @@ public class TikaRawMetadataProcessorTest {
 		String stackTrace = StackTraceUtil.getStackTrace(systemException);
 
 		Assert.assertTrue(
-			stackTrace,
 			stackTrace.contains(
 				"Record size (2147483647 bytes) is larger than the allowed " +
 					"record size"));
