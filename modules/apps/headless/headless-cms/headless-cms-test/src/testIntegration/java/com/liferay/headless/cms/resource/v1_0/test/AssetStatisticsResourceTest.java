@@ -52,6 +52,7 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.kernel.workflow.WorkflowTaskManagerUtil;
 import com.liferay.portal.search.document.DocumentBuilderFactory;
 import com.liferay.portal.search.engine.adapter.SearchEngineAdapter;
 import com.liferay.portal.search.engine.adapter.document.DeleteDocumentRequest;
@@ -289,6 +290,7 @@ public class AssetStatisticsResourceTest
 		_testGetAssetStatisticsUnlinkedCount();
 		_testGetAssetStatisticsWithFreeTier();
 		_testGetAssetStatisticsWorkflowTasksCounts();
+		_testGetAssetStatisticsWorkflowTasksCountsByUser();
 	}
 
 	@Override
@@ -474,20 +476,30 @@ public class AssetStatisticsResourceTest
 	}
 
 	private void _assertSLABreachedWorkflowTasksCount(
+			Long assetLibraryId,
+			AssetStatisticsResource assetStatisticsResource,
+			long expectedSLABreachedWorkflowTasksCount)
+		throws Exception {
+
+		AssetStatistics assetStatistics =
+			assetStatisticsResource.getAssetStatistics(assetLibraryId);
+
+		Assert.assertEquals(
+			expectedSLABreachedWorkflowTasksCount,
+			GetterUtil.getLong(
+				assetStatistics.getSlaBreachedWorkflowTasksCount()));
+	}
+
+	private void _assertSLABreachedWorkflowTasksCount(
 			Long assetLibraryId, long expectedSLABreachedWorkflowTasksCount)
 		throws Exception {
 
-		for (AssetStatisticsResource assetStatisticsResource :
-				_assetStatisticsResources) {
-
-			AssetStatistics assetStatistics =
-				assetStatisticsResource.getAssetStatistics(assetLibraryId);
-
-			Assert.assertEquals(
-				expectedSLABreachedWorkflowTasksCount,
-				GetterUtil.getLong(
-					assetStatistics.getSlaBreachedWorkflowTasksCount()));
-		}
+		_assertSLABreachedWorkflowTasksCount(
+			assetLibraryId, _buildAssetStatisticsResource(_companyAdminUser),
+			expectedSLABreachedWorkflowTasksCount);
+		_assertSLABreachedWorkflowTasksCount(
+			assetLibraryId, assetStatisticsResource,
+			expectedSLABreachedWorkflowTasksCount);
 	}
 
 	private void _assertTotalCount(
@@ -521,29 +533,61 @@ public class AssetStatisticsResourceTest
 	}
 
 	private void _assertWorkflowTasksCounts(
+			Long assetLibraryId,
+			AssetStatisticsResource assetStatisticsResource,
+			long expectedCompletedWorkflowTasksCount,
+			long expectedOverdueWorkflowTasksCount,
+			long expectedWorkflowTasksCount)
+		throws Exception {
+
+		AssetStatistics assetStatistics =
+			assetStatisticsResource.getAssetStatistics(assetLibraryId);
+
+		Assert.assertEquals(
+			expectedCompletedWorkflowTasksCount,
+			GetterUtil.getLong(
+				assetStatistics.getCompletedWorkflowTasksCount()));
+		Assert.assertEquals(
+			expectedOverdueWorkflowTasksCount,
+			GetterUtil.getLong(assetStatistics.getOverdueWorkflowTasksCount()));
+		Assert.assertEquals(
+			expectedWorkflowTasksCount,
+			GetterUtil.getLong(assetStatistics.getWorkflowTasksCount()));
+	}
+
+	private void _assertWorkflowTasksCounts(
 			Long assetLibraryId, long expectedCompletedWorkflowTasksCount,
 			long expectedOverdueWorkflowTasksCount,
 			long expectedWorkflowTasksCount)
 		throws Exception {
 
-		for (AssetStatisticsResource assetStatisticsResource :
-				_assetStatisticsResources) {
+		_assertWorkflowTasksCounts(
+			assetLibraryId, _buildAssetStatisticsResource(_companyAdminUser),
+			expectedCompletedWorkflowTasksCount,
+			expectedOverdueWorkflowTasksCount, expectedWorkflowTasksCount);
+		_assertWorkflowTasksCounts(
+			assetLibraryId, assetStatisticsResource,
+			expectedCompletedWorkflowTasksCount,
+			expectedOverdueWorkflowTasksCount, expectedWorkflowTasksCount);
+	}
 
-			AssetStatistics assetStatistics =
-				assetStatisticsResource.getAssetStatistics(assetLibraryId);
+	private void _assignWorkflowTaskToUser(
+			ObjectDefinition objectDefinition, ObjectEntry objectEntry,
+			User user)
+		throws Exception {
 
-			Assert.assertEquals(
-				expectedCompletedWorkflowTasksCount,
-				GetterUtil.getLong(
-					assetStatistics.getCompletedWorkflowTasksCount()));
-			Assert.assertEquals(
-				expectedOverdueWorkflowTasksCount,
-				GetterUtil.getLong(
-					assetStatistics.getOverdueWorkflowTasksCount()));
-			Assert.assertEquals(
-				expectedWorkflowTasksCount,
-				GetterUtil.getLong(assetStatistics.getWorkflowTasksCount()));
-		}
+		List<KaleoTaskInstanceToken> kaleoTaskInstanceTokens =
+			_kaleoTaskInstanceTokenLocalService.getKaleoTaskInstanceTokens(
+				objectDefinition.getClassName(),
+				objectEntry.getObjectEntryId());
+
+		KaleoTaskInstanceToken kaleoTaskInstanceToken =
+			kaleoTaskInstanceTokens.get(0);
+
+		WorkflowTaskManagerUtil.assignWorkflowTaskToUser(
+			TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
+			kaleoTaskInstanceToken.getKaleoTaskInstanceTokenId(),
+			user.getUserId(), RandomTestUtil.randomString(), null, null);
 	}
 
 	private AssetStatisticsResource _buildAssetStatisticsResource(User user) {
@@ -556,6 +600,20 @@ public class AssetStatisticsResourceTest
 		).locale(
 			LocaleUtil.getDefault()
 		).build();
+	}
+
+	private void _deleteSLATaskResults() throws Exception {
+		for (String slaTaskResultUid : _slaTaskResultUids) {
+			DeleteDocumentRequest deleteDocumentRequest =
+				new DeleteDocumentRequest(
+					_getSLATaskResultsIndexName(), slaTaskResultUid);
+
+			deleteDocumentRequest.setRefresh(true);
+
+			_searchEngineAdapter.execute(deleteDocumentRequest);
+		}
+
+		_slaTaskResultUids.clear();
 	}
 
 	private ObjectDefinition _getCMSBasicWebContentObjectDefinition()
@@ -1051,15 +1109,7 @@ public class AssetStatisticsResourceTest
 
 		_assertSLABreachedWorkflowTasksCount(depotEntry1.getGroupId(), 2);
 
-		for (String slaTaskResultUid : _slaTaskResultUids) {
-			DeleteDocumentRequest deleteDocumentRequest =
-				new DeleteDocumentRequest(
-					_getSLATaskResultsIndexName(), slaTaskResultUid);
-
-			deleteDocumentRequest.setRefresh(true);
-
-			_searchEngineAdapter.execute(deleteDocumentRequest);
-		}
+		_deleteSLATaskResults();
 
 		_depotEntryLocalService.deleteDepotEntry(depotEntry1.getDepotEntryId());
 		_depotEntryLocalService.deleteDepotEntry(depotEntry2.getDepotEntryId());
@@ -1168,6 +1218,95 @@ public class AssetStatisticsResourceTest
 
 		_depotEntryLocalService.deleteDepotEntry(depotEntry1.getDepotEntryId());
 		_depotEntryLocalService.deleteDepotEntry(depotEntry2.getDepotEntryId());
+	}
+
+	private void _testGetAssetStatisticsWorkflowTasksCountsByUser()
+		throws Exception {
+
+		DepotEntry depotEntry = _addSpaceDepotEntry(
+			ServiceContextTestUtil.getServiceContext());
+
+		ObjectDefinition objectDefinition =
+			_getCMSBasicWebContentObjectDefinition();
+
+		_workflowDefinitionLinkLocalService.updateWorkflowDefinitionLink(
+			TestPropsValues.getUserId(), TestPropsValues.getCompanyId(),
+			depotEntry.getGroupId(), objectDefinition.getClassName(), 0, 0,
+			"Single Approver", 1);
+
+		User user1 = UserTestUtil.addUser(
+			testCompany, RandomTestUtil.randomString());
+
+		_addGroupUserWithRole(
+			depotEntry.getGroupId(),
+			DepotRolesConstants.ASSET_LIBRARY_ADMINISTRATOR, user1);
+
+		User user2 = UserTestUtil.addUser(
+			testCompany, RandomTestUtil.randomString());
+
+		User user3 = _addUserWithRole(RoleConstants.PORTAL_CONTENT_REVIEWER);
+
+		_addGroupUserWithRole(
+			depotEntry.getGroupId(),
+			DepotRolesConstants.ASSET_LIBRARY_ADMINISTRATOR, user3);
+
+		Date date = new Date(System.currentTimeMillis() - Time.DAY);
+
+		ObjectEntry objectEntry1 = _addObjectEntry(
+			depotEntry, objectDefinition);
+
+		_updateKaleoTaskInstanceToken(
+			false, date, objectDefinition, objectEntry1);
+
+		ObjectEntry objectEntry2 = _addObjectEntry(
+			depotEntry, objectDefinition);
+
+		_assignWorkflowTaskToUser(objectDefinition, objectEntry2, user1);
+		_updateKaleoTaskInstanceToken(
+			false, date, objectDefinition, objectEntry2);
+
+		ObjectEntry objectEntry3 = _addObjectEntry(
+			depotEntry, objectDefinition);
+
+		_assignWorkflowTaskToUser(objectDefinition, objectEntry3, user2);
+		_updateKaleoTaskInstanceToken(
+			false, date, objectDefinition, objectEntry3);
+
+		_indexSLATaskResult(
+			true, objectDefinition, objectEntry1, false,
+			WorkflowMetricsSLAStatus.RUNNING);
+		_indexSLATaskResult(
+			true, objectDefinition, objectEntry2, false,
+			WorkflowMetricsSLAStatus.RUNNING);
+		_indexSLATaskResult(
+			true, objectDefinition, objectEntry3, false,
+			WorkflowMetricsSLAStatus.RUNNING);
+
+		_assertWorkflowTasksCounts(
+			depotEntry.getGroupId(),
+			_buildAssetStatisticsResource(_cmsAdministratorUser), 0, 0, 0);
+		_assertWorkflowTasksCounts(
+			depotEntry.getGroupId(), _buildAssetStatisticsResource(user1), 0, 2,
+			2);
+		_assertWorkflowTasksCounts(
+			depotEntry.getGroupId(), _buildAssetStatisticsResource(user3), 0, 3,
+			3);
+		_assertWorkflowTasksCounts(
+			depotEntry.getGroupId(), assetStatisticsResource, 0, 3, 3);
+
+		_assertSLABreachedWorkflowTasksCount(
+			depotEntry.getGroupId(),
+			_buildAssetStatisticsResource(_cmsAdministratorUser), 0);
+		_assertSLABreachedWorkflowTasksCount(
+			depotEntry.getGroupId(), _buildAssetStatisticsResource(user1), 2);
+		_assertSLABreachedWorkflowTasksCount(
+			depotEntry.getGroupId(), _buildAssetStatisticsResource(user3), 3);
+		_assertSLABreachedWorkflowTasksCount(
+			depotEntry.getGroupId(), assetStatisticsResource, 3);
+
+		_deleteSLATaskResults();
+
+		_depotEntryLocalService.deleteDepotEntry(depotEntry.getDepotEntryId());
 	}
 
 	private void _updateKaleoTaskInstanceToken(
