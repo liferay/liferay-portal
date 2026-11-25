@@ -394,6 +394,32 @@ describe('ContentEditorSidePanel', () => {
 		expect(screen.queryByText('Comment to delete')).not.toBeInTheDocument();
 	});
 
+	it('keeps the subscription when switching panels', async () => {
+		renderComponent();
+
+		await userEvent.click(screen.getByLabelText('comments'));
+
+		await userEvent.click(await screen.findByLabelText('subscribe'));
+
+		await waitFor(() => {
+			expect(screen.getByLabelText('unsubscribe')).toBeInTheDocument();
+		});
+
+		await userEvent.click(screen.getByLabelText('general'));
+
+		await waitFor(() => {
+			expect(screen.getByText('general')).toBeInTheDocument();
+		});
+
+		await userEvent.click(screen.getByLabelText('comments'));
+
+		await waitFor(() => {
+			expect(screen.getByText('comments')).toBeInTheDocument();
+		});
+
+		expect(screen.getByLabelText('unsubscribe')).toBeInTheDocument();
+	});
+
 	it('persists a tag commit while the categorization panel is closed', async () => {
 		const handlers: Record<string, (payload: any) => void> = {};
 
