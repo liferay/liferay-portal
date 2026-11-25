@@ -40,10 +40,12 @@ import java.util.Properties;
 public class CustomElementCETPortlet extends BaseCETPortlet<CustomElementCET> {
 
 	public CustomElementCETPortlet(
-		CustomElementCET customElementCET, Portal portal, String portletId) {
+		CustomElementCET customElementCET, String panelCategoryKey,
+		Portal portal, String portletId) {
 
 		super(customElementCET);
 
+		_panelCategoryKey = panelCategoryKey;
 		_portal = portal;
 		_portletId = portletId;
 	}
@@ -63,6 +65,8 @@ public class CustomElementCETPortlet extends BaseCETPortlet<CustomElementCET> {
 				cet.getPortletCategoryName()
 			).put(
 				"com.liferay.portlet.instanceable", cet.isInstanceable()
+			).put(
+				"com.liferay.portlet.panel.category.key", _panelCategoryKey
 			).put(
 				"jakarta.portlet.display-name", cet.getName(LocaleUtil.US)
 			).put(
@@ -180,6 +184,7 @@ public class CustomElementCETPortlet extends BaseCETPortlet<CustomElementCET> {
 	private static final Log _log = LogFactoryUtil.getLog(
 		CustomElementCETPortlet.class);
 
+	private final String _panelCategoryKey;
 	private final Portal _portal;
 	private final String _portletId;
 

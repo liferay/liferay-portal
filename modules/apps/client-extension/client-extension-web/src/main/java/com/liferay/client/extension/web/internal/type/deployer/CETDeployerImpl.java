@@ -144,15 +144,19 @@ public class CETDeployerImpl implements CETDeployer {
 						friendlyURLMapping, portletId)));
 		}
 
+		String panelCategoryKey = customElementCET.getPanelCategoryKey();
+
+		if (Validator.isNull(customElementCET.getPanelAppOrder())) {
+			panelCategoryKey = StringPool.BLANK;
+		}
+
 		serviceRegistrations.add(
 			_register(
 				Portlet.class,
 				new CustomElementCETPortlet(
-					customElementCET, _portal, portletId)));
+					customElementCET, panelCategoryKey, _portal, portletId)));
 
-		if (Validator.isNotNull(customElementCET.getPanelAppOrder()) &&
-			Validator.isNotNull(customElementCET.getPanelCategoryKey())) {
-
+		if (Validator.isNotNull(panelCategoryKey)) {
 			serviceRegistrations.add(
 				_bundleContext.registerService(
 					PanelApp.class,
@@ -164,8 +168,7 @@ public class CETDeployerImpl implements CETDeployer {
 						GetterUtil.getInteger(
 							customElementCET.getPanelAppOrder())
 					).put(
-						"panel.category.key",
-						customElementCET.getPanelCategoryKey()
+						"panel.category.key", panelCategoryKey
 					).build()));
 		}
 
