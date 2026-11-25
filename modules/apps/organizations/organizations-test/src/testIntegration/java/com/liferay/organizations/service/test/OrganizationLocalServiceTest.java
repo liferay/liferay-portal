@@ -144,9 +144,8 @@ public class OrganizationLocalServiceTest {
 			QueryUtil.ALL_POS, QueryUtil.ALL_POS,
 			(OrderByComparator<User>)null);
 
-		Assert.assertEquals(users.toString(), 1, users.size());
-
 		Assert.assertEquals(user, users.get(0));
+		Assert.assertEquals(users.toString(), 1, users.size());
 
 		_organizationLocalService.deleteUserOrganizationByEmailAddress(
 			user.getEmailAddress(), organization.getOrganizationId());
