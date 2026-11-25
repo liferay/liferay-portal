@@ -5,6 +5,7 @@ import (
 )
 
 const developerLicenseXML = `<?xml version="1.0"?>
+
 <licenses>
     <license>
         <description>Digital Sales Room Cloud Native Environment</description>
@@ -33,6 +34,7 @@ const developerLicenseXML = `<?xml version="1.0"?>
 </licenses>`
 
 const distinctOwnersLicenseXML = `<?xml version="1.0"?>
+
 <licenses>
     <license>
 		<license-type>enterprise</license-type>
@@ -46,6 +48,7 @@ const distinctOwnersLicenseXML = `<?xml version="1.0"?>
 </licenses>`
 
 const missingExpirationDateLicenseXML = `<?xml version="1.0"?>
+
 <licenses>
     <license>
 		<license-type>enterprise</license-type>
@@ -53,6 +56,7 @@ const missingExpirationDateLicenseXML = `<?xml version="1.0"?>
 </licenses>`
 
 const skipsValidationLicenseXML = `<?xml version="1.0"?>
+
 <licenses>
     <license>
 		<expiration-date>not a real date</expiration-date>
@@ -65,6 +69,7 @@ const skipsValidationLicenseXML = `<?xml version="1.0"?>
 </licenses>`
 
 const validLicenseXML = `<?xml version="1.0"?>
+
 <licenses>
     <license>
         <description>Digital Sales Room Cloud Native Environment</description>
