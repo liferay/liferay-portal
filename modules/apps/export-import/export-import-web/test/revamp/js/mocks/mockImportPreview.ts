@@ -16,6 +16,7 @@ export const mockImportPreview: ImportPreview = {
 	exportDate: '2000-07-27T00:00:00Z',
 	fileName: 'site.lar',
 	fileSize: 4096,
+	id: 1,
 	portletDataHandlers: toMockPortletDataHandlers(
 		mockPortletDataHandlerSections
 	),

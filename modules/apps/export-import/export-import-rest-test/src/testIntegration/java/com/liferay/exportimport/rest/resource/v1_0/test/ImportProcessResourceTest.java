@@ -321,6 +321,17 @@ public class ImportProcessResourceTest
 
 		_testPostImportProcessWithAssetLibrariesAndSites(
 			companyGroup.getGroupId());
+		_testPostImportProcessWithImportPreviewId(
+			companyGroup.getGroupId(),
+			file -> _importPreviewResource.postImportPreview(
+				null, null,
+				HashMapBuilder.put(
+					"file", file
+				).build()),
+			importProcessRequest ->
+				importProcessResource.postImportProcessHttpResponse(
+					null,
+					_toInstanceImportProcessRequest(importProcessRequest)));
 		_testPostImportProcessWithPreviewForOtherGroup(
 			testGroup.getGroupId(),
 			file -> _importPreviewResource.postSiteImportPreview(
@@ -591,6 +602,25 @@ public class ImportProcessResourceTest
 		LayoutTestUtil.addPortletToLayout(layout, portletId);
 
 		return layout;
+	}
+
+	private void _assertTempFileEntryId(
+			long expectedTempFileEntryId, HttpInvoker.HttpResponse httpResponse)
+		throws Exception {
+
+		assertHttpResponseStatusCode(200, httpResponse);
+
+		ImportProcess importProcess = ImportProcess.toDTO(
+			httpResponse.getContent());
+
+		BackgroundTask backgroundTask =
+			_backgroundTaskLocalService.getBackgroundTask(
+				importProcess.getId());
+
+		Assert.assertEquals(
+			expectedTempFileEntryId,
+			MapUtil.getLong(
+				backgroundTask.getTaskContextMap(), "tempFileEntryId"));
 	}
 
 	private void _deleteTempFileEntries(long groupId) throws Exception {
@@ -906,6 +936,61 @@ public class ImportProcessResourceTest
 			"LPD-85946", instanceImportProcessRequest);
 	}
 
+	@TestInfo("LPD-117620")
+	private void _testPostImportProcessWithImportPreviewId(
+			long exportImportGroupId,
+			UnsafeFunction<File, ImportPreview, Exception>
+				postImportPreviewUnsafeFunction,
+			UnsafeFunction
+				<ImportProcessRequest, HttpInvoker.HttpResponse, Exception>
+					postImportProcessUnsafeFunction)
+		throws Exception {
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.portal.vulcan.internal.jaxrs.exception.mapper." +
+					"WebApplicationExceptionMapper",
+				LoggerTestUtil.WARN)) {
+
+			try {
+				ImportPreview importPreview1 =
+					postImportPreviewUnsafeFunction.apply(
+						_exportLayoutAsFile(exportImportGroupId));
+				ImportPreview importPreview2 =
+					postImportPreviewUnsafeFunction.apply(
+						_exportLayoutAsFile(exportImportGroupId));
+
+				Assert.assertNotEquals(
+					importPreview1.getId(), importPreview2.getId());
+
+				_assertTempFileEntryId(
+					importPreview2.getId(),
+					postImportProcessUnsafeFunction.apply(
+						new ImportProcessRequest()));
+
+				_assertTempFileEntryId(
+					importPreview1.getId(),
+					postImportProcessUnsafeFunction.apply(
+						new ImportProcessRequest() {
+							{
+								importPreviewId = importPreview1.getId();
+							}
+						}));
+
+				assertHttpResponseStatusCode(
+					404,
+					postImportProcessUnsafeFunction.apply(
+						new ImportProcessRequest() {
+							{
+								importPreviewId = importPreview2.getId();
+							}
+						}));
+			}
+			finally {
+				_deleteTempFileEntries(exportImportGroupId);
+			}
+		}
+	}
+
 	private void _testPostImportProcessWithLayoutSet(
 			UnsafeFunction<File, ImportPreview, Exception>
 				postImportPreviewUnsafeFunction,
@@ -994,13 +1079,22 @@ public class ImportProcessResourceTest
 				LoggerTestUtil.WARN)) {
 
 			try {
-				postImportPreviewUnsafeFunction.apply(
-					_exportLayoutAsFile(exportImportGroupId));
+				ImportPreview importPreview =
+					postImportPreviewUnsafeFunction.apply(
+						_exportLayoutAsFile(exportImportGroupId));
 
 				assertHttpResponseStatusCode(
 					404,
 					postImportProcessUnsafeFunction.apply(
 						new ImportProcessRequest()));
+				assertHttpResponseStatusCode(
+					404,
+					postImportProcessUnsafeFunction.apply(
+						new ImportProcessRequest() {
+							{
+								importPreviewId = importPreview.getId();
+							}
+						}));
 			}
 			finally {
 				_deleteTempFileEntries(exportImportGroupId);

@@ -603,6 +603,7 @@ public class ImportPreviewResourceTest
 		Assert.assertEquals(file.getName(), importPreview.getFileName());
 		Assert.assertEquals(
 			Long.valueOf(file.length()), importPreview.getFileSize());
+		Assert.assertNotNull(importPreview.getId());
 		Assert.assertTrue(
 			_getAdditionCount(importPreview, objectDefinition.getPortletId()) >
 				0);

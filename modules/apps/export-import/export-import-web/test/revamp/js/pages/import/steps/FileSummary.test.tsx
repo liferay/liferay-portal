@@ -17,6 +17,7 @@ const baseImportPreview: ImportPreview = {
 	exportDate: '2026-05-01T00:00:00Z',
 	fileName: 'site.lar',
 	fileSize: 1024,
+	id: 1,
 	portletDataHandlers: [],
 };
 

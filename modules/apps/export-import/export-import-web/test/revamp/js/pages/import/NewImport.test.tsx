@@ -585,6 +585,7 @@ describe('NewImport', () => {
 
 		expect(JSON.parse(String(init?.body))).toMatchObject({
 			assetLibraries: [{externalReferenceCode: 'erc-book'}],
+			importPreviewId: mockImportPreview.id,
 			portletDataHandlers: [],
 			sites: [],
 		});
