@@ -24,6 +24,8 @@ public class SegmentsEntryConstants {
 
 	public static final String SOURCE_ASAH_FARO_BACKEND = "ASAH_FARO_BACKEND";
 
+	public static final String SOURCE_AUDIENCE = "AUDIENCE";
+
 	public static final String SOURCE_DEFAULT = "DEFAULT";
 
 	public static final String SOURCE_REFERRED = "REFERRED";
