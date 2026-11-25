@@ -89,8 +89,7 @@ public class RemoteInstanceObjectEntryValuesContributorTest {
 			TestPropsValues.getCompanyId());
 
 		return _encryptor.decryptAuthenticated(
-			company.getKeyObj(),
-			clientSecret.substring("{AES_GCM}".length()));
+			company.getKeyObj(), clientSecret.substring("{AES_GCM}".length()));
 	}
 
 	private String _getClientSecret(long objectEntryId) throws Exception {
