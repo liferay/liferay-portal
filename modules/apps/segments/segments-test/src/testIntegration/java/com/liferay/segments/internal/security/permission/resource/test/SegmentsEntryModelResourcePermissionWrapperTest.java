@@ -84,6 +84,25 @@ public class SegmentsEntryModelResourcePermissionWrapperTest {
 	}
 
 	@Test
+	public void testContainsWithSourceAudience() throws Exception {
+		SegmentsEntry segmentsEntry =
+			_segmentsEntryLocalService.addSegmentsEntry(
+				null, RandomTestUtil.randomString(),
+				Collections.singletonMap(
+					LocaleUtil.getDefault(), RandomTestUtil.randomString()),
+				Collections.singletonMap(
+					LocaleUtil.getDefault(), RandomTestUtil.randomString()),
+				true, null, SegmentsEntryConstants.SOURCE_AUDIENCE,
+				SegmentsEntryConstants.TYPE_DEFAULT,
+				ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+
+		Assert.assertFalse(
+			_segmentsEntryModelResourcePermission.contains(
+				_permissionCheckerFactory.create(TestPropsValues.getUser()),
+				segmentsEntry.getSegmentsEntryId(), ActionKeys.UPDATE));
+	}
+
+	@Test
 	public void testContainsWithoutPermissions() throws Exception {
 		User user = UserTestUtil.addUser(_group.getGroupId());
 

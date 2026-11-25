@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -54,6 +55,7 @@ import com.liferay.segments.exception.SegmentsExperiencePriorityException;
 import com.liferay.segments.model.SegmentsEntry;
 import com.liferay.segments.model.SegmentsExperience;
 import com.liferay.segments.model.SegmentsExperiment;
+import com.liferay.segments.service.SegmentsEntryLocalService;
 import com.liferay.segments.service.SegmentsExperienceLocalService;
 import com.liferay.segments.service.SegmentsExperimentLocalService;
 import com.liferay.segments.service.persistence.SegmentsExperiencePersistence;
@@ -211,6 +213,29 @@ public class SegmentsExperienceLocalServiceTest {
 			RandomTestUtil.randomString(),
 			CriteriaSerializer.serialize(new Criteria()),
 			SegmentsEntryConstants.SOURCE_ASAH_FARO_BACKEND,
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+
+		SegmentsExperience segmentsExperience =
+			_segmentsExperienceLocalService.addSegmentsExperience(
+				null, TestPropsValues.getUserId(), _group.getGroupId(),
+				segmentsEntry.getExternalReferenceCode(), null, _plid,
+				RandomTestUtil.randomLocaleStringMap(), true,
+				new UnicodeProperties(true),
+				ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+
+		Assert.assertTrue(segmentsExperience.isActive());
+	}
+
+	@FeatureFlag(enable = false, value = "LPD-78863")
+	@Test
+	public void testAddSegmentsExperienceActiveWithFeatureFlagDisabledAudienceSource()
+		throws Exception {
+
+		SegmentsEntry segmentsEntry = SegmentsTestUtil.addSegmentsEntry(
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(),
+			CriteriaSerializer.serialize(new Criteria()),
+			SegmentsEntryConstants.SOURCE_AUDIENCE,
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 
 		SegmentsExperience segmentsExperience =
@@ -631,6 +656,47 @@ public class SegmentsExperienceLocalServiceTest {
 
 		_segmentsExperienceLocalService.deleteSegmentsExperience(
 			segmentsExperience.getSegmentsExperienceId());
+	}
+
+	@Test
+	public void testDeleteSegmentsExperienceWithAudienceSegmentsEntry()
+		throws Exception {
+
+		Group companyGroup = _groupLocalService.getCompanyGroup(
+			_group.getCompanyId());
+
+		SegmentsEntry segmentsEntry = SegmentsTestUtil.addSegmentsEntry(
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), null,
+			SegmentsEntryConstants.SOURCE_AUDIENCE,
+			ServiceContextTestUtil.getServiceContext(
+				companyGroup.getGroupId()));
+
+		SegmentsExperience segmentsExperience1 =
+			SegmentsTestUtil.addSegmentsExperience(
+				_group.getGroupId(), segmentsEntry.getExternalReferenceCode(),
+				companyGroup.getExternalReferenceCode(), _plid);
+
+		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
+
+		SegmentsExperience segmentsExperience2 =
+			SegmentsTestUtil.addSegmentsExperience(
+				_group.getGroupId(), segmentsEntry.getExternalReferenceCode(),
+				companyGroup.getExternalReferenceCode(), layout.getPlid());
+
+		_segmentsExperienceLocalService.deleteSegmentsExperience(
+			segmentsExperience1.getSegmentsExperienceId());
+
+		Assert.assertNotNull(
+			_segmentsEntryLocalService.fetchSegmentsEntry(
+				segmentsEntry.getSegmentsEntryId()));
+
+		_segmentsExperienceLocalService.deleteSegmentsExperience(
+			segmentsExperience2.getSegmentsExperienceId());
+
+		Assert.assertNull(
+			_segmentsEntryLocalService.fetchSegmentsEntry(
+				segmentsEntry.getSegmentsEntryId()));
 	}
 
 	@Test
@@ -1229,12 +1295,18 @@ public class SegmentsExperienceLocalServiceTest {
 	private Group _group;
 
 	@Inject
+	private GroupLocalService _groupLocalService;
+
+	@Inject
 	private LayoutLocalService _layoutLocalService;
 
 	@Inject
 	private LockManager _lockManager;
 
 	private long _plid;
+
+	@Inject
+	private SegmentsEntryLocalService _segmentsEntryLocalService;
 
 	@Inject
 	private SegmentsExperienceLocalService _segmentsExperienceLocalService;

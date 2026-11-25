@@ -71,6 +71,12 @@ public class SegmentsServiceVerifyProcessTest {
 		SegmentsEntry asahFaroSegmentsEntry = _addActiveSegmentsEntry(
 			SegmentsEntryConstants.SOURCE_ASAH_FARO_BACKEND);
 
+		SegmentsEntry audienceSegmentsEntry = _addActiveSegmentsEntry(
+			SegmentsEntryConstants.SOURCE_AUDIENCE);
+
+		SegmentsExperience audienceSegmentsExperience =
+			_addActiveSegmentsExperience(audienceSegmentsEntry);
+
 		SegmentsEntry defaultSegmentsEntry = _addActiveSegmentsEntry(
 			SegmentsEntryConstants.SOURCE_DEFAULT);
 
@@ -83,6 +89,17 @@ public class SegmentsServiceVerifyProcessTest {
 			asahFaroSegmentsEntry.getSegmentsEntryId());
 
 		Assert.assertTrue(asahFaroSegmentsEntry.isActive());
+
+		audienceSegmentsEntry = _segmentsEntryLocalService.getSegmentsEntry(
+			audienceSegmentsEntry.getSegmentsEntryId());
+
+		Assert.assertTrue(audienceSegmentsEntry.isActive());
+
+		audienceSegmentsExperience =
+			_segmentsExperienceLocalService.getSegmentsExperience(
+				audienceSegmentsExperience.getSegmentsExperienceId());
+
+		Assert.assertTrue(audienceSegmentsExperience.isActive());
 
 		defaultSegmentsEntry = _segmentsEntryLocalService.getSegmentsEntry(
 			defaultSegmentsEntry.getSegmentsEntryId());

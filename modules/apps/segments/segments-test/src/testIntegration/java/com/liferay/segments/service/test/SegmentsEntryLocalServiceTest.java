@@ -144,6 +144,21 @@ public class SegmentsEntryLocalServiceTest {
 
 	@FeatureFlag(enable = false, value = "LPD-78863")
 	@Test
+	public void testAddSegmentsEntryActiveWithFeatureFlagDisabledAudienceSource()
+		throws Exception {
+
+		SegmentsEntry segmentsEntry = SegmentsTestUtil.addSegmentsEntry(
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(),
+			CriteriaSerializer.serialize(new Criteria()),
+			SegmentsEntryConstants.SOURCE_AUDIENCE,
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+
+		Assert.assertTrue(segmentsEntry.isActive());
+	}
+
+	@FeatureFlag(enable = false, value = "LPD-78863")
+	@Test
 	public void testAddSegmentsEntryActiveWithFeatureFlagDisabledWithinImport()
 		throws Exception {
 

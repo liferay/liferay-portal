@@ -118,6 +118,8 @@ public class SegmentsFeatureFlagListenerTest {
 			true, SegmentsEntryConstants.SOURCE_DEFAULT);
 		SegmentsEntry asahFaroSegmentsEntry = _addSegmentsEntry(
 			true, SegmentsEntryConstants.SOURCE_ASAH_FARO_BACKEND);
+		SegmentsEntry audienceSegmentsEntry = _addSegmentsEntry(
+			true, SegmentsEntryConstants.SOURCE_AUDIENCE);
 
 		SegmentsExperience segmentsExperience =
 			SegmentsTestUtil.addSegmentsExperience(
@@ -128,6 +130,11 @@ public class SegmentsFeatureFlagListenerTest {
 			SegmentsTestUtil.addSegmentsExperience(
 				_group.getGroupId(),
 				asahFaroSegmentsEntry.getExternalReferenceCode(),
+				_group.getExternalReferenceCode(), layout.getPlid());
+		SegmentsExperience audienceSegmentsExperience =
+			SegmentsTestUtil.addSegmentsExperience(
+				_group.getGroupId(),
+				audienceSegmentsEntry.getExternalReferenceCode(),
 				_group.getExternalReferenceCode(), layout.getPlid());
 
 		_invokeFeatureFlagListeners(false);
@@ -143,6 +150,12 @@ public class SegmentsFeatureFlagListenerTest {
 				asahFaroSegmentsExperience.getSegmentsExperienceId());
 
 		Assert.assertTrue(asahSegmentsExperience.isActive());
+
+		audienceSegmentsExperience =
+			_segmentsExperienceLocalService.getSegmentsExperience(
+				audienceSegmentsExperience.getSegmentsExperienceId());
+
+		Assert.assertTrue(audienceSegmentsExperience.isActive());
 	}
 
 	private SegmentsEntry _addSegmentsEntry(boolean active, String source)
