@@ -31,5 +31,11 @@
 		],
 		"type": "Root"
 	},
+	"settings": {
+		"favIcon": {
+			"contentType": "Document",
+			"externalReferenceCode": "LDP_FAVICON"
+		}
+	},
 	"version": 1.1
 }
