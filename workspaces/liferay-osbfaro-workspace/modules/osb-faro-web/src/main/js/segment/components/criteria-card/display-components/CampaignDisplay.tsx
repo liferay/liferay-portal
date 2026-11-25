@@ -46,7 +46,7 @@ const CampaignDisplay: React.FC<IDisplayComponentProps> = ({
 				{getOperatorLabel(criterion.operatorName ?? '', property.type)}
 			</span>
 
-			<span>{Liferay.Language.get('touched-by')}</span>
+			<span>{Liferay.Language.get('touched-by').toLowerCase()}</span>
 
 			{ids.map((id, index) => (
 				<React.Fragment key={id}>

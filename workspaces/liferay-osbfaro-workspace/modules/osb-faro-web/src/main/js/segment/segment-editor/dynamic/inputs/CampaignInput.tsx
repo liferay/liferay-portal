@@ -44,7 +44,7 @@ const CampaignInput: React.FC<ICampaignInputProps> = ({
 				<OperatorDropdown />
 
 				<Form.GroupItem className="entity-name" label shrink>
-					{Liferay.Language.get('touched-by')}
+					{Liferay.Language.get('touched-by').toLowerCase()}
 				</Form.GroupItem>
 
 				<Form.GroupItem label>
