@@ -250,16 +250,16 @@ public class CPDefinitionVirtualSettingServiceTest {
 		List<CPDVirtualSettingFileEntry> cpdVirtualSettingFileEntries =
 			cpDefinitionVirtualSetting.getCPDVirtualSettingFileEntries();
 
-		Assert.assertEquals(
-			cpdVirtualSettingFileEntries.toString(), 1,
-			cpdVirtualSettingFileEntries.size());
-
 		CPDVirtualSettingFileEntry cpdVirtualSettingFileEntry =
 			cpdVirtualSettingFileEntries.get(0);
 
 		Assert.assertEquals(
 			fileEntry.getFileEntryId(),
 			cpdVirtualSettingFileEntry.getFileEntryId());
+
+		Assert.assertEquals(
+			cpdVirtualSettingFileEntries.toString(), 1,
+			cpdVirtualSettingFileEntries.size());
 	}
 
 	private void _assertMustHavePermission(
