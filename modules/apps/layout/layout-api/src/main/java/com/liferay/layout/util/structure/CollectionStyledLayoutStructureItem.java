@@ -205,8 +205,15 @@ public class CollectionStyledLayoutStructureItem
 					JSONFactoryUtil.createJSONObject());
 
 			currentViewportConfigurationJSONObject.put(
+				"align", viewportConfigurationJSONObject.get("align")
+			).put(
+				"flexWrap", viewportConfigurationJSONObject.get("flexWrap")
+			).put(
+				"justify", viewportConfigurationJSONObject.get("justify")
+			).put(
 				"numberOfColumns",
-				viewportConfigurationJSONObject.get("numberOfColumns"));
+				viewportConfigurationJSONObject.get("numberOfColumns")
+			);
 
 			jsonObject.put(
 				viewportSize.getViewportSizeId(),
