@@ -459,10 +459,10 @@ public class RedirectEntryLocalServiceTest {
 			ServiceContextTestUtil.getServiceContext());
 
 		Assert.assertEquals(
+			_URL_DESTINATION, _chainedRedirectEntry.getDestinationURL());
+		Assert.assertEquals(
 			_friendlyURLNormalizer.normalizeWithEncoding("über-mİch"),
 			_chainedRedirectEntry.getSourceURL());
-		Assert.assertEquals(
-			_URL_DESTINATION, _chainedRedirectEntry.getDestinationURL());
 	}
 
 	@Test
@@ -486,10 +486,10 @@ public class RedirectEntryLocalServiceTest {
 			_redirectEntry.getRedirectEntryId());
 
 		Assert.assertEquals(
+			_URL_FINAL_DESTINATION, _redirectEntry.getDestinationURL());
+		Assert.assertEquals(
 			_friendlyURLNormalizer.normalizeWithEncoding("über-mİch"),
 			_redirectEntry.getSourceURL());
-		Assert.assertEquals(
-			_URL_FINAL_DESTINATION, _redirectEntry.getDestinationURL());
 	}
 
 	@Test
