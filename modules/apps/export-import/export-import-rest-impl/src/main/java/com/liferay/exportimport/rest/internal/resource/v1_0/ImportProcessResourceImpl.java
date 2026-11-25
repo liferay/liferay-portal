@@ -43,6 +43,7 @@ import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.PortletLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.MapUtil;
@@ -369,6 +370,7 @@ public class ImportProcessResourceImpl extends BaseImportProcessResourceImpl {
 			ActionKeys.EXPORT_IMPORT_LAYOUTS);
 
 		FileEntry fileEntry = ImportTempFileEntryUtil.getTempFileEntry(
+			GetterUtil.getLong(importProcessRequest.getImportPreviewId()),
 			groupId, contextUser.getUserId());
 
 		String name = importProcessRequest.getName();
@@ -424,6 +426,7 @@ public class ImportProcessResourceImpl extends BaseImportProcessResourceImpl {
 			ActionKeys.EXPORT_IMPORT_PORTLET_INFO);
 
 		FileEntry fileEntry = ImportTempFileEntryUtil.getTempFileEntry(
+			GetterUtil.getLong(importProcessRequest.getImportPreviewId()),
 			groupId, contextUser.getUserId());
 
 		String name = importProcessRequest.getName();
@@ -520,6 +523,8 @@ public class ImportProcessResourceImpl extends BaseImportProcessResourceImpl {
 							dataStrategy.getValue());
 					});
 				setDeletions(instanceImportProcessRequest::getDeletions);
+				setImportPreviewId(
+					instanceImportProcessRequest::getImportPreviewId);
 				setName(instanceImportProcessRequest::getName);
 				setPermissions(instanceImportProcessRequest::getPermissions);
 				setPortletDataHandlers(

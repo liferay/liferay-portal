@@ -116,6 +116,7 @@ export function NewImport({
 							}),
 							dataStrategy: values.dataStrategy as DataStrategy,
 							deletions: !!values.deletions,
+							importPreviewId: importPreview.id,
 							name: values.name,
 							permissions: !!values.permissions,
 							portletDataHandlers: toPortletDataHandlers(

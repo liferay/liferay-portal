@@ -186,9 +186,6 @@ public class ImportPreviewResourceImpl extends BaseImportPreviewResourceImpl {
 
 		long groupId = scopeGroup.getGroupId();
 
-		ImportTempFileEntryUtil.deleteUnreservedTempFileEntries(
-			groupId, contextUser.getUserId());
-
 		_validateImportFile(file, groupId, layout, portletId);
 
 		try (ZipReader zipReader = new ZipReader(file)) {
@@ -241,6 +238,7 @@ public class ImportPreviewResourceImpl extends BaseImportPreviewResourceImpl {
 					setFileName(
 						() -> ImportTempFileEntryUtil.getFileName(fileEntry));
 					setFileSize(fileEntry::getSize);
+					setId(fileEntry::getFileEntryId);
 					setPortletDataHandlers(() -> importPortletDataHandlers);
 					setSites(() -> _getSites(exportImportGroups));
 				}

@@ -25,6 +25,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -44,24 +45,13 @@ public class ImportTempFileEntryUtil {
 		}
 	}
 
-	public static void deleteUnreservedTempFileEntries(
-			long groupId, long userId)
-		throws PortalException {
-
-		for (FileEntry fileEntry :
-				_getUnreservedTempFileEntries(groupId, userId)) {
-
-			LayoutServiceUtil.deleteTempFileEntry(
-				groupId, _FOLDER_NAME, fileEntry.getFileName());
-		}
-	}
-
 	public static String getFileName(FileEntry fileEntry) {
 		return TempFileEntryUtil.getOriginalTempFileName(
 			fileEntry.getFileName());
 	}
 
-	public static FileEntry getTempFileEntry(long groupId, long userId)
+	public static FileEntry getTempFileEntry(
+			long fileEntryId, long groupId, long userId)
 		throws PortalException {
 
 		List<FileEntry> fileEntries = _getUnreservedTempFileEntries(
@@ -71,7 +61,22 @@ public class ImportTempFileEntryUtil {
 			throw new NotFoundException();
 		}
 
-		return fileEntries.get(0);
+		Collections.sort(
+			fileEntries,
+			Comparator.comparing(
+				FileEntry::getCreateDate, Comparator.reverseOrder()));
+
+		if (fileEntryId == 0) {
+			return fileEntries.get(0);
+		}
+
+		for (FileEntry fileEntry : fileEntries) {
+			if (fileEntry.getFileEntryId() == fileEntryId) {
+				return fileEntry;
+			}
+		}
+
+		throw new NotFoundException();
 	}
 
 	private static List<FileEntry> _getUnreservedTempFileEntries(

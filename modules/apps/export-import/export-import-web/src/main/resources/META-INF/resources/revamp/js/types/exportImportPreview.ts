@@ -19,6 +19,7 @@ export interface ImportPreview {
 	exportDate: string;
 	fileName: string;
 	fileSize: number;
+	id: number;
 	portletDataHandlers: PortletDataHandler[];
 	sites?: Site[];
 }
