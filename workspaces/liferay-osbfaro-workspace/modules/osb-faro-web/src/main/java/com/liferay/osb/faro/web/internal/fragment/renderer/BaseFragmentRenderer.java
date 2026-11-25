@@ -141,7 +141,8 @@ public abstract class BaseFragmentRenderer implements FragmentRenderer {
 					}
 				).put(
 					"dismissedAlerts",
-					_getDismissedAlerts(httpServletRequest)
+					_getDismissedAlerts(
+						themeDisplay.getScopeGroupId(), httpServletRequest)
 				).put(
 					"friendlyURL",
 					() -> {
@@ -240,9 +241,14 @@ public abstract class BaseFragmentRenderer implements FragmentRenderer {
 	protected ServletContext servletContext;
 
 	private Map<String, Object> _getDismissedAlerts(
-		HttpServletRequest httpServletRequest) {
+		long groupId, HttpServletRequest httpServletRequest) {
 
 		return HashMapBuilder.<String, Object>put(
+			"maintenanceDate",
+			SessionClicks.get(
+				httpServletRequest,
+				"osb-faro-web_dismissedAlerts_maintenanceDate_" + groupId, null)
+		).put(
 			"unassignedSegments",
 			GetterUtil.getBoolean(
 				SessionClicks.get(
