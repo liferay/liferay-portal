@@ -164,6 +164,12 @@ public class PIMCMSObjectEntryFormContributorTest {
 	}
 
 	private void _testContributeWithTitle() throws Exception {
+		Mockito.when(
+			_objectDefinition.getObjectFolderExternalReferenceCode()
+		).thenReturn(
+			PIMObjectFolderConstants.EXTERNAL_REFERENCE_CODE_PRODUCT_TYPES
+		);
+
 		JSONFactoryUtil jsonFactoryUtil = new JSONFactoryUtil();
 
 		jsonFactoryUtil.setJSONFactory(new JSONFactoryImpl());
@@ -177,24 +183,6 @@ public class PIMCMSObjectEntryFormContributorTest {
 		);
 
 		languageUtil.setLanguage(_language);
-
-		PortalUtil portalUtil = new PortalUtil();
-
-		Portal portal = Mockito.mock(Portal.class);
-
-		Mockito.when(
-			portal.getUniqueElementId()
-		).thenReturn(
-			RandomTestUtil.randomString()
-		);
-
-		portalUtil.setPortal(portal);
-
-		Mockito.when(
-			_objectDefinition.getObjectFolderExternalReferenceCode()
-		).thenReturn(
-			PIMObjectFolderConstants.EXTERNAL_REFERENCE_CODE_PRODUCT_TYPES
-		);
 
 		LayoutStructure layoutStructure = new LayoutStructure();
 
@@ -246,6 +234,24 @@ public class PIMCMSObjectEntryFormContributorTest {
 			titleFragmentEntryLink
 		);
 
+		Mockito.when(
+			_fragmentRendererRegistry.getFragmentRenderer(Mockito.anyString())
+		).thenReturn(
+			Mockito.mock(FragmentRenderer.class)
+		);
+
+		PortalUtil portalUtil = new PortalUtil();
+
+		Portal portal = Mockito.mock(Portal.class);
+
+		Mockito.when(
+			portal.getUniqueElementId()
+		).thenReturn(
+			RandomTestUtil.randomString()
+		);
+
+		portalUtil.setPortal(portal);
+
 		long productStickerFragmentEntryLinkId = RandomTestUtil.randomLong();
 
 		FragmentEntryLink productStickerFragmentEntryLink = Mockito.mock(
@@ -266,12 +272,6 @@ public class PIMCMSObjectEntryFormContributorTest {
 				Mockito.any(), Mockito.anyInt(), Mockito.any())
 		).thenReturn(
 			productStickerFragmentEntryLink
-		);
-
-		Mockito.when(
-			_fragmentRendererRegistry.getFragmentRenderer(Mockito.anyString())
-		).thenReturn(
-			Mockito.mock(FragmentRenderer.class)
 		);
 
 		try (MockedStatic<FeatureFlagManagerUtil>
