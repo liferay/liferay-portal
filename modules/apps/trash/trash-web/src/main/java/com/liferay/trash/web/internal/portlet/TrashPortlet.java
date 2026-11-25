@@ -417,20 +417,20 @@ public class TrashPortlet extends MVCPortlet {
 			return;
 		}
 
-		long containerModelClassNameId = ParamUtil.getLong(
-			renderRequest, "containerModelClassNameId");
-
 		String containerModelClassName =
 			trashHandler.getContainerModelClassName(classPK);
+
+		long containerModelClassNameId = ParamUtil.getLong(
+			renderRequest, "containerModelClassNameId");
 
 		if (containerModelClassNameId != 0) {
 			containerModelClassName = _getClassName(containerModelClassNameId);
 		}
 
+		long groupId = 0;
+
 		ContainerModel containerModel = trashHandler.getContainerModel(
 			containerModelId);
-
-		long groupId = 0;
 
 		if (containerModel instanceof GroupedModel) {
 			GroupedModel groupedModel = (GroupedModel)containerModel;
