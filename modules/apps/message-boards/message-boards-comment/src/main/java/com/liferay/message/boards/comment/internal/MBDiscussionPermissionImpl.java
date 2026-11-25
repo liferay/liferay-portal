@@ -170,6 +170,42 @@ public class MBDiscussionPermissionImpl extends BaseDiscussionPermission {
 		}
 	}
 
+	private boolean _hasMessagePermission(
+		PermissionChecker permissionChecker, MBMessage message,
+		String actionId) {
+
+		if (_mbBanLocalService.hasBan(
+				message.getGroupId(), permissionChecker.getUserId())) {
+
+			return false;
+		}
+
+		if (!message.isDiscussion()) {
+			String messageActionId = ActionKeys.UPDATE;
+
+			if (actionId.equals(ActionKeys.DELETE_DISCUSSION)) {
+				messageActionId = ActionKeys.DELETE;
+			}
+
+			Boolean hasPermission = ModelResourcePermissionUtil.contains(
+				permissionChecker, message.getGroupId(),
+				MBMessage.class.getName(), message.getMessageId(),
+				messageActionId);
+
+			if (hasPermission != null) {
+				return hasPermission.booleanValue();
+			}
+		}
+
+		if (permissionChecker.isSignedIn() &&
+			(permissionChecker.getUserId() == message.getUserId())) {
+
+			return true;
+		}
+
+		return permissionChecker.isGroupAdmin(message.getGroupId());
+	}
+
 	private boolean _hasPermission(
 			PermissionChecker permissionChecker, MBMessage message,
 			String actionId)
@@ -213,6 +249,16 @@ public class MBDiscussionPermissionImpl extends BaseDiscussionPermission {
 			if (hasPermission != null) {
 				return hasPermission.booleanValue();
 			}
+		}
+
+		List<String> resourceActions = ResourceActionsUtil.getResourceActions(
+			className);
+
+		if ((actionId.equals(ActionKeys.DELETE_DISCUSSION) ||
+			 actionId.equals(ActionKeys.UPDATE_DISCUSSION)) &&
+			!resourceActions.contains(actionId)) {
+
+			return _hasMessagePermission(permissionChecker, message, actionId);
 		}
 
 		return hasPermission(
