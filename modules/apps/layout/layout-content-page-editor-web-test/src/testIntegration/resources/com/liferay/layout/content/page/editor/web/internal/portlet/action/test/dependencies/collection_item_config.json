@@ -1,0 +1,27 @@
+{
+	"cssClasses": [
+	],
+	"displayAllItems": false,
+	"displayAllPages": true,
+	"gutters": true,
+	"landscapeMobile": {
+		"styles": {
+		}
+	},
+	"numberOfColumns": 1,
+	"numberOfItems": 5,
+	"numberOfItemsPerPage": 20,
+	"numberOfPages": 5,
+	"paginationType": "numeric",
+	"portraitMobile": {
+		"styles": {
+		}
+	},
+	"showAllItems": false,
+	"styles": {
+	},
+	"tablet": {
+		"styles": {
+		}
+	}
+}

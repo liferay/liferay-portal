@@ -1,0 +1,37 @@
+{
+	"align": "align-items-center",
+	"cssClasses": [
+	],
+	"displayAllItems": false,
+	"displayAllPages": true,
+	"flexWrap": "flex-wrap",
+	"gutters": true,
+	"justify": "justify-content-center",
+	"landscapeMobile": {
+		"styles": {
+		}
+	},
+	"listStyle": "flex-row",
+	"numberOfColumns": 1,
+	"numberOfItems": 5,
+	"numberOfItemsPerPage": 20,
+	"numberOfPages": 5,
+	"paginationType": "numeric",
+	"portraitMobile": {
+		"align": "align-items-start",
+		"flexWrap": "flex-nowrap",
+		"justify": "justify-content-start",
+		"styles": {
+		}
+	},
+	"showAllItems": false,
+	"styles": {
+	},
+	"tablet": {
+		"align": "align-items-end",
+		"flexWrap": "flex-wrap-reverse",
+		"justify": "justify-content-end",
+		"styles": {
+		}
+	}
+}
