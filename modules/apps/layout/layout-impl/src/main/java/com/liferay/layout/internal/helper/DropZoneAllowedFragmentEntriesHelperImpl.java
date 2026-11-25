@@ -12,6 +12,7 @@ import com.liferay.fragment.renderer.FragmentRenderer;
 import com.liferay.fragment.renderer.FragmentRendererRegistry;
 import com.liferay.fragment.service.FragmentEntryLocalService;
 import com.liferay.layout.helper.DropZoneAllowedFragmentEntriesHelper;
+import com.liferay.layout.util.constants.LayoutStructureConstants;
 import com.liferay.layout.util.structure.DropZoneLayoutStructureItem;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -122,7 +123,11 @@ public class DropZoneAllowedFragmentEntriesHelperImpl
 							fragmentEntryKey);
 
 					if ((defaultFragmentEntry != null) ||
-						(fragmentRenderer != null)) {
+						(fragmentRenderer != null) ||
+						ArrayUtil.contains(
+							LayoutStructureConstants.
+								LAYOUT_ELEMENT_FRAGMENT_ENTRY_KEYS,
+							fragmentEntryKey)) {
 
 						return JSONUtil.put(
 							"fragmentEntryRendererKey", fragmentEntryKey);
