@@ -251,6 +251,12 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 				objectDefinition, _objectDefinitionModelResourcePermission,
 				_portletLocalService, portletResourcePermission);
 
+		String panelCategoryKey = objectDefinition.getPanelCategoryKey();
+
+		if (!objectDefinition.isAllowStandaloneObjectEntry()) {
+			panelCategoryKey = StringPool.BLANK;
+		}
+
 		List<ServiceRegistration<?>> serviceRegistrations = ListUtil.fromArray(
 			_bundleContext.registerService(
 				AssetRendererFactory.class,
@@ -545,6 +551,8 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 						return "category.hidden";
 					}
 				).put(
+					"com.liferay.portlet.panel.category.key", panelCategoryKey
+				).put(
 					"jakarta.portlet.display-name",
 					objectDefinition.getPluralLabelCurrentValue()
 				).put(
@@ -691,29 +699,15 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 		// Register ObjectEntriesPanelApp after ObjectEntriesPortlet. See
 		// LPS-140379.
 
-		String panelCategoryKey = objectDefinition.getPanelCategoryKey();
-
-		if (!objectDefinition.isAllowStandaloneObjectEntry()) {
-			panelCategoryKey = StringPool.BLANK;
-		}
-
 		if (Validator.isNotNull(panelCategoryKey)) {
 			serviceRegistrations.add(
 				_bundleContext.registerService(
 					PanelApp.class,
 					new ObjectEntriesPanelApp(
 						objectDefinition,
-						() -> {
-							com.liferay.portal.kernel.model.Portlet portlet =
-								_portletLocalService.getPortletById(
-									objectDefinition.getCompanyId(),
-									objectDefinition.getPortletId());
-
-							portlet.setControlPanelEntryCategory(
-								objectDefinition.getPanelCategoryKey());
-
-							return portlet;
-						}),
+						() -> _portletLocalService.getPortletById(
+							objectDefinition.getCompanyId(),
+							objectDefinition.getPortletId())),
 					HashMapDictionaryBuilder.<String, Object>put(
 						"panel.app.order",
 						GetterUtil.getInteger(
