@@ -86,19 +86,18 @@ public class ProjectHelper {
 		String state = (String)globalStateMap.get("state");
 
 		if (StringUtil.equals(
-				projectDisplay.getState(),
-				FaroProjectConstants.STATE_UNAVAILABLE) &&
-			StringUtil.equals(state, FaroProjectConstants.STATE_SCHEDULED)) {
+				projectDisplay.getState(), FaroProjectConstants.STATE_READY) &&
+			StringUtil.equals(state, FaroProjectConstants.STATE_MAINTENANCE)) {
+
+			deleteGlobalState(faroProject.getGroupId());
 
 			return projectDisplay;
 		}
 		else if (StringUtil.equals(
 					projectDisplay.getState(),
-					FaroProjectConstants.STATE_READY) &&
+					FaroProjectConstants.STATE_UNAVAILABLE) &&
 				 StringUtil.equals(
-					 state, FaroProjectConstants.STATE_MAINTENANCE)) {
-
-			deleteGlobalState(faroProject.getGroupId());
+					 state, FaroProjectConstants.STATE_SCHEDULED)) {
 
 			return projectDisplay;
 		}
