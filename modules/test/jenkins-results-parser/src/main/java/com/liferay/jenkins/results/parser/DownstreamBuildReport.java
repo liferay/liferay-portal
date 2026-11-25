@@ -30,6 +30,8 @@ public interface DownstreamBuildReport extends BuildReport {
 
 	public List<TestClassReport> getTestClassReports();
 
+	public List<TestClassReport> getTestClassReports(String testClassName);
+
 	public List<TestReport> getTestReports();
 
 	public URL getTestrayCaseResultURL();

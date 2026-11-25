@@ -9,8 +9,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TreeMap;
 
 import org.json.JSONArray;
@@ -112,6 +114,42 @@ public abstract class BaseDownstreamBuildReport
 			_getTestClassReportsMap();
 
 		return new ArrayList<>(testClassReportsMap.values());
+	}
+
+	@Override
+	public synchronized List<TestClassReport> getTestClassReports(
+		String testClassName) {
+
+		String baseTestClassName = _getBaseTestClassName(testClassName);
+
+		if (_groupedTestClassReportsMap != null) {
+			return _groupedTestClassReportsMap.computeIfAbsent(
+				baseTestClassName, key -> new ArrayList<>());
+		}
+
+		_groupedTestClassReportsMap = new HashMap<>();
+
+		for (TestClassReport testClassReport : getTestClassReports()) {
+			String testClassReportName = testClassReport.getTestClassName();
+
+			if (!Objects.equals(
+					testClassReportName, "junit.framework.TestSuite")) {
+
+				_addGroupedTestClassReport(
+					_getBaseTestClassName(testClassReportName),
+					testClassReport);
+
+				continue;
+			}
+
+			for (TestReport testReport : testClassReport.getTestReports()) {
+				_addGroupedTestClassReport(
+					testReport.getTestName(), testClassReport);
+			}
+		}
+
+		return _groupedTestClassReportsMap.computeIfAbsent(
+			baseTestClassName, key -> new ArrayList<>());
 	}
 
 	@Override
@@ -229,6 +267,26 @@ public abstract class BaseDownstreamBuildReport
 		_topLevelBuildReport = topLevelBuildReport;
 
 		_buildCached = buildReportJSONObject.optBoolean("buildCached", false);
+	}
+
+	private void _addGroupedTestClassReport(
+		String testClassName, TestClassReport testClassReport) {
+
+		List<TestClassReport> testClassReports =
+			_groupedTestClassReportsMap.computeIfAbsent(
+				testClassName, key -> new ArrayList<>());
+
+		if (!testClassReports.contains(testClassReport)) {
+			testClassReports.add(testClassReport);
+		}
+	}
+
+	private String _getBaseTestClassName(String testClassName) {
+		if ((testClassName == null) || !testClassName.contains("$")) {
+			return testClassName;
+		}
+
+		return testClassName.substring(0, testClassName.indexOf("$"));
 	}
 
 	private List<TestReport> _getLiveTestReports() {
@@ -360,6 +418,7 @@ public abstract class BaseDownstreamBuildReport
 	private final String _batchName;
 	private final boolean _buildCached;
 	private final JSONObject _buildReportJSONObject;
+	private Map<String, List<TestClassReport>> _groupedTestClassReportsMap;
 	private Map<String, TestClassReport> _testClassReportsMap;
 	private List<TestReport> _testReports;
 	private final TopLevelBuildReport _topLevelBuildReport;
