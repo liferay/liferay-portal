@@ -809,7 +809,7 @@ public class PortalImpl implements Portal {
 				url, "previewCTIndicator", true);
 		}
 
-		if (LaunchThreadLocal.isPreview()) {
+		if (LaunchThreadLocal.isLaunchModePreview()) {
 			url = HttpComponentsUtil.setParameter(
 				url, "p_l_mode", Constants.PREVIEW);
 			url = HttpComponentsUtil.setParameter(

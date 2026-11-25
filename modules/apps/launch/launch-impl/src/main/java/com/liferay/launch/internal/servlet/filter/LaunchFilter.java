@@ -82,7 +82,7 @@ public class LaunchFilter extends BasePortalFilter {
 			HttpServletResponse httpServletResponse, FilterChain filterChain)
 		throws Exception {
 
-		if ((LaunchThreadLocal.getMode() != null) ||
+		if ((LaunchThreadLocal.getLaunchMode() != null) ||
 			(PreviewableResolverUtil.getPreviewId() != null)) {
 
 			processFilter(
@@ -95,28 +95,28 @@ public class LaunchFilter extends BasePortalFilter {
 		boolean header = false;
 		long launchSetId = ParamUtil.getLong(
 			httpServletRequest, "p_launch_id", -1);
-		String mode = ParamUtil.getString(httpServletRequest, "p_launch_mode");
+		String launchModeString = ParamUtil.getString(httpServletRequest, "p_launch_mode");
 
-		if ((launchSetId == -1) && Validator.isNull(mode)) {
+		if ((launchSetId == -1) && Validator.isNull(launchModeString)) {
 			header = true;
 			launchSetId = GetterUtil.getLong(
 				httpServletRequest.getHeader("X-Liferay-Launch-Id"), -1);
-			mode = httpServletRequest.getHeader("X-Liferay-Launch-Mode");
+			launchModeString = httpServletRequest.getHeader("X-Liferay-Launch-Mode");
 		}
 
-		if (Objects.equals(mode, Constants.EDIT)) {
+		if (Objects.equals(launchModeString, Constants.EDIT)) {
 			if ((launchSetId > 0) &&
 				_isEditable(httpServletRequest, launchSetId)) {
 
 				_processFilter(
 					filterChain, httpServletRequest, httpServletResponse,
-					launchSetId, LaunchThreadLocal.Mode.EDIT);
+					launchSetId, LaunchThreadLocal.LaunchMode.EDIT);
 
 				return;
 			}
 		}
-		else if (Objects.equals(mode, Constants.PREVIEW) ||
-				 ((launchSetId != -1) && Validator.isNull(mode))) {
+		else if (Objects.equals(launchModeString, Constants.PREVIEW) ||
+				 ((launchSetId != -1) && Validator.isNull(launchModeString))) {
 
 			if (!header &&
 				!Objects.equals(
@@ -136,7 +136,7 @@ public class LaunchFilter extends BasePortalFilter {
 			if ((user != null) && !user.isGuestUser()) {
 				_processFilter(
 					filterChain, httpServletRequest, httpServletResponse,
-					Math.max(launchSetId, 0), LaunchThreadLocal.Mode.PREVIEW);
+					Math.max(launchSetId, 0), LaunchThreadLocal.LaunchMode.PREVIEW);
 
 				return;
 			}
@@ -297,7 +297,7 @@ public class LaunchFilter extends BasePortalFilter {
 	private void _processFilter(
 			FilterChain filterChain, HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse, long launchSetId,
-			LaunchThreadLocal.Mode mode)
+			LaunchThreadLocal.LaunchMode launchMode)
 		throws Exception {
 
 		Map<Class<?>, Map<Serializable, Object>> previewableMap =
@@ -305,7 +305,7 @@ public class LaunchFilter extends BasePortalFilter {
 
 		try (SafeCloseable safeCloseable1 =
 				LaunchThreadLocal.setLaunchSetIdWithSafeCloseable(
-					launchSetId, mode)) {
+					launchSetId, launchMode)) {
 
 			if (previewableMap.isEmpty()) {
 				processFilter(

@@ -235,13 +235,13 @@ public class LiferayGlobalObjectPreAUIDynamicInclude
 	}
 
 	private String _getLaunchMode() {
-		LaunchThreadLocal.Mode mode = LaunchThreadLocal.getMode();
+		LaunchThreadLocal.LaunchMode launchMode = LaunchThreadLocal.getLaunchMode();
 
-		if (mode == null) {
+		if (launchMode == null) {
 			return StringPool.BLANK;
 		}
 
-		return StringUtil.toLowerCase(mode.name());
+		return StringUtil.toLowerCase(launchMode.name());
 	}
 
 	private LiferayGlobalObjectConfiguration

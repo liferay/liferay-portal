@@ -46,7 +46,7 @@ public class LaunchThreadLocalTest {
 
 		try (SafeCloseable safeCloseable =
 				LaunchThreadLocal.setLaunchSetIdWithSafeCloseable(
-					launchSetId, LaunchThreadLocal.Mode.EDIT)) {
+					launchSetId, LaunchThreadLocal.LaunchMode.EDIT)) {
 
 			Assert.assertEquals(
 				url,
@@ -56,14 +56,14 @@ public class LaunchThreadLocalTest {
 
 		try (SafeCloseable safeCloseable =
 				LaunchThreadLocal.setLaunchSetIdWithSafeCloseable(
-					launchSetId, LaunchThreadLocal.Mode.PREVIEW)) {
+					launchSetId, LaunchThreadLocal.LaunchMode.PREVIEW)) {
 
 			_assertPreservedParameters(String.valueOf(launchSetId), url);
 		}
 
 		try (SafeCloseable safeCloseable =
 				LaunchThreadLocal.setLaunchSetIdWithSafeCloseable(
-					0, LaunchThreadLocal.Mode.PREVIEW)) {
+					0, LaunchThreadLocal.LaunchMode.PREVIEW)) {
 
 			_assertPreservedParameters("0", url);
 		}

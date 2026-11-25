@@ -1013,7 +1013,7 @@ public class LayoutLocalServiceTest {
 
 		try (SafeCloseable safeCloseable =
 				LaunchThreadLocal.setLaunchSetIdWithSafeCloseable(
-					launchSetId, LaunchThreadLocal.Mode.PREVIEW)) {
+					launchSetId, LaunchThreadLocal.LaunchMode.PREVIEW)) {
 
 			Assert.assertEquals(
 				1,

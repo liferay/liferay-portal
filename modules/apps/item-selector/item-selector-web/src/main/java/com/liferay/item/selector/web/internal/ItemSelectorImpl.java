@@ -241,7 +241,7 @@ public class ItemSelectorImpl implements ItemSelector {
 			portletURL.setParameter(entry.getKey(), entry.getValue());
 		}
 
-		if (LaunchThreadLocal.isEdit()) {
+		if (LaunchThreadLocal.isLaunchModeEdit()) {
 			portletURL.setParameter(
 				"p_launch_id",
 				String.valueOf(LaunchThreadLocal.getLaunchSetId()));

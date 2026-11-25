@@ -18,20 +18,20 @@ public class LaunchThreadLocal {
 		return _launchSetId.get();
 	}
 
-	public static Mode getMode() {
-		return _mode.get();
+	public static LaunchMode getLaunchMode() {
+		return _launchMode.get();
 	}
 
-	public static boolean isEdit() {
-		if (_mode.get() == Mode.EDIT) {
+	public static boolean isLaunchModeEdit() {
+		if (_launchMode.get() == LaunchMode.EDIT) {
 			return true;
 		}
 
 		return false;
 	}
 
-	public static boolean isPreview() {
-		if (_mode.get() == Mode.PREVIEW) {
+	public static boolean isLaunchModePreview() {
+		if (_launchMode.get() == LaunchMode.PREVIEW) {
 			return true;
 		}
 
@@ -39,19 +39,19 @@ public class LaunchThreadLocal {
 	}
 
 	public static SafeCloseable setLaunchSetIdWithSafeCloseable(
-		long launchSetId, Mode mode) {
+		long launchSetId, LaunchMode launchMode) {
 
 		SafeCloseable launchSetIdSafeCloseable =
 			_launchSetId.setWithSafeCloseable(launchSetId);
-		SafeCloseable modeSafeCloseable = _mode.setWithSafeCloseable(mode);
+		SafeCloseable launchModeSafeCloseable = _launchMode.setWithSafeCloseable(launchMode);
 
 		return () -> {
-			modeSafeCloseable.close();
+			launchModeSafeCloseable.close();
 			launchSetIdSafeCloseable.close();
 		};
 	}
 
-	public static enum Mode {
+	public static enum LaunchMode {
 
 		EDIT, PREVIEW,
 
@@ -63,8 +63,8 @@ public class LaunchThreadLocal {
 	private static final CentralizedThreadLocal<Long> _launchSetId =
 		new CentralizedThreadLocal<>(
 			LaunchThreadLocal.class.getName() + "._launchSetId", () -> -1L);
-	private static final CentralizedThreadLocal<Mode> _mode =
+	private static final CentralizedThreadLocal<LaunchMode> _launchMode =
 		new CentralizedThreadLocal<>(
-			LaunchThreadLocal.class.getName() + "._mode");
+			LaunchThreadLocal.class.getName() + "._launchMode");
 
 }
