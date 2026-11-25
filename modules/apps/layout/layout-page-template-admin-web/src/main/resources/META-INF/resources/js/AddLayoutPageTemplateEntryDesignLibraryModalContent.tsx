@@ -54,37 +54,29 @@ export default function AddLayoutPageTemplateEntryDesignLibraryModalContent({
 
 		formData.append(`${namespace}name`, pageTemplateName ?? '');
 
-		try {
-			const response = await fetch(addLayoutPageTemplateEntryURL, {
-				body: formData,
-				method: 'POST',
-			});
+		const response = await fetch(addLayoutPageTemplateEntryURL, {
+			body: formData,
+			method: 'POST',
+		});
 
-			const {error, redirectURL}: {error?: string; redirectURL?: string} =
-				await response.json();
+		const {error, redirectURL}: {error?: string; redirectURL?: string} =
+			await response.json();
 
-			if (error) {
-				return error;
-			}
-
-			pendingReloadRef.current = false;
-
-			if (!redirectURL) {
-				navigate(location.href);
-
-				return;
-			}
-
-			navigate(
-				addParams(
-					{[`${namespace}redirect`]: location.href},
-					redirectURL
-				)
-			);
+		if (error) {
+			return error;
 		}
-		catch {
-			return Liferay.Language.get('an-unexpected-error-occurred');
+
+		pendingReloadRef.current = false;
+
+		if (!redirectURL) {
+			navigate(location.href);
+
+			return;
 		}
+
+		navigate(
+			addParams({[`${namespace}redirect`]: location.href}, redirectURL)
+		);
 	};
 
 	return (

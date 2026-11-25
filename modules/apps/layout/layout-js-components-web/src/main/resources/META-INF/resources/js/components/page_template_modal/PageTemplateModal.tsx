@@ -222,74 +222,75 @@ export function PageTemplateModalContent({
 			return;
 		}
 
-		if (!openAddTemplateSetModal) {
-			const submitError = await onSubmitPageTemplateSet(
-				Number(templateSetId),
-				pageTemplateName
-			);
+		let pageTemplateSetId = Number(templateSetId);
 
-			if (submitError) {
-				setFormErrors({pageTemplateName: submitError});
+		if (openAddTemplateSetModal) {
+			try {
+				const response = await fetch(addPageTemplateSetURL, {
+					body: getFormData({
+						description: templateSetDescription,
+						name: templateSetName,
+					}),
+					method: 'POST',
+				});
+
+				const {
+					error,
+					layoutPageTemplateCollectionId,
+				}: {
+					error?: string;
+					layoutPageTemplateCollectionId?: number;
+				} = await response.json();
+
+				if (!layoutPageTemplateCollectionId) {
+					throw new Error(error);
+				}
+
+				pageTemplateSetId = layoutPageTemplateCollectionId;
+			}
+			catch (error) {
 				setLoading(false);
+
+				openToast({
+					message:
+						escapeHTML((error as Error).message) ||
+						Liferay.Language.get('an-unexpected-error-occurred'),
+					type: 'danger',
+				});
 
 				return;
 			}
-
-			closeModal();
-
-			return;
 		}
 
 		try {
-			const response = await fetch(addPageTemplateSetURL, {
-				body: getFormData({
-					description: templateSetDescription,
-					name: templateSetName,
-				}),
-				method: 'POST',
-			});
-
-			const {
-				error,
-				layoutPageTemplateCollectionId,
-			}: {
-				error?: string;
-				layoutPageTemplateCollectionId?: number;
-			} = await response.json();
-
-			if (!layoutPageTemplateCollectionId) {
-				throw new Error(error);
-			}
-
 			const submitError = await onSubmitPageTemplateSet(
-				layoutPageTemplateCollectionId,
+				pageTemplateSetId,
 				pageTemplateName
 			);
 
-			if (submitError) {
-				updateAvailableSets([
-					...availableSets,
-					{id: layoutPageTemplateCollectionId, name: templateSetName},
-				]);
-				setTemplateSetId(String(layoutPageTemplateCollectionId));
-
-				setFormErrors({pageTemplateName: submitError});
-				setLoading(false);
+			if (!submitError) {
+				closeModal();
 
 				return;
 			}
 
-			closeModal();
+			setFormErrors({pageTemplateName: submitError});
 		}
-		catch (error) {
-			setLoading(false);
-
+		catch {
 			openToast({
-				message:
-					escapeHTML((error as Error).message) ||
-					Liferay.Language.get('an-unexpected-error-occurred'),
+				message: Liferay.Language.get('an-unexpected-error-occurred'),
 				type: 'danger',
 			});
+		}
+
+		setLoading(false);
+
+		if (openAddTemplateSetModal) {
+			updateAvailableSets([
+				...availableSets,
+				{id: pageTemplateSetId, name: templateSetName},
+			]);
+			setTemplateSetId(String(pageTemplateSetId));
 		}
 	}, [
 		addPageTemplateSetURL,
