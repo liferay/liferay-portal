@@ -38,7 +38,7 @@ type DesignLibraryProps = {
 	onSubmitPageTemplateSet: (
 		pageTemplateSetId: number,
 		pageTemplateName?: string
-	) => Promise<string | void> | void;
+	) => Promise<string | void>;
 	pageTemplateSets: PageTemplateSet[];
 	segmentsExperienceId?: never;
 };

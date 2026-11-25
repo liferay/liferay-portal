@@ -88,7 +88,7 @@ export default function AddLayoutPageTemplateEntryDesignLibraryModalContent({
 			onSubmitPageTemplateSet={
 				mode === 'page-template'
 					? submitLayoutPageTemplateEntry
-					: () => navigate(location.href)
+					: async () => navigate(location.href)
 			}
 			pageTemplateSets={mode === 'page-template' ? pageTemplateSets : []}
 		/>
