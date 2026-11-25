@@ -1,0 +1,13 @@
+[
+	{
+		"actions": [
+		],
+		"externalReferenceCode": "LDP_WORKSPACE_ADMINISTRATOR",
+		"name": "Workspace Administrator",
+		"name_i18n": {
+			"en_US": "Workspace Administrator"
+		},
+		"scope": 1,
+		"type": 2
+	}
+]

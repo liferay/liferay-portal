@@ -14,9 +14,15 @@
 		},
 		{
 			"actionIds": [
-				"VIEW"
 			],
 			"roleName": "Site Member",
+			"scope": 4
+		},
+		{
+			"actionIds": [
+				"VIEW"
+			],
+			"roleName": "Workspace Administrator",
 			"scope": 4
 		}
 	],
