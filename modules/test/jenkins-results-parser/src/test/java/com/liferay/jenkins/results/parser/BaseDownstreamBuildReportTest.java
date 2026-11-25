@@ -7,6 +7,11 @@ package com.liferay.jenkins.results.parser;
 
 import java.net.URL;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import org.json.JSONObject;
 
 import org.junit.Assert;
@@ -19,6 +24,60 @@ import org.mockito.Mockito;
  */
 public class BaseDownstreamBuildReportTest
 	extends com.liferay.jenkins.results.parser.Test {
+
+	@Test
+	public void testGetTestClassReports() {
+		String basicTestClassName = RandomTestUtil.randomString();
+
+		TestClassReport basicTestClassReport = _mockTestClassReport(
+			basicTestClassName);
+
+		String innerTestClassName =
+			basicTestClassName + "$" + RandomTestUtil.randomString();
+
+		TestClassReport innerTestClassReport = _mockTestClassReport(
+			innerTestClassName);
+
+		String testSuiteTestClassName = RandomTestUtil.randomString();
+
+		TestClassReport testSuiteTestClassReport = _mockTestClassReport(
+			"junit.framework.TestSuite", innerTestClassName,
+			testSuiteTestClassName, testSuiteTestClassName);
+
+		BaseDownstreamBuildReport baseDownstreamBuildReport = Mockito.mock(
+			BaseDownstreamBuildReport.class);
+
+		Mockito.doCallRealMethod(
+		).when(
+			baseDownstreamBuildReport
+		).getTestClassReports(
+			Mockito.anyString()
+		);
+
+		Mockito.doReturn(
+			Arrays.asList(
+				basicTestClassReport, innerTestClassReport,
+				testSuiteTestClassReport,
+				_mockTestClassReport(RandomTestUtil.randomString()))
+		).when(
+			baseDownstreamBuildReport
+		).getTestClassReports();
+
+		testEquals(
+			Arrays.asList(basicTestClassReport, innerTestClassReport),
+			baseDownstreamBuildReport.getTestClassReports(basicTestClassName));
+		testEquals(
+			Arrays.asList(basicTestClassReport, innerTestClassReport),
+			baseDownstreamBuildReport.getTestClassReports(innerTestClassName));
+		testEquals(
+			Collections.emptyList(),
+			baseDownstreamBuildReport.getTestClassReports(
+				RandomTestUtil.randomString()));
+		testEquals(
+			Collections.singletonList(testSuiteTestClassReport),
+			baseDownstreamBuildReport.getTestClassReports(
+				testSuiteTestClassName));
+	}
 
 	@Test
 	public void testGetTestrayCaseResultURL() throws Exception {
@@ -45,6 +104,40 @@ public class BaseDownstreamBuildReportTest
 			),
 			testrayCaseResultURL);
 		_testGetTestrayCaseResultURL(null, null);
+	}
+
+	private TestClassReport _mockTestClassReport(
+		String testClassName, String... testNames) {
+
+		TestClassReport testClassReport = Mockito.mock(TestClassReport.class);
+
+		Mockito.doReturn(
+			testClassName
+		).when(
+			testClassReport
+		).getTestClassName();
+
+		List<TestReport> testReports = new ArrayList<>();
+
+		for (String testName : testNames) {
+			TestReport testReport = Mockito.mock(TestReport.class);
+
+			Mockito.doReturn(
+				testName
+			).when(
+				testReport
+			).getTestName();
+
+			testReports.add(testReport);
+		}
+
+		Mockito.doReturn(
+			testReports
+		).when(
+			testClassReport
+		).getTestReports();
+
+		return testClassReport;
 	}
 
 	private void _testGetTestrayCaseResultURL(

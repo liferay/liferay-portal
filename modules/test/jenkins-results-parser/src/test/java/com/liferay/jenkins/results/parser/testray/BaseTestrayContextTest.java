@@ -560,12 +560,6 @@ public class BaseTestrayContextTest
 		TopLevelBuildReport topLevelBuildReport = _mockTopLevelBuildReport(
 			RandomTestUtil.randomString());
 
-		Mockito.doReturn(
-			RandomTestUtil.randomString()
-		).when(
-			topLevelBuildReport
-		).getTestSuiteName();
-
 		BaseTestrayContext baseTestrayContext = Mockito.mock(
 			BaseTestrayContext.class);
 
@@ -576,6 +570,12 @@ public class BaseTestrayContextTest
 			Mockito.any(AxisTestClassGroup.class),
 			Mockito.any(TestrayCaseResult.class)
 		);
+
+		Mockito.doReturn(
+			RandomTestUtil.randomString()
+		).when(
+			baseTestrayContext
+		).getTestSuiteName();
 
 		Mockito.doReturn(
 			topLevelBuildReport

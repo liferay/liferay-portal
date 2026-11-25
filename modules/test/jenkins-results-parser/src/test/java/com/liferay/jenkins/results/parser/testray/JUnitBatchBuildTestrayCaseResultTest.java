@@ -28,57 +28,57 @@ public class JUnitBatchBuildTestrayCaseResultTest
 	extends com.liferay.jenkins.results.parser.Test {
 
 	@Test
-	public void testInitBuildReport() throws Exception {
-		mockEnvironment(Collections.singletonMap("WORKSPACE", "/x"));
-
+	public void testInitBuildReport() {
 		String axisName = RandomTestUtil.randomString();
-		AxisTestClassGroup axisTestClassGroup = Mockito.mock(
-			AxisTestClassGroup.class);
-
-		Mockito.doReturn(
-			axisName
-		).when(
-			axisTestClassGroup
-		).getAxisName();
-
-		JUnitTestClass jUnitTestClass = Mockito.mock(JUnitTestClass.class);
 		String testClassName = RandomTestUtil.randomString();
-
-		Mockito.doReturn(
-			new File("/x/com/" + testClassName + ".java")
-		).when(
-			jUnitTestClass
-		).getTestClassFile();
-
-		DownstreamBuildReport axisDownstreamBuildReport =
-			_getDownstreamBuildReport(axisName, RandomTestUtil.randomString());
-		TopLevelBuildReport topLevelBuildReport = Mockito.mock(
-			TopLevelBuildReport.class);
-
-		Mockito.doReturn(
-			axisDownstreamBuildReport
-		).when(
-			topLevelBuildReport
-		).getDownstreamBuildReport(
-			axisName
-		);
 
 		DownstreamBuildReport downstreamBuildReport = _getDownstreamBuildReport(
 			axisName, "com." + testClassName);
 
+		TopLevelBuildReport topLevelBuildReport = _getTopLevelBuildReport(
+			axisName, downstreamBuildReport);
+
+		JUnitBatchBuildTestrayCaseResult jUnitBatchBuildTestrayCaseResult =
+			_getJUnitBatchBuildTestrayCaseResult(
+				axisName, testClassName, topLevelBuildReport);
+
+		testEquals(
+			downstreamBuildReport,
+			jUnitBatchBuildTestrayCaseResult.getDownstreamBuildReport());
+
+		Mockito.verify(
+			topLevelBuildReport, Mockito.never()
+		).getDownstreamBuildReports();
+	}
+
+	@Test
+	public void testInitBuildReportFallback() {
+		String axisName = RandomTestUtil.randomString();
+		String testClassName = RandomTestUtil.randomString();
+
+		DownstreamBuildReport downstreamBuildReport1 =
+			_getDownstreamBuildReport(axisName, RandomTestUtil.randomString());
+		DownstreamBuildReport downstreamBuildReport2 =
+			_getDownstreamBuildReport(axisName, "com." + testClassName);
+
+		TopLevelBuildReport topLevelBuildReport = _getTopLevelBuildReport(
+			axisName, downstreamBuildReport1);
+
 		Mockito.doReturn(
-			Arrays.asList(axisDownstreamBuildReport, downstreamBuildReport)
+			Arrays.asList(
+				_getDownstreamBuildReport(
+					RandomTestUtil.randomString(), "com." + testClassName),
+				downstreamBuildReport1, downstreamBuildReport2)
 		).when(
 			topLevelBuildReport
 		).getDownstreamBuildReports();
 
 		JUnitBatchBuildTestrayCaseResult jUnitBatchBuildTestrayCaseResult =
-			new JUnitBatchBuildTestrayCaseResult(
-				axisTestClassGroup, jUnitTestClass,
-				Mockito.mock(TestrayBuild.class), topLevelBuildReport);
+			_getJUnitBatchBuildTestrayCaseResult(
+				axisName, testClassName, topLevelBuildReport);
 
 		testEquals(
-			downstreamBuildReport,
+			downstreamBuildReport2,
 			jUnitBatchBuildTestrayCaseResult.getDownstreamBuildReport());
 	}
 
@@ -94,21 +94,61 @@ public class JUnitBatchBuildTestrayCaseResultTest
 			downstreamBuildReport
 		).getAxisName();
 
-		TestClassReport testClassReport = Mockito.mock(TestClassReport.class);
-
 		Mockito.doReturn(
-			testClassName
-		).when(
-			testClassReport
-		).getTestClassName();
-
-		Mockito.doReturn(
-			Collections.singletonList(testClassReport)
+			Collections.singletonList(Mockito.mock(TestClassReport.class))
 		).when(
 			downstreamBuildReport
-		).getTestClassReports();
+		).getTestClassReports(
+			testClassName
+		);
 
 		return downstreamBuildReport;
+	}
+
+	private JUnitBatchBuildTestrayCaseResult
+		_getJUnitBatchBuildTestrayCaseResult(
+			String axisName, String testClassName,
+			TopLevelBuildReport topLevelBuildReport) {
+
+		mockEnvironment(Collections.singletonMap("WORKSPACE", "/x"));
+
+		AxisTestClassGroup axisTestClassGroup = Mockito.mock(
+			AxisTestClassGroup.class);
+
+		Mockito.doReturn(
+			axisName
+		).when(
+			axisTestClassGroup
+		).getAxisName();
+
+		JUnitTestClass jUnitTestClass = Mockito.mock(JUnitTestClass.class);
+
+		Mockito.doReturn(
+			new File("/x/com/" + testClassName + ".java")
+		).when(
+			jUnitTestClass
+		).getTestClassFile();
+
+		return new JUnitBatchBuildTestrayCaseResult(
+			axisTestClassGroup, jUnitTestClass,
+			Mockito.mock(TestrayBuild.class), topLevelBuildReport);
+	}
+
+	private TopLevelBuildReport _getTopLevelBuildReport(
+		String axisName, DownstreamBuildReport downstreamBuildReport) {
+
+		TopLevelBuildReport topLevelBuildReport = Mockito.mock(
+			TopLevelBuildReport.class);
+
+		Mockito.doReturn(
+			downstreamBuildReport
+		).when(
+			topLevelBuildReport
+		).getDownstreamBuildReport(
+			axisName
+		);
+
+		return topLevelBuildReport;
 	}
 
 }
