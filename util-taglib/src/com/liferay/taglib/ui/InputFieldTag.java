@@ -228,18 +228,6 @@ public class InputFieldTag extends IncludeTag {
 
 	@Override
 	protected void setAttributes(HttpServletRequest httpServletRequest) {
-		String fieldParam = _fieldParam;
-
-		if (Validator.isNull(fieldParam)) {
-			fieldParam = _field;
-		}
-
-		String id = _id;
-
-		if (Validator.isNull(id)) {
-			id = fieldParam;
-		}
-
 		String className = _model.getName();
 		long groupId = 0;
 
@@ -256,6 +244,18 @@ public class InputFieldTag extends IncludeTag {
 			else {
 				groupId = BeanGetterUtil.getLong(_bean, "groupId");
 			}
+		}
+
+		String fieldParam = _fieldParam;
+
+		if (Validator.isNull(fieldParam)) {
+			fieldParam = _field;
+		}
+
+		String id = _id;
+
+		if (Validator.isNull(id)) {
+			id = fieldParam;
 		}
 
 		httpServletRequest.setAttribute(
