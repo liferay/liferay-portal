@@ -234,6 +234,12 @@ public class QueryUtilTest {
 		testUnionSQL("DESC", _SIZE, _SIZE * 2, _SIZE, "id", "id");
 	}
 
+	@Test
+	public void testUnionSQL7() throws Exception {
+		testUnionSQL(
+			null, _SIZE / 2, _SIZE + (_SIZE / 2), _SIZE, "value", "id");
+	}
+
 	protected static String[] createInserts(int amount) {
 		String[] sqls = new String[amount];
 
@@ -349,6 +355,10 @@ public class QueryUtilTest {
 				sqlQuery, _sessionFactory.getDialect(), start, end, true);
 
 			Assert.assertEquals(result.toString(), size, result.size());
+
+			if (order == null) {
+				return;
+			}
 
 			Object[] firstRow = result.get(0);
 			Object[] lastRow = result.get(result.size() - 1);
