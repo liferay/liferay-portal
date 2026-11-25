@@ -2953,13 +2953,14 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 	}
 
 	private void _testGetSiteSitePagesPageWithSiteTemplate() throws Exception {
-		LayoutSetPrototype layoutSetPrototype =
-			LayoutTestUtil.addLayoutSetPrototype(RandomTestUtil.randomString());
-
 		try (PropsTemporarySwapper propsTemporarySwapper =
 				new PropsTemporarySwapper(
 					FeatureFlagConstants.getKey("LPD-38869"),
 					Boolean.FALSE.toString())) {
+
+			LayoutSetPrototype layoutSetPrototype =
+				LayoutTestUtil.addLayoutSetPrototype(
+					RandomTestUtil.randomString());
 
 			Group group = layoutSetPrototype.getGroup();
 
@@ -4148,13 +4149,14 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 	}
 
 	private void _testPostSiteSitePageWithSiteTemplate() throws Exception {
-		LayoutSetPrototype layoutSetPrototype =
-			LayoutTestUtil.addLayoutSetPrototype(RandomTestUtil.randomString());
-
 		try (PropsTemporarySwapper propsTemporarySwapper =
 				new PropsTemporarySwapper(
 					FeatureFlagConstants.getKey("LPD-38869"),
 					Boolean.FALSE.toString())) {
+
+			LayoutSetPrototype layoutSetPrototype =
+				LayoutTestUtil.addLayoutSetPrototype(
+					RandomTestUtil.randomString());
 
 			Group group = layoutSetPrototype.getGroup();
 
@@ -5631,13 +5633,14 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 	}
 
 	private void _testPutSiteSitePageWithSiteTemplate() throws Exception {
-		LayoutSetPrototype layoutSetPrototype =
-			LayoutTestUtil.addLayoutSetPrototype(RandomTestUtil.randomString());
-
 		try (PropsTemporarySwapper propsTemporarySwapper =
 				new PropsTemporarySwapper(
 					FeatureFlagConstants.getKey("LPD-38869"),
 					Boolean.FALSE.toString())) {
+
+			LayoutSetPrototype layoutSetPrototype =
+				LayoutTestUtil.addLayoutSetPrototype(
+					RandomTestUtil.randomString());
 
 			Group group = layoutSetPrototype.getGroup();
 
