@@ -7,7 +7,7 @@ import '@testing-library/jest-dom';
 import {render, waitFor} from '@testing-library/react';
 import React from 'react';
 
-import ProductEditorSticker from '../../src/main/resources/META-INF/resources/js/ProductEditorSticker';
+import EditorProductSticker from '../../src/main/resources/META-INF/resources/js/EditorProductSticker';
 
 const mockFetch = jest.fn();
 
@@ -19,7 +19,7 @@ function mockImages(images: any[]) {
 	mockFetch.mockResolvedValue({json: () => Promise.resolve({images})});
 }
 
-describe('ProductEditorSticker', () => {
+describe('EditorProductSticker', () => {
 	beforeEach(() => {
 		mockFetch.mockReset();
 	});
@@ -32,7 +32,7 @@ describe('ProductEditorSticker', () => {
 		]);
 
 		const {container} = render(
-			<ProductEditorSticker
+			<EditorProductSticker
 				objectEntryId="123"
 				restContextPath="/o/c/basicproducts"
 			/>
@@ -54,7 +54,7 @@ describe('ProductEditorSticker', () => {
 		mockImages([{image: null}]);
 
 		const {container} = render(
-			<ProductEditorSticker
+			<EditorProductSticker
 				objectEntryId="123"
 				restContextPath="/o/c/basicproducts"
 			/>
@@ -69,7 +69,7 @@ describe('ProductEditorSticker', () => {
 	});
 
 	it('renders the product icon without fetching for a new product', () => {
-		const {container} = render(<ProductEditorSticker />);
+		const {container} = render(<EditorProductSticker />);
 
 		expect(mockFetch).not.toHaveBeenCalled();
 		expect(container.querySelector('img')).toBeNull();
