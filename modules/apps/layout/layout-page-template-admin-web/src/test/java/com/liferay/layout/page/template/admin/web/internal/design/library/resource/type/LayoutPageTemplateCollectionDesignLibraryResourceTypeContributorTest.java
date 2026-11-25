@@ -12,7 +12,7 @@ import com.liferay.layout.page.template.admin.constants.LayoutPageTemplateAdminP
 import com.liferay.layout.page.template.constants.LayoutPageTemplateActionKeys;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateCollectionTypeConstants;
 import com.liferay.layout.page.template.model.LayoutPageTemplateCollection;
-import com.liferay.layout.page.template.service.LayoutPageTemplateCollectionServiceUtil;
+import com.liferay.layout.page.template.service.LayoutPageTemplateCollectionLocalService;
 import com.liferay.portal.json.JSONFactoryImpl;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
@@ -93,6 +93,10 @@ public class
 
 		ReflectionTestUtil.setFieldValue(
 			_layoutPageTemplateCollectionDesignLibraryResourceTypeContributor,
+			"_layoutPageTemplateCollectionLocalService",
+			_layoutPageTemplateCollectionLocalService);
+		ReflectionTestUtil.setFieldValue(
+			_layoutPageTemplateCollectionDesignLibraryResourceTypeContributor,
 			"_portletResourcePermission", _portletResourcePermission);
 	}
 
@@ -100,7 +104,6 @@ public class
 	public void tearDown() {
 		_featureFlagManagerUtilMockedStatic.close();
 		_languageUtilMockedStatic.close();
-		_layoutPageTemplateCollectionServiceUtilMockedStatic.close();
 		_portalUtilMockedStatic.close();
 	}
 
@@ -120,7 +123,7 @@ public class
 		long layoutPageTemplateCollectionId = RandomTestUtil.randomLong();
 		String layoutPageTemplateCollectionName = RandomTestUtil.randomString();
 
-		_setUpLayoutPageTemplateCollectionServiceUtil(
+		_setUpLayoutPageTemplateCollectionLocalService(
 			layoutPageTemplateCollectionId, layoutPageTemplateCollectionName);
 
 		String backURL = RandomTestUtil.randomString();
@@ -266,7 +269,7 @@ public class
 		);
 	}
 
-	private void _setUpLayoutPageTemplateCollectionServiceUtil(
+	private void _setUpLayoutPageTemplateCollectionLocalService(
 		long layoutPageTemplateCollectionId,
 		String layoutPageTemplateCollectionName) {
 
@@ -285,13 +288,11 @@ public class
 			layoutPageTemplateCollectionName
 		);
 
-		_layoutPageTemplateCollectionServiceUtilMockedStatic.when(
-			() ->
-				LayoutPageTemplateCollectionServiceUtil.
-					getLayoutPageTemplateCollections(
-						_GROUP_ID,
-						LayoutPageTemplateCollectionTypeConstants.BASIC,
-						QueryUtil.ALL_POS, QueryUtil.ALL_POS)
+		Mockito.when(
+			_layoutPageTemplateCollectionLocalService.
+				getLayoutPageTemplateCollections(
+					_GROUP_ID, LayoutPageTemplateCollectionTypeConstants.BASIC,
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS)
 		).thenReturn(
 			Collections.singletonList(layoutPageTemplateCollection)
 		);
@@ -395,9 +396,9 @@ public class
 		LayoutPageTemplateCollectionDesignLibraryResourceTypeContributor
 			_layoutPageTemplateCollectionDesignLibraryResourceTypeContributor =
 				new LayoutPageTemplateCollectionDesignLibraryResourceTypeContributor();
-	private final MockedStatic<LayoutPageTemplateCollectionServiceUtil>
-		_layoutPageTemplateCollectionServiceUtilMockedStatic =
-			Mockito.mockStatic(LayoutPageTemplateCollectionServiceUtil.class);
+	private final LayoutPageTemplateCollectionLocalService
+		_layoutPageTemplateCollectionLocalService = Mockito.mock(
+			LayoutPageTemplateCollectionLocalService.class);
 	private final LiferayPortletURL _liferayPortletURL = Mockito.mock(
 		LiferayPortletURL.class);
 	private final PermissionChecker _permissionChecker = Mockito.mock(
