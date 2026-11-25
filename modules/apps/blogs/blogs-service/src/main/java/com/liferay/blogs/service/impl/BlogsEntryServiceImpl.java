@@ -84,7 +84,7 @@ public class BlogsEntryServiceImpl extends BlogsEntryServiceBaseImpl {
 			getPermissionChecker(), groupId, ActionKeys.ADD_ENTRY);
 
 		return blogsEntryLocalService.addAttachmentFileEntry(
-			externalReferenceCode, getUserId(), groupId, fileName, mimeType,
+			externalReferenceCode, getUserId(), groupId, 0, fileName, mimeType,
 			inputStream);
 	}
 
