@@ -17,6 +17,7 @@ import com.liferay.commerce.payment.service.CommercePaymentEntryLocalService;
 import com.liferay.commerce.product.constants.CommerceChannelConstants;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
+import com.liferay.commerce.test.util.CommerceTestUtil;
 import com.liferay.headless.commerce.admin.payment.client.dto.v1_0.Payment;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.User;
@@ -67,6 +68,9 @@ public class PaymentResourceTest extends BasePaymentResourceTestCase {
 			RandomTestUtil.randomString(),
 			CommerceChannelConstants.CHANNEL_TYPE_SITE, null,
 			_commerceCurrency.getCode(), _serviceContext);
+
+		_commerceOrder = CommerceTestUtil.addB2CCommerceOrder(
+			user.getUserId(), _commerceChannel.getGroupId(), _commerceCurrency);
 	}
 
 	@Ignore
@@ -165,7 +169,7 @@ public class PaymentResourceTest extends BasePaymentResourceTestCase {
 				paymentIntegrationKey = RandomTestUtil.randomString();
 				paymentIntegrationType = RandomTestUtil.randomInt();
 				reasonKey = StringPool.BLANK;
-				relatedItemId = RandomTestUtil.randomLong();
+				relatedItemId = _commerceOrder.getCommerceOrderId();
 				relatedItemName = CommerceOrder.class.getName();
 				transactionCode = RandomTestUtil.randomString();
 				type = CommercePaymentEntryConstants.TYPE_PAYMENT;
@@ -309,6 +313,8 @@ public class PaymentResourceTest extends BasePaymentResourceTestCase {
 
 	@Inject
 	private CommerceCurrencyLocalService _commerceCurrencyLocalService;
+
+	private CommerceOrder _commerceOrder;
 
 	@DeleteAfterTestRun
 	private final List<CommercePaymentEntry> _commercePaymentEntries =
