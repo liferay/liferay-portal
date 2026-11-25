@@ -184,7 +184,6 @@ public class BaseURLReaderTest extends com.liferay.jenkins.results.parser.Test {
 			new ByteArrayInputStream(errorResponse.getBytes()));
 
 		Assert.assertTrue(
-			standardOut,
 			standardOut.contains("\nError response:\n" + errorResponse));
 
 		String message = RandomTestUtil.randomString();
@@ -200,7 +199,6 @@ public class BaseURLReaderTest extends com.liferay.jenkins.results.parser.Test {
 			});
 
 		Assert.assertTrue(
-			standardOut,
 			standardOut.contains(
 				"\nUnable to read the error response: " + message));
 	}
@@ -436,10 +434,9 @@ public class BaseURLReaderTest extends com.liferay.jenkins.results.parser.Test {
 			);
 		}
 
-		PrintStream printStream = System.out;
-
 		ByteArrayOutputStream byteArrayOutputStream =
 			new ByteArrayOutputStream();
+		PrintStream printStream = System.out;
 
 		System.setOut(new PrintStream(byteArrayOutputStream, true));
 

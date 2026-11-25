@@ -203,7 +203,7 @@ public class BaseBuildUpdaterTest
 
 	private void _testRunReporting(
 		Class<? extends Build> buildClass, boolean expectedReinvoked,
-		boolean hasParentBuild) {
+		boolean parentBuildPresent) {
 
 		Properties buildProperties = new Properties();
 
@@ -213,7 +213,28 @@ public class BaseBuildUpdaterTest
 
 		JenkinsResultsParserUtil.setBuildProperties(buildProperties);
 
+		BaseBuildUpdater baseBuildUpdater = Mockito.mock(
+			BaseBuildUpdater.class);
+
 		Build build = Mockito.mock(buildClass);
+
+		Build.Invocation invocation = Mockito.mock(Build.Invocation.class);
+
+		if (parentBuildPresent) {
+			Build parentBuild = Mockito.mock(Build.class);
+
+			Mockito.when(
+				parentBuild.getStatus()
+			).thenReturn(
+				"running"
+			);
+
+			Mockito.when(
+				build.getParentBuild()
+			).thenReturn(
+				parentBuild
+			);
+		}
 
 		Mockito.when(
 			build.getBuildURL()
@@ -221,32 +242,11 @@ public class BaseBuildUpdaterTest
 			RandomTestUtil.randomString()
 		);
 
-		Build.Invocation invocation = Mockito.mock(Build.Invocation.class);
-
 		Mockito.when(
 			build.getCurrentInvocation()
 		).thenReturn(
 			invocation
 		);
-
-		if (hasParentBuild) {
-			Build parentBuild = Mockito.mock(Build.class);
-
-			Mockito.when(
-				build.getParentBuild()
-			).thenReturn(
-				parentBuild
-			);
-
-			Mockito.when(
-				parentBuild.getStatus()
-			).thenReturn(
-				"running"
-			);
-		}
-
-		BaseBuildUpdater baseBuildUpdater = Mockito.mock(
-			BaseBuildUpdater.class);
 
 		Mockito.doCallRealMethod(
 		).when(
@@ -301,15 +301,15 @@ public class BaseBuildUpdaterTest
 		).reinvoke();
 
 		Mockito.verify(
-			invocation, verificationMode
-		).setReinvokeRule(
-			Mockito.any(ReinvokeRule.class)
-		);
-
-		Mockito.verify(
 			build
 		).setStatus(
 			expectedStatus
+		);
+
+		Mockito.verify(
+			invocation, verificationMode
+		).setReinvokeRule(
+			Mockito.any(ReinvokeRule.class)
 		);
 	}
 
