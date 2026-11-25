@@ -21,6 +21,11 @@ public class EventDefinitionDTOConverterTest {
 	public void testToDTO() {
 		Assert.assertNull(_eventDefinitionDTOConverter.toDTO(null, null));
 
+		_testToDTOWithKnownType();
+		_testToDTOWithUnknownType();
+	}
+
+	private void _testToDTOWithKnownType() {
 		String description = RandomTestUtil.randomString();
 		String displayName = RandomTestUtil.randomString();
 		boolean hidden = RandomTestUtil.randomBoolean();
@@ -39,8 +44,7 @@ public class EventDefinitionDTOConverterTest {
 		Assert.assertEquals(type, eventDefinition.getType());
 	}
 
-	@Test
-	public void testToDTOWithUnknownType() {
+	private void _testToDTOWithUnknownType() {
 		EventDefinition eventDefinition = _toDTO(RandomTestUtil.randomString());
 
 		Assert.assertNull(eventDefinition.getType());

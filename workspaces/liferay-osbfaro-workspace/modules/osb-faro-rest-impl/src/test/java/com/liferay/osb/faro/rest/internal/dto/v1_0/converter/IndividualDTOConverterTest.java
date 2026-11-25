@@ -41,32 +41,25 @@ public class IndividualDTOConverterTest {
 
 	@Test
 	public void testToDTO() {
-		String activityStatus = RandomTestUtil.randomString();
-		Long averageSessionDuration = RandomTestUtil.randomLong();
-		Date knownSinceDate = RandomTestUtil.nextDate();
-		Individual.ProfileType profileType = Individual.ProfileType.KNOWN;
-		Long sessionsCount = RandomTestUtil.randomLong();
+		_testToDTOWithDemographics();
+		_testToDTOWithoutDemographics();
+	}
 
-		Individual individual = _toDTO(
-			activityStatus, averageSessionDuration, null, knownSinceDate,
-			StringUtil.toLowerCase(profileType.getValue()), sessionsCount);
+	private Field _createField(String name, String value) {
+		Field field = new Field();
 
-		Assert.assertEquals(activityStatus, individual.getActivityStatus());
-		Assert.assertEquals(
-			averageSessionDuration, individual.getAverageSessionDuration());
-		Assert.assertEquals(knownSinceDate, individual.getKnownSinceDate());
-		Assert.assertEquals(profileType, individual.getProfileType());
-		Assert.assertEquals(sessionsCount, individual.getSessionsCount());
+		field.setName(name);
+		field.setValue(value);
 
-		Assert.assertNull(individual.getDemographics());
-		Assert.assertNull(individual.getEmailAddress());
-		Assert.assertNull(individual.getName());
+		return field;
+	}
 
+	private void _testToDTOWithDemographics() {
 		String emailAddress = RandomTestUtil.randomString();
 		String familyName = RandomTestUtil.randomString();
 		String givenName = RandomTestUtil.randomString();
 
-		individual = _toDTO(
+		Individual individual = _toDTO(
 			HashMapBuilder.<String, List<Field>>put(
 				"email",
 				Collections.singletonList(_createField("email", emailAddress))
@@ -97,13 +90,26 @@ public class IndividualDTOConverterTest {
 		Assert.assertEquals(familyName, individual.getName());
 	}
 
-	private Field _createField(String name, String value) {
-		Field field = new Field();
+	private void _testToDTOWithoutDemographics() {
+		String activityStatus = RandomTestUtil.randomString();
+		Long averageSessionDuration = RandomTestUtil.randomLong();
+		Date knownSinceDate = RandomTestUtil.nextDate();
+		Individual.ProfileType profileType = Individual.ProfileType.KNOWN;
+		Long sessionsCount = RandomTestUtil.randomLong();
 
-		field.setName(name);
-		field.setValue(value);
+		Individual individual = _toDTO(
+			activityStatus, averageSessionDuration, null, knownSinceDate,
+			StringUtil.toLowerCase(profileType.getValue()), sessionsCount);
 
-		return field;
+		Assert.assertEquals(activityStatus, individual.getActivityStatus());
+		Assert.assertEquals(
+			averageSessionDuration, individual.getAverageSessionDuration());
+		Assert.assertNull(individual.getDemographics());
+		Assert.assertNull(individual.getEmailAddress());
+		Assert.assertEquals(knownSinceDate, individual.getKnownSinceDate());
+		Assert.assertNull(individual.getName());
+		Assert.assertEquals(profileType, individual.getProfileType());
+		Assert.assertEquals(sessionsCount, individual.getSessionsCount());
 	}
 
 	private Individual _toDTO(Map<String, List<Field>> demographics) {

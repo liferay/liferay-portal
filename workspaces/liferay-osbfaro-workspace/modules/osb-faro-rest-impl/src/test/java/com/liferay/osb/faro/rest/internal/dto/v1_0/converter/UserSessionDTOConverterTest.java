@@ -39,6 +39,29 @@ public class UserSessionDTOConverterTest {
 
 	@Test
 	public void testToDTO() {
+		Assert.assertNull(
+			_userSessionDTOConverter.toDTO(
+				new FaroDTOConverterContext(false, null, null), null));
+
+		_testToDTOWithEvents();
+		_testToDTOWithoutEvents();
+	}
+
+	private GetWorkspaceGroupChannelEventsPageResponse.Event _createEvent(
+		String assetTitle, String canonicalURL, Date createDate, String name) {
+
+		GetWorkspaceGroupChannelEventsPageResponse.Event event =
+			new GetWorkspaceGroupChannelEventsPageResponse.Event();
+
+		event.setAssetTitle(assetTitle);
+		event.setCanonicalUrl(canonicalURL);
+		event.setCreateDate(createDate);
+		event.setName(name);
+
+		return event;
+	}
+
+	private void _testToDTOWithEvents() {
 		String assetTitle = RandomTestUtil.randomString();
 		boolean becameKnown = RandomTestUtil.randomBoolean();
 		String browserName = RandomTestUtil.randomString();
@@ -68,34 +91,18 @@ public class UserSessionDTOConverterTest {
 		Assert.assertEquals(assetTitle, event.getAssetTitle());
 		Assert.assertEquals(canonicalURL, event.getCanonicalUrl());
 		Assert.assertEquals(name, event.getName());
+	}
 
-		userSession = _toDTO(null);
+	private void _testToDTOWithoutEvents() {
+		UserSession userSession = _toDTO(null);
 
 		Assert.assertNull(userSession.getEvents());
 
 		userSession = _toDTO(Collections.emptyList());
 
-		events = userSession.getEvents();
+		Event[] events = userSession.getEvents();
 
 		Assert.assertEquals(Arrays.toString(events), 0, events.length);
-
-		Assert.assertNull(
-			_userSessionDTOConverter.toDTO(
-				new FaroDTOConverterContext(false, null, null), null));
-	}
-
-	private GetWorkspaceGroupChannelEventsPageResponse.Event _createEvent(
-		String assetTitle, String canonicalURL, Date createDate, String name) {
-
-		GetWorkspaceGroupChannelEventsPageResponse.Event event =
-			new GetWorkspaceGroupChannelEventsPageResponse.Event();
-
-		event.setAssetTitle(assetTitle);
-		event.setCanonicalUrl(canonicalURL);
-		event.setCreateDate(createDate);
-		event.setName(name);
-
-		return event;
 	}
 
 	private UserSession _toDTO(

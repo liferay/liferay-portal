@@ -36,6 +36,72 @@ public class EventMetricDTOConverterTest {
 
 	@Test
 	public void testToDTO() {
+		Assert.assertNull(
+			_eventMetricDTOConverter.toDTO(
+				new FaroDTOConverterContext(false, null, null), null));
+
+		_testToDTOWithOptionalValues();
+		_testToDTOWithoutOptionalValues();
+	}
+
+	private GetWorkspaceGroupChannelEventMetricsResponse.Metric _createMetric(
+		Double value) {
+
+		GetWorkspaceGroupChannelEventMetricsResponse.Metric metric =
+			new GetWorkspaceGroupChannelEventMetricsResponse.Metric();
+
+		metric.setValue(value);
+
+		return metric;
+	}
+
+	private GetWorkspaceGroupChannelEventMetricsResponse.Metric _createMetric(
+		String[] bucketKeys, Double[] bucketValues, Double percentage,
+		Double previousValue, String trendClassification, Double value) {
+
+		GetWorkspaceGroupChannelEventMetricsResponse.Metric metric =
+			_createMetric(value);
+
+		if ((bucketKeys != null) && (bucketValues != null)) {
+			GetWorkspaceGroupChannelEventMetricsResponse.Histogram histogram =
+				new GetWorkspaceGroupChannelEventMetricsResponse.Histogram();
+
+			GetWorkspaceGroupChannelEventMetricsResponse.HistogramMetric[]
+				histogramMetrics =
+					new
+					GetWorkspaceGroupChannelEventMetricsResponse.HistogramMetric
+						[bucketKeys.length];
+
+			for (int i = 0; i < bucketKeys.length; i++) {
+				histogramMetrics[i] =
+					new GetWorkspaceGroupChannelEventMetricsResponse.
+						HistogramMetric();
+
+				histogramMetrics[i].setKey(bucketKeys[i]);
+				histogramMetrics[i].setValue(bucketValues[i]);
+				histogramMetrics[i].setValueKey(RandomTestUtil.randomString());
+			}
+
+			histogram.setMetrics(Arrays.asList(histogramMetrics));
+			histogram.setTotal(bucketKeys.length);
+
+			metric.setHistogram(histogram);
+		}
+
+		metric.setPreviousValue(previousValue);
+
+		GetWorkspaceGroupChannelEventMetricsResponse.Trend trend =
+			new GetWorkspaceGroupChannelEventMetricsResponse.Trend();
+
+		trend.setPercentage(percentage);
+		trend.setTrendClassification(trendClassification);
+
+		metric.setTrend(trend);
+
+		return metric;
+	}
+
+	private void _testToDTOWithOptionalValues() {
 		String[] bucketKeys = {
 			RandomTestUtil.randomString(), RandomTestUtil.randomString()
 		};
@@ -90,81 +156,22 @@ public class EventMetricDTOConverterTest {
 			totalSessionsTrendClassification,
 			totalSessionsMetric.getTrendClassification());
 		Assert.assertEquals(totalSessionsValue, totalSessionsMetric.getValue());
+	}
 
-		totalEventsValue = RandomTestUtil.randomDouble();
+	private void _testToDTOWithoutOptionalValues() {
+		Double totalEventsValue = RandomTestUtil.randomDouble();
 
-		eventMetric = _toDTO(_createMetric(totalEventsValue), null);
+		EventMetric eventMetric = _toDTO(_createMetric(totalEventsValue), null);
 
 		Assert.assertNull(eventMetric.getTotalSessions());
 
-		totalEventsMetric = eventMetric.getTotalEvents();
+		Metric totalEventsMetric = eventMetric.getTotalEvents();
 
 		Assert.assertNull(totalEventsMetric.getHistogramBuckets());
 		Assert.assertNull(totalEventsMetric.getPreviousValue());
 		Assert.assertNull(totalEventsMetric.getTrendClassification());
 		Assert.assertNull(totalEventsMetric.getTrendPercentage());
 		Assert.assertEquals(totalEventsValue, totalEventsMetric.getValue());
-
-		Assert.assertNull(
-			_eventMetricDTOConverter.toDTO(
-				new FaroDTOConverterContext(false, null, null), null));
-	}
-
-	private GetWorkspaceGroupChannelEventMetricsResponse.Metric _createMetric(
-		Double value) {
-
-		GetWorkspaceGroupChannelEventMetricsResponse.Metric metric =
-			new GetWorkspaceGroupChannelEventMetricsResponse.Metric();
-
-		metric.setValue(value);
-
-		return metric;
-	}
-
-	private GetWorkspaceGroupChannelEventMetricsResponse.Metric _createMetric(
-		String[] bucketKeys, Double[] bucketValues, Double percentage,
-		Double previousValue, String trendClassification, Double value) {
-
-		GetWorkspaceGroupChannelEventMetricsResponse.Metric metric =
-			_createMetric(value);
-
-		if (bucketKeys != null) {
-			GetWorkspaceGroupChannelEventMetricsResponse.Histogram histogram =
-				new GetWorkspaceGroupChannelEventMetricsResponse.Histogram();
-
-			GetWorkspaceGroupChannelEventMetricsResponse.HistogramMetric[]
-				histogramMetrics =
-					new
-					GetWorkspaceGroupChannelEventMetricsResponse.HistogramMetric
-						[bucketKeys.length];
-
-			for (int i = 0; i < bucketKeys.length; i++) {
-				histogramMetrics[i] =
-					new GetWorkspaceGroupChannelEventMetricsResponse.
-						HistogramMetric();
-
-				histogramMetrics[i].setKey(bucketKeys[i]);
-				histogramMetrics[i].setValue(bucketValues[i]);
-				histogramMetrics[i].setValueKey(RandomTestUtil.randomString());
-			}
-
-			histogram.setMetrics(Arrays.asList(histogramMetrics));
-			histogram.setTotal(bucketKeys.length);
-
-			metric.setHistogram(histogram);
-		}
-
-		metric.setPreviousValue(previousValue);
-
-		GetWorkspaceGroupChannelEventMetricsResponse.Trend trend =
-			new GetWorkspaceGroupChannelEventMetricsResponse.Trend();
-
-		trend.setPercentage(percentage);
-		trend.setTrendClassification(trendClassification);
-
-		metric.setTrend(trend);
-
-		return metric;
 	}
 
 	private EventMetric _toDTO(

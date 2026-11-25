@@ -22,6 +22,11 @@ public class EventAttributeDefinitionDTOConverterTest {
 		Assert.assertNull(
 			_eventAttributeDefinitionDTOConverter.toDTO(null, null));
 
+		_testToDTOWithKnownEnums();
+		_testToDTOWithUnknownEnums();
+	}
+
+	private void _testToDTOWithKnownEnums() {
 		EventAttributeDefinition.DataType dataType =
 			EventAttributeDefinition.DataType.DURATION;
 		String description = RandomTestUtil.randomString();
@@ -48,8 +53,7 @@ public class EventAttributeDefinitionDTOConverterTest {
 		Assert.assertEquals(type, eventAttributeDefinition.getType());
 	}
 
-	@Test
-	public void testToDTOWithUnknownEnums() {
+	private void _testToDTOWithUnknownEnums() {
 		EventAttributeDefinition eventAttributeDefinition = _toDTO(
 			RandomTestUtil.randomString(), RandomTestUtil.randomString());
 
