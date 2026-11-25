@@ -337,14 +337,6 @@ public class CommerceShipmentLocalServiceUtil {
 	}
 
 	public static List<CommerceShipment> getCommerceShipments(
-		long groupId, long commerceAccountId, int start, int end,
-		OrderByComparator<CommerceShipment> orderByComparator) {
-
-		return getService().getCommerceShipments(
-			groupId, commerceAccountId, start, end, orderByComparator);
-	}
-
-	public static List<CommerceShipment> getCommerceShipments(
 			long companyId, long[] groupIds, long[] commerceAccountIds,
 			String keywords, int[] shipmentStatuses,
 			boolean excludeShipmentStatus, int start, int end)
@@ -377,6 +369,15 @@ public class CommerceShipmentLocalServiceUtil {
 
 		return getService().getCommerceShipments(
 			groupIds, commerceAddressId, start, end, orderByComparator);
+	}
+
+	public static List<CommerceShipment>
+		getCommerceShipmentsByCommerceAccountId(
+			long groupId, long commerceAccountId, int start, int end,
+			OrderByComparator<CommerceShipment> orderByComparator) {
+
+		return getService().getCommerceShipmentsByCommerceAccountId(
+			groupId, commerceAccountId, start, end, orderByComparator);
 	}
 
 	/**
@@ -425,13 +426,6 @@ public class CommerceShipmentLocalServiceUtil {
 	}
 
 	public static int getCommerceShipmentsCount(
-		long groupId, long commerceAccountId) {
-
-		return getService().getCommerceShipmentsCount(
-			groupId, commerceAccountId);
-	}
-
-	public static int getCommerceShipmentsCount(
 			long companyId, long[] groupIds, long[] commerceAccountIds,
 			String keywords, int[] shipmentStatuses,
 			boolean excludeShipmentStatus)
@@ -455,6 +449,13 @@ public class CommerceShipmentLocalServiceUtil {
 
 		return getService().getCommerceShipmentsCount(
 			groupIds, commerceAddressId);
+	}
+
+	public static int getCommerceShipmentsCountByCommerceAccountId(
+		long groupId, long commerceAccountId) {
+
+		return getService().getCommerceShipmentsCountByCommerceAccountId(
+			groupId, commerceAccountId);
 	}
 
 	public static int[] getCommerceShipmentStatusesByCommerceOrderId(
@@ -645,4 +646,4 @@ public class CommerceShipmentLocalServiceUtil {
 			CommerceShipmentLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:573429282
+// LIFERAY-SERVICE-BUILDER-HASH:634455956

@@ -291,11 +291,6 @@ public interface CommerceShipmentLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CommerceShipment> getCommerceShipments(
-		long groupId, long commerceAccountId, int start, int end,
-		OrderByComparator<CommerceShipment> orderByComparator);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CommerceShipment> getCommerceShipments(
 			long companyId, long[] groupIds, long[] commerceAccountIds,
 			String keywords, int[] shipmentStatuses,
 			boolean excludeShipmentStatus, int start, int end)
@@ -314,6 +309,11 @@ public interface CommerceShipmentLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CommerceShipment> getCommerceShipments(
 		long[] groupIds, long commerceAddressId, int start, int end,
+		OrderByComparator<CommerceShipment> orderByComparator);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<CommerceShipment> getCommerceShipmentsByCommerceAccountId(
+		long groupId, long commerceAccountId, int start, int end,
 		OrderByComparator<CommerceShipment> orderByComparator);
 
 	/**
@@ -354,9 +354,6 @@ public interface CommerceShipmentLocalService
 	public int getCommerceShipmentsCount(long commerceOrderId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCommerceShipmentsCount(long groupId, long commerceAccountId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getCommerceShipmentsCount(
 			long companyId, long[] groupIds, long[] commerceAccountIds,
 			String keywords, int[] shipmentStatuses,
@@ -372,6 +369,10 @@ public interface CommerceShipmentLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getCommerceShipmentsCount(
 		long[] groupIds, long commerceAddressId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int getCommerceShipmentsCountByCommerceAccountId(
+		long groupId, long commerceAccountId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int[] getCommerceShipmentStatusesByCommerceOrderId(
@@ -484,4 +485,4 @@ public interface CommerceShipmentLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1121881828
+// LIFERAY-SERVICE-BUILDER-HASH:-28644842
