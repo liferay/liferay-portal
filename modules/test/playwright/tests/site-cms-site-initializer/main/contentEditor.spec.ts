@@ -447,7 +447,7 @@ test.describe('Comments Panel', () => {
 
 	test(
 		'Add and edit comments in the comments panel',
-		{tag: '@LPD-59851'},
+		{tag: ['@LPD-59851', '@LPD-117618']},
 		async ({contentsPage, page}) => {
 			await contentsPage.goto();
 
@@ -463,6 +463,16 @@ test.describe('Comments Panel', () => {
 				content: parentCommentContent,
 				page,
 			});
+
+			// Check that the comment is kept when switching side panels
+
+			await contentsPage.openSidePanel('General');
+
+			await contentsPage.openSidePanel('Comments');
+
+			await expect(
+				comment.filter({hasText: parentCommentContent})
+			).toBeVisible();
 
 			// Check that the text typed is removed when the button cancel is pressed
 

@@ -9,7 +9,7 @@ import '@testing-library/jest-dom';
 import {checkAccessibility} from '@liferay/layout-js-components-web/test/__lib__/index';
 import {render, screen, waitFor, within} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import React from 'react';
+import React, {useState} from 'react';
 
 import CommentsPanel from '../../../../../src/main/resources/META-INF/resources/js/content_editor/components/panels/CommentsPanel';
 import CommentService, {
@@ -112,17 +112,24 @@ const renderComponent = (
 	readOnly = false,
 	comments = initialComments
 ) => {
-	return render(
-		<CommentsPanel
-			addCommentURL={addCommentURL}
-			comments={comments}
-			deleteCommentURL="deleteCommentURL"
-			editCommentURL="editCommentURL"
-			editorConfig={{}}
-			getCommentsURL="getCommentsURL"
-			readOnly={readOnly}
-		/>
-	);
+	const Component = () => {
+		const [currentComments, setCurrentComments] = useState(comments);
+
+		return (
+			<CommentsPanel
+				addCommentURL={addCommentURL}
+				comments={currentComments}
+				deleteCommentURL="deleteCommentURL"
+				editCommentURL="editCommentURL"
+				editorConfig={{}}
+				getCommentsURL="getCommentsURL"
+				onUpdateComments={setCurrentComments}
+				readOnly={readOnly}
+			/>
+		);
+	};
+
+	return render(<Component />);
 };
 
 const closeToast = async () => {

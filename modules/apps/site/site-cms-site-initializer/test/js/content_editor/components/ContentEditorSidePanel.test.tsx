@@ -11,6 +11,9 @@ import React from 'react';
 import CategorizationSuggestionService from '../../../../src/main/resources/META-INF/resources/js/common/services/CategorizationSuggestionService';
 import VocabularyService from '../../../../src/main/resources/META-INF/resources/js/common/services/VocabularyService';
 import ContentEditorSidePanel from '../../../../src/main/resources/META-INF/resources/js/content_editor/components/ContentEditorSidePanel';
+import CommentService, {
+	Comment,
+} from '../../../../src/main/resources/META-INF/resources/js/content_editor/services/CommentService';
 import ObjectEntryService from '../../../../src/main/resources/META-INF/resources/js/main_view/info_panel/services/ObjectEntryService';
 import {mockFetch} from '../../__mocks__/frontend-js-web';
 
@@ -30,6 +33,9 @@ jest.mock('frontend-js-web', () => ({
 	},
 }));
 jest.mock(
+	'../../../../src/main/resources/META-INF/resources/js/content_editor/services/CommentService'
+);
+jest.mock(
 	'../../../../src/main/resources/META-INF/resources/js/main_view/info_panel/services/ObjectEntryService'
 );
 jest.mock(
@@ -41,8 +47,14 @@ jest.mock(
 
 const renderComponent = ({
 	cmpEnabled = true,
+	comments = [],
 	expirationDate = EXPIRATION_DATE,
 	isSubscribed = false,
+}: {
+	cmpEnabled?: boolean;
+	comments?: Comment[];
+	expirationDate?: string;
+	isSubscribed?: boolean;
 } = {}) => {
 	return render(
 		<ContentEditorSidePanel
@@ -51,7 +63,7 @@ const renderComponent = ({
 			assetType={30982}
 			cmpEnabled={cmpEnabled}
 			cmsGroupId="21000"
-			comments={[]}
+			comments={comments}
 			contentAPIURL="contentAPIURL"
 			deleteCommentURL="deleteCommentURL"
 			editCommentURL="editCommentURL"
@@ -317,6 +329,69 @@ describe('ContentEditorSidePanel', () => {
 				})
 			);
 		});
+	});
+
+	it('keeps a comment deleted when switching panels', async () => {
+		(CommentService.deleteComment as jest.Mock).mockResolvedValue({
+			data: {},
+		});
+
+		renderComponent({
+			comments: [
+				{
+					author: {
+						fullName: 'Test User',
+						portraitURL: '',
+						userId: '1',
+					},
+					body: 'Comment to delete',
+					children: [],
+					className: 'Z7P5',
+					commentId: '1',
+					dateDescription: '18 Seconds Ago',
+					edited: false,
+					hasDeletePermission: true,
+					hasUpdatePermission: true,
+					negativeVotes: 0,
+					positiveVotes: 0,
+					ratingsClassName:
+						'com.liferay.message.boards.model.MBDiscussion',
+					rootComment: true,
+					thumbDown: false,
+					thumbUp: false,
+				},
+			],
+		});
+
+		await userEvent.click(screen.getByLabelText('comments'));
+
+		expect(
+			await screen.findByText('Comment to delete')
+		).toBeInTheDocument();
+
+		await userEvent.click(screen.getByTitle('actions'));
+
+		await userEvent.click(screen.getByText('delete'));
+
+		await waitFor(() => {
+			expect(
+				screen.queryByText('Comment to delete')
+			).not.toBeInTheDocument();
+		});
+
+		await userEvent.click(screen.getByLabelText('general'));
+
+		await waitFor(() => {
+			expect(screen.getByText('general')).toBeInTheDocument();
+		});
+
+		await userEvent.click(screen.getByLabelText('comments'));
+
+		await waitFor(() => {
+			expect(screen.getByText('comments')).toBeInTheDocument();
+		});
+
+		expect(screen.queryByText('Comment to delete')).not.toBeInTheDocument();
 	});
 
 	it('persists a tag commit while the categorization panel is closed', async () => {
