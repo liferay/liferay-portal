@@ -488,6 +488,9 @@ public class DBCopyTablesProcessTest {
 		if (dbType == DBType.ORACLE) {
 			typeName = "varchar2";
 		}
+		else if (dbType == DBType.SQLSERVER) {
+			typeName = "nvarchar";
+		}
 
 		Assert.assertEquals(
 			Arrays.asList(
