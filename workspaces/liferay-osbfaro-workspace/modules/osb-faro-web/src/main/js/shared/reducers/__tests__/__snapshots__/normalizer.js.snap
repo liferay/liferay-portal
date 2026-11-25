@@ -79,6 +79,7 @@ Immutable.Map {
         "friendlyURL": null,
         "groupId": null,
         "incidentReportEmailAddresses": Immutable.List [],
+        "ldpEnabled": false,
         "name": "",
         "ownerEmailAddress": "",
         "recommendationsEnabled": false,
