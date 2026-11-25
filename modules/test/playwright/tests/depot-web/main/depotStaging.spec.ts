@@ -20,6 +20,7 @@ import {BlogsEditBlogEntryPage} from '../../blogs-web/main/pages/BlogsEditBlogEn
 import getDataStructureDefinition from '../../journal-web/main/utils/getDataStructureDefinition';
 import {pagesPagesTest} from '../../layout-admin-web/main/fixtures/pagesPagesTest';
 import {stagedDepotSiteTest} from './fixtures/stagedDepotSiteTest';
+import getBlogCoverImageURL from './utils/getBlogCoverImageURL';
 
 const test = mergeTests(
 	blogsPagesTest,
@@ -764,16 +765,9 @@ test(
 
 		await expect(page.getByText(blogHeadline)).toBeVisible();
 
-		const coverImageURL = await page
-			.locator('.cover-image')
-			.evaluate(
-				(element) =>
-					getComputedStyle(element).backgroundImage.match(
-						/url\("?(.*?)"?\)/
-					)[1]
-			);
-
-		const coverImageResponse = await page.request.get(coverImageURL);
+		const coverImageResponse = await page.request.get(
+			await getBlogCoverImageURL(page)
+		);
 
 		expect(coverImageResponse.ok()).toBe(true);
 	}
@@ -1077,16 +1071,6 @@ test(
 			site.friendlyUrlPath
 		);
 
-		const getCoverImageURL = () =>
-			page
-				.locator('.cover-image')
-				.evaluate(
-					(element) =>
-						getComputedStyle(element).backgroundImage.match(
-							/url\("?(.*?)"?\)/
-						)[1]
-				);
-
 		const expectWebContentImage = async (documentTitle: string) => {
 			await expect(depotStagingPage.webContentDisplay).toContainText(
 				documentTitle
@@ -1142,7 +1126,9 @@ test(
 
 			await page.goto(livePageURL);
 
-			expect(await getCoverImageURL()).toContain(documentTitles[0]);
+			expect(await getBlogCoverImageURL(page)).toContain(
+				documentTitles[0]
+			);
 
 			await expectWebContentImage(documentTitles[0]);
 		});
@@ -1176,7 +1162,9 @@ test(
 
 			await page.goto(livePageURL);
 
-			expect(await getCoverImageURL()).toContain(documentTitles[1]);
+			expect(await getBlogCoverImageURL(page)).toContain(
+				documentTitles[1]
+			);
 
 			await expectWebContentImage(documentTitles[1]);
 		});

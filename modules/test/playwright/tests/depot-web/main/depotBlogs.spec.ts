@@ -21,6 +21,7 @@ import {blogsPagesTest} from '../../blogs-web/main/fixtures/blogsPagesTest';
 import getPageDefinition from '../../layout-content-page-editor-web/main/utils/getPageDefinition';
 import getWidgetDefinition from '../../layout-content-page-editor-web/main/utils/getWidgetDefinition';
 import addConnectedDepot from './utils/addConnectedDepot';
+import getBlogCoverImageURL from './utils/getBlogCoverImageURL';
 import gotoDepotInItemSelector from './utils/gotoDepotInItemSelector';
 
 const test = mergeTests(
@@ -147,15 +148,9 @@ test(
 
 		await page.getByRole('link', {exact: true, name: blogTitle}).click();
 
-		const coverImage = page.locator('.cover-image');
-
-		await expect(coverImage).toBeVisible();
-
-		const coverImageURL = (await coverImage.getAttribute('style')).match(
-			/url\(['"]?(.*?)['"]?\)/
-		)[1];
-
-		const coverImageResponse = await page.request.get(coverImageURL);
+		const coverImageResponse = await page.request.get(
+			await getBlogCoverImageURL(page)
+		);
 
 		expect(coverImageResponse.status()).toBe(200);
 		expect(coverImageResponse.headers()['content-type']).toContain(
