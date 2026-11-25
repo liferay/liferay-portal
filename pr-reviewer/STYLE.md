@@ -80,6 +80,7 @@ Simplicity never outranks safety: when the two trade off, choose the safer form.
 
 - Place a test in its subject's package: a unit test at `xyz.BarTest` for source `xyz.Bar`, an integration test at `xyz.test.BarTest` for the same source. [604]
 - Consolidating trivial parallel test methods is a judgment call: fold many trivial variants into one method, but a few well named scenario methods are fine. [601]
+- Call a test helper once per value instead of looping over an array or collection literal of cases. [609]
 - Name a test method `test` plus the method it tests, keeping its `is` or `has` prefix (`testIsQuotaExceeded`, not `testQuotaExceeded`). [603]
 - Randomize any test value you do not assert on, an exception message or JSON value included; keep a literal only for a value the test checks. [602]
 - In a `*ResourceTest` that extends a generated `Base*ResourceTestCase`, override every base test method with `@Override @Test`, call `super.testX()` first, and add new scenarios as private `_testX*` helpers called from the override. A new top-level `@Test` method whose name does not match a base test is a violation. [605]
