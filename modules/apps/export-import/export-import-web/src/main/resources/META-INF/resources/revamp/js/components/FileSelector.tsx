@@ -186,11 +186,7 @@ export default function FileSelector({
 
 			{showErrorMessage && (
 				<div className="mt-2" id={`${name}-error-message`}>
-					<ClayAlert
-						displayType="danger"
-						role="alert"
-						symbol="times-circle-full"
-					>
+					<ClayAlert displayType="danger" role="alert">
 						{error}
 					</ClayAlert>
 				</div>
