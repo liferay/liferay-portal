@@ -66,8 +66,10 @@ public class SegmentsEntryModelResourcePermissionWrapper
 			throws PortalException {
 
 			if (actionId.equals(ActionKeys.UPDATE) &&
-				SegmentsEntryConstants.SOURCE_ASAH_FARO_BACKEND.equals(
-					segmentsEntry.getSource())) {
+				(SegmentsEntryConstants.SOURCE_ASAH_FARO_BACKEND.equals(
+					segmentsEntry.getSource()) ||
+				 SegmentsEntryConstants.SOURCE_AUDIENCE.equals(
+					 segmentsEntry.getSource()))) {
 
 				return false;
 			}
