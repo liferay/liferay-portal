@@ -1769,7 +1769,16 @@ public class DefaultObjectEntryManagerImpl
 				serviceBuilderObjectEntry);
 		}
 
-		return serviceBuilderObjectEntry;
+		if (missingObjectEntryIds.isEmpty()) {
+			return serviceBuilderObjectEntry;
+		}
+
+		for (long missingObjectEntryId : missingObjectEntryIds) {
+			_objectEntryService.deleteObjectEntry(missingObjectEntryId);
+		}
+
+		return objectEntryLocalService.getObjectEntry(
+			serviceBuilderObjectEntry.getPrimaryKey());
 	}
 
 	private ObjectEntry _addOrUpdateNestedObjectEntry(
