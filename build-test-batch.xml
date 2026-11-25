@@ -4808,24 +4808,35 @@ ${poshi.runner.testsuite.testcase.name}</echo>
 					<echo>##</echo>
 					<echo></echo>
 
-					<download-gradle-wrapper-binary workspace.dir="${workspace.dir}" />
+					<local name="workspaces.integration.failure.message" />
 
-					<get-workspace-bundle-url mirror.dir="@{workspace.bundle.mirror.dir}" workspace.dir="${workspace.dir}" />
+					<trycatch property="workspaces.integration.failure.message">
+						<try>
+							<download-gradle-wrapper-binary workspace.dir="${workspace.dir}" />
 
-					<mkdir dir="${workspace.dir}/build" />
+							<get-workspace-bundle-url mirror.dir="@{workspace.bundle.mirror.dir}" workspace.dir="${workspace.dir}" />
 
-					<mirrors-get
-						dest="${workspace.dir}/build/license.xml"
-						src="@{workspace.license.xml.url}"
-					/>
+							<mkdir dir="${workspace.dir}/build" />
 
-					<local name="gradle.args" />
+							<mirrors-get
+								dest="${workspace.dir}/build/license.xml"
+								src="@{workspace.license.xml.url}"
+							/>
 
-					<property name="gradle.args" value="--continue -Pintegration.test.target=bundle" />
+							<local name="gradle.args" />
 
-					<var if:set="workspace.bundle.url" name="gradle.args" value="${gradle.args} -Pliferay.workspace.bundle.url=${workspace.bundle.url}" />
+							<property name="gradle.args" value="--continue -Pintegration.test.target=bundle" />
 
-					<run-workspaces-junit-test gradle.target="gradle-execute-workspaces-integration" test.junit.args="${gradle.args}" test.task.group="@{test.task}" />
+							<var if:set="workspace.bundle.url" name="gradle.args" value="${gradle.args} -Pliferay.workspace.bundle.url=${workspace.bundle.url}" />
+
+							<run-workspaces-junit-test gradle.target="gradle-execute-workspaces-integration" test.junit.args="${gradle.args}" test.task.group="@{test.task}" />
+						</try>
+						<catch>
+							<echo>Unable to run @{test.task}</echo>
+
+							<echo>${workspaces.integration.failure.message}</echo>
+						</catch>
+					</trycatch>
 				</sequential>
 			</for>
 		</sequential>
