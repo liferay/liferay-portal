@@ -217,7 +217,7 @@ public class PropertiesSourceFormatterFileCheck extends BaseFileCheck {
 		dirName = dirName.substring(0, index);
 
 		if (dirName.contains(StringPool.STAR) ||
-			ArrayUtil.contains(_WILDCARD_DIR_NAMES, dirName)) {
+			ArrayUtil.contains(_ALLOWED_DIR_NAMES, dirName)) {
 
 			return;
 		}
@@ -588,7 +588,7 @@ public class PropertiesSourceFormatterFileCheck extends BaseFileCheck {
 		return content;
 	}
 
-	private static final String[] _WILDCARD_DIR_NAMES = {
+	private static final String[] _ALLOWED_DIR_NAMES = {
 		".cache", ".m2", ".m2-tmp", ".task-cache", "bower_components",
 		"build_gradle", "bun dles", "webapps"
 	};
