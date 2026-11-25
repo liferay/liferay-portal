@@ -17,15 +17,15 @@ import org.osgi.framework.ServiceReference;
 /**
  * @author Alessio Antonio Rendina
  */
-public class CommerceInventoryEngineContributorOrderComparator
+public class CommerceInventoryEngineContributorServiceReferenceComparator
 	implements Comparator<ServiceReference<CommerceInventoryEngineContributor>>,
 			   Serializable {
 
-	public CommerceInventoryEngineContributorOrderComparator() {
+	public CommerceInventoryEngineContributorServiceReferenceComparator() {
 		this(true);
 	}
 
-	public CommerceInventoryEngineContributorOrderComparator(
+	public CommerceInventoryEngineContributorServiceReferenceComparator(
 		boolean ascending) {
 
 		_ascending = ascending;

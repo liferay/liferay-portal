@@ -9,7 +9,7 @@ import com.liferay.commerce.inventory.constants.CommerceInventoryAvailabilityCon
 import com.liferay.commerce.inventory.constants.CommerceInventoryConstants;
 import com.liferay.commerce.inventory.engine.contributor.CommerceInventoryEngineContributor;
 import com.liferay.commerce.inventory.exception.MVCCException;
-import com.liferay.commerce.inventory.internal.engine.contributor.comparator.CommerceInventoryEngineContributorOrderComparator;
+import com.liferay.commerce.inventory.internal.engine.contributor.comparator.CommerceInventoryEngineContributorServiceReferenceComparator;
 import com.liferay.commerce.inventory.method.CommerceInventoryMethod;
 import com.liferay.commerce.inventory.model.CommerceInventoryWarehouseItem;
 import com.liferay.commerce.inventory.service.CommerceInventoryAuditLocalService;
@@ -253,7 +253,7 @@ public class DefaultCommerceInventoryMethodImpl
 	protected void activate(BundleContext bundleContext) {
 		_serviceTrackerList = ServiceTrackerListFactory.open(
 			bundleContext, CommerceInventoryEngineContributor.class,
-			new CommerceInventoryEngineContributorOrderComparator());
+			new CommerceInventoryEngineContributorServiceReferenceComparator());
 	}
 
 	@Deactivate
