@@ -144,30 +144,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro configureApplication(status = null) {
-		DepotNavigator.gotoGeneral();
-
-		Panel.expandPanel(panel = "Applications");
-
-		if (${status} == "Enabled") {
-			for (var applicationList : list ${applicationList}) {
-				Check(
-					checkboxName = ${applicationList},
-					locator1 = "Checkbox#ANY_CHECKBOX");
-			}
-		}
-		else if (${status} == "Disabled") {
-			for (var applicationList : list ${applicationList}) {
-				Uncheck(
-					checkboxName = ${applicationList},
-					locator1 = "Checkbox#ANY_CHECKBOX");
-			}
-		}
-
-		PortletEntry.save();
-	}
-
-	@summary = "Default summary"
 	macro configureAutoTagging(autoTagging = null) {
 		if (${autoTagging} == "Enabled") {
 			Check.checkToggleSwitch(

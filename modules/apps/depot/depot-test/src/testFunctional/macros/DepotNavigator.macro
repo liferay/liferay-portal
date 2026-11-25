@@ -146,18 +146,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro gotoGeneral() {
-		Click(
-			key_tab = "General",
-			locator1 = "NavTab#TAB_LINK");
-
-		AssertTextEquals(
-			key_title = "General",
-			locator1 = "Header#H2_TITLE",
-			value1 = "General");
-	}
-
-	@summary = "Default summary"
 	macro gotoLanguages() {
 		Click(
 			key_tab = "Languages",
