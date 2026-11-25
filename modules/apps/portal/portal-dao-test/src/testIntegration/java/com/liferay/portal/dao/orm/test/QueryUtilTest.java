@@ -157,32 +157,32 @@ public class QueryUtilTest {
 
 	@Test
 	public void testSQLWithLimitWithOuterOrder1Ascending() throws Exception {
-		testSQLWithLimitWithOuterOrder("ASC", 0, 10, 0, 9);
+		testSQLWithLimitWithOuterOrder("ORDER BY value ASC", 0, 10, 0, 9);
 	}
 
 	@Test
 	public void testSQLWithLimitWithOuterOrder1Descending() throws Exception {
-		testSQLWithLimitWithOuterOrder("DESC", 0, 10, 19, 10);
+		testSQLWithLimitWithOuterOrder("ORDER BY value DESC", 0, 10, 19, 10);
 	}
 
 	@Test
 	public void testSQLWithLimitWithOuterOrder2Ascending() throws Exception {
-		testSQLWithLimitWithOuterOrder("ASC", 5, 15, 5, 14);
+		testSQLWithLimitWithOuterOrder("ORDER BY value ASC", 5, 15, 5, 14);
 	}
 
 	@Test
 	public void testSQLWithLimitWithOuterOrder2Descending() throws Exception {
-		testSQLWithLimitWithOuterOrder("DESC", 5, 15, 14, 5);
+		testSQLWithLimitWithOuterOrder("ORDER BY value DESC", 5, 15, 14, 5);
 	}
 
 	@Test
 	public void testSQLWithLimitWithOuterOrder3Ascending() throws Exception {
-		testSQLWithLimitWithOuterOrder("ASC", 10, 20, 10, 19);
+		testSQLWithLimitWithOuterOrder("ORDER BY value ASC", 10, 20, 10, 19);
 	}
 
 	@Test
 	public void testSQLWithLimitWithOuterOrder3Descending() throws Exception {
-		testSQLWithLimitWithOuterOrder("DESC", 10, 20, 9, 0);
+		testSQLWithLimitWithOuterOrder("ORDER BY value DESC", 10, 20, 9, 0);
 	}
 
 	@Test
@@ -280,7 +280,7 @@ public class QueryUtilTest {
 	}
 
 	protected void testSQLWithLimitWithOuterOrder(
-			String order, int start, int end, int expectedFirstValue,
+			String orderBy, int start, int end, int expectedFirstValue,
 			int expectedLastValue)
 		throws Exception {
 
@@ -290,7 +290,7 @@ public class QueryUtilTest {
 			session = _sessionFactory.openSession();
 
 			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(
-				"SELECT id FROM QueryUtilTest ORDER BY value ".concat(order));
+				"SELECT id FROM QueryUtilTest ".concat(orderBy));
 
 			sqlQuery.addScalar("id", Type.INTEGER);
 
