@@ -45,19 +45,6 @@ public class BlogsEntryLocalServiceWrapper
 	}
 
 	@Override
-	public com.liferay.portal.kernel.repository.model.FileEntry
-			addAttachmentFileEntry(
-				String externalReferenceCode, long userId, long groupId,
-				String fileName, String mimeType,
-				java.io.InputStream inputStream)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _blogsEntryLocalService.addAttachmentFileEntry(
-			externalReferenceCode, userId, groupId, fileName, mimeType,
-			inputStream);
-	}
-
-	@Override
 	public com.liferay.portal.kernel.repository.model.Folder
 			addAttachmentsFolder(long userId, long groupId)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -947,4 +934,4 @@ public class BlogsEntryLocalServiceWrapper
 	private BlogsEntryLocalService _blogsEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1152614694
+// LIFERAY-SERVICE-BUILDER-HASH:1177384433

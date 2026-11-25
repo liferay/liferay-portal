@@ -77,11 +77,6 @@ public interface BlogsEntryLocalService
 			InputStream inputStream)
 		throws PortalException;
 
-	public FileEntry addAttachmentFileEntry(
-			String externalReferenceCode, long userId, long groupId,
-			String fileName, String mimeType, InputStream inputStream)
-		throws PortalException;
-
 	public Folder addAttachmentsFolder(long userId, long groupId)
 		throws PortalException;
 
@@ -601,4 +596,4 @@ public interface BlogsEntryLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-919294080
+// LIFERAY-SERVICE-BUILDER-HASH:-17395411
