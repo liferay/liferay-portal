@@ -242,7 +242,7 @@ public class CPInstanceUnitOfMeasureLocalServiceTest {
 			cpInstanceUnitOfMeasures.toString(), 2,
 			cpInstanceUnitOfMeasures.size());
 
-		int primaryCPInstanceUnitOfMeasureCount = 0;
+		int primaryCPInstanceUnitOfMeasuresCount = 0;
 
 		for (CPInstanceUnitOfMeasure cpInstanceUnitOfMeasure :
 				cpInstanceUnitOfMeasures) {
@@ -251,10 +251,10 @@ public class CPInstanceUnitOfMeasureLocalServiceTest {
 				continue;
 			}
 
-			primaryCPInstanceUnitOfMeasureCount++;
+			primaryCPInstanceUnitOfMeasuresCount++;
 		}
 
-		Assert.assertEquals(1, primaryCPInstanceUnitOfMeasureCount);
+		Assert.assertEquals(1, primaryCPInstanceUnitOfMeasuresCount);
 
 		cpInstanceUnitOfMeasure1 =
 			_cpInstanceUnitOfMeasureLocalService.updateCPInstanceUnitOfMeasure(
@@ -263,13 +263,13 @@ public class CPInstanceUnitOfMeasureLocalServiceTest {
 				nameMap, 2, BigDecimal.ZERO, true, 0.0, BigDecimal.ONE,
 				cpInstance.getSku());
 
-		Assert.assertTrue("Primary", cpInstanceUnitOfMeasure1.isPrimary());
+		Assert.assertTrue(cpInstanceUnitOfMeasure1.isPrimary());
 
 		cpInstanceUnitOfMeasure2 =
 			_cpInstanceUnitOfMeasureLocalService.getCPInstanceUnitOfMeasure(
 				cpInstanceUnitOfMeasure2.getCPInstanceUnitOfMeasureId());
 
-		Assert.assertTrue("Primary", !cpInstanceUnitOfMeasure2.isPrimary());
+		Assert.assertFalse(cpInstanceUnitOfMeasure2.isPrimary());
 	}
 
 	private void _testAddCPInstanceUnitOfMeasureWithSpecialCharactersName()
@@ -304,8 +304,6 @@ public class CPInstanceUnitOfMeasureLocalServiceTest {
 				).build(),
 				2, BigDecimal.ZERO, true, 0.0, BigDecimal.ONE,
 				cpInstance.getSku());
-
-		Assert.assertNotNull(cpInstanceUnitOfMeasure);
 
 		Assert.assertEquals(
 			"Unit of Measure",
