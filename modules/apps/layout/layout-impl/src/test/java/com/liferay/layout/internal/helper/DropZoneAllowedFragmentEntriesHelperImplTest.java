@@ -251,7 +251,7 @@ public class DropZoneAllowedFragmentEntriesHelperImplTest {
 				contributedFragmentEntryKey,
 				companyGroupFragmentEntry.getFragmentEntryKey(),
 				fragmentEntry.getFragmentEntryKey(), fragmentRendererKey,
-				RandomTestUtil.randomString()));
+				"form", RandomTestUtil.randomString()));
 
 		JSONObject normalizedItemConfigJSONObject =
 			_dropZoneAllowedFragmentEntriesHelperImpl.
@@ -275,7 +275,8 @@ public class DropZoneAllowedFragmentEntriesHelperImplTest {
 				JSONUtil.put(
 					"fragmentEntryERC",
 					fragmentEntry.getExternalReferenceCode()),
-				JSONUtil.put("fragmentEntryRendererKey", fragmentRendererKey)
+				JSONUtil.put("fragmentEntryRendererKey", fragmentRendererKey),
+				JSONUtil.put("fragmentEntryRendererKey", "form")
 			).toString(),
 			fragmentEntriesJSONArray.toString());
 
