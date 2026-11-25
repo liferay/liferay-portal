@@ -16,11 +16,8 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.model.PersistedModel;
 import com.liferay.portal.kernel.model.SystemEventConstants;
-import com.liferay.portal.kernel.search.BaseModelSearchResult;
-import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
-import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.BaseLocalService;
 import com.liferay.portal.kernel.service.PersistedModelLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -256,11 +253,6 @@ public interface ExportImportConfigurationLocalService
 			long exportImportConfigurationId)
 		throws PortalException;
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<ExportImportConfiguration> getExportImportConfigurations(
-			Hits hits)
-		throws PortalException;
-
 	/**
 	 * Returns a range of all the export import configurations.
 	 *
@@ -279,11 +271,6 @@ public interface ExportImportConfigurationLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<ExportImportConfiguration> getExportImportConfigurations(
 		long groupId, int type);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<ExportImportConfiguration> getExportImportConfigurations(
-		long groupId, int type, int start, int end,
-		OrderByComparator<ExportImportConfiguration> orderByComparator);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<ExportImportConfiguration> getExportImportConfigurations(
@@ -334,21 +321,6 @@ public interface ExportImportConfigurationLocalService
 			long userId, long exportImportConfigurationId)
 		throws PortalException;
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public BaseModelSearchResult<ExportImportConfiguration>
-			searchExportImportConfigurations(
-				long companyId, long groupId, int type, String keywords,
-				int start, int end, Sort sort)
-		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public BaseModelSearchResult<ExportImportConfiguration>
-			searchExportImportConfigurations(
-				long companyId, long groupId, int type, String name,
-				String description, boolean andSearch, int start, int end,
-				Sort sort)
-		throws PortalException;
-
 	/**
 	 * Updates the export import configuration in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	 *
@@ -376,4 +348,4 @@ public interface ExportImportConfigurationLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-876203891
+// LIFERAY-SERVICE-BUILDER-HASH:1608758596

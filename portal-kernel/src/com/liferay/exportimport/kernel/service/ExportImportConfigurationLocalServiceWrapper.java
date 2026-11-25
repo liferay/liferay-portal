@@ -325,17 +325,6 @@ public class ExportImportConfigurationLocalServiceWrapper
 			getExportImportConfiguration(exportImportConfigurationId);
 	}
 
-	@Override
-	public java.util.List
-		<com.liferay.exportimport.kernel.model.ExportImportConfiguration>
-				getExportImportConfigurations(
-					com.liferay.portal.kernel.search.Hits hits)
-			throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _exportImportConfigurationLocalService.
-			getExportImportConfigurations(hits);
-	}
-
 	/**
 	 * Returns a range of all the export import configurations.
 	 *
@@ -363,20 +352,6 @@ public class ExportImportConfigurationLocalServiceWrapper
 
 		return _exportImportConfigurationLocalService.
 			getExportImportConfigurations(groupId, type);
-	}
-
-	@Override
-	public java.util.List
-		<com.liferay.exportimport.kernel.model.ExportImportConfiguration>
-			getExportImportConfigurations(
-				long groupId, int type, int start, int end,
-				com.liferay.portal.kernel.util.OrderByComparator
-					<com.liferay.exportimport.kernel.model.
-						ExportImportConfiguration> orderByComparator) {
-
-		return _exportImportConfigurationLocalService.
-			getExportImportConfigurations(
-				groupId, type, start, end, orderByComparator);
 	}
 
 	@Override
@@ -474,35 +449,6 @@ public class ExportImportConfigurationLocalServiceWrapper
 				userId, exportImportConfigurationId);
 	}
 
-	@Override
-	public com.liferay.portal.kernel.search.BaseModelSearchResult
-		<com.liferay.exportimport.kernel.model.ExportImportConfiguration>
-				searchExportImportConfigurations(
-					long companyId, long groupId, int type, String keywords,
-					int start, int end,
-					com.liferay.portal.kernel.search.Sort sort)
-			throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _exportImportConfigurationLocalService.
-			searchExportImportConfigurations(
-				companyId, groupId, type, keywords, start, end, sort);
-	}
-
-	@Override
-	public com.liferay.portal.kernel.search.BaseModelSearchResult
-		<com.liferay.exportimport.kernel.model.ExportImportConfiguration>
-				searchExportImportConfigurations(
-					long companyId, long groupId, int type, String name,
-					String description, boolean andSearch, int start, int end,
-					com.liferay.portal.kernel.search.Sort sort)
-			throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _exportImportConfigurationLocalService.
-			searchExportImportConfigurations(
-				companyId, groupId, type, name, description, andSearch, start,
-				end, sort);
-	}
-
 	/**
 	 * Updates the export import configuration in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	 *
@@ -571,4 +517,4 @@ public class ExportImportConfigurationLocalServiceWrapper
 		_exportImportConfigurationLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1081219159
+// LIFERAY-SERVICE-BUILDER-HASH:325019269

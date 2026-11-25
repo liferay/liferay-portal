@@ -278,13 +278,6 @@ public class ExportImportConfigurationLocalServiceUtil {
 			exportImportConfigurationId);
 	}
 
-	public static List<ExportImportConfiguration> getExportImportConfigurations(
-			com.liferay.portal.kernel.search.Hits hits)
-		throws PortalException {
-
-		return getService().getExportImportConfigurations(hits);
-	}
-
 	/**
 	 * Returns a range of all the export import configurations.
 	 *
@@ -306,14 +299,6 @@ public class ExportImportConfigurationLocalServiceUtil {
 		long groupId, int type) {
 
 		return getService().getExportImportConfigurations(groupId, type);
-	}
-
-	public static List<ExportImportConfiguration> getExportImportConfigurations(
-		long groupId, int type, int start, int end,
-		OrderByComparator<ExportImportConfiguration> orderByComparator) {
-
-		return getService().getExportImportConfigurations(
-			groupId, type, start, end, orderByComparator);
 	}
 
 	public static List<ExportImportConfiguration> getExportImportConfigurations(
@@ -390,28 +375,6 @@ public class ExportImportConfigurationLocalServiceUtil {
 			userId, exportImportConfigurationId);
 	}
 
-	public static com.liferay.portal.kernel.search.BaseModelSearchResult
-		<ExportImportConfiguration> searchExportImportConfigurations(
-				long companyId, long groupId, int type, String keywords,
-				int start, int end, com.liferay.portal.kernel.search.Sort sort)
-			throws PortalException {
-
-		return getService().searchExportImportConfigurations(
-			companyId, groupId, type, keywords, start, end, sort);
-	}
-
-	public static com.liferay.portal.kernel.search.BaseModelSearchResult
-		<ExportImportConfiguration> searchExportImportConfigurations(
-				long companyId, long groupId, int type, String name,
-				String description, boolean andSearch, int start, int end,
-				com.liferay.portal.kernel.search.Sort sort)
-			throws PortalException {
-
-		return getService().searchExportImportConfigurations(
-			companyId, groupId, type, name, description, andSearch, start, end,
-			sort);
-	}
-
 	/**
 	 * Updates the export import configuration in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	 *
@@ -461,4 +424,4 @@ public class ExportImportConfigurationLocalServiceUtil {
 	private static volatile ExportImportConfigurationLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1919963081
+// LIFERAY-SERVICE-BUILDER-HASH:-383678245
