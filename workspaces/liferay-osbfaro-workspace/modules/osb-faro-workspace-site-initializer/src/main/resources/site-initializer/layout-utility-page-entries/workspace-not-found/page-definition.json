@@ -1,0 +1,54 @@
+{
+	"pageElement": {
+		"id": "fd35cc46-46e1-40f4-b018-8ed2642442db",
+		"pageElements": [
+			{
+				"definition": {
+					"fragment": {
+						"key": "com.liferay.osb.faro.web.internal.fragment.renderer.FaroConstantsFragmentRenderer"
+					},
+					"fragmentConfig": {
+					},
+					"fragmentFields": [
+					]
+				},
+				"id": "92ca68ef-1d5f-4560-86e4-9b7e231ce160",
+				"type": "Fragment"
+			},
+			{
+				"definition": {
+					"fragment": {
+						"key": "com.liferay.osb.faro.web.internal.fragment.renderer.FaroExternalScriptsFragmentRenderer"
+					},
+					"fragmentConfig": {
+					},
+					"fragmentFields": [
+					]
+				},
+				"id": "7000d3b5-08b5-4e61-9cae-bf9f3959a96d",
+				"type": "Fragment"
+			},
+			{
+				"definition": {
+					"fragment": {
+						"key": "com.liferay.osb.faro.web.internal.fragment.renderer.FaroWorkspaceNotFoundFragmentRenderer"
+					},
+					"fragmentConfig": {
+					},
+					"fragmentFields": [
+					]
+				},
+				"id": "0d845d3e-8097-43dd-a436-bb3e5e6708fd",
+				"type": "Fragment"
+			}
+		],
+		"type": "Root"
+	},
+	"settings": {
+		"favIcon": {
+			"contentType": "Document",
+			"externalReferenceCode": "LDP_FAVICON"
+		}
+	},
+	"version": 1.1
+}
