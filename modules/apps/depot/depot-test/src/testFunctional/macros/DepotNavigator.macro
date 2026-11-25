@@ -247,13 +247,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro openDepotCategoriesAdminStaging(depotName = null) {
-		var depotId = JSONGroupAPI._getDepotIdByName(depotName = ${depotName});
-
-		Navigator.openWithAppendToBaseURL(urlAppend = "group/asset-library-${depotId}-staging/~/control_panel/manage/-/categories_admin/vocabularies");
-	}
-
-	@summary = "Default summary"
 	macro openDepotDashboard(depotName = null) {
 		var depotId = JSONGroupAPI._getDepotIdByName(depotName = ${depotName});
 
