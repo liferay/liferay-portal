@@ -21,58 +21,59 @@ public class EventDefinitionDTOConverterTest {
 	public void testToDTO() {
 		Assert.assertNull(_eventDefinitionDTOConverter.toDTO(null, null));
 
-		GetWorkspaceGroupEventDefinitionsPageResponse.EventDefinition
-			responseEventDefinition = _createResponseEventDefinition("CUSTOM");
+		String description = RandomTestUtil.randomString();
+		String displayName = RandomTestUtil.randomString();
+		boolean hidden = RandomTestUtil.randomBoolean();
+		String id = RandomTestUtil.randomString();
+		String name = RandomTestUtil.randomString();
+		EventDefinition.Type type = EventDefinition.Type.CUSTOM;
 
-		EventDefinition eventDefinition = _eventDefinitionDTOConverter.toDTO(
-			null, responseEventDefinition);
+		EventDefinition eventDefinition = _toDTO(
+			description, displayName, hidden, id, name, type.getValue());
 
-		Assert.assertEquals(
-			responseEventDefinition.getDescription(),
-			eventDefinition.getDescription());
-		Assert.assertEquals(
-			responseEventDefinition.getDisplayName(),
-			eventDefinition.getDisplayName());
-		Assert.assertEquals(
-			responseEventDefinition.isHidden(), eventDefinition.getHidden());
-		Assert.assertEquals(
-			responseEventDefinition.getId(), eventDefinition.getId());
-		Assert.assertEquals(
-			responseEventDefinition.getName(), eventDefinition.getName());
-		Assert.assertEquals(
-			EventDefinition.Type.CUSTOM, eventDefinition.getType());
+		Assert.assertEquals(description, eventDefinition.getDescription());
+		Assert.assertEquals(displayName, eventDefinition.getDisplayName());
+		Assert.assertEquals(hidden, eventDefinition.getHidden());
+		Assert.assertEquals(id, eventDefinition.getId());
+		Assert.assertEquals(name, eventDefinition.getName());
+		Assert.assertEquals(type, eventDefinition.getType());
 	}
 
 	@Test
 	public void testToDTOWithUnknownType() {
-		EventDefinition eventDefinition = _eventDefinitionDTOConverter.toDTO(
-			null,
-			_createResponseEventDefinition(RandomTestUtil.randomString()));
+		EventDefinition eventDefinition = _toDTO(RandomTestUtil.randomString());
 
 		Assert.assertNull(eventDefinition.getType());
 
-		eventDefinition = _eventDefinitionDTOConverter.toDTO(
-			null, _createResponseEventDefinition(null));
+		eventDefinition = _toDTO(null);
 
 		Assert.assertNull(eventDefinition.getType());
 	}
 
-	private GetWorkspaceGroupEventDefinitionsPageResponse.EventDefinition
-		_createResponseEventDefinition(String type) {
+	private EventDefinition _toDTO(String type) {
+		return _toDTO(
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomBoolean(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), type);
+	}
+
+	private EventDefinition _toDTO(
+		String description, String displayName, boolean hidden, String id,
+		String name, String type) {
 
 		GetWorkspaceGroupEventDefinitionsPageResponse.EventDefinition
-			responseEventDefinition =
+			eventDefinition =
 				new GetWorkspaceGroupEventDefinitionsPageResponse.
 					EventDefinition();
 
-		responseEventDefinition.setDescription(RandomTestUtil.randomString());
-		responseEventDefinition.setDisplayName(RandomTestUtil.randomString());
-		responseEventDefinition.setHidden(RandomTestUtil.randomBoolean());
-		responseEventDefinition.setId(RandomTestUtil.randomString());
-		responseEventDefinition.setName(RandomTestUtil.randomString());
-		responseEventDefinition.setType(type);
+		eventDefinition.setDescription(description);
+		eventDefinition.setDisplayName(displayName);
+		eventDefinition.setHidden(hidden);
+		eventDefinition.setId(id);
+		eventDefinition.setName(name);
+		eventDefinition.setType(type);
 
-		return responseEventDefinition;
+		return _eventDefinitionDTOConverter.toDTO(null, eventDefinition);
 	}
 
 	private final EventDefinitionDTOConverter _eventDefinitionDTOConverter =

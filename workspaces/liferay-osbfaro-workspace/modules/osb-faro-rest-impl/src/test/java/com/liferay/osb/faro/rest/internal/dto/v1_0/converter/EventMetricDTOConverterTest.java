@@ -14,7 +14,6 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import java.lang.reflect.Field;
 
 import java.util.Arrays;
-import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -37,89 +36,64 @@ public class EventMetricDTOConverterTest {
 
 	@Test
 	public void testToDTO() {
-		GetWorkspaceGroupChannelEventMetricsResponse.EventMetric
-			responseEventMetric =
-				new GetWorkspaceGroupChannelEventMetricsResponse.EventMetric();
+		String[] bucketKeys = {
+			RandomTestUtil.randomString(), RandomTestUtil.randomString()
+		};
+		Double[] bucketValues = {
+			RandomTestUtil.randomDouble(), RandomTestUtil.randomDouble()
+		};
+		Double totalEventsPreviousValue = RandomTestUtil.randomDouble();
+		String totalEventsTrendClassification = RandomTestUtil.randomString();
+		Double totalEventsTrendPercentage = RandomTestUtil.randomDouble();
+		Double totalEventsValue = RandomTestUtil.randomDouble();
+		String totalSessionsTrendClassification = RandomTestUtil.randomString();
+		Double totalSessionsValue = RandomTestUtil.randomDouble();
 
-		GetWorkspaceGroupChannelEventMetricsResponse.Metric
-			responseTotalEventsMetric = _createMetric(
-				RandomTestUtil.randomDouble(), RandomTestUtil.randomDouble(),
-				RandomTestUtil.randomString(), RandomTestUtil.randomDouble(),
-				RandomTestUtil.randomDouble(), RandomTestUtil.randomDouble());
-		GetWorkspaceGroupChannelEventMetricsResponse.Metric
-			responseTotalSessionsMetric = _createMetric(
-				RandomTestUtil.randomDouble(), RandomTestUtil.randomDouble(),
-				RandomTestUtil.randomString(), RandomTestUtil.randomDouble());
-
-		responseEventMetric.setTotalEventsMetric(responseTotalEventsMetric);
-		responseEventMetric.setTotalSessionsMetric(responseTotalSessionsMetric);
-
-		EventMetric eventMetric = _toDTO(responseEventMetric);
+		EventMetric eventMetric = _toDTO(
+			_createMetric(
+				bucketKeys, bucketValues, totalEventsTrendPercentage,
+				totalEventsPreviousValue, totalEventsTrendClassification,
+				totalEventsValue),
+			_createMetric(
+				null, null, RandomTestUtil.randomDouble(),
+				RandomTestUtil.randomDouble(), totalSessionsTrendClassification,
+				totalSessionsValue));
 
 		Metric totalEventsMetric = eventMetric.getTotalEvents();
 
-		GetWorkspaceGroupChannelEventMetricsResponse.Trend responseTrend =
-			responseTotalEventsMetric.getTrend();
-
 		Assert.assertEquals(
-			responseTotalEventsMetric.getPreviousValue(),
-			totalEventsMetric.getPreviousValue());
+			totalEventsPreviousValue, totalEventsMetric.getPreviousValue());
 		Assert.assertEquals(
-			responseTrend.getTrendClassification(),
+			totalEventsTrendClassification,
 			totalEventsMetric.getTrendClassification());
 		Assert.assertEquals(
-			responseTrend.getPercentage(),
-			totalEventsMetric.getTrendPercentage());
-		Assert.assertEquals(
-			responseTotalEventsMetric.getValue(), totalEventsMetric.getValue());
+			totalEventsTrendPercentage, totalEventsMetric.getTrendPercentage());
+		Assert.assertEquals(totalEventsValue, totalEventsMetric.getValue());
 
 		HistogramBucket[] histogramBuckets =
 			totalEventsMetric.getHistogramBuckets();
 
-		GetWorkspaceGroupChannelEventMetricsResponse.Histogram
-			responseHistogram = responseTotalEventsMetric.getHistogram();
-
-		List<GetWorkspaceGroupChannelEventMetricsResponse.HistogramMetric>
-			responseHistogramMetrics = responseHistogram.getMetrics();
-
 		Assert.assertEquals(
-			Arrays.toString(histogramBuckets), responseHistogramMetrics.size(),
+			Arrays.toString(histogramBuckets), bucketKeys.length,
 			histogramBuckets.length);
 
 		for (int i = 0; i < histogramBuckets.length; i++) {
-			GetWorkspaceGroupChannelEventMetricsResponse.HistogramMetric
-				responseHistogramMetric = responseHistogramMetrics.get(i);
-
+			Assert.assertEquals(bucketKeys[i], histogramBuckets[i].getKey());
 			Assert.assertEquals(
-				responseHistogramMetric.getKey(), histogramBuckets[i].getKey());
-			Assert.assertEquals(
-				responseHistogramMetric.getValue(),
-				histogramBuckets[i].getValue());
+				bucketValues[i], histogramBuckets[i].getValue());
 		}
 
 		Metric totalSessionsMetric = eventMetric.getTotalSessions();
 
-		responseTrend = responseTotalSessionsMetric.getTrend();
-
 		Assert.assertNull(totalSessionsMetric.getHistogramBuckets());
 		Assert.assertEquals(
-			responseTrend.getTrendClassification(),
+			totalSessionsTrendClassification,
 			totalSessionsMetric.getTrendClassification());
-		Assert.assertEquals(
-			responseTotalSessionsMetric.getValue(),
-			totalSessionsMetric.getValue());
+		Assert.assertEquals(totalSessionsValue, totalSessionsMetric.getValue());
 
-		responseEventMetric =
-			new GetWorkspaceGroupChannelEventMetricsResponse.EventMetric();
+		totalEventsValue = RandomTestUtil.randomDouble();
 
-		GetWorkspaceGroupChannelEventMetricsResponse.Metric responseMetric =
-			new GetWorkspaceGroupChannelEventMetricsResponse.Metric();
-
-		responseMetric.setValue(RandomTestUtil.randomDouble());
-
-		responseEventMetric.setTotalEventsMetric(responseMetric);
-
-		eventMetric = _toDTO(responseEventMetric);
+		eventMetric = _toDTO(_createMetric(totalEventsValue), null);
 
 		Assert.assertNull(eventMetric.getTotalSessions());
 
@@ -129,8 +103,7 @@ public class EventMetricDTOConverterTest {
 		Assert.assertNull(totalEventsMetric.getPreviousValue());
 		Assert.assertNull(totalEventsMetric.getTrendClassification());
 		Assert.assertNull(totalEventsMetric.getTrendPercentage());
-		Assert.assertEquals(
-			responseMetric.getValue(), totalEventsMetric.getValue());
+		Assert.assertEquals(totalEventsValue, totalEventsMetric.getValue());
 
 		Assert.assertNull(
 			_eventMetricDTOConverter.toDTO(
@@ -138,13 +111,24 @@ public class EventMetricDTOConverterTest {
 	}
 
 	private GetWorkspaceGroupChannelEventMetricsResponse.Metric _createMetric(
-		Double percentage, Double previousValue, String trendClassification,
-		Double value, Double... bucketValues) {
+		Double value) {
 
 		GetWorkspaceGroupChannelEventMetricsResponse.Metric metric =
 			new GetWorkspaceGroupChannelEventMetricsResponse.Metric();
 
-		if (bucketValues.length > 0) {
+		metric.setValue(value);
+
+		return metric;
+	}
+
+	private GetWorkspaceGroupChannelEventMetricsResponse.Metric _createMetric(
+		String[] bucketKeys, Double[] bucketValues, Double percentage,
+		Double previousValue, String trendClassification, Double value) {
+
+		GetWorkspaceGroupChannelEventMetricsResponse.Metric metric =
+			_createMetric(value);
+
+		if (bucketKeys != null) {
 			GetWorkspaceGroupChannelEventMetricsResponse.Histogram histogram =
 				new GetWorkspaceGroupChannelEventMetricsResponse.Histogram();
 
@@ -152,20 +136,20 @@ public class EventMetricDTOConverterTest {
 				histogramMetrics =
 					new
 					GetWorkspaceGroupChannelEventMetricsResponse.HistogramMetric
-						[bucketValues.length];
+						[bucketKeys.length];
 
-			for (int i = 0; i < bucketValues.length; i++) {
+			for (int i = 0; i < bucketKeys.length; i++) {
 				histogramMetrics[i] =
 					new GetWorkspaceGroupChannelEventMetricsResponse.
 						HistogramMetric();
 
-				histogramMetrics[i].setKey(RandomTestUtil.randomString());
+				histogramMetrics[i].setKey(bucketKeys[i]);
 				histogramMetrics[i].setValue(bucketValues[i]);
 				histogramMetrics[i].setValueKey(RandomTestUtil.randomString());
 			}
 
 			histogram.setMetrics(Arrays.asList(histogramMetrics));
-			histogram.setTotal(bucketValues.length);
+			histogram.setTotal(bucketKeys.length);
 
 			metric.setHistogram(histogram);
 		}
@@ -180,19 +164,24 @@ public class EventMetricDTOConverterTest {
 
 		metric.setTrend(trend);
 
-		metric.setValue(value);
-
 		return metric;
 	}
 
 	private EventMetric _toDTO(
-		GetWorkspaceGroupChannelEventMetricsResponse.EventMetric
-			responseEventMetric) {
+		GetWorkspaceGroupChannelEventMetricsResponse.Metric totalEventsMetric,
+		GetWorkspaceGroupChannelEventMetricsResponse.Metric
+			totalSessionsMetric) {
+
+		GetWorkspaceGroupChannelEventMetricsResponse.EventMetric eventMetric =
+			new GetWorkspaceGroupChannelEventMetricsResponse.EventMetric();
+
+		eventMetric.setTotalEventsMetric(totalEventsMetric);
+		eventMetric.setTotalSessionsMetric(totalSessionsMetric);
 
 		return _eventMetricDTOConverter.toDTO(
 			new FaroDTOConverterContext(
 				false, RandomTestUtil.randomString(), null),
-			responseEventMetric);
+			eventMetric);
 	}
 
 	private final EventMetricDTOConverter _eventMetricDTOConverter =

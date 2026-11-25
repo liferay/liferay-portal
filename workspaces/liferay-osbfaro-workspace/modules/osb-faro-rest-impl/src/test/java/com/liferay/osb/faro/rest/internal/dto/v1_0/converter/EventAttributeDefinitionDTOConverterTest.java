@@ -22,77 +22,72 @@ public class EventAttributeDefinitionDTOConverterTest {
 		Assert.assertNull(
 			_eventAttributeDefinitionDTOConverter.toDTO(null, null));
 
-		GetWorkspaceGroupEventAttributeDefinitionsPageResponse.
-			EventAttributeDefinition responseEventAttributeDefinition =
-				_createResponseEventAttributeDefinition("DURATION", "LOCAL");
+		EventAttributeDefinition.DataType dataType =
+			EventAttributeDefinition.DataType.DURATION;
+		String description = RandomTestUtil.randomString();
+		String displayName = RandomTestUtil.randomString();
+		String id = RandomTestUtil.randomString();
+		String name = RandomTestUtil.randomString();
+		String sampleValue = RandomTestUtil.randomString();
+		EventAttributeDefinition.Type type =
+			EventAttributeDefinition.Type.LOCAL;
 
-		EventAttributeDefinition eventAttributeDefinition =
-			_eventAttributeDefinitionDTOConverter.toDTO(
-				null, responseEventAttributeDefinition);
+		EventAttributeDefinition eventAttributeDefinition = _toDTO(
+			dataType.getValue(), description, displayName, id, name,
+			sampleValue, type.getValue());
 
+		Assert.assertEquals(dataType, eventAttributeDefinition.getDataType());
 		Assert.assertEquals(
-			EventAttributeDefinition.DataType.DURATION,
-			eventAttributeDefinition.getDataType());
+			description, eventAttributeDefinition.getDescription());
 		Assert.assertEquals(
-			responseEventAttributeDefinition.getDescription(),
-			eventAttributeDefinition.getDescription());
+			displayName, eventAttributeDefinition.getDisplayName());
+		Assert.assertEquals(id, eventAttributeDefinition.getId());
+		Assert.assertEquals(name, eventAttributeDefinition.getName());
 		Assert.assertEquals(
-			responseEventAttributeDefinition.getDisplayName(),
-			eventAttributeDefinition.getDisplayName());
-		Assert.assertEquals(
-			responseEventAttributeDefinition.getId(),
-			eventAttributeDefinition.getId());
-		Assert.assertEquals(
-			responseEventAttributeDefinition.getName(),
-			eventAttributeDefinition.getName());
-		Assert.assertEquals(
-			responseEventAttributeDefinition.getSampleValue(),
-			eventAttributeDefinition.getSampleValue());
-		Assert.assertEquals(
-			EventAttributeDefinition.Type.LOCAL,
-			eventAttributeDefinition.getType());
+			sampleValue, eventAttributeDefinition.getSampleValue());
+		Assert.assertEquals(type, eventAttributeDefinition.getType());
 	}
 
 	@Test
 	public void testToDTOWithUnknownEnums() {
-		EventAttributeDefinition eventAttributeDefinition =
-			_eventAttributeDefinitionDTOConverter.toDTO(
-				null,
-				_createResponseEventAttributeDefinition(
-					RandomTestUtil.randomString(),
-					RandomTestUtil.randomString()));
+		EventAttributeDefinition eventAttributeDefinition = _toDTO(
+			RandomTestUtil.randomString(), RandomTestUtil.randomString());
 
 		Assert.assertNull(eventAttributeDefinition.getDataType());
 		Assert.assertNull(eventAttributeDefinition.getType());
 
-		eventAttributeDefinition = _eventAttributeDefinitionDTOConverter.toDTO(
-			null, _createResponseEventAttributeDefinition(null, null));
+		eventAttributeDefinition = _toDTO(null, null);
 
 		Assert.assertNull(eventAttributeDefinition.getDataType());
 		Assert.assertNull(eventAttributeDefinition.getType());
 	}
 
-	private GetWorkspaceGroupEventAttributeDefinitionsPageResponse.
-		EventAttributeDefinition _createResponseEventAttributeDefinition(
-			String dataType, String type) {
+	private EventAttributeDefinition _toDTO(String dataType, String type) {
+		return _toDTO(
+			dataType, RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(), type);
+	}
+
+	private EventAttributeDefinition _toDTO(
+		String dataType, String description, String displayName, String id,
+		String name, String sampleValue, String type) {
 
 		GetWorkspaceGroupEventAttributeDefinitionsPageResponse.
-			EventAttributeDefinition responseEventAttributeDefinition =
+			EventAttributeDefinition eventAttributeDefinition =
 				new GetWorkspaceGroupEventAttributeDefinitionsPageResponse.
 					EventAttributeDefinition();
 
-		responseEventAttributeDefinition.setDataType(dataType);
-		responseEventAttributeDefinition.setDescription(
-			RandomTestUtil.randomString());
-		responseEventAttributeDefinition.setDisplayName(
-			RandomTestUtil.randomString());
-		responseEventAttributeDefinition.setId(RandomTestUtil.randomString());
-		responseEventAttributeDefinition.setName(RandomTestUtil.randomString());
-		responseEventAttributeDefinition.setSampleValue(
-			RandomTestUtil.randomString());
-		responseEventAttributeDefinition.setType(type);
+		eventAttributeDefinition.setDataType(dataType);
+		eventAttributeDefinition.setDescription(description);
+		eventAttributeDefinition.setDisplayName(displayName);
+		eventAttributeDefinition.setId(id);
+		eventAttributeDefinition.setName(name);
+		eventAttributeDefinition.setSampleValue(sampleValue);
+		eventAttributeDefinition.setType(type);
 
-		return responseEventAttributeDefinition;
+		return _eventAttributeDefinitionDTOConverter.toDTO(
+			null, eventAttributeDefinition);
 	}
 
 	private final EventAttributeDefinitionDTOConverter
