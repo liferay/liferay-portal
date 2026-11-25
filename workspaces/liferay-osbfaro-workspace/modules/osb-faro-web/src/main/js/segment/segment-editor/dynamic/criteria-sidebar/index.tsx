@@ -109,9 +109,6 @@ export default function CriteriaSidebar({
 	useEffect(() => {
 		remoteItems.forEach((property) => property && addProperty?.(property));
 
-		// A campaign dropped into the builder is read back from the referenced
-		// objects, the same place a saved segment's campaigns come from.
-
 		if (selectedPropertyKey === CAMPAIGN_PROPERTY.propertyKey) {
 			addEntities?.({
 				entityType: EntityType.Campaigns,
@@ -240,9 +237,6 @@ export default function CriteriaSidebar({
 		if (isRemoteSection && remoteLoading) {
 			return <Loading overlay />;
 		}
-
-		// Checked against the keywords the list was fetched with, not the
-		// input's value, so the message describes the search that ran.
 
 		if (
 			selectedPropertyKey === CAMPAIGN_PROPERTY.propertyKey &&

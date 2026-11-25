@@ -5,11 +5,6 @@ import {CriterionGroup} from './utils/types';
 import {hasUnavailableCampaign} from './utils/campaigns';
 import {ReferencedObjectsContext} from './context/referencedObjects';
 
-/**
- * Warns that a criterion points to a campaign the campaign sync deleted. The
- * segment keeps working without it, so this asks for the row to be removed
- * rather than disabling the segment.
- */
 const UnavailableCampaignsAlert: React.FC<{criteria: CriterionGroup}> = ({
 	criteria,
 }) => {

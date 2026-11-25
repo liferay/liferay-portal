@@ -4,11 +4,6 @@ import Loading from 'shared/components/Loading';
 import React from 'react';
 import {useDataSources} from 'shared/context/dataSources';
 
-/**
- * Explains an empty Campaigns section before anything is searched. With no
- * data source connected, it points to connecting one, like the Account
- * section; with one connected, the campaigns just have not been synced yet.
- */
 const CampaignsEmptyState: React.FC = () => {
 	const {empty: noDataSources, loading} = useDataSources();
 

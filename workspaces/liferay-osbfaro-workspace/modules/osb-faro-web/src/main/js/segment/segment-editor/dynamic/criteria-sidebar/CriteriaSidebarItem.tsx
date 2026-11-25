@@ -83,10 +83,6 @@ export const beginDrag = ({
 		valid = {asset: false, dateFilter: true, occurenceCount: true};
 	}
 	else if (type === PropertyTypes.Campaign) {
-
-		// Each campaign in the sidebar carries its ID, so the criterion starts
-		// already set to that campaign.
-
 		valid = !!property.id;
 	}
 	else if (type === PropertyTypes.Event) {

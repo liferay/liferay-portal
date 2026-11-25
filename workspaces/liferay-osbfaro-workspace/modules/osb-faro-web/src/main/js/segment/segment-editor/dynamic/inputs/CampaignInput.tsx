@@ -13,14 +13,6 @@ interface ICampaignInputProps extends ISegmentEditorCustomInputBase {
 	segmentCategory?: SegmentCategories;
 }
 
-/**
- * Shows the campaign a criterion row holds. Each row holds one campaign, the
- * one dragged in from the Conditions Library, so the campaign is not editable
- * here; several campaigns are combined as separate rows with AND/OR. Names
- * come from the segment's referenced objects, so a renamed campaign shows its
- * current name; a campaign missing from them is shown by the row as no longer
- * existing, never by this input.
- */
 const CampaignInput: React.FC<ICampaignInputProps> = ({
 	operatorRenderer: OperatorDropdown,
 	segmentCategory,

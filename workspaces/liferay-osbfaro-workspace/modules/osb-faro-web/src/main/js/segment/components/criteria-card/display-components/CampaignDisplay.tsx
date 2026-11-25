@@ -10,13 +10,6 @@ import {getSegmentCategoryLabel} from 'segment/utils/labels';
 import {getUnavailableCampaignIds} from 'segment/segment-editor/dynamic/utils/campaigns';
 import {IDisplayComponentProps} from '../types';
 
-/**
- * Reads as the segment builder's row does, for example "Individual campaign
- * is touched by 'Spring Sale'". Names come from the segment's referenced
- * objects, the same source the segment builder reads, so a renamed campaign
- * shows its current name and a campaign the campaign sync deleted shows as no
- * longer existing.
- */
 const CampaignDisplay: React.FC<IDisplayComponentProps> = ({
 	criterion,
 	property,

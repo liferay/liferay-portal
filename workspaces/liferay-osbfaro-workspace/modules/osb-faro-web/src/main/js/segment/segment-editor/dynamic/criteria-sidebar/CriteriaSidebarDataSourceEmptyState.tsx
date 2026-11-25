@@ -12,11 +12,6 @@ interface ICriteriaSidebarDataSourceEmptyStateProps {
 	title: string;
 }
 
-/**
- * Shown in a Conditions Library section whose data comes from a data source
- * that has not synced it. Only administrators can connect a data source, so
- * only they get the button.
- */
 const CriteriaSidebarDataSourceEmptyState: React.FC<
 	ICriteriaSidebarDataSourceEmptyStateProps
 > = ({description, title}) => {

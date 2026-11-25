@@ -540,9 +540,6 @@ class CriteriaRow extends React.Component<
 			state: {selectedProperty},
 		} = this;
 
-		// A deleted campaign cannot be edited back into the row, so the row
-		// only offers to remove it, like an attribute that no longer exists.
-
 		const unavailableCampaign =
 			getUnavailableCampaignIds(criterion, referencedEntities).length > 0;
 
