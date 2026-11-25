@@ -5,6 +5,7 @@
 
 package com.liferay.portal.search.opensearch2.internal.index;
 
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.json.JSONFactoryImpl;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -19,6 +20,8 @@ import com.liferay.portal.search.opensearch2.internal.util.ResourceUtil;
 import com.liferay.portal.search.test.util.AssertUtils;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
+import java.util.Collections;
+
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -28,6 +31,10 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 
 import org.mockito.Mockito;
+
+import org.opensearch.client.opensearch.OpenSearchClient;
+import org.opensearch.client.opensearch.indices.OpenSearchIndicesClient;
+import org.opensearch.client.opensearch.indices.PutAliasRequest;
 
 /**
  * @author Adam Brandizzi
@@ -83,6 +90,62 @@ public class OpenSearchIndexInformationTest extends BaseOpenSearchTestCase {
 		AssertUtils.assertEquals(
 			"", _loadJSONObject(testName.getMethodName()),
 			fieldMappingsJSONObject);
+	}
+
+	@Test
+	public void testGetFieldMappingsWithAlias() throws Exception {
+		_indexFactoryFixture.createIndices();
+
+		String indexName = _indexFactoryFixture.getIndexName();
+
+		String aliasName = indexName + "_alias";
+
+		_putAlias(aliasName, indexName);
+
+		JSONObject aliasJSONObject = _jsonFactory.createJSONObject(
+			_openSearchIndexInformation.getFieldMappings(aliasName));
+
+		Assert.assertEquals(
+			Collections.singleton(aliasName), aliasJSONObject.keySet());
+
+		JSONObject indexJSONObject = _jsonFactory.createJSONObject(
+			_openSearchIndexInformation.getFieldMappings(indexName));
+
+		AssertUtils.assertEquals(
+			"", indexJSONObject.getJSONObject(indexName),
+			aliasJSONObject.getJSONObject(aliasName));
+	}
+
+	@Test
+	public void testGetFieldMappingsWithIndexName() throws Exception {
+		_indexFactoryFixture.createIndices();
+
+		String indexName = _indexFactoryFixture.getIndexName();
+
+		_putAlias(indexName + "_alias", indexName);
+
+		JSONObject jsonObject = _jsonFactory.createJSONObject(
+			_openSearchIndexInformation.getFieldMappings(indexName));
+
+		Assert.assertEquals(
+			Collections.singleton(indexName), jsonObject.keySet());
+	}
+
+	@Test
+	public void testGetFieldMappingsWithWildcard() throws Exception {
+		_indexFactoryFixture.createIndices();
+
+		String indexName = _indexFactoryFixture.getIndexName();
+
+		String aliasName = indexName + "_alias";
+
+		_putAlias(aliasName, indexName);
+
+		JSONObject jsonObject = _jsonFactory.createJSONObject(
+			_openSearchIndexInformation.getFieldMappings(StringPool.STAR));
+
+		Assert.assertFalse(jsonObject.has(aliasName));
+		Assert.assertTrue(jsonObject.has(indexName));
 	}
 
 	@Test
@@ -142,6 +205,24 @@ public class OpenSearchIndexInformationTest extends BaseOpenSearchTestCase {
 			getClass(), "OpenSearchIndexInformationTest-" + suffix + ".json");
 
 		return _jsonFactory.createJSONObject(json);
+	}
+
+	private void _putAlias(String aliasName, String indexName)
+		throws Exception {
+
+		OpenSearchClient openSearchClient =
+			openSearchConnectionManager.getOpenSearchClient();
+
+		OpenSearchIndicesClient openSearchIndicesClient =
+			openSearchClient.indices();
+
+		openSearchIndicesClient.putAlias(
+			PutAliasRequest.of(
+				putAliasRequest -> putAliasRequest.index(
+					indexName
+				).name(
+					aliasName
+				)));
 	}
 
 	private IndexFactoryFixture _indexFactoryFixture;

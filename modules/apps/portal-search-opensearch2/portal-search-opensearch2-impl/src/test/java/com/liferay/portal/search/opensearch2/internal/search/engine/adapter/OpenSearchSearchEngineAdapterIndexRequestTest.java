@@ -12,6 +12,8 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.search.engine.adapter.SearchEngineAdapter;
 import com.liferay.portal.search.engine.adapter.index.AnalysisIndexResponseToken;
@@ -58,6 +60,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -83,6 +86,7 @@ import org.opensearch.client.opensearch.indices.IndexSettings;
 import org.opensearch.client.opensearch.indices.IndexState;
 import org.opensearch.client.opensearch.indices.OpenRequest;
 import org.opensearch.client.opensearch.indices.OpenSearchIndicesClient;
+import org.opensearch.client.opensearch.indices.PutAliasRequest;
 import org.opensearch.client.opensearch.indices.PutIndicesSettingsRequest;
 import org.opensearch.client.opensearch.indices.PutMappingRequest;
 import org.opensearch.client.opensearch.indices.get_mapping.IndexMappingRecord;
@@ -422,6 +426,50 @@ public class OpenSearchSearchEngineAdapterIndexRequestTest
 	}
 
 	@Test
+	public void testExecuteGetIndexIndexRequestWithAlias() throws Exception {
+		_putAlias();
+
+		GetIndexIndexResponse getIndexIndexResponse =
+			searchEngineAdapter.execute(
+				new GetIndexIndexRequest(_INDEX_ALIAS_NAME));
+
+		Assert.assertArrayEquals(
+			new String[] {TEST_INDEX_NAME},
+			getIndexIndexResponse.getIndexNames());
+
+		_assertGetIndexIndexResponseKeys(
+			getIndexIndexResponse, Collections.singleton(_INDEX_ALIAS_NAME));
+	}
+
+	@Test
+	public void testExecuteGetIndexIndexRequestWithIndexName()
+		throws Exception {
+
+		_putAlias();
+
+		_assertGetIndexIndexResponseKeys(
+			searchEngineAdapter.execute(
+				new GetIndexIndexRequest(TEST_INDEX_NAME)),
+			Collections.singleton(TEST_INDEX_NAME));
+	}
+
+	@Test
+	public void testExecuteGetIndexIndexRequestWithWildcard() throws Exception {
+		_putAlias();
+
+		GetIndexIndexResponse getIndexIndexResponse =
+			searchEngineAdapter.execute(
+				new GetIndexIndexRequest(StringPool.STAR));
+
+		String[] indexNames = getIndexIndexResponse.getIndexNames();
+
+		Assert.assertTrue(ArrayUtil.contains(indexNames, TEST_INDEX_NAME));
+
+		_assertGetIndexIndexResponseKeys(
+			getIndexIndexResponse, SetUtil.fromArray(indexNames));
+	}
+
+	@Test
 	public void testExecuteGetMappingIndexRequest() throws Exception {
 		String mappingSource = JSONUtil.put(
 			"properties",
@@ -612,6 +660,19 @@ public class OpenSearchSearchEngineAdapterIndexRequestTest
 			expectedTokens);
 	}
 
+	private void _assertGetIndexIndexResponseKeys(
+		GetIndexIndexResponse getIndexIndexResponse, Set<String> keys) {
+
+		Map<String, String> indexMappings =
+			getIndexIndexResponse.getIndexMappings();
+
+		Assert.assertEquals(keys, indexMappings.keySet());
+
+		Map<String, String> settings = getIndexIndexResponse.getSettings();
+
+		Assert.assertEquals(keys, settings.keySet());
+	}
+
 	private void _assertIndexStatus(String indexName, String status) {
 		OpenSearchClient openSearchClient =
 			openSearchConnectionManager.getOpenSearchClient();
@@ -717,6 +778,16 @@ public class OpenSearchSearchEngineAdapterIndexRequestTest
 		}
 	}
 
+	private void _putAlias() throws Exception {
+		_openSearchIndicesClient.putAlias(
+			PutAliasRequest.of(
+				putAliasRequest -> putAliasRequest.index(
+					TEST_INDEX_NAME
+				).name(
+					_INDEX_ALIAS_NAME
+				)));
+	}
+
 	private void _putMapping(String mappingSource) throws Exception {
 		PutMappingRequest.Builder builder = new PutMappingRequest.Builder();
 
@@ -760,6 +831,8 @@ public class OpenSearchSearchEngineAdapterIndexRequestTest
 
 		_openIndex(TEST_INDEX_NAME);
 	}
+
+	private static final String _INDEX_ALIAS_NAME = "test_request_alias";
 
 	private static OpenSearchClient _openSearchClient;
 	private static OpenSearchIndicesClient _openSearchIndicesClient;

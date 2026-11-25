@@ -5,6 +5,11 @@
 
 package com.liferay.portal.search.elasticsearch8.internal.index;
 
+import co.elastic.clients.elasticsearch.ElasticsearchClient;
+import co.elastic.clients.elasticsearch.indices.ElasticsearchIndicesClient;
+import co.elastic.clients.elasticsearch.indices.PutAliasRequest;
+
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.json.JSONFactoryImpl;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -18,6 +23,7 @@ import com.liferay.portal.search.test.util.AssertUtils;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -99,6 +105,62 @@ public class ElasticsearchIndexInformationTest {
 	}
 
 	@Test
+	public void testGetFieldMappingsWithAlias() throws Exception {
+		_indexFactoryFixture.createIndices();
+
+		String indexName = _indexFactoryFixture.getIndexName();
+
+		String aliasName = indexName + "_alias";
+
+		_putAlias(aliasName, indexName);
+
+		JSONObject aliasJSONObject = _jsonFactory.createJSONObject(
+			_elasticsearchIndexInformation.getFieldMappings(aliasName));
+
+		Assert.assertEquals(
+			Collections.singleton(aliasName), aliasJSONObject.keySet());
+
+		JSONObject indexJSONObject = _jsonFactory.createJSONObject(
+			_elasticsearchIndexInformation.getFieldMappings(indexName));
+
+		AssertUtils.assertEquals(
+			"", indexJSONObject.getJSONObject(indexName),
+			aliasJSONObject.getJSONObject(aliasName));
+	}
+
+	@Test
+	public void testGetFieldMappingsWithIndexName() throws Exception {
+		_indexFactoryFixture.createIndices();
+
+		String indexName = _indexFactoryFixture.getIndexName();
+
+		_putAlias(indexName + "_alias", indexName);
+
+		JSONObject jsonObject = _jsonFactory.createJSONObject(
+			_elasticsearchIndexInformation.getFieldMappings(indexName));
+
+		Assert.assertEquals(
+			Collections.singleton(indexName), jsonObject.keySet());
+	}
+
+	@Test
+	public void testGetFieldMappingsWithWildcard() throws Exception {
+		_indexFactoryFixture.createIndices();
+
+		String indexName = _indexFactoryFixture.getIndexName();
+
+		String aliasName = indexName + "_alias";
+
+		_putAlias(aliasName, indexName);
+
+		JSONObject jsonObject = _jsonFactory.createJSONObject(
+			_elasticsearchIndexInformation.getFieldMappings(StringPool.STAR));
+
+		Assert.assertFalse(jsonObject.has(aliasName));
+		Assert.assertTrue(jsonObject.has(indexName));
+	}
+
+	@Test
 	public void testGetIndexNames() throws Exception {
 		_indexFactoryFixture.createIndices();
 
@@ -157,6 +219,24 @@ public class ElasticsearchIndexInformationTest {
 			"ElasticsearchIndexInformationTest-" + suffix + ".json");
 
 		return _jsonFactory.createJSONObject(json);
+	}
+
+	private void _putAlias(String aliasName, String indexName)
+		throws Exception {
+
+		ElasticsearchClient elasticsearchClient =
+			_elasticsearchConnectionFixture.getElasticsearchClient();
+
+		ElasticsearchIndicesClient elasticsearchIndicesClient =
+			elasticsearchClient.indices();
+
+		elasticsearchIndicesClient.putAlias(
+			PutAliasRequest.of(
+				putAliasRequest -> putAliasRequest.index(
+					indexName
+				).name(
+					aliasName
+				)));
 	}
 
 	private static ElasticsearchConnectionFixture
