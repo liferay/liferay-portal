@@ -27,7 +27,9 @@ interface Props {
 export function TextDialog({onAdd, onOpenChange, open}: Props) {
 	const eid = useEditorId();
 
-	const {observer} = useModal({onClose: () => onOpenChange(false)});
+	const {observer, onClose} = useModal({
+		onClose: () => onOpenChange(false),
+	});
 
 	const [text, setText] = useState('');
 	const [fontFamily, setFontFamily] = useState('sans-serif');
@@ -95,8 +97,8 @@ export function TextDialog({onAdd, onOpenChange, open}: Props) {
 					{Liferay.Language.get('add-text')}
 				</ClayModal.Header>
 
-				<ClayModal.Body>
-					<form onSubmit={submit}>
+				<form onSubmit={submit}>
+					<ClayModal.Body>
 						<ClayForm.Group>
 							<label htmlFor={eid('text')}>
 								{Liferay.Language.get('text')}
@@ -152,16 +154,30 @@ export function TextDialog({onAdd, onOpenChange, open}: Props) {
 							onPreview={setColor}
 							value={color}
 						/>
+					</ClayModal.Body>
 
-						<ClayButton
-							disabled={!text.trim()}
-							displayType="primary"
-							type="submit"
-						>
-							{Liferay.Language.get('add')}
-						</ClayButton>
-					</form>
-				</ClayModal.Body>
+					<ClayModal.Footer
+						last={
+							<ClayButton.Group spaced>
+								<ClayButton
+									displayType="secondary"
+									onClick={onClose}
+									type="button"
+								>
+									{Liferay.Language.get('cancel')}
+								</ClayButton>
+
+								<ClayButton
+									disabled={!text.trim()}
+									displayType="primary"
+									type="submit"
+								>
+									{Liferay.Language.get('add')}
+								</ClayButton>
+							</ClayButton.Group>
+						}
+					/>
+				</form>
 			</div>
 		</ClayModal>
 	);
