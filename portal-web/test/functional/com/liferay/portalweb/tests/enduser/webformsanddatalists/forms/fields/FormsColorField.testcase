@@ -314,16 +314,6 @@ definition {
 			fieldValue = "CBCBCB");
 	}
 
-	@description = "Verify that changes to the Field can be canceled"
-	@ignore = "Test Stub"
-	@priority = 4
-	test ChangesCanBeCanceled {
-		property portal.acceptance = "false";
-
-		// TODO LPS-133138 ChangesCanBeCanceled pending implementation
-
-	}
-
 	@description = "Verify that a help text can be added to a Color Field"
 	@priority = 5
 	test HelpTextCanBeAdded {
@@ -478,16 +468,6 @@ definition {
 		FormFields.viewFieldReference(
 			fieldName = "Color",
 			key_fieldReferenceValue = "Color1234");
-	}
-
-	@description = "Verify that the Field Type can be changed"
-	@ignore = "Test Stub"
-	@priority = 5
-	test TypeCanBeChanged {
-		property portal.acceptance = "false";
-
-		// TODO LPS-133137 TypeCanBeChanged pending implementation
-
 	}
 
 }

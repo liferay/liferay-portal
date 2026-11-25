@@ -622,16 +622,6 @@ definition {
 			uploadFileName = "Document_1");
 	}
 
-	@description = "Verify that changes to the Field can be canceled"
-	@ignore = "Test Stub"
-	@priority = 4
-	test ChangesCanBeCanceled {
-		property portal.acceptance = "false";
-
-		// TODO LPS-133218 ChangesCanBeCanceled pending implementation
-
-	}
-
 	@description = "This is a use case for LPS-125499."
 	@priority = 2
 	test GuestUserCannotUploadFileWithInvalidSize {
@@ -959,16 +949,6 @@ definition {
 		ItemSelector.gotoItemSelectorViaSelectButtonByGuest(fieldName = "Upload");
 
 		AssertElementNotPresent(locator1 = "IFrame#MODAL_IFRAME");
-	}
-
-	@description = "Verify that the Field Type can be changed"
-	@ignore = "Test Stub"
-	@priority = 5
-	test TypeCanBeChanged {
-		property portal.acceptance = "false";
-
-		// TODO LPS-133217 TypeCanBeChanged pending implementation
-
 	}
 
 	@description = "LPS-176235 - Verify if entries in a form created by an admin are private"

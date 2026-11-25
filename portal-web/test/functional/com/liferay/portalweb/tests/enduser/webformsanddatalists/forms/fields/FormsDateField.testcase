@@ -574,16 +574,6 @@ definition {
 			fieldValue = "01/01/${futureYear}");
 	}
 
-	@description = "Verify that changes to the Field can be canceled"
-	@ignore = "Test Stub"
-	@priority = 4
-	test ChangesCanBeCanceled {
-		property portal.acceptance = "false";
-
-		// TODO LPS-132819 ChangesCanBeCanceled pending implementation
-
-	}
-
 	@description = "Verify that the Dutch Netherlands Date Notation is correct"
 	@priority = 5
 	test DateNotationDutchNetherlands {
@@ -1300,16 +1290,6 @@ definition {
 		Form.viewFieldReference(
 			fieldName = "Date",
 			fieldReference = "Date1234");
-	}
-
-	@description = "Verify that the Field Type can be changed"
-	@ignore = "Test Stub"
-	@priority = 5
-	test TypeCanBeChanged {
-		property portal.acceptance = "false";
-
-		// TODO LPS-132818 TypeCanBeChanged pending implementation
-
 	}
 
 	@description = "Verify if the Repeatable option is working correctly on the Date field using the Validation with custom date"

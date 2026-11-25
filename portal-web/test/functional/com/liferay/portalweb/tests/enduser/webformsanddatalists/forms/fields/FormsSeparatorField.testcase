@@ -224,16 +224,6 @@ definition {
 		FormViewBuilder.validateTranslatedField(fieldLabel = "Separator");
 	}
 
-	@description = "Verify that changes to the Field can be canceled"
-	@ignore = "Test Stub"
-	@priority = 4
-	test ChangesCanBeCanceled {
-		property portal.acceptance = "false";
-
-		// TODO LPS-133239 ChangesCanBeCanceled pending implementation
-
-	}
-
 	@description = "Verify that a help text can be added to a Separator Field"
 	@priority = 5
 	test HelpTextCanBeAdded {
@@ -435,16 +425,6 @@ definition {
 			fieldValue = "ABC");
 
 		FormFields.viewSeparator(fieldLabel = "Separator");
-	}
-
-	@description = "Verify that the Field Type can be changed"
-	@ignore = "Test Stub"
-	@priority = 5
-	test TypeCanBeChanged {
-		property portal.acceptance = "false";
-
-		// TODO LPS-133238 TypeCanBeChanged pending implementation
-
 	}
 
 }

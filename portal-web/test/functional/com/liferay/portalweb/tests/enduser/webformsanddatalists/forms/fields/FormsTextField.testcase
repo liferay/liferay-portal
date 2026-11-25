@@ -895,16 +895,6 @@ definition {
 		FormPortlet.submitSuccessfullyAndViewSuccessPage();
 	}
 
-	@description = "Verify that changes to a Field can be canceled"
-	@ignore = "Test Stub"
-	@priority = 5
-	test ChangesCanBeCanceled {
-		property portal.acceptance = "false";
-
-		// TODO LPS-131335 ChangesCanBeCanceled pending implementation
-
-	}
-
 	@description = "Verify that the Confirmation can be placed Horizontally"
 	@priority = 5
 	test ConfirmationBoxCanBePlacedHorizontally {
@@ -1428,26 +1418,6 @@ definition {
 		AssertElementPresent(
 			key_name = "For Autosave",
 			locator1 = "FormFields#FIELD_TARGET_LABEL");
-	}
-
-	@description = "Verify that the Field Type can be changed"
-	@ignore = "Test Stub"
-	@priority = 5
-	test TypeCanBeChanged {
-		property portal.acceptance = "false";
-
-		// TODO LPS-131334 TypeCanBeChanged pending implementation
-
-	}
-
-	@description = "Verify that Validation options are reset after changing the Field Type from Text Field to Numeric Field"
-	@ignore = "Test Stub"
-	@priority = 4
-	test ValidationIsResetAfterChangingFieldType {
-		property portal.acceptance = "false";
-
-		// TODO LPS-131352 ValidationIsResetAfterChangingFieldType pending implementation
-
 	}
 
 	@description = "Verify if the confirmation error message and validation error message together work correctly."
