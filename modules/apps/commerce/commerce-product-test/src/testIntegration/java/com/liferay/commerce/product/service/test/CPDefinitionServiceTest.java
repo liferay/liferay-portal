@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.context.ContextUserReplace;
@@ -70,6 +71,56 @@ public class CPDefinitionServiceTest {
 	@After
 	public void tearDown() throws Exception {
 		ServiceContextThreadLocal.popServiceContext();
+	}
+
+	@Test
+	public void testCloneCPDefinition() throws Exception {
+		CommerceCatalog commerceCatalog1 = _addCommerceCatalog();
+
+		_resourcePermissionLocalService.setResourcePermissions(
+			commerceCatalog1.getCompanyId(), CommerceCatalog.class.getName(),
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(commerceCatalog1.getCommerceCatalogId()),
+			_role.getRoleId(),
+			new String[] {ActionKeys.UPDATE, ActionKeys.VIEW});
+
+		CPDefinition cpDefinition1 = CPTestUtil.addCPDefinitionFromCatalog(
+			commerceCatalog1.getGroupId(), SimpleCPTypeConstants.NAME, false,
+			false);
+
+		CommerceCatalog commerceCatalog2 = _addCommerceCatalog();
+
+		CPDefinition cpDefinition2 = CPTestUtil.addCPDefinitionFromCatalog(
+			commerceCatalog2.getGroupId(), SimpleCPTypeConstants.NAME, false,
+			false);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_user)) {
+
+			ServiceContext serviceContext =
+				ServiceContextTestUtil.getServiceContext(
+					commerceCatalog1.getGroupId(), _user.getUserId());
+
+			PrincipalException.MustHavePermission principalException =
+				Assert.assertThrows(
+					PrincipalException.MustHavePermission.class,
+					() -> _cpDefinitionService.cloneCPDefinition(
+						cpDefinition2.getCPDefinitionId(),
+						commerceCatalog1.getGroupId(), serviceContext));
+
+			Assert.assertEquals(
+				commerceCatalog2.getCommerceCatalogId(),
+				principalException.resourceId);
+
+			CPDefinition cpDefinition3 = _cpDefinitionService.cloneCPDefinition(
+				cpDefinition1.getCPDefinitionId(),
+				commerceCatalog1.getGroupId(), serviceContext);
+
+			Assert.assertNotEquals(
+				cpDefinition1.getCProductId(), cpDefinition3.getCProductId());
+			Assert.assertEquals(
+				commerceCatalog1.getGroupId(), cpDefinition3.getGroupId());
+		}
 	}
 
 	@Test
