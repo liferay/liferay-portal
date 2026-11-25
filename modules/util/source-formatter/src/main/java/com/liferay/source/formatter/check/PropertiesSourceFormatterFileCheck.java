@@ -292,32 +292,32 @@ public class PropertiesSourceFormatterFileCheck extends BaseFileCheck {
 				continue;
 			}
 
-			for (String propertyFileName : propertyValues) {
+			for (String propertyValue : propertyValues) {
 				if (key.endsWith("excludes")) {
-					_checkWildcardDirName(fileName, key, propertyFileName);
+					_checkWildcardDirName(fileName, key, propertyValue);
 				}
 
-				if (propertyFileName.contains(StringPool.STAR) ||
-					propertyFileName.endsWith("-ext.properties") ||
+				if (propertyValue.contains(StringPool.STAR) ||
+					propertyValue.endsWith("-ext.properties") ||
 					(isPortalSource() && !_hasPrivateAppsDir() &&
-					 isModulesApp(propertyFileName, true))) {
+					 isModulesApp(propertyValue, true))) {
 
 					continue;
 				}
 
-				int pos = propertyFileName.indexOf(CharPool.AT);
+				int pos = propertyValue.indexOf(CharPool.AT);
 
 				if (pos != -1) {
-					propertyFileName = propertyFileName.substring(0, pos);
+					propertyValue = propertyValue.substring(0, pos);
 				}
 
-				pos = propertyFileName.indexOf("->");
+				pos = propertyValue.indexOf("->");
 
 				if (pos != -1) {
-					propertyFileName = propertyFileName.substring(pos + 2);
+					propertyValue = propertyValue.substring(pos + 2);
 				}
 
-				File file = getFile(propertyFileName, getMaxDirLevel());
+				File file = getFile(propertyValue, getMaxDirLevel());
 
 				if (file != null) {
 					continue;
@@ -326,7 +326,7 @@ public class PropertiesSourceFormatterFileCheck extends BaseFileCheck {
 				addMessage(
 					fileName,
 					StringBundler.concat(
-						"Property value \"", propertyFileName,
+						"Property value \"", propertyValue,
 						"\" points to file or directory that does not ",
 						"exist"));
 			}
