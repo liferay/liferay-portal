@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.feature.flag.test;
+package com.liferay.feature.flag.web.internal.instance.lifecycle.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.portal.kernel.feature.flag.FeatureFlag;
@@ -33,7 +33,7 @@ import org.junit.runner.RunWith;
  * @author Thiago Buarque
  */
 @RunWith(Arquillian.class)
-public class CompanyModelListenerTest {
+public class ProcessDeprecationFeatureFlagsPortalInstanceLifecycleListenerTest {
 
 	@ClassRule
 	@Rule
@@ -41,7 +41,7 @@ public class CompanyModelListenerTest {
 		new LiferayIntegrationTestRule();
 
 	@Test
-	public void testDeprecationFeatureFlags() throws Exception {
+	public void testPortalInstanceRegistered() throws Exception {
 		PortalPreferencesWrapper portalPreferencesWrapper =
 			(PortalPreferencesWrapper)
 				_portalPreferencesLocalService.getPreferences(
