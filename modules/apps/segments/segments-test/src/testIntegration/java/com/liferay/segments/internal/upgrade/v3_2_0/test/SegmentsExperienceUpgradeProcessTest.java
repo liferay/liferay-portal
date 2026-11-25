@@ -178,6 +178,10 @@ public class SegmentsExperienceUpgradeProcessTest
 		runUpgrade();
 
 		_assertSegmentsExperiences();
+
+		runUpgrade();
+
+		_assertSegmentsExperiences();
 	}
 
 	@Test
