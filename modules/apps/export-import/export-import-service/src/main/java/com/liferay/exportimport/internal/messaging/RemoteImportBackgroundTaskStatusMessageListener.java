@@ -70,7 +70,7 @@ public class RemoteImportBackgroundTaskStatusMessageListener
 
 		try {
 			RemoteImportUserNotificationUtil.sendUserNotificationEvent(
-				_getObjectEntry(backgroundTask, status));
+				_updateObjectEntry(backgroundTask, status));
 		}
 		catch (Exception exception) {
 			throw new MessageListenerException(exception);
@@ -101,7 +101,7 @@ public class RemoteImportBackgroundTaskStatusMessageListener
 		return user.getLocale();
 	}
 
-	private ObjectEntry _getObjectEntry(
+	private ObjectEntry _updateObjectEntry(
 			BackgroundTask backgroundTask, int status)
 		throws Exception {
 
