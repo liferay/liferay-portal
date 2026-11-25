@@ -351,32 +351,6 @@ public class SocialRequestLocalServiceWrapper
 	}
 
 	/**
-	 * Returns a range of all the social requests for the receiving user.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end -
-	 * start</code> instances. <code>start</code> and <code>end</code> are not
-	 * primary keys, they are indexes in the result set. Thus, <code>0</code>
-	 * refers to the first result in the set. Setting both <code>start</code>
-	 * and <code>end</code> to {@link
-	 * com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full
-	 * result set.
-	 * </p>
-	 *
-	 * @param receiverUserId the primary key of the receiving user
-	 * @param start the lower bound of the range of results
-	 * @param end the upper bound of the range of results (not inclusive)
-	 * @return the range of matching social requests
-	 */
-	@Override
-	public java.util.List<SocialRequest> getReceiverUserRequests(
-		long receiverUserId, int start, int end) {
-
-		return _socialRequestLocalService.getReceiverUserRequests(
-			receiverUserId, start, end);
-	}
-
-	/**
 	 * Returns a range of all the social requests with the given status for the
 	 * receiving user.
 	 *
@@ -402,18 +376,6 @@ public class SocialRequestLocalServiceWrapper
 
 		return _socialRequestLocalService.getReceiverUserRequests(
 			receiverUserId, status, start, end);
-	}
-
-	/**
-	 * Returns the number of social requests for the receiving user.
-	 *
-	 * @param receiverUserId the primary key of the receiving user
-	 * @return the number of matching social requests
-	 */
-	@Override
-	public int getReceiverUserRequestsCount(long receiverUserId) {
-		return _socialRequestLocalService.getReceiverUserRequestsCount(
-			receiverUserId);
 	}
 
 	/**
@@ -523,64 +485,6 @@ public class SocialRequestLocalServiceWrapper
 	}
 
 	/**
-	 * Returns a range of all the social requests for the requesting user.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end -
-	 * start</code> instances. <code>start</code> and <code>end</code> are not
-	 * primary keys, they are indexes in the result set. Thus, <code>0</code>
-	 * refers to the first result in the set. Setting both <code>start</code>
-	 * and <code>end</code> to {@link
-	 * com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full
-	 * result set.
-	 * </p>
-	 *
-	 * @param userId the primary key of the requesting user
-	 * @param start the lower bound of the range of results
-	 * @param end the upper bound of the range of results (not inclusive)
-	 * @return the range of matching social requests
-	 */
-	@Override
-	public java.util.List<SocialRequest> getUserRequests(
-		long userId, int start, int end) {
-
-		return _socialRequestLocalService.getUserRequests(userId, start, end);
-	}
-
-	/**
-	 * Returns the number of social requests for the requesting user.
-	 *
-	 * @param userId the primary key of the requesting user
-	 * @return the number of matching social requests
-	 */
-	@Override
-	public int getUserRequestsCount(long userId) {
-		return _socialRequestLocalService.getUserRequestsCount(userId);
-	}
-
-	/**
-	 * Returns <code>true</code> if a matching social requests exists in the
-	 * database.
-	 *
-	 * @param userId the primary key of the requesting user
-	 * @param className the class name of the asset that is the subject of the
-	 request
-	 * @param classPK the primary key of the asset that is the subject of the
-	 request
-	 * @param type the request's type
-	 * @param status the social request's status
-	 * @return <code>true</code> if the request exists; <code>false</code>
-	 otherwise
-	 */
-	@Override
-	public boolean hasRequest(
-		long userId, String className, long classPK, int type, int status) {
-
-		return _socialRequestLocalService.hasRequest(
-			userId, className, classPK, type, status);
-	}
-
-	/**
 	 * Returns <code>true</code> if a matching social request exists in the
 	 * database.
 	 *
@@ -687,4 +591,4 @@ public class SocialRequestLocalServiceWrapper
 	private SocialRequestLocalService _socialRequestLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1562820275
+// LIFERAY-SERVICE-BUILDER-HASH:-411803391

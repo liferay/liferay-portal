@@ -293,28 +293,6 @@ public interface SocialRequestLocalService
 		throws PortalException;
 
 	/**
-	 * Returns a range of all the social requests for the receiving user.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end -
-	 * start</code> instances. <code>start</code> and <code>end</code> are not
-	 * primary keys, they are indexes in the result set. Thus, <code>0</code>
-	 * refers to the first result in the set. Setting both <code>start</code>
-	 * and <code>end</code> to {@link
-	 * com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full
-	 * result set.
-	 * </p>
-	 *
-	 * @param receiverUserId the primary key of the receiving user
-	 * @param start the lower bound of the range of results
-	 * @param end the upper bound of the range of results (not inclusive)
-	 * @return the range of matching social requests
-	 */
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<SocialRequest> getReceiverUserRequests(
-		long receiverUserId, int start, int end);
-
-	/**
 	 * Returns a range of all the social requests with the given status for the
 	 * receiving user.
 	 *
@@ -337,15 +315,6 @@ public interface SocialRequestLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<SocialRequest> getReceiverUserRequests(
 		long receiverUserId, int status, int start, int end);
-
-	/**
-	 * Returns the number of social requests for the receiving user.
-	 *
-	 * @param receiverUserId the primary key of the receiving user
-	 * @return the number of matching social requests
-	 */
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getReceiverUserRequestsCount(long receiverUserId);
 
 	/**
 	 * Returns the number of social requests with the given status for the
@@ -431,54 +400,6 @@ public interface SocialRequestLocalService
 	public int getSocialRequestsCount();
 
 	/**
-	 * Returns a range of all the social requests for the requesting user.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end -
-	 * start</code> instances. <code>start</code> and <code>end</code> are not
-	 * primary keys, they are indexes in the result set. Thus, <code>0</code>
-	 * refers to the first result in the set. Setting both <code>start</code>
-	 * and <code>end</code> to {@link
-	 * com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full
-	 * result set.
-	 * </p>
-	 *
-	 * @param userId the primary key of the requesting user
-	 * @param start the lower bound of the range of results
-	 * @param end the upper bound of the range of results (not inclusive)
-	 * @return the range of matching social requests
-	 */
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<SocialRequest> getUserRequests(long userId, int start, int end);
-
-	/**
-	 * Returns the number of social requests for the requesting user.
-	 *
-	 * @param userId the primary key of the requesting user
-	 * @return the number of matching social requests
-	 */
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getUserRequestsCount(long userId);
-
-	/**
-	 * Returns <code>true</code> if a matching social requests exists in the
-	 * database.
-	 *
-	 * @param userId the primary key of the requesting user
-	 * @param className the class name of the asset that is the subject of the
-	 request
-	 * @param classPK the primary key of the asset that is the subject of the
-	 request
-	 * @param type the request's type
-	 * @param status the social request's status
-	 * @return <code>true</code> if the request exists; <code>false</code>
-	 otherwise
-	 */
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public boolean hasRequest(
-		long userId, String className, long classPK, int type, int status);
-
-	/**
 	 * Returns <code>true</code> if a matching social request exists in the
 	 * database.
 	 *
@@ -549,4 +470,4 @@ public interface SocialRequestLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:772876241
+// LIFERAY-SERVICE-BUILDER-HASH:63227586
