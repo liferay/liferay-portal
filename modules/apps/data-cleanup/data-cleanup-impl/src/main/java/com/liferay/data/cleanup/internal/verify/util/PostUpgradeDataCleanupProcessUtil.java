@@ -40,16 +40,16 @@ public class PostUpgradeDataCleanupProcessUtil {
 	}
 
 	private static boolean _isEveryLiferayBundle(Predicate<Bundle> predicate) {
-		Bundle currentBundle = FrameworkUtil.getBundle(
+		Bundle bundle1 = FrameworkUtil.getBundle(
 			PostUpgradeDataCleanupProcessUtil.class);
 
-		BundleContext bundleContext = currentBundle.getBundleContext();
+		BundleContext bundleContext = bundle1.getBundleContext();
 
-		for (Bundle bundle : bundleContext.getBundles()) {
-			String bundleSymbolicName = bundle.getSymbolicName();
+		for (Bundle bundle2 : bundleContext.getBundles()) {
+			String bundleSymbolicName = bundle2.getSymbolicName();
 
 			if (bundleSymbolicName.startsWith("com.liferay.") &&
-				!predicate.test(bundle)) {
+				!predicate.test(bundle2)) {
 
 				return false;
 			}

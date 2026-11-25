@@ -55,19 +55,19 @@ public class ServiceComponentPostUpgradeDataCleanupProcess
 	public void cleanUp() throws Exception {
 		DBInspector dbInspector = new DBInspector(_connection);
 
+		Bundle bundle1 = FrameworkUtil.getBundle(
+			ServiceComponentPostUpgradeDataCleanupProcess.class);
+
+		BundleContext bundleContext = bundle1.getBundleContext();
+
 		Set<ServiceComponent> latestServiceComponents = new HashSet<>(
 			_serviceComponentLocalService.getLatestServiceComponents());
+
+		String tableName = dbInspector.normalizeName("ServiceComponent");
 
 		List<ServiceComponent> serviceComponents =
 			_serviceComponentLocalService.getServiceComponents(
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS);
-
-		String tableName = dbInspector.normalizeName("ServiceComponent");
-
-		Bundle currentBundle = FrameworkUtil.getBundle(
-			ServiceComponentPostUpgradeDataCleanupProcess.class);
-
-		BundleContext bundleContext = currentBundle.getBundleContext();
 
 		for (ServiceComponent serviceComponent : serviceComponents) {
 			String buildNamespace = serviceComponent.getBuildNamespace();
@@ -84,10 +84,10 @@ public class ServiceComponentPostUpgradeDataCleanupProcess
 					buildNamespace + " is not a fully qualified name");
 			}
 			else if (buildNamespace.startsWith("com.liferay.")) {
-				Bundle bundle = BundleUtil.getBundle(
+				Bundle bundle2 = BundleUtil.getBundle(
 					bundleContext, buildNamespace);
 
-				if (bundle == null) {
+				if (bundle2 == null) {
 					_serviceComponentLocalService.deleteServiceComponent(
 						serviceComponent);
 
@@ -105,7 +105,7 @@ public class ServiceComponentPostUpgradeDataCleanupProcess
 
 				String buildNumberServiceProperties = null;
 
-				URL servicePropertiesURL = bundle.getResource(
+				URL servicePropertiesURL = bundle2.getResource(
 					"service.properties");
 
 				if (servicePropertiesURL != null) {
@@ -121,7 +121,7 @@ public class ServiceComponentPostUpgradeDataCleanupProcess
 						 buildNumberServiceProperties,
 						 String.valueOf(serviceComponent.getBuildNumber()))) ||
 					!Objects.equals(
-						serviceComponent.getData(), _generateXML(bundle))) {
+						serviceComponent.getData(), _generateXML(bundle2))) {
 
 					_log.error(
 						StringBundler.concat(
