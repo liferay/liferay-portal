@@ -280,22 +280,6 @@ public class CommerceShipmentLocalServiceImpl
 
 	@Override
 	public List<CommerceShipment> getCommerceShipments(
-		long groupId, long commerceAccountId, int start, int end,
-		OrderByComparator<CommerceShipment> orderByComparator) {
-
-		GroupByStep groupByStep = _getCommerceAccountGroupByStep(
-			commerceAccountId,
-			DSLQueryFactoryUtil.select(CommerceShipmentTable.INSTANCE),
-			groupId);
-
-		LimitStep limitStep = groupByStep.orderBy(
-			CommerceShipmentTable.INSTANCE, orderByComparator);
-
-		return dslQuery(limitStep.limit(start, end));
-	}
-
-	@Override
-	public List<CommerceShipment> getCommerceShipments(
 			long companyId, long[] groupIds, long[] commerceAccountIds,
 			String keywords, int[] shipmentStatuses,
 			boolean excludeShipmentStatus, int start, int end)
@@ -339,16 +323,25 @@ public class CommerceShipmentLocalServiceImpl
 	}
 
 	@Override
-	public int getCommerceShipmentsCount(long commerceOrderId) {
-		return dslQueryCount(
-			_getGroupByStep(DSLQueryFactoryUtil.count(), commerceOrderId));
+	public List<CommerceShipment> getCommerceShipmentsByCommerceAccountId(
+		long groupId, long commerceAccountId, int start, int end,
+		OrderByComparator<CommerceShipment> orderByComparator) {
+
+		GroupByStep groupByStep = _getCommerceAccountGroupByStep(
+			commerceAccountId,
+			DSLQueryFactoryUtil.select(CommerceShipmentTable.INSTANCE),
+			groupId);
+
+		LimitStep limitStep = groupByStep.orderBy(
+			CommerceShipmentTable.INSTANCE, orderByComparator);
+
+		return dslQuery(limitStep.limit(start, end));
 	}
 
 	@Override
-	public int getCommerceShipmentsCount(long groupId, long commerceAccountId) {
+	public int getCommerceShipmentsCount(long commerceOrderId) {
 		return dslQueryCount(
-			_getCommerceAccountGroupByStep(
-				commerceAccountId, DSLQueryFactoryUtil.count(), groupId));
+			_getGroupByStep(DSLQueryFactoryUtil.count(), commerceOrderId));
 	}
 
 	@Override
@@ -385,6 +378,15 @@ public class CommerceShipmentLocalServiceImpl
 
 		return commerceShipmentPersistence.countByG_C(
 			groupIds, commerceAddressId);
+	}
+
+	@Override
+	public int getCommerceShipmentsCountByCommerceAccountId(
+		long groupId, long commerceAccountId) {
+
+		return dslQueryCount(
+			_getCommerceAccountGroupByStep(
+				commerceAccountId, DSLQueryFactoryUtil.count(), groupId));
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
