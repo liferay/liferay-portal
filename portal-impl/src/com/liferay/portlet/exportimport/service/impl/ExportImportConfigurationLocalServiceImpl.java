@@ -16,23 +16,12 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.model.ModelHintsUtil;
 import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.search.BaseModelSearchResult;
-import com.liferay.portal.kernel.search.Document;
-import com.liferay.portal.kernel.search.Field;
-import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
-import com.liferay.portal.kernel.search.Indexer;
-import com.liferay.portal.kernel.search.IndexerRegistryUtil;
-import com.liferay.portal.kernel.search.QueryConfig;
-import com.liferay.portal.kernel.search.SearchContext;
-import com.liferay.portal.kernel.search.SearchException;
-import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.persistence.UserPersistence;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -40,7 +29,6 @@ import com.liferay.portlet.exportimport.service.base.ExportImportConfigurationLo
 
 import java.io.Serializable;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -183,58 +171,10 @@ public class ExportImportConfigurationLocalServiceImpl
 
 	@Override
 	public List<ExportImportConfiguration> getExportImportConfigurations(
-			Hits hits)
-		throws PortalException {
-
-		List<Document> documents = hits.toList();
-
-		List<ExportImportConfiguration> exportImportConfigurations =
-			new ArrayList<>(documents.size());
-
-		for (Document document : documents) {
-			long exportImportConfigurationId = GetterUtil.getLong(
-				document.get("exportImportConfigurationId"));
-
-			ExportImportConfiguration exportImportConfiguration =
-				exportImportConfigurationPersistence.findByPrimaryKey(
-					exportImportConfigurationId);
-
-			if (exportImportConfiguration == null) {
-				exportImportConfigurations = null;
-
-				Indexer<ExportImportConfiguration> indexer =
-					IndexerRegistryUtil.getIndexer(
-						ExportImportConfiguration.class);
-
-				long companyId = GetterUtil.getLong(
-					document.get(Field.COMPANY_ID));
-
-				indexer.delete(companyId, document.getUID());
-			}
-			else if (exportImportConfigurations != null) {
-				exportImportConfigurations.add(exportImportConfiguration);
-			}
-		}
-
-		return exportImportConfigurations;
-	}
-
-	@Override
-	public List<ExportImportConfiguration> getExportImportConfigurations(
 		long groupId, int type) {
 
 		return exportImportConfigurationPersistence.findByG_T_S(
 			groupId, type, WorkflowConstants.STATUS_APPROVED);
-	}
-
-	@Override
-	public List<ExportImportConfiguration> getExportImportConfigurations(
-		long groupId, int type, int start, int end,
-		OrderByComparator<ExportImportConfiguration> orderByComparator) {
-
-		return exportImportConfigurationPersistence.findByG_T_S(
-			groupId, type, WorkflowConstants.STATUS_APPROVED, start, end,
-			orderByComparator);
 	}
 
 	@Override
@@ -281,63 +221,6 @@ public class ExportImportConfigurationLocalServiceImpl
 
 		return exportImportConfigurationPersistence.findByPrimaryKey(
 			exportImportConfigurationId);
-	}
-
-	@Override
-	public BaseModelSearchResult<ExportImportConfiguration>
-			searchExportImportConfigurations(
-				long companyId, long groupId, int type, String keywords,
-				int start, int end, Sort sort)
-		throws PortalException {
-
-		String description = null;
-		String name = null;
-		boolean andOperator = false;
-
-		if (Validator.isNotNull(keywords)) {
-			description = keywords;
-			name = keywords;
-		}
-		else {
-			andOperator = true;
-		}
-
-		return searchExportImportConfigurations(
-			companyId, groupId, type, name, description, andOperator, start,
-			end, sort);
-	}
-
-	@Override
-	public BaseModelSearchResult<ExportImportConfiguration>
-			searchExportImportConfigurations(
-				long companyId, long groupId, int type, String name,
-				String description, boolean andSearch, int start, int end,
-				Sort sort)
-		throws PortalException {
-
-		Indexer<ExportImportConfiguration> indexer =
-			IndexerRegistryUtil.nullSafeGetIndexer(
-				ExportImportConfiguration.class);
-
-		SearchContext searchContext = buildSearchContext(
-			companyId, groupId, type, name, description, andSearch, start, end,
-			sort);
-
-		for (int i = 0; i < 10; i++) {
-			Hits hits = indexer.search(searchContext);
-
-			List<ExportImportConfiguration> exportImportConfigurations =
-				exportImportConfigurationLocalService.
-					getExportImportConfigurations(hits);
-
-			if (exportImportConfigurations != null) {
-				return new BaseModelSearchResult<>(
-					exportImportConfigurations, hits.getLength());
-			}
-		}
-
-		throw new SearchException(
-			"Unable to fix the search index after 10 attempts");
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
@@ -389,42 +272,6 @@ public class ExportImportConfigurationLocalServiceImpl
 
 		return exportImportConfigurationPersistence.update(
 			exportImportConfiguration);
-	}
-
-	protected SearchContext buildSearchContext(
-		long companyId, long groupId, int type, String name, String description,
-		boolean andSearch, int start, int end, Sort sort) {
-
-		SearchContext searchContext = new SearchContext();
-
-		searchContext.setAndSearch(andSearch);
-		searchContext.setAttributes(
-			HashMapBuilder.<String, Serializable>put(
-				Field.STATUS, WorkflowConstants.STATUS_APPROVED
-			).put(
-				"description", description
-			).put(
-				"groupId", groupId
-			).put(
-				"name", name
-			).put(
-				"type", type
-			).build());
-		searchContext.setCompanyId(companyId);
-		searchContext.setEnd(end);
-
-		if (sort != null) {
-			searchContext.setSorts(sort);
-		}
-
-		searchContext.setStart(start);
-
-		QueryConfig queryConfig = searchContext.getQueryConfig();
-
-		queryConfig.setHighlightEnabled(false);
-		queryConfig.setScoreEnabled(false);
-
-		return searchContext;
 	}
 
 	private void _validate(String name)
