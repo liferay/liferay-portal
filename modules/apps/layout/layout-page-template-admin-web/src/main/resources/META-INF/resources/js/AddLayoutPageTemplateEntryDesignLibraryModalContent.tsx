@@ -26,11 +26,11 @@ export default function AddLayoutPageTemplateEntryDesignLibraryModalContent({
 	namespace,
 	pageTemplateSets,
 }: AddLayoutPageTemplateEntryDesignLibraryModalContentProps) {
-	const pageTemplateSetAddedRef = useRef(false);
+	const pendingReloadRef = useRef(false);
 
 	useEffect(
 		() => () => {
-			if (pageTemplateSetAddedRef.current) {
+			if (pendingReloadRef.current) {
 				navigate(location.href);
 			}
 		},
@@ -42,7 +42,7 @@ export default function AddLayoutPageTemplateEntryDesignLibraryModalContent({
 		pageTemplateName?: string
 	): Promise<string | void> => {
 		if (!pageTemplateSets.some(({id}) => id === pageTemplateSetId)) {
-			pageTemplateSetAddedRef.current = true;
+			pendingReloadRef.current = true;
 		}
 
 		const formData = new FormData();
@@ -67,7 +67,7 @@ export default function AddLayoutPageTemplateEntryDesignLibraryModalContent({
 				return error;
 			}
 
-			pageTemplateSetAddedRef.current = false;
+			pendingReloadRef.current = false;
 
 			if (!redirectURL) {
 				navigate(location.href);
