@@ -62,14 +62,14 @@ public class FileSystemAuditMessageProcessorConfigurationFormRendererTest {
 			String outputDirectory, String portletId)
 		throws Exception {
 
+		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
+			new MockLiferayPortletActionRequest();
+
 		ThemeDisplay themeDisplay = new ThemeDisplay();
 
 		themeDisplay.setCompany(
 			_companyLocalService.getCompany(TestPropsValues.getCompanyId()));
 		themeDisplay.setUser(TestPropsValues.getUser());
-
-		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
-			new MockLiferayPortletActionRequest();
 
 		mockLiferayPortletActionRequest.setAttribute(
 			JavaConstants.JAKARTA_PORTLET_CONFIG,
