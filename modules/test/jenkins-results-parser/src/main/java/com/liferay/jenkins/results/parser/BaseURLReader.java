@@ -362,7 +362,7 @@ public abstract class BaseURLReader<T> implements URLReader<T> {
 
 				if (((maxRetries >= 0) && (retryCount >= maxRetries)) ||
 					((maxRetries < 0) && (responseCode == 422) &&
-					 (retryCount >= _RETRIES_SIZE_MAX_UNPROCESSABLE_CONTENT))) {
+					 (retryCount >= 3))) {
 
 					throw ioException;
 				}
@@ -557,8 +557,6 @@ public abstract class BaseURLReader<T> implements URLReader<T> {
 
 		return false;
 	}
-
-	private static final int _RETRIES_SIZE_MAX_UNPROCESSABLE_CONTENT = 3;
 
 	private static final int _SECONDS_RETRY_PERIOD_ESCALATION_MAX = 60;
 
