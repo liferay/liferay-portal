@@ -12,8 +12,10 @@ import com.liferay.dynamic.data.mapping.util.DDMTemplateHelper;
 import com.liferay.info.item.InfoItemServiceRegistry;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.settings.GroupServiceSettingsLocator;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -22,7 +24,9 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.template.constants.TemplatePortletKeys;
 import com.liferay.template.web.internal.display.context.InformationTemplatesEditDDMTemplateDisplayContext;
 import com.liferay.template.web.internal.display.context.WidgetTemplatesEditDDMTemplateDisplayContext;
+import com.liferay.template.web.internal.security.permissions.resource.DDMTemplatePermission;
 
+import jakarta.portlet.PortletException;
 import jakarta.portlet.RenderRequest;
 import jakarta.portlet.RenderResponse;
 
@@ -50,10 +54,24 @@ public class EditDDMTemplatePropertiesMVCRenderCommand
 
 	@Override
 	public String render(
-		RenderRequest renderRequest, RenderResponse renderResponse) {
+			RenderRequest renderRequest, RenderResponse renderResponse)
+		throws PortletException {
 
 		ThemeDisplay themeDisplay = (ThemeDisplay)renderRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
+
+		long ddmTemplateId = ParamUtil.getLong(renderRequest, "ddmTemplateId");
+
+		if (ddmTemplateId > 0) {
+			try {
+				DDMTemplatePermission.check(
+					themeDisplay.getPermissionChecker(), ddmTemplateId,
+					ActionKeys.UPDATE);
+			}
+			catch (PortalException portalException) {
+				throw new PortletException(portalException);
+			}
+		}
 
 		renderRequest.setAttribute(
 			DDMGroupServiceConfiguration.class.getName(),
