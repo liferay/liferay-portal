@@ -143,11 +143,15 @@ public class EventMetricDTOConverterTest {
 			Arrays.toString(histogramBuckets), bucketKeys.length,
 			histogramBuckets.length);
 
-		for (int i = 0; i < histogramBuckets.length; i++) {
-			Assert.assertEquals(bucketKeys[i], histogramBuckets[i].getKey());
-			Assert.assertEquals(
-				bucketValues[i], histogramBuckets[i].getValue());
-		}
+		HistogramBucket histogramBucket = histogramBuckets[0];
+
+		Assert.assertEquals(bucketKeys[0], histogramBucket.getKey());
+		Assert.assertEquals(bucketValues[0], histogramBucket.getValue());
+
+		histogramBucket = histogramBuckets[1];
+
+		Assert.assertEquals(bucketKeys[1], histogramBucket.getKey());
+		Assert.assertEquals(bucketValues[1], histogramBucket.getValue());
 
 		Metric totalSessionsMetric = eventMetric.getTotalSessions();
 
