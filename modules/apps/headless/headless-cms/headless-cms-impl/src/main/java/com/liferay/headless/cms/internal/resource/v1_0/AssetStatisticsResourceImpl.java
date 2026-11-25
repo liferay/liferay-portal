@@ -39,6 +39,12 @@ import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.license.util.LicenseManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.PortletPreferencesLocalService;
 import com.liferay.portal.kernel.util.ArrayUtil;
@@ -59,12 +65,18 @@ import com.liferay.portal.search.query.QueriesUtil;
 import com.liferay.portal.search.query.TermsQuery;
 import com.liferay.portal.search.searcher.SearchRequestBuilderFactory;
 import com.liferay.portal.search.searcher.Searcher;
+import com.liferay.portal.workflow.kaleo.model.KaleoTask;
+import com.liferay.portal.workflow.kaleo.model.KaleoTaskAssignmentInstanceTable;
+import com.liferay.portal.workflow.kaleo.model.KaleoTaskAssignmentTable;
+import com.liferay.portal.workflow.kaleo.model.KaleoTaskInstanceToken;
 import com.liferay.portal.workflow.kaleo.model.KaleoTaskInstanceTokenTable;
 import com.liferay.portal.workflow.kaleo.service.KaleoTaskInstanceTokenLocalService;
 import com.liferay.portal.workflow.metrics.sla.processor.WorkflowMetricsSLAStatus;
 import com.liferay.site.cms.site.initializer.constants.CMSWorkflowConstants;
 import com.liferay.site.navigation.service.SiteNavigationMenuItemLocalService;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -236,6 +248,33 @@ public class AssetStatisticsResourceImpl
 		};
 	}
 
+	private Predicate _getAssignedWorkflowTasksPredicate(Long[] groupIds) {
+		PermissionChecker permissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		if (permissionChecker.isCompanyAdmin()) {
+			return null;
+		}
+
+		Predicate predicate = _getKaleoTaskAssignmentInstancesPredicate(
+			User.class.getName(), new Long[] {contextUser.getUserId()});
+
+		for (Long groupId : groupIds) {
+			predicate = predicate.or(
+				KaleoTaskInstanceTokenTable.INSTANCE.groupId.eq(
+					groupId
+				).and(
+					_getKaleoTaskAssignmentInstancesPredicate(
+						Role.class.getName(),
+						ArrayUtil.toArray(
+							permissionChecker.getRoleIds(
+								contextUser.getUserId(), groupId)))
+				));
+		}
+
+		return predicate.withParentheses();
+	}
+
 	private long _getBrokenLinksCount(
 		Long[] objectDefinitionIds, Long[] selectedSpaceGroupIds,
 		Long[] spaceGroupIds) {
@@ -291,6 +330,25 @@ public class AssetStatisticsResourceImpl
 		}
 	}
 
+	private Predicate _getKaleoTaskAssignmentInstancesPredicate(
+		String assigneeClassName, Long[] assigneeClassPKs) {
+
+		return KaleoTaskInstanceTokenTable.INSTANCE.kaleoTaskInstanceTokenId.in(
+			DSLQueryFactoryUtil.select(
+				KaleoTaskAssignmentInstanceTable.INSTANCE.
+					kaleoTaskInstanceTokenId
+			).from(
+				KaleoTaskAssignmentInstanceTable.INSTANCE
+			).where(
+				KaleoTaskAssignmentInstanceTable.INSTANCE.assigneeClassName.eq(
+					assigneeClassName
+				).and(
+					KaleoTaskAssignmentInstanceTable.INSTANCE.assigneeClassPK.
+						in(assigneeClassPKs)
+				)
+			));
+	}
+
 	private long _getMissingRequiredFieldsCount(Long[] groupIds) {
 		if (!FeatureFlagManagerUtil.isEnabled(
 				contextCompany.getCompanyId(), "LPD-82226")) {
@@ -318,8 +376,86 @@ public class AssetStatisticsResourceImpl
 		}
 	}
 
+	private List<Long> _getNotifiableWorkflowTaskIds(
+			Long[] groupIds, Predicate predicate)
+		throws PortalException {
+
+		PermissionChecker permissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		if (permissionChecker.isCompanyAdmin()) {
+			return Collections.emptyList();
+		}
+
+		List<Long> kaleoTaskInstanceTokenIds = new ArrayList<>();
+
+		for (Long kaleoTaskInstanceTokenId :
+				_kaleoTaskInstanceTokenLocalService.<List<Long>>dslQuery(
+					DSLQueryFactoryUtil.select(
+						KaleoTaskInstanceTokenTable.INSTANCE.
+							kaleoTaskInstanceTokenId
+					).from(
+						KaleoTaskInstanceTokenTable.INSTANCE
+					).where(
+						predicate.and(
+							Predicate.not(
+								_getAssignedWorkflowTasksPredicate(groupIds))
+						).and(
+							_getNotifiableWorkflowTasksPredicate()
+						)
+					))) {
+
+			if (!_kaleoTaskInstanceTokenModelResourcePermission.contains(
+					permissionChecker, kaleoTaskInstanceTokenId,
+					ActionKeys.VIEW)) {
+
+				continue;
+			}
+
+			kaleoTaskInstanceTokenIds.add(kaleoTaskInstanceTokenId);
+		}
+
+		return kaleoTaskInstanceTokenIds;
+	}
+
+	private Predicate _getNotifiableWorkflowTasksPredicate()
+		throws PortalException {
+
+		Long[] roleIds = transformToArray(
+			contextUser.getAllRoles(), Role::getRoleId, Long.class);
+
+		Predicate predicate =
+			KaleoTaskAssignmentTable.INSTANCE.kaleoClassName.eq(
+				KaleoTask.class.getName()
+			).and(
+				KaleoTaskAssignmentTable.INSTANCE.assigneeClassName.neq(
+					User.class.getName())
+			).and(
+				KaleoTaskAssignmentTable.INSTANCE.assigneeClassName.neq(
+					Role.class.getName()
+				).or(
+					KaleoTaskAssignmentTable.INSTANCE.assigneeClassPK.in(
+						roleIds)
+				).withParentheses()
+			);
+
+		return KaleoTaskInstanceTokenTable.INSTANCE.kaleoTaskId.in(
+			DSLQueryFactoryUtil.select(
+				KaleoTaskAssignmentTable.INSTANCE.kaleoClassPK
+			).from(
+				KaleoTaskAssignmentTable.INSTANCE
+			).where(
+				predicate
+			)
+		).or(
+			_getKaleoTaskAssignmentInstancesPredicate(
+				Role.class.getName(), roleIds)
+		).withParentheses();
+	}
+
 	private long _getSLABreachedWorkflowTasksCount(
-		String[] classNames, Long[] groupIds) {
+			String[] classNames, Long[] groupIds)
+		throws PortalException {
 
 		String indexName =
 			_indexNameBuilder.getIndexName(contextCompany.getCompanyId()) +
@@ -333,7 +469,11 @@ public class AssetStatisticsResourceImpl
 			return 0;
 		}
 
-		List<Long> kaleoTaskInstanceTokenIds =
+		Predicate predicate = _getWorkflowTasksPredicate(
+			classNames, groupIds,
+			KaleoTaskInstanceTokenTable.INSTANCE.completed.eq(false));
+
+		List<Long> kaleoTaskInstanceTokenIds = new ArrayList<>(
 			_kaleoTaskInstanceTokenLocalService.dslQuery(
 				DSLQueryFactoryUtil.select(
 					KaleoTaskInstanceTokenTable.INSTANCE.
@@ -341,11 +481,11 @@ public class AssetStatisticsResourceImpl
 				).from(
 					KaleoTaskInstanceTokenTable.INSTANCE
 				).where(
-					_getWorkflowTasksPredicate(
-						classNames, groupIds,
-						KaleoTaskInstanceTokenTable.INSTANCE.completed.eq(
-							false))
-				));
+					predicate.and(_getAssignedWorkflowTasksPredicate(groupIds))
+				)));
+
+		kaleoTaskInstanceTokenIds.addAll(
+			_getNotifiableWorkflowTaskIds(groupIds, predicate));
 
 		if (kaleoTaskInstanceTokenIds.isEmpty()) {
 			return 0;
@@ -431,15 +571,23 @@ public class AssetStatisticsResourceImpl
 	}
 
 	private long _getWorkflowTasksCount(
-		String[] classNames, Long[] groupIds, Predicate predicate) {
+			String[] classNames, Long[] groupIds, Predicate predicate)
+		throws PortalException {
 
-		return _kaleoTaskInstanceTokenLocalService.dslQueryCount(
+		predicate = _getWorkflowTasksPredicate(classNames, groupIds, predicate);
+
+		List<Long> kaleoTaskInstanceTokenIds = _getNotifiableWorkflowTaskIds(
+			groupIds, predicate);
+
+		long count = _kaleoTaskInstanceTokenLocalService.dslQueryCount(
 			DSLQueryFactoryUtil.count(
 			).from(
 				KaleoTaskInstanceTokenTable.INSTANCE
 			).where(
-				_getWorkflowTasksPredicate(classNames, groupIds, predicate)
+				predicate.and(_getAssignedWorkflowTasksPredicate(groupIds))
 			));
+
+		return count + kaleoTaskInstanceTokenIds.size();
 	}
 
 	private Predicate _getWorkflowTasksPredicate(
@@ -527,6 +675,12 @@ public class AssetStatisticsResourceImpl
 	@Reference
 	private KaleoTaskInstanceTokenLocalService
 		_kaleoTaskInstanceTokenLocalService;
+
+	@Reference(
+		target = "(model.class.name=com.liferay.portal.workflow.kaleo.model.KaleoTaskInstanceToken)"
+	)
+	private ModelResourcePermission<KaleoTaskInstanceToken>
+		_kaleoTaskInstanceTokenModelResourcePermission;
 
 	@Reference
 	private LayoutLocalService _layoutLocalService;
