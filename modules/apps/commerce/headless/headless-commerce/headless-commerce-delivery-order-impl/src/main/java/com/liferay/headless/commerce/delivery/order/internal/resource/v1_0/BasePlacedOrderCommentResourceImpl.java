@@ -368,10 +368,11 @@ public abstract class BasePlacedOrderCommentResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("placedOrderId")) {
+		Serializable placedOrderId = parameters.get("placedOrderId");
+
+		if (placedOrderId != null) {
 			return getPlacedOrderPlacedOrderCommentsPage(
-				_parseLong((String)parameters.get("placedOrderId")),
-				pagination);
+				_parseLong((String)placedOrderId), pagination);
 		}
 		else {
 			throw new NotSupportedException(

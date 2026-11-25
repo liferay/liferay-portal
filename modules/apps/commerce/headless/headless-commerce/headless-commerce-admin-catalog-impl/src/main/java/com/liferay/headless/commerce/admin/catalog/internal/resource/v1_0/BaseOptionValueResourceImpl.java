@@ -592,11 +592,13 @@ public abstract class BaseOptionValueResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("externalReferenceCode")) {
+			Serializable externalReferenceCode = parameters.get(
+				"externalReferenceCode");
+
+			if (externalReferenceCode != null) {
 				optionValueUnsafeFunction =
 					optionValue -> postOptionByExternalReferenceCodeOptionValue(
-						(String)parameters.get("externalReferenceCode"),
-						optionValue);
+						(String)externalReferenceCode, optionValue);
 			}
 			else {
 				throw new NotSupportedException(
@@ -609,6 +611,9 @@ public abstract class BaseOptionValueResourceImpl
 				"updateStrategy", "UPDATE");
 
 			if (StringUtil.equalsIgnoreCase(updateStrategy, "PARTIAL_UPDATE")) {
+				Serializable externalReferenceCode = parameters.get(
+					"externalReferenceCode");
+
 				optionValueUnsafeFunction = optionValue -> {
 					OptionValue getOptionValue = null;
 					OptionValue persistedOptionValue = null;
@@ -620,12 +625,10 @@ public abstract class BaseOptionValueResourceImpl
 						patchOptionValue(getOptionValue.getId(), optionValue);
 					}
 					catch (NoSuchModelException noSuchModelException) {
-						if (parameters.containsKey("externalReferenceCode")) {
+						if (externalReferenceCode != null) {
 							persistedOptionValue =
 								postOptionByExternalReferenceCodeOptionValue(
-									(String)parameters.get(
-										"externalReferenceCode"),
-									optionValue);
+									(String)externalReferenceCode, optionValue);
 						}
 						else {
 							throw new NotSupportedException(

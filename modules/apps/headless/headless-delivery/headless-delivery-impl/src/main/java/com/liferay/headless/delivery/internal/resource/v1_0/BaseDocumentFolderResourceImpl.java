@@ -1974,15 +1974,19 @@ public abstract class BaseDocumentFolderResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("assetLibraryId")) {
+			Serializable assetLibraryId = parameters.get("assetLibraryId");
+
+			Serializable siteId = parameters.get("siteId");
+
+			if (assetLibraryId != null) {
 				documentFolderUnsafeFunction =
 					documentFolder -> postAssetLibraryDocumentFolder(
-						(Long)parameters.get("assetLibraryId"), documentFolder);
+						(Long)assetLibraryId, documentFolder);
 			}
-			else if (parameters.containsKey("siteId")) {
+			else if (siteId != null) {
 				documentFolderUnsafeFunction =
 					documentFolder -> postSiteDocumentFolder(
-						(Long)parameters.get("siteId"), documentFolder);
+						(Long)siteId, documentFolder);
 			}
 			else {
 				throw new NotSupportedException(
@@ -2071,17 +2075,20 @@ public abstract class BaseDocumentFolderResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("assetLibraryId")) {
+		Serializable assetLibraryId = parameters.get("assetLibraryId");
+
+		Serializable siteId = parameters.get("siteId");
+
+		if (assetLibraryId != null) {
 			return getAssetLibraryDocumentFoldersPage(
-				(Long)parameters.get("assetLibraryId"),
+				(Long)assetLibraryId,
 				_parseBoolean((String)parameters.get("flatten")), search, null,
 				filter, pagination, sorts);
 		}
-		else if (parameters.containsKey("siteId")) {
+		else if (siteId != null) {
 			return getSiteDocumentFoldersPage(
-				(Long)parameters.get("siteId"),
-				_parseBoolean((String)parameters.get("flatten")), search, null,
-				filter, pagination, sorts);
+				(Long)siteId, _parseBoolean((String)parameters.get("flatten")),
+				search, null, filter, pagination, sorts);
 		}
 		else {
 			throw new NotSupportedException(

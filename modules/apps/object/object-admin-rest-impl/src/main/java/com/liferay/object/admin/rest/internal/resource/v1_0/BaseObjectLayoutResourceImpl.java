@@ -578,18 +578,21 @@ public abstract class BaseObjectLayoutResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("objectDefinitionId")) {
+			Serializable externalReferenceCode = parameters.get(
+				"externalReferenceCode");
+
+			Serializable objectDefinitionId = parameters.get(
+				"objectDefinitionId");
+
+			if (objectDefinitionId != null) {
 				objectLayoutUnsafeFunction =
 					objectLayout -> postObjectDefinitionObjectLayout(
-						_parseLong(
-							(String)parameters.get("objectDefinitionId")),
-						objectLayout);
+						_parseLong((String)objectDefinitionId), objectLayout);
 			}
-			else if (parameters.containsKey("externalReferenceCode")) {
+			else if (externalReferenceCode != null) {
 				objectLayoutUnsafeFunction = objectLayout ->
 					postObjectDefinitionByExternalReferenceCodeObjectLayout(
-						(String)parameters.get("externalReferenceCode"),
-						objectLayout);
+						(String)externalReferenceCode, objectLayout);
 			}
 			else {
 				throw new NotSupportedException(
@@ -678,10 +681,12 @@ public abstract class BaseObjectLayoutResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("objectDefinitionId")) {
+		Serializable objectDefinitionId = parameters.get("objectDefinitionId");
+
+		if (objectDefinitionId != null) {
 			return getObjectDefinitionObjectLayoutsPage(
-				_parseLong((String)parameters.get("objectDefinitionId")),
-				search, pagination, sorts);
+				_parseLong((String)objectDefinitionId), search, pagination,
+				sorts);
 		}
 		else {
 			throw new NotSupportedException(

@@ -531,11 +531,13 @@ public abstract class BaseAccountOrganizationResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("externalReferenceCode")) {
+			Serializable externalReferenceCode = parameters.get(
+				"externalReferenceCode");
+
+			if (externalReferenceCode != null) {
 				accountOrganizationUnsafeFunction = accountOrganization ->
 					postAccountByExternalReferenceCodeAccountOrganization(
-						(String)parameters.get("externalReferenceCode"),
-						accountOrganization);
+						(String)externalReferenceCode, accountOrganization);
 			}
 			else {
 				throw new NotSupportedException(

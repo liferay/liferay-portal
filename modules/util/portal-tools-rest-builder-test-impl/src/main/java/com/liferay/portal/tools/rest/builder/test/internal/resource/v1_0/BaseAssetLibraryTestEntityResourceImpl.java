@@ -241,13 +241,15 @@ public abstract class BaseAssetLibraryTestEntityResourceImpl
 			Map<String, Serializable> parameters)
 		throws Exception {
 
+		Serializable assetLibraryId = parameters.get("assetLibraryId");
+
 		UnsafeFunction
 			<AssetLibraryTestEntity, AssetLibraryTestEntity, Exception>
 				assetLibraryTestEntityUnsafeFunction =
 					assetLibraryTestEntity -> {
-						if (parameters.containsKey("assetLibraryId")) {
+						if (assetLibraryId != null) {
 							deleteAssetLibraryAssetLibraryTestEntityByExternalReferenceCode(
-								(Long)parameters.get("assetLibraryId"),
+								(Long)assetLibraryId,
 								assetLibraryTestEntity.
 									getExternalReferenceCode());
 
@@ -309,9 +311,11 @@ public abstract class BaseAssetLibraryTestEntityResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("assetLibraryId")) {
+		Serializable assetLibraryId = parameters.get("assetLibraryId");
+
+		if (assetLibraryId != null) {
 			return getAssetLibraryAssetLibraryTestEntitiesPage(
-				(Long)parameters.get("assetLibraryId"));
+				(Long)assetLibraryId);
 		}
 		else {
 			throw new NotSupportedException(

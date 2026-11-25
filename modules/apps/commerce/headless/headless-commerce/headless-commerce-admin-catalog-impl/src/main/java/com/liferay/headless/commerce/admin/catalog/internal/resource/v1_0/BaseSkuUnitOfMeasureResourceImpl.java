@@ -460,11 +460,13 @@ public abstract class BaseSkuUnitOfMeasureResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("externalReferenceCode")) {
+			Serializable externalReferenceCode = parameters.get(
+				"externalReferenceCode");
+
+			if (externalReferenceCode != null) {
 				skuUnitOfMeasureUnsafeFunction = skuUnitOfMeasure ->
 					postSkuByExternalReferenceCodeSkuUnitOfMeasure(
-						(String)parameters.get("externalReferenceCode"),
-						skuUnitOfMeasure);
+						(String)externalReferenceCode, skuUnitOfMeasure);
 			}
 			else {
 				throw new NotSupportedException(

@@ -299,9 +299,11 @@ public abstract class BaseNodeResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("processId")) {
+			Serializable processId = parameters.get("processId");
+
+			if (processId != null) {
 				nodeUnsafeFunction = node -> postProcessNode(
-					_parseLong((String)parameters.get("processId")), node);
+					_parseLong((String)processId), node);
 			}
 			else {
 				throw new NotSupportedException(
@@ -369,9 +371,10 @@ public abstract class BaseNodeResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("processId")) {
-			return getProcessNodesPage(
-				_parseLong((String)parameters.get("processId")));
+		Serializable processId = parameters.get("processId");
+
+		if (processId != null) {
+			return getProcessNodesPage(_parseLong((String)processId));
 		}
 		else {
 			throw new NotSupportedException(

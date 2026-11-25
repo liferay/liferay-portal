@@ -409,11 +409,13 @@ public abstract class BasePriceListAccountResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("externalReferenceCode")) {
+			Serializable externalReferenceCode = parameters.get(
+				"externalReferenceCode");
+
+			if (externalReferenceCode != null) {
 				priceListAccountUnsafeFunction = priceListAccount ->
 					postPriceListByExternalReferenceCodePriceListAccount(
-						(String)parameters.get("externalReferenceCode"),
-						priceListAccount);
+						(String)externalReferenceCode, priceListAccount);
 			}
 			else {
 				throw new NotSupportedException(

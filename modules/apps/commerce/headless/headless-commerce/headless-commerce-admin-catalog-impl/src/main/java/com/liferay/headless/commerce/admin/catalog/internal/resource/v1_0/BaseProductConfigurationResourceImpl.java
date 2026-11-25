@@ -833,11 +833,13 @@ public abstract class BaseProductConfigurationResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("externalReferenceCode")) {
+			Serializable externalReferenceCode = parameters.get(
+				"externalReferenceCode");
+
+			if (externalReferenceCode != null) {
 				productConfigurationUnsafeFunction = productConfiguration ->
 					postProductConfigurationListByExternalReferenceCodeProductConfiguration(
-						(String)parameters.get("externalReferenceCode"),
-						productConfiguration);
+						(String)externalReferenceCode, productConfiguration);
 			}
 			else {
 				throw new NotSupportedException(
@@ -850,6 +852,9 @@ public abstract class BaseProductConfigurationResourceImpl
 				"updateStrategy", "UPDATE");
 
 			if (StringUtil.equalsIgnoreCase(updateStrategy, "PARTIAL_UPDATE")) {
+				Serializable externalReferenceCode = parameters.get(
+					"externalReferenceCode");
+
 				productConfigurationUnsafeFunction = productConfiguration -> {
 					ProductConfiguration getProductConfiguration = null;
 					ProductConfiguration persistedProductConfiguration = null;
@@ -866,11 +871,10 @@ public abstract class BaseProductConfigurationResourceImpl
 								productConfiguration);
 					}
 					catch (NoSuchModelException noSuchModelException) {
-						if (parameters.containsKey("externalReferenceCode")) {
+						if (externalReferenceCode != null) {
 							persistedProductConfiguration =
 								postProductConfigurationListByExternalReferenceCodeProductConfiguration(
-									(String)parameters.get(
-										"externalReferenceCode"),
+									(String)externalReferenceCode,
 									productConfiguration);
 						}
 						else {

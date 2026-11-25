@@ -411,11 +411,13 @@ public abstract class BaseWarehouseAccountGroupResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("externalReferenceCode")) {
+			Serializable externalReferenceCode = parameters.get(
+				"externalReferenceCode");
+
+			if (externalReferenceCode != null) {
 				warehouseAccountGroupUnsafeFunction = warehouseAccountGroup ->
 					postWarehouseByExternalReferenceCodeWarehouseAccountGroup(
-						(String)parameters.get("externalReferenceCode"),
-						warehouseAccountGroup);
+						(String)externalReferenceCode, warehouseAccountGroup);
 			}
 			else {
 				throw new NotSupportedException(

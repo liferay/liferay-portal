@@ -416,11 +416,13 @@ public abstract class BaseDiscountChannelResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("externalReferenceCode")) {
+			Serializable externalReferenceCode = parameters.get(
+				"externalReferenceCode");
+
+			if (externalReferenceCode != null) {
 				discountChannelUnsafeFunction = discountChannel ->
 					postDiscountByExternalReferenceCodeDiscountChannel(
-						(String)parameters.get("externalReferenceCode"),
-						discountChannel);
+						(String)externalReferenceCode, discountChannel);
 			}
 			else {
 				throw new NotSupportedException(

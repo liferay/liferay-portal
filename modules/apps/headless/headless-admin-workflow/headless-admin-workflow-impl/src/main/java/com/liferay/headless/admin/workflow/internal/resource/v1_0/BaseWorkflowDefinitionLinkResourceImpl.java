@@ -428,18 +428,22 @@ public abstract class BaseWorkflowDefinitionLinkResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("workflowDefinitionId")) {
+			Serializable externalReferenceCode = parameters.get(
+				"externalReferenceCode");
+
+			Serializable workflowDefinitionId = parameters.get(
+				"workflowDefinitionId");
+
+			if (workflowDefinitionId != null) {
 				workflowDefinitionLinkUnsafeFunction = workflowDefinitionLink ->
 					postWorkflowDefinitionWorkflowDefinitionLink(
-						_parseLong(
-							(String)parameters.get("workflowDefinitionId")),
+						_parseLong((String)workflowDefinitionId),
 						workflowDefinitionLink);
 			}
-			else if (parameters.containsKey("externalReferenceCode")) {
+			else if (externalReferenceCode != null) {
 				workflowDefinitionLinkUnsafeFunction = workflowDefinitionLink ->
 					postWorkflowDefinitionByExternalReferenceCodeWorkflowDefinitionLink(
-						(String)parameters.get("externalReferenceCode"),
-						workflowDefinitionLink);
+						(String)externalReferenceCode, workflowDefinitionLink);
 			}
 			else {
 				throw new NotSupportedException(
@@ -535,10 +539,12 @@ public abstract class BaseWorkflowDefinitionLinkResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("workflowDefinitionId")) {
+		Serializable workflowDefinitionId = parameters.get(
+			"workflowDefinitionId");
+
+		if (workflowDefinitionId != null) {
 			return getWorkflowDefinitionWorkflowDefinitionLinksPage(
-				_parseLong((String)parameters.get("workflowDefinitionId")),
-				pagination);
+				_parseLong((String)workflowDefinitionId), pagination);
 		}
 		else {
 			throw new NotSupportedException(

@@ -800,11 +800,13 @@ public abstract class BaseNavigationMenuResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("siteExternalReferenceCode")) {
+			Serializable siteExternalReferenceCode = parameters.get(
+				"siteExternalReferenceCode");
+
+			if (siteExternalReferenceCode != null) {
 				navigationMenuUnsafeFunction =
 					navigationMenu -> postSiteNavigationMenu(
-						(String)parameters.get("siteExternalReferenceCode"),
-						navigationMenu);
+						(String)siteExternalReferenceCode, navigationMenu);
 			}
 			else {
 				throw new NotSupportedException(
@@ -817,12 +819,15 @@ public abstract class BaseNavigationMenuResourceImpl
 				"updateStrategy", "UPDATE");
 
 			if (StringUtil.equalsIgnoreCase(updateStrategy, "UPDATE")) {
+				Serializable siteExternalReferenceCode = parameters.get(
+					"siteExternalReferenceCode");
+
 				navigationMenuUnsafeFunction = navigationMenu -> {
 					NavigationMenu persistedNavigationMenu = null;
 
-					if (parameters.containsKey("siteExternalReferenceCode")) {
+					if (siteExternalReferenceCode != null) {
 						persistedNavigationMenu = putSiteNavigationMenu(
-							(String)parameters.get("siteExternalReferenceCode"),
+							(String)siteExternalReferenceCode,
 							navigationMenu.getExternalReferenceCode(),
 							navigationMenu);
 					}
@@ -863,11 +868,14 @@ public abstract class BaseNavigationMenuResourceImpl
 			Map<String, Serializable> parameters)
 		throws Exception {
 
+		Serializable siteExternalReferenceCode = parameters.get(
+			"siteExternalReferenceCode");
+
 		UnsafeFunction<NavigationMenu, NavigationMenu, Exception>
 			navigationMenuUnsafeFunction = navigationMenu -> {
-				if (parameters.containsKey("siteExternalReferenceCode")) {
+				if (siteExternalReferenceCode != null) {
 					deleteSiteNavigationMenu(
-						(String)parameters.get("siteExternalReferenceCode"),
+						(String)siteExternalReferenceCode,
 						navigationMenu.getExternalReferenceCode());
 
 					return navigationMenu;
@@ -924,10 +932,13 @@ public abstract class BaseNavigationMenuResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("siteExternalReferenceCode")) {
+		Serializable siteExternalReferenceCode = parameters.get(
+			"siteExternalReferenceCode");
+
+		if (siteExternalReferenceCode != null) {
 			return getSiteNavigationMenusPage(
-				(String)parameters.get("siteExternalReferenceCode"), search,
-				filter, pagination, sorts);
+				(String)siteExternalReferenceCode, search, filter, pagination,
+				sorts);
 		}
 		else {
 			throw new NotSupportedException(

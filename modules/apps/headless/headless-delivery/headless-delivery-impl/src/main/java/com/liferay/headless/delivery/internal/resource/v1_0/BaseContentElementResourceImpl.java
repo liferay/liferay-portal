@@ -452,15 +452,17 @@ public abstract class BaseContentElementResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("assetLibraryId")) {
+		Serializable assetLibraryId = parameters.get("assetLibraryId");
+
+		Serializable siteId = parameters.get("siteId");
+
+		if (assetLibraryId != null) {
 			return getAssetLibraryContentElementsPage(
-				(Long)parameters.get("assetLibraryId"), search, null, filter,
-				pagination, sorts);
+				(Long)assetLibraryId, search, null, filter, pagination, sorts);
 		}
-		else if (parameters.containsKey("siteId")) {
+		else if (siteId != null) {
 			return getSiteContentElementsPage(
-				(Long)parameters.get("siteId"), search, null, filter,
-				pagination, sorts);
+				(Long)siteId, search, null, filter, pagination, sorts);
 		}
 		else {
 			throw new NotSupportedException(

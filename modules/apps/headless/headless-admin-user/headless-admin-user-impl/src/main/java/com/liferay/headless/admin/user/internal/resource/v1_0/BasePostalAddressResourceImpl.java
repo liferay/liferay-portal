@@ -1152,11 +1152,12 @@ public abstract class BasePostalAddressResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("accountId")) {
+			Serializable accountId = parameters.get("accountId");
+
+			if (accountId != null) {
 				postalAddressUnsafeFunction =
 					postalAddress -> postAccountPostalAddress(
-						_parseLong((String)parameters.get("accountId")),
-						postalAddress);
+						_parseLong((String)accountId), postalAddress);
 			}
 			else {
 				throw new NotSupportedException(
@@ -1169,6 +1170,8 @@ public abstract class BasePostalAddressResourceImpl
 				"updateStrategy", "UPDATE");
 
 			if (StringUtil.equalsIgnoreCase(updateStrategy, "PARTIAL_UPDATE")) {
+				Serializable accountId = parameters.get("accountId");
+
 				postalAddressUnsafeFunction = postalAddress -> {
 					PostalAddress getPostalAddress = null;
 					PostalAddress persistedPostalAddress = null;
@@ -1182,10 +1185,9 @@ public abstract class BasePostalAddressResourceImpl
 							getPostalAddress.getId(), postalAddress);
 					}
 					catch (NoSuchModelException noSuchModelException) {
-						if (parameters.containsKey("accountId")) {
+						if (accountId != null) {
 							persistedPostalAddress = postAccountPostalAddress(
-								_parseLong((String)parameters.get("accountId")),
-								postalAddress);
+								_parseLong((String)accountId), postalAddress);
 						}
 						else {
 							throw new NotSupportedException(
@@ -1313,17 +1315,21 @@ public abstract class BasePostalAddressResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("accountId")) {
-			return getAccountPostalAddressesPage(
-				_parseLong((String)parameters.get("accountId")));
+		Serializable accountId = parameters.get("accountId");
+
+		Serializable organizationId = parameters.get("organizationId");
+
+		Serializable userAccountId = parameters.get("userAccountId");
+
+		if (accountId != null) {
+			return getAccountPostalAddressesPage(_parseLong((String)accountId));
 		}
-		else if (parameters.containsKey("organizationId")) {
-			return getOrganizationPostalAddressesPage(
-				(String)parameters.get("organizationId"));
+		else if (organizationId != null) {
+			return getOrganizationPostalAddressesPage((String)organizationId);
 		}
-		else if (parameters.containsKey("userAccountId")) {
+		else if (userAccountId != null) {
 			return getUserAccountPostalAddressesPage(
-				_parseLong((String)parameters.get("userAccountId")));
+				_parseLong((String)userAccountId));
 		}
 		else {
 			throw new NotSupportedException(

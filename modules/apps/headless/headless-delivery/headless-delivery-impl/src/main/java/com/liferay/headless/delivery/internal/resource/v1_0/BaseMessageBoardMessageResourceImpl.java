@@ -1939,11 +1939,13 @@ public abstract class BaseMessageBoardMessageResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("messageBoardThreadId")) {
+			Serializable messageBoardThreadId = parameters.get(
+				"messageBoardThreadId");
+
+			if (messageBoardThreadId != null) {
 				messageBoardMessageUnsafeFunction = messageBoardMessage ->
 					postMessageBoardThreadMessageBoardMessage(
-						_parseLong(
-							(String)parameters.get("messageBoardThreadId")),
+						_parseLong((String)messageBoardThreadId),
 						messageBoardMessage);
 			}
 			else {
@@ -1957,15 +1959,20 @@ public abstract class BaseMessageBoardMessageResourceImpl
 				"updateStrategy", "UPDATE");
 
 			if (StringUtil.equalsIgnoreCase(updateStrategy, "PARTIAL_UPDATE")) {
+				Serializable messageBoardThreadId = parameters.get(
+					"messageBoardThreadId");
+
+				Serializable siteId = parameters.get("siteId");
+
 				messageBoardMessageUnsafeFunction = messageBoardMessage -> {
 					MessageBoardMessage getMessageBoardMessage = null;
 					MessageBoardMessage persistedMessageBoardMessage = null;
 
 					try {
-						if (parameters.containsKey("siteId")) {
+						if (siteId != null) {
 							getMessageBoardMessage =
 								getSiteMessageBoardMessageByExternalReferenceCode(
-									(Long)parameters.get("siteId"),
+									(Long)siteId,
 									messageBoardMessage.
 										getExternalReferenceCode());
 						}
@@ -1979,12 +1986,10 @@ public abstract class BaseMessageBoardMessageResourceImpl
 							messageBoardMessage);
 					}
 					catch (NoSuchModelException noSuchModelException) {
-						if (parameters.containsKey("messageBoardThreadId")) {
+						if (messageBoardThreadId != null) {
 							persistedMessageBoardMessage =
 								postMessageBoardThreadMessageBoardMessage(
-									_parseLong(
-										(String)parameters.get(
-											"messageBoardThreadId")),
+									_parseLong((String)messageBoardThreadId),
 									messageBoardMessage);
 						}
 						else {
@@ -1998,13 +2003,15 @@ public abstract class BaseMessageBoardMessageResourceImpl
 			}
 
 			if (StringUtil.equalsIgnoreCase(updateStrategy, "UPDATE")) {
+				Serializable siteId = parameters.get("siteId");
+
 				messageBoardMessageUnsafeFunction = messageBoardMessage -> {
 					MessageBoardMessage persistedMessageBoardMessage = null;
 
-					if (parameters.containsKey("siteId")) {
+					if (siteId != null) {
 						persistedMessageBoardMessage =
 							putSiteMessageBoardMessageByExternalReferenceCode(
-								(Long)parameters.get("siteId"),
+								(Long)siteId,
 								messageBoardMessage.getExternalReferenceCode(),
 								messageBoardMessage);
 					}
@@ -2047,6 +2054,8 @@ public abstract class BaseMessageBoardMessageResourceImpl
 			Map<String, Serializable> parameters)
 		throws Exception {
 
+		Serializable siteId = parameters.get("siteId");
+
 		UnsafeFunction<MessageBoardMessage, MessageBoardMessage, Exception>
 			messageBoardMessageUnsafeFunction = messageBoardMessage -> {
 				if (messageBoardMessage.getId() != null) {
@@ -2059,9 +2068,9 @@ public abstract class BaseMessageBoardMessageResourceImpl
 						if (messageBoardMessage.getExternalReferenceCode() !=
 								null) {
 
-							if (parameters.containsKey("siteId")) {
+							if (siteId != null) {
 								deleteSiteMessageBoardMessageByExternalReferenceCode(
-									(Long)parameters.get("siteId"),
+									(Long)siteId,
 									messageBoardMessage.
 										getExternalReferenceCode());
 
@@ -2070,9 +2079,9 @@ public abstract class BaseMessageBoardMessageResourceImpl
 						}
 					}
 				}
-				else if (parameters.containsKey("siteId")) {
+				else if (siteId != null) {
 					deleteSiteMessageBoardMessageByExternalReferenceCode(
-						(Long)parameters.get("siteId"),
+						(Long)siteId,
 						messageBoardMessage.getExternalReferenceCode());
 
 					return messageBoardMessage;
@@ -2131,16 +2140,20 @@ public abstract class BaseMessageBoardMessageResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("messageBoardThreadId")) {
+		Serializable messageBoardThreadId = parameters.get(
+			"messageBoardThreadId");
+
+		Serializable siteId = parameters.get("siteId");
+
+		if (messageBoardThreadId != null) {
 			return getMessageBoardThreadMessageBoardMessagesPage(
-				_parseLong((String)parameters.get("messageBoardThreadId")),
-				search, null, filter, pagination, sorts);
+				_parseLong((String)messageBoardThreadId), search, null, filter,
+				pagination, sorts);
 		}
-		else if (parameters.containsKey("siteId")) {
+		else if (siteId != null) {
 			return getSiteMessageBoardMessagesPage(
-				(Long)parameters.get("siteId"),
-				_parseBoolean((String)parameters.get("flatten")), search, null,
-				filter, pagination, sorts);
+				(Long)siteId, _parseBoolean((String)parameters.get("flatten")),
+				search, null, filter, pagination, sorts);
 		}
 		else {
 			throw new NotSupportedException(

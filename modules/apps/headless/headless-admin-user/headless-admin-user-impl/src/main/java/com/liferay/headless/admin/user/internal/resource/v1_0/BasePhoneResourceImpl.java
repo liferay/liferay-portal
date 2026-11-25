@@ -815,17 +815,20 @@ public abstract class BasePhoneResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("accountId")) {
-			return getAccountPhonesPage(
-				_parseLong((String)parameters.get("accountId")));
+		Serializable accountId = parameters.get("accountId");
+
+		Serializable organizationId = parameters.get("organizationId");
+
+		Serializable userAccountId = parameters.get("userAccountId");
+
+		if (accountId != null) {
+			return getAccountPhonesPage(_parseLong((String)accountId));
 		}
-		else if (parameters.containsKey("organizationId")) {
-			return getOrganizationPhonesPage(
-				(String)parameters.get("organizationId"));
+		else if (organizationId != null) {
+			return getOrganizationPhonesPage((String)organizationId);
 		}
-		else if (parameters.containsKey("userAccountId")) {
-			return getUserAccountPhonesPage(
-				_parseLong((String)parameters.get("userAccountId")));
+		else if (userAccountId != null) {
+			return getUserAccountPhonesPage(_parseLong((String)userAccountId));
 		}
 		else {
 			throw new NotSupportedException(

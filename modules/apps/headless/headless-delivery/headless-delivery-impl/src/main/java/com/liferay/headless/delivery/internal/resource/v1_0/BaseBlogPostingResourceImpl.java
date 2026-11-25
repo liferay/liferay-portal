@@ -1404,9 +1404,11 @@ public abstract class BaseBlogPostingResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("siteId")) {
+			Serializable siteId = parameters.get("siteId");
+
+			if (siteId != null) {
 				blogPostingUnsafeFunction = blogPosting -> postSiteBlogPosting(
-					(Long)parameters.get("siteId"), blogPosting);
+					(Long)siteId, blogPosting);
 			}
 			else {
 				throw new NotSupportedException(
@@ -1419,15 +1421,17 @@ public abstract class BaseBlogPostingResourceImpl
 				"updateStrategy", "UPDATE");
 
 			if (StringUtil.equalsIgnoreCase(updateStrategy, "PARTIAL_UPDATE")) {
+				Serializable siteId = parameters.get("siteId");
+
 				blogPostingUnsafeFunction = blogPosting -> {
 					BlogPosting getBlogPosting = null;
 					BlogPosting persistedBlogPosting = null;
 
 					try {
-						if (parameters.containsKey("siteId")) {
+						if (siteId != null) {
 							getBlogPosting =
 								getSiteBlogPostingByExternalReferenceCode(
-									(Long)parameters.get("siteId"),
+									(Long)siteId,
 									blogPosting.getExternalReferenceCode());
 						}
 						else {
@@ -1439,9 +1443,9 @@ public abstract class BaseBlogPostingResourceImpl
 							getBlogPosting.getId(), blogPosting);
 					}
 					catch (NoSuchModelException noSuchModelException) {
-						if (parameters.containsKey("siteId")) {
+						if (siteId != null) {
 							persistedBlogPosting = postSiteBlogPosting(
-								(Long)parameters.get("siteId"), blogPosting);
+								(Long)siteId, blogPosting);
 						}
 						else {
 							throw new NotSupportedException(
@@ -1454,13 +1458,15 @@ public abstract class BaseBlogPostingResourceImpl
 			}
 
 			if (StringUtil.equalsIgnoreCase(updateStrategy, "UPDATE")) {
+				Serializable siteId = parameters.get("siteId");
+
 				blogPostingUnsafeFunction = blogPosting -> {
 					BlogPosting persistedBlogPosting = null;
 
-					if (parameters.containsKey("siteId")) {
+					if (siteId != null) {
 						persistedBlogPosting =
 							putSiteBlogPostingByExternalReferenceCode(
-								(Long)parameters.get("siteId"),
+								(Long)siteId,
 								blogPosting.getExternalReferenceCode(),
 								blogPosting);
 					}
@@ -1501,6 +1507,8 @@ public abstract class BaseBlogPostingResourceImpl
 			Map<String, Serializable> parameters)
 		throws Exception {
 
+		Serializable siteId = parameters.get("siteId");
+
 		UnsafeFunction<BlogPosting, BlogPosting, Exception>
 			blogPostingUnsafeFunction = blogPosting -> {
 				if (blogPosting.getId() != null) {
@@ -1511,9 +1519,9 @@ public abstract class BaseBlogPostingResourceImpl
 					}
 					catch (Exception exception) {
 						if (blogPosting.getExternalReferenceCode() != null) {
-							if (parameters.containsKey("siteId")) {
+							if (siteId != null) {
 								deleteSiteBlogPostingByExternalReferenceCode(
-									(Long)parameters.get("siteId"),
+									(Long)siteId,
 									blogPosting.getExternalReferenceCode());
 
 								return blogPosting;
@@ -1521,10 +1529,9 @@ public abstract class BaseBlogPostingResourceImpl
 						}
 					}
 				}
-				else if (parameters.containsKey("siteId")) {
+				else if (siteId != null) {
 					deleteSiteBlogPostingByExternalReferenceCode(
-						(Long)parameters.get("siteId"),
-						blogPosting.getExternalReferenceCode());
+						(Long)siteId, blogPosting.getExternalReferenceCode());
 
 					return blogPosting;
 				}
@@ -1580,10 +1587,11 @@ public abstract class BaseBlogPostingResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("siteId")) {
+		Serializable siteId = parameters.get("siteId");
+
+		if (siteId != null) {
 			return getSiteBlogPostingsPage(
-				(Long)parameters.get("siteId"), search, null, filter,
-				pagination, sorts);
+				(Long)siteId, search, null, filter, pagination, sorts);
 		}
 		else {
 			throw new NotSupportedException(

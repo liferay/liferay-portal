@@ -827,18 +827,20 @@ public abstract class BaseDataRecordResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("dataDefinitionId")) {
+			Serializable dataDefinitionId = parameters.get("dataDefinitionId");
+
+			Serializable dataRecordCollectionId = parameters.get(
+				"dataRecordCollectionId");
+
+			if (dataDefinitionId != null) {
 				dataRecordUnsafeFunction =
 					dataRecord -> postDataDefinitionDataRecord(
-						_parseLong((String)parameters.get("dataDefinitionId")),
-						dataRecord);
+						_parseLong((String)dataDefinitionId), dataRecord);
 			}
-			else if (parameters.containsKey("dataRecordCollectionId")) {
+			else if (dataRecordCollectionId != null) {
 				dataRecordUnsafeFunction =
 					dataRecord -> postDataRecordCollectionDataRecord(
-						_parseLong(
-							(String)parameters.get("dataRecordCollectionId")),
-						dataRecord);
+						_parseLong((String)dataRecordCollectionId), dataRecord);
 			}
 			else {
 				throw new NotSupportedException(
@@ -927,15 +929,20 @@ public abstract class BaseDataRecordResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("dataDefinitionId")) {
+		Serializable dataDefinitionId = parameters.get("dataDefinitionId");
+
+		Serializable dataRecordCollectionId = parameters.get(
+			"dataRecordCollectionId");
+
+		if (dataDefinitionId != null) {
 			return getDataDefinitionDataRecordsPage(
-				_parseLong((String)parameters.get("dataDefinitionId")),
+				_parseLong((String)dataDefinitionId),
 				_parseLong((String)parameters.get("dataListViewId")),
 				(String)parameters.get("keywords"), pagination, sorts);
 		}
-		else if (parameters.containsKey("dataRecordCollectionId")) {
+		else if (dataRecordCollectionId != null) {
 			return getDataRecordCollectionDataRecordsPage(
-				_parseLong((String)parameters.get("dataRecordCollectionId")),
+				_parseLong((String)dataRecordCollectionId),
 				_parseLong((String)parameters.get("dataListViewId")),
 				(String)parameters.get("keywords"), pagination, sorts);
 		}

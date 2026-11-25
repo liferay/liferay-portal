@@ -512,15 +512,17 @@ public abstract class BaseContentTemplateResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("assetLibraryId")) {
+		Serializable assetLibraryId = parameters.get("assetLibraryId");
+
+		Serializable siteId = parameters.get("siteId");
+
+		if (assetLibraryId != null) {
 			return getAssetLibraryContentTemplatesPage(
-				(Long)parameters.get("assetLibraryId"), search, null, filter,
-				pagination, sorts);
+				(Long)assetLibraryId, search, null, filter, pagination, sorts);
 		}
-		else if (parameters.containsKey("siteId")) {
+		else if (siteId != null) {
 			return getSiteContentTemplatesPage(
-				(Long)parameters.get("siteId"), search, null, filter,
-				pagination, sorts);
+				(Long)siteId, search, null, filter, pagination, sorts);
 		}
 		else {
 			throw new NotSupportedException(

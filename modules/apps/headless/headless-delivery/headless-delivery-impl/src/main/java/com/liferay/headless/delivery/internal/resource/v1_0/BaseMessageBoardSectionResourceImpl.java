@@ -1247,10 +1247,12 @@ public abstract class BaseMessageBoardSectionResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("siteId")) {
+			Serializable siteId = parameters.get("siteId");
+
+			if (siteId != null) {
 				messageBoardSectionUnsafeFunction =
 					messageBoardSection -> postSiteMessageBoardSection(
-						(Long)parameters.get("siteId"), messageBoardSection);
+						(Long)siteId, messageBoardSection);
 			}
 			else {
 				throw new NotSupportedException(
@@ -1343,11 +1345,12 @@ public abstract class BaseMessageBoardSectionResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("siteId")) {
+		Serializable siteId = parameters.get("siteId");
+
+		if (siteId != null) {
 			return getSiteMessageBoardSectionsPage(
-				(Long)parameters.get("siteId"),
-				_parseBoolean((String)parameters.get("flatten")), search, null,
-				filter, pagination, sorts);
+				(Long)siteId, _parseBoolean((String)parameters.get("flatten")),
+				search, null, filter, pagination, sorts);
 		}
 		else {
 			throw new NotSupportedException(

@@ -369,9 +369,11 @@ public abstract class BaseDSEnvelopeResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("siteId")) {
+			Serializable siteId = parameters.get("siteId");
+
+			if (siteId != null) {
 				dsEnvelopeUnsafeFunction = dsEnvelope -> postSiteDSEnvelope(
-					(Long)parameters.get("siteId"), dsEnvelope);
+					(Long)siteId, dsEnvelope);
 			}
 			else {
 				throw new NotSupportedException(
@@ -442,10 +444,11 @@ public abstract class BaseDSEnvelopeResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("siteId")) {
+		Serializable siteId = parameters.get("siteId");
+
+		if (siteId != null) {
 			return getSiteDSEnvelopesPage(
-				(Long)parameters.get("siteId"),
-				(String)parameters.get("fromDate"),
+				(Long)siteId, (String)parameters.get("fromDate"),
 				(String)parameters.get("keywords"),
 				(String)parameters.get("order"),
 				(String)parameters.get("status"), pagination);

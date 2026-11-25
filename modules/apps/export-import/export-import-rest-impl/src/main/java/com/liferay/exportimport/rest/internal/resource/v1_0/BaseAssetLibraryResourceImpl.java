@@ -259,7 +259,7 @@ public abstract class BaseAssetLibraryResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("search")) {
+		if (parameters.get("search") != null) {
 			if (!FeatureFlagManagerUtil.isEnabled(
 					CompanyThreadLocal.getCompanyId(), "LPD-41307")) {
 

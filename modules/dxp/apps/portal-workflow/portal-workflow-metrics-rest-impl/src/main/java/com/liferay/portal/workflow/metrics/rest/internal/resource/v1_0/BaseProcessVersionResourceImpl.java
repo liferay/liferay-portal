@@ -224,9 +224,10 @@ public abstract class BaseProcessVersionResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("processId")) {
-			return getProcessProcessVersionsPage(
-				_parseLong((String)parameters.get("processId")));
+		Serializable processId = parameters.get("processId");
+
+		if (processId != null) {
+			return getProcessProcessVersionsPage(_parseLong((String)processId));
 		}
 		else {
 			throw new NotSupportedException(

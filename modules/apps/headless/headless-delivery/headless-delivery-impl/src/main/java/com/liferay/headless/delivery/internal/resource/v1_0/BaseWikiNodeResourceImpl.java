@@ -1054,9 +1054,11 @@ public abstract class BaseWikiNodeResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("siteId")) {
+			Serializable siteId = parameters.get("siteId");
+
+			if (siteId != null) {
 				wikiNodeUnsafeFunction = wikiNode -> postSiteWikiNode(
-					(Long)parameters.get("siteId"), wikiNode);
+					(Long)siteId, wikiNode);
 			}
 			else {
 				throw new NotSupportedException(
@@ -1069,13 +1071,15 @@ public abstract class BaseWikiNodeResourceImpl
 				"updateStrategy", "UPDATE");
 
 			if (StringUtil.equalsIgnoreCase(updateStrategy, "UPDATE")) {
+				Serializable siteId = parameters.get("siteId");
+
 				wikiNodeUnsafeFunction = wikiNode -> {
 					WikiNode persistedWikiNode = null;
 
-					if (parameters.containsKey("siteId")) {
+					if (siteId != null) {
 						persistedWikiNode =
 							putSiteWikiNodeByExternalReferenceCode(
-								(Long)parameters.get("siteId"),
+								(Long)siteId,
 								wikiNode.getExternalReferenceCode(), wikiNode);
 					}
 					else {
@@ -1115,6 +1119,8 @@ public abstract class BaseWikiNodeResourceImpl
 			Map<String, Serializable> parameters)
 		throws Exception {
 
+		Serializable siteId = parameters.get("siteId");
+
 		UnsafeFunction<WikiNode, WikiNode, Exception> wikiNodeUnsafeFunction =
 			wikiNode -> {
 				if (wikiNode.getId() != null) {
@@ -1125,9 +1131,9 @@ public abstract class BaseWikiNodeResourceImpl
 					}
 					catch (Exception exception) {
 						if (wikiNode.getExternalReferenceCode() != null) {
-							if (parameters.containsKey("siteId")) {
+							if (siteId != null) {
 								deleteSiteWikiNodeByExternalReferenceCode(
-									(Long)parameters.get("siteId"),
+									(Long)siteId,
 									wikiNode.getExternalReferenceCode());
 
 								return wikiNode;
@@ -1135,10 +1141,9 @@ public abstract class BaseWikiNodeResourceImpl
 						}
 					}
 				}
-				else if (parameters.containsKey("siteId")) {
+				else if (siteId != null) {
 					deleteSiteWikiNodeByExternalReferenceCode(
-						(Long)parameters.get("siteId"),
-						wikiNode.getExternalReferenceCode());
+						(Long)siteId, wikiNode.getExternalReferenceCode());
 
 					return wikiNode;
 				}
@@ -1194,10 +1199,11 @@ public abstract class BaseWikiNodeResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("siteId")) {
+		Serializable siteId = parameters.get("siteId");
+
+		if (siteId != null) {
 			return getSiteWikiNodesPage(
-				(Long)parameters.get("siteId"), search, null, filter,
-				pagination, sorts);
+				(Long)siteId, search, null, filter, pagination, sorts);
 		}
 		else {
 			throw new NotSupportedException(

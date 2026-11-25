@@ -1979,18 +1979,20 @@ public abstract class BaseStructuredContentFolderResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("assetLibraryId")) {
+			Serializable assetLibraryId = parameters.get("assetLibraryId");
+
+			Serializable siteId = parameters.get("siteId");
+
+			if (assetLibraryId != null) {
 				structuredContentFolderUnsafeFunction =
 					structuredContentFolder ->
 						postAssetLibraryStructuredContentFolder(
-							(Long)parameters.get("assetLibraryId"),
-							structuredContentFolder);
+							(Long)assetLibraryId, structuredContentFolder);
 			}
-			else if (parameters.containsKey("siteId")) {
+			else if (siteId != null) {
 				structuredContentFolderUnsafeFunction =
 					structuredContentFolder -> postSiteStructuredContentFolder(
-						(Long)parameters.get("siteId"),
-						structuredContentFolder);
+						(Long)siteId, structuredContentFolder);
 			}
 			else {
 				throw new NotSupportedException(
@@ -2003,6 +2005,10 @@ public abstract class BaseStructuredContentFolderResourceImpl
 				"updateStrategy", "UPDATE");
 
 			if (StringUtil.equalsIgnoreCase(updateStrategy, "PARTIAL_UPDATE")) {
+				Serializable assetLibraryId = parameters.get("assetLibraryId");
+
+				Serializable siteId = parameters.get("siteId");
+
 				structuredContentFolderUnsafeFunction =
 					structuredContentFolder -> {
 						StructuredContentFolder getStructuredContentFolder =
@@ -2011,17 +2017,17 @@ public abstract class BaseStructuredContentFolderResourceImpl
 							persistedStructuredContentFolder = null;
 
 						try {
-							if (parameters.containsKey("assetLibraryId")) {
+							if (assetLibraryId != null) {
 								getStructuredContentFolder =
 									getAssetLibraryStructuredContentFolderByExternalReferenceCode(
-										(Long)parameters.get("assetLibraryId"),
+										(Long)assetLibraryId,
 										structuredContentFolder.
 											getExternalReferenceCode());
 							}
-							else if (parameters.containsKey("siteId")) {
+							else if (siteId != null) {
 								getStructuredContentFolder =
 									getSiteStructuredContentFolderByExternalReferenceCode(
-										(Long)parameters.get("siteId"),
+										(Long)siteId,
 										structuredContentFolder.
 											getExternalReferenceCode());
 							}
@@ -2036,17 +2042,16 @@ public abstract class BaseStructuredContentFolderResourceImpl
 									structuredContentFolder);
 						}
 						catch (NoSuchModelException noSuchModelException) {
-							if (parameters.containsKey("assetLibraryId")) {
+							if (assetLibraryId != null) {
 								persistedStructuredContentFolder =
 									postAssetLibraryStructuredContentFolder(
-										(Long)parameters.get("assetLibraryId"),
+										(Long)assetLibraryId,
 										structuredContentFolder);
 							}
-							else if (parameters.containsKey("siteId")) {
+							else if (siteId != null) {
 								persistedStructuredContentFolder =
 									postSiteStructuredContentFolder(
-										(Long)parameters.get("siteId"),
-										structuredContentFolder);
+										(Long)siteId, structuredContentFolder);
 							}
 							else {
 								throw new NotSupportedException(
@@ -2059,23 +2064,27 @@ public abstract class BaseStructuredContentFolderResourceImpl
 			}
 
 			if (StringUtil.equalsIgnoreCase(updateStrategy, "UPDATE")) {
+				Serializable assetLibraryId = parameters.get("assetLibraryId");
+
+				Serializable siteId = parameters.get("siteId");
+
 				structuredContentFolderUnsafeFunction =
 					structuredContentFolder -> {
 						StructuredContentFolder
 							persistedStructuredContentFolder = null;
 
-						if (parameters.containsKey("assetLibraryId")) {
+						if (assetLibraryId != null) {
 							persistedStructuredContentFolder =
 								putAssetLibraryStructuredContentFolderByExternalReferenceCode(
-									(Long)parameters.get("assetLibraryId"),
+									(Long)assetLibraryId,
 									structuredContentFolder.
 										getExternalReferenceCode(),
 									structuredContentFolder);
 						}
-						else if (parameters.containsKey("siteId")) {
+						else if (siteId != null) {
 							persistedStructuredContentFolder =
 								putSiteStructuredContentFolderByExternalReferenceCode(
-									(Long)parameters.get("siteId"),
+									(Long)siteId,
 									structuredContentFolder.
 										getExternalReferenceCode(),
 									structuredContentFolder);
@@ -2122,6 +2131,10 @@ public abstract class BaseStructuredContentFolderResourceImpl
 			Map<String, Serializable> parameters)
 		throws Exception {
 
+		Serializable assetLibraryId = parameters.get("assetLibraryId");
+
+		Serializable siteId = parameters.get("siteId");
+
 		UnsafeFunction
 			<StructuredContentFolder, StructuredContentFolder, Exception>
 				structuredContentFolderUnsafeFunction =
@@ -2137,21 +2150,18 @@ public abstract class BaseStructuredContentFolderResourceImpl
 								if (structuredContentFolder.
 										getExternalReferenceCode() != null) {
 
-									if (parameters.containsKey(
-											"assetLibraryId")) {
-
+									if (assetLibraryId != null) {
 										deleteAssetLibraryStructuredContentFolderByExternalReferenceCode(
-											(Long)parameters.get(
-												"assetLibraryId"),
+											(Long)assetLibraryId,
 											structuredContentFolder.
 												getExternalReferenceCode());
 
 										return structuredContentFolder;
 									}
 
-									if (parameters.containsKey("siteId")) {
+									if (siteId != null) {
 										deleteSiteStructuredContentFolderByExternalReferenceCode(
-											(Long)parameters.get("siteId"),
+											(Long)siteId,
 											structuredContentFolder.
 												getExternalReferenceCode());
 
@@ -2160,17 +2170,17 @@ public abstract class BaseStructuredContentFolderResourceImpl
 								}
 							}
 						}
-						else if (parameters.containsKey("assetLibraryId")) {
+						else if (assetLibraryId != null) {
 							deleteAssetLibraryStructuredContentFolderByExternalReferenceCode(
-								(Long)parameters.get("assetLibraryId"),
+								(Long)assetLibraryId,
 								structuredContentFolder.
 									getExternalReferenceCode());
 
 							return structuredContentFolder;
 						}
-						else if (parameters.containsKey("siteId")) {
+						else if (siteId != null) {
 							deleteSiteStructuredContentFolderByExternalReferenceCode(
-								(Long)parameters.get("siteId"),
+								(Long)siteId,
 								structuredContentFolder.
 									getExternalReferenceCode());
 
@@ -2233,17 +2243,20 @@ public abstract class BaseStructuredContentFolderResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("assetLibraryId")) {
+		Serializable assetLibraryId = parameters.get("assetLibraryId");
+
+		Serializable siteId = parameters.get("siteId");
+
+		if (assetLibraryId != null) {
 			return getAssetLibraryStructuredContentFoldersPage(
-				(Long)parameters.get("assetLibraryId"),
+				(Long)assetLibraryId,
 				_parseBoolean((String)parameters.get("flatten")), search, null,
 				filter, pagination, sorts);
 		}
-		else if (parameters.containsKey("siteId")) {
+		else if (siteId != null) {
 			return getSiteStructuredContentFoldersPage(
-				(Long)parameters.get("siteId"),
-				_parseBoolean((String)parameters.get("flatten")), search, null,
-				filter, pagination, sorts);
+				(Long)siteId, _parseBoolean((String)parameters.get("flatten")),
+				search, null, filter, pagination, sorts);
 		}
 		else {
 			throw new NotSupportedException(

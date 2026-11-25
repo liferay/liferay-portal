@@ -1216,11 +1216,13 @@ public abstract class BasePageTemplateSetResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("siteExternalReferenceCode")) {
+			Serializable siteExternalReferenceCode = parameters.get(
+				"siteExternalReferenceCode");
+
+			if (siteExternalReferenceCode != null) {
 				pageTemplateSetUnsafeFunction =
 					pageTemplateSet -> postSitePageTemplateSet(
-						(String)parameters.get("siteExternalReferenceCode"),
-						pageTemplateSet);
+						(String)siteExternalReferenceCode, pageTemplateSet);
 			}
 			else {
 				throw new NotSupportedException(
@@ -1233,12 +1235,15 @@ public abstract class BasePageTemplateSetResourceImpl
 				"updateStrategy", "UPDATE");
 
 			if (StringUtil.equalsIgnoreCase(updateStrategy, "UPDATE")) {
+				Serializable siteExternalReferenceCode = parameters.get(
+					"siteExternalReferenceCode");
+
 				pageTemplateSetUnsafeFunction = pageTemplateSet -> {
 					PageTemplateSet persistedPageTemplateSet = null;
 
-					if (parameters.containsKey("siteExternalReferenceCode")) {
+					if (siteExternalReferenceCode != null) {
 						persistedPageTemplateSet = putSitePageTemplateSet(
-							(String)parameters.get("siteExternalReferenceCode"),
+							(String)siteExternalReferenceCode,
 							pageTemplateSet.getExternalReferenceCode(),
 							pageTemplateSet);
 					}
@@ -1279,11 +1284,14 @@ public abstract class BasePageTemplateSetResourceImpl
 			Map<String, Serializable> parameters)
 		throws Exception {
 
+		Serializable siteExternalReferenceCode = parameters.get(
+			"siteExternalReferenceCode");
+
 		UnsafeFunction<PageTemplateSet, PageTemplateSet, Exception>
 			pageTemplateSetUnsafeFunction = pageTemplateSet -> {
-				if (parameters.containsKey("siteExternalReferenceCode")) {
+				if (siteExternalReferenceCode != null) {
 					deleteSitePageTemplateSet(
-						(String)parameters.get("siteExternalReferenceCode"),
+						(String)siteExternalReferenceCode,
 						pageTemplateSet.getExternalReferenceCode());
 
 					return pageTemplateSet;
@@ -1340,10 +1348,13 @@ public abstract class BasePageTemplateSetResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("siteExternalReferenceCode")) {
+		Serializable siteExternalReferenceCode = parameters.get(
+			"siteExternalReferenceCode");
+
+		if (siteExternalReferenceCode != null) {
 			return getSitePageTemplateSetsPage(
-				(String)parameters.get("siteExternalReferenceCode"), search,
-				null, filter, pagination, sorts);
+				(String)siteExternalReferenceCode, search, null, filter,
+				pagination, sorts);
 		}
 		else {
 			throw new NotSupportedException(

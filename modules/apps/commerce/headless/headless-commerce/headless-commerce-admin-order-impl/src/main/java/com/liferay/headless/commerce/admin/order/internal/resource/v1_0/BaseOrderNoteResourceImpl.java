@@ -562,11 +562,13 @@ public abstract class BaseOrderNoteResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("externalReferenceCode")) {
+			Serializable externalReferenceCode = parameters.get(
+				"externalReferenceCode");
+
+			if (externalReferenceCode != null) {
 				orderNoteUnsafeFunction =
 					orderNote -> postOrderByExternalReferenceCodeOrderNote(
-						(String)parameters.get("externalReferenceCode"),
-						orderNote);
+						(String)externalReferenceCode, orderNote);
 			}
 			else {
 				throw new NotSupportedException(
@@ -579,6 +581,9 @@ public abstract class BaseOrderNoteResourceImpl
 				"updateStrategy", "UPDATE");
 
 			if (StringUtil.equalsIgnoreCase(updateStrategy, "PARTIAL_UPDATE")) {
+				Serializable externalReferenceCode = parameters.get(
+					"externalReferenceCode");
+
 				orderNoteUnsafeFunction = orderNote -> {
 					OrderNote getOrderNote = null;
 					OrderNote persistedOrderNote = null;
@@ -590,12 +595,10 @@ public abstract class BaseOrderNoteResourceImpl
 						patchOrderNote(getOrderNote.getId(), orderNote);
 					}
 					catch (NoSuchModelException noSuchModelException) {
-						if (parameters.containsKey("externalReferenceCode")) {
+						if (externalReferenceCode != null) {
 							persistedOrderNote =
 								postOrderByExternalReferenceCodeOrderNote(
-									(String)parameters.get(
-										"externalReferenceCode"),
-									orderNote);
+									(String)externalReferenceCode, orderNote);
 						}
 						else {
 							throw new NotSupportedException(

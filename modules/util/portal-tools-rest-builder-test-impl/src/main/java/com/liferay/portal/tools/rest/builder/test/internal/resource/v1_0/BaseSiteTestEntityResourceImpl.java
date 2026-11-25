@@ -901,10 +901,12 @@ public abstract class BaseSiteTestEntityResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("siteId")) {
+			Serializable siteId = parameters.get("siteId");
+
+			if (siteId != null) {
 				siteTestEntityUnsafeFunction =
 					siteTestEntity -> postSiteSiteTestEntity(
-						(Long)parameters.get("siteId"), siteTestEntity);
+						(Long)siteId, siteTestEntity);
 			}
 			else {
 				throw new NotSupportedException(
@@ -917,15 +919,17 @@ public abstract class BaseSiteTestEntityResourceImpl
 				"updateStrategy", "UPDATE");
 
 			if (StringUtil.equalsIgnoreCase(updateStrategy, "PARTIAL_UPDATE")) {
+				Serializable siteId = parameters.get("siteId");
+
 				siteTestEntityUnsafeFunction = siteTestEntity -> {
 					SiteTestEntity getSiteTestEntity = null;
 					SiteTestEntity persistedSiteTestEntity = null;
 
 					try {
-						if (parameters.containsKey("siteId")) {
+						if (siteId != null) {
 							getSiteTestEntity =
 								getSiteSiteTestEntityByExternalReferenceCode(
-									(Long)parameters.get("siteId"),
+									(Long)siteId,
 									siteTestEntity.getExternalReferenceCode());
 						}
 						else {
@@ -937,9 +941,9 @@ public abstract class BaseSiteTestEntityResourceImpl
 							getSiteTestEntity.getId(), siteTestEntity);
 					}
 					catch (NoSuchModelException noSuchModelException) {
-						if (parameters.containsKey("siteId")) {
+						if (siteId != null) {
 							persistedSiteTestEntity = postSiteSiteTestEntity(
-								(Long)parameters.get("siteId"), siteTestEntity);
+								(Long)siteId, siteTestEntity);
 						}
 						else {
 							throw new NotSupportedException(
@@ -952,13 +956,15 @@ public abstract class BaseSiteTestEntityResourceImpl
 			}
 
 			if (StringUtil.equalsIgnoreCase(updateStrategy, "UPDATE")) {
+				Serializable siteId = parameters.get("siteId");
+
 				siteTestEntityUnsafeFunction = siteTestEntity -> {
 					SiteTestEntity persistedSiteTestEntity = null;
 
-					if (parameters.containsKey("siteId")) {
+					if (siteId != null) {
 						persistedSiteTestEntity =
 							putSiteSiteTestEntityByExternalReferenceCode(
-								(Long)parameters.get("siteId"),
+								(Long)siteId,
 								siteTestEntity.getExternalReferenceCode(),
 								siteTestEntity);
 					}
@@ -999,11 +1005,13 @@ public abstract class BaseSiteTestEntityResourceImpl
 			Map<String, Serializable> parameters)
 		throws Exception {
 
+		Serializable siteId = parameters.get("siteId");
+
 		UnsafeFunction<SiteTestEntity, SiteTestEntity, Exception>
 			siteTestEntityUnsafeFunction = siteTestEntity -> {
-				if (parameters.containsKey("siteId")) {
+				if (siteId != null) {
 					deleteSiteSiteTestEntityByExternalReferenceCode(
-						(Long)parameters.get("siteId"),
+						(Long)siteId,
 						siteTestEntity.getExternalReferenceCode());
 
 					return siteTestEntity;
@@ -1060,8 +1068,10 @@ public abstract class BaseSiteTestEntityResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("siteId")) {
-			return getSiteSiteTestEntitiesPage((Long)parameters.get("siteId"));
+		Serializable siteId = parameters.get("siteId");
+
+		if (siteId != null) {
+			return getSiteSiteTestEntitiesPage((Long)siteId);
 		}
 		else {
 			throw new NotSupportedException(

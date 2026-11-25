@@ -345,15 +345,15 @@ public abstract class BaseConnectedSiteResourceImpl
 				"updateStrategy", "UPDATE");
 
 			if (StringUtil.equalsIgnoreCase(updateStrategy, "UPDATE")) {
+				Serializable assetLibraryExternalReferenceCode = parameters.get(
+					"assetLibraryExternalReferenceCode");
+
 				connectedSiteUnsafeFunction = connectedSite -> {
 					ConnectedSite persistedConnectedSite = null;
 
-					if (parameters.containsKey(
-							"assetLibraryExternalReferenceCode")) {
-
+					if (assetLibraryExternalReferenceCode != null) {
 						persistedConnectedSite = putAssetLibraryConnectedSite(
-							(String)parameters.get(
-								"assetLibraryExternalReferenceCode"),
+							(String)assetLibraryExternalReferenceCode,
 							connectedSite.getExternalReferenceCode(),
 							connectedSite);
 					}
@@ -394,14 +394,14 @@ public abstract class BaseConnectedSiteResourceImpl
 			Map<String, Serializable> parameters)
 		throws Exception {
 
+		Serializable assetLibraryExternalReferenceCode = parameters.get(
+			"assetLibraryExternalReferenceCode");
+
 		UnsafeFunction<ConnectedSite, ConnectedSite, Exception>
 			connectedSiteUnsafeFunction = connectedSite -> {
-				if (parameters.containsKey(
-						"assetLibraryExternalReferenceCode")) {
-
+				if (assetLibraryExternalReferenceCode != null) {
 					deleteAssetLibraryConnectedSite(
-						(String)parameters.get(
-							"assetLibraryExternalReferenceCode"),
+						(String)assetLibraryExternalReferenceCode,
 						connectedSite.getExternalReferenceCode());
 
 					return connectedSite;
@@ -458,10 +458,12 @@ public abstract class BaseConnectedSiteResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("assetLibraryExternalReferenceCode")) {
+		Serializable assetLibraryExternalReferenceCode = parameters.get(
+			"assetLibraryExternalReferenceCode");
+
+		if (assetLibraryExternalReferenceCode != null) {
 			return getAssetLibraryConnectedSitesPage(
-				(String)parameters.get("assetLibraryExternalReferenceCode"),
-				pagination);
+				(String)assetLibraryExternalReferenceCode, pagination);
 		}
 		else {
 			throw new NotSupportedException(

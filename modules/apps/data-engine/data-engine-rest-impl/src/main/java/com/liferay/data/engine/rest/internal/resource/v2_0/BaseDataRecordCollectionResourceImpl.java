@@ -811,12 +811,13 @@ public abstract class BaseDataRecordCollectionResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("dataDefinitionId")) {
+			Serializable dataDefinitionId = parameters.get("dataDefinitionId");
+
+			if (dataDefinitionId != null) {
 				dataRecordCollectionUnsafeFunction =
 					dataRecordCollection ->
 						postDataDefinitionDataRecordCollection(
-							_parseLong(
-								(String)parameters.get("dataDefinitionId")),
+							_parseLong((String)dataDefinitionId),
 							dataRecordCollection);
 			}
 			else {
@@ -912,9 +913,11 @@ public abstract class BaseDataRecordCollectionResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("dataDefinitionId")) {
+		Serializable dataDefinitionId = parameters.get("dataDefinitionId");
+
+		if (dataDefinitionId != null) {
 			return getDataDefinitionDataRecordCollectionsPage(
-				_parseLong((String)parameters.get("dataDefinitionId")),
+				_parseLong((String)dataDefinitionId),
 				(String)parameters.get("keywords"), pagination);
 		}
 		else {

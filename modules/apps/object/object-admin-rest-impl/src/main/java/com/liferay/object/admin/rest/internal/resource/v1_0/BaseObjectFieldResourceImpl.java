@@ -739,18 +739,21 @@ public abstract class BaseObjectFieldResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("objectDefinitionId")) {
+			Serializable externalReferenceCode = parameters.get(
+				"externalReferenceCode");
+
+			Serializable objectDefinitionId = parameters.get(
+				"objectDefinitionId");
+
+			if (objectDefinitionId != null) {
 				objectFieldUnsafeFunction =
 					objectField -> postObjectDefinitionObjectField(
-						_parseLong(
-							(String)parameters.get("objectDefinitionId")),
-						objectField);
+						_parseLong((String)objectDefinitionId), objectField);
 			}
-			else if (parameters.containsKey("externalReferenceCode")) {
+			else if (externalReferenceCode != null) {
 				objectFieldUnsafeFunction = objectField ->
 					postObjectDefinitionByExternalReferenceCodeObjectField(
-						(String)parameters.get("externalReferenceCode"),
-						objectField);
+						(String)externalReferenceCode, objectField);
 			}
 			else {
 				throw new NotSupportedException(
@@ -839,10 +842,12 @@ public abstract class BaseObjectFieldResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("objectDefinitionId")) {
+		Serializable objectDefinitionId = parameters.get("objectDefinitionId");
+
+		if (objectDefinitionId != null) {
 			return getObjectDefinitionObjectFieldsPage(
-				_parseLong((String)parameters.get("objectDefinitionId")),
-				search, filter, pagination, sorts);
+				_parseLong((String)objectDefinitionId), search, filter,
+				pagination, sorts);
 		}
 		else {
 			throw new NotSupportedException(

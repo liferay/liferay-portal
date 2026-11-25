@@ -1803,18 +1803,22 @@ public abstract class BaseERCScopedTestEntityResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("assetLibraryExternalReferenceCode")) {
+			Serializable assetLibraryExternalReferenceCode = parameters.get(
+				"assetLibraryExternalReferenceCode");
+
+			Serializable siteExternalReferenceCode = parameters.get(
+				"siteExternalReferenceCode");
+
+			if (assetLibraryExternalReferenceCode != null) {
 				ercScopedTestEntityUnsafeFunction =
 					ercScopedTestEntity -> postAssetLibraryERCScopedTestEntity(
-						(String)parameters.get(
-							"assetLibraryExternalReferenceCode"),
+						(String)assetLibraryExternalReferenceCode,
 						ercScopedTestEntity);
 			}
-			else if (parameters.containsKey("siteExternalReferenceCode")) {
+			else if (siteExternalReferenceCode != null) {
 				ercScopedTestEntityUnsafeFunction =
 					ercScopedTestEntity -> postSiteERCScopedTestEntity(
-						(String)parameters.get("siteExternalReferenceCode"),
-						ercScopedTestEntity);
+						(String)siteExternalReferenceCode, ercScopedTestEntity);
 			}
 			else {
 				throw new NotSupportedException(
@@ -1827,26 +1831,26 @@ public abstract class BaseERCScopedTestEntityResourceImpl
 				"updateStrategy", "UPDATE");
 
 			if (StringUtil.equalsIgnoreCase(updateStrategy, "UPDATE")) {
+				Serializable assetLibraryExternalReferenceCode = parameters.get(
+					"assetLibraryExternalReferenceCode");
+
+				Serializable siteExternalReferenceCode = parameters.get(
+					"siteExternalReferenceCode");
+
 				ercScopedTestEntityUnsafeFunction = ercScopedTestEntity -> {
 					ERCScopedTestEntity persistedERCScopedTestEntity = null;
 
-					if (parameters.containsKey(
-							"assetLibraryExternalReferenceCode")) {
-
+					if (assetLibraryExternalReferenceCode != null) {
 						persistedERCScopedTestEntity =
 							putAssetLibraryERCScopedTestEntity(
-								(String)parameters.get(
-									"assetLibraryExternalReferenceCode"),
+								(String)assetLibraryExternalReferenceCode,
 								ercScopedTestEntity.getExternalReferenceCode(),
 								ercScopedTestEntity);
 					}
-					else if (parameters.containsKey(
-								"siteExternalReferenceCode")) {
-
+					else if (siteExternalReferenceCode != null) {
 						persistedERCScopedTestEntity =
 							putSiteERCScopedTestEntity(
-								(String)parameters.get(
-									"siteExternalReferenceCode"),
+								(String)siteExternalReferenceCode,
 								ercScopedTestEntity.getExternalReferenceCode(),
 								ercScopedTestEntity);
 					}
@@ -1890,14 +1894,17 @@ public abstract class BaseERCScopedTestEntityResourceImpl
 			Map<String, Serializable> parameters)
 		throws Exception {
 
+		Serializable assetLibraryExternalReferenceCode = parameters.get(
+			"assetLibraryExternalReferenceCode");
+
+		Serializable siteExternalReferenceCode = parameters.get(
+			"siteExternalReferenceCode");
+
 		UnsafeFunction<ERCScopedTestEntity, ERCScopedTestEntity, Exception>
 			ercScopedTestEntityUnsafeFunction = ercScopedTestEntity -> {
-				if (parameters.containsKey(
-						"assetLibraryExternalReferenceCode")) {
-
+				if (assetLibraryExternalReferenceCode != null) {
 					deleteAssetLibraryERCScopedTestEntity(
-						(String)parameters.get(
-							"assetLibraryExternalReferenceCode"),
+						(String)assetLibraryExternalReferenceCode,
 						ercScopedTestEntity.getExternalReferenceCode());
 
 					return ercScopedTestEntity;
@@ -1910,9 +1917,9 @@ public abstract class BaseERCScopedTestEntityResourceImpl
 
 					return ercScopedTestEntity;
 				}
-				else if (parameters.containsKey("siteExternalReferenceCode")) {
+				else if (siteExternalReferenceCode != null) {
 					deleteSiteERCScopedTestEntity(
-						(String)parameters.get("siteExternalReferenceCode"),
+						(String)siteExternalReferenceCode,
 						ercScopedTestEntity.getExternalReferenceCode());
 
 					return ercScopedTestEntity;
@@ -1972,13 +1979,19 @@ public abstract class BaseERCScopedTestEntityResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("assetLibraryExternalReferenceCode")) {
+		Serializable assetLibraryExternalReferenceCode = parameters.get(
+			"assetLibraryExternalReferenceCode");
+
+		Serializable siteExternalReferenceCode = parameters.get(
+			"siteExternalReferenceCode");
+
+		if (assetLibraryExternalReferenceCode != null) {
 			return getAssetLibraryERCScopedTestEntitiesPage(
-				(String)parameters.get("assetLibraryExternalReferenceCode"));
+				(String)assetLibraryExternalReferenceCode);
 		}
-		else if (parameters.containsKey("siteExternalReferenceCode")) {
+		else if (siteExternalReferenceCode != null) {
 			return getSiteERCScopedTestEntitiesPage(
-				(String)parameters.get("siteExternalReferenceCode"));
+				(String)siteExternalReferenceCode);
 		}
 		else {
 			return getERCScopedTestEntitiesPage(

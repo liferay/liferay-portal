@@ -401,12 +401,14 @@ public abstract class BaseDiscountSkuResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("externalReferenceCode")) {
+			Serializable externalReferenceCode = parameters.get(
+				"externalReferenceCode");
+
+			if (externalReferenceCode != null) {
 				discountSkuUnsafeFunction =
 					discountSku ->
 						postDiscountByExternalReferenceCodeDiscountSku(
-							(String)parameters.get("externalReferenceCode"),
-							discountSku);
+							(String)externalReferenceCode, discountSku);
 			}
 			else {
 				throw new NotSupportedException(

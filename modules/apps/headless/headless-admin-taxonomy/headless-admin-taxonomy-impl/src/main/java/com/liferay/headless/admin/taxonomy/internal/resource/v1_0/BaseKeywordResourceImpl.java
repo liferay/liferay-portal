@@ -1603,13 +1603,17 @@ public abstract class BaseKeywordResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("assetLibraryId")) {
+			Serializable assetLibraryId = parameters.get("assetLibraryId");
+
+			Serializable siteId = parameters.get("siteId");
+
+			if (assetLibraryId != null) {
 				keywordUnsafeFunction = keyword -> postAssetLibraryKeyword(
-					(Long)parameters.get("assetLibraryId"), keyword);
+					(Long)assetLibraryId, keyword);
 			}
-			else if (parameters.containsKey("siteId")) {
+			else if (siteId != null) {
 				keywordUnsafeFunction = keyword -> postSiteKeyword(
-					(Long)parameters.get("siteId"), keyword);
+					(Long)siteId, keyword);
 			}
 			else {
 				throw new NotSupportedException(
@@ -1622,19 +1626,23 @@ public abstract class BaseKeywordResourceImpl
 				"updateStrategy", "UPDATE");
 
 			if (StringUtil.equalsIgnoreCase(updateStrategy, "UPDATE")) {
+				Serializable assetLibraryId = parameters.get("assetLibraryId");
+
+				Serializable siteId = parameters.get("siteId");
+
 				keywordUnsafeFunction = keyword -> {
 					Keyword persistedKeyword = null;
 
-					if (parameters.containsKey("assetLibraryId")) {
+					if (assetLibraryId != null) {
 						persistedKeyword =
 							putAssetLibraryKeywordByExternalReferenceCode(
-								(Long)parameters.get("assetLibraryId"),
+								(Long)assetLibraryId,
 								keyword.getExternalReferenceCode(), keyword);
 					}
-					else if (parameters.containsKey("siteId")) {
+					else if (siteId != null) {
 						persistedKeyword =
 							putSiteKeywordByExternalReferenceCode(
-								(Long)parameters.get("siteId"),
+								(Long)siteId,
 								keyword.getExternalReferenceCode(), keyword);
 					}
 					else {
@@ -1673,6 +1681,10 @@ public abstract class BaseKeywordResourceImpl
 			Collection<Keyword> keywords, Map<String, Serializable> parameters)
 		throws Exception {
 
+		Serializable assetLibraryId = parameters.get("assetLibraryId");
+
+		Serializable siteId = parameters.get("siteId");
+
 		UnsafeFunction<Keyword, Keyword, Exception> keywordUnsafeFunction =
 			keyword -> {
 				if (keyword.getId() != null) {
@@ -1683,17 +1695,17 @@ public abstract class BaseKeywordResourceImpl
 					}
 					catch (Exception exception) {
 						if (keyword.getExternalReferenceCode() != null) {
-							if (parameters.containsKey("assetLibraryId")) {
+							if (assetLibraryId != null) {
 								deleteAssetLibraryKeywordByExternalReferenceCode(
-									(Long)parameters.get("assetLibraryId"),
+									(Long)assetLibraryId,
 									keyword.getExternalReferenceCode());
 
 								return keyword;
 							}
 
-							if (parameters.containsKey("siteId")) {
+							if (siteId != null) {
 								deleteSiteKeywordByExternalReferenceCode(
-									(Long)parameters.get("siteId"),
+									(Long)siteId,
 									keyword.getExternalReferenceCode());
 
 								return keyword;
@@ -1701,17 +1713,16 @@ public abstract class BaseKeywordResourceImpl
 						}
 					}
 				}
-				else if (parameters.containsKey("assetLibraryId")) {
+				else if (assetLibraryId != null) {
 					deleteAssetLibraryKeywordByExternalReferenceCode(
-						(Long)parameters.get("assetLibraryId"),
+						(Long)assetLibraryId,
 						keyword.getExternalReferenceCode());
 
 					return keyword;
 				}
-				else if (parameters.containsKey("siteId")) {
+				else if (siteId != null) {
 					deleteSiteKeywordByExternalReferenceCode(
-						(Long)parameters.get("siteId"),
-						keyword.getExternalReferenceCode());
+						(Long)siteId, keyword.getExternalReferenceCode());
 
 					return keyword;
 				}
@@ -1767,15 +1778,17 @@ public abstract class BaseKeywordResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("assetLibraryId")) {
+		Serializable assetLibraryId = parameters.get("assetLibraryId");
+
+		Serializable siteId = parameters.get("siteId");
+
+		if (assetLibraryId != null) {
 			return getAssetLibraryKeywordsPage(
-				(Long)parameters.get("assetLibraryId"), search, null, filter,
-				pagination, sorts);
+				(Long)assetLibraryId, search, null, filter, pagination, sorts);
 		}
-		else if (parameters.containsKey("siteId")) {
+		else if (siteId != null) {
 			return getSiteKeywordsPage(
-				(Long)parameters.get("siteId"), search, null, filter,
-				pagination, sorts);
+				(Long)siteId, search, null, filter, pagination, sorts);
 		}
 		else {
 			throw new NotSupportedException(

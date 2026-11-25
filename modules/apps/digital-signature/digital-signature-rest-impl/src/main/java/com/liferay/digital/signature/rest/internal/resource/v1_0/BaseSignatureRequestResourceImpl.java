@@ -420,10 +420,12 @@ public abstract class BaseSignatureRequestResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("siteId")) {
+			Serializable siteId = parameters.get("siteId");
+
+			if (siteId != null) {
 				signatureRequestUnsafeFunction =
 					signatureRequest -> postSiteSignatureRequest(
-						(Long)parameters.get("siteId"), signatureRequest);
+						(Long)siteId, signatureRequest);
 			}
 			else {
 				throw new NotSupportedException(
@@ -494,9 +496,11 @@ public abstract class BaseSignatureRequestResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("siteId")) {
+		Serializable siteId = parameters.get("siteId");
+
+		if (siteId != null) {
 			return getSiteSignatureRequestsPage(
-				(Long)parameters.get("siteId"), search, pagination);
+				(Long)siteId, search, pagination);
 		}
 		else {
 			throw new NotSupportedException(

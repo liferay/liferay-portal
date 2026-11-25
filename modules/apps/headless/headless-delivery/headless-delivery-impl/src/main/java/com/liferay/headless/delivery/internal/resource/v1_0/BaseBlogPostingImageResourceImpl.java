@@ -577,10 +577,12 @@ public abstract class BaseBlogPostingImageResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("siteId")) {
+			Serializable siteId = parameters.get("siteId");
+
+			if (siteId != null) {
 				blogPostingImageUnsafeFunction =
 					blogPostingImage -> postSiteBlogPostingImage(
-						(Long)parameters.get("siteId"), (MultipartBody)null);
+						(Long)siteId, (MultipartBody)null);
 			}
 			else {
 				throw new NotSupportedException(
@@ -615,6 +617,8 @@ public abstract class BaseBlogPostingImageResourceImpl
 			Map<String, Serializable> parameters)
 		throws Exception {
 
+		Serializable siteId = parameters.get("siteId");
+
 		UnsafeFunction<BlogPostingImage, BlogPostingImage, Exception>
 			blogPostingImageUnsafeFunction = blogPostingImage -> {
 				if (blogPostingImage.getId() != null) {
@@ -627,9 +631,9 @@ public abstract class BaseBlogPostingImageResourceImpl
 						if (blogPostingImage.getExternalReferenceCode() !=
 								null) {
 
-							if (parameters.containsKey("siteId")) {
+							if (siteId != null) {
 								deleteSiteBlogPostingImageByExternalReferenceCode(
-									(Long)parameters.get("siteId"),
+									(Long)siteId,
 									blogPostingImage.
 										getExternalReferenceCode());
 
@@ -638,9 +642,9 @@ public abstract class BaseBlogPostingImageResourceImpl
 						}
 					}
 				}
-				else if (parameters.containsKey("siteId")) {
+				else if (siteId != null) {
 					deleteSiteBlogPostingImageByExternalReferenceCode(
-						(Long)parameters.get("siteId"),
+						(Long)siteId,
 						blogPostingImage.getExternalReferenceCode());
 
 					return blogPostingImage;
@@ -697,10 +701,11 @@ public abstract class BaseBlogPostingImageResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("siteId")) {
+		Serializable siteId = parameters.get("siteId");
+
+		if (siteId != null) {
 			return getSiteBlogPostingImagesPage(
-				(Long)parameters.get("siteId"), search, null, filter,
-				pagination, sorts);
+				(Long)siteId, search, null, filter, pagination, sorts);
 		}
 		else {
 			throw new NotSupportedException(

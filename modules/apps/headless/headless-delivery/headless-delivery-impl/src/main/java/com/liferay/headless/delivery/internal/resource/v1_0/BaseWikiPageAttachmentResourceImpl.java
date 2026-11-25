@@ -541,11 +541,12 @@ public abstract class BaseWikiPageAttachmentResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("wikiPageId")) {
+			Serializable wikiPageId = parameters.get("wikiPageId");
+
+			if (wikiPageId != null) {
 				wikiPageAttachmentUnsafeFunction =
 					wikiPageAttachment -> postWikiPageWikiPageAttachment(
-						_parseLong((String)parameters.get("wikiPageId")),
-						(MultipartBody)null);
+						_parseLong((String)wikiPageId), (MultipartBody)null);
 			}
 			else {
 				throw new NotSupportedException(
@@ -634,9 +635,11 @@ public abstract class BaseWikiPageAttachmentResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("wikiPageId")) {
+		Serializable wikiPageId = parameters.get("wikiPageId");
+
+		if (wikiPageId != null) {
 			return getWikiPageWikiPageAttachmentsPage(
-				_parseLong((String)parameters.get("wikiPageId")));
+				_parseLong((String)wikiPageId));
 		}
 		else {
 			throw new NotSupportedException(

@@ -513,11 +513,12 @@ public abstract class BaseDataListViewResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("dataDefinitionId")) {
+			Serializable dataDefinitionId = parameters.get("dataDefinitionId");
+
+			if (dataDefinitionId != null) {
 				dataListViewUnsafeFunction =
 					dataListView -> postDataDefinitionDataListView(
-						_parseLong((String)parameters.get("dataDefinitionId")),
-						dataListView);
+						_parseLong((String)dataDefinitionId), dataListView);
 			}
 			else {
 				throw new NotSupportedException(
@@ -606,9 +607,11 @@ public abstract class BaseDataListViewResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("dataDefinitionId")) {
+		Serializable dataDefinitionId = parameters.get("dataDefinitionId");
+
+		if (dataDefinitionId != null) {
 			return getDataDefinitionDataListViewsPage(
-				_parseLong((String)parameters.get("dataDefinitionId")),
+				_parseLong((String)dataDefinitionId),
 				(String)parameters.get("keywords"), pagination, sorts);
 		}
 		else {

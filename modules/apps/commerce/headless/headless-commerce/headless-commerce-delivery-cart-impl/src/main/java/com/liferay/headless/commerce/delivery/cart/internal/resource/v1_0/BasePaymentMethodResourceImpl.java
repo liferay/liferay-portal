@@ -267,9 +267,10 @@ public abstract class BasePaymentMethodResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("cartId")) {
-			return getCartPaymentMethodsPage(
-				_parseLong((String)parameters.get("cartId")));
+		Serializable cartId = parameters.get("cartId");
+
+		if (cartId != null) {
+			return getCartPaymentMethodsPage(_parseLong((String)cartId));
 		}
 		else {
 			throw new NotSupportedException(

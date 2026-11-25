@@ -632,18 +632,22 @@ public abstract class BaseListTypeEntryResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("listTypeDefinitionId")) {
+			Serializable externalReferenceCode = parameters.get(
+				"externalReferenceCode");
+
+			Serializable listTypeDefinitionId = parameters.get(
+				"listTypeDefinitionId");
+
+			if (listTypeDefinitionId != null) {
 				listTypeEntryUnsafeFunction =
 					listTypeEntry -> postListTypeDefinitionListTypeEntry(
-						_parseLong(
-							(String)parameters.get("listTypeDefinitionId")),
+						_parseLong((String)listTypeDefinitionId),
 						listTypeEntry);
 			}
-			else if (parameters.containsKey("externalReferenceCode")) {
+			else if (externalReferenceCode != null) {
 				listTypeEntryUnsafeFunction = listTypeEntry ->
 					postListTypeDefinitionByExternalReferenceCodeListTypeEntry(
-						(String)parameters.get("externalReferenceCode"),
-						listTypeEntry);
+						(String)externalReferenceCode, listTypeEntry);
 			}
 			else {
 				throw new NotSupportedException(
@@ -732,10 +736,13 @@ public abstract class BaseListTypeEntryResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("listTypeDefinitionId")) {
+		Serializable listTypeDefinitionId = parameters.get(
+			"listTypeDefinitionId");
+
+		if (listTypeDefinitionId != null) {
 			return getListTypeDefinitionListTypeEntriesPage(
-				_parseLong((String)parameters.get("listTypeDefinitionId")),
-				search, null, filter, pagination, sorts);
+				_parseLong((String)listTypeDefinitionId), search, null, filter,
+				pagination, sorts);
 		}
 		else {
 			throw new NotSupportedException(

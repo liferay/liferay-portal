@@ -475,11 +475,13 @@ public abstract class BaseCategoryDisplayPageResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("externalReferenceCode")) {
+			Serializable externalReferenceCode = parameters.get(
+				"externalReferenceCode");
+
+			if (externalReferenceCode != null) {
 				categoryDisplayPageUnsafeFunction = categoryDisplayPage ->
 					postChannelByExternalReferenceCodeCategoryDisplayPage(
-						(String)parameters.get("externalReferenceCode"),
-						categoryDisplayPage);
+						(String)externalReferenceCode, categoryDisplayPage);
 			}
 			else {
 				throw new NotSupportedException(

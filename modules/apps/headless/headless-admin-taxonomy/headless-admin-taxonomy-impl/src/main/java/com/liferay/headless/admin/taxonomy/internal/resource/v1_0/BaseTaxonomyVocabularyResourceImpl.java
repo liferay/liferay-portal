@@ -1963,16 +1963,19 @@ public abstract class BaseTaxonomyVocabularyResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("assetLibraryId")) {
+			Serializable assetLibraryId = parameters.get("assetLibraryId");
+
+			Serializable siteId = parameters.get("siteId");
+
+			if (assetLibraryId != null) {
 				taxonomyVocabularyUnsafeFunction =
 					taxonomyVocabulary -> postAssetLibraryTaxonomyVocabulary(
-						(Long)parameters.get("assetLibraryId"),
-						taxonomyVocabulary);
+						(Long)assetLibraryId, taxonomyVocabulary);
 			}
-			else if (parameters.containsKey("siteId")) {
+			else if (siteId != null) {
 				taxonomyVocabularyUnsafeFunction =
 					taxonomyVocabulary -> postSiteTaxonomyVocabulary(
-						(Long)parameters.get("siteId"), taxonomyVocabulary);
+						(Long)siteId, taxonomyVocabulary);
 			}
 			else {
 				throw new NotSupportedException(
@@ -1985,22 +1988,26 @@ public abstract class BaseTaxonomyVocabularyResourceImpl
 				"updateStrategy", "UPDATE");
 
 			if (StringUtil.equalsIgnoreCase(updateStrategy, "PARTIAL_UPDATE")) {
+				Serializable assetLibraryId = parameters.get("assetLibraryId");
+
+				Serializable siteId = parameters.get("siteId");
+
 				taxonomyVocabularyUnsafeFunction = taxonomyVocabulary -> {
 					TaxonomyVocabulary getTaxonomyVocabulary = null;
 					TaxonomyVocabulary persistedTaxonomyVocabulary = null;
 
 					try {
-						if (parameters.containsKey("assetLibraryId")) {
+						if (assetLibraryId != null) {
 							getTaxonomyVocabulary =
 								getAssetLibraryTaxonomyVocabularyByExternalReferenceCode(
-									(Long)parameters.get("assetLibraryId"),
+									(Long)assetLibraryId,
 									taxonomyVocabulary.
 										getExternalReferenceCode());
 						}
-						else if (parameters.containsKey("siteId")) {
+						else if (siteId != null) {
 							getTaxonomyVocabulary =
 								getSiteTaxonomyVocabularyByExternalReferenceCode(
-									(Long)parameters.get("siteId"),
+									(Long)siteId,
 									taxonomyVocabulary.
 										getExternalReferenceCode());
 						}
@@ -2013,17 +2020,15 @@ public abstract class BaseTaxonomyVocabularyResourceImpl
 							getTaxonomyVocabulary.getId(), taxonomyVocabulary);
 					}
 					catch (NoSuchModelException noSuchModelException) {
-						if (parameters.containsKey("assetLibraryId")) {
+						if (assetLibraryId != null) {
 							persistedTaxonomyVocabulary =
 								postAssetLibraryTaxonomyVocabulary(
-									(Long)parameters.get("assetLibraryId"),
-									taxonomyVocabulary);
+									(Long)assetLibraryId, taxonomyVocabulary);
 						}
-						else if (parameters.containsKey("siteId")) {
+						else if (siteId != null) {
 							persistedTaxonomyVocabulary =
 								postSiteTaxonomyVocabulary(
-									(Long)parameters.get("siteId"),
-									taxonomyVocabulary);
+									(Long)siteId, taxonomyVocabulary);
 						}
 						else {
 							throw new NotSupportedException(
@@ -2036,20 +2041,24 @@ public abstract class BaseTaxonomyVocabularyResourceImpl
 			}
 
 			if (StringUtil.equalsIgnoreCase(updateStrategy, "UPDATE")) {
+				Serializable assetLibraryId = parameters.get("assetLibraryId");
+
+				Serializable siteId = parameters.get("siteId");
+
 				taxonomyVocabularyUnsafeFunction = taxonomyVocabulary -> {
 					TaxonomyVocabulary persistedTaxonomyVocabulary = null;
 
-					if (parameters.containsKey("assetLibraryId")) {
+					if (assetLibraryId != null) {
 						persistedTaxonomyVocabulary =
 							putAssetLibraryTaxonomyVocabularyByExternalReferenceCode(
-								(Long)parameters.get("assetLibraryId"),
+								(Long)assetLibraryId,
 								taxonomyVocabulary.getExternalReferenceCode(),
 								taxonomyVocabulary);
 					}
-					else if (parameters.containsKey("siteId")) {
+					else if (siteId != null) {
 						persistedTaxonomyVocabulary =
 							putSiteTaxonomyVocabularyByExternalReferenceCode(
-								(Long)parameters.get("siteId"),
+								(Long)siteId,
 								taxonomyVocabulary.getExternalReferenceCode(),
 								taxonomyVocabulary);
 					}
@@ -2090,6 +2099,10 @@ public abstract class BaseTaxonomyVocabularyResourceImpl
 			Map<String, Serializable> parameters)
 		throws Exception {
 
+		Serializable assetLibraryId = parameters.get("assetLibraryId");
+
+		Serializable siteId = parameters.get("siteId");
+
 		UnsafeFunction<TaxonomyVocabulary, TaxonomyVocabulary, Exception>
 			taxonomyVocabularyUnsafeFunction = taxonomyVocabulary -> {
 				if (taxonomyVocabulary.getId() != null) {
@@ -2102,18 +2115,18 @@ public abstract class BaseTaxonomyVocabularyResourceImpl
 						if (taxonomyVocabulary.getExternalReferenceCode() !=
 								null) {
 
-							if (parameters.containsKey("assetLibraryId")) {
+							if (assetLibraryId != null) {
 								deleteAssetLibraryTaxonomyVocabularyByExternalReferenceCode(
-									(Long)parameters.get("assetLibraryId"),
+									(Long)assetLibraryId,
 									taxonomyVocabulary.
 										getExternalReferenceCode());
 
 								return taxonomyVocabulary;
 							}
 
-							if (parameters.containsKey("siteId")) {
+							if (siteId != null) {
 								deleteSiteTaxonomyVocabularyByExternalReferenceCode(
-									(Long)parameters.get("siteId"),
+									(Long)siteId,
 									taxonomyVocabulary.
 										getExternalReferenceCode());
 
@@ -2122,16 +2135,16 @@ public abstract class BaseTaxonomyVocabularyResourceImpl
 						}
 					}
 				}
-				else if (parameters.containsKey("assetLibraryId")) {
+				else if (assetLibraryId != null) {
 					deleteAssetLibraryTaxonomyVocabularyByExternalReferenceCode(
-						(Long)parameters.get("assetLibraryId"),
+						(Long)assetLibraryId,
 						taxonomyVocabulary.getExternalReferenceCode());
 
 					return taxonomyVocabulary;
 				}
-				else if (parameters.containsKey("siteId")) {
+				else if (siteId != null) {
 					deleteSiteTaxonomyVocabularyByExternalReferenceCode(
-						(Long)parameters.get("siteId"),
+						(Long)siteId,
 						taxonomyVocabulary.getExternalReferenceCode());
 
 					return taxonomyVocabulary;
@@ -2188,15 +2201,17 @@ public abstract class BaseTaxonomyVocabularyResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("assetLibraryId")) {
+		Serializable assetLibraryId = parameters.get("assetLibraryId");
+
+		Serializable siteId = parameters.get("siteId");
+
+		if (assetLibraryId != null) {
 			return getAssetLibraryTaxonomyVocabulariesPage(
-				(Long)parameters.get("assetLibraryId"), search, null, filter,
-				pagination, sorts);
+				(Long)assetLibraryId, search, null, filter, pagination, sorts);
 		}
-		else if (parameters.containsKey("siteId")) {
+		else if (siteId != null) {
 			return getSiteTaxonomyVocabulariesPage(
-				(Long)parameters.get("siteId"), search, null, filter,
-				pagination, sorts);
+				(Long)siteId, search, null, filter, pagination, sorts);
 		}
 		else {
 			throw new NotSupportedException(

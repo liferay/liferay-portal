@@ -1640,19 +1640,22 @@ public abstract class BaseMessageBoardThreadResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("messageBoardSectionId")) {
+			Serializable messageBoardSectionId = parameters.get(
+				"messageBoardSectionId");
+
+			Serializable siteId = parameters.get("siteId");
+
+			if (messageBoardSectionId != null) {
 				messageBoardThreadUnsafeFunction =
 					messageBoardThread ->
 						postMessageBoardSectionMessageBoardThread(
-							_parseLong(
-								(String)parameters.get(
-									"messageBoardSectionId")),
+							_parseLong((String)messageBoardSectionId),
 							messageBoardThread);
 			}
-			else if (parameters.containsKey("siteId")) {
+			else if (siteId != null) {
 				messageBoardThreadUnsafeFunction =
 					messageBoardThread -> postSiteMessageBoardThread(
-						(Long)parameters.get("siteId"), messageBoardThread);
+						(Long)siteId, messageBoardThread);
 			}
 			else {
 				throw new NotSupportedException(
@@ -1741,16 +1744,20 @@ public abstract class BaseMessageBoardThreadResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("messageBoardSectionId")) {
+		Serializable messageBoardSectionId = parameters.get(
+			"messageBoardSectionId");
+
+		Serializable siteId = parameters.get("siteId");
+
+		if (messageBoardSectionId != null) {
 			return getMessageBoardSectionMessageBoardThreadsPage(
-				_parseLong((String)parameters.get("messageBoardSectionId")),
-				search, null, filter, pagination, sorts);
+				_parseLong((String)messageBoardSectionId), search, null, filter,
+				pagination, sorts);
 		}
-		else if (parameters.containsKey("siteId")) {
+		else if (siteId != null) {
 			return getSiteMessageBoardThreadsPage(
-				(Long)parameters.get("siteId"),
-				_parseBoolean((String)parameters.get("flatten")), search, null,
-				filter, pagination, sorts);
+				(Long)siteId, _parseBoolean((String)parameters.get("flatten")),
+				search, null, filter, pagination, sorts);
 		}
 		else {
 			throw new NotSupportedException(

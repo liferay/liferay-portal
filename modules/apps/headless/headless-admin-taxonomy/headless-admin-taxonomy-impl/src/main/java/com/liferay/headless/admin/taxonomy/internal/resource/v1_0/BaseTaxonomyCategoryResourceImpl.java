@@ -2347,22 +2347,27 @@ public abstract class BaseTaxonomyCategoryResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("assetLibraryId")) {
+			Serializable assetLibraryId = parameters.get("assetLibraryId");
+
+			Serializable siteId = parameters.get("siteId");
+
+			Serializable taxonomyVocabularyId = parameters.get(
+				"taxonomyVocabularyId");
+
+			if (assetLibraryId != null) {
 				taxonomyCategoryUnsafeFunction =
 					taxonomyCategory -> postAssetLibraryTaxonomyCategory(
-						(Long)parameters.get("assetLibraryId"),
-						taxonomyCategory);
+						(Long)assetLibraryId, taxonomyCategory);
 			}
-			else if (parameters.containsKey("siteId")) {
+			else if (siteId != null) {
 				taxonomyCategoryUnsafeFunction =
 					taxonomyCategory -> postSiteTaxonomyCategory(
-						(Long)parameters.get("siteId"), taxonomyCategory);
+						(Long)siteId, taxonomyCategory);
 			}
-			else if (parameters.containsKey("taxonomyVocabularyId")) {
+			else if (taxonomyVocabularyId != null) {
 				taxonomyCategoryUnsafeFunction =
 					taxonomyCategory -> postTaxonomyVocabularyTaxonomyCategory(
-						_parseLong(
-							(String)parameters.get("taxonomyVocabularyId")),
+						_parseLong((String)taxonomyVocabularyId),
 						taxonomyCategory);
 			}
 			else {
@@ -2376,33 +2381,36 @@ public abstract class BaseTaxonomyCategoryResourceImpl
 				"updateStrategy", "UPDATE");
 
 			if (StringUtil.equalsIgnoreCase(updateStrategy, "PARTIAL_UPDATE")) {
+				Serializable assetLibraryId = parameters.get("assetLibraryId");
+
+				Serializable siteId = parameters.get("siteId");
+
+				Serializable taxonomyVocabularyId = parameters.get(
+					"taxonomyVocabularyId");
+
 				taxonomyCategoryUnsafeFunction = taxonomyCategory -> {
 					TaxonomyCategory getTaxonomyCategory = null;
 					TaxonomyCategory persistedTaxonomyCategory = null;
 
 					try {
-						if (parameters.containsKey("assetLibraryId")) {
+						if (assetLibraryId != null) {
 							getTaxonomyCategory =
 								getAssetLibraryTaxonomyCategoryByExternalReferenceCode(
-									(Long)parameters.get("assetLibraryId"),
+									(Long)assetLibraryId,
 									taxonomyCategory.
 										getExternalReferenceCode());
 						}
-						else if (parameters.containsKey("siteId")) {
+						else if (siteId != null) {
 							getTaxonomyCategory =
 								getSiteTaxonomyCategoryByExternalReferenceCode(
-									(Long)parameters.get("siteId"),
+									(Long)siteId,
 									taxonomyCategory.
 										getExternalReferenceCode());
 						}
-						else if (parameters.containsKey(
-									"taxonomyVocabularyId")) {
-
+						else if (taxonomyVocabularyId != null) {
 							getTaxonomyCategory =
 								getTaxonomyVocabularyTaxonomyCategoryByExternalReferenceCode(
-									_parseLong(
-										(String)parameters.get(
-											"taxonomyVocabularyId")),
+									_parseLong((String)taxonomyVocabularyId),
 									taxonomyCategory.
 										getExternalReferenceCode());
 						}
@@ -2415,26 +2423,20 @@ public abstract class BaseTaxonomyCategoryResourceImpl
 							getTaxonomyCategory.getId(), taxonomyCategory);
 					}
 					catch (NoSuchModelException noSuchModelException) {
-						if (parameters.containsKey("assetLibraryId")) {
+						if (assetLibraryId != null) {
 							persistedTaxonomyCategory =
 								postAssetLibraryTaxonomyCategory(
-									(Long)parameters.get("assetLibraryId"),
-									taxonomyCategory);
+									(Long)assetLibraryId, taxonomyCategory);
 						}
-						else if (parameters.containsKey("siteId")) {
+						else if (siteId != null) {
 							persistedTaxonomyCategory =
 								postSiteTaxonomyCategory(
-									(Long)parameters.get("siteId"),
-									taxonomyCategory);
+									(Long)siteId, taxonomyCategory);
 						}
-						else if (parameters.containsKey(
-									"taxonomyVocabularyId")) {
-
+						else if (taxonomyVocabularyId != null) {
 							persistedTaxonomyCategory =
 								postTaxonomyVocabularyTaxonomyCategory(
-									_parseLong(
-										(String)parameters.get(
-											"taxonomyVocabularyId")),
+									_parseLong((String)taxonomyVocabularyId),
 									taxonomyCategory);
 						}
 						else {
@@ -2448,29 +2450,34 @@ public abstract class BaseTaxonomyCategoryResourceImpl
 			}
 
 			if (StringUtil.equalsIgnoreCase(updateStrategy, "UPDATE")) {
+				Serializable assetLibraryId = parameters.get("assetLibraryId");
+
+				Serializable siteId = parameters.get("siteId");
+
+				Serializable taxonomyVocabularyId = parameters.get(
+					"taxonomyVocabularyId");
+
 				taxonomyCategoryUnsafeFunction = taxonomyCategory -> {
 					TaxonomyCategory persistedTaxonomyCategory = null;
 
-					if (parameters.containsKey("assetLibraryId")) {
+					if (assetLibraryId != null) {
 						persistedTaxonomyCategory =
 							putAssetLibraryTaxonomyCategoryByExternalReferenceCode(
-								(Long)parameters.get("assetLibraryId"),
+								(Long)assetLibraryId,
 								taxonomyCategory.getExternalReferenceCode(),
 								taxonomyCategory);
 					}
-					else if (parameters.containsKey("siteId")) {
+					else if (siteId != null) {
 						persistedTaxonomyCategory =
 							putSiteTaxonomyCategoryByExternalReferenceCode(
-								(Long)parameters.get("siteId"),
+								(Long)siteId,
 								taxonomyCategory.getExternalReferenceCode(),
 								taxonomyCategory);
 					}
-					else if (parameters.containsKey("taxonomyVocabularyId")) {
+					else if (taxonomyVocabularyId != null) {
 						persistedTaxonomyCategory =
 							putTaxonomyVocabularyTaxonomyCategoryByExternalReferenceCode(
-								_parseLong(
-									(String)parameters.get(
-										"taxonomyVocabularyId")),
+								_parseLong((String)taxonomyVocabularyId),
 								taxonomyCategory.getExternalReferenceCode(),
 								taxonomyCategory);
 					}
@@ -2511,6 +2518,10 @@ public abstract class BaseTaxonomyCategoryResourceImpl
 			Map<String, Serializable> parameters)
 		throws Exception {
 
+		Serializable assetLibraryId = parameters.get("assetLibraryId");
+
+		Serializable siteId = parameters.get("siteId");
+
 		UnsafeFunction<TaxonomyCategory, TaxonomyCategory, Exception>
 			taxonomyCategoryUnsafeFunction = taxonomyCategory -> {
 				if (taxonomyCategory.getId() != null) {
@@ -2523,18 +2534,18 @@ public abstract class BaseTaxonomyCategoryResourceImpl
 						if (taxonomyCategory.getExternalReferenceCode() !=
 								null) {
 
-							if (parameters.containsKey("assetLibraryId")) {
+							if (assetLibraryId != null) {
 								deleteAssetLibraryTaxonomyCategoryByExternalReferenceCode(
-									(Long)parameters.get("assetLibraryId"),
+									(Long)assetLibraryId,
 									taxonomyCategory.
 										getExternalReferenceCode());
 
 								return taxonomyCategory;
 							}
 
-							if (parameters.containsKey("siteId")) {
+							if (siteId != null) {
 								deleteSiteTaxonomyCategoryByExternalReferenceCode(
-									(Long)parameters.get("siteId"),
+									(Long)siteId,
 									taxonomyCategory.
 										getExternalReferenceCode());
 
@@ -2543,16 +2554,16 @@ public abstract class BaseTaxonomyCategoryResourceImpl
 						}
 					}
 				}
-				else if (parameters.containsKey("assetLibraryId")) {
+				else if (assetLibraryId != null) {
 					deleteAssetLibraryTaxonomyCategoryByExternalReferenceCode(
-						(Long)parameters.get("assetLibraryId"),
+						(Long)assetLibraryId,
 						taxonomyCategory.getExternalReferenceCode());
 
 					return taxonomyCategory;
 				}
-				else if (parameters.containsKey("siteId")) {
+				else if (siteId != null) {
 					deleteSiteTaxonomyCategoryByExternalReferenceCode(
-						(Long)parameters.get("siteId"),
+						(Long)siteId,
 						taxonomyCategory.getExternalReferenceCode());
 
 					return taxonomyCategory;
@@ -2609,19 +2620,24 @@ public abstract class BaseTaxonomyCategoryResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("assetLibraryId")) {
+		Serializable assetLibraryId = parameters.get("assetLibraryId");
+
+		Serializable siteId = parameters.get("siteId");
+
+		Serializable taxonomyVocabularyId = parameters.get(
+			"taxonomyVocabularyId");
+
+		if (assetLibraryId != null) {
 			return getAssetLibraryTaxonomyCategoriesPage(
-				(Long)parameters.get("assetLibraryId"), search, null, filter,
-				pagination, sorts);
+				(Long)assetLibraryId, search, null, filter, pagination, sorts);
 		}
-		else if (parameters.containsKey("siteId")) {
+		else if (siteId != null) {
 			return getSiteTaxonomyCategoriesPage(
-				(Long)parameters.get("siteId"), search, null, filter,
-				pagination, sorts);
+				(Long)siteId, search, null, filter, pagination, sorts);
 		}
-		else if (parameters.containsKey("taxonomyVocabularyId")) {
+		else if (taxonomyVocabularyId != null) {
 			return getTaxonomyVocabularyTaxonomyCategoriesPage(
-				_parseLong((String)parameters.get("taxonomyVocabularyId")),
+				_parseLong((String)taxonomyVocabularyId),
 				_parseBoolean((String)parameters.get("flatten")), search, null,
 				filter, pagination, sorts);
 		}

@@ -372,15 +372,15 @@ public abstract class BaseUserGroupResourceImpl
 				"updateStrategy", "UPDATE");
 
 			if (StringUtil.equalsIgnoreCase(updateStrategy, "UPDATE")) {
+				Serializable assetLibraryExternalReferenceCode = parameters.get(
+					"assetLibraryExternalReferenceCode");
+
 				userGroupUnsafeFunction = userGroup -> {
 					UserGroup persistedUserGroup = null;
 
-					if (parameters.containsKey(
-							"assetLibraryExternalReferenceCode")) {
-
+					if (assetLibraryExternalReferenceCode != null) {
 						persistedUserGroup = putAssetLibraryUserGroup(
-							(String)parameters.get(
-								"assetLibraryExternalReferenceCode"),
+							(String)assetLibraryExternalReferenceCode,
 							userGroup.getExternalReferenceCode());
 					}
 					else {
@@ -420,14 +420,14 @@ public abstract class BaseUserGroupResourceImpl
 			Map<String, Serializable> parameters)
 		throws Exception {
 
+		Serializable assetLibraryExternalReferenceCode = parameters.get(
+			"assetLibraryExternalReferenceCode");
+
 		UnsafeFunction<UserGroup, UserGroup, Exception>
 			userGroupUnsafeFunction = userGroup -> {
-				if (parameters.containsKey(
-						"assetLibraryExternalReferenceCode")) {
-
+				if (assetLibraryExternalReferenceCode != null) {
 					deleteAssetLibraryUserGroup(
-						(String)parameters.get(
-							"assetLibraryExternalReferenceCode"),
+						(String)assetLibraryExternalReferenceCode,
 						userGroup.getExternalReferenceCode());
 
 					return userGroup;
@@ -484,9 +484,12 @@ public abstract class BaseUserGroupResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("assetLibraryExternalReferenceCode")) {
+		Serializable assetLibraryExternalReferenceCode = parameters.get(
+			"assetLibraryExternalReferenceCode");
+
+		if (assetLibraryExternalReferenceCode != null) {
 			return getAssetLibraryUserGroupsPage(
-				(String)parameters.get("assetLibraryExternalReferenceCode"),
+				(String)assetLibraryExternalReferenceCode,
 				(String)parameters.get("keywords"), search, pagination, sorts);
 		}
 		else {

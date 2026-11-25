@@ -198,11 +198,13 @@ public abstract class BaseDSRecipientViewDefinitionResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("siteId")) {
+			Serializable siteId = parameters.get("siteId");
+
+			if (siteId != null) {
 				dsRecipientViewDefinitionUnsafeFunction =
 					dsRecipientViewDefinition -> {
 						postSiteDSRecipientViewDefinition(
-							(Long)parameters.get("siteId"),
+							(Long)siteId,
 							(String)parameters.get("dsEnvelopeId"),
 							dsRecipientViewDefinition);
 

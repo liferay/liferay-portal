@@ -399,11 +399,13 @@ public abstract class BaseProductGroupProductResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("externalReferenceCode")) {
+			Serializable externalReferenceCode = parameters.get(
+				"externalReferenceCode");
+
+			if (externalReferenceCode != null) {
 				productGroupProductUnsafeFunction = productGroupProduct ->
 					postProductGroupByExternalReferenceCodeProductGroupProduct(
-						(String)parameters.get("externalReferenceCode"),
-						productGroupProduct);
+						(String)externalReferenceCode, productGroupProduct);
 			}
 			else {
 				throw new NotSupportedException(

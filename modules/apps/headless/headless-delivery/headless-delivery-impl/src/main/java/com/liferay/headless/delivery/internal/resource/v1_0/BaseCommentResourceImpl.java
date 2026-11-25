@@ -1839,19 +1839,24 @@ public abstract class BaseCommentResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("blogPostingId")) {
+			Serializable blogPostingId = parameters.get("blogPostingId");
+
+			Serializable documentId = parameters.get("documentId");
+
+			Serializable structuredContentId = parameters.get(
+				"structuredContentId");
+
+			if (blogPostingId != null) {
 				commentUnsafeFunction = comment -> postBlogPostingComment(
-					_parseLong((String)parameters.get("blogPostingId")),
-					comment);
+					_parseLong((String)blogPostingId), comment);
 			}
-			else if (parameters.containsKey("documentId")) {
+			else if (documentId != null) {
 				commentUnsafeFunction = comment -> postDocumentComment(
-					_parseLong((String)parameters.get("documentId")), comment);
+					_parseLong((String)documentId), comment);
 			}
-			else if (parameters.containsKey("structuredContentId")) {
+			else if (structuredContentId != null) {
 				commentUnsafeFunction = comment -> postStructuredContentComment(
-					_parseLong((String)parameters.get("structuredContentId")),
-					comment);
+					_parseLong((String)structuredContentId), comment);
 			}
 			else {
 				throw new NotSupportedException(
@@ -1939,20 +1944,27 @@ public abstract class BaseCommentResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("blogPostingId")) {
+		Serializable blogPostingId = parameters.get("blogPostingId");
+
+		Serializable documentId = parameters.get("documentId");
+
+		Serializable structuredContentId = parameters.get(
+			"structuredContentId");
+
+		if (blogPostingId != null) {
 			return getBlogPostingCommentsPage(
-				_parseLong((String)parameters.get("blogPostingId")), search,
-				null, filter, pagination, sorts);
+				_parseLong((String)blogPostingId), search, null, filter,
+				pagination, sorts);
 		}
-		else if (parameters.containsKey("documentId")) {
+		else if (documentId != null) {
 			return getDocumentCommentsPage(
-				_parseLong((String)parameters.get("documentId")), search, null,
-				filter, pagination, sorts);
+				_parseLong((String)documentId), search, null, filter,
+				pagination, sorts);
 		}
-		else if (parameters.containsKey("structuredContentId")) {
+		else if (structuredContentId != null) {
 			return getStructuredContentCommentsPage(
-				_parseLong((String)parameters.get("structuredContentId")),
-				search, null, filter, pagination, sorts);
+				_parseLong((String)structuredContentId), search, null, filter,
+				pagination, sorts);
 		}
 		else {
 			throw new NotSupportedException(

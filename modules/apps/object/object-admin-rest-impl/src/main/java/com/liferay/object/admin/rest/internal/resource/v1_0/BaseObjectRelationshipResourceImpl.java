@@ -655,19 +655,23 @@ public abstract class BaseObjectRelationshipResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("objectDefinitionId")) {
+			Serializable externalReferenceCode = parameters.get(
+				"externalReferenceCode");
+
+			Serializable objectDefinitionId = parameters.get(
+				"objectDefinitionId");
+
+			if (objectDefinitionId != null) {
 				objectRelationshipUnsafeFunction =
 					objectRelationship ->
 						postObjectDefinitionObjectRelationship(
-							_parseLong(
-								(String)parameters.get("objectDefinitionId")),
+							_parseLong((String)objectDefinitionId),
 							objectRelationship);
 			}
-			else if (parameters.containsKey("externalReferenceCode")) {
+			else if (externalReferenceCode != null) {
 				objectRelationshipUnsafeFunction = objectRelationship ->
 					postObjectDefinitionByExternalReferenceCodeObjectRelationship(
-						(String)parameters.get("externalReferenceCode"),
-						objectRelationship);
+						(String)externalReferenceCode, objectRelationship);
 			}
 			else {
 				throw new NotSupportedException(
@@ -774,10 +778,12 @@ public abstract class BaseObjectRelationshipResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("objectDefinitionId")) {
+		Serializable objectDefinitionId = parameters.get("objectDefinitionId");
+
+		if (objectDefinitionId != null) {
 			return getObjectDefinitionObjectRelationshipsPage(
-				_parseLong((String)parameters.get("objectDefinitionId")),
-				search, filter, pagination, sorts);
+				_parseLong((String)objectDefinitionId), search, filter,
+				pagination, sorts);
 		}
 		else {
 			throw new NotSupportedException(

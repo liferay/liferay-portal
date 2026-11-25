@@ -1203,11 +1203,13 @@ public abstract class BaseOrderItemResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("externalReferenceCode")) {
+			Serializable externalReferenceCode = parameters.get(
+				"externalReferenceCode");
+
+			if (externalReferenceCode != null) {
 				orderItemUnsafeFunction =
 					orderItem -> postOrderByExternalReferenceCodeOrderItem(
-						(String)parameters.get("externalReferenceCode"),
-						orderItem);
+						(String)externalReferenceCode, orderItem);
 			}
 			else {
 				throw new NotSupportedException(
@@ -1220,6 +1222,9 @@ public abstract class BaseOrderItemResourceImpl
 				"updateStrategy", "UPDATE");
 
 			if (StringUtil.equalsIgnoreCase(updateStrategy, "PARTIAL_UPDATE")) {
+				Serializable externalReferenceCode = parameters.get(
+					"externalReferenceCode");
+
 				orderItemUnsafeFunction = orderItem -> {
 					OrderItem getOrderItem = null;
 					OrderItem persistedOrderItem = null;
@@ -1232,12 +1237,10 @@ public abstract class BaseOrderItemResourceImpl
 							getOrderItem.getId(), orderItem);
 					}
 					catch (NoSuchModelException noSuchModelException) {
-						if (parameters.containsKey("externalReferenceCode")) {
+						if (externalReferenceCode != null) {
 							persistedOrderItem =
 								postOrderByExternalReferenceCodeOrderItem(
-									(String)parameters.get(
-										"externalReferenceCode"),
-									orderItem);
+									(String)externalReferenceCode, orderItem);
 						}
 						else {
 							throw new NotSupportedException(

@@ -247,9 +247,11 @@ public abstract class BaseDataDefinitionFieldLinkResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("dataDefinitionId")) {
+		Serializable dataDefinitionId = parameters.get("dataDefinitionId");
+
+		if (dataDefinitionId != null) {
 			return getDataDefinitionDataDefinitionFieldLinksPage(
-				_parseLong((String)parameters.get("dataDefinitionId")),
+				_parseLong((String)dataDefinitionId),
 				(String)parameters.get("fieldName"));
 		}
 		else {

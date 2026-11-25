@@ -764,19 +764,21 @@ public abstract class BaseDocumentDataDefinitionTypeResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("assetLibraryId")) {
+			Serializable assetLibraryId = parameters.get("assetLibraryId");
+
+			Serializable siteId = parameters.get("siteId");
+
+			if (assetLibraryId != null) {
 				documentDataDefinitionTypeUnsafeFunction =
 					documentDataDefinitionType ->
 						postAssetLibraryDocumentDataDefinitionType(
-							(Long)parameters.get("assetLibraryId"),
-							documentDataDefinitionType);
+							(Long)assetLibraryId, documentDataDefinitionType);
 			}
-			else if (parameters.containsKey("siteId")) {
+			else if (siteId != null) {
 				documentDataDefinitionTypeUnsafeFunction =
 					documentDataDefinitionType ->
 						postSiteDocumentDataDefinitionType(
-							(Long)parameters.get("siteId"),
-							documentDataDefinitionType);
+							(Long)siteId, documentDataDefinitionType);
 			}
 			else {
 				throw new NotSupportedException(
@@ -878,15 +880,17 @@ public abstract class BaseDocumentDataDefinitionTypeResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("assetLibraryId")) {
+		Serializable assetLibraryId = parameters.get("assetLibraryId");
+
+		Serializable siteId = parameters.get("siteId");
+
+		if (assetLibraryId != null) {
 			return getAssetLibraryDocumentDataDefinitionTypesPage(
-				(Long)parameters.get("assetLibraryId"), search, null, filter,
-				pagination, sorts);
+				(Long)assetLibraryId, search, null, filter, pagination, sorts);
 		}
-		else if (parameters.containsKey("siteId")) {
+		else if (siteId != null) {
 			return getSiteDocumentDataDefinitionTypesPage(
-				(Long)parameters.get("siteId"), search, null, filter,
-				pagination, sorts);
+				(Long)siteId, search, null, filter, pagination, sorts);
 		}
 		else {
 			throw new NotSupportedException(

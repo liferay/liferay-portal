@@ -773,11 +773,13 @@ public abstract class BaseAccountAddressResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("externalReferenceCode")) {
+			Serializable externalReferenceCode = parameters.get(
+				"externalReferenceCode");
+
+			if (externalReferenceCode != null) {
 				accountAddressUnsafeFunction = accountAddress ->
 					postAccountByExternalReferenceCodeAccountAddress(
-						(String)parameters.get("externalReferenceCode"),
-						accountAddress);
+						(String)externalReferenceCode, accountAddress);
 			}
 			else {
 				throw new NotSupportedException(
@@ -790,6 +792,9 @@ public abstract class BaseAccountAddressResourceImpl
 				"updateStrategy", "UPDATE");
 
 			if (StringUtil.equalsIgnoreCase(updateStrategy, "PARTIAL_UPDATE")) {
+				Serializable externalReferenceCode = parameters.get(
+					"externalReferenceCode");
+
 				accountAddressUnsafeFunction = accountAddress -> {
 					AccountAddress getAccountAddress = null;
 					AccountAddress persistedAccountAddress = null;
@@ -803,11 +808,10 @@ public abstract class BaseAccountAddressResourceImpl
 							getAccountAddress.getId(), accountAddress);
 					}
 					catch (NoSuchModelException noSuchModelException) {
-						if (parameters.containsKey("externalReferenceCode")) {
+						if (externalReferenceCode != null) {
 							persistedAccountAddress =
 								postAccountByExternalReferenceCodeAccountAddress(
-									(String)parameters.get(
-										"externalReferenceCode"),
+									(String)externalReferenceCode,
 									accountAddress);
 						}
 						else {

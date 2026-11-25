@@ -459,11 +459,13 @@ public abstract class BaseProductDisplayPageResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("externalReferenceCode")) {
+			Serializable externalReferenceCode = parameters.get(
+				"externalReferenceCode");
+
+			if (externalReferenceCode != null) {
 				productDisplayPageUnsafeFunction = productDisplayPage ->
 					postChannelByExternalReferenceCodeProductDisplayPage(
-						(String)parameters.get("externalReferenceCode"),
-						productDisplayPage);
+						(String)externalReferenceCode, productDisplayPage);
 			}
 			else {
 				throw new NotSupportedException(

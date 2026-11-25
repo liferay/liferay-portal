@@ -1580,10 +1580,12 @@ public abstract class BaseMasterPageResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("siteExternalReferenceCode")) {
+			Serializable siteExternalReferenceCode = parameters.get(
+				"siteExternalReferenceCode");
+
+			if (siteExternalReferenceCode != null) {
 				masterPageUnsafeFunction = masterPage -> postSiteMasterPage(
-					(String)parameters.get("siteExternalReferenceCode"),
-					masterPage);
+					(String)siteExternalReferenceCode, masterPage);
 			}
 			else {
 				throw new NotSupportedException(
@@ -1596,12 +1598,15 @@ public abstract class BaseMasterPageResourceImpl
 				"updateStrategy", "UPDATE");
 
 			if (StringUtil.equalsIgnoreCase(updateStrategy, "UPDATE")) {
+				Serializable siteExternalReferenceCode = parameters.get(
+					"siteExternalReferenceCode");
+
 				masterPageUnsafeFunction = masterPage -> {
 					MasterPage persistedMasterPage = null;
 
-					if (parameters.containsKey("siteExternalReferenceCode")) {
+					if (siteExternalReferenceCode != null) {
 						persistedMasterPage = putSiteMasterPage(
-							(String)parameters.get("siteExternalReferenceCode"),
+							(String)siteExternalReferenceCode,
 							masterPage.getExternalReferenceCode(), masterPage);
 					}
 					else {
@@ -1641,11 +1646,14 @@ public abstract class BaseMasterPageResourceImpl
 			Map<String, Serializable> parameters)
 		throws Exception {
 
+		Serializable siteExternalReferenceCode = parameters.get(
+			"siteExternalReferenceCode");
+
 		UnsafeFunction<MasterPage, MasterPage, Exception>
 			masterPageUnsafeFunction = masterPage -> {
-				if (parameters.containsKey("siteExternalReferenceCode")) {
+				if (siteExternalReferenceCode != null) {
 					deleteSiteMasterPage(
-						(String)parameters.get("siteExternalReferenceCode"),
+						(String)siteExternalReferenceCode,
 						masterPage.getExternalReferenceCode());
 
 					return masterPage;
@@ -1702,10 +1710,13 @@ public abstract class BaseMasterPageResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("siteExternalReferenceCode")) {
+		Serializable siteExternalReferenceCode = parameters.get(
+			"siteExternalReferenceCode");
+
+		if (siteExternalReferenceCode != null) {
 			return getSiteMasterPagesPage(
-				(String)parameters.get("siteExternalReferenceCode"), search,
-				null, filter, pagination, sorts);
+				(String)siteExternalReferenceCode, search, null, filter,
+				pagination, sorts);
 		}
 		else {
 			throw new NotSupportedException(

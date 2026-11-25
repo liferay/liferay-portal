@@ -632,7 +632,9 @@ public abstract class BaseSitePageResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("siteId")) {
+			Serializable siteId = parameters.get("siteId");
+
+			if (siteId != null) {
 				if (!FeatureFlagManagerUtil.isEnabled(
 						CompanyThreadLocal.getCompanyId(), "LPS-178052")) {
 
@@ -640,7 +642,7 @@ public abstract class BaseSitePageResourceImpl
 				}
 
 				sitePageUnsafeFunction = sitePage -> postSiteSitePage(
-					(Long)parameters.get("siteId"), sitePage);
+					(Long)siteId, sitePage);
 			}
 			else {
 				throw new NotSupportedException(
@@ -719,10 +721,11 @@ public abstract class BaseSitePageResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("siteId")) {
+		Serializable siteId = parameters.get("siteId");
+
+		if (siteId != null) {
 			return getSiteSitePagesPage(
-				(Long)parameters.get("siteId"), search, null, filter,
-				pagination, sorts);
+				(Long)siteId, search, null, filter, pagination, sorts);
 		}
 		else {
 			throw new NotSupportedException(

@@ -2552,18 +2552,21 @@ public abstract class BaseUserAccountResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("accountId")) {
+			Serializable accountId = parameters.get("accountId");
+
+			Serializable externalReferenceCode = parameters.get(
+				"externalReferenceCode");
+
+			if (accountId != null) {
 				userAccountUnsafeFunction =
 					userAccount -> postAccountUserAccount(
-						_parseLong((String)parameters.get("accountId")),
-						userAccount);
+						_parseLong((String)accountId), userAccount);
 			}
-			else if (parameters.containsKey("externalReferenceCode")) {
+			else if (externalReferenceCode != null) {
 				userAccountUnsafeFunction =
 					userAccount ->
 						postAccountUserAccountByExternalReferenceCode(
-							(String)parameters.get("externalReferenceCode"),
-							userAccount);
+							(String)externalReferenceCode, userAccount);
 			}
 			else {
 				userAccountUnsafeFunction = userAccount -> postUserAccount(
@@ -2577,6 +2580,11 @@ public abstract class BaseUserAccountResourceImpl
 				"updateStrategy", "UPDATE");
 
 			if (StringUtil.equalsIgnoreCase(updateStrategy, "PARTIAL_UPDATE")) {
+				Serializable accountId = parameters.get("accountId");
+
+				Serializable externalReferenceCode = parameters.get(
+					"externalReferenceCode");
+
 				userAccountUnsafeFunction = userAccount -> {
 					UserAccount getUserAccount = null;
 					UserAccount persistedUserAccount = null;
@@ -2589,19 +2597,14 @@ public abstract class BaseUserAccountResourceImpl
 							getUserAccount.getId(), userAccount);
 					}
 					catch (NoSuchModelException noSuchModelException) {
-						if (parameters.containsKey("accountId")) {
+						if (accountId != null) {
 							persistedUserAccount = postAccountUserAccount(
-								_parseLong((String)parameters.get("accountId")),
-								userAccount);
+								_parseLong((String)accountId), userAccount);
 						}
-						else if (parameters.containsKey(
-									"externalReferenceCode")) {
-
+						else if (externalReferenceCode != null) {
 							persistedUserAccount =
 								postAccountUserAccountByExternalReferenceCode(
-									(String)parameters.get(
-										"externalReferenceCode"),
-									userAccount);
+									(String)externalReferenceCode, userAccount);
 						}
 						else {
 							persistedUserAccount = postUserAccount(
@@ -2731,20 +2734,24 @@ public abstract class BaseUserAccountResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("accountId")) {
+		Serializable accountId = parameters.get("accountId");
+
+		Serializable organizationId = parameters.get("organizationId");
+
+		Serializable siteId = parameters.get("siteId");
+
+		if (accountId != null) {
 			return getAccountUserAccountsPage(
-				_parseLong((String)parameters.get("accountId")), search, filter,
-				pagination, sorts);
-		}
-		else if (parameters.containsKey("organizationId")) {
-			return getOrganizationUserAccountsPage(
-				(String)parameters.get("organizationId"), search, filter,
-				pagination, sorts);
-		}
-		else if (parameters.containsKey("siteId")) {
-			return getSiteUserAccountsPage(
-				(Long)parameters.get("siteId"), search, filter, pagination,
+				_parseLong((String)accountId), search, filter, pagination,
 				sorts);
+		}
+		else if (organizationId != null) {
+			return getOrganizationUserAccountsPage(
+				(String)organizationId, search, filter, pagination, sorts);
+		}
+		else if (siteId != null) {
+			return getSiteUserAccountsPage(
+				(Long)siteId, search, filter, pagination, sorts);
 		}
 		else {
 			return getUserAccountsPage(search, filter, pagination, sorts);

@@ -981,10 +981,11 @@ public abstract class BaseCollaboratorResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("objectEntryId")) {
+		Serializable objectEntryId = parameters.get("objectEntryId");
+
+		if (objectEntryId != null) {
 			return getObjectEntryCollaboratorsPage(
-				_parseLong((String)parameters.get("objectEntryId")),
-				pagination);
+				_parseLong((String)objectEntryId), pagination);
 		}
 		else {
 			throw new NotSupportedException(

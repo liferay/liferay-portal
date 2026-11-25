@@ -628,7 +628,10 @@ public abstract class BaseResourceFileResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("siteExternalReferenceCode")) {
+			Serializable siteExternalReferenceCode = parameters.get(
+				"siteExternalReferenceCode");
+
+			if (siteExternalReferenceCode != null) {
 				if (!FeatureFlagManagerUtil.isEnabled(
 						CompanyThreadLocal.getCompanyId(), "LPD-39244")) {
 
@@ -637,8 +640,7 @@ public abstract class BaseResourceFileResourceImpl
 
 				resourceFileUnsafeFunction =
 					resourceFile -> postSiteResourceFile(
-						(String)parameters.get("siteExternalReferenceCode"),
-						resourceFile);
+						(String)siteExternalReferenceCode, resourceFile);
 			}
 			else {
 				throw new NotSupportedException(
@@ -651,10 +653,13 @@ public abstract class BaseResourceFileResourceImpl
 				"updateStrategy", "UPDATE");
 
 			if (StringUtil.equalsIgnoreCase(updateStrategy, "UPDATE")) {
+				Serializable siteExternalReferenceCode = parameters.get(
+					"siteExternalReferenceCode");
+
 				resourceFileUnsafeFunction = resourceFile -> {
 					ResourceFile persistedResourceFile = null;
 
-					if (parameters.containsKey("siteExternalReferenceCode")) {
+					if (siteExternalReferenceCode != null) {
 						if (!FeatureFlagManagerUtil.isEnabled(
 								CompanyThreadLocal.getCompanyId(),
 								"LPD-39244")) {
@@ -663,7 +668,7 @@ public abstract class BaseResourceFileResourceImpl
 						}
 
 						persistedResourceFile = putSiteResourceFile(
-							(String)parameters.get("siteExternalReferenceCode"),
+							(String)siteExternalReferenceCode,
 							resourceFile.getExternalReferenceCode(),
 							resourceFile);
 					}
@@ -704,9 +709,12 @@ public abstract class BaseResourceFileResourceImpl
 			Map<String, Serializable> parameters)
 		throws Exception {
 
+		Serializable siteExternalReferenceCode = parameters.get(
+			"siteExternalReferenceCode");
+
 		UnsafeFunction<ResourceFile, ResourceFile, Exception>
 			resourceFileUnsafeFunction = resourceFile -> {
-				if (parameters.containsKey("siteExternalReferenceCode")) {
+				if (siteExternalReferenceCode != null) {
 					if (!FeatureFlagManagerUtil.isEnabled(
 							CompanyThreadLocal.getCompanyId(), "LPD-39244")) {
 
@@ -714,7 +722,7 @@ public abstract class BaseResourceFileResourceImpl
 					}
 
 					deleteSiteResourceFile(
-						(String)parameters.get("siteExternalReferenceCode"),
+						(String)siteExternalReferenceCode,
 						resourceFile.getExternalReferenceCode());
 
 					return resourceFile;
@@ -780,7 +788,10 @@ public abstract class BaseResourceFileResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("siteExternalReferenceCode")) {
+		Serializable siteExternalReferenceCode = parameters.get(
+			"siteExternalReferenceCode");
+
+		if (siteExternalReferenceCode != null) {
 			if (!FeatureFlagManagerUtil.isEnabled(
 					CompanyThreadLocal.getCompanyId(), "LPD-39244")) {
 
@@ -788,8 +799,7 @@ public abstract class BaseResourceFileResourceImpl
 			}
 
 			return getSiteResourceFilesPage(
-				(String)parameters.get("siteExternalReferenceCode"), filter,
-				pagination);
+				(String)siteExternalReferenceCode, filter, pagination);
 		}
 		else {
 			throw new NotSupportedException(

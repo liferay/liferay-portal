@@ -335,8 +335,10 @@ public abstract class BaseFormResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("siteId")) {
-			return getSiteFormsPage((Long)parameters.get("siteId"), pagination);
+		Serializable siteId = parameters.get("siteId");
+
+		if (siteId != null) {
+			return getSiteFormsPage((Long)siteId, pagination);
 		}
 		else {
 			throw new NotSupportedException(

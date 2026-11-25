@@ -494,15 +494,19 @@ public abstract class BaseReportEntryResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("importProcessId")) {
+		Serializable importProcessId = parameters.get("importProcessId");
+
+		Serializable publishProcessId = parameters.get("publishProcessId");
+
+		if (importProcessId != null) {
 			return getImportProcessReportEntriesPage(
-				_parseLong((String)parameters.get("importProcessId")), search,
-				filter, pagination, sorts);
+				_parseLong((String)importProcessId), search, filter, pagination,
+				sorts);
 		}
-		else if (parameters.containsKey("publishProcessId")) {
+		else if (publishProcessId != null) {
 			return getPublishProcessReportEntriesPage(
-				_parseLong((String)parameters.get("publishProcessId")), search,
-				filter, pagination, sorts);
+				_parseLong((String)publishProcessId), search, filter,
+				pagination, sorts);
 		}
 		else {
 			throw new NotSupportedException(

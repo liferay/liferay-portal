@@ -663,18 +663,21 @@ public abstract class BaseObjectActionResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("objectDefinitionId")) {
+			Serializable externalReferenceCode = parameters.get(
+				"externalReferenceCode");
+
+			Serializable objectDefinitionId = parameters.get(
+				"objectDefinitionId");
+
+			if (objectDefinitionId != null) {
 				objectActionUnsafeFunction =
 					objectAction -> postObjectDefinitionObjectAction(
-						_parseLong(
-							(String)parameters.get("objectDefinitionId")),
-						objectAction);
+						_parseLong((String)objectDefinitionId), objectAction);
 			}
-			else if (parameters.containsKey("externalReferenceCode")) {
+			else if (externalReferenceCode != null) {
 				objectActionUnsafeFunction = objectAction ->
 					postObjectDefinitionByExternalReferenceCodeObjectAction(
-						(String)parameters.get("externalReferenceCode"),
-						objectAction);
+						(String)externalReferenceCode, objectAction);
 			}
 			else {
 				throw new NotSupportedException(
@@ -763,10 +766,12 @@ public abstract class BaseObjectActionResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("objectDefinitionId")) {
+		Serializable objectDefinitionId = parameters.get("objectDefinitionId");
+
+		if (objectDefinitionId != null) {
 			return getObjectDefinitionObjectActionsPage(
-				_parseLong((String)parameters.get("objectDefinitionId")),
-				search, pagination, sorts);
+				_parseLong((String)objectDefinitionId), search, pagination,
+				sorts);
 		}
 		else {
 			throw new NotSupportedException(

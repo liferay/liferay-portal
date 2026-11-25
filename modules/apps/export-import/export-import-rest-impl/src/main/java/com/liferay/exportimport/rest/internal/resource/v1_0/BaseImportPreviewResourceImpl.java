@@ -417,18 +417,23 @@ public abstract class BaseImportPreviewResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("assetLibraryExternalReferenceCode")) {
+			Serializable assetLibraryExternalReferenceCode = parameters.get(
+				"assetLibraryExternalReferenceCode");
+
+			Serializable siteExternalReferenceCode = parameters.get(
+				"siteExternalReferenceCode");
+
+			if (assetLibraryExternalReferenceCode != null) {
 				importPreviewUnsafeFunction =
 					importPreview -> postAssetLibraryImportPreview(
-						(String)parameters.get(
-							"assetLibraryExternalReferenceCode"),
+						(String)assetLibraryExternalReferenceCode,
 						(String)parameters.get("portletId"),
 						(MultipartBody)null);
 			}
-			else if (parameters.containsKey("siteExternalReferenceCode")) {
+			else if (siteExternalReferenceCode != null) {
 				importPreviewUnsafeFunction =
 					importPreview -> postSiteImportPreview(
-						(String)parameters.get("siteExternalReferenceCode"),
+						(String)siteExternalReferenceCode,
 						(String)parameters.get("portletId"),
 						(String)parameters.get("sitePageExternalReferenceCode"),
 						(MultipartBody)null);

@@ -1351,26 +1351,21 @@ public class ObjectEntry implements Serializable {
 			return getTaxonomyCategoryIds();
 		}
 		else {
-			if (properties.containsKey(propertyName)) {
-				Object value = properties.get(propertyName);
+			Object value = properties.get(propertyName);
 
-				if (!(value instanceof UnsafeSupplier<?, ?>)) {
-					return value;
-				}
+			if (!(value instanceof UnsafeSupplier<?, ?>)) {
+				return value;
+			}
 
-				UnsafeSupplier<?, ?> unsafeSupplier =
-					(UnsafeSupplier<?, ?>)value;
+			UnsafeSupplier<?, ?> unsafeSupplier = (UnsafeSupplier<?, ?>)value;
 
-				try {
-					return unsafeSupplier.get();
-				}
-				catch (Throwable throwable) {
-					throw new RuntimeException(throwable);
-				}
+			try {
+				return unsafeSupplier.get();
+			}
+			catch (Throwable throwable) {
+				throw new RuntimeException(throwable);
 			}
 		}
-
-		return null;
 	}
 
 	public void setPropertyValue(String propertyName, Object propertyValue) {

@@ -409,11 +409,13 @@ public abstract class BaseOrderRuleAccountResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("externalReferenceCode")) {
+			Serializable externalReferenceCode = parameters.get(
+				"externalReferenceCode");
+
+			if (externalReferenceCode != null) {
 				orderRuleAccountUnsafeFunction = orderRuleAccount ->
 					postOrderRuleByExternalReferenceCodeOrderRuleAccount(
-						(String)parameters.get("externalReferenceCode"),
-						orderRuleAccount);
+						(String)externalReferenceCode, orderRuleAccount);
 			}
 			else {
 				throw new NotSupportedException(

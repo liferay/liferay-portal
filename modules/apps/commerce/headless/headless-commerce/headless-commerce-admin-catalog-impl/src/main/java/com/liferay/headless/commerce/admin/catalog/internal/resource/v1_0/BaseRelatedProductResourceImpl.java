@@ -442,11 +442,13 @@ public abstract class BaseRelatedProductResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("externalReferenceCode")) {
+			Serializable externalReferenceCode = parameters.get(
+				"externalReferenceCode");
+
+			if (externalReferenceCode != null) {
 				relatedProductUnsafeFunction = relatedProduct ->
 					postProductByExternalReferenceCodeRelatedProduct(
-						(String)parameters.get("externalReferenceCode"),
-						relatedProduct);
+						(String)externalReferenceCode, relatedProduct);
 			}
 			else {
 				throw new NotSupportedException(

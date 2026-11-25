@@ -804,18 +804,22 @@ public abstract class BaseMessageBoardAttachmentResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("messageBoardMessageId")) {
+			Serializable messageBoardMessageId = parameters.get(
+				"messageBoardMessageId");
+
+			Serializable messageBoardThreadId = parameters.get(
+				"messageBoardThreadId");
+
+			if (messageBoardMessageId != null) {
 				messageBoardAttachmentUnsafeFunction = messageBoardAttachment ->
 					postMessageBoardMessageMessageBoardAttachment(
-						_parseLong(
-							(String)parameters.get("messageBoardMessageId")),
+						_parseLong((String)messageBoardMessageId),
 						(MultipartBody)null);
 			}
-			else if (parameters.containsKey("messageBoardThreadId")) {
+			else if (messageBoardThreadId != null) {
 				messageBoardAttachmentUnsafeFunction = messageBoardAttachment ->
 					postMessageBoardThreadMessageBoardAttachment(
-						_parseLong(
-							(String)parameters.get("messageBoardThreadId")),
+						_parseLong((String)messageBoardThreadId),
 						(MultipartBody)null);
 			}
 			else {
@@ -916,13 +920,19 @@ public abstract class BaseMessageBoardAttachmentResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("messageBoardMessageId")) {
+		Serializable messageBoardMessageId = parameters.get(
+			"messageBoardMessageId");
+
+		Serializable messageBoardThreadId = parameters.get(
+			"messageBoardThreadId");
+
+		if (messageBoardMessageId != null) {
 			return getMessageBoardMessageMessageBoardAttachmentsPage(
-				_parseLong((String)parameters.get("messageBoardMessageId")));
+				_parseLong((String)messageBoardMessageId));
 		}
-		else if (parameters.containsKey("messageBoardThreadId")) {
+		else if (messageBoardThreadId != null) {
 			return getMessageBoardThreadMessageBoardAttachmentsPage(
-				_parseLong((String)parameters.get("messageBoardThreadId")));
+				_parseLong((String)messageBoardThreadId));
 		}
 		else {
 			throw new NotSupportedException(

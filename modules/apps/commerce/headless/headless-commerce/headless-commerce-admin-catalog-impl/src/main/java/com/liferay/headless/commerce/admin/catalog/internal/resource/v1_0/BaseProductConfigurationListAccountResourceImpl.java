@@ -437,11 +437,14 @@ public abstract class BaseProductConfigurationListAccountResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("externalReferenceCode")) {
+			Serializable externalReferenceCode = parameters.get(
+				"externalReferenceCode");
+
+			if (externalReferenceCode != null) {
 				productConfigurationListAccountUnsafeFunction =
 					productConfigurationListAccount ->
 						postProductConfigurationListByExternalReferenceCodeProductConfigurationListAccount(
-							(String)parameters.get("externalReferenceCode"),
+							(String)externalReferenceCode,
 							productConfigurationListAccount);
 			}
 			else {

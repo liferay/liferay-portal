@@ -392,11 +392,13 @@ public abstract class BaseDiscountOrderTypeResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("externalReferenceCode")) {
+			Serializable externalReferenceCode = parameters.get(
+				"externalReferenceCode");
+
+			if (externalReferenceCode != null) {
 				discountOrderTypeUnsafeFunction = discountOrderType ->
 					postDiscountByExternalReferenceCodeDiscountOrderType(
-						(String)parameters.get("externalReferenceCode"),
-						discountOrderType);
+						(String)externalReferenceCode, discountOrderType);
 			}
 			else {
 				throw new NotSupportedException(

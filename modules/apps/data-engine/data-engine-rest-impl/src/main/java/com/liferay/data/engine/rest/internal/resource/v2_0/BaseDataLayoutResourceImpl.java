@@ -596,11 +596,12 @@ public abstract class BaseDataLayoutResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("dataDefinitionId")) {
+			Serializable dataDefinitionId = parameters.get("dataDefinitionId");
+
+			if (dataDefinitionId != null) {
 				dataLayoutUnsafeFunction =
 					dataLayout -> postDataDefinitionDataLayout(
-						_parseLong((String)parameters.get("dataDefinitionId")),
-						dataLayout);
+						_parseLong((String)dataDefinitionId), dataLayout);
 			}
 			else {
 				throw new NotSupportedException(
@@ -689,9 +690,11 @@ public abstract class BaseDataLayoutResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("dataDefinitionId")) {
+		Serializable dataDefinitionId = parameters.get("dataDefinitionId");
+
+		if (dataDefinitionId != null) {
 			return getDataDefinitionDataLayoutsPage(
-				_parseLong((String)parameters.get("dataDefinitionId")),
+				_parseLong((String)dataDefinitionId),
 				(String)parameters.get("keywords"), pagination, sorts);
 		}
 		else {

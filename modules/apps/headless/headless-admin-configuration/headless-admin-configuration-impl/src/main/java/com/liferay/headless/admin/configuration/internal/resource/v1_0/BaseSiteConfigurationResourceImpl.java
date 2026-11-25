@@ -381,7 +381,10 @@ public abstract class BaseSiteConfigurationResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("siteExternalReferenceCode")) {
+			Serializable siteExternalReferenceCode = parameters.get(
+				"siteExternalReferenceCode");
+
+			if (siteExternalReferenceCode != null) {
 				if (!FeatureFlagManagerUtil.isEnabled(
 						CompanyThreadLocal.getCompanyId(), "LPD-65399")) {
 
@@ -390,8 +393,7 @@ public abstract class BaseSiteConfigurationResourceImpl
 
 				siteConfigurationUnsafeFunction =
 					siteConfiguration -> postSiteSiteConfiguration(
-						(String)parameters.get("siteExternalReferenceCode"),
-						siteConfiguration);
+						(String)siteExternalReferenceCode, siteConfiguration);
 			}
 			else {
 				throw new NotSupportedException(
@@ -404,10 +406,13 @@ public abstract class BaseSiteConfigurationResourceImpl
 				"updateStrategy", "UPDATE");
 
 			if (StringUtil.equalsIgnoreCase(updateStrategy, "UPDATE")) {
+				Serializable siteExternalReferenceCode = parameters.get(
+					"siteExternalReferenceCode");
+
 				siteConfigurationUnsafeFunction = siteConfiguration -> {
 					SiteConfiguration persistedSiteConfiguration = null;
 
-					if (parameters.containsKey("siteExternalReferenceCode")) {
+					if (siteExternalReferenceCode != null) {
 						if (!FeatureFlagManagerUtil.isEnabled(
 								CompanyThreadLocal.getCompanyId(),
 								"LPD-65399")) {
@@ -416,7 +421,7 @@ public abstract class BaseSiteConfigurationResourceImpl
 						}
 
 						persistedSiteConfiguration = putSiteSiteConfiguration(
-							(String)parameters.get("siteExternalReferenceCode"),
+							(String)siteExternalReferenceCode,
 							siteConfiguration.getExternalReferenceCode(),
 							siteConfiguration);
 					}
@@ -502,7 +507,10 @@ public abstract class BaseSiteConfigurationResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("siteExternalReferenceCode")) {
+		Serializable siteExternalReferenceCode = parameters.get(
+			"siteExternalReferenceCode");
+
+		if (siteExternalReferenceCode != null) {
 			if (!FeatureFlagManagerUtil.isEnabled(
 					CompanyThreadLocal.getCompanyId(), "LPD-65399")) {
 
@@ -510,8 +518,7 @@ public abstract class BaseSiteConfigurationResourceImpl
 			}
 
 			return getSiteSiteConfigurationsPage(
-				(String)parameters.get("siteExternalReferenceCode"),
-				pagination);
+				(String)siteExternalReferenceCode, pagination);
 		}
 		else {
 			throw new NotSupportedException(

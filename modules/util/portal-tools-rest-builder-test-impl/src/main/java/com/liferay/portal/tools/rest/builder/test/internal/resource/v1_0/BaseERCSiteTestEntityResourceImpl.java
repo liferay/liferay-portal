@@ -722,11 +722,13 @@ public abstract class BaseERCSiteTestEntityResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("siteExternalReferenceCode")) {
+			Serializable siteExternalReferenceCode = parameters.get(
+				"siteExternalReferenceCode");
+
+			if (siteExternalReferenceCode != null) {
 				ercSiteTestEntityUnsafeFunction =
 					ercSiteTestEntity -> postSiteERCSiteTestEntity(
-						(String)parameters.get("siteExternalReferenceCode"),
-						ercSiteTestEntity);
+						(String)siteExternalReferenceCode, ercSiteTestEntity);
 			}
 			else {
 				throw new NotSupportedException(
@@ -739,12 +741,15 @@ public abstract class BaseERCSiteTestEntityResourceImpl
 				"updateStrategy", "UPDATE");
 
 			if (StringUtil.equalsIgnoreCase(updateStrategy, "UPDATE")) {
+				Serializable siteExternalReferenceCode = parameters.get(
+					"siteExternalReferenceCode");
+
 				ercSiteTestEntityUnsafeFunction = ercSiteTestEntity -> {
 					ERCSiteTestEntity persistedERCSiteTestEntity = null;
 
-					if (parameters.containsKey("siteExternalReferenceCode")) {
+					if (siteExternalReferenceCode != null) {
 						persistedERCSiteTestEntity = putSiteERCSiteTestEntity(
-							(String)parameters.get("siteExternalReferenceCode"),
+							(String)siteExternalReferenceCode,
 							ercSiteTestEntity.getExternalReferenceCode(),
 							ercSiteTestEntity);
 					}
@@ -785,11 +790,14 @@ public abstract class BaseERCSiteTestEntityResourceImpl
 			Map<String, Serializable> parameters)
 		throws Exception {
 
+		Serializable siteExternalReferenceCode = parameters.get(
+			"siteExternalReferenceCode");
+
 		UnsafeFunction<ERCSiteTestEntity, ERCSiteTestEntity, Exception>
 			ercSiteTestEntityUnsafeFunction = ercSiteTestEntity -> {
-				if (parameters.containsKey("siteExternalReferenceCode")) {
+				if (siteExternalReferenceCode != null) {
 					deleteSiteERCSiteTestEntity(
-						(String)parameters.get("siteExternalReferenceCode"),
+						(String)siteExternalReferenceCode,
 						ercSiteTestEntity.getExternalReferenceCode());
 
 					return ercSiteTestEntity;
@@ -846,9 +854,12 @@ public abstract class BaseERCSiteTestEntityResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("siteExternalReferenceCode")) {
+		Serializable siteExternalReferenceCode = parameters.get(
+			"siteExternalReferenceCode");
+
+		if (siteExternalReferenceCode != null) {
 			return getSiteERCSiteTestEntitiesPage(
-				(String)parameters.get("siteExternalReferenceCode"));
+				(String)siteExternalReferenceCode);
 		}
 		else {
 			throw new NotSupportedException(

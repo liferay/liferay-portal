@@ -1248,19 +1248,24 @@ public abstract class BaseExportProcessResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("assetLibraryExternalReferenceCode")) {
+			Serializable assetLibraryExternalReferenceCode = parameters.get(
+				"assetLibraryExternalReferenceCode");
+
+			Serializable siteExternalReferenceCode = parameters.get(
+				"siteExternalReferenceCode");
+
+			if (assetLibraryExternalReferenceCode != null) {
 				exportProcessUnsafeFunction =
 					exportProcess -> postAssetLibraryExportProcess(
-						(String)parameters.get(
-							"assetLibraryExternalReferenceCode"),
+						(String)assetLibraryExternalReferenceCode,
 						(String)parameters.get("portletId"),
 						(ExportProcessRequest)parameters.get(
 							"exportProcessRequest"));
 			}
-			else if (parameters.containsKey("siteExternalReferenceCode")) {
+			else if (siteExternalReferenceCode != null) {
 				exportProcessUnsafeFunction =
 					exportProcess -> postSiteExportProcess(
-						(String)parameters.get("siteExternalReferenceCode"),
+						(String)siteExternalReferenceCode,
 						(String)parameters.get("portletId"),
 						(String)parameters.get("sitePageExternalReferenceCode"),
 						(ExportProcessRequest)parameters.get(
@@ -1356,17 +1361,23 @@ public abstract class BaseExportProcessResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("assetLibraryExternalReferenceCode")) {
+		Serializable assetLibraryExternalReferenceCode = parameters.get(
+			"assetLibraryExternalReferenceCode");
+
+		Serializable siteExternalReferenceCode = parameters.get(
+			"siteExternalReferenceCode");
+
+		if (assetLibraryExternalReferenceCode != null) {
 			return getAssetLibraryExportProcessesPage(
-				(String)parameters.get("assetLibraryExternalReferenceCode"),
+				(String)assetLibraryExternalReferenceCode,
 				_parseLong((String)parameters.get("creatorId")),
 				(String)parameters.get("portletId"), search,
 				_parseInteger((String)parameters.get("status")), pagination,
 				sorts);
 		}
-		else if (parameters.containsKey("siteExternalReferenceCode")) {
+		else if (siteExternalReferenceCode != null) {
 			return getSiteExportProcessesPage(
-				(String)parameters.get("siteExternalReferenceCode"),
+				(String)siteExternalReferenceCode,
 				_parseLong((String)parameters.get("creatorId")),
 				(String)parameters.get("portletId"), search,
 				(String)parameters.get("sitePageExternalReferenceCode"),

@@ -404,11 +404,13 @@ public abstract class BaseWarehouseOrderTypeResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("externalReferenceCode")) {
+			Serializable externalReferenceCode = parameters.get(
+				"externalReferenceCode");
+
+			if (externalReferenceCode != null) {
 				warehouseOrderTypeUnsafeFunction = warehouseOrderType ->
 					postWarehouseByExternalReferenceCodeWarehouseOrderType(
-						(String)parameters.get("externalReferenceCode"),
-						warehouseOrderType);
+						(String)externalReferenceCode, warehouseOrderType);
 			}
 			else {
 				throw new NotSupportedException(

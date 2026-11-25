@@ -431,11 +431,13 @@ public abstract class BaseDiscountProductGroupResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("externalReferenceCode")) {
+			Serializable externalReferenceCode = parameters.get(
+				"externalReferenceCode");
+
+			if (externalReferenceCode != null) {
 				discountProductGroupUnsafeFunction = discountProductGroup ->
 					postDiscountByExternalReferenceCodeDiscountProductGroup(
-						(String)parameters.get("externalReferenceCode"),
-						discountProductGroup);
+						(String)externalReferenceCode, discountProductGroup);
 			}
 			else {
 				throw new NotSupportedException(

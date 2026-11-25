@@ -417,11 +417,13 @@ public abstract class BaseOrderRuleChannelResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("externalReferenceCode")) {
+			Serializable externalReferenceCode = parameters.get(
+				"externalReferenceCode");
+
+			if (externalReferenceCode != null) {
 				orderRuleChannelUnsafeFunction = orderRuleChannel ->
 					postOrderRuleByExternalReferenceCodeOrderRuleChannel(
-						(String)parameters.get("externalReferenceCode"),
-						orderRuleChannel);
+						(String)externalReferenceCode, orderRuleChannel);
 			}
 			else {
 				throw new NotSupportedException(

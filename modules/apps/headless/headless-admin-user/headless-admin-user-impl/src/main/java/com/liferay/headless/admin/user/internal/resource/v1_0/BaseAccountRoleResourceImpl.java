@@ -1005,18 +1005,21 @@ public abstract class BaseAccountRoleResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("accountId")) {
+			Serializable accountId = parameters.get("accountId");
+
+			Serializable externalReferenceCode = parameters.get(
+				"externalReferenceCode");
+
+			if (accountId != null) {
 				accountRoleUnsafeFunction =
 					accountRole -> postAccountAccountRole(
-						_parseLong((String)parameters.get("accountId")),
-						accountRole);
+						_parseLong((String)accountId), accountRole);
 			}
-			else if (parameters.containsKey("externalReferenceCode")) {
+			else if (externalReferenceCode != null) {
 				accountRoleUnsafeFunction =
 					accountRole ->
 						postAccountAccountRoleByExternalReferenceCode(
-							(String)parameters.get("externalReferenceCode"),
-							accountRole);
+							(String)externalReferenceCode, accountRole);
 			}
 			else {
 				throw new NotSupportedException(
@@ -1087,9 +1090,11 @@ public abstract class BaseAccountRoleResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("accountId")) {
+		Serializable accountId = parameters.get("accountId");
+
+		if (accountId != null) {
 			return getAccountAccountRolesPage(
-				_parseLong((String)parameters.get("accountId")),
+				_parseLong((String)accountId),
 				(String)parameters.get("keywords"), filter, pagination, sorts);
 		}
 		else {

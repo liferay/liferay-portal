@@ -886,9 +886,11 @@ public abstract class BaseWorkflowTaskResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("workflowInstanceId")) {
+		Serializable workflowInstanceId = parameters.get("workflowInstanceId");
+
+		if (workflowInstanceId != null) {
 			return getWorkflowInstanceWorkflowTasksPage(
-				_parseLong((String)parameters.get("workflowInstanceId")),
+				_parseLong((String)workflowInstanceId),
 				_parseBoolean((String)parameters.get("completed")), pagination);
 		}
 		else {

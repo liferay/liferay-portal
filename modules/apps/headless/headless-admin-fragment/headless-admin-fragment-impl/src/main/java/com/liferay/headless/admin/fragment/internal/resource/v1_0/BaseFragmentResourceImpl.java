@@ -564,7 +564,10 @@ public abstract class BaseFragmentResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("siteExternalReferenceCode")) {
+			Serializable siteExternalReferenceCode = parameters.get(
+				"siteExternalReferenceCode");
+
+			if (siteExternalReferenceCode != null) {
 				if (!FeatureFlagManagerUtil.isEnabled(
 						CompanyThreadLocal.getCompanyId(), "LPD-39244")) {
 
@@ -572,8 +575,7 @@ public abstract class BaseFragmentResourceImpl
 				}
 
 				fragmentUnsafeFunction = fragment -> postSiteFragment(
-					(String)parameters.get("siteExternalReferenceCode"),
-					fragment);
+					(String)siteExternalReferenceCode, fragment);
 			}
 			else {
 				throw new NotSupportedException(
@@ -586,10 +588,13 @@ public abstract class BaseFragmentResourceImpl
 				"updateStrategy", "UPDATE");
 
 			if (StringUtil.equalsIgnoreCase(updateStrategy, "UPDATE")) {
+				Serializable siteExternalReferenceCode = parameters.get(
+					"siteExternalReferenceCode");
+
 				fragmentUnsafeFunction = fragment -> {
 					Fragment persistedFragment = null;
 
-					if (parameters.containsKey("siteExternalReferenceCode")) {
+					if (siteExternalReferenceCode != null) {
 						if (!FeatureFlagManagerUtil.isEnabled(
 								CompanyThreadLocal.getCompanyId(),
 								"LPD-39244")) {
@@ -598,7 +603,7 @@ public abstract class BaseFragmentResourceImpl
 						}
 
 						persistedFragment = putSiteFragment(
-							(String)parameters.get("siteExternalReferenceCode"),
+							(String)siteExternalReferenceCode,
 							fragment.getExternalReferenceCode(), fragment);
 					}
 					else {
@@ -638,9 +643,12 @@ public abstract class BaseFragmentResourceImpl
 			Map<String, Serializable> parameters)
 		throws Exception {
 
+		Serializable siteExternalReferenceCode = parameters.get(
+			"siteExternalReferenceCode");
+
 		UnsafeFunction<Fragment, Fragment, Exception> fragmentUnsafeFunction =
 			fragment -> {
-				if (parameters.containsKey("siteExternalReferenceCode")) {
+				if (siteExternalReferenceCode != null) {
 					if (!FeatureFlagManagerUtil.isEnabled(
 							CompanyThreadLocal.getCompanyId(), "LPD-39244")) {
 
@@ -648,7 +656,7 @@ public abstract class BaseFragmentResourceImpl
 					}
 
 					deleteSiteFragment(
-						(String)parameters.get("siteExternalReferenceCode"),
+						(String)siteExternalReferenceCode,
 						fragment.getExternalReferenceCode());
 
 					return fragment;
@@ -714,7 +722,10 @@ public abstract class BaseFragmentResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("siteExternalReferenceCode")) {
+		Serializable siteExternalReferenceCode = parameters.get(
+			"siteExternalReferenceCode");
+
+		if (siteExternalReferenceCode != null) {
 			if (!FeatureFlagManagerUtil.isEnabled(
 					CompanyThreadLocal.getCompanyId(), "LPD-39244")) {
 
@@ -722,8 +733,7 @@ public abstract class BaseFragmentResourceImpl
 			}
 
 			return getSiteFragmentsPage(
-				(String)parameters.get("siteExternalReferenceCode"), filter,
-				pagination);
+				(String)siteExternalReferenceCode, filter, pagination);
 		}
 		else {
 			throw new NotSupportedException(

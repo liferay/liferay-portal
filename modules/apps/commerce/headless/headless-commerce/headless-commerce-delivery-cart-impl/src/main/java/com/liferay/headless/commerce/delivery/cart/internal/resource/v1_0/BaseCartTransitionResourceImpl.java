@@ -284,11 +284,12 @@ public abstract class BaseCartTransitionResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("cartId")) {
+			Serializable cartId = parameters.get("cartId");
+
+			if (cartId != null) {
 				cartTransitionUnsafeFunction =
 					cartTransition -> postCartCartTransition(
-						_parseLong((String)parameters.get("cartId")),
-						cartTransition);
+						_parseLong((String)cartId), cartTransition);
 			}
 			else {
 				throw new NotSupportedException(
@@ -359,9 +360,10 @@ public abstract class BaseCartTransitionResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("cartId")) {
-			return getCartCartTransitionsPage(
-				_parseLong((String)parameters.get("cartId")));
+		Serializable cartId = parameters.get("cartId");
+
+		if (cartId != null) {
+			return getCartCartTransitionsPage(_parseLong((String)cartId));
 		}
 		else {
 			throw new NotSupportedException(

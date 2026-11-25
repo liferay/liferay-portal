@@ -829,17 +829,21 @@ public abstract class BaseEmailAddressResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("accountId")) {
-			return getAccountEmailAddressesPage(
-				_parseLong((String)parameters.get("accountId")));
+		Serializable accountId = parameters.get("accountId");
+
+		Serializable organizationId = parameters.get("organizationId");
+
+		Serializable userAccountId = parameters.get("userAccountId");
+
+		if (accountId != null) {
+			return getAccountEmailAddressesPage(_parseLong((String)accountId));
 		}
-		else if (parameters.containsKey("organizationId")) {
-			return getOrganizationEmailAddressesPage(
-				(String)parameters.get("organizationId"));
+		else if (organizationId != null) {
+			return getOrganizationEmailAddressesPage((String)organizationId);
 		}
-		else if (parameters.containsKey("userAccountId")) {
+		else if (userAccountId != null) {
 			return getUserAccountEmailAddressesPage(
-				_parseLong((String)parameters.get("userAccountId")));
+				_parseLong((String)userAccountId));
 		}
 		else {
 			throw new NotSupportedException(

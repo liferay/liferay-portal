@@ -1322,11 +1322,14 @@ public abstract class BaseDisplayPageTemplateFolderResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("siteExternalReferenceCode")) {
+			Serializable siteExternalReferenceCode = parameters.get(
+				"siteExternalReferenceCode");
+
+			if (siteExternalReferenceCode != null) {
 				displayPageTemplateFolderUnsafeFunction =
 					displayPageTemplateFolder ->
 						postSiteDisplayPageTemplateFolder(
-							(String)parameters.get("siteExternalReferenceCode"),
+							(String)siteExternalReferenceCode,
 							displayPageTemplateFolder);
 			}
 			else {
@@ -1340,18 +1343,18 @@ public abstract class BaseDisplayPageTemplateFolderResourceImpl
 				"updateStrategy", "UPDATE");
 
 			if (StringUtil.equalsIgnoreCase(updateStrategy, "UPDATE")) {
+				Serializable siteExternalReferenceCode = parameters.get(
+					"siteExternalReferenceCode");
+
 				displayPageTemplateFolderUnsafeFunction =
 					displayPageTemplateFolder -> {
 						DisplayPageTemplateFolder
 							persistedDisplayPageTemplateFolder = null;
 
-						if (parameters.containsKey(
-								"siteExternalReferenceCode")) {
-
+						if (siteExternalReferenceCode != null) {
 							persistedDisplayPageTemplateFolder =
 								putSiteDisplayPageTemplateFolder(
-									(String)parameters.get(
-										"siteExternalReferenceCode"),
+									(String)siteExternalReferenceCode,
 									displayPageTemplateFolder.
 										getExternalReferenceCode(),
 									displayPageTemplateFolder);
@@ -1398,16 +1401,16 @@ public abstract class BaseDisplayPageTemplateFolderResourceImpl
 			Map<String, Serializable> parameters)
 		throws Exception {
 
+		Serializable siteExternalReferenceCode = parameters.get(
+			"siteExternalReferenceCode");
+
 		UnsafeFunction
 			<DisplayPageTemplateFolder, DisplayPageTemplateFolder, Exception>
 				displayPageTemplateFolderUnsafeFunction =
 					displayPageTemplateFolder -> {
-						if (parameters.containsKey(
-								"siteExternalReferenceCode")) {
-
+						if (siteExternalReferenceCode != null) {
 							deleteSiteDisplayPageTemplateFolder(
-								(String)parameters.get(
-									"siteExternalReferenceCode"),
+								(String)siteExternalReferenceCode,
 								displayPageTemplateFolder.
 									getExternalReferenceCode());
 
@@ -1470,10 +1473,13 @@ public abstract class BaseDisplayPageTemplateFolderResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("siteExternalReferenceCode")) {
+		Serializable siteExternalReferenceCode = parameters.get(
+			"siteExternalReferenceCode");
+
+		if (siteExternalReferenceCode != null) {
 			return getSiteDisplayPageTemplateFoldersPage(
-				(String)parameters.get("siteExternalReferenceCode"), search,
-				null, filter, pagination, sorts);
+				(String)siteExternalReferenceCode, search, null, filter,
+				pagination, sorts);
 		}
 		else {
 			throw new NotSupportedException(

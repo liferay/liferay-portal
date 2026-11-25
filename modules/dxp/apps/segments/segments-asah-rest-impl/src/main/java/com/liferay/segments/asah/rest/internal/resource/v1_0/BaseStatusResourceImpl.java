@@ -166,11 +166,12 @@ public abstract class BaseStatusResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("experimentId")) {
+			Serializable experimentId = parameters.get("experimentId");
+
+			if (experimentId != null) {
 				statusUnsafeFunction = status -> {
 					postExperimentStatus(
-						_parseLong((String)parameters.get("experimentId")),
-						status);
+						_parseLong((String)experimentId), status);
 
 					return null;
 				};

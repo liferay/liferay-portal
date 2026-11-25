@@ -815,17 +815,20 @@ public abstract class BaseWebUrlResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("accountId")) {
-			return getAccountWebUrlsPage(
-				_parseLong((String)parameters.get("accountId")));
+		Serializable accountId = parameters.get("accountId");
+
+		Serializable organizationId = parameters.get("organizationId");
+
+		Serializable userAccountId = parameters.get("userAccountId");
+
+		if (accountId != null) {
+			return getAccountWebUrlsPage(_parseLong((String)accountId));
 		}
-		else if (parameters.containsKey("organizationId")) {
-			return getOrganizationWebUrlsPage(
-				(String)parameters.get("organizationId"));
+		else if (organizationId != null) {
+			return getOrganizationWebUrlsPage((String)organizationId);
 		}
-		else if (parameters.containsKey("userAccountId")) {
-			return getUserAccountWebUrlsPage(
-				_parseLong((String)parameters.get("userAccountId")));
+		else if (userAccountId != null) {
+			return getUserAccountWebUrlsPage(_parseLong((String)userAccountId));
 		}
 		else {
 			throw new NotSupportedException(

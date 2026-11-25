@@ -1916,17 +1916,21 @@ public abstract class BaseKnowledgeBaseArticleResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("knowledgeBaseFolderId")) {
+			Serializable knowledgeBaseFolderId = parameters.get(
+				"knowledgeBaseFolderId");
+
+			Serializable siteId = parameters.get("siteId");
+
+			if (knowledgeBaseFolderId != null) {
 				knowledgeBaseArticleUnsafeFunction = knowledgeBaseArticle ->
 					postKnowledgeBaseFolderKnowledgeBaseArticle(
-						_parseLong(
-							(String)parameters.get("knowledgeBaseFolderId")),
+						_parseLong((String)knowledgeBaseFolderId),
 						knowledgeBaseArticle);
 			}
-			else if (parameters.containsKey("siteId")) {
+			else if (siteId != null) {
 				knowledgeBaseArticleUnsafeFunction =
 					knowledgeBaseArticle -> postSiteKnowledgeBaseArticle(
-						(Long)parameters.get("siteId"), knowledgeBaseArticle);
+						(Long)siteId, knowledgeBaseArticle);
 			}
 			else {
 				throw new NotSupportedException(
@@ -1939,15 +1943,20 @@ public abstract class BaseKnowledgeBaseArticleResourceImpl
 				"updateStrategy", "UPDATE");
 
 			if (StringUtil.equalsIgnoreCase(updateStrategy, "PARTIAL_UPDATE")) {
+				Serializable knowledgeBaseFolderId = parameters.get(
+					"knowledgeBaseFolderId");
+
+				Serializable siteId = parameters.get("siteId");
+
 				knowledgeBaseArticleUnsafeFunction = knowledgeBaseArticle -> {
 					KnowledgeBaseArticle getKnowledgeBaseArticle = null;
 					KnowledgeBaseArticle persistedKnowledgeBaseArticle = null;
 
 					try {
-						if (parameters.containsKey("siteId")) {
+						if (siteId != null) {
 							getKnowledgeBaseArticle =
 								getSiteKnowledgeBaseArticleByExternalReferenceCode(
-									(Long)parameters.get("siteId"),
+									(Long)siteId,
 									knowledgeBaseArticle.
 										getExternalReferenceCode());
 						}
@@ -1962,19 +1971,16 @@ public abstract class BaseKnowledgeBaseArticleResourceImpl
 								knowledgeBaseArticle);
 					}
 					catch (NoSuchModelException noSuchModelException) {
-						if (parameters.containsKey("knowledgeBaseFolderId")) {
+						if (knowledgeBaseFolderId != null) {
 							persistedKnowledgeBaseArticle =
 								postKnowledgeBaseFolderKnowledgeBaseArticle(
-									_parseLong(
-										(String)parameters.get(
-											"knowledgeBaseFolderId")),
+									_parseLong((String)knowledgeBaseFolderId),
 									knowledgeBaseArticle);
 						}
-						else if (parameters.containsKey("siteId")) {
+						else if (siteId != null) {
 							persistedKnowledgeBaseArticle =
 								postSiteKnowledgeBaseArticle(
-									(Long)parameters.get("siteId"),
-									knowledgeBaseArticle);
+									(Long)siteId, knowledgeBaseArticle);
 						}
 						else {
 							throw new NotSupportedException(
@@ -1987,13 +1993,15 @@ public abstract class BaseKnowledgeBaseArticleResourceImpl
 			}
 
 			if (StringUtil.equalsIgnoreCase(updateStrategy, "UPDATE")) {
+				Serializable siteId = parameters.get("siteId");
+
 				knowledgeBaseArticleUnsafeFunction = knowledgeBaseArticle -> {
 					KnowledgeBaseArticle persistedKnowledgeBaseArticle = null;
 
-					if (parameters.containsKey("siteId")) {
+					if (siteId != null) {
 						persistedKnowledgeBaseArticle =
 							putSiteKnowledgeBaseArticleByExternalReferenceCode(
-								(Long)parameters.get("siteId"),
+								(Long)siteId,
 								knowledgeBaseArticle.getExternalReferenceCode(),
 								knowledgeBaseArticle);
 					}
@@ -2037,6 +2045,8 @@ public abstract class BaseKnowledgeBaseArticleResourceImpl
 			Map<String, Serializable> parameters)
 		throws Exception {
 
+		Serializable siteId = parameters.get("siteId");
+
 		UnsafeFunction<KnowledgeBaseArticle, KnowledgeBaseArticle, Exception>
 			knowledgeBaseArticleUnsafeFunction = knowledgeBaseArticle -> {
 				if (knowledgeBaseArticle.getId() != null) {
@@ -2050,9 +2060,9 @@ public abstract class BaseKnowledgeBaseArticleResourceImpl
 						if (knowledgeBaseArticle.getExternalReferenceCode() !=
 								null) {
 
-							if (parameters.containsKey("siteId")) {
+							if (siteId != null) {
 								deleteSiteKnowledgeBaseArticleByExternalReferenceCode(
-									(Long)parameters.get("siteId"),
+									(Long)siteId,
 									knowledgeBaseArticle.
 										getExternalReferenceCode());
 
@@ -2061,9 +2071,9 @@ public abstract class BaseKnowledgeBaseArticleResourceImpl
 						}
 					}
 				}
-				else if (parameters.containsKey("siteId")) {
+				else if (siteId != null) {
 					deleteSiteKnowledgeBaseArticleByExternalReferenceCode(
-						(Long)parameters.get("siteId"),
+						(Long)siteId,
 						knowledgeBaseArticle.getExternalReferenceCode());
 
 					return knowledgeBaseArticle;
@@ -2123,17 +2133,21 @@ public abstract class BaseKnowledgeBaseArticleResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("knowledgeBaseFolderId")) {
+		Serializable knowledgeBaseFolderId = parameters.get(
+			"knowledgeBaseFolderId");
+
+		Serializable siteId = parameters.get("siteId");
+
+		if (knowledgeBaseFolderId != null) {
 			return getKnowledgeBaseFolderKnowledgeBaseArticlesPage(
-				_parseLong((String)parameters.get("knowledgeBaseFolderId")),
+				_parseLong((String)knowledgeBaseFolderId),
 				_parseBoolean((String)parameters.get("flatten")), search, null,
 				filter, pagination, sorts);
 		}
-		else if (parameters.containsKey("siteId")) {
+		else if (siteId != null) {
 			return getSiteKnowledgeBaseArticlesPage(
-				(Long)parameters.get("siteId"),
-				_parseBoolean((String)parameters.get("flatten")), search, null,
-				filter, pagination, sorts);
+				(Long)siteId, _parseBoolean((String)parameters.get("flatten")),
+				search, null, filter, pagination, sorts);
 		}
 		else {
 			throw new NotSupportedException(

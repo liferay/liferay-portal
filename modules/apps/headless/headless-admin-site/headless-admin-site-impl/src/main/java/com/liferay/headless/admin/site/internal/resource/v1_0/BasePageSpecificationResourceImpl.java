@@ -768,10 +768,13 @@ public abstract class BasePageSpecificationResourceImpl
 				"updateStrategy", "UPDATE");
 
 			if (StringUtil.equalsIgnoreCase(updateStrategy, "UPDATE")) {
+				Serializable siteExternalReferenceCode = parameters.get(
+					"siteExternalReferenceCode");
+
 				pageSpecificationUnsafeFunction = pageSpecification -> {
 					PageSpecification persistedPageSpecification = null;
 
-					if (parameters.containsKey("siteExternalReferenceCode")) {
+					if (siteExternalReferenceCode != null) {
 						if (!FeatureFlagManagerUtil.isEnabled(
 								CompanyThreadLocal.getCompanyId(),
 								"LPD-74328")) {
@@ -780,7 +783,7 @@ public abstract class BasePageSpecificationResourceImpl
 						}
 
 						persistedPageSpecification = putSitePageSpecification(
-							(String)parameters.get("siteExternalReferenceCode"),
+							(String)siteExternalReferenceCode,
 							pageSpecification.getExternalReferenceCode(),
 							pageSpecification);
 					}
@@ -821,9 +824,12 @@ public abstract class BasePageSpecificationResourceImpl
 			Map<String, Serializable> parameters)
 		throws Exception {
 
+		Serializable siteExternalReferenceCode = parameters.get(
+			"siteExternalReferenceCode");
+
 		UnsafeFunction<PageSpecification, PageSpecification, Exception>
 			pageSpecificationUnsafeFunction = pageSpecification -> {
-				if (parameters.containsKey("siteExternalReferenceCode")) {
+				if (siteExternalReferenceCode != null) {
 					if (!FeatureFlagManagerUtil.isEnabled(
 							CompanyThreadLocal.getCompanyId(), "LPD-74328")) {
 
@@ -831,7 +837,7 @@ public abstract class BasePageSpecificationResourceImpl
 					}
 
 					deleteSitePageSpecification(
-						(String)parameters.get("siteExternalReferenceCode"),
+						(String)siteExternalReferenceCode,
 						pageSpecification.getExternalReferenceCode());
 
 					return pageSpecification;

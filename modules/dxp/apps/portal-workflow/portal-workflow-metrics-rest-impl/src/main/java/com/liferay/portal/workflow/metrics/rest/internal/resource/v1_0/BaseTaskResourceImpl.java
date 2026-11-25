@@ -447,9 +447,11 @@ public abstract class BaseTaskResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("processId")) {
+			Serializable processId = parameters.get("processId");
+
+			if (processId != null) {
 				taskUnsafeFunction = task -> postProcessTask(
-					_parseLong((String)parameters.get("processId")), task);
+					_parseLong((String)processId), task);
 			}
 			else {
 				throw new NotSupportedException(
@@ -517,9 +519,10 @@ public abstract class BaseTaskResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("processId")) {
-			return getProcessTasksPage(
-				_parseLong((String)parameters.get("processId")));
+		Serializable processId = parameters.get("processId");
+
+		if (processId != null) {
+			return getProcessTasksPage(_parseLong((String)processId));
 		}
 		else {
 			throw new NotSupportedException(

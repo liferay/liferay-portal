@@ -946,10 +946,13 @@ public abstract class BaseSkuResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("externalReferenceCode")) {
+			Serializable externalReferenceCode = parameters.get(
+				"externalReferenceCode");
+
+			if (externalReferenceCode != null) {
 				skuUnsafeFunction =
 					sku -> postProductByExternalReferenceCodeSku(
-						(String)parameters.get("externalReferenceCode"), sku);
+						(String)externalReferenceCode, sku);
 			}
 			else {
 				throw new NotSupportedException(
@@ -962,6 +965,9 @@ public abstract class BaseSkuResourceImpl
 				"updateStrategy", "UPDATE");
 
 			if (StringUtil.equalsIgnoreCase(updateStrategy, "PARTIAL_UPDATE")) {
+				Serializable externalReferenceCode = parameters.get(
+					"externalReferenceCode");
+
 				skuUnsafeFunction = sku -> {
 					Sku getSku = null;
 					Sku persistedSku = null;
@@ -973,12 +979,10 @@ public abstract class BaseSkuResourceImpl
 						persistedSku = patchSku(getSku.getId(), sku);
 					}
 					catch (NoSuchModelException noSuchModelException) {
-						if (parameters.containsKey("externalReferenceCode")) {
+						if (externalReferenceCode != null) {
 							persistedSku =
 								postProductByExternalReferenceCodeSku(
-									(String)parameters.get(
-										"externalReferenceCode"),
-									sku);
+									(String)externalReferenceCode, sku);
 						}
 						else {
 							throw new NotSupportedException(

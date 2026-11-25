@@ -1213,10 +1213,12 @@ public abstract class BaseKnowledgeBaseFolderResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("siteId")) {
+			Serializable siteId = parameters.get("siteId");
+
+			if (siteId != null) {
 				knowledgeBaseFolderUnsafeFunction =
 					knowledgeBaseFolder -> postSiteKnowledgeBaseFolder(
-						(Long)parameters.get("siteId"), knowledgeBaseFolder);
+						(Long)siteId, knowledgeBaseFolder);
 			}
 			else {
 				throw new NotSupportedException(
@@ -1229,15 +1231,17 @@ public abstract class BaseKnowledgeBaseFolderResourceImpl
 				"updateStrategy", "UPDATE");
 
 			if (StringUtil.equalsIgnoreCase(updateStrategy, "PARTIAL_UPDATE")) {
+				Serializable siteId = parameters.get("siteId");
+
 				knowledgeBaseFolderUnsafeFunction = knowledgeBaseFolder -> {
 					KnowledgeBaseFolder getKnowledgeBaseFolder = null;
 					KnowledgeBaseFolder persistedKnowledgeBaseFolder = null;
 
 					try {
-						if (parameters.containsKey("siteId")) {
+						if (siteId != null) {
 							getKnowledgeBaseFolder =
 								getSiteKnowledgeBaseFolderByExternalReferenceCode(
-									(Long)parameters.get("siteId"),
+									(Long)siteId,
 									knowledgeBaseFolder.
 										getExternalReferenceCode());
 						}
@@ -1251,11 +1255,10 @@ public abstract class BaseKnowledgeBaseFolderResourceImpl
 							knowledgeBaseFolder);
 					}
 					catch (NoSuchModelException noSuchModelException) {
-						if (parameters.containsKey("siteId")) {
+						if (siteId != null) {
 							persistedKnowledgeBaseFolder =
 								postSiteKnowledgeBaseFolder(
-									(Long)parameters.get("siteId"),
-									knowledgeBaseFolder);
+									(Long)siteId, knowledgeBaseFolder);
 						}
 						else {
 							throw new NotSupportedException(
@@ -1268,13 +1271,15 @@ public abstract class BaseKnowledgeBaseFolderResourceImpl
 			}
 
 			if (StringUtil.equalsIgnoreCase(updateStrategy, "UPDATE")) {
+				Serializable siteId = parameters.get("siteId");
+
 				knowledgeBaseFolderUnsafeFunction = knowledgeBaseFolder -> {
 					KnowledgeBaseFolder persistedKnowledgeBaseFolder = null;
 
-					if (parameters.containsKey("siteId")) {
+					if (siteId != null) {
 						persistedKnowledgeBaseFolder =
 							putSiteKnowledgeBaseFolderByExternalReferenceCode(
-								(Long)parameters.get("siteId"),
+								(Long)siteId,
 								knowledgeBaseFolder.getExternalReferenceCode(),
 								knowledgeBaseFolder);
 					}
@@ -1317,6 +1322,8 @@ public abstract class BaseKnowledgeBaseFolderResourceImpl
 			Map<String, Serializable> parameters)
 		throws Exception {
 
+		Serializable siteId = parameters.get("siteId");
+
 		UnsafeFunction<KnowledgeBaseFolder, KnowledgeBaseFolder, Exception>
 			knowledgeBaseFolderUnsafeFunction = knowledgeBaseFolder -> {
 				if (knowledgeBaseFolder.getId() != null) {
@@ -1329,9 +1336,9 @@ public abstract class BaseKnowledgeBaseFolderResourceImpl
 						if (knowledgeBaseFolder.getExternalReferenceCode() !=
 								null) {
 
-							if (parameters.containsKey("siteId")) {
+							if (siteId != null) {
 								deleteSiteKnowledgeBaseFolderByExternalReferenceCode(
-									(Long)parameters.get("siteId"),
+									(Long)siteId,
 									knowledgeBaseFolder.
 										getExternalReferenceCode());
 
@@ -1340,9 +1347,9 @@ public abstract class BaseKnowledgeBaseFolderResourceImpl
 						}
 					}
 				}
-				else if (parameters.containsKey("siteId")) {
+				else if (siteId != null) {
 					deleteSiteKnowledgeBaseFolderByExternalReferenceCode(
-						(Long)parameters.get("siteId"),
+						(Long)siteId,
 						knowledgeBaseFolder.getExternalReferenceCode());
 
 					return knowledgeBaseFolder;
@@ -1401,9 +1408,10 @@ public abstract class BaseKnowledgeBaseFolderResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("siteId")) {
-			return getSiteKnowledgeBaseFoldersPage(
-				(Long)parameters.get("siteId"), pagination);
+		Serializable siteId = parameters.get("siteId");
+
+		if (siteId != null) {
+			return getSiteKnowledgeBaseFoldersPage((Long)siteId, pagination);
 		}
 		else {
 			throw new NotSupportedException(

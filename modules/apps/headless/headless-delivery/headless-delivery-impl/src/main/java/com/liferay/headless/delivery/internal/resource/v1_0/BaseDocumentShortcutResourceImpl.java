@@ -911,16 +911,19 @@ public abstract class BaseDocumentShortcutResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("assetLibraryId")) {
+			Serializable assetLibraryId = parameters.get("assetLibraryId");
+
+			Serializable siteId = parameters.get("siteId");
+
+			if (assetLibraryId != null) {
 				documentShortcutUnsafeFunction =
 					documentShortcut -> postAssetLibraryDocumentShortcut(
-						(Long)parameters.get("assetLibraryId"),
-						documentShortcut);
+						(Long)assetLibraryId, documentShortcut);
 			}
-			else if (parameters.containsKey("siteId")) {
+			else if (siteId != null) {
 				documentShortcutUnsafeFunction =
 					documentShortcut -> postSiteDocumentShortcut(
-						(Long)parameters.get("siteId"), documentShortcut);
+						(Long)siteId, documentShortcut);
 			}
 			else {
 				throw new NotSupportedException(
@@ -933,15 +936,19 @@ public abstract class BaseDocumentShortcutResourceImpl
 				"updateStrategy", "UPDATE");
 
 			if (StringUtil.equalsIgnoreCase(updateStrategy, "PARTIAL_UPDATE")) {
+				Serializable assetLibraryId = parameters.get("assetLibraryId");
+
+				Serializable siteId = parameters.get("siteId");
+
 				documentShortcutUnsafeFunction = documentShortcut -> {
 					DocumentShortcut getDocumentShortcut = null;
 					DocumentShortcut persistedDocumentShortcut = null;
 
 					try {
-						if (parameters.containsKey("siteId")) {
+						if (siteId != null) {
 							getDocumentShortcut =
 								getSiteDocumentShortcutByExternalReferenceCode(
-									(Long)parameters.get("siteId"),
+									(Long)siteId,
 									documentShortcut.
 										getExternalReferenceCode());
 						}
@@ -954,17 +961,15 @@ public abstract class BaseDocumentShortcutResourceImpl
 							getDocumentShortcut.getId(), documentShortcut);
 					}
 					catch (NoSuchModelException noSuchModelException) {
-						if (parameters.containsKey("assetLibraryId")) {
+						if (assetLibraryId != null) {
 							persistedDocumentShortcut =
 								postAssetLibraryDocumentShortcut(
-									(Long)parameters.get("assetLibraryId"),
-									documentShortcut);
+									(Long)assetLibraryId, documentShortcut);
 						}
-						else if (parameters.containsKey("siteId")) {
+						else if (siteId != null) {
 							persistedDocumentShortcut =
 								postSiteDocumentShortcut(
-									(Long)parameters.get("siteId"),
-									documentShortcut);
+									(Long)siteId, documentShortcut);
 						}
 						else {
 							throw new NotSupportedException(
@@ -977,13 +982,15 @@ public abstract class BaseDocumentShortcutResourceImpl
 			}
 
 			if (StringUtil.equalsIgnoreCase(updateStrategy, "UPDATE")) {
+				Serializable siteId = parameters.get("siteId");
+
 				documentShortcutUnsafeFunction = documentShortcut -> {
 					DocumentShortcut persistedDocumentShortcut = null;
 
-					if (parameters.containsKey("siteId")) {
+					if (siteId != null) {
 						persistedDocumentShortcut =
 							putSiteDocumentShortcutByExternalReferenceCode(
-								(Long)parameters.get("siteId"),
+								(Long)siteId,
 								documentShortcut.getExternalReferenceCode(),
 								documentShortcut);
 					}
@@ -1024,6 +1031,8 @@ public abstract class BaseDocumentShortcutResourceImpl
 			Map<String, Serializable> parameters)
 		throws Exception {
 
+		Serializable siteId = parameters.get("siteId");
+
 		UnsafeFunction<DocumentShortcut, DocumentShortcut, Exception>
 			documentShortcutUnsafeFunction = documentShortcut -> {
 				if (documentShortcut.getId() != null) {
@@ -1036,9 +1045,9 @@ public abstract class BaseDocumentShortcutResourceImpl
 						if (documentShortcut.getExternalReferenceCode() !=
 								null) {
 
-							if (parameters.containsKey("siteId")) {
+							if (siteId != null) {
 								deleteSiteDocumentShortcutByExternalReferenceCode(
-									(Long)parameters.get("siteId"),
+									(Long)siteId,
 									documentShortcut.
 										getExternalReferenceCode());
 
@@ -1047,9 +1056,9 @@ public abstract class BaseDocumentShortcutResourceImpl
 						}
 					}
 				}
-				else if (parameters.containsKey("siteId")) {
+				else if (siteId != null) {
 					deleteSiteDocumentShortcutByExternalReferenceCode(
-						(Long)parameters.get("siteId"),
+						(Long)siteId,
 						documentShortcut.getExternalReferenceCode());
 
 					return documentShortcut;
@@ -1106,13 +1115,16 @@ public abstract class BaseDocumentShortcutResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("assetLibraryId")) {
+		Serializable assetLibraryId = parameters.get("assetLibraryId");
+
+		Serializable siteId = parameters.get("siteId");
+
+		if (assetLibraryId != null) {
 			return getAssetLibraryDocumentShortcutsPage(
-				(Long)parameters.get("assetLibraryId"), pagination);
+				(Long)assetLibraryId, pagination);
 		}
-		else if (parameters.containsKey("siteId")) {
-			return getSiteDocumentShortcutsPage(
-				(Long)parameters.get("siteId"), pagination);
+		else if (siteId != null) {
+			return getSiteDocumentShortcutsPage((Long)siteId, pagination);
 		}
 		else {
 			throw new NotSupportedException(

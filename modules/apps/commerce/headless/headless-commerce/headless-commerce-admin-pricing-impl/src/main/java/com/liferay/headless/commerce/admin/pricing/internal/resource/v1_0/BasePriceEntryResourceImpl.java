@@ -582,12 +582,14 @@ public abstract class BasePriceEntryResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("externalReferenceCode")) {
+			Serializable externalReferenceCode = parameters.get(
+				"externalReferenceCode");
+
+			if (externalReferenceCode != null) {
 				priceEntryUnsafeFunction =
 					priceEntry ->
 						postPriceListByExternalReferenceCodePriceEntry(
-							(String)parameters.get("externalReferenceCode"),
-							priceEntry);
+							(String)externalReferenceCode, priceEntry);
 			}
 			else {
 				throw new NotSupportedException(
@@ -600,6 +602,9 @@ public abstract class BasePriceEntryResourceImpl
 				"updateStrategy", "UPDATE");
 
 			if (StringUtil.equalsIgnoreCase(updateStrategy, "PARTIAL_UPDATE")) {
+				Serializable externalReferenceCode = parameters.get(
+					"externalReferenceCode");
+
 				priceEntryUnsafeFunction = priceEntry -> {
 					PriceEntry getPriceEntry = null;
 					PriceEntry persistedPriceEntry = null;
@@ -611,12 +616,10 @@ public abstract class BasePriceEntryResourceImpl
 						patchPriceEntry(getPriceEntry.getId(), priceEntry);
 					}
 					catch (NoSuchModelException noSuchModelException) {
-						if (parameters.containsKey("externalReferenceCode")) {
+						if (externalReferenceCode != null) {
 							persistedPriceEntry =
 								postPriceListByExternalReferenceCodePriceEntry(
-									(String)parameters.get(
-										"externalReferenceCode"),
-									priceEntry);
+									(String)externalReferenceCode, priceEntry);
 						}
 						else {
 							throw new NotSupportedException(

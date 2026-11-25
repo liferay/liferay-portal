@@ -466,9 +466,11 @@ public abstract class BaseSLAResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("processId")) {
+			Serializable processId = parameters.get("processId");
+
+			if (processId != null) {
 				slaUnsafeFunction = sla -> postProcessSLA(
-					_parseLong((String)parameters.get("processId")), sla);
+					_parseLong((String)processId), sla);
 			}
 			else {
 				throw new NotSupportedException(
@@ -551,9 +553,11 @@ public abstract class BaseSLAResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("processId")) {
+		Serializable processId = parameters.get("processId");
+
+		if (processId != null) {
 			return getProcessSLAsPage(
-				_parseLong((String)parameters.get("processId")),
+				_parseLong((String)processId),
 				_parseInteger((String)parameters.get("status")), pagination);
 		}
 		else {

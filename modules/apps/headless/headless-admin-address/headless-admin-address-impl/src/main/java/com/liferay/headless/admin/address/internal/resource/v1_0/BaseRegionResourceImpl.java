@@ -913,9 +913,11 @@ public abstract class BaseRegionResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("countryId")) {
+			Serializable countryId = parameters.get("countryId");
+
+			if (countryId != null) {
 				regionUnsafeFunction = region -> postCountryRegion(
-					_parseLong((String)parameters.get("countryId")), region);
+					_parseLong((String)countryId), region);
 			}
 			else {
 				throw new NotSupportedException(
@@ -928,6 +930,8 @@ public abstract class BaseRegionResourceImpl
 				"updateStrategy", "UPDATE");
 
 			if (StringUtil.equalsIgnoreCase(updateStrategy, "PARTIAL_UPDATE")) {
+				Serializable countryId = parameters.get("countryId");
+
 				regionUnsafeFunction = region -> {
 					Region getRegion = null;
 					Region persistedRegion = null;
@@ -940,10 +944,9 @@ public abstract class BaseRegionResourceImpl
 							getRegion.getId(), region);
 					}
 					catch (NoSuchModelException noSuchModelException) {
-						if (parameters.containsKey("countryId")) {
+						if (countryId != null) {
 							persistedRegion = postCountryRegion(
-								_parseLong((String)parameters.get("countryId")),
-								region);
+								_parseLong((String)countryId), region);
 						}
 						else {
 							throw new NotSupportedException(
@@ -1066,9 +1069,11 @@ public abstract class BaseRegionResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("countryId")) {
+		Serializable countryId = parameters.get("countryId");
+
+		if (countryId != null) {
 			return getCountryRegionsPage(
-				_parseLong((String)parameters.get("countryId")),
+				_parseLong((String)countryId),
 				_parseBoolean((String)parameters.get("active")), search,
 				pagination, sorts);
 		}

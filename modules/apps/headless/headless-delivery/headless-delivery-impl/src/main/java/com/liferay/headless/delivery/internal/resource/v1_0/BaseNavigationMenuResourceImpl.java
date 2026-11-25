@@ -1061,10 +1061,12 @@ public abstract class BaseNavigationMenuResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("siteId")) {
+			Serializable siteId = parameters.get("siteId");
+
+			if (siteId != null) {
 				navigationMenuUnsafeFunction =
 					navigationMenu -> postSiteNavigationMenu(
-						(Long)parameters.get("siteId"), navigationMenu);
+						(Long)siteId, navigationMenu);
 			}
 			else {
 				throw new NotSupportedException(
@@ -1077,13 +1079,15 @@ public abstract class BaseNavigationMenuResourceImpl
 				"updateStrategy", "UPDATE");
 
 			if (StringUtil.equalsIgnoreCase(updateStrategy, "UPDATE")) {
+				Serializable siteId = parameters.get("siteId");
+
 				navigationMenuUnsafeFunction = navigationMenu -> {
 					NavigationMenu persistedNavigationMenu = null;
 
-					if (parameters.containsKey("siteId")) {
+					if (siteId != null) {
 						persistedNavigationMenu =
 							putSiteNavigationMenuByExternalReferenceCode(
-								(Long)parameters.get("siteId"),
+								(Long)siteId,
 								navigationMenu.getExternalReferenceCode(),
 								navigationMenu);
 					}
@@ -1124,6 +1128,8 @@ public abstract class BaseNavigationMenuResourceImpl
 			Map<String, Serializable> parameters)
 		throws Exception {
 
+		Serializable siteId = parameters.get("siteId");
+
 		UnsafeFunction<NavigationMenu, NavigationMenu, Exception>
 			navigationMenuUnsafeFunction = navigationMenu -> {
 				if (navigationMenu.getId() != null) {
@@ -1134,9 +1140,9 @@ public abstract class BaseNavigationMenuResourceImpl
 					}
 					catch (Exception exception) {
 						if (navigationMenu.getExternalReferenceCode() != null) {
-							if (parameters.containsKey("siteId")) {
+							if (siteId != null) {
 								deleteSiteNavigationMenuByExternalReferenceCode(
-									(Long)parameters.get("siteId"),
+									(Long)siteId,
 									navigationMenu.getExternalReferenceCode());
 
 								return navigationMenu;
@@ -1144,9 +1150,9 @@ public abstract class BaseNavigationMenuResourceImpl
 						}
 					}
 				}
-				else if (parameters.containsKey("siteId")) {
+				else if (siteId != null) {
 					deleteSiteNavigationMenuByExternalReferenceCode(
-						(Long)parameters.get("siteId"),
+						(Long)siteId,
 						navigationMenu.getExternalReferenceCode());
 
 					return navigationMenu;
@@ -1203,10 +1209,11 @@ public abstract class BaseNavigationMenuResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("siteId")) {
+		Serializable siteId = parameters.get("siteId");
+
+		if (siteId != null) {
 			return getSiteNavigationMenusPage(
-				(Long)parameters.get("siteId"), search, filter, pagination,
-				sorts);
+				(Long)siteId, search, filter, pagination, sorts);
 		}
 		else {
 			throw new NotSupportedException(

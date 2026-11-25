@@ -1833,15 +1833,18 @@ public abstract class BaseAccountResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("accountGroupId")) {
+		Serializable accountGroupId = parameters.get("accountGroupId");
+
+		Serializable organizationId = parameters.get("organizationId");
+
+		if (accountGroupId != null) {
 			return getAccountGroupAccountsPage(
-				_parseLong((String)parameters.get("accountGroupId")), search,
-				filter, pagination, sorts);
+				_parseLong((String)accountGroupId), search, filter, pagination,
+				sorts);
 		}
-		else if (parameters.containsKey("organizationId")) {
+		else if (organizationId != null) {
 			return getOrganizationAccountsPage(
-				(String)parameters.get("organizationId"), search, filter,
-				pagination, sorts);
+				(String)organizationId, search, filter, pagination, sorts);
 		}
 		else {
 			return getAccountsPage(search, filter, pagination, sorts);

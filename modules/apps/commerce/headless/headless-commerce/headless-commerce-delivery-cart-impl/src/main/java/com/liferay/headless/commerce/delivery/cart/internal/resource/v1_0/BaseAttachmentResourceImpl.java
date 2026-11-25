@@ -509,10 +509,11 @@ public abstract class BaseAttachmentResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("cartId")) {
+		Serializable cartId = parameters.get("cartId");
+
+		if (cartId != null) {
 			return getCartAttachmentsPage(
-				_parseLong((String)parameters.get("cartId")), search, filter,
-				pagination, sorts);
+				_parseLong((String)cartId), search, filter, pagination, sorts);
 		}
 		else {
 			throw new NotSupportedException(

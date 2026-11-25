@@ -427,10 +427,13 @@ public abstract class BaseScheduledPublishProcessResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("siteExternalReferenceCode")) {
+			Serializable siteExternalReferenceCode = parameters.get(
+				"siteExternalReferenceCode");
+
+			if (siteExternalReferenceCode != null) {
 				scheduledPublishProcessUnsafeFunction =
 					scheduledPublishProcess -> postSiteScheduledPublishProcess(
-						(String)parameters.get("siteExternalReferenceCode"),
+						(String)siteExternalReferenceCode,
 						(ScheduledPublishProcessRequest)parameters.get(
 							"scheduledPublishProcessRequest"));
 			}
@@ -508,10 +511,12 @@ public abstract class BaseScheduledPublishProcessResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("siteExternalReferenceCode")) {
+		Serializable siteExternalReferenceCode = parameters.get(
+			"siteExternalReferenceCode");
+
+		if (siteExternalReferenceCode != null) {
 			return getSiteScheduledPublishProcessesPage(
-				(String)parameters.get("siteExternalReferenceCode"), search,
-				pagination, sorts);
+				(String)siteExternalReferenceCode, search, pagination, sorts);
 		}
 		else {
 			throw new NotSupportedException(

@@ -720,18 +720,22 @@ public abstract class BaseObjectValidationRuleResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("objectDefinitionId")) {
+			Serializable externalReferenceCode = parameters.get(
+				"externalReferenceCode");
+
+			Serializable objectDefinitionId = parameters.get(
+				"objectDefinitionId");
+
+			if (objectDefinitionId != null) {
 				objectValidationRuleUnsafeFunction = objectValidationRule ->
 					postObjectDefinitionObjectValidationRule(
-						_parseLong(
-							(String)parameters.get("objectDefinitionId")),
+						_parseLong((String)objectDefinitionId),
 						objectValidationRule);
 			}
-			else if (parameters.containsKey("externalReferenceCode")) {
+			else if (externalReferenceCode != null) {
 				objectValidationRuleUnsafeFunction = objectValidationRule ->
 					postObjectDefinitionByExternalReferenceCodeObjectValidationRule(
-						(String)parameters.get("externalReferenceCode"),
-						objectValidationRule);
+						(String)externalReferenceCode, objectValidationRule);
 			}
 			else {
 				throw new NotSupportedException(
@@ -826,10 +830,12 @@ public abstract class BaseObjectValidationRuleResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("objectDefinitionId")) {
+		Serializable objectDefinitionId = parameters.get("objectDefinitionId");
+
+		if (objectDefinitionId != null) {
 			return getObjectDefinitionObjectValidationRulesPage(
-				_parseLong((String)parameters.get("objectDefinitionId")),
-				search, pagination, sorts);
+				_parseLong((String)objectDefinitionId), search, pagination,
+				sorts);
 		}
 		else {
 			throw new NotSupportedException(

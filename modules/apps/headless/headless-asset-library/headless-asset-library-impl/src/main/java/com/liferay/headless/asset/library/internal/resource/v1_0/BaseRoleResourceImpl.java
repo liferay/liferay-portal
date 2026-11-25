@@ -409,10 +409,12 @@ public abstract class BaseRoleResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("assetLibraryExternalReferenceCode")) {
+		Serializable assetLibraryExternalReferenceCode = parameters.get(
+			"assetLibraryExternalReferenceCode");
+
+		if (assetLibraryExternalReferenceCode != null) {
 			return getAssetLibraryRolesPage(
-				(String)parameters.get("assetLibraryExternalReferenceCode"),
-				pagination);
+				(String)assetLibraryExternalReferenceCode, pagination);
 		}
 		else {
 			throw new NotSupportedException(

@@ -1048,10 +1048,12 @@ public abstract class BaseStyleBookResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("siteExternalReferenceCode")) {
+			Serializable siteExternalReferenceCode = parameters.get(
+				"siteExternalReferenceCode");
+
+			if (siteExternalReferenceCode != null) {
 				styleBookUnsafeFunction = styleBook -> postSiteStyleBook(
-					(String)parameters.get("siteExternalReferenceCode"),
-					styleBook);
+					(String)siteExternalReferenceCode, styleBook);
 			}
 			else {
 				throw new NotSupportedException(
@@ -1064,12 +1066,15 @@ public abstract class BaseStyleBookResourceImpl
 				"updateStrategy", "UPDATE");
 
 			if (StringUtil.equalsIgnoreCase(updateStrategy, "UPDATE")) {
+				Serializable siteExternalReferenceCode = parameters.get(
+					"siteExternalReferenceCode");
+
 				styleBookUnsafeFunction = styleBook -> {
 					StyleBook persistedStyleBook = null;
 
-					if (parameters.containsKey("siteExternalReferenceCode")) {
+					if (siteExternalReferenceCode != null) {
 						persistedStyleBook = putSiteStyleBook(
-							(String)parameters.get("siteExternalReferenceCode"),
+							(String)siteExternalReferenceCode,
 							styleBook.getExternalReferenceCode(), styleBook);
 					}
 					else {
@@ -1109,11 +1114,14 @@ public abstract class BaseStyleBookResourceImpl
 			Map<String, Serializable> parameters)
 		throws Exception {
 
+		Serializable siteExternalReferenceCode = parameters.get(
+			"siteExternalReferenceCode");
+
 		UnsafeFunction<StyleBook, StyleBook, Exception>
 			styleBookUnsafeFunction = styleBook -> {
-				if (parameters.containsKey("siteExternalReferenceCode")) {
+				if (siteExternalReferenceCode != null) {
 					deleteSiteStyleBook(
-						(String)parameters.get("siteExternalReferenceCode"),
+						(String)siteExternalReferenceCode,
 						styleBook.getExternalReferenceCode());
 
 					return styleBook;
@@ -1170,10 +1178,13 @@ public abstract class BaseStyleBookResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("siteExternalReferenceCode")) {
+		Serializable siteExternalReferenceCode = parameters.get(
+			"siteExternalReferenceCode");
+
+		if (siteExternalReferenceCode != null) {
 			return getSiteStyleBooksPage(
-				(String)parameters.get("siteExternalReferenceCode"), search,
-				null, filter, pagination, sorts);
+				(String)siteExternalReferenceCode, search, null, filter,
+				pagination, sorts);
 		}
 		else {
 			throw new NotSupportedException(

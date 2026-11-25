@@ -404,11 +404,13 @@ public abstract class BaseWarehouseChannelResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("externalReferenceCode")) {
+			Serializable externalReferenceCode = parameters.get(
+				"externalReferenceCode");
+
+			if (externalReferenceCode != null) {
 				warehouseChannelUnsafeFunction = warehouseChannel ->
 					postWarehouseByExternalReferenceCodeWarehouseChannel(
-						(String)parameters.get("externalReferenceCode"),
-						warehouseChannel);
+						(String)externalReferenceCode, warehouseChannel);
 			}
 			else {
 				throw new NotSupportedException(

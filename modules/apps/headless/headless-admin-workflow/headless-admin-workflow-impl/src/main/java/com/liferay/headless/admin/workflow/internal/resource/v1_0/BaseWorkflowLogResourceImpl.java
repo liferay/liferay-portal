@@ -403,14 +403,18 @@ public abstract class BaseWorkflowLogResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("workflowInstanceId")) {
+		Serializable workflowInstanceId = parameters.get("workflowInstanceId");
+
+		Serializable workflowTaskId = parameters.get("workflowTaskId");
+
+		if (workflowInstanceId != null) {
 			return getWorkflowInstanceWorkflowLogsPage(
-				_parseLong((String)parameters.get("workflowInstanceId")),
+				_parseLong((String)workflowInstanceId),
 				(String[])parameters.get("types"), pagination);
 		}
-		else if (parameters.containsKey("workflowTaskId")) {
+		else if (workflowTaskId != null) {
 			return getWorkflowTaskWorkflowLogsPage(
-				_parseLong((String)parameters.get("workflowTaskId")),
+				_parseLong((String)workflowTaskId),
 				(String[])parameters.get("types"), pagination);
 		}
 		else {

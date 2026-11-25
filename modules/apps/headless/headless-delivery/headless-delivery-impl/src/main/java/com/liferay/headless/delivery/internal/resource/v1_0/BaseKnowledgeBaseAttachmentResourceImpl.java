@@ -583,13 +583,14 @@ public abstract class BaseKnowledgeBaseAttachmentResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("knowledgeBaseArticleId")) {
+			Serializable knowledgeBaseArticleId = parameters.get(
+				"knowledgeBaseArticleId");
+
+			if (knowledgeBaseArticleId != null) {
 				knowledgeBaseAttachmentUnsafeFunction =
 					knowledgeBaseAttachment ->
 						postKnowledgeBaseArticleKnowledgeBaseAttachment(
-							_parseLong(
-								(String)parameters.get(
-									"knowledgeBaseArticleId")),
+							_parseLong((String)knowledgeBaseArticleId),
 							(MultipartBody)null);
 			}
 			else {
@@ -692,9 +693,12 @@ public abstract class BaseKnowledgeBaseAttachmentResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("knowledgeBaseArticleId")) {
+		Serializable knowledgeBaseArticleId = parameters.get(
+			"knowledgeBaseArticleId");
+
+		if (knowledgeBaseArticleId != null) {
 			return getKnowledgeBaseArticleKnowledgeBaseAttachmentsPage(
-				_parseLong((String)parameters.get("knowledgeBaseArticleId")));
+				_parseLong((String)knowledgeBaseArticleId));
 		}
 		else {
 			throw new NotSupportedException(

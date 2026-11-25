@@ -385,11 +385,13 @@ public abstract class BasePriceListDiscountResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("externalReferenceCode")) {
+			Serializable externalReferenceCode = parameters.get(
+				"externalReferenceCode");
+
+			if (externalReferenceCode != null) {
 				priceListDiscountUnsafeFunction = priceListDiscount ->
 					postPriceListByExternalReferenceCodePriceListDiscount(
-						(String)parameters.get("externalReferenceCode"),
-						priceListDiscount);
+						(String)externalReferenceCode, priceListDiscount);
 			}
 			else {
 				throw new NotSupportedException(

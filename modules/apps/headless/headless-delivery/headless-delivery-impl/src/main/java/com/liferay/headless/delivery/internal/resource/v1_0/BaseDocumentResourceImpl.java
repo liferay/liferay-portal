@@ -2160,19 +2160,23 @@ public abstract class BaseDocumentResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("assetLibraryId")) {
+			Serializable assetLibraryId = parameters.get("assetLibraryId");
+
+			Serializable documentFolderId = parameters.get("documentFolderId");
+
+			Serializable siteId = parameters.get("siteId");
+
+			if (assetLibraryId != null) {
 				documentUnsafeFunction = document -> postAssetLibraryDocument(
-					(Long)parameters.get("assetLibraryId"),
-					(MultipartBody)null);
+					(Long)assetLibraryId, (MultipartBody)null);
 			}
-			else if (parameters.containsKey("documentFolderId")) {
+			else if (documentFolderId != null) {
 				documentUnsafeFunction = document -> postDocumentFolderDocument(
-					_parseLong((String)parameters.get("documentFolderId")),
-					(MultipartBody)null);
+					_parseLong((String)documentFolderId), (MultipartBody)null);
 			}
-			else if (parameters.containsKey("siteId")) {
+			else if (siteId != null) {
 				documentUnsafeFunction = document -> postSiteDocument(
-					(Long)parameters.get("siteId"), (MultipartBody)null);
+					(Long)siteId, (MultipartBody)null);
 			}
 			else {
 				throw new NotSupportedException(
@@ -2185,21 +2189,28 @@ public abstract class BaseDocumentResourceImpl
 				"updateStrategy", "UPDATE");
 
 			if (StringUtil.equalsIgnoreCase(updateStrategy, "PARTIAL_UPDATE")) {
+				Serializable assetLibraryId = parameters.get("assetLibraryId");
+
+				Serializable documentFolderId = parameters.get(
+					"documentFolderId");
+
+				Serializable siteId = parameters.get("siteId");
+
 				documentUnsafeFunction = document -> {
 					Document getDocument = null;
 					Document persistedDocument = null;
 
 					try {
-						if (parameters.containsKey("assetLibraryId")) {
+						if (assetLibraryId != null) {
 							getDocument =
 								getAssetLibraryDocumentByExternalReferenceCode(
-									(Long)parameters.get("assetLibraryId"),
+									(Long)assetLibraryId,
 									document.getExternalReferenceCode());
 						}
-						else if (parameters.containsKey("siteId")) {
+						else if (siteId != null) {
 							getDocument =
 								getSiteDocumentByExternalReferenceCode(
-									(Long)parameters.get("siteId"),
+									(Long)siteId,
 									document.getExternalReferenceCode());
 						}
 						else {
@@ -2211,21 +2222,18 @@ public abstract class BaseDocumentResourceImpl
 							getDocument.getId(), (MultipartBody)null);
 					}
 					catch (NoSuchModelException noSuchModelException) {
-						if (parameters.containsKey("assetLibraryId")) {
+						if (assetLibraryId != null) {
 							persistedDocument = postAssetLibraryDocument(
-								(Long)parameters.get("assetLibraryId"),
-								(MultipartBody)null);
+								(Long)assetLibraryId, (MultipartBody)null);
 						}
-						else if (parameters.containsKey("documentFolderId")) {
+						else if (documentFolderId != null) {
 							persistedDocument = postDocumentFolderDocument(
-								_parseLong(
-									(String)parameters.get("documentFolderId")),
+								_parseLong((String)documentFolderId),
 								(MultipartBody)null);
 						}
-						else if (parameters.containsKey("siteId")) {
+						else if (siteId != null) {
 							persistedDocument = postSiteDocument(
-								(Long)parameters.get("siteId"),
-								(MultipartBody)null);
+								(Long)siteId, (MultipartBody)null);
 						}
 						else {
 							throw new NotSupportedException(
@@ -2238,20 +2246,24 @@ public abstract class BaseDocumentResourceImpl
 			}
 
 			if (StringUtil.equalsIgnoreCase(updateStrategy, "UPDATE")) {
+				Serializable assetLibraryId = parameters.get("assetLibraryId");
+
+				Serializable siteId = parameters.get("siteId");
+
 				documentUnsafeFunction = document -> {
 					Document persistedDocument = null;
 
-					if (parameters.containsKey("assetLibraryId")) {
+					if (assetLibraryId != null) {
 						persistedDocument =
 							putAssetLibraryDocumentByExternalReferenceCode(
-								(Long)parameters.get("assetLibraryId"),
+								(Long)assetLibraryId,
 								document.getExternalReferenceCode(),
 								(MultipartBody)null);
 					}
-					else if (parameters.containsKey("siteId")) {
+					else if (siteId != null) {
 						persistedDocument =
 							putSiteDocumentByExternalReferenceCode(
-								(Long)parameters.get("siteId"),
+								(Long)siteId,
 								document.getExternalReferenceCode(),
 								(MultipartBody)null);
 					}
@@ -2292,6 +2304,10 @@ public abstract class BaseDocumentResourceImpl
 			Map<String, Serializable> parameters)
 		throws Exception {
 
+		Serializable assetLibraryId = parameters.get("assetLibraryId");
+
+		Serializable siteId = parameters.get("siteId");
+
 		UnsafeFunction<Document, Document, Exception> documentUnsafeFunction =
 			document -> {
 				if (document.getId() != null) {
@@ -2302,17 +2318,17 @@ public abstract class BaseDocumentResourceImpl
 					}
 					catch (Exception exception) {
 						if (document.getExternalReferenceCode() != null) {
-							if (parameters.containsKey("assetLibraryId")) {
+							if (assetLibraryId != null) {
 								deleteAssetLibraryDocumentByExternalReferenceCode(
-									(Long)parameters.get("assetLibraryId"),
+									(Long)assetLibraryId,
 									document.getExternalReferenceCode());
 
 								return document;
 							}
 
-							if (parameters.containsKey("siteId")) {
+							if (siteId != null) {
 								deleteSiteDocumentByExternalReferenceCode(
-									(Long)parameters.get("siteId"),
+									(Long)siteId,
 									document.getExternalReferenceCode());
 
 								return document;
@@ -2320,17 +2336,16 @@ public abstract class BaseDocumentResourceImpl
 						}
 					}
 				}
-				else if (parameters.containsKey("assetLibraryId")) {
+				else if (assetLibraryId != null) {
 					deleteAssetLibraryDocumentByExternalReferenceCode(
-						(Long)parameters.get("assetLibraryId"),
+						(Long)assetLibraryId,
 						document.getExternalReferenceCode());
 
 					return document;
 				}
-				else if (parameters.containsKey("siteId")) {
+				else if (siteId != null) {
 					deleteSiteDocumentByExternalReferenceCode(
-						(Long)parameters.get("siteId"),
-						document.getExternalReferenceCode());
+						(Long)siteId, document.getExternalReferenceCode());
 
 					return document;
 				}
@@ -2386,23 +2401,28 @@ public abstract class BaseDocumentResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("assetLibraryId")) {
+		Serializable assetLibraryId = parameters.get("assetLibraryId");
+
+		Serializable documentFolderId = parameters.get("documentFolderId");
+
+		Serializable siteId = parameters.get("siteId");
+
+		if (assetLibraryId != null) {
 			return getAssetLibraryDocumentsPage(
-				(Long)parameters.get("assetLibraryId"),
+				(Long)assetLibraryId,
 				_parseBoolean((String)parameters.get("flatten")), search, null,
 				filter, pagination, sorts);
 		}
-		else if (parameters.containsKey("documentFolderId")) {
+		else if (documentFolderId != null) {
 			return getDocumentFolderDocumentsPage(
-				_parseLong((String)parameters.get("documentFolderId")),
+				_parseLong((String)documentFolderId),
 				_parseBoolean((String)parameters.get("flatten")), search, null,
 				filter, pagination, sorts);
 		}
-		else if (parameters.containsKey("siteId")) {
+		else if (siteId != null) {
 			return getSiteDocumentsPage(
-				(Long)parameters.get("siteId"),
-				_parseBoolean((String)parameters.get("flatten")), search, null,
-				filter, pagination, sorts);
+				(Long)siteId, _parseBoolean((String)parameters.get("flatten")),
+				search, null, filter, pagination, sorts);
 		}
 		else {
 			throw new NotSupportedException(

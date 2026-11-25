@@ -968,16 +968,19 @@ public abstract class BaseDocumentMetadataSetResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("assetLibraryId")) {
+			Serializable assetLibraryId = parameters.get("assetLibraryId");
+
+			Serializable siteId = parameters.get("siteId");
+
+			if (assetLibraryId != null) {
 				documentMetadataSetUnsafeFunction =
 					documentMetadataSet -> postAssetLibraryDocumentMetadataSet(
-						(Long)parameters.get("assetLibraryId"),
-						documentMetadataSet);
+						(Long)assetLibraryId, documentMetadataSet);
 			}
-			else if (parameters.containsKey("siteId")) {
+			else if (siteId != null) {
 				documentMetadataSetUnsafeFunction =
 					documentMetadataSet -> postSiteDocumentMetadataSet(
-						(Long)parameters.get("siteId"), documentMetadataSet);
+						(Long)siteId, documentMetadataSet);
 			}
 			else {
 				throw new NotSupportedException(
@@ -990,20 +993,24 @@ public abstract class BaseDocumentMetadataSetResourceImpl
 				"updateStrategy", "UPDATE");
 
 			if (StringUtil.equalsIgnoreCase(updateStrategy, "UPDATE")) {
+				Serializable assetLibraryId = parameters.get("assetLibraryId");
+
+				Serializable siteId = parameters.get("siteId");
+
 				documentMetadataSetUnsafeFunction = documentMetadataSet -> {
 					DocumentMetadataSet persistedDocumentMetadataSet = null;
 
-					if (parameters.containsKey("assetLibraryId")) {
+					if (assetLibraryId != null) {
 						persistedDocumentMetadataSet =
 							putAssetLibraryDocumentMetadataSetByExternalReferenceCode(
-								(Long)parameters.get("assetLibraryId"),
+								(Long)assetLibraryId,
 								documentMetadataSet.getExternalReferenceCode(),
 								documentMetadataSet);
 					}
-					else if (parameters.containsKey("siteId")) {
+					else if (siteId != null) {
 						persistedDocumentMetadataSet =
 							putSiteDocumentMetadataSetByExternalReferenceCode(
-								(Long)parameters.get("siteId"),
+								(Long)siteId,
 								documentMetadataSet.getExternalReferenceCode(),
 								documentMetadataSet);
 					}
@@ -1046,6 +1053,10 @@ public abstract class BaseDocumentMetadataSetResourceImpl
 			Map<String, Serializable> parameters)
 		throws Exception {
 
+		Serializable assetLibraryId = parameters.get("assetLibraryId");
+
+		Serializable siteId = parameters.get("siteId");
+
 		UnsafeFunction<DocumentMetadataSet, DocumentMetadataSet, Exception>
 			documentMetadataSetUnsafeFunction = documentMetadataSet -> {
 				if (documentMetadataSet.getId() != null) {
@@ -1058,18 +1069,18 @@ public abstract class BaseDocumentMetadataSetResourceImpl
 						if (documentMetadataSet.getExternalReferenceCode() !=
 								null) {
 
-							if (parameters.containsKey("assetLibraryId")) {
+							if (assetLibraryId != null) {
 								deleteAssetLibraryDocumentMetadataSetByExternalReferenceCode(
-									(Long)parameters.get("assetLibraryId"),
+									(Long)assetLibraryId,
 									documentMetadataSet.
 										getExternalReferenceCode());
 
 								return documentMetadataSet;
 							}
 
-							if (parameters.containsKey("siteId")) {
+							if (siteId != null) {
 								deleteSiteDocumentMetadataSetByExternalReferenceCode(
-									(Long)parameters.get("siteId"),
+									(Long)siteId,
 									documentMetadataSet.
 										getExternalReferenceCode());
 
@@ -1078,16 +1089,16 @@ public abstract class BaseDocumentMetadataSetResourceImpl
 						}
 					}
 				}
-				else if (parameters.containsKey("assetLibraryId")) {
+				else if (assetLibraryId != null) {
 					deleteAssetLibraryDocumentMetadataSetByExternalReferenceCode(
-						(Long)parameters.get("assetLibraryId"),
+						(Long)assetLibraryId,
 						documentMetadataSet.getExternalReferenceCode());
 
 					return documentMetadataSet;
 				}
-				else if (parameters.containsKey("siteId")) {
+				else if (siteId != null) {
 					deleteSiteDocumentMetadataSetByExternalReferenceCode(
-						(Long)parameters.get("siteId"),
+						(Long)siteId,
 						documentMetadataSet.getExternalReferenceCode());
 
 					return documentMetadataSet;
@@ -1146,13 +1157,16 @@ public abstract class BaseDocumentMetadataSetResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("assetLibraryId")) {
+		Serializable assetLibraryId = parameters.get("assetLibraryId");
+
+		Serializable siteId = parameters.get("siteId");
+
+		if (assetLibraryId != null) {
 			return getAssetLibraryDocumentMetadataSetsPage(
-				(Long)parameters.get("assetLibraryId"), pagination);
+				(Long)assetLibraryId, pagination);
 		}
-		else if (parameters.containsKey("siteId")) {
-			return getSiteDocumentMetadataSetsPage(
-				(Long)parameters.get("siteId"), pagination);
+		else if (siteId != null) {
+			return getSiteDocumentMetadataSetsPage((Long)siteId, pagination);
 		}
 		else {
 			throw new NotSupportedException(

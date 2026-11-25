@@ -403,11 +403,13 @@ public abstract class BaseOrderRuleOrderTypeResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("externalReferenceCode")) {
+			Serializable externalReferenceCode = parameters.get(
+				"externalReferenceCode");
+
+			if (externalReferenceCode != null) {
 				orderRuleOrderTypeUnsafeFunction = orderRuleOrderType ->
 					postOrderRuleByExternalReferenceCodeOrderRuleOrderType(
-						(String)parameters.get("externalReferenceCode"),
-						orderRuleOrderType);
+						(String)externalReferenceCode, orderRuleOrderType);
 			}
 			else {
 				throw new NotSupportedException(

@@ -781,12 +781,14 @@ public abstract class BaseERCAssetLibraryTestEntityResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("assetLibraryExternalReferenceCode")) {
+			Serializable assetLibraryExternalReferenceCode = parameters.get(
+				"assetLibraryExternalReferenceCode");
+
+			if (assetLibraryExternalReferenceCode != null) {
 				ercAssetLibraryTestEntityUnsafeFunction =
 					ercAssetLibraryTestEntity ->
 						postAssetLibraryERCAssetLibraryTestEntity(
-							(String)parameters.get(
-								"assetLibraryExternalReferenceCode"),
+							(String)assetLibraryExternalReferenceCode,
 							ercAssetLibraryTestEntity);
 			}
 			else {
@@ -800,18 +802,18 @@ public abstract class BaseERCAssetLibraryTestEntityResourceImpl
 				"updateStrategy", "UPDATE");
 
 			if (StringUtil.equalsIgnoreCase(updateStrategy, "UPDATE")) {
+				Serializable assetLibraryExternalReferenceCode = parameters.get(
+					"assetLibraryExternalReferenceCode");
+
 				ercAssetLibraryTestEntityUnsafeFunction =
 					ercAssetLibraryTestEntity -> {
 						ERCAssetLibraryTestEntity
 							persistedERCAssetLibraryTestEntity = null;
 
-						if (parameters.containsKey(
-								"assetLibraryExternalReferenceCode")) {
-
+						if (assetLibraryExternalReferenceCode != null) {
 							persistedERCAssetLibraryTestEntity =
 								putAssetLibraryERCAssetLibraryTestEntity(
-									(String)parameters.get(
-										"assetLibraryExternalReferenceCode"),
+									(String)assetLibraryExternalReferenceCode,
 									ercAssetLibraryTestEntity.
 										getExternalReferenceCode(),
 									ercAssetLibraryTestEntity);
@@ -858,16 +860,16 @@ public abstract class BaseERCAssetLibraryTestEntityResourceImpl
 			Map<String, Serializable> parameters)
 		throws Exception {
 
+		Serializable assetLibraryExternalReferenceCode = parameters.get(
+			"assetLibraryExternalReferenceCode");
+
 		UnsafeFunction
 			<ERCAssetLibraryTestEntity, ERCAssetLibraryTestEntity, Exception>
 				ercAssetLibraryTestEntityUnsafeFunction =
 					ercAssetLibraryTestEntity -> {
-						if (parameters.containsKey(
-								"assetLibraryExternalReferenceCode")) {
-
+						if (assetLibraryExternalReferenceCode != null) {
 							deleteAssetLibraryERCAssetLibraryTestEntity(
-								(String)parameters.get(
-									"assetLibraryExternalReferenceCode"),
+								(String)assetLibraryExternalReferenceCode,
 								ercAssetLibraryTestEntity.
 									getExternalReferenceCode());
 
@@ -930,9 +932,12 @@ public abstract class BaseERCAssetLibraryTestEntityResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("assetLibraryExternalReferenceCode")) {
+		Serializable assetLibraryExternalReferenceCode = parameters.get(
+			"assetLibraryExternalReferenceCode");
+
+		if (assetLibraryExternalReferenceCode != null) {
 			return getAssetLibraryERCAssetLibraryTestEntitiesPage(
-				(String)parameters.get("assetLibraryExternalReferenceCode"));
+				(String)assetLibraryExternalReferenceCode);
 		}
 		else {
 			throw new NotSupportedException(

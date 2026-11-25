@@ -708,7 +708,9 @@ public abstract class BaseFeatureFlagMethodTestEntityResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("siteId")) {
+			Serializable siteId = parameters.get("siteId");
+
+			if (siteId != null) {
 				if (!FeatureFlagManagerUtil.isEnabled(
 						CompanyThreadLocal.getCompanyId(), "METHOD-126")) {
 
@@ -718,8 +720,7 @@ public abstract class BaseFeatureFlagMethodTestEntityResourceImpl
 				featureFlagMethodTestEntityUnsafeFunction =
 					featureFlagMethodTestEntity ->
 						postSiteFeatureFlagMethodTestEntity(
-							(Long)parameters.get("siteId"),
-							featureFlagMethodTestEntity);
+							(Long)siteId, featureFlagMethodTestEntity);
 			}
 			else {
 				featureFlagMethodTestEntityUnsafeFunction =
@@ -734,6 +735,8 @@ public abstract class BaseFeatureFlagMethodTestEntityResourceImpl
 				"updateStrategy", "UPDATE");
 
 			if (StringUtil.equalsIgnoreCase(updateStrategy, "PARTIAL_UPDATE")) {
+				Serializable siteId = parameters.get("siteId");
+
 				featureFlagMethodTestEntityUnsafeFunction =
 					featureFlagMethodTestEntity -> {
 						FeatureFlagMethodTestEntity
@@ -767,7 +770,7 @@ public abstract class BaseFeatureFlagMethodTestEntityResourceImpl
 									featureFlagMethodTestEntity);
 						}
 						catch (NoSuchModelException noSuchModelException) {
-							if (parameters.containsKey("siteId")) {
+							if (siteId != null) {
 								if (!FeatureFlagManagerUtil.isEnabled(
 										CompanyThreadLocal.getCompanyId(),
 										"METHOD-126")) {
@@ -777,7 +780,7 @@ public abstract class BaseFeatureFlagMethodTestEntityResourceImpl
 
 								persistedFeatureFlagMethodTestEntity =
 									postSiteFeatureFlagMethodTestEntity(
-										(Long)parameters.get("siteId"),
+										(Long)siteId,
 										featureFlagMethodTestEntity);
 							}
 							else {
@@ -848,6 +851,8 @@ public abstract class BaseFeatureFlagMethodTestEntityResourceImpl
 			Map<String, Serializable> parameters)
 		throws Exception {
 
+		Serializable siteId = parameters.get("siteId");
+
 		UnsafeFunction
 			<FeatureFlagMethodTestEntity, FeatureFlagMethodTestEntity,
 			 Exception> featureFlagMethodTestEntityUnsafeFunction =
@@ -870,7 +875,7 @@ public abstract class BaseFeatureFlagMethodTestEntityResourceImpl
 							if (featureFlagMethodTestEntity.
 									getExternalReferenceCode() != null) {
 
-								if (parameters.containsKey("siteId")) {
+								if (siteId != null) {
 									if (!FeatureFlagManagerUtil.isEnabled(
 											CompanyThreadLocal.getCompanyId(),
 											"METHOD-126")) {
@@ -879,7 +884,7 @@ public abstract class BaseFeatureFlagMethodTestEntityResourceImpl
 									}
 
 									deleteSiteFeatureFlagMethodTestEntityByExternalReferenceCode(
-										(Long)parameters.get("siteId"),
+										(Long)siteId,
 										featureFlagMethodTestEntity.
 											getExternalReferenceCode());
 
@@ -888,7 +893,7 @@ public abstract class BaseFeatureFlagMethodTestEntityResourceImpl
 							}
 						}
 					}
-					else if (parameters.containsKey("siteId")) {
+					else if (siteId != null) {
 						if (!FeatureFlagManagerUtil.isEnabled(
 								CompanyThreadLocal.getCompanyId(),
 								"METHOD-126")) {
@@ -897,7 +902,7 @@ public abstract class BaseFeatureFlagMethodTestEntityResourceImpl
 						}
 
 						deleteSiteFeatureFlagMethodTestEntityByExternalReferenceCode(
-							(Long)parameters.get("siteId"),
+							(Long)siteId,
 							featureFlagMethodTestEntity.
 								getExternalReferenceCode());
 
@@ -984,15 +989,16 @@ public abstract class BaseFeatureFlagMethodTestEntityResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("siteId")) {
+		Serializable siteId = parameters.get("siteId");
+
+		if (siteId != null) {
 			if (!FeatureFlagManagerUtil.isEnabled(
 					CompanyThreadLocal.getCompanyId(), "METHOD-126")) {
 
 				throw new NotFoundException();
 			}
 
-			return getSiteFeatureFlagMethodTestEntitiesPage(
-				(Long)parameters.get("siteId"));
+			return getSiteFeatureFlagMethodTestEntitiesPage((Long)siteId);
 		}
 		else {
 			if (!FeatureFlagManagerUtil.isEnabled(

@@ -373,15 +373,15 @@ public abstract class BaseUserAccountResourceImpl
 				"updateStrategy", "UPDATE");
 
 			if (StringUtil.equalsIgnoreCase(updateStrategy, "UPDATE")) {
+				Serializable assetLibraryExternalReferenceCode = parameters.get(
+					"assetLibraryExternalReferenceCode");
+
 				userAccountUnsafeFunction = userAccount -> {
 					UserAccount persistedUserAccount = null;
 
-					if (parameters.containsKey(
-							"assetLibraryExternalReferenceCode")) {
-
+					if (assetLibraryExternalReferenceCode != null) {
 						persistedUserAccount = putAssetLibraryUserAccount(
-							(String)parameters.get(
-								"assetLibraryExternalReferenceCode"),
+							(String)assetLibraryExternalReferenceCode,
 							userAccount.getExternalReferenceCode());
 					}
 					else {
@@ -421,14 +421,14 @@ public abstract class BaseUserAccountResourceImpl
 			Map<String, Serializable> parameters)
 		throws Exception {
 
+		Serializable assetLibraryExternalReferenceCode = parameters.get(
+			"assetLibraryExternalReferenceCode");
+
 		UnsafeFunction<UserAccount, UserAccount, Exception>
 			userAccountUnsafeFunction = userAccount -> {
-				if (parameters.containsKey(
-						"assetLibraryExternalReferenceCode")) {
-
+				if (assetLibraryExternalReferenceCode != null) {
 					deleteAssetLibraryUserAccount(
-						(String)parameters.get(
-							"assetLibraryExternalReferenceCode"),
+						(String)assetLibraryExternalReferenceCode,
 						userAccount.getExternalReferenceCode());
 
 					return userAccount;
@@ -485,9 +485,12 @@ public abstract class BaseUserAccountResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("assetLibraryExternalReferenceCode")) {
+		Serializable assetLibraryExternalReferenceCode = parameters.get(
+			"assetLibraryExternalReferenceCode");
+
+		if (assetLibraryExternalReferenceCode != null) {
 			return getAssetLibraryUserAccountsPage(
-				(String)parameters.get("assetLibraryExternalReferenceCode"),
+				(String)assetLibraryExternalReferenceCode,
 				(String)parameters.get("keywords"), search, pagination, sorts);
 		}
 		else {

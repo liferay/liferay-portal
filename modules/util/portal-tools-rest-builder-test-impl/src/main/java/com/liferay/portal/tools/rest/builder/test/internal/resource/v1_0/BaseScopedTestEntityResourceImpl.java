@@ -882,16 +882,19 @@ public abstract class BaseScopedTestEntityResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("assetLibraryId")) {
+			Serializable assetLibraryId = parameters.get("assetLibraryId");
+
+			Serializable siteId = parameters.get("siteId");
+
+			if (assetLibraryId != null) {
 				scopedTestEntityUnsafeFunction =
 					scopedTestEntity -> postAssetLibraryScopedTestEntity(
-						(Long)parameters.get("assetLibraryId"),
-						scopedTestEntity);
+						(Long)assetLibraryId, scopedTestEntity);
 			}
-			else if (parameters.containsKey("siteId")) {
+			else if (siteId != null) {
 				scopedTestEntityUnsafeFunction =
 					scopedTestEntity -> postSiteScopedTestEntity(
-						(Long)parameters.get("siteId"), scopedTestEntity);
+						(Long)siteId, scopedTestEntity);
 			}
 			else {
 				throw new NotSupportedException(
@@ -904,20 +907,24 @@ public abstract class BaseScopedTestEntityResourceImpl
 				"updateStrategy", "UPDATE");
 
 			if (StringUtil.equalsIgnoreCase(updateStrategy, "UPDATE")) {
+				Serializable assetLibraryId = parameters.get("assetLibraryId");
+
+				Serializable siteId = parameters.get("siteId");
+
 				scopedTestEntityUnsafeFunction = scopedTestEntity -> {
 					ScopedTestEntity persistedScopedTestEntity = null;
 
-					if (parameters.containsKey("assetLibraryId")) {
+					if (assetLibraryId != null) {
 						persistedScopedTestEntity =
 							putAssetLibraryScopedTestEntityByExternalReferenceCode(
-								(Long)parameters.get("assetLibraryId"),
+								(Long)assetLibraryId,
 								scopedTestEntity.getExternalReferenceCode(),
 								scopedTestEntity);
 					}
-					else if (parameters.containsKey("siteId")) {
+					else if (siteId != null) {
 						persistedScopedTestEntity =
 							putSiteScopedTestEntityByExternalReferenceCode(
-								(Long)parameters.get("siteId"),
+								(Long)siteId,
 								scopedTestEntity.getExternalReferenceCode(),
 								scopedTestEntity);
 					}
@@ -958,18 +965,22 @@ public abstract class BaseScopedTestEntityResourceImpl
 			Map<String, Serializable> parameters)
 		throws Exception {
 
+		Serializable assetLibraryId = parameters.get("assetLibraryId");
+
+		Serializable siteId = parameters.get("siteId");
+
 		UnsafeFunction<ScopedTestEntity, ScopedTestEntity, Exception>
 			scopedTestEntityUnsafeFunction = scopedTestEntity -> {
-				if (parameters.containsKey("assetLibraryId")) {
+				if (assetLibraryId != null) {
 					deleteAssetLibraryScopedTestEntityByExternalReferenceCode(
-						(Long)parameters.get("assetLibraryId"),
+						(Long)assetLibraryId,
 						scopedTestEntity.getExternalReferenceCode());
 
 					return scopedTestEntity;
 				}
-				else if (parameters.containsKey("siteId")) {
+				else if (siteId != null) {
 					deleteSiteScopedTestEntityByExternalReferenceCode(
-						(Long)parameters.get("siteId"),
+						(Long)siteId,
 						scopedTestEntity.getExternalReferenceCode());
 
 					return scopedTestEntity;
@@ -1026,13 +1037,15 @@ public abstract class BaseScopedTestEntityResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("assetLibraryId")) {
-			return getAssetLibraryScopedTestEntitiesPage(
-				(Long)parameters.get("assetLibraryId"));
+		Serializable assetLibraryId = parameters.get("assetLibraryId");
+
+		Serializable siteId = parameters.get("siteId");
+
+		if (assetLibraryId != null) {
+			return getAssetLibraryScopedTestEntitiesPage((Long)assetLibraryId);
 		}
-		else if (parameters.containsKey("siteId")) {
-			return getSiteScopedTestEntitiesPage(
-				(Long)parameters.get("siteId"));
+		else if (siteId != null) {
+			return getSiteScopedTestEntitiesPage((Long)siteId);
 		}
 		else {
 			throw new NotSupportedException(

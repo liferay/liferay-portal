@@ -1095,9 +1095,12 @@ public abstract class BaseSitePageResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("siteExternalReferenceCode")) {
+			Serializable siteExternalReferenceCode = parameters.get(
+				"siteExternalReferenceCode");
+
+			if (siteExternalReferenceCode != null) {
 				sitePageUnsafeFunction = sitePage -> postSiteSitePage(
-					(String)parameters.get("siteExternalReferenceCode"),
+					(String)siteExternalReferenceCode,
 					_parseBoolean((String)parameters.get("privateLayout")),
 					sitePage);
 			}
@@ -1112,12 +1115,15 @@ public abstract class BaseSitePageResourceImpl
 				"updateStrategy", "UPDATE");
 
 			if (StringUtil.equalsIgnoreCase(updateStrategy, "UPDATE")) {
+				Serializable siteExternalReferenceCode = parameters.get(
+					"siteExternalReferenceCode");
+
 				sitePageUnsafeFunction = sitePage -> {
 					SitePage persistedSitePage = null;
 
-					if (parameters.containsKey("siteExternalReferenceCode")) {
+					if (siteExternalReferenceCode != null) {
 						persistedSitePage = putSiteSitePage(
-							(String)parameters.get("siteExternalReferenceCode"),
+							(String)siteExternalReferenceCode,
 							sitePage.getExternalReferenceCode(),
 							_parseBoolean(
 								(String)parameters.get("privateLayout")),
@@ -1160,11 +1166,14 @@ public abstract class BaseSitePageResourceImpl
 			Map<String, Serializable> parameters)
 		throws Exception {
 
+		Serializable siteExternalReferenceCode = parameters.get(
+			"siteExternalReferenceCode");
+
 		UnsafeFunction<SitePage, SitePage, Exception> sitePageUnsafeFunction =
 			sitePage -> {
-				if (parameters.containsKey("siteExternalReferenceCode")) {
+				if (siteExternalReferenceCode != null) {
 					deleteSiteSitePage(
-						(String)parameters.get("siteExternalReferenceCode"),
+						(String)siteExternalReferenceCode,
 						sitePage.getExternalReferenceCode());
 
 					return sitePage;
@@ -1221,9 +1230,12 @@ public abstract class BaseSitePageResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("siteExternalReferenceCode")) {
+		Serializable siteExternalReferenceCode = parameters.get(
+			"siteExternalReferenceCode");
+
+		if (siteExternalReferenceCode != null) {
 			return getSiteSitePagesPage(
-				(String)parameters.get("siteExternalReferenceCode"),
+				(String)siteExternalReferenceCode,
 				_parseBoolean((String)parameters.get("flatten")),
 				_parseBoolean((String)parameters.get("privateLayout")), search,
 				null, filter, pagination, sorts);

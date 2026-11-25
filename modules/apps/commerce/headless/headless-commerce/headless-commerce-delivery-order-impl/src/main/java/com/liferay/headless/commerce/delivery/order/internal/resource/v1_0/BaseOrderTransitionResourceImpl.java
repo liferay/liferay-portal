@@ -288,11 +288,12 @@ public abstract class BaseOrderTransitionResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("placedOrderId")) {
+			Serializable placedOrderId = parameters.get("placedOrderId");
+
+			if (placedOrderId != null) {
 				orderTransitionUnsafeFunction =
 					orderTransition -> postPlacedOrderOrderTransition(
-						_parseLong((String)parameters.get("placedOrderId")),
-						orderTransition);
+						_parseLong((String)placedOrderId), orderTransition);
 			}
 			else {
 				throw new NotSupportedException(
@@ -363,9 +364,11 @@ public abstract class BaseOrderTransitionResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("placedOrderId")) {
+		Serializable placedOrderId = parameters.get("placedOrderId");
+
+		if (placedOrderId != null) {
 			return getPlacedOrderOrderTransitionsPage(
-				_parseLong((String)parameters.get("placedOrderId")));
+				_parseLong((String)placedOrderId));
 		}
 		else {
 			throw new NotSupportedException(
