@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.service.PortletLocalService;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Collections;
 import java.util.List;
@@ -201,15 +202,20 @@ public class PanelAppRegistry {
 					Portlet portlet = _portletLocalService.getPortletById(
 						panelApp.getPortletId());
 
-					if (portlet != null) {
+					if (portlet == null) {
+						if (_log.isDebugEnabled()) {
+							_log.debug(
+								"Unable to get portlet " +
+									panelApp.getPortletId());
+						}
+					}
+					else if (Validator.isNull(
+								portlet.getControlPanelEntryCategory())) {
+
 						portlet.setControlPanelEntryCategory(
 							String.valueOf(
 								serviceReference.getProperty(
 									"panel.category.key")));
-					}
-					else if (_log.isDebugEnabled()) {
-						_log.debug(
-							"Unable to get portlet " + panelApp.getPortletId());
 					}
 
 					if (panelApp instanceof BasePanelApp) {

@@ -1341,6 +1341,13 @@ public class PortletTracker
 		}
 
 		if (companyId != null) {
+			String panelCategoryKey = (String)serviceReference.getProperty(
+				"com.liferay.portlet.panel.category.key");
+
+			if (Validator.isNotNull(panelCategoryKey)) {
+				portletModel.setControlPanelEntryCategory(panelCategoryKey);
+			}
+
 			_portletLocalService.deployRemotePortlet(
 				new long[] {companyId}, portletModel,
 				ArrayUtil.toStringArray(categoryNames), false, false);
