@@ -26,7 +26,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Eudaldo Alonso
  */
 @Component(service = FragmentRenderer.class)
-public class FaroPageBarActionsFragmentRenderer implements FragmentRenderer {
+public class FaroActionsPageBarFragmentRenderer implements FragmentRenderer {
 
 	@Override
 	public String getCollectionKey() {
@@ -51,7 +51,7 @@ public class FaroPageBarActionsFragmentRenderer implements FragmentRenderer {
 		throws IOException {
 
 		RequestDispatcher requestDispatcher =
-			_servletContext.getRequestDispatcher("/page_bar_actions.jsp");
+			_servletContext.getRequestDispatcher("/actions_page_bar.jsp");
 
 		try {
 			requestDispatcher.include(httpServletRequest, httpServletResponse);

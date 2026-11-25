@@ -123,7 +123,7 @@
 											{
 												"definition": {
 													"fragment": {
-														"key": "com.liferay.osb.faro.web.internal.fragment.renderer.FaroPageBarActionsFragmentRenderer"
+														"key": "com.liferay.osb.faro.web.internal.fragment.renderer.FaroActionsPageBarFragmentRenderer"
 													},
 													"fragmentConfig": {
 													},
