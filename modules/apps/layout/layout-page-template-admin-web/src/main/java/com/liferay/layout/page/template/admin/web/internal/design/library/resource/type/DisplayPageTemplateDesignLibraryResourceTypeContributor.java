@@ -245,12 +245,6 @@ public class DisplayPageTemplateDesignLibraryResourceTypeContributor
 	public boolean hasViewPermission(
 		PermissionChecker permissionChecker, DepotEntry depotEntry) {
 
-		if (!FeatureFlagManagerUtil.isEnabled(
-				depotEntry.getCompanyId(), "LPD-81651")) {
-
-			return false;
-		}
-
 		return _portletResourcePermission.contains(
 			permissionChecker, depotEntry.getGroupId(), ActionKeys.VIEW);
 	}

@@ -390,16 +390,6 @@ public class DisplayPageTemplateDesignLibraryResourceTypeContributorTest {
 			true
 		);
 
-		Assert.assertFalse(
-			_displayPageTemplateDesignLibraryResourceTypeContributor.
-				hasViewPermission(_permissionChecker, _depotEntry));
-
-		_featureFlagManagerUtilMockedStatic.when(
-			() -> FeatureFlagManagerUtil.isEnabled(_COMPANY_ID, "LPD-81651")
-		).thenReturn(
-			true
-		);
-
 		Assert.assertTrue(
 			_displayPageTemplateDesignLibraryResourceTypeContributor.
 				hasViewPermission(_permissionChecker, _depotEntry));
