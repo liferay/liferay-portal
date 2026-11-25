@@ -984,20 +984,31 @@ for (const reactPaginatorEnabled of [false, true]) {
 					await test.step('End the displayed range at the maximum search depth', async () => {
 						await configureSearchResults(
 							maximumSearchDepthInput,
-							'5'
+							'4'
 						);
 
 						await page.goto(`${layoutURL}?delta=20&q=${keyword}`);
 
 						await expect(searchPage.searchResultsItems).toHaveCount(
-							5
+							4
 						);
 
-						await expect(
-							searchPage.searchResultsPaginationDescription
-						).toHaveText(
-							`Showing 1 to 5 of ${getSearchResultsTotal(5)} entries.`
-						);
+						// With the result count accuracy limited, the total is
+						// capped at the maximum search depth, which fits in one
+						// page, so the paginator is hidden
+
+						if (reactPaginatorEnabled) {
+							await expect(
+								searchPage.searchResultsPaginationDescription
+							).toBeHidden();
+						}
+						else {
+							await expect(
+								searchPage.searchResultsPaginationDescription
+							).toHaveText(
+								`Showing 1 to 4 of ${WEB_CONTENTS_COUNT} entries.`
+							);
+						}
 					});
 				}
 			);
