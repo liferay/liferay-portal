@@ -24,24 +24,6 @@ jest.mock('shared/apollo/client', () => ({
 	default: {query: jest.fn()}
 }));
 
-const mockLiferayLanguage = key => {
-	const messages = {
-		'add-x': 'Add {0}',
-		'conditions-library': 'Conditions Library',
-		custom: 'Custom',
-		default: 'Default',
-		event: 'event',
-		'no-results-were-found': 'No Results Were Found'
-	};
-	return messages[key] || key;
-};
-
-global.Liferay = {
-	Language: {
-		get: mockLiferayLanguage
-	}
-};
-
 jest.mock('@apollo/client', () => ({
 	...jest.requireActual('@apollo/client'),
 	useQuery: jest.fn()
@@ -58,6 +40,36 @@ jest.mock('shared/context/dataSources', () => ({
 jest.mock('react-router-dom', () => ({
 	useParams: () => ({groupId: '12345'})
 }));
+
+const campaignPropertyGroupList = new List([
+	new PropertyGroup({
+		label: 'Campaigns',
+		propertyKey: 'campaign',
+		propertySubgroups: new List([
+			new PropertySubgroup({properties: new List()})
+		])
+	})
+]);
+
+const CampaignsSidebar = ({addEntities = jest.fn()}) => (
+	<DndProvider backend={HTML5Backend}>
+		<ReferencedObjectsContext.Provider
+			value={{
+				addEntities,
+				addProperty: jest.fn(),
+				referencedEntities: Map(),
+				referencedProperties: Map()
+			}}
+		>
+			<CriteriaSidebar
+				channelId='123'
+				groupId='456'
+				propertyGroupsIList={campaignPropertyGroupList}
+				type={SegmentTypes.Batch}
+			/>
+		</ReferencedObjectsContext.Provider>
+	</DndProvider>
+);
 
 describe('CriteriaSidebar', () => {
 	const fullPropertyGroupList = new List([
@@ -164,7 +176,7 @@ describe('CriteriaSidebar', () => {
 		);
 
 		expect(
-			screen.getByRole('combobox', {name: 'condition-type'})
+			screen.getByRole('combobox', {name: /^condition type$/i})
 		).toHaveTextContent(/interests/i);
 	});
 
@@ -231,7 +243,7 @@ describe('CriteriaSidebar', () => {
 			</DndProvider>
 		);
 
-		fireEvent.click(screen.getByRole('combobox', {name: 'condition-type'}));
+		fireEvent.click(screen.getByRole('combobox', {name: /^condition type$/i}));
 
 		expect(
 			within(screen.getByRole('group', {name: /behavioral/i}))
@@ -246,42 +258,20 @@ describe('CriteriaSidebar', () => {
 	});
 
 	describe('Campaigns section', () => {
-		const campaignPropertyGroupList = new List([
-			new PropertyGroup({
-				label: 'Campaigns',
-				propertyKey: 'campaign',
-				propertySubgroups: new List([
-					new PropertySubgroup({properties: new List()})
-				])
-			})
-		]);
-
-		const renderCampaigns = () =>
-			render(
-				<DndProvider backend={HTML5Backend}>
-					<CriteriaSidebar
-						channelId='123'
-						groupId='456'
-						propertyGroupsIList={campaignPropertyGroupList}
-						type={SegmentTypes.Batch}
-					/>
-				</DndProvider>
-			);
-
 		it('should offer to clear a search that matches no campaign', async () => {
-			renderCampaigns();
+			render(<CampaignsSidebar />);
 
-			const searchInput = screen.getByPlaceholderText('search');
+			const searchInput = screen.getByPlaceholderText(/^search$/i);
 
 			fireEvent.change(searchInput, {target: {value: 'Summer Launch'}});
 
 			const clearButton = await screen.findByRole('button', {
-				name: 'clear-search'
+				name: /^clear search$/i
 			});
 
-			expect(screen.getByText('No Results Were Found')).toBeInTheDocument();
+			expect(screen.getByText(/^no results were found$/i)).toBeInTheDocument();
 			expect(
-				screen.getByText('review-your-search-and-try-again')
+				screen.getByText(/review your search and try again/i)
 			).toBeInTheDocument();
 
 			fireEvent.click(clearButton);
@@ -297,25 +287,7 @@ describe('CriteriaSidebar', () => {
 
 			const addEntities = jest.fn();
 
-			render(
-				<DndProvider backend={HTML5Backend}>
-					<ReferencedObjectsContext.Provider
-						value={{
-							addEntities,
-							addProperty: jest.fn(),
-							referencedEntities: Map(),
-							referencedProperties: Map()
-						}}
-					>
-						<CriteriaSidebar
-							channelId='123'
-							groupId='456'
-							propertyGroupsIList={campaignPropertyGroupList}
-							type={SegmentTypes.Batch}
-						/>
-					</ReferencedObjectsContext.Provider>
-				</DndProvider>
-			);
+			render(<CampaignsSidebar addEntities={addEntities} />);
 
 			await waitFor(() =>
 				expect(addEntities).toHaveBeenCalledWith({
@@ -326,13 +298,13 @@ describe('CriteriaSidebar', () => {
 		});
 
 		it('should explain the empty section when nothing was searched', async () => {
-			renderCampaigns();
+			render(<CampaignsSidebar />);
 
 			expect(
-				await screen.findByText('no-campaigns-were-found')
+				await screen.findByText(/^no campaigns were found$/i)
 			).toBeInTheDocument();
 			expect(
-				screen.queryByRole('button', {name: 'clear-search'})
+				screen.queryByRole('button', {name: /^clear search$/i})
 			).not.toBeInTheDocument();
 		});
 	});

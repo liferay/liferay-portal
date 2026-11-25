@@ -9,7 +9,7 @@ import {
 	withReferencedObjectsConsumer,
 	withReferencedObjectsProvider
 } from '../referencedObjects';
-import {cleanup, render} from '@testing-library/react';
+import {cleanup, fireEvent, render, screen} from '@testing-library/react';
 import {fromJS, Map} from 'immutable';
 import {Property, Segment} from 'shared/util/records';
 
@@ -262,6 +262,48 @@ describe('referencedObjects', () => {
 
 			expect(container).toHaveTextContent(mockAssetName);
 			expect(container).toHaveTextContent(mockOrganizationName);
+		});
+
+		it('should add campaigns to a segment that references none', () => {
+			const ChildComponent = () => {
+				const {addEntities, referencedEntities} = React.useContext(
+					ReferencedObjectsContext
+				);
+
+				return (
+					<button
+						onClick={() =>
+							addEntities({
+								entityType: EntityType.Campaigns,
+								payload: [
+									Map({campaignName: 'Spring Sale', id: 'c1'})
+								]
+							})
+						}
+						type='button'
+					>
+						{referencedEntities.getIn([
+							EntityType.Campaigns,
+							'c1',
+							'campaignName'
+						]) ?? 'add'}
+					</button>
+				);
+			};
+
+			render(
+				<ReferencedObjectsProvider
+					segment={new Segment(fromJS({referencedObjects: {}}))}
+				>
+					<ChildComponent />
+				</ReferencedObjectsProvider>
+			);
+
+			fireEvent.click(screen.getByRole('button', {name: /^add$/i}));
+
+			expect(
+				screen.getByRole('button', {name: /spring sale/i})
+			).toBeInTheDocument();
 		});
 	});
 

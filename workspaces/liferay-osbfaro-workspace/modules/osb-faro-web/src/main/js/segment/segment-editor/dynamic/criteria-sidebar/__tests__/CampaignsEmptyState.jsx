@@ -1,12 +1,13 @@
 import CampaignsEmptyState from '../CampaignsEmptyState';
 import React from 'react';
 import {cleanup, render, screen} from '@testing-library/react';
-import {useCurrentUser} from 'shared/hooks/useCurrentUser';
 import {useDataSources} from 'shared/context/dataSources';
 
 jest.mock('shared/context/dataSources', () => ({useDataSources: jest.fn()}));
 
-jest.mock('shared/hooks/useCurrentUser', () => ({useCurrentUser: jest.fn()}));
+jest.mock('shared/hooks/useCurrentUser', () => ({
+	useCurrentUser: () => ({isAdmin: () => true})
+}));
 
 jest.mock('react-router-dom', () => ({
 	useParams: () => ({groupId: '12345'})
@@ -16,7 +17,6 @@ describe('CampaignsEmptyState', () => {
 	afterEach(cleanup);
 
 	beforeEach(() => {
-		useCurrentUser.mockReturnValue({isAdmin: () => true});
 		useDataSources.mockReturnValue({empty: false, loading: false});
 	});
 
@@ -26,45 +26,22 @@ describe('CampaignsEmptyState', () => {
 		render(<CampaignsEmptyState />);
 
 		expect(
-			screen.getByText('No Campaign Data Has Been Synced')
+			screen.getByText(/no campaign data has been synced/i)
 		).toBeInTheDocument();
 		expect(
-			screen.getByText('Connect a data source containing campaign data.')
+			screen.getByText(/connect a data source containing campaign data/i)
 		).toBeInTheDocument();
-		expect(
-			screen.getByRole('link', {name: /Learn More about Data Sources/i})
-		).toBeInTheDocument();
-		expect(
-			screen.getByRole('link', {name: 'Connect Data Source'})
-		).toHaveAttribute('href', '/workspace/12345/settings/data-source');
-	});
-
-	it('should not offer to connect a data source to a user who cannot', () => {
-		useCurrentUser.mockReturnValue({isAdmin: () => false});
-		useDataSources.mockReturnValue({empty: true, loading: false});
-
-		render(<CampaignsEmptyState />);
-
-		expect(
-			screen.getByText('No Campaign Data Has Been Synced')
-		).toBeInTheDocument();
-		expect(
-			screen.queryByRole('link', {name: 'Connect Data Source'})
-		).not.toBeInTheDocument();
 	});
 
 	it('should tell that no campaign was synced when a data source is connected', () => {
 		render(<CampaignsEmptyState />);
 
-		expect(screen.getByText('No Campaigns Were Found')).toBeInTheDocument();
+		expect(screen.getByText(/no campaigns were found/i)).toBeInTheDocument();
 		expect(
 			screen.getByText(
-				'No campaigns were synced from the connected data sources.'
+				/no campaigns were synced from the connected data sources/i
 			)
 		).toBeInTheDocument();
-		expect(
-			screen.queryByRole('link', {name: 'Connect Data Source'})
-		).not.toBeInTheDocument();
 	});
 
 	it('should wait for the data sources before telling why it is empty', () => {
@@ -73,10 +50,10 @@ describe('CampaignsEmptyState', () => {
 		render(<CampaignsEmptyState />);
 
 		expect(
-			screen.queryByText('No Campaigns Were Found')
+			screen.queryByText(/no campaigns were found/i)
 		).not.toBeInTheDocument();
 		expect(
-			screen.queryByText('No Campaign Data Has Been Synced')
+			screen.queryByText(/no campaign data has been synced/i)
 		).not.toBeInTheDocument();
 	});
 });

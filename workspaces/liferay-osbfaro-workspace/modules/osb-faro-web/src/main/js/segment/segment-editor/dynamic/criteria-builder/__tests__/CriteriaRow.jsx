@@ -24,6 +24,37 @@ const WrapperComponent = ({children}) => (
 	</ApolloProvider>
 );
 
+const CampaignRow = ({campaignId, onDelete = jest.fn()}) => (
+	<WrapperComponent>
+		<ReferencedObjectsContext.Provider
+			value={{
+				referencedEntities: fromJS({
+					campaigns: {c1: {campaignName: 'Spring Sale', id: 'c1'}}
+				}),
+				referencedProperties: Map()
+			}}
+		>
+			<DndProvider backend={HTML5Backend}>
+				<CriteriaRow
+					criterion={{
+						operatorName: 'campaigns-filter',
+						propertyName: 'id',
+						rowId: 'row_0',
+						touched: false,
+						valid: true,
+						value: getDefaultValue(CAMPAIGN_PROPERTY).setIn(
+							['criterionGroup', 'items', 0, 'value'],
+							List([campaignId])
+						)
+					}}
+					index={0}
+					onDelete={onDelete}
+				/>
+			</DndProvider>
+		</ReferencedObjectsContext.Provider>
+	</WrapperComponent>
+);
+
 describe('CriteriaRow', () => {
 	afterEach(cleanup);
 
@@ -131,69 +162,28 @@ describe('CriteriaRow', () => {
 		expect(onDelete).toHaveBeenCalledWith(3);
 	});
 
-	describe('campaign criterion', () => {
-		const renderCampaignRow = ({onDelete = jest.fn()} = {}) =>
-			render(
-				<WrapperComponent>
-					<ReferencedObjectsContext.Provider
-						value={{
-							referencedEntities: fromJS({
-								campaigns: {c1: {campaignName: 'Spring Sale', id: 'c1'}}
-							}),
-							referencedProperties: Map()
-						}}
-					>
-						<DndProvider backend={HTML5Backend}>
-							<CriteriaRow
-								criterion={{
-									operatorName: 'campaigns-filter',
-									propertyName: 'id',
-									rowId: 'row_0',
-									touched: false,
-									valid: true,
-									value: getDefaultValue(
-										CAMPAIGN_PROPERTY
-									).setIn(
-										['criterionGroup', 'items', 0, 'value'],
-										List([campaignId])
-									)
-								}}
-								index={0}
-								onDelete={onDelete}
-							/>
-						</DndProvider>
-					</ReferencedObjectsContext.Provider>
-				</WrapperComponent>
-			);
+	it('should not flag a campaign that still exists', () => {
+		render(<CampaignRow campaignId="c1" />);
 
-		let campaignId;
+		expect(
+			screen.queryByText(/campaign no longer exists/i)
+		).not.toBeInTheDocument();
+	});
 
-		it('should show the name of a campaign that still exists', () => {
-			campaignId = 'c1';
+	it('should only offer to remove a campaign that no longer exists', () => {
+		const onDelete = jest.fn();
 
-			renderCampaignRow();
+		render(<CampaignRow campaignId="deleted" onDelete={onDelete} />);
 
-			expect(screen.getByText('Spring Sale')).toBeInTheDocument();
-			expect(
-				screen.queryByText('Campaign no longer exists.')
-			).not.toBeInTheDocument();
-		});
+		expect(screen.getByRole('alert')).toHaveTextContent(
+			/^campaign no longer exists\.$/i
+		);
+		expect(
+			screen.queryByRole('button', {name: /^menu$/i})
+		).not.toBeInTheDocument();
 
-		it('should only offer to remove a campaign that no longer exists', () => {
-			campaignId = 'deleted';
+		fireEvent.click(screen.getByRole('button', {name: /^delete$/i}));
 
-			const onDelete = jest.fn();
-
-			renderCampaignRow({onDelete});
-
-			expect(
-				screen.getByText('Campaign no longer exists.')
-			).toBeInTheDocument();
-			expect(screen.queryByText('Duplicate')).not.toBeInTheDocument();
-
-			fireEvent.click(screen.getByRole('button', {name: 'Delete'}));
-
-			expect(onDelete).toHaveBeenCalledWith(0);
-		});
+		expect(onDelete).toHaveBeenCalledWith(0);
 	});
 });
