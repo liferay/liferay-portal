@@ -90,6 +90,20 @@ public class TextEmbeddingRetrieverTest {
 				List.of(_TEST_PROVIDER_NAME),
 				_textEmbeddingRetrieverImpl.getAvailableProviderNames());
 
+			EmbeddingProviderStatus embeddingProviderStatus =
+				_textEmbeddingRetrieverImpl.getEmbeddingProviderStatus(
+					new EmbeddingProviderConfiguration(
+					) {
+
+						{
+							providerName = disabledProviderName;
+						}
+					}.toString());
+
+			Assert.assertEquals(
+				"Embedding provider " + disabledProviderName + " was not found",
+				embeddingProviderStatus.getErrorMessage());
+
 			_textEmbeddingRetrieverImpl.deactivate();
 
 			_textEmbeddingRetrieverImpl.activate(
