@@ -262,13 +262,18 @@ public class CommerceShipmentContentDisplayContext {
 		}
 
 		_searchContainer.setResultsAndTotal(
-			() -> _commerceShipmentLocalService.getCommerceShipments(
-				_commerceChannel.getGroupId(), accountEntry.getAccountEntryId(),
-				_searchContainer.getStart(), _searchContainer.getEnd(),
-				CommerceShipmentCreateDateComparator.getInstance(false)),
-			_commerceShipmentLocalService.getCommerceShipmentsCount(
-				_commerceChannel.getGroupId(),
-				accountEntry.getAccountEntryId()));
+			() ->
+				_commerceShipmentLocalService.
+					getCommerceShipmentsByCommerceAccountId(
+						_commerceChannel.getGroupId(),
+						accountEntry.getAccountEntryId(),
+						_searchContainer.getStart(), _searchContainer.getEnd(),
+						CommerceShipmentCreateDateComparator.getInstance(
+							false)),
+			_commerceShipmentLocalService.
+				getCommerceShipmentsCountByCommerceAccountId(
+					_commerceChannel.getGroupId(),
+					accountEntry.getAccountEntryId()));
 
 		return _searchContainer;
 	}
