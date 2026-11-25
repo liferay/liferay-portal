@@ -55,18 +55,6 @@ import org.osgi.service.component.annotations.Reference;
 public class CPDefinitionGroupedEntryLocalServiceImpl
 	extends CPDefinitionGroupedEntryLocalServiceBaseImpl {
 
-	@Override
-	public void addCPDefinitionGroupedEntries(
-			long cpDefinitionId, long[] entryCProductIds,
-			ServiceContext serviceContext)
-		throws PortalException {
-
-		for (long entryCProductId : entryCProductIds) {
-			cpDefinitionGroupedEntryLocalService.addCPDefinitionGroupedEntry(
-				cpDefinitionId, entryCProductId, 0, 1, serviceContext);
-		}
-	}
-
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public CPDefinitionGroupedEntry addCPDefinitionGroupedEntry(
@@ -174,14 +162,6 @@ public class CPDefinitionGroupedEntryLocalServiceImpl
 			cpDefinitionGroupedEntryLocalService.deleteCPDefinitionGroupedEntry(
 				cpDefinitionGroupedEntry);
 		}
-	}
-
-	@Override
-	public CPDefinitionGroupedEntry fetchCPDefinitionGroupedEntry(
-		long cpDefinitionId, long entryCProductId) {
-
-		return cpDefinitionGroupedEntryPersistence.fetchByC_E(
-			cpDefinitionId, entryCProductId);
 	}
 
 	@Override
