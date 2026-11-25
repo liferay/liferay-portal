@@ -197,7 +197,7 @@ public class FragmentSetResourceTest extends BaseFragmentSetResourceTestCase {
 
 	@Override
 	@Test
-	@TestInfo({"LPD-88395", "LPD-107754", "LPD-117504"})
+	@TestInfo({"LPD-88395", "LPD-107754"})
 	public void testPostSiteFragmentSet() throws Exception {
 		FragmentSet randomFragmentSet = randomFragmentSet();
 
@@ -253,7 +253,7 @@ public class FragmentSetResourceTest extends BaseFragmentSetResourceTestCase {
 
 	@Override
 	@Test
-	@TestInfo({"LPD-88395", "LPD-117504"})
+	@TestInfo("LPD-88395")
 	public void testPutSiteFragmentSet() throws Exception {
 		FragmentSet fragmentSet = randomFragmentSet();
 
@@ -291,7 +291,6 @@ public class FragmentSetResourceTest extends BaseFragmentSetResourceTestCase {
 		String originalExternalReferenceCode =
 			fragmentSet.getExternalReferenceCode();
 		String originalKey = fragmentSet.getKey();
-		String originalUuid = fragmentSet.getUuid();
 
 		Boolean originalMarketplace = fragmentSet.getMarketplace();
 
@@ -299,7 +298,6 @@ public class FragmentSetResourceTest extends BaseFragmentSetResourceTestCase {
 		fragmentSet.setExternalReferenceCode(RandomTestUtil.randomString());
 		fragmentSet.setKey(RandomTestUtil.randomString());
 		fragmentSet.setMarketplace(!originalMarketplace);
-		fragmentSet.setUuid(RandomTestUtil.randomString());
 
 		putFragmentSet = fragmentSetResource.putSiteFragmentSet(
 			testGroup.getExternalReferenceCode(), originalExternalReferenceCode,
@@ -312,7 +310,6 @@ public class FragmentSetResourceTest extends BaseFragmentSetResourceTestCase {
 		Assert.assertEquals(originalKey, putFragmentSet.getKey());
 		Assert.assertEquals(
 			originalMarketplace, putFragmentSet.getMarketplace());
-		Assert.assertEquals(originalUuid, putFragmentSet.getUuid());
 
 		FragmentSet duplicateKeyFragmentSet = randomFragmentSet();
 
@@ -351,8 +348,7 @@ public class FragmentSetResourceTest extends BaseFragmentSetResourceTestCase {
 	@Override
 	protected String[] getAdditionalAssertFieldNames() {
 		return new String[] {
-			"description", "externalReferenceCode", "key", "marketplace",
-			"name", "uuid"
+			"description", "externalReferenceCode", "key", "marketplace", "name"
 		};
 	}
 
@@ -512,8 +508,6 @@ public class FragmentSetResourceTest extends BaseFragmentSetResourceTestCase {
 			fragmentSet.getName(), fragmentCollection.getName());
 		Assert.assertEquals(
 			fragmentSet.getDescription(), fragmentCollection.getDescription());
-		Assert.assertEquals(
-			fragmentSet.getUuid(), fragmentCollection.getUuid());
 	}
 
 	private void _assertGetSiteFragmentSetsPageWithFilter(
