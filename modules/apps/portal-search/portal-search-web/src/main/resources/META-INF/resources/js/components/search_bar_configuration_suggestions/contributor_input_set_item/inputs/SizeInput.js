@@ -31,7 +31,9 @@ function SizeInput({index, onBlur, onChange, touched, value}) {
 						className="c-ml-2"
 						data-tooltip-align="top"
 						tabIndex={0}
-						title={Liferay.Language.get('size-suggestion-help')}
+						title={Liferay.Language.get(
+							'size-suggestion-limit-help'
+						)}
 					>
 						<ClayIcon symbol="question-circle-full" />
 					</span>
