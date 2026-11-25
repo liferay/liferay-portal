@@ -122,9 +122,9 @@ public class PropertiesSourceFormatterFileCheck extends BaseFileCheck {
 			String fileName, String absolutePath, String content)
 		throws Exception {
 
-		int pos = absolutePath.lastIndexOf(CharPool.SLASH);
+		int index = absolutePath.lastIndexOf(CharPool.SLASH);
 
-		String fileLocation = absolutePath.substring(0, pos);
+		String fileLocation = absolutePath.substring(0, index);
 
 		String rootDirName = SourceUtil.getRootDirName(absolutePath);
 
@@ -159,16 +159,16 @@ public class PropertiesSourceFormatterFileCheck extends BaseFileCheck {
 				continue;
 			}
 
-			pos = sourceFormatterProperties.indexOf(propertyKey);
+			index = sourceFormatterProperties.indexOf(propertyKey);
 
-			if (pos == -1) {
+			if (index == -1) {
 				previousLine = line;
 
 				continue;
 			}
 
 			if ((previousPropertyPosition != -1) &&
-				(pos < previousPropertyPosition)) {
+				(index < previousPropertyPosition)) {
 
 				addMessage(
 					fileName,
@@ -183,7 +183,7 @@ public class PropertiesSourceFormatterFileCheck extends BaseFileCheck {
 
 			previousLine = line;
 			previousPropertyKey = propertyKey;
-			previousPropertyPosition = pos;
+			previousPropertyPosition = index;
 		}
 	}
 
@@ -208,13 +208,13 @@ public class PropertiesSourceFormatterFileCheck extends BaseFileCheck {
 
 		String dirName = propertyValue.substring(3);
 
-		int pos = dirName.indexOf(CharPool.SLASH);
+		int index = dirName.indexOf(CharPool.SLASH);
 
-		if (pos == -1) {
+		if (index == -1) {
 			return;
 		}
 
-		dirName = dirName.substring(0, pos);
+		dirName = dirName.substring(0, index);
 
 		if (dirName.contains(StringPool.STAR) ||
 			ArrayUtil.contains(_WILDCARD_DIR_NAMES, dirName)) {
@@ -305,16 +305,16 @@ public class PropertiesSourceFormatterFileCheck extends BaseFileCheck {
 					continue;
 				}
 
-				int pos = propertyValue.indexOf(CharPool.AT);
+				int index = propertyValue.indexOf(CharPool.AT);
 
-				if (pos != -1) {
-					propertyValue = propertyValue.substring(0, pos);
+				if (index != -1) {
+					propertyValue = propertyValue.substring(0, index);
 				}
 
-				pos = propertyValue.indexOf("->");
+				index = propertyValue.indexOf("->");
 
-				if (pos != -1) {
-					propertyValue = propertyValue.substring(pos + 2);
+				if (index != -1) {
+					propertyValue = propertyValue.substring(index + 2);
 				}
 
 				File file = getFile(propertyValue, getMaxDirLevel());
