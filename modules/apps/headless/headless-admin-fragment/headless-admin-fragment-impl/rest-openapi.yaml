@@ -451,10 +451,6 @@ components:
                     description:
                         The fragment set's name.
                     type: string
-                uuid:
-                    description:
-                        The fragment set's universally unique identifier. On write, it is used only when the fragment set is created, to keep the identifier of an exported fragment set.
-                    type: string
             type: object
         FragmentVersion:
             description:
