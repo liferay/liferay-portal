@@ -48,11 +48,12 @@ public class SecretResolverUtilTest {
 
 	@Test
 	public void testResolve() {
+		SecretResolver secretResolver = Mockito.mock(SecretResolver.class);
+
 		long companyId = RandomTestUtil.randomLong();
-		String resolvedValue = RandomTestUtil.randomString();
 		String value = _randomKeyReferenceString();
 
-		SecretResolver secretResolver = Mockito.mock(SecretResolver.class);
+		String resolvedValue = RandomTestUtil.randomString();
 
 		Mockito.when(
 			secretResolver.resolve(companyId, value)
@@ -104,12 +105,13 @@ public class SecretResolverUtilTest {
 
 	@Test
 	public void testResolveWithIdentifier() {
+		SecretResolver secretResolver = Mockito.mock(SecretResolver.class);
+
 		long companyId = RandomTestUtil.randomLong();
 		String identifier = RandomTestUtil.randomString();
-		String resolvedValue = RandomTestUtil.randomString();
 		String value = _randomKeyReferenceString();
 
-		SecretResolver secretResolver = Mockito.mock(SecretResolver.class);
+		String resolvedValue = RandomTestUtil.randomString();
 
 		Mockito.when(
 			secretResolver.resolve(companyId, identifier, value)
