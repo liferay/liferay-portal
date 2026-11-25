@@ -6,7 +6,7 @@
 				"externalReferenceCode": "LDPPRIMARYNAVIGATION1",
 				"menuItems": [
 					{
-						"displayIcon": "diagram",
+						"displayIcon": "plant",
 						"externalReferenceCode": "LDPPRIMARYNAVIGATION2",
 						"friendlyURL": "/lifecycles",
 						"privateLayout": false,
@@ -20,21 +20,21 @@
 						"type": "layout"
 					},
 					{
-						"displayIcon": "globe",
+						"displayIcon": "sites",
 						"externalReferenceCode": "LDPPRIMARYNAVIGATION4",
 						"friendlyURL": "/sites",
 						"privateLayout": false,
 						"type": "layout"
 					},
 					{
-						"displayIcon": "documents-and-media",
+						"displayIcon": "sheets",
 						"externalReferenceCode": "LDPPRIMARYNAVIGATION5",
 						"friendlyURL": "/assets",
 						"privateLayout": false,
 						"type": "layout"
 					},
 					{
-						"displayIcon": "bolt",
+						"displayIcon": "click",
 						"externalReferenceCode": "LDPPRIMARYNAVIGATION6",
 						"friendlyURL": "/events",
 						"privateLayout": false,
@@ -59,7 +59,7 @@
 				"externalReferenceCode": "LDPPRIMARYNAVIGATION7",
 				"menuItems": [
 					{
-						"displayIcon": "filter",
+						"displayIcon": "box-squared",
 						"externalReferenceCode": "LDPPRIMARYNAVIGATION8",
 						"friendlyURL": "/segments",
 						"privateLayout": false,
@@ -129,7 +129,7 @@
 				"externalReferenceCode": "LDPSETTINGSNAVIGATION2",
 				"menuItems": [
 					{
-						"displayIcon": "code",
+						"displayIcon": "api-web",
 						"externalReferenceCode": "LDPSETTINGSNAVIGATION3",
 						"friendlyURL": "/tokens",
 						"name_i18n": {
@@ -148,14 +148,14 @@
 						"useCustomName": true
 					},
 					{
-						"displayIcon": "books",
+						"displayIcon": "tag",
 						"externalReferenceCode": "LDPSETTINGSNAVIGATION4",
 						"friendlyURL": "/definitions",
 						"privateLayout": false,
 						"type": "layout"
 					},
 					{
-						"displayIcon": "data-privacy",
+						"displayIcon": "shield-asterisk",
 						"externalReferenceCode": "LDPSETTINGSNAVIGATION5",
 						"friendlyURL": "/data-privacy",
 						"name_i18n": {
@@ -206,7 +206,7 @@
 				"externalReferenceCode": "LDPSETTINGSNAVIGATION8",
 				"menuItems": [
 					{
-						"displayIcon": "users",
+						"displayIcon": "user-cog",
 						"externalReferenceCode": "LDPSETTINGSNAVIGATION9",
 						"friendlyURL": "/users",
 						"name_i18n": {
@@ -225,7 +225,7 @@
 						"useCustomName": true
 					},
 					{
-						"displayIcon": "page",
+						"displayIcon": "slideshow",
 						"externalReferenceCode": "LDPSETTINGSNAVIGATION10",
 						"friendlyURL": "/properties",
 						"privateLayout": false,
