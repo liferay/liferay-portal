@@ -156,8 +156,6 @@
 										PortalUtil.getControlPanelPortletURL(request, stagingGroup, StagingProcessesPortletKeys.STAGING_PROCESSES, 0, 0, PortletRequest.RENDER_PHASE)
 									).setMVCRenderCommandName(
 										"/staging_processes/view_new_publish"
-									).setRedirect(
-										PortalUtil.getControlPanelPortletURL(request, stagingGroup, StagingProcessesPortletKeys.STAGING_PROCESSES, 0, 0, PortletRequest.RENDER_PHASE)
 									).setBackURL(
 										themeDisplay.getURLCurrent()
 									).setParameter(

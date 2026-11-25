@@ -35,12 +35,6 @@ if (liveGroup == null) {
 PublishProcessDisplayContext publishProcessDisplayContext = new PublishProcessDisplayContext(liveGroup, locale, publishSourceGroup);
 
 renderResponse.setTitle(publishProcessDisplayContext.getTitle(scheduledPublishProcessId));
-
-String redirect = PortalUtil.escapeRedirect(ParamUtil.getString(request, "redirect"));
-
-if (Validator.isNull(redirect)) {
-	redirect = backURL;
-}
 %>
 
 <clay:container-fluid
@@ -65,7 +59,12 @@ if (Validator.isNull(redirect)) {
 			).put(
 				"pageTreeModalConfiguration", publishProcessDisplayContext.getPageTreeModalConfiguration()
 			).put(
-				"processesBackURL", HttpComponentsUtil.setParameter(redirect, liferayPortletResponse.getNamespace() + "tabs1", "processes")
+				"processesBackURL",
+				PortletURLBuilder.createRenderURL(
+					liferayPortletResponse
+				).setTabs1(
+					"processes"
+				).buildString()
 			).put(
 				"publishPreviewAPIURL", publishProcessDisplayContext.getPublishPreviewAPIURL()
 			).put(
@@ -73,7 +72,12 @@ if (Validator.isNull(redirect)) {
 			).put(
 				"remoteConnection", publishProcessDisplayContext.getRemoteConnectionJSONObject()
 			).put(
-				"scheduledBackURL", HttpComponentsUtil.setParameter(redirect, liferayPortletResponse.getNamespace() + "tabs1", "scheduled")
+				"scheduledBackURL",
+				PortletURLBuilder.createRenderURL(
+					liferayPortletResponse
+				).setTabs1(
+					"scheduled"
+				).buildString()
 			).put(
 				"scheduledPublishProcessAPIURL", publishProcessDisplayContext.getScheduledPublishProcessAPIURL()
 			).put(
