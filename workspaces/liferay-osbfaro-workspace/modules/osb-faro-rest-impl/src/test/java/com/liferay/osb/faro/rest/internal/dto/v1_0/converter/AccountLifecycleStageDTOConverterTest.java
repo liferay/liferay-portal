@@ -20,38 +20,41 @@ public class AccountLifecycleStageDTOConverterTest {
 	public void testToDTO() {
 		Assert.assertNull(_accountLifecycleStageDTOConverter.toDTO(null, null));
 
+		String description = RandomTestUtil.randomString();
+		String id = RandomTestUtil.randomString();
+		Integer maxDuration = RandomTestUtil.randomInt();
+		String name = RandomTestUtil.randomString();
+		Integer position = RandomTestUtil.randomInt();
+
+		AccountLifecycleStage accountLifecycleStage = _toDTO(
+			description, id, maxDuration, name, position);
+
+		Assert.assertEquals(
+			description, accountLifecycleStage.getDescription());
+		Assert.assertEquals(id, accountLifecycleStage.getId());
+		Assert.assertEquals(
+			maxDuration, accountLifecycleStage.getMaxDuration());
+		Assert.assertEquals(name, accountLifecycleStage.getName());
+		Assert.assertEquals(position, accountLifecycleStage.getPosition());
+	}
+
+	private AccountLifecycleStage _toDTO(
+		String description, String id, Integer maxDuration, String name,
+		Integer position) {
+
 		com.liferay.osb.faro.engine.client.model.AccountLifecycleStage
-			engineClientAccountLifecycleStage =
+			accountLifecycleStage =
 				new com.liferay.osb.faro.engine.client.model.
 					AccountLifecycleStage();
 
-		engineClientAccountLifecycleStage.setDescription("Pipeline");
-		engineClientAccountLifecycleStage.setId("stage-1");
-		engineClientAccountLifecycleStage.setMaxDuration(30);
-		engineClientAccountLifecycleStage.setName(
-			RandomTestUtil.randomString());
-		engineClientAccountLifecycleStage.setPosition(
-			RandomTestUtil.randomInt());
+		accountLifecycleStage.setDescription(description);
+		accountLifecycleStage.setId(id);
+		accountLifecycleStage.setMaxDuration(maxDuration);
+		accountLifecycleStage.setName(name);
+		accountLifecycleStage.setPosition(position);
 
-		AccountLifecycleStage accountLifecycleStage =
-			_accountLifecycleStageDTOConverter.toDTO(
-				null, engineClientAccountLifecycleStage);
-
-		Assert.assertEquals(
-			engineClientAccountLifecycleStage.getDescription(),
-			accountLifecycleStage.getDescription());
-		Assert.assertEquals(
-			engineClientAccountLifecycleStage.getId(),
-			accountLifecycleStage.getId());
-		Assert.assertEquals(
-			engineClientAccountLifecycleStage.getMaxDuration(),
-			accountLifecycleStage.getMaxDuration());
-		Assert.assertEquals(
-			engineClientAccountLifecycleStage.getName(),
-			accountLifecycleStage.getName());
-		Assert.assertEquals(
-			engineClientAccountLifecycleStage.getPosition(),
-			accountLifecycleStage.getPosition());
+		return _accountLifecycleStageDTOConverter.toDTO(
+			null, accountLifecycleStage);
 	}
 
 	private final AccountLifecycleStageDTOConverter

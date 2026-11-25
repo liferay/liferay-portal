@@ -40,91 +40,72 @@ public class AccountLifecycleStageTransitionDTOConverterTest {
 		Assert.assertNull(
 			_accountLifecycleStageTransitionDTOConverter.toDTO(null, null));
 
-		com.liferay.osb.faro.engine.client.model.AccountLifecycleStageTransition
-			engineClientAccountLifecycleStageTransition =
-				new com.liferay.osb.faro.engine.client.model.
-					AccountLifecycleStageTransition();
-
-		engineClientAccountLifecycleStageTransition.setAccountId(
-			RandomTestUtil.randomString());
-		engineClientAccountLifecycleStageTransition.setAccountName(
-			RandomTestUtil.randomString());
-		engineClientAccountLifecycleStageTransition.
-			setFromAccountLifecycleStage(
-				_createEngineClientAccountLifecycleStage(
-					RandomTestUtil.randomString(),
-					RandomTestUtil.randomString(), RandomTestUtil.randomInt(),
-					RandomTestUtil.randomString(), RandomTestUtil.randomInt()));
-		engineClientAccountLifecycleStageTransition.setToAccountLifecycleStage(
-			_createEngineClientAccountLifecycleStage(
-				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-				RandomTestUtil.randomInt(), RandomTestUtil.randomString(),
-				RandomTestUtil.randomInt()));
-		engineClientAccountLifecycleStageTransition.setTransitionDate(
-			new Date());
+		String accountId = RandomTestUtil.randomString();
+		String accountName = RandomTestUtil.randomString();
+		String fromAccountLifecycleStageId = RandomTestUtil.randomString();
+		String toAccountLifecycleStageId = RandomTestUtil.randomString();
+		Date transitionDate = new Date();
 
 		AccountLifecycleStageTransition accountLifecycleStageTransition =
-			_accountLifecycleStageTransitionDTOConverter.toDTO(
-				null, engineClientAccountLifecycleStageTransition);
+			_toDTO(
+				accountId, accountName, fromAccountLifecycleStageId,
+				toAccountLifecycleStageId, transitionDate);
 
 		Assert.assertEquals(
-			engineClientAccountLifecycleStageTransition.getAccountId(),
-			accountLifecycleStageTransition.getAccountId());
+			accountId, accountLifecycleStageTransition.getAccountId());
 		Assert.assertEquals(
-			engineClientAccountLifecycleStageTransition.getAccountName(),
-			accountLifecycleStageTransition.getAccountName());
-		_assertAccountLifecycleStage(
-			engineClientAccountLifecycleStageTransition.
-				getFromAccountLifecycleStage(),
-			accountLifecycleStageTransition.getFromAccountLifecycleStage());
-		_assertAccountLifecycleStage(
-			engineClientAccountLifecycleStageTransition.
-				getToAccountLifecycleStage(),
-			accountLifecycleStageTransition.getToAccountLifecycleStage());
+			accountName, accountLifecycleStageTransition.getAccountName());
+
+		AccountLifecycleStage fromAccountLifecycleStage =
+			accountLifecycleStageTransition.getFromAccountLifecycleStage();
+
 		Assert.assertEquals(
-			engineClientAccountLifecycleStageTransition.getTransitionDate(),
+			fromAccountLifecycleStageId, fromAccountLifecycleStage.getId());
+
+		AccountLifecycleStage toAccountLifecycleStage =
+			accountLifecycleStageTransition.getToAccountLifecycleStage();
+
+		Assert.assertEquals(
+			toAccountLifecycleStageId, toAccountLifecycleStage.getId());
+
+		Assert.assertEquals(
+			transitionDate,
 			accountLifecycleStageTransition.getTransitionDate());
 	}
 
-	private void _assertAccountLifecycleStage(
-		com.liferay.osb.faro.engine.client.model.AccountLifecycleStage
-			engineClientAccountLifecycleStage,
-		AccountLifecycleStage accountLifecycleStage) {
-
-		Assert.assertEquals(
-			engineClientAccountLifecycleStage.getDescription(),
-			accountLifecycleStage.getDescription());
-		Assert.assertEquals(
-			engineClientAccountLifecycleStage.getId(),
-			accountLifecycleStage.getId());
-		Assert.assertEquals(
-			engineClientAccountLifecycleStage.getMaxDuration(),
-			accountLifecycleStage.getMaxDuration());
-		Assert.assertEquals(
-			engineClientAccountLifecycleStage.getName(),
-			accountLifecycleStage.getName());
-		Assert.assertEquals(
-			engineClientAccountLifecycleStage.getPosition(),
-			accountLifecycleStage.getPosition());
-	}
-
 	private com.liferay.osb.faro.engine.client.model.AccountLifecycleStage
-		_createEngineClientAccountLifecycleStage(
-			String description, String id, int maxDuration, String name,
-			int position) {
+		_createAccountLifecycleStage(String id) {
 
 		com.liferay.osb.faro.engine.client.model.AccountLifecycleStage
-			engineClientAccountLifecycleStage =
+			accountLifecycleStage =
 				new com.liferay.osb.faro.engine.client.model.
 					AccountLifecycleStage();
 
-		engineClientAccountLifecycleStage.setDescription(description);
-		engineClientAccountLifecycleStage.setId(id);
-		engineClientAccountLifecycleStage.setMaxDuration(maxDuration);
-		engineClientAccountLifecycleStage.setName(name);
-		engineClientAccountLifecycleStage.setPosition(position);
+		accountLifecycleStage.setId(id);
 
-		return engineClientAccountLifecycleStage;
+		return accountLifecycleStage;
+	}
+
+	private AccountLifecycleStageTransition _toDTO(
+		String accountId, String accountName,
+		String fromAccountLifecycleStageId, String toAccountLifecycleStageId,
+		Date transitionDate) {
+
+		com.liferay.osb.faro.engine.client.model.AccountLifecycleStageTransition
+			accountLifecycleStageTransition =
+				new com.liferay.osb.faro.engine.client.model.
+					AccountLifecycleStageTransition();
+
+		accountLifecycleStageTransition.setAccountId(accountId);
+		accountLifecycleStageTransition.setAccountName(accountName);
+		accountLifecycleStageTransition.setFromAccountLifecycleStage(
+			_createAccountLifecycleStage(fromAccountLifecycleStageId));
+		accountLifecycleStageTransition.setToAccountLifecycleStage(
+			_createAccountLifecycleStage(toAccountLifecycleStageId));
+		accountLifecycleStageTransition.setTransitionDate(transitionDate);
+
+		return _accountLifecycleStageTransitionDTOConverter.toDTO(
+			null, accountLifecycleStageTransition);
 	}
 
 	private final AccountLifecycleStageTransitionDTOConverter

@@ -8,6 +8,8 @@ package com.liferay.osb.faro.rest.internal.dto.v1_0.converter;
 import com.liferay.osb.faro.rest.dto.v1_0.IndividualSegmentMembershipChange;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 
+import java.util.Date;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -18,61 +20,64 @@ public class IndividualSegmentMembershipChangeDTOConverterTest {
 
 	@Test
 	public void testToDTO() {
-		com.liferay.osb.faro.engine.client.model.
-			IndividualSegmentMembershipChange
-				engineClientIndividualSegmentMembershipChange =
-					new com.liferay.osb.faro.engine.client.model.
-						IndividualSegmentMembershipChange();
-
-		engineClientIndividualSegmentMembershipChange.setDateChanged(
-			RandomTestUtil.nextDate());
-		engineClientIndividualSegmentMembershipChange.setDateFirst(
-			RandomTestUtil.nextDate());
-		engineClientIndividualSegmentMembershipChange.setId(
-			RandomTestUtil.randomString());
-		engineClientIndividualSegmentMembershipChange.setIndividualEmail(
-			RandomTestUtil.randomString());
-		engineClientIndividualSegmentMembershipChange.setIndividualId(
-			RandomTestUtil.randomString());
-		engineClientIndividualSegmentMembershipChange.setIndividualName(
-			RandomTestUtil.randomString());
-		engineClientIndividualSegmentMembershipChange.setIndividualSegmentId(
-			RandomTestUtil.randomString());
+		Date dateChanged = RandomTestUtil.nextDate();
+		Date dateFirst = RandomTestUtil.nextDate();
+		String id = RandomTestUtil.randomString();
+		String individualEmail = RandomTestUtil.randomString();
+		String individualId = RandomTestUtil.randomString();
+		String individualName = RandomTestUtil.randomString();
+		String individualSegmentId = RandomTestUtil.randomString();
 
 		IndividualSegmentMembershipChange individualSegmentMembershipChange =
-			_individualSegmentMembershipChangeDTOConverter.toDTO(
-				new FaroDTOConverterContext(
-					false,
-					engineClientIndividualSegmentMembershipChange.getId(),
-					null),
-				engineClientIndividualSegmentMembershipChange);
+			_toDTO(
+				dateChanged, dateFirst, id, individualEmail, individualId,
+				individualName, individualSegmentId);
 
 		Assert.assertEquals(
-			engineClientIndividualSegmentMembershipChange.getDateChanged(),
-			individualSegmentMembershipChange.getDateChanged());
+			dateChanged, individualSegmentMembershipChange.getDateChanged());
 		Assert.assertEquals(
-			engineClientIndividualSegmentMembershipChange.getDateFirst(),
-			individualSegmentMembershipChange.getDateFirst());
+			dateFirst, individualSegmentMembershipChange.getDateFirst());
+		Assert.assertEquals(id, individualSegmentMembershipChange.getId());
 		Assert.assertEquals(
-			engineClientIndividualSegmentMembershipChange.getId(),
-			individualSegmentMembershipChange.getId());
-		Assert.assertEquals(
-			engineClientIndividualSegmentMembershipChange.getIndividualEmail(),
+			individualEmail,
 			individualSegmentMembershipChange.getIndividualEmail());
 		Assert.assertEquals(
-			engineClientIndividualSegmentMembershipChange.getIndividualId(),
-			individualSegmentMembershipChange.getIndividualId());
+			individualId, individualSegmentMembershipChange.getIndividualId());
 		Assert.assertEquals(
-			engineClientIndividualSegmentMembershipChange.getIndividualName(),
+			individualName,
 			individualSegmentMembershipChange.getIndividualName());
 		Assert.assertEquals(
-			engineClientIndividualSegmentMembershipChange.
-				getIndividualSegmentId(),
+			individualSegmentId,
 			individualSegmentMembershipChange.getIndividualSegmentId());
 
 		Assert.assertNull(
 			_individualSegmentMembershipChangeDTOConverter.toDTO(
 				new FaroDTOConverterContext(false, null, null), null));
+	}
+
+	private IndividualSegmentMembershipChange _toDTO(
+		Date dateChanged, Date dateFirst, String id, String individualEmail,
+		String individualId, String individualName,
+		String individualSegmentId) {
+
+		com.liferay.osb.faro.engine.client.model.
+			IndividualSegmentMembershipChange
+				individualSegmentMembershipChange =
+					new com.liferay.osb.faro.engine.client.model.
+						IndividualSegmentMembershipChange();
+
+		individualSegmentMembershipChange.setDateChanged(dateChanged);
+		individualSegmentMembershipChange.setDateFirst(dateFirst);
+		individualSegmentMembershipChange.setId(id);
+		individualSegmentMembershipChange.setIndividualEmail(individualEmail);
+		individualSegmentMembershipChange.setIndividualId(individualId);
+		individualSegmentMembershipChange.setIndividualName(individualName);
+		individualSegmentMembershipChange.setIndividualSegmentId(
+			individualSegmentId);
+
+		return _individualSegmentMembershipChangeDTOConverter.toDTO(
+			new FaroDTOConverterContext(false, id, null),
+			individualSegmentMembershipChange);
 	}
 
 	private final IndividualSegmentMembershipChangeDTOConverter
