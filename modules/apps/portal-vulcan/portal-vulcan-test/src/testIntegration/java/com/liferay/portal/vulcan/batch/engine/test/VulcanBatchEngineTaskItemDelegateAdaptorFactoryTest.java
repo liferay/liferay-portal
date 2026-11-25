@@ -57,7 +57,7 @@ public class VulcanBatchEngineTaskItemDelegateAdaptorFactoryTest {
 		new LiferayIntegrationTestRule();
 
 	@Test
-	public void testCreate() {
+	public void testCreate() throws Exception {
 		TestVulcanBatchEngineTaskItemDelegate
 			vulcanBatchEngineTaskItemDelegate =
 				new TestVulcanBatchEngineTaskItemDelegate();
@@ -77,16 +77,9 @@ public class VulcanBatchEngineTaskItemDelegateAdaptorFactoryTest {
 		Assert.assertSame(
 			_roleLocalService,
 			vulcanBatchEngineTaskItemDelegate._roleLocalService);
-	}
 
-	@Test
-	public void testCreateWithUnknownAssetLibraryId() throws Exception {
 		_testCreateWithUnknownScopeKey(
 			"assetLibraryId", "Unable to get a valid asset library with ID ");
-	}
-
-	@Test
-	public void testCreateWithUnknownSiteId() throws Exception {
 		_testCreateWithUnknownScopeKey(
 			"siteId", "Unable to get a valid site with ID ");
 	}
