@@ -202,8 +202,6 @@ public class LiferayJWTBearerGrantHandlerTest {
 	}
 
 	private ServerAccessToken _createAccessToken(JwtClaims jwtClaims) {
-		Message message = new MessageImpl();
-
 		HttpServletRequest httpServletRequest = Mockito.mock(
 			HttpServletRequest.class);
 
@@ -213,8 +211,9 @@ public class LiferayJWTBearerGrantHandlerTest {
 			_TOKEN_PATH
 		);
 
-		message.put(AbstractHTTPDestination.HTTP_REQUEST, httpServletRequest);
+		Message message = new MessageImpl();
 
+		message.put(AbstractHTTPDestination.HTTP_REQUEST, httpServletRequest);
 		message.put(Message.REQUEST_URL, "http://" + _HOST + _TOKEN_PATH);
 
 		ThreadLocal<Message> threadLocal = _getCurrentMessageThreadLocal();
