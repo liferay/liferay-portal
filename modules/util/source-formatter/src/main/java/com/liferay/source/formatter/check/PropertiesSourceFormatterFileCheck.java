@@ -590,7 +590,7 @@ public class PropertiesSourceFormatterFileCheck extends BaseFileCheck {
 
 	private static final String[] _WILDCARD_DIR_NAMES = {
 		".cache", ".m2", ".m2-tmp", ".task-cache", "bower_components",
-		"build_gradle", "bun dles", "gradle", "webapps"
+		"build_gradle", "bun dles", "webapps"
 	};
 
 	private static final Pattern _checkPropertyPattern = Pattern.compile(
