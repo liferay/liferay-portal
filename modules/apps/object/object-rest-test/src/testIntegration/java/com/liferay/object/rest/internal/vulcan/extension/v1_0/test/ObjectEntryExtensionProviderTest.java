@@ -17,17 +17,22 @@ import com.liferay.list.type.model.ListTypeDefinition;
 import com.liferay.list.type.service.ListTypeDefinitionLocalService;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.constants.ObjectFieldConstants;
+import com.liferay.object.constants.ObjectFieldSettingConstants;
+import com.liferay.object.constants.ObjectRelationshipConstants;
 import com.liferay.object.field.builder.BooleanObjectFieldBuilder;
 import com.liferay.object.field.builder.DateObjectFieldBuilder;
 import com.liferay.object.field.builder.DecimalObjectFieldBuilder;
 import com.liferay.object.field.builder.MultiselectPicklistObjectFieldBuilder;
 import com.liferay.object.field.builder.PrecisionDecimalObjectFieldBuilder;
 import com.liferay.object.field.builder.TextObjectFieldBuilder;
+import com.liferay.object.field.setting.util.ObjectFieldSettingUtil;
 import com.liferay.object.field.util.ObjectFieldUtil;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectField;
+import com.liferay.object.model.ObjectRelationship;
 import com.liferay.object.rest.dto.v1_0.ListEntry;
 import com.liferay.object.rest.dto.v1_0.ObjectEntry;
+import com.liferay.object.rest.test.util.ObjectRelationshipTestUtil;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
@@ -43,6 +48,7 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.service.PersistedModelLocalServiceRegistryUtil;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.vulcan.extension.ExtensionProvider;
@@ -214,6 +220,17 @@ public class ObjectEntryExtensionProviderTest {
 			extendedPropertyDefinitions.get("precisionDecimal"));
 	}
 
+	@FeatureFlag("LPD-108620")
+	@Test
+	public void testGetExtendedPropertyDefinitionsWithObjectRelationship()
+		throws Exception {
+
+		_testGetExtendedPropertyDefinitionsWithObjectRelationship(
+			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+		_testGetExtendedPropertyDefinitionsWithObjectRelationship(
+			ObjectRelationshipConstants.TYPE_ONE_TO_ONE);
+	}
+
 	@Test
 	public void testIsApplicableExtension() throws Exception {
 		Assert.assertFalse(
@@ -301,6 +318,42 @@ public class ObjectEntryExtensionProviderTest {
 
 		Assert.assertEquals(
 			customFieldValue, extendedProperties.get(customFieldName));
+	}
+
+	private void _testGetExtendedPropertyDefinitionsWithObjectRelationship(
+			String type)
+		throws Exception {
+
+		ObjectRelationship objectRelationship =
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				ObjectDefinitionTestUtil.publishObjectDefinition(),
+				_objectDefinitionLocalService.fetchObjectDefinitionByClassName(
+					TestPropsValues.getCompanyId(), User.class.getName()),
+				TestPropsValues.getUserId(), type);
+
+		Map<String, PropertyDefinition> extendedPropertyDefinitions =
+			_extensionProvider.getExtendedPropertyDefinitions(
+				TestPropsValues.getCompanyId(), UserAccount.class.getName());
+
+		ObjectField objectField = _objectFieldLocalService.getObjectField(
+			objectRelationship.getObjectFieldId2());
+
+		_assertPropertyDefinition(
+			null, null, objectField.getName(),
+			PropertyDefinition.PropertyType.LONG, false,
+			extendedPropertyDefinitions.get(objectField.getName()));
+
+		String objectRelationshipERCObjectFieldName =
+			ObjectFieldSettingUtil.getValue(
+				ObjectFieldSettingConstants.
+					NAME_OBJECT_RELATIONSHIP_ERC_OBJECT_FIELD_NAME,
+				objectField);
+
+		_assertPropertyDefinition(
+			null, null, objectRelationshipERCObjectFieldName,
+			PropertyDefinition.PropertyType.TEXT, false,
+			extendedPropertyDefinitions.get(
+				objectRelationshipERCObjectFieldName));
 	}
 
 	private void _testSetAndGetExtendedPropertiesWithCommerceProduct()
