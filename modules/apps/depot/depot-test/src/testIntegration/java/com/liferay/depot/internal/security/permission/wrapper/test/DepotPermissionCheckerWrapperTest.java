@@ -13,6 +13,7 @@ import com.liferay.depot.service.DepotEntryGroupRelLocalService;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.depot.test.util.DepotTestUtil;
 import com.liferay.document.library.kernel.model.DLFileEntry;
+import com.liferay.document.library.kernel.model.DLFolder;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -24,12 +25,15 @@ import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.repository.model.Folder;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactory;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.FeatureFlagTestUtil;
@@ -153,6 +157,58 @@ public class DepotPermissionCheckerWrapperTest {
 		_testHasPermissionWithDepotGroup(ActionKeys.VIEW);
 		_testHasPermissionWithDepotGroup(ActionKeys.VIEW_MEMBERS);
 		_testHasPermissionWithDepotGroup(ActionKeys.VIEW_SITE_ADMINISTRATION);
+	}
+
+	@Test
+	@TestInfo("LPD-117654")
+	public void testHasPermissionWithDepotGroupAndGroupPermissions()
+		throws Exception {
+
+		DepotEntry depotEntry = _addDepotEntry(TestPropsValues.getUserId());
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(depotEntry.getGroupId());
+
+		serviceContext.setAddGroupPermissions(true);
+		serviceContext.setAddGuestPermissions(false);
+
+		Folder folder = _dlAppLocalService.addFolder(
+			null, TestPropsValues.getUserId(), depotEntry.getGroupId(),
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			serviceContext);
+
+		FileEntry fileEntry = _dlAppLocalService.addFileEntry(
+			null, TestPropsValues.getUserId(), depotEntry.getGroupId(),
+			folder.getFolderId(), StringUtil.randomString(),
+			ContentTypes.APPLICATION_OCTET_STREAM, StringUtil.randomString(),
+			StringUtil.randomString(), StringUtil.randomString(),
+			StringUtil.randomString(), new byte[0], null, null, null,
+			serviceContext);
+
+		PermissionChecker guestPermissionChecker =
+			_permissionCheckerFactory.create(
+				_userLocalService.getGuestUser(TestPropsValues.getCompanyId()));
+
+		Assert.assertFalse(
+			guestPermissionChecker.hasPermission(
+				fileEntry.getGroupId(), DLFileEntry.class.getName(),
+				fileEntry.getFileEntryId(), ActionKeys.VIEW));
+
+		DepotTestUtil.withRegularUser(
+			(user, role) -> {
+				PermissionChecker permissionChecker =
+					_permissionCheckerFactory.create(user);
+
+				Assert.assertTrue(
+					permissionChecker.hasPermission(
+						folder.getGroupId(), DLFolder.class.getName(),
+						folder.getFolderId(), ActionKeys.ADD_DOCUMENT));
+				Assert.assertTrue(
+					permissionChecker.hasPermission(
+						fileEntry.getGroupId(), DLFileEntry.class.getName(),
+						fileEntry.getFileEntryId(), ActionKeys.VIEW));
+			});
 	}
 
 	@Test
