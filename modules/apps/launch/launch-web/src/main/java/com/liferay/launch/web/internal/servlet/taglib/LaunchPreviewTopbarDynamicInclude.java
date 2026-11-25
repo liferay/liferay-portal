@@ -124,7 +124,7 @@ public class LaunchPreviewTopbarDynamicInclude extends BaseDynamicInclude {
 
 	private String _getNoLaunchURL(HttpServletRequest httpServletRequest) {
 		return HttpComponentsUtil.setParameter(
-			_portal.getCurrentURL(httpServletRequest), "p_launch_id", 0);
+			_portal.getCurrentURL(httpServletRequest), "p_launch_set_id", 0);
 	}
 
 	private void _writeCSSLink(

@@ -267,7 +267,7 @@ declare module Liferay {
 		export function getCompanyId(): string;
 		export function getDefaultLanguageId(): Language.Locale;
 		export function getLanguageId(): Language.Locale;
-		export function getLaunchId(): string;
+		export function getLaunchSetId(): string;
 		export function getLaunchMode(): '' | 'edit' | 'preview';
 		export function getLayoutRelativeControlPanelURL(): string;
 		export function getPathContext(): string;

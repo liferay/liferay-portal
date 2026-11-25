@@ -94,13 +94,13 @@ public class LaunchFilter extends BasePortalFilter {
 
 		boolean header = false;
 		long launchSetId = ParamUtil.getLong(
-			httpServletRequest, "p_launch_id", -1);
+			httpServletRequest, "p_launch_set_id", -1);
 		String launchModeString = ParamUtil.getString(httpServletRequest, "p_launch_mode");
 
 		if ((launchSetId == -1) && Validator.isNull(launchModeString)) {
 			header = true;
 			launchSetId = GetterUtil.getLong(
-				httpServletRequest.getHeader("X-Liferay-Launch-Id"), -1);
+				httpServletRequest.getHeader("X-Liferay-Launch-Set-Id"), -1);
 			launchModeString = httpServletRequest.getHeader("X-Liferay-Launch-Mode");
 		}
 

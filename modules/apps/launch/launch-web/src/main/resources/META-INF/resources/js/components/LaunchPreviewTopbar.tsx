@@ -132,7 +132,7 @@ function LaunchPicker({
 							const url = new URL(window.location.href);
 
 							url.searchParams.set(
-								'p_launch_id',
+								'p_launch_set_id',
 								String(launchOption.id)
 							);
 

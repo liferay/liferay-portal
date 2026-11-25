@@ -86,7 +86,7 @@ public class LaunchThreadLocalTest {
 		Assert.assertEquals(
 			expectedLaunchSetId,
 			HttpComponentsUtil.getParameter(
-				preservedURL, "p_launch_id", false));
+				preservedURL, "p_launch_set_id", false));
 		Assert.assertEquals(
 			Constants.PREVIEW,
 			HttpComponentsUtil.getParameter(

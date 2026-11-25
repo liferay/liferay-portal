@@ -142,7 +142,7 @@ public class LaunchFilterTest {
 		mockHttpServletRequest.setAttribute(
 			WebKeys.USER, TestPropsValues.getUser());
 		mockHttpServletRequest.setParameter(
-			"p_launch_id", String.valueOf(launchSetId));
+			"p_launch_set_id", String.valueOf(launchSetId));
 		mockHttpServletRequest.setParameter("p_launch_mode", Constants.EDIT);
 
 		AtomicReference<LaunchThreadLocal.LaunchMode> launchMode = new AtomicReference<>();
@@ -165,7 +165,7 @@ public class LaunchFilterTest {
 			launchSetId, _launchDraftLayout1.getPlid(),
 			_launchDraftLayout2.getPlid(), null,
 			HashMapBuilder.put(
-				"X-Liferay-Launch-Id", String.valueOf(launchSetId)
+				"X-Liferay-Launch-Set-Id", String.valueOf(launchSetId)
 			).put(
 				"X-Liferay-Launch-Mode", Constants.EDIT
 			).build(),
@@ -177,7 +177,7 @@ public class LaunchFilterTest {
 			launchSetId, _launchDraftLayout1.getPlid(),
 			_launchDraftLayout2.getPlid(), null, Collections.emptyMap(),
 			HashMapBuilder.put(
-				"p_launch_id", String.valueOf(launchSetId)
+				"p_launch_set_id", String.valueOf(launchSetId)
 			).put(
 				"p_launch_mode", Constants.EDIT
 			).build(),
@@ -190,7 +190,7 @@ public class LaunchFilterTest {
 			_launchDraftLayout2.getPlid(), Collections.emptyMap(),
 			Collections.emptyMap(),
 			HashMapBuilder.put(
-				"p_launch_id", String.valueOf(launchSetId)
+				"p_launch_set_id", String.valueOf(launchSetId)
 			).put(
 				"p_launch_mode", Constants.EDIT
 			).build(),
@@ -202,7 +202,7 @@ public class LaunchFilterTest {
 			-1, _layout1.getPlid(), _layout2.getPlid(), null,
 			Collections.emptyMap(),
 			HashMapBuilder.put(
-				"p_launch_id", String.valueOf(RandomTestUtil.randomLong())
+				"p_launch_set_id", String.valueOf(RandomTestUtil.randomLong())
 			).put(
 				"p_launch_mode", Constants.EDIT
 			).build(),
@@ -222,7 +222,7 @@ public class LaunchFilterTest {
 			-1, _layout1.getPlid(), _layout2.getPlid(), null,
 			Collections.emptyMap(),
 			HashMapBuilder.put(
-				"p_launch_id", String.valueOf(launchSetId)
+				"p_launch_set_id", String.valueOf(launchSetId)
 			).put(
 				"p_launch_mode", Constants.EDIT
 			).build(),
@@ -240,7 +240,7 @@ public class LaunchFilterTest {
 			-1, _layout1.getPlid(), _layout2.getPlid(), null,
 			Collections.emptyMap(),
 			HashMapBuilder.put(
-				"p_launch_id", String.valueOf(launchSetId)
+				"p_launch_set_id", String.valueOf(launchSetId)
 			).put(
 				"p_launch_mode", Constants.EDIT
 			).build(),
@@ -254,7 +254,7 @@ public class LaunchFilterTest {
 			-1, _layout1.getPlid(), _layout2.getPlid(), null,
 			Collections.emptyMap(),
 			HashMapBuilder.put(
-				"_" + portletId + "_p_launch_id", String.valueOf(launchSetId)
+				"_" + portletId + "_p_launch_set_id", String.valueOf(launchSetId)
 			).put(
 				"_" + portletId + "_p_launch_mode", Constants.EDIT
 			).put(
@@ -274,7 +274,7 @@ public class LaunchFilterTest {
 			new MockHttpServletRequest();
 
 		mockHttpServletRequest.addHeader(
-			"X-Liferay-Launch-Id", String.valueOf(launchSetId));
+			"X-Liferay-Launch-Set-Id", String.valueOf(launchSetId));
 		mockHttpServletRequest.addHeader(
 			"X-Liferay-Launch-Mode", Constants.PREVIEW);
 
@@ -292,7 +292,7 @@ public class LaunchFilterTest {
 		mockHttpServletRequest = new MockHttpServletRequest();
 
 		mockHttpServletRequest.addHeader(
-			"X-Liferay-Launch-Id", String.valueOf(launchSetId));
+			"X-Liferay-Launch-Set-Id", String.valueOf(launchSetId));
 
 		_assertProcessFilterWithLaunchModePreview(
 			launchSetId, null, mockHttpServletRequest,
@@ -304,11 +304,11 @@ public class LaunchFilterTest {
 
 		mockHttpServletRequest.setParameter("p_l_mode", Constants.PREVIEW);
 		mockHttpServletRequest.setParameter(
-			"p_launch_id", String.valueOf(launchSetId));
+			"p_launch_set_id", String.valueOf(launchSetId));
 		mockHttpServletRequest.setParameter("p_launch_mode", Constants.PREVIEW);
 		mockHttpServletRequest.setQueryString(
 			StringBundler.concat(
-				"p_launch_id=", launchSetId,
+				"p_launch_set_id=", launchSetId,
 				"&p_launch_mode=preview&p_l_mode=preview"));
 		mockHttpServletRequest.setRequestURI("/web/guest/home");
 
@@ -323,7 +323,7 @@ public class LaunchFilterTest {
 			HttpComponentsUtil.addParameter(
 				_portal.getPathMain() + "/portal/login", "redirect",
 				StringBundler.concat(
-					"http://localhost/web/guest/home?p_launch_id=", launchSetId,
+					"http://localhost/web/guest/home?p_launch_set_id=", launchSetId,
 					"&p_launch_mode=preview&p_l_mode=preview")),
 			mockHttpServletRequest, null);
 
@@ -333,7 +333,7 @@ public class LaunchFilterTest {
 
 		mockHttpServletRequest.setParameter("p_l_mode", Constants.PREVIEW);
 		mockHttpServletRequest.setParameter(
-			"p_launch_id", String.valueOf(launchSetId));
+			"p_launch_set_id", String.valueOf(launchSetId));
 
 		_assertProcessFilterWithLaunchModePreview(
 			launchSetId, null, mockHttpServletRequest,
@@ -344,17 +344,17 @@ public class LaunchFilterTest {
 		mockHttpServletRequest = new MockHttpServletRequest();
 
 		mockHttpServletRequest.setParameter(
-			"p_launch_id", String.valueOf(launchSetId));
+			"p_launch_set_id", String.valueOf(launchSetId));
 		mockHttpServletRequest.setParameter("p_launch_mode", Constants.PREVIEW);
 		mockHttpServletRequest.setQueryString(
 			StringBundler.concat(
-				"p_launch_id=", launchSetId, "&p_launch_mode=preview"));
+				"p_launch_set_id=", launchSetId, "&p_launch_mode=preview"));
 		mockHttpServletRequest.setRequestURI("/web/guest/home");
 
 		_assertProcessFilterWithLaunchModePreview(
 			-1,
 			StringBundler.concat(
-				"/web/guest/home?p_launch_id=", launchSetId,
+				"/web/guest/home?p_launch_set_id=", launchSetId,
 				"&p_launch_mode=preview&p_l_mode=preview"),
 			mockHttpServletRequest, TestPropsValues.getUser());
 	}

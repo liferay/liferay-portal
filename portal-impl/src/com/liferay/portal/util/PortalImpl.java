@@ -513,7 +513,7 @@ public class PortalImpl implements Portal {
 
 		// Portal launch
 
-		_reservedParams.add("p_launch_id");
+		_reservedParams.add("p_launch_set_id");
 		_reservedParams.add("p_launch_mode");
 
 		// Miscellaneous
@@ -813,7 +813,7 @@ public class PortalImpl implements Portal {
 			url = HttpComponentsUtil.setParameter(
 				url, "p_l_mode", Constants.PREVIEW);
 			url = HttpComponentsUtil.setParameter(
-				url, "p_launch_id", LaunchThreadLocal.getLaunchSetId());
+				url, "p_launch_set_id", LaunchThreadLocal.getLaunchSetId());
 			url = HttpComponentsUtil.setParameter(
 				url, "p_launch_mode", Constants.PREVIEW);
 		}
