@@ -1050,5 +1050,62 @@ describe('Table incremental interactions', () => {
 				).not.toBeInTheDocument();
 			});
 		});
+
+		describe('expander column', () => {
+			function ExpanderColumnTable({
+				expanderColumnKey,
+			}: {
+				expanderColumnKey?: React.Key;
+			}) {
+				return (
+					<Table
+						columnsVisibility={false}
+						expanderColumnKey={expanderColumnKey}
+						nestedKey="children"
+					>
+						<Head items={columns}>
+							{(column) => (
+								<Cell key={column.id}>{column.name}</Cell>
+							)}
+						</Head>
+
+						<Body defaultItems={itemsTree}>
+							{(row) => (
+								<Row items={columns}>
+									{(column) => (
+										<Cell key={`${row.id}:${column.id}`}>
+
+											{/** @ts-ignore */}
+
+											{row[column.id]}
+										</Cell>
+									)}
+								</Row>
+							)}
+						</Body>
+					</Table>
+				);
+			}
+
+			it('renders the expand button in the column set by expanderColumnKey', () => {
+				const {getByTitle} = render(
+					<ExpanderColumnTable expanderColumnKey="type" />
+				);
+
+				const expanderCell = getByTitle('expandable').closest('td');
+
+				expect(expanderCell).toHaveAttribute('aria-colindex', '2');
+				expect(expanderCell).toHaveTextContent('Folder');
+			});
+
+			it('renders the expand button in the first column by default', () => {
+				const {getByTitle} = render(<ExpanderColumnTable />);
+
+				const expanderCell = getByTitle('expandable').closest('td');
+
+				expect(expanderCell).toHaveAttribute('aria-colindex', '1');
+				expect(expanderCell).toHaveTextContent('Baz');
+			});
+		});
 	});
 });
