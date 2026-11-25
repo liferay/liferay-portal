@@ -42,7 +42,7 @@ public class UserSessionDTOConverterTest {
 		String assetTitle = RandomTestUtil.randomString();
 		boolean becameKnown = RandomTestUtil.randomBoolean();
 		String browserName = RandomTestUtil.randomString();
-		String canonicalUrl = RandomTestUtil.randomString();
+		String canonicalURL = RandomTestUtil.randomString();
 		Date completeDate = RandomTestUtil.nextDate();
 		Date createDate = RandomTestUtil.nextDate();
 		String deviceType = RandomTestUtil.randomString();
@@ -51,7 +51,7 @@ public class UserSessionDTOConverterTest {
 		UserSession userSession = _toDTO(
 			becameKnown, browserName, completeDate, createDate, deviceType,
 			Arrays.asList(
-				_createEvent(assetTitle, canonicalUrl, createDate, name)));
+				_createEvent(assetTitle, canonicalURL, createDate, name)));
 
 		Assert.assertEquals(becameKnown, userSession.getBecameKnown());
 		Assert.assertEquals(browserName, userSession.getBrowserName());
@@ -66,7 +66,7 @@ public class UserSessionDTOConverterTest {
 		Event event = events[0];
 
 		Assert.assertEquals(assetTitle, event.getAssetTitle());
-		Assert.assertEquals(canonicalUrl, event.getCanonicalUrl());
+		Assert.assertEquals(canonicalURL, event.getCanonicalUrl());
 		Assert.assertEquals(name, event.getName());
 
 		userSession = _toDTO(null);
@@ -85,13 +85,13 @@ public class UserSessionDTOConverterTest {
 	}
 
 	private GetWorkspaceGroupChannelEventsPageResponse.Event _createEvent(
-		String assetTitle, String canonicalUrl, Date createDate, String name) {
+		String assetTitle, String canonicalURL, Date createDate, String name) {
 
 		GetWorkspaceGroupChannelEventsPageResponse.Event event =
 			new GetWorkspaceGroupChannelEventsPageResponse.Event();
 
 		event.setAssetTitle(assetTitle);
-		event.setCanonicalUrl(canonicalUrl);
+		event.setCanonicalUrl(canonicalURL);
 		event.setCreateDate(createDate);
 		event.setName(name);
 

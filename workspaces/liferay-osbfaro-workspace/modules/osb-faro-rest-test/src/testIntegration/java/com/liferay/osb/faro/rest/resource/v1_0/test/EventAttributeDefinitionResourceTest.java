@@ -27,7 +27,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,6 +40,26 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class EventAttributeDefinitionResourceTest
 	extends BaseEventAttributeDefinitionResourceTestCase {
+
+	@Before
+	@Override
+	public void setUp() throws Exception {
+		super.setUp();
+
+		_faroProject = _faroProjectLocalService.addFaroProject(
+			TestPropsValues.getUserId(), RandomTestUtil.randomString(), null,
+			null, null, null, Collections.emptyList(), null, null, null, null,
+			null, FaroProjectConstants.STATE_READY, "{}", "UTC", null);
+	}
+
+	@After
+	@Override
+	public void tearDown() throws Exception {
+		_faroProjectLocalService.deleteFaroProjectByGroupId(
+			_faroProject.getGroupId());
+
+		super.tearDown();
+	}
 
 	@Override
 	@Test
@@ -64,18 +86,12 @@ public class EventAttributeDefinitionResourceTest
 					}));
 
 		try {
-			FaroProject faroProject = _faroProjectLocalService.addFaroProject(
-				TestPropsValues.getUserId(), RandomTestUtil.randomString(),
-				null, null, null, null, Collections.emptyList(), null, null,
-				null, null, null, FaroProjectConstants.STATE_READY, "{}", "UTC",
-				null);
-
 			_testGetWorkspaceGroupEventAttributeDefinitionsPage(
-				faroProject.getGroupId());
+				_faroProject.getGroupId());
 			_testGetWorkspaceGroupEventAttributeDefinitionsPageWithoutEventAttributeDefinitionBag(
-				faroProject.getGroupId());
+				_faroProject.getGroupId());
 			_testGetWorkspaceGroupEventAttributeDefinitionsPageWithoutOptionalParameters(
-				faroProject.getGroupId());
+				_faroProject.getGroupId());
 		}
 		finally {
 			ReflectionTestUtil.setFieldValue(
@@ -272,6 +288,8 @@ public class EventAttributeDefinitionResourceTest
 			variables.get("sort"));
 		Assert.assertEquals("ALL", variables.get("type"));
 	}
+
+	private FaroProject _faroProject;
 
 	@Inject
 	private FaroProjectLocalService _faroProjectLocalService;

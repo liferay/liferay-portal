@@ -27,7 +27,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,6 +40,26 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class EventDefinitionResourceTest
 	extends BaseEventDefinitionResourceTestCase {
+
+	@Before
+	@Override
+	public void setUp() throws Exception {
+		super.setUp();
+
+		_faroProject = _faroProjectLocalService.addFaroProject(
+			TestPropsValues.getUserId(), RandomTestUtil.randomString(), null,
+			null, null, null, Collections.emptyList(), null, null, null, null,
+			null, FaroProjectConstants.STATE_READY, "{}", "UTC", null);
+	}
+
+	@After
+	@Override
+	public void tearDown() throws Exception {
+		_faroProjectLocalService.deleteFaroProjectByGroupId(
+			_faroProject.getGroupId());
+
+		super.tearDown();
+	}
 
 	@Override
 	@Test
@@ -61,18 +83,12 @@ public class EventDefinitionResourceTest
 					}));
 
 		try {
-			FaroProject faroProject = _faroProjectLocalService.addFaroProject(
-				TestPropsValues.getUserId(), RandomTestUtil.randomString(),
-				null, null, null, null, Collections.emptyList(), null, null,
-				null, null, null, FaroProjectConstants.STATE_READY, "{}", "UTC",
-				null);
-
 			_testGetWorkspaceGroupEventDefinitionsPage(
-				faroProject.getGroupId());
+				_faroProject.getGroupId());
 			_testGetWorkspaceGroupEventDefinitionsPageWithoutEventDefinitionBag(
-				faroProject.getGroupId());
+				_faroProject.getGroupId());
 			_testGetWorkspaceGroupEventDefinitionsPageWithoutOptionalParameters(
-				faroProject.getGroupId());
+				_faroProject.getGroupId());
 		}
 		finally {
 			ReflectionTestUtil.setFieldValue(
@@ -251,6 +267,8 @@ public class EventDefinitionResourceTest
 			).build(),
 			variables.get("sort"));
 	}
+
+	private FaroProject _faroProject;
 
 	@Inject
 	private FaroProjectLocalService _faroProjectLocalService;
