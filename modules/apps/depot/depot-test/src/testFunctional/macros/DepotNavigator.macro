@@ -501,48 +501,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro openToEditWCEntry(depotName = null, webContentTitle = null, folderName = null) {
-		var baseURL = ${baseURL};
-
-		if (!(isSet(baseURL))) {
-			var baseURL = PropsUtil.get("portal.url");
-		}
-
-		var depotId = JSONGroupAPI._getDepotIdByName(depotName = ${depotName});
-		var groupId = JSONWebcontentSetter.setGroupId(
-			groupName = ${depotName},
-			site = "false");
-		var articleId = JSONWebcontentSetter.setArticleId(
-			groupName = ${depotName},
-			site = "false",
-			title = ${webContentTitle});
-
-		if (isSet(folderName)) {
-			var folderId = JSONWebcontentSetter.setFolderId(
-				folderName = ${folderName},
-				groupId = ${groupId});
-		}
-		else {
-			var folderId = 0;
-		}
-
-		if (!(isSet(version))) {
-			var version = "1.0";
-		}
-
-		if (isSet(staging)) {
-			Navigator.openWithAppendToBaseURL(
-				baseURL = ${baseURL},
-				urlAppend = "group/asset-library-${depotId}-staging/~/control_panel/manage?p_p_id=com_liferay_journal_web_portlet_JournalPortlet&_com_liferay_journal_web_portlet_JournalPortlet_mvcRenderCommandName=/journal/edit_article&_com_liferay_journal_web_portlet_JournalPortlet_redirect=${baseURL}/group/asset-library-${depotId}-staging/~/control_panel/manage?p_p_id=com_liferay_journal_web_portlet_JournalPortlet&_com_liferay_journal_web_portlet_JournalPortlet_articleId=${articleId}&_com_liferay_journal_web_portlet_JournalPortlet_folderId=${folderId}&_com_liferay_journal_web_portlet_JournalPortlet_groupId=${groupId}&_com_liferay_journal_web_portlet_JournalPortlet_referringPortletResource=&_com_liferay_journal_web_portlet_JournalPortlet_version=${version}");
-		}
-		else {
-			Navigator.openWithAppendToBaseURL(
-				baseURL = ${baseURL},
-				urlAppend = "group/asset-library-${depotId}/~/control_panel/manage?p_p_id=com_liferay_journal_web_portlet_JournalPortlet&_com_liferay_journal_web_portlet_JournalPortlet_mvcRenderCommandName=/journal/edit_article&_com_liferay_journal_web_portlet_JournalPortlet_redirect=${baseURL}/group/asset-library-${depotId}/~/control_panel/manage?p_p_id=com_liferay_journal_web_portlet_JournalPortlet&_com_liferay_journal_web_portlet_JournalPortlet_articleId=${articleId}&_com_liferay_journal_web_portlet_JournalPortlet_folderId=${folderId}&_com_liferay_journal_web_portlet_JournalPortlet_groupId=${groupId}&_com_liferay_journal_web_portlet_JournalPortlet_referringPortletResource=&_com_liferay_journal_web_portlet_JournalPortlet_version=${version}");
-		}
-	}
-
-	@summary = "Default summary"
 	macro switchStagingStatus(stagingItem = null) {
 		WaitForVisible(locator1 = "Button#STAGING_INDICATOR");
 
