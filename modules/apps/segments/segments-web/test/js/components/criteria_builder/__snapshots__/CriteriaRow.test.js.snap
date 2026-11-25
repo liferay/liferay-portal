@@ -188,11 +188,11 @@ exports[`CriteriaRow renders and inform there is an unknown property 1`] = `
             class="alert-indicator"
           >
             <svg
-              class="lexicon-icon lexicon-icon-exclamation-full"
+              class="lexicon-icon lexicon-icon-times-circle-full"
               role="presentation"
             >
               <use
-                href="#exclamation-full"
+                href="#times-circle-full"
               />
             </svg>
           </span>
