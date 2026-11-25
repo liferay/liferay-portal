@@ -6,12 +6,9 @@ describe('labels', () => {
 		[SegmentCategories.Account, /^account$/i],
 		[SegmentCategories.Individual, /^individual$/i],
 		[undefined, /^individual$/i],
-	])(
-		'should label the %s segment category',
-		(segmentCategory, expected) => {
-			expect(getSegmentCategoryLabel(segmentCategory)).toMatch(expected);
-		}
-	);
+	])('should label the %s segment category', (segmentCategory, expected) => {
+		expect(getSegmentCategoryLabel(segmentCategory)).toMatch(expected);
+	});
 
 	it.each([
 		[SegmentTypes.Batch, /^batch$/i],
