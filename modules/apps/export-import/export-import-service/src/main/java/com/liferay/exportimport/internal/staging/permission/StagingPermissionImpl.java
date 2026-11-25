@@ -28,7 +28,7 @@ public class StagingPermissionImpl implements StagingPermission {
 		PermissionChecker permissionChecker, Group group, String className,
 		long classPK, String portletId, String actionId) {
 
-		if (!_isLockedAction(actionId)) {
+		if ((group == null) || !_isLockedAction(actionId)) {
 			return null;
 		}
 
