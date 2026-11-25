@@ -14,6 +14,8 @@ import com.liferay.headless.admin.site.dto.v1_0.DefaultFragmentReference;
 import com.liferay.headless.admin.site.dto.v1_0.FragmentItemExternalReference;
 import com.liferay.headless.admin.site.dto.v1_0.FragmentReference;
 import com.liferay.headless.admin.site.internal.util.LogUtil;
+import com.liferay.layout.util.constants.LayoutStructureConstants;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -105,7 +107,11 @@ public class FragmentEntryReferenceUtil {
 				defaultFragmentReference.getDefaultFragmentKey());
 		}
 
-		if ((fragmentEntry == null) && (fragmentRenderer == null)) {
+		if ((fragmentEntry == null) && (fragmentRenderer == null) &&
+			!ArrayUtil.contains(
+				LayoutStructureConstants.LAYOUT_ELEMENT_FRAGMENT_ENTRY_KEYS,
+				defaultFragmentReference.getDefaultFragmentKey())) {
+
 			LogUtil.logOptionalReference(
 				DefaultFragmentReference.class,
 				defaultFragmentReference.getDefaultFragmentKey(), scopeGroupId);
