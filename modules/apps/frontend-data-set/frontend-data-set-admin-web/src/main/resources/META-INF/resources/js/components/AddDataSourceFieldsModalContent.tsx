@@ -46,9 +46,9 @@ const initializeFields = ({
 
 		if (selectedField) {
 			selectedKeys.add(selectedField.name);
-
-			field.savedId = selectedField.id;
 		}
+
+		field.savedId = selectedField?.id;
 
 		field.initialChildren = field.children;
 		field.id = field.name;

@@ -39,6 +39,7 @@ import ClayAlert from '@clayui/alert';
 import ClayIcon from '@clayui/icon';
 
 import getDataSetResourceURL from '../../../utils/getDataSetResourceURL';
+import getDeselectedTableSectionIds from '../../../utils/getDeselectedTableSectionIds';
 import sortItems from '../../../utils/sortItems';
 import {
 	EFieldType,
@@ -474,9 +475,11 @@ function Table(props: IDataSetSectionProps & {title?: string}) {
 
 	const saveDataSetTableColumns = async ({
 		closeModal,
+		deletionIds = [],
 		fields,
 	}: {
 		closeModal: Function;
+		deletionIds?: Array<string>;
 		fields: Array<IField>;
 	}) => {
 		setSaveButtonDisabled(true);
@@ -505,6 +508,10 @@ function Table(props: IDataSetSectionProps & {title?: string}) {
 		);
 
 		formData.append(`${namespace}dataSetId`, dataSet.id);
+
+		deletionIds.forEach((deletionId) => {
+			formData.append(`${namespace}deletionIds`, deletionId);
+		});
 
 		const response = await fetch(saveDataSetTableSectionsURL, {
 			body: formData,
@@ -596,6 +603,11 @@ function Table(props: IDataSetSectionProps & {title?: string}) {
 					}) => {
 						saveDataSetTableColumns({
 							closeModal,
+							deletionIds: getDeselectedTableSectionIds({
+								fieldTreeItems,
+								selectedFields,
+								tableSections: tableSections ?? [],
+							}),
 							fields: selectedFields,
 						});
 					}}
