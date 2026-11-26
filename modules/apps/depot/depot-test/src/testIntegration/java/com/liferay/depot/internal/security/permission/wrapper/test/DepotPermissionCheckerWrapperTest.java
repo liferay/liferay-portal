@@ -179,7 +179,7 @@ public class DepotPermissionCheckerWrapperTest {
 		Folder folder = _dlAppLocalService.addFolder(
 			null, TestPropsValues.getUserId(), depotEntry.getGroupId(),
 			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
-			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			StringUtil.randomString(), StringUtil.randomString(),
 			serviceContext);
 
 		FileEntry fileEntry = _dlAppLocalService.addFileEntry(
