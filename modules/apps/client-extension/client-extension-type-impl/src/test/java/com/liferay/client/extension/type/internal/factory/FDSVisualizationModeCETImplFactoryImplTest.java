@@ -50,11 +50,6 @@ public class FDSVisualizationModeCETImplFactoryImplTest {
 
 		_assertValidateFails(
 			_createFDSVisualizationModeCET(
-				RandomTestUtil.randomString(), "not json",
-				RandomTestUtil.randomString()),
-			"the-item-elements-are-not-valid-json");
-		_assertValidateFails(
-			_createFDSVisualizationModeCET(
 				RandomTestUtil.randomString(), "[]",
 				RandomTestUtil.randomString()),
 			"declare-at-least-one-item-element");
@@ -63,6 +58,11 @@ public class FDSVisualizationModeCETImplFactoryImplTest {
 				RandomTestUtil.randomString(), "[{}]",
 				RandomTestUtil.randomString()),
 			"every-item-element-must-have-a-name");
+		_assertValidateFails(
+			_createFDSVisualizationModeCET(
+				RandomTestUtil.randomString(), "not json",
+				RandomTestUtil.randomString()),
+			"the-item-elements-are-not-valid-json");
 
 		String name = RandomTestUtil.randomString();
 

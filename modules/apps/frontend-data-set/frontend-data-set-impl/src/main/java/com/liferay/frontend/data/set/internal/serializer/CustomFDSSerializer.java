@@ -1176,19 +1176,19 @@ public class CustomFDSSerializer
 	}
 
 	private JSONObject _getSchemaJSONObject(
-		String externalReferenceCode, String sections,
+		String externalReferenceCode, String sectionsJSON,
 		JSONObject visualizationModeJSONObject) {
 
 		JSONObject schemaJSONObject = _jsonFactory.createJSONObject();
 
-		if (Validator.isBlank(sections)) {
+		if (Validator.isBlank(sectionsJSON)) {
 			return schemaJSONObject;
 		}
 
 		JSONArray sectionsJSONArray = null;
 
 		try {
-			sectionsJSONArray = _jsonFactory.createJSONArray(sections);
+			sectionsJSONArray = _jsonFactory.createJSONArray(sectionsJSON);
 		}
 		catch (JSONException jsonException) {
 			if (_log.isDebugEnabled()) {
