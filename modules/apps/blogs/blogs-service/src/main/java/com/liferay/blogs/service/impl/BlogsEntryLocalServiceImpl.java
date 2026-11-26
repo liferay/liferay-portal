@@ -125,6 +125,7 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import java.awt.image.RenderedImage;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
@@ -135,6 +136,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import net.htmlparser.jericho.Source;
@@ -1584,7 +1586,8 @@ public class BlogsEntryLocalServiceImpl extends BlogsEntryLocalServiceBaseImpl {
 				BlogsGroupServiceSettings.getInstance(groupId);
 
 			imageBytes = _scaleImage(
-				imageBytes, blogsGroupServiceSettings.getSmallImageWidth());
+				imageBytes, imageSelector.getImageMimeType(),
+				blogsGroupServiceSettings.getSmallImageWidth());
 
 			if (imageBytes == null) {
 				throw new EntrySmallImageScaleException();
@@ -2248,7 +2251,9 @@ public class BlogsEntryLocalServiceImpl extends BlogsEntryLocalServiceBaseImpl {
 		return urlTitle;
 	}
 
-	private byte[] _scaleImage(byte[] bytes, int width) throws Exception {
+	private byte[] _scaleImage(byte[] bytes, String mimeType, int width)
+		throws Exception {
+
 		byte[] scaledBytes = null;
 
 		try {
@@ -2267,7 +2272,12 @@ public class BlogsEntryLocalServiceImpl extends BlogsEntryLocalServiceBaseImpl {
 			}
 		}
 
-		if ((scaledBytes == null) && _imageMagick.isEnabled()) {
+		if ((scaledBytes == null) && _imageMagick.isEnabled() &&
+			Objects.equals(
+				MimeTypesUtil.getContentType(
+					new ByteArrayInputStream(bytes), null),
+				mimeType)) {
+
 			scaledBytes = _imageMagick.scale(
 				bytes, ImageConstants.TYPE_PNG, width, 0);
 		}

@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.repository.model.FileVersion;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.MimeTypes;
 import com.liferay.portal.kernel.util.StringUtil;
 
 import java.io.File;
@@ -26,6 +27,7 @@ import java.io.InputStream;
 
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.Future;
 
 import org.osgi.service.component.annotations.Component;
@@ -59,6 +61,13 @@ public class AMImageMagickImageScaler implements AMImageScaler {
 			imageFile = _getFile(fileVersion);
 
 			String mimeType = fileVersion.getMimeType();
+
+			if (!Objects.equals(
+					_mimeTypes.getContentType(imageFile), mimeType)) {
+
+				throw new AMRuntimeException.IOException(
+					"Unable to scale image with mime type " + mimeType);
+			}
 
 			String extension = _extensions.get(mimeType);
 
@@ -163,5 +172,8 @@ public class AMImageMagickImageScaler implements AMImageScaler {
 
 	@Reference
 	private ImageMagick _imageMagick;
+
+	@Reference
+	private MimeTypes _mimeTypes;
 
 }
