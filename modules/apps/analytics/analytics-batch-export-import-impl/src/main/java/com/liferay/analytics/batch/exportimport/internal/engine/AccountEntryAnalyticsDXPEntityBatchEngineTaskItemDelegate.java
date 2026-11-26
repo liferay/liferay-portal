@@ -9,7 +9,7 @@ import com.liferay.account.model.AccountEntry;
 import com.liferay.account.model.AccountEntryTable;
 import com.liferay.account.model.AccountGroupRelTable;
 import com.liferay.account.service.AccountEntryLocalService;
-import com.liferay.analytics.batch.exportimport.internal.dto.v1_0.converter.constants.DTOConverterConstants;
+import com.liferay.analytics.batch.exportimport.internal.dxp.entity.rest.dto.v1_0.converter.constants.DTOConverterConstants;
 import com.liferay.analytics.batch.exportimport.internal.engine.util.DTOConverterUtil;
 import com.liferay.analytics.batch.exportimport.internal.odata.entity.AccountEntryAnalyticsDXPEntityEntityModel;
 import com.liferay.analytics.dxp.entity.rest.dto.v1_0.DXPEntity;

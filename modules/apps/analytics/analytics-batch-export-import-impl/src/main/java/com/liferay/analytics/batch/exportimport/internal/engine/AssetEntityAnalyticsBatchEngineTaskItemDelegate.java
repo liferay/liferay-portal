@@ -127,7 +127,7 @@ public class AssetEntityAnalyticsBatchEngineTaskItemDelegate
 	}
 
 	@Reference(
-		target = "(component.name=com.liferay.analytics.batch.exportimport.internal.dto.v1_0.converter.AssetEntityDTOConverter)"
+		target = "(component.name=com.liferay.analytics.batch.exportimport.internal.dxp.entity.rest.dto.v1_0.converter.AssetEntityDTOConverter)"
 	)
 	private DTOConverter<AssetEntry, AssetEntity> _assetEntityDTOConverter;
 

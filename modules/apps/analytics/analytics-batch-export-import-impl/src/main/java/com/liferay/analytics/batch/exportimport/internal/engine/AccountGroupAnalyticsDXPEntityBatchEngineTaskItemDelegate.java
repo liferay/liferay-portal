@@ -8,7 +8,7 @@ package com.liferay.analytics.batch.exportimport.internal.engine;
 import com.liferay.account.model.AccountGroup;
 import com.liferay.account.model.AccountGroupTable;
 import com.liferay.account.service.AccountGroupLocalService;
-import com.liferay.analytics.batch.exportimport.internal.dto.v1_0.converter.constants.DTOConverterConstants;
+import com.liferay.analytics.batch.exportimport.internal.dxp.entity.rest.dto.v1_0.converter.constants.DTOConverterConstants;
 import com.liferay.analytics.batch.exportimport.internal.engine.util.DTOConverterUtil;
 import com.liferay.analytics.dxp.entity.rest.dto.v1_0.DXPEntity;
 import com.liferay.analytics.settings.rest.manager.AnalyticsSettingsManager;
