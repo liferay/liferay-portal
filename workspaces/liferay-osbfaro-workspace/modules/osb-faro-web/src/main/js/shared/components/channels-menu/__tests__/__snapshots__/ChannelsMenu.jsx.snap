@@ -20,7 +20,11 @@ exports[`ChannelsMenu should render the first item as label 1`] = `
       tabindex="0"
       type="button"
     >
-      Link 1
+      <span
+        class="text-truncate"
+      >
+        Link 1
+      </span>
       <svg
         class="lexicon-icon lexicon-icon-caret-double inline-item inline-item-after"
         role="presentation"

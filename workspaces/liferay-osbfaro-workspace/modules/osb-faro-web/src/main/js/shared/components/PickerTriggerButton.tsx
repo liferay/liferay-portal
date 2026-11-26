@@ -23,7 +23,7 @@ const PickerTriggerButton = React.forwardRef<
 		ref={ref}
 		size={size}
 	>
-		{label}
+		<span className="text-truncate">{label}</span>
 
 		<Icon className="inline-item inline-item-after" symbol="caret-double" />
 	</ClayButton>

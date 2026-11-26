@@ -3,10 +3,8 @@ import getCN from 'classnames';
 import PickerTriggerButton from '../PickerTriggerButton';
 import React from 'react';
 import {connect} from 'react-redux';
-import {MAX_LABEL_LENGTH} from 'shared/util/constants';
 import {Option, Picker} from '@clayui/core';
 import {Routes, toRoute} from 'shared/util/router';
-import {truncateText} from 'shared/util/util';
 import {updateDefaultChannelId} from 'shared/actions/preferences';
 import {useHistoryAdapter} from 'shared/hooks/useHistoryAdapter';
 
@@ -109,12 +107,11 @@ export const ChannelsMenu: React.FC<IChannelsMenuProps> = ({
 				searchable
 				selectedKey={channel ? channel.id : undefined}
 				size="regular"
+				width={160}
 			>
 				{(item) => (
 					<Option key={item.id} textValue={item.name}>
-						<span>
-							{truncateText(item.name, MAX_LABEL_LENGTH, null)}
-						</span>
+						<span className="text-break">{item.name}</span>
 					</Option>
 				)}
 			</Picker>

@@ -2,7 +2,13 @@ import ChannelsMenu, {isValidChannel} from '../index';
 import mockStore from 'test/mock-store';
 import React from 'react';
 import {BrowserRouter} from 'react-router-dom';
-import {cleanup, fireEvent, render, screen} from '@testing-library/react';
+import {
+	cleanup,
+	fireEvent,
+	render,
+	screen,
+	within
+} from '@testing-library/react';
 import {Provider} from 'react-redux';
 
 const mockMenuItems = () => [
@@ -84,7 +90,7 @@ describe('ChannelsMenu', () => {
 		expect(screen.getByText('Link 2')).toBeTruthy();
 	});
 
-	it('should find a channel with a truncated label by its full name', () => {
+	it('should show the full name of a long channel in the options', () => {
 		const channelName = 'A property name longer than the label length';
 
 		render(
@@ -106,6 +112,31 @@ describe('ChannelsMenu', () => {
 		});
 
 		expect(screen.getAllByRole('option')).toHaveLength(1);
+
+		expect(screen.getByRole('option')).toHaveTextContent(channelName);
+	});
+
+	it('should truncate a selected property name longer than the picker', () => {
+		const channelName =
+			'A property name much longer than the product menu picker width';
+
+		render(
+			<Provider store={mockStore()}>
+				<BrowserRouter>
+					<ChannelsMenu
+						channels={[{id: '1', name: channelName}]}
+						defaultChannelId='1'
+						groupId='123456'
+					/>
+				</BrowserRouter>
+			</Provider>
+		);
+
+		expect(
+			within(
+				screen.getByRole('combobox', {name: /^property$/i})
+			).getByText(channelName)
+		).toHaveClass('text-truncate');
 	});
 });
 

@@ -50,7 +50,11 @@ exports[`Sidebar should render 1`] = `
                   tabindex="0"
                   type="button"
                 >
-                  No Properties
+                  <span
+                    class="text-truncate"
+                  >
+                    No Properties
+                  </span>
                   <svg
                     class="lexicon-icon lexicon-icon-caret-double inline-item inline-item-after"
                     role="presentation"
