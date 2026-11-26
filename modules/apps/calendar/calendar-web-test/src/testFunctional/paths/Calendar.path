@@ -357,7 +357,7 @@
 </tr>
 <tr>
 	<td>OTHER_CALENDARS_CALENDAR_MENULIST_COLOR_PICKER</td>
-	<td>//button[contains(@class,'simple-color-picker-item') and contains(@style,'${key_color}')]</td>
+	<td>//button[contains(@class,'simple-color-picker-item') and contains(@aria-label,'${key_color}')]</td>
 	<td></td>
 </tr>
 <tr>
