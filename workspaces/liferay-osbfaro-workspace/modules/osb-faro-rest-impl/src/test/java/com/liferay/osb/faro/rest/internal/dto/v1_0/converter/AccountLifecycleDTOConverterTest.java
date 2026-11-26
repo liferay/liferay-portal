@@ -68,10 +68,6 @@ public class AccountLifecycleDTOConverterTest {
 		AccountLifecycleStage[] accountLifecycleStages =
 			accountLifecycle.getAccountLifecycleStages();
 
-		Assert.assertEquals(
-			accountLifecycleStages.toString(), 1,
-			accountLifecycleStages.length);
-
 		AccountLifecycleStage accountLifecycleStage = accountLifecycleStages[0];
 
 		Assert.assertEquals(
@@ -83,6 +79,10 @@ public class AccountLifecycleDTOConverterTest {
 		Assert.assertEquals(
 			engineClientAccountLifecycleStage.getPosition(),
 			accountLifecycleStage.getPosition());
+
+		Assert.assertEquals(
+			accountLifecycleStages.toString(), 1,
+			accountLifecycleStages.length);
 
 		Assert.assertEquals(
 			engineClientAccountLifecycle.getModifiedDate(),
