@@ -165,16 +165,35 @@ public class ObjectEntryServiceImpl extends ObjectEntryServiceBaseImpl {
 	@Override
 	@Transactional(enabled = false)
 	public void checkModelResourcePermission(
+			ModelResourcePermission<ObjectEntry> modelResourcePermission,
+			ObjectEntry objectEntry, String actionId)
+		throws PortalException {
+
+		if (objectEntry.isRootDescendantNode() &&
+			(actionId.equals(ActionKeys.DELETE) ||
+			 actionId.equals(ActionKeys.VIEW)) &&
+			modelResourcePermission.contains(
+				getPermissionChecker(), objectEntry, ActionKeys.UPDATE)) {
+
+			return;
+		}
+
+		modelResourcePermission.check(
+			getPermissionChecker(), objectEntry, actionId);
+	}
+
+	@Override
+	@Transactional(enabled = false)
+	public void checkModelResourcePermission(
 			ObjectEntry objectEntry, String actionId)
 		throws PortalException {
 
 		ObjectDefinition objectDefinition = objectEntry.getObjectDefinition();
 
-		_checkPermission(
-			actionId,
+		checkModelResourcePermission(
 			ModelResourcePermissionRegistryUtil.getModelResourcePermission(
 				objectDefinition.getClassName()),
-			objectEntry);
+			objectEntry, actionId);
 	}
 
 	@Override
@@ -861,28 +880,9 @@ public class ObjectEntryServiceImpl extends ObjectEntryServiceBaseImpl {
 			String actionId, long objectDefinitionId, ObjectEntry objectEntry)
 		throws PortalException {
 
-		_checkPermission(
-			actionId, getModelResourcePermission(objectDefinitionId),
-			objectEntry);
-	}
-
-	private void _checkPermission(
-			String actionId,
-			ModelResourcePermission<ObjectEntry> modelResourcePermission,
-			ObjectEntry objectEntry)
-		throws PortalException {
-
-		if (objectEntry.isRootDescendantNode() &&
-			(actionId.equals(ActionKeys.DELETE) ||
-			 actionId.equals(ActionKeys.VIEW)) &&
-			modelResourcePermission.contains(
-				getPermissionChecker(), objectEntry, ActionKeys.UPDATE)) {
-
-			return;
-		}
-
-		modelResourcePermission.check(
-			getPermissionChecker(), objectEntry, actionId);
+		checkModelResourcePermission(
+			getModelResourcePermission(objectDefinitionId), objectEntry,
+			actionId);
 	}
 
 	private void _checkUpdatePermissions(
