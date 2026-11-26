@@ -93,14 +93,14 @@ public class LaunchSetFilter extends BasePortalFilter {
 			return;
 		}
 
-		boolean header = false;
+		boolean fromHeader = false;
 		long launchSetId = ParamUtil.getLong(
 			httpServletRequest, "p_launch_set_id", -1);
 		String launchSetModeString = ParamUtil.getString(
 			httpServletRequest, "p_launch_set_mode");
 
 		if ((launchSetId == -1) && Validator.isNull(launchSetModeString)) {
-			header = true;
+			fromHeader = true;
 			launchSetId = GetterUtil.getLong(
 				httpServletRequest.getHeader("X-Liferay-Launch-Set-Id"), -1);
 			launchSetModeString = httpServletRequest.getHeader(
@@ -124,7 +124,7 @@ public class LaunchSetFilter extends BasePortalFilter {
 				 ((launchSetId != -1) &&
 				  Validator.isNull(launchSetModeString))) {
 
-			if (!header &&
+			if (!fromHeader &&
 				!Objects.equals(
 					ParamUtil.getString(httpServletRequest, "p_l_mode"),
 					Constants.PREVIEW)) {
@@ -147,7 +147,7 @@ public class LaunchSetFilter extends BasePortalFilter {
 				return;
 			}
 
-			if (!header) {
+			if (!fromHeader) {
 				httpServletResponse.sendRedirect(
 					HttpComponentsUtil.addParameter(
 						_portal.getPathMain() + "/portal/login", "redirect",
