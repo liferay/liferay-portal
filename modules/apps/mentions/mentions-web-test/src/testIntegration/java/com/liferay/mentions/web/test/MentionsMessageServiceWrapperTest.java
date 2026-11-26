@@ -9,7 +9,9 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.blogs.model.BlogsEntry;
 import com.liferay.blogs.service.BlogsEntryLocalService;
 import com.liferay.blogs.test.util.BlogsTestUtil;
+import com.liferay.message.boards.constants.MBCategoryConstants;
 import com.liferay.message.boards.constants.MBMessageConstants;
+import com.liferay.message.boards.model.MBMessage;
 import com.liferay.message.boards.model.MBMessageDisplay;
 import com.liferay.message.boards.model.MBThread;
 import com.liferay.message.boards.service.MBMessageLocalService;
@@ -40,6 +42,7 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.SynchronousMailTestRule;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.Assert;
@@ -133,6 +136,40 @@ public class MentionsMessageServiceWrapperTest {
 	}
 
 	@Test
+	@TestInfo("LPD-117732")
+	public void testUpdateStatusOnMessage() throws Exception {
+		Group group = GroupTestUtil.addGroup();
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				group.getGroupId(), TestPropsValues.getUserId());
+
+		serviceContext.setAddGuestPermissions(false);
+
+		User user = UserTestUtil.addUser(group.getGroupId());
+
+		MBMessage mbMessage = _mbMessageLocalService.addMessage(
+			TestPropsValues.getUserId(), RandomTestUtil.randomString(),
+			group.getGroupId(), MBCategoryConstants.DEFAULT_PARENT_CATEGORY_ID,
+			RandomTestUtil.randomString(),
+			StringBundler.concat(
+				"<span class=\"mention mention-user-",
+				user.getExternalReferenceCode(), "\">@", user.getScreenName(),
+				"</span>"),
+			"html", Collections.emptyList(), false, 0.0, false, serviceContext);
+
+		Assert.assertEquals(
+			1,
+			_userNotificationEventLocalService.getUserNotificationEventsCount(
+				user.getUserId()));
+
+		_mbMessageLocalService.deleteMessage(mbMessage);
+		_userLocalService.deleteUser(user);
+
+		GroupTestUtil.deleteGroup(group);
+	}
+
+	@Test
 	@TestInfo("LPD-116828")
 	public void testUpdateStatusWithoutViewPermission() throws Exception {
 		Group group = GroupTestUtil.addGroup();
@@ -183,6 +220,42 @@ public class MentionsMessageServiceWrapperTest {
 		_blogsEntryLocalService.deleteEntry(blogsEntry);
 		_userLocalService.deleteUser(user1);
 		_userLocalService.deleteUser(user2);
+
+		GroupTestUtil.deleteGroup(group);
+	}
+
+	@Test
+	@TestInfo("LPD-117732")
+	public void testUpdateStatusWithoutViewPermissionOnMessage()
+		throws Exception {
+
+		Group group = GroupTestUtil.addGroup();
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				group.getGroupId(), TestPropsValues.getUserId());
+
+		serviceContext.setAddGuestPermissions(false);
+
+		User user = UserTestUtil.addUser();
+
+		MBMessage mbMessage = _mbMessageLocalService.addMessage(
+			TestPropsValues.getUserId(), RandomTestUtil.randomString(),
+			group.getGroupId(), MBCategoryConstants.DEFAULT_PARENT_CATEGORY_ID,
+			RandomTestUtil.randomString(),
+			StringBundler.concat(
+				"<span class=\"mention mention-user-",
+				user.getExternalReferenceCode(), "\">@", user.getScreenName(),
+				"</span>"),
+			"html", Collections.emptyList(), false, 0.0, false, serviceContext);
+
+		Assert.assertEquals(
+			0,
+			_userNotificationEventLocalService.getUserNotificationEventsCount(
+				user.getUserId()));
+
+		_mbMessageLocalService.deleteMessage(mbMessage);
+		_userLocalService.deleteUser(user);
 
 		GroupTestUtil.deleteGroup(group);
 	}
