@@ -6,7 +6,6 @@
 package com.liferay.commerce.pricing.service.impl;
 
 import com.liferay.commerce.pricing.exception.CommercePricingClassTitleException;
-import com.liferay.commerce.pricing.exception.NoSuchPricingClassException;
 import com.liferay.commerce.pricing.model.CommercePricingClass;
 import com.liferay.commerce.pricing.model.CommercePricingClassCPDefinitionRel;
 import com.liferay.commerce.pricing.service.CommercePricingClassCPDefinitionRelLocalService;
@@ -17,8 +16,6 @@ import com.liferay.exportimport.kernel.empty.model.EmptyModelManager;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
@@ -43,7 +40,6 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
-import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
@@ -132,48 +128,6 @@ public class CommercePricingClassLocalServiceImpl
 		return commercePricingClass;
 	}
 
-	@Override
-	public CommercePricingClass addOrUpdateCommercePricingClass(
-			String externalReferenceCode, long commercePricingClassId,
-			long userId, Map<Locale, String> titleMap,
-			Map<Locale, String> descriptionMap, ServiceContext serviceContext)
-		throws PortalException {
-
-		if (commercePricingClassId > 0) {
-			try {
-				return commercePricingClassLocalService.
-					updateCommercePricingClass(
-						commercePricingClassId, userId, titleMap,
-						descriptionMap, serviceContext);
-			}
-			catch (NoSuchPricingClassException noSuchPricingClassException) {
-				if (_log.isDebugEnabled()) {
-					_log.debug(
-						"Unable to find pricing class with ID: " +
-							commercePricingClassId,
-						noSuchPricingClassException);
-				}
-			}
-		}
-
-		if (!Validator.isBlank(externalReferenceCode)) {
-			CommercePricingClass commercePricingClass =
-				commercePricingClassPersistence.fetchByERC_C(
-					externalReferenceCode, serviceContext.getCompanyId());
-
-			if (commercePricingClass != null) {
-				return commercePricingClassLocalService.
-					updateCommercePricingClass(
-						commercePricingClassId, userId, titleMap,
-						descriptionMap, serviceContext);
-			}
-		}
-
-		return commercePricingClassLocalService.addCommercePricingClass(
-			externalReferenceCode, userId, titleMap, descriptionMap,
-			serviceContext);
-	}
-
 	@Indexable(type = IndexableType.DELETE)
 	@Override
 	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
@@ -235,15 +189,6 @@ public class CommercePricingClassLocalServiceImpl
 			_commercePricingClassCPDefinitionRelPersistence.
 				findByCPDefinitionId(cpDefinitionId),
 			CommercePricingClassCPDefinitionRel::getCommercePricingClassId);
-	}
-
-	@Override
-	public List<CommercePricingClass> getCommercePricingClasses(
-		long companyId, int start, int end,
-		OrderByComparator<CommercePricingClass> orderByComparator) {
-
-		return commercePricingClassPersistence.findByCompanyId(
-			companyId, start, end, orderByComparator);
 	}
 
 	@Override
@@ -451,9 +396,6 @@ public class CommercePricingClassLocalServiceImpl
 		Field.COMPANY_ID, Field.ENTRY_CLASS_NAME, Field.ENTRY_CLASS_PK,
 		Field.TITLE
 	};
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		CommercePricingClassLocalServiceImpl.class);
 
 	@Reference
 	private CommercePricingClassCPDefinitionRelLocalService
