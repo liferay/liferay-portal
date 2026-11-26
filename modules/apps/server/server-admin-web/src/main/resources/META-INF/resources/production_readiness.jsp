@@ -10,6 +10,16 @@
 <liferay-portlet:resourceURL copyCurrentRenderParameters="<%= false %>" var="baseResourceURL" />
 
 <div>
+	<div class="mb-3">
+		<clay:link
+			aria-label='<%= LanguageUtil.format(request, "x-opens-new-window", LanguageUtil.get(request, "click-here-to-learn-more-about-what-settings-liferay-recommends-to-check-before-a-dxp-deployment"), false) %>'
+			href="https://www.liferay.com/resources/product-info/Liferay+DXP+Go+Live+Checklist"
+			iconAfter="shortcut"
+			label="click-here-to-learn-more-about-what-settings-liferay-recommends-to-check-before-a-dxp-deployment"
+			target="_blank"
+		/>
+	</div>
+
 	<react:component
 		module="{ProductionReadinessDashboard} from server-admin-web"
 		props='<%=
