@@ -1393,4 +1393,4 @@ public abstract class BaseFragmentSetResourceImpl
 		LogFactoryUtil.getLog(BaseFragmentSetResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-73883082
+// LIFERAY-REST-BUILDER-HASH:-1145880850
