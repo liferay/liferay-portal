@@ -38,14 +38,13 @@ public class DLAppServiceWhenMovingAFileEntryTest extends BaseDLAppTestCase {
 	@Test
 	@TestInfo("LPS-110213")
 	public void testShouldHaveSameContent() throws Exception {
+		FileEntry fileEntry = DLAppServiceTestUtil.addFileEntry(
+			group.getGroupId(), parentFolder.getFolderId());
 		Folder folder = dlAppService.addFolder(
 			null, group.getGroupId(),
 			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 			ServiceContextTestUtil.getServiceContext(group.getGroupId()));
-
-		FileEntry fileEntry = DLAppServiceTestUtil.addFileEntry(
-			group.getGroupId(), parentFolder.getFolderId());
 
 		FileEntry movedFileEntry = dlAppService.moveFileEntry(
 			fileEntry.getFileEntryId(), folder.getFolderId(),
