@@ -16,7 +16,8 @@ import com.liferay.portal.kernel.settings.LocalizedValuesMap;
  */
 @ExtendedObjectClassDefinition(
 	category = "multi-factor-authentication",
-	scope = ExtendedObjectClassDefinition.Scope.COMPANY, strictScope = true
+	scope = ExtendedObjectClassDefinition.Scope.COMPANY, strictScope = true,
+	visibilityControllerKey = "multi-factor-authentication"
 )
 @Meta.OCD(
 	id = "com.liferay.multi.factor.authentication.email.otp.configuration.MFAEmailOTPConfiguration",
