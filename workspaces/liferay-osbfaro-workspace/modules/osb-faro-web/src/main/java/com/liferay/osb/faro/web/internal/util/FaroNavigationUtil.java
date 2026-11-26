@@ -33,6 +33,20 @@ public class FaroNavigationUtil {
 		return PortalUtil.getLayoutRelativeURL(layout, themeDisplay);
 	}
 
+	public static boolean isLDPEnabled(FaroProject faroProject)
+		throws Exception {
+
+		if ((faroProject == null) ||
+			Validator.isNull(faroProject.getSubscription())) {
+
+			return false;
+		}
+
+		return isLDPEnabled(
+			JSONUtil.readValue(
+				faroProject.getSubscription(), FaroSubscriptionDisplay.class));
+	}
+
 	public static boolean isLDPEnabled(
 		FaroSubscriptionDisplay faroSubscriptionDisplay) {
 
@@ -50,18 +64,8 @@ public class FaroNavigationUtil {
 	}
 
 	public static boolean isLDPEnabled(long groupId) throws Exception {
-		FaroProject faroProject =
-			FaroProjectLocalServiceUtil.fetchFaroProjectByGroupId(groupId);
-
-		if ((faroProject == null) ||
-			Validator.isNull(faroProject.getSubscription())) {
-
-			return false;
-		}
-
 		return isLDPEnabled(
-			JSONUtil.readValue(
-				faroProject.getSubscription(), FaroSubscriptionDisplay.class));
+			FaroProjectLocalServiceUtil.fetchFaroProjectByGroupId(groupId));
 	}
 
 }
