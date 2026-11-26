@@ -42,8 +42,7 @@ interface IVisualizationModeItem extends IDataSetVisualizationMode {
 	active: boolean;
 	externalReferenceCode: string;
 	lastEnabled: boolean;
-	missingFields: boolean;
-	missingRequiredSections: boolean;
+	mapped: boolean | null;
 	onEdit: () => void;
 	onToggle: () => Promise<void>;
 	toggleDisabled: boolean;
@@ -89,7 +88,7 @@ function NameCell({
 
 	return (
 		<>
-			<ClayIcon className="mr-2" symbol={item.thumbnail} />
+			<ClayIcon className="mr-3" symbol={item.thumbnail} />
 
 			{fuzzyMatch ? (
 				<span
@@ -100,19 +99,23 @@ function NameCell({
 			) : (
 				<span>{item.label}</span>
 			)}
-
-			{item.missingFields && (
-				<ClayLabel className="ml-2" displayType="warning">
-					{Liferay.Language.get('no-fields-assigned')}
-				</ClayLabel>
-			)}
-
-			{item.missingRequiredSections && (
-				<ClayLabel className="ml-2" displayType="warning">
-					{Liferay.Language.get('required-elements-not-assigned')}
-				</ClayLabel>
-			)}
 		</>
+	);
+}
+
+function FieldMappingCell({item}: {item: IVisualizationModeItem}) {
+	if (item.mapped === null) {
+		return null;
+	}
+
+	return item.mapped ? (
+		<ClayLabel displayType="success">
+			{Liferay.Language.get('mapped')}
+		</ClayLabel>
+	) : (
+		<ClayLabel displayType="warning">
+			{Liferay.Language.get('not-mapped')}
+		</ClayLabel>
 	);
 }
 
@@ -146,6 +149,19 @@ const FIELDS = [
 		name: 'label',
 	},
 	{
+		contentRenderer: {
+			component: FieldMappingCell,
+			textMatch: (item: IVisualizationModeItem) =>
+				item.mapped === null
+					? ''
+					: item.mapped
+						? Liferay.Language.get('mapped')
+						: Liferay.Language.get('not-mapped'),
+		},
+		label: Liferay.Language.get('field-mapping'),
+		name: 'mapped',
+	},
+	{
 		label: Liferay.Language.get('type'),
 		name: 'type',
 	},
@@ -165,7 +181,7 @@ const FIELDS = [
 			component: EditCell,
 			textMatch: () => '',
 		},
-		label: Liferay.Language.get('actions'),
+		label: '',
 		name: 'edit',
 	},
 ];
@@ -301,28 +317,35 @@ export default function VisualizationModes(props: IDataSetSectionProps) {
 				visualizationMode.enabled &&
 				enabledVisualizationModesCount === 1;
 
+			const sections = visualizationMode.clientExtension
+				? getClientExtensionSections(
+						visualizationModeClientExtensions,
+						visualizationMode.name
+					)
+				: [];
+
+			let mapped: boolean | null = null;
+
+			if (visualizationMode.clientExtension) {
+				if (sections.some(({required}) => required)) {
+					mapped = !hasMissingRequiredSections(
+						getSectionFields(dataSet, visualizationMode.name),
+						sections
+					);
+				}
+			}
+			else if (mappedVisualizationModeNames) {
+				mapped = mappedVisualizationModeNames.includes(
+					visualizationMode.name
+				);
+			}
+
 			return {
 				...visualizationMode,
 				active: visualizationMode.enabled,
 				externalReferenceCode: visualizationMode.name,
 				lastEnabled,
-				missingFields:
-					visualizationMode.enabled &&
-					!visualizationMode.clientExtension &&
-					!!mappedVisualizationModeNames &&
-					!mappedVisualizationModeNames.includes(
-						visualizationMode.name
-					),
-				missingRequiredSections:
-					visualizationMode.enabled &&
-					visualizationMode.clientExtension &&
-					hasMissingRequiredSections(
-						getSectionFields(dataSet, visualizationMode.name),
-						getClientExtensionSections(
-							visualizationModeClientExtensions,
-							visualizationMode.name
-						)
-					),
+				mapped,
 				onEdit: () =>
 					setActiveVisualizationModeName(visualizationMode.name),
 				onToggle: () => toggleVisualizationMode(visualizationMode.name),

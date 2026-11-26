@@ -258,18 +258,19 @@ describe('VisualizationModes', () => {
 		expect(within(getRow('cards')).getByRole('switch')).toBeEnabled();
 	});
 
-	it('warns about enabled visualization modes without fields', async () => {
+	it('shows whether the default visualization modes have fields mapped', async () => {
 		renderVisualizationModes();
 
 		expect(
-			await within(getRow('cards')).findByText('no-fields-assigned')
+			await within(getRow('cards')).findByText('not-mapped')
 		).toBeVisible();
 
+		expect(within(getRow('table')).getByText('mapped')).toBeVisible();
 		expect(
-			within(getRow('table')).queryByText('no-fields-assigned')
+			within(getRow('Timeline')).queryByText('mapped')
 		).not.toBeInTheDocument();
 		expect(
-			within(getRow('Timeline')).queryByText('no-fields-assigned')
+			within(getRow('Timeline')).queryByText('not-mapped')
 		).not.toBeInTheDocument();
 	});
 
@@ -331,15 +332,41 @@ describe('VisualizationModes', () => {
 				],
 			} as any);
 
-		it('labels the visualization mode that has required sections without a field', async () => {
+		it('shows the field mapping of the visualization mode as not mapped', async () => {
 			renderWithSections(
 				JSON.stringify([{enabled: true, name: 'LXC:timeline'}])
 			);
 
 			expect(
-				within(getRow('Timeline')).getByText(
-					'required-elements-not-assigned'
-				)
+				within(getRow('Timeline')).getByText('not-mapped')
+			).toBeVisible();
+		});
+
+		it('shows the field mapping of a disabled visualization mode', async () => {
+			renderWithSections(
+				JSON.stringify([{enabled: false, name: 'LXC:timeline'}])
+			);
+
+			expect(
+				within(getRow('Timeline')).getByText('not-mapped')
+			).toBeVisible();
+		});
+
+		it('shows the field mapping as mapped once each required element has a field', async () => {
+			renderWithSections(
+				JSON.stringify([
+					{
+						configuration: {
+							sectionFields: {image: 'image', title: 'title'},
+						},
+						enabled: true,
+						name: 'LXC:timeline',
+					},
+				])
+			);
+
+			expect(
+				within(getRow('Timeline')).getByText('mapped')
 			).toBeVisible();
 		});
 
