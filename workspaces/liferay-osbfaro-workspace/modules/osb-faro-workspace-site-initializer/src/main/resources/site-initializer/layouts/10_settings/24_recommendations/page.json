@@ -1,6 +1,6 @@
 {
 	"friendlyURL": "/recommendations",
-	"hidden": true,
+	"hidden": false,
 	"name": "Recommendations",
 	"name_i18n": {
 		"en_US": "Recommendations",
@@ -30,5 +30,11 @@
 	],
 	"private": false,
 	"system": false,
-	"type": "Content"
+	"type": "Content",
+	"typeSettings": [
+		{
+			"key": "faroRequirement",
+			"value": "recommendations"
+		}
+	]
 }

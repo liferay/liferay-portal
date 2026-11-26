@@ -23,5 +23,11 @@
 	],
 	"private": false,
 	"system": false,
-	"type": "Content"
+	"type": "Content",
+	"typeSettings": [
+		{
+			"key": "faroRequirement",
+			"value": "ldp"
+		}
+	]
 }
