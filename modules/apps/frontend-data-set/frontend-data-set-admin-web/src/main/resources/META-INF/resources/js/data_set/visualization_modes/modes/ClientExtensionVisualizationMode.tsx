@@ -150,7 +150,7 @@ export default function ClientExtensionVisualizationMode(
 				>
 					{sub(
 						Liferay.Language.get(
-							'the-client-extension-no-longer-declares-these-elements-x'
+							'the-client-extension-no-longer-declares-these-item-elements-x'
 						),
 						staleSectionNames.join(', ')
 					)}
@@ -164,7 +164,7 @@ export default function ClientExtensionVisualizationMode(
 					variant="stripe"
 				>
 					{Liferay.Language.get(
-						'this-visualization-mode-will-not-be-shown-until-you-assign-a-field-to-each-required-element'
+						'this-visualization-mode-will-not-be-shown-until-you-assign-a-field-to-each-required-item-element'
 					)}
 				</ClayAlert>
 			)}

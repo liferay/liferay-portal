@@ -385,7 +385,7 @@ describe('VisualizationModes', () => {
 			).not.toBeInTheDocument();
 			expect(
 				screen.getByText(
-					'this-visualization-mode-will-not-be-shown-until-you-assign-a-field-to-each-required-element'
+					'this-visualization-mode-will-not-be-shown-until-you-assign-a-field-to-each-required-item-element'
 				)
 			).toBeVisible();
 		});
@@ -581,7 +581,7 @@ describe('VisualizationModes', () => {
 
 			expect(
 				screen.getByText(
-					'the-client-extension-no-longer-declares-these-elements-x'
+					'the-client-extension-no-longer-declares-these-item-elements-x'
 				)
 			).toBeVisible();
 		});
