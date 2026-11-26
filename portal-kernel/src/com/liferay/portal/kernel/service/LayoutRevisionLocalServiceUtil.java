@@ -260,13 +260,6 @@ public class LayoutRevisionLocalServiceUtil {
 		return getService().fetchLatestLayoutRevision(layoutSetBranchId, plid);
 	}
 
-	public static LayoutRevision fetchLatestLayoutRevision(
-		long layoutSetBranchId, long layoutBranchId, long plid) {
-
-		return getService().fetchLatestLayoutRevision(
-			layoutSetBranchId, layoutBranchId, plid);
-	}
-
 	public static LayoutRevision fetchLayoutRevision(long layoutRevisionId) {
 		return getService().fetchLayoutRevision(layoutRevisionId);
 	}
@@ -291,13 +284,6 @@ public class LayoutRevisionLocalServiceUtil {
 		return getService().getChildLayoutRevisions(
 			layoutSetBranchId, parentLayoutRevision, plid, start, end,
 			orderByComparator);
-	}
-
-	public static int getChildLayoutRevisionsCount(
-		long layoutSetBranchId, long parentLayoutRevision, long plid) {
-
-		return getService().getChildLayoutRevisionsCount(
-			layoutSetBranchId, parentLayoutRevision, plid);
 	}
 
 	public static
@@ -381,14 +367,6 @@ public class LayoutRevisionLocalServiceUtil {
 		long layoutSetBranchId, long plid, int status) {
 
 		return getService().getLayoutRevisions(layoutSetBranchId, plid, status);
-	}
-
-	public static List<LayoutRevision> getLayoutRevisions(
-		long layoutSetBranchId, long plid, int start, int end,
-		OrderByComparator<LayoutRevision> orderByComparator) {
-
-		return getService().getLayoutRevisions(
-			layoutSetBranchId, plid, start, end, orderByComparator);
 	}
 
 	public static List<LayoutRevision> getLayoutRevisions(
@@ -492,4 +470,4 @@ public class LayoutRevisionLocalServiceUtil {
 	private static volatile LayoutRevisionLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1421977305
+// LIFERAY-SERVICE-BUILDER-HASH:-1335491689

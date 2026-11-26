@@ -291,15 +291,6 @@ public class LayoutRevisionLocalServiceWrapper
 	}
 
 	@Override
-	public com.liferay.portal.kernel.model.LayoutRevision
-		fetchLatestLayoutRevision(
-			long layoutSetBranchId, long layoutBranchId, long plid) {
-
-		return _layoutRevisionLocalService.fetchLatestLayoutRevision(
-			layoutSetBranchId, layoutBranchId, plid);
-	}
-
-	@Override
 	public com.liferay.portal.kernel.model.LayoutRevision fetchLayoutRevision(
 		long layoutRevisionId) {
 
@@ -335,14 +326,6 @@ public class LayoutRevisionLocalServiceWrapper
 		return _layoutRevisionLocalService.getChildLayoutRevisions(
 			layoutSetBranchId, parentLayoutRevision, plid, start, end,
 			orderByComparator);
-	}
-
-	@Override
-	public int getChildLayoutRevisionsCount(
-		long layoutSetBranchId, long parentLayoutRevision, long plid) {
-
-		return _layoutRevisionLocalService.getChildLayoutRevisionsCount(
-			layoutSetBranchId, parentLayoutRevision, plid);
 	}
 
 	@Override
@@ -447,18 +430,6 @@ public class LayoutRevisionLocalServiceWrapper
 
 		return _layoutRevisionLocalService.getLayoutRevisions(
 			layoutSetBranchId, plid, status);
-	}
-
-	@Override
-	public java.util.List<com.liferay.portal.kernel.model.LayoutRevision>
-		getLayoutRevisions(
-			long layoutSetBranchId, long plid, int start, int end,
-			com.liferay.portal.kernel.util.OrderByComparator
-				<com.liferay.portal.kernel.model.LayoutRevision>
-					orderByComparator) {
-
-		return _layoutRevisionLocalService.getLayoutRevisions(
-			layoutSetBranchId, plid, start, end, orderByComparator);
 	}
 
 	@Override
@@ -588,4 +559,4 @@ public class LayoutRevisionLocalServiceWrapper
 	private LayoutRevisionLocalService _layoutRevisionLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1331129619
+// LIFERAY-SERVICE-BUILDER-HASH:563979108

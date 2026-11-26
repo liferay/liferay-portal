@@ -229,10 +229,6 @@ public interface LayoutRevisionLocalService
 		long layoutSetBranchId, long plid);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public LayoutRevision fetchLatestLayoutRevision(
-		long layoutSetBranchId, long layoutBranchId, long plid);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public LayoutRevision fetchLayoutRevision(long layoutRevisionId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -246,10 +242,6 @@ public interface LayoutRevisionLocalService
 	public List<LayoutRevision> getChildLayoutRevisions(
 		long layoutSetBranchId, long parentLayoutRevision, long plid, int start,
 		int end, OrderByComparator<LayoutRevision> orderByComparator);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getChildLayoutRevisionsCount(
-		long layoutSetBranchId, long parentLayoutRevision, long plid);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
@@ -310,11 +302,6 @@ public interface LayoutRevisionLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<LayoutRevision> getLayoutRevisions(
 		long layoutSetBranchId, long plid, int status);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<LayoutRevision> getLayoutRevisions(
-		long layoutSetBranchId, long plid, int start, int end,
-		OrderByComparator<LayoutRevision> orderByComparator);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<LayoutRevision> getLayoutRevisions(
@@ -381,4 +368,4 @@ public interface LayoutRevisionLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-476905312
+// LIFERAY-SERVICE-BUILDER-HASH:-1966216629

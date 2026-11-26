@@ -683,20 +683,6 @@ public interface LayoutLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public long getDefaultPlid(long groupId, boolean privateLayout);
 
-	/**
-	 * Returns primary key of the default portlet layout for the group
-	 *
-	 * @param groupId the primary key of the group
-	 * @param privateLayout whether the layout is private to the group
-	 * @param portletId the primary key of the portlet
-	 * @return the primary key of the default portlet layout for the group;
-	 {@link LayoutConstants#DEFAULT_PLID} otherwise
-	 * @throws PortalException
-	 */
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public long getDefaultPlid(
-		long groupId, boolean privateLayout, String portletId);
-
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ExportActionableDynamicQuery getExportActionableDynamicQuery(
 		PortletDataContext portletDataContext);
@@ -1167,10 +1153,6 @@ public interface LayoutLocalService
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<Layout> getMasterLayouts(
-		long groupId, String masterLayoutPageTemplateEntryERC);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getMasterLayoutsCount(
 		long groupId, String masterLayoutPageTemplateEntryERC);
 
@@ -1282,16 +1264,6 @@ public interface LayoutLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public boolean hasLayouts(
 			User user, boolean privateLayout, boolean includeUserGroups)
-		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public boolean hasLayoutSetPrototypeLayout(
-			long layoutSetPrototypeId, String layoutUuid)
-		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public boolean hasLayoutSetPrototypeLayout(
-			String layoutSetPrototypeUuid, long companyId, String layoutUuid)
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -1748,4 +1720,4 @@ public interface LayoutLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1407315814
+// LIFERAY-SERVICE-BUILDER-HASH:506257846

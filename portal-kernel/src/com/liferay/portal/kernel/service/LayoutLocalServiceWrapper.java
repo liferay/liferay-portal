@@ -833,24 +833,6 @@ public class LayoutLocalServiceWrapper
 		return _layoutLocalService.getDefaultPlid(groupId, privateLayout);
 	}
 
-	/**
-	 * Returns primary key of the default portlet layout for the group
-	 *
-	 * @param groupId the primary key of the group
-	 * @param privateLayout whether the layout is private to the group
-	 * @param portletId the primary key of the portlet
-	 * @return the primary key of the default portlet layout for the group;
-	 {@link LayoutConstants#DEFAULT_PLID} otherwise
-	 * @throws PortalException
-	 */
-	@Override
-	public long getDefaultPlid(
-		long groupId, boolean privateLayout, String portletId) {
-
-		return _layoutLocalService.getDefaultPlid(
-			groupId, privateLayout, portletId);
-	}
-
 	@Override
 	public com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery
 		getExportActionableDynamicQuery(
@@ -1508,14 +1490,6 @@ public class LayoutLocalServiceWrapper
 	}
 
 	@Override
-	public java.util.List<Layout> getMasterLayouts(
-		long groupId, String masterLayoutPageTemplateEntryERC) {
-
-		return _layoutLocalService.getMasterLayouts(
-			groupId, masterLayoutPageTemplateEntryERC);
-	}
-
-	@Override
 	public int getMasterLayoutsCount(
 		long groupId, String masterLayoutPageTemplateEntryERC) {
 
@@ -1690,24 +1664,6 @@ public class LayoutLocalServiceWrapper
 
 		return _layoutLocalService.hasLayouts(
 			user, privateLayout, includeUserGroups);
-	}
-
-	@Override
-	public boolean hasLayoutSetPrototypeLayout(
-			long layoutSetPrototypeId, String layoutUuid)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _layoutLocalService.hasLayoutSetPrototypeLayout(
-			layoutSetPrototypeId, layoutUuid);
-	}
-
-	@Override
-	public boolean hasLayoutSetPrototypeLayout(
-			String layoutSetPrototypeUuid, long companyId, String layoutUuid)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _layoutLocalService.hasLayoutSetPrototypeLayout(
-			layoutSetPrototypeUuid, companyId, layoutUuid);
 	}
 
 	@Override
@@ -2380,4 +2336,4 @@ public class LayoutLocalServiceWrapper
 	private LayoutLocalService _layoutLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1016631408
+// LIFERAY-SERVICE-BUILDER-HASH:-180539413

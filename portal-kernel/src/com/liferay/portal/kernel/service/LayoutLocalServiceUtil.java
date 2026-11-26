@@ -781,22 +781,6 @@ public class LayoutLocalServiceUtil {
 		return getService().getDefaultPlid(groupId, privateLayout);
 	}
 
-	/**
-	 * Returns primary key of the default portlet layout for the group
-	 *
-	 * @param groupId the primary key of the group
-	 * @param privateLayout whether the layout is private to the group
-	 * @param portletId the primary key of the portlet
-	 * @return the primary key of the default portlet layout for the group;
-	 {@link LayoutConstants#DEFAULT_PLID} otherwise
-	 * @throws PortalException
-	 */
-	public static long getDefaultPlid(
-		long groupId, boolean privateLayout, String portletId) {
-
-		return getService().getDefaultPlid(groupId, privateLayout, portletId);
-	}
-
 	public static com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery
 		getExportActionableDynamicQuery(
 			com.liferay.exportimport.kernel.lar.PortletDataContext
@@ -1387,13 +1371,6 @@ public class LayoutLocalServiceUtil {
 			user, privateLayout, includeUserGroups);
 	}
 
-	public static List<Layout> getMasterLayouts(
-		long groupId, String masterLayoutPageTemplateEntryERC) {
-
-		return getService().getMasterLayouts(
-			groupId, masterLayoutPageTemplateEntryERC);
-	}
-
 	public static int getMasterLayoutsCount(
 		long groupId, String masterLayoutPageTemplateEntryERC) {
 
@@ -1545,22 +1522,6 @@ public class LayoutLocalServiceUtil {
 		throws PortalException {
 
 		return getService().hasLayouts(user, privateLayout, includeUserGroups);
-	}
-
-	public static boolean hasLayoutSetPrototypeLayout(
-			long layoutSetPrototypeId, String layoutUuid)
-		throws PortalException {
-
-		return getService().hasLayoutSetPrototypeLayout(
-			layoutSetPrototypeId, layoutUuid);
-	}
-
-	public static boolean hasLayoutSetPrototypeLayout(
-			String layoutSetPrototypeUuid, long companyId, String layoutUuid)
-		throws PortalException {
-
-		return getService().hasLayoutSetPrototypeLayout(
-			layoutSetPrototypeUuid, companyId, layoutUuid);
 	}
 
 	public static List<Layout> search(
@@ -2160,4 +2121,4 @@ public class LayoutLocalServiceUtil {
 	private static volatile LayoutLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1651792520
+// LIFERAY-SERVICE-BUILDER-HASH:-132778349
