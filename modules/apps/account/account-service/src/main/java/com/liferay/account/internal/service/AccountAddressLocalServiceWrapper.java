@@ -5,9 +5,9 @@
 
 package com.liferay.account.internal.service;
 
+import com.liferay.account.configuration.AccountEntryAddressSubtypeConfigurationUtil;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.exportimport.kernel.empty.model.EmptyModelManagerUtil;
-import com.liferay.portal.kernel.account.configuration.manager.AccountEntryAddressSubtypeConfigurationManagerUtil;
 import com.liferay.portal.kernel.exception.AddressSubtypeException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.list.type.manager.ListTypeEntryManagerUtil;
@@ -94,7 +94,7 @@ public class AccountAddressLocalServiceWrapper
 		ListType listType = _listTypeLocalService.getListType(listTypeId);
 
 		String externalReferenceCode =
-			AccountEntryAddressSubtypeConfigurationManagerUtil.
+			AccountEntryAddressSubtypeConfigurationUtil.
 				getAddressSubtypeListTypeDefinitionExternalReferenceCode(
 					companyId, listType.getName());
 

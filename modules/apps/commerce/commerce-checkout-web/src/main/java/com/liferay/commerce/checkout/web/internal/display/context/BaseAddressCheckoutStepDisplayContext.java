@@ -5,6 +5,7 @@
 
 package com.liferay.commerce.checkout.web.internal.display.context;
 
+import com.liferay.account.configuration.AccountEntryAddressSubtypeConfigurationUtil;
 import com.liferay.account.constants.AccountActionKeys;
 import com.liferay.account.constants.AccountListTypeConstants;
 import com.liferay.account.model.AccountEntry;
@@ -26,7 +27,6 @@ import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.service.CommerceAddressService;
 import com.liferay.commerce.util.comparator.CommerceAddressNameComparator;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.account.configuration.manager.AccountEntryAddressSubtypeConfigurationManagerUtil;
 import com.liferay.portal.kernel.bean.BeanParamUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -183,21 +183,21 @@ public abstract class BaseAddressCheckoutStepDisplayContext {
 
 				return HashMapBuilder.<String, Object>put(
 					"billing",
-					AccountEntryAddressSubtypeConfigurationManagerUtil.
+					AccountEntryAddressSubtypeConfigurationUtil.
 						getAddressSubtypeListTypeDefinitionExternalReferenceCode(
 							companyId,
 							AccountListTypeConstants.
 								ACCOUNT_ENTRY_ADDRESS_TYPE_BILLING)
 				).put(
 					"billingAndShipping",
-					AccountEntryAddressSubtypeConfigurationManagerUtil.
+					AccountEntryAddressSubtypeConfigurationUtil.
 						getAddressSubtypeListTypeDefinitionExternalReferenceCode(
 							companyId,
 							AccountListTypeConstants.
 								ACCOUNT_ENTRY_ADDRESS_TYPE_BILLING_AND_SHIPPING)
 				).put(
 					"shipping",
-					AccountEntryAddressSubtypeConfigurationManagerUtil.
+					AccountEntryAddressSubtypeConfigurationUtil.
 						getAddressSubtypeListTypeDefinitionExternalReferenceCode(
 							companyId,
 							AccountListTypeConstants.

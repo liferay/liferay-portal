@@ -5,6 +5,7 @@
 
 package com.liferay.commerce.order.content.web.internal.fragment.renderer;
 
+import com.liferay.account.configuration.AccountEntryAddressSubtypeConfigurationUtil;
 import com.liferay.commerce.configuration.CommerceOrderCheckoutConfiguration;
 import com.liferay.commerce.constants.CommerceConstants;
 import com.liferay.commerce.constants.CommerceOrderActionKeys;
@@ -18,7 +19,6 @@ import com.liferay.info.item.ClassPKInfoItemIdentifier;
 import com.liferay.info.item.InfoItemReference;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
-import com.liferay.portal.kernel.account.configuration.manager.AccountEntryAddressSubtypeConfigurationManagerUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
@@ -121,7 +121,7 @@ public class MultishippingFragmentRenderer implements FragmentRenderer {
 					"liferay-commerce:multishipping:",
 					"billingAddressSubtypeListTypeDefinition",
 					"ExternalReferenceCode"),
-				AccountEntryAddressSubtypeConfigurationManagerUtil.
+				AccountEntryAddressSubtypeConfigurationUtil.
 					getAddressSubtypeListTypeDefinitionExternalReferenceCode(
 						commerceOrder.getCompanyId(), "billing"));
 			httpServletRequest.setAttribute(
@@ -129,7 +129,7 @@ public class MultishippingFragmentRenderer implements FragmentRenderer {
 					"liferay-commerce:multishipping:",
 					"billingAndShippingAddressSubtypeListTypeDefinition",
 					"ExternalReferenceCode"),
-				AccountEntryAddressSubtypeConfigurationManagerUtil.
+				AccountEntryAddressSubtypeConfigurationUtil.
 					getAddressSubtypeListTypeDefinitionExternalReferenceCode(
 						commerceOrder.getCompanyId(), "billing-and-shipping"));
 			httpServletRequest.setAttribute(
@@ -146,7 +146,7 @@ public class MultishippingFragmentRenderer implements FragmentRenderer {
 					"liferay-commerce:multishipping:",
 					"shippingAddressSubtypeListTypeDefinition",
 					"ExternalReferenceCode"),
-				AccountEntryAddressSubtypeConfigurationManagerUtil.
+				AccountEntryAddressSubtypeConfigurationUtil.
 					getAddressSubtypeListTypeDefinitionExternalReferenceCode(
 						commerceOrder.getCompanyId(), "shipping"));
 

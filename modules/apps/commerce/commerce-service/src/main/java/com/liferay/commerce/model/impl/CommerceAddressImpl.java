@@ -5,6 +5,7 @@
 
 package com.liferay.commerce.model.impl;
 
+import com.liferay.account.configuration.AccountEntryAddressSubtypeConfigurationUtil;
 import com.liferay.account.constants.AccountListTypeConstants;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.service.AccountEntryLocalServiceUtil;
@@ -15,7 +16,6 @@ import com.liferay.expando.kernel.util.ExpandoBridgeFactoryUtil;
 import com.liferay.list.type.model.ListTypeEntry;
 import com.liferay.list.type.service.ListTypeEntryLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.account.configuration.manager.AccountEntryAddressSubtypeConfigurationManagerUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.list.type.manager.ListTypeEntryManagerUtil;
 import com.liferay.portal.kernel.model.Address;
@@ -223,7 +223,7 @@ public class CommerceAddressImpl extends CommerceAddressBaseImpl {
 		}
 
 		String externalReferenceCode =
-			AccountEntryAddressSubtypeConfigurationManagerUtil.
+			AccountEntryAddressSubtypeConfigurationUtil.
 				getAddressSubtypeListTypeDefinitionExternalReferenceCode(
 					getCompanyId(),
 					CommerceAddressConstants.getAddressTypeLabel(getType()));

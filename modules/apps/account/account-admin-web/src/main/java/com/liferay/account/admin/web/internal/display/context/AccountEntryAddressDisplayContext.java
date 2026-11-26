@@ -6,8 +6,8 @@
 package com.liferay.account.admin.web.internal.display.context;
 
 import com.liferay.account.admin.web.internal.display.AddressDisplay;
+import com.liferay.account.configuration.AccountEntryAddressSubtypeConfigurationUtil;
 import com.liferay.account.constants.AccountListTypeConstants;
-import com.liferay.portal.kernel.account.configuration.manager.AccountEntryAddressSubtypeConfigurationManagerUtil;
 import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -43,21 +43,21 @@ public class AccountEntryAddressDisplayContext {
 
 				return HashMapBuilder.<String, Object>put(
 					"billing",
-					AccountEntryAddressSubtypeConfigurationManagerUtil.
+					AccountEntryAddressSubtypeConfigurationUtil.
 						getAddressSubtypeListTypeDefinitionExternalReferenceCode(
 							companyId,
 							AccountListTypeConstants.
 								ACCOUNT_ENTRY_ADDRESS_TYPE_BILLING)
 				).put(
 					"billingAndShipping",
-					AccountEntryAddressSubtypeConfigurationManagerUtil.
+					AccountEntryAddressSubtypeConfigurationUtil.
 						getAddressSubtypeListTypeDefinitionExternalReferenceCode(
 							companyId,
 							AccountListTypeConstants.
 								ACCOUNT_ENTRY_ADDRESS_TYPE_BILLING_AND_SHIPPING)
 				).put(
 					"shipping",
-					AccountEntryAddressSubtypeConfigurationManagerUtil.
+					AccountEntryAddressSubtypeConfigurationUtil.
 						getAddressSubtypeListTypeDefinitionExternalReferenceCode(
 							companyId,
 							AccountListTypeConstants.

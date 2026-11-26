@@ -5,6 +5,7 @@
 
 package com.liferay.commerce.order.content.web.internal.fragment.renderer;
 
+import com.liferay.account.configuration.AccountEntryAddressSubtypeConfigurationUtil;
 import com.liferay.account.constants.AccountListTypeConstants;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.commerce.constants.CommerceOrderActionKeys;
@@ -36,7 +37,6 @@ import com.liferay.fragment.renderer.FragmentRendererContext;
 import com.liferay.fragment.util.configuration.FragmentEntryConfigurationParser;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.account.configuration.manager.AccountEntryAddressSubtypeConfigurationManagerUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONException;
@@ -430,20 +430,20 @@ public class InfoBoxFragmentRenderer implements FragmentRenderer {
 
 		return HashMapBuilder.put(
 			"billing",
-			AccountEntryAddressSubtypeConfigurationManagerUtil.
+			AccountEntryAddressSubtypeConfigurationUtil.
 				getAddressSubtypeListTypeDefinitionExternalReferenceCode(
 					companyId,
 					AccountListTypeConstants.ACCOUNT_ENTRY_ADDRESS_TYPE_BILLING)
 		).put(
 			"billingAndShipping",
-			AccountEntryAddressSubtypeConfigurationManagerUtil.
+			AccountEntryAddressSubtypeConfigurationUtil.
 				getAddressSubtypeListTypeDefinitionExternalReferenceCode(
 					companyId,
 					AccountListTypeConstants.
 						ACCOUNT_ENTRY_ADDRESS_TYPE_BILLING_AND_SHIPPING)
 		).put(
 			"shipping",
-			AccountEntryAddressSubtypeConfigurationManagerUtil.
+			AccountEntryAddressSubtypeConfigurationUtil.
 				getAddressSubtypeListTypeDefinitionExternalReferenceCode(
 					companyId,
 					AccountListTypeConstants.
