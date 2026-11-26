@@ -2,7 +2,6 @@ import ClayForm from '@clayui/form';
 import client from 'shared/apollo/client';
 import mockStore from 'test/mock-store';
 import React, {useState} from 'react';
-import ReactDOM from 'react-dom';
 import {act, cleanup, fireEvent, render} from '@testing-library/react';
 import {ApolloProvider} from '@apollo/client';
 import {
@@ -192,9 +191,6 @@ describe('DownloadReportModal CSV', () => {
 		CSV_URL = '';
 
 		jest.useFakeTimers();
-
-		// @ts-ignore
-		ReactDOM.createPortal = jest.fn((element) => element);
 	});
 
 	afterAll(() => {
@@ -202,7 +198,7 @@ describe('DownloadReportModal CSV', () => {
 	});
 
 	it('renders component', async () => {
-		const {container, getByRole, getByTestId, getByText} = render(
+		const {getByRole, getByTestId, getByText} = render(
 			<WrapperCSVComponent type={CSVType.Blog} />
 		);
 
@@ -216,7 +212,7 @@ describe('DownloadReportModal CSV', () => {
 			jest.runAllTimers();
 		});
 
-		await waitForLoadingToBeRemoved(container);
+		await waitForLoadingToBeRemoved();
 
 		expect(getByText(/^select date range$/i)).toBeInTheDocument();
 
@@ -265,9 +261,6 @@ describe('DownloadReportModal PDF', () => {
 
 	beforeAll(() => {
 		jest.useFakeTimers();
-
-		// @ts-ignore
-		ReactDOM.createPortal = jest.fn((element) => element);
 	});
 
 	afterAll(() => {
@@ -305,7 +298,7 @@ describe('DownloadReportModal PDF', () => {
 			ReportContainer.VisitorsByTimeCard,
 		];
 
-		const {container, getByRole, getByTestId, getByText} = render(
+		const {getByRole, getByTestId, getByText} = render(
 			<WrapperPDFomponent>
 				<ClayForm.Group>
 					<label>{Liferay.Language.get('dashboard-reports')}</label>
@@ -333,7 +326,7 @@ describe('DownloadReportModal PDF', () => {
 			jest.runAllTimers();
 		});
 
-		await waitForLoadingToBeRemoved(container);
+		await waitForLoadingToBeRemoved();
 
 		expect(getByText(/^select date range$/i)).toBeInTheDocument();
 

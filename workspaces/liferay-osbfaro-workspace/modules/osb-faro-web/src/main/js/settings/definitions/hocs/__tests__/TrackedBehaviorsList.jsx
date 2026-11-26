@@ -1,9 +1,6 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import TrackedBehaviorsList from '../TrackedBehaviorsList';
 import {cleanup, render} from '@testing-library/react';
-
-ReactDOM.createPortal = jest.fn();
 
 describe('TrackedBehaviorsList', () => {
 	afterEach(cleanup);

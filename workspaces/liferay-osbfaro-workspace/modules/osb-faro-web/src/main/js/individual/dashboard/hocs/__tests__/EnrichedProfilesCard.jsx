@@ -1,7 +1,6 @@
 import * as API from 'shared/api';
 import EnrichedProfilesCard from '../EnrichedProfilesCard';
 import React from 'react';
-import ReactDOM from 'react-dom';
 import {cleanup, queryByText, render} from '@testing-library/react';
 import {CredentialTypes} from 'shared/util/constants';
 import {DataSource} from 'shared/util/records';
@@ -20,8 +19,6 @@ jest.mock('react-router-dom', () => ({
 		groupId: '23'
 	})
 }));
-
-ReactDOM.createPortal = jest.fn();
 
 const DefaultComponent = props => (
 	<MemoryRouter>

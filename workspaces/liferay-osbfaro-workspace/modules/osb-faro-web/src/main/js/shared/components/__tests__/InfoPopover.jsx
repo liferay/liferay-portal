@@ -1,9 +1,6 @@
 import InfoPopover from '../InfoPopover';
 import React from 'react';
-import ReactDOM from 'react-dom';
 import {cleanup, render} from '@testing-library/react';
-
-ReactDOM.createPortal = jest.fn();
 
 describe('InfoPopover', () => {
 	afterEach(cleanup);
