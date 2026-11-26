@@ -13,11 +13,12 @@ import com.liferay.commerce.constants.CommerceAddressConstants;
 import com.liferay.commerce.model.CommerceAddress;
 import com.liferay.expando.kernel.model.ExpandoBridge;
 import com.liferay.expando.kernel.util.ExpandoBridgeFactoryUtil;
+import com.liferay.list.type.model.ListTypeDefinition;
 import com.liferay.list.type.model.ListTypeEntry;
+import com.liferay.list.type.service.ListTypeDefinitionLocalServiceUtil;
 import com.liferay.list.type.service.ListTypeEntryLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.list.type.manager.ListTypeEntryManagerUtil;
 import com.liferay.portal.kernel.model.Address;
 import com.liferay.portal.kernel.model.Country;
 import com.liferay.portal.kernel.model.ListType;
@@ -232,11 +233,18 @@ public class CommerceAddressImpl extends CommerceAddressBaseImpl {
 			return getSubtype();
 		}
 
+		ListTypeDefinition listTypeDefinition =
+			ListTypeDefinitionLocalServiceUtil.
+				fetchListTypeDefinitionByExternalReferenceCode(
+					externalReferenceCode, getCompanyId());
+
+		if (listTypeDefinition == null) {
+			return getSubtype();
+		}
+
 		ListTypeEntry listTypeEntry =
 			ListTypeEntryLocalServiceUtil.fetchListTypeEntry(
-				ListTypeEntryManagerUtil.
-					getListTypeEntryIdByListTypeDefinitionExternalReferenceCode(
-						externalReferenceCode, getCompanyId(), getSubtype()));
+				listTypeDefinition.getListTypeDefinitionId(), getSubtype());
 
 		if (listTypeEntry == null) {
 			return getSubtype();

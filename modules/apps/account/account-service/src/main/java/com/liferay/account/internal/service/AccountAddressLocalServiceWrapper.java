@@ -8,9 +8,12 @@ package com.liferay.account.internal.service;
 import com.liferay.account.configuration.AccountEntryAddressSubtypeConfigurationUtil;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.exportimport.kernel.empty.model.EmptyModelManagerUtil;
+import com.liferay.list.type.model.ListTypeDefinition;
+import com.liferay.list.type.model.ListTypeEntry;
+import com.liferay.list.type.service.ListTypeDefinitionLocalService;
+import com.liferay.list.type.service.ListTypeEntryLocalService;
 import com.liferay.portal.kernel.exception.AddressSubtypeException;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.list.type.manager.ListTypeEntryManagerUtil;
 import com.liferay.portal.kernel.model.Address;
 import com.liferay.portal.kernel.model.ListType;
 import com.liferay.portal.kernel.model.User;
@@ -102,18 +105,32 @@ public class AccountAddressLocalServiceWrapper
 			throw new AddressSubtypeException();
 		}
 
-		long listTypeEntryId =
-			ListTypeEntryManagerUtil.
-				getListTypeEntryIdByListTypeDefinitionExternalReferenceCode(
-					externalReferenceCode, companyId, subtype);
+		ListTypeDefinition listTypeDefinition =
+			_listTypeDefinitionLocalService.
+				fetchListTypeDefinitionByExternalReferenceCode(
+					externalReferenceCode, companyId);
 
-		if (listTypeEntryId == 0) {
+		if (listTypeDefinition == null) {
+			throw new AddressSubtypeException();
+		}
+
+		ListTypeEntry listTypeEntry =
+			_listTypeEntryLocalService.fetchListTypeEntry(
+				listTypeDefinition.getListTypeDefinitionId(), subtype);
+
+		if (listTypeEntry == null) {
 			throw new AddressSubtypeException();
 		}
 	}
 
 	@Reference
 	private ClassNameLocalService _classNameLocalService;
+
+	@Reference
+	private ListTypeDefinitionLocalService _listTypeDefinitionLocalService;
+
+	@Reference
+	private ListTypeEntryLocalService _listTypeEntryLocalService;
 
 	@Reference
 	private ListTypeLocalService _listTypeLocalService;
