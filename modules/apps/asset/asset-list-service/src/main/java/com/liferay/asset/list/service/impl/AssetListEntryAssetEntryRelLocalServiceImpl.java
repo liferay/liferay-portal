@@ -267,22 +267,6 @@ public class AssetListEntryAssetEntryRelLocalServiceImpl
 
 	@Override
 	public int getAssetListEntryAssetEntryRelsCount(
-		long assetListEntryId, long segmentsEntryId) {
-
-		return getAssetListEntryAssetEntryRelsCount(
-			assetListEntryId, StringPool.BLANK, segmentsEntryId);
-	}
-
-	@Override
-	public int getAssetListEntryAssetEntryRelsCount(
-		long assetListEntryId, long[] segmentsEntryIds) {
-
-		return assetListEntryAssetEntryRelPersistence.countByA_AEERC_S(
-			assetListEntryId, StringPool.BLANK, segmentsEntryIds);
-	}
-
-	@Override
-	public int getAssetListEntryAssetEntryRelsCount(
 		long assetListEntryId, String audienceEntryERC, long segmentsEntryId) {
 
 		return assetListEntryAssetEntryRelPersistence.countByA_AEERC_S(
