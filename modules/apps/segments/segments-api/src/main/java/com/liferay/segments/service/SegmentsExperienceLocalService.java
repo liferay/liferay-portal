@@ -403,12 +403,6 @@ public interface SegmentsExperienceLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<SegmentsExperience> getSegmentsExperiences(
-		long groupId, String[] segmentsEntryERCs, String segmentsEntryScopeERC,
-		long plid, boolean active, int start, int end,
-		OrderByComparator<SegmentsExperience> orderByComparator);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<SegmentsExperience> getSegmentsExperiences(
 		long[] groupIds, boolean active);
 
 	/**
@@ -502,4 +496,4 @@ public interface SegmentsExperienceLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1808348869
+// LIFERAY-SERVICE-BUILDER-HASH:1550055812

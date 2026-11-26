@@ -510,16 +510,6 @@ public class SegmentsExperienceLocalServiceUtil {
 	}
 
 	public static List<SegmentsExperience> getSegmentsExperiences(
-		long groupId, String[] segmentsEntryERCs, String segmentsEntryScopeERC,
-		long plid, boolean active, int start, int end,
-		OrderByComparator<SegmentsExperience> orderByComparator) {
-
-		return getService().getSegmentsExperiences(
-			groupId, segmentsEntryERCs, segmentsEntryScopeERC, plid, active,
-			start, end, orderByComparator);
-	}
-
-	public static List<SegmentsExperience> getSegmentsExperiences(
 		long[] groupIds, boolean active) {
 
 		return getService().getSegmentsExperiences(groupIds, active);
@@ -644,4 +634,4 @@ public class SegmentsExperienceLocalServiceUtil {
 			SegmentsExperienceLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-905342043
+// LIFERAY-SERVICE-BUILDER-HASH:1858071132

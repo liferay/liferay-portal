@@ -583,18 +583,6 @@ public class SegmentsExperienceLocalServiceWrapper
 
 	@Override
 	public java.util.List<SegmentsExperience> getSegmentsExperiences(
-		long groupId, String[] segmentsEntryERCs, String segmentsEntryScopeERC,
-		long plid, boolean active, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<SegmentsExperience>
-			orderByComparator) {
-
-		return _segmentsExperienceLocalService.getSegmentsExperiences(
-			groupId, segmentsEntryERCs, segmentsEntryScopeERC, plid, active,
-			start, end, orderByComparator);
-	}
-
-	@Override
-	public java.util.List<SegmentsExperience> getSegmentsExperiences(
 		long[] groupIds, boolean active) {
 
 		return _segmentsExperienceLocalService.getSegmentsExperiences(
@@ -765,4 +753,4 @@ public class SegmentsExperienceLocalServiceWrapper
 	private SegmentsExperienceLocalService _segmentsExperienceLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1307981150
+// LIFERAY-SERVICE-BUILDER-HASH:-1730671901
