@@ -95,12 +95,6 @@ public interface CommercePricingClassLocalService
 			ServiceContext serviceContext)
 		throws PortalException;
 
-	public CommercePricingClass addOrUpdateCommercePricingClass(
-			String externalReferenceCode, long commercePricingClassId,
-			long userId, Map<Locale, String> titleMap,
-			Map<Locale, String> descriptionMap, ServiceContext serviceContext)
-		throws PortalException;
-
 	/**
 	 * Creates a new commerce pricing class with the primary key. Does not add the commerce pricing class to the database.
 	 *
@@ -303,11 +297,6 @@ public interface CommercePricingClassLocalService
 	public List<CommercePricingClass> getCommercePricingClasses(
 		int start, int end);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CommercePricingClass> getCommercePricingClasses(
-		long companyId, int start, int end,
-		OrderByComparator<CommercePricingClass> orderByComparator);
-
 	/**
 	 * Returns the number of commerce pricing classes.
 	 *
@@ -394,4 +383,4 @@ public interface CommercePricingClassLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1428162567
+// LIFERAY-SERVICE-BUILDER-HASH:-1715960148

@@ -76,18 +76,6 @@ public class CommercePricingClassLocalServiceUtil {
 			serviceContext);
 	}
 
-	public static CommercePricingClass addOrUpdateCommercePricingClass(
-			String externalReferenceCode, long commercePricingClassId,
-			long userId, Map<java.util.Locale, String> titleMap,
-			Map<java.util.Locale, String> descriptionMap,
-			com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws PortalException {
-
-		return getService().addOrUpdateCommercePricingClass(
-			externalReferenceCode, commercePricingClassId, userId, titleMap,
-			descriptionMap, serviceContext);
-	}
-
 	/**
 	 * Creates a new commerce pricing class with the primary key. Does not add the commerce pricing class to the database.
 	 *
@@ -346,14 +334,6 @@ public class CommercePricingClassLocalServiceUtil {
 		return getService().getCommercePricingClasses(start, end);
 	}
 
-	public static List<CommercePricingClass> getCommercePricingClasses(
-		long companyId, int start, int end,
-		OrderByComparator<CommercePricingClass> orderByComparator) {
-
-		return getService().getCommercePricingClasses(
-			companyId, start, end, orderByComparator);
-	}
-
 	/**
 	 * Returns the number of commerce pricing classes.
 	 *
@@ -465,4 +445,4 @@ public class CommercePricingClassLocalServiceUtil {
 			CommercePricingClassLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1697607242
+// LIFERAY-SERVICE-BUILDER-HASH:-622244871
