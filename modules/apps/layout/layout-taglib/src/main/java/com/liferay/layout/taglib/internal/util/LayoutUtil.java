@@ -12,7 +12,7 @@ import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
-import com.liferay.portal.kernel.launch.LaunchThreadLocal;
+import com.liferay.portal.kernel.launch.LaunchSetThreadLocal;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
@@ -249,7 +249,7 @@ public class LayoutUtil {
 			return true;
 		}
 
-		long launchSetId = LaunchThreadLocal.getLaunchSetId();
+		long launchSetId = LaunchSetThreadLocal.getLaunchSetId();
 
 		if (launchSetId <= 0) {
 			return false;

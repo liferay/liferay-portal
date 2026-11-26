@@ -20,7 +20,7 @@ import com.liferay.portal.kernel.feature.flag.FeatureFlag;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManager;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.launch.LaunchSetMode;
-import com.liferay.portal.kernel.launch.LaunchThreadLocal;
+import com.liferay.portal.kernel.launch.LaunchSetThreadLocal;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.CompanyConstants;
@@ -236,7 +236,7 @@ public class LiferayGlobalObjectPreAUIDynamicInclude
 	}
 
 	private String _getLaunchSetMode() {
-		LaunchSetMode launchSetMode = LaunchThreadLocal.getLaunchSetMode();
+		LaunchSetMode launchSetMode = LaunchSetThreadLocal.getLaunchSetMode();
 
 		if (launchSetMode == null) {
 			return StringPool.BLANK;
@@ -667,7 +667,7 @@ public class LiferayGlobalObjectPreAUIDynamicInclude
 			_language.getLanguageId(httpServletRequest));
 		_renderMethod(
 			"getLaunchSetId", printWriter,
-			Math.max(LaunchThreadLocal.getLaunchSetId(), 0));
+			Math.max(LaunchSetThreadLocal.getLaunchSetId(), 0));
 		_renderMethod("getLaunchSetMode", printWriter, _getLaunchSetMode());
 		_renderMethod(
 			"getParentGroupId", printWriter, themeDisplay.getSiteGroupId());

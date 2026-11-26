@@ -57,7 +57,7 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.launch.LaunchSetMode;
-import com.liferay.portal.kernel.launch.LaunchThreadLocal;
+import com.liferay.portal.kernel.launch.LaunchSetThreadLocal;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutSet;
@@ -638,7 +638,7 @@ public class FragmentEntryFragmentRendererTest {
 				_serviceContext);
 
 		try (SafeCloseable safeCloseable =
-				LaunchThreadLocal.setLaunchSetIdWithSafeCloseable(
+				LaunchSetThreadLocal.setLaunchSetIdWithSafeCloseable(
 					LaunchSetMode.EDIT, RandomTestUtil.randomLong())) {
 
 			_renderFragmentEntryLink(fragmentEntryLink);

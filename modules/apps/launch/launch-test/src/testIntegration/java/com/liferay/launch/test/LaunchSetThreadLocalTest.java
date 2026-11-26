@@ -8,7 +8,7 @@ package com.liferay.launch.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.launch.LaunchSetMode;
-import com.liferay.portal.kernel.launch.LaunchThreadLocal;
+import com.liferay.portal.kernel.launch.LaunchSetThreadLocal;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -27,7 +27,7 @@ import org.junit.runner.RunWith;
  * @author Alejandro Tardín
  */
 @RunWith(Arquillian.class)
-public class LaunchThreadLocalTest {
+public class LaunchSetThreadLocalTest {
 
 	@ClassRule
 	@Rule
@@ -46,7 +46,7 @@ public class LaunchThreadLocalTest {
 		long launchSetId = RandomTestUtil.randomLong();
 
 		try (SafeCloseable safeCloseable =
-				LaunchThreadLocal.setLaunchSetIdWithSafeCloseable(
+				LaunchSetThreadLocal.setLaunchSetIdWithSafeCloseable(
 					LaunchSetMode.EDIT, launchSetId)) {
 
 			Assert.assertEquals(
@@ -56,14 +56,14 @@ public class LaunchThreadLocalTest {
 		}
 
 		try (SafeCloseable safeCloseable =
-				LaunchThreadLocal.setLaunchSetIdWithSafeCloseable(
+				LaunchSetThreadLocal.setLaunchSetIdWithSafeCloseable(
 					LaunchSetMode.PREVIEW, launchSetId)) {
 
 			_assertPreservedParameters(String.valueOf(launchSetId), url);
 		}
 
 		try (SafeCloseable safeCloseable =
-				LaunchThreadLocal.setLaunchSetIdWithSafeCloseable(
+				LaunchSetThreadLocal.setLaunchSetIdWithSafeCloseable(
 					LaunchSetMode.PREVIEW, 0)) {
 
 			_assertPreservedParameters("0", url);

@@ -33,7 +33,7 @@ import com.liferay.portal.kernel.content.security.policy.ContentSecurityPolicyNo
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.launch.LaunchThreadLocal;
+import com.liferay.portal.kernel.launch.LaunchSetThreadLocal;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Layout;
@@ -173,7 +173,7 @@ public class FragmentEntryFragmentRenderer implements FragmentRenderer {
 			!fragmentRendererContext.isViewMode() ||
 			(fragmentRendererContext.getPreviewClassPK() > 0) ||
 			!fragmentRendererContext.isUseCachedContent() ||
-			(LaunchThreadLocal.getLaunchSetId() > 0)) {
+			(LaunchSetThreadLocal.getLaunchSetId() > 0)) {
 
 			return false;
 		}

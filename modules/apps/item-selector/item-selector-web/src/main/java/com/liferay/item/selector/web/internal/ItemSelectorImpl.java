@@ -22,7 +22,7 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.launch.LaunchSetMode;
-import com.liferay.portal.kernel.launch.LaunchThreadLocal;
+import com.liferay.portal.kernel.launch.LaunchSetThreadLocal;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactory;
@@ -241,15 +241,16 @@ public class ItemSelectorImpl implements ItemSelector {
 			portletURL.setParameter(entry.getKey(), entry.getValue());
 		}
 
-		if (LaunchThreadLocal.isLaunchSetModeEdit()) {
-			LaunchSetMode launchSetMode = LaunchThreadLocal.getLaunchSetMode();
+		if (LaunchSetThreadLocal.isLaunchSetModeEdit()) {
+			LaunchSetMode launchSetMode =
+				LaunchSetThreadLocal.getLaunchSetMode();
 
 			portletURL.setParameter(
 				"p_launch_set_mode", launchSetMode.getValue());
 
 			portletURL.setParameter(
 				"p_launch_set_id",
-				String.valueOf(LaunchThreadLocal.getLaunchSetId()));
+				String.valueOf(LaunchSetThreadLocal.getLaunchSetId()));
 		}
 
 		return portletURL;

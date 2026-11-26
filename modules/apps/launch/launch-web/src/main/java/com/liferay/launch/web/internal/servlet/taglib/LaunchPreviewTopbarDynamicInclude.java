@@ -8,7 +8,7 @@ package com.liferay.launch.web.internal.servlet.taglib;
 import com.liferay.launch.web.internal.constants.LaunchPortletKeys;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
-import com.liferay.portal.kernel.launch.LaunchThreadLocal;
+import com.liferay.portal.kernel.launch.LaunchSetThreadLocal;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.servlet.taglib.BaseDynamicInclude;
@@ -84,7 +84,7 @@ public class LaunchPreviewTopbarDynamicInclude extends BaseDynamicInclude {
 					"{LaunchPreviewTopbar} from launch-web",
 					portletNamespace + "PreviewTopbar", null, true),
 				HashMapBuilder.<String, Object>put(
-					"launchSetId", LaunchThreadLocal.getLaunchSetId()
+					"launchSetId", LaunchSetThreadLocal.getLaunchSetId()
 				).put(
 					"noLaunchURL", _getNoLaunchURL(httpServletRequest)
 				).build(),
@@ -100,7 +100,7 @@ public class LaunchPreviewTopbarDynamicInclude extends BaseDynamicInclude {
 	private ThemeDisplay _getLaunchPreviewThemeDisplay(
 		HttpServletRequest httpServletRequest) {
 
-		if (!LaunchThreadLocal.isLaunchSetModePreview() ||
+		if (!LaunchSetThreadLocal.isLaunchSetModePreview() ||
 			!Objects.equals(
 				Constants.PREVIEW,
 				ParamUtil.getString(httpServletRequest, "p_l_mode"))) {

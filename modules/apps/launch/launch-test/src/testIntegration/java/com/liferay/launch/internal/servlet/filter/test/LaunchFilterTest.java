@@ -15,7 +15,7 @@ import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.launch.LaunchSetMode;
-import com.liferay.portal.kernel.launch.LaunchThreadLocal;
+import com.liferay.portal.kernel.launch.LaunchSetThreadLocal;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.User;
@@ -141,13 +141,13 @@ public class LaunchFilterTest {
 		AtomicReference<LaunchSetMode> launchSetMode = new AtomicReference<>();
 
 		try (SafeCloseable safeCloseable =
-				LaunchThreadLocal.setLaunchSetIdWithSafeCloseable(
+				LaunchSetThreadLocal.setLaunchSetIdWithSafeCloseable(
 					LaunchSetMode.PREVIEW, launchSetId)) {
 
 			_filter.doFilter(
 				mockHttpServletRequest, new MockHttpServletResponse(),
 				(servletRequest, servletResponse) -> launchSetMode.set(
-					LaunchThreadLocal.getLaunchSetMode()));
+					LaunchSetThreadLocal.getLaunchSetMode()));
 		}
 
 		Assert.assertEquals(LaunchSetMode.PREVIEW, launchSetMode.get());
@@ -440,8 +440,8 @@ public class LaunchFilterTest {
 		AtomicLong layout2Plid = new AtomicLong();
 
 		FilterChain filterChain = (servletRequest, servletResponse) -> {
-			launchSetMode.set(LaunchThreadLocal.getLaunchSetMode());
-			launchSetId.set(LaunchThreadLocal.getLaunchSetId());
+			launchSetMode.set(LaunchSetThreadLocal.getLaunchSetMode());
+			launchSetId.set(LaunchSetThreadLocal.getLaunchSetId());
 
 			try {
 				Layout layout1 = _layoutLocalService.getLayout(
@@ -508,8 +508,8 @@ public class LaunchFilterTest {
 		_filter.doFilter(
 			mockHttpServletRequest, mockHttpServletResponse,
 			(servletRequest, servletResponse) -> {
-				launchSetMode.set(LaunchThreadLocal.getLaunchSetMode());
-				launchSetId.set(LaunchThreadLocal.getLaunchSetId());
+				launchSetMode.set(LaunchSetThreadLocal.getLaunchSetMode());
+				launchSetId.set(LaunchSetThreadLocal.getLaunchSetId());
 			});
 
 		Assert.assertEquals(expectedLaunchSetId, launchSetId.get());

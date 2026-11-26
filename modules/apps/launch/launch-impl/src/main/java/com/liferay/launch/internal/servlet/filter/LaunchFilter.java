@@ -20,7 +20,7 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.launch.LaunchSetMode;
-import com.liferay.portal.kernel.launch.LaunchThreadLocal;
+import com.liferay.portal.kernel.launch.LaunchSetThreadLocal;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.BaseModel;
@@ -83,7 +83,7 @@ public class LaunchFilter extends BasePortalFilter {
 			HttpServletResponse httpServletResponse, FilterChain filterChain)
 		throws Exception {
 
-		if ((LaunchThreadLocal.getLaunchSetMode() != null) ||
+		if ((LaunchSetThreadLocal.getLaunchSetMode() != null) ||
 			(PreviewableResolverUtil.getPreviewId() != null)) {
 
 			processFilter(
@@ -307,7 +307,7 @@ public class LaunchFilter extends BasePortalFilter {
 		throws Exception {
 
 		try (SafeCloseable safeCloseable1 =
-				LaunchThreadLocal.setLaunchSetIdWithSafeCloseable(
+				LaunchSetThreadLocal.setLaunchSetIdWithSafeCloseable(
 					launchSetMode, launchSetId)) {
 
 			Map<Class<?>, Map<Serializable, Object>> previewableMap =

@@ -12,7 +12,7 @@ import com.liferay.petra.lang.SafeCloseable;
  * @author Alejandro Tardín
  * @author Carlos Correa
  */
-public class LaunchThreadLocal {
+public class LaunchSetThreadLocal {
 
 	public static long getLaunchSetId() {
 		return _launchSetId.get();
@@ -52,14 +52,14 @@ public class LaunchThreadLocal {
 		};
 	}
 
-	private LaunchThreadLocal() {
+	private LaunchSetThreadLocal() {
 	}
 
 	private static final CentralizedThreadLocal<Long> _launchSetId =
 		new CentralizedThreadLocal<>(
-			LaunchThreadLocal.class.getName() + "._launchSetId", () -> -1L);
+			LaunchSetThreadLocal.class.getName() + "._launchSetId", () -> -1L);
 	private static final CentralizedThreadLocal<LaunchSetMode> _launchSetMode =
 		new CentralizedThreadLocal<>(
-			LaunchThreadLocal.class.getName() + "._launchSetMode");
+			LaunchSetThreadLocal.class.getName() + "._launchSetMode");
 
 }

@@ -5,7 +5,7 @@
 
 package com.liferay.layout.internal.search.spi.model.query.contributor;
 
-import com.liferay.portal.kernel.launch.LaunchThreadLocal;
+import com.liferay.portal.kernel.launch.LaunchSetThreadLocal;
 import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.Field;
@@ -104,7 +104,7 @@ public class LayoutModelPreFilterContributor
 
 		statusesTermsFilter.addValues(ArrayUtil.toStringArray(statuses));
 
-		long launchSetId = LaunchThreadLocal.getLaunchSetId();
+		long launchSetId = LaunchSetThreadLocal.getLaunchSetId();
 
 		long[] classPKs = new long[0];
 

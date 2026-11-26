@@ -39,7 +39,7 @@ import com.liferay.portal.kernel.exception.LayoutTypeException;
 import com.liferay.portal.kernel.exception.MasterLayoutException;
 import com.liferay.portal.kernel.exception.NoSuchLayoutException;
 import com.liferay.portal.kernel.launch.LaunchSetMode;
-import com.liferay.portal.kernel.launch.LaunchThreadLocal;
+import com.liferay.portal.kernel.launch.LaunchSetThreadLocal;
 import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -1013,7 +1013,7 @@ public class LayoutLocalServiceTest {
 				new int[] {WorkflowConstants.STATUS_APPROVED}));
 
 		try (SafeCloseable safeCloseable =
-				LaunchThreadLocal.setLaunchSetIdWithSafeCloseable(
+				LaunchSetThreadLocal.setLaunchSetIdWithSafeCloseable(
 					LaunchSetMode.PREVIEW, launchSetId)) {
 
 			Assert.assertEquals(
