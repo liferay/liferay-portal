@@ -580,6 +580,7 @@ function getFieldType(objectField: ObjectField): FieldType {
 		Decimal: 'decimal',
 		EmailAddress: 'email',
 		Integer: 'integer',
+		Location: 'location',
 		LongText: 'long-text',
 		PhoneNumber: 'phone-number',
 		RichText: 'rich-text',
