@@ -128,7 +128,7 @@ public class FDSVisualizationModeCETImplFactoryImpl
 
 			if (Validator.isBlank(name)) {
 				throw new ClientExtensionEntryTypeSettingsException(
-					"Every section must have a name",
+					"Every section must have a \"name\"",
 					"every-item-element-must-have-a-name");
 			}
 

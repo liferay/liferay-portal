@@ -1793,11 +1793,11 @@ public class CustomFDSSerializerTest extends BaseFDSSerializerTestCase {
 		jsonArray = _customFDSSerializer.serializeViews(
 			FDS_NAMES[0], httpServletRequest);
 
-		for (int i = 0; i < jsonArray.length(); i++) {
+		for (int index = 0; index < jsonArray.length(); index++) {
 			Assert.assertNotEquals(
 				cetExternalReferenceCode,
 				jsonArray.getJSONObject(
-					i
+					index
 				).getString(
 					"name"
 				));
