@@ -92,7 +92,8 @@ public class WorkspaceSiteHelper {
 				continue;
 			}
 
-			_updateLayoutPermission(faroRequirement, layout, ldpEnabled, role);
+			_updateLayoutPermission(
+				faroProject, faroRequirement, layout, ldpEnabled, role);
 		}
 	}
 
@@ -152,14 +153,16 @@ public class WorkspaceSiteHelper {
 	}
 
 	private void _updateLayoutPermission(
-			String faroRequirement, Layout layout, boolean ldpEnabled,
-			Role role)
+			FaroProject faroProject, String faroRequirement, Layout layout,
+			boolean ldpEnabled, Role role)
 		throws Exception {
 
 		String[] actionIds = {};
 
 		if ((faroRequirement.equals("ac") && !ldpEnabled) ||
-			(faroRequirement.equals("ldp") && ldpEnabled)) {
+			(faroRequirement.equals("ldp") && ldpEnabled) ||
+			(faroRequirement.equals("recommendations") &&
+			 faroProject.isRecommendationsEnabled())) {
 
 			actionIds = new String[] {ActionKeys.VIEW};
 		}
