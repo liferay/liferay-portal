@@ -76,6 +76,9 @@ public class EditDDMTemplateMVCRenderCommandTest {
 	@Test
 	@TestInfo("LPD-116127")
 	public void testRender() throws Exception {
+		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
+			new MockLiferayPortletRenderRequest();
+
 		ThemeDisplay themeDisplay = new ThemeDisplay();
 
 		themeDisplay.setCompany(
@@ -84,9 +87,6 @@ public class EditDDMTemplateMVCRenderCommandTest {
 			_permissionCheckerFactory.create(UserTestUtil.addUser()));
 		themeDisplay.setScopeGroupId(_group.getGroupId());
 		themeDisplay.setSiteGroupId(_group.getGroupId());
-
-		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
-			new MockLiferayPortletRenderRequest();
 
 		mockLiferayPortletRenderRequest.setAttribute(
 			WebKeys.THEME_DISPLAY, themeDisplay);
