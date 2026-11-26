@@ -26,10 +26,6 @@ portletDisplay.setURLBack(redirect);
 portletDisplay.setURLBackTitle(portletDisplay.getPortletDisplayName());
 
 renderResponse.setTitle(LanguageUtil.get(request, "select-master-page"));
-
-SelectLayoutPageTemplateEntryMasterLayoutDisplayContext selectLayoutPageTemplateEntryMasterLayoutDisplayContext = new SelectLayoutPageTemplateEntryMasterLayoutDisplayContext(request, renderResponse);
-
-Map<String, Object> additionalProps = selectLayoutPageTemplateEntryMasterLayoutDisplayContext.getAdditionalProps();
 %>
 
 <clay:container-fluid
@@ -45,6 +41,10 @@ Map<String, Object> additionalProps = selectLayoutPageTemplateEntryMasterLayoutD
 				<li class="card-page-item card-page-item-asset">
 
 					<%
+					SelectLayoutPageTemplateEntryMasterLayoutDisplayContext selectLayoutPageTemplateEntryMasterLayoutDisplayContext = new SelectLayoutPageTemplateEntryMasterLayoutDisplayContext(request, renderResponse);
+
+					Map<String, Object> additionalProps = selectLayoutPageTemplateEntryMasterLayoutDisplayContext.getAdditionalProps();
+
 					SelectLayoutPageTemplateEntryMasterLayoutVerticalCard selectLayoutPageTemplateEntryMasterLayoutVerticalCard = new SelectLayoutPageTemplateEntryMasterLayoutVerticalCard(masterLayoutPageTemplateEntry, renderRequest, renderResponse);
 					%>
 
