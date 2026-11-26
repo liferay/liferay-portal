@@ -5,7 +5,7 @@
 
 package com.liferay.launch.internal.url.provider;
 
-import com.liferay.launch.url.provider.LaunchEditURLProvider;
+import com.liferay.launch.url.provider.LaunchSetEditURLProvider;
 import com.liferay.portal.kernel.launch.LaunchMode;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -15,8 +15,8 @@ import org.osgi.service.component.annotations.Component;
 /**
  * @author Carlos Correa
  */
-@Component(service = LaunchEditURLProvider.class)
-public class LaunchEditURLProviderImpl implements LaunchEditURLProvider {
+@Component(service = LaunchSetEditURLProvider.class)
+public class LaunchSetEditURLProviderImpl implements LaunchSetEditURLProvider {
 
 	@Override
 	public String getEditURL(long launchSetId, String url) {

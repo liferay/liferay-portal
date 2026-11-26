@@ -7,7 +7,7 @@ package com.liferay.launch.web.internal.portlet.action;
 
 import com.liferay.launch.entry.manager.LaunchEntryManager;
 import com.liferay.launch.entry.manager.LaunchEntryManagerRegistry;
-import com.liferay.launch.url.provider.LaunchEditURLProvider;
+import com.liferay.launch.url.provider.LaunchSetEditURLProvider;
 import com.liferay.launch.web.internal.constants.LaunchPortletKeys;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -132,7 +132,7 @@ public class GetLaunchEntrySummaryMVCResourceCommand
 				"author", draft.getUserName()
 			).put(
 				"editURL",
-				_launchEditURLProvider.getEditURL(
+				_launchSetEditURLProvider.getEditURL(
 					ParamUtil.getLong(resourceRequest, "launchSetId"),
 					draft.getEditURL(
 						ParamUtil.getString(resourceRequest, "redirect"),
@@ -175,7 +175,7 @@ public class GetLaunchEntrySummaryMVCResourceCommand
 	private Language _language;
 
 	@Reference
-	private LaunchEditURLProvider _launchEditURLProvider;
+	private LaunchSetEditURLProvider _launchSetEditURLProvider;
 
 	@Reference
 	private LaunchEntryManagerRegistry _launchEntryManagerRegistry;

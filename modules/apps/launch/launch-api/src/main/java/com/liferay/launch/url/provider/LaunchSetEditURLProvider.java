@@ -11,7 +11,7 @@ import org.osgi.annotation.versioning.ProviderType;
  * @author Carlos Correa
  */
 @ProviderType
-public interface LaunchEditURLProvider {
+public interface LaunchSetEditURLProvider {
 
 	public String getEditURL(long launchSetId, String url);
 
