@@ -125,7 +125,6 @@ public class GetFragmentEntryLinksMVCResourceCommandTest {
 			ContentLayoutTestUtil.getThemeDisplay(
 				_companyLocalService.fetchCompany(_group.getCompanyId()),
 				_group, layout));
-
 		mockLiferayResourceRequest.setParameter(
 			"data",
 			JSONUtil.toJSONArray(
@@ -167,11 +166,12 @@ public class GetFragmentEntryLinksMVCResourceCommandTest {
 		JSONArray jsonArray = _serveResource(
 			_draftLayout, RandomTestUtil.nextLong());
 
-		Assert.assertEquals(1, jsonArray.length());
-
 		JSONObject jsonObject = jsonArray.getJSONObject(0);
 
 		Assert.assertEquals(0, jsonObject.length());
+
+		Assert.assertEquals(1, jsonArray.length());
+
 	}
 
 	private void _testGetFragmentEntryLinksWithLayoutFragmentEntryLink()
@@ -183,14 +183,14 @@ public class GetFragmentEntryLinksMVCResourceCommandTest {
 		JSONArray jsonArray = _serveResource(
 			_draftLayout, fragmentEntryLink.getFragmentEntryLinkId());
 
-		Assert.assertEquals(1, jsonArray.length());
-
 		JSONObject jsonObject = jsonArray.getJSONObject(0);
 
 		Assert.assertTrue(jsonObject.has("content"));
 		Assert.assertEquals(
 			fragmentEntryLink.getFragmentEntryLinkId(),
 			jsonObject.getLong("fragmentEntryLinkId"));
+
+		Assert.assertEquals(1, jsonArray.length());
 	}
 
 	private void _testGetFragmentEntryLinksWithMasterLayoutFragmentEntryLink()
@@ -228,8 +228,6 @@ public class GetFragmentEntryLinksMVCResourceCommandTest {
 			masterFragmentEntryLink.getFragmentEntryLinkId(),
 			otherMasterFragmentEntryLink.getFragmentEntryLinkId());
 
-		Assert.assertEquals(3, jsonArray.length());
-
 		JSONObject jsonObject = jsonArray.getJSONObject(0);
 
 		Assert.assertTrue(jsonObject.has("content"));
@@ -247,6 +245,8 @@ public class GetFragmentEntryLinksMVCResourceCommandTest {
 		jsonObject = jsonArray.getJSONObject(2);
 
 		Assert.assertEquals(0, jsonObject.length());
+
+		Assert.assertEquals(3, jsonArray.length());
 	}
 
 	private void _testGetFragmentEntryLinksWithNoLayoutFragmentEntryLink()
@@ -263,11 +263,11 @@ public class GetFragmentEntryLinksMVCResourceCommandTest {
 		JSONArray jsonArray = _serveResource(
 			_draftLayout, fragmentEntryLink.getFragmentEntryLinkId());
 
-		Assert.assertEquals(1, jsonArray.length());
-
 		JSONObject jsonObject = jsonArray.getJSONObject(0);
 
 		Assert.assertEquals(0, jsonObject.length());
+
+		Assert.assertEquals(1, jsonArray.length());
 	}
 
 	private void _testGetFragmentEntryLinksWithOtherGroupFragmentEntryLink()
@@ -283,11 +283,11 @@ public class GetFragmentEntryLinksMVCResourceCommandTest {
 		JSONArray jsonArray = _serveResource(
 			_draftLayout, fragmentEntryLink.getFragmentEntryLinkId());
 
-		Assert.assertEquals(1, jsonArray.length());
-
 		JSONObject jsonObject = jsonArray.getJSONObject(0);
 
 		Assert.assertEquals(0, jsonObject.length());
+
+		Assert.assertEquals(1, jsonArray.length());
 	}
 
 	private void _testGetFragmentEntryLinksWithOtherLayoutFragmentEntryLink()
@@ -301,11 +301,11 @@ public class GetFragmentEntryLinksMVCResourceCommandTest {
 		JSONArray jsonArray = _serveResource(
 			_draftLayout, fragmentEntryLink.getFragmentEntryLinkId());
 
-		Assert.assertEquals(1, jsonArray.length());
-
 		JSONObject jsonObject = jsonArray.getJSONObject(0);
 
 		Assert.assertEquals(0, jsonObject.length());
+
+		Assert.assertEquals(1, jsonArray.length());
 	}
 
 	private void _testGetFragmentEntryLinksWithOtherMasterLayoutFragmentEntryLink()
@@ -321,11 +321,11 @@ public class GetFragmentEntryLinksMVCResourceCommandTest {
 		JSONArray jsonArray = _serveResource(
 			_draftLayout, fragmentEntryLink.getFragmentEntryLinkId());
 
-		Assert.assertEquals(1, jsonArray.length());
-
 		JSONObject jsonObject = jsonArray.getJSONObject(0);
 
 		Assert.assertEquals(0, jsonObject.length());
+
+		Assert.assertEquals(1, jsonArray.length());
 	}
 
 	@Inject
