@@ -234,7 +234,8 @@ public class DefaultMentionsNotifier implements MentionsNotifier {
 					}
 				}
 			}
-			else if (discussion) {
+
+			if (discussion) {
 				if (!_hasDiscussionViewPermission(
 						classPK,
 						_permissionCheckerFactory.create(mentionedUser))) {
