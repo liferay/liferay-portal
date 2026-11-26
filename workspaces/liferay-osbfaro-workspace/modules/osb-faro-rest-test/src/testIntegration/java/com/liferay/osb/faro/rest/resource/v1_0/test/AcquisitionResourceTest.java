@@ -119,12 +119,15 @@ public class AcquisitionResourceTest extends BaseAcquisitionResourceTestCase {
 		_setCompositionBag(acquisition, totalCount);
 
 		String accountId = RandomTestUtil.randomString();
+		String rangeEnd = "2026-01-31";
+		String rangeStart = "2026-01-01";
 		String segmentId = String.valueOf(RandomTestUtil.randomLong());
+		String type = "REFERRER";
 
 		Page<Acquisition> acquisitionsPage =
 			acquisitionResource.getWorkspaceGroupChannelAcquisitionsPage(
-				_faroProject.getGroupId(), _CHANNEL_ID, accountId, "2026-01-31",
-				"LAST_7_DAYS", "2026-01-01", segmentId, "REFERRER",
+				_faroProject.getGroupId(), _CHANNEL_ID, accountId, rangeEnd,
+				"LAST_7_DAYS", rangeStart, segmentId, type,
 				Pagination.of(2, 10));
 
 		assertEquals(
@@ -142,11 +145,11 @@ public class AcquisitionResourceTest extends BaseAcquisitionResourceTestCase {
 		Map<String, Object> variables = graphQLRequest.getVariables();
 
 		Assert.assertEquals(accountId, variables.get("accountId"));
-		Assert.assertEquals("REFERRER", variables.get("acquisitionType"));
+		Assert.assertEquals(type, variables.get("acquisitionType"));
 		Assert.assertEquals(_CHANNEL_ID, variables.get("channelId"));
-		Assert.assertEquals("2026-01-31", variables.get("rangeEnd"));
+		Assert.assertEquals(rangeEnd, variables.get("rangeEnd"));
 		Assert.assertEquals(7, variables.get("rangeKey"));
-		Assert.assertEquals("2026-01-01", variables.get("rangeStart"));
+		Assert.assertEquals(rangeStart, variables.get("rangeStart"));
 		Assert.assertEquals(segmentId, variables.get("segmentId"));
 		Assert.assertEquals(10, variables.get("size"));
 		Assert.assertEquals(1, variables.get("start"));

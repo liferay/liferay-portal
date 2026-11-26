@@ -122,11 +122,14 @@ public class VisitFrequencyMetricResourceTest
 				).build()
 			).build());
 
+		String rangeEnd = "2026-01-31";
+		String rangeStart = "2026-01-01";
+
 		VisitFrequencyMetric actualVisitFrequencyMetric =
 			visitFrequencyMetricResource.
 				getWorkspaceGroupChannelVisitFrequencyMetric(
-					_faroProject.getGroupId(), _CHANNEL_ID, "2026-01-31",
-					"LAST_7_DAYS", "2026-01-01");
+					_faroProject.getGroupId(), _CHANNEL_ID, rangeEnd,
+					"LAST_7_DAYS", rangeStart);
 
 		assertEquals(visitFrequencyMetric, actualVisitFrequencyMetric);
 		Assert.assertEquals(
@@ -143,9 +146,9 @@ public class VisitFrequencyMetricResourceTest
 		Map<String, Object> variables = graphQLRequest.getVariables();
 
 		Assert.assertEquals(_CHANNEL_ID, variables.get("channelId"));
-		Assert.assertEquals("2026-01-31", variables.get("rangeEnd"));
+		Assert.assertEquals(rangeEnd, variables.get("rangeEnd"));
 		Assert.assertEquals(7, variables.get("rangeKey"));
-		Assert.assertEquals("2026-01-01", variables.get("rangeStart"));
+		Assert.assertEquals(rangeStart, variables.get("rangeStart"));
 	}
 
 	private void _testGetWorkspaceGroupChannelVisitFrequencyMetricWithoutVisitFrequencyBag()
