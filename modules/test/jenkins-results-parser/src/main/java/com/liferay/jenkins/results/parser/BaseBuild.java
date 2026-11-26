@@ -3384,7 +3384,7 @@ public abstract class BaseBuild implements Build {
 			).put(
 				new JSONObject(
 				).put(
-					"queuingDurationMillis", 0L
+					"queuingDurationMillis", 0
 				)
 			)
 		).put(
