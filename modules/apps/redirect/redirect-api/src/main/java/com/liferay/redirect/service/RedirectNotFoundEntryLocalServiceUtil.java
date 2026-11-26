@@ -306,13 +306,6 @@ public class RedirectNotFoundEntryLocalServiceUtil {
 			groupId, ignored, minModifiedDate);
 	}
 
-	public static int getRedirectNotFoundEntriesCount(
-		long groupId, java.util.Date minModifiedDate) {
-
-		return getService().getRedirectNotFoundEntriesCount(
-			groupId, minModifiedDate);
-	}
-
 	/**
 	 * Returns the redirect not found entry with the primary key.
 	 *
@@ -361,4 +354,4 @@ public class RedirectNotFoundEntryLocalServiceUtil {
 			RedirectNotFoundEntryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1227992874
+// LIFERAY-SERVICE-BUILDER-HASH:-1927051731

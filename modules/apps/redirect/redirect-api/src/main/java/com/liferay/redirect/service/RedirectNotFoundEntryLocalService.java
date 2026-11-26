@@ -276,10 +276,6 @@ public interface RedirectNotFoundEntryLocalService
 	public int getRedirectNotFoundEntriesCount(
 		long groupId, Boolean ignored, Date minModifiedDate);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getRedirectNotFoundEntriesCount(
-		long groupId, Date minModifiedDate);
-
 	/**
 	 * Returns the redirect not found entry with the primary key.
 	 *
@@ -312,4 +308,4 @@ public interface RedirectNotFoundEntryLocalService
 		RedirectNotFoundEntry redirectNotFoundEntry);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:230922826
+// LIFERAY-SERVICE-BUILDER-HASH:1583300307
