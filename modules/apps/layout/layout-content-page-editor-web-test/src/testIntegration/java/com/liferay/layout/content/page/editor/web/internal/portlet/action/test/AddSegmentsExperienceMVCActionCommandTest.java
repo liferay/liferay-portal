@@ -150,10 +150,6 @@ public class AddSegmentsExperienceMVCActionCommandTest {
 					_group.getGroupId(), _addSegmentsExperience(),
 					_draftLayout.getPlid());
 
-		Assert.assertEquals(
-			targetFragmentEntryLinks.toString(), 1,
-			targetFragmentEntryLinks.size());
-
 		FragmentEntryLink targetFragmentEntryLink =
 			targetFragmentEntryLinks.get(0);
 
@@ -174,6 +170,10 @@ public class AddSegmentsExperienceMVCActionCommandTest {
 				targetFragmentEntryLink.getNamespace() + "-element-text");
 
 		Assert.assertEquals(editableValue, jsonObject.getString(languageId));
+
+		Assert.assertEquals(
+			targetFragmentEntryLinks.toString(), 1,
+			targetFragmentEntryLinks.size());
 	}
 
 	@Test
