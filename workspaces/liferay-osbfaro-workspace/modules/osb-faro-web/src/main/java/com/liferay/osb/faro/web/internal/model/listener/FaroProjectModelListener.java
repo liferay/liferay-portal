@@ -7,6 +7,7 @@ package com.liferay.osb.faro.web.internal.model.listener;
 
 import com.liferay.osb.faro.model.FaroProject;
 import com.liferay.osb.faro.web.internal.helper.WorkspaceSiteHelper;
+import com.liferay.osb.faro.web.internal.util.FaroNavigationUtil;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -32,6 +33,39 @@ public class FaroProjectModelListener extends BaseModelListener<FaroProject> {
 
 		try {
 			_workspaceSiteHelper.initialize(faroProject);
+		}
+		catch (Exception exception) {
+			_log.error(exception);
+		}
+	}
+
+	@Override
+	public void onAfterUpdate(
+		FaroProject originalFaroProject, FaroProject faroProject) {
+
+		if (!FeatureFlagManagerUtil.isEnabled(
+				faroProject.getCompanyId(), "LPD-114293")) {
+
+			return;
+		}
+
+		try {
+			boolean ldpEnabled = FaroNavigationUtil.isLDPEnabled(faroProject);
+
+			if (FaroNavigationUtil.isLDPEnabled(originalFaroProject) ==
+					ldpEnabled) {
+
+				return;
+			}
+
+			if (ldpEnabled) {
+				_workspaceSiteHelper.updateMasterLayouts(
+					"LDP_FAVICON", faroProject.getGroupId());
+			}
+			else {
+				_workspaceSiteHelper.updateMasterLayouts(
+					"AC_FAVICON", faroProject.getGroupId());
+			}
 		}
 		catch (Exception exception) {
 			_log.error(exception);
