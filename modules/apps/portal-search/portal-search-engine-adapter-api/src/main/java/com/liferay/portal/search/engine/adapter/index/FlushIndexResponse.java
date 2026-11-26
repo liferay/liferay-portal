@@ -31,10 +31,6 @@ public class FlushIndexResponse implements IndexResponse {
 		return _indexRequestShardFailures;
 	}
 
-	public int getRestStatus() {
-		return _restStatus;
-	}
-
 	public int getSuccessfulShards() {
 		return _successfulShards;
 	}
@@ -47,10 +43,6 @@ public class FlushIndexResponse implements IndexResponse {
 		_failedShards = failedShards;
 	}
 
-	public void setRestStatus(int restStatus) {
-		_restStatus = restStatus;
-	}
-
 	public void setSuccessfulShards(int successfulShards) {
 		_successfulShards = successfulShards;
 	}
@@ -61,7 +53,6 @@ public class FlushIndexResponse implements IndexResponse {
 
 	private int _failedShards;
 	private List<IndexRequestShardFailure> _indexRequestShardFailures;
-	private int _restStatus;
 	private int _successfulShards;
 	private int _totalShards;
 

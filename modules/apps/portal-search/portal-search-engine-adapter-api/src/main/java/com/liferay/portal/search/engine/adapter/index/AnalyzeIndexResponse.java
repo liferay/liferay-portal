@@ -25,17 +25,6 @@ public class AnalyzeIndexResponse implements IndexResponse {
 		_analysisIndexResponseTokens.addAll(analysisIndexResponseToken);
 	}
 
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *             #getDetailsAnalyzer()}, {@link #getDetailsCharFilters()},
-	 *             {@link #getDetailsTokenFilters()}, {@link
-	 *             #getDetailsTokenizer()}
-	 */
-	@Deprecated
-	public String getAnalysisDetails() {
-		return _analysisDetails;
-	}
-
 	public List<AnalysisIndexResponseToken> getAnalysisIndexResponseTokens() {
 		return _analysisIndexResponseTokens;
 	}
@@ -54,18 +43,6 @@ public class AnalyzeIndexResponse implements IndexResponse {
 
 	public DetailsTokenizer getDetailsTokenizer() {
 		return _detailsTokenizer;
-	}
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *             #setDetailsAnalyzer(DetailsAnalyzer)}, {@link
-	 *             #setDetailsCharFilters(List)}, {@link
-	 *             #setDetailsTokenFilters(List)}, {@link
-	 *             #setDetailsTokenizer(DetailsTokenizer)}
-	 */
-	@Deprecated
-	public void setAnalysisDetails(String analysisDetails) {
-		_analysisDetails = analysisDetails;
 	}
 
 	public void setDetailsAnalyzer(DetailsAnalyzer detailsAnalyzer) {
@@ -185,7 +162,6 @@ public class AnalyzeIndexResponse implements IndexResponse {
 
 	}
 
-	private String _analysisDetails;
 	private final List<AnalysisIndexResponseToken>
 		_analysisIndexResponseTokens = new ArrayList<>();
 	private DetailsAnalyzer _detailsAnalyzer;
