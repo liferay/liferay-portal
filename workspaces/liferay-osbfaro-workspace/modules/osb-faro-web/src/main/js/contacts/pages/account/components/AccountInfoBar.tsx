@@ -85,7 +85,13 @@ const AccountInfoBar: React.FC<IAccountInfoBarProps> = ({
 
 					<span className="align-self-stretch border-left mr-4" />
 
-					<span className="mr-2">
+					<span className="align-items-center d-flex mr-2">
+						<Text size={3}>
+							<span className="mr-2">
+								{Liferay.Language.get('lifecycle')}
+							</span>
+						</Text>
+
 						<LifecyclePicker
 							lifecycles={lifecycles}
 							onSelectionChange={setSelectedLifecycleId}
