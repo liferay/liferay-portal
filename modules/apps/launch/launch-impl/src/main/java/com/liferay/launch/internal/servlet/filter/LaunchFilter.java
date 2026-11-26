@@ -19,7 +19,7 @@ import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
-import com.liferay.portal.kernel.launch.LaunchMode;
+import com.liferay.portal.kernel.launch.LaunchSetMode;
 import com.liferay.portal.kernel.launch.LaunchThreadLocal;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -83,7 +83,7 @@ public class LaunchFilter extends BasePortalFilter {
 			HttpServletResponse httpServletResponse, FilterChain filterChain)
 		throws Exception {
 
-		if ((LaunchThreadLocal.getLaunchMode() != null) ||
+		if ((LaunchThreadLocal.getLaunchSetMode() != null) ||
 			(PreviewableResolverUtil.getPreviewId() != null)) {
 
 			processFilter(
@@ -94,34 +94,35 @@ public class LaunchFilter extends BasePortalFilter {
 		}
 
 		boolean header = false;
-		String launchModeString = ParamUtil.getString(
-			httpServletRequest, "p_launch_mode");
+		String launchSetModeString = ParamUtil.getString(
+			httpServletRequest, "p_launch_set_mode");
 		long launchSetId = ParamUtil.getLong(
 			httpServletRequest, "p_launch_set_id", -1);
 
-		if ((launchSetId == -1) && Validator.isNull(launchModeString)) {
+		if ((launchSetId == -1) && Validator.isNull(launchSetModeString)) {
 			header = true;
-			launchModeString = httpServletRequest.getHeader(
-				"X-Liferay-Launch-Mode");
+			launchSetModeString = httpServletRequest.getHeader(
+				"X-Liferay-Launch-Set-Mode");
 			launchSetId = GetterUtil.getLong(
 				httpServletRequest.getHeader("X-Liferay-Launch-Set-Id"), -1);
 		}
 
-		LaunchMode launchMode = LaunchMode.parse(launchModeString);
+		LaunchSetMode launchSetMode = LaunchSetMode.parse(launchSetModeString);
 
-		if (launchMode == LaunchMode.EDIT) {
+		if (launchSetMode == LaunchSetMode.EDIT) {
 			if ((launchSetId > 0) &&
 				_isEditable(httpServletRequest, launchSetId)) {
 
 				_processFilter(
 					filterChain, httpServletRequest, httpServletResponse,
-					LaunchMode.EDIT, launchSetId);
+					LaunchSetMode.EDIT, launchSetId);
 
 				return;
 			}
 		}
-		else if ((launchMode == LaunchMode.PREVIEW) ||
-				 ((launchSetId != -1) && Validator.isNull(launchModeString))) {
+		else if ((launchSetMode == LaunchSetMode.PREVIEW) ||
+				 ((launchSetId != -1) &&
+				  Validator.isNull(launchSetModeString))) {
 
 			if (!header &&
 				!Objects.equals(
@@ -141,7 +142,7 @@ public class LaunchFilter extends BasePortalFilter {
 			if ((user != null) && !user.isGuestUser()) {
 				_processFilter(
 					filterChain, httpServletRequest, httpServletResponse,
-					LaunchMode.PREVIEW, Math.max(launchSetId, 0));
+					LaunchSetMode.PREVIEW, Math.max(launchSetId, 0));
 
 				return;
 			}
@@ -301,13 +302,13 @@ public class LaunchFilter extends BasePortalFilter {
 
 	private void _processFilter(
 			FilterChain filterChain, HttpServletRequest httpServletRequest,
-			HttpServletResponse httpServletResponse, LaunchMode launchMode,
-			long launchSetId)
+			HttpServletResponse httpServletResponse,
+			LaunchSetMode launchSetMode, long launchSetId)
 		throws Exception {
 
 		try (SafeCloseable safeCloseable1 =
 				LaunchThreadLocal.setLaunchSetIdWithSafeCloseable(
-					launchMode, launchSetId)) {
+					launchSetMode, launchSetId)) {
 
 			Map<Class<?>, Map<Serializable, Object>> previewableMap =
 				_getPreviewableMap(

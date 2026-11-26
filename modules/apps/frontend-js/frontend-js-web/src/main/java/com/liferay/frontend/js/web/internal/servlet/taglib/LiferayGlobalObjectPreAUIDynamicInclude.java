@@ -19,7 +19,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlag;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManager;
 import com.liferay.portal.kernel.language.Language;
-import com.liferay.portal.kernel.launch.LaunchMode;
+import com.liferay.portal.kernel.launch.LaunchSetMode;
 import com.liferay.portal.kernel.launch.LaunchThreadLocal;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -235,14 +235,14 @@ public class LiferayGlobalObjectPreAUIDynamicInclude
 		return dateFormatPattern;
 	}
 
-	private String _getLaunchMode() {
-		LaunchMode launchMode = LaunchThreadLocal.getLaunchMode();
+	private String _getLaunchSetMode() {
+		LaunchSetMode launchSetMode = LaunchThreadLocal.getLaunchSetMode();
 
-		if (launchMode == null) {
+		if (launchSetMode == null) {
 			return StringPool.BLANK;
 		}
 
-		return launchMode.getValue();
+		return launchSetMode.getValue();
 	}
 
 	private LiferayGlobalObjectConfiguration
@@ -665,10 +665,10 @@ public class LiferayGlobalObjectPreAUIDynamicInclude
 		_renderMethod(
 			"getLanguageId", printWriter,
 			_language.getLanguageId(httpServletRequest));
-		_renderMethod("getLaunchMode", printWriter, _getLaunchMode());
 		_renderMethod(
 			"getLaunchSetId", printWriter,
 			Math.max(LaunchThreadLocal.getLaunchSetId(), 0));
+		_renderMethod("getLaunchSetMode", printWriter, _getLaunchSetMode());
 		_renderMethod(
 			"getParentGroupId", printWriter, themeDisplay.getSiteGroupId());
 		_renderMethod(

@@ -14,24 +14,24 @@ import com.liferay.petra.lang.SafeCloseable;
  */
 public class LaunchThreadLocal {
 
-	public static LaunchMode getLaunchMode() {
-		return _launchMode.get();
-	}
-
 	public static long getLaunchSetId() {
 		return _launchSetId.get();
 	}
 
-	public static boolean isLaunchModeEdit() {
-		if (_launchMode.get() == LaunchMode.EDIT) {
+	public static LaunchSetMode getLaunchSetMode() {
+		return _launchSetMode.get();
+	}
+
+	public static boolean isLaunchSetModeEdit() {
+		if (_launchSetMode.get() == LaunchSetMode.EDIT) {
 			return true;
 		}
 
 		return false;
 	}
 
-	public static boolean isLaunchModePreview() {
-		if (_launchMode.get() == LaunchMode.PREVIEW) {
+	public static boolean isLaunchSetModePreview() {
+		if (_launchSetMode.get() == LaunchSetMode.PREVIEW) {
 			return true;
 		}
 
@@ -39,27 +39,27 @@ public class LaunchThreadLocal {
 	}
 
 	public static SafeCloseable setLaunchSetIdWithSafeCloseable(
-		LaunchMode launchMode, long launchSetId) {
+		LaunchSetMode launchSetMode, long launchSetId) {
 
-		SafeCloseable launchModeSafeCloseable =
-			_launchMode.setWithSafeCloseable(launchMode);
 		SafeCloseable launchSetIdSafeCloseable =
 			_launchSetId.setWithSafeCloseable(launchSetId);
+		SafeCloseable launchSetModeSafeCloseable =
+			_launchSetMode.setWithSafeCloseable(launchSetMode);
 
 		return () -> {
 			launchSetIdSafeCloseable.close();
-			launchModeSafeCloseable.close();
+			launchSetModeSafeCloseable.close();
 		};
 	}
 
 	private LaunchThreadLocal() {
 	}
 
-	private static final CentralizedThreadLocal<LaunchMode> _launchMode =
-		new CentralizedThreadLocal<>(
-			LaunchThreadLocal.class.getName() + "._launchMode");
 	private static final CentralizedThreadLocal<Long> _launchSetId =
 		new CentralizedThreadLocal<>(
 			LaunchThreadLocal.class.getName() + "._launchSetId", () -> -1L);
+	private static final CentralizedThreadLocal<LaunchSetMode> _launchSetMode =
+		new CentralizedThreadLocal<>(
+			LaunchThreadLocal.class.getName() + "._launchSetMode");
 
 }

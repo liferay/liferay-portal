@@ -12,14 +12,14 @@ import java.util.Objects;
 /**
  * @author Carlos Correa
  */
-public enum LaunchMode {
+public enum LaunchSetMode {
 
 	EDIT(Constants.EDIT), PREVIEW(Constants.PREVIEW);
 
-	public static LaunchMode parse(String value) {
-		for (LaunchMode launchMode : values()) {
-			if (Objects.equals(launchMode.getValue(), value)) {
-				return launchMode;
+	public static LaunchSetMode parse(String value) {
+		for (LaunchSetMode launchSetMode : values()) {
+			if (Objects.equals(launchSetMode.getValue(), value)) {
+				return launchSetMode;
 			}
 		}
 
@@ -35,7 +35,7 @@ public enum LaunchMode {
 		return _value;
 	}
 
-	private LaunchMode(String value) {
+	private LaunchSetMode(String value) {
 		_value = value;
 	}
 

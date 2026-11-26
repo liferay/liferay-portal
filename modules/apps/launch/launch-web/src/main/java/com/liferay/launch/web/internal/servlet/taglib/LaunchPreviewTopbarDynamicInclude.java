@@ -100,7 +100,7 @@ public class LaunchPreviewTopbarDynamicInclude extends BaseDynamicInclude {
 	private ThemeDisplay _getLaunchPreviewThemeDisplay(
 		HttpServletRequest httpServletRequest) {
 
-		if (!LaunchThreadLocal.isLaunchModePreview() ||
+		if (!LaunchThreadLocal.isLaunchSetModePreview() ||
 			!Objects.equals(
 				Constants.PREVIEW,
 				ParamUtil.getString(httpServletRequest, "p_l_mode"))) {
