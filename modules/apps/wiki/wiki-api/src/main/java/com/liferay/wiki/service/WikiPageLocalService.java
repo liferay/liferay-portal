@@ -662,10 +662,6 @@ public interface WikiPageLocalService
 	public WikiPage movePageToTrash(long userId, long nodeId, String title)
 		throws PortalException;
 
-	public WikiPage movePageToTrash(
-			long userId, long nodeId, String title, double version)
-		throws PortalException;
-
 	public WikiPage movePageToTrash(long userId, WikiPage page)
 		throws PortalException;
 
@@ -750,4 +746,4 @@ public interface WikiPageLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2134577916
+// LIFERAY-SERVICE-BUILDER-HASH:-1340877178

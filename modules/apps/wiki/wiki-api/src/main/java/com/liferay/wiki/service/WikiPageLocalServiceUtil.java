@@ -897,13 +897,6 @@ public class WikiPageLocalServiceUtil {
 		return getService().movePageToTrash(userId, nodeId, title);
 	}
 
-	public static WikiPage movePageToTrash(
-			long userId, long nodeId, String title, double version)
-		throws PortalException {
-
-		return getService().movePageToTrash(userId, nodeId, title, version);
-	}
-
 	public static WikiPage movePageToTrash(long userId, WikiPage page)
 		throws PortalException {
 
@@ -1029,4 +1022,4 @@ public class WikiPageLocalServiceUtil {
 			WikiPageLocalServiceUtil.class, WikiPageLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1957003387
+// LIFERAY-SERVICE-BUILDER-HASH:397844932

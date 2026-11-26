@@ -1025,15 +1025,6 @@ public class WikiPageLocalServiceWrapper
 	}
 
 	@Override
-	public WikiPage movePageToTrash(
-			long userId, long nodeId, String title, double version)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _wikiPageLocalService.movePageToTrash(
-			userId, nodeId, title, version);
-	}
-
-	@Override
 	public WikiPage movePageToTrash(long userId, WikiPage page)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
@@ -1197,4 +1188,4 @@ public class WikiPageLocalServiceWrapper
 	private WikiPageLocalService _wikiPageLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-810861222
+// LIFERAY-SERVICE-BUILDER-HASH:-2075040644
