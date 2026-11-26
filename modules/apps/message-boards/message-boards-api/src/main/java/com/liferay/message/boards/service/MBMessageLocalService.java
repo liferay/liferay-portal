@@ -37,7 +37,6 @@ import com.liferay.portal.kernel.util.ObjectValuePair;
 import com.liferay.portal.kernel.util.OrderByComparator;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.Serializable;
 
@@ -126,20 +125,6 @@ public interface MBMessageLocalService
 			boolean anonymous, double priority, boolean allowPingbacks,
 			ServiceContext serviceContext)
 		throws PortalException;
-
-	/**
-	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
-	 #addMessage(String, long, String, long, long, long, long,
-	 String, String, String, List, boolean, double, boolean,
-	 ServiceContext)}
-	 */
-	@Deprecated
-	public MBMessage addMessage(
-			long userId, String userName, long groupId, long categoryId,
-			String subject, String body, String format, String fileName,
-			File file, boolean anonymous, double priority,
-			boolean allowPingbacks, ServiceContext serviceContext)
-		throws FileNotFoundException, PortalException;
 
 	public MBMessage addMessage(
 			String externalReferenceCode, long userId, String userName,
@@ -672,4 +657,4 @@ public interface MBMessageLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1143924659
+// LIFERAY-SERVICE-BUILDER-HASH:477138942

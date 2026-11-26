@@ -118,29 +118,6 @@ public class MBMessageLocalServiceWrapper
 			serviceContext);
 	}
 
-	/**
-	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
-	 #addMessage(String, long, String, long, long, long, long,
-	 String, String, String, List, boolean, double, boolean,
-	 ServiceContext)}
-	 */
-	@Deprecated
-	@Override
-	public MBMessage addMessage(
-			long userId, String userName, long groupId, long categoryId,
-			String subject, String body, String format, String fileName,
-			java.io.File file, boolean anonymous, double priority,
-			boolean allowPingbacks,
-			com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.PortalException,
-			   java.io.FileNotFoundException {
-
-		return _mbMessageLocalService.addMessage(
-			userId, userName, groupId, categoryId, subject, body, format,
-			fileName, file, anonymous, priority, allowPingbacks,
-			serviceContext);
-	}
-
 	@Override
 	public MBMessage addMessage(
 			String externalReferenceCode, long userId, String userName,
@@ -1065,4 +1042,4 @@ public class MBMessageLocalServiceWrapper
 	private MBMessageLocalService _mbMessageLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-877360252
+// LIFERAY-SERVICE-BUILDER-HASH:1743211455
