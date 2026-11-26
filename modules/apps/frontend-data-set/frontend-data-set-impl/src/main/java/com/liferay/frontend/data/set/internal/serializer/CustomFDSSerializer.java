@@ -1218,8 +1218,9 @@ public class CustomFDSSerializer
 				"sectionFields");
 		}
 
-		for (int i = 0; i < sectionsJSONArray.length(); i++) {
-			JSONObject sectionJSONObject = sectionsJSONArray.getJSONObject(i);
+		for (int index = 0; index < sectionsJSONArray.length(); index++) {
+			JSONObject sectionJSONObject = sectionsJSONArray.getJSONObject(
+				index);
 
 			if (sectionJSONObject == null) {
 				continue;
@@ -1238,7 +1239,7 @@ public class CustomFDSSerializer
 
 					// A required section without a field leaves the
 					// visualization mode out, as the default ones are left
-					// out until mapped
+					// out until mapped.
 
 					return null;
 				}
