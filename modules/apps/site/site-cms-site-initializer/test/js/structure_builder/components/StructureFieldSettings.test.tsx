@@ -455,6 +455,51 @@ describe('StructureFieldSettings', () => {
 		expect(screen.getByLabelText('domains')).toBeInTheDocument();
 	});
 
+	it('shows the general and the advanced settings of a location field', async () => {
+		const uuid = getUuid();
+
+		renderComponent({
+			state: {
+				...DEFAULT_STATE,
+				structure: {
+					...DEFAULT_STATE.structure,
+					children: new Map([
+						[
+							uuid,
+							{
+								...getDefaultField({
+									defaultLanguageLabels: {
+										labels: {},
+										locale: 'en_US',
+									},
+									parent: getUuid(),
+									type: 'location',
+								}),
+								uuid,
+							},
+						],
+					]),
+				},
+			},
+			uuid,
+		});
+
+		expect(screen.getAllByText('location[place]')).not.toHaveLength(0);
+		expect(screen.getByLabelText('mandatory')).toBeInTheDocument();
+		expect(screen.getByLabelText('localizable')).toBeInTheDocument();
+		expect(
+			screen.queryByLabelText('accept-unique-values-only')
+		).not.toBeInTheDocument();
+		expect(
+			screen.queryByLabelText('limit-characters')
+		).not.toBeInTheDocument();
+
+		await userEvent.click(screen.getByText('advanced'));
+
+		expect(screen.getByLabelText('searchable')).toBeChecked();
+		expect(screen.getByLabelText('keyword')).toBeInTheDocument();
+	});
+
 	it('updates specific phone number configuration', async () => {
 		const uuid = getUuid();
 

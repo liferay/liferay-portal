@@ -60,6 +60,24 @@ const EMAIL_FIELD: Field = {
 	uuid: getUuid(),
 };
 
+const LOCATION_FIELD: Field = {
+	erc: 'location-field',
+	indexableConfig: {
+		indexed: true,
+		indexedAsKeyword: false,
+		indexedLanguageId: 'en_US',
+	},
+	label: {en_US: 'Location Field'},
+	localized: true,
+	locked: false,
+	name: 'locationField',
+	parent: getUuid(),
+	required: true,
+	settings: {},
+	type: 'location',
+	uuid: getUuid(),
+};
+
 const TEXT_FIELD: Field = {
 	erc: 'text-field',
 	indexableConfig: {indexed: true, indexedAsKeyword: true},
@@ -284,6 +302,34 @@ describe('buildObjectDefinition', () => {
 
 		expect(result.objectFields?.[0].objectFieldSettings).toEqual([
 			{name: 'blockedDomains', value: '@example.com'},
+		]);
+	});
+
+	it('builds a location field as a Location business type stored as a Clob', () => {
+		const result = buildObjectDefinition({
+			children: getChildren([LOCATION_FIELD]),
+			erc: 'structureERC',
+			label: {en_US: 'Structure'},
+			name: 'myStructure',
+			spaces: [],
+			status: 'draft',
+		});
+
+		expect(result.objectFields).toEqual([
+			{
+				DBType: 'Clob',
+				businessType: 'Location',
+				externalReferenceCode: 'location-field',
+				indexed: true,
+				indexedAsKeyword: false,
+				indexedLanguageId: 'en_US',
+				label: {en_US: 'Location Field'},
+				localized: true,
+				name: 'locationField',
+				objectFieldSettings: [],
+				required: true,
+				system: false,
+			},
 		]);
 	});
 
