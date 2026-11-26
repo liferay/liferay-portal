@@ -277,16 +277,16 @@ public class ObjectEntryLocalServiceTest {
 				objectValidationRuleEngineException.
 					getObjectValidationRuleResults();
 
-			Assert.assertEquals(
-				objectValidationRuleResults.toString(), 1,
-				objectValidationRuleResults.size());
-
 			ObjectValidationRuleResult objectValidationRuleResult =
 				objectValidationRuleResults.get(0);
 
 			Assert.assertEquals(
 				externalReferenceCode,
 				objectValidationRuleResult.getExternalReferenceCode());
+
+			Assert.assertEquals(
+				objectValidationRuleResults.toString(), 1,
+				objectValidationRuleResults.size());
 		}
 	}
 
