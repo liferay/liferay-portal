@@ -513,17 +513,6 @@ public class SegmentsExperienceLocalServiceImpl
 
 	@Override
 	public List<SegmentsExperience> getSegmentsExperiences(
-		long groupId, String[] segmentsEntryERCs, String segmentsEntryScopeERC,
-		long plid, boolean active, int start, int end,
-		OrderByComparator<SegmentsExperience> orderByComparator) {
-
-		return segmentsExperiencePersistence.findByG_SEERC_SESERC_P_A(
-			groupId, segmentsEntryERCs, segmentsEntryScopeERC, plid, active,
-			start, end, orderByComparator);
-	}
-
-	@Override
-	public List<SegmentsExperience> getSegmentsExperiences(
 		long[] groupIds, boolean active) {
 
 		return segmentsExperiencePersistence.findByG_A(groupIds, active);
