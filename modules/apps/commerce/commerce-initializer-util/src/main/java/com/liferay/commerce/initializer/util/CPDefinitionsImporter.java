@@ -351,14 +351,16 @@ public class CPDefinitionsImporter {
 		serviceContext.setUserId(userId);
 
 		for (int i = 0; i < jsonArray.length(); i++) {
-			String tagName = jsonArray.getString(i);
+			String assetTagName = jsonArray.getString(i);
 
-			if (_assetTagLocalService.fetchTag(scopeGroupId, tagName) != null) {
+			if (_assetTagLocalService.fetchTag(scopeGroupId, assetTagName) !=
+					null) {
+
 				continue;
 			}
 
 			_assetTagLocalService.addTag(
-				null, userId, scopeGroupId, tagName, serviceContext);
+				null, userId, scopeGroupId, assetTagName, serviceContext);
 		}
 	}
 
