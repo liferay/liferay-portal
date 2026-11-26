@@ -163,7 +163,7 @@ public class ObjectEntryServiceImpl extends ObjectEntryServiceBaseImpl {
 	}
 
 	@Override
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	@Transactional(enabled = false)
 	public void checkModelResourcePermission(
 			ObjectEntry objectEntry, String actionId)
 		throws PortalException {
