@@ -116,7 +116,11 @@ export default function AddChildDropdown({
 							},
 						]
 					: [],
-				FIELD_TYPES.map(
+				FIELD_TYPES.filter(
+					(type) =>
+						type !== 'location' ||
+						Boolean(Liferay.FeatureFlags['LPD-70668'])
+				).map(
 					(type): Item => ({
 						label: FIELD_TYPE_LABEL[type],
 						onClick: () => addField(type),
