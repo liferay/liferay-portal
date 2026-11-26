@@ -811,13 +811,14 @@ public class PortalImpl implements Portal {
 		}
 
 		if (LaunchSetThreadLocal.isLaunchSetModePreview()) {
-			LaunchSetMode launchSetMode =
-				LaunchSetThreadLocal.getLaunchSetMode();
-
 			url = HttpComponentsUtil.setParameter(
 				url, "p_l_mode", Constants.PREVIEW);
 			url = HttpComponentsUtil.setParameter(
 				url, "p_launch_set_id", LaunchSetThreadLocal.getLaunchSetId());
+
+			LaunchSetMode launchSetMode =
+				LaunchSetThreadLocal.getLaunchSetMode();
+
 			url = HttpComponentsUtil.setParameter(
 				url, "p_launch_set_mode", launchSetMode.getValue());
 		}

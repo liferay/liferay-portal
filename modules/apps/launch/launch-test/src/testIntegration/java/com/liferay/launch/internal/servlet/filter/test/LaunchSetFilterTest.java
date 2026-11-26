@@ -124,35 +124,9 @@ public class LaunchSetFilterTest {
 	@Test
 	public void testProcessFilterWithLaunchSetModeEdit() throws Exception {
 
-		// Launch set already in preview mode
+		// Launch set ID header
 
 		long launchSetId = _launchSetObjectEntry.getObjectEntryId();
-
-		MockHttpServletRequest mockHttpServletRequest =
-			new MockHttpServletRequest();
-
-		mockHttpServletRequest.setAttribute(
-			WebKeys.USER, TestPropsValues.getUser());
-		mockHttpServletRequest.setParameter(
-			"p_launch_set_id", String.valueOf(launchSetId));
-		mockHttpServletRequest.setParameter(
-			"p_launch_set_mode", LaunchSetMode.EDIT.getValue());
-
-		AtomicReference<LaunchSetMode> launchSetMode = new AtomicReference<>();
-
-		try (SafeCloseable safeCloseable =
-				LaunchSetThreadLocal.setLaunchSetIdWithSafeCloseable(
-					launchSetId, LaunchSetMode.PREVIEW)) {
-
-			_filter.doFilter(
-				mockHttpServletRequest, new MockHttpServletResponse(),
-				(servletRequest, servletResponse) -> launchSetMode.set(
-					LaunchSetThreadLocal.getLaunchSetMode()));
-		}
-
-		Assert.assertEquals(LaunchSetMode.PREVIEW, launchSetMode.get());
-
-		// Launch set ID header
 
 		_assertProcessFilterWithLaunchSetModeEdit(
 			launchSetId, _launchDraftLayout1.getPlid(),
@@ -238,6 +212,32 @@ public class LaunchSetFilterTest {
 				"p_launch_set_mode", LaunchSetMode.EDIT.getValue()
 			).build(),
 			_user);
+
+		// Launch set already in preview mode
+
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest();
+
+		mockHttpServletRequest.setAttribute(
+			WebKeys.USER, TestPropsValues.getUser());
+		mockHttpServletRequest.setParameter(
+			"p_launch_set_id", String.valueOf(launchSetId));
+		mockHttpServletRequest.setParameter(
+			"p_launch_set_mode", LaunchSetMode.EDIT.getValue());
+
+		AtomicReference<LaunchSetMode> launchSetMode = new AtomicReference<>();
+
+		try (SafeCloseable safeCloseable =
+				LaunchSetThreadLocal.setLaunchSetIdWithSafeCloseable(
+					launchSetId, LaunchSetMode.PREVIEW)) {
+
+			_filter.doFilter(
+				mockHttpServletRequest, new MockHttpServletResponse(),
+				(servletRequest, servletResponse) -> launchSetMode.set(
+					LaunchSetThreadLocal.getLaunchSetMode()));
+		}
+
+		Assert.assertEquals(LaunchSetMode.PREVIEW, launchSetMode.get());
 
 		// Launch set mode header without a launch set ID
 
