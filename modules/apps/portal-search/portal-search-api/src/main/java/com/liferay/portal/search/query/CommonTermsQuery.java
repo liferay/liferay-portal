@@ -32,16 +32,8 @@ public class CommonTermsQuery extends Query {
 		return _field;
 	}
 
-	public String getHighFreqMinimumShouldMatch() {
-		return _highFreqMinimumShouldMatch;
-	}
-
 	public Operator getHighFreqOperator() {
 		return _highFreqOperator;
-	}
-
-	public String getLowFreqMinimumShouldMatch() {
-		return _lowFreqMinimumShouldMatch;
 	}
 
 	public Operator getLowFreqOperator() {
@@ -60,18 +52,8 @@ public class CommonTermsQuery extends Query {
 		_cutoffFrequency = cutoffFrequency;
 	}
 
-	public void setHighFreqMinimumShouldMatch(
-		String highFreqMinimumShouldMatch) {
-
-		_highFreqMinimumShouldMatch = highFreqMinimumShouldMatch;
-	}
-
 	public void setHighFreqOperator(Operator highFreqOperator) {
 		_highFreqOperator = highFreqOperator;
-	}
-
-	public void setLowFreqMinimumShouldMatch(String lowFreqMinimumShouldMatch) {
-		_lowFreqMinimumShouldMatch = lowFreqMinimumShouldMatch;
 	}
 
 	public void setLowFreqOperator(Operator lowFreqOperator) {
@@ -83,9 +65,7 @@ public class CommonTermsQuery extends Query {
 	private String _analyzer;
 	private Float _cutoffFrequency;
 	private final String _field;
-	private String _highFreqMinimumShouldMatch;
 	private Operator _highFreqOperator = Operator.OR;
-	private String _lowFreqMinimumShouldMatch;
 	private Operator _lowFreqOperator = Operator.OR;
 	private final String _text;
 

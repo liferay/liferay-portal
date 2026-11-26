@@ -7,7 +7,6 @@ package com.liferay.portal.search.query;
 
 import com.liferay.portal.search.geolocation.Shape;
 import com.liferay.portal.search.query.geolocation.ShapeRelation;
-import com.liferay.portal.search.query.geolocation.SpatialStrategy;
 
 /**
  * @author Michael C. Han
@@ -73,10 +72,6 @@ public class GeoShapeQuery extends Query {
 		return _shapeRelation;
 	}
 
-	public SpatialStrategy getSpatialStrategy() {
-		return _spatialStrategy;
-	}
-
 	public void setIgnoreUnmapped(Boolean ignoreUnmapped) {
 		_ignoreUnmapped = ignoreUnmapped;
 	}
@@ -97,10 +92,6 @@ public class GeoShapeQuery extends Query {
 		_shapeRelation = shapeRelation;
 	}
 
-	public void setSpatialStrategy(SpatialStrategy spatialStrategy) {
-		_spatialStrategy = spatialStrategy;
-	}
-
 	private static final long serialVersionUID = 1L;
 
 	private final String _field;
@@ -112,6 +103,5 @@ public class GeoShapeQuery extends Query {
 	private final String _indexedShapeType;
 	private final Shape _shape;
 	private ShapeRelation _shapeRelation;
-	private SpatialStrategy _spatialStrategy;
 
 }

@@ -63,10 +63,6 @@ public class BooleanQuery extends Query {
 		return this;
 	}
 
-	public Boolean getAdjustPureNegative() {
-		return _adjustPureNegative;
-	}
-
 	public List<Query> getFilterQueryClauses() {
 		return Collections.unmodifiableList(_filterQueryClauses);
 	}
@@ -95,10 +91,6 @@ public class BooleanQuery extends Query {
 		}
 
 		return false;
-	}
-
-	public void setAdjustPureNegative(Boolean adjustPureNegative) {
-		_adjustPureNegative = adjustPureNegative;
 	}
 
 	public void setMinimumShouldMatch(Integer minimumShouldMatch) {
@@ -130,7 +122,6 @@ public class BooleanQuery extends Query {
 
 	private static final long serialVersionUID = 1L;
 
-	private Boolean _adjustPureNegative;
 	private final List<Query> _filterQueryClauses = new ArrayList<>();
 	private Integer _minimumShouldMatch;
 	private final List<Query> _mustNotQueryClauses = new ArrayList<>();
