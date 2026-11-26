@@ -41,15 +41,6 @@ public class OAuth2ScopeGrantLocalServiceImpl
 	@Override
 	public OAuth2ScopeGrant createOAuth2ScopeGrant(
 			long companyId, long oAuth2ApplicationScopeAliasesId,
-			String applicationName, String bundleSymbolicName, String scope)
-		throws DuplicateOAuth2ScopeGrantException {
-
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public OAuth2ScopeGrant createOAuth2ScopeGrant(
-			long companyId, long oAuth2ApplicationScopeAliasesId,
 			String applicationName, String bundleSymbolicName, String scope,
 			List<String> scopeAliases)
 		throws DuplicateOAuth2ScopeGrantException {
