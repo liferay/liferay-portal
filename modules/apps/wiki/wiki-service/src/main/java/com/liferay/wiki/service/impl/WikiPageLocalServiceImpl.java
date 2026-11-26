@@ -1592,16 +1592,6 @@ public class WikiPageLocalServiceImpl extends WikiPageLocalServiceBaseImpl {
 	}
 
 	@Override
-	public WikiPage movePageToTrash(
-			long userId, long nodeId, String title, double version)
-		throws PortalException {
-
-		WikiPage page = wikiPagePersistence.findByN_T_V(nodeId, title, version);
-
-		return movePageToTrash(userId, page);
-	}
-
-	@Override
 	public WikiPage movePageToTrash(long userId, WikiPage page)
 		throws PortalException {
 
