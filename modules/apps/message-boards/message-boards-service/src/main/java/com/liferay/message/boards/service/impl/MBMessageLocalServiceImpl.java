@@ -146,8 +146,6 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import java.io.Closeable;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.Serializable;
 
@@ -318,37 +316,6 @@ public class MBMessageLocalServiceImpl extends MBMessageLocalServiceBaseImpl {
 			userId, userName, groupId, categoryId, threadId, parentMessageId,
 			subject, body, format, inputStreamOVPs, anonymous, priority,
 			allowPingbacks, serviceContext);
-	}
-
-	/**
-	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
-	 *             #addMessage(String, long, String, long, long, long, long,
-	 *             String, String, String, List, boolean, double, boolean,
-	 *             ServiceContext)}
-	 */
-	@Deprecated
-	@Override
-	public MBMessage addMessage(
-			long userId, String userName, long groupId, long categoryId,
-			String subject, String body, String format, String fileName,
-			File file, boolean anonymous, double priority,
-			boolean allowPingbacks, ServiceContext serviceContext)
-		throws FileNotFoundException, PortalException {
-
-		List<ObjectValuePair<String, InputStream>> inputStreamOVPs =
-			new ArrayList<>(1);
-
-		InputStream inputStream = new FileInputStream(file);
-
-		ObjectValuePair<String, InputStream> inputStreamOVP =
-			new ObjectValuePair<>(fileName, inputStream);
-
-		inputStreamOVPs.add(inputStreamOVP);
-
-		return addMessage(
-			userId, userName, groupId, categoryId, 0, 0, subject, body, format,
-			inputStreamOVPs, anonymous, priority, allowPingbacks,
-			serviceContext);
 	}
 
 	@Override
