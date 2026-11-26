@@ -162,6 +162,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
 /**
@@ -1825,6 +1826,7 @@ public class KBArticleLocalServiceImpl extends KBArticleLocalServiceBaseImpl {
 	}
 
 	@Activate
+	@Modified
 	protected void activate(Map<String, Object> properties) {
 		_kbServiceConfiguration = ConfigurableUtil.createConfigurable(
 			KBServiceConfiguration.class, properties);
@@ -1977,10 +1979,20 @@ public class KBArticleLocalServiceImpl extends KBArticleLocalServiceBaseImpl {
 						kbArticle.getDisplayDate()));
 			}
 
-			updateStatus(
-				userId, kbArticle.getResourcePrimKey(),
-				WorkflowConstants.STATUS_APPROVED,
-				_getServiceContext(company, kbArticle));
+			try {
+				updateStatus(
+					userId, kbArticle.getResourcePrimKey(),
+					WorkflowConstants.STATUS_APPROVED,
+					_getServiceContext(company, kbArticle));
+			}
+			catch (Exception exception) {
+				if (_log.isWarnEnabled()) {
+					_log.warn(
+						"Unable to publish knowledge base article " +
+							kbArticle.getKbArticleId(),
+						exception);
+				}
+			}
 		}
 	}
 
@@ -2008,10 +2020,20 @@ public class KBArticleLocalServiceImpl extends KBArticleLocalServiceBaseImpl {
 						kbArticle.getExpirationDate()));
 			}
 
-			updateStatus(
-				userId, kbArticle.getResourcePrimKey(),
-				WorkflowConstants.STATUS_EXPIRED,
-				_getServiceContext(company, kbArticle));
+			try {
+				updateStatus(
+					userId, kbArticle.getResourcePrimKey(),
+					WorkflowConstants.STATUS_EXPIRED,
+					_getServiceContext(company, kbArticle));
+			}
+			catch (Exception exception) {
+				if (_log.isWarnEnabled()) {
+					_log.warn(
+						"Unable to expire knowledge base article " +
+							kbArticle.getKbArticleId(),
+						exception);
+				}
+			}
 		}
 	}
 
@@ -2041,12 +2063,24 @@ public class KBArticleLocalServiceImpl extends KBArticleLocalServiceBaseImpl {
 						" with reviewDate ", kbArticle.getReviewDate()));
 			}
 
-			_notify(
-				SetUtil.fromArray(
-					_NOTIFICATION_RECEIVER_OWNER,
-					_NOTIFICATION_RECEIVER_SUBSCRIBER),
-				userId, kbArticle, _NOTIFICATION_ACTION_REVIEW,
-				_getServiceContext(company, kbArticle));
+			try {
+				_notify(
+					SetUtil.fromArray(
+						_NOTIFICATION_RECEIVER_OWNER,
+						_NOTIFICATION_RECEIVER_SUBSCRIBER),
+					userId, kbArticle, _NOTIFICATION_ACTION_REVIEW,
+					_getServiceContext(company, kbArticle));
+			}
+			catch (Exception exception) {
+				if (_log.isWarnEnabled()) {
+					_log.warn(
+						StringBundler.concat(
+							"Unable to send the review notification for ",
+							"knowledge base article ",
+							kbArticle.getKbArticleId()),
+						exception);
+				}
+			}
 		}
 	}
 
@@ -2193,6 +2227,10 @@ public class KBArticleLocalServiceImpl extends KBArticleLocalServiceBaseImpl {
 		return _kbServiceConfiguration.checkInterval();
 	}
 
+	private int _getKBArticleCheckLimit() {
+		return _kbServiceConfiguration.kbArticleCheckLimit();
+	}
+
 	private String _getKBArticleURL(KBArticle kbArticle)
 		throws PortalException {
 
@@ -2250,6 +2288,8 @@ public class KBArticleLocalServiceImpl extends KBArticleLocalServiceBaseImpl {
 				)
 			).orderBy(
 				KBArticleTable.INSTANCE.createDate.ascending()
+			).limit(
+				0, _getKBArticleCheckLimit()
 			));
 	}
 
@@ -2284,6 +2324,10 @@ public class KBArticleLocalServiceImpl extends KBArticleLocalServiceBaseImpl {
 					KBArticleTable.INSTANCE.status.neq(
 						WorkflowConstants.STATUS_SCHEDULED)
 				)
+			).orderBy(
+				KBArticleTable.INSTANCE.expirationDate.ascending()
+			).limit(
+				0, _getKBArticleCheckLimit()
 			));
 	}
 
@@ -3113,7 +3157,7 @@ public class KBArticleLocalServiceImpl extends KBArticleLocalServiceBaseImpl {
 	@Reference
 	private KBFolderPersistence _kbFolderPersistence;
 
-	private KBServiceConfiguration _kbServiceConfiguration;
+	private volatile KBServiceConfiguration _kbServiceConfiguration;
 
 	@Reference
 	private LockManager _lockManager;

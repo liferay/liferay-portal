@@ -36,4 +36,11 @@ public interface KBServiceConfiguration {
 	)
 	public int expirationDateNotificationDateWeeks();
 
+	@Meta.AD(
+		deflt = "100",
+		description = "knowledge-base-article-check-limit-description",
+		min = "1", name = "knowledge-base-article-check-limit", required = false
+	)
+	public int kbArticleCheckLimit();
+
 }
