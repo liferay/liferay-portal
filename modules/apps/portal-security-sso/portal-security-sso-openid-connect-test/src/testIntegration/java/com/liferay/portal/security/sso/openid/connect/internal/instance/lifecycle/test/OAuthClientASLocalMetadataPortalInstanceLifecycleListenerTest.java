@@ -68,7 +68,7 @@ public class OAuthClientASLocalMetadataPortalInstanceLifecycleListenerTest {
 		_testPortalInstanceRegisteredWithLongIssuerURL();
 	}
 
-	private void _disableComponentDescriptionDTO(
+	private void _disableComponent(
 			ComponentDescriptionDTO componentDescriptionDTO)
 		throws Exception {
 
@@ -84,7 +84,7 @@ public class OAuthClientASLocalMetadataPortalInstanceLifecycleListenerTest {
 		promise.getValue();
 	}
 
-	private void _enableComponentDescriptionDTO(
+	private void _enableComponent(
 			ComponentDescriptionDTO componentDescriptionDTO)
 		throws Exception {
 
@@ -169,7 +169,7 @@ public class OAuthClientASLocalMetadataPortalInstanceLifecycleListenerTest {
 					TestPropsValues.getCompanyId(), localWellKnownURI,
 					clientId);
 
-			_enableComponentDescriptionDTO(componentDescriptionDTO);
+			_enableComponent(componentDescriptionDTO);
 
 			oAuthClientASLocalMetadata =
 				_oAuthClientASLocalMetadataLocalService.
@@ -212,12 +212,12 @@ public class OAuthClientASLocalMetadataPortalInstanceLifecycleListenerTest {
 				Assert.assertEquals(messages.toString(), 0, messages.size());
 			}
 
-			_disableComponentDescriptionDTO(componentDescriptionDTO);
+			_disableComponent(componentDescriptionDTO);
 
 			try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 					_CLASS_NAME, LoggerTestUtil.WARN)) {
 
-				_enableComponentDescriptionDTO(componentDescriptionDTO);
+				_enableComponent(componentDescriptionDTO);
 
 				List<String> messages = logCapture.getMessages();
 
@@ -260,12 +260,12 @@ public class OAuthClientASLocalMetadataPortalInstanceLifecycleListenerTest {
 				_oAuthClientEntryLocalService.updateOAuthClientEntry(
 					newOAuthClientEntry);
 
-			_disableComponentDescriptionDTO(componentDescriptionDTO);
+			_disableComponent(componentDescriptionDTO);
 
 			try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 					_CLASS_NAME, LoggerTestUtil.WARN)) {
 
-				_enableComponentDescriptionDTO(componentDescriptionDTO);
+				_enableComponent(componentDescriptionDTO);
 
 				List<String> messages = logCapture.getMessages();
 
@@ -299,7 +299,7 @@ public class OAuthClientASLocalMetadataPortalInstanceLifecycleListenerTest {
 					clientId));
 		}
 		finally {
-			_disableComponentDescriptionDTO(componentDescriptionDTO);
+			_disableComponent(componentDescriptionDTO);
 
 			_openIdConnectSessionLocalService.deleteOpenIdConnectSession(
 				openIdConnectSession);
@@ -353,7 +353,7 @@ public class OAuthClientASLocalMetadataPortalInstanceLifecycleListenerTest {
 			LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				_CLASS_NAME, LoggerTestUtil.WARN)) {
 
-			_enableComponentDescriptionDTO(componentDescriptionDTO);
+			_enableComponent(componentDescriptionDTO);
 
 			List<String> messages = logCapture.getMessages();
 
@@ -367,7 +367,7 @@ public class OAuthClientASLocalMetadataPortalInstanceLifecycleListenerTest {
 						" because it would exceed 255 characters")));
 		}
 		finally {
-			_disableComponentDescriptionDTO(componentDescriptionDTO);
+			_disableComponent(componentDescriptionDTO);
 		}
 
 		oAuthClientASLocalMetadata =
