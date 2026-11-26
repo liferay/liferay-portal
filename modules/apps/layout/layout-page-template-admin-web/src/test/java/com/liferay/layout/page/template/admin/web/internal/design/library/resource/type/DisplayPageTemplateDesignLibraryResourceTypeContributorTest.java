@@ -539,10 +539,6 @@ public class DisplayPageTemplateDesignLibraryResourceTypeContributorTest {
 		JSONArray mappingTypesJSONArray = (JSONArray)moduleProps.get(
 			"mappingTypes");
 
-		Assert.assertEquals(
-			mappingTypesJSONArray.toString(), 1,
-			mappingTypesJSONArray.length());
-
 		JSONObject mappingTypeJSONObject = mappingTypesJSONArray.getJSONObject(
 			0);
 
@@ -555,15 +551,19 @@ public class DisplayPageTemplateDesignLibraryResourceTypeContributorTest {
 		JSONArray subtypesJSONArray = mappingTypeJSONObject.getJSONArray(
 			"subtypes");
 
-		Assert.assertEquals(
-			subtypesJSONArray.toString(), 1, subtypesJSONArray.length());
-
 		JSONObject subtypeJSONObject = subtypesJSONArray.getJSONObject(0);
 
 		Assert.assertEquals(
 			_FORM_VARIATION_KEY, subtypeJSONObject.getString("id"));
 		Assert.assertEquals(
 			_FORM_VARIATION_LABEL, subtypeJSONObject.getString("label"));
+
+		Assert.assertEquals(
+			subtypesJSONArray.toString(), 1, subtypesJSONArray.length());
+
+		Assert.assertEquals(
+			mappingTypesJSONArray.toString(), 1,
+			mappingTypesJSONArray.length());
 	}
 
 	private void _testGetCreationItemsWhenFeatureFlagIsEnabled()
