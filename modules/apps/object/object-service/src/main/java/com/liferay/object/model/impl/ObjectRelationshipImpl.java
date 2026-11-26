@@ -39,6 +39,17 @@ public class ObjectRelationshipImpl extends ObjectRelationshipBaseImpl {
 	}
 
 	@Override
+	public boolean hasRelationshipObjectField() {
+		if (compareType(ObjectRelationshipConstants.TYPE_ONE_TO_MANY) ||
+			compareType(ObjectRelationshipConstants.TYPE_ONE_TO_ONE)) {
+
+			return true;
+		}
+
+		return false;
+	}
+
+	@Override
 	public boolean isAllowedObjectRelationshipType(String type) {
 		if (StringUtil.equals(
 				type, ObjectRelationshipConstants.TYPE_ONE_TO_ONE) &&
