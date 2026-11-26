@@ -87,9 +87,7 @@ public class OneToOneObjectRelationshipInfoCollectionProviderTest {
 	}
 
 	@Test
-	public void testGetCollectionInfoPage()
-		throws Exception {
-
+	public void testGetCollectionInfoPage() throws Exception {
 		ObjectRelationship objectRelationship =
 			ObjectRelationshipTestUtil.addObjectRelationship(
 				_objectRelationshipLocalService, _objectDefinition1,
