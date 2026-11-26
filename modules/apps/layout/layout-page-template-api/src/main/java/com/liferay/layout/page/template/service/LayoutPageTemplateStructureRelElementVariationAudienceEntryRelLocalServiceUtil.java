@@ -98,15 +98,6 @@ public class
 		return getService().createPersistedModel(primaryKeyObj);
 	}
 
-	public static void
-		deleteGroupLayoutPageTemplateStructureRelElementVariationAudienceEntryRels(
-			long groupId, String audienceEntryERC) {
-
-		getService().
-			deleteGroupLayoutPageTemplateStructureRelElementVariationAudienceEntryRels(
-				groupId, audienceEntryERC);
-	}
-
 	/**
 	 * Deletes the layout page template structure rel element variation audience entry rel from the database. Also notifies the appropriate model listeners.
 	 *
@@ -529,4 +520,4 @@ public class
 				LayoutPageTemplateStructureRelElementVariationAudienceEntryRelLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:856447395
+// LIFERAY-SERVICE-BUILDER-HASH:1346022385

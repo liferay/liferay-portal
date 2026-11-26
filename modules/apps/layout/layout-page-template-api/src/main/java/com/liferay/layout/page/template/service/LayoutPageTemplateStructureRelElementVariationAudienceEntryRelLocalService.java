@@ -106,10 +106,6 @@ public interface
 	public PersistedModel createPersistedModel(Serializable primaryKeyObj)
 		throws PortalException;
 
-	public void
-		deleteGroupLayoutPageTemplateStructureRelElementVariationAudienceEntryRels(
-			long groupId, String audienceEntryERC);
-
 	/**
 	 * Deletes the layout page template structure rel element variation audience entry rel from the database. Also notifies the appropriate model listeners.
 	 *
@@ -427,4 +423,4 @@ public interface
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:877475869
+// LIFERAY-SERVICE-BUILDER-HASH:-1556488103

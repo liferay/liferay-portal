@@ -101,16 +101,6 @@ public class
 			createPersistedModel(primaryKeyObj);
 	}
 
-	@Override
-	public void
-		deleteGroupLayoutPageTemplateStructureRelElementVariationAudienceEntryRels(
-			long groupId, String audienceEntryERC) {
-
-		_layoutPageTemplateStructureRelElementVariationAudienceEntryRelLocalService.
-			deleteGroupLayoutPageTemplateStructureRelElementVariationAudienceEntryRels(
-				groupId, audienceEntryERC);
-	}
-
 	/**
 	 * Deletes the layout page template structure rel element variation audience entry rel from the database. Also notifies the appropriate model listeners.
 	 *
@@ -630,4 +620,4 @@ public class
 			_layoutPageTemplateStructureRelElementVariationAudienceEntryRelLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1643673747
+// LIFERAY-SERVICE-BUILDER-HASH:844891450
