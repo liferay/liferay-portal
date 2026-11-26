@@ -175,9 +175,9 @@ public class GetLaunchEntrySummaryMVCResourceCommand
 	private Language _language;
 
 	@Reference
-	private LaunchSetEditURLProvider _launchSetEditURLProvider;
+	private LaunchEntryManagerRegistry _launchEntryManagerRegistry;
 
 	@Reference
-	private LaunchEntryManagerRegistry _launchEntryManagerRegistry;
+	private LaunchSetEditURLProvider _launchSetEditURLProvider;
 
 }

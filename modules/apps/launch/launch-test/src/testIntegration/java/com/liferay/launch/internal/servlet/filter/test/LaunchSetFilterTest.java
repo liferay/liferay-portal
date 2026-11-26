@@ -158,9 +158,9 @@ public class LaunchSetFilterTest {
 			launchSetId, _launchDraftLayout1.getPlid(),
 			_launchDraftLayout2.getPlid(), null,
 			HashMapBuilder.put(
-				"X-Liferay-Launch-Set-Mode", LaunchSetMode.EDIT.getValue()
-			).put(
 				"X-Liferay-Launch-Set-Id", String.valueOf(launchSetId)
+			).put(
+				"X-Liferay-Launch-Set-Mode", LaunchSetMode.EDIT.getValue()
 			).build(),
 			Collections.emptyMap(), TestPropsValues.getUser());
 
@@ -170,9 +170,9 @@ public class LaunchSetFilterTest {
 			launchSetId, _launchDraftLayout1.getPlid(),
 			_launchDraftLayout2.getPlid(), null, Collections.emptyMap(),
 			HashMapBuilder.put(
-				"p_launch_set_mode", LaunchSetMode.EDIT.getValue()
-			).put(
 				"p_launch_set_id", String.valueOf(launchSetId)
+			).put(
+				"p_launch_set_mode", LaunchSetMode.EDIT.getValue()
 			).build(),
 			TestPropsValues.getUser());
 
@@ -183,9 +183,9 @@ public class LaunchSetFilterTest {
 			_launchDraftLayout2.getPlid(), Collections.emptyMap(),
 			Collections.emptyMap(),
 			HashMapBuilder.put(
-				"p_launch_set_mode", LaunchSetMode.EDIT.getValue()
-			).put(
 				"p_launch_set_id", String.valueOf(launchSetId)
+			).put(
+				"p_launch_set_mode", LaunchSetMode.EDIT.getValue()
 			).build(),
 			TestPropsValues.getUser());
 
@@ -195,9 +195,9 @@ public class LaunchSetFilterTest {
 			-1, _layout1.getPlid(), _layout2.getPlid(), null,
 			Collections.emptyMap(),
 			HashMapBuilder.put(
-				"p_launch_set_mode", LaunchSetMode.EDIT.getValue()
-			).put(
 				"p_launch_set_id", String.valueOf(RandomTestUtil.randomLong())
+			).put(
+				"p_launch_set_mode", LaunchSetMode.EDIT.getValue()
 			).build(),
 			TestPropsValues.getUser());
 
@@ -215,9 +215,9 @@ public class LaunchSetFilterTest {
 			-1, _layout1.getPlid(), _layout2.getPlid(), null,
 			Collections.emptyMap(),
 			HashMapBuilder.put(
-				"p_launch_set_mode", LaunchSetMode.EDIT.getValue()
-			).put(
 				"p_launch_set_id", String.valueOf(launchSetId)
+			).put(
+				"p_launch_set_mode", LaunchSetMode.EDIT.getValue()
 			).build(),
 			TestPropsValues.getUser());
 
@@ -233,9 +233,9 @@ public class LaunchSetFilterTest {
 			-1, _layout1.getPlid(), _layout2.getPlid(), null,
 			Collections.emptyMap(),
 			HashMapBuilder.put(
-				"p_launch_set_mode", LaunchSetMode.EDIT.getValue()
-			).put(
 				"p_launch_set_id", String.valueOf(launchSetId)
+			).put(
+				"p_launch_set_mode", LaunchSetMode.EDIT.getValue()
 			).build(),
 			_user);
 
@@ -256,11 +256,11 @@ public class LaunchSetFilterTest {
 			-1, _layout1.getPlid(), _layout2.getPlid(), null,
 			Collections.emptyMap(),
 			HashMapBuilder.put(
-				"_" + portletId + "_p_launch_set_mode",
-				LaunchSetMode.EDIT.getValue()
-			).put(
 				"_" + portletId + "_p_launch_set_id",
 				String.valueOf(launchSetId)
+			).put(
+				"_" + portletId + "_p_launch_set_mode",
+				LaunchSetMode.EDIT.getValue()
 			).put(
 				"p_p_id", portletId
 			).build(),
