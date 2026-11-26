@@ -49,8 +49,6 @@ public class SystemObject1toMObjectRelatedModelsProviderImplTest
 			companyId
 		);
 
-		long groupId = RandomTestUtil.randomLong();
-
 		PersistedModelLocalService persistedModelLocalService = Mockito.mock(
 			PersistedModelLocalService.class);
 
@@ -59,6 +57,8 @@ public class SystemObject1toMObjectRelatedModelsProviderImplTest
 		).thenReturn(
 			Collections.emptyList()
 		);
+
+		long groupId = RandomTestUtil.randomLong();
 
 		try (MockedStatic<PersistedModelLocalServiceRegistryUtil>
 				persistedModelLocalServiceRegistryUtilMockedStatic =
