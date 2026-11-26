@@ -247,9 +247,12 @@ public class PreFilterContributorHelperImpl
 		List<ModelPreFilterContributor> modelPreFilterContributors =
 			new ArrayList<>();
 
-		_addAll(modelPreFilterContributors, _getAllClassesContributors());
 		_addAll(
-			modelPreFilterContributors, _getClassContributors(entryClassName));
+			modelPreFilterContributors,
+			_classNameServiceTrackerMap.getService("ALL"));
+		_addAll(
+			modelPreFilterContributors,
+			_classNameServiceTrackerMap.getService(entryClassName));
 
 		if ((excludes != null) && (excludes.size() == 1) &&
 			excludes.contains(StringPool.STAR)) {
@@ -262,7 +265,10 @@ public class PreFilterContributorHelperImpl
 		}
 		else {
 			List<String> mandatoryContributorClassNames =
-				_getMandatoryContributorNames(_getMandatoryContributors());
+				TransformUtil.transform(
+					_getMandatoryContributors(),
+					modelPreFilterContributor -> _getClassName(
+						modelPreFilterContributor));
 
 			if ((includes != null) && !includes.isEmpty() &&
 				!((includes.size() == 1) &&
@@ -295,29 +301,10 @@ public class PreFilterContributorHelperImpl
 		return modelPreFilterContributors;
 	}
 
-	private List<ModelPreFilterContributor> _getAllClassesContributors() {
-		return _classNameServiceTrackerMap.getService("ALL");
-	}
-
-	private List<ModelPreFilterContributor> _getClassContributors(
-		String entryClassName) {
-
-		return _classNameServiceTrackerMap.getService(entryClassName);
-	}
-
 	private String _getClassName(Object object) {
 		Class<?> clazz = object.getClass();
 
 		return clazz.getName();
-	}
-
-	private List<String> _getMandatoryContributorNames(
-		List<ModelPreFilterContributor> mandatoryContributors) {
-
-		return TransformUtil.transform(
-			mandatoryContributors,
-			modelPreFilterContributor -> _getClassName(
-				modelPreFilterContributor));
 	}
 
 	private List<ModelPreFilterContributor> _getMandatoryContributors() {
