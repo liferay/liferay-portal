@@ -216,6 +216,21 @@ public class DepotPermissionCheckerWrapperTest {
 	}
 
 	@Test
+	@TestInfo({"LPD-117654", "LPS-151756", "LPS-151760"})
+	public void testHasPermissionWithDepotGroupAndStagingEnabled()
+		throws Exception {
+
+		DepotTestUtil.withLocalStagingEnabled(
+			_addDepotEntry(TestPropsValues.getUserId()),
+			stagingDepotEntry -> {
+				_testHasPermissionWithDepotGroup(
+					ActionKeys.PUBLISH_STAGING, stagingDepotEntry);
+				_testHasPermissionWithDepotGroup(
+					ActionKeys.VIEW_STAGING, stagingDepotEntry);
+			});
+	}
+
+	@Test
 	public void testHasPermissionWithRoleAndAssetLibraryAdministrator()
 		throws Exception {
 
@@ -488,19 +503,6 @@ public class DepotPermissionCheckerWrapperTest {
 							stagingDepotEntry.getGroup(), Group.class.getName(),
 							Group.class.getName(), ActionKeys.PUBLISH_STAGING));
 				}));
-	}
-
-	@Test
-	@TestInfo({"LPD-117654", "LPS-151756", "LPS-151760"})
-	public void testHasStagingPermissionWithDepotGroup() throws Exception {
-		DepotTestUtil.withLocalStagingEnabled(
-			_addDepotEntry(TestPropsValues.getUserId()),
-			stagingDepotEntry -> {
-				_testHasPermissionWithDepotGroup(
-					ActionKeys.PUBLISH_STAGING, stagingDepotEntry);
-				_testHasPermissionWithDepotGroup(
-					ActionKeys.VIEW_STAGING, stagingDepotEntry);
-			});
 	}
 
 	@Test
