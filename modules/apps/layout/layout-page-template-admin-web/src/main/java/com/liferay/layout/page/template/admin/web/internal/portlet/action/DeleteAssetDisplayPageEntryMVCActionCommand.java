@@ -5,7 +5,9 @@
 
 package com.liferay.layout.page.template.admin.web.internal.portlet.action;
 
+import com.liferay.asset.display.page.model.AssetDisplayPageEntry;
 import com.liferay.asset.display.page.service.AssetDisplayPageEntryLocalService;
+import com.liferay.asset.display.page.service.AssetDisplayPageEntryService;
 import com.liferay.layout.page.template.admin.constants.LayoutPageTemplateAdminPortletKeys;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
@@ -57,8 +59,14 @@ public class DeleteAssetDisplayPageEntryMVCActionCommand
 			for (long deleteAssetDisplayPageEntryId :
 					deleteAssetDisplayPageEntryIds) {
 
-				_assetDisplayPageEntryLocalService.deleteAssetDisplayPageEntry(
-					deleteAssetDisplayPageEntryId);
+				AssetDisplayPageEntry assetDisplayPageEntry =
+					_assetDisplayPageEntryLocalService.getAssetDisplayPageEntry(
+						deleteAssetDisplayPageEntryId);
+
+				_assetDisplayPageEntryService.deleteAssetDisplayPageEntry(
+					assetDisplayPageEntry.getGroupId(),
+					assetDisplayPageEntry.getClassNameId(),
+					assetDisplayPageEntry.getClassPK());
 			}
 
 			hideDefaultSuccessMessage(actionRequest);
@@ -77,5 +85,8 @@ public class DeleteAssetDisplayPageEntryMVCActionCommand
 	@Reference
 	private AssetDisplayPageEntryLocalService
 		_assetDisplayPageEntryLocalService;
+
+	@Reference
+	private AssetDisplayPageEntryService _assetDisplayPageEntryService;
 
 }

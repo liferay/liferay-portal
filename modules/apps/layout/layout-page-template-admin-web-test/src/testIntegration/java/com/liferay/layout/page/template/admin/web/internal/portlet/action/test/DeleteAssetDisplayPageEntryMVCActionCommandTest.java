@@ -9,13 +9,21 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.asset.display.page.constants.AssetDisplayPageConstants;
 import com.liferay.asset.display.page.model.AssetDisplayPageEntry;
 import com.liferay.asset.display.page.service.AssetDisplayPageEntryLocalService;
-import com.liferay.asset.kernel.model.AssetEntry;
+import com.liferay.journal.constants.JournalFolderConstants;
+import com.liferay.journal.model.JournalArticle;
+import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.LayoutService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.servlet.SessionErrors;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionRequest;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionResponse;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -25,6 +33,7 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -64,16 +73,8 @@ public class DeleteAssetDisplayPageEntryMVCActionCommandTest {
 	public void testDeleteAssetDisplayPageEntryMVCActionCommand()
 		throws Exception {
 
-		ServiceContext serviceContext =
-			ServiceContextTestUtil.getServiceContext(
-				_group, TestPropsValues.getUserId());
-
 		AssetDisplayPageEntry assetDisplayPageEntry =
-			_assetDisplayPageEntryLocalService.addAssetDisplayPageEntry(
-				TestPropsValues.getUserId(), _group.getGroupId(),
-				_portal.getClassNameId(AssetEntry.class.getName()),
-				RandomTestUtil.randomLong(), RandomTestUtil.randomLong(),
-				AssetDisplayPageConstants.TYPE_SPECIFIC, serviceContext);
+			_addAssetDisplayPageEntry();
 
 		_mvcActionCommand.processAction(
 			_getMockLiferayPortletActionRequest(assetDisplayPageEntry),
@@ -82,6 +83,50 @@ public class DeleteAssetDisplayPageEntryMVCActionCommandTest {
 		Assert.assertNull(
 			_assetDisplayPageEntryLocalService.fetchAssetDisplayPageEntry(
 				assetDisplayPageEntry.getAssetDisplayPageEntryId()));
+	}
+
+	@Test
+	@TestInfo("LPD-116138")
+	public void testDeleteAssetDisplayPageEntryMVCActionCommandWithoutPermission()
+		throws Exception {
+
+		AssetDisplayPageEntry assetDisplayPageEntry =
+			_addAssetDisplayPageEntry();
+
+		_user = UserTestUtil.addUser();
+
+		PermissionThreadLocal.setPermissionChecker(
+			PermissionCheckerFactoryUtil.create(_user));
+
+		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
+			_getMockLiferayPortletActionRequest(assetDisplayPageEntry);
+
+		_mvcActionCommand.processAction(
+			mockLiferayPortletActionRequest,
+			new MockLiferayPortletActionResponse());
+
+		Assert.assertTrue(
+			SessionErrors.contains(
+				mockLiferayPortletActionRequest, PrincipalException.class));
+
+		Assert.assertNotNull(
+			_assetDisplayPageEntryLocalService.fetchAssetDisplayPageEntry(
+				assetDisplayPageEntry.getAssetDisplayPageEntryId()));
+	}
+
+	private AssetDisplayPageEntry _addAssetDisplayPageEntry() throws Exception {
+		JournalArticle journalArticle = JournalTestUtil.addArticle(
+			_group.getGroupId(),
+			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID);
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_group, TestPropsValues.getUserId());
+
+		return _assetDisplayPageEntryLocalService.addAssetDisplayPageEntry(
+			TestPropsValues.getUserId(), _group.getGroupId(),
+			_portal.getClassNameId(JournalArticle.class.getName()),
+			journalArticle.getResourcePrimKey(), RandomTestUtil.randomLong(),
+			AssetDisplayPageConstants.TYPE_SPECIFIC, serviceContext);
 	}
 
 	private MockLiferayPortletActionRequest _getMockLiferayPortletActionRequest(
@@ -126,5 +171,8 @@ public class DeleteAssetDisplayPageEntryMVCActionCommandTest {
 
 	@Inject
 	private Portal _portal;
+
+	@DeleteAfterTestRun
+	private User _user;
 
 }

@@ -6,7 +6,7 @@
 package com.liferay.layout.page.template.admin.web.internal.portlet.action;
 
 import com.liferay.asset.display.page.constants.AssetDisplayPageConstants;
-import com.liferay.asset.display.page.service.AssetDisplayPageEntryLocalService;
+import com.liferay.asset.display.page.service.AssetDisplayPageEntryService;
 import com.liferay.layout.page.template.admin.constants.LayoutPageTemplateAdminPortletKeys;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
@@ -58,7 +58,7 @@ public class UpdateAssetDisplayPageEntryMVCActionCommand
 			for (long updateAssetDisplayPageEntryId :
 					updateAssetDisplayPageEntryIds) {
 
-				_assetDisplayPageEntryLocalService.updateAssetDisplayPageEntry(
+				_assetDisplayPageEntryService.updateAssetDisplayPageEntry(
 					updateAssetDisplayPageEntryId, 0,
 					AssetDisplayPageConstants.TYPE_NONE);
 			}
@@ -77,7 +77,6 @@ public class UpdateAssetDisplayPageEntryMVCActionCommand
 	}
 
 	@Reference
-	private AssetDisplayPageEntryLocalService
-		_assetDisplayPageEntryLocalService;
+	private AssetDisplayPageEntryService _assetDisplayPageEntryService;
 
 }
