@@ -208,7 +208,6 @@ public class BaseURLReaderTest extends com.liferay.jenkins.results.parser.Test {
 		_testToStringFailure(1, IOException.class, 400);
 		_testToStringFailure(_MAX_RETRIES + 1, IOException.class, 403);
 		_testToStringFailure(_MAX_RETRIES + 1, IOException.class, 408);
-
 		_testToStringFailure(_MAX_RETRIES + 1, IOException.class, 422);
 		_testToStringFailure(_MAX_RETRIES + 1, IOException.class, 429);
 		_testToStringFailure(_MAX_RETRIES + 1, IOException.class, 500);

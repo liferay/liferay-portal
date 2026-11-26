@@ -205,6 +205,11 @@ public class BaseBuildUpdaterTest
 		Class<? extends Build> buildClass, boolean expectedReinvoked,
 		boolean parentBuildPresent) {
 
+		ReflectionTestUtil.setFieldValue(
+			JenkinsResultsParserUtil.class, "_ciNode", true);
+		ReflectionTestUtil.setFieldValue(
+			ReinvokeRule.class, "_reinvokeRules", null);
+
 		Properties buildProperties = new Properties();
 
 		buildProperties.setProperty(
@@ -270,10 +275,6 @@ public class BaseBuildUpdaterTest
 			true
 		);
 
-		ReflectionTestUtil.setFieldValue(
-			JenkinsResultsParserUtil.class, "_ciNode", true);
-		ReflectionTestUtil.setFieldValue(
-			ReinvokeRule.class, "_reinvokeRules", null);
 		ReflectionTestUtil.setFieldValue(baseBuildUpdater, "_build", build);
 		ReflectionTestUtil.setFieldValue(
 			baseBuildUpdater, "_reinvokeRulesMap", new HashMap<>());
