@@ -70,7 +70,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
  */
 @FeatureFlag("LPD-72278")
 @RunWith(Arquillian.class)
-public class LaunchFilterTest {
+public class LaunchSetFilterTest {
 
 	@ClassRule
 	@Rule
@@ -526,7 +526,7 @@ public class LaunchFilterTest {
 		Assert.assertNull(PreviewableResolverUtil.getPreviewId());
 	}
 
-	@Inject(filter = "servlet-filter-name=Launch Filter")
+	@Inject(filter = "servlet-filter-name=Launch Set Filter")
 	private Filter _filter;
 
 	@DeleteAfterTestRun

@@ -62,11 +62,11 @@ import org.osgi.service.component.annotations.Reference;
 @Component(
 	property = {
 		"dispatcher=FORWARD", "dispatcher=REQUEST", "servlet-context-name=",
-		"servlet-filter-name=Launch Filter", "url-pattern=/*"
+		"servlet-filter-name=Launch Set Filter", "url-pattern=/*"
 	},
 	service = Filter.class
 )
-public class LaunchFilter extends BasePortalFilter {
+public class LaunchSetFilter extends BasePortalFilter {
 
 	@Override
 	public boolean isFilterEnabled(
@@ -87,7 +87,7 @@ public class LaunchFilter extends BasePortalFilter {
 			(PreviewableResolverUtil.getPreviewId() != null)) {
 
 			processFilter(
-				LaunchFilter.class.getName(), httpServletRequest,
+				LaunchSetFilter.class.getName(), httpServletRequest,
 				httpServletResponse, filterChain);
 
 			return;
@@ -158,7 +158,7 @@ public class LaunchFilter extends BasePortalFilter {
 		}
 
 		processFilter(
-			LaunchFilter.class.getName(), httpServletRequest,
+			LaunchSetFilter.class.getName(), httpServletRequest,
 			httpServletResponse, filterChain);
 	}
 
@@ -316,7 +316,7 @@ public class LaunchFilter extends BasePortalFilter {
 
 			if (previewableMap.isEmpty()) {
 				processFilter(
-					LaunchFilter.class.getName(), httpServletRequest,
+					LaunchSetFilter.class.getName(), httpServletRequest,
 					httpServletResponse, filterChain);
 
 				return;
@@ -330,7 +330,7 @@ public class LaunchFilter extends BasePortalFilter {
 						previewId)) {
 
 				processFilter(
-					LaunchFilter.class.getName(), httpServletRequest,
+					LaunchSetFilter.class.getName(), httpServletRequest,
 					httpServletResponse, filterChain);
 			}
 			finally {
@@ -339,7 +339,8 @@ public class LaunchFilter extends BasePortalFilter {
 		}
 	}
 
-	private static final Log _log = LogFactoryUtil.getLog(LaunchFilter.class);
+	private static final Log _log = LogFactoryUtil.getLog(
+		LaunchSetFilter.class);
 
 	@Reference
 	private GroupLocalService _groupLocalService;
