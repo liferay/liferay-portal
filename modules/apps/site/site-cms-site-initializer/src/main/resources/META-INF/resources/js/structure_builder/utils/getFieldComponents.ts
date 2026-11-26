@@ -26,6 +26,7 @@ const GETTERS: Record<FieldType, () => Partial<FieldComponents>> = {
 	'decimal': () => ({}),
 	'email': getEmailFieldComponents,
 	'integer': getNumericFieldComponents,
+	'location': () => ({}),
 	'long-text': getLongTextFieldComponents,
 	'phone-number': getPhoneNumberFieldComponents,
 	'rich-text': () => ({}),

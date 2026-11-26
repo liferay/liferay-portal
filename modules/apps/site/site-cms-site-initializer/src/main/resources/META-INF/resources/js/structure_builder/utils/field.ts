@@ -22,6 +22,7 @@ export const FIELD_TYPES = [
 	'rich-text',
 	'integer',
 	'decimal',
+	'location',
 	'select-from-list',
 	'phone-number',
 	'date',
@@ -38,6 +39,7 @@ const FIELD_TYPE_LANGUAGE_KEY: Record<FieldType, string> = {
 	'decimal': 'decimal',
 	'email': 'email',
 	'integer': 'numeric',
+	'location': 'location[place]',
 	'long-text': 'long-text',
 	'phone-number': 'phone-number',
 	'rich-text': 'rich-text',
@@ -53,6 +55,7 @@ export const FIELD_TYPE_LABEL: Record<FieldType, string> = {
 	'decimal': Liferay.Language.get('decimal'),
 	'email': Liferay.Language.get('email'),
 	'integer': Liferay.Language.get('numeric'),
+	'location': Liferay.Language.get('location[place]'),
 	'long-text': Liferay.Language.get('long-text'),
 	'phone-number': Liferay.Language.get('phone-number'),
 	'rich-text': Liferay.Language.get('rich-text'),
@@ -68,6 +71,7 @@ export const FIELD_TYPE_ICON: Record<FieldType, string> = {
 	'decimal': 'decimal',
 	'email': 'envelope-closed',
 	'integer': 'number',
+	'location': 'maps',
 	'long-text': 'field-area',
 	'phone-number': 'phone',
 	'rich-text': 'textbox',
@@ -100,6 +104,8 @@ export function getFieldBusinessType(
 			return 'EmailAddress';
 		case 'integer':
 			return 'Integer';
+		case 'location':
+			return 'Location';
 		case 'long-text':
 			return 'LongText';
 		case 'phone-number':
@@ -122,6 +128,7 @@ export const FIELD_TYPE_TO_DB_TYPE: Record<FieldType, string> = {
 	'decimal': 'Double',
 	'email': 'String',
 	'integer': 'Integer',
+	'location': 'Clob',
 	'long-text': 'Clob',
 	'phone-number': 'String',
 	'rich-text': 'Clob',

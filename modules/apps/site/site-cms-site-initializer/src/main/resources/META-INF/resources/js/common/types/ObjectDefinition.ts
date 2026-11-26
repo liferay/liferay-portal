@@ -13,6 +13,7 @@ export type ObjectField = {
 		| 'DateTime'
 		| 'EmailAddress'
 		| 'Integer'
+		| 'Location'
 		| 'MultiselectPicklist'
 		| 'Long'
 		| 'LongText'

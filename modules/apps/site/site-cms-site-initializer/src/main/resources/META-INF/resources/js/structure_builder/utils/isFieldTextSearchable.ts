@@ -8,6 +8,7 @@ import {Field} from './field';
 export function isFieldTextSearchable(field: Field) {
 	switch (field.type) {
 		case 'email':
+		case 'location':
 		case 'long-text':
 		case 'phone-number':
 		case 'rich-text':
