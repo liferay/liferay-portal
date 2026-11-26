@@ -44,6 +44,11 @@ public class ProjectDisplayTest {
 	}
 
 	private String _getURL(long groupId, Group group) {
+		return ReflectionTestUtil.getFieldValue(
+			_toProjectDisplay(_mockFaroProject(groupId), group), "_url");
+	}
+
+	private FaroProject _mockFaroProject(long groupId) {
 		FaroProject faroProject = Mockito.mock(FaroProject.class);
 
 		Mockito.when(
@@ -58,6 +63,12 @@ public class ProjectDisplayTest {
 			"UTC"
 		);
 
+		return faroProject;
+	}
+
+	private ProjectDisplay _toProjectDisplay(
+		FaroProject faroProject, Group group) {
+
 		try (MockedStatic<FaroUserLocalServiceUtil>
 				faroUserLocalServiceUtilMockedStatic = Mockito.mockStatic(
 					FaroUserLocalServiceUtil.class);
@@ -68,7 +79,7 @@ public class ProjectDisplayTest {
 				Mockito.mockStatic(PortalUtil.class)) {
 
 			groupLocalServiceUtilMockedStatic.when(
-				() -> GroupLocalServiceUtil.fetchGroup(groupId)
+				() -> GroupLocalServiceUtil.fetchGroup(faroProject.getGroupId())
 			).thenReturn(
 				group
 			);
@@ -79,8 +90,7 @@ public class ProjectDisplayTest {
 				"/web"
 			);
 
-			return ReflectionTestUtil.getFieldValue(
-				new ProjectDisplay(faroProject), "_url");
+			return new ProjectDisplay(faroProject);
 		}
 	}
 
