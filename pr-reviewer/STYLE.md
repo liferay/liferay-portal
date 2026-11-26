@@ -106,6 +106,7 @@ Simplicity never outranks safety: when the two trade off, choose the safer form.
 
 ## General coding
 
+- Never name a real customer or other organization in code, test data, or comments; use Liferay's own names or reserved example values such as `example.com`. [003]
 - In runtime logic, prefer an exact check over a loose one — `equals`, not a substring `contains`; a partial check in a test is fine. [901]
 - Do not end a URL or path with a trailing slash. [902]
 - Do not end a file with a trailing newline; the source formatter strips it, so the `\ No newline at end of file` marker in a diff is the expected state. [908]
