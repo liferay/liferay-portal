@@ -17,6 +17,7 @@ import com.liferay.message.boards.model.MBMessage;
 import com.liferay.message.boards.service.MBMessageLocalService;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
+import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.comment.DiscussionPermission;
@@ -233,10 +234,17 @@ public class DefaultMentionsNotifier implements MentionsNotifier {
 					}
 				}
 			}
-			else if (discussion &&
-					 !_hasDiscussionViewPermission(
-						 classPK,
-						 _permissionCheckerFactory.create(mentionedUser))) {
+			else if (discussion) {
+				if (!_hasDiscussionViewPermission(
+						classPK,
+						_permissionCheckerFactory.create(mentionedUser))) {
+
+					continue;
+				}
+			}
+			else if (!_hasViewPermission(
+						className, classPK,
+						_permissionCheckerFactory.create(mentionedUser))) {
 
 				continue;
 			}
@@ -395,6 +403,27 @@ public class DefaultMentionsNotifier implements MentionsNotifier {
 		return _discussionPermission.hasViewPermission(
 			permissionChecker, mbMessage.getCompanyId(), mbMessage.getGroupId(),
 			mbMessage.getClassName(), mbMessage.getClassPK());
+	}
+
+	private boolean _hasViewPermission(
+			String className, long classPK, PermissionChecker permissionChecker)
+		throws PortalException {
+
+		AssetRendererFactory<?> assetRendererFactory =
+			AssetRendererFactoryRegistryUtil.getAssetRendererFactoryByClassName(
+				className);
+
+		if (assetRendererFactory == null) {
+			return false;
+		}
+
+		try {
+			return assetRendererFactory.hasPermission(
+				permissionChecker, classPK, ActionKeys.VIEW);
+		}
+		catch (Exception exception) {
+			return ReflectionUtil.throwException(exception);
+		}
 	}
 
 	private static final MentionsMatcher _defaultMentionsMatcher =
