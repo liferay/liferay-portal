@@ -49,9 +49,11 @@ public class GetInitialPublishStatusMVCResourceCommand
 			throw new PrincipalException();
 		}
 
-		Group liveGroup = _staging.getLiveGroup(themeDisplay.getScopeGroupId());
+		resourceResponse.setContentType(ContentTypes.TEXT_PLAIN_UTF8);
 
 		int backgroundTasksCount = 0;
+
+		Group liveGroup = _staging.getLiveGroup(themeDisplay.getScopeGroupId());
 
 		if (liveGroup != null) {
 			backgroundTasksCount =
@@ -61,8 +63,6 @@ public class GetInitialPublishStatusMVCResourceCommand
 						LAYOUT_STAGING_BACKGROUND_TASK_EXECUTOR,
 					false);
 		}
-
-		resourceResponse.setContentType(ContentTypes.TEXT_PLAIN_UTF8);
 
 		PortletResponseUtil.write(
 			resourceResponse, String.valueOf(backgroundTasksCount > 0));
