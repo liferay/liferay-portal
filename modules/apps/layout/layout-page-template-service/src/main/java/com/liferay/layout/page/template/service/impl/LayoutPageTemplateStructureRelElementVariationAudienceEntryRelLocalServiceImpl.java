@@ -69,15 +69,6 @@ public class
 
 	@Override
 	public void
-		deleteGroupLayoutPageTemplateStructureRelElementVariationAudienceEntryRels(
-			long groupId, String audienceEntryERC) {
-
-		layoutPageTemplateStructureRelElementVariationAudienceEntryRelPersistence.
-			removeByG_AEERC(groupId, audienceEntryERC);
-	}
-
-	@Override
-	public void
 		deleteLayoutPageTemplateStructureRelElementVariationAudienceEntryRels(
 			long groupId,
 			String layoutPageTemplateStructureRelElementVariationERC) {
