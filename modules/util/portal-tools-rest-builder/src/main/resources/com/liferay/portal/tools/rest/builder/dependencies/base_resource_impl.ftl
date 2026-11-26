@@ -630,11 +630,10 @@ public abstract class Base${schemaName}ResourceImpl
 	<#if generateBatch>
 		<#assign
 			createStrategies = freeMarkerTool.getVulcanBatchImplementationCreateStrategies(configYAML, javaMethodSignatures, properties)
-			getIdMethodName = properties?keys?seq_contains("id")?then("getId", "get" + schemaName + "Id")
-			updateStrategies = freeMarkerTool.getVulcanBatchImplementationUpdateStrategies(configYAML, javaMethodSignatures)
-
 			declaredParameterNames = []
+			getIdMethodName = properties?keys?seq_contains("id")?then("getId", "get" + schemaName + "Id")
 			parserMethodDataTypes = []
+			updateStrategies = freeMarkerTool.getVulcanBatchImplementationUpdateStrategies(configYAML, javaMethodSignatures)
 		/>
 
 		@Override
