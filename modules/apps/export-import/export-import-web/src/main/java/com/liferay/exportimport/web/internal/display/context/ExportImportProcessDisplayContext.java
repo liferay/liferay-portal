@@ -287,7 +287,7 @@ public class ExportImportProcessDisplayContext {
 	public boolean isSpaceSelectionEnabled() {
 		if ((getScope() == Scope.COMPANY) &&
 			FeatureFlagManagerUtil.isEnabled(
-				_group.getCompanyId(), "LPD-41307")) {
+				_group.getCompanyId(), "LPD-57655")) {
 
 			return true;
 		}

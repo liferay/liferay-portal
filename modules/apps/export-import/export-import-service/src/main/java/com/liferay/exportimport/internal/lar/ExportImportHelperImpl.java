@@ -299,7 +299,7 @@ public class ExportImportHelperImpl implements ExportImportHelper {
 				excludeDataAlwaysStaged, groupId);
 		}
 
-		if (FeatureFlagManagerUtil.isEnabled(companyId, "LPD-41307") &&
+		if (FeatureFlagManagerUtil.isEnabled(companyId, "LPD-57655") &&
 			_isSpaceDepotEntry(groupId)) {
 
 			return ListUtil.filter(
@@ -892,7 +892,7 @@ public class ExportImportHelperImpl implements ExportImportHelper {
 				  group.getCompanyId(), "LPD-85946")) ||
 			 (group.isDepot() &&
 			  FeatureFlagManagerUtil.isEnabled(
-				  group.getCompanyId(), "LPD-41307"))) &&
+				  group.getCompanyId(), "LPD-57655"))) &&
 			group.isActive() && !group.isCMS() && !group.isStaged() &&
 			!group.isStagingGroup() &&
 			!stagingGroupHelper.isCompanyGroup(group)) {

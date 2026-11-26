@@ -1600,7 +1600,7 @@ paths:
                                     $ref: "#/components/schemas/AssetLibrary"
                                 type: array
             tags: ["AssetLibrary"]
-            x-feature-flag: LPD-41307
+            x-feature-flag: LPD-57655
     "/export-preview/sites":
         get:
             description:

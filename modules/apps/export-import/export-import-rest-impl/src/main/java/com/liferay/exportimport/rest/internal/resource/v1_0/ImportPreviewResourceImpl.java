@@ -142,7 +142,7 @@ public class ImportPreviewResourceImpl extends BaseImportPreviewResourceImpl {
 		List<ExportImportGroup> exportImportGroups) {
 
 		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-41307")) {
+				contextCompany.getCompanyId(), "LPD-57655")) {
 
 			return new AssetLibrary[0];
 		}
@@ -169,9 +169,7 @@ public class ImportPreviewResourceImpl extends BaseImportPreviewResourceImpl {
 		throws Exception {
 
 		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-41307") &&
-			!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-85946")) {
+				contextCompany.getCompanyId(), "LPD-57655")) {
 
 			return Collections.emptyList();
 		}
