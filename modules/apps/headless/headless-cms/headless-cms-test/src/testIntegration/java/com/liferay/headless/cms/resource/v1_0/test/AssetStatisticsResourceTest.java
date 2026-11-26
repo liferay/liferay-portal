@@ -1241,19 +1241,16 @@ public class AssetStatisticsResourceTest
 			depotEntry.getGroupId(),
 			DepotRolesConstants.ASSET_LIBRARY_ADMINISTRATOR, user1);
 
-		User user2 = UserTestUtil.addUser(
-			testCompany, RandomTestUtil.randomString());
-
 		User user3 = _addUserWithRole(RoleConstants.PORTAL_CONTENT_REVIEWER);
 
 		_addGroupUserWithRole(
 			depotEntry.getGroupId(),
 			DepotRolesConstants.ASSET_LIBRARY_ADMINISTRATOR, user3);
 
-		Date date = new Date(System.currentTimeMillis() - Time.DAY);
-
 		ObjectEntry objectEntry1 = _addObjectEntry(
 			depotEntry, objectDefinition);
+
+		Date date = new Date(System.currentTimeMillis() - Time.DAY);
 
 		_updateKaleoTaskInstanceToken(
 			false, date, objectDefinition, objectEntry1);
@@ -1268,7 +1265,11 @@ public class AssetStatisticsResourceTest
 		ObjectEntry objectEntry3 = _addObjectEntry(
 			depotEntry, objectDefinition);
 
+		User user2 = UserTestUtil.addUser(
+			testCompany, RandomTestUtil.randomString());
+
 		_assignWorkflowTaskToUser(objectDefinition, objectEntry3, user2);
+
 		_updateKaleoTaskInstanceToken(
 			false, date, objectDefinition, objectEntry3);
 

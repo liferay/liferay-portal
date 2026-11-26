@@ -387,35 +387,31 @@ public class AssetStatisticsResourceImpl
 			return Collections.emptyList();
 		}
 
-		List<Long> kaleoTaskInstanceTokenIds = new ArrayList<>();
+		return transform(
+			_kaleoTaskInstanceTokenLocalService.<List<Long>>dslQuery(
+				DSLQueryFactoryUtil.select(
+					KaleoTaskInstanceTokenTable.INSTANCE.
+						kaleoTaskInstanceTokenId
+				).from(
+					KaleoTaskInstanceTokenTable.INSTANCE
+				).where(
+					predicate.and(
+						Predicate.not(
+							_getAssignedWorkflowTasksPredicate(groupIds))
+					).and(
+						_getNotifiableWorkflowTasksPredicate()
+					)
+				)),
+			kaleoTaskInstanceTokenId -> {
+				if (!_kaleoTaskInstanceTokenModelResourcePermission.contains(
+						permissionChecker, kaleoTaskInstanceTokenId,
+						ActionKeys.VIEW)) {
 
-		for (Long kaleoTaskInstanceTokenId :
-				_kaleoTaskInstanceTokenLocalService.<List<Long>>dslQuery(
-					DSLQueryFactoryUtil.select(
-						KaleoTaskInstanceTokenTable.INSTANCE.
-							kaleoTaskInstanceTokenId
-					).from(
-						KaleoTaskInstanceTokenTable.INSTANCE
-					).where(
-						predicate.and(
-							Predicate.not(
-								_getAssignedWorkflowTasksPredicate(groupIds))
-						).and(
-							_getNotifiableWorkflowTasksPredicate()
-						)
-					))) {
+					return null;
+				}
 
-			if (!_kaleoTaskInstanceTokenModelResourcePermission.contains(
-					permissionChecker, kaleoTaskInstanceTokenId,
-					ActionKeys.VIEW)) {
-
-				continue;
-			}
-
-			kaleoTaskInstanceTokenIds.add(kaleoTaskInstanceTokenId);
-		}
-
-		return kaleoTaskInstanceTokenIds;
+				return kaleoTaskInstanceTokenId;
+			});
 	}
 
 	private Predicate _getNotifiableWorkflowTasksPredicate()
@@ -576,7 +572,7 @@ public class AssetStatisticsResourceImpl
 
 		predicate = _getWorkflowTasksPredicate(classNames, groupIds, predicate);
 
-		List<Long> kaleoTaskInstanceTokenIds = _getNotifiableWorkflowTaskIds(
+		List<Long> notifiableWorkflowTaskIds = _getNotifiableWorkflowTaskIds(
 			groupIds, predicate);
 
 		long count = _kaleoTaskInstanceTokenLocalService.dslQueryCount(
@@ -587,7 +583,7 @@ public class AssetStatisticsResourceImpl
 				predicate.and(_getAssignedWorkflowTasksPredicate(groupIds))
 			));
 
-		return count + kaleoTaskInstanceTokenIds.size();
+		return count + notifiableWorkflowTaskIds.size();
 	}
 
 	private Predicate _getWorkflowTasksPredicate(
