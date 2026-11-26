@@ -138,16 +138,6 @@ public class RedirectNotFoundEntryLocalServiceImpl
 					groupId, ignored, minModifiedDate)));
 	}
 
-	@Override
-	public int getRedirectNotFoundEntriesCount(
-		long groupId, Date minModifiedDate) {
-
-		return GetterUtil.getInteger(
-			redirectNotFoundEntryPersistence.countWithDynamicQuery(
-				_getRedirectNotFoundEntriesDynamicQuery(
-					groupId, null, minModifiedDate)));
-	}
-
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public RedirectNotFoundEntry updateRedirectNotFoundEntry(
