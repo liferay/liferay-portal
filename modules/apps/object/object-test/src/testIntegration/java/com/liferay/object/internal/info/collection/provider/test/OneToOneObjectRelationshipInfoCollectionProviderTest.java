@@ -87,7 +87,7 @@ public class OneToOneObjectRelationshipInfoCollectionProviderTest {
 	}
 
 	@Test
-	public void testOneToOneObjectRelationshipRelatedInfoCollectionProvider()
+	public void testGetCollectionInfoPage()
 		throws Exception {
 
 		ObjectRelationship objectRelationship =
