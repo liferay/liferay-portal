@@ -5,7 +5,6 @@
 
 package com.liferay.multi.factor.authentication.email.otp.web.internal.checker;
 
-import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.json.JSONFactoryImpl;
 import com.liferay.portal.kernel.audit.AuditMessage;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -13,9 +12,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
-import com.liferay.portal.kernel.test.util.FeatureFlagTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
-import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import org.junit.AfterClass;
@@ -61,7 +58,6 @@ public class EmailOTPBrowserMFACheckerTest {
 		_frameworkUtilMockedStatic.close();
 	}
 
-	@FeatureFlag("LPD-96921")
 	@Test
 	public void testBuildAuditMessages() throws Exception {
 		AuditMessage auditMessage = _buildAuditMessage(
@@ -81,32 +77,30 @@ public class EmailOTPBrowserMFACheckerTest {
 			_buildAuditMessage(
 				"buildNotVerifiedAuditMessage",
 				new Class<?>[] {User.class, String.class, String.class},
-				_getUser(), RandomTestUtil.randomString(),
+				Mockito.mock(User.class), RandomTestUtil.randomString(),
 				RandomTestUtil.randomString()),
 			"verify_failure", "not_verified");
 		_assertAuditMessage(
 			_buildAuditMessage(
 				"buildVerificationFailureAuditMessage",
 				new Class<?>[] {User.class, String.class, String.class},
-				_getUser(), RandomTestUtil.randomString(),
+				Mockito.mock(User.class), RandomTestUtil.randomString(),
 				RandomTestUtil.randomString()),
 			"verify_failure", "verification_failure");
 		_assertAuditMessage(
 			_buildAuditMessage(
 				"buildVerificationSuccessAuditMessage",
-				new Class<?>[] {User.class, String.class}, _getUser(),
-				RandomTestUtil.randomString()),
+				new Class<?>[] {User.class, String.class},
+				Mockito.mock(User.class), RandomTestUtil.randomString()),
 			"verify", "verification_success");
 		_assertAuditMessage(
 			_buildAuditMessage(
 				"buildVerifiedAuditMessage",
-				new Class<?>[] {User.class, String.class}, _getUser(),
-				RandomTestUtil.randomString()),
+				new Class<?>[] {User.class, String.class},
+				Mockito.mock(User.class), RandomTestUtil.randomString()),
 			"verify", "verified");
 		_assertAuditMessage(
 			auditMessage, "verify_failure", "verification_failure");
-
-		_testBuildNotVerifiedAuditMessageWhenFeatureFlagIsDisabled();
 	}
 
 	@Test
@@ -157,42 +151,6 @@ public class EmailOTPBrowserMFACheckerTest {
 		return ReflectionTestUtil.invoke(
 			mfaEmailOTPAuditMessageBuilder, methodName, parameterTypes,
 			arguments);
-	}
-
-	private User _getUser() {
-		User user = Mockito.mock(User.class);
-
-		Mockito.when(
-			user.getCompanyId()
-		).thenReturn(
-			RandomTestUtil.randomLong()
-		);
-
-		return user;
-	}
-
-	private void _testBuildNotVerifiedAuditMessageWhenFeatureFlagIsDisabled()
-		throws Exception {
-
-		try (SafeCloseable safeCloseable =
-				FeatureFlagTestUtil.setFeatureFlagsWithSafeCloseable(
-					false, "LPD-96921")) {
-
-			String reason = RandomTestUtil.randomString();
-
-			AuditMessage auditMessage = _buildAuditMessage(
-				"buildNotVerifiedAuditMessage",
-				new Class<?>[] {User.class, String.class, String.class},
-				_getUser(), RandomTestUtil.randomString(), reason);
-
-			JSONObject additionalInfoJSONObject =
-				auditMessage.getAdditionalInfo();
-
-			Assert.assertFalse(additionalInfoJSONObject.has("factor"));
-			Assert.assertFalse(additionalInfoJSONObject.has("outcome"));
-			Assert.assertEquals(
-				reason, additionalInfoJSONObject.getString("reason"));
-		}
 	}
 
 	private static final MockedStatic<FrameworkUtil>

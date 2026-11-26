@@ -8,7 +8,6 @@ package com.liferay.portal.security.audit.configuration.web.internal.configurati
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.configuration.admin.constants.ConfigurationAdminPortletKeys;
 import com.liferay.configuration.admin.display.ConfigurationFormRenderer;
-import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.configuration.test.util.ConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.audit.AuditMessage;
@@ -18,7 +17,6 @@ import com.liferay.portal.kernel.portlet.LiferayPortletConfig;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionRequest;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
-import com.liferay.portal.kernel.test.util.FeatureFlagTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapDictionary;
@@ -30,7 +28,6 @@ import com.liferay.portal.security.audit.AuditMessageProcessor;
 import com.liferay.portal.security.audit.configuration.AuditConfiguration;
 import com.liferay.portal.security.audit.event.generators.constants.EventTypes;
 import com.liferay.portal.test.rule.FeatureFlag;
-import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -98,12 +95,9 @@ public class AuditConfigurationModelListenerTest {
 		_serviceRegistration.unregister();
 	}
 
-	@FeatureFlags(
-		featureFlags = {@FeatureFlag("LPD-6417"), @FeatureFlag("LPD-96921")}
-	)
+	@FeatureFlag("LPD-6417")
 	@Test
 	public void testOnAfterSave() throws Exception {
-		_testOnAfterSaveWhenFeatureFlagIsDisabled();
 		_testOnAfterSaveWithCompanyScope();
 		_testOnAfterSaveWithSystemScope();
 		_testOnAfterSaveWithUnchangedPseudonymizationEnabled();
@@ -170,28 +164,6 @@ public class AuditConfigurationModelListenerTest {
 		return new HashMapDictionary<>(
 			_configurationFormRenderer.getRequestParameters(
 				mockLiferayPortletActionRequest.getHttpServletRequest()));
-	}
-
-	private void _testOnAfterSaveWhenFeatureFlagIsDisabled() throws Exception {
-		_auditMessages.clear();
-
-		AuditConfiguration auditConfiguration =
-			_configurationProvider.getSystemConfiguration(
-				AuditConfiguration.class);
-
-		try (SafeCloseable safeCloseable =
-				FeatureFlagTestUtil.setFeatureFlagsWithSafeCloseable(
-					false, "LPD-96921");
-			ConfigurationTemporarySwapper configurationTemporarySwapper =
-				new ConfigurationTemporarySwapper(
-					AuditConfiguration.class.getName(),
-					_getRequestParameters(
-						ConfigurationAdminPortletKeys.SYSTEM_SETTINGS,
-						!auditConfiguration.pseudonymizationEnabled()))) {
-
-			Assert.assertEquals(
-				_auditMessages.toString(), 0, _auditMessages.size());
-		}
 	}
 
 	private void _testOnAfterSaveWithCompanyScope() throws Exception {

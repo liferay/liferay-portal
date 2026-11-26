@@ -10,7 +10,6 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.audit.AuditRequestContext;
 import com.liferay.portal.kernel.audit.AuditRequestContextThreadLocal;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogContext;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -129,15 +128,11 @@ public class AuditFilter extends BaseFilter implements TryFilter {
 			auditRequestContext.setRequestIdGenerated(false);
 		}
 
-		long companyId = CompanyThreadLocal.getCompanyId();
-
-		if (FeatureFlagManagerUtil.isEnabled(companyId, "LPD-96921")) {
-			auditRequestContext.setHttpMethod(
-				_truncate(75, httpServletRequest.getMethod()));
-			auditRequestContext.setUserAgent(
-				_truncate(
-					255, httpServletRequest.getHeader(HttpHeaders.USER_AGENT)));
-		}
+		auditRequestContext.setHttpMethod(
+			_truncate(75, httpServletRequest.getMethod()));
+		auditRequestContext.setUserAgent(
+			_truncate(
+				255, httpServletRequest.getHeader(HttpHeaders.USER_AGENT)));
 
 		if (!_auditLogContextConfiguration.enabled()) {
 			return null;
@@ -152,8 +147,9 @@ public class AuditFilter extends BaseFilter implements TryFilter {
 		httpServletResponse.setHeader(HttpHeaders.X_REQUEST_ID, xRequestId);
 
 		_auditLogContext.setContext(
-			remoteAddr, companyId, httpServletRequest.getServerName(),
-			userEmailAddress, userId, userLogin, xRequestId);
+			remoteAddr, CompanyThreadLocal.getCompanyId(),
+			httpServletRequest.getServerName(), userEmailAddress, userId,
+			userLogin, xRequestId);
 
 		return null;
 	}

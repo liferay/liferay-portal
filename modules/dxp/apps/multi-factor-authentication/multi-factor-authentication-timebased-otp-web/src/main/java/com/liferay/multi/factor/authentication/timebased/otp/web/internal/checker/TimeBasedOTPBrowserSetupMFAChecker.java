@@ -27,13 +27,11 @@ import com.liferay.portal.kernel.audit.AuditException;
 import com.liferay.portal.kernel.audit.AuditMessage;
 import com.liferay.portal.kernel.audit.AuditRouterUtil;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.UserLocalService;
@@ -717,14 +715,6 @@ public class TimeBasedOTPBrowserSetupMFAChecker
 
 		private void _setVerificationResult(
 			AuditMessage auditMessage, String outcome) {
-
-			long companyId = auditMessage.getCompanyId();
-
-			if ((companyId == CompanyConstants.SYSTEM) ||
-				!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-96921")) {
-
-				return;
-			}
 
 			JSONObject additionalInfoJSONObject =
 				auditMessage.getAdditionalInfo();

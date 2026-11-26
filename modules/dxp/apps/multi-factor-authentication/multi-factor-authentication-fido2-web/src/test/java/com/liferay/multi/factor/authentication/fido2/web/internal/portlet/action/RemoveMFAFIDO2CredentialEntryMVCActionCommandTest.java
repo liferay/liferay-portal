@@ -15,6 +15,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -36,6 +37,7 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import org.mockito.ArgumentCaptor;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
 /**
@@ -89,10 +91,21 @@ public class RemoveMFAFIDO2CredentialEntryMVCActionCommandTest
 
 	@Test
 	public void testDoProcessAction() throws Exception {
-		_testDoProcessAction();
-		_testDoProcessActionWithFailedDeletion();
-		_testDoProcessActionWithImpersonatePermission();
-		_testDoProcessActionWithoutImpersonatePermission();
+		try (MockedStatic<UserLocalServiceUtil>
+				userLocalServiceUtilMockedStatic = Mockito.mockStatic(
+					UserLocalServiceUtil.class)) {
+
+			userLocalServiceUtilMockedStatic.when(
+				() -> UserLocalServiceUtil.fetchUser(_DO_AS_USER_ID)
+			).thenReturn(
+				Mockito.mock(User.class)
+			);
+
+			_testDoProcessAction();
+			_testDoProcessActionWithFailedDeletion();
+			_testDoProcessActionWithImpersonatePermission();
+			_testDoProcessActionWithoutImpersonatePermission();
+		}
 	}
 
 	private void _setUpMFAFIDO2CredentialEntry(
@@ -142,8 +155,9 @@ public class RemoveMFAFIDO2CredentialEntryMVCActionCommandTest
 		);
 
 		assertAuditMessage(
-			argumentCaptor.getValue(), String.valueOf(_DO_AS_USER_ID),
-			MFAFIDO2EventTypes.MFA_FIDO2_SETUP_REMOVED, _DO_AS_USER_ID);
+			argumentCaptor.getValue(),
+			MFAFIDO2EventTypes.MFA_FIDO2_SETUP_REMOVED, _DO_AS_USER_ID,
+			_DO_AS_USER_ID);
 	}
 
 	private void _testDoProcessActionWithFailedDeletion() throws Exception {
@@ -206,8 +220,8 @@ public class RemoveMFAFIDO2CredentialEntryMVCActionCommandTest
 		);
 
 		assertAuditMessage(
-			argumentCaptor.getValue(), String.valueOf(_DO_AS_USER_ID),
-			MFAFIDO2EventTypes.MFA_FIDO2_SETUP_REMOVED, userId);
+			argumentCaptor.getValue(),
+			MFAFIDO2EventTypes.MFA_FIDO2_SETUP_REMOVED, _DO_AS_USER_ID, userId);
 	}
 
 	private void _testDoProcessActionWithoutImpersonatePermission()

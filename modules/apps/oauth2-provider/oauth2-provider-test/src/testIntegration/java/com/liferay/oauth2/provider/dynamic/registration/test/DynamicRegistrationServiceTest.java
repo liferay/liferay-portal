@@ -810,7 +810,6 @@ public class DynamicRegistrationServiceTest extends BaseClientTestCase {
 		}
 	}
 
-	@FeatureFlag("LPD-96921")
 	@Test
 	public void testRegisterSetsResourceAction() throws Exception {
 		WebTarget registerWebTarget = getRegisterWebTarget();

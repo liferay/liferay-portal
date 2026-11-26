@@ -36,7 +36,6 @@ import com.liferay.portal.kernel.servlet.HttpMethods;
 import com.liferay.portal.kernel.servlet.filters.invoker.InvokerFilterChain;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
-import com.liferay.portal.kernel.test.util.FeatureFlagTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
@@ -46,7 +45,6 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.servlet.filters.authverifier.AuthVerifierFilter;
 import com.liferay.portal.servlet.filters.secure.SecureFilter;
 import com.liferay.portal.test.rule.FeatureFlag;
-import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
@@ -80,9 +78,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
  * @author Christian Moura
  * @author Álvaro Saugar
  */
-@FeatureFlags(
-	featureFlags = {@FeatureFlag("LPD-6417"), @FeatureFlag("LPD-96921")}
-)
+@FeatureFlag("LPD-6417")
 @RunWith(Arquillian.class)
 public class AuditMessageTest {
 
@@ -118,7 +114,6 @@ public class AuditMessageTest {
 		_assertNoImpersonatedUser(_getAuditMessage(null));
 
 		_testConstructorOnMessageBusThread();
-		_testConstructorWhenFeatureFlagIsDisabled();
 		_testConstructorWithHeadlessRequest();
 		_testConstructorWithHeadlessRequestWithoutCSRFToken();
 		_testConstructorWithJSON();
@@ -335,31 +330,6 @@ public class AuditMessageTest {
 
 		Assert.assertNotEquals(
 			auditMessage1.getRequestId(), auditMessage2.getRequestId());
-	}
-
-	private void _testConstructorWhenFeatureFlagIsDisabled() {
-		try (SafeCloseable safeCloseable =
-				FeatureFlagTestUtil.setFeatureFlagsWithSafeCloseable(
-					false, "LPD-96921")) {
-
-			AuditMessage auditMessage = _getAuditMessage(
-				String.valueOf(_impersonatedUser.getUserId()));
-
-			_assertNoImpersonatedUser(auditMessage);
-
-			JSONObject additionalInfoJSONObject =
-				auditMessage.getAdditionalInfo();
-
-			Assert.assertEquals(
-				_impersonatedUser.getEmailAddress(),
-				additionalInfoJSONObject.getString("doAsUserEmailAddress"));
-			Assert.assertEquals(
-				String.valueOf(_impersonatedUser.getUserId()),
-				additionalInfoJSONObject.getString("doAsUserId"));
-			Assert.assertEquals(
-				_impersonatedUser.getFullName(),
-				additionalInfoJSONObject.getString("doAsUserName"));
-		}
 	}
 
 	private void _testConstructorWithHeadlessRequest() throws Exception {

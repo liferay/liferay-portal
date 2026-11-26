@@ -6,7 +6,6 @@
 package com.liferay.portal.security.audit.router.internal.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.ConfigurationTemporarySwapper;
@@ -15,7 +14,6 @@ import com.liferay.portal.kernel.audit.AuditMessage;
 import com.liferay.portal.kernel.audit.AuditRouter;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONUtil;
-import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.model.Role;
@@ -27,7 +25,6 @@ import com.liferay.portal.kernel.service.UserGroupRoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
-import com.liferay.portal.kernel.test.util.FeatureFlagTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.OrganizationTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -40,7 +37,6 @@ import com.liferay.portal.security.audit.AuditMessageProcessor;
 import com.liferay.portal.security.audit.configuration.AuditConfiguration;
 import com.liferay.portal.security.audit.constants.AuditEventConstants;
 import com.liferay.portal.security.audit.event.generators.constants.EventTypes;
-import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
@@ -90,7 +86,6 @@ public class DefaultAuditRouterTest {
 		_serviceRegistration.unregister();
 	}
 
-	@FeatureFlag("LPD-96921")
 	@Test
 	public void testRoute() throws Exception {
 		_testRoute(
@@ -253,23 +248,6 @@ public class DefaultAuditRouterTest {
 
 		Assert.assertNull(auditMessage.getRoles());
 
-		auditMessage = new AuditMessage(
-			CompanyConstants.SYSTEM, _user.getUserId(),
-			RandomTestUtil.randomString(), RandomTestUtil.randomString());
-
-		auditMessage.setAction(RandomTestUtil.randomString());
-		auditMessage.setResourceAction(RandomTestUtil.randomString());
-		auditMessage.setResourceType(RandomTestUtil.randomString());
-		auditMessage.setRoles(RandomTestUtil.randomString());
-
-		_auditRouter.route(auditMessage);
-
-		Assert.assertTrue(_auditMessages.contains(auditMessage));
-		Assert.assertNull(auditMessage.getAction());
-		Assert.assertNull(auditMessage.getResourceAction());
-		Assert.assertNull(auditMessage.getResourceType());
-		Assert.assertNull(auditMessage.getRoles());
-
 		auditMessage = _getAuditMessage(
 			RandomTestUtil.randomString(), null, RandomTestUtil.randomString(),
 			RandomTestUtil.randomLong());
@@ -295,7 +273,6 @@ public class DefaultAuditRouterTest {
 		Assert.assertFalse(_auditMessages.contains(auditMessage));
 
 		_testRouteWhenAuditIsDisabled();
-		_testRouteWhenFeatureFlagIsDisabled();
 	}
 
 	private AuditMessage _getAuditMessage(
@@ -351,33 +328,6 @@ public class DefaultAuditRouterTest {
 			_auditRouter.route(auditMessage);
 
 			Assert.assertTrue(_auditMessages.contains(auditMessage));
-		}
-	}
-
-	private void _testRouteWhenFeatureFlagIsDisabled() throws Exception {
-		try (SafeCloseable safeCloseable =
-				FeatureFlagTestUtil.setFeatureFlagsWithSafeCloseable(
-					false, "LPD-96921")) {
-
-			AuditMessage auditMessage = _getAuditMessage(
-				RandomTestUtil.randomString(), null,
-				RandomTestUtil.randomString(), _user.getUserId());
-
-			auditMessage.setAction(RandomTestUtil.randomString());
-			auditMessage.setResourceAction(RandomTestUtil.randomString());
-			auditMessage.setResourceType(RandomTestUtil.randomString());
-			auditMessage.setRoles(RandomTestUtil.randomString());
-
-			_auditRouter.route(auditMessage);
-
-			Assert.assertTrue(_auditMessages.contains(auditMessage));
-			Assert.assertNull(auditMessage.getAction());
-			Assert.assertEquals(
-				AuditEventConstants.CONTEXT_NAME_INSTANCE,
-				auditMessage.getContextName());
-			Assert.assertNull(auditMessage.getResourceAction());
-			Assert.assertNull(auditMessage.getResourceType());
-			Assert.assertNull(auditMessage.getRoles());
 		}
 	}
 

@@ -8,9 +8,6 @@ package com.liferay.portal.action;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.audit.AuditMessage;
 import com.liferay.portal.kernel.audit.AuditRouterUtil;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.login.AuthLoginGroupSettingsUtil;
@@ -308,28 +305,11 @@ public class LayoutAction implements Action {
 					AuditRouterUtil.isDeployed()) {
 
 					User realUser = themeDisplay.getRealUser();
-					User user = themeDisplay.getUser();
-
-					JSONObject additionalInfoJSONObject = null;
-
-					if (Validator.isNotNull(themeDisplay.getDoAsUserId()) &&
-						(realUser.getUserId() != user.getUserId()) &&
-						!FeatureFlagManagerUtil.isEnabled(
-							realUser.getCompanyId(), "LPD-96921")) {
-
-						additionalInfoJSONObject = JSONUtil.put(
-							"doAsUserEmailAddress", user.getEmailAddress()
-						).put(
-							"doAsUserId", user.getUserId()
-						).put(
-							"doAsUserName", user.getFullName()
-						);
-					}
 
 					AuditMessage auditMessage = new AuditMessage(
 						layout.getGroupId(), realUser.getCompanyId(),
 						realUser.getUserId(), realUser.getFullName(), null,
-						additionalInfoJSONObject, Layout.class.getName(),
+						null, Layout.class.getName(),
 						String.valueOf(layout.getPlid()), ActionKeys.VIEW,
 						null);
 

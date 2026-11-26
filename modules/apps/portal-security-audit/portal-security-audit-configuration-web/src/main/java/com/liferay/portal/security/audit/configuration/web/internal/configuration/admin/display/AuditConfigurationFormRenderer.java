@@ -91,10 +91,8 @@ public class AuditConfigurationFormRenderer
 			requestParameters.put(
 				"pseudonymizationEnabled", pseudonymizationEnabled);
 
-			if (FeatureFlagManagerUtil.isEnabled(
-					themeDisplay.getCompanyId(), "LPD-96921") &&
-				(pseudonymizationEnabled !=
-					auditConfiguration.pseudonymizationEnabled())) {
+			if (pseudonymizationEnabled !=
+					auditConfiguration.pseudonymizationEnabled()) {
 
 				AuditConfigurationThreadLocal.setAuditMessage(
 					_getAuditMessage(

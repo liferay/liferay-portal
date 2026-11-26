@@ -42,7 +42,6 @@ import com.liferay.portal.security.audit.router.configuration.PersistentAuditMes
 import com.liferay.portal.security.audit.router.configuration.PersistentAuditMessageProcessorConfiguration;
 import com.liferay.portal.security.audit.storage.model.AuditEvent;
 import com.liferay.portal.security.audit.storage.service.AuditEventLocalService;
-import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
@@ -72,7 +71,6 @@ public class PersistentAuditMessageProcessorTest {
 	public static final AggregateTestRule aggregateTestRule =
 		new LiferayIntegrationTestRule();
 
-	@FeatureFlag("LPD-96921")
 	@Test
 	public void testProcess() throws Exception {
 		_testProcessHttpRequestContext();

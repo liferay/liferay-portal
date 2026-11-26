@@ -225,11 +225,11 @@ public class FIDO2BrowserSetupMFACheckerTest extends BaseMFAFIDO2WebTestCase {
 		List<AuditMessage> auditMessages = argumentCaptor.getAllValues();
 
 		assertAuditMessage(
-			auditMessages.get(0), null,
-			MFAFIDO2EventTypes.MFA_FIDO2_SETUP_REMOVED, selectedUserId);
+			auditMessages.get(0), MFAFIDO2EventTypes.MFA_FIDO2_SETUP_REMOVED, 0,
+			selectedUserId);
 		assertAuditMessage(
-			auditMessages.get(1), null,
-			MFAFIDO2EventTypes.MFA_FIDO2_SETUP_REMOVED, selectedUserId);
+			auditMessages.get(1), MFAFIDO2EventTypes.MFA_FIDO2_SETUP_REMOVED, 0,
+			selectedUserId);
 	}
 
 	@Test
@@ -339,8 +339,8 @@ public class FIDO2BrowserSetupMFACheckerTest extends BaseMFAFIDO2WebTestCase {
 		);
 
 		assertAuditMessage(
-			argumentCaptor.getValue(), null,
-			MFAFIDO2EventTypes.MFA_FIDO2_SETUP_ADDED, selectedUserId);
+			argumentCaptor.getValue(), MFAFIDO2EventTypes.MFA_FIDO2_SETUP_ADDED,
+			0, selectedUserId);
 	}
 
 	private void _testSetUpWithFailedRegistration() throws Exception {

@@ -19,7 +19,6 @@ import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
-import com.liferay.portal.kernel.test.util.FeatureFlagTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
@@ -27,7 +26,6 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.security.audit.AuditMessageProcessor;
 import com.liferay.portal.security.audit.event.generators.constants.EventTypes;
-import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
@@ -55,7 +53,6 @@ import org.springframework.mock.web.MockHttpServletResponse;
 /**
  * @author Christian Moura
  */
-@FeatureFlag("LPD-96921")
 @RunWith(Arquillian.class)
 public class ImpersonationActionTest {
 
@@ -95,7 +92,6 @@ public class ImpersonationActionTest {
 	@Test
 	public void testRun() throws Exception {
 		_testRun();
-		_testRunWhenFeatureFlagIsDisabled();
 	}
 
 	private AuditMessage _run() throws Exception {
@@ -158,30 +154,6 @@ public class ImpersonationActionTest {
 		Assert.assertFalse(additionalInfoJSONObject.has("userEmailAddress"));
 		Assert.assertFalse(additionalInfoJSONObject.has("userId"));
 		Assert.assertFalse(additionalInfoJSONObject.has("userName"));
-	}
-
-	private void _testRunWhenFeatureFlagIsDisabled() throws Exception {
-		try (SafeCloseable safeCloseable =
-				FeatureFlagTestUtil.setFeatureFlagsWithSafeCloseable(
-					false, "LPD-96921")) {
-
-			AuditMessage auditMessage = _run();
-
-			Assert.assertFalse(auditMessage.isImpersonated());
-
-			JSONObject additionalInfoJSONObject =
-				auditMessage.getAdditionalInfo();
-
-			Assert.assertEquals(
-				_impersonatedUser.getEmailAddress(),
-				additionalInfoJSONObject.getString("userEmailAddress"));
-			Assert.assertEquals(
-				_impersonatedUser.getUserId(),
-				additionalInfoJSONObject.getLong("userId"));
-			Assert.assertEquals(
-				_impersonatedUser.getFullName(),
-				additionalInfoJSONObject.getString("userName"));
-		}
 	}
 
 	private final List<AuditMessage> _auditMessages = new ArrayList<>();

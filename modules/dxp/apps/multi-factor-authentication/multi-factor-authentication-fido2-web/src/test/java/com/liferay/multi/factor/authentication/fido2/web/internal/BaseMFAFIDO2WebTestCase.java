@@ -12,7 +12,6 @@ import com.liferay.portal.kernel.audit.AuditRequestContext;
 import com.liferay.portal.kernel.audit.AuditRequestContextThreadLocal;
 import com.liferay.portal.kernel.audit.AuditRouter;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -60,18 +59,15 @@ public abstract class BaseMFAFIDO2WebTestCase {
 	}
 
 	protected void assertAuditMessage(
-		AuditMessage auditMessage, String doAsUserId, String eventType,
+		AuditMessage auditMessage, String eventType, long impersonatedUserId,
 		long selectedUserId) {
-
-		JSONObject additionalInfoJSONObject = auditMessage.getAdditionalInfo();
-
-		Assert.assertEquals(
-			doAsUserId, additionalInfoJSONObject.getString("doAsUserId", null));
 
 		Assert.assertEquals(User.class.getName(), auditMessage.getClassName());
 		Assert.assertEquals(
 			String.valueOf(selectedUserId), auditMessage.getClassPK());
 		Assert.assertEquals(eventType, auditMessage.getEventType());
+		Assert.assertEquals(
+			impersonatedUserId, auditMessage.getImpersonatedUserId());
 		Assert.assertEquals(REAL_USER_ID, auditMessage.getUserId());
 		Assert.assertEquals(REAL_USER_NAME, auditMessage.getUserName());
 	}

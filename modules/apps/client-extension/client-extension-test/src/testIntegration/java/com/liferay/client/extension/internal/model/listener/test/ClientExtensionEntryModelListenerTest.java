@@ -25,7 +25,6 @@ import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.security.audit.AuditMessageProcessor;
 import com.liferay.portal.security.audit.event.generators.constants.EventTypes;
 import com.liferay.portal.security.audit.router.configuration.LoggingAuditMessageProcessorConfiguration;
-import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
@@ -90,7 +89,6 @@ public class ClientExtensionEntryModelListenerTest {
 		}
 	}
 
-	@FeatureFlag("LPD-96921")
 	@Test
 	public void testOnBeforeCreate() throws Exception {
 		PrintStream printStream = System.out;

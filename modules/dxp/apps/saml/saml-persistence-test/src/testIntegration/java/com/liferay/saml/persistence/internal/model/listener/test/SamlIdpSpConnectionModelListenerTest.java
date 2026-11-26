@@ -24,7 +24,6 @@ import com.liferay.portal.security.audit.router.configuration.LoggingAuditMessag
 import com.liferay.portal.security.audit.test.util.AuditMessageTestUtil;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LoggerTestUtil;
-import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.saml.persistence.model.SamlIdpSpConnection;
 import com.liferay.saml.persistence.service.SamlIdpSpConnectionLocalService;
@@ -43,7 +42,6 @@ import org.skyscreamer.jsonassert.JSONCompareMode;
 public class SamlIdpSpConnectionModelListenerTest
 	extends BaseModelListenerTestCase {
 
-	@FeatureFlag("LPD-96921")
 	@Test
 	public void testOnAfterCreate() throws Exception {
 		try (ConfigurationTemporarySwapper configurationTemporarySwapper =

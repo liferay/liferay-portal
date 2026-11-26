@@ -28,7 +28,6 @@ import com.liferay.portal.security.audit.router.configuration.LoggingAuditMessag
 import com.liferay.portal.security.audit.test.util.AuditMessageTestUtil;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LoggerTestUtil;
-import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 
 import org.junit.Assert;
@@ -57,7 +56,6 @@ public class ResourcePermissionModelListenerTest
 		auditMessages.clear();
 	}
 
-	@FeatureFlag("LPD-96921")
 	@Test
 	public void testOnBeforeCreate() throws Exception {
 		try (ConfigurationTemporarySwapper configurationTemporarySwapper =

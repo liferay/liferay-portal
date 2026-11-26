@@ -15,11 +15,9 @@ import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.audit.AuditException;
 import com.liferay.portal.kernel.audit.AuditMessage;
 import com.liferay.portal.kernel.audit.AuditRouter;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.UserLocalService;
@@ -135,19 +133,6 @@ public class DefaultAuditRouter implements AuditRouter {
 		if (Validator.isNull(auditMessage.getContextName())) {
 			auditMessage.setContextName(
 				AuditEventConstants.CONTEXT_NAME_INSTANCE);
-		}
-
-		long companyId = auditMessage.getCompanyId();
-
-		if ((companyId == CompanyConstants.SYSTEM) ||
-			!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-96921")) {
-
-			auditMessage.setAction(null);
-			auditMessage.setResourceAction(null);
-			auditMessage.setResourceType(null);
-			auditMessage.setRoles(null);
-
-			return;
 		}
 
 		if (Validator.isNull(auditMessage.getRoles()) &&

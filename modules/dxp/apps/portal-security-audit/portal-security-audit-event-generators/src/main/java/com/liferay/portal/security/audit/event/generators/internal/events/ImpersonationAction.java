@@ -10,9 +10,6 @@ import com.liferay.portal.kernel.audit.AuditRouter;
 import com.liferay.portal.kernel.events.Action;
 import com.liferay.portal.kernel.events.ActionException;
 import com.liferay.portal.kernel.events.LifecycleAction;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -75,25 +72,11 @@ public class ImpersonationAction extends Action {
 			if (impersonatingUser == null) {
 				httpSession.setAttribute(_IMPERSONATING_USER, Boolean.TRUE);
 
-				JSONObject additionalInfoJSONObject = null;
-
-				if (!FeatureFlagManagerUtil.isEnabled(
-						themeDisplay.getCompanyId(), "LPD-96921")) {
-
-					additionalInfoJSONObject = JSONUtil.put(
-						"userEmailAddress", user.getEmailAddress()
-					).put(
-						"userId", user.getUserId()
-					).put(
-						"userName", user.getFullName()
-					);
-				}
-
 				AuditMessage auditMessage = new AuditMessage(
 					themeDisplay.getCompanyId(), realUser.getUserId(),
-					realUser.getFullName(), additionalInfoJSONObject,
-					User.class.getName(), String.valueOf(user.getUserId()),
-					EventTypes.IMPERSONATE, null);
+					realUser.getFullName(), null, User.class.getName(),
+					String.valueOf(user.getUserId()), EventTypes.IMPERSONATE,
+					null);
 
 				_auditRouter.route(auditMessage);
 			}

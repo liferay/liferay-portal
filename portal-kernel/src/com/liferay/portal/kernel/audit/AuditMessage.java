@@ -5,15 +5,12 @@
 
 package com.liferay.portal.kernel.audit;
 
-import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
@@ -21,7 +18,6 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PortalRunMode;
-import com.liferay.portal.kernel.util.PortalUtil;
 
 import java.io.Serializable;
 
@@ -90,19 +86,13 @@ public class AuditMessage implements Serializable {
 		_clientHost = auditRequestContext.getClientHost();
 		_clientIP = auditRequestContext.getClientIP();
 		_correlationId = auditRequestContext.getCorrelationId();
-
-		if ((companyId > CompanyConstants.SYSTEM) &&
-			FeatureFlagManagerUtil.isEnabled(companyId, "LPD-96921")) {
-
-			_httpMethod = auditRequestContext.getHttpMethod();
-			_userAgent = auditRequestContext.getUserAgent();
-		}
-
+		_httpMethod = auditRequestContext.getHttpMethod();
 		_requestId = auditRequestContext.getRequestId();
 		_requestIdGenerated = auditRequestContext.isRequestIdGenerated();
 		_serverName = auditRequestContext.getServerName();
 		_serverPort = auditRequestContext.getServerPort();
 		_sessionID = auditRequestContext.getSessionID();
+		_userAgent = auditRequestContext.getUserAgent();
 		_userEmailAddress = auditRequestContext.getRealUserEmailAddress();
 
 		long realUserId = auditRequestContext.getRealUserId();
@@ -115,30 +105,15 @@ public class AuditMessage implements Serializable {
 		}
 
 		if ((realUserId > 0) && (impersonatedUserId != realUserId)) {
-			if (FeatureFlagManagerUtil.isEnabled(companyId, "LPD-96921")) {
-				User impersonatedUser = UserLocalServiceUtil.fetchUser(
-					impersonatedUserId);
+			User impersonatedUser = UserLocalServiceUtil.fetchUser(
+				impersonatedUserId);
 
-				if ((impersonatedUser != null) &&
-					!impersonatedUser.isGuestUser()) {
-
-					_impersonated = true;
-					_impersonatedUserEmailAddress =
-						impersonatedUser.getEmailAddress();
-					_impersonatedUserId = impersonatedUserId;
-					_impersonatedUserName = impersonatedUser.getFullName();
-				}
-			}
-			else if (!_additionalInfoJSONObject.has("doAsUserId")) {
-				_additionalInfoJSONObject.put(
-					"doAsUserEmailAddress",
-					PortalUtil.getUserEmailAddress(impersonatedUserId)
-				).put(
-					"doAsUserId", String.valueOf(impersonatedUserId)
-				).put(
-					"doAsUserName",
-					PortalUtil.getUserName(impersonatedUserId, StringPool.BLANK)
-				);
+			if ((impersonatedUser != null) && !impersonatedUser.isGuestUser()) {
+				_impersonated = true;
+				_impersonatedUserEmailAddress =
+					impersonatedUser.getEmailAddress();
+				_impersonatedUserId = impersonatedUserId;
+				_impersonatedUserName = impersonatedUser.getFullName();
 			}
 		}
 

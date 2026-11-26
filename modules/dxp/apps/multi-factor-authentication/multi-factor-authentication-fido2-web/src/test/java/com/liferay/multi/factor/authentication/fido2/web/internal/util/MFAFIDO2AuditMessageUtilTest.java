@@ -5,15 +5,12 @@
 
 package com.liferay.multi.factor.authentication.fido2.web.internal.util;
 
-import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.json.JSONFactoryImpl;
 import com.liferay.portal.kernel.audit.AuditMessage;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.test.util.FeatureFlagTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
-import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import org.junit.Assert;
@@ -41,7 +38,6 @@ public class MFAFIDO2AuditMessageUtilTest {
 		jsonFactoryUtil.setJSONFactory(new JSONFactoryImpl());
 	}
 
-	@FeatureFlag("LPD-96921")
 	@Test
 	public void testBuildAuditMessages() throws Exception {
 		AuditMessage auditMessage =
@@ -61,26 +57,24 @@ public class MFAFIDO2AuditMessageUtilTest {
 			auditMessage, "verify_failure", "verification_failure");
 		_assertAuditMessage(
 			MFAFIDO2AuditMessageUtil.buildNotVerifiedAuditMessage(
-				_getUser(), RandomTestUtil.randomString(),
+				Mockito.mock(User.class), RandomTestUtil.randomString(),
 				RandomTestUtil.randomString()),
 			"verify_failure", "not_verified");
 		_assertAuditMessage(
 			MFAFIDO2AuditMessageUtil.
 				buildUnconfiguredUserVerificationFailureAuditMessage(
-					RandomTestUtil.randomLong(), _getUser(),
+					RandomTestUtil.randomLong(), Mockito.mock(User.class),
 					RandomTestUtil.randomString()),
 			"verify_failure", "verification_failure");
 		_assertAuditMessage(
 			MFAFIDO2AuditMessageUtil.buildVerificationFailureAuditMessage(
-				_getUser(), RandomTestUtil.randomString(),
+				Mockito.mock(User.class), RandomTestUtil.randomString(),
 				RandomTestUtil.randomString()),
 			"verify_failure", "verification_failure");
 		_assertAuditMessage(
 			MFAFIDO2AuditMessageUtil.buildVerifiedAuditMessage(
-				_getUser(), RandomTestUtil.randomString()),
+				Mockito.mock(User.class), RandomTestUtil.randomString()),
 			"verify", "verified");
-
-		_testBuildNotVerifiedAuditMessageWhenFeatureFlagIsDisabled();
 	}
 
 	private void _assertAuditMessage(
@@ -93,41 +87,6 @@ public class MFAFIDO2AuditMessageUtilTest {
 
 		Assert.assertEquals(
 			expectedOutcome, additionalInfoJSONObject.getString("outcome"));
-	}
-
-	private User _getUser() {
-		User user = Mockito.mock(User.class);
-
-		Mockito.when(
-			user.getCompanyId()
-		).thenReturn(
-			RandomTestUtil.randomLong()
-		);
-
-		return user;
-	}
-
-	private void _testBuildNotVerifiedAuditMessageWhenFeatureFlagIsDisabled()
-		throws Exception {
-
-		try (SafeCloseable safeCloseable =
-				FeatureFlagTestUtil.setFeatureFlagsWithSafeCloseable(
-					false, "LPD-96921")) {
-
-			String reason = RandomTestUtil.randomString();
-
-			AuditMessage auditMessage =
-				MFAFIDO2AuditMessageUtil.buildNotVerifiedAuditMessage(
-					_getUser(), RandomTestUtil.randomString(), reason);
-
-			JSONObject additionalInfoJSONObject =
-				auditMessage.getAdditionalInfo();
-
-			Assert.assertFalse(additionalInfoJSONObject.has("factor"));
-			Assert.assertFalse(additionalInfoJSONObject.has("outcome"));
-			Assert.assertEquals(
-				reason, additionalInfoJSONObject.getString("reason"));
-		}
 	}
 
 }
