@@ -216,7 +216,7 @@ describe('Liferay.Util.fetch', () => {
 	});
 
 	it.each(['edit', 'preview'])(
-		'adds the launch headers when a launch is in %s mode',
+		'adds the launch set headers when a launch set is in %s mode',
 		(launchSetMode) => {
 			window.Liferay.ThemeDisplay = {
 				getDoAsUserIdEncoded: () => '',
@@ -236,7 +236,7 @@ describe('Liferay.Util.fetch', () => {
 		}
 	);
 
-	it('does not add the launch headers outside of a launch', () => {
+	it('does not add the launch set headers outside of a launch set', () => {
 		window.Liferay.ThemeDisplay = {
 			getDoAsUserIdEncoded: () => '',
 			getLaunchSetId: () => '0',

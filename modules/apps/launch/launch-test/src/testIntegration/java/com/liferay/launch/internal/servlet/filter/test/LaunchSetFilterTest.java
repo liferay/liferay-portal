@@ -124,7 +124,7 @@ public class LaunchSetFilterTest {
 	@Test
 	public void testProcessFilterWithLaunchSetModeEdit() throws Exception {
 
-		// Launch preview
+		// Launch set already in preview mode
 
 		long launchSetId = _launchSetObjectEntry.getObjectEntryId();
 

@@ -512,7 +512,7 @@ public class PortalImpl implements Portal {
 
 		_reservedParams.add("p_j_a_id"); // LPS-16418
 
-		// Portal launch
+		// Portal launch set
 
 		_reservedParams.add("p_launch_set_id");
 		_reservedParams.add("p_launch_set_mode");
