@@ -52,19 +52,26 @@ public class FaroProjectModelListener extends BaseModelListener<FaroProject> {
 		try {
 			boolean ldpEnabled = FaroNavigationUtil.isLDPEnabled(faroProject);
 
-			if (FaroNavigationUtil.isLDPEnabled(originalFaroProject) ==
+			if (FaroNavigationUtil.isLDPEnabled(originalFaroProject) !=
 					ldpEnabled) {
 
-				return;
-			}
+				_workspaceSiteHelper.updateLayoutPermissions(
+					faroProject, ldpEnabled);
 
-			if (ldpEnabled) {
-				_workspaceSiteHelper.updateMasterLayouts(
-					"LDP_FAVICON", faroProject.getGroupId());
+				if (ldpEnabled) {
+					_workspaceSiteHelper.updateMasterLayouts(
+						"LDP_FAVICON", faroProject.getGroupId());
+				}
+				else {
+					_workspaceSiteHelper.updateMasterLayouts(
+						"AC_FAVICON", faroProject.getGroupId());
+				}
 			}
-			else {
-				_workspaceSiteHelper.updateMasterLayouts(
-					"AC_FAVICON", faroProject.getGroupId());
+			else if (originalFaroProject.isRecommendationsEnabled() !=
+						faroProject.isRecommendationsEnabled()) {
+
+				_workspaceSiteHelper.updateLayoutPermissions(
+					faroProject, ldpEnabled);
 			}
 		}
 		catch (Exception exception) {
