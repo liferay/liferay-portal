@@ -42,10 +42,20 @@ const OBJECT_ENTRY_FOLDER_CLASS_NAME =
 const OBJECT_ENTRY_FOLDERS_API_URL =
 	'/o/headless-object/v1.0/object-entry-folders';
 
+const DL_FOLDER_CLASS_NAME =
+	'com.liferay.document.library.kernel.model.DLFolder';
+
 const STATUS_IN_TRASH = 8;
 
 function isFolder(item?: {entryClassName: string}): boolean {
-	return item?.entryClassName === OBJECT_ENTRY_FOLDER_CLASS_NAME;
+	return (
+		item?.entryClassName === OBJECT_ENTRY_FOLDER_CLASS_NAME ||
+		item?.entryClassName === DL_FOLDER_CLASS_NAME
+	);
+}
+
+function getFolderLabel(item: any): string {
+	return item?.embedded?.title ?? item?.embedded?.name ?? item?.title ?? '';
 }
 
 async function checkNewCMSFiles(
@@ -151,13 +161,15 @@ type DetachedCMSFilesItemSelectorModalProps<T extends Record<string, any>> =
 	TDetachedItemSelectorModal<T> & {
 		buildApiURL: (folderId: number | null) => string;
 		folderMemoryKey?: string;
+		resetKey?: string;
+		rootLabel?: string;
 	};
 
-function getRootBreadcrumbFolders(): FolderCrumb[] {
+function getRootBreadcrumbFolders(rootLabel?: string): FolderCrumb[] {
 	return [
 		{
 			id: null,
-			label: Liferay.Language.get('files'),
+			label: rootLabel ?? Liferay.Language.get('files'),
 		},
 	];
 }
@@ -201,7 +213,14 @@ async function isFolderAvailable(folder: FolderCrumb): Promise<boolean> {
 const DetachedCMSFilesItemSelectorModal = <T extends Record<string, any>>(
 	props: DetachedCMSFilesItemSelectorModalProps<T>
 ) => {
-	const {buildApiURL, folderMemoryKey, onItemsChange, ...restProps} = props;
+	const {
+		buildApiURL,
+		folderMemoryKey,
+		onItemsChange,
+		resetKey,
+		rootLabel,
+		...restProps
+	} = props;
 
 	const {observer, onOpenChange, open} = useModal();
 	const [newItemsCount, setNewItemsCount] = useState(0);
@@ -212,12 +231,18 @@ const DetachedCMSFilesItemSelectorModal = <T extends Record<string, any>>(
 				? getLastBreadcrumbFolders(folderMemoryKey)
 				: null;
 
-			return restoredFolders ?? getRootBreadcrumbFolders();
+			return restoredFolders ?? getRootBreadcrumbFolders(rootLabel);
 		}
 	);
 
 	const isBrowserTabVisible = useBrowserTabVisibility();
 	const lastRequestTimeRef = useRef(new Date().toISOString());
+	const resetKeyRef = useRef(resetKey);
+	const rootLabelRef = useRef(rootLabel);
+
+	useEffect(() => {
+		rootLabelRef.current = rootLabel;
+	});
 
 	useEffect(() => {
 		onOpenChange(true);
@@ -239,11 +264,23 @@ const DetachedCMSFilesItemSelectorModal = <T extends Record<string, any>>(
 				if (!available) {
 					setLastBreadcrumbFolders(folderMemoryKey, null);
 
-					setBreadcrumbFolders(getRootBreadcrumbFolders());
+					setBreadcrumbFolders(
+						getRootBreadcrumbFolders(rootLabelRef.current)
+					);
 				}
 			}
 		);
 	}, [folderMemoryKey]);
+
+	useEffect(() => {
+		if (resetKeyRef.current === resetKey) {
+			return;
+		}
+
+		resetKeyRef.current = resetKey;
+
+		setBreadcrumbFolders(getRootBreadcrumbFolders(rootLabel));
+	}, [resetKey, rootLabel]);
 
 	const activeFolderId = breadcrumbFolders.at(-1)!.id;
 	const activeScopeId = breadcrumbFolders.at(-1)!.scopeId ?? null;
@@ -343,9 +380,9 @@ const DetachedCMSFilesItemSelectorModal = <T extends Record<string, any>>(
 													id:
 														itemData?.embedded.id ??
 														0,
-													label:
-														itemData?.embedded
-															.title ?? '',
+													label: getFolderLabel(
+														itemData
+													),
 													scopeId:
 														itemData?.embedded
 															.scopeId ?? 0,
@@ -359,7 +396,9 @@ const DetachedCMSFilesItemSelectorModal = <T extends Record<string, any>>(
 							);
 						}
 
-						const fileMimeType = itemData?.embedded?.file?.mimeType;
+						const fileMimeType =
+							itemData?.embedded?.file?.mimeType ??
+							itemData?.embedded?.encodingFormat;
 
 						let stickerClassName = 'file-icon-color-5';
 						let iconSymbol = 'document-default';
@@ -388,7 +427,7 @@ const DetachedCMSFilesItemSelectorModal = <T extends Record<string, any>>(
 									<ClayIcon symbol={iconSymbol} />
 								</ClaySticker>
 
-								<span>{value}</span>
+								<span>{value || itemData?.title}</span>
 							</div>
 						);
 					},
@@ -442,7 +481,7 @@ const DetachedCMSFilesItemSelectorModal = <T extends Record<string, any>>(
 								onClick: () =>
 									navigateToFolder({
 										id: item?.embedded?.id ?? 0,
-										label: item?.embedded?.title ?? '',
+										label: getFolderLabel(item),
 										scopeId: item?.embedded?.scopeId ?? 0,
 									}),
 								...(view.contentRenderer === 'cards'
