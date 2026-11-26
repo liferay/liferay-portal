@@ -361,22 +361,15 @@ public class AnalyticsReportsDataProvider {
 		return _isValidConnection(companyId);
 	}
 
-	private String _get(long companyId, String path) {
-		try {
-			AnalyticsConfiguration analyticsConfiguration =
-				_analyticsSettingsManager.getAnalyticsConfiguration(companyId);
+	private String _get(long companyId, String path) throws Exception {
+		AnalyticsConfiguration analyticsConfiguration =
+			_analyticsSettingsManager.getAnalyticsConfiguration(companyId);
 
-			return _getResponse(
-				companyId,
-				String.format(
-					"%s/%s",
-					analyticsConfiguration.liferayAnalyticsFaroBackendURL(),
-					path));
-		}
-		catch (Exception exception) {
-			throw new NestableRuntimeException(
-				"Request to Asah Faro backend failed", exception);
-		}
+		return _getResponse(
+			companyId,
+			String.format(
+				"%s/%s",
+				analyticsConfiguration.liferayAnalyticsFaroBackendURL(), path));
 	}
 
 	private String _getPagesEndpoint(
