@@ -62,6 +62,18 @@ public class ObjectEntryServiceWrapper
 
 	@Override
 	public void checkModelResourcePermission(
+			com.liferay.portal.kernel.security.permission.resource.
+				ModelResourcePermission<com.liferay.object.model.ObjectEntry>
+					modelResourcePermission,
+			com.liferay.object.model.ObjectEntry objectEntry, String actionId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		_objectEntryService.checkModelResourcePermission(
+			modelResourcePermission, objectEntry, actionId);
+	}
+
+	@Override
+	public void checkModelResourcePermission(
 			com.liferay.object.model.ObjectEntry objectEntry, String actionId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
@@ -368,4 +380,4 @@ public class ObjectEntryServiceWrapper
 	private ObjectEntryService _objectEntryService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1978829394
+// LIFERAY-SERVICE-BUILDER-HASH:-1179293985

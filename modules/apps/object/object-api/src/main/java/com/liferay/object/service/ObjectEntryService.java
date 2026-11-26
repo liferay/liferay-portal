@@ -67,7 +67,13 @@ public interface ObjectEntryService extends BaseService {
 			long objectDefinitionId, long objectEntryId, String actionId)
 		throws PortalException;
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	@Transactional(enabled = false)
+	public void checkModelResourcePermission(
+			ModelResourcePermission<ObjectEntry> modelResourcePermission,
+			ObjectEntry objectEntry, String actionId)
+		throws PortalException;
+
+	@Transactional(enabled = false)
 	public void checkModelResourcePermission(
 			ObjectEntry objectEntry, String actionId)
 		throws PortalException;
@@ -215,4 +221,4 @@ public interface ObjectEntryService extends BaseService {
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1424192967
+// LIFERAY-SERVICE-BUILDER-HASH:-535557292
