@@ -1239,6 +1239,119 @@ test('Check modal field selection allows check and uncheck fields @LPS-174141, @
 	});
 });
 
+test(
+	'Deselecting fields in the field selection modal removes them from the table',
+	{tag: '@LPD-94121'},
+	async ({page, visualizationModesPage}) => {
+		const customFieldName = getRandomString();
+		const deselectedFieldName = 'fieldName';
+		const keptFieldNames = ['externalReferenceCode', 'id'];
+
+		await test.step('Navigate to table visualization mode page', async () => {
+			await visualizationModesPage.goto({
+				dataSetLabel,
+			});
+
+			await visualizationModesPage.editVisualizationMode('Table');
+
+			await expect(
+				visualizationModesPage.tableVisualizationModeContainer
+			).toBeVisible();
+		});
+
+		await test.step('Add fields from the data source and manually', async () => {
+			await visualizationModesPage.openAddDataSourceFieldsModal();
+
+			for (const fieldName of [...keptFieldNames, deselectedFieldName]) {
+				await visualizationModesPage.selectField({fieldName});
+			}
+
+			await saveFromModal({
+				page,
+			});
+
+			await visualizationModesPage.openAddCustomFieldModal();
+
+			await visualizationModesPage.addCustomFieldInput.fill(
+				customFieldName
+			);
+
+			await saveFromModal({
+				page,
+				saveText: 'Add',
+			});
+
+			await visualizationModesPage.assertTableFieldRowCount(4);
+		});
+
+		await test.step('Deselect a field and check it is removed from the table', async () => {
+			await visualizationModesPage.openAddDataSourceFieldsModal();
+
+			await visualizationModesPage.unSelectField({
+				fieldName: deselectedFieldName,
+			});
+
+			await saveFromModal({
+				page,
+			});
+
+			await visualizationModesPage.assertTableFieldRowCount(3);
+
+			await expect(
+				visualizationModesPage.getRowByText(deselectedFieldName)
+			).toBeHidden();
+
+			for (const fieldName of [...keptFieldNames, customFieldName]) {
+				await expect(
+					visualizationModesPage.getRowByText(fieldName)
+				).toBeVisible();
+			}
+		});
+
+		await test.step('Select the removed field again and check it is added back', async () => {
+			await visualizationModesPage.openAddDataSourceFieldsModal();
+
+			await visualizationModesPage.selectField({
+				fieldName: deselectedFieldName,
+			});
+
+			await saveFromModal({
+				page,
+			});
+
+			await visualizationModesPage.assertTableFieldRowCount(4);
+
+			await expect(
+				visualizationModesPage.getRowByText(deselectedFieldName)
+			).toBeVisible();
+		});
+
+		await test.step('Deselect the field again and check the removal persists', async () => {
+			await visualizationModesPage.openAddDataSourceFieldsModal();
+
+			await visualizationModesPage.unSelectField({
+				fieldName: deselectedFieldName,
+			});
+
+			await saveFromModal({
+				page,
+			});
+
+			await visualizationModesPage.goto({
+				dataSetLabel,
+			});
+
+			await visualizationModesPage.editVisualizationMode('Table');
+
+			await visualizationModesPage.assertTableFieldRowCount(3);
+
+			await expect(
+				visualizationModesPage.getRowByText(deselectedFieldName)
+			).toBeHidden();
+		});
+	}
+);
+
 test('Assert the CellRenderer is displayed', async ({
 	page,
 	visualizationModesPage,
