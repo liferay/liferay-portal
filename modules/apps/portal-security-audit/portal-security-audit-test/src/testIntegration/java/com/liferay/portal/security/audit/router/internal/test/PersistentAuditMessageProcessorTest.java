@@ -367,12 +367,12 @@ public class PersistentAuditMessageProcessorTest {
 				_route(_company.getCompanyId(), eventType);
 
 				Assert.assertEquals(
-					0,
-					_getAuditEventsCount(_company.getCompanyId(), eventType));
-				Assert.assertEquals(
 					1,
 					_getAuditEventsCount(
 						TestPropsValues.getCompanyId(), eventType));
+				Assert.assertEquals(
+					0,
+					_getAuditEventsCount(_company.getCompanyId(), eventType));
 
 				try (SafeCloseable safeCloseable2 =
 						FeatureFlagTestUtil.setFeatureFlagsWithSafeCloseable(
@@ -461,11 +461,11 @@ public class PersistentAuditMessageProcessorTest {
 
 				Assert.assertEquals(
 					0,
-					_getAuditEventsCount(_company.getCompanyId(), eventType));
-				Assert.assertEquals(
-					0,
 					_getAuditEventsCount(
 						TestPropsValues.getCompanyId(), eventType));
+				Assert.assertEquals(
+					0,
+					_getAuditEventsCount(_company.getCompanyId(), eventType));
 			}
 		}
 	}
