@@ -50,24 +50,24 @@ public class GetWorkspaceGroupChannelVisitFrequencyMetricResponse {
 	@JsonIgnoreProperties(ignoreUnknown = true)
 	public static class VisitFrequencyBag {
 
+		public List<Composition> getCompositions() {
+			return _compositions;
+		}
+
 		public Long getTotalCount() {
 			return _totalCount;
 		}
 
-		public List<Composition> getVisitFrequency() {
-			return _visitFrequency;
+		public void setCompositions(List<Composition> compositions) {
+			_compositions = compositions;
 		}
 
 		public void setTotalCount(Long totalCount) {
 			_totalCount = totalCount;
 		}
 
-		public void setVisitFrequency(List<Composition> visitFrequency) {
-			_visitFrequency = visitFrequency;
-		}
-
+		private List<Composition> _compositions;
 		private Long _totalCount;
-		private List<Composition> _visitFrequency;
 
 	}
 

@@ -19,11 +19,11 @@ import java.util.Map;
 public class ContactsEngineGraphQLStub implements AutoCloseable {
 
 	public ContactsEngineGraphQLStub(Object resource) {
-		_faroGraphQLClient = ReflectionTestUtil.getFieldValue(
+		Object faroGraphQLClient = ReflectionTestUtil.getFieldValue(
 			resource, "_faroGraphQLClient");
 
 		_contactsEngineClient = ReflectionTestUtil.getAndSetFieldValue(
-			_faroGraphQLClient, "_contactsEngineClient",
+			faroGraphQLClient, "_contactsEngineClient",
 			(ContactsEngineClient)ProxyUtil.newProxyInstance(
 				ContactsEngineClient.class.getClassLoader(),
 				new Class<?>[] {ContactsEngineClient.class},
@@ -32,6 +32,8 @@ public class ContactsEngineGraphQLStub implements AutoCloseable {
 
 					return Collections.singletonMap("data", _data);
 				}));
+
+		_faroGraphQLClient = faroGraphQLClient;
 	}
 
 	@Override

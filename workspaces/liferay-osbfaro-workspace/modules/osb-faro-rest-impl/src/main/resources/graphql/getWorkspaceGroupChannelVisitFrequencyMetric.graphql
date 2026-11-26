@@ -10,10 +10,10 @@ query getWorkspaceGroupChannelVisitFrequencyMetric(
 		rangeKey: $rangeKey
 		rangeStart: $rangeStart
 	) {
-		totalCount
-		visitFrequency {
+		compositions: visitFrequency {
 			count
 			name
 		}
+		totalCount
 	}
 }

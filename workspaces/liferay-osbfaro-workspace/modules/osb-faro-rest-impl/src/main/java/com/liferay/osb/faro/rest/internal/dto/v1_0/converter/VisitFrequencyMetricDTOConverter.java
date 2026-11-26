@@ -45,7 +45,7 @@ public class VisitFrequencyMetricDTOConverter
 		}
 
 		Map<String, Long> counts = _getCounts(
-			visitFrequencyBag.getVisitFrequency());
+			visitFrequencyBag.getCompositions());
 
 		return new VisitFrequencyMetric() {
 			{

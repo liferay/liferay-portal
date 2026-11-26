@@ -73,7 +73,7 @@ public class VisitFrequencyMetricDTOConverterTest {
 		long occasionalVisitors = RandomTestUtil.randomLong();
 		long weeklyVisitors = RandomTestUtil.randomLong();
 
-		visitFrequencyBag.setVisitFrequency(
+		visitFrequencyBag.setCompositions(
 			Arrays.asList(
 				_createComposition(biWeeklyVisitors, "bi-weekly"),
 				_createComposition(dailyVisitors, "daily"),
@@ -112,7 +112,7 @@ public class VisitFrequencyMetricDTOConverterTest {
 		long weeklyVisitors = RandomTestUtil.randomLong();
 
 		visitFrequencyBag.setTotalCount(weeklyVisitors);
-		visitFrequencyBag.setVisitFrequency(
+		visitFrequencyBag.setCompositions(
 			Collections.singletonList(
 				_createComposition(weeklyVisitors, "weekly")));
 
@@ -151,7 +151,7 @@ public class VisitFrequencyMetricDTOConverterTest {
 				new GetWorkspaceGroupChannelVisitFrequencyMetricResponse.
 					VisitFrequencyBag();
 
-		visitFrequencyBag.setVisitFrequency(
+		visitFrequencyBag.setCompositions(
 			Collections.singletonList(
 				_createComposition(
 					RandomTestUtil.randomLong(),

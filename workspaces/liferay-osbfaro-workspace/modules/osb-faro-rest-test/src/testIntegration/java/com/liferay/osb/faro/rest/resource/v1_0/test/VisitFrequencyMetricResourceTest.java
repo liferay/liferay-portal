@@ -102,9 +102,7 @@ public class VisitFrequencyMetricResourceTest
 			HashMapBuilder.<String, Object>put(
 				"visitFrequencyBag",
 				HashMapBuilder.<String, Object>put(
-					"totalCount", visitFrequencyMetric.getVisitors()
-				).put(
-					"visitFrequency",
+					"compositions",
 					List.of(
 						_createComposition(
 							visitFrequencyMetric.getBiWeeklyVisitors(),
@@ -119,6 +117,8 @@ public class VisitFrequencyMetricResourceTest
 							"occasional"),
 						_createComposition(
 							visitFrequencyMetric.getWeeklyVisitors(), "weekly"))
+				).put(
+					"totalCount", visitFrequencyMetric.getVisitors()
 				).build()
 			).build());
 

@@ -119,6 +119,7 @@ public class AcquisitionResourceTest extends BaseAcquisitionResourceTestCase {
 		_setCompositionBag(acquisition, totalCount);
 
 		String accountId = RandomTestUtil.randomString();
+		int pageSize = 10;
 		String rangeEnd = "2026-01-31";
 		String rangeStart = "2026-01-01";
 		String segmentId = String.valueOf(RandomTestUtil.randomLong());
@@ -128,7 +129,7 @@ public class AcquisitionResourceTest extends BaseAcquisitionResourceTestCase {
 			acquisitionResource.getWorkspaceGroupChannelAcquisitionsPage(
 				_faroProject.getGroupId(), _CHANNEL_ID, accountId, rangeEnd,
 				"LAST_7_DAYS", rangeStart, segmentId, type,
-				Pagination.of(2, 10));
+				Pagination.of(2, pageSize));
 
 		assertEquals(
 			List.of(acquisition),
@@ -151,7 +152,7 @@ public class AcquisitionResourceTest extends BaseAcquisitionResourceTestCase {
 		Assert.assertEquals(7, variables.get("rangeKey"));
 		Assert.assertEquals(rangeStart, variables.get("rangeStart"));
 		Assert.assertEquals(segmentId, variables.get("segmentId"));
-		Assert.assertEquals(10, variables.get("size"));
+		Assert.assertEquals(pageSize, variables.get("size"));
 		Assert.assertEquals(1, variables.get("start"));
 	}
 
