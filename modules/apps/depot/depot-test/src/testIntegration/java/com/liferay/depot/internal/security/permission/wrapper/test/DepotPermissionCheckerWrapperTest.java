@@ -206,12 +206,12 @@ public class DepotPermissionCheckerWrapperTest {
 
 				Assert.assertTrue(
 					permissionChecker.hasPermission(
-						folder.getGroupId(), DLFolder.class.getName(),
-						folder.getFolderId(), ActionKeys.ADD_DOCUMENT));
-				Assert.assertTrue(
-					permissionChecker.hasPermission(
 						fileEntry.getGroupId(), DLFileEntry.class.getName(),
 						fileEntry.getFileEntryId(), ActionKeys.VIEW));
+				Assert.assertTrue(
+					permissionChecker.hasPermission(
+						folder.getGroupId(), DLFolder.class.getName(),
+						folder.getFolderId(), ActionKeys.ADD_DOCUMENT));
 			});
 	}
 

@@ -61,8 +61,9 @@ public class DepotEntryJournalArticleStagingTest {
 	@Before
 	public void setUp() throws Exception {
 		_liveDepotEntry = _depotEntryLocalService.addDepotEntry(
-			Collections.singletonMap(
-				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
+			HashMapBuilder.put(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()
+			).build(),
 			Collections.emptyMap(), DepotConstants.TYPE_ASSET_LIBRARY,
 			ServiceContextTestUtil.getServiceContext());
 	}
@@ -87,7 +88,7 @@ public class DepotEntryJournalArticleStagingTest {
 
 				Assert.assertEquals(
 					journalArticle.getUrlTitle(LocaleUtil.getDefault()),
-					_getLiveUrlTitle(journalArticle, liveGroup));
+					_getLiveURLTitle(journalArticle, liveGroup));
 
 				String urlTitle = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
@@ -112,7 +113,7 @@ public class DepotEntryJournalArticleStagingTest {
 					stagingDepotEntry.getGroup(), liveGroup);
 
 				Assert.assertEquals(
-					urlTitle, _getLiveUrlTitle(journalArticle, liveGroup));
+					urlTitle, _getLiveURLTitle(journalArticle, liveGroup));
 			});
 	}
 
@@ -216,7 +217,7 @@ public class DepotEntryJournalArticleStagingTest {
 				}));
 	}
 
-	private String _getLiveUrlTitle(
+	private String _getLiveURLTitle(
 			JournalArticle journalArticle, Group liveGroup)
 		throws Exception {
 
