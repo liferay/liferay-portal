@@ -8,7 +8,9 @@ package com.liferay.osb.faro.web.internal.helper;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
 import com.liferay.osb.faro.model.FaroProject;
+import com.liferay.osb.faro.web.internal.util.FaroNavigationUtil;
 import com.liferay.osb.faro.web.internal.util.SiteInitializerUtil;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
@@ -26,9 +28,14 @@ public class WorkspaceSiteHelper {
 	public synchronized void initialize(FaroProject faroProject)
 		throws Exception {
 
+		Group group = _groupLocalService.getGroup(faroProject.getGroupId());
+
 		SiteInitializerUtil.initialize(
-			_groupLocalService.getGroup(faroProject.getGroupId()),
-			_siteInitializer, _SITE_INITIALIZER_VERSION);
+			group, _siteInitializer, _SITE_INITIALIZER_VERSION);
+
+		if (!FaroNavigationUtil.isLDPEnabled(faroProject)) {
+			updateMasterLayouts("AC_FAVICON", group.getGroupId());
+		}
 	}
 
 	public boolean isInitialized(FaroProject faroProject) throws Exception {
