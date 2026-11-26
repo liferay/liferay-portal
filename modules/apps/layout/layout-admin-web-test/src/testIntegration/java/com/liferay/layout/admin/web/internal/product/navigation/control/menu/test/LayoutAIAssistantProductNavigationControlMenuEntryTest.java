@@ -121,14 +121,16 @@ public class LayoutAIAssistantProductNavigationControlMenuEntryTest {
 		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
 			new MockLiferayPortletRenderRequest();
 
-		String path = "/view.jsp";
-
 		mockLiferayPortletRenderRequest.setAttribute(
 			JavaConstants.JAKARTA_PORTLET_CONFIG, null);
+
+		String path = "/view.jsp";
+
 		mockLiferayPortletRenderRequest.setAttribute(
 			MVCRenderConstants.
 				PORTLET_CONTEXT_OVERRIDE_REQUEST_ATTIBUTE_NAME_PREFIX + path,
 			new MockLiferayPortletContext(path));
+
 		mockLiferayPortletRenderRequest.setAttribute(
 			WebKeys.COMPANY_ID, _group.getCompanyId());
 		mockLiferayPortletRenderRequest.setAttribute(
@@ -152,6 +154,10 @@ public class LayoutAIAssistantProductNavigationControlMenuEntryTest {
 
 		ThemeDisplay themeDisplay = new ThemeDisplay();
 
+		PortletDisplay portletDisplay = themeDisplay.getPortletDisplay();
+
+		portletDisplay.setPortletName(LayoutAdminPortletKeys.GROUP_PAGES);
+
 		themeDisplay.setCompany(
 			_companyLocalService.getCompany(_group.getCompanyId()));
 		themeDisplay.setLocale(LocaleUtil.getDefault());
@@ -160,10 +166,6 @@ public class LayoutAIAssistantProductNavigationControlMenuEntryTest {
 		themeDisplay.setScopeGroupId(_group.getGroupId());
 		themeDisplay.setSiteGroupId(_group.getGroupId());
 		themeDisplay.setUser(TestPropsValues.getUser());
-
-		PortletDisplay portletDisplay = themeDisplay.getPortletDisplay();
-
-		portletDisplay.setPortletName(LayoutAdminPortletKeys.GROUP_PAGES);
 
 		mockHttpServletRequest.setAttribute(
 			"LAYOUT_PAGE_LAYOUT_ADMIN_DISPLAY_CONTEXT",
