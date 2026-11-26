@@ -392,11 +392,6 @@ public interface CommercePriceListLocalService
 		long[] groupIds, long companyId, int start, int end);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CommercePriceList> getCommercePriceLists(
-		long[] groupIds, long companyId, int status, int start, int end,
-		OrderByComparator<CommercePriceList> orderByComparator);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CommercePriceList>
 		getCommercePriceListsByAccountAndChannelAndOrderTypeId(
 			long groupId, long commerceAccountId, long commerceChannelId,
@@ -594,4 +589,4 @@ public interface CommercePriceListLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1190684172
+// LIFERAY-SERVICE-BUILDER-HASH:-707109315

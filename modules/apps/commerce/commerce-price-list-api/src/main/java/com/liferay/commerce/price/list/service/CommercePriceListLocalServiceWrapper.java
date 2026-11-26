@@ -543,16 +543,6 @@ public class CommercePriceListLocalServiceWrapper
 	}
 
 	@Override
-	public java.util.List<CommercePriceList> getCommercePriceLists(
-		long[] groupIds, long companyId, int status, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<CommercePriceList>
-			orderByComparator) {
-
-		return _commercePriceListLocalService.getCommercePriceLists(
-			groupIds, companyId, status, start, end, orderByComparator);
-	}
-
-	@Override
 	public java.util.List<CommercePriceList>
 		getCommercePriceListsByAccountAndChannelAndOrderTypeId(
 			long groupId, long commerceAccountId, long commerceChannelId,
@@ -918,4 +908,4 @@ public class CommercePriceListLocalServiceWrapper
 	private CommercePriceListLocalService _commercePriceListLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1214174752
+// LIFERAY-SERVICE-BUILDER-HASH:256999044

@@ -487,14 +487,6 @@ public class CommercePriceListLocalServiceUtil {
 			groupIds, companyId, start, end);
 	}
 
-	public static List<CommercePriceList> getCommercePriceLists(
-		long[] groupIds, long companyId, int status, int start, int end,
-		OrderByComparator<CommercePriceList> orderByComparator) {
-
-		return getService().getCommercePriceLists(
-			groupIds, companyId, status, start, end, orderByComparator);
-	}
-
 	public static List<CommercePriceList>
 		getCommercePriceListsByAccountAndChannelAndOrderTypeId(
 			long groupId, long commerceAccountId, long commerceChannelId,
@@ -790,4 +782,4 @@ public class CommercePriceListLocalServiceUtil {
 			CommercePriceListLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1743482881
+// LIFERAY-SERVICE-BUILDER-HASH:-1227070807
