@@ -343,7 +343,6 @@ public class WorkflowDefinitionManagerTest extends BaseWorkflowManagerTestCase {
 						"Definition",
 					RandomTestUtil.randomString(), TestPropsValues.getUserId());
 			});
-
 		AssertUtils.assertFailure(
 			KaleoDefinitionValidationException.class,
 			"The Ask a Human node must have a question",
@@ -359,7 +358,6 @@ public class WorkflowDefinitionManagerTest extends BaseWorkflowManagerTestCase {
 					"Ask a Human Node With Empty Question Workflow Definition",
 					RandomTestUtil.randomString(), TestPropsValues.getUserId());
 			});
-
 		AssertUtils.assertFailure(
 			WorkflowDefinitionFileException.class, "Unable to parse definition",
 			() -> {
