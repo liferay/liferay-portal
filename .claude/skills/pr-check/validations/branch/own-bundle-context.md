@@ -4,7 +4,7 @@ Flags `SystemBundleUtil.getBundleContext()` that a branch adds to module code wh
 
 ## Source Formatter Candidate
 
-This validation stands in for a Source Formatter check. Source Formatter catches the same code at format time and in CI without a pr-check run, so the check is the intended home of this rule, and this validation is the guard until it lands. When the check lands in `modules/util/source-formatter`, delete this file and its entry in `SKILL.md`. The check lists the same files in its `allowedFileNames` property.
+This validation stands in for a Source Formatter check. Source Formatter catches the same code at format time and in CI without a pr-check run, so the check is the intended home of this rule, and this validation is the guard until it lands. When the check lands in `modules/util/source-formatter`, delete this file and its entry in `SKILL.md`. The check will list the same files in its `allowedFileNames` property.
 
 - Check: `JavaSystemBundleContextCheck`
 
@@ -14,11 +14,11 @@ This validation stands in for a Source Formatter check. Source Formatter catches
 
 ## Command
 
-This check is static and needs no build. It reads each changed Java file under `modules` that the branch keeps and reports each `SystemBundleUtil.getBundleContext()` on a line the branch adds, outside comments and string literals. The **Match** leaves out unit tests under `src/test`, which run without an OSGi framework, so the system bundle's context is the only one they have, and the files below, which keep the system bundle's context on purpose:
+This check is static and needs no build. It reads each changed Java file under `modules` that the branch keeps and reports each `SystemBundleUtil.getBundleContext()` on a line the branch adds, outside comments and string literals. The **Match** leaves out the unit tests under `src/test`, which run without an OSGi framework and have no context other than the system bundle's, and the files below, which keep the system bundle's context on purpose:
 
 - `modules/apps/portal-cache/portal-cache-test/src/testIntegration/java/com/liferay/portal/cache/internal/test/ClusterGeneralTest.java`, `ClusterPluginCacheReplicationTest.java` beside it, and `modules/apps/portal-scheduler/portal-scheduler-test/src/testIntegration/java/com/liferay/portal/scheduler/internal/test/ClusterSchedulerEngineTest.java`, whose code also runs in a second portal JVM where the test bundle is not installed.
+- `BaseExpandoTestCase.java`, `BaseReindexSingleIndexerBackgroundTaskExecutorTestCase.java`, `BaseSearchResultUtilTestCase.java`, and `LiferayFieldQueryFactoryFixture.java` under `modules/apps/portal-search/portal-search-test-util`, which unit tests also extend.
 - `modules/apps/portal/portal-license-test/src/testIntegration/java/com/liferay/portal/license/test/BaseLicenseTestCase.java`, which resets the lifecycle action of the system bundle.
-- `BaseExpandoTestCase.java`, `BaseSearchResultUtilTestCase.java`, `LiferayFieldQueryFactoryFixture.java`, and `BaseReindexSingleIndexerBackgroundTaskExecutorTestCase.java` under `modules/apps/portal-search/portal-search-test-util`, which unit tests also extend.
 - `modules/core/jaxws-osgi-bridge/src/main/java/com/liferay/jaxws/osgi/bridge/Provider.java`, which the app server loads outside any bundle.
 
 Each finding prints as `<path>:<line>: uses SystemBundleUtil.getBundleContext()`.
@@ -136,9 +136,9 @@ Run the command from `${REPO_ROOT}`, with the branch checked out and the working
 
 Use `while read` rather than a `for` over an unquoted substitution, so a path holding whitespace stays one file rather than splitting into several.
 
-When `${FINDINGS}` is empty, the branch adds no use of the system bundle's context to module code, so the validation passes.
+An empty `${FINDINGS}` means that the branch adds no use of the system bundle's context to module code, and the validation passes.
 
-Otherwise, read the code each line names. A line is not a finding when the code runs where no bundle of its own exists, such as a class that a unit test outside `src/test` also loads without an OSGi framework, or code that runs in a second portal JVM. Every other line is a finding, and the validation fails. Report the message below to the developer with one row for each finding and return it as the failure note.
+Otherwise, read the code that each line names. A line is not a finding when the code runs where no bundle of its own exists, such as a class that a unit test outside `src/test` also loads without an OSGi framework, or code that runs in a second portal JVM. Every other line is a finding, and the validation fails. Report the message below to the developer with one row for each finding and return it as the failure note.
 
 ```markdown
 **Module code uses the system bundle's context.** Use the bundle's own `BundleContext` instead of `SystemBundleUtil.getBundleContext()`: the `BundleContext` of the `@Activate` method in a component, `FrameworkUtil.getBundle(<Class>.class)` and its `BundleContext` in a static utility or a plain object, and `BundleContextTestUtil.getBundleContext(<Class>.class)` in an integration test. For additional questions, use #t-core-infrastructure on Slack.
