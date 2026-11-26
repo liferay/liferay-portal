@@ -91,8 +91,12 @@ public class GoogleDocsDLFilePicker implements DLFilePicker {
 		Template template = TemplateManagerUtil.getTemplate(
 			TemplateConstants.LANG_TYPE_FTL, templateResource, false);
 
-		template.put("googleAppsAPIKey", _getGoogleAppsAPIKey());
-		template.put("googleClientId", _getGoogleClientId());
+		template.put(
+			"googleAppsAPIKey",
+			SecretResolverUtil.resolve(
+				_companyId, _dlGoogleDriveCompanyConfiguration.pickerAPIKey()));
+		template.put(
+			"googleClientId", _dlGoogleDriveCompanyConfiguration.clientId());
 		template.put("htmlUtil", HtmlUtil_IW.getInstance());
 		template.put("namespace", _namespace);
 		template.put("onFilePickCallback", _onFilePickCallback);
@@ -117,15 +121,6 @@ public class GoogleDocsDLFilePicker implements DLFilePicker {
 	@Override
 	public String getTitleFieldName() {
 		return GoogleDocsConstants.DDM_FIELD_NAME_TITLE;
-	}
-
-	private String _getGoogleAppsAPIKey() {
-		return SecretResolverUtil.resolve(
-			_companyId, _dlGoogleDriveCompanyConfiguration.pickerAPIKey());
-	}
-
-	private String _getGoogleClientId() {
-		return _dlGoogleDriveCompanyConfiguration.clientId();
 	}
 
 	private final long _companyId;
