@@ -10,6 +10,7 @@ import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalServ
 import com.liferay.osb.faro.constants.FaroUserConstants;
 import com.liferay.osb.faro.model.FaroProject;
 import com.liferay.osb.faro.model.FaroUser;
+import com.liferay.osb.faro.service.FaroUserLocalService;
 import com.liferay.osb.faro.web.internal.util.FaroNavigationUtil;
 import com.liferay.osb.faro.web.internal.util.SiteInitializerUtil;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -44,6 +45,13 @@ public class WorkspaceSiteHelper {
 
 		if (!FaroNavigationUtil.isLDPEnabled(faroProject)) {
 			updateMasterLayouts("AC_FAVICON", group.getGroupId());
+		}
+
+		for (FaroUser faroUser :
+				_faroUserLocalService.getFaroUsersByStatus(
+					group.getGroupId(), FaroUserConstants.STATUS_APPROVED)) {
+
+			updateUserGroupRoles(faroUser);
 		}
 	}
 
@@ -129,6 +137,9 @@ public class WorkspaceSiteHelper {
 	}
 
 	private static final String _SITE_INITIALIZER_VERSION = "0.1";
+
+	@Reference
+	private FaroUserLocalService _faroUserLocalService;
 
 	@Reference
 	private GroupLocalService _groupLocalService;
