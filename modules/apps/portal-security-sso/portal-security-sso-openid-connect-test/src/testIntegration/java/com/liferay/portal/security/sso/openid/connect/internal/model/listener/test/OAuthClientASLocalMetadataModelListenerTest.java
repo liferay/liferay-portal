@@ -101,7 +101,7 @@ public class OAuthClientASLocalMetadataModelListenerTest {
 
 		try {
 			OAuthClientEntry oAuthClientEntry =
-				_oAuthClientEntryLocalService.fetchOAuthClientEntry(
+				_oAuthClientEntryLocalService.getOAuthClientEntry(
 					TestPropsValues.getCompanyId(), localWellKnownURI,
 					clientId);
 

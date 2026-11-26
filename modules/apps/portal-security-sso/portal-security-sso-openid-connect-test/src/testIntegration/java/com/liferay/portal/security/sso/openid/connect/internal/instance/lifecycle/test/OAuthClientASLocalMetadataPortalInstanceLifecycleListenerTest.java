@@ -165,7 +165,7 @@ public class OAuthClientASLocalMetadataPortalInstanceLifecycleListenerTest {
 					"FIPS_ENABLED", true)) {
 
 			OAuthClientEntry oAuthClientEntry =
-				_oAuthClientEntryLocalService.fetchOAuthClientEntry(
+				_oAuthClientEntryLocalService.getOAuthClientEntry(
 					TestPropsValues.getCompanyId(), localWellKnownURI,
 					clientId);
 
@@ -182,7 +182,7 @@ public class OAuthClientASLocalMetadataPortalInstanceLifecycleListenerTest {
 			Assert.assertNotEquals(localWellKnownURI, newLocalWellKnownURI);
 
 			OAuthClientEntry newOAuthClientEntry =
-				_oAuthClientEntryLocalService.fetchOAuthClientEntry(
+				_oAuthClientEntryLocalService.getOAuthClientEntry(
 					TestPropsValues.getCompanyId(), newLocalWellKnownURI,
 					clientId);
 
@@ -240,7 +240,7 @@ public class OAuthClientASLocalMetadataPortalInstanceLifecycleListenerTest {
 			ConfigurationTestUtil.saveConfiguration(_pid, properties);
 
 			newOAuthClientEntry =
-				_oAuthClientEntryLocalService.fetchOAuthClientEntry(
+				_oAuthClientEntryLocalService.getOAuthClientEntry(
 					TestPropsValues.getCompanyId(), newLocalWellKnownURI,
 					clientId);
 

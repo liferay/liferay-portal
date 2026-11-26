@@ -279,7 +279,7 @@ public class OpenIdConnectProviderPortalInstanceLifecycleListenerTest {
 		}
 
 		OAuthClientEntry oAuthClientEntry =
-			_oAuthClientEntryLocalService.fetchOAuthClientEntry(
+			_oAuthClientEntryLocalService.getOAuthClientEntry(
 				TestPropsValues.getCompanyId(),
 				_generateLocalWellKnownURI(issuerURL, tokenEndpoint), clientId);
 
