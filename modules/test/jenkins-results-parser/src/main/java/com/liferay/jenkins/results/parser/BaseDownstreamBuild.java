@@ -309,29 +309,43 @@ public class BaseDownstreamBuild extends BaseBuild implements DownstreamBuild {
 
 	@Override
 	public JSONObject getBuildReportJSONObject() {
-		JSONObject buildReportJSONObject = super.getBuildReportJSONObject();
+		JSONObject buildReportJSONObject = null;
 
-		buildReportJSONObject.put("axisName", getAxisName());
+		DownstreamBuildReport cachedDownstreamBuildReport =
+			getCachedDownstreamBuildReport();
 
-		JSONObject testReportJSONObject = getTestReportJSONObject(false);
+		if (cachedDownstreamBuildReport != null) {
+			buildReportJSONObject = new JSONObject(
+				String.valueOf(
+					cachedDownstreamBuildReport.getBuildReportJSONObject()));
 
-		if (testReportJSONObject != null) {
-			buildReportJSONObject.put(
-				"failCount", testReportJSONObject.optInt("failCount")
-			).put(
-				"passCount", testReportJSONObject.optInt("passCount")
-			).put(
-				"skipCount", testReportJSONObject.optInt("skipCount")
-			);
+			buildReportJSONObject.put("buildCached", true);
 		}
+		else {
+			buildReportJSONObject = super.getBuildReportJSONObject();
 
-		JSONArray testResultsJSONArray = new JSONArray();
+			buildReportJSONObject.put("axisName", getAxisName());
 
-		for (TestResult testResult : getTestResults(null)) {
-			testResultsJSONArray.put(testResult.getTestReportJSONObject());
+			JSONObject testReportJSONObject = getTestReportJSONObject(false);
+
+			if (testReportJSONObject != null) {
+				buildReportJSONObject.put(
+					"failCount", testReportJSONObject.optInt("failCount")
+				).put(
+					"passCount", testReportJSONObject.optInt("passCount")
+				).put(
+					"skipCount", testReportJSONObject.optInt("skipCount")
+				);
+			}
+
+			JSONArray testResultsJSONArray = new JSONArray();
+
+			for (TestResult testResult : getTestResults(null)) {
+				testResultsJSONArray.put(testResult.getTestReportJSONObject());
+			}
+
+			buildReportJSONObject.put("testResults", testResultsJSONArray);
 		}
-
-		buildReportJSONObject.put("testResults", testResultsJSONArray);
 
 		if (_testrayCaseResultURL != null) {
 			buildReportJSONObject.put(
