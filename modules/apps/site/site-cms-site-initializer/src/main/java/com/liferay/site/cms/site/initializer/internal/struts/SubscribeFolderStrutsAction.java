@@ -7,17 +7,13 @@ package com.liferay.site.cms.site.initializer.internal.struts;
 
 import com.liferay.object.model.ObjectEntryFolder;
 import com.liferay.object.service.ObjectEntryFolderLocalService;
+import com.liferay.object.service.ObjectEntryFolderService;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONUtil;
-import com.liferay.portal.kernel.security.auth.GuestOrUserUtil;
-import com.liferay.portal.kernel.security.permission.ActionKeys;
-import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.servlet.ServletResponseUtil;
 import com.liferay.portal.kernel.struts.StrutsAction;
-import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.ParamUtil;
-import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -40,27 +36,21 @@ public class SubscribeFolderStrutsAction implements StrutsAction {
 		throws Exception {
 
 		long objectEntryFolderId = ParamUtil.getLong(
-			httpServletRequest, "classPK");
+			httpServletRequest, "objectEntryFolderId");
 
-		ThemeDisplay themeDisplay =
-			(ThemeDisplay)httpServletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY);
-
-		_modelResourcePermission.check(
-			GuestOrUserUtil.getPermissionChecker(), objectEntryFolderId,
-			ActionKeys.SUBSCRIBE);
+		ObjectEntryFolder objectEntryFolder =
+			_objectEntryFolderLocalService.getObjectEntryFolder(
+				objectEntryFolderId);
 
 		String cmd = ParamUtil.getString(httpServletRequest, "cmd");
 
 		if (cmd.equals(Constants.SUBSCRIBE)) {
-			_objectEntryFolderLocalService.subscribeObjectEntryFolder(
-				themeDisplay.getUserId(), themeDisplay.getScopeGroupId(),
-				objectEntryFolderId);
+			_objectEntryFolderService.subscribeObjectEntryFolder(
+				objectEntryFolder.getGroupId(), objectEntryFolderId);
 		}
 		else {
-			_objectEntryFolderLocalService.unsubscribeObjectEntryFolder(
-				themeDisplay.getUserId(), themeDisplay.getScopeGroupId(),
-				objectEntryFolderId);
+			_objectEntryFolderService.unsubscribeObjectEntryFolder(
+				objectEntryFolder.getGroupId(), objectEntryFolderId);
 		}
 
 		ServletResponseUtil.write(
@@ -73,12 +63,10 @@ public class SubscribeFolderStrutsAction implements StrutsAction {
 	@Reference
 	private JSONFactory _jsonFactory;
 
-	@Reference(
-		target = "(model.class.name=com.liferay.object.model.ObjectEntryFolder)"
-	)
-	private ModelResourcePermission<ObjectEntryFolder> _modelResourcePermission;
-
 	@Reference
 	private ObjectEntryFolderLocalService _objectEntryFolderLocalService;
+
+	@Reference
+	private ObjectEntryFolderService _objectEntryFolderService;
 
 }
