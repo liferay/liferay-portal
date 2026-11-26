@@ -23,6 +23,12 @@ import java.util.regex.Pattern;
 public class SQLServerLimitStringUtil {
 
 	public static String getLimitString(String sql, int offset, int limit) {
+		if (_hasOrderBy(sql)) {
+			return StringBundler.concat(
+				sql, " offset ", offset, " rows fetch next ", limit - offset,
+				" rows only");
+		}
+
 		String sqlLowerCase = StringUtil.toLowerCase(sql);
 
 		int fromPos = sqlLowerCase.indexOf(" from ");
@@ -71,6 +77,31 @@ public class SQLServerLimitStringUtil {
 		}
 
 		return innerSelectFrom;
+	}
+
+	private static boolean _hasOrderBy(String sql) {
+		int depth = 0;
+
+		for (int i = sql.length() - 1; i >= 0; i--) {
+			char c = sql.charAt(i);
+
+			if (c == CharPool.APOSTROPHE) {
+				i = sql.lastIndexOf(CharPool.APOSTROPHE, i - 1);
+			}
+			else if (c == CharPool.CLOSE_PARENTHESIS) {
+				depth++;
+			}
+			else if (c == CharPool.OPEN_PARENTHESIS) {
+				depth--;
+			}
+			else if ((depth == 0) &&
+					 sql.regionMatches(true, i, " order by ", 0, 10)) {
+
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	private static String[] _splitOrderBy(String selectFrom, String orderBy) {
