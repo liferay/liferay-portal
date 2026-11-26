@@ -55,7 +55,6 @@ import com.liferay.portal.kernel.model.LayoutFriendlyURL;
 import com.liferay.portal.kernel.model.LayoutPrototype;
 import com.liferay.portal.kernel.model.LayoutReference;
 import com.liferay.portal.kernel.model.LayoutSet;
-import com.liferay.portal.kernel.model.LayoutSetPrototype;
 import com.liferay.portal.kernel.model.LayoutTable;
 import com.liferay.portal.kernel.model.LayoutType;
 import com.liferay.portal.kernel.model.LayoutTypeController;
@@ -99,7 +98,6 @@ import com.liferay.portal.kernel.service.persistence.GroupPersistence;
 import com.liferay.portal.kernel.service.persistence.LayoutFriendlyURLPersistence;
 import com.liferay.portal.kernel.service.persistence.LayoutPrototypePersistence;
 import com.liferay.portal.kernel.service.persistence.LayoutSetPersistence;
-import com.liferay.portal.kernel.service.persistence.LayoutSetPrototypePersistence;
 import com.liferay.portal.kernel.service.persistence.PortalPreferencesPersistence;
 import com.liferay.portal.kernel.service.persistence.ResourcePermissionPersistence;
 import com.liferay.portal.kernel.service.persistence.UserPersistence;
@@ -1584,41 +1582,6 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 	}
 
 	/**
-	 * Returns primary key of the default portlet layout for the group
-	 *
-	 * @param  groupId the primary key of the group
-	 * @param  privateLayout whether the layout is private to the group
-	 * @param  portletId the primary key of the portlet
-	 * @return the primary key of the default portlet layout for the group;
-	 *         {@link LayoutConstants#DEFAULT_PLID} otherwise
-	 * @throws PortalException
-	 */
-	@Override
-	public long getDefaultPlid(
-		long groupId, boolean privateLayout, String portletId) {
-
-		if (groupId > 0) {
-			List<Layout> layouts = layoutPersistence.findByG_P_S(
-				groupId, privateLayout, false);
-
-			for (Layout layout : layouts) {
-				if (!layout.isTypePortlet()) {
-					continue;
-				}
-
-				LayoutTypePortlet layoutTypePortlet =
-					(LayoutTypePortlet)layout.getLayoutType();
-
-				if (layoutTypePortlet.hasPortletId(portletId)) {
-					return layout.getPlid();
-				}
-			}
-		}
-
-		return LayoutConstants.DEFAULT_PLID;
-	}
-
-	/**
 	 * Returns the layout for the friendly URL.
 	 *
 	 * @param  groupId the primary key of the group
@@ -2449,14 +2412,6 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 	}
 
 	@Override
-	public List<Layout> getMasterLayouts(
-		long groupId, String masterLayoutPageTemplateEntryERC) {
-
-		return layoutPersistence.findByG_MLPTEERC(
-			groupId, masterLayoutPageTemplateEntryERC);
-	}
-
-	@Override
 	public int getMasterLayoutsCount(
 		long groupId, String masterLayoutPageTemplateEntryERC) {
 
@@ -2682,30 +2637,6 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 		}
 
 		return false;
-	}
-
-	@Override
-	public boolean hasLayoutSetPrototypeLayout(
-			long layoutSetPrototypeId, String layoutUuid)
-		throws PortalException {
-
-		return layoutLocalServiceHelper.hasLayoutSetPrototypeLayout(
-			_layoutSetPrototypePersistence.findByPrimaryKey(
-				layoutSetPrototypeId),
-			layoutUuid);
-	}
-
-	@Override
-	public boolean hasLayoutSetPrototypeLayout(
-			String layoutSetPrototypeUuid, long companyId, String layoutUuid)
-		throws PortalException {
-
-		LayoutSetPrototype layoutSetPrototype =
-			_layoutSetPrototypePersistence.findByUuid_C_First(
-				layoutSetPrototypeUuid, companyId, null);
-
-		return layoutLocalServiceHelper.hasLayoutSetPrototypeLayout(
-			layoutSetPrototype, layoutUuid);
 	}
 
 	@Override
@@ -4818,9 +4749,6 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 
 	@BeanReference(type = LayoutSetPersistence.class)
 	private LayoutSetPersistence _layoutSetPersistence;
-
-	@BeanReference(type = LayoutSetPrototypePersistence.class)
-	private LayoutSetPrototypePersistence _layoutSetPrototypePersistence;
 
 	@BeanReference(type = PortalPreferenceValueLocalService.class)
 	private PortalPreferenceValueLocalService

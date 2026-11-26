@@ -21,7 +21,6 @@ import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.model.LayoutFriendlyURL;
 import com.liferay.portal.kernel.model.LayoutSet;
-import com.liferay.portal.kernel.model.LayoutSetPrototype;
 import com.liferay.portal.kernel.model.LayoutType;
 import com.liferay.portal.kernel.model.LayoutTypeController;
 import com.liferay.portal.kernel.model.ModelHintsUtil;
@@ -246,20 +245,6 @@ public class LayoutLocalServiceHelper implements IdentifiableOSGiService {
 		}
 
 		return plid;
-	}
-
-	public boolean hasLayoutSetPrototypeLayout(
-			LayoutSetPrototype layoutSetPrototype, String layoutUuid)
-		throws PortalException {
-
-		Layout layout = layoutPersistence.fetchByUUID_G_P(
-			layoutUuid, layoutSetPrototype.getGroupId(), true);
-
-		if (layout != null) {
-			return true;
-		}
-
-		return false;
 	}
 
 	public void validate(

@@ -283,15 +283,6 @@ public class LayoutRevisionLocalServiceImpl
 	}
 
 	@Override
-	public LayoutRevision fetchLatestLayoutRevision(
-		long layoutSetBranchId, long layoutBranchId, long plid) {
-
-		return layoutRevisionPersistence.fetchByL_L_P_First(
-			layoutSetBranchId, layoutBranchId, plid,
-			LayoutRevisionCreateDateComparator.getInstance(false));
-	}
-
-	@Override
 	public List<LayoutRevision> getChildLayoutRevisions(
 		long layoutSetBranchId, long parentLayoutRevisionId, long plid) {
 
@@ -307,14 +298,6 @@ public class LayoutRevisionLocalServiceImpl
 		return layoutRevisionPersistence.findByL_P_P(
 			layoutSetBranchId, parentLayoutRevision, plid, start, end,
 			orderByComparator);
-	}
-
-	@Override
-	public int getChildLayoutRevisionsCount(
-		long layoutSetBranchId, long parentLayoutRevision, long plid) {
-
-		return layoutRevisionPersistence.countByL_P_P(
-			layoutSetBranchId, parentLayoutRevision, plid);
 	}
 
 	@Override
@@ -385,15 +368,6 @@ public class LayoutRevisionLocalServiceImpl
 
 		return layoutRevisionPersistence.findByL_P_S(
 			layoutSetBranchId, plid, status);
-	}
-
-	@Override
-	public List<LayoutRevision> getLayoutRevisions(
-		long layoutSetBranchId, long plid, int start, int end,
-		OrderByComparator<LayoutRevision> orderByComparator) {
-
-		return layoutRevisionPersistence.findByL_P(
-			layoutSetBranchId, plid, start, end, orderByComparator);
 	}
 
 	@Override
