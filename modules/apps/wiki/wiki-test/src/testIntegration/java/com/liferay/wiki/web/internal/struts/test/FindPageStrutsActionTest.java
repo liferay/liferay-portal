@@ -65,12 +65,12 @@ public class FindPageStrutsActionTest {
 
 		LayoutTestUtil.addPortletToLayout(_layout, WikiPortletKeys.WIKI);
 
-		WikiNode wikiNode = WikiTestUtil.addNode(_group.getGroupId());
-
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId());
 
 		serviceContext.setAddGuestPermissions(false);
+
+		WikiNode wikiNode = WikiTestUtil.addNode(_group.getGroupId());
 
 		_wikiPage = WikiTestUtil.addPage(
 			TestPropsValues.getUserId(), wikiNode.getNodeId(),
@@ -83,7 +83,7 @@ public class FindPageStrutsActionTest {
 	public void testExecute() throws Exception {
 		String redirect = _execute(TestPropsValues.getUser());
 
-		Assert.assertTrue(redirect, redirect.contains(_wikiPage.getTitle()));
+		Assert.assertTrue(redirect.contains(_wikiPage.getTitle()));
 	}
 
 	@Test
