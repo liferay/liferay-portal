@@ -310,10 +310,6 @@ public class SearchContext implements Serializable {
 		return _queryConfig;
 	}
 
-	public float getScoresThreshold() {
-		return _scoresThreshold;
-	}
-
 	public Sort[] getSorts() {
 		return _sorts;
 	}
@@ -530,10 +526,6 @@ public class SearchContext implements Serializable {
 		_scopeStrict = scopeStrict;
 	}
 
-	public void setScoresThreshold(float scoresThreshold) {
-		_scoresThreshold = scoresThreshold;
-	}
-
 	public void setSorts(Sort... sorts) {
 		_sorts = sorts;
 	}
@@ -598,7 +590,6 @@ public class SearchContext implements Serializable {
 	private String[] _portletIds;
 	private QueryConfig _queryConfig;
 	private boolean _scopeStrict = true;
-	private float _scoresThreshold;
 	private Sort[] _sorts;
 	private int _start;
 	private final Map<String, Stats> _stats = new ConcurrentHashMap<>();
