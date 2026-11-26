@@ -446,20 +446,6 @@ public class AssetListEntryAssetEntryRelLocalServiceUtil {
 	}
 
 	public static int getAssetListEntryAssetEntryRelsCount(
-		long assetListEntryId, long segmentsEntryId) {
-
-		return getService().getAssetListEntryAssetEntryRelsCount(
-			assetListEntryId, segmentsEntryId);
-	}
-
-	public static int getAssetListEntryAssetEntryRelsCount(
-		long assetListEntryId, long[] segmentsEntryIds) {
-
-		return getService().getAssetListEntryAssetEntryRelsCount(
-			assetListEntryId, segmentsEntryIds);
-	}
-
-	public static int getAssetListEntryAssetEntryRelsCount(
 		long assetListEntryId, String audienceEntryERC, long segmentsEntryId) {
 
 		return getService().getAssetListEntryAssetEntryRelsCount(
@@ -566,4 +552,4 @@ public class AssetListEntryAssetEntryRelLocalServiceUtil {
 			AssetListEntryAssetEntryRelLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1878844685
+// LIFERAY-SERVICE-BUILDER-HASH:944085725

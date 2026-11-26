@@ -362,14 +362,6 @@ public interface AssetListEntryAssetEntryRelLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getAssetListEntryAssetEntryRelsCount(
-		long assetListEntryId, long segmentsEntryId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getAssetListEntryAssetEntryRelsCount(
-		long assetListEntryId, long[] segmentsEntryIds);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getAssetListEntryAssetEntryRelsCount(
 		long assetListEntryId, String audienceEntryERC, long segmentsEntryId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -445,4 +437,4 @@ public interface AssetListEntryAssetEntryRelLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-694412720
+// LIFERAY-SERVICE-BUILDER-HASH:567576589

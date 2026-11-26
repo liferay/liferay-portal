@@ -509,24 +509,6 @@ public class AssetListEntryAssetEntryRelLocalServiceWrapper
 
 	@Override
 	public int getAssetListEntryAssetEntryRelsCount(
-		long assetListEntryId, long segmentsEntryId) {
-
-		return _assetListEntryAssetEntryRelLocalService.
-			getAssetListEntryAssetEntryRelsCount(
-				assetListEntryId, segmentsEntryId);
-	}
-
-	@Override
-	public int getAssetListEntryAssetEntryRelsCount(
-		long assetListEntryId, long[] segmentsEntryIds) {
-
-		return _assetListEntryAssetEntryRelLocalService.
-			getAssetListEntryAssetEntryRelsCount(
-				assetListEntryId, segmentsEntryIds);
-	}
-
-	@Override
-	public int getAssetListEntryAssetEntryRelsCount(
 		long assetListEntryId, String audienceEntryERC, long segmentsEntryId) {
 
 		return _assetListEntryAssetEntryRelLocalService.
@@ -684,4 +666,4 @@ public class AssetListEntryAssetEntryRelLocalServiceWrapper
 		_assetListEntryAssetEntryRelLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-350073619
+// LIFERAY-SERVICE-BUILDER-HASH:-1684679299
