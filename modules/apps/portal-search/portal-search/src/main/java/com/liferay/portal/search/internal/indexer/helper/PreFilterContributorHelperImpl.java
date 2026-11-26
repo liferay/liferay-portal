@@ -168,7 +168,7 @@ public class PreFilterContributorHelperImpl
 		SearchContext searchContext) {
 
 		List<ModelPreFilterContributor> modelPreFilterContributors =
-			_filterModelPreFilterContributor(
+			_filterModelPreFilterContributors(
 				modelSearchSettings.getClassName(),
 				getStrings(
 					"search.full.query.clause.contributors.excludes",
@@ -240,7 +240,7 @@ public class PreFilterContributorHelperImpl
 		return booleanFilter;
 	}
 
-	private List<ModelPreFilterContributor> _filterModelPreFilterContributor(
+	private List<ModelPreFilterContributor> _filterModelPreFilterContributors(
 		String entryClassName, Collection<String> excludes,
 		Collection<String> includes, boolean mandatoryOnly) {
 
