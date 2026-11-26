@@ -117,6 +117,7 @@ public class ObjectEntryVersionFieldValueResolverTest {
 		_testToDisplayValueWithHTMLListTypeEntryName();
 		_testToDisplayValueWithHTMLObjectEntryTitle();
 		_testToDisplayValueWithHTMLTextValue();
+		_testToDisplayValueWithLocationObjectField();
 		_testToDisplayValueWithMultiselectPicklistObjectField();
 		_testToDisplayValueWithNonexistentFileEntry();
 		_testToDisplayValueWithNonexistentObjectEntry();
@@ -471,6 +472,8 @@ public class ObjectEntryVersionFieldValueResolverTest {
 		_testToDiffHtmlWithoutDiffHtml(
 			ObjectFieldConstants.BUSINESS_TYPE_INTEGER);
 		_testToDiffHtmlWithoutDiffHtml(
+			ObjectFieldConstants.BUSINESS_TYPE_LOCATION);
+		_testToDiffHtmlWithoutDiffHtml(
 			ObjectFieldConstants.BUSINESS_TYPE_LONG_INTEGER);
 		_testToDiffHtmlWithoutDiffHtml(
 			ObjectFieldConstants.BUSINESS_TYPE_PHONE_NUMBER);
@@ -666,6 +669,43 @@ public class ObjectEntryVersionFieldValueResolverTest {
 				"<img src=x onerror=alert(1)>"));
 	}
 
+	private void _testToDisplayValueWithLocationObjectField() {
+		ObjectField objectField = _mockObjectField(
+			ObjectFieldConstants.BUSINESS_TYPE_LOCATION);
+
+		Assert.assertEquals(
+			"Passeig de Gracia &amp; Diagonal",
+			_objectEntryVersionFieldValueResolver.toDisplayValue(
+				_LANGUAGE_ID, objectField, null,
+				HashMapBuilder.<String, Object>put(
+					"address", "Passeig de Gracia & Diagonal"
+				).put(
+					"coordinates",
+					HashMapBuilder.<String, Object>put(
+						"latitude", RandomTestUtil.randomDouble()
+					).put(
+						"longitude", RandomTestUtil.randomDouble()
+					).build()
+				).build()));
+		Assert.assertEquals(
+			StringPool.BLANK,
+			_objectEntryVersionFieldValueResolver.toDisplayValue(
+				_LANGUAGE_ID, objectField, null,
+				HashMapBuilder.<String, Object>put(
+					"coordinates",
+					HashMapBuilder.<String, Object>put(
+						"latitude", RandomTestUtil.randomDouble()
+					).put(
+						"longitude", RandomTestUtil.randomDouble()
+					).build()
+				).build()));
+		Assert.assertEquals(
+			"&lt;img src=x onerror=alert(1)&gt;",
+			_objectEntryVersionFieldValueResolver.toDisplayValue(
+				_LANGUAGE_ID, objectField, null,
+				"<img src=x onerror=alert(1)>"));
+	}
+
 	private void _testToDisplayValueWithMultiselectPicklistObjectField() {
 		long listTypeDefinitionId = RandomTestUtil.randomLong();
 
@@ -780,6 +820,7 @@ public class ObjectEntryVersionFieldValueResolverTest {
 		_assertNullDisplayValue(ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT);
 		_assertNullDisplayValue(ObjectFieldConstants.BUSINESS_TYPE_DATE);
 		_assertNullDisplayValue(ObjectFieldConstants.BUSINESS_TYPE_DATE_TIME);
+		_assertNullDisplayValue(ObjectFieldConstants.BUSINESS_TYPE_LOCATION);
 		_assertNullDisplayValue(
 			ObjectFieldConstants.BUSINESS_TYPE_MULTISELECT_PICKLIST);
 		_assertNullDisplayValue(ObjectFieldConstants.BUSINESS_TYPE_PICKLIST);
