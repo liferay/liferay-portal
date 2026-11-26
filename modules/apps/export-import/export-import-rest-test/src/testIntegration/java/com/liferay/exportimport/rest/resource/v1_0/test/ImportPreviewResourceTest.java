@@ -179,10 +179,7 @@ public class ImportPreviewResourceTest
 	}
 
 	@FeatureFlags(
-		featureFlags = {
-			@FeatureFlag(value = "LPD-41307"), @FeatureFlag("LPD-57655"),
-			@FeatureFlag("LPD-85946")
-		}
+		featureFlags = {@FeatureFlag("LPD-57655"), @FeatureFlag("LPD-85946")}
 	)
 	@Override
 	@Test

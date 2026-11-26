@@ -319,9 +319,7 @@ public class ExportProcessResourceTest
 	}
 
 	@FeatureFlags(
-		featureFlags = {
-			@FeatureFlag(value = "LPD-41307"), @FeatureFlag("LPD-85946")
-		}
+		featureFlags = {@FeatureFlag("LPD-57655"), @FeatureFlag("LPD-85946")}
 	)
 	@Override
 	@Test
@@ -979,7 +977,7 @@ public class ExportProcessResourceTest
 				ExportImportGroup::getExternalReferenceCode));
 
 		_testPostExportProcessWhenFeatureFlagIsDisabled(
-			"LPD-41307", instanceExportProcessRequest);
+			"LPD-57655", instanceExportProcessRequest);
 		_testPostExportProcessWhenFeatureFlagIsDisabled(
 			"LPD-85946", instanceExportProcessRequest);
 	}

@@ -30,9 +30,7 @@ public class GroupUtilTest {
 		LiferayUnitTestRule.INSTANCE;
 
 	@FeatureFlags(
-		featureFlags = {
-			@FeatureFlag(value = "LPD-41307"), @FeatureFlag("LPD-85946")
-		}
+		featureFlags = {@FeatureFlag("LPD-57655"), @FeatureFlag("LPD-85946")}
 	)
 	@Test
 	public void testGetGroupExternalReferenceCodes() {
@@ -74,7 +72,7 @@ public class GroupUtilTest {
 		}
 		catch (BadRequestException badRequestException) {
 			Assert.assertEquals(
-				"Asset libraries require the feature flag \"LPD-41307\"",
+				"Asset libraries require the feature flag \"LPD-57655\"",
 				badRequestException.getMessage());
 		}
 

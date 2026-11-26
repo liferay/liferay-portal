@@ -95,10 +95,7 @@ import org.osgi.framework.ServiceRegistration;
  * @author Petteri Karttunen
  */
 @FeatureFlags(
-	featureFlags = {
-		@FeatureFlag(value = "LPD-41307"), @FeatureFlag("LPD-57655"),
-		@FeatureFlag("LPD-85946")
-	}
+	featureFlags = {@FeatureFlag("LPD-57655"), @FeatureFlag("LPD-85946")}
 )
 @RunWith(Arquillian.class)
 public class GroupExportImportTest {

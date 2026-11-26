@@ -214,7 +214,7 @@ public class GroupImporterTest {
 
 			featureFlagManagerUtilMockedStatic.when(
 				() -> FeatureFlagManagerUtil.isEnabled(
-					Mockito.anyLong(), Mockito.eq("LPD-85946"))
+					Mockito.anyLong(), Mockito.eq("LPD-57655"))
 			).thenReturn(
 				true
 			);
@@ -672,7 +672,7 @@ public class GroupImporterTest {
 
 			featureFlagManagerUtilMockedStatic.when(
 				() -> FeatureFlagManagerUtil.isEnabled(
-					Mockito.anyLong(), Mockito.eq("LPD-85946"))
+					Mockito.anyLong(), Mockito.eq("LPD-57655"))
 			).thenReturn(
 				groupExportImportEnabled
 			);

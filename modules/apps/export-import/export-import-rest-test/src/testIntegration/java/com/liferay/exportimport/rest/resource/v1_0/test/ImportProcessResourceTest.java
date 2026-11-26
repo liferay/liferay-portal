@@ -254,9 +254,7 @@ public class ImportProcessResourceTest
 	}
 
 	@FeatureFlags(
-		featureFlags = {
-			@FeatureFlag(value = "LPD-41307"), @FeatureFlag("LPD-85946")
-		}
+		featureFlags = {@FeatureFlag("LPD-57655"), @FeatureFlag("LPD-85946")}
 	)
 	@Override
 	@Test
@@ -931,7 +929,7 @@ public class ImportProcessResourceTest
 				PortletDataHandlerKeys.GROUP_EXTERNAL_REFERENCE_CODES));
 
 		_testPostImportProcessWhenFeatureFlagIsDisabled(
-			"LPD-41307", instanceImportProcessRequest);
+			"LPD-57655", instanceImportProcessRequest);
 		_testPostImportProcessWhenFeatureFlagIsDisabled(
 			"LPD-85946", instanceImportProcessRequest);
 	}

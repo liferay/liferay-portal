@@ -578,10 +578,7 @@ public class ExportImportHelperUtilTest {
 	}
 
 	@FeatureFlags(
-		featureFlags = {
-			@FeatureFlag(value = "LPD-41307"), @FeatureFlag("LPD-57655"),
-			@FeatureFlag("LPD-85946")
-		}
+		featureFlags = {@FeatureFlag("LPD-57655"), @FeatureFlag("LPD-85946")}
 	)
 	@Test
 	public void testGetExportablePortletsWithDepotGroup() throws Exception {
@@ -1231,10 +1228,7 @@ public class ExportImportHelperUtilTest {
 	}
 
 	@FeatureFlags(
-		featureFlags = {
-			@FeatureFlag(value = "LPD-41307"), @FeatureFlag("LPD-57655"),
-			@FeatureFlag("LPD-85946")
-		}
+		featureFlags = {@FeatureFlag("LPD-57655"), @FeatureFlag("LPD-85946")}
 	)
 	@Test
 	public void testIsGroupSupported() throws Exception {
@@ -1264,10 +1258,7 @@ public class ExportImportHelperUtilTest {
 	}
 
 	@FeatureFlags(
-		featureFlags = {
-			@FeatureFlag(value = "LPD-41307"), @FeatureFlag("LPD-57655"),
-			@FeatureFlag("LPD-85946")
-		}
+		featureFlags = {@FeatureFlag("LPD-57655"), @FeatureFlag("LPD-85946")}
 	)
 	@Test
 	public void testIsGroupSupportedWhenFeatureFlagIsDisabled()
@@ -1281,12 +1272,10 @@ public class ExportImportHelperUtilTest {
 
 		try (SafeCloseable safeCloseable =
 				FeatureFlagTestUtil.setFeatureFlagsWithSafeCloseable(
-					false, "LPD-41307")) {
+					false, "LPD-57655")) {
 
 			Assert.assertFalse(
 				ExportImportHelperUtil.isGroupSupported(depotGroup));
-			Assert.assertTrue(
-				ExportImportHelperUtil.isGroupSupported(_liveGroup));
 		}
 
 		try (SafeCloseable safeCloseable =

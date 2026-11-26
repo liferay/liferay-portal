@@ -140,7 +140,7 @@ public class LayoutImportBackgroundTaskExecutorTest {
 					StagingGroupHelperUtil.class)) {
 
 			featureFlagManagerUtilMockedStatic.when(
-				() -> FeatureFlagManagerUtil.isEnabled(companyId, "LPD-85946")
+				() -> FeatureFlagManagerUtil.isEnabled(companyId, "LPD-57655")
 			).thenReturn(
 				true
 			);

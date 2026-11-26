@@ -35,10 +35,7 @@ import org.junit.runner.RunWith;
  * @author Jürgen Kappler
  */
 @FeatureFlags(
-	featureFlags = {
-		@FeatureFlag(value = "LPD-41307"), @FeatureFlag("LPD-57655"),
-		@FeatureFlag("LPD-85946")
-	}
+	featureFlags = {@FeatureFlag("LPD-57655"), @FeatureFlag("LPD-85946")}
 )
 @RunWith(Arquillian.class)
 public class AssetLibraryResourceTest extends BaseAssetLibraryResourceTestCase {

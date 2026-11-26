@@ -314,11 +314,9 @@ public class GroupExportImportParameterUtilTest {
 
 	@Test
 	public void testIsGroupExportImportEnabled() {
-		Assert.assertFalse(
-			_isGroupExportImportEnabled(false, "LPD-41307", "LPD-85946"));
+		Assert.assertFalse(_isGroupExportImportEnabled(false, "LPD-57655"));
 		Assert.assertFalse(_isGroupExportImportEnabled(true));
-		Assert.assertTrue(_isGroupExportImportEnabled(true, "LPD-41307"));
-		Assert.assertTrue(_isGroupExportImportEnabled(true, "LPD-85946"));
+		Assert.assertTrue(_isGroupExportImportEnabled(true, "LPD-57655"));
 	}
 
 	@Test
@@ -370,7 +368,7 @@ public class GroupExportImportParameterUtilTest {
 					StagingGroupHelperUtil.class)) {
 
 			featureFlagManagerUtilMockedStatic.when(
-				() -> FeatureFlagManagerUtil.isEnabled(companyId, "LPD-85946")
+				() -> FeatureFlagManagerUtil.isEnabled(companyId, "LPD-57655")
 			).thenReturn(
 				groupExportImportEnabled
 			);
