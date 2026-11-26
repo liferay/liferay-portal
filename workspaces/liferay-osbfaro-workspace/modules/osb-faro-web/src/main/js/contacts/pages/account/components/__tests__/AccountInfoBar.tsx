@@ -90,6 +90,18 @@ describe('AccountInfoBar', () => {
 			expect(screen.queryByText(/^engaged$/i)).not.toBeInTheDocument();
 		});
 
+		it('should render the Lifecycle label before the lifecycle selector', () => {
+			render(<AccountInfoBar {...mockAccount} />);
+
+			const label = screen.getByText(/^lifecycle$/i);
+
+			expect(
+				label.compareDocumentPosition(
+					screen.getByRole('combobox', {name: /^lifecycle$/i})
+				) & Node.DOCUMENT_POSITION_FOLLOWING
+			).toBeTruthy();
+		});
+
 		it('should render the lifecycle selector with the selected lifecycle', () => {
 			render(<AccountInfoBar {...mockAccount} />);
 
