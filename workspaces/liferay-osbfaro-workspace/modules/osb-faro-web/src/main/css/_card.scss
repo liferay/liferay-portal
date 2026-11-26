@@ -70,4 +70,11 @@
 		font-size: 18px;
 		font-weight: $fontWeightSemiBold;
 	}
+
+	// The card hides overflow, which would clip an outer focus ring
+
+	.panel-header-link:focus-visible {
+		border-radius: inherit;
+		box-shadow: $cadmin-component-focus-inset-box-shadow;
+	}
 }
