@@ -196,10 +196,6 @@ public class SelectLayoutPageTemplateEntryMasterLayoutDisplayContextTest {
 		JSONArray pageTemplateSetsJSONArray = (JSONArray)additionalProps.get(
 			"pageTemplateSets");
 
-		Assert.assertEquals(
-			pageTemplateSetsJSONArray.toString(), 1,
-			pageTemplateSetsJSONArray.length());
-
 		JSONObject pageTemplateSetJSONObject =
 			pageTemplateSetsJSONArray.getJSONObject(0);
 
@@ -209,6 +205,10 @@ public class SelectLayoutPageTemplateEntryMasterLayoutDisplayContextTest {
 		Assert.assertEquals(
 			layoutPageTemplateCollectionName,
 			pageTemplateSetJSONObject.getString("name"));
+
+		Assert.assertEquals(
+			pageTemplateSetsJSONArray.toString(), 1,
+			pageTemplateSetsJSONArray.length());
 	}
 
 	private void _testGetAdditionalPropsWithLayoutPageTemplateCollectionId(

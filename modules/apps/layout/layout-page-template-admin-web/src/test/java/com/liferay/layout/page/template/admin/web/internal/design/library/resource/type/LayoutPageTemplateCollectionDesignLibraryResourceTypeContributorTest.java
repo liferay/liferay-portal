@@ -227,10 +227,6 @@ public class
 		JSONArray pageTemplateSetsJSONArray = (JSONArray)moduleProps.get(
 			"pageTemplateSets");
 
-		Assert.assertEquals(
-			pageTemplateSetsJSONArray.toString(), 1,
-			pageTemplateSetsJSONArray.length());
-
 		JSONObject pageTemplateSetJSONObject =
 			pageTemplateSetsJSONArray.getJSONObject(0);
 
@@ -240,6 +236,10 @@ public class
 		Assert.assertEquals(
 			layoutPageTemplateCollectionName,
 			pageTemplateSetJSONObject.getString("name"));
+
+		Assert.assertEquals(
+			pageTemplateSetsJSONArray.toString(), 1,
+			pageTemplateSetsJSONArray.length());
 	}
 
 	private void _assertFDSActionDropdownItem(
@@ -350,10 +350,6 @@ public class
 				_layoutPageTemplateCollectionDesignLibraryResourceTypeContributor.
 					getCreationItems(_httpServletRequest, _depotEntry, backURL);
 
-		Assert.assertEquals(
-			designLibraryResourceCreationItems.toString(), 2,
-			designLibraryResourceCreationItems.size());
-
 		DesignLibraryResourceCreationItem designLibraryResourceCreationItem =
 			designLibraryResourceCreationItems.get(0);
 
@@ -373,6 +369,10 @@ public class
 			designLibraryResourceCreationItems.get(1), "add-page-template-set",
 			"new-page-template-set", layoutPageTemplateCollectionId,
 			layoutPageTemplateCollectionName, "set");
+
+		Assert.assertEquals(
+			designLibraryResourceCreationItems.toString(), 2,
+			designLibraryResourceCreationItems.size());
 
 		Assert.assertEquals(
 			"/select_layout_page_template_entry_master_layout.jsp",

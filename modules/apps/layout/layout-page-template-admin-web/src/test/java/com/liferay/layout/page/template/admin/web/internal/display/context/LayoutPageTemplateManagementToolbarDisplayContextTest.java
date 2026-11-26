@@ -299,9 +299,6 @@ public class LayoutPageTemplateManagementToolbarDisplayContextTest {
 		List<DropdownItem> primaryDropdownItems = _getPrimaryDropdownItems(
 			layoutPageTemplateManagementToolbarDisplayContext);
 
-		Assert.assertEquals(
-			primaryDropdownItems.toString(), 1, primaryDropdownItems.size());
-
 		DropdownItem primaryDropdownItem = primaryDropdownItems.get(0);
 
 		Assert.assertNull(primaryDropdownItem.get("data"));
@@ -311,6 +308,9 @@ public class LayoutPageTemplateManagementToolbarDisplayContextTest {
 				";param_mvcPath=/select_layout_page_template_entry_master_",
 				"layout.jsp;param_layoutPageTemplateCollectionId=0"),
 			primaryDropdownItem.get("href"));
+
+		Assert.assertEquals(
+			primaryDropdownItems.toString(), 1, primaryDropdownItems.size());
 	}
 
 	private final MockedStatic<DesignLibraryUtil>

@@ -592,10 +592,6 @@ public class DisplayPageTemplateDesignLibraryResourceTypeContributorTest {
 					getCreationItems(
 						_httpServletRequest, _depotEntry, _BACK_URL);
 
-		Assert.assertEquals(
-			designLibraryResourceCreationItems.toString(), 1,
-			designLibraryResourceCreationItems.size());
-
 		DesignLibraryResourceCreationItem designLibraryResourceCreationItem =
 			designLibraryResourceCreationItems.get(0);
 
@@ -610,6 +606,10 @@ public class DisplayPageTemplateDesignLibraryResourceTypeContributorTest {
 			designLibraryResourceCreationItem.getLabel());
 		Assert.assertNull(designLibraryResourceCreationItem.getModule());
 		Assert.assertNull(designLibraryResourceCreationItem.getModuleProps());
+
+		Assert.assertEquals(
+			designLibraryResourceCreationItems.toString(), 1,
+			designLibraryResourceCreationItems.size());
 
 		Assert.assertEquals(
 			"/select_display_page_master_layout.jsp",
