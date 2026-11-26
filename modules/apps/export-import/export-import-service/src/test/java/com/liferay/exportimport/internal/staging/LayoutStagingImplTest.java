@@ -92,10 +92,6 @@ public class LayoutStagingImplTest {
 			_hasPermission(
 				RandomTestUtil.randomString(), _liveGroup,
 				RandomTestUtil.randomString(), stagingPermissionImpl));
-	}
-
-	@Test
-	public void testHasPermissionWithNullGroup() {
 		Assert.assertNull(
 			_hasPermission(
 				RandomTestUtil.randomString(), null, _STAGED_PORTLET_ID,
