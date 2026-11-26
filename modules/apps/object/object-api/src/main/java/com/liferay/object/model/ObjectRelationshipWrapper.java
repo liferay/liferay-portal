@@ -591,6 +591,11 @@ public class ObjectRelationshipWrapper
 	}
 
 	@Override
+	public boolean hasRelationshipObjectField() {
+		return model.hasRelationshipObjectField();
+	}
+
+	@Override
 	public boolean isAllowedObjectRelationshipType(String type) {
 		return model.isAllowedObjectRelationshipType(type);
 	}
@@ -1019,4 +1024,4 @@ public class ObjectRelationshipWrapper
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-286267771
+// LIFERAY-SERVICE-BUILDER-HASH:791431888

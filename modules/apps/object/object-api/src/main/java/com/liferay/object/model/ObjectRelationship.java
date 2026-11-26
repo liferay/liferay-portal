@@ -51,9 +51,11 @@ public interface ObjectRelationship
 
 	public boolean compareType(String type);
 
+	public boolean hasRelationshipObjectField();
+
 	public boolean isAllowedObjectRelationshipType(String type);
 
 	public boolean isSelf();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-561398511
+// LIFERAY-SERVICE-BUILDER-HASH:-308682795
