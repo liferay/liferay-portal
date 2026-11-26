@@ -21,6 +21,28 @@ public class VisitorMetricDTOConverterTest {
 	public void testToDTO() {
 		Assert.assertNull(_visitorMetricDTOConverter.toDTO(null, null));
 
+		_testToDTO();
+		_testToDTOWithNullValues();
+	}
+
+	private GetWorkspaceGroupChannelVisitorMetricResponse.VisitorMetric
+		_createResponseVisitorMetric(Double totalSessionDuration) {
+
+		GetWorkspaceGroupChannelVisitorMetricResponse.VisitorMetric
+			responseVisitorMetric =
+				new GetWorkspaceGroupChannelVisitorMetricResponse.
+					VisitorMetric();
+
+		responseVisitorMetric.setAverageSessionDuration(
+			RandomTestUtil.randomLong());
+		responseVisitorMetric.setKnownVisitors(RandomTestUtil.randomLong());
+		responseVisitorMetric.setTotalSessionDuration(totalSessionDuration);
+		responseVisitorMetric.setVisitors(RandomTestUtil.randomLong());
+
+		return responseVisitorMetric;
+	}
+
+	private void _testToDTO() {
 		long totalSessionDuration =
 			Integer.MAX_VALUE + (long)RandomTestUtil.randomInt();
 
@@ -44,8 +66,7 @@ public class VisitorMetricDTOConverterTest {
 			responseVisitorMetric.getVisitors(), visitorMetric.getVisitors());
 	}
 
-	@Test
-	public void testToDTOWithNullValues() {
+	private void _testToDTOWithNullValues() {
 		VisitorMetric visitorMetric = _visitorMetricDTOConverter.toDTO(
 			null,
 			new GetWorkspaceGroupChannelVisitorMetricResponse.VisitorMetric());
@@ -56,23 +77,6 @@ public class VisitorMetricDTOConverterTest {
 		Assert.assertEquals(
 			Long.valueOf(0), visitorMetric.getTotalSessionDuration());
 		Assert.assertEquals(Long.valueOf(0), visitorMetric.getVisitors());
-	}
-
-	private GetWorkspaceGroupChannelVisitorMetricResponse.VisitorMetric
-		_createResponseVisitorMetric(Double totalSessionDuration) {
-
-		GetWorkspaceGroupChannelVisitorMetricResponse.VisitorMetric
-			responseVisitorMetric =
-				new GetWorkspaceGroupChannelVisitorMetricResponse.
-					VisitorMetric();
-
-		responseVisitorMetric.setAverageSessionDuration(
-			RandomTestUtil.randomLong());
-		responseVisitorMetric.setKnownVisitors(RandomTestUtil.randomLong());
-		responseVisitorMetric.setTotalSessionDuration(totalSessionDuration);
-		responseVisitorMetric.setVisitors(RandomTestUtil.randomLong());
-
-		return responseVisitorMetric;
 	}
 
 	private final VisitorMetricDTOConverter _visitorMetricDTOConverter =

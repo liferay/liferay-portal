@@ -24,6 +24,40 @@ public class VisitFrequencyMetricDTOConverterTest {
 	public void testToDTO() {
 		Assert.assertNull(_visitFrequencyMetricDTOConverter.toDTO(null, null));
 
+		_testToDTO();
+		_testToDTOWithMissingBuckets();
+		_testToDTOWithNullCompositions();
+		_testToDTOWithUnknownBucket();
+	}
+
+	private void _assertZeroBuckets(VisitFrequencyMetric visitFrequencyMetric) {
+		Assert.assertEquals(
+			Long.valueOf(0), visitFrequencyMetric.getBiWeeklyVisitors());
+		Assert.assertEquals(
+			Long.valueOf(0), visitFrequencyMetric.getDailyVisitors());
+		Assert.assertEquals(
+			Long.valueOf(0), visitFrequencyMetric.getMonthlyVisitors());
+		Assert.assertEquals(
+			Long.valueOf(0), visitFrequencyMetric.getOccasionalVisitors());
+		Assert.assertEquals(
+			Long.valueOf(0), visitFrequencyMetric.getWeeklyVisitors());
+	}
+
+	private GetWorkspaceGroupChannelVisitFrequencyMetricResponse.Composition
+		_createComposition(long count, String name) {
+
+		GetWorkspaceGroupChannelVisitFrequencyMetricResponse.Composition
+			composition =
+				new GetWorkspaceGroupChannelVisitFrequencyMetricResponse.
+					Composition();
+
+		composition.setCount(count);
+		composition.setName(name);
+
+		return composition;
+	}
+
+	private void _testToDTO() {
 		GetWorkspaceGroupChannelVisitFrequencyMetricResponse.VisitFrequencyBag
 			visitFrequencyBag =
 				new GetWorkspaceGroupChannelVisitFrequencyMetricResponse.
@@ -69,8 +103,7 @@ public class VisitFrequencyMetricDTOConverterTest {
 			visitFrequencyMetric.getWeeklyVisitors());
 	}
 
-	@Test
-	public void testToDTOWithMissingBuckets() {
+	private void _testToDTOWithMissingBuckets() {
 		GetWorkspaceGroupChannelVisitFrequencyMetricResponse.VisitFrequencyBag
 			visitFrequencyBag =
 				new GetWorkspaceGroupChannelVisitFrequencyMetricResponse.
@@ -99,8 +132,7 @@ public class VisitFrequencyMetricDTOConverterTest {
 			visitFrequencyMetric.getWeeklyVisitors());
 	}
 
-	@Test
-	public void testToDTOWithNullCompositions() {
+	private void _testToDTOWithNullCompositions() {
 		VisitFrequencyMetric visitFrequencyMetric =
 			_visitFrequencyMetricDTOConverter.toDTO(
 				null,
@@ -113,8 +145,7 @@ public class VisitFrequencyMetricDTOConverterTest {
 			Long.valueOf(0), visitFrequencyMetric.getVisitors());
 	}
 
-	@Test
-	public void testToDTOWithUnknownBucket() {
+	private void _testToDTOWithUnknownBucket() {
 		GetWorkspaceGroupChannelVisitFrequencyMetricResponse.VisitFrequencyBag
 			visitFrequencyBag =
 				new GetWorkspaceGroupChannelVisitFrequencyMetricResponse.
@@ -128,33 +159,6 @@ public class VisitFrequencyMetricDTOConverterTest {
 
 		_assertZeroBuckets(
 			_visitFrequencyMetricDTOConverter.toDTO(null, visitFrequencyBag));
-	}
-
-	private void _assertZeroBuckets(VisitFrequencyMetric visitFrequencyMetric) {
-		Assert.assertEquals(
-			Long.valueOf(0), visitFrequencyMetric.getBiWeeklyVisitors());
-		Assert.assertEquals(
-			Long.valueOf(0), visitFrequencyMetric.getDailyVisitors());
-		Assert.assertEquals(
-			Long.valueOf(0), visitFrequencyMetric.getMonthlyVisitors());
-		Assert.assertEquals(
-			Long.valueOf(0), visitFrequencyMetric.getOccasionalVisitors());
-		Assert.assertEquals(
-			Long.valueOf(0), visitFrequencyMetric.getWeeklyVisitors());
-	}
-
-	private GetWorkspaceGroupChannelVisitFrequencyMetricResponse.Composition
-		_createComposition(long count, String name) {
-
-		GetWorkspaceGroupChannelVisitFrequencyMetricResponse.Composition
-			composition =
-				new GetWorkspaceGroupChannelVisitFrequencyMetricResponse.
-					Composition();
-
-		composition.setCount(count);
-		composition.setName(name);
-
-		return composition;
 	}
 
 	private final VisitFrequencyMetricDTOConverter
