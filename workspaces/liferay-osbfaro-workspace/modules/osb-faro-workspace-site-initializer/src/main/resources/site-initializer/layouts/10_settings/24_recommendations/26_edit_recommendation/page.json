@@ -28,11 +28,5 @@
 	],
 	"private": false,
 	"system": false,
-	"type": "Content",
-	"typeSettings": [
-		{
-			"key": "faroViewRoleName",
-			"value": "Workspace Administrator"
-		}
-	]
+	"type": "Content"
 }
