@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.struts.StrutsAction;
 import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -36,6 +37,7 @@ import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+import com.liferay.subscription.model.Subscription;
 import com.liferay.subscription.service.SubscriptionLocalService;
 
 import org.junit.Assert;
@@ -141,23 +143,31 @@ public class SubscribeFolderStrutsActionTest {
 	}
 
 	private void _testExecuteSubscribe() throws Exception {
-		Group group = _addGroup();
-
-		Layout layout = LayoutTestUtil.addTypeContentLayout(group);
+		Group group1 = _addGroup();
 
 		ObjectEntryFolder objectEntryFolder = _addObjectEntryFolder(
-			group.getGroupId());
+			group1.getGroupId());
 
 		Assert.assertFalse(
 			_isSubscribed(objectEntryFolder, TestPropsValues.getUserId()));
 
+		Group group2 = GroupTestUtil.addGroup();
+
 		_execute(
 			_getMockHttpServletRequest(
-				group, layout, objectEntryFolder, Constants.SUBSCRIBE),
+				group2, LayoutTestUtil.addTypeContentLayout(group2),
+				objectEntryFolder, Constants.SUBSCRIBE),
 			TestPropsValues.getUser());
 
 		Assert.assertTrue(
 			_isSubscribed(objectEntryFolder, TestPropsValues.getUserId()));
+
+		Subscription subscription = _subscriptionLocalService.fetchSubscription(
+			objectEntryFolder.getCompanyId(), TestPropsValues.getUserId(),
+			ObjectEntryFolder.class.getName(),
+			objectEntryFolder.getObjectEntryFolderId());
+
+		Assert.assertEquals(group1.getGroupId(), subscription.getGroupId());
 	}
 
 	private void _testExecuteUnsubscribe() throws Exception {
