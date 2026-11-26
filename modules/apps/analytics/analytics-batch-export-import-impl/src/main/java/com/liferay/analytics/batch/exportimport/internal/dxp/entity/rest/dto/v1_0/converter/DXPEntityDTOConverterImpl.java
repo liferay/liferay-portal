@@ -9,7 +9,6 @@ import com.liferay.account.model.AccountEntry;
 import com.liferay.analytics.dxp.entity.rest.dto.v1_0.DXPEntity;
 import com.liferay.analytics.dxp.entity.rest.dto.v1_0.ExpandoField;
 import com.liferay.analytics.dxp.entity.rest.dto.v1_0.Field;
-import com.liferay.analytics.dxp.entity.rest.dto.v1_0.converter.DXPEntityDTOConverter;
 import com.liferay.analytics.settings.configuration.AnalyticsConfiguration;
 import com.liferay.analytics.settings.configuration.AnalyticsConfigurationRegistry;
 import com.liferay.expando.kernel.model.ExpandoBridge;
