@@ -7,11 +7,14 @@ package com.liferay.osb.faro.web.internal.model.display.contacts;
 
 import com.liferay.osb.faro.model.FaroProject;
 import com.liferay.osb.faro.service.FaroUserLocalServiceUtil;
+import com.liferay.osb.faro.web.internal.util.JSONUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+
+import java.util.Collections;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -23,6 +26,24 @@ import org.mockito.Mockito;
  * @author Eudaldo Alonso
  */
 public class ProjectDisplayTest {
+
+	@Test
+	public void testGetIncidentReportEmailAddresses() throws Exception {
+		String emailAddress = RandomTestUtil.randomString();
+		FaroProject faroProject = _mockFaroProject(RandomTestUtil.randomLong());
+
+		Mockito.when(
+			faroProject.getIncidentReportEmailAddresses()
+		).thenReturn(
+			JSONUtil.writeValueAsString(Collections.singletonList(emailAddress))
+		);
+
+		Assert.assertEquals(
+			Collections.singletonList(emailAddress),
+			ReflectionTestUtil.getFieldValue(
+				_toProjectDisplay(faroProject, null),
+				"_incidentReportEmailAddresses"));
+	}
 
 	@Test
 	public void testGetURL() {
