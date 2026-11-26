@@ -76,7 +76,7 @@ public abstract class BaseAssetLibraryResourceImpl
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/export-import/v1.0/export-preview/asset-libraries'  -u 'test@liferay.com:test'
 	 */
-	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-41307")
+	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-57655")
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Retrieves the asset libraries the instance can export in full."
 	)
@@ -130,7 +130,7 @@ public abstract class BaseAssetLibraryResourceImpl
 	 *
 	 * curl -X 'POST' 'http://localhost:8080/o/export-import/v1.0/export-preview/asset-libraries/export-batch'  -u 'test@liferay.com:test'
 	 */
-	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-41307")
+	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-57655")
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -261,7 +261,7 @@ public abstract class BaseAssetLibraryResourceImpl
 
 		if (parameters.get("search") != null) {
 			if (!FeatureFlagManagerUtil.isEnabled(
-					CompanyThreadLocal.getCompanyId(), "LPD-41307")) {
+					CompanyThreadLocal.getCompanyId(), "LPD-57655")) {
 
 				throw new NotFoundException();
 			}
@@ -877,4 +877,4 @@ public abstract class BaseAssetLibraryResourceImpl
 		LogFactoryUtil.getLog(BaseAssetLibraryResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1038705765
+// LIFERAY-REST-BUILDER-HASH:-847539502
