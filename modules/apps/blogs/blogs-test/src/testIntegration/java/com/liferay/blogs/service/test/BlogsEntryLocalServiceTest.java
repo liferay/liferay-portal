@@ -16,6 +16,7 @@ import com.liferay.blogs.attachments.test.BlogsEntryAttachmentFileEntryHelperTes
 import com.liferay.blogs.constants.BlogsConstants;
 import com.liferay.blogs.exception.EntryContentException;
 import com.liferay.blogs.exception.EntrySmallImageNameException;
+import com.liferay.blogs.exception.EntrySmallImageScaleException;
 import com.liferay.blogs.exception.EntryTitleException;
 import com.liferay.blogs.exception.EntryUrlTitleException;
 import com.liferay.blogs.exception.NoSuchEntryException;
@@ -25,6 +26,7 @@ import com.liferay.blogs.test.util.BlogsTestUtil;
 import com.liferay.document.library.kernel.exception.NoSuchFileEntryException;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.friendly.url.exception.DuplicateFriendlyURLEntryException;
+import com.liferay.image.ImageMagick;
 import com.liferay.message.boards.constants.MBMessageConstants;
 import com.liferay.message.boards.model.MBMessage;
 import com.liferay.message.boards.model.MBMessageDisplay;
@@ -52,8 +54,10 @@ import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUti
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.IdentityServiceContextFunction;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.ServiceWrapper;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.servlet.taglib.ui.ImageSelector;
+import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.constants.TestDataConstants;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -71,10 +75,12 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MimeTypesUtil;
+import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.TempFileEntryUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.spring.aop.AopInvocationHandler;
 import com.liferay.portal.test.mail.MailServiceTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -93,6 +99,7 @@ import java.util.Date;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -662,6 +669,67 @@ public class BlogsEntryLocalServiceTest {
 		Folder folder = portletFileEntry.getFolder();
 
 		Assert.assertEquals(BlogsConstants.SERVICE_NAME, folder.getName());
+	}
+
+	@Test
+	@TestInfo("LPD-117735")
+	public void testAddSmallImageWithInvalidContent() throws Exception {
+		AopInvocationHandler aopInvocationHandler =
+			ProxyUtil.fetchInvocationHandler(
+				_blogsEntryLocalService, AopInvocationHandler.class);
+
+		Object blogsEntryLocalServiceImpl = aopInvocationHandler.getTarget();
+
+		while (blogsEntryLocalServiceImpl instanceof ServiceWrapper) {
+			ServiceWrapper<?> serviceWrapper =
+				(ServiceWrapper<?>)blogsEntryLocalServiceImpl;
+
+			blogsEntryLocalServiceImpl = serviceWrapper.getWrappedService();
+		}
+
+		ImageMagick imageMagick = ReflectionTestUtil.getFieldValue(
+			blogsEntryLocalServiceImpl, "_imageMagick");
+
+		AtomicBoolean scaled = new AtomicBoolean();
+
+		ReflectionTestUtil.setFieldValue(
+			blogsEntryLocalServiceImpl, "_imageMagick",
+			ProxyUtil.newProxyInstance(
+				ImageMagick.class.getClassLoader(),
+				new Class<?>[] {ImageMagick.class},
+				(proxy, method, args) -> {
+					String methodName = method.getName();
+
+					if (methodName.equals("isEnabled")) {
+						return true;
+					}
+
+					if (methodName.equals("scale")) {
+						scaled.set(true);
+					}
+
+					return null;
+				}));
+
+		try {
+			String content = RandomTestUtil.randomString();
+			BlogsEntry entry = addEntry(false);
+
+			_blogsEntryLocalService.addSmallImage(
+				entry.getEntryId(),
+				new ImageSelector(
+					content.getBytes(), RandomTestUtil.randomString() + ".gif",
+					ContentTypes.IMAGE_GIF, StringPool.BLANK));
+
+			Assert.fail();
+		}
+		catch (EntrySmallImageScaleException entrySmallImageScaleException) {
+			Assert.assertFalse(scaled.get());
+		}
+		finally {
+			ReflectionTestUtil.setFieldValue(
+				blogsEntryLocalServiceImpl, "_imageMagick", imageMagick);
+		}
 	}
 
 	@Test(expected = EntrySmallImageNameException.class)

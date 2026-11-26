@@ -16,6 +16,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.File;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.MimeTypes;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import java.io.ByteArrayInputStream;
@@ -48,6 +49,8 @@ public class AMImageMagickImageScalerTest {
 			_amImageMagickImageScaler, "_file", _file);
 		ReflectionTestUtil.setFieldValue(
 			_amImageMagickImageScaler, "_imageMagick", _imageMagick);
+		ReflectionTestUtil.setFieldValue(
+			_amImageMagickImageScaler, "_mimeTypes", _mimeTypes);
 	}
 
 	@Test
@@ -66,6 +69,43 @@ public class AMImageMagickImageScalerTest {
 				"Unable to scale image using ImageMagick",
 				throwable.getMessage());
 		}
+	}
+
+	@Test
+	public void testScaleImageWithInvalidMimeType() throws Exception {
+		java.io.File imageFile = new java.io.File(
+			RandomTestUtil.randomString());
+		InputStream inputStream = new ByteArrayInputStream(
+			RandomTestUtil.randomBytes());
+
+		Mockito.when(
+			_file.createTempFile(inputStream)
+		).thenReturn(
+			imageFile
+		);
+
+		Mockito.when(
+			_mimeTypes.getContentType(imageFile)
+		).thenReturn(
+			ContentTypes.IMAGE_PNG
+		);
+
+		try {
+			_amImageMagickImageScaler.scaleImage(
+				_mockFileVersion(inputStream, ContentTypes.IMAGE_JPEG),
+				Mockito.mock(AMImageConfigurationEntry.class));
+
+			Assert.fail();
+		}
+		catch (AMRuntimeException.IOException ioException) {
+			Throwable throwable = ioException.getCause();
+
+			Assert.assertEquals(
+				"Unable to scale image with mime type image/jpeg",
+				throwable.getMessage());
+		}
+
+		Mockito.verifyNoInteractions(_imageMagick);
 	}
 
 	@Test
@@ -139,6 +179,12 @@ public class AMImageMagickImageScalerTest {
 			bytes
 		);
 
+		Mockito.when(
+			_mimeTypes.getContentType(imageFile)
+		).thenReturn(
+			mimeType
+		);
+
 		int maxHeight = RandomTestUtil.randomInt();
 		int maxWidth = RandomTestUtil.randomInt();
 		byte[] scaledBytes = RandomTestUtil.randomBytes();
@@ -204,5 +250,6 @@ public class AMImageMagickImageScalerTest {
 		new AMImageMagickImageScaler();
 	private final File _file = Mockito.mock(File.class);
 	private final ImageMagick _imageMagick = Mockito.mock(ImageMagick.class);
+	private final MimeTypes _mimeTypes = Mockito.mock(MimeTypes.class);
 
 }
