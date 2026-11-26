@@ -47,7 +47,7 @@ public class LaunchSetThreadLocalTest {
 
 		try (SafeCloseable safeCloseable =
 				LaunchSetThreadLocal.setLaunchSetIdWithSafeCloseable(
-					LaunchSetMode.EDIT, launchSetId)) {
+					launchSetId, LaunchSetMode.EDIT)) {
 
 			Assert.assertEquals(
 				url,
@@ -57,14 +57,14 @@ public class LaunchSetThreadLocalTest {
 
 		try (SafeCloseable safeCloseable =
 				LaunchSetThreadLocal.setLaunchSetIdWithSafeCloseable(
-					LaunchSetMode.PREVIEW, launchSetId)) {
+					launchSetId, LaunchSetMode.PREVIEW)) {
 
 			_assertPreservedParameters(String.valueOf(launchSetId), url);
 		}
 
 		try (SafeCloseable safeCloseable =
 				LaunchSetThreadLocal.setLaunchSetIdWithSafeCloseable(
-					LaunchSetMode.PREVIEW, 0)) {
+					0, LaunchSetMode.PREVIEW)) {
 
 			_assertPreservedParameters("0", url);
 		}
@@ -85,13 +85,13 @@ public class LaunchSetThreadLocalTest {
 			Constants.PREVIEW,
 			HttpComponentsUtil.getParameter(preservedURL, "p_l_mode", false));
 		Assert.assertEquals(
-			LaunchSetMode.PREVIEW.getValue(),
-			HttpComponentsUtil.getParameter(
-				preservedURL, "p_launch_set_mode", false));
-		Assert.assertEquals(
 			expectedLaunchSetId,
 			HttpComponentsUtil.getParameter(
 				preservedURL, "p_launch_set_id", false));
+		Assert.assertEquals(
+			LaunchSetMode.PREVIEW.getValue(),
+			HttpComponentsUtil.getParameter(
+				preservedURL, "p_launch_set_mode", false));
 	}
 
 }

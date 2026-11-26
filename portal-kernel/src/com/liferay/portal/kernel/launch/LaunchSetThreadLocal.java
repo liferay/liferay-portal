@@ -39,7 +39,7 @@ public class LaunchSetThreadLocal {
 	}
 
 	public static SafeCloseable setLaunchSetIdWithSafeCloseable(
-		LaunchSetMode launchSetMode, long launchSetId) {
+		long launchSetId, LaunchSetMode launchSetMode) {
 
 		SafeCloseable launchSetIdSafeCloseable =
 			_launchSetId.setWithSafeCloseable(launchSetId);

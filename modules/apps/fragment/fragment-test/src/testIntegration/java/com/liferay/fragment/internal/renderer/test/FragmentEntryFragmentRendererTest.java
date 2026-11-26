@@ -639,7 +639,7 @@ public class FragmentEntryFragmentRendererTest {
 
 		try (SafeCloseable safeCloseable =
 				LaunchSetThreadLocal.setLaunchSetIdWithSafeCloseable(
-					LaunchSetMode.EDIT, RandomTestUtil.randomLong())) {
+					RandomTestUtil.randomLong(), LaunchSetMode.EDIT)) {
 
 			_renderFragmentEntryLink(fragmentEntryLink);
 		}

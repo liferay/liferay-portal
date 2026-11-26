@@ -817,9 +817,9 @@ public class PortalImpl implements Portal {
 			url = HttpComponentsUtil.setParameter(
 				url, "p_l_mode", Constants.PREVIEW);
 			url = HttpComponentsUtil.setParameter(
-				url, "p_launch_set_mode", launchSetMode.getValue());
-			url = HttpComponentsUtil.setParameter(
 				url, "p_launch_set_id", LaunchSetThreadLocal.getLaunchSetId());
+			url = HttpComponentsUtil.setParameter(
+				url, "p_launch_set_mode", launchSetMode.getValue());
 		}
 
 		return url;

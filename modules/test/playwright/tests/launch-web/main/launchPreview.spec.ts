@@ -416,10 +416,10 @@ test(
 			);
 
 			expect(previewPage.url()).toContain('p_l_mode=preview');
-			expect(previewPage.url()).toContain('p_launch_set_mode=preview');
 			expect(previewPage.url()).toContain(
 				`p_launch_set_id=${firstLaunch.id}`
 			);
+			expect(previewPage.url()).toContain('p_launch_set_mode=preview');
 
 			await expectPreview(previewPage, {
 				hidden: [liveHeading, liveText, secondLaunchText],

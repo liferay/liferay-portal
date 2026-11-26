@@ -94,17 +94,17 @@ public class LaunchSetFilter extends BasePortalFilter {
 		}
 
 		boolean header = false;
-		String launchSetModeString = ParamUtil.getString(
-			httpServletRequest, "p_launch_set_mode");
 		long launchSetId = ParamUtil.getLong(
 			httpServletRequest, "p_launch_set_id", -1);
+		String launchSetModeString = ParamUtil.getString(
+			httpServletRequest, "p_launch_set_mode");
 
 		if ((launchSetId == -1) && Validator.isNull(launchSetModeString)) {
 			header = true;
-			launchSetModeString = httpServletRequest.getHeader(
-				"X-Liferay-Launch-Set-Mode");
 			launchSetId = GetterUtil.getLong(
 				httpServletRequest.getHeader("X-Liferay-Launch-Set-Id"), -1);
+			launchSetModeString = httpServletRequest.getHeader(
+				"X-Liferay-Launch-Set-Mode");
 		}
 
 		LaunchSetMode launchSetMode = LaunchSetMode.parse(launchSetModeString);
@@ -115,7 +115,7 @@ public class LaunchSetFilter extends BasePortalFilter {
 
 				_processFilter(
 					filterChain, httpServletRequest, httpServletResponse,
-					LaunchSetMode.EDIT, launchSetId);
+					launchSetId, LaunchSetMode.EDIT);
 
 				return;
 			}
@@ -142,7 +142,7 @@ public class LaunchSetFilter extends BasePortalFilter {
 			if ((user != null) && !user.isGuestUser()) {
 				_processFilter(
 					filterChain, httpServletRequest, httpServletResponse,
-					LaunchSetMode.PREVIEW, Math.max(launchSetId, 0));
+					Math.max(launchSetId, 0), LaunchSetMode.PREVIEW);
 
 				return;
 			}
@@ -302,13 +302,13 @@ public class LaunchSetFilter extends BasePortalFilter {
 
 	private void _processFilter(
 			FilterChain filterChain, HttpServletRequest httpServletRequest,
-			HttpServletResponse httpServletResponse,
-			LaunchSetMode launchSetMode, long launchSetId)
+			HttpServletResponse httpServletResponse, long launchSetId,
+			LaunchSetMode launchSetMode)
 		throws Exception {
 
 		try (SafeCloseable safeCloseable1 =
 				LaunchSetThreadLocal.setLaunchSetIdWithSafeCloseable(
-					launchSetMode, launchSetId)) {
+					launchSetId, launchSetMode)) {
 
 			Map<Class<?>, Map<Serializable, Object>> previewableMap =
 				_getPreviewableMap(

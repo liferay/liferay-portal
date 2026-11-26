@@ -33,8 +33,8 @@ export default function LaunchPreviewButton({
 				const url = new URL(pageURL, window.location.origin);
 
 				url.searchParams.set('p_l_mode', 'preview');
-				url.searchParams.set('p_launch_set_mode', 'preview');
 				url.searchParams.set('p_launch_set_id', String(launchSetId));
+				url.searchParams.set('p_launch_set_mode', 'preview');
 
 				window.open(url.toString(), '_blank');
 			},

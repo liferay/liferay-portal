@@ -220,8 +220,8 @@ describe('Liferay.Util.fetch', () => {
 		(launchSetMode) => {
 			window.Liferay.ThemeDisplay = {
 				getDoAsUserIdEncoded: () => '',
-				getLaunchSetMode: () => launchSetMode,
 				getLaunchSetId: () => '123',
+				getLaunchSetMode: () => launchSetMode,
 				getPathContext: () => '',
 			};
 
@@ -229,18 +229,18 @@ describe('Liferay.Util.fetch', () => {
 
 			const [, init] = fetch.mock.calls[fetch.mock.calls.length - 1];
 
+			expect(init.headers.get('x-liferay-launch-set-id')).toBe('123');
 			expect(init.headers.get('x-liferay-launch-set-mode')).toBe(
 				launchSetMode
 			);
-			expect(init.headers.get('x-liferay-launch-set-id')).toBe('123');
 		}
 	);
 
 	it('does not add the launch headers outside of a launch', () => {
 		window.Liferay.ThemeDisplay = {
 			getDoAsUserIdEncoded: () => '',
-			getLaunchSetMode: () => '',
 			getLaunchSetId: () => '0',
+			getLaunchSetMode: () => '',
 			getPathContext: () => '',
 		};
 
@@ -248,7 +248,7 @@ describe('Liferay.Util.fetch', () => {
 
 		const [, init] = fetch.mock.calls[fetch.mock.calls.length - 1];
 
-		expect(init.headers.has('x-liferay-launch-set-mode')).toBe(false);
 		expect(init.headers.has('x-liferay-launch-set-id')).toBe(false);
+		expect(init.headers.has('x-liferay-launch-set-mode')).toBe(false);
 	});
 });
