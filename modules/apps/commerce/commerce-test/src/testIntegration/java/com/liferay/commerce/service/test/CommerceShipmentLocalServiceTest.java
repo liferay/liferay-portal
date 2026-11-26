@@ -233,9 +233,6 @@ public class CommerceShipmentLocalServiceTest {
 					QueryUtil.ALL_POS,
 					CommerceShipmentCreateDateComparator.getInstance(false));
 
-		Assert.assertEquals(
-			commerceShipments.toString(), 2, commerceShipments.size());
-
 		CommerceShipment commerceShipment1 = commerceShipments.get(0);
 
 		CommerceShipment commerceShipment2 = commerceShipments.get(1);
@@ -243,6 +240,9 @@ public class CommerceShipmentLocalServiceTest {
 		Date createDate = commerceShipment2.getCreateDate();
 
 		Assert.assertFalse(createDate.after(commerceShipment1.getCreateDate()));
+
+		Assert.assertEquals(
+			commerceShipments.toString(), 2, commerceShipments.size());
 
 		commerceShipments =
 			_commerceShipmentLocalService.
@@ -285,10 +285,10 @@ public class CommerceShipmentLocalServiceTest {
 		throws Exception {
 
 		Assert.assertEquals(
-			2,
+			0,
 			_commerceShipmentLocalService.
 				getCommerceShipmentsCountByCommerceAccountId(
-					_commerceChannel.getGroupId(),
+					RandomTestUtil.randomLong(),
 					commerceOrder.getCommerceAccountId()));
 		Assert.assertEquals(
 			0,
@@ -297,10 +297,10 @@ public class CommerceShipmentLocalServiceTest {
 					_commerceChannel.getGroupId(),
 					RandomTestUtil.randomLong()));
 		Assert.assertEquals(
-			0,
+			2,
 			_commerceShipmentLocalService.
 				getCommerceShipmentsCountByCommerceAccountId(
-					RandomTestUtil.randomLong(),
+					_commerceChannel.getGroupId(),
 					commerceOrder.getCommerceAccountId()));
 	}
 
