@@ -5,9 +5,13 @@
 
 package com.liferay.osb.faro.web.internal.helper;
 
+import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
+import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
 import com.liferay.osb.faro.model.FaroProject;
 import com.liferay.osb.faro.web.internal.util.SiteInitializerUtil;
+import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.site.initializer.SiteInitializer;
 
 import org.osgi.service.component.annotations.Component;
@@ -33,10 +37,48 @@ public class WorkspaceSiteHelper {
 			_siteInitializer, _SITE_INITIALIZER_VERSION);
 	}
 
+	public void updateMasterLayouts(String faviconFileEntryERC, long groupId) {
+		_updateMasterLayout(
+			faviconFileEntryERC, groupId,
+			"liferay-data-platform-editor-master");
+		_updateMasterLayout(
+			faviconFileEntryERC, groupId, "liferay-data-platform-master");
+		_updateMasterLayout(
+			faviconFileEntryERC, groupId,
+			"liferay-data-platform-settings-master");
+	}
+
+	private void _updateMasterLayout(
+		String faviconFileEntryERC, long groupId,
+		String layoutPageTemplateEntryKey) {
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			_layoutPageTemplateEntryLocalService.fetchLayoutPageTemplateEntry(
+				groupId, layoutPageTemplateEntryKey);
+
+		if (layoutPageTemplateEntry == null) {
+			return;
+		}
+
+		Layout layout = _layoutLocalService.fetchLayout(
+			layoutPageTemplateEntry.getPlid());
+
+		layout.setFaviconFileEntryERC(faviconFileEntryERC);
+
+		_layoutLocalService.updateLayout(layout);
+	}
+
 	private static final String _SITE_INITIALIZER_VERSION = "0.1";
 
 	@Reference
 	private GroupLocalService _groupLocalService;
+
+	@Reference
+	private LayoutLocalService _layoutLocalService;
+
+	@Reference
+	private LayoutPageTemplateEntryLocalService
+		_layoutPageTemplateEntryLocalService;
 
 	@Reference(
 		target = "(site.initializer.key=com.liferay.osb.faro.workspace.site.initializer)"
