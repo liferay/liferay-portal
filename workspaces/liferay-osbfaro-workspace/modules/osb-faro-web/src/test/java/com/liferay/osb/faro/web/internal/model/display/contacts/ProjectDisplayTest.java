@@ -13,8 +13,12 @@ import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LogEntry;
+import com.liferay.portal.test.log.LoggerTestUtil;
 
 import java.util.Collections;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -43,6 +47,30 @@ public class ProjectDisplayTest {
 			ReflectionTestUtil.getFieldValue(
 				_toProjectDisplay(faroProject, null),
 				"_incidentReportEmailAddresses"));
+	}
+
+	@Test
+	public void testGetIncidentReportEmailAddressesWithoutEmailAddresses() {
+		FaroProject faroProject = _mockFaroProject(RandomTestUtil.randomLong());
+
+		Mockito.when(
+			faroProject.getSubscription()
+		).thenReturn(
+			"{}"
+		);
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				ProjectDisplay.class.getName(), LoggerTestUtil.ERROR)) {
+
+			Assert.assertNull(
+				ReflectionTestUtil.getFieldValue(
+					_toProjectDisplay(faroProject, null),
+					"_incidentReportEmailAddresses"));
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertTrue(logEntries.isEmpty());
+		}
 	}
 
 	@Test
