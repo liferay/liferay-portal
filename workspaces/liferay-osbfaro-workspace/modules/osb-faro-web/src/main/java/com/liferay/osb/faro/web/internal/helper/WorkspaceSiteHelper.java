@@ -16,14 +16,19 @@ import com.liferay.osb.faro.web.internal.util.SiteInitializerUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.UserGroupRoleLocalService;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.site.initializer.SiteInitializer;
 
+import java.util.List;
 import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
@@ -43,7 +48,11 @@ public class WorkspaceSiteHelper {
 		SiteInitializerUtil.initialize(
 			group, _siteInitializer, _SITE_INITIALIZER_VERSION);
 
-		if (!FaroNavigationUtil.isLDPEnabled(faroProject)) {
+		boolean ldpEnabled = FaroNavigationUtil.isLDPEnabled(faroProject);
+
+		updateLayoutPermissions(faroProject, ldpEnabled);
+
+		if (!ldpEnabled) {
 			updateMasterLayouts("AC_FAVICON", group.getGroupId());
 		}
 
@@ -59,6 +68,32 @@ public class WorkspaceSiteHelper {
 		return SiteInitializerUtil.isInitialized(
 			_groupLocalService.getGroup(faroProject.getGroupId()),
 			_siteInitializer, _SITE_INITIALIZER_VERSION);
+	}
+
+	public void updateLayoutPermissions(
+			FaroProject faroProject, boolean ldpEnabled)
+		throws Exception {
+
+		List<Layout> layouts = _layoutLocalService.getLayouts(
+			faroProject.getGroupId(), false);
+
+		Role role = _roleLocalService.getRole(
+			faroProject.getCompanyId(), RoleConstants.SITE_MEMBER);
+
+		for (Layout layout : layouts) {
+			if (layout.isDraftLayout()) {
+				continue;
+			}
+
+			String faroRequirement = layout.getTypeSettingsProperty(
+				"faroRequirement");
+
+			if (Validator.isNull(faroRequirement)) {
+				continue;
+			}
+
+			_updateLayoutPermission(faroRequirement, layout, ldpEnabled, role);
+		}
 	}
 
 	public void updateMasterLayouts(String faviconFileEntryERC, long groupId) {
@@ -116,6 +151,25 @@ public class WorkspaceSiteHelper {
 		return false;
 	}
 
+	private void _updateLayoutPermission(
+			String faroRequirement, Layout layout, boolean ldpEnabled,
+			Role role)
+		throws Exception {
+
+		String[] actionIds = {};
+
+		if ((faroRequirement.equals("ac") && !ldpEnabled) ||
+			(faroRequirement.equals("ldp") && ldpEnabled)) {
+
+			actionIds = new String[] {ActionKeys.VIEW};
+		}
+
+		_resourcePermissionLocalService.setResourcePermissions(
+			layout.getCompanyId(), Layout.class.getName(),
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(layout.getPlid()), role.getRoleId(), actionIds);
+	}
+
 	private void _updateMasterLayout(
 		String faviconFileEntryERC, long groupId,
 		String layoutPageTemplateEntryKey) {
@@ -150,6 +204,9 @@ public class WorkspaceSiteHelper {
 	@Reference
 	private LayoutPageTemplateEntryLocalService
 		_layoutPageTemplateEntryLocalService;
+
+	@Reference
+	private ResourcePermissionLocalService _resourcePermissionLocalService;
 
 	@Reference
 	private RoleLocalService _roleLocalService;
