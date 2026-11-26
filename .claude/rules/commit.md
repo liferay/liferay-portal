@@ -26,7 +26,7 @@ Never describe a security concern in the title or the body. Do not mention vulne
 
 ### Title
 
-Format: `<TICKET> <Summary of the problem solved>`
+Format: `<TICKET> <Summary of the problem solved or the behavior changed>`
 
 - Lead with the Jira ticket ID.
 - Follow with a concise summary of the problem solved or the behavior changed, as a user or caller sees it. Do not name the mechanism (classes, methods, selectors) unless the mechanism is the point of the change.
@@ -48,10 +48,10 @@ Omit the body by default. Most commits are fully explained by the title plus the
 
 Add a body only when it carries something a reader cannot get from the diff:
 
-- ASCII diagrams — a flow, a state machine, a race, or a before/after data shape.
+- ASCII diagrams — a flow, a state machine, a race, or a before and after data shape.
 - Behavior changes a reviewer would not expect from the title.
-- Links — related tickets, commits or pull requests, upstream bugs, specifications, documentation.
-- Non-obvious constraints, or alternatives that were considered and rejected, and why.
+- Links — related tickets, commits, pull requests, upstream bugs, specifications, or documentation.
+- Nonobvious constraints, or alternatives that were considered and rejected, and why.
 - Reproduction steps or the observed failure, when the title cannot hold them.
 
 Never restate the diff. Do not narrate which files, classes, methods, selectors, or assertions changed, and do not walk through how a test works.
@@ -61,7 +61,7 @@ When a body is warranted:
 - Do not wrap lines. Diagrams and code blocks keep their own line breaks.
 - Keep it as brief as possible: one short sentence, a few short bullets, or one diagram.
 - Separate it from the title with a blank line.
-- Write a single point as one plain sentence. Use bullets only when describing several things, one point per bullet, rather than a paragraph of prose.
+- Write a single point as one plain sentence. Write several points as bullets, one point per bullet, rather than as a paragraph.
 
 When the user provides a hint or description, incorporate it into the message.
 
@@ -72,7 +72,7 @@ Bad — the body retells the diff:
 ```
 LPD-116783 Show each calendar's own color in Manage Calendars
 
-The Color column on the Manage Calendars list rendered every row with whichever calendar's color ended up last in the CSS cascade, because each iteration of the search container emitted an <aui:style> block redefining the shared .calendar-portlet-color-box selector. Target the background-color at a per-row class derived from the calendar id so each <span> binds to its own style rule and keeps the CSP-safe form from LPD-53713.
+The Color column on the Manage Calendars list rendered every row with whichever calendar's color ended up last in the CSS cascade, because each iteration of the search container emitted an <aui:style> block redefining the shared .calendar-portlet-color-box selector. Target the background-color at a per row class derived from the calendar ID so each <span> binds to its own style rule and keeps the CSP safe form from LPD-53713.
 ```
 
 Good — the title states the problem, and the body keeps only the context the diff hides:
@@ -80,5 +80,5 @@ Good — the title states the problem, and the body keeps only the context the d
 ```
 LPD-116783 Show each calendar's own color in Manage Calendars
 
-Keeps the CSP-safe <aui:style> form from LPD-53713 rather than going back to an inline style.
+Keep the CSP safe <aui:style> form from LPD-53713 rather than going back to an inline style.
 ```
