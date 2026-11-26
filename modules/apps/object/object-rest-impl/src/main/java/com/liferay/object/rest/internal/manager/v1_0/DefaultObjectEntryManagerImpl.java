@@ -119,6 +119,7 @@ import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.InlineSQLHelper;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
+import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermissionRegistryUtil;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -193,6 +194,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -3169,12 +3171,40 @@ public class DefaultObjectEntryManagerImpl
 				groupIds, objectDefinition, predicate, preferApproved, search,
 				sorts)) {
 
+			List<Long> primaryKeys = objectEntryLocalService.getPrimaryKeys(
+				groupIds, companyId, dtoConverterContext.getUserId(),
+				objectDefinition.getObjectDefinitionId(), predicate,
+				preferApproved, search, start, end, sorts);
+
+			Map<Serializable, com.liferay.object.model.ObjectEntry>
+				objectEntries = objectEntryLocalService.fetchPersistedModels(
+					new HashSet<>(primaryKeys));
+
+			ModelResourcePermission<com.liferay.object.model.ObjectEntry>
+				modelResourcePermission =
+					ModelResourcePermissionRegistryUtil.
+						getModelResourcePermission(
+							objectDefinition.getClassName());
+
 			serviceBuilderObjectEntries = TransformUtil.transform(
-				objectEntryLocalService.getPrimaryKeys(
-					groupIds, companyId, dtoConverterContext.getUserId(),
-					objectDefinition.getObjectDefinitionId(), predicate,
-					preferApproved, search, start, end, sorts),
-				primaryKey -> _objectEntryService.getObjectEntry(primaryKey));
+				primaryKeys,
+				primaryKey -> {
+					com.liferay.object.model.ObjectEntry
+						serviceBuilderObjectEntry = objectEntries.get(
+							primaryKey);
+
+					if ((serviceBuilderObjectEntry != null) &&
+						!ObjectEntryThreadLocal.
+							isSkipObjectEntryResourcePermission()) {
+
+						_objectEntryService.checkModelResourcePermission(
+							modelResourcePermission, serviceBuilderObjectEntry,
+							ActionKeys.VIEW);
+					}
+
+					return serviceBuilderObjectEntry;
+				});
+
 			objectEntriesCount = objectEntryLocalService.getValuesListCount(
 				groupIds, companyId, dtoConverterContext.getUserId(),
 				objectDefinition.getObjectDefinitionId(), predicate,
