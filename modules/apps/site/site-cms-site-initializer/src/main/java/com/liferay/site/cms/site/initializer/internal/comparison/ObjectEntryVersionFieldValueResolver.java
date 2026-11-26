@@ -208,6 +208,10 @@ public class ObjectEntryVersionFieldValueResolver {
 				_getDateTimeFormat(languageId, objectField, user), value);
 		}
 
+		if (ObjectFieldConstants.BUSINESS_TYPE_LOCATION.equals(businessType)) {
+			return _toLocationDisplayValue(value);
+		}
+
 		if (ObjectFieldConstants.BUSINESS_TYPE_MULTISELECT_PICKLIST.equals(
 				businessType)) {
 
@@ -376,6 +380,17 @@ public class ObjectEntryVersionFieldValueResolver {
 		}
 	}
 
+	private String _toLocationDisplayValue(Object value) {
+		if (value instanceof Map) {
+			Map<?, ?> valueMap = (Map<?, ?>)value;
+
+			return HtmlUtil.escape(
+				GetterUtil.getString(valueMap.get("address")));
+		}
+
+		return HtmlUtil.escape(GetterUtil.getString(value));
+	}
+
 	private String _toMultiselectPicklistDisplayValue(
 		String languageId, ObjectField objectField, Object value) {
 
@@ -482,6 +497,7 @@ public class ObjectEntryVersionFieldValueResolver {
 			ObjectFieldConstants.BUSINESS_TYPE_DECIMAL,
 			ObjectFieldConstants.BUSINESS_TYPE_EMAIL_ADDRESS,
 			ObjectFieldConstants.BUSINESS_TYPE_INTEGER,
+			ObjectFieldConstants.BUSINESS_TYPE_LOCATION,
 			ObjectFieldConstants.BUSINESS_TYPE_LONG_INTEGER,
 			ObjectFieldConstants.BUSINESS_TYPE_PHONE_NUMBER,
 			ObjectFieldConstants.BUSINESS_TYPE_PRECISION_DECIMAL,
