@@ -48,6 +48,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -74,6 +75,11 @@ public class LinkReferenceResourceTest
 		new AggregateTestRule(
 			new LiferayIntegrationTestRule(),
 			PermissionCheckerMethodTestRule.INSTANCE);
+
+	@AfterClass
+	public static void tearDownClass() throws Exception {
+		PIMTestUtil.deleteBasicProductObjectDefinitionTree();
+	}
 
 	@Before
 	@Override

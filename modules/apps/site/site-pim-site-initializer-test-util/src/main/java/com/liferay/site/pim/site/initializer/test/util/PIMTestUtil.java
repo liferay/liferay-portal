@@ -9,7 +9,9 @@ import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalServiceUtil;
 import com.liferay.object.model.ObjectDefinition;
+import com.liferay.object.model.ObjectRelationship;
 import com.liferay.object.service.ObjectDefinitionLocalServiceUtil;
+import com.liferay.object.service.ObjectRelationshipLocalServiceUtil;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
@@ -40,6 +42,40 @@ public class PIMTestUtil {
 				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
 			DepotConstants.TYPE_SPACE,
 			ServiceContextTestUtil.getServiceContext());
+	}
+
+	public static void deleteBasicProductObjectDefinitionTree()
+		throws Exception {
+
+		ObjectDefinition objectDefinition =
+			ObjectDefinitionLocalServiceUtil.
+				fetchObjectDefinitionByExternalReferenceCode(
+					PIMObjectDefinitionConstants.
+						EXTERNAL_REFERENCE_CODE_BASIC_PRODUCT,
+					TestPropsValues.getCompanyId());
+
+		if (objectDefinition == null) {
+			return;
+		}
+
+		for (ObjectRelationship objectRelationship :
+				ObjectRelationshipLocalServiceUtil.getObjectRelationships(
+					objectDefinition.getObjectDefinitionId(), true)) {
+
+			ObjectRelationshipLocalServiceUtil.updateObjectRelationship(
+				objectRelationship.getExternalReferenceCode(),
+				objectRelationship.getObjectRelationshipId(),
+				objectRelationship.getParameterObjectFieldId(),
+				objectRelationship.getDeletionType(),
+				objectRelationship.getDescriptionMap(), false,
+				objectRelationship.getLabelMap(), null);
+
+			ObjectDefinitionLocalServiceUtil.deleteObjectDefinition(
+				objectRelationship.getObjectDefinitionId2());
+		}
+
+		ObjectDefinitionLocalServiceUtil.deleteObjectDefinition(
+			objectDefinition.getObjectDefinitionId());
 	}
 
 	public static Group getOrAddGroup() throws Exception {

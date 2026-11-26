@@ -29,6 +29,7 @@ import com.liferay.site.pim.site.initializer.constants.PIMObjectDefinitionConsta
 import com.liferay.site.pim.site.initializer.constants.PIMObjectFolderConstants;
 import com.liferay.site.pim.site.initializer.test.util.PIMTestUtil;
 
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -49,6 +50,11 @@ public class PIMFeatureFlagListenerTest {
 		new AggregateTestRule(
 			new LiferayIntegrationTestRule(),
 			PermissionCheckerMethodTestRule.INSTANCE);
+
+	@AfterClass
+	public static void tearDownClass() throws Exception {
+		PIMTestUtil.deleteBasicProductObjectDefinitionTree();
+	}
 
 	@Before
 	public void setUp() throws Exception {

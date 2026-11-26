@@ -41,6 +41,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -61,6 +62,11 @@ public class PIMConnectorContainerResponseFilterTest {
 		new AggregateTestRule(
 			new LiferayIntegrationTestRule(),
 			PermissionCheckerMethodTestRule.INSTANCE);
+
+	@AfterClass
+	public static void tearDownClass() throws Exception {
+		PIMTestUtil.deleteBasicProductObjectDefinitionTree();
+	}
 
 	@Before
 	public void setUp() throws Exception {
