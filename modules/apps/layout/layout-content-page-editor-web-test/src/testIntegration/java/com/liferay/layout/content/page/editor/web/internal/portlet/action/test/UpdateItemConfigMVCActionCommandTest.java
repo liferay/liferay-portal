@@ -323,8 +323,6 @@ public class UpdateItemConfigMVCActionCommandTest {
 	}
 
 	private void _testUpdateCollectionItemConfigResponsive() throws Exception {
-		MockActionRequest mockActionRequest = _getMockActionRequest();
-
 		LayoutStructure layoutStructure = _getLayoutStructure();
 
 		LayoutStructureItem layoutStructureItem =
@@ -341,6 +339,8 @@ public class UpdateItemConfigMVCActionCommandTest {
 		Assert.assertEquals(
 			_objectMapper.readTree(_read("collection_item_config.json")),
 			_objectMapper.readTree(jsonObject.toString()));
+
+		MockActionRequest mockActionRequest = _getMockActionRequest();
 
 		mockActionRequest.setParameter(
 			"itemConfig", _read("collection_item_config_responsive.json"));
