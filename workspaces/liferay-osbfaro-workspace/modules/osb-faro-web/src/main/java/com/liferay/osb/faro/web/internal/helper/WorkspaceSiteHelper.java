@@ -7,14 +7,23 @@ package com.liferay.osb.faro.web.internal.helper;
 
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
+import com.liferay.osb.faro.constants.FaroUserConstants;
 import com.liferay.osb.faro.model.FaroProject;
+import com.liferay.osb.faro.model.FaroUser;
 import com.liferay.osb.faro.web.internal.util.FaroNavigationUtil;
 import com.liferay.osb.faro.web.internal.util.SiteInitializerUtil;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
+import com.liferay.portal.kernel.service.RoleLocalService;
+import com.liferay.portal.kernel.service.UserGroupRoleLocalService;
 import com.liferay.site.initializer.SiteInitializer;
+
+import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -55,6 +64,50 @@ public class WorkspaceSiteHelper {
 			"liferay-data-platform-settings-master");
 	}
 
+	public void updateUserGroupRoles(FaroUser faroUser) throws PortalException {
+		if (faroUser.getLiveUserId() <= 0) {
+			return;
+		}
+
+		Role role = _roleLocalService.fetchRole(
+			faroUser.getCompanyId(), "Workspace Administrator");
+
+		if (role == null) {
+			return;
+		}
+
+		if (_isWorkspaceAdministrator(faroUser)) {
+			_userGroupRoleLocalService.addUserGroupRoles(
+				faroUser.getLiveUserId(), faroUser.getGroupId(),
+				new long[] {role.getRoleId()});
+		}
+		else {
+			_userGroupRoleLocalService.deleteUserGroupRoles(
+				faroUser.getLiveUserId(), faroUser.getGroupId(),
+				new long[] {role.getRoleId()});
+		}
+	}
+
+	private boolean _isWorkspaceAdministrator(FaroUser faroUser) {
+		if (faroUser.getStatus() != FaroUserConstants.STATUS_APPROVED) {
+			return false;
+		}
+
+		Role role = _roleLocalService.fetchRole(faroUser.getRoleId());
+
+		if (role == null) {
+			return false;
+		}
+
+		if (Objects.equals(role.getName(), RoleConstants.SITE_ADMINISTRATOR) ||
+			Objects.equals(role.getName(), RoleConstants.SITE_OWNER)) {
+
+			return true;
+		}
+
+		return false;
+	}
+
 	private void _updateMasterLayout(
 		String faviconFileEntryERC, long groupId,
 		String layoutPageTemplateEntryKey) {
@@ -87,9 +140,15 @@ public class WorkspaceSiteHelper {
 	private LayoutPageTemplateEntryLocalService
 		_layoutPageTemplateEntryLocalService;
 
+	@Reference
+	private RoleLocalService _roleLocalService;
+
 	@Reference(
 		target = "(site.initializer.key=com.liferay.osb.faro.workspace.site.initializer)"
 	)
 	private SiteInitializer _siteInitializer;
+
+	@Reference
+	private UserGroupRoleLocalService _userGroupRoleLocalService;
 
 }
