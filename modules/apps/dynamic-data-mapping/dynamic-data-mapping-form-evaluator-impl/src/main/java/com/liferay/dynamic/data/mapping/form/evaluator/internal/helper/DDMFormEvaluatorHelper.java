@@ -251,7 +251,7 @@ public class DDMFormEvaluatorHelper {
 	private void _checkFieldAffectedBySetReadOnlyAction(
 		DDMFormRule ddmFormRule, DDMFormField ddmFormField) {
 
-		if (_containsAction(
+		if (_hasAction(
 				ddmFormRule, "setEnabled", ddmFormField.getName(),
 				!ddmFormField.isReadOnly())) {
 
@@ -268,7 +268,7 @@ public class DDMFormEvaluatorHelper {
 	private void _checkFieldAffectedBySetRequiredAction(
 		DDMFormRule ddmFormRule, DDMFormField ddmFormField) {
 
-		if (_containsAction(
+		if (_hasAction(
 				ddmFormRule, "setRequired", ddmFormField.getName(),
 				ddmFormField.isRequired())) {
 
@@ -285,7 +285,7 @@ public class DDMFormEvaluatorHelper {
 	private void _checkFieldAffectedBySetVisibleAction(
 		DDMFormRule ddmFormRule, DDMFormField ddmFormField) {
 
-		if (_containsAction(
+		if (_hasAction(
 				ddmFormRule, "setVisible", ddmFormField.getName(), true)) {
 
 			UpdateFieldPropertyRequest.Builder builder =
@@ -295,22 +295,6 @@ public class DDMFormEvaluatorHelper {
 			ddmFormEvaluatorExpressionObserver.updateFieldProperty(
 				builder.build());
 		}
-	}
-
-	private boolean _containsAction(
-		DDMFormRule ddmFormRule, String functionName, String ddmFormFieldName,
-		boolean defaultValue) {
-
-		String setBooleanPropertyAction = String.format(
-			"%s('%s', %s)", functionName, ddmFormFieldName, defaultValue);
-
-		for (String action : ddmFormRule.getActions()) {
-			if (Objects.equals(setBooleanPropertyAction, action)) {
-				return true;
-			}
-		}
-
-		return false;
 	}
 
 	private <T> DDMExpression<T> _createExpression(String expression)
@@ -614,6 +598,22 @@ public class DDMFormEvaluatorHelper {
 		}
 
 		return nonevaluableFieldNames;
+	}
+
+	private boolean _hasAction(
+		DDMFormRule ddmFormRule, String functionName, String ddmFormFieldName,
+		boolean defaultValue) {
+
+		String setBooleanPropertyAction = String.format(
+			"%s('%s', %s)", functionName, ddmFormFieldName, defaultValue);
+
+		for (String action : ddmFormRule.getActions()) {
+			if (Objects.equals(setBooleanPropertyAction, action)) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	private boolean _isBooleanPropertyValue(
