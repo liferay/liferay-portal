@@ -8,6 +8,7 @@ package com.liferay.object.service.impl;
 import com.liferay.object.configuration.ObjectEntryScheduleConfiguration;
 import com.liferay.object.configuration.ObjectEntryVersionConfiguration;
 import com.liferay.object.entry.util.ObjectEntryDTOConverterUtil;
+import com.liferay.object.entry.util.ObjectEntryThreadLocal;
 import com.liferay.object.exception.RequiredObjectEntryVersionException;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectEntryVersion;
@@ -380,13 +381,22 @@ public class ObjectEntryVersionLocalServiceImpl
 			objectEntry.getObjectDefinitionId());
 		objectEntryVersion.setObjectEntryId(objectEntry.getObjectEntryId());
 
+		boolean skipObjectEntryResourcePermission =
+			ObjectEntryThreadLocal.isSkipObjectEntryResourcePermission();
+
 		try {
+			ObjectEntryThreadLocal.setSkipObjectEntryResourcePermission(true);
+
 			objectEntryVersion.setContent(
 				ObjectEntryDTOConverterUtil.toDTO(
 					_dtoConverterRegistry, _jsonFactory, objectEntry, user));
 		}
 		catch (Exception exception) {
 			throw new PortalException(exception);
+		}
+		finally {
+			ObjectEntryThreadLocal.setSkipObjectEntryResourcePermission(
+				skipObjectEntryResourcePermission);
 		}
 
 		objectEntryVersion.setDisplayDate(objectEntry.getDisplayDate());
