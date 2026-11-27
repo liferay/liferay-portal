@@ -5,6 +5,9 @@
 
 package com.liferay.portal.kernel.xml;
 
+import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 /**
@@ -12,6 +15,38 @@ import com.liferay.portal.kernel.util.Validator;
  * @author Julius Lee
  */
 public class XMLUtil {
+
+	public static String getElementText(String xml, String elementName) {
+		String startTag = StringBundler.concat(
+			StringPool.LESS_THAN, elementName, StringPool.GREATER_THAN);
+
+		int start = xml.indexOf(startTag);
+
+		int emptyElementStart = xml.indexOf(
+			StringBundler.concat(StringPool.LESS_THAN, elementName, "/>"));
+
+		if ((emptyElementStart != -1) &&
+			((start == -1) || (emptyElementStart < start))) {
+
+			return StringPool.BLANK;
+		}
+
+		if (start == -1) {
+			return null;
+		}
+
+		start += startTag.length();
+
+		int end = xml.indexOf(
+			StringBundler.concat("</", elementName, StringPool.GREATER_THAN),
+			start);
+
+		if (end == -1) {
+			return null;
+		}
+
+		return HtmlUtil.unescape(xml.substring(start, end));
+	}
 
 	public static String stripInvalidChars(String xml) {
 		if (Validator.isNull(xml)) {
