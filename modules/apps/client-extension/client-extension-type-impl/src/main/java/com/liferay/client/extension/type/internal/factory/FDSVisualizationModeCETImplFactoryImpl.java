@@ -117,10 +117,10 @@ public class FDSVisualizationModeCETImplFactoryImpl
 		Set<String> names = new HashSet<>();
 
 		for (int index = 0; index < sectionsJSONArray.length(); index++) {
+			String name = null;
+
 			JSONObject sectionJSONObject = sectionsJSONArray.getJSONObject(
 				index);
-
-			String name = null;
 
 			if (sectionJSONObject != null) {
 				name = sectionJSONObject.getString("name");
