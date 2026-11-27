@@ -118,6 +118,34 @@ public class ListUtilTest {
 	}
 
 	@Test
+	public void testIndexOfEmptyList() {
+		List<String> list = new ArrayList<>();
+
+		Assert.assertEquals(-1, ListUtil.indexOf(list, string -> true));
+	}
+
+	@Test
+	public void testIndexOfList() {
+		List<String> list = new ArrayList<>();
+
+		list.add("a");
+		list.add("bb");
+		list.add("cc");
+
+		Assert.assertEquals(
+			1, ListUtil.indexOf(list, string -> string.length() == 2));
+		Assert.assertEquals(
+			-1, ListUtil.indexOf(list, string -> string.equals("z")));
+	}
+
+	@Test
+	public void testIndexOfNullList() {
+		List<String> list = null;
+
+		Assert.assertEquals(-1, ListUtil.indexOf(list, string -> true));
+	}
+
+	@Test
 	public void testIsNullWhenAllValuesAreNull() {
 		List<String> list = new ArrayList<>();
 
