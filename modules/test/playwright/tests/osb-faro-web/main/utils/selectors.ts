@@ -18,7 +18,7 @@ export enum CardSelectors {
 
 export enum SegmentConditions {
 	atMostOrAtLeast = '.operator-input:not(.criterion-input):not([data-testid])',
-	criteriaCondition = '.criterion-input',
+	criteriaCondition = '.criterion-input:not([aria-label="Match Logic"])',
 	selectedTime = '[data-testid="clay-select"]',
 	timeConjunction = '[data-testid="conjunction-input"]',
 }
