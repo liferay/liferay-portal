@@ -64,14 +64,14 @@ public class GoogleDocsDLViewFileVersionDisplayContext
 
 		// See LPS-79987
 
-		if (Validator.isNull(
-				_googleDocsMetadataHelper.getFieldValue(
-					GoogleDocsConstants.DDM_FIELD_NAME_URL))) {
+		String url = _googleDocsMetadataHelper.getFieldValue(
+			GoogleDocsConstants.DDM_FIELD_NAME_URL);
 
+		if (Validator.isNull(url)) {
 			return actionDropdownItems;
 		}
 
-		_processDropdownItems(actionDropdownItems);
+		_processDropdownItems(actionDropdownItems, url);
 
 		return actionDropdownItems;
 	}
@@ -111,16 +111,12 @@ public class GoogleDocsDLViewFileVersionDisplayContext
 		printWriter.write("</div>");
 	}
 
-	private void _processDropdownItems(List<DropdownItem> dropdownItems) {
+	private void _processDropdownItems(
+		List<DropdownItem> dropdownItems, String url) {
+
 		dropdownItems.removeIf(
 			dropdownItem -> _unsupportedDropdownItemKeys.contains(
 				dropdownItem.get("key")));
-
-		if (!_googleDocsMetadataHelper.containsField(
-				GoogleDocsConstants.DDM_FIELD_NAME_URL)) {
-
-			return;
-		}
 
 		int index = ListUtil.indexOf(
 			dropdownItems,
@@ -134,8 +130,7 @@ public class GoogleDocsDLViewFileVersionDisplayContext
 		dropdownItems.add(
 			index,
 			DropdownItemBuilder.setHref(
-				_googleDocsMetadataHelper.getFieldValue(
-					GoogleDocsConstants.DDM_FIELD_NAME_URL)
+				url
 			).setKey(
 				GoogleDocsUIItemKeys.EDIT_IN_GOOGLE
 			).setLabel(
