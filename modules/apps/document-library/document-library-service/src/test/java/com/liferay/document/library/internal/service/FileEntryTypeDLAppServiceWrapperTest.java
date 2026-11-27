@@ -45,6 +45,7 @@ public class FileEntryTypeDLAppServiceWrapperTest {
 
 		long fileEntryId = RandomTestUtil.randomLong();
 		long newFolderId = RandomTestUtil.randomLong();
+
 		ServiceContext serviceContext = new ServiceContext();
 
 		FileEntry fileEntry = Mockito.mock(FileEntry.class);
