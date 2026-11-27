@@ -46,13 +46,13 @@ public class OpenSearchIndexInformation implements IndexInformation {
 			_getOpenSearchIndicesClient();
 
 		try {
+			JSONObject jsonObject = _jsonFactory.createJSONObject();
+
 			GetIndexResponse getIndexResponse = openSearchIndicesClient.get(
 				GetIndexRequest.of(
 					getIndexRequest -> getIndexRequest.index(indexName)));
 
 			Map<String, IndexState> indexStates = getIndexResponse.result();
-
-			JSONObject jsonObject = _jsonFactory.createJSONObject();
 
 			for (Map.Entry<String, IndexState> entry : indexStates.entrySet()) {
 				IndexState indexState = entry.getValue();

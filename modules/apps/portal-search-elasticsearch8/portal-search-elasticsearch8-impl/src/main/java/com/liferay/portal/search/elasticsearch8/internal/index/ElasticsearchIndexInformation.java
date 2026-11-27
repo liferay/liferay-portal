@@ -46,13 +46,13 @@ public class ElasticsearchIndexInformation implements IndexInformation {
 			_getElasticsearchIndicesClient();
 
 		try {
+			JSONObject jsonObject = _jsonFactory.createJSONObject();
+
 			GetIndexResponse getIndexResponse = elasticsearchIndicesClient.get(
 				GetIndexRequest.of(
 					getIndexRequest -> getIndexRequest.index(indexName)));
 
 			Map<String, IndexState> indexStates = getIndexResponse.result();
-
-			JSONObject jsonObject = _jsonFactory.createJSONObject();
 
 			for (Map.Entry<String, IndexState> entry : indexStates.entrySet()) {
 				IndexState indexState = entry.getValue();
