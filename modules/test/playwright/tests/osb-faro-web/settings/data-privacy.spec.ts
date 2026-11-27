@@ -50,9 +50,18 @@ test(
 
 			await page.getByRole('checkbox', {name: jobType}).check();
 
-			await page.getByPlaceholder('example@email.com').fill(email);
+			const emailInput = page.getByPlaceholder('example@email.com');
 
-			await page.getByRole('option', {name: email}).click();
+			const emailOption = page.getByRole('option', {name: email});
+
+			await expect(async () => {
+				await emailInput.fill('');
+				await emailInput.fill(email);
+
+				await expect(emailOption).toBeVisible({timeout: 5000});
+			}).toPass();
+
+			await emailOption.click();
 
 			await page.getByRole('button', {name: 'Save'}).click();
 
