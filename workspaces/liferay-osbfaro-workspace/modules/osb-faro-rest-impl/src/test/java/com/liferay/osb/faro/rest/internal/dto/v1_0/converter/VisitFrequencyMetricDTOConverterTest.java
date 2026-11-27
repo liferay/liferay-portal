@@ -30,7 +30,9 @@ public class VisitFrequencyMetricDTOConverterTest {
 		_testToDTOWithUnknownBucket();
 	}
 
-	private void _assertZeroBuckets(VisitFrequencyMetric visitFrequencyMetric) {
+	private void _assertZeroVisitors(
+		VisitFrequencyMetric visitFrequencyMetric) {
+
 		Assert.assertEquals(
 			Long.valueOf(0), visitFrequencyMetric.getBiWeeklyVisitors());
 		Assert.assertEquals(
@@ -139,7 +141,7 @@ public class VisitFrequencyMetricDTOConverterTest {
 				new GetWorkspaceGroupChannelVisitFrequencyMetricResponse.
 					VisitFrequencyBag());
 
-		_assertZeroBuckets(visitFrequencyMetric);
+		_assertZeroVisitors(visitFrequencyMetric);
 
 		Assert.assertEquals(
 			Long.valueOf(0), visitFrequencyMetric.getVisitors());
@@ -157,7 +159,7 @@ public class VisitFrequencyMetricDTOConverterTest {
 					RandomTestUtil.randomLong(),
 					RandomTestUtil.randomString())));
 
-		_assertZeroBuckets(
+		_assertZeroVisitors(
 			_visitFrequencyMetricDTOConverter.toDTO(null, visitFrequencyBag));
 	}
 
