@@ -114,6 +114,11 @@ export default function useAIChat({
 	const chatbotExternalReferenceCodeRef = useRef<string | undefined>(
 		chatbotExternalReferenceCode
 	);
+	const chatMessageSentRef = useRef<boolean>(false);
+	const connectionIdRef = useRef<number>(0);
+	const subscribedChatbotExternalReferenceCodeRef = useRef<
+		string | undefined
+	>(undefined);
 	const lastMessageRef = useRef<HTMLDivElement | null>(null);
 	const messagesContainerRef = useRef<HTMLDivElement | null>(null);
 	const sourceLanguageIdRef = useRef<string>(
@@ -143,6 +148,7 @@ export default function useAIChat({
 		setMessage('');
 		setReportContext(null);
 		setIsGenerating(false);
+		chatMessageSentRef.current = false;
 		contextRef.current = undefined;
 		initialMessageSentRef.current = false;
 		eventSourceReference.current = null;
@@ -317,6 +323,8 @@ export default function useAIChat({
 
 			setIsGenerating(true);
 
+			chatMessageSentRef.current = true;
+
 			const postToChat = () =>
 				postChatByExternalReferenceCodeMessage({
 					chatContext: {
@@ -411,8 +419,23 @@ export default function useAIChat({
 	}, []);
 
 	const openAIAssistantChatConnection = useCallback(() => {
-		createEventSource().then((eventSource) => {
+		const connectionId = ++connectionIdRef.current;
+
+		subscribedChatbotExternalReferenceCodeRef.current =
+			chatbotExternalReferenceCodeRef.current;
+
+		const eventSourcePromise = createEventSource(
+			subscribedChatbotExternalReferenceCodeRef.current
+		);
+
+		eventSourcePromise.then((eventSource) => {
 			if (!eventSource) {
+				return;
+			}
+
+			if (connectionId !== connectionIdRef.current) {
+				eventSource.close();
+
 				return;
 			}
 
@@ -520,6 +543,8 @@ export default function useAIChat({
 	}, [sendMessage]);
 
 	const closeAIAssistantChatConnection = useCallback(() => {
+		connectionIdRef.current++;
+
 		eventSourceRef.current?.close();
 
 		eventSourceRef.current = null;
@@ -535,6 +560,27 @@ export default function useAIChat({
 		closeAIAssistantChatConnection,
 		openAIAssistantChatConnection,
 		sessionKey,
+	]);
+
+	useEffect(() => {
+		if (
+			!chatbotExternalReferenceCode ||
+			chatbotExternalReferenceCode ===
+				subscribedChatbotExternalReferenceCodeRef.current ||
+			chatMessageSentRef.current
+		) {
+			return;
+		}
+
+		closeAIAssistantChatConnection();
+
+		eventSourceReference.current = null;
+
+		openAIAssistantChatConnection();
+	}, [
+		chatbotExternalReferenceCode,
+		closeAIAssistantChatConnection,
+		openAIAssistantChatConnection,
 	]);
 
 	useEffect(() => {
