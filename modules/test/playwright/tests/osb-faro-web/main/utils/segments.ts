@@ -141,7 +141,9 @@ export async function editCriteriaConjunction({
 	index?: number;
 	page: Page;
 }) {
-	await page.locator('.conjunction-button').nth(index).click();
+	await page.getByRole('combobox', {name: 'Match Logic'}).nth(index).click();
+
+	await page.getByRole('option', {name: 'Any'}).click();
 }
 
 export async function editSegment(page: Page) {
