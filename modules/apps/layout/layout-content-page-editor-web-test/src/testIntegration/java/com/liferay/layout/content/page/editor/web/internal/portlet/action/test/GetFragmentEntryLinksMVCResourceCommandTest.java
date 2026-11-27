@@ -171,7 +171,6 @@ public class GetFragmentEntryLinksMVCResourceCommandTest {
 		Assert.assertEquals(0, jsonObject.length());
 
 		Assert.assertEquals(1, jsonArray.length());
-
 	}
 
 	private void _testGetFragmentEntryLinksWithLayoutFragmentEntryLink()
