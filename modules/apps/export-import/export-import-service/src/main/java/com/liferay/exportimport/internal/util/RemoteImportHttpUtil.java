@@ -105,7 +105,6 @@ public class RemoteImportHttpUtil {
 
 		options.addHeader(
 			HttpHeaders.CONTENT_TYPE, ContentTypes.APPLICATION_JSON);
-
 		options.setBody(
 			JSONUtil.put(
 				"assetLibraries",
