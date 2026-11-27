@@ -1,6 +1,6 @@
 # Commit Message Wording
 
-The **Commit message wording** precondition in [SKILL.md](SKILL.md) follows these rules. It flags a commit message on the branch that reveals a vulnerability the change fixes, and notes one that names a protection the change adds. A commit message stays in Git history for good, and it is public once the branch is pushed, so the message of a security fix reads like any other change to the same code, and the details stay in the private ticket. The check is advisory, and nothing it finds reaches the Results Summary, so the published result never marks a security fix.
+The **Commit message wording** precondition in [SKILL.md](SKILL.md) follows these rules. It flags a commit message on the branch that reveals a vulnerability the change fixes, and notes one that names a protection the change adds. The message of a security fix reads like any other change to the same code, and the details stay in the private ticket, because a commit message stays in Git history for good and is public once the branch is pushed. The check is advisory. Nothing it finds reaches the Results Summary, so the published result never marks a security fix.
 
 ## Check
 
@@ -23,14 +23,14 @@ A message is not flagged, but noted, when it names a protection the change adds 
 
 A message is neither flagged nor noted when it:
 
-- Fixes an ordinary defect, or describes a change by the code it touches, its classes, methods, and calls, without naming a protection or an access rule.
+- Fixes an ordinary defect, or describes a change by the code it touches (its classes, methods, and calls) without naming a protection or an access rule.
 - Names a product feature by its name only, such as the Security Settings tab or the Permissions screen.
 
 These examples are fictional:
 
 | Message | Result | Reason |
 | --- | --- | --- |
-| `LPD-12345 Add the Security Settings tab to the widget admin` | No | A product feature by its name |
+| `LPD-12345 Add the Security Settings tab to the widget admin` | No | Names a product feature only |
 | `LPD-12345 Add permission check to WidgetService` | Note | Names a protection |
 | `LPD-12345 Allow guests to view public widgets` | Note | Says who may now do what |
 | `LPD-12345 Fix a security issue in the widget preview` | Flag | That it fixes a vulnerability |
@@ -50,7 +50,7 @@ For each flagged or noted text, suggest a wording that the rules above would nei
 When nothing is flagged or noted, continue without a word. Otherwise, show the developer the block below, and ask whether to stop the run to reword or to continue. A reword costs nothing here, since no validation has run yet. Never offer to reword a commit that is already pushed, since its message is already public. Give the SHA of each commit as the log prints it, and quote only the flagged or noted text rather than the whole message. The block is shown to the developer alone, so never copy any of it into the Results Summary, the PR description, or a comment:
 
 ```markdown
-**These commit messages may describe more than the change.** A flagged text says how a defect could be exploited, what could reach it, or what it allowed, or labels the change as a vulnerability fix. A noted text names a protection the change adds or who may now do what, which tells a reader where to look when the change fixes a vulnerability. A commit message is public once the branch is pushed. Reword each one before you push, or keep it when you judge it safe. This check never blocks the branch, and the developer decides.
+**These commit messages may describe more than the change.** A flagged text says how a defect could be exploited, what could reach it, or what it allowed, or labels the change as a vulnerability fix. A noted text names a protection the change adds or who may now do what, which tells a reader where to look when the change fixes a vulnerability. A commit message is public once the branch is pushed. Reword each one before you push, or keep it when you judge it safe. This check never blocks the branch, so the choice is yours.
 
 | Commit | Kind | Text | Reason | Suggested Wording |
 | --- | --- | --- | --- | --- |
