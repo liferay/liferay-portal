@@ -108,7 +108,6 @@ public class FindPageStrutsActionTest {
 		mockHttpServletRequest.addParameter(
 			"pageResourcePrimKey",
 			String.valueOf(_wikiPage.getResourcePrimKey()));
-		mockHttpServletRequest.setRequestURI("/c/wiki/find_page");
 
 		ThemeDisplay themeDisplay = new ThemeDisplay();
 
@@ -122,6 +121,8 @@ public class FindPageStrutsActionTest {
 
 		mockHttpServletRequest.setAttribute(
 			WebKeys.THEME_DISPLAY, themeDisplay);
+
+		mockHttpServletRequest.setRequestURI("/c/wiki/find_page");
 
 		MockHttpServletResponse mockHttpServletResponse =
 			new MockHttpServletResponse();
