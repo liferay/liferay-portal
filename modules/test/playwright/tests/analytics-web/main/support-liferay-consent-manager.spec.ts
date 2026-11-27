@@ -80,6 +80,15 @@ async function changeCookiePreference({
 	publishButton.click();
 
 	await waitForAlert(page, `Success:Your request completed successfully.`);
+
+	if (enableCookieBanner) {
+		await page.getByRole('button', {name: 'Activate'}).click();
+
+		await waitForAlert(
+			page,
+			`Success:Your request completed successfully.`
+		);
+	}
 }
 
 async function connectACToDXP({
