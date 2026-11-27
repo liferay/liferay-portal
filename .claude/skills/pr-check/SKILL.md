@@ -222,6 +222,8 @@ The procedure runs in two passes over the validations, in the order below. The o
 
 1. [Own Bundle Context](validations/branch/own-bundle-context.md)
 
+1. [XML Element Text](validations/branch/xml-element-text.md)
+
 1. [Full Portal Build](validations/portal/full-portal-build.md)
 
 1. [Per-Module Compile](validations/portal/per-module-compile.md)
