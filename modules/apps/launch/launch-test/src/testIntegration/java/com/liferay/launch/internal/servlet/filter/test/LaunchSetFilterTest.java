@@ -426,12 +426,11 @@ public class LaunchSetFilterTest {
 		MockHttpServletRequest mockHttpServletRequest =
 			new MockHttpServletRequest();
 
-		mockHttpServletRequest.setAttribute(WebKeys.USER, user);
-
 		for (Map.Entry<String, String> entry : headers.entrySet()) {
 			mockHttpServletRequest.addHeader(entry.getKey(), entry.getValue());
 		}
 
+		mockHttpServletRequest.setAttribute(WebKeys.USER, user);
 		mockHttpServletRequest.setParameters(parameters);
 
 		AtomicLong launchSetId = new AtomicLong();
