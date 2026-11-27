@@ -34,6 +34,9 @@ public class MyGroupItemSelectorViewRendererUtil {
 			String itemSelectedEventName)
 		throws IOException, ServletException {
 
+		RequestDispatcher requestDispatcher =
+			servletContext.getRequestDispatcher("/view_sites.jsp");
+
 		servletRequest.setAttribute(
 			SiteWebKeys.GROUP_URL_PROVIDER, groupURLProvider);
 
@@ -46,9 +49,6 @@ public class MyGroupItemSelectorViewRendererUtil {
 		servletRequest.setAttribute(
 			SitesItemSelectorWebKeys.SITES_ITEM_SELECTOR_DISPLAY_CONTEXT,
 			mySitesItemSelectorViewDisplayContext);
-
-		RequestDispatcher requestDispatcher =
-			servletContext.getRequestDispatcher("/view_sites.jsp");
 
 		requestDispatcher.include(servletRequest, servletResponse);
 	}

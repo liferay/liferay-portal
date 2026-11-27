@@ -79,6 +79,9 @@ public class SiteTemplateItemSelectorView
 			PortletURL portletURL, String itemSelectedEventName, boolean search)
 		throws IOException, ServletException {
 
+		RequestDispatcher requestDispatcher =
+			_servletContext.getRequestDispatcher("/view_sites.jsp");
+
 		servletRequest.setAttribute(
 			SiteWebKeys.GROUP_URL_PROVIDER, _groupURLProvider);
 
@@ -92,9 +95,6 @@ public class SiteTemplateItemSelectorView
 		servletRequest.setAttribute(
 			SitesItemSelectorWebKeys.SITES_ITEM_SELECTOR_DISPLAY_CONTEXT,
 			siteTemplateItemSelectorViewDisplayContext);
-
-		RequestDispatcher requestDispatcher =
-			_servletContext.getRequestDispatcher("/view_sites.jsp");
 
 		requestDispatcher.include(servletRequest, servletResponse);
 	}

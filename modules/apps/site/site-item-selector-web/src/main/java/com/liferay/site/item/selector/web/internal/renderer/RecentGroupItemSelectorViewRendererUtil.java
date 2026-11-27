@@ -37,6 +37,9 @@ public class RecentGroupItemSelectorViewRendererUtil {
 			PortletURL portletURL, String itemSelectedEventName)
 		throws IOException, ServletException {
 
+		RequestDispatcher requestDispatcher =
+			servletContext.getRequestDispatcher("/view_sites.jsp");
+
 		servletRequest.setAttribute(
 			SiteWebKeys.GROUP_URL_PROVIDER, groupURLProvider);
 
@@ -50,9 +53,6 @@ public class RecentGroupItemSelectorViewRendererUtil {
 		servletRequest.setAttribute(
 			SitesItemSelectorWebKeys.SITES_ITEM_SELECTOR_DISPLAY_CONTEXT,
 			siteItemSelectorViewDisplayContext);
-
-		RequestDispatcher requestDispatcher =
-			servletContext.getRequestDispatcher("/view_sites.jsp");
 
 		requestDispatcher.include(servletRequest, servletResponse);
 	}
