@@ -57,13 +57,12 @@ public class BackgroundTaskStatusMessageListener extends BaseMessageListener {
 		_backgroundTaskExecutorRegistry = backgroundTaskExecutorRegistry;
 		_backgroundTaskLocalService = backgroundTaskLocalService;
 		_backgroundTaskStatusRegistry = backgroundTaskStatusRegistry;
-
-		_backgroundTaskLockHelper = new BackgroundTaskLockHelper(
-			backgroundTaskExecutorRegistry, lockManager);
-
 		_roleLocalService = roleLocalService;
 		_userLocalService = userLocalService;
 		_userNotificationEventLocalService = userNotificationEventLocalService;
+
+		_backgroundTaskLockHelper = new BackgroundTaskLockHelper(
+			backgroundTaskExecutorRegistry, lockManager);
 	}
 
 	@Override
