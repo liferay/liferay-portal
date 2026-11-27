@@ -22,9 +22,7 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
-import com.liferay.portal.kernel.xml.Document;
-import com.liferay.portal.kernel.xml.Element;
-import com.liferay.portal.kernel.xml.SAXReaderUtil;
+import com.liferay.portal.kernel.xml.XMLUtil;
 
 import jakarta.portlet.PortletPreferences;
 
@@ -56,12 +54,8 @@ public class CPPublisherWebHelper {
 		List<Long> missingAssetCPDefinitionIds = new ArrayList<>();
 
 		for (String catalogEntryXml : catalogEntryXmls) {
-			Document document = SAXReaderUtil.read(catalogEntryXml);
-
-			Element rootElement = document.getRootElement();
-
 			long cpDefinitionId = GetterUtil.getLong(
-				rootElement.elementText("product-id"));
+				XMLUtil.getElementText(catalogEntryXml, "product-id"));
 
 			try {
 				CPCatalogEntry cpCatalogEntry =
@@ -142,12 +136,8 @@ public class CPPublisherWebHelper {
 		while (iterator.hasNext()) {
 			String catalogEntryXml = iterator.next();
 
-			Document document = SAXReaderUtil.read(catalogEntryXml);
-
-			Element rootElement = document.getRootElement();
-
 			long cpDefinitionId = GetterUtil.getLong(
-				rootElement.elementText("product-id"));
+				XMLUtil.getElementText(catalogEntryXml, "product-id"));
 
 			if (!cpDefinitionIds.contains(cpDefinitionId)) {
 				continue;

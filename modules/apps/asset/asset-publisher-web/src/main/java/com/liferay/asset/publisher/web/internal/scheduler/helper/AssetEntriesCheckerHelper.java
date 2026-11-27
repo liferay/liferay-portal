@@ -70,9 +70,7 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.SubscriptionSender;
 import com.liferay.portal.kernel.util.TimeZoneThreadLocal;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.kernel.xml.Document;
-import com.liferay.portal.kernel.xml.Element;
-import com.liferay.portal.kernel.xml.SAXReaderUtil;
+import com.liferay.portal.kernel.xml.XMLUtil;
 import com.liferay.portlet.asset.service.permission.AssetEntryPermission;
 import com.liferay.portlet.configuration.kernel.util.PortletConfigurationUtil;
 import com.liferay.segments.configuration.provider.SegmentsConfigurationProvider;
@@ -474,12 +472,8 @@ public class AssetEntriesCheckerHelper {
 					groupId = group.getLiveGroupId();
 				}
 
-				Document document = SAXReaderUtil.read(assetEntryXml);
-
-				Element rootElement = document.getRootElement();
-
-				String assetEntryUuid = rootElement.elementText(
-					"asset-entry-uuid");
+				String assetEntryUuid = XMLUtil.getElementText(
+					assetEntryXml, "asset-entry-uuid");
 
 				AssetEntry assetEntry = _assetEntryLocalService.fetchEntry(
 					groupId, assetEntryUuid);

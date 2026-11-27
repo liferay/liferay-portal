@@ -69,9 +69,7 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.portal.kernel.xml.Document;
-import com.liferay.portal.kernel.xml.Element;
-import com.liferay.portal.kernel.xml.SAXReaderUtil;
+import com.liferay.portal.kernel.xml.XMLUtil;
 import com.liferay.segments.SegmentsEntryRetriever;
 import com.liferay.segments.constants.SegmentsWebKeys;
 import com.liferay.segments.context.RequestContextMapper;
@@ -202,13 +200,11 @@ public class AssetPublisherHelperImpl implements AssetPublisherHelper {
 		List<String> missingAssetEntryUuids = new ArrayList<>();
 
 		for (String assetEntryXml : assetEntryXmls) {
-			Document document = SAXReaderUtil.read(assetEntryXml);
+			String assetEntryUuid = XMLUtil.getElementText(
+				assetEntryXml, "asset-entry-uuid");
 
-			Element rootElement = document.getRootElement();
-
-			String assetEntryUuid = rootElement.elementText("asset-entry-uuid");
-
-			String assetEntryType = rootElement.elementText("asset-entry-type");
+			String assetEntryType = XMLUtil.getElementText(
+				assetEntryXml, "asset-entry-type");
 
 			AssetRendererFactory<?> assetRendererFactory =
 				AssetRendererFactoryRegistryUtil.
@@ -1367,11 +1363,8 @@ public class AssetPublisherHelperImpl implements AssetPublisherHelper {
 		while (iterator.hasNext()) {
 			String assetEntryXml = iterator.next();
 
-			Document document = SAXReaderUtil.read(assetEntryXml);
-
-			Element rootElement = document.getRootElement();
-
-			String assetEntryUuid = rootElement.elementText("asset-entry-uuid");
+			String assetEntryUuid = XMLUtil.getElementText(
+				assetEntryXml, "asset-entry-uuid");
 
 			if (!assetEntryUuids.contains(assetEntryUuid)) {
 				continue;
