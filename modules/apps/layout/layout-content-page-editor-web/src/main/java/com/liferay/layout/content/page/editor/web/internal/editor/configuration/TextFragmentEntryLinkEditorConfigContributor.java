@@ -60,7 +60,7 @@ public class TextFragmentEntryLinkEditorConfigContributor
 				"removePlugins",
 				new String[] {
 					"Bold", "GeneralHtmlSupport", "Italic", "Image", "Link",
-					"List", "Underline"
+					"LinkItemSelector", "List", "Underline"
 				}
 			).put(
 				"toolbar", new String[0]
