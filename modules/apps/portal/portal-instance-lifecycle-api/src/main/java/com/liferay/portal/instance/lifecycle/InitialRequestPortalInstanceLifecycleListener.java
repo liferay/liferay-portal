@@ -14,8 +14,13 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.servlet.InitialRequestSyncUtil;
+import com.liferay.portal.kernel.transaction.Propagation;
+import com.liferay.portal.kernel.transaction.TransactionConfig;
+import com.liferay.portal.kernel.transaction.TransactionInvokerUtil;
 import com.liferay.portal.kernel.util.FileUtil;
+import com.liferay.portal.kernel.util.LocaleThreadLocal;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -25,6 +30,7 @@ import java.io.OutputStream;
 import java.nio.ByteBuffer;
 
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 
 import org.osgi.framework.Bundle;
@@ -58,6 +64,30 @@ public abstract class InitialRequestPortalInstanceLifecycleListener
 	protected abstract void doPortalInstanceRegistered(long companyId)
 		throws Exception;
 
+	private void _doPortalInstanceRegistered(long companyId) throws Exception {
+		Locale defaultLocale = LocaleThreadLocal.getDefaultLocale();
+		Locale siteDefaultLocale = LocaleThreadLocal.getSiteDefaultLocale();
+
+		try (SafeCloseable safeCloseable1 =
+				CompanyThreadLocal.setCompanyIdWithSafeCloseable(companyId);
+			SafeCloseable safeCloseable2 =
+				CompanyThreadLocal.
+					setInitializingPortalInstanceWithSafeCloseable(true)) {
+
+			Company company = CompanyLocalServiceUtil.getCompanyById(companyId);
+
+			LocaleThreadLocal.setDefaultLocale(company.getLocale());
+
+			LocaleThreadLocal.setSiteDefaultLocale(null);
+
+			doPortalInstanceRegistered(companyId);
+		}
+		finally {
+			LocaleThreadLocal.setDefaultLocale(defaultLocale);
+			LocaleThreadLocal.setSiteDefaultLocale(siteDefaultLocale);
+		}
+	}
+
 	private void _loadCompanyIds() {
 		if (_dataFile.exists() && !StartupHelperUtil.isDBNew()) {
 			try {
@@ -89,11 +119,17 @@ public abstract class InitialRequestPortalInstanceLifecycleListener
 
 		InitialRequestSyncUtil.registerSyncCallable(
 			() -> {
-				try (SafeCloseable safeCloseable =
-						CompanyThreadLocal.setCompanyIdWithSafeCloseable(
-							companyId)) {
+				try {
+					TransactionInvokerUtil.invoke(
+						_transactionConfig,
+						() -> {
+							_doPortalInstanceRegistered(companyId);
 
-					doPortalInstanceRegistered(companyId);
+							return null;
+						});
+				}
+				catch (Throwable throwable) {
+					throw new Exception(throwable);
 				}
 				finally {
 					if (_companyIds.remove(companyId)) {
@@ -139,6 +175,10 @@ public abstract class InitialRequestPortalInstanceLifecycleListener
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		InitialRequestPortalInstanceLifecycleListener.class);
+
+	private static final TransactionConfig _transactionConfig =
+		TransactionConfig.Factory.create(
+			Propagation.REQUIRED, new Class<?>[] {Exception.class});
 
 	private BundleContext _bundleContext;
 	private final Set<Long> _companyIds = new HashSet<>();
