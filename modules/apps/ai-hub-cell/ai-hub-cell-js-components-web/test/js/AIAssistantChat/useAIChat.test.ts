@@ -126,6 +126,153 @@ describe('useAIChat', () => {
 		expect(mockPostChat).not.toHaveBeenCalled();
 	});
 
+	function createFakeEventSource() {
+		const listeners: Record<string, (event: {data: string}) => void> = {};
+
+		return {
+			addEventListener: jest.fn(
+				(type: string, handler: (event: {data: string}) => void) => {
+					listeners[type] = handler;
+				}
+			),
+			close: jest.fn(),
+			emit(type: string, data: string) {
+				listeners[type]?.({data});
+			},
+		};
+	}
+
+	function renderWithChatbot(chatbotExternalReferenceCode?: string) {
+		return renderHook(
+			(props: {chatbotExternalReferenceCode?: string}) =>
+				useAIChat({
+					chatbotExternalReferenceCode:
+						props.chatbotExternalReferenceCode,
+					instructionDefinitionScope: '',
+				}),
+			{initialProps: {chatbotExternalReferenceCode}}
+		);
+	}
+
+	it('subscribes with the chatbot', async () => {
+		renderWithChatbot('chatbot-1');
+
+		await act(async () => {});
+
+		expect(mockCreateEventSource).toHaveBeenCalledTimes(1);
+		expect(mockCreateEventSource).toHaveBeenCalledWith('chatbot-1');
+	});
+
+	it('subscribes again when the chatbot changes before a message is sent', async () => {
+		const fakeEventSource1 = createFakeEventSource();
+		const fakeEventSource2 = createFakeEventSource();
+
+		mockCreateEventSource
+			.mockResolvedValueOnce(fakeEventSource1 as never)
+			.mockResolvedValueOnce(fakeEventSource2 as never);
+
+		const {rerender, result} = renderWithChatbot();
+
+		await act(async () => {});
+
+		await act(async () => {
+			fakeEventSource1.emit('Subscribe', 'reference-1');
+		});
+
+		rerender({chatbotExternalReferenceCode: 'chatbot-1'});
+
+		await act(async () => {});
+
+		expect(mockCreateEventSource).toHaveBeenLastCalledWith('chatbot-1');
+		expect(fakeEventSource1.close).toHaveBeenCalled();
+
+		await act(async () => {
+			fakeEventSource2.emit('Subscribe', 'reference-2');
+		});
+
+		await act(async () => {
+			await result.current.sendMessage('Hello');
+		});
+
+		expect(mockPostChat).toHaveBeenCalledWith(
+			expect.objectContaining({
+				chatbotExternalReferenceCode: 'chatbot-1',
+				eventSourceReference: 'reference-2',
+			})
+		);
+	});
+
+	it('keeps the subscription when the chatbot changes after a message is sent', async () => {
+		const fakeEventSource = createFakeEventSource();
+
+		mockCreateEventSource.mockResolvedValue(fakeEventSource as never);
+
+		const {rerender, result} = renderWithChatbot('chatbot-1');
+
+		await act(async () => {});
+
+		await act(async () => {
+			fakeEventSource.emit('Subscribe', 'reference-1');
+		});
+
+		await act(async () => {
+			await result.current.sendMessage('Hello');
+		});
+
+		rerender({chatbotExternalReferenceCode: 'chatbot-2'});
+
+		await act(async () => {});
+
+		expect(mockCreateEventSource).toHaveBeenCalledTimes(1);
+		expect(fakeEventSource.close).not.toHaveBeenCalled();
+	});
+
+	it('keeps the subscription when the chatbot is cleared', async () => {
+		const fakeEventSource = createFakeEventSource();
+
+		mockCreateEventSource.mockResolvedValue(fakeEventSource as never);
+
+		const {rerender} = renderWithChatbot('chatbot-1');
+
+		await act(async () => {});
+
+		rerender({chatbotExternalReferenceCode: undefined});
+
+		await act(async () => {});
+
+		expect(mockCreateEventSource).toHaveBeenCalledTimes(1);
+		expect(fakeEventSource.close).not.toHaveBeenCalled();
+	});
+
+	it('closes a subscription that opens after it was replaced', async () => {
+		const fakeEventSource1 = createFakeEventSource();
+		const fakeEventSource2 = createFakeEventSource();
+
+		let resolveEventSource1: (value: never) => void = () => {};
+
+		mockCreateEventSource
+			.mockReturnValueOnce(
+				new Promise((resolve) => {
+					resolveEventSource1 = resolve;
+				})
+			)
+			.mockResolvedValueOnce(fakeEventSource2 as never);
+
+		const {rerender} = renderWithChatbot();
+
+		rerender({chatbotExternalReferenceCode: 'chatbot-1'});
+
+		await act(async () => {});
+
+		await act(async () => {
+			resolveEventSource1(fakeEventSource1 as never);
+		});
+
+		expect(fakeEventSource1.close).toHaveBeenCalled();
+		expect(fakeEventSource1.addEventListener).not.toHaveBeenCalled();
+		expect(fakeEventSource2.close).not.toHaveBeenCalled();
+	});
+
 	it('keeps the generating indicator until every balloon has finished', async () => {
 		const {result} = renderHook(() =>
 			useAIChat({instructionDefinitionScope: ''})

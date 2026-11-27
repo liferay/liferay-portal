@@ -65,6 +65,19 @@ describe('createEventSource', () => {
 			expect.anything()
 		);
 	});
+
+	it('subscribes to the chats with the chatbot', async () => {
+		mockFetch.mockResolvedValueOnce(
+			jsonResponse(authorizationToken) as never
+		);
+
+		await createEventSource('chatbot 1');
+
+		expect(EventSource).toHaveBeenCalledWith(
+			'https://ai-hub.liferay.com/o/ai-hub/v1.0/chats/subscribe?chatbotExternalReferenceCode=chatbot%201',
+			expect.anything()
+		);
+	});
 });
 
 describe('postChatByExternalReferenceCodeMessage', () => {
