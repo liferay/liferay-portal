@@ -326,12 +326,15 @@ public class QueryUtilTest {
 			}
 
 			Object[] firstRow = result.get(0);
-			Object[] lastRow = result.get(result.size() - 1);
 
 			Number firstId = (Number)firstRow[0];
-			Number lastId = (Number)lastRow[0];
 
 			Assert.assertEquals(expectedFirstValue, firstId.intValue());
+
+			Object[] lastRow = result.get(result.size() - 1);
+
+			Number lastId = (Number)lastRow[0];
+
 			Assert.assertEquals(expectedLastValue, lastId.intValue());
 		}
 		finally {
