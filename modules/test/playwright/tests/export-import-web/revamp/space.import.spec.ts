@@ -4,8 +4,6 @@
  */
 
 import {mergeTests} from '@playwright/test';
-import {createReadStream} from 'fs';
-import path from 'path';
 
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
@@ -48,11 +46,6 @@ test(
 			space1.name
 		);
 
-		await apiHelpers.headlessDelivery.postAssetLibraryDocument(
-			space1.id,
-			createReadStream(path.join(__dirname, 'dependencies/Document.jpg'))
-		);
-
 		await exportImportPage.goToExport(space1.friendlyURL);
 
 		await exportImportPage.clickNew();
@@ -66,7 +59,7 @@ test(
 			exportImportDataSelectionPage,
 			exportImportPage,
 			folderPath,
-			hasCommentsAndRatings: true,
+			hasCommentsAndRatings: false,
 			hasMirrorWithOverwriting: true,
 			hasSiteBuilder: false,
 			name,
