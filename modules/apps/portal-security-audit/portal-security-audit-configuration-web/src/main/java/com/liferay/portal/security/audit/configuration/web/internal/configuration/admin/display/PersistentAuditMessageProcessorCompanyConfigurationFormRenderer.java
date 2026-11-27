@@ -93,6 +93,11 @@ public class PersistentAuditMessageProcessorCompanyConfigurationFormRenderer
 		throws IOException {
 
 		try {
+			RequestDispatcher requestDispatcher =
+				_servletContext.getRequestDispatcher(
+					"/configuration/persistent_audit_message_processor_" +
+						"company_configuration.jsp");
+
 			ThemeDisplay themeDisplay =
 				(ThemeDisplay)httpServletRequest.getAttribute(
 					WebKeys.THEME_DISPLAY);
@@ -105,11 +110,6 @@ public class PersistentAuditMessageProcessorCompanyConfigurationFormRenderer
 						themeDisplay.getCompanyId()),
 					_configurationProvider.getSystemConfiguration(
 						PersistentAuditMessageProcessorConfiguration.class)));
-
-			RequestDispatcher requestDispatcher =
-				_servletContext.getRequestDispatcher(
-					"/configuration/persistent_audit_message_processor_" +
-						"company_configuration.jsp");
 
 			requestDispatcher.include(httpServletRequest, httpServletResponse);
 		}

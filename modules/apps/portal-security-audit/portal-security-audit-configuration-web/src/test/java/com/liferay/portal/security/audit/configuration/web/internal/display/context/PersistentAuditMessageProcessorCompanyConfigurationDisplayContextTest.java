@@ -36,9 +36,6 @@ public class
 
 	@Before
 	public void setUp() {
-		_configurationOverridePropertiesUtilMockedStatic = Mockito.mockStatic(
-			ConfigurationOverridePropertiesUtil.class);
-
 		_persistentAuditMessageProcessorCompanyConfigurationDisplayContext =
 			new PersistentAuditMessageProcessorCompanyConfigurationDisplayContext(
 				Mockito.mock(
@@ -134,7 +131,8 @@ public class
 	}
 
 	private MockedStatic<ConfigurationOverridePropertiesUtil>
-		_configurationOverridePropertiesUtilMockedStatic;
+		_configurationOverridePropertiesUtilMockedStatic = Mockito.mockStatic(
+			ConfigurationOverridePropertiesUtil.class);
 	private PersistentAuditMessageProcessorCompanyConfigurationDisplayContext
 		_persistentAuditMessageProcessorCompanyConfigurationDisplayContext;
 	private final PersistentAuditMessageProcessorConfiguration
