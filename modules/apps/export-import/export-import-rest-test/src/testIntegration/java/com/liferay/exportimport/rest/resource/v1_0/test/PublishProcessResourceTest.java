@@ -146,7 +146,6 @@ public class PublishProcessResourceTest
 		).locale(
 			LocaleUtil.getDefault()
 		).build();
-
 		_reportEntryResource = ReportEntryResource.builder(
 		).authentication(
 			_user.getEmailAddress(), password
