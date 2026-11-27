@@ -1499,11 +1499,11 @@ public class CPDefinitionLocalServiceTest {
 			_cpDefinitionLocalService.addOrUpdateCPDefinition(
 				externalReferenceCode, TestPropsValues.getUserId(),
 				_commerceCatalog.getGroupId(), 0, 0, false, false, null, null,
-				0, false, 0, null, null, 0, null, 1, 1, 0, 0, 2026, 1, 1, 0, 0,
+				0, false, 1, null, null, 0, null, 1, 1, 0, 0, 2026, 1, 1, 0, 0,
 				2026, false, 0, false, 0, null, null, null,
 				RandomTestUtil.randomLocaleStringMap(), true,
 				SimpleCPTypeConstants.NAME, true, false, true, 0, null, false,
-				0, null, null, false, false, null, 0, 0,
+				1, null, null, false, false, null, 0, 0,
 				WorkflowConstants.STATUS_APPROVED, _serviceContext);
 
 		Assert.assertEquals(
@@ -1517,10 +1517,10 @@ public class CPDefinitionLocalServiceTest {
 				externalReferenceCode, TestPropsValues.getUserId(),
 				_commerceCatalog.getGroupId(),
 				cpDefinition1.getCPDefinitionId(), 0, false, false, null, null,
-				0, false, 0, null, null, 0, null, 1, 1, 0, 0, 2026, 1, 1, 0, 0,
+				0, false, 1, null, null, 0, null, 1, 1, 0, 0, 2026, 1, 1, 0, 0,
 				2026, false, 0, false, 0, null, null, null, nameMap, true,
 				SimpleCPTypeConstants.NAME, true, false, true, 0, null, false,
-				0, null, null, false, false, null, 0, 0,
+				1, null, null, false, false, null, 0, 0,
 				WorkflowConstants.STATUS_APPROVED, _serviceContext);
 
 		Assert.assertEquals(
@@ -1567,11 +1567,11 @@ public class CPDefinitionLocalServiceTest {
 				cpDefinition1.getCProductExternalReferenceCode(),
 				TestPropsValues.getUserId(), _commerceCatalog.getGroupId(),
 				cpDefinition2.getCPDefinitionId(), 0, false, false, null, null,
-				0, false, 0, null, null, 0, null, 1, 1, 0, 0, 2026, 1, 1, 0, 0,
+				0, false, 1, null, null, 0, null, 1, 1, 0, 0, 2026, 1, 1, 0, 0,
 				2026, false, 0, false, 0, null, null, null,
 				RandomTestUtil.randomLocaleStringMap(), true,
 				SimpleCPTypeConstants.NAME, true, false, true, 0, null, false,
-				0, null, null, false, false, null, 0, 0,
+				1, null, null, false, false, null, 0, 0,
 				WorkflowConstants.STATUS_APPROVED, _serviceContext));
 
 		Assert.assertEquals(
@@ -1604,11 +1604,11 @@ public class CPDefinitionLocalServiceTest {
 			() -> _cpDefinitionLocalService.addOrUpdateCPDefinition(
 				cpDefinition1.getCProductExternalReferenceCode(),
 				TestPropsValues.getUserId(), RandomTestUtil.nextLong(), 0, 0,
-				false, false, null, null, 0, false, 0, null, null, 0, null, 1,
+				false, false, null, null, 0, false, 1, null, null, 0, null, 1,
 				1, 0, 0, 2026, 1, 1, 0, 0, 2026, false, 0, false, 0, null, null,
 				null, RandomTestUtil.randomLocaleStringMap(), true,
 				SimpleCPTypeConstants.NAME, true, false, true, 0, null, false,
-				0, null, null, false, false, null, 0, 0,
+				1, null, null, false, false, null, 0, 0,
 				WorkflowConstants.STATUS_APPROVED, _serviceContext));
 
 		CPDefinition cpDefinition2 = _cpDefinitionLocalService.getCPDefinition(
