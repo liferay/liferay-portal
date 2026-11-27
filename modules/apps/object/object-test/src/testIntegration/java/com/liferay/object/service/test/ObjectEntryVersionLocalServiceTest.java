@@ -181,6 +181,9 @@ public class ObjectEntryVersionLocalServiceTest {
 	@FeatureFlag("LPD-116183")
 	@Test
 	public void testAddObjectEntryVersionWithHierarchy() throws Exception {
+
+		// Add root descendant object entries
+
 		List<ObjectField> objectFields = Collections.singletonList(
 			new TextObjectFieldBuilder(
 			).labelMap(
@@ -215,8 +218,6 @@ public class ObjectEntryVersionLocalServiceTest {
 					objectDefinitionAAA,
 					ObjectRelationshipConstants.DELETION_TYPE_CASCADE,
 					"objectRelationship2")));
-
-		// Add root descendant object entries
 
 		ObjectEntry objectEntryA1 = ObjectEntryTestUtil.addObjectEntry(
 			0, objectDefinitionA.getObjectDefinitionId(),
