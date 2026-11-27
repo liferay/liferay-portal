@@ -99,7 +99,7 @@ test(
 			`/web/${site.name}/${layout.friendlyUrlPath}/-/blogs/blogs-ac-title`
 		);
 
-		// Vote 4 stars (DXP scale 0-5 shows 4.0; AC scale 0-10 stores 8.00/10)
+		// Vote 4 stars (DXP scale 0-5 shows 4.0; AC scale 0-10 shows 8/10)
 
 		await clickAndExpectToBeVisible({
 			autoClick: true,
@@ -117,7 +117,7 @@ test(
 
 		await page.waitForTimeout(30000);
 
-		// AC asset blog overview reflects the 8.00/10 rating
+		// AC asset blog overview reflects the 8/10 rating
 
 		await navigateToACPageViaURL({
 			acPage: ACPage.assetPage,
@@ -133,14 +133,14 @@ test(
 		});
 
 		await clickAndExpectToBeVisible({
-			target: page.getByText('8.00', {exact: false}),
+			target: page.getByText('8/10'),
 			trigger: page.getByRole('link', {
 				exact: true,
 				name: blogsEntryName,
 			}),
 		});
 
-		// Revoke the vote (DXP shows -, AC scale should return to 0.00/10)
+		// Revoke the vote (DXP shows -, AC scale should return to 0/10)
 
 		await page.goto(
 			`/web/${site.name}/${layout.friendlyUrlPath}/-/blogs/blogs-ac-title`
@@ -176,7 +176,7 @@ test(
 		});
 
 		await clickAndExpectToBeVisible({
-			target: page.getByText('0.00/10'),
+			target: page.getByText('0/10'),
 			trigger: page.getByRole('link', {
 				exact: true,
 				name: blogsEntryName,
