@@ -16,6 +16,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.repository.model.FileVersion;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -32,7 +33,6 @@ import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.UUID;
-import java.util.function.Predicate;
 
 /**
  * @author Iván Zaera
@@ -115,16 +115,6 @@ public class GoogleDocsDLViewFileVersionDisplayContext
 		printWriter.write("</div>");
 	}
 
-	private <T> int _getIndex(List<T> items, Predicate<T> predicate) {
-		for (int i = 0; i < items.size(); i++) {
-			if (predicate.test(items.get(i))) {
-				return i;
-			}
-		}
-
-		return -1;
-	}
-
 	private void _insertEditInGoogleDropdownItem(
 		List<DropdownItem> dropdownItems) {
 
@@ -134,7 +124,7 @@ public class GoogleDocsDLViewFileVersionDisplayContext
 			return;
 		}
 
-		int index = _getIndex(
+		int index = ListUtil.indexOf(
 			dropdownItems,
 			dropdownItem -> Objects.equals(
 				dropdownItem.get("key"), DLUIItemKeys.EDIT));
