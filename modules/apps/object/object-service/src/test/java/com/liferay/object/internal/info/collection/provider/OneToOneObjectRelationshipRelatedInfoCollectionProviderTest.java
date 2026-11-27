@@ -54,8 +54,8 @@ public class OneToOneObjectRelationshipRelatedInfoCollectionProviderTest {
 				Mockito.mock(ObjectEntry.class)),
 			0);
 
-		Assert.assertEquals(0, infoPage.getTotalCount());
 		Assert.assertTrue(ListUtil.isEmpty(infoPage.getPageItems()));
+		Assert.assertEquals(0, infoPage.getTotalCount());
 
 		infoPage = _getCollectionInfoPage(Collections.emptyList(), 0);
 
@@ -66,16 +66,16 @@ public class OneToOneObjectRelationshipRelatedInfoCollectionProviderTest {
 		infoPage = _getCollectionInfoPage(
 			Collections.singletonList(relatedObjectEntry), 0);
 
-		Assert.assertEquals(1, infoPage.getTotalCount());
 		Assert.assertEquals(
 			Collections.singletonList(relatedObjectEntry),
 			infoPage.getPageItems());
+		Assert.assertEquals(1, infoPage.getTotalCount());
 
 		infoPage = _getCollectionInfoPage(
 			Collections.singletonList(relatedObjectEntry), 1);
 
-		Assert.assertEquals(1, infoPage.getTotalCount());
 		Assert.assertTrue(ListUtil.isEmpty(infoPage.getPageItems()));
+		Assert.assertEquals(1, infoPage.getTotalCount());
 	}
 
 	private InfoPage<ObjectEntry> _getCollectionInfoPage(
