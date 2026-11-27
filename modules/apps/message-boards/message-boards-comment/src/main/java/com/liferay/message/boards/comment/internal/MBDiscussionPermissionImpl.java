@@ -187,13 +187,13 @@ public class MBDiscussionPermissionImpl extends BaseDiscussionPermission {
 				messageActionId = ActionKeys.DELETE;
 			}
 
-			Boolean hasPermission = ModelResourcePermissionUtil.contains(
+			Boolean permission = ModelResourcePermissionUtil.contains(
 				permissionChecker, message.getGroupId(),
 				MBMessage.class.getName(), message.getMessageId(),
 				messageActionId);
 
-			if (hasPermission != null) {
-				return hasPermission.booleanValue();
+			if (permission != null) {
+				return permission.booleanValue();
 			}
 		}
 
