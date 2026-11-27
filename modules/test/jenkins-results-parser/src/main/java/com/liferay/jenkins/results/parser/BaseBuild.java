@@ -3352,9 +3352,9 @@ public abstract class BaseBuild implements Build {
 	}
 
 	private JSONObject _getCachedBuildJSONObject() {
-		Map<String, String> parameters = getParameters();
-
 		JSONArray parametersJSONArray = new JSONArray();
+
+		Map<String, String> parameters = getParameters();
 
 		for (Map.Entry<String, String> entry : parameters.entrySet()) {
 			parametersJSONArray.put(
