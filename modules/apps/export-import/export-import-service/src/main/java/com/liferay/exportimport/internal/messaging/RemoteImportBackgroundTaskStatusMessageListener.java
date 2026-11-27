@@ -6,6 +6,7 @@
 package com.liferay.exportimport.internal.messaging;
 
 import com.liferay.exportimport.internal.background.task.RemoteImportBackgroundTaskExecutor;
+import com.liferay.exportimport.internal.constants.RemoteInstanceConstants;
 import com.liferay.exportimport.internal.notifications.RemoteImportUserNotificationUtil;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.object.model.ObjectEntry;
@@ -55,7 +56,9 @@ public class RemoteImportBackgroundTaskStatusMessageListener
 
 		int status = message.getInteger("status");
 
-		if (!ArrayUtil.contains(_FINAL_STATUSES, status)) {
+		if (!ArrayUtil.contains(
+				RemoteInstanceConstants.STATUSES_COMPLETED, status)) {
+
 			return;
 		}
 
@@ -112,7 +115,7 @@ public class RemoteImportBackgroundTaskStatusMessageListener
 		if ((objectEntry == null) ||
 			(status == BackgroundTaskConstants.STATUS_SUCCESSFUL) ||
 			ArrayUtil.contains(
-				_FINAL_STATUSES,
+				RemoteInstanceConstants.STATUSES_COMPLETED,
 				MapUtil.getInteger(objectEntry.getValues(), "importStatus"))) {
 
 			return objectEntry;
@@ -129,13 +132,6 @@ public class RemoteImportBackgroundTaskStatusMessageListener
 			).build(),
 			new ServiceContext());
 	}
-
-	private static final int[] _FINAL_STATUSES = {
-		BackgroundTaskConstants.STATUS_CANCELLED,
-		BackgroundTaskConstants.STATUS_COMPLETED_WITH_ERRORS,
-		BackgroundTaskConstants.STATUS_FAILED,
-		BackgroundTaskConstants.STATUS_SUCCESSFUL
-	};
 
 	@Reference
 	private BackgroundTaskManager _backgroundTaskManager;

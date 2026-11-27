@@ -95,7 +95,7 @@ public class CheckRemoteImportProcessesSchedulerJobConfiguration
 				remoteInstanceObjectEntry.getValues());
 
 		if (importProcessJSONObject == null) {
-			_updateRemoteImportProcess(
+			_updateObjectEntry(
 				objectEntry,
 				HashMapBuilder.<String, Serializable>put(
 					"errorMessage",
@@ -116,18 +116,12 @@ public class CheckRemoteImportProcessesSchedulerJobConfiguration
 		int status = statusJSONObject.getInt("code");
 
 		if (!ArrayUtil.contains(
-				new int[] {
-					BackgroundTaskConstants.STATUS_CANCELLED,
-					BackgroundTaskConstants.STATUS_COMPLETED_WITH_ERRORS,
-					BackgroundTaskConstants.STATUS_FAILED,
-					BackgroundTaskConstants.STATUS_SUCCESSFUL
-				},
-				status)) {
+				RemoteInstanceConstants.STATUSES_COMPLETED, status)) {
 
 			return false;
 		}
 
-		_updateRemoteImportProcess(
+		_updateObjectEntry(
 			objectEntry,
 			HashMapBuilder.<String, Serializable>put(
 				"importStatus", status
@@ -152,16 +146,16 @@ public class CheckRemoteImportProcessesSchedulerJobConfiguration
 			return;
 		}
 
-		Predicate predicate = _filterFactory.create(
-			"importStatus eq " + BackgroundTaskConstants.STATUS_IN_PROGRESS,
-			objectDefinition);
-
 		boolean skipObjectEntryResourcePermission =
 			ObjectEntryThreadLocal.isSkipObjectEntryResourcePermission();
 
 		ObjectEntryThreadLocal.setSkipObjectEntryResourcePermission(true);
 
 		try {
+			Predicate predicate = _filterFactory.create(
+				"importStatus eq " + BackgroundTaskConstants.STATUS_IN_PROGRESS,
+				objectDefinition);
+
 			IntervalActionProcessor<Void> intervalActionProcessor =
 				new IntervalActionProcessor<>(
 					_objectEntryLocalService.getValuesListCount(
@@ -218,7 +212,7 @@ public class CheckRemoteImportProcessesSchedulerJobConfiguration
 		return user.getLocale();
 	}
 
-	private void _updateRemoteImportProcess(
+	private void _updateObjectEntry(
 			ObjectEntry objectEntry, Map<String, Serializable> values)
 		throws Exception {
 

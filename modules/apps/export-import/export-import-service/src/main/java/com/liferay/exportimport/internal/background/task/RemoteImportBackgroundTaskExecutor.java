@@ -61,16 +61,16 @@ public class RemoteImportBackgroundTaskExecutor
 		Map<String, Serializable> taskContextMap =
 			backgroundTask.getTaskContextMap();
 
-		BackgroundTask exportBackgroundTask =
-			_backgroundTaskManager.getBackgroundTask(
-				MapUtil.getLong(taskContextMap, "exportProcessId"));
-
 		ObjectEntry remoteInstanceObjectEntry =
 			_objectEntryLocalService.getObjectEntry(
 				MapUtil.getLong(taskContextMap, "remoteInstanceId"));
 
 		Map<String, Serializable> remoteInstanceValues =
 			remoteInstanceObjectEntry.getValues();
+
+		BackgroundTask exportBackgroundTask =
+			_backgroundTaskManager.getBackgroundTask(
+				MapUtil.getLong(taskContextMap, "exportProcessId"));
 
 		JSONObject importPreviewJSONObject =
 			RemoteImportHttpUtil.postImportPreview(
@@ -83,7 +83,7 @@ public class RemoteImportBackgroundTaskExecutor
 				backgroundTask.getCompanyId(), importPreviewJSONObject,
 				exportBackgroundTask.getName(), remoteInstanceValues);
 
-		_updateRemoteImportProcess(
+		_updateObjectEntry(
 			backgroundTask,
 			HashMapBuilder.<String, Serializable>put(
 				"importStatus", BackgroundTaskConstants.STATUS_IN_PROGRESS
@@ -119,7 +119,7 @@ public class RemoteImportBackgroundTaskExecutor
 		BackgroundTask backgroundTask, Exception exception1) {
 
 		try {
-			_updateRemoteImportProcess(
+			_updateObjectEntry(
 				backgroundTask,
 				HashMapBuilder.<String, Serializable>put(
 					"errorMessage", exception1.getMessage()
@@ -152,7 +152,7 @@ public class RemoteImportBackgroundTaskExecutor
 		return fileEntries.get(0);
 	}
 
-	private void _updateRemoteImportProcess(
+	private void _updateObjectEntry(
 			BackgroundTask backgroundTask, Map<String, Serializable> values)
 		throws Exception {
 

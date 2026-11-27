@@ -50,9 +50,8 @@ public class RemoteInstanceObjectEntryValuesContributorTest {
 
 	@Before
 	public void setUp() throws Exception {
-		_remoteInstanceObjectDefinition =
-			_objectDefinitionLocalService.getObjectDefinition(
-				TestPropsValues.getCompanyId(), "RemoteInstance");
+		_objectDefinition = _objectDefinitionLocalService.getObjectDefinition(
+			TestPropsValues.getCompanyId(), "RemoteInstance");
 	}
 
 	@Test
@@ -64,12 +63,10 @@ public class RemoteInstanceObjectEntryValuesContributorTest {
 		_testContributeOnUpdateWithPlainClientSecret();
 	}
 
-	private ObjectEntry _addRemoteInstance(String clientSecret)
-		throws Exception {
-
+	private ObjectEntry _addObjectEntry(String clientSecret) throws Exception {
 		return _objectEntryLocalService.addObjectEntry(
 			0, TestPropsValues.getUserId(),
-			_remoteInstanceObjectDefinition.getObjectDefinitionId(), 0, null,
+			_objectDefinition.getObjectDefinitionId(), 0, null,
 			HashMapBuilder.<String, Serializable>put(
 				"clientId", RandomTestUtil.randomString()
 			).put(
@@ -102,7 +99,7 @@ public class RemoteInstanceObjectEntryValuesContributorTest {
 	private void _testContributeOnAdd() throws Exception {
 		String clientSecret = RandomTestUtil.randomString();
 
-		ObjectEntry objectEntry = _addRemoteInstance(clientSecret);
+		ObjectEntry objectEntry = _addObjectEntry(clientSecret);
 
 		String storedClientSecret = _getClientSecret(
 			objectEntry.getObjectEntryId());
@@ -118,7 +115,7 @@ public class RemoteInstanceObjectEntryValuesContributorTest {
 			"${secretRef:", RandomTestUtil.randomString(), ":",
 			RandomTestUtil.randomString(), "}");
 
-		ObjectEntry objectEntry = _addRemoteInstance(clientSecret);
+		ObjectEntry objectEntry = _addObjectEntry(clientSecret);
 
 		Assert.assertEquals(
 			clientSecret, _getClientSecret(objectEntry.getObjectEntryId()));
@@ -129,7 +126,7 @@ public class RemoteInstanceObjectEntryValuesContributorTest {
 	private void _testContributeOnPartialUpdateWithoutClientSecret()
 		throws Exception {
 
-		ObjectEntry objectEntry = _addRemoteInstance(
+		ObjectEntry objectEntry = _addObjectEntry(
 			RandomTestUtil.randomString());
 
 		String storedClientSecret = _getClientSecret(
@@ -146,48 +143,45 @@ public class RemoteInstanceObjectEntryValuesContributorTest {
 			storedClientSecret,
 			_getClientSecret(objectEntry.getObjectEntryId()));
 
-		_objectEntryLocalService.deleteObjectEntry(
-			objectEntry.getObjectEntryId());
+		_objectEntryLocalService.deleteObjectEntry(objectEntry);
 	}
 
 	private void _testContributeOnUpdateWithEncryptedClientSecret()
 		throws Exception {
 
-		ObjectEntry objectEntry = _addRemoteInstance(
+		ObjectEntry objectEntry = _addObjectEntry(
 			RandomTestUtil.randomString());
 
 		String storedClientSecret = _getClientSecret(
 			objectEntry.getObjectEntryId());
 
-		_updateRemoteInstance(objectEntry, storedClientSecret);
+		_updateObjectEntry(objectEntry, storedClientSecret);
 
 		Assert.assertEquals(
 			storedClientSecret,
 			_getClientSecret(objectEntry.getObjectEntryId()));
 
-		_objectEntryLocalService.deleteObjectEntry(
-			objectEntry.getObjectEntryId());
+		_objectEntryLocalService.deleteObjectEntry(objectEntry);
 	}
 
 	private void _testContributeOnUpdateWithPlainClientSecret()
 		throws Exception {
 
-		ObjectEntry objectEntry = _addRemoteInstance(
+		ObjectEntry objectEntry = _addObjectEntry(
 			RandomTestUtil.randomString());
 
 		String clientSecret = RandomTestUtil.randomString();
 
-		_updateRemoteInstance(objectEntry, clientSecret);
+		_updateObjectEntry(objectEntry, clientSecret);
 
 		Assert.assertEquals(
 			clientSecret,
 			_decrypt(_getClientSecret(objectEntry.getObjectEntryId())));
 
-		_objectEntryLocalService.deleteObjectEntry(
-			objectEntry.getObjectEntryId());
+		_objectEntryLocalService.deleteObjectEntry(objectEntry);
 	}
 
-	private void _updateRemoteInstance(
+	private void _updateObjectEntry(
 			ObjectEntry objectEntry, String clientSecret)
 		throws Exception {
 
@@ -207,12 +201,12 @@ public class RemoteInstanceObjectEntryValuesContributorTest {
 	@Inject
 	private Encryptor _encryptor;
 
+	private ObjectDefinition _objectDefinition;
+
 	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
 
 	@Inject
 	private ObjectEntryLocalService _objectEntryLocalService;
-
-	private ObjectDefinition _remoteInstanceObjectDefinition;
 
 }

@@ -5,6 +5,8 @@
 
 package com.liferay.exportimport.internal.constants;
 
+import com.liferay.portal.kernel.backgroundtask.constants.BackgroundTaskConstants;
+
 /**
  * @author Adolfo Pérez
  */
@@ -18,5 +20,12 @@ public class RemoteInstanceConstants {
 
 	public static final String OBJECT_FIELD_NAME_REMOTE_INSTANCE_ID =
 		"r_remoteInstanceToRemoteImportProcesses_c_remoteInstanceId";
+
+	public static final int[] STATUSES_COMPLETED = {
+		BackgroundTaskConstants.STATUS_CANCELLED,
+		BackgroundTaskConstants.STATUS_COMPLETED_WITH_ERRORS,
+		BackgroundTaskConstants.STATUS_FAILED,
+		BackgroundTaskConstants.STATUS_SUCCESSFUL
+	};
 
 }

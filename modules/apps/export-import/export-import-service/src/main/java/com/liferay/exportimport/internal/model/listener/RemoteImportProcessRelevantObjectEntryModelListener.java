@@ -156,7 +156,7 @@ public class RemoteImportProcessRelevantObjectEntryModelListener
 			originalObjectEntry.getValues();
 		Map<String, Serializable> values = objectEntry.getValues();
 
-		for (String key : _IMMUTABLE_OBJECT_FIELD_NAMES) {
+		for (String key : _OBJECT_FIELD_NAMES) {
 			if (!values.containsKey(key) ||
 				Objects.equals(originalValues.get(key), values.get(key))) {
 
@@ -171,7 +171,7 @@ public class RemoteImportProcessRelevantObjectEntryModelListener
 		}
 	}
 
-	private static final String[] _IMMUTABLE_OBJECT_FIELD_NAMES = {
+	private static final String[] _OBJECT_FIELD_NAMES = {
 		"exportProcessId",
 		RemoteInstanceConstants.OBJECT_FIELD_NAME_REMOTE_INSTANCE_ID
 	};
