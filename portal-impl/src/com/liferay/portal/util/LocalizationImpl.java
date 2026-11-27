@@ -6,6 +6,7 @@
 package com.liferay.portal.util;
 
 import com.liferay.petra.concurrent.ConcurrentReferenceKeyHashMap;
+import com.liferay.petra.concurrent.DCLSingleton;
 import com.liferay.petra.io.unsync.UnsyncStringReader;
 import com.liferay.petra.io.unsync.UnsyncStringWriter;
 import com.liferay.petra.lang.SafeCloseable;
@@ -270,11 +271,8 @@ public class LocalizationImpl implements Localization {
 
 		XMLStreamReader xmlStreamReader = null;
 
-		try (SafeCloseable safeCloseable = ThreadContextClassLoaderUtil.swap(
-				PortalClassLoaderUtil.getClassLoader())) {
-
-			XMLInputFactory xmlInputFactory =
-				SecureXMLFactoryProviderUtil.newXMLInputFactory();
+		try {
+			XMLInputFactory xmlInputFactory = _getXMLInputFactory();
 
 			xmlStreamReader = xmlInputFactory.createXMLStreamReader(
 				new UnsyncStringReader(xml));
@@ -1016,8 +1014,7 @@ public class LocalizationImpl implements Localization {
 		try (SafeCloseable safeCloseable = ThreadContextClassLoaderUtil.swap(
 				PortalClassLoaderUtil.getClassLoader())) {
 
-			XMLInputFactory xmlInputFactory =
-				SecureXMLFactoryProviderUtil.newXMLInputFactory();
+			XMLInputFactory xmlInputFactory = _getXMLInputFactory();
 
 			xmlStreamReader = xmlInputFactory.createXMLStreamReader(
 				new UnsyncStringReader(xml));
@@ -1247,8 +1244,7 @@ public class LocalizationImpl implements Localization {
 		try (SafeCloseable safeCloseable = ThreadContextClassLoaderUtil.swap(
 				PortalClassLoaderUtil.getClassLoader())) {
 
-			XMLInputFactory xmlInputFactory =
-				SecureXMLFactoryProviderUtil.newXMLInputFactory();
+			XMLInputFactory xmlInputFactory = _getXMLInputFactory();
 
 			xmlStreamReader = xmlInputFactory.createXMLStreamReader(
 				new UnsyncStringReader(xml));
@@ -1493,11 +1489,8 @@ public class LocalizationImpl implements Localization {
 
 		XMLStreamReader xmlStreamReader = null;
 
-		try (SafeCloseable safeCloseable = ThreadContextClassLoaderUtil.swap(
-				PortalClassLoaderUtil.getClassLoader())) {
-
-			XMLInputFactory xmlInputFactory =
-				SecureXMLFactoryProviderUtil.newXMLInputFactory();
+		try {
+			XMLInputFactory xmlInputFactory = _getXMLInputFactory();
 
 			xmlStreamReader = xmlInputFactory.createXMLStreamReader(
 				new UnsyncStringReader(xml));
@@ -1531,6 +1524,18 @@ public class LocalizationImpl implements Localization {
 		}
 
 		return value;
+	}
+
+	private XMLInputFactory _getXMLInputFactory() {
+		return _xmlInputFactoryDCLSingleton.getSingleton(
+			() -> {
+				try (SafeCloseable safeCloseable =
+						ThreadContextClassLoaderUtil.swap(
+							PortalClassLoaderUtil.getClassLoader())) {
+
+					return SecureXMLFactoryProviderUtil.newXMLInputFactory();
+				}
+			});
 	}
 
 	private String _sanitizeXML(String xml) {
@@ -1579,6 +1584,9 @@ public class LocalizationImpl implements Localization {
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		LocalizationImpl.class);
+
+	private static final DCLSingleton<XMLInputFactory>
+		_xmlInputFactoryDCLSingleton = new DCLSingleton<>();
 
 	private final Map<String, Map<Tuple, String>> _cache =
 		new ConcurrentReferenceKeyHashMap<>(
