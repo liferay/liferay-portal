@@ -126,14 +126,14 @@ public class PreFilterContributorHelperImpl
 	protected SearchPermissionChecker searchPermissionChecker;
 
 	private void _addAll(
-		List<ModelPreFilterContributor> list1,
-		List<ModelPreFilterContributor> list2) {
+		List<ModelPreFilterContributor> modelPreFilterContributors1,
+		List<ModelPreFilterContributor> modelPreFilterContributors2) {
 
-		if (list2 == null) {
+		if (modelPreFilterContributors2 == null) {
 			return;
 		}
 
-		list1.addAll(list2);
+		modelPreFilterContributors1.addAll(modelPreFilterContributors2);
 	}
 
 	private void _addIndexerProvidedPreFilters(
@@ -349,14 +349,14 @@ public class PreFilterContributorHelperImpl
 	}
 
 	private void _retainAll(
-		List<ModelPreFilterContributor> list1,
-		List<ModelPreFilterContributor> list2) {
+		List<ModelPreFilterContributor> modelPreFilterContributors1,
+		List<ModelPreFilterContributor> modelPreFilterContributors2) {
 
-		if (list2 == null) {
+		if (modelPreFilterContributors2 == null) {
 			return;
 		}
 
-		list1.retainAll(list2);
+		modelPreFilterContributors1.retainAll(modelPreFilterContributors2);
 	}
 
 	private ServiceTrackerMap<String, List<ModelPreFilterContributor>>
