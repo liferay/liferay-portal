@@ -6,11 +6,12 @@
 package com.liferay.exportimport.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.exportimport.kernel.lar.ExportImportProcessCallbackRegistryUtil;
+import com.liferay.exportimport.kernel.lar.ExportImportProcessCallbackRegistry;
 import com.liferay.exportimport.kernel.lifecycle.ExportImportLifecycleManagerUtil;
 import com.liferay.exportimport.kernel.lifecycle.constants.ExportImportLifecycleConstants;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import java.util.concurrent.Callable;
@@ -58,7 +59,7 @@ public class ExportImportProcessCallbackRegistryTest {
 
 		thread2.start();
 
-		ExportImportProcessCallbackRegistryUtil.registerCallback(
+		_exportImportProcessCallbackRegistry.registerCallback(
 			_processId, callable);
 
 		Assert.assertFalse(callable.hasBeenCalled.get());
@@ -66,6 +67,9 @@ public class ExportImportProcessCallbackRegistryTest {
 		stopProcess(_processId);
 
 		Assert.assertTrue(callable.hasBeenCalled.get());
+
+		thread1.join();
+		thread2.join();
 	}
 
 	@Test
@@ -77,6 +81,9 @@ public class ExportImportProcessCallbackRegistryTest {
 
 		thread1.start();
 		thread2.start();
+
+		thread1.join();
+		thread2.join();
 	}
 
 	@Test
@@ -88,7 +95,7 @@ public class ExportImportProcessCallbackRegistryTest {
 		MockExportImportProcessCallable callable1 =
 			new MockExportImportProcessCallable();
 
-		ExportImportProcessCallbackRegistryUtil.registerCallback(
+		_exportImportProcessCallbackRegistry.registerCallback(
 			_processId, callable1);
 
 		CountDownLatch countDownLatch = new CountDownLatch(1);
@@ -133,7 +140,7 @@ public class ExportImportProcessCallbackRegistryTest {
 
 		Thread registrationThread = new Thread(
 			() -> {
-				ExportImportProcessCallbackRegistryUtil.registerCallback(
+				_exportImportProcessCallbackRegistry.registerCallback(
 					_processId, callable);
 
 				registeredLatch.countDown();
@@ -167,7 +174,7 @@ public class ExportImportProcessCallbackRegistryTest {
 		MockExportImportProcessCallable callable1 =
 			new MockExportImportProcessCallable();
 
-		ExportImportProcessCallbackRegistryUtil.registerCallback(
+		_exportImportProcessCallbackRegistry.registerCallback(
 			_processId, callable1);
 
 		CountDownLatch countDownLatch = new CountDownLatch(1);
@@ -193,7 +200,7 @@ public class ExportImportProcessCallbackRegistryTest {
 		MockExportImportProcessCallable callable =
 			new MockExportImportProcessCallable();
 
-		ExportImportProcessCallbackRegistryUtil.registerCallback(
+		_exportImportProcessCallbackRegistry.registerCallback(
 			_processId, callable);
 
 		String nestedProcessId = RandomTestUtil.randomString();
@@ -203,7 +210,7 @@ public class ExportImportProcessCallbackRegistryTest {
 		MockExportImportProcessCallable callableNested =
 			new MockExportImportProcessCallable();
 
-		ExportImportProcessCallbackRegistryUtil.registerCallback(
+		_exportImportProcessCallbackRegistry.registerCallback(
 			nestedProcessId, callableNested);
 
 		Assert.assertFalse(callableNested.hasBeenCalled.get());
@@ -228,10 +235,10 @@ public class ExportImportProcessCallbackRegistryTest {
 		MockExportImportProcessCallable callable2 =
 			new MockExportImportProcessCallable();
 
-		ExportImportProcessCallbackRegistryUtil.registerCallback(
+		_exportImportProcessCallbackRegistry.registerCallback(
 			_processId, callable1);
 
-		ExportImportProcessCallbackRegistryUtil.registerCallback(
+		_exportImportProcessCallbackRegistry.registerCallback(
 			_processId, callable2);
 
 		Assert.assertFalse(callable1.hasBeenCalled.get());
@@ -250,7 +257,7 @@ public class ExportImportProcessCallbackRegistryTest {
 		MockExportImportProcessCallable callable =
 			new MockExportImportProcessCallable();
 
-		ExportImportProcessCallbackRegistryUtil.registerCallback(
+		_exportImportProcessCallbackRegistry.registerCallback(
 			_processId, callable);
 
 		startProcess(_processId);
@@ -258,7 +265,7 @@ public class ExportImportProcessCallbackRegistryTest {
 		MockExportImportProcessCallable callableNested =
 			new MockExportImportProcessCallable();
 
-		ExportImportProcessCallbackRegistryUtil.registerCallback(
+		_exportImportProcessCallbackRegistry.registerCallback(
 			_processId, callableNested);
 
 		Assert.assertFalse(callableNested.hasBeenCalled.get());
@@ -291,7 +298,7 @@ public class ExportImportProcessCallbackRegistryTest {
 			MockExportImportProcessCallable callable =
 				new MockExportImportProcessCallable();
 
-			ExportImportProcessCallbackRegistryUtil.registerCallback(
+			_exportImportProcessCallbackRegistry.registerCallback(
 				processId, callable);
 
 			Assert.assertFalse(callable.hasBeenCalled.get());
@@ -323,6 +330,10 @@ public class ExportImportProcessCallbackRegistryTest {
 				PROCESS_FLAG_LAYOUT_STAGING_IN_PROCESS,
 			processId);
 	}
+
+	@Inject
+	private ExportImportProcessCallbackRegistry
+		_exportImportProcessCallbackRegistry;
 
 	private String _processId;
 
