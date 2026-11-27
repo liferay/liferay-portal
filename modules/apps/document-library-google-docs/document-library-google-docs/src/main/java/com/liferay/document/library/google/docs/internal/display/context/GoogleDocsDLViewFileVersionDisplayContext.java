@@ -71,10 +71,6 @@ public class GoogleDocsDLViewFileVersionDisplayContext
 			return actionDropdownItems;
 		}
 
-		actionDropdownItems.removeIf(
-			dropdownItem -> Objects.equals(
-				dropdownItem.get("key"), "#edit-with-image-editor"));
-
 		_processDropdownItems(actionDropdownItems);
 
 		return actionDropdownItems;
@@ -116,13 +112,9 @@ public class GoogleDocsDLViewFileVersionDisplayContext
 	}
 
 	private void _processDropdownItems(List<DropdownItem> dropdownItems) {
-		Set<String> keys = SetUtil.fromArray(
-			DLUIItemKeys.CANCEL_CHECKOUT, DLUIItemKeys.CHECKIN,
-			DLUIItemKeys.CHECKOUT, DLUIItemKeys.DOWNLOAD,
-			DLUIItemKeys.OPEN_IN_MS_OFFICE, "#edit-in-google-drive");
-
 		dropdownItems.removeIf(
-			dropdownItem -> keys.contains(dropdownItem.get("key")));
+			dropdownItem -> _unsupportedDropdownItemKeys.contains(
+				dropdownItem.get("key")));
 
 		if (!_googleDocsMetadataHelper.containsField(
 				GoogleDocsConstants.DDM_FIELD_NAME_URL)) {
@@ -162,6 +154,13 @@ public class GoogleDocsDLViewFileVersionDisplayContext
 
 	private static final UUID _UUID = UUID.fromString(
 		"7B61EA79-83AE-4FFD-A77A-1D47E06EBBE9");
+
+	private static final Set<String> _unsupportedDropdownItemKeys =
+		SetUtil.fromArray(
+			DLUIItemKeys.CANCEL_CHECKOUT, DLUIItemKeys.CHECKIN,
+			DLUIItemKeys.CHECKOUT, DLUIItemKeys.DOWNLOAD,
+			DLUIItemKeys.OPEN_IN_MS_OFFICE, "#edit-in-google-drive",
+			"#edit-with-image-editor");
 
 	private final GoogleDocsMetadataHelper _googleDocsMetadataHelper;
 	private final HttpServletRequest _httpServletRequest;
