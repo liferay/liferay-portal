@@ -123,7 +123,7 @@ export class ProductsPage {
 		await this.searchInput.press('Enter');
 
 		await expect(
-			this.page.locator('.search-resume-label', {
+			this.page.locator('.search-resume', {
 				has: this.page.locator('strong', {hasText: value}),
 			})
 		).toBeVisible();
