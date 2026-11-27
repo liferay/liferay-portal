@@ -234,26 +234,26 @@ public class DDMFormEvaluatorHelper {
 		return formEvaluatorEvaluateResponse.build();
 	}
 
+	private void _checkFieldAffectedByAction(
+		DDMFormField ddmFormField, DDMFormRule ddmFormRule) {
+
+		_checkFieldAffectedBySetReadOnlyAction(ddmFormField, ddmFormRule);
+		_checkFieldAffectedBySetRequiredAction(ddmFormField, ddmFormRule);
+		_checkFieldAffectedBySetVisibleAction(ddmFormField, ddmFormRule);
+	}
+
 	private void _checkFieldAffectedByAction(DDMFormRule ddmFormRule) {
 		for (DDMFormField ddmFormField : _ddmFormFieldsMap.values()) {
-			_checkFieldAffectedByAction(ddmFormRule, ddmFormField);
+			_checkFieldAffectedByAction(ddmFormField, ddmFormRule);
 		}
 	}
 
-	private void _checkFieldAffectedByAction(
-		DDMFormRule ddmFormRule, DDMFormField ddmFormField) {
-
-		_checkFieldAffectedBySetReadOnlyAction(ddmFormRule, ddmFormField);
-		_checkFieldAffectedBySetRequiredAction(ddmFormRule, ddmFormField);
-		_checkFieldAffectedBySetVisibleAction(ddmFormRule, ddmFormField);
-	}
-
 	private void _checkFieldAffectedBySetReadOnlyAction(
-		DDMFormRule ddmFormRule, DDMFormField ddmFormField) {
+		DDMFormField ddmFormField, DDMFormRule ddmFormRule) {
 
 		if (_hasAction(
-				ddmFormRule, "setEnabled", ddmFormField.getName(),
-				!ddmFormField.isReadOnly())) {
+				ddmFormField.getName(), ddmFormRule, !ddmFormField.isReadOnly(),
+				"setEnabled")) {
 
 			UpdateFieldPropertyRequest.Builder builder =
 				UpdateFieldPropertyRequest.Builder.newBuilder(
@@ -266,11 +266,11 @@ public class DDMFormEvaluatorHelper {
 	}
 
 	private void _checkFieldAffectedBySetRequiredAction(
-		DDMFormRule ddmFormRule, DDMFormField ddmFormField) {
+		DDMFormField ddmFormField, DDMFormRule ddmFormRule) {
 
 		if (_hasAction(
-				ddmFormRule, "setRequired", ddmFormField.getName(),
-				ddmFormField.isRequired())) {
+				ddmFormField.getName(), ddmFormRule, ddmFormField.isRequired(),
+				"setRequired")) {
 
 			UpdateFieldPropertyRequest.Builder builder =
 				UpdateFieldPropertyRequest.Builder.newBuilder(
@@ -283,10 +283,10 @@ public class DDMFormEvaluatorHelper {
 	}
 
 	private void _checkFieldAffectedBySetVisibleAction(
-		DDMFormRule ddmFormRule, DDMFormField ddmFormField) {
+		DDMFormField ddmFormField, DDMFormRule ddmFormRule) {
 
 		if (_hasAction(
-				ddmFormRule, "setVisible", ddmFormField.getName(), true)) {
+				ddmFormField.getName(), ddmFormRule, true, "setVisible")) {
 
 			UpdateFieldPropertyRequest.Builder builder =
 				UpdateFieldPropertyRequest.Builder.newBuilder(
@@ -601,8 +601,8 @@ public class DDMFormEvaluatorHelper {
 	}
 
 	private boolean _hasAction(
-		DDMFormRule ddmFormRule, String functionName, String ddmFormFieldName,
-		boolean defaultValue) {
+		String ddmFormFieldName, DDMFormRule ddmFormRule, boolean defaultValue,
+		String functionName) {
 
 		String setBooleanPropertyAction = String.format(
 			"%s('%s', %s)", functionName, ddmFormFieldName, defaultValue);
