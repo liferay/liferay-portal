@@ -111,10 +111,10 @@ public class VisitFrequencyMetricDTOConverterTest {
 
 		long weeklyVisitors = RandomTestUtil.randomLong();
 
-		visitFrequencyBag.setTotalCount(weeklyVisitors);
 		visitFrequencyBag.setCompositions(
 			Collections.singletonList(
 				_createComposition(weeklyVisitors, "weekly")));
+		visitFrequencyBag.setTotalCount(weeklyVisitors);
 
 		VisitFrequencyMetric visitFrequencyMetric =
 			_visitFrequencyMetricDTOConverter.toDTO(null, visitFrequencyBag);
