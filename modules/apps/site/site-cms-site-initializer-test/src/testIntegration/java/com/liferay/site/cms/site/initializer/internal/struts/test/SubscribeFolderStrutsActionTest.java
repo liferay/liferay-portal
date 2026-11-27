@@ -125,10 +125,10 @@ public class SubscribeFolderStrutsActionTest {
 				_companyLocalService.getCompany(TestPropsValues.getCompanyId()),
 				group, layout);
 
+		mockHttpServletRequest.setParameter("cmd", cmd);
 		mockHttpServletRequest.setParameter(
 			"objectEntryFolderId",
 			String.valueOf(objectEntryFolder.getObjectEntryFolderId()));
-		mockHttpServletRequest.setParameter("cmd", cmd);
 
 		return mockHttpServletRequest;
 	}
@@ -214,13 +214,13 @@ public class SubscribeFolderStrutsActionTest {
 						group, layout, objectEntryFolder, Constants.SUBSCRIBE),
 					guestUser));
 
-		Assert.assertEquals(
-			ObjectEntryFolder.class.getName(), mustHavePermission.resourceName);
+		Assert.assertArrayEquals(
+			new String[] {ActionKeys.SUBSCRIBE}, mustHavePermission.actionId);
 		Assert.assertEquals(
 			objectEntryFolder.getObjectEntryFolderId(),
 			mustHavePermission.resourceId);
-		Assert.assertArrayEquals(
-			new String[] {ActionKeys.SUBSCRIBE}, mustHavePermission.actionId);
+		Assert.assertEquals(
+			ObjectEntryFolder.class.getName(), mustHavePermission.resourceName);
 
 		Assert.assertFalse(
 			_isSubscribed(objectEntryFolder, guestUser.getUserId()));

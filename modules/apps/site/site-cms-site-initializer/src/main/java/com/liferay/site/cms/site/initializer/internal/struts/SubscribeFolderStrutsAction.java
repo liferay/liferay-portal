@@ -48,14 +48,14 @@ public class SubscribeFolderStrutsAction implements StrutsAction {
 			throw new UnsupportedOperationException();
 		}
 
+		String cmd = ParamUtil.getString(httpServletRequest, "cmd");
+
 		long objectEntryFolderId = ParamUtil.getLong(
 			httpServletRequest, "objectEntryFolderId");
 
 		ObjectEntryFolder objectEntryFolder =
 			_objectEntryFolderLocalService.getObjectEntryFolder(
 				objectEntryFolderId);
-
-		String cmd = ParamUtil.getString(httpServletRequest, "cmd");
 
 		if (cmd.equals(Constants.SUBSCRIBE)) {
 			_objectEntryFolderService.subscribeObjectEntryFolder(
