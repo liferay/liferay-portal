@@ -99,57 +99,50 @@ public class OAuthClientASLocalMetadataModelListenerTest {
 			_openIdConnectSessionLocalService.updateOpenIdConnectSession(
 				openIdConnectSession);
 
-		try {
-			OAuthClientEntry oAuthClientEntry =
-				_oAuthClientEntryLocalService.getOAuthClientEntry(
-					TestPropsValues.getCompanyId(), localWellKnownURI,
-					clientId);
+		OAuthClientEntry oAuthClientEntry =
+			_oAuthClientEntryLocalService.getOAuthClientEntry(
+				TestPropsValues.getCompanyId(), localWellKnownURI, clientId);
 
-			String metadataJSON = oAuthClientASLocalMetadata.getMetadataJSON();
+		String metadataJSON = oAuthClientASLocalMetadata.getMetadataJSON();
 
-			JSONObject jsonObject = JSONFactoryUtil.createJSONObject(
-				metadataJSON);
+		JSONObject jsonObject = JSONFactoryUtil.createJSONObject(metadataJSON);
 
-			jsonObject.put(
-				"token_endpoint", "http://" + RandomTestUtil.randomString());
+		jsonObject.put(
+			"token_endpoint", "http://" + RandomTestUtil.randomString());
 
-			oAuthClientASLocalMetadata =
-				_oAuthClientASLocalMetadataLocalService.
-					updateOAuthClientASLocalMetadata(
-						oAuthClientASLocalMetadata.
-							getOAuthClientASLocalMetadataId(),
-						jsonObject.toString(), "openid-configuration");
-
-			Assert.assertNotEquals(
-				localWellKnownURI,
-				oAuthClientASLocalMetadata.getLocalWellKnownURI());
-
-			oAuthClientEntry =
-				_oAuthClientEntryLocalService.getOAuthClientEntry(
-					oAuthClientEntry.getOAuthClientEntryId());
-
-			Assert.assertEquals(
-				oAuthClientASLocalMetadata.getLocalWellKnownURI(),
-				oAuthClientEntry.getAuthServerWellKnownURI());
-
-			openIdConnectSession =
-				_openIdConnectSessionLocalService.getOpenIdConnectSession(
-					openIdConnectSession.getOpenIdConnectSessionId());
-
-			Assert.assertEquals(
-				oAuthClientASLocalMetadata.getLocalWellKnownURI(),
-				openIdConnectSession.getAuthServerWellKnownURI());
-
+		oAuthClientASLocalMetadata =
 			_oAuthClientASLocalMetadataLocalService.
 				updateOAuthClientASLocalMetadata(
 					oAuthClientASLocalMetadata.
 						getOAuthClientASLocalMetadataId(),
-					metadataJSON, "openid-configuration");
-		}
-		finally {
-			_openIdConnectSessionLocalService.deleteOpenIdConnectSession(
-				openIdConnectSession);
-		}
+					jsonObject.toString(), "openid-configuration");
+
+		Assert.assertNotEquals(
+			localWellKnownURI,
+			oAuthClientASLocalMetadata.getLocalWellKnownURI());
+
+		oAuthClientEntry = _oAuthClientEntryLocalService.getOAuthClientEntry(
+			oAuthClientEntry.getOAuthClientEntryId());
+
+		Assert.assertEquals(
+			oAuthClientASLocalMetadata.getLocalWellKnownURI(),
+			oAuthClientEntry.getAuthServerWellKnownURI());
+
+		openIdConnectSession =
+			_openIdConnectSessionLocalService.getOpenIdConnectSession(
+				openIdConnectSession.getOpenIdConnectSessionId());
+
+		Assert.assertEquals(
+			oAuthClientASLocalMetadata.getLocalWellKnownURI(),
+			openIdConnectSession.getAuthServerWellKnownURI());
+
+		_oAuthClientASLocalMetadataLocalService.
+			updateOAuthClientASLocalMetadata(
+				oAuthClientASLocalMetadata.getOAuthClientASLocalMetadataId(),
+				metadataJSON, "openid-configuration");
+
+		_openIdConnectSessionLocalService.deleteOpenIdConnectSession(
+			openIdConnectSession);
 	}
 
 	@Inject
