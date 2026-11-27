@@ -1088,10 +1088,11 @@ public class CustomFDSSerializerTest extends BaseFDSSerializerTestCase {
 
 	@Test
 	public void testSerializeShowColumnsVisibility() throws Exception {
-		String fdsName = RandomTestUtil.randomString();
-
 		_mockSerializeShowColumnsVisibility(FDS_NAMES[0], false);
 		_mockSerializeShowColumnsVisibility(FDS_NAMES[1], true);
+
+		String fdsName = RandomTestUtil.randomString();
+
 		_mockSerializeShowColumnsVisibility(fdsName, null);
 
 		Assert.assertFalse(
