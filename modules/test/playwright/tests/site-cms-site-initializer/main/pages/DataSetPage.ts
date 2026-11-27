@@ -174,7 +174,7 @@ export class DataSetPage {
 				await this.searchInput.press('Enter');
 
 				await this.page
-					.locator('.search-resume-label', {
+					.locator('.search-resume', {
 						has: this.page.locator('strong', {hasText: value}),
 					})
 					.waitFor();
