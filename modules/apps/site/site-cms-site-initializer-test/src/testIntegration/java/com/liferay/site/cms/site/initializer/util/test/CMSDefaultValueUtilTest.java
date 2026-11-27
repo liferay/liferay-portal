@@ -248,8 +248,6 @@ public class CMSDefaultValueUtilTest {
 			_group.getGroupId(), _objectEntryFolder.getExternalReferenceCode(),
 			ObjectEntryFolder.class.getName(), _filterFactory);
 
-		Assert.assertEquals(2, jsonArray.length());
-
 		JSONObject jsonObject = jsonArray.getJSONObject(0);
 
 		Assert.assertEquals("description", jsonObject.getString("name"));
@@ -259,6 +257,8 @@ public class CMSDefaultValueUtilTest {
 
 		Assert.assertEquals("title", jsonObject.getString("name"));
 		Assert.assertEquals("Title", jsonObject.getString("value"));
+
+		Assert.assertEquals(2, jsonArray.length());
 	}
 
 	@Test
@@ -336,8 +336,6 @@ public class CMSDefaultValueUtilTest {
 			_group.getGroupId(), _filterFactory,
 			_objectEntryFolder.getObjectEntryFolderId());
 
-		Assert.assertEquals(defaultValues.toString(), 6, defaultValues.size());
-
 		JSONObject jsonObject = defaultValues.get(
 			CMSDefaultValueUtil.getObjectFieldKey(
 				"list1", "category", "Picklist"));
@@ -364,6 +362,8 @@ public class CMSDefaultValueUtilTest {
 		Assert.assertEquals(
 			"Folder description", valueJSONObject.getString("en_US"));
 		Assert.assertFalse(valueJSONObject.has("it_IT"));
+
+		Assert.assertEquals(defaultValues.toString(), 6, defaultValues.size());
 
 		_assertInheritedDefaultValue(
 			DepotEntry.class.getName(), defaultValues,
