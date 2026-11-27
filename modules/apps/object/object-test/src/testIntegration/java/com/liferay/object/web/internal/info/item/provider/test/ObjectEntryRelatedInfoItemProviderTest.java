@@ -64,9 +64,6 @@ public class ObjectEntryRelatedInfoItemProviderTest {
 		List<RelatedInfoItem> relatedInfoItems =
 			relatedInfoItemProvider.getRelatedInfoItems();
 
-		Assert.assertEquals(
-			relatedInfoItems.toString(), 1, relatedInfoItems.size());
-
 		RelatedInfoItem relatedInfoItem = relatedInfoItems.get(0);
 
 		Assert.assertEquals(
@@ -74,6 +71,9 @@ public class ObjectEntryRelatedInfoItemProviderTest {
 			relatedInfoItem.getClassName());
 		Assert.assertEquals(
 			objectRelationship.getName(), relatedInfoItem.getName());
+
+		Assert.assertEquals(
+			relatedInfoItems.toString(), 1, relatedInfoItems.size());
 	}
 
 	@Inject

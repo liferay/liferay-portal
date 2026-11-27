@@ -2819,9 +2819,6 @@ public class ObjectActionLocalServiceTest {
 				0, objectRelationship.getObjectDefinitionId2(),
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 
-		Assert.assertEquals(
-			childObjectEntries.toString(), 1, childObjectEntries.size());
-
 		ObjectEntry childObjectEntry = childObjectEntries.get(0);
 
 		ObjectField objectField = _objectFieldLocalService.getObjectField(
@@ -2831,6 +2828,9 @@ public class ObjectActionLocalServiceTest {
 			parentObjectEntry.getObjectEntryId(),
 			MapUtil.getLong(
 				childObjectEntry.getValues(), objectField.getName()));
+
+		Assert.assertEquals(
+			childObjectEntries.toString(), 1, childObjectEntries.size());
 	}
 
 	@Test

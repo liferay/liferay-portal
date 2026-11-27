@@ -13158,7 +13158,6 @@ public class ObjectEntryLocalServiceTest {
 					).name(
 						"name"
 					).build()));
-
 		String value = RandomTestUtil.randomString();
 
 		ObjectEntry parentObjectEntry1 = _addObjectEntry(
