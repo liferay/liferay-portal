@@ -50,7 +50,6 @@ public class IndividualResourceTest extends BaseIndividualResourceTestCase {
 
 		_contactsEngineHttpServer = new ContactsEngineHttpServer(
 			_contactsEngineClient, "/individuals", "individual");
-
 		_faroProject = _faroProjectLocalService.addFaroProject(
 			TestPropsValues.getUserId(), RandomTestUtil.randomString(), null,
 			null, null, null, Collections.emptyList(), null, null, null, null,
@@ -62,7 +61,6 @@ public class IndividualResourceTest extends BaseIndividualResourceTestCase {
 	@Override
 	public void tearDown() throws Exception {
 		_contactsEngineHttpServer.close();
-
 		_faroProjectLocalService.deleteFaroProjectByGroupId(
 			_faroProject.getGroupId());
 

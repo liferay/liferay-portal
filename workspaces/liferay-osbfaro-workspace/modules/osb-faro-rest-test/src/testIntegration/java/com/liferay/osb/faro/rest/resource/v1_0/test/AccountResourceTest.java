@@ -54,7 +54,6 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 
 		_contactsEngineHttpServer = new ContactsEngineHttpServer(
 			_contactsEngineClient, "/accounts", "account");
-
 		_faroProject = _faroProjectLocalService.addFaroProject(
 			TestPropsValues.getUserId(), RandomTestUtil.randomString(), null,
 			null, null, null, Collections.emptyList(), null, null, null, null,
@@ -66,7 +65,6 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 	@Override
 	public void tearDown() throws Exception {
 		_contactsEngineHttpServer.close();
-
 		_faroProjectLocalService.deleteFaroProjectByGroupId(
 			_faroProject.getGroupId());
 
