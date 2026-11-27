@@ -402,6 +402,22 @@ public class ListUtil {
 		return previousAndNext;
 	}
 
+	public static <E> int indexOf(
+		List<? extends E> list, Predicate<E> predicate) {
+
+		if (isEmpty(list)) {
+			return -1;
+		}
+
+		for (int i = 0; i < list.size(); i++) {
+			if (predicate.test(list.get(i))) {
+				return i;
+			}
+		}
+
+		return -1;
+	}
+
 	public static boolean isEmpty(List<?> list) {
 		if ((list == null) || list.isEmpty()) {
 			return true;
