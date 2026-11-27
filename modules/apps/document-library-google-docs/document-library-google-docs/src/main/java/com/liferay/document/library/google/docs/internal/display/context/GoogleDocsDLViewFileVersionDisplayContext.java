@@ -27,13 +27,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.UUID;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
@@ -172,31 +170,16 @@ public class GoogleDocsDLViewFileVersionDisplayContext
 		_insertEditInGoogleDropdownItem(dropdownItems);
 	}
 
-	private <T> void _removeUIItems(
-		List<T> items, Function<T, String> function, Set<String> keys) {
-
-		Iterator<T> iterator = items.iterator();
-
-		while (iterator.hasNext()) {
-			T item = iterator.next();
-
-			if (!keys.contains(function.apply(item))) {
-				continue;
-			}
-
-			iterator.remove();
-		}
-	}
-
 	private void _removeUnsupportedDropdownItems(
 		List<DropdownItem> dropdownItems) {
 
-		_removeUIItems(
-			dropdownItems, dropdownItem -> (String)dropdownItem.get("key"),
-			SetUtil.fromArray(
-				DLUIItemKeys.CANCEL_CHECKOUT, DLUIItemKeys.CHECKIN,
-				DLUIItemKeys.CHECKOUT, DLUIItemKeys.DOWNLOAD,
-				DLUIItemKeys.OPEN_IN_MS_OFFICE, "#edit-in-google-drive"));
+		Set<String> keys = SetUtil.fromArray(
+			DLUIItemKeys.CANCEL_CHECKOUT, DLUIItemKeys.CHECKIN,
+			DLUIItemKeys.CHECKOUT, DLUIItemKeys.DOWNLOAD,
+			DLUIItemKeys.OPEN_IN_MS_OFFICE, "#edit-in-google-drive");
+
+		dropdownItems.removeIf(
+			dropdownItem -> keys.contains(dropdownItem.get("key")));
 	}
 
 	private static final UUID _UUID = UUID.fromString(
