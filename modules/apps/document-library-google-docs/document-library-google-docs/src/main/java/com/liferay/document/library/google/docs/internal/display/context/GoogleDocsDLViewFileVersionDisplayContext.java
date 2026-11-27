@@ -115,8 +115,14 @@ public class GoogleDocsDLViewFileVersionDisplayContext
 		printWriter.write("</div>");
 	}
 
-	private void _insertEditInGoogleDropdownItem(
-		List<DropdownItem> dropdownItems) {
+	private void _processDropdownItems(List<DropdownItem> dropdownItems) {
+		Set<String> keys = SetUtil.fromArray(
+			DLUIItemKeys.CANCEL_CHECKOUT, DLUIItemKeys.CHECKIN,
+			DLUIItemKeys.CHECKOUT, DLUIItemKeys.DOWNLOAD,
+			DLUIItemKeys.OPEN_IN_MS_OFFICE, "#edit-in-google-drive");
+
+		dropdownItems.removeIf(
+			dropdownItem -> keys.contains(dropdownItem.get("key")));
 
 		if (!_googleDocsMetadataHelper.containsField(
 				GoogleDocsConstants.DDM_FIELD_NAME_URL)) {
@@ -152,24 +158,6 @@ public class GoogleDocsDLViewFileVersionDisplayContext
 			).setTarget(
 				"_blank"
 			).build());
-	}
-
-	private void _processDropdownItems(List<DropdownItem> dropdownItems) {
-		_removeUnsupportedDropdownItems(dropdownItems);
-
-		_insertEditInGoogleDropdownItem(dropdownItems);
-	}
-
-	private void _removeUnsupportedDropdownItems(
-		List<DropdownItem> dropdownItems) {
-
-		Set<String> keys = SetUtil.fromArray(
-			DLUIItemKeys.CANCEL_CHECKOUT, DLUIItemKeys.CHECKIN,
-			DLUIItemKeys.CHECKOUT, DLUIItemKeys.DOWNLOAD,
-			DLUIItemKeys.OPEN_IN_MS_OFFICE, "#edit-in-google-drive");
-
-		dropdownItems.removeIf(
-			dropdownItem -> keys.contains(dropdownItem.get("key")));
 	}
 
 	private static final UUID _UUID = UUID.fromString(
