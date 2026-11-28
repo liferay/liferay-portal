@@ -104,6 +104,25 @@
 											}
 										},
 										"type": "Widget"
+									},
+									{
+										"definition": {
+											"widgetInstance": {
+												"widgetConfig": {
+													"displayStyle": "ddmTemplate_LEARN_SEARCH_TABS",
+													"displayStyleGroupId": "32323",
+													"frequenciesVisible": "true",
+													"frequencyThreshold": "1",
+													"maxTerms": "10",
+													"order": "count:desc",
+													"parameterName": "category",
+													"vocabularyIds": "90249"
+												},
+												"widgetName": "com_liferay_portal_search_web_category_facet_portlet_CategoryFacetPortlet"
+											}
+										},
+										"id": "fd3859f3-c70f-f1fd-1a3a-2388babb47c5",
+										"type": "Widget"
 									}
 								],
 								"type": "Section"
